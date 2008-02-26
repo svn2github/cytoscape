@@ -36,8 +36,10 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesImpl;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CyAttributesFactory;
+import org.cytoscape.attributes.AttributeValueVisitor;
+import org.cytoscape.attributes.AttributeFilter;
 
 import cytoscape.data.readers.CyAttributesReader;
 
@@ -60,7 +62,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testRead1() throws IOException {
 		String attributeName = "TestNodeAttribute1";
-		CyAttributes cyAttributes = new CyAttributesImpl();
+		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testRead1"); 
 		File file = new File("src/test/resources/testData/galFiltered.nodeAttrs1");
 		FileReader reader = new FileReader(file);
 		CyAttributesReader.loadAttributes(cyAttributes, reader);
@@ -90,7 +92,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 * @throws IOException IO Errors.
 	 */
 	public void testRead2() throws IOException {
-		CyAttributes cyAttributes = new CyAttributesImpl();
+		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testRead2"); 
 		File file = new File("src/test/resources/testData/galFiltered.edgeAttrs2");
 		FileReader reader = new FileReader(file);
 		CyAttributesReader.loadAttributes(cyAttributes, reader);
@@ -121,7 +123,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 * @throws IOException IO Errors.
 	 */
 	public void testRead3() throws IOException {
-		CyAttributes cyAttributes = new CyAttributesImpl();
+		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testRead3"); 
 
 		//  This file contains an explicit class declaration, like so:
 		//  Score (class=Java.lang.Double)
@@ -148,7 +150,7 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testReadSimpleLists() throws IOException {
 		String attributeName = "GO_molecular_function_level_4";
-		CyAttributes cyAttributes = new CyAttributesImpl();
+		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testReadSimpleLists"); 
 		File file = new File("src/test/resources/testData/implicitStringArray.attribute");
 		FileReader reader = new FileReader(file);
 		CyAttributesReader.loadAttributes(cyAttributes, reader);

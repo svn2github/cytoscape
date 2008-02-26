@@ -43,7 +43,7 @@ import org.cytoscape.Node;
 import org.cytoscape.Edge;
 import org.cytoscape.groups.CyGroup;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
 import java.util.ArrayList;
 import java.util.Collection;

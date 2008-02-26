@@ -58,7 +58,7 @@ import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.readers.CyAttributesReader;
 import cytoscape.util.FileUtil;

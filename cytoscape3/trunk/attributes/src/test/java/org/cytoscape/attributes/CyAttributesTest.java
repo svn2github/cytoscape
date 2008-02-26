@@ -36,8 +36,8 @@
  */
 package cytoscape.data;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesImpl;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.impl.CyAttributesImpl;
 
 import junit.framework.TestCase;
 

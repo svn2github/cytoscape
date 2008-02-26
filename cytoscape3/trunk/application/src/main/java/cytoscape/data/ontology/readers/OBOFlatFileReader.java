@@ -37,7 +37,7 @@ package cytoscape.data.ontology.readers;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 
 import cytoscape.data.ontology.Ontology;

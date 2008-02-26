@@ -34,10 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data;
-
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
+package org.cytoscape.attributes;
 
 import java.util.List;
 import java.util.Map;
@@ -69,7 +66,7 @@ import java.util.Map;
  * <LI>For edges, use {@link cytoscape.Edge#getIdentifier()}.
  * </UL>
  * <h3>Data Type Restrictions:</h3>
- * CyAttributes uses a {@link cytoscape.data.attr.MultiHashMap} data structure,
+ * CyAttributes uses a {@link org.cytoscape.attributes.MultiHashMap} data structure,
  * which restricts attribute values to four data types:  <CODE>Boolean</CODE>,
  * <CODE>Integer</CODE>, <CODE>Double</CODE>, and <CODE>String</CODE>.  It does
  * not store arbitrary Java Objects.  We do this for three reasons:
@@ -191,7 +188,7 @@ import java.util.Map;
  * will delete all attributes with this name, preparing the way for a clean
  * slate.  Please use with caution!
  * <h3>Working with Arbitrarily Complex Data Structures:</h3>
- * CyAttributes uses a {@link cytoscape.data.attr.MultiHashMap} data structure
+ * CyAttributes uses a {@link org.cytoscape.attributes.MultiHashMap} data structure
  * to store attributes.  This data structure enables you to store arbitrarily
  * complex trees of data, but restricts the tree to Objects of type:
  * <CODE>Boolean</CODE>, <CODE>Integer</CODE>, <CODE>Double</CODE> or
@@ -202,14 +199,14 @@ import java.util.Map;
  * obtaining the MultiHashMap via {@link CyAttributes#getMultiHashMap()},
  * and {@link CyAttributes#getMultiHashMapDefinition()},
  * and working on the data structure directly.  Complete information is
- * available in the {@link cytoscape.data.attr.MultiHashMap} javadocs.
+ * available in the {@link org.cytoscape.attributes.MultiHashMap} javadocs.
  * <h3>Listening for Attribute Events:</h3>
- * As noted above, CyAttributes uses a {@link cytoscape.data.attr.MultiHashMap}
+ * As noted above, CyAttributes uses a {@link org.cytoscape.attributes.MultiHashMap}
  * data structure to store attributes.  To listen to attribute events,
  * first obtain the MultiHashMap via {@link CyAttributes#getMultiHashMap()},
  * and then register a listener via
  * {@link
- * MultiHashMap#addDataListener(cytoscape.data.attr.MultiHashMapListener)}.
+ * MultiHashMap#addDataListener(org.cytoscape.attributes.MultiHashMapListener)}.
  * <P>Note that calls to
  * {@link CyAttributes#setListAttribute(String, String, java.util.List)}
  * and

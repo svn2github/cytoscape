@@ -1,5 +1,6 @@
+
 /*
-  File: AttributeFilter.java
+  File: CyAttributesFactory.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,30 +35,25 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data;
+package org.cytoscape.attributes;
 
+import java.util.Map;
+import java.util.HashMap;
+import org.cytoscape.attributes.impl.CyAttributesImpl; 
 
-/**
- * Interface for defining CyEdge-based filters used for determining
- * which Edges should be used for a particular operation, such as
- * CyAttributesUtils.copyAttributes().
- * @see cytoscape.data.CyAttributesUtils#copyAttributes
- */
-public interface AttributeFilter {
-	/**
-	 * Return true iff a given attribute should be included in
-	 * some operation, such as {@link
-	 * cytoscape.data.CyAttributesUtils#copyAttributes
-	 * CyAttributesUtils.copyAttributes()}.
-	 * @param CyAttributes attrs the CyAttributes where attrName
-	 *        is stored.
-	 * @param objID the identifer of the object whose attrName attribute
-	 *              is stored in attrs.
-	 * @param attrName the name of the Attribute to test.
-	 * For example, if we were performing a CyAttributesUtils.copyAttributes(),
-	 * returning true would mean to copy the attribute attrName
-	 * for the object with key objID, within the CyAttributes attrs.
-	 * @see cytoscape.data.CyAttributesUtils#copyAttributes
-	 */
-	boolean includeAttribute(CyAttributes attrs, String objID, String attrName);
+public class CyAttributesFactory {
+
+	private static Map<String,CyAttributes> attrs = new HashMap<String,CyAttributes>();
+	
+	private CyAttributesFactory() { }
+
+	public static CyAttributes getCyAttributes(String namespace) {
+		if (namespace == null)
+			return null;
+
+		if (!attrs.containsKey(namespace)) 
+			attrs.put(namespace, new CyAttributesImpl());
+		
+		return attrs.get(namespace);
+	}
 }

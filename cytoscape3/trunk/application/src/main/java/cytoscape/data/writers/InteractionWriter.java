@@ -41,7 +41,7 @@ import org.cytoscape.Edge;
 import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 
 import cytoscape.task.TaskMonitor;

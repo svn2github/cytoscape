@@ -41,8 +41,9 @@ import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.data.attr.CountedIterator;
-import cytoscape.data.attr.MultiHashMap;
+import org.cytoscape.attributes.CountedIterator;
+import org.cytoscape.attributes.MultiHashMap;
+import org.cytoscape.attributes.CyAttributes;
 
 import org.cytoscape.Edge;
 

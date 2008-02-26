@@ -47,6 +47,8 @@ package cytoscape.data;
 import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
+import org.cytoscape.attributes.CyAttributes;
+
 //--------------------------------------------------------------------
 import cytoscape.data.readers.TextFileReader;
 import cytoscape.data.readers.TextJarReader;

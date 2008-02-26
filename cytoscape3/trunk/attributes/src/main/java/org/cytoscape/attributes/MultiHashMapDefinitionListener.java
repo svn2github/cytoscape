@@ -1,5 +1,5 @@
 /*
-  File: CountedIterator.java
+  File: MultiHashMapDefinitionListener.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,18 +34,25 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.attr;
-
-import java.util.Iterator;
+package org.cytoscape.attributes;
 
 
 /**
- * A java.util.Iterator with knowledge of how many elements are remaining.
+ * A hook to receive notification when attribute definitions are created
+ * and destroyed.
  */
-public interface CountedIterator extends Iterator {
+public interface MultiHashMapDefinitionListener {
 	/**
-	 * Returns a non-negative integer I such that next() will successfully
-	 * return a value no more and no less than I times.
+	 * This method is called by a MultiHashMapDefinition implementation as a
+	 * result of a new attribute being defined
+	 * (MultiHashMapDefinition.defineAttribute()).
 	 */
-	public int numRemaining();
+	public void attributeDefined(String attributeName);
+
+	/**
+	 * This method is called by a MultiHashMapDefinition implementation as a
+	 * result of an attribute being undefined
+	 * (MultiHashMapDefinition.undefineAttribute()).
+	 */
+	public void attributeUndefined(String attributeName);
 }

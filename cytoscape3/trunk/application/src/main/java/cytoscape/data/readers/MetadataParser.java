@@ -40,7 +40,7 @@ import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
 import java.net.URISyntaxException;
 

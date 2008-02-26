@@ -34,12 +34,12 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data;
+package org.cytoscape.attributes.impl; 
 
-import cytoscape.data.attr.CountedIterator;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.attr.util.MultiHashMapFactory;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CountedIterator;
+import org.cytoscape.attributes.MultiHashMap;
+import org.cytoscape.attributes.MultiHashMapDefinition;
 
 import java.util.*;
 

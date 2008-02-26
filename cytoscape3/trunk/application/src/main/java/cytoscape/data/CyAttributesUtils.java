@@ -38,9 +38,12 @@ package cytoscape.data;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.attr.CountedIterator;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
+import org.cytoscape.attributes.CountedIterator;
+import org.cytoscape.attributes.MultiHashMap;
+import org.cytoscape.attributes.MultiHashMapDefinition;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.AttributeValueVisitor;
+import org.cytoscape.attributes.AttributeFilter;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
@@ -611,8 +614,8 @@ public class CyAttributesUtils {
 	 * types returned by methods like CyAttributes.getType() and
 	 * MultiHashMapDefinition.getAttributeKeysapceDimensionTypes().
 	 * This is useful for "toString()" operations.
-	 * @see cytoscape.data.CyAttributes#getType
-	 * @see cytoscape.data.attr.MultiHashMapDefinition#getAttributeKeyspaceDimensionTypes
+	 * @see org.cytoscape.attributes.CyAttributes#getType
+	 * @see org.cytoscape.attributes.MultiHashMapDefinition#getAttributeKeyspaceDimensionTypes
 	 */
 	static public String toString(byte atype) {
 		switch (atype) {

@@ -48,7 +48,7 @@ import org.cytoscape.Node;
 import org.cytoscape.groups.CyGroup;
 import cytoscape.Cytoscape;
 import cytoscape.view.CyNetworkView;
-import cytoscape.data.CyAttributes;;
+import org.cytoscape.attributes.CyAttributes;;
 
 /**
  * The CyGroup class provides the implementation for a group model that

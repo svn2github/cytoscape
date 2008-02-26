@@ -1,5 +1,5 @@
 /*
-  File: GraphReader.java
+  File: AttributeValueVisitor.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,65 +34,31 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.readers;
-
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.layout.CyLayoutAlgorithm;
-
-import org.cytoscape.RootGraph;
-
-import giny.view.GraphView;
-
-import java.io.IOException;
+package org.cytoscape.attributes;
 
 
 /**
- * Interface for Reading in Cytoscape Graphs.
+ * Interface for defining attribute value visitors--operations to
+ * perform on each attribute value using {@link
+ * cytoscape.data.CyAttributesUtils#traverseAttributeValues
+ * CyAttributesUtils.traverseAttributeValues()}.
  *
- * @author Cytoscape Development Group.
  */
-public interface GraphReader {
+public interface AttributeValueVisitor {
 	/**
-	 * Reads/imports the graph.
-	 *
-	 * @throws IOException IO Errors.
+	 * Perform whatever operations are desired on the given attribute value.
+	 * @param  objTraversedID the identifier of the object for which we have
+	 *                  obtained an attribute value.
+	 * @param attrName the attribute name for which this is a value.
+	 * @param attrs the CyAttributes where this attribute value is stored.
+	 * @param keySpace the key used to obtain this value. For complex
+	 * values, this may consist of several elements (e.g., new
+	 * Object[] {"url1", new Integer(1), new Integer(0)). Modification
+	 * of this key may lead to unexpected traversal results or errors,
+	 * so copy this key if you wish to make modifications.
+	 * @param visitedValue the actual visited.
+	 * @see cytoscape.data.CyAttributesUtils#traverseAttributeValues
 	 */
-	public void read() throws IOException;
-
-	/**
-	 * Returns the CyLayoutAlgorithm used to layout the graph
-	 *
-	 * @param myView
-	 */
-	public CyLayoutAlgorithm getLayoutAlgorithm();
-
-	/**
-	 * Gets an array of node indices that participate in the newly created graph.
-	 *
-	 * @return array of node indices from the root graph.
-	 */
-	public int[] getNodeIndicesArray();
-
-	/**
-	 * Gets an array of edges indices that participate in the newly created graph.
-	 *
-	 * @return array of edges indices from the root graph.
-	 */
-	public int[] getEdgeIndicesArray();
-
-	/**
-	 * Execute whatever post-processing is required.
-	 */
-	public void doPostProcessing(GraphPerspective network);
-
-	/**
-	 * Gets the name of the network.
-	 * @return network name.
-	 */
-	public String getNetworkName();
+	void visitingAttributeValue(String objTraverseID, String attrName, CyAttributes attrs,
+	                            Object[] keySpace, Object visitedValue);
 }

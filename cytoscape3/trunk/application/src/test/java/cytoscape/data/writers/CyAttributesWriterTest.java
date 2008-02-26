@@ -36,8 +36,8 @@
  */
 package cytoscape.data.writers;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesImpl;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CyAttributesFactory;
 
 import cytoscape.data.readers.CyAttributesReader;
 
@@ -67,7 +67,7 @@ public class CyAttributesWriterTest extends TestCase {
 	 *             IO Error.
 	 */
 	public void testWriterScalars() throws IOException {
-		CyAttributes cyAttributes = new CyAttributesImpl();
+		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testWriteScalars"); 
 		File file = new File("src/test/resources/testData/galFiltered.nodeAttrs1");
 		FileReader reader = new FileReader(file);
 		CyAttributesReader.loadAttributes(cyAttributes, reader);
@@ -100,7 +100,7 @@ public class CyAttributesWriterTest extends TestCase {
 	 *             IO Error.
 	 */
 	public void donttestWriteSimpleLists() throws IOException {
-		CyAttributes cyAttributes = new CyAttributesImpl();
+		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testWriteSimpleLists"); 
 		File file = new File("src/test/resources/testData/implicitStringArray.attribute");
 		FileReader reader = new FileReader(file);
 		CyAttributesReader.loadAttributes(cyAttributes, reader);

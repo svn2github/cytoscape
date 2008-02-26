@@ -40,6 +40,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.data.writers.CyAttributesWriter2;
+import org.cytoscape.attributes.CyAttributes; 
 
 
 import java.awt.BorderLayout;

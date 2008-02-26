@@ -40,14 +40,13 @@ import org.cytoscape.Edge;
 import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.AttributeFilter;
-import cytoscape.data.AttributeValueVisitor;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.Semantics;
+import org.cytoscape.attributes.AttributeFilter;
+import org.cytoscape.attributes.AttributeValueVisitor;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.MultiHashMap;
+import org.cytoscape.attributes.MultiHashMapDefinition;
 
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.Semantics;
 
 import org.cytoscape.GraphObject;
 
@@ -60,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 
 
-// package cytoscape.data;
 /**
  *
  */

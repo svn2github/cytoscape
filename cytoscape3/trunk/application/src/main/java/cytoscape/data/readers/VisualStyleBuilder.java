@@ -37,7 +37,7 @@
 package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.*;

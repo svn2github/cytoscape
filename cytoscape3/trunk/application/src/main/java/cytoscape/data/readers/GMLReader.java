@@ -42,7 +42,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 
 import cytoscape.layout.LayoutAdapter;

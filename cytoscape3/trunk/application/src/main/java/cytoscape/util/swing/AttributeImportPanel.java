@@ -36,7 +36,7 @@ package cytoscape.util.swing;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;

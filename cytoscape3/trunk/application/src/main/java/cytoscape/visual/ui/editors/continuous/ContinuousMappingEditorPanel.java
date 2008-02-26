@@ -58,9 +58,9 @@ import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.CountedIterator;
-import cytoscape.data.attr.MultiHashMap;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CountedIterator;
+import org.cytoscape.attributes.MultiHashMap;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.mappings.ContinuousMapping;

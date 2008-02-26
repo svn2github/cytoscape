@@ -36,7 +36,7 @@ package cytoscape.data.synonyms;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
 
 import java.util.ArrayList;

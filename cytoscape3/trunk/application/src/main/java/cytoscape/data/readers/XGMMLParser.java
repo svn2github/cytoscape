@@ -43,10 +43,10 @@ import org.cytoscape.Node;
 import org.cytoscape.Edge;
 import cytoscape.groups.CyGroupManager;
 import org.cytoscape.groups.CyGroup;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.MultiHashMapDefinition;
+import org.cytoscape.attributes.MultiHashMap;
+import org.cytoscape.attributes.MultiHashMapDefinition;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntEnumerator;
 

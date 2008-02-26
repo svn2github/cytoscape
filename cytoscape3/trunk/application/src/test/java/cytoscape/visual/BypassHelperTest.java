@@ -38,7 +38,7 @@ package cytoscape.visual;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 
 import giny.view.Label;

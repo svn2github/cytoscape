@@ -38,7 +38,7 @@ import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 
 import cytoscape.data.ontology.readers.OBOTags;

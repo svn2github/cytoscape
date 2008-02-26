@@ -44,7 +44,7 @@ package cytoscape.visual.mappings.discrete;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.visual.mappings.discrete.DiscreteMappingReader;
 import cytoscape.visual.mappings.discrete.DiscreteMappingWriter;

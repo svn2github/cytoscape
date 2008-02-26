@@ -44,7 +44,7 @@ package cytoscape.visual.calculators;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 
 import cytoscape.visual.Appearance;

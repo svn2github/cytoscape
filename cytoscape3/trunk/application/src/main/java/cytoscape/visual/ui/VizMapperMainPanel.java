@@ -48,7 +48,7 @@ import org.cytoscape.GraphObject;
 import org.cytoscape.Node;
 import org.cytoscape.Edge;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 
 import cytoscape.util.SwingWorker;

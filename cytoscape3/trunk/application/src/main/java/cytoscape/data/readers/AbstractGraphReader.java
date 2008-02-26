@@ -38,7 +38,7 @@ package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.util.CyNetworkNaming;
 

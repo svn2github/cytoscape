@@ -48,7 +48,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ObjectToString;

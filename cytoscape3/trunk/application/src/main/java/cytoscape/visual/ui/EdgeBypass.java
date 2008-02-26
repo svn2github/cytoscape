@@ -38,7 +38,7 @@ package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;

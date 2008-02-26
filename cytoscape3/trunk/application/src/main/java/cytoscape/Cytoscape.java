@@ -42,8 +42,9 @@ import cytoscape.actions.SaveSessionAction;
 
 import cytoscape.bookmarks.Bookmarks;
 
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesImpl;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CyAttributesFactory;
+
 import cytoscape.data.ExpressionData;
 import cytoscape.data.ImportHandler;
 import cytoscape.data.Semantics;
@@ -338,17 +339,17 @@ public abstract class Cytoscape {
 	/**
 	 * Node CyAttributes.
 	 */
-	private static CyAttributes nodeAttributes = new CyAttributesImpl();
+	private static CyAttributes nodeAttributes = CyAttributesFactory.getCyAttributes("node"); 
 
 	/**
 	 * Edge CyAttributes.
 	 */
-	private static CyAttributes edgeAttributes = new CyAttributesImpl();
+	private static CyAttributes edgeAttributes = CyAttributesFactory.getCyAttributes("edge"); 
 
 	/**
 	 * Network CyAttributes.
 	 */
-	private static CyAttributes networkAttributes = new CyAttributesImpl();
+	private static CyAttributes networkAttributes = CyAttributesFactory.getCyAttributes("network"); 
 
 	/**
 	 * Ontology Attributes
@@ -356,7 +357,7 @@ public abstract class Cytoscape {
 	 * Will be used to store annotations for ontology
 	 *
 	 */
-	private static CyAttributes ontologyAttributes = new CyAttributesImpl();
+	private static CyAttributes ontologyAttributes = CyAttributesFactory.getCyAttributes("ontology"); 
 	protected static ExpressionData expressionData;
 	protected static Object pcsO = new Object();
 	protected static SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(pcsO);

@@ -1,5 +1,5 @@
 /*
-  File: MultiHashMapFactory.java
+  File: CountedIterator.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,26 +34,18 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.attr.util;
+package org.cytoscape.attributes;
+
+import java.util.Iterator;
 
 
 /**
- * This class provides access to implementations of MultiHashMap and
- * MultiHashMapDefinition.
+ * A java.util.Iterator with knowledge of how many elements are remaining.
  */
-public final class MultiHashMapFactory {
-	// "No constructor".
-	private MultiHashMapFactory() {
-	}
-
+public interface CountedIterator extends Iterator {
 	/**
-	 * The return object implements both
-	 * cytoscape.data.attr.MultiHashMapDefinition
-	 * and cytoscape.data.attr.MultiHashMap.
-	 * You will need to cast the return value to one of these to access the
-	 * corresponding functionality.
+	 * Returns a non-negative integer I such that next() will successfully
+	 * return a value no more and no less than I times.
 	 */
-	public final static Object instantiateDataModel() {
-		return new MultiHashMapModel();
-	}
+	public int numRemaining();
 }

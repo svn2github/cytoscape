@@ -39,7 +39,7 @@ package cytoscape.layout.ui;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.layout.CyLayoutAlgorithm;
 

@@ -34,9 +34,9 @@
 */
 package cytoscape.data.writers;
 
-import cytoscape.data.CyAttributes;
+import org.cytoscape.attributes.CyAttributes;
 
-import cytoscape.data.attr.MultiHashMap;
+import org.cytoscape.attributes.MultiHashMap;
 
 import java.io.IOException;
 import java.io.Writer;
