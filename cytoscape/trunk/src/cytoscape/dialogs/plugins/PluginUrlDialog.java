@@ -126,15 +126,22 @@ public class PluginUrlDialog extends JDialog {
 	// add - opens the bookmarks dialog to add a new download site
 	private void addSiteHandler(java.awt.event.ActionEvent evt) {
 		try {
+			final int preEdit = BookmarksUtil.getDataSourceList(
+					bookmarkCategory, theBookmarks.getCategory()).size();
+			
 			BookmarkDialog bDialog = new BookmarkDialog(Cytoscape.getDesktop(), "plugins");
-
-			// for some reason the windowStateListener wasn't getting the event
-			// so I have to use this one
-			// this allows me to update the combo box when the user is done
-			// adding
+			
+			/* for some reason the windowStateListener wasn't getting the event
+			so I have to use this one this allows me to update the combo 
+			box when the user is done adding */
 			bDialog.addWindowListener(new java.awt.event.WindowListener() {
 				public void windowClosed(java.awt.event.WindowEvent evt) {
-					loadBookmarkCMBox();
+					int postEdit = BookmarksUtil.getDataSourceList(
+							bookmarkCategory, theBookmarks.getCategory()).size();
+
+					if (preEdit >= postEdit) 
+						loadBookmarkCMBox(false);
+					else loadBookmarkCMBox(true);
 				}
 
 				public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -168,7 +175,7 @@ public class PluginUrlDialog extends JDialog {
 	}
 
 	// loads the combo box for bookmars
-	private void loadBookmarkCMBox() {
+	private void loadBookmarkCMBox(boolean selectLast) {
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel();
 
 		// Extract the URL entries
@@ -178,6 +185,8 @@ public class PluginUrlDialog extends JDialog {
 		if (theDataSourceList != null) {
 			for (DataSource Current : theDataSourceList) {
 				theModel.addElement(Current);
+				if (selectLast)
+					theModel.setSelectedItem(Current);
 			}
 		}
 
@@ -193,7 +202,7 @@ public class PluginUrlDialog extends JDialog {
 
 		jPanel1 = new JPanel();
 		okButton = new JButton();
-		addSiteButton = new JButton();
+		editSiteButton = new JButton();
 		cancelButton = new JButton();
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		label.setText("Choose a plugin download site");
@@ -217,8 +226,8 @@ public class PluginUrlDialog extends JDialog {
 				okHandler(evt);
 			}
 		});
-		addSiteButton.setText("Add Site");
-		addSiteButton.addActionListener(new java.awt.event.ActionListener() {
+		editSiteButton.setText("Edit Sites");
+		editSiteButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				addSiteHandler(evt);
 			}
@@ -236,14 +245,14 @@ public class PluginUrlDialog extends JDialog {
 				GroupLayout.LEADING).add(
 				jPanel1Layout.createSequentialGroup().add(8, 8, 8)
 						.add(okButton).addPreferredGap(LayoutStyle.RELATED)
-						.add(addSiteButton)
+						.add(editSiteButton)
 						.addPreferredGap(LayoutStyle.RELATED).add(cancelButton)
 						.addContainerGap(46, Short.MAX_VALUE)));
 		jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(
 				GroupLayout.LEADING).add(
 				jPanel1Layout.createSequentialGroup().addContainerGap().add(
 						jPanel1Layout.createParallelGroup(GroupLayout.BASELINE)
-								.add(okButton).add(addSiteButton).add(
+								.add(okButton).add(editSiteButton).add(
 										cancelButton)).addContainerGap(
 						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
@@ -300,7 +309,7 @@ public class PluginUrlDialog extends JDialog {
 								GroupLayout.PREFERRED_SIZE,
 								GroupLayout.DEFAULT_SIZE,
 								GroupLayout.PREFERRED_SIZE)));
-		loadBookmarkCMBox();
+		loadBookmarkCMBox(false);
 		pack();
 	}
 
@@ -386,7 +395,7 @@ public class PluginUrlDialog extends JDialog {
 
 	}
 
-	private JButton addSiteButton;
+	private JButton editSiteButton;
 
 	private JButton cancelButton;
 
