@@ -55,7 +55,7 @@ import java.net.URL;
 import java.util.Iterator;
 
 import javax.swing.JFileChooser;
-
+import java.awt.Component;
 
 /**
  * Provides a platform-dependent way to open files. Mainly
@@ -144,9 +144,24 @@ public abstract class FileUtil {
 	 *                based on extension
 	 */
 	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters) {
-		return getFiles(title, load_save_custom, filters, null, null, true);
+		return getFiles(null,title, load_save_custom, filters, null, null, true);
 	}
 
+	/**
+	 * Returns an array of File objects, this method should be used instead
+	 * of rolling your own JFileChooser.
+	 * @return the location of the selcted file
+	 * @param parent the parent component of the JFileChooser dialog
+	 * @param title the title of the dialog box
+	 * @param load_save_custom a flag for the type of file dialog
+	 * @param filters an array of CyFileFilters that let you filter
+	 *                based on extension
+	 */
+	public static File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters) {
+		return getFiles(parent,title, load_save_custom, filters, null, null, true);
+	}
+	
+	
 	/**
 	 * Returns a list of File objects, this method should be used instead
 	 * of rolling your own JFileChooser.
@@ -164,9 +179,10 @@ public abstract class FileUtil {
 	 */
 	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
 	                              String start_dir, String custom_approve_text) {
-		return getFiles(title, load_save_custom, filters, start_dir, custom_approve_text, true);
+		return getFiles(null,title, load_save_custom, filters, start_dir, custom_approve_text, true);
 	}
 
+	
 	/**
 	  * Returns a list of File objects, this method should be used instead
 	  * of rolling your own JFileChooser.
@@ -184,9 +200,38 @@ public abstract class FileUtil {
 	  * @param multiselect Enable selection of multiple files (Macs are
 	  *                    still limited to a single file because we use
 	  *                    FileDialog there -- is this fixed in Java 1.5?)
-	  */
+	  */	
 	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters,
+           String start_dir, String custom_approve_text, boolean multiselect) {
+		return getFiles(null, title, load_save_custom, filters, start_dir, custom_approve_text, multiselect);
+	}
+	
+	/**
+	  * Returns a list of File objects, this method should be used instead
+	  * of rolling your own JFileChooser.
+	  *
+	  * @return and array of selected files, or null if none are selected
+	  * @param parent the parent of the JFileChooser dialog
+	  * @param title the title of the dialog box
+	  * @param load_save_custom a flag for the type of file dialog
+	  * @param filters an array of CyFileFilters that let you filter
+	  *                based on extension
+	  * @param start_dir an alternate start dir, if null the default
+	  *                  cytoscape MUD will be used
+	  * @param custom_approve_text if this is a custom dialog, then
+	  *                            custom text should be on the approve
+	  *                            button.
+	  * @param multiselect Enable selection of multiple files (Macs are
+	  *                    still limited to a single file because we use
+	  *                    FileDialog there -- is this fixed in Java 1.5?)
+	  */
+	public static File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
 	                              String start_dir, String custom_approve_text, boolean multiselect) {
+
+		if (parent == null) {
+			parent = Cytoscape.getDesktop();
+		}
+		
 		File start = null;
 
 		if (start_dir == null) {
@@ -200,7 +245,7 @@ public abstract class FileUtil {
 		//System.out.println( "Os name: "+osName );
 		if (osName.startsWith("Mac")) {
 			// this is a Macintosh, use the AWT style file dialog
-			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(), title, load_save_custom);
+			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(),title, load_save_custom);
 
 			// we can only set the one filter; therefore, create a special
 			// version of CyFileFilter that contains all extensions
@@ -251,7 +296,7 @@ public abstract class FileUtil {
 
 			// set the dialog type
 			if (load_save_custom == LOAD) {
-				if (chooser.showOpenDialog(Cytoscape.getDesktop()) == JFileChooser.APPROVE_OPTION) {
+				if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
 					if (multiselect)
 						result = chooser.getSelectedFiles();
 					else if ((tmp = chooser.getSelectedFile()) != null) {
@@ -260,7 +305,7 @@ public abstract class FileUtil {
 					}
 				}
 			} else if (load_save_custom == SAVE) {
-				if (chooser.showSaveDialog(Cytoscape.getDesktop()) == JFileChooser.APPROVE_OPTION) {
+				if (chooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
 					if (multiselect)
 						result = chooser.getSelectedFiles();
 					else if ((tmp = chooser.getSelectedFile()) != null) {
@@ -269,7 +314,7 @@ public abstract class FileUtil {
 					}
 				}
 			} else {
-				if (chooser.showDialog(Cytoscape.getDesktop(), custom_approve_text) == JFileChooser.APPROVE_OPTION) {
+				if (chooser.showDialog(parent, custom_approve_text) == JFileChooser.APPROVE_OPTION) {
 					if (multiselect)
 						result = chooser.getSelectedFiles();
 					else if ((tmp = chooser.getSelectedFile()) != null) {
