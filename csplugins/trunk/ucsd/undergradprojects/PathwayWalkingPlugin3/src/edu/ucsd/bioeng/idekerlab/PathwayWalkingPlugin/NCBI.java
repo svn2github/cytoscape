@@ -96,11 +96,13 @@ public class NCBI extends Thread{
 	private String nodeId;
     private Node node;
     private javax.swing.JProgressBar jProgressBar2;
+    private int button;
     
-    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar2){
+    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar2, int buttonpress){
     	nodeId = nodeID;
     	node=node1;
     	jProgressBar2 = jBar2;
+    	button = buttonpress;
     	
 		try {
 			EUtilsServiceLocator service3 = new EUtilsServiceLocator();
@@ -168,7 +170,14 @@ public class NCBI extends Thread{
 		task1.startsearch();
 		System.out.println("trying to import network");
 //		importNetwork("675", null);
-		importNetwork("675", Cytoscape.getCurrentNetwork());
+		
+    	if (button == 1){
+    		importNetwork("675", Cytoscape.getCurrentNetwork());
+    	}
+    	if (button == 2){
+    		importNetwork("675", null);	
+    	}
+		
 		System.out.println("the network has been imported");
 		jProgressBar2.setIndeterminate(false);
 		

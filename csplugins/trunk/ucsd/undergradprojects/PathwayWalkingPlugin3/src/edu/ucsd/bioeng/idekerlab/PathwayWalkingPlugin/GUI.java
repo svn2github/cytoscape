@@ -383,7 +383,7 @@ public class GUI extends javax.swing.JFrame {
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
 	        
-	        Intact attempt = new Intact(nodeId, node, jProgressBar1);
+	        Intact attempt = new Intact(nodeId, node, jProgressBar1, 1);
 	        attempt.start();
  
 	        System.out.println("After Intact Client was called.");
@@ -394,13 +394,18 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("Start Search Button Pressed");
 	        
-	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2);
+	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2, 1);
 //	        attempt2.startSearch(nodeId, node);
 	        attempt2.start();
  
 	        System.out.println("After NCBI Client was called.");
 	        
     	}
+//		This code will hide the PathwayWalking window immediately after the button is pressed due to the threading.
+//		This is because we have one thread running the GUI.  One thread running IntAct.  And one thread running NCBI.
+//		In order to avoid this, we will need to put the setVisible(false) within IntAct and NCBI respectively.
+//    	setVisible(false);
+    	
     }
     
  
@@ -414,7 +419,7 @@ public class GUI extends javax.swing.JFrame {
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
 	        
-	        Intact attempt = new Intact(nodeId, node, jProgressBar1);
+	        Intact attempt = new Intact(nodeId, node, jProgressBar1, 2);
 	        attempt.start();
  
 	        System.out.println("After Intact Client was called.");
@@ -425,13 +430,14 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("Start Search Button Pressed");
 	        
-	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2);
+	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2, 2);
 //	        attempt2.startSearch(nodeId, node);
 	        attempt2.start();
  
 	        System.out.println("After NCBI Client was called.");
 	        
     	}
+    	
     }
  
     /**

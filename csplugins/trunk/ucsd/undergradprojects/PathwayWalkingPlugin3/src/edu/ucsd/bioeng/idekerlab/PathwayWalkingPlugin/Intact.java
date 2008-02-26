@@ -40,11 +40,13 @@ public class Intact extends Thread{
     private String nodeId;
     private Node node;
     private javax.swing.JProgressBar jProgressBar1;
+    private int button;
     
-    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1){
+    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1, int buttonpress){
     	nodeId = nodeID;
     	node=node1;
     	jProgressBar1 = jBar1;
+    	button = buttonpress;
     }
 	
 	//public void startSearch(String nodeId, Node node){
@@ -78,8 +80,12 @@ public class Intact extends Thread{
         	
         	//this will modify the current network 
         	//(which could be a newly created one)
-  
-        	importNetwork(blah1, Cytoscape.getCurrentNetwork());
+        	if (button == 1){
+        		importNetwork(blah1, Cytoscape.getCurrentNetwork());
+        	}
+        	if (button == 2){
+        		importNetwork(blah1, null);	
+        	}
         	jProgressBar1.setIndeterminate(false);
 			//This will create a new network
 //        	importNetwork(blah1, null);
