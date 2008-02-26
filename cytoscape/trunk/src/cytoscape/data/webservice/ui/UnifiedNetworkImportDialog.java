@@ -39,6 +39,8 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
+import cytoscape.data.webservice.CyWebServiceException;
 import cytoscape.data.webservice.DatabaseSearchResult;
 import cytoscape.data.webservice.NetworkImportWebServiceClient;
 import cytoscape.data.webservice.WebServiceClient;
@@ -81,6 +83,7 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
     implements PropertyChangeListener {
 	private static final UnifiedNetworkImportDialog dialog;
 	private String selectedClientID = null;
+	private WSNetworkImportTask task;
 
 	// Key is display name, value is actual service name.
 	private Map<String, String> clientNames;
@@ -258,12 +261,10 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
-		final CyWebServiceEvent event = buildEvent();
+		final CyWebServiceEvent<String> event = buildEvent();
 		System.out.println("Start importing network: " + evt.getActionCommand());
 
-		//		WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
-		WSNetworkImportTask task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem()
-		                                                                     .toString(), event);
+		task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem().toString(), event);
 
 		// Configure JTask Dialog Pop-Up Box
 		final JTaskConfig jTaskConfig = new JTaskConfig();
@@ -337,14 +338,15 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		}
 	}
 
-	private CyWebServiceEvent buildEvent() {
+	private CyWebServiceEvent<String> buildEvent() {
 		final String clientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
 		// Update props here.
 		WebServiceClientManager.getClient(clientID).getProps().updateValues();
 
-		return new CyWebServiceEvent(clientID, WSEventType.SEARCH_DATABASE,
-		                             searchTermTextPane.getText(), WSEventType.IMPORT_NETWORK);
+		return new CyWebServiceEvent<String>(clientID, WSEventType.SEARCH_DATABASE,
+		                                     searchTermTextPane.getText(),
+		                                     WSEventType.IMPORT_NETWORK);
 	}
 
 	// Variables declaration - do not modify                     
@@ -364,39 +366,44 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	// End of variables declaration        
 	class WSNetworkImportTask implements Task {
 		private String serviceName;
-		private CyWebServiceEvent evt;
+		private CyWebServiceEvent<String> evt;
 		private TaskMonitor taskMonitor;
 
-		public WSNetworkImportTask(String serviceName, CyWebServiceEvent evt) {
+		public WSNetworkImportTask(final String serviceName, final CyWebServiceEvent<String> evt) {
 			this.evt = evt;
 			this.serviceName = serviceName;
 		}
 
 		public String getTitle() {
-			// TODO Auto-generated method stub
 			return "Loading network from web service...";
 		}
 
 		public void halt() {
-			
 		}
 
 		public void run() {
 			taskMonitor.setStatus("Loading interactions from " + serviceName);
 			taskMonitor.setPercentCompleted(-1);
+
 			// this even will load the file
 			try {
 				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
 			} catch (Exception e) {
 				taskMonitor.setException(e, "Failed to load network from web service.");
+
 				return;
 			}
+
 			taskMonitor.setPercentCompleted(100);
 			taskMonitor.setStatus("Network successfully loaded.");
 		}
 
 		public void setTaskMonitor(TaskMonitor arg0) throws IllegalThreadStateException {
 			this.taskMonitor = arg0;
+		}
+
+		protected TaskMonitor getTaskMonitor() {
+			return taskMonitor;
 		}
 	}
 
@@ -408,32 +415,42 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object resultObject = evt.getNewValue();
 
-		if (evt.getPropertyName().equals("SEARCH_RESULT") && (resultObject != null)
-		    && ((DatabaseSearchResult) resultObject).getNextMove().equals(WSEventType.IMPORT_NETWORK)) {
-			System.out.println("Got search result from: " + evt.getSource() + ", Num result = "
-			                   + ((DatabaseSearchResult) resultObject).getResultSize() + ", Source name = " + evt.getOldValue());
+		if (evt.getPropertyName().equals(WSResponseType.SEARCH_FINISHED.toString()) && (resultObject != null)
+		    && resultObject instanceof DatabaseSearchResult) {
+			DatabaseSearchResult result = (DatabaseSearchResult) resultObject;
 
-			String[] message = {
-			                       ((DatabaseSearchResult) resultObject).getResultSize()
-			                       + " records found in " + selectedClientID,
-			                       "Do you want to create new network from the search result?"
-			                   };
-			int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
-			                                          "Import network", JOptionPane.YES_NO_OPTION);
+			if (result.getNextMove().equals(WSEventType.IMPORT_NETWORK)) {
+				System.out.println("Got search result from: " + evt.getSource() + ", Num result = "
+				                   + result.getResultSize() + ", Source name = "
+				                   + evt.getOldValue());
 
-			if (value == JOptionPane.YES_OPTION) {
-				CyWebServiceEvent evt2 = new CyWebServiceEvent(evt.getOldValue().toString(),
-				                                               WSEventType.IMPORT_NETWORK,
-				                                               ((DatabaseSearchResult) resultObject)
-				                                               .getResult());
-				try {
-					WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				String[] message = {
+				                       result.getResultSize() + " records found in "
+				                       + selectedClientID,
+				                       "Do you want to create new network from the search result?"
+				                   };
+				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
+				                                          "Import network",
+				                                          JOptionPane.YES_NO_OPTION);
+
+				if (value == JOptionPane.YES_OPTION) {
+					CyWebServiceEvent<Object> evt2 = new CyWebServiceEvent<Object>(evt.getOldValue()
+					                                                                  .toString(),
+					                                                               WSEventType.IMPORT_NETWORK,
+					                                                               result.getResult());
+
+					try {
+						WebServiceClientManager.getCyWebServiceEventSupport()
+						                       .fireCyWebServiceEvent(evt2);
+					} catch (CyWebServiceException e) {
+						// TODO Auto-generated catch block
+						if (task.getTaskMonitor() != null) {
+							task.getTaskMonitor().setException(e, "Database search failed.");
+						}
+					}
 				}
 			}
-		} else if (evt.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
+		} else if (evt.getPropertyName().equals(WSResponseType.DATA_IMPORT_FINISHED.toString())) {
 			String[] message = { "Network loaded.", "Please enter name for new network:" };
 			String value = JOptionPane.showInputDialog(Cytoscape.getDesktop(), message,
 			                                           "Name new network",
@@ -446,11 +463,13 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
 				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
-				                                                                                                                                                                                                                                                                                                                                                                                                                                    .getClient(selectedClientID))
-				                          .getDefaultVisualStyle();
-				if(style == null) {
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getClient(selectedClientID))
+				                    .getDefaultVisualStyle();
+
+				if (style == null) {
 					style = Cytoscape.getVisualMappingManager().getVisualStyle();
 				}
+
 				VisualStyle testStyle = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
 				                                 .getVisualStyle(style.getName());
 

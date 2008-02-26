@@ -210,7 +210,7 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 *
 	 * @param props DOCUMENT ME!
 	 */
-	public void setPorps(ModuleProperties props) {
+	public void setProps(ModuleProperties props) {
 		this.props = props;
 	}
 
@@ -219,5 +219,5 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public abstract void executeService(CyWebServiceEvent e) throws Exception;
+	public abstract void executeService(CyWebServiceEvent e) throws CyWebServiceException;
 }

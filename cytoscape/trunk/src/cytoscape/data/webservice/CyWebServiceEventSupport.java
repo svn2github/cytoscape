@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.data.webservice;
 
 import java.util.Vector;
@@ -74,14 +72,13 @@ public class CyWebServiceEventSupport {
 	 *  DOCUMENT ME!
 	 *
 	 * @param evt DOCUMENT ME!
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public void fireCyWebServiceEvent(CyWebServiceEvent evt) throws Exception {
+	public void fireCyWebServiceEvent(CyWebServiceEvent evt) throws CyWebServiceException {
 		Vector<CyWebServiceEventListener> elements = (Vector<CyWebServiceEventListener>) listenerVec
 		                                                                        .clone();
 
-		for (CyWebServiceEventListener lis : elements) {
+		for (CyWebServiceEventListener lis : elements)
 			lis.executeService(evt);
-		}
 	}
 }

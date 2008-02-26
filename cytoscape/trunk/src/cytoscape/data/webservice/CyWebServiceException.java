@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,66 +33,25 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package cytoscape.data.webservice;
 
-import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-import cytoscape.util.ModuleProperties;
-
-import java.lang.reflect.Method;
-
-import java.util.List;
-
-
 /**
- * All web service clients must implement this method. 
-  */
-public interface WebServiceClient {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getClientID();
+ *
+ */
+public class CyWebServiceException extends Exception {
+	public enum WSErrorCode {
+		NO_RESULT, REMOTE_EXEC_FAILED, OPERATION_NOT_SUPPORTED;
+	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public String getDisplayName();
+	private final WSErrorCode ec;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public ClientType[] getClientType();
-	
-	public boolean isCompatibleType(ClientType ct);
+	public CyWebServiceException(WSErrorCode ec) {
+		this.ec = ec;
+	}
 
-	/**
-	 *  Get client stub object.
-	 *  All services available from this client will be
-	 *  accessed through this stub.
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object getClientStub();
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public ModuleProperties getProps();
-	
-	public void setProps(ModuleProperties props);
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public List<Method> getAllServices();
+	public WSErrorCode getErrorCode() {
+		return ec;
+	}
 
 }
