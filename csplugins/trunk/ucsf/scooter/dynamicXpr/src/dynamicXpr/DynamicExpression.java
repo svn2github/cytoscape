@@ -48,6 +48,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.visual.*;
 import cytoscape.visual.mappings.*;
 import cytoscape.visual.calculators.*;
+import cytoscape.visual.VisualPropertyType;
 import cytoscape.data.*;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
@@ -91,11 +92,13 @@ public class DynamicExpression extends AbstractAction {
 
 	protected File currentDirectory;
 
-	protected NodeColorCalculator oldNodeColorCalculator;
+	protected Calculator oldNodeColorCalculator;
 
-	protected NodeColorCalculator dynamicXprCalculator;
+	protected Calculator dynamicXprCalculator;
 
 	protected HashMap oldFillColorAttr;
+
+	protected String fillColorOverride;
 
 	/**
 	 * Constructor.
@@ -104,6 +107,7 @@ public class DynamicExpression extends AbstractAction {
 		super("Dynamic Expression...");
 		this.currentDirectory = new File(System.getProperty("user.dir"));
 		this.pause = -1;
+		fillColorOverride = VisualPropertyType.NODE_FILL_COLOR.getBypassAttrName();
 	}
 
 	/**
@@ -137,7 +141,7 @@ public class DynamicExpression extends AbstractAction {
 		Iterator it = cyNetwork.nodesIterator();
 		while (it.hasNext()) {
 			CyNode node = (CyNode) it.next();
-			Object value = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), NodeAppearanceCalculator.nodeFillColorBypass);
+			Object value = Cytoscape.getNodeAttributes().getStringAttribute(node.getIdentifier(), fillColorOverride);
 			this.oldFillColorAttr.put(node, value);
 		}// for i
 
@@ -149,15 +153,14 @@ public class DynamicExpression extends AbstractAction {
 	protected void prepareBeforePlay() {
 		saveFillColor();
 		
-		Cytoscape.getNodeAttributes().deleteAttribute(NodeAppearanceCalculator.nodeFillColorBypass);
+		Cytoscape.getNodeAttributes().deleteAttribute(fillColorOverride);
 
 		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 		NodeAppearanceCalculator nac = 
 			manager.getVisualStyle().getNodeAppearanceCalculator();
 		
 		// See if there is already a dynamic expression calculator in the catalog
-		NodeColorCalculator check = 
-			manager.getCalculatorCatalog().getNodeColorCalculator(NODE_COLOR_CALC_NAME);
+		Calculator check = nac.getCalculator(VisualPropertyType.NODE_FILL_COLOR);
 		
 		if(check != null){
 			this.dynamicXprCalculator = check;
@@ -166,19 +169,13 @@ public class DynamicExpression extends AbstractAction {
 		}
 		
 		// Make sure we are not getting our own node color calculator:
-		NodeColorCalculator nodeColorCalc = nac.getNodeFillColorCalculator();
+		Calculator nodeColorCalc = nac.getCalculator(VisualPropertyType.NODE_FILL_COLOR);
 		if(this.dynamicXprCalculator != null && nodeColorCalc != this.dynamicXprCalculator){
 			this.oldNodeColorCalculator = nodeColorCalc;
 		}
 		
-		nac.setNodeFillColorCalculator(this.dynamicXprCalculator);
-		// Make sure that the catalog has one copy of this calculator
-		NodeColorCalculator check2 = 
-			manager.getCalculatorCatalog().getNodeColorCalculator(NODE_COLOR_CALC_NAME);
-		if (check2 == null) {
-			manager.getCalculatorCatalog().addNodeColorCalculator(
-					this.dynamicXprCalculator);
-		}
+		nac.setCalculator(this.dynamicXprCalculator);
+
 		prepareMetaNodes();
 	}// prepareBeforePlay
 
@@ -305,7 +302,7 @@ public class DynamicExpression extends AbstractAction {
 	 * @return the node color calculator used for coloring nodes according to
 	 *         their <code>EXPRESSION_ATTR</code> values.
 	 */
-	public NodeColorCalculator getDynamicXprColorCalculator() {
+	public Calculator getDynamicXprColorCalculator() {
 		return this.dynamicXprCalculator;
 	}// getDynamicXprColorCalculator
 
@@ -316,7 +313,7 @@ public class DynamicExpression extends AbstractAction {
 	// TODO: This hard-codes the boundary values for the calculator. Maybe make
 	// a more inteligent calculator for this
 	// that looks at the input ratios.
-	protected NodeColorCalculator createCalculator() {
+	protected Calculator createCalculator() {
 
 		ContinuousMapping contMapping = new ContinuousMapping(new Color(204,
 				204, 204), ObjectMapping.NODE_MAPPING);
@@ -344,8 +341,9 @@ public class DynamicExpression extends AbstractAction {
 		brVals.greaterValue = new Color(255, 0, 0);
 		contMapping.addPoint(1.0, brVals);
 
-		this.dynamicXprCalculator = new GenericNodeColorCalculator(
-				NODE_COLOR_CALC_NAME, contMapping);
+		this.dynamicXprCalculator = new BasicCalculator("Node Color Calc",
+				                                            contMapping,
+                                                    VisualPropertyType.NODE_FILL_COLOR);
 		return this.dynamicXprCalculator;
 	}// createCalculator
 
@@ -370,7 +368,7 @@ public class DynamicExpression extends AbstractAction {
 		VisualMappingManager manager = Cytoscape.getVisualMappingManager();
 		NodeAppearanceCalculator nac = manager.getVisualStyle()
 				.getNodeAppearanceCalculator();
-		nac.setNodeFillColorCalculator(this.oldNodeColorCalculator);
+		nac.setCalculator(this.oldNodeColorCalculator);
 		if (this.oldFillColorAttr != null) {
 			Set keyset = this.oldFillColorAttr.keySet();
 			CyNode[] nodes = (CyNode[]) keyset
@@ -378,7 +376,7 @@ public class DynamicExpression extends AbstractAction {
 			CyAttributes nodeAtts = Cytoscape.getNodeAttributes();
 			for (int i = 0; i < nodes.length; i++) {
 				Object value = this.oldFillColorAttr.get(nodes[i]);
-				nodeAtts.setAttribute(nodes[i].getIdentifier(), NodeAppearanceCalculator.nodeFillColorBypass, (String)value);
+				nodeAtts.setAttribute(nodes[i].getIdentifier(), fillColorOverride, (String)value);
 			}// for i
 		}
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true); // don't do
