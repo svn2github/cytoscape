@@ -259,12 +259,13 @@ public class StructureViz extends CytoscapePlugin
   /**
    * This class gets attached to the menu item.
    */
-  static class StructureVizCommandListener implements ActionListener {
+  static class StructureVizCommandListener implements ActionListener, ItemListener {
   	private static final long serialVersionUID = 1;
 		private static Chimera chimera = null;
 		private static ModelNavigatorDialog mnDialog = null;
 		private static AlignStructuresDialog alDialog = null;
 		private int command;
+		private static boolean showModelWarning = true;
 		private Object userData = null; // Either a Structure or an ArrayList
 
 		StructureVizCommandListener(int command, Object userData) {
@@ -361,24 +362,47 @@ public class StructureViz extends CytoscapePlugin
  		 */
 		private void findModelsAction() {
 			CyNode node = (CyNode)userData;
+			final StructureVizCommandListener listener = this;
 			// Bring up the warning dialog, but do it in a thread to allow the load to continue
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					String message = "<html><b>Warning</b>: Modelled structures can be very misleading.  Please review the data<br>";
-					message += "and structure carefully.</b>";
-					message += "Modelled structures are obtained from the ModBase<br>";
-					message += "web service at <a href=\"http://modbase.salilab.org\">http://modbase.salilab.org/</a></html>";
-					JOptionPane.showMessageDialog(mnDialog, 
-						message,
-						"Modelled Structure Warning",JOptionPane.WARNING_MESSAGE);
-				}
-			});
+			if (showModelWarning) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						String message = "<html><b>Warning</b>: Modelled structures are predictions, not experimental data.<br>";
+						message += "These structures are from the ModBase web service at <a href=\"http://modbase.salilab.org\">http://modbase.salilab.org/</a><br>";
+						message += "Measures of model reliability, or likelihood of correctness, are provided in the<br>";
+						message += "Chimera ModBase Model List.</html>";
+						Object[] options = new Object[3];
+						JCheckBox enough = new JCheckBox("Don't show this message again");
+						enough.addItemListener(listener);
+						enough.setSelected(false);
+						options[0] = enough;
+						options[1] = new JLabel("      ");
+						options[2] = "OK";
+						JOptionPane dialog = new JOptionPane(message, 
+							                                   JOptionPane.WARNING_MESSAGE,
+						                                     JOptionPane.DEFAULT_OPTION,
+						                                     null, 
+						                                     options);
+						JDialog jd = dialog.createDialog(mnDialog, "Modelled Structure Warning");
+						jd.pack();
+						jd.setVisible(true);
+					}
+				});
+			}
 			String ident = node.getIdentifier();
 			if (ident.startsWith("gi"))
 				ident = ident.substring(2);
 			Structure struct = new Structure(ident, node, Structure.StructureType.MODBASE_MODEL);
 			userData = struct;
 			openAction(ident);
+		}
+
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.DESELECTED) {
+				showModelWarning = true;
+			} else if (e.getStateChange() == ItemEvent.SELECTED) {
+				showModelWarning = false;
+			}
 		}
 
 		/**
