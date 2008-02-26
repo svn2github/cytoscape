@@ -135,7 +135,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
 
-	private static final String SMALL_ICON = "images/c16.png";
+	private static final String SMALL_ICON = "/images/c16.png";
 
 	// --------------------//
 	// Member varaibles
@@ -657,7 +657,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// add the network panel to our tab
 		String tab1Name = new String("Network");
-		cytoPanelWest.add(tab1Name, new ImageIcon(getClass().getResource("images/class_hi.gif")),
+		cytoPanelWest.add(tab1Name, new ImageIcon(getClass().getResource("/images/class_hi.gif")),
 		                  networkPanel, "Cytoscape Network List");
 
 		// create the split pane - hidden by default

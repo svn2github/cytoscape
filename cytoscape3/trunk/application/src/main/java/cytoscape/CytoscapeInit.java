@@ -103,7 +103,7 @@ import javax.swing.ImageIcon;
  * @author Cytoscape Core Team
  */
 public class CytoscapeInit {
-	private static final String SPLASH_SCREEN_LOCATION = "/cytoscape/images/CytoscapeSplashScreen.png";
+	private static final String SPLASH_SCREEN_LOCATION = "/images/CytoscapeSplashScreen.png";
 	
 	private static Properties properties;
 	private static Properties visualProperties;
@@ -404,11 +404,12 @@ public class CytoscapeInit {
 
 		try {
 			// load the props from the jar file
-			tryName = "cytoscape.jar";
+			tryName = "application.jar";
 
 			// This somewhat unusual way of getting the ClassLoader is because
 			// other methods don't work from WebStart.
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			//ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			ClassLoader cl = Cytoscape.class.getClassLoader();
 
 			URL vmu = null;
 
@@ -513,12 +514,12 @@ public class CytoscapeInit {
 	private static void initProperties() {
 		if (properties == null) {
 			properties = new Properties();
-			loadStaticProperties("cytoscape.props", properties);
+			loadStaticProperties("/cytoscape.props", properties);
 		}
 
 		if (visualProperties == null) {
 			visualProperties = new Properties();
-			loadStaticProperties("vizmap.props", visualProperties);
+			loadStaticProperties("/vizmap.props", visualProperties);
 		}
 	}
 

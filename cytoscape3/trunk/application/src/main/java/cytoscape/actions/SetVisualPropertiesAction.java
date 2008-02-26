@@ -68,7 +68,7 @@ public class SetVisualPropertiesAction extends CytoscapeAction {
 	 */
 	public SetVisualPropertiesAction() {
 		super(title,
-		      new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_file-with-objects-16.png")));
+		      new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_file-with-objects-16.png")));
 		setPreferredMenu("View");
 		setEnabled(true);
 	}

@@ -228,9 +228,9 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		javax.swing.ToolTipManager.sharedInstance().registerComponent(
 				pluginTree);
 		javax.swing.ImageIcon warningIcon = createImageIcon(
-				"/cytoscape/images/misc/alert-red2.gif", "Warning");
+				"/images/misc/alert-red2.gif", "Warning");
 		javax.swing.ImageIcon okIcon = createImageIcon(
-				"/cytoscape/images/misc/check-mark.gif", "Ok");
+				"/images/misc/check-mark.gif", "Ok");
 		if (warningIcon != null) {
 			treeRenderer = new TreeCellRenderer(warningIcon, okIcon);
 			pluginTree.setCellRenderer(treeRenderer);

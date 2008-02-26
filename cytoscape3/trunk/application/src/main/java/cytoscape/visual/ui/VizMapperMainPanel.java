@@ -213,14 +213,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	/*
 	 * Icons used in this panel.
 	 */
-	private static final ImageIcon optionIcon = new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/ximian/stock_form-properties.png"));
-	private static final ImageIcon delIcon = new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/ximian/stock_delete-16.png"));
-	private static final ImageIcon addIcon = new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/ximian/stock_data-new-table-16.png"));
-	private static final ImageIcon rndIcon = new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/ximian/stock_filters-16.png"));
-	private static final ImageIcon renameIcon = new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/ximian/stock_redo-16.png"));
-	private static final ImageIcon duplicateIcon = new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/ximian/stock_slide-duplicate.png"));
-	private static final ImageIcon legendIcon = new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/ximian/stock_graphic-styles-16.png"));
-	private static final ImageIcon editIcon = new ImageIcon(Cytoscape.class.getResource("/cytoscape/images/ximian/stock_edit-16.png"));
+	private static final ImageIcon optionIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_form-properties.png"));
+	private static final ImageIcon delIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_delete-16.png"));
+	private static final ImageIcon addIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_data-new-table-16.png"));
+	private static final ImageIcon rndIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_filters-16.png"));
+	private static final ImageIcon renameIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_redo-16.png"));
+	private static final ImageIcon duplicateIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_slide-duplicate.png"));
+	private static final ImageIcon legendIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_graphic-styles-16.png"));
+	private static final ImageIcon editIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_edit-16.png"));
 	private static final String DEFAULT_VS_NAME = "default";
 
 	/*

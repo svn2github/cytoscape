@@ -103,7 +103,7 @@ public class HelpAboutAction extends CytoscapeAction {
 					               + " Aditya Vailaya\n" + " Jonathan Wang\n" + " Chris Workman\n";
 
 					CreditScreen.showCredits(getClass()
-					                             .getResource("/cytoscape/images/CytoscapeCredits.png"),
+					                             .getResource("/images/CytoscapeCredits.png"),
 					                         lines);
 				}
 			});

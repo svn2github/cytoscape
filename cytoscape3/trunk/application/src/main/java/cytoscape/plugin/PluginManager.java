@@ -862,6 +862,9 @@ public class PluginManager {
 				inse.printStackTrace();
 			} catch (IllegalAccessException ille) {
 				ille.printStackTrace();
+			} catch (Throwable thr) {
+				thr.printStackTrace();
+				System.out.println("Attempting to continue loading plugins...");
 			}
 
 		} else if (loadedPlugins.contains(plugin.getName())) {

@@ -187,7 +187,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * Location of our icons.
 	 */
-	private static final String RESOURCE_DIR = "/cytoscape/images/";
+	private static final String RESOURCE_DIR = "/images/";
 
 	/**
 	 * The float icon gif filename.

@@ -170,7 +170,7 @@ public class FilterHistoryJList extends JList {
 			textField = new JTextField(width);
 			textField.getDocument().addDocumentListener(this);
 			textField.addActionListener(this);
-			prevSearchButton = new JButton(new ImageIcon(Cytoscape.class.getResource("images/ximian/stock_search.png")));
+			prevSearchButton = new JButton(new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_search.png")));
 			prevSearchButton.setBorder(null);
 			prevSearchButton.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent me) {
