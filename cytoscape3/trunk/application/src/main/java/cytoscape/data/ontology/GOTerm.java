@@ -47,6 +47,7 @@ import java.util.Map;
  * @author kono
  *
  */
+@SuppressWarnings("deprecation")  // because of biojava deprecations that we can't control
 public class GOTerm extends OntologyTerm {
 	/**
 	 * Creates a new GOTerm object.

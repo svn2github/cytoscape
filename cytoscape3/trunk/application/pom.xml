@@ -380,9 +380,11 @@
                     <target>1.5</target>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+					<!--
 				    <compilerArguments>
                       <Xlint:all></Xlint:all>
 				    </compilerArguments>
+					-->
                 </configuration>
             </plugin>
       <plugin>
@@ -391,7 +393,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>cytoscape.*</Export-Package>
+            <Export-Package>cytoscape.*,ding.*,giny.*</Export-Package>
             <Bundle-Activator>cytoscape.plugin.HostActivator</Bundle-Activator>
           </instructions>
         </configuration>

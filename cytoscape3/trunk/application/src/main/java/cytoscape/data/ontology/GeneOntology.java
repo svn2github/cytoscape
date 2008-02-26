@@ -60,6 +60,7 @@ import java.util.List;
  * @author kono
  *
  */
+@SuppressWarnings("deprecation")  // because of biojava deprecations that we can't control
 public class GeneOntology extends Ontology {
 	private CyAttributes goTermAttributes = Cytoscape.getNodeAttributes();
 	public enum GOAspect {

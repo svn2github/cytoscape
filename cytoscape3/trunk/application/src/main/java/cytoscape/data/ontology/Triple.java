@@ -22,6 +22,7 @@ import java.util.Collections;
  * @author kono
  *
  */
+@SuppressWarnings("deprecation")  // because of biojava deprecations that we can't control
 public class Triple extends AbstractChangeable implements org.biojava.ontology.Triple {
 	private final Term object;
 	private final Term subject;

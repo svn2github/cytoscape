@@ -64,6 +64,7 @@ import java.util.Map;
  * @author kono
  *
  */
+@SuppressWarnings("deprecation")  // because of biojava deprecations that we can't control
 public class OntologyTerm extends AbstractChangeable implements org.biojava.ontology.OntologyTerm {
 	/*
 	 * These constants will be used as the attribute names in CyAttributes.

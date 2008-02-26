@@ -80,6 +80,7 @@ import java.util.Set;
  * @author kono
  *
  */
+@SuppressWarnings("deprecation")  // because of biojava deprecations that we can't control
 public class Ontology extends AbstractChangeable implements org.biojava.ontology.Ontology {
 	/*
 	 * For metadata
