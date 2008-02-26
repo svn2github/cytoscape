@@ -2079,7 +2079,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 	private void selectAttributeFileButtonActionPerformed(ActionEvent evt)
 	    throws IOException {
-		final File[] multiSource = FileUtil.getFiles(this, "Select local file", FileUtil.LOAD,
+		final File[] multiSource = FileUtil.getFiles("Select local file", FileUtil.LOAD,
 		                                             new CyFileFilter[] {  });
 
 		if ((multiSource == null) || (multiSource[0] == null))
