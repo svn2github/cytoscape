@@ -231,7 +231,12 @@ function getPluginProps($zipFileName) {
 		while ($zip_entry = zip_read($zip)) {
 			$cur_file_name = zip_entry_name($zip_entry);
 
-			if (substr_count($cur_file_name, "plugin.prop") > 0) {
+			if (substr_count($cur_file_name, "plugin.props") > 0) {
+				
+			$position = strpos($cur_file_name,"plugin.props"); //find position of plugin.props 
+			if ($position != (strlen($cur_file_name) - 12)) {
+				continue;
+			}
 				// This is the plugin.prop file 
 				if (zip_entry_open($zip, $zip_entry, "r")) {
 					$buf = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
@@ -338,6 +343,7 @@ function getPluginProps($zipFileName) {
 	else {
 		//failed to open the zip file
 	}
+		
 	return $pluginProps;
 	
 }// end of getPluginProps()
