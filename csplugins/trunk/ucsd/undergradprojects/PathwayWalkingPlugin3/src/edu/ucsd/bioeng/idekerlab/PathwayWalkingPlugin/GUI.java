@@ -120,7 +120,7 @@ public class GUI extends javax.swing.JFrame {
         jCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
  
-        jCheckBox3.setText("HPRD");
+        jCheckBox3.setText("KEGG");
         jCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
  
@@ -136,7 +136,7 @@ public class GUI extends javax.swing.JFrame {
         jCheckBox6.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox6.setMargin(new java.awt.Insets(0, 0, 0, 0));
  
-        jCheckBox7.setText("KEGG");
+        jCheckBox7.setText("DIP");
         jCheckBox7.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox7.setMargin(new java.awt.Insets(0, 0, 0, 0));
  
