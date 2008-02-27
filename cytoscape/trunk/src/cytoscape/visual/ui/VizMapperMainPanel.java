@@ -2360,7 +2360,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		removeProperty(parent);
 
-		propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
+		if(propertyMap.get(vmm.getVisualStyle().getName()) != null) {
+			propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
+		}
+		
 
 		// vmm.getNetworkView().redrawGraph(false, true);
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
