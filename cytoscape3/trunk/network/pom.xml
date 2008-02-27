@@ -33,17 +33,17 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-        <plugin>    
+  <build>
+		<plugins>
+			<plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+  	      <source>1.5</source>
+          <target>1.5</target>
+    	  </configuration>
+      </plugin>
+      <plugin>    
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -53,7 +53,7 @@
             <Private-Package>org.cytoscape.impl,org.cytoscape.data.impl</Private-Package>
           </instructions>
         </configuration>
-       </plugin>  
-        </plugins>
-    </build>
+      </plugin>  
+    </plugins>
+  </build>
 </project>
