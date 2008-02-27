@@ -46,6 +46,7 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
+import java.net.URL;
 
 /**
  *
@@ -55,12 +56,11 @@ public class BookmarksUtilTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-/* TODO
+
 		BookmarkReader reader = new BookmarkReader();
-		reader.readBookmarks();
+		reader.readBookmarks(new URL("file:src/main/resources/bookmarks.xml"));
 
 		bk = reader.getBookmarks();
-		*/
 	}
 
 	protected void tearDown() throws Exception {
@@ -70,8 +70,7 @@ public class BookmarksUtilTest extends TestCase {
 	/**
 	 *  DOCUMENT ME!
 	 */
-	 // TODO
-	public void donttestGetCategory() {
+	public void testGetCategory() {
 		List<Category> rootCat = bk.getCategory();
 		assertNotNull(rootCat);
 		System.out.println("#### Number of bookmarks in the root category = " + rootCat.size());
@@ -93,8 +92,7 @@ public class BookmarksUtilTest extends TestCase {
 	/**
 	 *  DOCUMENT ME!
 	 */
-	 // TODO
-	public void donttestGetDataSourceList() {
+	public void testGetDataSourceList() {
 		List<Category> rootCat = bk.getCategory();
 		List<DataSource> sources = BookmarksUtil.getDataSourceList("ontology", bk.getCategory());
 
@@ -108,10 +106,5 @@ public class BookmarksUtilTest extends TestCase {
 		List<DataSource> sources3 = BookmarksUtil.getDataSourceList("network", bk.getCategory());
 		assertNotNull(sources3);
 		assertEquals(6, sources3.size());
-	}
-
-	// dummy test to avoid all unit tests failing
-	public void testDummy() {
-		assertTrue(true);
 	}
 }

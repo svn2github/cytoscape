@@ -48,6 +48,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import java.net.URL;
+
 
 /**
  * Unit test fopr the bookmark reader.
@@ -68,18 +70,12 @@ public class BookmarkReaderTest extends TestCase {
 		reader = null;
 	}
 	
-	// dummy test so that unit tests don't fail
-	public void testDummy() {
-		assertTrue(true);
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 */
-	 // TODO
-	public void donttestReadBookmarks() {
+	public void testReadBookmarks() {
 		try {
-			reader.readBookmarks();
+			reader.readBookmarks(new URL("file:src/main/resources/bookmarks.xml"));
 
 			Bookmarks bkm = reader.getBookmarks();
 			List cat = bkm.getCategory();
