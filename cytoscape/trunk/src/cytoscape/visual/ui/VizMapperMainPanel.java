@@ -229,13 +229,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static VizMapperMainPanel panel;
 
 	static {
-		/*
-		 * Make dummy network nodes & edges
-		 */
-		final CyNode source = Cytoscape.getCyNode("Source", true);
-		final CyNode target = Cytoscape.getCyNode("Target", true);
-		final CyEdge edge = Cytoscape.getCyEdge(source, target, "dummyInteraction", "interaction",
-		                                        true, true);
 
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		nodeAttr.setAttribute("Source", "hiddenLabel", "Source");
@@ -1438,8 +1431,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final List<VizMapperProperty> children = new ArrayList<VizMapperProperty>();
 
 		for (Object key : attrKeys) {
-			if(key.toString().equals("Target") || key.toString().equals("Source"))
-				continue;
 			
 			valProp = new VizMapperProperty();
 			strVal = key.toString();

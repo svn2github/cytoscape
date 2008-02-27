@@ -50,6 +50,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.ding.DingNetworkView;
+import cytoscape.giny.CytoscapeFingRootGraph;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 
@@ -71,24 +72,28 @@ public class DefaultViewPanel extends JPanel {
 	/*
 	 * Dummy graph component
 	 */
+	private static final CytoscapeFingRootGraph dummyGraph;
 	private static final CyNode source;
 	private static final CyNode target;
 	private static final CyEdge edge;
 	private Component canvas = null;
 
 	static {
-		source = Cytoscape.getCyNode("Source");
-		target = Cytoscape.getCyNode("Target");
-		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(),
-		                           "interaction");
-
+		dummyGraph = new CytoscapeFingRootGraph();
+		source = (CyNode) dummyGraph.getNode(dummyGraph.createNode());
+		source.setIdentifier("Source");
+		target = (CyNode) dummyGraph.getNode(dummyGraph.createNode());
+		target.setIdentifier("Target");
+		edge = (CyEdge) dummyGraph.getEdge(dummyGraph.createEdge(source, target));
+		edge.setIdentifier("dummyInteraction");
+		
 		List nodes = new ArrayList();
 		List edges = new ArrayList();
 		nodes.add(source);
 		nodes.add(target);
 		edges.add(edge);
 
-		dummyNet = Cytoscape.getRootGraph().createNetwork(nodes, edges);
+		dummyNet = dummyGraph.createNetwork(nodes, edges);
 		dummyNet.setTitle("Default Appearance");
 	}
 
