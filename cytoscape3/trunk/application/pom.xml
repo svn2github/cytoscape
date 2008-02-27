@@ -478,6 +478,19 @@
 						</goals>
 					</execution>
 
+					<execution>
+						<id>xgmml</id>
+						<configuration>
+							<packageName>cytoscape.xgmml</packageName>
+							<outputDirectory>${basedir}/src/main/generated</outputDirectory>
+							<schemaFiles>xgmml.xsd,xlinks-2001.xsd</schemaFiles>
+							<clearOutputDir>false</clearOutputDir>
+						</configuration>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+					</execution>
+
 				</executions>
 
 			</plugin>
