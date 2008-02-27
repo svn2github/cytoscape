@@ -153,7 +153,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 				FontRenderContext frc = g.getFontRenderContext();
 				TextLayout tl = new TextLayout(valueString, g.getFont(), frc);
 		       
-				g.setStroke(new BasicStroke(0.1f));
+				g.setStroke(new BasicStroke(0.6f));
 				g.setColor(Color.BLACK);
 				final float[] hsb = colors[i].RGBtoHSB(colors[i].getRed(), colors[i].getGreen(), colors[i].getBlue(), null);
 				
