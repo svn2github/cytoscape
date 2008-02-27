@@ -92,6 +92,7 @@
 		<module>session</module>
 		<!-- Cytoscape Application -->
 		<module>network</module>
+		<module>attributes</module>
   </modules>
 
 
