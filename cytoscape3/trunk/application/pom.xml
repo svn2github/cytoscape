@@ -1,409 +1,486 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>cytoscape</groupId>
-  <artifactId>application</artifactId>
-  <packaging>bundle</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>application</name>
-  <url>http://maven.apache.org</url>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cytoscape</groupId>
+	<artifactId>application</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>application</name>
+	<url>http://maven.apache.org</url>
 
-  <repositories>
-    <repository>
-      <id>freehep-maven</id>
-      <name>Maven FreeHEP</name>
-      <url>http://java.freehep.org/maven2</url>
-    </repository>
-  </repositories>
+	<repositories>
+		<repository>
+			<id>freehep-maven</id>
+			<name>Maven FreeHEP</name>
+			<url>http://java.freehep.org/maven2</url>
+		</repository>
 
-  <dependencies>
+		<!-- for biojava -->
+		<repository>
+			<id>wwmm</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<name>Murray-Rust Research Group</name>
+			<url>http://wwmm.ch.cam.ac.uk/maven2</url>
+		</repository>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<name>Java.net Repository for Maven</name>
+			<url>http://download.java.net/maven/2/</url>
+			<layout>default</layout>
+		</repository>
 
-    <dependency>
-      <groupId>org.cytoscape</groupId>
-      <artifactId>network</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<!--
+		<repository>
+			<id>ibiblio</id>
+			<name>ibiblio</name>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+		</repository>
+-->
+	</repositories>
 
-    <dependency>
-      <groupId>org.cytoscape</groupId>
-      <artifactId>attributes</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+	<dependencies>
 
-    <dependency>
-      <groupId>tclib</groupId>
-      <artifactId>tclib</artifactId>
-      <version>1.1</version>
-    </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>org.apache</groupId>
-      <artifactId>commons.cli</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>network</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>cruft.obo</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>attributes</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>render.stateful</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>tclib</groupId>
+			<artifactId>tclib</artifactId>
+			<version>1.1</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>render.immed</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>org.apache</groupId>
+			<artifactId>commons.cli</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>render.export</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>cruft.obo</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>geom.rtree</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-<!--
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>render.stateful</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>render.immed</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>render.export</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>geom.rtree</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<!--
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>bookmarks</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
 -->
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>session</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>session</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>undo</groupId>
-      <artifactId>undo</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>undo</groupId>
+			<artifactId>undo</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>task</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>task</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>graph.dynamic</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>graph.dynamic</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-export</artifactId>
-      <version>2.0.3</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-export</artifactId>
+			<version>2.0.3</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-graphics2d</artifactId>
-      <version>2.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-graphics2d</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-graphicsio</artifactId>
-      <version>2.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-graphicsio</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-graphicsio-emf</artifactId>
-      <version>2.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-graphicsio-emf</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-graphicsio-pdf</artifactId>
-      <version>2.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-graphicsio-pdf</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-graphicsio-ps</artifactId>
-      <version>2.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-graphicsio-ps</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-graphicsio-svg</artifactId>
-      <version>2.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-graphicsio-svg</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-graphicsio-swf</artifactId>
-      <version>2.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-graphicsio-swf</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-io</artifactId>
-      <version>2.0.1</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-swing</artifactId>
-      <version>2.0.2</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-swing</artifactId>
+			<version>2.0.2</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-util</artifactId>
-      <version>2.0.1</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-util</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
-    <dependency>
-      <groupId>org.freehep</groupId>
-      <artifactId>freehep-xml</artifactId>
-      <version>2.0.1</version>
-    </dependency>
+		<dependency>
+			<groupId>org.freehep</groupId>
+			<artifactId>freehep-xml</artifactId>
+			<version>2.0.1</version>
+		</dependency>
 
-    <dependency>
-      <groupId>com.lowagie</groupId>
-      <artifactId>itext</artifactId>
-      <version>2.0.6</version>
-    </dependency>
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.0.6</version>
+		</dependency>
 
-    <dependency>
-      <groupId>jdom</groupId>
-      <artifactId>jdom</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<groupId>jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>com.jgoodies</groupId>
-      <artifactId>looks</artifactId>
-      <version>2.1.2</version>
-    </dependency>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>looks</artifactId>
+			<version>2.1.2</version>
+		</dependency>
 
-    <dependency>
-      <groupId>phoebe</groupId>
-      <artifactId>phoebe.dnd</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>phoebe</groupId>
+			<artifactId>phoebe.dnd</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-temp</groupId>
-      <artifactId>biojava</artifactId>
-      <version>1.4</version>
-    </dependency>
+		<dependency>
+			<groupId>biojava</groupId>
+			<artifactId>biojava</artifactId>
+			<version>1.4</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-temp</groupId>
-      <artifactId>l2fprod-common-all</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<groupId>net.java.dev.swing-layout</groupId>
+			<artifactId>swing-layout</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-temp</groupId>
-      <artifactId>stax-ex</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<groupId>org.swinglabs</groupId>
+			<artifactId>swingx</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-temp</groupId>
-      <artifactId>swing-layout</artifactId>
-      <version>1.0.1</version>
-    </dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-temp</groupId>
-      <artifactId>swingx</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<groupId>com.sun.xml.fastinfoset</groupId>
+			<artifactId>FastInfoset</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>fastinfoset</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<groupId>concurrent</groupId>
+			<artifactId>concurrent</artifactId>
+			<version>1.0</version>
+			<!-- There are versions up to 1.3.4 -->
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>activation</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>concurrent</artifactId>
-      <version>1.0</version>
-   </dependency>
-
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>glf</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>http</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-<!--
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>1.0</version>
-    </dependency>
-
+		<!--
     <dependency>
       <groupId>cytoscape-sun</groupId>
       <artifactId>jaxws-api</artifactId>
       <version>1.0</version>
     </dependency>
-
     <dependency>
       <groupId>cytoscape-sun</groupId>
       <artifactId>jaxws-rt</artifactId>
       <version>1.0</version>
     </dependency>
-
     <dependency>
       <groupId>cytoscape-sun</groupId>
       <artifactId>jaxws-tools</artifactId>
       <version>1.0</version>
     </dependency>
-
     <dependency>
       <groupId>cytoscape-sun</groupId>
       <artifactId>jnlp</artifactId>
       <version>1.0</version>
     </dependency>
-
 -->
 
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>jsr173_api</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<!-- jsr173 -->
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>stax-api</artifactId>
+			<version>1.0-2</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>jsr181-api</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<!-- jsr181 -->
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-jws-api</artifactId>
+			<version>1.3</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>jsr250-api</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+			<version>1.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>jhall</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<!-- replaces jhall -->
+			<groupId>javax.help</groupId>
+			<artifactId>javahelp</artifactId>
+			<version>2.0.02</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>resolver</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<!-- replaces resolver -->
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-xjc</artifactId>
+			<version>2.0</version>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape-sun</groupId>
-      <artifactId>saaj-api</artifactId>
-      <version>1.0</version>
-    </dependency>
+		<dependency>
+			<!-- replaces saaj-api -->
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-saaj-api</artifactId>
+			<version>1.2</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+
+
+		<!-- Not found!  Maybe needed?
     <dependency>
       <groupId>cytoscape-sun</groupId>
       <artifactId>saaj-impl</artifactId>
       <version>1.0</version>
     </dependency>
-
     <dependency>
       <groupId>cytoscape-sun</groupId>
       <artifactId>sjsxp</artifactId>
       <version>1.0</version>
     </dependency>
-
     <dependency>
       <groupId>cytoscape-sun</groupId>
       <artifactId>streambuffer</artifactId>
       <version>1.0</version>
     </dependency>
-
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-      <version>1.0.3</version>
+      <groupId>cytoscape-sun</groupId>
+      <artifactId>glf</artifactId>
+      <version>1.0</version>
     </dependency>
+    <dependency>
+      <groupId>cytoscape-sun</groupId>
+      <artifactId>http</artifactId>
+      <version>1.0</version>
+    </dependency>
+        <dependency>
+      <groupId>cytoscape-temp</groupId>
+      <artifactId>l2fprod-common-all</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>cytoscape-temp</groupId>
+      <artifactId>stax-ex</artifactId>
+      <version>1.0</version>
+    </dependency>
+-->
 
-  </dependencies>
- 
+	</dependencies>
 
-    <build>
-        <plugins>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
-                </configuration>
-            </plugin>
+				</configuration>
+			</plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                    <showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
 					<!--
 				    <compilerArguments>
                       <Xlint:all></Xlint:all>
 				    </compilerArguments>
 					-->
-                </configuration>
-            </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>cytoscape.*,ding.*,giny.*</Export-Package>
-            <Bundle-Activator>cytoscape.plugin.HostActivator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<finalName>cytoscape</finalName>
+					<archive>
+						<manifest>
+							<mainClass>cytoscape.CyMain</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Package>cytoscape.*,ding.*,giny.*</Export-Package>
+						<Bundle-Activator>cytoscape.plugin.HostActivator</Bundle-Activator>
+					</instructions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<executions>
+
+					<execution>
+						<id>bookmarks</id>
+						<configuration>
+							<packageName>cytoscape.bookmarks</packageName>
+							<outputDirectory>${basedir}/src/main/generated</outputDirectory>
+							<schemaFiles>bookmarks.xsd,xlinks-2001.xsd</schemaFiles>
+							<clearOutputDir>false</clearOutputDir>
+						</configuration>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>session</id>
+						<configuration>
+							<packageName>cytoscape.session</packageName>
+							<outputDirectory>${basedir}/src/main/generated</outputDirectory>
+							<schemaFiles>cysession.xsd,xlinks-2001.xsd</schemaFiles>
+							<clearOutputDir>false</clearOutputDir>
+						</configuration>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+					</execution>
+
+				</executions>
+
+			</plugin>
+		</plugins>
+	</build>
 </project>
