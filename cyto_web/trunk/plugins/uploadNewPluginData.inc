@@ -48,9 +48,9 @@
 
 			// Update the table "plugin_list"  
 			$dbQuery = 'UPDATE plugin_list ' .
-			'SET description = "' . $pluginProps['pluginDescription'] . '",' .
+			'SET description = "' . addslashes($pluginProps['pluginDescription']) . '",' .
 			'project_url ="' . $theProjuctURL . '",' .
-			'license ="' . $license . '",' .
+			'license ="' . addslashes($license) . '",' .
 			'license_required ="' . $license_required . '" ' .
 			'WHERE plugin_auto_id = ' . $plugin_auto_id;
 
