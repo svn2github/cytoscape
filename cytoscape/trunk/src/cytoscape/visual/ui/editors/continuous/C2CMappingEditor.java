@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
@@ -43,17 +41,14 @@ import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
+import org.jdesktop.swingx.multislider.TrackRenderer;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import java.beans.PropertyChangeEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.ImageIcon;
-
-import org.jdesktop.swingx.multislider.TrackRenderer;
 
 
 /**
@@ -69,10 +64,9 @@ import org.jdesktop.swingx.multislider.TrackRenderer;
  *
   */
 public class C2CMappingEditor extends ContinuousMappingEditorPanel {
-	
 	// Default value for below and above.
 	private static final Float DEF_BELOW_AND_ABOVE = 1f;
-	
+
 	/**
 	 * Creates a new C2CMappingEditor object.
 	 *
@@ -84,7 +78,12 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		belowPanel.setVisible(false);
 		pack();
 		setSlider();
-//		((ContinuousTrackRenderer) slider.getTrackRenderer()).addPropertyChangeListener(this);
+		
+		// Add two sliders by default.
+		if (mapping.getPointCount() == 0) {
+			addSlider(0f, 10f);
+			addSlider(100f, 30f);
+		}
 	}
 
 	/**
@@ -117,14 +116,14 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		editor = new C2CMappingEditor(type);
 
 		TrackRenderer rend = editor.slider.getTrackRenderer();
-		
-		if(rend instanceof ContinuousTrackRenderer) {
+
+		if (rend instanceof ContinuousTrackRenderer) {
 			rend.getRendererComponent(editor.slider);
-			return ((ContinuousTrackRenderer)rend).getTrackGraphicIcon(iconWidth, iconHeight);
+
+			return ((ContinuousTrackRenderer) rend).getTrackGraphicIcon(iconWidth, iconHeight);
 		} else {
 			return null;
 		}
-		
 	}
 
 	/**
@@ -141,18 +140,21 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		editor = new C2CMappingEditor(type);
 
 		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider
-		                                                                                                                              .getTrackRenderer();
+		                                                                                                                                   .getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
 		return rend.getLegend(width, height);
 	}
 
-	@Override
-	protected void addButtonActionPerformed(ActionEvent evt) {
+	// Add slider to the editor.
+	private void addSlider(float position, float value) {
+		
+		System.out.println("=====Adding slider\n");
+		
 		BoundaryRangeValues newRange;
 
 		if (mapping.getPointCount() == 0) {
-			slider.getModel().addThumb(50f, 5f);
+			slider.getModel().addThumb(position, value);
 
 			newRange = new BoundaryRangeValues(below, 5f, above);
 			mapping.addPoint(maxValue / 2, newRange);
@@ -165,7 +167,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		}
 
 		// Add a new white thumb in the min.
-		slider.getModel().addThumb(100f, 5f);
+		slider.getModel().addThumb(position, value);
 
 		// Update continuous mapping
 		final Double newVal = maxValue;
@@ -189,6 +191,11 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 		slider.repaint();
 		repaint();
+	}
+	
+	@Override
+	protected void addButtonActionPerformed(ActionEvent evt) {
+		addSlider(100f, 5f);
 	}
 
 	@Override
@@ -221,10 +228,10 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		BoundaryRangeValues bound;
 		Float fraction;
 
-
-		if(allPoints == null) {
+		if (allPoints == null) {
 			return;
 		}
+
 		for (ContinuousMappingPoint point : allPoints) {
 			bound = point.getRange();
 
