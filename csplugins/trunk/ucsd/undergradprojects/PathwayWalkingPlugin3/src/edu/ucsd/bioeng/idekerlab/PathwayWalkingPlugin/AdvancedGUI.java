@@ -28,7 +28,9 @@ public class AdvancedGUI extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox();
+        jComboBox2 = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
  
@@ -47,9 +49,14 @@ public class AdvancedGUI extends javax.swing.JFrame {
             }
         });
  
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Homo Sapiens" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Homo Sapiens", "Arabidopsis thaliana", "Danio rerio", "Drosophila melanogaster", "Escherichia coli", "Mus musculus", "Rattus norvegicus", "Saccharomyces cerevisiae" }));
  
         jLabel1.setText("Species");
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "(Click to Select)", "Ensembl Gene ID", "EntrezGene ID", "PDB ID", "Unigene ID", "UniProt/SPTREMBL ID", "UniProt/Swiss-Prot ID" }));
+        
+        jLabel2.setText("ID Type");
+        
  
         jButton3.setText("SAVE");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -76,9 +83,16 @@ public class AdvancedGUI extends javax.swing.JFrame {
                         .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 172, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jLabel1))
+                        .add(jLabel1)) 
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(19, 19, 19)
+                            .addContainerGap()
+                            .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 172, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .addContainerGap()
+                            .add(jLabel2)) 
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                    		
+                    		.add(19, 19, 19)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                 .add(jButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 74, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -95,6 +109,10 @@ public class AdvancedGUI extends javax.swing.JFrame {
                 .add(jLabel1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jLabel2)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                
                 .add(34, 34, 34)
                 .add(jButton2)
                 .add(30, 30, 30)
@@ -147,7 +165,9 @@ public class AdvancedGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration
  
 }
