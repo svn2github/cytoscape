@@ -1438,6 +1438,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final List<VizMapperProperty> children = new ArrayList<VizMapperProperty>();
 
 		for (Object key : attrKeys) {
+			if(key.toString().equals("Target") || key.toString().equals("Source"))
+				continue;
+			
 			valProp = new VizMapperProperty();
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
