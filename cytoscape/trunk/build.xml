@@ -147,6 +147,7 @@
 			<produces dir="${src.dir}/cytoscape/generated" 
 			          includes="* impl/*" />
 		</xjc>
+		<!--
 		<xjc schema="${schema.dir}/${xgmml.schema}" 
 					destdir="${src.dir}" 
 		     package="${package}2" 
@@ -155,6 +156,7 @@
 			<arg value="-nv" />
 			<produces dir="${src.dir}/cytoscape/generated2" includes="* impl/*" />
 		</xjc>
+		-->
 		
 		<xjc schema="${schema.dir}/${bookmark.schema}" 
 				destdir="${src.dir}" 
@@ -168,9 +170,11 @@
 		<copy todir="${build.classes}/cytoscape/generated">
 			<fileset dir="${src.dir}/cytoscape/generated" includes="*.properties" />
 		</copy>
+		<!--
 		<copy todir="${build.classes}/cytoscape/generated2">
 			<fileset dir="${src.dir}/cytoscape/generated2" includes="*.properties" />
 		</copy>
+		-->
 		<copy todir="${build.classes}/cytoscape/bookmarks">
 			<fileset dir="${src.dir}/cytoscape/bookmarks" includes="*.properties" />
 		</copy>
