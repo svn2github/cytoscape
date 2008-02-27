@@ -54,9 +54,9 @@ import java.util.Properties;
  */
 public abstract class OpenBrowser {
 	static String UNIX_PROTOCOL = "file:";
-	static String UNIX_PATH = "gnome-moz-remote";
+//	static String UNIX_PATH = "gnome-moz-remote";
 
-	//static String UNIX_PATH = "firefox";
+	static String UNIX_PATH = "htmlview";
 	static String UNIX_FLAG = "-remote openURL";
 
 	//static String WINDOWS_PATH = "cmd.exe /c start";
