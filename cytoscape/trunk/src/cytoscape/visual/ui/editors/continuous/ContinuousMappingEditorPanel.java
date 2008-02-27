@@ -102,6 +102,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected Object below;
 	protected Object above;
 	protected static ContinuousMappingEditorPanel editor;
+	
+	protected double lastSpinnerNumber = 0;
 
 	/** Creates new form ContinuousMapperEditorPanel */
 	public ContinuousMappingEditorPanel(final VisualPropertyType type) {
@@ -546,6 +548,16 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 			int selectedIndex = slider.getSelectedIndex();
 
 			if ((0 <= selectedIndex) && (slider.getModel().getThumbCount() > 1)) {
+				
+				if(newVal.doubleValue() < minValue || newVal.doubleValue() > maxValue) {
+					if(lastSpinnerNumber > minValue && lastSpinnerNumber < maxValue) {
+						spinnerModel.setValue(lastSpinnerNumber);
+					} else {
+						spinnerModel.setValue(0);
+					}
+					return;
+				}
+				
 				Double newPosition = ((newVal.floatValue() - minValue) / valRange);
 
 				slider.getModel().getThumbAt(selectedIndex)
@@ -559,10 +571,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				slider.getSelectedThumb().repaint();
 				slider.getParent().repaint();
 				slider.repaint();
-
-				/*
-				 * Set continuous mapper value
-				 */
+				
+				lastSpinnerNumber = newVal.doubleValue();
 			}
 		}
 	}
