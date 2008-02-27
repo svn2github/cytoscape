@@ -28,7 +28,7 @@
       </xs:sequence>
       <xs:attribute name="format" />
       <xs:attribute name="name" use="required" />
-<!--      <xs:attribute ref="xlink:href" use="required" /> -->
+      <xs:attribute ref="xlink:href" use="required" /> 
     </xs:complexType>
   </xs:element>
   <xs:element name="attribute">

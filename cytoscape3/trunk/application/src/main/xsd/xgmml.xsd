@@ -25,8 +25,15 @@
 <!-- For metadata  -->
    <xsd:import namespace="http://purl.org/dc/elements/1.1/" 
 	schemaLocation="dcmes-xml-dtd.xsd"/>
-	
-<!-- Boolean type -->
+
+<!-- For rdf??  -->
+   <xsd:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+      schemaLocation="rdf.xsd"/>
+
+   <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
+      schemaLocation="xml.xsd"/>
+
+ <!-- Boolean type -->
 <xsd:simpleType name="boolean.type">
  <xsd:restriction base="xsd:nonNegativeInteger">
 	  <xsd:enumeration value="0"/>
@@ -195,7 +202,7 @@
 
 <!-- Standard XML Attributes -->
 <xsd:attributeGroup name="xml-atts">
-		<xsd:attribute ref="xml:lang"/>
+	<!--	<xsd:attribute ref="xml:lang"/> -->
 		<xsd:attribute ref="xml:space"/>
 </xsd:attributeGroup>
 
