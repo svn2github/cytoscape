@@ -107,13 +107,86 @@ public class CyDesktopManager  {
 		if (pStyle == Arrange.CASCADE) {
 			int delta_x = 20;
 			int delta_y = 20;
+			int delta_block = 50;
+						
+			int[] x = new int[frameCount];
+			int[] y = new int[frameCount];
+			int[] w = new int[frameCount];
+			int[] h = new int[frameCount];
+			x[0] = 0;
+			y[0] = 0;
+			w[0] = allFrames[0].getWidth();
+			h[0] =allFrames[0].getHeight();
+
+			boolean multiBlock = false;
+			int blockSize =0;
+			for (int i=1; i<frameCount; i++) {
+				blockSize++;
+				x[i] = x[i-1] + delta_x;
+				y[i] = y[i-1] + delta_y;
+
+				if (desktopSize.height - y[i]<MINIMUM_WIN_HEIGHT) {
+					y[i] =0;
+					multiBlock = true;
+				}
+				if (desktopSize.width - x[i]<MINIMUM_WIN_WIDTH && !multiBlock) {
+					x[i] = x[i-1];
+				}
+				
+				// Determine the w,h for the previous block and start of another block 
+				if (y[i]==0 && multiBlock) {
+										
+					for (int j=0; j< blockSize; j++) {
+						if (i-blockSize>0) { //use the same (w, h) as previous block
+							w[i-j-1] = w[i-blockSize];
+							h[i-j-1] = h[i-blockSize];							
+						}
+						else {
+							w[i-j-1] = desktopSize.width - x[i-1];
+							h[i-j-1] = desktopSize.height - y[i-1];							
+						}
+					}									
+					//start of another block
+					x[i] = x[i-blockSize] + delta_block; 
+					if (x[i] > (desktopSize.width - delta_x * blockSize)) {
+						x[i] = x[i-blockSize];
+					}
+					blockSize =1;	
+				}
+			}
+
+			// Handle the last block
+			if (!multiBlock) { // single block
+				for (int i = 0; i < frameCount; i++) {
+					w[frameCount-1-i] = desktopSize.width - x[frameCount - 1];
+					h[frameCount-1-i] = desktopSize.height - y[frameCount - 1];					
+				}
+			}
+			else { //case for multiBlock
+				for (int i = 0; i < blockSize; i++) {
+					//use the same (w, h) as previous block
+					w[frameCount-1-i] = w[frameCount - blockSize-1];
+					h[frameCount-1-i] = h[frameCount - blockSize-1];
+					// If w is too wider to fit to the screen, adjust it
+					if (w[frameCount-1-i] > desktopSize.width - x[frameCount - 1]) {
+						w[frameCount-1-i] = desktopSize.width - x[frameCount - 1];
+					}
+				}				
+			}
 			
-			int w = desktopSize.width - delta_x * (frameCount-1);
-			int h = desktopSize.height - delta_y *(frameCount-1);
+			if (desktopSize.height - MINIMUM_WIN_HEIGHT < delta_y ) { // WinHeight is too small, This is a special case
+				double delta_x1 = ((double)(desktopSize.width - MINIMUM_WIN_WIDTH))/(frameCount-1);
+				for (int i = 0; i < frameCount; i++) {
+					x[i] = (int) Math.ceil( i * delta_x1);
+					y[i] =0;
+					w[i] = MINIMUM_WIN_WIDTH;
+					h[i] = MINIMUM_WIN_HEIGHT;
+				}
+			}
 			
+			//Arrange all frames on the screen
 			for (int i=0; i<frameCount; i++) {
-				// put the newest frame on the top 
-				allFrames[frameCount -1-i].setBounds(delta_x * i, delta_y*i, w, h);
+				allFrames[frameCount-1-i].setBounds(x[i], y[i], w[i], h[i]);
 			}
 		}
 		else if (pStyle == Arrange.GRID) {
