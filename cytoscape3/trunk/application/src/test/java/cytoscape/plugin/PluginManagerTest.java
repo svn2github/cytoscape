@@ -1,6 +1,6 @@
 package cytoscape.plugin;
 
-import org.cytoscape.*;
+//import org.cytoscape.*;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.CytoscapeVersion;
@@ -33,7 +33,7 @@ public class PluginManagerTest extends TestCase {
 			UserDir = UserDir.replaceAll("\\\\", FS);
 		}
 		UserDir = UserDir.replaceFirst("/", "");
-		return "file:///" + UserDir + FS + "src/test/resources/testData" + FS + "plugins" + FS;
+		return "file:///" + UserDir + FS + "target/test-classes/testData" + FS + "plugins" + FS;
 	}
 
 	private String cleanFileUrl(String url) {
@@ -109,7 +109,7 @@ public class PluginManagerTest extends TestCase {
 		assertFalse(wsTmpDir.exists());
 	}
 	
-	public void testDownloadPluginWebstart() throws java.io.IOException, org.jdom.JDOMException, cytoscape.plugin.ManagerException {
+	public void testDownloadPluginWebstart() throws Exception {
 		mgr.resetManager();
 		System.setProperty("javawebstart.version", "booya");
 
@@ -158,8 +158,8 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#inquire(java.lang.String)}.
 	 */
-	public void testInquireString() throws java.io.IOException,
-			org.jdom.JDOMException {
+	public void testInquireString() throws Exception {
+			
 		String Url = "http://google.com/x.xml";
 		try {
 			mgr.inquire(Url);
@@ -180,8 +180,7 @@ public class PluginManagerTest extends TestCase {
 	public void testRegister() throws Exception {
 	}
 
-	public void testInstallTheme() throws java.io.IOException,
-		org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException {
+	public void testInstallTheme() throws Exception {
 
 		ThemeInfo TestObj = (ThemeInfo) getSpecificObj(mgr.inquire(testUrl), "goodThemeTest123", "0.5");
 		DownloadableInfo DownloadedObj = mgr.download(TestObj);
@@ -207,8 +206,7 @@ public class PluginManagerTest extends TestCase {
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#install()}.
 	 */
-	public void testInstallPlugin() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException {
+	public void testInstallPlugin() throws Exception {
 		PluginInfo TestObj = (PluginInfo)getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
 
@@ -269,7 +267,7 @@ public class PluginManagerTest extends TestCase {
 	}
 	
 	
-	public void testInstallIncorrectFileType() throws ManagerException, org.jdom.JDOMException {
+	public void testInstallIncorrectFileType() throws Exception {
 		PluginInfo TestObj = null;
 		try {
 			TestObj = (PluginInfo)getSpecificObj(mgr.inquire(testUrl),
@@ -295,8 +293,7 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#delete(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testDeletePluginInfo() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
+	public void testDeletePluginInfo() throws Exception  {
 
 		List<DownloadableInfo> Downloadables = mgr.inquire(testUrl);
 		
@@ -330,8 +327,7 @@ public class PluginManagerTest extends TestCase {
 	/**
 	 * Test method for {@link cytoscape.plugin.PluginManager#delete()}.
 	 */
-	public void testDeletePlugin() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException  {
+	public void testDeletePlugin() throws Exception  {
 		List<DownloadableInfo> Downloadables = mgr.inquire(testUrl);
 		
 		PluginInfo TestObj = (PluginInfo) Downloadables.get(0);
@@ -372,8 +368,7 @@ public class PluginManagerTest extends TestCase {
 	//assertEquals(mgr.getPluginManageDirectory().list().length, 1);
 	}
 	
-	public void testDeleteTheme() throws java.io.IOException,
-	org.jdom.JDOMException, cytoscape.plugin.ManagerException, cytoscape.plugin.WebstartException  {
+	public void testDeleteTheme() throws Exception  {
 		
 		ThemeInfo TestObj = (ThemeInfo) getSpecificObj(mgr.inquire(testUrl), "goodThemeTest123", "0.5");
 		
@@ -415,8 +410,7 @@ public class PluginManagerTest extends TestCase {
 	}
 	
 
-	public void testFindThemeUpdates() throws java.io.IOException,
-	org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
+	public void testFindThemeUpdates() throws Exception  {
 	
 		ThemeInfo TestObj = (ThemeInfo) getSpecificObj(mgr.inquire(testUrl), "goodThemeTest123", "0.5");
 		
@@ -438,8 +432,7 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#findUpdates(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testFindPluginUpdates() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
+	public void testFindPluginUpdates() throws Exception  {
 		PluginInfo GoodJar = (PluginInfo) getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
 		
@@ -543,7 +536,7 @@ public class PluginManagerTest extends TestCase {
 
 	
 	public void testDownloadGoodTheme() 
-		throws java.io.IOException, org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
+		throws Exception  {
 		
 		ThemeInfo GoodTheme = (ThemeInfo) getSpecificObj(mgr.inquire(testUrl), "goodThemeTest123", "0.5");
 		assertEquals(GoodTheme.getCategory(), Category.THEME.getCategoryText());
@@ -565,8 +558,7 @@ public class PluginManagerTest extends TestCase {
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#download(cytoscape.plugin.PluginInfo)}.
 	 */
-	public void testDownloadGoodPlugin() throws java.io.IOException,
-			org.jdom.JDOMException, cytoscape.plugin.ManagerException,  cytoscape.plugin.WebstartException  {
+	public void testDownloadGoodPlugin() throws Exception  {
 		PluginInfo GoodJar = (PluginInfo) getSpecificObj(mgr.inquire(testUrl),
 				"goodJarPlugin123", "1.0");
 		DownloadableInfo GoodDL = mgr.download(GoodJar);
@@ -589,8 +581,7 @@ public class PluginManagerTest extends TestCase {
 	 * files are only bad if they fail to have an attribute Cytoscape-Plugin in
 	 * the manifest
 	 */
-	public void testDownloadBadPlugin() throws java.io.IOException,
-			org.jdom.JDOMException,  cytoscape.plugin.WebstartException  {
+	public void testDownloadBadPlugin() throws Exception  {
 		PluginInfo BadJar = (PluginInfo) getSpecificObj(mgr.inquire(testUrl),
 				"badJarPlugin123", "0.3");
 

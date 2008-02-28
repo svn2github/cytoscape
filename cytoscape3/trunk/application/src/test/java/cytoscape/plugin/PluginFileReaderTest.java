@@ -117,8 +117,7 @@ public class PluginFileReaderTest extends TestCase {
 	}
 
 	// regression test, not all files will contain the <theme> tags
-	public void testReadFileMissingThemes() throws org.jdom.JDOMException,
-			java.io.IOException {
+	public void testReadFileMissingThemes() throws Exception {
 		url = getFileUrl() + "test_plugin_no_themes.xml";
 		PluginFileReader readerNoThemes = new PluginFileReader(url);
 		assertNotNull(readerNoThemes.getThemes());
