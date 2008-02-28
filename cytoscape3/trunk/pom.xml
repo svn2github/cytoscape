@@ -88,11 +88,13 @@
 		<module>render.stateful</module>
 		<module>render.export</module>
 		<module>phoebe.dnd</module>
-    <module>cruft.obo</module>
-		<module>session</module>
+    	<module>cruft.obo</module>
+		<!-- <module>session</module> -->
+		
 		<!-- Cytoscape Application -->
 		<module>network</module>
 		<module>attributes</module>
+		<module>application</module>
   </modules>
 
 
