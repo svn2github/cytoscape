@@ -1860,7 +1860,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 //		}	
 		
 		if(ignore) return;
-//		
+		
 		/*
 		 * Managing editor windows.
 		 */
@@ -1916,9 +1916,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		/*
-		 * Got global siginal
+		 * Got global event
 		 */
-
 		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
@@ -1950,12 +1949,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 
 				if (vs.getName().equals(vsNameComboBox.getSelectedItem())) {
-					// Do nothing here. Redaraw will be handled by Desktop.
-					// Cytoscape.getCurrentNetworkView().redrawGraph(false,
-					// true);
+					Cytoscape.getCurrentNetworkView().redrawGraph(false,true);
 				} else {
 					switchVS(vs.getName(), false);
-
 					vsNameComboBox.setSelectedItem(vs.getName());
 					setDefaultPanel(this.defaultImageManager.get(vs.getName()));
 				}
@@ -2712,7 +2708,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-			Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetworkView().getIdentifier());
+			switchVS(newName);
+			//Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetworkView().getIdentifier());
 		}
 	}
 
