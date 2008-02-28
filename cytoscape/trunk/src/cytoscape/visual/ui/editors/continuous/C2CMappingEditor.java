@@ -80,7 +80,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		setSlider();
 		
 		// Add two sliders by default.
-		if (mapping.getPointCount() == 0) {
+		if (mapping != null && mapping.getPointCount() == 0) {
 			addSlider(0f, 10f);
 			addSlider(100f, 30f);
 		}
