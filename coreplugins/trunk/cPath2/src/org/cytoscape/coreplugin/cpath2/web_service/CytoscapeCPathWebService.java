@@ -47,13 +47,21 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl {
      * @param e CyWebService Object.
      * @throws Exception All Errors.
      */
-    public void executeService(CyWebServiceEvent e) throws Exception {
+    public void executeService(CyWebServiceEvent e) throws CyWebServiceException{
         if (e.getSource().equals(CLIENT_ID)) {
             if (e.getEventType().equals(CyWebServiceEvent.WSEventType.IMPORT_NETWORK)) {
                 importNetwork(e);
             } else if (e.getEventType().equals(CyWebServiceEvent.WSEventType.EXPAND_NETWORK)) {
             } else if (e.getEventType().equals(CyWebServiceEvent.WSEventType.SEARCH_DATABASE)) {
-                searchDatabase(e);
+                try {
+                    searchDatabase(e);
+                } catch (CPathException e1) {
+                    throw new CyWebServiceException
+                            (CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+                } catch (EmptySetException e1) {
+                    throw new CyWebServiceException
+                            (CyWebServiceException.WSErrorCode.NO_RESULT);
+                }
             }
         }
     }
