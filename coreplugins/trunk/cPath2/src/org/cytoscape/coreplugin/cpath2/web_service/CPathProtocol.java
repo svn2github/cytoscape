@@ -1,8 +1,11 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.HttpMethodBase;
 import org.jdom.input.SAXBuilder;
 import org.jdom.Document;
 import org.jdom.JDOMException;
@@ -149,7 +152,7 @@ public class CPathProtocol {
     private int startIndex;
     private String format;
     private String baseUrl;
-    private volatile GetMethod method;
+    private volatile HttpMethodBase method;
     private boolean cancelledByUser = false;
     private static boolean debug = false;
 
@@ -237,15 +240,22 @@ public class CPathProtocol {
     public String connect (TaskMonitor taskMonitor) throws CPathException, EmptySetException {
         try {
             NameValuePair[] nvps = createNameValuePairs();
-            String liveUrl = createURI(baseUrl, nvps);
-            System.out.println("Connect:  " + liveUrl);
 
             // Create an instance of HttpClient.
             HttpClient client = new HttpClient();
             setProxyInfo(client);
 
             // Create a method instance.
-            method = new GetMethod(liveUrl);
+            // If the query string is long, use POST.  Otherwise, use GET.
+            if (query != null && query.length() > 100) {
+                method = new PostMethod(baseUrl);
+                method.setQueryString(nvps);
+                System.out.println("Connect:  " + method.getURI() + " (via POST)");
+            } else {
+                String liveUrl = createURI(baseUrl, nvps);
+                method = new GetMethod(liveUrl);
+                System.out.println("Connect:  " + liveUrl);
+            }
 
             int statusCode = client.executeMethod(method);
 
@@ -421,47 +431,5 @@ public class CPathProtocol {
                     "Error Code:  " + errorCode + ", " + errorMsg);
             }
         }
-    }
-}
-
-/**
- * Name Value Pair.
- *
- * @author Ethan Cerami.
- */
-class NameValuePair {
-    private String name;
-    private String value;
-
-    /**
-     * Constructor.
-     * @param name  name.
-     * @param value value.
-     */
-    public NameValuePair (String name, String value) {
-        this.name = name;
-		//try {
-			//this.value = URLEncoder.encode(value, "UTF-8");
-            this.value = value;
-        //        } catch (UnsupportedEncodingException e) {
-        //			e.printStackTrace();
-        //			this.value = value;
-        //		}
-	}
-
-    /**
-     * Gets name.
-     * @return name.
-     */
-    public String getName () {
-        return name;
-    }
-
-    /**
-     * Gets value.
-     * @return value.
-     */
-    public String getValue () {
-        return value;
     }
 }
