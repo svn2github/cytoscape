@@ -808,6 +808,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		}
 		
+		closeEditorWindow();
+		
 		//System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
 
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
@@ -1842,36 +1844,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		defaultImageManager = new HashMap<String, Image>();
 	}
 
-	/**
-	 * Handle propeaty change events.
-	 *
-	 * @param e
-	 *            DOCUMENT ME!
-	 */
-	public void propertyChange(PropertyChangeEvent e) {
-		
-		// Set ignore flag.
-		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
-			ignore = true;;
-			enableListeners(false);
-		}
-//		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED) || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
-//			ignore = false;
-//		}	
-		
-		if(ignore) return;
-		
-		/*
-		 * Managing editor windows.
-		 */
-		if (e.getPropertyName() == ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED) {
-			this.editorWindowManager.put((VisualPropertyType) e.getNewValue(),
-			                             (JDialog) e.getSource());
-
-			return;
-		} else if (e.getPropertyName() == ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED) {
-			final VisualPropertyType type = (VisualPropertyType) e.getNewValue();
-			this.editorWindowManager.remove(type);
+	
+	private void manageWindow(final String status, VisualPropertyType vpt, Object source) {
+		if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)) {
+			this.editorWindowManager.put(vpt,
+			                             (JDialog) source);
+		} else if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
+			final VisualPropertyType type = vpt;
+			
 
 			/*
 			 * Update icon
@@ -1911,10 +1891,53 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			rendReg.registerRenderer(vprop, cRenderer);
 			visualPropertySheetPanel.getTable().repaint();
-
-			return;
 		}
 
+	}
+	
+	private void closeEditorWindow() {
+		Set<VisualPropertyType> typeSet = editorWindowManager.keySet();
+		Set<VisualPropertyType> keySet = new HashSet<VisualPropertyType>();
+		for(VisualPropertyType vpt:typeSet) {
+			JDialog window = editorWindowManager.get(vpt);
+			manageWindow(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED, vpt, null);
+			window.dispose();
+			keySet.add(vpt);
+		}
+		
+		for(VisualPropertyType type:keySet) 
+			editorWindowManager.remove(type);
+	}
+	/**
+	 * Handle propeaty change events.
+	 *
+	 * @param e
+	 *            DOCUMENT ME!
+	 */
+	public void propertyChange(PropertyChangeEvent e) {
+		
+		// Set ignore flag.
+		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+			ignore = true;;
+			enableListeners(false);
+		}
+//		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED) || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
+//			ignore = false;
+//		}	
+		
+		if(ignore) return;
+		
+		/*
+		 * Managing editor windows.
+		 */
+		if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED) ||
+				e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
+			manageWindow(e.getPropertyName(), (VisualPropertyType) e.getNewValue(), e.getSource());
+			
+			if(e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED))
+				editorWindowManager.remove((VisualPropertyType) e.getNewValue());
+			return;
+		}
 		/*
 		 * Got global event
 		 */
