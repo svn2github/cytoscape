@@ -58,7 +58,6 @@ public class VisualStyleBuilder {
 	Map<VisualPropertyType,Map<Object,Integer>> counts;
 	String name;
 	private boolean nodeSizeLocked = true;
-	private String styleName = "undefined";
 
 	private int nodeMax;
 	private int edgeMax;
@@ -157,7 +156,7 @@ public class VisualStyleBuilder {
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
-		styleName = name+" style";
+		String styleName = name+" style";
 		VisualStyle graphStyle = new VisualStyle(styleName, nac, eac, gac);
 
 		// Remove this in case we've already loaded this network once
@@ -220,14 +219,6 @@ public class VisualStyleBuilder {
 		nodeSizeLocked = pLock;
 	}
 	
-	/**
-	 * This method return the name of visual style created. If visual style 
-	 * is not created, returned value will be "undefined". 
-	 */
-	public String getStyleName() {
-		return styleName;
-	}
-
 	/**
 	 * Processes the counts for the various visual properties and establishes
 	 * how many nodes and edges there are.
