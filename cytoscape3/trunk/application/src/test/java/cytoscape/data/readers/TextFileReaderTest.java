@@ -86,8 +86,11 @@ public class TextFileReaderTest extends TestCase {
 	public void testSimple() throws Exception {
 		AllTests.standardOut("testCtor");
 
-		TextFileReader reader = new TextFileReader("src/test/resources/testData/randomTextFile.txt");
+//		TextFileReader reader = new TextFileReader("src/test/resources/testData/randomTextFile.txt");
+		java.io.InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("testData/randomTextFile.txt");
 
+		TextFileReader reader = new TextFileReader(is, "randomTextFile.txt");
+		
 		/* if (AllTests.runAllTests()) {
 		     reader = new TextFileReader
 		             ("src/cytoscape/data/readers/unitTests/TextFileReaderTest.java");

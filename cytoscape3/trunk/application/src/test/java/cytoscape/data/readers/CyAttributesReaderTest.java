@@ -56,6 +56,14 @@ import java.util.List;
  * Tests the CyAttributesReader Class.
  */
 public class CyAttributesReaderTest extends TestCase {
+	
+	private java.io.InputStreamReader getReader(String file) {
+		java.io.InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("testData/" + file);
+		java.io.InputStreamReader reader = new java.io.InputStreamReader(is);
+		return reader;
+	}
+
+	
 	/**
 	 * Testing Reading, Take 1.
 	 * @throws IOException IO Errors.
@@ -63,9 +71,8 @@ public class CyAttributesReaderTest extends TestCase {
 	public void testRead1() throws IOException {
 		String attributeName = "TestNodeAttribute1";
 		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testRead1"); 
-		File file = new File("src/test/resources/testData/galFiltered.nodeAttrs1");
-		FileReader reader = new FileReader(file);
-		CyAttributesReader.loadAttributes(cyAttributes, reader);
+
+		CyAttributesReader.loadAttributes(cyAttributes, getReader("galFiltered.nodeAttrs1"));
 
 		byte type = cyAttributes.getType(attributeName);
 		assertEquals(CyAttributes.TYPE_INTEGER, type);
@@ -93,9 +100,8 @@ public class CyAttributesReaderTest extends TestCase {
 	 */
 	public void testRead2() throws IOException {
 		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testRead2"); 
-		File file = new File("src/test/resources/testData/galFiltered.edgeAttrs2");
-		FileReader reader = new FileReader(file);
-		CyAttributesReader.loadAttributes(cyAttributes, reader);
+
+		CyAttributesReader.loadAttributes(cyAttributes, getReader("galFiltered.edgeAttrs2"));
 
 		byte type = cyAttributes.getType("TestEdgeAttribute2");
 		assertEquals(CyAttributes.TYPE_INTEGER, type);
@@ -128,9 +134,8 @@ public class CyAttributesReaderTest extends TestCase {
 		//  This file contains an explicit class declaration, like so:
 		//  Score (class=Java.lang.Double)
 		//  All the integer values should therefore be stored as Doubles.
-		File file = new File("src/test/resources/testData/explicitDouble.attribute");
-		FileReader reader = new FileReader(file);
-		CyAttributesReader.loadAttributes(cyAttributes, reader);
+
+		CyAttributesReader.loadAttributes(cyAttributes, getReader("explicitDouble.attribute"));
 
 		byte type = cyAttributes.getType("Score");
 		assertEquals(CyAttributes.TYPE_FLOATING, type);
@@ -151,9 +156,8 @@ public class CyAttributesReaderTest extends TestCase {
 	public void testReadSimpleLists() throws IOException {
 		String attributeName = "GO_molecular_function_level_4";
 		CyAttributes cyAttributes = CyAttributesFactory.getCyAttributes("testReadSimpleLists"); 
-		File file = new File("src/test/resources/testData/implicitStringArray.attribute");
-		FileReader reader = new FileReader(file);
-		CyAttributesReader.loadAttributes(cyAttributes, reader);
+
+		CyAttributesReader.loadAttributes(cyAttributes, getReader("implicitStringArray.attribute"));
 
 		byte type = cyAttributes.getType(attributeName);
 		assertEquals(CyAttributes.TYPE_SIMPLE_LIST, type);

@@ -252,7 +252,8 @@ public class InteractionsReaderTest extends TestCase {
 	} // testReadMultiWordProteinsFileWithErrantSpaces
 
 	private InteractionsReader getReader(String file) {
-		InteractionsReader reader = new InteractionsReader("target/test-classes/testData/" + file);
+		java.io.InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("testData/" + file);
+		InteractionsReader reader = new InteractionsReader(is, file);
 		return reader;
 	}
 

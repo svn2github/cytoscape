@@ -49,6 +49,12 @@ public class TextFileReader {
 	BufferedReader bufferedReader;
 	StringBuffer strbuf;
 
+	public TextFileReader(InputStream is, String fileName) {
+		bufferedReader = new BufferedReader( new java.io.InputStreamReader(is) );
+		strbuf = new StringBuffer();
+		filename = fileName;
+	}
+	
 	/**
 	 * Creates a new TextFileReader object.
 	 *
