@@ -197,7 +197,7 @@ public class GMLReader extends AbstractGraphReader {
 	String styleName;
 
 	// New Visual Style comverted from GML file.
-	VisualStyle gmlstyle;
+	//VisualStyle gmlstyle;
 
 	// Hashes for node & edge attributes
 	HashMap nodeW;
@@ -1244,12 +1244,6 @@ public class GMLReader extends AbstractGraphReader {
 		
 			if (!(vsbSwitch != null && vsbSwitch.equals("off"))) {
 				graphStyle.buildStyle();	
-				
-				// The following code is required, because of a bug in VMM
-				Cytoscape.getVisualMappingManager().setVisualStyle(graphStyle.getStyleName());
-				CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
-			    view.applyVizmapper(Cytoscape.getVisualMappingManager().getVisualStyle()); 
-			    //view.redrawGraph(false, true); 
 			}			
 		}
 	}
