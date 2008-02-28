@@ -112,7 +112,12 @@ public class LicenseDialog extends javax.swing.JDialog {
         		radioStateChanged(evt);
         	}
         });
-        
+        acceptRadio.addMouseMotionListener( new java.awt.event.MouseMotionAdapter() {
+        	public void mouseMoved(java.awt.event.MouseEvent evt) {
+        		mouseMotionDetected(evt);
+        	}
+        });
+        		
         declineRadio.setText("Decline All");
         declineRadio.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         declineRadio.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -120,6 +125,11 @@ public class LicenseDialog extends javax.swing.JDialog {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 radioStateChanged(evt);
             }
+        });
+        declineRadio.addMouseMotionListener( new java.awt.event.MouseMotionAdapter() {
+        	public void mouseMoved(java.awt.event.MouseEvent evt) {
+        		mouseMotionDetected(evt);
+        	}
         });
 
         org.jdesktop.layout.GroupLayout buttonPaneLayout = new org.jdesktop.layout.GroupLayout(buttonPane);
@@ -176,7 +186,19 @@ public class LicenseDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>                        
 
-    private void radioStateChanged(javax.swing.event.ChangeEvent evt) {                                          
+    // handles issue on Windows of mouse rollover deselecting radio buttons...I hope
+    private void mouseMotionDetected(java.awt.event.MouseEvent evt) {
+    	if (acceptRadio.isSelected()) {
+    		acceptRadio.setSelected(true);
+    		okButton.setEnabled(true);
+    	} else if (declineRadio.isSelected()) {
+    		declineRadio.setSelected(true);
+    		okButton.setEnabled(false);
+    	}
+    }
+    
+    private void radioStateChanged(javax.swing.event.ChangeEvent evt) {      
+    	
     	javax.swing.JRadioButton radioButton = (javax.swing.JRadioButton) evt.getSource();
     	if (radioButton.equals(declineRadio)) {
 				this.acceptRadio.setSelected(false);
