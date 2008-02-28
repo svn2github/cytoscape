@@ -514,12 +514,12 @@ public class CytoscapeInit {
 	private static void initProperties() {
 		if (properties == null) {
 			properties = new Properties();
-			loadStaticProperties("/cytoscape.props", properties);
+			loadStaticProperties("cytoscape.props", properties);
 		}
 
 		if (visualProperties == null) {
 			visualProperties = new Properties();
-			loadStaticProperties("/vizmap.props", visualProperties);
+			loadStaticProperties("vizmap.props", visualProperties);
 		}
 	}
 
