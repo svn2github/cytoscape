@@ -3714,6 +3714,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
 		
+		String curStyleName = vmm.getVisualStyle().getName();
+		
 		String styleName;
 		List<String> namesInBox = new ArrayList<String>();
 		namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
@@ -3735,8 +3737,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vsNameComboBox.addItem(name);
 		}
 		
-		switchVS(vmm.getVisualStyle().getName());
 		
+		// Bug fix: 0001721: 
+		//Note: Because vsNameComboBox.removeAllItems() will fire unwanted event, 
+		// vmm.getVisualStyle().getName() will not be the same as curStyleName
+		if (curStyleName == null || curStyleName.trim().equals("")) {
+			switchVS(vmm.getVisualStyle().getName());			
+		}
+		else {
+			switchVS(curStyleName);			
+		}
+
 		//vsNameComboBox.setSelectedItem(vmm.getVisualStyle().getName());
 		
 		// Sync style and selected item.
