@@ -160,7 +160,7 @@
 	<!-- =================================================================== -->
 	<!-- Build all jars                                                      -->
 	<!-- =================================================================== -->
-	<target name="all" depends="tableImport" />
+	<target name="all" depends="release" />
 
 	<!-- =================================================================== -->
 	<!-- Run the Plugin                                                      -->
@@ -176,7 +176,7 @@
 	<!-- =================================================================== -->
 	<target name="runtests" depends="tests">
 		<mkdir dir="${tableImport.tests.reports.dir}" />
-		<junit printsummary="yes" haltonfailure="no" dir="${tableImport.classes.dir}" maxmemory="1G">
+		<junit printsummary="yes" haltonfailure="yes" dir="${tableImport.classes.dir}" maxmemory="1G">
 			<formatter type="plain" usefile="true" />
 			<classpath refid="tableImport.project.class.path" />
 			<!-- The junit task doesn't support 'if' so we test for JUnit here -->
@@ -191,7 +191,7 @@
 	<!-- ======================================================= -->
 	<target name="test-swing" depends="tableImport" >
 		<mkdir dir="${tableImport.tests.reports.dir}" />
-		<junit printsummary="yes" haltonfailure="no" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
+		<junit printsummary="yes" haltonfailure="yes" maxmemory="1G" filtertrace="off" includeantruntime="true" showoutput="on">
 			
 			<classpath>
 				<fileset dir="${tableImport.root.dir}">
@@ -243,7 +243,7 @@
 	            ***********************************************
 		</echo>
 		<mkdir dir="${junit.report.dir}" />
-		<junit printsummary="yes" haltonfailure="no" maxmemory="512m">
+		<junit printsummary="yes" haltonfailure="yes" maxmemory="512m">
 			<classpath refid="tableImport.project.class.path" />
 			<formatter type="plain" usefile="true" />
 			<formatter type="xml" usefile="true" />

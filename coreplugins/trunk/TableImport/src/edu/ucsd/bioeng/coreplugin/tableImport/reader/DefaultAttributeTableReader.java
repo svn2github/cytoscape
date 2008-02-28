@@ -201,10 +201,14 @@ public class DefaultAttributeTableReader implements TextTableReader {
 				parts = line.split(mapping.getDelimiterRegEx());
 				// If key dos not exists, ignore the line.
 				if(parts.length>=mapping.getKeyIndex()+1) {
+					try {
 					if(importAll) {
 						parser.parseAll(parts);
 					} else
 						parser.parseEntry(parts);
+					} catch (Exception ex) {
+						System.out.println("Couldn't parse row: " + lineCount);
+					}
 					globalCounter++;
 				}
 			}

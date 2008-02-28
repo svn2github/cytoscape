@@ -120,10 +120,14 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 
 		while ((row = sheet.getRow(rowCount)) != null) {
 			cellsInOneRow = createElementStringArray(row);
-			if(importAll)
-				parser.parseAll(cellsInOneRow);
-			else
-				parser.parseEntry(cellsInOneRow);
+			try {
+				if(importAll)
+					parser.parseAll(cellsInOneRow);
+				else 
+					parser.parseEntry(cellsInOneRow);
+			} catch (Exception ex) {
+				System.out.println("Couldn't parse row: " + rowCount);
+			}
 			
 			rowCount++;
 			globalCounter++;

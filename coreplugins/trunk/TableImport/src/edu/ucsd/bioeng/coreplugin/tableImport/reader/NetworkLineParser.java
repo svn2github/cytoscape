@@ -129,7 +129,7 @@ public class NetworkLineParser {
 	private void addEdgeAttributes(final Edge edge, final String[] parts) {
 		for (int i = 0; i < parts.length; i++) {
 			if ((i != nmp.getSourceIndex()) && (i != nmp.getTargetIndex())
-			    && (i != nmp.getInteractionIndex())) {
+			    && (i != nmp.getInteractionIndex()) && parts[i] != null ) {
 				if ((nmp.getImportFlag().length > i) && (nmp.getImportFlag()[i] == true)) {
 					mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
 				}
