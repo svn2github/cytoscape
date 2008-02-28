@@ -106,7 +106,7 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 	public void propertyChange(PropertyChangeEvent evt) {
 		
 		Object resultObj = evt.getNewValue();
-		if(evt.getPropertyName().equals("SEARCH_RESULT") && ((DatabaseSearchResult)resultObj).getNextMove().equals(WSEventType.EXPAND_NETWORK)) {
+		if(evt.getPropertyName().equals(CyWebServiceEvent.WSResponseType.SEARCH_FINISHED.toString()) && ((DatabaseSearchResult)resultObj).getNextMove().equals(WSEventType.EXPAND_NETWORK)) {
 			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@Got search result from: " 
 					+ evt.getSource() + ", Num result = " + evt.getNewValue() + ", Source name = " + evt.getOldValue());
 			String message[] = {
@@ -141,7 +141,6 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 			if(defLayout == null) {
 				defLayout = "force-directed";
 			}
-			
 		}
 		
 	}
