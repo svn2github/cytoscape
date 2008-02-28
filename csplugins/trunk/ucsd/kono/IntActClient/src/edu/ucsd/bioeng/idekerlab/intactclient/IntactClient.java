@@ -273,7 +273,7 @@ public class IntactClient extends WebServiceClientImpl implements NetworkImportW
 
 		if (net == null) {
 			Cytoscape.createNetwork(nodes, edges, "IntAct: ", null);
-			Cytoscape.firePropertyChange(DATA_IMPORT_FINISHED.toString(), null, null);
+			Cytoscape.firePropertyChange(DATA_IMPORT_FINISHED.toString(), null, "IntAct Network");
 		} else {
 			for (Node node : nodes) {
 				net.addNode(node);
