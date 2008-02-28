@@ -1,4 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>cytoscape</artifactId>
+		<groupId>cytoscape</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cytoscape</groupId>
 	<artifactId>application</artifactId>
@@ -8,7 +15,6 @@
 	<url>http://maven.apache.org</url>
 
 	<repositories>
-
 		<!-- for freehep -->
 		<repository>
 			<id>freehep-maven</id>
@@ -101,7 +107,7 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-<!--
+		<!--
 		<dependency>
 			<groupId>cytoscape</groupId>
 			<artifactId>bookmarks</artifactId>
@@ -260,7 +266,7 @@
 			<!-- There are versions up to 1.3.4 -->
 		</dependency>
 
-<!--
+		<!--
 	<dependency>
 		<groupId>cytoscape-sun</groupId>
 		<artifactId>jaxws-api</artifactId>
@@ -303,14 +309,14 @@
 			<artifactId>jsr250-api</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>cytoscape-sun</groupId>
 			<artifactId>jhall</artifactId>
 			<version>1.0</version>
 		</dependency>
 
-<!-- This help compiles but doesn't run in the assembly jar
+		<!-- This help compiles but doesn't run in the assembly jar
 		<dependency>
 			<groupId>javax.help</groupId>
 			<artifactId>javahelp</artifactId>
@@ -348,7 +354,7 @@
 			<version>1.0</version>
 		</dependency>
 
-<!-- this version of swingx doesn't compile
+		<!-- this version of swingx doesn't compile
 		<dependency>
 			<groupId>org.swinglabs</groupId>
 			<artifactId>swingx</artifactId>
@@ -356,7 +362,14 @@
 		</dependency>
 -->
 
-<!-- Not found!  No complaints in compile...
+
+		<dependency>
+			<groupId>cytoscape-temp</groupId>
+			<artifactId>swingx</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- Not found!  No complaints in compile...
 	<dependency>
 		<groupId>cytoscape-sun</groupId>
 		<artifactId>saaj-impl</artifactId>
@@ -388,12 +401,41 @@
 		<version>1.0</version>
 	</dependency>
 -->
-
 	</dependencies>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>dependencies</report>
+							<report>project-team</report>
+							<report>mailing-list</report>
+							<report>cim</report>
+							<report>issue-tracking</report>
+							<report>license</report>
+							<report>scm</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin> <!-- javadocs -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+			</plugin>
+
+		</plugins>
+	</reporting>
+
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -458,7 +500,6 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
 				<executions>
-
 					<execution>
 						<id>bookmarks</id>
 						<configuration>
@@ -472,7 +513,6 @@
 							<goal>xjc</goal>
 						</goals>
 					</execution>
-
 					<execution>
 						<id>session</id>
 						<configuration>
@@ -485,10 +525,52 @@
 							<goal>xjc</goal>
 						</goals>
 					</execution>
-
 				</executions>
-
 			</plugin>
+			<!--
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>
+							package
+						</phase>
+						<configuration>
+							<tasks>
+								<target name="help" description="Builds Help system files (full text search db, etc).">
+									<uptodate property="helpIsUpToDate" targetfile="${build.classes}/cytoscape/help/JavaHelpSearch/SCHEMA">
+										<srcfiles dir="${basedir}/docs/help" includes="**/*" />
+									</uptodate>
+									<antcall target="buildHelp" />
+								</target>
+
+								<target name="buildHelp" unless="helpIsUpToDate">
+									<echo>Copying javahelp files: helpset, html files, images</echo>
+									<copy todir="${build.classes}/cytoscape/help">
+										<fileset dir="${basedir}/docs/help" />
+									</copy>
+									<mkdir dir="${build.classes}/cytoscape/help/images" />
+									<copy todir="${build.classes}/cytoscape/help/images">
+										<fileset dir="${basedir}/docs/images" />
+									</copy>
+
+									<echo>Indexing help files and creating search db</echo>
+									<java classname="com.sun.java.help.search.Indexer" classpathref="classpath" dir="${build.classes}/cytoscape/help" fork="true">
+										<arg value="-db" />
+										<arg value="JavaHelpSearch" />
+										<arg value="${build.classes}/cytoscape/help" />
+									</java>
+								</target>
+
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+-->
 		</plugins>
 	</build>
 </project>
