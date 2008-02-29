@@ -605,7 +605,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		attrModel.sortAtttributes();
 
 		final List<String> atNames = new ArrayList<String>();
-		for(String attName: attributes.getAttributeNames()) {
+		for(String attName: CyAttributesUtils.getVisibleAttributeNames(attributes)) {
 			atNames.add(attName);
 		}
 		final List<String> toBeRemoved = new ArrayList<String>();
