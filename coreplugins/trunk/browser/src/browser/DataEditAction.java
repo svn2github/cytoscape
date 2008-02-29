@@ -34,7 +34,7 @@
 */
 package browser;
 
-import static browser.DataObjectType.*;
+import static browser.DataObjectType.NETWORK;
 
 import cytoscape.Cytoscape;
 
@@ -43,36 +43,37 @@ import cytoscape.data.CyAttributes;
 import javax.swing.JOptionPane;
 import javax.swing.undo.AbstractUndoableEdit;
 
+
 /**
+ * Validate and set new value to the CyAttributes.
  *
  */
 public class DataEditAction extends AbstractUndoableEdit {
-	final String object;
-	final String attrName;
-	final Object old_value;
-	final Object new_value;
-	final String[] keys;
-	final DataObjectType objectType;
-	final DataTableModel tableModel;
-	boolean valid = false;
+	private final String attrKey;
+	private final String attrName;
+	private final Object old_value;
+	private final Object new_value;
+	private final DataObjectType objectType;
+	private final DataTableModel tableModel;
+	
+	private boolean valid = false;
 
 	/**
 	 * Creates a new DataEditAction object.
 	 *
 	 * @param table  DOCUMENT ME!
-	 * @param object  DOCUMENT ME!
+	 * @param attrKey  DOCUMENT ME!
 	 * @param attrName  DOCUMENT ME!
 	 * @param keys  DOCUMENT ME!
 	 * @param old_value  DOCUMENT ME!
 	 * @param new_value  DOCUMENT ME!
 	 * @param graphObjectType  DOCUMENT ME!
 	 */
-	public DataEditAction(DataTableModel table, String object, String attrName, String[] keys,
+	public DataEditAction(DataTableModel table, String attrKey, String attrName,
 	                      Object old_value, Object new_value, DataObjectType graphObjectType) {
 		this.tableModel = table;
-		this.object = object;
+		this.attrKey = attrKey;
 		this.attrName = attrName;
-		this.keys = keys;
 		this.old_value = old_value;
 		this.new_value = new_value;
 		this.objectType = graphObjectType;
@@ -86,7 +87,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getPresentationName() {
-		return object + " attribute " + attrName + " changed.";
+		return attrKey + " attribute " + attrName + " changed.";
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getRedoPresentationName() {
-		return "Redo: " + object + ":" + attrName + " to:" + new_value + " from " + old_value;
+		return "Redo: " + attrKey + ":" + attrName + " to:" + new_value + " from " + old_value;
 	}
 
 	/**
@@ -104,28 +105,33 @@ public class DataEditAction extends AbstractUndoableEdit {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getUndoPresentationName() {
-		return "Undo: " + object + ":" + attrName + " back to:" + old_value + " from " + new_value;
+		return "Undo: " + attrKey + ":" + attrName + " back to:" + old_value + " from " + new_value;
 	}
 
-	// Set value based on the data type.
-	// Mod. by kono (11/10/2005)
-	// Error check routine added.
-	//
-	private void setAttributeValue(String id, String att, Object object) {
-		final CyAttributes data = objectType.getAssociatedAttribute();
+	/**
+	 * Set attribute value.  Input validater is added.
+	 *
+	 * @param id
+	 * @param att
+	 * @param newValue
+	 */
+	private void setAttributeValue(String id, String att, Object newValue) {
+
+		final CyAttributes attr = objectType.getAssociatedAttribute();
+
+		// Error message for the popup dialog.
 		String errMessage = null;
 
 		// Change object to String
-		String strObject = object.toString();
-
-		byte targetType = data.getType(att);
+		final String newValueStr = newValue.toString();
+		final byte targetType = attr.getType(att);
 
 		if (targetType == CyAttributes.TYPE_INTEGER) {
-			Integer newIntVal = new Integer(0);
+			Integer newIntVal;
 
 			try {
-				newIntVal = Integer.valueOf(strObject);
-				data.setAttribute(id, att, newIntVal);
+				newIntVal = Integer.valueOf(newValueStr);
+				attr.setAttribute(id, att, newIntVal);
 			} catch (Exception nfe) {
 				errMessage = "Attribute " + att
 				             + " should be an integer (or the number is too big/small).";
@@ -134,11 +140,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_FLOATING) {
-			Double newDblVal = new Double(0);
+			Double newDblVal;
 
 			try {
-				newDblVal = Double.valueOf(strObject);
-				data.setAttribute(id, att, newDblVal);
+				newDblVal = Double.valueOf(newValueStr);
+				attr.setAttribute(id, att, newDblVal);
 			} catch (Exception e) {
 				errMessage = "Attribute " + att
 				             + " should be a floating point number (or the number is too big/small).";
@@ -147,11 +153,11 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_BOOLEAN) {
-			Boolean newBoolVal = new Boolean(false);
+			Boolean newBoolVal = false;
 
 			try {
-				newBoolVal = Boolean.valueOf(strObject);
-				data.setAttribute(id, att, newBoolVal);
+				newBoolVal = Boolean.valueOf(newValueStr);
+				attr.setAttribute(id, att, newBoolVal);
 			} catch (Exception e) {
 				errMessage = "Attribute " + att + " should be a boolean value (true/false).";
 				showErrorWindow(errMessage);
@@ -159,7 +165,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_STRING) {
-			data.setAttribute(id, att, strObject);
+			attr.setAttribute(id, att, newValueStr);
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
 			errMessage = "List editing is not supported in this version.";
 			showErrorWindow(errMessage);
@@ -172,8 +178,6 @@ public class DataEditAction extends AbstractUndoableEdit {
 			showErrorWindow(errMessage);
 
 			return;
-
-			// data.setAttributeMap(id, att, (Map) object);
 		}
 
 		valid = true;
@@ -181,25 +185,24 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 	// Pop-up window for error message
 	private void showErrorWindow(String errMessage) {
-		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage, "Error!",
+		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), errMessage, "Invalid Value!",
 		                              JOptionPane.ERROR_MESSAGE);
 
 		return;
 	}
 
-	// this sets the new value
 	/**
-	 *  DOCUMENT ME!
+	 * For redo function.
 	 */
 	public void redo() {
-		setAttributeValue(object, attrName, new_value);
+		setAttributeValue(attrKey, attrName, new_value);
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void undo() {
-		setAttributeValue(object, attrName, old_value);
+		setAttributeValue(attrKey, attrName, old_value);
 
 		if (objectType != NETWORK) {
 			tableModel.setTableData();
