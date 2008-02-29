@@ -70,12 +70,24 @@ public class BookmarkReaderTest extends TestCase {
 		reader = null;
 	}
 	
+	public void testReadBookmarksNoArgs() {
+		try {
+			reader.readBookmarks();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+			fail("Caught IOException");
+		} catch (JAXBException jbe) {
+			jbe.printStackTrace();
+			fail("Caught JAXBexception");
+		}
+	}
+	
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void testReadBookmarks() {
 		try {
-			reader.readBookmarks(new URL("file:src/main/resources/bookmarks.xml"));
+			reader.readBookmarks(Thread.currentThread().getContextClassLoader().getResourceAsStream("bookmarks.xml"));
 
 			Bookmarks bkm = reader.getBookmarks();
 			List cat = bkm.getCategory();
@@ -92,9 +104,6 @@ public class BookmarkReaderTest extends TestCase {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 			fail("Caught jaxb exception");
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Caught io exception");
 		}
 	}
 }
