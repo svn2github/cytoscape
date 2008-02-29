@@ -121,26 +121,25 @@ public class DeletionDialog extends JDialog {
 	} // </editor-fold>
 
 	private void deleteButtonActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
 		CyAttributes attr = null;
 
 		if (type.equalsIgnoreCase("node")) {
 			attr = Cytoscape.getNodeAttributes();
-		} else {
+		} else if(type.equalsIgnoreCase("edge")) {
 			attr = Cytoscape.getEdgeAttributes();
 		}
 
 		Object[] selected = attributeList.getSelectedValues();
 
-		for (int i = 0; i < selected.length; i++) {
+		for (int i = 0; i < selected.length; i++)
 			attr.deleteAttribute(selected[i].toString());
-		}
+		
 		model.setTableData();
-		this.dispose();
+		
+		dispose();
 	}
 
 	private void cancelButtonActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
 		this.dispose();
 	}
 
