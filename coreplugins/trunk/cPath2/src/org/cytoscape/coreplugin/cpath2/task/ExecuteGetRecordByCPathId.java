@@ -16,12 +16,15 @@ import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.coreplugin.cpath2.web_service.*;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.Attribute;
+import org.jdom.Namespace;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 
 import javax.swing.*;
 import java.io.File;
@@ -199,7 +202,6 @@ public class ExecuteGetRecordByCPathId implements Task {
      * @param cyNetwork Cytoscape Network Object.
      */
     private void postProcessingBinarySif(final CyNetwork cyNetwork) {
-        Iterator nodeIterator = cyNetwork.nodesIterator();
         CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
         //  Init the node attribute meta data, e.g. description, visibility, etc.
@@ -215,7 +217,7 @@ public class ExecuteGetRecordByCPathId implements Task {
 
         //  Get all node details.
         //  TODO:  For efficiency, only get the new nodes
-        getNodeDetails(cyNetwork, nodeIterator, nodeAttributes);
+        getNodeDetails2(cyNetwork, nodeAttributes);
 
         if (haltFlag == false) {
             if (mergedNetwork != null) {
@@ -309,8 +311,8 @@ public class ExecuteGetRecordByCPathId implements Task {
     /**
      * Gets Details for Each Node from Web Service API.
      */
-    private void getNodeDetails
-            (CyNetwork cyNetwork, Iterator nodeIterator, CyAttributes nodeAttributes) {
+    private void getNodeDetails (CyNetwork cyNetwork,  CyAttributes nodeAttributes) {
+        Iterator nodeIterator = cyNetwork.nodesIterator();
         if (taskMonitor != null) {
             taskMonitor.setStatus("Retrieving node details...");
             taskMonitor.setPercentCompleted(0);
@@ -348,6 +350,86 @@ public class ExecuteGetRecordByCPathId implements Task {
             }
             counter++;
         }
+    }
+
+    /**
+     * Gets Details for Each Node from Web Service API.
+     */
+    private void getNodeDetails2 (CyNetwork cyNetwork,  CyAttributes nodeAttributes) {
+        if (taskMonitor != null) {
+            taskMonitor.setStatus("Retrieving node details...");
+            taskMonitor.setPercentCompleted(0);
+        }
+        ArrayList batchList = createBatchArray(cyNetwork);
+        if (batchList.size()==0) {
+            System.out.println ("Skipping node details.  Already have all the details new need.");
+        }
+        for (int i=0; i<batchList.size(); i++) {
+            if (haltFlag == true) {
+                break;
+            }
+            ArrayList currentList = (ArrayList) batchList.get(i);
+            System.out.println ("Getting node details, batch:  " + i);
+            long ids[] = new long [currentList.size()];
+            for (int j=0; j<currentList.size(); j++) {
+                CyNode node = (CyNode) currentList.get(j);
+                ids[j] = Long.valueOf(node.getIdentifier());
+            }
+            try {
+                String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX,
+                        new NullTaskMonitor());
+                StringReader reader = new StringReader(xml);
+                BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
+                ArrayList peList = bpUtil.getPhysicalEntityList();
+                Namespace ns = Namespace.getNamespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+                for (int j=0; j<peList.size(); j++) {
+                    Element element = (Element) peList.get(j);
+                    String id = element.getAttributeValue("ID", ns);
+                    if (id != null) {
+                        id = id.replaceAll("CPATH-", "");
+                        MapNodeAttributes.mapNodeAttribute(element, id, nodeAttributes, bpUtil);
+                    }
+                }
+                int percentComplete = (int) (100.0 * (i / (double) batchList.size()));
+                if (taskMonitor != null) {
+                    taskMonitor.setPercentCompleted(percentComplete);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JDOMException e) {
+                e.printStackTrace();
+            } catch (EmptySetException e) {
+                e.printStackTrace();
+            } catch (CPathException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private ArrayList createBatchArray(CyNetwork cyNetwork) {
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        int max_ids_per_request = 50;
+        ArrayList masterList = new ArrayList();
+        ArrayList currentList = new ArrayList();
+        Iterator nodeIterator = cyNetwork.nodesIterator();
+        int counter = 0;
+        while (nodeIterator.hasNext()) {
+            CyNode node = (CyNode) nodeIterator.next();
+            String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
+                    BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+
+            //  If we already have details on this node, skip it.
+            if (label == null) {
+                currentList.add(node);
+                counter++;
+            }
+            if (counter > max_ids_per_request) {
+                masterList.add(currentList);
+                currentList = new ArrayList();
+                counter = 0;
+            }
+        }
+        return masterList;
     }
 
     private CyNetworkView createNetworkView (CyNetwork network, String title, CyLayoutAlgorithm
