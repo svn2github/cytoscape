@@ -408,9 +408,9 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			setDataVector(data_vector, column_names);
 			//			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 			//			         .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
-			AttributeBrowserPlugin.getPropertyChangeSupport()
-			                      .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null,
-			                                          null);
+			AttributeBrowser.getPropertyChangeSupport()
+			                      .firePropertyChange(AttributeBrowser.RESTORE_COLUMN, null,
+			                                          objectType);
 
 			return;
 		} else if (attributeNames.contains(AttributeBrowser.ID) == false) {
@@ -455,8 +455,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		setDataVector(data_vector, column_names);
 
-		AttributeBrowserPlugin.getPropertyChangeSupport()
-		                      .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+		AttributeBrowser.getPropertyChangeSupport()
+		                      .firePropertyChange(AttributeBrowser.RESTORE_COLUMN, null, objectType);
 	}
 
 	/**

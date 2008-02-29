@@ -307,6 +307,11 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JToolBar getJToolBar() {
 		if (jToolBar == null) {
 			jToolBar = new JToolBar();
+			jToolBar.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					AttributeBrowser.getPropertyChangeSupport().firePropertyChange(AttributeBrowser.CLEAR_INTERNAL_SELECTION, null, objectType);
+				}
+			});
 			jToolBar.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			jToolBar.setPreferredSize(new java.awt.Dimension(200, 28));
 			jToolBar.setFloatable(false);
@@ -620,7 +625,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		}
 
 		tableModel.setTableData(null, orderedCol);
-		AttributeBrowserPlugin.firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+		AttributeBrowser.firePropertyChange(AttributeBrowser.RESTORE_COLUMN, null, objectType);
 		
 	}
 	

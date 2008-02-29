@@ -40,6 +40,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +53,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumnModel;
@@ -76,6 +81,19 @@ import cytoscape.view.cytopanels.CytoPanelState;
  *
  */
 public class AttributeBrowser implements TableColumnModelListener {
+	
+	protected static Object pcsO = new Object();
+	protected static PropertyChangeSupport pcs = new SwingPropertyChangeSupport(pcsO);
+	
+	
+	public static PropertyChangeSupport getPropertyChangeSupport() {
+		return pcs;
+	}
+	
+	public static void firePropertyChange(String property_type, Object old_value, Object new_value) {
+		final PropertyChangeEvent e = new PropertyChangeEvent(pcsO, property_type, old_value, new_value);
+		getPropertyChangeSupport().firePropertyChange(e);
+	}
 	/**
 	 *
 	 */
@@ -121,6 +139,13 @@ public class AttributeBrowser implements TableColumnModelListener {
 	int modPanelIndex;
 	int tableIndex;
 	int browserIndex;
+
+	
+	/**
+	 *
+	 */
+	public final static String RESTORE_COLUMN = "RESTORE_COLUMN";
+	public final static String CLEAR_INTERNAL_SELECTION = "CLEAR_INTERNAL_SELECTION";
 
 	/**
 	 * Browser object is one per attribute type.
@@ -175,9 +200,14 @@ public class AttributeBrowser implements TableColumnModelListener {
 		}
 
 		attributeTable.getColumnModel().addColumnModelListener(this);
-
+		JScrollPane tp = new JScrollPane(attributeTable);
+		tp.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				getPropertyChangeSupport().firePropertyChange(AttributeBrowser.CLEAR_INTERNAL_SELECTION, null, panelType);
+			}
+		});
 		mainPanel.setName(panelType.getDislayName() + "AttributeBrowser");
-		mainPanel.add(new JScrollPane(attributeTable), BorderLayout.CENTER);
+		mainPanel.add(tp, BorderLayout.CENTER);
 		mainPanel.add(attributeBrowserToolBar, BorderLayout.NORTH);
 
 		// Add main browser panel to CytoPanel 2 (SOUTH)

@@ -110,12 +110,6 @@ import cytoscape.visual.VisualMappingManager;
 public class CyAttributeBrowserTable extends JTable implements MouseListener, ActionListener,
                                                                PropertyChangeListener,
                                                                SelectEventListener, MouseMotionListener {
-	// Local Signal
-	/**
-	 *
-	 */
-	public final static String RESTORE_COLUMN = "RESTORE_COLUMN";
-
 	/**
 	 *
 	 */
@@ -641,6 +635,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						}
 					} else if (SwingUtilities.isLeftMouseButton(e)
 					           && (getSelectedRows().length != 0)) {
+						
 						showListContents(e);
 
 						if ((row >= getRowCount()) || (row < 0) || (column >= getColumnCount())
@@ -654,11 +649,11 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 							try {
 								url = new URL((String) value);
 							} catch (MalformedURLException e1) {
+								// If invalid, just ignore.
 							}
 
-							if (url != null) {
+							if (url != null)
 								cytoscape.util.OpenBrowser.openURL(url.toString());
-							}
 						}
 					}
 				} // mouseClicked
@@ -1024,15 +1019,23 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		if(ignore) return;
 		
 		
-		if (e.getPropertyName().equals(RESTORE_COLUMN)) {
+		if(e.getPropertyName().equals(AttributeBrowser.RESTORE_COLUMN) && e.getNewValue() != null && e.getNewValue().equals(objectType)) {
 			ColumnResizer.adjustColumnPreferredWidths(this);
 			return;
+		}
+		
+		if(e.getPropertyName().equals(AttributeBrowser.CLEAR_INTERNAL_SELECTION)) {
+			
+			if(e.getNewValue() != null && e.getNewValue().equals(objectType)) {
+				getSelectionModel().clearSelection();
+				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			}
 		}
 
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-			AttributeBrowserPlugin.getPropertyChangeSupport().addPropertyChangeListener(this);
+			AttributeBrowser.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)

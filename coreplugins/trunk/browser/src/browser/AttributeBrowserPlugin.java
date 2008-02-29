@@ -68,19 +68,6 @@ import javax.swing.event.SwingPropertyChangeSupport;
  */
 public class AttributeBrowserPlugin extends CytoscapePlugin {
 	
-	protected static Object pcsO = new Object();
-	protected static PropertyChangeSupport pcs = new SwingPropertyChangeSupport(pcsO);
-	
-	
-	public static PropertyChangeSupport getPropertyChangeSupport() {
-		return pcs;
-	}
-	
-	public static void firePropertyChange(String property_type, Object old_value, Object new_value) {
-		final PropertyChangeEvent e = new PropertyChangeEvent(pcsO, property_type, old_value, new_value);
-		getPropertyChangeSupport().firePropertyChange(e);
-	}
-	
 	// Name of browser's property file.
 	private static final String PROP_FILE_NAME = "attributeBrowser.props";
 
