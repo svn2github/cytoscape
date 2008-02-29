@@ -88,6 +88,9 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
         	cmbPassFilter.setSelectedIndex(0);			
 			cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
 		}
+        else { // thePassFilter == null, it's a brand new filter
+        	theFilter.setPassFilter((CompositeFilter)theModel.getSelectedItem());
+        }
 	}
     
     	
