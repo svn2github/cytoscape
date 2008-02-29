@@ -161,7 +161,6 @@ public class CPathProtocol {
      */
     public CPathProtocol() {
         this.baseUrl = CPathProperties.getInstance().getCPathUrl();
-        System.out.println("Base URL:  " + baseUrl);
         this.maxHits = DEFAULT_MAX_HITS;
         this.taxonomyId = NOT_SPECIFIED;
     }
@@ -249,7 +248,7 @@ public class CPathProtocol {
             // If the query string is long, use POST.  Otherwise, use GET.
             if (query != null && query.length() > 100) {
                 method = new PostMethod(baseUrl);
-                method.setQueryString(nvps);
+                ((PostMethod)(method)).addParameters(nvps);
                 System.out.println("Connect:  " + method.getURI() + " (via POST)");
             } else {
                 String liveUrl = createURI(baseUrl, nvps);
