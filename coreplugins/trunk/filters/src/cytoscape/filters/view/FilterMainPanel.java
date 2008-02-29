@@ -630,7 +630,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				refreshAttributeCMB();
 			}
 			else if (cmb == cmbAttributes) {
-				String selectItem = (String) cmbAttributes.getSelectedItem();
+				String selectItem = (String) cmbAttributes.getSelectedItem().toString();
 				// Disable the Add button if "--Attribute--" or "-- Filter ---" is selected
 				if (selectItem.equalsIgnoreCase("-- Filters --") ||selectItem.equalsIgnoreCase("-- Attributes --")) {
 					btnAddFilterWidget.setEnabled(false);
@@ -1019,7 +1019,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			else { // value == null
 				setText(""); 
 			}
-/*
+
 			if (isSelected) {
 				setBackground(list.getSelectionBackground());
 				setForeground(list.getSelectionForeground());
@@ -1027,7 +1027,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				setBackground(list.getBackground());
 				setForeground(list.getForeground());
 			}
-*/
+
 			return this;
 		}
 	}// FilterRenderer
