@@ -58,7 +58,7 @@ public class BookmarksUtilTest extends TestCase {
 		super.setUp();
 
 		BookmarkReader reader = new BookmarkReader();
-		reader.readBookmarks(new URL("file:src/main/resources/bookmarks.xml"));
+		reader.readBookmarks(Thread.currentThread().getContextClassLoader().getResourceAsStream("bookmarks.xml"));
 
 		bk = reader.getBookmarks();
 	}
@@ -71,6 +71,8 @@ public class BookmarksUtilTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetCategory() {
+		assertNotNull(bk);
+		
 		List<Category> rootCat = bk.getCategory();
 		assertNotNull(rootCat);
 		System.out.println("#### Number of bookmarks in the root category = " + rootCat.size());
@@ -93,6 +95,8 @@ public class BookmarksUtilTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testGetDataSourceList() {
+		assertNotNull(bk);
+
 		List<Category> rootCat = bk.getCategory();
 		List<DataSource> sources = BookmarksUtil.getDataSourceList("ontology", bk.getCategory());
 
