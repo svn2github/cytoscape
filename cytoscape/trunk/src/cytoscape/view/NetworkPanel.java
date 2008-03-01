@@ -259,9 +259,13 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * update a network title
 	 */
 	public void updateTitle(final CyNetwork network) {
-		// updates the title in the network panel
-		treeTableModel.setValueAt(network.getTitle(),
+		// updates the title in the network panel 
+		if (treeTable.getTree().getSelectionPath() != null) { // user has selected something
+			treeTableModel.setValueAt(network.getTitle(),
 		                          treeTable.getTree().getSelectionPath().getLastPathComponent(), 0);
+		} else { // no selection, means the title has been changed programmatically
+		
+		}
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
 		// updates the title in the networkViewMap
@@ -411,15 +415,14 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			if ( e.getSource() != this )
 				focusNetworkNode((String) e.getNewValue());
-		}
-		else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
+		} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
 			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
 			String newID = cyNetworkTitleChange.getNetworkIdentifier();
 			//String newTitle = cyNetworkTitleChange.getNetworkTitle();
 			CyNetwork _network = Cytoscape.getNetwork(newID);
-			if (_network != null) {
+			// Network "0" is the default and does not appear in the netowrk panel
+			if (_network != null && !_network.getIdentifier().equals("0")) 
 				updateTitle(_network);				
-			}
 		}
 	}
 
