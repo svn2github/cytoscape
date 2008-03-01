@@ -34,59 +34,60 @@
 */
 package cytoscape.data.webservice.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
 import cytoscape.data.webservice.CyWebServiceException;
 import cytoscape.data.webservice.DatabaseSearchResult;
 import cytoscape.data.webservice.NetworkImportWebServiceClient;
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
 import cytoscape.layout.Tunable;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
 import cytoscape.util.ModuleProperties;
-
 import cytoscape.visual.VisualStyle;
-
-import java.awt.Color;
-import java.awt.GridLayout;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 
 /**
  *
  * @author  kono
  */
-public class UnifiedNetworkImportDialog extends javax.swing.JDialog
-    implements PropertyChangeListener {
+public class UnifiedNetworkImportDialog extends JDialog implements PropertyChangeListener {
+	// This is a singleton.
 	private static final UnifiedNetworkImportDialog dialog;
+
+	// Selected web service client ID
 	private String selectedClientID = null;
+
+	// Task to run in the separate thread.
 	private WSNetworkImportTask task;
 
 	// Key is display name, value is actual service name.
 	private Map<String, String> clientNames;
+
+	// Client-Dependent GUI panels
+	private Map<String, JComponent> serviceUIPanelsl = new HashMap<String, JComponent>();
 
 	static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
@@ -101,7 +102,7 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	}
 
 	/** Creates new form NetworkImportDialog */
-	public UnifiedNetworkImportDialog(java.awt.Frame parent, boolean modal) {
+	public UnifiedNetworkImportDialog(Frame parent, boolean modal) {
 		super(parent, modal);
 
 		// Register as listener.
@@ -113,6 +114,7 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		setDatasource();
 
 		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
+		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
 	}
 
 	/** This method is called from within the constructor to
@@ -123,56 +125,12 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code">                          
 	private void initComponents() {
-		mainPanel = new javax.swing.JPanel();
-		titleLabel = new javax.swing.JLabel();
-		datasourceLabel = new javax.swing.JLabel();
-		datasourceComboBox = new javax.swing.JComboBox();
-		searchButton = new javax.swing.JButton();
-		cancelButton = new javax.swing.JButton();
-		resetButton = new javax.swing.JButton();
+
 		mainTabbedPane = new javax.swing.JTabbedPane();
 		searchTermScrollPane = new javax.swing.JScrollPane();
 		searchTermTextPane = new javax.swing.JTextPane();
 		propertyPanel = new javax.swing.JPanel();
-
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Import Network from Web Services");
-		setBackground(new java.awt.Color(255, 255, 255));
-		mainPanel.setBackground(new java.awt.Color(255, 255, 255));
-		titleLabel.setBackground(new java.awt.Color(255, 255, 255));
-		titleLabel.setFont(new java.awt.Font("SansSerif", 1, 18));
-		titleLabel.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/network.png")));
-		titleLabel.setText("Import Network from Database");
-
-		datasourceLabel.setText("Datasource:");
-
-		datasourceComboBox.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					datasourceComboBoxActionPerformed(evt);
-				}
-			});
-
-		searchButton.setText("Search");
-		searchButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					searchButtonActionPerformed(evt);
-				}
-			});
-
-		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					cancelButtonActionPerformed(evt);
-				}
-			});
-
-		resetButton.setText("Clear Query");
-		resetButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					resetButtonActionPerformed(evt);
-				}
-			});
-
+	
 		searchTermTextPane.setFont(new java.awt.Font("SansSerif", 0, 12));
 		searchTermTextPane.setText("Please enter search terms...");
 		searchTermScrollPane.setViewportView(searchTermTextPane);
@@ -189,72 +147,179 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		propertyScrollPane = new JScrollPane();
 		propertyScrollPane.setViewportView(propertyPanel);
 		mainTabbedPane.addTab("Search Property", propertyScrollPane);
+	
+		titlePanel = new javax.swing.JPanel();
+		titleIconLabel = new javax.swing.JLabel();
+		datasourcePanel = new javax.swing.JPanel();
+		datasourceLabel = new javax.swing.JLabel();
+		datasourceComboBox = new javax.swing.JComboBox();
+		aboutButton = new javax.swing.JButton();
+		buttonPanel = new javax.swing.JPanel();
+		searchButton = new javax.swing.JButton();
+		cancelButton = new javax.swing.JButton();
+		clearButton = new javax.swing.JButton();
+		dataQueryPanel = new javax.swing.JPanel();
 
-		org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel);
-		mainPanel.setLayout(mainPanelLayout);
-		mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                  .add(mainPanelLayout.createSequentialGroup()
-		                                                                      .addContainerGap()
-		                                                                      .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                                          .add(mainPanelLayout.createSequentialGroup()
-		                                                                                                              .add(resetButton)
-		                                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-		                                                                                                                               151,
-		                                                                                                                               Short.MAX_VALUE)
-		                                                                                                              .add(cancelButton)
-		                                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                                              .add(searchButton))
-		                                                                                          .add(mainPanelLayout.createSequentialGroup()
-		                                                                                                              .add(datasourceLabel)
-		                                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                                              .add(datasourceComboBox,
-		                                                                                                                   0,
-		                                                                                                                   328,
-		                                                                                                                   Short.MAX_VALUE))
-		                                                                                          .add(titleLabel,
-		                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                               413,
-		                                                                                               Short.MAX_VALUE)
-		                                                                                          .add(mainTabbedPane,
-		                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                               413,
-		                                                                                               Short.MAX_VALUE))
-		                                                                      .addContainerGap()));
-		mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                     mainPanelLayout.createSequentialGroup()
-		                                                                    .addContainerGap()
-		                                                                    .add(titleLabel)
-		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                    .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		setTitle("Import Network from Database");
+
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+		titlePanel.setBackground(new java.awt.Color(0, 0, 0));
+
+		titleIconLabel.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("images/networkImportIcon.png"))); // NOI18N
+
+		org.jdesktop.layout.GroupLayout titlePanelLayout = new org.jdesktop.layout.GroupLayout(titlePanel);
+		titlePanel.setLayout(titlePanelLayout);
+		titlePanelLayout.setHorizontalGroup(titlePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                    .add(titleIconLabel,
+		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                         461,
+		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE));
+		titlePanelLayout.setVerticalGroup(titlePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                  .add(titleIconLabel));
+
+		datasourceLabel.setFont(new java.awt.Font("SansSerif", 0, 12));
+		datasourceLabel.setText("Data Source");
+
+		datasourceComboBox.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					datasourceComboBoxActionPerformed(evt);
+				}
+			});
+
+		aboutButton.setText("About");
+		aboutButton.setMargin(new java.awt.Insets(2, 5, 2, 5));
+		aboutButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					aboutButtonActionPerformed(evt);
+				}
+			});
+
+		org.jdesktop.layout.GroupLayout datasourcePanelLayout = new org.jdesktop.layout.GroupLayout(datasourcePanel);
+		datasourcePanel.setLayout(datasourcePanelLayout);
+		datasourcePanelLayout.setHorizontalGroup(datasourcePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                              .add(datasourcePanelLayout.createSequentialGroup()
+		                                                                                        .addContainerGap()
 		                                                                                        .add(datasourceLabel)
+		                                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                        .add(datasourceComboBox,
-		                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                             org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                    .add(mainTabbedPane,
-		                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                         330,
-		                                                                         Short.MAX_VALUE)
-		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                    .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                        .add(resetButton)
-		                                                                                        .add(searchButton)
-		                                                                                        .add(cancelButton))
-		                                                                    .addContainerGap()));
+		                                                                                             0,
+		                                                                                             301,
+		                                                                                             Short.MAX_VALUE)
+		                                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                        .add(aboutButton)
+		                                                                                        .addContainerGap()));
+		datasourcePanelLayout.setVerticalGroup(datasourcePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                            .add(datasourcePanelLayout.createSequentialGroup()
+		                                                                                      .addContainerGap()
+		                                                                                      .add(datasourcePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                                                .add(datasourceLabel)
+		                                                                                                                .add(aboutButton)
+		                                                                                                                .add(datasourceComboBox,
+		                                                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+		                                                                                      .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                       Short.MAX_VALUE)));
+
+		buttonPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+		searchButton.setText("Search");
+		searchButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					searchButtonActionPerformed(evt);
+				}
+			});
+
+		cancelButton.setText("Cancel");
+		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					cancelButtonActionPerformed(evt);
+				}
+			});
+
+		clearButton.setText("Clear");
+		clearButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					clearButtonActionPerformed(evt);
+				}
+			});
+
+		org.jdesktop.layout.GroupLayout buttonPanelLayout = new org.jdesktop.layout.GroupLayout(buttonPanel);
+		buttonPanel.setLayout(buttonPanelLayout);
+		buttonPanelLayout.setHorizontalGroup(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                           buttonPanelLayout.createSequentialGroup()
+		                                                                            .addContainerGap()
+		                                                                            .add(clearButton)
+		                                                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+		                                                                                             225,
+		                                                                                             Short.MAX_VALUE)
+		                                                                            .add(cancelButton)
+		                                                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                            .add(searchButton)
+		                                                                            .addContainerGap()));
+		buttonPanelLayout.setVerticalGroup(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                    .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                         buttonPanelLayout.createSequentialGroup()
+		                                                                          .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                           Short.MAX_VALUE)
+		                                                                          .add(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                                .add(searchButton)
+		                                                                                                .add(cancelButton)
+		                                                                                                .add(clearButton))
+		                                                                          .addContainerGap()));
+
+		org.jdesktop.layout.GroupLayout dataQueryPanelLayout = new org.jdesktop.layout.GroupLayout(dataQueryPanel);
+		dataQueryPanel.setLayout(dataQueryPanelLayout);
+		dataQueryPanelLayout.setHorizontalGroup(dataQueryPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                            .add(0, 461, Short.MAX_VALUE));
+		dataQueryPanelLayout.setVerticalGroup(dataQueryPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                          .add(0, 247, Short.MAX_VALUE));
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(mainPanel,
+		                                .add(titlePanel,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     Short.MAX_VALUE)
+		                                .add(datasourcePanel,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     Short.MAX_VALUE)
+		                                .add(buttonPanel,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     Short.MAX_VALUE)
+		                                .add(dataQueryPanel,
 		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                     Short.MAX_VALUE));
 		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(mainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   Short.MAX_VALUE));
+		                              .add(layout.createSequentialGroup()
+		                                         .add(titlePanel,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                         .add(datasourcePanel,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                         .add(dataQueryPanel,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              Short.MAX_VALUE)
+		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                         .add(buttonPanel,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+
+		getDefaultQueryPanel();
+
 		pack();
 	} // </editor-fold>                        
 
@@ -281,8 +346,21 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		dispose();
 	}
 
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		Object description = WebServiceClientManager.getClient(selectedClientID).getDescription();
+		if(description instanceof String) {
+			JOptionPane.showMessageDialog(
+					this , description.toString(), "About Database" ,
+					JOptionPane.INFORMATION_MESSAGE
+			);
+		}
+	}
+
+	private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
+	}
+
+	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		dispose();
 	}
 
@@ -293,6 +371,12 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	private void datasourceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		searchTermTextPane.setText("");
 		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
+		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
+	}
+
+	private void getDefaultQueryPanel() {
+		dataQueryPanel.setLayout(new BorderLayout());
+		dataQueryPanel.add(mainTabbedPane, BorderLayout.CENTER);
 	}
 
 	private void setProperty(String clientID) {
@@ -321,19 +405,11 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 
 	private void setDatasource() {
 		List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
-
-		ClientType[] compatibleTypes = null;
-
+		
 		for (WebServiceClient client : clients) {
-			compatibleTypes = client.getClientType();
-
-			for (ClientType type : compatibleTypes) {
-				if (type.equals(ClientType.NETWORK)) {
-					this.datasourceComboBox.addItem(client.getDisplayName());
-					this.clientNames.put(client.getDisplayName(), client.getClientID());
-
-					break;
-				}
+			if (client instanceof NetworkImportWebServiceClient) {
+				this.datasourceComboBox.addItem(client.getDisplayName());
+				this.clientNames.put(client.getDisplayName(), client.getClientID());
 			}
 		}
 	}
@@ -362,6 +438,20 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	private javax.swing.JScrollPane searchTermScrollPane;
 	private javax.swing.JTextPane searchTermTextPane;
 	private javax.swing.JLabel titleLabel;
+	private javax.swing.JButton aboutButton;
+	private javax.swing.JPanel buttonPanel;
+
+	//    private javax.swing.JButton cancelButton;
+	private javax.swing.JButton clearButton;
+	private javax.swing.JPanel dataQueryPanel;
+
+	//    private javax.swing.JComboBox datasourceComboBox;
+	//    private javax.swing.JLabel datasourceLabel;
+	private javax.swing.JPanel datasourcePanel;
+
+	//    private javax.swing.JButton searchButton;
+	private javax.swing.JLabel titleIconLabel;
+	private javax.swing.JPanel titlePanel;
 
 	// End of variables declaration        
 	class WSNetworkImportTask implements Task {
@@ -415,8 +505,8 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object resultObject = evt.getNewValue();
 
-		if (evt.getPropertyName().equals(WSResponseType.SEARCH_FINISHED.toString()) && (resultObject != null)
-		    && resultObject instanceof DatabaseSearchResult) {
+		if (evt.getPropertyName().equals(WSResponseType.SEARCH_FINISHED.toString())
+		    && (resultObject != null) && resultObject instanceof DatabaseSearchResult) {
 			DatabaseSearchResult result = (DatabaseSearchResult) resultObject;
 
 			if (result.getNextMove().equals(WSEventType.IMPORT_NETWORK)) {
@@ -463,7 +553,7 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
 				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getClient(selectedClientID))
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getClient(selectedClientID))
 				                    .getDefaultVisualStyle();
 
 				if (style == null) {

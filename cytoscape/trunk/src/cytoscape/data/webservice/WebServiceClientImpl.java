@@ -213,6 +213,10 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	public void setProps(ModuleProperties props) {
 		this.props = props;
 	}
+	
+	public Object getDescription() {
+		return "Description for " + displayName + " is not available.";
+	}
 
 	/**
 	 *  Execute the service through event handling system.

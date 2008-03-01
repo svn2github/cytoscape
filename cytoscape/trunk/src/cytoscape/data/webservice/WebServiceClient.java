@@ -93,5 +93,7 @@ public interface WebServiceClient {
 	 * @return  DOCUMENT ME!
 	 */
 	public List<Method> getAllServices();
+	
+	public Object getDescription();
 
 }
