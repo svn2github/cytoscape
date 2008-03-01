@@ -1,5 +1,6 @@
+
 /*
- File: NodeMenuListener.java
+ File: GraphObjMenu.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,11 +37,6 @@
  */
 package netlink;
 
-import ding.view.NodeContextMenuListener;
-
-import giny.view.NodeView;
-import giny.model.Node;
-
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 
@@ -50,18 +46,30 @@ import cytoscape.Cytoscape;
 
 
 /**
- * NodeMenuListener implements NodeContextMenuListener
+ * GraphObjMenu implements NodeContextMenuListener
  * When a node is selected it calls bypass andd add
  */
-class NodeMenuListener extends GraphObjMenu implements NodeContextMenuListener {
+class GraphObjMenu {
 
-	NodeMenuListener() { }
+	GraphObjMenu() { }
 
 	/**
 	 * @param nodeView The clicked NodeView
 	 * @param menu popup menu to add the  menu
 	 */
-	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-		addMenu(nodeView.getNode().getIdentifier(),Cytoscape.getNodeAttributes(),menu);
+	protected void addMenu(String graphObjId, CyAttributes attrs, JPopupMenu menu) {
+		CyNetwork curr = Cytoscape.getCurrentNetwork();
+		String attrName =  "netlink.child";
+		String childId = attrs.getStringAttribute(graphObjId, attrName); 
+
+		if ( childId == null ) {
+			System.out.println("no child");
+			return;
+		}
+
+		if (menu == null)
+			menu = new JPopupMenu();
+
+		menu.add(new JMenuItem(new NetLink(childId)));
 	}
 }

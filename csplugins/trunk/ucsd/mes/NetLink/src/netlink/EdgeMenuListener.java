@@ -47,44 +47,15 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyEdge;
 
-class EdgeMenuListener implements EdgeContextMenuListener {
+class EdgeMenuListener extends GraphObjMenu implements EdgeContextMenuListener {
 
     EdgeMenuListener() { }
 
     /**
-     * @param nodeView The clicked EdgeView
+     * @param edgeView The clicked EdgeView
      * @param menu popup menu to add the  menu
      */
     public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-//		System.out.println("asdasdfasdfafs");
-		CyEdge e = (CyEdge)edgeView.getEdge();
-		String[] titles = e.getIdentifier().split("\\s+");
-		String n1title = titles[0];
-		String n2title = titles[2];
-
-		CyNetwork match = null;
-
-		for ( Object no : Cytoscape.getNetworkSet() ) {
-			CyNetwork net = (CyNetwork)no;
-//			System.out.println("	testing title: " + net.getTitle());
-			if ( net.getTitle().matches( n1title + "\\W" + n2title ) ||
-			     net.getTitle().matches( n2title + "\\W" + n1title ) ) {
-				 match = net;
-				 break;
-			}
-		}
-
-
-		if ( match == null ) {
-			System.out.println("Couldn't find matching child network for edge: " + e.getIdentifier());
-			return;
-		} else {
-			//System.out.println("Found match: " + match.getTitle());
-		}
-
-        if (menu == null)
-            menu = new JPopupMenu();
-
-        menu.add( new JMenuItem(new NetLink(match)));
+		addMenu(edgeView.getEdge().getIdentifier(),Cytoscape.getEdgeAttributes(),menu);
     }
 }
