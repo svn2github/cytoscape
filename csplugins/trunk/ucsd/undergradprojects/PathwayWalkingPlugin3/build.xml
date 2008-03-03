@@ -85,6 +85,15 @@
 			<fileset dir="${pathwayWalking.root.dir}/../IntActClientPlugin">
 				<include name="*.jar" />
 			</fileset>
+			<fileset dir="${pathwayWalking.root.dir}/../NCBIClientPlugin">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${pathwayWalking.root.dir}/../NCBIClientPlugin/lib">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${pathwayWalking.root.dir}/../NCBIClientPlugin/lib/axis-1_4/lib">
+				<include name="*.jar" />
+			</fileset>
 		</path>
 
 
