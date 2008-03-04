@@ -170,6 +170,7 @@
     <module>quickfind</module>
     <module>filters.old</module>
     <module>filters</module>
+    <module>sbml.reader</module>
   </modules>
 
 
