@@ -162,18 +162,19 @@
 
 		<!-- Cytoscape plugins -->
 		<module>automatic.layout</module>
-    <module>biopax</module>
-    <module>editor</module>
-    <module>merge</module>
-    <module>manual.layout</module>
-    <module>psi.mi</module>
-    <module>quickfind</module>
-    <module>filters.old</module>
-    <module>filters</module>
-    <module>sbml.reader</module>
-    <module>table.import</module>
-    <module>attribute.browser</module>
-    <module>linkout</module>
+		<module>biopax</module>
+		<module>editor</module>
+		<module>merge</module>
+		<module>manual.layout</module>
+		<module>psi.mi</module>
+		<module>quickfind</module>
+		<module>filters.old</module>
+		<module>filters</module>
+		<module>sbml.reader</module>
+		<module>table.import</module>
+		<module>attribute.browser</module>
+		<module>linkout</module>
+		<module>cpath</module>
   </modules>
 
 
