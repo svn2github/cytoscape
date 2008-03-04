@@ -49,7 +49,8 @@ public class GetParentInteractions implements Task {
                 dialog.setTitle("Neighborhood");
             }
             InteractionBundlePanel interactionBundlePanel =
-                    new InteractionBundlePanel(interactionBundleModel, dialog);
+                    new InteractionBundlePanel(interactionBundleModel,
+                            Cytoscape.getCurrentNetwork(), dialog);
             dialog.getContentPane().add(interactionBundlePanel);
             interactionBundleModel.setRecordList(recordList);
             interactionBundlePanel.expandAllNodes();

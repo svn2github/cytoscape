@@ -31,6 +31,8 @@ import cytoscape.task.util.TaskManager;
  */
 public class DownloadDetails extends JDialog {
     private MergePanel mergePanel;
+    private long ids[];
+    private String peName;
 
     /**
      * Constructor.
@@ -40,6 +42,7 @@ public class DownloadDetails extends JDialog {
     public DownloadDetails(java.util.List<BasicRecordType> passedRecordList,
             String peName) {
         super();
+        this.peName = peName;
         this.setTitle("Retrieval Confirmation");
         this.setModal(true);
         Container contentPane = getContentPane();
@@ -67,7 +70,7 @@ public class DownloadDetails extends JDialog {
         table.setAutoCreateColumnsFromModel(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        final long ids[] = new long[passedRecordList.size()];
+        ids = new long[passedRecordList.size()];
         int i = 0;
         for (BasicRecordType record : passedRecordList) {
             if (record.getName().equalsIgnoreCase("N/A")) {
@@ -86,7 +89,7 @@ public class DownloadDetails extends JDialog {
         scrollPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
-        JPanel buttonPanel = createButtonPanel(ids, peName, this);
+        JPanel buttonPanel = createButtonPanel(this);
         mergePanel = new MergePanel();
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -102,15 +105,14 @@ public class DownloadDetails extends JDialog {
     /**
      * Button Panel.
      */
-    private JPanel createButtonPanel(final long[] ids, final String peName,
-            final JDialog dialog) {
+    private JPanel createButtonPanel(final JDialog dialog) {
         JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent actionEvent) {
                 dialog.setVisible(false);
                 dialog.dispose();
-                downloadInteractions(ids, peName);
+                downloadInteractions();
             }
         });
 
@@ -132,7 +134,7 @@ public class DownloadDetails extends JDialog {
     /**
      * Downloads interaction bundles in a new thread.
      */
-    private void downloadInteractions(long ids[], String peName) {
+    private void downloadInteractions() {
         CyNetwork networkToMerge = null;
         JComboBox networkComboBox = mergePanel.getNetworkComboBox();
         if (networkComboBox != null) {
@@ -141,6 +143,10 @@ public class DownloadDetails extends JDialog {
                 networkToMerge = netWrapper.getNetwork();
             }
         }
+        downloadInteractions(networkToMerge);
+    }
+
+    public void downloadInteractions(CyNetwork networkToMerge) {
         String networkTitle = peName + ":  Network";
         CPathWebService webApi = CPathWebServiceImpl.getInstance();
 
@@ -154,7 +160,7 @@ public class DownloadDetails extends JDialog {
 
         ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi, ids, format,
                 networkTitle, networkToMerge);
-        
+
         JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());
         jTaskConfig.displayStatus(true);

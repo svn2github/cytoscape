@@ -1,6 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 import org.cytoscape.coreplugin.cpath2.filters.ChainedFilter;
 import org.cytoscape.coreplugin.cpath2.filters.DataSourceFilter;
 import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;
@@ -37,11 +38,19 @@ public class InteractionBundlePanel extends JPanel {
     private JTreeWithCheckNodes tree;
     private CollapsablePanel filterPanel;
     private JDialog dialog;
+    private CyNetwork mergeNetwork;
 
     public InteractionBundlePanel(InteractionBundleModel
             interactionBundleModel, JDialog dialog) {
         this(interactionBundleModel);
         this.dialog = dialog;
+    }
+
+    public InteractionBundlePanel(InteractionBundleModel
+            interactionBundleModel, CyNetwork mergeNetwork, JDialog dialog) {
+        this(interactionBundleModel);
+        this.dialog = dialog;
+        this.mergeNetwork = mergeNetwork;
     }
 
     public InteractionBundlePanel(InteractionBundleModel
@@ -213,7 +222,11 @@ public class InteractionBundlePanel extends JPanel {
                                 }
                             });
                     }
-                    detailsFrame.setVisible(true);
+                    if (mergeNetwork == null) {
+                        detailsFrame.setVisible(true);
+                    } else {
+                        detailsFrame.downloadInteractions(mergeNetwork);
+                    }
                 }
             }
         });

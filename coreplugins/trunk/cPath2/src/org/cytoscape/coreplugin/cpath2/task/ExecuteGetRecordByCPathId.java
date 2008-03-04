@@ -216,7 +216,6 @@ public class ExecuteGetRecordByCPathId implements Task {
                 BinarySifVisualStyleUtil.BINARY_NETWORK, Boolean.TRUE);
 
         //  Get all node details.
-        //  TODO:  For efficiency, only get the new nodes
         getNodeDetails2(cyNetwork, nodeAttributes);
 
         if (haltFlag == false) {
@@ -310,6 +309,7 @@ public class ExecuteGetRecordByCPathId implements Task {
 
     /**
      * Gets Details for Each Node from Web Service API.
+     * Old getNodeDetails() method.  Keep around a little while longer, in case we need it again.
      */
     private void getNodeDetails (CyNetwork cyNetwork,  CyAttributes nodeAttributes) {
         Iterator nodeIterator = cyNetwork.nodesIterator();
@@ -429,6 +429,9 @@ public class ExecuteGetRecordByCPathId implements Task {
                 counter = 0;
             }
         }
+        if (currentList.size() > 0 && masterList.size() ==0) {
+            masterList.add(currentList);
+        }
         return masterList;
     }
 
@@ -446,9 +449,12 @@ public class ExecuteGetRecordByCPathId implements Task {
 		Cytoscape.getNetworkViewMap().put(network.getIdentifier(), view);
 		Cytoscape.setSelectionMode(Cytoscape.getSelectionMode(), view);
 
-		if (vs != null) {
+        VisualMappingManager VMM = Cytoscape.getVisualMappingManager();
+        if (vs != null) {
 			view.setVisualStyle(vs.getName());
-		}
+            VMM.setVisualStyle(vs);
+            VMM.setNetworkView(view);
+        }
 
 		if (layout == null) {
 			layout = CyLayouts.getDefaultLayout();
