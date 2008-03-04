@@ -163,6 +163,7 @@
 		<!-- Cytoscape plugins -->
 		<module>automatic.layout</module>
     <module>biopax</module>
+    <module>editor</module>
   </modules>
 
 
