@@ -3112,7 +3112,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			                              JOptionPane.INFORMATION_MESSAGE);
 
 			return false;
-		} else if (table.getColumnCount() < 2) {
+		} else if (table.getColumnCount() < 2 && dialogType != NETWORK_IMPORT) {
 			JOptionPane.showMessageDialog(this, "Table should contain at least 2 columns.",
 			                              "Invalid Table!", JOptionPane.INFORMATION_MESSAGE);
 
@@ -3132,13 +3132,13 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				return false;
 			}
 
-			if ((sIdx == tIdx) || (((iIdx == sIdx) || (iIdx == tIdx)) && (iIdx != -1))) {
-				JOptionPane.showMessageDialog(this,
-				                              "Columns for source, target, and interaction type must be distinct.",
-				                              "Same column index!", JOptionPane.INFORMATION_MESSAGE);
-
-				return false;
-			}
+//			if ((sIdx == tIdx) || (((iIdx == sIdx) || (iIdx == tIdx)) && (iIdx != -1))) {
+//				JOptionPane.showMessageDialog(this,
+//				                              "Columns for source, target, and interaction type must be distinct.",
+//				                              "Same column index!", JOptionPane.INFORMATION_MESSAGE);
+//
+//				return false;
+//			}
 		}
 
 		return true;

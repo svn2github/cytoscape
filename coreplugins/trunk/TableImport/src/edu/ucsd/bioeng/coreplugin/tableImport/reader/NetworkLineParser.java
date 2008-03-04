@@ -95,6 +95,12 @@ public class NetworkLineParser {
 		} else {
 			source = null;
 		}
+		
+		// Single column nodes list.  Just add nodes.
+		if(nmp.getSourceIndex() == nmp.getTargetIndex()) {
+			// do not create edge.
+			return null;
+		}
 
 		final Node target;
 
