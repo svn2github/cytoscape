@@ -164,6 +164,7 @@
 		<module>automatic.layout</module>
     <module>biopax</module>
     <module>editor</module>
+    <module>merge</module>
   </modules>
 
 
