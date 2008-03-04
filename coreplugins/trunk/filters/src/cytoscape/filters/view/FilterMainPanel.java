@@ -158,7 +158,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		this.cmbSelectFilter.repaint();
 	}
 	
-	public void refreshAttributeCMB() {
+	private void refreshAttributeCMB() {
 		updateCMBAttributes();
 		cmbAttributes.repaint();
 	}
@@ -343,7 +343,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	/*
 	 * Update the attribute list in the attribute combobox based on the settings in the 
-	 * cuttrent selected filter
+	 * current selected filter
 	 */
 	private void updateCMBAttributes() {
 		
@@ -356,31 +356,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			return;
 		}
 
-		if (selectedFilter.getAdvancedSetting().isNodeChecked() 
-				&& !selectedFilter.getAdvancedSetting().isEdgeChecked())
-		{
-			//System.out.println("Only Node is checked");
-			attributeList.addAll(getCyAttributesList("node"));
-			//attributeList = getCyAttributesList("node");
-		}
-		else if (selectedFilter.getAdvancedSetting().isEdgeChecked()
-				&& !selectedFilter.getAdvancedSetting().isNodeChecked())
-		{
-			//System.out.println("Only Edge is checked");
-			attributeList.addAll(getCyAttributesList("edge"));
-			//attributeList = getCyAttributesList("edge");
-		}
-		else if (selectedFilter.getAdvancedSetting().isNodeChecked()
-				&& selectedFilter.getAdvancedSetting().isEdgeChecked())
-		{
-			//System.out.println("Both Node and edge are checked");
-			attributeList.addAll(getCyAttributesList("node"));
-			//attributeList = getCyAttributesList("node");
-			attributeList.addAll(getCyAttributesList("edge"));
-		}
-		//else {
-		//	System.out.println("Neither Node nore edge is checked");
-		//}
+		attributeList.addAll(getCyAttributesList("node"));
+		attributeList.addAll(getCyAttributesList("edge"));
 
 		attributeList.add("-- Filters --");
 		
@@ -392,6 +369,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		
 		cmbAttributes.setModel(new DefaultComboBoxModel(attributeList));		
 	}
+
 	
 	/**
 	 * Setup menu items.
@@ -951,26 +929,19 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private void createNewFilter(String pFilterName, String pFilterType) {
 		// Create an empty filter, add it to the current filter list
 		
-		System.out.println("Entering FilterMainPanel.createNewFilter() ...");
 		CompositeFilter newFilter = null;
 		
 		if (pFilterType.equalsIgnoreCase("Topology")) {
-			System.out.println("\tCreate a topology filter");
-
 			newFilter =  new TopologyFilter();
 			newFilter.getAdvancedSetting().setEdge(false);
 			newFilter.setName(pFilterName);			
 		}
 		else if (pFilterType.equalsIgnoreCase("NodeInteraction")) {
-			System.out.println("\tCreate an NodeInteraction filter");
-
 			newFilter =  new NodeInteractionFilter();
 			//newFilter.getAdvancedSetting().setEdge(false);
 			newFilter.setName(pFilterName);			
 		}		
 		else if (pFilterType.equalsIgnoreCase("EdgeInteraction")) {
-			System.out.println("\tCreate an EdgeInteraction filter");
-
 			newFilter =  new EdgeInteractionFilter();
 			//newFilter.getAdvancedSetting().setEdge(false);
 			newFilter.setName(pFilterName);			
@@ -992,8 +963,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (pFilterType.equalsIgnoreCase("Composite")) {
 			updateCMBAttributes();
 		}
-		
-		System.out.println("Leaving FilterMainPanel.createNewFilter() ...");
 	}
 
 	class FilterRenderer extends JLabel implements ListCellRenderer {
