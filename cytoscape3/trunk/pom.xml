@@ -168,6 +168,7 @@
     <module>manual.layout</module>
     <module>psi.mi</module>
     <module>quickfind</module>
+    <module>filters.old</module>
   </modules>
 
 
