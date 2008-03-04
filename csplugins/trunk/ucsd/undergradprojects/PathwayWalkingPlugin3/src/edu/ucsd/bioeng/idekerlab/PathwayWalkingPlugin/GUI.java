@@ -57,7 +57,7 @@ public class GUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         nodeIDText = new javax.swing.JLabel();
-        databaseNameText = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
@@ -67,12 +67,12 @@ public class GUI extends javax.swing.JFrame {
         jCheckBox6 = new javax.swing.JCheckBox();
         jCheckBox7 = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
@@ -89,8 +89,9 @@ public class GUI extends javax.swing.JFrame {
         jProgressBar4 = new javax.swing.JProgressBar();
         jProgressBar5 = new javax.swing.JProgressBar();
         jProgressBar6 = new javax.swing.JProgressBar();
-        jLabel10 = new javax.swing.JLabel();
+        jButton10 = new javax.swing.JButton();
         jProgressBar7 = new javax.swing.JProgressBar();
+        
  
         setTitle("Pathway Walking Plugin");
         
@@ -103,11 +104,13 @@ public class GUI extends javax.swing.JFrame {
         jLabel2.setText("Current Node ID:");
  
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel3.setText("Database Name:");
+        jLabel3.setText("Identifier:");
  
         nodeIDText.setText(nodeId);
- 
-        databaseNameText.setText("default");
+        
+        String[] attributeNames = cyAtts.getAttributeNames();
+        
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(attributeNames));
  
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel1.setText("Available Databases");
@@ -143,22 +146,22 @@ public class GUI extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel4.setText("Progress");
  
-        jLabel6.setText("0");
+        jButton6.setText("x");
  
-        jLabel7.setText("0");
+        jButton7.setText("x");
  
-        jLabel8.setText("0");
+        jButton8.setText("x");
  
-        jLabel9.setText("0");
+        jButton9.setText("x");
  
-        jLabel11.setText("0");
+        jButton11.setText("x");
  
-        jLabel12.setText("0");
+        jButton12.setText("x");
  
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel5.setText("Nodes");
+        jLabel5.setText("Cancel");
         
-        jList1.setListData(cyAtts.getAttributeNames()) ;
+//        jList1.setListData(cyAtts.getAttributeNames()) ;
  
         jScrollPane1.setViewportView(jList1);
  
@@ -195,7 +198,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
  
-        jLabel10.setText("0");
+        jButton10.setText("x");
  
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -218,7 +221,7 @@ public class GUI extends javax.swing.JFrame {
                                             .add(jLabel3))
                                         .add(14, 14, 14)
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                            .add(org.jdesktop.layout.GroupLayout.LEADING, databaseNameText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 172, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(org.jdesktop.layout.GroupLayout.LEADING, jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 172, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                             .add(org.jdesktop.layout.GroupLayout.LEADING, nodeIDText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
                                     .add(layout.createSequentialGroup()
@@ -245,13 +248,13 @@ public class GUI extends javax.swing.JFrame {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel6)
-                                    .add(jLabel7)
-                                    .add(jLabel8)
-                                    .add(jLabel11)
-                                    .add(jLabel9)
-                                    .add(jLabel12)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel10))
+                                    .add(jButton6)
+                                    .add(jButton7)
+                                    .add(jButton8)
+                                    .add(jButton9)
+                                    .add(jButton10)
+                                    .add(jButton11)
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton12))
                                 .add(19, 19, 19))
                             .add(layout.createSequentialGroup()
                                 .add(jLabel5)
@@ -292,7 +295,7 @@ public class GUI extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel3)
-                    .add(databaseNameText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(19, 19, 19)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
@@ -301,29 +304,29 @@ public class GUI extends javax.swing.JFrame {
                 .add(17, 17, 17)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jCheckBox1)
-                    .add(jLabel6)
+                    .add(jButton6)
                     .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(12, 12, 12)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jCheckBox2)
-                    .add(jLabel7)
+                    .add(jButton7)
                     .add(jProgressBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(14, 14, 14)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jCheckBox3)
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                         .add(jProgressBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(jLabel8)))
+                        .add(jButton8)))
                 .add(16, 16, 16)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel9)
+                    .add(jButton9)
                     .add(jCheckBox4)
                     .add(jProgressBar4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(16, 16, 16)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel11)
+                            .add(jButton11)
                             .add(jCheckBox5))
                         .add(15, 15, 15)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
@@ -333,7 +336,7 @@ public class GUI extends javax.swing.JFrame {
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                                     .add(jProgressBar6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jLabel12))
+                                    .add(jButton12))
                                 .add(4, 4, 4))))
                     .add(jProgressBar5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -341,7 +344,7 @@ public class GUI extends javax.swing.JFrame {
                         .add(13, 13, 13)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jCheckBox7)
-                            .add(jLabel10))
+                            .add(jButton10))
                         .add(17, 17, 17)
                         .add(jLabel13))
                     .add(layout.createSequentialGroup()
@@ -378,7 +381,7 @@ public class GUI extends javax.swing.JFrame {
     	if(jCheckBox1.isSelected() == true)
     	{
     		jProgressBar1.setIndeterminate(true);
-	        System.out.println("Start Search Button Pressed");
+	        System.out.println("[Search & Add on Existing] Button Pressed");
 	        
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
@@ -392,7 +395,7 @@ public class GUI extends javax.swing.JFrame {
     	if(jCheckBox2.isSelected() == true)
     	{
     		jProgressBar2.setIndeterminate(true);
-	        System.out.println("Start Search Button Pressed");
+	        System.out.println("[Search & Add on Existing] Button Pressed");
 	        
 	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2, 1);
 //	        attempt2.startSearch(nodeId, node);
@@ -405,7 +408,9 @@ public class GUI extends javax.swing.JFrame {
 //		This is because we have one thread running the GUI.  One thread running IntAct.  And one thread running NCBI.
 //		In order to avoid this, we will need to put the setVisible(false) within IntAct and NCBI respectively.
 //    	setVisible(false);
-    	
+    	if(jProgressBar1.isIndeterminate() == false && jProgressBar2.isIndeterminate() == false){
+    		setVisible(false);
+    	}
     }
     
  
@@ -414,7 +419,7 @@ public class GUI extends javax.swing.JFrame {
     	if(jCheckBox1.isSelected() == true)
     	{
     		jProgressBar1.setIndeterminate(true);
-	        System.out.println("Start Search Button Pressed");
+	        System.out.println("[Search & Open in New] Button Pressed");
 	        
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
@@ -428,7 +433,7 @@ public class GUI extends javax.swing.JFrame {
     	if(jCheckBox2.isSelected() == true)
     	{
     		jProgressBar2.setIndeterminate(true);
-	        System.out.println("Start Search Button Pressed");
+	        System.out.println("[Search & Open in New] Button Pressed");
 	        
 	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2, 2);
 //	        attempt2.startSearch(nodeId, node);
@@ -458,7 +463,7 @@ public class GUI extends javax.swing.JFrame {
 
     
     // Variables declaration - do not modify
-    private javax.swing.JLabel databaseNameText;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -470,9 +475,9 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox6;
     private javax.swing.JCheckBox jCheckBox7;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -481,10 +486,10 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JList jList1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JProgressBar jProgressBar2;

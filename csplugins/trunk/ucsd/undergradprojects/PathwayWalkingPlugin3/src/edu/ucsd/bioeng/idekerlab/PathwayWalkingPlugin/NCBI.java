@@ -334,10 +334,11 @@ public class NCBI extends Thread{
 			}
 
 			net.setSelectedNodeState(nodes, true);
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
+			//Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
 		}
 
 		// Cytoscape.createNetwork(nodes, edges, "NCBI: " + string);
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
 
@@ -361,13 +362,28 @@ public class NCBI extends Thread{
 			
 			
 			try {
+				//
+				ESearchRequest parameters1 = new ESearchRequest();
+				System.out.println("This is parameters (new ESearchRequest())" + parameters1);
+				parameters1.setDb("gene");
+				parameters1.setTerm(nodeId);
+				
+				EUtilsServiceSoap service4 = (EUtilsServiceSoap) stub;
+				System.out.println("This is service4(EUtilsServiceSoap): " + service4);
+				
+				ESearchResult results = service4.run_eSearch(parameters1);
+				System.out.println("Returned: " + results.getCount());
+				System.out.println("This is your result: " + results);
+				System.out.println("results.getIdList().get()[i]" + results.getIdList().getId()[0]);
+				
+				//
 				EFetchRequest parameters = new EFetchRequest();
 				
 				System.out.println("This is parameters (new EFetchRequesT())" + parameters);
 				
 				parameters.setDb("gene");
 //				parameters.setId(entrezID);
-				parameters.setId("675");
+				parameters.setId(results.getIdList().getId()[0]);
 			
 				EUtilsServiceSoap service = (EUtilsServiceSoap) stub;
 				
@@ -389,9 +405,14 @@ public class NCBI extends Thread{
 				for (int i = 0; i < entrySize; i++) {
 					curEntry = res.getEntrezgeneSet().getEntrezgene()[i];
 
+
+					System.out.println("results.getIdList().get()[i]" + results.getIdList().getId()[i]);
+
+					
 					// Extract common name (Official Symbol)
 					commonName = curEntry.getEntrezgene_gene().getGeneRef().getGeneRef_locus();
 					gc = curEntry.getEntrezgene_comments().getGeneCommentary();
+					
 
 					// Loop through the commentary, and find Interaction section.
 					for (GeneCommentaryType g : gc) {

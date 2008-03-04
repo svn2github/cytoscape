@@ -335,9 +335,9 @@ public class Intact extends Thread{
 				}
 
 				net.setSelectedNodeState(nodes, true);
-				Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
+				//Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
 			}
-
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, null);
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		} catch (Exception e) {
 			// Auto-generated catch block
