@@ -171,6 +171,7 @@
     <module>filters.old</module>
     <module>filters</module>
     <module>sbml.reader</module>
+    <module>table.import</module>
   </modules>
 
 
