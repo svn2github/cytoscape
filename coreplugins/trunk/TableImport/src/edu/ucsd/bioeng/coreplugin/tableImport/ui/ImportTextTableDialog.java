@@ -3124,21 +3124,21 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			final int tIdx = networkImportPanel.getTargetIndex();
 			final int iIdx = networkImportPanel.getInteractionIndex();
 
-			if ((sIdx == -1) || (tIdx == -1)) {
-				JOptionPane.showMessageDialog(this, "Source or Target index not selected.",
-				                              "Please select both source & target index.",
-				                              JOptionPane.INFORMATION_MESSAGE);
-
-				return false;
-			}
-
-//			if ((sIdx == tIdx) || (((iIdx == sIdx) || (iIdx == tIdx)) && (iIdx != -1))) {
-//				JOptionPane.showMessageDialog(this,
-//				                              "Columns for source, target, and interaction type must be distinct.",
-//				                              "Same column index!", JOptionPane.INFORMATION_MESSAGE);
+//			if ((sIdx == -1) || (tIdx == -1)) {
+//				JOptionPane.showMessageDialog(this, "Source or Target index not selected.",
+//				                              "Please select both source & target index.",
+//				                              JOptionPane.INFORMATION_MESSAGE);
 //
 //				return false;
 //			}
+
+			if ((sIdx == tIdx) || (((iIdx == sIdx) || (iIdx == tIdx)) && (iIdx != -1))) {
+				JOptionPane.showMessageDialog(this,
+				                              "Columns for source, target, and interaction type must be distinct.",
+				                              "Same column index!", JOptionPane.INFORMATION_MESSAGE);
+
+				return false;
+			}
 		}
 
 		return true;
