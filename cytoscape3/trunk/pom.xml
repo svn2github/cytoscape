@@ -169,6 +169,7 @@
     <module>psi.mi</module>
     <module>quickfind</module>
     <module>filters.old</module>
+    <module>filters</module>
   </modules>
 
 
