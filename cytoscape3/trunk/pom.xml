@@ -118,9 +118,24 @@
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+					<!--
+					<compilerArguments>
+						<Xlint:all></Xlint:all>
+					</compilerArguments>
+					-->
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                </configuration>
+            </plugin>
 		</plugins>
+
 	</build>
 
 	<modules>
@@ -139,12 +154,15 @@
 		<module>render.export</module>
 		<module>phoebe.dnd</module>
     	<module>cruft.obo</module>
-		<!-- <module>session</module> -->
-		
-		<!-- Cytoscape Application -->
 		<module>network</module>
 		<module>attributes</module>
+
+		<!-- Cytoscape Application -->
 		<module>application</module>
+
+		<!-- Cytoscape plugins -->
+		<module>automatic.layout</module>
+    <module>biopax</module>
   </modules>
 
 
