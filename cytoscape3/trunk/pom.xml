@@ -173,6 +173,7 @@
     <module>sbml.reader</module>
     <module>table.import</module>
     <module>attribute.browser</module>
+    <module>linkout</module>
   </modules>
 
 
