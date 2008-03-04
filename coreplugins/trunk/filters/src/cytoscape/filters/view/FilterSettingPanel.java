@@ -77,7 +77,7 @@ public class FilterSettingPanel extends JPanel {
 	private CyNetwork currentNetwork = null;
 	private TopoFilterPanel topoPanel = null;
 	private InteractionFilterPanel interactionPanel = null;
-
+	
 	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj) {
 		theFilter = (CompositeFilter) pFilterObj;
 		parentPanel = pParent;
@@ -85,10 +85,14 @@ public class FilterSettingPanel extends JPanel {
 		
 		initAdvancedSetting();
 		
+		// Select "node/edge" will be determined automatically through the attribute selected
+		lbSelect.setVisible(false);			
+		chkEdge.setVisible(false);
+		chkNode.setVisible(false);						
+		
 		initCustomSetting();	
 		
 		if (pFilterObj instanceof TopologyFilter) {
-			System.out.println("FilterSettingPanl: it is a topologyFilter");
 
 			java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 	        gridBagConstraints.gridy = 2;
@@ -113,7 +117,6 @@ public class FilterSettingPanel extends JPanel {
 		}
 		
 		if (pFilterObj instanceof InteractionFilter) {
-			System.out.println("FilterSettingPanl: it is a InteractionFilter");
 
 			java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
 	        gridBagConstraints.gridy = 2;
@@ -217,16 +220,16 @@ public class FilterSettingPanel extends JPanel {
 	
 	
 	private JRangeSliderExtended getRangerSlider(NumericFilter pFilter) {
-		System.out.println("Entering FilterSettingPanel.getRangerSlider()...");
+		//System.out.println("Entering FilterSettingPanel.getRangerSlider()...");
 		
 		NumberIndex theIndex = createNumberIndex(pFilter);
 
 		if (theIndex != null) {
-			System.out.println("theIndex != null");
+			//System.out.println("theIndex != null");
 			pFilter.setIndex(theIndex);
 		}
 		else {
-			System.out.println("theIndex == null");
+			//System.out.println("theIndex == null");
 		}
 		
 		NumberRangeModel rangeModel = null;
@@ -246,8 +249,6 @@ public class FilterSettingPanel extends JPanel {
 			}
 			
 			if (dataType == CyAttributes.TYPE_FLOATING) {
-				//System.out.println("\ndataType = FLOATING");
-				
 				Double lowB = (Double)pFilter.getLowBound();
 				Double highB = (Double)pFilter.getHighBound();
 				Double min = (Double)theIndex.getMinimumValue();
@@ -256,7 +257,6 @@ public class FilterSettingPanel extends JPanel {
 				rangeModel = new NumberRangeModel(lowB.doubleValue(),highB.doubleValue(),min.doubleValue(),max.doubleValue());				
 			}
 			else if (dataType == CyAttributes.TYPE_INTEGER) {
-				//System.out.println("\ndataType = INTEGER");
 				rangeModel = new NumberRangeModel(pFilter.getLowBound(),pFilter.getHighBound(),
 						theIndex.getMinimumValue(),theIndex.getMaximumValue());		
 			}
@@ -290,7 +290,7 @@ public class FilterSettingPanel extends JPanel {
 			if (_obj instanceof JRangeSliderExtended) {
 				_range = (JRangeSliderExtended) _obj;
 				_model = (NumberRangeModel) _range.getModel();
-				toolTipText = _model.getLowValue() + "~~" + _model.getHighValue(); 
+				toolTipText = _model.getLowValue() + " ~ " + _model.getHighValue(); 
 				_range.setToolTipText(toolTipText);
 			}
 		}
@@ -317,9 +317,6 @@ public class FilterSettingPanel extends JPanel {
 	//  Refresh indices for widget after nertwork switch
 	// The method may be triggered by event of NETWORK_VIEW_FOCUSED
 	public void refreshIndicesForWidgets(){
-
-		System.out.println("FilterSettingPanel.refreshIndicesForWidgets()...");
-		
 		// Check if each widget has associatd index, if not, try to create one
 		List<CyFilter> children = theFilter.getChildren();
 		if ((children == null)||(children.size() == 0)) {
@@ -477,8 +474,6 @@ public class FilterSettingPanel extends JPanel {
 				retFilter.setControllingAttribute(pCtrlAttribute);
 				retFilter.setIndexType(pIndexType);
 				
-				System.out.println("FilterSettingPanel.getAtomicFilterFromStr() ...");		
-				
 				//TextIndex index_by_thisAttr = (TextIndex) quickFind.getIndex(Cytoscape.getCurrentNetwork());
 
 				retFilter.setIndex(quickFind.getIndex(Cytoscape.getCurrentNetwork()));
@@ -631,17 +626,25 @@ public class FilterSettingPanel extends JPanel {
 	}
 	
 	public void addNewWidget(Object pObj) {
-		//System.out.println("Entering FilterSettingPanel: addNewWidget(Object) ...");
-		
 		// The parameter pObj is the object selected from Attribute/Filter combobox
 		// It can be either (1) a string with prefix "node."/"edge." (2) a CompositeFilter object 
 		if (pObj instanceof CompositeFilter) {
 			if (pObj == theFilter) {
 				return; // Ignore if try to add self
 			}
-			addWidgetRow((CompositeFilter) pObj, theFilter.getChildren().size()*2);
+			
+			CompositeFilter theCompositeFilter = (CompositeFilter) pObj;
+			addWidgetRow(theCompositeFilter, theFilter.getChildren().size()*2);
 			// Update theFilter object	
-			theFilter.addChild((CompositeFilter) pObj, new Boolean(false));
+			theFilter.addChild(theCompositeFilter, new Boolean(false));
+
+			//determine the filter selection type
+			if (theCompositeFilter.getAdvancedSetting().isNodeChecked()) {
+				theFilter.getAdvancedSetting().setNode(true);				
+			}
+			if (theCompositeFilter.getAdvancedSetting().isEdgeChecked()) {
+				theFilter.getAdvancedSetting().setEdge(true);				
+			}
 		}
 		else { //(pObj instanceof String)
 			String tmpObj = (String)pObj;
@@ -650,14 +653,53 @@ public class FilterSettingPanel extends JPanel {
 			int indexType = QuickFind.INDEX_NODES;
 			if (tmpObj.startsWith("edge.")) {
 				indexType = QuickFind.INDEX_EDGES;
+				// determine the filter selection type
+				theFilter.getAdvancedSetting().setEdge(true);
+			}
+			else {
+				theFilter.getAdvancedSetting().setNode(true);
 			}
 			AtomicFilter newChildFilter = getAtomicFilterFromStr(ctrlAttribute, indexType);			
 			addWidgetRow(newChildFilter, theFilter.getChildren().size()*2);
 			// Update theFilter object		
 			theFilter.addChild(newChildFilter);
 		}
+		// Update selection type of the filter setting
+		updateSelectionType();
+		
 		//Update the selection on screen
 		doSelection();
+	}
+	
+
+	private void updateSelectionType() {
+		boolean selectNode = false;
+		boolean selectEdge = false;
+		List<CyFilter> childFilters = theFilter.getChildren();
+		for (int i=0; i< childFilters.size(); i++) {
+			CyFilter child = childFilters.get(i);
+			if (child instanceof AtomicFilter) {
+				AtomicFilter tmp = (AtomicFilter) child;
+				if (tmp.getIndexType() == QuickFind.INDEX_NODES) {
+					selectNode = true;
+				}
+				if (tmp.getIndexType() == QuickFind.INDEX_EDGES) {
+					selectEdge = true;
+				}
+			}
+			else if (child instanceof CompositeFilter) {
+				CompositeFilter tmp = (CompositeFilter) child;
+				if (tmp.getAdvancedSetting().isNodeChecked()) {
+					selectNode = true;
+				}
+				if (tmp.getAdvancedSetting().isEdgeChecked()) {
+					selectEdge = true;
+				}
+			}
+		}//end of for loop
+		
+		theFilter.getAdvancedSetting().setNode(selectNode);
+		theFilter.getAdvancedSetting().setEdge(selectEdge);
 	}
 	
 	// Determine the child index in filter based on the row index of a component 
@@ -690,8 +732,6 @@ public class FilterSettingPanel extends JPanel {
 	// remove a GUI widget from the customeSetting panel 
 	private void removeFilterWidget(MouseEvent e)
 	{
-		//System.out.println("Entering FilterSettingPanel.removeFilterWidget()...");
-		
 		Object _actionObject = e.getSource();
 		
 		if (_actionObject instanceof JLabel) {
@@ -704,6 +744,9 @@ public class FilterSettingPanel extends JPanel {
 			pnlCustomSettings.removeAll();			
 			initCustomSetting();
 		}
+		
+		updateSelectionType();
+		
 		doSelection();
 	}
 
@@ -893,8 +936,11 @@ public class FilterSettingPanel extends JPanel {
 		ItemListener l = new MyItemListener();
 		chkSession.addItemListener(l);
 		chkGlobal.addItemListener(l);
-		chkNode.addItemListener(l);
-		chkEdge.addItemListener(l);
+		
+		//The following no longer needed
+		//chkNode.addItemListener(l);
+		//chkEdge.addItemListener(l);
+		
 		chkSource.addItemListener(l);
 		chkTarget.addItemListener(l);
 		rbtAND.addItemListener(l);
@@ -923,92 +969,37 @@ public class FilterSettingPanel extends JPanel {
 					theFilter.getAdvancedSetting().setGlobal(chkGlobal.isSelected());										
 					parentPanel.refreshFilterSelectCMB();
 				}
+				/*
+				 * "select Node/Edge" will be determined automatically through selection of attribute in attributeComboBox
 				else if (theCheckBox == chkNode)
 				{
-					/*
-					// In case of TopologyFilter, change the behavior of Node/Edge to radio button
-					if (theFilter instanceof TopologyFilter) {
-						theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
-						theFilter.getAdvancedSetting().setEdge(!chkNode.isSelected());
-						chkEdge.setSelected(!chkNode.isSelected());
-						if (chkNode.isSelected()) {
-							topoPanel.updateSelectionLabel("Node");							
-						}
-						else {
-							topoPanel.updateSelectionLabel("Edge");
-						}
-					}
-					else {
-					*/
-						theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
-						parentPanel.refreshAttributeCMB();						
-					//}
+					theFilter.getAdvancedSetting().setNode(chkNode.isSelected());
+					parentPanel.refreshAttributeCMB();						
 				}
 				else if (theCheckBox == chkEdge)
 				{
-					/*
-					// In case of TopologyFilter, change the behavior of Node/Edge to radio button
-					if (theFilter instanceof TopologyFilter) {
-						theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());
-						theFilter.getAdvancedSetting().setNode(!chkEdge.isSelected());
-						chkNode.setSelected(!chkEdge.isSelected());
-						if (chkNode.isSelected()) {
-							topoPanel.updateSelectionLabel("Node");							
-						}
-						else {
-							topoPanel.updateSelectionLabel("Edge");
-						}
-					}
-					else {
-					*/
-						theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());	
-						parentPanel.refreshAttributeCMB();						
-					//}
-					
-					//if (!chkEdge.isSelected()) {
-					//	chkSource.setSelected(false);
-					//	chkTarget.setSelected(false);
-					//}
+					theFilter.getAdvancedSetting().setEdge(chkEdge.isSelected());	
+					parentPanel.refreshAttributeCMB();						
 				}
+				*/
 				else if (theCheckBox == chkSource)
 				{
 					theFilter.getAdvancedSetting().setSource(chkSource.isSelected());										
-					parentPanel.refreshAttributeCMB();
+					//parentPanel.refreshAttributeCMB();
 				}	
 				else if (theCheckBox == chkTarget)
 				{
 					theFilter.getAdvancedSetting().setTarget(chkTarget.isSelected());										
-					parentPanel.refreshAttributeCMB();
+					//parentPanel.refreshAttributeCMB();
 				}					
 				else if (theCheckBox == chkNegation)
 				{
 					theFilter.setNegation(chkNegation.isSelected());										
 				}	
-				/*
-				if (theCheckBox == chkSource || theCheckBox == chkTarget) {
-					System.out.println("chkSource or theCheckBox is checked");
-					if (!chkSource.isSelected() || !chkTarget.isSelected()) {
-						chkNode.setSelected(false);
-						chkEdge.setSelected(true);
-						theFilter.getAdvancedSetting().setNode(false);
-						theFilter.getAdvancedSetting().setEdge(true);
-					}
-					if (!chkSource.isSelected() && !chkTarget.isSelected()) {
-						chkEdge.setSelected(false);
-					}
-				}
-				*/
 				//Update the selection on screen
-				if ((theCheckBox == chkNegation)||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
-					
-					theFilter.childChanged();//The setting is changed
-					
-					//if (theFilter instanceof TopologyFilter || theFilter instanceof InteractionFilter) {
-						// Do not apply Filter if TopologyFilter or InteractionFilter	
-					//}
-					//else {						
-						doSelection();										
-					//}
+				if ((theCheckBox == chkNegation)) { //||(theCheckBox == chkEdge)||(theCheckBox == chkNode)) {
+					theFilter.childChanged();//The setting has changed
+					doSelection();										
 				}
 			}
 			if (soureObj instanceof javax.swing.JRadioButton) {
@@ -1298,4 +1289,5 @@ public class FilterSettingPanel extends JPanel {
     private javax.swing.JRadioButton rbtOR;
     private javax.swing.JLabel lbNegation;
     // End of variables declaration
+        
 }
