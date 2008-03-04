@@ -80,6 +80,7 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 							System.out
 									.println("Database connection terminated");
 						} catch (Exception ex) { /* ignore close errors */
+							
 						}
 					}
 				}
