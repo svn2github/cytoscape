@@ -2902,9 +2902,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		try {
 			newValue = type.showDiscreteEditor();
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		if(newValue == null)
+			return;
 
 		Object key = null;
 		final Class keyClass = CyAttributesUtils.getClass(mapping.getControllingAttributeName(),
