@@ -669,9 +669,9 @@ public class PreviewTablePanel extends JPanel {
 			 */
 			
 			System.out.println("# of Sheets = " + wb.getNumberOfSheets());
-			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-				HSSFSheet sheet = wb.getSheetAt(i);
-				System.out.println("Sheet name = " + wb.getSheetName(i) +", ROW = " + sheet.rowIterator().hasNext());
+//			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+				HSSFSheet sheet = wb.getSheetAt(0);
+				System.out.println("Sheet name = " + wb.getSheetName(0) +", ROW = " + sheet.rowIterator().hasNext());
 				
 				System.out.println("TS = " + sheet.toString());
 				
@@ -679,10 +679,10 @@ public class PreviewTablePanel extends JPanel {
 				if(newModel.getRowCount() == 0) {
 					return;
 				}
-				guessDataTypes(newModel, wb.getSheetName(i));
-				listDataTypeMap.put(wb.getSheetName(i), initListDataTypes(newModel));
-				addTableTab(newModel, wb.getSheetName(i), curRenderer);
-			}
+				guessDataTypes(newModel, wb.getSheetName(0));
+				listDataTypeMap.put(wb.getSheetName(0), initListDataTypes(newModel));
+				addTableTab(newModel, wb.getSheetName(0), curRenderer);
+//			}
 		} else {
 			fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
 			fileTypeLabel.setText("Text File");
