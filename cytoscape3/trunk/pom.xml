@@ -167,6 +167,7 @@
     <module>merge</module>
     <module>manual.layout</module>
     <module>psi.mi</module>
+    <module>quickfind</module>
   </modules>
 
 
