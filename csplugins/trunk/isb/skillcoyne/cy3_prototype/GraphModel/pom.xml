@@ -1,0 +1,33 @@
+<project>
+ <parent>
+	  <groupId>cytoscape3</groupId>
+	  <artifactId>cy3_sk</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+   <modelVersion>4.0.0</modelVersion>
+  <groupId>cytoscape3</groupId>
+  <artifactId>GraphModel</artifactId>
+  <packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Graph Model</name>
+	<url>http://cytoscape.org</url>
+  
+  <dependencies>
+    <dependency>
+      <groupId>cytoscape3</groupId>
+      <artifactId>graph.fixed</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cytoscape3</groupId>
+      <artifactId>graph.dynamic</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cytoscape3</groupId>
+      <artifactId>util.intr</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
+</project>

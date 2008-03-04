@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Built-By: Administrator
+Created-By: Apache Maven Bundle Plugin
+Import-Package: cytoscape.util.intr
+Bnd-LastModified: 1204571418484
+Export-Package: cytoscape.util.intr
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: util.intr
+Bundle-Description: My prototype for Cy3, core libraries
+Build-Jdk: 1.5.0_10
+Private-Package: cytoscape.graph.dynamic.util
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: cytoscape.util.intr
+Tool: Bnd-0.0.238
+

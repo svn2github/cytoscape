@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Built-By: Administrator
+Created-By: Apache Maven Bundle Plugin
+Bundle-License: http://www.gnu.org/licenses/lgpl-3.0.txt
+Import-Package: javax.swing.event,javax.swing.undo,undo
+Bnd-LastModified: 1204567051515
+Export-Package: undo;uses:="javax.swing.undo,javax.swing.event"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Description: A network visualization and analysis application.
+Bundle-Name: undo
+Build-Jdk: 1.5.0_10
+Bundle-DocURL: http://cytoscape.org
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Cytoscape
+Bundle-SymbolicName: undo.undo
+Tool: Bnd-0.0.238
+

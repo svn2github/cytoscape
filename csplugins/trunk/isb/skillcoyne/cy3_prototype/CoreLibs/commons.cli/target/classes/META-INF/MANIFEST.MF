@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Built-By: Administrator
+Created-By: Apache Maven Bundle Plugin
+Import-Package: org.apache.commons.cli,org.apache.commons.lang.math
+Bnd-LastModified: 1204572450609
+Export-Package: org.apache.commons.cli;uses:="org.apache.commons.lang.
+ math"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: commons.cli
+Bundle-Description: My prototype for Cy3, core libraries
+Build-Jdk: 1.5.0_10
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.apache.commons.cli
+Tool: Bnd-0.0.238
+

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cytoscape3</groupId>
+  <artifactId>corelibs</artifactId>
+  <packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Cytoscape 3 CoreLibs (sk)</name>
+	<url>http://cytoscape.org</url>
+  <description>My prototype for Cy3, core libraries</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+<!--
+      <plugin>    
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>com.nerius.math.xform</Export-Package>
+            <Export-Package>cytoscape.util.intr</Export-Package>
+            <Export-Package>cytoscape.graph.fixed</Export-Package>
+            <Export-Package>cytoscape.graph.dynamic</Export-Package>
+            <Private-Package>cytoscape.graph.dynamic.util</Private-Package>
+            <Export-Package>cytoscape.geom.spacial</Export-Package>
+            <Export-Package>cytoscape.geom.rtree</Export-Package>
+            <Export-Package>undo</Export-Package>
+            <Export-Package>cytoscape.task,cytoscape.task.ui,cytoscape.task.util</Export-Package>
+            <Export-Package>cytoscape.render.immed</Export-Package>
+            <Export-Package>cytoscape.render.stateful</Export-Package>
+            <Export-Package>cytoscape.render.export</Export-Package>
+            <Export-Package>cytoscape.cruft.obo</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin> 
+-->       
+		</plugins>
+	</build>
+
+  
+  <modules>
+		<module>commons.cli</module>
+		<module>nerius.math.xform</module>
+		<module>util.intr</module>
+		<module>graph.fixed</module>
+		<module>graph.dynamic</module>
+		<module>geom.spacial</module>
+		<module>geom.rtree</module>
+		<module>undo</module>
+		<module>task</module>
+		<module>render.immed</module>
+		<module>render.stateful</module>
+		<module>render.export</module>
+		<module>phoebe.dnd</module>
+   	<module>cruft.obo</module>
+  </modules>
+  
+</project>

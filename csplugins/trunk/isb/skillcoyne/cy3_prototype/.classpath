@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="ViewModel/src/main/java"/>
+	<classpathentry kind="src" path="GraphModel/src/main/java"/>
+	<classpathentry kind="src" path="CoreLibs/symbols/src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

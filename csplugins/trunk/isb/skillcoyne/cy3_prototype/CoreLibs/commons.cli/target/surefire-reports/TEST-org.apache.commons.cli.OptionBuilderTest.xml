@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" skipped="0" tests="7" time="0" failures="0" name="org.apache.commons.cli.OptionBuilderTest">
+  <properties>
+    <property value="Java(TM) 2 Runtime Environment, Standard Edition" name="java.runtime.name"/>
+    <property value="c:\Java\jdk1.5.0_10\jre\bin" name="sun.boot.library.path"/>
+    <property value="1.5.0_10-b03" name="java.vm.version"/>
+    <property value="Sun Microsystems Inc." name="java.vm.vendor"/>
+    <property value="http://java.sun.com/" name="java.vendor.url"/>
+    <property value=";" name="path.separator"/>
+    <property value="Java HotSpot(TM) Client VM" name="java.vm.name"/>
+    <property value="sun.io" name="file.encoding.pkg"/>
+    <property value="US" name="user.country"/>
+    <property value="Service Pack 4" name="sun.os.patch.level"/>
+    <property value="Java Virtual Machine Specification" name="java.vm.specification.name"/>
+    <property value="C:\eclipse\workspace\My Cytoscape 3\CoreLibs\commons.cli" name="user.dir"/>
+    <property value="1.5.0_10-b03" name="java.runtime.version"/>
+    <property value="sun.awt.Win32GraphicsEnvironment" name="java.awt.graphicsenv"/>
+    <property value="C:\eclipse\workspace\My Cytoscape 3\CoreLibs\commons.cli" name="basedir"/>
+    <property value="c:\Java\jdk1.5.0_10\jre\lib\endorsed" name="java.endorsed.dirs"/>
+    <property value="x86" name="os.arch"/>
+    <property value="C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\" name="java.io.tmpdir"/>
+    <property value="
+" name="line.separator"/>
+    <property value="Sun Microsystems Inc." name="java.vm.specification.vendor"/>
+    <property value="" name="user.variant"/>
+    <property value="Windows 2000" name="os.name"/>
+    <property value="Cp1252" name="sun.jnu.encoding"/>
+    <property value="c:\Java\jdk1.5.0_10\jre\bin;.;C:\WINNT\system32;C:\WINNT;c:\ruby\bin;C:\Perl\bin\;C:\WINNT\system32;C:\WINNT;C:\WINNT\System32\Wbem;C:\Program Files\Subversion\bin;c:\Java\jdk1.5.0_10\bin;C:\Program Files\Common Files\GTK\2.0\bin;C:\apache-ant-1.7.0\bin;C:\Program Files\QuickTime\QTSystem\;C:\unixutil;C:\Program Files\PuTTY;C:\maven-2.0.7\bin" name="java.library.path"/>
+    <property value="Java Platform API Specification" name="java.specification.name"/>
+    <property value="49.0" name="java.class.version"/>
+    <property value="HotSpot Client Compiler" name="sun.management.compiler"/>
+    <property value="5.0" name="os.version"/>
+    <property value="C:\Documents and Settings\Administrator" name="user.home"/>
+    <property value="" name="user.timezone"/>
+    <property value="sun.awt.windows.WPrinterJob" name="java.awt.printerjob"/>
+    <property value="Cp1252" name="file.encoding"/>
+    <property value="1.5" name="java.specification.version"/>
+    <property value="Administrator" name="user.name"/>
+    <property value="C:\Documents and Settings\Administrator\.m2\repository\org\codehaus\plexus\plexus-archiver\1.0-alpha-7\plexus-archiver-1.0-alpha-7.jar;C:\Documents and Settings\Administrator\.m2\repository\junit\junit\3.8.1\junit-3.8.1.jar;C:\Documents and Settings\Administrator\.m2\repository\org\apache\maven\surefire\surefire-api\2.3\surefire-api-2.3.jar;C:\Documents and Settings\Administrator\.m2\repository\org\codehaus\plexus\plexus-container-default\1.0-alpha-8\plexus-container-default-1.0-alpha-8.jar;C:\Documents and Settings\Administrator\.m2\repository\classworlds\classworlds\1.1-alpha-2\classworlds-1.1-alpha-2.jar;C:\Documents and Settings\Administrator\.m2\repository\org\codehaus\plexus\plexus-utils\1.1\plexus-utils-1.1.jar;C:\Documents and Settings\Administrator\.m2\repository\commons-lang\commons-lang\2.1\commons-lang-2.1.jar;C:\Documents and Settings\Administrator\.m2\repository\org\apache\maven\surefire\surefire-booter\2.3\surefire-booter-2.3.jar" name="java.class.path"/>
+    <property value="1.0" name="java.vm.specification.version"/>
+    <property value="32" name="sun.arch.data.model"/>
+    <property value="c:\Java\jdk1.5.0_10\jre" name="java.home"/>
+    <property value="Sun Microsystems Inc." name="java.specification.vendor"/>
+    <property value="en" name="user.language"/>
+    <property value="sun.awt.windows.WToolkit" name="awt.toolkit"/>
+    <property value="mixed mode, sharing" name="java.vm.info"/>
+    <property value="1.5.0_10" name="java.version"/>
+    <property value="c:\Java\jdk1.5.0_10\jre\lib\ext" name="java.ext.dirs"/>
+    <property value="c:\Java\jdk1.5.0_10\jre\lib\rt.jar;c:\Java\jdk1.5.0_10\jre\lib\i18n.jar;c:\Java\jdk1.5.0_10\jre\lib\sunrsasign.jar;c:\Java\jdk1.5.0_10\jre\lib\jsse.jar;c:\Java\jdk1.5.0_10\jre\lib\jce.jar;c:\Java\jdk1.5.0_10\jre\lib\charsets.jar;c:\Java\jdk1.5.0_10\jre\classes" name="sun.boot.class.path"/>
+    <property value="Sun Microsystems Inc." name="java.vendor"/>
+    <property value="C:\Documents and Settings\Administrator\.m2\repository" name="localRepository"/>
+    <property value="\" name="file.separator"/>
+    <property value="http://java.sun.com/cgi-bin/bugreport.cgi" name="java.vendor.url.bug"/>
+    <property value="little" name="sun.cpu.endian"/>
+    <property value="UnicodeLittle" name="sun.io.unicode.encoding"/>
+    <property value="windows" name="sun.desktop"/>
+    <property value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86" name="sun.cpu.isalist"/>
+  </properties>
+  <testcase time="0" name="testCompleteOption"/>
+  <testcase time="0" name="testTwoCompleteOptions"/>
+  <testcase time="0" name="testBaseOptionCharOpt"/>
+  <testcase time="0" name="testBaseOptionStringOpt"/>
+  <testcase time="0" name="testSpecialOptChars"/>
+  <testcase time="0" name="testOptionArgNumbers"/>
+  <testcase time="0" name="testIllegalOptions"/>
+</testsuite>
