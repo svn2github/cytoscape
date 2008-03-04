@@ -166,6 +166,7 @@
     <module>editor</module>
     <module>merge</module>
     <module>manual.layout</module>
+    <module>psi.mi</module>
   </modules>
 
 

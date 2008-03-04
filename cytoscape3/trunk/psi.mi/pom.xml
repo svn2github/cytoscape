@@ -1,0 +1,93 @@
+<?xml version="1.0"?><project>
+  <parent>
+    <artifactId>cytoscape</artifactId>
+    <groupId>cytoscape</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cytoscape</groupId>
+  <artifactId>psi.mi</artifactId>
+  <name>psi.mi</name>
+  <version>1.0-SNAPSHOT</version>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>network</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>attributes</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>application</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+<!-- These may conflict with what is in application -->
+<!-- TODO figure out the proper version -->
+
+	<dependency>
+		<groupId>javax.xml.bind</groupId>
+		<artifactId>jaxb-api</artifactId>
+		<version>2.0</version>
+	</dependency>
+
+	<dependency>
+		<groupId>com.sun.xml.bind</groupId>
+		<artifactId>jaxb-impl</artifactId>
+		<version>2.0.3</version>
+	</dependency> 
+
+  </dependencies>
+
+        <build>
+          <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>mi1</id>
+                        <configuration>
+                            <arguments>-nv</arguments>
+                            <packageName>org.cytoscape.coreplugin.psi_mi.schema.mi1</packageName>
+                            <schemaFiles>MIF1.xsd</schemaFiles>
+                            <staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplugin/psi_mi/schema/mi1/.staleFlag</staleFile>
+                            <clearOutputDir>false</clearOutputDir>
+                        </configuration>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>mi25</id>
+                        <configuration>
+                            <arguments>-nv</arguments>
+                            <packageName>org.cytoscape.coreplugin.psi_mi.schema.mi25</packageName>
+                            <schemaFiles>MIF25.xsd</schemaFiles>
+                            <staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplugin/psi_mi/schema/mi25/.staleFlag</staleFile>
+                            <clearOutputDir>false</clearOutputDir>
+                        </configuration>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+          </plugins>
+        </build>
+
+</project>
