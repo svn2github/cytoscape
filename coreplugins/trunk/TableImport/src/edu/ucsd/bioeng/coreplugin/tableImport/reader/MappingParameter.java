@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
@@ -42,7 +40,7 @@ import java.util.List;
 
 
 /**
- * 
+ *
   */
 public interface MappingParameter {
 	/**
@@ -107,4 +105,11 @@ public interface MappingParameter {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getListDelimiter();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Boolean getCaseSensitive();
 }

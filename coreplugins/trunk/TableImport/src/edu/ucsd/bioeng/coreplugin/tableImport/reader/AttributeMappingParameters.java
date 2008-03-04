@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
 import cytoscape.CyNetwork;
@@ -57,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 /**
  * Parameter object for text table <---> CyAttributes mapping.<br>
  * <p>
@@ -70,7 +69,7 @@ import java.util.Set;
  */
 public class AttributeMappingParameters implements MappingParameter {
 	/**
-	 * 
+	 *
 	 */
 	public static final String ID = "ID";
 	private static final String DEF_LIST_DELIMITER = PIPE.toString();
@@ -89,6 +88,35 @@ public class AttributeMappingParameters implements MappingParameter {
 	private CyAttributes attributes;
 	private Aliases existingAliases;
 	private final Map<String, String> networkTitle2ID;
+
+	// Case sensitivity
+	private Boolean caseSensitive;
+
+	/**
+	 * Creates a new AttributeMappingParameters object.
+	 *
+	 * @param objectType  DOCUMENT ME!
+	 * @param delimiters  DOCUMENT ME!
+	 * @param listDelimiter  DOCUMENT ME!
+	 * @param keyIndex  DOCUMENT ME!
+	 * @param mappingAttribute  DOCUMENT ME!
+	 * @param aliasIndex  DOCUMENT ME!
+	 * @param attrNames  DOCUMENT ME!
+	 * @param attributeTypes  DOCUMENT ME!
+	 * @param listAttributeTypes  DOCUMENT ME!
+	 * @param importFlag  DOCUMENT ME!
+	 *
+	 * @throws Exception  DOCUMENT ME!
+	 */
+	public AttributeMappingParameters(final ObjectType objectType, final List<String> delimiters,
+	                                  final String listDelimiter, final int keyIndex,
+	                                  final String mappingAttribute,
+	                                  final List<Integer> aliasIndex, final String[] attrNames,
+	                                  Byte[] attributeTypes, Byte[] listAttributeTypes,
+	                                  boolean[] importFlag) throws Exception {
+		this(objectType, delimiters, listDelimiter, keyIndex, mappingAttribute, aliasIndex,
+		     attrNames, attributeTypes, listAttributeTypes, importFlag, true);
+	}
 
 	/**
 	 * Creates a new AttributeMappingParameters object.
@@ -110,11 +138,12 @@ public class AttributeMappingParameters implements MappingParameter {
 	public AttributeMappingParameters(final ObjectType objectType, final List<String> delimiters,
 	                                  final String listDelimiter, final int keyIndex,
 	                                  final String mappingAttribute,
-	                                  final List<Integer> aliasIndex,
-	                                  final String[] attrNames, Byte[] attributeTypes,
-	                                  Byte[] listAttributeTypes, boolean[] importFlag)
+	                                  final List<Integer> aliasIndex, final String[] attrNames,
+	                                  Byte[] attributeTypes, Byte[] listAttributeTypes,
+	                                  boolean[] importFlag, Boolean caseSensitive)
 	    throws Exception {
 		this.listAttributeTypes = listAttributeTypes;
+		this.caseSensitive = caseSensitive;
 
 		if (attrNames == null) {
 			throw new Exception("attributeNames should not be null.");
@@ -448,5 +477,14 @@ public class AttributeMappingParameters implements MappingParameter {
 
 	protected Map<String, String> getnetworkTitleMap() {
 		return networkTitle2ID;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Boolean getCaseSensitive() {
+		return caseSensitive;
 	}
 }

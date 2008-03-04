@@ -37,6 +37,7 @@ package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.giny.CytoscapeRootGraph;
 
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 
@@ -166,7 +167,7 @@ public class AttributeLineParser {
 			}
 		}
 	}
-
+	
 	private void transfer2cyattributes(String primaryKey, Set<String> aliasSet, String[] parts) {
 		String altKey = null;
 		String targetNetworkID = null;
@@ -178,10 +179,37 @@ public class AttributeLineParser {
 			case NODE:
 
 				Node node = Cytoscape.getCyNode(primaryKey);
+				
+				if(mapping.getCaseSensitive() == false && node == null) {
+					// This is extremely slow, but we have no choice.
+					final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
+					int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
+					int nodeCount = nodes.length;
+					for(int i=0; i<nodeCount; i++) {
+						if(rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
+							node = rg.getNode(nodes[i]);
+							primaryKey = node.getIdentifier();
+							break;
+						}
+					}
+				}
 
 				if (node == null) {
 					for (String alias : aliasSet) {
 						node = Cytoscape.getCyNode(alias);
+						if(mapping.getCaseSensitive() == false && node == null) {
+							// This is extremely slow, but we have no choice.
+							final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
+							int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
+							int nodeCount = nodes.length;
+							for(int i=0; i<nodeCount; i++) {
+								if(rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(alias)) {
+									node = rg.getNode(nodes[i]);
+									alias = node.getIdentifier();
+									break;
+								}
+							}
+						}
 
 						if (node != null) {
 							altKey = alias;
@@ -194,17 +222,41 @@ public class AttributeLineParser {
 						return;
 					}
 				}
-
 				break;
 
 			case EDGE:
 
 				Edge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
-
+				if(mapping.getCaseSensitive() == false && edge == null) {
+					// This is extremely slow, but we have no choice.
+					final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
+					int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
+					int edgeCount = edges.length;
+					for(int i=0; i<edgeCount; i++) {
+						if(rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
+							edge = rg.getEdge(edges[i]);
+							primaryKey = edge.getIdentifier();
+							break;
+						}
+					}
+				}
 				if (edge == null) {
 					for (String alias : aliasSet) {
 						edge = Cytoscape.getRootGraph().getEdge(alias);
-
+						if(mapping.getCaseSensitive() == false && edge == null) {
+							// This is extremely slow, but we have no choice.
+							final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
+							int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
+							int edgeCount = edges.length;
+							for(int i=0; i<edgeCount; i++) {
+								if(rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(alias)) {
+									edge = rg.getEdge(edges[i]);
+									alias = edge.getIdentifier();
+									break;
+								}
+							}
+						}
+						
 						if (edge != null) {
 							altKey = alias;
 
