@@ -2,6 +2,8 @@ package org.genmapp.subgeneviewer.splice.controller;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Properties;
 
 import org.genmapp.subgeneviewer.controller.SubgeneController;
@@ -29,7 +31,6 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	 * and passed to the networkViewBuilder.
 	 */
 	public void mousePressed(MouseEvent e) {
-
 		if (e.getClickCount() >= 2
 				&& (((DGraphView) Cytoscape.getCurrentNetworkView())
 						.getPickedNodeView(e.getPoint()) != null)) {
@@ -52,9 +53,37 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 				buildSpliceView();
 			} else {
 				// If not; prompt to collect data from server
-				// See http://www.exampledepot.com/egs/java.net/Post.html
 				System.out
-						.println("Insufficient exon structure data for this gene");
+				.println("Insufficient exon structure data for this gene");
+				System.out
+				.println("Attempting to connect to database...");
+
+				Connection conn = null;
+
+				try {
+					System.out.println("check 1");
+					String userName = "mysql";
+					String password = "fun4mysql";
+					String url = "jdbc:mysql://conklinwolf.ucsf.edu/SubgeneViewer";
+					Class.forName("com.mysql.jdbc.Driver").newInstance();
+					conn = DriverManager.getConnection(url, userName, password);
+					System.out.println("Database connection established");
+				} catch (Exception ex) {
+					System.err.println("Cannot connect to database server: "+ ex.getMessage());
+					ex.printStackTrace();
+				} finally {
+					System.out.println("check 2");
+					if (conn != null) {
+						System.out.println("check 3");
+						try {
+							conn.close();
+							System.out
+									.println("Database connection terminated");
+						} catch (Exception ex) { /* ignore close errors */
+						}
+					}
+				}
+
 			}
 		}
 	}
@@ -65,6 +94,7 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	public boolean exonDataCheck() {
 		// TODO: do data check
 		CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+//		return false;
 		if ((nodeAttribs.hasAttribute(_nodeId, "sgv_structure"))
 				&& (nodeAttribs.hasAttribute(_nodeId, "sgv_feature"))) {
 			if ((nodeAttribs.getListAttribute(_nodeId, "sgv_structure")
@@ -86,17 +116,17 @@ public class SpliceController extends MouseAdapter implements SubgeneController 
 	public void probesetLinkOut() {
 		Properties props = CytoscapeInit.getProperties();
 		props
-		.setProperty(
-				"nodelinkouturl.SubgeneViewer.Affymetrix Human Exon 1_0 Probe Sets",
-				"http://genome.ucsc.edu/cgi-bin/hgc?g=affyHuEx1&i=%Affy_probeset%");
+				.setProperty(
+						"nodelinkouturl.SubgeneViewer.Affymetrix Human Exon 1_0 Probe Sets",
+						"http://genome.ucsc.edu/cgi-bin/hgc?g=affyHuEx1&i=%Affy_probeset%");
 		props
-		.setProperty(
-				"nodelinkouturl.SubgeneViewer.Affymetrix NetAffx Probe Sets (requires login)",
-				"https://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:%Affy_probeset%");
+				.setProperty(
+						"nodelinkouturl.SubgeneViewer.Affymetrix NetAffx Probe Sets (requires login)",
+						"https://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:%Affy_probeset%");
 		props
-		.setProperty(
-				"nodelinkouturl.SubgeneViewer.UCSC Genome Browser (link by gene)",
-				"http://genome.ucsc.edu/cgi-bin/hgTracks?position=%ID%");
+				.setProperty(
+						"nodelinkouturl.SubgeneViewer.UCSC Genome Browser (link by gene)",
+						"http://genome.ucsc.edu/cgi-bin/hgTracks?position=%ID%");
 	}
 
 	/**
