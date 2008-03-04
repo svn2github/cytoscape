@@ -264,7 +264,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			treeTableModel.setValueAt(network.getTitle(),
 		                          treeTable.getTree().getSelectionPath().getLastPathComponent(), 0);
 		} else { // no selection, means the title has been changed programmatically
-		
+			NetworkTreeNode node = getNetworkNode(network.getIdentifier());
+			treeTableModel.setValueAt(network.getTitle(), node, 0);
 		}
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
