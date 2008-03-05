@@ -2726,7 +2726,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			Property curProp = item.getProperty();
 
 			if (curProp instanceof VizMapperProperty) {
-				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
+				final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
 				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .getHiddenObject();
 
 				if (type == null)
@@ -2736,26 +2736,26 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				                       "The Mapping for " + type.getName() + " will be removed.",
 				                       "Proceed?"
 				                   };
+
 				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
 				                                          "Remove Mapping",
 				                                          JOptionPane.YES_NO_OPTION);
 
 				if (value == JOptionPane.YES_OPTION) {
-					/*
-					 * First, remove from property sheet.
-					 */
-
-					// visualPropertySheetPanel.removeProperty(curProp);
-					/*
-					 * Then, remove from calculator & redraw
-					 */
+					
+					// If Continuous Mapper is displayed, kill it.
+					if(editorWindowManager.get(type) != null) {
+						JDialog editor = editorWindowManager.get(type);
+						editor.dispose();
+						editorWindowManager.remove(type);
+					}
+					
 					if (type.isNodeProp()) {
 						vmm.getVisualStyle().getNodeAppearanceCalculator().removeCalculator(type);
 					} else {
 						vmm.getVisualStyle().getEdgeAppearanceCalculator().removeCalculator(type);
 					}
 
-					// vmm.getNetworkView().redrawGraph(false, true);
 					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 					/*
