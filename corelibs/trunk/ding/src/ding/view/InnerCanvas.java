@@ -109,6 +109,8 @@ import javax.swing.JTextPane;
 import javax.swing.JToolTip;
 import javax.swing.TransferHandler;
 
+import java.awt.FontMetrics;
+
 
 // AJK: 04/26/06 END
 /**
@@ -138,6 +140,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private int m_lastRenderDetail = 0;
 	private Rectangle m_selectionRect = null;
 	private ViewChangeEdit m_undoable_edit;
+
+	FontMetrics m_fontMetrics = null;
 	
 	private boolean NodeMovement = true;
 
@@ -251,6 +255,8 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		double xCenter = 0.0d;
 		double yCenter = 0.0d;
 		double scaleFactor = 1.0d;
+
+		m_fontMetrics = g.getFontMetrics();
 
 		// set color alpha based on opacity setting
 		int alpha = (m_isOpaque) ? 255 : 0;

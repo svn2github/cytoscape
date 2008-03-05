@@ -1887,15 +1887,30 @@ public class DGraphView implements GraphView, Printable {
 			float yMin = Float.POSITIVE_INFINITY;
 			float xMax = Float.NEGATIVE_INFINITY;
 			float yMax = Float.NEGATIVE_INFINITY;
+		
+			int leftMost = 0;
+			int rightMost = 0;
 
 			while (selectedElms.numRemaining() > 0) {
 				final int node = selectedElms.nextInt();
 				m_spacial.exists(node, m_extentsBuff, 0);
-				xMin = Math.min(xMin, m_extentsBuff[0]);
+
+				if ( m_extentsBuff[0] < xMin ) {
+					xMin = m_extentsBuff[0];
+					leftMost = node;
+				}
+
+				if ( m_extentsBuff[2] > xMax ) {
+					xMax = m_extentsBuff[2];
+					rightMost = node;
+				}
+
 				yMin = Math.min(yMin, m_extentsBuff[1]);
-				xMax = Math.max(xMax, m_extentsBuff[2]);
 				yMax = Math.max(yMax, m_extentsBuff[3]);
 			}
+
+			xMin = xMin - ( getLabelWidth(leftMost)/2 );
+			xMax = xMax + ( getLabelWidth(rightMost)/2 );
 
 			m_networkCanvas.m_xCenter = (((double) xMin) + ((double) xMax)) / 2.0d;
 			m_networkCanvas.m_yCenter = (((double) yMin) + ((double) yMax)) / 2.0d;
@@ -1906,6 +1921,25 @@ public class DGraphView implements GraphView, Printable {
 			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
 			m_viewportChanged = true;
 		}
+	}
+
+	private int getLabelWidth(int node) {
+		DNodeView x = ((DNodeView)getNodeView(~node));
+		if ( x == null ) 
+			return 0;
+		
+		String s = x.getText();
+		if ( s == null ) 
+			return 0;
+
+		char[] lab = s.toCharArray();
+		if ( lab == null )
+			return 0; 
+
+		if ( m_networkCanvas.m_fontMetrics == null ) 
+			return 0;
+
+		return m_networkCanvas.m_fontMetrics.charsWidth( lab, 0, lab.length );
 	}
 
 	/**
