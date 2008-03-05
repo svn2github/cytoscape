@@ -34,70 +34,10 @@
  */
 package cytoscape.visual.ui;
 
-import com.l2fprod.common.propertysheet.DefaultProperty;
-import com.l2fprod.common.propertysheet.Property;
-import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
-import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import com.l2fprod.common.propertysheet.PropertySheetTable;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-
-import cytoscape.util.SwingWorker;
-
-import cytoscape.util.swing.DropDownMenuButton;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.NetworkPanel;
-
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
-
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.calculators.BasicCalculator;
-import cytoscape.visual.calculators.Calculator;
-
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
-import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
-import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
-import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
-import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
-import cytoscape.visual.ui.icon.ArrowIcon;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import ding.view.DGraphView;
-
 import giny.model.GraphObject;
 import giny.model.Node;
 
@@ -116,16 +56,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
-
 import java.lang.reflect.Constructor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -163,6 +99,54 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+
+import com.l2fprod.common.propertysheet.DefaultProperty;
+import com.l2fprod.common.propertysheet.Property;
+import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
+import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
+import com.l2fprod.common.propertysheet.PropertySheetPanel;
+import com.l2fprod.common.propertysheet.PropertySheetTable;
+import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+import cytoscape.util.SwingWorker;
+import cytoscape.util.swing.DropDownMenuButton;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.NetworkPanel;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
+import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
+import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
+import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
+import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
+import cytoscape.visual.ui.icon.ArrowIcon;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import ding.view.DGraphView;
 
 
 /**
@@ -1918,12 +1902,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		// Set ignore flag.
 		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
-			ignore = true;;
+			ignore = true;
 			enableListeners(false);
-		}
-//		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED) || e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
-//			ignore = false;
-//		}	
+		}	
 		
 		if(ignore) return;
 		
@@ -2017,25 +1998,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		if ((prop.getParentProperty() == null) && e.getNewValue() instanceof String) {
 			/*
-			 * This is a controlling attr name.
+			 * This is a controlling attr name change signal.
 			 */
 			typeRootProp = (VizMapperProperty) prop;
 			type = (VisualPropertyType) ((VizMapperProperty) prop).getHiddenObject();
 			ctrAttrName = (String) e.getNewValue();
 		} else if ((prop.getParentProperty() == null) && (e.getNewValue() == null)) {
 			/*
-			 * Empty cell celected. no need to change anything.
+			 * Empty cell selected. no need to change anything.
 			 */
 			return;
 		} else {
 			typeRootProp = (VizMapperProperty) prop.getParentProperty();
 
-			if (prop.getParentProperty() == null) {
+			if (prop.getParentProperty() == null)
 				return;
-			}
-
-			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getHiddenObject();
+			
+			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getHiddenObject();
 		}
 
 		/*
@@ -2080,11 +2059,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				return;
 			}
 
-			System.out.println("Mapping new val = " + e.getNewValue());
-
-			if (e.getNewValue().toString().endsWith("Mapper") == false) {
+			if (e.getNewValue().toString().endsWith("Mapper") == false)
 				return;
-			}
 
 			switchMapping(prop, e.getNewValue().toString(), prop.getParentProperty().getValue());
 
@@ -2150,10 +2126,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			// If same, do nothing.
 			if (ctrAttrName.equals(mapping.getControllingAttributeName()))
 				return;
-
-			////////////////////////////////////////
+			
 			// Buffer current discrete mapping
-			////////////////////////////////////////
 			if (mapping instanceof DiscreteMapping) {
 				final String curMappingName = curCalc.toString() + "-"
 				                              + mapping.getControllingAttributeName();
@@ -2170,6 +2144,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
 					((DiscreteMapping) mapping).putAll(saved);
 				}
+			} else {
+				mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
 			}
 
 			visualPropertySheetPanel.removeProperty(typeRootProp);
@@ -2223,7 +2199,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		final CyAttributes attr;
 		ctrAttrName = mapping.getControllingAttributeName();
-
+		
+		System.out.println("!!!!!!!CTR attr name: " + ctrAttrName);
+		
 		if (type.isNodeProp()) {
 			attr = Cytoscape.getNodeAttributes();
 		} else {
