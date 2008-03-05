@@ -457,7 +457,7 @@ public class GUI extends javax.swing.JFrame {
 	        System.out.println("Here we go....");
 	        System.out.println("This is columnSearch()" + columnSearch());
 	        
-	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 1);
+	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 1, this);
 
 	        
 	        attempt.start();
@@ -470,7 +470,7 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Add on Existing] Button Pressed");
 	        
-	        NCBI attempt2 = new NCBI(columnSearch(), node, jProgressBar2, 1);
+	        NCBI attempt2 = new NCBI(columnSearch(), node, jProgressBar2, 1, this);
 //	        attempt2.startSearch(nodeId, node);
 	        attempt2.start();
  
@@ -511,7 +511,7 @@ public class GUI extends javax.swing.JFrame {
 	        
 	        System.out.println("Attribute Name:" + attributeNames[index]);
 
-	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 2);
+	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 2, this);
 	        attempt.start();
  
 	        System.out.println("After Intact Client was called.");
@@ -524,7 +524,7 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Open in New] Button Pressed");
 	        
-	        NCBI attempt = new NCBI(columnSearch(), node, jProgressBar1, 2);
+	        NCBI attempt = new NCBI(columnSearch(), node, jProgressBar1, 2, this);
 	        attempt.start();
 	        
 	        
