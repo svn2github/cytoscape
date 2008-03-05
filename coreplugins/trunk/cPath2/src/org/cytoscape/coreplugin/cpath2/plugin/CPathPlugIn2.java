@@ -121,7 +121,7 @@ public class CPathPlugIn2 extends CytoscapePlugin {
                 }
             }
             });
-        //WebServiceClientManager.registerClient(CytoscapeCPathWebService.getClient());
+        WebServiceClientManager.registerClient(CytoscapeCPathWebService.getClient());
     }
 
     private void initUi() {
@@ -152,7 +152,7 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         cpathProperties.initProperties(pluginProperties);
     }
 
-    private JScrollPane createConfigPanel() {
+    public static JScrollPane createConfigPanel() {
         JPanel configPanel = new JPanel();
         configPanel.setBorder(new TitledBorder("Retrieval Options"));
         configPanel.setLayout(new GridBagLayout());
