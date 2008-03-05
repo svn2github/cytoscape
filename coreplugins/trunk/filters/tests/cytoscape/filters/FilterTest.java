@@ -15,7 +15,7 @@ import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.test.quickfind.test.TaskMonitorBase;
 import csplugins.widgets.autocomplete.index.TextIndex;
 
-public class FilterTest extends TestCase {
+public abstract class FilterTest extends TestCase {
 	
 	protected void initNetwork() {
 		cyNetwork = Cytoscape.createNetwork("network1");
