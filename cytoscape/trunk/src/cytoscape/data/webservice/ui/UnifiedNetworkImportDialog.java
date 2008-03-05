@@ -426,13 +426,13 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				this.datasourceComboBox.addItem(client.getDisplayName());
 				this.clientNames.put(client.getDisplayName(), client.getClientID());
 
-				if (client instanceof WebServiceClientImplWithGUI
-				    && (((WebServiceClientImplWithGUI) client).getGUI() != null)) {
-					serviceUIPanelsl.put(client.getClientID(),
-					                     ((WebServiceClientImplWithGUI) client).getGUI());
+				if (client instanceof WebServiceClientGUI
+				    && (((WebServiceClientGUI) client).getGUI() != null)) {
+                    serviceUIPanelsl.put(client.getClientID(),
+					                     ((WebServiceClientGUI) client).getGUI());
 				} else {
 					serviceUIPanelsl.put(client.getClientID(), mainTabbedPane);
-				}
+                }
 			}
 		}
 	}
