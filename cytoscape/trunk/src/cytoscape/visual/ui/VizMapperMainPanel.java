@@ -3685,9 +3685,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 //		}
 		
 		// Update GUI based on CalcCatalog's state.
-		if(!findVSName(currentName)) {
+		//Bug fix: 0001802: always sync combobox, not just for new VS
+
+		//if(!findVSName(currentName)) {
 			syncStyleBox();
-		}
+		//}
 	}
 	
 	private void syncStyleBox() {
