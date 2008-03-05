@@ -1818,13 +1818,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 				// Make sure primary key index is up-to-date.
 				keyInFile = primaryKeyComboBox.getSelectedIndex();
-				
-				int idx=0;
-				for(String name: attributeNames) {
-					System.out.println(name + " = " + importFlag[idx] + ", type = " + attributeTypes[idx]);
-					idx++;
-				}
-				
+			
 				// Build mapping parameter object.
 				final AttributeMappingParameters mapping = new AttributeMappingParameters(objType,
 				                                                                          checkDelimiter(),

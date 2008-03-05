@@ -44,6 +44,7 @@ import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.*
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType.*;
 
+import giny.model.Edge;
 import giny.model.Node;
 
 import java.io.IOException;
@@ -148,7 +149,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		if (attrNames == null) {
 			throw new Exception("attributeNames should not be null.");
 		}
-
+		
 		/*
 		 * Error check: Key column number should be smaller than actual number
 		 * of columns in the text table.
@@ -222,7 +223,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		} else {
 			this.attributeTypes = attributeTypes;
 		}
-
+		
 		/*
 		 * If not specified, import everything.
 		 */
@@ -264,10 +265,11 @@ public class AttributeMappingParameters implements MappingParameter {
 				attributes = null;
 				it = null;
 		}
-
+		
 		if ((this.mappingAttribute != null) && !this.mappingAttribute.equals(ID)) {
 			buildAttribute2IDMap(it);
 		}
+
 	}
 
 	/**
@@ -444,9 +446,16 @@ public class AttributeMappingParameters implements MappingParameter {
 					break;
 
 				case EDGE:
+					
+					Edge edge = (Edge) it.next();
+					objectID = edge.getIdentifier();
+					attributeValue = attributes.getStringAttribute(objectID, mappingAttribute);
+					
 					break;
 
 				case NETWORK:
+					// Not supported yet.
+					it.next();
 					break;
 
 				default:

@@ -37,6 +37,7 @@ package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
+
 import cytoscape.giny.CytoscapeRootGraph;
 
 import edu.ucsd.bioeng.coreplugin.tableImport.reader.TextTableReader.ObjectType;
@@ -134,7 +135,6 @@ public class AttributeLineParser {
 				}
 			}
 		}
-
 		aliasSet.add(primaryKey);
 
 		/*
@@ -149,6 +149,8 @@ public class AttributeLineParser {
 			List<String> objectIDs = null;
 
 			for (String id : aliasSet) {
+				// Normal Mapping.  Case sensitive.
+				
 				if (mapping.getAttributeToIDMap().containsKey(id)) {
 					objectIDs = mapping.toID(id);
 
@@ -157,6 +159,29 @@ public class AttributeLineParser {
 					}
 
 					break;
+				} else if (mapping.getCaseSensitive() == false) {
+					
+					Set<String> keySet = mapping.getAttributeToIDMap().keySet();
+
+					String newKey = null;
+
+					for (String key : keySet) {
+						if (key.equalsIgnoreCase(id)) {
+							newKey = key;
+							
+							break;
+						}
+					}
+
+					if (newKey != null) {
+						objectIDs = mapping.toID(newKey);
+
+						for (String objectID : objectIDs) {
+							mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
+						}
+
+						break;
+					}
 				}
 			}
 
@@ -167,7 +192,7 @@ public class AttributeLineParser {
 			}
 		}
 	}
-	
+
 	private void transfer2cyattributes(String primaryKey, Set<String> aliasSet, String[] parts) {
 		String altKey = null;
 		String targetNetworkID = null;
@@ -179,16 +204,18 @@ public class AttributeLineParser {
 			case NODE:
 
 				Node node = Cytoscape.getCyNode(primaryKey);
-				
-				if(mapping.getCaseSensitive() == false && node == null) {
+
+				if ((mapping.getCaseSensitive() == false) && (node == null)) {
 					// This is extremely slow, but we have no choice.
 					final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
 					int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
 					int nodeCount = nodes.length;
-					for(int i=0; i<nodeCount; i++) {
-						if(rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
+
+					for (int i = 0; i < nodeCount; i++) {
+						if (rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
 							node = rg.getNode(nodes[i]);
 							primaryKey = node.getIdentifier();
+
 							break;
 						}
 					}
@@ -197,15 +224,18 @@ public class AttributeLineParser {
 				if (node == null) {
 					for (String alias : aliasSet) {
 						node = Cytoscape.getCyNode(alias);
-						if(mapping.getCaseSensitive() == false && node == null) {
+
+						if ((mapping.getCaseSensitive() == false) && (node == null)) {
 							// This is extremely slow, but we have no choice.
 							final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
 							int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
 							int nodeCount = nodes.length;
-							for(int i=0; i<nodeCount; i++) {
-								if(rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(alias)) {
+
+							for (int i = 0; i < nodeCount; i++) {
+								if (rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(alias)) {
 									node = rg.getNode(nodes[i]);
 									alias = node.getIdentifier();
+
 									break;
 								}
 							}
@@ -222,41 +252,49 @@ public class AttributeLineParser {
 						return;
 					}
 				}
+
 				break;
 
 			case EDGE:
 
 				Edge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
-				if(mapping.getCaseSensitive() == false && edge == null) {
+
+				if ((mapping.getCaseSensitive() == false) && (edge == null)) {
 					// This is extremely slow, but we have no choice.
 					final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
 					int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
 					int edgeCount = edges.length;
-					for(int i=0; i<edgeCount; i++) {
-						if(rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
+
+					for (int i = 0; i < edgeCount; i++) {
+						if (rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
 							edge = rg.getEdge(edges[i]);
 							primaryKey = edge.getIdentifier();
+
 							break;
 						}
 					}
 				}
+
 				if (edge == null) {
 					for (String alias : aliasSet) {
 						edge = Cytoscape.getRootGraph().getEdge(alias);
-						if(mapping.getCaseSensitive() == false && edge == null) {
+
+						if ((mapping.getCaseSensitive() == false) && (edge == null)) {
 							// This is extremely slow, but we have no choice.
 							final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
 							int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
 							int edgeCount = edges.length;
-							for(int i=0; i<edgeCount; i++) {
-								if(rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(alias)) {
+
+							for (int i = 0; i < edgeCount; i++) {
+								if (rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(alias)) {
 									edge = rg.getEdge(edges[i]);
 									alias = edge.getIdentifier();
+
 									break;
 								}
 							}
 						}
-						
+
 						if (edge != null) {
 							altKey = alias;
 
@@ -352,9 +390,8 @@ public class AttributeLineParser {
 	private void mapAttribute(final String key, final String entry, final int index) {
 		final Byte type = mapping.getAttributeTypes()[index];
 
-//		System.out.println("Index = " + mapping.getAttributeNames()[index] + ", " + key + " = "
-//		                   + entry);
-
+		//		System.out.println("Index = " + mapping.getAttributeNames()[index] + ", " + key + " = "
+		//		                   + entry);
 		switch (type) {
 			case CyAttributes.TYPE_BOOLEAN:
 

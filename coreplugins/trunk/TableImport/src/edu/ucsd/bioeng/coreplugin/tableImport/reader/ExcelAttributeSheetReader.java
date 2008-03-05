@@ -127,6 +127,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 					parser.parseEntry(cellsInOneRow);
 			} catch (Exception ex) {
 				System.out.println("Couldn't parse row: " + rowCount);
+				ex.printStackTrace();
 			}
 			
 			rowCount++;
