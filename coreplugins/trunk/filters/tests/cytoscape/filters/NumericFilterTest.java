@@ -100,13 +100,13 @@ public class NumericFilterTest extends FilterTest {
 	
 	// String representation of a filter 
 	public void test_toString() { 
-		String theFirstFilter_expectStr = "NumericFilter=integerFilter:rank:false:2:3:"+ QuickFind.INDEX_NODES;
+		String theFirstFilter_expectStr = "NumericFilter=rank:false:2:3:"+ QuickFind.INDEX_NODES;
 		theIntegerFilter.setNegation(false);
 		theDoubleFilter.apply();
 
 		assertEquals(theFirstFilter_expectStr, theIntegerFilter.toString());	
 		
-		String theSecondFilter_expectStr = "NumericFilter=doubleFilter:score:false:3.0:25.0:"+QuickFind.INDEX_NODES;
+		String theSecondFilter_expectStr = "NumericFilter=score:false:3.0:25.0:"+QuickFind.INDEX_NODES;
 		theDoubleFilter.setNegation(false);
 		theDoubleFilter.apply();
 
