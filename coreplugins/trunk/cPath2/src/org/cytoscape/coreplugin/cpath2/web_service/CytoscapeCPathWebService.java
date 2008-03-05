@@ -1,18 +1,27 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
 import cytoscape.Cytoscape;
+import cytoscape.visual.VisualStyle;
 import cytoscape.data.webservice.*;
+import cytoscape.data.webservice.ui.WebServiceClientGUI;
 import cytoscape.layout.Tunable;
 import cytoscape.util.ModuleProperties;
 import cytoscape.util.ModulePropertiesImpl;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.util.NullTaskMonitor;
+import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
+import org.cytoscape.coreplugin.cpath2.view.TabUi;
+import org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
  */
-public class CytoscapeCPathWebService extends WebServiceClientImpl {
+public class CytoscapeCPathWebService extends WebServiceClientImpl implements WebServiceClientGUI,
+    NetworkImportWebServiceClient {
     // Display name of this client.
     private static final String DISPLAY_NAME = CPathProperties.getInstance().getCPathServerName() +
             " Web Service Client";
@@ -32,6 +41,8 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl {
      * Response Format.
      */
     public static final String RESPONSE_FORMAT = "response_format";
+
+    private JPanel mainPanel;
 
     /**
      * Return instance of this client.
@@ -66,6 +77,24 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl {
         }
     }
 
+
+    public Container getGUI() {
+        return mainPanel;
+    }
+
+    public void setGUI(Container container) {
+        //
+    }
+
+    public VisualStyle getDefaultVisualStyle() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getDescription() {
+        CPathProperties props = CPathProperties.getInstance();
+        return props.getCPathBlurb(); 
+    }
+
     /**
      * Creates a new Web Services client.
      */
@@ -73,8 +102,23 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl {
         super(CLIENT_ID, DISPLAY_NAME, new WebServiceClientManager.ClientType[]
                 {WebServiceClientManager.ClientType.NETWORK});
         // Set properties for this client.
-        stub = CPathWebServiceImpl.getInstance();
+        this.setClientStub(CPathWebServiceImpl.getInstance());
         setProperty();
+
+        mainPanel = new JPanel();
+        mainPanel.setPreferredSize(new Dimension (500,400));
+        mainPanel.setLayout (new BorderLayout());
+
+        CPathWebService webApi = CPathWebServiceImpl.getInstance();
+        cPathSearchPanel cpathPanel = new cPathSearchPanel(webApi);
+
+        TabUi tabbedPane = TabUi.getInstance();
+        tabbedPane.add("Search", cpathPanel);
+
+        JScrollPane configPanel = CPathPlugIn2.createConfigPanel();
+        tabbedPane.add("Options", configPanel);
+        mainPanel.add(tabbedPane, BorderLayout.CENTER);
+
     }
 
     /**
