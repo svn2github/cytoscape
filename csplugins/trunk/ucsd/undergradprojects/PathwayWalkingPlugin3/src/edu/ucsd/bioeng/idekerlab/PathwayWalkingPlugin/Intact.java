@@ -41,12 +41,14 @@ public class Intact extends Thread{
     private Node node;
     private javax.swing.JProgressBar jProgressBar1;
     private int button;
+    private GUI gui;
     
-    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1, int buttonpress){
+    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1, int buttonpress, GUI that){
     	nodeId = nodeID;
     	node=node1;
     	jProgressBar1 = jBar1;
     	button = buttonpress;
+    	this.gui = that;
     }
 	
 	//public void startSearch(String nodeId, Node node){
@@ -89,11 +91,16 @@ public class Intact extends Thread{
         	jProgressBar1.setIndeterminate(false);
 			//This will create a new network
 //        	importNetwork(blah1, null);
+        	gui.setVisible(false);
         	
         } catch(Exception e){
         	System.out.println(e.toString());
         }
     	
+    }
+    
+    public void kill(){
+    	jProgressBar1.setIndeterminate(false);
     }
 
     
@@ -145,6 +152,8 @@ public class Intact extends Thread{
 			Cytoscape.firePropertyChange("SEARCH_RESULT", "edu.ucsd.bioeng.idekerlab.intactplugin.IntactClient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
 		}
 	}
+	
+	
 	
 	//adds search result to network
 	//move to merger class later

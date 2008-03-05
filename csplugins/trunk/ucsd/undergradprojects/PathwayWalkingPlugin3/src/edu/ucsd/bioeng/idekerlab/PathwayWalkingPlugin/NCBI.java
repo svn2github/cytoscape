@@ -97,12 +97,14 @@ public class NCBI extends Thread{
     private Node node;
     private javax.swing.JProgressBar jProgressBar2;
     private int button;
+    private GUI gui;
     
-    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar2, int buttonpress){
+    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar2, int buttonpress, GUI that){
     	nodeId = nodeID;
     	node=node1;
     	jProgressBar2 = jBar2;
     	button = buttonpress;
+    	this.gui = that;
     	
 		try {
 			EUtilsServiceLocator service3 = new EUtilsServiceLocator();
@@ -180,12 +182,15 @@ public class NCBI extends Thread{
 		
 		System.out.println("the network has been imported");
 		jProgressBar2.setIndeterminate(false);
-		
-		
+		gui.setVisible(false);
 		
     	
 //		search(cyweb1.getParameter().toString(), cyweb1);
 	}
+	
+	public void kill(){
+    	jProgressBar2.setIndeterminate(false);
+    }
 	
 //	@Override
 	public void executeService(CyWebServiceEvent e) {

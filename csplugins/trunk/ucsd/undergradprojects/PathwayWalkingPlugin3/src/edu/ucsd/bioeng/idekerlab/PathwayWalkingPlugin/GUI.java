@@ -401,6 +401,8 @@ public class GUI extends javax.swing.JFrame {
                     .add(jButton2))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
+        attempt = new Intact(nodeId, node, jProgressBar1, 1, this);
+        attempt2 = new NCBI(nodeId, node, jProgressBar2, 1, this);
         pack();
     }// </editor-fold>
  
@@ -412,11 +414,14 @@ public class GUI extends javax.swing.JFrame {
     }
     
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt){
-
+    		attempt.kill();
+    		attempt.interrupt();
     }
     
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt){
-    	
+			attempt2.kill();
+			attempt2.interrupt();
+
     }
     
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt){
@@ -449,7 +454,7 @@ public class GUI extends javax.swing.JFrame {
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
 	        
-	        Intact attempt = new Intact(nodeId, node, jProgressBar1, 1);
+	        
 	        attempt.start();
  
 	        System.out.println("After Intact Client was called.");
@@ -460,7 +465,7 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Add on Existing] Button Pressed");
 	        
-	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2, 1);
+	        
 //	        attempt2.startSearch(nodeId, node);
 	        attempt2.start();
  
@@ -472,6 +477,8 @@ public class GUI extends javax.swing.JFrame {
 //		In order to avoid this, we will need to put the setVisible(false) within IntAct and NCBI respectively.
 //    	if(jProgressBar1.isIndeterminate() == false && jProgressBar2.isIndeterminate() == false){
 //    		setVisible(false);
+
+    	
 //    	}
     }
     
@@ -486,14 +493,14 @@ public class GUI extends javax.swing.JFrame {
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
 	        if(jComboBox1.getSelectedIndex() == 0){
-		        Intact attempt = new Intact(nodeId, node, jProgressBar1, 1);
+		        Intact attempt = new Intact(nodeId, node, jProgressBar1, 1, this);
 		        attempt.start();
 	        }
 	        	        
 	        if(jComboBox1.getSelectedIndex() == index){
 	        	System.out.println("Attribute Name:" + attributeNames[index]);
 	        	System.out.println("Attribute Name:" + cyAtts2.getStringAttribute(nodeId, attributeNames[index]));
-	        	Intact attempt = new Intact(cyAtts2.getStringAttribute(nodeId, attributeNames[index]), node, jProgressBar1, 2);
+	        	//Intact attempt = new Intact(cyAtts2.getStringAttribute(nodeId, attributeNames[index]), node, jProgressBar1, 2);
 	        	attempt.start();
 	        }
  
@@ -505,7 +512,7 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Open in New] Button Pressed");
 	        
-	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2, 2);
+	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2, 2, this);
 //	        attempt2.startSearch(nodeId, node);
 	        attempt2.start();
  
@@ -577,6 +584,8 @@ public class GUI extends javax.swing.JFrame {
     private String[] attributeNames;
     private CyAttributes cyAtts2;
     private int index;
+    private Intact attempt;
+    private NCBI attempt2;
     // End of variables declaration
  
 }
