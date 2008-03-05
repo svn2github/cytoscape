@@ -44,6 +44,7 @@ public class GUI extends javax.swing.JFrame {
     	cyAtts = Cytoscape.getNodeAttributes();
     	nodeId = node.getIdentifier();
         initComponents();
+
     }
  
     /** This method is called from within the constructor to
@@ -108,7 +109,7 @@ public class GUI extends javax.swing.JFrame {
  
         nodeIDText.setText(nodeId);
         
-        String[] attributeNames = cyAtts.getAttributeNames();
+        attributeNames = cyAtts.getAttributeNames();
         
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(attributeNames));
  
@@ -147,16 +148,53 @@ public class GUI extends javax.swing.JFrame {
         jLabel4.setText("Progress");
  
         jButton6.setText("x");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
  
         jButton7.setText("x");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
  
         jButton8.setText("x");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
  
         jButton9.setText("x");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        
+        jButton10.setText("x");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
  
         jButton11.setText("x");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
  
         jButton12.setText("x");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
  
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel5.setText("Cancel");
@@ -197,8 +235,7 @@ public class GUI extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
- 
-        jButton10.setText("x");
+
  
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -374,7 +411,33 @@ public class GUI extends javax.swing.JFrame {
         advG.openGUI();
     }
     
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt){
+
+    }
     
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt){
+    	
+    }
+    
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt){
+    	
+    }
+    
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt){
+    	
+    }
+    
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt){
+    	
+    }
+    
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt){
+    	
+    }
+    
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt){
+    	
+    }
  
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
     	System.out.println("Add to Existing Network");
@@ -407,10 +470,9 @@ public class GUI extends javax.swing.JFrame {
 //		This code will hide the PathwayWalking window immediately after the button is pressed due to the threading.
 //		This is because we have one thread running the GUI.  One thread running IntAct.  And one thread running NCBI.
 //		In order to avoid this, we will need to put the setVisible(false) within IntAct and NCBI respectively.
-//    	setVisible(false);
-    	if(jProgressBar1.isIndeterminate() == false && jProgressBar2.isIndeterminate() == false){
-    		setVisible(false);
-    	}
+//    	if(jProgressBar1.isIndeterminate() == false && jProgressBar2.isIndeterminate() == false){
+//    		setVisible(false);
+//    	}
     }
     
  
@@ -423,9 +485,17 @@ public class GUI extends javax.swing.JFrame {
 	        
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
-	        
-	        Intact attempt = new Intact(nodeId, node, jProgressBar1, 2);
-	        attempt.start();
+	        if(jComboBox1.getSelectedIndex() == 0){
+		        Intact attempt = new Intact(nodeId, node, jProgressBar1, 1);
+		        attempt.start();
+	        }
+	        	        
+	        if(jComboBox1.getSelectedIndex() == index){
+	        	System.out.println("Attribute Name:" + attributeNames[index]);
+	        	System.out.println("Attribute Name:" + cyAtts2.getStringAttribute(nodeId, attributeNames[index]));
+	        	Intact attempt = new Intact(cyAtts2.getStringAttribute(nodeId, attributeNames[index]), node, jProgressBar1, 2);
+	        	attempt.start();
+	        }
  
 	        System.out.println("After Intact Client was called.");
 	        //jProgressBar1.setIndeterminate(false);
@@ -504,6 +574,9 @@ public class GUI extends javax.swing.JFrame {
     private String nodeId;
     private Node node;
     private CyAttributes cyAtts;
+    private String[] attributeNames;
+    private CyAttributes cyAtts2;
+    private int index;
     // End of variables declaration
  
 }
