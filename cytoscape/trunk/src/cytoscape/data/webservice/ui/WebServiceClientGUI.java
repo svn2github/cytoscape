@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,24 +32,34 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package cytoscape.data.webservice.ui;
 
-package cytoscape.data.webservice;
-
-import javax.swing.JPanel;
-
-import cytoscape.visual.VisualStyle;
+import java.awt.Container;
 
 
 /**
- * 
-  */
-public interface NetworkImportWebServiceClient {
+ * Web service client which has custom component should implements this interface.
+ * Otherwise, default GUI will be used in the desktop.
+ * If this client will be used only through CLI or scripts, this is not required.
+  *
+ * @param <U>  GUI component for this service.
+ */
+public interface WebServiceClientGUI<U extends Container> {
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns GUI for this client.
+	 *  Will be used only with Cytoscape Desktop.
 	 *
-	 * @return  DOCUMENT ME!
+	 *  U is the Component for GUI.  In many cases, this is a JPanel.
+	 *
+	 *
+	 * @return  GUI for this service.
 	 */
-	public VisualStyle getDefaultVisualStyle();
-	
-//	public JPanel getUserInterfacePanel();
+	public U getGUI();
+
+	/**
+	 *  Set GUI for this service.
+	 *
+	 * @param gui GUI for this service.
+	 */
+	public void setGUI(U gui);
 }

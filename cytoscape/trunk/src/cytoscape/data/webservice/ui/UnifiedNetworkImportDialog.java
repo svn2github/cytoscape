@@ -34,12 +34,41 @@
 */
 package cytoscape.data.webservice.ui;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
+import cytoscape.data.webservice.CyWebServiceException;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientImplWithGUI;
+import cytoscape.data.webservice.WebServiceClientManager;
+
+import cytoscape.layout.Tunable;
+
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+
+import cytoscape.task.ui.JTaskConfig;
+
+import cytoscape.task.util.TaskManager;
+
+import cytoscape.util.ModuleProperties;
+
+import cytoscape.visual.VisualStyle;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Frame;
 import java.awt.GridLayout;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,24 +78,6 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceException;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
-import cytoscape.layout.Tunable;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import cytoscape.util.ModuleProperties;
-import cytoscape.visual.VisualStyle;
 
 
 /**
@@ -87,7 +98,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private Map<String, String> clientNames;
 
 	// Client-Dependent GUI panels
-	private Map<String, JComponent> serviceUIPanelsl = new HashMap<String, JComponent>();
+	private Map<String, Container> serviceUIPanelsl = new HashMap<String, Container>();
 
 	static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
@@ -115,6 +126,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
+
+		// Initialize GUI panel.
+		datasourceComboBoxActionPerformed(null);
 	}
 
 	/** This method is called from within the constructor to
@@ -125,12 +139,11 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code">                          
 	private void initComponents() {
-
 		mainTabbedPane = new javax.swing.JTabbedPane();
 		searchTermScrollPane = new javax.swing.JScrollPane();
 		searchTermTextPane = new javax.swing.JTextPane();
 		propertyPanel = new javax.swing.JPanel();
-	
+
 		searchTermTextPane.setFont(new java.awt.Font("SansSerif", 0, 12));
 		searchTermTextPane.setText("Please enter search terms...");
 		searchTermScrollPane.setViewportView(searchTermTextPane);
@@ -147,7 +160,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		propertyScrollPane = new JScrollPane();
 		propertyScrollPane.setViewportView(propertyPanel);
 		mainTabbedPane.addTab("Search Property", propertyScrollPane);
-	
+
 		titlePanel = new javax.swing.JPanel();
 		titleIconLabel = new javax.swing.JLabel();
 		datasourcePanel = new javax.swing.JPanel();
@@ -318,8 +331,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
-		getDefaultQueryPanel();
-
+		dataQueryPanel.setLayout(new BorderLayout());
 		pack();
 	} // </editor-fold>                        
 
@@ -348,11 +360,10 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		Object description = WebServiceClientManager.getClient(selectedClientID).getDescription();
-		if(description instanceof String) {
-			JOptionPane.showMessageDialog(
-					this , description.toString(), "About Database" ,
-					JOptionPane.INFORMATION_MESSAGE
-			);
+
+		if (description instanceof String) {
+			JOptionPane.showMessageDialog(this, description.toString(), "About Database",
+			                              JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
@@ -372,11 +383,15 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		searchTermTextPane.setText("");
 		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
-	}
 
-	private void getDefaultQueryPanel() {
-		dataQueryPanel.setLayout(new BorderLayout());
-		dataQueryPanel.add(mainTabbedPane, BorderLayout.CENTER);
+		// Update Panel
+		dataQueryPanel.removeAll();
+
+		if (serviceUIPanelsl.get(selectedClientID) != null) {
+			dataQueryPanel.add(serviceUIPanelsl.get(selectedClientID), BorderLayout.CENTER);
+			pack();
+			repaint();
+		}
 	}
 
 	private void setProperty(String clientID) {
@@ -405,11 +420,19 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 	private void setDatasource() {
 		List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
-		
+
 		for (WebServiceClient client : clients) {
 			if (client instanceof NetworkImportWebServiceClient) {
 				this.datasourceComboBox.addItem(client.getDisplayName());
 				this.clientNames.put(client.getDisplayName(), client.getClientID());
+
+				if (client instanceof WebServiceClientImplWithGUI
+				    && (((WebServiceClientImplWithGUI) client).getGUI() != null)) {
+					serviceUIPanelsl.put(client.getClientID(),
+					                     ((WebServiceClientImplWithGUI) client).getGUI());
+				} else {
+					serviceUIPanelsl.put(client.getClientID(), mainTabbedPane);
+				}
 			}
 		}
 	}
@@ -553,7 +576,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
 				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getClient(selectedClientID))
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   .getClient(selectedClientID))
 				                    .getDefaultVisualStyle();
 
 				if (style == null) {

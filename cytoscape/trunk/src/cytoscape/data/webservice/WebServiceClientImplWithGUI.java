@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,24 +32,57 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.data.webservice;
 
-import javax.swing.JPanel;
+import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+import cytoscape.data.webservice.ui.WebServiceClientGUI;
 
-import cytoscape.visual.VisualStyle;
+import cytoscape.util.ModuleProperties;
+
+import java.awt.Container;
 
 
 /**
- * 
-  */
-public interface NetworkImportWebServiceClient {
+ * Client with GUI.
+ *
+ * @param <S>  Client stub type.
+ * @param <U>  User interface type.
+ */
+public abstract class WebServiceClientImplWithGUI<S, U extends Container>
+    extends WebServiceClientImpl<S> implements WebServiceClientGUI<U> {
+	// GUI for this client.  This is optional and default is null.
+	protected U gui = null;
+
+	/**
+	 * Creates a new WebServiceClientImpl object.
+	 *
+	 * @param serviceName  DOCUMENT ME!
+	 * @param displayName  DOCUMENT ME!
+	 * @param types  DOCUMENT ME!
+	 * @param props  DOCUMENT ME!
+	 */
+	public WebServiceClientImplWithGUI(final String serviceName, final String displayName,
+	                                   final ClientType[] types, final ModuleProperties props,
+	                                   final S clientStub, final U gui) {
+		super(serviceName, displayName, types, props, clientStub);
+		this.gui = gui;
+	}
+
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public VisualStyle getDefaultVisualStyle();
-	
-//	public JPanel getUserInterfacePanel();
+	public U getGUI() {
+		return gui;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param gui DOCUMENT ME!
+	 */
+	public void setGUI(U gui) {
+		this.gui = gui;
+	}
 }

@@ -35,65 +35,121 @@
 package cytoscape.data.webservice;
 
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+
 import cytoscape.util.ModuleProperties;
 
 import java.lang.reflect.Method;
 
-import java.util.List;
+import java.util.Collection;
 
 
 /**
- * All web service clients must implement this method. 
-  */
-public interface WebServiceClient {
+ * Web service client wrapper for Cytoscape.
+ * <p>
+ * Usually, developers first use code generator to create Java code
+ * from WSDL.  The generated code should be wrapped by this interface
+ * to be used in Cytoscape framework.
+ * </p>
+ * All web service clients <strong>must</strong> implement this method.
+ *
+ * @param <S> Client stub object.  This is service dependent.  For example, NCBI's eUtils
+ *  stub has the class EUtilsServiceSoap.
+ *
+ * @author kono
+ * @version 0.5
+ * @since Cytoscape 2.6
+ */
+public interface WebServiceClient<S> {
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns client ID.
+	 *  This ID should be unique.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  client ID as String.
 	 */
 	public String getClientID();
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns display name of this client.
+	 *  This is more human readable name for this client.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  display name for this client.
 	 */
 	public String getDisplayName();
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns client type.
+	 *  A client can have multiple types.
 	 *
-	 * @return  DOCUMENT ME!
+	 *  For example, NCBI Client can be used as network import
+	 *  and attribute import, so this array contains both types.
+	 *
+	 * @see cytoscape.data.webservice.WebServiceClientManager.ClientType
+	 *
+	 * @return  Array of client types.
 	 */
 	public ClientType[] getClientType();
-	
+
+	/**
+	 *  Return true if the given ClientType is compatible with this client.
+	 *
+	 *  If a client is used as network importer, isCompatibleType(ClientType.NETWORK)
+	 *  returns true, but isCompatibleType(ClientType.ATTRIBUTE) returns false.
+	 *
+	 * @param ct Client type.
+	 *
+	 * @return  true if compatible.
+	 */
 	public boolean isCompatibleType(ClientType ct);
 
 	/**
 	 *  Get client stub object.
 	 *  All services available from this client will be
-	 *  accessed through this stub.
+	 *  accessed through this stub.  This will be used when developer wants
+	 *  to access "raw" API of this service.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return Client stub.  This object type depends on service.
 	 */
-	public Object getClientStub();
+	public S getClientStub();
 
 	/**
-	 *  DOCUMENT ME!
+	 * Set stub to this client.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param stub client stub used in this client.
+	 */
+	public void setClientStub(S clientStub);
+
+	/**
+	 * Get properties used by the Tunable.
+	 *
+	 * @return
 	 */
 	public ModuleProperties getProps();
-	
+
+	/**
+	 * Set props used by Tunable.
+	 *
+	 * @param props Property.
+	 */
 	public void setProps(ModuleProperties props);
 
 	/**
-	 *  DOCUMENT ME!
+	 * Returns all available methods accessible through client stub.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return Collection of methods available through stub.
 	 */
-	public List<Method> getAllServices();
-	
-	public Object getDescription();
+	public Collection<Method> getAccessibleMethods();
 
+	/**
+	 * Get description for this client.
+	 *
+	 * @return  Description as a string.  Users should write parser for this return value.
+	 */
+	public String getDescription();
+
+	/**
+	 *  Set description for this service.
+	 *
+	 * @param description Description as a String.
+	 */
+	public void setDescription(String description);
 }
