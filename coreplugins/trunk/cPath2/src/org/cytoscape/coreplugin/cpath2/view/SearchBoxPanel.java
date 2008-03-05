@@ -2,6 +2,7 @@ package org.cytoscape.coreplugin.cpath2.view;
 
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import cytoscape.Cytoscape;
 import org.cytoscape.coreplugin.cpath2.task.ExecutePhysicalEntitySearch;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.view.model.Organism;
@@ -12,6 +13,7 @@ import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -43,6 +45,12 @@ public class SearchBoxPanel extends JPanel {
         setLayout(boxLayout);
         add (header);
         add (Box.createVerticalStrut(5));
+
+        JPanel centerPanel = new JPanel();
+        BoxLayout boxLayoutMain = new BoxLayout(centerPanel, BoxLayout.X_AXIS);
+        centerPanel.setLayout(boxLayoutMain);
+        centerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
         final JTextField searchField = createSearchField();
 
         pulsatingBorder = new PulsatingBorder (searchField);
@@ -80,19 +88,17 @@ public class SearchBoxPanel extends JPanel {
         Font newFont = new Font (font.getFamily(), font.getStyle(), font.getSize()-2);
         label.setFont(newFont);
         label.setBorder(new EmptyBorder(5,3,3,3));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        add(searchField);
-        add (label);
+        centerPanel.add(searchField);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        //searchButton.setBorder(new EmptyBorder (0,6,7,0));
-        searchButton.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        organismComboBox.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-        buttonPanel.add(organismComboBox);
-        buttonPanel.add(searchButton);
-        add(buttonPanel);
+        organismComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        searchButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(organismComboBox);
+        centerPanel.add(searchButton);
+
+        add(centerPanel);
+        add(label);
     }
 
     /**
@@ -165,7 +171,7 @@ public class SearchBoxPanel extends JPanel {
     }
 
     private void executeSearch(String keyword, int ncbiTaxonomyId) {
-        Window window = SwingUtilities.getWindowAncestor(this);
+        Window window = Cytoscape.getDesktop();
         if (keyword == null || keyword.trim().length() == 0
                 || keyword.startsWith(ENTER_TEXT)) {
             JOptionPane.showMessageDialog(window, "Please enter a Gene Name or ID.",

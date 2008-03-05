@@ -74,6 +74,7 @@ public class SearchDetailsPanel extends JPanel {
         JScrollPane pathwayTable = createPathwayTable(pathwayTableModel);
         pathwayPane.add(pathwayTable, BorderLayout.CENTER);
         JLabel label = new JLabel ("> Double-click pathway to retrieve.");
+        label.setForeground(Color.BLUE);
         Font font = label.getFont();
         Font newFont = new Font(font.getFamily(), Font.PLAIN, font.getSize()-2);
         label.setFont(newFont);

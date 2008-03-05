@@ -76,21 +76,25 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         //  Create the Hit List
         peListModel = new DefaultListModel();
         peList = createHitJList(peListModel);
-        JScrollPane hitListPane = new JScrollPane(peList);
 
+        JPanel hitListPane = new JPanel();
+        hitListPane.setLayout(new BorderLayout());
+        JScrollPane hitListScrollPane = new JScrollPane(peList);
+        hitListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         detailsButton = createDetailsButton();
-        GradientHeader header = new GradientHeader("Step 2:  Select", detailsButton);
+        GradientHeader header = new GradientHeader("Step 2:  Select");
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(header);
+        hitListPane.add(header, BorderLayout.NORTH);
+        hitListPane.add(hitListScrollPane, BorderLayout.CENTER);
 
         //  Create Search Details Panel
         SearchDetailsPanel detailsPanel = new SearchDetailsPanel(interactionBundleModel,
                 pathwayTableModel);
 
         //  Create the Split Pane
-        JSplitPane splitPane = new JSplitPane (JSplitPane.VERTICAL_SPLIT, hitListPane,
+        JSplitPane splitPane = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, hitListPane,
                 detailsPanel);
-        splitPane.setDividerLocation(60);
+        splitPane.setDividerLocation(200);
         splitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(splitPane);
         createListener(interactionBundleModel, pathwayTableModel, summaryTextPane);
