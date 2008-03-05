@@ -32,6 +32,7 @@ import uk.ac.ebi.intact.binarysearch.wsclient.generated.SearchResult;
 import cytoscape.util.ModuleProperties;
 import cytoscape.util.ModulePropertiesImpl;
 
+
 public class Intact extends Thread{
 
 	private static final String CLIENT_ID = "intact";

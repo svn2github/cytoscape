@@ -109,6 +109,7 @@ public class GUI extends javax.swing.JFrame {
  
         nodeIDText.setText(nodeId);
         
+        // This is the different attributes stored in Cytoscape
         attributeNames = cyAtts.getAttributeNames();
         
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(attributeNames));
@@ -453,7 +454,11 @@ public class GUI extends javax.swing.JFrame {
 	        
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
+	        System.out.println("Here we go....");
+	        System.out.println("This is columnSearch()" + columnSearch());
 	        
+	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 1);
+
 	        
 	        attempt.start();
  
@@ -465,7 +470,7 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Add on Existing] Button Pressed");
 	        
-	        
+	        NCBI attempt2 = new NCBI(columnSearch(), node, jProgressBar2, 1);
 //	        attempt2.startSearch(nodeId, node);
 	        attempt2.start();
  
@@ -485,41 +490,59 @@ public class GUI extends javax.swing.JFrame {
  
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
         System.out.println("Open in New Network");
-    	if(jCheckBox1.isSelected() == true)
+        
+    	// If IntAct is checked
+        if(jCheckBox1.isSelected() == true)
     	{
+
     		jProgressBar1.setIndeterminate(true);
+
 	        System.out.println("[Search & Open in New] Button Pressed");
 	        
 	        //Intact attempt = new Intact();
 	        //attempt.startSearch(nodeId, node);
-	        if(jComboBox1.getSelectedIndex() == 0){
-		        Intact attempt = new Intact(nodeId, node, jProgressBar1, 1, this);
-		        attempt.start();
-	        }
-	        	        
-	        if(jComboBox1.getSelectedIndex() == index){
-	        	System.out.println("Attribute Name:" + attributeNames[index]);
-	        	System.out.println("Attribute Name:" + cyAtts2.getStringAttribute(nodeId, attributeNames[index]));
-	        	//Intact attempt = new Intact(cyAtts2.getStringAttribute(nodeId, attributeNames[index]), node, jProgressBar1, 2);
-	        	attempt.start();
-	        }
+//	        if(jComboBox1.getSelectedIndex() == 0){
+//		        Intact attempt = new Intact(nodeId, node, jProgressBar1, 1);
+//		        attempt.start();
+//	        }
+	        
+	        // this combobox gives you a list of attribute names
+	        
+	        
+	        System.out.println("Attribute Name:" + attributeNames[index]);
+
+	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 2);
+	        attempt.start();
  
 	        System.out.println("After Intact Client was called.");
 	        //jProgressBar1.setIndeterminate(false);
     	}
+        
+        // If NCBI is checked
     	if(jCheckBox2.isSelected() == true)
     	{
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Open in New] Button Pressed");
 	        
-	        NCBI attempt2 = new NCBI(nodeId, node, jProgressBar2, 2, this);
-//	        attempt2.startSearch(nodeId, node);
-	        attempt2.start();
- 
+	        NCBI attempt = new NCBI(columnSearch(), node, jProgressBar1, 2);
+	        attempt.start();
+	        
+	        
 	        System.out.println("After NCBI Client was called.");
 	        
     	}
     	
+    }
+    
+    public String columnSearch(){
+    	index = jComboBox1.getSelectedIndex();
+    	System.out.println("This is index: " + index);
+		System.out.println("This is the attribute header: " + attributeNames[index]);
+		
+		String attribute = cyAtts.getStringAttribute(nodeId, attributeNames[index]);
+
+		System.out.println("Attribute from ColumnSearch:" + attribute);	
+		return attribute;
     }
  
     /**
