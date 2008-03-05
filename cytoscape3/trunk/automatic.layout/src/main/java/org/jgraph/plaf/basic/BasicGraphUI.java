@@ -107,6 +107,7 @@ import javax.swing.plaf.UIResource;
  * @version 1.0 1/1/02
  * @author Gaudenz Alder
  */
+ @SuppressWarnings("deprecation") // because of SwingUtilities
 public class BasicGraphUI extends GraphUI implements Serializable {
 	/**
 	 * Controls live-preview in dragEnabled mode. This is used to disable

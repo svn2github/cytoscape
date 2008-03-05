@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 
 import javax.swing.plaf.UIResource;
@@ -23,6 +22,7 @@ import javax.swing.plaf.UIResource;
 /**
  *
  */
+ @SuppressWarnings("deprecation") // because of java.io.StringBufferInputStream
 public class BasicGraphTransferable implements Transferable, UIResource, Serializable {
 	private static DataFlavor[] htmlFlavors;
 	private static DataFlavor[] stringFlavors;
@@ -131,7 +131,7 @@ public class BasicGraphTransferable implements Transferable, UIResource, Seriali
 			} else if (Reader.class.equals(flavor.getRepresentationClass())) {
 				return new StringReader(data);
 			} else if (InputStream.class.equals(flavor.getRepresentationClass())) {
-				return new StringBufferInputStream(data);
+				return new java.io.StringBufferInputStream(data);
 			}
 
 			// fall through to unsupported
@@ -144,7 +144,7 @@ public class BasicGraphTransferable implements Transferable, UIResource, Seriali
 			} else if (Reader.class.equals(flavor.getRepresentationClass())) {
 				return new StringReader(data);
 			} else if (InputStream.class.equals(flavor.getRepresentationClass())) {
-				return new StringBufferInputStream(data);
+				return new java.io.StringBufferInputStream(data);
 			}
 
 			// fall through to unsupported
