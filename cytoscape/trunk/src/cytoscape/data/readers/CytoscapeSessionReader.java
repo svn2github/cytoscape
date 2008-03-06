@@ -89,7 +89,7 @@ import cytoscape.view.CyNetworkView;
 
 
 /**
- * Reaser to load CYtoscape Session file (.cys).<br>
+ * Reader to load CYtoscape Session file (.cys).<br>
  * This class unzip cys file and read all files in the archive.
  * <p>
  * This class accept input as URL only! If it is a file, use File.toURL() to get
