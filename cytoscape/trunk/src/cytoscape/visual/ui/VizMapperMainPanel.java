@@ -1234,6 +1234,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		edgeNumericalAttrEditor.setAvailableValues(names.toArray());
+		
+		repaint();
 	}
 
 	private void processMouseClick(MouseEvent e) {
