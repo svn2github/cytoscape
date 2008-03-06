@@ -7,15 +7,8 @@ import cytoscape.Cytoscape;
 import junit.framework.TestCase;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.filters.StringFilter;
-import java.util.BitSet;
 
-import csplugins.quickfind.util.QuickFind;
-import csplugins.quickfind.util.QuickFindFactory;
-import csplugins.test.quickfind.test.TaskMonitorBase;
-import csplugins.widgets.autocomplete.index.TextIndex;
-
-public abstract class FilterTest extends TestCase {
+public class FilterTest extends TestCase {
 	
 	protected void initNetwork() {
 		cyNetwork = Cytoscape.createNetwork("network1");
@@ -69,4 +62,10 @@ public abstract class FilterTest extends TestCase {
 	protected static final String SCORE = "score";
 	protected static final String PMID = "pmid";
 	protected CyNetwork cyNetwork;
+	
+	public void testDumb() {
+		//No test for FilterTest. It holds test data only!
+		// Without this dumb test-case, a warning message will be printed out
+	}
+
 }
