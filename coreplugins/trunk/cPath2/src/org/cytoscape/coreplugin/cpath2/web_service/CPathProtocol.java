@@ -239,7 +239,7 @@ public class CPathProtocol {
      */
     public String connect (TaskMonitor taskMonitor) throws CPathException, EmptySetException {
         try {
-            NameValuePair[] nvps = createNameValuePairs();
+            NameValuePair[] nvps;
 
             // Create an instance of HttpClient.
             HttpClient client = new HttpClient();
@@ -248,10 +248,12 @@ public class CPathProtocol {
             // Create a method instance.
             // If the query string is long, use POST.  Otherwise, use GET.
             if (query != null && query.length() > 100) {
+                nvps =  createNameValuePairs(true);
                 method = new PostMethod(baseUrl);
                 ((PostMethod)(method)).addParameters(nvps);
                 System.out.println("Connect:  " + method.getURI() + " (via POST)");
             } else {
+                nvps = createNameValuePairs(false);
                 String liveUrl = createURI(baseUrl, nvps);
                 method = new GetMethod(liveUrl);
                 System.out.println("Connect:  " + liveUrl);
@@ -372,7 +374,7 @@ public class CPathProtocol {
      * @return URI.
      */
     public String getURI () {
-        NameValuePair[] nvps = createNameValuePairs();
+        NameValuePair[] nvps = createNameValuePairs(false);
         return createURI(baseUrl, nvps);
     }
 
@@ -390,7 +392,7 @@ public class CPathProtocol {
         return buf.toString();
     }
 
-    private NameValuePair[] createNameValuePairs () {
+    private NameValuePair[] createNameValuePairs (boolean post) {
         NameValuePair nvps[] = null;
         if (taxonomyId == NOT_SPECIFIED) {
             nvps = new NameValuePair[6];
@@ -401,7 +403,11 @@ public class CPathProtocol {
         }
         nvps[0] = new NameValuePair(ARG_COMMAND, command);
         try {
-            nvps[1] = new NameValuePair(ARG_QUERY, URLEncoder.encode(query, "UTF-8"));
+            if (!post) {
+                nvps[1] = new NameValuePair(ARG_QUERY, URLEncoder.encode(query, "UTF-8"));
+            } else {
+                nvps[1] = new NameValuePair(ARG_QUERY, query); 
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
