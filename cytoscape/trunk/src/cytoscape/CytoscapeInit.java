@@ -38,8 +38,9 @@ package cytoscape;
 
 import cytoscape.data.readers.CytoscapeSessionReader;
 
-import cytoscape.init.CyInitParams;
 import cytoscape.dialogs.ErrorDialog;
+
+import cytoscape.init.CyInitParams;
 
 import cytoscape.plugin.PluginManager;
 
@@ -58,15 +59,16 @@ import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-//import java.net.URLClassLoader;
 
+//import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-//import java.util.Set;
 
+//import java.util.Set;
 import javax.swing.ImageIcon;
+
 
 /**
  * <p>
@@ -78,13 +80,13 @@ import javax.swing.ImageIcon;
  * support a "headless" mode (meaning there is no GUI). We do, however, hope to
  * support this in the future.
  * </p>
- * 
+ *
  * <p>
  * The two main modes of running Cytoscape are either in "headless" mode or in
  * "script" mode. This class will use the command-line options to figure out
  * which mode is desired, and run things accordingly.
  * </p>
- * 
+ *
  * The order for doing things will be the following:<br>
  * <ol>
  * <li>deterimine script mode, or headless mode</li>
@@ -96,13 +98,12 @@ import javax.swing.ImageIcon;
  * <li>Initialize all plugins, in order if specified.</li>
  * <li>Start Desktop/Print Output exit.</li>
  * </ol>
- * 
+ *
  * @since Cytoscape 1.0
  * @author Cytoscape Core Team
  */
 public class CytoscapeInit {
 	private static final String SPLASH_SCREEN_LOCATION = "/cytoscape/images/CytoscapeSplashScreen.png";
-
 	private static Properties properties;
 	private static Properties visualProperties;
 
@@ -128,7 +129,7 @@ public class CytoscapeInit {
 
 	/**
 	 * Cytoscape Init must be initialized using the command line arguments.
-	 * 
+	 *
 	 * @param args
 	 *            the arguments from the command line
 	 * @return false, if we fail to initialize for some reason
@@ -160,9 +161,9 @@ public class CytoscapeInit {
 			 * Initialize as GUI mode
 			 */
 			if ((initParams.getMode() == CyInitParams.GUI)
-					|| (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				final ImageIcon image = new ImageIcon(this.getClass()
-						.getResource(SPLASH_SCREEN_LOCATION));
+				                                          .getResource(SPLASH_SCREEN_LOCATION));
 				WindowUtilities.showSplash(image, 8000);
 
 				/*
@@ -171,14 +172,15 @@ public class CytoscapeInit {
 				Cytoscape.getDesktop();
 
 				// set the wait cursor
-				Cytoscape.getDesktop().setCursor(
-						Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				Cytoscape.getDesktop().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 				setUpAttributesChangedListener();
 			}
+
 			errorDialog = new ErrorDialog(Cytoscape.getDesktop(), "Cytoscape Initialization Errors");
 
 			PluginManager mgr = PluginManager.getPluginManager();
+
 			try {
 				System.out.println("Updating plugins...");
 				mgr.delete();
@@ -186,9 +188,11 @@ public class CytoscapeInit {
 				errorDialog.addError(me);
 				me.printStackTrace();
 			}
+
 			mgr.install();
 
 			System.out.println("loading plugins....");
+
 			/*
 			 * TODO smart plugin loading. If there are multiple of the same
 			 * plugin (this will only work in the .cytoscape directory) load the
@@ -204,42 +208,46 @@ public class CytoscapeInit {
 			// Get all directories where plugins have been installed
 			// going to have to be a little smart...themes contain their plugins
 			// in subdirectories
-			List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr
-					.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
-			for (cytoscape.plugin.DownloadableInfo dInfo : MgrInstalledPlugins) {
+			List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
 
-				if (dInfo.getCategory().equals(
-						cytoscape.plugin.Category.CORE.getCategoryText()))
+			for (cytoscape.plugin.DownloadableInfo dInfo : MgrInstalledPlugins) {
+				if (dInfo.getCategory().equals(cytoscape.plugin.Category.CORE.getCategoryText()))
 					continue;
 
 				switch (dInfo.getType()) { // TODO get rid of switches
-				case PLUGIN:
-					InstalledPlugins.add(((cytoscape.plugin.PluginInfo) dInfo)
-							.getInstallLocation());
-					break;
-				case THEME:
-					cytoscape.plugin.ThemeInfo tInfo = (cytoscape.plugin.ThemeInfo) dInfo;
-					for (cytoscape.plugin.PluginInfo plugin : tInfo
-							.getPlugins()) {
-						InstalledPlugins.add(plugin.getInstallLocation());
-					}
-					break;
+					case PLUGIN:
+						InstalledPlugins.add(((cytoscape.plugin.PluginInfo) dInfo)
+						                                                                                                                                                                                                    .getInstallLocation());
+
+						break;
+
+					case THEME:
+
+						cytoscape.plugin.ThemeInfo tInfo = (cytoscape.plugin.ThemeInfo) dInfo;
+
+						for (cytoscape.plugin.PluginInfo plugin : tInfo.getPlugins()) {
+							InstalledPlugins.add(plugin.getInstallLocation());
+						}
+
+						break;
 				}
 			}
+
 			mgr.loadPlugins(InstalledPlugins);
-			
+
 			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
-			for (Throwable t: pluginLoadingErrors) {
+
+			for (Throwable t : pluginLoadingErrors) {
 				errorDialog.addError(t);
 				t.printStackTrace();
 			}
+
 			mgr.clearErrorList();
-			
 
 			System.out.println("loading session...");
 
 			if ((initParams.getMode() == CyInitParams.GUI)
-					|| (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
 				loadSessionFile();
 
 			System.out.println("loading networks...");
@@ -250,11 +258,17 @@ public class CytoscapeInit {
 
 			System.out.println("loading expression files...");
 			loadExpressionFiles();
+
+			if ((initParams.getMode() == CyInitParams.GUI)
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+				System.out.println("Initializing VizMapper...");
+				initVizmapper();
+			}
 		} finally {
 			// Always restore the cursor and hide the splash, even there is
 			// exception
 			if ((initParams.getMode() == CyInitParams.GUI)
-					|| (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				WindowUtilities.hideSplash();
 				Cytoscape.getDesktop().setCursor(Cursor.getDefaultCursor());
 
@@ -264,14 +278,12 @@ public class CytoscapeInit {
 		}
 
 		long endtime = System.currentTimeMillis() - begintime;
-		System.out.println("\nCytoscape initialized successfully in: "
-				+ endtime + " ms");
-		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null,
-				null);
+		System.out.println("\nCytoscape initialized successfully in: " + endtime + " ms");
+		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 
 		if (errorDialog.hasErrors())
 			errorDialog.setVisible(true);
-		
+
 		return true;
 	}
 
@@ -295,8 +307,7 @@ public class CytoscapeInit {
 	 */
 	public static File getMRUD() {
 		if (mrud == null)
-			mrud = new File(properties.getProperty("mrud", System
-					.getProperty("user.dir")));
+			mrud = new File(properties.getProperty("mrud", System.getProperty("user.dir")));
 
 		return mrud;
 	}
@@ -326,14 +337,13 @@ public class CytoscapeInit {
 
 	/**
 	 * Within the .cytoscape directory create a version-specific directory
-	 * 
+	 *
 	 * @return the directory ".cytoscape/[cytoscape version]
 	 */
 	public static File getConfigVersionDirectory() {
 		File Parent = getConfigDirectory();
 
-		File VersionDir = new File(Parent, (new CytoscapeVersion())
-				.getMajorVersion());
+		File VersionDir = new File(Parent, (new CytoscapeVersion()).getMajorVersion());
 		VersionDir.mkdir();
 
 		return VersionDir;
@@ -341,7 +351,7 @@ public class CytoscapeInit {
 
 	/**
 	 * If .cytoscape directory does not exist, it creates it and returns it
-	 * 
+	 *
 	 * @return the directory ".cytoscape" in the users home directory.
 	 */
 	public static File getConfigDirectory() {
@@ -349,7 +359,7 @@ public class CytoscapeInit {
 
 		try {
 			String dirName = properties.getProperty("alternative.config.dir",
-					System.getProperty("user.home"));
+			                                        System.getProperty("user.home"));
 			File parent_dir = new File(dirName, ".cytoscape");
 
 			if (parent_dir.mkdir())
@@ -365,10 +375,10 @@ public class CytoscapeInit {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @param file_name
 	 *            DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public static File getConfigFile(String file_name) {
@@ -389,15 +399,14 @@ public class CytoscapeInit {
 
 	/**
 	 * DOCUMENT ME!
-	 * 
+	 *
 	 * @return DOCUMENT ME!
 	 */
 	public static Properties getVisualProperties() {
 		return visualProperties;
 	}
 
-	private static void loadStaticProperties(String defaultName,
-			Properties props) {
+	private static void loadStaticProperties(String defaultName, Properties props) {
 		if (props == null) {
 			System.out.println("input props is null");
 			props = new Properties();
@@ -418,8 +427,7 @@ public class CytoscapeInit {
 			if (cl != null)
 				vmu = cl.getResource(defaultName);
 			else
-				System.out
-						.println("ClassLoader for reading cytoscape.jar is null");
+				System.out.println("ClassLoader for reading cytoscape.jar is null");
 
 			if (vmu != null)
 				// We'd like to use URLUtil.getBasicInputStream() to get
@@ -429,8 +437,7 @@ public class CytoscapeInit {
 				// it directly:
 				props.load(vmu.openStream());
 			else
-				System.out.println("couldn't read " + defaultName + " from "
-						+ tryName);
+				System.out.println("couldn't read " + defaultName + " from " + tryName);
 
 			// load the props file from $HOME/.cytoscape
 			tryName = "$HOME/.cytoscape";
@@ -440,11 +447,10 @@ public class CytoscapeInit {
 			if (vmp != null)
 				props.load(new FileInputStream(vmp));
 			else
-				System.out.println("couldn't read " + defaultName + " from "
-						+ tryName);
+				System.out.println("couldn't read " + defaultName + " from " + tryName);
 		} catch (IOException ioe) {
 			System.err.println("couldn't open " + tryName + " " + defaultName
-					+ " file - creating a hardcoded default");
+			                   + " file - creating a hardcoded default");
 			ioe.printStackTrace();
 		}
 	}
@@ -472,18 +478,13 @@ public class CytoscapeInit {
 		String sessionFile = initParams.getSessionFile();
 
 		// Turn off the network panel (for loading speed)
-		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
-				false);
-		Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane()
-				.setVisible(false);
+		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
+		Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
 
 		try {
 			String sessionName = "";
 
 			if (sessionFile != null) {
-				Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
-				Cytoscape.createNewSession();
-				Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
 
 				CytoscapeSessionReader reader = null;
 
@@ -502,22 +503,18 @@ public class CytoscapeInit {
 
 				if (reader != null) {
 					reader.read();
-					Cytoscape.getDesktop().setTitle(
-							"Cytoscape Desktop (Session Name: " + sessionName
-									+ ")");
+					Cytoscape.getDesktop()
+					         .setTitle("Cytoscape Desktop (Session Name: " + sessionName + ")");
 
 					return true;
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("couldn't create session from file: '"
-					+ sessionFile + "'");
+			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
-			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(
-					true);
-			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane()
-					.setVisible(true);
+			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
+			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
 		}
 
 		return false;
@@ -555,8 +552,7 @@ public class CytoscapeInit {
 			}
 		};
 
-		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(
-				attsChangeListener);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(attsChangeListener);
 	}
 
 	// Load all requested networks
@@ -570,13 +566,12 @@ public class CytoscapeInit {
 			boolean createView = false;
 
 			if ((initParams.getMode() == CyInitParams.GUI)
-					|| (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
 				createView = true;
 
 			if (net.matches(FileUtil.urlPattern)) {
 				try {
-					network = Cytoscape.createNetworkFromURL(new URL(net),
-							createView);
+					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
 				} catch (MalformedURLException mue) {
 					mue.printStackTrace();
 					System.out.println("Couldn't load network.  Bad URL!");
@@ -591,21 +586,24 @@ public class CytoscapeInit {
 			ret_val[1] = net;
 			ret_val[2] = new Integer(0);
 
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null,
-					ret_val);
+			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 		}
 	}
 
 	// load any specified data attribute files
 	private void loadAttributes() {
 		try {
-			Cytoscape.loadAttributes((String[]) initParams
-					.getNodeAttributeFiles().toArray(new String[] {}),
-					(String[]) initParams.getEdgeAttributeFiles().toArray(
-							new String[] {}));
+			Cytoscape.loadAttributes((String[]) initParams.getNodeAttributeFiles()
+			                                              .toArray(new String[] {  }),
+			                         (String[]) initParams.getEdgeAttributeFiles()
+			                                              .toArray(new String[] {  }));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.out.println("failure loading specified attributes");
 		}
+	}
+
+	private void initVizmapper() {
+		Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
 	}
 }

@@ -883,17 +883,20 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	/*
 	 * Set Visual Style selector combo box.
 	 */
-	private void setVSSelector() {
+	public void initVizmapperGUI() {
 		List<String> vsNames = new ArrayList<String>(vmm.getCalculatorCatalog().getVisualStyleNames());
 
+		// Disable action listeners
+		final ActionListener[] li = vsNameComboBox.getActionListeners();
+		for(int i=0; i<li.length; i++)
+			vsNameComboBox.removeActionListener(li[i]);
+		
 		vsNameComboBox.removeAllItems();
 
 		JPanel defPanel;
 
 		final Dimension panelSize = defaultAppearencePanel.getSize();
 		DGraphView view;
-
-		CyNetworkView oldView = vmm.getNetworkView();
 
 		Collections.sort(vsNames);
 		for (String name : vsNames) {
@@ -908,10 +911,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 		
-		// vmm.setNetworkView(oldView);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-
-		// Cytoscape.destroyNetwork(dummyNet);
+		
+		// Restore
+		for(int i=0; i<li.length; i++)
+			vsNameComboBox.addActionListener(li[i]);
 	}
 
 	/**
@@ -1932,22 +1936,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
-
-			if (vsNameComboBox.getItemCount() == 0) {
-				setVSSelector();
-			}
-
 			setDefaultPanel(defaultImageManager.get(vmName));
-
 			vsNameComboBox.setSelectedItem(vmName);
 			vmm.setVisualStyle(vmName);
-
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
 			final String vsName = vmm.getVisualStyle().getName();
-			this.lastVSName = null;
-			setVSSelector();
+			
+			lastVSName = null;
+			initVizmapperGUI();
+			switchVS(vsName);
 			vsNameComboBox.setSelectedItem(vsName);
 			vmm.setVisualStyle(vsName);
 
@@ -3677,6 +3676,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final String currentName = vmm.getVisualStyle().getName();
 		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
 
+		if(ignore) {
+			return;
+		}
 		System.out.println("Got VMM Change event.  Cur VS in VMM: " + vmm.getVisualStyle().getName());
 		
 		if (selectedName == null || currentName == null || curView == null || curView.equals(Cytoscape.getNullNetworkView()) )
