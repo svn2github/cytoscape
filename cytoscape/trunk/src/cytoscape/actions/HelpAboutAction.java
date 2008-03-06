@@ -36,17 +36,12 @@
 */
 package cytoscape.actions;
 
-import cytoscape.CytoscapeVersion;
-
 import cytoscape.util.CreditScreen;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyHelpBroker;
 
 import java.awt.event.ActionEvent;
 
-import java.lang.*;
-
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -57,12 +52,12 @@ public class HelpAboutAction extends CytoscapeAction {
 	 * Creates a new HelpAboutAction object.
 	 */
 	public HelpAboutAction() {
-		super("About");
+		super("About...");
 		setPreferredMenu("Help");
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Show about page.
 	 *
 	 * @param e DOCUMENT ME!
 	 */
@@ -92,9 +87,10 @@ public class HelpAboutAction extends CytoscapeAction {
 					               + " Hamid Bolouri\n" + " Ethan Cerami\n" + " Rowan Christmas\n"
 					               + " Melissa Cline\n" + " Mike Creech\n" + " Paul Edlefsen\n"
 					               + " Stephanie Fan\n" + " Trey Ideker\n" + " Liz Kain\n"
-					               + " Larissa Kamenkovich\n" + " Ryan Kelley\n" + " Sarah Killcoyne\n" 
-					               + " Brad Kohlenberg\n" + " Allan Kuchinsky\n"
-					               + " Nerius Landys\n" + " Willem Ligtenberg\n" + " Samad Lotia\n"
+					               + " Larissa Kamenkovich\n" + " Ryan Kelley\n"
+					               + " Sarah Killcoyne\n" + " Brad Kohlenberg\n"
+					               + " Allan Kuchinsky\n" + " Nerius Landys\n"
+					               + " Willem Ligtenberg\n" + " Samad Lotia\n"
 					               + " Andrew Markiel\n" + " James McIninch\n" + " Keiichiro Ono\n"
 					               + " Owen Ozier\n" + " David Reiss\n" + " Chris Sander\n"
 					               + " Paul Shannon\n" + " Robert Sheridan\n"
