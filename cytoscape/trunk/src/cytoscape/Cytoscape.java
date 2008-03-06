@@ -1007,6 +1007,9 @@ public abstract class Cytoscape {
 
 		firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
+		network.unselectAllEdges();
+		network.unselectAllNodes();
+
 		Map nmap = getNetworkMap();
 		nmap.remove(networkId);
 
