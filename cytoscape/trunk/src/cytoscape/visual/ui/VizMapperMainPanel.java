@@ -112,6 +112,7 @@ import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.attr.MultiHashMapListener;
 import cytoscape.util.SwingWorker;
 import cytoscape.util.swing.DropDownMenuButton;
 import cytoscape.view.CyNetworkView;
@@ -166,7 +167,7 @@ import ding.view.DGraphView;
  * @param <syncronized>
  */
 public class VizMapperMainPanel extends JPanel implements PropertyChangeListener, PopupMenuListener,
-                                                          ChangeListener {
+                                                          ChangeListener, MultiHashMapListener {
 	private static final Color UNUSED_COLOR = new Color(100, 100, 100, 50);
 	public enum DefaultEditor {
 		NODE,
@@ -267,6 +268,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		initComponents();
 		registerCellEditorListeners();
+		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(this);
+		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(this);
+		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(this);
+		
 	}
 
 	/*
@@ -1964,9 +1969,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 		           || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
-			System.out.println("Updating attr: Event = " + e.getPropertyName() + ", Source = "
-			                   + e.getSource());
-
 			setAttrComboBox();
 		}
 
@@ -3778,5 +3780,21 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final JTable table = visualPropertySheetPanel.getTable();
 
 		return table.getModel().getValueAt(table.getSelectedRow(), 0);
+	}
+
+	public void allAttributeValuesRemoved(String objectKey, String attributeName) {
+		setAttrComboBox();
+	}
+
+	public void attributeValueAssigned(String objectKey, String attributeName,
+			Object[] keyIntoValue, Object oldAttributeValue,
+			Object newAttributeValue) {
+		setAttrComboBox();
+		
+	}
+
+	public void attributeValueRemoved(String objectKey, String attributeName,
+			Object[] keyIntoValue, Object attributeValue) {
+		setAttrComboBox();
 	}
 }
