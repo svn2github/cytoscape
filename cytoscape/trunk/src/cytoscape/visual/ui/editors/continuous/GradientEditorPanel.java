@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,33 +32,31 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.visual.ui.editors.continuous;
+
+import cytoscape.Cytoscape;
+
+import cytoscape.util.CyColorChooser;
+
+import cytoscape.visual.VisualPropertyType;
+
+import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JColorChooser;
 import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-
-import cytoscape.Cytoscape;
-import cytoscape.util.CyColorChooser;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.AddPointListener;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
 
 
 /**
@@ -71,7 +68,6 @@ import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
  */
 public class GradientEditorPanel extends ContinuousMappingEditorPanel
     implements PropertyChangeListener {
-
 	/**
 	 * Creates a new GradientEditorPanel object.
 	 *
@@ -107,11 +103,24 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 
 		return editor;
 	}
-	
-	public static ImageIcon getLegend(final int width, final int height, final VisualPropertyType type) {
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param width DOCUMENT ME!
+	 * @param height DOCUMENT ME!
+	 * @param type DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public static ImageIcon getLegend(final int width, final int height,
+	                                  final VisualPropertyType type) {
 		editor = new GradientEditorPanel(type);
-		CyGradientTrackRenderer rend = (CyGradientTrackRenderer)editor.slider.getTrackRenderer();
+
+		CyGradientTrackRenderer rend = (CyGradientTrackRenderer) editor.slider
+		                                                                                                                 .getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
+
 		return rend.getLegend(width, height);
 	}
 
@@ -121,16 +130,19 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-            VisualPropertyType type) {
+	                                VisualPropertyType type) {
 		editor = new GradientEditorPanel(type);
-		CyGradientTrackRenderer rend = (CyGradientTrackRenderer)editor.slider.getTrackRenderer();
+
+		CyGradientTrackRenderer rend = (CyGradientTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
+
 		return rend.getTrackGraphicIcon(iconWidth, iconHeight);
 	}
 
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
 		BoundaryRangeValues newRange;
+		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 
 		if (mapping.getPointCount() == 0) {
 			slider.getModel().addThumb(50f, Color.white);
@@ -197,13 +209,11 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 		setMinimumSize(new Dimension(300, 80));
 		slider.updateUI();
 
-//		slider.setComponentPopupMenu(menu);
-
+		//		slider.setComponentPopupMenu(menu);
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if (SwingUtilities.isRightMouseButton(e)) {
 					} else {
-
 						final JComponent selectedThumb = slider.getSelectedThumb();
 
 						if (selectedThumb != null) {
@@ -212,8 +222,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 
 							if (e.getClickCount() == 2) {
 								final Color newColor = CyColorChooser.showDialog(slider,
-								                                                "Choose new color...",
-								                                                Color.white);
+								                                                 "Choose new color...",
+								                                                 Color.white);
 
 								if (newColor != null) {
 									slider.getModel().getThumbAt(slider.getSelectedIndex())
@@ -259,12 +269,13 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 				}
 			});
 
-		double actualRange = Math.abs(minValue - maxValue);
+		final double actualRange = EditorValueRangeTracer.getTracer().getRange(type);
+		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
 
 		if (allPoints != null) {
 			for (ContinuousMappingPoint point : allPoints) {
 				BoundaryRangeValues bound = point.getRange();
-				
+
 				slider.getModel()
 				      .addThumb(((Double) ((point.getValue() - minValue) / actualRange)).floatValue() * 100,
 				                (Color) bound.equalValue);
@@ -283,15 +294,14 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 
-//		System.out.println("--------- VS = "
-//		                   + Cytoscape.getVisualMappingManager().getVisualStyle()
-//		                              .getNodeAppearanceCalculator()
-//		                              .getCalculator(VisualPropertyType.NODE_SHAPE) + " ----");
-
-		CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(minValue, maxValue,
-		                                                            (Color) below, (Color) above,
+		//		System.out.println("--------- VS = "
+		//		                   + Cytoscape.getVisualMappingManager().getVisualStyle()
+		//		                              .getNodeAppearanceCalculator()
+		//		                              .getCalculator(VisualPropertyType.NODE_SHAPE) + " ----");
+		CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(type, (Color) below,
+		                                                            (Color) above,
 		                                                            mapping
-		                                                                                                                                                                                                                                                                                                       .getControllingAttributeName());
+		                                                                                                                                                                                                                                                                                                        .getControllingAttributeName());
 		//updateBelowAndAbove();
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(gRend);
@@ -318,8 +328,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 			else
 				this.below = e.getNewValue();
 
-			final CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(minValue, maxValue,
-			                                                                  (Color) below,
+			final CyGradientTrackRenderer gRend = new CyGradientTrackRenderer(type, (Color) below,
 			                                                                  (Color) above,
 			                                                                  mapping
 			                                                                                                                                                                                                                                                                                                                                  .getControllingAttributeName());

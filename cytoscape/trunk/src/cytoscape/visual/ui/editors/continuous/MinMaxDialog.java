@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
@@ -44,30 +42,42 @@ import cytoscape.Cytoscape;
  * @author  kono
  */
 public class MinMaxDialog extends javax.swing.JDialog {
-	
 	private static MinMaxDialog dialog;
-	
+
 	/** Creates new form MinMaxDialog */
 	private MinMaxDialog(java.awt.Frame parent, boolean modal, Double min, Double max) {
 		super(parent, modal);
 		this.min = min;
 		this.max = max;
 		initComponents();
+		
+		this.minTextField.setText(min.toString());
+		this.maxTextField.setText(max.toString());
 	}
-	
+
 	private Double min;
 	private Double max;
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param min DOCUMENT ME!
+	 * @param max DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static Double[] getMinMax(double min, double max) {
 		Double[] minMax = new Double[2];
 		dialog = new MinMaxDialog(Cytoscape.getDesktop(), true, min, max);
+		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
 		dialog.setVisible(true);
-		
-		if(dialog.min == null || dialog.max == null)
+
+		if ((dialog.min == null) || (dialog.max == null))
 			return null;
 
 		minMax[0] = dialog.min;
 		minMax[1] = dialog.max;
+
 		return minMax;
 	}
 
@@ -79,34 +89,25 @@ public class MinMaxDialog extends javax.swing.JDialog {
 
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
-		titleLabel = new javax.swing.JLabel();
-		titleSeparator = new javax.swing.JSeparator();
 		minLabel = new javax.swing.JLabel();
 		maxLabel = new javax.swing.JLabel();
 		minTextField = new javax.swing.JTextField();
 		maxTextField = new javax.swing.JTextField();
 		okButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
+		titlePanel = new javax.swing.JPanel();
+		titleLabel = new javax.swing.JLabel();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-		titleLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
-		titleLabel.setText("Set Min and Max");
+		setTitle("Set Range");
+		setAlwaysOnTop(true);
+		setResizable(false);
 
 		minLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 		minLabel.setText("Min");
 
 		maxLabel.setFont(new java.awt.Font("SansSerif", 1, 12));
 		maxLabel.setText("Max");
-
-		minTextField.setText(min.toString());
-		minTextField.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					minTextFieldActionPerformed(evt);
-				}
-			});
-
-		maxTextField.setText(max.toString());
 
 		okButton.setText("OK");
 		okButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
@@ -124,68 +125,76 @@ public class MinMaxDialog extends javax.swing.JDialog {
 				}
 			});
 
+		titlePanel.setBackground(new java.awt.Color(255, 255, 255));
+
+		titleLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
+		titleLabel.setText("Set Value Range");
+
+		org.jdesktop.layout.GroupLayout titlePanelLayout = new org.jdesktop.layout.GroupLayout(titlePanel);
+		titlePanel.setLayout(titlePanelLayout);
+		titlePanelLayout.setHorizontalGroup(titlePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                    .add(titlePanelLayout.createSequentialGroup()
+		                                                                         .addContainerGap()
+		                                                                         .add(titleLabel)
+		                                                                         .addContainerGap(125,
+		                                                                                          Short.MAX_VALUE)));
+		titlePanelLayout.setVerticalGroup(titlePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                  .add(titlePanelLayout.createSequentialGroup()
+		                                                                       .addContainerGap()
+		                                                                       .add(titleLabel)
+		                                                                       .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                        Short.MAX_VALUE)));
+
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                .add(titlePanel,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     Short.MAX_VALUE)
 		                                .add(layout.createSequentialGroup().addContainerGap()
 		                                           .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                      .add(titleSeparator,
+		                                                      .add(minLabel,
+		                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                           35,
+		                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                                      .add(maxLabel,
 		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                           144, Short.MAX_VALUE)
-		                                                      .add(titleLabel)
-		                                                      .add(layout.createSequentialGroup()
-		                                                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                                                                 false)
-		                                                                            .add(minLabel,
-		                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                 Short.MAX_VALUE)
-		                                                                            .add(maxLabel,
-		                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                 Short.MAX_VALUE))
-		                                                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                            .add(layout.createSequentialGroup()
-		                                                                                       .add(12,
-		                                                                                            12,
-		                                                                                            12)
-		                                                                                       .add(minTextField,
-		                                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                            107,
-		                                                                                            Short.MAX_VALUE))
-		                                                                            .add(layout.createSequentialGroup()
-		                                                                                       .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                       .add(maxTextField,
-		                                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                            107,
-		                                                                                            Short.MAX_VALUE))))
-		                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                           layout.createSequentialGroup()
-		                                                                 .add(cancelButton)
-		                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                 .add(okButton)))
-		                                           .addContainerGap()));
+		                                                           35, Short.MAX_VALUE))
+		                                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                           .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                      .add(minTextField,
+		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                           182, Short.MAX_VALUE)
+		                                                      .add(maxTextField,
+		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                           182, Short.MAX_VALUE))
+		                                           .addContainerGap())
+		                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                     layout.createSequentialGroup()
+		                                           .addContainerGap(163, Short.MAX_VALUE)
+		                                           .add(cancelButton)
+		                                           .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                           .add(okButton).addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(layout.createSequentialGroup().addContainerGap()
-		                                         .add(titleLabel)
-		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                         .add(titleSeparator,
+		                              .add(layout.createSequentialGroup()
+		                                         .add(titlePanel,
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                              10,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 		                                                    .add(minLabel)
 		                                                    .add(minTextField,
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                         18,
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 		                                                    .add(maxLabel)
 		                                                    .add(maxTextField,
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                         18,
 		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -201,22 +210,22 @@ public class MinMaxDialog extends javax.swing.JDialog {
 	}
 
 	private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		try{
+		try {
 			min = Double.valueOf(minTextField.getText());
 			max = Double.valueOf(maxTextField.getText());
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			min = null;
 			max = null;
 		}
+
 		dispose();
 	}
-	
+
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		min = null;
 		max = null;
 		dispose();
 	}
-
 
 	// Variables declaration - do not modify
 	private javax.swing.JButton cancelButton;
@@ -226,7 +235,7 @@ public class MinMaxDialog extends javax.swing.JDialog {
 	private javax.swing.JTextField minTextField;
 	private javax.swing.JButton okButton;
 	private javax.swing.JLabel titleLabel;
-	private javax.swing.JSeparator titleSeparator;
+	private javax.swing.JPanel titlePanel;
 
 	// End of variables declaration
 }

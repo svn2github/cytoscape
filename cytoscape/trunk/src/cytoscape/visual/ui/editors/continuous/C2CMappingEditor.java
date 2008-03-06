@@ -78,9 +78,9 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		belowPanel.setVisible(false);
 		pack();
 		setSlider();
-		
+
 		// Add two sliders by default.
-		if (mapping != null && mapping.getPointCount() == 0) {
+		if ((mapping != null) && (mapping.getPointCount() == 0)) {
 			addSlider(0f, 10f);
 			addSlider(100f, 30f);
 		}
@@ -140,7 +140,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		editor = new C2CMappingEditor(type);
 
 		final ContinuousTrackRenderer rend = (ContinuousTrackRenderer) editor.slider
-		                                                                                                                                   .getTrackRenderer();
+		                                                                                                                                       .getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
 		return rend.getLegend(width, height);
@@ -148,9 +148,10 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 	// Add slider to the editor.
 	private void addSlider(float position, float value) {
-		
 		System.out.println("=====Adding slider\n");
-		
+
+		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+
 		BoundaryRangeValues newRange;
 
 		if (mapping.getPointCount() == 0) {
@@ -192,7 +193,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		slider.repaint();
 		repaint();
 	}
-	
+
 	@Override
 	protected void addButtonActionPerformed(ActionEvent evt) {
 		addSlider(100f, 5f);
@@ -223,7 +224,8 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		setMinimumSize(new Dimension(300, 80));
 		slider.updateUI();
 
-		double actualRange = Math.abs(minValue - maxValue);
+		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		double actualRange = EditorValueRangeTracer.getTracer().getRange(type);
 
 		BoundaryRangeValues bound;
 		Float fraction;
@@ -252,7 +254,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		 */
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
 
-		ContinuousTrackRenderer cRend = new ContinuousTrackRenderer(type, minValue, maxValue,
+		ContinuousTrackRenderer cRend = new ContinuousTrackRenderer(type,
 		                                                            (Number) below, (Number) above);
 		cRend.addPropertyChangeListener(this);
 

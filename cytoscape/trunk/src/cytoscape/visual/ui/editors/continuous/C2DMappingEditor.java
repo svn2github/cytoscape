@@ -49,6 +49,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import java.beans.PropertyChangeEvent;
+
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -107,9 +108,10 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	                                VisualPropertyType type) {
 		editor = new C2DMappingEditor(type);
 
-		if(editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
+		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
-		} 
+		}
+
 		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
@@ -129,9 +131,10 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	                                  final VisualPropertyType type) {
 		editor = new C2DMappingEditor(type);
 
-		if(editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
+		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
 		}
+
 		DiscreteTrackRenderer rend = (DiscreteTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
@@ -143,6 +146,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		BoundaryRangeValues newRange;
 		Object defValue = Cytoscape.getVisualMappingManager().getVisualStyle()
 		                           .getNodeAppearanceCalculator().getDefaultAppearance().get(type);
+		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 
 		if (mapping.getPointCount() == 0) {
 			slider.getModel().addThumb(50f, defValue);
@@ -174,14 +178,18 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		updateMap();
 
-		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+		//		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 
 		slider.repaint();
 		repaint();
 	}
-	
+
 	protected void updateMap() {
 		List<Thumb> thumbs = slider.getModel().getSortedThumbs();
+
+		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		final double valRange = EditorValueRangeTracer.getTracer().getRange(type);
 
 		//List<ContinuousMappingPoint> points = mapping.getAllPoints();
 		Thumb t;
@@ -192,9 +200,10 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			mapping.getPoint(0).getRange().equalValue = below;
 			mapping.getPoint(0).getRange().lesserValue = below;
 			mapping.getPoint(0).getRange().greaterValue = above;
-			
+
 			newVal = ((thumbs.get(0).getPosition() / 100) * valRange) + minValue;
 			mapping.getPoint(0).setValue(newVal);
+
 			return;
 		}
 
@@ -205,7 +214,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 				// First thumb
 				mapping.getPoint(i).getRange().lesserValue = below;
 				mapping.getPoint(i).getRange().equalValue = below;
-				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i+1).getObject();
+				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1).getObject();
 			} else if (i == (thumbs.size() - 1)) {
 				// Last thumb
 				mapping.getPoint(i).getRange().greaterValue = above;
@@ -215,7 +224,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 				// Others
 				mapping.getPoint(i).getRange().lesserValue = t.getObject();
 				mapping.getPoint(i).getRange().equalValue = t.getObject();
-				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i+1).getObject();
+				mapping.getPoint(i).getRange().greaterValue = thumbs.get(i + 1).getObject();
 			}
 
 			newVal = ((t.getPosition() / 100) * valRange) + minValue;
@@ -245,12 +254,15 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		setMinimumSize(new Dimension(300, 80));
 		slider.updateUI();
 
+		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e
-					                                                                                                                                                                                       .getX(),
+					                                                                                                                                                                                                                                                   .getX(),
 					                                                                           e
-					                                                                                                                                                                                         .getY());
+					                                                                                                                                                                                                                                                     .getY());
 
 					Object newValue = null;
 
@@ -277,8 +289,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 						updateMap();
 
-						slider.setTrackRenderer(new DiscreteTrackRenderer(type, minValue, maxValue,
-						                                                  below, above));
+						slider.setTrackRenderer(new DiscreteTrackRenderer(type, below, above));
 						slider.repaint();
 
 						Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
@@ -286,7 +297,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 				}
 			});
 
-		double actualRange = Math.abs(minValue - maxValue);
+		double actualRange = EditorValueRangeTracer.getTracer().getRange(type);
 
 		BoundaryRangeValues bound;
 		Float fraction;
@@ -294,9 +305,10 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		/*
 		 * NPE?
 		 */
-		if(allPoints == null) {
+		if (allPoints == null) {
 			return;
 		}
+
 		for (ContinuousMappingPoint point : allPoints) {
 			bound = point.getRange();
 
@@ -319,8 +331,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		 * get min and max for the value object
 		 */
 		TriangleThumbRenderer thumbRend = new TriangleThumbRenderer(slider);
-		DiscreteTrackRenderer dRend = new DiscreteTrackRenderer(type, minValue, maxValue, below,
-		                                                        above);
+		DiscreteTrackRenderer dRend = new DiscreteTrackRenderer(type, below, above);
 
 		slider.setThumbRenderer(thumbRend);
 		slider.setTrackRenderer(dRend);

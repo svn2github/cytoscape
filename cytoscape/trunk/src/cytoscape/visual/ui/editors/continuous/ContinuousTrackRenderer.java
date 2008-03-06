@@ -80,7 +80,6 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	/*
 	 * Constants for diagram.
 	 */
-	
 	private static float UPPER_LIMIT;
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final Font ICON_FONT = new Font("SansSerif", Font.BOLD, 8);
@@ -97,13 +96,6 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	private int trackHeight = 120;
 	private int arrowBarPosition = trackHeight + 50;
 	private static final Color BORDER_COLOR = Color.black;
-	private double valueRange;
-
-	/*
-	 * Min and Max for X-Axis.
-	 */
-	private double minValue;
-	private double maxValue;
 
 	/*
 	 * Min and Max for the Y-Axis.
@@ -131,16 +123,13 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	/**
 	 * Creates a new ContinuousTrackRenderer object.
 	 *
-	 * @param minValue DOCUMENT ME!
-	 * @param maxValue DOCUMENT ME!
+	 * @param type  DOCUMENT ME!
+	 * @param below  DOCUMENT ME!
+	 * @param above  DOCUMENT ME!
 	 */
-	public ContinuousTrackRenderer(VisualPropertyType type, double minValue, double maxValue,
-	                               Number below, Number above) {
-		this.minValue = minValue;
-		this.maxValue = maxValue;
+	public ContinuousTrackRenderer(VisualPropertyType type, Number below, Number above) {
 		this.below = below;
 		this.above = above;
-
 		this.type = type;
 
 		if (type.isNodeProp())
@@ -153,7 +142,6 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			                                        .getCalculator(type).getMapping(0);
 
 		title = cMapping.getControllingAttributeName();
-		valueRange = Math.abs(maxValue - minValue);
 
 		Float val;
 		Object propStr = CytoscapeInit.getProperties().getProperty("vizmapper.cntMapperUpperLimit");
@@ -201,12 +189,6 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		}
 	}
 
-	/*
-	 * Drawing actual track.<br>
-	 *
-	 * (non-Javadoc)
-	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-	 */
 	@Override
 	protected void paintComponent(Graphics gfx) {
 		trackHeight = slider.getHeight() - 100;
@@ -215,6 +197,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		// AA on
 		Graphics2D g = (Graphics2D) gfx;
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 
 		int thumb_width = 12;
 		int track_width = slider.getWidth() - thumb_width;
@@ -362,8 +347,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			g.setColor(Color.DARK_GRAY);
 			g.setFont(new Font("SansSerif", Font.BOLD, 10));
 
-			Float curPositionValue = ((Double) (((fractions[i] / 100) * valueRange) + minValue))
-			                                                                                                                                                                                                                                                                                                                                                                 .floatValue();
+			Float curPositionValue = ((Double) (((fractions[i] / 100) * EditorValueRangeTracer.getTracer()
+			                                                                                  .getRange(type))
+			                         + minValue)).floatValue();
 			String valueString = String.format("%.4f", curPositionValue);
 
 			int flipLimit = 90;
@@ -449,10 +435,11 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	 * @return DOCUMENT ME!
 	 */
 	public Double getSelectedThumbValue() {
+		final Double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
+		final Double minValue = EditorValueRangeTracer.getTracer().getMin(type);
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
-		final double thumbVal = (((position / 100) * valueRange) + minValue);
 
-		return thumbVal;
+		return (((position / 100) * valueRange) + minValue);
 	}
 
 	/**
@@ -810,6 +797,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		// Turn Anti-alias on
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+		double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
 		/*
 		 * Fill background
 		 */
