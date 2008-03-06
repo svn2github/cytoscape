@@ -33,6 +33,8 @@ import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.NodeAppearance;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualStyle;
+import cytoscape.visual.parsers.DoubleParser;
+import cytoscape.visual.parsers.ObjectToString;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
 import ding.view.ViewportChangeListener;
@@ -580,21 +582,21 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			List<NodeView> excludedNodeViews = new ArrayList<NodeView>();
 
 			// collect NodeViews bounded by current region plus buffer
-			// TODO: use node width and height to buffer rectangle i/o
-			// handle_size
 			NodeAppearance appr = Cytoscape.getCurrentNetworkView()
 					.getVisualStyle().getNodeAppearanceCalculator()
 					.getDefaultAppearance();
-			Object nodeWidth = appr.get(VisualPropertyType.NODE_WIDTH);
-			// How do you get default width and height??
+			Object defaultNodeWidthObj = appr.get(VisualPropertyType.NODE_WIDTH);
+			Object defaultNodeHeightObj = appr.get(VisualPropertyType.NODE_HEIGHT);
+			double defaultNodeWidth = Double.parseDouble(ObjectToString.getStringValue(defaultNodeWidthObj));
+			double defaultNodeHeight = Double.parseDouble(ObjectToString.getStringValue(defaultNodeHeightObj));
 
 			Rectangle2D boundsBuffer = this.getBounds();
-			boundsBuffer.setRect(this.getBounds().getMinX() - HANDLE_SIZE, this
+			boundsBuffer.setRect(this.getBounds().getMinX() - defaultNodeWidth/2, this
 					.getBounds().getMinY()
-					- HANDLE_SIZE, this.getBounds().getMaxX()
-					- this.getBounds().getMinX() + 2 * HANDLE_SIZE, this
+					- defaultNodeHeight/2, this.getBounds().getMaxX()
+					- this.getBounds().getMinX() + defaultNodeWidth, this
 					.getBounds().getMaxY()
-					- this.getBounds().getMinY() + 2 * HANDLE_SIZE);
+					- this.getBounds().getMinY() + defaultNodeHeight);
 			boundedNodeViews = NodeViewsTransformer.bounded(nodeViews,
 					boundsBuffer);
 			List<LayoutRegion> lr = LayoutRegionManager
@@ -640,15 +642,15 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			}
 			// xform boundary around all regions
 			double[] topLeft = new double[2];
-			topLeft[0] = minRegionsX - 2 * HANDLE_SIZE;
-			topLeft[1] = minRegionsY - 2 * HANDLE_SIZE;
+			topLeft[0] = minRegionsX - defaultNodeWidth/2;
+			topLeft[1] = minRegionsY - defaultNodeHeight/2;
 			((DGraphView) Cytoscape.getCurrentNetworkView())
 					.xformComponentToNodeCoords(topLeft);
 			minRegionsX = topLeft[0];
 			minRegionsY = topLeft[1];
 			double[] bottomRight = new double[2];
-			bottomRight[0] = maxRegionsX + 2 * HANDLE_SIZE;
-			bottomRight[1] = maxRegionsY + 2 * HANDLE_SIZE;
+			bottomRight[0] = maxRegionsX + defaultNodeWidth/2;
+			bottomRight[1] = maxRegionsY + defaultNodeHeight/2;
 			((DGraphView) Cytoscape.getCurrentNetworkView())
 					.xformComponentToNodeCoords(bottomRight);
 			maxRegionsX = bottomRight[0];
@@ -656,15 +658,15 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 
 			// xform new region boundary
 			double[] topLeft2 = new double[2];
-			topLeft2[0] = this.getX1() - 2 * HANDLE_SIZE;
-			topLeft2[1] = this.getY1() - 2 * HANDLE_SIZE;
+			topLeft2[0] = this.getX1() - defaultNodeWidth/2;
+			topLeft2[1] = this.getY1() - defaultNodeHeight/2;
 			((DGraphView) Cytoscape.getCurrentNetworkView())
 					.xformComponentToNodeCoords(topLeft2);
 			double minNewRegionX = topLeft2[0];
 			double minNewRegionY = topLeft2[1];
 			double[] bottomRight2 = new double[2];
-			bottomRight2[0] = this.getX1() + this.getW1() + 2 * HANDLE_SIZE;
-			bottomRight2[1] = this.getY1() + this.getH1() + 2 * HANDLE_SIZE;
+			bottomRight2[0] = this.getX1() + this.getW1() + defaultNodeWidth/2;
+			bottomRight2[1] = this.getY1() + this.getH1() + defaultNodeHeight/2;
 			((DGraphView) Cytoscape.getCurrentNetworkView())
 					.xformComponentToNodeCoords(bottomRight2);
 			double maxNewRegionX = bottomRight2[0];
@@ -672,61 +674,73 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 
 			// determine closest edge per excludedNodeView and move node to
 			// mirror distance relative to new region
+			int countN = 0;
+			int countS = 0;
+			int countE = 0;
+			int countW = 0;
 			for (NodeView nv : excludedNodeViews) {
 				double nvX = nv.getXPosition();
 				double nvY = nv.getYPosition();
 
 				// distance between node and new region
-				double newNorth = nvY - minNewRegionY;
-				double newSouth = maxNewRegionY - nvY;
-				double newEast = nvX - minNewRegionX;
-				double newWest = maxNewRegionX - nvX;
+				double nearNorth = nvY - minNewRegionY;
+				double nearSouth = maxNewRegionY - nvY;
+				double nearEast = nvX - minNewRegionX;
+				double nearWest = maxNewRegionX - nvX;
 
 				// distance between node and boundary around all regions
-				double allNorth = nvY - minRegionsY;
-				double allSouth = maxRegionsY - nvY;
-				double allEast = nvX - minRegionsX;
-				double allWest = maxRegionsX - nvX;
+				double farNorth = nvY - minRegionsY;
+				double farSouth = maxRegionsY - nvY;
+				double farEast = nvX - minRegionsX;
+				double farWest = maxRegionsX - nvX;
 
-				if (allNorth < allSouth) {
-					if (allNorth < allEast) {
-						if (allNorth < allWest) {
-							nv.setYPosition(nvY - 2 * newNorth);
+				if (farNorth < farSouth) {
+					if (farNorth < farEast) {
+						if (farNorth < farWest) {
+							nv.setYPosition(nvY - (nearNorth + countN * defaultNodeHeight));
+							countN++;
 							System.out.println(nv.getNode().getIdentifier()
-									+ " moved North by " + (int) newNorth);
+									+ " moved North by " + (int) nearNorth);
 						} else {
-							nv.setXPosition(nvX + 2 * newWest);
+							nv.setXPosition(nvX + (nearWest + countW * defaultNodeWidth));
+							countW++;
 							System.out.println(nv.getNode().getIdentifier()
-									+ " moved West(1) by " + (int) newWest);
+									+ " moved West(1) by " + (int) nearWest);
 						}
-					} else if (allEast < allWest) {
-						nv.setXPosition(nvX - 2 * newEast);
+					} else if (farEast < farWest) {
+						nv.setXPosition(nvX - (nearEast + countE * defaultNodeWidth));
+						countE++;
 						System.out.println(nv.getNode().getIdentifier()
-								+ " moved East(1) by " + (int) newEast);
+								+ " moved East(1) by " + (int) nearEast);
 					} else {
-						nv.setXPosition(nvX + 2 * newWest);
+						nv.setXPosition(nvX + (nearWest + countW * defaultNodeWidth));
+						countW++;
 						System.out.println(nv.getNode().getIdentifier()
-								+ " moved West(2) by " + (int) newWest);
+								+ " moved West(2) by " + (int) nearWest);
 					}
 
-				} else if (allSouth < allEast) {
-					if (allSouth < allWest) {
-						nv.setYPosition(nvY + 2 * newSouth);
+				} else if (farSouth < farEast) {
+					if (farSouth < farWest) {
+						nv.setYPosition(nvY + (nearSouth + countS * defaultNodeHeight));
+						countS++;
 						System.out.println(nv.getNode().getIdentifier()
-								+ " moved South by " + (int) newSouth);
+								+ " moved South by " + (int) nearSouth);
 					} else {
-						nv.setXPosition(nvX + 2 * newWest);
+						nv.setXPosition(nvX + (nearWest + countW * defaultNodeWidth));
+						countW++;
 						System.out.println(nv.getNode().getIdentifier()
-								+ " moved West(3) by " + (int) newWest);
+								+ " moved West(3) by " + (int) nearWest);
 					}
-				} else if (allEast < allWest) {
-					nv.setXPosition(nvX - 2 * newEast);
+				} else if (farEast < farWest) {
+					nv.setXPosition(nvX - (nearEast + countE * defaultNodeWidth));
+					countE++;
 					System.out.println(nv.getNode().getIdentifier()
-							+ " moved East(2) by " + (int) newEast);
+							+ " moved East(2) by " + (int) nearEast);
 				} else {
-					nv.setXPosition(nvX + 2 * newWest);
+					nv.setXPosition(nvX + (nearWest + countW * defaultNodeWidth));
+					countW++;
 					System.out.println(nv.getNode().getIdentifier()
-							+ " moved West(4) by " + (int) newWest);
+							+ " moved West(4) by " + (int) nearWest);
 				}
 			}
 
