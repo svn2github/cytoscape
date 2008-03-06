@@ -303,7 +303,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 				root.add(dmtn);
 			}
 
-			// fires valueChanged
+			// apparently this doesn't fire valueChanged 
 			treeTable.getTree().collapsePath(new TreePath(new TreeNode[] { root }));
 
 			treeTable.getTree().updateUI();
@@ -312,8 +312,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			treeTable.getTree().scrollPathToVisible(path);
 			treeTable.doLayout();
 		
-			// shouldn't need this because valueChanged is fired above
-			//focusNetworkNode(network_id);
+			// this is necessary because valueChanged is not fired above 
+			focusNetworkNode(network_id);
 		}
 	}
 
@@ -378,28 +378,25 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			return;
 		}
 
-		// only fire NETWORK_VIEW_FOCUS events if a view actually exists for this network
-		if ( Cytoscape.viewExists( (String) node.getNetworkID() ) ) {
-			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
-		                                                   null, (String) node.getNetworkID()));
+		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
+	                                                   null, (String) node.getNetworkID()));
 
-			// creates a list of all selected networks 
-			List<String> networkList = new LinkedList<String>();
-			try {
-				for ( int i = mtree.getMinSelectionRow(); i <= mtree.getMaxSelectionRow(); i++ ) {
-					NetworkTreeNode n = (NetworkTreeNode) mtree.getPathForRow(i).getLastPathComponent();
-					if ( n != null && n.getUserObject() != null && mtree.isRowSelected(i) )
-						networkList.add( n.getNetworkID() );
-				}
-			} catch (Exception ex) { 
-				ex.printStackTrace();
+		// creates a list of all selected networks 
+		List<String> networkList = new LinkedList<String>();
+		try {
+			for ( int i = mtree.getMinSelectionRow(); i <= mtree.getMaxSelectionRow(); i++ ) {
+				NetworkTreeNode n = (NetworkTreeNode) mtree.getPathForRow(i).getLastPathComponent();
+				if ( n != null && n.getUserObject() != null && mtree.isRowSelected(i) )
+					networkList.add( n.getNetworkID() );
 			}
+		} catch (Exception ex) { 
+			ex.printStackTrace();
+		}
 
-			if ( networkList.size() > 0 ) {
-				// System.out.println("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
-				pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
-			                                                   null, networkList));
-			} 
+		if ( networkList.size() > 0 ) {
+			// System.out.println("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
+			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
+		                                                   null, networkList));
 		} 
 	}
 
