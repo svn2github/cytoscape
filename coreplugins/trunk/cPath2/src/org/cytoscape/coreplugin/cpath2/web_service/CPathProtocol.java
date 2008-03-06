@@ -17,6 +17,7 @@ import java.io.*;
 import java.net.UnknownHostException;
 import java.net.SocketException;
 import java.net.Proxy;
+import java.net.URLEncoder;
 
 /**
  * Utility Class for Connecting to the cPath Web Service API.
@@ -399,7 +400,11 @@ public class CPathProtocol {
                     Integer.toString(taxonomyId));
         }
         nvps[0] = new NameValuePair(ARG_COMMAND, command);
-        nvps[1] = new NameValuePair(ARG_QUERY, query);
+        try {
+            nvps[1] = new NameValuePair(ARG_QUERY, URLEncoder.encode(query, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         nvps[2] = new NameValuePair(ARG_FORMAT, format);
         nvps[3] = new NameValuePair(ARG_VERSION, CURRENT_VERSION);
         nvps[4] = new NameValuePair(ARG_MAX_HITS, Integer.toString(maxHits));
