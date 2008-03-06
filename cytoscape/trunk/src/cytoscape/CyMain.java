@@ -197,6 +197,15 @@ public class CyMain implements CyInitParams {
 			System.exit(1);
 		}
 
+		// Read any argument containing ".cys" as session file.
+		// Allows session files to be passed in via MIME type settings.
+		// This imprecise method is overwritten by -s option, if specified.
+		for (String freeArg : args){
+			if (freeArg.contains(".cys")){
+				sessionFile = freeArg;
+			}
+		}
+
 		// use what is found on the command line to set values
 		if (line.hasOption("h")) {
 			printHelp();
