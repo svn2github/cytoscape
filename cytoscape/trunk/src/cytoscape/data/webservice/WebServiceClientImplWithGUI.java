@@ -41,6 +41,8 @@ import cytoscape.util.ModuleProperties;
 
 import java.awt.Container;
 
+import javax.swing.Icon;
+
 
 /**
  * Client with GUI.
@@ -84,5 +86,9 @@ public abstract class WebServiceClientImplWithGUI<S, U extends Container>
 	 */
 	public void setGUI(U gui) {
 		this.gui = gui;
+	}
+	
+	public Icon getIcon(WebServiceClientGUI.IconSize i) {
+		return null;
 	}
 }

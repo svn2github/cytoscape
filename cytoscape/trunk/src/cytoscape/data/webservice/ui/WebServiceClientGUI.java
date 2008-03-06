@@ -36,6 +36,8 @@ package cytoscape.data.webservice.ui;
 
 import java.awt.Container;
 
+import javax.swing.Icon;
+
 
 /**
  * Web service client which has custom component should implements this interface.
@@ -45,6 +47,18 @@ import java.awt.Container;
  * @param <U>  GUI component for this service.
  */
 public interface WebServiceClientGUI<U extends Container> {
+	/**
+	 * Defines icon type.
+	 *
+	 * @author kono
+	 *
+	 */
+	public enum IconSize {
+		SMALL,
+		MEDIUM,
+		FULL;
+	}
+
 	/**
 	 *  Returns GUI for this client.
 	 *  Will be used only with Cytoscape Desktop.
@@ -62,4 +76,12 @@ public interface WebServiceClientGUI<U extends Container> {
 	 * @param gui GUI for this service.
 	 */
 	public void setGUI(U gui);
+
+	/**
+	 * Returns icon for the GUI.  May be used for about page.
+	 * 
+	 * @param t
+	 * @return
+	 */
+	public Icon getIcon(IconSize t);
 }
