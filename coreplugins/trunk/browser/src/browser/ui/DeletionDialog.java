@@ -6,6 +6,7 @@
 package browser.ui;
 
 import browser.DataTableModel;
+
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
@@ -30,13 +31,14 @@ public class DeletionDialog extends JDialog {
 	private DataTableModel model;
 
 	/** Creates new form DeletionDialog */
-	protected DeletionDialog(Frame parent, boolean modal, String[] attributes, String type, DataTableModel model) {
+	protected DeletionDialog(Frame parent, boolean modal, String[] attributes, String type,
+	                         DataTableModel model) {
 		super(parent, modal);
 
 		this.type = type;
 		this.attributes = attributes;
 		this.model = model;
-		
+
 		String title = "Delete " + type + " Attributes";
 		this.setTitle(title);
 		initComponents();
@@ -125,17 +127,23 @@ public class DeletionDialog extends JDialog {
 
 		if (type.equalsIgnoreCase("node")) {
 			attr = Cytoscape.getNodeAttributes();
-		} else if(type.equalsIgnoreCase("edge")) {
+		} else if (type.equalsIgnoreCase("edge")) {
 			attr = Cytoscape.getEdgeAttributes();
+		} else {
+			attr = Cytoscape.getNetworkAttributes();
 		}
 
 		Object[] selected = attributeList.getSelectedValues();
 
 		for (int i = 0; i < selected.length; i++)
 			attr.deleteAttribute(selected[i].toString());
-		
+
+		Cytoscape.getSwingPropertyChangeSupport()
+		         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		Cytoscape.getPropertyChangeSupport()
+		         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+
 		model.setTableData();
-		
 		dispose();
 	}
 

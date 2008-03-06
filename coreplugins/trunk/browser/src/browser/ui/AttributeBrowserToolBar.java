@@ -752,6 +752,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			orderedCol.add(name);
 			Cytoscape.getSwingPropertyChangeSupport()
 			         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+			Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
 			tableModel.setTableData(null, orderedCol);
 		}
