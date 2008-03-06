@@ -91,8 +91,7 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
     }
 
     public String getDescription() {
-        CPathProperties props = CPathProperties.getInstance();
-        return props.getCPathBlurb(); 
+        return "Provides integrated access to pathwaycommons.org."; 
     }
 
     /**
