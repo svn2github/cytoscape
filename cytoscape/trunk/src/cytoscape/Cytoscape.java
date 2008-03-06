@@ -63,8 +63,8 @@ import cytoscape.giny.CytoscapeRootGraph;
 
 import cytoscape.init.CyInitParams;
 
-import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
 
 import cytoscape.util.FileUtil;
 
@@ -78,6 +78,7 @@ import giny.model.Edge;
 import giny.model.Node;
 
 import giny.view.GraphView;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
@@ -90,10 +91,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -114,10 +115,9 @@ import javax.xml.bind.JAXBException;
  * Node/Edge is present.
  */
 public abstract class Cytoscape {
-	//
-	// Events
-	//
-
+	
+	// All of these events should be reviewed and cleaned up in 3.0 using enum.
+	
 	/**
 	 * This signals when new attributes have been loaded and a few other
 	 * large scale changes to attributes have been made.  There is no
@@ -198,8 +198,11 @@ public abstract class Cytoscape {
 	 */
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 
+	/**
+	 * 
+	 */
 	public static final String NETWORK_TITLE_MODIFIED = "NETWORK_TITLE_MODIFIED";
-	
+
 	/**
 	 *
 	 */
@@ -228,11 +231,11 @@ public abstract class Cytoscape {
 	 */
 	public static final String PREFERENCES_UPDATED = "PREFERENCES_UPDATED";
 
-       /**
-        * Specifies that the Proxy settings Cytoscape uses to connect to the
-        * internet have been changed.
-        */
-       public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
+	/**
+	 * Specifies that the Proxy settings Cytoscape uses to connect to the
+	 * internet have been changed.
+	 */
+	public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
 
 	/**
 	 * When creating a network, use one of the standard suffixes to have it
@@ -299,30 +302,31 @@ public abstract class Cytoscape {
 	/**
 	 *
 	 */
-	public static final int SESSION_NEW = 0;
+	public static final Integer SESSION_NEW = 0;
 
 	/**
 	 *
 	 */
-	public static final int SESSION_OPENED = 1;
+	public static final Integer SESSION_OPENED = 1;
 
 	/**
 	 *
 	 */
-	public static final int SESSION_CHANGED = 2;
+	public static final Integer SESSION_CHANGED = 2;
 
 	/**
 	 *
 	 */
 	public static final int SESSION_CLOSED = 3;
 	private static int sessionState = SESSION_NEW;
+	
+	@Deprecated
 	private static BioDataServer bioDataServer;
 
 	/**
 	 * New ontology server. This will replace BioDataServer.
 	 */
 	private static OntologyServer ontologyServer;
-	private static String species;
 
 	/**
 	 *
@@ -330,7 +334,7 @@ public abstract class Cytoscape {
 	public static final String READER_CLIENT_KEY = "reader_client_key";
 
 	// global flag to indicate if Squiggle is turned on
-//	private static boolean squiggleEnabled = false;
+	//	private static boolean squiggleEnabled = false;
 
 	/**
 	 * The shared RootGraph between all Networks
@@ -736,7 +740,6 @@ public abstract class Cytoscape {
 	 */
 	public static CyEdge getCyEdge(String source_alias, String edge_name, String target_alias,
 	                               String interaction_type) {
-
 		CyEdge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 
 		if (edge != null) {
@@ -771,7 +774,6 @@ public abstract class Cytoscape {
 			return null;
 		}
 	}
-
 
 	// --------------------//
 	// Network Methods
@@ -846,9 +848,9 @@ public abstract class Cytoscape {
 	 * Returns the list of currently selected networks.
 	 */
 	public static List<CyNetworkView> getSelectedNetworkViews() {
-		if ( selectedNetworkViews == null ) {
+		if (selectedNetworkViews == null) {
 			selectedNetworkViews = new LinkedList<CyNetworkView>();
-			selectedNetworkViews.add( getCurrentNetworkView() );
+			selectedNetworkViews.add(getCurrentNetworkView());
 		}
 
 		return (List<CyNetworkView>) selectedNetworkViews.clone();
@@ -858,25 +860,26 @@ public abstract class Cytoscape {
 	 * Sets the selected network views.
 	 */
 	public static void setSelectedNetworkViews(final List<String> viewIDs) {
-
-		if ( selectedNetworkViews == null ) 
+		if (selectedNetworkViews == null)
 			selectedNetworkViews = new LinkedList<CyNetworkView>();
 
 		selectedNetworkViews.clear();
 
-		if ( viewIDs == null ) 
+		if (viewIDs == null)
 			return;
 
-		for ( String id : viewIDs ) {
+		for (String id : viewIDs) {
 			CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(id);
-			if ( nview != null ) {
-				selectedNetworkViews.add( nview );
+
+			if (nview != null) {
+				selectedNetworkViews.add(nview);
 			}
 		}
 
 		CyNetworkView cv = getCurrentNetworkView();
-		if ( !selectedNetworkViews.contains( cv ) ) {
-			selectedNetworkViews.add( cv );
+
+		if (!selectedNetworkViews.contains(cv)) {
+			selectedNetworkViews.add(cv);
 		}
 	}
 
@@ -884,37 +887,38 @@ public abstract class Cytoscape {
 	 * Returns the list of selected networks.
 	 */
 	public static List<CyNetwork> getSelectedNetworks() {
-		if ( selectedNetworks == null ) {
+		if (selectedNetworks == null) {
 			selectedNetworks = new LinkedList<CyNetwork>();
-			selectedNetworks.add( getCurrentNetwork() );
+			selectedNetworks.add(getCurrentNetwork());
 		}
 
-		return (List<CyNetwork>)selectedNetworks.clone();
+		return (List<CyNetwork>) selectedNetworks.clone();
 	}
 
 	/**
 	 * Sets the list of selected networks.
 	 */
 	public static void setSelectedNetworks(final List<String> ids) {
-
-		if ( selectedNetworks == null ) 
+		if (selectedNetworks == null)
 			selectedNetworks = new LinkedList<CyNetwork>();
-			
+
 		selectedNetworks.clear();
 
-		if ( ids == null )
+		if (ids == null)
 			return;
 
-		for ( String id : ids ) {
+		for (String id : ids) {
 			CyNetwork n = (CyNetwork) getNetworkMap().get(id);
-			if ( n != null ) {
-				selectedNetworks.add( n );
+
+			if (n != null) {
+				selectedNetworks.add(n);
 			}
 		}
 
 		CyNetwork cn = getCurrentNetwork();
-		if ( !selectedNetworks.contains( cn ) ) {
-			selectedNetworks.add( cn );
+
+		if (!selectedNetworks.contains(cn)) {
+			selectedNetworks.add(cn);
 		}
 	}
 
@@ -1414,9 +1418,10 @@ public abstract class Cytoscape {
 		// network.putClientData(READER_CLIENT_KEY, reader);
 		addNetwork(network, title, parent, false);
 
-		if (create_view && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-		                                                            .getProperty("viewThreshold")))) {
-			createNetworkView(network,title,reader.getLayoutAlgorithm());
+		if (create_view
+		    && (network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+		                                                               .getProperty("viewThreshold")))) {
+			createNetworkView(network, title, reader.getLayoutAlgorithm());
 		}
 
 		// Execute any necessary post-processing.
@@ -1644,10 +1649,10 @@ public abstract class Cytoscape {
 	 * @param layout
 	 *            the CyLayoutAlgorithm to use to lay this out by default
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout) {
-		return createNetworkView(network,title,layout,null);
+	public static CyNetworkView createNetworkView(CyNetwork network, String title,
+	                                              CyLayoutAlgorithm layout) {
+		return createNetworkView(network, title, layout, null);
 	}
-
 
 	/**
 	 * Creates a CyNetworkView that is placed placed in a given visual style
@@ -1664,8 +1669,8 @@ public abstract class Cytoscape {
 	 * @param vs the VisualStyle in which to render this new network. If null,
 	 *           the default visual style will be used.
 	 */
-	public static CyNetworkView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout,
-	                                              VisualStyle vs) {
+	public static CyNetworkView createNetworkView(CyNetwork network, String title,
+	                                              CyLayoutAlgorithm layout, VisualStyle vs) {
 		if (network == nullNetwork) {
 			return nullNetworkView;
 		}
@@ -1691,7 +1696,8 @@ public abstract class Cytoscape {
 			layout = CyLayouts.getDefaultLayout();
 		}
 
-		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
+		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null,
+		                             view);
 
 		layout.doLayout(view);
 
@@ -1701,7 +1707,6 @@ public abstract class Cytoscape {
 
 		return view;
 	}
-
 
 	/**
 	 *  DOCUMENT ME!
@@ -1760,16 +1765,19 @@ public abstract class Cytoscape {
 			case SELECT_NODES_ONLY:
 				view.disableEdgeSelection();
 				view.enableNodeSelection();
+
 				break;
 
 			case SELECT_EDGES_ONLY:
 				view.disableNodeSelection();
 				view.enableEdgeSelection();
+
 				break;
 
 			case SELECT_NODES_AND_EDGES:
 				view.enableNodeSelection();
 				view.enableEdgeSelection();
+
 				break;
 		}
 	}
