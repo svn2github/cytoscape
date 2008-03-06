@@ -45,6 +45,7 @@ class DeleteEdit extends CyAbstractEdit {
 				yPos[i] = nv.getYPosition();
 			}
 		}
+		
 	}
 
 	public void redo() {
@@ -52,6 +53,8 @@ class DeleteEdit extends CyAbstractEdit {
 
 		net.hideEdges(edges);
 		net.hideNodes(nodes);
+		CyNetworkView netView = Cytoscape.getNetworkView(net.getIdentifier());				
+		netView.redrawGraph(true, true);
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
 	}
 
@@ -68,6 +71,7 @@ class DeleteEdit extends CyAbstractEdit {
 				nv.setOffset( xPos[i], yPos[i] );
 			}
 		}
+		netView.redrawGraph(true, true);
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 	}
 }
