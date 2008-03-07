@@ -149,7 +149,7 @@ public class CytoscapeSessionReader {
 	private HashMap<String, List<String>> theURLstrMap = new HashMap<String, List<String>>();
 
 	// Task monitor
-	private TaskMonitor taskMonitor;
+	private TaskMonitor taskMonitor = null;
 	private PercentUtil percentUtil;
 	private float networkCounter = 0;
 	private float netIndex = 0;
@@ -177,8 +177,8 @@ public class CytoscapeSessionReader {
 		bookmarks = new Bookmarks();
 		pluginFileListMap = new HashMap<String, List<File>>();
 
+		this.taskMonitor = monitor;
 		if (monitor != null) {
-			this.taskMonitor = monitor;
 			percentUtil = new PercentUtil(1);
 		}
 	}
@@ -204,7 +204,7 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 */
 	public CytoscapeSessionReader(final String fileName) throws IOException {
-		this(new File(fileName).toURL(), null);
+		this(new File(fileName).toURL(), (TaskMonitor)null);
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class CytoscapeSessionReader {
 	 * @throws IOException  DOCUMENT ME!
 	 */
 	public CytoscapeSessionReader(final URL sourceName) throws IOException {
-		this(sourceName, null);
+		this(sourceName, (TaskMonitor)null);
 	}
 
 	/**
@@ -306,7 +306,7 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public void read() throws IOException, JAXBException {
+	public void read() throws IOException, JAXBException, Exception {
 		start = System.currentTimeMillis();
 
 		// All listeners should listen to this event to ignore unnecessary events!
@@ -396,7 +396,7 @@ public class CytoscapeSessionReader {
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	private void unzipSessionFromURL() throws IOException, JAXBException {
+	private void unzipSessionFromURL() throws IOException, JAXBException, Exception {
 		extractEntry();
 		System.out.println("extractEntry: " + (System.currentTimeMillis() - start) + " msec.");
 
@@ -533,7 +533,7 @@ public class CytoscapeSessionReader {
 		return theBookmark;
 	}
 
-	private void loadCySession() throws JAXBException, IOException {
+	private void loadCySession() throws JAXBException, IOException, Exception {
 		// InputStream is = cysessionFileURL.openStream();
 		// Even though cytoscapeFileURL is probably a local URL, error on the
 		// side of caution and use URLUtil to get the input stream (which
@@ -620,7 +620,7 @@ public class CytoscapeSessionReader {
 		URL targetNetworkURL;
 		JarURLConnection jarConnection;
 		InputStream networkStream;
-		CyNetwork new_network;
+		CyNetwork new_network = null;
 		CyNetworkView curNetView;
 
 		for (int i = 0; i < numChildren; i++) {
@@ -631,13 +631,10 @@ public class CytoscapeSessionReader {
 			targetNetworkURL = (URL) networkURLs.get(targetNwUrlName);
 
 			// handle the unlikely event that the stored network is corrupted with a bad filename (bug fix)
-			if (targetNetworkURL == null)
-				throw new IOException("Session file corrupt: Filename " + childNet.getFilename()
-				                      + " does not correspond to a network of that name in session file");
-
 			if (targetNetworkURL == null) {
-				throw new IOException("Can't find network file: " + sessionID + "/"
-				                      + childNet.getFilename() + " in session!");
+				System.err.println("Session file corrupt: Filename " + childNet.getFilename()
+				                      + " does not correspond to a network of that name in session file");
+				continue;
 			}
 
 			jarConnection = (JarURLConnection) targetNetworkURL.openConnection();
@@ -651,7 +648,19 @@ public class CytoscapeSessionReader {
 			prop.setProperty("visualStyleBuilder", "off");
 
 			final XGMMLReader reader = new XGMMLReader(networkStream);
-			new_network = Cytoscape.createNetwork(reader, false, parent);
+			try {
+				new_network = Cytoscape.createNetwork(reader, false, parent);
+			} catch (Exception e) {
+				String message = "Unable to read XGMML file: "+childNet.getFilename()+".  "+e.getMessage();
+				System.err.println(message);
+				Cytoscape.destroyNetwork(new_network);
+				if (taskMonitor != null)
+					taskMonitor.setException(e, message);
+				// Load child networks, even if this network is bad
+				if (childNet.getChild().size() != 0)
+					walkTree(childNet, new_network, sessionSource);
+				continue;
+			}
 			System.out.println("XGMMLReader " + new_network.getIdentifier() + ": "
 			                   + (System.currentTimeMillis() - start) + " msec.");
 
@@ -664,7 +673,7 @@ public class CytoscapeSessionReader {
 			if ((taskMonitor != null) && (networkCounter >= 20)) {
 				netIndex++;
 				taskMonitor.setPercentCompleted(((Number) ((netIndex / networkCounter) * 100))
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .intValue());
+															 .intValue());
 			}
 
 			if (networkStream != null) {

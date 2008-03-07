@@ -61,6 +61,7 @@ import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.ParserAdapter;
 import org.xml.sax.InputSource;
 import org.xml.sax.Attributes;
@@ -235,13 +236,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		} catch (SAXException e) {
 			if (taskMonitor != null) {
 				taskMonitor.setException(e, e.getMessage());
-			} else {
-				System.out.println("Cannot read given XGMML file.  Given XGMML file may contain invalid entry: "
-						   + e.getMessage());
-				e.printStackTrace();
-				throw new IOException("Cannot read given XGMML file.  Given XGMML file may contain invalid entry: "
-				                      + e.getMessage());
 			}
+			// e.printStackTrace();
+			throw new IOException(e.getMessage());
 		}
 	}
 
@@ -283,6 +280,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			ParserAdapter pa = new ParserAdapter(sp.getParser());
 			parser = new XGMMLParser();
 			pa.setContentHandler(parser);
+			pa.setErrorHandler(parser);
 			pa.parse(new InputSource(networkStream));
 			networkName = parser.getNetworkName();
 
