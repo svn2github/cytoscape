@@ -34,50 +34,42 @@
 */
 package cytoscape.data.webservice.ui;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
-import cytoscape.data.webservice.CyWebServiceException;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientImplWithGUI;
-import cytoscape.data.webservice.WebServiceClientManager;
-
-import cytoscape.layout.Tunable;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-import cytoscape.util.ModuleProperties;
-
-import cytoscape.visual.VisualStyle;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Frame;
 import java.awt.GridLayout;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JComponent;
+import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceException;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
+import cytoscape.data.webservice.ui.WebServiceClientGUI.IconSize;
+import cytoscape.layout.Tunable;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.util.ModuleProperties;
+import cytoscape.util.swing.AboutDialog;
+import cytoscape.visual.VisualStyle;
 
 
 /**
@@ -99,6 +91,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 	// Client-Dependent GUI panels
 	private Map<String, Container> serviceUIPanels = new HashMap<String, Container>();
+	
+	//Default icon for about dialog
+	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/icon100.png"));
 
 	static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
@@ -357,12 +352,19 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	}
 
 	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		Object description = WebServiceClientManager.getClient(selectedClientID).getDescription();
-
-		if (description instanceof String) {
-			JOptionPane.showMessageDialog(this, description.toString(), "About Database",
-			                              JOptionPane.INFORMATION_MESSAGE);
+		WebServiceClient wsc = WebServiceClientManager.getClient(selectedClientID);
+		final String clientName = wsc.getDisplayName();
+		final String description = wsc.getDescription();
+		Icon icon = null;
+		if(wsc instanceof WebServiceClientGUI) {
+			icon = ((WebServiceClientGUI)wsc).getIcon(IconSize.FULL);
 		}
+		
+		if(icon == null) {
+			icon = DEF_ICON;
+		}
+		AboutDialog.showDialog(clientName, icon, description);
+
 	}
 
 	private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {
