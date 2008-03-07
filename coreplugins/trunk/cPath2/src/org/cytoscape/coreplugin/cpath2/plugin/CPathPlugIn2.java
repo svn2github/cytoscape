@@ -33,37 +33,22 @@ package org.cytoscape.coreplugin.cpath2.plugin;
 
 // imports
 
+import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginProperties;
-import cytoscape.Cytoscape;
-import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.util.CytoscapeToolBar;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.CyMenus;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelState;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
 import org.cytoscape.coreplugin.cpath2.mapping.MapCPathToCytoscape;
 import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CytoscapeCPathWebService;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
-import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
-import org.cytoscape.coreplugin.cpath2.view.TabUi;
-import org.cytoscape.coreplugin.cpath2.view.SearchHitsPanel;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import java.io.IOException;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.net.URL;
-
-import com.sun.glf.util.GridBagConstants;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * The cPath plugin class.  It gets called by Cytoscape's plugin manager
@@ -72,9 +57,6 @@ import com.sun.glf.util.GridBagConstants;
  * @author Benjamin Gross.
  */
 public class CPathPlugIn2 extends CytoscapePlugin {
-    private static boolean uiInitialized = false;
-    private cPathSearchPanel cpathPanel;
-    private JTabbedPane tabbedPane;
 
     /**
      * Constructor.
@@ -93,57 +75,8 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         new HTTPServer(HTTPServer.DEFAULT_PORT,
                 new MapCPathToCytoscape(networkListener), debug).start();
 
-        CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        CyMenus cyMenus = desktop.getCyMenus();
-        CytoscapeToolBar toolBar = cyMenus.getToolBar();
-        toolBar.addSeparator();
-        CPathProperties cpathProperties = CPathProperties.getInstance();
-        URL iconURL = SearchHitsPanel.class.getResource("resources/"
-                + cpathProperties.getIconFileName());
-        ImageIcon icon = new ImageIcon(iconURL);
-        JButton button = new JButton(icon);
-        button.setToolTipText(CPathProperties.getInstance().getIconToolTip());
-        button.setBorder(new EmptyBorder(0,0,0,0));
-        toolBar.add(button);
-        toolBar.addSeparator();
-        button.addActionListener (new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (!uiInitialized) {
-                    initUi();
-                    uiInitialized = true;
-                } else {
-                    CytoscapeDesktop desktop = Cytoscape.getDesktop();
-                    CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
-                    int index = cytoPanel.indexOfComponent(tabbedPane);
-                    cytoPanel.setSelectedIndex(index);
-                    cpathPanel.showAboutPanel();
-                    tabbedPane.setSelectedIndex(0);
-                }
-            }
-            });
+        //  Register Web Service
         WebServiceClientManager.registerClient(CytoscapeCPathWebService.getClient());
-    }
-
-    private void initUi() {
-        CytoscapeDesktop desktop = Cytoscape.getDesktop();
-        final CytoPanel cytoPanel = desktop.getCytoPanel(SwingConstants.EAST);
-
-        CPathWebService webApi = CPathWebServiceImpl.getInstance();
-
-        cpathPanel = new cPathSearchPanel(webApi);
-
-        tabbedPane = TabUi.getInstance();
-        tabbedPane.add("Search", cpathPanel);
-
-        JScrollPane configPanel = createConfigPanel();
-        tabbedPane.add("Options", configPanel);
-
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                cytoPanel.add(CPathProperties.getInstance().getCPathServerName(), tabbedPane);
-                cytoPanel.setState(CytoPanelState.DOCK);
-            }
-        });
     }
 
     private void initProperties() throws IOException {
@@ -165,11 +98,11 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         textArea1.setEditable(false);
         textArea1.setOpaque(false);
         Font font = textArea1.getFont();
-        Font smallerFont = new Font(font.getFamily(), font.getStyle(), font.getSize()-2);
+        Font smallerFont = new Font(font.getFamily(), font.getStyle(), font.getSize() - 2);
         textArea1.setFont(smallerFont);
         textArea1.setText("Retrieve the full model, as stored in the original BioPAX "
-            + "representation.  In this representation, nodes within a network can "
-            + "refer to physical entities and interactions.");
+                + "representation.  In this representation, nodes within a network can "
+                + "refer to physical entities and interactions.");
         textArea1.setBorder(new EmptyBorder(5, 20, 0, 0));
 
         JTextArea textArea2 = new JTextArea(3, 20);
@@ -179,8 +112,8 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         textArea2.setOpaque(false);
         textArea2.setFont(smallerFont);
         textArea2.setText("Retrieve a simplified binary network, as inferred from the original "
-            + "BioPAX representation.  In this representation, nodes within a network refer "
-            + "to physical entities only, and edges refer to inferred interactions.");
+                + "BioPAX representation.  In this representation, nodes within a network refer "
+                + "to physical entities only, and edges refer to inferred interactions.");
         textArea2.setBorder(new EmptyBorder(5, 20, 0, 0));
 
 
