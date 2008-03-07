@@ -38,7 +38,7 @@ package cytoscape;
 
 import cytoscape.data.readers.CytoscapeSessionReader;
 
-import cytoscape.dialogs.ErrorDialog;
+//import cytoscape.dialogs.ErrorDialog;
 
 import cytoscape.init.CyInitParams;
 
@@ -136,7 +136,7 @@ public class CytoscapeInit {
 	 */
 	public boolean init(CyInitParams params) {
 		long begintime = System.currentTimeMillis();
-		ErrorDialog errorDialog = null;
+		//ErrorDialog errorDialog = null;
 
 		try {
 			initParams = params;
@@ -177,7 +177,7 @@ public class CytoscapeInit {
 				setUpAttributesChangedListener();
 			}
 
-			errorDialog = new ErrorDialog(Cytoscape.getDesktop(), "Cytoscape Initialization Errors");
+			//errorDialog = new ErrorDialog(Cytoscape.getDesktop(), "Cytoscape Initialization Errors");
 
 			PluginManager mgr = PluginManager.getPluginManager();
 
@@ -185,7 +185,7 @@ public class CytoscapeInit {
 				System.out.println("Updating plugins...");
 				mgr.delete();
 			} catch (cytoscape.plugin.ManagerException me) {
-				errorDialog.addError(me);
+				//errorDialog.addError(me);
 				me.printStackTrace();
 			}
 
@@ -238,7 +238,7 @@ public class CytoscapeInit {
 			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
 
 			for (Throwable t : pluginLoadingErrors) {
-				errorDialog.addError(t);
+				//errorDialog.addError(t);
 				t.printStackTrace();
 			}
 
@@ -281,8 +281,8 @@ public class CytoscapeInit {
 		System.out.println("\nCytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 
-		if (errorDialog.hasErrors())
-			errorDialog.setVisible(true);
+//		if (errorDialog.hasErrors())
+//			errorDialog.setVisible(true);
 
 		return true;
 	}
