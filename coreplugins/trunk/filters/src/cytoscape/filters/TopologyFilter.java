@@ -54,10 +54,12 @@ public class TopologyFilter extends CompositeFilter {
 	private CompositeFilter passFilter = null;
 	
 	public TopologyFilter() {
+		super.advancedSetting.setNode(true);
 	}
 
 	public TopologyFilter(String pName) {
 		name = pName;
+		super.advancedSetting.setNode(true);
 	}
 
 	public void setPassFilter(CompositeFilter pFilter) {
