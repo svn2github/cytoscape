@@ -376,7 +376,7 @@ public class XGMMLWriter {
 		writeElement("<dc:date>"+df.format(now)+"</dc:date>\n");
 		writeElement("<dc:title>"+network.getTitle()+"</dc:title>\n");
 		writeElement("<dc:source>http://www.cytoscape.org/</dc:source>\n");
-		writeElement("<dc:format>Xytoscape-XGMML</dc:format>\n");
+		writeElement("<dc:format>Cytoscape-XGMML</dc:format>\n");
 		depth--;
 		writeElement("</rdf:Description>\n");
 		depth--;
