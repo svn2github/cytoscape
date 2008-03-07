@@ -263,7 +263,6 @@ class ExportAsXGMMLTask implements Task {
 	               FactoryConfigurationError {
 		// final FileWriter fileWriter = new FileWriter(fileName);
 		OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
-		System.out.println("Character encoding: "+fileWriter.getEncoding());
 		final XGMMLWriter writer = new XGMMLWriter(network, view);
 
 		try {
