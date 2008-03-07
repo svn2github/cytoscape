@@ -48,6 +48,8 @@ import java.util.Hashtable;
 import java.util.BitSet;
 import java.util.LinkedList;
 
+import csplugins.quickfind.util.QuickFind;
+
 public class CompositeFilter implements CyFilter {
 
 	protected List<CyFilter> children;
@@ -257,6 +259,8 @@ public class CompositeFilter implements CyFilter {
 			return;
 		}
 
+		updateSelectionType();
+		
 		if (advancedSetting.isNodeChecked()) {
 			calculateNodeBitSet();
 		}
@@ -268,6 +272,37 @@ public class CompositeFilter implements CyFilter {
 		childChanged = false;
 	}
 	
+	
+	private void updateSelectionType() {
+		boolean selectNode = false;
+		boolean selectEdge = false;
+		//List<CyFilter> childFilters = theFilter.getChildren();
+		for (int i=0; i< children.size(); i++) {
+			CyFilter child = children.get(i);
+			if (child instanceof AtomicFilter) {
+				AtomicFilter tmp = (AtomicFilter) child;
+				if (tmp.getIndexType() == QuickFind.INDEX_NODES) {
+					selectNode = true;
+				}
+				if (tmp.getIndexType() == QuickFind.INDEX_EDGES) {
+					selectEdge = true;
+				}
+			}
+			else if (child instanceof CompositeFilter) {
+				CompositeFilter tmp = (CompositeFilter) child;
+				if (tmp.getAdvancedSetting().isNodeChecked()) {
+					selectNode = true;
+				}
+				if (tmp.getAdvancedSetting().isEdgeChecked()) {
+					selectEdge = true;
+				}
+			}
+		}//end of for loop
+		
+		advancedSetting.setNode(selectNode);
+		advancedSetting.setEdge(selectEdge);
+	}
+
 	public BitSet getEdgeBits() {
 		apply();
 		return edge_bits;
