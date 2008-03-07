@@ -40,13 +40,11 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
     private InteractionBundleModel interactionBundleModel;
     private PathwayTableModel pathwayTableModel;
     private JTextPane summaryTextPane;
-    private PhysicalEntityDetailsPanel detailsPanel;
+    private PhysicalEntityDetailsPanel peDetailsPanel;
 	private JLayeredPane appLayeredPane;
-    private JButton detailsButton;
-	private PopupPanel popup;
-	private ModalPanel modalPanel;
     private HashMap <Long, RecordList> parentRecordsMap;
 	private CytoPanelState cytoPanelState;
+    private JFrame detailsFrame;
 
     /**
      * Constructor.
@@ -63,15 +61,15 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         //  Create the Summary Panel, but don't show it yet
-        detailsPanel = new PhysicalEntityDetailsPanel(this);
-        summaryDocument = detailsPanel.getDocument();
-        summaryTextPane = detailsPanel.getTextPane();
+        peDetailsPanel = new PhysicalEntityDetailsPanel(this);
+        summaryDocument = peDetailsPanel.getDocument();
+        summaryTextPane = peDetailsPanel.getTextPane();
 
 		// create popup window
-		modalPanel = new ModalPanel();
-		popup = new PopupPanel(appLayeredPane, detailsPanel, modalPanel);
-		appLayeredPane.add(modalPanel, JLayeredPane.POPUP_LAYER);
-		appLayeredPane.add(popup, JLayeredPane.DRAG_LAYER);
+//		modalPanel = new ModalPanel();
+//		popup = new PopupPanel(appLayeredPane, peDetailsPanel, modalPanel);
+//		appLayeredPane.add(modalPanel, 1000);
+//		appLayeredPane.add(popup, 1000);
 
         //  Create the Hit List
         peListModel = new DefaultListModel();
@@ -81,11 +79,13 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
         hitListPane.setLayout(new BorderLayout());
         JScrollPane hitListScrollPane = new JScrollPane(peList);
         hitListScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        detailsButton = createDetailsButton();
         GradientHeader header = new GradientHeader("Step 2:  Select");
         header.setAlignmentX(Component.LEFT_ALIGNMENT);
         hitListPane.add(header, BorderLayout.NORTH);
-        hitListPane.add(hitListScrollPane, BorderLayout.CENTER);
+        JSplitPane internalPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hitListScrollPane,
+                peDetailsPanel);
+        internalPanel.setDividerLocation(100);
+        hitListPane.add(internalPanel, BorderLayout.CENTER);
 
         //  Create Search Details Panel
         SearchDetailsPanel detailsPanel = new SearchDetailsPanel(interactionBundleModel,
@@ -105,74 +105,12 @@ public class SearchHitsPanel extends JPanel implements CPathWebServiceListener, 
 		cytoPanelState = cytoPanel.getState();
     }
 
-    private JButton createDetailsButton() {
-        URL url = GradientHeader.class.getResource ("resources/stock_zoom-16.png");
-        ImageIcon detailsIcon = new ImageIcon(url);
-        JButton button = new JButton (detailsIcon);
-        button.setToolTipText("View Complete Gene Details");
-        button.setOpaque(false);
-
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                togglePopup();
-            }
-        });
-
-        return button;
-    }
-
     private JList createHitJList(DefaultListModel peListModel) {
         JList peList = new JListWithToolTips(peListModel);
         peList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         peList.setPrototypeCellValue("12345678901234567890");
         return peList;
     }
-
-	/**
-	 * Our implementation of setBounds().  Required to affect
-	 * popup window position and/or transition effect if this 
-	 * panel's bounds change.
-	 */
-	public void setBounds(int x, int y, int width, int height) {
-
-		if (getX() != x || getY() != y || getWidth() != width || getHeight() != height) {
-			if (popup.isVisible()) {
-				popup.cancelTransition();
-			}
-		}
-		super.setBounds(x,y,width, height);
-	}
-
-	public void togglePopup() {
-        if (!popup.isVisible()) {
-            detailsButton.setToolTipText("Hide Gene Details");
-
-			int MARGIN = 30;
-			int popupX; int popupY;
-			int popupWIDTH = (int)this.getSize().getWidth();
-			int popupHEIGHT = (int)(this.getSize().getHeight() * .75);
-			CytoscapeDesktop desktop = Cytoscape.getDesktop();
-			int desktopLocationX = desktop.getLocationOnScreen().x;
-			int desktopLocationY = desktop.getLocationOnScreen().y;
-			int desktopInsets = desktop.getInsets().top + desktop.getInsets().bottom;
-			// set popup location - based on cytopanel state
-			if (cytoPanelState == CytoPanelState.DOCK) {
-				popupX = getLocationOnScreen().x - desktopLocationX - popupWIDTH - MARGIN;
-				popupY = getLocationOnScreen().y - desktopLocationY;
-			}
-			else {
-				popupX = desktopLocationX + desktop.getWidth() / 2 - popupWIDTH / 2;
-				popupY = desktopLocationY + desktop.getHeight() / 2 - popupHEIGHT / 2;
-			}
-			modalPanel.setBounds(0, 0, desktop.getWidth(), desktop.getHeight());
-			popup.setBounds(popupX, popupY, popupWIDTH, popupHEIGHT);
-            popup.setCurtain(popupX+desktopLocationX, popupY+desktopLocationY+desktopInsets, popupWIDTH, popupHEIGHT);
-			popup.fadeIn();
-        } else {
-			detailsButton.setToolTipText("View Gene Details");
-			popup.fadeOut();
-        }
-	}
 
     /**
      * Indicates that user has initiated a phsyical entity search.

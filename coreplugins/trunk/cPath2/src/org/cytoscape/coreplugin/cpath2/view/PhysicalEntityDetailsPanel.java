@@ -34,36 +34,12 @@ public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener 
         doc = textPane.getDocument();
         JScrollPane scrollPane = encloseInJScrollPane (textPane);
 
-        URL url = GradientHeader.class.getResource ("resources/stock_toggle-graphics-16.png");
-        ImageIcon detailsIcon = new ImageIcon(url);
-        JButton button = new JButton (detailsIcon);
-        button.setToolTipText("Hide Gene Details");
-        button.setOpaque(false);
-
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-				PhysicalEntityDetailsPanel.this.searchHitsPanel.togglePopup(); // amazing syntax!!
-            }
-        });
-        GradientHeader header = new GradientHeader("Gene Details", button);
+        GradientHeader header = new GradientHeader("Details");
 		// we become gradient header mouse listener - see comment below
 		header.addMouseListener(this);
 
-		// ok button
-		JButton okButton = new JButton("Ok");
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-				PhysicalEntityDetailsPanel.this.searchHitsPanel.togglePopup(); // amazing syntax!!
-            }
-        });
-
         add (header, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
-        JPanel okPanel = new JPanel();
-        okPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        okPanel.add(okButton);
-        add(okPanel, BorderLayout.SOUTH);
-		
     }
 
 	// kill mouse events - fixes bug where user can 
@@ -122,9 +98,9 @@ public class PhysicalEntityDetailsPanel extends JPanel implements MouseListener 
 
         HTMLDocument htmlDoc = (HTMLDocument) textPane.getDocument();
         StyleSheet styleSheet = htmlDoc.getStyleSheet();
-        styleSheet.addRule("h2 {color: #663333; font-size: 120%; font-weight: bold; "
+        styleSheet.addRule("h2 {color:  #663333; font-size: 102%; font-weight: bold; "
                 + "margin-bottom:3px}");
-        styleSheet.addRule("h3 {color: #663333; font-size: 105%; font-weight: bold;"
+        styleSheet.addRule("h3 {color: #663333; font-size: 95%; font-weight: bold;"
                 + "margin-bottom:7px}");
         styleSheet.addRule("ul { list-style-type: none; margin-left: 5px; "
                 + "padding-left: 1em;	text-indent: -1em;}");
