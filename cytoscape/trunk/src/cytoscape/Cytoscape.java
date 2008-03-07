@@ -936,7 +936,9 @@ public abstract class Cytoscape {
 	/**
 	 */
 	public static void setCurrentNetwork(String id) {
+		//System.out.println("- TRY setting current network" + id);
 		if (getNetworkMap().containsKey(id)) {
+			//System.out.println("- SUCCEED setting current network " + id);
 			currentNetworkID = id;
 		}
 	}
@@ -945,7 +947,9 @@ public abstract class Cytoscape {
 	 * @return true if there is network view, false if not
 	 */
 	public static boolean setCurrentNetworkView(String id) {
+		//System.out.println("= TRY setting current network VIEW " + id);
 		if (getNetworkViewMap().containsKey(id)) {
+			//System.out.println("= SUCCEED setting current network VIEW " + id);
 			currentNetworkViewID = id;
 
 			return true;

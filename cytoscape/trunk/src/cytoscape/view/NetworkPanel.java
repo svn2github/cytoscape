@@ -368,7 +368,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		// System.out.println("NetworkPanel: VALUE changed -  " + e.getSource().toString()); 
+		// System.out.println("NetworkPanel: valueChanged - " + e.getSource().getClass().getName()); 
 		JTree mtree = treeTable.getTree();
 
 		// sets the "current" network based on last node in the tree selected
@@ -378,6 +378,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			return;
 		}
 
+		// System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
 		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
 	                                                   null, (String) node.getNetworkID()));
 

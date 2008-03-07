@@ -203,13 +203,13 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 * Fire Events when a Managed Network View gets the Focus.
 	 */
 	public void internalFrameActivated(InternalFrameEvent e) {
-		// System.out.println("NetworkViewManager: internalFrameActivated ");
 		String network_id = componentMap.get(e.getInternalFrame());
 
 		if (network_id == null) {
 			return;
 		}
 
+		//System.out.println("NetworkViewManager: firing NETWORK_VIEW_FOCUSED (intenalFrameActivate)");
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
 				network_id);
 	}
@@ -290,6 +290,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 		// handle focus event
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
+			//System.out.println("NetworkViewManager got NETWORK_VIEW_FOCUS " + e.getSource().getClass().getName());
 			String network_id = (String) e.getNewValue();
 			e = null;
 			unsetFocus(); // in case the newly focused network doesn't have a
@@ -307,6 +308,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 		// handle putting a newly created CyNetworkView into a Container
 		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			//System.out.println("NetworkViewManager got NETWORK_VIEW_CREATED " + e.getSource().getClass().getName());
 			CyNetworkView new_view = (CyNetworkView) e.getNewValue();
 			createContainer(new_view);
 			e = null;
@@ -446,7 +448,8 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 		networkViewMap.put(view.getNetwork().getIdentifier(), iframe);
 		componentMap.put(iframe, view.getNetwork().getIdentifier());
-
+		
+		//System.out.println("NetworkViewManager: firing NETWORK_VIEW_FOCUSED (createContainer)");
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, view
 				.getNetwork().getIdentifier());
 	}
