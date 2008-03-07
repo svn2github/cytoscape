@@ -12,10 +12,12 @@ import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
 import org.cytoscape.coreplugin.cpath2.util.NullTaskMonitor;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 import org.cytoscape.coreplugin.cpath2.view.TabUi;
+import org.cytoscape.coreplugin.cpath2.view.SearchHitsPanel;
 import org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
@@ -91,7 +93,17 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
     }
 
     public String getDescription() {
-        return "Provides integrated access to pathwaycommons.org."; 
+        String desc = CPathProperties.getInstance().getCPathBlurb();
+        desc = desc.replaceAll("<span class='bold'>", "");
+        desc = desc.replaceAll("</span>", "");
+        desc = desc.replaceAll("<BR>", "\n");
+        return desc;
+    }
+
+    public Icon getIcon(IconSize iconSize) {
+        URL iconURL = SearchHitsPanel.class.getResource("resources/"
+                + CPathProperties.getInstance().getIconFileName());
+        return new ImageIcon(iconURL);
     }
 
     /**
