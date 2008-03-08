@@ -1,6 +1,8 @@
 
 package cytoscape.actions;
 
+import java.awt.event.KeyEvent;
+
 import giny.view.NodeView;
 
 import javax.swing.event.MenuKeyListener;
@@ -22,8 +24,6 @@ class DeleteEdit extends CyAbstractEdit {
 	double[] xPos;
 	double[] yPos;
 	CyNetwork net;
-	// AJK: 03082008 add a constructor that includes calling action so that we can reactivate VK_DELETE after undo
-	DeleteAction deleteAction;
 
 	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd) {
 		super("Delete");
@@ -52,12 +52,6 @@ class DeleteEdit extends CyAbstractEdit {
 		}
 		
 	}
-	
-	// AJK: 03082008 add a constructor that includes calling action so that we can reactivate VK_DELETE after undo
-	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd, DeleteAction action) {
-		this(net, nodeInd, edgeInd);
-		this.deleteAction = action;
-	}
 		
 
 	public void redo() {
@@ -84,15 +78,6 @@ class DeleteEdit extends CyAbstractEdit {
 			}
 		}
 		netView.redrawGraph(true, true);
-//		MenuKeyListener [] menuKeyListeners  = 
-//			Cytoscape.getDesktop().getCyMenus().getEditMenu().getMenuKeyListeners();
-//		boolean found = false;
-//		int i = 0;
-//		while ((!found) && i < menuKeyListeners.length)
-//		{
-//			MenuKeyListener key = menuKeyListeners[i];
-//			key.
-//		}
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
 	}
 }
