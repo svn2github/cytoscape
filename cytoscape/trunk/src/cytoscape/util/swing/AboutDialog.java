@@ -107,6 +107,8 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 		initComponents();
 		mainEditorPane.setEditable(false);
 		mainEditorPane.addHyperlinkListener(this);
+		setLocationRelativeTo(Cytoscape.getDesktop());
+		setAlwaysOnTop(true);
 	}
 
 	/**
