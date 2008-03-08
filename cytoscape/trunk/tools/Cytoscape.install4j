@@ -61,7 +61,7 @@
       <screen id="programGroup" enabled="false" />
       <screen id="fileAssociations" enabled="true">
         <associations>
-          <association extension="cys" description="" winIconFile="" launcherId="3" selected="true" windows="true" macos="true" macIconFile="" />
+          <association extension="cys" description="" winIconFile="../images/icon32x32_file.png" launcherId="3" selected="true" windows="true" macos="true" macIconFile="../images/icon32x32_file.png" />
         </associations>
       </screen>
       <screen id="services" enabled="true" allSelected="true">
