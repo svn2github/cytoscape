@@ -168,7 +168,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-		enableForNetworkAndView();	
+		enableForNetwork();	
 	}
 } 
 
