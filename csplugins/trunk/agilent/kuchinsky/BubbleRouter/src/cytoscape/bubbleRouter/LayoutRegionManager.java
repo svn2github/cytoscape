@@ -38,38 +38,6 @@ public class LayoutRegionManager {
 	}
 
 	/**
-	 * add a region/view association in the regionViewMap data structure
-	 * 
-	 * @param view
-	 *            the CyNetworkView to add to
-	 * @param region
-	 *            the region you are adding
-	 */
-	public static void addRegionForView(CyNetworkView view, LayoutRegion region) {
-		List<LayoutRegion> regionList = regionViewMap.get(view);
-		if (regionList == null) {
-			regionList = new ArrayList<LayoutRegion>();
-		}
-		regionList.add(region);
-		regionViewMap.put(view, regionList);
-	}
-
-	/**
-	 * remove the region and index from the view
-	 * 
-	 * @param view
-	 * @param index
-	 */
-	public static void removeRegionFromView(CyNetworkView view, Integer index) {
-		List<LayoutRegion> regionList = regionViewMap.get(view);
-		if (regionList == null) {
-			regionList = new ArrayList<LayoutRegion>();
-		}
-		regionList.remove(index);
-		regionViewMap.put(view, regionList);
-	}
-
-	/**
 	 * 
 	 * @param view
 	 * @return number of regions for this CyNetworkView
@@ -98,24 +66,31 @@ public class LayoutRegionManager {
 		}
 		regionViewMap.put(view, null);
 	}
-	
-	/**
-	 * clears hash map of regions per view and view IDs 
-	 * to reset maps when a new session is loaded.
-	 *
-	 */
-	public static void clearRegionViewMap() {
-		regionViewMap.clear();
-		viewIdMap.clear();
-	}
 
 	/**
-	 * remove given region from view
+	 * higher-level routine for removing a region from a view
 	 * 
 	 * @param view
 	 * @param region
 	 */
-	public static void removeRegionFromView(CyNetworkView view,
+	public static void removeRegion(CyNetworkView view, LayoutRegion region) {
+		removeRegionFromView(view, region);
+		DGraphView dview = (DGraphView) view;
+		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
+		backgroundLayer.remove(region);
+		backgroundLayer.repaint();
+
+		BubbleRouterPlugin.groupWillBeRemoved(region);
+	}
+
+	/**
+	 * remove given region from view
+	 * (use removeRegion outside of this class)
+	 * 
+	 * @param view
+	 * @param region
+	 */
+	private static void removeRegionFromView(CyNetworkView view,
 			LayoutRegion region) {
 		List<LayoutRegion> regionList = regionViewMap.get(view);
 		if (regionList == null) {
@@ -195,20 +170,21 @@ public class LayoutRegionManager {
 	}
 
 	/**
-	 * higher-level routine for removing a region from a view
+	 * add a region/view association in the regionViewMap data structure
+	 * (use addRegion outside of this class)
 	 * 
 	 * @param view
+	 *            the CyNetworkView to add to
 	 * @param region
+	 *            the region you are adding
 	 */
-	public static void removeRegion(CyNetworkView view, LayoutRegion region) {
-		removeRegionFromView(view, region);
-		// removeRegionNameFromList(region);
-		DGraphView dview = (DGraphView) view;
-		DingCanvas backgroundLayer = dview.getCanvas(REGION_CANVAS);
-		backgroundLayer.remove(region);
-		backgroundLayer.repaint();
-
-		BubbleRouterPlugin.groupWillBeRemoved(region);
+	private static void addRegionForView(CyNetworkView view, LayoutRegion region) {
+		List<LayoutRegion> regionList = regionViewMap.get(view);
+		if (regionList == null) {
+			regionList = new ArrayList<LayoutRegion>();
+		}
+		regionList.add(region);
+		regionViewMap.put(view, regionList);
 	}
 
 	/**

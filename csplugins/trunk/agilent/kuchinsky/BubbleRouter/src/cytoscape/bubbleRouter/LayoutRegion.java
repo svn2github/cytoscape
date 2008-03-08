@@ -100,8 +100,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 
 	private CyGroup myGroup = null;
 
-	private int viewID = 0;
-
 	/**
 	 * For undo/redo
 	 */
@@ -110,6 +108,12 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 	private Point2D[] _redoOffsets;
 
 	private NodeView[] _selectedNodeViews;
+
+	private Point2D[] _undoExcludedOffsets;
+
+	private Point2D[] _redoExcludedOffsets;
+
+	private NodeView[] _excludedNodeViews;
 
 	private LayoutRegion _thisRegion;
 
@@ -617,9 +621,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 				}
 			}
 
-			// Cytoscape.getCurrentNetwork().setSelectedNodeState(excludedNodes,
-			// true);
-
 			// define boundary around all regions directly above, below or
 			// beside this region
 			double maxAllY = Double.NEGATIVE_INFINITY;
@@ -637,8 +638,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 				double maxThisX = minThisX + this.getW1();
 				double maxThisY = minThisY + this.getH1();
 
-				System.out.println("region bounds: " + minRegionX + ", "
-						+ minRegionY);
 				if (maxRegionX > maxAllX
 						&& ((minRegionY >= minThisY && minRegionY <= maxThisY)
 								|| (maxRegionY >= minThisY && maxRegionY <= maxThisY) || (minRegionY <= minThisY && maxRegionY >= maxThisY))) {
@@ -660,8 +659,7 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 					minAllY = minRegionY;
 				}
 			}
-			System.out.println("far bounds: " + minAllX + ", " + minAllY
-					+ " : " + maxAllX + ", " + maxAllY);
+
 			// xform boundary around all regions
 			double[] topLeft = new double[2];
 			topLeft[0] = minAllX - defaultNodeWidth / 2;
@@ -678,26 +676,8 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			maxAllX = bottomRight[0];
 			maxAllY = bottomRight[1];
 
-			// // xform new region boundary
-			// double[] topLeft2 = new double[2];
-			// topLeft2[0] = this.getX1() - defaultNodeWidth / 2;
-			// topLeft2[1] = this.getY1() - defaultNodeHeight / 2;
-			// ((DGraphView) Cytoscape.getCurrentNetworkView())
-			// .xformComponentToNodeCoords(topLeft2);
-			// double minNewRegionX = topLeft2[0];
-			// double minNewRegionY = topLeft2[1];
-			// double[] bottomRight2 = new double[2];
-			// bottomRight2[0] = this.getX1() + this.getW1() + defaultNodeWidth
-			// / 2;
-			// bottomRight2[1] = this.getY1() + this.getH1() + defaultNodeHeight
-			// / 2;
-			// ((DGraphView) Cytoscape.getCurrentNetworkView())
-			// .xformComponentToNodeCoords(bottomRight2);
-			// double maxNewRegionX = bottomRight2[0];
-			// double maxNewRegionY = bottomRight2[1];
-
 			// determine closest edge per excludedNodeView and move node to
-			// mirror distance relative to new region		
+			// mirror distance relative to new region
 			int countN = 0;
 			int countS = 0;
 			int countE = 0;
@@ -706,27 +686,24 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 			List<Double> pastS = new ArrayList<Double>();
 			List<Double> pastE = new ArrayList<Double>();
 			List<Double> pastW = new ArrayList<Double>();
+			SortedSet<Object> excludedNodes = new TreeSet<Object>(comparator);
+
+			// for undo/redo
+			_excludedNodeViews = new NodeView[excludedNodeViews.size()];
+			_undoExcludedOffsets = new Point2D[excludedNodeViews.size()];
+			_redoExcludedOffsets = new Point2D[excludedNodeViews.size()];
+			int k = 0;
 
 			for (NodeView nv : excludedNodeViews) {
+				excludedNodes.add(nv.getNode());
 
-				// TODO: figure out secondary color for excluded nodes
-				// Cytoscape.getCurrentNetwork().setSelectedNodeState(nv.getNode(),
-				// true);
-				GlobalAppearanceCalculator gac = Cytoscape
-						.getVisualMappingManager().getVisualStyle()
-						.getGlobalAppearanceCalculator();
-				;
-				nv.setSelectedPaint(gac.getDefaultNodeReverseSelectionColor());
-				nv.setSelected(true);
+				// for undo/redo
+				_excludedNodeViews[k] = nv;
+				_undoExcludedOffsets[k] = _excludedNodeViews[k].getOffset();
+				k++;
 
 				double nvX = nv.getXPosition();
 				double nvY = nv.getYPosition();
-
-				// distance between node and new region
-				// double nearNorth = nvY - minNewRegionY;
-				// double nearSouth = maxNewRegionY - nvY;
-				// double nearEast = nvX - minNewRegionX;
-				// double nearWest = maxNewRegionX - nvX;
 
 				// distance between node and boundary around all regions
 				double farNorth = nvY - minAllY;
@@ -747,8 +724,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 							nv.setYPosition(nvY
 									- (farNorth + countN * defaultNodeHeight));
 							pastN.add(nvX);
-							System.out.println(nv.getNode().getIdentifier()
-									+ " moved North by " + (int) farNorth);
 						} else {
 							countW = 0;
 							for (double pW : pastW) {
@@ -760,8 +735,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 							nv.setXPosition(nvX
 									+ (farWest + countW * defaultNodeWidth));
 							pastW.add(nvY);
-							System.out.println(nv.getNode().getIdentifier()
-									+ " moved West(1) by " + (int) farWest);
 						}
 					} else if (farEast < farWest) {
 						countE = 0;
@@ -774,8 +747,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 						nv.setXPosition(nvX
 								- (farEast + countE * defaultNodeWidth));
 						pastE.add(nvY);
-						System.out.println(nv.getNode().getIdentifier()
-								+ " moved East(1) by " + (int) farEast);
 					} else {
 						countW = 0;
 						for (double pW : pastW) {
@@ -787,8 +758,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 						nv.setXPosition(nvX
 								+ (farWest + countW * defaultNodeWidth));
 						pastW.add(nvY);
-						System.out.println(nv.getNode().getIdentifier()
-								+ " moved West(2) by " + (int) farWest);
 					}
 
 				} else if (farSouth < farEast) {
@@ -803,8 +772,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 						nv.setYPosition(nvY
 								+ (farSouth + countS * defaultNodeHeight));
 						pastS.add(nvX);
-						System.out.println(nv.getNode().getIdentifier()
-								+ " moved South by " + (int) farSouth);
 					} else {
 						countW = 0;
 						for (double pW : pastW) {
@@ -816,8 +783,6 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 						nv.setXPosition(nvX
 								+ (farWest + countW * defaultNodeWidth));
 						pastW.add(nvY);
-						System.out.println(nv.getNode().getIdentifier()
-								+ " moved West(3) by " + (int) farWest);
 					}
 				} else if (farEast < farWest) {
 					countE = 0;
@@ -827,11 +792,10 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 							countE++;
 						}
 					}
-					nv.setXPosition(nvX
-							- (farEast + countE * defaultNodeWidth));
+					nv
+							.setXPosition(nvX
+									- (farEast + countE * defaultNodeWidth));
 					pastE.add(nvY);
-					System.out.println(nv.getNode().getIdentifier()
-							+ " moved East(2) by " + (int) farEast);
 				} else {
 					countW = 0;
 					for (double pW : pastW) {
@@ -840,23 +804,34 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 							countW++;
 						}
 					}
-					nv.setXPosition(nvX
-							+ (farWest + countW * defaultNodeWidth));
+					nv
+							.setXPosition(nvX
+									+ (farWest + countW * defaultNodeWidth));
 					pastW.add(nvY);
-					System.out.println(nv.getNode().getIdentifier()
-							+ " moved West(4) by " + (int) farWest);
 				}
 			}
 
 			// redraw
 			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 
-			// TODO: undoing exclusion
-			// copy treatment of selectedNodes below for excludedNodes
+			// Secondary color for excluded nodes
+			Cytoscape.getCurrentNetwork().setSelectedNodeState(excludedNodes,
+					true);
+			for (NodeView nv : excludedNodeViews) {
+				GlobalAppearanceCalculator gac = Cytoscape
+						.getVisualMappingManager().getVisualStyle()
+						.getGlobalAppearanceCalculator();
+				;
+				nv.setSelectedPaint(gac.getDefaultNodeReverseSelectionColor());
+			}
 
 			// undo/redo facility
-			for (int k = 0; k < _selectedNodeViews.length; k++) {
-				_redoOffsets[k] = _selectedNodeViews[k].getOffset();
+			for (int l = 0; l < _selectedNodeViews.length; l++) {
+				_redoOffsets[l] = _selectedNodeViews[l].getOffset();
+			}
+
+			for (int l = 0; l < _excludedNodeViews.length; l++) {
+				_redoExcludedOffsets[l] = _excludedNodeViews[l].getOffset();
 			}
 
 			CyUndo.getUndoableEditSupport().postEdit(
@@ -880,8 +855,12 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 								_selectedNodeViews[m].setOffset(_redoOffsets[m]
 										.getX(), _redoOffsets[m].getY());
 							}
+							for (int m = 0; m < _excludedNodeViews.length; m++) {
+								_excludedNodeViews[m].setOffset(_redoExcludedOffsets[m]
+										.getX(), _redoExcludedOffsets[m].getY());
+							}
 							// Add region to list of regions for this view
-							LayoutRegionManager.addRegionForView(Cytoscape
+							LayoutRegionManager.addRegion(Cytoscape
 									.getCurrentNetworkView(), _thisRegion);
 
 							// Grab ArbitraryGraphicsCanvas (a prefab canvas)
@@ -899,8 +878,12 @@ public class LayoutRegion extends JComponent implements ViewportChangeListener {
 								_selectedNodeViews[m].setOffset(_undoOffsets[m]
 										.getX(), _undoOffsets[m].getY());
 							}
+							for (int m = 0; m < _excludedNodeViews.length; m++) {
+								_excludedNodeViews[m].setOffset(_undoExcludedOffsets[m]
+										.getX(), _undoExcludedOffsets[m].getY());
+							}
 							// Add region to list of regions for this view
-							LayoutRegionManager.removeRegionFromView(Cytoscape
+							LayoutRegionManager.removeRegion(Cytoscape
 									.getCurrentNetworkView(), _thisRegion);
 
 							// Grab ArbitraryGraphicsCanvas (a prefab canvas)
