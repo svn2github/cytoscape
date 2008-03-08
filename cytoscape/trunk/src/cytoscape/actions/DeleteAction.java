@@ -154,7 +154,7 @@ public class DeleteAction extends CytoscapeAction {
 		for (Integer ni : nodeIndices) 
 			nodeInd[i++] = ni.intValue();
 
-		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodeInd,edgeInd) );
+		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodeInd,edgeInd, this) );
 
 		// delete the actual nodes and edges
 		cyNet.hideEdges(edgeInd);
@@ -175,8 +175,13 @@ public class DeleteAction extends CytoscapeAction {
 
         if ( ( nodes != null && nodes.size() > 0 ) || 
 		     ( edges != null && edges.size() > 0 ) )
-            setEnabled(true);
+        {
+ 
+        	setEnabled(true); 	
+        }
+            
         else
             setEnabled(false);
     }
+    
 }
