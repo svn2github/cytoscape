@@ -3,6 +3,7 @@ package cytoscape.bubbleRouter;
 import giny.model.Node;
 import giny.view.NodeView;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -162,6 +163,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	public static String ORDER = "Order";
 
+	public static String COLOR = "Color";
+
 	/**
 	 * For Cytoscape Menu
 	 */
@@ -239,10 +242,18 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		JMenuItem deleteRegionItem = new JMenuItem(DELETE_REGION);
 		JMenuItem layoutRegionItem = new JMenuItem(LAYOUT_REGION);
 		JMenu orderRegionSubmenu = new JMenu(ORDER);
+		JMenu colorRegionSubmenu = new JMenu(COLOR);
 		JMenuItem forwardRegionItem = new JMenuItem(MOVE_FORWARD);
 		JMenuItem backwardRegionItem = new JMenuItem(MOVE_BACKWARD);
 		JMenuItem frontRegionItem = new JMenuItem(MOVE_TO_FRONT);
 		JMenuItem backRegionItem = new JMenuItem(MOVE_TO_BACK);
+		JMenuItem redItem = new JMenuItem("Red");
+		JMenuItem greenItem = new JMenuItem("Green");
+		JMenuItem blueItem = new JMenuItem("Blue");
+		JMenuItem orangeItem = new JMenuItem("Orange");
+		JMenuItem cyanItem = new JMenuItem("Cyan");
+		JMenuItem magentaItem = new JMenuItem("Magenta");
+		JMenuItem dgrayItem = new JMenuItem("Black");
 		JMenuItem helpItem = new JMenuItem(ITEM_HELP);
 
 		// Tool tips per item
@@ -252,6 +263,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		layoutRegionItem
 				.setToolTipText("Run layout algorithm on all nodes associated with region");
 		orderRegionSubmenu.setToolTipText("Move regions forward and back");
+		colorRegionSubmenu.setToolTipText("Choose color for region border");
 		helpItem.setToolTipText("Open online help");
 
 		// Popup action listeners per item
@@ -263,6 +275,13 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		backwardRegionItem.addActionListener(popupActionListener);
 		frontRegionItem.addActionListener(popupActionListener);
 		backRegionItem.addActionListener(popupActionListener);
+		redItem.addActionListener(popupActionListener);
+		greenItem.addActionListener(popupActionListener);
+		blueItem.addActionListener(popupActionListener);
+		orangeItem.addActionListener(popupActionListener);
+		cyanItem.addActionListener(popupActionListener);
+		magentaItem.addActionListener(popupActionListener);
+		dgrayItem.addActionListener(popupActionListener);
 		helpItem.addActionListener(popupActionListener);
 
 		// Add items to context menu
@@ -270,10 +289,18 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		orderRegionSubmenu.add(forwardRegionItem);
 		orderRegionSubmenu.add(backwardRegionItem);
 		orderRegionSubmenu.add(backRegionItem);
+		colorRegionSubmenu.add(redItem);
+		colorRegionSubmenu.add(greenItem);
+		colorRegionSubmenu.add(blueItem);
+		colorRegionSubmenu.add(orangeItem);
+		colorRegionSubmenu.add(cyanItem);
+		colorRegionSubmenu.add(magentaItem);
+		colorRegionSubmenu.add(dgrayItem);
 		menu.add(uncrossEdgesItem);
 		menu.add(layoutRegionItem);
 		menu.add(deleteRegionItem);
 		menu.add(orderRegionSubmenu);
+		menu.add(colorRegionSubmenu);
 		menu.add(helpItem);
 		menu.setVisible(false);
 		
@@ -1017,7 +1044,6 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		String networkTarget = attributes.getStringAttribute(groupNode
 				.getIdentifier(), REGION_NETWORK_ATT);
 
-		// TODO: rename GroupNode based on new viewID
 		// See if this is the network we want
 		if (!networkTarget.equals(myView.getNetwork().getIdentifier())) {
 			// No, return without actually building the region
@@ -1146,12 +1172,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 						.getDesktop(),
 						"Do you really want to delete this layout region?");
 				if (confirm == JOptionPane.YES_OPTION) {
-
 					LayoutRegionManager.removeRegion(Cytoscape
 							.getCurrentNetworkView(), pickedRegion);
 					System.out.println("Region \""
 							+ pickedRegion.getRegionAttributeValue().toString()
 							+ "\" deleted");
+					pickedRegion = null;
 				}
 
 			} else if ((label == LAYOUT_REGION) && (pickedRegion != null)) {
@@ -1226,7 +1252,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				// uncross edges of nodes selected only within a region
 				UnCrossAction.unCross(boundedNodeViews, true);
 				System.out.println("Edges uncrossed");
-			} else if ((label == ITEM_HELP) && (pickedRegion != null)) {
+			} else if (label == ITEM_HELP) {
 				String helpURL = "http://www.genmapp.org/BubbleRouter/manual.htm";
 				cytoscape.util.OpenBrowser.openURL(helpURL);
 			} else if ((label == MOVE_TO_FRONT) && (pickedRegion != null)) {
@@ -1275,9 +1301,30 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 											.getComponentZOrder(pickedRegion) + 1);
 				}
 				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			} else if (label == "Red" && pickedRegion != null) {
+				pickedRegion.setPaint(Color.red);
+				pickedRegion.repaint();
+			} else if (label == "Green" && pickedRegion != null) {
+				pickedRegion.setPaint(Color.green);
+				pickedRegion.repaint();
+			} else if (label == "Blue" && pickedRegion != null) {
+				pickedRegion.setPaint(Color.blue);
+				pickedRegion.repaint();
+			} else if (label == "Orange" && pickedRegion != null) {
+				pickedRegion.setPaint(Color.orange);
+				pickedRegion.repaint();
+			} else if (label == "Cyan" && pickedRegion != null) {
+				pickedRegion.setPaint(Color.cyan);
+				pickedRegion.repaint();
+			} else if (label == "Magenta" && pickedRegion != null) {
+				pickedRegion.setPaint(Color.magenta);
+				pickedRegion.repaint();
+			} else if (label == "Black" && pickedRegion != null) {
+				pickedRegion.setPaint(Color.darkGray);
+				pickedRegion.repaint();
 			} else {
 				// throw an exception here?
-				System.err.println("Unexpected Region popup option");
+				System.err.println("No action associated with that menu selection!");
 			}
 		}
 	}
