@@ -154,7 +154,10 @@ public class DeleteAction extends CytoscapeAction {
 		for (Integer ni : nodeIndices) 
 			nodeInd[i++] = ni.intValue();
 
-		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodeInd,edgeInd) );
+		// AJK: 03/08/2008 pass in myself to DeleteEdit so that I can be signaled to reenable
+		//    menu item upon undo
+//		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodeInd,edgeInd) );
+		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodeInd,edgeInd, this) );
 
 		// delete the actual nodes and edges
 		cyNet.hideEdges(edgeInd);
