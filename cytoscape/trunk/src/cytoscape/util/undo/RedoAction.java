@@ -58,6 +58,7 @@ public class RedoAction extends CytoscapeAction {
 		super("Redo");
 		setAcceleratorCombo(KeyEvent.VK_Y, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
+		setEnabled(true);
 	}
 
 	/**
@@ -86,5 +87,15 @@ public class RedoAction extends CytoscapeAction {
 			setEnabled(false);
 			putValue(Action.NAME, "Redo");
 		}
+	}
+
+    /**
+     * Called when a menu is hidden once you click on a menu item or elsewhere.
+     * This is a hack to make sure that redo is available via the accelerator
+     * keys at all times.
+     * @param e The menu event that triggers this method call.
+     */
+    public void menuDeselected(MenuEvent e) {
+		setEnabled(true);
 	}
 }

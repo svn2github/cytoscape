@@ -56,9 +56,9 @@ public class UndoAction extends CytoscapeAction {
 	 */
 	public UndoAction() {
 		super("Undo");
-		setEnabled(false);
 		setAcceleratorCombo(KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
+		setEnabled(true);
 	}
 
     /**
@@ -87,5 +87,15 @@ public class UndoAction extends CytoscapeAction {
 			setEnabled(false);
 			putValue(Action.NAME, "Undo");
 		}
+	}
+
+	/**
+	 * Called when a menu is hidden once you click on a menu item or elsewhere.
+	 * This is a hack to make sure that undo is available via the accelerator
+	 * keys at all times.  
+     * @param e The menu event that triggers this method call.
+	 */
+	public void menuDeselected(MenuEvent e) {
+		setEnabled(true);
 	}
 }
