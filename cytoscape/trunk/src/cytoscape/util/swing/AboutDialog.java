@@ -34,16 +34,18 @@
 */
 package cytoscape.util.swing;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.util.OpenBrowser;
+
 import java.io.IOException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.Icon;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-
-import cytoscape.Cytoscape;
-import cytoscape.util.OpenBrowser;
 
 
 /**
@@ -159,11 +161,10 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 		                                                  .add(titlePanelLayout.createSequentialGroup()
 		                                                                       .addContainerGap()
 		                                                                       .add(titleLabel,
-		                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                            109,
-		                                                                            org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                       .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                        Short.MAX_VALUE)));
+		                                                                            org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                            32,
+		                                                                            Short.MAX_VALUE)
+		                                                                       .addContainerGap()));
 
 		mainPanel.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -185,7 +186,7 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 		                                                                    .addContainerGap()
 		                                                                    .add(mainScrollPane,
 		                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                         314,
+		                                                                         215,
 		                                                                         Short.MAX_VALUE)
 		                                                                    .addContainerGap()));
 

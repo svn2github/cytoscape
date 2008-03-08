@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,16 +32,14 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.data.webservice;
 
-import javax.swing.JPanel;
-
+import cytoscape.CyNode;
 import cytoscape.visual.VisualStyle;
 
 
 /**
- * 
+ *
   */
 public interface NetworkImportWebServiceClient {
 	/**
@@ -51,6 +48,11 @@ public interface NetworkImportWebServiceClient {
 	 * @return  DOCUMENT ME!
 	 */
 	public VisualStyle getDefaultVisualStyle();
-	
-//	public JPanel getUserInterfacePanel();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Boolean isNodeExpandable(CyNode node);
 }

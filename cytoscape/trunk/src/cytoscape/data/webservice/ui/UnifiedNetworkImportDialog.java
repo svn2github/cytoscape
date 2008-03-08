@@ -93,7 +93,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private Map<String, Container> serviceUIPanels = new HashMap<String, Container>();
 	
 	//Default icon for about dialog
-	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/icon100.png"));
+	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_internet-32.png"));
 
 	static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);

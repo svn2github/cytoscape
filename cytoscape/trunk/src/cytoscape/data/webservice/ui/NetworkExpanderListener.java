@@ -45,23 +45,21 @@ import java.beans.PropertyChangeListener;
 
 
 /**
- *
+ * Add context menu to the node.
  */
 public class NetworkExpanderListener implements PropertyChangeListener {
 
 	private NetworkExpander expander = null;
 	
 	/**
-	 *  DOCUMENT ME!
+	 *  Add expander.
 	 *
 	 * @param evt DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
 		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			if(expander == null) {
+			if(expander == null)
 				expander = new NetworkExpander();
-			}
 			
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(expander);
 		}
