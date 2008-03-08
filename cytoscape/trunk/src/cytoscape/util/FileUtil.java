@@ -55,6 +55,7 @@ import java.net.URL;
 import java.util.Iterator;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import java.awt.Component;
 
 /**
@@ -311,6 +312,17 @@ public abstract class FileUtil {
 					else if ((tmp = chooser.getSelectedFile()) != null) {
 						result = new File[1];
 						result[0] = tmp;
+					}
+					// FileDialog checks for overwrte, but JFileChooser does not, so we need to do
+					// so ourselves
+					for (int i = 0; i < result.length; i++) {
+						if (result[i].exists()) {
+							int answer = JOptionPane.showConfirmDialog(chooser, 
+							   "The file '"+result[i].getName()+"' already exists, are you sure you want to overwrite it?",
+							   "File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+							if (answer == 1) 
+								return null;
+						}
 					}
 				}
 			} else {
