@@ -61,7 +61,7 @@
       <screen id="programGroup" enabled="false" />
       <screen id="fileAssociations" enabled="true">
         <associations>
-          <association extension="cys" description="" winIconFile="../images/icon32x32_file.png" launcherId="3" selected="true" windows="true" macos="true" macIconFile="../images/icon32x32_file.png" />
+          <association extension="cys" description="Cytoscape Session File" winIconFile="../images/cytoscape_file.icns" launcherId="3" selected="true" windows="true" macos="true" macIconFile="../images/cytoscape_file.icns" />
         </associations>
       </screen>
       <screen id="services" enabled="true" allSelected="true">
