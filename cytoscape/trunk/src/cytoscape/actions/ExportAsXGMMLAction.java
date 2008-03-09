@@ -207,9 +207,9 @@ class ExportAsXGMMLTask implements Task {
 
 		int numNodes = network.getNodeCount();
 
-		if (numNodes == 0) {
-			throw new IllegalArgumentException("Network is empty.");
-		}
+		// if (numNodes == 0) {
+		// 	throw new IllegalArgumentException("Network is empty.");
+		// }
 
 		try {
 			saveGraph();
