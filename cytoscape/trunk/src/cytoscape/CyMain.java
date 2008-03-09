@@ -1,61 +1,44 @@
 /*
-  File: CyMain.java
+ File: CyMain.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
-  The Cytoscape Consortium is:
-  - Institute for Systems Biology
-  - University of California San Diego
-  - Memorial Sloan-Kettering Cancer Center
-  - Institut Pasteur
-  - Agilent Technologies
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
-  This library is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published
-  by the Free Software Foundation; either version 2.1 of the License, or
-  any later version.
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
 
-  This library is distributed in the hope that it will be useful, but
-  WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
-  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
-  documentation provided hereunder is on an "as is" basis, and the
-  Institute for Systems Biology and the Whitehead Institute
-  have no obligations to provide maintenance, support,
-  updates, enhancements or modifications.  In no event shall the
-  Institute for Systems Biology and the Whitehead Institute
-  be liable to any party for direct, indirect, special,
-  incidental or consequential damages, including lost profits, arising
-  out of the use of this software and its documentation, even if the
-  Institute for Systems Biology and the Whitehead Institute
-  have been advised of the possibility of such damage.  See
-  the GNU Lesser General Public License for more details.
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
 
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation,
-  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+ */
 package cytoscape;
 
-import com.jgoodies.looks.LookUtils;
-import com.jgoodies.looks.Options;
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-
-import cytoscape.init.CyInitParams;
-
-import cytoscape.util.FileUtil;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
-
 import java.awt.Dimension;
-
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -64,44 +47,70 @@ import java.util.regex.Pattern;
 
 import javax.swing.UIManager;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
+
+import com.install4j.api.launcher.StartupNotification;
+import com.jgoodies.looks.LookUtils;
+import com.jgoodies.looks.Options;
+import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
+
+import cytoscape.init.CyInitParams;
+import cytoscape.util.FileUtil;
 
 /**
  * This is the main startup class for Cytoscape. This parses the command line
  * and implements CyInitParams so that it can be used to initialize cytoscape.
- *
+ * 
  * <p>
  * Look and Feel is modified for jgoodies 2.1.4 by Kei Ono
  * </p>
  */
 public class CyMain implements CyInitParams {
 	protected String[] args;
+
 	protected Properties props;
+
 	protected String[] graphFiles;
+
 	protected String[] plugins;
+
 	protected Properties vizmapProps;
-	protected String sessionFile;
+
+	protected static String sessionFile;
+
 	protected String[] nodeAttrFiles;
+
 	protected String[] edgeAttrFiles;
+
 	protected String[] expressionFiles;
+
 	protected int mode;
+
 	protected org.apache.commons.cli.Options options;
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @param args
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws Exception
+	 *             DOCUMENT ME!
 	 */
 	public static void main(String[] args) throws Exception {
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			/*
-			 * By kono 4/2/2007
-			 * Fix Application name for Mac.
+			 * By kono 4/2/2007 Fix Application name for Mac.
 			 */
 			final CytoscapeVersion ver = new CytoscapeVersion();
 			final String version = ver.getVersion();
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", version);
+			System.setProperty(
+					"com.apple.mrj.application.apple.menu.about.name", version);
 			System.setProperty("apple.awt.brushMetalRounded", "true");
 			System.setProperty("apple.awt.antialiasing", "on");
 			System.setProperty("apple.awt.rendering", "VALUE_RENDER_SPEED");
@@ -112,10 +121,12 @@ public class CyMain implements CyInitParams {
 
 	/**
 	 * Creates a new CyMain object.
-	 *
-	 * @param args  DOCUMENT ME!
-	 *
-	 * @throws Exception  DOCUMENT ME!
+	 * 
+	 * @param args
+	 *            DOCUMENT ME!
+	 * 
+	 * @throws Exception
+	 *             DOCUMENT ME!
 	 */
 	public CyMain(String[] args) throws Exception {
 		props = null;
@@ -130,9 +141,13 @@ public class CyMain implements CyInitParams {
 		mode = CyInitParams.ERROR;
 		options = new org.apache.commons.cli.Options();
 
-		//for (String asdf: args)
-		//	System.out.println("arg: '" + asdf + "'");
+		// for (String asdf: args)
+		// System.out.println("arg: '" + asdf + "'");
 		parseCommandLine(args);
+
+		// Register CyStartupListener to intercept arguments passed by file
+		// associations set by install4j for Mac OS
+		StartupNotification.registerStartupListener(new CyStartupListener());
 
 		CytoscapeInit initializer = new CytoscapeInit();
 
@@ -146,44 +161,55 @@ public class CyMain implements CyInitParams {
 		// create the options
 		options.addOption("h", "help", false, "Print this message.");
 		options.addOption("v", "version", false, "Print the version number.");
-		// commented out until we actually support doing anything in headless mode
-		//		options.addOption("H", "headless", false, "Run in headless (no gui) mode.");
-		options.addOption(OptionBuilder.withLongOpt("session")
-		                               .withDescription("Load a cytoscape session (.cys) file.")
-		                               .withValueSeparator('\0').withArgName("file").hasArg() // only allow one session!!!
-		.create("s"));
+		// commented out until we actually support doing anything in headless
+		// mode
+		// options.addOption("H", "headless", false, "Run in headless (no gui)
+		// mode.");
+		options.addOption(OptionBuilder.withLongOpt("session").withDescription(
+				"Load a cytoscape session (.cys) file.").withValueSeparator(
+				'\0').withArgName("file").hasArg() // only allow one session!!!
+				.create("s"));
 
-		options.addOption(OptionBuilder.withLongOpt("network")
-		                               .withDescription("Load a network file (any format).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("N"));
+		options.addOption(OptionBuilder.withLongOpt("network").withDescription(
+				"Load a network file (any format).").withValueSeparator('\0')
+				.withArgName("file").hasArgs().create("N"));
 
-		options.addOption(OptionBuilder.withLongOpt("edge-attrs")
-		                               .withDescription("Load an edge attributes file (edge attribute format).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("e"));
+		options
+				.addOption(OptionBuilder
+						.withLongOpt("edge-attrs")
+						.withDescription(
+								"Load an edge attributes file (edge attribute format).")
+						.withValueSeparator('\0').withArgName("file").hasArgs()
+						.create("e"));
 		options.addOption(OptionBuilder.withLongOpt("node-attrs")
-		                               .withDescription("Load a node attributes file (node attribute format).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("n"));
-		options.addOption(OptionBuilder.withLongOpt("matrix")
-		                               .withDescription("Load a node attribute matrix file (table).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("m"));
+				.withDescription(
+						"Load a node attributes file (node attribute format).")
+				.withValueSeparator('\0').withArgName("file").hasArgs().create(
+						"n"));
+		options.addOption(OptionBuilder.withLongOpt("matrix").withDescription(
+				"Load a node attribute matrix file (table).")
+				.withValueSeparator('\0').withArgName("file").hasArgs().create(
+						"m"));
 
-		options.addOption(OptionBuilder.withLongOpt("plugin")
-		                               .withDescription("Load a plugin jar file, directory of jar files, plugin class name, or plugin jar URL.")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("p"));
+		options
+				.addOption(OptionBuilder
+						.withLongOpt("plugin")
+						.withDescription(
+								"Load a plugin jar file, directory of jar files, plugin class name, or plugin jar URL.")
+						.withValueSeparator('\0').withArgName("file").hasArgs()
+						.create("p"));
 
-		options.addOption(OptionBuilder.withLongOpt("props")
-		                               .withDescription("Load cytoscape properties file (Java properties format) or individual property: -P name=value.")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("P"));
-		options.addOption(OptionBuilder.withLongOpt("vizmap")
-		                               .withDescription("Load vizmap properties file (Java properties format).")
-		                               .withValueSeparator('\0').withArgName("file").hasArgs()
-		                               .create("V"));
+		options
+				.addOption(OptionBuilder
+						.withLongOpt("props")
+						.withDescription(
+								"Load cytoscape properties file (Java properties format) or individual property: -P name=value.")
+						.withValueSeparator('\0').withArgName("file").hasArgs()
+						.create("P"));
+		options.addOption(OptionBuilder.withLongOpt("vizmap").withDescription(
+				"Load vizmap properties file (Java properties format).")
+				.withValueSeparator('\0').withArgName("file").hasArgs().create(
+						"V"));
 
 		// try to parse the cmd line
 		CommandLineParser parser = new PosixParser();
@@ -192,20 +218,21 @@ public class CyMain implements CyInitParams {
 		try {
 			line = parser.parse(options, args);
 		} catch (ParseException e) {
-			System.err.println("Parsing command line failed: " + e.getMessage());
+			System.err
+					.println("Parsing command line failed: " + e.getMessage());
 			printHelp();
 			System.exit(1);
 		}
-
+		
 		// Read any argument containing ".cys" as session file.
 		// Allows session files to be passed in via MIME type settings.
 		// This imprecise method is overwritten by -s option, if specified.
-		for (String freeArg : args){
-			if (freeArg.contains(".cys")){
+		for (String freeArg : args) {
+			if (freeArg.contains(".cys")) {
 				sessionFile = freeArg;
 			}
 		}
-
+		
 		// use what is found on the command line to set values
 		if (line.hasOption("h")) {
 			printHelp();
@@ -254,16 +281,28 @@ public class CyMain implements CyInitParams {
 			expressionFiles = line.getOptionValues("m");
 	}
 
+	/**
+	 * Provides access to the session file parsed from arguments intercepted by
+	 * CyStartupListener
+	 * 
+	 * @return sessionFile
+	 */
+	public static void setSessionFile(String sf) {
+		sessionFile = sf;
+	}
+
 	protected void setupLookAndFeel() {
 		try {
 			if (LookUtils.IS_OS_WINDOWS) {
 				/*
 				 * For Windows: just use platform default look & feel.
 				 */
-				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+				UIManager
+						.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			} else if (LookUtils.IS_OS_MAC) {
 				/*
-				 * For Mac: move menue bar to OS X default bar (next to Apple icon)
+				 * For Mac: move menue bar to OS X default bar (next to Apple
+				 * icon)
 				 */
 				System.setProperty("apple.laf.useScreenMenuBar", "true");
 			} else {
@@ -271,10 +310,12 @@ public class CyMain implements CyInitParams {
 				 * For Unix platforms, use JGoodies Looks
 				 */
 				UIManager.setLookAndFeel(new Plastic3DLookAndFeel());
-				//				UIManager.setLookAndFeel(new NimbusLookAndFeel());
+				// UIManager.setLookAndFeel(new NimbusLookAndFeel());
 				Plastic3DLookAndFeel.set3DEnabled(true);
-				Plastic3DLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
-				Plastic3DLookAndFeel.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
+				Plastic3DLookAndFeel
+						.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
+				Plastic3DLookAndFeel
+						.setTabStyle(Plastic3DLookAndFeel.TAB_STYLE_METAL_VALUE);
 				Plastic3DLookAndFeel.setHighContrastFocusColorsEnabled(true);
 
 				Options.setDefaultIconSize(new Dimension(18, 18));
@@ -292,41 +333,44 @@ public class CyMain implements CyInitParams {
 
 	protected void printHelp() {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [OPTIONS]", options);
+		formatter.printHelp("java -Xmx512M -jar cytoscape.jar [OPTIONS]",
+				options);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Properties getProps() {
 		return props;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public Properties getVizProps() {
 		return vizmapProps;
 	}
 
 	private Properties createProperties(String[] potentialProps) {
-		//for ( String asdf: potentialProps)
-		//	System.out.println("prop: '" + asdf + "'");
+		// for ( String asdf: potentialProps)
+		// System.out.println("prop: '" + asdf + "'");
 		Properties props = new Properties();
 		Properties argProps = new Properties();
 
-		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$").matcher("");
+		Matcher propPattern = Pattern.compile("^((\\w+\\.*)+)\\=(.+)$")
+				.matcher("");
 
 		for (int i = 0; i < potentialProps.length; i++) {
 			propPattern.reset(potentialProps[i]);
 
 			// check to see if the string is a key value pair
 			if (propPattern.matches()) {
-				argProps.setProperty(propPattern.group(1), propPattern.group(3));
+				argProps
+						.setProperty(propPattern.group(1), propPattern.group(3));
 
 				// otherwise assume it's a file/url
 			} else {
@@ -336,9 +380,11 @@ public class CyMain implements CyInitParams {
 					if (in != null)
 						props.load(in);
 					else
-						System.out.println("Couldn't load property: " + potentialProps[i]);
+						System.out.println("Couldn't load property: "
+								+ potentialProps[i]);
 				} catch (IOException e) {
-					System.out.println("Couldn't load property: " + potentialProps[i]);
+					System.out.println("Couldn't load property: "
+							+ potentialProps[i]);
 					e.printStackTrace();
 				}
 			}
@@ -353,72 +399,72 @@ public class CyMain implements CyInitParams {
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List getGraphFiles() {
 		return createList(graphFiles);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List getEdgeAttributeFiles() {
 		return createList(edgeAttrFiles);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List getNodeAttributeFiles() {
 		return createList(nodeAttrFiles);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List getExpressionFiles() {
 		return createList(expressionFiles);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public List getPlugins() {
 		return createList(plugins);
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String getSessionFile() {
 		return sessionFile;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public int getMode() {
 		return mode;
 	}
 
 	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
+	 * DOCUMENT ME!
+	 * 
+	 * @return DOCUMENT ME!
 	 */
 	public String[] getArgs() {
 		return args;
