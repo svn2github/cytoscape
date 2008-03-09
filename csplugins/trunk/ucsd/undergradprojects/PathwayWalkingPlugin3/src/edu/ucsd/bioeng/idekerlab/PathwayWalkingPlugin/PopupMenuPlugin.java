@@ -9,8 +9,6 @@ import ding.view.*;
 
 import java.util.*;
 
-
-
 public class PopupMenuPlugin extends CytoscapePlugin {
 	/**
 	 * Creates a new LinkOutPlugin object.

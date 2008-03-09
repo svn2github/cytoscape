@@ -14,7 +14,7 @@ class menuActionPressed extends AbstractAction {
         selectedNode = node;
     }
     public void actionPerformed(ActionEvent e) {
-        GUI yay = new GUI(selectedNode);
-        yay.loadGui(selectedNode);
+        GUI newGUI = new GUI(selectedNode);
+        newGUI.loadGui(selectedNode);
     }
 }

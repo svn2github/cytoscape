@@ -402,10 +402,10 @@ public class GUI extends javax.swing.JFrame {
                     .add(jButton2))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
-        attempt = new Intact(nodeId, node, jProgressBar1, 1, this);
-        attempt2 = new NCBI(nodeId, node, jProgressBar2, 1, this);
+//        attempt = new Intact(nodeId, node, jProgressBar1, 1, this);
+//        attempt2 = new NCBI(nodeId, node, jProgressBar2, 1, this);
         pack();
-    }// </editor-fold>
+    }
  
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
 // TODO add your handling code here:
@@ -415,14 +415,10 @@ public class GUI extends javax.swing.JFrame {
     }
     
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt){
-    		attempt.kill();
-    		attempt.interrupt();
+    	
     }
     
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt){
-			attempt2.kill();
-			attempt2.interrupt();
-
     }
     
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt){
@@ -457,7 +453,7 @@ public class GUI extends javax.swing.JFrame {
 	        System.out.println("Here we go....");
 	        System.out.println("This is columnSearch()" + columnSearch());
 	        
-	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 1, this);
+	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 1);
 
 	        
 	        attempt.start();
@@ -470,7 +466,7 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Add on Existing] Button Pressed");
 	        
-	        NCBI attempt2 = new NCBI(columnSearch(), node, jProgressBar2, 1, this);
+	        NCBI attempt2 = new NCBI(columnSearch(), node, jProgressBar2, 1);
 //	        attempt2.startSearch(nodeId, node);
 	        attempt2.start();
  
@@ -511,7 +507,7 @@ public class GUI extends javax.swing.JFrame {
 	        
 	        System.out.println("Attribute Name:" + attributeNames[index]);
 
-	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 2, this);
+	        Intact attempt = new Intact(columnSearch(), node, jProgressBar1, 2);
 	        attempt.start();
  
 	        System.out.println("After Intact Client was called.");
@@ -524,7 +520,7 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Open in New] Button Pressed");
 	        
-	        NCBI attempt = new NCBI(columnSearch(), node, jProgressBar1, 2, this);
+	        NCBI attempt = new NCBI(columnSearch(), node, jProgressBar2, 2);
 	        attempt.start();
 	        
 	        

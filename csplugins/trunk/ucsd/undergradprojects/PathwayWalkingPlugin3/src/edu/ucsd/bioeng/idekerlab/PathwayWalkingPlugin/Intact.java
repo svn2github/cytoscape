@@ -42,14 +42,12 @@ public class Intact extends Thread{
     private Node node;
     private javax.swing.JProgressBar jProgressBar1;
     private int button;
-    private GUI gui;
     
-    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1, int buttonpress, GUI that){
+    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1, int buttonpress){
     	nodeId = nodeID;
     	node=node1;
     	jProgressBar1 = jBar1;
     	button = buttonpress;
-    	this.gui = that;
     }
 	
 	//public void startSearch(String nodeId, Node node){
@@ -62,19 +60,19 @@ public class Intact extends Thread{
         	
         	Object blah1 = try2.execute("findBinaryInteractions", new Class[]{String.class}, new Object[]{nodeId});
 
-        	SearchResult result = (SearchResult) blah1;
+//        	SearchResult result = (SearchResult) blah1;
         	  	
-        	Cytoscape.firePropertyChange("SEARCH_RESULT", "uk.ac.ebi.intact.binarysearch.wsclient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
+//        	Cytoscape.firePropertyChange("SEARCH_RESULT", "uk.ac.ebi.intact.binarysearch.wsclient", new DatabaseSearchResult(result.getTotalCount(), result, WSEventType.IMPORT_NETWORK));
 
         	CyWebServiceEvent cyweb1 = new CyWebServiceEvent("IntAct", WSEventType.SEARCH_DATABASE, node);
         	
         	
         	System.out.println("RESULTS.GETINTERACTIONS() RETURNS...");
-        	System.out.println(result.getInteractions().toString());
+//        	System.out.println(result.getInteractions().toString());
         	System.out.println("END OF RESULTS.GETINTERACTIONS");
         	
         	
-        	search(cyweb1.getParameter().toString(), cyweb1);
+//        	search(cyweb1.getParameter().toString(), cyweb1);
         	
         	System.out.println("SEARCH RESULTS (blah1):");
         	System.out.println(blah1);
@@ -92,18 +90,12 @@ public class Intact extends Thread{
         	jProgressBar1.setIndeterminate(false);
 			//This will create a new network
 //        	importNetwork(blah1, null);
-        	gui.setVisible(false);
         	
         } catch(Exception e){
         	System.out.println(e.toString());
         }
     	
     }
-    
-    public void kill(){
-    	jProgressBar1.setIndeterminate(false);
-    }
-
     
     
 	private void setProperty() {
