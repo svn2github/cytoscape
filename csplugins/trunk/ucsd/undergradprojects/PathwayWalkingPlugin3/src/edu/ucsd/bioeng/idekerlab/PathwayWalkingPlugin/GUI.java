@@ -58,48 +58,29 @@ public class GUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         nodeIDText = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox5 = new javax.swing.JCheckBox();
-        jCheckBox6 = new javax.swing.JCheckBox();
-        jCheckBox7 = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jProgressBar1 = new javax.swing.JProgressBar();
         jProgressBar2 = new javax.swing.JProgressBar();
         jProgressBar3 = new javax.swing.JProgressBar();
-        jProgressBar4 = new javax.swing.JProgressBar();
-        jProgressBar5 = new javax.swing.JProgressBar();
-        jProgressBar6 = new javax.swing.JProgressBar();
-        jButton10 = new javax.swing.JButton();
-        jProgressBar7 = new javax.swing.JProgressBar();
-        
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox();
  
-        setTitle("Pathway Walking Plugin");
-        
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         titleText.setFont(new java.awt.Font("Tahoma", 1, 18));
         titleText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        titleText.setText("");
+        titleText.setText("Pathway Walking Plugin");
  
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel2.setText("Current Node ID:");
@@ -108,122 +89,43 @@ public class GUI extends javax.swing.JFrame {
         jLabel3.setText("Identifier:");
  
         nodeIDText.setText(nodeId);
-        
-        // This is the different attributes stored in Cytoscape
-        attributeNames = cyAtts.getAttributeNames();
-        
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(attributeNames));
  
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel1.setText("Available Databases");
+        jLabel1.setText("Databases");
  
         jCheckBox1.setText("IntAct");
         jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+//        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                jCheckBox1ActionPerformed(evt);
+//            }
+//        });
  
         jCheckBox2.setText("NCBI");
         jCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
  
-        jCheckBox3.setText("KEGG");
+        jCheckBox3.setText("Pathway Commons");
         jCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
  
-        jCheckBox4.setText("BioCyc");
-        jCheckBox4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox4.setMargin(new java.awt.Insets(0, 0, 0, 0));
- 
-        jCheckBox5.setText("PUMA2");
-        jCheckBox5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox5.setMargin(new java.awt.Insets(0, 0, 0, 0));
- 
-        jCheckBox6.setText("Reactome");
-        jCheckBox6.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox6.setMargin(new java.awt.Insets(0, 0, 0, 0));
- 
-        jCheckBox7.setText("DIP");
-        jCheckBox7.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox7.setMargin(new java.awt.Insets(0, 0, 0, 0));
- 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel4.setText("Progress");
- 
-        jButton6.setText("x");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
- 
-        jButton7.setText("x");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
- 
-        jButton8.setText("x");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
- 
-        jButton9.setText("x");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-        
-        jButton10.setText("x");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
- 
-        jButton11.setText("x");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
- 
-        jButton12.setText("x");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
- 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel5.setText("Cancel");
-        
-//        jList1.setListData(cyAtts.getAttributeNames()) ;
  
         jScrollPane1.setViewportView(jList1);
  
         jLabel13.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel13.setText("Results:");
  
-        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel14.setText("Name");
- 
-        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel15.setText("Database");
- 
-        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel16.setText("Name");
- 
-        jButton1.setText("Search & Add on Existing");
+        jButton1.setText("Add to New Network");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
  
-        jButton2.setText("Search & Open in New");
+        jButton2.setText("Add to Existing Network");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -236,6 +138,16 @@ public class GUI extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
+ 
+        jButton4.setText("Cancel");
+ 
+        jButton5.setText("Cancel");
+ 
+        jButton6.setText("Cancel");
+        
+ 
+//        attributeNames = cyAtts.getAttributeNames();
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
  
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
@@ -245,9 +157,6 @@ public class GUI extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-                        .addContainerGap())
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel1)
@@ -258,149 +167,91 @@ public class GUI extends javax.swing.JFrame {
                                             .add(jLabel2)
                                             .add(jLabel3))
                                         .add(14, 14, 14)
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                            .add(org.jdesktop.layout.GroupLayout.LEADING, jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 172, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(org.jdesktop.layout.GroupLayout.LEADING, nodeIDText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(layout.createSequentialGroup()
+                                                .add(nodeIDText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                                            .add(jComboBox1, 0, 153, Short.MAX_VALUE)))
                                     .add(layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(jCheckBox2)
                                             .add(jCheckBox1)
-                                            .add(jCheckBox3)
-                                            .add(jCheckBox4)
-                                            .add(jCheckBox5)
-                                            .add(jCheckBox7))
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 132, Short.MAX_VALUE)
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(jProgressBar5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(jProgressBar4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(jLabel4)
-                                            .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(jProgressBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(jProgressBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(jProgressBar6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(jProgressBar7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .add(19, 19, 19)))
-                                .add(28, 28, 28)))
+                                            .add(jCheckBox2)
+                                            .add(jCheckBox3))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                            .add(jProgressBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jProgressBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                                                    .add(jProgressBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                                                    .add(jLabel4))))))
+                                .add(47, 47, 47)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jButton6)
-                                    .add(jButton7)
-                                    .add(jButton8)
-                                    .add(jButton9)
-                                    .add(jButton10)
-                                    .add(jButton11)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton12))
-                                .add(19, 19, 19))
-                            .add(layout.createSequentialGroup()
-                                .add(jLabel5)
-                                .addContainerGap())))
-                    .add(layout.createSequentialGroup()
-                        .add(39, 39, 39)
-                        .add(titleText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .add(layout.createSequentialGroup()
-                        .add(jCheckBox6)
-                        .addContainerGap(312, Short.MAX_VALUE))
+                            .add(jButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 64, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jButton5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 64, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jButton6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 64, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(19, 19, 19))
                     .add(layout.createSequentialGroup()
                         .add(jLabel13)
-                        .addContainerGap(328, Short.MAX_VALUE))
+                        .addContainerGap(352, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
-                        .add(jLabel14)
-                        .add(75, 75, 75)
-                        .add(jLabel15)
-                        .add(70, 70, 70)
-                        .add(jLabel16)
-                        .add(97, 97, 97))
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                        .addContainerGap())
                     .add(layout.createSequentialGroup()
                         .add(jButton1)
-                        .add(21, 21, 21)
+                        .add(34, 34, 34)
                         .add(jButton2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 25, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 36, Short.MAX_VALUE)
                         .add(jButton3)
                         .addContainerGap())))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, titleText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .addContainerGap()
                 .add(titleText)
-                .add(30, 30, 30)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel2)
-                    .add(nodeIDText))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel3)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(19, 19, 19)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(jLabel5)
-                    .add(jLabel4))
-                .add(17, 17, 17)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jCheckBox1)
-                    .add(jButton6)
-                    .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(12, 12, 12)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jCheckBox2)
-                    .add(jButton7)
-                    .add(jProgressBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(14, 14, 14)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jCheckBox3)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                        .add(jProgressBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(jButton8)))
-                .add(16, 16, 16)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jButton9)
-                    .add(jCheckBox4)
-                    .add(jProgressBar4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(16, 16, 16)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jButton11)
-                            .add(jCheckBox5))
-                        .add(15, 15, 15)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(layout.createSequentialGroup()
-                                .add(jCheckBox6)
-                                .add(3, 3, 3))
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(jProgressBar6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jButton12))
-                                .add(4, 4, 4))))
-                    .add(jProgressBar5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(13, 13, 13)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jCheckBox7)
-                            .add(jButton10))
+                            .add(jLabel2)
+                            .add(nodeIDText))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel3)
+                            .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(19, 19, 19)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel1)
+                            .add(jLabel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .add(17, 17, 17)
-                        .add(jLabel13))
-                    .add(layout.createSequentialGroup()
-                        .add(10, 10, 10)
-                        .add(jProgressBar7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jCheckBox1)
+                            .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(jButton4))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel14)
-                    .add(jLabel15)
-                    .add(jLabel16))
-                .add(3, 3, 3)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jButton5)
+                    .add(jCheckBox2)
+                    .add(jProgressBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(8, 8, 8)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jCheckBox3)
+                    .add(jProgressBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton6))
+                .add(19, 19, 19)
+                .add(jLabel13)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 154, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(22, 22, 22)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButton1)
                     .add(jButton3)
                     .add(jButton2))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 //        attempt = new Intact(nodeId, node, jProgressBar1, 1, this);
 //        attempt2 = new NCBI(nodeId, node, jProgressBar2, 1, this);
@@ -414,33 +265,7 @@ public class GUI extends javax.swing.JFrame {
         advG.openGUI();
     }
     
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt){
-    	
-    }
-    
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt){
-    }
-    
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt){
-    	
-    }
-    
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt){
-    	
-    }
-    
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt){
-    	
-    }
-    
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt){
-    	
-    }
-    
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt){
-    	
-    }
- 
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
     	System.out.println("Add to Existing Network");
     	if(jCheckBox1.isSelected() == true)
@@ -558,42 +383,26 @@ public class GUI extends javax.swing.JFrame {
 	
 
     
-    // Variables declaration - do not modify
-    private javax.swing.JComboBox jComboBox1;
+    // Variables declaration - do not modify                    
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
-    private javax.swing.JCheckBox jCheckBox6;
-    private javax.swing.JCheckBox jCheckBox7;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JList jList1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JProgressBar jProgressBar3;
-    private javax.swing.JProgressBar jProgressBar4;
-    private javax.swing.JProgressBar jProgressBar5;
-    private javax.swing.JProgressBar jProgressBar6;
-    private javax.swing.JProgressBar jProgressBar7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel nodeIDText;
     private javax.swing.JLabel titleText;
@@ -605,6 +414,6 @@ public class GUI extends javax.swing.JFrame {
     private int index;
     private Intact attempt;
     private NCBI attempt2;
-    // End of variables declaration
- 
+    // End of variables declaration                  
+
 }
