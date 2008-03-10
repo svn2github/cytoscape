@@ -95,12 +95,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 
 	
-	//private SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
-	//public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
-	//	return pcs;
-	//}
-
-	
 	public FilterMainPanel(Vector<CompositeFilter> pAllFilterVect) {
 		allFilterVect = pAllFilterVect;
 		//Initialize the option menu with menuItems
@@ -777,11 +771,54 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (FilterPlugin.getAllFilterVect() == null || FilterPlugin.getAllFilterVect().size() == 0) {
 			newNodeInteractionFilterMenuItem.setEnabled(false);
 			newEdgeInteractionFilterMenuItem.setEnabled(false);
+			return;
+		}
+		
+		// Set newEdgeInteractionFilterMenuItem on only if there are at least one 
+		// Node Filter
+		if (hasNodeFilter(FilterPlugin.getAllFilterVect())) {
+				newEdgeInteractionFilterMenuItem.setEnabled(true);	
 		}
 		else {
+				newEdgeInteractionFilterMenuItem.setEnabled(false);
+		}
+
+		// Set newNodeInteractionFilterMenuItem on only if there are at least one 
+		// Edge Filter
+		if (hasEdgeFilter(FilterPlugin.getAllFilterVect())) {
 			newNodeInteractionFilterMenuItem.setEnabled(true);
-			newEdgeInteractionFilterMenuItem.setEnabled(true);
 		}	
+		else {
+			newNodeInteractionFilterMenuItem.setEnabled(false);
+		}
+	}
+	
+	// Check if there are any NodeFilter in the AllFilterVect
+	private boolean hasNodeFilter(Vector<CompositeFilter> pAllFilterVect) {
+		boolean selectNode = false;
+
+		for (int i=0; i< pAllFilterVect.size(); i++) {
+			CompositeFilter curFilter = (CompositeFilter) pAllFilterVect.elementAt(i);
+			if (curFilter.getAdvancedSetting().isNodeChecked()) {
+				selectNode = true;
+			}			
+		}//end of for loop
+
+		return selectNode;
+	}
+
+	// Check if there are any NodeFilter in the AllFilterVect
+	private boolean hasEdgeFilter(Vector<CompositeFilter> pAllFilterVect) {
+		boolean selectEdge = false;
+
+		for (int i=0; i< pAllFilterVect.size(); i++) {
+			CompositeFilter curFilter = (CompositeFilter) pAllFilterVect.elementAt(i);
+			if (curFilter.getAdvancedSetting().isEdgeChecked()) {
+				selectEdge = true;
+			}			
+		}//end of for loop
+
+		return selectEdge;
 	}
 	
     //Each time, the FilterMainPanel become visible, update the status of InteractionMaenuItems
