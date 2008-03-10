@@ -86,10 +86,12 @@ public class NodeInteractionFilter extends InteractionFilter {
 		int objectCount = nodes_list.size();
 		node_bits = new BitSet(objectCount); // all the bits are false at very beginning
 			
-		for (int i=0; i<objectCount; i++) {
-			if (isHit((Node)nodes_list.get(i))) {
-				node_bits.set(i);
-			}
+		if (nodeType != NODE_UNDEFINED) {
+			for (int i=0; i<objectCount; i++) {
+				if (isHit((Node)nodes_list.get(i))) {
+					node_bits.set(i);
+				}
+			}			
 		}
 			
 		if (negation) {
