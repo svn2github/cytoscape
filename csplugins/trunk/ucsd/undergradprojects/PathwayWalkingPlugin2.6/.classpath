@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/swing-layout-1.0.jar"/>
+	<classpathentry kind="lib" path="/cellar/users/eatsai/workspace/NCBIClientPlugin/lib/ncbiws.jar"/>
+	<classpathentry kind="lib" path="/cellar/users/eatsai/workspace/NCBIClientPlugin/lib/axis-1_4/lib/wsdl4j-1.5.1.jar"/>
+	<classpathentry kind="lib" path="/cellar/users/eatsai/workspace/NCBIClientPlugin/lib/axis-1_4/lib/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="/cellar/users/eatsai/workspace/cytoscape/lib/ding.jar"/>
+	<classpathentry kind="lib" path="/cellar/users/eatsai/workspace/cytoscape/lib/giny.jar"/>
+	<classpathentry kind="lib" path="/newCytoscape/cytoscape.jar"/>
+	<classpathentry kind="lib" path="/IntActClient/lib/psi25-xml-1.0-rc1.jar"/>
+	<classpathentry kind="lib" path="/IntActClient/lib/psimi-annotations-1.0.jar"/>
+	<classpathentry kind="lib" path="/IntActClient/lib/psimitab-1.5.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/IntActClient/lib/psimitab-search-1.5.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/IntActClient/lib/intact-binary-wsclient-1.6.0-rc1.jar"/>
+	<classpathentry kind="lib" path="/IntActClient/lib/intact-psimitab-2.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/IntActClient/intactClient.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
