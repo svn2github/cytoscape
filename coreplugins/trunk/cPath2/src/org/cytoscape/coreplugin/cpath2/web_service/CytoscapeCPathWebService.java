@@ -100,7 +100,6 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
         String desc = CPathProperties.getInstance().getCPathBlurb();
         desc = desc.replaceAll("<span class='bold'>", "<B>");
         desc = desc.replaceAll("</span>", "</B>");
-        desc = desc.replaceAll("<BR>", "\n");
         return "<html><body>" + desc + "</body></html>";
     }
 
