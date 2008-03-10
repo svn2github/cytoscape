@@ -76,7 +76,7 @@ public class NodeInteractionFilter extends InteractionFilter {
 		
 		if (!passFilter.getName().equalsIgnoreCase("None")) {
 			passFilter.setNetwork(network);
-			passFilter.apply();			
+			passFilter.apply();		
 		}	
 
 		List<Node> nodes_list = null;
@@ -86,7 +86,7 @@ public class NodeInteractionFilter extends InteractionFilter {
 		int objectCount = nodes_list.size();
 		node_bits = new BitSet(objectCount); // all the bits are false at very beginning
 			
-		if (nodeType != NODE_UNDEFINED) {
+		if ((nodeType != NODE_UNDEFINED)&&(!passFilter.getName().equalsIgnoreCase("None"))) {
 			for (int i=0; i<objectCount; i++) {
 				if (isHit((Node)nodes_list.get(i))) {
 					node_bits.set(i);
