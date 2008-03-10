@@ -18,8 +18,8 @@ import javax.swing.ListCellRenderer;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.FilterPlugin;
 import cytoscape.filters.InteractionFilter;
-//import cytoscape.filters.NodeInteractionFilter;
 import cytoscape.filters.EdgeInteractionFilter;
+import cytoscape.filters.NodeInteractionFilter;
 import cytoscape.filters.util.FilterUtil;
 
 public class InteractionFilterPanel extends JPanel implements ItemListener{
@@ -217,20 +217,27 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
-			if (value != null) {
-				if (value == theFilter) {
-					setText(""); 
-				}
-				//else if (value.toString().equalsIgnoreCase("None")) {
-				//	setText("None");
-				//}
-				else {
-					CompositeFilter tmpFilter = (CompositeFilter) value;
-					setText(tmpFilter.getName());					
-				}
-			}
-			else { // value == null
+			
+			if (value == null)  {
 				setText(""); 
+				return this;
+			}
+			
+			//Ignore self
+			if (value == theFilter) {
+				setText(""); 
+
+				return this;
+			}
+
+			//Display related filters only
+			CompositeFilter tmpFilter = (CompositeFilter) value;
+			if ((theFilter instanceof EdgeInteractionFilter && tmpFilter.getAdvancedSetting().isNodeChecked()) ||
+					(theFilter instanceof NodeInteractionFilter && tmpFilter.getAdvancedSetting().isEdgeChecked())) {
+				setText(tmpFilter.getName());											
+			}
+			else {
+				setText("");
 			}
 
 			return this;
