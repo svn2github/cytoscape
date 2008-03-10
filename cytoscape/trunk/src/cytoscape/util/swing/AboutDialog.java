@@ -43,7 +43,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.swing.Icon;
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -75,15 +75,15 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 		about.titleLabel.setIcon(icon);
 
 		URL target = null;
-
-		try {
+        about.mainEditorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES,
+                    Boolean.TRUE);
+        try {
 			target = new URL(description);
 		} catch (MalformedURLException e) {
+            about.mainEditorPane.setContentType("text/html");
 			about.mainEditorPane.setText(description);
-			about.pack();
 			about.repaint();
 			about.setVisible(true);
-
 			return;
 		}
 
