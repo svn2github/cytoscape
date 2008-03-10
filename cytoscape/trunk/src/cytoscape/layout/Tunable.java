@@ -6,17 +6,24 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Color;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import javax.swing.BoxLayout;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
 
 /**
@@ -75,6 +82,11 @@ public class Tunable {
 	 *
 	 */
 	final public static int LIST = 6;
+
+	/**
+	 *
+	 */
+	final public static int GROUP = 7;
 
 	/**
 	 * Flags
@@ -161,6 +173,7 @@ public class Tunable {
 		this.lowerBound = lowerBound;
 		this.flag = flag;
 		this.immutable = immutable;
+		// System.out.println("Tunable "+desc+" has value "+value);
 	}
 
 	/**
@@ -194,23 +207,33 @@ public class Tunable {
 		if (value.getClass() == String.class) {
 			switch (type) {
 				case INTEGER:
+					// System.out.println("Setting Integer tunable "+desc+" value to "+value);
 					this.value = new Integer((String) value);
-
 					break;
 
 				case DOUBLE:
+					// System.out.println("Setting Double tunable "+desc+" value to "+value);
 					this.value = new Double((String) value);
-
 					break;
 
 				case BOOLEAN:
+					// System.out.println("Setting Boolean tunable "+desc+" value to "+value);
 					this.value = new Boolean((String) value);
-
 					break;
 
-				default:
-					this.value = value;
+				case LIST:
+					// System.out.println("Setting List tunable "+desc+" value to "+value);
+					this.value = new Integer((String) value);
+					return;
 
+				case GROUP:
+					// System.out.println("Setting Group tunable "+desc+" value to "+value);
+					this.value = new Integer((String) value);
+					return;
+
+				default:
+					// System.out.println("Setting String tunable "+desc+" value to "+value);
+					this.value = value;
 					break;
 			}
 		} else {
@@ -302,6 +325,24 @@ public class Tunable {
 	}
 
 	/**
+	 * Method to return the type of this Tunable.
+	 *
+	 * @return Tunable type
+	 */
+	public int getType() {
+		return type;
+	}
+
+	/**
+	 * Method to return the description for this Tunable.
+	 *
+	 * @return Tunable description
+	 */
+	public String getDescription() {
+		return desc;
+	}
+
+	/**
 	 * This method returns a JPanel suitable for inclusion in the
 	 * LayoutSettingsDialog to represent this Tunable.  Note that
 	 * while the type of the widgets used to represent the Tunable
@@ -315,7 +356,22 @@ public class Tunable {
 		if ((flag & NOINPUT) != 0)
 			return null;
 
-		JPanel tunablePanel = new JPanel(new BorderLayout(10, 2));
+		if (type == GROUP) {
+			JPanel tunablesPanel = new JPanel();
+			BoxLayout box = new BoxLayout(tunablesPanel, BoxLayout.Y_AXIS);
+			tunablesPanel.setLayout(box);
+
+			// Special case for groups
+			Border refBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+			TitledBorder titleBorder = BorderFactory.createTitledBorder(refBorder, this.desc);
+			titleBorder.setTitlePosition(TitledBorder.LEFT);
+			titleBorder.setTitlePosition(TitledBorder.TOP);
+			tunablesPanel.setBorder(titleBorder);
+
+			return tunablesPanel;
+		}
+
+		JPanel tunablePanel = new JPanel(new BorderLayout(0, 1));
 		tunablePanel.add(new JLabel(desc), BorderLayout.LINE_START);
 
 		if ((type == DOUBLE) || (type == INTEGER)) {
@@ -414,7 +470,7 @@ public class Tunable {
 	public void updateValue() {
 		Object newValue;
 
-		if (inputField == null)
+		if (inputField == null || type == GROUP)
 			return;
 
 		if (type == DOUBLE) {

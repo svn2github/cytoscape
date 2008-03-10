@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JPanel;
+import javax.swing.BoxLayout;
 
 
 /**
@@ -50,16 +51,27 @@ public class LayoutProperties extends ModulePropertiesImpl {
 	 * @return JPanel that contains all of the Tunable widgets
 	 */
 	public JPanel getTunablePanel() {
-		JPanel tunablesPanel = new JPanel(new GridLayout(0, 1));
+		// JPanel tunablesPanel = new JPanel(new GridLayout(0, 1));
+		JPanel tunablesPanel = new JPanel();
+		BoxLayout box = new BoxLayout(tunablesPanel, BoxLayout.Y_AXIS);
+		tunablesPanel.setLayout(box);
 
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+		addSubPanels(tunablesPanel, tunablesList.iterator(), new Integer(100000));
+
+/*
+		for (Iterator<Tunable> iter = tunablesList.iterator(); iter.hasNext();) {
 			Tunable tunable = (Tunable) iter.next();
 			JPanel p = tunable.getPanel();
+			if (tunable.getType() == Tunable.GROUP) {
+				addSubPanels(p, iter, tunable.getLowerBound());
+			}
 
 			if (p != null)
 				tunablesPanel.add(p);
 		}
+*/
 
+		tunablesPanel.validate();
 		return tunablesPanel;
 	}
 
@@ -70,5 +82,22 @@ public class LayoutProperties extends ModulePropertiesImpl {
 			prefix = prefix + ".";
 
 		return prefix;
+	}
+
+	private void addSubPanels(JPanel panel, Iterator<Tunable>iter, Object count) {
+		int groupCount = ((Integer)count).intValue();
+		for (int n = 0; n < groupCount; n++) {
+			if (!iter.hasNext()) {
+				return;
+			}
+			// Get the next tunable
+			Tunable tunable = iter.next();
+			JPanel p = tunable.getPanel();
+			if (tunable.getType() == Tunable.GROUP) {
+				addSubPanels(p, iter, tunable.getValue());
+			}
+			if (p != null)
+				panel.add(p);
+		}
 	}
 }
