@@ -29,7 +29,7 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
     /** Creates new form InteractionFilterPanel */
     public InteractionFilterPanel(InteractionFilter pFilter) {
     	theFilter = pFilter;
-
+    	
         initComponents();
         if (pFilter instanceof EdgeInteractionFilter) {
         	changeLabelText();
@@ -50,7 +50,25 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 
 		// Recovery initial values
         chkSource.setSelected(pFilter.isSorceChecked());        	
-        chkTarget.setSelected(pFilter.isTargetChecked());        	
+        chkTarget.setSelected(pFilter.isTargetChecked());       
+        
+        //Initialize the passFilter, if it is a new fIlter
+        if (theFilter.getPassFilter().getName().equalsIgnoreCase("None")) {			
+        	// thePassFilter name == "None", it's a brand new filter
+        	// Set the passFilter the first appropriate filter in the comboBox 
+        	int index = 0;
+        	CompositeFilter curFilter = null;
+        	for (int i=0; i< cmbPassFilter.getModel().getSize(); i++) {
+        		curFilter = (CompositeFilter)cmbPassFilter.getModel().getElementAt(i);        		
+    			if ((theFilter instanceof EdgeInteractionFilter && curFilter.getAdvancedSetting().isNodeChecked())||
+    				 theFilter instanceof NodeInteractionFilter && curFilter.getAdvancedSetting().isEdgeChecked()) {
+    				index = i;
+    				break;    				
+    			}
+        	}
+        	theFilter.setPassFilter((CompositeFilter)cmbPassFilter.getModel().getElementAt(index));
+        }
+		cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
     }
     
     private void changeLabelText() {
@@ -84,13 +102,6 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 		DefaultComboBoxModel theModel = new DefaultComboBoxModel(tmpVect);
 		
 		cmbPassFilter.setModel(theModel);
-        if (theFilter.getPassFilter() != null) {
-        	cmbPassFilter.setSelectedIndex(0);			
-			cmbPassFilter.setSelectedItem(theFilter.getPassFilter());
-		}
-        else { // thePassFilter == null, it's a brand new filter
-        	theFilter.setPassFilter((CompositeFilter)theModel.getSelectedItem());
-        }
 	}
     
     	
