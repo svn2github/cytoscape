@@ -65,6 +65,7 @@ import java.awt.event.ActionEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -216,7 +217,7 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 		}
 	}
 
-	private void fetchData(final String datasourceName, SourceType type) throws Exception {
+	private void fetchData(final String datasourceName, SourceType type) throws IOException {
 		Map<String, String> returnValMap = new HashMap<String, String>();
 		final List<String> order = new ArrayList<String>();
 		final String selectedDB = databaseComboBox.getSelectedItem().toString();
