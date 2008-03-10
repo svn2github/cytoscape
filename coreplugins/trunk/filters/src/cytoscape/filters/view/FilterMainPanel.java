@@ -631,7 +631,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 			if (_btn == btnApplyFilter) {
 				//ApplyButton is clicked!
-				System.out.println("\nApplyButton is clicked!");
+				//System.out.println("\nApplyButton is clicked!");
 				//System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 				
 				FilterUtil.doSelection((CompositeFilter) cmbSelectFilter.getSelectedItem());
