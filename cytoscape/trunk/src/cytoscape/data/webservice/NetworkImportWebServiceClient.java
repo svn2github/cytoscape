@@ -34,7 +34,6 @@
 */
 package cytoscape.data.webservice;
 
-import cytoscape.CyNode;
 import cytoscape.visual.VisualStyle;
 
 
@@ -43,16 +42,10 @@ import cytoscape.visual.VisualStyle;
   */
 public interface NetworkImportWebServiceClient {
 	/**
-	 *  DOCUMENT ME!
+	 *  Return default vixual style for this network import client.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  default visual style.
 	 */
 	public VisualStyle getDefaultVisualStyle();
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Boolean isNodeExpandable(CyNode node);
 }

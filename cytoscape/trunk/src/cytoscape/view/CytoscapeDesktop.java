@@ -36,25 +36,6 @@
  */
 package cytoscape.view;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeVersion;
-
-import cytoscape.data.webservice.ui.NetworkExpanderListener;
-import cytoscape.util.undo.CyUndo;
-
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanel;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
-import cytoscape.visual.ui.VizMapUI;
-import cytoscape.visual.ui.VizMapperMainPanel;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -62,16 +43,13 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 import java.util.List;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
-
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -85,6 +63,21 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeVersion;
+import cytoscape.data.webservice.ui.WebServiceContextMenuListener;
+import cytoscape.util.undo.CyUndo;
+import cytoscape.view.cytopanels.BiModalJSplitPane;
+import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelImp;
+import cytoscape.view.cytopanels.CytoPanelState;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.ui.VizMapBypassNetworkListener;
+import cytoscape.visual.ui.VizMapUI;
+import cytoscape.visual.ui.VizMapperMainPanel;
 
 
 /**
@@ -321,8 +314,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		Cytoscape.getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(new VizMapBypassNetworkListener());
 		
+		// Web Service Client context menu.
 		Cytoscape.getSwingPropertyChangeSupport()
-        .addPropertyChangeListener(new NetworkExpanderListener());
+        .addPropertyChangeListener(new WebServiceContextMenuListener());
 
 		// initialize Menus
 		cyMenus.initializeMenus();

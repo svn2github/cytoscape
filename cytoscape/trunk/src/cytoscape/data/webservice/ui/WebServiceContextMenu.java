@@ -34,70 +34,79 @@
 */
 package cytoscape.data.webservice.ui;
 
-import java.awt.Container;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientManager;
+
+import ding.view.EdgeContextMenuListener;
+import ding.view.NodeContextMenuListener;
+
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
+import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.Icon;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 
 /**
- * Web service client which has custom component should implements this interface.
- * Otherwise, default GUI will be used in the desktop.
- * If this client will be used only through CLI or scripts, this is not required.
-  *
- * @param <U>  GUI component for this service.
+ * Context menu for web service clients.
+ * 
+ * @author kono
+ * @since Cytoscape 2.6
+ * @version 0.5
+ * 
  */
-public interface WebServiceClientGUI<U extends Container> {
+public class WebServiceContextMenu implements NodeContextMenuListener, EdgeContextMenuListener {
+	private HashMap<String, String> clientMap;
+	private JMenu nodeRootMenu;
+
 	/**
-	 * Defines icon type.
-	 *
-	 * @author kono
-	 *
+	 * Creates a new WebServiceContextMenu object.
 	 */
-	public enum IconSize {
-		SMALL,
-		MEDIUM,
-		FULL;
+	public WebServiceContextMenu() {
+		clientMap = new HashMap<String, String>();
+
+		final List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+
+		nodeRootMenu = new JMenu("Use Web Services");
+
+		List<JMenuItem> context = null;
+
+		for (WebServiceClient client : clients) {
+			if (client instanceof WebServiceClientGUI) {
+				context = ((WebServiceClientGUI) client).getNodeContextMenuItems();
+
+				if (context != null) {
+					JMenu menu = new JMenu(client.getDisplayName());
+
+					for (JMenuItem menuItem : context) {
+						menu.add(menuItem);
+					}
+
+					nodeRootMenu.add(menu);
+					clientMap.put(client.getDisplayName(), client.getClientID());
+				}
+			}
+		}
 	}
 
 	/**
-	 *  Returns GUI for this client.
-	 *  Will be used only with Cytoscape Desktop.
+	 *  Add this menu to the node context menu.
 	 *
-	 *  U is the Component for GUI.  In many cases, this is a JPanel.
-	 *
-	 *
-	 * @return  GUI for this service.
+	 * @param nodeView DOCUMENT ME!
+	 * @param menu DOCUMENT ME!
 	 */
-	public U getGUI();
+	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
+		if (menu == null)
+			menu = new JPopupMenu();
 
-	/**
-	 *  Set GUI for this service.
-	 *
-	 * @param gui GUI for this service.
-	 */
-	public void setGUI(U gui);
+		menu.add(this.nodeRootMenu);
+	}
 
-	/**
-	 * Returns icon for the GUI.  May be used for about page.
-	 *
-	 * @param t
-	 * @return
-	 */
-	public Icon getIcon(IconSize t);
-
-	/**
-	 * Return node context menu item if available.
-	 * 
-	 * @return Custom context menu.
-	 * 
-	 */
-	public List<JMenuItem> getNodeContextMenuItems();
-	
-	/**
-	 * Return edge context menu if available.
-	 * @return
-	 */
-	public List<JMenuItem> getEdgeContextMenuItems();
+	public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
+		// Not implemented yet.
+	}
 }

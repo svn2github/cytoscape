@@ -41,7 +41,10 @@ import cytoscape.util.ModuleProperties;
 
 import java.awt.Container;
 
+import java.util.List;
+
 import javax.swing.Icon;
+import javax.swing.JMenuItem;
 
 
 /**
@@ -87,8 +90,33 @@ public abstract class WebServiceClientImplWithGUI<S, U extends Container>
 	public void setGUI(U gui) {
 		this.gui = gui;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param i DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Icon getIcon(WebServiceClientGUI.IconSize i) {
+		return null;
+	}
+
+	/**
+	 *  Returns client dependent context menu for nodes
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public List<JMenuItem> getNodeContextMenuItems() {
+		return null;
+	}
+	
+	/**
+	 *  Returns client dependent context menu for edges
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public List<JMenuItem> getEdgeContextMenuItems() {
 		return null;
 	}
 }
