@@ -124,7 +124,8 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 */
 	public Object clone() {
 		final ContinuousMapping clone = new ContinuousMapping(defaultObj, mapType);
-
+		String ctrAttrName = new String(this.attrName);
+		clone.setControllingAttributeName(ctrAttrName, null, true);
 		//  Copy over all listeners...
 		for (ChangeListener listener : observers)
 			clone.addChangeListener(listener);
