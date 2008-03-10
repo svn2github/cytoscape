@@ -396,12 +396,12 @@ public abstract class Cytoscape {
 	/**
 	 * The list analog to the currentNetworkViewID
 	 */
-	protected static LinkedList<CyNetworkView> selectedNetworkViews;
+	protected static LinkedList<CyNetworkView> selectedNetworkViews = new LinkedList<CyNetworkView>();
 
 	/**
 	 * The list analog to the currentNetworkID
 	 */
-	protected static LinkedList<CyNetwork> selectedNetworks;
+	protected static LinkedList<CyNetwork> selectedNetworks = new LinkedList<CyNetwork>();
 
 	/**
 	 *  DOCUMENT ME!
@@ -848,10 +848,9 @@ public abstract class Cytoscape {
 	 * Returns the list of currently selected networks.
 	 */
 	public static List<CyNetworkView> getSelectedNetworkViews() {
-		if (selectedNetworkViews == null) {
-			selectedNetworkViews = new LinkedList<CyNetworkView>();
-			selectedNetworkViews.add(getCurrentNetworkView());
-		}
+		CyNetworkView view = getCurrentNetworkView();
+		if ( !selectedNetworkViews.contains( view ) )
+			selectedNetworkViews.add( view );
 
 		return (List<CyNetworkView>) selectedNetworkViews.clone();
 	}
@@ -860,9 +859,6 @@ public abstract class Cytoscape {
 	 * Sets the selected network views.
 	 */
 	public static void setSelectedNetworkViews(final List<String> viewIDs) {
-		if (selectedNetworkViews == null)
-			selectedNetworkViews = new LinkedList<CyNetworkView>();
-
 		selectedNetworkViews.clear();
 
 		if (viewIDs == null)
@@ -887,10 +883,9 @@ public abstract class Cytoscape {
 	 * Returns the list of selected networks.
 	 */
 	public static List<CyNetwork> getSelectedNetworks() {
-		if (selectedNetworks == null) {
-			selectedNetworks = new LinkedList<CyNetwork>();
-			selectedNetworks.add(getCurrentNetwork());
-		}
+		CyNetwork curr = getCurrentNetwork();
+		if (!selectedNetworks.contains(curr)) 
+			selectedNetworks.add(curr);
 
 		return (List<CyNetwork>) selectedNetworks.clone();
 	}
@@ -899,9 +894,6 @@ public abstract class Cytoscape {
 	 * Sets the list of selected networks.
 	 */
 	public static void setSelectedNetworks(final List<String> ids) {
-		if (selectedNetworks == null)
-			selectedNetworks = new LinkedList<CyNetwork>();
-
 		selectedNetworks.clear();
 
 		if (ids == null)
@@ -910,7 +902,7 @@ public abstract class Cytoscape {
 		for (String id : ids) {
 			CyNetwork n = (CyNetwork) getNetworkMap().get(id);
 
-			if (n != null) {
+			if (n != null && n != nullNetwork) {
 				selectedNetworks.add(n);
 			}
 		}
@@ -940,6 +932,10 @@ public abstract class Cytoscape {
 		if (getNetworkMap().containsKey(id)) {
 			//System.out.println("- SUCCEED setting current network " + id);
 			currentNetworkID = id;
+
+			// reset selected networks 
+			selectedNetworks.clear();
+			selectedNetworks.add( (CyNetwork)(getNetworkMap().get(id)) );
 		}
 	}
 
@@ -951,6 +947,10 @@ public abstract class Cytoscape {
 		if (getNetworkViewMap().containsKey(id)) {
 			//System.out.println("= SUCCEED setting current network VIEW " + id);
 			currentNetworkViewID = id;
+
+			// reset selected network views 
+			selectedNetworkViews.clear();
+			selectedNetworkViews.add( (CyNetworkView)(getNetworkViewMap().get(id)) );
 
 			return true;
 		}
