@@ -37,6 +37,7 @@ package edu.ucsd.bioeng.idekerlab.biomartclient;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,6 +46,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -55,6 +57,7 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 
 /**
@@ -152,10 +155,12 @@ public class BiomartStub {
 	 *  Get the registry information from the base URL.
 	 *
 	 * @return  Map of registry information.  Key value is "name" field.
+	 * @throws ParserConfigurationException 
+	 * @throws SAXException 
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public Map<String, Map<String, String>> getRegistry() throws Exception {
+	public Map<String, Map<String, String>> getRegistry() throws IOException, ParserConfigurationException, SAXException {
 		// If already loaded, just return it.
 		if (databases != null)
 			return databases;
@@ -212,7 +217,7 @@ public class BiomartStub {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public Map<String, String> getAvailableDatasets(final String martName)
-	    throws Exception {
+	    throws IOException {
 		final Map<String, String> datasources = new HashMap<String, String>();
 
 		Map<String, String> detail = databases.get(martName);
@@ -307,10 +312,11 @@ public class BiomartStub {
 	 * @param datasetName DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
+	 * @throws IOException 
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
-	public Map<String, String[]> getAttributes(String datasetName) throws Exception {
+	public Map<String, String[]> getAttributes(String datasetName) throws IOException {
 		Map<String, String[]> attributes = new HashMap<String, String[]>();
 
 		String martName = datasourceMap.get(datasetName);
@@ -369,7 +375,7 @@ public class BiomartStub {
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public List<String[]> sendQuery(String xmlQuery) throws Exception {
+	public List<String[]> sendQuery(String xmlQuery) throws IOException {
 		url = new URL(baseURL);
 		uc = url.openConnection();
 		uc.setDoOutput(true);

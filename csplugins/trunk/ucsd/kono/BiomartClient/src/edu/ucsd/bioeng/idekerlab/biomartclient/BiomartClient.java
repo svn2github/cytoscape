@@ -34,6 +34,7 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartclient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.webservice.AttributeImportQuery;
 import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceException;
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientImpl;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
@@ -58,7 +60,7 @@ import cytoscape.util.ModulePropertiesImpl;
  * @since Cytoscape 2.6
  * 
  */
-public class BiomartClient extends WebServiceClientImpl {
+public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
 
 	// Client name
 	private static final String DISPLAY_NAME = "Biomart Web Service Client";
@@ -67,7 +69,7 @@ public class BiomartClient extends WebServiceClientImpl {
 	private static final String CLIENT_ID = "biomart";
 	
 	// Actual biomart client.
-	private static WebServiceClient client;
+	private static WebServiceClient<BiomartStub> client;
 	
 	// Biomart base URL
 	private static final String BASE_URL = "http://www.biomart.org/biomart/martservice";
@@ -78,7 +80,7 @@ public class BiomartClient extends WebServiceClientImpl {
 	 * @return  DOCUMENT ME!
 	 * @throws Exception 
 	 */
-	public static WebServiceClient getClient() throws Exception {
+	public static WebServiceClient<BiomartStub> getClient() throws Exception {
 		if(client == null) {
 			client = new BiomartClient();
 		}
@@ -93,7 +95,7 @@ public class BiomartClient extends WebServiceClientImpl {
 	 */
 	public BiomartClient() throws Exception {
 		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.ATTRIBUTE });
-		stub = new BiomartStub(BASE_URL);
+		clientStub = new BiomartStub(BASE_URL);
 		
 		// Set properties
 		props = new ModulePropertiesImpl(clientID, "wsc");
@@ -113,9 +115,11 @@ public class BiomartClient extends WebServiceClientImpl {
 
 	/**
 	 * Execute service based on events.
+	 * @throws  
+	 * @throws CyWebServiceException 
 	 */
 	@Override
-	public void executeService(CyWebServiceEvent e) throws Exception {
+	public void executeService(CyWebServiceEvent e) throws CyWebServiceException {
 		if (e.getSource().equals(CLIENT_ID)) {
 			if (e.getEventType().equals(WSEventType.IMPORT_ATTRIBUTE)) {
 				importAttributes((AttributeImportQuery) e.getParameter());
@@ -128,18 +132,23 @@ public class BiomartClient extends WebServiceClientImpl {
 	 * Based on the query given, execute the data fetching.
 	 * 
 	 * @param query
+	 * @throws CyWebServiceException 
+	 * @throws IOException 
 	 * @throws Exception 
 	 */
-	private void importAttributes(AttributeImportQuery query) throws Exception {
+	private void importAttributes(AttributeImportQuery query) throws CyWebServiceException {
 		
-			List<String[]> result = ((BiomartStub)stub).sendQuery(query.getParameter().toString());
+			List<String[]> result = null;
+			try {
+				result = clientStub.sendQuery(query.getParameter().toString());
+			} catch (IOException e) {
+				throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+			}
 			
 			if(((List<String[]>) result).size() == 1) {
 				String[] res = ((List<String[]>) result).get(0);
 				if(res[0].contains("Query ERROR")) {
-					Exception e = new Exception(res[0]);
-					
-					throw e;
+					throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
 				}
 			}
 	
