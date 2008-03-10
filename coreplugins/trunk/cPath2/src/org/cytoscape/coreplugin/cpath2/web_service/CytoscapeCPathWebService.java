@@ -1,6 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
 import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 import cytoscape.visual.VisualStyle;
 import cytoscape.data.webservice.*;
 import cytoscape.data.webservice.ui.WebServiceClientGUI;
@@ -79,6 +80,9 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
         }
     }
 
+    public Boolean isNodeExpandable(CyNode cyNode) {
+        return false;
+    }
 
     public Container getGUI() {
         return mainPanel;
@@ -94,10 +98,10 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
 
     public String getDescription() {
         String desc = CPathProperties.getInstance().getCPathBlurb();
-        desc = desc.replaceAll("<span class='bold'>", "");
-        desc = desc.replaceAll("</span>", "");
+        desc = desc.replaceAll("<span class='bold'>", "<B>");
+        desc = desc.replaceAll("</span>", "</B>");
         desc = desc.replaceAll("<BR>", "\n");
-        return desc;
+        return "<html><body>" + desc + "</body></html>";
     }
 
     public Icon getIcon(IconSize iconSize) {
