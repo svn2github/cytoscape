@@ -34,47 +34,24 @@
 */
 package edu.ucsd.bioeng.idekerlab.intactclient;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.*;
-import cytoscape.data.webservice.CyWebServiceException;
-import static cytoscape.data.webservice.CyWebServiceException.WSErrorCode.*;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientImpl;
-import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-
-import cytoscape.layout.Tunable;
-
-import cytoscape.util.ModulePropertiesImpl;
-
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
+import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.DATA_IMPORT_FINISHED;
+import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.SEARCH_FINISHED;
+import static cytoscape.data.webservice.CyWebServiceException.WSErrorCode.NO_RESULT;
+import static cytoscape.data.webservice.CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED;
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
 
-import cytoscape.visual.VisualStyle;
+import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import cytoscape.visual.calculators.AbstractCalculator;
-import cytoscape.visual.calculators.EdgeCalculator;
-import cytoscape.visual.calculators.NodeCalculator;
-
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
-import giny.model.Edge;
-import giny.model.Node;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.tab.converter.txt2tab.MitabLineException;
@@ -86,25 +63,42 @@ import psidev.psi.mi.tab.model.CrossReference;
 import psidev.psi.mi.tab.model.InteractionDetectionMethod;
 import psidev.psi.mi.tab.model.InteractionType;
 import psidev.psi.mi.tab.model.Interactor;
-
 import uk.ac.ebi.intact.BinarySearch;
 import uk.ac.ebi.intact.BinarySearchService;
 import uk.ac.ebi.intact.BinarySearchService_Impl;
 import uk.ac.ebi.intact.SimplifiedSearchResult;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceException;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientImplWithGUI;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+import cytoscape.data.webservice.util.NetworkExpansionMenu;
 
-import java.awt.Color;
-
-import java.beans.PropertyChangeEvent;
-
-import java.rmi.RemoteException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import cytoscape.layout.Tunable;
+import cytoscape.util.ModulePropertiesImpl;
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.AbstractCalculator;
+import cytoscape.visual.calculators.EdgeCalculator;
+import cytoscape.visual.calculators.NodeCalculator;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+import giny.model.Edge;
+import giny.model.Node;
 
 
 /**
@@ -115,7 +109,7 @@ import java.util.Set;
  * @since Cytoscape 2.6
  *
  */
-public class IntactClient extends WebServiceClientImpl<BinarySearchService> implements NetworkImportWebServiceClient {
+public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchService, JPanel> implements NetworkImportWebServiceClient {
 	// Display name of this client.
 	private static final String DISPLAY_NAME = "IntAct Web Service Client";
 
@@ -137,6 +131,10 @@ public class IntactClient extends WebServiceClientImpl<BinarySearchService> impl
 	private Set<Node> nodes = new HashSet<Node>();
 	private Set<Edge> edges = new HashSet<Edge>();
 
+	private void setDescription() {
+		description = "http://www.ebi.ac.uk/intact/";
+	}
+	
 	/**
 	 * Return instance of this client.
 	 * @return
@@ -149,9 +147,8 @@ public class IntactClient extends WebServiceClientImpl<BinarySearchService> impl
 	 * Creates a new IntactClient object.
 	 */
 	private IntactClient() {
-		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.NETWORK });
-		clientStub = new BinarySearchService_Impl();
-
+		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.NETWORK }, null, new BinarySearchService_Impl(), null);
+		setDescription();
 		// Set properties for this client.
 		setProperty();
 	}
@@ -594,5 +591,11 @@ public class IntactClient extends WebServiceClientImpl<BinarySearchService> impl
 		eac.setCalculator(targetColorCalc);
 
 		return defStyle;
+	}
+
+	public List<JMenuItem> getNodeContextMenuItems() {
+		List<JMenuItem> menuList = new ArrayList<JMenuItem>();
+		menuList.add(NetworkExpansionMenu.getExpander(this));
+		return menuList;
 	}
 }
