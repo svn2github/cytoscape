@@ -121,7 +121,7 @@ public class CPathDesktop extends JFrame implements Observer {
         //  Create Center Panel (Console plus Details)
         consolePanel = new ConsolePanel();
         String url = CPathProperties.getCPathUrl();
-        consolePanel.logMessage("PlugIn is currently set to retrieve data "
+        consolePanel.logMessage("Plugin is currently set to retrieve data "
                 + "from:  " + url);
         cPane.add(consolePanel, BorderLayout.CENTER);
 
