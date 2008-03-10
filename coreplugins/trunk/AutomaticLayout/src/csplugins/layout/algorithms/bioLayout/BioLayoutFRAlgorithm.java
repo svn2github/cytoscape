@@ -37,26 +37,12 @@ import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.Profile;
 
-import cytoscape.*;
-
-import cytoscape.data.*;
-
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
-
-import cytoscape.util.*;
-
-import cytoscape.view.*;
-
-import giny.view.*;
 
 import java.awt.Dimension;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Properties;
 
 
 /**
@@ -102,7 +88,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * max_distance_factor is the portion of the graph
 	 * beyond which repulsive forces will not operate.
 	 */
-	private double max_distance_factor = 10;
+	private double max_distance_factor = 100;
 
 	/**
 	 * maxDistance is the actual calculated distance
@@ -147,6 +133,12 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * The partition we're laying out
 	 */
 	private LayoutPartition partition;
+
+	/**
+ 	 * The width and height of the layout
+ 	 */
+	private double width = 0;
+	private double height = 0;
 
 	/**
 	 * Profile data -- not used, for now
@@ -494,10 +486,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Perform a layout
 	 */
-	public void layout(LayoutPartition partition) {
+	public void layoutPartion(LayoutPartition partition) {
 		this.partition = partition;
 
-		Iterator iter = null;
 		Dimension initialLocation = null;
 
 		/* Get all of our profiles */
@@ -523,9 +514,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		double temp;
 
 		if (temperature == 0) {
-			temp = this.width / 10;
+			temp = Math.sqrt(this.width*this.height)/2;
 		} else {
-			temp = this.temperature;
+			temp = Math.sqrt(this.width*this.height) * this.temperature/100;
 		}
 
 		// Figure out our starting point
@@ -558,16 +549,11 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			if (debug || ((update_iterations > 0) && ((iteration % update_iterations) == 0))) {
 				if (iteration > 0) {
 					// Actually move the pieces around
-					iter = partition.nodeIterator();
-
-					while (iter.hasNext()) {
-						LayoutNode v = (LayoutNode) iter.next();
+					for (LayoutNode v: partition.getNodeList()) {
 						// if this is locked, the move just resets X and Y
 						v.moveToLocation();
-
 						// System.out.println("Node "+v.getIdentifier()+" moved to "+v.getX()+","+v.getY());
 					}
-
 					networkView.updateView();
 				}
 
@@ -593,10 +579,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		// Note that we reset our min/max values before we start this
 		// so we can get an accurate min/max for paritioning
 		partition.resetNodes();
-		iter = partition.nodeIterator();
 
-		while (iter.hasNext()) {
-			LayoutNode v = (LayoutNode) iter.next();
+		for (LayoutNode v: partition.getNodeList()) {
 			partition.moveNodeToLocation(v);
 		}
 
@@ -608,11 +592,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			Dimension finalLocation = partition.getAverageLocation();
 			xDelta = finalLocation.getWidth() - initialLocation.getWidth();
 			yDelta = finalLocation.getHeight() - initialLocation.getHeight();
-			iter = partition.nodeIterator();
 
-			while (iter.hasNext()) {
-				LayoutNode v = (LayoutNode) iter.next();
-
+			for (LayoutNode v: partition.getNodeList()) {
 				if (!v.isLocked()) {
 					v.decrement(xDelta, yDelta);
 					partition.moveNodeToLocation(v);
@@ -631,24 +612,19 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @return an updated temperature factor.
 	 */
 	public double doOneIteration(int iteration, double temp) {
-		Iterator iter = partition.nodeIterator();
 		double xAverage = 0;
 		double yAverage = 0;
 
 		// repulseProfile.start();
 		// Calculate repulsive forces
-		while (iter.hasNext()) {
-			LayoutNode v = (LayoutNode) iter.next();
+		for (LayoutNode v: partition.getNodeList()) {
 			if (!v.isLocked()) {
 				xAverage += v.getX()/partition.nodeCount();
 				yAverage += v.getY()/partition.nodeCount();
 			}
 		}
 
-		iter = partition.nodeIterator();
-		while (iter.hasNext()) {
-			LayoutNode v = (LayoutNode) iter.next();
-
+		for (LayoutNode v: partition.getNodeList()) {
 			if (!v.isLocked()) {
 				calculateRepulsion(v);
 				if (gravity_constant != 0)
@@ -663,12 +639,12 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 		// attractProfile.start();
 		// Calculate attractive forces
-		Iterator lIter = partition.edgeIterator();
 
-		while (lIter.hasNext()) {
-			LayoutEdge e = (LayoutEdge) lIter.next();
+/// for e in E do begin
+		for (LayoutEdge e: partition.getEdgeList()) {
 			calculateAttraction(e);
 		}
+/// end
 
 		// attractProfile.checkpoint();
 
@@ -679,11 +655,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		double xDispTotal = 0;
 		double yDispTotal = 0;
 		// updateProfile.start();
-		iter = partition.nodeIterator();
 
-		while (iter.hasNext()) {
-			LayoutNode v = (LayoutNode) iter.next();
-
+/// for v in V do begin
+		for (LayoutNode v: partition.getNodeList()) {
 			if (v.isLocked())
 				continue;
 
@@ -692,14 +666,12 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			xDispTotal += Math.abs(v.getXDisp());
 			yDispTotal += Math.abs(v.getYDisp());
 		}
+/// end
 
 		// Translate back to the middle (or to the starting point,
 		// if we're dealing with a selected group
 		if (!selectedOnly) {
-			iter = partition.nodeIterator();
-
-			while (iter.hasNext()) {
-				LayoutNode v = (LayoutNode) iter.next();
+			for (LayoutNode v: partition.getNodeList()) {
 				v.decrement(xAverage - (width / 2), yAverage - (height / 2));
 			}
 		}
@@ -711,7 +683,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		if (complete(xDispTotal, yDispTotal))
 			return 0;
 
-		// cool
+// t := cool(t)
 		return cool(temp, iteration);
 	}
 
@@ -755,67 +727,69 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * calculate the repulsive forces and offsets for
 	 * each vertex.
 	 *
-	 * @param v1 LayoutNode we're calculating repulsive forces for
+	 * @param v LayoutNode we're calculating repulsive forces for
 	 */
-	private void calculateRepulsion(LayoutNode v1) {
-		// Initialize
-		v1.setDisp(0, 0);
+	private void calculateRepulsion(LayoutNode v) {
+/// v.disp := 0;
+		v.setDisp(0, 0);
 
-		double width = v1.getWidth();
-		double height = v1.getHeight();
-		double radius = v1.getWidth() / 2;
+		double width = v.getWidth();
+		double height = v.getHeight();
+		double radius = v.getWidth() / 2;
 
-		Iterator iter = partition.nodeIterator();
+/// for u in V do
+		for (LayoutNode u: partition.getNodeList()) {
+			double dx = v.getX() - u.getX();
+			double dy = v.getY() - u.getY();
 
-		while (iter.hasNext()) {
-			LayoutNode v2 = (LayoutNode) iter.next();
-			double dx = v1.getX() - v2.getX();
-			double dy = v1.getY() - v2.getY();
-
-			if (v1 == v2)
+/// if (u # v) then begin
+			if (v == u)
 				continue;
 
 			// Get the 
-			// double xSign = Math.signum(v1.getX() - v2.getX());
-			// double ySign = Math.signum(v1.getY() - v2.getY());
+			// double xSign = Math.signum(v.getX() - u.getX());
+			// double ySign = Math.signum(v.getY() - u.getY());
 
+/// delta := v.pos - u.pos
 			// Get our euclidean distance
-			double deltaDistance = v1.distance(v2);
+			double deltaDistance = v.distance(u);
 
 			if (deltaDistance == 0.0)
 				deltaDistance = EPSILON;
 
-			double force = forceR(repulsion_constant, deltaDistance);
+			double fr = forceR(repulsion_constant, deltaDistance);
 
 			// If its too close, increase the force by a constant
-			if (deltaDistance < (radius + (v2.getWidth() / 2))) {
-				force += conflict_avoidance;
+			if (deltaDistance < (radius + (u.getWidth() / 2))) {
+				// System.out.println("Applying conflict_avoidance force: "+conflict_avoidance);
+				fr += conflict_avoidance;
 			}
 
-			if (Double.isNaN(force)) {
-				force = 500;
+			if (Double.isNaN(fr)) {
+				fr = 500;
 			}
 
 			/*
-			            System.out.println("Repulsive force between "+v1.getIdentifier()
-			                             +" and "+v2.getIdentifier()+" is "+force);
+			            System.out.println("Repulsive force between "+v.getIdentifier()
+			                             +" and "+u.getIdentifier()+" is "+force);
 			            System.out.println("   distance = "+deltaDistance);
-			            System.out.println("   incrementing "+v1.getIdentifier()+" by ("+
-			                                   xSign*force+", "+ySign*force+")");
+			            System.out.println("   incrementing "+v.getIdentifier()+" by ("+
+			                                   force+", "+force+")");
 			*/
 
 			// Adjust the displacement.  In the case of doing selectedOnly,
 			// we increase the force to enhance the discrimination power.
 			// Also note that we only update the displacement of the movable
 			// node since the other node won't move anyways.
-			double xVector = dx*force/deltaDistance;
-			double yVector = dy*force/deltaDistance;
-			if (v1.isLocked()) {
+/// v.disp := v.disp + (delta/abs(delta)) * fr(abs(delta))
+			double xVector = (dx/deltaDistance)*fr;
+			double yVector = (dy/deltaDistance)*fr;
+			if (v.isLocked()) {
 				return; // shouldn't happen
-			} else if (v2.isLocked()) {
-				v1.incrementDisp(xVector * 2, yVector * 2);
+			} else if (u.isLocked()) {
+				v.incrementDisp(xVector * 2, yVector * 2);
 			} else {
-				v1.incrementDisp(xVector, yVector);
+				v.incrementDisp(xVector, yVector);
 			}
 		}
 	}
@@ -828,74 +802,68 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @param e Edge we're calculating attractive forces for
 	 */
 	private void calculateAttraction(LayoutEdge e) {
-		LayoutNode v1 = e.getSource();
-		LayoutNode v2 = e.getTarget();
-		double dx = v1.getX() - v2.getX();
-		double dy = v1.getY() - v2.getY();
-		double deltaDistance = v1.distance(v2);
+		LayoutNode v = e.getSource();
+		LayoutNode u = e.getTarget();
+		double dx = v.getX() - u.getX();
+		double dy = v.getY() - u.getY();
 
-		double force = forceA(attraction_constant, deltaDistance, e.getWeight());
+/// delta := e.v.pos - e.u.pos
+		double deltaDistance = v.distance(u);
 
-		if (Double.isNaN(force)) {
-			force = EPSILON;
+		double fa = forceA(attraction_constant, deltaDistance, e.getWeight());
+
+		if (Double.isNaN(fa)) {
+			fa = EPSILON;
 		}
-
-	/*
-		        System.out.println("Attractive force between "+v1.getIdentifier()
-		                         +" and "+v2.getIdentifier()+" is "+force);
-		        System.out.println("   distance = "+deltaDistance);
-		        System.out.println("   weight = "+e.getWeight());
-		        System.out.println("   decrementing "+v1.getIdentifier()+" by ("+
-		                               dx*force+", "+dy*force+")");
-		        System.out.println("   incrementing "+v2.getIdentifier()+" by ("+
-		                               dx*force+", "+dy*force+")");
-	*/
 
 		// Adjust the displacement.  In the case of doing selectedOnly,
 		// we increase the force to enhance the discrimination power.
 		// Also note that we only update the displacement of the movable
 		// node since the other node won't move anyways.
-		double xVector = dx*force/deltaDistance;
-		double yVector = dy*force/deltaDistance;
-		if (v2.isLocked() && v1.isLocked()) {
+
+/// e.v.disp := e.v.disp - (delta/abs(delta)) * fa(abs(delta))
+/// e.u.disp := e.u.disp + (delta/abs(delta)) * fa(abs(delta))
+		double xVector = dx*fa;
+		double yVector = dy*fa;
+		if (u.isLocked() && v.isLocked()) {
 			return; // shouldn't happen
-		} else if (v2.isLocked()) {
-			v1.decrementDisp(xVector * 2, yVector * 2);
-		} else if (v1.isLocked()) {
-			v2.incrementDisp(xVector * 2, yVector * 2);
+		} else if (u.isLocked()) {
+			v.decrementDisp(xVector * 2, yVector * 2);
+		} else if (v.isLocked()) {
+			u.incrementDisp(xVector * 2, yVector * 2);
 		} else {
-			v1.decrementDisp(xVector, yVector);
-			v2.incrementDisp(xVector, yVector);
+			v.decrementDisp(xVector, yVector);
+			u.incrementDisp(xVector, yVector);
 		}
 	}
 
 	/**
 	 * Calculate the gravity (pull towards the center) force.
 	 *
-	 * @param v1 the node we're pulling
+	 * @param v the node we're pulling
 	 * @param xAverage the X portion of the location that's pulling us
 	 * @param yAverage the Y portion of the location that's pulling us
 	 */
-	private void calculateGravity(LayoutNode v1,double xAverage, double yAverage)
+	private void calculateGravity(LayoutNode v,double xAverage, double yAverage)
 	{
-		double dx = v1.getX() - xAverage;
-		double dy = v1.getY() - yAverage;
+		double dx = v.getX() - xAverage;
+		double dy = v.getY() - yAverage;
 		double distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
 		//double theta = Math.atan(dy/dx);
 		//double xSign = Math.signum(dx);
 		//double ySign = Math.signum(dy);
 		if(distance == 0) distance = EPSILON;
-		double phi = (1 +v1.getDegree())/3;
+		double phi = (1 +v.getDegree())/3;
 		double force = gravity_constant*distance*phi;
 		double xVector = dx*force;
 		double yVector = dy*force;
-		if (v1.isLocked()) {
+		if (v.isLocked()) {
 			return; 
 		}// shouldn't happen
 		
 		else {
 			// System.out.println("Gravity adjustment = "+xVector+", "+yVector);
-			v1.decrementDisp( xVector, yVector);
+			v.decrementDisp( xVector, yVector);
 		}
 	}
 
@@ -908,8 +876,10 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @param v LayoutNode we're moving
 	 * @param temp double representing the current temperature
 	 */
+/// v.pos := v.pos + (v.disp/|v.disp|) * min (v.disp, t);
 	private void calculatePosition(LayoutNode v, double temp) {
 		double deltaDistance = v.distance(v.getXDisp(), v.getYDisp());
+
 		double newXDisp = v.getXDisp() / deltaDistance * Math.min(deltaDistance, temp);
 
 		if (Double.isNaN(newXDisp)) {
@@ -923,6 +893,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		}
 		v.increment(newXDisp, newYDisp);
 
+/// v.pos.x := min(W/2, max(-W/2, v.pos.x));
+/// v.pos.y := min(L/2, max(-L/2, v.pos.y));
 	}
 
 	/**
@@ -1003,6 +975,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @param distance the distance between the vertices
 	 * @return the repulsive force
 	 */
+/// fr(z) := begin return k*k/z end;
 	private double forceR(double k, double distance) {
 		// We want to bound the distance over which
 		// the repulsive force acts
@@ -1021,9 +994,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @param weight the edge weight
 	 * @return the attractive force
 	 */
+/// fa(z) := begin return z*z/k end;
 	private double forceA(double k, double distance, double weight) {
-		distance *= weight;
-
-		return ((distance * distance) / k);
+		return ((distance / k) * weight);
 	}
 }

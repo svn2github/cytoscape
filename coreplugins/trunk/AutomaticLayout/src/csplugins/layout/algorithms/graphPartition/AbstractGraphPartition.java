@@ -7,6 +7,7 @@ import cern.colt.map.*;
 
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
+import csplugins.layout.EdgeWeighter;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -34,6 +35,8 @@ import javax.swing.JOptionPane;
 public abstract class AbstractGraphPartition extends AbstractLayout {
 	double incr = 100;
 	protected List <LayoutPartition> partitionList = null;
+	protected EdgeWeighter edgeWeighter = null;
+	protected boolean singlePartition = false;
 
 	// Information for taskMonitor
 	double current_start = 0;	// Starting node number
@@ -65,6 +68,17 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	}
 
 	/**
+ 	 * Set the singlePartition flag, which disables partitioning.  This
+ 	 * can be used by users who do not want to partition their graph for
+ 	 * some reason.
+ 	 *
+ 	 * @param singlePartition if true, only a single partition will be created
+ 	 */
+	public void setSinglePartition(boolean singlePartition) {
+		this.singlePartition = singlePartition;
+	}
+
+	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param percent The percentage of completion for this partition
@@ -87,14 +101,17 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	public void construct() {
 		initialize();
 
+		if (edgeWeighter != null) 
+		 	edgeWeighter.reset();
+
 		// Depending on whether we are partitioned or not,
 		// we use different initialization.  Note that if the user only wants
 		// to lay out selected nodes, partitioning becomes a very bad idea!
-		if (selectedOnly) {
+		if (selectedOnly || singlePartition) {
 			// We still use the partition abstraction, even if we're
 			// not partitioning.  This makes the code further down
 			// much cleaner
-			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, edgeAttribute);
+			LayoutPartition partition = new LayoutPartition(network, networkView, selectedOnly, edgeWeighter);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
 		} else if (staticNodes != null && staticNodes.size() > 0) {
@@ -106,24 +123,21 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 					unlockedNodes.add(node);
 				}
 			}
-			LayoutPartition partition = new LayoutPartition(network, networkView, unlockedNodes, edgeAttribute);
+			LayoutPartition partition = new LayoutPartition(network, networkView, unlockedNodes, edgeWeighter);
 			partitionList = new ArrayList(1);
 			partitionList.add(partition);
 		} else {
-			partitionList = LayoutPartition.partition(network, networkView, false, edgeAttribute);
+			partitionList = LayoutPartition.partition(network, networkView, false, edgeWeighter);
 		}
 
 		total_nodes = network.getNodeCount();
 		current_start = 0;
 
 		// Set up offsets -- we start with the overall min and max
-		double xStart = ((LayoutPartition) partitionList.get(0)).getMinX();
-		double yStart = ((LayoutPartition) partitionList.get(0)).getMinY();
+		double xStart = (partitionList.get(0)).getMinX();
+		double yStart = (partitionList.get(0)).getMinY();
 
-		Iterator partIter = partitionList.iterator();
-
-		while (partIter.hasNext()) {
-			LayoutPartition part = (LayoutPartition) partIter.next();
+		for (LayoutPartition part: partitionList) {
 			xStart = Math.min(xStart, part.getMinX());
 			yStart = Math.min(yStart, part.getMinY());
 		}
@@ -137,12 +151,11 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 		max_dimensions *= incr;
 		max_dimensions += xStart;
 
-		Iterator p = partitionList.iterator();
-		while (p.hasNext() && !canceled) {
-
+		for (LayoutPartition partition: partitionList) {
+			if (canceled) break;
 			// get the partition
-			LayoutPartition partition = (LayoutPartition) p.next();
 			current_size = (double)partition.size();
+			// System.out.println("Partition #"+partition.getPartitionNumber()+" has "+current_size+" nodes");
 			setTaskStatus(1);
 
 			// Partitions Requiring Layout
@@ -154,8 +167,11 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 					return;
 				}
 
-				// OFFSET
-				partition.offset(next_x_start, next_y_start);
+				if (!selectedOnly && !singlePartition) {
+					// System.out.println("Offsetting partition #"+partition.getPartitionNumber()+" to "+next_x_start+", "+next_y_start);
+					// OFFSET
+					partition.offset(next_x_start, next_y_start);
+				}
 
 			// single nodes
 			} else if ( partition.nodeCount() == 1 ) {

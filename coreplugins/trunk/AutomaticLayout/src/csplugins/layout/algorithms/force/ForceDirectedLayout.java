@@ -39,10 +39,12 @@ package csplugins.layout.algorithms.force;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
-import cytoscape.layout.*;
+import cytoscape.layout.Tunable;
+import cytoscape.layout.LayoutProperties;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
+import csplugins.layout.EdgeWeighter;
 import csplugins.layout.algorithms.graphPartition.*;
 
 import cytoscape.view.CyNetworkView;
@@ -50,6 +52,7 @@ import cytoscape.data.CyAttributes;
 import ding.view.DGraphView;
 
 import java.awt.GridLayout;
+import java.awt.Dimension;
 
 import java.util.*;
 
@@ -66,8 +69,8 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	private ForceSimulator m_fsim;
 
 	private int numIterations = 100;
-	double defaultSpringCoefficient = -1.0;
-	double defaultSpringLength = -1.0;
+	double defaultSpringCoefficient = 1e-4f;
+	double defaultSpringLength = 50;
 	double defaultNodeMass = 3.0;
 
 	/**
@@ -80,13 +83,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	 */
 	String[] integratorArray = {"Runge-Kutta", "Euler"};
 
-	/**
-	 * Minimum and maximum weights.  This is used to
-	 * provide a bounds on the weights.
-	 */
-	protected double minWeightCutoff = 0;
-	protected double maxWeightCutoff = Double.MAX_VALUE;
-
 	private boolean supportWeights = true;
 	private LayoutProperties layoutProperties;
 	Map<LayoutNode,ForceItem> forceItems;
@@ -95,6 +91,9 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	
 	public ForceDirectedLayout() {
 		super();
+
+		if (edgeWeighter == null)
+			edgeWeighter = new EdgeWeighter();
 
 		m_fsim = new ForceSimulator();
 		m_fsim.addForce(new NBodyForce());
@@ -115,11 +114,11 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	}
 
 	protected void initialize_local() {
-		LayoutPartition.setWeightCutoffs(minWeightCutoff, maxWeightCutoff);
 	}
 
 
 	public void layoutPartion(LayoutPartition part) {
+		Dimension initialLocation = null;
 		// System.out.println("layoutPartion: "+part.getEdgeList().size()+" edges");
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
@@ -128,9 +127,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		m_fsim.clear();
 
 		// initialize nodes
-		Iterator iter = part.nodeIterator();
-			while ( iter.hasNext() ) {
-			LayoutNode ln = (LayoutNode)iter.next();
+		for (LayoutNode ln: part.getNodeList()) {
 			if ( !forceItems.containsKey(ln) )
 				forceItems.put(ln, new ForceItem());
 			ForceItem fitem = forceItems.get(ln); 
@@ -141,21 +138,25 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		}
 		
 		// initialize edges
-		iter =  part.edgeIterator(); 
-		while ( iter.hasNext() ) {
-			LayoutEdge e  = (LayoutEdge)iter.next();
+		for (LayoutEdge e: part.getEdgeList()) {
 			LayoutNode n1 = e.getSource();
 			ForceItem f1 = forceItems.get(n1); 
 			LayoutNode n2 = e.getTarget();
 			ForceItem f2 = forceItems.get(n2); 
 			if ( f1 == null || f2 == null )
 				continue;
+			// System.out.println("Adding edge "+e+" with spring coeffficient = "+getSpringCoefficient(e)+" and length "+getSpringLength(e));
 			m_fsim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e)); 
 		}
 
 		// setTaskStatus(5); // This is a rough approximation, but probably good enough
 		if (taskMonitor != null) {
 			taskMonitor.setStatus("Initializing partition "+part.getPartitionNumber());
+		}
+
+		// Figure out our starting point
+		if (selectedOnly) {
+			initialLocation = part.getAverageLocation();
 		}
 
 		// perform layout
@@ -168,14 +169,27 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		}
 		
 		// update positions
-		iter = part.nodeIterator(); 
-		while ( iter.hasNext() ) {
-			LayoutNode ln = (LayoutNode)iter.next();
+		for (LayoutNode ln: part.getNodeList()) {
 			if (!ln.isLocked()) {
 				ForceItem fitem = forceItems.get(ln); 
 				ln.setX(fitem.location[0]);
 				ln.setY(fitem.location[1]);
 				part.moveNodeToLocation(ln);
+			}
+		}
+		// Not quite done, yet.  If we're only laying out selected nodes, we need
+		// to migrate the selected nodes back to their starting position
+		if (selectedOnly) {
+			double xDelta = 0.0;
+			double yDelta = 0.0;
+			Dimension finalLocation = part.getAverageLocation();
+			xDelta = finalLocation.getWidth() - initialLocation.getWidth();
+			yDelta = finalLocation.getHeight() - initialLocation.getHeight();
+			for (LayoutNode v: part.getNodeList()) {
+				if (!v.isLocked()) {
+					v.decrement(xDelta, yDelta);
+					part.moveNodeToLocation(v);
+				}
 			}
 		}
 	}
@@ -239,6 +253,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 	
 	protected void initialize_properties() {
+
 		layoutProperties.add(new Tunable("defaultSpringCoefficient", "Default Spring Coefficient",
 		                                 Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
 
@@ -251,12 +266,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
 		                                 Tunable.INTEGER, new Integer(numIterations)));
 
-		layoutProperties.add(new Tunable("min_weight", "The minimum edge weight to consider",
-       		                              Tunable.DOUBLE, new Double(0)));
-
-		layoutProperties.add(new Tunable("max_weight", "The maximum edge weight to consider",
-           		                          Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
-
 		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
 		                                 Tunable.LIST, new Integer(0), 
 		                                 (Object) integratorArray, (Object) null, 0));
@@ -264,11 +273,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
 
-		layoutProperties.add(new Tunable("edge_attribute", 
-		                                 "The edge attribute that contains the weights",
-		                                 Tunable.EDGEATTRIBUTE, "weight",
-		                                 (Object) getInitialAttributeList(), (Object) null,
-		                                 Tunable.NUMERICATTRIBUTE));
+		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
 
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
@@ -306,18 +311,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		if ((t != null) && (t.valueChanged() || force))
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 
-		t = layoutProperties.get("min_weight");
-		if ((t != null) && (t.valueChanged() || force))
-			minWeightCutoff = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("max_weight");
-		if ((t != null) && (t.valueChanged() || force))
-			maxWeightCutoff = ((Double) t.getValue()).doubleValue();
-
-		t = layoutProperties.get("edge_attribute");
-		if ((t != null) && (t.valueChanged() || force))
-			edgeAttribute = (t.getValue().toString());
-
 		t = layoutProperties.get("integrator");
 		if ((t != null) && (t.valueChanged() || force)) {
 			if (((Integer) t.getValue()).intValue() == 0)
@@ -326,9 +319,10 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 				integrator = new EulerIntegrator();
 			else
 				return;
-
 			m_fsim.setIntegrator(integrator);
 		}
+
+		edgeWeighter.updateSettings(layoutProperties, force);
 	}
 
 	public LayoutProperties getSettings() {
@@ -336,9 +330,10 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	}
 
 	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(layoutProperties.getTunablePanel());
+		// JPanel panel = new JPanel(new GridLayout(0, 1));
+		// panel.add(layoutProperties.getTunablePanel());
+		// return panel;
+		return layoutProperties.getTunablePanel();
 
-		return panel;
 	}
 }

@@ -35,6 +35,7 @@ package csplugins.layout;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.Profile;
+import csplugins.layout.EdgeWeighter;
 
 import cytoscape.util.intr.IntIntHash;
 import cytoscape.util.intr.IntObjHash;
@@ -77,6 +78,7 @@ public class LayoutPartition {
 	private static IntIntHash edgesSeenMap = null;
 	private int nodeIndex = 0;
 	private int partitionNumber = 0;
+	private EdgeWeighter edgeWeighter = null;
 
 	// Keep track of the node min and max values
 	private double maxX = -100000;
@@ -94,21 +96,9 @@ public class LayoutPartition {
 	// this partition
 	private int lockedNodes = 0;
 
-	// Keep track of the edge weight min/max values.  Note that these are intentionally
-	// static because we want to normalize weights across all partitions
-	private static double minWeight = 100000;
-	private static double maxWeight = -100000;
-	private static double maxLogWeight = -100000;
-	private static double minLogWeight = 100000;
-
 	// private constants
 	private static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
 	private static final int m_NODE_HAS_BEEN_SEEN = 1;
-	private static double logWeightCeiling = 1074; // Maximum log value (-Math.log(Double.MIN_VALU))
-
-	// Some static values -- these will be the same for all partitions
-	private static double minWeightCutoff = 0;
-	private static double maxWeightCutoff = Double.MAX_VALUE;
 
 	/**
 	 * LayoutPartition: use this constructor to create an empty LayoutPartition.
@@ -132,12 +122,11 @@ public class LayoutPartition {
 	 * @param network the CyNetwork to include
 	 * @param networkView the CyNetworkView to use
 	 * @param nodeSet the nodes to be considered
-	 * @param edgeAttribute a String that contains the name of the attribute to use
-	 *                      for edge weighting
+	 * @param edgeWeighter the weighter to use for edge weighting
 	 */
 	public LayoutPartition(CyNetwork network, CyNetworkView networkView, Collection<CyNode>nodeSet,
-	                       String edgeAttribute) {
-		initialize(network,networkView,nodeSet,edgeAttribute);
+	                       EdgeWeighter edgeWeighter) {
+		initialize(network,networkView,nodeSet,edgeWeighter);
 	}
 
 
@@ -148,20 +137,22 @@ public class LayoutPartition {
 	 * @param network the CyNetwork to include
 	 * @param networkView the CyNetworkView to use
 	 * @param selectedOnly if true, only include selected nodes in the partition
-	 * @param edgeAttribute a String that contains the name of the attribute to use
-	 *                      for edge weighting
+	 * @param edgeWeighter the weighter to use for edge weighting
 	 */
 	public LayoutPartition(CyNetwork network, CyNetworkView networkView, boolean selectedOnly,
-	                       String edgeAttribute) {
+	                       EdgeWeighter edgeWeighter) {
 		if (selectedOnly) {
-			initialize(network,networkView,(Collection<CyNode>)network.getSelectedNodes(),edgeAttribute);
+			initialize(network,networkView,(Collection<CyNode>)network.getSelectedNodes(),edgeWeighter);
 		} else {
-			initialize(network,networkView,network.nodesList(),edgeAttribute);
+			initialize(network,networkView,network.nodesList(),edgeWeighter);
 		}
 	}
 
 	protected void initialize(CyNetwork network, CyNetworkView networkView, Collection<CyNode>nodeSet,
-	                          String edgeAttribute) {
+	                          EdgeWeighter edgeWeighter) {
+
+		this.edgeWeighter = edgeWeighter;
+
 		// Initialize
 		nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
 		edgeList = new ArrayList<LayoutEdge>(network.getEdgeCount());
@@ -169,15 +160,21 @@ public class LayoutPartition {
 		if (nodeToLayoutNode == null)
 			nodeToLayoutNode = new HashMap<CyNode,LayoutNode>(network.getNodeCount());
 
-		// Initialize/reset edge weighting
-		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
-		LayoutPartition.resetEdges();
-
 		// Now, walk the iterators and fill in the values
 		nodeListInitialize(network, networkView, nodeSet);
-		edgeListInitialize(network, networkView, edgeAttribute);
+		edgeListInitialize(network, networkView);
 		trimToSize();
 		partitionNumber = 1;
+	}
+
+	/**
+	 * Set the EdgeWeighter to use for this partition.  The EdgeWeighter should be
+	 * shared by all partitions in the same graph to avoid contrary scaling problems.
+	 *
+	 * @param edgeWeighter the weighter to use for edge weighting
+	 */
+	public void setEdgeWeighter(EdgeWeighter edgeWeighter) {
+		this.edgeWeighter = edgeWeighter;
 	}
 
 	/**
@@ -209,12 +206,10 @@ public class LayoutPartition {
 	 * nodes are not yet known.
 	 *
 	 * @param edge    the CyEdge to add to the partition
-	 * @param edgeAttribute    the attribute name (if any) that contains the
-	 *                      weights to use for this edge
 	 */
-	protected void addEdge(CyEdge edge, String edgeAttribute) {
+	protected void addEdge(CyEdge edge) {
 		LayoutEdge newEdge = new LayoutEdge(edge);
-		updateWeights(newEdge, edgeAttribute);
+		updateWeights(newEdge);
 		edgeList.add(newEdge);
 	}
 
@@ -225,12 +220,10 @@ public class LayoutPartition {
 	 * @param edge    the CyEdge to add to the partition
 	 * @param v1    the LayoutNode of the edge source
 	 * @param v2    the LayoutNode of the edge target
-	 * @param edgeAttribute    the attribute name (if any) that contains the
-	 *                      weights to use for this edge
 	 */
-	protected void addEdge(CyEdge edge, LayoutNode v1, LayoutNode v2, String edgeAttribute) {
+	protected void addEdge(CyEdge edge, LayoutNode v1, LayoutNode v2) {
 		LayoutEdge newEdge = new LayoutEdge(edge, v1, v2);
-		updateWeights(newEdge, edgeAttribute);
+		updateWeights(newEdge);
 		edgeList.add(newEdge);
 	}
 
@@ -300,10 +293,6 @@ public class LayoutPartition {
 	 * are met.
 	 */
 	public void calculateEdgeWeights() {
-		// Normalize the weights to between 0 and 1
-		boolean logWeights = false;
-		if (Math.abs(maxLogWeight - minLogWeight) > 3)
-			logWeights = true;
 
 		// Use a ListIterator so that we can modify the list
 		// as we go
@@ -311,31 +300,12 @@ public class LayoutPartition {
 		while (iter.hasNext()) {
 			LayoutEdge edge = iter.next();
 
-			// System.out.println("Edge "+edge.getEdge().getIdentifier()+" has weight "+edge.getWeight());
-			double weight = edge.getWeight();
-
 			// If we're only dealing with selected nodes, drop any edges
 			// that don't have any selected nodes
 			if (edge.getSource().isLocked() && edge.getTarget().isLocked()) {
 				iter.remove();
-			} else if (minWeight == maxWeight) {
-				continue; // unweighted
-			} else if ((weight <= minWeightCutoff) || (weight > maxWeightCutoff)) {
-				// Drop any edges that are outside of our bounds
+			} else if (edgeWeighter != null && edgeWeighter.normalizeWeight(edge) == false)
 				iter.remove();
-			} else {
-				if (logWeights) {
-					// edge.normalizeWeight(minLogWeight-1,maxLogWeight+1,true);
-					// The KK algorithm works much better when weights are not too close
-					// to zero -- set 0 as our minLogWeight to force better bounding
-					edge.normalizeWeight(0, maxLogWeight, true);
-				} else
-					edge.normalizeWeight(minWeight, maxWeight, false);
-
-				// Drop any edges where the normalized weight is small
-				if (edge.getWeight() < .001)
-					iter.remove();
-			}
 
 			// System.out.println("Edge "+edge.getEdge().getIdentifier()+" now has weight "+edge.getWeight());
 		}
@@ -377,7 +347,7 @@ public class LayoutPartition {
 	 * @return Iterator over the list of LayoutNodes
 	 * @see LayoutNode
 	 */
-	public Iterator nodeIterator() {
+	public Iterator<LayoutNode> nodeIterator() {
 		return nodeList.iterator();
 	}
 
@@ -387,7 +357,7 @@ public class LayoutPartition {
 	 * @return Iterator over the list of LayoutEdges
 	 * @see LayoutEdge
 	 */
-	public Iterator edgeIterator() {
+	public Iterator<LayoutEdge> edgeIterator() {
 		return edgeList.iterator();
 	}
 
@@ -542,18 +512,6 @@ public class LayoutPartition {
 	}
 
 	/**
-	 * Reset all of the data maintained for the LayoutEdges
-	 * contained within this partition, including the min
-	 * and max weight and logWeight data.
-	 */
-	public static void resetEdges() {
-		maxWeight = -100000;
-		minWeight = 100000;
-		maxLogWeight = -100000;
-		minLogWeight = 100000;
-	}
-
-	/**
 	 * Private routines
 	 */
 	private void nodeListInitialize(CyNetwork network, CyNetworkView networkView,
@@ -574,8 +532,7 @@ public class LayoutPartition {
 		}
 	}
 
-	private void edgeListInitialize(CyNetwork network, CyNetworkView networkView,
-	                                String edgeAttribute) {
+	private void edgeListInitialize(CyNetwork network, CyNetworkView networkView) {
 		Iterator iter = network.edgesIterator();
 
 		while (iter.hasNext()) {
@@ -598,7 +555,7 @@ public class LayoutPartition {
 			if (v1.isLocked() && v2.isLocked())
 				continue; // no, ignore it
 
-			addEdge(edge, v1, v2, edgeAttribute);
+			addEdge(edge, v1, v2);
 		}
 	}
 
@@ -621,30 +578,15 @@ public class LayoutPartition {
 		averageY += y;
 	}
 
-	private void updateWeights(LayoutEdge newEdge, String edgeAttribute) {
-		newEdge.setWeight(edgeAttribute);
-		maxWeight = Math.max(maxWeight, newEdge.getWeight());
-		minWeight = Math.min(minWeight, newEdge.getWeight());
-		maxLogWeight = Math.max(maxLogWeight, newEdge.getLogWeight());
-		minLogWeight = Math.min(minLogWeight, newEdge.getLogWeight());
+	private void updateWeights(LayoutEdge newEdge) {
+		if (edgeWeighter != null) {
+			edgeWeighter.setWeight(newEdge);
+		}
 
 		// System.out.println("Updating "+newEdge);
-		// System.out.println("maxWeight = "+maxWeight+", minWeight = "+minWeight);
-		// System.out.println("maxLogWeight = "+maxLogWeight+", minLogWeight = "+minLogWeight);
 	}
 
 	// Static routines
-
-	/**
-	 * Set the edge weight cutoffs for all LayoutEdges.
-	 *
-	 * @param minCutoff the minimum value to accept
-	 * @param maxCutoff the maximum value to accept
-	 */
-	public static void setWeightCutoffs(double minCutoff, double maxCutoff) {
-		minWeightCutoff = minCutoff;
-		maxWeightCutoff = maxCutoff;
-	}
 
 	/**
 	 * Partition the graph -- this builds the LayoutEdge and LayoutNode
@@ -654,17 +596,17 @@ public class LayoutPartition {
 	 * @param network the CyNetwork containing the graph
 	 * @param networkView the CyNetworkView representing the graph
 	 * @param selectedOnly only consider selected nodes
-	 * @param edgeAttribute the attribute to use for edge weighting
+	 * @param edgeWeighter the weighter to use for edge weighting
 	 * @return a List of LayoutPartitions
 	 */
 	public static List<LayoutPartition> partition(CyNetwork network, CyNetworkView networkView,
-	                             boolean selectedOnly, String edgeAttribute) {
+	                             boolean selectedOnly, EdgeWeighter edgeWeighter) {
 
 		if (selectedOnly) {
-			return partition(network,networkView,network.getSelectedNodes(),edgeAttribute);
+			return partition(network,networkView,network.getSelectedNodes(),edgeWeighter);
 		}
 
-		return partition(network,networkView,network.nodesList(),edgeAttribute);
+		return partition(network,networkView,network.nodesList(),edgeWeighter);
 
 	}
 
@@ -676,11 +618,11 @@ public class LayoutPartition {
 	 * @param network the CyNetwork containing the graph
 	 * @param networkView the CyNetworkView representing the graph
 	 * @param nodeSet the set of nodes to consider
-	 * @param edgeAttribute the attribute to use for edge weighting
+	 * @param edgeWeighter the weighter to use for edge weighting
 	 * @return a List of LayoutPartitions
 	 */
 	public static List<LayoutPartition> partition(CyNetwork network, CyNetworkView networkView,
-	                             Collection<CyNode> nodeSet, String edgeAttribute) {
+	                             Collection<CyNode> nodeSet, EdgeWeighter edgeWeighter) {
 		ArrayList<LayoutPartition> partitions = new ArrayList<LayoutPartition>();
 
 		nodesSeenMap = new IntIntHash();
@@ -699,10 +641,6 @@ public class LayoutPartition {
 			nodesToViews.put(-node, nv);
 		}
 
-		// Initialize/reset edge weighting
-		LayoutEdge.setLogWeightCeiling(logWeightCeiling);
-		LayoutPartition.resetEdges();
-
 		for (CyEdge edge: (List<CyEdge>)network.edgesList()) {
 			int edgeIndex = edge.getRootGraphIndex();
 			edgesSeenMap.put(-edgeIndex, m_NODE_HAS_NOT_BEEN_SEEN);
@@ -719,11 +657,13 @@ public class LayoutPartition {
 			// Nope, first time
 			LayoutPartition part = new LayoutPartition(network.getNodeCount(),
 			                                           network.getEdgeCount());
+			// Set the edge weighter
+			part.setEdgeWeighter(edgeWeighter);
 
 			nodesSeenMap.put(-nodeIndex, m_NODE_HAS_BEEN_SEEN);
 
 			// Traverse through all connected nodes
-			traverse(network, networkView, nodesToViews, node, part, edgeAttribute);
+			traverse(network, networkView, nodesToViews, node, part);
 
 			// Done -- finalize the parition
 			part.trimToSize();
@@ -759,13 +699,11 @@ public class LayoutPartition {
 	  * @param networkView        The CyNetworkView we are laying out
 	  * @param nodesToViews        A map that maps between nodes and views
 	  * @param node                        The node to search for connected nodes.
-	  * @param partition            The partition that holds all of the nodes and edges.
-	  * @param edgeAttribute    A String that is the name of the attribute to use
-	      *                         for weights
+	  * @param partition the partition we're laying out
 	  */
 	private static void traverse(CyNetwork network, CyNetworkView networkView,
 	                             IntObjHash nodesToViews, CyNode node,
-	                             LayoutPartition partition, String edgeAttribute) {
+	                             LayoutPartition partition) {
 		int nodeIndex = node.getRootGraphIndex();
 
 		// Get the nodeView
@@ -797,7 +735,7 @@ public class LayoutPartition {
 			ev.clearBends();
 
 			// Add the edge to the partition
-			partition.addEdge(incidentEdge, edgeAttribute);
+			partition.addEdge(incidentEdge);
 
 			// Determine the node's index that is on the other side of the edge
 			CyNode otherNode;
@@ -816,7 +754,7 @@ public class LayoutPartition {
 				nodesSeenMap.put(-incidentNodeIndex, m_NODE_HAS_BEEN_SEEN);
 
 				// Traverse through this one
-				traverse(network, networkView, nodesToViews, otherNode, partition, edgeAttribute);
+				traverse(network, networkView, nodesToViews, otherNode, partition);
 			}
 		}
 	}
