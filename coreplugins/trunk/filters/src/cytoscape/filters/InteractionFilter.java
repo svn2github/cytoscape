@@ -50,7 +50,7 @@ public class InteractionFilter extends CompositeFilter {
 	protected boolean isSourceChecked = true;
 	protected boolean isTargetChecked = true;
 	
-	protected CompositeFilter passFilter = null;
+	protected CompositeFilter passFilter = new CompositeFilter("None");
 	
 	public InteractionFilter() {
 	}
