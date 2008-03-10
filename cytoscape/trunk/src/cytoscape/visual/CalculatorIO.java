@@ -159,8 +159,10 @@ public class CalculatorIO {
 			while (oneLine != null) {
 				if (oneLine.startsWith("#"))
 					headerLines.add(oneLine);
-				else if ((oneLine.toUpperCase().contains("EDGELINETYPE") == false)
-				         && (oneLine.toUpperCase().contains("NODELINETYPE") == false))
+				else if (oneLine.toUpperCase().contains("EDGELINETYPE") == false
+				         && oneLine.toUpperCase().contains("NODELINETYPE") == false
+				         && oneLine.toUpperCase().contains("ARROW=") == false
+				         )
 					lines.add(oneLine);
 
 				oneLine = reader.readLine();
