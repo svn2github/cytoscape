@@ -99,6 +99,7 @@ import cytoscape.visual.mappings.ObjectMapping;
 import cytoscape.visual.mappings.PassThroughMapping;
 import giny.model.Edge;
 import giny.model.Node;
+import giny.view.NodeView;
 
 
 /**
@@ -593,7 +594,7 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 		return defStyle;
 	}
 
-	public List<JMenuItem> getNodeContextMenuItems() {
+	public List<JMenuItem> getNodeContextMenuItems(NodeView nv) {
 		List<JMenuItem> menuList = new ArrayList<JMenuItem>();
 		menuList.add(NetworkExpansionMenu.getExpander(this));
 		return menuList;
