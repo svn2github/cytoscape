@@ -53,44 +53,24 @@ import javax.swing.JPopupMenu;
 
 /**
  * Context menu for web service clients.
- * 
+ *
  * @author kono
  * @since Cytoscape 2.6
  * @version 0.5
- * 
+ *
  */
 public class WebServiceContextMenu implements NodeContextMenuListener, EdgeContextMenuListener {
 	private HashMap<String, String> clientMap;
 	private JMenu nodeRootMenu;
+	private JMenu edgeRootMenu;
 
 	/**
 	 * Creates a new WebServiceContextMenu object.
 	 */
 	public WebServiceContextMenu() {
 		clientMap = new HashMap<String, String>();
-
-		final List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
-
 		nodeRootMenu = new JMenu("Use Web Services");
-
-		List<JMenuItem> context = null;
-
-		for (WebServiceClient client : clients) {
-			if (client instanceof WebServiceClientGUI) {
-				context = ((WebServiceClientGUI) client).getNodeContextMenuItems();
-
-				if (context != null) {
-					JMenu menu = new JMenu(client.getDisplayName());
-
-					for (JMenuItem menuItem : context) {
-						menu.add(menuItem);
-					}
-
-					nodeRootMenu.add(menu);
-					clientMap.put(client.getDisplayName(), client.getClientID());
-				}
-			}
-		}
+		edgeRootMenu = new JMenu("Use Web Services");
 	}
 
 	/**
@@ -100,13 +80,59 @@ public class WebServiceContextMenu implements NodeContextMenuListener, EdgeConte
 	 * @param menu DOCUMENT ME!
 	 */
 	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu menu) {
-		if (menu == null)
-			menu = new JPopupMenu();
-
-		menu.add(this.nodeRootMenu);
+		addMenu(nodeView, menu);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param edgeView DOCUMENT ME!
+	 * @param menu DOCUMENT ME!
+	 */
 	public void addEdgeContextMenuItems(EdgeView edgeView, JPopupMenu menu) {
-		// Not implemented yet.
+		addMenu(edgeView, menu);
+	}
+
+	private void addMenu(Object view, JPopupMenu menu) {
+		if (menu == null)
+			menu = new JPopupMenu();
+		else {
+			// Clean up menu
+			nodeRootMenu.removeAll();
+			edgeRootMenu.removeAll();
+		}
+
+		List<JMenuItem> context = null;
+		final List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+
+		for (WebServiceClient client : clients) {
+			if (client instanceof WebServiceClientGUI) {
+				if (view instanceof NodeView)
+					context = ((WebServiceClientGUI) client).getNodeContextMenuItems((NodeView) view);
+				else if (view instanceof EdgeView)
+					context = ((WebServiceClientGUI) client).getEdgeContextMenuItems((EdgeView) view);
+
+				if (context != null) {
+					JMenu cMenu = new JMenu(client.getDisplayName());
+
+					for (JMenuItem menuItem : context) {
+						cMenu.add(menuItem);
+					}
+
+					nodeRootMenu.add(cMenu);
+					clientMap.put(client.getDisplayName(), client.getClientID());
+				}
+			}
+		}
+
+		if(view instanceof NodeView) {
+			menu.add(this.nodeRootMenu);
+			if(nodeRootMenu.getItemCount() == 0)
+				nodeRootMenu.setEnabled(false);
+		} else {
+			menu.add(this.edgeRootMenu);
+			if(edgeRootMenu.getItemCount() == 0)
+				edgeRootMenu.setEnabled(false);
+		}
 	}
 }

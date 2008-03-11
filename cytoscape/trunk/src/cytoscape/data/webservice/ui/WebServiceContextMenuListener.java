@@ -61,6 +61,7 @@ public class WebServiceContextMenuListener implements PropertyChangeListener {
 				cMenu = new WebServiceContextMenu();
 
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(cMenu);
+			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(cMenu);
 		}
 	}
 }

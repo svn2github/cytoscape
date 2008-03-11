@@ -34,6 +34,9 @@
 */
 package cytoscape.data.webservice.ui;
 
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
 import java.awt.Container;
 import java.util.List;
 
@@ -93,11 +96,11 @@ public interface WebServiceClientGUI<U extends Container> {
 	 * @return Custom context menu.
 	 * 
 	 */
-	public List<JMenuItem> getNodeContextMenuItems();
+	public List<JMenuItem> getNodeContextMenuItems(NodeView nv);
 	
 	/**
 	 * Return edge context menu if available.
 	 * @return
 	 */
-	public List<JMenuItem> getEdgeContextMenuItems();
+	public List<JMenuItem> getEdgeContextMenuItems(EdgeView ev);
 }

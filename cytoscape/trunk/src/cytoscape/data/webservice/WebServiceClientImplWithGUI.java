@@ -39,6 +39,9 @@ import cytoscape.data.webservice.ui.WebServiceClientGUI;
 
 import cytoscape.util.ModuleProperties;
 
+import giny.view.EdgeView;
+import giny.view.NodeView;
+
 import java.awt.Container;
 
 import java.util.List;
@@ -107,7 +110,7 @@ public abstract class WebServiceClientImplWithGUI<S, U extends Container>
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<JMenuItem> getNodeContextMenuItems() {
+	public List<JMenuItem> getNodeContextMenuItems(NodeView nv) {
 		return null;
 	}
 	
@@ -116,7 +119,7 @@ public abstract class WebServiceClientImplWithGUI<S, U extends Container>
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<JMenuItem> getEdgeContextMenuItems() {
+	public List<JMenuItem> getEdgeContextMenuItems(EdgeView ev) {
 		return null;
 	}
 }
