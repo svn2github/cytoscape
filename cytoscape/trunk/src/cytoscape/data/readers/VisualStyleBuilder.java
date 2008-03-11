@@ -68,7 +68,9 @@ public class VisualStyleBuilder {
 	 * @param name the name of the visual style that will be created.
 	 */
 	public VisualStyleBuilder(String name) {
-		this.name = name;
+		// because visual style parsing breaks with '.' in the names
+		this.name = name.replaceAll("\\.","_");
+
 		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
 		counts = new EnumMap<VisualPropertyType,Map<Object,Integer>>(VisualPropertyType.class);
 	}
@@ -131,7 +133,7 @@ public class VisualStyleBuilder {
 				System.out.println( "ValueMaps size: " + valueMaps.get(type).size() );
 				dm.putAll( valMap );
 
-				Calculator calc = new BasicCalculator("homer " + getAttrName(type), dm, type);
+				Calculator calc = new BasicCalculator("VisualStyleBuilder-" + getAttrName(type), dm, type);
 	
 				if ( type.isNodeProp() )
 					nac.setCalculator( calc );
@@ -156,7 +158,8 @@ public class VisualStyleBuilder {
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
-		String styleName = name+" style";
+		String styleName = name + " style";
+
 		VisualStyle graphStyle = new VisualStyle(styleName, nac, eac, gac);
 
 		// Remove this in case we've already loaded this network once
