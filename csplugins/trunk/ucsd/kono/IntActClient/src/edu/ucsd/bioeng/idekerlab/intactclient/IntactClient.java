@@ -133,7 +133,7 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 	private Set<Edge> edges = new HashSet<Edge>();
 
 	private void setDescription() {
-		description = "http://www.ebi.ac.uk/intact/";
+		description = "http://www.ebi.ac.uk/intact/site/contents/all_printerfriendly.jsf";
 	}
 	
 	/**
