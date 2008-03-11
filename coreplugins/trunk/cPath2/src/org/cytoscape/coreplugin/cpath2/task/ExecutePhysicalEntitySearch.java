@@ -81,7 +81,10 @@ public class ExecutePhysicalEntitySearch implements Task {
             for (ExtendedRecordType hit:  searchHits) {
                 taskMonitor.setStatus("Retrieving interaction details for:  " +
                     hit.getName());
-                webApi.getParentSummaries(hit.getPrimaryId(), taskMonitor);
+                try {
+                    webApi.getParentSummaries(hit.getPrimaryId(), taskMonitor);
+                } catch (EmptySetException e) {
+                }
                 int percentComplete = (int) (100 * (numRetrieved++ / (float) numHits));
                 taskMonitor.setPercentCompleted(percentComplete);
             }
