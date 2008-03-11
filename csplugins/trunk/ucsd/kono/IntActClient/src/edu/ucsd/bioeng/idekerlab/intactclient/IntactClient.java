@@ -50,6 +50,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
@@ -81,7 +83,6 @@ import cytoscape.data.webservice.WebServiceClientImplWithGUI;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 import cytoscape.data.webservice.util.NetworkExpansionMenu;
-
 import cytoscape.layout.Tunable;
 import cytoscape.util.ModulePropertiesImpl;
 import cytoscape.visual.ArrowShape;
@@ -111,6 +112,9 @@ import giny.view.NodeView;
  *
  */
 public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchService, JPanel> implements NetworkImportWebServiceClient {
+	
+	private static final Icon ABOUT_ICON = new ImageIcon(IntactClient.class.getResource("/images/logo_intact_small.gif"));
+	
 	// Display name of this client.
 	private static final String DISPLAY_NAME = "IntAct Web Service Client";
 
@@ -598,5 +602,9 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 		List<JMenuItem> menuList = new ArrayList<JMenuItem>();
 		menuList.add(NetworkExpansionMenu.getExpander(this));
 		return menuList;
+	}
+	
+	public Icon getIcon(IconSize type) {
+		return ABOUT_ICON;
 	}
 }
