@@ -111,6 +111,14 @@ public class InteractionBundlePanel extends JPanel {
                 matchingInteractionsLabel.setText("Matching Interactions:  "
                         + recordList.getNumRecords());
 
+                if (recordList.getNumRecords() == 0) {
+                    filterPanel.setVisible(false);
+                    retrieveButton.setVisible(false);
+                } else {
+                    filterPanel.setVisible(true);
+                    retrieveButton.setVisible(true);
+                }
+
                 TreeMap<String, Integer> dataSourceMap = recordList.getDataSourceMap();
                 TreeMap<String, Integer> entityTypeMap = recordList.getEntityTypeMap();
 
