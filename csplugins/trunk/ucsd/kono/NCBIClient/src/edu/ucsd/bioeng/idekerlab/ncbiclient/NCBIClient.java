@@ -34,48 +34,11 @@
 */
 package edu.ucsd.bioeng.idekerlab.ncbiclient;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.CyAttributes;
-
-import cytoscape.data.webservice.AttributeImportQuery;
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
-import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.*;
-import cytoscape.data.webservice.CyWebServiceException;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientImpl;
-import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-
-import cytoscape.layout.Tunable;
-
-import cytoscape.util.ModulePropertiesImpl;
-
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
-
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.calculators.AbstractCalculator;
-import cytoscape.visual.calculators.EdgeCalculator;
-import cytoscape.visual.calculators.NodeCalculator;
-
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
 import giny.model.Edge;
 import giny.model.Node;
-
+import giny.view.NodeView;
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceLocator;
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceSoap;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.DbtagType;
@@ -94,11 +57,8 @@ import gov.nih.nlm.ncbi.www.soap.eutils.esearch.ESearchResult;
 import gov.nih.nlm.ncbi.www.soap.eutils.esearch.IdListType;
 
 import java.awt.Color;
-
 import java.beans.PropertyChangeEvent;
-
 import java.rmi.RemoteException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -111,12 +71,48 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.xml.rpc.ServiceException;
+
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.webservice.AttributeImportQuery;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceException;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientImplWithGUI;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
+import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+import cytoscape.data.webservice.util.NetworkExpansionMenu;
+import cytoscape.layout.Tunable;
+import cytoscape.util.ModulePropertiesImpl;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.calculators.AbstractCalculator;
+import cytoscape.visual.calculators.EdgeCalculator;
+import cytoscape.visual.calculators.NodeCalculator;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
 
 /**
  *
  */
-public class NCBIClient extends WebServiceClientImpl implements NetworkImportWebServiceClient {
+public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, JPanel> implements NetworkImportWebServiceClient {
+	
+	private static final Icon ABOUT_ICON = new ImageIcon(NCBIClient.class.getResource("/images/entrez32.png"));
+	
 	/**
 	 * Annotation categories available in NCBI
 	 *
@@ -191,7 +187,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static WebServiceClient getClient() {
+	public static WebServiceClient<EUtilsServiceSoap> getClient() {
 		return client;
 	}
 
@@ -202,11 +198,11 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	 * @throws Exception  DOCUMENT ME!
 	 */
 	public NCBIClient() throws CyWebServiceException {
-		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.NETWORK, ClientType.ATTRIBUTE });
+		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.NETWORK, ClientType.ATTRIBUTE }, null, null, null);
 
 		EUtilsServiceLocator service = new EUtilsServiceLocator();
 		try {
-			stub = service.geteUtilsServiceSoap();
+			clientStub = service.geteUtilsServiceSoap();
 		} catch (ServiceException e) {
 			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
 		}
@@ -218,6 +214,12 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		                      new Integer(DEF_POOL_SIZE)));
 		props.add(new Tunable("buket_size", "Number of IDs send at once", Tunable.INTEGER,
 		                      new Integer(DEF_BUCKET_SIZE)));
+		
+		prepareDescription();
+	}
+	
+	private void prepareDescription() {
+		description = "http://www.ncbi.nlm.nih.gov/entrez/query/static/esoap_help.html";
 	}
 
 	/**
@@ -242,7 +244,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 	}
 
 	private void search(CyWebServiceEvent<String> e) throws CyWebServiceException {
-		final EUtilsServiceSoap ncbiStub = (EUtilsServiceSoap) stub;
+
 		final ESearchRequest searchParam = new ESearchRequest();
 		final String keyword = e.getParameter();
 
@@ -252,7 +254,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		searchParam.setTerm(keyword);
 
 		try {
-			final ESearchResult result = ncbiStub.run_eSearch(searchParam);
+			final ESearchResult result = clientStub.run_eSearch(searchParam);
 			int resSize = Integer.parseInt(result.getCount());
 			System.out.println("Number of Result from Entrez Gene = " + resSize);
 
@@ -569,7 +571,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 				while (res == null) {
 					try {
-						res = ((EUtilsServiceSoap) stub).run_eFetch(parameters);
+						res = clientStub.run_eFetch(parameters);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						//						e.printStackTrace();
@@ -724,7 +726,7 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 
 			while (res == null) {
 				try {
-					res = ((EUtilsServiceSoap) stub).run_eFetch(parameters);
+					res = clientStub.run_eFetch(parameters);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					//						e.printStackTrace();
@@ -1169,5 +1171,15 @@ public class NCBIClient extends WebServiceClientImpl implements NetworkImportWeb
 		eac.setCalculator(edgeColorCalc);
 
 		return defStyle;
+	}
+
+	public List<JMenuItem> getNodeContextMenuItems(NodeView nv) {
+		List<JMenuItem> menuList = new ArrayList<JMenuItem>();
+		menuList.add(NetworkExpansionMenu.getExpander(this));
+		return menuList;
+	}
+	
+	public Icon getIcon(IconSize type) {
+		return ABOUT_ICON;
 	}
 }
