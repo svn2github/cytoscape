@@ -112,7 +112,9 @@ public class FontChooser extends JPanel {
         else
             this.selectedFont = def.deriveFont(1F);
 
+		face.setEditable(true); // so that we may select the default font
         face.setSelectedItem(this.selectedFont);
+		face.setEditable(false); // so that users aren't allowed to edit the list
 
         add(face);
     }
