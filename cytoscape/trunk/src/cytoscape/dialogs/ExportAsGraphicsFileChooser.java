@@ -59,11 +59,16 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 				eventCount =0;
 				return;
 			}
-			if (formatComboBox.getSelectedItem().toString().equalsIgnoreCase("EPS (*.eps)")) {
-				if (useTransparency()) {
-					JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
+			
+			if (formatComboBox.getSelectedItem().toString().equalsIgnoreCase("EPS (*.eps)") && useTransparency()) {
+				JOptionPane.showMessageDialog(	Cytoscape.getDesktop(),
 							"Could not export in EPS format, because transparency is used in the visual style!");
-				}
+					okButton.setEnabled(false);
+					chooseFileButton.setEnabled(false);
+			}
+			else {
+				okButton.setEnabled(true);
+				chooseFileButton.setEnabled(true);
 			}
 		}		
 	}
@@ -120,6 +125,9 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		selectedFile = file;
 		filePathField.setText(selectedFile.getPath());
 		okButton.setEnabled(true);
+		if (formatComboBox.getSelectedItem().toString().equalsIgnoreCase("EPS (*.eps)") && useTransparency()) {
+			okButton.setEnabled(false);
+		}
 	}
 
 	protected void removeFile()
@@ -147,6 +155,9 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		selectedFile = new File(selectedFile.getParent(), name + "." + newExtension);
 		filePathField.setText(selectedFile.getPath());
 		okButton.setEnabled(true);
+		if (formatComboBox.getSelectedItem().toString().equalsIgnoreCase("EPS (*.eps)") && useTransparency()) {
+			okButton.setEnabled(false);
+		}
 	}
 
 	public void actionPerformed(ActionEvent e) {
