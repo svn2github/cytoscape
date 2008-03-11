@@ -4,6 +4,7 @@ import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
 import org.cytoscape.coreplugin.cpath2.view.model.RecordList;
 import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.*;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
 import javax.swing.text.Document;
 import javax.swing.*;
@@ -136,8 +137,12 @@ public class SelectPhysicalEntity {
         RecordList recordList = parentRecordsMap.get(searchHit.getPrimaryId());
         if (recordList != null) {
             interactionBundleModel.setRecordList(recordList);
-            interactionBundleModel.setPhysicalEntityName(searchHit.getName());
+        } else {
+            SummaryResponseType summaryResponseType = new SummaryResponseType();
+            recordList = new RecordList(summaryResponseType);
+            interactionBundleModel.setRecordList(recordList);
         }
+        interactionBundleModel.setPhysicalEntityName(searchHit.getName());
     }
 
     /**
