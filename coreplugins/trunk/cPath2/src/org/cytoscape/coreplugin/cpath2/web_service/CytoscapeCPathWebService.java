@@ -10,6 +10,7 @@ import cytoscape.util.ModuleProperties;
 import cytoscape.util.ModulePropertiesImpl;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.task.ExecuteGetRecordByCPathId;
+import org.cytoscape.coreplugin.cpath2.task.ExpandNode;
 import org.cytoscape.coreplugin.cpath2.util.NullTaskMonitor;
 import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 import org.cytoscape.coreplugin.cpath2.view.TabUi;
@@ -19,6 +20,11 @@ import org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.*;
+import java.util.List;
+
+import giny.view.NodeView;
+import giny.view.EdgeView;
 
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
@@ -66,6 +72,7 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
             if (e.getEventType().equals(CyWebServiceEvent.WSEventType.IMPORT_NETWORK)) {
                 importNetwork(e);
             } else if (e.getEventType().equals(CyWebServiceEvent.WSEventType.EXPAND_NETWORK)) {
+
             } else if (e.getEventType().equals(CyWebServiceEvent.WSEventType.SEARCH_DATABASE)) {
                 try {
                     searchDatabase(e);
@@ -80,8 +87,12 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
         }
     }
 
-    public Boolean isNodeExpandable(CyNode cyNode) {
-        return false;
+    public List getNodeContextMenuItems(NodeView nodeView) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public List getEdgeContextMenuItems(EdgeView edgeView) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Container getGUI() {
@@ -140,8 +151,6 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
      */
     private void setProperty() {
         props = new ModulePropertiesImpl(clientID, "wsc");
-
-        //  TODO:  Can we add Tunable Lists? e.g. enums 
         props.add(new Tunable(NCBI_TAXONOMY_ID_FILTER, "Filter by Organism - NCBI Taxonomy ID",
                 Tunable.INTEGER, new Integer(-1)));
         props.add(new Tunable(RESPONSE_FORMAT, "Response Format",
@@ -152,7 +161,6 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
         CPathWebService webApi = CPathWebServiceImpl.getInstance();
         String q = e.getParameter().toString();
 
-        //  TODO:  Is there a convention for specifying multiple Ids / keywords?
         String idStrs[] = q.split(" ");
         long ids[] = new long[idStrs.length];
         for (int i = 0; i < ids.length; i++) {
@@ -170,7 +178,6 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
         ExecuteGetRecordByCPathId task = new ExecuteGetRecordByCPathId(webApi,
                 ids, format, CPathProperties.getInstance().getCPathServerName());
         //  Run right here in this thread.
-        //  TODO:  Should the web client create a new thread?
         task.run();
     }
 
@@ -188,7 +195,6 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
         Integer totalNumHits = response.getTotalNumHits().intValue();
 
         //  Fire appropriate events.
-        //  TODO:  "SEARCH_RESULT" should probably be a constant somewhere.
         if (e.getNextMove() != null) {
             Cytoscape.firePropertyChange("SEARCH_RESULT", this.clientID,
                     new DatabaseSearchResult(totalNumHits, response,
