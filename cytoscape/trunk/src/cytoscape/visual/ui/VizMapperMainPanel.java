@@ -1818,14 +1818,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	public void enableListeners(boolean on) {
 		if (on) {
-			//System.out.println("=========Truning ON listeners!!!!!!!!!=============");
-			//Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 			Cytoscape.getVisualMappingManager().addChangeListener(this);
 			syncStyleBox();
 			ignore = false;
 		} else {
-			//System.out.println("=========REMOVING listeners!!!!!!!!!=============");
-			//Cytoscape.getSwingPropertyChangeSupport().removePropertyChangeListener(this);
 			Cytoscape.getVisualMappingManager().removeChangeListener(this);
 		}
 	}
@@ -3572,6 +3568,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void popupMenuCanceled(PopupMenuEvent arg0) {
+		disableAllPopup();
+	}
+	
+	private void disableAllPopup() {
 		rainbow1.setEnabled(false);
 		rainbow2.setEnabled(false);
 		randomize.setEnabled(false);
@@ -3598,6 +3598,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+		
+		disableAllPopup();
+		
 		final int selected = visualPropertySheetPanel.getTable().getSelectedRow();
 
 		if (0 > selected) {
@@ -3611,8 +3614,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 
 		VizMapperProperty prop = ((VizMapperProperty) curProp);
-
-		if (prop.getHiddenObject() instanceof VisualPropertyType) {
+		
+		if (prop.getHiddenObject() instanceof VisualPropertyType && curProp.getDisplayName().contains("Mapping Type") == false) {
 			// Enble delete menu
 			delete.setEnabled(true);
 
