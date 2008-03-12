@@ -1871,57 +1871,89 @@ public class DGraphView implements GraphView, Printable {
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void fitSelected() {
-		synchronized (m_lock) {
-			final IntEnumerator selectedElms = m_selectedNodes.searchRange(Integer.MIN_VALUE,
-			                                                               Integer.MAX_VALUE, false);
+    /**
+     * DOCUMENT ME!
+     */
+    public void fitSelected() {
+        synchronized (m_lock) {
+            IntEnumerator selectedElms = m_selectedNodes.searchRange(Integer.MIN_VALUE,
+                    Integer.MAX_VALUE, false);
 
-			if (selectedElms.numRemaining() == 0) {
-				return;
-			}
+            // Only check for selected edges if we don't have selected nodes. 
+            if (selectedElms.numRemaining() == 0 && edgeSelectionEnabled()) {
+                selectedElms = getSelectedEdgeNodes();
+				if ( selectedElms.numRemaining() == 0 )
+					return;
+            }
 
-			float xMin = Float.POSITIVE_INFINITY;
-			float yMin = Float.POSITIVE_INFINITY;
-			float xMax = Float.NEGATIVE_INFINITY;
-			float yMax = Float.NEGATIVE_INFINITY;
-		
-			int leftMost = 0;
-			int rightMost = 0;
+            float xMin = Float.POSITIVE_INFINITY;
+            float yMin = Float.POSITIVE_INFINITY;
+            float xMax = Float.NEGATIVE_INFINITY;
+            float yMax = Float.NEGATIVE_INFINITY;
+        
+            int leftMost = 0;
+            int rightMost = 0;
 
-			while (selectedElms.numRemaining() > 0) {
-				final int node = selectedElms.nextInt();
-				m_spacial.exists(node, m_extentsBuff, 0);
+            while (selectedElms.numRemaining() > 0) {
+                final int node = selectedElms.nextInt();
+                m_spacial.exists(node, m_extentsBuff, 0);
 
-				if ( m_extentsBuff[0] < xMin ) {
-					xMin = m_extentsBuff[0];
-					leftMost = node;
-				}
+                if ( m_extentsBuff[0] < xMin ) {
+                    xMin = m_extentsBuff[0];
+                    leftMost = node;
+                }
 
-				if ( m_extentsBuff[2] > xMax ) {
-					xMax = m_extentsBuff[2];
-					rightMost = node;
-				}
+                if ( m_extentsBuff[2] > xMax ) {
+                    xMax = m_extentsBuff[2];
+                    rightMost = node;
+                }
 
-				yMin = Math.min(yMin, m_extentsBuff[1]);
-				yMax = Math.max(yMax, m_extentsBuff[3]);
-			}
+                yMin = Math.min(yMin, m_extentsBuff[1]);
+                yMax = Math.max(yMax, m_extentsBuff[3]);
+            }
 
-			xMin = xMin - ( getLabelWidth(leftMost)/2 );
-			xMax = xMax + ( getLabelWidth(rightMost)/2 );
+            xMin = xMin - ( getLabelWidth(leftMost)/2 );
+            xMax = xMax + ( getLabelWidth(rightMost)/2 );
 
-			m_networkCanvas.m_xCenter = (((double) xMin) + ((double) xMax)) / 2.0d;
-			m_networkCanvas.m_yCenter = (((double) yMin) + ((double) yMax)) / 2.0d;
-			final double zoom = Math.min(((double) m_networkCanvas.getWidth()) / (((double) xMax)
-			                             - ((double) xMin)),
-			                             ((double) m_networkCanvas.getHeight()) / (((double) yMax)
-			                             - ((double) yMin)));
-			m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
-			m_viewportChanged = true;
-		}
-	}
+            m_networkCanvas.m_xCenter = (((double) xMin) + ((double) xMax)) / 2.0d;
+            m_networkCanvas.m_yCenter = (((double) yMin) + ((double) yMax)) / 2.0d;
+            final double zoom = Math.min(((double) m_networkCanvas.getWidth()) / (((double) xMax)
+                                         - ((double) xMin)),
+                                         ((double) m_networkCanvas.getHeight()) / (((double) yMax)
+                                         - ((double) yMin)));
+            m_networkCanvas.m_scaleFactor = checkZoom(zoom,m_networkCanvas.m_scaleFactor);
+            m_viewportChanged = true;
+        }
+    }
+    
+    /**
+     * @return An IntEnumerator listing the nodes that are endpoints of the 
+	 * currently selected edges.
+     */
+    private IntEnumerator getSelectedEdgeNodes() {
+        synchronized (m_lock) {
+            final IntEnumerator selectedEdges = m_selectedEdges.searchRange(Integer.MIN_VALUE,
+                        Integer.MAX_VALUE, false);
+                
+            final IntHash nodeIds = new IntHash();
+
+            while (selectedEdges.numRemaining() > 0) {
+                 final int edge = ~selectedEdges.nextInt();
+                 Edge currEdge = getEdgeView(edge).getEdge();
+
+                 Node source = currEdge.getSource();
+                 int sourceId = ~source.getRootGraphIndex();
+                 nodeIds.put(sourceId);
+
+                 Node target = currEdge.getTarget();
+                 int targetId = ~target.getRootGraphIndex();
+                 nodeIds.put(targetId);
+            }
+    
+			return nodeIds.elements();
+        }
+    }
+
 
 	private int getLabelWidth(int node) {
 		DNodeView x = ((DNodeView)getNodeView(~node));
