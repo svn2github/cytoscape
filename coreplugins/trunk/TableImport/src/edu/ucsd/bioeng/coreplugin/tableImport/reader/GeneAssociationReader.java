@@ -193,11 +193,13 @@ public class GeneAssociationReader implements TextTableReader {
 		this.nodeAttributes = Cytoscape.getNodeAttributes();
 
 		final Ontology testOntology = Cytoscape.getOntologyServer().getOntologies().get(ontologyName);
-
 		/*
 		 * Ontology type should be GO.
 		 */
-		if (testOntology.getClass() == GeneOntology.class) {
+		if(testOntology == null) {
+			throw new IOException("Could not find ontology data for "  + ontologyName + " in memory.");
+		}
+		if(testOntology.getClass() == GeneOntology.class) {
 			this.geneOntology = (GeneOntology) testOntology;
 		} else {
 			throw new IOException("Given ontology is not GO.");

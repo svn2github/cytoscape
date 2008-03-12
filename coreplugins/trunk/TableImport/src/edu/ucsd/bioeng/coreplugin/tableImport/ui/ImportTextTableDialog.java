@@ -1884,9 +1884,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				/*
 				 * If selected ontology is not loaded, load it first.
 				 */
-				if (Cytoscape.getOntologyServer().getOntologyNames().contains(selectedOntologyName) == false) {
+				if (Cytoscape.getOntologyServer().getOntologyNames().contains(selectedOntologyName) == false)
 					loadOntology(ontologySourceLocation, selectedOntologyName);
-				}
 
 				/*
 				 * Now, load & map annotation.

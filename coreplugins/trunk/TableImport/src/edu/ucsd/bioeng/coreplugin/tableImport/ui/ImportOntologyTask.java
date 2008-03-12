@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,19 +32,17 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
-import cytoscape.Cytoscape;
 import static cytoscape.data.servers.OntologyServer.OntologyType.BASIC;
 import static cytoscape.data.servers.OntologyServer.OntologyType.GO;
 
+import java.io.IOException;
+import java.net.URL;
+
+import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
-import java.io.IOException;
-
-import java.net.URL;
 
 
 /**
