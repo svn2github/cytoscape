@@ -42,6 +42,7 @@ import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 
 import cytoscape.util.GraphSetUtils;
+import cytoscape.util.CyNetworkNaming;
 
 import cytoscape.view.CyNetworkView;
 
@@ -110,12 +111,14 @@ public class GraphMerge extends CytoscapePlugin {
 
 			if (!dialog.isCancelled()) {
 				if (dialog.getOperation() == MergeDialog.UNION) {
-					GraphSetUtils.createUnionGraph(dialog.getNetworkList(), true, "Union");
+					GraphSetUtils.createUnionGraph(dialog.getNetworkList(), true, 
+					                CyNetworkNaming.getSuggestedNetworkTitle("Union"));
 				} else if (dialog.getOperation() == MergeDialog.INTERSECTION) {
 					GraphSetUtils.createIntersectionGraph(dialog.getNetworkList(), true,
-					                                      "Intersection");
+								    CyNetworkNaming.getSuggestedNetworkTitle("Intersection"));
 				} else if (dialog.getOperation() == MergeDialog.DIFFERENCE) {
-					GraphSetUtils.createDifferenceGraph(dialog.getNetworkList(), true, "Difference");
+					GraphSetUtils.createDifferenceGraph(dialog.getNetworkList(), true, 
+					                CyNetworkNaming.getSuggestedNetworkTitle("Difference"));
 				}
 			}
 		}
