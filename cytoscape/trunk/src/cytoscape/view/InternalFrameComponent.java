@@ -188,6 +188,10 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	 */
 	public void print(Graphics g) {
 		backgroundCanvas.print(g);
+		
+		// This is a work-around, otherwise we lose backgroundCanvas color
+		networkCanvas.setBackground(backgroundCanvas.getBackground());
+		
 		networkCanvas.print(g);
 		foregroundCanvas.print(g);
 	}
@@ -196,6 +200,7 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	 * This method is used by BitmapExporter to export network as graphics (png, jpg, bmp)
 	 */
 	public void printNoImposter(Graphics g) {
+		// Note: This method will generate image correctly, but very low quality
 		backgroundCanvas.print(g);
 		networkCanvas.printNoImposter(g);
 		foregroundCanvas.print(g);
