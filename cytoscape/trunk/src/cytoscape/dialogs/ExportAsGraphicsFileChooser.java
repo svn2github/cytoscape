@@ -67,7 +67,12 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 					chooseFileButton.setEnabled(false);
 			}
 			else {
-				okButton.setEnabled(true);
+				if (selectedFile !=null) {
+					okButton.setEnabled(true);					
+				}
+				else {
+					okButton.setEnabled(false);
+				}
 				chooseFileButton.setEnabled(true);
 			}
 		}		
