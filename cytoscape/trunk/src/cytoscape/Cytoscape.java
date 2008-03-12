@@ -115,9 +115,8 @@ import javax.xml.bind.JAXBException;
  * Node/Edge is present.
  */
 public abstract class Cytoscape {
-	
 	// All of these events should be reviewed and cleaned up in 3.0 using enum.
-	
+
 	/**
 	 * This signals when new attributes have been loaded and a few other
 	 * large scale changes to attributes have been made.  There is no
@@ -199,7 +198,7 @@ public abstract class Cytoscape {
 	public static final String NETWORK_MODIFIED = "NETWORK_MODIFIED";
 
 	/**
-	 * 
+	 *
 	 */
 	public static final String NETWORK_TITLE_MODIFIED = "NETWORK_TITLE_MODIFIED";
 
@@ -319,7 +318,6 @@ public abstract class Cytoscape {
 	 */
 	public static final int SESSION_CLOSED = 3;
 	private static int sessionState = SESSION_NEW;
-	
 	@Deprecated
 	private static BioDataServer bioDataServer;
 
@@ -370,8 +368,8 @@ public abstract class Cytoscape {
 	// Test
 	protected static Object pcs2 = new Object();
 	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport(pcs2);
-	protected static Map networkViewMap;
-	protected static Map networkMap;
+	protected static Map<String, CyNetworkView> networkViewMap;
+	protected static Map<String, CyNetwork> networkMap;
 	protected static CytoscapeDesktop defaultDesktop;
 	protected static String currentNetworkID;
 	protected static String currentNetworkViewID;
@@ -795,7 +793,7 @@ public abstract class Cytoscape {
 	/**
 	 * Return a List of all available CyNetworks
 	 */
-	public static Set getNetworkSet() {
+	public static Set<CyNetwork> getNetworkSet() {
 		return new java.util.LinkedHashSet(((HashMap) getNetworkMap()).values());
 	}
 
@@ -849,8 +847,9 @@ public abstract class Cytoscape {
 	 */
 	public static List<CyNetworkView> getSelectedNetworkViews() {
 		CyNetworkView view = getCurrentNetworkView();
-		if ( !selectedNetworkViews.contains( view ) )
-			selectedNetworkViews.add( view );
+
+		if (!selectedNetworkViews.contains(view))
+			selectedNetworkViews.add(view);
 
 		return (List<CyNetworkView>) selectedNetworkViews.clone();
 	}
@@ -884,7 +883,8 @@ public abstract class Cytoscape {
 	 */
 	public static List<CyNetwork> getSelectedNetworks() {
 		CyNetwork curr = getCurrentNetwork();
-		if (!selectedNetworks.contains(curr)) 
+
+		if (!selectedNetworks.contains(curr))
 			selectedNetworks.add(curr);
 
 		return (List<CyNetwork>) selectedNetworks.clone();
@@ -902,7 +902,7 @@ public abstract class Cytoscape {
 		for (String id : ids) {
 			CyNetwork n = (CyNetwork) getNetworkMap().get(id);
 
-			if (n != null && n != nullNetwork) {
+			if ((n != null) && (n != nullNetwork)) {
 				selectedNetworks.add(n);
 			}
 		}
@@ -935,7 +935,7 @@ public abstract class Cytoscape {
 
 			// reset selected networks 
 			selectedNetworks.clear();
-			selectedNetworks.add( (CyNetwork)(getNetworkMap().get(id)) );
+			selectedNetworks.add((CyNetwork) (getNetworkMap().get(id)));
 		}
 	}
 
@@ -950,7 +950,7 @@ public abstract class Cytoscape {
 
 			// reset selected network views 
 			selectedNetworkViews.clear();
-			selectedNetworkViews.add( (CyNetworkView)(getNetworkViewMap().get(id)) );
+			selectedNetworkViews.add((CyNetworkView) (getNetworkViewMap().get(id)));
 
 			return true;
 		}
@@ -962,10 +962,9 @@ public abstract class Cytoscape {
 	 * This Map has keys that are Strings ( network_ids ) and values that are
 	 * networks.
 	 */
-	protected static Map getNetworkMap() {
-		if (networkMap == null) {
-			networkMap = new HashMap();
-		}
+	protected static Map<String, CyNetwork> getNetworkMap() {
+		if (networkMap == null)
+			networkMap = new HashMap<String, CyNetwork>();
 
 		return networkMap;
 	}
@@ -974,10 +973,9 @@ public abstract class Cytoscape {
 	 * This Map has keys that are Strings ( network_ids ) and values that are
 	 * networkviews.
 	 */
-	public static Map getNetworkViewMap() {
-		if (networkViewMap == null) {
-			networkViewMap = new HashMap();
-		}
+	public static Map<String, CyNetworkView> getNetworkViewMap() {
+		if (networkViewMap == null)
+			networkViewMap = new HashMap<String, CyNetworkView>();
 
 		return networkViewMap;
 	}
@@ -1011,14 +1009,14 @@ public abstract class Cytoscape {
 
 		getSelectedNetworks().remove(network);
 
-		String networkId = network.getIdentifier();
+		final String networkId = network.getIdentifier();
 
 		firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
 		network.unselectAllEdges();
 		network.unselectAllNodes();
 
-		Map nmap = getNetworkMap();
+		final Map<String, CyNetwork> nmap = getNetworkMap();
 		nmap.remove(networkId);
 
 		if (networkId.equals(currentNetworkID)) {
@@ -1026,8 +1024,8 @@ public abstract class Cytoscape {
 				currentNetworkID = null;
 			} else {
 				// randomly pick a network to become the current network
-				for (Iterator it = nmap.keySet().iterator(); it.hasNext();) {
-					currentNetworkID = (String) it.next();
+				for (String key : nmap.keySet()) {
+					currentNetworkID = key;
 
 					break;
 				}
@@ -1038,21 +1036,15 @@ public abstract class Cytoscape {
 			destroyNetworkView(network);
 
 		if (destroy_unique) {
-			ArrayList nodes = new ArrayList();
-			ArrayList edges = new ArrayList();
+			final List<Node> nodes = new ArrayList<Node>();
+			final List<Edge> edges = new ArrayList<Edge>();
 
-			Collection networks = networkMap.values();
+			final Collection<CyNetwork> networks = networkMap.values();
 
-			Iterator nodes_i = network.nodesIterator();
-			Iterator edges_i = network.edgesIterator();
-
-			while (nodes_i.hasNext()) {
-				Node node = (Node) nodes_i.next();
+			for (Node node : nodes) {
 				boolean add = true;
 
-				for (Iterator n_i = networks.iterator(); n_i.hasNext();) {
-					CyNetwork net = (CyNetwork) n_i.next();
-
+				for (CyNetwork net : networks) {
 					if (net.containsNode(node)) {
 						add = false;
 
@@ -1060,18 +1052,14 @@ public abstract class Cytoscape {
 					}
 				}
 
-				if (add) {
+				if (add)
 					nodes.add(node);
-				}
 			}
 
-			while (edges_i.hasNext()) {
-				Edge edge = (Edge) edges_i.next();
+			for (Edge edge : edges) {
 				boolean add = true;
 
-				for (Iterator n_i = networks.iterator(); n_i.hasNext();) {
-					CyNetwork net = (CyNetwork) n_i.next();
-
+				for (CyNetwork net : networks) {
 					if (net.containsEdge(edge)) {
 						add = false;
 
@@ -1079,13 +1067,19 @@ public abstract class Cytoscape {
 					}
 				}
 
-				if (add) {
+				if (add)
 					edges.add(edge);
-				}
 			}
 
-			getRootGraph().removeNodes(nodes);
-			getRootGraph().removeEdges(edges);
+			for (Node node : nodes) {
+				getRootGraph().removeNode(node);
+				node = null;
+			}
+
+			for (Edge edge : edges) {
+				getRootGraph().removeEdge(edge);
+				edge = null;
+			}
 		}
 
 		// theoretically this should not be set to null till after the events
@@ -1118,7 +1112,7 @@ public abstract class Cytoscape {
 			else {
 				// depending on which randomly chosen currentNetworkID we get, 
 				// we may or may not have a view for it.
-				CyNetworkView newCurr = (CyNetworkView) (getNetworkViewMap().get(currentNetworkID));
+				CyNetworkView newCurr = getNetworkViewMap().get(currentNetworkID);
 
 				if (newCurr != null)
 					currentNetworkViewID = newCurr.getIdentifier();
@@ -1826,39 +1820,44 @@ public abstract class Cytoscape {
 	 * Clear all networks and attributes and start a new session.
 	 */
 	public static void createNewSession() {
-		Set netSet = getNetworkSet();
-		Iterator it = netSet.iterator();
+		// Destroy all networks
+		Set<CyNetwork> netSet = getNetworkSet();
 
-		while (it.hasNext()) {
-			CyNetwork net = (CyNetwork) it.next();
-			destroyNetwork(net);
-		}
+		for (CyNetwork net : netSet)
+			destroyNetwork(net, true);
 
 		// Clear node attributes
-		CyAttributes nodeAttributes = getNodeAttributes();
-		String[] nodeAttrNames = nodeAttributes.getAttributeNames();
-
-		for (int i = 0; i < nodeAttrNames.length; i++) {
-			nodeAttributes.deleteAttribute(nodeAttrNames[i]);
-		}
-
+		final String[] nodeAttrNames = nodeAttributes.getAttributeNames();
+		for (String name: nodeAttrNames)
+			nodeAttributes.deleteAttribute(name);
+		
 		// Clear edge attributes
-		CyAttributes edgeAttributes = getEdgeAttributes();
-		String[] edgeAttrNames = edgeAttributes.getAttributeNames();
-
-		for (int i = 0; i < edgeAttrNames.length; i++) {
-			edgeAttributes.deleteAttribute(edgeAttrNames[i]);
-		}
-
+		final String[] edgeAttrNames = edgeAttributes.getAttributeNames();
+		for (String name: edgeAttrNames)
+			edgeAttributes.deleteAttribute(name);
+		
 		// Clear network attributes
-		CyAttributes networkAttributes = getNetworkAttributes();
-		String[] networkAttrNames = networkAttributes.getAttributeNames();
-
-		for (int i = 0; i < networkAttrNames.length; i++) {
-			networkAttributes.deleteAttribute(networkAttrNames[i]);
-		}
-
+		final String[] networkAttrNames = networkAttributes.getAttributeNames();
+		for(String name: networkAttrNames)
+			networkAttributes.deleteAttribute(name);
+		
+		// Reset Ontology
+		
+		
 		setCurrentSessionFileName(null);
+		firePropertyChange(ATTRIBUTES_CHANGED, null, null);
+		cytoscapeRootGraph = null;
+		System.gc();
+		cytoscapeRootGraph = new CytoscapeFingRootGraph();
+		System.out.println("Cytoscape Session Initialized.");
+		
+		// Test code
+//		Set<CyNetwork> newSet = getNetworkSet();
+//		for(CyNetwork net: newSet) {
+//			System.out.println("#######Net = " + net.getTitle());
+//		}
+//		System.out.println("#######Nodes = " + getRootGraph().getNodeCount());
+//		System.out.println("#######Edges = " + getRootGraph().getEdgeCount());
 	}
 
 	/**
