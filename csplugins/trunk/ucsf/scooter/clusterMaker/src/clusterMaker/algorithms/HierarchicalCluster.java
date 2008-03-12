@@ -115,10 +115,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		// The attribute to use to get the weights
 		attributeArray = getAllAttributes();
 
-		clusterProperties.add(new Tunable("attribute",
-		                                  "Attribute to use to get the data values",
-		                                  Tunable.LIST, new Integer(0),
-		                                  (Object)attributeArray, (Object)null, 0));
+		clusterProperties.add(new Tunable("attributeList",
+		                                  "Attributes to use to get the data values",
+		                                  Tunable.LIST, new ArrayList<String>(),
+		                                  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
 
 		// Whether or not to transpose the matrix
 		clusterProperties.add(new Tunable("transposeMatrix",
@@ -150,195 +150,15 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 			transposeMatrix = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("attribute");
-		if ((t != null) && (t.valueChanged() || force))
-			dataAttribute = attributeArray[((Integer) t.getValue()).intValue()];
+		if ((t != null) && (t.valueChanged() || force)) {
+			// dataAttribute = attributeArray[((Integer) t.getValue()).intValue()];
+		}
 	}
 
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
 		// Sanity check all of our settings
 		// OK, go for it!
-		String summary = cluster(dataAttribute, distanceMetric, transposeMatrix);
-	}
-
-	public String cluster(String weightAttribute, 
-	                      DistanceMetric metric, boolean transpose) {
-
-		String keyword = "GENE";
-		if (transpose) keyword = "ARRY";
-
-		// Create the matrix
-		Matrix matrix = new Matrix(weightAttribute, transpose);
-
-		// Create a weight vector of all ones (we don't use individual weighting, yet)
-		matrix.setUniformWeights();
-
-		// Cluster
-		TreeNode[] nodeList = treeCluster(matrix, metric);
-
-		if (metric == DistanceMetric.EUCLIDEAN || metric == DistanceMetric.CITYBLOCK) {
-			// Normalize distances to between 0 and 1
-			double scale = 0.0;
-			for (int node = 0; node < nodeList.length; node++) {
-				if (nodeList[node].getDistance() > scale) scale = nodeList[node].getDistance();
-			}
-			if (scale != 0.0) {
-				for (int node = 0; node < nodeList.length; node++) {
-					double dist = nodeList[node].getDistance();
-					nodeList[node].setDistance(dist/scale);
-				}
-			}
-		}
-
-		// Join the nodes
-		double[] nodeOrder = new double[nodeList.length];
-		int[] nodeCounts = new int[nodeList.length];
-		String[] nodeID = new String[nodeList.length];
-
-		for (int node = 0; node < nodeList.length; node++) {
-			int min1 = nodeList[node].getLeft();
-			int min2 = nodeList[node].getRight();
-
-			double order1;
-			double order2;
-			int counts1;
-			int counts2;
-			String ID1;
-			String ID2;
-			nodeID[node] = "NODE"+(node+1)+"X";
-			if (min1 < 0) {
-				int index1 = -min1-1;
-				order1 = nodeOrder[index1];
-				counts1 = nodeCounts[index1];
-				ID1 = nodeID[index1];
-				nodeList[node].setDistance(Math.max(nodeList[node].getDistance(), nodeList[index1].getDistance()));
-			} else {
-				order1 = min1;
-				counts1 = 1;
-				ID1 = keyword+min1+"X"; // Shouldn't this be the name of the gene/condition?
-			}
-
-			if (min2 < 0) {
-				int index2 = -min2-1;
-				order2 = nodeOrder[index2];
-				counts2 = nodeCounts[index2];
-				ID2 = nodeID[index2];
-				nodeList[node].setDistance(Math.max(nodeList[node].getDistance(), nodeList[index2].getDistance()));
-			} else {
-				order2 = min2;
-				counts2 = 1;
-				ID2 = keyword+min2+"X"; // Shouldn't this be the name of the gene/condition?
-			}
-
-			nodeCounts[node] = counts1 + counts2;
-			nodeOrder[node] = (counts1*order1 + counts2*order2) / (counts1 + counts2);
-		}
-
-		// Now sort based on tree structure
-
-		// Update the network attribute "HierarchicalCluster" and make it hidden
-		return "Complete";
-	}
-
-	private TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric) { 
-
-		double[][] distanceMatrix = distanceMatrix(matrix, metric);
-		TreeNode[] result = null;
-
-		switch (clusterMethod) {
-			case SINGLE_LINKAGE:
-				System.out.println("Calculating single linkage hierarchical cluster");
-				result = pslCluster(matrix, distanceMatrix, metric);
-				break;
-
-			case MAXIMUM_LINKAGE:
-				System.out.println("Calculating maximum linkage hierarchical cluster");
-				result = pmlcluster(matrix.nRows(), distanceMatrix);
-				break;
-
-			case AVERAGE_LINKAGE:
-				System.out.println("Calculating average linkage hierarchical cluster");
-				result = palcluster(matrix.nRows(), distanceMatrix);
-				break;
-
-			case CENTROID_LINKAGE:
-				System.out.println("Calculating centroid linkage hierarchical cluster");
-				result = pclcluster(matrix, distanceMatrix, metric);
-				break;
-		}
-		return result;
-	}
-
-	private TreeNode[] pslCluster(Matrix matrix, double[][] distanceMatrix, DistanceMetric metric) {
-		int nRows = matrix.nRows();
-		int nNodes = nRows-1;
-
-		System.out.println("pslCluster: nRows = "+nRows+", nNodes = "+nNodes);
-		if (distanceMatrix != null)
-			System.out.println("pslCluster: distranceMatrix is not null");
-		else
-			System.out.println("pslCluster: distranceMatrix is null!");
-
-		int[] vector = new int[nNodes];
-		TreeNode[] nodeList = new TreeNode[nNodes]; 
-		// Initialize
-		for (int i = 0; i < nNodes; i++) {
-			vector[i] = i;
-			nodeList[i] = new TreeNode(Double.MAX_VALUE);
-		}
-
-		int k = 0;
-		for (int row = 0; row < nNodes; row++) {
-			double[] temp = new double[nNodes];
-			if (distanceMatrix != null) {
-				for (int j = 0; j < row; j++) temp[j] = distanceMatrix[row][j];
-			} else {
-				for (int j = 0; j < row; j++)
-					temp[j] = metric.getMetric(matrix, matrix, matrix.getWeights(), row, j);
-			}
-			for (int j = 0; j < row; j++) {
-				k = vector[j];
-				double dist = nodeList[j].getDistance();
-				if (dist >= temp[j]) {
-					if (dist < temp[k]) temp[k] = dist;
-					nodeList[j].setDistance(temp[j]);
-					vector[j] = row;
-				} else if (temp[j] < temp[k]) temp[k] = temp[j];
-				System.out.println("pslCluster: nRows = "+nRows+", nNodes = "+nNodes+", j = "+j+", row="+row+", vector["+j+"] = "+vector[j]);
-			}
-			for (int j = 0; j < row; j++) {
-				double dist = nodeList[j].getDistance();
-				if (dist >= nodeList[vector[j]].getDistance()) vector[j] = row;	
-			}
-		}
-		for (int row = 0; row < nNodes; row++)
-			nodeList[row].setLeft(row);
-
-		Arrays.sort(nodeList, new NodeComparator());
-
-		int[] index = new int[nRows];
-		for (int i = 0; i < nRows; i++) index[i] = i;
-		for (int i = 0; i < nNodes; i++) {
-			int j = nodeList[i].getLeft();
-			k = vector[j];
-			nodeList[i].setLeft(index[j]);
-			nodeList[i].setRight(index[i]);
-			index[k] = -i-1;
-		}
-
-		return nodeList;
-	}
-
-	private TreeNode[] pclcluster(Matrix matrix, double[][] distanceMatrix, DistanceMetric metric) {
-		return null;
-	}
-
-	private TreeNode[] pmlcluster(int rows, double[][] distanceMatrix) {
-		return null;
-	}
-
-	private TreeNode[] palcluster(int rows, double[][] distanceMatrix) {
-		return null;
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
@@ -361,32 +181,6 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		return attributeList.toArray(attributeArray);
 	}
 		
-
-	class TreeNode {
-		int left;
-		int right;
-		double distance;
-
-		public TreeNode(int left, int right, double distance) {
-			this.left = left;
-			this.right = right;
-			this.distance = distance;
-		};
-
-		public TreeNode(double distance) {
-			this.distance = distance;
-		}
-
-		double getDistance() { return this.distance; }
-		void setDistance(double dist) { this.distance = dist; }
-
-		int getLeft() { return this.left; }
-		void setLeft(int left) { this.left = left; }
-
-		int getRight() { return this.right; }
-		void setRight(int right) { this.right = right; }
-	}
-
 	enum ClusterMethod {
 		SINGLE_LINKAGE("pairwise single-linkage"),
 		MAXIMUM_LINKAGE("pairwise maximum-linkage"),
@@ -402,16 +196,6 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		public String toString() {
 			return this.keyword;
 		}
-	}
-
-	class NodeComparator implements Comparator<TreeNode> {
-
-		public int compare(TreeNode o1, TreeNode o2) {
-			if (o1.getDistance() < o2.getDistance()) return -1;
-			if (o1.getDistance() > o2.getDistance()) return 1;
-			return 0;
-		}
-		boolean equals() { return false; };
 	}
 
 }

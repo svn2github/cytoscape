@@ -39,7 +39,7 @@
    <copy todir="build/clusterMaker" file="resources/plugin.props"/>
    <jar jarfile="${jar}/clusterMaker.jar">
       <manifest>
-          <attribute name="Cytoscape-Plugin" value="clusterMaker.StructureViz" />
+          <attribute name="Cytoscape-Plugin" value="clusterMaker.ClusterMaker" />
       </manifest>
       <fileset dir="${build}"/>
    </jar>
