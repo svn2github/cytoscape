@@ -199,28 +199,6 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	}
 
 	/**
-	 * Sets the partition flag
-	 *
-	 * @param flag boolean value that turns initial randomization on or off
-	 */
-	public void setPartition(boolean flag) {
-		if (flag)
-			singlePartition = false;
-		else
-			singlePartition = true;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 */
-	public void setPartition(String value) {
-		Boolean val = new Boolean(value);
-		setPartition(val.booleanValue());
-	}
-
-	/**
 	 * Sets the randomize flag
 	 *
 	 * @param flag boolean value that turns initial randomization on or off
@@ -244,8 +222,13 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	 * the values as appropriates.
 	 */
 	protected void initializeProperties() {
+		
+		layoutProperties.add(new Tunable("standard", "Standard settings", Tunable.GROUP,
+		                                 new Integer(3)));
+		/*
 		layoutProperties.add(new Tunable("debug", "Enable debugging", Tunable.BOOLEAN,
 		                                 new Boolean(false), Tunable.NOINPUT));
+		*/
 		layoutProperties.add(new Tunable("partition", "Partition graph before layout",
 		                                 Tunable.BOOLEAN, new Boolean(true)));
 		layoutProperties.add(new Tunable("randomize", "Randomize graph before layout",

@@ -67,8 +67,8 @@ public class EdgeWeighter {
 	final static double EPSILON = .001;
 
 	// Default normalization bounds
-	final static double LOWER_BOUND = .2f;
-	final static double UPPER_BOUND = .8f;
+	final static double LOWER_BOUND = .1f;
+	final static double UPPER_BOUND = .9f;
 
 	double lowerBounds = LOWER_BOUND;
 	double upperBounds = UPPER_BOUND;

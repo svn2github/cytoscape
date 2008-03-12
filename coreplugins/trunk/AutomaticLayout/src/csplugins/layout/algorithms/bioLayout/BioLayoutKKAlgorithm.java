@@ -325,6 +325,9 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		/**
 		 * Tuning values
 		 */
+
+		layoutProperties.add(new Tunable("algorithm_settings", "Algorithm settings",
+		                                 Tunable.GROUP, new Integer(7)));
 		if (supportWeights)
 			layoutProperties.add(new Tunable("iterations_pernode",
 			                                 "Number of iteratations for each node",
@@ -339,7 +342,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		layoutProperties.add(new Tunable("distance_strength", "Spring strength", Tunable.DOUBLE,
 		                                 new Double(15.0)));
 		layoutProperties.add(new Tunable("rest_length", "Spring rest length", Tunable.DOUBLE,
-		                                 new Double(15.0)));
+		                                 new Double(45.0)));
 		layoutProperties.add(new Tunable("disconnected_strength",
 		                                 "Strength of a 'disconnected' spring", Tunable.DOUBLE,
 		                                 new Double(0.05)));

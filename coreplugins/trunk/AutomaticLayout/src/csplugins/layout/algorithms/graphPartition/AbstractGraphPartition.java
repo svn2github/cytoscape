@@ -68,14 +68,29 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	}
 
 	/**
- 	 * Set the singlePartition flag, which disables partitioning.  This
+	 * Sets the singlePartition flag, which disables partitioning. This
  	 * can be used by users who do not want to partition their graph for
  	 * some reason.
- 	 *
- 	 * @param singlePartition if true, only a single partition will be created
- 	 */
-	public void setSinglePartition(boolean singlePartition) {
-		this.singlePartition = singlePartition;
+	 *
+	 * @param flag if false, no paritioning will be done
+	 */
+	public void setPartition(boolean flag) {
+		if (flag)
+			this.singlePartition = false;
+		else
+			this.singlePartition = true;
+	}
+
+	/**
+	 * Sets the singlePartition flag, which disables partitioning. This
+ 	 * can be used by users who do not want to partition their graph for
+ 	 * some reason.
+	 *
+	 * @param value if "false", no paritioning will be done
+	 */
+	public void setPartition(String value) {
+		Boolean val = new Boolean(value);
+		setPartition(val.booleanValue());
 	}
 
 	/**

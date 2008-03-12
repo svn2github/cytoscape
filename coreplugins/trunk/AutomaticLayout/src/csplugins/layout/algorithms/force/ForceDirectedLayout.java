@@ -254,6 +254,20 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	
 	protected void initialize_properties() {
 
+		layoutProperties.add(new Tunable("standard", "Standard settings",
+		                                 Tunable.GROUP, new Integer(2)));
+
+		layoutProperties.add(new Tunable("partition", "Partition graph before layout",
+		                                 Tunable.BOOLEAN, new Boolean(true)));
+
+		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+		                                 Tunable.BOOLEAN, new Boolean(false)));
+
+		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
+
+		layoutProperties.add(new Tunable("force_alg_settings", "Algorithm settings",
+		                                 Tunable.GROUP, new Integer(5)));
+
 		layoutProperties.add(new Tunable("defaultSpringCoefficient", "Default Spring Coefficient",
 		                                 Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
 
@@ -269,11 +283,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
 		                                 Tunable.LIST, new Integer(0), 
 		                                 (Object) integratorArray, (Object) null, 0));
-
-		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
-		                                 Tunable.BOOLEAN, new Boolean(false)));
-
-		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
 
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
@@ -291,7 +300,15 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	public void updateSettings(boolean force) {
 		layoutProperties.updateValues();
 
-		Tunable t = layoutProperties.get("defaultSpringCoefficient");
+		Tunable t = layoutProperties.get("selected_only");
+		if ((t != null) && (t.valueChanged() || force))
+			selectedOnly = ((Boolean) t.getValue()).booleanValue();
+
+		t = layoutProperties.get("partition");
+		if ((t != null) && (t.valueChanged() || force))
+			setPartition(t.getValue().toString());
+
+		t = layoutProperties.get("defaultSpringCoefficient");
 		if ((t != null) && (t.valueChanged() || force))
 			defaultSpringCoefficient = ((Double) t.getValue()).doubleValue();
 
@@ -306,10 +323,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		t = layoutProperties.get("numIterations");
 		if ((t != null) && (t.valueChanged() || force))
 			numIterations = ((Integer) t.getValue()).intValue();
-
-		t = layoutProperties.get("selected_only");
-		if ((t != null) && (t.valueChanged() || force))
-			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 
 		t = layoutProperties.get("integrator");
 		if ((t != null) && (t.valueChanged() || force)) {

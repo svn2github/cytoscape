@@ -389,6 +389,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		/**
 		 * Tuning values
 		 */
+		layoutProperties.add(new Tunable("algorithm_settings",
+		                                 "Algorithm settings",
+		                                 Tunable.GROUP, new Integer(9)));
 		layoutProperties.add(new Tunable("repulsion_multiplier",
 		                                 "Multiplier to calculate the repulsion force",
 		                                 Tunable.DOUBLE, new Double(0.04)));
@@ -412,7 +415,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		                                 Tunable.DOUBLE, new Double(20.0)));
 		layoutProperties.add(new Tunable("max_distance_factor",
 		                                 "Percent of graph used for node repulsion calculations",
-		                                 Tunable.DOUBLE, new Double(10.0)));
+		                                 Tunable.DOUBLE, new Double(20.0)));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties();
