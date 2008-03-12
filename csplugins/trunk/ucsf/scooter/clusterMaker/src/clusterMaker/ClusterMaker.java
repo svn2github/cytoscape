@@ -49,7 +49,7 @@ import cytoscape.plugin.PluginInfo;
 // clusterMaker imports
 import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.algorithms.ClusterAlgorithm;
-import clusterMaker.algorithms.HierarchicalCluster;
+// import clusterMaker.algorithms.hierarchicalClustering.HierarchicalClustering;
 // import clusterMaker.algorithms.MCLCluster;
 // import clusterMaker.algorithms.KMeansCluster;
 // import clusterMaker.algorithms.SOMCluster;
@@ -67,8 +67,9 @@ public class ClusterMaker extends CytoscapePlugin {
   public ClusterMaker() {
 
 		JMenu menu = new JMenu("Cluster");
-		addClusterAlgorithm(menu, new HierarchicalCluster());
+		// addClusterAlgorithm(menu, new HierarchicalCluster());
 		// addClusterAlgorithm(new MCLCLuster());
+		// addClusterAlgorithm(new FORCECLuster());
 		// addClusterAlgorithm(new KMeansCluster());
 		// addClusterAlgorithm(new SOMCluster());
 		

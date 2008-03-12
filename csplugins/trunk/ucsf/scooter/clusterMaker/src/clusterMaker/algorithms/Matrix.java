@@ -52,7 +52,8 @@ public class Matrix {
 	int nRows;
 	int nColumns;
 	Double matrix[][];
-	double weights[];
+	double colWeights[];
+	double rowWeights[];
 	String rowLabels[];
 	String columnLabels[];
 	boolean transpose;
@@ -108,12 +109,23 @@ public class Matrix {
 	}
 
 	public void setUniformWeights() {
-		this.weights = new double[nColumns];
-		Arrays.fill(this.weights,1.0);
+		Arrays.fill(this.colWeights,1.0);
+		Arrays.fill(this.rowWeights,1.0);
+	}
+
+	public double[] getRowWeights() {
+		return this.rowWeights;
+	}
+
+	public double[] getColWeights() {
+		return this.colWeights;
 	}
 
 	public double[] getWeights() {
-		return this.weights;
+		if (transpose)
+			return rowWeights;
+		else
+			return colWeights;
 	}
 
 	public double[] getRank(int row) {

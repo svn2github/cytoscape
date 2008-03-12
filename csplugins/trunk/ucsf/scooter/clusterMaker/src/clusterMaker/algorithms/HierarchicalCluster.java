@@ -273,6 +273,12 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		int nRows = matrix.nRows();
 		int nNodes = nRows-1;
 
+		System.out.println("pslCluster: nRows = "+nRows+", nNodes = "+nNodes);
+		if (distanceMatrix != null)
+			System.out.println("pslCluster: distranceMatrix is not null");
+		else
+			System.out.println("pslCluster: distranceMatrix is null!");
+
 		int[] vector = new int[nNodes];
 		TreeNode[] nodeList = new TreeNode[nNodes]; 
 		// Initialize
@@ -281,12 +287,11 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 			nodeList[i] = new TreeNode(Double.MAX_VALUE);
 		}
 
-		int k;
-		for (int row = 0; row < nRows; row++) {
+		int k = 0;
+		for (int row = 0; row < nNodes; row++) {
 			double[] temp = new double[nNodes];
 			if (distanceMatrix != null) {
-					for (int j = 0; j < row; j++) 
-					temp[j] = distanceMatrix[row][j];
+				for (int j = 0; j < row; j++) temp[j] = distanceMatrix[row][j];
 			} else {
 				for (int j = 0; j < row; j++)
 					temp[j] = metric.getMetric(matrix, matrix, matrix.getWeights(), row, j);
@@ -299,10 +304,11 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 					nodeList[j].setDistance(temp[j]);
 					vector[j] = row;
 				} else if (temp[j] < temp[k]) temp[k] = temp[j];
-				for (j = 0; j < row; j++) {
-					dist = nodeList[j].getDistance();
-					if (dist > nodeList[vector[j]].getDistance()) vector[j] = row;	
-				}
+				System.out.println("pslCluster: nRows = "+nRows+", nNodes = "+nNodes+", j = "+j+", row="+row+", vector["+j+"] = "+vector[j]);
+			}
+			for (int j = 0; j < row; j++) {
+				double dist = nodeList[j].getDistance();
+				if (dist >= nodeList[vector[j]].getDistance()) vector[j] = row;	
 			}
 		}
 		for (int row = 0; row < nNodes; row++)
