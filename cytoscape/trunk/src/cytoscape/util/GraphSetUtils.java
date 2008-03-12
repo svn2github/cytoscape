@@ -42,6 +42,7 @@ import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 
 import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
 
 import giny.model.Edge;
 import giny.model.Node;
@@ -75,8 +76,7 @@ public class GraphSetUtils {
 	 * @param networkList
 	 *            A list containing all of the networks.
 	 * @param copyView
-	 *            Flag indicates whether view information should be copied to
-	 *            the new view
+	 *            This argument is ignored.
 	 * @param title
 	 *            The title of the new network
 	 * @return A cyNetwork which is the union of the input graphs
@@ -93,8 +93,7 @@ public class GraphSetUtils {
 	 * @param networkList
 	 *            A list containing all of the networks.
 	 * @param copyView
-	 *            Flag indicates whether view information should be copied to
-	 *            the new view
+	 *            This argument is ignored.
 	 * @param title
 	 *            The title of the new network
 	 * @return A cyNetwork which is the intersection of the input graphs
@@ -115,8 +114,7 @@ public class GraphSetUtils {
 	 * @param networkList
 	 *            A list containing all of the networks.
 	 * @param copyView
-	 *            Flag indicates whether view information should be copied to
-	 *            the new view
+	 *            This argument is ignored.
 	 * @param title
 	 *            The title of the new network
 	 * @return A cyNetwork which is the difference of the input graphs
@@ -174,114 +172,21 @@ public class GraphSetUtils {
 				throw new IllegalArgumentException("Specified invalid graph set operation");
 		}
 
-		/*
-		 * Create an empty network
-		 */
+		// create the new network
 		CyNetwork newNetwork = Cytoscape.createNetwork(new_nodes, new_edges, title);
 
-		/*
-		 * Check to see if we need to set visual information
-		 */
-		if (copyView && Cytoscape.viewExists(newNetwork.getIdentifier())) {
-			/*
-			 * A list of node views that we will copy over to the new network,
-			 */
-			List nodeViews = new Vector();
+		// get the visual style for the first network in the list and try to apply
+		// it to the new network.
+		CyNetwork firstNetwork = (CyNetwork)networkList.get(0);
+		CyNetworkView firstView =  Cytoscape.getNetworkView( firstNetwork.getIdentifier() );
+		if ( firstView != null && firstView != Cytoscape.getNullNetworkView() ) {
+			VisualStyle firstVS = firstView.getVisualStyle();
 
-			for (int idx = 0; idx < new_nodes.length; idx++) {
-				int current_node = new_nodes[idx];
-
-				for (Iterator networkIt = networkList.iterator(); networkIt.hasNext();) {
-					CyNetwork currentNetwork = (CyNetwork) networkIt.next();
-
-					if (Cytoscape.viewExists(currentNetwork.getIdentifier())) {
-						CyNetworkView view = Cytoscape.getNetworkView(currentNetwork.getIdentifier());
-						nodeViews.add(view.getNodeView(current_node));
-
-						break;
-					}
-				}
-			}
-
-			/*
-			 * A list of edge views that we will copy over to the new network
-			 */
-			List edgeViews = new Vector();
-
-			for (int idx = 0; idx < new_edges.length; idx++) {
-				int current_node = new_edges[idx];
-
-				for (Iterator networkIt = networkList.iterator(); networkIt.hasNext();) {
-					CyNetwork currentNetwork = (CyNetwork) networkIt.next();
-
-					if (Cytoscape.viewExists(currentNetwork.getIdentifier())) {
-						CyNetworkView view = Cytoscape.getNetworkView(currentNetwork.getIdentifier());
-
-						edgeViews.add(view.getEdgeView(current_node));
-
-						break;
-					}
-				}
-			}
-
-			CyNetworkView newNetworkView = Cytoscape.getNetworkView(newNetwork.getIdentifier());
-
-			/*
-			 * Apply the nodeview information from the merged graph views
-			 */
-			for (Iterator nodeViewIt = nodeViews.iterator(); nodeViewIt.hasNext();) {
-				NodeView oldView = (NodeView) nodeViewIt.next();
-
-				if (oldView == null) {
-					System.err.println("Unexpected null nodeview");
-
-					continue;
-				}
-
-				Node node = oldView.getNode();
-				NodeView newView = newNetworkView.getNodeView(node);
-				newView.setBorder(oldView.getBorder());
-				newView.setBorderPaint(oldView.getBorderPaint());
-				newView.setBorderWidth(oldView.getBorderWidth());
-				newView.setHeight(oldView.getHeight());
-				newView.setSelectedPaint(oldView.getSelectedPaint());
-				newView.setShape(oldView.getShape());
-				newView.setTransparency(oldView.getTransparency());
-				newView.setUnselectedPaint(oldView.getUnselectedPaint());
-				newView.setWidth(oldView.getWidth());
-				newView.setXPosition(oldView.getXPosition());
-				newView.setYPosition(oldView.getYPosition());
-
-				Label oldLabel = oldView.getLabel();
-				Label newLabel = newView.getLabel();
-				newLabel.setFont(oldLabel.getFont());
-				newLabel.setGreekThreshold(oldLabel.getGreekThreshold());
-				newLabel.setText(oldLabel.getText());
-				newLabel.setTextPaint(oldLabel.getTextPaint());
-			}
-
-			/*
-			 * Apply the edgeview information from the merged graph views
-			 */
-			for (Iterator edgeViewIt = edgeViews.iterator(); edgeViewIt.hasNext();) {
-				EdgeView oldView = (EdgeView) edgeViewIt.next();
-
-				if (oldView == null) {
-					System.err.println("Unexpected null edgeview");
-
-					continue;
-				}
-
-				Edge edge = oldView.getEdge();
-				EdgeView newView = newNetworkView.getEdgeView(edge);
-				newView.setLineType(oldView.getLineType());
-				newView.setSelectedPaint(oldView.getSelectedPaint());
-				newView.setSourceEdgeEndPaint(oldView.getSourceEdgeEndPaint());
-				newView.setSourceEdgeEndSelectedPaint(oldView.getSourceEdgeEndSelectedPaint());
-				newView.setStroke(oldView.getStroke());
-				newView.setStrokeWidth(oldView.getStrokeWidth());
-				newView.setTargetEdgeEndPaint(oldView.getTargetEdgeEndPaint());
-				newView.setTargetEdgeEndSelectedPaint(oldView.getTargetEdgeEndSelectedPaint());
+			CyNetworkView newView = Cytoscape.getNetworkView( newNetwork.getIdentifier() );
+			if ( newView != null && newView != Cytoscape.getNullNetworkView() && firstVS != null ) {
+				newView.setVisualStyle(firstVS.getName()); 
+				Cytoscape.getVisualMappingManager().setVisualStyle(firstVS);
+				newView.redrawGraph(true,true);
 			}
 		}
 
