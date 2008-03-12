@@ -13,8 +13,6 @@ import java.util.Properties;
  */
 public class PSExporter implements Exporter
 {
-	//private boolean exportTextAsFont = true;
-
 	public PSExporter()
 	{
 	}
@@ -22,9 +20,6 @@ public class PSExporter implements Exporter
 
 	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
 	{
-		//DingNetworkView theView = (DingNetworkView) view;
-		//theView.setPrintingTextAsShape(!exportTextAsFont);
-
 		InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
 		
 		Properties p = new Properties();
@@ -36,13 +31,10 @@ public class PSExporter implements Exporter
 	    
 	    g.setProperties(p); 
 	    g.startExport(); 
-	    ifc.print(g); 
+	   
+	    ifc.printEPS(g); 
 	    g.endExport();
 
 	}
-	
-	//public void setExportTextAsFont(boolean pExportTextAsFont) {
-	//	exportTextAsFont = pExportTextAsFont;
-	//}
 
 }
