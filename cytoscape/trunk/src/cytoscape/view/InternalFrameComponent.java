@@ -174,6 +174,14 @@ public class InternalFrameComponent extends JComponent implements Printable {
 			return NO_SUCH_PAGE;
 	}
 
+	/**
+	 * This method is used by freehep lib to export network as graphics in EPS format.
+	 * Because opacity is an issue for eps format, foregroundCanvas and backgroundCanvas
+	 * are not rendered.
+	 */
+	public void printEPS(Graphics g) {
+		networkCanvas.print(g);			
+	}
 
 	/**
 	 * This method is used by freehep lib to export network as graphics.
