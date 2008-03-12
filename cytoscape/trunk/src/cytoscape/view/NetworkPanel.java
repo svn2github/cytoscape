@@ -296,9 +296,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			                                           network_id);
 			Cytoscape.getNetwork(network_id).addSelectEventListener(this);
 
-			if (parent_id != null) {
-				NetworkTreeNode parent = getNetworkNode(parent_id);
-				parent.add(dmtn);
+			if (parent_id != null && getNetworkNode(parent_id) != null) {
+				getNetworkNode(parent_id).add(dmtn);
 			} else {
 				root.add(dmtn);
 			}

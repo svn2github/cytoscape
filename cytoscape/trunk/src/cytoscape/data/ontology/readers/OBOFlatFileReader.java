@@ -192,7 +192,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				Cytoscape.setOntologyRootID(rootID);
 			}
 		}
-
+		
 		ontologyDAG = Cytoscape.createNetwork(name, Cytoscape.getNetwork(rootID), false);
 	}
 

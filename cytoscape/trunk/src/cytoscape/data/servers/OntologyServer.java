@@ -138,15 +138,6 @@ public class OntologyServer implements PropertyChangeListener {
 		networkAliases = new Aliases(AliasType.NETWORK);
 	}
 
-	//	public Bookmarks getBookmarks() {
-	//		return bookmarks;
-	//	}
-	//
-	//	public void loadBookmarks() throws JAXBException, IOException {
-	//		BookmarkReader reader = new BookmarkReader();
-	//		reader.readBookmarks();
-	//		bookmarks = reader.getBookmarks();
-	//	}
 	public DBCrossReferences getCrossReferences() {
 		return xref;
 	}
@@ -177,12 +168,8 @@ public class OntologyServer implements PropertyChangeListener {
 
 			case GO:
 				onto = factory.createGeneOntology(dataSource, ontologyName, description);
-
 				break;
 
-			// case KEGG:
-			// onto = factory.createKEGGOntology(dataSource, ontologyName);
-			// break;
 			default:
 				onto = null;
 		}

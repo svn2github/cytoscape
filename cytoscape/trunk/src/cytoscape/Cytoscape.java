@@ -38,55 +38,15 @@
 //---------------------------------------------------------------------------
 package cytoscape;
 
-import cytoscape.actions.SaveSessionAction;
-
-import cytoscape.bookmarks.Bookmarks;
-
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesImpl;
-import cytoscape.data.ExpressionData;
-import cytoscape.data.ImportHandler;
-import cytoscape.data.Semantics;
-
-import cytoscape.data.readers.BookmarkReader;
-import cytoscape.data.readers.CyAttributesReader;
-import cytoscape.data.readers.GraphReader;
-
-import cytoscape.data.servers.BioDataServer;
-import cytoscape.data.servers.OntologyServer;
-
-import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.DingNetworkView;
-
-import cytoscape.giny.CytoscapeFingRootGraph;
-import cytoscape.giny.CytoscapeRootGraph;
-
-import cytoscape.init.CyInitParams;
-
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.CyLayouts;
-
-import cytoscape.util.FileUtil;
-
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
 import giny.model.Edge;
 import giny.model.Node;
-
 import giny.view.GraphView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -98,8 +58,32 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
-
 import javax.xml.bind.JAXBException;
+
+import cytoscape.actions.SaveSessionAction;
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesImpl;
+import cytoscape.data.ExpressionData;
+import cytoscape.data.ImportHandler;
+import cytoscape.data.Semantics;
+import cytoscape.data.readers.BookmarkReader;
+import cytoscape.data.readers.CyAttributesReader;
+import cytoscape.data.readers.GraphReader;
+import cytoscape.data.servers.BioDataServer;
+import cytoscape.data.servers.OntologyServer;
+import cytoscape.ding.CyGraphLOD;
+import cytoscape.ding.DingNetworkView;
+import cytoscape.giny.CytoscapeFingRootGraph;
+import cytoscape.giny.CytoscapeRootGraph;
+import cytoscape.init.CyInitParams;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.util.FileUtil;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 
 /**
@@ -1101,9 +1085,7 @@ public abstract class Cytoscape {
 			return;
 
 		getSelectedNetworkViews().remove(view);
-
-		String viewID = view.getIdentifier();
-
+		final String viewID = view.getIdentifier();
 		getNetworkViewMap().remove(viewID);
 
 		if (viewID.equals(currentNetworkViewID)) {
@@ -1120,12 +1102,12 @@ public abstract class Cytoscape {
 					currentNetworkViewID = null;
 			}
 		}
-
+		
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_DESTROYED, null, view);
 		// theoretically this should not be set to null till after the events
 		// firing is done
 		view = null;
-
+		
 		// so that a network will be selected.
 		if (currentNetworkID != null)
 			getDesktop().setFocus(currentNetworkID);
@@ -1142,7 +1124,7 @@ public abstract class Cytoscape {
 	 * destroys the networkview, including any layout information
 	 */
 	public static void destroyNetworkView(CyNetwork network) {
-		destroyNetworkView((CyNetworkView) getNetworkViewMap().get(network.getIdentifier()));
+		destroyNetworkView(getNetworkViewMap().get(network.getIdentifier()));
 	}
 
 	protected static void addNetwork(CyNetwork network, String title, CyNetwork parent,
@@ -1841,8 +1823,9 @@ public abstract class Cytoscape {
 		for(String name: networkAttrNames)
 			networkAttributes.deleteAttribute(name);
 		
-		// Reset Ontology
-		
+		// Reset Ontology Server
+		buildOntologyServer();
+		setOntologyRootID(null);
 		
 		setCurrentSessionFileName(null);
 		firePropertyChange(ATTRIBUTES_CHANGED, null, null);
@@ -1851,13 +1834,6 @@ public abstract class Cytoscape {
 		cytoscapeRootGraph = new CytoscapeFingRootGraph();
 		System.out.println("Cytoscape Session Initialized.");
 		
-		// Test code
-//		Set<CyNetwork> newSet = getNetworkSet();
-//		for(CyNetwork net: newSet) {
-//			System.out.println("#######Net = " + net.getTitle());
-//		}
-//		System.out.println("#######Nodes = " + getRootGraph().getNodeCount());
-//		System.out.println("#######Edges = " + getRootGraph().getEdgeCount());
 	}
 
 	/**
