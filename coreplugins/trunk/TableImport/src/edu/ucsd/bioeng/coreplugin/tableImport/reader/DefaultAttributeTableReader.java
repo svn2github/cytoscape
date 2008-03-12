@@ -191,6 +191,8 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
 		String[] parts = null;
+		
+		final String delimiter = mapping.getDelimiterRegEx();
 		while ((line = bufRd.readLine()) != null) {
 			/*
 			 * Ignore Empty & Commnet lines.
@@ -198,7 +200,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 			if ((commentChar != null) && line.startsWith(commentChar)) {
 				// Do nothing
 			} else if ((lineCount >= startLineNumber) && (line.trim().length() > 0)) {
-				parts = line.split(mapping.getDelimiterRegEx());
+				parts = line.split(delimiter);
 				// If key dos not exists, ignore the line.
 				if(parts.length>=mapping.getKeyIndex()+1) {
 					try {

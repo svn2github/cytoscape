@@ -74,11 +74,10 @@ public class AttributeLineParser {
 		this.mapping = mapping;
 	}
 
-	// Import everything.
 	/**
-	 *  DOCUMENT ME!
+	 *  Import everything regardless associated nodes/edges exist or not.
 	 *
-	 * @param parts DOCUMENT ME!
+	 * @param parts entries in a line.
 	 */
 	public void parseAll(String[] parts) {
 		// Get key

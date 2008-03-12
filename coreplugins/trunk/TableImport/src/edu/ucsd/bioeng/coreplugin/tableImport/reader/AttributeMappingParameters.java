@@ -391,10 +391,14 @@ public class AttributeMappingParameters implements MappingParameter {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getDelimiterRegEx() {
+		
 		StringBuffer delimiterBuffer = new StringBuffer();
 		delimiterBuffer.append("[");
 
 		for (String delimiter : delimiters) {
+			if(delimiter.equals(" += +")) {
+				return " += +";
+			}
 			delimiterBuffer.append(delimiter);
 		}
 
