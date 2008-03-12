@@ -436,7 +436,11 @@ public class AttributeLineParser {
 				break;
 
 			case CyAttributes.TYPE_STRING:
-				mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+				try {
+					mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 
 				break;
 
@@ -467,13 +471,21 @@ public class AttributeLineParser {
 				}
 
 				curList.addAll(buildList(entry, listType));
-				mapping.getAttributes()
-				       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
+				try {
+					mapping.getAttributes()
+					       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 
 				break;
 
 			default:
-				mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+				try {
+					mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 		}
 	}
 
