@@ -225,6 +225,7 @@ class OpenSessionTask implements Task {
             taskMonitor.setException(e, "Error while loading session " + e.getMessage());
 		} finally {
 			sr = null;
+			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
 			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
 			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
 			System.gc();

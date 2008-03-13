@@ -878,13 +878,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static final String GRAPHICAL_MAP_VIEW = "Graphical View";
 	private static final String NODE_VISUAL_MAPPING = "Node Visual Mapping";
 	private static final String EDGE_VISUAL_MAPPING = "Edge Visual Mapping";
-	private JButton addMappingButton;
 
 	/*
 	 * Set Visual Style selector combo box.
 	 */
 	public void initVizmapperGUI() {
 		List<String> vsNames = new ArrayList<String>(vmm.getCalculatorCatalog().getVisualStyleNames());
+		
+		final VisualStyle style = vmm.getVisualStyle(); 
 
 		// Disable action listeners
 		final ActionListener[] li = vsNameComboBox.getActionListeners();
@@ -913,7 +914,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		
-		// Restore
+		// Switch back to the original style.
+		switchVS(style.getName());
+		
+		// Restore listeners
 		for(int i=0; i<li.length; i++)
 			vsNameComboBox.addActionListener(li[i]);
 	}
