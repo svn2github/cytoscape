@@ -104,8 +104,16 @@ public class NodeToolTipProp extends AbstractVisualProperty {
 	public void applyToNodeView(NodeView nv, Object o) {
 		if ((o == null) || (nv == null))
 			return;
+
 		if(((String)o).startsWith("<html>")) {
 			nv.setToolTip((String) o);
+			return;
+		}
+
+		// Setting the tooltip to null is preferred because otherwise a small icon
+		// indicating the empty tooltip appears.
+		if (((String)o).equals("")) {
+			nv.setToolTip(null);
 			return;
 		}
 		

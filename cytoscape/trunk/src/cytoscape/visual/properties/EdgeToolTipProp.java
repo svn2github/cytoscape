@@ -50,6 +50,9 @@ import java.util.Properties;
  *
  */
 public class EdgeToolTipProp extends AbstractVisualProperty {
+
+	private StringBuilder buf = new StringBuilder();
+
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -63,13 +66,27 @@ public class EdgeToolTipProp extends AbstractVisualProperty {
 		return null;
 	}
 	
-    public void applyToEdgeView(EdgeView nv, Object o) {
-        if ( o == null || nv == null )
+    public void applyToEdgeView(EdgeView ev, Object o) {
+		if ((o == null) || (ev == null))
+			return;
+	
+        if(((String)o).startsWith("<html>")) {
+            ev.setToolTip((String) o);
             return;
+        }
 
-        // TODO - add getToolTip to EdgeView
-        //if ( !((String)o).equals(nv.getToolTip()) )
-            nv.setToolTip((String)o);
+        // Setting the tooltip to null is preferred because otherwise a small icon
+        // indicating the empty tooltip appears.
+        if (((String)o).equals("")) {
+            ev.setToolTip(null);
+            return;
+        }
+
+        buf = new StringBuilder();
+        buf.append("<html><body bgcolor=\"white\"><Div Align=\"center\"><Font Size=\"4\">");
+        buf.append(((String)o).replaceAll("\\n", "<br>"));
+        buf.append("</Font></div></body></html>");
+        ev.setToolTip(buf.toString());
     }
 
     public Object parseProperty(Properties props, String baseKey) {
