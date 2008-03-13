@@ -233,20 +233,16 @@ public class ExecuteGetRecordByCPathId implements Task {
                 }
 
                 //  Select this view
-                CyNetworkView networkView = Cytoscape.getNetworkView(mergedNetwork.getIdentifier());
+                final CyNetworkView networkView = Cytoscape.getNetworkView
+                        (mergedNetwork.getIdentifier());
                 Cytoscape.setCurrentNetwork(mergedNetwork.getIdentifier());
                 Cytoscape.setCurrentNetworkView(mergedNetwork.getIdentifier());
-
-                //  Apply Layout
-                LayoutUtil layoutAlgorithm = new LayoutUtil();
-                networkView.applyLayout(layoutAlgorithm);
 
                 final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
                         bpContainer.showLegend();
-                        Cytoscape.getCurrentNetworkView().fitContent();
                         VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
                         vizmapper.applyAppearances();
                     }
@@ -260,6 +256,26 @@ public class ExecuteGetRecordByCPathId implements Task {
 
                 //  Delete the temp network.
                 Cytoscape.destroyNetwork(cyNetwork);
+
+                //  Apply Layout
+                Object[] options = {"Yes", "No"};
+                int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
+                    "Would you like re-layout the modified network?",
+                    "Layout?",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options, options[0]);
+                System.out.println ("Option:  " + n);
+                if (n==0) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            LayoutUtil layoutAlgorithm = new LayoutUtil();
+                            networkView.applyLayout(layoutAlgorithm);
+                            Cytoscape.getCurrentNetworkView().fitContent();
+                        }
+                    });
+                }
 
             } else if (cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
                     .getProperty("viewThreshold"))) {
@@ -284,11 +300,6 @@ public class ExecuteGetRecordByCPathId implements Task {
                 final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
                 NetworkListener networkListener = bpContainer.getNetworkListener();
                 networkListener.registerNetwork(cyNetwork);
-
-                ExpandNode menuListener = new ExpandNode();
-                ((DGraphView) Cytoscape.getNetworkView(cyNetwork.getIdentifier()))
-                                      .addNodeContextMenuListener(menuListener);
-
 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
