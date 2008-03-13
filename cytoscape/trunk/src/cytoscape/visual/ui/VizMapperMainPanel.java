@@ -1733,13 +1733,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		mapAttrs = CyAttributesUtils.getAttribute(attrName, attrs);
 
 		if ((mapAttrs == null) || (mapAttrs.size() == 0))
-			return null;
+			return new TreeSet<Object>();
 
 		List acceptedClasses = Arrays.asList(mapping.getAcceptedDataClasses());
 		Class mapAttrClass = CyAttributesUtils.getClass(attrName, attrs);
 
 		if ((mapAttrClass == null) || !(acceptedClasses.contains(mapAttrClass)))
-			return null;
+			return new TreeSet<Object>();  // Return empty set.
 
 		return loadKeySet(mapAttrs);
 	}
@@ -2962,16 +2962,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * User wants to Seed the Discrete Mapper with Random Color Values.
 		 */
 		public void actionPerformed(ActionEvent e) {
-			/*
-			 * Check Selected poperty
-			 */
+
+			//Check Selected poperty
 			final int selectedRow = visualPropertySheetPanel.getTable().getSelectedRow();
 
-			if (selectedRow < 0) {
-				System.out.println("No entry selected.");
-
+			if (selectedRow < 0)
 				return;
-			}
 
 			final Item item = (Item) visualPropertySheetPanel.getTable().getValueAt(selectedRow, 0);
 			final VizMapperProperty prop = (VizMapperProperty) item.getProperty();
@@ -2979,7 +2975,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (hidden instanceof VisualPropertyType) {
 				final VisualPropertyType type = (VisualPropertyType) hidden;
-				System.out.println("This is category top.");
 
 				final Map valueMap = new HashMap();
 				final long seed = System.currentTimeMillis();
@@ -3002,15 +2997,21 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					nOre = ObjectMapping.EDGE_MAPPING;
 				}
 
-				if ((oMap instanceof DiscreteMapping) == false) {
+				// This function is for discrete mapping only.
+				if ((oMap instanceof DiscreteMapping) == false)
 					return;
-				}
-
+				
 				dm = (DiscreteMapping) oMap;
-
 				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr,
 				                                     oMap, nOre);
-
+				// Show error if there is no attribute value.
+				if(attrSet.size() == 0) {
+					JOptionPane.showMessageDialog(
+							panel, "No attribute value is available." , "Cannot generate values" ,
+							JOptionPane.ERROR_MESSAGE
+						);
+				}
+				
 				/*
 				 * Create random colors
 				 */
@@ -3031,12 +3032,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					} else if (functionType == RAINBOW2) {
 						for (Object key : attrSet) {
 							hue = hue + increment;
-							// sat =
-							// Math.abs(((Number)Math.cos((i)/(2*Math.PI))).floatValue())/3
-							// + rand.nextFloat()*0.666f;
-							// br =
-							// Math.abs(((Number)Math.sin((((float)i)/2f)/(2*Math.PI))).floatValue())/2
-							// + rand.nextFloat()*0.5f;
 							sat = (Math.abs(((Number) Math.cos((8 * i) / (2 * Math.PI))).floatValue()) * 0.7f)
 							      + 0.3f;
 							br = (Math.abs(((Number) Math.sin(((i) / (2 * Math.PI)) + (Math.PI / 2)))
