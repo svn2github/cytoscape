@@ -1248,7 +1248,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 			// Set HTML style tooltip
 			setToolTipText(getFormattedToolTipText(colName, value));
 		} else {
-			setToolTipText("");
+			setToolTipText(null);
 		}
 
 		// If selected, return
