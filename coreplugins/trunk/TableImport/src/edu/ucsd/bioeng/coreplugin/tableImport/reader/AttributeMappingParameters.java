@@ -38,6 +38,7 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
 
 import cytoscape.data.synonyms.Aliases;
 import static edu.ucsd.bioeng.coreplugin.tableImport.reader.TextFileDelimiters.*;
@@ -149,7 +150,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		if (attrNames == null) {
 			throw new Exception("attributeNames should not be null.");
 		}
-		
+
 		/*
 		 * Error check: Key column number should be smaller than actual number
 		 * of columns in the text table.
@@ -223,7 +224,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		} else {
 			this.attributeTypes = attributeTypes;
 		}
-		
+
 		/*
 		 * If not specified, import everything.
 		 */
@@ -265,11 +266,10 @@ public class AttributeMappingParameters implements MappingParameter {
 				attributes = null;
 				it = null;
 		}
-		
+
 		if ((this.mappingAttribute != null) && !this.mappingAttribute.equals(ID)) {
 			buildAttribute2IDMap(it);
 		}
-
 	}
 
 	/**
@@ -358,9 +358,9 @@ public class AttributeMappingParameters implements MappingParameter {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns attribute name for mapping.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  Key CyAttribute name for mapping.
 	 */
 	public String getMappingAttribute() {
 		return mappingAttribute;
@@ -391,14 +391,14 @@ public class AttributeMappingParameters implements MappingParameter {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getDelimiterRegEx() {
-		
 		StringBuffer delimiterBuffer = new StringBuffer();
 		delimiterBuffer.append("[");
 
 		for (String delimiter : delimiters) {
-			if(delimiter.equals(" += +")) {
+			if (delimiter.equals(" += +")) {
 				return " += +";
 			}
+
 			delimiterBuffer.append(delimiter);
 		}
 
@@ -432,12 +432,11 @@ public class AttributeMappingParameters implements MappingParameter {
 	 *
 	 */
 	private void buildAttribute2IDMap(Iterator it) {
+		// Mapping from attribute value to object ID.
 		attr2id = new HashMap<String, List<String>>();
 
 		String objectID = null;
-
-		String attributeValue = null;
-		List<String> objIdList = null;
+		Object valObj = null;
 
 		while (it.hasNext()) {
 			switch (objectType) {
@@ -445,37 +444,74 @@ public class AttributeMappingParameters implements MappingParameter {
 
 					Node node = (Node) it.next();
 					objectID = node.getIdentifier();
-					attributeValue = attributes.getStringAttribute(objectID, mappingAttribute);
+
+					if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
+						valObj = attributes.getListAttribute(objectID, mappingAttribute);
+					} else if (CyAttributesUtils.getClass(mappingAttribute, attributes) != Map.class) {
+						valObj = attributes.getAttribute(objectID, mappingAttribute);
+					}
 
 					break;
 
 				case EDGE:
-					
+
 					Edge edge = (Edge) it.next();
 					objectID = edge.getIdentifier();
-					attributeValue = attributes.getStringAttribute(objectID, mappingAttribute);
-					
+
+					if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
+						valObj = attributes.getListAttribute(objectID, mappingAttribute);
+					} else if (CyAttributesUtils.getClass(mappingAttribute, attributes) != Map.class) {
+						valObj = attributes.getAttribute(objectID, mappingAttribute);
+					}
+
 					break;
 
 				case NETWORK:
 					// Not supported yet.
 					it.next();
+
 					break;
 
 				default:
 			}
 
-			if (attributeValue != null) {
-				if (attr2id.containsKey(attributeValue)) {
-					objIdList = (List<String>) attr2id.get(attributeValue);
+			// Put the <attribute value>-<object ID list> pair to the Map object.
+			if (valObj != null) {
+				if (valObj instanceof List) {
+					List keys = (List) valObj;
+
+					for (Object key : keys) {
+						if (key != null) {
+							putAttrValue(key.toString(), objectID);
+						}
+					}
 				} else {
-					objIdList = new ArrayList<String>();
+					putAttrValue(valObj.toString(), objectID);
 				}
 
-				objIdList.add(objectID);
-				attr2id.put(attributeValue, objIdList);
+				//				if (attr2id.containsKey(attributeValue)) {
+				//					objIdList = (List<String>) attr2id.get(attributeValue);
+				//				} else {
+				//					objIdList = new ArrayList<String>();
+				//				}
+				//
+				//				objIdList.add(objectID);
+				//				attr2id.put(attributeValue, objIdList);
 			}
 		}
+	}
+
+	private void putAttrValue(String attributeValue, String objectID) {
+		List<String> objIdList = null;
+
+		if (attr2id.containsKey(attributeValue)) {
+			objIdList = attr2id.get(attributeValue);
+		} else {
+			objIdList = new ArrayList<String>();
+		}
+
+		objIdList.add(objectID);
+		attr2id.put(attributeValue, objIdList);
 	}
 
 	/**
