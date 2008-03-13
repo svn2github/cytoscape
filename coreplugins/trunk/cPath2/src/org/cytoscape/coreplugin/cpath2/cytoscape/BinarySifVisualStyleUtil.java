@@ -51,6 +51,12 @@ public class BinarySifVisualStyleUtil {
             visualStyle = new VisualStyle(BINARY_SIF_VISUAL_STYLE);
 
             NodeAppearanceCalculator nac = new NodeAppearanceCalculator();
+
+            //  set node opacity
+            nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_OPACITY, 125);
+            //  unlock node size
+            nac.setNodeSizeLocked(false);
+
             createNodeShapes(nac);
             createNodeColors(nac);
             createNodeLabel(nac);
