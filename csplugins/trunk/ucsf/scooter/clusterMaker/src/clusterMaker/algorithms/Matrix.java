@@ -62,12 +62,12 @@ public class Matrix {
 	 * Create a data matrix from the current nodes in the network.  There are two ways
 	 * we construct the matrix, depending on the type.  If we are looking at expression
 	 * profiles, for example, each node will represent a gene, and the expression results
-	 * for each condition will be encoded in the indicated node attribute.  For our purposes,
+	 * for each condition will be encoded in the indicated node attributes.  For our purposes,
 	 * we don't pay any attention to edges when creating the matrix (there are obviously
 	 * reasons why we might want to derive edges from the resulting data, but this can be
 	 * done after the clustering is complete.
 	 *
-	 * On the other hand, if we are looking at epistatic mapping, the resulting matrix will
+	 * On the other hand, if we are looking at genetic interactions, the resulting matrix will
 	 * be symmetrical around the diagonal and the weightAttribute will be an edge attribute
 	 * on the edges between the nodes.
 	 *
@@ -75,16 +75,20 @@ public class Matrix {
 	 * @param transpose true if we are transposing this matrix 
 	 *                  (clustering columns instead of rows)
 	 */
-	public Matrix(String weightAttribute, boolean transpose) {
+	public Matrix(List<String> weightAttributes, boolean transpose) {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
-		String weight = weightAttribute.substring(5);
 		this.transpose = transpose;
-
+		
 		// If our weightAttribute is on edges, we're looking at a symmetrical matrix
-		if (weightAttribute.startsWith("node.")) {
-			buildGeneArrayMatrix(network, weight, transpose);
-		} else if (weightAttribute.startsWith("edge.")) {
-			buildSymmetricalMatrix(network, weight);
+		if (weightAttributes.size() > 1 || weightAttributes.get(0).startsWith("node.")) {
+			// Get rid of the leading type information
+			for (int i = 0; i < weightAttributes.size(); i++) {
+				String substr = weightAttributes.get(i).substring(5);
+				weightAttributes.set(i, substr);
+			}
+			buildGeneArrayMatrix(network, weightAttributes, transpose);
+		} else if (weightAttributes.size() == 1 && weightAttributes.get(0).startsWith("edge.")) {
+			buildSymmetricalMatrix(network, weightAttributes.get(0).substring(5));
 		} else {
 			// Throw an exception?
 			return;
@@ -200,7 +204,7 @@ public class Matrix {
 		}
 	}
 
-	private void buildGeneArrayMatrix(CyNetwork network, String weight, boolean transpose) {
+	private void buildGeneArrayMatrix(CyNetwork network, List<String> weightAttributes, boolean transpose) {
 		// Get the list of nodes
 		List<CyNode>nodeList = network.nodesList();
 
@@ -218,18 +222,21 @@ public class Matrix {
 			// Create the map for this node
 			HashMap<String,Double>thisCondMap = new HashMap();
 
-			// Get the list of conditions for this node
-			List<String>condList = 
-				nodeAttributes.getListAttribute(node.getIdentifier(), weight);
-
-			// For each condition, get the value and save them
-			for (String cond: condList) {
-				String[] cv = cond.split("=");
-				if (cv.length != 2) continue;		// Throw an exception?
-				if (!condMap.containsKey(cv[0])) {
-					condMap.put(cv[0],cv[0]); // remember this condition
+			for (String attr: weightAttributes) {
+				Double value = null;
+				// Remember the condition name
+				condMap.put(attr,attr);
+				// Get the attribute type
+				if (nodeAttributes.getType(attr) == CyAttributes.TYPE_INTEGER) {
+					Integer intVal = nodeAttributes.getIntegerAttribute(node.getIdentifier(), attr);
+					value = Double.valueOf(intVal.doubleValue());
+				} else if (nodeAttributes.getType(attr) == CyAttributes.TYPE_FLOATING) {
+					value = nodeAttributes.getDoubleAttribute(node.getIdentifier(), attr);
+				} else {
+					continue; // At some point, handle lists?
 				}
-				thisCondMap.put(cv[0], new Double(cv[1]));
+				// Set it
+				thisCondMap.put(attr, value);
 			}
 			nodeCondMap.put(node, thisCondMap);
 		}

@@ -1,12 +1,7 @@
 // vim: set ts=2: */
 package clusterMaker.algorithms;
 
-import cytoscape.util.ModulePropertiesImpl;
-import cytoscape.layout.Tunable;
-
-import java.awt.GridLayout;
-import javax.swing.JPanel;
-
+import cytoscape.layout.LayoutProperties;
 
 /**
  * The ClusterProperties class is a helper class to support the management
@@ -19,7 +14,7 @@ import javax.swing.JPanel;
  * using the <tt>add</tt> method and are retrieved with the <tt>get</tt>
  * method.
  */
-public class ClusterProperties extends ModulePropertiesImpl {
+public class ClusterProperties extends LayoutProperties {
 
 	/**
 	 * Constructor.
@@ -29,35 +24,7 @@ public class ClusterProperties extends ModulePropertiesImpl {
 	 *                       list.
 	 */
 	public ClusterProperties(String propertyPrefix) {
-		super(propertyPrefix, null);
-	}
-
-
-	/**
-	 * This method returns a JPanel that represents the all of the Tunables
-	 * associated with this LayoutProperties object.
-	 *
-	 * @return JPanel that contains all of the Tunable widgets
-	 */
-	public JPanel getTunablePanel() {
-		JPanel tunablesPanel = new JPanel(new GridLayout(0, 1));
-
-		for (Tunable tunable: tunablesList) {
-			JPanel p = tunable.getPanel();
-
-			if (p != null)
-				tunablesPanel.add(p);
-		}
-
-		return tunablesPanel;
-	}
-
-	protected String getPrefix() {
-		String prefix = "clusterMaker." + propertyPrefix;
-
-		if (prefix.lastIndexOf('.') != prefix.length())
-			prefix = prefix + ".";
-
-		return prefix;
+		super(propertyPrefix);
+		setModuleType("clusterMaker");
 	}
 }

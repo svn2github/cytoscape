@@ -50,6 +50,7 @@ import cytoscape.plugin.PluginInfo;
 import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.HierarchicalCluster;
+// import clusterMaker.algorithms.hierarchicalClustering.HierarchicalClustering;
 // import clusterMaker.algorithms.MCLCluster;
 // import clusterMaker.algorithms.KMeansCluster;
 // import clusterMaker.algorithms.SOMCluster;

@@ -69,7 +69,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	ClusterMethod clusterMethod =  ClusterMethod.AVERAGE_LINKAGE;
 	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
 	boolean transposeMatrix = false;
-	String dataAttribute = null;
+	String dataAttributes = null;
 	TaskMonitor monitor = null;
 
 	public HierarchicalCluster() {
@@ -81,16 +81,12 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	public String getName() {return "Hierarchical cluster";};
 
 	public JPanel getSettingsPanel() {
-		JPanel panel = new JPanel(new GridLayout(0,1));
-
 		// Everytime we ask for the panel, we want to update our attributes
-		Tunable attributeTunable = clusterProperties.get("attribute");
+		Tunable attributeTunable = clusterProperties.get("attributeList");
 		attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object)attributeArray);
 
-		panel.add(clusterProperties.getTunablePanel());
-
-		return panel;
+		return clusterProperties.getTunablePanel();
 	}
 
 	protected void initializeProperties() {
@@ -112,12 +108,15 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.LIST, new Integer(0),
 		                                  (Object)distanceTypes, (Object)null, 0));
 
+		clusterProperties.add(new Tunable("attributeListGroup",
+		                                  "Source for array data",
+		                                  Tunable.GROUP, new Integer(1)));
+
 		// The attribute to use to get the weights
 		attributeArray = getAllAttributes();
-
 		clusterProperties.add(new Tunable("attributeList",
-		                                  "Attributes to use to get the data values",
-		                                  Tunable.LIST, new ArrayList<String>(),
+		                                  "Array sources",
+		                                  Tunable.LIST, "",
 		                                  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
 
 		// Whether or not to transpose the matrix
@@ -149,15 +148,16 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		if ((t != null) && (t.valueChanged() || force))
 			transposeMatrix = ((Boolean) t.getValue()).booleanValue();
 
-		t = clusterProperties.get("attribute");
+		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
-			// dataAttribute = attributeArray[((Integer) t.getValue()).intValue()];
+			dataAttributes = (String) t.getValue();
 		}
 	}
 
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
 		// Sanity check all of our settings
+		System.out.println("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
 		// OK, go for it!
 	}
 
