@@ -39,17 +39,22 @@ package cytoscape.editor.impl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.SwingConstants;
 
-import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 
 /**
  * Used to switch to the Editor cytopanel when a new empty network is created.
  */ 
 class NewEmptyNetworkListener implements PropertyChangeListener {
+	
+	// AJK: 03/13/2008 need to check that network is NEW as well as empty
+	private List<CyNetwork> networksSeen = new ArrayList<CyNetwork>();
 
 	NewEmptyNetworkListener() {
 		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
@@ -64,10 +69,18 @@ class NewEmptyNetworkListener implements PropertyChangeListener {
 
 			// only if the network in question doesn't have any nodes (i.e. it's an
 			// empty network), do we automatically switch to the editor
-			if ( net.getNodeCount() <= 0 ) {
-				int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
-				if (idx >= 0) 
-					Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(idx);
+			// AJK: 02/28/08 but check against null network
+//			if ( net.getNodeCount() <= 0 ) {
+			// AJK: 03/13/2008 need to check that network is NEW as well as empty
+//			if (( net.getNodeCount() <= 0 ) && (net != Cytoscape.getNullNetwork())){
+			if (!networksSeen.contains (net))
+			{
+				networksSeen.add(net);
+				if (( net.getNodeCount() <= 0 ) && (net != Cytoscape.getNullNetwork())) {									
+					int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
+					if (idx >= 0) 
+						Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(idx);
+				}			
 			}
 		}
 	}
