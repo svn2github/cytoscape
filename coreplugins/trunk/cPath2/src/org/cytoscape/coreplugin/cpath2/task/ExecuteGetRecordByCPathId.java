@@ -440,7 +440,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 counter = 0;
             }
         }
-        if (currentList.size() > 0 && masterList.size() ==0) {
+        if (currentList.size() > 0) {
             masterList.add(currentList);
         }
         return masterList;
