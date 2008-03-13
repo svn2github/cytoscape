@@ -5,7 +5,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.FileUtil;
@@ -80,19 +82,42 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 	
 	// Check if transparency is used in the visual style
 	private boolean useTransparency(){
-		boolean nodeOpacity = false;
-		boolean edgeOpacity = false;
 
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
 		
+		// Check opacity in default setting
+		Properties node_default_props = vs.getNodeAppearanceCalculator().getDefaultAppearance().getDefaultProperties("");
+		Properties edge_default_props = vs.getEdgeAppearanceCalculator().getDefaultAppearance().getDefaultProperties("");
+
+		Enumeration nodePropNames = node_default_props.propertyNames();
+		Enumeration edgePropNames = edge_default_props.propertyNames();
+		
+		while (nodePropNames.hasMoreElements()) {
+			String tmp = (String) nodePropNames.nextElement();
+			if (tmp.contains("Opacity")) {
+				if ((new Float(node_default_props.getProperty(tmp))).floatValue() != 255) {
+					return true;
+				}
+			}
+		}
+
+		while (edgePropNames.hasMoreElements()) {
+			String tmp = (String) edgePropNames.nextElement();
+			if (tmp.contains("Opacity")) {
+				if ((new Float(edge_default_props.getProperty(tmp))).floatValue() != 255) {
+					return true;										
+				}
+			}
+		}
+
+		//Check opacity in calculators
 		List<Calculator> node_calculators = vs.getNodeAppearanceCalculator().getCalculators();
 		for (Calculator cal: node_calculators) {
 			if (cal.getVisualPropertyType() == cytoscape.visual.VisualPropertyType.NODE_OPACITY || 
 			cal.getVisualPropertyType() == cytoscape.visual.VisualPropertyType.NODE_BORDER_OPACITY ||
 			(cal.getVisualPropertyType() == cytoscape.visual.VisualPropertyType.NODE_LABEL_OPACITY))
 			{
-				nodeOpacity = true;
-				break;
+				return true;
 			}
 		}
 		
@@ -103,11 +128,11 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 					cal.getVisualPropertyType()== cytoscape.visual.VisualPropertyType.EDGE_TGTARROW_OPACITY ||
 					cal.getVisualPropertyType()== cytoscape.visual.VisualPropertyType.EDGE_SRCARROW_OPACITY
 			) {
-				edgeOpacity = true;
-				break;
+				return true;
 			}
 		}
-		return nodeOpacity || edgeOpacity;
+		
+		return false;
 	}
 
 	public CyFileFilter getSelectedFormat()
