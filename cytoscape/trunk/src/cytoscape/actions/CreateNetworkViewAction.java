@@ -54,6 +54,13 @@ import javax.swing.JOptionPane;
 
 import javax.swing.event.MenuEvent;
 
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+
+import cytoscape.task.ui.JTaskConfig;
+
+import cytoscape.task.util.TaskManager;
+
 
 /**
  *
@@ -96,7 +103,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 
 		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit.getProperties()
-		                                                             .getProperty("secondaryViewThreshold"))) {
+                                                        .getProperty("secondaryViewThreshold"))) {
 			int n = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
 			                                      "Network contains "
 			                                      + formatter.format(cyNetwork.getNodeCount())
@@ -108,15 +115,24 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			                                      "Rendering Large Network",
 			                                      JOptionPane.YES_NO_OPTION);
 
-			if (n == JOptionPane.YES_OPTION) {
-				Cytoscape.createNetworkView(cyNetwork);
-			} else {
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-				                              "Create View Request Cancelled by User.");
-			}
-		} else {
-			Cytoscape.createNetworkView(cyNetwork);
-		}
+			if (n == JOptionPane.NO_OPTION) 
+				return;
+		} 
+		
+		// Create Task
+		CreateNetworkViewTask task = new CreateNetworkViewTask(cyNetwork);
+
+		// Configure JTask Dialog Pop-Up Box
+		JTaskConfig jTaskConfig = new JTaskConfig();
+
+		jTaskConfig.displayCancelButton(false);
+		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.displayCloseButton(false);
+		jTaskConfig.displayStatus(true);
+		jTaskConfig.setAutoDispose(true);
+
+		// Execute Task in New Thread; pop open JTask Dialog Box.
+		TaskManager.executeTask(task, jTaskConfig);
 	}
 
 	/**
@@ -135,4 +151,40 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			setEnabled(false);
 	}
 
-}
+} //End of SaveSessionAction
+
+
+class CreateNetworkViewTask implements Task {
+	private CyNetwork network;
+	private TaskMonitor taskMonitor;
+
+	CreateNetworkViewTask(CyNetwork network) {
+		this.network = network;
+	}
+
+	public void run() {
+		taskMonitor.setStatus("Creating network view ...");
+		taskMonitor.setPercentCompleted(-1);
+
+		try {
+			Cytoscape.createNetworkView(network);
+		} catch (Exception e) {
+			taskMonitor.setException(e, "Could not create network view for network: " + network.getTitle());
+		}
+
+		taskMonitor.setPercentCompleted(100);
+		taskMonitor.setStatus("Network view successfully create for:  " + network.getTitle());
+	}
+
+	public void halt() { }
+
+	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+		this.taskMonitor = taskMonitor;
+	}
+
+	public String getTitle() {
+		return "Creating Network View";
+	}
+} 
+
+
