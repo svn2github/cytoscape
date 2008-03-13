@@ -6,14 +6,11 @@ import cytoscape.Cytoscape;
 import org.cytoscape.coreplugin.cpath2.task.ExecutePhysicalEntitySearch;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.view.model.Organism;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.animation.timing.Animator;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -28,7 +25,6 @@ public class SearchBoxPanel extends JPanel {
     private JButton searchButton;
     private CPathWebService webApi;
     private static final String ENTER_TEXT = "Enter Gene Name or ID";
-    private Animator animator;
     private PulsatingBorder pulsatingBorder;
     private JComboBox organismComboBox;
 
@@ -57,12 +53,6 @@ public class SearchBoxPanel extends JPanel {
         searchField.setBorder (BorderFactory.createCompoundBorder(searchField.getBorder(),
                 pulsatingBorder));
 
-        PropertySetter setter = new PropertySetter (pulsatingBorder, "thickness",
-                0.0f, 1.0f);
-        animator = new Animator (900, Animator.INFINITE,
-                Animator.RepeatBehavior.REVERSE, setter);
-        animator.start();
-        
         organismComboBox = createOrganismComboBox();
         searchButton = createSearchButton(searchField);
 
@@ -179,10 +169,6 @@ public class SearchBoxPanel extends JPanel {
         } else {
             ExecutePhysicalEntitySearch search = new ExecutePhysicalEntitySearch
                     (webApi, keyword.trim(), ncbiTaxonomyId);
-            if (animator.isRunning()) {
-                pulsatingBorder.setThickness(0);
-                animator.stop();
-            }
             JTaskConfig jTaskConfig = new JTaskConfig();
             jTaskConfig.setAutoDispose(true);
             jTaskConfig.displayStatus(true);
