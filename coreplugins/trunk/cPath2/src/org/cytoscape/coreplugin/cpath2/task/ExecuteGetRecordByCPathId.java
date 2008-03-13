@@ -260,8 +260,8 @@ public class ExecuteGetRecordByCPathId implements Task {
                 //  Apply Layout
                 Object[] options = {"Yes", "No"};
                 int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
-                    "Would you like re-layout the modified network?",
-                    "Layout?",
+                    "Would you like layout the modified network?",
+                    "Adjust Layout?",
                     JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
