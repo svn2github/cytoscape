@@ -23,6 +23,10 @@ import cytoscape.task.util.TaskManager;
 public class ExpandNode implements NodeContextMenuListener, ActionListener {
     private NodeView nodeView;
 
+    public ExpandNode (NodeView nodeView) {
+        this.nodeView = nodeView;
+    }
+
     public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu jPopupMenu) {
         this.nodeView = nodeView;
         CPathProperties cpathProperties = CPathProperties.getInstance();
