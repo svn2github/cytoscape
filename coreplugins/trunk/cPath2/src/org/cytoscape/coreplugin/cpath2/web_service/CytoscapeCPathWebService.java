@@ -2,9 +2,12 @@ package org.cytoscape.coreplugin.cpath2.web_service;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
+import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualStyle;
 import cytoscape.data.webservice.*;
 import cytoscape.data.webservice.ui.WebServiceClientGUI;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.util.ModuleProperties;
 import cytoscape.util.ModulePropertiesImpl;
@@ -16,6 +19,7 @@ import org.cytoscape.coreplugin.cpath2.view.cPathSearchPanel;
 import org.cytoscape.coreplugin.cpath2.view.TabUi;
 import org.cytoscape.coreplugin.cpath2.view.SearchHitsPanel;
 import org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2;
+import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +29,7 @@ import java.util.List;
 
 import giny.view.NodeView;
 import giny.view.EdgeView;
+import giny.model.Node;
 
 /**
  * CPath Web Service, integrated into the Cytoscape Web Services Framework.
@@ -87,12 +92,24 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
         }
     }
 
-    public List getNodeContextMenuItems(NodeView nodeView) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public List<JMenuItem> getNodeContextMenuItems(NodeView nodeView) {
+        CyNetworkView networkView = (CyNetworkView) nodeView.getGraphView();
+        CyNetwork cyNetwork = networkView.getNetwork();
+        CyAttributes networkAttributes  = Cytoscape.getNetworkAttributes();
+        Boolean b = networkAttributes.getBooleanAttribute(cyNetwork.getIdentifier(), 
+                BinarySifVisualStyleUtil.BINARY_NETWORK);
+        if (b != null) {
+            List<JMenuItem> menuList = new ArrayList<JMenuItem>();
+            JMenuItem menuItem = new JMenuItem ("Get Neighbors");
+            menuItem.addActionListener(new ExpandNode(nodeView));
+            menuList.add(menuItem);
+            return menuList;
+        }
+        return null;
     }
 
     public List getEdgeContextMenuItems(EdgeView edgeView) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public Container getGUI() {
@@ -104,7 +121,7 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
     }
 
     public VisualStyle getDefaultVisualStyle() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public String getDescription() {
