@@ -4,15 +4,7 @@ package cytoscape.layout;
 import cytoscape.CytoscapeInit;
 import cytoscape.util.ModulePropertiesImpl;
 
-import java.awt.GridLayout;
-
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
@@ -30,8 +22,6 @@ import javax.swing.BoxLayout;
  * method.
  */
 public class LayoutProperties extends ModulePropertiesImpl {
-	
-
 	/**
 	 * Constructor.
 	 *
@@ -40,7 +30,7 @@ public class LayoutProperties extends ModulePropertiesImpl {
 	 *                       list.
 	 */
 	public LayoutProperties(String propertyPrefix) {
-		super(propertyPrefix, null);
+		super(propertyPrefix, "layout");
 	}
 
 
@@ -51,37 +41,14 @@ public class LayoutProperties extends ModulePropertiesImpl {
 	 * @return JPanel that contains all of the Tunable widgets
 	 */
 	public JPanel getTunablePanel() {
-		// JPanel tunablesPanel = new JPanel(new GridLayout(0, 1));
 		JPanel tunablesPanel = new JPanel();
 		BoxLayout box = new BoxLayout(tunablesPanel, BoxLayout.Y_AXIS);
 		tunablesPanel.setLayout(box);
 
 		addSubPanels(tunablesPanel, tunablesList.iterator(), new Integer(100000));
 
-/*
-		for (Iterator<Tunable> iter = tunablesList.iterator(); iter.hasNext();) {
-			Tunable tunable = (Tunable) iter.next();
-			JPanel p = tunable.getPanel();
-			if (tunable.getType() == Tunable.GROUP) {
-				addSubPanels(p, iter, tunable.getLowerBound());
-			}
-
-			if (p != null)
-				tunablesPanel.add(p);
-		}
-*/
-
 		tunablesPanel.validate();
 		return tunablesPanel;
-	}
-
-	protected String getPrefix() {
-		String prefix = "layout." + propertyPrefix;
-
-		if (prefix.lastIndexOf('.') != prefix.length())
-			prefix = prefix + ".";
-
-		return prefix;
 	}
 
 	private void addSubPanels(JPanel panel, Iterator<Tunable>iter, Object count) {

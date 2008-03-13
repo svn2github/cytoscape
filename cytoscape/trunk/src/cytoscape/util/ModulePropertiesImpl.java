@@ -58,7 +58,7 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	protected List<Tunable> tunablesList = null;
 	protected String propertyPrefix = null;
 	
-	protected final String moduleType; 
+	protected String moduleType; 
 
 	/**
 	 * Constructor.
@@ -258,6 +258,10 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	
 	public List<Tunable> getTunables() {
 		return tunablesList;
+	}
+
+	protected void setModuleType(String type) {
+		moduleType = type;
 	}
 
 	protected String getPrefix() {

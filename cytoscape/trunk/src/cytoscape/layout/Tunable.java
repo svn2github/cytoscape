@@ -8,6 +8,7 @@ import cytoscape.data.CyAttributes;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import javax.swing.BoxLayout;
@@ -94,9 +97,16 @@ public class Tunable {
 	final public static int NOINPUT = 0x1;
 
 	/**
-	 *
+	 * For attributes, indicate that the list should be restricted to integer
+	 * or float attributes.
 	 */
 	final public static int NUMERICATTRIBUTE = 0x2;
+
+	/**
+	 * For LIST, NODEATTRIBUTE, or EDGEATTRIBUTE types, use a list widget that
+	 * supports multiselect rather than a combo box.
+	 */
+	final public static int MULTISELECT = 0x4;
 
 	/**
 	 * Constructor to create a Tunable with no bounds
@@ -223,7 +233,12 @@ public class Tunable {
 
 				case LIST:
 					// System.out.println("Setting List tunable "+desc+" value to "+value);
-					this.value = new Integer((String) value);
+					if ((flag & MULTISELECT) != 0) {
+						// Multiselect LIST -- value is a List of Integers, or String values
+						this.value = value;
+					} else {
+						this.value = new Integer((String) value);
+					}
 					return;
 
 				case GROUP:
@@ -378,23 +393,18 @@ public class Tunable {
 			JTextField field = new JTextField(value.toString(), 8);
 			field.setHorizontalAlignment(JTextField.RIGHT);
 			inputField = field;
-			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == BOOLEAN) {
 			JCheckBox box = new JCheckBox();
 			box.setSelected(((Boolean) value).booleanValue());
 			inputField = box;
-			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == NODEATTRIBUTE) {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 			inputField = getAttributePanel(nodeAttributes);
-			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == EDGEATTRIBUTE) {
 			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 			inputField = getAttributePanel(edgeAttributes);
-			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == LIST) {
 			inputField = getListPanel((Object[]) lowerBound);
-			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == STRING) {
 			JTextField field = new JTextField(value.toString(), 20);
 			field.setHorizontalAlignment(JTextField.RIGHT);
@@ -407,6 +417,16 @@ public class Tunable {
 			inputField.setEnabled(false);
 		}
 		inputField.setBackground(Color.white);
+
+		// Special case for MULTISELECT lists
+		if ((type == LIST || type == NODEATTRIBUTE || type == EDGEATTRIBUTE) 
+			  && (flag & MULTISELECT) != 0) {
+			JScrollPane listScroller = new JScrollPane(inputField);
+			listScroller.setPreferredSize(new Dimension(200,100));
+			tunablePanel.add(listScroller, BorderLayout.LINE_END);
+		} else {
+			tunablePanel.add(inputField, BorderLayout.LINE_END);
+		}
 		return tunablePanel;
 	}
 
@@ -416,11 +436,11 @@ public class Tunable {
 	 * choose from for doing attribute-dependent layouts.
 	 *
 	 * @param attributes CyAttributes of the appropriate (edge or node) type
-	 * @return a JComboBox with an entry for each attribute
+	 * @return a JComponent with an entry for each attribute
 	 */
-	private JComboBox getAttributePanel(CyAttributes attributes) {
+	private JComponent getAttributePanel(CyAttributes attributes) {
 		final String[] attList = attributes.getAttributeNames();
-		final List<Object> list = new ArrayList<Object>();
+		final List<String> list = new ArrayList<String>();
 
 		// See if we have any initial attributes (mapped into lowerBound)
 		if (lowerBound != null) {
@@ -441,11 +461,17 @@ public class Tunable {
 			}
 		}
 
-		// Set our current value as selected
-		JComboBox box = new JComboBox(list.toArray());
-		box.setSelectedItem((String) value);
-
-		return box;
+		if ((flag & MULTISELECT) != 0) {
+			// Set our current value as selected
+			JList jList = new JList(list.toArray());
+			jList.setSelectedIndices(getSelectedValues(list, decodeArray((String)value)));
+			return jList;
+		} else {
+			// Set our current value as selected
+			JComboBox box = new JComboBox(list.toArray());
+			box.setSelectedItem((String) value);
+			return box;
+		}
 	}
 
 	/**
@@ -455,12 +481,55 @@ public class Tunable {
 	 * @param list Array of Objects containing the list
 	 * @return a JComboBox with an entry for each item on the list
 	 */
-	private JComboBox getListPanel(Object[] list) {
-		// Set our current value as selected
-		JComboBox box = new JComboBox(list);
-		box.setSelectedIndex(((Integer) value).intValue());
+	private JComponent getListPanel(Object[] list) {
+		if ((flag & MULTISELECT) != 0) {
+			JList jList =  new JList(list);
+			if (value != null && ((String)value).length() > 0) {
+				jList.setSelectedIndices(decodeIntegerArray((String)value));
+			}
+			return jList;
+		} else {
+			// Set our current value as selected
+			JComboBox box = new JComboBox(list);
+			box.setSelectedIndex(((Integer) value).intValue());
+			return box;
+		}
+	}
 
-		return box;
+	/**
+ 	 * Return an array of indices suitable for selection. The passed
+ 	 * String value is an encoded list of entries of the form [attr1,attr2,...]
+ 	 *
+ 	 * @param attrs the list of attributes to choose from
+ 	 * @param values the list of values
+ 	 * @return array of integers to use to select values
+ 	 */
+	private int[] getSelectedValues(List<String>attrs, String[] values) {
+		if (values == null) return null;
+		int[] selVals = new int[values.length];
+		for (int i = 0; i < values.length;  i++) {
+			selVals[i] = attrs.indexOf(values[i]);
+		}
+		return selVals;
+	}
+
+	private int[] decodeIntegerArray(String value) {
+		if(value == null || value.length() == 0) {
+			return null;
+		}
+		String[] valArray = value.split(",");
+		int[] intArray = new int[valArray.length];
+		for (int i = 0; i < valArray.length; i++) {
+			intArray[i] = Integer.valueOf(valArray[i]).intValue();
+		}
+		return intArray;
+	}
+
+	private String[] decodeArray(String value) {
+		if(value == null || value.length() == 0) {
+			return null;
+		}
+		return value.split(",");
 	}
 
 	/**
@@ -480,9 +549,29 @@ public class Tunable {
 		} else if (type == BOOLEAN) {
 			newValue = new Boolean(((JCheckBox) inputField).isSelected());
 		} else if (type == LIST) {
-			newValue = new Integer(((JComboBox) inputField).getSelectedIndex());
+			if ((flag & MULTISELECT) != 0) {
+				int [] selVals = ((JList) inputField).getSelectedIndices();
+				String newString = "";
+				for (int i = 0; i < selVals.length; i++) {
+					newString += Integer.toString(selVals[i]);
+					if (i < selVals.length) newString+= ",";
+				}
+				newValue = (Object) newString;
+			} else {
+				newValue = new Integer(((JComboBox) inputField).getSelectedIndex());
+			}
 		} else if ((type == NODEATTRIBUTE) || (type == EDGEATTRIBUTE)) {
-			newValue = (String) ((JComboBox) inputField).getSelectedItem();
+			if ((flag & MULTISELECT) != 0) {
+				Object [] selVals = ((JList) inputField).getSelectedValues();
+				String newString = "";
+				for (int i = 0; i < selVals.length; i++) {
+					newString += selVals[i];
+					if (i < selVals.length) newString+= ",";
+				}
+				newValue = (Object) newString;
+			} else {
+				newValue = (String) ((JComboBox) inputField).getSelectedItem();
+			}
 		} else {
 			newValue = ((JTextField) inputField).getText();
 		}
