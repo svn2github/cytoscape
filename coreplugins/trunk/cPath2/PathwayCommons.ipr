@@ -252,7 +252,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file:///Users/cerami/dev/idea/PathwayCommons.iml" filepath="/Users/cerami/dev/idea/PathwayCommons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PathwayCommons.iml" filepath="$PROJECT_DIR$/PathwayCommons.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">

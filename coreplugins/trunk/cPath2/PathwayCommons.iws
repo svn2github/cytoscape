@@ -17,9 +17,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/cPathSearchPanel.java" afterPath="$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/cPathSearchPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PathwayCommons.ipr" afterPath="$PROJECT_DIR$/PathwayCommons.ipr" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PathwayCommons.iws" afterPath="$PROJECT_DIR$/PathwayCommons.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugin.props" afterPath="$PROJECT_DIR$/plugin.props" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/plugin/CPathPlugIn2.java" afterPath="$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/plugin/CPathPlugIn2.java" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -90,34 +90,13 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <exception_breakpoints>
-      <breakpoint class_name="java.lang.ArrayIndexOutOfBoundsException" package_name="java.lang">
-        <option name="NOTIFY_CAUGHT" value="true" />
-        <option name="NOTIFY_UNCAUGHT" value="true" />
-        <option name="ENABLED" value="true" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="true" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <filter>
-          <option name="PATTERN" value="apple.laf.AquaTabbedPaneUI" />
-          <option name="ENABLED" value="true" />
-        </filter>
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-    </exception_breakpoints>
     <breakpoint_any>
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
-        <option name="NOTIFY_UNCAUGHT" value="false" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
         <option name="ENABLED" value="false" />
         <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="LOG_ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
         <option name="COUNT_FILTER_ENABLED" value="false" />
         <option name="COUNT_FILTER" value="0" />
@@ -129,10 +108,10 @@
       </breakpoint>
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
-        <option name="NOTIFY_UNCAUGHT" value="false" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
         <option name="ENABLED" value="false" />
         <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="LOG_ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
         <option name="COUNT_FILTER_ENABLED" value="false" />
         <option name="COUNT_FILTER" value="0" />
@@ -144,24 +123,7 @@
       </breakpoint>
     </breakpoint_any>
     <breakpoint_rules />
-    <ui_properties>
-      <property name="exception_breakpoints_flattenPackages" value="true" />
-      <property name="line_breakpoints_groupByClasses" value="true" />
-      <property name="exception_breakpoints_groupByMethods" value="false" />
-      <property name="method_breakpoints_viewId" value="TABLE" />
-      <property name="line_breakpoints_viewId" value="TABLE" />
-      <property name="exception_breakpoints_groupByClasses" value="true" />
-      <property name="method_breakpoints_groupByMethods" value="false" />
-      <property name="field_breakpoints_flattenPackages" value="true" />
-      <property name="line_breakpoints_flattenPackages" value="true" />
-      <property name="exception_breakpoints_viewId" value="TABLE" />
-      <property name="field_breakpoints_groupByClasses" value="true" />
-      <property name="method_breakpoints_flattenPackages" value="true" />
-      <property name="field_breakpoints_viewId" value="TABLE" />
-      <property name="line_breakpoints_groupByMethods" value="false" />
-      <property name="method_breakpoints_groupByClasses" value="true" />
-      <property name="field_breakpoints_groupByMethods" value="false" />
-    </ui_properties>
+    <ui_properties />
   </component>
   <component name="ErrorTreeViewConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -182,46 +144,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SelectPhysicalEntity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/task/SelectPhysicalEntity.java">
+      <file leaf-file-name="CPathProtocol.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/web_service/CPathProtocol.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="164" column="0" selection-start="6682" selection-end="6682" vertical-scroll-proportion="0.6336336">
-              <folding />
+            <state line="16" column="0" selection-start="576" selection-end="576" vertical-scroll-proportion="0.33333334">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CPathProperties.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/web_service/CPathProperties.java">
+      <file leaf-file-name="build.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="58" selection-start="1138" selection-end="1138" vertical-scroll-proportion="0.8108108">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DownloadDetails.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/DownloadDetails.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="13" selection-start="879" selection-end="879" vertical-scroll-proportion="0.2027027">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MergeDialog.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/MergeDialog.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="243" column="8" selection-start="8099" selection-end="8149" vertical-scroll-proportion="0.022522522">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ModalPanel.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/ModalPanel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="13" selection-start="2065" selection-end="2065" vertical-scroll-proportion="0.24774775">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-3.1972477">
               <folding />
             </state>
           </provider>
@@ -230,43 +167,16 @@
       <file leaf-file-name="CPathPlugIn2.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/plugin/CPathPlugIn2.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="96" column="79" selection-start="4123" selection-end="4123" vertical-scroll-proportion="0.11261261">
+            <state line="58" column="13" selection-start="2618" selection-end="2618" vertical-scroll-proportion="0.29816514">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cPathSearchPanel.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/cPathSearchPanel.java">
+      <file leaf-file-name="CheckNodeRenderer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/tree/CheckNodeRenderer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="58" column="0" selection-start="1997" selection-end="1997" vertical-scroll-proportion="0.27027026">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CollapsablePanel.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/CollapsablePanel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="160" column="8" selection-start="5896" selection-end="5896" vertical-scroll-proportion="0.21621622">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BinarySifVisualStyleUtil.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/cytoscape/BinarySifVisualStyleUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="82" column="4" selection-start="3672" selection-end="3672" vertical-scroll-proportion="1.5765766">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BioPaxConstants.class" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar:///Users/cerami/dev/cytoscape/plugins/core/biopax.jar!/org/mskcc/biopax_plugin/util/biopax/BioPaxConstants.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="41" selection-start="310" selection-end="310" vertical-scroll-proportion="0.13824885">
+            <state line="52" column="73" selection-start="1701" selection-end="1701" vertical-scroll-proportion="0.07339449">
               <folding />
             </state>
           </provider>
@@ -486,8 +396,30 @@
           <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
+      </PATH>
+      <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/util" />
+          <option name="myItemId" value="PathwayCommons.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PathwayCommons" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/test" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -538,6 +470,10 @@
           <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/plugin" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
       </PATH>
       <PATH>
         <PATH_ELEMENT>
@@ -578,7 +514,7 @@
       <showLibraryContents />
       <hideEmptyPackages />
       <abbreviatePackageNames />
-      <showStructure Scope="false" ProjectPane="false" PackagesPane="false" Favorites="false" />
+      <showStructure ProjectPane="false" PackagesPane="false" Favorites="false" />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
@@ -586,8 +522,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="cvs_file_history_treeWidth0" value="334" />
-    <property name="cvs_file_history_flatWidth2" value="334" />
+    <property name="cvs_file_history_treeWidth0" value="330" />
+    <property name="cvs_file_history_flatWidth2" value="330" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="cvs_file_history_treeOrder1" value="1" />
     <property name="RunManagerConfig.compileBeforeRunning" value="true" />
@@ -595,16 +531,16 @@
     <property name="cvs_file_history_treeOrder3" value="3" />
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="cvs_file_history_flatOrder1" value="1" />
-    <property name="cvs_file_history_flatWidth1" value="334" />
-    <property name="cvs_file_history_treeWidth1" value="334" />
-    <property name="cvs_file_history_treeWidth3" value="333" />
+    <property name="cvs_file_history_flatWidth1" value="330" />
+    <property name="cvs_file_history_treeWidth1" value="330" />
+    <property name="cvs_file_history_treeWidth3" value="330" />
     <property name="cvs_file_history_treeOrder2" value="2" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="cvs_file_history_flatOrder2" value="2" />
     <property name="MemberChooser.showClasses" value="true" />
-    <property name="cvs_file_history_flatWidth0" value="334" />
-    <property name="cvs_file_history_flatWidth3" value="333" />
-    <property name="cvs_file_history_treeWidth2" value="334" />
+    <property name="cvs_file_history_flatWidth0" value="330" />
+    <property name="cvs_file_history_flatWidth3" value="330" />
+    <property name="cvs_file_history_treeWidth2" value="330" />
     <property name="cvs_file_history_flatOrder3" value="3" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="cvs_file_history_treeOrder0" value="0" />
@@ -613,22 +549,19 @@
   <component name="ReadonlyStatusHandler">
     <option name="SHOW_DIALOG" value="true" />
   </component>
-  <component name="RecentsManager">
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="org.mskcc.pathway_commons.task" />
-      <recent name="org.mskcc.pathway_commons.filters" />
-      <recent name="org.mskcc.pathway_commons.view" />
-    </key>
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="org.cytoscape.coreplugin.cpath2.view" />
-      <recent name="org.cytoscape.coreplugin.cpath2.view.tree" />
-      <recent name="org.cytoscape.coreplugin.cpath2.view.model" />
-      <recent name="org.cytoscape.coreplugin.cpath2.web_service" />
-      <recent name="org.cytoscape.coreplugin.cpath2.util" />
-    </key>
-  </component>
+  <component name="RecentsManager" />
   <component name="RestoreUpdateTree" />
-  <component name="RunManager" selected="Application.Unnamed1">
+  <component name="RunManager" selected="JUnit.TestWebService">
+    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <module name="" />
+    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -667,94 +600,21 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
     </configuration>
-    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <module name="" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="CyMain" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" value="cytoscape.CyMain" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="-p plugins" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+    <configuration default="false" name="TestWebService" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
+      <module name="PathwayCommons" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <module name="PathwayCommons" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="50235" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="PCPanel" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" value="org.mskcc.cpath2.view.cPathSearchPanel" />
+      <option name="PACKAGE_NAME" value="org.cytoscape.coreplugin.cpath2.test" />
+      <option name="MAIN_CLASS_NAME" value="org.cytoscape.coreplugin.cpath2.test.TestCytoscapeCPathWebService" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <module name="PathwayCommons" />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="SandBox" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" value="org.mskcc.pathway_commons.view.SandBox" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <module name="PathwayCommons" />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="Unnamed" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" value="org.mskcc.cpath2.view.tree.TreeDemo" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <module name="PathwayCommons" />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="Unnamed1" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" value="org.mskcc.cpath2.view.InternalFrameDemo" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <module name="PathwayCommons" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method>
@@ -766,16 +626,7 @@
       <Port>5050</Port>
     </configuration>
   </component>
-  <component name="ScopeViewComponent">
-    <subPane subId="Project">
-      <PATH>
-        <PATH_ELEMENT USER_OBJECT="Root">
-          <option name="myItemId" value="" />
-          <option name="myItemType" value="" />
-        </PATH_ELEMENT>
-      </PATH>
-    </subPane>
-  </component>
+  <component name="ScopeViewComponent" />
   <component name="SelectInManager" />
   <component name="StarteamConfiguration">
     <option name="SERVER" value="" />
@@ -825,7 +676,6 @@
     <option name="UPDATE_RECURSIVELY" value="true" />
     <option name="MERGE_DRY_RUN" value="false" />
     <configuration useDefault="true">/Users/cerami/.subversion</configuration>
-    <upgradeMode>none</upgradeMode>
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -842,30 +692,30 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="22" width="1440" height="813" extended-state="0" />
+    <frame x="1" y="22" width="1440" height="801" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="13" />
+      <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22573689" order="0" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31424582" order="1" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24946082" order="0" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32022473" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33333334" order="9" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286517" order="8" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
-      <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="6" />
-      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="10" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="4" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.13946801" order="1" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960895" order="11" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30726257" order="2" />
+      <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5948645" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
-      <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="5" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39944133" order="4" />
+      <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="4" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="12" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32551724" order="8" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292011" order="8" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="0" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="3" />
@@ -952,107 +802,95 @@
     <option name="myLastEditedConfigurable" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/task/ExecuteGetRecordByCPathId.java">
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/InteractionBundlePanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="263" column="92" selection-start="10485" selection-end="10485" vertical-scroll-proportion="0.022522522">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Classes/classes.jar!/java/util/List.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="17" selection-start="151" selection-end="151" vertical-scroll-proportion="0.022522522">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/util/NetworkGroupUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="33" selection-start="631" selection-end="631" vertical-scroll-proportion="0.2957958">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/web_service/CPathWebService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="22" selection-start="5938" selection-end="5953" vertical-scroll-proportion="0.022522522">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/SearchHitsPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="81" column="67" selection-start="3401" selection-end="3401" vertical-scroll-proportion="0.023041476">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/task/SelectPhysicalEntity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="164" column="0" selection-start="6682" selection-end="6682" vertical-scroll-proportion="0.6336336">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/web_service/CPathProperties.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="58" selection-start="1138" selection-end="1138" vertical-scroll-proportion="0.8108108">
+        <state line="235" column="57" selection-start="10382" selection-end="10402" vertical-scroll-proportion="0.8123515">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/DownloadDetails.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="13" selection-start="879" selection-end="879" vertical-scroll-proportion="0.2027027">
+        <state line="160" column="70" selection-start="5900" selection-end="5925" vertical-scroll-proportion="0.7648456">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/MergeDialog.java">
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/task/ExecuteGetRecordByCPathId.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="243" column="8" selection-start="8099" selection-end="8149" vertical-scroll-proportion="0.022522522">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Users/cerami/dev/cytoscape/plugins/core/biopax.jar!/org/mskcc/biopax_plugin/util/biopax/BioPaxConstants.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="41" selection-start="310" selection-end="310" vertical-scroll-proportion="0.13824885">
+        <state line="421" column="23" selection-start="17223" selection-end="17223" vertical-scroll-proportion="13.752969">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/cytoscape/BinarySifVisualStyleUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="4" selection-start="3672" selection-end="3672" vertical-scroll-proportion="1.5765766">
+        <state line="56" column="12" selection-start="2571" selection-end="2571" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/CollapsablePanel.java">
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/SearchBoxPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="160" column="8" selection-start="5896" selection-end="5896" vertical-scroll-proportion="0.21621622">
+        <state line="171" column="0" selection-start="6705" selection-end="6705" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/ModalPanel.java">
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/resources/arrow_collapsed.gif">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/resources/types.gif">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/resources/question.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/resources/run_tool.gif">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/resources/stock_zoom-16.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/tree/CheckNodeRenderer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="13" selection-start="2065" selection-end="2065" vertical-scroll-proportion="0.24774775">
+        <state line="52" column="73" selection-start="1701" selection-end="1701" vertical-scroll-proportion="0.07339449">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/cPathSearchPanel.java">
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/resources/stock_toggle-graphics-16.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/web_service/CPathProtocol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="0" selection-start="1997" selection-end="1997" vertical-scroll-proportion="0.27027026">
-          <folding />
+        <state line="16" column="0" selection-start="576" selection-end="576" vertical-scroll-proportion="0.33333334">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/view/resources/stock_autofilter.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/cytoscape/coreplugin/cpath2/plugin/CPathPlugIn2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="96" column="79" selection-start="4123" selection-end="4123" vertical-scroll-proportion="0.11261261">
+        <state line="58" column="13" selection-start="2618" selection-end="2618" vertical-scroll-proportion="0.29816514">
           <folding />
         </state>
       </provider>
