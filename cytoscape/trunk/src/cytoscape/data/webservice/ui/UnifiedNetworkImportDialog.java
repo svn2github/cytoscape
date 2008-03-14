@@ -34,22 +34,17 @@
 */
 package cytoscape.data.webservice.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Icon;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -95,7 +90,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	//Default icon for about dialog
 	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_internet-32.png"));
 
-	static {
+    private int numDataSources = 0;
+
+    static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
 	}
 
@@ -119,7 +116,15 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		initComponents();
 		setDatasource();
 
-		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
+        //  If we have no data sources, show the install panel
+        if (numDataSources ==0) {
+            this.getContentPane().add(installPanel);
+        } else {
+            this.getContentPane().add(queryPanel);
+        }
+
+        this.pack();
+        setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
 		// Initialize GUI panel.
@@ -283,8 +288,10 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		dataQueryPanelLayout.setVerticalGroup(dataQueryPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                          .add(0, 247, Short.MAX_VALUE));
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
+
+        queryPanel = new JPanel();
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(queryPanel);
+		queryPanel.setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                .add(titlePanel,
 		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
@@ -325,10 +332,56 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
 		dataQueryPanel.setLayout(new BorderLayout());
-		pack();
-	} // </editor-fold>                        
+        createInstallPanel();
+	} // </editor-fold>
 
-	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void createInstallPanel() {
+        installPanel = new JPanel();
+        installPanel.setLayout(new BorderLayout());
+        JLabel titleIconLabel2 = new JLabel();
+        titleIconLabel2.setIcon(new ImageIcon
+                (Cytoscape.class.getResource("images/networkImportIcon.png")));
+        JPanel titlePanel2 = new JPanel();
+        titlePanel2.add(titleIconLabel2);
+        titlePanel2.setBackground(new Color(0, 0, 0));
+        titlePanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
+        installPanel.add(titlePanel2, BorderLayout.NORTH);
+
+        JPanel internalPanel = new JPanel();
+        internalPanel.setBorder(new EmptyBorder(10,10,10,10));
+        internalPanel.setLayout(new BoxLayout(internalPanel, BoxLayout.PAGE_AXIS));
+        JTextArea area = new JTextArea (1, 40);
+        area.setBorder(new EmptyBorder(0,0,0,0));
+        area.setText("There are no network import web service clients installed.");
+        area.setEditable(false);
+        area.setOpaque(false);
+        area.setAlignmentX(Component.LEFT_ALIGNMENT);
+        internalPanel.add(area);
+        JButton installButton = new JButton ("Install Web Services Pack");
+        installButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        internalPanel.add(Box.createVerticalStrut(15));
+        internalPanel.add(installButton);
+        installPanel.add(internalPanel, BorderLayout.CENTER);
+        createInstallButtonListener(installButton);
+    }
+
+    private void createInstallButtonListener(JButton installButton) {
+        installButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                //  TODO:  Install Code goes here...
+                //  Container contentPane = UnifiedNetworkImportDialog.this.getContentPane();
+                //  contentPane.removeAll();
+                //  contentPane.add(queryPanel);
+                //  UnifiedNetworkImportDialog.this.pack();
+                //  UnifiedNetworkImportDialog.this.setLocationRelativeTo(Cytoscape.getDesktop());
+                setDatasource();
+                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                        "The auto-install feature is under construction.");
+            }
+        });
+    }
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
 		final CyWebServiceEvent<String> event = buildEvent();
@@ -431,7 +484,6 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 	private void setDatasource() {
 		List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
-
 		for (WebServiceClient client : clients) {
 			if (client instanceof NetworkImportWebServiceClient) {
 				this.datasourceComboBox.addItem(client.getDisplayName());
@@ -441,7 +493,8 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				    && (((WebServiceClientGUI) client).getGUI() != null)) {
                     serviceUIPanels.put(client.getClientID(),
 					                     ((WebServiceClientGUI) client).getGUI());
-				}
+                    numDataSources++;
+                }
 			}
 		}
 	}
@@ -472,8 +525,10 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JButton aboutButton;
 	private javax.swing.JPanel buttonPanel;
+    private JPanel queryPanel;
+    private JPanel installPanel;
 
-	//    private javax.swing.JButton cancelButton;
+    //    private javax.swing.JButton cancelButton;
 	private javax.swing.JButton clearButton;
 	private javax.swing.JPanel dataQueryPanel;
 
