@@ -69,8 +69,15 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 				}
 
 				public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+					
+					if(combo.getSelectedItem() == null && combo.getItemCount() != 0) {
+						combo.setSelectedIndex(0);
+						CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
+                                combo.getItemAt(0));
+					} else 
 					CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
 					                                                 combo.getSelectedItem());
+					
 				}
 
 				public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
@@ -131,6 +138,9 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 	 */
 	public void setAvailableValues(Object[] values) {
 		((JComboBox) editor).setModel(new DefaultComboBoxModel(values));
+		if(((JComboBox) editor).getItemCount() != 0){
+			((JComboBox) editor).setSelectedIndex(0);
+		}
 	}
 
 	/**
@@ -158,7 +168,11 @@ public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
 			}
 
 			if (value == null) {
-				component = new JLabel("Please Select a Value!");
+				component = new JLabel("Select Value!");
+				component.setForeground(SELECTED);
+				((JLabel) component).setFont(new Font("SansSerif", Font.BOLD, 12));
+			} else if(value == null && ((JComboBox) editor).getItemCount() != 0) {
+				component = new JLabel(((JComboBox) editor).getItemAt(0).toString());
 				component.setForeground(SELECTED);
 				((JLabel) component).setFont(new Font("SansSerif", Font.BOLD, 12));
 			}

@@ -761,16 +761,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private PropertyRendererRegistry rendReg = new PropertyRendererRegistry();
 	private PropertyEditorRegistry editorReg = new PropertyEditorRegistry();
 
-	private PropertyEditor getCellEditor(VisualPropertyType type) {
-		Class dataType = type.getDataType();
-
-		if (dataType == Number.class) {
-			return numberCellEditor;
-		}
-
-		return null;
-	}
-
 	// End of variables declaration
 	private void vsNameComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		final String vsName = (String) vsNameComboBox.getSelectedItem();
@@ -818,8 +808,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			 * Add properties to current property sheet.
 			 */
 			for (Property prop : props) {
-				// System.out.println("======== renderer: " +
-				// editorReg.getEditor(prop));
 				if (prop.getCategory().startsWith(CATEGORY_UNUSED) == false) {
 					if (prop.getCategory().equals(NODE_VISUAL_MAPPING)) {
 						visualPropertySheetPanel.addProperty(0, prop);
@@ -1050,7 +1038,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		final Set mappingTypes = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
 		                                  .getMappingNames();
-
+		
 		mappingTypeEditor.setAvailableValues(mappingTypes.toArray());
 
 		VisualPropertyIcon newIcon;
@@ -1278,7 +1266,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				newProp.setDisplayName(type.getName());
 				newProp.setHiddenObject(type);
-				newProp.setValue("Please select an attribute!");
+				newProp.setValue("Please select a value!");
 
 				if (type.isNodeProp()) {
 					newProp.setCategory(NODE_VISUAL_MAPPING);
@@ -1487,7 +1475,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			attrName = firstMap.getControllingAttributeName();
 
 			if (attrName == null) {
-				calculatorTypeProp.setValue("Please select a value!");
+				calculatorTypeProp.setValue("Select Value");
 				rendReg.registerRenderer(calculatorTypeProp, emptyBoxRenderer);
 			} else {
 				calculatorTypeProp.setValue(attrName);
@@ -1979,7 +1967,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (e.getPropertyName().equalsIgnoreCase("value") == false)
 			return;
 
-		if (e.getNewValue() == e.getOldValue())
+		if (e.getNewValue().equals(e.getOldValue()))
 			return;
 
 		final PropertySheetTable table = visualPropertySheetPanel.getTable();
@@ -1994,10 +1982,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Item selectedItem = (Item) visualPropertySheetPanel.getTable().getValueAt(selected, 0);
 		VizMapperProperty prop = (VizMapperProperty) selectedItem.getProperty();
 
-		final VisualPropertyType type;
+		VisualPropertyType type = null;
 		String ctrAttrName = null;
 
-		VizMapperProperty typeRootProp;
+		VizMapperProperty typeRootProp = null;
 
 		if ((prop.getParentProperty() == null) && e.getNewValue() instanceof String) {
 			/*
@@ -2006,7 +1994,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			typeRootProp = (VizMapperProperty) prop;
 			type = (VisualPropertyType) ((VizMapperProperty) prop).getHiddenObject();
 			ctrAttrName = (String) e.getNewValue();
-		} else if ((prop.getParentProperty() == null) && (e.getNewValue() == null)) {
+		} else if (prop.getParentProperty() == null && e.getNewValue() == null) {
 			/*
 			 * Empty cell selected. no need to change anything.
 			 */
@@ -2019,7 +2007,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			
 			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getHiddenObject();
 		}
-
+		
 		/*
 		 * Mapping type changed
 		 */
@@ -2203,8 +2191,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final CyAttributes attr;
 		ctrAttrName = mapping.getControllingAttributeName();
 		
-		System.out.println("!!!!!!!CTR attr name: " + ctrAttrName);
-		
 		if (type.isNodeProp()) {
 			attr = Cytoscape.getNodeAttributes();
 		} else {
@@ -2241,9 +2227,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if ((((Number) newValue).doubleValue() == 0)
 			    || (newValue instanceof Number && type.toString().endsWith("OPACITY")
 			       && (((Number) newValue).doubleValue() > 255))) {
-				// JOptionPane.showMessageDialog(this, type.getName() + " should
-				// be positive number.",
-				// "Value is out of range", JOptionPane.WARNING_MESSAGE);
+
 				int shownPropCount = table.getRowCount();
 				Property p = null;
 				Object val = null;
@@ -3614,11 +3598,24 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		VizMapperProperty prop = ((VizMapperProperty) curProp);
 		
-		if (prop.getHiddenObject() instanceof VisualPropertyType && curProp.getDisplayName().contains("Mapping Type") == false) {
+		if (prop.getHiddenObject() instanceof VisualPropertyType && 
+				prop.getDisplayName().contains("Mapping Type") == false &&
+				prop.getValue() != null && prop.getValue().toString().startsWith("Please select") == false
+				) {
 			// Enble delete menu
 			delete.setEnabled(true);
 
+			Property[] children = prop.getSubProperties();
+			for(Property p: children) {
+				if(p.getDisplayName() != null && p.getDisplayName().contains("Mapping Type")){
+					if(p.getValue() == null || p.getValue().equals("Discrete Mapping") == false) {
+						return;
+					}
+				}
+			}
+			
 			VisualPropertyType type = ((VisualPropertyType) prop.getHiddenObject());
+
 			Class dataType = type.getDataType();
 
 			if (dataType == Color.class) {
