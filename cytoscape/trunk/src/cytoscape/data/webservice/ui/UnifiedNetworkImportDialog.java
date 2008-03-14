@@ -374,9 +374,25 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
                 //  contentPane.add(queryPanel);
                 //  UnifiedNetworkImportDialog.this.pack();
                 //  UnifiedNetworkImportDialog.this.setLocationRelativeTo(Cytoscape.getDesktop());
+            	cytoscape.data.webservice.util.WebServiceThemeInstall wst = new cytoscape.data.webservice.util.WebServiceThemeInstall();
+            	boolean displayError = false;
+            	try {
+            		cytoscape.plugin.DownloadableInfo InstalledTheme = wst.installTheme();
+            		if (InstalledTheme == null)
+            			displayError = true;
+            	} catch (java.io.IOException ioe) {
+            		displayError = true;
+            		ioe.printStackTrace();
+            	} catch (org.jdom.JDOMException jde) {
+            		displayError = true;
+            		jde.printStackTrace();
+            	} finally {
+            		if (displayError)
+            			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Failed to install the WebServiceThemePack", "Install Error", JOptionPane.ERROR_MESSAGE);
+            	}
                 setDatasource();
-                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                        "The auto-install feature is under construction.");
+//                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+//                        "The auto-install feature is under construction.");
             }
         });
     }
