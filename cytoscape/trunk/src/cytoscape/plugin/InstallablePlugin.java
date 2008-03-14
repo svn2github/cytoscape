@@ -65,6 +65,7 @@ public class InstallablePlugin implements Installable {
 		}
 
 		File Download = new File(PluginDir, createFileName(infoObj));
+		taskMonitor.setStatus(infoObj.toString() + " loading...");
 		URLUtil.download(infoObj.getObjectUrl(), Download, taskMonitor);
 
 		try {
@@ -73,7 +74,7 @@ public class InstallablePlugin implements Installable {
 
 			if (ClassName != null) {
 				infoObj.setPluginClassName(ClassName);
-			} else {
+			} else { // no class name so delete the plugin
 				Download.delete();
 				Download.getParentFile().delete();
 				ManagerException E = new ManagerException(
