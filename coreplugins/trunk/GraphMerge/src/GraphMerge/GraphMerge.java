@@ -36,7 +36,6 @@
 */
 package GraphMerge;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.plugin.CytoscapePlugin;
@@ -44,43 +43,9 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.GraphSetUtils;
 import cytoscape.util.CyNetworkNaming;
 
-import cytoscape.view.CyNetworkView;
-
-import giny.model.Edge;
-import giny.model.Node;
-
-import giny.view.EdgeView;
-import giny.view.Label;
-import giny.view.NodeView;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 
 /**
