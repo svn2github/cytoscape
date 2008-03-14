@@ -722,48 +722,51 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			taskMonitor.setPercentCompleted(-1);
 
 			PluginManager Mgr = PluginManager.getPluginManager();
+			cytoscape.plugin.Installable ins = infoObj.getInstallable();
 			try {
 				infoObj = Mgr.download(infoObj, taskMonitor);
 				taskMonitor.setStatus(infoObj.getName() + " v"
 						+ infoObj.getObjectVersion() + " complete.");
 
-				PluginManageDialog.this.setMessage(infoObj.getName()
+				PluginManageDialog.this.setMessage(infoObj.toString()
 						+ " install complete.");
 
-				taskMonitor.setStatus(infoObj.getName() + " v"
-						+ infoObj.getObjectVersion() + " loading...");
+				taskMonitor.setStatus(infoObj.toString() + " loading...");
 
 				Mgr.install(infoObj);
 				Mgr.loadPlugin(infoObj);
 			} catch (java.io.IOException ioe) {
-				taskMonitor
-						.setException(ioe, "Failed to download "
+				taskMonitor.setException(ioe, "Failed to download "
 								+ infoObj.getName() + " from "
 								+ infoObj.getObjectUrl());
 				infoObj = null;
 				ioe.printStackTrace();
 			} catch (cytoscape.plugin.ManagerException me) {
-				PluginManageDialog.this.setError("Failed to install "
-						+ infoObj.toString());
+				PluginManageDialog.this.setError("Failed to install " + infoObj.toString());
 				taskMonitor.setException(me, me.getMessage());
 				infoObj = null;
 				me.printStackTrace();
 			} catch (cytoscape.plugin.PluginException pe) {
-				PluginManageDialog.this.setError("Failed to install "
-						+ infoObj.toString());
+				PluginManageDialog.this.setError("Failed to install " + infoObj.toString());
 				infoObj = null;
 				taskMonitor.setException(pe, pe.getMessage());
 				pe.printStackTrace();
 			} catch (ClassNotFoundException cne) {
 				taskMonitor.setException(cne, cne.getMessage());
-				PluginManageDialog.this.setError("Failed to install "
-						+ infoObj.toString());
+				PluginManageDialog.this.setError("Failed to install " + infoObj.toString());
 				infoObj = null;
 				cne.printStackTrace();
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
 
+			try {
+			if (infoObj == null)
+				ins.uninstall();
+			} catch (cytoscape.plugin.ManagerException me) {
+				me.printStackTrace();
+			}
+			
 		}
 
 		public DownloadableInfo getDownloadedPlugin() {
@@ -780,7 +783,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		}
 
 		public String getTitle() {
-			return "Installing Cytoscape Plugin '" + infoObj.getName() + "'";
+			return "Installing Cytoscape " + infoObj.getType().name() + " '" + infoObj.getName() + "'";
 		}
 
 	}
