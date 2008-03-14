@@ -14,7 +14,7 @@ pluginDescription=Provides set operations (union, intersection, difference) for 
 pluginVersion=1.0
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.5
+cytoscapeVersion=2.5,2.6
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Core
