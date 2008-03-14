@@ -493,9 +493,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				    && (((WebServiceClientGUI) client).getGUI() != null)) {
                     serviceUIPanels.put(client.getClientID(),
 					                     ((WebServiceClientGUI) client).getGUI());
-                    numDataSources++;
                 }
-			}
+                numDataSources++;
+            }
 		}
 	}
 
