@@ -124,8 +124,13 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 */
 	public Object clone() {
 		final ContinuousMapping clone = new ContinuousMapping(defaultObj, mapType);
-		String ctrAttrName = new String(this.attrName);
-		clone.setControllingAttributeName(ctrAttrName, null, true);
+		// MLC 03/13/08 BEGIN:
+		// String ctrAttrName = new String(this.attrName);
+		// clone.setControllingAttributeName(ctrAttrName, null, true);
+		// Strings are immutable, so you don't need to copy them:
+		clone.setControllingAttributeName(attrName, null, true);
+
+		// MLC 03/13/08 END.
 		//  Copy over all listeners...
 		for (ChangeListener listener : observers)
 			clone.addChangeListener(listener);
