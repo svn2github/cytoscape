@@ -131,8 +131,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	 * @return true if the plugin was successfulyl constructed, false otherwise
 	 */
 	public static Object loadPlugin(Class pluginClass)
-			throws InstantiationException, IllegalAccessException,
-			PluginException {
+			//throws InstantiationException, IllegalAccessException,
+			throws PluginException {
 
 		if (pluginClass == null) {
 			return false;
@@ -156,10 +156,10 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			// for the class cytoscape.CyWindow, which is no longer defined,
 			// propagates a ClassNotFoundException (which, if we don't
 			// catch causes the application to crash).
-			String ErrorMsg = "Unchecked '" + e.getClass().getName() + "'exception while attempting to load plugin.\n"
-					+ "This may happen when loading a plugin written for a different "
-					+ "version of Cytoscape than this one, or if the plugin is dependent "
-					+ "on another plugin that isn't available. Consult the documentation "
+			String ErrorMsg = "Unchecked '" + e.getClass().getName() + "'exception while attempting to load plugin " + pluginClass.getName() + ".\n"  
+					+ "This may happen when loading a plugin written for a different \n"
+					+ "version of Cytoscape than this one, or if the plugin is dependent \n"
+					+ "on another plugin that isn't available. Consult the documentation \n"
 					+ "for the plugin or contact the plugin author for more information.";
 
 			//System.err.println(ErrorMsg);

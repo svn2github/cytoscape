@@ -275,8 +275,10 @@ public class PluginManager {
 			try {
 				pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
 			} catch (IOException ioe) {
+				ioe.printStackTrace();
 				loadingErrors.add(ioe);
 			} catch (TrackerException te) {
+				te.printStackTrace();
 				loadingErrors.add(te); 
 			} finally { // document should be cleaned out by now
 				try {
@@ -665,6 +667,7 @@ public class PluginManager {
 				try {
 					ToLoad.add(jarURL(FileName));
 				} catch (MalformedURLException mue) {
+					mue.printStackTrace();
 					loadingErrors.add(mue);
 				}
 			}
@@ -761,6 +764,7 @@ public class PluginManager {
 					}
 				}
 			} catch (MalformedURLException mue) {
+				mue.printStackTrace();
 				loadingErrors.add(mue);
 			}
 		}
@@ -808,7 +812,6 @@ public class PluginManager {
 		for (int i = 0; i < urls.length; ++i) {
 
 			try {
-
 				System.out.println("");
 				System.out.println("attempting to load plugin url: ");
 				System.out.println(urls[i]);
@@ -863,13 +866,10 @@ public class PluginManager {
 						entry = entry.replaceAll("/|\\\\", ".");
 
 						Class pc = getPluginClass(entry);
-
 						if (pc == null) {
 							continue;
 						}
-
 						totalPlugins++;
-
 						loadPlugin(pc, jar, register);
 						break;
 					}
@@ -879,10 +879,13 @@ public class PluginManager {
 							.println("No plugin found in specified jar - assuming it's a library.");
 				}
 			} catch (IOException ioe) {
+				ioe.printStackTrace();
 				loadingErrors.add(ioe);
 			} catch (ClassNotFoundException cne) {
+				cne.printStackTrace();
 				loadingErrors.add(cne);
 			} catch (PluginException pe) {
+				pe.printStackTrace();
 				loadingErrors.add(pe);
 			}
 		}
@@ -892,7 +895,6 @@ public class PluginManager {
 	// these are jars that *may or may not* extend CytoscapePlugin but may be
 	// used by jars that do
 	private void loadResourcePlugins(List<String> resourcePlugins) {
-		// throws ClassNotFoundException, PluginException {
 		// attempt to load resource plugins
 		for (String resource : resourcePlugins) {
 			System.out.println("");
@@ -903,8 +905,10 @@ public class PluginManager {
 				Class rclass = Class.forName(resource);
 				loadPlugin(rclass, null, true);
 			} catch (ClassNotFoundException cne) {
+				cne.printStackTrace();
 				loadingErrors.add(cne);
 			} catch (PluginException pe) {
+				pe.printStackTrace();
 				loadingErrors.add(pe);
 			}
 		}
@@ -914,19 +918,14 @@ public class PluginManager {
 	private void loadPlugin(Class plugin, JarFile jar, boolean register) throws PluginException {
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)
 				&& !loadedPlugins.contains(plugin.getName())) {
-			try {
-				Object obj = CytoscapePlugin.loadPlugin(plugin);
+
+			Object obj = CytoscapePlugin.loadPlugin(plugin);
 				if (obj != null) {
 					loadedPlugins.add(plugin.getName());
 					if (register) {
 						register((CytoscapePlugin) obj, jar);
 					}
 				}
-			} catch (InstantiationException inse) {
-				loadingErrors.add(inse);
-			} catch (IllegalAccessException ille) {
-				loadingErrors.add(ille);
-			}
 
 		} else if (loadedPlugins.contains(plugin.getName())) {
 			duplicateClasses.add(plugin.getName());
