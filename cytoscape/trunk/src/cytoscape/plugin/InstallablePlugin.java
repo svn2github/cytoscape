@@ -65,7 +65,8 @@ public class InstallablePlugin implements Installable {
 		}
 
 		File Download = new File(PluginDir, createFileName(infoObj));
-		taskMonitor.setStatus(infoObj.toString() + " loading...");
+		if (taskMonitor != null)
+			taskMonitor.setStatus(infoObj.toString() + " loading...");
 		URLUtil.download(infoObj.getObjectUrl(), Download, taskMonitor);
 
 		try {
