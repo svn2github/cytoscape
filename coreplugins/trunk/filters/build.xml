@@ -155,7 +155,7 @@
 	    <target name="clean"
 	        description="Deletes all build files and starts fresh">
 	        <delete dir="${build.dir}"/>
-	        <delete file="${dist.dir}/filters.jar"/>
+	        <delete dir="${dist.dir}"/>
 	    </target>
 		
 	</project>
