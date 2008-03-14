@@ -30,8 +30,6 @@
 				<hr/>
 				<h3><a href="http://chianti.ucsd.edu/Cyto-2_6-beta">Download 2.6 Beta Release!</a></h3>
 				<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">Submit Bugs!</a>
-				<br/>
-				<a href="http://cytoscape.org/cgi-bin/moin.cgi/QC_Event">Earn Rewards!</a>
 				</p></div>
 		</div>
 		<? include "nav.php"; ?><? include "detailed_nav.php"; ?>
