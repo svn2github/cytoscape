@@ -79,6 +79,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
 
 
 /**
@@ -97,13 +99,16 @@ public class NCBI extends Thread{
     private Node node;
     private javax.swing.JProgressBar jProgressBar2;
     private int button;
-    private GUI gui;
+    private JScrollPane jScrollPane1;
+    private JList jList1 = new JList();
+    private boolean shouldKeepRunning;
     
-    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar2, int buttonpress){
+    public NCBI(String nodeID, Node node1, javax.swing.JProgressBar jBar2, int buttonpress, JScrollPane jPane){
     	nodeId = nodeID;
     	node=node1;
     	jProgressBar2 = jBar2;
     	button = buttonpress;
+    	jScrollPane1 = jPane;
 //    	this.gui = that;
     	
 		try {
@@ -166,30 +171,48 @@ public class NCBI extends Thread{
 	
 //	public void startSearch(String nodeId, Node node){
 	public void run(){
-		
-    	CyWebServiceEvent cyweb1 = new CyWebServiceEvent("ncbi_entrez", WSEventType.SEARCH_DATABASE, node);
-    	ImportTask task1 = new ImportTask(nodeId);
-		task1.startsearch();
-		System.out.println("trying to import network");
-//		importNetwork("675", null);
-		
-    	if (button == 1){
-    		importNetwork("675", Cytoscape.getCurrentNetwork());
-    	}
-    	if (button == 2){
-    		importNetwork("675", null);	
-    	}
-		
-		System.out.println("the network has been imported");
+		shouldKeepRunning = true;
+			
+			CyWebServiceEvent cyweb1 = new CyWebServiceEvent("ncbi_entrez", WSEventType.SEARCH_DATABASE, node);
+			
+			
+				ImportTask task1 = new ImportTask(nodeId);
+				task1.startsearch();
+			
+				System.out.println("trying to import network");
+	
+			//importNetwork("675", null);
+				
+				
+				if(shouldKeepRunning){
+					if (button == 1){
+						importNetwork("675", Cytoscape.getCurrentNetwork());
+					}
+					if (button == 2){
+						importNetwork("675", null);	
+					}
+				} else {
+					System.out.println("canceled import");
+					try{
+						this.wait(100);
+					} catch (Exception e){
+						System.out.println("wait failed");
+					}
+				}
+			
+				System.out.println("the network has been imported");
+			
+		//gui.setVisible(false);
 		jProgressBar2.setIndeterminate(false);
-		gui.setVisible(false);
-		
     	
 //		search(cyweb1.getParameter().toString(), cyweb1);
 	}
 	
 	public void kill(){
-    	jProgressBar2.setIndeterminate(false);
+		System.out.println("search canceled");
+		shouldKeepRunning = false;
+		jProgressBar2.setIndeterminate(false);
+    	
     }
 	
 //	@Override
@@ -290,7 +313,8 @@ public class NCBI extends Thread{
 
 		CyAttributes nAttr = Cytoscape.getNodeAttributes();
 		CyAttributes eAttr = Cytoscape.getEdgeAttributes();
-		
+		String[] foundNodesContainer = new String[500];
+		int i = 0;
 		
 		for (String key : resMap.keySet()) {
 			List<String[]> itrs = resMap.get(key);
@@ -320,12 +344,20 @@ public class NCBI extends Thread{
 
 				System.out.println("Entry: " + node1.getIdentifier() + " - "
 				                   + node2.getIdentifier() + "===== " + node2.getClass());
+				foundNodesContainer[i]= "Entry: " + node1.getIdentifier() + " - "
+					+ node2.getIdentifier() + "===== " + node2.getClass();
 				nodes.add(node1);
 				nodes.add(node2);
 				edges.add(edge);
+				i++;
 			}
 		}
-		
+		String[] foundNodes = new String[i+1];
+		for(int j=0; j<i+1; j++){
+			foundNodes[j]=foundNodesContainer[j];
+		}
+		jList1.setListData(foundNodes);
+		jScrollPane1.setViewportView(jList1);
 		if (net == null) {
 			Cytoscape.createNetwork(nodes, edges, "NCBI: ", null);
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);

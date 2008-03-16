@@ -71,6 +71,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+
 import edu.ucsd.bioeng.idekerlab.intactclient.IntactClient;
 
 public class Intact extends Thread{
@@ -108,18 +111,22 @@ public class Intact extends Thread{
     private int button;
     private GUI gui;
     private String clientID = "edu.ucsd.bioeng.idekerlab.intactclient.IntactClient";
+    private boolean shouldKeepRunning;
+    private JScrollPane jScrollPane1;
+    private JList jList1 = new JList();
     
-    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1, int buttonpress){
+    public Intact(String nodeID, Node node1, javax.swing.JProgressBar jBar1, int buttonpress, JScrollPane jPane){
     	nodeId = nodeID;
     	node=node1;
     	jProgressBar1 = jBar1;
     	button = buttonpress;
-//    	this.gui = that;
+    	jScrollPane1 = jPane;
     }
 	
 	//public void startSearch(String nodeId, Node node){
     public void run(){
     	setProperty();
+    	shouldKeepRunning = true;
     	
         WebServiceClientImpl try2 = (IntactClient) IntactClient.getClient();
         System.out.println("WebSErviceClientImpl: " + try2);
@@ -186,6 +193,7 @@ public class Intact extends Thread{
     }
     
     public void kill(){
+    	shouldKeepRunning = false;
     	jProgressBar1.setIndeterminate(false);
     }
 
@@ -325,7 +333,14 @@ public class Intact extends Thread{
 			                                                        null, null);
 			Cytoscape.getPropertyChangeSupport().firePropertyChange(pce);
 		}
-
+		Object[] container = new Object[nodes.size()];
+		container = nodes.toArray();
+		String[] textNodes = new String[nodes.size()];
+		for(int index=0; index<nodes.size(); index++){
+			textNodes[index] = container[index].toString();
+		}
+		jList1.setListData(textNodes);
+		jScrollPane1.setViewportView(jList1);
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
 	
@@ -532,11 +547,11 @@ public class Intact extends Thread{
 		System.out.println("======================");
 		
 		if (e.getSource().equals(CLIENT_ID)) {
-			if (e.getEventType().equals(WSEventType.IMPORT_NETWORK)) {
+			if (e.getEventType().equals(WSEventType.IMPORT_NETWORK) && shouldKeepRunning) {
 				System.out.println("We are now importing network, yay!");
 				System.out.println("This is e.getParameter(): " + e.getParameter());
 				importNetwork(e.getParameter(), null);
-			} else if (e.getEventType().equals(WSEventType.EXPAND_NETWORK)) {
+			} else if (e.getEventType().equals(WSEventType.EXPAND_NETWORK) && shouldKeepRunning) {
 				System.out.println("2");
 				System.out.println("This is e.getParameter(): " + e.getParameter());
 				importNetwork(e.getParameter(), Cytoscape.getCurrentNetwork());
