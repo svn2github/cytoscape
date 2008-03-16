@@ -210,9 +210,8 @@ public class NCBI extends Thread{
 	
 	public void kill(){
 		System.out.println("search canceled");
-		shouldKeepRunning = false;
 		jProgressBar2.setIndeterminate(false);
-    	
+		shouldKeepRunning = false;	
     }
 	
 //	@Override

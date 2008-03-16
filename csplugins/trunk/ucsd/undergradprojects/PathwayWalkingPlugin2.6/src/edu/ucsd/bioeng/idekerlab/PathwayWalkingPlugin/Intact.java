@@ -109,7 +109,6 @@ public class Intact extends Thread{
     private Node node;
     private javax.swing.JProgressBar jProgressBar1;
     private int button;
-    private GUI gui;
     private String clientID = "edu.ucsd.bioeng.idekerlab.intactclient.IntactClient";
     private boolean shouldKeepRunning;
     private JScrollPane jScrollPane1;
@@ -193,8 +192,9 @@ public class Intact extends Thread{
     }
     
     public void kill(){
-    	shouldKeepRunning = false;
+    	System.out.println("Search Canceled");
     	jProgressBar1.setIndeterminate(false);
+    	shouldKeepRunning = false;
     }
 
     

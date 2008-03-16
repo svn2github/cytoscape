@@ -360,7 +360,7 @@ public class GUI extends javax.swing.JFrame {
     		jProgressBar2.setIndeterminate(true);
 	        System.out.println("[Search & Open in New] Button Pressed");
 	        
-	        attempt2 = new NCBI(columnSearch(), node, jProgressBar1, 2, jScrollPane1);
+	        attempt2 = new NCBI(columnSearch(), node, jProgressBar2, 2, jScrollPane1);
 	        attempt2.start();
 	        
 	        

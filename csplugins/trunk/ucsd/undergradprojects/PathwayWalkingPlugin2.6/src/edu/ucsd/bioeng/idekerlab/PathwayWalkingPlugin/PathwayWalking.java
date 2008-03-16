@@ -65,7 +65,7 @@ public class PathwayWalking {
                 selectedNode, new Integer(5));
 
 		final JMenuItem source = new JMenuItem(map);
-		source.setBackground(Color.red);
+//		source.setBackground(Color.red);
 		source.setEnabled(true);
 		top_menu.add(source);
 		return top_menu;
