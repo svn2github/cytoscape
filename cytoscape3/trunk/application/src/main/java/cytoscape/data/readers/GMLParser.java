@@ -205,8 +205,8 @@ public class GMLParser {
 	/**
 	 * A list consists of zero or more paris of keys and values
 	 */
-	public Vector parseList() throws IOException, ParseException {
-		Vector result = new Vector();
+	public Vector<KeyValue> parseList() throws IOException, ParseException {
+		Vector<KeyValue> result = new Vector<KeyValue>();
 
 		while (isKey()) {
 			String key = parseKey();

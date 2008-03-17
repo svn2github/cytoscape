@@ -53,6 +53,7 @@ import cytoscape.visual.VisualStyle;
 
 //-------------------------------------------------------------------------
 import org.cytoscape.Node;
+import org.cytoscape.Edge;
 import java.awt.event.ActionEvent;
 
 import java.util.Iterator;
@@ -90,8 +91,8 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
 
-		Set nodes = current_network.getSelectedNodes();
-		Set edges = current_network.getSelectedEdges();
+		Set<Node> nodes = current_network.getSelectedNodes();
+		Set<Edge> edges = current_network.getSelectedEdges();
 
 		GraphPerspective new_network = Cytoscape.createNetwork(nodes, edges,
 		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),

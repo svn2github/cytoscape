@@ -65,13 +65,6 @@ public class CytoPanelAction extends CytoscapeAction {
 	protected String title;
 	protected int position;
 
-	/**
-	 * @deprecated Use other constructor instead. Will be removed 4/2008.
-	 */
-	public CytoPanelAction(JCheckBoxMenuItem menuItem, CytoPanel cytoPanel) {
-		this(cytoPanel.getTitle(), cytoPanel.getCompassDirection(), menuItem.isSelected());
-	}
-
 	public CytoPanelAction(CytoPanelName cp, boolean show) {
 		this(cp.getTitle(), cp.getCompassDirection(), show);
 	}

@@ -44,7 +44,7 @@ import java.util.*;
  * GML terminal, or contain a mapping from string keys to other
  * GMLNodes
  **/
-public class GMLNode implements Comparator {
+public class GMLNode implements Comparator<String> {
 	/**
 	 * True if this node is a terminal. (A terminal node is one
 	 * that just contains a piece of data (string,double,int) and
@@ -73,8 +73,8 @@ public class GMLNode implements Comparator {
 	 * terminal. It contains a mapping from Strings to a vector
 	 * of GMLNodes
 	 */
-	private HashMap key2GMLNodeVec;
-	private HashMap key2Order;
+	private HashMap<String,Vector<GMLNode>> key2GMLNodeVec;
+	private HashMap<String,Integer> key2Order;
 	private int order;
 
 	/**
@@ -99,8 +99,8 @@ public class GMLNode implements Comparator {
 	public GMLNode() {
 		terminal = false;
 		order = 1;
-		key2Order = new HashMap();
-		key2GMLNodeVec = new HashMap();
+		key2Order = new HashMap<String,Integer>();
+		key2GMLNodeVec = new HashMap<String,Vector<GMLNode>>();
 	}
 
 	/**
@@ -130,17 +130,16 @@ public class GMLNode implements Comparator {
 			result += (lineSep + indent + "[" + lineSep);
 
 			//Iterator it = key2GMLNodeVec.keySet().iterator();
-			Vector sortedKeys = new Vector(key2GMLNodeVec.keySet());
+			Vector<String> sortedKeys = new Vector<String>(key2GMLNodeVec.keySet());
 			Collections.sort(sortedKeys, this);
 
 			Iterator it = sortedKeys.iterator();
 
 			while (it.hasNext()) {
 				String key = (String) it.next();
-				Iterator mapIt = ((Vector) key2GMLNodeVec.get(key)).iterator();
+				Vector<GMLNode> mapIt = key2GMLNodeVec.get(key);
 
-				while (mapIt.hasNext()) {
-					GMLNode next = (GMLNode) mapIt.next();
+				for (GMLNode next : mapIt) {
 					result += (indent + key + next.toString(indent + TAB) + lineSep);
 				}
 			}
@@ -159,10 +158,10 @@ public class GMLNode implements Comparator {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int compare(Object o1, Object o2) {
+	public int compare(String o1, String o2) {
 		//get the integer orderings for these two objects
-		Integer int1 = (Integer) key2Order.get(o1);
-		Integer int2 = (Integer) key2Order.get(o2);
+		Integer int1 = key2Order.get(o1);
+		Integer int2 = key2Order.get(o2);
 
 		if ((int1 == null) || (int2 == null))
 			throw new RuntimeException("Forgot to add an order mapping for one of the keys");
@@ -202,13 +201,12 @@ public class GMLNode implements Comparator {
 	 * @param node The node which will map to the key
 	 */
 	public void addMapping(String key, GMLNode node) {
-		Vector values;
-		values = (Vector) key2GMLNodeVec.get(key);
+		Vector<GMLNode> values =  key2GMLNodeVec.get(key);
 
 		if (values == null) {
-			values = new Vector();
+			values = new Vector<GMLNode>();
 			key2GMLNodeVec.put(key, values);
-			key2Order.put(key, new Integer(order++));
+			key2Order.put(key, order++);
 		}
 
 		values.add(node);
@@ -219,7 +217,7 @@ public class GMLNode implements Comparator {
 	 * @param key The key to look up
 	 * @return A vector of GMLNodes (may be null)
 	 */
-	public Vector getMapping(String key) {
-		return (Vector) key2GMLNodeVec.get(key);
+	public Vector<GMLNode> getMapping(String key) {
+		return key2GMLNodeVec.get(key);
 	}
 }

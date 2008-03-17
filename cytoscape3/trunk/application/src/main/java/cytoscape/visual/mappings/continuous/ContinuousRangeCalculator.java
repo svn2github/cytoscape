@@ -45,7 +45,7 @@ package cytoscape.visual.mappings.continuous;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.Interpolator;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,17 +53,17 @@ import java.util.Map;
  * Calculates the Range for Continuous Mappers.
  */
 public class ContinuousRangeCalculator {
-    private ArrayList points;
+    private List<ContinuousMappingPoint> points;
     private Interpolator interpolator;
     private Map attrBundle;
 
     /**
      * Constructor.
-     * @param points ArrayList of ContinuousMappingPoints.
+     * @param points List of ContinuousMappingPoints.
      * @param interpolator Interpolator Object.
      * @param attrBundle Attribute Bundle.
      */
-    public ContinuousRangeCalculator(ArrayList points,
+    public ContinuousRangeCalculator(List<ContinuousMappingPoint> points,
         Interpolator interpolator, Map attrBundle) {
         this.points = points;
         this.interpolator = interpolator;

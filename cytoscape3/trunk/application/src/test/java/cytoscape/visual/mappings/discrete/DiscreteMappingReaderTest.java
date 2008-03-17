@@ -55,7 +55,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import java.util.Properties;
-import java.util.TreeMap;
+import java.util.SortedMap;
 
 
 /**
@@ -78,7 +78,7 @@ public class DiscreteMappingReaderTest extends TestCase {
 		String attribute = reader.getControllingAttributeName();
 		assertEquals("canonicalName", attribute);
 
-		TreeMap map = reader.getMap();
+		SortedMap<Object,Object> map = reader.getMap();
 
 		//  Test a few of the mapping elements.
 		Color color = (Color) map.get("A");
@@ -154,7 +154,7 @@ public class DiscreteMappingReaderTest extends TestCase {
 		String attribute = reader.getControllingAttributeName();
 		assertEquals("controlling attr name", "homer", attribute);
 
-		TreeMap map = reader.getMap();
+		SortedMap<Object,Object> map = reader.getMap();
 
 		Color color = (Color) map.get(new Integer(1));
 		assertEquals(new Color(204, 255, 255), color);

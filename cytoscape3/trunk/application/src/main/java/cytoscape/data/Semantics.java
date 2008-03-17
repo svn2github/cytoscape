@@ -181,8 +181,8 @@ public class Semantics {
 	 * the species attribute in the node attributes of the supplied network and
 	 * returns a Set containing every unique value found.
 	 */
-	public static Set getSpeciesInNetwork(final GraphPerspective network) {
-		final Set returnSet = new HashSet();
+	public static Set<String> getSpeciesInNetwork(final GraphPerspective network) {
+		final Set<String> returnSet = new HashSet<String>();
 
 		if (network == null) {
 			return returnSet;
@@ -209,12 +209,13 @@ public class Semantics {
 	 *
 	 * If the argument is null, returns an array of length 0.
 	 */
+	@SuppressWarnings("unchecked")  // again the result of stupid attributes being untyped
 	public static String[] getInteractionTypes(final GraphPerspective network) {
 		if (network == null) {
 			return new String[0];
 		}
 
-		final HashMap dupsFilter = new HashMap();
+		final HashMap<Object,Object> dupsFilter = new HashMap<Object,Object>();
 		final CyAttributes attrs = Cytoscape.getEdgeAttributes();
 		final MultiHashMap mmap = attrs.getMultiHashMap();
 		final CountedIterator objs = mmap.getObjectKeys(Semantics.INTERACTION);
@@ -310,8 +311,8 @@ public class Semantics {
 	 * be determined, then use the BioDataServer to add all the synonyms that
 	 * are registered for the name argument.
 	 */
-	public static List getAllSynonyms(final String name, final GraphPerspective network) {
-		final List returnList = new ArrayList();
+	public static List<String> getAllSynonyms(final String name, final GraphPerspective network) {
+		final List<String> returnList = new ArrayList<String>();
 
 		if (name == null) {
 			return returnList;

@@ -131,18 +131,18 @@ public class CytoscapeSessionReader {
 	private static final String BOOKMARKS_FILE = "session_bookmarks.xml";
 	private static final String NETWORK_ROOT = "Network Root";
 	private URL sourceURL;
-	private HashMap networkURLs = null;
+	private Map<String,URL> networkURLs = null;
 	private URL cysessionFileURL = null;
 	private URL vizmapFileURL = null;
 	private URL cytoscapePropsURL = null;
 	private URL bookmarksFileURL = null;
-	private HashMap<String, Network> netMap;
+	private Map<String, Network> netMap;
 	private String sessionID;
 	private Cysession session;
-	private List networkList;
+	private List<String> networkList;
 	private Bookmarks bookmarks = null;
-	private HashMap<String, List<File>> pluginFileListMap;
-	private HashMap<String, List<String>> theURLstrMap = new HashMap<String, List<String>>();
+	private Map<String, List<File>> pluginFileListMap;
+	private Map<String, List<String>> theURLstrMap = new HashMap<String, List<String>>();
 
 	// Task monitor
 	private TaskMonitor taskMonitor;
@@ -169,7 +169,7 @@ public class CytoscapeSessionReader {
 		else
 			this.sourceURL = temporaryLocalFileURL(sourceName);
 
-		networkList = new ArrayList();
+		networkList = new ArrayList<String>();
 		bookmarks = new Bookmarks();
 		pluginFileListMap = new HashMap<String, List<File>>();
 
@@ -244,7 +244,7 @@ public class CytoscapeSessionReader {
 
 		ZipInputStream zis = new ZipInputStream(juc.getInputStream());
 
-		networkURLs = new HashMap();
+		networkURLs = new HashMap<String,URL>();
 
 		// Extract list of entries
 		ZipEntry zen = null;
@@ -574,7 +574,7 @@ public class CytoscapeSessionReader {
 
 		Iterator frameIt = session.getSessionState().getDesktop().getNetworkFrames()
 		                          .getNetworkFrame().iterator();
-		Map frameMap = new HashMap();
+		Map<String,NetworkFrame> frameMap = new HashMap<String,NetworkFrame>();
 
 		while (frameIt.hasNext()) {
 			NetworkFrame netFrame = (NetworkFrame) frameIt.next();
@@ -586,7 +586,7 @@ public class CytoscapeSessionReader {
 
 		for (int i = 0; i < frames.length; i++) {
 			JInternalFrame frame = (JInternalFrame) frames[i];
-			NetworkFrame nFrame = (NetworkFrame) frameMap.get(frame.getTitle());
+			NetworkFrame nFrame = frameMap.get(frame.getTitle());
 
 			if (nFrame != null) {
 				frame.setSize(nFrame.getWidth().intValue(), nFrame.getHeight().intValue());
@@ -624,7 +624,7 @@ public class CytoscapeSessionReader {
 			childNet = netMap.get(child.getId());
 
 			String targetNwUrlName = sessionID + "/" + childNet.getFilename();
-			targetNetworkURL = (URL) networkURLs.get(targetNwUrlName);
+			targetNetworkURL = networkURLs.get(targetNwUrlName);
 
 			// handle the unlikely event that the stored network is corrupted with a bad filename (bug fix)
 			if (targetNetworkURL == null)
@@ -715,7 +715,7 @@ public class CytoscapeSessionReader {
 			return;
 		}
 
-		final List selectedNodeList = new ArrayList();
+		final List<org.cytoscape.Node> selectedNodeList = new ArrayList<org.cytoscape.Node>();
 		final Iterator it = selected.getNode().iterator();
 
 		while (it.hasNext()) {
@@ -763,7 +763,7 @@ public class CytoscapeSessionReader {
 		}
 
 		org.cytoscape.Edge targetEdge = null;
-		final List selectedEdgeList = new ArrayList();
+		final List<org.cytoscape.Edge> selectedEdgeList = new ArrayList<org.cytoscape.Edge>();
 		final Iterator it = selected.getEdge().iterator();
 
 		while (it.hasNext()) {

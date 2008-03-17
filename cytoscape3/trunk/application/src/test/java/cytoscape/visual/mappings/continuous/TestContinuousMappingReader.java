@@ -53,6 +53,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -82,7 +83,7 @@ public class TestContinuousMappingReader extends TestCase {
 		Interpolator interp = reader.getInterpolator();
 		assertTrue(interp instanceof LinearNumberToColorInterpolator);
 
-		ArrayList points = reader.getPoints();
+		List<ContinuousMappingPoint> points = reader.getPoints();
 		assertEquals(3, points.size());
 
 		ContinuousMappingPoint point0 = (ContinuousMappingPoint) points.get(0);

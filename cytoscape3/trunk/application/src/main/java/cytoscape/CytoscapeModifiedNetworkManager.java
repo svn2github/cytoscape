@@ -48,6 +48,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -72,7 +73,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 *
 	 */
 	public static final String CLEAN = "Clean";
-	private static HashMap networkStateMap = new HashMap();
+	private static Map<GraphPerspective,String> networkStateMap = new HashMap<GraphPerspective,String>();
 
 	/**
 	 *
@@ -120,12 +121,12 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 * @return
 	 */
 	public static boolean isModified(GraphPerspective net) {
-		Object modObj = networkStateMap.get(net);
+		String modObj = networkStateMap.get(net);
 
 		if (modObj == null) // no network in table, so it can't be modified
 		 {
 			return false;
-		} else if (modObj.toString().equals(MODIFIED)) {
+		} else if (modObj.equals(MODIFIED)) {
 			return true;
 		} else {
 			return false;

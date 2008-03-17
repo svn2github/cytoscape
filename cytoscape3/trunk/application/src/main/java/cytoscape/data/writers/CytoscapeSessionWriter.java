@@ -194,7 +194,7 @@ public class CytoscapeSessionWriter {
 	private String[] targetFileNames;
 	private Bookmarks bookmarks;
 	private Set<GraphPerspective> networks;
-	private HashMap networkMap;
+	private Map<String,String> networkMap;
 	private String sessionNote = "You can add note for this session here.";
 
 	//
@@ -204,12 +204,12 @@ public class CytoscapeSessionWriter {
 	private Cysession session;
 	private NetworkTree tree;
 	private SessionState sState;
-	private List netList;
+	private List<Network> netList;
 	private Cytopanels cps;
 	private Plugins plugins;
 	private String sessionDirName;
 	private String sessionDir;
-	private Map viewMap = Cytoscape.getNetworkViewMap();
+	private Map<String,CyNetworkView> viewMap = Cytoscape.getNetworkViewMap();
 	private ZipOutputStream zos; 
 
 	/**
@@ -228,7 +228,7 @@ public class CytoscapeSessionWriter {
 
 		// Get all networks in the session
 		networks = Cytoscape.getNetworkSet();
-		networkMap = new HashMap();
+		networkMap = new HashMap<String,String>();
 	}
 
 	/**
@@ -521,7 +521,7 @@ public class CytoscapeSessionWriter {
 
 		GraphPerspective curNet = Cytoscape.getNetwork((String) networkMap.get(node.getUserObject()
 		                                                                    .toString()));
-		CyNetworkView curView = (CyNetworkView) viewMap.get(curNet.getIdentifier());
+		CyNetworkView curView = viewMap.get(curNet.getIdentifier());
 
 		if (!node.getUserObject().toString().equals("Network Root")) {
 			String visualStyleName = null;
@@ -563,7 +563,7 @@ public class CytoscapeSessionWriter {
 			curNode.setParent(parent);
 		}
 
-		List children = curNode.getChild();
+		List<Child> children = curNode.getChild();
 
 		for (int i = 0; i < childCount; i++) {
 			// Exctract a network from the Network Panel.
@@ -721,7 +721,7 @@ public class CytoscapeSessionWriter {
 		// List-up all hidden nodes
 		if (type == NODE) {
 			HiddenNodes hn = factory.createHiddenNodes();
-			List hNodeList = hn.getNode();
+			List<cytoscape.generated.Node> hNodeList = hn.getNode();
 
 			org.cytoscape.Node targetNode = null;
 			String curNodeName = null;
@@ -752,7 +752,7 @@ public class CytoscapeSessionWriter {
 			}
 		} else if (type == EDGE) {
 			HiddenEdges he = factory.createHiddenEdges();
-			List hEdgeList = he.getEdge();
+			List<cytoscape.generated.Edge> hEdgeList = he.getEdge();
 
 			org.cytoscape.Edge targetEdge = null;
 			String curEdgeName = null;
@@ -802,9 +802,9 @@ public class CytoscapeSessionWriter {
 	private Object getSelectedObjects(int type, GraphPerspective curNet) throws JAXBException {
 		if (type == NODE) {
 			SelectedNodes sn = factory.createSelectedNodes();
-			List sNodeList = sn.getNode();
+			List<cytoscape.generated.Node> sNodeList = sn.getNode();
 
-			Set selectedNodes = curNet.getSelectedNodes();
+			Set<org.cytoscape.Node> selectedNodes = curNet.getSelectedNodes();
 
 			if (selectedNodes.size() != 0) {
 				Iterator iterator = selectedNodes.iterator();
@@ -826,9 +826,9 @@ public class CytoscapeSessionWriter {
 			}
 		} else if (type == EDGE) {
 			SelectedEdges se = factory.createSelectedEdges();
-			List sEdgeList = se.getEdge();
+			List<cytoscape.generated.Edge> sEdgeList = se.getEdge();
 
-			Set selectedEdges = curNet.getSelectedEdges();
+			Set<org.cytoscape.Edge> selectedEdges = curNet.getSelectedEdges();
 
 			if (selectedEdges.size() != 0) {
 				Iterator iterator = selectedEdges.iterator();
@@ -868,7 +868,7 @@ public class CytoscapeSessionWriter {
 	 */
 	private Cytopanels getCytoPanelStates() throws JAXBException {
 		Cytopanels cps = factory.createCytopanels();
-		List cytoPanelList = cps.getCytopanel();
+		List<cytoscape.generated.Cytopanel> cytoPanelList = cps.getCytopanel();
 
 		String[] cytopanelStates = new String[CYTOPANEL_COUNT + 1];
 		int[] selectedPanels = new int[CYTOPANEL_COUNT + 1];
@@ -891,7 +891,7 @@ public class CytoscapeSessionWriter {
 
 		for (int i = 1; i < (CYTOPANEL_COUNT + 1); i++) {
 			Panels internalPanels = factory.createPanels();
-			List iPanelList = internalPanels.getPanel();
+			List<Panel> iPanelList = internalPanels.getPanel();
 			Panel iPanel = factory.createPanel();
 			iPanel.setId("test");
 

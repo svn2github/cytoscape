@@ -109,7 +109,7 @@ public class AllTests extends TestCase {
 
 			// create a list of URLs of the test classes
 			Enumeration entries = thisJar.entries();
-			List testNames = new ArrayList();
+			List<String> testNames = new ArrayList<String>();
 
 			while (entries.hasMoreElements()) {
 				String name = ((JarEntry) entries.nextElement()).getName();

@@ -148,6 +148,7 @@ public class OntologyTerm extends AbstractChangeable implements org.biojava.onto
 	 * In this implementation, key is the synonym name, and value is the synonym
 	 * type.
 	 */
+	@SuppressWarnings("unchecked") // TODO fix cyattributes to return the proper type
 	public void addSynonym(Object synonym, SynonymType type) {
 		Map<Object, SynonymType> synoMap = Cytoscape.getNodeAttributes()
 		                                            .getMapAttribute(name,

@@ -181,7 +181,7 @@ public class CyNetworkUtilities {
 		//GraphPerspective theGraph = network.getGraphPerspective();
 		//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		int nodeFound = 0;
-		Vector matchedNodes = new Vector();
+		Vector<Node> matchedNodes = new Vector<Node>();
 
 		for (Iterator i = network.nodesIterator(); i.hasNext();) {
 			Node node = (Node) i.next();

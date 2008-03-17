@@ -189,6 +189,7 @@ public class CyAttributesUtilsTest extends TestCase {
 	/**
 	 *  DOCUMENT ME!
 	 */
+	@SuppressWarnings("unchecked") // stupid attrs
 	public void testCopyAttribute() {
 		Node testNode3 = Cytoscape.getCyNode("testNode3", true);
 		Edge testEdgeCopy = Cytoscape.getCyEdge(testNode1.getIdentifier(), "Interaction Value",
@@ -300,6 +301,7 @@ public class CyAttributesUtilsTest extends TestCase {
 		TSIValues.add("url2: publication 1");
 	}
 
+	@SuppressWarnings("unchecked") // stupid attrs
 	private void testAttributes(GraphObject go) {
 		String goID = go.getIdentifier();
 		CyAttributes attrs = null;

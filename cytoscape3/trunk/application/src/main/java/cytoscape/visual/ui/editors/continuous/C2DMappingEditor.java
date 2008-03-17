@@ -140,6 +140,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked") // for thumbs
 	protected void addButtonActionPerformed(ActionEvent evt) {
 		BoundaryRangeValues newRange;
 		Object defValue = Cytoscape.getVisualMappingManager().getVisualStyle()
@@ -181,6 +182,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 		repaint();
 	}
 	
+	@SuppressWarnings("unchecked") // for thumbs
 	protected void updateMap() {
 		List<Thumb> thumbs = slider.getModel().getSortedThumbs();
 
@@ -238,7 +240,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			repaint();
 		}
 	}
-
+ 
+	@SuppressWarnings("unchecked") // for thumbs
 	private void setSlider() {
 		Dimension dim = new Dimension(600, 100);
 		setPreferredSize(dim);
@@ -248,10 +251,8 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e
-					                                                                                                                                                                                       .getX(),
-					                                                                           e
-					                                                                                                                                                                                         .getY());
+					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e.getX(),
+					                                                                           e.getY());
 
 					Object newValue = null;
 

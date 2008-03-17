@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.SortedMap;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -73,7 +74,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	String attrName; // the name of the controlling data attribute
 	protected byte mapType; //  node or edge; specifies which attributes
 	                        //  to use.
-	private TreeMap treeMap; //  contains the actual map elements (sorted)
+	private SortedMap<Object,Object> treeMap; //  contains the actual map elements (sorted)
 	private Object lastKey;
 
 	/**
@@ -94,7 +95,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * ObjectMapping.NODE_MAPPING.
 	*/
 	public DiscreteMapping(Object defObj, String attrName, byte mapType) {
-		treeMap = new TreeMap();
+		treeMap = new TreeMap<Object,Object>();
 
 		this.defaultObj = defObj;
 		this.rangeClass = defObj.getClass();
@@ -120,7 +121,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 			clone.addChangeListener(listener);
 		}
 
-		clone.putAll((TreeMap) treeMap.clone());
+		clone.putAll(treeMap);  // TODO we used to clone treeMap, but I don't think it's necessary
 
 		return clone;
 	}
@@ -166,7 +167,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * gets all map values
 	 *
 	 */
-	public Map getAll() {
+	public Map<Object,Object> getAll() {
 		return treeMap;
 	}
 
@@ -220,7 +221,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 		this.attrName = attrName;
 
 		if (preserveMapping == false) {
-			treeMap = new TreeMap();
+			treeMap = new TreeMap<Object,Object>();
 		}
 	}
 

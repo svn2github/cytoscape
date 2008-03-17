@@ -220,7 +220,7 @@ public class XGMMLWriter {
 	private String[] networkAttNames = null;
 	private GraphPerspective network;
 	private CyNetworkView networkView;
-	private ArrayList <CyGroup>groupList;
+	private List <CyGroup>groupList;
 	private	HashMap <Node, Node>nodeMap;
 	private	HashMap <Edge, Edge>edgeMap;
 	private boolean noCytoscapeGraphics = false;
@@ -565,12 +565,12 @@ public class XGMMLWriter {
 		// and see if any of the children of a group are
 		// themselves a group. If so, remove them from
 		// the list & will pick them up on recursion
-		groupList = (ArrayList) CyGroupManager.getGroupList();
+		groupList = CyGroupManager.getGroupList();
 
 		if ((groupList == null) || groupList.isEmpty())
 			return;
 
-		HashMap embeddedGroupList = new HashMap();
+		HashMap<CyGroup,CyGroup> embeddedGroupList = new HashMap<CyGroup,CyGroup>();
 
 		for (CyGroup group: groupList) {
 			List<Node> childList = group.getNodes();
@@ -859,14 +859,14 @@ public class XGMMLWriter {
 	 *            the number of keys used for given attribute name
 	 * @return Map - ref to Map interface
 	 */
-  private Map getComplexAttributeStructure(MultiHashMap mmap, String id, String attributeName,
+  private Map<Object,Object> getComplexAttributeStructure(MultiHashMap mmap, String id, String attributeName,
                                            Object[] keys, int keysIndex, int numKeyDimensions) {
 		// are we done?
 		if (keysIndex == numKeyDimensions)
 			return null;
 
 		// the hashmap to return
-		Map keyHashMap = new HashMap();
+		Map<Object,Object> keyHashMap = new HashMap<Object,Object>();
 
 		// create a new object array to store keys for this interation
 		// copy all existing keys into it

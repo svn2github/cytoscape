@@ -197,6 +197,8 @@ public class MetadataParser {
 	 * @param entryName DOCUMENT ME!
 	 * @param value DOCUMENT ME!
 	 */
+	 // TODO fix attributes so this isn't necessary
+	 @SuppressWarnings("unchecked")  
 	public void setMetadata(MetadataEntries entryName, String value) {
 		Map<String, String> metadata = networkAttributes.getMapAttribute(network.getIdentifier(),
 		                                                                 metadataLabel);

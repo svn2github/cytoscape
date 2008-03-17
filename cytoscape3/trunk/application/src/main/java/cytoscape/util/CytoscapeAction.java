@@ -60,7 +60,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	protected int keyModifiers;
 	protected int keyCode;
 	protected String consoleName;
-	private static List actionList = new LinkedList();
+	private static List<CytoscapeAction> actionList = new LinkedList<CytoscapeAction>();
 	protected boolean useCheckBoxMenuItem = false;
 
 	/**
@@ -103,7 +103,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static List getActionList() {
+	public static List<CytoscapeAction> getActionList() {
 		return actionList;
 	}
 

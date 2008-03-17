@@ -72,7 +72,7 @@ public class ValueSelectDialog extends JDialog {
 	
 	private final VisualPropertyType type;
 	private Map shapeMap;
-	private List orderedKeyList;
+	private List<Object> orderedKeyList;
 	
 	private Object originalValue;
 	
@@ -231,7 +231,7 @@ public class ValueSelectDialog extends JDialog {
 	 */
 	private void setList() {
 		List<Icon> icons = new ArrayList<Icon>();
-		orderedKeyList = new ArrayList();
+		orderedKeyList = new ArrayList<Object>();
 
 		model = new DefaultListModel();
 		iconList.setModel(model);

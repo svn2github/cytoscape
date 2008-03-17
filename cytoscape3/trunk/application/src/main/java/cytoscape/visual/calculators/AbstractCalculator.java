@@ -100,7 +100,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * Contains an array of classes - each representing the appropriate domain
 	 * classes of the mapping in the {@link #mappings} vector at the same index.
 	 */
-	protected Vector acceptedDataClasses = new Vector(4, 2);
+	protected Vector<Class[]> acceptedDataClasses = new Vector<Class[]>(4, 2);
 	protected String name;
 
 	/**
@@ -113,7 +113,7 @@ public abstract class AbstractCalculator implements Calculator {
 	private int dupeCount = 0;
 
 	/** keep track of interested UI classes. */
-	protected List changeListeners = new Vector(1, 1);
+	protected List<ChangeListener> changeListeners = new Vector<ChangeListener>(1, 1);
 
 	/**
 	 * Only one <code>ChangeEvent</code> is needed per calculator instance
@@ -129,6 +129,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param c DOCUMENT ME!
 	 * @param type DOCUMENT ME!
 	 */
+	 @SuppressWarnings("unchecked") // TODO figure this one out
 	public AbstractCalculator(String name, ObjectMapping m, VisualPropertyType type) {
 		if (type == null)
 			throw new NullPointerException("Type parameter for Calculator is null");
@@ -215,7 +216,7 @@ public abstract class AbstractCalculator implements Calculator {
 			dupeFreeName = new String(name);
 
 		clonedCalc.name = dupeFreeName;
-		clonedCalc.mappings = new Vector(this.mappings.size(), 2);
+		clonedCalc.mappings = new Vector<ObjectMapping>(this.mappings.size(), 2);
 
 		for (int i = 0; i < this.mappings.size(); i++) {
 			final ObjectMapping m = this.getMapping(i);
@@ -364,7 +365,7 @@ public abstract class AbstractCalculator implements Calculator {
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
 		for (int i = this.changeListeners.size() - 1; i >= 0; i--) {
-			ChangeListener listener = (ChangeListener) this.changeListeners.get(i);
+			ChangeListener listener = this.changeListeners.get(i);
 
 			// Lazily create the event:
 			if (this.changeEvent == null)
@@ -427,6 +428,8 @@ public abstract class AbstractCalculator implements Calculator {
 		appr.set(type, o);
 	}
 
+	@SuppressWarnings("unchecked") // TODO again, this should be fixed as part of CyAttributes
+	                               // this one is also related to bug 247!!!
 	protected Object getRangeValue(GraphObject obj) {
 		if (obj == null)
 			return null;

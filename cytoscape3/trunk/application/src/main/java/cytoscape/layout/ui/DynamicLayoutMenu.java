@@ -88,7 +88,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		super(layout.toString());
 		addMenuListener(this);
 		this.layout = layout;
-		selectedNodes = new HashSet();
+		selectedNodes = new HashSet<Node>();
 		setEnabled(enabled);
 	}
 

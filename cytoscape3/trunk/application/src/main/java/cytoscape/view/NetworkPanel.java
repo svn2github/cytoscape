@@ -235,15 +235,13 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	public void removeNetwork(final String network_id) {
 		final NetworkTreeNode node = getNetworkNode(network_id);
 		final Enumeration children = node.children();
-		NetworkTreeNode child = null;
-		final List removed_children = new ArrayList();
+		final List<NetworkTreeNode> removed_children = new ArrayList<NetworkTreeNode>();
 
 		while (children.hasMoreElements()) {
-			removed_children.add(children.nextElement());
+			removed_children.add((NetworkTreeNode)children.nextElement());
 		}
 
-		for (Iterator i = removed_children.iterator(); i.hasNext();) {
-			child = (NetworkTreeNode) i.next();
+		for (NetworkTreeNode child: removed_children) {
 			child.removeFromParent();
 			root.add(child);
 		}

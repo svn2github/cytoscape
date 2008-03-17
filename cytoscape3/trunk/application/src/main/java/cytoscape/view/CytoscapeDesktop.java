@@ -404,24 +404,14 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return the OLD VisualStyle
 	 */
 	public VisualStyle setVisualStyle(VisualStyle style) {
-		//
-		//				VisualStyle old_style = (VisualStyle) vizMapUI.getStyleSelector().getToolbarComboBox()
-		//				                                              .getSelectedItem();
-		//		
 		vmm.setVisualStyle(style);
 
-		//vizMapUI.getStyleSelector().getToolbarComboBox().setSelectedItem(style);
 		return null;
 	}
 
 	protected void updateFocus(String network_id) {
 		final VisualStyle old_style = vmm.getVisualStyle();
 		final CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
-
-		if (old_view != null) {
-			old_view.putClientData(VISUAL_STYLE, old_style);
-			old_view.putClientData(VIZMAP_ENABLED, new Boolean(old_view.getVisualMapperEnabled()));
-		}
 
 		// set the current Network/View
 		Cytoscape.setCurrentNetwork(network_id);
@@ -430,23 +420,16 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			// deal with the new Network
 			final CyNetworkView new_view = Cytoscape.getCurrentNetworkView();
 
-			//			VisualStyle new_style = (VisualStyle) new_view.getClientData(VISUAL_STYLE);
 			VisualStyle new_style = new_view.getVisualStyle();
-
-			Boolean vizmap_enabled = ((Boolean) new_view.getClientData(VIZMAP_ENABLED));
 
 			if (new_style == null)
 				new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
-
-			if (vizmap_enabled == null)
-				vizmap_enabled = true;
 
 			vmm.setNetworkView(new_view);
 
 			if (new_style.getName().equals(old_style.getName()) == false) {
 				vmm.setVisualStyle(new_style);
 				
-				// Is this necessary?
 				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			}
 		}

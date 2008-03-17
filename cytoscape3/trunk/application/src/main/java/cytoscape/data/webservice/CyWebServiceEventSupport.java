@@ -76,6 +76,7 @@ public class CyWebServiceEventSupport {
 	 * @param evt DOCUMENT ME!
 	 * @throws Exception 
 	 */
+	 @SuppressWarnings("unchecked")
 	public void fireCyWebServiceEvent(CyWebServiceEvent evt) throws Exception {
 		Vector<CyWebServiceEventListener> elements = (Vector<CyWebServiceEventListener>) listenerVec
 		                                                                        .clone();

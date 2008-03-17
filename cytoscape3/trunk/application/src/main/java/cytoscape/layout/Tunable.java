@@ -362,6 +362,7 @@ public class Tunable {
 	 * @param attributes CyAttributes of the appropriate (edge or node) type
 	 * @return a JComboBox with an entry for each attribute
 	 */
+	 @SuppressWarnings("unchecked")  // TODO REVIEW THIS CODE!
 	private JComboBox getAttributePanel(CyAttributes attributes) {
 		final String[] attList = attributes.getAttributeNames();
 		final List<Object> list = new ArrayList<Object>();

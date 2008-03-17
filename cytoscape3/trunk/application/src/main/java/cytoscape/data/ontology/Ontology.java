@@ -226,7 +226,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 *
 	 * @return All ontology terms as Set object.
 	 */
-	public Set getTerms() {
+	public Set<Term> getTerms() {
 		Set<Term> terms = new HashSet<Term>();
 
 		Iterator nodeIt = ontologyGraph.nodesIterator();

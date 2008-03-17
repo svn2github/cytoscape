@@ -59,6 +59,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
+import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -84,7 +85,7 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	private byte mapType; //  mapping type value
 
 	//  Contains List of Data Points
-	private ArrayList<ContinuousMappingPoint> points = new ArrayList<ContinuousMappingPoint>();
+	private List<ContinuousMappingPoint> points = new ArrayList<ContinuousMappingPoint>();
 
 	/**
 	 *  Constructor.
@@ -132,9 +133,9 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 
 	/**
 	 * Gets all Data Points.
-	 * @return ArrayList of ContinuousMappingPoint objects.
+	 * @return List of ContinuousMappingPoint objects.
 	 */
-	public ArrayList<ContinuousMappingPoint> getAllPoints() {
+	public List<ContinuousMappingPoint> getAllPoints() {
 		return points;
 	}
 
@@ -166,7 +167,7 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 * @return ContinuousMappingPoint.
 	 */
 	public ContinuousMappingPoint getPoint(int index) {
-		return (ContinuousMappingPoint) points.get(index);
+		return points.get(index);
 	}
 
 	/**
@@ -211,7 +212,7 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	/**
 	 * Gets Accepted Data Classes.
 	 * Required by the ObjectMapping interface.
-	 * @return ArrayList of Class objects.
+	 * @return List of Class objects.
 	 */
 	public Class[] getAcceptedDataClasses() {
 		// only numbers supported

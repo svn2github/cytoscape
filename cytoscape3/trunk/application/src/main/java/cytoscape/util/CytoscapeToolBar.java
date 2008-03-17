@@ -38,7 +38,6 @@ package cytoscape.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -50,8 +49,7 @@ import javax.swing.JToolBar;
  */
 public class CytoscapeToolBar extends JToolBar {
 	private final static long serialVersionUID = 1202339868655256L;
-	protected Map actionButtonMap = null;
-	protected Set actionMembersSet;
+	protected Map<Action,JButton> actionButtonMap = null;
 
 	/**
 	 * Default constructor delegates to the superclass void constructor and then
@@ -95,7 +93,7 @@ public class CytoscapeToolBar extends JToolBar {
 		JButton button = null;
 
 		if (actionButtonMap != null) {
-			button = (JButton) actionButtonMap.get(action);
+			button = actionButtonMap.get(action);
 		}
 
 		if (button != null) {
@@ -135,7 +133,7 @@ public class CytoscapeToolBar extends JToolBar {
 			return false;
 		}
 
-		JButton button = (JButton) actionButtonMap.remove(action);
+		JButton button = actionButtonMap.remove(action);
 
 		if (button == null) {
 			return false;
@@ -164,7 +162,7 @@ public class CytoscapeToolBar extends JToolBar {
 	/**
 	 * Factory method for instantiating the action->button map.
 	 */
-	protected Map createActionButtonMap() {
-		return new HashMap();
+	protected Map<Action,JButton> createActionButtonMap() {
+		return new HashMap<Action,JButton>();
 	}
 } // class CytoscapeToolBar

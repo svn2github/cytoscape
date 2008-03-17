@@ -130,6 +130,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	}
 
 	@Override
+	@SuppressWarnings("unchecked") // for thumb stuff
 	protected void addButtonActionPerformed(ActionEvent evt) {
 		BoundaryRangeValues newRange;
 
@@ -191,6 +192,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	/**
 	 * DOCUMENT ME!
 	 */
+	@SuppressWarnings("unchecked") // for thumb stuff 
 	public void setSlider() {
 		Dimension dim = new Dimension(600, 100);
 		setPreferredSize(dim);

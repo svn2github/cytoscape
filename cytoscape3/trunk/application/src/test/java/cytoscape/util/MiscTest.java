@@ -241,10 +241,10 @@ public class MiscTest extends TestCase {
 		props.put("dog", "dozer");
 		props.put("cat", "(ernie::louie)");
 
-		Vector dogs = Misc.getPropertyValues(props, "dog");
+		Vector<String> dogs = Misc.getPropertyValues(props, "dog");
 		assertTrue(dogs.size() == 1);
 
-		Vector cats = Misc.getPropertyValues(props, "cat");
+		Vector<String> cats = Misc.getPropertyValues(props, "cat");
 		assertTrue(cats.size() == 2);
 
 		String[] catNames = (String[]) cats.toArray(new String[0]);

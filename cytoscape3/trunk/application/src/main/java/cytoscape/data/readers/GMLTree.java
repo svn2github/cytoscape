@@ -324,7 +324,7 @@ public class GMLTree {
 	}
 
 	protected void parse(StringTokenizer quotes) {
-		LinkedList tokenList = new LinkedList();
+		LinkedList<String> tokenList = new LinkedList<String>();
 
 		// handle the quotes -> build GMLToken list
 		// find the quoted strings first so we can preserve their white space
@@ -468,7 +468,7 @@ public class GMLTree {
 	 *         type
 	 */
 	public Vector getVector(String[] keys, int type) {
-		Vector keyVector = new Vector(keys.length);
+		Vector<String> keyVector = new Vector<String>(keys.length);
 
 		for (int i = 0; i < keys.length; i++) {
 			keyVector.add(keys[i]);
@@ -491,6 +491,7 @@ public class GMLTree {
 	 * @param result
 	 *            The vector to which we add result data.
 	 */
+	@SuppressWarnings("unchecked")
 	private static void getVector(GMLNode root, Vector keys, int index, int type, Vector result) {
 		Vector mapped = root.getMapping((String) keys.get(index));
 

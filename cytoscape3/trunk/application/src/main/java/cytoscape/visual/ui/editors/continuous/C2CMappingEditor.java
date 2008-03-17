@@ -149,6 +149,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked") // for the thumbs
 	protected void addButtonActionPerformed(ActionEvent evt) {
 		BoundaryRangeValues newRange;
 
@@ -210,6 +211,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 		}
 	}
 
+	@SuppressWarnings("unchecked") // for the thumbs
 	private void setSlider() {
 		Dimension dim = new Dimension(600, 100);
 		setPreferredSize(dim);

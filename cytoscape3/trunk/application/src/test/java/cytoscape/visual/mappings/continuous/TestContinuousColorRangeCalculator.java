@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -63,6 +64,7 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 	 * Test with First Sample Data Set.
 	 * @throws Exception All Exceptions.
 	 */
+	 @SuppressWarnings("unchecked") // stupid attrs
 	public void testCalculator1() throws Exception {
 		InputStream in = getMapper1Props();
 		Properties props = getProperties(in);
@@ -71,7 +73,7 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 		ContinuousMappingReader reader = new ContinuousMappingReader(props,
 		                                                             "nodeColorCalculator.Sample.mapping",
 		                                                             parser);
-		ArrayList points = reader.getPoints();
+		List<ContinuousMappingPoint> points = reader.getPoints();
 
 		//  Create some sample values...
 		HashMap bundle = new HashMap();
@@ -108,10 +110,10 @@ public class TestContinuousColorRangeCalculator extends TestCase {
 		ContinuousMappingReader reader = new ContinuousMappingReader(props,
 		                                                             "nodeColorCalculator.Sample.mapping",
 		                                                             parser);
-		ArrayList points = reader.getPoints();
+		List<ContinuousMappingPoint> points = reader.getPoints();
 
 		//  Create some sample values...
-		HashMap bundle = new HashMap();
+		HashMap<String,Double> bundle = new HashMap<String,Double>();
 		double[] values = { -1.0, 0.07, 2.0, 4.0, 5.0, 10.0 };
 
 		for (int i = 0; i < values.length; i++) {

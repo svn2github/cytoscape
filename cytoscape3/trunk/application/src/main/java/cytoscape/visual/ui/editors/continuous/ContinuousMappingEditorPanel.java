@@ -97,7 +97,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected double maxValue;
 	protected double minValue;
 	protected double valRange;
-	protected ArrayList<ContinuousMappingPoint> allPoints;
+	protected List<ContinuousMappingPoint> allPoints;
 	private SpinnerNumberModel spinnerModel;
 	protected Object below;
 	protected Object above;
@@ -456,6 +456,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected BelowAndAbovePanel abovePanel;
 	protected BelowAndAbovePanel belowPanel;
 
+	@SuppressWarnings("unchecked") // for the Thumb cast
 	protected int getSelectedPoint(int selectedIndex) {
 		final List<Thumb> thumbs = slider.getModel().getSortedThumbs();
 		Thumb selected = slider.getModel().getThumbAt(selectedIndex);
@@ -470,6 +471,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		return -1;
 	}
 
+	@SuppressWarnings("unchecked") // for the Thumb cast
 	protected void updateMap() {
 		List<Thumb> thumbs = slider.getModel().getSortedThumbs();
 

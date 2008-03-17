@@ -103,7 +103,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 		try {
 			FileReader fin = new FileReader(name);
 			BufferedReader bin = new BufferedReader(fin);
-			List fileNodes = new ArrayList();
+			List<String> fileNodes = new ArrayList<String>();
 			String s;
 
 			while ((s = bin.readLine()) != null) {
@@ -118,7 +118,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 
 			// loop through all the node of the graph
 			// selecting those in the file
-			List nodeList = network.nodesList();
+			List<Node> nodeList = network.nodesList();
 			Node[] nodes = (Node[]) nodeList.toArray(new Node[0]);
 
 			for (int i = 0; i < nodes.length; i++) {

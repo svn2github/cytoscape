@@ -122,23 +122,6 @@ public interface CyNetworkView extends GraphView {
 	// Network Client Data
 
 	/**
-	 * Networks can support client data.
-	 * @param data_name the name of this client data
-	 */
-	public void putClientData(String data_name, Object data);
-
-	/**
-	 * Get a list of all currently available ClientData objects
-	 */
-	public Collection getClientDataNames();
-
-	/**
-	 * Get Some client data
-	 * @param data_name the data to get
-	 */
-	public Object getClientData(String data_name);
-
-	/**
 	 * Applies the given edge to the given vizmapper
 	 */
 	public boolean applyVizMap(Edge edge);

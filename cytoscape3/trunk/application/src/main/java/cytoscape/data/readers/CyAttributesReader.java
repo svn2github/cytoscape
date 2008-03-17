@@ -152,7 +152,7 @@ public class CyAttributesReader {
 					val = val.substring(0, val.length() - 1).trim();
 
 					// Home-grown parsing (ughh) to handle escape sequences.
-					final ArrayList elmsBuff = new ArrayList();
+					final ArrayList<Object> elmsBuff = new ArrayList<Object>();
 
 					while (val.length() > 0) {
 						final StringBuilder elmBuff = new StringBuilder();

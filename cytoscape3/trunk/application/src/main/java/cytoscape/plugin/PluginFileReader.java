@@ -112,6 +112,7 @@ public class PluginFileReader {
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked") // jdom
 	protected List<ThemeInfo> getThemes() {
 		List<ThemeInfo> Themes = new ArrayList<ThemeInfo>();
 
@@ -139,6 +140,7 @@ public class PluginFileReader {
 	 * 
 	 * @return The list of PluginInfo objects specified by the xml document.
 	 */
+	@SuppressWarnings("unchecked") // jdom
 	protected List<PluginInfo> getPlugins() {
 		List<PluginInfo> Plugins = new ArrayList<PluginInfo>();
 
@@ -158,6 +160,7 @@ public class PluginFileReader {
 		return Plugins;
 	}
 
+	@SuppressWarnings("unchecked") // jdom
 	protected ThemeInfo createThemeObject(Element CurrentTheme) {
 		ThemeInfo Info = (ThemeInfo) this.createBasicInfoObject(CurrentTheme,
 				DownloadableType.THEME);
@@ -195,6 +198,7 @@ public class PluginFileReader {
 		return Info;
 	}
 
+	@SuppressWarnings("unchecked") // jdom
 	private DownloadableInfo createBasicInfoObject(Element E,
 			DownloadableType Type) {
 		
@@ -318,6 +322,7 @@ public class PluginFileReader {
 	}
 
 	// get the authors, add to info object
+	@SuppressWarnings("unchecked") // jdom
 	private PluginInfo addAuthors(PluginInfo obj, Element Plugin) {
 		if (Plugin.getChild(authorListTag) != null) {
 			List<Element> Authors = Plugin.getChild(authorListTag).getChildren(authorTag);

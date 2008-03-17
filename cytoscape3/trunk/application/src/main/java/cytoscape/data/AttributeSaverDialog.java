@@ -254,7 +254,7 @@ class AttributeSaverState implements TableModel {
 	/**
 	 * A vector of all the objects that are listening to this TableModel
 	 */
-	private Vector listeners;
+	private Vector<TableModelListener> listeners;
 
 	/**
 	 * Network to from which to read graph objects
@@ -279,7 +279,7 @@ class AttributeSaverState implements TableModel {
 	public AttributeSaverState(final String[] nodeAttributes, final String suffix, int type) {
 		this.type = type;
 		this.suffix = suffix;
-		this.listeners = new Vector();
+		this.listeners = new Vector<TableModelListener>();
 		this.attributeNames = new Vector<String>();
 		this.filenames = new Vector<String>();
 		this.selectedAttributes = new Vector<Boolean>();

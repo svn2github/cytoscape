@@ -209,6 +209,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
 	@Override
+	@SuppressWarnings("unchecked") // for slider.getModel().getSortedThumbs();
 	protected void paintComponent(Graphics gfx) {
 		trackHeight = slider.getHeight() - 100;
 		arrowBarPosition = trackHeight + 50;
@@ -482,6 +483,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	}
 
 	class CMouseMotionListener implements MouseMotionListener {
+		@SuppressWarnings("unchecked") // more jdesktop crap
 		public void mouseDragged(MouseEvent e) {
 			/*
 			 * If user is moving thumbs, update is not necessary!
@@ -554,6 +556,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 	class CMouseListener extends MouseAdapter {
 		@Override
+		@SuppressWarnings("unchecked") // more jdesktop crap
 		public void mouseClicked(MouseEvent e) {
 			/*
 			 * Show popup dialog to enter new numerical value.
@@ -800,6 +803,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		return drawIcon(iconWidth, iconHeight, true);
 	}
 
+	@SuppressWarnings("unchecked") // for slider.getModel().getSortedThumbs();
 	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
 		if (slider == null) {
 			return null;

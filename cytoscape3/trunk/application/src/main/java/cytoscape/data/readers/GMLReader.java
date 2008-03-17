@@ -179,12 +179,12 @@ public class GMLReader extends AbstractGraphReader {
 	List<Integer> nodes;
 	List<Integer> sources;
 	List<Integer> targets;
-	Vector node_labels;
-	Vector edge_labels;
-	Vector edge_root_index_pairs;
-	Vector node_root_index_pairs;
-	Vector edge_names;
-	Vector node_names;
+	Vector<String> node_labels;
+	Vector<String> edge_labels;
+	Vector<KeyValue> edge_root_index_pairs;
+	Vector<KeyValue> node_root_index_pairs;
+	Vector<String> edge_names;
+	Vector<String> node_names;
 	List<Integer> giny_nodes;
 	List<Integer> giny_edges;
 	private TaskMonitor taskMonitor;
@@ -207,26 +207,26 @@ public class GMLReader extends AbstractGraphReader {
 	CalculatorCatalog catalog;
 
 	// Hashes for node & edge attributes
-	HashMap nodeW;
+	Map<String,Double> nodeW;
 
 	// Hashes for node & edge attributes
-	HashMap nodeH;
+	Map<String,Double> nodeH;
 
 	// Hashes for node & edge attributes
-	HashMap<String,NodeShape> nodeShape;
+	Map<String,NodeShape> nodeShape;
 
 	// Hashes for node & edge attributes
-	HashMap nodeCol;
+	Map<String,String> nodeCol;
 
 	// Hashes for node & edge attributes
-	HashMap<String,Double> nodeBWidth;
+	Map<String,Double> nodeBWidth;
 
 	// Hashes for node & edge attributes
-	HashMap nodeBCol;
-	HashMap edgeCol;
-	HashMap<String,Float> edgeWidth;
-	HashMap<String,String> edgeArrow;
-	HashMap edgeShape;
+	Map<String,String> nodeBCol;
+	Map<String,String> edgeCol;
+	Map<String,Float> edgeWidth;
+	Map<String,String> edgeArrow;
+	Map<String,String> edgeShape;
 
 	// The InputStream
 	InputStream inputStream = null;
@@ -308,19 +308,19 @@ public class GMLReader extends AbstractGraphReader {
 
 	private void initializeHash() {
 		// Initialize HashMap for new visual style
-		nodeW = new HashMap();
-		nodeH = new HashMap();
+		nodeW = new HashMap<String,Double>();
+		nodeH = new HashMap<String,Double>();
 		nodeShape = new HashMap<String,NodeShape>();
-		nodeCol = new HashMap();
+		nodeCol = new HashMap<String,String>();
 		nodeBWidth = new HashMap<String,Double>();
-		nodeBCol = new HashMap();
-		edgeCol = new HashMap();
+		nodeBCol = new HashMap<String,String>();
+		edgeCol = new HashMap<String,String>();
 		edgeWidth = new HashMap<String,Float>();
 		edgeArrow = new HashMap<String,String>();
-		edgeShape = new HashMap();
+		edgeShape = new HashMap<String,String>();
 
-		edge_names = new Vector();
-		node_names = new Vector();
+		edge_names = new Vector<String>();
+		node_names = new Vector<String>();
 	}
 
 	// Initialize variables for the new style created from GML
@@ -729,10 +729,10 @@ public class GMLReader extends AbstractGraphReader {
 		nodes = new ArrayList<Integer>();
 		sources = new ArrayList<Integer>();
 		targets = new ArrayList<Integer>();
-		node_labels = new Vector();
-		edge_labels = new Vector();
-		edge_root_index_pairs = new Vector();
-		node_root_index_pairs = new Vector();
+		node_labels = new Vector<String>();
+		edge_labels = new Vector<String>();
+		edge_root_index_pairs = new Vector<KeyValue>();
+		node_root_index_pairs = new Vector<KeyValue>();
 	}
 
 	protected void releaseStructures() {
@@ -759,7 +759,7 @@ public class GMLReader extends AbstractGraphReader {
 		giny_nodes = new ArrayList<Integer>(nodes.size());
 
 		Map<Integer,Integer> gml_id2order = new HashMap<Integer,Integer>(nodes.size());
-		Set nodeNameSet = new HashSet(nodes.size());
+		Set<String> nodeNameSet = new HashSet<String>(nodes.size());
 
 		// Add All Nodes to Network
 		for (int idx = 0; idx < nodes.size(); idx++) {
@@ -785,7 +785,7 @@ public class GMLReader extends AbstractGraphReader {
 
 		giny_edges = new ArrayList<Integer>(sources.size());
 
-		Set edgeNameSet = new HashSet(sources.size());
+		Set<String> edgeNameSet = new HashSet<String>(sources.size());
 
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 
@@ -860,6 +860,7 @@ public class GMLReader extends AbstractGraphReader {
 	 * This function takes in a list which was given as the value to a "graph"
 	 * key underneath the main gml list
 	 */
+	@SuppressWarnings("unchecked") // KeyValue.value cast
 	protected void readGraph(List list) {
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
@@ -878,7 +879,7 @@ public class GMLReader extends AbstractGraphReader {
 	 * This will extract the model information from the list which is matched a
 	 * "node" key
 	 */
-	protected void readNode(List list) {
+	protected void readNode(List<KeyValue> list) {
 		String label = "";
 		boolean contains_id = false;
 		int id = 0;
@@ -929,7 +930,7 @@ public class GMLReader extends AbstractGraphReader {
 	 * This will extract the model information from the list which is matched to
 	 * an "edge" key.
 	 */
-	protected void readEdge(List list) {
+	protected void readEdge(List<KeyValue> list) {
 		String label = DEFAULT_EDGE_INTERACTION;
 		boolean contains_source = false;
 		boolean contains_target = false;
@@ -1054,6 +1055,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 	}
 
+	@SuppressWarnings("unchecked") // KeyValue.value cast
 	protected void extractNode(List list) {
 		List graphics_list = null;
 		String label = null;
@@ -1086,6 +1088,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 	}
 
+	@SuppressWarnings("unchecked") // KeyValue.value cast
 	protected void extractEdge(List list, String edgeName) {
 		List graphics_list = null;
 
@@ -1109,6 +1112,7 @@ public class GMLReader extends AbstractGraphReader {
 	/**
 	 * Lays Out the Graph, based on GML.
 	 */
+	@SuppressWarnings("unchecked") // KeyValue.value cast
 	protected void layoutGraph(final GraphView myView, List list) {
 		String edgeName = null;
 
@@ -1225,7 +1229,8 @@ public class GMLReader extends AbstractGraphReader {
 
 	//
 	// Extract node attributes from GML file
-	protected void extractNodeAttributes(List list, String nodeName) {
+	@SuppressWarnings("unchecked") // KeyValue.value cast
+	protected void extractNodeAttributes(List<KeyValue> list, String nodeName) {
 		// Put all attributes into hashes.
 		// Key is the node name
 		// (Assume we do not have duplicate node name.)
@@ -1235,16 +1240,16 @@ public class GMLReader extends AbstractGraphReader {
 			if (keyVal.key.equals(X) || keyVal.key.equals(Y)) {
 				// Do nothing.
 			} else if (keyVal.key.equals(H)) {
-				nodeH.put(nodeName, keyVal.value);
+				nodeH.put(nodeName, (Double)keyVal.value);
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_HEIGHT, ""+keyVal.value);
 			} else if (keyVal.key.equals(W)) {
-				nodeW.put(nodeName, keyVal.value);
+				nodeW.put(nodeName, (Double)keyVal.value);
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_WIDTH, ""+keyVal.value);
 			} else if (keyVal.key.equals(FILL)) {
-				nodeCol.put(nodeName, keyVal.value);
+				nodeCol.put(nodeName, (String)keyVal.value);
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_FILL_COLOR, ""+keyVal.value);
 			} else if (keyVal.key.equals(OUTLINE)) {
-				nodeBCol.put(nodeName, keyVal.value);
+				nodeBCol.put(nodeName, (String)keyVal.value);
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_BORDER_COLOR, ""+keyVal.value);
 			} else if (keyVal.key.equals(OUTLINE_WIDTH)) {
 				nodeBWidth.put(nodeName, (Double)keyVal.value);
@@ -1277,7 +1282,7 @@ public class GMLReader extends AbstractGraphReader {
 	//
 	// Extract edge attributes from GML input
 	//
-	protected void extractEdgeAttributes(List list, String edgeName) {
+	protected void extractEdgeAttributes(List<KeyValue> list, String edgeName) {
 		String value = null;
 
 		boolean isArrow = false;
@@ -1375,7 +1380,8 @@ public class GMLReader extends AbstractGraphReader {
 	 * Assign edge visual properties based on pairs in the list matched to the
 	 * "edge" key world
 	 */
-	protected void layoutEdge(GraphView myView, List list, String edgeName) {
+	@SuppressWarnings("unchecked") // KeyValue.value cast
+	protected void layoutEdge(GraphView myView, List<KeyValue> list, String edgeName) {
 		EdgeView edgeView = null;
 		List graphics_list = null;
 
@@ -1414,7 +1420,8 @@ public class GMLReader extends AbstractGraphReader {
 	// Now this method correctly translate the GML input file
 	// into graphics.
 	//
-	protected void layoutEdgeGraphics(GraphView myView, List list, EdgeView edgeView) {
+	@SuppressWarnings("unchecked") // KeyValue.value cast
+	protected void layoutEdgeGraphics(GraphView myView, List<KeyValue> list, EdgeView edgeView) {
 		// Local vars.
 		String value = null;
 		KeyValue keyVal = null;
@@ -1470,7 +1477,7 @@ public class GMLReader extends AbstractGraphReader {
 	 * "Line" key We make sure that there is both an x,y present in the
 	 * underlying point list before trying to generate a bend point
 	 */
-	protected void layoutEdgeGraphicsLine(GraphView myView, List list, EdgeView edgeView) {
+	protected void layoutEdgeGraphicsLine(GraphView myView, List<KeyValue> list, EdgeView edgeView) {
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
 

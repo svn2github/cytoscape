@@ -57,8 +57,8 @@ import java.util.Vector;
  */
 public class Exec {
 	String[] cmd;
-	Vector stdoutResults;
-	Vector stderrResults;
+	Vector<String> stdoutResults;
+	Vector<String> stderrResults;
 	String stringToSendToStandardInput;
 	boolean runInBackground = false;
 	String stdout;
@@ -78,8 +78,8 @@ public class Exec {
 	 */
 	public Exec(String[] cmd) {
 		this.cmd = cmd;
-		stdoutResults = new Vector(100); // just guessing...
-		stderrResults = new Vector(10);
+		stdoutResults = new Vector<String>(100); // just guessing...
+		stderrResults = new Vector<String>(10);
 	}
 
 	/**
@@ -269,7 +269,7 @@ public class Exec {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Vector getStdout() {
+	public Vector<String> getStdout() {
 		return stdoutResults;
 	}
 
@@ -278,7 +278,7 @@ public class Exec {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Vector getStderr() {
+	public Vector<String> getStderr() {
 		return stderrResults;
 	}
 

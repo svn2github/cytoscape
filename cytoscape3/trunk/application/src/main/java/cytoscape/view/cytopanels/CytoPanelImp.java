@@ -110,7 +110,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 	/**
 	 * An array of CytoPanelListeners
 	 */
-	private ArrayList cytoPanelListenerList;
+	private ArrayList<CytoPanelListener> cytoPanelListenerList;
 
 	/**
 	 * Notification state change.
@@ -229,7 +229,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 		}
 
 		// init listener list
-		cytoPanelListenerList = new ArrayList();
+		cytoPanelListenerList = new ArrayList<CytoPanelListener>();
 
 		// init the icons
 		initIcons();

@@ -1109,7 +1109,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		arrowCellEditor.setAvailableValues(arrowShapes.toArray());
 		arrowCellEditor.setAvailableIcons(iconArray);
 
-		iconList = new ArrayList();
+		iconList = new ArrayList<Icon>();
 		iconList.addAll(lineTypeIcons.values());
 		iconArray = new Icon[iconList.size()];
 		shapeNames = new String[iconList.size()];
@@ -1855,6 +1855,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param e
 	 *            DOCUMENT ME!
 	 */
+	 @SuppressWarnings("unchecked") // because of the attrBundle crap for the mappers
 	public void propertyChange(PropertyChangeEvent e) {
 		
 		// Set ignore flag.
@@ -2022,8 +2023,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				return;
 			}
 
-			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getHiddenObject();
+			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty()).getHiddenObject();
 		}
 
 		/*
@@ -2987,7 +2987,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final VisualPropertyType type = (VisualPropertyType) hidden;
 				System.out.println("This is category top.");
 
-				final Map valueMap = new HashMap();
+				final Map<Object,Object> valueMap = new HashMap<Object,Object>();
 				final long seed = System.currentTimeMillis();
 				final Random rand = new Random(seed);
 
@@ -3053,8 +3053,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					} else {
 						for (Object key : attrSet)
 							valueMap.put(key,
-							             new Color(((Number) (rand.nextFloat() * MAX_COLOR))
-							                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          .intValue()));
+							             new Color(((Number) (rand.nextFloat() * MAX_COLOR)).intValue()));
 					}
 				} else if ((type.getDataType() == Number.class) && (functionType == RANDOM)) {
 					final String range = JOptionPane.showInputDialog(visualPropertySheetPanel,
@@ -3125,7 +3124,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (hidden instanceof VisualPropertyType) {
 				final VisualPropertyType type = (VisualPropertyType) hidden;
 
-				final Map valueMap = new HashMap();
+				final Map<Object,Object> valueMap = new HashMap<Object,Object>();
 				final ObjectMapping oMap;
 				final CyAttributes attr;
 				final int nOre;
@@ -3232,7 +3231,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (hidden instanceof VisualPropertyType) {
 				final VisualPropertyType type = (VisualPropertyType) hidden;
 
-				final Map valueMap = new HashMap();
+				final Map<Object,Object> valueMap = new HashMap<Object,Object>();
 				final ObjectMapping oMap;
 				final CyAttributes attr;
 
@@ -3495,7 +3494,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (hidden instanceof VisualPropertyType) {
 				final VisualPropertyType type = (VisualPropertyType) hidden;
 
-				final Map valueMap = new HashMap();
+				final Map<Object,Object> valueMap = new HashMap<Object,Object>();
 				final ObjectMapping oMap;
 
 				final CyAttributes attr;

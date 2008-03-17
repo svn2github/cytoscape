@@ -245,7 +245,7 @@ public class GinyUtils {
 		}
 
 		GraphPerspective graphPerspective = view.getGraphPerspective();
-		Set nodeViewsToSelect = new HashSet();
+		Set<NodeView> nodeViewsToSelect = new HashSet<NodeView>();
 
 		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext();) {
 			NodeView nview = (NodeView) i.next();

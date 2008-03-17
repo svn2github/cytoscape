@@ -39,6 +39,7 @@ import org.cytoscape.Node;
 import giny.view.GraphView;
 import giny.view.Label;
 import giny.view.NodeView;
+import giny.view.EdgeView;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -121,7 +122,7 @@ public class TestNodeView implements NodeView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List getEdgeViewsList(NodeView otherNode) {
+	public java.util.List<EdgeView> getEdgeViewsList(NodeView otherNode) {
 		return null;
 	}
 

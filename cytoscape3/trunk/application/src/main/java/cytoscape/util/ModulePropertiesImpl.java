@@ -155,11 +155,11 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 *
 	 * @return HashMap containing the resulting properties
 	 */
-	public HashMap getProperties() {
+	public HashMap<String,String> getProperties() {
 		String prefix = getPrefix();
 		Properties props = CytoscapeInit.getProperties();
-		propertyMap = new HashMap();
-		savedPropertyMap = new HashMap();
+		propertyMap = new HashMap<String,String>();
+		savedPropertyMap = new HashMap<String,String>();
 
 		// Find all properties with this prefix
 		Enumeration iter = props.propertyNames();
@@ -216,7 +216,7 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 * the user does a "Cancel".
 	 */
 	public void revertProperties() {
-		propertyMap = new HashMap();
+		propertyMap = new HashMap<String,String>();
 
 		Set keys = savedPropertyMap.keySet();
 

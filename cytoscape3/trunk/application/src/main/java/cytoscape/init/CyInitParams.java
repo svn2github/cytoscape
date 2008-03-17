@@ -67,28 +67,28 @@ public interface CyInitParams {
 	 *
 	 * @return A list of Strings representing graph file locations.
 	 */
-	public List getGraphFiles();
+	public List<String> getGraphFiles();
 
 	/**
 	 * A list of Strings that describe edge attribute file locations. 
 	 *
 	 * @return A list of Strings representing edge attribute file locations.
 	 */
-	public List getEdgeAttributeFiles();
+	public List<String> getEdgeAttributeFiles();
 
 	/**
 	 * A list of Strings that describe node attribute file locations. 
 	 *
 	 * @return A list of Strings representing node attribute file locations.
 	 */
-	public List getNodeAttributeFiles();
+	public List<String> getNodeAttributeFiles();
 
 	/**
 	 * A list of Strings that describe expression matrix file locations. 
 	 *
 	 * @return A list of Strings representing expression matrixfile locations.
 	 */
-	public List getExpressionFiles();
+	public List<String> getExpressionFiles();
 
 	/**
 	 * A list of Strings that describe plugins.  The descriptions can be any of the following: 
@@ -101,7 +101,7 @@ public interface CyInitParams {
 	 *
 	 * @return A list of strings describing the plugin locations. 
 	 */
-	public List getPlugins();
+	public List<String> getPlugins();
 
 	/**
 	 * A single string describing the session file location. 

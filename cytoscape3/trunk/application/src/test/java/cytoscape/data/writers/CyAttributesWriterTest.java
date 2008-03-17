@@ -106,7 +106,7 @@ public class CyAttributesWriterTest extends TestCase {
 		CyAttributesReader.loadAttributes(cyAttributes, reader);
 
 		// Add a new item
-		List list = new ArrayList();
+		List<String> list = new ArrayList<String>();
 		list.add("Apple");
 		list.add("Orange");
 		list.add("Banana");

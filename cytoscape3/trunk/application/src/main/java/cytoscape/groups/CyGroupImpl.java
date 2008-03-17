@@ -117,10 +117,10 @@ public class CyGroupImpl implements CyGroup {
 	 * Empty constructor
 	 */
 	protected CyGroupImpl() {
-		this.nodeMap = new HashMap();
-		this.nodeToEdgeMap = new HashMap();
-		this.innerEdgeMap = new HashMap();
-		this.outerEdgeMap = new HashMap();
+		this.nodeMap = new HashMap<Node,Node>();
+		this.nodeToEdgeMap = new HashMap<Node,List<Edge>>();
+		this.innerEdgeMap = new HashMap<Edge,Edge>();
+		this.outerEdgeMap = new HashMap<Edge,Edge>();
 	}
 
 	/**

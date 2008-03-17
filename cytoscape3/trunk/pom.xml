@@ -120,11 +120,10 @@
 					<target>1.5</target>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
-					<!--
 					<compilerArguments>
 						<Xlint:all></Xlint:all>
+						<Xmaxwarns>10000</Xmaxwarns>
 					</compilerArguments>
-					-->
 				</configuration>
 			</plugin>
             <plugin>

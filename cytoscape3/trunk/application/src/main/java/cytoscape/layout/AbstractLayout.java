@@ -89,8 +89,8 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected String nodeAttribute = null;
 	protected boolean canceled = false;
 	protected Dimension currentSize = new Dimension(20, 20);
-	protected HashMap propertyMap = null;
-	protected HashMap savedPropertyMap = null;
+	protected HashMap propertyMap = null;  // TODO figure out if this is used in a child somewhere
+	protected HashMap savedPropertyMap = null;  // TODO figure out if this is used in a child somewhere
 	private ViewChangeEdit undoableEdit;
 
 	protected static TaskMonitor nullTaskMonitor = new TaskMonitor() {
@@ -108,7 +108,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * The Constructor is null
 	 */
 	public AbstractLayout() {
-		this.staticNodes = new HashSet();
+		this.staticNodes = new HashSet<NodeView>();
 	}
 
 	/**
@@ -198,7 +198,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * @return A (possibly empty) list of attributes
 	 */
 	public List<String> getInitialAttributeList() {
-		return new ArrayList();
+		return new ArrayList<String>();
 	}
 
 	/**

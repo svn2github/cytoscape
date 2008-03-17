@@ -91,7 +91,8 @@ public class GMLWriter {
 	 * list is empty in that case. Those same update functions must be able to
 	 * create all relevant key-value pairs as well then.
 	 */
-	public void writeGML(final GraphPerspective network, final CyNetworkView view, final List oldList) {
+	@SuppressWarnings("unchecked")  // for the casts of KeyValue.value
+	public void writeGML(final GraphPerspective network, final CyNetworkView view, final List<KeyValue> oldList) {
 		/*
 		 * Initially all the nodes and edges have not been seen
 		 */
@@ -155,7 +156,7 @@ public class GMLWriter {
 		/*
 		 * Update the list associated with the graph pair
 		 */
-		writeGraph(network, view, (List) graph.value);
+		writeGraph(network, view, (List<KeyValue>) graph.value);
 		creator.value = "Cytoscape";
 		version.value = new Double(1.0);
 
@@ -165,7 +166,7 @@ public class GMLWriter {
 		 * perspective that were not updated For these objects, create an empty
 		 * key-value mapping and then update it
 		 */
-		List graph_list = (List) graph.value;
+		List<KeyValue> graph_list = (List<KeyValue>) graph.value;
 
 		while (!newNodes.isEmpty()) {
 			KeyValue nodePair = new KeyValue(GMLReader.NODE, new Vector());
@@ -178,7 +179,7 @@ public class GMLWriter {
 		while (!newEdges.isEmpty()) {
 			KeyValue edgePair = new KeyValue(GMLReader.EDGE, new Vector());
 			graph_list.add(edgePair);
-			((List) edgePair.value).add(new KeyValue(GMLReader.ROOT_INDEX,
+			((List<KeyValue>) edgePair.value).add(new KeyValue(GMLReader.ROOT_INDEX,
 			                                         newEdges.iterator().next()));
 			writeGraphEdge(network, view, (List) edgePair.value);
 		}
@@ -187,7 +188,8 @@ public class GMLWriter {
 	/**
 	 * Update the list associated with a graph key
 	 */
-	private void writeGraph(final GraphPerspective network, final CyNetworkView view, final List oldList) {
+	 @SuppressWarnings("unchecked") // for the casts of KeyValue.value
+	private void writeGraph(final GraphPerspective network, final CyNetworkView view, final List<KeyValue> oldList) {
 		for (Iterator<KeyValue> it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = it.next();
 
@@ -198,11 +200,11 @@ public class GMLWriter {
 			 * Also do the same thing for the edges.
 			 */
 			if (keyVal.key.equals(GMLReader.NODE)) {
-				if (!writeGraphNode(network, view, (List) keyVal.value)) {
+				if (!writeGraphNode(network, view, (List<KeyValue>) keyVal.value)) {
 					it.remove();
 				}
 			} else if (keyVal.key.equals(GMLReader.EDGE)) {
-				if (!writeGraphEdge(network, view, (List) keyVal.value)) {
+				if (!writeGraphEdge(network, view, (List<KeyValue>) keyVal.value)) {
 					it.remove();
 				}
 			}
@@ -212,8 +214,9 @@ public class GMLWriter {
 	/**
 	 * Update the list associated with a node key
 	 */
+	@SuppressWarnings("unchecked") // for the cast of KeyValue.value
 	private boolean writeGraphNode(final GraphPerspective network, final CyNetworkView view,
-	                               final List oldList) {
+	                               final List<KeyValue> oldList) {
 		/*
 		 * We expect a list associated with node key to potentially have a
 		 * graphic key, id key, and root_index key
@@ -272,11 +275,11 @@ public class GMLWriter {
 		 */
 		if (view != Cytoscape.getNullNetworkView()) {
 			if (graphicsPair == null) {
-				graphicsPair = new KeyValue(GMLReader.GRAPHICS, new Vector());
+				graphicsPair = new KeyValue(GMLReader.GRAPHICS, new Vector<KeyValue>());
 				oldList.add(graphicsPair);
 			}
 
-			writeGraphNodeGraphics(network, view.getNodeView(node), (List) graphicsPair.value);
+			writeGraphNodeGraphics(network, view.getNodeView(node), (List<KeyValue>) graphicsPair.value);
 		}
 
 		/*
@@ -296,8 +299,9 @@ public class GMLWriter {
 	/**
 	 * Update the list associated with an edge key
 	 */
+	@SuppressWarnings("unchecked") // for the cast of KeyValue.value
 	private boolean writeGraphEdge(final GraphPerspective network, final CyNetworkView view,
-	                               final List oldList) {
+	                               final List<KeyValue> oldList) {
 		/*
 		 * An edge key will definitely have a root_index, labelPair (we enforce
 		 * this on loading), source key, and a target key
@@ -360,7 +364,7 @@ public class GMLWriter {
 				// will eventually make a new graphics pair here
 			}
 
-			writeGraphEdgeGraphics(network, view.getEdgeView(edge), (List) graphicsPair.value);
+			writeGraphEdgeGraphics(network, view.getEdgeView(edge), (List<KeyValue>) graphicsPair.value);
 		}
 
 		if (labelPair == null) {
@@ -379,7 +383,7 @@ public class GMLWriter {
 	 * object tree
 	 */
 	private void writeGraphNodeGraphics(final GraphPerspective network, final NodeView nodeView,
-	                                    final List oldList) {
+	                                    final List<KeyValue> oldList) {
 		KeyValue x = null;
 		KeyValue y = null;
 		KeyValue w = null;
@@ -498,7 +502,7 @@ public class GMLWriter {
 	}
 
 	private void writeGraphEdgeGraphics(final GraphPerspective network, final EdgeView edgeView,
-	                                    final List oldList) {
+	                                    final List<KeyValue> oldList) {
 		KeyValue width = null;
 		KeyValue fill = null;
 		KeyValue line = null;
@@ -561,13 +565,13 @@ public class GMLWriter {
 		}
 
 		Point2D[] pointsArray = edgeView.getBend().getDrawPoints();
-		Vector points = new Vector(pointsArray.length);
+		Vector<KeyValue> points = new Vector<KeyValue>(pointsArray.length);
 
 		// CTW funny thing with anchor points, need to trim off the first and
 		// last
 		// and reverse the order x
 		for (int idx = pointsArray.length - 2; idx > 0; idx--) {
-			Vector coords = new Vector(2);
+			Vector<KeyValue> coords = new Vector<KeyValue>(2);
 			coords.add(new KeyValue(GMLReader.X, new Double(pointsArray[idx].getX())));
 			coords.add(new KeyValue(GMLReader.Y, new Double(pointsArray[idx].getY())));
 			points.add(new KeyValue(GMLReader.POINT, coords));

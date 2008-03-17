@@ -49,6 +49,7 @@ import cytoscape.visual.mappings.InterpolatorFactory;
 import cytoscape.visual.parsers.ValueParser;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -58,7 +59,7 @@ import java.util.Properties;
 public class ContinuousMappingReader {
     private String controllingAttributeName;
     private Interpolator interpolator;
-    private ArrayList points;
+    private ArrayList<ContinuousMappingPoint> points;
     private ValueParser parser;
 
     /**
@@ -70,7 +71,7 @@ public class ContinuousMappingReader {
     public ContinuousMappingReader(Properties props, String baseKey,
         ValueParser parser) {
         this.parser = parser;
-        points = new ArrayList();
+        points = new ArrayList<ContinuousMappingPoint>();
         parseProperties(props, baseKey);
     }
 
@@ -94,7 +95,7 @@ public class ContinuousMappingReader {
      * Gets ArrayList of all Data Points.
      * @return ArrayList of ContinuousMappingPoint objects.
      */
-    public ArrayList getPoints() {
+    public List<ContinuousMappingPoint> getPoints() {
         return points;
     }
 

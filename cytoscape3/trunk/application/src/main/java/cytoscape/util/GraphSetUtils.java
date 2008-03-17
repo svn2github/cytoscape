@@ -186,7 +186,7 @@ public class GraphSetUtils {
 			/*
 			 * A list of node views that we will copy over to the new network,
 			 */
-			List nodeViews = new Vector();
+			List<NodeView> nodeViews = new Vector<NodeView>();
 
 			for (int idx = 0; idx < new_nodes.length; idx++) {
 				int current_node = new_nodes[idx];
@@ -206,7 +206,7 @@ public class GraphSetUtils {
 			/*
 			 * A list of edge views that we will copy over to the new network
 			 */
-			List edgeViews = new Vector();
+			List<EdgeView> edgeViews = new Vector<EdgeView>();
 
 			for (int idx = 0; idx < new_edges.length; idx++) {
 				int current_node = new_edges[idx];
@@ -295,7 +295,7 @@ public class GraphSetUtils {
 	 * @return an integer array containing the set of edges in the difference
 	 */
 	protected static int[] differenceEdges(List networkList) {
-		List edges = new Vector();
+		List<Edge> edges = new Vector<Edge>();
 
 		/*
 		 * For each node in the first network, chech to make sure that it is not
@@ -339,7 +339,7 @@ EDGE_LOOP:
 	 * @return an integer array containing the set of edges in the difference
 	 */
 	protected static int[] differenceNodes(List networkList, int[] edges) {
-		HashSet nodes = new HashSet();
+		HashSet<Node> nodes = new HashSet<Node>();
 
 		/*
 		 * For each node in the first network, check to see if it is not present
@@ -387,7 +387,7 @@ NODE_LOOP:
 	 * @return an integer array which contains the indices of nodes in the intersection
 	 */
 	protected static int[] intersectNodes(List networkList) {
-		List nodes = new Vector();
+		List<Node> nodes = new Vector<Node>();
 
 		/*
 		 * For each node in the first network, check to see if it is present in
@@ -426,7 +426,7 @@ NODE_LOOP:
 	 * @return an integer array which contains the indices of edges in the intersection
 	 */
 	protected static int[] intersectEdges(List networkList) {
-		List edges = new Vector();
+		List<Edge> edges = new Vector<Edge>();
 
 		/*
 		 * For each node in the first network, check to see if it is present in
@@ -468,7 +468,7 @@ EDGE_LOOP:
 		/*
 		 * This is the set of nodes that will be in the final merged network
 		 */
-		Set nodes = new HashSet();
+		Set<Integer> nodes = new HashSet<Integer>();
 
 		for (Iterator it = networkList.iterator(); it.hasNext();) {
 			GraphPerspective currentNetwork = (GraphPerspective) it.next();
@@ -497,7 +497,7 @@ EDGE_LOOP:
 		/*
 		 * This is the set of edges that will be in the final network
 		 */
-		Set edges = new HashSet();
+		Set<Integer> edges = new HashSet<Integer>();
 
 		for (Iterator it = networkList.iterator(); it.hasNext();) {
 			GraphPerspective currentNetwork = (GraphPerspective) it.next();

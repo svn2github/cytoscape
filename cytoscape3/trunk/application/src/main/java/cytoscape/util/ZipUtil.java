@@ -46,6 +46,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.CRC32;
@@ -84,7 +85,7 @@ public class ZipUtil {
 	private String inputFileDir;
 	private int fileCount;
 	private String sessionDirName;
-	private HashMap pluginFileMap = null;
+	private Map<String,List<File>> pluginFileMap = null;
 
 	/**
 	 * For zip file, file separator is always "/" in all platforms inclding Win,
@@ -183,7 +184,7 @@ public class ZipUtil {
 			Set<String> pluginSet = pluginFileMap.keySet();
 
 			for (String pluginName : pluginSet) {
-				List<File> theFileList = (List<File>) pluginFileMap.get(pluginName);
+				List<File> theFileList = pluginFileMap.get(pluginName);
 
 				if ((theFileList == null) || (theFileList.size() == 0))
 					continue;
@@ -214,7 +215,7 @@ public class ZipUtil {
 	 *
 	 * @param pMap DOCUMENT ME!
 	 */
-	public void setPluginFileMap(HashMap pMap) {
+	public void setPluginFileMap(Map<String,List<File>> pMap) {
 		pluginFileMap = pMap;
 	}
 

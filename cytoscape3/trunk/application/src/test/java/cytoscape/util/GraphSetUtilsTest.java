@@ -56,7 +56,7 @@ import java.util.*;
  *
  */
 public class GraphSetUtilsTest extends TestCase {
-	protected List networklist;
+	protected List<GraphPerspective> networklist;
 	protected int a;
 	protected int b;
 	protected int c;
@@ -77,7 +77,7 @@ public class GraphSetUtilsTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void setUp() throws Exception {
-		networklist = new ArrayList();
+		networklist = new ArrayList<GraphPerspective>();
 
 		RootGraph root = Cytoscape.getRootGraph();
 		a = root.createNode();

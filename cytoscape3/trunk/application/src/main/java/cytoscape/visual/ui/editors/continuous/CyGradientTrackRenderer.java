@@ -285,6 +285,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 *
 	 * @return DOCUMENT ME!
 	 */
+	 @SuppressWarnings("unchecked") // because apparently everything swingx does is unchecked
 	public JComponent getRendererComponent(JXMultiThumbSlider slider) {
 		this.slider = slider;
 		trackHeight = slider.getHeight() - 50;

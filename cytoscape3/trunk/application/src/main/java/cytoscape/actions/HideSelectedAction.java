@@ -88,8 +88,8 @@ public class HideSelectedAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// Get the selected nodes:
-		Set selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
-		Set selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
+		Set<Node> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+		Set<Edge> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
 		GinyUtils.hideSelectedNodes(Cytoscape.getCurrentNetworkView());
 		GinyUtils.hideSelectedEdges(Cytoscape.getCurrentNetworkView());
 

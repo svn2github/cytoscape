@@ -97,14 +97,14 @@ public class MappingUtilTest extends TestCase {
 		             MappingUtil.getAttributeType("node", "mappingUtilTest4"));
 
 		// list test
-		List l = new ArrayList();
+		List<String> l = new ArrayList<String>();
 		l.add("asdf");
 		Cytoscape.getNodeAttributes().setListAttribute("id", "mappingUtilTest5", l);
 		assertEquals("list attr ", CyAttributes.TYPE_SIMPLE_LIST,
 		             MappingUtil.getAttributeType("node", "mappingUtilTest5"));
 
 		// map test
-		Map m = new HashMap();
+		Map<String,String> m = new HashMap<String,String>();
 		m.put("a", "b");
 		Cytoscape.getNodeAttributes().setMapAttribute("id", "mappingUtilTest6", m);
 		assertEquals("map attr ", CyAttributes.TYPE_SIMPLE_MAP,
@@ -145,14 +145,14 @@ public class MappingUtilTest extends TestCase {
 		             MappingUtil.getAttributeType("edge", "mappingUtilTest4"));
 
 		// list test
-		List l = new ArrayList();
+		List<String> l = new ArrayList<String>();
 		l.add("asdf");
 		Cytoscape.getEdgeAttributes().setListAttribute("id", "mappingUtilTest5", l);
 		assertEquals("list attr ", CyAttributes.TYPE_SIMPLE_LIST,
 		             MappingUtil.getAttributeType("edge", "mappingUtilTest5"));
 
 		// map test
-		Map m = new HashMap();
+		Map<String,String> m = new HashMap<String,String>();
 		m.put("a", "b");
 		Cytoscape.getEdgeAttributes().setMapAttribute("id", "mappingUtilTest6", m);
 		assertEquals("map attr ", CyAttributes.TYPE_SIMPLE_MAP,

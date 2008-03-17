@@ -73,7 +73,7 @@ import javax.swing.event.ChangeListener;
 public class CalculatorCatalog {
 	private static final String label = "label";
 	private Map<VisualPropertyType, Map<String, Calculator>> calculators;
-	private Map<VisualPropertyType, List> listeners;
+	private Map<VisualPropertyType, List<ChangeListener>> listeners;
 	private Map<String, VisualStyle> visualStyles;
 	private Map<String, Class> mappers;
 
@@ -108,7 +108,7 @@ public class CalculatorCatalog {
 	 */
 	public void clear() {
 		calculators = new EnumMap<VisualPropertyType, Map<String, Calculator>>(VisualPropertyType.class);
-		listeners = new EnumMap<VisualPropertyType, List>(VisualPropertyType.class);
+		listeners = new EnumMap<VisualPropertyType, List<ChangeListener>>(VisualPropertyType.class);
 
 		visualStyles = new HashMap<String, VisualStyle>();
 
@@ -126,11 +126,11 @@ public class CalculatorCatalog {
 	 * @throws IllegalArgumentException
 	 *             if unknown type passed in
 	 */
-	protected List getListenerList(final VisualPropertyType type) throws IllegalArgumentException {
-		List l = listeners.get(type);
+	protected List<ChangeListener> getListenerList(final VisualPropertyType type) throws IllegalArgumentException {
+		List<ChangeListener> l = listeners.get(type);
 
 		if (l == null) {
-			l = new ArrayList();
+			l = new ArrayList<ChangeListener>();
 			listeners.put(type, l);
 		}
 
@@ -156,7 +156,7 @@ public class CalculatorCatalog {
 	 */
 	public void addChangeListener(ChangeListener l, VisualPropertyType type)
 	    throws IllegalArgumentException {
-		List theListeners = getListenerList(type);
+		List<ChangeListener> theListeners = getListenerList(type);
 		theListeners.add(l);
 	}
 
@@ -179,12 +179,12 @@ public class CalculatorCatalog {
 	 *             if type is unknown
 	 */
 	protected void fireStateChanged(final VisualPropertyType type) throws IllegalArgumentException {
-		List notifyEvents = getListenerList(type);
+		List<ChangeListener> notifyEvents = getListenerList(type);
 
 		ChangeListener listener;
 
 		for (int i = notifyEvents.size() - 1; i >= 0; i--) {
-			listener = (ChangeListener) notifyEvents.get(i);
+			listener = notifyEvents.get(i);
 
 			// Lazily create the event:
 			if (changeEvent == null)
@@ -458,7 +458,7 @@ public class CalculatorCatalog {
 
 	private void addNodeAppearanceCalculator(NodeAppearanceCalculator c) {
 		for (Calculator cc : c.getCalculators()) {
-			Map m = getCalculatorMap(cc.getVisualPropertyType());
+			Map<String, Calculator> m = getCalculatorMap(cc.getVisualPropertyType());
 
 			if (!m.values().contains(cc))
 				m.put(cc.toString(), cc);
@@ -467,14 +467,14 @@ public class CalculatorCatalog {
 
 	private void addEdgeAppearanceCalculator(EdgeAppearanceCalculator c) {
 		for (Calculator cc : c.getCalculators()) {
-			Map m = getCalculatorMap(cc.getVisualPropertyType());
+			Map<String, Calculator> m = getCalculatorMap(cc.getVisualPropertyType());
 
 			if (!m.values().contains(cc))
 				m.put(cc.toString(), cc);
 		}
 	}
 
-	protected void addCalculator(Calculator c, Map m) throws DuplicateCalculatorNameException {
+	protected void addCalculator(Calculator c, Map<String, Calculator> m) throws DuplicateCalculatorNameException {
 		if (c == null)
 			return;
 
@@ -489,7 +489,7 @@ public class CalculatorCatalog {
 		m.put(name, c);
 	}
 
-	protected String checkName(String name, Map m) {
+	protected String checkName(String name, Map<String, ?> m) {
 		if (name == null)
 			return null;
 

@@ -46,7 +46,7 @@ import junit.framework.TestCase;
 
 import java.io.InputStream;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -67,7 +67,7 @@ public class TestContinuousMappingWriter extends TestCase {
 		properties.load(in);
 
 		ContinuousMappingReader reader = new ContinuousMappingReader(properties, baseKey, parser);
-		ArrayList points = reader.getPoints();
+		List<ContinuousMappingPoint> points = reader.getPoints();
 
 		//  Now write out a set of Propeties.
 		ContinuousMappingWriter writer = new ContinuousMappingWriter(points, baseKey,

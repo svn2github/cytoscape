@@ -57,7 +57,7 @@ public class PreferenceTableModel extends AbstractTableModel {
 	static int[] columnWidth = new int[] { 150, 250 };
 	static int[] alignment = new int[] { JLabel.LEFT, JLabel.LEFT };
 	private Properties properties;
-	Vector propertiesList = new Vector();
+	Vector<String[]> propertiesList = new Vector<String[]>();
 	static String[] columnHeader = new String[] { "Property Name", "Value" };
 
 	/**
@@ -256,20 +256,17 @@ public class PreferenceTableModel extends AbstractTableModel {
 }
 
 
-class StringComparator implements Comparator {
+class StringComparator implements Comparator<String[]> {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param o1 DOCUMENT ME!
-	 * @param o2 DOCUMENT ME!
+	 * @param str1 DOCUMENT ME!
+	 * @param str2 DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int compare(Object o1, Object o2) {
+	public int compare(String[] str1, String[] str2) {
 		int result = 0;
-
-		String[] str1 = ((String[]) o1);
-		String[] str2 = ((String[]) o2);
 
 		for (int i = 0; i < str1.length; i++) {
 			result = str1[i].compareTo(str2[i]);

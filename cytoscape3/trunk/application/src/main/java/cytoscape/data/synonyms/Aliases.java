@@ -118,6 +118,7 @@ public class Aliases {
 	 * @param alias
 	 *            New alias to be added.
 	 */
+	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
 	public void add(String key, String alias) {
 		List<String> aliasList = attributes.getListAttribute(key, ALIAS);
 
@@ -142,6 +143,7 @@ public class Aliases {
 	 * @param key
 	 * @param aliaseList
 	 */
+	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
 	public void add(String key, List<String> aliasList) {
 		List<String> curAliasList = attributes.getListAttribute(key, ALIAS);
 
@@ -167,6 +169,7 @@ public class Aliases {
 	 * @param alias
 	 *            Alias to be removed.
 	 */
+	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
 	public void remove(String key, String alias) {
 		List<String> curAliasList = attributes.getListAttribute(key, ALIAS);
 
@@ -184,6 +187,7 @@ public class Aliases {
 	 * @param key
 	 * @return
 	 */
+	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
 	public List<String> getAliases(String key) {
 		return attributes.getListAttribute(key, ALIAS);
 	}
@@ -261,6 +265,7 @@ public class Aliases {
 	 * @param key
 	 * @return
 	 */
+	@SuppressWarnings("unchecked") // Fix when CyAttributes gets fixed
 	public Set<String> getIdSet(String key) {
 		List<String> curAliases = attributes.getListAttribute(key, ALIAS);
 		Set<String> allNames = new TreeSet<String>();

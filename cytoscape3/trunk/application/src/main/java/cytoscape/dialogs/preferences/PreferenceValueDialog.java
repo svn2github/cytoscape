@@ -74,26 +74,6 @@ public class PreferenceValueDialog extends JDialog {
 	 * @param caller  DOCUMENT ME!
 	 * @param tm  DOCUMENT ME!
 	 * @param title  DOCUMENT ME!
-	 * @param includeBrowse  DOCUMENT ME!
-	 *
-	 * @deprecated includeBrowse is not longer supported.  Use the other constructor instead.
-	 * Will be removed 5/2008.
-	 */
-	@Deprecated
-	public PreferenceValueDialog(Dialog owner, String name, String value, PreferencesDialog caller,
-	                             TableModel tm, String title, boolean includeBrowse) {
-		this(owner,name,value,caller,tm,title);
-	}
-
-	/**
-	 * Creates a new PreferenceValueDialog object.
-	 *
-	 * @param owner  DOCUMENT ME!
-	 * @param name  DOCUMENT ME!
-	 * @param value  DOCUMENT ME!
-	 * @param caller  DOCUMENT ME!
-	 * @param tm  DOCUMENT ME!
-	 * @param title  DOCUMENT ME!
 	 */
 	public PreferenceValueDialog(Dialog owner, String name, String value, PreferencesDialog caller,
 	                             TableModel tm, String title) {
@@ -137,52 +117,6 @@ public class PreferenceValueDialog extends JDialog {
 		this.setVisible(true);
 	}
 
-
-	/** @deprecated no longer used by anyting.  Will leave this world Dec 2007. */
-	public String validatedPluginData(Component comp, String selection) {
-		String validatedData = null;
-		File file = new File(selection);
-
-		// directory was specified
-		if (file.isDirectory()) {
-			// must expand as list of files, as the autoloading tries to
-			// use the specified values as JAR files.
-			String[] fileList = file.list(); // could use FileFilter
-			String pluginFiles = new String("");
-
-			for (int j = 0; j < fileList.length; j++) {
-				String jarString = file.getAbsolutePath() + File.separator + fileList[j];
-
-				if (jarString.endsWith(".jar")) {
-					if (pluginFiles.length() > 0) {
-						pluginFiles = pluginFiles + "," + jarString;
-					} else {
-						pluginFiles = new String(jarString);
-					}
-				}
-			}
-
-			if (pluginFiles.length() == 0) {
-				// no *.jar files found in directory, popup info dialog
-				JOptionPane.showMessageDialog(comp, "No plugins (*.jar files) found.",
-				                              "Information", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				validatedData = pluginFiles;
-			}
-		} else {
-			// ordinary file was specified
-			if (!selection.endsWith(".jar")) {
-				// no *.jar files found in input string, popup info
-				// dialog
-				JOptionPane.showMessageDialog(comp, "No plugins (*.jar files) found.",
-				                              "Information", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				validatedData = selection;
-			}
-		}
-
-		return validatedData;
-	}
 
 	class OkButtonListener implements ActionListener {
 		PreferenceValueDialog motherRef = null;

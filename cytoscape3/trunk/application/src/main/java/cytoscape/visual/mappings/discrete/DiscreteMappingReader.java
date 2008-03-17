@@ -49,6 +49,7 @@ import cytoscape.visual.parsers.ValueParser;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.SortedMap;
 
 
 /**
@@ -59,7 +60,7 @@ import java.util.TreeMap;
  */
 public class DiscreteMappingReader {
     private String controllingAttribute;
-    private TreeMap map = new TreeMap();
+    private SortedMap<Object,Object> map = new TreeMap<Object,Object>();
 
     /**
      * Constructor.
@@ -84,7 +85,7 @@ public class DiscreteMappingReader {
      * Gets the Discrete Map.
      * @return TreeMap Object.
      */
-    public TreeMap getMap() {
+    public SortedMap<Object,Object> getMap() {
         return map;
     }
 

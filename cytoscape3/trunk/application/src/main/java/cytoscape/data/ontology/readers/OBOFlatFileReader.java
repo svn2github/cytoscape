@@ -243,6 +243,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	 * @param rd
 	 * @throws IOException
 	 */
+	 @SuppressWarnings("unchecked") // more attr hell
 	private void readEntry(final BufferedReader rd) throws IOException {
 		String id = "";
 		String line = null;
@@ -277,10 +278,8 @@ public class OBOFlatFileReader implements OntologyReader {
 			           || key.equals(BROAD_SYNONYM.toString())
 			           || key.equals(NARROW_SYNONYM.toString()) || key.equals(SYNONYM.toString())) {
 				String[] synonymParts = val.split("\"");
-				Map<String, String> synoMap = termAttributes.getMapAttribute(id,
-				                                                             OBO_PREFIX + "."
-				                                                             + OBOTags.SYNONYM
-				                                                                                                                                                                                                                                                                       .toString());
+				Map<String, String> synoMap = termAttributes.getMapAttribute(id, OBO_PREFIX + "."
+				                                                             + OBOTags.SYNONYM.toString());
 
 				if (synoMap == null) {
 					synoMap = new HashMap<String, String>();

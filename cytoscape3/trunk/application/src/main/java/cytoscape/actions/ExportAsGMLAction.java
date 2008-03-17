@@ -49,6 +49,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.readers.GMLParser;
 import cytoscape.data.readers.GMLWriter;
+import cytoscape.data.readers.KeyValue;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -231,7 +232,7 @@ class ExportAsGMLTask implements Task {
 	 */
 	private void saveGraph() throws IOException {
 		FileWriter fileWriter = new FileWriter(fileName);
-		List list = new Vector();
+		List<KeyValue> list = new Vector<KeyValue>();
 
 		GMLWriter gmlWriter = new GMLWriter();
 		gmlWriter.writeGML(network, view, list);

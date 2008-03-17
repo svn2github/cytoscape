@@ -168,6 +168,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	 * @param e
 	 *            DOCUMENT ME!
 	 */
+	 @SuppressWarnings("unchecked") // for the casts below
 	public void propertyChange(PropertyChangeEvent e) {
 		String pluginName = this.getClass().getName();
 		int index = pluginName.lastIndexOf(".");

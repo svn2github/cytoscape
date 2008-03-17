@@ -474,10 +474,10 @@ class XGMMLParser extends DefaultHandler {
 		groupStack = new Stack<Node>();
 		nodeList = new ArrayList<Node>();
 		edgeList = new ArrayList<Edge>();
-		nodeLinks = new HashMap();
-		nodeGraphicsMap = new HashMap();
-		edgeGraphicsMap = new HashMap();
-		idMap = new HashMap();
+		nodeLinks = new HashMap<Node,List<String>>();
+		nodeGraphicsMap = new HashMap<Node,Attributes>();
+		edgeGraphicsMap = new HashMap<Edge,Attributes>();
+		idMap = new HashMap<String,Node>();
 	}
 
 	/********************************************************************
@@ -982,7 +982,7 @@ class XGMMLParser extends DefaultHandler {
 				}
 				// System.out.println("x="+edgeBendX+" y="+edgeBendY);
 				if (edgeBendX != null && edgeBendY != null) {
-					if (handleList == null) handleList = new ArrayList();
+					if (handleList == null) handleList = new ArrayList<String>();
 					handleList.add(edgeBendX+","+edgeBendY);
 					edgeBendX = null;
 					edgeBendY = null;
@@ -1035,6 +1035,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+	@SuppressWarnings("unchecked") // TODO Stupid list attribute!  Fix CyAttributes!
 	class handleListAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			ObjectType objType = getType(atts.getValue("type"));
@@ -1060,6 +1061,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+	@SuppressWarnings("unchecked") // TODO Stupid map attribute!  Fix CyAttributes!
 	class handleMapAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			String name = atts.getValue("name");
@@ -1123,6 +1125,7 @@ class XGMMLParser extends DefaultHandler {
 	 * attribute property is equal to the data type of the key or value. - name
 	 * attribute properties are only set for keys
 	 */
+	@SuppressWarnings("unchecked") // TODO hmmmm
 	class handleComplexAttribute implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			// We can't create the complex attribute until we know what the definition is, but
@@ -1165,6 +1168,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 	}
 
+	@SuppressWarnings("unchecked") // TODO hmmmm
 	class handleComplexAttributeDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			if (level == 0) {

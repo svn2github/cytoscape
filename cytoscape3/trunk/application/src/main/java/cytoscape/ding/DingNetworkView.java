@@ -76,7 +76,6 @@ import java.util.List;
 public class DingNetworkView extends DGraphView implements CyNetworkView {
 	private String title;
 	private boolean vizmapEnabled = true;
-	private HashMap clientData = new HashMap();
 	private VisualStyle vs;
 
 	/**
@@ -217,36 +216,6 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param data_name DOCUMENT ME!
-	 * @param data DOCUMENT ME!
-	 */
-	public void putClientData(String data_name, Object data) {
-		clientData.put(data_name, data);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Collection getClientDataNames() {
-		return clientData.keySet();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param data_name DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public Object getClientData(String data_name) {
-		return clientData.get(data_name);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @param nodes DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
@@ -299,7 +268,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean applyVizMap(EdgeView edge_view) {
-		return applyVizMap(edge_view, (VisualStyle) getClientData(CytoscapeDesktop.VISUAL_STYLE));
+		return applyVizMap(edge_view, vs);
 	}
 
 	/**
@@ -321,7 +290,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean applyVizMap(NodeView node_view) {
-		return applyVizMap(node_view, (VisualStyle) getClientData(CytoscapeDesktop.VISUAL_STYLE));
+		return applyVizMap(node_view, vs);
 	}
 
 	/**
@@ -485,8 +454,8 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List getNodeViewsList() {
-		ArrayList list = new ArrayList(getNodeViewCount());
+	public List<NodeView> getNodeViewsList() {
+		ArrayList<NodeView> list = new ArrayList<NodeView>(getNodeViewCount());
 		int[] gp_indices = getGraphPerspective().getNodeIndicesArray();
 
 		for (int i = 0; i < gp_indices.length; i++) {

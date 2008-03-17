@@ -43,6 +43,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -117,13 +118,13 @@ public class FilterHistoryJList extends JList {
 	// inner class to provide filtered model
 	class FilterModel extends AbstractListModel {
 	private final static long serialVersionUID = 120233987592111L;
-		ArrayList items;
-		ArrayList filterItems;
+		List<Object> items;
+		List<Object> filterItems;
 
 		public FilterModel() {
 			super();
-			items = new ArrayList();
-			filterItems = new ArrayList();
+			items = new ArrayList<Object>();
+			filterItems = new ArrayList<Object>();
 		}
 
 		public Object getElementAt(int index) {
@@ -159,7 +160,7 @@ public class FilterHistoryJList extends JList {
 	// inner class provides filter-by-keystroke field
 	class FilterField extends JComponent implements DocumentListener, ActionListener {
 	private final static long serialVersionUID = 1202339875100770L;
-		LinkedList prevSearches;
+		LinkedList<String> prevSearches;
 		JTextField textField;
 		JButton prevSearchButton;
 		JPopupMenu prevSearchMenu;
@@ -179,7 +180,7 @@ public class FilterHistoryJList extends JList {
 				});
 			add(prevSearchButton, BorderLayout.WEST);
 			add(textField, BorderLayout.CENTER);
-			prevSearches = new LinkedList();
+			prevSearches = new LinkedList<String>();
 		}
 
 		public void popMenu(int x, int y) {

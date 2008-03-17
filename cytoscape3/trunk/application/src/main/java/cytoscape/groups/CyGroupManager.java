@@ -65,22 +65,22 @@ public class CyGroupManager {
 	 * The list of groups, indexed by the CyNode that represents the group.  The values
 	 * are the CyGroup itself.
 	 */
-	private static HashMap<Node, CyGroup> groupMap = new HashMap();
+	private static HashMap<Node, CyGroup> groupMap = new HashMap<Node, CyGroup>();
 
 	/**
 	 * The list of group viewers currently registered.
 	 */
-	private static HashMap<String, CyGroupViewer> viewerMap = new HashMap();
+	private static HashMap<String, CyGroupViewer> viewerMap = new HashMap<String, CyGroupViewer>();
 
 	/**
 	 * The list of groups, indexed by the managing viewer
 	 */
-	private static HashMap<CyGroupViewer, List<CyGroup>> groupViewerMap = new HashMap();
+	private static HashMap<CyGroupViewer, List<CyGroup>> groupViewerMap = new HashMap<CyGroupViewer, List<CyGroup>>();
 
 	/**
 	 * The list of group change listeners
 	 */
-	private static List<CyGroupChangeListener> changeListeners = new ArrayList();
+	private static List<CyGroupChangeListener> changeListeners = new ArrayList<CyGroupChangeListener>();
 
 	// Static methods
 	/**

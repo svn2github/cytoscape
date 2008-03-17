@@ -55,8 +55,8 @@ import java.util.*;
  *
  */
 public class GraphViewController implements GraphPerspectiveChangeListener {
-	protected Map graphViewToHandler; // a map of GraphViews to GraphViewHandlers
-	protected Map gpToGv; // a map of GraphPerspectives to GraphViews
+	protected Map<GraphView,GraphViewHandler> graphViewToHandler; // a map of GraphViews to GraphViewHandlers
+	protected Map<GraphPerspective,GraphView> gpToGv; // a map of GraphPerspectives to GraphViews
 
 	/**
 	 *
@@ -67,8 +67,8 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	 * Empty constructor, initializes class members to empty HashMaps.
 	 */
 	public GraphViewController() {
-		this.graphViewToHandler = new HashMap();
-		this.gpToGv = new HashMap();
+		this.graphViewToHandler = new HashMap<GraphView,GraphViewHandler>();
+		this.gpToGv = new HashMap<GraphPerspective,GraphView>();
 	} //GraphViewController
 
 	/**
@@ -81,8 +81,8 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	 * available through their <code>getGraphPerspective()</code> method.
 	 */
 	public GraphViewController(GraphView[] graph_views) {
-		this.graphViewToHandler = new HashMap();
-		this.gpToGv = new HashMap();
+		this.graphViewToHandler = new HashMap<GraphView,GraphViewHandler>();
+		this.gpToGv = new HashMap<GraphPerspective,GraphView>();
 		setGraphViews(graph_views);
 	} //GraphViewController
 
@@ -101,8 +101,8 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	 * objects that are not keys in the given <code>Map</code>
 	 */
 	public GraphViewController(GraphView[] graph_views, Map gv_to_handler) {
-		this.graphViewToHandler = new HashMap();
-		this.gpToGv = new HashMap();
+		this.graphViewToHandler = new HashMap<GraphView,GraphViewHandler>();
+		this.gpToGv = new HashMap<GraphPerspective,GraphView>();
 		setGraphViews(graph_views, gv_to_handler);
 	} //GraphViewController
 
@@ -169,7 +169,7 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	 * @return an array of <code>giny.view.GraphView</code> objects
 	 */
 	public GraphView[] getGraphViews() {
-		Set keySet = this.graphViewToHandler.keySet();
+		Set<GraphView> keySet = this.graphViewToHandler.keySet();
 
 		return (GraphView[]) keySet.toArray(new GraphView[keySet.size()]);
 	} //getGraphViews

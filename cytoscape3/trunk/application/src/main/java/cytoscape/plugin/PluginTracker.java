@@ -115,6 +115,7 @@ public class PluginTracker {
 	/* In order to maintain a list of plugins that does not duplicate entries due to lack of a unique identifier
 	 * all entries that lack an unique id will be purged and expected to re-register.  User will see no difference.
 	 */
+	 @SuppressWarnings("unchecked") // for jdom
 	private void removeMissingIdEntries() {
 		List<Element> Plugins = trackerDoc.getRootElement().getChild(PluginStatus.CURRENT.getTagName()).getChildren(pluginTag);
 		List<Element> PluginsToRemove = new ArrayList<Element>();
@@ -326,7 +327,8 @@ public class PluginTracker {
 			return null;
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked") // something from jdom
 	private void createPluginTable() {
 		this.infoObjMap = new java.util.HashMap<String, Element>();
 		for (PluginStatus ps: PluginStatus.values()) {
@@ -422,6 +424,7 @@ public class PluginTracker {
 	
 	
 	// Not sure this is the right way to do this but for now...
+	@SuppressWarnings("unchecked") // jdom again
 	private List<ThemeInfo> getThemeContent(Element ThemeParentTag) {
 		List<ThemeInfo> Content = new ArrayList<ThemeInfo>();
 		List<Element> Themes = ThemeParentTag.getChildren(PluginXml.THEME.getTag());
@@ -448,6 +451,7 @@ public class PluginTracker {
 	 * Takes a list of elemnts, creates the PluginInfo object for each and
 	 * returns list of objects
 	 */
+	@SuppressWarnings("unchecked") // jdom again
 	private List<PluginInfo> getPluginContent(Element PluginParentTag) {
 		List<PluginInfo> Content = new ArrayList<PluginInfo>();
 
@@ -479,6 +483,7 @@ public class PluginTracker {
 	/*
 	 * Create the PluginInfo object from a <plugin>...</plugin> tree 
 	 */
+	@SuppressWarnings("unchecked") // jdom again
 	private PluginInfo createPluginObject(Element PluginElement) {
     	PluginInfo Info = (PluginInfo) createBasicObject(PluginElement, DownloadableType.PLUGIN);
     	

@@ -95,10 +95,10 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			current_network_view = Cytoscape.getNetworkView(current_network.getIdentifier());
 		} // end of if ()
 
-		Set nodes = current_network.getSelectedNodes();
+		Set<Node> nodes = current_network.getSelectedNodes();
 
 		GraphPerspective new_network = Cytoscape.createNetwork(nodes,
-		                                                current_network.getConnectingEdges(new ArrayList(nodes)),
+		                                                current_network.getConnectingEdges(new ArrayList<Node>(nodes)),
 		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 		                                                current_network);
 

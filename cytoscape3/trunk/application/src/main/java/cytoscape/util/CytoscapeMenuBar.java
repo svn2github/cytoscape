@@ -61,15 +61,15 @@ public class CytoscapeMenuBar extends JMenuBar {
 	protected static final int NO_INDEX = -2;
 	protected String defaultMenuSpecifier = DEFAULT_MENU_SPECIFIER;
 	protected Set actionMembersSet = null;
-	protected Map actionMenuItemMap = null;
-	protected Map menuMap = null;
+	protected Map<Action,JMenuItem> actionMenuItemMap = null;
+	protected Map<String,JMenu> menuMap = null;
 
 
 	/**
 	 * The Menu-&gt;Integer "effective last index"
 	 * Map for Menus with menu items that want to be at the end.
 	 */
-	protected Map menuEffectiveLastIndexMap = null;
+	protected Map<JMenu,Integer> menuEffectiveLastIndexMap = null;
 
 	/**
 	 * @beaninfo (rwb)
@@ -80,9 +80,9 @@ public class CytoscapeMenuBar extends JMenuBar {
 	 * Default constructor. 
 	 */
 	public CytoscapeMenuBar() {
-		menuEffectiveLastIndexMap = new HashMap();
-		menuMap = new HashMap();
-		actionMenuItemMap = new HashMap();
+		menuEffectiveLastIndexMap = new HashMap<JMenu,Integer>();
+		menuMap = new HashMap<String,JMenu>();
+		actionMenuItemMap = new HashMap<Action,JMenuItem>();
 
 		// Load the first menu, just to please the layouter. Also make sure the
 		// menu bar doesn't get too small.

@@ -114,7 +114,7 @@ public class Misc {
 	 * called 'property.delimiter' (whose value is usually "::")
 	 * get the property value; check to see if it is a list; parse it if necessary
 	 */
-	static public Vector getPropertyValues(Properties props, String propName) {
+	static public Vector<String> getPropertyValues(Properties props, String propName) {
 		String propertyDelimiterName = "property.token.delimiter";
 		String delimiter = props.getProperty(propertyDelimiterName, "::");
 
@@ -124,7 +124,7 @@ public class Misc {
 		String listEndTokenName = "list.endToken";
 		String listEndToken = props.getProperty(listEndTokenName, ")");
 
-		Vector result = new Vector();
+		Vector<String> result = new Vector<String>();
 		String propString = props.getProperty(propName);
 
 		if (propString == null)
