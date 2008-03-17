@@ -165,18 +165,23 @@ public class ShapePaletteInfoGeneratorImpl implements ShapePaletteInfoGenerator 
 	private Set<String> getMappingKeys(Calculator calc, String controllingAttribute) {
 		DiscreteMapping dm = getDiscreteMapping(calc, controllingAttribute);
 
+		Set<String> keys = new HashSet<String>();
+
 		if (dm == null) {
-			return new HashSet<String>(0);
+			return keys; 
 		}
 
-		Map<String, Object> keyValuePairs = (Map<String, Object>) dm.getAll();
+		Map<Object, Object> keyValuePairs = (Map<Object, Object>) dm.getAll();
 
-		// don't know if the map can ever be null, but check anyway:
 		if (keyValuePairs == null) {
-			return new HashSet<String>(0);
+			return keys;
 		}
 
-		return keyValuePairs.keySet();
+		for ( Object k : keyValuePairs.keySet() ) {
+			keys.add( k.toString() );
+		}
+
+		return keys; 
 	}
 
 	private DiscreteMapping getDiscreteMapping(Calculator calc, String controllingAttribute) {
