@@ -44,8 +44,6 @@ import cytoscape.visual.*;
 
 import ding.view.EdgeContextMenuListener;
 
-// AJK: 05/19/06 BEGIN
-//     for context menus
 import ding.view.NodeContextMenuListener;
 
 import giny.view.*;
@@ -187,12 +185,12 @@ public interface CyNetworkView extends GraphView {
 	 * Applies the given layout to the entire CyNetworkView,
 	 * but locks the given NodeViews and EdgeViews in place
 	 */
-	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges);
+	public void applyLockedLayout(CyLayoutAlgorithm layout, NodeView[] nodes, EdgeView[] edges);
 
 	/**
 	 * Applies the  given layout to only the given NodeViews and EdgeViews
 	 */
-	public void applyLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges);
+	public void applyLayout(CyLayoutAlgorithm layout, NodeView[] nodes, EdgeView[] edges);
 
 	/**
 	 * Applies the given layout to the entire CyNetworkView,

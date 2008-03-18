@@ -37,25 +37,20 @@ package cytoscape.ding;
 import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
+
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.layout.CyLayoutAlgorithm;
 
-import cytoscape.view.CyEdgeView;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
-import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.FlagAndSelectionHandler;
 
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
+import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import ding.view.EdgeContextMenuListener;
-
-// AJK: 05/19/06 BEGIN
-//     for context menus
 import ding.view.NodeContextMenuListener;
 
 import giny.view.EdgeView;
@@ -69,7 +64,6 @@ import java.util.Iterator;
 import java.util.List;
 
 
-// AJK: 05/19/06 END
 /**
  *
  */
@@ -314,9 +308,11 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean applyVizMap(EdgeView edge_view, VisualStyle style) {
-		VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
-		Cytoscape.getVisualMappingManager().vizmapEdge(edge_view, this);
-		Cytoscape.getDesktop().setVisualStyle(old_style);
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		VisualStyle old_style = vmm.getVisualStyle(); 
+		vmm.setVisualStyle(style);
+		vmm.vizmapEdge(edge_view, this);
+		vmm.setVisualStyle(old_style);
 
 		return true;
 	}
@@ -342,9 +338,11 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean applyVizMap(NodeView node_view, VisualStyle style) {
-		VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
-		Cytoscape.getVisualMappingManager().vizmapNode(node_view, this);
-		Cytoscape.getDesktop().setVisualStyle(old_style);
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		VisualStyle old_style = vmm.getVisualStyle(); 
+		vmm.setVisualStyle(style);
+		vmm.vizmapNode(node_view, this);
+		vmm.setVisualStyle(old_style);
 
 		return true;
 	}
@@ -391,7 +389,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param style DOCUMENT ME!
 	 */
 	public void applyVizmapper(VisualStyle style) {
-		VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
+		VisualStyle old_style = Cytoscape.getVisualMappingManager().setVisualStyle(style);
 		redrawGraph(false, true);
 	}
 
@@ -472,7 +470,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges) {
+	public void applyLockedLayout(CyLayoutAlgorithm layout, NodeView[] nodes, EdgeView[] edges) {
 		layout.lockNodes(nodes);
 		layout.doLayout();
 	}
@@ -484,7 +482,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param nodes DOCUMENT ME!
 	 * @param edges DOCUMENT ME!
 	 */
-	public void applyLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges) {
+	public void applyLayout(CyLayoutAlgorithm layout, NodeView[] nodes, EdgeView[] edges) {
 		layout.lockNodes(getInverseViews(nodes));
 		layout.doLayout();
 	}

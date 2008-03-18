@@ -52,8 +52,6 @@ import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
 
 import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
-import cytoscape.view.CyEdgeView;
 
 import cytoscape.visual.LineStyle;
 
