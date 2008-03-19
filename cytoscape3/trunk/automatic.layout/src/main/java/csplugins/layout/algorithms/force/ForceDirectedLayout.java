@@ -45,9 +45,8 @@ import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.algorithms.graphPartition.*;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.attributes.CyAttributes;
-import ding.view.DGraphView;
 
 import java.awt.GridLayout;
 

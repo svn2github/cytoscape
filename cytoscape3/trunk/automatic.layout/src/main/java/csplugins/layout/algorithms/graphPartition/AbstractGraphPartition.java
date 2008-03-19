@@ -14,7 +14,7 @@ import cytoscape.layout.AbstractLayout;
 
 import cytoscape.task.*;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 import java.lang.Throwable;

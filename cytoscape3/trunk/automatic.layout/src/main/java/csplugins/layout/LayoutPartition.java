@@ -43,7 +43,7 @@ import org.cytoscape.*;
 
 import cytoscape.view.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.awt.Dimension;
 
@@ -130,12 +130,12 @@ public class LayoutPartition {
 	 * includes the entire network.
 	 *
 	 * @param network the GraphPerspective to include
-	 * @param networkView the CyNetworkView to use
+	 * @param networkView the GraphView to use
 	 * @param nodeSet the nodes to be considered
 	 * @param edgeAttribute a String that contains the name of the attribute to use
 	 *                      for edge weighting
 	 */
-	public LayoutPartition(GraphPerspective network, CyNetworkView networkView, Collection<Node>nodeSet,
+	public LayoutPartition(GraphPerspective network, GraphView networkView, Collection<Node>nodeSet,
 	                       String edgeAttribute) {
 		initialize(network,networkView,nodeSet,edgeAttribute);
 	}
@@ -146,12 +146,12 @@ public class LayoutPartition {
 	 * includes the entire network.
 	 *
 	 * @param network the GraphPerspective to include
-	 * @param networkView the CyNetworkView to use
+	 * @param networkView the GraphView to use
 	 * @param selectedOnly if true, only include selected nodes in the partition
 	 * @param edgeAttribute a String that contains the name of the attribute to use
 	 *                      for edge weighting
 	 */
-	public LayoutPartition(GraphPerspective network, CyNetworkView networkView, boolean selectedOnly,
+	public LayoutPartition(GraphPerspective network, GraphView networkView, boolean selectedOnly,
 	                       String edgeAttribute) {
 		if (selectedOnly) {
 			initialize(network,networkView,(Collection<Node>)network.getSelectedNodes(),edgeAttribute);
@@ -160,7 +160,7 @@ public class LayoutPartition {
 		}
 	}
 
-	protected void initialize(GraphPerspective network, CyNetworkView networkView, Collection<Node>nodeSet,
+	protected void initialize(GraphPerspective network, GraphView networkView, Collection<Node>nodeSet,
 	                          String edgeAttribute) {
 		// Initialize
 		nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
@@ -556,7 +556,7 @@ public class LayoutPartition {
 	/**
 	 * Private routines
 	 */
-	private void nodeListInitialize(GraphPerspective network, CyNetworkView networkView,
+	private void nodeListInitialize(GraphPerspective network, GraphView networkView,
 	                                Collection<Node> nodeSet) {
 		int nodeIndex = 0;
 		this.nodeList = new ArrayList<LayoutNode>(network.getNodeCount());
@@ -574,7 +574,7 @@ public class LayoutPartition {
 		}
 	}
 
-	private void edgeListInitialize(GraphPerspective network, CyNetworkView networkView,
+	private void edgeListInitialize(GraphPerspective network, GraphView networkView,
 	                                String edgeAttribute) {
 		Iterator iter = network.edgesIterator();
 
@@ -652,12 +652,12 @@ public class LayoutPartition {
 	 * algorithms/graphPartition/SGraphPartition.java.
 	 *
 	 * @param network the GraphPerspective containing the graph
-	 * @param networkView the CyNetworkView representing the graph
+	 * @param networkView the GraphView representing the graph
 	 * @param selectedOnly only consider selected nodes
 	 * @param edgeAttribute the attribute to use for edge weighting
 	 * @return a List of LayoutPartitions
 	 */
-	public static List<LayoutPartition> partition(GraphPerspective network, CyNetworkView networkView,
+	public static List<LayoutPartition> partition(GraphPerspective network, GraphView networkView,
 	                             boolean selectedOnly, String edgeAttribute) {
 
 		if (selectedOnly) {
@@ -674,12 +674,12 @@ public class LayoutPartition {
 	 * algorithms/graphPartition/SGraphPartition.java.
 	 *
 	 * @param network the GraphPerspective containing the graph
-	 * @param networkView the CyNetworkView representing the graph
+	 * @param networkView the GraphView representing the graph
 	 * @param nodeSet the set of nodes to consider
 	 * @param edgeAttribute the attribute to use for edge weighting
 	 * @return a List of LayoutPartitions
 	 */
-	public static List<LayoutPartition> partition(GraphPerspective network, CyNetworkView networkView,
+	public static List<LayoutPartition> partition(GraphPerspective network, GraphView networkView,
 	                             Collection<Node> nodeSet, String edgeAttribute) {
 		ArrayList<LayoutPartition> partitions = new ArrayList<LayoutPartition>();
 
@@ -756,14 +756,14 @@ public class LayoutPartition {
 	/**
 	  * This method traverses nodes connected to the specified node.
 	  * @param network                The GraphPerspective we are laying out
-	  * @param networkView        The CyNetworkView we are laying out
+	  * @param networkView        The GraphView we are laying out
 	  * @param nodesToViews        A map that maps between nodes and views
 	  * @param node                        The node to search for connected nodes.
 	  * @param partition            The partition that holds all of the nodes and edges.
 	  * @param edgeAttribute    A String that is the name of the attribute to use
 	      *                         for weights
 	  */
-	private static void traverse(GraphPerspective network, CyNetworkView networkView,
+	private static void traverse(GraphPerspective network, GraphView networkView,
 	                             IntObjHash nodesToViews, Node node,
 	                             LayoutPartition partition, String edgeAttribute) {
 		int nodeIndex = node.getRootGraphIndex();

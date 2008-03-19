@@ -40,10 +40,10 @@ import org.cytoscape.Node;
 
 import cytoscape.layout.AbstractLayout;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import giny.view.NodeView;
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.util.Collection;
 import java.util.Iterator;

@@ -57,7 +57,7 @@ import cytoscape.util.*;
 
 import cytoscape.view.*;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.event.*;
 

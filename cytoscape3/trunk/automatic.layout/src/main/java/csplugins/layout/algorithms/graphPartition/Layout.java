@@ -42,11 +42,11 @@ import cern.colt.map.*;
 
 import org.cytoscape.GraphPerspective;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.util.*;
 
@@ -76,8 +76,8 @@ public class Layout {
 	 * @param view  DOCUMENT ME!
 	 * @param load_current_values  DOCUMENT ME!
 	 */
-	public Layout(CyNetworkView view, boolean load_current_values) {
-		this(view.getNetwork());
+	public Layout(GraphView view, boolean load_current_values) {
+		this(view.getGraphPerspective());
 
 		// initialize current values
 		if (load_current_values) {
@@ -94,7 +94,7 @@ public class Layout {
 	/**
 	 * Apply the layout to a given GraphView
 	 */
-	public void applyLayout(CyNetworkView view) {
+	public void applyLayout(GraphView view) {
 		Iterator i = view.getNodeViewsIterator();
 
 		while (i.hasNext()) {

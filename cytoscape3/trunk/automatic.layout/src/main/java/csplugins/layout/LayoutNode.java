@@ -36,7 +36,7 @@ import org.cytoscape.*;
 
 import cytoscape.view.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;

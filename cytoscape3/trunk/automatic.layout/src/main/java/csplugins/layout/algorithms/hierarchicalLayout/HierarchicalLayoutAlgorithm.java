@@ -48,10 +48,10 @@ import cytoscape.layout.Tunable;
 
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.GridLayout;
 import java.awt.geom.Point2D;

@@ -39,7 +39,7 @@
  **/
 package csplugins.layout.algorithms.hierarchicalLayout;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.io.BufferedReader;
 import java.io.IOException;

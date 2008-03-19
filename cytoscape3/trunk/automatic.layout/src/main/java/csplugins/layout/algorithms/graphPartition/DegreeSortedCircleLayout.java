@@ -14,7 +14,7 @@ import cytoscape.view.*;
 
 import org.cytoscape.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.util.*;
 

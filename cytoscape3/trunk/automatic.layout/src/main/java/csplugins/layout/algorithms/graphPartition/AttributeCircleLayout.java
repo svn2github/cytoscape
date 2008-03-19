@@ -46,7 +46,7 @@ import cytoscape.layout.Tunable;
 
 import cytoscape.view.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.awt.GridLayout;
 
