@@ -1222,7 +1222,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		Point pt = dte.getLocation();
 
-		PhoebeCanvasDropEvent event = new PhoebeCanvasDropEvent(this, // we are the event source
+		PhoebeCanvasDropEvent event = new PhoebeCanvasDropEvent(m_view, // the view should be the event source
 		                                                        t, // item dropped
 		                                                        pt // location
 		);
@@ -1257,20 +1257,6 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	protected synchronized void processPhoebeCanvasDropEvent(PhoebeCanvasDropEvent event) {
 		Enumeration e = listeners.elements();
 
-		//        // AJK: 12/08/06 oy, what a hack.  try to send transferable to transferhandler
-		//        //               of cytoscapeDesktopPane
-		//        Transferable t = event.getTransferable();
-		//        TransferHandler th = Cytoscape.getDesktop().getNetworkViewManager().
-		//        getDesktopPane().getTransferHandler();
-		//        if (th != null)
-		//        {
-		//        	th.importData(Cytoscape.getDesktop().getNetworkViewManager().
-		//        getDesktopPane(), t);
-		//        }
-		//        // AJK: 12/08/06 END       
-
-		//      // AJK: 01/14/07 oy, what a hack.  try to send transferable to transferhandler
-		//      //               of cytoscapeDesktopPane
 		Transferable t = event.getTransferable();
 		TransferHandler th;
 		JComponent jComp;
@@ -1285,14 +1271,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			}
 		}
 
-		// AJK: 01/14/07 END
 		while (e.hasMoreElements()) {
 			PhoebeCanvasDropListener l = (PhoebeCanvasDropListener) e.nextElement();
 			l.itemDropped(event);
 		}
 	}
 
-	// AJK: 04/02/06 END
 	/**
 	 *  DOCUMENT ME!
 	 *

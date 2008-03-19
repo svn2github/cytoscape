@@ -27,6 +27,12 @@ import org.cytoscape.GraphPerspective;
 
 import cytoscape.render.stateful.GraphLOD;
 
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.KeyListener;
+
+import phoebe.*;
+
 /**
  * @author xmas
  */
@@ -615,19 +621,40 @@ public static int NODE_X_POSITION = 0;
 
 	public void addTransferComponent(JComponent comp); 
 
+	// for printing
 	public void setBounds(int x, int y, int width, int height) ;
 	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex);
 	public void print(Graphics g) ;
 	public void printNoImposter(Graphics g) ;
-
 	public Printable getPrintable();
 
+	// ??
 	public Point2D getCenter(); 
 	public void setCenter(double x, double y); 
+	public void setSize(Dimension d);
 
+	// for export
 	public Image createImage(int width, int height, double shrink);
 
-	public void setSize(Dimension d);
+
+	// for internal frame component support
 	public Container getContainer(JLayeredPane jlp);
+
+	// used by editor
+    public NodeView getPickedNodeView(Point2D pt); 
+	public EdgeView getPickedEdgeView(Point2D pt);
+
+	public void xformComponentToNodeCoords(double[] coords);
+
+	public void addMouseListener(MouseListener m);
+	public void addMouseMotionListener(MouseMotionListener m);
+	public void addKeyListener(KeyListener k);
+	
+	public void removeMouseListener(MouseListener m);
+	public void removeMouseMotionListener(MouseMotionListener m);
+	public void removeKeyListener(KeyListener k);
+
+    public void addPhoebeCanvasDropListener(PhoebeCanvasDropListener l);
+	public void removePhoebeCanvasDropListener(PhoebeCanvasDropListener l);
 }
 

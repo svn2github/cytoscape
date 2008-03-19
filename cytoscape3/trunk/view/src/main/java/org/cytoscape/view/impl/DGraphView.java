@@ -79,6 +79,9 @@ import java.awt.geom.Point2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.image.BufferedImage;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.KeyListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,6 +91,8 @@ import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
+
+import phoebe.*;
 
 /**
  * DING implementation of the GINY view.
@@ -102,7 +107,7 @@ import javax.swing.JLayeredPane;
  *
  * @author Nerius Landys
  */
-public class DGraphView implements GraphView, Printable {
+public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
     private static enum ZOrder {
         BACKGROUND_PANE,
@@ -2660,5 +2665,33 @@ public class DGraphView implements GraphView, Printable {
 
 	public Container getContainer(JLayeredPane jlp) {
 		return new InternalFrameComponent(jlp,this);
+	}
+
+    public void addMouseListener(MouseListener m) {
+		m_networkCanvas.addMouseListener(m);
+	}
+    public void addMouseMotionListener(MouseMotionListener m) {
+		m_networkCanvas.addMouseMotionListener(m);
+	}
+    public void addKeyListener(KeyListener k) {
+		m_networkCanvas.addKeyListener(k);
+	}
+
+    public void removeMouseListener(MouseListener m) {
+		m_networkCanvas.removeMouseListener(m);
+	}
+    public void removeMouseMotionListener(MouseMotionListener m) {
+		m_networkCanvas.removeMouseMotionListener(m);
+	}
+    public void removeKeyListener(KeyListener k) {
+		m_networkCanvas.removeKeyListener(k);
+	}
+
+	public void addPhoebeCanvasDropListener(PhoebeCanvasDropListener l) {
+		m_networkCanvas.addPhoebeCanvasDropListener(l);
+	}
+
+	public void removePhoebeCanvasDropListener(PhoebeCanvasDropListener l) {
+		m_networkCanvas.removePhoebeCanvasDropListener(l);
 	}
 }
