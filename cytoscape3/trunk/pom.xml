@@ -158,6 +158,7 @@
     	<module>cruft.obo</module>
 		<module>network</module>
 		<module>attributes</module>
+    	<module>view</module>
 
 		<!-- Cytoscape Application -->
 		<module>application</module>
@@ -177,7 +178,6 @@
 		<module>attribute.browser</module>
 		<module>linkout</module>
 		<module>cpath</module>
-    <module>view</module>
   </modules>
 
 
