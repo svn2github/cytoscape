@@ -64,7 +64,7 @@ public class ArrangeAction extends JMenu {
 
 
 	public ArrangeAction() {
-		super("Arrange");
+		super("Arrange Network Windows");
 		
 		cascade = new JMenuItem(new AbstractAction("Cascade") {
 			public void actionPerformed(ActionEvent e) {

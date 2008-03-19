@@ -37,48 +37,90 @@
 
 package cytoscape.view;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-
-import cytoscape.actions.*; // * because we need access to all actions!
-
-import cytoscape.layout.ui.SettingsAction;
-import cytoscape.layout.ui.LayoutMenuManager;
-
-import cytoscape.util.undo.UndoAction;
-import cytoscape.util.undo.RedoAction;
-
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.CytoscapeMenuBar;
-import cytoscape.util.CytoscapeToolBar;
-
-import cytoscape.view.cytopanels.CytoPanelName;
-
 import giny.view.GraphViewChangeEvent;
 import giny.view.GraphViewChangeListener;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.help.CSH;
-import javax.help.HelpBroker;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
-import javax.swing.KeyStroke;
-import javax.swing.MenuElement;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+
+import cytoscape.actions.AlphabeticalSelectionAction;
+import cytoscape.actions.ArrangeAction;
+import cytoscape.actions.BendSelectedEdgesAction;
+import cytoscape.actions.BookmarkAction;
+import cytoscape.actions.CloneGraphInNewWindowAction;
+import cytoscape.actions.CreateNetworkViewAction;
+import cytoscape.actions.CytoPanelAction;
+import cytoscape.actions.DeSelectAllEdgesAction;
+import cytoscape.actions.DeSelectAllNodesAction;
+import cytoscape.actions.DeleteAction;
+import cytoscape.actions.DeselectAllAction;
+import cytoscape.actions.DestroyNetworkAction;
+import cytoscape.actions.DestroyNetworkViewAction;
+import cytoscape.actions.ExitAction;
+import cytoscape.actions.ExportAsGMLAction;
+import cytoscape.actions.ExportAsGraphicsAction;
+import cytoscape.actions.ExportAsInteractionsAction;
+import cytoscape.actions.ExportAsXGMMLAction;
+import cytoscape.actions.ExportEdgeAttributesAction;
+import cytoscape.actions.ExportNodeAttributesAction;
+import cytoscape.actions.ExportVizmapAction;
+import cytoscape.actions.FitContentAction;
+import cytoscape.actions.HelpAboutAction;
+import cytoscape.actions.HelpContactHelpDeskAction;
+import cytoscape.actions.HelpContentsAction;
+import cytoscape.actions.HideSelectedEdgesAction;
+import cytoscape.actions.HideSelectedNodesAction;
+import cytoscape.actions.ImportEdgeAttributesAction;
+import cytoscape.actions.ImportExpressionMatrixAction;
+import cytoscape.actions.ImportGraphFileAction;
+import cytoscape.actions.ImportNodeAttributesAction;
+import cytoscape.actions.ImportVizmapAction;
+import cytoscape.actions.InvertSelectedEdgesAction;
+import cytoscape.actions.InvertSelectedNodesAction;
+import cytoscape.actions.ListFromFileSelectionAction;
+import cytoscape.actions.NewNetworkAction;
+import cytoscape.actions.NewSessionAction;
+import cytoscape.actions.NewWindowSelectedNodesEdgesAction;
+import cytoscape.actions.NewWindowSelectedNodesOnlyAction;
+import cytoscape.actions.OpenSessionAction;
+import cytoscape.actions.PluginManagerAction;
+import cytoscape.actions.PluginUpdateAction;
+import cytoscape.actions.PreferenceAction;
+import cytoscape.actions.PrintAction;
+import cytoscape.actions.ProxyServerAction;
+import cytoscape.actions.SaveSessionAction;
+import cytoscape.actions.SaveSessionAsAction;
+import cytoscape.actions.SelectAdjacentEdgesAction;
+import cytoscape.actions.SelectAllAction;
+import cytoscape.actions.SelectAllEdgesAction;
+import cytoscape.actions.SelectAllNodesAction;
+import cytoscape.actions.SelectConnectedNodesAction;
+import cytoscape.actions.SelectFirstNeighborsAction;
+import cytoscape.actions.SelectionModeAction;
+import cytoscape.actions.SetVisualPropertiesAction;
+import cytoscape.actions.ShowGraphicsDetailsAction;
+import cytoscape.actions.StraightenSelectedEdgesAction;
+import cytoscape.actions.UnHideSelectedEdgesAction;
+import cytoscape.actions.UnHideSelectedNodesAction;
+import cytoscape.actions.WebServiceNetworkImportAction;
+import cytoscape.actions.ZoomAction;
+import cytoscape.actions.ZoomSelectedAction;
+import cytoscape.layout.ui.LayoutMenuManager;
+import cytoscape.layout.ui.SettingsAction;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.CytoscapeMenuBar;
+import cytoscape.util.CytoscapeToolBar;
+import cytoscape.util.undo.RedoAction;
+import cytoscape.util.undo.UndoAction;
+import cytoscape.view.cytopanels.CytoPanelName;
 
 
 /**
@@ -360,11 +402,14 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new NewNetworkAction());
 
 		addAction(new OpenSessionAction(),1);
+		
 		addAction(new SaveSessionAction("Save"),2);
 		addAction(new SaveSessionAsAction("Save As..."),3);
 
-		fileMenu.add(new JSeparator(), 4);
-
+		fileMenu.add(new JSeparator(), 2);
+		fileMenu.add(new JSeparator(), 5);
+		
+		
 		// Import submenu
 		addAction(new ImportGraphFileAction(this));
 		addAction(new WebServiceNetworkImportAction());
@@ -378,6 +423,8 @@ public class CyMenus implements GraphViewChangeListener {
 		loadSubMenu.add(new JSeparator());
 
 		addAction(new ImportVizmapAction());
+		
+		loadSubMenu.add(new JSeparator());
 
 		// Save submenu
 		addAction(new ExportAsXGMMLAction());
@@ -388,7 +435,9 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ExportVizmapAction());
 		addAction(new ExportAsGraphicsAction());
 
+		fileMenu.add(new JSeparator());
 		addAction(new PrintAction());
+		fileMenu.add(new JSeparator());
 		addAction(new ExitAction());
 
 		//
@@ -452,11 +501,16 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new CytoPanelAction(CytoPanelName.WEST,true));
 		addAction(new CytoPanelAction(CytoPanelName.SOUTH,true));
 		addAction(new CytoPanelAction(CytoPanelName.EAST,false));
+		
+		viewMenu.add(new JSeparator());
+		
 		addAction(new ShowGraphicsDetailsAction());
 
-		menuBar.getMenu("View").add(new JSeparator());
+		viewMenu.add(new JSeparator());
 
 		addAction(new SetVisualPropertiesAction());
+		viewMenu.add(new JSeparator());
+		
 		viewMenu.add(new ArrangeAction());
 		
 		//
