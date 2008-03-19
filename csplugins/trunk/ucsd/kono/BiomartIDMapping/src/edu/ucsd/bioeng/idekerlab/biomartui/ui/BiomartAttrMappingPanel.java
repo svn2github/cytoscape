@@ -154,8 +154,11 @@ public class BiomartAttrMappingPanel extends AttributeImportPanel implements Pro
 			    && (databaseFilter.contains(databaseName) == false)) {
 				String dispName = detail.get("displayName");
 
-				datasources = stub.getAvailableDatasets(databaseName);
-
+				try {
+					datasources = stub.getAvailableDatasets(databaseName);
+				} catch (IOException e) {
+					continue;
+				}
 				for (String key : datasources.keySet()) {
 					dsList.add(dispName + " - " + datasources.get(key));
 					datasourceMap.put(dispName + " - " + datasources.get(key), key);
