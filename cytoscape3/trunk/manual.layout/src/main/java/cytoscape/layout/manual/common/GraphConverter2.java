@@ -45,10 +45,10 @@ import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.geom.Point2D;
 
@@ -87,7 +87,7 @@ public final class GraphConverter2 {
 		double maxX = Double.MIN_VALUE;
 		double minY = Double.MAX_VALUE;
 		double maxY = Double.MIN_VALUE;
-		final CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+		final GraphView graphView = Cytoscape.getCurrentNetworkView();
 		Iterator iter = graphView.getNodeViewsIterator();
 
 		while (iter.hasNext()) {
@@ -130,7 +130,7 @@ public final class GraphConverter2 {
 		final double xOff = minX - border;
 		final double yOff = minY - border;
 
-		final FixedGraph fixedGraph = (FixedGraph) (graphView.getNetwork());
+		final FixedGraph fixedGraph = (FixedGraph) (graphView.getGraphPerspective());
 
 		return new MutablePolyEdgeGraphLayout() {
 				// FixedGraph methods.

@@ -52,7 +52,7 @@ import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanelImp;
@@ -101,7 +101,7 @@ public class SliderStateTracker implements  PropertyChangeListener {
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
-			CyNetworkView curr = Cytoscape.getCurrentNetworkView();
+			GraphView curr = Cytoscape.getCurrentNetworkView();
 
 			if ( curr == null || curr == Cytoscape.getNullNetworkView() )
 				return;

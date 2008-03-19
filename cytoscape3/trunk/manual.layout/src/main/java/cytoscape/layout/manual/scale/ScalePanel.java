@@ -44,8 +44,8 @@ import cytoscape.Cytoscape;
 //import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
 
-import ding.view.DGraphView;
-import ding.view.ViewChangeEdit;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.ViewChangeEdit;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -168,7 +168,7 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 
 		// only create the edit when we're beginning to adjust
 		if ( startAdjusting ) { 
-			currentEdit = new ViewChangeEdit((DGraphView)(Cytoscape.getCurrentNetworkView()), "Scale");
+			currentEdit = new ViewChangeEdit(Cytoscape.getCurrentNetworkView(), "Scale");
 			startAdjusting = false;
 		}
 

@@ -43,10 +43,10 @@ import cytoscape.util.*;
 
 import cytoscape.view.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
-import ding.view.DGraphView;
-import ding.view.ViewChangeEdit;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.ViewChangeEdit;
 
 import java.awt.event.*;
 
@@ -87,7 +87,7 @@ public abstract class AbstractControlAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		GraphView view = Cytoscape.getCurrentNetworkView();
-		ViewChangeEdit vce = new ViewChangeEdit((DGraphView)view, title);
+		ViewChangeEdit vce = new ViewChangeEdit(view, title);
 		computeDimensions(view);
 		control(view.getSelectedNodes());
 		view.updateView();

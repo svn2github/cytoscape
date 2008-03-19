@@ -38,8 +38,8 @@ package cytoscape.layout.manual.rotate;
 
 import cytoscape.Cytoscape;
 
-import ding.view.ViewChangeEdit;
-import ding.view.DGraphView;
+import org.cytoscape.view.ViewChangeEdit;
+import org.cytoscape.view.GraphView;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -142,7 +142,7 @@ public class RotatePanel extends JPanel implements ChangeListener, PolymorphicSl
 
 		// only create the edit at the beginning of the adjustment
 		if ( startAdjusting ) {
-			currentEdit = new ViewChangeEdit((DGraphView)(Cytoscape.getCurrentNetworkView()), "Rotate");
+			currentEdit = new ViewChangeEdit(Cytoscape.getCurrentNetworkView(), "Rotate");
 			startAdjusting = false;
 		}
 

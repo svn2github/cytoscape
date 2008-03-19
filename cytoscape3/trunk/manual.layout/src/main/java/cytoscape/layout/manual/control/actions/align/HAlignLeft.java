@@ -47,11 +47,11 @@ import cytoscape.data.*;
 import cytoscape.util.*;
 
 import cytoscape.view.*;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.awt.event.*;
 
