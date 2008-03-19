@@ -70,6 +70,6 @@ echo ">>> Generated file: ${OUT}"
 ##
 ## Now, run the progam using the input file we just generated
 ##
-
+mkdir $RESULT_DIR
 runmp.sh ${OUT}
 

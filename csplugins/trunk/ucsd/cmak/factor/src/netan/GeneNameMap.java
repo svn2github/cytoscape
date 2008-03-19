@@ -20,7 +20,7 @@ public class GeneNameMap
 {
     private static Logger logger = Logger.getLogger(GeneNameMap.class.getName());
 
-    private static String data = "/cellar/users/cmak/data/orf2name.noa";
+    private static String data = "orf2name.noa";
 
     private static Map orf2nameMap;
     
