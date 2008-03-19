@@ -47,15 +47,15 @@ import cytoscape.data.Semantics;
 import cytoscape.data.readers.AbstractGraphReader;
 import cytoscape.data.readers.GraphReader;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 
 import cytoscape.visual.*;
 
 import org.cytoscape.Node;
 
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import jigcell.sbml2.*;
 
@@ -239,8 +239,8 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 		}
 
 		manager.setVisualStyle(vs);
-		Cytoscape.getCurrentNetworkView().setVisualStyle(vs.getName());
-		Cytoscape.getCurrentNetworkView().applyVizmapper(vs);
+		manager.setVisualStyleForView(Cytoscape.getCurrentNetworkView(),vs);
+		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 	}
 
 	/**

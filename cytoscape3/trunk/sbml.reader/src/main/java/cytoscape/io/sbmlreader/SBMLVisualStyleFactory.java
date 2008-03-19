@@ -51,7 +51,7 @@ import cytoscape.visual.mappings.*;
 
 import cytoscape.visual.ui.*;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 
 import java.awt.Color;
 
