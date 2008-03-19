@@ -6,8 +6,7 @@ package cytoscape.editor.event;
 
 import cytoscape.editor.CytoscapeEditor;
 
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
+import org.cytoscape.view.GraphView;
 
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
@@ -41,8 +40,7 @@ import java.awt.event.MouseMotionListener;
 public class NetworkEditEventAdapter implements MouseListener, MouseMotionListener, ActionListener,
                                                 PhoebeCanvasDropListener, KeyListener,
                                                 org.cytoscape.attributes.MultiHashMapListener {
-	protected InnerCanvas canvas;
-	protected DGraphView view;
+	protected GraphView view;
 	CytoscapeEditor _caller;
 
 	/**
@@ -60,46 +58,27 @@ public class NetworkEditEventAdapter implements MouseListener, MouseMotionListen
 	 */
 
 	// public void start(PGraphView view) {
-	public void start(DGraphView view) {
+	public void start(GraphView view) {
 		this.view = view;
-		this.canvas = view.getCanvas();
-		// AJK: 04/15/06 for Cytoscape 2.3
-		// canvas.addInputEventListener(this);
 		
-		canvas.addMouseListener(this);
-		canvas.addMouseMotionListener(this);
-		canvas.addKeyListener(this);
+		view.addMouseListener(this);
+		view.addMouseMotionListener(this);
+		view.addKeyListener(this);
 
-		// CytoscapeEditorManager.log("Mouse and MotionListeners added to " + canvas);
-		// CytoscapeEditorManager.log("Canvas has total number of Listeners = " +
-		// canvas.getMouseListeners().length);
 	}
 
 	/**
 	 * stops the event handler by removing the input event listener from the
-	 * canvas this is called when the user switches between editors
+	 * view this is called when the user switches between editors
 	 *
 	 */
 	public void stop() {
-		if (canvas != null) {
-			// AJKL: 04/15/06 for Cytoscape 2.3
-			// canvas.removeInputEventListener(this);
-			canvas.removeMouseListener(this);
-			canvas.removeMouseMotionListener(this);
-			canvas.removeKeyListener(this);
+		if (view != null ) {
+			view.removeMouseListener(this);
+			view.removeMouseMotionListener(this);
+			view.removeKeyListener(this);
 			this.view = null;
-			this.canvas = null;
 		}
-	}
-
-	/**
-	 *
-	 * @return the current canvas
-	 */
-
-	// public PCanvas getCanvas() {
-	public InnerCanvas getCanvas() {
-		return canvas;
 	}
 
 	/**
@@ -256,8 +235,7 @@ public class NetworkEditEventAdapter implements MouseListener, MouseMotionListen
 	 * @return Returns the view.
 	 */
 
-	// public PGraphView getView() {
-	public DGraphView getView() {
+	public GraphView getView() {
 		return view;
 	}
 
@@ -266,8 +244,7 @@ public class NetworkEditEventAdapter implements MouseListener, MouseMotionListen
 	 *            The view to set.
 	 */
 
-	// public void setView(PGraphView view) {
-	public void setView(DGraphView view) {
+	public void setView(GraphView view) {
 		this.view = view;
 	}
 }

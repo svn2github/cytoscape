@@ -47,10 +47,11 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
 import cytoscape.Cytoscape;
+import cytoscape.visual.VisualMappingManager;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.DragSourceContextCursorSetter;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 /**
@@ -118,7 +119,7 @@ public class ShapePalette extends JPanel {
 		// AJK: 12/10/06 END
 		CytoscapeEditorManager.setCurrentShapePalette(this);
 
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		GraphView view = Cytoscape.getCurrentNetworkView();
 		CytoscapeEditorManager.setShapePaletteForView(view, this);
 
 		this.setBackground(Cytoscape.getDesktop().getBackground());
@@ -152,9 +153,7 @@ public class ShapePalette extends JPanel {
 		_shapeMap.put(cytoShape.getTitle(), cytoShape);
 
 		if (attributeName.equals(CytoscapeEditorManager.EDGE_TYPE)) {
-			CytoscapeEditorManager.addEdgeTypeForVisualStyle(Cytoscape.getCurrentNetworkView()
-			                                                          .getVisualStyle(),
-			                                                 attributeValue);
+			CytoscapeEditorManager.addEdgeTypeForVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()),attributeValue);
 		}
 
 		_shapePane.add(cytoShape);
@@ -165,7 +164,7 @@ public class ShapePalette extends JPanel {
 	 *
 	 */
 	public void showPalette() {
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		GraphView view = Cytoscape.getCurrentNetworkView();
 		CytoscapeEditorManager.setShapePaletteForView(view, this);
 		this.setVisible(true);
 	}

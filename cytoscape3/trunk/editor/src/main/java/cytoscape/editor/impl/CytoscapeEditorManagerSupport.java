@@ -23,8 +23,8 @@
 *  selected. Added isEditorInOperation().  Changed
 *  updateEditorPalette() to be private.
 * Thu Oct 25 05:42:55 2007 (Michael L. Creech) creech@w235krbza760
-*  Changed onComponentSelected() to not generate a bogus CyNetworkView
-*  but the desired CyNetworkView.
+*  Changed onComponentSelected() to not generate a bogus GraphView
+*  but the desired GraphView.
 * Wed May 09 13:59:45 2007 (Michael L. Creech) creech@w235krbza760
 *  Removed several unneeded imports.
 * Wed Dec 27 09:04:18 2006 (Michael L. Creech) creech@w235krbza760
@@ -46,7 +46,7 @@ import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 
 import cytoscape.view.cytopanels.CytoPanelListener;
@@ -171,14 +171,14 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 				// our current visual style to  "default" thru CytoscapeDesktop
 				// event listener:
 				// GraphPerspective newNet = Cytoscape.createNetwork(CytoscapeEditorManager.createUniqueNetworkName());
-				// DON'T create a CyNetworkView:
+				// DON'T create a GraphView:
 				 GraphPerspective newNet = Cytoscape.createNetwork(new int[] {  }, new int[] {  },
 				 					   CytoscapeEditorManager.createUniqueNetworkName(),
 									   null,
 									   false);
-				// CyNetworkView newView = Cytoscape.createNetworkView(newNet);
+				// GraphView newView = Cytoscape.createNetworkView(newNet);
 				// Now build the right view:
-				CyNetworkView newView = Cytoscape.createNetworkView(newNet,
+				GraphView newView = Cytoscape.createNetworkView(newNet,
 											    newNet.getTitle(),
 											    null,
 											    // use the existing visual style:
@@ -260,7 +260,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		}
 
 		if (editorForStyle != null) {
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			GraphView view = Cytoscape.getCurrentNetworkView();
 			CytoscapeEditor editorForView = CytoscapeEditorManager.getEditorForView(Cytoscape.getCurrentNetworkView());
 
 			CytoscapeEditorManager.log("Got editor for view: " + editorForView);
@@ -305,7 +305,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 				//    -- any non-null value will do
 				if ((e.getOldValue().equals(CytoscapeEditorManager.CYTOSCAPE_EDITOR))
 				    || (e.getOldValue().equals("cytoscape.util.UndoManager"))) {
-					Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 				}
 			}
 		}
@@ -315,7 +315,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
 			CytoscapeEditorManager.log("NETWORK_VIEW_FOCUSED: " + e.getNewValue());
 			CytoscapeEditorManager.log("From older network view: " + e.getOldValue());
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			GraphView view = Cytoscape.getCurrentNetworkView();
 			CytoscapeEditorManager.log("Current network view = " + view);
 			
 			view = Cytoscape.getNetworkView(e.getNewValue().toString());

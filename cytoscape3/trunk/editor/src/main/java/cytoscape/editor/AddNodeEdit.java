@@ -4,10 +4,10 @@ package cytoscape.editor;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 /**
  * An edit used by the Editor when adding new nodes to a network.
@@ -28,7 +28,7 @@ public class AddNodeEdit extends CyAbstractEdit {
 		this.net = net;
 		this.node = node;
 
-		CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
+		GraphView view = Cytoscape.getNetworkView(net.getIdentifier());
 		if ( view != null || view != Cytoscape.getNullNetworkView() ) {
 			NodeView nv = view.getNodeView(node);
 			xPos = nv.getXPosition(); 
@@ -47,7 +47,7 @@ public class AddNodeEdit extends CyAbstractEdit {
 		super.redo();
 		net.restoreNode( node );
 
-		CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
+		GraphView view = Cytoscape.getNetworkView(net.getIdentifier());
 		if ( view != null || view != Cytoscape.getNullNetworkView() ) {
 			NodeView nv = view.getNodeView(node);
 			nv.setXPosition(xPos);

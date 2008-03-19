@@ -21,27 +21,27 @@ import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.dnd.DragSourceDragEvent;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 /**
  * Interface used to allow a general computation to determine
  * the cursor to show during a drag operation originating
  * from a BasicCytoShapeEntity (palette entry) that is dragged over a
- * CyNetworkView of interest.
+ * GraphView of interest.
  * @author Michael L. Creech
  */
 public interface DragSourceContextCursorSetter {
 	/**
 	 * Used to determine the cursor to show during a drag operation originating
 	 * from a BasicCytoShapeEntity (palette entry) that is dragged over a
-	 * CyNetworkView of interest. For example, we might want to show that
+	 * GraphView of interest. For example, we might want to show that
 	 * it is illegal to drop on certain objects, such as Edges.
-	 * @param netView the CyNetworkView that is being dragged over.
+	 * @param netView the GraphView that is being dragged over.
 	 * @param netViewLoc the location within netView of the cursor, in netView coordinates.
 	 * @param dsde the DragSourceDragEvent that describes this particular
 	 *        drag operation.
 	 * @return the Cursor to display during this drag (e.g, DragSource.DefaultCopyNoDrop).
 	 */
-	public Cursor computeCursor(CyNetworkView netView, Point netViewLoc, DragSourceDragEvent dsde);
+	public Cursor computeCursor(GraphView netView, Point netViewLoc, DragSourceDragEvent dsde);
 }

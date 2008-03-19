@@ -32,8 +32,8 @@
  */
 package cytoscape.editor.editors;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Cursor;
 import java.awt.Image;
@@ -68,10 +68,9 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyMenus;
-import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
-import ding.view.EdgeContextMenuListener;
-import ding.view.NodeContextMenuListener;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.EdgeContextMenuListener;
+import org.cytoscape.view.NodeContextMenuListener;
 
 
 /**
@@ -258,7 +257,7 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 			double[] nextLocn = new double[2];
 			nextLocn[0] = location.getX();
 			nextLocn[1] = location.getY();
-			((DGraphView) Cytoscape.getCurrentNetworkView()).xformComponentToNodeCoords(nextLocn);
+			Cytoscape.getCurrentNetworkView().xformComponentToNodeCoords(nextLocn);
 			nv.setOffset(nextLocn[0], nextLocn[1]);
 			CytoscapeEditorManager.log("Offset for node " + cn + "set to " + nv.getOffset());
 		}
@@ -772,12 +771,12 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			GraphView view = Cytoscape.getCurrentNetworkView();
 			java.util.List nodes = view.getSelectedNodes();
 
 			String edgeTypeValue = "default";
 			String edgeTypeName = "DefaultEdge";
-			List edgeTypesList = CytoscapeEditorManager.getEdgeTypesForVisualStyle(view.getVisualStyle());
+			List edgeTypesList = CytoscapeEditorManager.getEdgeTypesForVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyleForView(view));
 
 			if (edgeTypesList != null) {
 				if (edgeTypesList.size() == 1) // just use only edge type

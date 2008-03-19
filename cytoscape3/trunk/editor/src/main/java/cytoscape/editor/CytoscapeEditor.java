@@ -43,7 +43,7 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
  * editor whose operations adhere to the semantics of the <em>BioPAX</em> specification.
  * The basic idea of the framework is to provide, on the Cytotoscape side, a set of common operations that
  * all editors would use to interact with the Cytoscape environment.  Such common operations include drag/drop
- * support, mouse event handling, management of CyNetworks and CyNetworkViews, and wrappers for Cytoscape core
+ * support, mouse event handling, management of CyNetworks and GraphViews, and wrappers for Cytoscape core
  * methods that add and delete Cytoscape nodes and edges.
  * <p>
  * <b>CytoscapeEditor</b> is an interface that specifies common methods which all editors must implement.

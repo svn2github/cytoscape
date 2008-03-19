@@ -1,6 +1,6 @@
 package cytoscape.editor.impl;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
-import ding.view.DGraphView;
+import org.cytoscape.view.GraphView;
 
 /**
  * add Nodes and Edges to the network based upon a line of SIF typed in by the
@@ -45,8 +45,7 @@ public class SIF_Interpreter {
 						double[] nextLocn = new double[2];
 						nextLocn[0] = p.getX();
 						nextLocn[1] = p.getY();
-						((DGraphView) Cytoscape.getCurrentNetworkView())
-								.xformComponentToNodeCoords(nextLocn);
+						Cytoscape.getCurrentNetworkView().xformComponentToNodeCoords(nextLocn);
 						nv1.setOffset(nextLocn[0], nextLocn[1]);
 					} else {
 						nv1 = Cytoscape.getCurrentNetworkView().getNodeView(
@@ -97,14 +96,13 @@ public class SIF_Interpreter {
 					}
 				}
 			}
-			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 		}
 
 	}
 
 	public static void processInput(Point p, CytoscapeEditor editor) {
-		String input = JOptionPane.showInputDialog(((DGraphView) Cytoscape
-				.getCurrentNetworkView()).getCanvas(),
+		String input = JOptionPane.showInputDialog(Cytoscape.getCurrentNetworkView().getComponent(),
 				"Type in a nodes/edges expression in SIF format"
 						+ ", e.g. A inhibit B");
 		if (input != null) {
@@ -113,28 +111,9 @@ public class SIF_Interpreter {
 	}
 
 	public static void doCircleLayout(List nodeViews, NodeView nv1) {
-		//
-		// Maximum width or height
-		// MLC 07/03/07:
-		// int max = 0;
 
 		NodeView nv;
 
-		// // Loop through all nodeViews
-		// for (int i = 0; i < nodeViews.size(); i++) {
-		// // Add vertex to list
-		//
-		// // Fetch Bounds
-		// // Rectangle bounds = nodeViews[i].getBounds ();
-		// Rectangle bounds = ((Rectangle) nodeViews.get(i)).getBounds();
-		//
-		// // Update Maximum
-		// if (bounds != null) {
-		// max = Math.max(Math.max(bounds.width, bounds.height), max);
-		// }
-		//
-		// //
-		// // int max = BaseHeight;
 		// // Compute Radius
 
 		int r = (int) Math.max((nodeViews.size() * nv1.getWidth()) / Math.PI,
@@ -152,7 +131,7 @@ public class SIF_Interpreter {
 					nv1.getYPosition() + (int) (r * Math.cos(i * phi)));
 		}
 
-		Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 	}
 

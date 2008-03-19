@@ -27,12 +27,9 @@
 */
 package cytoscape.editor.event;
 
-import ding.view.DGraphView;
-import ding.view.DingCanvas;
-import ding.view.InnerCanvas;
-
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -49,7 +46,7 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.editors.BasicCytoscapeEditor;
 import cytoscape.editor.impl.SIF_Interpreter;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 // TODO: No instance variables should be protected--only private and
@@ -75,7 +72,6 @@ import cytoscape.view.CyNetworkView;
  */
 public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implements ActionListener, org.cytoscape.attributes.MultiHashMapListener //TODO: dont need MultiHashMapListener
  {
-	// PNodeLocator locator;
 
 	/**
 	 * counter variable used in setting unique names for nodes
@@ -144,21 +140,12 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 */
 	protected Point2D nextPoint;
 
-	/**
-	 * the canvas that this event handler is listening to
-	 */
-
-	// AJK: 04/15/06 go from PCanvas to DING InnerCanvas
-	// protected PCanvas canvas;
-	protected InnerCanvas canvas;
 
 	/**
 	 * the current network view
 	 */
 
-	// AJK: 04/15/06 go from PGraphView to DGraphView
-	// protected PGraphView view;
-	protected DGraphView view;
+	protected GraphView view;
 
 	/**
 	 * attribute used to set NODE_TYPE
@@ -233,20 +220,15 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * @param caller
 	 * @param view
 	 */
-	public BasicNetworkEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
+	public BasicNetworkEditEventHandler(CytoscapeEditor caller, GraphView view) {
 		this();
 		_caller = caller;
-		this.setView((DGraphView) view);
+		this.setView(view);
 	}
 
 	/**
 	 *
 	 */
-
-	// public PCanvas getCanvas() {
-	public InnerCanvas getCanvas() {
-		return canvas;
-	}
 
 	/**
 	 * The <b>mousePressed() </b> method is at the heart of the basic Cytoscape
@@ -356,7 +338,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 */
 	public void beginEdge(Point2D location, NodeView nv) {
 		edgeStarted = true;
-		// node = (NodeView) e.getPickedNode();
 		node = nv;
 		startPoint = location;
 		updateEdge();
@@ -370,16 +351,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * @param location works in Canvas coordinates
 	 */
 	public Edge finishEdge(Point2D location, NodeView target) {
-		// CytoscapeEditorManager.log("finishEdge in BasicNetworkEventHandler");
-		// MLC 12/07/06 BEGIN:
-		//        edgeStarted = false;
-		//        updateEdge();
-		//
-		//        saveX1 = Double.MIN_VALUE;
-		//        saveX2 = Double.MIN_VALUE;
-		//        saveY1 = Double.MIN_VALUE;
-		//        saveY2 = Double.MIN_VALUE;
-		// MLC 12/07/06 END.
 		NodeView source = node;
 
 		Node source_node = source.getNode();
@@ -393,40 +364,11 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		                                (this.getEdgeAttributeValue() != null)
 		                                ? this.getEdgeAttributeValue()
 		                                : BasicNetworkEditEventHandler.DEFAULT_EDGE);
-		// MLC 12/07/06 BEGIN:
-		// AJK: 11/19/05 invert selection of target, which will have had its
-		// selection inverted upon mouse entry
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//        target.setSelected(!target.isSelected());
 		completeFinishEdge();
 
-		//        edge = null;
-		//        node = null;
-		//
-		//        if (isHandlingEdgeDrop()) {
-		//            this.setHandlingEdgeDrop(false);
-		//        }
-		//
-		//        // AJK: 11/19/05 invert selection of target, which will have had its
-		//        // selection inverted upon mouse entry
-		//        target.setSelected(!target.isSelected());
-		//
-		//        // AJK: 11/18/2005 invert selection of any nodes/edges that have been highlighted
-		//        invertSelections(null);
-		//
-		//        this.getCanvas().repaint();
-		//
-		//        // redraw graph so that the correct arrow is shown (but only if network
-		//        // is small enough to see the edge...
-		//        // NOTE: this is not needed
-		//        if (Cytoscape.getCurrentNetwork().getNodeCount() <= 500) {
-		//            Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-		//        }
-		// MLC 12/07/06 END.
 		return myEdge;
 	}
 
-	// MLC 12/07/06 BEGIN:
 	/**
 	 * Perform all cleanup and refresh activities to complete
 	 * finishEdge().
@@ -446,20 +388,15 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			this.setHandlingEdgeDrop(false);
 		}
 
-		// AJK: 11/18/2005 invert selection of any nodes/edges that have been highlighted
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//        invertSelections(null);
-		this.getCanvas().repaint();
+		//this.getCanvas().repaint();
 
 		// redraw graph so that the correct arrow is shown (but only if network
 		// is small enough to see the edge...
 		// NOTE: this is not needed
 		if (Cytoscape.getCurrentNetwork().getNodeCount() <= 500) {
-			Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 		}
 	}
-
-	// MLC 12/07/06 END.
 
 	/**
 	 * create a new node at the point where mouse was pressed
@@ -486,7 +423,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			updateEdge();
 
 			// if over NodeView or EdgeView, then highlight
-			// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
 			NodeView nv = view.getPickedNodeView(nextPoint);
 			EdgeView ev = view.getPickedEdgeView(nextPoint);
 
@@ -507,36 +443,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *
 	 */
 
-	// TODO: this doesn't work because we are entering Canvas, NOT nodeview
 	public void mouseEntered(MouseEvent e) {
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//        Point2D  location = e.getPoint();
-		//        NodeView nv = view.getPickedNodeView(location);
-		//
-		//        if (nv != null) {
-		//            if (edgeStarted) {
-		//                nv.setSelected(!nv.isSelected());
-		//            }
-		//
-		//            this.getCanvas().repaint();
-		//        }
 	}
 
 	/**
 	 * revert temporary node highlighting that was done upon MouseEnter
 	 */
 	public void mouseExited(MouseEvent e) {
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//        Point2D  location = e.getPoint();
-		//        NodeView nv = view.getPickedNodeView(location);
-		//
-		//        if (nv != null) {
-		//            if (edgeStarted) {
-		//                nv.setSelected(!nv.isSelected());
-		//            }
-		//
-		//            this.getCanvas().repaint();
-		//        }
 	}
 
 	/**
@@ -548,18 +461,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		boolean onNode = false;
 		Point2D location = e.getPoint();
 		NodeView nv = view.getPickedNodeView(location);
-		// MLC 05/10/07:
-		// EdgeView ev = view.getPickedEdgeView(location);
-
-		// if over NodeView or EdgeView, then highlight
-		// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-		//       if (nv != null) {
-		//            invertSelections(nv);
-		//        } else if (ev != null) {
-		//            invertSelections(ev);
-		//        } else {
-		//            invertSelections(null);
-		//        }
 		if (nv != null) {
 			onNode = true;
 		}
@@ -579,82 +480,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		}
 	}
 
-	// AJK: 12/09/06 comment out the toggling of selection, due to bug caused
-	/*   private void invertSelections(Object nodeOrEdgeView) {
-	    if (nodeOrEdgeView == null) // we have moved off a node or edge
-	     {
-	        if (_highlightedEdgeView != null) {
-	            _highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
-	            //                   if (_savedStrokeWidth != Float.NaN)
-	            //                {
-	            //                    _highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
-	            //                }
-	            _highlightedEdgeView = null;
-	        }
-
-	        if (_highlightedNodeView != null) {
-	            _highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
-	            _highlightedNodeView = null;
-	        }
-
-	        if (_savedCursor != null) {
-	            Cytoscape.getDesktop().setCursor(_savedCursor);
-	        }
-	    } else if (nodeOrEdgeView instanceof NodeView) {
-	        NodeView nv = (NodeView) nodeOrEdgeView;
-
-	        if (_highlightedEdgeView != null) {
-	            _highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
-	            //                   if (_savedStrokeWidth != Float.NaN)
-	            //                {
-	            //                    _highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
-	            //                    Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-	            //                }
-	            //                   _highlightedEdgeView = null;
-	        }
-
-	        if (_highlightedNodeView != null) {
-	            _highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
-	        }
-
-	        _highlightedNodeView = nv;
-	        nv.setSelected(!nv.isSelected());
-	        CytoscapeEditorManager.log("Hovering near: " + nv +
-	                                   " setting cursor to " +
-	                                   Cursor.HAND_CURSOR);
-	        _savedCursor = Cytoscape.getDesktop().getCursor();
-	        Cytoscape.getDesktop()
-	                 .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-	    } else if (nodeOrEdgeView instanceof EdgeView) {
-	        EdgeView ev = (EdgeView) nodeOrEdgeView;
-
-	        if (_highlightedNodeView != null) {
-	            _highlightedNodeView.setSelected(!_highlightedNodeView.isSelected());
-	            _highlightedNodeView = null;
-	        }
-
-	        if (_highlightedEdgeView != null) {
-	            _highlightedEdgeView.setSelected(!_highlightedEdgeView.isSelected());
-	            //                 if (_savedStrokeWidth != Float.NaN)
-	            //                {
-	            //                    _highlightedEdgeView.setStrokeWidth(_savedStrokeWidth);
-	            //                    Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
-	            //                }
-	        }
-
-	        _highlightedEdgeView = ev;
-	        ev.setSelected(!ev.isSelected());
-	        //            _savedStrokeWidth = ev.getStrokeWidth();
-	        //            ev.setStrokeWidth(4.0f);
-	        _savedCursor = Cytoscape.getDesktop().getCursor();
-	        CytoscapeEditorManager.log("Hovering near: " + ev +
-	                                   " setting cursor to " +
-	                                   Cursor.HAND_CURSOR);
-	        Cytoscape.getDesktop()
-	                 .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-	    }
-	}
-	*/
 
 	/**
 	     * updates the rubberbanded edge line as the mouse is moved, works in Canvas coordinates
@@ -676,23 +501,18 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 
 		nextPoint.setLocation(x2, y2);
 
-		Graphics g = canvas.getGraphics();
+		Graphics g = view.getComponent().getGraphics();
 
 		Color saveColor = g.getColor();
 
 		if (saveX1 != Double.MIN_VALUE) {
-			// AJK: 11/07/06 BEGIN
-			//    fix for fanout bug
-			//			canvas.getGraphics().setColor(canvas.getBackground());
-			DGraphView dnv = (DGraphView) Cytoscape.getCurrentNetworkView();
-			DingCanvas backgroundCanvas = dnv.getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-			g.setColor(backgroundCanvas.getBackground());
-			// AJK: 11/04/06 END
+			GraphView dnv = Cytoscape.getCurrentNetworkView();
+			g.setColor((Color)dnv.getBackgroundPaint());
 			g.drawLine(((int) saveX1) - 1, ((int) saveY1) - 1, ((int) saveX2) + 1,
 			           ((int) saveY2) + 1);
 		}
 
-		canvas.update(g);
+		view.getComponent().update(g);
 		g.setColor(Color.BLACK);
 		g.drawLine(((int) x1) - 1, ((int) y1) - 1, ((int) x2) + 1, ((int) y2) + 1);
 		g.setColor(saveColor);
@@ -805,9 +625,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * @return Returns the view.
 	 */
 
-	// AJK: 04/15/06 for Cytoscape 2.3 renderer
-	// public PGraphView getView() {
-	public DGraphView getView() {
+	public GraphView getView() {
 		return view;
 	}
 
@@ -817,9 +635,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *
 	 */
 
-	// AJK: 04/15/06 for Cytoscape 2.3 renderer
-	// public void setView(PGraphView view) {
-	public void setView(DGraphView view) {
+	public void setView(GraphView view) {
 		this.view = view;
 	}
 
@@ -851,16 +667,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *            a Cytoscape network view
 	 */
 
-	// AJK: 04/15/06 for Cytoscape 2.3 renderer
-	// public void start(PGraphView view) {
-	public void start(DGraphView view) {
+	public void start(GraphView view) {
 		this.view = view;
-		this.canvas = view.getCanvas();
-		// canvas.addInputEventListener(this);
+		//this.canvas = view.getCanvas();
 		CytoscapeEditorManager.log("Started event listener: " + this);
-		canvas.addMouseListener(this);
-		canvas.addMouseMotionListener(this);
-		canvas.addKeyListener(this);
+		view.addMouseListener(this);
+		view.addMouseMotionListener(this);
+		view.addKeyListener(this);
 	}
 
 	/**
@@ -869,15 +682,11 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 *
 	 */
 	public void stop() {
-		if (canvas != null) {
-			// AJK: 04/15/06 for Cytoscape 2.3 renderer
-			// canvas.removeInputEventListener(this);
-			//			CytoscapeEditorManager.log("stopped event listener: " + this);
-			canvas.removeMouseListener(this);
-			canvas.removeMouseMotionListener(this);
-			canvas.removeKeyListener(this);
+		if (view != null) {
+			view.removeMouseListener(this);
+			view.removeMouseMotionListener(this);
+			view.removeKeyListener(this);
 			this.view = null;
-			this.canvas = null;
 		}
 	}
 

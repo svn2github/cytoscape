@@ -63,13 +63,10 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.util.undo.CyUndo;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
-import ding.view.DGraphView.Canvas;
 
 
 /**
@@ -147,7 +144,7 @@ public abstract class CytoscapeEditorManager {
 	 * map that associates a network view with its editor
 	 */
 
-	private static Map<CyNetworkView, CytoscapeEditor> editorViewMap = new HashMap<CyNetworkView, CytoscapeEditor>();
+	private static Map<GraphView, CytoscapeEditor> editorViewMap = new HashMap<GraphView, CytoscapeEditor>();
 
 
 	private static boolean editingEnabled = false;
@@ -164,14 +161,14 @@ public abstract class CytoscapeEditorManager {
 	 * associates a view with its NetworkEditEventAdapter
 	 */
 
-	private static Map<CyNetworkView, NetworkEditEventAdapter> viewNetworkEditEventAdapterMap = new HashMap<CyNetworkView, NetworkEditEventAdapter>();
+	private static Map<GraphView, NetworkEditEventAdapter> viewNetworkEditEventAdapterMap = new HashMap<GraphView, NetworkEditEventAdapter>();
 
 
 	/**
-	 * associate a CyNetworkView with a ShapePalette
+	 * associate a GraphView with a ShapePalette
 	 */
 
-	private static Map<CyNetworkView, ShapePalette> viewShapePaletteMap = new HashMap<CyNetworkView, ShapePalette>();
+	private static Map<GraphView, ShapePalette> viewShapePaletteMap = new HashMap<GraphView, ShapePalette>();
 
 
 	/**
@@ -497,59 +494,55 @@ public abstract class CytoscapeEditorManager {
 	 * @param newView
 	 *            the NetworkView being created
 	 */
-	public static void setupNewNetworkView(CyNetworkView newView) {
+	public static void setupNewNetworkView(GraphView newView) {
 		CytoscapeEditor cyEditor = CytoscapeEditorManager.getCurrentEditor();
 
 		if (cyEditor != null) {
 			CytoscapeEditorManager.setEditorForView(newView, cyEditor);
 		}
 
-		ding.view.DGraphView wiwx = (DGraphView) newView;
-		ding.view.InnerCanvas canvas = wiwx.getCanvas();
+		//org.cytoscape.view.InnerCanvas canvas = newView.getCanvas();
 
-		// AJK: 09/22/06 fix for opacity of foreground canvas
-		wiwx.getCanvas(Canvas.FOREGROUND_CANVAS).setOpaque(false);
+		//newView.getCanvas(Canvas.FOREGROUND_CANVAS).setOpaque(false);
 
 		NetworkEditEventAdapter event = CytoscapeEditorManager.getViewNetworkEditEventAdapter(newView);
 
 		if (event == null) {
 			event = CytoscapeEditorFactory.INSTANCE.getNetworkEditEventAdapter(cyEditor);
 			CytoscapeEditorManager.setViewNetworkEditEventAdapter(newView, event);
-			canvas.addPhoebeCanvasDropListener(event);
+			newView.addPhoebeCanvasDropListener(event);
 			Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(event);
 			Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(event);
 		}
 
-		canvas.setEnabled(true);
+		//canvas.setEnabled(true);
 	}
 
 	/**
-	 * sets mapping of event handler to CyNetworkView.  Typically done when a
+	 * sets mapping of event handler to GraphView.  Typically done when a
 	 * NETWORK_VIEW_FOCUSED event is received.
 	 * removes various listeners on canvas from previous view and sets up
 	 * the listeners for this view on the canvas.
 	 *
 	 * @param view
 	 */
-	public static void setEventHandlerForView(CyNetworkView view) {
-		DGraphView thisView = (DGraphView) view;
-		InnerCanvas canvas = ((InnerCanvas) thisView.getCanvas());
-		NetworkEditEventAdapter oldEvent = CytoscapeEditorManager.getViewNetworkEditEventAdapter((CyNetworkView) thisView);
+	public static void setEventHandlerForView(GraphView view) {
+		NetworkEditEventAdapter oldEvent = CytoscapeEditorManager.getViewNetworkEditEventAdapter(view);
 
 		if (oldEvent != null) // remove event from this canvas
-		 {
-			canvas.removeMouseListener(oldEvent);
-			canvas.removeMouseMotionListener(oldEvent);
-			canvas.removePhoebeCanvasDropListener(oldEvent);
+		{
+			view.removeMouseListener(oldEvent);
+			view.removeMouseMotionListener(oldEvent);
+			view.removePhoebeCanvasDropListener(oldEvent);
 		}
 
 		CytoscapeEditor cyEditor = CytoscapeEditorManager.getCurrentEditor();
 		NetworkEditEventAdapter newEvent = CytoscapeEditorFactory.INSTANCE
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getNetworkEditEventAdapter(cyEditor);
-		CytoscapeEditorManager.setViewNetworkEditEventAdapter((CyNetworkView) thisView, newEvent);
-		newEvent.setView((DGraphView) view);
-		newEvent.start((DGraphView) thisView);
-		canvas.addPhoebeCanvasDropListener(newEvent);
+						.getNetworkEditEventAdapter(cyEditor);
+		CytoscapeEditorManager.setViewNetworkEditEventAdapter( view, newEvent);
+		newEvent.setView(view);
+		newEvent.start(view);
+		view.addPhoebeCanvasDropListener(newEvent);
 	}
 
 	/**
@@ -561,7 +554,7 @@ public abstract class CytoscapeEditorManager {
 	 * @param event
 	 *            the NetworkEditEventHandler associated with the view.
 	 */
-	public static void setViewNetworkEditEventAdapter(CyNetworkView view,
+	public static void setViewNetworkEditEventAdapter(GraphView view,
 	                                                  NetworkEditEventAdapter event) {
 		viewNetworkEditEventAdapterMap.put(view, event);
 	}
@@ -572,7 +565,7 @@ public abstract class CytoscapeEditorManager {
 	 *
 	 * @return the NetworkEventAdapter
 	 */
-	public static NetworkEditEventAdapter getViewNetworkEditEventAdapter(CyNetworkView view) {
+	public static NetworkEditEventAdapter getViewNetworkEditEventAdapter(GraphView view) {
 		Object obj = viewNetworkEditEventAdapterMap.get(view);
 
 		if (obj != null) {
@@ -585,13 +578,13 @@ public abstract class CytoscapeEditorManager {
 	}
 
 	/**
-	 * get the editor that is assigned to this CyNetworkView
+	 * get the editor that is assigned to this GraphView
 	 *
 	 * @param view
-	 *            a CyNetworkView
-	 * @return the editor assigned to this CyNetworkView
+	 *            a GraphView
+	 * @return the editor assigned to this GraphView
 	 */
-	public static CytoscapeEditor getEditorForView(CyNetworkView view) {
+	public static CytoscapeEditor getEditorForView(GraphView view) {
 		Object obj = editorViewMap.get(view);
 
 		if (obj != null) {
@@ -604,23 +597,23 @@ public abstract class CytoscapeEditorManager {
 	}
 
 	/**
-	 * get the ShapePalette that is associated with a CyNetworkView. needed when
+	 * get the ShapePalette that is associated with a GraphView. needed when
 	 * a view changes
 	 *
 	 * @param view The view we're getting the pallete for.
 	 * @return The ShapePalette object for the view.
 	 */
-	public static ShapePalette getShapePaletteForView(CyNetworkView view) {
+	public static ShapePalette getShapePaletteForView(GraphView view) {
 		return (ShapePalette) viewShapePaletteMap.get(view);
 	}
 
 	/**
-	 * sets the ShapePalette that is associated with a CyNetworkView. needed when
+	 * sets the ShapePalette that is associated with a GraphView. needed when
 	 * a view changes
 	 * @param view
 	 * @param shape
 	 */
-	public static void setShapePaletteForView(CyNetworkView view, ShapePalette shape) {
+	public static void setShapePaletteForView(GraphView view, ShapePalette shape) {
 		viewShapePaletteMap.put(view, shape);
 	}
 
@@ -736,14 +729,14 @@ public abstract class CytoscapeEditorManager {
 	}
 
 	/**
-	 * set the editor for a CyNetworkView
+	 * set the editor for a GraphView
 	 *
 	 * @param view
-	 *            the CyNetworkView
+	 *            the GraphView
 	 * @param editor
-	 *            the editor to be assigned to the CyNetworkView
+	 *            the editor to be assigned to the GraphView
 	 */
-	public static void setEditorForView(CyNetworkView view, CytoscapeEditor editor) {
+	public static void setEditorForView(GraphView view, CytoscapeEditor editor) {
 		editorViewMap.put(view, editor);
 	}
 

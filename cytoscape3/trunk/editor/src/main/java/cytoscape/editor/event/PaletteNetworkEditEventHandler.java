@@ -26,7 +26,7 @@
 */
 package cytoscape.editor.event;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
@@ -41,9 +41,7 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
-import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
+import org.cytoscape.view.GraphView;
 
 
 /**
@@ -78,7 +76,7 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 	 * @param caller
 	 * @param view
 	 */
-	public PaletteNetworkEditEventHandler(CytoscapeEditor caller, CyNetworkView view) {
+	public PaletteNetworkEditEventHandler(CytoscapeEditor caller, GraphView view) {
 		super(caller, view);
 	}
 
@@ -144,22 +142,19 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 	 *
 	 */
 
-	// MLC 12/07/06 BEGIN:
 	// implements PhoebeCanvasDropListener interface:
 	public void itemDropped(PhoebeCanvasDropEvent e) {
 		Point location = e.getLocation();
 		CytoscapeEditorManager.log("Item dropped at: " + e.getLocation());
 		CytoscapeEditorManager.log("on object: " + e.getSource());
 		
-		// AJK: 07/03/07 BEGIN
-		//    do nothing if we are not dropping on canvas for current network view
-		InnerCanvas dropCanvas = (InnerCanvas) e.getSource();
-		InnerCanvas currentCanvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
-		if (dropCanvas != currentCanvas)
+		// do nothing if we are not dropping on the current network view
+		GraphView dropView = (GraphView) e.getSource();
+		GraphView currentView = Cytoscape.getCurrentNetworkView();
+		if (dropView != currentView)
 		{
 			return;
 		}
-		// AJK: 07/03/07 END
 		
 		BasicCytoShapeEntity myShape = getShapeEntityForLocation(location, e.getTransferable());
 
@@ -168,8 +163,6 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 			String attributeName = myShape.getAttributeName();
 			String attributeValue = myShape.getAttributeValue();
 
-			// CytoscapeEditorManager.log("Item dropped of type: " +
-			// attributeName);
 			if (attributeName.equals(get_caller().getControllingNodeAttribute())) {
 				setNodeAttributeName(attributeName);
 				setNodeAttributeValue(attributeValue);

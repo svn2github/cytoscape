@@ -60,7 +60,7 @@ import cytoscape.Cytoscape;
 import cytoscape.editor.DragSourceContextCursorSetter;
 import cytoscape.editor.GraphicalEntity;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 /**
@@ -82,7 +82,7 @@ public class BasicCytoShapeEntity extends JComponent implements DragGestureListe
 	// MLC 12/16/06 BEGIN:
 	private static DragSourceContextCursorSetter _defaultCursorSetter = new DragSourceContextCursorSetter() {
 		// The default shows that a drop is possible anywhere on the netView:
-		public Cursor computeCursor(CyNetworkView netView, Point netViewLoc,
+		public Cursor computeCursor(GraphView netView, Point netViewLoc,
 		                            DragSourceDragEvent dsde) {
 			return DragSource.DefaultCopyDrop;
 		}

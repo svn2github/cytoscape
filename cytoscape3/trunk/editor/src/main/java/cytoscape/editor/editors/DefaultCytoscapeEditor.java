@@ -34,7 +34,7 @@
  */
 package cytoscape.editor.editors;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -57,13 +57,13 @@ import cytoscape.editor.ShapePaletteInfoGenerator;
 import cytoscape.editor.event.PaletteNetworkEditEventHandler;
 import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualPropertyType;
-import ding.view.DGraphView;
+import org.cytoscape.view.GraphView;
 
 
 /**
@@ -263,10 +263,10 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 
 	// A CursorSetter that says it's only ok to drop when we are on a Node:
 	private class EdgePaletteItemDragCursorSetter implements DragSourceContextCursorSetter {
-		public Cursor computeCursor(CyNetworkView netView, Point netViewLoc,
+		public Cursor computeCursor(GraphView netView, Point netViewLoc,
 		                            DragSourceDragEvent dsde) {
 			// Now check if we are on a NodeView?
-			NodeView nv = ((DGraphView) netView).getPickedNodeView(netViewLoc);
+			NodeView nv = netView.getPickedNodeView(netViewLoc);
 
 			if (nv != null) {
 				return DragSource.DefaultCopyDrop;
