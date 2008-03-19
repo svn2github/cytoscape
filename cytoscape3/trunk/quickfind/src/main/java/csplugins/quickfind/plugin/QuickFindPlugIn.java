@@ -55,24 +55,22 @@ import csplugins.widgets.slider.JRangeSliderExtended;
 import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
+
+import org.cytoscape.view.GraphView;
+
 import cytoscape.Cytoscape;
-
-import cytoscape.ding.DingNetworkView;
-
 import cytoscape.plugin.CytoscapePlugin;
 
 import cytoscape.util.CytoscapeToolBar;
 
 import cytoscape.view.CyMenus;
-import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
-
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import prefuse.data.query.NumberRangeModel;
+
+import java.awt.Component;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -186,8 +184,8 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 
 				thread.start();
 			} else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_DESTROYED)) {
-				CyNetworkView networkView = (CyNetworkView) event.getNewValue();
-				GraphPerspective cyNetwork = networkView.getNetwork();
+				GraphView networkView = (GraphView) event.getNewValue();
+				GraphPerspective cyNetwork = networkView.getGraphPerspective();
 				quickFind.removeNetwork(cyNetwork);
 				swapCurrentNetwork(quickFind);
 			} else if (event.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)) {
@@ -205,7 +203,7 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 		boolean networkHasFocus = false;
 
 		if (network != null) {
-			CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
+			GraphView networkView = Cytoscape.getNetworkView(network.getIdentifier());
 
 			if (networkView != Cytoscape.getNullNetworkView()) {
 				TextIndex textIndex = (TextIndex) quickFind.getIndex(network);
@@ -290,7 +288,7 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 
 					if (index.getIndexType() == QuickFind.INDEX_NODES) {
 						network.setSelectedNodeState(list, true);
-						((DingNetworkView) Cytoscape.getCurrentNetworkView()).fitSelected();
+						Cytoscape.getCurrentNetworkView().fitSelected();
 					} else {
 						network.setSelectedEdgeState(list, true);
 
@@ -305,7 +303,7 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 						}
 
 						network.setSelectedNodeState(nodeList, true);
-						((DingNetworkView) Cytoscape.getCurrentNetworkView()).fitSelected();
+						Cytoscape.getCurrentNetworkView().fitSelected();
 					}
 
 					//  If only one node is selected, auto-adjust zoom factor
@@ -315,8 +313,8 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 							Node node = (Node) graphObjects[0];
 
 							//  Obtain dimensions of current InnerCanvas
-							DGraphView graphView = (DGraphView) Cytoscape.getCurrentNetworkView();
-							InnerCanvas innerCanvas = graphView.getCanvas();
+							GraphView graphView = Cytoscape.getCurrentNetworkView();
+							Component innerCanvas = graphView.getComponent();
 
 							NodeView nodeView = Cytoscape.getCurrentNetworkView().getNodeView(node);
 
