@@ -41,12 +41,12 @@ import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
-import giny.view.GraphView;
+import org.cytoscape.view.GraphView;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.readers.GraphReader;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 import cytoscape.layout.CyLayoutAlgorithm;
@@ -124,10 +124,10 @@ public class BioPaxGraphReader implements GraphReader {
 	 * else matrix layout;  same as that provided by the SIF reader.
 	 * Keep this for pre-2.5 support
 	 *
-	 * @param view CyNetworkView Object.
+	 * @param view GraphView Object.
 	 */
 	public void layout(GraphView view) {
-		layoutUtil.doLayout((CyNetworkView)view);
+		layoutUtil.doLayout((GraphView)view);
 	}
 
 	/**
@@ -210,10 +210,10 @@ public class BioPaxGraphReader implements GraphReader {
 		//  Set-up the BioPax Visual Style
 		final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
 		final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-		final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-		view.setVisualStyle(bioPaxVisualStyle.getName());
+		final GraphView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+		manager.setVisualStyleForView(view,bioPaxVisualStyle);
 		manager.setVisualStyle(bioPaxVisualStyle);
-		view.applyVizmapper(bioPaxVisualStyle);
+		Cytoscape.redrawGraph(view);
 
 		//  Set up BP UI
 		CytoscapeWrapper.initBioPaxPlugInUI();

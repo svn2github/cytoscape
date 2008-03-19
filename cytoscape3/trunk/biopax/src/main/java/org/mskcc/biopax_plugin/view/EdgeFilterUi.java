@@ -3,7 +3,7 @@ package org.mskcc.biopax_plugin.view;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Edge;
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.actions.GinyUtils;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
@@ -15,7 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 
 /**
  * Edge Filter Dialog.
@@ -120,7 +120,7 @@ class ApplyEdgeFilter implements ActionListener {
             allEdgeIds[i] = edge.getRootGraphIndex();
         }
 
-        CyNetworkView networkView = Cytoscape.getCurrentNetworkView();
+        GraphView networkView = Cytoscape.getCurrentNetworkView();
         GinyUtils.unHideAll(networkView);
         ArrayList edgeViewList = new ArrayList();
         for (int i=0; i<edgeSet.size(); i++) {

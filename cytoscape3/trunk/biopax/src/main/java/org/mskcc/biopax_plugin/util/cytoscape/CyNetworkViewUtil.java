@@ -37,16 +37,13 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.DingNetworkView;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.view.CyNetworkView;
-
-import ding.view.DGraphView;
-
-import giny.view.NodeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.NodeView;
 
 import legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
 
@@ -69,7 +66,7 @@ import javax.swing.*;
  */
 public class CyNetworkViewUtil {
 	/**
-	 * Creates a CyNetworkView from the specified GraphPerspective.
+	 * Creates a GraphView from the specified GraphPerspective.
 	 *
 	 * @param cyNetwork           GraphPerspective Object.
 	 * @param taskMonitor         TaskMonitor Object.
@@ -88,7 +85,7 @@ public class CyNetworkViewUtil {
 			taskMonitor.setStatus("Creating Network View");
 			taskMonitor.setPercentCompleted(-1);
 
-			CyNetworkView networkView = createCyNetworkView(cyNetwork, applyVisualStyle);
+			GraphView networkView = createGraphView(cyNetwork, applyVisualStyle);
 
 			//  Execute the Spring Embedder Layout Algorithm
 			if (executeSpringLayout) {
@@ -106,34 +103,36 @@ public class CyNetworkViewUtil {
 			//  After everthing is done, show the network view instantly.
 			SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						DingNetworkView view = (DingNetworkView) Cytoscape.getCurrentNetworkView();
+						GraphView view = Cytoscape.getCurrentNetworkView();
 						view.setGraphLOD(new CyGraphLOD());
-						((DGraphView) view).fitContent();
+						view.fitContent();
 					}
 				});
 		}
 	}
 
 	/**
-	 * Creates the CyNetworkView.
-	 * Most of this code is copied directly from Cytoscape.createCyNetworkView.
+	 * Creates the GraphView.
+	 * Most of this code is copied directly from Cytoscape.createGraphView.
 	 * However, it requires a bit of a hack to actually hide the network
 	 * view from the user, and I didn't want to use this hack in the core
 	 * Cytoscape.java class.
 	 *
 	 * @param cyNetwork        GraphPerspective
 	 * @param applyVisualStyle Flag to Apply Current Visual Style.
-	 * @return CyNetworkView
+	 * @return GraphView
 	 */
-	private static CyNetworkView createCyNetworkView(GraphPerspective cyNetwork, boolean applyVisualStyle) {
-		final DingNetworkView view = new DingNetworkView(cyNetwork, cyNetwork.getTitle());
+	private static GraphView createGraphView(GraphPerspective cyNetwork, boolean applyVisualStyle) {
+		final GraphView view = GraphViewFactory.createGraphView(cyNetwork);
 
 		view.setIdentifier(cyNetwork.getIdentifier());
 		Cytoscape.getNetworkViewMap().put(cyNetwork.getIdentifier(), view);
 		view.setTitle(cyNetwork.getTitle());
 
 		if (applyVisualStyle) {
-			view.setVisualStyle(BioPaxVisualStyleUtil.BIO_PAX_VISUAL_STYLE);
+			Cytoscape.getVisualMappingManager().setVisualStyleForView(view,
+				Cytoscape.getVisualMappingManager().getVisualStyle(
+						BioPaxVisualStyleUtil.BIO_PAX_VISUAL_STYLE));
 		}
 
 		// set the selection mode on the view
@@ -149,12 +148,12 @@ public class CyNetworkViewUtil {
 	/**
 	 * Executes the Spring Embedded Layout2.
 	 *
-	 * @param networkView CyNetworkView
+	 * @param networkView GraphView
 	 * @param taskMonitor TaskMonitor
 	 */
-	private static void executeLayout(CyNetworkView networkView, TaskMonitor taskMonitor) {
+	private static void executeLayout(GraphView networkView, TaskMonitor taskMonitor) {
 		// move a network node to jumpstart the SpringEmbeddedLayouter2
-		Iterator i = networkView.getNetwork().nodesIterator();
+		Iterator i = networkView.getGraphPerspective().nodesIterator();
 
 		if (i.hasNext()) {
 			Node node = (Node) i.next();

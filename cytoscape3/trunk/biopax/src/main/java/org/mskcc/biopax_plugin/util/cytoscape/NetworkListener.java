@@ -37,7 +37,7 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.data.SelectFilter;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 
 import org.mskcc.biopax_plugin.action.DisplayBioPaxDetails;
@@ -210,7 +210,7 @@ public class NetworkListener implements PropertyChangeListener {
 			String id = (String) cyNetworkList.get(lc);
 
 			// get the network view via id
-			CyNetworkView cyNetworkView = Cytoscape.getNetworkView(id);
+			GraphView cyNetworkView = Cytoscape.getNetworkView(id);
 
 			if (cyNetworkView != null) {
 				return true;

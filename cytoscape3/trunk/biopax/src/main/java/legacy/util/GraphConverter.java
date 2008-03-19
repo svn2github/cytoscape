@@ -6,12 +6,12 @@ package legacy.util;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.Edge;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
 import legacy.layout.algorithm.util.MutablePolyEdgeGraphLayoutRepresentation;
@@ -274,7 +274,7 @@ public final class GraphConverter {
 			throw new IllegalArgumentException("percentBorder < 0.0");
 		}
 
-		CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+		GraphView graphView = Cytoscape.getCurrentNetworkView();
 		final int numNodesInTopology = graphView.getNodeViewCount();
 		final int numEdgesInTopology = graphView.getEdgeViewCount();
 
@@ -541,7 +541,7 @@ public final class GraphConverter {
 			throw new IllegalArgumentException("percentBorder < 0.0");
 		}
 
-		CyNetworkView graphView = Cytoscape.getCurrentNetworkView();
+		GraphView graphView = Cytoscape.getCurrentNetworkView();
 		final int numNodesInTopology = graphView.getNodeViewCount();
 		final int numEdgesInTopology = graphView.getEdgeViewCount();
 

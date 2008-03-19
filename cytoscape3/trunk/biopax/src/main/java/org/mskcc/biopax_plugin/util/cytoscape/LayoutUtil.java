@@ -34,11 +34,11 @@
 package org.mskcc.biopax_plugin.util.cytoscape;
 
 // imports
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 import java.util.Iterator;
 import cytoscape.Cytoscape;
 import cytoscape.task.TaskMonitor;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutProperties;
 
@@ -63,14 +63,14 @@ public class LayoutUtil implements CyLayoutAlgorithm {
 	/**
 	 * Our implementation of LayoutAlgorithm.doLayout(..).
 	 */
-	public void doLayout(CyNetworkView networkView) {
+	public void doLayout(GraphView networkView) {
 	    doLayout(networkView, null);
     }
 
 	/**
 	 * Our implementation of LayoutAlgorithm.doLayout(..,..).
 	 */
-	public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+	public void doLayout(GraphView networkView, TaskMonitor monitor) {
 
 		double distanceBetweenNodes = 50.0d;
 		int columns = (int) Math.sqrt(networkView.nodeCount());

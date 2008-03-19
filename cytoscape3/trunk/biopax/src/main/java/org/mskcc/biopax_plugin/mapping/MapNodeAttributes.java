@@ -43,11 +43,8 @@ import org.cytoscape.attributes.CountedIterator;
 import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
 
-import cytoscape.view.CyNetworkView;
-
-import ding.view.DNodeView;
-
-import giny.view.NodeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import org.jdom.Element;
 
@@ -385,11 +382,11 @@ public class MapNodeAttributes {
     /**
 	 * Addes custom node shapes to biopax nodes.
 	 *
-	 * @param networkView CyNetworkView
+	 * @param networkView GraphView
 	 */
-	public static void customNodes(CyNetworkView networkView) {
+	public static void customNodes(GraphView networkView) {
 		// grab node attributes
-		GraphPerspective cyNetwork = networkView.getNetwork();
+		GraphPerspective cyNetwork = networkView.getGraphPerspective();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 		// iterate through the nodes
@@ -500,18 +497,17 @@ public class MapNodeAttributes {
 	/**
 	 * Based on given arguments, adds proper custom node shape to node.
 	 */
-	private static void addCustomShapes(CyNetworkView networkView, Node node, String shapeType,
+	private static void addCustomShapes(GraphView networkView, Node node, String shapeType,
 	                                    int modificationCount) {
 		// create refs to help views
-		GraphPerspective cyNetwork = networkView.getNetwork();
+		GraphPerspective cyNetwork = networkView.getGraphPerspective();
 		NodeView nodeView = networkView.getNodeView(node);
-		DNodeView dingNodeView = (DNodeView) nodeView;
 
 		// remove existing custom nodes
-		int numExistingCustomShapes = dingNodeView.getCustomGraphicCount();
+		int numExistingCustomShapes = nodeView.getCustomGraphicCount();
 
 		for (int lc = 0; lc < numExistingCustomShapes; lc++) {
-			dingNodeView.removeCustomGraphic(0);
+			nodeView.removeCustomGraphic(0);
 		}
 
 		for (int lc = 0; lc < modificationCount; lc++) {
@@ -535,7 +531,7 @@ public class MapNodeAttributes {
 			}
 
 			// add the graphic
-			dingNodeView.addCustomGraphic(rect, paint, lc);
+			nodeView.addCustomGraphic(rect, paint, lc);
 		}
 	}
 
