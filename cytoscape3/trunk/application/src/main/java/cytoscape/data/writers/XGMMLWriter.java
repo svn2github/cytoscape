@@ -51,16 +51,13 @@ import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import cytoscape.visual.LineStyle;
 
-import ding.view.DGraphView;
-import ding.view.DingCanvas;
-
-import giny.view.Bend;
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.Bend;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.Node;
 import org.cytoscape.Edge;
 
@@ -217,7 +214,7 @@ public class XGMMLWriter {
 	private String[] edgeAttNames = null;
 	private String[] networkAttNames = null;
 	private GraphPerspective network;
-	private CyNetworkView networkView;
+	private GraphView networkView;
 	private List <CyGroup>groupList;
 	private	HashMap <Node, Node>nodeMap;
 	private	HashMap <Edge, Edge>edgeMap;
@@ -234,11 +231,11 @@ public class XGMMLWriter {
 	 * @param network
 	 *            CyNetwork object to be saved.
 	 * @param view
-	 *            CyNetworkView for the network.
+	 *            GraphView for the network.
 	 * @throws URISyntaxException
 	 * @throws JAXBException
 	 */
-	public XGMMLWriter(final GraphPerspective network, final CyNetworkView view)
+	public XGMMLWriter(final GraphPerspective network, final GraphView view)
 	    throws IOException, URISyntaxException {
 		this.network = network;
 		this.networkView = view;
@@ -266,14 +263,14 @@ public class XGMMLWriter {
 	 * @param network
 	 *            CyNetwork object to be saved.
 	 * @param view
-	 *            CyNetworkView for the network.
+	 *            GraphView for the network.
 	 * @param noCytoscapeGraphics
 	 *            boolean to indicate whether cytoscape graphics
 	 *            attributes should be written
 	 * @throws URISyntaxException
 	 * @throws JAXBException
 	 */
-	public XGMMLWriter(final GraphPerspective network, final CyNetworkView view,
+	public XGMMLWriter(final GraphPerspective network, final GraphView view,
 	                   boolean noCytoscapeGraphics) throws IOException, URISyntaxException {
 		this(network, view);
 		this.noCytoscapeGraphics = noCytoscapeGraphics;
@@ -390,16 +387,13 @@ public class XGMMLWriter {
 	private void writeNetworkAttributes() throws IOException {
 		if (networkView != null) {
 			// Get our background color
-			DingCanvas backgroundCanvas = 
-				((DGraphView)Cytoscape.getCurrentNetworkView()).
-				getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
-			writeAttributeXML(BACKGROUND, ObjectType.STRING, paint2string(backgroundCanvas.getBackground()), true);
+			writeAttributeXML(BACKGROUND, ObjectType.STRING, paint2string(networkView.getBackgroundPaint()), true);
 
 			// lets also write the zoom
 			final Double dAttr = new Double(networkView.getZoom());
 			writeAttributeXML(GRAPH_VIEW_ZOOM, ObjectType.REAL, dAttr ,true);
 
-			final Point2D center = ((DGraphView) networkView).getCenter();
+			final Point2D center = networkView.getCenter();
 			writeAttributeXML(GRAPH_VIEW_CENTER_X, ObjectType.REAL, new Double(center.getX()) ,true);
 			writeAttributeXML(GRAPH_VIEW_CENTER_Y, ObjectType.REAL, new Double(center.getY()) ,true);
 		}

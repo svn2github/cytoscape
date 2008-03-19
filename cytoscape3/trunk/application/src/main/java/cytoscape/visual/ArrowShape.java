@@ -34,8 +34,8 @@
 */
 package cytoscape.visual;
 
-import giny.view.EdgeView;
-import ding.view.DGraphView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.ShapeFactory;
 import javax.swing.Icon;
 import java.util.Map;
 import java.util.HashMap;
@@ -77,7 +77,7 @@ public enum ArrowShape {
 	;
 
 
-	private static Map<Integer,Shape> arrowShapes = DGraphView.getArrowShapes();
+	private static Map<Integer,Shape> arrowShapes = ShapeFactory.getArrowShapes();
 
 	private String shapeName;
 	private String ginyShapeName;

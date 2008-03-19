@@ -34,7 +34,7 @@
 */
 package cytoscape.visual;
 
-import giny.view.Label;
+import org.cytoscape.view.Label;
 
 import java.awt.Color;
 import java.awt.Font;

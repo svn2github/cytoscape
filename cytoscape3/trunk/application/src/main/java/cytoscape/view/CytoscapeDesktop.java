@@ -37,6 +37,8 @@
 package cytoscape.view;
 
 import org.cytoscape.GraphPerspective;
+import org.cytoscape.view.GraphView;
+
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
 
@@ -174,7 +176,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * Provides Operations for Mapping Data Attributes of CyNetworks to
-	 * CyNetworkViews
+	 * GraphViews
 	 */
 	protected VisualMappingManager vmm;
 
@@ -411,26 +413,23 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	protected void updateFocus(String network_id) {
 		final VisualStyle old_style = vmm.getVisualStyle();
-		final CyNetworkView old_view = Cytoscape.getCurrentNetworkView();
+		final GraphView old_view = Cytoscape.getCurrentNetworkView();
 
 		// set the current Network/View
 		Cytoscape.setCurrentNetwork(network_id);
 
 		if (Cytoscape.setCurrentNetworkView(network_id)) {
 			// deal with the new Network
-			final CyNetworkView new_view = Cytoscape.getCurrentNetworkView();
+			final GraphView new_view = Cytoscape.getCurrentNetworkView();
 
-			VisualStyle new_style = new_view.getVisualStyle();
-
-			if (new_style == null)
-				new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
+			VisualStyle new_style = vmm.getVisualStyleForView( new_view );
 
 			vmm.setNetworkView(new_view);
 
 			if (new_style.getName().equals(old_style.getName()) == false) {
 				vmm.setVisualStyle(new_style);
 				
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				Cytoscape.redrawGraph(new_view);
 			}
 		}
 	}
@@ -474,7 +473,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == NETWORK_VIEW_CREATED) {
 			// add the new view to the GraphViewController
-			getGraphViewController().addGraphView((CyNetworkView) e.getNewValue());
+			getGraphViewController().addGraphView((GraphView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
@@ -509,7 +508,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			}
 		} else if (e.getPropertyName() == NETWORK_VIEW_DESTROYED) {
 			// remove the view from the GraphViewController
-			getGraphViewController().removeGraphView((CyNetworkView) e.getNewValue());
+			getGraphViewController().removeGraphView((GraphView) e.getNewValue());
 			// pass on the event
 			pcs.firePropertyChange(e);
 		}

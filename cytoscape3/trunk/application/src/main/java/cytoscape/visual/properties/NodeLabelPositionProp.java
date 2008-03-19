@@ -45,8 +45,8 @@ import cytoscape.visual.ui.LabelPlacerGraphic;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
-import giny.view.Label;
-import giny.view.NodeView;
+import org.cytoscape.view.Label;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;

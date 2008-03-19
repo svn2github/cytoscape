@@ -139,7 +139,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 
 			newRange = new BoundaryRangeValues(below, Color.white, above);
 			mapping.addPoint(maxValue / 2, newRange);
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 
 			slider.repaint();
 			repaint();
@@ -168,7 +168,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 
 		updateMap();
 
-		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+		Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 
 		slider.repaint();
 		repaint();
@@ -184,7 +184,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 			updateMap();
 			mapping.fireStateChanged();
 
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 			repaint();
 		}
 	}
@@ -251,8 +251,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 
 										cMapping.fireStateChanged();
 
-										Cytoscape.getVisualMappingManager().getNetworkView()
-										         .redrawGraph(false, true);
+										Cytoscape.redrawGraph(
+											Cytoscape.getVisualMappingManager().getNetworkView());
 										slider.repaint();
 									}
 								}

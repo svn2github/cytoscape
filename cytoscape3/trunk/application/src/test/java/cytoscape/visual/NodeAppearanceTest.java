@@ -68,7 +68,7 @@ import org.cytoscape.Edge;
 import org.cytoscape.Node;
 import org.cytoscape.RootGraph;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 //----------------------------------------------------------------------------
 import junit.framework.*;

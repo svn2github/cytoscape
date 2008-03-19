@@ -48,7 +48,7 @@ import cytoscape.data.CyNetworkUtilities;
 
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import java.awt.*;
 

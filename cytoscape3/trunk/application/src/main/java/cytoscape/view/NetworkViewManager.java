@@ -40,8 +40,7 @@ import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import ding.view.DGraphView;
-import ding.view.InnerCanvas;
+import org.cytoscape.view.GraphView;
 
 import java.awt.Component;
 import java.awt.event.WindowEvent;
@@ -77,8 +76,6 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 	private Map<JInternalFrame, String> componentMap;
 
-	private Map<String, InternalFrameComponent> internalFrameComponentMap;
-
 	protected CytoscapeDesktop cytoscapeDesktop;
 
 	protected SwingPropertyChangeSupport pcs;
@@ -100,7 +97,6 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 		networkViewMap = new HashMap<String, JInternalFrame>();
 		componentMap = new HashMap<JInternalFrame, String>();
-		internalFrameComponentMap = new HashMap<String, InternalFrameComponent>();
 	}
 
 	/**
@@ -121,35 +117,16 @@ public class NetworkViewManager implements PropertyChangeListener,
 		return desktopPane;
 	}
 
-	/**
-	 * Given a CyNetworkView, returns the InternalFrameComponent that wraps it.
-	 * 
-	 * @param view
-	 *            CyNetworkView
-	 * @return InternalFrameComponent
-	 * @throws IllegalArgumentException
-	 */
-	public InternalFrameComponent getInternalFrameComponent(CyNetworkView view)
-			throws IllegalArgumentException {
-		// check args
-		if (view == null) {
-			throw new IllegalArgumentException(
-					"NetworkViewManager.getInternalFrameComponent(), argument is null");
-		}
-
-		// outta here
-		return internalFrameComponentMap.get(view.getIdentifier());
-	}
 
 	/**
-	 * Given a CyNetworkView, returns the internal frame.
+	 * Given a GraphView, returns the internal frame.
 	 * 
 	 * @param view
-	 *            CyNetworkView
-	 * @return InternalFrameComponent
+	 *            GraphView
+	 * @return JInternalFrame
 	 * @throws IllegalArgumentException
 	 */
-	public JInternalFrame getInternalFrame(CyNetworkView view)
+	public JInternalFrame getInternalFrame(GraphView view)
 			throws IllegalArgumentException {
 		// check args
 		if (view == null) {
@@ -257,25 +234,21 @@ public class NetworkViewManager implements PropertyChangeListener,
 							// view
 			setFocus(network_id);
 
-			// hack to add transfer handlers to canvas
-			InnerCanvas canvas = ((DGraphView) Cytoscape
-					.getCurrentNetworkView()).getCanvas();
-
 			if (this.getDesktopPane() != null) {
-				canvas.addTransferComponent(this.getDesktopPane());
+				Cytoscape.getCurrentNetworkView().addTransferComponent(this.getDesktopPane());
 			}
 		}
 
-		// handle putting a newly created CyNetworkView into a Container
+		// handle putting a newly created GraphView into a Container
 		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			CyNetworkView new_view = (CyNetworkView) e.getNewValue();
+			GraphView new_view = (GraphView) e.getNewValue();
 			createContainer(new_view);
 			e = null;
 		}
 
 		// handle a NetworkView destroyed
 		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
-			CyNetworkView view = (CyNetworkView) e.getNewValue();
+			GraphView view = (GraphView) e.getNewValue();
 			removeView(view);
 			e = null;
 		}
@@ -307,7 +280,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 
 	/**
 	 * Sets the focus of the passed network, if possible The Network ID
-	 * corresponds to the CyNetworkView.getNetwork().getIdentifier()
+	 * corresponds to the GraphView.getGraphPerspective().getIdentifier()
 	 */
 	protected void setFocus(String network_id) {
 		if (networkViewMap.containsKey(network_id)) {
@@ -322,26 +295,26 @@ public class NetworkViewManager implements PropertyChangeListener,
 		}
 	}
 
-	protected void removeView(CyNetworkView view) {
+	protected void removeView(GraphView view) {
 		try {
-			networkViewMap.get(view.getNetwork().getIdentifier()).dispose();
+			networkViewMap.get(view.getGraphPerspective().getIdentifier()).dispose();
 		} catch (Exception e) {
 			System.err.println("Network View unable to be killed");
 		}
 
-		networkViewMap.remove(view.getNetwork().getIdentifier());
+		networkViewMap.remove(view.getGraphPerspective().getIdentifier());
 	}
 
 	/**
-	 * Contains a CyNetworkView.
+	 * Contains a GraphView.
 	 */
-	protected void createContainer(final CyNetworkView view) {
-		if (networkViewMap.containsKey(view.getNetwork().getIdentifier())) {
+	protected void createContainer(final GraphView view) {
+		if (networkViewMap.containsKey(view.getGraphPerspective().getIdentifier())) {
 			// already contains
 			return;
 		}
 
-		// create a new InternalFrame and put the CyNetworkViews Component into
+		// create a new InternalFrame and put the GraphViews Component into
 		// it
 		JInternalFrame iframe = new JInternalFrame(view.getTitle(), true, true,
 				true, true);
@@ -352,18 +325,8 @@ public class NetworkViewManager implements PropertyChangeListener,
 		});
 		desktopPane.add(iframe);
 
-		// code added to support layered canvas for each CyNetworkView
-		if (view instanceof DGraphView) {
-			InternalFrameComponent internalFrameComp = new InternalFrameComponent(
-					iframe.getLayeredPane(), (DGraphView) view);
-			iframe.setContentPane(internalFrameComp);
-			internalFrameComponentMap.put(view.getNetwork().getIdentifier(),
-					internalFrameComp);
-		} else {
-			System.out
-					.println("NetworkViewManager.createContainer() - DGraphView not found!");
-			iframe.getContentPane().add(view.getComponent());
-		}
+
+		iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
 
 		iframe.pack();
 		iframe.setSize(400, 400);
@@ -382,10 +345,10 @@ public class NetworkViewManager implements PropertyChangeListener,
 		iframe.setVisible(true);
 		iframe.addInternalFrameListener(this);
 
-		networkViewMap.put(view.getNetwork().getIdentifier(), iframe);
-		componentMap.put(iframe, view.getNetwork().getIdentifier());
+		networkViewMap.put(view.getGraphPerspective().getIdentifier(), iframe);
+		componentMap.put(iframe, view.getGraphPerspective().getIdentifier());
 
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, view
-				.getNetwork().getIdentifier());
+				.getGraphPerspective().getIdentifier());
 	}
 }

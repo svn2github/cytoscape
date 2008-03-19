@@ -46,9 +46,9 @@ import cytoscape.Cytoscape;
 
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
@@ -77,7 +77,7 @@ public class StraightenSelectedEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		GraphView view = Cytoscape.getCurrentNetworkView();
 		final int[] selectedEdges = view.getSelectedEdgeIndices();
 
 		if (selectedEdges != null) {

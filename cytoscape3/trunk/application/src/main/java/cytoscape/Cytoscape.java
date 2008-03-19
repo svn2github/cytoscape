@@ -56,7 +56,8 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.data.servers.OntologyServer;
 
 import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.DingNetworkView;
+
+import org.cytoscape.view.GraphViewFactory;
 
 import cytoscape.init.CyInitParams;
 
@@ -65,7 +66,7 @@ import cytoscape.layout.CyLayoutAlgorithm;
 
 import cytoscape.util.FileUtil;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 
 import cytoscape.visual.VisualMappingManager;
@@ -77,7 +78,7 @@ import org.cytoscape.GraphPerspective;
 import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphFactory;
 
-import giny.view.GraphView;
+import org.cytoscape.view.GraphView;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
@@ -365,7 +366,7 @@ public abstract class Cytoscape {
 	// Test
 	protected static Object pcs2 = new Object();
 	protected static PropertyChangeSupport newPcs = new PropertyChangeSupport(pcs2);
-	protected static Map<String,CyNetworkView> networkViewMap;
+	protected static Map<String,GraphView> networkViewMap;
 	protected static Map<String,GraphPerspective> networkMap;
 	protected static CytoscapeDesktop defaultDesktop;
 	protected static String currentNetworkID;
@@ -390,7 +391,7 @@ public abstract class Cytoscape {
 	/**
 	 * The list analog to the currentNetworkViewID
 	 */
-	protected static LinkedList<CyNetworkView> selectedNetworkViews;
+	protected static LinkedList<GraphView> selectedNetworkViews;
 
 	/**
 	 * The list analog to the currentNetworkID
@@ -407,9 +408,9 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * A null CyNetworkView to give when there is no Current NetworkView
+	 * A null GraphView to give when there is no Current NetworkView
 	 */
-	protected static CyNetworkView nullNetworkView = new DingNetworkView(nullNetwork, "null");
+	protected static GraphView nullNetworkView = GraphViewFactory.createGraphView(nullNetwork);
 
 	/*
 	 * VMM should be tied to Cytoscape, not to Desktop. Developers should call
@@ -420,7 +421,7 @@ public abstract class Cytoscape {
 	/**
 	 * @return a nullNetworkView object. This is NOT simply a null object.
 	 */
-	public static CyNetworkView getNullNetworkView() {
+	public static GraphView getNullNetworkView() {
 		return nullNetworkView;
 	}
 
@@ -829,14 +830,14 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * @return a CyNetworkView for the given ID, if one exists, otherwise
+	 * @return a GraphView for the given ID, if one exists, otherwise
 	 *         returns null
 	 */
-	public static CyNetworkView getNetworkView(String network_id) {
+	public static GraphView getNetworkView(String network_id) {
 		if ((network_id == null) || !(getNetworkViewMap().containsKey(network_id)))
 			return nullNetworkView;
 
-		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(network_id);
+		GraphView nview = (GraphView) getNetworkViewMap().get(network_id);
 
 		return nview;
 	}
@@ -849,15 +850,15 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Return the CyNetworkView that currently has the focus. Can be different
+	 * Return the GraphView that currently has the focus. Can be different
 	 * from getCurrentNetwork
 	 */
-	public static CyNetworkView getCurrentNetworkView() {
+	public static GraphView getCurrentNetworkView() {
 		if ((currentNetworkViewID == null)
 		    || !(getNetworkViewMap().containsKey(currentNetworkViewID)))
 			return nullNetworkView;
 
-		CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(currentNetworkViewID);
+		GraphView nview = (GraphView) getNetworkViewMap().get(currentNetworkViewID);
 
 		return nview;
 	}
@@ -865,14 +866,14 @@ public abstract class Cytoscape {
 	/**
 	 * Returns the list of currently selected networks.
 	 */
-	public static List<CyNetworkView> getSelectedNetworkViews() {
+	public static List<GraphView> getSelectedNetworkViews() {
 		if ( selectedNetworkViews == null ) {
-			selectedNetworkViews = new LinkedList<CyNetworkView>();
+			selectedNetworkViews = new LinkedList<GraphView>();
 			selectedNetworkViews.add( getCurrentNetworkView() );
 		}
 
-		LinkedList<CyNetworkView> l = new LinkedList<CyNetworkView>();
-		for (CyNetworkView g : selectedNetworkViews)
+		LinkedList<GraphView> l = new LinkedList<GraphView>();
+		for (GraphView g : selectedNetworkViews)
 			l.add(g);
 
 		return l; 
@@ -884,7 +885,7 @@ public abstract class Cytoscape {
 	public static void setSelectedNetworkViews(final List<String> viewIDs) {
 
 		if ( selectedNetworkViews == null ) 
-			selectedNetworkViews = new LinkedList<CyNetworkView>();
+			selectedNetworkViews = new LinkedList<GraphView>();
 
 		selectedNetworkViews.clear();
 
@@ -892,13 +893,13 @@ public abstract class Cytoscape {
 			return;
 
 		for ( String id : viewIDs ) {
-			CyNetworkView nview = (CyNetworkView) getNetworkViewMap().get(id);
+			GraphView nview = (GraphView) getNetworkViewMap().get(id);
 			if ( nview != null ) {
 				selectedNetworkViews.add( nview );
 			}
 		}
 
-		CyNetworkView cv = getCurrentNetworkView();
+		GraphView cv = getCurrentNetworkView();
 		if ( !selectedNetworkViews.contains( cv ) ) {
 			selectedNetworkViews.add( cv );
 		}
@@ -994,9 +995,9 @@ public abstract class Cytoscape {
 	 * This Map has keys that are Strings ( network_ids ) and values that are
 	 * networkviews.
 	 */
-	public static Map<String,CyNetworkView> getNetworkViewMap() {
+	public static Map<String,GraphView> getNetworkViewMap() {
 		if (networkViewMap == null) {
-			networkViewMap = new HashMap<String,CyNetworkView>();
+			networkViewMap = new HashMap<String,GraphView>();
 		}
 
 		return networkViewMap;
@@ -1115,7 +1116,7 @@ public abstract class Cytoscape {
 	/**
 	 * destroys the networkview, including any layout information
 	 */
-	public static void destroyNetworkView(CyNetworkView view) {
+	public static void destroyNetworkView(GraphView view) {
 		if ((view == null) || (view == nullNetworkView))
 			return;
 
@@ -1131,7 +1132,7 @@ public abstract class Cytoscape {
 			else {
 				// depending on which randomly chosen currentNetworkID we get, 
 				// we may or may not have a view for it.
-				CyNetworkView newCurr = (CyNetworkView) (getNetworkViewMap().get(currentNetworkID));
+				GraphView newCurr = (GraphView) (getNetworkViewMap().get(currentNetworkID));
 
 				if (newCurr != null)
 					currentNetworkViewID = newCurr.getIdentifier();
@@ -1154,14 +1155,14 @@ public abstract class Cytoscape {
 	 * destroys the networkview, including any layout information
 	 */
 	public static void destroyNetworkView(String network_view_id) {
-		destroyNetworkView((CyNetworkView) getNetworkViewMap().get(network_view_id));
+		destroyNetworkView((GraphView) getNetworkViewMap().get(network_view_id));
 	}
 
 	/**
 	 * destroys the networkview, including any layout information
 	 */
 	public static void destroyNetworkView(GraphPerspective network) {
-		destroyNetworkView((CyNetworkView) getNetworkViewMap().get(network.getIdentifier()));
+		destroyNetworkView((GraphView) getNetworkViewMap().get(network.getIdentifier()));
 	}
 
 	protected static void addNetwork(GraphPerspective network, String title, GraphPerspective parent,
@@ -1599,23 +1600,23 @@ public abstract class Cytoscape {
 	}
 
 	// ------------------------------//
-	// CyNetworkView Creation Methods
+	// GraphView Creation Methods
 	// ------------------------------//
 
 	/**
-	 * Creates a CyNetworkView, but doesn't do anything with it. Ifnn's you want
+	 * Creates a GraphView, but doesn't do anything with it. Ifnn's you want
 	 * to use it
 	 *
 	 * @link {CytoscapeDesktop}
 	 * @param network
 	 *            the network to create a view of
 	 */
-	public static CyNetworkView createNetworkView(GraphPerspective network) {
+	public static GraphView createNetworkView(GraphPerspective network) {
 		return createNetworkView(network, network.getTitle(), null, null);
 	}
 
 	/**
-	 * Creates a CyNetworkView, but doesn't do anything with it. Ifnn's you want
+	 * Creates a GraphView, but doesn't do anything with it. Ifnn's you want
 	 * to use it
 	 *
 	 * @link {CytoscapeDesktop}
@@ -1624,12 +1625,12 @@ public abstract class Cytoscape {
 	 * @param title
 	 *            the title to use for the view
 	 */
-	public static CyNetworkView createNetworkView(GraphPerspective network, String title) {
+	public static GraphView createNetworkView(GraphPerspective network, String title) {
 		return createNetworkView(network, title, null, null);
 	}
 
 	/**
-	 * Creates a CyNetworkView, but doesn't do anything with it. Ifnn's you want
+	 * Creates a GraphView, but doesn't do anything with it. Ifnn's you want
 	 * to use it
 	 *
 	 * @link {CytoscapeDesktop}
@@ -1640,15 +1641,15 @@ public abstract class Cytoscape {
 	 * @param layout
 	 *            the CyLayoutAlgorithm to use to lay this out by default
 	 */
-	public static CyNetworkView createNetworkView(GraphPerspective network, String title, CyLayoutAlgorithm layout) {
+	public static GraphView createNetworkView(GraphPerspective network, String title, CyLayoutAlgorithm layout) {
 		return createNetworkView(network,title,layout,null);
 	}
 
 
 	/**
-	 * Creates a CyNetworkView that is placed placed in a given visual style
+	 * Creates a GraphView that is placed placed in a given visual style
 	 * and rendered with a given layout algorithm.
-	 * The CyNetworkView will become the current view and have focus.
+	 * The GraphView will become the current view and have focus.
 	 *
 	 * @param network
 	 *            the network to create a view of
@@ -1660,7 +1661,7 @@ public abstract class Cytoscape {
 	 * @param vs the VisualStyle in which to render this new network. If null,
 	 *           the default visual style will be used.
 	 */
-	public static CyNetworkView createNetworkView(GraphPerspective network, String title, CyLayoutAlgorithm layout,
+	public static GraphView createNetworkView(GraphPerspective network, String title, CyLayoutAlgorithm layout,
 	                                              VisualStyle vs) {
 		if (network == nullNetwork) {
 			return nullNetworkView;
@@ -1670,15 +1671,14 @@ public abstract class Cytoscape {
 			return getNetworkView(network.getIdentifier());
 		}
 
-		final DingNetworkView view = new DingNetworkView(network, title);
+		final GraphView view = GraphViewFactory.createGraphView(network);
 		view.setGraphLOD(new CyGraphLOD());
 		view.setIdentifier(network.getIdentifier());
-		view.setTitle(network.getTitle());
 		getNetworkViewMap().put(network.getIdentifier(), view);
 		setSelectionMode(Cytoscape.getSelectionMode(), view);
 
 		if (vs != null) {
-			view.setVisualStyle(vs.getName());
+			VMM.setVisualStyleForView(view,vs);
 			VMM.setVisualStyle(vs);
 			VMM.setNetworkView(view);
 		}
@@ -1693,7 +1693,7 @@ public abstract class Cytoscape {
 
 		view.fitContent();
 
-		view.redrawGraph(false, true);
+		redrawGraph(view);
 
 		return view;
 	}
@@ -1903,4 +1903,12 @@ public abstract class Cytoscape {
         return source + " (" + attribute_value + ") " + target;
     }
 
+	/**
+	 * This is a temporary utility method and will eventually be refactored away.
+	 */
+	public static void redrawGraph(GraphView view) {
+		VMM.setNetworkView(view);
+		VMM.applyAppearances();
+		view.updateView();
+	}
 }

@@ -39,8 +39,8 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.VisualProperty;
 import cytoscape.visual.VisualPropertyType;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Graphics2D;
 

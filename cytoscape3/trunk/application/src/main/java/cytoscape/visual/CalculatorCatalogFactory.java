@@ -235,10 +235,8 @@ public abstract class CalculatorCatalogFactory {
                 // reapplied.
                 final VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
                 vmm.setVisualStyle(vmm.getVisualStyle().getName());
-                Cytoscape.getCurrentNetworkView()
-                         .setVisualStyle(vmm.getVisualStyle().getName());
-                Cytoscape.getCurrentNetworkView()
-                         .redrawGraph(false, true);
+				vmm.setVisualStyleForView( Cytoscape.getCurrentNetworkView(), vmm.getVisualStyle() );
+                Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
                 // Since the toolbar tends to get messed up, repaint it.
                 Cytoscape.getDesktop()

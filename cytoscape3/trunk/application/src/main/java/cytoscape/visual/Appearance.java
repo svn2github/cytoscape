@@ -44,8 +44,8 @@ import cytoscape.visual.parsers.ValueParser;
 import cytoscape.visual.parsers.ObjectToString;
 
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.util.Properties;
 import java.util.Map;

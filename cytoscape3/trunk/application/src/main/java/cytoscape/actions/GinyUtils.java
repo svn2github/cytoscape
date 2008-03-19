@@ -46,7 +46,7 @@ package cytoscape.actions;
 //-------------------------------------------------------------------------
 import org.cytoscape.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.util.*;
 

@@ -13,7 +13,7 @@ import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CyNetworkNaming;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 /**

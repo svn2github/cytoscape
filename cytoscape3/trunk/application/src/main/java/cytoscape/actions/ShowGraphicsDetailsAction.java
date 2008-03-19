@@ -43,11 +43,10 @@ import cytoscape.CytoscapeInit;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.ding.CyGraphAllLOD;
-import cytoscape.ding.DingNetworkView;
 import cytoscape.render.stateful.GraphLOD;
 
 import java.awt.event.ActionEvent;
@@ -87,11 +86,11 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetworkView currView = Cytoscape.getCurrentNetworkView();
+		GraphView currView = Cytoscape.getCurrentNetworkView();
 		if (!showFlag) {
-			((DingNetworkView)currView).setGraphLOD(new CyGraphLOD());
+			currView.setGraphLOD(new CyGraphLOD());
 		} else {
-			((DingNetworkView)currView).setGraphLOD(new CyGraphAllLOD());
+			currView.setGraphLOD(new CyGraphAllLOD());
 		}
 	}
 
@@ -99,13 +98,13 @@ public class ShowGraphicsDetailsAction extends CytoscapeAction {
 	 * Sets the state of the action before rendering the menu. 
 	 */
 	public void menuSelected(MenuEvent e) {
-		CyNetworkView currView = Cytoscape.getCurrentNetworkView();
+		GraphView currView = Cytoscape.getCurrentNetworkView();
 		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
 			setEnabled(false);
 		else {
 			setEnabled(true);
 			// Get the current graph LOD
-			GraphLOD lod = ((DingNetworkView)currView).getGraphLOD();
+			GraphLOD lod = currView.getGraphLOD();
 			if (CyGraphLOD.class.isInstance(lod)) {
 				putValue(Action.NAME, "Show Graphics Details");
 				showFlag = true;

@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cytoscape</groupId>
 	<artifactId>application</artifactId>
-	<packaging>bundle</packaging>
+	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>application</name>
 	<url>http://maven.apache.org</url>
@@ -50,6 +50,12 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>network</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>view</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
@@ -334,6 +340,7 @@
 		<plugins>
 
 <!--
+-->
 			<plugin>   
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -361,7 +368,6 @@
 					</execution>
 				</executions>
 			</plugin>
--->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>

@@ -62,7 +62,7 @@ import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import java.awt.event.ActionEvent;
 
@@ -128,7 +128,7 @@ public class ExportAsGMLAction extends CytoscapeAction {
 
 		// Get Current Network and View
 		GraphPerspective network = Cytoscape.getCurrentNetwork();
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		GraphView view = Cytoscape.getCurrentNetworkView();
 
 		// Create Task
 		ExportAsGMLTask task = new ExportAsGMLTask(name, network, view);
@@ -157,7 +157,7 @@ public class ExportAsGMLAction extends CytoscapeAction {
 class ExportAsGMLTask implements Task {
 	private String fileName;
 	private GraphPerspective network;
-	private CyNetworkView view;
+	private GraphView view;
 	private TaskMonitor taskMonitor;
 
 	/**
@@ -168,7 +168,7 @@ class ExportAsGMLTask implements Task {
 	 * @param view
 	 *            Network View Object.
 	 */
-	ExportAsGMLTask(String fileName, GraphPerspective network, CyNetworkView view) {
+	ExportAsGMLTask(String fileName, GraphPerspective network, GraphView view) {
 		this.fileName = fileName;
 		this.network = network;
 		this.view = view;

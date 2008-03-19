@@ -36,7 +36,7 @@ package cytoscape.visual.properties;
 
 import cytoscape.visual.*;
 import cytoscape.visual.parsers.*;
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 import java.util.Properties;
 
 import javax.swing.Icon;

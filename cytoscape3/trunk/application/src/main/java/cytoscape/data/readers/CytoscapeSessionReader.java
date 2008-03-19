@@ -67,6 +67,8 @@ import javax.xml.bind.Unmarshaller;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.data.Semantics;
 import cytoscape.generated.Child;
@@ -81,7 +83,7 @@ import cytoscape.generated.SelectedNodes;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
 import cytoscape.util.URLUtil;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 /**
@@ -353,13 +355,15 @@ public class CytoscapeSessionReader {
 			         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
 
 			// Cleanup view
-			final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
+			final GraphView curView = Cytoscape.getCurrentNetworkView();
 
 			if ((curView != null) && (curView.equals(Cytoscape.getNullNetworkView()) == false)) {
-				curView.setVisualStyle(lastVSName);
-				Cytoscape.getVisualMappingManager().setNetworkView(curView);
-				Cytoscape.getVisualMappingManager().setVisualStyle(curView.getVisualStyle());
-				curView.redrawGraph(false, true);
+				VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+				VisualStyle lastVS = vmm.getVisualStyle(lastVSName);
+				vmm.setVisualStyleForView(curView,lastVS);
+				vmm.setNetworkView(curView);
+				vmm.setVisualStyle(lastVS);
+				Cytoscape.redrawGraph(curView);
 			}
 
 			Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
@@ -617,7 +621,7 @@ public class CytoscapeSessionReader {
 		JarURLConnection jarConnection;
 		InputStream networkStream;
 		GraphPerspective new_network;
-		CyNetworkView curNetView;
+		GraphView curNetView;
 
 		for (int i = 0; i < numChildren; i++) {
 			child = children.get(i);
@@ -659,8 +663,7 @@ public class CytoscapeSessionReader {
 
 			if ((taskMonitor != null) && (networkCounter >= 20)) {
 				netIndex++;
-				taskMonitor.setPercentCompleted(((Number) ((netIndex / networkCounter) * 100))
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .intValue());
+				taskMonitor.setPercentCompleted(((Number) ((netIndex / networkCounter) * 100)).intValue());
 			}
 
 			if (networkStream != null) {
@@ -686,15 +689,13 @@ public class CytoscapeSessionReader {
 				curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
 				                                         reader.getLayoutAlgorithm());
 
-				//System.out.println("createNetworkView "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
-				curNetView.setVisualStyle(vsName);
+				Cytoscape.getVisualMappingManager().setVisualStyleForView(curNetView, 
+							Cytoscape.getVisualMappingManager().getVisualStyle(vsName));
 
 				Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
 				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 
-				//System.out.println("setVisualStyle stuff "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 				reader.doPostProcessing(new_network);
-				//System.out.println("doPostProcessing "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 
 				// Set hidden nodes + edges
 				setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());
@@ -726,7 +727,7 @@ public class CytoscapeSessionReader {
 		network.setSelectedNodeState(selectedNodeList, true);
 	}
 
-	private void setHiddenNodes(final CyNetworkView view, final HiddenNodes hidden) {
+	private void setHiddenNodes(final GraphView view, final HiddenNodes hidden) {
 		if (hidden == null) {
 			return;
 		}
@@ -740,7 +741,7 @@ public class CytoscapeSessionReader {
 		}
 	}
 
-	private void setHiddenEdges(final CyNetworkView view, final HiddenEdges hidden) {
+	private void setHiddenEdges(final GraphView view, final HiddenEdges hidden) {
 		if (hidden == null) {
 			return;
 		}

@@ -41,14 +41,14 @@ import cytoscape.Cytoscape;
 
 import cytoscape.plugin.CytoscapePlugin;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
 
-import giny.view.EdgeView;
-import giny.view.Label;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.Label;
+import org.cytoscape.view.NodeView;
 
 import java.util.*;
 
@@ -195,7 +195,7 @@ public class GraphSetUtils {
 					GraphPerspective currentNetwork = (GraphPerspective) networkIt.next();
 
 					if (Cytoscape.viewExists(currentNetwork.getIdentifier())) {
-						CyNetworkView view = Cytoscape.getNetworkView(currentNetwork.getIdentifier());
+						GraphView view = Cytoscape.getNetworkView(currentNetwork.getIdentifier());
 						nodeViews.add(view.getNodeView(current_node));
 
 						break;
@@ -215,7 +215,7 @@ public class GraphSetUtils {
 					GraphPerspective currentNetwork = (GraphPerspective) networkIt.next();
 
 					if (Cytoscape.viewExists(currentNetwork.getIdentifier())) {
-						CyNetworkView view = Cytoscape.getNetworkView(currentNetwork.getIdentifier());
+						GraphView view = Cytoscape.getNetworkView(currentNetwork.getIdentifier());
 
 						edgeViews.add(view.getEdgeView(current_node));
 
@@ -224,7 +224,7 @@ public class GraphSetUtils {
 				}
 			}
 
-			CyNetworkView newNetworkView = Cytoscape.getNetworkView(newNetwork.getIdentifier());
+			GraphView newNetworkView = Cytoscape.getNetworkView(newNetwork.getIdentifier());
 
 			/*
 			 * Apply the nodeview information from the merged graph views

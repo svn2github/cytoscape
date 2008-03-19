@@ -34,7 +34,7 @@
  */
 package cytoscape.visual.properties;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 
 import java.util.Map;
 import java.util.Properties;

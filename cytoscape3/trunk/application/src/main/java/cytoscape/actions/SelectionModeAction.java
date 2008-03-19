@@ -39,9 +39,9 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import org.cytoscape.GraphPerspective;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import giny.view.GraphView;
+import org.cytoscape.view.GraphView;
 
 import java.awt.event.ActionEvent;
 

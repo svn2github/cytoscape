@@ -45,14 +45,12 @@ package cytoscape.actions;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
-import cytoscape.ding.DingNetworkView;
-
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 //-------------------------------------------------------------------------
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.awt.event.ActionEvent;
 

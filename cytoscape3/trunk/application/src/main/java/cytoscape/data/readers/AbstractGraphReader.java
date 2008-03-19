@@ -42,7 +42,7 @@ import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.util.CyNetworkNaming;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import cytoscape.task.TaskMonitor;
 
@@ -50,8 +50,8 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
 
 
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.io.File;
 import java.io.IOException;

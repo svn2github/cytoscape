@@ -42,7 +42,7 @@ import cytoscape.visual.parsers.*;
 
 import cytoscape.visual.ui.icon.*;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

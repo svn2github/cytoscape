@@ -122,8 +122,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
      * CyNetwork. The supplied NodeAppearance object will be changed to hold the
      * new values.
      */
-    public void calculateNodeAppearance(NodeAppearance appr, Node node,
-        GraphPerspective network) {
+    public void calculateNodeAppearance(NodeAppearance appr, Node node, GraphPerspective network) {
         appr.copy(defaultAppearance); // set defaults and node lock state
 
         for (Calculator nc : calcs)

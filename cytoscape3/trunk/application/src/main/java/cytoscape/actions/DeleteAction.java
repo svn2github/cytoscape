@@ -44,7 +44,7 @@ import javax.swing.event.MenuEvent;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.undo.CyUndo;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 /**
@@ -93,8 +93,8 @@ public class DeleteAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent ae) {
 
-		CyNetworkView myView = Cytoscape.getCurrentNetworkView();
-		GraphPerspective cyNet = myView.getNetwork();
+		GraphView myView = Cytoscape.getCurrentNetworkView();
+		GraphPerspective cyNet = myView.getGraphPerspective();
 		List<Edge> edgeViews = myView.getSelectedEdges();
 		List<Node> nodeViews = myView.getSelectedNodes();
 		Node cyNode;

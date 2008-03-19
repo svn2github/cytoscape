@@ -44,13 +44,13 @@ import org.cytoscape.attributes.CyAttributes;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutTask;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import cytoscape.task.util.TaskManager;
 
 import org.cytoscape.Node;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -135,8 +135,8 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		} else {
 
 			// No special menus, so make sure we layout all selected
-			List<CyNetworkView> views = Cytoscape.getSelectedNetworkViews();
-			for ( CyNetworkView view: views ) {
+			List<GraphView> views = Cytoscape.getSelectedNetworkViews();
+			for ( GraphView view: views ) {
 				layout.setSelectedOnly(false);
 				layout.setLayoutAttribute(null);
 				TaskManager.executeTask( new LayoutTask(layout, view),
@@ -218,9 +218,9 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 
 		public void actionPerformed(ActionEvent e) {
 
-			List<CyNetworkView> views = Cytoscape.getSelectedNetworkViews();
+			List<GraphView> views = Cytoscape.getSelectedNetworkViews();
 
-			for ( CyNetworkView netView : views ) {
+			for ( GraphView netView : views ) {
 
 				if (layout.supportsSelectedOnly()) {
 					layout.setSelectedOnly(selectedOnly);

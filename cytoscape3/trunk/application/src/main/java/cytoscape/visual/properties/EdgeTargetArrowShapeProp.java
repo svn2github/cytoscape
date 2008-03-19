@@ -41,7 +41,7 @@ import cytoscape.visual.parsers.ArrowShapeParser;
 
 import cytoscape.visual.ui.icon.ArrowIcon;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 
 import java.util.Map;
 import java.util.Properties;

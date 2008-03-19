@@ -27,7 +27,7 @@ public class ServiceHandler {
 				Cytoscape.getImportHandler().addFilter( (CyFileFilter)bc.getService(r));
 		} catch (Exception e) { e.printStackTrace(); }
 	}
-	public void applyVisualStyle(CyNetworkView view, String visualStyleName) {
+	public void applyVisualStyle(GraphView view, String visualStyleName) {
 		try {
 		ServiceReference[] sr = bc.getServiceReferences(VisualStyle.class.getName(), "(visualStyleName=" + visualStyleName + ")");
 		for (ServiceReference r : sr ) {

@@ -120,12 +120,13 @@
 					<target>1.5</target>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
-					<!--
 					<compilerArguments>
+					<!--
 						<Xlint:all></Xlint:all>
-						<Xmaxwarns>10000</Xmaxwarns>
-					</compilerArguments>
 					-->
+						<Xmaxwarns>10000</Xmaxwarns>
+						<Xmaxerrs>10000</Xmaxerrs>
+					</compilerArguments>
 				</configuration>
 			</plugin>
             <plugin>
@@ -176,6 +177,7 @@
 		<module>attribute.browser</module>
 		<module>linkout</module>
 		<module>cpath</module>
+    <module>view</module>
   </modules>
 
 

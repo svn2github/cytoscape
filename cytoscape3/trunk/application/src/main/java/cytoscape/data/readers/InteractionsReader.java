@@ -54,7 +54,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;

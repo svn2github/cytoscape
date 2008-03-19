@@ -48,9 +48,9 @@ import cytoscape.data.Semantics;
 
 import cytoscape.util.*;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import java.awt.event.ActionEvent;
 
@@ -136,7 +136,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 				}
 
 				if (select) {
-					//CyNetworkView view = Cytoscape.getCurrentNetworkView();
+					//GraphView view = Cytoscape.getCurrentNetworkView();
 					//NodeView nv = view.getNodeView(node.getRootGraphIndex());
 					//nv.setSelected(true);
 					network.setSelectedNodeState(node, true);

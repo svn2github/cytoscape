@@ -38,7 +38,7 @@
 package cytoscape.groups;
 
 import org.cytoscape.Node;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.groups.CyGroup;
 
 /**
@@ -73,7 +73,7 @@ public interface CyGroupViewer {
 	 * @param group the CyGroup that was just created.
 	 */
 	public void groupCreated(CyGroup group);
-	public void groupCreated(CyGroup group, CyNetworkView myView);
+	public void groupCreated(CyGroup group, GraphView myView);
 
 	/**
 	 * Provide viewer-specific hooks to deletion of a group.  Most of the time

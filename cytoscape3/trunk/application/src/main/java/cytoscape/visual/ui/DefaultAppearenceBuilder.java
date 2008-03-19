@@ -274,7 +274,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 				public void actionPerformed(ActionEvent arg0) {
 					
 					Cytoscape.getVisualMappingManager().setNetworkView(Cytoscape.getCurrentNetworkView());
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 					dispose();
 				}
 			});
@@ -369,7 +369,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			}
 
 			buildList();
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 			mainView.updateView();
 			mainView.repaint();
 		}
@@ -388,7 +388,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			}
 
 			buildList();
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 
 			if (selected.equals("Background Color")) {
 				Cytoscape.getVisualMappingManager().applyGlobalAppearances();

@@ -72,7 +72,5 @@ public class ShowAllAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		GinyUtils.unHideAll(Cytoscape.getCurrentNetworkView());
-
-		//networkView.redrawGraph(false, true);
 	}
 }

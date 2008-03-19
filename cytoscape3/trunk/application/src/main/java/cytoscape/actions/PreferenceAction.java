@@ -48,7 +48,7 @@ import cytoscape.dialogs.preferences.*;
 
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import java.awt.event.ActionEvent;
 

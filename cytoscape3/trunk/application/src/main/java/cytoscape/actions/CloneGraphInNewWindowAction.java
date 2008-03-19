@@ -44,15 +44,13 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.visual.VisualStyle;
 import cytoscape.util.CytoscapeAction;
 
-import giny.view.NodeView;
-import giny.view.EdgeView;
-import giny.view.Bend;
-
-import ding.view.DGraphView;
+import org.cytoscape.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.Bend;
 
 import java.awt.event.ActionEvent;
 
@@ -87,7 +85,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		GraphPerspective origNet = Cytoscape.getCurrentNetwork();
-		CyNetworkView origView = Cytoscape.getCurrentNetworkView();
+		GraphView origView = Cytoscape.getCurrentNetworkView();
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
 
 		GraphPerspective new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
@@ -100,7 +98,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 		if ( origView == null || origView == Cytoscape.getNullNetworkView() )
 			return;
 
-		CyNetworkView newView = Cytoscape.getNetworkView(new_network.getIdentifier());
+		GraphView newView = Cytoscape.getNetworkView(new_network.getIdentifier());
 		if ( newView != null || newView != Cytoscape.getNullNetworkView() ) {
 
         	// Use nodes as keys because they are less volatile than views...
@@ -116,8 +114,8 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 			}
 
 			newView.setZoom(origView.getZoom());
-			Point2D origCenter = ((DGraphView)origView).getCenter();
-			((DGraphView)newView).setCenter(origCenter.getX(), origCenter.getY());
+			Point2D origCenter = origView.getCenter();
+			newView.setCenter(origCenter.getX(), origCenter.getY());
 
 			// set edge anchors and bends
 	        Iterator ei = origView.getGraphPerspective().edgesIterator();

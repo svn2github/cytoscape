@@ -37,7 +37,7 @@
 package cytoscape.layout;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.layout.CyLayoutAlgorithm;
 
 import cytoscape.task.Task;
@@ -54,7 +54,7 @@ import cytoscape.task.ui.JTaskConfig;
 public class LayoutTask implements Task {
 
 	CyLayoutAlgorithm layout;
-	CyNetworkView view;
+	GraphView view;
 	TaskMonitor monitor;
 
 	/**
@@ -63,7 +63,7 @@ public class LayoutTask implements Task {
 	 * @param layout The CyLayoutAlgorithm to apply.
 	 * @param view The view the algorithm should be applied to.
 	 */
-	public LayoutTask(CyLayoutAlgorithm layout,CyNetworkView view) {
+	public LayoutTask(CyLayoutAlgorithm layout,GraphView view) {
 		this.layout = layout; 
 		this.view = view; 
 	}

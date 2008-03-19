@@ -2,7 +2,7 @@ package cytoscape.util.export;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 /**
  * Interface for exporting a network view to a graphics file.
@@ -16,5 +16,5 @@ public interface Exporter
 	 *               the stream is not closed when exporting
 	 *               is finished.
 	 */
-	public void export(CyNetworkView view, FileOutputStream stream) throws IOException;
+	public void export(GraphView view, FileOutputStream stream) throws IOException;
 }

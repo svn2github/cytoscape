@@ -36,9 +36,9 @@
  */
 package cytoscape.visual.ui;
 
-import ding.view.EdgeContextMenuListener;
+import org.cytoscape.view.EdgeContextMenuListener;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 
 import javax.swing.JPopupMenu;
 

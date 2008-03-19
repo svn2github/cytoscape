@@ -38,7 +38,7 @@ package cytoscape.visual.ui;
 
 import cytoscape.visual.LabelPosition;
 
-import giny.view.Label;
+import org.cytoscape.view.Label;
 
 import java.awt.*;
 import java.awt.event.*;

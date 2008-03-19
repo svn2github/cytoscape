@@ -43,7 +43,7 @@ import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.layout.CyLayoutAlgorithm;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -153,7 +153,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		if ( network == null || network == Cytoscape.getNullNetwork() )
 			return false;
 
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		GraphView view = Cytoscape.getCurrentNetworkView();
 		if ( view == null || view == Cytoscape.getNullNetworkView() )
 			return false;
 		else

@@ -7,8 +7,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.InternalFrameComponent;
+import org.cytoscape.view.GraphView;
 
 /**
  * Bitmap exporter by the ImageIO class.
@@ -38,16 +37,15 @@ public class BitmapExporter implements Exporter
 			throw new IllegalArgumentException("Format " + extension + " is not supported by the ImageIO class");
 	}
 
-	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
+	public void export(GraphView view, FileOutputStream stream) throws IOException
 	{
-		InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
-		int width  = (int) (ifc.getWidth() * scale);
-		int height = (int) (ifc.getHeight() * scale);
+		int width  = (int) (view.getComponent().getWidth() * scale);
+		int height = (int) (view.getComponent().getHeight() * scale);
 
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();
 		g.scale(scale, scale);
-		ifc.printNoImposter(g);
+		view.printNoImposter(g);
 		g.dispose();
 		
 		ImageIO.write(image, extension, stream);

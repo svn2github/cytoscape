@@ -46,7 +46,7 @@ import cytoscape.layout.CyLayoutAlgorithm;
 
 import org.cytoscape.RootGraph;
 
-import giny.view.GraphView;
+import org.cytoscape.view.GraphView;
 
 import java.io.IOException;
 

@@ -36,10 +36,10 @@ package cytoscape.visual;
 
 import org.cytoscape.Node;
 
-import giny.view.GraphView;
-import giny.view.Label;
-import giny.view.NodeView;
-import giny.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.Label;
+import org.cytoscape.view.NodeView;
+import org.cytoscape.view.EdgeView;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -301,7 +301,7 @@ public class TestNodeView implements NodeView {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public giny.view.Label getLabel() {
+	public org.cytoscape.view.Label getLabel() {
 		return label;
 	}
 

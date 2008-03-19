@@ -1,11 +1,11 @@
 
 package cytoscape.actions;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 
 /**
@@ -37,7 +37,7 @@ class DeleteEdit extends CyAbstractEdit {
 		// save the positions of the nodes
 		xPos = new double[nodes.length]; 
 		yPos = new double[nodes.length]; 
-		CyNetworkView netView = Cytoscape.getNetworkView(net.getIdentifier());
+		GraphView netView = Cytoscape.getNetworkView(net.getIdentifier());
 		if ( netView != null && netView != Cytoscape.getNullNetworkView() ) {
 			for ( int i = 0; i < nodes.length; i++ ) {
 				NodeView nv = netView.getNodeView(nodes[i]);
@@ -61,7 +61,7 @@ class DeleteEdit extends CyAbstractEdit {
 		net.restoreNodes(nodes);
 		net.restoreEdges(edges);
 
-		CyNetworkView netView = Cytoscape.getNetworkView(net.getIdentifier());
+		GraphView netView = Cytoscape.getNetworkView(net.getIdentifier());
 		if ( netView != null && netView != Cytoscape.getNullNetworkView() ) {
 			for ( int i = 0; i < nodes.length; i++ ) {
 				NodeView nv = netView.getNodeView(nodes[i]);

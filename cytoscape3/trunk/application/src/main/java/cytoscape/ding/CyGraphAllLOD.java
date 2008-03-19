@@ -37,7 +37,7 @@
 package cytoscape.ding;
 
 import cytoscape.render.stateful.GraphLOD;
-import ding.view.PrintLOD;
+import org.cytoscape.view.PrintLOD;
 
 
 /**

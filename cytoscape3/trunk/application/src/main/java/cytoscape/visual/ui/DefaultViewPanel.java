@@ -34,7 +34,7 @@
 */
 package cytoscape.visual.ui;
 
-import giny.view.GraphView;
+import org.cytoscape.view.GraphView;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -48,11 +48,10 @@ import javax.swing.JPanel;
 import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
+import org.cytoscape.view.GraphViewFactory;
 import cytoscape.Cytoscape;
 import org.cytoscape.RootGraph;
-import cytoscape.ding.DingNetworkView;
-import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
+import org.cytoscape.view.GraphView;
 
 
 /**
@@ -65,8 +64,8 @@ import ding.view.DGraphView;
 public class DefaultViewPanel extends JPanel {
 	private final static long serialVersionUID = 1202339876691085L;
 	private static final int PADDING = 20;
-	private CyNetworkView view;
-	private CyNetworkView oldView;
+	private GraphView view;
+	private GraphView oldView;
 	private static GraphPerspective dummyNet;
 	private Color background;
 
@@ -124,11 +123,8 @@ public class DefaultViewPanel extends JPanel {
 	 * Create dummy network
 	 */
 	protected void createDummyNetworkView() {
-		view = new DingNetworkView(dummyNet, "Default Appearence");
-
+		view = GraphViewFactory.createGraphView(dummyNet);
 		view.setIdentifier(dummyNet.getIdentifier());
-		view.setTitle(dummyNet.getTitle());
-
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
 		Cytoscape.getVisualMappingManager().setNetworkView(view);
@@ -150,11 +146,10 @@ public class DefaultViewPanel extends JPanel {
 	protected void updateView() {
 		if (view != null) {
 			Cytoscape.getVisualMappingManager().setNetworkView(view);
-			view.setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+			Cytoscape.getVisualMappingManager().setVisualStyleForView(view, Cytoscape.getVisualMappingManager().getVisualStyle());
 
 			final Dimension panelSize = this.getSize();
-			((DGraphView) view).getCanvas()
-			 .setSize(new Dimension((int) panelSize.getWidth() - PADDING,
+			view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
 			                        (int) panelSize.getHeight() - PADDING));
 			view.fitContent();
 			canvas = (view.getComponent());

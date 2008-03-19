@@ -41,12 +41,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import cytoscape.task.TaskMonitor;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import javax.swing.JPanel;
 
@@ -69,9 +69,9 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	/**
 	 * This method performs the layout on the current network.
 	 *
-	 * @param networkView the CyNetworkView on which to perform the layout
+	 * @param networkView the GraphView on which to perform the layout
 	 */
-	public void doLayout(CyNetworkView networkView) {
+	public void doLayout(GraphView networkView) {
 		doLayout(networkView, null);
 	}
 
@@ -79,10 +79,10 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * This method performs the layout on the current network, but assumes
 	 * that the layout is part of an existing monitored task
 	 *
-	 * @param networkView the CyNetworkView on which to perform the layout
+	 * @param networkView the GraphView on which to perform the layout
 	 * @param monitor the task monitor to use
 	 */
-	public abstract void doLayout(CyNetworkView networkView, TaskMonitor monitor);
+	public abstract void doLayout(GraphView networkView, TaskMonitor monitor);
 
 	/**
 	 * Get the name of this layout.

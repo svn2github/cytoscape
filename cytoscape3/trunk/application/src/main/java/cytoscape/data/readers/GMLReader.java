@@ -38,7 +38,7 @@ package cytoscape.data.readers;
 
 import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
@@ -77,9 +77,9 @@ import cytoscape.visual.mappings.PassThroughMapping;
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
 
-import giny.view.EdgeView;
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -989,7 +989,7 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
-			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+			public void doLayout(GraphView networkView, TaskMonitor monitor) {
 				layout(networkView);
 			}
 		};
@@ -1000,7 +1000,7 @@ public class GMLReader extends AbstractGraphReader {
 	 *
 	 * @param myView the view of the network we want to layout
 	 */
-	public void layout(CyNetworkView myView) {
+	public void layout(GraphView myView) {
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}
@@ -1564,9 +1564,8 @@ public class GMLReader extends AbstractGraphReader {
 				
 				Cytoscape.getVisualMappingManager().applyAppearances();
 				
-				CyNetworkView view = Cytoscape.getNetworkView(net.getIdentifier());
-			    view.applyVizmapper(Cytoscape.getVisualMappingManager().getVisualStyle()); 
-			    view.redrawGraph(false, true); 
+				GraphView view = Cytoscape.getNetworkView(net.getIdentifier());
+			    Cytoscape.redrawGraph(view); 
 			}			
 		}
 	}

@@ -538,7 +538,7 @@ public class CytoscapeInit {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)) {
 					// apply vizmaps
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 				}
 			}
 		};

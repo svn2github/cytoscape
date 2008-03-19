@@ -52,7 +52,7 @@ import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import java.awt.event.ActionEvent;
 
@@ -150,7 +150,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 
 		// Get Current Network and View
 		final GraphPerspective network = Cytoscape.getCurrentNetwork();
-		final CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		final GraphView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		// Create Task
 		final ExportAsXGMMLTask task = new ExportAsXGMMLTask(name, network, view);
@@ -178,7 +178,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 class ExportAsXGMMLTask implements Task {
 	private String fileName;
 	private GraphPerspective network;
-	private CyNetworkView view;
+	private GraphView view;
 	private TaskMonitor taskMonitor;
 
 	/**
@@ -189,7 +189,7 @@ class ExportAsXGMMLTask implements Task {
 	 * @param view
 	 *            Network View Object.
 	 */
-	public ExportAsXGMMLTask(String fileName, GraphPerspective network, CyNetworkView view) {
+	public ExportAsXGMMLTask(String fileName, GraphPerspective network, GraphView view) {
 		this.fileName = fileName;
 		this.network = network;
 		this.view = view;

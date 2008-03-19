@@ -158,7 +158,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 			newRange = new BoundaryRangeValues(below, 5f, above);
 			mapping.addPoint(maxValue / 2, newRange);
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 
 			slider.repaint();
 			repaint();
@@ -187,7 +187,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 		updateMap();
 
-		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+		Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 
 		slider.repaint();
 		repaint();
@@ -206,7 +206,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 			mapping.fireStateChanged();
 
-			Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 			repaint();
 		}
 	}

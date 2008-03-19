@@ -44,20 +44,20 @@ package cytoscape.view;
 
 import org.cytoscape.GraphPerspectiveChangeEvent;
 
-import giny.view.GraphView;
+import org.cytoscape.view.GraphView;
 
 
 /**
  * This interface represents an object that handles a change in a
  * <code>giny.mode.GraphPerspective</code> by updating one of its
- * <code>giny.view.GraphView</code>s.
+ * <code>org.cytoscape.view.GraphView</code>s.
  */
 public interface GraphViewHandler {
 	/**
-	 * Handles the event as desired by updating the given <code>giny.view.GraphView</code>.
+	 * Handles the event as desired by updating the given <code>org.cytoscape.view.GraphView</code>.
 	 *
 	 * @param event the event to handle
-	 * @param graph_view the <code>giny.view.GraphView</code> that views the
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> that views the
 	 * <code>cytoscape.GraphPerspective</code> that generated the event and that should
 	 * be updated as necessary
 	 */
@@ -68,7 +68,7 @@ public interface GraphViewHandler {
 	 * Useful if <code>GraphPerspectiveChangeEvents</code> haven't been handled,
 	 * and a <code>graph_view</code> must be made synchronized with its GraphPerspective.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> that views the should
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> that views the should
 	 * be updated as necessary
 	 */
 	public void updateGraphView(GraphView graph_view);

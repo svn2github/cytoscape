@@ -38,8 +38,7 @@ package cytoscape.view;
 
 import cytoscape.Cytoscape;
 
-import ding.view.BirdsEyeView;
-import ding.view.DGraphView;
+import org.cytoscape.view.BirdsEyeView;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -66,13 +65,8 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
 	BirdsEyeViewHandler(Component desktopPane) {
-		bev = new BirdsEyeView((DGraphView) Cytoscape.getCurrentNetworkView(), desktopPane) {
-	private final static long serialVersionUID = 1202339868259783L;
-				public Dimension getMinimumSize() {
-					return new Dimension(180, 180);
-				}
-			};
-		
+		bev = new BirdsEyeView(Cytoscape.getCurrentNetworkView(), desktopPane);
+
 		if (desktopPane != null)
 			desktopPane.addComponentListener(new DesktopListener());
 	}
@@ -88,7 +82,7 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		    || (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED)
 		    || (e.getPropertyName() == Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			bev.changeView((DGraphView) Cytoscape.getCurrentNetworkView());
+			bev.changeView(Cytoscape.getCurrentNetworkView());
 		}
 
 		// Add the frameListener to the currently focused view if it

@@ -45,7 +45,7 @@ package cytoscape.visual;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Font;

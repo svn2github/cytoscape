@@ -41,7 +41,7 @@ import cytoscape.visual.parsers.NodeShapeParser;
 
 import cytoscape.visual.ui.icon.NodeIcon;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.util.Map;
 import java.util.Properties;

@@ -40,8 +40,8 @@ import java.util.Map;
 
 import javax.swing.Icon;
 import java.util.Properties;
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 
 /**

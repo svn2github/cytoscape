@@ -41,7 +41,7 @@ import cytoscape.Cytoscape;
 import cytoscape.visual.parsers.ObjectToString;
 import cytoscape.visual.VisualPropertyType;
 
-import giny.view.Label;
+import org.cytoscape.view.Label;
 import org.cytoscape.GraphObject;
 
 
@@ -177,7 +177,7 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 				String val = ObjectToString.getStringValue(newlp);
 				Cytoscape.getNodeAttributes().setAttribute(go.getIdentifier(), 
 				                   VisualPropertyType.NODE_LABEL_POSITION.getBypassAttrName(), val);
-				Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 			}
 		}
 	}

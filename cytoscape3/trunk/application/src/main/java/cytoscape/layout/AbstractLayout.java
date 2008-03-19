@@ -46,14 +46,14 @@ import cytoscape.task.TaskMonitor;
 
 import cytoscape.util.*;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import ding.view.DGraphView;
-import ding.view.ViewChangeEdit;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.ViewChangeEdit;
 
-import giny.view.EdgeView;
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
@@ -81,7 +81,7 @@ import org.cytoscape.Node;
  */
 abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected Set<NodeView> staticNodes;
-	protected CyNetworkView networkView;
+	protected GraphView networkView;
 	protected GraphPerspective network;
 	protected TaskMonitor taskMonitor; 
 	protected boolean selectedOnly = false;
@@ -242,14 +242,14 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	/**
 	 * doLayout on specified network view.
 	 */
-	public void doLayout(CyNetworkView nview) {
+	public void doLayout(GraphView nview) {
 		doLayout(nview,nullTaskMonitor);
 	}
 
 	/**
 	 * doLayout on specified network view with specified monitor.
 	 */
-	public void doLayout(CyNetworkView nview, TaskMonitor monitor) {
+	public void doLayout(GraphView nview, TaskMonitor monitor) {
 
 		canceled = false;
 
@@ -259,7 +259,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		if (networkView == null || networkView == Cytoscape.getNullNetworkView())
 			return;
 
-		this.network = networkView.getNetwork();
+		this.network = networkView.getGraphPerspective();
 
 		if (network == null || network == Cytoscape.getNullNetwork()) 
 			return;
@@ -273,7 +273,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		taskMonitor = monitor;
 
 		// set up the edit
-		undoableEdit = new ViewChangeEdit((DGraphView)networkView, toString() + " Layout");
+		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout");
 
 		// this is overridden by children and does the actual layout
 		construct();

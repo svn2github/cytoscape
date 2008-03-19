@@ -46,13 +46,13 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.Semantics;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
 
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -74,9 +74,9 @@ public class CyNetworkUtilities {
 	/**
 	 * Saves all selected nodes in the current view to a file with the given
 	 * name.
-	 * TODO: The CyNetworkView is not a needed parameter
+	 * TODO: The GraphView is not a needed parameter
 	 */
-	public static boolean saveSelectedNodeNames(CyNetworkView networkView, GraphPerspective network,
+	public static boolean saveSelectedNodeNames(GraphView networkView, GraphPerspective network,
 	                                            String filename) {
 		if ((networkView == null) || (network == null) || (filename == null)) {
 			return false;
@@ -168,7 +168,7 @@ public class CyNetworkUtilities {
 	 * concatenated.
 	 */
 	public static boolean selectNodesStartingWith(GraphPerspective network, String key,
-	                                              CyNetworkView networkView) {
+	                                              GraphView networkView) {
 		if ((network == null) || (key == null) || (networkView == null)) {
 			return false;
 		}

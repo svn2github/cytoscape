@@ -43,9 +43,9 @@
 package cytoscape.view;
 
 
-import giny.view.EdgeView;
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.util.*;
 
@@ -67,10 +67,10 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	} //BasicGraphViewHandler
 
 	/**
-	 * Handles the event as desired by updating the given <code>giny.view.GraphView</code>.
+	 * Handles the event as desired by updating the given <code>org.cytoscape.view.GraphView</code>.
 	 *
 	 * @param event the event to handle
-	 * @param graph_view the <code>giny.view.GraphView</code> that views the
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> that views the
 	 * <code>cytoscape.GraphPerspective</code> that generated the event and that should
 	 * be updated as necessary
 	 */
@@ -108,10 +108,10 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	} //handleGraphPerspectiveEvent
 
 	/**
-	 * It removes the views of the edges in the array from the given <code>giny.view.GraphView</code>
+	 * It removes the views of the edges in the array from the given <code>org.cytoscape.view.GraphView</code>
 	 * object.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object from which edges will be removed
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object from which edges will be removed
 	 * @param edges the edges whose views will be removed
 	 * @return an array of edges that were removed
 	 */
@@ -133,10 +133,10 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	} 
 
 	/**
-	 * It removes the views of the edges in the array from the given <code>giny.view.GraphView</code>
+	 * It removes the views of the edges in the array from the given <code>org.cytoscape.view.GraphView</code>
 	 * object.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object from which edges will be removed
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object from which edges will be removed
 	 * @param edge_indices the indices of the edges that will be removed
 	 * @return an array of edge indices that were removed
 	 */
@@ -158,10 +158,10 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	} //removeGraphViewEdges
 
 	/**
-	 * It restores the views of the edges in the array in the given <code>giny.view.GraphView</code>
+	 * It restores the views of the edges in the array in the given <code>org.cytoscape.view.GraphView</code>
 	 * object
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object in which edges will be restored
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object in which edges will be restored
 	 * @param edges the edges that will be restored
 	 * @return an array of edges that were restored
 	 */
@@ -198,9 +198,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 	/**
 	 * It restores the views of the edges with the given indices in the given
-	 * <code>giny.view.GraphView</code> object
+	 * <code>org.cytoscape.view.GraphView</code> object
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object in which edges' views
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object in which edges' views
 	 * will be restored
 	 * @param edge_indices the indices of the edges that will be restored
 	 * @return an array of indices of edges that were restored
@@ -238,9 +238,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	} 
 
 	/**
-	 * It selects the edges in the array in the given <code>giny.view.GraphView</code> object.
+	 * It selects the edges in the array in the given <code>org.cytoscape.view.GraphView</code> object.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object in which edges will be selected
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object in which edges will be selected
 	 * @param edges the edges in <code>graph_view</code> that will be selected
 	 * @return the edges that were selected
 	 */
@@ -260,9 +260,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	}
 
 	/**
-	 * It unselects the edges in the array in the given  <code>giny.view.GraphView</code> object
+	 * It unselects the edges in the array in the given  <code>org.cytoscape.view.GraphView</code> object
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object in which edges will be unselected
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object in which edges will be unselected
 	 * @param edges the edges that will be unselected in <code>graph_view</code>
 	 * @return an array of edges that were unselected
 	 */
@@ -282,11 +282,11 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	} //unselectGraphViewEdges
 
 	/**
-	 * It removes the nodes in the array from the given <code>giny.view.GraphView</code> object,
+	 * It removes the nodes in the array from the given <code>org.cytoscape.view.GraphView</code> object,
 	 * it also removes the connected edges to these nodes (an edge without a connecting node makes
 	 * no mathematical sense).
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object from which nodes will be removed
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object from which nodes will be removed
 	 * @param nodes the nodes whose views will be removed from <code>graph_view</code>
 	 * @return an array of nodes that were removed
 	 */
@@ -311,10 +311,10 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 	/**
 	* It removes the views of the nodes with the given indices that are contained in the given
-	* <code>giny.view.GraphView</code> object, it also removes the connected edges to
+	* <code>org.cytoscape.view.GraphView</code> object, it also removes the connected edges to
 	* these nodes (an edge without a connecting node makes no mathematical sense).
 	*
-	* @param graph_view the <code>giny.view.GraphView</code> object from which nodes will be removed
+	* @param graph_view the <code>org.cytoscape.view.GraphView</code> object from which nodes will be removed
 	* @param node_indices the indices of the nodes that will be removed
 	* @return an array of indices of nodes that were removed
 	*/
@@ -338,9 +338,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 	/**
 	 * It restores the views of the nodes in the array in the given
-	 * <code>giny.view.GraphView</code> object
+	 * <code>org.cytoscape.view.GraphView</code> object
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object in which nodes will be restored
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object in which nodes will be restored
 	 * @param nodes the nodes whose views will be restored in <code>graph_view</code>
 	 * @param restore_connected_edges whether or not the connected edges to the restored nodes
 	 * should also be restored or not (for now this argument is ignored)
@@ -381,9 +381,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 	/**
 	 * It restores the views of the nodes with the given indices in the given
-	 * <code>giny.view.GraphView</code> object
+	 * <code>org.cytoscape.view.GraphView</code> object
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object in which node views will be restored
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object in which node views will be restored
 	 * @param node_indices the indices of the nodes whose views will be restored
 	 * @param restore_connected_edges whether or not the connected edges to the restored nodes
 	 * should also be restored or not (for now this argument is ignored)
@@ -424,9 +424,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	} //restoreGraphViewNodes
 
 	/**
-	 * It selects the nodes in the array in the given <code>giny.view.GraphView</code> object.
+	 * It selects the nodes in the array in the given <code>org.cytoscape.view.GraphView</code> object.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object in which nodes will be selected
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object in which nodes will be selected
 	 * @param nodes the nodes in <code>graph_view</code> that will be selected
 	 * @return the nodes that were selected
 	 */
@@ -446,9 +446,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	} //selectGraphViewNodes
 
 	/**
-	 * It unselects the nodes in the array in the given  <code>giny.view.GraphView</code> object
+	 * It unselects the nodes in the array in the given  <code>org.cytoscape.view.GraphView</code> object
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object in which nodes will be unselected
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object in which nodes will be unselected
 	 * @param nodes the nodes that will be unselected in <code>graph_view</code>
 	 * @return an array of nodes that were unselected
 	 */
@@ -471,7 +471,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * If the node that node_view represents is a meta-node, then it
 	 * positions it at the barycenter of its viewable children nodes.
 	 *
-	 * @param node_view the <code>giny.view.NodeView</code> that will be positioned
+	 * @param node_view the <code>org.cytoscape.view.NodeView</code> that will be positioned
 	 * to the barycenter of its children
 	 */
 	static public void positionToBarycenter(NodeView node_view) {

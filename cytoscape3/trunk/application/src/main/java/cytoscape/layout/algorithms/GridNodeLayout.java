@@ -47,13 +47,13 @@ import cytoscape.task.Task;
 
 import cytoscape.util.*;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.*;
 
-import giny.view.EdgeView;
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Dimension;
 

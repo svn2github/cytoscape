@@ -40,7 +40,7 @@ import cytoscape.visual.parsers.ColorParser;
 
 import cytoscape.visual.ui.icon.NodeIcon;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 

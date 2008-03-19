@@ -45,7 +45,7 @@ package cytoscape.visual;
 
 import org.cytoscape.Node;
 import org.cytoscape.RootGraph;
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Font;

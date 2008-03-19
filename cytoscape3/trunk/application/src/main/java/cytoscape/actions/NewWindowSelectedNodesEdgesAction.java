@@ -35,25 +35,21 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//-------------------------------------------------------------------------
-// $Revision: 13022 $
-// $Date: 2008-02-11 13:59:26 -0800 (Mon, 11 Feb 2008) $
-// $Author: mes $
-//-------------------------------------------------------------------------
 package cytoscape.actions;
 
 import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+import org.cytoscape.Edge;
+
+import org.cytoscape.view.GraphView;
+
 import cytoscape.Cytoscape;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
 
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyNetworkView;
-import cytoscape.visual.VisualStyle;
-
-//-------------------------------------------------------------------------
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
 import java.awt.event.ActionEvent;
 
 import java.util.Iterator;
@@ -62,7 +58,6 @@ import java.util.Set;
 import javax.swing.event.MenuEvent;
 
 
-//-------------------------------------------------------------------------
 /**
  *
  */
@@ -86,7 +81,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		// keep ref to current state
         GraphPerspective current_network = Cytoscape.getCurrentNetwork();
-        CyNetworkView current_network_view = Cytoscape.getCurrentNetworkView();
+        GraphView current_network_view = Cytoscape.getCurrentNetworkView();
 
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
@@ -99,11 +94,12 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 		                                                current_network);
 
 		String title = " selection";
-		CyNetworkView new_network_view = Cytoscape.createNetworkView(new_network, title);
+		GraphView new_network_view = Cytoscape.createNetworkView(new_network, title);
         
         String vsName = "default";
         
         // keep the node positions
+        VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
         if (current_network_view != Cytoscape.getNullNetworkView()) {
             Iterator i = new_network.nodesIterator();
 
@@ -117,13 +113,13 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
             new_network_view.fitContent();
 
             // Set visual style
-            VisualStyle newVS = current_network_view.getVisualStyle();
+            VisualStyle newVS = vmm.getVisualStyleForView( current_network_view );
 
             if (newVS != null) {
                 vsName = newVS.getName();
             }
         }
-        Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+        vmm.setVisualStyle(vsName);
 	}
 
 	public void menuSelected(MenuEvent e) {

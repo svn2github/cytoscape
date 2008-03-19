@@ -42,7 +42,7 @@ import cytoscape.visual.parsers.FloatParser;
 
 import cytoscape.visual.ui.icon.NodeIcon;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;

@@ -44,13 +44,11 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.ding.DingNetworkView;
-
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
@@ -81,7 +79,7 @@ public class ZoomSelectedAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		((DingNetworkView) Cytoscape.getCurrentNetworkView()).fitSelected();
+		Cytoscape.getCurrentNetworkView().fitSelected();
 		Cytoscape.getCurrentNetworkView().updateView();
 	}
 }

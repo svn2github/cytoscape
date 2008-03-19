@@ -60,7 +60,7 @@ import org.cytoscape.Edge;
 import org.cytoscape.Node;
 import org.cytoscape.RootGraph;
 
-import giny.view.Label;
+import org.cytoscape.view.Label;
 
 import junit.framework.*;
 

@@ -41,14 +41,14 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
 
-import giny.view.EdgeView;
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -130,10 +130,10 @@ public class GMLTree {
 	 * @param myView
 	 *            the GraphView used to create the GMLTree
 	 */
-	public GMLTree(CyNetworkView networkView) {
+	public GMLTree(GraphView networkView) {
 		// DecimalFormat cf = new DecimalFormat("00");
 		DecimalFormat df = new DecimalFormat("####0.0#");
-		GraphView myView = networkView.getView();
+		GraphView myView = networkView;
 
 		// networkView.getNetwork().getNodeAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();

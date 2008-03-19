@@ -47,7 +47,7 @@ import javax.swing.event.MenuEvent;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.GraphPerspective;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 /**
  *
@@ -372,7 +372,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 			return;
 		}
 		
-		CyNetworkView v = Cytoscape.getCurrentNetworkView();
+		GraphView v = Cytoscape.getCurrentNetworkView();
 		if ( v == null || v == Cytoscape.getNullNetworkView() )
 			setEnabled(false);
 		else

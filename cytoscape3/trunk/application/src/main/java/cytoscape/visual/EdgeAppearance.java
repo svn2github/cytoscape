@@ -54,8 +54,8 @@ import cytoscape.visual.parsers.ObjectToString;
 
 import org.cytoscape.Edge;
 
-import giny.view.EdgeView;
-import giny.view.Label;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.Label;
 
 import java.awt.Color;
 import java.awt.Font;

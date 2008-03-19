@@ -43,17 +43,17 @@
 package cytoscape.actions;
 
 import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+
+import org.cytoscape.view.GraphView;
+
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyNetworkView;
-
 import cytoscape.visual.VisualStyle;
-
-//-------------------------------------------------------------------------
-import org.cytoscape.Node;
+import cytoscape.visual.VisualMappingManager;
 
 import java.awt.event.ActionEvent;
 
@@ -89,7 +89,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
 
-		CyNetworkView current_network_view = null;
+		GraphView current_network_view = null;
 
 		if (Cytoscape.viewExists(current_network.getIdentifier())) {
 			current_network_view = Cytoscape.getNetworkView(current_network.getIdentifier());
@@ -102,14 +102,15 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 		                                                current_network);
 
-		CyNetworkView new_view = Cytoscape.getNetworkView(new_network.getIdentifier());
+		GraphView new_view = Cytoscape.getNetworkView(new_network.getIdentifier());
 
 		if (new_view == Cytoscape.getNullNetworkView()) {
 			return;
 		}
 
         String vsName = "default";
-        
+       
+	   	VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
         // keep the node positions
 		if (current_network_view != Cytoscape.getNullNetworkView()) {
 			Iterator i = new_network.nodesIterator();
@@ -124,13 +125,15 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			new_view.fitContent();
 
 			// Set visual style
-			VisualStyle newVS = current_network_view.getVisualStyle();
+			VisualStyle newVS = vmm.getVisualStyleForView( current_network_view );
+
 
 			if (newVS != null) {
                 vsName = newVS.getName();
+				vmm.setVisualStyleForView( new_view, newVS );
 			}
 		}
-        Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
+        vmm.setVisualStyle(vsName);
 	}
 
 	public void menuSelected(MenuEvent e) {

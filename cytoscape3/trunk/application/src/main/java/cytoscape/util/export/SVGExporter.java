@@ -5,19 +5,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.InternalFrameComponent;
-
-/*
-import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.svggen.GenericImageHandler;
-import org.apache.batik.svggen.ImageHandlerPNGEncoder;
-import org.apache.batik.svggen.ImageHandlerBase64Encoder;
-import org.apache.batik.svggen.SVGGeneratorContext;
-import org.apache.batik.dom.GenericDOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMImplementation;
-*/
+import org.cytoscape.view.GraphView;
 
 import org.freehep.graphicsio.svg.SVGGraphics2D;
 import org.freehep.graphics2d.VectorGraphics;
@@ -32,26 +20,11 @@ public class SVGExporter implements Exporter
 	{
 	}
 
-	/*
-	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
+	public void export(GraphView view, FileOutputStream stream) throws IOException
 	{
-		InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
-		DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
-		Document document = domImpl.createDocument("http://www.w3.org/2000/svg", "svg", null);
-		SVGGeneratorContext context = SVGGeneratorContext.createDefault(document);
-		//context.setImageHandler(new ImageHandlerPNGEncoder("/cellar/users/slotia/", null));
-		context.setImageHandler(new ImageHandlerBase64Encoder());
-		SVGGraphics2D svgGenerator = new SVGGraphics2D(context, false);
-		ifc.print(svgGenerator);
-		svgGenerator.stream(new OutputStreamWriter(stream), true);
-	}
-	*/
-	public void export(CyNetworkView view, FileOutputStream stream) throws IOException
-	{
-		InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
-		VectorGraphics g = new SVGGraphics2D(stream, ifc);
+		VectorGraphics g = new SVGGraphics2D(stream, view.getComponent());
 		g.startExport();
-		ifc.print(g);
+		view.print(g);
 		g.endExport();
 	}
 }

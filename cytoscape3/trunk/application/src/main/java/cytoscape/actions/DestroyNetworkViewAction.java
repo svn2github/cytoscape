@@ -41,7 +41,7 @@ import org.cytoscape.GraphPerspective;
 
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
@@ -79,12 +79,12 @@ public class DestroyNetworkViewAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// Get the list first, then iterate. If you do this:
-		//     for ( CyNetworkView cv : Cytoscape.getSelectedNetworkViews() )
+		//     for ( GraphView cv : Cytoscape.getSelectedNetworkViews() )
 		// you will notice that the list of selected networks changes
 		// as you iterate through it.  This is due to events getting fired
 		// as a result of the deletion.
-		java.util.List<CyNetworkView> l = Cytoscape.getSelectedNetworkViews();
-		for ( CyNetworkView cv : l )
+		java.util.List<GraphView> l = Cytoscape.getSelectedNetworkViews();
+		for ( GraphView cv : l )
 			Cytoscape.destroyNetworkView(cv);
 	}
 

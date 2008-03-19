@@ -55,7 +55,6 @@ import cytoscape.data.readers.XGMMLReader;
 import cytoscape.dialogs.ImportNetworkDialog;
 
 import cytoscape.ding.CyGraphLOD;
-import cytoscape.ding.DingNetworkView;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;

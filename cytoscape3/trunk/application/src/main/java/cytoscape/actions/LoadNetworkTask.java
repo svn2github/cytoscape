@@ -59,7 +59,6 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CytoscapeDesktop;
-import ding.view.DGraphView;
 
 
 /**
@@ -169,7 +168,7 @@ public class LoadNetworkTask implements Task {
 				Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
 				Cytoscape.getDesktop().getNetworkViewManager().firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, Cytoscape.getCurrentNetworkView()
-						.getNetwork().getIdentifier());
+						.getGraphPerspective().getIdentifier());
 			}
 			
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);

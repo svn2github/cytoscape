@@ -47,7 +47,7 @@ import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
 import org.cytoscape.groups.CyGroup;
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.attributes.CyAttributes;;
 
 /**
@@ -330,7 +330,7 @@ public class CyGroupManager {
 	 * @param myView the network view that this is being operated on
 	 * @param notify if 'true' the viewer will be notified of the creation
 	 */
-	public static void setGroupViewer(CyGroup group, String viewer, CyNetworkView myView, boolean notify) {
+	public static void setGroupViewer(CyGroup group, String viewer, GraphView myView, boolean notify) {
 		// See if we need to remove the current viewer first
 		if (group.getViewer() != null) {
 			// get the viewer
@@ -354,7 +354,7 @@ public class CyGroupManager {
 
 			if (notify) {
 				// Make sure we have a view before we notify
-				CyNetworkView currentView = Cytoscape.getCurrentNetworkView();
+				GraphView currentView = Cytoscape.getCurrentNetworkView();
 				if (myView != null) {
 					v.groupCreated(group, myView);
 				} else if (currentView != null) {

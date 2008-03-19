@@ -42,7 +42,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import java.awt.event.ActionEvent;
 
@@ -130,7 +130,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			setEnabled(false);
 			return;
 		}
-		CyNetworkView currView = Cytoscape.getNetworkView(currNet.getIdentifier());
+		GraphView currView = Cytoscape.getNetworkView(currNet.getIdentifier());
 		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
 			setEnabled(true);
 		else

@@ -43,7 +43,7 @@ import cytoscape.visual.parsers.ColorParser;
 
 import cytoscape.visual.ui.icon.ArrowIcon;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 
 import java.awt.Color;
 import java.awt.Paint;

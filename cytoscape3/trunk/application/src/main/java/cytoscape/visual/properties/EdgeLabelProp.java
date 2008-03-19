@@ -38,8 +38,8 @@ import cytoscape.visual.*;
 
 import cytoscape.visual.parsers.*;
 
-import giny.view.EdgeView;
-import giny.view.Label;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.Label;
 
 import java.util.Properties;
 

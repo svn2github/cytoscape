@@ -10,8 +10,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.InternalFrameComponent;
+import org.cytoscape.view.GraphView;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.util.FileUtil;
@@ -81,7 +80,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 									+ "\n\nError: " + exp.getMessage());
 					return;
 				}
-				CyNetworkView view = Cytoscape.getCurrentNetworkView();
+				GraphView view = Cytoscape.getCurrentNetworkView();
 				filter.export(view, stream);
 			}
 		};
@@ -93,7 +92,7 @@ class ExportTask
 {
 	public static void run(	final String title,
 				final Exporter exporter,
-				final CyNetworkView view,
+				final GraphView view,
 				final FileOutputStream stream)
 	{
 		// Create the Task
@@ -159,7 +158,7 @@ abstract class ExportFilter extends CyFileFilter
 		return getDescription();
 	}
 
-	public abstract void export(CyNetworkView view, FileOutputStream stream);
+	public abstract void export(GraphView view, FileOutputStream stream);
 }
 
 class PDFExportFilter extends ExportFilter
@@ -168,7 +167,7 @@ class PDFExportFilter extends ExportFilter
 	{
 		super("pdf", "PDF");
 	}
-	public void export(final CyNetworkView view, final FileOutputStream stream)
+	public void export(final GraphView view, final FileOutputStream stream)
 	{
 		PDFExporter exporter = new PDFExporter();
 		ExportTask.run("Exporting to PDF", exporter, view, stream);
@@ -185,10 +184,9 @@ class BitmapExportFilter extends ExportFilter
 		this.extension = extension;
 	}
 
-	public void export(final CyNetworkView view, final FileOutputStream stream)
+	public void export(final GraphView view, final FileOutputStream stream)
 	{
-		final InternalFrameComponent ifc = Cytoscape.getDesktop().getNetworkViewManager().getInternalFrameComponent(view);
-		final ExportBitmapOptionsDialog dialog = new ExportBitmapOptionsDialog(ifc.getWidth(), ifc.getHeight());
+		final ExportBitmapOptionsDialog dialog = new ExportBitmapOptionsDialog(view.getComponent().getWidth(), view.getComponent().getHeight());
 		ActionListener listener = new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -210,7 +208,7 @@ class SVGExportFilter extends ExportFilter
 		super("svg", "SVG");
 	}
 
-	public void export(final CyNetworkView view, final FileOutputStream stream)
+	public void export(final GraphView view, final FileOutputStream stream)
 	{
 		SVGExporter exporter = new SVGExporter();
 		ExportTask.run("Exporting to SVG", exporter, view, stream);

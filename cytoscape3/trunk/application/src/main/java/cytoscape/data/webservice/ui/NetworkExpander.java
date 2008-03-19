@@ -1,7 +1,7 @@
 package cytoscape.data.webservice.ui;
 
 import org.cytoscape.Node;
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
@@ -31,7 +31,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import ding.view.NodeContextMenuListener;
+import org.cytoscape.view.NodeContextMenuListener;
 
 public class NetworkExpander implements PropertyChangeListener, NodeContextMenuListener {
 	
@@ -196,8 +196,7 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 			
 			String curNetID = Cytoscape.getCurrentNetwork().getIdentifier();
 			
-			Cytoscape.getNetworkView(curNetID).setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
-			Cytoscape.getNetworkView(curNetID).redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getNetworkView(curNetID));
 			
 		}
 

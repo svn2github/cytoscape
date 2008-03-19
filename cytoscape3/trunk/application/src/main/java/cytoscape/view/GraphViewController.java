@@ -46,7 +46,7 @@ import org.cytoscape.GraphPerspective;
 import org.cytoscape.GraphPerspectiveChangeEvent;
 import org.cytoscape.GraphPerspectiveChangeListener;
 
-import giny.view.GraphView;
+import org.cytoscape.view.GraphView;
 
 import java.util.*;
 
@@ -73,9 +73,9 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 
 	/**
 	 * Constructor, assigns <code>GraphViewController.DEFAULT_GRAPH_VIEW_HANDLER</code>
-	 * to all the given <code>giny.view.GraphView</code> objects in the array.
+	 * to all the given <code>org.cytoscape.view.GraphView</code> objects in the array.
 	 *
-	 * @param graph_views an array of <code>giny.view.GraphView</code> objects
+	 * @param graph_views an array of <code>org.cytoscape.view.GraphView</code> objects
 	 * that this <code>GraphViewController</code> will keep synchronized to
 	 * their corresponding <code>cytoscape.GraphPerspective</code> objects
 	 * available through their <code>getGraphPerspective()</code> method.
@@ -88,16 +88,16 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 
 	/**
 	 * Constructor, specifies the <code>cytoscape.view.GraphViewHandler</code> objects
-	 * for the given <code>giny.view.GraphView</code> objects in the arrays.
+	 * for the given <code>org.cytoscape.view.GraphView</code> objects in the arrays.
 	 *
-	 * @param graph_views an array of <code>giny.view.GraphView</code> objects
+	 * @param graph_views an array of <code>org.cytoscape.view.GraphView</code> objects
 	 * that this <code>GraphViewController</code> will keep synchronized to
 	 * their corresponding <code>cytoscape.GraphPerspective</code> objects
 	 * available through their <code>getGraphPerspective()</code> method
-	 * @param gv_to_handler a <code>Map</code> with <code>giny.view.GraphView</code>
+	 * @param gv_to_handler a <code>Map</code> with <code>org.cytoscape.view.GraphView</code>
 	 * objects as keys, and <code>cytoscape.view.GraphViewHandler</code> objects
 	 * as values, two or more different keys can share the same value, the
-	 * DEFAULT_GRAPH_VIEW_HANDLER will be set for <code>giny.view.GraphView</code>
+	 * DEFAULT_GRAPH_VIEW_HANDLER will be set for <code>org.cytoscape.view.GraphView</code>
 	 * objects that are not keys in the given <code>Map</code>
 	 */
 	public GraphViewController(GraphView[] graph_views, Map gv_to_handler) {
@@ -107,14 +107,14 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //GraphViewController
 
 	/**
-	 * Sets the array of <code>giny.view.GraphView</code> objects
+	 * Sets the array of <code>org.cytoscape.view.GraphView</code> objects
 	 * that this <code>GraphViewController</code> will keep synchronized with
 	 * their corresponding <code>cytoscape.GraphPerspective</code> objects
 	 * available through their <code>getGraphPerspective()</code> method, the
 	 * DEFAULT_GRAPH_VIEW_HANDLER is set for all the views. Any previous <code>GraphView</code>
 	 * objects are removed from this listener
 	 *
-	 * @param graph_views an array of <code>giny.view.GraphView</code> objects
+	 * @param graph_views an array of <code>org.cytoscape.view.GraphView</code> objects
 	 */
 	public void setGraphViews(GraphView[] graph_views) {
 		removeAllGraphViews();
@@ -128,7 +128,7 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //setGraphViews
 
 	/**
-	* Sets the array of <code>giny.view.GraphView</code> objects
+	* Sets the array of <code>org.cytoscape.view.GraphView</code> objects
 	* that this <code>GraphViewController</code> will keep synchronized with
 	* their corresponding <code>cytoscape.GraphPerspective</code> objects
 	* available through their <code>getGraphPerspective()</code> method, the
@@ -138,8 +138,8 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	* then DEFAULT_GRAPH_VIEW_HANDLER is used. Any previous <code>GraphView</code>
 	* objects are removed from this listener
 	*
-	* @param graph_views an array of <code>giny.view.GraphView</code> objects
-	* @param gv_to_handler a <code>Map</code> with <code>giny.view.GraphView</code>
+	* @param graph_views an array of <code>org.cytoscape.view.GraphView</code> objects
+	* @param gv_to_handler a <code>Map</code> with <code>org.cytoscape.view.GraphView</code>
 	* for keys and <code>cytoscape.view.GraphViewHandler</code> objects for values
 	*/
 	public void setGraphViews(GraphView[] graph_views, Map gv_to_handler) {
@@ -161,12 +161,12 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //setGraphViews
 
 	/**
-	 * Gets an array of <code>giny.view.GraphView</code> objects
+	 * Gets an array of <code>org.cytoscape.view.GraphView</code> objects
 	 * that this <code>GraphViewController</code> will keep synchronized with
 	 * their corresponding <code>cytoscape.GraphPerspective</code> objects
 	 * available through their <code>getGraphPerspective()</code> method
 	 *
-	 * @return an array of <code>giny.view.GraphView</code> objects
+	 * @return an array of <code>org.cytoscape.view.GraphView</code> objects
 	 */
 	public GraphView[] getGraphViews() {
 		Set<GraphView> keySet = this.graphViewToHandler.keySet();
@@ -175,12 +175,12 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //getGraphViews
 
 	/**
-	 * Gets a <code>Map</code> with <code>giny.view.GraphView</code>
+	 * Gets a <code>Map</code> with <code>org.cytoscape.view.GraphView</code>
 	 * objects as keys, and <code>cytoscape.view.GraphViewHandler</code> objects
 	 * as values, two or more different keys can share the same value.
 	 *
 	 * @return the <code>Map</code> that specifies what <code>cytoscape.view.GraphViewHandler</code>
-	 * objects handle the <code>giny.view.GraphView</code> objects in this controller.
+	 * objects handle the <code>org.cytoscape.view.GraphView</code> objects in this controller.
 	 */
 	public Map getGraphViewHandlersMap() {
 		return this.graphViewToHandler;
@@ -188,11 +188,11 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 
 	/**
 	 * Gets the <code>cytoscape.view.GraphViewHandler</code> for the given
-	 * <code>giny.view.GraphView</code>
+	 * <code>org.cytoscape.view.GraphView</code>
 	 *
 	 * @return a <code>cytoscape.view.GraphViewHandler</code>, or null if this
 	 * <code>GraphViewController</code> does not control the given
-	 * <code>giny.view.GraphView</code>
+	 * <code>org.cytoscape.view.GraphView</code>
 	 */
 	public GraphViewHandler getGraphViewHandler(GraphView graph_view) {
 		return (GraphViewHandler) this.graphViewToHandler.get(graph_view);
@@ -200,12 +200,12 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 
 	/**
 	 * If this <code>GraphViewController</code> contains the given
-	 * <code>giny.view.GraphView</code>, then it is removed from it, and it no longer listens
-	 * for change events from the removed <code>giny.view.GraphView</code>'s
+	 * <code>org.cytoscape.view.GraphView</code>, then it is removed from it, and it no longer listens
+	 * for change events from the removed <code>org.cytoscape.view.GraphView</code>'s
 	 * <code>cytoscape.GraphPerspective</code>.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> that will be removed
-	 * @return the removed  <code>giny.view.GraphView</code>'s
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> that will be removed
+	 * @return the removed  <code>org.cytoscape.view.GraphView</code>'s
 	 * <code>cytoscape.view.GraphViewHandler</code>, or null if it is not in this
 	 * <code>GraphViewController</code>
 	 */
@@ -224,12 +224,12 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //removeGraphView
 
 	/**
-	 * Adds to the set of <code>giny.view.GraphView</code> objects that this
+	 * Adds to the set of <code>org.cytoscape.view.GraphView</code> objects that this
 	 * <code>GraphViewController</code> keeps synchronized with their
 	 * <code>cytoscape.GraphPerspective</code> objects.
-	 * DEFAULT_GRAPH_VIEW_HANDLER is used for the given <code>giny.view.GraphView</code>
+	 * DEFAULT_GRAPH_VIEW_HANDLER is used for the given <code>org.cytoscape.view.GraphView</code>
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> to be added
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> to be added
 	 * @return true if succesfully added, false otherwise (if it was already added)
 	 * @see GraphViewController.setGraphViewHandler
 	 */
@@ -248,12 +248,12 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //addGraphView
 
 	/**
-	 * Adds to the set of <code>giny.view.GraphView</code> objects that this
+	 * Adds to the set of <code>org.cytoscape.view.GraphView</code> objects that this
 	 * <code>GraphViewController</code> keeps synchronized to their
 	 * <code>cytoscape.GraphPerspective</code> objects. The given <code>GraphViewHandler</code>
-	 * is used for the given <code>giny.view.GraphView</code> object.
+	 * is used for the given <code>org.cytoscape.view.GraphView</code> object.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> to be added
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> to be added
 	 * @param gv_to_handler the <code>GraphViewHandler</code> that will handle
 	 * change events from <code>graph_view</code>'s <code>cytoscape.GraphPerspective</code> member
 	 * @return true if succesfully added, false otherwise (if <code>graph_view</code> is
@@ -275,11 +275,11 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //addGraphView
 
 	/**
-	 * If the given <code>giny.view.GraphView</code> object belongs to this
+	 * If the given <code>org.cytoscape.view.GraphView</code> object belongs to this
 	 * <code>GraphViewController</code>, then its <code>GraphViewHandler</code>
 	 * is set to the given one.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> to be updated
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> to be updated
 	 * @param gv_handler the <code>GraphViewHandler</code> that will handle
 	 * change events from <code>graph_view</code>'s <code>cytoscape.GraphPerspective</code>
 	 * @return true if the method was successful, false otherwise (if <code>graph_view</code>
@@ -296,13 +296,13 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //setGraphViewHandler
 
 	/**
-	 * Removes all of the current <code>giny.view.GraphView</code> objects that this
+	 * Removes all of the current <code>org.cytoscape.view.GraphView</code> objects that this
 	 * <code>GraphViewController</code> keeps synchronized to their corresponding
 	 * <code>cytoscape.GraphPerspective</code> members. This <code>GraphViewController</code>
 	 * will no longer receive events from <code>cytoscape.GraphPerspective</code>s after
 	 * this call.
 	 *
-	 * @return the array of removed <code>giny.view.GraphView</code> objects
+	 * @return the array of removed <code>org.cytoscape.view.GraphView</code> objects
 	 */
 	public GraphView[] removeAllGraphViews() {
 		GraphView[] gViews = getGraphViews();
@@ -319,11 +319,11 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	} //removeAllGraphViews
 
 	/**
-	 * Whether or not the given <code>giny.view.GraphView</code> is kept synchronized
+	 * Whether or not the given <code>org.cytoscape.view.GraphView</code> is kept synchronized
 	 * with its <code>cytoscape.GraphPerspective</code> member by this
 	 * <code>GraphViewController</code>.
 	 *
-	 * @param graph_view the <code>giny.view.GraphView</code> object to test
+	 * @param graph_view the <code>org.cytoscape.view.GraphView</code> object to test
 	 */
 	public boolean containsGraphView(GraphView graph_view) {
 		return this.graphViewToHandler.containsKey(graph_view);
@@ -348,7 +348,7 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	/**
 	 * It temporarily removes this <code>GraphViewController</code> listener
 	 * from the <code>cytoscape.GraphPerspective</code> object that the given
-	 * <code>giny.view.GraphView</code> views.
+	 * <code>org.cytoscape.view.GraphView</code> views.
 	 *
 	 * @see #resumeListening(GraphView)
 	 */
@@ -382,7 +382,7 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 
 	/**
 	 * It adds this <code>GraphViewController</code> listener to the
-	 * <code>cytoscape.GraphPerspective</code> of the given <code>giny.view.GraphView</code>
+	 * <code>cytoscape.GraphPerspective</code> of the given <code>org.cytoscape.view.GraphView</code>
 	 * that was temporarily "removed" by a call to <code>stopListening(GraphView)</code>, it updates
 	 * <code>graph_view</code> so that it's synchronized to its <code>GraphPerspective</code>
 	 * due to changes that may have occured while not listening.
@@ -399,7 +399,7 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 
 	/**
 	 * Invoked when a graph change to any of the <code>cytoscape.GraphPerspective</code>
-	 * objects accessed through <code>giny.view.GraphView.getGraphPerspective()</code> of
+	 * objects accessed through <code>org.cytoscape.view.GraphView.getGraphPerspective()</code> of
 	 * this object's graphViews is made.
 	 *
 	 * @param event the event that was generated, contains the source

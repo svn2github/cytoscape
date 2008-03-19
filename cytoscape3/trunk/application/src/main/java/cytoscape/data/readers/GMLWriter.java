@@ -41,13 +41,13 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.Semantics;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -92,7 +92,7 @@ public class GMLWriter {
 	 * create all relevant key-value pairs as well then.
 	 */
 	@SuppressWarnings("unchecked")  // for the casts of KeyValue.value
-	public void writeGML(final GraphPerspective network, final CyNetworkView view, final List<KeyValue> oldList) {
+	public void writeGML(final GraphPerspective network, final GraphView view, final List<KeyValue> oldList) {
 		/*
 		 * Initially all the nodes and edges have not been seen
 		 */
@@ -189,7 +189,7 @@ public class GMLWriter {
 	 * Update the list associated with a graph key
 	 */
 	 @SuppressWarnings("unchecked") // for the casts of KeyValue.value
-	private void writeGraph(final GraphPerspective network, final CyNetworkView view, final List<KeyValue> oldList) {
+	private void writeGraph(final GraphPerspective network, final GraphView view, final List<KeyValue> oldList) {
 		for (Iterator<KeyValue> it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = it.next();
 
@@ -215,7 +215,7 @@ public class GMLWriter {
 	 * Update the list associated with a node key
 	 */
 	@SuppressWarnings("unchecked") // for the cast of KeyValue.value
-	private boolean writeGraphNode(final GraphPerspective network, final CyNetworkView view,
+	private boolean writeGraphNode(final GraphPerspective network, final GraphView view,
 	                               final List<KeyValue> oldList) {
 		/*
 		 * We expect a list associated with node key to potentially have a
@@ -300,7 +300,7 @@ public class GMLWriter {
 	 * Update the list associated with an edge key
 	 */
 	@SuppressWarnings("unchecked") // for the cast of KeyValue.value
-	private boolean writeGraphEdge(final GraphPerspective network, final CyNetworkView view,
+	private boolean writeGraphEdge(final GraphPerspective network, final GraphView view,
 	                               final List<KeyValue> oldList) {
 		/*
 		 * An edge key will definitely have a root_index, labelPair (we enforce

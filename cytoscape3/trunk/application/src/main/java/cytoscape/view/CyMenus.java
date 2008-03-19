@@ -54,8 +54,8 @@ import cytoscape.util.CytoscapeToolBar;
 
 import cytoscape.view.cytopanels.CytoPanelName;
 
-import giny.view.GraphViewChangeEvent;
-import giny.view.GraphViewChangeListener;
+import org.cytoscape.view.GraphViewChangeEvent;
+import org.cytoscape.view.GraphViewChangeListener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -430,7 +430,6 @@ public class CyMenus implements GraphViewChangeListener {
 		menuBar.getMenu("View").add(new JSeparator());
 
 		addAction(new SetVisualPropertiesAction());
-		//addAction(new ToggleVisualMapperAction());
 
 		//
 		// Layout menu

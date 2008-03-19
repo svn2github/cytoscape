@@ -42,7 +42,7 @@ import cytoscape.visual.parsers.*;
 
 import javax.swing.Icon;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 import java.util.Properties;
 
 

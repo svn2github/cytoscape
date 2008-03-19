@@ -37,9 +37,9 @@ package cytoscape.visual;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
-import ding.view.DGraphView;
+import org.cytoscape.view.ShapeFactory;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Shape;
 
@@ -72,7 +72,7 @@ public enum NodeShape {
 	private int ginyShape;
 	private String name;
 	private boolean isSupported;
-	private static Map<Integer, Shape> nodeShapes = DGraphView.getNodeShapes();
+	private static Map<Integer, Shape> nodeShapes = ShapeFactory.getNodeShapes();
 
 	private NodeShape(int ginyShape, String name, boolean isSupported) {
 		this.ginyShape = ginyShape;

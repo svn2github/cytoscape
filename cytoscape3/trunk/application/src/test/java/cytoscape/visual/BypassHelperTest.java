@@ -41,7 +41,7 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 
-import giny.view.Label;
+import org.cytoscape.view.Label;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

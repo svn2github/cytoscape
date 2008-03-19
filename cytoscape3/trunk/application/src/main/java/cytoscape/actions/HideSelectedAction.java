@@ -48,7 +48,7 @@ import cytoscape.util.CytoscapeAction;
 
 import org.cytoscape.*;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 //-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;

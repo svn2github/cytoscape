@@ -460,8 +460,9 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 				}
 
 				Cytoscape.getVisualMappingManager().setVisualStyle(style);
-				Cytoscape.getNetworkView(cyNetwork.getIdentifier()).setVisualStyle(style.getName());
-				Cytoscape.getNetworkView(cyNetwork.getIdentifier()).redrawGraph(false, true);
+				Cytoscape.getVisualMappingManager().setVisualStyleForView(
+						Cytoscape.getNetworkView(cyNetwork.getIdentifier()), style);
+				Cytoscape.redrawGraph(Cytoscape.getNetworkView(cyNetwork.getIdentifier()));
 			}
 		}
 	}

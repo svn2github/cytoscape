@@ -38,9 +38,9 @@ package cytoscape.data.readers;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
-import giny.view.EdgeView;
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -84,12 +84,11 @@ import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualMappingManager;
-import ding.view.DGraphView;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -349,7 +348,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 */
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
-			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+			public void doLayout(GraphView networkView, TaskMonitor monitor) {
 				layout(networkView);
 			}
 		};
@@ -360,7 +359,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @param myView the view of the network we want to layout
 	 */
-	private void layout(CyNetworkView myView) {
+	private void layout(GraphView myView) {
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}
@@ -651,7 +650,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		parser.setMetaData(network);
 
 		// Get the view.  Note that for large networks this might be the null view
-		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		GraphView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		// Now that we have a network, handle the groups
 		// This is done here rather than in layout because layout is
@@ -704,7 +703,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		final Point2D center = parser.getGraphViewCenter();
 
 		if (center != null)
-			((DGraphView) view).setCenter(center.getX(), center.getY());
+			view.setCenter(center.getX(), center.getY());
 
 		Cytoscape.getVisualMappingManager().applyAppearances();
 	}

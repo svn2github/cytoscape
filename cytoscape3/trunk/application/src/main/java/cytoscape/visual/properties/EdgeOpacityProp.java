@@ -36,7 +36,7 @@
 
 package cytoscape.visual.properties;
 
-import giny.view.EdgeView;
+import org.cytoscape.view.EdgeView;
 
 import java.awt.Color;
 import java.awt.Component;

@@ -74,7 +74,7 @@ import cytoscape.util.BookmarksUtil;
 
 import cytoscape.util.swing.JTreeTable;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 
@@ -83,8 +83,8 @@ import cytoscape.visual.CalculatorIO;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Component;
 
@@ -209,7 +209,7 @@ public class CytoscapeSessionWriter {
 	private Plugins plugins;
 	private String sessionDirName;
 	private String sessionDir;
-	private Map<String,CyNetworkView> viewMap = Cytoscape.getNetworkViewMap();
+	private Map<String,GraphView> viewMap = Cytoscape.getNetworkViewMap();
 	private ZipOutputStream zos; 
 
 	/**
@@ -375,7 +375,7 @@ public class CytoscapeSessionWriter {
 	    throws IOException, JAXBException, URISyntaxException {
 
 		String xgmmlFile = getValidFileName( network.getTitle() + XGMML_EXT );
-		CyNetworkView view = Cytoscape.getNetworkView(network.getIdentifier());
+		GraphView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
 		Writer writer = new OutputStreamWriter(zos);
@@ -521,13 +521,13 @@ public class CytoscapeSessionWriter {
 
 		GraphPerspective curNet = Cytoscape.getNetwork((String) networkMap.get(node.getUserObject()
 		                                                                    .toString()));
-		CyNetworkView curView = viewMap.get(curNet.getIdentifier());
+		GraphView curView = viewMap.get(curNet.getIdentifier());
 
 		if (!node.getUserObject().toString().equals("Network Root")) {
 			String visualStyleName = null;
 
 			if (curView != null) {
-				VisualStyle curVS = curView.getVisualStyle();
+				VisualStyle curVS = Cytoscape.getVisualMappingManager().getVisualStyleForView( curView );
 
 				if (curVS != null) {
 					visualStyleName = curVS.getName();
@@ -582,13 +582,13 @@ public class CytoscapeSessionWriter {
 				leaf.setFilename(getValidFileName(childFileName));
 				leaf.setId(child.getUserObject().toString());
 
-				CyNetworkView leafView = Cytoscape.getNetworkView((String) networkMap.get(child.getUserObject()
+				GraphView leafView = Cytoscape.getNetworkView((String) networkMap.get(child.getUserObject()
 				                                                                               .toString()));
 
 				String leafVisualStyleName = null;
 
 				if (leafView != Cytoscape.getNullNetworkView()) {
-					VisualStyle leafVS = leafView.getVisualStyle();
+					VisualStyle leafVS = Cytoscape.getVisualMappingManager().getVisualStyleForView( leafView );
 
 					if (leafVS != null) {
 						leafVisualStyleName = leafVS.getName();
@@ -608,7 +608,7 @@ public class CytoscapeSessionWriter {
 				leaf.setParent(tempParent);
 
 				GraphPerspective targetNetwork = Cytoscape.getNetwork(targetID);
-				CyNetworkView curNetworkView = Cytoscape.getNetworkView(targetID);
+				GraphView curNetworkView = Cytoscape.getNetworkView(targetID);
 
 				if (curNetworkView == Cytoscape.getNullNetworkView()) {
 					leaf.setViewAvailable(false);
@@ -689,7 +689,7 @@ public class CytoscapeSessionWriter {
 		}
 
 		// Extract hidden nodes and edges
-		CyNetworkView curNetworkView = Cytoscape.getNetworkView(targetID);
+		GraphView curNetworkView = Cytoscape.getNetworkView(targetID);
 
 		if (curNetworkView != Cytoscape.getNullNetworkView()) {
 			HiddenNodes hn = (HiddenNodes) getHiddenObjects(NODE, curNetworkView);
@@ -717,7 +717,7 @@ public class CytoscapeSessionWriter {
 	 * @return JAXB object (HiddenNodes or HiddenEdges)
 	 * @throws JAXBException
 	 */
-	private Object getHiddenObjects(int type, CyNetworkView view) throws JAXBException {
+	private Object getHiddenObjects(int type, GraphView view) throws JAXBException {
 		// List-up all hidden nodes
 		if (type == NODE) {
 			HiddenNodes hn = factory.createHiddenNodes();

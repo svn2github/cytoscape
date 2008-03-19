@@ -40,9 +40,9 @@ import cytoscape.task.TaskMonitor;
 
 import cytoscape.util.*;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import java.util.List;
 
@@ -63,18 +63,18 @@ public interface CyLayoutAlgorithm {
 	/**
 	 * This method performs the layout on the current network.
 	 *
-	 * @param networkView the CyNetworkView on which to perform the layout
+	 * @param networkView the GraphView on which to perform the layout
 	 */
-	public void doLayout(CyNetworkView networkView);
+	public void doLayout(GraphView networkView);
 
 	/**
 	 * This method performs the layout on the current network, but assumes
 	 * that the layout is part of an existing monitored task
 	 *
-	 * @param networkView the CyNetworkView on which to perform the layout
+	 * @param networkView the GraphView on which to perform the layout
 	 * @param monitor the task monitor to use
 	 */
-	public void doLayout(CyNetworkView networkView, TaskMonitor monitor);
+	public void doLayout(GraphView networkView, TaskMonitor monitor);
 
 	/**
 	 * Tests to see if this layout supports doing a layout on a subset of the

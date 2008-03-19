@@ -55,7 +55,7 @@ import cytoscape.util.SwingWorker;
 
 import cytoscape.util.swing.DropDownMenuButton;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 
@@ -96,9 +96,6 @@ import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
 import cytoscape.visual.ui.icon.ArrowIcon;
 import cytoscape.visual.ui.icon.NodeIcon;
 import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import ding.view.DGraphView;
-
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -381,8 +378,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final String focus = vmm.getNetwork().getIdentifier();
 
 		createDefaultImage(targetName,
-		                   (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(targetName))
-		                   .getView(), defaultAppearencePanel.getSize());
+		                   ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(targetName)).getView(),
+						   defaultAppearencePanel.getSize());
 		setDefaultPanel(defaultImageManager.get(targetName));
 	}
 
@@ -441,7 +438,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						switchNodeSizeLock(false);
 					}
 
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 				}
 			});
 
@@ -859,10 +856,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		lastVSName = vsName;
 
-		Cytoscape.getCurrentNetworkView().setVisualStyle(vsName);
+		vmm.setVisualStyleForView( Cytoscape.getCurrentNetworkView(), vmm.getVisualStyle(vsName) );
 
 		if (redraw) {
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 		}
 
 		/*
@@ -872,9 +869,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		if (defImg == null) {
 			createDefaultImage(vsName,
-			                   (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      .getDefaultView(vsName))
-			                   .getView(), defaultAppearencePanel.getSize());
+			                    ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(vsName)).getView()
+								, defaultAppearencePanel.getSize());
 			defImg = defaultImageManager.get(vsName);
 		}
 
@@ -907,16 +903,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		JPanel defPanel;
 
 		final Dimension panelSize = defaultAppearencePanel.getSize();
-		DGraphView view;
+		GraphView view;
 
-		CyNetworkView oldView = vmm.getNetworkView();
+		GraphView oldView = vmm.getNetworkView();
 
 		Collections.sort(vsNames);
 		for (String name : vsNames) {
 			vsNameComboBox.addItem(name);
 
 			defPanel = DefaultAppearenceBuilder.getDefaultView(name);
-			view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
+			view = ((DefaultViewPanel) defPanel).getView();
 
 			if (view != null) {
 				System.out.println("Creating Default Image for " + name);
@@ -924,10 +920,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 		}
 		
-		// vmm.setNetworkView(oldView);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-
-		// Cytoscape.destroyNetwork(dummyNet);
 	}
 
 	/**
@@ -937,7 +930,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param view
 	 * @param size
 	 */
-	private void createDefaultImage(String vsName, DGraphView view, Dimension size) {
+	private void createDefaultImage(String vsName, GraphView view, Dimension size) {
 		defaultAppearencePanel.setLayout(new BorderLayout());
 
 		final Image image = view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9);
@@ -1805,9 +1798,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final String focus = vmm.getNetwork().getIdentifier();
 
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .showDialog(Cytoscape
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getDesktop());
-				createDefaultImage(targetName, (DGraphView) panel.getView(),
+				                                .showDialog(Cytoscape
+				                                .getDesktop());
+				createDefaultImage(targetName, panel.getView(),
 				                   defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(targetName));
 
@@ -1952,15 +1945,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		           && (e.getSource().getClass() == NetworkPanel.class)) {
-			final VisualStyle vs = vmm.getNetworkView().getVisualStyle();
+			final VisualStyle vs = vmm.getVisualStyleForView( vmm.getNetworkView() );
 
 			if (vs != null) {
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 
 				if (vs.getName().equals(vsNameComboBox.getSelectedItem())) {
 					// Do nothing here. Redaraw will be handled by Desktop.
-					// Cytoscape.getCurrentNetworkView().redrawGraph(false,
-					// true);
 				} else {
 					switchVS(vs.getName(), false);
 
@@ -2181,7 +2172,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			// Finally, update graph view and focus.
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 			return;
 		}
@@ -2281,7 +2272,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		visualPropertySheetPanel.repaint();
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 	}
 
 	/**
@@ -2295,7 +2286,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .getParentProperty())
+		                                .getParentProperty())
 		                                .getHiddenObject();
 		final String newCalcName = vmm.getVisualStyle().getName() + "-" + type.getName() + "-"
 		                           + newMapName;
@@ -2368,8 +2359,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
 
-		// vmm.getNetworkView().redrawGraph(false, true);
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 		parent = null;
 	}
 
@@ -2531,12 +2521,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vmm.getCalculatorCatalog().addVisualStyle(newStyle);
 			// Apply the new style
 			vmm.setVisualStyle(newStyle);
-			Cytoscape.getCurrentNetworkView().setVisualStyle(newStyle.getName());
+			vmm.setVisualStyleForView(Cytoscape.getCurrentNetworkView(), newStyle);
 
 			removeMapping(dummy.getVisualPropertyType());
 
 			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(name);
-			final DGraphView view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
+			final GraphView view = ((DefaultViewPanel) defPanel).getView();
 			final Dimension panelSize = defaultAppearencePanel.getSize();
 
 			if (view != null) {
@@ -2546,7 +2536,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-			//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 			switchVS(name);
 		}
 	}
@@ -2624,7 +2613,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vmm.getCalculatorCatalog().addVisualStyle(currentStyle);
 
 			vmm.setVisualStyle(currentStyle);
-			vmm.getNetworkView().setVisualStyle(name);
+			vmm.setVisualStyleForView(vmm.getNetworkView(), currentStyle);
 
 			/*
 			 * Update combo box and
@@ -2678,9 +2667,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				propertyMap.remove(styleName);
 
 				vmm.setVisualStyle(currentStyle);
-				vmm.getNetworkView().setVisualStyle(currentStyle.getName());
-				// vmm.getNetworkView().redrawGraph(false, true);
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				vmm.setVisualStyleForView(vmm.getNetworkView(), currentStyle);
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 			}
 		}
 	}
@@ -2710,7 +2698,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vmm.setVisualStyle(clone);
 
 			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(newName);
-			final DGraphView view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
+			final GraphView view = ((DefaultViewPanel) defPanel).getView();
 			final Dimension panelSize = defaultAppearencePanel.getSize();
 
 			if (view != null) {
@@ -2765,8 +2753,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						vmm.getVisualStyle().getEdgeAppearanceCalculator().removeCalculator(type);
 					}
 
-					// vmm.getNetworkView().redrawGraph(false, true);
-					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 					/*
 					 * Finally, move the visual property to "unused list"
@@ -2798,7 +2785,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vmm.getVisualStyle().getEdgeAppearanceCalculator().removeCalculator(type);
 		}
 
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 		final Property[] props = visualPropertySheetPanel.getProperties();
 		Property toBeRemoved = null;
@@ -2926,7 +2913,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		table.repaint();
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 	}
 
 	/*
@@ -3076,7 +3063,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm.putAll(valueMap);
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 				visualPropertySheetPanel.removeProperty(prop);
 
@@ -3183,7 +3170,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				dm.putAll(valueMap);
 
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 				visualPropertySheetPanel.removeProperty(prop);
 
@@ -3311,10 +3298,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 							attrSet1.add(((Node) node).getIdentifier());
 						}
 
-						CyNetworkView net = Cytoscape.getCurrentNetworkView();
+						GraphView net = Cytoscape.getCurrentNetworkView();
 						String text;
 
-						for (Object node : net.getNetwork().nodesList()) {
+						for (Object node : net.getGraphPerspective().nodesList()) {
 							text = net.getNodeView((Node) node).getLabel().getText();
 							strLen = text.length();
 
@@ -3402,10 +3389,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 							attrSet1.add(((Node) node).getIdentifier());
 						}
 
-						CyNetworkView net = Cytoscape.getCurrentNetworkView();
+						GraphView net = Cytoscape.getCurrentNetworkView();
 						String text;
 
-						for (Object node : net.getNetwork().nodesList()) {
+						for (Object node : net.getGraphPerspective().nodesList()) {
 							text = net.getNodeView((Node) node).getLabel().getText();
 							strLen = text.length();
 
@@ -3438,7 +3425,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				wm.putAll(valueMap);
 
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 				visualPropertySheetPanel.removeProperty(prop);
 
@@ -3548,7 +3535,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm.putAll(valueMap);
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-				Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 				visualPropertySheetPanel.removeProperty(prop);
 
@@ -3660,9 +3647,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		List<? extends GraphObject> obj;
 
 		if (nOre == ObjectMapping.NODE_MAPPING) {
-			obj = Cytoscape.getCurrentNetworkView().getNetwork().nodesList();
+			obj = Cytoscape.getCurrentNetworkView().getGraphPerspective().nodesList();
 		} else {
-			obj = Cytoscape.getCurrentNetworkView().getNetwork().edgesList();
+			obj = Cytoscape.getCurrentNetworkView().getGraphPerspective().edgesList();
 		}
 
 		for (GraphObject o : obj) {
@@ -3682,7 +3669,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	public void stateChanged(ChangeEvent e) {
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
 		final String currentName = vmm.getVisualStyle().getName();
-		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
+		final GraphView curView = Cytoscape.getCurrentNetworkView();
 
 		System.out.println("Got VMM Change event.  Cur VS in VMM: " + vmm.getVisualStyle().getName());
 		
@@ -3703,7 +3690,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	
 	private void syncStyleBox() {
 		
-		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
+		final GraphView curView = Cytoscape.getCurrentNetworkView();
 		
 		String styleName;
 		List<String> namesInBox = new ArrayList<String>();
@@ -3728,31 +3715,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		switchVS(vmm.getVisualStyle().getName());
 		
-		//vsNameComboBox.setSelectedItem(vmm.getVisualStyle().getName());
-		
-		// Sync style and selected item.
-		
-//		if(curView != null && curView.equals(Cytoscape.getNullNetworkView()) == false) {
-//			
-//			// Get visual style name associated with the current network view.
-//			String curNetVSName = curView.getVisualStyle().getName();
-//			
-//			if(curNetVSName.equals(vmm.getVisualStyle().getName()) == false) {
-//				vmm.removeChangeListener(this);
-//				vmm.setVisualStyle(curView.getVisualStyle());
-//				vmm.addChangeListener(this);
-//			}
-//			
-//			if(vsNameComboBox.getSelectedItem().toString().equals(curNetVSName) == false) {
-//				//vmm.setNetworkView(curView);
-//				//switchVS(curNetVSName);
-//			}
-//			
-//		}
-//		if(vmm.getVisualStyle().getName().equals(vsNameComboBox.getSelectedItem().toString()) == false) {
-//			vsNameComboBox.setSelectedItem(vmm.getVisualStyle().getName());
-//			switchVS(vmm.getVisualStyle().getName());
-//		}
 	}
 
 	// return true iff 'match' is found as a name within the
