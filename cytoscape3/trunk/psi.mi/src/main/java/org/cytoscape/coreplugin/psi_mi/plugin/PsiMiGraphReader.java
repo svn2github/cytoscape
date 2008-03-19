@@ -42,8 +42,8 @@ import cytoscape.data.readers.AbstractGraphReader;
 
 import org.cytoscape.RootGraph;
 
-import giny.view.GraphView;
-import giny.view.NodeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
