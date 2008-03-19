@@ -159,6 +159,8 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		// Sanity check all of our settings
 		System.out.println("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
 		// OK, go for it!
+		// Create the data matrix
+		// Cluster!
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
@@ -175,7 +177,6 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	private String[] getAllAttributes() {
 		// Create the list by combining node and edge attributes into a single list
 		List<String> attributeList = new ArrayList<String>();
-		attributeList.add("-- select attribute --");
 		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
 		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
 		return attributeList.toArray(attributeArray);

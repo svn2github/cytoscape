@@ -39,20 +39,30 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
-import java.awt.*;
-import java.io.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.util.ListIterator;
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 // giny imports
+import ding.view.DGraphView;
 import giny.view.NodeView;
-import ding.view.*;
+import ding.view.NodeContextMenuListener;
 
 // Cytoscape imports
-import cytoscape.*;
+import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CytoscapeDesktop;

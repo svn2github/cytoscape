@@ -13,10 +13,10 @@ pluginName=dynamicXpr
 pluginDescription=A Plug-In that colors nodes according to their expression across many conditions, as in a movie
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.1
+pluginVersion=1.2
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.5
+cytoscapeVersion=2.6
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Analysis
@@ -31,4 +31,4 @@ pluginCategory=Analysis
 pluginAuthorsIntsitutions=Iliana Avila-Compillo:ISB;John "Scooter" Morris:UCSF
 
 # Date this plugin/plugin version was released
-releaseDate=July 7, 2007
+releaseDate=March 18, 2008

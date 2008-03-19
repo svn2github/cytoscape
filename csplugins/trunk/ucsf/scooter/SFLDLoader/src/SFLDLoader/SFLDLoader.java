@@ -70,8 +70,8 @@ public class SFLDLoader extends CytoscapePlugin {
 	final static double VERSION = 1.0;
 	static JDialog sfldQueryDialog = null;
 	static List superFamilies = null;
-	// public final String URLBase = "http://sfldtest.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
 	public final String URLBase = "http://sfld.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
+	// public final String URLBase = "http://sfldtest.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
 	static JMenuItem loadMenu = null;
 
   /**
