@@ -1,1 +1,0 @@
-Copy directories cytoscape-temp and cytoscape-sun to your local .m2/repository directory before running "maven install" on the parent pom.
