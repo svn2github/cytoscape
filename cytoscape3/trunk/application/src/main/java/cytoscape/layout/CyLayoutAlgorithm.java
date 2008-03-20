@@ -38,10 +38,7 @@ package cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.util.*;
-
 import org.cytoscape.view.GraphView;
-
 import org.cytoscape.view.NodeView;
 
 import java.util.List;

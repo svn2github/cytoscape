@@ -45,8 +45,6 @@ import cytoscape.layout.AbstractLayout;
 
 import cytoscape.task.Task;
 
-import cytoscape.util.*;
-
 import org.cytoscape.view.GraphView;
 
 import org.cytoscape.*;

@@ -1,7 +1,6 @@
 // vim: set ts=2: */
 package cytoscape.layout;
 
-import cytoscape.CytoscapeInit;
 import cytoscape.util.ModulePropertiesImpl;
 
 import java.awt.GridLayout;

@@ -37,14 +37,10 @@
 package cytoscape.layout;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
 
 import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.init.CyInitParams;
 
 import cytoscape.task.TaskMonitor;
-
-import cytoscape.util.*;
 
 import org.cytoscape.view.GraphView;
 

@@ -37,8 +37,6 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.init.CyInitParams;
 
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
