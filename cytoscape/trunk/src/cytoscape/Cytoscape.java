@@ -402,8 +402,9 @@ public abstract class Cytoscape {
 	/*
 	 * VMM should be tied to Cytoscape, not to Desktop. Developers should call
 	 * this from here.
+	 * Don't initialize this until it is to be used.
 	 */
-	protected static VisualMappingManager VMM = new VisualMappingManager(nullNetworkView);
+	protected static VisualMappingManager VMM = null; 
 
 	/**
 	 * @return a nullNetworkView object. This is NOT simply a null object.
@@ -524,6 +525,8 @@ public abstract class Cytoscape {
 	 * @return  DOCUMENT ME!
 	 */
 	public static VisualMappingManager getVisualMappingManager() {
+		if ( VMM == null )
+			VMM = new VisualMappingManager(nullNetworkView);
 		return VMM;
 	}
 
@@ -1668,8 +1671,8 @@ public abstract class Cytoscape {
 
 		if (vs != null) {
 			view.setVisualStyle(vs.getName());
-			VMM.setVisualStyle(vs);
-			VMM.setNetworkView(view);
+			getVisualMappingManager().setVisualStyle(vs);
+			getVisualMappingManager().setNetworkView(view);
 		}
 
 		if (layout == null) {
