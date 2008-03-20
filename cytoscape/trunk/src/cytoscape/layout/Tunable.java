@@ -554,7 +554,7 @@ public class Tunable {
 				String newString = "";
 				for (int i = 0; i < selVals.length; i++) {
 					newString += Integer.toString(selVals[i]);
-					if (i < selVals.length) newString+= ",";
+					if (i < selVals.length-1) newString+= ",";
 				}
 				newValue = (Object) newString;
 			} else {
