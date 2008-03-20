@@ -89,6 +89,15 @@
 		</repository>
 		
 		<repository>
+			<id>chianti</id>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<name>Cytoscape Internal Repository</name>
+			<url>http://chianti.ucsd.edu/maven2</url>
+		</repository>
+
+		<repository>
   		<id>maven2-repository.dev.java.net</id>
 			<snapshots>
 				<enabled>false</enabled>
