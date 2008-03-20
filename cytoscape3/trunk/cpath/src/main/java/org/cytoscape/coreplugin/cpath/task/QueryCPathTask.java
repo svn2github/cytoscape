@@ -41,7 +41,7 @@ import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.coreplugin.cpath.model.*;
 import org.cytoscape.coreplugin.cpath.protocol.CPathProtocol;
 import org.cytoscape.coreplugin.cpath.ui.Console;
@@ -201,7 +201,7 @@ public class QueryCPathTask implements Task {
 
         }
 
-        CyNetworkView networkView = createNetworkView(cyNetwork);
+        GraphView networkView = createNetworkView(cyNetwork);
         if (networkView != null) {
             CyLayoutAlgorithm layoutAlgorithm = graphReader.getLayoutAlgorithm();
             if (layoutAlgorithm != null) {
@@ -251,7 +251,7 @@ public class QueryCPathTask implements Task {
         }
     }
 
-    private CyNetworkView createNetworkView (GraphPerspective cyNetwork) {
+    private GraphView createNetworkView (GraphPerspective cyNetwork) {
         //  Conditionally Create a View, based on Number of Nodes.
         //  GetViewThreshold is settable by the End User.
         logToConsole("Total Number of Nodes in Network:  "
@@ -260,7 +260,7 @@ public class QueryCPathTask implements Task {
                 + cyNetwork.getEdgeCount());
         int threshold = Integer.parseInt(CytoscapeInit.getProperties().getProperty
                 ("viewThreshold", "5000"));
-        CyNetworkView view = null;
+        GraphView view = null;
         if (cyNetwork.getNodeCount() < threshold) {
             logToConsole("Your Network is Under "
                     + threshold
@@ -268,7 +268,7 @@ public class QueryCPathTask implements Task {
                     + "automatically created.");
             taskMonitor.setStatus("Creating Network View.  Please wait.");
             view = Cytoscape.createNetworkView(cyNetwork);
-            searchResponse.setCyNetworkView(view);
+            searchResponse.setGraphView(view);
             taskMonitor.setStatus("Applying Visual Styles.");
             Cytoscape.getVisualMappingManager().applyAppearances();
         } else {

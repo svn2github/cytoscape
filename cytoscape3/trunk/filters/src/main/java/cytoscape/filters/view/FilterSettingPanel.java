@@ -57,7 +57,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import javax.swing.event.ChangeEvent;
 import java.awt.Component;
@@ -334,7 +334,7 @@ public class FilterSettingPanel extends JPanel {
 				if (pnlCustomSettings.getComponent(i*5+2) instanceof TextIndexComboBox) {
 					TextIndexComboBox theBox = (TextIndexComboBox) pnlCustomSettings.getComponent(i*5+2);
 					if (network != null) {
-						CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
+						GraphView networkView = Cytoscape.getNetworkView(network.getIdentifier());
 
 						if (networkView != Cytoscape.getNullNetworkView()) {
 							TextIndex textIndex = createTextIndex((StringFilter) child);;
@@ -351,7 +351,7 @@ public class FilterSettingPanel extends JPanel {
 				if (pnlCustomSettings.getComponent(i*5+2) instanceof JRangeSliderExtended) {
 					JRangeSliderExtended theSlider = (JRangeSliderExtended) pnlCustomSettings.getComponent(i*5+2);
 					if (network != null) {
-						CyNetworkView networkView = Cytoscape.getNetworkView(network.getIdentifier());
+						GraphView networkView = Cytoscape.getNetworkView(network.getIdentifier());
 
 						if (networkView != Cytoscape.getNullNetworkView()) {
 							NumberIndex numIndex = createNumberIndex((NumericFilter) child);;

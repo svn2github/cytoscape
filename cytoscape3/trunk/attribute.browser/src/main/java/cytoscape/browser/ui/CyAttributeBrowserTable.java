@@ -29,8 +29,8 @@ import static cytoscape.browser.DataObjectType.NODES;
 import org.cytoscape.Edge;
 import org.cytoscape.GraphObject;
 import org.cytoscape.Node;
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -96,7 +96,7 @@ import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.util.OpenBrowser;
 import cytoscape.util.swing.ColumnResizer;
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.GlobalAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
@@ -314,7 +314,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		Edge selectedEdge;
 		NodeView nv;
 		EdgeView ev;
-		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
+		final GraphView netView = Cytoscape.getCurrentNetworkView();
 
 		for (int idx = 0; idx < selectedRowLength; idx++) {
 			selectedName = (String) getValueAt(rowsSelected[idx], idLocation);
@@ -349,7 +349,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	}
 
 	private void resetObjectColor(int idLocation) {
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		GraphView view = Cytoscape.getCurrentNetworkView();
 
 		if ((view == Cytoscape.getNullNetworkView()) || (view == null))
 			return;
@@ -1164,7 +1164,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 */
 	public void editingStopped(ChangeEvent e) {
 		super.editingStopped(e);
-		Cytoscape.getVisualMappingManager().getNetworkView().redrawGraph(false, true);
+		Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 	}
 
 	public void mouseDragged(MouseEvent e) {
@@ -1292,7 +1292,7 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 			return this;
 
 		// handle colors for the the ID column
-		CyNetworkView netview = Cytoscape.getCurrentNetworkView();
+		GraphView netview = Cytoscape.getCurrentNetworkView();
 
 		if (type == NODES) {
 			if (netview != Cytoscape.getNullNetworkView()) {

@@ -49,7 +49,7 @@ import cytoscape.filter.view.*;
 import org.cytoscape.*;
 import cytoscape.Cytoscape;
 
-import giny.view.*;
+import org.cytoscape.view.*;
 
 import phoebe.*;
 

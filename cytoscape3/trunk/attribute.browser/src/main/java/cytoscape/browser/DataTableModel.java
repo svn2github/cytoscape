@@ -46,7 +46,7 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import cytoscape.visual.GlobalAppearanceCalculator;
 
@@ -54,8 +54,8 @@ import org.cytoscape.Edge;
 import org.cytoscape.GraphObject;
 import org.cytoscape.Node;
 
-import giny.view.EdgeView;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeView;
 
 import java.awt.Color;
 
@@ -362,7 +362,7 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		NodeView nv;
 		EdgeView edgeView;
-		final CyNetworkView netView = Cytoscape.getCurrentNetworkView();
+		final GraphView netView = Cytoscape.getCurrentNetworkView();
 
 		if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 			for (GraphObject obj : graphObjects) {

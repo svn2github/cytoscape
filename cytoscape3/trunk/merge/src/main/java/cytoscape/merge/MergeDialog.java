@@ -43,14 +43,14 @@ import cytoscape.plugin.CytoscapePlugin;
 
 import cytoscape.util.GraphSetUtils;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
 
-import giny.view.EdgeView;
-import giny.view.Label;
-import giny.view.NodeView;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.Label;
+import org.cytoscape.view.NodeView;
 
 import java.awt.BorderLayout;
 import java.awt.Container;

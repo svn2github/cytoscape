@@ -36,7 +36,7 @@ package org.cytoscape.coreplugin.cpath.model;
 
 import org.cytoscape.GraphPerspective;
 
-import cytoscape.view.CyNetworkView;
+import org.cytoscape.view.GraphView;
 
 import java.util.ArrayList;
 
@@ -63,9 +63,9 @@ public class SearchResponse {
 	private GraphPerspective cyNetwork;
 
 	/**
-	 * The Corresponding CyNetworkView in Cytoscape.
+	 * The Corresponding GraphView in Cytoscape.
 	 */
-	private CyNetworkView cyNetworkView;
+	private GraphView cyNetworkView;
 
 	/**
 	 * Gets List of Interaction Objects.
@@ -123,20 +123,20 @@ public class SearchResponse {
 	}
 
 	/**
-	 * Gets the CyNetworkView Corresponding to this list of interactions.
+	 * Gets the GraphView Corresponding to this list of interactions.
 	 *
-	 * @return Cytoscape CyNetworkView Object.
+	 * @return Cytoscape GraphView Object.
 	 */
-	public CyNetworkView getCyNetworkView() {
+	public GraphView getGraphView() {
 		return cyNetworkView;
 	}
 
 	/**
-	 * Sets the CyNetworkView Corresponding to this list of interactions.
+	 * Sets the GraphView Corresponding to this list of interactions.
 	 *
-	 * @param cyNetworkView Cytoscape CyNetworkView Object.
+	 * @param cyNetworkView Cytoscape GraphView Object.
 	 */
-	public void setCyNetworkView(CyNetworkView cyNetworkView) {
+	public void setGraphView(GraphView cyNetworkView) {
 		this.cyNetworkView = cyNetworkView;
 	}
 }

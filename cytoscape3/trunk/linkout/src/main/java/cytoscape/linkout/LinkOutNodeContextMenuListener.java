@@ -1,9 +1,9 @@
 /*$Id: LinkOutContextMenuListener.java,v 1.1 2006/06/14 18:12:46 mes Exp $*/
 package cytoscape.linkout;
 
-import ding.view.NodeContextMenuListener;
+import org.cytoscape.view.NodeContextMenuListener;
 
-import giny.view.NodeView;
+import org.cytoscape.view.NodeView;
 
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
