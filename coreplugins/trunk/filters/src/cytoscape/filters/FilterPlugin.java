@@ -60,6 +60,9 @@ public class FilterPlugin extends CytoscapePlugin {
 	// Other plugin can turn on/off the FilterEvent
 	public static boolean shouldFireFilterEvent = false;
 
+	protected ImageIcon icon = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria.png"));
+	protected ImageIcon icon2 = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria-16.png"));
+
 	// Other plugin can get a handler to all the filters defined
 	public static Vector<CompositeFilter> getAllFilterVect() {
 		if (allFilterVect == null) {
@@ -78,24 +81,16 @@ public class FilterPlugin extends CytoscapePlugin {
 	 */
 	public FilterPlugin() {
 
-		ImageIcon icon = new ImageIcon(getClass().getResource(
-				"/cytoscape/images/ximian/stock_filter-data-by-criteria.png"));
-		ImageIcon icon2 = new ImageIcon(
-				getClass()
-						.getResource(
-								"/cytoscape/images/ximian/stock_filter-data-by-criteria-16.png"));
-
 		// Add a menuItem on "select" menu
 		FilterMenuItemAction menuAction = new FilterMenuItemAction(icon2, this);
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction(
 				(CytoscapeAction) menuAction);
 
-		// Add an icon on toolbar
+		// Add an icon to tool-bar
 		FilterPluginToolBarAction toolbarAction = new FilterPluginToolBarAction(
 				icon, this);
 		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction(
 				(CytoscapeAction) toolbarAction);
-
 
 		if (allFilterVect == null) {
 			allFilterVect = new Vector<CompositeFilter>();
@@ -103,16 +98,11 @@ public class FilterPlugin extends CytoscapePlugin {
 		
 		restoreInitState();
 
-		// initialize the filterMainPanel and add it to the CytoPanelWEST, i.e.
-		// the control (management) panel
+		// initialize the filterMainPanel and add it to the control panel
 		CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
 		.getCytoPanel(SwingConstants.WEST);
 
 		cytoPanelWest.add("Filters", new FilterMainPanel(allFilterVect));
-
-		// The following two lines are for debug only
-		//int indexInCytoPanel = cytoPanelWest.indexOfComponent("Filters");
-		//cytoPanelWest.setSelectedIndex(indexInCytoPanel);
 	}
 
 
