@@ -23,6 +23,7 @@
 
 	    <!-- The resources directory -->
 	    <property name="resources.dir"    value="${basedir}/resources"/>
+		<property name="images.dir" value="${basedir}/images"/>
 
 		<!-- The unit test reports directory -->
 	    <property name="junit.report.dir"    value="${build.dir}/junit-reports"/>
@@ -90,6 +91,9 @@
 	    <target name="jar" depends="compile"
 	            description="Creates Plugin Jar:  filters.jar">
 	    	<copy todir="${build.dir}/classes/cytoscape/filters" file="${resources.dir}/plugin.props"/>
+	    	<copy todir="${build.dir}">
+	            <fileset dir="${images.dir}"/> 
+	    	</copy>
 	    	<jar destfile="${dist.dir}/filters.jar">
 	        <manifest>
 	         <attribute name="Cytoscape-Plugin" value="cytoscape.filters.FilterPlugin"/>
