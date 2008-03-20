@@ -45,6 +45,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.awt.Shape;
 import java.awt.geom.Point2D;
 
 
@@ -514,4 +515,17 @@ public class TestNodeView implements NodeView {
 	public int getNodeLabelAnchor() {
 		return node_label_anchor;
 	}
+
+    public int getCustomGraphicCount() {
+		return 0;
+	}
+	
+	public Shape getCustomGraphicShape(int index) {
+		return null;
+	}
+	public Paint getCustomGraphicPaint(int index) {
+		return null;
+	}
+    public void removeCustomGraphic(int index){}
+	public void addCustomGraphic(Shape s, Paint p, int index){}
 }
