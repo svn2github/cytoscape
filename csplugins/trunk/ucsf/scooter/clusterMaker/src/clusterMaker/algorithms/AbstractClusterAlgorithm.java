@@ -89,17 +89,6 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 
 	public void halt() { canceled = true; }
 	
-	public static double[][] distanceMatrix(Matrix matrix, DistanceMetric metric) {
-		double[][] result = new double[matrix.nRows()][matrix.nColumns()];
-		for (int row = 1; row < matrix.nRows(); row++) {
-			for (int column = 0; column < row; column++) {
-				result[row][column] = 
-				   metric.getMetric(matrix, matrix, matrix.getWeights(), row, column);
-			}
-		}
-		return result;
-	}
-
 	public static double mean(Double[] vector) {
 		double result = 0.0;
 		for (int i = 0; i < vector.length; i++) {

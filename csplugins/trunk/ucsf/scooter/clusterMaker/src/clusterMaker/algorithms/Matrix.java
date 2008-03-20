@@ -49,14 +49,14 @@ import cytoscape.data.CyAttributes;
 // clusterMaker imports
 
 public class Matrix {
-	int nRows;
-	int nColumns;
-	Double matrix[][];
-	double colWeights[];
-	double rowWeights[];
-	String rowLabels[];
-	String columnLabels[];
-	boolean transpose;
+	private int nRows;
+	private int nColumns;
+	private Double matrix[][];
+	private double colWeights[];
+	private double rowWeights[];
+	private String rowLabels[];
+	private String columnLabels[];
+	protected boolean transpose;
 
 	/**
 	 * Create a data matrix from the current nodes in the network.  There are two ways
@@ -75,35 +75,84 @@ public class Matrix {
 	 * @param transpose true if we are transposing this matrix 
 	 *                  (clustering columns instead of rows)
 	 */
-	public Matrix(List<String> weightAttributes, boolean transpose) {
+	public Matrix(String[] weightAttributes, boolean transpose) {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		this.transpose = transpose;
 		
 		// If our weightAttribute is on edges, we're looking at a symmetrical matrix
-		if (weightAttributes.size() > 1 || weightAttributes.get(0).startsWith("node.")) {
+		if (weightAttributes.length > 1 || weightAttributes[0].startsWith("node.")) {
 			// Get rid of the leading type information
-			for (int i = 0; i < weightAttributes.size(); i++) {
-				String substr = weightAttributes.get(i).substring(5);
-				weightAttributes.set(i, substr);
+			for (int i = 0; i < weightAttributes.length; i++) {
+				weightAttributes[i] = weightAttributes[i].substring(5);
 			}
 			buildGeneArrayMatrix(network, weightAttributes, transpose);
-		} else if (weightAttributes.size() == 1 && weightAttributes.get(0).startsWith("edge.")) {
-			buildSymmetricalMatrix(network, weightAttributes.get(0).substring(5));
+		} else if (weightAttributes.length == 1 && weightAttributes[0].startsWith("edge.")) {
+			buildSymmetricalMatrix(network, weightAttributes[0].substring(5));
 		} else {
 			// Throw an exception?
 			return;
 		}
+		System.out.println("New Matrix with "+nRows+" rows and "+nColumns+" columns");
+	}
+
+	public Matrix(Matrix duplicate) {
+		this.nRows = duplicate.nRows();
+		this.nColumns = duplicate.nColumns();
+		this.matrix = new Double[nRows][nColumns];
+		this.colWeights = new double[nColumns];
+		this.rowWeights = new double[nRows];
+		this.columnLabels = new String[nColumns];
+		this.rowLabels = new String[nRows];
+		this.transpose = duplicate.transpose;
+
+		for (int row = 0; row < nRows; row++) {
+			rowWeights[row] = duplicate.getRowWeight(row);
+			rowLabels[row] = duplicate.getRowLabel(row);
+			for (int col = 0; col < nColumns; col++) {
+				if (row == 0) {
+					colWeights[col] = duplicate.getColWeight(col);
+					columnLabels[col] = duplicate.getColLabel(col);
+				}
+				if (duplicate.getValue(row, col) != null)
+					this.matrix[row][col] = new Double(duplicate.getValue(row, col));
+			}
+		}
+		System.out.println("New Matrix with "+nRows+" rows and "+nColumns+" columns");
+	}
+
+	public Matrix(int rows, int cols) {
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		this.nRows = rows;
+		this.nColumns = cols;
+		this.matrix = new Double[rows][cols];
+		this.colWeights = new double[cols];
+		this.rowWeights = new double[rows];
+		this.columnLabels = new String[cols];
+		this.rowLabels = new String[rows];
+		this.transpose = false;
+		System.out.println("New Matrix with "+nRows+" rows and "+nColumns+" columns");
 	}
 
 	public int nRows() { return this.nRows; }
+
 	public int nColumns() { return this.nColumns; }
+
 	public Double getValue(int row, int column) {
 		return matrix[row][column];
 	}
+
 	public double doubleValue(int row, int column) {
 		if (matrix[row][column] != null)
 			return matrix[row][column].doubleValue();
 		return Double.NaN;
+	}
+
+	public void setValue(int row, int column, double value) {
+		matrix[row][column] = new Double(value);
+	}
+
+	public void setValue(int row, int column, Double value) {
+		matrix[row][column] = value;
 	}
 
 	public boolean hasValue(int row, int column) {
@@ -113,6 +162,10 @@ public class Matrix {
 	}
 
 	public void setUniformWeights() {
+		if (colWeights == null || rowWeights == null) {
+			colWeights = new double[nColumns];
+			rowWeights = new double[nRows];
+		}
 		Arrays.fill(this.colWeights,1.0);
 		Arrays.fill(this.rowWeights,1.0);
 	}
@@ -121,8 +174,16 @@ public class Matrix {
 		return this.rowWeights;
 	}
 
+	public double getRowWeight(int row) {
+		return this.rowWeights[row];
+	}
+
 	public double[] getColWeights() {
 		return this.colWeights;
+	}
+
+	public double getColWeight(int col) {
+		return this.colWeights[col];
 	}
 
 	public double[] getWeights() {
@@ -130,6 +191,44 @@ public class Matrix {
 			return rowWeights;
 		else
 			return colWeights;
+	}
+
+	public void setRowWeight(int row, double value) {
+		if (rowWeights == null) {
+			rowWeights = new double[nRows];
+		}
+		rowWeights[row] = value;
+	}
+
+	public void setColWeight(int col, double value) {
+		if (colWeights == null) {
+			colWeights = new double[nColumns];
+		}
+		colWeights[col] = value;
+	}
+
+	public String[] getColLabels() {
+		return this.columnLabels;
+	}
+
+	public String getColLabel(int col) {
+		return this.columnLabels[col];
+	}
+
+	public void setColLabel(int col, String label) {
+		this.columnLabels[col] = label;
+	}
+
+	public String[] getRowLabels() {
+		return this.rowLabels;
+	}
+
+	public String getRowLabel(int row) {
+		return this.rowLabels[row];
+	}
+
+	public void setRowLabel(int row, String label) {
+		this.rowLabels[row] = label;
 	}
 
 	public double[] getRank(int row) {
@@ -162,6 +261,17 @@ public class Matrix {
 			i += m;
 		}
 		return rank;
+	}
+
+	public double[][] getDistanceMatrix(DistanceMetric metric) {
+		double[][] result = new double[this.nRows][this.nRows];
+		for (int row = 1; row < this.nRows; row++) {
+			for (int column = 0; column < row; column++) {
+				result[row][column] = 
+				   metric.getMetric(this, this, this.getWeights(), row, column);
+			}
+		}
+		return result;
 	}
 
 	private Integer[] indexSort(double[] tData, int nVals) {
@@ -204,7 +314,7 @@ public class Matrix {
 		}
 	}
 
-	private void buildGeneArrayMatrix(CyNetwork network, List<String> weightAttributes, boolean transpose) {
+	private void buildGeneArrayMatrix(CyNetwork network, String[] weightAttributes, boolean transpose) {
 		// Get the list of nodes
 		List<CyNode>nodeList = network.nodesList();
 
@@ -222,7 +332,8 @@ public class Matrix {
 			// Create the map for this node
 			HashMap<String,Double>thisCondMap = new HashMap();
 
-			for (String attr: weightAttributes) {
+			for (int attrIndex = 0; attrIndex < weightAttributes.length; attrIndex++) {
+				String attr = weightAttributes[attrIndex];
 				Double value = null;
 				// Remember the condition name
 				condMap.put(attr,attr);
@@ -247,6 +358,8 @@ public class Matrix {
 			this.nRows = condMap.keySet().size();
 			this.nColumns = nodeList.size();
 			this.matrix = new Double[nRows][nColumns];
+			this.rowLabels = new String[nRows];
+			this.columnLabels = new String[nColumns];
 			assignRowLabels(condMap.keySet());
 
 			int column = 0;
@@ -263,6 +376,8 @@ public class Matrix {
 		} else {
 			this.nRows = nodeList.size();
 			this.nColumns = condMap.keySet().size();
+			this.rowLabels = new String[nRows];
+			this.columnLabels = new String[nColumns];
 			this.matrix = new Double[nRows][nColumns];
 			assignColumnLabels(condMap.keySet());
 
@@ -290,6 +405,7 @@ public class Matrix {
 	private void assignColumnLabels(Set<String>labelList) {
 		int index = 0;
 		for (String label: labelList){
+			System.out.println("Column label: "+label);
 			this.columnLabels[index++] = label;
 		}
 	}

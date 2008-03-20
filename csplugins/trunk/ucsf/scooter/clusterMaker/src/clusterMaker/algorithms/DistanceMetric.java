@@ -83,9 +83,9 @@ public enum DistanceMetric {
 	                            int index1, int index2) {
 		double result = 0.0;
 		double tweight = 0.0;
-		for (int i = 0; i < data1.nRows(); i++) {
-			if (data1.hasValue(index1,i) && data2.hasValue(index2,i)) {
-				double term = data1.doubleValue(index1,i) - data2.doubleValue(index2,i);
+		for (int i = 0; i < data1.nColumns(); i++) {
+			if (data1.hasValue(index1, i) && data2.hasValue(index2, i)) {
+				double term = data1.doubleValue(index1, i) - data2.doubleValue(index2, i);
 				result += weights[i]*term*term;
 				tweight += weights[i];
 			}
@@ -98,9 +98,9 @@ public enum DistanceMetric {
 	                                      int index1, int index2) {
 		double result = 0.0;
 		double tweight = 0.0;
-		for (int i = 0; i < data1.nRows(); i++) {
-			if (data1.hasValue(index1,i) && data2.hasValue(index2,i)) {
-				double term = data1.doubleValue(index1,i) - data2.doubleValue(index2,i);
+		for (int i = 0; i < data1.nColumns(); i++) {
+			if (data1.hasValue(index1, i) && data2.hasValue(index2, i)) {
+				double term = data1.doubleValue(index1, i) - data2.doubleValue(index2, i);
 				result = result + weights[i]*Math.abs(term);
 				tweight += weights[i];
 			}
@@ -117,10 +117,10 @@ public enum DistanceMetric {
 		double denom1 = 0.0;
 		double denom2 = 0.0;
 		double tweight = 0.0;
-		for (int i = 0; i < data1.nRows(); i++) {
-			if (data1.hasValue(index1,i) && data2.hasValue(index2,i)) {
-				double term1 = data1.doubleValue(index1,i);
-				double term2 = data2.doubleValue(index2,i);
+		for (int i = 0; i < data1.nColumns(); i++) {
+			if (data1.hasValue(index1, i) && data2.hasValue(index2, i)) {
+				double term1 = data1.doubleValue(index1, i);
+				double term2 = data2.doubleValue(index2, i);
 				double w = weights[i];
 				sum1 += w*term1;
 				sum2 += w*term2;
@@ -148,10 +148,10 @@ public enum DistanceMetric {
 		double denom1 = 0.0;
 		double denom2 = 0.0;
 		double tweight = 0.0;
-		for (int i = 0; i < data1.nRows(); i++) {
-			if (data1.hasValue(index1,i) && data2.hasValue(index2,i)) {
-				double term1 = data1.doubleValue(index1,i);
-				double term2 = data2.doubleValue(index2,i);
+		for (int i = 0; i < data1.nColumns(); i++) {
+			if (data1.hasValue(index1, i) && data2.hasValue(index2, i)) {
+				double term1 = data1.doubleValue(index1, i);
+				double term2 = data2.doubleValue(index2, i);
 				double w = weights[i];
 				sum1 += w*term1;
 				sum2 += w*term2;
@@ -178,7 +178,7 @@ public enum DistanceMetric {
 		double denom2 = 0.0;
 		boolean flag = false;
 
-		for (int i = 0; i < data1.nRows(); i++) {
+		for (int i = 0; i < data1.nColumns(); i++) {
 			if (data1.hasValue(index1,i) && data2.hasValue(index2,i)) {
 				double term1 = data1.doubleValue(index1,i);
 				double term2 = data2.doubleValue(index2,i);
@@ -203,7 +203,7 @@ public enum DistanceMetric {
 		double denom2 = 0.0;
 		boolean flag = false;
 
-		for (int i = 0; i < data1.nRows(); i++) {
+		for (int i = 0; i < data1.nColumns(); i++) {
 			if (data1.hasValue(index1,i) && data2.hasValue(index2,i)) {
 				double term1 = data1.doubleValue(index1,i);
 				double term2 = data2.doubleValue(index2,i);
@@ -260,13 +260,13 @@ public enum DistanceMetric {
 		double denomx;
 		double denomy;
 		double tau;
-		for (int i = 0; i < data1.nRows(); i++) {
+		for (int i = 0; i < data1.nColumns(); i++) {
 			for (int j = 0; j < i; j++) {
-				if (data1.hasValue(index1,j) && data2.hasValue(index2,j)) {
-					double x1 = data1.doubleValue(index1,i);
-					double x2 = data1.doubleValue(index1,j);
-					double y1 = data2.doubleValue(index2,i);
-					double y2 = data2.doubleValue(index2,j);
+				if (data1.hasValue(index1, j) && data2.hasValue(index2, j)) {
+					double x1 = data1.doubleValue(index1, i);
+					double x2 = data1.doubleValue(index1, j);
+					double y1 = data2.doubleValue(index2, i);
+					double y2 = data2.doubleValue(index2, j);
 					if (x1 < x2 && y1 < y2) con++;
 					if (x1 > x2 && y1 > y2) con++;
 					if (x1 < x2 && y1 > y2) dis++;

@@ -159,6 +159,8 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		// Sanity check all of our settings
 		System.out.println("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
 		// OK, go for it!
+		String attributeArray[] = getAttributeArray(dataAttributes);
+		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, transposeMatrix);
 		// Create the data matrix
 		// Cluster!
 	}
@@ -181,22 +183,13 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
 		return attributeList.toArray(attributeArray);
 	}
-		
-	enum ClusterMethod {
-		SINGLE_LINKAGE("pairwise single-linkage"),
-		MAXIMUM_LINKAGE("pairwise maximum-linkage"),
-		AVERAGE_LINKAGE("pairwise average-linkage"),
-		CENTROID_LINKAGE("pairwise centroid-linkage");
-	
-		private String keyword;
-	
-		ClusterMethod(String keyword) {
-			this.keyword = keyword;
-		}
-	
-		public String toString() {
-			return this.keyword;
-		}
-	}
 
+	private String[] getAttributeArray(String dataAttributes) {
+		String indices[] = dataAttributes.split(",");
+		String selectedAttributes[] = new String[indices.length];
+		for (int i = 0; i < indices.length; i++) {
+			selectedAttributes[i] = attributeArray[Integer.parseInt(indices[i])];
+		}
+		return selectedAttributes;
+	}
 }
