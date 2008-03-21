@@ -410,10 +410,15 @@ public class NetworkViewManager implements PropertyChangeListener,
 		//iframe.setSize(400, 400);
 		// create cascade iframe
 		int x=0,y=0;
-		JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
-		if (selectedFrame != null) {
-			x = selectedFrame.getLocation().x + 20;
-			y = selectedFrame.getLocation().y + 20;
+		JInternalFrame refFrame = null;
+		JInternalFrame[] allFrames = desktopPane.getAllFrames();
+		if ( allFrames.length > 1) {
+			refFrame = allFrames[0];
+		}
+		
+		if (refFrame != null) {
+			x = refFrame.getLocation().x + 20;
+			y = refFrame.getLocation().y + 20;
 		}
 
 		if (x > desktopPane.getWidth() - MINIMUM_WIN_WIDTH){
