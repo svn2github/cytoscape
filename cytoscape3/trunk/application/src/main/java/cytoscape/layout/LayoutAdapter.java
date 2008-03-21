@@ -50,6 +50,8 @@ import org.cytoscape.view.NodeView;
 
 import javax.swing.JPanel;
 
+import org.cytoscape.tunable.ModuleProperties;
+
 /**
  * LayoutAdapter provides a *very* minimal interface to implement a layout
  * algorithm.  It is meant to be used by graph readers and plugins that provide
@@ -180,7 +182,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return the layout properties for this algorithm
 	 *
 	 */
-	public LayoutProperties getSettings() {return null;}
+	public ModuleProperties getSettings() {return null;}
 
 	/**
 	 *  DOCUMENT ME!

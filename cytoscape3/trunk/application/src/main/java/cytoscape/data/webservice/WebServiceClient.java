@@ -35,7 +35,7 @@
 package cytoscape.data.webservice;
 
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-import cytoscape.util.ModuleProperties;
+import org.cytoscape.tunable.ModuleProperties;
 
 import java.lang.reflect.Method;
 

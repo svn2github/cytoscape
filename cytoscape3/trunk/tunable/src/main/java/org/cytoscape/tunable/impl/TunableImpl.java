@@ -1,9 +1,8 @@
 // vim: set ts=2: */
-package cytoscape.layout;
-
-import cytoscape.Cytoscape;
+package org.cytoscape.tunable.impl; 
 
 import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.tunable.Tunable;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
+
 /**
  * The Tunable class provides a convenient way to encapsulate
  * CyLayoutAlgorithm property and settings values.  Each Tunable
@@ -28,7 +28,7 @@ import javax.swing.JTextField;
  * or the lower and upper bounds for the value.  These are meant
  * to be used as part of the LayoutSettingsDialog (see getPanel).
  */
-public class Tunable {
+public class TunableImpl implements Tunable {
 	private String name;
 	private String desc;
 	private int type = STRING;
@@ -41,86 +41,8 @@ public class Tunable {
 	
 	private boolean immutable = false;
 
-	/**
-	 * Types
-	 */
-	final public static int INTEGER = 0;
+	private CyAttributes attrs;
 
-	/**
-	 *
-	 */
-	final public static int DOUBLE = 1;
-
-	/**
-	 *
-	 */
-	final public static int BOOLEAN = 2;
-
-	/**
-	 *
-	 */
-	final public static int STRING = 3;
-
-	/**
-	 *
-	 */
-	final public static int NODEATTRIBUTE = 4;
-
-	/**
-	 *
-	 */
-	final public static int EDGEATTRIBUTE = 5;
-
-	/**
-	 *
-	 */
-	final public static int LIST = 6;
-
-	/**
-	 * Flags
-	 */
-	final public static int NOINPUT = 0x1;
-
-	/**
-	 *
-	 */
-	final public static int NUMERICATTRIBUTE = 0x2;
-
-	/**
-	 * Constructor to create a Tunable with no bounds
-	 * information, and no flag.
-	 *
-	 * @param name The name of the Tunable
-	 * @param desc The description of the Tunable
-	 * @param type Integer value that represents the type of
-	 *             the Tunable.  The type not only impact the
-	 *             way that the value is interpreted, but also
-	 *             the component used for the LayoutSettingsDialog
-	 * @param value The initial (default) value of the Tunable
-	 */
-	public Tunable(String name, String desc, int type, Object value) {
-		this(name, desc, type, value, null, null, 0);
-	}
-
-	/**
-	 * Constructor to create a Tunable with no bounds
-	 * information, but with a flag.
-	 *
-	 * @param name The name of the Tunable
-	 * @param desc The description of the Tunable
-	 * @param type Integer value that represents the type of
-	 *             the Tunable.  The type not only impact the
-	 *             way that the value is interpreted, but also
-	 *             the component used for the LayoutSettingsDialog
-	 * @param value The initial (default) value of the Tunable
-	 * @param flag The initial value of the flag.  This can be
-	 *             used to indicate that this tunable is not user
-	 *             changeable (e.g. debug), or to indicate if there
-	 *             is a specific type for the attributes.
-	 */
-	public Tunable(String name, String desc, int type, Object value, int flag) {
-		this(name, desc, type, value, null, null, flag);
-	}
 
 	/**
 	 * Constructor to create a Tunable with bounds
@@ -146,13 +68,8 @@ public class Tunable {
 	 *             changeable (e.g. debug), or to indicate if there
 	 *             is a specific type for the attributes.
 	 */
-	public Tunable(String name, String desc, int type, Object value, Object lowerBound,
-	               Object upperBound, int flag) {
-		this(name, desc, type, value, lowerBound, upperBound, flag, false);
-	}
-	
-	public Tunable(String name, String desc, int type, Object value, Object lowerBound,
-            Object upperBound, int flag, boolean immutable) {
+	public TunableImpl(String name, String desc, int type, Object value, Object lowerBound,
+            Object upperBound, int flag, boolean immutable, CyAttributes attrs) {
 		this.name = name;
 		this.desc = desc;
 		this.type = type;
@@ -161,6 +78,7 @@ public class Tunable {
 		this.lowerBound = lowerBound;
 		this.flag = flag;
 		this.immutable = immutable;
+		this.attrs = attrs;
 	}
 
 	/**
@@ -328,13 +246,8 @@ public class Tunable {
 			box.setSelected(((Boolean) value).booleanValue());
 			inputField = box;
 			tunablePanel.add(inputField, BorderLayout.LINE_END);
-		} else if (type == NODEATTRIBUTE) {
-			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-			inputField = getAttributePanel(nodeAttributes);
-			tunablePanel.add(inputField, BorderLayout.LINE_END);
-		} else if (type == EDGEATTRIBUTE) {
-			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-			inputField = getAttributePanel(edgeAttributes);
+		} else if (type == NODEATTRIBUTE || type == EDGEATTRIBUTE) {
+			inputField = getAttributePanel(attrs);
 			tunablePanel.add(inputField, BorderLayout.LINE_END);
 		} else if (type == LIST) {
 			inputField = getListPanel((Object[]) lowerBound);

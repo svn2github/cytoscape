@@ -45,6 +45,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import org.cytoscape.tunable.ModuleProperties;
 
 /**
  *
@@ -162,7 +163,7 @@ public interface CyLayoutAlgorithm {
 	 * @return the layout properties for this algorithm
 	 *
 	 */
-	public LayoutProperties getSettings();
+	public ModuleProperties getSettings();
 
 	/**
 	 * Get the name of this layout.

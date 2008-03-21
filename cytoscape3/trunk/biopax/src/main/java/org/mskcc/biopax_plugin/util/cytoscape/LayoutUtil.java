@@ -40,7 +40,7 @@ import cytoscape.Cytoscape;
 import cytoscape.task.TaskMonitor;
 import org.cytoscape.view.GraphView;
 import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.LayoutProperties;
+import org.cytoscape.tunable.ModuleProperties;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -156,7 +156,7 @@ public class LayoutUtil implements CyLayoutAlgorithm {
 	/**
 	 * Our implementation of LayoutAlgorithm.getSettings().
 	 */
-	public LayoutProperties getSettings() {
+	public ModuleProperties getSettings() {
 		return null;
     }
 

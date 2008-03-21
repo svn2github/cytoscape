@@ -39,12 +39,14 @@ import csplugins.layout.Profile;
 
 
 
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
 import cytoscape.util.*;
 
 import cytoscape.view.*;
+import cytoscape.CytoscapeInit;
 
 import org.cytoscape.view.*;
 
@@ -327,32 +329,32 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		 * Tuning values
 		 */
 		if (supportWeights)
-			layoutProperties.add(new Tunable("iterations_pernode",
+			layoutProperties.add(TunableFactory.getTunable("iterations_pernode",
 			                                 "Number of iteratations for each node",
 			                                 Tunable.INTEGER, new Integer(40)));
 		else
-			layoutProperties.add(new Tunable("iterations_pernode",
+			layoutProperties.add(TunableFactory.getTunable("iterations_pernode",
 			                                 "Number of iteratations for each node",
 			                                 Tunable.INTEGER, new Integer(20)));
 
-		layoutProperties.add(new Tunable("layout_passes", "Number of layout passes",
+		layoutProperties.add(TunableFactory.getTunable("layout_passes", "Number of layout passes",
 		                                 Tunable.INTEGER, new Integer(2)));
-		layoutProperties.add(new Tunable("distance_strength", "Spring strength", Tunable.DOUBLE,
+		layoutProperties.add(TunableFactory.getTunable("distance_strength", "Spring strength", Tunable.DOUBLE,
 		                                 new Double(15.0)));
-		layoutProperties.add(new Tunable("rest_length", "Spring rest length", Tunable.DOUBLE,
+		layoutProperties.add(TunableFactory.getTunable("rest_length", "Spring rest length", Tunable.DOUBLE,
 		                                 new Double(15.0)));
-		layoutProperties.add(new Tunable("disconnected_strength",
+		layoutProperties.add(TunableFactory.getTunable("disconnected_strength",
 		                                 "Strength of a 'disconnected' spring", Tunable.DOUBLE,
 		                                 new Double(0.05)));
-		layoutProperties.add(new Tunable("disconnected_rest_length",
+		layoutProperties.add(TunableFactory.getTunable("disconnected_rest_length",
 		                                 "Rest length of a 'disconnected' spring", Tunable.DOUBLE,
 		                                 new Double(2000.0)));
-		layoutProperties.add(new Tunable("anticollisionStrength",
+		layoutProperties.add(TunableFactory.getTunable("anticollisionStrength",
 		                                 "Strength to apply to avoid collisions", Tunable.DOUBLE,
 		                                 new Double(100.0)));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
 
 		// Finally, update everything.  We need to do this to update
 		// any of our values based on what we read from the property file

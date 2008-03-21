@@ -41,10 +41,12 @@ package csplugins.layout.algorithms.hierarchicalLayout;
 
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import cytoscape.layout.AbstractLayout;
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
 import cytoscape.task.TaskMonitor;
 
@@ -236,7 +238,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	private int topEdge = 32;
 	private int rightMargin = 7000;
 	private boolean selected_only = false;
-	private LayoutProperties layoutProperties;
+	private ModuleProperties layoutProperties;
 	private HashMap<Integer, HierarchyFlowLayoutOrderNode> nodes2HFLON = new HashMap<Integer, HierarchyFlowLayoutOrderNode>();
 
 	/**
@@ -244,7 +246,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	 */
 	public HierarchicalLayoutAlgorithm() {
 		super();
-		layoutProperties = new LayoutProperties(getName());
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 		initialize_properties();
 	}
 
@@ -1179,25 +1181,25 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	}
 
 	protected void initialize_properties() {
-		layoutProperties.add(new Tunable("nodeHorizontalSpacing",
+		layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing",
 		                                 "Horizontal spacing between nodes", Tunable.INTEGER,
 		                                 new Integer(64)));
-		layoutProperties.add(new Tunable("nodeVerticalSpacing", "Vertical spacing between nodes",
+		layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes",
 		                                 Tunable.INTEGER, new Integer(32)));
-		layoutProperties.add(new Tunable("componentSpacing", "Component spacing", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("componentSpacing", "Component spacing", Tunable.INTEGER,
 		                                 new Integer(64)));
-		layoutProperties.add(new Tunable("bandGap", "Band gap", Tunable.INTEGER, new Integer(64)));
-		layoutProperties.add(new Tunable("leftEdge", "Left edge margin", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("bandGap", "Band gap", Tunable.INTEGER, new Integer(64)));
+		layoutProperties.add(TunableFactory.getTunable("leftEdge", "Left edge margin", Tunable.INTEGER,
 		                                 new Integer(32)));
-		layoutProperties.add(new Tunable("topEdge", "Top edge margin", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("topEdge", "Top edge margin", Tunable.INTEGER,
 		                                 new Integer(32)));
-		layoutProperties.add(new Tunable("rightMargin", "Right edge margin", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("rightMargin", "Right edge margin", Tunable.INTEGER,
 		                                 new Integer(7000)));
-		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+		layoutProperties.add(TunableFactory.getTunable("selected_only", "Only layout selected nodes",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
 
 		// Finally, update everything.  We need to do this to update
 		// any of our values based on what we read from the property file

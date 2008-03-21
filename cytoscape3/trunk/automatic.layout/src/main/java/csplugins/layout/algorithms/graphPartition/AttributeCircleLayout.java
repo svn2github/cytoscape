@@ -38,11 +38,13 @@ import csplugins.layout.LayoutPartition;
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import org.cytoscape.attributes.CyAttributes;
 
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
 import cytoscape.view.*;
 
@@ -66,7 +68,7 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	String attribute = null;
 	private double spacing = 50.0;
 	boolean supportNodeAttributes = true;
-	LayoutProperties layoutProperties = null;
+	ModuleProperties layoutProperties = null;
 
 	/**
 	 * Creates a new AttributeCircleLayout object.
@@ -93,7 +95,7 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	 */
 	public void initialize(boolean supportAttributes) {
 		supportNodeAttributes = supportAttributes;
-		layoutProperties = new LayoutProperties(getName());
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 		initialize_properties();
 	}
 
@@ -135,13 +137,14 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 	}
 
 	protected void initialize_properties() {
-		layoutProperties.add(new Tunable("spacing", "Circle size", Tunable.DOUBLE, new Double(100.0)));
-		layoutProperties.add(new Tunable("attribute", "The attribute to use for the layout",
+		layoutProperties.add(TunableFactory.getTunable("spacing", "Circle size", Tunable.DOUBLE, new Double(100.0)));
+		layoutProperties.add(TunableFactory.getTunable("attribute", "The attribute to use for the layout",
 		                                 Tunable.NODEATTRIBUTE, "(none)",
-		                                 (Object) getInitialAttributeList(), (Object) null, 0));
+		                                 (Object) getInitialAttributeList(), (Object) null, 0,false,
+																		 Cytoscape.getNodeAttributes()));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
 
 		// Finally, update everything.  We need to do this to update
 		// any of our values based on what we read from the property file
@@ -155,7 +158,7 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 		updateSettings(false);
 	}
 
-	public LayoutProperties getSettings() {
+	public ModuleProperties getSettings() {
 		return layoutProperties;
 	}
 

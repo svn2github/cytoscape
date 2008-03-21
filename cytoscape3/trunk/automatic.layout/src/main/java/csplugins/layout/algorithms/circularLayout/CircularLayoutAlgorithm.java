@@ -46,11 +46,13 @@ import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 
 //import cytoscape.editor.AddEdgeEdit;
 //import cytoscape.layout.AbstractLayout;
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
 //import cytoscape.render.stateful.NodeDetails;
 import cytoscape.task.TaskMonitor;
+import cytoscape.CytoscapeInit;
 
 //import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
@@ -82,7 +84,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	private int componentSpacing = 64;
 
 	//private boolean selected_only = false;
-	private LayoutProperties layoutProperties;
+	private ModuleProperties layoutProperties;
 	private int[][] bc;
 	private boolean[] posSet;
 	private boolean[] depthPosSet;
@@ -97,7 +99,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	 */
 	public CircularLayoutAlgorithm() {
 		super();
-		layoutProperties = new LayoutProperties(getName());
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 		initialize_properties();
 	}
 
@@ -1137,21 +1139,21 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	}
 
 	protected void initialize_properties() {
-		layoutProperties.add(new Tunable("nodeHorizontalSpacing",
+		layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing",
 		                                 "Horizontal spacing between nodes", Tunable.INTEGER,
 		                                 new Integer(64)));
-		layoutProperties.add(new Tunable("nodeVerticalSpacing", "Vertical spacing between nodes",
+		layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes",
 		                                 Tunable.INTEGER, new Integer(32)));
 
-		layoutProperties.add(new Tunable("leftEdge", "Left edge margin", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("leftEdge", "Left edge margin", Tunable.INTEGER,
 		                                 new Integer(32)));
-		layoutProperties.add(new Tunable("topEdge", "Top edge margin", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("topEdge", "Top edge margin", Tunable.INTEGER,
 		                                 new Integer(32)));
-		layoutProperties.add(new Tunable("rightMargin", "Right edge margin", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("rightMargin", "Right edge margin", Tunable.INTEGER,
 		                                 new Integer(1000)));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
 
 		// Finally, update everything.  We need to do this to update
 		// any of our values based on what we read from the property file

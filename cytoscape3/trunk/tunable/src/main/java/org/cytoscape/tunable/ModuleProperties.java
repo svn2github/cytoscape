@@ -34,17 +34,16 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape.util;
+package org.cytoscape.tunable;
 
 import java.util.HashMap;
 import java.util.List;
-
-import cytoscape.layout.Tunable;
-
+import java.util.Properties;
+import javax.swing.JPanel;
 
 /**
  * 
-  */
+ */
 public interface ModuleProperties {
 	/**
 	 * This method is used to add a new Tunable to the LayoutProperties
@@ -100,20 +99,19 @@ public interface ModuleProperties {
 	 */
 
 	/**
-	 * getProperties is used to extract properties from the Cytoscape properties
-	 * file.  getProperties should always be called first to initialize the property
-	 * maps.
+	 * Used to extract properties from the props parameter. 
+	 * getProperties should always be called first to initialize the property maps.
 	 *
 	 * @return HashMap containing the resulting properties
 	 */
-	public HashMap getProperties();
+	public HashMap getProperties(Properties props);
 
 	/**
-	 * saveProperties is used to add modified properties to the Cytoscape properties
+	 * Used to add modified properties to props parameter 
 	 * so they can be saved in the properties file.
 	 *
 	 */
-	public void saveProperties();
+	public void saveProperties(Properties props);
 
 	/**
 	 *  DOCUMENT ME!
@@ -143,12 +141,14 @@ public interface ModuleProperties {
 	 * there is no value for the property, then the default value in the Tunable
 	 * is used to initialize the property.
 	 */
-	public void initializeProperties();
+	public void initializeProperties(Properties props);
 
 	/**
 	 * This method returns list of tunables.
 	 *
-	 * @return JPanel that contains all of the Tunable widgets
+	 * @return List that contains all of the Tunable widgets
 	 */
 	public List<Tunable> getTunables();
+
+	public JPanel getTunablePanel();
 }

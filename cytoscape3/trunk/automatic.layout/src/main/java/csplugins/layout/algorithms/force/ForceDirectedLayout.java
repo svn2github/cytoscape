@@ -38,6 +38,7 @@ package csplugins.layout.algorithms.force;
 
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import cytoscape.layout.*;
 import csplugins.layout.LayoutPartition;
@@ -47,6 +48,10 @@ import csplugins.layout.algorithms.graphPartition.*;
 
 import org.cytoscape.view.GraphView;
 import org.cytoscape.attributes.CyAttributes;
+
+import org.cytoscape.tunable.TunableFactory;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
 
 import java.awt.GridLayout;
 
@@ -87,7 +92,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	protected double maxWeightCutoff = Double.MAX_VALUE;
 
 	private boolean supportWeights = true;
-	private LayoutProperties layoutProperties;
+	private ModuleProperties layoutProperties;
 	Map<LayoutNode,ForceItem> forceItems;
 
 	private Integrator integrator = null;
@@ -100,7 +105,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		m_fsim.addForce(new SpringForce());
 		m_fsim.addForce(new DragForce());
 
-		layoutProperties = new LayoutProperties(getName());
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 		initialize_properties();
 		forceItems = new HashMap<LayoutNode,ForceItem>();
 	}
@@ -238,40 +243,40 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 	
 	protected void initialize_properties() {
-		layoutProperties.add(new Tunable("defaultSpringCoefficient", "Default Spring Coefficient",
+		layoutProperties.add(TunableFactory.getTunable("defaultSpringCoefficient", "Default Spring Coefficient",
 		                                 Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
 
-		layoutProperties.add(new Tunable("defaultSpringLength", "Default Spring Length",
+		layoutProperties.add(TunableFactory.getTunable("defaultSpringLength", "Default Spring Length",
 		                                 Tunable.DOUBLE, new Double(defaultSpringLength)));
 
-		layoutProperties.add(new Tunable("defaultNodeMass", "Default Node Mass",
+		layoutProperties.add(TunableFactory.getTunable("defaultNodeMass", "Default Node Mass",
 		                                 Tunable.DOUBLE, new Double(defaultNodeMass)));
 
-		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
+		layoutProperties.add(TunableFactory.getTunable("numIterations", "Number of Iterations",
 		                                 Tunable.INTEGER, new Integer(numIterations)));
 
-		layoutProperties.add(new Tunable("min_weight", "The minimum edge weight to consider",
+		layoutProperties.add(TunableFactory.getTunable("min_weight", "The minimum edge weight to consider",
        		                              Tunable.DOUBLE, new Double(0)));
 
-		layoutProperties.add(new Tunable("max_weight", "The maximum edge weight to consider",
+		layoutProperties.add(TunableFactory.getTunable("max_weight", "The maximum edge weight to consider",
            		                          Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
 
-		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
+		layoutProperties.add(TunableFactory.getTunable("integrator", "Integration algorithm to use",
 		                                 Tunable.LIST, new Integer(0), 
 		                                 (Object) integratorArray, (Object) null, 0));
 
-		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+		layoutProperties.add(TunableFactory.getTunable("selected_only", "Only layout selected nodes",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
 
-		layoutProperties.add(new Tunable("edge_attribute", 
+		layoutProperties.add(TunableFactory.getTunable("edge_attribute", 
 		                                 "The edge attribute that contains the weights",
 		                                 Tunable.EDGEATTRIBUTE, "weight",
 		                                 (Object) getInitialAttributeList(), (Object) null,
-		                                 Tunable.NUMERICATTRIBUTE));
+		                                 Tunable.NUMERICATTRIBUTE, false, Cytoscape.getEdgeAttributes()));
 
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
 
 		// Finally, update everything.  We need to do this to update
 		// any of our values based on what we read from the property file
@@ -330,7 +335,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		}
 	}
 
-	public LayoutProperties getSettings() {
+	public ModuleProperties getSettings() {
 		return layoutProperties;
 	}
 

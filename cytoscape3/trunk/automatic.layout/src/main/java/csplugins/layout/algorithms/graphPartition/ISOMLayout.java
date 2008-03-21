@@ -18,10 +18,13 @@ import csplugins.layout.LayoutPartition;
 
 import org.cytoscape.GraphPerspective;
 
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
 import org.cytoscape.*;
+
+import cytoscape.CytoscapeInit;
 
 import java.awt.GridLayout;
 
@@ -48,7 +51,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 	private double coolingFactor = 2;
 	private boolean trace;
 	private boolean done;
-	private LayoutProperties layoutProperties;
+	private ModuleProperties layoutProperties;
 	private LayoutPartition partition;
 
 	//Queue, First In First Out, use add() and get(0)/remove(0)
@@ -68,7 +71,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 
 		q = new IntArrayList();
 		trace = false;
-		layoutProperties = new LayoutProperties(getName());
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 		initialize_properties();
 	}
 
@@ -101,25 +104,25 @@ public class ISOMLayout extends AbstractGraphPartition {
 	}
 
 	protected void initialize_properties() {
-		layoutProperties.add(new Tunable("maxEpoch", "Number of iterations", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("maxEpoch", "Number of iterations", Tunable.INTEGER,
 		                                 new Integer(5000)));
-		layoutProperties.add(new Tunable("sizeFactor", "Size factor", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("sizeFactor", "Size factor", Tunable.INTEGER,
 		                                 new Integer(10)));
-		layoutProperties.add(new Tunable("radiusConstantTime", "Radius constant", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("radiusConstantTime", "Radius constant", Tunable.INTEGER,
 		                                 new Integer(20)));
-		layoutProperties.add(new Tunable("radius", "Radius", Tunable.INTEGER, new Integer(5)));
-		layoutProperties.add(new Tunable("minRadius", "Minimum radius", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("radius", "Radius", Tunable.INTEGER, new Integer(5)));
+		layoutProperties.add(TunableFactory.getTunable("minRadius", "Minimum radius", Tunable.INTEGER,
 		                                 new Integer(1)));
-		layoutProperties.add(new Tunable("initialAdaptation", "Initial adaptation", Tunable.DOUBLE,
+		layoutProperties.add(TunableFactory.getTunable("initialAdaptation", "Initial adaptation", Tunable.DOUBLE,
 		                                 new Double(0.9)));
-		layoutProperties.add(new Tunable("minAdaptation", "Minimum adaptation value",
+		layoutProperties.add(TunableFactory.getTunable("minAdaptation", "Minimum adaptation value",
 		                                 Tunable.DOUBLE, new Double(0)));
-		layoutProperties.add(new Tunable("coolingFactor", "Cooling factor", Tunable.DOUBLE,
+		layoutProperties.add(TunableFactory.getTunable("coolingFactor", "Cooling factor", Tunable.DOUBLE,
 		                                 new Double(2)));
 
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
 
 		// Finally, update everything.  We need to do this to update
 		// any of our values based on what we read from the property file
@@ -133,7 +136,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 		updateSettings(false);
 	}
 
-	public LayoutProperties getSettings() {
+	public ModuleProperties getSettings() {
 		return layoutProperties;
 	}
 

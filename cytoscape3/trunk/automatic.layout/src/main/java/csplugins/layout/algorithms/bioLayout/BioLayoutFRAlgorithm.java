@@ -39,12 +39,14 @@ import csplugins.layout.Profile;
 
 
 
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
 import cytoscape.util.*;
 
 import cytoscape.view.*;
+import cytoscape.CytoscapeInit;
 
 import org.cytoscape.view.*;
 
@@ -398,33 +400,33 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		/**
 		 * Tuning values
 		 */
-		layoutProperties.add(new Tunable("repulsion_multiplier",
+		layoutProperties.add(TunableFactory.getTunable("repulsion_multiplier",
 		                                 "Multiplier to calculate the repulsion force",
 		                                 Tunable.DOUBLE, new Double(0.04)));
-		layoutProperties.add(new Tunable("attraction_multiplier",
+		layoutProperties.add(TunableFactory.getTunable("attraction_multiplier",
 		                                 "Divisor to calculate the attraction force",
 		                                 Tunable.DOUBLE, new Double(0.03)));
-		layoutProperties.add(new Tunable("gravity_multiplier",
+		layoutProperties.add(TunableFactory.getTunable("gravity_multiplier",
 		                                 "Multiplier to calculate the gravity force",
 		                                 Tunable.DOUBLE, new Double(1)));
-		layoutProperties.add(new Tunable("iterations", "Number of iterations", Tunable.INTEGER,
+		layoutProperties.add(TunableFactory.getTunable("iterations", "Number of iterations", Tunable.INTEGER,
 		                                 new Integer(500)));
-		layoutProperties.add(new Tunable("temperature", "Initial temperature", Tunable.DOUBLE,
+		layoutProperties.add(TunableFactory.getTunable("temperature", "Initial temperature", Tunable.DOUBLE,
 		                                 new Double(80)));
-		layoutProperties.add(new Tunable("spread_factor", "Amount of extra room for layout",
+		layoutProperties.add(TunableFactory.getTunable("spread_factor", "Amount of extra room for layout",
 		                                 Tunable.DOUBLE, new Double(2)));
-		layoutProperties.add(new Tunable("update_iterations",
+		layoutProperties.add(TunableFactory.getTunable("update_iterations",
 		                                 "Number of iterations before updating display",
 		                                 Tunable.INTEGER, new Integer(0)));
-		layoutProperties.add(new Tunable("conflict_avoidance",
+		layoutProperties.add(TunableFactory.getTunable("conflict_avoidance",
 		                                 "Constant force applied to avoid conflicts",
 		                                 Tunable.DOUBLE, new Double(20.0)));
-		layoutProperties.add(new Tunable("max_distance_factor",
+		layoutProperties.add(TunableFactory.getTunable("max_distance_factor",
 		                                 "Percent of graph used for node repulsion calculations",
 		                                 Tunable.DOUBLE, new Double(10.0)));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
 
 		// Finally, update everything.  We need to do this to update
 		// any of our values based on what we read from the property file

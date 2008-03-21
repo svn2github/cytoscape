@@ -40,12 +40,14 @@ import csplugins.layout.Profile;
 import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.layout.AbstractLayout;
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
 import cytoscape.util.*;
 
 import cytoscape.view.*;
+import cytoscape.Cytoscape;
 
 import org.cytoscape.view.*;
 
@@ -79,7 +81,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	private static final int MAXWEIGHT = 3;
 	private static final int SELECTEDONLY = 4;
 	private static final int LAYOUTATTRIBUTE = 5;
-	LayoutProperties layoutProperties;
+	ModuleProperties layoutProperties;
 
 	/**
 	 * A small value used to avoid division by zero
@@ -135,7 +137,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 */
 	public BioLayoutAlgorithm() {
 		super();
-		layoutProperties = new LayoutProperties(getName());
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 	}
 
 	// We do support selected only
@@ -320,23 +322,23 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	 * the values as appropriates.
 	 */
 	protected void initializeProperties() {
-		layoutProperties.add(new Tunable("debug", "Enable debugging", Tunable.BOOLEAN,
+		layoutProperties.add(TunableFactory.getTunable("debug", "Enable debugging", Tunable.BOOLEAN,
 		                                 new Boolean(false), Tunable.NOINPUT));
-		layoutProperties.add(new Tunable("partition", "Partition graph before layout",
+		layoutProperties.add(TunableFactory.getTunable("partition", "Partition graph before layout",
 		                                 Tunable.BOOLEAN, new Boolean(true)));
-		layoutProperties.add(new Tunable("randomize", "Randomize graph before layout",
+		layoutProperties.add(TunableFactory.getTunable("randomize", "Randomize graph before layout",
 		                                 Tunable.BOOLEAN, new Boolean(true)));
-		layoutProperties.add(new Tunable("min_weight", "The minimum edge weight to consider",
+		layoutProperties.add(TunableFactory.getTunable("min_weight", "The minimum edge weight to consider",
 		                                 Tunable.DOUBLE, new Double(0)));
-		layoutProperties.add(new Tunable("max_weight", "The maximum edge weight to consider",
+		layoutProperties.add(TunableFactory.getTunable("max_weight", "The maximum edge weight to consider",
 		                                 Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
-		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+		layoutProperties.add(TunableFactory.getTunable("selected_only", "Only layout selected nodes",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
-		layoutProperties.add(new Tunable("edge_attribute",
+		layoutProperties.add(TunableFactory.getTunable("edge_attribute",
 		                                 "The edge attribute that contains the weights",
 		                                 Tunable.EDGEATTRIBUTE, "weight",
 		                                 (Object) getInitialAttributeList(), (Object) null,
-		                                 Tunable.NUMERICATTRIBUTE));
+		                                 Tunable.NUMERICATTRIBUTE, false, Cytoscape.getEdgeAttributes()));
 	}
 
 	/**
@@ -349,7 +351,7 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		return panel;
 	}
 
-	public LayoutProperties getSettings() {
+	public ModuleProperties getSettings() {
 		return layoutProperties;
 	}
 

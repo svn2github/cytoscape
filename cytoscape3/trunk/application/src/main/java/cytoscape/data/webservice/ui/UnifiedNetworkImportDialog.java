@@ -45,7 +45,8 @@ import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -54,7 +55,6 @@ import cytoscape.task.ui.JTaskConfig;
 
 import cytoscape.task.util.TaskManager;
 
-import cytoscape.util.ModuleProperties;
 
 import cytoscape.visual.VisualStyle;
 

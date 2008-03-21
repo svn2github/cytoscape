@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package cytoscape.util;
+package org.cytoscape.tunable.impl; 
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -44,9 +44,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import cytoscape.CytoscapeInit;
-import cytoscape.layout.Tunable;
+import java.awt.GridLayout;
+import javax.swing.JPanel;
 
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
 
 /**
  *
@@ -155,9 +157,8 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 *
 	 * @return HashMap containing the resulting properties
 	 */
-	public HashMap<String,String> getProperties() {
+	public HashMap<String,String> getProperties(Properties props) {
 		String prefix = getPrefix();
-		Properties props = CytoscapeInit.getProperties();
 		propertyMap = new HashMap<String,String>();
 		savedPropertyMap = new HashMap<String,String>();
 
@@ -182,9 +183,8 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 * so they can be saved in the properties file.
 	 *
 	 */
-	public void saveProperties() {
+	public void saveProperties(Properties props) {
 		String prefix = getPrefix();
-		Properties props = CytoscapeInit.getProperties();
 
 		for (String key : propertyMap.keySet()) {
 			props.setProperty(prefix + key, propertyMap.get(key));
@@ -237,8 +237,8 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 * there is no value for the property, then the default value in the Tunable
 	 * is used to initialize the property.
 	 */
-	public void initializeProperties() {
-		getProperties();
+	public void initializeProperties(Properties props) {
+		getProperties(props);
 
 		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
 			Tunable tunable = (Tunable) iter.next();
@@ -268,4 +268,26 @@ public class ModulePropertiesImpl implements ModuleProperties {
 
 		return prefix;
 	}
+
+
+	/**
+	 * This method returns a JPanel that represents the all of the Tunables
+	 * associated with this LayoutProperties object.
+	 *
+	 * @return JPanel that contains all of the Tunable widgets
+	 */
+	public JPanel getTunablePanel() {
+		JPanel tunablesPanel = new JPanel(new GridLayout(0, 1));
+
+		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
+			Tunable tunable = (Tunable) iter.next();
+			JPanel p = tunable.getPanel();
+
+			if (p != null)
+				tunablesPanel.add(p);
+		}
+
+		return tunablesPanel;
+	}
+
 }

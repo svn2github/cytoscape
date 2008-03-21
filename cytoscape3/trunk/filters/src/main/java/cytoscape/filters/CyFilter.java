@@ -39,8 +39,6 @@ package cytoscape.filters;
 import java.util.*;
 import org.cytoscape.GraphPerspective;
 
-//import giny.filter.Filter;
-
 public interface CyFilter { //extends Filter{
 	public BitSet getNodeBits();
 	public BitSet getEdgeBits();

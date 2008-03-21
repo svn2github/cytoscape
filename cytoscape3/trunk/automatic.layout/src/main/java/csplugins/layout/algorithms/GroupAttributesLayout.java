@@ -37,12 +37,14 @@
 package csplugins.layout.algorithms;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 
 import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.layout.AbstractLayout;
-import cytoscape.layout.LayoutProperties;
-import cytoscape.layout.Tunable;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.tunable.TunableFactory;
 
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
@@ -94,14 +96,14 @@ public class GroupAttributesLayout extends AbstractLayout {
 	private String attributeName;
 	private byte attributeType;
 	private CyAttributes nodeAttributes;
-	private LayoutProperties layoutProperties;
+	private ModuleProperties layoutProperties;
 
 	/**
 	 * Creates a new GroupAttributesLayout object.
 	 */
 	public GroupAttributesLayout() {
 		super();
-		layoutProperties = new LayoutProperties(getName());
+		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 		initialize_properties();
 	}
 
@@ -168,23 +170,23 @@ public class GroupAttributesLayout extends AbstractLayout {
 	}
 
 	protected void initialize_properties() {
-		layoutProperties.add(new Tunable("spacingx",
+		layoutProperties.add(TunableFactory.getTunable("spacingx",
 		                                 "Horizontal spacing between two partitions in a row",
 		                                 Tunable.DOUBLE, new Double(400.0)));
-		layoutProperties.add(new Tunable("spacingy",
+		layoutProperties.add(TunableFactory.getTunable("spacingy",
 		                                 "Vertical spacing between the largest partitions of two rows",
 		                                 Tunable.DOUBLE, new Double(400.0)));
-		layoutProperties.add(new Tunable("maxwidth", "Maximum width of a row", Tunable.DOUBLE,
+		layoutProperties.add(TunableFactory.getTunable("maxwidth", "Maximum width of a row", Tunable.DOUBLE,
 		                                 new Double(5000.0)));
-		layoutProperties.add(new Tunable("minrad", "Minimum width of a partition", Tunable.DOUBLE,
+		layoutProperties.add(TunableFactory.getTunable("minrad", "Minimum width of a partition", Tunable.DOUBLE,
 		                                 new Double(100.0)));
-		layoutProperties.add(new Tunable("radmult", "Scale of the radius of the partition",
+		layoutProperties.add(TunableFactory.getTunable("radmult", "Scale of the radius of the partition",
 		                                 Tunable.DOUBLE, new Double(50.0)));
-		layoutProperties.add(new Tunable("attributeName", "The attribute to use for the layout",
-		                                 Tunable.NODEATTRIBUTE, ""));
+		layoutProperties.add(TunableFactory.getTunable("attributeName", "The attribute to use for the layout",
+		                                 Tunable.NODEATTRIBUTE, "", "","",0,false,Cytoscape.getNodeAttributes()));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
-		layoutProperties.initializeProperties();
+		layoutProperties.initializeProperties(CytoscapeInit.getProperties());
 
 		// Finally, update everything.  We need to do this to update
 		// any of our values based on what we read from the property file
@@ -244,7 +246,7 @@ public class GroupAttributesLayout extends AbstractLayout {
 		layoutProperties.revertProperties();
 	}
 
-	public LayoutProperties getSettings() {
+	public ModuleProperties getSettings() {
 		return layoutProperties;
 	}
 

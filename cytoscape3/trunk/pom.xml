@@ -187,6 +187,7 @@
 		<module>attribute.browser</module>
 		<module>linkout</module>
 		<module>cpath</module>
+    <module>tunable</module>
   </modules>
 
 

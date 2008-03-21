@@ -70,6 +70,7 @@ import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
 
+import org.cytoscape.tunable.ModuleProperties;
 
 /**
  * The AbstractLayout provides nice starting point for Layouts
@@ -224,7 +225,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * Property handling -- these must be overridden by any algorithms
 	 * that want to use properties or have a settings UI.
 	 */
-	public LayoutProperties getSettings () {
+	public ModuleProperties getSettings () {
 		return null;
 	}
 
