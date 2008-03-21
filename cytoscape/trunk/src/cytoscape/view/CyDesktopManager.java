@@ -227,13 +227,18 @@ public class CyDesktopManager  {
 				h = MINIMUM_WIN_HEIGHT;
 			}
 			
-			double delta_h = 0;
+			double delta_y = 0;
 			if (frameCount > 1) {
-				delta_h = ((double)(desktopSize.height - MINIMUM_WIN_HEIGHT))/(frameCount-1);	
+				if (h < MINIMUM_WIN_HEIGHT) {
+					delta_y = ((double)(desktopSize.height - MINIMUM_WIN_HEIGHT))/(frameCount-1);						
+				}
+				else {
+					delta_y = ((double)(desktopSize.height))/(frameCount);
+				}
 			}
 			
 			for (int i=0; i< frameCount; i++) {
-				y = (int)(delta_h * i);
+				y = (int)(delta_y * i);
 				if (y> desktopSize.height - MINIMUM_WIN_HEIGHT) {
 					y = desktopSize.height - MINIMUM_WIN_HEIGHT;
 				}
@@ -250,13 +255,18 @@ public class CyDesktopManager  {
 				w = MINIMUM_WIN_WIDTH;
 			}
 
-			double delta_w = 0;
+			double delta_x = 0;
 			if (frameCount > 1) {
-				delta_w = ((double)(desktopSize.width - MINIMUM_WIN_WIDTH))/(frameCount-1);	
+				if (w < MINIMUM_WIN_WIDTH) {
+					delta_x = ((double)(desktopSize.width - MINIMUM_WIN_WIDTH))/(frameCount-1);	
+				}
+				else {
+					delta_x = ((double)desktopSize.width)/frameCount;
+				}
 			}
 			
 			for (int i=0; i< frameCount; i++) {
-				x = (int)(delta_w * i);
+				x = (int)(delta_x * i);
 				if (x > desktopSize.width - MINIMUM_WIN_WIDTH) {
 					x = desktopSize.width - MINIMUM_WIN_WIDTH;
 				}
