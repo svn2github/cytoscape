@@ -40,7 +40,7 @@ import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.layout.*;
+import org.cytoscape.layout.*;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;

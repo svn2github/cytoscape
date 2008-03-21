@@ -41,7 +41,7 @@ import cytoscape.CytoscapeInit;
 
 import org.cytoscape.attributes.CyAttributes;
 
-import cytoscape.layout.AbstractLayout;
+import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;

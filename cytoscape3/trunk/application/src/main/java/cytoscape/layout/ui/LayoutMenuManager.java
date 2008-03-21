@@ -38,8 +38,8 @@ package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.CyLayouts;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
 
 import java.util.ArrayList;
 import java.util.List;

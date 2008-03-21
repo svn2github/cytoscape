@@ -42,7 +42,7 @@ import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayoutAlgorithm;
 
 import org.cytoscape.RootGraph;
 

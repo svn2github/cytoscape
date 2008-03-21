@@ -45,7 +45,7 @@ import csplugins.layout.algorithms.hierarchicalLayout.Edge;
 import csplugins.layout.algorithms.hierarchicalLayout.Graph;
 
 //import cytoscape.editor.AddEdgeEdit;
-//import cytoscape.layout.AbstractLayout;
+//import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;

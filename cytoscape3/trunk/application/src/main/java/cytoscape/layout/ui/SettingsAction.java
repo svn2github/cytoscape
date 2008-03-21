@@ -37,7 +37,6 @@
 package cytoscape.layout.ui;
 
 import cytoscape.util.CytoscapeAction;
-import cytoscape.layout.ui.LayoutSettingsDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.event.MenuEvent;
 

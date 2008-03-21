@@ -26,7 +26,7 @@ import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-import cytoscape.layout.CyLayouts;
+import org.cytoscape.layout.CyLayouts;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -134,7 +134,7 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message, "Expansion complete", JOptionPane.YES_NO_OPTION
 				);
 				if (value == JOptionPane.YES_OPTION) {
-					CyLayouts.getLayout(defLayout).doLayout();
+					CyLayouts.getLayout(defLayout).doLayout(Cytoscape.getCurrentNetworkView());
 				}
 
 		} else if(evt.getPropertyName().equals(Cytoscape.PREFERENCES_UPDATED)) {

@@ -10,7 +10,7 @@ import csplugins.layout.LayoutPartition;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.layout.AbstractLayout;
+import org.cytoscape.layout.AbstractLayout;
 
 import cytoscape.task.*;
 

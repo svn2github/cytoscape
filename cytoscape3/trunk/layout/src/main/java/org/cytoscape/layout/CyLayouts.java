@@ -34,10 +34,9 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.layout;
+package org.cytoscape.layout;
 
-import cytoscape.CytoscapeInit;
-import cytoscape.layout.algorithms.GridNodeLayout;
+import org.cytoscape.layout.algorithms.GridNodeLayout;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -122,16 +121,15 @@ public class CyLayouts {
 	 */
 	public static CyLayoutAlgorithm getDefaultLayout() {
 		// See if the user has set the layout.default property
-		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
-
-		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
-			defaultLayout = "grid";
-		}
+//		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
+//
+//		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
+//			defaultLayout = "grid";
+//		}
+		String defaultLayout = "grid"; 
 
 		CyLayoutAlgorithm l = layoutMap.get(defaultLayout);
-		// System.out.println("getDefaultLayout returning " + l);
 
-		// Nope, so return the grid layout 
 		return l;
 	}
 

@@ -37,7 +37,7 @@ package org.cytoscape.coreplugin.cpath.task;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;

@@ -41,8 +41,7 @@ import cytoscape.Cytoscape;
 
 import org.cytoscape.attributes.CyAttributes;
 
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.LayoutTask;
+import org.cytoscape.layout.CyLayoutAlgorithm;
 
 import org.cytoscape.view.GraphView;
 

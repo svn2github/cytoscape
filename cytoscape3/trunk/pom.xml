@@ -164,10 +164,12 @@
 		<module>render.stateful</module>
 		<module>render.export</module>
 		<module>phoebe.dnd</module>
-    	<module>cruft.obo</module>
+		<module>cruft.obo</module>
 		<module>network</module>
 		<module>attributes</module>
-    	<module>view</module>
+		<module>view</module>
+		<module>tunable</module>
+		<module>layout</module>
 
 		<!-- Cytoscape Application -->
 		<module>application</module>
@@ -187,7 +189,6 @@
 		<module>attribute.browser</module>
 		<module>linkout</module>
 		<module>cpath</module>
-    <module>tunable</module>
   </modules>
 
 

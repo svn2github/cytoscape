@@ -49,7 +49,7 @@ import cytoscape.data.readers.GraphReader;
 import org.cytoscape.view.GraphView;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
-import cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayoutAlgorithm;
 
 import java.net.URLDecoder;
 

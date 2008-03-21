@@ -34,22 +34,18 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.layout;
-
-import cytoscape.Cytoscape;
-
-import cytoscape.layout.CyLayoutAlgorithm;
+package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
 
 import org.cytoscape.view.GraphView;
-
-import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.ViewChangeEdit;
-
 import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
+
+import org.cytoscape.RootGraph;
+import org.cytoscape.RootGraphFactory;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
@@ -230,13 +226,6 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	}
 
 	/**
-	 * doLayout on current network view.
-	 */
-	public void doLayout() {
-		doLayout(Cytoscape.getCurrentNetworkView(),nullTaskMonitor);
-	}
-
-	/**
 	 * doLayout on specified network view.
 	 */
 	public void doLayout(GraphView nview) {
@@ -253,12 +242,12 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		networkView = nview;
 
 		// do some sanity checking
-		if (networkView == null || networkView == Cytoscape.getNullNetworkView())
+		if (networkView == null || networkView == GraphViewFactory.getNullGraphView())
 			return;
 
 		this.network = networkView.getGraphPerspective();
 
-		if (network == null || network == Cytoscape.getNullNetwork()) 
+		if (network == null || network == RootGraphFactory.getRootGraph().getNullGraphPerspective()) 
 			return;
 
 		if (network.getNodeCount() <= 0) 

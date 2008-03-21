@@ -1495,4 +1495,8 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 			edge_name_index_map.put(identifier, index);
 		}
 	}
+
+	public GraphPerspective getNullGraphPerspective() {
+		return createGraphPerspective( new int[] {}, new int[] {} );
+	}
 }

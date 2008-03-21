@@ -61,8 +61,8 @@ import org.cytoscape.view.GraphViewFactory;
 
 import cytoscape.init.CyInitParams;
 
-import cytoscape.layout.CyLayouts;
-import cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.layout.CyLayoutAlgorithm;
 
 import cytoscape.util.FileUtil;
 

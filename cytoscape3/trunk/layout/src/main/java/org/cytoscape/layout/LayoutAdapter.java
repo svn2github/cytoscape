@@ -34,13 +34,12 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.layout;
+package org.cytoscape.layout;
 
 import java.lang.String;
 import java.util.List;
 import java.util.ArrayList;
 
-import cytoscape.Cytoscape;
 import org.cytoscape.view.GraphView;
 
 import cytoscape.task.TaskMonitor;
@@ -59,14 +58,6 @@ import org.cytoscape.tunable.ModuleProperties;
  * available outside of the reader or plugin's context.
  */
 abstract public class LayoutAdapter implements CyLayoutAlgorithm {
-	/**
-	 * This method performs the layout on the current network using the
-	 * current network view.
-	 *
-	 */
-	public void doLayout() {
-		doLayout(Cytoscape.getCurrentNetworkView(), null);
-	}
 
 	/**
 	 * This method performs the layout on the current network.

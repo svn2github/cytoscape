@@ -48,8 +48,8 @@ import csplugins.layout.algorithms.force.ForceDirectedLayout;
 
 import org.cytoscape.*;
 
-import cytoscape.layout.*;
-import cytoscape.layout.CyLayouts;
+import org.cytoscape.layout.*;
+import org.cytoscape.layout.CyLayouts;
 
 import cytoscape.plugin.*;
 

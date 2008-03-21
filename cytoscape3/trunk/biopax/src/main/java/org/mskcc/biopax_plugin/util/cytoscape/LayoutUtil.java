@@ -39,7 +39,7 @@ import java.util.Iterator;
 import cytoscape.Cytoscape;
 import cytoscape.task.TaskMonitor;
 import org.cytoscape.view.GraphView;
-import cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.tunable.ModuleProperties;
 
 import java.util.List;

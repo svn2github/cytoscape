@@ -60,6 +60,8 @@ public interface RootGraph {
 
   public GraphPerspective createGraphPerspective ( Collection<Node> nodes, Collection<Edge> edges);
 
+  public GraphPerspective getNullGraphPerspective();
+
   /**
    * Create a new GraphPerspective with just the given Nodes and Edges (and all
    * Nodes incident on the given Edges).

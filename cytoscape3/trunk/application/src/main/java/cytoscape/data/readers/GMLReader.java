@@ -45,8 +45,8 @@ import cytoscape.CytoscapeInit;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
 
-import cytoscape.layout.LayoutAdapter;
-import cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.LayoutAdapter;
+import org.cytoscape.layout.CyLayoutAlgorithm;
 
 import cytoscape.init.CyInitParams;
 

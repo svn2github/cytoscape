@@ -34,7 +34,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.layout;
+package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
 
@@ -51,12 +51,6 @@ import org.cytoscape.tunable.ModuleProperties;
  *
   */
 public interface CyLayoutAlgorithm {
-	/**
-	 * This method performs the layout on the current network using the
-	 * current network view.
-	 *
-	 */
-	public void doLayout();
 
 	/**
 	 * This method performs the layout on the current network.

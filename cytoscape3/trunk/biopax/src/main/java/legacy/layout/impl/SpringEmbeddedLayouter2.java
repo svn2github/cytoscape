@@ -58,7 +58,7 @@ import java.util.*;
  * project.  As little as possible has been done to change the algorithmic
  * logic, even where flaws might have been found.  The legacy class which
  * this class borrows code from is
- * <code>cytoscape.layout.SpringEmbeddedLayouter</code>.<p>
+ * <code>SpringEmbeddedLayouter</code>.<p>
  * This layout algorithm does support subgraph layout - that is, it respects
  * <code>MutableGraphLayout</code> objects whose nodes are not all movable.<p>
  * This class is seriously due for a complete re-write.  The algorithm is

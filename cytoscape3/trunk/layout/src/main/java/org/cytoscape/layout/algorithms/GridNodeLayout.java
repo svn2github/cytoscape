@@ -34,14 +34,13 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.layout.algorithms;
+package org.cytoscape.layout.algorithms;
 
 import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
-import cytoscape.Cytoscape;
 
-import cytoscape.layout.AbstractLayout;
+import org.cytoscape.layout.AbstractLayout;
 
 import cytoscape.task.Task;
 

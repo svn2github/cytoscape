@@ -38,7 +38,7 @@ package csplugins.layout.algorithms;
 
 import org.cytoscape.Node;
 
-import cytoscape.layout.AbstractLayout;
+import org.cytoscape.layout.AbstractLayout;
 
 import org.cytoscape.view.GraphView;
 
