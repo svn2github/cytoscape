@@ -39,6 +39,11 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		formatComboBox.addActionListener(this);
 		chkExportTextAsFont.addActionListener(this);
 		
+		// Hide the checkBox "ExportText as Font", because iText and FreeHep ignore the flag
+		chkExportTextAsFont.setVisible(false);
+		// Because the checkBox "ExportText as Font" is hidden, we have to set the preferred size
+		filePathField.setPreferredSize(new Dimension(300,25));
+		
 		formatComboBox.setModel(new DefaultComboBoxModel(formats));
 		formatComboBox.setSelectedIndex(0);
 		
