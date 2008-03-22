@@ -36,14 +36,14 @@ import java.util.Arrays;
 import java.lang.Math;
 
 public enum DistanceMetric {
-	EUCLIDEAN("Euclidean distance"),
-	CITYBLOCK("City-block distance"),
-	CORRELATION("correlation"),
-	ABS_CORRELATION("absolute value of the correlation"),
-	UNCENTERED_CORRELATION("uncentered correlation"),
-	ABS_UNCENTERED_CORRELATION("absolute uncentered correlation"),
+	UNCENTERED_CORRELATION("Uncentered correlation"),
+	CORRELATION("Pearson correlation"),
+	ABS_UNCENTERED_CORRELATION("Uncentered correlation, absolute value"),
+	ABS_CORRELATION("Pearson correlation, absolute value"),
 	SPEARMANS_RANK("Spearman's rank correlation"),
-	KENDALLS_TAU("Kendall's tau");
+	KENDALLS_TAU("Kendall's tau"),
+	EUCLIDEAN("Euclidean distance"),
+	CITYBLOCK("City-block distance");
 
 	private String name;
 
@@ -91,7 +91,7 @@ public enum DistanceMetric {
 			}
 		}
 		if (tweight == 0.0) return 0;
-		return (result /= tweight);
+		return (result/tweight);
 	}
 
 	private static double cityblockMetric(Matrix data1, Matrix data2, double[] weights, 
@@ -106,7 +106,7 @@ public enum DistanceMetric {
 			}
 		}
 		if (tweight == 0.0) return 0;
-		return (result /= tweight);
+		return (result/tweight);
 	}
 
 	private static double correlationMetric(Matrix data1, Matrix data2, double[] weights, 
@@ -229,14 +229,17 @@ public enum DistanceMetric {
 		double[] rank1 = data1.getRank(index1);
 		double[] rank2 = data2.getRank(index2);
 
+		if (rank1 == null || rank2 == null)
+			return 0.0;
+
 		double avgrank = 0.5*(rank1.length-1);
 
 		for (int i = 0; i < rank1.length; i++) {
 			double value1 = rank1[i];
 			double value2 = rank2[i];
-			result += value1 + value2;
-			denom1 += value1 + value1;
-			denom2 += value2 + value2;
+			result += value1 * value2;
+			denom1 += value1 * value1;
+			denom2 += value2 * value2;
 		}
 		result /= rank1.length;
 		denom1 /= rank1.length;

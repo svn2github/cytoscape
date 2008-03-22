@@ -92,7 +92,6 @@ public class Matrix {
 			// Throw an exception?
 			return;
 		}
-		System.out.println("New Matrix with "+nRows+" rows and "+nColumns+" columns");
 	}
 
 	public Matrix(Matrix duplicate) {
@@ -117,7 +116,6 @@ public class Matrix {
 					this.matrix[row][col] = new Double(duplicate.getValue(row, col));
 			}
 		}
-		System.out.println("New Matrix with "+nRows+" rows and "+nColumns+" columns");
 	}
 
 	public Matrix(int rows, int cols) {
@@ -130,7 +128,6 @@ public class Matrix {
 		this.columnLabels = new String[cols];
 		this.rowLabels = new String[rows];
 		this.transpose = false;
-		System.out.println("New Matrix with "+nRows+" rows and "+nColumns+" columns");
 	}
 
 	public int nRows() { return this.nRows; }
@@ -232,14 +229,16 @@ public class Matrix {
 	}
 
 	public double[] getRank(int row) {
-
 		// Get the masked row
-		double[] tData = new double[nRows];
+		double[] tData = new double[nColumns];
 		int nVals = 0;
 		for (int column = 0; column < nColumns; column++) {
 			if (hasValue(row,column))
 				tData[nVals++] = matrix[row][column].doubleValue();
 		}
+
+		if (nVals == 0)
+			return null;
 
 		// Sort the data
 		Integer index[] = indexSort(tData,nVals);
@@ -269,9 +268,27 @@ public class Matrix {
 			for (int column = 0; column < row; column++) {
 				result[row][column] = 
 				   metric.getMetric(this, this, this.getWeights(), row, column);
+				// System.out.println("distanceMatrix["+row+"]["+column+"] = "+result[row][column]);
 			}
 		}
 		return result;
+	}
+
+	public void printMatrix() {
+		for (int col = 0; col < nColumns; col++)
+			System.out.print("\t"+columnLabels[col]);
+		System.out.println();
+
+		for (int row = 0; row < nRows; row++) {
+			System.out.print(rowLabels[row]+"\t");
+			for (int col = 0; col < nColumns; col++) {
+				if (matrix[row][col] != null)
+					System.out.print(matrix[row][col]+"\t");
+				else
+					System.out.print("\t");
+			}
+			System.out.println();
+		}
 	}
 
 	private Integer[] indexSort(double[] tData, int nVals) {
@@ -388,9 +405,11 @@ public class Matrix {
 				for (int column=0; column < this.nColumns; column++) {
 					String columnLabel = this.columnLabels[column];
 					if (thisCondMap.containsKey(columnLabel)) {
+						// System.out.println("Setting matrix["+rowLabels[row]+"]["+columnLabel+"] to "+thisCondMap.get(columnLabel));
 						matrix[row][column] = thisCondMap.get(columnLabel);
 					}
 				}
+				row++;
 			}
 		}
 	}
@@ -405,7 +424,6 @@ public class Matrix {
 	private void assignColumnLabels(Set<String>labelList) {
 		int index = 0;
 		for (String label: labelList){
-			System.out.println("Column label: "+label);
 			this.columnLabels[index++] = label;
 		}
 	}

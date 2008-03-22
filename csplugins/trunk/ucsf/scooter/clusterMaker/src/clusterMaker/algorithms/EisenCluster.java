@@ -47,6 +47,8 @@ import cytoscape.task.TaskMonitor;
 // clusterMaker imports
 
 public class EisenCluster {
+	final static int IS = 0;
+	final static int JS = 1;
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
 	                      ClusterMethod clusterMethod, boolean transpose) {
@@ -62,6 +64,7 @@ public class EisenCluster {
 
 		// Cluster
 		TreeNode[] nodeList = treeCluster(matrix, metric, clusterMethod);
+		if (nodeList == null || nodeList.length == 0) System.out.println("treeCluster returned empty tree!");
 
 		if (metric == DistanceMetric.EUCLIDEAN || metric == DistanceMetric.CITYBLOCK) {
 			// Normalize distances to between 0 and 1
@@ -92,7 +95,7 @@ public class EisenCluster {
 			int counts2;
 			String ID1;
 			String ID2;
-			nodeID[node] = "NODE"+(node+1)+"X";
+			nodeID[node] = "GROUP"+(node+1)+"X";
 			if (min1 < 0) {
 				int index1 = -min1-1;
 				order1 = nodeOrder[index1];
@@ -102,7 +105,8 @@ public class EisenCluster {
 			} else {
 				order1 = min1;
 				counts1 = 1;
-				ID1 = keyword+min1+"X"; // Shouldn't this be the name of the gene/condition?
+				// ID1 = keyword+min1+"X"; // Shouldn't this be the name of the gene/condition?
+				ID1 = matrix.getRowLabel(min1);
 			}
 
 			if (min2 < 0) {
@@ -114,14 +118,18 @@ public class EisenCluster {
 			} else {
 				order2 = min2;
 				counts2 = 1;
-				ID2 = keyword+min2+"X"; // Shouldn't this be the name of the gene/condition?
+				// ID2 = keyword+min2+"X"; // Shouldn't this be the name of the gene/condition?
+				ID2 = matrix.getRowLabel(min2);
 			}
+
+			System.out.println(nodeID[node]+"\t"+ID1+"\t"+ID2+"\t"+(1.0-nodeList[node].getDistance()));
 
 			nodeCounts[node] = counts1 + counts2;
 			nodeOrder[node] = (counts1*order1 + counts2*order2) / (counts1 + counts2);
 		}
 
 		// Now sort based on tree structure
+		TreeSort(nodeList.length, nodeOrder, nodeCounts, nodeList);
 
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		return "Complete";
@@ -129,6 +137,7 @@ public class EisenCluster {
 
 	private static TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric, ClusterMethod clusterMethod) { 
 
+		matrix.printMatrix();
 		double[][] distanceMatrix = matrix.getDistanceMatrix(metric);
 		TreeNode[] result = null;
 
@@ -179,12 +188,6 @@ public class EisenCluster {
 		int nRows = matrix.nRows();
 		int nNodes = nRows-1;
 
-		System.out.println("pslCluster: nRows = "+nRows+", nNodes = "+nNodes);
-		if (distanceMatrix != null)
-			System.out.println("pslCluster: distranceMatrix is not null");
-		else
-			System.out.println("pslCluster: distranceMatrix is null!");
-
 		int[] vector = new int[nNodes];
 		TreeNode[] nodeList = new TreeNode[nNodes]; 
 		// Initialize
@@ -194,8 +197,9 @@ public class EisenCluster {
 		}
 
 		int k = 0;
-		for (int row = 0; row < nNodes; row++) {
-			double[] temp = new double[nNodes];
+		double[] temp = new double[nNodes];
+
+		for (int row = 0; row < nRows; row++) {
 			if (distanceMatrix != null) {
 				for (int j = 0; j < row; j++) temp[j] = distanceMatrix[row][j];
 			} else {
@@ -204,19 +208,18 @@ public class EisenCluster {
 			}
 			for (int j = 0; j < row; j++) {
 				k = vector[j];
-				double dist = nodeList[j].getDistance();
-				if (dist >= temp[j]) {
-					if (dist < temp[k]) temp[k] = dist;
+				if (nodeList[j].getDistance() >= temp[j]) {
+					if (nodeList[j].getDistance() < temp[k]) temp[k] = nodeList[j].getDistance();
 					nodeList[j].setDistance(temp[j]);
 					vector[j] = row;
 				} else if (temp[j] < temp[k]) temp[k] = temp[j];
-				System.out.println("pslCluster: nRows = "+nRows+", nNodes = "+nNodes+", j = "+j+", row="+row+", vector["+j+"] = "+vector[j]);
 			}
 			for (int j = 0; j < row; j++) {
-				double dist = nodeList[j].getDistance();
-				if (dist >= nodeList[vector[j]].getDistance()) vector[j] = row;	
+				if (vector[j] == nNodes || nodeList[j].getDistance() >= nodeList[vector[j]].getDistance()) vector[j] = row;
 			}
 		}
+
+
 		for (int row = 0; row < nNodes; row++)
 			nodeList[row].setLeft(row);
 
@@ -228,7 +231,7 @@ public class EisenCluster {
 			int j = nodeList[i].getLeft();
 			k = vector[j];
 			nodeList[i].setLeft(index[j]);
-			nodeList[i].setRight(index[i]);
+			nodeList[i].setRight(index[k]);
 			index[k] = -i-1;
 		}
 
@@ -249,82 +252,203 @@ public class EisenCluster {
 		int nRows = matrix.nRows();
 		int nColumns = matrix.nColumns();
 		int nNodes = nRows-1;
-		int mask[][] = new int[matrix.nRows()][matrix.nColumns()];
-
-		System.out.println("pclCluster: nRows = "+nRows+", nNodes = "+nNodes);
-		if (distanceMatrix != null)
-			System.out.println("pclCluster: distranceMatrix is not null");
-		else
-			System.out.println("pclCluster: distranceMatrix is null!");
+		double mask[][] = new double[matrix.nRows()][matrix.nColumns()];
 
 		TreeNode[] nodeList = new TreeNode[nNodes]; 
 
 		// Initialize
-		int distID[] = new int[nNodes];
-		for (int row = 0; row < nNodes; row++) {
+		Matrix newData = new Matrix(matrix);
+		// System.out.println("New matrix: ");
+		// newData.printMatrix();
+
+		int distID[] = new int[nRows];
+		for (int row = 0; row < nRows; row++) {
 			distID[row] = row;
 			for (int col = 0; col < nColumns; col++) {
-				if (matrix.hasValue(row, col))
-					mask[row][col] = 1;
+				if (newData.hasValue(row, col))
+					mask[row][col] = 1.0;
 				else
-					mask[row][col] = 0;
+					mask[row][col] = 0.0;
 			}
+			if (row < nNodes)
+				nodeList[row] = new TreeNode(Double.MAX_VALUE);
 		}
 
-		Matrix newData = new Matrix(matrix);
 		int pair[] = new int[2];
 
 		for (int inode = 0; inode < nNodes; inode++) {
 			// find the pair with the shortest distance
-			pair[0] = 1; pair[1] = 0;
-			nodeList[inode].setDistance(findClosestPair(nNodes-inode, distanceMatrix, pair));
+			pair[IS] = 1; pair[JS] = 0;
+			double distance = findClosestPair(nRows-inode, distanceMatrix, pair);
+			nodeList[inode].setDistance(distance);
 
-			int isInt = pair[0];
-			int jsInt = pair[1];
-			nodeList[inode].setLeft(distID[jsInt]);
-			nodeList[inode].setRight(distID[isInt]);
+			int is = pair[IS];
+			int js = pair[JS];
+			nodeList[inode].setLeft(distID[js]);
+			nodeList[inode].setRight(distID[is]);
 	
 			// make node js the new node
 			for (int col = 0; col < nColumns; col++) {
-				double jsValue = newData.doubleValue(jsInt, col);
-				double isValue = newData.doubleValue(isInt, col);
-				newData.setValue(jsInt, col, jsValue*mask[jsInt][col] + isValue*mask[isInt][col]);
-				mask[jsInt][col] += mask[isInt][col];
-				if (mask[jsInt][col] != 0) {
-					newData.setValue(jsInt, col, newData.doubleValue(jsInt, col) / mask[jsInt][col]);
+				double jsValue = newData.doubleValue(js, col);
+				double isValue = newData.doubleValue(is, col);
+				double newValue = 0.0;
+				if (newData.hasValue(js,col)) newValue = jsValue * mask[js][col];
+				if (newData.hasValue(is,col)) newValue += isValue * mask[is][col];
+
+				if (newData.hasValue(js,col) || newData.hasValue(is,col)) {
+					newData.setValue(js, col, newValue);
+				}
+				mask[js][col] += mask[is][col];
+				if (mask[js][col] != 0) {
+					newData.setValue(js, col, newValue / mask[js][col]);
 				}
 			}
 
 			for (int col = 0; col < nColumns; col++) {
-				mask[isInt][col] = mask[nNodes-inode][col];
-				newData.setValue(isInt, col, newData.getValue(nNodes-inode, col));
+				mask[is][col] = mask[nNodes-inode][col];
+				newData.setValue(is, col, newData.getValue(nNodes-inode, col));
 			}
 
 			// Fix the distances
-			distID[isInt] = distID[nNodes-inode];
-			for (int i = 0; i < isInt; i++)
-				distanceMatrix[isInt][i] = distanceMatrix[nNodes-inode][i];
+			distID[is] = distID[nNodes-inode];
+			for (int i = 0; i < is; i++) {
+				distanceMatrix[is][i] = distanceMatrix[nNodes-inode][i];
+			}
 
-			for (int i = jsInt+1; i < nNodes-inode; i++)
-				distanceMatrix[i][isInt] = distanceMatrix[nNodes-inode][i];
+			for (int i = is+1; i < nNodes-inode; i++) {
+				distanceMatrix[i][is] = distanceMatrix[nNodes-inode][i];
+			}
 
-			distID[jsInt] = -inode-1;
-
-			for (int i = 0; i < jsInt; i++)
-				distanceMatrix[jsInt][i] = metric.getMetric(newData, newData, newData.getWeights(), jsInt, i);
-			for (int i = jsInt+1; i < nNodes-inode; i++)
-				distanceMatrix[i][jsInt] = metric.getMetric(newData, newData, newData.getWeights(), jsInt, i);
+			distID[js] = -inode-1;
+			for (int i = 0; i < js; i++) {
+				distanceMatrix[js][i] = metric.getMetric(newData, newData, newData.getWeights(), js, i);
+			}
+			for (int i = js+1; i < nNodes-inode; i++) {
+				distanceMatrix[i][js] = metric.getMetric(newData, newData, newData.getWeights(), js, i);
+			}
 		}
 
 		return nodeList;
 	}
 
-	private static TreeNode[] pmlcluster(int rows, double[][] distanceMatrix) {
-		return null;
+	/**
+	 * The pmlcluster routine performs clustering using pairwise maximum- (complete-)
+	 * linking on the given distance matrix.
+	 * 
+	 * @param nRows The number of rows to be clustered
+	 * @param distanceMatrix The distance matrix, with rows rows, each row being filled up to the
+	 * diagonal. The elements on the diagonal are not used, as they are assumed to be
+	 * zero. The distance matrix will be modified by this routine.
+	 * @return the array of TreeNode's that describe the hierarchical clustering solution, or null if
+	 * it fails for some reason.
+	 */
+	private static TreeNode[] pmlcluster(int nRows, double[][] distanceMatrix) {
+		int[] clusterID = new int[nRows];
+		TreeNode[] nodeList = new TreeNode[nRows-1]; 
+
+		for (int j = 0; j < nRows; j++) {
+			clusterID[j] = j;
+		}
+
+		int pair[] = new int[2];
+		for (int n = nRows; n > 1; n--) {
+			pair[0] = 1; pair[1] = 2;
+			if (nodeList[nRows-n] == null)
+				nodeList[nRows-n] = new TreeNode(Double.MAX_VALUE);
+			nodeList[nRows-n].setDistance(findClosestPair(n, distanceMatrix, pair));
+			int is = pair[0];
+			int js = pair[1];
+
+			// Fix the distances
+			for (int j = 0; j < js; j++)
+				distanceMatrix[js][j] = Math.max(distanceMatrix[is][j],distanceMatrix[js][j]);
+			for (int j = js+1; j < is; j++)
+				distanceMatrix[j][js] = Math.max(distanceMatrix[is][j],distanceMatrix[j][js]);
+			for (int j = is+1; j < n; j++)
+				distanceMatrix[j][js] = Math.max(distanceMatrix[j][is],distanceMatrix[j][js]);
+			for (int j = 0; j < is; j++)
+				distanceMatrix[is][j] = distanceMatrix[n-1][j];
+			for (int j = is+1; j < n-1; j++)
+				distanceMatrix[j][is] = distanceMatrix[n-1][j];
+
+			// Update cluster IDs
+			nodeList[nRows-n].setLeft(clusterID[is]);
+			nodeList[nRows-n].setRight(clusterID[js]);
+			clusterID[js] = n-nRows-1;
+			clusterID[is] = clusterID[n-1];
+		}
+		return nodeList;
 	}
 
-	private static TreeNode[] palcluster(int rows, double[][] distanceMatrix) {
-		return null;
+	/**
+	 * The pmlcluster routine performs clustering using pairwise average
+	 * linking on the given distance matrix.
+	 * 
+	 * @param nRows The number of rows to be clustered
+	 * @param distanceMatrix The distance matrix, with rows rows, each row being filled up to the
+	 * diagonal. The elements on the diagonal are not used, as they are assumed to be
+	 * zero. The distance matrix will be modified by this routine.
+	 * @return the array of TreeNode's that describe the hierarchical clustering solution, or null if
+	 * it fails for some reason.
+	 */
+	private static TreeNode[] palcluster(int nRows, double[][] distanceMatrix) {
+		int[] clusterID = new int[nRows];
+		int[] number = new int[nRows];
+		TreeNode[] nodeList = new TreeNode[nRows-1]; 
+
+		// Setup a list specifying to which cluster a gene belongs, and keep track
+		// of the number of elements in each cluster (needed to calculate the
+		// average).
+		for (int j = 0; j < nRows; j++) {
+			number[j] = 1;
+			clusterID[j] = j;
+		}
+
+		int pair[] = new int[2];
+		for (int n = nRows; n > 1; n--) {
+			int sum = 0;
+			pair[IS] = 1; pair[JS] = 0;
+			if (nodeList[nRows-n] == null)
+				nodeList[nRows-n] = new TreeNode(Double.MAX_VALUE);
+			double distance = findClosestPair(n, distanceMatrix, pair);
+			nodeList[nRows-n].setDistance(distance);
+
+			// Save result
+			int is = pair[IS];
+			int js = pair[JS];
+			nodeList[nRows-n].setLeft(clusterID[is]);
+			nodeList[nRows-n].setRight(clusterID[js]);
+
+			// Fix the distances
+			sum = number[is] + number[js];
+			for (int j = 0; j < js; j++) {
+				distanceMatrix[js][j] = (distanceMatrix[is][j]*(double)number[is] + distanceMatrix[js][j]*(double)number[js])/(double)sum;
+			}
+
+			for (int j = js+1; j < is; j++) {
+				distanceMatrix[j][js] = (distanceMatrix[is][j]*(double)number[is] + distanceMatrix[j][js]*(double)number[js])/(double)sum;
+			}
+
+			for (int j = is+1; j < n; j++) {
+				distanceMatrix[j][js] = (distanceMatrix[j][is]*(double)number[is] + distanceMatrix[j][js]*(double)number[js])/(double)sum;
+			}
+
+			for (int j = 0; j < is; j++) {
+				distanceMatrix[is][j] = distanceMatrix[n-1][j];
+			}
+			for (int j = is+1; j < n-1; j++) {
+				distanceMatrix[j][is] = distanceMatrix[n-1][j];
+			}
+
+			// Update number of elements in the clusters
+			number[js] = sum;
+			number[is] = number[n-1];
+
+			// Update cluster IDs
+			clusterID[js] = n-nRows-1;
+			clusterID[is] = clusterID[n-1];
+		}
+		return nodeList;
 	}
 
 	private static void getAttributesList(List<String>attributeList, CyAttributes attributes, 
@@ -378,8 +502,21 @@ public class EisenCluster {
 				}
 			}
 		}
-		pair[0] = ip;
-		pair[1] = jp;
+		pair[IS] = ip;
+		pair[JS] = jp;
 		return distance;
+	}
+
+	private static void TreeSort(int nNodes, double nodeOrder[], int nodeCounts[], TreeNode nodeList[]) {
+		int nElements = nNodes+1;
+		double newOrder[] = new double[nElements];
+		int clusterID[] = new int[nElements];
+		
+		for (int i = 0; i < nElements; i++) clusterID[i] = i;
+
+		for (int i = 0; i < nNodes; i++) {
+			int i1 = nodeList[i].getLeft();
+			int i2 = nodeList[i].getRight();
+		}
 	}
 }
