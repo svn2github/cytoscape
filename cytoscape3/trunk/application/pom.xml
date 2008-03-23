@@ -317,7 +317,7 @@
 		</dependency>
 
 	</dependencies>
-
+<!-- not sure if this needs to be here
 	<reporting>
 		<plugins>
 			<plugin>
@@ -347,7 +347,7 @@
 
 		</plugins>
 	</reporting>
-
+-->
 	<build>
 		<plugins>
 
