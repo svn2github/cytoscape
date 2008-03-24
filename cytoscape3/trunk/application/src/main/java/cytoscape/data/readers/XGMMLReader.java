@@ -85,10 +85,10 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
 import org.cytoscape.view.GraphView;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualMappingManager;
+import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualMappingManager;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;

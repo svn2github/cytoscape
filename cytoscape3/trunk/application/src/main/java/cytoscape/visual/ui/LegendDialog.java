@@ -3,15 +3,15 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualStyle;
 
-import cytoscape.visual.calculators.Calculator;
+import org.cytoscape.vizmap.calculators.Calculator;
 
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.mappings.PassThroughMapping;
 
 import org.freehep.util.export.ExportDialog;
 

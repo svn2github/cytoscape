@@ -56,14 +56,14 @@ import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
-import cytoscape.visual.ui.LabelPlacerGraphic;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import org.cytoscape.vizmap.LabelPosition;
+import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
+//import cytoscape.visual.ui.LabelPlacerGraphic;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 
 /**
@@ -570,6 +570,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.setStroke(STROKE2);
 
 		switch (type) {
+			case NODE_LABEL_POSITION:  // TODO!!! 
 			case NODE_SHAPE:
 
 				final VisualPropertyIcon icon = (VisualPropertyIcon) type.getVisualProperty()
@@ -629,13 +630,13 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 				break;
 
-			case NODE_LABEL_POSITION:
-
-				final LabelPlacerGraphic lp = new LabelPlacerGraphic((LabelPosition) key,
-				                                                     (int) (size * 1.5), false);
-				lp.paint(g);
-
-				break;
+//			case NODE_LABEL_POSITION:
+//
+//				final LabelPlacerGraphic lp = new LabelPlacerGraphic((LabelPosition) key,
+//				                                                     (int) (size * 1.5), false);
+//				lp.paint(g);
+//
+//				break;
 
 			case NODE_LABEL:
 			case NODE_TOOLTIP:

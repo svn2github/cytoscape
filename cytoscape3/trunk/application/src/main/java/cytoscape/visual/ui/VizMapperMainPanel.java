@@ -49,7 +49,7 @@ import org.cytoscape.Node;
 import org.cytoscape.Edge;
 
 import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
+import org.cytoscape.attributes.CyAttributesUtils;
 
 import cytoscape.util.SwingWorker;
 
@@ -59,28 +59,28 @@ import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
-import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
-import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
-import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualPropertyType;
+import static org.cytoscape.vizmap.VisualPropertyType.NODE_FONT_SIZE;
+import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
+import static org.cytoscape.vizmap.VisualPropertyType.NODE_LABEL_POSITION;
+import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
 
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualStyle;
 
-import cytoscape.visual.calculators.BasicCalculator;
-import cytoscape.visual.calculators.Calculator;
+import org.cytoscape.vizmap.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
 
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
+import org.cytoscape.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.mappings.PassThroughMapping;
 
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
@@ -93,9 +93,9 @@ import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
 import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
-import cytoscape.visual.ui.icon.ArrowIcon;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import org.cytoscape.vizmap.icon.ArrowIcon;
+import org.cytoscape.vizmap.icon.NodeIcon;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -225,25 +225,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	private static VizMapperMainPanel panel;
 
-	static {
-		/*
-		 * Make dummy network nodes & edges
-		final Node source = Cytoscape.getCyNode("Source", true);
-		final Node target = Cytoscape.getCyNode("Target", true);
-		final Edge edge = Cytoscape.getCyEdge(source, target, "dummyInteraction", "interaction", true, true);
-
-		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-		nodeAttr.setAttribute("Source", "hiddenLabel", "Source");
-		nodeAttr.setAttribute("Target", "hiddenLabel", "Target");
-		nodeAttr.setUserVisible("hiddenLabel", false);
-		nodeAttr.setUserEditable("hiddenLabel", false);
-
-		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		edgeAttr.setUserVisible("dummyInteraction", false);
-		edgeAttr.setUserEditable("dummyInteraction", false);
-		 */
-	}
-
 	/*
 	 * Visual mapping manager. All parameters should be taken from here.
 	 */
@@ -283,6 +264,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		// Need to register listener here, instead of CytoscapeDesktop.
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new VizMapListener());
 
 		initComponents();
 		registerCellEditorListeners();
@@ -522,7 +504,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	public static Object showValueSelectDialog(VisualPropertyType type, Component caller)
 	    throws Exception {
-		return type.showDiscreteEditor();
+		return EditorFactory.showDiscreteEditor(type);
 	}
 
 	/**
@@ -1344,7 +1326,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						return;
 					} else {
 						try {
-							((JDialog) type.showContinuousEditor()).addPropertyChangeListener(this);
+							((JDialog) EditorFactory.showContinuousEditor(type)).addPropertyChangeListener(this);
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
@@ -2875,7 +2857,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Object newValue = null;
 
 		try {
-			newValue = type.showDiscreteEditor();
+			newValue = EditorFactory.showDiscreteEditor(type);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

@@ -13,7 +13,7 @@ import java.awt.geom.AffineTransform;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 
 
 /**

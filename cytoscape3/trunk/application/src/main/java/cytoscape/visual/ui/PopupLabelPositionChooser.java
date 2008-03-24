@@ -36,10 +36,12 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.LabelPosition;
 import cytoscape.Cytoscape;
-import cytoscape.visual.parsers.ObjectToString;
-import cytoscape.visual.VisualPropertyType;
+
+import org.cytoscape.vizmap.ObjectToString;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.LabelPosition;
+import org.cytoscape.vizmap.LabelPlacerGraphic;
 
 import org.cytoscape.view.Label;
 import org.cytoscape.GraphObject;

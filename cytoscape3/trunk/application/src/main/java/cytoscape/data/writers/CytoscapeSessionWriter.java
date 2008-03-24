@@ -78,10 +78,10 @@ import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.CalculatorIO;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.CalculatorIO;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
 
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;

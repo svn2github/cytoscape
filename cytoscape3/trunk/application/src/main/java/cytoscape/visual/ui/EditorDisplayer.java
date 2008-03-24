@@ -47,11 +47,11 @@ import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.LabelPosition;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.LabelPosition;
+import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualPropertyType;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;

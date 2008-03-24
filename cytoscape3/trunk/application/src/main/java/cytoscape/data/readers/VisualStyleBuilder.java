@@ -38,9 +38,9 @@ package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
-import cytoscape.visual.*;
-import cytoscape.visual.calculators.*;
-import cytoscape.visual.mappings.*;
+import org.cytoscape.vizmap.*;
+import org.cytoscape.vizmap.calculators.*;
+import org.cytoscape.vizmap.mappings.*;
 
 import java.util.*;
 import java.awt.Color;

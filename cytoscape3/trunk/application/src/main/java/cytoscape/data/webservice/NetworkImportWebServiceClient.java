@@ -36,7 +36,7 @@
 
 package cytoscape.data.webservice;
 
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualStyle;
 
 
 /**

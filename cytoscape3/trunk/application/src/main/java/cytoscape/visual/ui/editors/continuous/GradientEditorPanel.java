@@ -55,11 +55,11 @@ import javax.swing.SwingUtilities;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.AddPointListener;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.vizmap.mappings.continuous.AddPointListener;
+import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 
 
 /**

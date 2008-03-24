@@ -67,8 +67,9 @@ import javax.xml.bind.Unmarshaller;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.DuplicateCalculatorNameException;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.data.Semantics;
 import cytoscape.generated.Child;
@@ -319,7 +320,7 @@ public class CytoscapeSessionReader {
 
 		try {
 			unzipSessionFromURL();
-		} catch (cytoscape.visual.DuplicateCalculatorNameException dcne) {
+		} catch (DuplicateCalculatorNameException dcne) {
 			System.out.println("Duplicate VS name found.  It will be ignored...");
 		}
 

@@ -38,10 +38,10 @@ package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;

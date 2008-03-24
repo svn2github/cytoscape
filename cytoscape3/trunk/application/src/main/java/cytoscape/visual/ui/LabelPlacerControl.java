@@ -36,7 +36,7 @@
  */
 package cytoscape.visual.ui;
 
-import cytoscape.visual.LabelPosition;
+import org.cytoscape.vizmap.LabelPosition;
 
 import org.cytoscape.view.Label;
 
@@ -65,7 +65,6 @@ class LabelPlacerControl extends JPanel
     private JTextField yoffsetBox;
     private JComboBox nodeAnchors;
     private JComboBox labelAnchors;
-    private LabelPlacerGraphic labelPlacer;
     private boolean ignoreEvents;
 
     LabelPlacerControl(LabelPosition pos) {

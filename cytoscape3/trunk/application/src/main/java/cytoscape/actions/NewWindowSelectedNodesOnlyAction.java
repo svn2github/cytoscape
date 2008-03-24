@@ -52,8 +52,8 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.VisualMappingManager;
 
 import java.awt.event.ActionEvent;
 

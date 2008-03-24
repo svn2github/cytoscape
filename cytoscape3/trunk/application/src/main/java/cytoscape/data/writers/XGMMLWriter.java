@@ -53,7 +53,7 @@ import org.cytoscape.attributes.MultiHashMapDefinition;
 
 import org.cytoscape.view.GraphView;
 
-import cytoscape.visual.LineStyle;
+import org.cytoscape.vizmap.LineStyle;
 
 import org.cytoscape.view.Bend;
 import org.cytoscape.view.EdgeView;

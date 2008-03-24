@@ -69,8 +69,9 @@ import cytoscape.util.FileUtil;
 import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.VMMFactory;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
@@ -412,12 +413,6 @@ public abstract class Cytoscape {
 	 */
 	protected static GraphView nullNetworkView = GraphViewFactory.createGraphView(nullNetwork);
 
-	/*
-	 * VMM should be tied to Cytoscape, not to Desktop. Developers should call
-	 * this from here.
-	 */
-	protected static VisualMappingManager VMM = new VisualMappingManager(nullNetworkView);
-
 	/**
 	 * @return a nullNetworkView object. This is NOT simply a null object.
 	 */
@@ -531,14 +526,6 @@ public abstract class Cytoscape {
 		return newPcs;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static VisualMappingManager getVisualMappingManager() {
-		return VMM;
-	}
 
 	/**
 	 * Return the RootGraph
@@ -1678,9 +1665,9 @@ public abstract class Cytoscape {
 		setSelectionMode(Cytoscape.getSelectionMode(), view);
 
 		if (vs != null) {
-			VMM.setVisualStyleForView(view,vs);
-			VMM.setVisualStyle(vs);
-			VMM.setNetworkView(view);
+			VMMFactory.getVisualMappingManager().setVisualStyleForView(view,vs);
+			VMMFactory.getVisualMappingManager().setVisualStyle(vs);
+			VMMFactory.getVisualMappingManager().setNetworkView(view);
 		}
 
 		if (layout == null) {
@@ -1907,8 +1894,12 @@ public abstract class Cytoscape {
 	 * This is a temporary utility method and will eventually be refactored away.
 	 */
 	public static void redrawGraph(GraphView view) {
-		VMM.setNetworkView(view);
-		VMM.applyAppearances();
+		VMMFactory.getVisualMappingManager().setNetworkView(view);
+		VMMFactory.getVisualMappingManager().applyAppearances();
 		view.updateView();
+	}
+
+	public static VisualMappingManager getVisualMappingManager() {
+		return VMMFactory.getVisualMappingManager();
 	}
 }

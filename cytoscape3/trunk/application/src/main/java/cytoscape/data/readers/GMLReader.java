@@ -55,23 +55,23 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
 import cytoscape.util.FileUtil;
 
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.GlobalAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.VisualPropertyType;
 
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.calculators.BasicCalculator;
 
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.mappings.PassThroughMapping;
 
 // -----------------------------------------------------------------------------------------
 import org.cytoscape.Edge;

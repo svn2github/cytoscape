@@ -34,7 +34,7 @@
 */
 package cytoscape.visual.ui;
 
-import static cytoscape.visual.VisualPropertyType.*;
+import static org.cytoscape.vizmap.VisualPropertyType.*;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -58,9 +58,9 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 
 /**

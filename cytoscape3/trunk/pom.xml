@@ -227,6 +227,7 @@
 		<module>attribute.browser</module>
 		<module>linkout</module>
 		<module>cpath</module>
+    <module>vizmap</module>
   </modules>
 
 

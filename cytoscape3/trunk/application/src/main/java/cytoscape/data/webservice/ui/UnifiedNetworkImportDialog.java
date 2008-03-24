@@ -56,7 +56,7 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
 
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualStyle;
 
 import java.awt.Color;
 import java.awt.GridLayout;

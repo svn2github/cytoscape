@@ -37,12 +37,12 @@ package cytoscape.visual.ui;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CyColorChooser;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-import static cytoscape.visual.VisualPropertyType.*;
+import org.cytoscape.vizmap.GlobalAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.VisualPropertyType;
+import static org.cytoscape.vizmap.VisualPropertyType.*;
 
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;

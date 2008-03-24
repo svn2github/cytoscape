@@ -36,10 +36,11 @@ package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
+import cytoscape.visual.ui.EditorFactory;
 
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 
 import org.jdesktop.swingx.multislider.Thumb;
 
@@ -259,7 +260,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 					if (e.getClickCount() == 2) {
 						try {
 							setAlwaysOnTop(false);
-							newValue = type.showDiscreteEditor();
+							newValue = EditorFactory.showDiscreteEditor(type);
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						} finally {

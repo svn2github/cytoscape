@@ -39,7 +39,7 @@ import com.l2fprod.common.swing.PercentLayout;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.LabelPosition;
+import org.cytoscape.vizmap.LabelPosition;
 
 import cytoscape.visual.ui.PopupLabelPositionChooser;
 

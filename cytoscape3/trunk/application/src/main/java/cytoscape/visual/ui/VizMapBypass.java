@@ -49,9 +49,9 @@ import javax.swing.JMenuItem;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.parsers.ObjectToString;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.ObjectToString;
 
 
 /**
@@ -107,7 +107,7 @@ abstract class VizMapBypass {
 					Object obj = null;
 
 					try {
-						obj = type.showDiscreteEditor();
+						obj = EditorFactory.showDiscreteEditor(type);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						obj = null;

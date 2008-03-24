@@ -61,10 +61,10 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CountedIterator;
 import org.cytoscape.attributes.MultiHashMap;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.continuous.ContinuousMappingPoint;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 
 
 /**

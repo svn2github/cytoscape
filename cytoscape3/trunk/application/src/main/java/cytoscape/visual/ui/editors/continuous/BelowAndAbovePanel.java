@@ -3,10 +3,10 @@ package cytoscape.visual.ui.editors.continuous;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CyColorChooser;
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
+import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.vizmap.mappings.ContinuousMapping;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

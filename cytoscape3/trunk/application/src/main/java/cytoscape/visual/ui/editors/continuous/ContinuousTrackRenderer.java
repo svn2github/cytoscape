@@ -37,10 +37,10 @@ package cytoscape.visual.ui.editors.continuous;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 
-import cytoscape.visual.mappings.BoundaryRangeValues;
-import cytoscape.visual.mappings.ContinuousMapping;
+import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
+import org.cytoscape.vizmap.mappings.ContinuousMapping;
 
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;

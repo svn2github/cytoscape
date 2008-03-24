@@ -44,8 +44,8 @@ import org.cytoscape.Edge;
 import org.cytoscape.view.GraphView;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
 
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;

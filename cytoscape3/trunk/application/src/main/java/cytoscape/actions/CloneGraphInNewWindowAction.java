@@ -45,7 +45,7 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import org.cytoscape.view.GraphView;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualStyle;
 import cytoscape.util.CytoscapeAction;
 
 import org.cytoscape.view.NodeView;
