@@ -47,8 +47,8 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.readers.GraphReader;
 import org.cytoscape.view.GraphView;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 
 import java.net.URLDecoder;

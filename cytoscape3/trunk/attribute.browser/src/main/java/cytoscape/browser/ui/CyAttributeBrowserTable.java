@@ -98,8 +98,8 @@ import cytoscape.util.OpenBrowser;
 import cytoscape.util.swing.ColumnResizer;
 import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.VisualMappingManager;
+import org.cytoscape.vizmap.GlobalAppearanceCalculator;
+import org.cytoscape.vizmap.VisualMappingManager;
 
 
 

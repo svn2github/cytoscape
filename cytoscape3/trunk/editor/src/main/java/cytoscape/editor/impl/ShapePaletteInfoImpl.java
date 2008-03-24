@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import cytoscape.editor.ShapePaletteInfo;
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 
 
 /**

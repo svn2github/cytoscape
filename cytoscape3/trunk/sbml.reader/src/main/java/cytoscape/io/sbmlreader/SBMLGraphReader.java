@@ -50,7 +50,7 @@ import cytoscape.data.readers.GraphReader;
 import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 
-import cytoscape.visual.*;
+import org.cytoscape.vizmap.*;
 
 import org.cytoscape.Node;
 

@@ -23,7 +23,7 @@
 */
 package cytoscape.editor;
 
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 
 
 /**

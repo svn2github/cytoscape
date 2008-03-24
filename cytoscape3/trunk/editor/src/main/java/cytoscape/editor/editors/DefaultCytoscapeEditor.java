@@ -58,11 +58,11 @@ import cytoscape.editor.event.PaletteNetworkEditEventHandler;
 import cytoscape.editor.impl.CytoShapeIcon;
 import cytoscape.editor.impl.ShapePalette;
 import org.cytoscape.view.GraphView;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.view.GraphView;
 
 

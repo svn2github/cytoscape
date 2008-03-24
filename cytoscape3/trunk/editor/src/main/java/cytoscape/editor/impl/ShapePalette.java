@@ -47,7 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.VisualMappingManager;
+import org.cytoscape.vizmap.VisualMappingManager;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.DragSourceContextCursorSetter;
 import cytoscape.editor.event.BasicCytoShapeTransferHandler;

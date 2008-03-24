@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 import javax.swing.event.ChangeListener;
 
-import cytoscape.visual.VisualPropertyType;
+import org.cytoscape.vizmap.VisualPropertyType;
 
 
 /**

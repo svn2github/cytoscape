@@ -37,12 +37,12 @@ import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.ShapePaletteInfo;
 import cytoscape.editor.ShapePaletteInfoFilter;
 import cytoscape.editor.ShapePaletteInfoGenerator;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
 
 
 /**

@@ -52,8 +52,8 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
 
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
 
 import org.cytoscape.GraphPerspectiveChangeEvent;
 import org.cytoscape.GraphPerspectiveChangeListener;

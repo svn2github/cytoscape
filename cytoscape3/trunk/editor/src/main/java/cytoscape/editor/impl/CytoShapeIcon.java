@@ -37,8 +37,8 @@ import java.awt.Image;
 
 import javax.swing.Icon;
 
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.NodeShape;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.NodeShape;
 
 
 /**

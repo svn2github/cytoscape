@@ -35,7 +35,7 @@
 package cytoscape.browser;
 
 import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
+import org.cytoscape.attributes.CyAttributesUtils;
 
 import org.cytoscape.attributes.MultiHashMapDefinitionListener;
 

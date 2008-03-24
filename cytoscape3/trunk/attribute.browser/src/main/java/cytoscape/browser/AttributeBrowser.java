@@ -58,7 +58,7 @@ import cytoscape.browser.ui.AttributeBrowserToolBar;
 import cytoscape.browser.ui.CyAttributeBrowserTable;
 import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
+import org.cytoscape.attributes.CyAttributesUtils;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
 

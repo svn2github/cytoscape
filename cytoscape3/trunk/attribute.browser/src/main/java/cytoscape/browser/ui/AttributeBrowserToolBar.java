@@ -73,7 +73,7 @@ import cytoscape.actions.ImportEdgeAttributesAction;
 import cytoscape.actions.ImportExpressionMatrixAction;
 import cytoscape.actions.ImportNodeAttributesAction;
 import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
+import org.cytoscape.attributes.CyAttributesUtils;
 import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.util.swing.CheckBoxJList;
 

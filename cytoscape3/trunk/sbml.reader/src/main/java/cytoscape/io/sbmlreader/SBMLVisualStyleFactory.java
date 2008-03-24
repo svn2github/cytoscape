@@ -43,13 +43,11 @@ import cytoscape.data.Semantics;
 
 import cytoscape.view.CytoscapeDesktop;
 
-import cytoscape.visual.*;
+import org.cytoscape.vizmap.*;
 
-import cytoscape.visual.calculators.*;
+import org.cytoscape.vizmap.calculators.*;
 
-import cytoscape.visual.mappings.*;
-
-import cytoscape.visual.ui.*;
+import org.cytoscape.vizmap.mappings.*;
 
 import org.cytoscape.view.EdgeView;
 

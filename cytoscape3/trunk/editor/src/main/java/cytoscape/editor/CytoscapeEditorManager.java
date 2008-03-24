@@ -64,9 +64,9 @@ import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.util.undo.CyUndo;
 import org.cytoscape.view.GraphView;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
 
 
 /**

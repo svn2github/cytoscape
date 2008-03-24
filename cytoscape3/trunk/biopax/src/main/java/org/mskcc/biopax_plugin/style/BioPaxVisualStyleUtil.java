@@ -33,13 +33,13 @@ package org.mskcc.biopax_plugin.style;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.visual.*;
+import org.cytoscape.vizmap.*;
 
-import cytoscape.visual.calculators.*;
+import org.cytoscape.vizmap.calculators.*;
 
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
+import org.cytoscape.vizmap.mappings.PassThroughMapping;
 
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
@@ -267,7 +267,7 @@ public class BioPaxVisualStyleUtil {
 		                                                     discreteMappingWidth,
 		                                                     VisualPropertyType.NODE_WIDTH);
 		nac.setCalculator(nodeWidthCalculator);
-		nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_WIDTH,
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_WIDTH,
 									   new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_WIDTH));
 
 		Calculator nodeHeightCalculator = new BasicCalculator("BioPAX Node Height"
@@ -275,7 +275,7 @@ public class BioPaxVisualStyleUtil {
 		                                                      discreteMappingHeight,
 		                                                      VisualPropertyType.NODE_HEIGHT);
 		nac.setCalculator(nodeHeightCalculator);
-		nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_HEIGHT,
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_HEIGHT,
 									   new Double(BIO_PAX_VISUAL_STYLE_PHYSICAL_ENTITY_NODE_HEIGHT));
 	}
 
@@ -320,7 +320,7 @@ public class BioPaxVisualStyleUtil {
 		nac.setCalculator(nodeColorCalculator);
 
 		// set default color
-		nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_FILL_COLOR,
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_FILL_COLOR,
 									   DEFAULT_NODE_COLOR);
 	}
 
@@ -353,7 +353,7 @@ public class BioPaxVisualStyleUtil {
 		nac.setCalculator(nodeBorderColorCalculator);
 
 		// set default color
-		nac.getDefaultAppearance().set(cytoscape.visual.VisualPropertyType.NODE_BORDER_COLOR,
+		nac.getDefaultAppearance().set(VisualPropertyType.NODE_BORDER_COLOR,
 									   DEFAULT_NODE_BORDER_COLOR);
 	}
 

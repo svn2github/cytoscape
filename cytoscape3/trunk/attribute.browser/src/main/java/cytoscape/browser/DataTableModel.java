@@ -44,11 +44,11 @@ import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
+import org.cytoscape.attributes.CyAttributesUtils;
 
 import org.cytoscape.view.GraphView;
 
-import cytoscape.visual.GlobalAppearanceCalculator;
+import org.cytoscape.vizmap.GlobalAppearanceCalculator;
 
 import org.cytoscape.Edge;
 import org.cytoscape.GraphObject;
