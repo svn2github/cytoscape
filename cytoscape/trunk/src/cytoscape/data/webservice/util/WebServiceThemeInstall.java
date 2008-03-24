@@ -1,6 +1,7 @@
 package cytoscape.data.webservice.util;
 
 import cytoscape.Cytoscape;
+import cytoscape.data.webservice.ui.UnifiedNetworkImportDialog;
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.ManagerUtil;
@@ -10,6 +11,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
+import javax.swing.*;
 import java.util.*;
 
 public class WebServiceThemeInstall {
@@ -17,10 +19,12 @@ public class WebServiceThemeInstall {
 	public final static String WEBSERVICE_THEME = "WebServiceClientPack";
 	
 	private PluginManager mgr;
-	
-	public WebServiceThemeInstall() {
+    private UnifiedNetworkImportDialog unifiedNetworkImportDialog;
+
+    public WebServiceThemeInstall(UnifiedNetworkImportDialog dialog) {
 		super();
-		mgr = PluginManager.getPluginManager();
+        unifiedNetworkImportDialog = dialog;
+        mgr = PluginManager.getPluginManager();
 	}
 	
 	// for test purposes so a manager pointing at the tmp directory can be used
@@ -61,7 +65,15 @@ public class WebServiceThemeInstall {
 		// Execute Task in New Thread; pop open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 		DownloadableInfo info = task.getDownloadedPlugin();
-		return info;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                unifiedNetworkImportDialog.resetGUI();
+                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                                "WebServiceThemePack successfully installed.",
+                                "Installation Successfull", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        return info;
 	}
 
 	private class InstallTask implements cytoscape.task.Task {
@@ -147,7 +159,7 @@ public class WebServiceThemeInstall {
 		}
 
 		public String getTitle() {
-			return "Installing Cytoscape " + infoObj.getType().toString() + " '" + infoObj.getName() + "'";		}
+			return "Installing Cytoscape Theme: '" + infoObj.getName() + "'";		}
 
 	}
 
