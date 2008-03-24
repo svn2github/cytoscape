@@ -69,7 +69,7 @@ public class WebServiceThemeInstall {
             public void run() {
                 unifiedNetworkImportDialog.resetGUI();
                 JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-                                "WebServiceThemePack successfully installed.",
+                                "Web Services Pack Successfully Installed.",
                                 "Installation Successfull", JOptionPane.INFORMATION_MESSAGE);
             }
         });
