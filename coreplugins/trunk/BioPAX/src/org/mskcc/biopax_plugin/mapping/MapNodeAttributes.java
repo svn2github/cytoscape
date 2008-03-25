@@ -734,7 +734,11 @@ public class MapNodeAttributes {
 
 			for (int i = 0; i < xrefList.size(); i++) {
 				ExternalLink link = (ExternalLink) xrefList.get(i);
-				temp.append("<LI>- ");
+                //  Ignore cPath Link.
+                if (link.getDbName() != null && link.getDbName().equalsIgnoreCase("CPATH")) {
+                    continue;
+                }
+                temp.append("<LI>- ");
 				temp.append(ExternalLinkUtil.createLink(link.getDbName(), link.getId()));
                 temp.append("</LI>");
 			}
