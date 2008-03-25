@@ -34,25 +34,30 @@
 */
 package cytoscape.visual.ui;
 
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+
+import cytoscape.ding.DingNetworkView;
+
+import cytoscape.giny.CytoscapeFingRootGraph;
+
+import cytoscape.view.CyNetworkView;
+
+import ding.view.DGraphView;
+
 import giny.view.GraphView;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.ding.DingNetworkView;
-import cytoscape.giny.CytoscapeFingRootGraph;
-import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
 
 
 /**
@@ -64,10 +69,14 @@ import ding.view.DGraphView;
   */
 public class DefaultViewPanel extends JPanel {
 	private static final int PADDING = 20;
-	private CyNetworkView view;
-	private CyNetworkView oldView;
-	private static CyNetwork dummyNet;
-	private Color background;
+
+	// Dummy network and its view.
+	private static final CyNetworkView view;
+	private static final CyNetwork dummyNet;
+
+	// Background color of this view.
+	private Color background = Color.white;
+	private static final DefaultViewPanel panel;
 
 	/*
 	 * Dummy graph component
@@ -76,7 +85,6 @@ public class DefaultViewPanel extends JPanel {
 	private static final CyNode source;
 	private static final CyNode target;
 	private static final CyEdge edge;
-	private Component canvas = null;
 
 	static {
 		dummyGraph = new CytoscapeFingRootGraph();
@@ -86,23 +94,36 @@ public class DefaultViewPanel extends JPanel {
 		target.setIdentifier("Target");
 		edge = (CyEdge) dummyGraph.getEdge(dummyGraph.createEdge(source, target));
 		edge.setIdentifier("dummyInteraction");
-		
-		List nodes = new ArrayList();
-		List edges = new ArrayList();
+
+		List<CyNode> nodes = new ArrayList<CyNode>();
+		List<CyEdge> edges = new ArrayList<CyEdge>();
 		nodes.add(source);
 		nodes.add(target);
 		edges.add(edge);
 
 		dummyNet = dummyGraph.createNetwork(nodes, edges);
 		dummyNet.setTitle("Default Appearance");
+
+		// Create default view
+		view = new DingNetworkView(dummyNet, "Default Appearence");
+
+		view.setIdentifier(dummyNet.getIdentifier());
+		view.setTitle(dummyNet.getTitle());
+
+		view.getNodeView(source).setOffset(0, 0);
+		view.getNodeView(target).setOffset(150, 10);
+
+		panel = new DefaultViewPanel();
+	}
+
+	protected static DefaultViewPanel getDefaultViewPanel() {
+		return panel;
 	}
 
 	/**
 	 * Creates a new NodeFullDetailView object.
 	 */
-	public DefaultViewPanel() {
-		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
-
+	private DefaultViewPanel() {
 		background = Cytoscape.getVisualMappingManager().getVisualStyle()
 		                      .getGlobalAppearanceCalculator().getDefaultBackgroundColor();
 		this.setBackground(background);
@@ -116,65 +137,29 @@ public class DefaultViewPanel extends JPanel {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Component getCanvas() {
-		return canvas;
-	}
-
-	/**
-	 * Create dummy network
-	 */
-	protected void createDummyNetworkView() {
-		view = new DingNetworkView(dummyNet, "Default Appearence");
-
-		view.setIdentifier(dummyNet.getIdentifier());
-		view.setTitle(dummyNet.getTitle());
-
-		view.getNodeView(source).setOffset(0, 0);
-		view.getNodeView(target).setOffset(150, 10);
-		Cytoscape.getVisualMappingManager().setNetworkView(view);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void clean() {
-		Cytoscape.destroyNetwork(dummyNet);
-		Cytoscape.getVisualMappingManager().setNetworkView(oldView);
-		dummyNet = null;
-		canvas = null;
-	}
-
-	/**
-	 * DOCUMENT ME!
 	 */
 	protected void updateView() {
-		if (view != null) {
-			Cytoscape.getVisualMappingManager().setNetworkView(view);
-			view.setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+		Cytoscape.getVisualMappingManager().setNetworkView(view);
+		view.setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
 
-			final Dimension panelSize = this.getSize();
-			((DGraphView) view).getCanvas()
-			 .setSize(new Dimension((int) panelSize.getWidth() - PADDING,
-			                        (int) panelSize.getHeight() - PADDING));
-			view.fitContent();
-			canvas = (view.getComponent());
+		final Dimension panelSize = this.getSize();
+		((DGraphView) view).getCanvas()
+		 .setSize(new Dimension((int) panelSize.getWidth() - PADDING,
+		                        (int) panelSize.getHeight() - PADDING));
+		view.fitContent();
 
-			for (MouseListener listener : canvas.getMouseListeners())
-				canvas.removeMouseListener(listener);
+		final Component canvas = view.getComponent();
 
-			this.removeAll();
-			this.add(canvas);
+		for (MouseListener listener : canvas.getMouseListeners())
+			canvas.removeMouseListener(listener);
 
-			canvas.setLocation(PADDING / 2, PADDING / 2);
-			Cytoscape.getVisualMappingManager().applyAppearances();
+		this.removeAll();
+		this.add(canvas);
 
-			if ((background != null) && (canvas != null)) {
-				canvas.setBackground(background);
-			}
-		}
+		canvas.setLocation(PADDING / 2, PADDING / 2);
+		Cytoscape.getVisualMappingManager().applyAppearances();
+
+		canvas.setBackground(background);
 	}
 
 	/**

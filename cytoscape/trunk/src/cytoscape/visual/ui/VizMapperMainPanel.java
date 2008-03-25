@@ -363,7 +363,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final String targetName = vmm.getVisualStyle().getName();
 		final String focus = vmm.getNetwork().getIdentifier();
 
-		createDefaultImage(targetName,
+		updateDefaultImage(targetName,
 		                   (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(targetName))
 		                   .getView(), defaultAppearencePanel.getSize());
 		setDefaultPanel(defaultImageManager.get(targetName));
@@ -552,7 +552,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		defaultAppearencePanel.setPreferredSize(new Dimension(mainSplitPane.getWidth(),
 		                                                      this.mainSplitPane.getDividerLocation()));
 		defaultAppearencePanel.setSize(defaultAppearencePanel.getPreferredSize());
-		// defaultAppearencePanel.addMouseListener(new DefaultMouseListener());
+		defaultAppearencePanel.setLayout(new BorderLayout());
+		
 		mainSplitPane.setDividerLocation(120);
 		mainSplitPane.setDividerSize(4);
 		listSplitPane.setDividerLocation(400);
@@ -843,7 +844,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Image defImg = defaultImageManager.get(vsName);
 
 		if (defImg == null) {
-			createDefaultImage(vsName,
+			updateDefaultImage(vsName,
 			                   (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder
 			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      .getDefaultView(vsName))
 			                   .getView(), defaultAppearencePanel.getSize());
@@ -896,7 +897,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (view != null) {
 				System.out.println("Creating Default Image for " + name);
-				createDefaultImage(name, view, panelSize);
+				updateDefaultImage(name, view, panelSize);
 			}
 		}
 		
@@ -917,12 +918,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param view
 	 * @param size
 	 */
-	private void createDefaultImage(String vsName, DGraphView view, Dimension size) {
-		defaultAppearencePanel.setLayout(new BorderLayout());
-
-		final Image image = view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9);
-
-		defaultImageManager.put(vsName, image);
+	private void updateDefaultImage(String vsName, DGraphView view, Dimension size) {
+		Image image = defaultImageManager.get(vsName);
+		
+		if(image != null) {
+			image.flush();
+			image = null;
+		}
+		defaultImageManager.put(vsName, view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9));
 	}
 
 	private void setPropertySheetAppearence() {
@@ -1775,7 +1778,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		defaultImageButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		defaultImageButton.setIcon(new ImageIcon(defImage));
-		// defaultImageButton.setBackground(bgColor);
 		defaultAppearencePanel.add(defaultImageButton, BorderLayout.CENTER);
 		defaultImageButton.addMouseListener(new DefaultMouseListener());
 	}
@@ -1789,7 +1791,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder
 				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .showDialog(Cytoscape
 				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getDesktop());
-				createDefaultImage(targetName, (DGraphView) panel.getView(),
+				updateDefaultImage(targetName, (DGraphView) panel.getView(),
 				                   defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(targetName));
 
@@ -2520,7 +2522,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (view != null) {
 				System.out.println("Creating Default Image for new visual style " + name);
-				createDefaultImage(name, view, panelSize);
+				updateDefaultImage(name, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(name));
 			}
 
@@ -2691,13 +2693,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (view != null) {
 				System.out.println("Creating Default Image for new visual style " + newName);
-				createDefaultImage(newName, view, panelSize);
+				updateDefaultImage(newName, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(newName));
 			}
 
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 			switchVS(newName);
-			//Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetworkView().getIdentifier());
 		}
 	}
 

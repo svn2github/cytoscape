@@ -34,19 +34,9 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.util.CyColorChooser;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-import static cytoscape.visual.VisualPropertyType.*;
-
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
+import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
+import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -63,7 +53,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -71,13 +60,23 @@ import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
-import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+
+import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+
+import cytoscape.Cytoscape;
+import cytoscape.util.CyColorChooser;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.VisualPropertyType;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
@@ -135,7 +134,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public static JPanel showDialog(Frame parent) {
-		buildDefaultViewDialog(parent);
+		if(dab == null)
+			dab = new DefaultAppearenceBuilder(parent, true);
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(900, 400);
 		dab.lockSize();
@@ -153,7 +153,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public static JPanel getDefaultView(String vsName) {
-		buildDefaultViewDialog(null);
+		if(dab == null)
+			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
 		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
@@ -163,10 +164,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 		return dab.getPanel();
 	}
 
-	private static void buildDefaultViewDialog(Frame component) {
-		dab = new DefaultAppearenceBuilder(component, true);
-		dab.mainView.createDummyNetworkView();
-	}
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -177,7 +174,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
 		jXPanel1 = new org.jdesktop.swingx.JXPanel();
-		mainView = new DefaultViewPanel();
+		mainView = DefaultViewPanel.getDefaultViewPanel();
 		jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
 		defaultObjectTabbedPane = new javax.swing.JTabbedPane();
 		nodeScrollPane = new javax.swing.JScrollPane();
