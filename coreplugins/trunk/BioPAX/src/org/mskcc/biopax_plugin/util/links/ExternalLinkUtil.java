@@ -156,9 +156,8 @@ public class ExternalLinkUtil {
 			//  Taxonomy ID appears like this:
 			//  ncbi_tax_id_1=9609
 			if (url.length() > 0) {
-				if (taxonomyId > 0) {
-				//	url.append("ncbi_tax_id_1=" + taxonomyId);
-				}
+                //  removed NCBI Taxonomy ID;  results in nearly always getting a hit w/i iHOP.
+                //	url.append("ncbi_tax_id_1=" + taxonomyId);
 
 				url.insert(0, "http://www.ihop-net.org/UniPub/iHOP/in?");
 
