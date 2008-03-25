@@ -101,10 +101,11 @@ public class ExternalLinkUtil {
 	 * @return HTML String.
 	 */
 	public static String createLink(String dbName, String id) {
+        dbName = dbName.toUpperCase();
 		String url = getUrl(dbName, id);
 		StringBuffer buf = new StringBuffer();
 
-		if (url != null) {
+        if (url != null) {
 			buf.append("<A class=\"link\" HREF=\"" + url + "\">" + dbName + ":  " + id + "</A>");
 		} else {
 			buf.append(dbName + ":  " + id);
@@ -156,7 +157,7 @@ public class ExternalLinkUtil {
 			//  ncbi_tax_id_1=9609
 			if (url.length() > 0) {
 				if (taxonomyId > 0) {
-					url.append("ncbi_tax_id_1=" + taxonomyId);
+				//	url.append("ncbi_tax_id_1=" + taxonomyId);
 				}
 
 				url.insert(0, "http://www.ihop-net.org/UniPub/iHOP/in?");
@@ -251,8 +252,9 @@ public class ExternalLinkUtil {
 	public static String createIHOPLink(String type, ArrayList synList, ArrayList linkList,
 	                                    int taxonomyId) {
 		String url = getIHOPUrl(type, synList, linkList, taxonomyId);
+        System.out.println ("IHOP URL:  " + url);
 
-		if (url != null) {
+        if (url != null) {
 			StringBuffer buf = new StringBuffer();
 			buf.append("<A class=\"link\" HREF=\"" + url + "\">" + "Search iHOP</A>");
 
@@ -272,7 +274,11 @@ public class ExternalLinkUtil {
 		dbMap.put("PUBMED", url);
 		dbMap.put("PMID", url);
 
-		//  UniProt
+        //  HPRD
+        url = "http://hprd.org/protein/";
+        dbMap.put ("HPRD", url);
+
+        //  UniProt
 		url = "http://www.pir.uniprot.org/cgi-bin/upEntry?id=";
 
 		HashMap temp = new HashMap();
@@ -311,7 +317,8 @@ public class ExternalLinkUtil {
 		//  Entrez Gene
 		url = "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene&" + "cmd=search&term=";
 		temp = new HashMap();
-		temp.put("ENTREZ_GENE", url);
+        temp.put("ENTREZGENE", url);
+        temp.put("ENTREZ_GENE", url);
 		temp.put("LOCUS_LINK", url);
 		temp.put("LOCUSLINK", url);
 		temp.put("LOCUS-LINK", url);
