@@ -306,7 +306,9 @@ public class ExecuteGetRecordByCPathId implements Task {
                         CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
                         bpContainer.showLegend();
                         Cytoscape.getCurrentNetworkView().fitContent();
-                        cyNetwork.setTitle(networkTitle);
+                        String networkTitleWithUnderscores = networkTitle.replaceAll(": ", "");
+                        networkTitleWithUnderscores = networkTitleWithUnderscores.replaceAll(" ", "_");
+                        cyNetwork.setTitle(networkTitleWithUnderscores);
                     }
                 });
             }
