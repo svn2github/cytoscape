@@ -50,6 +50,8 @@ public class ExecuteGetRecordByCPathId implements Task {
     private boolean haltFlag = false;
     private CyNetwork mergedNetwork;
     private CPathResponseFormat format;
+    private final static String CPATH_SERVER_NAME_ATTRIBUTE = "CPATH_SERVER_NAME";
+    private final static String CPATH_SERVER_DETAILS_URL = "CPATH_SERVER_DETAILS_URL";
 
     /**
      * Constructor.
@@ -179,6 +181,10 @@ public class ExecuteGetRecordByCPathId implements Task {
                 Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null,
                     ret_val);
             }
+
+            //  Add Links Back to cPath Instance
+            addLinksToCPathInstance (cyNetwork);
+
             if (taskMonitor != null) {
                 taskMonitor.setStatus("Done");
                 taskMonitor.setPercentCompleted(100);
@@ -193,6 +199,28 @@ public class ExecuteGetRecordByCPathId implements Task {
             if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
                 taskMonitor.setException(e, e.getMessage(), e.getRecoveryTip());
             }
+        }
+    }
+
+    /**
+     * Add Node Links Back to cPath Instance.
+     * @param cyNetwork CyNetwork.
+     */
+    private void addLinksToCPathInstance(CyNetwork cyNetwork) {
+        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+        CPathProperties props = CPathProperties.getInstance();
+        String serverName = props.getCPathServerName();
+        String serverURL = props.getCPathUrl();
+        String cPathServerDetailsUrl = networkAttributes.getStringAttribute
+                (cyNetwork.getIdentifier(), ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL);
+        if (cPathServerDetailsUrl == null) {
+            networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                    ExecuteGetRecordByCPathId.CPATH_SERVER_NAME_ATTRIBUTE,
+                    serverName);
+            String url = serverURL.replaceFirst("webservice.do", "record2.do?id=");
+            networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                    ExecuteGetRecordByCPathId.CPATH_SERVER_DETAILS_URL,
+                    url);
         }
     }
 
