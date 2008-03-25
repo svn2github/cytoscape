@@ -99,7 +99,7 @@ public class TestExternalLinkUtil extends TestCase {
 		//  Verify a Sample URL to IHOP
 		String url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.PROTEIN, synList, dbList, 9606);
 		assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD|"
-		             + "AIS|TFM&dbrefs_1=UNIPROT__AC|P10275,NCBI_GENE__ID|367&ncbi_tax_id_1=9606",
+		             + "AIS|TFM&dbrefs_1=UNIPROT__AC|P10275,NCBI_GENE__ID|367",
 		             url);
 
 		//  Verify that no link is generated for small molecules
@@ -116,7 +116,7 @@ public class TestExternalLinkUtil extends TestCase {
 		dbList.add(new ExternalLink("GO", "4321"));
 		dbList.add(new ExternalLink("Reactome", "XYZ"));
 		url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.PROTEIN, synList, dbList, 9606);
-		assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD|AIS|TFM&ncbi_tax_id_1=9606",
+		assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD|AIS|TFM",
 		             url);
 
 		//  Try using no Synonyms + XRefs not supported by IHOP
@@ -133,7 +133,7 @@ public class TestExternalLinkUtil extends TestCase {
 		ExternalLinkUtil.useUrlEncoding(true);
 		url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.PROTEIN, synList, dbList, 9606);
 		assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=KD%7"
-		             + "CAIS%7CTFM&ncbi_tax_id_1=9606", url);
+		             + "CAIS%7CTFM", url);
 
 		//  Test Special Case where we have exactly dbRef of type UniProt,
 		//  and no synonyms
@@ -147,6 +147,6 @@ public class TestExternalLinkUtil extends TestCase {
 		synList.add("TNF");
 		url = ExternalLinkUtil.getIHOPUrl(BioPaxConstants.PROTEIN, synList, dbList, 9606);
 		assertEquals("http://www.ihop-net.org/UniPub/iHOP/in?syns_1=TNF&dbrefs_1="
-		             + "UNIPROT__AC%7CP10275&ncbi_tax_id_1=9606", url);
+		             + "UNIPROT__AC%7CP10275", url);
 	}
 }

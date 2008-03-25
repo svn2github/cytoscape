@@ -149,11 +149,12 @@ public class ExternalLinkUtil {
 			String dbParameter = createDbParameter(dbList, synList);
 
 			url.append(synonymParameter);
-			appendAmpersand(synonymParameter, url);
-			url.append(dbParameter);
-			appendAmpersand(dbParameter, url);
+            if (dbParameter != null && dbParameter.length() > 0) {
+                appendAmpersand(synonymParameter, url);
+			    url.append(dbParameter);
+        }
 
-			//  Taxonomy ID appears like this:
+            //  Taxonomy ID appears like this:
 			//  ncbi_tax_id_1=9609
 			if (url.length() > 0) {
                 //  removed NCBI Taxonomy ID;  results in nearly always getting a hit w/i iHOP.
@@ -251,7 +252,6 @@ public class ExternalLinkUtil {
 	public static String createIHOPLink(String type, ArrayList synList, ArrayList linkList,
 	                                    int taxonomyId) {
 		String url = getIHOPUrl(type, synList, linkList, taxonomyId);
-        System.out.println ("IHOP URL:  " + url);
 
         if (url != null) {
 			StringBuffer buf = new StringBuffer();
