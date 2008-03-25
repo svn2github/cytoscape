@@ -199,9 +199,7 @@ public class BioPaxDetailsPanel extends JPanel {
 
     private void addType(String nodeID, StringBuffer buf) {
         String type = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ENTITY_TYPE);
-        if (type != null && !type.equalsIgnoreCase("Protein")) {
-            buf.append("<h3>" + type + "</h3>");
-        }
+        buf.append("<h3>" + type + "</h3>");
     }
 
     private void addLinks(String nodeID, StringBuffer buf) {
