@@ -34,12 +34,14 @@ package org.mskcc.biopax_plugin.action;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.view.CyNetworkView;
 
 import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
+import org.mskcc.biopax_plugin.util.cytoscape.CySessionUtil;
 import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
@@ -116,17 +118,20 @@ public class DisplayBioPaxDetails implements SelectEventListener {
 
 	private void displayDetails(String id) {
 		//  Conditionally, set up BP UI
-		CytoscapeWrapper.initBioPaxPlugInUI();
+        //  If we are reading a session file, ignore the node selection event.
+        if (!CySessionUtil.isSessionReadingInProgress()) {
+            CytoscapeWrapper.initBioPaxPlugInUI();
 
-		//  Show the details
-		bpPanel.showDetails(id);
+            //  Show the details
+            bpPanel.showDetails(id);
 
-		//  If we are part of an embedded set of tabs, activate our Tab(s)
-		activateTabs(bpPanel);
+            //  If we are part of an embedded set of tabs, activate our Tab(s)
+            activateTabs(bpPanel);
 
-        //  If legend is showing, show details
-        BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-        bpContainer.showDetails();
+            //  If legend is showing, show details
+            BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+            bpContainer.showDetails();
+        }
     }
 
 	/**
