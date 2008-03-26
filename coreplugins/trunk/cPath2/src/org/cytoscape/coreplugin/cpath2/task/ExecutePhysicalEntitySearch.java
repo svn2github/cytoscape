@@ -2,6 +2,7 @@ package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+import cytoscape.Cytoscape;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
 import org.cytoscape.coreplugin.cpath2.web_service.EmptySetException;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathException;
@@ -9,6 +10,7 @@ import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.ExtendedRecordType;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -21,6 +23,7 @@ public class ExecutePhysicalEntitySearch implements Task {
     private String keyword;
     private int ncbiTaxonomyId;
     private TaskMonitor taskMonitor;
+    private int numMatchesFound = 0;
 
     /**
      * Constructor.
@@ -50,6 +53,14 @@ public class ExecutePhysicalEntitySearch implements Task {
      */
     public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
         this.taskMonitor = taskMonitor;
+    }
+
+    /**
+     * Gets Number of Matches Found.
+     * @return Number of Matches Found.
+     */
+    public int getNumMatchesFound() {
+        return this.numMatchesFound;
     }
 
     /**
@@ -88,17 +99,15 @@ public class ExecutePhysicalEntitySearch implements Task {
                 int percentComplete = (int) (100 * (numRetrieved++ / (float) numHits));
                 taskMonitor.setPercentCompleted(percentComplete);
             }
-
-            // update the task monitor
-            taskMonitor.setStatus("Done");
-            taskMonitor.setPercentCompleted(100);
+            this.numMatchesFound = numHits;
         } catch (EmptySetException e) {
-            taskMonitor.setException(e, "No matches found for:  " + keyword + ".",
-                    "Please try a different search term and try again.");
         } catch (CPathException e) {
             if (e.getErrorCode() != CPathException.ERROR_CANCELED_BY_USER) {
                 taskMonitor.setException(e, e.getMessage(), e.getRecoveryTip());
             }
+        } finally {
+            taskMonitor.setStatus("Done");
+            taskMonitor.setPercentCompleted(100);
         }
     }
 }
