@@ -5,6 +5,7 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.Cytoscape;
 import org.cytoscape.coreplugin.cpath2.task.ExecutePhysicalEntitySearch;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.view.model.Organism;
 
 import javax.swing.*;
@@ -14,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
+import java.util.ArrayList;
 import java.net.URL;
 
 /**
@@ -100,7 +102,8 @@ public class SearchBoxPanel extends JPanel {
         //  Organism List is currently hard-coded.
         Vector organismList = new Vector();
         organismList.add(new Organism("All Organisms", -1));
-        organismList.add(new Organism("Human", 9606));
+        CPathProperties props = CPathProperties.getInstance();
+        organismList.addAll(props.getOrganismList());
         DefaultComboBoxModel organismComboBoxModel = new DefaultComboBoxModel(organismList);
         JComboBox organismComboBox = new JComboBox(organismComboBoxModel);
         organismComboBox.setToolTipText("Select Organism");
@@ -132,7 +135,8 @@ public class SearchBoxPanel extends JPanel {
                 int keyCode = e.getKeyCode();
                 if (keyCode == 10) {
                     Organism organism = (Organism) organismComboBox.getSelectedItem();
-                    executeSearch(searchField.getText(), organism.getNcbiTaxonomyId());
+                    executeSearch(searchField.getText(), organism.getNcbiTaxonomyId(),
+                            organism.getSpeciesName());
                 }
             }
         });
@@ -154,13 +158,14 @@ public class SearchBoxPanel extends JPanel {
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 Organism organism = (Organism) organismComboBox.getSelectedItem();
-                executeSearch(searchField.getText(), organism.getNcbiTaxonomyId());
+                executeSearch(searchField.getText(), organism.getNcbiTaxonomyId(),
+                        organism.getSpeciesName());
             }
         });
         return searchButton;
     }
 
-    private void executeSearch(String keyword, int ncbiTaxonomyId) {
+    private void executeSearch(String keyword, int ncbiTaxonomyId, String speciesName) {
         Window window = Cytoscape.getDesktop();
         if (keyword == null || keyword.trim().length() == 0
                 || keyword.startsWith(ENTER_TEXT)) {
@@ -176,6 +181,13 @@ public class SearchBoxPanel extends JPanel {
             jTaskConfig.displayCloseButton(false);
             jTaskConfig.setOwner(window);
             TaskManager.executeTask(search, jTaskConfig);
+            if (search.getNumMatchesFound() == 0) {
+                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                        "No matches found for:  " + keyword + " [" + speciesName + "]" +
+                        "\nPlease try a different search term and/or organism filter.",
+                        "No matches found.",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
