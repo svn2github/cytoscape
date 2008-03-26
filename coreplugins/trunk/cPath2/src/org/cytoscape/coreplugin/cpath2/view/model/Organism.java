@@ -7,16 +7,23 @@ package org.cytoscape.coreplugin.cpath2.view.model;
  */
 public class Organism {
     private String commonName;
+    private String speciesName;
     private int ncbiTaxonomyId;
 
     /**
      * Constructor.
-     * @param commonName      Organism Commmon Name.
+     * @param speciesName     Organism Species Name.
      * @param ncbiTaxonomyId  NCBI Taxonomy ID.
      */
-    public Organism (String commonName, int ncbiTaxonomyId) {
-        this.commonName = commonName;
+    public Organism (String speciesName, int ncbiTaxonomyId) {
+        this.speciesName = speciesName;
         this.ncbiTaxonomyId = ncbiTaxonomyId;
+    }
+
+    /**
+     * Empty-Arg Constructor.
+     */
+    public Organism() {
     }
 
     /**
@@ -33,6 +40,22 @@ public class Organism {
      */
     public void setCommonName(String commonName) {
         this.commonName = commonName;
+    }
+
+    /**
+     * Gets the Species Name.
+     * @return species name.
+     */
+    public String getSpeciesName() {
+        return speciesName;
+    }
+
+    /**
+     * Sets the Species Name.
+     * @param speciesName species name.
+     */
+    public void setSpeciesName(String speciesName) {
+        this.speciesName = speciesName;
     }
 
     /**
@@ -56,6 +79,6 @@ public class Organism {
      * @return Organism common name.
      */
     public String toString() {
-        return commonName;
+        return speciesName;
     }
 }
