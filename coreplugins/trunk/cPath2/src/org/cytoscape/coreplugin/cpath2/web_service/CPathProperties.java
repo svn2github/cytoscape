@@ -4,6 +4,9 @@ import cytoscape.CytoscapeInit;
 import cytoscape.plugin.PluginProperties;
 
 import java.util.Properties;
+import java.util.ArrayList;
+
+import org.cytoscape.coreplugin.cpath2.view.model.Organism;
 
 /**
  * Contains cPath Specific Properties
@@ -34,7 +37,12 @@ public class CPathProperties {
     /**
      * Property:  Icon File
      */
-    public static final String ICON_FILE_NAME = new String ("cpath2.icon_file_name");    
+    public static final String ICON_FILE_NAME = new String ("cpath2.icon_file_name");
+
+    /**
+     * Property:  Organism.
+     */
+    public static final String ORGANISM_PREFIX = new String ("cpath2.organism");
 
     /**
      * Download Networks in Full BioPAX Mode.
@@ -53,6 +61,7 @@ public class CPathProperties {
     private static String blurb;
     private static String iconToolTip;
     private static String iconFileName;
+    private static ArrayList<Organism> organismList = new ArrayList<Organism>();
     private int downloadMode = DOWNLOAD_REDUCED_BINARY_SIF;
 
     /**
@@ -102,6 +111,24 @@ public class CPathProperties {
                 "assembly, transport and catalysis events, and physical interactions " +
                 "involving proteins, DNA, RNA, small molecules and complexes.";
         }
+
+        int index = 0;
+        String orgField = pluginProperties.getProperty(ORGANISM_PREFIX + index);
+        while (orgField != null) {
+            String parts[] = orgField.split(":");
+            Organism organism = new Organism();
+            if (parts != null && parts.length == 2) {
+                organism.setSpeciesName(parts[0]);
+                try {
+                    organism.setNcbiTaxonomyId(Integer.parseInt(parts[1]));
+                    organismList.add(organism);
+                } catch(NumberFormatException e) {
+                }
+            }
+            index++;
+            orgField = pluginProperties.getProperty(ORGANISM_PREFIX + index);
+        }
+
     }
 
     /**
@@ -170,5 +197,13 @@ public class CPathProperties {
      */
     public void setDownloadMode(int downloadMode) {
         this.downloadMode = downloadMode;
-    }    
+    }
+
+    /**
+     * Gets the Organism List.
+     * @return ArrayList of <Organism> Objects.
+     */
+    public ArrayList<Organism> getOrganismList() {
+        return organismList;
+    }
 }
