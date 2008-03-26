@@ -1397,7 +1397,11 @@ public abstract class Cytoscape {
 			System.err.println("reader returned null edges");
 		}
 
+		// Create the network
 		final CyNetwork network = getRootGraph().createNetwork(nodes, edges);
+		// Change the identifier
+		network.setIdentifier(title);
+
 		// network.putClientData(READER_CLIENT_KEY, reader);
 		addNetwork(network, title, parent, false);
 
