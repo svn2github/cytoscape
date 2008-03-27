@@ -34,10 +34,70 @@
  */
 package cytoscape.visual.ui;
 
+import com.l2fprod.common.propertysheet.DefaultProperty;
+import com.l2fprod.common.propertysheet.Property;
+import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
+import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
+import com.l2fprod.common.propertysheet.PropertySheetPanel;
+import com.l2fprod.common.propertysheet.PropertySheetTable;
+import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
+import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
+
+import cytoscape.Cytoscape;
+
+import cytoscape.data.CyAttributes;
+import cytoscape.data.CyAttributesUtils;
+
+import cytoscape.data.attr.MultiHashMapListener;
+
+import cytoscape.util.SwingWorker;
+
+import cytoscape.util.swing.DropDownMenuButton;
+
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.NetworkPanel;
+
+import cytoscape.visual.ArrowShape;
+import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.LineStyle;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.NODE_FONT_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL_POSITION;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
+
+import cytoscape.visual.VisualStyle;
+
+import cytoscape.visual.calculators.BasicCalculator;
+import cytoscape.visual.calculators.Calculator;
+
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+
+import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
+import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
+import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
+import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
+import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
+import cytoscape.visual.ui.icon.ArrowIcon;
+import cytoscape.visual.ui.icon.NodeIcon;
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+
+import ding.view.DGraphView;
+
 import giny.model.GraphObject;
 import giny.model.Node;
 
@@ -56,10 +116,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
+
 import java.lang.reflect.Constructor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -99,55 +162,6 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-
-import com.l2fprod.common.propertysheet.DefaultProperty;
-import com.l2fprod.common.propertysheet.Property;
-import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
-import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import com.l2fprod.common.propertysheet.PropertySheetTable;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
-
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.CyAttributesUtils;
-import cytoscape.data.attr.MultiHashMapListener;
-import cytoscape.util.SwingWorker;
-import cytoscape.util.swing.DropDownMenuButton;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.NetworkPanel;
-import cytoscape.visual.ArrowShape;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.calculators.BasicCalculator;
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.mappings.ContinuousMapping;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
-import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
-import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
-import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
-import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
-import cytoscape.visual.ui.icon.ArrowIcon;
-import cytoscape.visual.ui.icon.NodeIcon;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
-import ding.view.DGraphView;
 
 
 /**
@@ -214,7 +228,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static VizMapperMainPanel panel;
 
 	static {
-
 		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
 		nodeAttr.setAttribute("Source", "hiddenLabel", "Source");
 		nodeAttr.setAttribute("Target", "hiddenLabel", "Target");
@@ -246,10 +259,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private JPanel bottomPanel;
 	private Map<VisualPropertyType, JDialog> editorWindowManager = new HashMap<VisualPropertyType, JDialog>();
 	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
-
-	
 	private boolean ignore = false;
-	
+
 	// For node size lock
 	VizMapperProperty nodeSize;
 	VizMapperProperty nodeWidth;
@@ -271,7 +282,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(this);
 		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(this);
 		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(this);
-		
 	}
 
 	/*
@@ -351,17 +361,26 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					isNodeHExist = true;
 			}
 
-			if (isNodeHExist == false)
-				visualPropertySheetPanel.addProperty(nodeHeight);
-
-			if (isNodeWExist == false)
-				visualPropertySheetPanel.addProperty(nodeWidth);
+			if (isNodeHExist == false) {
+				if(nodeHeight != null) {
+					visualPropertySheetPanel.addProperty(nodeHeight);
+				} else {
+					System.out.print("NH null!!!!");
+				}
+			}
+			if (isNodeWExist == false) {
+				if(nodeHeight != null) {
+					visualPropertySheetPanel.addProperty(nodeWidth);
+				} else {
+					System.out.print("NW null!!!!");
+				}
+			}
+				
 		}
 
 		visualPropertySheetPanel.repaint();
 
 		final String targetName = vmm.getVisualStyle().getName();
-		final String focus = vmm.getNetwork().getIdentifier();
 
 		updateDefaultImage(targetName,
 		                   (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(targetName))
@@ -553,7 +572,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		                                                      this.mainSplitPane.getDividerLocation()));
 		defaultAppearencePanel.setSize(defaultAppearencePanel.getPreferredSize());
 		defaultAppearencePanel.setLayout(new BorderLayout());
-		
+
 		mainSplitPane.setDividerLocation(120);
 		mainSplitPane.setDividerSize(4);
 		listSplitPane.setDividerLocation(400);
@@ -780,18 +799,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private void switchVS(String vsName, boolean redraw) {
-		
-		if(ignore)
+		if (ignore)
 			return;
+
 		// If new VS name is the same, ignore.
 		if (lastVSName == vsName) {
 			return;
 		}
-		
-		closeEditorWindow();
-		
-		//System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
 
+		closeEditorWindow();
+
+		//System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		vmm.setVisualStyle(vsName);
 
@@ -846,7 +864,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (defImg == null) {
 			updateDefaultImage(vsName,
 			                   (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      .getDefaultView(vsName))
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              .getDefaultView(vsName))
 			                   .getView(), defaultAppearencePanel.getSize());
 			defImg = defaultImageManager.get(vsName);
 		}
@@ -873,14 +891,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	public void initVizmapperGUI() {
 		List<String> vsNames = new ArrayList<String>(vmm.getCalculatorCatalog().getVisualStyleNames());
-		
-		final VisualStyle style = vmm.getVisualStyle(); 
+
+		final VisualStyle style = vmm.getVisualStyle();
 
 		// Disable action listeners
 		final ActionListener[] li = vsNameComboBox.getActionListeners();
-		for(int i=0; i<li.length; i++)
+
+		for (int i = 0; i < li.length; i++)
 			vsNameComboBox.removeActionListener(li[i]);
-		
+
 		vsNameComboBox.removeAllItems();
 
 		JPanel defPanel;
@@ -889,6 +908,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		DGraphView view;
 
 		Collections.sort(vsNames);
+
 		for (String name : vsNames) {
 			vsNameComboBox.addItem(name);
 
@@ -900,14 +920,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				updateDefaultImage(name, view, panelSize);
 			}
 		}
-		
+
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
-		
+
 		// Switch back to the original style.
 		switchVS(style.getName());
 		
+		// Sync check box and actual lock state
+		switchNodeSizeLock(lockSize.isSelected());
+
 		// Restore listeners
-		for(int i=0; i<li.length; i++)
+		for (int i = 0; i < li.length; i++)
 			vsNameComboBox.addActionListener(li[i]);
 	}
 
@@ -920,12 +943,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	private void updateDefaultImage(String vsName, DGraphView view, Dimension size) {
 		Image image = defaultImageManager.get(vsName);
-		
-		if(image != null) {
+
+		if (image != null) {
 			image.flush();
 			image = null;
 		}
-		defaultImageManager.put(vsName, view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9));
+
+		defaultImageManager.put(vsName,
+		                        view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9));
 	}
 
 	private void setPropertySheetAppearence() {
@@ -1041,7 +1066,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		final Set mappingTypes = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
 		                                  .getMappingNames();
-		
+
 		mappingTypeEditor.setAvailableValues(mappingTypes.toArray());
 
 		VisualPropertyIcon newIcon;
@@ -1233,7 +1258,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		edgeNumericalAttrEditor.setAvailableValues(names.toArray());
-		
+
 		repaint();
 	}
 
@@ -1261,7 +1286,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				((VizMapperProperty) curProp).setEditable(true);
 
 				VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getHiddenObject();
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getHiddenObject();
 				visualPropertySheetPanel.removeProperty(curProp);
 
 				final VizMapperProperty newProp = new VizMapperProperty();
@@ -1304,7 +1329,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					type = (VisualPropertyType) ((VizMapperProperty) curProp).getHiddenObject();
 				else if (curProp.getParentProperty() != null)
 					type = (VisualPropertyType) ((VizMapperProperty) curProp.getParentProperty())
-					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .getHiddenObject();
+					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .getHiddenObject();
 				else
 
 					return;
@@ -1423,7 +1448,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final List<VizMapperProperty> children = new ArrayList<VizMapperProperty>();
 
 		for (Object key : attrKeys) {
-			
 			valProp = new VizMapperProperty();
 			strVal = key.toString();
 			valProp.setDisplayName(strVal);
@@ -1730,7 +1754,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Class mapAttrClass = CyAttributesUtils.getClass(attrName, attrs);
 
 		if ((mapAttrClass == null) || !(acceptedClasses.contains(mapAttrClass)))
-			return new TreeSet<Object>();  // Return empty set.
+			return new TreeSet<Object>(); // Return empty set.
 
 		return loadKeySet(mapAttrs);
 	}
@@ -1789,8 +1813,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final String focus = vmm.getNetwork().getIdentifier();
 
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .showDialog(Cytoscape
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getDesktop());
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .showDialog(Cytoscape
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .getDesktop());
 				updateDefaultImage(targetName, (DGraphView) panel.getView(),
 				                   defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(targetName));
@@ -1829,14 +1853,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		defaultImageManager = new HashMap<String, Image>();
 	}
 
-	
 	private void manageWindow(final String status, VisualPropertyType vpt, Object source) {
 		if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)) {
-			this.editorWindowManager.put(vpt,
-			                             (JDialog) source);
+			this.editorWindowManager.put(vpt, (JDialog) source);
 		} else if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
 			final VisualPropertyType type = vpt;
-			
 
 			/*
 			 * Update icon
@@ -1877,22 +1898,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			rendReg.registerRenderer(vprop, cRenderer);
 			visualPropertySheetPanel.getTable().repaint();
 		}
-
 	}
-	
+
 	private void closeEditorWindow() {
 		Set<VisualPropertyType> typeSet = editorWindowManager.keySet();
 		Set<VisualPropertyType> keySet = new HashSet<VisualPropertyType>();
-		for(VisualPropertyType vpt:typeSet) {
+
+		for (VisualPropertyType vpt : typeSet) {
 			JDialog window = editorWindowManager.get(vpt);
 			manageWindow(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED, vpt, null);
 			window.dispose();
 			keySet.add(vpt);
 		}
-		
-		for(VisualPropertyType type:keySet) 
+
+		for (VisualPropertyType type : keySet)
 			editorWindowManager.remove(type);
 	}
+
 	/**
 	 * Handle propeaty change events.
 	 *
@@ -1900,40 +1922,44 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		
 		// Set ignore flag.
-		if(e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+		if (e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
 			ignore = true;
 			enableListeners(false);
-		}	
-		
-		if(ignore) return;
-		
+		}
+
+		if (ignore)
+			return;
+
 		/*
 		 * Managing editor windows.
 		 */
-		if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED) ||
-				e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
+		if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)
+		    || e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
 			manageWindow(e.getPropertyName(), (VisualPropertyType) e.getNewValue(), e.getSource());
-			
-			if(e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED))
+
+			if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED))
 				editorWindowManager.remove((VisualPropertyType) e.getNewValue());
+
 			return;
 		}
+
 		/*
 		 * Got global event
 		 */
+
 		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
 			setDefaultPanel(defaultImageManager.get(vmName));
 			vsNameComboBox.setSelectedItem(vmName);
 			vmm.setVisualStyle(vmName);
+
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
 			final String vsName = vmm.getVisualStyle().getName();
-			
+
 			lastVSName = null;
 			initVizmapperGUI();
 			switchVS(vsName);
@@ -1949,7 +1975,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 
 				if (vs.getName().equals(vsNameComboBox.getSelectedItem())) {
-					Cytoscape.getCurrentNetworkView().redrawGraph(false,true);
+					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 				} else {
 					switchVS(vs.getName(), false);
 					vsNameComboBox.setSelectedItem(vs.getName());
@@ -1996,7 +2022,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			typeRootProp = (VizMapperProperty) prop;
 			type = (VisualPropertyType) ((VizMapperProperty) prop).getHiddenObject();
 			ctrAttrName = (String) e.getNewValue();
-		} else if (prop.getParentProperty() == null && e.getNewValue() == null) {
+		} else if ((prop.getParentProperty() == null) && (e.getNewValue() == null)) {
 			/*
 			 * Empty cell selected. no need to change anything.
 			 */
@@ -2006,10 +2032,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (prop.getParentProperty() == null)
 				return;
-			
-			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getHiddenObject();
+
+			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getHiddenObject();
 		}
-		
+
 		/*
 		 * Mapping type changed
 		 */
@@ -2119,7 +2146,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			// If same, do nothing.
 			if (ctrAttrName.equals(mapping.getControllingAttributeName()))
 				return;
-			
+
 			// Buffer current discrete mapping
 			if (mapping instanceof DiscreteMapping) {
 				final String curMappingName = curCalc.toString() + "-"
@@ -2132,8 +2159,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
 				} else if (saved != null) {
 					// Mapping exists
-					discMapBuffer.put(curMappingName,
-					                  ((DiscreteMapping) mapping).getAll());
+					discMapBuffer.put(curMappingName, ((DiscreteMapping) mapping).getAll());
 					mapping.setControllingAttributeName(ctrAttrName, vmm.getNetwork(), false);
 					((DiscreteMapping) mapping).putAll(saved);
 				}
@@ -2153,9 +2179,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				              newRootProp, EDGE_VISUAL_MAPPING);
 
 			removeProperty(typeRootProp);
-			if(propertyMap.get(vmm.getVisualStyle().getName()) != null)
+
+			if (propertyMap.get(vmm.getVisualStyle().getName()) != null)
 				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
-			
+
 			typeRootProp = null;
 
 			expandLastSelectedItem(type.getName());
@@ -2192,7 +2219,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		final CyAttributes attr;
 		ctrAttrName = mapping.getControllingAttributeName();
-		
+
 		if (type.isNodeProp()) {
 			attr = Cytoscape.getNodeAttributes();
 		} else {
@@ -2229,7 +2256,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if ((((Number) newValue).doubleValue() == 0)
 			    || (newValue instanceof Number && type.toString().endsWith("OPACITY")
 			       && (((Number) newValue).doubleValue() > 255))) {
-
 				int shownPropCount = table.getRowCount();
 				Property p = null;
 				Object val = null;
@@ -2275,7 +2301,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .getParentProperty())
+		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .getParentProperty())
 		                                .getHiddenObject();
 		final String newCalcName = vmm.getVisualStyle().getName() + "-" + type.getName() + "-"
 		                           + newMapName;
@@ -2346,10 +2372,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		removeProperty(parent);
 
-		if(propertyMap.get(vmm.getVisualStyle().getName()) != null) {
+		if (propertyMap.get(vmm.getVisualStyle().getName()) != null) {
 			propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
 		}
-		
 
 		// vmm.getNetworkView().redrawGraph(false, true);
 		Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
@@ -2715,7 +2740,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (curProp instanceof VizMapperProperty) {
 				final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) curProp)
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .getHiddenObject();
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .getHiddenObject();
 
 				if (type == null)
 					return;
@@ -2730,14 +2755,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				                                          JOptionPane.YES_NO_OPTION);
 
 				if (value == JOptionPane.YES_OPTION) {
-					
 					// If Continuous Mapper is displayed, kill it.
-					if(editorWindowManager.get(type) != null) {
+					if (editorWindowManager.get(type) != null) {
 						JDialog editor = editorWindowManager.get(type);
 						editor.dispose();
 						editorWindowManager.remove(type);
 					}
-					
+
 					if (type.isNodeProp()) {
 						vmm.getVisualStyle().getNodeAppearanceCalculator().removeCalculator(type);
 					} else {
@@ -2805,10 +2829,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		prop.setValue("Double-Click to create...");
 		visualPropertySheetPanel.addProperty(prop);
 
-		if(propertyMap.get(vmm.getVisualStyle().getName()) != null) {
+		if (propertyMap.get(vmm.getVisualStyle().getName()) != null) {
 			propertyMap.get(vmm.getVisualStyle().getName()).add(prop);
 		}
-		
+
 		visualPropertySheetPanel.repaint();
 	}
 
@@ -2841,7 +2865,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		final VisualPropertyType type = (VisualPropertyType) ((VizMapperProperty) prop
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getParentProperty())
+		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .getParentProperty())
 		                                .getHiddenObject();
 
 		/*
@@ -2870,8 +2894,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
-		if(newValue == null)
+
+		if (newValue == null)
 			return;
 
 		Object key = null;
@@ -2947,7 +2971,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * User wants to Seed the Discrete Mapper with Random Color Values.
 		 */
 		public void actionPerformed(ActionEvent e) {
-
 			//Check Selected poperty
 			final int selectedRow = visualPropertySheetPanel.getTable().getSelectedRow();
 
@@ -2985,18 +3008,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				// This function is for discrete mapping only.
 				if ((oMap instanceof DiscreteMapping) == false)
 					return;
-				
+
 				dm = (DiscreteMapping) oMap;
+
 				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr,
 				                                     oMap, nOre);
+
 				// Show error if there is no attribute value.
-				if(attrSet.size() == 0) {
-					JOptionPane.showMessageDialog(
-							panel, "No attribute value is available." , "Cannot generate values" ,
-							JOptionPane.ERROR_MESSAGE
-						);
+				if (attrSet.size() == 0) {
+					JOptionPane.showMessageDialog(panel, "No attribute value is available.",
+					                              "Cannot generate values",
+					                              JOptionPane.ERROR_MESSAGE);
 				}
-				
+
 				/*
 				 * Create random colors
 				 */
@@ -3028,7 +3052,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						for (Object key : attrSet)
 							valueMap.put(key,
 							             new Color(((Number) (rand.nextFloat() * MAX_COLOR))
-							                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          .intValue()));
+							                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       .intValue()));
 					}
 				} else if ((type.getDataType() == Number.class) && (functionType == RANDOM)) {
 					final String range = JOptionPane.showInputDialog(visualPropertySheetPanel,
@@ -3262,13 +3286,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 					Integer height = ((Number) (vmm.getVisualStyle().getNodeAppearanceCalculator()
 					                               .getDefaultAppearance().get(NODE_FONT_SIZE)))
-					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .intValue();
+					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         .intValue();
 					vmm.getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance()
 					   .set(NODE_HEIGHT, height * 2.5);
 
 					Integer fontSize = ((Number) vmm.getVisualStyle().getNodeAppearanceCalculator()
 					                                .getDefaultAppearance().get(NODE_FONT_SIZE))
-					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .intValue();
+					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .intValue();
 					int strLen;
 
 					String labelString = null;
@@ -3360,7 +3384,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 					Integer fontSize = ((Number) vmm.getVisualStyle().getNodeAppearanceCalculator()
 					                                .getDefaultAppearance().get(NODE_FONT_SIZE))
-					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              .intValue();
+					                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .intValue();
 					int strLen;
 
 					String labelString = null;
@@ -3554,7 +3578,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	public void popupMenuCanceled(PopupMenuEvent arg0) {
 		disableAllPopup();
 	}
-	
+
 	private void disableAllPopup() {
 		rainbow1.setEnabled(false);
 		rainbow2.setEnabled(false);
@@ -3582,9 +3606,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-		
 		disableAllPopup();
-		
+
 		final int selected = visualPropertySheetPanel.getTable().getSelectedRow();
 
 		if (0 > selected) {
@@ -3598,23 +3621,25 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 
 		VizMapperProperty prop = ((VizMapperProperty) curProp);
-		
-		if (prop.getHiddenObject() instanceof VisualPropertyType && 
-				prop.getDisplayName().contains("Mapping Type") == false &&
-				prop.getValue() != null && prop.getValue().toString().startsWith("Please select") == false
-				) {
+
+		if (prop.getHiddenObject() instanceof VisualPropertyType
+		    && (prop.getDisplayName().contains("Mapping Type") == false)
+		    && (prop.getValue() != null)
+		    && (prop.getValue().toString().startsWith("Please select") == false)) {
 			// Enble delete menu
 			delete.setEnabled(true);
 
 			Property[] children = prop.getSubProperties();
-			for(Property p: children) {
-				if(p.getDisplayName() != null && p.getDisplayName().contains("Mapping Type")){
-					if(p.getValue() == null || p.getValue().equals("Discrete Mapping") == false) {
+
+			for (Property p : children) {
+				if ((p.getDisplayName() != null) && p.getDisplayName().contains("Mapping Type")) {
+					if ((p.getValue() == null)
+					    || (p.getValue().equals("Discrete Mapping") == false)) {
 						return;
 					}
 				}
 			}
-			
+
 			VisualPropertyType type = ((VisualPropertyType) prop.getHiddenObject());
 
 			Class dataType = type.getDataType();
@@ -3676,98 +3701,65 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final String currentName = vmm.getVisualStyle().getName();
 		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
 
-		if(ignore) {
+		if (ignore)
 			return;
-		}
-		System.out.println("Got VMM Change event.  Cur VS in VMM: " + vmm.getVisualStyle().getName());
-		
-		if (selectedName == null || currentName == null || curView == null || curView.equals(Cytoscape.getNullNetworkView()) )
+
+		System.out.println("Got VMM Change event.  Cur VS in VMM: "
+		                   + vmm.getVisualStyle().getName());
+
+		if ((selectedName == null) || (currentName == null) || (curView == null)
+		    || curView.equals(Cytoscape.getNullNetworkView()))
 			return;
-		
-//		// We need to update the combo box and switch visual styles.
-//		// Now check if we need to add a new item:
-//		if (!findVSName(currentName)) {
-//			vsNameComboBox.addItem(currentName);
-//		}
-		
+
 		// Update GUI based on CalcCatalog's state.
-		if(!findVSName(currentName)) {
+		if (!findVSName(currentName)) {
 			syncStyleBox();
-		}
-		else {
+		} else {
 			// Bug fix: 0001802: if VS already existed in combobox, select it
 			for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
 				if (vsNameComboBox.getItemAt(i).equals(currentName)) {
 					vsNameComboBox.setSelectedIndex(i);
+
 					break;
 				}
 			}
 		}
 	}
-	
+
 	private void syncStyleBox() {
-		
-		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
-		
+
 		String curStyleName = vmm.getVisualStyle().getName();
-		
+
 		String styleName;
 		List<String> namesInBox = new ArrayList<String>();
 		namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
-		
-		for(int i=0; i<vsNameComboBox.getItemCount(); i++) {
+
+		for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
 			styleName = vsNameComboBox.getItemAt(i).toString();
-			if(vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
+
+			if (vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
 				// No longer exists in the VMM.  Remove.
 				vsNameComboBox.removeItem(styleName);
 				defaultImageManager.remove(styleName);
 				propertyMap.remove(styleName);
-			} 
+			}
 		}
+
 		Collections.sort(namesInBox);
-		
+
 		// Reset combobox items.
 		vsNameComboBox.removeAllItems();
-		for(String name: namesInBox) {
+
+		for (String name : namesInBox)
 			vsNameComboBox.addItem(name);
-		}
-		
-		
+
 		// Bug fix: 0001721: 
 		//Note: Because vsNameComboBox.removeAllItems() will fire unwanted event, 
 		// vmm.getVisualStyle().getName() will not be the same as curStyleName
-		if (curStyleName == null || curStyleName.trim().equals("")) {
-			switchVS(vmm.getVisualStyle().getName());			
-		}
-		else {
-			switchVS(curStyleName);			
-		}
-
-		//vsNameComboBox.setSelectedItem(vmm.getVisualStyle().getName());
-		
-		// Sync style and selected item.
-		
-//		if(curView != null && curView.equals(Cytoscape.getNullNetworkView()) == false) {
-//			
-//			// Get visual style name associated with the current network view.
-//			String curNetVSName = curView.getVisualStyle().getName();
-//			
-//			if(curNetVSName.equals(vmm.getVisualStyle().getName()) == false) {
-//				vmm.removeChangeListener(this);
-//				vmm.setVisualStyle(curView.getVisualStyle());
-//				vmm.addChangeListener(this);
-//			}
-//			
-//			if(vsNameComboBox.getSelectedItem().toString().equals(curNetVSName) == false) {
-//				//vmm.setNetworkView(curView);
-//				//switchVS(curNetVSName);
-//			}
-//			
-//		}
-//		if(vmm.getVisualStyle().getName().equals(vsNameComboBox.getSelectedItem().toString()) == false) {
-//			vsNameComboBox.setSelectedItem(vmm.getVisualStyle().getName());
-//			switchVS(vmm.getVisualStyle().getName());
-//		}
+		if ((curStyleName == null) || curStyleName.trim().equals(""))
+			switchVS(vmm.getVisualStyle().getName());
+		else
+			switchVS(curStyleName);
 	}
 
 	// return true iff 'match' is found as a name within the
@@ -3793,19 +3785,41 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		return table.getModel().getValueAt(table.getSelectedRow(), 0);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param objectKey DOCUMENT ME!
+	 * @param attributeName DOCUMENT ME!
+	 */
 	public void allAttributeValuesRemoved(String objectKey, String attributeName) {
 		setAttrComboBox();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param objectKey DOCUMENT ME!
+	 * @param attributeName DOCUMENT ME!
+	 * @param keyIntoValue DOCUMENT ME!
+	 * @param oldAttributeValue DOCUMENT ME!
+	 * @param newAttributeValue DOCUMENT ME!
+	 */
 	public void attributeValueAssigned(String objectKey, String attributeName,
-			Object[] keyIntoValue, Object oldAttributeValue,
-			Object newAttributeValue) {
+	                                   Object[] keyIntoValue, Object oldAttributeValue,
+	                                   Object newAttributeValue) {
 		setAttrComboBox();
-		
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param objectKey DOCUMENT ME!
+	 * @param attributeName DOCUMENT ME!
+	 * @param keyIntoValue DOCUMENT ME!
+	 * @param attributeValue DOCUMENT ME!
+	 */
 	public void attributeValueRemoved(String objectKey, String attributeName,
-			Object[] keyIntoValue, Object attributeValue) {
+	                                  Object[] keyIntoValue, Object attributeValue) {
 		setAttrComboBox();
 	}
 }

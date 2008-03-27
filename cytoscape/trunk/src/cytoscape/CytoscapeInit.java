@@ -246,9 +246,12 @@ public class CytoscapeInit {
 
 			System.out.println("loading session...");
 
+			boolean sessionLoaded = false;
 			if ((initParams.getMode() == CyInitParams.GUI)
-			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				loadSessionFile();
+				sessionLoaded = true;
+			}
 
 			System.out.println("loading networks...");
 			loadNetworks();
@@ -261,8 +264,10 @@ public class CytoscapeInit {
 
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				System.out.println("Initializing VizMapper...");
-				initVizmapper();
+				if(sessionLoaded == false) {
+					System.out.println("Initializing VizMapper...");
+					initVizmapper();
+				}
 			}
 		} finally {
 			// Always restore the cursor and hide the splash, even there is
@@ -505,7 +510,6 @@ public class CytoscapeInit {
 					reader.read();
 					Cytoscape.getDesktop()
 					         .setTitle("Cytoscape Desktop (Session Name: " + sessionName + ")");
-
 					return true;
 				}
 			}
@@ -513,8 +517,10 @@ public class CytoscapeInit {
 			e.printStackTrace();
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
+			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
 			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
 			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
+			System.gc();
 		}
 
 		return false;
