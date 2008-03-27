@@ -14,6 +14,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.DefaultFontMapper;
 import cytoscape.ding.DingNetworkView;
 /**
  * PDF exporter by the iText library.
@@ -37,7 +38,13 @@ public class PDFExporter implements Exporter
 			PdfWriter writer = PdfWriter.getInstance(document, stream);
 			document.open();
 			PdfContentByte cb = writer.getDirectContent();
-			Graphics2D g = cb.createGraphicsShapes((int) pageSize.getWidth(), (int) pageSize.getHeight());
+			Graphics2D g = null;
+			if ( exportTextAsFont ) {
+				g = cb.createGraphics(pageSize.getWidth(), pageSize.getHeight(), new DefaultFontMapper());
+			} else {
+				g = cb.createGraphicsShapes(pageSize.getWidth(), pageSize.getHeight());
+			}
+
 			double imageScale = Math.min(pageSize.getWidth()  / ((double) ifc.getWidth()),
 			                             pageSize.getHeight() / ((double) ifc.getHeight()));
 			g.scale(imageScale, imageScale);

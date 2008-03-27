@@ -256,7 +256,7 @@ class PSExportFilter extends ExportFilter
 	public void export(final CyNetworkView view, final FileOutputStream stream)
 	{
 		PSExporter exporter = new PSExporter();
-		//exporter.setExportTextAsFont(this.getExportTextAsFont());
+		exporter.setExportTextAsFont(this.getExportTextAsFont());
 		ExportTask.run("Exporting to EPS", exporter, view, stream);
 	}
 }
