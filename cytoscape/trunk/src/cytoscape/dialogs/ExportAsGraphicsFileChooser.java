@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.util.FileUtil;
 import cytoscape.util.CyFileFilter;
 import cytoscape.visual.VisualStyle;
@@ -23,8 +24,8 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 {
 	protected File selectedFile;
 
-	private boolean exportTextAsFont = false;
-	
+	private boolean exportTextAsFont = !(new Boolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")).booleanValue());
+
 	public ExportAsGraphicsFileChooser(CyFileFilter[] formats)
 	{
 		super(Cytoscape.getDesktop(), "Export Network View as Graphics");
@@ -39,11 +40,9 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		formatComboBox.addActionListener(this);
 		chkExportTextAsFont.addActionListener(this);
 		
-		// Hide the checkBox "ExportText as Font", because iText and FreeHep ignore the flag
-		chkExportTextAsFont.setVisible(false);
-		// Because the checkBox "ExportText as Font" is hidden, we have to set the preferred size
-		filePathField.setPreferredSize(new Dimension(300,25));
-		
+		// Set the init value based on Cytoscape property "exportTextAsShape"
+		chkExportTextAsFont.setSelected(exportTextAsFont);
+				
 		formatComboBox.setModel(new DefaultComboBoxModel(formats));
 		formatComboBox.setSelectedIndex(0);
 		
@@ -225,7 +224,8 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 			CyFileFilter filter = (CyFileFilter) formatComboBox.getSelectedItem();
 			
 			if (filter.getClass().getName().equalsIgnoreCase("cytoscape.actions.PDFExportFilter") ||
-					filter.getClass().getName().equalsIgnoreCase("cytoscape.actions.SVGExportFilter")) {
+					filter.getClass().getName().equalsIgnoreCase("cytoscape.actions.SVGExportFilter") ||
+					filter.getClass().getName().equalsIgnoreCase("cytoscape.actions.PSExportFilter")) {
 				this.chkExportTextAsFont.setEnabled(true);
 			}
 			else {
@@ -234,6 +234,12 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		}
 		if (obj instanceof JCheckBox) {
 			exportTextAsFont = chkExportTextAsFont.isSelected();
+			// Update Cytoscape property "exportTextAsShape"
+			String exportTextAsShape = "false";
+			if (!exportTextAsFont) {
+				exportTextAsShape = "true";
+			}
+			CytoscapeInit.getProperties().setProperty("exportTextAsShape", exportTextAsShape);
 		}
 	}
 	
