@@ -81,7 +81,7 @@ public class ConditionsVsPathwaysTable extends JPanel {
 		table.setDefaultRenderer(Boolean.class, new ColorRenderer());
 		JScrollPane scrollpane = new JScrollPane(table);
 
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 //		JPanel tablePanel = new JPanel();
@@ -115,7 +115,20 @@ public class ConditionsVsPathwaysTable extends JPanel {
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				Set nodes = parentNetwork.getSelectedNodes();
+				for (int i=0; i< table.getSelectedRowCount(); i++) {
+					int[] rows = table.getSelectedRows();
+					csplugins.jActiveModules.Component thePath = activePaths[rows[i]];
+					Vector nodesVect = thePath.getNodes();
+					createNetwork(thePath.getNodes());	
+				}
+			}
+			
+			private void createNetwork(Vector pNodeVect) {
+				Object[] objArray = pNodeVect.toArray();
+				HashSet nodes = new HashSet(pNodeVect.size());
+				nodes.addAll(pNodeVect);
+									
+				//Set nodes = parentNetwork.getSelectedNodes();
 				Set edges = new HashSet();
 				Iterator iterator = parentNetwork.edgesIterator();
 				while (iterator.hasNext())
@@ -130,6 +143,7 @@ public class ConditionsVsPathwaysTable extends JPanel {
 				Cytoscape.createNetworkView(newNetwork, " results");
 				Cytoscape.getNetworkView(newNetwork.getIdentifier())
 					.setVisualStyle(Cytoscape.getNetworkView(parentNetwork.getIdentifier()).getVisualStyle().getName());
+				
 			}
 		});
 		createNetworkButton.setEnabled(false);
@@ -152,6 +166,8 @@ public class ConditionsVsPathwaysTable extends JPanel {
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+				System.out.println("Save Score Distributions is clicked!");
+
 				parentUI.startRandomizeAndRun(cyNetwork);
 			}
 		});
