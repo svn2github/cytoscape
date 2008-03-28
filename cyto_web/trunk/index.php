@@ -10,30 +10,34 @@
 		<title>Cytoscape: Analyzing and Visualizing Network Data</title>
 		<link href="css/cytoscape.css" type="text/css" rel="stylesheet" media="screen">
 		<link href="images/cyto.ico" rel="shortcut icon">
-		<meta name="keywords" content="Cytoscape, visualization, interaction network, software, genetic, gene, expression, protein interaction, graph, bioinformatics, computational biology, Whitehead Institute, Institute for Systems Biology, microarray analysis, clustering, pathways, integration, algorithm, simulated annealing, gene regulation">
+		<meta name="keywords" content="Cytoscape, visualization, interaction network, software, genetic, gene, 
+        expression, protein interaction, graph, bioinformatics, computational biology, Whitehead Institute, 
+        Institute for Systems Biology, microarray analysis, clustering, pathways, integration, algorithm, 
+        simulated annealing, gene regulation">
 	</head>
 
 	<body>
-		<!>
-		<! ========== Title and menu bar ============ >
-		<!>
+    
+		<! ========== Title and menu bar ============ />
+
 		<div id="feature">
 			<div class="title">
 				Cytoscape
 			</div>
 			<img src="images/logo.png">
 			<div class="article">
-				<h2><a href="<?= $latest_download_link ?>">Download Cytoscape
-            <?= $latest_version ?>
-            ! </a></h2>
+				<h2><a href="<?= $latest_download_link ?>">Download Cytoscape<?= $latest_version ?>!</a></h2>
 				<a href="<?= $latest_release_notes_link ?>"><?= $latest_version ?> Release Notes &raquo; </a>
 				<hr/>
 				<h3><a href="http://chianti.ucsd.edu/Cyto-2_6-beta">Download 2.6 Beta Release!</a></h3>
 				<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">Submit Bugs!</a>
-				</p></div>
+				</p>
+            </div>
 		</div>
+        
 		<? include "nav.php"; ?><? include "detailed_nav.php"; ?>
-		<!>
+		
+        <!>
 		<! ========== Main Contents ============ >
 		<!>
 		<div id="content">
