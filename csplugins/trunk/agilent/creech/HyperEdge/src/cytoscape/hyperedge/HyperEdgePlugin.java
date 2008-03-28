@@ -38,8 +38,6 @@ package cytoscape.hyperedge;
 
 //import cytoscape.CytoscapeObj;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginInfo;
-import cytoscape.plugin.PluginManager;
 
 
 /**
