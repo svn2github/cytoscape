@@ -117,34 +117,29 @@ public class ConditionsVsPathwaysTable extends JPanel {
 			{
 				for (int i=0; i< table.getSelectedRowCount(); i++) {
 					int[] rows = table.getSelectedRows();
-					csplugins.jActiveModules.Component thePath = activePaths[rows[i]];
-					Vector nodesVect = thePath.getNodes();
-					createNetwork(thePath.getNodes());	
+
+					parentNetwork.unselectAllNodes();
+					parentNetwork.unselectAllEdges();
+
+					ConditionsVsPathwaysTable.this.pathViewer.displayPath(activePaths[rows[i]], "");
+
+					Set nodes = parentNetwork.getSelectedNodes();
+					Set edges = new HashSet();
+					Iterator iterator = parentNetwork.edgesIterator();
+					while (iterator.hasNext())
+					{
+						CyEdge edge = (CyEdge) iterator.next();
+						if (nodes.contains(edge.getSource()) && nodes.contains(edge.getTarget()))
+							edges.add(edge);
+					}
+					CyNetwork newNetwork = Cytoscape.createNetwork(nodes, edges,
+						CyNetworkNaming.getSuggestedSubnetworkTitle(parentNetwork),
+						parentNetwork);
+					Cytoscape.createNetworkView(newNetwork, " results");
+					Cytoscape.getNetworkView(newNetwork.getIdentifier())
+						.setVisualStyle(Cytoscape.getNetworkView(parentNetwork.getIdentifier()).getVisualStyle().getName());					
 				}
-			}
-			
-			private void createNetwork(Vector pNodeVect) {
-				Object[] objArray = pNodeVect.toArray();
-				HashSet nodes = new HashSet(pNodeVect.size());
-				nodes.addAll(pNodeVect);
-									
-				//Set nodes = parentNetwork.getSelectedNodes();
-				Set edges = new HashSet();
-				Iterator iterator = parentNetwork.edgesIterator();
-				while (iterator.hasNext())
-				{
-					CyEdge edge = (CyEdge) iterator.next();
-					if (nodes.contains(edge.getSource()) && nodes.contains(edge.getTarget()))
-						edges.add(edge);
-				}
-				CyNetwork newNetwork = Cytoscape.createNetwork(nodes, edges,
-					CyNetworkNaming.getSuggestedSubnetworkTitle(parentNetwork),
-					parentNetwork);
-				Cytoscape.createNetworkView(newNetwork, " results");
-				Cytoscape.getNetworkView(newNetwork.getIdentifier())
-					.setVisualStyle(Cytoscape.getNetworkView(parentNetwork.getIdentifier()).getVisualStyle().getName());
-				
-			}
+			}			
 		});
 		createNetworkButton.setEnabled(false);
 		table.addMouseListener(new MouseAdapter() {
