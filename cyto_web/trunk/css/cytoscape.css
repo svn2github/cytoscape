@@ -1,4 +1,4 @@
-﻿/********************************
+/********************************
 
  Core CSS file for Cytoscape.org
  
@@ -63,7 +63,7 @@ body {
 	padding-bottom: 0px;
 	margin-bottom: 0px;
 }
-#feature h2 {
+#feature h1 {
 	position:absolute;
 	top:0px;
 	font-size: 36px;
