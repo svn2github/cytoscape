@@ -1,10 +1,21 @@
 <HTML>
 <HEAD>
-<TITLE>HyperEdge Release Notes (version 2.58)</TITLE>
+<TITLE>HyperEdge Release Notes (version 2.59)</TITLE>
 </HEAD>
 <BODY>
 
-<H1>HyperEdge Release Notes (version 2.58)</H1>
+<H1>HyperEdge Release Notes (version 2.59)</H1>
+Implementation changes only:
+<OL>
+<LI>Migrated ListenerList to LSIUtils com.agilent.labs.lsiutils.ListenerStore.
+<P><LI>Changed code to use migrated ListenerStore.
+<P><LI>Updated HyperEdgeManagerImpl to use stronger typing thru generics.
+<P><LI>Updated to use new LSIUtils (v0.11).
+</OL>
+
+<H1>Prior Notes</H1>
+
+<H2>HyperEdge Release Notes (version 2.58)</H2>
 <OL>
 <LI>Changed when ConnectorNodes are really deleted from the delayed
 deletion list.
@@ -13,8 +24,6 @@ that was overridden by the HyperEdgeEditor was removed (the
 functionality was moved into the Cytoscape core). Now, the
 ConnectorNodes are removed whenever a NETWORK_MODIFIED event is fired.
 </OL>
-
-<H1>Prior Notes</H1>
 
 <H2>HyperEdge Release Notes (version 2.57)</H2>
 <OL>
@@ -422,7 +431,7 @@ HyperEdges along with your Cytoscape structures.
 <P>To compile, point at your cytoscape 2.2 libraries in your Eclipse project.
 
 <HR>
-<SMALL><EM>This page was last updated: 12/19/07</EM></SMALL>
+<SMALL><EM>This page was last updated: 03/28/08</EM></SMALL>
 
 </BODY>
 </HTML>

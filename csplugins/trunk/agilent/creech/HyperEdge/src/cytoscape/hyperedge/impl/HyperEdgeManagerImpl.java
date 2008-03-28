@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Sep 16 17:13:31 2005
-* Modified:     Thu Dec 20 10:22:06 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Fri Mar 28 07:25:22 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,12 @@
 *
 * Revisions:
 *
+* Fri Mar 28 07:24:53 2008 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.59
+* Fri Mar 14 15:15:52 2008 (Michael L. Creech) creech@w235krbza760
+*  Updated code to use stronger typing thru generics and to use new
+*  generic ListenerStore (migrated ListenerList from
+*  cytoscape.hyperedge.impl.utils to cytoscape.util).
 * Wed Dec 19 14:23:47 2007 (Michael L. Creech) creech@w235krbza760
 *  Added actually deleting connectorNodes on the delayed deletion
 *  list whenever NETWORK_MODIFIED events are fired.
@@ -114,7 +120,6 @@ import cytoscape.hyperedge.event.DeleteListener;
 import cytoscape.hyperedge.event.EventNote;
 import cytoscape.hyperedge.event.NewObjectListener;
 import cytoscape.hyperedge.impl.utils.HEUtils;
-import cytoscape.hyperedge.impl.utils.ListenerList;
 import cytoscape.hyperedge.impl.utils.MapUtils;
 
 import giny.model.GraphObject;
@@ -132,6 +137,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.agilent.labs.lsiutils.ListenerStore;
+import com.agilent.labs.lsiutils.impl.ListenerStoreImpl;
 
 
 /**
@@ -154,11 +162,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // used for fine-grained synchronization:
     private final static Boolean          INTERSECTION_LOCK   = new Boolean(true);
     private static final HyperEdgeManager INSTANCE            = new HyperEdgeManagerImpl();
-    private static final Double           VERSION_NUMBER      = 2.58;
+    private static final Double           VERSION_NUMBER      = 2.59;
     private static final String           VERSION             = "HyperEdge Version " +
                                                                 VERSION_NUMBER +
-                                                                ", 20-Dec-07";
-    private static transient ListenerList _new_listener_store = new ListenerList();
+                                                                ", 28-Mar-08";
+    private static transient ListenerStore<NewObjectListener> _new_listener_store = new ListenerStoreImpl<NewObjectListener>();
 
     // Used for setting and reading _internalRemoval:
     private final static Boolean LOCAL_REMOVAL_LOCK = new Boolean(true);
@@ -222,8 +230,8 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // Used for if any persistent objs are dirty--useful for
     // operations like save:
     // private transient ListenerList _any_dirty_listener_store = new ListenerList();
-    private transient ListenerList _change_listener_store;
-    private transient ListenerList _delete_listener_store;
+    private transient ListenerStore<ChangeListener> _change_listener_store;
+    private transient ListenerStore<DeleteListener> _delete_listener_store;
 
     // Used to specify if we are in the middle of an internal removal of edges or nodes
     // so that we can ignore event handling. For example, if we perform a HyperEdge.removeEdge()
@@ -461,7 +469,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
         // find intersection of CyNetwork CyEdges and CyNode's CyEdges:
         // HyperEdges contained within a CyNetwork:
-        Set edges_in_net = (Set) _net_to_edges_map.get(net);
+        Set<CyEdge> edges_in_net = (Set<CyEdge>) _net_to_edges_map.get(net);
 
         if (edges_in_net == null) {
             // no CyEdges in this CyNetwork:
@@ -512,19 +520,19 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
 
         // Now iterate over all the HEs looking for ones that match edge types:
-        Iterator        hes_it        = start_col_of_hes.iterator();
-        Iterator        edge_types_it;
+        Iterator<HyperEdge> hes_it        = start_col_of_hes.iterator();
+        Iterator<String>    edge_types_it;
         HyperEdge       he;
         boolean         does_match;
         List<HyperEdge> matches = new ArrayList<HyperEdge>();
 
         while (hes_it.hasNext()) {
-            he            = (HyperEdge) hes_it.next();
+            he            = hes_it.next();
             edge_types_it = edgeITypes.iterator();
             does_match    = true;
 
             while (edge_types_it.hasNext()) {
-                if (!he.hasEdgeOfType((String) edge_types_it.next())) {
+                if (!he.hasEdgeOfType(edge_types_it.next())) {
                     does_match = false;
 
                     break;
@@ -853,8 +861,9 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // implements HyperEdgeManager interface:
     public boolean addChangeListener(ChangeListener l) {
-        _change_listener_store = ListenerList.setupListenerListWhenNecessary(_change_listener_store);
-
+	if (_change_listener_store == null) {
+	    _change_listener_store = new ListenerStoreImpl<ChangeListener>();
+	}
         return _change_listener_store.addListener(l);
     }
 
@@ -879,8 +888,9 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // implements HyperEdgeManager interface:
     public boolean addDeleteListener(DeleteListener l) {
-        _delete_listener_store = ListenerList.setupListenerListWhenNecessary(_delete_listener_store);
-
+        if (_delete_listener_store == null) {
+	    _delete_listener_store = new ListenerStoreImpl<DeleteListener>();
+	}
         return _delete_listener_store.addListener(l);
     }
 
@@ -897,11 +907,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         if ((_delete_listener_store != null) &&
             (_delete_listener_store.hasListeners())) {
             // Now call all the listeners:
-            Iterator it = _delete_listener_store.iterator();
+            Iterator<DeleteListener> it = _delete_listener_store.iterator();
 
             synchronized (_delete_listener_store) {
                 while (it.hasNext()) {
-                    ((DeleteListener) it.next()).objectDestroyed(he);
+                    it.next().objectDestroyed(he);
                 }
             }
         }
@@ -1251,13 +1261,13 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     protected void fireNewHObjEvent(HyperEdge he) {
         if (_new_listener_store.hasListeners()) {
-            List list = _new_listener_store.getListeners();
+            List<NewObjectListener> list = _new_listener_store.getListeners();
 
             // Now call all the listeners:
-            Iterator it = list.iterator();
+            Iterator<NewObjectListener> it = list.iterator();
 
             while (it.hasNext()) {
-                ((NewObjectListener) it.next()).objectCreated(he);
+                it.next().objectCreated(he);
             }
         }
     }
@@ -1340,7 +1350,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             MapUtils.removeCollectionValueFromMap(_node_to_hes_map, node, he);
 
             // There's a chance the node is no longer a member of any HyperEdges:
-            List hes_containing_node = (List) _node_to_hes_map.get(node);
+            List<HyperEdge> hes_containing_node = _node_to_hes_map.get(node);
 
             if (hes_containing_node == null) {
                 // there are no other HyperEdge references to node.
@@ -1565,13 +1575,13 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         EventNote en = new EventNote(he, type, sub_type, supporting_info);
 
         if (_change_listener_store.hasListeners()) {
-            List list = _change_listener_store.getListeners();
+            List<ChangeListener> list = _change_listener_store.getListeners();
 
             // Now call all the listeners:
-            Iterator it = list.iterator();
+            Iterator<ChangeListener> it = list.iterator();
 
             while (it.hasNext()) {
-                ((ChangeListener) it.next()).objectChanged(en);
+                it.next().objectChanged(en);
             }
         }
     }
@@ -1597,19 +1607,19 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     private class HESessionLoadedUpdater extends HENetworkLoadedUpdater {
         // override propertyChange:
         public void propertyChange(PropertyChangeEvent e) {
-            handleLoadedSession((List) e.getNewValue());
+            handleLoadedSession((List<String>) e.getNewValue());
         }
 
-        private void handleLoadedSession(List networks) {
+        private void handleLoadedSession(List<String> networks) {
             if (networks == null) {
                 return;
             }
 
-            Iterator  netIt = networks.iterator();
+            Iterator<String>  netIt = networks.iterator();
             CyNetwork net;
 
             while (netIt.hasNext()) {
-                String netID = (String) netIt.next();
+                String netID = netIt.next();
                 net = (CyNetwork) Cytoscape.getNetwork(netID);
                 handleLoadedNetwork(net);
             }
@@ -1636,11 +1646,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             handleReloadedSharedHyperEdges(net);
 
             // find all connector nodes:
-            Iterator nodesIt = net.nodesIterator();
+            Iterator<CyNode> nodesIt = net.nodesIterator();
             CyNode   node;
 
             while (nodesIt.hasNext()) {
-                node = (CyNode) nodesIt.next();
+                node = nodesIt.next();
                 HyperEdgeImpl.reconstructIfConnectorNode(node, net);
             }
 
