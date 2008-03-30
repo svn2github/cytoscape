@@ -104,8 +104,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		treeView.setBorder(BorderFactory.createEtchedBorder());
 		navTree.setBackground(Cytoscape.getDesktop().getBackground());
 		treeView.setBackground(Cytoscape.getDesktop().getBackground());
-		this.setPreferredSize(new Dimension(240, 300));
-		navTree.setPreferredSize(new Dimension(240, 300));
+		// this.setPreferredSize(new Dimension(-1, 400));
+		// navTree.setPreferredSize(new Dimension(-1, 800));
 
 		navTree.addTreeExpansionListener(this);
 
@@ -158,6 +158,9 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		// Close our "ears" to selection updates from Cytoscape
 		updateSelection = false;
 
+		List<CyNode>clearNodes = new ArrayList();
+		List<TreePath>clearPaths = new ArrayList();
+
 		for (int i = cPaths.length-1; i >= 0; i--) {
 			// System.out.println(cPaths[i]);
 			DefaultMutableTreeNode treeNode = 
@@ -175,55 +178,45 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			if (!CyNode.class.isInstance(treeNode.getUserObject()))
 				continue;
 
+			updateTreeSelection = false;
 			CyNode node = (CyNode)treeNode.getUserObject();
 			if (e.isAddedPath(cPaths[i])) {
 				// See if this node has multiple paths
 				if (nodeMap.containsKey(node) && nodeMap.get(node).size() > 1) {
-					updateTreeSelection = false;
 					treeSelectionModel.addSelectionPaths(nodeMap.get(node).toArray(ta));
-					updateTreeSelection = true;
 				}
 				if (CyGroupManager.isaGroup(node)) {
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(node, true);
-					// It's a group -- get the members
 					CyGroup group = CyGroupManager.getCyGroup(node);
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getNodes(), true);
 					group.setState(NamedSelection.SELECTED);
-					if (navTree.isExpanded(cPaths[i])) {
-						updateNodes(group, true);
-					}
+					// Update the Cytoscape selections
+					List<CyNode>nodes = updateNodes(group);
+					Cytoscape.getCurrentNetwork().setSelectedNodeState(nodes, true);
+					// Update the JTree
+					List<TreePath>paths = getPathList(nodes);
+					treeSelectionModel.addSelectionPaths(paths.toArray(cPaths));
 				} else {
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(node, true);
 					// Do we need to promote?
 					checkUpdateGroups(node);
 				}
 			} else {
+				clearNodes.add(node);
+				clearPaths.add(cPaths[1]);
 				if (CyGroupManager.isaGroup(node)) {
 					CyGroup group = CyGroupManager.getCyGroup(node);
 					group.setState(NamedSelection.UNSELECTED);
-					Iterator<CyNode> nodeIter = group.getNodeIterator();
-					updateTreeSelection = false;
-					while (nodeIter.hasNext()) {
-						CyNode childNode = nodeIter.next();
-						if (nodeMap.containsKey(childNode)) {
-							treeSelectionModel.removeSelectionPaths(nodeMap.get(childNode).toArray(ta));
-						}
-						Cytoscape.getCurrentNetwork().setSelectedNodeState(childNode, false);
-					}
-					updateTreeSelection = true;
-				} else {
-					Cytoscape.getCurrentNetwork().setSelectedNodeState(node, false);
+					// Update the Cytoscape selections
+					clearNodes.addAll(updateNodes(group));
 				}
-				updateTreeSelection = false;
-				Iterator<TreePath>pathIter = nodeMap.get(node).iterator();
-				while (pathIter.hasNext()) {
+				for (TreePath path: nodeMap.get(node)) {
 					// Get the parent of this selection
-					TreePath path = pathIter.next();
 					if (path.getPathCount() > 1) {
 						if (path != cPaths[i])
-							treeSelectionModel.removeSelectionPath(path);
+							clearPaths.add(path);
 						TreePath parentPath = path.getParentPath();
-						treeSelectionModel.removeSelectionPath(parentPath);
+						clearPaths.add(parentPath);
 						// Get the group and mark it as unselected
 						Object userObject = ((DefaultMutableTreeNode)parentPath.getLastPathComponent()).getUserObject();
 						if (CyNode.class.isInstance(userObject)) {
@@ -232,8 +225,14 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 						}
 					}
 				}
-				updateTreeSelection = true;
 			}
+			updateTreeSelection = true;
+		}
+		if (clearPaths.size() > 0) {
+			updateTreeSelection = false;
+			treeSelectionModel.removeSelectionPaths(clearPaths.toArray(cPaths));
+			Cytoscape.getCurrentNetwork().setSelectedNodeState(clearNodes, false);
+			updateTreeSelection = true;
 		}
 		Cytoscape.getCurrentNetworkView().updateView();
 
@@ -282,22 +281,28 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	 *
 	 * @param group the group whose nodes we need to check
 	 */
-	private void updateNodes(CyGroup group, boolean select) {
-		Iterator<CyNode> nodeIter = group.getNodeIterator();
-		while (nodeIter.hasNext()) {
-			CyNode node = nodeIter.next();
+	private List<CyNode> updateNodes(CyGroup group) {
+		ArrayList<CyNode>list = new ArrayList();
+		for (CyNode node: group.getNodes()) {
 			if (nodeMap.containsKey(node)) {
-				Iterator<TreePath> pathIter = nodeMap.get(node).iterator();
-				while (pathIter.hasNext()) {
-					TreePath path = pathIter.next();
-					if (select) {
-						treeSelectionModel.addSelectionPath(path);
-					} else {
-						treeSelectionModel.removeSelectionPath(path);
-					}
-				}
+				list.add(node);
+			}
+			if (node.isaGroup()) {
+				CyGroup childGroup = CyGroupManager.getCyGroup(node);
+				list.addAll(updateNodes(childGroup));
 			}
 		}
+		return list;
+	}
+
+	private List<TreePath> getPathList(List<CyNode>nodeList) {
+		ArrayList<TreePath> pathList = new ArrayList(nodeList.size());
+		for (CyNode node: nodeList) {
+			if (nodeMap.containsKey(node)) {
+				pathList.addAll(nodeMap.get(node));
+			}
+		}
+		return pathList;
 	}
 
 	/**
@@ -519,9 +524,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			if (groupList == null || groupList.size() == 0)
 				return rootNode;
 
-			Iterator<CyGroup> iter = groupList.iterator();
-			while (iter.hasNext()) {
-				rootNode.add(addGroupToTree(iter.next(), rootNode, rootPath));
+			for (CyGroup group: groupList) {
+				// Only add root groups
+				if (isRootGroup(group))
+					rootNode.add(addGroupToTree(group, rootNode, rootPath));
 			}
 			return rootNode;
 		}
@@ -570,12 +576,21 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			}
 
 			// Now, add all of our children
-			Iterator<CyNode> nodeIter = group.getNodeIterator();
-			while (nodeIter.hasNext()) {
-				CyNode node = nodeIter.next();
+			for (CyNode node: group.getNodes()) {
 				if (CyGroupManager.isaGroup(node)) {
 					// Get the group
 					CyGroup childGroup = CyGroupManager.getCyGroup(node);
+					// See if it's already in the tree
+					if (nodeMap.containsKey(childGroup.getGroupNode())) {
+						// Yes!  If it's a root, we need to move it underneath us
+						List<TreePath> childPathList = nodeMap.get(childGroup.getGroupNode());
+						for (TreePath childPath: childPathList) {
+							if (childPath.getPathCount() == 2) {
+								// It's a root -- remove it
+								removeGroupFromTree(childGroup, treeModel, childPath);
+							}
+						}
+					}
 					treeNode.add(addGroupToTree(childGroup, treeNode, path));
 				} else {
 					// Add the node to the tree
@@ -593,6 +608,30 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			}
 			return treeNode;
 		}
+
+		private void removeGroupFromTree(CyGroup childGroup, DefaultMutableTreeNode treeModel,
+		                                 TreePath path) {
+			TreePath parentPath = path.getParentPath();
+			DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)parentPath.getLastPathComponent();
+			DefaultMutableTreeNode thisNode = (DefaultMutableTreeNode)path.getLastPathComponent();
+			parentNode.remove(thisNode);
+		}
+
+		private boolean isRootGroup(CyGroup group) {
+			CyNode groupNode = group.getGroupNode();
+			List<CyGroup>groupList = groupNode.getGroups();
+			if (groupList == null || groupList.size() == 0) {
+				return true;
+			}
+
+			// Not a root, but might be a child of a different viewer
+			for (CyGroup parent: groupList) {
+				if (parent.getViewer() != null && parent.getViewer().equals(viewer.getViewerName()))
+					return false;
+			}
+			return true;
+		}
+
 	}
 
 	/**
