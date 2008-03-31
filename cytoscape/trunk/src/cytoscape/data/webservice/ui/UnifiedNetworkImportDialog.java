@@ -91,6 +91,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_internet-32.png"));
 
     private int numDataSources = 0;
+    private int numClients = 0;
 
     static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
@@ -125,14 +126,23 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
     private void initGUI() {
         clientNames = new HashMap<String, String>();
 
+        List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+		for (WebServiceClient client : clients) {
+			if (client instanceof NetworkImportWebServiceClient) {
+                numClients++;
+            }
+		}
+
         initComponents();
         setDatasource();
 
         //  If we have no data sources, show the install panel
-        if (numDataSources ==0) {
-            this.getContentPane().add(installPanel);
-        } else {
-            this.getContentPane().add(queryPanel);
+        getContentPane().setLayout(new BorderLayout());
+        if (numClients <= 1) {
+            this.getContentPane().add(installPanel, BorderLayout.SOUTH);
+        }
+        if (numClients > 0) {
+            this.getContentPane().add(queryPanel, BorderLayout.CENTER);
         }
 
         this.pack();
@@ -357,14 +367,20 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
         titlePanel2.add(titleIconLabel2);
         titlePanel2.setBackground(new Color(0, 0, 0));
         titlePanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
-        installPanel.add(titlePanel2, BorderLayout.NORTH);
+        if (numClients ==0) {
+            installPanel.add(titlePanel2, BorderLayout.NORTH);
+        }
 
         JPanel internalPanel = new JPanel();
         internalPanel.setBorder(new EmptyBorder(10,10,10,10));
         internalPanel.setLayout(new BoxLayout(internalPanel, BoxLayout.PAGE_AXIS));
         JTextArea area = new JTextArea (1, 40);
         area.setBorder(new EmptyBorder(0,0,0,0));
-        area.setText("There are no network import web service clients installed.");
+        if (numClients == 0) {
+            area.setText("There are no network import web service clients installed.");
+        } else {
+            area.setText("To install additional web service clients, click the install button below.");
+        }
         area.setEditable(false);
         area.setOpaque(false);
         area.setAlignmentX(Component.LEFT_ALIGNMENT);
