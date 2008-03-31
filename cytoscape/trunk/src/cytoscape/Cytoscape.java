@@ -1089,7 +1089,7 @@ public abstract class Cytoscape {
 
 		getSelectedNetworkViews().remove(view);
 		final String viewID = view.getIdentifier();
-		getNetworkViewMap().remove(viewID);
+		
 
 		if (viewID.equals(currentNetworkViewID)) {
 			if (getNetworkViewMap().size() <= 0)
@@ -1109,6 +1109,7 @@ public abstract class Cytoscape {
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_DESTROYED, null, view);
 		// theoretically this should not be set to null till after the events
 		// firing is done
+		getNetworkViewMap().remove(viewID);
 		view = null;
 		
 		// so that a network will be selected.
@@ -1837,10 +1838,9 @@ public abstract class Cytoscape {
 		setCurrentSessionFileName(null);
 		firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 		cytoscapeRootGraph = null;
-		System.gc();
 		cytoscapeRootGraph = new CytoscapeFingRootGraph();
 		System.out.println("Cytoscape Session Initialized.");
-		
+		System.gc();
 	}
 
 	/**
