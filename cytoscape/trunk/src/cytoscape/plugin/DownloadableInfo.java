@@ -381,7 +381,7 @@ public abstract class DownloadableInfo {
 	public boolean equals(Object Obj) {
 		DownloadableInfo obj = (DownloadableInfo) Obj;
 
-		if (this.getID() != null && obj.getID() != null) {
+		if ( (this.getID() != null && obj.getID() != null) && this.getType().equals(obj.getType()) ) {
 			if (this.getID().equals(obj.getID()) &&
 				this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
 				this.getObjectVersion().equals(obj.getObjectVersion()))
@@ -395,6 +395,12 @@ public abstract class DownloadableInfo {
 		return false;
 	}
 
+	/**
+	 * Compares the ID and download URL of the two objects.  If they are the same
+	 * the objects are considered to be equal regardless of version.
+	 * @param Obj
+	 * @return
+	 */
 	public boolean equalsDifferentObjectVersion(Object Obj) {
 		DownloadableInfo obj = (DownloadableInfo) Obj;
 		if (this.getID().equals(obj.getID()) &&
