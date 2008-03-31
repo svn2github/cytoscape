@@ -58,11 +58,11 @@
 
    <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
-        <javadoc packagenames="metaNodePlugin2.*" sourcepath="src" source="1.5" destdir="doc"
+        <javadoc packagenames="clusterMaker.*" sourcepath="src" source="1.5" destdir="doc"
 			 classpathref="classpath_release" >
-        <link href = "http://java.sun.com/j2se/1.4.2/docs/api/"/>
+        <link href = "http://java.sun.com/j2se/1.5.0/docs/api/"/>
         <link href = "http://csbi.sourceforge.net/API/"/>
-	<link href = "http://chianti.ucsd.edu/Cyto-2_4_1/javadoc/" />
+	<link href = "http://chianti.ucsd.edu/Cyto-2_6_0/javadoc/" />
        </javadoc>
     </target>
 
