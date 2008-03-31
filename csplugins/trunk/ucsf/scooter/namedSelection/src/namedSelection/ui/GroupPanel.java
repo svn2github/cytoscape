@@ -203,7 +203,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				}
 			} else {
 				clearNodes.add(node);
-				clearPaths.add(cPaths[1]);
+				clearPaths.add(cPaths[i]);
 				if (CyGroupManager.isaGroup(node)) {
 					CyGroup group = CyGroupManager.getCyGroup(node);
 					group.setState(NamedSelection.UNSELECTED);
@@ -299,7 +299,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		ArrayList<TreePath> pathList = new ArrayList(nodeList.size());
 		for (CyNode node: nodeList) {
 			if (nodeMap.containsKey(node)) {
-				pathList.addAll(nodeMap.get(node));
+				for (TreePath path: nodeMap.get(node)) {
+					if (navTree.isVisible(path))
+						pathList.add(path);
+				}
 			}
 		}
 		return pathList;
