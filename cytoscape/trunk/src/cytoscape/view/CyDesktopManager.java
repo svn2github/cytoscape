@@ -91,18 +91,16 @@ public class CyDesktopManager  {
 	
 	// Arrange all windows in the desktop according to the given style
 	public static void arrangeFrames(Arrange pStyle) {
-		if (desktop == null) {
+		if (desktop == null)
 			new CyDesktopManager();
-		}
 		
-		Dimension desktopSize = desktop.getSize();
+		final Dimension desktopSize = desktop.getSize();
 		
-		JInternalFrame[] allFrames = desktop.getAllFrames();
+		final JInternalFrame[] allFrames = desktop.getAllFrames();
 		
 		int frameCount = allFrames.length; 
-		if ( frameCount == 0) {
+		if ( frameCount == 0)
 			return;
-		}
 
 		if (pStyle == Arrange.CASCADE) {
 			int delta_x = 20;
@@ -273,6 +271,9 @@ public class CyDesktopManager  {
 				allFrames[frameCount-i-1].setBounds(x, y, w, h);
 			}
 		}
+		
+		// Clean up.
+		System.gc();
 	}
 	
 }
