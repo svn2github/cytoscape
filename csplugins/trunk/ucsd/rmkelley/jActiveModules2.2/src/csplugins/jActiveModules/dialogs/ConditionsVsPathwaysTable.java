@@ -145,6 +145,9 @@ public class ConditionsVsPathwaysTable extends JPanel {
 		table.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent me) {
 				//System.err.println("Mouse pressed");
+				if (table.getSelectedRowCount() ==0) {
+					return;
+				}
 				ConditionsVsPathwaysTable.this.pathViewer.displayPath(
 						activePaths[table.getSelectedRow()], "");
 				createNetworkButton.setEnabled(table.getSelectedRow() != -1);
@@ -161,8 +164,6 @@ public class ConditionsVsPathwaysTable extends JPanel {
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				System.out.println("Save Score Distributions is clicked!");
-
 				parentUI.startRandomizeAndRun(cyNetwork);
 			}
 		});
