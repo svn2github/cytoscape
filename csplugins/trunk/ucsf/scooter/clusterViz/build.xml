@@ -1,5 +1,5 @@
 <?xml version = "1.0"?>
-<project name = "structureViz" default = "compile_release" basedir = ".">
+<project name = "clusterViz" default = "jar" basedir = ".">
    
    <property name = "src" location = "src"/>
    <property name = "build" location = "build"/>
@@ -8,6 +8,7 @@
    <property name = "lib" location = "../../../../cytoscape"/>
    <property name = "jar"  location = "jar"/>
    <property name = "doc" location = "doc"/>
+	 <property name = "plugin.dir" location = "jar/treeView" />
 
    <property name="cytoscape.plugin" value="${lib}/plugins"/>
 
@@ -23,7 +24,7 @@
 
    <target name="compile" depends = "prepare" description="Compile with Cytoscape under development">
    <!-- Compile the java code from ${src} into ${build} -->
-   <javac source = "1.5" debug="true" deprecation="true" srcdir = "${src}" destdir="${build}">
+   <javac source = "1.5" debug="true" deprecation="false" srcdir = "${src}" destdir="${build}">
       <classpath refid = "classpath"/>
    </javac>
    </target>
@@ -36,10 +37,11 @@
 
    <target name="jar" depends="compile" description="makes a jar for Cytoscape under development">
    <mkdir dir = "${jar}"/>
-   <copy todir="build/structureViz" file="resources/plugin.props"/>
-   <jar jarfile="${jar}/structureViz.jar">
+	 <mkdir dir="${plugin.dir}"/>
+   <copy todir="build/clusterViz" file="resources/plugin.props"/>
+   <jar jarfile="${jar}/clusterViz.jar" excludes="edu/standord/genetics/treeview/plugin/**">
       <manifest>
-          <attribute name="Cytoscape-Plugin" value="structureViz.StructureViz" />
+          <attribute name="Cytoscape-Plugin" value="clusterViz.ClusterViz" />
       </manifest>
       <fileset dir="${build}"/>
    </jar>
@@ -49,20 +51,73 @@
       <java classname = "cytoscape.CyMain" classpathref = "classpath"
           fork = "true" maxmemory = "1g">
       	  <arg line = "--JLD"/>
-      	  <arg line = "${jar}/structureViz.jar"/>
+      	  <arg line = "${jar}/clusterViz.jar"/>
       	  <arg line = "-vt"/>
       	  <arg line = "5000"/>
       </java>
     </target>
 
+	<target name="pluginDir">
+		<mkdir dir="${plugin.dir}"/>
+	</target>
+
+	<target name="dendrogramPlugin" depends="pluginDir,jar">
+    <echo    message="Creating jar file for dendrogram plugin"/>
+    <copy file="${src}/edu/stanford/genetics/treeview/plugin/dendroview/tv_plugins.cd"
+          todir="${build}/edu/stanford/genetics/treeview/plugin/dendroview">
+    </copy>
+     <!-- The ** bullshit matches any level of directories, * just matches one -->
+    <jar  jarfile="${plugin.dir}/Dendrogram.jar"
+          basedir="${build}"
+      includes="edu/stanford/genetics/treeview/plugin/dendroview**/*">
+    </jar>
+	</target>
+  <target name="karyoscopePlugin" depends="pluginDir,compile">
+      <echo    message="Creating jar file for karyoscope plugin"/>
+      <copy file="${src}/edu/stanford/genetics/treeview/plugin/karyoview/tv_plugins.cd"
+            todir="${build}/edu/stanford/genetics/treeview/plugin/karyoview">
+      </copy>
+       <!-- The ** bullshit matches any level of directories, * just matches one -->
+      <jar  jarfile="${plugin.dir}/Karyoscope.jar"
+            basedir="${build}"
+        includes="edu/stanford/genetics/treeview/plugin/karyoview**/*">
+      </jar>
+  </target>
+  <target name="scatterplotPlugin" depends="pluginDir,compile">
+      <echo    message="Creating jar file for scatterplot plugin"/>
+      <copy file="${src}/edu/stanford/genetics/treeview/plugin/scatterview/tv_plugins.cd"
+            todir="${build}/edu/stanford/genetics/treeview/plugin/scatterview">
+      </copy>
+       <!-- The ** bullshit matches any level of directories, * just matches one -->
+      <jar  jarfile="${plugin.dir}/Scatterplot.jar"
+            basedir="${build}"
+        includes="edu/stanford/genetics/treeview/plugin/scatterview**/*">
+      </jar>
+  </target>
+  <target name="treeannoPlugin" depends="pluginDir,compile">
+      <echo    message="Creating jar file for treeanno plugin"/>
+      <copy file="${src}/edu/stanford/genetics/treeview/plugin/treeanno/tv_plugins.cd"
+            todir="${build}/edu/stanford/genetics/treeview/plugin/treeanno">
+      </copy>
+       <!-- The ** bullshit matches any level of directories, * just matches one -->
+      <jar  jarfile="${plugin.dir}/Treeanno.jar"
+            basedir="${build}"
+        includes="edu/stanford/genetics/treeview/plugin/treeanno**/*">
+      </jar>
+  </target>
+
+		<target name="plugins" depends="dendrogramPlugin,karyoscopePlugin,scatterplotPlugin,treeannoPlugin">
+		</target>
+
+
 
    <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
-        <javadoc packagenames="metaNodePlugin2.*" sourcepath="src" source="1.5" destdir="doc"
+        <javadoc packagenames="clusterViz.*" sourcepath="src" source="1.5" destdir="doc"
 			 classpathref="classpath_release" >
         <link href = "http://java.sun.com/j2se/1.4.2/docs/api/"/>
         <link href = "http://csbi.sourceforge.net/API/"/>
-	<link href = "http://chianti.ucsd.edu/Cyto-2_4_1/javadoc/" />
+				<link href = "http://chianti.ucsd.edu/Cyto-2_4_1/javadoc/" />
        </javadoc>
     </target>
 

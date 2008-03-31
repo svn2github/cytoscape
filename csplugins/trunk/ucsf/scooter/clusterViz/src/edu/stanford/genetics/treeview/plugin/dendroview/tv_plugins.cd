@@ -1,0 +1,3 @@
+edu.stanford.genetics.treeview.plugin.dendroview.DendrogramFactory
+edu.stanford.genetics.treeview.plugin.dendroview.AlignmentFactory
+edu.stanford.genetics.treeview.plugin.dendroview.KnnDendrogramFactory
