@@ -552,9 +552,7 @@ public class CytoscapeSessionReader {
 				is = null;
 			}
 		}
-
-		//System.out.println("unmarshal: " + (System.currentTimeMillis() - start) + " msec.");
-
+		
 		/*
 		 * Session ID is the name of folder which contains everything for this
 		 * session.
@@ -570,26 +568,26 @@ public class CytoscapeSessionReader {
 	}
 
 	private void restoreDesktopState() {
+		
+		// Restore Desktop size
 		Cytoscape.getDesktop()
 		         .setSize(session.getSessionState().getDesktop().getDesktopSize().getWidth()
 		                         .intValue(),
 		                  session.getSessionState().getDesktop().getDesktopSize().getHeight()
 		                         .intValue());
 
-		Iterator frameIt = session.getSessionState().getDesktop().getNetworkFrames()
-		                          .getNetworkFrame().iterator();
-		Map frameMap = new HashMap();
+		final List<NetworkFrame> frames = session.getSessionState().getDesktop().getNetworkFrames()
+		                          .getNetworkFrame();
+		final Map<String, NetworkFrame> frameMap = new HashMap<String, NetworkFrame>();
 
-		while (frameIt.hasNext()) {
-			NetworkFrame netFrame = (NetworkFrame) frameIt.next();
+		for(NetworkFrame netFrame: frames)
 			frameMap.put(netFrame.getFrameID(), netFrame);
-		}
 
-		Component[] frames = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane()
+		Component[] desktopFrames = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane()
 		                              .getComponents();
 
-		for (int i = 0; i < frames.length; i++) {
-			JInternalFrame frame = (JInternalFrame) frames[i];
+		for (int i = 0; i < desktopFrames.length; i++) {
+			JInternalFrame frame = (JInternalFrame) desktopFrames[i];
 			NetworkFrame nFrame = (NetworkFrame) frameMap.get(frame.getTitle());
 
 			if (nFrame != null) {
