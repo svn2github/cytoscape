@@ -778,8 +778,12 @@ public class MetaNode {
 	 */
 	private void restoreNodes () {
 		NodeView metaNodeView = (NodeView)networkView.getNodeView(groupNode);
-		double xCenter = metaNodeView.getXPosition();
-		double yCenter = metaNodeView.getYPosition();
+		double xCenter = 0;
+		double yCenter = 0;
+		if (metaNodeView != null) {
+			xCenter = metaNodeView.getXPosition();
+			yCenter = metaNodeView.getYPosition();
+		}
 		double xOffset = 0;
 		double yOffset = 0;
 
