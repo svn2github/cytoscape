@@ -43,7 +43,7 @@ import javax.swing.JPanel;
 
 public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	// Common class values
-	ClusterProperties clusterProperties = null;
+	protected ClusterProperties clusterProperties = null;
 	boolean debug = false;
 	boolean canceled = false;
 

@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.hierarchical;
 
 import java.util.List;
 import java.util.HashMap;
@@ -56,6 +56,8 @@ public class Matrix {
 	private double rowWeights[];
 	private String rowLabels[];
 	private String columnLabels[];
+	private CyNode rowNodes[];
+	private CyNode columnNodes[];
 	protected boolean transpose;
 
 	/**
@@ -102,15 +104,29 @@ public class Matrix {
 		this.rowWeights = new double[nRows];
 		this.columnLabels = new String[nColumns];
 		this.rowLabels = new String[nRows];
+
+		// Only one of these will actually be used, depending on whether
+		// we're transposed or not
+		this.rowNodes = null;
+		this.columnNodes = null;
+		if (duplicate.getRowNode(0) != null)
+			this.rowNodes = new CyNode[nRows];
+		else
+			this.columnNodes = new CyNode[nColumns];
+
 		this.transpose = duplicate.transpose;
 
 		for (int row = 0; row < nRows; row++) {
 			rowWeights[row] = duplicate.getRowWeight(row);
 			rowLabels[row] = duplicate.getRowLabel(row);
+			if (rowNodes != null)
+				rowNodes[row] = duplicate.getRowNode(row);
 			for (int col = 0; col < nColumns; col++) {
 				if (row == 0) {
 					colWeights[col] = duplicate.getColWeight(col);
 					columnLabels[col] = duplicate.getColLabel(col);
+					if (columnNodes != null)
+						columnNodes[col] = duplicate.getColNode(col);
 				}
 				if (duplicate.getValue(row, col) != null)
 					this.matrix[row][col] = new Double(duplicate.getValue(row, col));
@@ -127,6 +143,9 @@ public class Matrix {
 		this.rowWeights = new double[rows];
 		this.columnLabels = new String[cols];
 		this.rowLabels = new String[rows];
+		// Only one of these will actually be used
+		this.rowNodes = null;
+		this.columnNodes = null;
 		this.transpose = false;
 	}
 
@@ -181,6 +200,18 @@ public class Matrix {
 
 	public double getColWeight(int col) {
 		return this.colWeights[col];
+	}
+
+	public CyNode getRowNode(int row) {
+		if (this.rowNodes != null)
+			return rowNodes[row];
+		return null;
+	}
+
+	public CyNode getColNode(int col) {
+		if (this.columnNodes != null)
+			return columnNodes[col];
+		return null;
 	}
 
 	public double[] getWeights() {
@@ -291,13 +322,15 @@ public class Matrix {
 		}
 	}
 
-	private Integer[] indexSort(double[] tData, int nVals) {
+	public Integer[] indexSort(double[] tData, int nVals) {
 		Integer[] index = new Integer[nVals];
 		for (int i = 0; i < nVals; i++) index[i] = new Integer(i);
 		IndexComparator iCompare = new IndexComparator(tData);
 		Arrays.sort(index, iCompare);
 		return index;
 	}
+
+	public boolean isTransposed() { return this.transpose; }
 
 	private void buildSymmetricalMatrix(CyNetwork network, String weight) {
 
@@ -309,12 +342,15 @@ public class Matrix {
 		this.matrix = new Double[nRows][nColumns];
 		this.rowLabels = new String[nRows];
 		this.columnLabels = new String[nColumns];
+		this.rowNodes = new CyNode[nRows];
+		this.columnNodes = null;
 
 		// For each edge, get the attribute and update the matrix and mask values
 		int index = 0;
 		int column;
 		for (CyNode node: nodeList) {
 			this.rowLabels[index] = node.getIdentifier();
+			this.rowNodes[index] = node;
 			this.columnLabels[index] = node.getIdentifier();
 			// Get the list of adjacent edges
 				List<CyEdge> edgeList = network.getAdjacentEdgesList(node, true, true, true);
@@ -377,11 +413,13 @@ public class Matrix {
 			this.matrix = new Double[nRows][nColumns];
 			this.rowLabels = new String[nRows];
 			this.columnLabels = new String[nColumns];
+			this.columnNodes = new CyNode[nColumns];
 			assignRowLabels(condMap.keySet());
 
 			int column = 0;
 			for (CyNode node: nodeList) {
 				this.columnLabels[column] = node.getIdentifier();
+				this.columnNodes[column] = node;
 				HashMap<String,Double>thisCondMap = nodeCondMap.get(node);
 				for (int row=0; row < this.nRows; row++) {
 					String rowLabel = this.rowLabels[row];
@@ -394,6 +432,7 @@ public class Matrix {
 			this.nRows = nodeList.size();
 			this.nColumns = condMap.keySet().size();
 			this.rowLabels = new String[nRows];
+			this.rowNodes = new CyNode[nRows];
 			this.columnLabels = new String[nColumns];
 			this.matrix = new Double[nRows][nColumns];
 			assignColumnLabels(condMap.keySet());
@@ -401,6 +440,7 @@ public class Matrix {
 			int row = 0;
 			for (CyNode node: nodeList) {
 				this.rowLabels[row] = node.getIdentifier();
+				this.rowNodes[row] = node;
 				HashMap<String,Double>thisCondMap = nodeCondMap.get(node);
 				for (int column=0; column < this.nColumns; column++) {
 					String columnLabel = this.columnLabels[column];

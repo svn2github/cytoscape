@@ -30,31 +30,18 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.hierarchical;
+
+import java.util.Comparator;
 
 // clusterMaker imports
 
-class TreeNode {
-	int left;
-	int right;
-	double distance;
+class NodeComparator implements Comparator<TreeNode> {
 
-	public TreeNode(int left, int right, double distance) {
-		this.left = left;
-		this.right = right;
-	this.distance = distance;
-	};
-
-	public TreeNode(double distance) {
-	this.distance = distance;
+	public int compare(TreeNode o1, TreeNode o2) {
+		if (o1.getDistance() < o2.getDistance()) return -1;
+		if (o1.getDistance() > o2.getDistance()) return 1;
+		return 0;
 	}
-
-	double getDistance() { return this.distance; }
-	void setDistance(double dist) { this.distance = dist; }
-
-	int getLeft() { return this.left; }
-	void setLeft(int left) { this.left = left; }
-
-	int getRight() { return this.right; }
-	void setRight(int right) { this.right = right; }
+	boolean equals() { return false; };
 }

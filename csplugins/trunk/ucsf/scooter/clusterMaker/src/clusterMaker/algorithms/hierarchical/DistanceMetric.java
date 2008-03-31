@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.hierarchical;
 
 import java.util.Arrays;
 import java.lang.Math;

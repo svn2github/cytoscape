@@ -30,21 +30,36 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.hierarchical;
 
-enum ClusterMethod {
-	SINGLE_LINKAGE("pairwise single-linkage"),
-	MAXIMUM_LINKAGE("pairwise maximum-linkage"),
-	AVERAGE_LINKAGE("pairwise average-linkage"),
-	CENTROID_LINKAGE("pairwise centroid-linkage");
+// clusterMaker imports
 
-	private String keyword;
+class TreeNode {
+	int left;
+	int right;
+	double distance;
+	String name;
 
-	ClusterMethod(String keyword) {
-	this.keyword = keyword;
+	public TreeNode(int left, int right, double distance) {
+		this.left = left;
+		this.right = right;
+		this.distance = distance;
+		this.name = null;
+	};
+
+	public TreeNode(double distance) {
+		this.distance = distance;
 	}
 
-	public String toString() {
-		return this.keyword;
-	}
+	public double getDistance() { return this.distance; }
+	public void setDistance(double dist) { this.distance = dist; }
+
+	public int getLeft() { return this.left; }
+	public void setLeft(int left) { this.left = left; }
+
+	public int getRight() { return this.right; }
+	public void setRight(int right) { this.right = right; }
+
+	String getName() { return this.name; }
+	void setName (String name) { this.name = name; }
 }

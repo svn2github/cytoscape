@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.hierarchical;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +44,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.task.TaskMonitor;
+import clusterMaker.algorithms.AbstractClusterAlgorithm;
 
 // clusterMaker imports
 
@@ -158,11 +159,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		this.monitor = monitor;
 		// Sanity check all of our settings
 		System.out.println("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
-		// OK, go for it!
+		// Get our attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
-		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, transposeMatrix);
-		// Create the data matrix
 		// Cluster!
+		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, transposeMatrix);
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 

@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.hierarchical;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,9 +40,12 @@ import javax.swing.JPanel;
 
 // Cytoscape imports
 import cytoscape.Cytoscape;
+import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
 import cytoscape.task.TaskMonitor;
+import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupManager;
 
 // clusterMaker imports
 
@@ -84,6 +87,7 @@ public class EisenCluster {
 		double[] nodeOrder = new double[nodeList.length];
 		int[] nodeCounts = new int[nodeList.length];
 		String[] nodeID = new String[nodeList.length];
+		ArrayList<String>attrList = new ArrayList(nodeList.length);
 
 		for (int node = 0; node < nodeList.length; node++) {
 			int min1 = nodeList[node].getLeft();
@@ -91,20 +95,24 @@ public class EisenCluster {
 
 			double order1;
 			double order2;
-			int counts1;
-			int counts2;
+			double counts1;
+			double counts2;
 			String ID1;
 			String ID2;
 			nodeID[node] = "GROUP"+(node+1)+"X";
+			nodeList[node].setName("GROUP"+(node+1)+"X");
 			if (min1 < 0) {
 				int index1 = -min1-1;
 				order1 = nodeOrder[index1];
-				counts1 = nodeCounts[index1];
-				ID1 = nodeID[index1];
+				// System.out.println("1: order1 = "+order1);
+				counts1 = (double) nodeCounts[index1];
+				// ID1 = nodeID[index1];
+				ID1 = nodeList[index1].getName();
 				nodeList[node].setDistance(Math.max(nodeList[node].getDistance(), nodeList[index1].getDistance()));
 			} else {
 				order1 = min1;
-				counts1 = 1;
+				// System.out.println("2: order1 = "+order1+", min1 = "+min1);
+				counts1 = 1.0;
 				// ID1 = keyword+min1+"X"; // Shouldn't this be the name of the gene/condition?
 				ID1 = matrix.getRowLabel(min1);
 			}
@@ -112,26 +120,48 @@ public class EisenCluster {
 			if (min2 < 0) {
 				int index2 = -min2-1;
 				order2 = nodeOrder[index2];
-				counts2 = nodeCounts[index2];
-				ID2 = nodeID[index2];
+				// System.out.println("3: order2 = "+order2);
+				counts2 = (double) nodeCounts[index2];
+				// ID2 = nodeID[index2];
+				ID2 = nodeList[index2].getName();
 				nodeList[node].setDistance(Math.max(nodeList[node].getDistance(), nodeList[index2].getDistance()));
 			} else {
-				order2 = min2;
-				counts2 = 1;
+				order2 = (double) min2;
+				// System.out.println("4: order2 = "+order2+", min2 = "+min2);
+				counts2 = 1.0;
 				// ID2 = keyword+min2+"X"; // Shouldn't this be the name of the gene/condition?
 				ID2 = matrix.getRowLabel(min2);
 			}
 
-			System.out.println(nodeID[node]+"\t"+ID1+"\t"+ID2+"\t"+(1.0-nodeList[node].getDistance()));
+			attrList.add(node, nodeList[node].getName()+"\t"+ID1+"\t"+ID2+"\t"+(1.0-nodeList[node].getDistance()));
+			System.out.println(attrList.get(node));
 
-			nodeCounts[node] = counts1 + counts2;
+			nodeCounts[node] = (int)counts1 + (int)counts2;
 			nodeOrder[node] = (counts1*order1 + counts2*order2) / (counts1 + counts2);
+			// System.out.println(""+node+": nodeCounts = "+nodeCounts[node]+", nodeorder = "+nodeOrder[node]);
 		}
 
 		// Now sort based on tree structure
-		TreeSort(nodeList.length, nodeOrder, nodeCounts, nodeList);
+		Integer order[] = TreeSort(matrix, nodeList.length, nodeOrder, nodeCounts, nodeList);
 
 		// Update the network attribute "HierarchicalCluster" and make it hidden
+		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+		String net = Cytoscape.getCurrentNetwork().getIdentifier();
+		netAttr.setListAttribute(net, "HierarchicalCluster", attrList);
+
+		ArrayList<Integer> orderList = new ArrayList();
+		for (int i = 0; i < order.length; i++) {
+			orderList.add(order[i]);
+		}
+
+		netAttr.setListAttribute(net, "NodeOrder", orderList);
+
+		// Finally, create the group hierarchy
+		// The root is the last entry in our nodeList
+		if (!matrix.isTransposed()) {
+			CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1]);
+		}
+
 		return "Complete";
 	}
 
@@ -507,16 +537,96 @@ public class EisenCluster {
 		return distance;
 	}
 
-	private static void TreeSort(int nNodes, double nodeOrder[], int nodeCounts[], TreeNode nodeList[]) {
+	private static Integer[] TreeSort(Matrix matrix, int nNodes, double nodeOrder[], int nodeCounts[], TreeNode nodeList[]) {
 		int nElements = nNodes+1;
 		double newOrder[] = new double[nElements];
-		int clusterID[] = new int[nElements];
+		int clusterIDs[] = new int[nElements];
+		double order1, order2;
+		int count1, count2, i1, i2;
 		
-		for (int i = 0; i < nElements; i++) clusterID[i] = i;
+		for (int i = 0; i < nElements; i++) clusterIDs[i] = i;
+
+		// for (int i = 0; i < nodeOrder.length; i++)
+		//  	System.out.println("nodeOrder["+i+"] = "+nodeOrder[i]);
 
 		for (int i = 0; i < nNodes; i++) {
-			int i1 = nodeList[i].getLeft();
-			int i2 = nodeList[i].getRight();
+			i1 = nodeList[i].getLeft();
+			i2 = nodeList[i].getRight();
+			if (i1 < 0) {
+				order1 = nodeOrder[-i1-1];
+				count1 = nodeCounts[-i1-1];
+			} else {
+				order1 = (double) i1;
+				count1 = 1;
+			}
+
+			if (i2 < 0) {
+				order2 = nodeOrder[-i2-1];
+				count2 = nodeCounts[-i2-1];
+			} else {
+				order2 = (double) i2;
+				count2 = 1;
+			}
+
+			// If order1 and order2 are equal, their order is determined by the
+			// order in which they were clustered
+			if (i1 < i2) {
+				double increase = count1;
+				if (order1 < order2)
+					increase = count2;
+				for (int j = 0; j < nElements; j++) {
+					int clusterID = clusterIDs[j];
+					if (clusterID == i1 && order1 >= order2) newOrder[j] += increase;
+					if (clusterID == i2 && order1 < order2) newOrder[j] += increase;
+					if (clusterID == i1 || clusterID == i2) clusterIDs[j] = -i-1;
+				}
+			} else {
+				double increase = count1;
+				if (order1 <= order2)
+					increase = count2;
+				for (int j = 0; j < nElements; j++) {
+					int clusterID = clusterIDs[j];
+					if (clusterID == i1 && order1 > order2) newOrder[j] += increase;
+					if (clusterID == i2 && order1 <= order2) newOrder[j] += increase;
+					if (clusterID == i1 || clusterID == i2) clusterIDs[j] = -i-1;
+				}
+			}
 		}
+		// for (int i = 0; i < newOrder.length; i++)
+		// 	System.out.println("newOrder["+i+"] = "+newOrder[i]);
+
+		Integer[] rowOrder = matrix.indexSort(newOrder, newOrder.length);
+		for (int i = 0; i < rowOrder.length; i++) {
+			System.out.println(""+i+": "+matrix.getRowLabel(rowOrder[i].intValue()));
+		}
+		return rowOrder;
+	}
+
+	private static CyGroup createGroups(Matrix matrix, TreeNode nodeList[], TreeNode node) {
+		ArrayList<CyNode>memberList = new ArrayList(2);
+
+		// Do a right-first descend of the tree
+		if (node.getRight() < 0) {
+			int index = -node.getRight() - 1;
+			CyGroup rightGroup = createGroups(matrix, nodeList, nodeList[index]);
+			memberList.add(rightGroup.getGroupNode());
+		} else {
+			memberList.add(matrix.getRowNode(node.getRight()));
+		}
+
+		if (node.getLeft() < 0) {
+			int index = -node.getLeft() - 1;
+			CyGroup leftGroup = createGroups(matrix, nodeList, nodeList[index]);
+			memberList.add(leftGroup.getGroupNode());
+		} else {
+			memberList.add(matrix.getRowNode(node.getLeft()));
+		}
+
+		// System.out.println("Creating group "+node.getName()+" with nodes "+memberList.get(0).getIdentifier()+" and "+memberList.get(1).getIdentifier());
+
+		// Create the group for this level
+		CyGroup group = CyGroupManager.createGroup(node.getName(), memberList, null);
+		CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+		return group;
 	}
 }

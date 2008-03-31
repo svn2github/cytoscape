@@ -30,18 +30,21 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms;
+package clusterMaker.algorithms.hierarchical;
 
-import java.util.Comparator;
+enum ClusterMethod {
+	SINGLE_LINKAGE("pairwise single-linkage"),
+	MAXIMUM_LINKAGE("pairwise maximum-linkage"),
+	AVERAGE_LINKAGE("pairwise average-linkage"),
+	CENTROID_LINKAGE("pairwise centroid-linkage");
 
-// clusterMaker imports
+	private String keyword;
 
-class NodeComparator implements Comparator<TreeNode> {
-
-	public int compare(TreeNode o1, TreeNode o2) {
-		if (o1.getDistance() < o2.getDistance()) return -1;
-		if (o1.getDistance() > o2.getDistance()) return 1;
-		return 0;
+	ClusterMethod(String keyword) {
+	this.keyword = keyword;
 	}
-	boolean equals() { return false; };
+
+	public String toString() {
+		return this.keyword;
+	}
 }
