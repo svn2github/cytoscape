@@ -36,22 +36,19 @@
  */
 package cytoscape.view;
 
-import cytoscape.Cytoscape;
-
-import ding.view.BirdsEyeView;
-import ding.view.DGraphView;
-
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.ComponentEvent;
-
+import java.awt.event.ComponentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+
+import cytoscape.Cytoscape;
+import ding.view.BirdsEyeView;
+import ding.view.DGraphView;
 
 /**
  * This class handles the creation of the BirdsEyeView navigation object 
