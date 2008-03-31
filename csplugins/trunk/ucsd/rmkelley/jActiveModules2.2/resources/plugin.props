@@ -17,7 +17,7 @@ pluginVersion=2.21
 cytoscapeVersion=2.5,2.6
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Analysis Plugins
+pluginCategory=Analysis
 
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
