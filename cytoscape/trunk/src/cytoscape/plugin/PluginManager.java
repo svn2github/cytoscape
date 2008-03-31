@@ -78,7 +78,7 @@ public class PluginManager {
 	private static PluginManager pluginMgr = null;
 
 	private static File tempDir;
-	
+
 	private static List<java.net.URL> pluginURLs;
 
 	private static List<String> resourcePlugins;
@@ -100,7 +100,8 @@ public class PluginManager {
 	 */
 	public List<Throwable> getLoadingErrors() {
 		if (pluginTracker.hasCorruptedElements()) {
-			loadingErrors.add(new TrackerException(
+			loadingErrors
+					.add(new TrackerException(
 							"Corrupted elements removed from the Plugin Tracker.  Some plugins may need to be reinstalled."));
 		}
 		return new ArrayList<Throwable>(loadingErrors);
@@ -187,17 +188,15 @@ public class PluginManager {
 
 	/**
 	 * 
-	 * @return The current version directory under .cytoscape
-	 *  that includes the plugins/ directory.
-	 *  
-	 *  Ex. /<user dir>/.cytoscape/2.6/plugins
+	 * @return The current version directory under .cytoscape that includes the
+	 *         plugins/ directory.
+	 * 
+	 * Ex. /<user dir>/.cytoscape/2.6/plugins
 	 */
 	public File getPluginManageDirectory() {
 		return tempDir;
 	}
 
-	
-	
 	/*
 	 * Just checks the system property 'javawebstart.version' which is only set
 	 * when running as a webstart.
@@ -254,16 +253,16 @@ public class PluginManager {
 				removeWebstartInstalls();
 				trackerFileName = "track_webstart_plugins.xml";
 			} else {
-				tempDir = new File(CytoscapeInit.getConfigVersionDirectory(), "plugins");
+				tempDir = new File(CytoscapeInit.getConfigVersionDirectory(),
+						"plugins");
 			}
 		} else if (!tempDir.getAbsolutePath().endsWith("/plugins")) {
 			tempDir = new File(tempDir, "plugins");
 		}
 
-		
-		
 		if (!tempDir.exists()) {
-			System.err.println("Creating directories for " + tempDir.getAbsolutePath());
+			System.err.println("Creating directories for "
+					+ tempDir.getAbsolutePath());
 			if (!tempDir.mkdirs()) {
 				Cytoscape.exit(-1);
 			}
@@ -273,18 +272,20 @@ public class PluginManager {
 			pluginTracker = Tracker;
 		} else {
 			try {
-				pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
+				pluginTracker = new PluginTracker(tempDir.getParentFile(),
+						trackerFileName);
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 				loadingErrors.add(ioe);
 			} catch (TrackerException te) {
 				te.printStackTrace();
-				loadingErrors.add(te); 
+				loadingErrors.add(te);
 			} finally { // document should be cleaned out by now
 				try {
-					pluginTracker = new PluginTracker(tempDir.getParentFile(), trackerFileName);
+					pluginTracker = new PluginTracker(tempDir.getParentFile(),
+							trackerFileName);
 				} catch (Exception e) {
-					e.printStackTrace(); 
+					e.printStackTrace();
 					// this could go on forever, surely there's a better way!
 				}
 			}
@@ -595,35 +596,36 @@ public class PluginManager {
 	 *            .cytoscape/plugins/[cytoscape version number]
 	 * @return File downloaded
 	 */
-	public DownloadableInfo download(DownloadableInfo Obj, TaskMonitor taskMonitor) 
-		throws IOException, ManagerException {
-		// run a check for plugins in a theme
+	public DownloadableInfo download(DownloadableInfo Obj,
+			TaskMonitor taskMonitor) throws IOException, ManagerException {
+		// run a check for plugins 
 		List<DownloadableInfo> CurrentAndInstalled = new ArrayList<DownloadableInfo>();
 		CurrentAndInstalled.addAll(this.getDownloadables(PluginStatus.CURRENT));
 		CurrentAndInstalled.addAll(this.getDownloadables(PluginStatus.INSTALL));
-		for (DownloadableInfo info : CurrentAndInstalled) {
-			switch (Obj.getType()) { // TODO get rid of these switches
-			case THEME: // check for other themes that include the same plugins
-				if (info.getType().equals(DownloadableType.THEME)) {
-					ThemeInfo Theme = (ThemeInfo) Obj;
-					for (PluginInfo plugin : Theme.getPlugins()) {
-						if (((ThemeInfo) info).containsPlugin(plugin)) {
-							throw new ManagerException(Obj.getName()
-											+ " cannot be downloaded, it includes plugins that are installed in the theme '"
-											+ info.getName() + "'");
-						}
+		
+		List<DownloadableInfo> FlattenedList = this.flattenDownloadableList(CurrentAndInstalled);
+		
+		for (DownloadableInfo info : FlattenedList) {
+			System.out.println("*** compare " + Obj.toString() + " to " + info.toString());
+			DownloadableInfo CurrentlyInstalled = null;
+			if (info.getParent() != null) {
+				CurrentlyInstalled = info.getParent();
+			} else {
+				CurrentlyInstalled = info;
+			}
+				
+			 
+			if (Obj.equals(info) || Obj.equalsDifferentObjectVersion(info)) {
+				throw new ManagerException(Obj.toString() + " cannot be installed, it is already loaded in: " + CurrentlyInstalled.toString());
+			}
+				
+			if (Obj.getType().equals(DownloadableType.THEME)) {
+				for (PluginInfo plugin: ((ThemeInfo) Obj).getPlugins()) {
+					if (plugin.equalsDifferentObjectVersion(info)) {
+						throw new ManagerException(Obj.toString() + " cannot be installed a plugin contained within the theme is already present: " 
+								+ CurrentlyInstalled.toString());
 					}
 				}
-				break;
-			case PLUGIN: // check for themes that include this plugin
-				if (info.getType().equals(DownloadableType.THEME)
-						&& ((ThemeInfo) info).containsPlugin((PluginInfo) Obj)) {
-					throw new ManagerException(Obj.getName()
-							+ " cannot be downloaded, the theme '"
-							+ info.getName()
-							+ "' includes a version of this plugin");
-				}
-				break;
 			}
 		}
 
@@ -633,6 +635,19 @@ public class PluginManager {
 		return installable.getInfoObj();
 	}
 
+	private List<DownloadableInfo> flattenDownloadableList(List<DownloadableInfo> list) {
+		List<DownloadableInfo> FlattenedList = new ArrayList<DownloadableInfo>();
+		for (DownloadableInfo info: list) {
+			switch (info.getType()) {
+			case THEME:
+				FlattenedList.addAll(((ThemeInfo) info).getPlugins());
+			case PLUGIN:
+				FlattenedList.add(info);
+			}
+		}
+		return FlattenedList;
+	}
+	
 	/*
 	 * Methods for loading plugins when Cytoscape starts up.
 	 */
@@ -688,7 +703,7 @@ public class PluginManager {
 	 * Parses the plugin input strings and transforms them into the appropriate
 	 * URLs or resource names. The method first checks to see if the
 	 */
-	public void loadPlugins(List<String> p) { 
+	public void loadPlugins(List<String> p) {
 		Set<String> PluginsSeen = new HashSet<String>();
 
 		// Parse the plugin strings and determine whether they're urls,
@@ -700,7 +715,7 @@ public class PluginManager {
 
 				if (currentPlugin.contains(".cytoscape"))
 					System.out.println(currentPlugin);
-				
+
 				File f = new File(currentPlugin);
 
 				// If the file name ends with .jar add it to the list as a url.
@@ -754,7 +769,8 @@ public class PluginManager {
 							} else {
 								// TODO this should have a better error
 								// perhaps, throw an exception??
-								loadingErrors.add( new PluginException("Plugin location specified in "  
+								loadingErrors.add(new PluginException(
+										"Plugin location specified in "
 												+ currentPlugin
 												+ " is not a valid url: "
 												+ pluginLoc
@@ -847,7 +863,9 @@ public class PluginManager {
 				Enumeration entries = jar.entries();
 
 				if (entries == null) {
-					loadingErrors.add( new PluginException("Jar file " + jar.getName() + " has no entries, skipped loading."));
+					loadingErrors.add(new PluginException("Jar file "
+							+ jar.getName()
+							+ " has no entries, skipped loading."));
 					continue;
 				}
 
@@ -898,7 +916,8 @@ public class PluginManager {
 		// attempt to load resource plugins
 		for (String resource : resourcePlugins) {
 			System.out.println("");
-			System.out.println("attempting to load plugin resourse: " + resource);
+			System.out.println("attempting to load plugin resourse: "
+					+ resource);
 
 			// try to get the class
 			try {
@@ -915,17 +934,18 @@ public class PluginManager {
 		System.out.println("");
 	}
 
-	private void loadPlugin(Class plugin, JarFile jar, boolean register) throws PluginException {
+	private void loadPlugin(Class plugin, JarFile jar, boolean register)
+			throws PluginException {
 		if (CytoscapePlugin.class.isAssignableFrom(plugin)
 				&& !loadedPlugins.contains(plugin.getName())) {
 
 			Object obj = CytoscapePlugin.loadPlugin(plugin);
-				if (obj != null) {
-					loadedPlugins.add(plugin.getName());
-					if (register) {
-						register((CytoscapePlugin) obj, jar);
-					}
+			if (obj != null) {
+				loadedPlugins.add(plugin.getName());
+				if (register) {
+					register((CytoscapePlugin) obj, jar);
 				}
+			}
 
 		} else if (loadedPlugins.contains(plugin.getName())) {
 			duplicateClasses.add(plugin.getName());
@@ -940,7 +960,8 @@ public class PluginManager {
 	 * @param name
 	 *            the name of the putative plugin class
 	 */
-	private Class getPluginClass(String name) throws ClassNotFoundException, NoClassDefFoundError {
+	private Class getPluginClass(String name) throws ClassNotFoundException,
+			NoClassDefFoundError {
 		Class c = classLoader.loadClass(name);
 		if (CytoscapePlugin.class.isAssignableFrom(c))
 			return c;
@@ -1021,7 +1042,8 @@ public class PluginManager {
 	 */
 	private void addClassPath(URL url) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
-		Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
+		Method method = URLClassLoader.class.getDeclaredMethod("addURL",
+				new Class[] { URL.class });
 		method.setAccessible(true);
 		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
 	}
