@@ -39,6 +39,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 
+import cytoscape.data.CyAttributes;
 import cytoscape.ding.DingNetworkView;
 
 import cytoscape.giny.CytoscapeFingRootGraph;
@@ -114,6 +115,17 @@ public class DefaultViewPanel extends JPanel {
 		view.getNodeView(target).setOffset(150, 10);
 
 		panel = new DefaultViewPanel();
+		
+		// Setup dummy attribute values
+		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
+		nodeAttr.setAttribute("Source", "hiddenLabel", "Source");
+		nodeAttr.setAttribute("Target", "hiddenLabel", "Target");
+		nodeAttr.setUserVisible("hiddenLabel", false);
+		nodeAttr.setUserEditable("hiddenLabel", false);
+
+		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
+		edgeAttr.setUserVisible("dummyInteraction", false);
+		edgeAttr.setUserEditable("dummyInteraction", false);
 	}
 
 	protected static DefaultViewPanel getDefaultViewPanel() {
