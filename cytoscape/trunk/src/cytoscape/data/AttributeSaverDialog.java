@@ -39,7 +39,7 @@ package cytoscape.data;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import cytoscape.data.writers.CyAttributesWriter2;
+import cytoscape.data.writers.CyAttributesWriter;
 
 import giny.model.GraphObject;
 
@@ -321,7 +321,7 @@ class AttributeSaverState implements TableModel {
 
 		for (int idx = 0; idx < attributeNames.size(); idx++) {
 			if (selectedAttributes.get(idx)) {
-				final CyAttributesWriter2 writer = new CyAttributesWriter2(cyAttributes,
+				final CyAttributesWriter writer = new CyAttributesWriter(cyAttributes,
 				                                                           attributeNames.get(idx),
 				                                                           new FileWriter(new File(saveDirectory,
 				                                                                                   filenames
