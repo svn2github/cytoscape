@@ -107,7 +107,7 @@ public class ExportCommand extends AbstractCommand {
 	 * export vizmap to filename
 	 * export node attributes to filename
 	 * export edge attributes to filename
-	 * export network as {XGMML,PSI-MI,GML,SIF,EPS,SWF,PDF,PS,SVG,EMF,GIF,PNG,JPG} to filename
+	 * export network as {XGMML,PSI-MI,GML,SIF,PDF,SVG,BMP,PNG,JPG} to filename
 	 */
 	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
 
@@ -201,6 +201,7 @@ public class ExportCommand extends AbstractCommand {
 			exporter = new BitmapExporter("bmp", zoom);
 		}
 
+		// Handle filename changes
 		try {
 			FileOutputStream outputFile = new FileOutputStream(fileName);
 			exporter.export(curr, outputFile);
