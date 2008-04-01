@@ -22,6 +22,7 @@ public class RunMCL {
 	private List<CyNode> nodes;
 	private Hashtable<String, Double> normalizedSimilaritiesForGivenEdges = new Hashtable<String, Double>(); // key: s#t
 	private String nodeClusterAttributeName;
+	final static String GROUP_ATTRIBUTE = "__MCLGroups";
 	
 	public RunMCL(String nodeClusterAttributeName, List<CyNode> nodes, Hashtable<String, Double> normalizedSimilaritiesForGivenEdges, double inflationParameter, int num_iterations, double clusteringThresh)
 	{
@@ -82,7 +83,6 @@ public class RunMCL {
 		{
 			CyNode node = this.nodes.get(i);
 			nodeAttributes.setAttribute(node.getIdentifier(),nodeClusterAttributeName,new Double(clusters[i]));
-			// node.addToGroup(CyGroupManager.findGroup(nodeClusterAttributeName + "_" + (new Integer((int)clusters[i])).toString()));
 			if (clusterMap.containsKey(Integer.valueOf((int)clusters[i]))) {
 				clusterMap.get(Integer.valueOf((int)clusters[i])).add(node);
 			} else {
@@ -91,8 +91,21 @@ public class RunMCL {
 				clusterMap.put(Integer.valueOf((int)clusters[i]), nodeList);
 			}
 		}
+
+		// See if we already have groups defined (from a previous run?)
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+		String networkID = Cytoscape.getCurrentNetwork().getIdentifier();
+		if (netAttributes.hasAttribute(networkID, GROUP_ATTRIBUTE)) {
+			List<String> groupList = (List<String>)netAttributes.getListAttribute(networkID, GROUP_ATTRIBUTE);
+			for (String groupName: groupList) {
+				CyGroup group = CyGroupManager.findGroup(groupName);
+				if (group != null)
+					CyGroupManager.removeGroup(group);
+			}
+		}
 		
 		// Now, create the groups
+		List<String>groupList = new ArrayList(); // keep track of the groups we create
 		for (Integer clusterNumber: clusterMap.keySet()) {
 			String groupName = nodeClusterAttributeName+"_"+clusterNumber.toString();
 			List<CyNode>nodeList = clusterMap.get(clusterNumber);
@@ -101,8 +114,12 @@ public class RunMCL {
 			if (newgroup != null) {
 				// Now tell the metanode viewer about it
 				CyGroupManager.setGroupViewer(newgroup, "metaNode", Cytoscape.getCurrentNetworkView(), true);
+				groupList.add(groupName);
 			}
 		}
+
+		// Save the network attribute so we remember which groups are ours
+		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);
 	}	
 }
 
