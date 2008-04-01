@@ -227,18 +227,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	private static VizMapperMainPanel panel;
 
-	static {
-		final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
-		nodeAttr.setAttribute("Source", "hiddenLabel", "Source");
-		nodeAttr.setAttribute("Target", "hiddenLabel", "Target");
-		nodeAttr.setUserVisible("hiddenLabel", false);
-		nodeAttr.setUserEditable("hiddenLabel", false);
-
-		final CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
-		edgeAttr.setUserVisible("dummyInteraction", false);
-		edgeAttr.setUserEditable("dummyInteraction", false);
-	}
-
 	/*
 	 * Visual mapping manager. All parameters should be taken from here.
 	 */
@@ -251,6 +239,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	// Keeps current discrete mappings.  NOT PERMANENT
 	private final Map<String, Map<Object, Object>> discMapBuffer = new HashMap<String, Map<Object, Object>>();
+        // MLC 03/31/08:
+        // lastVSName is currently used as an efficiency hack to ignore the expensive need
+        // to update the visual style when the existing style is already that style:
 	private String lastVSName = null;
 	private JScrollPane noMapListScrollPane;
 	private List<VisualPropertyType> noMapping;
@@ -362,20 +353,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			if (isNodeHExist == false) {
-				if(nodeHeight != null) {
+				if(nodeHeight != null)
 					visualPropertySheetPanel.addProperty(nodeHeight);
-				} else {
-					System.out.print("NH null!!!!");
-				}
 			}
+			
 			if (isNodeWExist == false) {
-				if(nodeHeight != null) {
+				if(nodeHeight != null)
 					visualPropertySheetPanel.addProperty(nodeWidth);
-				} else {
-					System.out.print("NW null!!!!");
-				}
 			}
-				
 		}
 
 		visualPropertySheetPanel.repaint();
@@ -622,9 +607,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		                                                                                                1,
 		                                                                                                12),
 		                                                                              java.awt.Color.darkGray));
-		// defaultTabbedPane
-		// .setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
-		// defaultTabbedPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
+		
 		mainSplitPane.setLeftComponent(defaultAppearencePanel);
 
 		visualPropertySheetPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
@@ -803,17 +786,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 
 		// If new VS name is the same, ignore.
-		if (lastVSName == vsName) {
+		if (lastVSName == vsName)
 			return;
-		}
 
 		closeEditorWindow();
 
 		//System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
+		
+		// MLC 03/31/08:
+		// NOTE: Will cause stateChanged() to be called:
 		vmm.setVisualStyle(vsName);
 
-		if (propertyMap.containsKey(vsName) && (vsName.equals(lastVSName) == false)) {
+		if (propertyMap.containsKey(vsName)) {
 			final List<Property> props = propertyMap.get(vsName);
 			final Map<String, Property> unused = new TreeMap<String, Property>();
 
@@ -844,39 +829,39 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			for (Object key : keys) {
 				visualPropertySheetPanel.addProperty(unused.get(key));
 			}
-		} else {
+		} else
 			setPropertyTable();
-		}
 
-		lastVSName = vsName;
+		// MLC 03/31/08:
+		//lastVSName = vsName;
 
 		Cytoscape.getCurrentNetworkView().setVisualStyle(vsName);
 
-		if (redraw) {
+		if (redraw)
 			Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
-		}
 
 		/*
 		 * Draw default view
 		 */
 		Image defImg = defaultImageManager.get(vsName);
 
-		if (defImg == null) {
+		if(defImg == null) {
+			// Default image is not available in the buffer.  Create a new one.
 			updateDefaultImage(vsName,
-			                   (DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              .getDefaultView(vsName))
-			                   .getView(), defaultAppearencePanel.getSize());
+									(DGraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(vsName)).getView(),
+									defaultAppearencePanel.getSize());
 			defImg = defaultImageManager.get(vsName);
 		}
-
+		// Set the default view to the panel.
 		setDefaultPanel(defImg);
 
+		// Sync. lock state
 		final boolean lockState = vmm.getVisualStyle().getNodeAppearanceCalculator()
 		                             .getNodeSizeLocked();
 		lockSize.setSelected(lockState);
-
 		switchNodeSizeLock(lockState);
 
+		// Cleanup desktop.
 		Cytoscape.getDesktop().repaint();
 		vsNameComboBox.setSelectedItem(vsName);
 	}
@@ -911,7 +896,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		for (String name : vsNames) {
 			vsNameComboBox.addItem(name);
-
+			// MLC 03/31/08:
+			// Deceptively, getDefaultView actually actually calls VisualMappingManager.setVisualStyle()
+			// so each time we add a combobox item, the visual style is changing.
+			// Make sure to set the lastVSName as we change the visual style:
 			defPanel = DefaultAppearenceBuilder.getDefaultView(name);
 			view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
 
@@ -942,7 +930,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param size
 	 */
 	private void updateDefaultImage(String vsName, DGraphView view, Dimension size) {
-		Image image = defaultImageManager.get(vsName);
+		Image image = defaultImageManager.remove(vsName);
 
 		if (image != null) {
 			image.flush();
@@ -1791,9 +1779,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private void setDefaultPanel(final Image defImage) {
-		if (defImage == null) {
+		if (defImage == null)
 			return;
-		}
 
 		defaultAppearencePanel.removeAll();
 
@@ -1954,7 +1941,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			setDefaultPanel(defaultImageManager.get(vmName));
 			vsNameComboBox.setSelectedItem(vmName);
 			vmm.setVisualStyle(vmName);
-
+			setPropertyTable();
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
@@ -3699,6 +3686,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	public void stateChanged(ChangeEvent e) {
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
 		final String currentName = vmm.getVisualStyle().getName();
+		// MLC 03/31/08 BEGIN:
+		// Make fure we update the lastVSName based on anything that changes the visual style:
+		lastVSName = currentName;
+		// MLC 03/31/08 END.
 		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
 
 		if (ignore)
