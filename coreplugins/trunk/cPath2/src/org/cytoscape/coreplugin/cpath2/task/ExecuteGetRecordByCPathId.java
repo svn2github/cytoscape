@@ -1,6 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.task;
 
 import cytoscape.*;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.ding.DingNetworkView;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.layout.CyLayoutAlgorithm;
@@ -162,8 +163,9 @@ public class ExecuteGetRecordByCPathId implements Task {
                 cyNetwork = Cytoscape.createNetwork(reader, false, null);
                 postProcessingBinarySif(cyNetwork);
             } else {
-                //  create network, with the view.
-                cyNetwork = Cytoscape.createNetwork(reader, true, null);
+                //  create network, without the view.
+                cyNetwork = Cytoscape.createNetwork(reader, false, null);
+                postProcessingBioPAX(cyNetwork);             
             }
 
             // Fire appropriate network event.
@@ -248,63 +250,7 @@ public class ExecuteGetRecordByCPathId implements Task {
 
         if (haltFlag == false) {
             if (mergedNetwork != null) {
-                taskMonitor.setStatus("Merging Network...");
-                List nodeList = cyNetwork.nodesList();
-                for (int i = 0; i < nodeList.size(); i++) {
-                    CyNode node = (CyNode) nodeList.get(i);
-                    mergedNetwork.addNode(node);
-                }
-                List edgeList = cyNetwork.edgesList();
-                for (int i = 0; i < edgeList.size(); i++) {
-                    CyEdge edge = (CyEdge) edgeList.get(i);
-                    mergedNetwork.addEdge(edge);
-                }
-
-                //  Select this view
-                final CyNetworkView networkView = Cytoscape.getNetworkView
-                        (mergedNetwork.getIdentifier());
-                Cytoscape.setCurrentNetwork(mergedNetwork.getIdentifier());
-                Cytoscape.setCurrentNetworkView(mergedNetwork.getIdentifier());
-
-                final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
-                        bpContainer.showLegend();
-                        VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-                        vizmapper.applyAppearances();
-                    }
-                });
-
-                //  Select only the new nodes
-                mergedNetwork.unselectAllEdges();
-                mergedNetwork.unselectAllNodes();
-                mergedNetwork.setSelectedNodeState(nodeList, true);
-                mergedNetwork.setSelectedEdgeState(edgeList, true);
-
-                //  Delete the temp network.
-                Cytoscape.destroyNetwork(cyNetwork);
-
-                //  Apply Layout
-                Object[] options = {"Yes", "No"};
-                int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
-                    "Would you like layout the modified network?",
-                    "Adjust Layout?",
-                    JOptionPane.YES_NO_CANCEL_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    options, options[0]);
-                System.out.println ("Option:  " + n);
-                if (n==0) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            LayoutUtil layoutAlgorithm = new LayoutUtil();
-                            networkView.applyLayout(layoutAlgorithm);
-                            Cytoscape.getCurrentNetworkView().fitContent();
-                        }
-                    });
-                }
-
+                mergeNetworks(cyNetwork);
             } else if (cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
                     .getProperty("viewThreshold"))) {
                 if (taskMonitor != null) {
@@ -336,6 +282,8 @@ public class ExecuteGetRecordByCPathId implements Task {
                         Cytoscape.getCurrentNetworkView().fitContent();
                         String networkTitleWithUnderscores = networkTitle.replaceAll(": ", "");
                         networkTitleWithUnderscores = networkTitleWithUnderscores.replaceAll(" ", "_");
+                        networkTitleWithUnderscores = CyNetworkNaming.getSuggestedNetworkTitle
+                                (networkTitleWithUnderscores);
                         cyNetwork.setTitle(networkTitleWithUnderscores);
                     }
                 });
@@ -345,6 +293,100 @@ public class ExecuteGetRecordByCPathId implements Task {
             if (cyNetwork != null) {
                 Cytoscape.destroyNetwork(cyNetwork);
             }
+        }
+    }
+
+    /**
+     * Execute Post-Processing on BioPAX Network.
+     *
+     * @param cyNetwork Cytoscape Network Object.
+     */
+    private void postProcessingBioPAX(final CyNetwork cyNetwork) {
+        if (haltFlag == false) {
+            if (mergedNetwork != null) {
+                mergeNetworks(cyNetwork);
+            } else if (cyNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
+                    .getProperty("viewThreshold"))) {
+                if (taskMonitor != null) {
+                    taskMonitor.setStatus("Creating Network View...");
+                    taskMonitor.setPercentCompleted(-1);
+                }
+
+                //  Set up the right visual style
+                VisualStyle visualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
+
+                //  Set up the right layout algorithm.
+                LayoutUtil layoutAlgorithm = new LayoutUtil();
+
+                //  Now, create the view.
+                //  Use local create view option, so that we don't mess up the visual style.
+                createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
+                        visualStyle);
+            }
+        } else {
+            //  If we have requested a halt, and we have a network, destroy it.
+            if (cyNetwork != null) {
+                Cytoscape.destroyNetwork(cyNetwork);
+            }
+        }
+    }
+
+
+    private void mergeNetworks(CyNetwork cyNetwork) {
+        taskMonitor.setStatus("Merging Network...");
+        List nodeList = cyNetwork.nodesList();
+        for (int i = 0; i < nodeList.size(); i++) {
+            CyNode node = (CyNode) nodeList.get(i);
+            mergedNetwork.addNode(node);
+        }
+        List edgeList = cyNetwork.edgesList();
+        for (int i = 0; i < edgeList.size(); i++) {
+            CyEdge edge = (CyEdge) edgeList.get(i);
+            mergedNetwork.addEdge(edge);
+        }
+
+        //  Select this view
+        final CyNetworkView networkView = Cytoscape.getNetworkView
+                (mergedNetwork.getIdentifier());
+        Cytoscape.setCurrentNetwork(mergedNetwork.getIdentifier());
+        Cytoscape.setCurrentNetworkView(mergedNetwork.getIdentifier());
+
+        final BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                CytoscapeWrapper.activateBioPaxPlugInTab(bpContainer);
+                bpContainer.showLegend();
+                VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+                vizmapper.applyAppearances();
+            }
+        });
+
+        //  Select only the new nodes
+        mergedNetwork.unselectAllEdges();
+        mergedNetwork.unselectAllNodes();
+        mergedNetwork.setSelectedNodeState(nodeList, true);
+        mergedNetwork.setSelectedEdgeState(edgeList, true);
+
+        //  Delete the temp network.
+        Cytoscape.destroyNetwork(cyNetwork);
+
+        //  Apply Layout
+        Object[] options = {"Yes", "No"};
+        int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
+            "Would you like layout the modified network?",
+            "Adjust Layout?",
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            options, options[0]);
+        if (n==0) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    LayoutUtil layoutAlgorithm = new LayoutUtil();
+                    networkView.applyLayout(layoutAlgorithm);
+                    Cytoscape.getCurrentNetworkView().fitContent();
+                }
+            });
         }
     }
 
