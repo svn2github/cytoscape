@@ -1,7 +1,5 @@
 /*
- File: CyAttributesWriter.java
-
- Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -33,110 +31,123 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- */
+*/
 package cytoscape.data.writers;
 
 import cytoscape.data.CyAttributes;
 
+import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
- * Please use CyAttributesWriter2 instead.
+ * CyAttributeWriter extracted from AttributeSaverDialog.
+ *
  */
-@Deprecated
 public class CyAttributesWriter {
 	/**
-	 *  DOCUMENT ME!
 	 *
-	 * @param cyAttrs DOCUMENT ME!
-	 * @param attributeName DOCUMENT ME!
-	 * @param fileOut DOCUMENT ME!
-	 *
-	 * @throws IOException DOCUMENT ME!
 	 */
-	public static void writeAttributes(CyAttributes cyAttrs, String attributeName, Writer fileOut)
-	    throws IOException {
-		final BufferedWriter writer;
+	public static String newline = System.getProperty("line.separator");
+	private final CyAttributes cyAttributes;
+	private final String attributeName;
+	private Writer fileWriter;
 
-		if (fileOut instanceof BufferedWriter) {
-			writer = (BufferedWriter) fileOut;
-		} else {
-			writer = new BufferedWriter(fileOut);
-		}
+	/**
+	 * Creates a new CyAttributesWriter2 object.
+	 *
+	 * @param attributes  DOCUMENT ME!
+	 * @param attributeName  DOCUMENT ME!
+	 * @param fileWriter  DOCUMENT ME!
+	 */
+	public CyAttributesWriter(final CyAttributes attributes, final String attributeName,
+	                           final Writer fileWriter) {
+		this.cyAttributes = attributes;
+		this.attributeName = attributeName;
+		this.fileWriter = fileWriter;
+	}
 
-		final byte cyType = cyAttrs.getType(attributeName);
+	/**
+	 * Write out the state for the given attributes
+	 *
+	 * @param selectedRows
+	 *
+	 * @return number of files successfully saved, the better way to do this
+	 *         would just be to throw the error and display a specific message
+	 *         for each failure, but oh well.
+	 * @throws IOException
+	 *
+	 */
+	public void writeAttributes() throws IOException {
+		final String className;
+		final byte dataType = cyAttributes.getMultiHashMapDefinition()
+		                                  .getAttributeValueType(attributeName);
 
-		if (!((cyType == CyAttributes.TYPE_BOOLEAN) || (cyType == CyAttributes.TYPE_FLOATING)
-		    || (cyType == CyAttributes.TYPE_INTEGER) || (cyType == CyAttributes.TYPE_STRING)
-		    || (cyType == CyAttributes.TYPE_SIMPLE_LIST))) {
-			return;
-		}
+		if ((dataType == CyAttributes.TYPE_COMPLEX) || (dataType == CyAttributes.TYPE_SIMPLE_MAP)
+		    || (dataType == CyAttributes.TYPE_UNDEFINED))
+			throw new IOException("Unsupported Datatype.");
 
-		final byte mulType = cyAttrs.getMultiHashMapDefinition().getAttributeValueType(attributeName);
-		writer.write(attributeName);
-		writer.write(" (class=");
+		if (dataType == MultiHashMapDefinition.TYPE_BOOLEAN)
+			className = "java.lang.Boolean";
+		else if (dataType == MultiHashMapDefinition.TYPE_INTEGER)
+			className = "java.lang.Integer";
+		else if (dataType == MultiHashMapDefinition.TYPE_FLOATING_POINT)
+			className = "java.lang.Double";
+		else
+			className = "java.lang.String";
 
-		{
-			final String className;
+		fileWriter.write(attributeName + " (class=" + className + ")" + newline);
 
-			if (mulType == MultiHashMapDefinition.TYPE_BOOLEAN) {
-				className = "java.lang.Boolean";
-			} else if (mulType == MultiHashMapDefinition.TYPE_INTEGER) {
-				className = "java.lang.Integer";
-			} else if (mulType == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
-				className = "java.lang.Double";
-			} else {
-				className = "java.lang.String";
-			}
+		final MultiHashMap attributeMap = cyAttributes.getMultiHashMap();
 
-			writer.write(className);
-		}
+		if (attributeMap != null) {
+			final Iterator<String> keys = cyAttributes.getMultiHashMap().getObjectKeys(attributeName);
 
-		writer.write(")");
-		writer.newLine();
+			String key;
+			Object value;
+			Iterator objIt;
+			StringBuilder result = new StringBuilder();
 
-		final Iterator keys = cyAttrs.getMultiHashMap().getObjectKeys(attributeName);
+			while (keys.hasNext()) {
+				key = keys.next();
 
-		while (keys.hasNext()) {
-			final String key = (String) keys.next();
-			writer.write(key);
-			writer.write("=");
+				if (cyAttributes.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
+					value = cyAttributes.getListAttribute(key, attributeName);
+				else
+					value = cyAttributes.getAttribute(key, attributeName);
+					
 
-			if (cyType == CyAttributes.TYPE_BOOLEAN) {
-				writer.write(cyAttrs.getBooleanAttribute(key, attributeName).toString());
-			} else if (cyType == CyAttributes.TYPE_INTEGER) {
-				writer.write(cyAttrs.getIntegerAttribute(key, attributeName).toString());
-			} else if (cyType == CyAttributes.TYPE_FLOATING) {
-				writer.write(cyAttrs.getDoubleAttribute(key, attributeName).toString());
-			} else if (cyType == CyAttributes.TYPE_STRING) {
-				writer.write(cyAttrs.getStringAttribute(key, attributeName));
-			} else { // TYPE_SIMPLE_LIST
-				writer.write("(");
+				if (value != null) {
+					if (value instanceof List) {
+						result.append(key + " = ");
 
-				final Iterator listElms = cyAttrs.getListAttribute(key, attributeName).iterator();
+						if (((Collection) value).size() > 0) {
+							objIt = ((Collection) value).iterator();
+							result.append("(" + objIt.next());
 
-				while (listElms.hasNext()) {
-					writer.write(listElms.next().toString());
+							while (objIt.hasNext())
+								result.append("::" + objIt.next());
 
-					if (listElms.hasNext()) {
-						writer.write("::");
-					}
+							result.append(")" + newline);
+							fileWriter.write(result.toString());
+							result = new StringBuilder();
+						}
+					} else
+						fileWriter.write(key + " = " + value + newline);
 				}
-
-				writer.write(")");
 			}
 
-			writer.newLine();
-			;
+			fileWriter.flush();
 		}
 
-		writer.flush();
+		fileWriter.close();
+		fileWriter = null;
 	}
 }
