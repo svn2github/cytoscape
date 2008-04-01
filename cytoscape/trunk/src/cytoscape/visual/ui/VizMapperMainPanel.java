@@ -270,6 +270,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		initComponents();
 		registerCellEditorListeners();
+		
+		// By default, force to sort property by prop name.
+		visualPropertySheetPanel.setSorting(true);
+		
 		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(this);
 		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(this);
 		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(this);
@@ -860,7 +864,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		                             .getNodeSizeLocked();
 		lockSize.setSelected(lockState);
 		switchNodeSizeLock(lockState);
-
+		
+		visualPropertySheetPanel.setSorting(true);
+		
 		// Cleanup desktop.
 		Cytoscape.getDesktop().repaint();
 		vsNameComboBox.setSelectedItem(vsName);
@@ -1942,6 +1948,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vsNameComboBox.setSelectedItem(vmName);
 			vmm.setVisualStyle(vmName);
 			setPropertyTable();
+			visualPropertySheetPanel.setSorting(true);
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
