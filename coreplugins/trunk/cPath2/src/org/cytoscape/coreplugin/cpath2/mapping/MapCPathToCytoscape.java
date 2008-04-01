@@ -33,23 +33,16 @@ package org.cytoscape.coreplugin.cpath2.mapping;
 
 // imports
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
 import cytoscape.util.ProxyHandler;
 import ding.view.NodeContextMenuListener;
-import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.cytoscape.coreplugin.cpath2.http.HTTPConnectionHandler;
 import org.cytoscape.coreplugin.cpath2.http.HTTPEvent;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
 import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
-import org.cytoscape.coreplugin.cpath2.util.NetworkGroupUtil;
-import org.cytoscape.coreplugin.cpath2.view.MergeDialog;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.util.NetworkMergeUtil;
+import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
 
 import java.net.Proxy;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * This class listens for requests from cPath instance
@@ -103,35 +96,27 @@ public class MapCPathToCytoscape implements HTTPServerListener {
                 }
             }
         }
-
-        Set<CyNetwork> bpNetworkSet = NetworkGroupUtil.getNetworkSet
-                (CPathProperties.DOWNLOAD_FULL_BIOPAX);
-
-        // if no other networks are loaded, we can just load it up
-        if (bpNetworkSet.size() == 0) {
-            new NetworkUtil(cpathRequest, null, false, nodeContextMenuListener).start();
-        }
-        // other networks list, give user option to merge
-        else {
-            loadMergeDialog(cpathRequest, bpNetworkSet);
-        }
+        System.out.println("CPATH REQUEST:  " + cpathRequest.toString());
+        loadMergeDialog(cpathRequest);
     }
 
     /**
      * Loads the merge dialog.
      *
      * @param cpathRequest String
-     * @param bpNetworkSet          Set<CyNetwork>
      */
-    private void loadMergeDialog(String cpathRequest, Set<CyNetwork> bpNetworkSet) {
-
-        MergeDialog dialog = new MergeDialog(Cytoscape.getDesktop(),
-                CPathProperties.getInstance().getCPathServerName() + "Network Merge",
-                true,
-                cpathRequest,
-                bpNetworkSet,
-                nodeContextMenuListener);
-        dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-        dialog.setVisible(true);
+    private void loadMergeDialog(String cpathRequest) {
+        NetworkMergeUtil mergeUtil = new NetworkMergeUtil();
+        if (mergeUtil.mergeNetworksExist()) {
+            NetworkWrapper networkWrapper = mergeUtil.promptForNetworkToMerge();
+            if (networkWrapper != null && networkWrapper.getNetwork() != null) {
+                new NetworkUtil(cpathRequest, networkWrapper.getNetwork(),
+                        true, nodeContextMenuListener).start();
+            } else {
+                new NetworkUtil(cpathRequest, null, false, nodeContextMenuListener).start();                
+            }
+        } else {
+            new NetworkUtil(cpathRequest, null, false, nodeContextMenuListener).start();
+        }
     }
 }
