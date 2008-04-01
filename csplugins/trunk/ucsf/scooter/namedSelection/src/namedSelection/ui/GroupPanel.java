@@ -53,6 +53,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
+import javax.swing.border.*;
 
 import giny.view.*;
 import giny.model.Node;
@@ -63,6 +64,7 @@ import giny.model.Node;
  */
 public class GroupPanel extends JPanel implements TreeSelectionListener,
                                                   TreeExpansionListener,
+	                                                ActionListener,
                                                   GraphViewChangeListener {
 	CyGroupViewer viewer = null;
 	JTree navTree = null;
@@ -82,7 +84,73 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		super();
 		this.viewer = viewer;
 
-		// Create a button box at the top for (New Group)
+		setLayout(new BorderLayout());
+
+		// Create a separate JPanel for our various controls
+		JPanel controlPanel = new JPanel();
+		// Set up our layout
+		BoxLayout layout = new BoxLayout(controlPanel, BoxLayout.Y_AXIS);
+		controlPanel.setLayout(layout);
+
+		// Create a button box at the top 
+		JPanel buttonBox = new JPanel();
+		// Create clear selection button
+		JButton clearButton = new JButton("Clear Selection");
+		clearButton.setActionCommand("clear");
+		clearButton.addActionListener(this);
+		buttonBox.add(clearButton);
+
+		// Create new group button
+		JButton newButton = new JButton("New Group");
+		newButton.setActionCommand("new");
+		newButton.addActionListener(this);
+		buttonBox.add(newButton);
+
+		// Create delete group button
+		JButton deleteButton = new JButton("Delete Group");
+		deleteButton.setActionCommand("delete");
+		deleteButton.addActionListener(this);
+		buttonBox.add(deleteButton);
+
+		// Border it
+		buttonBox.setBorder(BorderFactory.createEtchedBorder());
+		controlPanel.add(buttonBox);
+
+		JPanel depthBox = new JPanel();
+		// Create depth buttons
+		JButton depthOne = new JButton("1");
+		depthOne.setActionCommand("1");
+		depthOne.addActionListener(this);
+		depthBox.add(depthOne);
+		JButton depthTwo = new JButton("2");
+		depthTwo.setActionCommand("2");
+		depthTwo.addActionListener(this);
+		depthBox.add(depthTwo);
+		JButton depthThree = new JButton("3");
+		depthThree.setActionCommand("3");
+		depthThree.addActionListener(this);
+		depthBox.add(depthThree);
+		JButton depthFour = new JButton("4");
+		depthFour.setActionCommand("4");
+		depthFour.addActionListener(this);
+		depthBox.add(depthFour);
+		JButton depthFive = new JButton("5");
+		depthFive.setActionCommand("5");
+		depthFive.addActionListener(this);
+		depthBox.add(depthFive);
+		JButton depthSix = new JButton("6");
+		depthSix.setActionCommand("6");
+		depthSix.addActionListener(this);
+		depthBox.add(depthSix);
+		// Border it
+		Border depthBorder = BorderFactory.createEtchedBorder();
+		TitledBorder dTitleBorder = BorderFactory.createTitledBorder(depthBorder, "Expansion Depth");
+		dTitleBorder.setTitlePosition(TitledBorder.LEFT);
+		dTitleBorder.setTitlePosition(TitledBorder.TOP);
+		depthBox.setBorder(dTitleBorder);
+		controlPanel.add(depthBox);
+
+		add(controlPanel, BorderLayout.NORTH);
 
 		// Create our JTree
 		navTree = new JTree();
@@ -109,7 +177,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 		navTree.addTreeExpansionListener(this);
 
-		add(treeView);
+		add(treeView, BorderLayout.CENTER);
 
 	}
 
@@ -165,15 +233,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			// System.out.println(cPaths[i]);
 			DefaultMutableTreeNode treeNode = 
 			     (DefaultMutableTreeNode) cPaths[i].getLastPathComponent();
-			// Special case for "clear"
-			if (String.class.isInstance(treeNode.getUserObject()) &&
-			    e.isAddedPath(cPaths[i])) {
-				String str = (String)treeNode.getUserObject();
-				if (str.equals("Clear Selections")) {
-					Cytoscape.getCurrentNetwork().unselectAllNodes();
-				}
-				continue;
-			}
 			    
 			if (!CyNode.class.isInstance(treeNode.getUserObject()))
 				continue;
@@ -184,7 +243,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				// See if this node has multiple paths
 				if (nodeMap.containsKey(node) && nodeMap.get(node).size() > 1) {
 					treeSelectionModel.addSelectionPaths(nodeMap.get(node).toArray(ta));
+				} else {
+					treeSelectionModel.addSelectionPath(cPaths[i]);
 				}
+
 				if (CyGroupManager.isaGroup(node)) {
 					Cytoscape.getCurrentNetwork().setSelectedNodeState(node, true);
 					CyGroup group = CyGroupManager.getCyGroup(node);
@@ -237,6 +299,84 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		Cytoscape.getCurrentNetworkView().updateView();
 
 		updateSelection = true;
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if ("clear".equals(e.getActionCommand())) {
+			updateSelection = false;
+			updateTreeSelection = false;
+			Cytoscape.getCurrentNetwork().unselectAllNodes();
+			navTree.clearSelection();
+			updateSelection = true;
+			updateTreeSelection = true;
+		} else if ("new".equals(e.getActionCommand())) {
+			// Check and see if anything is selected
+			Set nodeSet = Cytoscape.getCurrentNetwork().getSelectedNodes();
+			if (nodeSet != null && nodeSet.size() > 0) {
+				// Yes, create the group
+				ArrayList<CyNode>currentNodes = new ArrayList(nodeSet);
+				CyGroup group = null;
+				while (group == null) {
+					String groupName = JOptionPane.showInputDialog("Please enter a name for this selection");
+					if (groupName == null) return;
+					group = CyGroupManager.createGroup(groupName, currentNodes, viewer.getViewerName());
+					if (group == null)
+						JOptionPane.showInputDialog("Group "+groupName+" already exists.  Please enter an alternate name");
+				}
+				group.setState(NamedSelection.SELECTED);
+				groupCreated(group);
+			} else {
+				// No, tell the user
+				JOptionPane.showMessageDialog(this, "You must select a set of nodes to be part of the group", 
+				                              "No nodes", JOptionPane.ERROR_MESSAGE);
+			}
+		} else if ("delete".equals(e.getActionCommand())) {
+			// Do we have a path to a group?
+			TreePath[] pathArray = navTree.getSelectionPaths();
+			
+			// Make sure we're pointing to groups
+			ArrayList<CyGroup>groupList = new ArrayList();
+			if (pathArray != null) {
+				for (int path = 0; path < pathArray.length; path++) {
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode)pathArray[path].getLastPathComponent();
+					CyNode nodeObject = (CyNode)node.getUserObject();
+					if (nodeObject.isaGroup()) {
+						groupList.add(CyGroupManager.getCyGroup(nodeObject));
+					}
+				}
+			}
+
+			if (groupList.size() == 0) {
+					JOptionPane.showMessageDialog(this, "No groups are selected", "No groups", JOptionPane.ERROR_MESSAGE);
+					return;
+			}
+			// Yes, do the appropriate "are you sure"
+			int ans = JOptionPane.showConfirmDialog(this, "You are deleting "+groupList.size()+" groups.  Are you sure?", 
+			                                        "Confirm group delete", JOptionPane.YES_NO_OPTION);
+			if (ans == 0) {
+				// Delete them
+				updateSelection = false;
+				updateTreeSelection = false;
+				for (CyGroup group: groupList) {
+					CyGroupManager.removeGroup(group);
+				}
+				updateSelection = true;
+				updateTreeSelection = true;
+				treeModel.reload();
+			}
+		} else if ("1".equals(e.getActionCommand())) {
+			setTreeDepth(1, navTree.getPathForRow(0));
+		} else if ("2".equals(e.getActionCommand())) {
+			setTreeDepth(2, navTree.getPathForRow(0));
+		} else if ("3".equals(e.getActionCommand())) {
+			setTreeDepth(3, navTree.getPathForRow(0));
+		} else if ("4".equals(e.getActionCommand())) {
+			setTreeDepth(4, navTree.getPathForRow(0));
+		} else if ("5".equals(e.getActionCommand())) {
+			setTreeDepth(5, navTree.getPathForRow(0));
+		} else if ("6".equals(e.getActionCommand())) {
+			setTreeDepth(6, navTree.getPathForRow(0));
+		}
 	}
 
 	/**
@@ -306,6 +446,36 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			}
 		}
 		return pathList;
+	}
+
+	private void setTreeDepth(int depth, TreePath path) {
+		DefaultMutableTreeNode treeNode = 
+			     (DefaultMutableTreeNode) path.getLastPathComponent();
+		navTree.expandPath(path);
+		for (int child = 0; child < treeNode.getChildCount(); child++) {
+			DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)treeNode.getChildAt(child);
+			CyNode node = (CyNode)childNode.getUserObject();
+			if (!nodeMap.containsKey(node)) {
+				continue;
+			}
+
+			// A node could be in mulitple paths, but we only want
+			// the immediate descendant of "path"
+			List<TreePath> pathsToNode = nodeMap.get(node);
+			TreePath pathToNode = pathsToNode.get(0);
+			for (int p = 1; p < pathsToNode.size(); p++) {
+				if (pathsToNode.get(p).getParentPath().equals(path)) {
+					pathToNode = pathsToNode.get(p);
+					break;
+				}
+			}
+
+			if (depth == 1) {
+					navTree.collapsePath(pathToNode);
+			} else {
+				setTreeDepth(depth-1, pathToNode);
+			}
+		}
 	}
 
 	/**
@@ -522,7 +692,6 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			nodeMap = new HashMap<CyNode,List<TreePath>>();
 			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Named Selections (Groups)");
 			TreePath rootPath = new TreePath(rootNode);
-			rootNode.add(addClearToTree("Clear Selections", rootNode, rootPath));
 			List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
 			if (groupList == null || groupList.size() == 0)
 				return rootNode;
