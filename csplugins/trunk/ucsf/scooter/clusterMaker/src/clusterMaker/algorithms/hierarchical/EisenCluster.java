@@ -53,6 +53,10 @@ public class EisenCluster {
 	final static int IS = 0;
 	final static int JS = 1;
 
+	final static String GROUP_ATTRIBUTE = "__hierarchicalGroups";
+	final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
+	final static String CLUSTER_ATTRIBUTE = "__hierarchicalClusters";
+
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
 	                      ClusterMethod clusterMethod, boolean transpose) {
 
@@ -146,20 +150,34 @@ public class EisenCluster {
 
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
-		String net = Cytoscape.getCurrentNetwork().getIdentifier();
-		netAttr.setListAttribute(net, "HierarchicalCluster", attrList);
+		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+		netAttr.setListAttribute(netID, CLUSTER_ATTRIBUTE, attrList);
 
 		ArrayList<Integer> orderList = new ArrayList();
 		for (int i = 0; i < order.length; i++) {
 			orderList.add(order[i]);
 		}
 
-		netAttr.setListAttribute(net, "NodeOrder", orderList);
+		netAttr.setListAttribute(netID, "NodeOrder", orderList);
+
+		// See if we have any old groups in this network
+		if (netAttr.hasAttribute(netID, "__hierarchicalGroups")) {
+			List<String>clList = (List<String>)netAttr.getListAttribute(netID, "__hierarchicalGroups");
+			for (String groupName: clList) {
+				CyGroup group = CyGroupManager.findGroup(groupName);
+				if (group != null)
+					CyGroupManager.removeGroup(group);
+			}
+		
+		}
 
 		// Finally, create the group hierarchy
 		// The root is the last entry in our nodeList
 		if (!matrix.isTransposed()) {
-			CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1]);
+			ArrayList<String> groupNames = new ArrayList(nodeList.length);
+			CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1], groupNames);
+			// Remember this in the _hierarchicalGroups attribute
+			netAttr.setListAttribute(netID, GROUP_ATTRIBUTE, groupNames);
 		}
 
 		return "Complete";
@@ -602,13 +620,13 @@ public class EisenCluster {
 		return rowOrder;
 	}
 
-	private static CyGroup createGroups(Matrix matrix, TreeNode nodeList[], TreeNode node) {
+	private static CyGroup createGroups(Matrix matrix, TreeNode nodeList[], TreeNode node, List<String>groupNames) {
 		ArrayList<CyNode>memberList = new ArrayList(2);
 
 		// Do a right-first descend of the tree
 		if (node.getRight() < 0) {
 			int index = -node.getRight() - 1;
-			CyGroup rightGroup = createGroups(matrix, nodeList, nodeList[index]);
+			CyGroup rightGroup = createGroups(matrix, nodeList, nodeList[index], groupNames);
 			memberList.add(rightGroup.getGroupNode());
 		} else {
 			memberList.add(matrix.getRowNode(node.getRight()));
@@ -616,7 +634,7 @@ public class EisenCluster {
 
 		if (node.getLeft() < 0) {
 			int index = -node.getLeft() - 1;
-			CyGroup leftGroup = createGroups(matrix, nodeList, nodeList[index]);
+			CyGroup leftGroup = createGroups(matrix, nodeList, nodeList[index], groupNames);
 			memberList.add(leftGroup.getGroupNode());
 		} else {
 			memberList.add(matrix.getRowNode(node.getLeft()));
@@ -627,6 +645,9 @@ public class EisenCluster {
 		// Create the group for this level
 		CyGroup group = CyGroupManager.createGroup(node.getName(), memberList, null);
 		CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+
+		groupNames.add(node.getName());
+
 		return group;
 	}
 }
