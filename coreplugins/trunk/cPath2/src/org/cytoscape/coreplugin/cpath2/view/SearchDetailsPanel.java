@@ -115,18 +115,7 @@ public class SearchDetailsPanel extends JPanel {
             NetworkWrapper mergeNetwork = null;
             NetworkMergeUtil mergeUtil = new NetworkMergeUtil();
             if (mergeUtil.mergeNetworksExist()) {
-                NetworkWrapper[] networks = (NetworkWrapper[]) mergeUtil.getMergeNetworks().toArray
-                    (new NetworkWrapper[mergeUtil.getMergeNetworks().size()]);
-                URL iconURL = SearchDetailsPanel.class.getResource("resources/question.png");
-                Icon icon = null;
-                if (iconURL != null) {
-                    icon = new ImageIcon(iconURL);
-                }
-                mergeNetwork = (NetworkWrapper)
-                        JOptionPane.showInputDialog(Cytoscape.getDesktop(),
-                        "Create new network or merge with existing network?", "Create / Merge",
-                        JOptionPane.PLAIN_MESSAGE, icon,
-                        networks, networks[0]);
+                mergeNetwork = mergeUtil.promptForNetworkToMerge();
                 if (mergeNetwork == null) {
                     return;
                 }
