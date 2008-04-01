@@ -244,6 +244,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				if (nodeMap.containsKey(node) && nodeMap.get(node).size() > 1) {
 					treeSelectionModel.addSelectionPaths(nodeMap.get(node).toArray(ta));
 				} else {
+					// System.out.println("Adding "+cPaths[i]);
 					treeSelectionModel.addSelectionPath(cPaths[i]);
 				}
 
@@ -828,7 +829,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 																									boolean leaf, int row, 
 																									boolean hasFocus) 
 		{
-			if (row == 0 || row == 1) sel = false;
+			if (row == 0) sel = false;
 			// Call the DefaultTreeCellRender's method to do most of the work
 			Object userObject = ((DefaultMutableTreeNode)value).getUserObject();
 			if (CyNode.class.isInstance(userObject)) {
