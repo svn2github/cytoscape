@@ -41,6 +41,7 @@ import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
 import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
 import org.cytoscape.coreplugin.cpath2.util.NetworkMergeUtil;
 import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 
 import java.net.Proxy;
 
@@ -106,6 +107,9 @@ public class MapCPathToCytoscape implements HTTPServerListener {
      * @param cpathRequest String
      */
     private void loadMergeDialog(String cpathRequest) {
+        CPathProperties cPathProperties = CPathProperties.getInstance();
+        int downloadMode = cPathProperties.getDownloadMode();
+        cPathProperties.setDownloadMode(CPathProperties.DOWNLOAD_FULL_BIOPAX);
         NetworkMergeUtil mergeUtil = new NetworkMergeUtil();
         if (mergeUtil.mergeNetworksExist()) {
             NetworkWrapper networkWrapper = mergeUtil.promptForNetworkToMerge();
@@ -118,5 +122,6 @@ public class MapCPathToCytoscape implements HTTPServerListener {
         } else {
             new NetworkUtil(cpathRequest, null, false, nodeContextMenuListener).start();
         }
+        cPathProperties.setDownloadMode(downloadMode);
     }
 }
