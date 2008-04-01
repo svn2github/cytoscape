@@ -246,7 +246,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 BinarySifVisualStyleUtil.BINARY_NETWORK, Boolean.TRUE);
 
         //  Get all node details.
-        getNodeDetails2(cyNetwork, nodeAttributes);
+        getNodeDetails(cyNetwork, nodeAttributes);
 
         if (haltFlag == false) {
             if (mergedNetwork != null) {
@@ -392,53 +392,8 @@ public class ExecuteGetRecordByCPathId implements Task {
 
     /**
      * Gets Details for Each Node from Web Service API.
-     * Old getNodeDetails() method.  Keep around a little while longer, in case we need it again.
      */
     private void getNodeDetails (CyNetwork cyNetwork,  CyAttributes nodeAttributes) {
-        Iterator nodeIterator = cyNetwork.nodesIterator();
-        if (taskMonitor != null) {
-            taskMonitor.setStatus("Retrieving node details...");
-            taskMonitor.setPercentCompleted(0);
-        }
-        int numNodes = cyNetwork.nodesList().size();
-        int counter = 0;
-        while (nodeIterator.hasNext() && haltFlag == false) {
-            CyNode node = (CyNode) nodeIterator.next();
-            String nodeId = node.getIdentifier();
-            long ids[] = new long[1];
-            ids[0] = Long.valueOf(nodeId);
-
-            try {
-                String xml = webApi.getRecordsByIds(ids, CPathResponseFormat.BIOPAX,
-                        new NullTaskMonitor());
-                StringReader reader = new StringReader(xml);
-                BioPaxUtil bpUtil = new BioPaxUtil(reader, new NullTaskMonitor());
-                ArrayList peList = bpUtil.getPhysicalEntityList();
-                if (peList.size() > 0) {
-                    Element element = (Element) peList.get(0);
-                    MapNodeAttributes.mapNodeAttribute(element, nodeId, nodeAttributes, bpUtil);
-                }
-            } catch (CPathException e) {
-                e.printStackTrace();
-            } catch (EmptySetException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JDOMException e) {
-                e.printStackTrace();
-            }
-            int percentComplete = (int) (100.0 * (counter / (double) numNodes));
-            if (taskMonitor != null) {
-                taskMonitor.setPercentCompleted(percentComplete);
-            }
-            counter++;
-        }
-    }
-
-    /**
-     * Gets Details for Each Node from Web Service API.
-     */
-    private void getNodeDetails2 (CyNetwork cyNetwork,  CyAttributes nodeAttributes) {
         if (taskMonitor != null) {
             taskMonitor.setStatus("Retrieving node details...");
             taskMonitor.setPercentCompleted(0);
