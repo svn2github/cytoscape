@@ -226,7 +226,7 @@ public class CytoscapeSessionReader {
 	 */
 	private void extractEntry() throws IOException {
 		/*
-		 * This is an inportant part!
+		 * This is an important part!
 		 *
 		 * We can create InputStream directly from URL, but it does not work
 		 * always due to the cashing mechanism in URLConnection.
@@ -287,6 +287,12 @@ public class CytoscapeSessionReader {
 
 	private void extractPluginEntry(String entryName) {
 		String[] items = entryName.split("/");
+		
+		if (items.length < 3) {
+			// It's a directory name, not a file name
+			return;
+		}
+		
 		String pluginName = items[2];
 		String URLstr = "jar:" + sourceURL.toString() + "!/" + entryName;
 
