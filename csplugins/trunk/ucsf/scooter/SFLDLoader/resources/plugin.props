@@ -19,7 +19,7 @@ pluginVersion=1.2
 cytoscapeVersion=2.6
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Network I/O
+pluginCategory=Network and Attribute I/O
 
 # -- The following properties are OPTIONAL -- #
 
