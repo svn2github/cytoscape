@@ -42,6 +42,7 @@ import cytoscape.groups.CyGroupManager;
 import cytoscape.groups.CyGroupViewer;
 
 import namedSelection.NamedSelection;
+import namedSelection.ui.GroupCreationDialog;
 
 // System imports
 import javax.swing.JPanel;
@@ -66,7 +67,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
                                                   TreeExpansionListener,
 	                                                ActionListener,
                                                   GraphViewChangeListener {
-	CyGroupViewer viewer = null;
+	List<CyGroupViewer> viewerList = null;
 	JTree navTree = null;
 	GroupTreeModel treeModel = null;
 	TreeSelectionModel treeSelectionModel = null;
@@ -86,7 +87,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	 */
 	public GroupPanel (CyGroupViewer viewer) {
 		super();
-		this.viewer = viewer;
+		viewerList = new ArrayList();
+		viewerList.add(viewer);
 
 		setLayout(new BorderLayout());
 
@@ -153,6 +155,18 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 		add(treeView, BorderLayout.CENTER);
 
+	}
+
+	/**
+ 	 * Tell the GroupPanel that we have an additional viewer who
+ 	 * wants to use us
+ 	 *
+ 	 * @param viewer the new viewer
+ 	 */
+	public void addViewer(CyGroupViewer viewer) {
+		if (viewerList.contains(viewer))
+			return;
+		viewerList.add(viewer);
 	}
 
 	/**
@@ -281,6 +295,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			updateSelection = false;
 			updateTreeSelection = false;
 			Cytoscape.getCurrentNetwork().unselectAllNodes();
+			Cytoscape.getCurrentNetworkView().updateView();
 			navTree.clearSelection();
 			updateSelection = true;
 			updateTreeSelection = true;
@@ -290,16 +305,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			if (nodeSet != null && nodeSet.size() > 0) {
 				// Yes, create the group
 				ArrayList<CyNode>currentNodes = new ArrayList(nodeSet);
-				CyGroup group = null;
-				while (group == null) {
-					String groupName = JOptionPane.showInputDialog("Please enter a name for this selection");
-					if (groupName == null) return;
-					group = CyGroupManager.createGroup(groupName, currentNodes, viewer.getViewerName());
-					if (group == null)
-						JOptionPane.showInputDialog("Group "+groupName+" already exists.  Please enter an alternate name");
-				}
-				group.setState(NamedSelection.SELECTED);
-				groupCreated(group);
+				GroupCreationDialog dd = new GroupCreationDialog(Cytoscape.getDesktop(), currentNodes, viewerList);
 			} else {
 				// No, tell the user
 				JOptionPane.showMessageDialog(this, "You must select a set of nodes to be part of the group", 
@@ -369,8 +375,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		Iterator<CyGroup> iter = groupList.iterator();
 		while (iter.hasNext()) {
 			CyGroup group = iter.next();
-			String groupViewer = group.getViewer();
-			if (groupViewer == null || !groupViewer.equals(viewer.getViewerName())) 
+			CyGroupViewer groupViewer = CyGroupManager.getGroupViewer(group.getViewer());
+			if (groupViewer == null || !groupList.contains(groupViewer)) 
 				continue;
 			Iterator<CyNode> nodeIter = group.getNodeIterator();
 			boolean allSelected = true;
@@ -682,16 +688,16 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 			super.reload();
 
-			// Update our selection based on the currently selection nodes, etc.
-			List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
-			if (groupList == null || groupList.size() == 0)
-				return;
-			Iterator<CyGroup> iter = groupList.iterator();
-			while (iter.hasNext()) {
-				CyGroup group = iter.next();
-				CyNode groupNode = group.getGroupNode();
-				if (group.getState() == NamedSelection.SELECTED && nodeMap.containsKey(groupNode)) {
-					treeSelectionModel.addSelectionPaths(nodeMap.get(groupNode).toArray(ta));
+			for (CyGroupViewer viewer: viewerList) {
+				// Update our selection based on the currently selection nodes, etc.
+				List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
+				if (groupList == null || groupList.size() == 0)
+					continue;
+				for (CyGroup group: groupList) {
+					CyNode groupNode = group.getGroupNode();
+					if (group.getState() == NamedSelection.SELECTED && nodeMap.containsKey(groupNode)) {
+						treeSelectionModel.addSelectionPaths(nodeMap.get(groupNode).toArray(ta));
+					}
 				}
 			}
 			
@@ -707,18 +713,21 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			nodeMap = new HashMap<CyNode,List<TreePath>>();
 			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Named Selections (Groups)");
 			TreePath rootPath = new TreePath(rootNode);
-			List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
-			if (groupList == null || groupList.size() == 0) {
-				deleteButton.setEnabled(false);
-				return rootNode;
-			}
 
-			deleteButton.setEnabled(true);
+			deleteButton.setEnabled(false);
+			for (CyGroupViewer viewer: viewerList) {
+				List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
+				if (groupList == null || groupList.size() == 0) {
+					continue;
+				}
 
-			for (CyGroup group: groupList) {
-				// Only add root groups
-				if (isRootGroup(group))
-					rootNode.add(addGroupToTree(group, rootNode, rootPath));
+				deleteButton.setEnabled(true);
+
+				for (CyGroup group: groupList) {
+					// Only add root groups
+					if (isRootGroup(group, viewer))
+						rootNode.add(addGroupToTree(group, rootNode, rootPath));
+				}
 			}
 			return rootNode;
 		}
@@ -809,7 +818,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			parentNode.remove(thisNode);
 		}
 
-		private boolean isRootGroup(CyGroup group) {
+		private boolean isRootGroup(CyGroup group, CyGroupViewer viewer) {
 			CyNode groupNode = group.getGroupNode();
 			List<CyGroup>groupList = groupNode.getGroups();
 			if (groupList == null || groupList.size() == 0) {

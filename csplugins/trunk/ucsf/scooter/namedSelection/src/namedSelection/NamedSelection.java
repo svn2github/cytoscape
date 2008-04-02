@@ -98,12 +98,14 @@ public class NamedSelection extends CytoscapePlugin
    */
 	public NamedSelection() {
 		// Listen for network changes (so we can add our context menu)
+		// Now that the group panel supports group creation, do we still
+		// want to do this?
 		try {
 			// Add ourselves to the network view created change list
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
 			// Add our context menu
-			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+			// ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
 		} catch (ClassCastException e) {
 			System.out.println(e.getMessage());
 		}
@@ -216,6 +218,15 @@ public class NamedSelection extends CytoscapePlugin
 			menu = new JPopupMenu();
 		}
 		menu.add(getNodePopupMenu(nodeView));
+	}
+
+	/**
+	 * The named selection viewer can act as a "helper" for other viewers by
+	 * allowing them to use the group panel.  This method will return a handle
+	 * to the group panel for other viewers to use
+	 */
+	public GroupPanel getGroupPanel() {
+		return groupPanel;
 	}
 
 	/**
