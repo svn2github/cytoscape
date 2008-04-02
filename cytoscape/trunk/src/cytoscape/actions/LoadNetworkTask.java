@@ -40,29 +40,37 @@
 // $Author: pwang $
 package cytoscape.actions;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+
+import cytoscape.data.readers.GraphReader;
+
+import cytoscape.init.CyInitParams;
+
+import cytoscape.layout.CyLayoutAlgorithm;
+
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+
+import cytoscape.task.ui.JTask;
+import cytoscape.task.ui.JTaskConfig;
+
+import cytoscape.task.util.TaskManager;
+
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+
 import java.io.File;
 import java.io.IOException;
+
 import java.net.URI;
 import java.net.URL;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import javax.swing.JOptionPane;
-
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.data.readers.GraphReader;
-import cytoscape.init.CyInitParams;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.ui.JTask;
-import cytoscape.task.util.TaskManager;
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.CyNetworkView;
-import ding.view.DGraphView;
 
 
 /**
@@ -137,8 +145,10 @@ public class LoadNetworkTask implements Task {
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
+
 		if (cancelable)
 			jTaskConfig.displayCancelButton(true);
+
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(skipMessage);
 
@@ -160,6 +170,7 @@ public class LoadNetworkTask implements Task {
 		name = u.toString();
 		reader = null;
 		layoutAlgorithm = layout;
+
 		// Postpone getting the reader since we want to do that in a thread
 	}
 
@@ -168,11 +179,11 @@ public class LoadNetworkTask implements Task {
 		uri = file.toURI();
 		name = file.getName();
 		layoutAlgorithm = layout;
+
 		if (reader == null) {
 			uri = null;
 			url = null;
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-			                              "Unable to open file "+name, 
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Unable to open file " + name,
 			                              "File Open Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -181,42 +192,49 @@ public class LoadNetworkTask implements Task {
 	 * Executes Task.
 	 */
 	public void run() {
-		if (reader == null && url == null) return;
+		if ((reader == null) && (url == null))
+			return;
+
 		myThread = Thread.currentThread();
 
-		if (reader == null && url != null) {
+		if ((reader == null) && (url != null)) {
 			try {
-				taskMonitor.setStatus("Opening URL "+url);
+				taskMonitor.setStatus("Opening URL " + url);
 				reader = Cytoscape.getImportHandler().getReader(url);
-				if (interrupted) return;	
+
+				if (interrupted)
+					return;
+
 				uri = url.toURI();
 			} catch (Exception e) {
 				uri = null;
-				taskMonitor.setException(e, 
-							      "Unable to connect to URL "+name+": "+e.getMessage());
+				taskMonitor.setException(e,
+				                         "Unable to connect to URL " + name + ": " + e.getMessage());
+
 				return;
-			} 
+			}
+
 			if (reader == null) {
 				uri = null;
-				taskMonitor.setException(null, 
-							      "Unable to connect to URL "+name); 
+				taskMonitor.setException(null, "Unable to connect to URL " + name);
+
 				return;
 			}
 
 			// URL is open, things will get very messy if the user cancels the actual
 			// network load, so prevent them from doing so
-			((JTask)taskMonitor).setCancel(false);
+			((JTask) taskMonitor).setCancel(false);
 		}
 
 		taskMonitor.setStatus("Reading in Network Data...");
-		
+
 		// Remove unnecessary listeners:
-		if((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
-			    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+		if ((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
+		    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-	         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+			         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
 		}
-		
+
 		try {
 			taskMonitor.setPercentCompleted(-1);
 
@@ -226,10 +244,11 @@ public class LoadNetworkTask implements Task {
 
 			// Are we supposed to lay this out?
 			CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-			if (layoutAlgorithm != null && view != null) {
+
+			if ((layoutAlgorithm != null) && (view != null)) {
 				// Yes, do it
 				// Layouts are, in general cancelable
-				((JTask)taskMonitor).setCancel(true);
+				((JTask) taskMonitor).setCancel(true);
 				taskMonitor.setStatus("Performing layout...");
 				layoutAlgorithm.doLayout(view, taskMonitor);
 				taskMonitor.setStatus("Layout complete");
@@ -239,14 +258,16 @@ public class LoadNetworkTask implements Task {
 			ret_val[0] = cyNetwork;
 			ret_val[1] = uri;
 
-			if((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
-				    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+			if ((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
+			    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-		         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
-				Cytoscape.getDesktop().getNetworkViewManager().firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, Cytoscape.getCurrentNetworkView()
-						.getNetwork().getIdentifier());
+				         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+				Cytoscape.getDesktop().getNetworkViewManager()
+				         .firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
+				                             Cytoscape.getCurrentNetworkView().getNetwork()
+				                                      .getIdentifier());
 			}
-			
+
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 
 			if (cyNetwork != null) {
@@ -262,7 +283,10 @@ public class LoadNetworkTask implements Task {
 			taskMonitor.setPercentCompleted(100);
 		} catch (Exception e) {
 			taskMonitor.setException(e, "Unable to load network.");
+
 			return;
+		} finally {
+			reader = null;
 		}
 	}
 
@@ -308,10 +332,11 @@ public class LoadNetworkTask implements Task {
 	public void halt() {
 		// Task can not currently be halted.
 		System.out.println("Halt called");
+
 		if (myThread != null) {
 			myThread.interrupt();
 			this.interrupted = true;
-			((JTask)taskMonitor).setDone();
+			((JTask) taskMonitor).setDone();
 		}
 	}
 
