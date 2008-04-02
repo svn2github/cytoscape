@@ -72,7 +72,7 @@
      	  		'plugin_version.sysdat, ' .
      	  		'plugin_version.version_auto_id' .
      	  		' FROM plugin_list, plugin_version WHERE category_id =' . $categoryID.
-     	  		' and plugin_list.plugin_auto_id = plugin_version.plugin_id';
+     	  		' and plugin_list.plugin_auto_id = plugin_version.plugin_id order by plugin_list.name';
   
   		  // Run the query
           if (!($pluginVersions = @ mysql_query ($query, $connection))) 
