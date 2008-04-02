@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import cytoscape.CyEdge;
@@ -72,7 +71,6 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	private boolean vizmapEnabled = true;
 	private HashMap clientData = new HashMap();
 	private VisualStyle vs;
-	
 	private final FlagAndSelectionHandler flagHandler;
 
 	/**
@@ -90,6 +88,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 
 		final int nodeCount = nodes.length;
 		final int edgeCount = edges.length;
+
 		for (int i = 0; i < nodeCount; i++)
 			addNodeView(nodes[i]);
 
@@ -428,7 +427,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param style DOCUMENT ME!
 	 */
 	public void applyVizmapper(VisualStyle style) {
-		VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
+		final VisualStyle old_style = Cytoscape.getDesktop().setVisualStyle(style);
 		redrawGraph(false, true);
 	}
 
@@ -468,15 +467,13 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	private NodeView[] getInverseViews(NodeView[] given) {
 		// This code, like most all of the code in this class, is copied from
 		// PhoebeNetworkView.  Zum kotzen.
-		NodeView[] inverse = new NodeView[getNodeViewCount() - given.length];
-		List node_views = getNodeViewsList();
+		final NodeView[] inverse = new NodeView[getNodeViewCount() - given.length];
+		final List<NodeView> node_views = getNodeViewsList();
+
 		int count = 0;
-		Iterator i = node_views.iterator();
 		Arrays.sort(given);
 
-		while (i.hasNext()) {
-			NodeView view = (NodeView) i.next();
-
+		for (NodeView view : node_views) {
 			if (Arrays.binarySearch(given, view) < 0) {
 				inverse[count] = view;
 				count++;
@@ -492,12 +489,12 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @return  DOCUMENT ME!
 	 */
 	public List getNodeViewsList() {
-		ArrayList list = new ArrayList(getNodeViewCount());
-		int[] gp_indices = getGraphPerspective().getNodeIndicesArray();
+		final List<NodeView> list = new ArrayList<NodeView>(getNodeViewCount());
+		final int[] gp_indices = getGraphPerspective().getNodeIndicesArray();
+		final int gpSize = gp_indices.length;
 
-		for (int i = 0; i < gp_indices.length; i++) {
+		for (int i = 0; i < gpSize; i++)
 			list.add(getNodeView(gp_indices[i]));
-		}
 
 		return list;
 	}
@@ -539,11 +536,11 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	}
 
 	private NodeView[] convertToNodeViews(int[] nodes) {
-		NodeView[] views = new NodeView[nodes.length];
+		final NodeView[] views = new NodeView[nodes.length];
+		final int size = views.length;
 
-		for (int i = 0; i < nodes.length; i++) {
+		for (int i = 0; i < size; i++)
 			views[i] = getNodeView(nodes[i]);
-		}
 
 		return views;
 	}
