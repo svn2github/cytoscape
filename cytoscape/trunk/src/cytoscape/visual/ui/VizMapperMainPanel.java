@@ -795,7 +795,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		closeEditorWindow();
 
-		//System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
+		System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		
 		// MLC 03/31/08:
@@ -3693,10 +3693,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	public void stateChanged(ChangeEvent e) {
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
 		final String currentName = vmm.getVisualStyle().getName();
-		// MLC 03/31/08 BEGIN:
-		// Make fure we update the lastVSName based on anything that changes the visual style:
-		lastVSName = currentName;
-		// MLC 03/31/08 END.
+		
 		final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
 
 		if (ignore)
@@ -3717,11 +3714,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
 				if (vsNameComboBox.getItemAt(i).equals(currentName)) {
 					vsNameComboBox.setSelectedIndex(i);
-
 					break;
 				}
 			}
 		}
+		
+		// kono: should be placed here.
+		// MLC 03/31/08 BEGIN:
+		// Make fure we update the lastVSName based on anything that changes the visual style:
+		lastVSName = currentName;
+		// MLC 03/31/08 END.
 	}
 
 	private void syncStyleBox() {
