@@ -74,6 +74,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 	boolean updateSelection = true;
 	boolean updateTreeSelection = true;
 	TreePath[] ta = new TreePath[1];
+	ButtonGroup depthGroup = null;
+	JButton deleteButton = null;
+	JPanel depthBox = null;
+	int treeDepth = 1;
 
 	/**
 	 * Construct a group panel
@@ -95,72 +99,22 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		// Create a button box at the top 
 		JPanel buttonBox = new JPanel();
 		// Create clear selection button
-		JButton clearButton = new JButton("Clear Selection");
-		clearButton.setActionCommand("clear");
-		clearButton.addActionListener(this);
-		buttonBox.add(clearButton);
+		buttonBox.add(createButton("Clear Selection", "clear", true));
 
 		// Create new group button
-		JButton newButton = new JButton("New Group");
-		newButton.setActionCommand("new");
-		newButton.addActionListener(this);
-		buttonBox.add(newButton);
+		buttonBox.add(createButton("New Group", "new", true));
 
 		// Create delete group button
-		JButton deleteButton = new JButton("Delete Group");
-		deleteButton.setActionCommand("delete");
-		deleteButton.addActionListener(this);
+		deleteButton = createButton("Delete Group", "delete", false);
 		buttonBox.add(deleteButton);
 
 		// Border it
 		buttonBox.setBorder(BorderFactory.createEtchedBorder());
 		controlPanel.add(buttonBox);
 
-		JPanel depthBox = new JPanel();
-		ButtonGroup depthGroup = new ButtonGroup();
-		// Create depth buttons
-		{
-			JRadioButton depthOne = new JRadioButton("1");
-			depthOne.setActionCommand("1");
-			depthOne.addActionListener(this);
-			depthGroup.add(depthOne);
-			depthBox.add(depthOne);
-		}
-		{
-			JRadioButton depthTwo = new JRadioButton("2");
-			depthTwo.setActionCommand("2");
-			depthTwo.addActionListener(this);
-			depthGroup.add(depthTwo);
-			depthBox.add(depthTwo);
-		}
-		{
-			JRadioButton depthThree = new JRadioButton("3");
-			depthThree.setActionCommand("3");
-			depthThree.addActionListener(this);
-			depthGroup.add(depthThree);
-			depthBox.add(depthThree);
-		}
-		{
-			JRadioButton depthFour = new JRadioButton("4");
-			depthFour.setActionCommand("4");
-			depthFour.addActionListener(this);
-			depthGroup.add(depthFour);
-			depthBox.add(depthFour);
-		}
-		{
-			JRadioButton depthFive = new JRadioButton("5");
-			depthFive.setActionCommand("5");
-			depthFive.addActionListener(this);
-			depthGroup.add(depthFive);
-			depthBox.add(depthFive);
-		}
-		{
-			JRadioButton depthSix = new JRadioButton("6");
-			depthSix.setActionCommand("6");
-			depthSix.addActionListener(this);
-			depthGroup.add(depthSix);
-			depthBox.add(depthSix);
-		}
+		depthBox = new JPanel();
+		depthGroup = new ButtonGroup();
+		addDepthButtons(treeDepth);
 
 		// Border it
 		Border depthBorder = BorderFactory.createEtchedBorder();
@@ -397,6 +351,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			setTreeDepth(5, navTree.getPathForRow(0));
 		} else if ("6".equals(e.getActionCommand())) {
 			setTreeDepth(6, navTree.getPathForRow(0));
+		} else if ("7".equals(e.getActionCommand())) {
+			setTreeDepth(7, navTree.getPathForRow(0));
+		} else if ("8".equals(e.getActionCommand())) {
+			setTreeDepth(8, navTree.getPathForRow(0));
 		}
 	}
 
@@ -658,6 +616,40 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		}
 	}
 
+	private JButton createButton(String label, String command, boolean enabled) {
+		JButton newButton = new JButton("<html><span style='font-size: 80%;'>"+label+"</span></html>");
+		newButton.setActionCommand(command);
+		newButton.addActionListener(this);
+		newButton.setEnabled(enabled);
+		return newButton;
+	}
+
+	private void addDepthButtons(int depth) {
+		int maxDepth = depth;
+		if (maxDepth > 8) maxDepth = 8;
+
+		// Get the number of buttons currently in the group
+		int buttonCount = depthGroup.getButtonCount();
+		if (buttonCount > maxDepth) {
+			for (Enumeration <AbstractButton> buttons = depthGroup.getElements(); buttons.hasMoreElements() ;) {
+				AbstractButton b = buttons.nextElement();
+				String command = b.getActionCommand();
+				if (Integer.parseInt(command) > maxDepth) {
+					depthGroup.remove(b);
+					depthBox.remove(b);
+				}
+			}
+		} else {
+			for (int count = buttonCount+1; count < maxDepth+1; count++) {
+				JRadioButton depthButton = new JRadioButton("<html><span style='font-size: 70%'>"+count+"</span></html>");
+				depthButton.setActionCommand(""+count);
+				depthButton.addActionListener(this);
+				depthGroup.add(depthButton);
+				depthBox.add(depthButton);
+			}
+		}
+	}
+
 	/**
 	 * The GroupTreeModel implements the model for the JTree
 	 */
@@ -674,6 +666,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			this.navTree = tree;
 			updateTreeSelection = false;
 			DefaultMutableTreeNode rootNode = buildTree();
+			addDepthButtons(treeDepth);
 			this.setRoot(rootNode);
 			updateTreeSelection = true;
 		}
@@ -684,6 +677,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		public void reload() {
 			updateTreeSelection = false;
 			DefaultMutableTreeNode rootNode = buildTree();
+			addDepthButtons(treeDepth);
 			this.setRoot(rootNode);
 
 			super.reload();
@@ -714,8 +708,12 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Named Selections (Groups)");
 			TreePath rootPath = new TreePath(rootNode);
 			List<CyGroup> groupList = CyGroupManager.getGroupList(viewer);
-			if (groupList == null || groupList.size() == 0)
+			if (groupList == null || groupList.size() == 0) {
+				deleteButton.setEnabled(false);
 				return rootNode;
+			}
+
+			deleteButton.setEnabled(true);
 
 			for (CyGroup group: groupList) {
 				// Only add root groups
@@ -799,6 +797,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 					}
 				}
 			}
+			treeDepth++;
 			return treeNode;
 		}
 
