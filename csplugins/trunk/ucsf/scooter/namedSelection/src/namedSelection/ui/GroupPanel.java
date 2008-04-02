@@ -117,31 +117,51 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		controlPanel.add(buttonBox);
 
 		JPanel depthBox = new JPanel();
+		ButtonGroup depthGroup = new ButtonGroup();
 		// Create depth buttons
-		JButton depthOne = new JButton("1");
-		depthOne.setActionCommand("1");
-		depthOne.addActionListener(this);
-		depthBox.add(depthOne);
-		JButton depthTwo = new JButton("2");
-		depthTwo.setActionCommand("2");
-		depthTwo.addActionListener(this);
-		depthBox.add(depthTwo);
-		JButton depthThree = new JButton("3");
-		depthThree.setActionCommand("3");
-		depthThree.addActionListener(this);
-		depthBox.add(depthThree);
-		JButton depthFour = new JButton("4");
-		depthFour.setActionCommand("4");
-		depthFour.addActionListener(this);
-		depthBox.add(depthFour);
-		JButton depthFive = new JButton("5");
-		depthFive.setActionCommand("5");
-		depthFive.addActionListener(this);
-		depthBox.add(depthFive);
-		JButton depthSix = new JButton("6");
-		depthSix.setActionCommand("6");
-		depthSix.addActionListener(this);
-		depthBox.add(depthSix);
+		{
+			JRadioButton depthOne = new JRadioButton("1");
+			depthOne.setActionCommand("1");
+			depthOne.addActionListener(this);
+			depthGroup.add(depthOne);
+			depthBox.add(depthOne);
+		}
+		{
+			JRadioButton depthTwo = new JRadioButton("2");
+			depthTwo.setActionCommand("2");
+			depthTwo.addActionListener(this);
+			depthGroup.add(depthTwo);
+			depthBox.add(depthTwo);
+		}
+		{
+			JRadioButton depthThree = new JRadioButton("3");
+			depthThree.setActionCommand("3");
+			depthThree.addActionListener(this);
+			depthGroup.add(depthThree);
+			depthBox.add(depthThree);
+		}
+		{
+			JRadioButton depthFour = new JRadioButton("4");
+			depthFour.setActionCommand("4");
+			depthFour.addActionListener(this);
+			depthGroup.add(depthFour);
+			depthBox.add(depthFour);
+		}
+		{
+			JRadioButton depthFive = new JRadioButton("5");
+			depthFive.setActionCommand("5");
+			depthFive.addActionListener(this);
+			depthGroup.add(depthFive);
+			depthBox.add(depthFive);
+		}
+		{
+			JRadioButton depthSix = new JRadioButton("6");
+			depthSix.setActionCommand("6");
+			depthSix.addActionListener(this);
+			depthGroup.add(depthSix);
+			depthBox.add(depthSix);
+		}
+
 		// Border it
 		Border depthBorder = BorderFactory.createEtchedBorder();
 		TitledBorder dTitleBorder = BorderFactory.createTitledBorder(depthBorder, "Expansion Depth");
