@@ -34,32 +34,6 @@
 */
 package cytoscape.ding;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.layout.CyLayoutAlgorithm;
-
-import cytoscape.view.CyEdgeView;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CyNodeView;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.FlagAndSelectionHandler;
-
-import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.VisualStyle;
-
-import cytoscape.visual.ui.VizMapUI;
-
-import ding.view.DGraphView;
-import ding.view.EdgeContextMenuListener;
-
-// AJK: 05/19/06 BEGIN
-//     for context menus
-import ding.view.NodeContextMenuListener;
-
 import giny.view.EdgeView;
 import giny.view.NodeView;
 
@@ -69,6 +43,24 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.view.CyEdgeView;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CyNodeView;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.FlagAndSelectionHandler;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.ui.VizMapUI;
+import ding.view.DGraphView;
+import ding.view.EdgeContextMenuListener;
+import ding.view.NodeContextMenuListener;
 
 
 // AJK: 05/19/06 END
@@ -80,6 +72,8 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	private boolean vizmapEnabled = true;
 	private HashMap clientData = new HashMap();
 	private VisualStyle vs;
+	
+	private final FlagAndSelectionHandler flagHandler;
 
 	/**
 	 * Creates a new DingNetworkView object.
@@ -94,15 +88,15 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 		final int[] nodes = network.getNodeIndicesArray();
 		final int[] edges = network.getEdgeIndicesArray();
 
-		for (int i = 0; i < nodes.length; i++) {
+		final int nodeCount = nodes.length;
+		final int edgeCount = edges.length;
+		for (int i = 0; i < nodeCount; i++)
 			addNodeView(nodes[i]);
-		}
 
-		for (int i = 0; i < edges.length; i++) {
+		for (int i = 0; i < edgeCount; i++)
 			addEdgeView(edges[i]);
-		}
 
-		new FlagAndSelectionHandler(((CyNetwork) getNetwork()).getSelectFilter(), this);
+		flagHandler = new FlagAndSelectionHandler(getNetwork().getSelectFilter(), this);
 	}
 
 	/**
