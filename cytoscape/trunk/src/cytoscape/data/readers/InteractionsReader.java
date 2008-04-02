@@ -48,6 +48,7 @@ import cern.colt.list.IntArrayList;
 import cern.colt.map.OpenIntIntHashMap;
 
 import cytoscape.CyEdge;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.data.Interaction;
@@ -246,12 +247,6 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * @return  DOCUMENT ME!
 	 */
 	public Interaction[] getAllInteractions() {
-		//		Interaction[] result = new Interaction[allInteractions.size()];
-		//
-		//		for (int i = 0; i < allInteractions.size(); i++) {
-		//			Interaction inter = (Interaction) allInteractions.elementAt(i);
-		//			result[i] = inter;
-		//		}
 		return allInteractions.toArray(new Interaction[0]);
 	}
 
@@ -393,5 +388,17 @@ public class InteractionsReader extends AbstractGraphReader {
 		edge_indices.trimToSize();
 
 		return edge_indices.elements();
+	}
+	
+	public void doPostProcessing(CyNetwork net) {
+		
+		// Cleanup unnecessary references.
+		edges.clear();
+		node_indices.clear();
+		edges = null;
+		node_indices = null;
+		
+		allInteractions.clear();
+		allInteractions = null;
 	}
 } // InteractionsReader
