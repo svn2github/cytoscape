@@ -90,30 +90,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>cytoscape</groupId>
-			<artifactId>render.stateful</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>cytoscape</groupId>
-			<artifactId>render.immed</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>cytoscape</groupId>
-			<artifactId>render.export</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>cytoscape</groupId>
-			<artifactId>geom.rtree</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
 			<groupId>undo</groupId>
 			<artifactId>undo</artifactId>
 			<version>1.0-SNAPSHOT</version>
@@ -125,11 +101,6 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
-			<groupId>cytoscape</groupId>
-			<artifactId>graph.dynamic</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
 
 		<!-- our custom version of CLI -->
 		<dependency>
