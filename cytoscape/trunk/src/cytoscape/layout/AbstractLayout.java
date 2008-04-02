@@ -36,39 +36,24 @@
 */
 package cytoscape.layout;
 
-import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.init.CyInitParams;
 
 import cytoscape.task.TaskMonitor;
-
-import cytoscape.util.*;
 
 import cytoscape.view.CyNetworkView;
 
 import ding.view.DGraphView;
 import ding.view.ViewChangeEdit;
 
-import giny.view.EdgeView;
-import giny.view.GraphView;
 import giny.view.NodeView;
 
 import java.awt.Dimension;
-import java.awt.geom.Point2D;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -79,10 +64,12 @@ import javax.swing.JPanel;
  * written for Cytoscape.
  */
 abstract public class AbstractLayout implements CyLayoutAlgorithm {
+	// Graph Objects and Views
 	protected Set<NodeView> staticNodes;
 	protected CyNetworkView networkView;
 	protected CyNetwork network;
-	protected TaskMonitor taskMonitor; 
+	
+	//
 	protected boolean selectedOnly = false;
 	protected String edgeAttribute = null;
 	protected String nodeAttribute = null;
@@ -91,13 +78,26 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected HashMap propertyMap = null;
 	protected HashMap savedPropertyMap = null;
 	private ViewChangeEdit undoableEdit;
-
+	
+	// Monitor
+	protected TaskMonitor taskMonitor;
+	
 	protected static TaskMonitor nullTaskMonitor = new TaskMonitor() {
-		public void setPercentCompleted(int percent) {}
-		public void setEstimatedTimeRemaining(long time) throws IllegalThreadStateException {}
-		public void setException(Throwable t, String userErrorMessage) {}
-  	        public void setException(Throwable t, String userErrorMessage, String recoveryTip) {}
-		public void setStatus(String message) throws IllegalThreadStateException, NullPointerException {}
+		public void setPercentCompleted(int percent) {
+		}
+
+		public void setEstimatedTimeRemaining(long time) throws IllegalThreadStateException {
+		}
+
+		public void setException(Throwable t, String userErrorMessage) {
+		}
+
+		public void setException(Throwable t, String userErrorMessage, String recoveryTip) {
+		}
+
+		public void setStatus(String message)
+		    throws IllegalThreadStateException, NullPointerException {
+		}
 	};
 
 	// Should definitely be overridden!
@@ -227,7 +227,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * Property handling -- these must be overridden by any algorithms
 	 * that want to use properties or have a settings UI.
 	 */
-	public LayoutProperties getSettings () {
+	public LayoutProperties getSettings() {
 		return null;
 	}
 
@@ -235,44 +235,43 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * doLayout on current network view.
 	 */
 	public void doLayout() {
-		doLayout(Cytoscape.getCurrentNetworkView(),nullTaskMonitor);
+		doLayout(Cytoscape.getCurrentNetworkView(), nullTaskMonitor);
 	}
 
 	/**
 	 * doLayout on specified network view.
 	 */
 	public void doLayout(CyNetworkView nview) {
-		doLayout(nview,nullTaskMonitor);
+		doLayout(nview, nullTaskMonitor);
 	}
 
 	/**
 	 * doLayout on specified network view with specified monitor.
 	 */
 	public void doLayout(CyNetworkView nview, TaskMonitor monitor) {
-
 		canceled = false;
 
 		networkView = nview;
 
 		// do some sanity checking
-		if (networkView == null || networkView == Cytoscape.getNullNetworkView())
+		if ((networkView == null) || (networkView == Cytoscape.getNullNetworkView()))
 			return;
 
 		this.network = networkView.getNetwork();
 
-		if (network == null || network == Cytoscape.getNullNetwork()) 
+		if ((network == null) || (network == Cytoscape.getNullNetwork()))
 			return;
 
-		if (network.getNodeCount() <= 0) 
+		if (network.getNodeCount() <= 0)
 			return;
 
-		if ( monitor == null )
+		if (monitor == null)
 			monitor = nullTaskMonitor;
 
 		taskMonitor = monitor;
 
 		// set up the edit
-		undoableEdit = new ViewChangeEdit((DGraphView)networkView, toString() + " Layout");
+		undoableEdit = new ViewChangeEdit((DGraphView) networkView, toString() + " Layout");
 
 		// this is overridden by children and does the actual layout
 		construct();
@@ -285,6 +284,9 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 
 		// post the edit 
 		undoableEdit.post();
+
+		this.network = null;
+		this.networkView = null;
 	}
 
 	/**
@@ -351,7 +353,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	}
 
 	/**
-	 * Halt the algorithm.  
+	 * Halt the algorithm.
 	 */
 	public void halt() {
 		canceled = true;
