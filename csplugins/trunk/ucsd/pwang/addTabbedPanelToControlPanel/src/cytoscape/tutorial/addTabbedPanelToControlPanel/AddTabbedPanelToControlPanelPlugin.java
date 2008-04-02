@@ -32,18 +32,10 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.filters;
+package cytoscape.tutorial;
 
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.filters.view.FilterMainPanel;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.util.*;
 import cytoscape.view.cytopanels.CytoPanelImp;
-import java.io.File;
-import java.util.List;
-import java.util.Vector;
-import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 
 /**
@@ -51,28 +43,8 @@ import javax.swing.SwingConstants;
  */
 public class AddTabbedPanelToControlPanelPlugin extends CytoscapePlugin {
 
-	private static Vector<CompositeFilter> allFilterVect = null;
-	private FilterIO filterIO = new FilterIO();
-	
-	public static final String DYNAMIC_FILTER_THRESHOLD = "dynamicFilterThreshold";
-	public static final int DEFAULT_DYNAMIC_FILTER_THRESHOLD = 1000;
-
-	// Other plugin can turn on/off the FilterEvent
-	public static boolean shouldFireFilterEvent = false;
-
-	protected ImageIcon icon = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria.png"));
-	protected ImageIcon icon2 = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria-16.png"));
-
-	// Other plugin can get a handler to all the filters defined
-	public static Vector<CompositeFilter> getAllFilterVect() {
-		if (allFilterVect == null) {
-			allFilterVect = new Vector<CompositeFilter>();
-		}
-		return allFilterVect;
-	}
-	
 	/**
-	 * Creates a new FilterPlugin object.
+	 * Creates a new Plugin object.
 	 * 
 	 * @param icon
 	 *            DOCUMENT ME!
@@ -81,65 +53,17 @@ public class AddTabbedPanelToControlPanelPlugin extends CytoscapePlugin {
 	 */
 	public AddTabbedPanelToControlPanelPlugin() {
 
-		// Add a menuItem on "select" menu
-		FilterMenuItemAction menuAction = new FilterMenuItemAction(icon2, this);
-		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction(
-				(CytoscapeAction) menuAction);
+		CytoPanelImp ctrlPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST); 
+		MyPanel myPanel = new MyPanel(); 
+		cytoPanelWest.add("myPanelName", myPanel);
 
-		// Add an icon to tool-bar
-		FilterPluginToolBarAction toolbarAction = new FilterPluginToolBarAction(
-				icon, this);
-		Cytoscape.getDesktop().getCyMenus().addCytoscapeAction(
-				(CytoscapeAction) toolbarAction);
-
-		if (allFilterVect == null) {
-			allFilterVect = new Vector<CompositeFilter>();
+		int indexInCytoPanel = cytoPanelWest.indexOfComponent("myPanelName");
+		cytoPanelWest.setSelectedIndex(indexInCytoPanel);						
+	}
+	
+	class MyPanel extends JPanel {
+		public MyPanel() {
 		}
-		
-		restoreInitState();
-
-		// initialize the filterMainPanel and add it to the control panel
-		CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop()
-		.getCytoPanel(SwingConstants.WEST);
-
-		cytoPanelWest.add("Filters", new FilterMainPanel(allFilterVect));
 	}
 
-
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void onCytoscapeExit() {
-		// Save global filter to "filters.prop"
-		filterIO.saveGlobalPropFile(CytoscapeInit.getConfigFile("filters.props"));
-	}
-
-	public void restoreInitState() {
-		File global_filter_file = CytoscapeInit.getConfigFile("filters.props");
-
-		int[] loadCount = filterIO.getFilterVectFromPropFile(global_filter_file);
-		
-		System.out.println("FilterPlugin: load " + loadCount[1] + " of " + loadCount[0] + " filters from filters.prop");		
-	}
-
-	// override the following two methods to save state.
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param pStateFileList
-	 *            DOCUMENT ME!
-	 */
-	public void restoreSessionState(List<File> pStateFileList) {
-		filterIO.restoreSessionState(pStateFileList);	
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @param pFileList
-	 *            DOCUMENT ME!
-	 */
-	public void saveSessionStateFiles(List<File> pFileList) {
-		filterIO.saveSessionStateFiles(pFileList);
-	}
 }
