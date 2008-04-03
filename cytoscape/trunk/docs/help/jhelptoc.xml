@@ -4,11 +4,11 @@
   PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 <toc version="1.0">
    <tocitem target="d0e1" text="Cytoscape User Manual">
-      <tocitem target="Cytoscape 2.5.0 User Manual" text="Cytoscape 2.5.0 User Manual"/>
+      <tocitem target="Cytoscape 2.6 User Manual" text="Cytoscape 2.6 User Manual"/>
       <tocitem target="Introduction" text="Introduction">
          <tocitem target="Development" text="Development"/>
          <tocitem target="License" text="License"/>
-         <tocitem target="What&#8217;s New in 2.5" text="What&#8217;s New in 2.5"/>
+         <tocitem target="What&#8217;s New in 2.6" text="What&#8217;s New in 2.6"/>
       </tocitem>
       <tocitem target="Launching Cytoscape" text="Launching Cytoscape">
          <tocitem target="System requirements" text="System requirements"/>
@@ -16,7 +16,10 @@
             <tocitem target="Install Java" text="Install Java"/>
             <tocitem target="Install Cytoscape" text="Install Cytoscape"/>
             <tocitem target="Launch the application" text="Launch the application">
-               <tocitem target="Note on Memory Consumption" text="Note on Memory Consumption"/>
+               <tocitem target="Note on Memory Consumption" text="Note on Memory Consumption">
+                  <tocitem target="Overall Memory Size for Cytoscape" text="Overall Memory Size for Cytoscape"/>
+                  <tocitem target="Stack Size" text="Stack Size"/>
+               </tocitem>
             </tocitem>
             <tocitem target="Note on Directory Location" text="Note on Directory Location"/>
          </tocitem>
@@ -31,7 +34,9 @@
             <tocitem target="Plugins" text="Plugins"/>
             <tocitem target="Help" text="Help"/>
          </tocitem>
-         <tocitem target="Network Management" text="Network Management"/>
+         <tocitem target="Network Management" text="Network Management">
+            <tocitem target="Arrange Network Windows" text="Arrange Network Windows"/>
+         </tocitem>
          <tocitem target="The Network Overview Window" text="The Network Overview Window"/>
       </tocitem>
       <tocitem target="Command Line Arguments" text="Command Line Arguments"/>
@@ -49,10 +54,13 @@
          </tocitem>
          <tocitem target="Import Free-Format Table Files" text="Import Free-Format Table Files">
             <tocitem target="Supported Files" text="Supported Files"/>
-            <tocitem target="Basic Operations" text="Basic Operations"/>
+            <tocitem target="Basic Operations" text="Basic Operations">
+               <tocitem target="Import List of Nodes Without Edges" text="Import List of Nodes Without Edges"/>
+            </tocitem>
             <tocitem target="Advanced Options" text="Advanced Options"/>
             <tocitem target="Modify Attribute Name/Type" text="Modify Attribute Name/Type"/>
          </tocitem>
+         <tocitem target="Import Networks from Web Services" text="Import Networks from Web Services"/>
          <tocitem target="Edit a New Network" text="Edit a New Network"/>
       </tocitem>
       <tocitem target="Supported Network File Formats" text="Supported Network File Formats">
@@ -79,7 +87,9 @@
                <tocitem target="Aliases" text="Aliases"/>
                <tocitem target="Text File Import Options" text="Text File Import Options"/>
             </tocitem>
-            <tocitem target="Attribute Browser" text="Attribute Browser"/>
+            <tocitem target="Attribute Browser" text="Attribute Browser">
+               <tocitem target="Attribute Batch Editor" text="Attribute Batch Editor"/>
+            </tocitem>
          </tocitem>
       </tocitem>
       <tocitem target="Loading Gene Expression (Attribute Matrix) Data" text="Loading Gene Expression (Attribute Matrix) Data">
@@ -87,6 +97,26 @@
          <tocitem target="General Procedure" text="General Procedure"/>
          <tocitem target="Worked Example" text="Worked Example"/>
          <tocitem target="Detailed file format (Advanced users)" text="Detailed file format (Advanced users)"/>
+      </tocitem>
+      <tocitem target="Importing Networks and Attributes from External Databases" text="Importing Networks and Attributes from External Databases">
+         <tocitem target="Web Service Client Manager" text="Web Service Client Manager">
+            <tocitem target="What is a Web Service?" text="What is a Web Service?"/>
+         </tocitem>
+         <tocitem target="Getting Started" text="Getting Started"/>
+         <tocitem target="Example #1:  Retrieving Protein-Protein Interaction Networks from IntAct" text="Example #1:  Retrieving Protein-Protein Interaction Networks from IntAct"/>
+         <tocitem target="Example #2:  Retrieving Protein-Protein Interaction Networks from NCBI Entrez Gene" text="Example #2:  Retrieving Protein-Protein Interaction Networks from NCBI Entrez Gene"/>
+         <tocitem target="Example #3:  Retrieving Pathways and Networks from Pathway Commons" text="Example #3:  Retrieving Pathways and Networks from Pathway Commons">
+            <tocitem target="Downloading Pathways and Interaction Networks" text="Downloading Pathways and Interaction Networks"/>
+            <tocitem target="Pathway Commons Options" text="Pathway Commons Options"/>
+         </tocitem>
+         <tocitem target="Future Directions" text="Future Directions"/>
+         <tocitem target="Import Attributes from External Database" text="Import Attributes from External Database">
+            <tocitem target="Example 1: Import Additional ID Sets and Annotations from BioMart" text="Example 1: Import Additional ID Sets and Annotations from BioMart"/>
+            <tocitem target="Example 2: Import Annotations from NCBI Entrez Gene Database" text="Example 2: Import Annotations from NCBI Entrez Gene Database"/>
+         </tocitem>
+         <tocitem target="Use Multiple Services in a Workflow" text="Use Multiple Services in a Workflow">
+            <tocitem target="Example: Import and Annotate Networks" text="Example: Import and Annotate Networks"/>
+         </tocitem>
       </tocitem>
       <tocitem target="Navigation and Layout" text="Navigation and Layout">
          <tocitem target="Basic Network Navigation" text="Basic Network Navigation">
@@ -98,12 +128,21 @@
             <tocitem target="Context" text="Context"/>
          </tocitem>
          <tocitem target="Automatic Layout Algorithms" text="Automatic Layout Algorithms">
-            <tocitem target="Cytoscape Spring-Embedded Layout" text="Cytoscape Spring-Embedded Layout"/>
-            <tocitem target="yFiles Circular Layout" text="yFiles Circular Layout"/>
-            <tocitem target="yFiles Hierarchical Layout" text="yFiles Hierarchical Layout"/>
-            <tocitem target="yFiles Organic Layout" text="yFiles Organic Layout"/>
+            <tocitem target="yFiles Layouts" text="yFiles Layouts">
+               <tocitem target="yFiles Circular Layout" text="yFiles Circular Layout"/>
+               <tocitem target="yFiles Hierarchical Layout" text="yFiles Hierarchical Layout"/>
+               <tocitem target="yFiles Organic Layout" text="yFiles Organic Layout"/>
+            </tocitem>
+            <tocitem target="Cytoscape Layouts" text="Cytoscape Layouts">
+               <tocitem target="Grid Layout" text="Grid Layout"/>
+               <tocitem target="Force Directed Layout" text="Force Directed Layout"/>
+               <tocitem target="Spring-Embedded Layout" text="Spring-Embedded Layout"/>
+               <tocitem target="Attribute Circle Layout" text="Attribute Circle Layout"/>
+               <tocitem target="Group Attributes Layout" text="Group Attributes Layout"/>
+            </tocitem>
+            <tocitem target="JGraph Layouts" text="JGraph Layouts"/>
+            <tocitem target="Layout Parameters" text="Layout Parameters"/>
          </tocitem>
-         <tocitem target="Layout Parameters" text="Layout Parameters"/>
          <tocitem target="Manual Layout" text="Manual Layout">
             <tocitem target="Rotate" text="Rotate"/>
             <tocitem target="Scale" text="Scale"/>
@@ -149,10 +188,7 @@
             <tocitem target="Dynamic Filtering via Quick Find" text="Dynamic Filtering via Quick Find"/>
          </tocitem>
          <tocitem target="Filters" text="Filters"/>
-         <tocitem target="Using New Filters" text="Using New Filters">
-            <tocitem target="Advanced Options" text="Advanced Options"/>
-            <tocitem target="Modifying Filters" text="Modifying Filters"/>
-         </tocitem>
+         <tocitem target="Using New Filters" text="Using New Filters"/>
          <tocitem target="Using Old Filters" text="Using Old Filters">
             <tocitem target="Creating Filters" text="Creating Filters"/>
             <tocitem target="String Filter" text="String Filter"/>
@@ -164,10 +200,14 @@
          </tocitem>
          <tocitem target="The Select Menu" text="The Select Menu"/>
       </tocitem>
-      <tocitem target="Editing Networks" text="Editing Networks"/>
+      <tocitem target="Editing Networks" text="Editing Networks">
+         <tocitem target="Add Interactions  (SIF Style)" text="Add Interactions  (SIF Style)"/>
+      </tocitem>
       <tocitem target="Plugins and the Plugin Manager" text="Plugins and the Plugin Manager">
          <tocitem target="The Plugin Manager" text="The Plugin Manager"/>
-         <tocitem target="Get New Plugins" text="Get New Plugins"/>
+         <tocitem target="Get New Plugins" text="Get New Plugins">
+            <tocitem target="Themes" text="Themes"/>
+         </tocitem>
          <tocitem target="Delete Existing Plugins" text="Delete Existing Plugins"/>
          <tocitem target="Update Existing Plugins" text="Update Existing Plugins"/>
          <tocitem target="Download Plugins from a Custom Site" text="Download Plugins from a Custom Site"/>
@@ -179,6 +219,7 @@
       <tocitem target="Rendering Engine" text="Rendering Engine">
          <tocitem target="What is Level of Detail (LOD)?" text="What is Level of Detail (LOD)?">
             <tocitem target="Parameters for Controlling LOD" text="Parameters for Controlling LOD"/>
+            <tocitem target="Force to Display Detail" text="Force to Display Detail"/>
          </tocitem>
       </tocitem>
       <tocitem target="Annotation" text="Annotation">
@@ -189,6 +230,7 @@
             <tocitem target="Gene Association File" text="Gene Association File"/>
          </tocitem>
          <tocitem target="Node Name Mapping" text="Node Name Mapping">
+            <tocitem target="Import New ID Sets from BioMart" text="Import New ID Sets from BioMart"/>
             <tocitem target="Import Network and Name Mapping Files" text="Import Network and Name Mapping Files"/>
          </tocitem>
          <tocitem target="Import Ontology and Annotation" text="Import Ontology and Annotation">
@@ -204,6 +246,7 @@
       </tocitem>
       <tocitem target="Linkout" text="Linkout">
          <tocitem target="Adding or Removing Links" text="Adding or Removing Links"/>
+         <tocitem target="Use LinkOut from Attribute Browser" text="Use LinkOut from Attribute Browser"/>
       </tocitem>
       <tocitem target="Acknowledgements" text="Acknowledgements"/>
       <tocitem target="Appendix A: Old Annotation Server Format" text="Appendix A: Old Annotation Server Format">
