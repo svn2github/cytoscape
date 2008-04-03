@@ -32,11 +32,13 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.tutorial;
+package cytoscape.tutorial.addTabbedPanelToControlPanel;
 
+import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import javax.swing.SwingConstants;
+import javax.swing.JPanel;
 
 /**
  * 
@@ -55,10 +57,10 @@ public class AddTabbedPanelToControlPanelPlugin extends CytoscapePlugin {
 
 		CytoPanelImp ctrlPanel = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST); 
 		MyPanel myPanel = new MyPanel(); 
-		cytoPanelWest.add("myPanelName", myPanel);
+		ctrlPanel.add("myPanelName", myPanel);
 
-		int indexInCytoPanel = cytoPanelWest.indexOfComponent("myPanelName");
-		cytoPanelWest.setSelectedIndex(indexInCytoPanel);						
+		int indexInCytoPanel = ctrlPanel.indexOfComponent("myPanelName");
+		ctrlPanel.setSelectedIndex(indexInCytoPanel);						
 	}
 	
 	class MyPanel extends JPanel {
