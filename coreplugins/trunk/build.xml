@@ -19,6 +19,7 @@
 		<ant dir="PSI-MI" />
 		<ant dir="SBMLReader" />
 		<ant dir="cPath" />
+		<ant dir="cPath2" />
 		<ant dir="TableImport" />
 		<ant dir="linkout" />
 		<ant dir="filters" />
@@ -35,6 +36,7 @@
 		<copy todir="${build.dir}" file="PSI-MI/build/jars/psi_mi.jar" />
 		<copy todir="${build.dir}" file="SBMLReader/SBMLReader.jar" />
 		<copy todir="${build.dir}" file="cPath/plugins/cPath.jar" />
+		<copy todir="${build.dir}" file="cPath2/build/jars/cPath2.jar" />
 		<copy todir="${build.dir}" file="TableImport/TableImport.jar" />
 		<copy todir="${build.dir}" file="linkout/linkout.jar" />
 		<copy todir="${build.dir}" file="filters/plugins/filters.jar" />
@@ -53,6 +55,7 @@
 		<ant dir="PSI-MI" target="clean" />
 		<ant dir="SBMLReader" target="clean" />
 		<ant dir="cPath" target="clean" />
+		<ant dir="cPath2" target="clean" />
 		<ant dir="TableImport" target="clean" />
 		<ant dir="linkout" target="clean" />
 		<ant dir="filters" target="clean" />
