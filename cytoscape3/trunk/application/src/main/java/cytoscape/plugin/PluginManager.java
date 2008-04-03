@@ -758,6 +758,7 @@ public class PluginManager {
 			System.out.println("");
 			System.out.println("attempting to load plugin url: ");
 			System.out.println(urls[i]);
+			try {
 
 			JarURLConnection jc = (JarURLConnection) urls[i].openConnection();
 			// Ensure we are reading the real content from urls[i],
@@ -824,6 +825,11 @@ public class PluginManager {
 			if (totalPlugins == 0) {
 				System.out
 						.println("No plugin found in specified jar - assuming it's a library.");
+			}
+
+			} catch (Throwable thr) {
+				thr.printStackTrace();
+				System.out.println("Caught throwable, attempting to continue...");
 			}
 		}
 		System.out.println("");

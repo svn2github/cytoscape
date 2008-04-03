@@ -1,0 +1,28 @@
+
+bin
+---
+
+Contains the felix jar file which includes a Main class.  This class loads 
+whatever bundles are specified in the config.properties file in the conf
+dir.  The felix jar also contains all OSGi interfaces and implementations.
+
+
+conf
+----
+
+Contains the config.properties file that determines which bundles to load
+and specifies other things like the cache directory.
+
+
+bundle
+------
+
+Contains the bundles to be loaded.
+
+
+plugins
+-------
+
+Contains all old-school (i.e. not bundled) Cytoscape plugins.
+
+

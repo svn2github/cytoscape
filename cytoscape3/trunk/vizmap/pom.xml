@@ -60,8 +60,8 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>org.cytoscape.vizmap,org.cytoscape.vizmap.calculators,org.cytoscape.vizmap.mappings,org.cytoscape.vizmap.icon</Export-Package>
-            <Private-Package>org.cytoscape.vizmap.parsers,org.cytoscape.vizmap.properties,org.cytoscape.vizmap.mappings.discrete,org.cytoscape.vizmap.mappings.continuous</Private-Package>
+            <Export-Package>org.cytoscape.vizmap,org.cytoscape.vizmap.calculators,org.cytoscape.vizmap.mappings,org.cytoscape.vizmap.icon,org.cytoscape.vizmap.mappings.discrete,org.cytoscape.vizmap.mappings.continuous</Export-Package>
+            <Private-Package>org.cytoscape.vizmap.parsers,org.cytoscape.vizmap.properties</Private-Package>
           </instructions>
         </configuration>
       </plugin>

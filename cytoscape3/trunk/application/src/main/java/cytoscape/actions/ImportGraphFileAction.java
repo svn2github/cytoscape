@@ -152,12 +152,13 @@ public class ImportGraphFileAction extends CytoscapeAction {
 
 		try {
 			fd = new ImportNetworkDialog(Cytoscape.getDesktop(), true);
-		} catch (JAXBException e1) {
-			// TODO Auto-generated catch block
+		} catch (Exception e1) {
+			System.out.println("start dialog error");
 			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			System.out.println("end dialog error");
+			JOptionPane.showMessageDialog(fd, "Exception: " + e1.getMessage(), "ERROR",
+			 	                             JOptionPane.INFORMATION_MESSAGE);
+			return;
 		}
 
 		fd.pack();
