@@ -44,7 +44,7 @@ public class NodeInteractionFilterTest extends FilterTest {
 		nodeInteractionFilter.setPassFilter(testCmpFilter);
 		nodeInteractionFilter.setName("myNodeInteractionFilter");
 		nodeInteractionFilter.setNetwork(cyNetwork);
-		nodeInteractionFilter.setSorceChecked(true);
+		nodeInteractionFilter.setSourceChecked(true);
 		nodeInteractionFilter.setTargetChecked(false);
 		
 		nodeInteractionFilter.apply();
@@ -64,7 +64,7 @@ public class NodeInteractionFilterTest extends FilterTest {
 		nodeInteractionFilter.setPassFilter(testCmpFilter);
 		nodeInteractionFilter.setName("myNodeInteractionFilter");
 		nodeInteractionFilter.setNetwork(cyNetwork);
-		nodeInteractionFilter.setSorceChecked(false);
+		nodeInteractionFilter.setSourceChecked(false);
 		nodeInteractionFilter.setTargetChecked(true);
 		
 		nodeInteractionFilter.apply();
@@ -85,7 +85,7 @@ public class NodeInteractionFilterTest extends FilterTest {
 		nodeInteractionFilter.setPassFilter(testCmpFilter);
 		nodeInteractionFilter.setName("myNodeInteractionFilter");
 		nodeInteractionFilter.setNetwork(cyNetwork);
-		nodeInteractionFilter.setSorceChecked(false);
+		nodeInteractionFilter.setSourceChecked(false);
 		nodeInteractionFilter.setTargetChecked(true);
 		nodeInteractionFilter.setNegation(true);
 		
@@ -108,7 +108,7 @@ public class NodeInteractionFilterTest extends FilterTest {
 		nodeInteractionFilter.setPassFilter(testCmpFilter);
 		nodeInteractionFilter.setName("myNodeInteractionFilter");
 		nodeInteractionFilter.setNetwork(cyNetwork);
-		nodeInteractionFilter.setSorceChecked(true);
+		nodeInteractionFilter.setSourceChecked(true);
 		nodeInteractionFilter.setTargetChecked(true);
 		
 		nodeInteractionFilter.apply();
@@ -130,7 +130,7 @@ public class NodeInteractionFilterTest extends FilterTest {
 		nodeInteractionFilter.setPassFilter(testCmpFilter);
 		nodeInteractionFilter.setName("myNodeInteractionFilter");
 		nodeInteractionFilter.setNetwork(cyNetwork);
-		nodeInteractionFilter.setSorceChecked(false);
+		nodeInteractionFilter.setSourceChecked(false);
 		nodeInteractionFilter.setTargetChecked(true);
 		
 		nodeInteractionFilter.apply();

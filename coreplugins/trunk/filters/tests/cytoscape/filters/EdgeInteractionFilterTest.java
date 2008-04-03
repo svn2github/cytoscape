@@ -44,7 +44,7 @@ public class EdgeInteractionFilterTest extends FilterTest {
 		edgeInteractionFilter.setPassFilter(testCmpFilter);
 		edgeInteractionFilter.setName("myEdgeInteractionFilter");
 		edgeInteractionFilter.setNetwork(cyNetwork);
-		edgeInteractionFilter.setSorceChecked(true);
+		edgeInteractionFilter.setSourceChecked(true);
 		edgeInteractionFilter.setTargetChecked(false);
 		
 		edgeInteractionFilter.apply();
@@ -66,7 +66,7 @@ public class EdgeInteractionFilterTest extends FilterTest {
 		edgeInteractionFilter.setPassFilter(testCmpFilter);
 		edgeInteractionFilter.setName("myEdgeInteractionFilter");
 		edgeInteractionFilter.setNetwork(cyNetwork);
-		edgeInteractionFilter.setSorceChecked(false);
+		edgeInteractionFilter.setSourceChecked(false);
 		edgeInteractionFilter.setTargetChecked(true);
 		
 		edgeInteractionFilter.apply();
@@ -86,7 +86,7 @@ public class EdgeInteractionFilterTest extends FilterTest {
 		edgeInteractionFilter.setPassFilter(testCmpFilter);
 		edgeInteractionFilter.setName("myEdgeInteractionFilter");
 		edgeInteractionFilter.setNetwork(cyNetwork);
-		edgeInteractionFilter.setSorceChecked(true);
+		edgeInteractionFilter.setSourceChecked(true);
 		edgeInteractionFilter.setTargetChecked(true);
 		
 		edgeInteractionFilter.apply();
@@ -109,7 +109,7 @@ public class EdgeInteractionFilterTest extends FilterTest {
 		edgeInteractionFilter.setPassFilter(testCmpFilter);
 		edgeInteractionFilter.setName("myEdgeInteractionFilter");
 		edgeInteractionFilter.setNetwork(cyNetwork);
-		edgeInteractionFilter.setSorceChecked(false);
+		edgeInteractionFilter.setSourceChecked(false);
 		edgeInteractionFilter.setTargetChecked(true);
 		edgeInteractionFilter.setNegation(true);
 		
@@ -133,7 +133,7 @@ public class EdgeInteractionFilterTest extends FilterTest {
 		edgeInteractionFilter.setPassFilter(testCmpFilter);
 		edgeInteractionFilter.setName("myEdgeInteractionFilter");
 		edgeInteractionFilter.setNetwork(cyNetwork);
-		edgeInteractionFilter.setSorceChecked(false);
+		edgeInteractionFilter.setSourceChecked(false);
 		edgeInteractionFilter.setTargetChecked(true);
 		
 		edgeInteractionFilter.apply();
