@@ -3,6 +3,7 @@
  */
 package cytoscape.plugin;
 
+import cytoscape.plugin.DownloadableInfo;
 import junit.framework.TestCase;
 
 /**
@@ -206,6 +207,12 @@ public class DownloadableInfoTest extends TestCase {
 		assertFalse(di.equals(di3));
 	}
 
+	public void testEqualsDifferentObjs() {
+		di = new InfoObj("1234");
+		PluginInfo pi = new PluginInfo("1234");
+		assertFalse(di.equals(pi));
+	}
+	
 
 	// in the absence of an id the object version and downloadable url alone are used to determine equality
 	public void testEqualsNoId() {
