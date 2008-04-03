@@ -68,8 +68,8 @@ public abstract class DownloadableInfo {
 
 	private boolean licenseRequired = false;
 
-	private Set<String> compatibleCyVersions; 
-	
+	private Set<String> compatibleCyVersions;
+
 	private DownloadableInfo parentObj = null;
 
 	public DownloadableInfo() {
@@ -88,7 +88,7 @@ public abstract class DownloadableInfo {
 	}
 
 	/* --- SET --- */
-	
+
 	/**
 	 * Sets the license information for the plugin. Not required.
 	 * 
@@ -113,8 +113,7 @@ public abstract class DownloadableInfo {
 		license = new License(licenseText);
 		licenseRequired = alwaysRequired;
 	}
-	
-	
+
 	/**
 	 * @param Category
 	 *            Sets the category of the downloadable object.
@@ -166,13 +165,14 @@ public abstract class DownloadableInfo {
 	}
 
 	/**
-	 * Contains a list of all the Cytoscape versions this object
-	 * is compatible with.
+	 * Contains a list of all the Cytoscape versions this object is compatible
+	 * with.
 	 * 
 	 * @param cyVersion
 	 * @throws NumberFormatException
 	 */
-	public void addCytoscapeVersion(String cyVersion) throws NumberFormatException {	
+	public void addCytoscapeVersion(String cyVersion)
+			throws NumberFormatException {
 		if (versionOk(cyVersion, false)) {
 			compatibleCyVersions.add(cyVersion);
 		} else {
@@ -229,7 +229,7 @@ public abstract class DownloadableInfo {
 	}
 
 	public abstract Installable getInstallable();
-		
+
 	/**
 	 * Return the downloadable type of this object.
 	 */
@@ -291,10 +291,10 @@ public abstract class DownloadableInfo {
 	 */
 	public String getCytoscapeVersion() {
 		String CurrentVersion = null;
-		for (String v: this.compatibleCyVersions) {
+		for (String v : this.compatibleCyVersions) {
 			if (CurrentVersion != null)
 				CurrentVersion = compareCyVersions(v, CurrentVersion);
-			else 
+			else
 				CurrentVersion = v;
 		}
 		return CurrentVersion;
@@ -306,11 +306,11 @@ public abstract class DownloadableInfo {
 	public java.util.List<String> getCytoscapeVersions() {
 		return new java.util.ArrayList<String>(this.compatibleCyVersions);
 	}
-	
+
 	public boolean containsVersion(String cyVersion) {
 		return compatibleCyVersions.contains(cyVersion);
 	}
-	
+
 	/**
 	 * @return Release date for this object.
 	 */
@@ -337,10 +337,11 @@ public abstract class DownloadableInfo {
 		String[] NewVersion = New.getObjectVersion().split(versionSplit);
 
 		// make sure it's the same object first
-		if ( !(this.getID().equals(New.getID()) && this.getDownloadableURL().equals(New.getDownloadableURL())) ) {
+		if (!(this.getID().equals(New.getID()) && this.getDownloadableURL()
+				.equals(New.getDownloadableURL()))) {
 			return false;
 		}
-		
+
 		int CurrentMajor = Integer.valueOf(CurrentVersion[0]).intValue();
 		int NewMajor = Integer.valueOf(NewVersion[0]).intValue();
 
@@ -372,56 +373,57 @@ public abstract class DownloadableInfo {
 		return true;
 	}
 
-	
 	// careful, this overwrites the Object.equals method
 	/**
-	 * Compare the two info objects.  If the ID, downloadable url and object version
-	 * are the same they are considered to be the same object.
+	 * Compare the two info objects. If the ID, downloadable url and object
+	 * version are the same they are considered to be the same object.
 	 */
 	public boolean equals(Object Obj) {
 		DownloadableInfo obj = (DownloadableInfo) Obj;
 
-		if ( (this.getID() != null && obj.getID() != null) && this.getType().equals(obj.getType()) ) {
-			if (this.getID().equals(obj.getID()) &&
-				this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
-				this.getObjectVersion().equals(obj.getObjectVersion()))
+		if ( this.getType().equals(obj.getType()) ) {
+			if ( (this.getID() != null && obj.getID() != null) ) {
+				if (this.getID().equals(obj.getID()) &&
+					this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
+					this.getObjectVersion().equals(obj.getObjectVersion()))
+					return true;
+			} else if (this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
+					   this.getObjectVersion().equals(obj.getObjectVersion())) {
+				// should I do this?? Without an id there is no other good way to
+				// tell I suppose
 				return true;
-		} else if (this.getDownloadableURL().equals(obj.getDownloadableURL()) &&
-				   this.getObjectVersion().equals(obj.getObjectVersion())) {
-			// should I do this?? Without an id there is no other good way to tell I suppose
-			return true;
+			}
 		}
-			
 		return false;
 	}
 
 	/**
-	 * Compares the ID and download URL of the two objects.  If they are the same
+	 * Compares the ID and download URL of the two objects. If they are the same
 	 * the objects are considered to be equal regardless of version.
+	 * 
 	 * @param Obj
 	 * @return
 	 */
 	public boolean equalsDifferentObjectVersion(Object Obj) {
 		DownloadableInfo obj = (DownloadableInfo) Obj;
-		if (this.getID().equals(obj.getID()) &&
-			this.getDownloadableURL().equals(obj.getDownloadableURL()))
+		if (this.getID().equals(obj.getID())
+				&& this.getType().equals(obj.getType())
+				&& this.getDownloadableURL().equals(obj.getDownloadableURL()))
 			return true;
 
 		return false;
 	}
-	
-	
+
 	/**
-	 * @return Returns String of downloadable name and version
-	 * 		ex. MyPlugin v.1.0
+	 * @return Returns String of downloadable name and version ex. MyPlugin
+	 *         v.1.0
 	 */
 	public String toString() {
 		return getName() + " v." + getObjectVersion();
 	}
-	
-	
+
 	public abstract String htmlOutput();
-	
+
 	// yea, it's ugly...styles taken from cytoscape website
 	protected String basicHtmlOutput() {
 		String Html = "<html><style type='text/css'>";
@@ -436,23 +438,27 @@ public abstract class DownloadableInfo {
 		Html += "<b>Version:</b>&nbsp;" + getObjectVersion() + "<p>";
 		Html += "<b>Category:</b>&nbsp;" + getCategory() + "<p>";
 		Html += "<b>Description:</b><br>" + getDescription();
-		
+
 		if (!isCytoscapeVersionCurrent()) {
-			Html += "<br><b>Verified with the following Cytoscape versions:</b> " + getCytoscapeVersions().toString() + "<br>";
-			Html += "<font color='red'><i>" + toString() + " is not verfied to work in the current version (" 
-				+ cytoscape.CytoscapeVersion.version + ") of Cytoscape.</i></font>";
+			Html += "<br><b>Verified with the following Cytoscape versions:</b> "
+					+ getCytoscapeVersions().toString() + "<br>";
+			Html += "<font color='red'><i>" + toString()
+					+ " is not verfied to work in the current version ("
+					+ cytoscape.CytoscapeVersion.version
+					+ ") of Cytoscape.</i></font>";
 		}
 		Html += "<p>";
 
 		if (getReleaseDate() != null && getReleaseDate().length() > 0) {
 			Html += "<b>Release Date:</b>&nbsp;" + getReleaseDate() + "<p>";
 		}
-		
+
 		return Html;
 	}
 
 	/**
 	 * Return the most recent of the two versions.
+	 * 
 	 * @param arg0
 	 * @param arg1
 	 * @return
@@ -460,31 +466,34 @@ public abstract class DownloadableInfo {
 	String compareCyVersions(String arg0, String arg1) {
 		String MostRecentVersion = null;
 		int max = 3;
-		
+
 		String[] SplitVersionA = arg0.split(versionSplit);
 		String[] SplitVersionB = arg1.split(versionSplit);
-		
-		for (int i=0; i<max; i++) {
+
+		for (int i = 0; i < max; i++) {
 			int a = 0;
 			int b = 0;
-			
-			if (i == (max-1)) {
-				System.out.println("A length: " + SplitVersionA.length + " B length: " + SplitVersionB.length);
-				a = (SplitVersionA.length == max)? Integer.valueOf(SplitVersionA[i]) : 0;
-				b = (SplitVersionB.length == max)? Integer.valueOf(SplitVersionB[i]) : 0;
+
+			if (i == (max - 1)) {
+				System.out.println("A length: " + SplitVersionA.length
+						+ " B length: " + SplitVersionB.length);
+				a = (SplitVersionA.length == max) ? Integer
+						.valueOf(SplitVersionA[i]) : 0;
+				b = (SplitVersionB.length == max) ? Integer
+						.valueOf(SplitVersionB[i]) : 0;
 			} else {
 				a = Integer.valueOf(SplitVersionA[i]);
 				b = Integer.valueOf(SplitVersionB[i]);
 			}
-		
+
 			if (a != b) {
-				MostRecentVersion = (a > b)? arg0: arg1;
+				MostRecentVersion = (a > b) ? arg0 : arg1;
 				break;
 			}
 		}
 		return MostRecentVersion;
 	}
-	
+
 	// this just checks the downloadable object version and the cytoscape
 	// version
 	boolean versionOk(String version, boolean downloadObj) {
@@ -566,5 +575,4 @@ public abstract class DownloadableInfo {
 
 	}
 
-	
 }
