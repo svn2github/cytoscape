@@ -605,23 +605,21 @@ public class PluginManager {
 		
 		List<DownloadableInfo> FlattenedList = this.flattenDownloadableList(CurrentAndInstalled);
 		
-		for (DownloadableInfo info : FlattenedList) {
-			System.out.println("*** compare " + Obj.toString() + " to " + info.toString());
+		for (DownloadableInfo currentlyInstalled : FlattenedList) {
 			DownloadableInfo CurrentlyInstalled = null;
-			if (info.getParent() != null) {
-				CurrentlyInstalled = info.getParent();
+			if (currentlyInstalled.getParent() != null) {
+				CurrentlyInstalled = currentlyInstalled.getParent();
 			} else {
-				CurrentlyInstalled = info;
+				CurrentlyInstalled = currentlyInstalled;
 			}
 				
-			 
-			if (Obj.equals(info) || Obj.equalsDifferentObjectVersion(info)) {
+			if (Obj.equals(currentlyInstalled) || Obj.equalsDifferentObjectVersion(currentlyInstalled)) {
 				throw new ManagerException(Obj.toString() + " cannot be installed, it is already loaded in: " + CurrentlyInstalled.toString());
 			}
 				
 			if (Obj.getType().equals(DownloadableType.THEME)) {
-				for (PluginInfo plugin: ((ThemeInfo) Obj).getPlugins()) {
-					if (plugin.equalsDifferentObjectVersion(info)) {
+				for (PluginInfo themePlugin: ((ThemeInfo) Obj).getPlugins()) {
+					if (themePlugin.equalsDifferentObjectVersion(currentlyInstalled)) {
 						throw new ManagerException(Obj.toString() + " cannot be installed a plugin contained within the theme is already present: " 
 								+ CurrentlyInstalled.toString());
 					}
