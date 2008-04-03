@@ -88,7 +88,7 @@
       <excludedScreenIds />
       <customScriptLines />
     </macosFolder>
-    <win32 name="Windows" id="11" mediaFileName="" installDir="Cytoscape_v%VERSION%" allLaunchers="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" customInstallBaseDir="" allowUserStartAfterFinish="false" launchExecutableId="" createUninstallIcon="true" overrideLicenseFile="false" licenseFile="" overridePreInformationFile="false" preInformationFile="" overridePostInformationFile="false" postInformationFile="" adminRequired="false" languageID="en" modeDesktopIcon="1" desktopLauncherId="" programGroup="Cytoscape" allowUserDisableStartMenuCreation="false" reboot="false" rebootUninstaller="false" modeQuickLaunchIon="1">
+    <win32 name="Windows" id="11" mediaFileName="" installDir="Cytoscape_v%VERSION%" allLaunchers="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" customInstallBaseDir="" allowUserStartAfterFinish="false" launchExecutableId="" createUninstallIcon="true" overrideLicenseFile="false" licenseFile="" overridePreInformationFile="false" preInformationFile="" overridePostInformationFile="false" postInformationFile="" adminRequired="false" languageID="en" modeDesktopIcon="1" desktopLauncherId="" programGroup="Cytoscape_v%VERSION%" allowUserDisableStartMenuCreation="false" reboot="false" rebootUninstaller="false" modeQuickLaunchIon="1">
       <selectedLaunchers>
         <launcher id="3" />
       </selectedLaunchers>
