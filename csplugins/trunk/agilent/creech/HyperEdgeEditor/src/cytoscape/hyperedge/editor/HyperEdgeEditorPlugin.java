@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Fri Mar 28 07:24:11 2008 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Apr 03 06:21:27 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Thu Apr 03 06:21:12 2008 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.62.
 * Fri Mar 28 07:24:04 2008 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.61.
 * Wed Dec 19 14:17:20 2007 (Michael L. Creech) creech@w235krbza760
@@ -121,7 +123,7 @@ import javax.swing.JPopupMenu;
  *
  */
 public class HyperEdgeEditorPlugin extends CytoscapePlugin {
-    private static final Double VERSION = 2.61;
+    private static final Double VERSION = 2.62;
 
     public HyperEdgeEditorPlugin() {
         initializeHyperEdgeEditor();
