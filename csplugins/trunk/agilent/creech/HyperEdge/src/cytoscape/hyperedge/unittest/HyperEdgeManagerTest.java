@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Tue Sep 20 06:09:08 2005
-* Modified:     Tue Nov 07 06:56:43 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Apr 03 11:00:38 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Thu Apr 03 10:59:38 2008 (Michael L. Creech) creech@w235krbza760
+*  Updated for saving/restoring networks, but still not working right.
+*  Must fix in the future.
 * Tue Nov 07 06:52:30 2006 (Michael L. Creech) creech@w235krbza760
 *  Changed use of Edge-->CyEdge.
 * Mon Nov 06 09:27:21 2006 (Michael L. Creech) creech@w235krbza760
@@ -54,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -62,8 +66,11 @@ import java.util.List;
  * @version 1.1
  */
 public class HyperEdgeManagerTest extends TestBase {
-    // private final String TEST1_LOC = "hyperedge-manager-test1.xml";
-    // private final String TEST2_LOC = "hyperedge-manager-test2.xml";
+    private final String TEST1_LOC = "hyperedge-manager-test1.xml";
+    private final String TEST2_LOC = "hyperedge-manager-test2.xml";
+    private final String NET6_NAME = "net6";
+    private final String NET7_NAME = "net7";
+    private PersistenceHelper _pHelper              = new PersistenceHelper();
     protected CyNode    B;
     protected CyNode    C;
     protected CyNode    D;
@@ -112,8 +119,8 @@ public class HyperEdgeManagerTest extends TestBase {
         C    = Cytoscape.getCyNode("C", true);
         D    = Cytoscape.getCyNode("D", true);
         E    = Cytoscape.getCyNode("E", true);
-        net6 = Cytoscape.createNetwork("net6");
-        net7 = Cytoscape.createNetwork("net7");
+        net6 = Cytoscape.createNetwork(NET6_NAME);
+        net7 = Cytoscape.createNetwork(NET7_NAME);
         he2  = factory.createHyperEdge(A,
                                        EdgeTypeMap.SUBSTRATE,
                                        B,
@@ -178,8 +185,8 @@ public class HyperEdgeManagerTest extends TestBase {
 
         if (!_saved) {
             // MLC 08/15/06 FIX!!:
-            // saveTestHelper(TEST1_LOC, net6);
-            // saveTestHelper(TEST2_LOC, net7);
+             _pHelper.saveTestHelper(TEST1_LOC, net6);
+             _pHelper.saveTestHelper(TEST2_LOC, net7);
             // MLC 08/15/06 END PATCH
             _saved = true;
         }
@@ -188,7 +195,14 @@ public class HyperEdgeManagerTest extends TestBase {
     protected void tearDown1(boolean fire_events) {
         super.tearDown1(fire_events);
         // remove Cytoscape networks:
-        Cytoscape.destroyNetwork((CyNetwork) net7);
+	// MLC 04/03/08 BEGIN:
+        Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
+
+        for (CyNetwork net : nets) {
+            Cytoscape.destroyNetwork(net);
+        }
+        // Cytoscape.destroyNetwork((CyNetwork) net7);
+	// MLC 04/03/08 END.
     }
 
     // When we reload and reset the sample objects, reconnect the
@@ -258,6 +272,26 @@ public class HyperEdgeManagerTest extends TestBase {
         Assert.assertNotNull(C);
         Assert.assertNotNull(D);
         Assert.assertNotNull(E);
+
+	// MLC 04/03/08 BEGIN:
+        // Now connect up networks:
+        Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
+        HEUtils.log("nets size = " + nets.size());
+
+        for (CyNetwork net : nets) {
+            HEUtils.log("NET = " + net.getTitle());
+
+            if (NET6_NAME.equals(net.getTitle())) {
+                HEUtils.log(
+                    "reconnect Network with name = " + NET6_NAME);
+                net6 = net;
+            } else if (NET7_NAME.equals(net.getTitle())) {
+                HEUtils.log(
+                    "reconnect Network with name = " + NET7_NAME);
+                net7 = net;
+            }
+        }
+	// MLC 04/03/08 END.
     }
 
     public void testHyperEdgeManager() {
@@ -289,17 +323,20 @@ public class HyperEdgeManagerTest extends TestBase {
         test.runIt();
         tearDown1(false);
 
-        // MLC 08/15/06 PATCH FIX!!:
-        // net6 and net7 were destroyed, rebuild them:
-        //        net6 = Cytoscape.createNetwork("net6");
-        //        net7 = Cytoscape.createNetwork("net7");
-        // rerun the tests from the restored objects:
-        // restoreTestHelper(TEST1_LOC, net6);
-        //  restoreTestHelper(TEST2_LOC, net7);
-        //        reconnectInstanceVariables();
-        //        test.extraSetup();
-        //        test.runIt();
-        // MLC 08/15/06 END PATCH
+	// MLC 04/03/08 BEGIN:
+	// TODO: Restoring the networks and running the tests isn't working.
+	//       This may be because of a bug in HyperEdge or a bug in the
+	//       testing. Need to fix in the future:
+	//        manager.reset(false);
+	//        // net6 and net7 were destroyed, rebuild them:
+	//         _pHelper.restoreTestHelper(TEST1_LOC);
+	//	 _pHelper.restoreTestHelper(TEST2_LOC);
+	//	 reconnectInstanceVariables();
+	//	 test.extraSetup();
+	//	 // rerun the tests from the restored objects:	
+	//	 test.runIt();
+	//	 tearDown1(false);
+        // MLC 04/03/08 END.
     }
 
     // ensure all of he's contents are in GP:
@@ -322,10 +359,10 @@ public class HyperEdgeManagerTest extends TestBase {
             }
         }
 
-        Iterator node_it = he.getNodes(null);
+        Iterator<CyNode> node_it = he.getNodes(null);
 
         while (node_it.hasNext()) {
-            node = (CyNode) node_it.next();
+            node = node_it.next();
 
             if (!gp.containsNode(node)) {
                 HEUtils.log(

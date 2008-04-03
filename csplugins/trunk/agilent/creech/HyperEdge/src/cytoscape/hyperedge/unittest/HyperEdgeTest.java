@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Wed Sep 21 09:14:34 2005
-* Modified:     Tue Nov 21 07:00:05 2006 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Apr 03 11:01:50 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Thu Apr 03 11:01:05 2008 (Michael L. Creech) creech@w235krbza760
+*  Removed various hacks around old cytoscape bugs and updated to test save/restore.
 * Tue Nov 07 06:46:29 2006 (Michael L. Creech) creech@w235krbza760
 *  Changed use of Edge-->CyEdge.
 * Mon Nov 06 09:25:45 2006 (Michael L. Creech) creech@w235krbza760
@@ -256,13 +258,6 @@ public class HyperEdgeTest extends TestBase {
         _pHelper.restoreTestHelper(SHARED_EDGE_NET2_LOC);
         reconnectInstanceVariables();
         performHyperEdgeTests(true);
-        // MLC DEBUG 11/13/06 BEGIN:
-        // reload and make sure objects still work:
-        //        _pHelper.restoreTestHelper(NET1_LOC);
-        //        _pHelper.restoreTestHelper(SHARED_EDGE_NET1_LOC);
-        //        _pHelper.restoreTestHelper(SHARED_EDGE_NET2_LOC);
-        //        performHyperEdgeTests(false);
-        // MLC DEBUG 11/13/06 END.
     }
 
     private void removeCyNetworks() {
@@ -332,9 +327,7 @@ public class HyperEdgeTest extends TestBase {
     private void performGetNumEdgesTests() {
         // TEST getNumEdges():
         Assert.assertTrue(he1.getNumEdges() == 3);
-
-        // DEBUG: Uncomment when session reader fixed:
-        // Assert.assertTrue(hd1.getNumEdges() == 3);
+	Assert.assertTrue(hd1.getNumEdges() == 3);
     }
 
     private void performGetNumNodesTests() {
@@ -365,8 +358,7 @@ public class HyperEdgeTest extends TestBase {
         Assert.assertFalse(
             he1.hasMultipleEdges(S) || he1.hasMultipleEdges(M) ||
             he1.hasMultipleEdges(P));
-        // DEBUG: Uncomment when session reader fixed:
-        // Assert.assertTrue(hd1.hasMultipleEdges(S));
+        Assert.assertTrue(hd1.hasMultipleEdges(S));
         Assert.assertFalse(hd1.hasMultipleEdges(M));
     }
 
@@ -445,11 +437,9 @@ public class HyperEdgeTest extends TestBase {
         Assert.assertTrue(
             test_list.contains(he1_sub) && test_list.contains(he1_med) &&
             test_list.contains(he1_prod));
-        // DEBUG: Uncomment when session reader fixed:
-        // test_list = testIterator(hd1.getEdges(null), 3);
-        // DEBUG: Uncomment when session reader fixed:
-        // Assert.assertTrue(test_list.contains(hd1_sub) &&
-        //    test_list.contains(hd1_med) && test_list.contains(hd1_imed));
+        test_list = testIterator(hd1.getEdges(null), 3);
+        Assert.assertTrue(test_list.contains(hd1_sub) &&
+			  test_list.contains(hd1_med) && test_list.contains(hd1_imed));
 
         // TEST getEdges():
         test_list = testIterator(he1.getEdges(null), 3);
@@ -457,17 +447,16 @@ public class HyperEdgeTest extends TestBase {
         test_list = testIterator(he1.getEdges(A), 0);
         test_list = testIterator(he1.getEdges(S), 1);
         Assert.assertTrue(test_list.contains(he1_sub));
+        // test_list = net.getEdge(adjacentEdges[j]);
+        // MLC 04/02/08:
         test_list = testIterator(he1.getEdges(M), 1);
         Assert.assertTrue(test_list.contains(he1_med));
         test_list = testIterator(he1.getEdges(P), 1);
         Assert.assertTrue(test_list.contains(he1_prod));
 
-        // DEBUG: Uncomment when session reader fixed:
-        //        test_list = testIterator(hd1.getEdges(S), 2);
-        // DEBUG: Uncomment when session reader fixed:
-        //        Assert.assertTrue(test_list.contains(hd1_sub));
-        // DEBUG: Uncomment when session reader fixed:
-        //        Assert.assertTrue(test_list.contains(hd1_imed));
+	test_list = testIterator(hd1.getEdges(S), 2);
+	Assert.assertTrue(test_list.contains(hd1_sub));
+	Assert.assertTrue(test_list.contains(hd1_imed));
     }
 
     private void performAddAndRemoveEdgeTests() {
@@ -1064,7 +1053,7 @@ public class HyperEdgeTest extends TestBase {
         Assert.assertFalse(net1.containsEdge(hd1_med));
         Assert.assertFalse(net1.containsEdge(hd1_sub));
         // TODO: FIX: Uncomment when Cytoscape session reader fixed:
-        // Assert.assertFalse(net1.containsEdge(hd1_imed));
+         Assert.assertFalse(net1.containsEdge(hd1_imed));
 
         // leave normal nodes and Connector nodes with regular edges
         // alone:

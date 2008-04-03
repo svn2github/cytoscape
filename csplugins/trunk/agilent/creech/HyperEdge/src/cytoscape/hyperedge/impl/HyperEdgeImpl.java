@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Wed Sep 14 13:05:17 2005
-* Modified:     Thu Jun 21 05:24:07 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Apr 02 19:41:37 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,13 @@
 *
 * Revisions:
 *
+* Wed Apr 02 19:41:20 2008 (Michael L. Creech) creech@w235krbza760
+*  Fixed bad bug where reading session or saved networks was not
+*  reconstructing all information needed to correctly represent
+*  HyperEdges (e.g., _net_to_hes_map). This would lead to HyperEdges
+*  not being correctly removed and then errors (e.g.,
+*  HEStructuralIntegrityException) occurring when reloading the same
+*  file.
 * Thu Jun 21 05:23:32 2007 (Michael L. Creech) creech@w235krbza760
 *  Changed use of CyAttributes.deleteAttribute()->HEUtils.deleteAttribute()
 *  due to Cytoscape bug.
@@ -239,7 +246,10 @@ public class HyperEdgeImpl implements HyperEdge {
         // MLC 08/27/06 BEGIN:
         // constructorSupport(net, false);
         _manager.registerHyperEdge(this);
+	// MLC 04/02/08 BEGIN:
         // startInCyNetwork(net);
+	startInCyNetwork (net);
+	// MLC 04/02/08 END.
         primSetState(LifeState.NORMAL);
         // MLC 08/27/06 END.
     }

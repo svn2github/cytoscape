@@ -1,10 +1,24 @@
 <HTML>
 <HEAD>
-<TITLE>HyperEdge Release Notes (version 2.59)</TITLE>
+<TITLE>HyperEdge Release Notes (version 2.60)</TITLE>
 </HEAD>
 <BODY>
 
-<H1>HyperEdge Release Notes (version 2.59)</H1>
+<H1>HyperEdge Release Notes (version 2.60)</H1>
+<OL>
+
+<LI>Fixed Mantis bug 1837--reading a session or saved network
+    was not reconstructing all information needed to correctly
+    represent HyperEdges (e.g., _net_to_hes_map).
+<P> This would lead to HyperEdges not being correctly removed and then
+  errors (e.g., HEStructuralIntegrityException) occurring when
+  reloading the same HyperEdges from a session or saved network file.
+<P><LI>Updated some test cases to better test save/restore of HyperEdges.
+</OL>
+
+<H1>Prior Notes</H1>
+
+<H2>HyperEdge Release Notes (version 2.59)</H2>
 Implementation changes only:
 <OL>
 <LI>Migrated ListenerList to LSIUtils com.agilent.labs.lsiutils.ListenerStore.
@@ -12,8 +26,6 @@ Implementation changes only:
 <P><LI>Updated HyperEdgeManagerImpl to use stronger typing thru generics.
 <P><LI>Updated to use new LSIUtils (v0.11).
 </OL>
-
-<H1>Prior Notes</H1>
 
 <H2>HyperEdge Release Notes (version 2.58)</H2>
 <OL>
@@ -431,7 +443,7 @@ HyperEdges along with your Cytoscape structures.
 <P>To compile, point at your cytoscape 2.2 libraries in your Eclipse project.
 
 <HR>
-<SMALL><EM>This page was last updated: 03/28/08</EM></SMALL>
+<SMALL><EM>This page was last updated: 04/02/08</EM></SMALL>
 
 </BODY>
 </HTML>

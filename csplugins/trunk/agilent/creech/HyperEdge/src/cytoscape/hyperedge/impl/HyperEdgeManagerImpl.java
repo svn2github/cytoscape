@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Sep 16 17:13:31 2005
-* Modified:     Fri Mar 28 07:25:22 2008 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Apr 02 19:44:41 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Apr 02 19:34:54 2008 (Michael L. Creech) creech@w235krbza760
+
 * Fri Mar 28 07:24:53 2008 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.59
 * Fri Mar 14 15:15:52 2008 (Michael L. Creech) creech@w235krbza760
@@ -162,10 +164,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // used for fine-grained synchronization:
     private final static Boolean          INTERSECTION_LOCK   = new Boolean(true);
     private static final HyperEdgeManager INSTANCE            = new HyperEdgeManagerImpl();
-    private static final Double           VERSION_NUMBER      = 2.59;
+    private static final Double           VERSION_NUMBER      = 2.60;
     private static final String           VERSION             = "HyperEdge Version " +
                                                                 VERSION_NUMBER +
-                                                                ", 28-Mar-08";
+                                                                ", 02-Apr-08";
     private static transient ListenerStore<NewObjectListener> _new_listener_store = new ListenerStoreImpl<NewObjectListener>();
 
     // Used for setting and reading _internalRemoval:
@@ -1053,7 +1055,6 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         //            _he_to_nets_map.remove(hedge);
         //        }
         MapUtils.removeCollectionValueFromMap(_net_to_hes_map, net, hedge);
-
         MapUtils.removeCollectionValuesFromMap(_net_to_edges_map,
                                                net,
                                                hedge.getEdges(null));
@@ -1114,8 +1115,8 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     private void addEdgeToCyNetwork(CyEdge edge, CyNetwork net) {
         // ASSUME: If edge is already in net, it will not be added again:
-        //        HEUtils.log("really adding edge " + edge.getIdentifier() + " to net " +
-        //            ((CyNetwork) net).getTitle());
+	//                HEUtils.log("really adding edge " + edge.getIdentifier() + " to net " +
+	//                            ((CyNetwork) net).getTitle());
         net.addEdge(edge);
         // net.restoreEdge(edge);
     }
@@ -1774,7 +1775,6 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         public void propertyChange(PropertyChangeEvent e) {
             String    network_name = (String) e.getNewValue();
             CyNetwork net = (CyNetwork) Cytoscape.getNetwork(network_name);
-            // MLC 01/15/07:
             // HEUtils.log("NETWORK CREATED " + network_name);
             net.addGraphPerspectiveChangeListener(gosUpdater);
         }
@@ -1786,8 +1786,8 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         public void propertyChange(PropertyChangeEvent e) {
             String    network_name = (String) e.getNewValue();
             CyNetwork net = (CyNetwork) Cytoscape.getNetwork(network_name);
-//          MLC 01/15/07:
-            // HEUtils.log("NETWORK DESTROYED " + network_name);
+
+	    // HEUtils.log("NETWORK DESTROYED " + network_name);
 
             // remove edges updater since our updates for
             // removing HyperEdges from net may trigger node and
@@ -1808,7 +1808,6 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             Collection<HyperEdge> hes = HEUtils.createCollection(heIt);
 
             for (HyperEdge he : hes) {
-		// MLC 01/15/07:
                 // HEUtils.log("removed " + HEUtils.toString(he));
                 he.removeFromNetwork(net);
             }
@@ -1851,7 +1850,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
         // Update HyperEdge structures to keep in sync with changes to their
         // underlying Cytoscape structures. For example, if an Edge is removed
-        // in Cytoscape, endure the edge is removed from the corresponding HyperEdges.
+        // in Cytoscape, ensure the edge is removed from the corresponding HyperEdges.
         // This is a complicated update mechanism. For details on its design, see
         // the Delayed Node Deletion solution in the deletion-issues.txt document.
         //
@@ -1931,7 +1930,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
                     }
 
                     // HEUtils.log("CONNECTOR NODE HIDDEN = " +
-                    //            HEUtils.toString(node));
+		    //             HEUtils.toString(node));
                     // // if any other objects are deleted during bookkeeping
                     // // remember them to avoid them in the future:
                     // net.addGraphPerspectiveChangeListener(deletedCatcher);
@@ -1980,7 +1979,6 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
                 // If edge is shared across two HyperEdges, the removal
                 // from one, will remove it from the other:
-		// MLC 01/15/07:
                 // HEUtils.log("Removing CyEdge " + edge.getIdentifier());
                 // // if any other objects are deleted during bookkeeping
                 // // remember them to avoid them in the future:
