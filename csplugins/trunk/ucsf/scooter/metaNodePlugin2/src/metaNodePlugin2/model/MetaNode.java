@@ -82,6 +82,8 @@ public class MetaNode {
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
 	public static final String Y_HINT_ATTR = "__metanodeHintY";
+	public static final String CHILDREN_ATTR = "NumChildren";
+	public static final String DESCENDENTS_ATTR = "NumDescendents";
 
 	// Instance variables
 	private CyGroup metaGroup = null;		// Keep handy copies of the CyGroup
@@ -103,6 +105,8 @@ public class MetaNode {
 	private CyAttributes nodeAttributes = null;
 	private CyNetworkView networkView = null;
 	private CyNetwork network = null;
+	private int nChildren = 0;
+	private int nDescendents = 0;
 
 	/*****************************************************************
 	 *                    Static methods                             *
@@ -246,6 +250,7 @@ public class MetaNode {
 		}
 		// Note that this node is hidden
 		hiddenNodes.put(groupNode, Boolean.TRUE);
+		updateAttributes();
 		if (DEBUG) System.out.println("... done\n\n");
 	}
 
@@ -353,6 +358,7 @@ public class MetaNode {
 		// Hide the node
 		hideNode(node);
 
+		updateAttributes();
 		updateDisplay();
 	}
 
@@ -417,6 +423,7 @@ public class MetaNode {
 			}
 		}
 
+		updateAttributes();
 		updateDisplay();
 	}
 
@@ -635,6 +642,10 @@ public class MetaNode {
 		}
 		newEdgeMap.get(newEdge).add(edge);
 		metaEdgeMap.put(partner,newEdge);
+	}
+
+	public int getDescendentCount() {
+		return nDescendents;
 	}
 
 	/**
@@ -997,9 +1008,7 @@ public class MetaNode {
 		List<CyGroup> groupList = node.getGroups();
 		if (groupList == null) return null;
 
-		Iterator<CyGroup>iter = groupList.iterator();
-		while (iter.hasNext()) {
-			CyGroup group = iter.next();
+		for (CyGroup group: groupList) {
 			if (metaMap.containsKey(group.getGroupNode())) {
 				MetaNode meta = metaMap.get(group.getGroupNode());
 				if (meta != this && meta.isCollapsed) return meta;
@@ -1029,6 +1038,29 @@ public class MetaNode {
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		vizmapper.applyAppearances();
 		networkView.updateView();
+	}
+
+	/**
+	 * Update our child counts and attributes
+	 */
+	private void updateAttributes() {
+		nChildren = metaGroup.getNodes().size();
+
+		nDescendents = nChildren;
+
+		for (CyNode node: metaGroup.getNodes()) {
+			if (metaMap.containsKey(node)) {
+				// This node is a metaNode
+				MetaNode mn = metaMap.get(node);
+				nDescendents += mn.getDescendentCount()-1;
+			}
+		}
+
+		nodeAttributes.setAttribute(groupNode.getIdentifier(), CHILDREN_ATTR,
+		                            new Integer(nChildren));
+		nodeAttributes.setAttribute(groupNode.getIdentifier(), DESCENDENTS_ATTR,
+		                            new Integer(nDescendents));
+		
 	}
 
 	/**

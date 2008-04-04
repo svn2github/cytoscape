@@ -44,6 +44,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.beans.*;
+import java.lang.reflect.Method;
 
 // giny imports
 import giny.view.NodeView;
@@ -108,6 +109,13 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 
 	private static CyGroupViewer groupViewer = null;
 
+	private static boolean registeredWithGroupPanel = false;
+
+	private Method updateMethod = null;
+	private CyGroupViewer namedSelectionViewer = null;
+
+	protected int descendents = 0;
+
 	/**
 	 * The main constructor
 	 */
@@ -134,6 +142,11 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		// Register with CyGroup
 		CyGroupManager.registerGroupViewer(this);
 		this.groupViewer = this; // this makes it easier to get at from inner classes
+
+		// See if we can get any help from the group panel.  We'll try this again
+		// later if we fail now.
+		registerWithGroupPanel();
+
 		System.out.println("metaNodePlugin2 "+VERSION+" initialized");
 	}
 
@@ -158,6 +171,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		if (MetaNode.getMetaNode(group) == null) {
 			MetaNode newNode = new MetaNode(group);
 		}
+		// Update the attributes of the group node
+		registerWithGroupPanel();
 	}
 
 	/**
@@ -184,6 +199,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				network.hideNode(group.getGroupNode());
 			}
 		}
+		registerWithGroupPanel();
 	}
 
 	/**
@@ -260,6 +276,35 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		return menu;
 	}
 
+	private void registerWithGroupPanel() {
+		if (registeredWithGroupPanel) {
+			try {
+				updateMethod.invoke(namedSelectionViewer);
+			} catch (Exception e) {
+				System.err.println(e);
+			}
+			return;
+		}
+
+		namedSelectionViewer = CyGroupManager.getGroupViewer("namedSelection");
+		if (namedSelectionViewer == null)
+			return;
+
+		if (namedSelectionViewer.getClass().getName().equals("namedSelection.NamedSelection")) {
+			// Get the addViewerToGroupPanel method
+
+			try {
+				updateMethod = namedSelectionViewer.getClass().getMethod("updateGroupPanel");
+				Method regMethod = namedSelectionViewer.getClass().getMethod("addViewerToGroupPanel", CyGroupViewer.class);
+				regMethod.invoke(namedSelectionViewer, (CyGroupViewer)this);
+				registeredWithGroupPanel = true;
+			} catch (Exception e) {
+				System.err.println(e);
+				return;
+			}
+			// Invoke it
+		}
+	}
 
 	/**
 	 * The MetanodeMenuListener provides the interface to the metanode
@@ -369,7 +414,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 					if (addGroupMenu(item, command, groupList, null))
 						menu.add(item);
 				}
-			} else if (CyGroupManager.isaGroup(contextNode) && command == Command.EXPAND) {
+			} else if (contextNode.isaGroup() && command == Command.EXPAND) {
+				// Get the groups this group is a member of
 				CyGroup group = CyGroupManager.findGroup(contextNode.getIdentifier());
 				if (group.getState() == COLLAPSED) {
 					addSubMenu(menu, label+" "+group.getGroupName(), 
@@ -443,9 +489,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				nodeGroups = node.getGroups();
 			} 
 			// List current named selections
-			Iterator iter = groupList.iterator();
-			while (iter.hasNext()) {
-				CyGroup group = (CyGroup)iter.next();
+			for (CyGroup group: groupList) {
 				CyNode groupNode = group.getGroupNode();
 				List<CyGroup> parents = groupNode.getGroups();
 				if (group.getViewer() != null && group.getViewer().equals(groupViewer.getViewerName())) {
@@ -456,10 +500,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 					// If command is expand and we're a child of a group that isn't
 					// yet expanded, don't give this as an option
 					if ((command == Command.EXPAND) && (parents != null) && (parents.size() > 0)) {
-						Iterator<CyGroup> grIter = parents.iterator();
 						boolean parentCollapsed = false;
-						while (grIter.hasNext()) {
-							CyGroup parent = grIter.next();
+						for (CyGroup parent: parents) {
 							if (groupList.contains(parent) && (parent.getState() == COLLAPSED)) {
 								parentCollapsed = true;
 								break;
@@ -530,6 +572,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
      * This method is called when the user selects the menu item.
      */
     public void actionPerformed(ActionEvent ae) {
+
+			registerWithGroupPanel();
+
 			String label = ae.getActionCommand();
 			if (command == Command.COLLAPSE) {
 				collapse();
@@ -596,10 +641,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				// them one-by-one
 				CyNetwork network = Cytoscape.getCurrentNetwork();
 				List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
-				Iterator<CyNode>nodeIter = currentNodes.iterator();
-				while (nodeIter.hasNext()) {
-					node = nodeIter.next();
-					node.addToGroup(group);
+				for (CyNode selNode: currentNodes) {
+					selNode.addToGroup(group);
 				}
 			}
 		}
@@ -618,11 +661,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				// them one-by-one
 				CyNetwork network = Cytoscape.getCurrentNetwork();
 				List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
-				Iterator<CyNode>nodeIter = currentNodes.iterator();
-				while (nodeIter.hasNext()) {
-					node = nodeIter.next();
-					if (group.contains(node))
-						node.removeFromGroup(group);
+				for (CyNode selNode: currentNodes) {
+					if (group.contains(selNode))
+						selNode.removeFromGroup(group);
 				}
 			}
 		}
