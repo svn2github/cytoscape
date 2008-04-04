@@ -225,8 +225,15 @@ public class NamedSelection extends CytoscapePlugin
 	 * allowing them to use the group panel.  This method will return a handle
 	 * to the group panel for other viewers to use
 	 */
-	public GroupPanel getGroupPanel() {
-		return groupPanel;
+	public void addViewerToGroupPanel(CyGroupViewer viewer) {
+		groupPanel.addViewer(viewer);
+	}
+
+	/**
+	 * Update the group panel when one of our clients gets updated.
+	 */
+	public void updateGroupPanel() {
+		groupPanel.reload();
 	}
 
 	/**

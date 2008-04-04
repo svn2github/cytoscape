@@ -94,7 +94,12 @@ public class GroupCreationDialog extends JDialog implements ActionListener {
 		// See if we need to handle the viewer issue....
 		if (viewerList.size() > 1) {
 			// Yes, add a combo box with the viewer names
-			viewerChoices = new JComboBox(viewerList.toArray());
+			String[] viewerStrings = new String[viewerList.size()];
+			int index = 0;
+			for (CyGroupViewer viewer: viewerList) {
+				viewerStrings[index++] = viewer.getViewerName();
+			}
+			viewerChoices = new JComboBox(viewerStrings);
 			contentPane.add (viewerChoices);
 		}
 
@@ -135,7 +140,8 @@ public class GroupCreationDialog extends JDialog implements ActionListener {
 			// Get the viewer
 			CyGroupViewer viewer = viewerList.get(0);
 			if (viewerList.size() > 1) {
-				viewer = (CyGroupViewer)viewerChoices.getSelectedItem();
+				String viewerName = (String)viewerChoices.getSelectedItem();
+				viewer = CyGroupManager.getGroupViewer(viewerName);
 			} 
 			// Create the group
 			group = CyGroupManager.createGroup(groupName, currentNodes, null);
@@ -149,5 +155,4 @@ public class GroupCreationDialog extends JDialog implements ActionListener {
 			setVisible(false);
 		}
 	}
-	
 }
