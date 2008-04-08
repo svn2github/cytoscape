@@ -633,8 +633,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				//ApplyButton is clicked!
 				//System.out.println("\nApplyButton is clicked!");
 				//System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
-				
-				FilterUtil.doSelection((CompositeFilter) cmbSelectFilter.getSelectedItem());
+				CompositeFilter theFilterToApply = (CompositeFilter) cmbSelectFilter.getSelectedItem();
+				theFilterToApply.setNetwork(Cytoscape.getCurrentNetwork());
+				FilterUtil.doSelection(theFilterToApply);
 			}
 			if (_btn == btnAddFilterWidget) {
 				//btnAddFilterWidget is clicked!
