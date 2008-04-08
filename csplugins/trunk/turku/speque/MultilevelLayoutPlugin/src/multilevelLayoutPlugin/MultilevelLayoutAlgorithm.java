@@ -94,6 +94,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	/**
 	 * External interface to update our settings
 	 */
+	@Override
 	public void updateSettings() {
 		updateSettings(true);
 	}
@@ -119,10 +120,12 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	/**
 	 * Revert our settings back to the original.
 	 */
+	@Override
 	public void revertSettings() {
 		layoutProperties.revertProperties();
 	}
 
+	@Override
 	public LayoutProperties getSettings() {
 		return layoutProperties;
 	}
@@ -131,6 +134,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	 * Main entry point for AbstractLayout classes. Initializes and
 	 * runs the algorithm.
 	 */
+	@Override
 	public void construct() {
 		taskMonitor.setStatus("Initializing");
 		initialize();  // Calls initialize_local
@@ -143,6 +147,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	 * Call all of the initialization code.  Called from
 	 * <code>AbstractLayout.initialize()</code>.
 	 */
+	@Override
 	protected void initialize_local() {
 		posManager = new NodePositionManager(networkView.getNetwork().getNodeCount());
 		level = 0;
@@ -284,8 +289,8 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 			iter = cn.nodesIterator();
 			while(iter.hasNext()){
 				Node n = iter.next();
-				posManager.setX(n.getRootGraphIndex(), ((300.0 * Math.sqrt((double)cn.getNodeCount()) * (posManager.getX(n.getRootGraphIndex())-minX))/(xDifference)));
-				posManager.setY(n.getRootGraphIndex(), ((300.0 * Math.sqrt((double)cn.getNodeCount()) * (posManager.getY(n.getRootGraphIndex())-minY))/(yDifference)));
+				posManager.setX(n.getRootGraphIndex(), ((300.0 * Math.sqrt(cn.getNodeCount()) * (posManager.getX(n.getRootGraphIndex())-minX))/(xDifference)));
+				posManager.setY(n.getRootGraphIndex(), ((300.0 * Math.sqrt(cn.getNodeCount()) * (posManager.getY(n.getRootGraphIndex())-minY))/(yDifference)));
 			}
 		}
 		
@@ -406,6 +411,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	 * algorithm.
 	 *
 	 */
+	@Override
 	public JPanel getSettingsPanel() {
 		JPanel panel = new JPanel(new GridLayout(0,1));
 		panel.add(layoutProperties.getTunablePanel());
@@ -426,6 +432,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	 *
 	 * @return  short-hand name
 	 */
+	@Override
 	public String getName() {
 		return "multilevel-layout";
 	}
@@ -435,6 +442,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	 *
 	 * @return  user visible name
 	 */
+	@Override
 	public String toString() {
 		return "Multilevel Layout";
 	}
@@ -445,14 +453,17 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 	 *
 	 * @return  true if we support selected-only layout
 	 */
+	@Override
 	public boolean supportsSelectedOnly() {
 		return false;
 	}	
 	
+	@Override
 	public byte[] supportsNodeAttributes() {
 		return null;
 	}
 	
+	@Override
 	public byte[] supportsEdgeAttributes() {
 		return null;
 	}

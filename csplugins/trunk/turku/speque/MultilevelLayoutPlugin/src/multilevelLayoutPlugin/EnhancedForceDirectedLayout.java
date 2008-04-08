@@ -25,9 +25,6 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import multilevelLayoutPlugin.MultilevelConfig;
-
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
