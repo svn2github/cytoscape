@@ -29,6 +29,9 @@ public class FilterUtil {
 		if (init == null)
 			return;
 
+		if (pFilter.getNetwork() == null)
+			return;
+
 		// Set wait cursor
 		if ((init.getMode() == CyInitParams.GUI)
 			    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
