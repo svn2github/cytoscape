@@ -1,0 +1,85 @@
+<html>
+<body>
+<h2>NetLink Plugin</h2>
+The NetLink plugin is a simple plugin for connecting nodes or edges in one network
+with another network.  The basic idea is to create an attribute which 
+point to the names of the other network.   The NetLink plugin simply looks for an
+attribute named <b>netlink.connection</b> or and if that attribute exists for the given
+node or edge, it then creates a menu item in the right-click (context) popup menu.  
+If the menu item exists, then chosing the menu item will switch the selected view
+focuse from the current network to the new network. 
+
+<h3>Parent -&gt; Child Links</h3>
+<p>
+Begin with a simple network called <i>Parent.sif</i>:
+</p>
+<pre>
+A pp B
+B pp C
+C pp A
+</pre>
+<p>
+Next, assume that node <i>A</i> points to child network <i>A.sif</i>, <i>B</i> points to child network <i>B.sif</i>, and <i>C</i> points to child network <i>C.sif</i>.  
+</p>
+<p>
+<i>A.sif:</i>
+</p>
+<pre>
+one pp two
+two pp three
+</pre>
+
+<p>
+<i>B.sif:</i>
+</p>
+<pre>
+marge knows homer
+lisa knows bart
+</pre>
+
+<p>
+<i>C.sif:</i>
+</p>
+<pre>
+cat xx dog
+bird xx fish
+</pre>
+
+<p>
+Now, to create the links from the Parent nodes to the child nodes, create a node attribute file
+where the attribute is named <i>netlink.connnection</i>.
+</p>
+
+<pre>
+netlink.connection
+A = A.sif
+A = B.sif
+A = C.sif
+</pre>
+
+<p>
+Now load all networks and the node attributes file.  When you right click on a node in the Parent.sif
+network, you should see a menu item that says: "asdf".
+</p>
+
+<h3>Child -&gt; Parent Links</h3>
+<p>
+If you want to add Child -&gt;Parent links, then simply append the node names found in the child networks 
+the node attributes file that you just created:
+</p>
+
+<pre>
+netlink.connection
+A = A.sif
+B = B.sif
+C = C.sif
+one = Parent.sif
+two = Parent.sif
+three = Parent.sif
+cat = Parent.sif
+dog = Parent.sif
+...
+</pre>
+
+</body>
+</html>

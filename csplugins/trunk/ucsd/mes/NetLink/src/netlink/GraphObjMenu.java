@@ -54,22 +54,21 @@ class GraphObjMenu {
 	GraphObjMenu() { }
 
 	/**
-	 * @param nodeView The clicked NodeView
-	 * @param menu popup menu to add the  menu
+	 * @param graphObjId Id of the node or edge selected. 
+	 * @param menu The CyAttributes object. 
+	 * @param menu Popup menu to add the menu item to.
 	 */
 	protected void addMenu(String graphObjId, CyAttributes attrs, JPopupMenu menu) {
-		CyNetwork curr = Cytoscape.getCurrentNetwork();
-		String attrName =  "netlink.child";
-		String childId = attrs.getStringAttribute(graphObjId, attrName); 
+		String link = attrs.getStringAttribute(graphObjId, "netlink.connection"); 
 
-		if ( childId == null ) {
-			System.out.println("no child");
+		if ( link == null ) {
+			// System.out.println("can't find attr: " + );
 			return;
 		}
 
 		if (menu == null)
 			menu = new JPopupMenu();
 
-		menu.add(new JMenuItem(new NetLink(childId)));
+		menu.add(new JMenuItem(new NetLink(link)));
 	}
 }
