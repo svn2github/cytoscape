@@ -1,13 +1,13 @@
 <? include "config.php"; ?>
 <div id="links2">
 	<div class="naventry1">
-		<h1><a href="features.php">About Cytoscape</a></h1>
+		<h1><a href="features2.php">About Cytoscape</a></h1>
 		<p>
 		Cytoscape is an open source bioinformatics software platform for 
 		<b><i>visualizing</i></b> molecular interaction networks and 
 		<b><i>integrating</i></b> these interactions with gene expression 
 		profiles and other state data. 
-		<a href="features.php"><br><strong>Read more &raquo; </strong></a>
+		<a href="features2.php"><br><strong>Read more &raquo; </strong></a>
 		</p>
 	</div>
 	<div class="naventry2">

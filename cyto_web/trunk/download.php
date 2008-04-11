@@ -61,6 +61,7 @@
 	<link href="images/cyto.ico" rel="shortcut icon">
 </head>
 <body bgcolor="#ffffff">
+<div id=container>
 <table summary="" cellspacing="0" cellpadding="2" border="0" id="feature">
 	<tbody>
 		<tr>
@@ -213,6 +214,6 @@
 <? } ?>
 </div>
 <? include "footer.php"; ?>
-
+</div>
 </body>
 </html>

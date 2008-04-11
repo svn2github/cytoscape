@@ -29,11 +29,18 @@
 			</ul>
 						
 		<h3>Cytoscape Themes</h3>
-			<ul>
-				<li>Pack multiple plugins in a Theme and install all of them at once</li>
-			</ul>
+		Themes are bundles of plugins that are all
+		related or work towards a common goal.  Themes that we have created include a
+		<strong>WebService theme</strong> that bundles all available web services into a single installable
+		unit and a <strong>Nature Protocols theme</strong> that bundles all plugins needed
+		to execute the protocol described in our recent
+		<a href="http://www.ncbi.nlm.nih.gov/pubmed/17947979">Nature Protocols publication</a>.
 		<h3>Dynamic Filters</h3>
+		As changes to filters are made, the filters get applied dynamically to the network view. 
+		As you move sliders, you'll see the nodes and edges get selected as you move them.
 		<h3>Network Manager supports multiple network selection</h3>
+		For operations like layout and network deletion, you can now select more than one network in the
+		network manager and have the action applied to all selected networks.
 		<h3>Label Positioning has been improved</h3>
 		<h3>Session saving occurs in memory</h3>
 		<h3>XGMML loading/saving optimized</h3>

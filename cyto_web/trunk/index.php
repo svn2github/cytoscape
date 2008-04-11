@@ -30,8 +30,6 @@
 				
 				<a href="<?= $latest_release_notes_link ?>"><?= $latest_version ?> Release Notes &raquo; </a>
 				
-				<h3><a href="http://chianti.ucsd.edu/Cyto-2_6-beta">Download 2.6 Beta Release!</a></h3>
-				<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">Submit Bugs!</a>
 			</div>
 		</div>
 		
@@ -49,17 +47,13 @@
 				</a>
 				
 				<div id="paragraph">
-					(Updated 4/10/2008) New features include: <br>
+					(Updated 4/11/2008) New features include: <br>
 					<ul id="paragraph">
 						<li><strong>Web Service Client Manager</strong></li>
-						<ul>
-						<li>New framework to integrate web service clients into Cytoscape</li>
-						<li>Web Service client plugins for downloading networks from 
-							PathwayCommons, IntAct, and NCBI Entrez Gene.</li>
-						<li>Annotation import web service plugin for BioMart. This is mainly for 
-							ID translation/synonym mapping</li>
-						</ul>
-						
+							<ul>
+							<li>Seamless access to Pathway Commons, IntAct, and NCBI Entrez Gene.</li>
+							<li>Synonym import from BioMart.</li>
+							</ul>
 						<li><strong>Cytoscape Themes</strong></li>
 						<li><strong>Dynamic Filters</strong></li>
 						<li><strong>Network Manager supports multiple network selection</strong></li>
@@ -223,9 +217,7 @@
 				<h3>Integration of biological networks and gene expression data using Cytoscape</h3>
 				Nature Protocols 2, 2366 - 2382 (2007) Published online: 27 September 2007 
 				| doi:10.1038/nprot.2007.324<br><br>
-					<a href="http://www.genome.org/cgi/content/full/13/11/2498"> [Abstract] </a>
-					<a href="http://www.genome.org/cgi/reprint/13/11/2498"> [PDF] </a>
-					<a href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;list_uids=14597658&amp;dopt=Abstract"> [PubMed entry]</a>.
+					<a href="http://www.ncbi.nlm.nih.gov/pubmed/17947979"> [PubMed entry]</a>.
 			</div>
 			</div>
 			
