@@ -37,15 +37,18 @@
 package cytoscape.render.stateful;
 
 import cytoscape.render.immed.GraphGraphics;
+import cytoscape.render.stateful.CustomGraphic;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 
 /**
- * Defines visual properties of a node modulo the node size and location.
+ * Defines visual properties of a node modulo the node size and location
  * Even though this class is not declared abstract, in most situations it
  * makes sense to override at least some of its methods in order to gain
  * control over node visual properties.<p>
@@ -105,6 +108,12 @@ public class NodeDetails {
 	 * bounding box.
 	 */
 	public static final byte ANCHOR_NORTHWEST = 8;
+
+        /**
+         * Used for range checking the anchor values. 
+         */
+        // Seems like these values should really be an enum...:
+        public static final byte MAX_ANCHOR_VAL = 8;
 
 	/**
 	 * Specifies that the lines in a multi-line node label should each have
@@ -359,8 +368,14 @@ public class NodeDetails {
 	 * Returns the number of custom graphics that this node has.  By default this
 	 * method returns zero.  A custom graphic extends the concept of node label
 	 * to include any arbitrary filled shape.
+	 * @deprecated Switch to using the CustomGraphics way of manipulating custom graphics.
+	 *             For details, see deprecation note under 
+	 *  	       {@link CustomGraphic#CustomGraphic CustomGraphic}.
+	 *             Once switched, then
+	 *             use {@link #customGraphicCount(int) customGraphicCount()}.
+
 	 */
-	public int graphicCount(final int node) {
+        @Deprecated public int graphicCount(final int node) {
 		return 0;
 	}
 
@@ -372,8 +387,13 @@ public class NodeDetails {
 	 * this method is called by the rendering engine.
 	 * @param graphicInx a value in the range [0, graphicCount(node)-1]
 	 *   indicating which node graphic in question.
+	 * @deprecated Switch to using the CustomGraphics way of manipulating custom graphics.
+	 *             For details, see deprecation note under 
+	 *  	       {@link CustomGraphic#CustomGraphic CustomGraphic}.
+	 *             Once switched, then
+	 *             use {@link cytoscape.render.stateful.CustomGraphic#getShape() CustomGraphic.getShape()}.
 	 */
-	public Shape graphicShape(final int node, final int graphicInx) {
+        @Deprecated public Shape graphicShape(final int node, final int graphicInx) {
 		return null;
 	}
 
@@ -384,8 +404,13 @@ public class NodeDetails {
 	 * an error to return null if this method is called by the rendering engine.
 	 * @param graphicInx a value in the range [0, graphicCount(node)-1]
 	 *   indicating which node graphic in question.
+	 * @deprecated Switch to using the CustomGraphics way of manipulating custom graphics.
+	 *             For details, see deprecation note under 
+	 *  	       {@link CustomGraphic#CustomGraphic CustomGraphic}.
+	 *             Once switched, then
+	 *             use {@link cytoscape.render.stateful.CustomGraphic#getPaint() CustomGraphic.getPaint()}.
 	 */
-	public Paint graphicPaint(final int node, final int graphicInx) {
+        @Deprecated public Paint graphicPaint(final int node, final int graphicInx) {
 		return null;
 	}
 
@@ -402,7 +427,13 @@ public class NodeDetails {
 	 * @see #ANCHOR_CENTER
 	 * @see #graphicOffsetVectorX(int, int)
 	 * @see #graphicOffsetVectorY(int, int)
+	 * @deprecated Switch to using the CustomGraphics way of manipulating custom graphics.
+	 *             For details, see deprecation note under 
+	 *  	       {@link CustomGraphic#CustomGraphic CustomGraphic}.
+	 *             Once switched, then
+	 *             use {@link cytoscape.render.stateful.CustomGraphic#getAnchor() CustomGraphic.getAnchor()}.
 	 */
+        @Deprecated 
 	public byte graphicNodeAnchor(final int node, final int graphicInx) {
 		return ANCHOR_CENTER;
 	}
@@ -436,6 +467,69 @@ public class NodeDetails {
 	public float graphicOffsetVectorY(final int node, final int graphicInx) {
 		return 0.0f;
 	}
+
+
+    /**
+     * A thread-safe method returning the number of custom graphics
+     * associated with a given Node. If none are associated, zero is
+     * returned.
+     * NOTE: This method should be abstract, but since it isn't, any real use should override this
+     *       method in a subclass.
+     * @see #customGraphics(int)
+     * @since Cytoscape 2.6
+     */
+    public int customGraphicCount(final int node) {
+	return 0;
+    }
+
+    /**
+     * Return a non-null, read-only Iterator over all CustomGraphics contained in this Node.
+     * The Iterator will return each CustomGraphic in draw order.
+     * The Iterator cannot be used to modify the underlying set of CustomGraphics.
+     * NOTE: This method should be abstract, but since it isn't, any real use should override this
+     *       method in a subclass.
+     * @return The CustomGraphics Iterator. If no CustomGraphics are
+     * associated with this Node, an empty Iterator is returned.
+     * @throws UnsupportedOperationException if an attempt is made to use the Iterator's remove() method.
+     * @since Cytoscape 2.6
+     * @see #customGraphicsLock(int)
+     */
+    // Should probably be getCustomGraphics(), but all the methods
+    // seem to have this form.
+    public Iterator<CustomGraphic> customGraphics (final int node) {
+	return new Iterator<CustomGraphic>() {
+	    private Iterator<CustomGraphic> _iterator =  new ArrayList<CustomGraphic>(0).iterator();
+	    public boolean hasNext() {return _iterator.hasNext();}
+	    public CustomGraphic next() {return _iterator.next();}
+	    public void remove() {
+		throw new UnsupportedOperationException();
+	    }
+	};
+    }
+
+    /**
+     * Return the object used for synchronizing custom graphics operations for a given Node.
+     * This is used in conjunction with the customGraphics() Iterator to allow iteration over
+     * the custom graphics without fear of the underlying CustomGraphics mutating.
+     * For example:
+     * <PRE>
+     *    NodeDetails nd = ...;
+     *    synchronized (nd.customGraphicsLock(node)) {
+     *       Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
+     *       CustomGraphic cg = null;
+     *       while (dNodeIt.hasNext()) {
+     *          cg = dNodeIt.next();
+     *          // DO STUFF WITH cg HERE.
+     *       }
+     *    }
+     * </PRE>
+     * NOTE: This method should be abstract, but since it isn't, any real use should override this
+     *       method in a subclass.
+     * @since Cytoscape 2.6
+     */
+    public Object customGraphicsLock(final int node) {
+	return this;
+    }
 
 	/**
 	 * Used to set selected state of given node.
