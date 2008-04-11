@@ -71,8 +71,7 @@
     <td><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/KeiichiroOno">Keiichiro Ono</a></td>
     <td>Chris Workman</td>
     <td>Allan Kuchinsky</td>
-    <td>Aditya Vailaya</td>
-     <td>Melissa Cline</td>
+    <td><a href="http://chianti.ucsd.edu/~slotia/">Samad Lotia</a></td>
     
   </tr>
   <tr>
@@ -83,8 +82,7 @@
     <td><img src="people_photos/kei.jpg"></img></td>
   <td><img src="people_photos/chris.jpg"></img></td>
     <td><img src="people_photos/allan.jpg"></img></td>
-    <td><img src="people_photos/aditya.jpg"></img></td>
-     <td><img src="people_photos/melissa.jpg"></img></td>
+     <td><img src="people_photos/samad.jpg"></img></td>
   </tr>
   <tr><td colspan=6>&nbsp;</td></tr>
   <tr>
@@ -95,7 +93,6 @@
     <td>John "Scooter"<br /> Morris</td>
     <td>Peng Wang</td>
     <td>Sarah Killcoyne</td>
-    <td><a href="http://chianti.ucsd.edu/~slotia/">Samad Lotia</a></td>
    </tr>
 
     <tr>
@@ -106,7 +103,6 @@
      <td><img src="people_photos/scooter.jpg"></img></td>
      <td><img src="people_photos/peng.jpg"></img></td>
      <td><img src="people_photos/sarah.jpg"></img></td>
-     <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
   </tr>
 
   
@@ -116,6 +112,10 @@
 				<tbody>
 					<tr>
 						<td>
+    					Aditya Vailaya
+						<br>
+     					Melissa Cline
+						<br>
 						Guy Warner
 						<br>
 						Iliana Avila-Campillo
