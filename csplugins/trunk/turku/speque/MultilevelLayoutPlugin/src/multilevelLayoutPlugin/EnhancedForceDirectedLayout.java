@@ -28,9 +28,11 @@ import java.util.Iterator;
 
 import metricTree.MetricNode;
 import metricTree.MetricNodeTree;
+
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+
 import giny.model.Edge;
 import giny.model.Node;
 
@@ -77,7 +79,7 @@ public class EnhancedForceDirectedLayout {
 	private Point2D.Double DispVector, DiffVector, vOldPosition ;
 	
 	//just some variables used in performance testing
-	//private long start=0L, gridTime=0L, attTime=0L, repTime=0L;
+	private long start=0L, gridTime=0L, attTime=0L, repTime=0L;
 	
 	/**
 	 * Class constructor.
@@ -122,10 +124,9 @@ public class EnhancedForceDirectedLayout {
 			converged = true;
 			
 			Iterator<Node> iterator = network.nodesIterator();
-			
 			metricNodeTree = new MetricNodeTree();
-			
 			HashSet<MetricNode> mNodeSet = new HashSet<MetricNode>();
+			
 			while(iterator.hasNext()){
 				MetricNode mn = new MetricNode(iterator.next());
 				metricNodeTree.insert(mn);
@@ -138,12 +139,14 @@ public class EnhancedForceDirectedLayout {
 			while(mIterator.hasNext()) {
 				MetricNode mnode = mIterator.next();
 				
-				//FIND NODE IN A RANGE OF R
-				closeNodes = metricNodeTree.getRange(mnode, R);
-				
 				Node v = mnode.getValue();
 				
-				//FIND CONNECTED NODES
+				//FIND NODES IN A RANGE OF R FROM NODE v
+				start = System.currentTimeMillis();
+				closeNodes = metricNodeTree.getRange(mnode, R);
+				gridTime += System.currentTimeMillis() -start;
+				
+				//FIND NODES CONNECTED TO NODE v
 				edgesConnectedToV.clear();
 				int[] edgeIndices = network.getAdjacentEdgeIndicesArray(v.getRootGraphIndex(), true, true, true);
 				for(int i = 0; i < edgeIndices.length; i++){
@@ -155,62 +158,60 @@ public class EnhancedForceDirectedLayout {
 					if(!e.getTarget().equals(v)) neighboringNodesOfV.add(e.getTarget());
 				}
 				
-				//start = System.currentTimeMillis();
+				start = System.currentTimeMillis();
 				
 				//CALCULATE REPULSIVE FORCES
-				
 				DispVector = new Point2D.Double(0, 0);
 				double diffLength, uWeight, fRep, newX, newY;
-				//iterate over found nodes
+				//iterate over nodes in a range of R
 				for (MetricNode temp : closeNodes){
 					Node u = temp.getValue();
 					if (u != v){
 						DiffVector = getDifferenceVector(u, v, posManager);
 						diffLength = getVectorLength(DiffVector);
-						//is node inside radius R?
-						if (getVectorLength(DiffVector)<=R) {
-							if (diffLength == 0.0){
-								posManager.setPosition(
-										u.getRootGraphIndex(), 
-										posManager.getX(u.getRootGraphIndex()) + plusOrMinusOne()*0.001*k,
-										posManager.getY(u.getRootGraphIndex()) + plusOrMinusOne()*0.001*k);
-								DiffVector = getDifferenceVector(u, v, posManager);
-								diffLength = getVectorLength(DiffVector);
-							}
-							
-							uWeight = 1.0;
-							if (nodeAttributes.getIntegerAttribute(u.getIdentifier(), "ml_weight") != null){
-								uWeight = nodeAttributes.getIntegerAttribute(u.getIdentifier(), "ml_weight");
-							}
-							//calculate actual repulsive force
-							fRep = forceRepulsive(diffLength, uWeight);
-							
-							if(MultilevelConfig.clusteringEnabled){
-								if(neighboringNodesOfV.contains(u)){
-									if(ccm.getCC(u.getRootGraphIndex()) >= MultilevelConfig.minimumCC){
-										fRep = fRep / (1.0 + ccm.getCC(u.getRootGraphIndex()) * MultilevelConfig.ccPower);
-									}
+						//do the nodes share the exact same position
+						if (diffLength == 0.0){
+							posManager.setPosition(
+									u.getRootGraphIndex(), 
+									posManager.getX(u.getRootGraphIndex()) + plusOrMinusOne()*0.001*k,
+									posManager.getY(u.getRootGraphIndex()) + plusOrMinusOne()*0.001*k);
+							DiffVector = getDifferenceVector(u, v, posManager);
+							diffLength = getVectorLength(DiffVector);
+						}
+						//get the weight of the node
+						uWeight = 1.0;
+						if (nodeAttributes.getIntegerAttribute(u.getIdentifier(), "ml_weight") != null){
+							uWeight = nodeAttributes.getIntegerAttribute(u.getIdentifier(), "ml_weight");
+						}
+						
+						//calculate actual repulsive force
+						fRep = forceRepulsive(diffLength, uWeight);
+						
+						if(MultilevelConfig.clusteringEnabled){
+							if(neighboringNodesOfV.contains(u)){
+								if(ccm.getCC(u.getRootGraphIndex()) >= MultilevelConfig.minimumCC){
+									fRep = fRep / (1.0 + ccm.getCC(u.getRootGraphIndex()) * MultilevelConfig.ccPower);
 								}
 							}
-							
-							newX = DispVector.getX() + (DiffVector.getX() / diffLength)	* fRep;
-							newY = DispVector.getY() + (DiffVector.getY() / diffLength)	* fRep;
-							DispVector.setLocation(newX, newY);
-						}						
+						}
+						//set the displacement
+						newX = DispVector.getX() + (DiffVector.getX() / diffLength)	* fRep;
+						newY = DispVector.getY() + (DiffVector.getY() / diffLength)	* fRep;
+						DispVector.setLocation(newX, newY);
 					}						
 				 }
 				
-				//repTime += System.currentTimeMillis() -start;
+				repTime += System.currentTimeMillis() -start;
 				
-				//start = System.currentTimeMillis();
+				start = System.currentTimeMillis();
 				
 				//CALCULATE ATTRACTIVE FORCES BETWEEN CONNECTED NODES	
-
 				double fAttr;
 				//iterate over nodes connected to v
 				for(Node n : neighboringNodesOfV){
 					DiffVector = getDifferenceVector(n, v, posManager);
 					diffLength = getVectorLength(DiffVector);
+					//do the nodes share the exact same position
 					if (diffLength == 0.0) {
 						posManager.setPosition(
 								n.getRootGraphIndex(), 
@@ -227,13 +228,13 @@ public class EnhancedForceDirectedLayout {
 							fAttr = fAttr * (1.0 + ccm.getCC(n.getRootGraphIndex()) * MultilevelConfig.ccPower);
 						}
 					}
-									
+					//set the displacement			
 					newX = (DispVector.getX() + (DiffVector.getX() / diffLength) * fAttr);
 					newY = (DispVector.getY() + (DiffVector.getY() / diffLength)	* fAttr);
 					DispVector.setLocation(newX, newY);
 				}
 				
-				//attTime += System.currentTimeMillis() -start;
+				attTime += System.currentTimeMillis() -start;
 				 
 				//REPOSITION v
 				//first, save old position
@@ -252,7 +253,7 @@ public class EnhancedForceDirectedLayout {
 				//calculate the amount of movement 
 				DiffVector = new Point2D.Double((vOldPosition.getX() - posManager.getX(v.getRootGraphIndex())), 
 						(vOldPosition.getY() - posManager.getY(v.getRootGraphIndex())));
-				//if all movement has dropped below treshold => converged 
+				//if movement is above treshold => not converged 
 				if(getVectorLength(DiffVector) > this.k*MultilevelConfig.tolerance) converged = false;
 			}
 			
@@ -260,7 +261,7 @@ public class EnhancedForceDirectedLayout {
 			t = cool(t);
 		}
 		
-		//System.out.println("grid: " + gridTime + " rep: " + repTime + " attr: " + attTime);
+		System.out.println("grid: " + gridTime + " rep: " + repTime + " attr: " + attTime);
 	}
 	
 	/**
