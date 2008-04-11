@@ -41,7 +41,19 @@ package cytoscape.data.webservice;
  */
 public class CyWebServiceException extends Exception {
 	public enum WSErrorCode {
-		NO_RESULT, REMOTE_EXEC_FAILED, OPERATION_NOT_SUPPORTED;
+		NO_RESULT("Service returned no result."), 
+		REMOTE_EXEC_FAILED("Remote service failed."), 
+		OPERATION_NOT_SUPPORTED("Operation is not supported by the service.");
+		
+		private final String errorMessage;
+		
+		private WSErrorCode(final String message) {
+			this.errorMessage = message;
+		}
+		
+		public String getErrorMessage() {
+			return errorMessage;
+		}
 	}
 
 	private final WSErrorCode ec;
