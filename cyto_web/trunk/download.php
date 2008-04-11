@@ -60,20 +60,13 @@
 	<link href="css/cytoscape.css" media="screen" type="text/css" rel="stylesheet">
 	<link href="images/cyto.ico" rel="shortcut icon">
 </head>
-<body bgcolor="#ffffff">
-<div id=container>
-<table summary="" cellspacing="0" cellpadding="2" border="0" id="feature">
-	<tbody>
-		<tr>
-			<td width="10">
-				&nbsp;
-			</td>
-			<td valign="center">
-				<h1><?= $title ?></h1> 
-			</td>
-		</tr>
-	</tbody>
-</table>
+
+<body>
+<div id="container">
+
+<div id="topbar">
+	<div class="title">Download Cytoscape</div>
+</div>
 
 <? include "nav.php"; ?>
 <?php
