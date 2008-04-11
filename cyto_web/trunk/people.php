@@ -10,18 +10,19 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/cytoscape.css" />
 		<link rel="shortcut icon" href="images/cyto.ico" />
 	</head>
-	<body bgcolor="#FFFFFF">
+	
+	<body>
+	<div id="container">
+	
 	<div id="topbar">
 		<div class="title">Cytoscape Development Team</div>
 	</div>
-<? include "nav.php"; ?>
-<blockquote>
-			<big>
-				<b>
-					Board of Directors:</b>
-			</big>
-			
-</blockquote>
+	
+	<? include "nav.php"; ?>
+	
+	
+	<br><h2>Board of Directors:</h2>
+
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -57,18 +58,11 @@
     <td><img src="people_photos/NO_PHOTO_YET.jpg"></img></td>
   </tr>
 </table>
-<blockquote>
-			<small><i>The link on each name will take you to the lab webpage of that person.</i></small>
-			<br>
-			<br>
-			<br>
-			<hr width="100%" size="2">
-			<big>
-				<b>
-					Software Core Developers:</b></big>
-			<br>
-			<br>
-</blockquote>
+
+<small><i>The link on each name will take you to the lab webpage of that person.</i></small>
+
+<h2>Software Core Developers:</h2>
+
 <table cellpadding="8" cellspacing="0" border="0">
   <tr><!-- Stupid table wants to put itself all the way to the left lol! -->
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<!-- Hack, hack, cough, cough. --></td>
@@ -117,13 +111,7 @@
 
   
 </table>
-<blockquote>
-			<hr width="100%" size="2">
-			<big>
-				<b>
-					Past Developers and Directors:</b></big>
-			<br>
-			<br>
+<h2>Past Developers and Directors:</h2>
 			<table cellpadding="2" cellspacing="2" border="0" width="100%">
 				<tbody>
 					<tr>
@@ -162,7 +150,8 @@
 			</table>
 
 		<br>
-</blockquote>
-<? include "footer.php"; ?>
+
+	<? include "footer.php"; ?>
+	</div>
 	</body>
 </html>

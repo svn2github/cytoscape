@@ -1,48 +1,12 @@
-<table cellspacing="0" cellpadding="2" border="0" summary="" id="links">
-		<tr>
-			<td colspan="6" id="caption">
-				<h1>
-					<a href="http://cytoscape.org/index.php">
-						Home
-					</a>
-					|
-					<a href="http://cytoscape.org/features.php">
-						Features 
-					</a>
-					| 
-					<a href="http://cytoscape.org/screenshots.php">
-						Screenshots 
-					</a>
-					| 
-					<a href="http://cytoscape.org/plugins/index.php">
-						PlugIns 
-					</a>
-					| 
-					<a href="http://cytoscape.org/community.php">
-						Community 
-					</a>					
-					| 
-					<a href="http://cytoscape.org/download_list.php">
-						All Releases
-					</a>
-					|
-					<a href="http://cytoscape.org/people.php">
-						Dev Team
-					</a>
-					| 
-					<a href="http://cytoscape.org/links.php">
-						Links
-					</a>
-					| 
-					<a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">
-						Bug Tracker
-					</a>
-					|
-					<a href="http://cytoscape.org/cgi-bin/moin.cgi/user_faq">
-						FAQ
-					</a>
-					
-				</h1>
-			</td>
-		</tr>
-<table>
+<div id="nav">
+	<div class="item"><a href="index.php">Home</a></div>
+	<div class="item"><a href="features2.php">Introduction</a></div>
+	<div class="item"><a href="screenshots.php">Screenshots</a></div>
+	<div class="item"><a href="plugins/index.php">Plugins</a></div>
+	<div class="item"><a href="community.php">Community</a></div>
+	<div class="item"><a href="download_list.php">All Releases</a></div>
+	<div class="item"><a href="people.php">Dev Team</a></div>
+	<div class="item"><a href="links.php">Links</a></div>
+	<div class="item"><a href="http://www.cbio.mskcc.org/cytoscape/bugs/set_project.php?project_id=5">Bug Tracker</a></div>
+	<div class="itemlast"><a href="cgi-bin/moin.cgi/user_faq">FAQ</a></div>
+</div>

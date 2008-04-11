@@ -10,20 +10,27 @@
     "css/cytoscape.css">
     <link rel="shortcut icon" href="images/cyto.ico">
   </head>
-  <body bgcolor="#FFFFFF">
+  
+  <body>
+  <div id="container">
+  
     <div id="topbar">
-			<div class="title">Cytoscape Links</div>
-	</div>
+    	<div class="title">Cytoscape Links</div>
+    </div>
+    
     <? include "nav.php"; ?>
+    
     <div id="indent">
 
-<P>
-<big><b>Cytoscape Dependencies</b></big>
-<P>
+<br>
+
+<h3>Cytoscape Dependencies</h3>
 <a href="http://www.cs.umd.edu/hcil/piccolo/">Piccolo</a>
 provides the graphics engine used by Cytoscape, has a Zoomable User Interface(ZUI) <br>
 and provides a powerful framework for user interaction and data display.
-<P><big><b>Software</b></big></P>
+
+
+<h3>Software</h3>
 <ul>
 	<li><a href="http://www.genmapp.org/">GenMAPP</a>
 	<li><a href="http://biodata.mshri.on.ca/osprey/servlet/Index">Osprey</a>
@@ -34,12 +41,12 @@ and provides a powerful framework for user interaction and data display.
 
 </ul>
 
-<p><big><b>Network Databases</b></big></p>
+<h3>Network Databases</h3>
 <ul><li><a href="http://bind.ca">Biomolecular Interaction Network Database (BIND)</a>
 	<li><a href="http://www.cbio.mskcc.org/prl">BioPAX Directory</a> (Pathguide)
 </ul>
 
-<p><big><b>Data Exchange Formats</b></big></p>
+<h3>Data Exchange Formats</h3>
 <ul>
 	<li><a href="http://www.biopax.org">BioPAX (Biological Pathway Exchange)</a>
 	<li><a href="http://sbml.org/index.psp">SBML (Systems Biology Markup Language)</a>
@@ -50,7 +57,7 @@ and provides a powerful framework for user interaction and data display.
 	<li><a href="http://obo.sourceforge.net/">Open Biomedical Ontologies</a>
 </ul>
 
-<p><big><b>Projects Using Cytoscape</b></big></p>
+<h3>Projects Using Cytoscape</h3>
 <ul>
 	<li><a href="http://www.t1dbase.org">T1DBase - A Bioinformatics Resource for Type 1 Diabetes Researchers</a>
 	<li><a href="http://amdec-bioinfo.cu-genome.org/html/caWorkBench.htm">caWorkBench2.0 - A Platform for Integrated Genomics</a>
@@ -59,19 +66,20 @@ and provides a powerful framework for user interaction and data display.
 	<BR>
 </ul>
 
-<p><big><b>Support</b></big></p>
+<h3>Support</h3>
 <ul>
 	<li><a href="http://grants1.nih.gov/grants/index.cfm">NIH NIGMS grant 1 R01 GM070743-01</a>
 	<li><a href="http://www.unilever.com/home/">Unilever</a>
 	<li><a href="http://www.nsf.gov/">National Science Foundation (NSF)</a>
 </ul>
 
-<p><big><b>Documentation in Other Languages</b></big></p>
+<h3>Documentation in Other Languages</h3>
 <ul>
 	<li><a href="http://cydoc.sourceforge.jp/">CyDoc - Cytoscape Japanese Documentation Project</a>
 </ul>
-<br><br>
     </div>
-    <? include "footer.php"; ?>
-  </body>
+
+	<? include "footer.php"; ?>
+	</div>
+  	</body>
 </html>
