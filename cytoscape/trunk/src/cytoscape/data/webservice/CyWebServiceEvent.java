@@ -47,7 +47,8 @@ public class CyWebServiceEvent<P> extends EventObject {
 		IMPORT_NETWORK,
 		EXPAND_NETWORK,
 		IMPORT_ATTRIBUTE,
-		EXECUTE_ANALYSIS;
+		EXECUTE_ANALYSIS,
+		CANCEL;
 	}
 
 	/**
