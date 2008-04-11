@@ -188,6 +188,21 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	}
 
 	/**
+	 * Method to update the network title on the JInternalFrame, but not in the network panel.
+	 *
+	 * @param network CyNetwork
+	 * @param title String
+	 */
+	public void updateNetworkTitle(CyNetwork network, String title) {
+		final JInternalFrame frame = networkViewMap.get(network.getIdentifier());
+
+		if (frame != null) {
+			frame.setTitle(title);
+			frame.repaint();
+		}
+	}
+
+	/**
 	 * @deprecated Will no longer support ChangeListener. Will be removed August
 	 *             2008.
 	 */
