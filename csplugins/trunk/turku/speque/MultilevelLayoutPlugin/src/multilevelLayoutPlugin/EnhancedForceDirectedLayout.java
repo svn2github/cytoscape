@@ -22,9 +22,12 @@
 package multilevelLayoutPlugin;
 
 import java.awt.geom.Point2D;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+
+import metricTree.MetricNode;
+import metricTree.MetricNodeTree;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -100,14 +103,13 @@ public class EnhancedForceDirectedLayout {
 	public void doLayout() {
 		boolean converged= false;
 		double t = k;
-		int hashSize = (int)Math.sqrt(network.getNodeCount());
-		HashMap<Integer, HashSet<Node>> xMapping = new HashMap<Integer, HashSet<Node>>(hashSize);
-		HashMap<Integer, HashSet<Node>> yMapping = new HashMap<Integer, HashSet<Node>>(hashSize);
+		
+		MetricNodeTree metricNodeTree;
+		MetricNode.posman = posManager;
+		
 		HashSet<Node> neighboringNodesOfV = new HashSet<Node>();
 		HashSet<Edge> edgesConnectedToV = new HashSet<Edge>();
-		HashSet<Node> closeNodes = new HashSet<Node>(100);
-		HashSet<Node> xPossible = new HashSet<Node>(150);
-		HashSet<Node> yPossible  = new HashSet<Node>(150);
+		ArrayList<MetricNode> closeNodes = new ArrayList<MetricNode>();	
 		
 		ClusteringCoefficientManager ccm = null;
 		if(MultilevelConfig.clusteringEnabled){
@@ -119,79 +121,27 @@ public class EnhancedForceDirectedLayout {
 		while(!converged){
 			converged = true;
 			
-			xMapping.clear(); yMapping.clear();
 			Iterator<Node> iterator = network.nodesIterator();
-			int bucketX, bucketY;
-			while(iterator.hasNext()){
-				Node n = iterator.next();
-				bucketX = ((int)(Math.abs(posManager.getX(n.getRootGraphIndex()))/ R)) % hashSize;
-				bucketY = ((int)(Math.abs(posManager.getY(n.getRootGraphIndex()))/ R)) % hashSize;
-				if(!xMapping.containsKey(new Integer(bucketX))){
-					xMapping.put(new Integer(bucketX), new HashSet<Node>(hashSize));
-				}
-				xMapping.get(new Integer(bucketX)).add(n);
-				if(!yMapping.containsKey(new Integer(bucketY))){
-					yMapping.put(new Integer(bucketY), new HashSet<Node>(hashSize));
-				}
-				yMapping.get(new Integer(bucketY)).add(n);
-			}
-	
-			//iterate over all nodes
-			iterator = network.nodesIterator();
 			
-			while(iterator.hasNext()) {
-				Node v = iterator.next();
+			metricNodeTree = new MetricNodeTree();
+			
+			HashSet<MetricNode> mNodeSet = new HashSet<MetricNode>();
+			while(iterator.hasNext()){
+				MetricNode mn = new MetricNode(iterator.next());
+				metricNodeTree.insert(mn);
+				mNodeSet.add(mn);
+			}
+			
+			//iterate over all metric nodes
+			Iterator<MetricNode> mIterator = mNodeSet.iterator();
+			
+			while(mIterator.hasNext()) {
+				MetricNode mnode = mIterator.next();
 				
-				//FIND NODES IN THE SAME OR THE ADJACENT SQUARES
-				//start = System.currentTimeMillis();
+				//FIND NODE IN A RANGE OF R
+				closeNodes = metricNodeTree.getRange(mnode, R);
 				
-				closeNodes.clear(); xPossible.clear(); yPossible.clear();
-				bucketX = ((int)(Math.abs(posManager.getX(v.getRootGraphIndex()))/ R)) % hashSize;
-				bucketY = ((int)(Math.abs(posManager.getY(v.getRootGraphIndex()))/ R)) % hashSize;
-				
-				if(bucketX==0){
-					if(xMapping.containsKey(new Integer(hashSize-1))) xPossible.addAll(xMapping.get(hashSize-1));
-					if(xMapping.containsKey(new Integer(0))) xPossible.addAll(xMapping.get(0));
-					if(xMapping.containsKey(new Integer(1))) xPossible.addAll(xMapping.get(1));
-				}
-				else{
-					if(bucketX == hashSize-1){
-						if(xMapping.containsKey(new Integer(hashSize-2))) xPossible.addAll(xMapping.get(hashSize-2));
-						if(xMapping.containsKey(new Integer(hashSize-1))) xPossible.addAll(xMapping.get(hashSize-1));
-						if(xMapping.containsKey(new Integer(0))) xPossible.addAll(xMapping.get(0));
-					}
-					else{
-						if(xMapping.containsKey(new Integer(bucketX-1))) xPossible.addAll(xMapping.get(bucketX-1));
-						if(xMapping.containsKey(new Integer(bucketX))) xPossible.addAll(xMapping.get(bucketX));
-						if(xMapping.containsKey(new Integer(bucketX+1))) xPossible.addAll(xMapping.get(bucketX+1));
-					}
-				}
-				
-				if(bucketY==0){
-					if(yMapping.containsKey(new Integer(hashSize-1))) yPossible.addAll(yMapping.get(hashSize-1));
-					if(yMapping.containsKey(new Integer(0))) yPossible.addAll(yMapping.get(0));
-					if(yMapping.containsKey(new Integer(1))) yPossible.addAll(yMapping.get(1));
-				}
-				else{
-					if(bucketY==hashSize-1){
-						if(yMapping.containsKey(new Integer(hashSize-2))) yPossible.addAll(yMapping.get(hashSize-2));
-						if(yMapping.containsKey(new Integer(hashSize-1))) yPossible.addAll(yMapping.get(hashSize-1));
-						if(yMapping.containsKey(new Integer(0))) yPossible.addAll(yMapping.get(0));
-					}
-					else{
-						if(yMapping.containsKey(new Integer(bucketY-1))) yPossible.addAll(yMapping.get(bucketY-1));
-						if(yMapping.containsKey(new Integer(bucketY))) yPossible.addAll(yMapping.get(bucketY));
-						if(yMapping.containsKey(new Integer(bucketY+1))) yPossible.addAll(yMapping.get(bucketY+1));
-					}
-				}
-				
-				Iterator<Node> it = xPossible.iterator();
-				while(it.hasNext()){
-					Node n = it.next();
-					if(yPossible.contains(n)) closeNodes.add(n);
-				}
-				
-				//gridTime += System.currentTimeMillis() -start;
+				Node v = mnode.getValue();
 				
 				//FIND CONNECTED NODES
 				edgesConnectedToV.clear();
@@ -207,12 +157,13 @@ public class EnhancedForceDirectedLayout {
 				
 				//start = System.currentTimeMillis();
 				
-				//CALCULATE REPULSIVE FORCES BETWEEN NODES INSIDE A GIVEN RADIUS
+				//CALCULATE REPULSIVE FORCES
 				
 				DispVector = new Point2D.Double(0, 0);
 				double diffLength, uWeight, fRep, newX, newY;
 				//iterate over found nodes
-				for (Node u : closeNodes){ 
+				for (MetricNode temp : closeNodes){
+					Node u = temp.getValue();
 					if (u != v){
 						DiffVector = getDifferenceVector(u, v, posManager);
 						diffLength = getVectorLength(DiffVector);
