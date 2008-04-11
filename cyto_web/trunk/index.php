@@ -70,7 +70,9 @@
 						<li><strong>Extra sample Visual Styles using new visual properties</strong></li>
 						<li><strong>Many, many bug fixes!</strong></li>
 					</ul>
+					<a href="cyto_2_6_features.php">Cytoscape 2.6.0 release notes</a>
 				</div>
+				
 			</div>
 
 
