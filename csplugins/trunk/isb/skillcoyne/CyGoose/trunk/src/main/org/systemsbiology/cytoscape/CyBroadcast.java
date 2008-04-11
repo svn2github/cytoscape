@@ -74,6 +74,8 @@ public class CyBroadcast {
         // TODO: get species XXX
         String Species = null;
 
+        Species = gDialog.getSpecies();
+
         ArrayList<String> SelectedIds = new ArrayList<String>();
         while (NodesIter.hasNext()) 
         	SelectedIds.add(NodesIter.next().getIdentifier());
@@ -370,8 +372,13 @@ public class CyBroadcast {
             //Species = getSpecies(SourceNode.getIdentifier());
         }
 
+        if (Species.equals("")) {
+            Species = gDialog.getSpecies();
+        }
+
         GaggleNetwork = addAttributes(GaggleNetwork);
         GaggleNetwork.setSpecies(Species);
+        System.out.println("in broadcastnetwork, species is " + GaggleNetwork.getSpecies());
         try {
             this.gaggleBoss.broadcastNetwork(Goose.getName(), TargetGoose,
                     GaggleNetwork);
