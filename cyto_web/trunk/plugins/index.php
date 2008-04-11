@@ -39,7 +39,9 @@
 -->
     </style>
 </head>
-<body bgcolor="#ffffff">
+<body>
+<div id="container">
+
 <div id="topbar">
 	<div class="title">Cytoscape 2.x Plugins</div>
 </div>
@@ -162,5 +164,6 @@
 </span>
 <?php include "../footer.php"; ?>
 <br>
+</div>
 </body>
 </html>
