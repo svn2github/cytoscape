@@ -47,12 +47,12 @@ import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
+import java.util.Iterator;
 
 
 /**
@@ -697,12 +697,16 @@ public final class GraphRenderer {
 
 					// Take care of custom graphic rendering.
 					if ((lodBits & LOD_CUSTOM_GRAPHICS) != 0) {
+					    // NOTE: The following block of code should be removed when the deprecated index-based API
+					    //       methods are removed:
+					    // BEGIN BLOCK TO REMOVE.
 						final int graphicCount = nodeDetails.graphicCount(node);
 
 						for (int graphicInx = 0; graphicInx < graphicCount; graphicInx++) {
 							final Shape gShape = nodeDetails.graphicShape(node, graphicInx);
 							final Paint paint = nodeDetails.graphicPaint(node, graphicInx);
 							final byte anchor = nodeDetails.graphicNodeAnchor(node, graphicInx);
+							// Shouldn't these be graphicOffsetVectorX and Y versus labelOffsetVectorX and Y:
 							final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
 							                                                           graphicInx);
 							final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
@@ -716,6 +720,34 @@ public final class GraphRenderer {
 							                            (float) (doubleBuff2[0] + offsetVectorX),
 							                            (float) (doubleBuff2[1] + offsetVectorY),
 							                            paint);
+						}
+						// END BLOCK TO REMOVE.
+
+						// don't allow our custom graphics to mutate while we iterate over them:
+						synchronized (nodeDetails.customGraphicsLock(node)) {
+						    // This iterator will return CustomGraphics in rendering order:
+						    Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
+						    CustomGraphic cg = null;
+						    // The graphic index used to retrieve non custom graphic info corresponds to the zero-based
+						    // index of the CustomGraphic returned by the iterator:
+						    int graphicInx = 0;
+						    while (dNodeIt.hasNext()) {
+							cg = dNodeIt.next();
+							final float offsetVectorX = nodeDetails.labelOffsetVectorX(node,
+														   graphicInx);
+							final float offsetVectorY = nodeDetails.labelOffsetVectorY(node,
+														   graphicInx);
+							doubleBuff1[0] = floatBuff1[0];
+							doubleBuff1[1] = floatBuff1[1];
+							doubleBuff1[2] = floatBuff1[2];
+							doubleBuff1[3] = floatBuff1[3];
+							lemma_computeAnchor(cg.getAnchor(), doubleBuff1, doubleBuff2);
+							grafx.drawCustomGraphicFull(cg.getShape(),
+										    (float) (doubleBuff2[0] + offsetVectorX),
+										    (float) (doubleBuff2[1] + offsetVectorY),
+										    cg.getPaint());
+							graphicInx++;
+						    }
 						}
 					}
 
