@@ -69,6 +69,7 @@
 </div>
 
 <? include "nav.php"; ?>
+
 <?php
 	#  Write to Data File
 	if (isset($submit) && $error_flag == false) {
@@ -199,14 +200,11 @@
 			</TR>
 			</TABLE>
 </div>
-<p>
-	&nbsp;
-</p>
-<p>
-</p>
+
 <? } ?>
-</div>
+
 <? include "footer.php"; ?>
+
 </div>
 </body>
 </html>
