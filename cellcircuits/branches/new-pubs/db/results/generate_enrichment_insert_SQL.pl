@@ -1,17 +1,18 @@
 #! /usr/bin/perl
 
 my $usage=<<USG;
- usage: $0 <db-name>
+ usage: $0 <db-name> <results dir with .gl.enrichment files>
 
- e.g. $0 cellcircuits_dev
+ e.g. $0 cellcircuits_dev results
 
 USG
 
-die $usage if(@ARGV != 1);
+die $usage if(@ARGV != 2);
 
 use DBI;
 
 my $db       = shift @ARGV;
+my $resultsDir = shift @ARGV;
 my $server   = 'localhost';
 my $username = 'mdaly';
 my $password = 'mdalysql';
@@ -67,25 +68,25 @@ my $enrichment_fields = [
 
 
 
-my $tmp_dir = "BandyopadhyayGersten2007";
-chdir $tmp_dir or die "Cannot cd into $tmp_dir: $!\n";
+#my $tmp_dir = "BandyopadhyayGersten2007";
+#chdir $tmp_dir or die "Cannot cd into $tmp_dir: $!\n";
 
-my $find_cmd = `find . -name "*.gl.enrichment"\n`;
+my $find_cmd = `find $resultsDir -name "*.gl.enrichment"\n`;
 
 my @files = split(/\n/, $find_cmd);
 
-my $tmp_dir = '..';
-chdir $tmp_dir or die "Cannot cd into $tmp_dir: $!\n";
+#my $tmp_dir = '..';
+#chdir $tmp_dir or die "Cannot cd into $tmp_dir: $!\n";
 
 foreach my $file (@files)
 {
     print STDERR "file = $file\n";
-
-    my $pub = 'BandyopadhyayGersten2007';
+    next;
+#    my $pub = 'BandyopadhyayGersten2007';
 
     $file =~ s/^\.\///;
 
-    $file = join "/", $pub, $file;
+#    $file = join "/", $pub, $file;
 
     my @a = split(/\//, $file);
     

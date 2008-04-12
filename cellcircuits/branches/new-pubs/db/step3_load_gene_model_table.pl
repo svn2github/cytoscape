@@ -3,7 +3,7 @@
 use strict;
 use DBI;
 
-my $ccdev = 'mysql -u mdaly --password=mdalysql cellcircuits_dev';
+
 
 my $usage=<<USG;
  usage: $0 <db-name>
@@ -19,6 +19,8 @@ my $server   = 'localhost';
 my $db       = shift @ARGV;
 my $username = 'mdaly';
 my $password = 'mdalysql';
+
+my $ccdev = "mysql --user=$username --password=$password $db";
 
 my $dbh = DBI->connect("dbi:mysql:$db", $username, $password);
 
@@ -132,10 +134,10 @@ undef($gp_row);
 #########
 ##
 ##  select MAX(dbxref)... is really BAD!!!!!  not flexible!!!!!
-##
+##  used to be "SELECT MAX(dbxref_id) FROM gene_product" [even worse]
 #########
 my $get_last_index_of_dbxref_table = qq{
-SELECT MAX(dbxref_id) FROM gene_product
+SELECT MAX(id) FROM dbxref
 };
 my $get_last_index_of_dbxref_table_STH =
     $dbh->prepare($get_last_index_of_dbxref_table);
@@ -161,21 +163,20 @@ my %imgFormat =
      Yeang2005_GB               => "gif",
      );
 
+#	      BandyopadhyayGersten2007
 my @pubs = qw(
-	      BandyopadhyayGersten2007
+	      Begley2002_MCR
+	      Bernard2005_PSB
+	      de_Lichtenberg2005_Science
+	      Gandhi2006_NG
+	      Hartemink2002_PSB
+	      Haugen2004_GB
+	      Ideker2002_BINF
+	      Kelley2005_NBT
+	      Sharan2005_PNAS
+	      Suthram2005_Nature
+	      Yeang2005_GB
 	      );
-	      #Begley2002_MCR
-	      #Bernard2005_PSB
-	      #de_Lichtenberg2005_Science
-	      #Gandhi2006_NG
-	      #Hartemink2002_PSB
-	      #Haugen2004_GB
-	      #Ideker2002_BINF
-	      #Kelley2005_NBT
-	      #Sharan2005_PNAS
-	      #Suthram2005_Nature
-	      #Yeang2005_GB
-	      #);
 
 
 print STDERR "Here...1\n";
@@ -191,7 +192,9 @@ my $gene_model_sql = 'INSERT INTO gene_model (model_id, gene_product_id)';
 
 
 
-my $sifList_path = "/cellar/users/mdaly/cellcircuits/trunk/data";
+#my $sifList_path = "/cellar/users/mdaly/cellcircuits/trunk/data";
+my $sifList_path = '/var/www/html/search/data';
+
 
 my $c = 0;
 

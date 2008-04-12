@@ -3,7 +3,7 @@
 use strict;
 use DBI;
 
-my $ccdev = 'mysql -u mdaly --password=mdalysql cellcircuits_dev';
+
 
 my $usage=<<USG;
  usage: $0 <db-name>
@@ -19,6 +19,8 @@ my $server   = 'localhost';
 my $db       = shift @ARGV;
 my $username = 'mdaly';
 my $password = 'mdalysql';
+
+my $ccdev = "mysql --user=$username --password=$password $db";
 
 my $dbh = DBI->connect("dbi:mysql:$db", $username, $password);
 
