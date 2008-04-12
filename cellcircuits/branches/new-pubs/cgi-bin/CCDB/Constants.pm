@@ -38,7 +38,7 @@ our $data_url     = "/data";
 
 our $chianti_url = 'http://chianti.ucsd.edu';
 
-our $DB_INSTANCE = "cc_stage";
+our $DB_INSTANCE = "cc";
 
 our $SYNONYM_FILE = "/opt/www/cgi-bin/search/${cgi_version}/CCDB/synonyms.$DB_INSTANCE.latest.tab";
 
@@ -110,19 +110,20 @@ our $pubInfo = {
 	name => "Yeang, Genome Biology (2005)",
 	img_format => "gif",
 	supplement_URL => "$chianti_url/Yeang2005",
-    },
-    BandyopadhyayGersten2007 => {
-	citation => sprintf($entrezURLFormat, ""),
-	name => "Bandyopadhyay, SUBMITTED (2006)",
-	img_format => "png",
-	supplement_URL => "",
-    },
-    Chuang2006 => {
-	citation => sprintf($entrezURLFormat, ""),
-	name => "Chuang, SUBMITTED (2006)",
-	img_format => "png",
-	supplement_URL => "",
     }
+#,
+#    BandyopadhyayGersten2007 => {
+#	citation => sprintf($entrezURLFormat, ""),
+#	name => "Bandyopadhyay, SUBMITTED (2006)",
+#	img_format => "png",
+#	supplement_URL => "",
+#    },
+#    Chuang2006 => {
+#	citation => sprintf($entrezURLFormat, ""),
+#	name => "Chuang, SUBMITTED (2006)",
+#	img_format => "png",
+#	supplement_URL => "",
+#    }
 };
 
 our $db_link_by_species = {
@@ -175,9 +176,9 @@ our $pubName = {
     'Begley2002_MCR'             => "Begley, Molecular Cancer Research (2002)",
     'Bernard2005_PSB'            => "Bernard and Hartemink, Pacific Symposium on Biocomputing (2005)",
     'de_Lichtenberg2005_Science' => "de Lichtenberg, Science (2005)",
-    'Gandhi2006_NG'              => "Gandhi, Nataure Genetics (2006)",
+    'Gandhi2006_NG'              => "Gandhi, Nature Genetics (2006)",
     'Hartemink2002_PSB'          => "Hartemink, Pacific Symposium on Biocomputing (2002)",
-    'Haugen2004_GB'              => "Haugen, Geneome Biology (2004)",
+    'Haugen2004_GB'              => "Haugen, Genome Biology (2004)",
     'Ideker2002_BINF'            => "Ideker, Bioinformatics (2002)",
     'Kelley2005_NBT'             => "Kelley, Nature Biotechnology (2005)",
     'Sharan2005_PNAS'            => "Sharan, PNAS (2005)",

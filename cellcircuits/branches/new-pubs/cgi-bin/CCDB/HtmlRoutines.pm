@@ -177,12 +177,12 @@ sub query_form
       <td align='left' valign='center' rowspan=2>
          &nbsp;<a class='white-bg-link' href='$search_url/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
 	 &nbsp;<a class='white-bg-link' href='$search_url/advanced_search.html'>Advanced&nbsp;Search</a><br />
-	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>&nbsp;|&nbsp;<a class='white-bg-link' href='$search_url/Tutorial-results.html'>Help</a>
+	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>&nbsp;|&nbsp;<a class='white-bg-link' href='$search_url/Tutorial-results-1.html'>Help</a>
       </td>
     </tr>
     <tr>
       <td align='center' valign='top'>
-        <input type="submit" name="search_query_button" value="Search" title='Click to find models matching your query'/><input type="submit" value="Load Example Query" title="requires javaScript" onClick="LoadExampleQuery('gcn* gal4 GO:0003677','DNA binding');return false;" />
+        <input type="submit" name="search_query_button" value="Search" title='Click to find models matching your query'/><input type="submit" value="Load Example Query" title="requires javaScript" onClick="LoadExampleQuery('rad51 GO:0006950 ercc1_human', 'DNA repair');return false;" />
       </td>
     </tr>
   </table>
@@ -478,7 +478,7 @@ sub print_results
      <th class="result-header">Model</th>
      <th class="result-header">Matches</th>
      <th class="result-header" colspan="1" valign='bottom'>
-     Model annotation [<a class="color-bg-link" href="/Tutorial-results.html#row4_explanation" title="Go to tutorial">read more</a>]&nbsp;&nbsp;
+     Model annotation [<a class="color-bg-link" href="/Tutorial-results-2.html#row4_explanation" title="Go to tutorial">read more</a>]&nbsp;&nbsp;
      </th>
    </tr>
 TBL_HDR
@@ -993,7 +993,9 @@ sub format_model_thm_td
 	 <a class='white-bg-link' href='$pubInfo->{$pub}->{citation}' title='PubMed abstract'>[PubMed]</a>
 MODEL_HTML
       
-    if(exists($pubInfo->{$pub}->{supplement_URL})) { 
+   if(exists($pubInfo->{$pub}->{supplement_URL}) &&
+       $pubInfo->{$pub}->{supplement_URL} ne "") 
+    { 
         $model_thm_html .= "<a class='white-bg-link' href='$pubInfo->{$pub}->{supplement_URL}' title='Online publication supplement'>[web site]</a>\n";
     }
 
