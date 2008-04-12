@@ -1,0 +1,6 @@
+NMI	ipp	MYC
+STA5A	ipp	NMI
+MYC	ipp	STA5A
+AP2B	ipp	MYC
+GSTT1	ipp	MYC
+MYC	ipp	NFYC

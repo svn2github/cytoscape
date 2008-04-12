@@ -1,0 +1,5 @@
+MK09	ipp	IRS1
+IRS1	ipp	RASN
+IRS1	ipp	SHC1
+RASN	ipp	SHC1
+IRS1	ipp	TRS1

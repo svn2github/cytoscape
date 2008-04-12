@@ -1,0 +1,4 @@
+ESR1	ipp	SHC1
+ESR1	ipp	LBC
+CP1A1	ipp	ESR1
+BRCA1	ipp	ESR1

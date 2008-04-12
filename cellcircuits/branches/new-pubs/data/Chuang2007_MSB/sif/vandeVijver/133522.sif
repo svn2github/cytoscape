@@ -1,0 +1,8 @@
+RL5	ipp	RS25
+ESR1	ipp	P53
+ESR1	ipp	AHR
+Q86YN6	ipp	ESR1
+P53	ipp	RL5
+CAV1	ipp	ESR1
+ESR1	ipp	SMCA2
+ESR1	ipp	JUN

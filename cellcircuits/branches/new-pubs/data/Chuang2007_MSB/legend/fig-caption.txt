@@ -1,0 +1,1 @@
+Nodes and links represent human proteins and protein interactions, respectively. The color of each node scales with the change in expression of the corresponding gene for metastatic versus non-metastatic cancer. The shape of each node indicates whether its gene is significantly differentially-expressed (diamond; p < 0.05 from a two-tailed t-test) or not (circle). 

@@ -1,0 +1,7 @@
+CDC6	ipp	PSB2
+CDC6	ipp	PSA7
+PSA7	ipp	PSB2
+PSB2	ipp	PSD7
+PSA7	ipp	PSD7
+CDC6	ipp	PSD7
+LMX1B	ipp	PSB2

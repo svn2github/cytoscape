@@ -1,0 +1,7 @@
+RXRA	ipp	PXR
+PSD1	ipp	PSD7
+SP1	ipp	HDAC2
+RXRA	ipp	SP1
+MECR	ipp	RXRA
+RXRA	ipp	CATL
+CATL	ipp	PSD1
