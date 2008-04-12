@@ -177,6 +177,7 @@
              splitindex="true"
              noindex="false"
              windowtitle="${name} API"
+	     package="true"
              doctitle="${name}" />
     <echo message="Successfully ran docs task!"/>
   </target>
