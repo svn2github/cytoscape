@@ -11,6 +11,7 @@ use MultiOrganismSIF;
 use GeneNameMapper;
 use EdgeMapper;
 use YeastHumanGeneMapper;
+use Publication;
 
 use File::Spec;
 
@@ -27,52 +28,47 @@ my $em = EdgeMapper->new();
 
 foreach my $pub (@ARGV)
 {
-    my $sifDir = "$DATA_DIR/$pub/sif";
     my $glDir = "$OUTPUT_DIR/gl";
     my $glPubDir = "$glDir/$pub";
     my $sqlDir = "$OUTPUT_DIR/sql";
 
-    if (! -d $sifDir)
-    {
-	print STDERR "$sifDir is not a directory\n";
-	next;
-    }
     checkDir($glDir);
     checkDir($glPubDir);
     checkDir($sqlDir);
 
-    processPub($pub, $sifDir, $glPubDir, $sqlDir);
+    processPub($pub, $DATA_DIR, $glPubDir, $sqlDir);
 }
 
 sub processPub
 {
-    my ($pub, $sifDir, $glDir, $sqlDir) = @_;
+    my ($pubName, $dataDir, $glDir, $sqlDir) = @_;
 
-    print STDERR "publication: $pub\n";
+    print "publication: $pubName\n";
 
-    my @sifs = glob("$sifDir/*.sif");
-    
-    my $sqlFile = $pub . ".insert-MODEL-GENE_MODEL.sql";
-    #my @sifs = "$sifDir/" . "24.sif";
+    my $pub = Publication->new($pubName, $dataDir, $nm, $em);
+
+    my $sqlFile = $pubName . ".insert-MODEL-GENE_MODEL.sql";
     
     open(SQLOUT, ">$sqlDir/$sqlFile") || die "Can't open $sqlDir/$sqlFile\n";
     
-    foreach my $file (@sifs)
+    while( my ($file, $sif) = each %{$pub->sifs()})
     {
-	print STDERR "   reading $file\n";
-	my $sif = MultiOrganismSIF->new($file, 
-					["Saccharomyces cerevisiae","Homo sapiens"], 
-					$nm,
-					$em);
-	my $name = getName($file);
-	$sif->name($name);
-	$pub =~ /(\w+)/;
-	$sif->pub($1);
-	
-	writeGL($glDir, $name . ".gl",  $file, $sif);
+	print "   reading $file\n";
+
+	makeSubDirs($glDir, $sif->name());
+
+	writeGL($glDir, $sif->name() . ".gl",  $file, $sif);
 	writeSQL(*SQLOUT, $sif);
     }
     close SQLOUT;
+}
+
+sub makeSubDirs
+{
+    my ($parent, $name) = @_;
+
+    my ($vol, $dir, $file) = File::Spec->splitpath($name);
+    checkDir(File::Spec->catdir($parent, $dir));
 }
 
 sub checkDir
@@ -130,22 +126,18 @@ sub writeSQL
     {
 	print $FH ("INSERT INTO gene_model (model_id, gene_product_id) VALUES\n");
 	print $FH join(",\n  ", 
-		       map { sprintf("(LAST_INSERT_ID(), %s)", $_) } sort { $a<=>$b} keys %goids);
+		       # CMAK 9/12/07
+		       # LAST_INSERT_ID() does not seem to work when inserting multiple values
+		       # on MySQL v 4.1.20 (default RedHat installation on chianti).
+		       # So, use the less elegant way instead (select id from model ...).
+		       # LAST_INSERT_ID() works on MySQL v 4.1.21 on claret
+		       #
+                       #map { sprintf("(LAST_INSERT_ID(), %s)", $_) } 
+		       #
+		       map { sprintf("((select id from model where pub= '%s' and name = '%s'), %s)", $sif->pub(), $sif->name(), $_) } 
+		       sort { $a<=>$b} keys %goids);
 	print $FH ";\n\n";
     }
-}
-
-sub getName
-{
-    my ($file) = @_;
-    my ($volume, $dirs, $name) = File::Spec->splitpath( $file );
-
-    if($name =~ /(.+)\.(\w+)/)
-    {
-	return $1;
-    }
-   
-    return $name;
 }
 
 sub writeGL

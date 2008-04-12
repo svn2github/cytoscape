@@ -75,48 +75,47 @@ foreach my $pub (@PUBS)
     if(-d $glDir && -d $sqlDir)
     {
 	printf STDERR "Generating enrichment SQL for $glDir\n";
-	processPub($glDir, $sqlDir, $pub);
+	my $output_file = "$sqlDir/$pub.insert-ENRICHMENT.sql";
+	printf STDERR "Writing SQL commands to: $output_file\n";
+
+	open(OUTPUT, "> $output_file" ) || die "Cannot open $output_file\n";
+	processGLDir($pub, $glDir, \*OUTPUT);
+	close OUTPUT;
     }
 
 }
 
-sub processPub
+sub processGLDir
 {
-    my ($glDir, $sqlDir, $pub) = @_;
+    my ($pub, $dir, $outputFH, @prefixes) = @_;
 
-    printf STDERR "Reading .gl.enrichment files in $glDir\n";
+    opendir(D, $dir) || die "Can't open dir $dir: $!\n";
+    foreach my $entry (readdir(D))
+    {
+	next if($entry eq "." || $entry eq "..");
+	if(-d "$dir/$entry")
+	{
+	    print STDERR "processGLDir recursing to $dir/$entry\n";
+	    
+	    processGLDir($pub, "$dir/$entry", $outputFH, @prefixes, $entry);
+	}
+    }
+    closedir(D);
+    processGLFiles($pub, $dir, $outputFH, @prefixes);
+}
 
-    my @files = glob("$glDir/*.gl.enrichment"); 
+sub processGLFiles
+{
+    my ($pub, $gl_dir, $outputFH, @prefixes) = @_;
 
-    my $output_file = "$sqlDir/$pub.insert-ENRICHMENT.sql";
-    printf STDERR "Writing SQL files to: $output_file\n";
-    open(OUTPUT, "> $output_file" ) || die "Cannot open $output_file\n";
-    
+    print STDERR "### gl dir = $gl_dir\n";
+
+    my @files = glob("$gl_dir/*.gl.enrichment");
+
     foreach my $file (@files)
     {
-	print STDERR "file = $file\n";
+	print STDERR "generating enrichment SQL for $file\n";
 	
-### all this is for "nested models"  
-### We will address this problem later.
-
- #   my $pub = 'BandyopadhyayGersten2007';
-
- #   $file =~ s/^\.\///;
-
-#    $file = join "/", $pub, $file;
-
-#    my @a = split(/\//, $file);
-    
-#    my $pub = shift @a;
-    
-#    $pub = shift @a;
-
-#    my $tmp_file = join '/', @a[0..$#a];
-
-#    my @fp = split(/[.]/, $tmp_file);
-
-#    my $model_name = $fp[0];
-
 	my ($volume, $dirs, $name) = File::Spec->splitpath( $file );
 	if ($name !~ /(.*)\.gl\.enrichment/)
 	{
@@ -124,15 +123,13 @@ sub processPub
 	    next;
 	}
 	
-	my $model_name = $1;
-	
+	my $model_name = join("/", @prefixes, $1);
+	print STDERR "  model_name=$model_name, pub=$pub\n";
+
 	my $model_id = get_model_id($get_model_id_STH, $model_name, $pub);
-	print STDERR "mid = $model_id\n";    
+	print STDERR "   mid = $model_id\n";    
 	open(FILE, "< $file") or die "Cannot open $file: $!\n";
-	
-	printf OUTPUT ("INSERT INTO enrichment (%s) VALUES\n", 
-		       join(",", @{$enrichment_fields}));
-	
+		
 	my @values;
 	while(<FILE>)
 	{
@@ -194,11 +191,16 @@ sub processPub
 						 $gene_ids));
 	}
 	close(FILE);
-	
-	printf OUTPUT ("%s;\n", join(",\n", @values));
+
+	if(scalar(@values) > 0)
+	{
+	    printf $outputFH ("INSERT INTO enrichment (%s) VALUES\n", 
+			   join(",", @{$enrichment_fields}));
+	    
+	    printf $outputFH ("%s;\n", join(",\n", @values));
+	}
     }
-    
-    close OUTPUT;
+
 }
 
 sub get_term_id

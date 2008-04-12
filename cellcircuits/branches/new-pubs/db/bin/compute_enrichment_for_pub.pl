@@ -1,17 +1,20 @@
-#! /usr/bin/perl
+#! /usr/bin/perl -I../perl-lib -w
 
 use DBI;
 use Memoize;
 
-memoize 'get_species_id';
+use DBCache;
+
+
+#memoize 'get_species_id';
 
 #my $dir_prefix = "/var/www/html/search/data";
 #my $dir_prefix = "/cellar/users/mdaly/cellcircuits/trunk/data";
 my $hyper_p    = "/cellar/users/cworkman/src/hypergeometric_Pvalue/hyper_p";
-my $genes_beneath_terms_FILE = "n_genes_beneath_BY_GO_term_accession.tab";
+#my $genes_beneath_terms_FILE = "n_genes_beneath_BY_GO_term_accession.tab";
 
 my $usage=<<USG;
- usage: $0 <db-name> <$genes_beneath_terms_FILE> <output dir> <publication>+
+ usage: $0 <db-name> <n_genes_beneath_terms_FILE> <output dir> <publication>+
 
   This program operates on gl files in:
 
@@ -42,7 +45,9 @@ USG
 die $usage if(@ARGV < 4);
 
 
-my ($db, $genes_beneath_terms_FILE, $OUTPUT_DIR, @PUBS) = @ARGV;
+my ($db, $CACHE_DIR, $genes_beneath_terms_FILE, $OUTPUT_DIR, @PUBS) = @ARGV;
+
+my $dbCache = DBCache->new($CACHE_DIR);
 
 my $server   = 'localhost';
 my $username = 'mdaly';
@@ -169,21 +174,33 @@ print "genes_beneath_terms_FILE: $genes_beneath_terms_FILE\n";
 
 my $org_acc_n_genes_beneath = read_genes_beneath_file($genes_beneath_terms_FILE);
 
-my $count = 0;
-
 foreach my $pub (@PUBS) 
 {
-## This is for the "nested models" e.g. yc-pairwise/1.gl
-#    my @dp = split(/\//,$pub_dir_name);
-#    my $pub = shift @dp;
-#    my $gl_dir = "";
-#    if(scalar(@dp)>=1){
-#	my $path = join "/", @dp;
-#	$gl_dir = "$dir_prefix/$pub/gl/$path";
-#    }
-#    else{ $gl_dir = "$dir_prefix/$pub/gl"; }
-
     my $gl_dir = "$OUTPUT_DIR/gl/$pub";
+    processGLDir($gl_dir);
+}
+
+sub processGLDir
+{
+    my ($dir) = @_;
+
+    opendir(D, $dir) || die "Can't open dir $dir: $!\n";
+    foreach my $entry (readdir(D))
+    {
+	next if($entry eq "." || $entry eq "..");
+	if(-d "$dir/$entry")
+	{
+	    print STDERR "processGLDir recursing to $dir/$entry\n";
+	    processGLDir("$dir/$entry");
+	}
+    }
+    closedir(D);
+    processGLFiles($dir);
+}
+
+sub processGLFiles
+{
+    my ($gl_dir) = @_;
 
     print STDERR "### gl dir = $gl_dir\n";
 
@@ -195,17 +212,15 @@ foreach my $pub (@PUBS)
 
 	my ($genes) = parse_gl_file($gl_file); #genes->{organism}{gene_name}
 
-	$count++;
-	print STDERR "$count\t$pub_dir_name\t$gl_file\n";
-	
 	my $results_file = "${gl_file}.enrichment";
 	
 	open(RESULTS, "> $results_file") || die "Cannot open $results_file: $!\n";
 	my $n_genes_in_model = 0;
 	foreach my $org (sort keys %{ $genes }) {
 	    my($genus,$species) = split(/\s/, $org);
-	    my $species_id = get_species_id($genus,$species);
-	    
+	    my $species_id = get_species_id($org);
+	    print STDERR "### speciesId = $species_id for $org\n";
+	
 	    my ($genes_in_model,#ref-to-hash genes_in_model->{gene_product_id} = symbol
 		$org_tacc_gid,  #org_tacc_gid->{org}{tacc}{gene_name}++
 		$org_tacc       #org_tacc->{org}{tacc} = "ttype\ttname"
@@ -217,6 +232,7 @@ foreach my $pub (@PUBS)
 	    printf RESULTS "%s\n", join "\t", @outfile_data_fields;
 
 	    foreach my $tacc (keys %{ $org_tacc_gid->{$org} }){
+#		print STDERR "!!! $org $tacc\n";
 		my @genes_in_model_with_term = keys %{ $org_tacc_gid->{$org}{$tacc} };
 		my $n_genes_in_model_with_term = scalar(@genes_in_model_with_term);
 
@@ -226,7 +242,8 @@ foreach my $pub (@PUBS)
 		my $n_genes_in_GO = 
 		    $org_acc_n_genes_beneath->{$org}{$acc_by_type->{$ttype}};
 		my $n_genes_with_term = $org_acc_n_genes_beneath->{$org}{$tacc};
-		
+
+		next if (! defined($n_genes_with_term)); # hack to work around bug in n_genes_beneath file
 		my $hyperp_input = 
 		    join " ", $n_genes_in_model_with_term, $n_genes_in_model,
 		    $n_genes_with_term, $n_genes_in_GO;
@@ -255,12 +272,21 @@ sub get_terms_annotated_to_genes
     my $org_tacc = {};       #org_tacc->{org}{tacc} = "ttype\ttname"
     foreach my $gene (keys %{ $gene_list->{$organism} }) {
 	my $tmp_terms = {};
+
+	#print STDERR "### getting terms for $gene $genus $species\n";
 	($tmp_terms,$genes_in_model) = get_terms($gene,$genus,$species,
 						 $genes_in_model,$ofh,$gl_name);
-	$tmp_terms = get_ancestors($tmp_terms);
-
 	foreach my $ttype (keys %{ $tmp_terms }){
 	    foreach my $tacc (keys %{ $tmp_terms->{$ttype} }) {
+		#print STDERR  "### before_ancestors: $organism $ttype $tacc $gene\n";
+	    }
+	}
+	$tmp_terms = get_ancestors($tmp_terms);
+
+	printf STDERR "### get_terms [$gene]: %s\n", join(", ", map { "[" . $_ . "," . scalar(keys %{$tmp_terms->{$_}}) . "]"} keys %{$tmp_terms}); 
+	foreach my $ttype (keys %{ $tmp_terms }){
+	    foreach my $tacc (keys %{ $tmp_terms->{$ttype} }) {
+		#print STDERR  "### found: $organism $ttype $tacc $gene\n";
 		$org_tacc_gid->{$organism}{$tacc}{$gene}++;
 		$org_tacc->{$organism}{$tacc} = "$ttype\t$tmp_terms->{$ttype}{$tacc}";
 	    }
@@ -281,9 +307,9 @@ sub get_terms
 	$gene .= "_HUMAN"; 
     }
 
-    $get_terms_of_gene_symbol_STH->bind_param(1, $genus,   {TYPE=>12});
-    $get_terms_of_gene_symbol_STH->bind_param(2, $species, {TYPE=>12});
-    $get_terms_of_gene_symbol_STH->bind_param(3, $gene,    {TYPE=>12});
+    $get_terms_of_gene_symbol_STH->bind_param(1, $genus);
+    $get_terms_of_gene_symbol_STH->bind_param(2, $species);
+    $get_terms_of_gene_symbol_STH->bind_param(3, $gene);
     $get_terms_of_gene_symbol_STH->execute();
 
     my $tmp_terms = {};
@@ -297,10 +323,11 @@ sub get_terms
 	}
     }
 
+
     if(scalar(keys %{ $tmp_terms }) == 0){
-	$get_terms_of_gene_synonym_STH->bind_param(1, $genus,   {TYPE=>12});
-	$get_terms_of_gene_synonym_STH->bind_param(2, $species, {TYPE=>12});
-	$get_terms_of_gene_synonym_STH->bind_param(3, $gene,    {TYPE=>12});
+	$get_terms_of_gene_synonym_STH->bind_param(1, $genus);
+	$get_terms_of_gene_synonym_STH->bind_param(2, $species);
+	$get_terms_of_gene_synonym_STH->bind_param(3, $gene);
 	$get_terms_of_gene_synonym_STH->execute();
 	my $synonyms = {};
 	while(my $Ref = $get_terms_of_gene_synonym_STH->fetchrow_hashref()) {
@@ -364,7 +391,7 @@ sub get_ancestors
 #      {
 #	  print STDERR "Miss $termAccession\n";
 #      }
-      return $cache{$termAcccession} if exists $cache{$termAccession};
+      return $cache{$termAccession} if exists $cache{$termAccession};
       my %ancestors;
 
       $get_ancestors_of_term_STH->bind_param(1, $termAccession);
@@ -393,25 +420,27 @@ sub get_ancestors
 
 sub get_species_id
 {
-    my ($genus,$species) = @_;
+    my ($organism) = @_;
 
-    $get_species_id_STH->bind_param(1, $genus,   {TYPE=>12});
-    $get_species_id_STH->bind_param(2, $species, {TYPE=>12});
-    $get_species_id_STH->execute();
+    return $dbCache->name2speciesId($organism);
 
-    my $species_id;
-    my $row = $get_species_id_STH->fetchrow_arrayref();
-    if(scalar(@$row) > 1){ 
-	print STDERR "ERROR: more than one species id corresponds "
-	    . "to genus=$genus species=$species\n";  exit;
-    }
-    elsif(scalar(@$row) == 0){ 
-	print STDERR "ERROR: no species id corresponds "
-	    . "to genus=$genus species=$species\n"; exit;
-    }
-    else{ $species_id = $row->[0]; }
+#    $get_species_id_STH->bind_param(1, $genus);
+#    $get_species_id_STH->bind_param(2, $species);
+#    $get_species_id_STH->execute();
 
-    return $species_id;
+#    my $species_id;
+#    my $row = $get_species_id_STH->fetchrow_arrayref();
+#    if(scalar(@$row) > 1){ 
+#	print STDERR "ERROR: more than one species id corresponds "
+#	    . "to genus=$genus species=$species\n";  exit;
+#    }
+#    elsif(scalar(@$row) == 0){ 
+#	print STDERR "ERROR: no species id corresponds "
+#	    . "to genus=$genus species=$species\n"; exit;
+#    }
+#    else{ $species_id = $row->[0]; }
+
+#    return $species_id;
 }
 
 sub parse_gl_file
