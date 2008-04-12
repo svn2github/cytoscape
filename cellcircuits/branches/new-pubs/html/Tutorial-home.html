@@ -12,7 +12,7 @@
   <script src="javascript/scriptaculous.js" type="text/javascript"></script>
 
   <!--<link type="text/css" rel="stylesheet" href="master.css">-->
-  <link type="text/css" rel="stylesheet" href="tutorial.css">
+  <link type="text/css" rel="stylesheet" href="css/tutorial.css">
 
   <title>Cell Circuits - Tutorial (Page 1/4) - Home</title>
 
@@ -43,15 +43,15 @@
        <br><br>
 -->       
        <div class="left-col">
-         <a class="blue-link" href="http://cellcircuits.org">CellCircuits Home</a><br><br>
-	 <a class="blue-link" href="about_cell_circuits.html">About CellCircuits</a><br><br>
-         <a class="black-no-decoration-link" href="http://cellcircuits.org">Tutorial</a><br><br>
-         <a class="grey-indented-no-decoration-link" href="http://cellcircuits.org">Welcome</a><br><br>
-         <a class="blue-indented-link" href="http://cellcircuits.org">Advanced Search</a><br><br>
-         <a class="blue-indented-link" href="http://cellcircuits.org">Results - 1 of 2</a><br><br>
-         <a class="blue-indented-link" href="http://cellcircuits.org">Results - 2 of 2</a><br><br>
-         <a class="blue-link" href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab">Ideker Lab</a><br><br>
-         <a class="blue-link" href="http://www-bioeng.ucsd.edu/">UCSD</a><br>
+         <a class="blue-link" href="http://cellcircuits.org" title="CellCircuits Home">CellCircuits Home</a><br><br>
+	 <a class="blue-link" href="about_cell_circuits.html" title="About CellCircuits">About CellCircuits</a><br><br>
+         <a class="black-no-decoration-link" href="Tutorial-home.html" title="Have Questions? Take the Cellcircuits tour">Tutorial</a><br><br>
+         <a class="grey-indented-no-decoration-link" href="Tutorial-home.html">Welcome</a><br><br>
+         <a class="blue-indented-link" href="Tutorial-advanced-search.html">Advanced Search</a><br><br>
+         <a class="blue-indented-link" href="Tutorial-results-1.html">Results - 1 of 2</a><br><br>
+         <a class="blue-indented-link" href="Tutorial-results-2.html">Results - 2 of 2</a><br><br>
+         <a class="blue-link" href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab" title="Dr. Trey Ideker's Lab Home Page">Ideker Lab</a><br><br>
+         <a class="blue-link" href="http://www-bioeng.ucsd.edu/" title="UCSD Bioengineering Home Page">UCSD</a><br>
 
        </div>
 
@@ -59,24 +59,23 @@
      </td>
 
 <!-- start of rest of stuff -->
-     <td>
+     <td class="footer-hr">
      
      <div class="tutorial-body">
 
            <table border=0>
 
-	   <tr>
-	     <td colspan=4 align=right>
-	       <a href="Tutorial-advanced-search.html"><img src="red-back.gif" align=absmiddle border=0></img></a>
-               <a href="Tutorial-advanced-search.html"><img src="red-next.gif" align=absmiddle border=0></img></a>
-	     </td>
-	   </tr>
+	     <tr>
+	       <td colspan=5 align=right>
+                 <a href="Tutorial-advanced-search.html"><img src="images/tutorial/red-next.gif" align=absmiddle border=0></img></a>
+	       </td>
+	     </tr>
 
 	     <tr>
-	       <td colspan=4>
+	       <td colspan=5>
                  <span class="welcome-header">Welcome to CellCircuits</span>
                  <div class="image">
-                   <img id="tutorial-img" src="Tutorial-results_v4_page1.gif" border=0 usemap="#home_tutorial_map" title="Home Tutorial image"></img>
+                   <img id="tutorial-img" src="images/tutorial/CC-home.gif" border=0 usemap="#home_tutorial_map" title="Home Tutorial image"></img>
                  </div>
 
                <map name="home_tutorial_map">
@@ -87,22 +86,22 @@
 	       </td>
 	     </tr>
 
-             <tr id="explanation" valign="top">
+             <tr id="explanation" valign="center">
   
                <td width=40 valign=center>
-                 <img src="1_red.gif"></img>
+                 <img src="images/tutorial/1_red.gif"></img>
+               </td>
+               <td width=250>
+                  <span class="explanation-header">Search</span>
                </td>
 
-               <td class="explanation-header">
-                  Search
-               </td>
+	       <td>&nbsp;&nbsp;</td>
 
                <td width=40 valign=center>
-                 <img src="2_red.gif"></img>
+                 <img src="images/tutorial/2_red.gif"></img>
                </td>
-
-               <td class="explanation-header">
-                 Load an Example
+               <td width=250>
+                 <span class="explanation-header">Load an Example</span>
                </td>
 
              </tr>
@@ -110,13 +109,13 @@
              <tr>
                <td colspan=2>
 
-              Separate search terms with a space, including:
-              <ul>
-                <li>Exact gene names (e.g. gcn4, rad52, gal4, yap6)
-                <li>Fuzzy gene names including the '*' character (e.g. gcn*, rad*, gal*, yap*)
-                <li><a class="blue-link" href="http://www.geneontology.org">GO</a> term accessions (e.g. GO:0006366, GO:0004402) 
-                <li>Full or partial <a class="blue-link" href="http://www.geneontology.org">GO</a> term names enclosed in double-quotes (e.g. "DNA binding", "cell cycle", "acetylation", "cytoplasm")
-              </ul>
+                 Search terms, separated by a space, may include:
+                 <ul>
+                   <li>Exact gene names (e.g. gcn4, rad52, gal4, yap6)
+                   <li>Fuzzy gene names including the '*' character (e.g. gcn*, rad*, gal*, yap*)
+                   <li><a class="blue-link" href="http://www.geneontology.org">GO</a> term accessions (e.g. GO:0006366, GO:0004402) 
+                   <li>Full or partial <a class="blue-link" href="http://www.geneontology.org">GO</a> term names enclosed in double-quotes (e.g. "DNA binding", "cell cycle", "acetylation", "cytoplasm")
+                 </ul>
 
            <!--
               Any combination of the above is valid, however longer and more complex queries will 
@@ -130,6 +129,8 @@
 
                </td>
 
+	       <td>&nbsp;&nbsp;</td>
+
                <td colspan=2 valign=top>
                  At a loss for how to start?  Click this button and a 
                  valid example query will populate the search box.<br/><br/>
@@ -138,9 +139,9 @@
              </tr>
 
 	     <tr>
-	       <td colspan=4 align=right>
-	         <a href="Tutorial-advanced-search.html"><img src="red-back.gif" align=absmiddle border=0></img></a>
-	         <a href="Tutorial-advanced-search.html"><img src="red-next.gif" align=absmiddle border=0></img></a>
+	       <td colspan=5 align=right>
+<!--	         <a href="Tutorial-advanced-search.html"><img src="images/tutorial/red-back.gif" align=absmiddle border=0></img></a>-->
+	         <a href="Tutorial-advanced-search.html"><img src="images/tutorial/red-next.gif" align=absmiddle border=0></img></a>
 	       </td>
              </tr>
            </table>
@@ -155,15 +156,15 @@
 
 </table>
 
-<hr/>
+<br>
 
 <center>
 
-<a class="blue-link" href="index.html" title="Click to go to the CellCircuits Home Page">CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-<a class="blue-link" href="about_cell_circuits.html">About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-<a class="blue-link" href="Tutorial-home.html">Help</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-<a class="blue-link" href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab">Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-<a class="blue-link" href="http://www-bioeng.ucsd.edu/">UCSD</a><br />
+<a class="blue-link" href="http://cellcircuits.org" title="CellCircuits Home Page">CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a class="blue-link" href="about_cell_circuits.html" title="About Cellcircuits">About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a class="blue-link" href="Tutorial-home.html" title="Have Questions? Take the Cellcircuits tour">Help</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a class="blue-link" href="http://www-bioeng.ucsd.edu/faculty/area/ideker_lab" title="Dr. Trey Ideker's Lab Home Page">Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a class="blue-link" href="http://www-bioeng.ucsd.edu/" title="UCSD Bioengineering Home Page">UCSD</a><br />
 <p style="font-size: 0.8em">Funding provided by the National Science Foundation (NSF 0425926).</p>
 
 </center>
