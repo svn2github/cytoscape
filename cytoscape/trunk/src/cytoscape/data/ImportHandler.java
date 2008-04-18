@@ -200,6 +200,8 @@ public class ImportHandler {
 
 		// Get the content-type
 		String contentType = conn.getContentType();
+		if ( contentType == null )
+			contentType = "";
 
 		// System.out.println("Content-type: "+contentType);
 
