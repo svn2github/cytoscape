@@ -53,6 +53,9 @@ public class HeaderSummary extends Observable implements ConfigNodePersistent {
 		String [] strings = null;
 		try {
 		    strings = headerInfo.getHeader(index);
+				// for (int i = 0; i < strings.length; i++) {
+				// 	System.out.println("header["+index+"]["+i+"] = "+strings[i]);
+				// }
 		} catch (java.lang.ArrayIndexOutOfBoundsException aie) {
 		    LogBuffer.println("index " + index + " out of bounds on headers, continuing");
 			return null;

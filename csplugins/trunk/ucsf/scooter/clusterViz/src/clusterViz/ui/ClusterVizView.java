@@ -36,11 +36,15 @@ package clusterViz.ui;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observer;
+import java.util.Observable;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -48,34 +52,51 @@ import java.net.MalformedURLException;
 
 // Cytoscape imports
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.view.CyNetworkView;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
 
+// Giny imports
+import giny.model.Node;
+import giny.view.GraphViewChangeListener;
+import giny.view.GraphViewChangeEvent;
+
 // clusterViz imports
 import clusterViz.ui.ClusterVizView;
+import clusterViz.model.ClusterVizModel;
 
 // TreeView imports
 import edu.stanford.genetics.treeview.*;
-import edu.stanford.genetics.treeview.core.PluginManager;
+import edu.stanford.genetics.treeview.app.LinkedViewApp;
+// import edu.stanford.genetics.treeview.core.PluginManager;
 import edu.stanford.genetics.treeview.core.MenuHelpPluginsFrame;
 
 /**
  * The ClusterViz class provides the primary interface to the
  * Cytoscape plugin mechanism
  */
-public class ClusterVizView extends TreeViewApp {
+public class ClusterVizView extends TreeViewApp implements Observer, GraphViewChangeListener {
 	private URL codeBase = null;
 	private ViewFrame viewFrame = null;
+	private TreeSelectionI geneSelection = null;
+	private TreeSelectionI arraySelection = null;
+	private ClusterVizModel dataModel = null;
+	private CyNetworkView myView = null;
+	private CyNetwork myNetwork = null;
+
+	private static String appName = "ClusterViz";
 
 	public ClusterVizView() {
 		super();
-		scanForPlugins();
+		// scanForPlugins();
 		setExitOnWindowsClosed(false);
 	}
 
 	public ClusterVizView(XmlConfig xmlConfig) {
 		super(xmlConfig);
-		scanForPlugins();
+		// scanForPlugins();
 		// setExitOnWindowsClosed(false);
 	}
 
@@ -84,50 +105,40 @@ public class ClusterVizView extends TreeViewApp {
 			viewFrame.setVisible(visibility);
 	}
 
+	public String getAppName() {
+		return appName;
+	}
+
 	public void startup() {
-		// XXX HACK XXX
-		String sFilePath = "/tmp/input.cdt";
-		File file = new File(sFilePath);
-		FileSet fileSet = new FileSet(file.getName(), file.getParent()+File.separator);
-		try {
-			viewFrame = openNewNW(fileSet);
-		} catch (LoadException e) {
-			System.err.println(e.getMessage());
-		}
+		// Get our data model
+		dataModel = new ClusterVizModel();
+
+		// Set up our configuration
+		XmlConfig documentConfig = new XmlConfig("<ClusterVizConfig/>","ClusterVizConfig");
+		dataModel.setDocumentConfig(documentConfig);
+
+		// Create our view frame
+		TreeViewFrame frame = new TreeViewFrame(this);
+
+		// Set the data model
+		frame.setDataModel(dataModel);
+		frame.setLoaded(true);
+		frame.addWindowListener(this);
+		frame.setVisible(true);
+		geneSelection = frame.getGeneSelection();
+		geneSelection.addObserver(this);
+		arraySelection = frame.getArraySelection();
+
+		// Now set up to receive selection events
+		myView = Cytoscape.getCurrentNetworkView();
+		myNetwork = Cytoscape.getCurrentNetwork();
+		// myView.addGraphViewChangeListener(this);
 	}
 
 
 	private void setCodeBase(URL url) {
 		codeBase = url;
 	}
-
-	private void scanForPlugins() {
-    URL fileURL = getCodeBase();
-    String dir = Util.URLtoFilePath(fileURL.getPath()+"/treeView/");
-		System.out.println("plugin path: "+dir);
-    File[] files = PluginManager.getPluginManager().readdir(dir);
-    if (files == null) {
-      LogBuffer.println("Directory "+dir+" returned null");
-      File f_currdir = new File(".");
-      try {
-        dir = f_currdir.getCanonicalPath() + File.separator +"treeView" + File.separator;
-        LogBuffer.println("failing over to "+dir);
-        files = PluginManager.getPluginManager().readdir(dir);
-        if (files != null) {
-          setCodeBase(f_currdir.toURL());
-        }
-      } catch (IOException e1) {
-        // this might happen when the dir is bad.
-        e1.printStackTrace();
-      }
-    }
-    if (files == null || files.length == 0) {
-    	LogBuffer.println("Directory "+dir+" contains no plugins");
-    } else {
-      PluginManager.getPluginManager().loadPlugins(files, false);
-    }
-    PluginManager.getPluginManager().pluginAssignConfigNodes(getGlobalConfig().getNode("Plugins"));
-  }
 
 	public ViewFrame openNew() {
 		LinkedViewFrame tvFrame = new LinkedViewFrame((TreeViewApp)this, "clusterViz");
@@ -204,4 +215,55 @@ public class ClusterVizView extends TreeViewApp {
       return null;
     }
   }
+
+	public void update(Observable o, Object arg) {
+		if (o == geneSelection) {
+			List<CyNode>nodes = new ArrayList();
+			int[] selections = geneSelection.getSelectedIndexes();
+			HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
+			String [] names = geneInfo.getNames();
+			for (int i = 0; i < selections.length; i++) {
+				String nodeName = geneInfo.getHeader(selections[i])[0];
+				CyNode node = Cytoscape.getCyNode(nodeName, false);
+				if (node != null) nodes.add(node);
+			}
+			// myView.removeGraphViewChangeListener(this);
+			System.out.print("Clearing selection....");
+			myNetwork.unselectAllNodes();
+			System.out.println("done.");
+			System.out.print("Updating selection....");
+			myNetwork.setSelectedNodeState(nodes, true);
+			System.out.println("done");
+			myView.updateView();
+			// myView.addGraphViewChangeListener(this);
+		}
+	}
+
+	public void graphViewChanged(GraphViewChangeEvent event) {
+		System.out.println("graphViewChanged");
+		if (event.isNodesSelectedType()) {
+			Node[] nodeArray = event.getSelectedNodes();
+			// setSelection(nodeArray, true);
+		} else if (event.isNodesUnselectedType()) {
+			Node[] nodeArray = event.getUnselectedNodes();
+			// setSelection(nodeArray, false);
+		}
+	}
+
+	private void setSelection(Node[] nodeArray, boolean select) {
+		HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
+		geneSelection.deleteObserver(this);
+		geneSelection.setSelectedNode(null);
+		for (int index = 0; index < nodeArray.length; index++) {
+			CyNode cyNode = (CyNode) nodeArray[index];
+			System.out.println("setting "+cyNode.getIdentifier()+" to "+select);
+			int geneIndex = geneInfo.getIndex(cyNode.getIdentifier());
+			geneSelection.setIndex(geneIndex, select);
+		}
+		geneSelection.notifyObservers();
+		geneSelection.addObserver(this);
+		arraySelection.setSelectedNode(null);
+		arraySelection.selectAllIndexes();
+		arraySelection.notifyObservers();
+	}
 }

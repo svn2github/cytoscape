@@ -75,8 +75,22 @@ public class XmlConfig {
 				 el = new XMLElement(tag);
 			 }
 		 } catch (java.io.FileNotFoundException e) {
-			 // well, let's make our own...
-			 el = makeNewConfig(tag);
+		 	 try {
+				 // We might have gotten raw XML
+			 	 IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+		 		 Reader sreader = new StringReader(xmlFile);
+		 		 IXMLReader reader = new StdXMLReader(sreader);
+		 		 parser.setReader(reader);
+		 		 el = (XMLElement) parser.parse();
+			 } catch (XMLException ex) {
+				 el = null;
+			 } catch (Exception ex) {
+			 	 System.out.println(ex);
+		 	 }
+		 
+		   if (el == null) {
+			   	el = new XMLElement(tag);
+		   }
 		 } catch (Exception ex) {
 			 System.out.println(ex);
 		 }
@@ -107,12 +121,11 @@ public class XmlConfig {
 						xmlText = xmlText + new String(cbuf);
 						ch = st.read();
 					}
-				 
-				 IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
-				 Reader breader = new StringReader(xmlText);
-				 IXMLReader reader = new StdXMLReader(breader);
-				 parser.setReader(reader);
-				 el = (XMLElement) parser.parse();
+			 	  IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+		 		  Reader sreader = new StringReader(xmlText);
+		 		  IXMLReader reader = new StdXMLReader(sreader);
+		 		  parser.setReader(reader);
+		 		  el = (XMLElement) parser.parse();
 			 } catch (XMLException ex) {
 				 LogBuffer.println("Error parsing XML code in configuration url");
 				 LogBuffer.println(url.toString());
@@ -127,15 +140,14 @@ public class XmlConfig {
 				 LogBuffer.println(ex.toString());
 				 ex.printStackTrace();
 			 }
-		 }
-		 
-		 if (el == null) {
-			 el = new XMLElement(tag);
-		 }
-		 
-		 root = new XmlConfigNode(el);
-	 }
 
+			 if (el == null) {
+			   el = new XMLElement(tag);
+			 }
+		 	 root = new XmlConfigNode(el);
+		 }
+		}
+		 
     /**
      * returns node if it exists, otherwise makes a new one.
      */

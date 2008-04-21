@@ -110,9 +110,9 @@ public class TVModel extends Observable implements DataModel {
 	//	System.out.println("aid found called, value " + aidFound);
 	return aidFound;
     };
-	void aidFound(boolean newVal) {aidFound = newVal;}
+	public void aidFound(boolean newVal) {aidFound = newVal;}
     public boolean gidFound() {return gidFound;};
-	void gidFound(boolean newVal) {gidFound = newVal;}
+	public void gidFound(boolean newVal) {gidFound = newVal;}
 
 	public void setSource(FileSet source) {
 		this.source = source;
@@ -783,10 +783,10 @@ public class TVModel extends Observable implements DataModel {
 		}
 	
 
-	  void setGenePrefix(String [] newVal) {
+	  public void setGenePrefix(String [] newVal) {
 		  geneHeaderInfo.setPrefixArray(newVal);
 	  }
-	  void setGeneHeaders(String [][] newVal) {
+	  public void setGeneHeaders(String [][] newVal) {
 		  geneHeaderInfo.setHeaderArray(newVal);
 	  }
 	// loading stuff follows...

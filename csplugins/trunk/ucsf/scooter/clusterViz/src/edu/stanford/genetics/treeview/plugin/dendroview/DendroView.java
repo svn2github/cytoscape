@@ -90,7 +90,6 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 			arrayIndex = null;
 		}
 		if (dataModel.getGeneHeaderInfo().getIndex("GROUP") != -1) {
-			System.err.println("got gene group header");
 			HeaderInfo headerInfo = dataModel.getGeneHeaderInfo();
 			int groupIndex = headerInfo.getIndex("GROUP");
 			geneIndex = getGroupVector(headerInfo, groupIndex);

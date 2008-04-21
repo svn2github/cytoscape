@@ -110,6 +110,7 @@ public class ClusterViz extends CytoscapePlugin {
 					cvView.startup();
 					cvView.setVisible(true);
 				} else {
+					cvView.startup();
 					cvView.setVisible(true);
 				}
 			}

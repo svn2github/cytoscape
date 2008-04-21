@@ -132,6 +132,7 @@ public class DoubleArrayDrawer extends ArrayDrawer {
 		if (dataMatrix == null) {
 			System.out.println("data matrix wasn't set");
 		}
+
 		// ynext will hold the first pixel of the next block.
 		int ynext       = dest.y;
 		// geneFirst holds first gene which contributes to this pixel.
@@ -155,6 +156,7 @@ public class DoubleArrayDrawer extends ArrayDrawer {
 				if (xnext == xstart) {
 					continue;
 				}
+
 				try {
 					double val   = 0;
 					int count    = 0;
@@ -163,6 +165,7 @@ public class DoubleArrayDrawer extends ArrayDrawer {
 							int actualGene = source.y + i;
 							if (geneOrder != null) actualGene = geneOrder[actualGene];
 							double thisVal  = dataMatrix.getValue(j + source.x,  actualGene);
+
 							if (thisVal == DataModel.EMPTY) {
 								val = DataModel.EMPTY;
 								count =1;

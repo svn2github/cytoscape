@@ -59,7 +59,6 @@ public class TextViewManager extends ModelView implements FontSelectable, Proper
 		}
 		headerSummary.addObserver(this);
 		
-				
 		makeTextViews(hI.getNumNames());
 		
 		for(int i = 0; i < numViews - 1; i++)
