@@ -27,7 +27,7 @@ public class Tutorial04 extends CytoscapePlugin {
 
 		public MyPluginAction(Tutorial04 myPlugin) {
 			// Add the menu item under menu pulldown "Plugins"
-			super("Tutorial11");
+			super("Tutorial04");
 			setPreferredMenu("Plugins");
 		}
 
