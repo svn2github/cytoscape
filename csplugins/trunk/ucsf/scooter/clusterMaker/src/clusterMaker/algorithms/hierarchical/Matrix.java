@@ -109,6 +109,7 @@ public class Matrix {
 		// we're transposed or not
 		this.rowNodes = null;
 		this.columnNodes = null;
+
 		if (duplicate.getRowNode(0) != null)
 			this.rowNodes = new CyNode[nRows];
 		else

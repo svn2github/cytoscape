@@ -56,6 +56,8 @@ public class EisenCluster {
 	final static String GROUP_ATTRIBUTE = "__hierarchicalGroups";
 	final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
 	final static String CLUSTER_ATTRIBUTE = "__hierarchicalClusters";
+	final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
+	final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
 	                      ClusterMethod clusterMethod, boolean transpose) {
@@ -153,22 +155,42 @@ public class EisenCluster {
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
 		netAttr.setListAttribute(netID, CLUSTER_ATTRIBUTE, attrList);
 
-		ArrayList<Integer> orderList = new ArrayList();
+		ArrayList<String> orderList = new ArrayList();
+		String[] rowArray = matrix.getRowLabels();
 		for (int i = 0; i < order.length; i++) {
-			orderList.add(order[i]);
+			orderList.add(rowArray[order[i]]);
 		}
 
-		netAttr.setListAttribute(netID, "NodeOrder", orderList);
+		// Remove the attributes that are lingering
+		if (netAttr.hasAttribute(netID, ARRAY_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ARRAY_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
+		netAttr.deleteAttribute(netID, NODE_ORDER_ATTRIBUTE);
+
+		String[] columnArray = matrix.getColLabels();
+		ArrayList<String>columnList = new ArrayList(columnArray.length);
+		for (int col = 0; col < columnArray.length; col++) {
+			columnList.add(columnArray[col]);
+		}
+
+		if (matrix.isTransposed()) {
+			// We did an Array cluster -- output the calculated array order
+			// and the actual node order
+			netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, orderList);
+			netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, columnList);
+		} else {
+			netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, orderList);
+			netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, columnList);
+		}
 
 		// See if we have any old groups in this network
-		if (netAttr.hasAttribute(netID, "__hierarchicalGroups")) {
-			List<String>clList = (List<String>)netAttr.getListAttribute(netID, "__hierarchicalGroups");
+		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE)) {
+			List<String>clList = (List<String>)netAttr.getListAttribute(netID, GROUP_ATTRIBUTE);
 			for (String groupName: clList) {
 				CyGroup group = CyGroupManager.findGroup(groupName);
 				if (group != null)
 					CyGroupManager.removeGroup(group);
 			}
-		
 		}
 
 		// Finally, create the group hierarchy
