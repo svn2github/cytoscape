@@ -29,8 +29,6 @@
  */
 package org.jgraph.layout;
 
-import cytoscape.Cytoscape;
-
 import org.jgraph.JGraph;
 
 import org.jgraph.graph.CellView;
@@ -399,8 +397,7 @@ public class MoenLayoutAlgorithm extends JGraphLayoutAlgorithm {
 
 			display(roots);
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), e, "Error",
-			                              JOptionPane.INFORMATION_MESSAGE);
+			e.printStackTrace();
 		}
 	}
 
