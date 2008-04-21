@@ -482,10 +482,6 @@ public class CytoscapeInit {
 	private boolean loadSessionFile() {
 		String sessionFile = initParams.getSessionFile();
 
-		// Turn off the network panel (for loading speed)
-		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
-		Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
-
 		try {
 			String sessionName = "";
 
@@ -518,8 +514,6 @@ public class CytoscapeInit {
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
-			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
-			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
 			System.gc();
 		}
 
