@@ -361,15 +361,16 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<!-- this version makes resolution optional for imports
-				<version>1.4.2-SNAPSHOT</version>
-				-->
 				<version>1.4.0</version>
+				-->
+				<version>1.4.2-SNAPSHOT</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
 						<Export-Package>cytoscape.*</Export-Package>
 						<Bundle-Activator>cytoscape.plugin.HostActivator</Bundle-Activator>
 					</instructions>
+					<importResolution>*;resolution:=optional</importResolution>
 				</configuration>
 				<executions>
 					<execution>

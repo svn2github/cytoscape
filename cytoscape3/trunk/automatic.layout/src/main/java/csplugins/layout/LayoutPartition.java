@@ -41,8 +41,6 @@ import cytoscape.util.intr.IntObjHash;
 
 import org.cytoscape.*;
 
-import cytoscape.view.*;
-
 import org.cytoscape.view.*;
 
 import java.awt.Dimension;

@@ -36,15 +36,11 @@
 
 package csplugins.layout;
 
-//import cern.colt.map.*;
-
 import cytoscape.Cytoscape;
 
 import org.cytoscape.layout.AbstractLayout;
 
 import cytoscape.task.TaskMonitor;
-
-import cytoscape.view.*;
 
 import org.cytoscape.*;
 

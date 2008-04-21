@@ -10,10 +10,11 @@ cp -r felix-cytoscape $target
 # copy over bundles
 cp application/target/*.jar $target/bundle
 cp application/target/classes/*.jar $target/bundle
+cp automatic.layout/target/automatic.layout-1.0-SNAPSHOT.jar $target/bundle
+cp automatic.layout/target/classes/colt*.jar $target/bundle
 
 #copy over plugins
 cp biopax/target/biopax-1.0-SNAPSHOT.jar $target/plugins
-cp automatic.layout/target/automatic.layout-1.0-SNAPSHOT.jar $target/plugins
 cp editor/target/editor-1.0-SNAPSHOT.jar $target/plugins
 cp merge/target/merge-1.0-SNAPSHOT.jar $target/plugins
 cp manual.layout/target/manual.layout-1.0-SNAPSHOT.jar $target/plugins

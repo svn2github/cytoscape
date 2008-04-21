@@ -10,8 +10,6 @@ import cytoscape.Cytoscape;
 import cytoscape.data.*;
 import org.cytoscape.attributes.CyAttributes;
 
-import cytoscape.view.*;
-
 import org.cytoscape.*;
 
 import org.cytoscape.view.*;

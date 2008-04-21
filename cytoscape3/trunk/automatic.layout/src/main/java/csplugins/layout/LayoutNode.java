@@ -34,8 +34,6 @@ package csplugins.layout;
 
 import org.cytoscape.*;
 
-import cytoscape.view.*;
-
 import org.cytoscape.view.*;
 
 import java.util.ArrayList;

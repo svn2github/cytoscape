@@ -46,7 +46,6 @@ import org.cytoscape.tunable.TunableFactory;
 
 import cytoscape.util.*;
 
-import cytoscape.view.*;
 import cytoscape.Cytoscape;
 
 import org.cytoscape.view.*;

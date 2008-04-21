@@ -8,28 +8,74 @@
   <groupId>csplugins</groupId>
   <artifactId>automatic.layout</artifactId>
   <name>automatic.layout</name>
+  <packaging>bundle</packaging>
   <version>1.0-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <dependencies>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
 
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>application</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+		<dependency>
+			<groupId>cytoscape</groupId>
+			<artifactId>application</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-    <dependency>
-      <groupId>colt</groupId>
-      <artifactId>colt</artifactId>
-      <version>1.2.0</version>
-    </dependency>
+		<dependency>
+			<groupId>colt</groupId>
+			<artifactId>colt</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+
+        <!-- for OSGi activator -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_compendium</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
 
   </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Activator>org.cytoscape.layout.automatic.LayoutActivator</Bundle-Activator>
+						<Export-Package>org.cytoscape.layout.automatic</Export-Package>
+						<Private-Package>csplugins.layout.*,org.jgraph.*,prefuse.util.force</Private-Package>
+					</instructions>
+					<importResolution>*;resolution:=optional</importResolution>
+				</configuration>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>package</phase>
+						<goals>
+							<goal>wrap</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

@@ -42,8 +42,6 @@ import cytoscape.data.*;
 
 import cytoscape.util.*;
 
-import cytoscape.view.*;
-
 
 /**
  * The LayoutEdge class.  This class is used as a container for information
