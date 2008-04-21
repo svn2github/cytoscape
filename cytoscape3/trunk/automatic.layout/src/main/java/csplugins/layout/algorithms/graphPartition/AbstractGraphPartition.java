@@ -12,7 +12,7 @@ import cytoscape.Cytoscape;
 
 import org.cytoscape.layout.AbstractLayout;
 
-import cytoscape.task.*;
+import cytoscape.task.TaskMonitor;
 
 import org.cytoscape.view.GraphView;
 

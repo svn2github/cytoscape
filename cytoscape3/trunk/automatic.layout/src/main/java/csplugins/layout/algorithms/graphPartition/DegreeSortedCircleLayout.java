@@ -7,7 +7,6 @@ import csplugins.layout.LayoutPartition;
 import org.cytoscape.*;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.*;
 import org.cytoscape.attributes.CyAttributes;
 
 import org.cytoscape.*;

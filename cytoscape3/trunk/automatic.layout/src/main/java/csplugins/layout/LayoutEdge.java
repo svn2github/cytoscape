@@ -38,11 +38,6 @@ import org.cytoscape.*;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.Cytoscape;
 
-import cytoscape.data.*;
-
-import cytoscape.util.*;
-
-
 /**
  * The LayoutEdge class.  This class is used as a container for information
  * about the edges in a layout.  In particular, it provides a convenient handle
