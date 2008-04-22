@@ -465,14 +465,6 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		iframe.setVisible(true);
 		iframe.addInternalFrameListener(this);
 
-		// unselect iframe - if its selected here, birdseye view will not get activated
-		// this must be called after iframe.setVisible()
-		try {
-			iframe.setSelected(false);
-		} catch (PropertyVetoException pve) {
-			pve.printStackTrace();
-		}
-
 		networkViewMap.put(view.getNetwork().getIdentifier(), iframe);
 		componentMap.put(iframe, view.getNetwork().getIdentifier());
 		
