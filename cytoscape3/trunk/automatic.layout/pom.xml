@@ -59,8 +59,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>org.cytoscape.layout.automatic.LayoutActivator</Bundle-Activator>
-						<Export-Package>org.cytoscape.layout.automatic</Export-Package>
+						<Bundle-Activator>csplugins.layout.LayoutActivator</Bundle-Activator>
 						<Private-Package>csplugins.layout.*,org.jgraph.*,prefuse.util.force</Private-Package>
 					</instructions>
 					<importResolution>*;resolution:=optional</importResolution>
