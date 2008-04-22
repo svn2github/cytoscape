@@ -474,7 +474,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			selectButton = new JButton();
 			selectButton.setBorder(null);
 			selectButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			selectButton.setIcon(new ImageIcon(AttributeBrowser.class.getResource("images/stock_select-row.png")));
+			selectButton.setIcon(new ImageIcon(getClass().getResource("/images/stock_select-row.png")));
 			selectButton.setToolTipText("Select Attributes");
 
 			selectButton.addMouseListener(new MouseAdapter() {
@@ -492,7 +492,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		if (importButton == null) {
 			importButton = new JButton();
 			importButton.setBorder(null);
-			importButton.setIcon(new ImageIcon(AttributeBrowser.class.getResource("images/stock_open.png")));
+			importButton.setIcon(new ImageIcon(getClass().getResource("/images/stock_open.png")));
 			importButton.setToolTipText("Import attributes from file...");
 			importButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			importButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -510,7 +510,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			matrixButton = new JButton();
 			matrixButton.setBorder(null);
 			matrixButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			matrixButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class.getResource("images/microarray_24.png")));
+			matrixButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/microarray_24.png")));
 			matrixButton.setToolTipText("Import Expression Matrix Data...");
 
 			matrixButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -529,7 +529,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		if (attrModButton == null) {
 			attrModButton = new JButton();
 			attrModButton.setBorder(null);
-			attrModButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class.getResource("images/stock_insert-columns.png")));
+			attrModButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/stock_insert-columns.png")));
 			attrModButton.setToolTipText("Attribute Batch Editor");
 			attrModButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
@@ -577,8 +577,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			deleteAttributeButton = new JButton();
 			deleteAttributeButton.setBorder(null);
 			deleteAttributeButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-			deleteAttributeButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .getResource("images/stock_delete.png")));
+			deleteAttributeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/stock_delete.png")));
 			deleteAttributeButton.setToolTipText("Delete Attributes...");
 
 			// Create pop-up window for deletion
@@ -680,8 +679,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			createNewAttributeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 			createNewAttributeButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			createNewAttributeButton.setToolTipText("Create New Attribute");
-			createNewAttributeButton.setIcon(new javax.swing.ImageIcon(AttributeBrowser.class
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           .getResource("images/stock_new.png")));
+			createNewAttributeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/stock_new.png")));
 			createNewAttributeButton.addMouseListener(new java.awt.event.MouseAdapter() {
 					public void mouseClicked(java.awt.event.MouseEvent e) {
 						jPopupMenu1.show(e.getComponent(), e.getX(), e.getY());
