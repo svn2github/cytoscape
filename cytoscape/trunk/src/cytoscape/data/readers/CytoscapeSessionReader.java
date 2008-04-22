@@ -320,9 +320,6 @@ public class CytoscapeSessionReader {
 
 		if (Cytoscape.getDesktop() != null) {
 			Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
-
-			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-			         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
 		}
 
 		try {
@@ -359,8 +356,6 @@ public class CytoscapeSessionReader {
 
 		// Restore listener for VizMapper.
 		if (Cytoscape.getDesktop() != null) {
-			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-			         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
 
 			// Cleanup view
 			final CyNetworkView curView = Cytoscape.getCurrentNetworkView();
