@@ -135,6 +135,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			// entire
 			// cytoscape app to crash, which a plugin should not do.
 		} catch (Throwable e) {
+			e.printStackTrace();
 			object = null;
 			System.err.println("Instantiation has failed for: " + pluginClass);
 			// Here's a bit of Java strangeness: newInstance() throws
@@ -145,7 +146,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			// for the class cytoscape.CyWindow, which is no longer defined,
 			// propagates a ClassNotFoundException (which, if we don't
 			// catch causes the application to crash).
-			String ErrorMsg = "Unchecked '" + e.getClass().getName() + "'exception while attempting to load plugin.\n"
+			String ErrorMsg = "Unchecked '" + e.getClass().getName() 
+			        + "' exception while attempting to load plugin.\n"
 					+ "This may happen when loading a plugin written for a different "
 					+ "version of Cytoscape than this one, or if the plugin is dependent "
 					+ "on another plugin that isn't available. Consult the documentation "
