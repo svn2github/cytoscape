@@ -1430,7 +1430,7 @@ class XGMMLParser extends DefaultHandler {
 	private CyEdge createEdge (CyNode source, CyNode target, 
                              String interaction, String label) throws SAXException {
 		// OK create it
-		CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, false);
+		CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
 		edgeList.add(edge);
 		return edge;
 	}
