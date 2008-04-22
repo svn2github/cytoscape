@@ -90,7 +90,7 @@ public class EdgeInteractionFilterEditor extends FilterEditor implements ActionL
 		super();
 
 		try {
-			filterClass = Class.forName("filter.cytoscape.EdgeInteractionFilter");
+			filterClass = Class.forName("cytoscape.filter.cytoscape.EdgeInteractionFilter");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

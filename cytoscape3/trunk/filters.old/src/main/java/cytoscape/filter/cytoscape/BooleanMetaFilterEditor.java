@@ -92,7 +92,7 @@ public class BooleanMetaFilterEditor extends FilterEditor implements ItemListene
 		super();
 
 		try {
-			filterClass = Class.forName("filter.cytoscape.BooleanMetaFilter");
+			filterClass = Class.forName("cytoscape.filter.cytoscape.BooleanMetaFilter");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

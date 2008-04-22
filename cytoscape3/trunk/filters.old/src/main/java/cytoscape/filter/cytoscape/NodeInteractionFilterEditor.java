@@ -90,7 +90,7 @@ public class NodeInteractionFilterEditor extends FilterEditor implements ActionL
 		super();
 
 		try {
-			filterClass = Class.forName("filter.cytoscape.NodeInteractionFilter");
+			filterClass = Class.forName("cytoscape.filter.cytoscape.NodeInteractionFilter");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

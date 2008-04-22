@@ -95,7 +95,7 @@ public class NodeTopologyFilterEditor extends FilterEditor implements ActionList
 		super();
 
 		try {
-			filterClass = Class.forName("filter.cytoscape.NodeTopologyFilter");
+			filterClass = Class.forName("cytoscape.filter.cytoscape.NodeTopologyFilter");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -141,9 +141,9 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 		}
 
 		// create icons
-		ImageIcon icon = new ImageIcon(getClass().getResource("/stock_filter-data-by-criteria.png"));
+		ImageIcon icon = new ImageIcon(getClass().getResource("/images/ximian/stock_filter-data-by-criteria.png"));
 		ImageIcon icon2 = new ImageIcon(getClass()
-		                                    .getResource("/stock_filter-data-by-criteria-16.png"));
+		                                    .getResource("/images/ximian/stock_filter-data-by-criteria-16.png"));
 
 		// 
 		//FilterPlugin action = new FilterPlugin(icon, this);
