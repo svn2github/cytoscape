@@ -368,6 +368,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>cytoscape.*</Export-Package>
+						<Import-Package>com.sun.xml.bind.v2,*</Import-Package>
 						<Bundle-Activator>cytoscape.plugin.HostActivator</Bundle-Activator>
 					</instructions>
 					<importResolution>*;resolution:=optional</importResolution>
