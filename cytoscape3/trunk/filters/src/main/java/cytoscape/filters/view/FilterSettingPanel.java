@@ -66,11 +66,11 @@ import javax.swing.JRadioButton;
 public class FilterSettingPanel extends JPanel {
 	
 	private static final ImageIcon plusIcon = new ImageIcon(
-			Cytoscape.class.getResource("/cytoscape/images/ximian/plus.gif"));
+			FilterSettingPanel.class.getResource("/images/ximian/plus.gif"));
 	private static final ImageIcon minusIcon = new ImageIcon(
-			Cytoscape.class.getResource("/cytoscape/images/ximian/minus.gif"));
-	private static final ImageIcon delIcon = new ImageIcon(Cytoscape.class
-			.getResource("/cytoscape/images/ximian/stock_delete-16.png"));
+			FilterSettingPanel.class.getResource("/images/ximian/minus.gif"));
+	private static final ImageIcon delIcon = new ImageIcon(
+	        FilterSettingPanel.class.getResource("/images/ximian/stock_delete-16.png"));
 
 	private CompositeFilter theFilter;
 	private FilterMainPanel parentPanel;

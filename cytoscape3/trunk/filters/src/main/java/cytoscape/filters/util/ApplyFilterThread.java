@@ -67,8 +67,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-
 import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;

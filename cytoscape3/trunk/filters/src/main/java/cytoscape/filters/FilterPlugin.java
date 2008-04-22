@@ -79,11 +79,9 @@ public class FilterPlugin extends CytoscapePlugin {
 	public FilterPlugin() {
 
 		ImageIcon icon = new ImageIcon(getClass().getResource(
-				"/cytoscape/images/ximian/stock_filter-data-by-criteria.png"));
+				"/images/ximian/stock_filter-data-by-criteria.png"));
 		ImageIcon icon2 = new ImageIcon(
-				getClass()
-						.getResource(
-								"/cytoscape/images/ximian/stock_filter-data-by-criteria-16.png"));
+				getClass().getResource("/images/ximian/stock_filter-data-by-criteria-16.png"));
 
 		// Add a menuItem on "select" menu
 		FilterMenuItemAction menuAction = new FilterMenuItemAction(icon2, this);

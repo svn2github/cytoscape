@@ -75,22 +75,20 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	/*
 	 * Icons used in this panel.
 	 */
-	private static final ImageIcon optionIcon = new ImageIcon(Cytoscape.class
-			.getResource("/cytoscape/images/ximian/stock_form-properties.png"));
+	private static final ImageIcon optionIcon = new ImageIcon(FilterMainPanel.class
+			.getResource("/images/ximian/stock_form-properties.png"));
 
-	private static final ImageIcon delIcon = new ImageIcon(Cytoscape.class
-			.getResource("/cytoscape/images/ximian/stock_delete-16.png"));
+	private static final ImageIcon delIcon = new ImageIcon(FilterMainPanel.class
+			.getResource("/images/ximian/stock_delete-16.png"));
 
 	private static final ImageIcon addIcon = new ImageIcon(
-			Cytoscape.class
-					.getResource("/cytoscape/images/ximian/stock_data-new-table-16.png"));
+			FilterMainPanel.class.getResource("/images/ximian/stock_data-new-table-16.png"));
 
-	private static final ImageIcon renameIcon = new ImageIcon(Cytoscape.class
-			.getResource("/cytoscape/images/ximian/stock_redo-16.png"));
+	private static final ImageIcon renameIcon = new ImageIcon(FilterMainPanel.class
+			.getResource("/images/ximian/stock_redo-16.png"));
 
 	private static final ImageIcon duplicateIcon = new ImageIcon(
-			Cytoscape.class
-					.getResource("/cytoscape/images/ximian/stock_slide-duplicate.png"));
+			FilterMainPanel.class.getResource("/images/ximian/stock_slide-duplicate.png"));
 
 	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 
