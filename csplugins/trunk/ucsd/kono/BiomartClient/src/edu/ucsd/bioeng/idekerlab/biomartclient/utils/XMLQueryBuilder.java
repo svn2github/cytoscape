@@ -106,7 +106,10 @@ public class XMLQueryBuilder {
 			for (Filter filter : filters) {
 				Element ft = doc.createElement("Filter");
 				ft.setAttribute("name", filter.getName());
-				ft.setAttribute("value", filter.getValue());
+				if(filter.getValue() == null) {
+					ft.setAttribute("excluded", "0");
+				} else 
+					ft.setAttribute("value", filter.getValue());
 				ds.appendChild(ft);
 			}
 		}

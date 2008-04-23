@@ -37,7 +37,15 @@ package edu.ucsd.bioeng.idekerlab.biomartclient;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
+
 import org.xml.sax.SAXException;
+
+import cytoscape.util.URLUtil;
+
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Attribute;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Dataset;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.Filter;
+import edu.ucsd.bioeng.idekerlab.biomartclient.utils.XMLQueryBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,7 +54,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -66,13 +73,15 @@ import javax.xml.parsers.ParserConfigurationException;
 public class BiomartStub {
 	private String baseURL = "http://www.biomart.org/biomart/martservice?";
 	private static final String RESOURCE = "/resource/filterconversion.txt";
-	private URL url;
-	private URLConnection uc;
+	private static final String TAXONOMY_TABLE = "/resource/tax_report.txt";
+//	private URL url;
+//	private URLConnection uc;
 	private Map<String, Map<String, String>> databases = null;
 
 	// Key is datasource, value is database name.
 	private Map<String, String> datasourceMap = new HashMap<String, String>();
 	private Map<String, Map<String, String>> filterConversionMap;
+	private Map<String, String> taxonomyTable;
 
 	/**
 	 * Creates a new BiomartStub object.
@@ -124,6 +133,9 @@ public class BiomartStub {
 
 			oneEntry.put(dbparts[1], dbparts[2]);
 		}
+
+		inFile.close();
+		inBuffer.close();
 	}
 
 	/**
@@ -155,12 +167,13 @@ public class BiomartStub {
 	 *  Get the registry information from the base URL.
 	 *
 	 * @return  Map of registry information.  Key value is "name" field.
-	 * @throws ParserConfigurationException 
-	 * @throws SAXException 
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public Map<String, Map<String, String>> getRegistry() throws IOException, ParserConfigurationException, SAXException {
+	public Map<String, Map<String, String>> getRegistry()
+	    throws IOException, ParserConfigurationException, SAXException {
 		// If already loaded, just return it.
 		if (databases != null)
 			return databases;
@@ -175,7 +188,7 @@ public class BiomartStub {
 		// Get the result as XML document.
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		final DocumentBuilder builder = factory.newDocumentBuilder();
-		InputStream is = targetURL.openStream();
+		InputStream is = URLUtil.getBasicInputStream(targetURL);
 		final Document registry = builder.parse(is);
 
 		// Extract each datasource
@@ -218,6 +231,16 @@ public class BiomartStub {
 	 */
 	public Map<String, String> getAvailableDatasets(final String martName)
 	    throws IOException {
+		try {
+			getRegistry();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		final Map<String, String> datasources = new HashMap<String, String>();
 
 		Map<String, String> detail = databases.get(martName);
@@ -227,8 +250,7 @@ public class BiomartStub {
 		System.out.println("DB name = " + martName + ", Target URL = " + urlStr + "\n");
 
 		URL url = new URL(urlStr);
-		URLConnection uc = url.openConnection();
-		InputStream is = uc.getInputStream();
+		InputStream is = URLUtil.getBasicInputStream(url);
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String s;
@@ -273,11 +295,10 @@ public class BiomartStub {
 		                + detail.get("path") + "?virtualschema="
 		                + detail.get("serverVirtualSchema") + "&type=filters&dataset="
 		                + datasetName;
-		//System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
 
+		//System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
 		URL url = new URL(urlStr);
-		URLConnection uc = url.openConnection();
-		InputStream is = uc.getInputStream();
+		InputStream is = URLUtil.getBasicInputStream(url);
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String s;
@@ -291,8 +312,10 @@ public class BiomartStub {
 				if (getAll) {
 					filters.put(parts[1], parts[0]);
 				} else if ((parts[1].contains("ID(s)") || parts[1].contains("Accession(s)")
-				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false) && (parts[0].endsWith("-2") == false)) {
+				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false)
+				           && (parts[0].endsWith("-2") == false)) {
 					filters.put(parts[1], parts[0]);
+
 					//System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
 				}
 			}
@@ -312,7 +335,7 @@ public class BiomartStub {
 	 * @param datasetName DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
-	 * @throws IOException 
+	 * @throws IOException
 	 *
 	 * @throws IOException DOCUMENT ME!
 	 */
@@ -326,11 +349,10 @@ public class BiomartStub {
 		                + detail.get("path") + "?virtualschema="
 		                + detail.get("serverVirtualSchema") + "&type=attributes&dataset="
 		                + datasetName;
-		//System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
 
+		//System.out.println("Dataset name = " + datasetName + ", Target URL = " + urlStr + "\n");
 		URL url = new URL(urlStr);
-		URLConnection uc = url.openConnection();
-		InputStream is = uc.getInputStream();
+		InputStream is = URLUtil.getBasicInputStream(url);
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String s;
@@ -376,8 +398,8 @@ public class BiomartStub {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public List<String[]> sendQuery(String xmlQuery) throws IOException {
-		url = new URL(baseURL);
-		uc = url.openConnection();
+		URL url = new URL(baseURL);
+		URLConnection uc = URLUtil.getURLConnection(url);
 		uc.setDoOutput(true);
 		uc.setRequestProperty("User-Agent", "Java URLConnection");
 
@@ -388,8 +410,11 @@ public class BiomartStub {
 
 		// Post the data
 		ps.print(postStr);
+		os.close();
 		ps.close();
 		ps = null;
+		os = null;
+		
 
 		final InputStream is = uc.getInputStream();
 
@@ -412,5 +437,83 @@ public class BiomartStub {
 		reader = null;
 
 		return result;
+	}
+
+	private String taxID2datasource(String ncbiTaxID) throws IOException {
+		if (taxonomyTable == null) {
+			final InputStreamReader inFile;
+			inFile = new InputStreamReader(this.getClass().getResource(TAXONOMY_TABLE).openStream());
+
+			BufferedReader inBuffer = new BufferedReader(inFile);
+
+			String line;
+			String trimed;
+			taxonomyTable = new HashMap<String, String>();
+
+			String[] dbparts;
+
+			String name1 = null;
+			String name2 = null;
+			String[] spName;
+			while ((line = inBuffer.readLine()) != null) {
+				trimed = line.trim();
+				dbparts = trimed.split("\\t");
+				spName = dbparts[0].split(" ");
+				name1 = spName[0].substring(0, 1);
+				name2 = spName[1];
+				taxonomyTable.put(dbparts[1], (name1 + name2).toLowerCase());
+			}
+
+			inFile.close();
+			inBuffer.close();
+		}
+		
+		if(taxonomyTable.get(ncbiTaxID) == null)
+			return null;
+		else
+			return taxonomyTable.get(ncbiTaxID) + "_gene_ensembl";
+	}
+
+	/**
+	 * Method to return all GO annotations for the given NCBI taxonomy ID.
+	 *
+	 * @param ncbiTaxID
+	 * @return Annotation as a text table.
+	 * @throws IOException
+	 */
+	public List<String[]> getAllGOAnnotations(final String ncbiTaxID) throws IOException {
+		List<String[]> res = new ArrayList<String[]>();
+		
+		final String dbName = taxID2datasource(ncbiTaxID);
+		
+		if(dbName == null) 
+			return res;
+		
+		Dataset dataset;
+		Attribute[] attrs;
+		Filter[] filters;
+		
+		dataset = new Dataset(dbName);
+		attrs = new Attribute[3];
+		attrs[0] = new Attribute("ensembl_gene_id");
+		attrs[1] = new Attribute("go");
+		attrs[2] = new Attribute("evidence_code");
+	
+		filters = new Filter[1];
+		filters[0] = new Filter("with_go", null);
+		
+		String query2 = XMLQueryBuilder.getQueryString(dataset, attrs, filters);
+		
+		res = sendQuery(query2);
+
+		return res;
+	}
+	
+	public List<String[]> getAllAliases(final String ncbiTaxID) throws IOException {
+		List<String[]> res = new ArrayList<String[]>();
+		
+		final String dbName = taxID2datasource(ncbiTaxID);
+		
+		return res;
 	}
 }
