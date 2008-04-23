@@ -363,7 +363,7 @@
 				<!-- this version makes resolution optional for imports
 				<version>1.4.0</version>
 				-->
-				<version>1.4.2-SNAPSHOT</version>
+				<version>1.4.1-SNAPSHOT</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -371,7 +371,7 @@
 						<Import-Package>com.sun.xml.bind.v2,*</Import-Package>
 						<Bundle-Activator>cytoscape.plugin.HostActivator</Bundle-Activator>
 					</instructions>
-					<importResolution>*;resolution:=optional</importResolution>
+					<wrapImportPackage>*;resolution:=optional</wrapImportPackage>
 				</configuration>
 				<executions>
 					<execution>
