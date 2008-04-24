@@ -34,16 +34,32 @@
 */
 package cytoscape.data.webservice.ui;
 
-import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import cytoscape.CyNetwork;
@@ -596,6 +612,19 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		}
 
 		public void halt() {
+			
+			// Kill the import task.
+			CyWebServiceEvent<String> cancelEvent = new CyWebServiceEvent<String>(serviceName, WSEventType.CANCEL,
+                     null,
+                     null);
+			try {
+				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(cancelEvent);
+				taskMonitor.setPercentCompleted(100);
+				taskMonitor.setStatus("Import canceled by user.");
+			} catch (CyWebServiceException e) {
+				// TODO Auto-generated catch block
+				taskMonitor.setException(e, "Cancel Failed.");
+			}
 		}
 
 		public void run() {
@@ -668,6 +697,11 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				}
 			}
 		} else if (evt.getPropertyName().equals(WSResponseType.DATA_IMPORT_FINISHED.toString())) {
+			
+			// If network is empty, just ignore it.
+			if(evt.getNewValue() == null)
+				return;
+			
 			String[] message = { "Network loaded.", "Please enter name for new network:" };
 			String value = JOptionPane.showInputDialog(Cytoscape.getDesktop(), message,
 			                                           "Name new network",
