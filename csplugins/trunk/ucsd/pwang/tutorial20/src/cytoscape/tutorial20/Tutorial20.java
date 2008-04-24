@@ -1,24 +1,23 @@
 package cytoscape.tutorial20;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JOptionPane;
-
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.view.CyNetworkView;
 import giny.view.NodeView;
-import java.util.Iterator;
 import ding.view.NodeContextMenuListener;
 import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionListener;
+
+import browser.AttributeBrowser;
+import browser.AttributeBrowserPlugin;
+import static browser.DataObjectType.NODES;
+import browser.DataObjectType;
 /**
  * 
  */
@@ -35,6 +34,10 @@ public class Tutorial20 extends CytoscapePlugin {
 	
 	public class MyPluginAction extends CytoscapeAction {
 
+		private Object browser_clickedObject = null;
+		private Object browser_RowID = null;
+		private Object browser_AttriName = null;
+		
 		public MyPluginAction(Tutorial20 myPlugin) {
 			// Add the menu item under menu pulldown "Plugins"
 			super("Tutorial20");
@@ -50,8 +53,34 @@ public class Tutorial20 extends CytoscapePlugin {
 			}
 
 			MyNodeContextMenuListener l = new MyNodeContextMenuListener();
+			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(l);	
 			
-			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(l);			
+			//Add a component to attribute browser content menu
+			JMenuItem menuItem = new JMenuItem("MyMenuItem_browser");
+
+			AttributeBrowserPlugin.getAttributeBrowser(browser.DataObjectType.NODES).getattributeTable().addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					//Remember the object clicked on attribute browser
+					AttributeBrowser attBrowser = AttributeBrowserPlugin.getAttributeBrowser(browser.DataObjectType.NODES);
+					final int column = attBrowser.getColumnModel().getColumnIndexAtX(e.getX());
+					final int row = e.getY() / attBrowser.getattributeTable().getRowHeight();
+					browser_clickedObject = attBrowser.getattributeTable().getValueAt(row, column);
+					browser_RowID = attBrowser.getattributeTable().getValueAt(row, 0);
+					browser_AttriName = attBrowser.getattributeTable().getTableHeader().getColumnModel().getColumn(column).getIdentifier();
+				}
+			});
+			menuItem.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					String message = "MyMenuItem_browser is clicked!"+
+					"\nbrowser_RowID = "+ browser_RowID + 
+					"\nbrowser_AttrName = "+ browser_AttriName.toString()+
+					"\nbrowser_clickedObject = "+ browser_clickedObject;
+
+					JOptionPane.showMessageDialog(Cytoscape.getDesktop(),message);	
+				}
+			});
+
+			AttributeBrowserPlugin.addMenuItem(browser.DataObjectType.NODES, menuItem);
 		}
 
 		
@@ -65,7 +94,6 @@ public class Tutorial20 extends CytoscapePlugin {
 				if (menu == null) {
 					menu = new JPopupMenu();
 				}
-				//menu.add(new JSeparator());
 				menu.add(myMenuItem); 
 			} 
 		}
