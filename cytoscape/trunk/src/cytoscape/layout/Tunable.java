@@ -9,24 +9,34 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import javax.swing.BoxLayout;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 
 /**
@@ -38,7 +48,7 @@ import javax.swing.border.TitledBorder;
  * or the lower and upper bounds for the value.  These are meant
  * to be used as part of the LayoutSettingsDialog (see getPanel).
  */
-public class Tunable {
+public class Tunable implements FocusListener,ChangeListener {
 	private String name;
 	private String desc;
 	private int type = STRING;
@@ -47,7 +57,10 @@ public class Tunable {
 	private Object lowerBound;
 	private Object upperBound;
 	private JComponent inputField;
+	private JSlider slider;
 	private boolean valueChanged = true;
+	private String savedValue = null;
+	private boolean usingSlider = false;
 	
 	private boolean immutable = false;
 
@@ -55,41 +68,14 @@ public class Tunable {
 	 * Types
 	 */
 	final public static int INTEGER = 0;
-
-	/**
-	 *
-	 */
 	final public static int DOUBLE = 1;
-
-	/**
-	 *
-	 */
 	final public static int BOOLEAN = 2;
-
-	/**
-	 *
-	 */
 	final public static int STRING = 3;
-
-	/**
-	 *
-	 */
 	final public static int NODEATTRIBUTE = 4;
-
-	/**
-	 *
-	 */
 	final public static int EDGEATTRIBUTE = 5;
-
-	/**
-	 *
-	 */
 	final public static int LIST = 6;
-
-	/**
-	 *
-	 */
 	final public static int GROUP = 7;
+	final public static int BUTTON = 8;
 
 	/**
 	 * Flags
@@ -107,6 +93,12 @@ public class Tunable {
 	 * supports multiselect rather than a combo box.
 	 */
 	final public static int MULTISELECT = 0x4;
+
+	/**
+ 	 * For INTEGER or DOUBLE tunables, preferentially use a slider widget.  This
+ 	 * will *only* take effect if the upper and lower bounds are provided.
+ 	 */
+	final public static int USESLIDER = 0x8;
 
 	/**
 	 * Constructor to create a Tunable with no bounds
@@ -386,13 +378,47 @@ public class Tunable {
 			return tunablesPanel;
 		}
 
-		JPanel tunablePanel = new JPanel(new BorderLayout(0, 1));
-		tunablePanel.add(new JLabel(desc), BorderLayout.LINE_START);
+		JPanel tunablePanel = new JPanel(new BorderLayout(0, 2));
+		JLabel tunableLabel = new JLabel(desc);
+		String labelLocation = BorderLayout.LINE_START;
+		String fieldLocation = BorderLayout.LINE_END;
 
 		if ((type == DOUBLE) || (type == INTEGER)) {
-			JTextField field = new JTextField(value.toString(), 8);
-			field.setHorizontalAlignment(JTextField.RIGHT);
-			inputField = field;
+			if ( ((flag & USESLIDER) != 0) && (lowerBound != null) && (upperBound != null)) {
+				// We're going to use a slider,  We need to be somewhat intelligent about the bounds and
+				// labels.  It would also be nice to provide feedback, which we do by providing a text field
+				// in addition to the slider.  The text field can also be used to enter the desired value
+				// directly.
+
+				slider = new JSlider(JSlider.HORIZONTAL, 
+				                            sliderScale(lowerBound), 
+				                            sliderScale(upperBound), 
+				                            sliderScale(value));
+
+				slider.setLabelTable(createLabels(slider));
+				slider.setPaintLabels(true);
+				slider.addChangeListener(this);
+				tunablePanel.add(tunableLabel, BorderLayout.NORTH);
+				tunablePanel.add(slider, BorderLayout.CENTER);
+
+				JTextField textField = new JTextField(value.toString(), 4);
+				textField.addFocusListener(this);
+				inputField = textField;
+				tunablePanel.add(textField, BorderLayout.EAST);
+				textField.setBackground(Color.white);
+				return tunablePanel;
+
+			} else {
+				// We can't use a slider, so turn off the flag
+				clearFlag(USESLIDER);
+				JTextField field = new JTextField(value.toString(), 8);
+				field.setHorizontalAlignment(JTextField.RIGHT);
+				// If we have an upper and/or lower bounds, we want to "listen" for changes
+				if (upperBound != null || lowerBound != null) {
+					field.addFocusListener(this);
+				}
+				inputField = field;
+			}
 		} else if (type == BOOLEAN) {
 			JCheckBox box = new JCheckBox();
 			box.setSelected(((Boolean) value).booleanValue());
@@ -409,6 +435,11 @@ public class Tunable {
 			JTextField field = new JTextField(value.toString(), 20);
 			field.setHorizontalAlignment(JTextField.RIGHT);
 			inputField = field;
+		} else if (type == BUTTON) {
+			JButton button = new JButton((String)value);
+			button.addActionListener((ActionListener)lowerBound);
+			button.setActionCommand(name);
+			inputField = button;
 		}
 
 		// Added by kono
@@ -418,14 +449,16 @@ public class Tunable {
 		}
 		inputField.setBackground(Color.white);
 
+		tunablePanel.add(tunableLabel, labelLocation);
+
 		// Special case for MULTISELECT lists
 		if ((type == LIST || type == NODEATTRIBUTE || type == EDGEATTRIBUTE) 
 			  && (flag & MULTISELECT) != 0) {
 			JScrollPane listScroller = new JScrollPane(inputField);
 			listScroller.setPreferredSize(new Dimension(200,100));
-			tunablePanel.add(listScroller, BorderLayout.LINE_END);
+			tunablePanel.add(listScroller, fieldLocation);
 		} else {
-			tunablePanel.add(inputField, BorderLayout.LINE_END);
+			tunablePanel.add(inputField, fieldLocation);
 		}
 		return tunablePanel;
 	}
@@ -539,13 +572,21 @@ public class Tunable {
 	public void updateValue() {
 		Object newValue;
 
-		if (inputField == null || type == GROUP)
+		if (inputField == null || type == GROUP || type == BUTTON)
 			return;
 
 		if (type == DOUBLE) {
-			newValue = new Double(((JTextField) inputField).getText());
+			if (usingSlider) {
+				newValue = new Double(((JSlider) inputField).getValue());
+			} else {
+				newValue = new Double(((JTextField) inputField).getText());
+			}
 		} else if (type == INTEGER) {
-			newValue = new Integer(((JTextField) inputField).getText());
+			if (usingSlider) {
+				newValue = new Integer(((JSlider) inputField).getValue());
+			} else {
+				newValue = new Integer(((JTextField) inputField).getText());
+			}
 		} else if (type == BOOLEAN) {
 			newValue = new Boolean(((JCheckBox) inputField).isSelected());
 		} else if (type == LIST) {
@@ -581,5 +622,148 @@ public class Tunable {
 		}
 
 		value = newValue;
+	}
+
+	/**
+ 	 * Document listener routines to handle bounds checking
+ 	 */
+	public void focusLost(FocusEvent ev) {
+		Object value = null;
+		// Check the bounds
+		if (type == DOUBLE) {
+			Double newValue = null;
+			try {
+				newValue = new Double(((JTextField) inputField).getText());
+			} catch (NumberFormatException e) {
+				displayBoundsError("a floating point");
+				return;
+			}
+			if ((upperBound != null && newValue > (Double)upperBound) ||
+			   (lowerBound != null && newValue < (Double)lowerBound)) {
+				displayBoundsError("a floating point");
+				return;
+			}
+			value = (Object)newValue;
+		} else if (type == INTEGER) {
+			Integer newValue = null;
+			try {
+				newValue = new Integer(((JTextField) inputField).getText());
+			} catch (NumberFormatException e) {
+				displayBoundsError("an integer");
+				return;
+			}
+			if ((upperBound != null && newValue > (Integer)upperBound) ||
+			   (lowerBound != null && newValue < (Integer)lowerBound)) {
+				displayBoundsError("an integer");
+				return;
+			}
+			value = (Object)newValue;
+		} else {
+			// Ooops -- shouldn't be here!
+			return;
+		}
+
+		if ((flag & USESLIDER) != 0) {
+			// Update the slider with this new value
+			slider.setValue(sliderScale(value));
+		}
+	}
+
+	public void focusGained(FocusEvent ev) {
+		// Save the current value
+		savedValue = ((JTextField) inputField).getText();
+	}
+
+	public void stateChanged(ChangeEvent e) {
+		// Get the widget
+		JSlider slider = (JSlider) e.getSource();
+
+		// Get the value
+		int value = slider.getValue();
+
+		// Update the text box
+		((JTextField) inputField).setText(sliderScale(value).toString());
+	}
+
+	private void displayBoundsError(String typeString) {
+		if (lowerBound != null && upperBound != null) {
+			JOptionPane.showMessageDialog(null,  "Value must be "+typeString+" between "+lowerBound+" and "+upperBound,
+				"Bounds Error", JOptionPane.ERROR_MESSAGE);
+		} else if (lowerBound != null) {
+			JOptionPane.showMessageDialog(null, "Value must be "+typeString+" greater than "+lowerBound,
+				"Bounds Error", JOptionPane.ERROR_MESSAGE);
+		} else if (upperBound != null) {
+			JOptionPane.showMessageDialog(null, "Value must be "+typeString+" less than "+upperBound,
+				"Bounds Error", JOptionPane.ERROR_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, "Value must be "+typeString+" number",
+				"Type Error", JOptionPane.ERROR_MESSAGE);
+		}
+		((JTextField) inputField).setText(savedValue);
+	}
+
+	private int getIntValue(Object v) {
+		if (type == DOUBLE) {
+			Double d = (Double)v;
+			return d.intValue();
+		} else if (type == INTEGER) {
+			Integer d = (Integer)v;
+			return d.intValue();
+		}
+		return 0;
+	}
+
+	private int sliderScale(Object value) {
+		if (type == INTEGER) {
+			// Don't mess with Integer values
+			return ((Integer)value).intValue();
+		}
+		double minimum = ((Double)lowerBound).doubleValue();
+		double maximum = ((Double)upperBound).doubleValue();
+		double input = ((Double)value).doubleValue();
+		double extent = maximum-minimum;
+
+		// Use a scale from 0-100 with 0 = minimum and 100 = maximum
+		return (int)(((input-minimum)/extent)*100.0);
+	}
+
+	private Object sliderScale(int value) {
+		if (type == INTEGER) {
+			// Don't mess with Integer values
+			return Integer.valueOf(value);
+		}
+		double minimum = ((Double)lowerBound).doubleValue();
+		double maximum = ((Double)upperBound).doubleValue();
+		double extent = maximum-minimum;
+		double dvalue = (double)value/100.0;
+		double scaledValue = (dvalue*extent)+minimum;
+		int places = 2;
+		if (extent < 1.0)
+			places = (int)Math.round(-Math.log10(extent)) + 1;
+		return new Double(round(scaledValue, places));
+
+	}
+
+	private Hashtable createLabels(JSlider slider) {
+		if (type == INTEGER) {
+			return slider.createStandardLabels((getIntValue(upperBound)-getIntValue(lowerBound))/5);
+		}
+		Hashtable<Integer,JComponent>table = new Hashtable();
+		// Create our table in 5 steps from lowerBound to upperBound
+		// This could obviously be much fancier, but it's probably sufficient for now.
+		for (int label = 0; label < 6; label++) {
+			Double v = (Double)sliderScale(label*20);
+			table.put(label*20, new JLabel(v.toString()));
+		}
+		return table;
+	}
+
+	private double round(double val, int places) {
+		long factor = (long)Math.pow(10, places);
+		val = val * factor;
+
+		long tmp = Math.round(val);
+
+		return (double)tmp / factor;
 	}
 }

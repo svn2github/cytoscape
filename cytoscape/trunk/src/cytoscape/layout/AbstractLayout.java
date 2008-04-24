@@ -42,6 +42,7 @@ import cytoscape.Cytoscape;
 import cytoscape.task.TaskMonitor;
 
 import cytoscape.view.CyNetworkView;
+import cytoscape.data.CyAttributes;
 
 import ding.view.DGraphView;
 import ding.view.ViewChangeEdit;
@@ -284,6 +285,11 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 
 		// post the edit 
 		undoableEdit.post();
+
+		// update the __layoutAlgorithm attribute
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		networkAttributes.setAttribute(network.getIdentifier(), "__layoutAlgorithm", getName());
+		networkAttributes.setUserVisible("__layoutAlgorithm", false);
 
 		this.network = null;
 		this.networkView = null;
