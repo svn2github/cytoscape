@@ -117,6 +117,15 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 		}
 	}
 
+	public static AttributeBrowser getAttributeBrowser(browser.DataObjectType pObjectType){
+		if (pObjectType == NODES) {
+			return nodeAttributeBrowser;
+		}
+		else if (pObjectType == NODES) {
+			return edgeAttributeBrowser;
+		}
+		return networkAttributeBrowser;
+	}
 	/**
 	 *  DOCUMENT ME!
 	 */
