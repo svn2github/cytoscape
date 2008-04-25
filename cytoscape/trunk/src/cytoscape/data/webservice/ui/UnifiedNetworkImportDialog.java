@@ -616,15 +616,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		public void halt() {
 			
 			cancelFlag = true;
-			
-			System.out.println("Thread Name Before ==== " + Thread.currentThread().getName());
-			Thread.currentThread().interrupt();
-			
+			Thread.currentThread().interrupt();		
 			taskMonitor.setPercentCompleted(100);
-			taskMonitor.setException(new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED), "Import canceled by user.");
 
-			
-			
 			// Kill the import task.
 			CyWebServiceEvent<String> cancelEvent = new CyWebServiceEvent<String>(serviceName, WSEventType.CANCEL,
                      null,
