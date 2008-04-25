@@ -45,6 +45,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +109,8 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
     private int numDataSources = 0;
     private int numClients = 0;
+    
+    private boolean cancelFlag = false;
 
     static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
@@ -473,7 +476,6 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 			icon = DEF_ICON;
 		}
 		AboutDialog.showDialog(clientName, icon, description);
-
 	}
 
 	private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -613,14 +615,22 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 		public void halt() {
 			
+			cancelFlag = true;
+			
+			System.out.println("Thread Name Before ==== " + Thread.currentThread().getName());
+			Thread.currentThread().interrupt();
+			
+			taskMonitor.setPercentCompleted(100);
+			taskMonitor.setException(new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED), "Import canceled by user.");
+
+			
+			
 			// Kill the import task.
 			CyWebServiceEvent<String> cancelEvent = new CyWebServiceEvent<String>(serviceName, WSEventType.CANCEL,
                      null,
                      null);
 			try {
 				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(cancelEvent);
-				taskMonitor.setPercentCompleted(100);
-				taskMonitor.setStatus("Import canceled by user.");
 			} catch (CyWebServiceException e) {
 				// TODO Auto-generated catch block
 				taskMonitor.setException(e, "Cancel Failed.");
@@ -628,6 +638,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		}
 
 		public void run() {
+			cancelFlag = false;
 			taskMonitor.setStatus("Loading interactions from " + serviceName);
 			taskMonitor.setPercentCompleted(-1);
 
@@ -659,6 +670,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	 * @param evt DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
+		
+		if(cancelFlag) return;
+		
 		Object resultObject = evt.getNewValue();
 
 		if (evt.getPropertyName().equals(WSResponseType.SEARCH_FINISHED.toString())
@@ -706,32 +720,28 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 			String value = JOptionPane.showInputDialog(Cytoscape.getDesktop(), message,
 			                                           "Name new network",
 			                                           JOptionPane.QUESTION_MESSAGE);
+			if (value == null || value.length() == 0 )
+				value = selectedClientID + " Network";
 
-			if ((value != null) || (value.length() != 0)) {
+			
 				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-				cyNetwork.setTitle(value);
 				Cytoscape.getCurrentNetwork().setTitle(value);
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
-				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   .getClient(selectedClientID))
+				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager.getClient(selectedClientID))
 				                    .getDefaultVisualStyle();
-
-				if (style == null) {
+				if(style == null) {
 					style = Cytoscape.getVisualMappingManager().getVisualStyle();
 				}
 
-				VisualStyle testStyle = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
-				                                 .getVisualStyle(style.getName());
 
-				if (testStyle == null) {
+
+				if (Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+                .getVisualStyle(style.getName()) == null)
 					Cytoscape.getVisualMappingManager().getCalculatorCatalog().addVisualStyle(style);
-				}
 
 				Cytoscape.getVisualMappingManager().setVisualStyle(style);
-				Cytoscape.getNetworkView(cyNetwork.getIdentifier()).setVisualStyle(style.getName());
-				Cytoscape.getNetworkView(cyNetwork.getIdentifier()).redrawGraph(false, true);
-			}
+
 		}
 	}
 }
