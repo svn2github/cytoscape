@@ -37,7 +37,6 @@ package edu.ucsd.bioeng.idekerlab.intactclient;
 import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.DATA_IMPORT_FINISHED;
 import static cytoscape.data.webservice.CyWebServiceEvent.WSResponseType.SEARCH_FINISHED;
 import static cytoscape.data.webservice.CyWebServiceException.WSErrorCode.NO_RESULT;
-import static cytoscape.data.webservice.CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED;
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
 
@@ -49,6 +48,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -75,11 +81,13 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceEventListener;
 import cytoscape.data.webservice.CyWebServiceException;
 import cytoscape.data.webservice.DatabaseSearchResult;
 import cytoscape.data.webservice.NetworkImportWebServiceClient;
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientImplWithGUI;
+import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 import cytoscape.data.webservice.util.NetworkExpansionMenu;
@@ -101,6 +109,7 @@ import cytoscape.visual.mappings.PassThroughMapping;
 import giny.model.Edge;
 import giny.model.Node;
 import giny.view.NodeView;
+
 
 
 /**
@@ -135,6 +144,8 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 	// Nodes and edges to be added.
 	private Set<Node> nodes = new HashSet<Node>();
 	private Set<Edge> edges = new HashSet<Edge>();
+	
+	private SimplifiedSearchResult sResult = null;
 
 	private void setDescription() {
 		description = "http://www.ebi.ac.uk/intact/site/contents/all_printerfriendly.jsf";
@@ -167,7 +178,7 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 		props.add(new Tunable("max_interactions", "Maximum number of records", Tunable.INTEGER,
 		                      new Integer(1000)));
 
-		//props.add(new Tunable("search_depth", "Search depth", Tunable.INTEGER, new Integer(0)));
+		props.add(new Tunable("timeout", "Timeout (sec.)", Tunable.INTEGER, new Integer(600)));
 		//props.add(new Tunable("select_interaction", "Import only selected interactions",
 		//                      Tunable.BOOLEAN, new Boolean(false)));
 	}
@@ -410,35 +421,40 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 	}
 
 	private void search(String query, CyWebServiceEvent<String> e) throws CyWebServiceException {
-		if (clientStub == null) {
-			clientStub = new BinarySearchService_Impl();
-		}
 
-		BinarySearch searchClient = ((BinarySearchService_Impl) clientStub).getBinarySearchPort();
-		SimplifiedSearchResult result = null;
-
+		sResult = null;
+		final ExecutorService exe = Executors.newCachedThreadPool();
+		long startTime = System.currentTimeMillis();
+		
+		Future<?> res = null;
 		try {
-			result = searchClient.findBinaryInteractionsLimited(query, 0,
-			                                                    (Integer) props.get("max_interactions")
-			                                                                   .getValue());
-		} catch (RemoteException e1) {
-			throw new CyWebServiceException(REMOTE_EXEC_FAILED);
+			res = exe.submit(new SearchTask(query, exe));
+			res.get((Integer) props.get("timeout")
+                    .getValue(), TimeUnit.SECONDS);
+
+			long endTime = System.currentTimeMillis();
+			double sec = (endTime - startTime) / (1000.0);
+			System.out.println("IntAct DB search finished in " + sec + " msec.");
+		} catch (ExecutionException ee) {
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+		} catch (TimeoutException te) {
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+		} catch (InterruptedException ie) {
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+		} finally {
+			res.cancel(true);
+			exe.shutdown();
 		}
 
-		if (e.getNextMove() != null) {
-			Cytoscape.firePropertyChange(SEARCH_FINISHED.toString(), this.clientID,
-			                             new DatabaseSearchResult<SimplifiedSearchResult>(result
-			                                                                                                                                                                                                                                                                                                                                                                                                                                   .getTotalResults(),
-			                                                                              result,
-			                                                                              e
-			                                                                                                                                                                                                                                                                                                                                                                                                                                      .getNextMove()));
-		} else {
-			Cytoscape.firePropertyChange(SEARCH_FINISHED.toString(), this.clientID,
-			                             new DatabaseSearchResult<SimplifiedSearchResult>(result
-			                                                                                                                                                                                                                                                                                                                                                                                                                                          .getTotalResults(),
-			                                                                              result,
-			                                                                              WSEventType.IMPORT_NETWORK));
-		}
+		if(sResult == null) return;
+		
+		WSEventType nextMove = e.getNextMove();
+		if (nextMove == null)
+			nextMove = WSEventType.IMPORT_NETWORK;
+		
+		Cytoscape.firePropertyChange(SEARCH_FINISHED.toString(), this.clientID,
+				new DatabaseSearchResult<SimplifiedSearchResult>(
+						sResult.getTotalResults(),sResult, nextMove));
 	}
 
 	private SearchResult<IntActBinaryInteraction> toSearchResult(SimplifiedSearchResult ssr) {
@@ -606,5 +622,38 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 	
 	public Icon getIcon(IconSize type) {
 		return ABOUT_ICON;
+	}
+	
+	class SearchTask implements Callable, CyWebServiceEventListener {
+		
+		String query;
+		ExecutorService exe;
+		
+		public SearchTask(String query, ExecutorService exe) {
+			this.query = query;
+			this.exe = exe;
+			WebServiceClientManager.getCyWebServiceEventSupport().addCyWebServiceEventListener(this);
+		}
+		
+		public Object call() throws CyWebServiceException {
+			BinarySearch searchClient = ((BinarySearchService_Impl) clientStub).getBinarySearchPort();
+
+			try {
+				sResult = searchClient.findBinaryInteractionsLimited(query, 0,
+                        (Integer) props.get("max_interactions")
+                                       .getValue());
+			} catch (RemoteException e) {
+				throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+			}
+			return null;
+		}
+
+		public void executeService(CyWebServiceEvent event)
+				throws CyWebServiceException {
+
+			if (event.getEventType().equals(WSEventType.CANCEL)) {
+				throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+			}
+		}
 	}
 }
