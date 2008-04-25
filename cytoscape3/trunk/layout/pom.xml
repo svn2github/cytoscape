@@ -63,7 +63,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-		  	<Bundle-Activator>org.cytoscape.layout.LayoutActivator</Bundle-Activator>
+		  	<Bundle-Activator>org.cytoscape.layout.CyLayouts</Bundle-Activator>
             <Export-Package>org.cytoscape.layout</Export-Package>
             <Private-Package>org.cytoscape.layout.algorithms</Private-Package>
           </instructions>
