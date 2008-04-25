@@ -47,6 +47,7 @@ import javax.swing.ImageIcon;
 import cytoscape.Cytoscape;
 import cytoscape.data.webservice.AttributeImportQuery;
 import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceException;
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
@@ -142,7 +143,7 @@ public class NCBIGenePanel extends AttributeImportPanel {
 		final JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
-		jTaskConfig.displayCancelButton(false);
+		jTaskConfig.displayCancelButton(true);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(false);
 
@@ -177,7 +178,19 @@ public class NCBIGenePanel extends AttributeImportPanel {
 		 *  DOCUMENT ME!
 		 */
 		public void halt() {
-			// TODO Auto-generated method stub
+			Thread.currentThread().interrupt();		
+			taskMonitor.setPercentCompleted(100);
+
+			// Kill the import task.
+			CyWebServiceEvent<String> cancelEvent = new CyWebServiceEvent<String>(ncbi.getClientID(), WSEventType.CANCEL,
+                     null,
+                     null);
+			try {
+				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(cancelEvent);
+			} catch (CyWebServiceException e) {
+				// TODO Auto-generated catch block
+				taskMonitor.setException(e, "Cancel Failed.");
+			}
 		}
 
 		/**
