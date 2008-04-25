@@ -34,11 +34,52 @@
 */
 package edu.ucsd.bioeng.idekerlab.ncbiclient;
 
+import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
+
+import cytoscape.data.CyAttributes;
+
+import cytoscape.data.webservice.AttributeImportQuery;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
+import cytoscape.data.webservice.CyWebServiceEventListener;
+import cytoscape.data.webservice.CyWebServiceException;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientImplWithGUI;
+import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+import cytoscape.data.webservice.util.NetworkExpansionMenu;
+
+import cytoscape.layout.Tunable;
+
+import cytoscape.util.ModulePropertiesImpl;
+
+import cytoscape.visual.EdgeAppearanceCalculator;
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.NodeShape;
+import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.EDGE_LABEL;
 import static cytoscape.visual.VisualPropertyType.NODE_LABEL;
+
+import cytoscape.visual.VisualStyle;
+
+import cytoscape.visual.calculators.AbstractCalculator;
+import cytoscape.visual.calculators.EdgeCalculator;
+import cytoscape.visual.calculators.NodeCalculator;
+
+import cytoscape.visual.mappings.DiscreteMapping;
+import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.visual.mappings.PassThroughMapping;
+
 import giny.model.Edge;
 import giny.model.Node;
+
 import giny.view.NodeView;
+
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceLocator;
 import gov.nih.nlm.ncbi.www.soap.eutils.EUtilsServiceSoap;
 import gov.nih.nlm.ncbi.www.soap.eutils.efetch.DbtagType;
@@ -57,62 +98,43 @@ import gov.nih.nlm.ncbi.www.soap.eutils.esearch.ESearchResult;
 import gov.nih.nlm.ncbi.www.soap.eutils.esearch.IdListType;
 
 import java.awt.Color;
+
 import java.beans.PropertyChangeEvent;
+
 import java.rmi.RemoteException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+
 import javax.xml.rpc.ServiceException;
 
-import cytoscape.CyNetwork;
-import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributes;
-import cytoscape.data.webservice.AttributeImportQuery;
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceException;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientImplWithGUI;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
-import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-import cytoscape.data.webservice.util.NetworkExpansionMenu;
-import cytoscape.layout.Tunable;
-import cytoscape.util.ModulePropertiesImpl;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.NodeShape;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.VisualStyle;
-import cytoscape.visual.calculators.AbstractCalculator;
-import cytoscape.visual.calculators.EdgeCalculator;
-import cytoscape.visual.calculators.NodeCalculator;
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
 
 /**
  *
  */
-public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, JPanel> implements NetworkImportWebServiceClient {
-	
+public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, JPanel>
+    implements NetworkImportWebServiceClient {
 	private static final Icon ABOUT_ICON = new ImageIcon(NCBIClient.class.getResource("/images/entrez32.png"));
-	
+
 	/**
 	 * Annotation categories available in NCBI
 	 *
@@ -159,6 +181,11 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 	private static final String DEF_ITR_TYPE = "pp";
 	private CopyOnWriteArrayList<Node> nodeList;
 	private CopyOnWriteArrayList<Edge> edgeList;
+	
+	private Boolean canceled = null;
+	
+	private ExecutorService executer;
+	
 
 	//	private Map<String[], Object> nodeAttrMap = new ConcurrentHashMap<String[], Object>();
 	private Map<String[], Object> attrMap = new ConcurrentHashMap<String[], Object>();
@@ -166,7 +193,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 	private int threadNum;
 	private int buketNum;
 	private static final int DEF_BUCKET_SIZE = 5;
-	private static final int DEF_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 5;
+	private static final int DEF_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
 	private Map<String, Set<String>> reverseMap;
 
 	// Visual Style name for the networks generated by this client.
@@ -193,14 +220,16 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 	/**
 	 * Creates a new NCBIClient object.
-	 * @throws CyWebServiceException 
+	 * @throws CyWebServiceException
 	 *
 	 * @throws Exception  DOCUMENT ME!
 	 */
 	public NCBIClient() throws CyWebServiceException {
-		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.NETWORK, ClientType.ATTRIBUTE }, null, null, null);
+		super(CLIENT_ID, DISPLAY_NAME,
+		      new ClientType[] { ClientType.NETWORK, ClientType.ATTRIBUTE }, null, null, null);
 
 		EUtilsServiceLocator service = new EUtilsServiceLocator();
+
 		try {
 			clientStub = service.geteUtilsServiceSoap();
 		} catch (ServiceException e) {
@@ -208,16 +237,20 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 		}
 
 		props = new ModulePropertiesImpl(clientID, "wsc");
+		props.add(new Tunable("timeout", "Timeout for search (sec.)",
+                Tunable.INTEGER, new Integer(6000)));
 		props.add(new Tunable("max_search_result", "Maximum number of search result",
 		                      Tunable.INTEGER, new Integer(10000)));
 		props.add(new Tunable("thread_pool_size", "Thread pool size", Tunable.INTEGER,
 		                      new Integer(DEF_POOL_SIZE)));
 		props.add(new Tunable("buket_size", "Number of IDs send at once", Tunable.INTEGER,
 		                      new Integer(DEF_BUCKET_SIZE)));
-		
+
 		prepareDescription();
+		
+		executer = Executors.newFixedThreadPool(DEF_POOL_SIZE);
 	}
-	
+
 	private void prepareDescription() {
 		description = "http://www.ncbi.nlm.nih.gov/entrez/query/static/esoap_help.html";
 	}
@@ -226,7 +259,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 	 *  DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
-	 * @throws CyWebServiceException 
+	 * @throws CyWebServiceException
 	 */
 	@Override
 	public void executeService(CyWebServiceEvent e) throws CyWebServiceException {
@@ -244,7 +277,6 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 	}
 
 	private void search(CyWebServiceEvent<String> e) throws CyWebServiceException {
-
 		final ESearchRequest searchParam = new ESearchRequest();
 		final String keyword = e.getParameter();
 
@@ -253,28 +285,50 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 		//		keyword = keyword.replace(" ", "+");
 		searchParam.setTerm(keyword);
 
-		try {
-			final ESearchResult result = clientStub.run_eSearch(searchParam);
-			int resSize = Integer.parseInt(result.getCount());
-			System.out.println("Number of Result from Entrez Gene = " + resSize);
+		ESearchResult result = null;
 
-			if (e.getNextMove() != null) {
-				Cytoscape.firePropertyChange(WSResponseType.SEARCH_FINISHED.toString(),
-				                             this.clientID,
-				                             new DatabaseSearchResult<ESearchResult>(resSize,
-				                                                                     result,
-				                                                                     e.getNextMove()));
-			} else {
-				Cytoscape.firePropertyChange(WSResponseType.SEARCH_FINISHED.toString(),
-				                             this.clientID,
-				                             new DatabaseSearchResult<ESearchResult>(Integer
-				                                                                                                                                                                                                                                                    .getInteger(result
-				                                                                                                                                                                                                                                                                .getCount()),
-				                                                                     result,
-				                                                                     WSEventType.IMPORT_NETWORK));
-			}
-		} catch (RemoteException e1) {
-			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+		long startTime = System.currentTimeMillis();
+		executer = Executors.newSingleThreadExecutor();
+		Future<ESearchResult> res = executer.submit(new SearchDatabaseTask(searchParam));
+
+		try {
+			result = res.get(Integer.parseInt(props.getValue("timeout")), TimeUnit.SECONDS);
+
+			long endTime = System.currentTimeMillis();
+			double sec = (endTime - startTime) / (1000.0);
+			System.out.println("NCBI Search finished in " + sec + " msec.");
+		
+		} catch (ExecutionException ee) {
+			// TODO Auto-generated catch block
+			ee.printStackTrace();
+		} catch (TimeoutException te) {
+			// TODO Auto-generated catch block
+			te.printStackTrace();
+		} catch (InterruptedException ie) {
+			// TODO Auto-generated catch block
+			ie.printStackTrace();
+		} finally {
+			res.cancel(true);
+			executer.shutdown();
+		}
+		
+		if(result == null) {
+			return;
+		}
+
+		int resSize = Integer.parseInt(result.getCount());
+		System.out.println("Number of Result from Entrez Gene = " + resSize);
+
+		if (e.getNextMove() != null) {
+			Cytoscape.firePropertyChange(WSResponseType.SEARCH_FINISHED.toString(), this.clientID,
+			                             new DatabaseSearchResult<ESearchResult>(resSize, result,
+			                                                                     e.getNextMove()));
+		} else {
+			Cytoscape.firePropertyChange(WSResponseType.SEARCH_FINISHED.toString(), this.clientID,
+			                             new DatabaseSearchResult<ESearchResult>(Integer.getInteger(result
+			                                                                                        .getCount()),
+			                                                                     result,
+			                                                                     WSEventType.IMPORT_NETWORK));
 		}
 	}
 
@@ -363,7 +417,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 			group++;
 
 			if (group == 10) {
-				e.submit(new ImportAnnotationTask(box));
+				e.submit(new ImportTask(new ImportAnnotationTask(box)));
 				group = 0;
 				box = new String[10];
 			}
@@ -375,15 +429,20 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 			newbox[i] = box[i];
 		}
 
-		e.submit(new ImportAnnotationTask(newbox));
+		e.submit(new ImportTask(new ImportAnnotationTask(newbox)));
 
 		try {
 			e.shutdown();
-			e.awaitTermination(6000, TimeUnit.SECONDS);
+			e.awaitTermination(Integer.parseInt(props.getValue("timeout")), TimeUnit.SECONDS);
 
 			long endTime = System.currentTimeMillis();
 			double msec = (endTime - startTime) / (1000.0);
 			System.out.println("NCBI Import finished in " + msec + " msec.");
+			
+			if(canceled != null && canceled) {
+				canceled = null;
+				return;
+			}
 
 			// Copy to CyAttributes.
 			final CyAttributes nodeAttr = Cytoscape.getNodeAttributes();
@@ -450,29 +509,32 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 		}
 	}
 
-	private CyNetwork importNetwork(Object searchResult, CyNetwork net) throws CyWebServiceException {
+	private CyNetwork importNetwork(Object searchResult, CyNetwork net)
+	    throws CyWebServiceException {
 		ESearchResult res = (ESearchResult) searchResult;
 		IdListType ids = res.getIdList();
 
 		nodeList = new CopyOnWriteArrayList<Node>();
 		edgeList = new CopyOnWriteArrayList<Edge>();
 
+		System.gc();
+		
 		long startTime = System.currentTimeMillis();
 		setPerformanceParameters();
 
-		ExecutorService e = Executors.newFixedThreadPool(threadNum);
+		executer = Executors.newFixedThreadPool(threadNum);
 
 		System.out.println("Thread Pool Initialized.");
 
 		int group = 0;
 		String[] box = new String[3];
-
+		
 		for (String entrezID : ids.getId()) {
 			box[group] = entrezID;
 			group++;
 
 			if (group == 3) {
-				e.submit(new ImportNetworkTask(box));
+				executer.submit(new ImportTask(new ImportNetworkTask(box)));
 				group = 0;
 				box = new String[3];
 			}
@@ -480,19 +542,23 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 		String[] newbox = new String[group];
 
-		for (int i = 0; i < group; i++) {
+		for (int i = 0; i < group; i++)
 			newbox[i] = box[i];
-		}
-
-		e.submit(new ImportNetworkTask(newbox));
-
+	
+		executer.submit(new ImportTask(new ImportNetworkTask(newbox)));
+		
 		try {
-			e.shutdown();
-			e.awaitTermination(6000, TimeUnit.SECONDS);
+			executer.shutdown();
+			executer.awaitTermination(Integer.parseInt(props.getValue("timeout")), TimeUnit.SECONDS);
 
 			long endTime = System.currentTimeMillis();
 			double sec = (endTime - startTime) / (1000.0);
 			System.out.println("Finished in " + sec + " sec.");
+			
+			if(canceled != null && canceled) {
+				canceled = null;
+				return null;
+			}
 
 			// Set attributes
 			CyAttributes edgeAttr = Cytoscape.getEdgeAttributes();
@@ -511,7 +577,8 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 			if (net == null) {
 				net = Cytoscape.createNetwork(nodeList, edgeList, "NCBI-Net", null);
-				Cytoscape.firePropertyChange(WSResponseType.DATA_IMPORT_FINISHED.toString(), null, null);
+				Cytoscape.firePropertyChange(WSResponseType.DATA_IMPORT_FINISHED.toString(), null,
+				                             net);
 			} else {
 				for (Node node : nodeList) {
 					net.addNode(node);
@@ -530,32 +597,61 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 			}
 
 			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
-			e = null;
+			
+			
 		} catch (InterruptedException e1) {
 			System.out.println("TIMEOUT");
 			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+		} finally {
+			nodeList.clear();
+			edgeList.clear();
+			
+			nodeList = null;
+			edgeList = null;
+			
+			System.gc();
 		}
 
 		return net;
 	}
 
+	
+	
+	class ImportTask extends FutureTask implements CyWebServiceEventListener {
+
+		
+		public ImportTask(Callable task) {
+			super(task);
+			WebServiceClientManager.getCyWebServiceEventSupport().addCyWebServiceEventListener(this);
+		}
+
+		public void executeService(CyWebServiceEvent event)
+				throws CyWebServiceException {
+
+			if (event.getEventType().equals(WSEventType.CANCEL)) {
+				cancel(true);
+				if(canceled == null)
+					canceled = true;
+			}
+		}
+	}
+	
+	
+	
 	/**
 	 * Thereads which will be executed
 	 * @author kono
 	 *
 	 */
-	class ImportNetworkTask implements Runnable {
+	class ImportNetworkTask implements Callable {
 		private String[] entrezID;
 
 		public ImportNetworkTask(String[] id) {
 			this.entrezID = id;
-		}
-
-		private void parseAnnotation(EFetchResult res) {
+			
 		}
 
 		public void run() {
-			{
 				final EFetchRequest parameters = new EFetchRequest();
 				final StringBuilder builder = new StringBuilder();
 				parameters.setDb("gene");
@@ -569,6 +665,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 				EFetchResult res = null;
 
+				int retryCounter = 0;
 				while (res == null) {
 					try {
 						res = clientStub.run_eFetch(parameters);
@@ -578,18 +675,20 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 						res = null;
 
 						try {
-							System.out.println("Network error.  Retrying..."
+							System.out.println("Could not fetch data from NCBI: "
 							                   + query.substring(0, query.length() - 1));
 							TimeUnit.SECONDS.sleep(1);
 						} catch (InterruptedException e2) {
-							// TODO Auto-generated catch block
-							System.out.println("Time Out!");
+							System.out.println("Interrupted: " + query.substring(0, query.length() - 1));
 						}
 					}
 
-					if (res == null) {
-						System.out.println("Trying..." + query.substring(0, query.length() - 1));
-					}
+					if (res == null && retryCounter < 3)
+						System.out.println("Retry: " + query.substring(0, query.length() - 1));
+					else if(res == null && retryCounter >=3)
+						return;
+					
+					retryCounter++;
 				}
 
 				// Create network from Interactions section
@@ -609,6 +708,8 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 				String edgeID;
 
 				for (int i = 0; i < entryLen; i++) {
+					if(canceled != null && canceled)
+						return;
 					// Get commentary section.
 					gc = res.getEntrezgeneSet().getEntrezgene()[i].getEntrezgene_comments()
 					                                              .getGeneCommentary();
@@ -687,13 +788,39 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 						}
 					}
 				}
-			}
+		}
+
+		public Object call() throws Exception {
+				run();
+			return null;
 		}
 	}
 
 	// Task for importing annotations
 	//
-	class ImportAnnotationTask implements Runnable {
+	class SearchDatabaseTask implements Callable<ESearchResult> {
+		private final ESearchRequest query;
+
+		public SearchDatabaseTask(final ESearchRequest query) {
+			this.query = query;
+		}
+
+		public ESearchResult call() throws Exception {
+			ESearchResult result = null;
+
+			try {
+				result = clientStub.run_eSearch(query);
+			} catch (RemoteException re) {
+				new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+			}
+
+			return result;
+		}
+	}
+
+	// Task for importing annotations
+	//
+	class ImportAnnotationTask implements Callable {
 		private String[] ids;
 
 		public ImportAnnotationTask(String[] ids) {
@@ -703,7 +830,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 		private void parseAnnotation(EFetchResult res) {
 		}
 
-		public void run() {
+		public Object call() throws Exception {
 			StringBuilder builder = new StringBuilder();
 			final EFetchRequest parameters = new EFetchRequest();
 			parameters.setDb("gene");
@@ -734,7 +861,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 
 					try {
 						retry++;
-						System.out.println("BGW error !!!!!!!!!!!!!!!! Sleep "
+						System.out.println("Data fetching failed for: "
 						                   + query.substring(0, query.length() - 1));
 						TimeUnit.SECONDS.sleep(1);
 					} catch (InterruptedException e2) {
@@ -744,16 +871,20 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 				}
 
 				if ((res == null) && (retry < 3)) {
-					System.out.println("=========Try again!!! "
+					System.out.println("Retry: "
 					                   + query.substring(0, query.length() - 1));
-				} else if (retry > 3) {
-					return;
+				} else if (retry >=3) {
+					return null;
 				}
 			}
 
 			EntrezgeneType[] entries = res.getEntrezgeneSet().getEntrezgene();
 
 			for (EntrezgeneType entry : entries) {
+				
+				if(canceled!= null && canceled)
+					return null;
+				
 				String entrezID = entry.getEntrezgene_trackInfo().getGeneTrack()
 				                       .getGeneTrack_geneid();
 
@@ -1089,6 +1220,7 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 				String[] grtx = new String[] { entrezID, "GeneRIF" };
 				attrMap.put(grtx, geneRIFText);
 			}
+			return null;
 		}
 	}
 
@@ -1173,12 +1305,27 @@ public class NCBIClient extends WebServiceClientImplWithGUI<EUtilsServiceSoap, J
 		return defStyle;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param nv DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public List<JMenuItem> getNodeContextMenuItems(NodeView nv) {
 		List<JMenuItem> menuList = new ArrayList<JMenuItem>();
 		menuList.add(NetworkExpansionMenu.getExpander(this));
+
 		return menuList;
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param type DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Icon getIcon(IconSize type) {
 		return ABOUT_ICON;
 	}
