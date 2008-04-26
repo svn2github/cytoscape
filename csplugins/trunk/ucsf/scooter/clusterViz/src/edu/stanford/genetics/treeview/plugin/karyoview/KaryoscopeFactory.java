@@ -5,8 +5,8 @@
  */
 package edu.stanford.genetics.treeview.plugin.karyoview;
 
-import java.awt.Menu;
-import java.awt.MenuItem;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
@@ -84,9 +84,9 @@ public class KaryoscopeFactory extends PluginFactory {
 	/* (non-Javadoc)
 	 * @see edu.stanford.genetics.treeview.PluginFactory#addPluginConfig(java.awt.Menu)
 	 */
-	public void addPluginConfig(Menu globalMenu, final ViewFrame frame) {
+	public void addPluginConfig(JMenu globalMenu, final ViewFrame frame) {
 		super.addPluginConfig(globalMenu, frame);
-		MenuItem pluginItem = new MenuItem("Karyoscope Color...");
+		JMenuItem pluginItem = new JMenuItem("Karyoscope Color...");
 		pluginItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (cpresetFrame == null) {
@@ -106,7 +106,7 @@ public class KaryoscopeFactory extends PluginFactory {
 			}
 			coordEditor.synchronizeFrom();
 		}
-		pluginItem = new MenuItem("Karyoscope Coordinates...");
+		pluginItem = new JMenuItem("Karyoscope Coordinates...");
 		pluginItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (cpresetFrame == null) {

@@ -5,12 +5,12 @@
  */
 package edu.stanford.genetics.treeview.plugin.dendroview;
 
-import java.awt.Menu;
-import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 import edu.stanford.genetics.treeview.*;
 import edu.stanford.genetics.treeview.core.PluginManager;
@@ -55,9 +55,9 @@ public class KnnDendrogramFactory extends PluginFactory {
 	/* (non-Javadoc)
 	 * @see edu.stanford.genetics.treeview.PluginFactory#addPluginConfig(java.awt.Menu)
 	 */
-	public void addPluginConfig(Menu globalMenu, final ViewFrame frame) {
+	public void addPluginConfig(JMenu globalMenu, final ViewFrame frame) {
 		super.addPluginConfig(globalMenu, frame);
-		MenuItem pluginItem = new MenuItem("KnnDendrogram Color Presets...");
+		JMenuItem pluginItem = new JMenuItem("KnnDendrogram Color Presets...");
 		pluginItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (cpresetFrame == null) {

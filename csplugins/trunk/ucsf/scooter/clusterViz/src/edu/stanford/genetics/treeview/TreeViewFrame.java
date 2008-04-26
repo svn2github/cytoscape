@@ -74,20 +74,20 @@ public class TreeViewFrame extends ViewFrame {
 	}
 
 	protected void setupMenuBar() {
-		menubar = new MenuBar();
-		setMenuBar(menubar);
+		menubar = new JMenuBar();
+		setJMenuBar(menubar);
 		programMenu = new ProgramMenu(); // rebuilt when fileMru notifies
 		menubar.add(programMenu);
-		documentMenu = new Menu("Settings");
+		documentMenu = new JMenu("Settings");
 		menubar.add(documentMenu);
-		analysisMenu = new Menu("Analysis");
+		analysisMenu = new JMenu("Analysis");
 		menubar.add(analysisMenu);
-		presetsMenu = new Menu("Presets");
+		presetsMenu = new JMenu("Presets");
 		populateSettingsMenu(presetsMenu);
 		documentMenu.add(presetsMenu);
-		exportMenu = new Menu("Export");
+		exportMenu = new JMenu("Export");
 		menubar.add(exportMenu);
-		windowMenu = new Menu("Window");
+		windowMenu = new JMenu("Window");
 		menubar.add(windowMenu);
 		// menubar.setHelpMenu(getHelpMenu()); not implemented yet?
 		menubar.add(getHelpMenu());
@@ -332,9 +332,9 @@ public class TreeViewFrame extends ViewFrame {
 		presetsFrame.pack();
 	}
 
-	protected void populateSettingsMenu(Menu settingsMenu) {
-		MenuItem presetItem = new MenuItem("Gene Url Presets...",
-				new MenuShortcut(KeyEvent.VK_P));
+	protected void populateSettingsMenu(JMenu settingsMenu) {
+		JMenuItem presetItem = new JMenuItem("Gene Url Presets...",
+				KeyEvent.VK_P);
 		presetItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (presetsPanel == null)
@@ -345,7 +345,7 @@ public class TreeViewFrame extends ViewFrame {
 			}
 		});
 
-		MenuItem apresetItem = new MenuItem("Array Url Presets...");
+		JMenuItem apresetItem = new JMenuItem("Array Url Presets...");
 		apresetItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (presetsPanel == null)
@@ -360,7 +360,7 @@ public class TreeViewFrame extends ViewFrame {
 
 		PluginFactory[] plugins = PluginManager.getPluginManager().getPluginFactories();
 		if (plugins.length == 0) {
-			MenuItem cpresetItem = new MenuItem("Color Presets...");
+			JMenuItem cpresetItem = new JMenuItem("Color Presets...");
 			cpresetItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					if (presetsPanel == null)
@@ -412,9 +412,8 @@ public class TreeViewFrame extends ViewFrame {
 		return arrayFinder;
 	}
 
-	protected void populateAnalysisMenu(Menu menu) {
-		MenuItem menuItem1 = new MenuItem("Find Genes...", new MenuShortcut(
-				KeyEvent.VK_F));
+	protected void populateAnalysisMenu(JMenu menu) {
+		JMenuItem menuItem1 = new JMenuItem("Find Genes...", KeyEvent.VK_F);
 		menuItem1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				getGeneFinder().setVisible(true);
@@ -422,7 +421,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		menu.add(menuItem1);
 
-		MenuItem arrayItem = new MenuItem("Find Arrays...");
+		JMenuItem arrayItem = new JMenuItem("Find Arrays...");
 		arrayItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				getArrayFinder().setVisible(true);
@@ -430,7 +429,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		menu.add(arrayItem);
 
-		MenuItem menuItem2 = new MenuItem("Stats...");
+		JMenuItem menuItem2 = new JMenuItem("Stats...");
 		menuItem2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(TreeViewFrame.this,
@@ -441,7 +440,7 @@ public class TreeViewFrame extends ViewFrame {
 		menu.add(menuItem2);
 	}
 
-	protected void populateExportMenu(Menu exportMenu) {
+	protected void populateExportMenu(JMenu exportMenu) {
 		/*
 		 * MenuItem menuItem2 = new MenuItem("Export to Text File... ");
 		 * menuItem2.addActionListener(new ActionListener() { public void
@@ -455,7 +454,7 @@ public class TreeViewFrame extends ViewFrame {
 		 * t.makeList(); } }); exportMenu.add(menuItem2);
 		 */
 
-		MenuItem listItem = new MenuItem("Save List");
+		JMenuItem listItem = new JMenuItem("Save List");
 		listItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actiosnEvent) {
 				if (warnSelectionEmpty()) {
@@ -480,7 +479,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		exportMenu.add(listItem);
 
-		MenuItem dataItem = new MenuItem("Save Data");
+		JMenuItem dataItem = new JMenuItem("Save Data");
 		dataItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actiosnEvent) {
 				if (warnSelectionEmpty()) {
@@ -521,15 +520,15 @@ public class TreeViewFrame extends ViewFrame {
 		return treeView;
 	}
 
-	private class ProgramMenu extends Menu {
-		private MenuItem openItem, urlItem, exitItem, fmeItem, saveItem;
+	private class ProgramMenu extends JMenu {
+		private JMenuItem openItem, urlItem, exitItem, fmeItem, saveItem;
 
-		private Menu mruItem;
+		private JMenu mruItem;
 
 		ProgramMenu() {
 			super("File");
 
-			openItem = new MenuItem("Open...", new MenuShortcut(KeyEvent.VK_O));
+			openItem = new JMenuItem("Open...", KeyEvent.VK_O);
 			openItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					try {
@@ -551,7 +550,7 @@ public class TreeViewFrame extends ViewFrame {
 				}
 			});
 
-			urlItem = new MenuItem("Open Url...");
+			urlItem = new JMenuItem("Open Url...");
 			urlItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					try {
@@ -569,16 +568,15 @@ public class TreeViewFrame extends ViewFrame {
 				}
 			});
 
-			saveItem = new MenuItem("Save");
-			saveItem.setShortcut(new MenuShortcut(KeyEvent.VK_S));
+			saveItem = new JMenuItem("Save");
+			saveItem.setMnemonic(KeyEvent.VK_S);
 			saveItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					DataModelWriter writer = new DataModelWriter(getDataModel());
 					writer.writeIncremental(getDataModel().getFileSet());
 				}
 			});
-			exitItem = new MenuItem("Exit Program", new MenuShortcut(
-					KeyEvent.VK_Q));
+			exitItem = new JMenuItem("Exit Program", KeyEvent.VK_Q);
 			exitItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					try {
@@ -591,9 +589,9 @@ public class TreeViewFrame extends ViewFrame {
 				}
 			});
 
-			mruItem = new Menu("Recent Files");
+			mruItem = new JMenu("Recent Files");
 
-			fmeItem = new MenuItem("Edit Recent Files...");
+			fmeItem = new JMenuItem("Edit Recent Files...");
 			fmeItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					FileMruEditor fme = new FileMruEditor(fileMru);
@@ -615,7 +613,7 @@ public class TreeViewFrame extends ViewFrame {
 			for (int j = aconfigNode.length; j > 0; j--) {
 				FileMenuListener fileMenuListener = new FileMenuListener(
 						new FileSet(aconfigNode[j - 1]));
-				MenuItem menuItem = new MenuItem(astring[j - 1]);
+				JMenuItem menuItem = new JMenuItem(astring[j - 1]);
 				menuItem.addActionListener(fileMenuListener);
 				mruItem.add(menuItem);
 			}
@@ -673,10 +671,10 @@ public class TreeViewFrame extends ViewFrame {
 		}
 	}
 
-	private Menu getHelpMenu() {
-		Menu menu = new Menu("Help");
+	private JMenu getHelpMenu() {
+		JMenu menu = new JMenu("Help");
 
-		MenuItem menuItem1 = new MenuItem("About...");
+		JMenuItem menuItem1 = new JMenuItem("About...");
 		menuItem1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				/*
@@ -729,7 +727,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		menu.add(menuItem1);
 
-		MenuItem messagesItem = new MenuItem("Messages...");
+		JMenuItem messagesItem = new JMenuItem("Messages...");
 		messagesItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JPanel inner = new JPanel();
@@ -752,7 +750,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		menu.add(messagesItem);
 
-		MenuItem menuItem4 = new MenuItem("Documentation...");
+		JMenuItem menuItem4 = new JMenuItem("Documentation...");
 		menuItem4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				// Popup popup = new Popup(TreeViewFrame.this, "Java TreeView:
@@ -780,7 +778,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		menu.add(menuItem4);
 
-		MenuItem mi_plugins = new MenuItem("Plugins...");
+		JMenuItem mi_plugins = new JMenuItem("Plugins...");
 		mi_plugins.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				displayPluginInfo();
@@ -788,7 +786,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		menu.add(mi_plugins);
 
-		MenuItem menuItem5 = new MenuItem("Registration...");
+		JMenuItem menuItem5 = new JMenuItem("Registration...");
 		menuItem5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				ConfigNode node = treeView.getGlobalConfig().getNode(
@@ -806,7 +804,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		menu.add(menuItem5);
 
-		MenuItem menuItem6 = new MenuItem("Feedback...");
+		JMenuItem menuItem6 = new JMenuItem("Feedback...");
 		menuItem6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				JPanel feedback = new JPanel();
@@ -878,7 +876,7 @@ public class TreeViewFrame extends ViewFrame {
 
 		menu.addSeparator();
 
-		MenuItem menuItem2 = new MenuItem("Memory...");
+		JMenuItem menuItem2 = new JMenuItem("Memory...");
 		menuItem2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new MemMonitor();
@@ -886,7 +884,7 @@ public class TreeViewFrame extends ViewFrame {
 		});
 		menu.add(menuItem2);
 
-		MenuItem menuItem3 = new MenuItem("Threads...");
+		JMenuItem menuItem3 = new JMenuItem("Threads...");
 		menuItem3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ThreadListener pop = new ThreadListener();
@@ -919,17 +917,17 @@ public class TreeViewFrame extends ViewFrame {
 
 	TreeViewApp treeView;
 
-	private MenuBar menubar;
+	private JMenuBar menubar;
 
 	private ProgramMenu programMenu;
 
-	private Menu documentMenu;
+	private JMenu documentMenu;
 
-	private Menu analysisMenu;
+	private JMenu analysisMenu;
 
-	private Menu exportMenu;
+	private JMenu exportMenu;
 
-	private Menu presetsMenu;
+	private JMenu presetsMenu;
 
 	private boolean loaded;
 

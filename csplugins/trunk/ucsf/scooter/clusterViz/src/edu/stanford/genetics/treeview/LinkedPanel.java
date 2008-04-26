@@ -192,7 +192,7 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	 public void populateSettingsMenu(Menu menu) {
+	 public void populateSettingsMenu(JMenu menu) {
 		 MainPanel panel = (MainPanel) getSelectedComponent();
 		 if (panel != null) {
 			 panel.populateSettingsMenu(menu);
@@ -205,7 +205,7 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateAnalysisMenu(Menu menu) {
+	public void populateAnalysisMenu(JMenu menu) {
 		MainPanel panel = (MainPanel) getSelectedComponent();
 		if (panel != null) {
 			panel.populateAnalysisMenu(menu);
@@ -214,7 +214,7 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 		PluginFactory [] plugins = PluginManager.getPluginManager().getPluginFactories();
 		for (int i = 0; i < plugins.length; i++) {
 			final PluginFactory thisFactory = plugins[i];
-			MenuItem pluginItem = new MenuItem(thisFactory.getPluginName());
+			JMenuItem pluginItem = new JMenuItem(thisFactory.getPluginName());
 			pluginItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					MainPanel plugin = addPlugin(thisFactory);
@@ -223,14 +223,14 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 			menu.add(pluginItem);
 		}
 		if (plugins.length == 0) {
-			menu.add(new MenuItem ("No Plugins Found"));
+			menu.add(new JMenuItem ("No Plugins Found"));
 		}
 		if (menu.getItemCount() > 0) menu.addSeparator();
 
 		menu.addSeparator();
 		
 		
-		MenuItem removeItem = new MenuItem("Remove Current");
+		JMenuItem removeItem = new JMenuItem("Remove Current");
 		removeItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				removeCurrent();
@@ -238,7 +238,7 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 		});
 		menu.add(removeItem);
 		
-		MenuItem detachItem = new MenuItem("Detach Current");
+		JMenuItem detachItem = new JMenuItem("Detach Current");
 		detachItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				detachCurrent();
@@ -258,7 +258,7 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	 public void populateExportMenu(Menu menu) {
+	 public void populateExportMenu(JMenu menu) {
 		 MainPanel panel = (MainPanel) getSelectedComponent();
 		 if (panel != null) {
 			 if (menu.getItemCount() > 0) menu.addSeparator();					

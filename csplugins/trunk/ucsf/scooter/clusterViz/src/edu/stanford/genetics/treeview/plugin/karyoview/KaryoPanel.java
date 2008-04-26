@@ -27,7 +27,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.ProgressMonitor;
 
 import edu.stanford.genetics.treeview.*;
 import edu.stanford.genetics.treeview.model.TVModel;
@@ -375,8 +380,8 @@ public class KaryoPanel extends DragGridPanel implements MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateSettingsMenu(Menu menu) {
-		MenuItem dispItem = new MenuItem("Display...");
+	public void populateSettingsMenu(JMenu menu) {
+		JMenuItem dispItem = new JMenuItem("Display...");
 		dispItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showDisplayPopup();
@@ -384,7 +389,7 @@ public class KaryoPanel extends DragGridPanel implements MainPanel {
 		});
 		menu.add(dispItem);
 
-		MenuItem aveItem = new MenuItem("Averaging...");
+		JMenuItem aveItem = new JMenuItem("Averaging...");
 		aveItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showAveragingPopup();
@@ -392,14 +397,14 @@ public class KaryoPanel extends DragGridPanel implements MainPanel {
 		});
 		menu.add(aveItem);
 
-		MenuItem coordItem = new MenuItem("Coordinates...");
+		JMenuItem coordItem = new JMenuItem("Coordinates...");
 		coordItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showCoordinatesPopup();
 			}
 		});
 		menu.add(coordItem);
-		MenuItem urlItem = new MenuItem("Url Links...");
+		JMenuItem urlItem = new JMenuItem("Url Links...");
 		urlItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SettingsPanel urlPanel = new UrlSettingsPanel(viewFrame.getUrlExtractor() , viewFrame.getGeneUrlPresets());
@@ -417,7 +422,7 @@ public class KaryoPanel extends DragGridPanel implements MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateAnalysisMenu(Menu menu) {
+	public void populateAnalysisMenu(JMenu menu) {
 	}
 
 	/**
@@ -425,8 +430,8 @@ public class KaryoPanel extends DragGridPanel implements MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateExportMenu(Menu menu) {
-		MenuItem bitmapItem = new MenuItem("Export to Image...");
+	public void populateExportMenu(JMenu menu) {
+		JMenuItem bitmapItem = new JMenuItem("Export to Image...");
 		bitmapItem.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent actionEvent) {
 

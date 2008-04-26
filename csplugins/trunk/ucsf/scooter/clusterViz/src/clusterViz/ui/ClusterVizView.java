@@ -228,13 +228,9 @@ public class ClusterVizView extends TreeViewApp implements Observer, GraphViewCh
 				if (node != null) nodes.add(node);
 			}
 			// myView.removeGraphViewChangeListener(this);
-			System.out.print("Clearing selection....");
+			// System.out.println("Selecting "+nodes.size()+" nodes");
 			myNetwork.unselectAllNodes();
-			System.out.println("done.");
-			System.out.print("Updating selection....");
 			myNetwork.setSelectedNodeState(nodes, true);
-			System.out.println("done");
-			myView.updateView();
 			// myView.addGraphViewChangeListener(this);
 		}
 	}

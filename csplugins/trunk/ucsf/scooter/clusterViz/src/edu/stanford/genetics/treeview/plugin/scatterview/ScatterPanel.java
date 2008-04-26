@@ -150,8 +150,8 @@ public class ScatterPanel extends JPanel implements MainPanel, java.util.Observe
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateSettingsMenu(Menu menu) {
-		MenuItem dispItem = new MenuItem("Display...");
+	public void populateSettingsMenu(JMenu menu) {
+		JMenuItem dispItem = new JMenuItem("Display...");
 		dispItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showDisplayPopup();
@@ -166,7 +166,7 @@ public class ScatterPanel extends JPanel implements MainPanel, java.util.Observe
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateAnalysisMenu(Menu menu) {
+	public void populateAnalysisMenu(JMenu menu) {
 	}
 
 
@@ -175,9 +175,9 @@ public class ScatterPanel extends JPanel implements MainPanel, java.util.Observe
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateExportMenu(Menu menu) {
+	public void populateExportMenu(JMenu menu) {
 
-		MenuItem bitmapItem = new MenuItem("Export to Image...");
+		JMenuItem bitmapItem = new JMenuItem("Export to Image...");
 		bitmapItem.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent actionEvent) {
 

@@ -67,9 +67,9 @@ public class DendrogramFactory extends PluginFactory {
 	/* (non-Javadoc)
 	 * @see edu.stanford.genetics.treeview.PluginFactory#addPluginConfig(java.awt.Menu)
 	 */
-	public void addPluginConfig(Menu globalMenu, final ViewFrame frame) {
+	public void addPluginConfig(JMenu globalMenu, final ViewFrame frame) {
 		super.addPluginConfig(globalMenu, frame);
-		MenuItem pluginItem = new MenuItem("Dendrogram Color Presets...");
+		JMenuItem pluginItem = new JMenuItem("Dendrogram Color Presets...");
 		pluginItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (cpresetFrame == null) {

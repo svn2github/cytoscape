@@ -22,7 +22,7 @@
  */
 package edu.stanford.genetics.treeview;
 
-import java.awt.Menu;
+import javax.swing.JMenu;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -52,7 +52,7 @@ public interface MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateSettingsMenu(Menu menu);
+	public void populateSettingsMenu(JMenu menu);
 
 
 	/**
@@ -60,7 +60,7 @@ public interface MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateAnalysisMenu(Menu menu);
+	public void populateAnalysisMenu(JMenu menu);
 
 
 	/**
@@ -68,7 +68,7 @@ public interface MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateExportMenu(Menu menu);
+	public void populateExportMenu(JMenu menu);
 
 
 	/**

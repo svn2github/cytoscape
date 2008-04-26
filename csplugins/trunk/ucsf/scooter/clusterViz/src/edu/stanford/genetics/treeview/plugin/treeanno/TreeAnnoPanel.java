@@ -244,7 +244,7 @@ public class TreeAnnoPanel extends JPanel implements MainPanel {
 	/* (non-Javadoc)
 	 * @see edu.stanford.genetics.treeview.MainPanel#populateSettingsMenu(java.awt.Menu)
 	 */
-	public void populateSettingsMenu(Menu menu) {
+	public void populateSettingsMenu(JMenu menu) {
 		// TODO Auto-generated method stub
 
 	}
@@ -252,7 +252,7 @@ public class TreeAnnoPanel extends JPanel implements MainPanel {
 	/* (non-Javadoc)
 	 * @see edu.stanford.genetics.treeview.MainPanel#populateAnalysisMenu(java.awt.Menu)
 	 */
-	public void populateAnalysisMenu(Menu menu) {
+	public void populateAnalysisMenu(JMenu menu) {
 		// TODO Auto-generated method stub
 
 	}
@@ -260,7 +260,7 @@ public class TreeAnnoPanel extends JPanel implements MainPanel {
 	/* (non-Javadoc)
 	 * @see edu.stanford.genetics.treeview.MainPanel#populateExportMenu(java.awt.Menu)
 	 */
-	public void populateExportMenu(Menu menu) {
+	public void populateExportMenu(JMenu menu) {
 		// TODO Auto-generated method stub
 
 	}

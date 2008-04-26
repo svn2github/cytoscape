@@ -27,7 +27,13 @@ import java.awt.event.*;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.ProgressMonitor;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JViewport;
 
 import edu.stanford.genetics.treeview.*;
 

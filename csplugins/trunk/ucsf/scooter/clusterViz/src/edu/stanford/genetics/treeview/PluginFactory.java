@@ -5,7 +5,7 @@
  */
 package edu.stanford.genetics.treeview;
 
-import java.awt.Menu;
+import javax.swing.JMenu;
 
 /**
  * 
@@ -77,7 +77,7 @@ public abstract class PluginFactory {
 	 * either the presets or defaults associated with the plugin
 	 * 
 	 */
-	public void addPluginConfig(Menu globalMenu, ViewFrame viewFrame) {
+	public void addPluginConfig(JMenu globalMenu, ViewFrame viewFrame) {
 		// no presets by default.
 	}
 

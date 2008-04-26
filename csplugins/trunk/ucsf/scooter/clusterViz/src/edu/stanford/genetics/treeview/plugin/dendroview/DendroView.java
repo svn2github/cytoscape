@@ -917,10 +917,10 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 
 	// Menus
 	
-		  public void populateExportMenu(Menu menu)
+		  public void populateExportMenu(JMenu menu)
 	  {
 
-		MenuItem psItem = new MenuItem("Export to Postscript...", new MenuShortcut(KeyEvent.VK_X));
+		JMenuItem psItem = new JMenuItem("Export to Postscript...", KeyEvent.VK_X);
 		psItem.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent actionEvent) {
 
@@ -952,7 +952,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		menu.add(psItem);
 		
 
-		MenuItem bitmapItem = new MenuItem("Export to Image...");
+		JMenuItem bitmapItem = new JMenuItem("Export to Image...");
 		bitmapItem.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent actionEvent) {
 
@@ -985,7 +985,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		menu.add(bitmapItem);
 
 
-		MenuItem pcbItem = new MenuItem("Export ColorBar to Postscript...");
+		JMenuItem pcbItem = new JMenuItem("Export ColorBar to Postscript...");
 		pcbItem.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent actionEvent) {
 
@@ -1000,7 +1000,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		});
 		menu.add(pcbItem);
 
-		MenuItem gcbItem = new MenuItem("Export ColorBar to Image...");
+		JMenuItem gcbItem = new JMenuItem("Export ColorBar to Image...");
 		gcbItem.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent actionEvent) {
 
@@ -1038,9 +1038,9 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 			return null;
 	  }
 	  
-		private void addSimpleExportOptions(Menu menu) {
+		private void addSimpleExportOptions(JMenu menu) {
 			
-			MenuItem treeItem = new MenuItem("Save Tree Image");
+			JMenuItem treeItem = new JMenuItem("Save Tree Image");
 			treeItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					
@@ -1069,7 +1069,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 			});
 			menu.add(treeItem);
 			
-			MenuItem thumbItem = new MenuItem("Save Thumbnail Image");
+			JMenuItem thumbItem = new JMenuItem("Save Thumbnail Image");
 			thumbItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					
@@ -1098,7 +1098,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 			});
 			menu.add(thumbItem);
 			
-			MenuItem zoomItem = new MenuItem("Save Zoomed Image");
+			JMenuItem zoomItem = new JMenuItem("Save Zoomed Image");
 			zoomItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
 					
@@ -1143,8 +1143,8 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	 *
 	 * @param  menu  menu to add to
 	 */
-	public void populateAnalysisMenu(Menu menu) {
-		MenuItem flipNodeItem = new MenuItem("Flip Tree Node", new MenuShortcut(KeyEvent.VK_L));
+	public void populateAnalysisMenu(JMenu menu) {
+		JMenuItem flipNodeItem = new JMenuItem("Flip Tree Node", KeyEvent.VK_L);
 		flipNodeItem.addActionListener(
 			new ActionListener()
 			{
@@ -1157,7 +1157,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		menu.add(flipNodeItem);
   
   
-		MenuItem alignToTreeItem = new MenuItem("Align to Tree...", new MenuShortcut(KeyEvent.VK_A));
+		JMenuItem alignToTreeItem = new JMenuItem("Align to Tree...", KeyEvent.VK_A);
 		alignToTreeItem.addActionListener(
 			new ActionListener()
 			{
@@ -1185,7 +1185,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		menu.add(alignToTreeItem);
 		
 
-		MenuItem compareTo = new MenuItem("Compare to...", new MenuShortcut(KeyEvent.VK_C));
+		JMenuItem compareTo = new JMenuItem("Compare to...", KeyEvent.VK_C);
 		compareTo.addActionListener(
 			new ActionListener()
 			{
@@ -1210,7 +1210,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		);
 		menu.add(compareTo);
 		
-		MenuItem removeCompare = new MenuItem("Remove comparison", new MenuShortcut(KeyEvent.VK_R));
+		JMenuItem removeCompare = new JMenuItem("Remove comparison", KeyEvent.VK_R);
 		removeCompare.addActionListener(
 			new ActionListener()
 			{
@@ -1229,7 +1229,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		
 		
 
-		MenuItem summaryItem = new MenuItem("Summary Window...");
+		JMenuItem summaryItem = new JMenuItem("Summary Window...");
 		summaryItem.addActionListener(new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
 			  SummaryViewWizard  wizard = new SummaryViewWizard(DendroView.this);
@@ -1247,7 +1247,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	 *
 	 * @param  menu  menu to add to
 	 */
-	public void populateSettingsMenu(Menu menu) {
+	public void populateSettingsMenu(JMenu menu) {
 /*
 		MenuItem itemg = new MenuItem("Gene Settings...", new MenuShortcut(KeyEvent.VK_S));
 	itemg.addActionListener(new ActionListener() {
@@ -1275,7 +1275,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	});
 	menu.add(itema);
 */
-	MenuItem pixelItem  = new MenuItem("Pixel Settings...");
+	JMenuItem pixelItem  = new JMenuItem("Pixel Settings...");
 		pixelItem.addActionListener(
 			new ActionListener() {
 				public void actionPerformed(ActionEvent actionEvent) {
@@ -1304,7 +1304,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 			});
 		menu.add(pixelItem);
 
-	MenuItem urlItem = new MenuItem("Url Settings...");
+	JMenuItem urlItem = new JMenuItem("Url Settings...");
 	urlItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent actionEvent) {
 			// keep refs to settingsPanel, settingsFrame local, since will dispose of self when closed...
@@ -1326,7 +1326,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	});
 	menu.add(urlItem);
 
-	MenuItem fontItem = new MenuItem("Font Settings...");
+	JMenuItem fontItem = new JMenuItem("Font Settings...");
 	fontItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent actionEvent) {
 			// keep ref to settingsFrame local, since will dispose of self when closed...
@@ -1346,7 +1346,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	});
 	menu.add(fontItem);
 
-	MenuItem annoItem = new MenuItem("Annotations...");
+	JMenuItem annoItem = new JMenuItem("Annotations...");
 	annoItem.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent actionEvent) {
 			// keep refs to settingsPanel, settingsFrame local, since will dispose of self when closed...

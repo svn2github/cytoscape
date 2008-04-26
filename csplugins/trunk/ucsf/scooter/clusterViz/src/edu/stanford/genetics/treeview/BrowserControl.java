@@ -266,7 +266,7 @@ class UnixBrowserControl extends BrowserControl {
 	 */
 
 	public void displayURL(String url) throws IOException {
-		String cmd  = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
+		String cmd  = UNIX_PATH + " " + url;
 		if (isValidUrl(url) == false) {
 			cmd = url;
 		}
@@ -304,10 +304,10 @@ class UnixBrowserControl extends BrowserControl {
 
 
 	/** The default browser under unix.*/
-	private final static String UNIX_PATH  = "netscape";
+	private final static String UNIX_PATH  = "firefox";
 
 	/** The flag to display a url.*/
-	private final static String UNIX_FLAG  = "-remote openURL";
+	private final static String UNIX_FLAG  = "";
 }
 
 // I wonder if MacBrowserControl will use the right MRJ?

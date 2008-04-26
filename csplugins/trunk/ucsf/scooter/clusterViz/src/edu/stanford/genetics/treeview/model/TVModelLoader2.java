@@ -27,7 +27,12 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.net.URL;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import edu.stanford.genetics.treeview.*;
 

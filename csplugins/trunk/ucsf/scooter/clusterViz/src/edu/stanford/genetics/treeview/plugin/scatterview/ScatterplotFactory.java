@@ -67,9 +67,9 @@ public class ScatterplotFactory extends PluginFactory {
 	/* (non-Javadoc)
 	 * @see edu.stanford.genetics.treeview.PluginFactory#addPluginConfig(java.awt.Menu)
 	 */
-	public void addPluginConfig(Menu globalMenu, final ViewFrame frame) {
+	public void addPluginConfig(JMenu globalMenu, final ViewFrame frame) {
 		super.addPluginConfig(globalMenu, frame);
-		MenuItem pluginItem = new MenuItem("Scatterplot Color...");
+		JMenuItem pluginItem = new JMenuItem("Scatterplot Color...");
 		pluginItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (cpresetFrame == null) {
@@ -186,7 +186,7 @@ private class GraphDialog extends JDialog {
 			return -1;
 		}
 	}
-	MenuItem ratioItem = new MenuItem("Make Scatterplot of Genes...");
+	JMenuItem ratioItem = new JMenuItem("Make Scatterplot of Genes...");
 
 	class ButtonPanel extends JPanel {
 		private JButton  closeButton, goButton;

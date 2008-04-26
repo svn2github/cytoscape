@@ -109,7 +109,8 @@ public abstract class ViewFrame extends JFrame implements Observer {
 		Rectangle rectangle  = new Rectangle(dimension);
 
 		// XXX should drag out of global config
-		setSize(rectangle.width * 3 / 4, rectangle.height * 4 / 5);
+		// setSize(rectangle.width * 3 / 4, rectangle.height * 4 / 5);
+		setSize(rectangle.width / 4, rectangle.height / 4);
 		center(rectangle);
 	}
 
@@ -551,13 +552,13 @@ public abstract class ViewFrame extends JFrame implements Observer {
 	 */
 	 public void rebuildWindowMenu(Vector windows) {
 		 windowMenu.removeAll();
-		 MenuItem closeItem = new MenuItem("Close Window", new MenuShortcut(KeyEvent.VK_W));
+		 JMenuItem closeItem = new JMenuItem("Close Window", KeyEvent.VK_W);
 		 closeItem.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent actionEvent) {
 				 closeWindow();
 			 }
 		 });
-		 MenuItem newItem = new MenuItem("New Window", new MenuShortcut(KeyEvent.VK_N));
+		 JMenuItem newItem = new JMenuItem("New Window", KeyEvent.VK_N);
 		 newItem.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent actionEvent)
 			 {
@@ -570,7 +571,7 @@ public abstract class ViewFrame extends JFrame implements Observer {
 			 if (i > 8) {
 				 return;
 			 }// just want first 9 windows...
-			 MenuItem focusItem  = getFocusItem(windows, i);
+			 JMenuItem focusItem  = getFocusItem(windows, i);
 			 windowMenu.add(focusItem);
 		 }
 		windowMenu.addSeparator();
@@ -594,7 +595,7 @@ public abstract class ViewFrame extends JFrame implements Observer {
 	 * @param  i  which window to move to the front.
 	 * @return    a menuItem which focuses the i'th window, or null if more than 9 windows.
 	 */
-	 private MenuItem getFocusItem(Vector windows, int i) {
+	 private JMenuItem getFocusItem(Vector windows, int i) {
 		 int p1                  = i + 1;
 		 if (p1 > 9) {
 			 return null;
@@ -606,7 +607,7 @@ public abstract class ViewFrame extends JFrame implements Observer {
 		 } else {
 			 name = "Not Loaded";
 		 }
-		 MenuItem focusItem      = new MenuItem(name, new MenuShortcut(getKey(p1)));
+		 JMenuItem focusItem      = new JMenuItem(name, getKey(p1));
 		 focusItem.addActionListener(
 		 new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
@@ -649,7 +650,7 @@ public abstract class ViewFrame extends JFrame implements Observer {
 		 return 0;
 	 }
 	 
-	 protected Menu windowMenu;
+	 protected JMenu windowMenu;
 
 	  public void showSubDataModel(int[] indexes, String source, String name) {
 		  	if (indexes.length == 0) {
