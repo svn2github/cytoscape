@@ -36,7 +36,6 @@
  */
 package cytoscape.actions;
 
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
