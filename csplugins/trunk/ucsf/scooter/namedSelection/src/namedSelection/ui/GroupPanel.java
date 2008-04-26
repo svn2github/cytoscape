@@ -265,7 +265,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				clearPaths.add(cPaths[i]);
 				if (CyGroupManager.isaGroup(node)) {
 					CyGroup group = CyGroupManager.getCyGroup(node);
-					if (group.getViewer().equals("namedSelection"))
+					if (group.getViewer() != null && group.getViewer().equals("namedSelection"))
 						group.setState(NamedSelection.UNSELECTED);
 					// Update the Cytoscape selections
 					clearNodes.addAll(updateNodes(group));
@@ -548,9 +548,11 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 		if (event.isNodesSelectedType()) {
 			select = true;
 			nodeList = event.getSelectedNodes();
+			// System.out.println("selected "+nodeList.length+" nodes");
 		} else if (event.isNodesUnselectedType()) {
 			select = false;
 			nodeList = event.getUnselectedNodes();
+			// System.out.println("unselected "+nodeList.length+" nodes");
 		} else {
 			return;
 		}
@@ -614,7 +616,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			} else {
 				updateTreeSelection = false;
 				treeSelectionModel.removeSelectionPaths(nodeMap.get(groupNode).toArray(ta));
-				if (group.getViewer().equals("namedSelection"))
+				if (group.getViewer() != null && group.getViewer().equals("namedSelection"))
 					group.setState(NamedSelection.UNSELECTED);
 				updateTreeSelection = true;
 			}
@@ -694,7 +696,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 					continue;
 				for (CyGroup group: groupList) {
 					CyNode groupNode = group.getGroupNode();
-					if (group.getViewer().equals("namedSelection") &&
+					if (group.getViewer() != null && group.getViewer().equals("namedSelection") &&
 					    group.getState() == NamedSelection.SELECTED && nodeMap.containsKey(groupNode)) {
 						treeSelectionModel.addSelectionPaths(nodeMap.get(groupNode).toArray(ta));
 					}
@@ -822,7 +824,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			TreePath parentPath = path.getParentPath();
 			DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)parentPath.getLastPathComponent();
 			DefaultMutableTreeNode thisNode = (DefaultMutableTreeNode)path.getLastPathComponent();
-			parentNode.remove(thisNode);
+			if (parentNode.isNodeChild(thisNode))
+				parentNode.remove(thisNode);
 		}
 
 		private boolean isRootGroup(CyGroup group, CyGroupViewer viewer) {
