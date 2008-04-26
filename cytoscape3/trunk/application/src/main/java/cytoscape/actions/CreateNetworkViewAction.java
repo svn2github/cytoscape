@@ -36,9 +36,15 @@
  */
 package cytoscape.actions;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
+import cytoscape.actions.CreateNetworkViewTask;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
 
 import cytoscape.view.CytoscapeDesktop;
@@ -117,7 +123,21 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 				                              "Create View Request Cancelled by User.");
 			}
 		} else {
-			Cytoscape.createNetworkView(cyNetwork);
+//			Cytoscape.createNetworkView(cyNetwork);
+			// Create Task
+			CreateNetworkViewTask task = new CreateNetworkViewTask(cyNetwork);
+
+			// Configure JTask Dialog Pop-Up Box
+			JTaskConfig jTaskConfig = new JTaskConfig();
+
+			jTaskConfig.displayCancelButton(false);
+			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.displayCloseButton(false);
+			jTaskConfig.displayStatus(true);
+			jTaskConfig.setAutoDispose(true);
+
+			// Execute Task in New Thread; pop open JTask Dialog Box.
+			TaskManager.executeTask(task, jTaskConfig);
 		}
 	}
 
@@ -138,3 +158,37 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	}
 
 }
+
+
+class CreateNetworkViewTask implements Task {
+	private GraphPerspective network;
+	private TaskMonitor taskMonitor;
+
+	CreateNetworkViewTask(GraphPerspective network) {
+		this.network = network;
+	}
+
+	public void run() {
+		taskMonitor.setStatus("Creating network view ...");
+		taskMonitor.setPercentCompleted(-1);
+
+		try {
+			Cytoscape.createNetworkView(network);
+		} catch (Exception e) {
+			taskMonitor.setException(e, "Could not create network view for network: " + network.getTitle());
+		}
+
+		taskMonitor.setPercentCompleted(100);
+		taskMonitor.setStatus("Network view successfully create for:  " + network.getTitle());
+	}
+
+	public void halt() { }
+
+	public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+		this.taskMonitor = taskMonitor;
+	}
+
+	public String getTitle() {
+		return "Creating Network View";
+	}
+} 
