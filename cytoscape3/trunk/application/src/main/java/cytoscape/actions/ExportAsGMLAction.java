@@ -145,7 +145,7 @@ public class ExportAsGMLAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-		enableForNetworkAndView();
+		enableForNetwork();
 	}
 
 } 
@@ -232,7 +232,7 @@ class ExportAsGMLTask implements Task {
 	 */
 	private void saveGraph() throws IOException {
 		FileWriter fileWriter = new FileWriter(fileName);
-		List<KeyValue> list = new Vector<KeyValue>();
+		List list = new Vector();
 
 		GMLWriter gmlWriter = new GMLWriter();
 		gmlWriter.writeGML(network, view, list);
