@@ -223,6 +223,7 @@
 		<module>view</module>
 		<module>tunable</module>
 		<module>layout</module>
+		<module>vizmap</module>
 
 		<!-- Cytoscape Application -->
 		<module>application</module>
@@ -242,7 +243,7 @@
 		<module>attribute.browser</module>
 		<module>linkout</module>
 		<module>cpath</module>
-    <module>vizmap</module>
+		<module>cpath2</module>
   </modules>
 
 

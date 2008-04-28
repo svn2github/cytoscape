@@ -27,6 +27,7 @@ cp table.import/target/table.import-1.0-SNAPSHOT.jar $target/plugins
 cp attribute.browser/target/attribute.browser-1.0-SNAPSHOT.jar $target/plugins
 cp linkout/target/linkout-1.0-SNAPSHOT.jar $target/plugins
 cp cpath/target/cpath-1.0-SNAPSHOT.jar $target/plugins
+cp cpath2/target/cpath2-1.0-SNAPSHOT.jar $target/plugins
 
 
 # build the config file based on the bundles in the bundle dir
