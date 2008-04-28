@@ -98,6 +98,7 @@ public class LayoutActivator implements BundleActivator {
 	private void registerLayout(BundleContext bc, CyLayoutAlgorithm cla, String prefMenu) {
 		Hashtable props = new Hashtable();
 		props.put("preferredMenu", prefMenu);
+		props.put("name", cla.getName());
 		ServiceRegistration reg = bc.registerService(CyLayoutAlgorithm.class.getName(),cla,props);
 		regSet.add( reg );	
 	}
