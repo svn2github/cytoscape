@@ -34,6 +34,11 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
+import org.cytoscape.vizmap.VisualPropertyType;
+
+import org.jdesktop.swingx.JXMultiThumbSlider;
+import org.jdesktop.swingx.multislider.Thumb;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -48,14 +53,12 @@ import java.awt.font.TextLayout;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
-
-import org.jdesktop.swingx.JXMultiThumbSlider;
-import org.jdesktop.swingx.multislider.Thumb;
 
 
 /**
@@ -71,12 +74,14 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 
 	//private Paint checker_paint;
 	private JXMultiThumbSlider<Color> slider;
-	private double minValue;
-	private double maxValue;
-	private double range;
+
+	//	private double minValue;
+	//	private double maxValue;
+	//	private double range;
 	private Color below;
 	private Color above;
 	private String attrName;
+	private VisualPropertyType type;
 
 	/**
 	 * Creates a new GradientTrackRenderer object.
@@ -84,16 +89,16 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 * @param gradientPicker
 	 *            DOCUMENT ME!
 	 */
-	public CyGradientTrackRenderer(double minValue, double maxValue, Color below, Color above,
-	                               String title) {
+	public CyGradientTrackRenderer(VisualPropertyType type, Color below, Color above, String title) {
 		//checker_paint = ColorUtil.getCheckerPaint();
 		this.below = below;
 		this.above = above;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
+		//		this.minValue = minValue;
+		//		this.maxValue = maxValue;
 		this.attrName = title;
 
-		this.range = Math.abs(maxValue - minValue);
+		//		this.range = Math.abs(maxValue - minValue);
+		this.type = type;
 	}
 
 	/**
@@ -112,6 +117,10 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 
 		// Turn AA on
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+		double range = EditorValueRangeTracer.getTracer().getRange(type);
 
 		//		 calculate the track area
 		int thumb_width = 12;
@@ -153,39 +162,35 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 
 				FontRenderContext frc = g.getFontRenderContext();
 				TextLayout tl = new TextLayout(valueString, g.getFont(), frc);
-		       
-				g.setStroke(new BasicStroke(0.1f));
+
+				g.setStroke(new BasicStroke(0.6f));
 				g.setColor(Color.BLACK);
-				final float[] hsb = colors[i].RGBtoHSB(colors[i].getRed(), colors[i].getGreen(), colors[i].getBlue(), null);
-				
+
+				final float[] hsb = colors[i].RGBtoHSB(colors[i].getRed(), colors[i].getGreen(),
+				                                       colors[i].getBlue(), null);
+
 				int x;
 				int y;
-				if (curPosition < (stringWidth / 2)) {
 
+				if (curPosition < (stringWidth / 2)) {
 					x = curPosition;
 					y = trackHeight + 15;
 				} else if ((track_width - curPosition) < (stringWidth / 2)) {
-					
 					x = curPosition - stringWidth;
 					y = trackHeight + 15;
-				
 				} else {
-					
 					x = curPosition - (stringWidth / 2);
 					y = trackHeight + 15;
-					
 				}
-				
-				if(hsb[1]< 0.5) {
-					
+
+				if (hsb[1] < 0.5) {
 					g.setColor(colors[i]);
 					g.drawString(valueString, x, y);
-					
+
 					g.translate(x, y);
 					g.setColor(Color.BLACK);
 					g.draw(tl.getOutline(null));
 					g.translate(-x, -y);
-					
 				} else {
 					g.setColor(colors[i]);
 					g.drawString(valueString, x, y);
@@ -285,7 +290,6 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	 @SuppressWarnings("unchecked") // because apparently everything swingx does is unchecked
 	public JComponent getRendererComponent(JXMultiThumbSlider slider) {
 		this.slider = slider;
 		trackHeight = slider.getHeight() - 50;
@@ -335,11 +339,19 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	public ImageIcon getTrackGraphicIcon(int iconWidth, int iconHeight) {
 		return drawIcon(iconWidth, iconHeight, false);
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param iconWidth DOCUMENT ME!
+	 * @param iconHeight DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public ImageIcon getLegend(int iconWidth, int iconHeight) {
 		return drawIcon(iconWidth, iconHeight, true);
 	}
-	
+
 	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
 		if (slider == null) {
 			return null;
@@ -351,6 +363,9 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 		// Turn AA on.
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+		final double range = EditorValueRangeTracer.getTracer().getRange(type);
 		/*
 		 * Fill background
 		 */
@@ -363,17 +378,17 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 		float[] fractions = null;
 		Point2D start = new Point2D.Float(0, 0);
 		Point2D end = null;
-		
-		
-		if(detail) {
+
+		if (detail) {
 			end = new Point2D.Float(iconWidth - 3, iconHeight - 30);
 		} else {
 			end = new Point2D.Float(iconWidth - 3, iconHeight - 9);
 		}
-		
+
 		if (len != 0) {
 			// set up the data for the gradient
 			fractions = new float[len + 2];
+
 			Color[] colors = new Color[len + 2];
 			int i = 1;
 
@@ -390,66 +405,61 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 			fractions[fractions.length - 1] = stops.get(stops.size() - 1).getPosition() / 100;
 
 			// fill in the gradient
-			
-			
-
 			drawGradient(g2, start, end, fractions, colors);
-			
 		}
 
-		
 		// Draw border line
 		g2.setStroke(new BasicStroke(1.0f));
 		g2.setColor(Color.DARK_GRAY);
-		g2.drawRect(0, 0, ((Number)end.getX()).intValue(), ((Number)end.getY()).intValue());
-		
+		g2.drawRect(0, 0, ((Number) end.getX()).intValue(), ((Number) end.getY()).intValue());
+
 		/*
 		 * draw numbers
 		 */
-		
 		g2.setFont(new Font("SansSerif", Font.BOLD, 9));
 
 		final String minStr = String.format("%.2f", minValue);
 		final String maxStr = String.format("%.2f", maxValue);
-		
+
 		g2.setColor(Color.black);
-		
-		if(detail && fractions != null) {
+
+		if (detail && (fractions != null)) {
 			String fNum = null;
-			for(int i=0; i<fractions.length; i++) {
-				fNum = String.format("%.2f", (fractions[i]*range) + minValue);
-				
+
+			for (int i = 0; i < fractions.length; i++) {
+				fNum = String.format("%.2f", (fractions[i] * range) + minValue);
+
 				strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), fNum);
-				
-				g2.drawString(fNum, fractions[i]*iconWidth-strWidth/2, iconHeight-20);
+
+				g2.drawString(fNum, (fractions[i] * iconWidth) - (strWidth / 2), iconHeight - 20);
 			}
-			
+
 			g2.drawString(minStr, 0, iconHeight);
 			strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), maxStr);
 			g2.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
-			
+
 			g2.setFont(TITLE_FONT);
 
 			final int titleWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), attrName);
 			g2.setColor(Color.black);
-			g2.drawString(attrName, (iconWidth / 2) - (titleWidth / 2),
-			             iconHeight-5);
+			g2.drawString(attrName, (iconWidth / 2) - (titleWidth / 2), iconHeight - 5);
+
 			Polygon p = new Polygon();
-			p.addPoint(iconWidth,iconHeight-9);
-			p.addPoint(iconWidth-15,iconHeight-15 );
-			p.addPoint(iconWidth-15,iconHeight-9 );
+			p.addPoint(iconWidth, iconHeight - 9);
+			p.addPoint(iconWidth - 15, iconHeight - 15);
+			p.addPoint(iconWidth - 15, iconHeight - 9);
 			g2.fillPolygon(p);
-			g2.drawLine(0, iconHeight-9, (iconWidth / 2) - (titleWidth / 2)-3, iconHeight-9);
-			g2.drawLine((iconWidth / 2) + (titleWidth / 2)+3, iconHeight-9, iconWidth, iconHeight-9);
-			
+			g2.drawLine(0, iconHeight - 9, (iconWidth / 2) - (titleWidth / 2) - 3, iconHeight - 9);
+			g2.drawLine((iconWidth / 2) + (titleWidth / 2) + 3, iconHeight - 9, iconWidth,
+			            iconHeight - 9);
 		} else {
 			g2.drawString(minStr, 0, iconHeight);
 			strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), maxStr);
 			g2.drawString(maxStr, iconWidth - strWidth - 2, iconHeight);
 		}
+
 		return new ImageIcon(bi);
 	}
-	
 
 	/**
 	 * DOCUMENT ME!
@@ -458,7 +468,9 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 */
 	public Double getSelectedThumbValue() {
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
-		final double thumbVal = (((position / 100) * range) + minValue);
+		final double thumbVal = (((position / 100) * EditorValueRangeTracer.getTracer()
+		                                                                   .getRange(type))
+		                        + EditorValueRangeTracer.getTracer().getMin(type));
 
 		return thumbVal;
 	}

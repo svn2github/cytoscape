@@ -23,6 +23,10 @@ public class CyNetworkTitleChange {
 		public String getNetworkTitle() {
 			return networkName;
 		}
+		
+		public String toString() {
+			return networkName + ":" + networkId;
+		}
 
 	
 }

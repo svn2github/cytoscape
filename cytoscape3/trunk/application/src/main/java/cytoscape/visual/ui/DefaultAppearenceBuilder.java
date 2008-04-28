@@ -136,7 +136,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public static JPanel showDialog(Frame parent) {
-		buildDefaultViewDialog(parent);
+		if(dab == null)
+			dab = new DefaultAppearenceBuilder(parent, true);
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(900, 400);
 		dab.lockSize();
@@ -154,7 +155,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public static JPanel getDefaultView(String vsName) {
-		buildDefaultViewDialog(null);
+		if(dab == null)
+			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
 		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
@@ -164,10 +166,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 		return dab.getPanel();
 	}
 
-	private static void buildDefaultViewDialog(Frame component) {
-		dab = new DefaultAppearenceBuilder(component, true);
-		dab.mainView.createDummyNetworkView();
-	}
 
 	/**
 	 * This method is called from within the constructor to initialize the form.

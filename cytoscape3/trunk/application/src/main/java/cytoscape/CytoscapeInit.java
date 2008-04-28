@@ -59,14 +59,14 @@ import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 
+//import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
+//import java.util.Set;
 import javax.swing.ImageIcon;
 
 
@@ -120,7 +120,7 @@ public class CytoscapeInit {
 	private static File mruf;
 
 	// Error message
-	private static String ErrorMsg;
+	private static String ErrorMsg = "";
 
 	/**
 	 * Creates a new CytoscapeInit object.
@@ -177,24 +177,28 @@ public class CytoscapeInit {
 				setUpAttributesChangedListener();
 			}
 
-			//TODO what to do with the exception?
+			//errorDialog = new ErrorDialog(Cytoscape.getDesktop(), "Cytoscape Initialization Errors");
+
 			PluginManager mgr = PluginManager.getPluginManager();
 			try {
 				System.out.println("updating plugins...");
 				mgr.delete();
 			} catch (cytoscape.plugin.ManagerException me) {
-				System.err.println(me.getMessage());
-				//me.printStackTrace();
+				//errorDialog.addError(me);
+				me.printStackTrace();
 			}
-			mgr.install();
 			
+			mgr.install();
 
-			try {
 				System.out.println("loading plugins....");
-				/* TODO smart plugin loading.  If there are multiple of the same plugin (this will only work
-				 * in the .cytoscape directory) load the newest version first.  Should be able to examine the 
-				 * directories for this information.  All installed plugins are named like  'MyPlugin-1.0' 
-				 * currently this isn't necessary as old version are not kept around
+
+			/*
+			 * TODO smart plugin loading. If there are multiple of the same
+			 * plugin (this will only work in the .cytoscape directory) load the
+			 * newest version first. Should be able to examine the directories
+			 * for this information. All installed plugins are named like
+			 * 'MyPlugin-1.0' currently this isn't necessary as old version are
+			 * not kept around
 				 */ 
 				List<String> InstalledPlugins = new ArrayList<String>();
 				// load from those listed on the command line
@@ -203,42 +207,52 @@ public class CytoscapeInit {
 				// Get all directories where plugins have been installed
 				// going to have to be a little smart...themes contain their plugins in subdirectories
 				List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
-				for (cytoscape.plugin.DownloadableInfo dInfo: MgrInstalledPlugins) {
 
+			for (cytoscape.plugin.DownloadableInfo dInfo : MgrInstalledPlugins) {
 					if (dInfo.getCategory().equals(cytoscape.plugin.Category.CORE.getCategoryText()))
 						continue;
 					
-					switch (dInfo.getType()) {
+				switch (dInfo.getType()) { // TODO get rid of switches
 					case PLUGIN:
-						InstalledPlugins.add( ((cytoscape.plugin.PluginInfo) dInfo).getInstallLocation() );
+						InstalledPlugins.add(((cytoscape.plugin.PluginInfo) dInfo)
+						                                                                                                                                                                                                    .getInstallLocation());
+
 						break;
 					case THEME:
 						cytoscape.plugin.ThemeInfo tInfo = (cytoscape.plugin.ThemeInfo) dInfo;
-						for (cytoscape.plugin.PluginInfo plugin: tInfo.getPlugins()) {
+
+						for (cytoscape.plugin.PluginInfo plugin : tInfo.getPlugins()) {
 							InstalledPlugins.add(plugin.getInstallLocation());
 						}
+
 						break;
 					}
-				// this is the directory where user-installed plugins should live
-//				for (String f : mgr.getPluginManageDirectory().list()) {
-//					InstalledPlugins.add(mgr.getPluginManageDirectory().getAbsolutePath()
-//					                     + File.separator + f);
 				}
+
+// TODO this exception wasn't getting caught
+try {
 				mgr.loadPlugins(InstalledPlugins);
-				
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} catch (ClassNotFoundException cne) {
-				cne.printStackTrace();
-			} catch (cytoscape.plugin.PluginException pe) {
-				pe.printStackTrace();
-			}
+} catch ( Exception mue ) {
+	mue.printStackTrace();
+}
+//				TODO SARAH
+//			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
+//
+//			for (Throwable t : pluginLoadingErrors) {
+//				//errorDialog.addError(t);
+//				t.printStackTrace();
+//			}
+//
+//			mgr.clearErrorList();
 
 			System.out.println("loading session...");
 
+			boolean sessionLoaded = false;
 			if ((initParams.getMode() == CyInitParams.GUI)
-			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW))
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				loadSessionFile();
+				sessionLoaded = true;
+			}
 
 			System.out.println("loading networks...");
 			loadNetworks();
@@ -248,9 +262,14 @@ public class CytoscapeInit {
 
 			System.out.println("loading expression files...");
 			loadExpressionFiles();
-		} catch (Throwable t) {
-			System.out.println("Caught something");
-			t.printStackTrace();	
+
+			if ((initParams.getMode() == CyInitParams.GUI)
+			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+				if(sessionLoaded == false) {
+					System.out.println("Initializing VizMapper...");
+					initVizmapper();
+				}
+			}
 		} finally {
 			// Always restore the cursor and hide the splash, even there is
 			// exception
@@ -268,11 +287,8 @@ public class CytoscapeInit {
 		System.out.println("\nCytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 
-		if ((ErrorMsg != null) && (ErrorMsg.length() > 0)) {
-			javax.swing.JOptionPane.showMessageDialog(Cytoscape.getDesktop(), ErrorMsg,
-			                                          "Initialization Error",
-			                                          javax.swing.JOptionPane.ERROR_MESSAGE);
-		}
+//		if (errorDialog.hasErrors())
+//			errorDialog.setVisible(true);
 
 		return true;
 	}
@@ -408,8 +424,7 @@ public class CytoscapeInit {
 
 			// This somewhat unusual way of getting the ClassLoader is because
 			// other methods don't work from WebStart.
-			//ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			ClassLoader cl = Cytoscape.class.getClassLoader();
+			ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
 			URL vmu = null;
 
@@ -421,7 +436,8 @@ public class CytoscapeInit {
 			if (vmu != null)
 			    // We'd like to use URLUtil.getBasicInputStream() to get
 			    // InputStream, but it is too early in the initialization of
-			    // Cytoscape and vmu is most likely out of a local resource, so get
+				// Cytoscape and vmu is most likely out of a local resource, so
+				// get
 			    // it directly:
 				props.load(vmu.openStream());
 			else
@@ -465,17 +481,10 @@ public class CytoscapeInit {
 	private boolean loadSessionFile() {
 		String sessionFile = initParams.getSessionFile();
 
-		// Turn off the network panel (for loading speed)
-		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
-		Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
-
 		try {
 			String sessionName = "";
 
 			if (sessionFile != null) {
-				Cytoscape.setSessionState(Cytoscape.SESSION_OPENED);
-				Cytoscape.createNewSession();
-				Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
 
 				CytoscapeSessionReader reader = null;
 
@@ -496,7 +505,6 @@ public class CytoscapeInit {
 					reader.read();
 					Cytoscape.getDesktop()
 					         .setTitle("Cytoscape Desktop (Session Name: " + sessionName + ")");
-
 					return true;
 				}
 			}
@@ -504,8 +512,8 @@ public class CytoscapeInit {
 			e.printStackTrace();
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
-			Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(true);
-			Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(true);
+			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
+			System.gc();
 		}
 
 		return false;
@@ -592,5 +600,9 @@ public class CytoscapeInit {
 			ex.printStackTrace();
 			System.out.println("failure loading specified attributes");
 		}
+	}
+
+	private void initVizmapper() {
+		Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
 	}
 }

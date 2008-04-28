@@ -16,7 +16,7 @@ public class CyFontPropertyEditor extends FontPropertyEditor {
 
 	    Font font = (Font) super.getValue();
 	    
-	    Font selectedFont = PopupFontChooser.showDialog(Cytoscape.getDesktop(), null);
+	    Font selectedFont = PopupFontChooser.showDialog(Cytoscape.getDesktop(), font);
 
 	    if (selectedFont != null) {
 	      Font oldFont = font;

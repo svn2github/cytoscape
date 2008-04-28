@@ -40,173 +40,177 @@ import javax.swing.event.PopupMenuListener;
  *
  */
 public class CyComboBoxPropertyEditor extends AbstractPropertyEditor {
-    /*
-     * Color & Font theme
-     */
-    private static final Color BACKGROUND = Color.white;
-    private static final Color NOT_SELECTED = new Color(51, 51, 255, 150);
-    private static final Color SELECTED = Color.red;
-    private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD,
-            12);
-    private Object oldValue;
-    private Icon[] icons;
-
-    /**
-     * Creates a new CyComboBoxPropertyEditor object.
-     */
-    public CyComboBoxPropertyEditor() {
-        editor = new JComboBox() {
 	private final static long serialVersionUID = 120233986911049L;
-                    public void setSelectedItem(Object anObject) {
-                        oldValue = getSelectedItem();
-                        super.setSelectedItem(anObject);
-                    }
-                };
+	/*
+	 * Color & Font theme
+	 */
+	private static final Color BACKGROUND = Color.white;
+	private static final Color NOT_SELECTED = new Color(51, 51, 255, 150);
+	private static final Color SELECTED = Color.red;
+	private static final Font SELECTED_FONT = new Font("SansSerif", Font.BOLD, 12);
+	private Object oldValue;
+	private Icon[] icons;
 
-        final JComboBox combo = (JComboBox) editor;
+	/**
+	 * Creates a new CyComboBoxPropertyEditor object.
+	 */
+	public CyComboBoxPropertyEditor() {
+		editor = new JComboBox() {
+				public void setSelectedItem(Object anObject) {
+					oldValue = getSelectedItem();
+					super.setSelectedItem(anObject);
+				}
+			};
 
-        combo.setRenderer(new Renderer());
-        combo.addPopupMenuListener(
-            new PopupMenuListener() {
-                public void popupMenuCanceled(PopupMenuEvent e) {
-                }
+		final JComboBox combo = (JComboBox) editor;
 
-                public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-                    System.out.println("Old Value = " + oldValue + ", New Value = " +
-                        combo.getSelectedItem());
+		combo.setRenderer(new Renderer());
+		combo.addPopupMenuListener(new PopupMenuListener() {
+				public void popupMenuCanceled(PopupMenuEvent e) {
+				}
 
-                    CyComboBoxPropertyEditor.this.firePropertyChange(
-                        oldValue,
-                        combo.getSelectedItem());
-                }
+				public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+					
+					if(combo.getSelectedItem() == null && combo.getItemCount() != 0) {
+						combo.setSelectedIndex(0);
+						CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
+                                combo.getItemAt(0));
+					} else 
+					CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
+					                                                 combo.getSelectedItem());
+					
+				}
 
-                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-                }
-            });
-        combo.addKeyListener(
-            new KeyAdapter() {
-                public void keyPressed(KeyEvent e) {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                        CyComboBoxPropertyEditor.this.firePropertyChange(
-                            oldValue,
-                            combo.getSelectedItem());
-                }
-            });
-        combo.setSelectedIndex(-1);
-    }
+				public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				}
+			});
+		combo.addKeyListener(new KeyAdapter() {
+				public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER)
+						CyComboBoxPropertyEditor.this.firePropertyChange(oldValue,
+						                                                 combo.getSelectedItem());
+				}
+			});
+		combo.setSelectedIndex(-1);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public Object getValue() {
-        Object selected = ((JComboBox) editor).getSelectedItem();
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public Object getValue() {
+		Object selected = ((JComboBox) editor).getSelectedItem();
 
-        if (selected instanceof Value)
-            return ((Value) selected).value;
-        else
-            return selected;
-    }
+		if (selected instanceof Value)
+			return ((Value) selected).value;
+		else
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param value DOCUMENT ME!
-     */
-    public void setValue(Object value) {
-        JComboBox combo = (JComboBox) editor;
-        Object current = null;
-        int index = -1;
+			return selected;
+	}
 
-        for (int i = 0, c = combo.getModel()
-                                 .getSize(); i < c; i++) {
-            current = combo.getModel()
-                           .getElementAt(i);
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param value DOCUMENT ME!
+	 */
+	public void setValue(Object value) {
+		JComboBox combo = (JComboBox) editor;
+		Object current = null;
+		int index = -1;
 
-            if ((value == current) ||
-                    ((current != null) && current.equals(value))) {
-                index = i;
+		for (int i = 0, c = combo.getModel().getSize(); i < c; i++) {
+			current = combo.getModel().getElementAt(i);
 
-                break;
-            }
-        }
+			if ((value == current) || ((current != null) && current.equals(value))) {
+				index = i;
 
-        ((JComboBox) editor).setSelectedIndex(index);
-    }
+				break;
+			}
+		}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param values DOCUMENT ME!
-     */
-    public void setAvailableValues(Object[] values) {
-        ((JComboBox) editor).setModel(new DefaultComboBoxModel(values));
-    }
+		((JComboBox) editor).setSelectedIndex(index);
+	}
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param icons DOCUMENT ME!
-     */
-    public void setAvailableIcons(Icon[] icons) {
-        this.icons = icons;
-    }
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param values DOCUMENT ME!
+	 */
+	public void setAvailableValues(Object[] values) {
+		((JComboBox) editor).setModel(new DefaultComboBoxModel(values));
+		if(((JComboBox) editor).getItemCount() != 0){
+			((JComboBox) editor).setSelectedIndex(0);
+		}
+	}
 
-    public class Renderer extends DefaultListCellRenderer {
-	private final static long serialVersionUID = 120233986920362L;
-        public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus) {
-            Component component = super.getListCellRendererComponent(list,
-                    (value instanceof Value) ? ((Value) value).visualValue : value,
-                    index, isSelected, cellHasFocus);
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param icons DOCUMENT ME!
+	 */
+	public void setAvailableIcons(Icon[] icons) {
+		this.icons = icons;
+	}
 
-            if ((icons != null) && (index >= 0) && component instanceof JLabel)
-                ((JLabel) component).setIcon(icons[index]);
+	public class Renderer extends DefaultListCellRenderer {
+		public Component getListCellRendererComponent(JList list, Object value, int index,
+		                                              boolean isSelected, boolean cellHasFocus) {
+			Component component = super.getListCellRendererComponent(list,
+			                                                         (value instanceof Value)
+			                                                         ? ((Value) value).visualValue
+			                                                         : value, index, isSelected,
+			                                                         cellHasFocus);
 
-            if ((index >= 0) && component instanceof JLabel) {
-            }
+			if ((icons != null) && (index >= 0) && component instanceof JLabel)
+				((JLabel) component).setIcon(icons[index]);
 
-            if (value == null) {
-                component = new JLabel("Please Select a Value!");
-                component.setForeground(SELECTED);
-                ((JLabel) component).setFont(
-                    new Font("SansSerif", Font.BOLD, 12));
-            }
+			if ((index >= 0) && component instanceof JLabel) {
+			}
 
-            if (isSelected) {
-                component.setForeground(SELECTED);
-                ((JLabel) component).setFont(SELECTED_FONT);
-            } else
-                component.setForeground(NOT_SELECTED);
+			if (value == null) {
+				component = new JLabel("Select Value!");
+				component.setForeground(SELECTED);
+				((JLabel) component).setFont(new Font("SansSerif", Font.BOLD, 12));
+			} else if(value == null && ((JComboBox) editor).getItemCount() != 0) {
+				component = new JLabel(((JComboBox) editor).getItemAt(0).toString());
+				component.setForeground(SELECTED);
+				((JLabel) component).setFont(new Font("SansSerif", Font.BOLD, 12));
+			}
 
-            component.setBackground(BACKGROUND);
+			if (isSelected) {
+				component.setForeground(SELECTED);
+				((JLabel) component).setFont(SELECTED_FONT);
+			} else
+				component.setForeground(NOT_SELECTED);
 
-            return component;
-        }
-    }
+			component.setBackground(BACKGROUND);
 
-    public static final class Value {
-        private Object value;
-        private Object visualValue;
+			return component;
+		}
+	}
 
-        public Value(Object value, Object visualValue) {
-            this.value = value;
-            this.visualValue = visualValue;
-        }
+	public static final class Value {
+		private Object value;
+		private Object visualValue;
 
-        public boolean equals(Object o) {
-            if (o == this)
-                return true;
+		public Value(Object value, Object visualValue) {
+			this.value = value;
+			this.visualValue = visualValue;
+		}
 
-            if ((value == o) || ((value != null) && value.equals(o)))
-                return true;
+		public boolean equals(Object o) {
+			if (o == this)
+				return true;
 
-            return false;
-        }
+			if ((value == o) || ((value != null) && value.equals(o)))
+				return true;
 
-        public int hashCode() {
-            return (value == null) ? 0 : value.hashCode();
-        }
-    }
+			return false;
+		}
+
+		public int hashCode() {
+			return (value == null) ? 0 : value.hashCode();
+		}
+	}
 }

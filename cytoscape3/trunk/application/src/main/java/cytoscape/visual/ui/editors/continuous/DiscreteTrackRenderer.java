@@ -62,8 +62,8 @@ import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
-//import cytoscape.visual.ui.LabelPlacerGraphic;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
+//import cytoscape.visual.ui.LabelPlacerGraphic;
 
 
 /**
@@ -72,11 +72,9 @@ import org.cytoscape.vizmap.icon.VisualPropertyIcon;
  * @author $author$
   */
 public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackRenderer {
-	private final static long serialVersionUID = 1202339877125834L;
 	/*
 	 * Constants for diagram.
 	 */
-	
 	private final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
 	private static final int ICON_SIZE = VisualPropertyIcon.DEFAULT_ICON_SIZE;
 	private int SMALL_ICON_SIZE = 20;
@@ -86,14 +84,9 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	private static final int V_PADDING = 20;
 	private static int ARROW_BAR_Y_POSITION = TRACK_HEIGHT + 50;
 
-	/*
-	 * Define Colors used in this diagram.
-	 */
-
-	// private static final int stringPosition = TRACK_HEIGHT + 20;
-	private double valueRange;
-	private double minValue;
-	private double maxValue;
+//	private double valueRange;
+//	private double minValue;
+//	private double maxValue;
 	private Object below;
 	private Object above;
 	private VisualPropertyType type;
@@ -116,10 +109,9 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * @param below  DOCUMENT ME!
 	 * @param above  DOCUMENT ME!
 	 */
-	public DiscreteTrackRenderer(VisualPropertyType type, double minValue, double maxValue,
+	public DiscreteTrackRenderer(VisualPropertyType type,
 	                             Object below, Object above) {
-		this.minValue = minValue;
-		this.maxValue = maxValue;
+
 		this.below = below;
 		this.above = above;
 
@@ -134,8 +126,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			                 .getEdgeAppearanceCalculator().getCalculator(type).getMapping(0)
 			                 .getControllingAttributeName();
 
-		valueRange = Math.abs(maxValue - minValue);
-
 		this.setBackground(Color.white);
 		this.setForeground(Color.white);
 	}
@@ -148,16 +138,12 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * @param lastRegionObject DOCUMENT ME!
 	 * @param cm DOCUMENT ME!
 	 */
-	public DiscreteTrackRenderer(double minValue, double maxValue, Object lastRegionObject,
+	public DiscreteTrackRenderer(Object lastRegionObject,
 	                             ContinuousMapping cm) {
 		rangeObjects = new ArrayList<Object>();
 		rangeTooltips = new ArrayList<String>();
 
 		this.lastObject = lastRegionObject;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
-
-		valueRange = Math.abs(maxValue - minValue);
 
 		this.setBackground(Color.white);
 		this.setForeground(Color.white);
@@ -173,7 +159,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		paintComponent(g);
 	}
 
-	@SuppressWarnings("unchecked") // for the thumb stuff
 	protected void paintComponent(Graphics gfx) {
 		TRACK_HEIGHT = slider.getHeight() - 100;
 		ARROW_BAR_Y_POSITION = TRACK_HEIGHT + 50;
@@ -186,6 +171,10 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 		g.translate(THUMB_WIDTH / 2, 12);
 
+		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+		double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
+		
 		//		 get the list of tumbs
 		List<Thumb> stops = slider.getModel().getSortedThumbs();
 
@@ -322,12 +311,16 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 			iconLocX = newX - (((newX - (int) p1.getX()) / 2) + (ICON_SIZE / 2));
 			iconLocY = ((TRACK_HEIGHT) / 2) - (ICON_SIZE / 2) + 5;
 
+			//			if (ICON_SIZE < (newX - p1.getX()))
+			//				g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
 			if (i == 0) {
 				drawIcon(below, g, iconLocX, iconLocY, ICON_SIZE);
 
+				//				g.drawString(below.toString(), iconLocX, iconLocY);
 			} else {
 				drawIcon(objectValues[i], g, iconLocX, iconLocY, ICON_SIZE);
 
+				//				g.drawString(objectValues[i].toString(), iconLocX, iconLocY);
 			}
 
 			p1.setLocation(p2);
@@ -340,6 +333,8 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 		iconLocX = track_width - (((track_width - (int) p1.getX()) / 2) + (ICON_SIZE / 2));
 		iconLocY = ((TRACK_HEIGHT) / 2) - (ICON_SIZE / 2) + 5;
+		//		g.drawImage(((ImageIcon) rangeObjects.get(i)).getImage(), iconLocX, iconLocY, this);
+		//		g.drawString(above.toString(), iconLocX, iconLocY);
 		drawIcon(above, g, iconLocX, iconLocY, ICON_SIZE);
 		/*
 		 * Finally, draw border line (rectangle)
@@ -378,7 +373,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	 @SuppressWarnings("unchecked") // for thumbs
 	public String getToolTipForCurrentLocation(int x, int y) {
 		int oldX = 0;
 		int newX;
@@ -434,7 +428,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * +-------------------------------------------
 	 *
 	 */
-	 @SuppressWarnings("unchecked") // for thumbs
 	protected int getRangeID(int x, int y) {
 		int oldX = 0;
 		int newX;
@@ -525,14 +518,26 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				objValues[i + 1] = points.get(i).getRange().equalValue;
 		}
 
+		//List<ImageIcon> iconList = buildIconArray(objValues);
 		final Point2D start = new Point2D.Float(10, 0);
 		final Point2D end = new Point2D.Float(trackWidth, trackHeight);
 
+		//		int i=1;
+		//		
+		//		g2.setFont(new Font("SansSerif", Font.BOLD, 9));
+		//		int strWidth;
+		//		for(ContinuousMappingPoint point: points) {
+		//			String p = Double.toString(point.getValue());
+		//			g2.setColor(Color.black);
+		//			strWidth = SwingUtilities.computeStringWidth(g2.getFontMetrics(), p);
+		//			g2.drawString(p, fractions[i]*iconWidth - strWidth/2, iconHeight -7);
+		//			i++;
+		//		}
 		return new ImageIcon(bi);
 	}
 
-	private static List<Object> buildIconArray(int size) {
-		List<Object> icons = new ArrayList<Object>();
+	private static List buildIconArray(int size) {
+		List<ImageIcon> icons = new ArrayList<ImageIcon>();
 
 		Map iconMap = NodeShape.getIconSet();
 
@@ -570,7 +575,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.setStroke(STROKE2);
 
 		switch (type) {
-			case NODE_LABEL_POSITION:  // TODO!!! 
 			case NODE_SHAPE:
 
 				final VisualPropertyIcon icon = (VisualPropertyIcon) type.getVisualProperty()
@@ -630,6 +634,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 				break;
 
+// TODO
 //			case NODE_LABEL_POSITION:
 //
 //				final LabelPlacerGraphic lp = new LabelPlacerGraphic((LabelPosition) key,
@@ -670,7 +675,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		return drawIcon(iconWidth, iconHeight, true);
 	}
 	
-	 @SuppressWarnings("unchecked") // for thumbs
 	private ImageIcon drawIcon(int iconWidth, int iconHeight, boolean detail) {
 		if (slider == null) {
 			return null;
@@ -685,6 +689,10 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		// Fill background
 		g.setColor(Color.white);
 		g.fillRect(0, 0, iconWidth, iconHeight);
+		
+		double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
+		double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
 
 		int track_width = iconWidth;
 		int trackHeight = iconHeight - 8;
@@ -827,9 +835,11 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	 * @return DOCUMENT ME!
 	 */
 	public Double getSelectedThumbValue() {
+		final double minValue = EditorValueRangeTracer.getTracer().getMin(type);
+		final double valueRange = EditorValueRangeTracer.getTracer().getRange(type);
+		
 		final float position = slider.getModel().getThumbAt(slider.getSelectedIndex()).getPosition();
-		final double thumbVal = (((position / 100) * valueRange) + minValue);
 
-		return thumbVal;
+		return (((position / 100) * valueRange) + minValue);
 	}
 }

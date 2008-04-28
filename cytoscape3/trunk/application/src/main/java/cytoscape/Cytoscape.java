@@ -301,23 +301,25 @@ public abstract class Cytoscape {
 	/**
 	 *
 	 */
-	public static final int SESSION_NEW = 0;
+	public static final Integer SESSION_NEW = 0;
 
 	/**
 	 *
 	 */
-	public static final int SESSION_OPENED = 1;
+	public static final Integer SESSION_OPENED = 1;
 
 	/**
 	 *
 	 */
-	public static final int SESSION_CHANGED = 2;
+	public static final Integer SESSION_CHANGED = 2;
 
 	/**
 	 *
 	 */
-	public static final int SESSION_CLOSED = 3;
-	private static int sessionState = SESSION_NEW;
+	public static final Integer SESSION_CLOSED = 3;
+
+	private static Integer sessionState = SESSION_NEW;
+
 
 	/**
 	 * New ontology server. This will replace BioDataServer.
@@ -392,12 +394,12 @@ public abstract class Cytoscape {
 	/**
 	 * The list analog to the currentNetworkViewID
 	 */
-	protected static LinkedList<GraphView> selectedNetworkViews;
+	protected static LinkedList<GraphView> selectedNetworkViews = new LinkedList<GraphView>();
 
 	/**
 	 * The list analog to the currentNetworkID
 	 */
-	protected static LinkedList<GraphPerspective> selectedNetworks;
+	protected static LinkedList<GraphPerspective> selectedNetworks = new LinkedList<GraphPerspective>();
 
 	/**
 	 *  DOCUMENT ME!
@@ -853,85 +855,73 @@ public abstract class Cytoscape {
 	/**
 	 * Returns the list of currently selected networks.
 	 */
-	public static List<GraphView> getSelectedNetworkViews() {
-		if ( selectedNetworkViews == null ) {
-			selectedNetworkViews = new LinkedList<GraphView>();
-			selectedNetworkViews.add( getCurrentNetworkView() );
-		}
+    public static List<GraphView> getSelectedNetworkViews() {
+        GraphView view = getCurrentNetworkView();
 
-		LinkedList<GraphView> l = new LinkedList<GraphView>();
-		for (GraphView g : selectedNetworkViews)
-			l.add(g);
+        if (!selectedNetworkViews.contains(view))
+            selectedNetworkViews.add(view);
 
-		return l; 
-	}
+        return (List<GraphView>) selectedNetworkViews.clone();
+    }
 
-	/**
-	 * Sets the selected network views.
-	 */
-	public static void setSelectedNetworkViews(final List<String> viewIDs) {
+    /**
+     * Sets the selected network views.
+     */
+    public static void setSelectedNetworkViews(final List<String> viewIDs) {
+        selectedNetworkViews.clear();
 
-		if ( selectedNetworkViews == null ) 
-			selectedNetworkViews = new LinkedList<GraphView>();
+        if (viewIDs == null)
+            return;
 
-		selectedNetworkViews.clear();
+        for (String id : viewIDs) {
+            GraphView nview = getNetworkViewMap().get(id);
 
-		if ( viewIDs == null ) 
-			return;
+            if (nview != null) {
+                selectedNetworkViews.add(nview);
+            }
+        }
 
-		for ( String id : viewIDs ) {
-			GraphView nview = (GraphView) getNetworkViewMap().get(id);
-			if ( nview != null ) {
-				selectedNetworkViews.add( nview );
-			}
-		}
+        GraphView cv = getCurrentNetworkView();
 
-		GraphView cv = getCurrentNetworkView();
-		if ( !selectedNetworkViews.contains( cv ) ) {
-			selectedNetworkViews.add( cv );
-		}
-	}
+        if (!selectedNetworkViews.contains(cv)) {
+            selectedNetworkViews.add(cv);
+        }
+    }
 
 	/**
 	 * Returns the list of selected networks.
 	 */
 	public static List<GraphPerspective> getSelectedNetworks() {
-		if ( selectedNetworks == null ) {
-			selectedNetworks = new LinkedList<GraphPerspective>();
-			selectedNetworks.add( getCurrentNetwork() );
-		}
+        GraphPerspective curr = getCurrentNetwork();
 
-		LinkedList<GraphPerspective> l = new LinkedList<GraphPerspective>();
-		for (GraphPerspective g : selectedNetworks)
-			l.add(g);
+        if (!selectedNetworks.contains(curr))
+            selectedNetworks.add(curr);
 
-		return l; 
+        return (List<GraphPerspective>) selectedNetworks.clone();
 	}
 
 	/**
 	 * Sets the list of selected networks.
 	 */
 	public static void setSelectedNetworks(final List<String> ids) {
+        selectedNetworks.clear();
 
-		if ( selectedNetworks == null ) 
-			selectedNetworks = new LinkedList<GraphPerspective>();
-			
-		selectedNetworks.clear();
+        if (ids == null)
+            return;
 
-		if ( ids == null )
-			return;
+        for (String id : ids) {
+            GraphPerspective n = getNetworkMap().get(id);
 
-		for ( String id : ids ) {
-			GraphPerspective n = (GraphPerspective) getNetworkMap().get(id);
-			if ( n != null ) {
-				selectedNetworks.add( n );
-			}
-		}
+            if ((n != null) && (n != nullNetwork)) {
+                selectedNetworks.add(n);
+            }
+        }
 
-		GraphPerspective cn = getCurrentNetwork();
-		if ( !selectedNetworks.contains( cn ) ) {
-			selectedNetworks.add( cn );
-		}
+        GraphPerspective cn = getCurrentNetwork();
+
+        if (!selectedNetworks.contains(cn)) {
+            selectedNetworks.add(cn);
+        }
 	}
 
 	/**
@@ -947,24 +937,36 @@ public abstract class Cytoscape {
 
 	/**
 	 */
-	public static void setCurrentNetwork(String id) {
-		if (getNetworkMap().containsKey(id)) {
-			currentNetworkID = id;
-		}
-	}
+    public static void setCurrentNetwork(String id) {
+        //System.out.println("- TRY setting current network" + id);
+        if (getNetworkMap().containsKey(id)) {
+            //System.out.println("- SUCCEED setting current network " + id);
+            currentNetworkID = id;
 
-	/**
-	 * @return true if there is network view, false if not
-	 */
-	public static boolean setCurrentNetworkView(String id) {
-		if (getNetworkViewMap().containsKey(id)) {
-			currentNetworkViewID = id;
+            // reset selected networks
+            selectedNetworks.clear();
+            selectedNetworks.add(getNetworkMap().get(id));
+        }
+    }
 
-			return true;
-		}
+    /**
+     * @return true if there is network view, false if not
+     */
+    public static boolean setCurrentNetworkView(String id) {
+        //System.out.println("= TRY setting current network VIEW " + id);
+        if (getNetworkViewMap().containsKey(id)) {
+            //System.out.println("= SUCCEED setting current network VIEW " + id);
+            currentNetworkViewID = id;
 
-		return false;
-	}
+            // reset selected network views
+            selectedNetworkViews.clear();
+            selectedNetworkViews.add(getNetworkViewMap().get(id));
+
+            return true;
+        }
+
+        return false;
+    }
 
 	/**
 	 * This Map has keys that are Strings ( network_ids ) and values that are
@@ -1013,92 +1015,98 @@ public abstract class Cytoscape {
 	 *            if this is true, then all Nodes and Edges that are in this
 	 *            network, but no other are also destroyed.
 	 */
-	public static void destroyNetwork(GraphPerspective network, boolean destroy_unique) {
-		if ((network == null) || (network == nullNetwork))
-			return;
+    public static void destroyNetwork(GraphPerspective network, boolean destroy_unique) {
+        if ((network == null) || (network == nullNetwork))
+            return;
 
-		getSelectedNetworks().remove(network);
+        getSelectedNetworks().remove(network);
 
-		String networkId = network.getIdentifier();
+        final String networkId = network.getIdentifier();
 
-		firePropertyChange(NETWORK_DESTROYED, null, networkId);
+        firePropertyChange(NETWORK_DESTROYED, null, networkId);
 
-		Map<String,GraphPerspective> nmap = getNetworkMap();
-		nmap.remove(networkId);
+        network.unselectAllEdges();
+        network.unselectAllNodes();
 
-		if (networkId.equals(currentNetworkID)) {
-			if (nmap.size() <= 0) {
-				currentNetworkID = null;
-			} else {
-				// randomly pick a network to become the current network
-				for ( String s : nmap.keySet() ) {
-					currentNetworkID = s;
-					break;
-				}
-			}
-		}
+        final Map<String, GraphPerspective> nmap = getNetworkMap();
+        nmap.remove(networkId);
 
-		if (viewExists(networkId))
-			destroyNetworkView(network);
+        if (networkId.equals(currentNetworkID)) {
+            if (nmap.size() <= 0) {
+                currentNetworkID = null;
+            } else {
+                // randomly pick a network to become the current network
+                for (String key : nmap.keySet()) {
+                    currentNetworkID = key;
 
-		if (destroy_unique) {
-			ArrayList<Node> nodes = new ArrayList<Node>();
-			ArrayList<Edge> edges = new ArrayList<Edge>();
+                    break;
+                }
+            }
+        }
 
-			Collection<GraphPerspective> networks = networkMap.values();
+        if (viewExists(networkId))
+            destroyNetworkView(network);
 
-			Iterator<Node> nodes_i = network.nodesIterator();
-			Iterator<Edge> edges_i = network.edgesIterator();
+        if (destroy_unique) {
+            final List<Node> nodes = new ArrayList<Node>();
+            final List<Edge> edges = new ArrayList<Edge>();
 
-			while (nodes_i.hasNext()) {
-				Node node = nodes_i.next();
-				boolean add = true;
-			
-				for ( GraphPerspective net : networks ) {
+            final Collection<GraphPerspective> networks = networkMap.values();
 
-					if (net.containsNode(node)) {
-						add = false;
+            for (Node node : nodes) {
+                boolean add = true;
 
-						continue;
-					}
-				}
+                for (GraphPerspective net : networks) {
+                    if (net.containsNode(node)) {
+                        add = false;
 
-				if (add) {
-					nodes.add(node);
-				}
-			}
+                        continue;
+                    }
+                }
 
-			while (edges_i.hasNext()) {
-				Edge edge = edges_i.next();
-				boolean add = true;
+                if (add)
+                    nodes.add(node);
+            }
 
-				for ( GraphPerspective net : networks ) {
-					if (net.containsEdge(edge)) {
-						add = false;
+            for (Edge edge : edges) {
+                boolean add = true;
 
-						continue;
-					}
-				}
+                for (GraphPerspective net : networks) {
+                    if (net.containsEdge(edge)) {
+                        add = false;
 
-				if (add) {
-					edges.add(edge);
-				}
-			}
+                        continue;
+                    }
+                }
 
-			getRootGraph().removeNodes(nodes);
-			getRootGraph().removeEdges(edges);
-		}
+                if (add)
+                    edges.add(edge);
+            }
 
-		// theoretically this should not be set to null till after the events
-		// firing is done
-		network = null;
+            for (Node node : nodes) {
+                getRootGraph().removeNode(node);
+                node = null;
+            }
 
-		// updates the desktop - but only if the view is null
-		// if a view exists, then the focus will have already been updated
-		// in destroyNetworkView
-		if ((currentNetworkID != null) && (currentNetworkViewID == null))
-			getDesktop().setFocus(currentNetworkID);
-	}
+            for (Edge edge : edges) {
+                getRootGraph().removeEdge(edge);
+                edge = null;
+            }
+        }
+
+        // theoretically this should not be set to null till after the events
+        // firing is done
+        network = null;
+
+        // updates the desktop - but only if the view is null
+        // if a view exists, then the focus will have already been updated
+        // in destroyNetworkView
+        if ((currentNetworkID != null) && (currentNetworkViewID == null))
+            getDesktop().setFocus(currentNetworkID);
+    }
+
+
+
 
 	/**
 	 * destroys the networkview, including any layout information
@@ -1110,8 +1118,6 @@ public abstract class Cytoscape {
 		getSelectedNetworkViews().remove(view);
 
 		String viewID = view.getIdentifier();
-
-		getNetworkViewMap().remove(viewID);
 
 		if (viewID.equals(currentNetworkViewID)) {
 			if (getNetworkViewMap().size() <= 0)
@@ -1131,6 +1137,7 @@ public abstract class Cytoscape {
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_DESTROYED, null, view);
 		// theoretically this should not be set to null till after the events
 		// firing is done
+		getNetworkViewMap().remove(viewID);
 		view = null;
 
 		// so that a network will be selected.
@@ -1142,14 +1149,14 @@ public abstract class Cytoscape {
 	 * destroys the networkview, including any layout information
 	 */
 	public static void destroyNetworkView(String network_view_id) {
-		destroyNetworkView((GraphView) getNetworkViewMap().get(network_view_id));
+		destroyNetworkView(getNetworkViewMap().get(network_view_id));
 	}
 
 	/**
 	 * destroys the networkview, including any layout information
 	 */
 	public static void destroyNetworkView(GraphPerspective network) {
-		destroyNetworkView((GraphView) getNetworkViewMap().get(network.getIdentifier()));
+		destroyNetworkView(getNetworkViewMap().get(network.getIdentifier()));
 	}
 
 	protected static void addNetwork(GraphPerspective network, String title, GraphPerspective parent,
@@ -1739,18 +1746,17 @@ public abstract class Cytoscape {
 	 *            the GraphView to set the selection mode on.
 	 */
 	public static void setSelectionMode(int selectionMode, GraphView view) {
-		// first, disable node and edge selection on the view
-		view.disableNodeSelection();
-		view.disableEdgeSelection();
 
 		// then, based on selection mode, enable node and/or edge selection
 		switch (selectionMode) {
 			case SELECT_NODES_ONLY:
+				view.disableEdgeSelection();
 				view.enableNodeSelection();
 
 				break;
 
 			case SELECT_EDGES_ONLY:
+				view.disableNodeSelection();
 				view.enableEdgeSelection();
 
 				break;
@@ -1802,41 +1808,40 @@ public abstract class Cytoscape {
 	/**
 	 * Clear all networks and attributes and start a new session.
 	 */
-	public static void createNewSession() {
-		Set netSet = getNetworkSet();
-		Iterator it = netSet.iterator();
 
-		while (it.hasNext()) {
-			GraphPerspective net = (GraphPerspective) it.next();
-			destroyNetwork(net);
-		}
+    public static void createNewSession() {
+        // Destroy all networks
+        Set<GraphPerspective> netSet = getNetworkSet();
 
-		// Clear node attributes
-		CyAttributes nodeAttributes = getNodeAttributes();
-		String[] nodeAttrNames = nodeAttributes.getAttributeNames();
+        for (GraphPerspective net : netSet)
+            destroyNetwork(net, true);
 
-		for (int i = 0; i < nodeAttrNames.length; i++) {
-			nodeAttributes.deleteAttribute(nodeAttrNames[i]);
-		}
+        // Clear node attributes
+        final String[] nodeAttrNames = nodeAttributes.getAttributeNames();
+        for (String name: nodeAttrNames)
+            nodeAttributes.deleteAttribute(name);
 
-		// Clear edge attributes
-		CyAttributes edgeAttributes = getEdgeAttributes();
-		String[] edgeAttrNames = edgeAttributes.getAttributeNames();
+        // Clear edge attributes
+        final String[] edgeAttrNames = edgeAttributes.getAttributeNames();
+        for (String name: edgeAttrNames)
+            edgeAttributes.deleteAttribute(name);
 
-		for (int i = 0; i < edgeAttrNames.length; i++) {
-			edgeAttributes.deleteAttribute(edgeAttrNames[i]);
-		}
+        // Clear network attributes
+        final String[] networkAttrNames = networkAttributes.getAttributeNames();
+        for(String name: networkAttrNames)
+            networkAttributes.deleteAttribute(name);
 
-		// Clear network attributes
-		CyAttributes networkAttributes = getNetworkAttributes();
-		String[] networkAttrNames = networkAttributes.getAttributeNames();
+        // Reset Ontology Server
+        buildOntologyServer();
+        setOntologyRootID(null);
 
-		for (int i = 0; i < networkAttrNames.length; i++) {
-			networkAttributes.deleteAttribute(networkAttrNames[i]);
-		}
-
-		setCurrentSessionFileName(null);
-	}
+        setCurrentSessionFileName(null);
+        firePropertyChange(ATTRIBUTES_CHANGED, null, null);
+        cytoscapeRootGraph = null;
+        cytoscapeRootGraph = RootGraphFactory.getRootGraph(); 
+        System.out.println("Cytoscape Session Initialized.");
+        System.gc();
+    }
 
 	/**
 	 *  DOCUMENT ME!
