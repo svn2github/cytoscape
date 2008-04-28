@@ -270,6 +270,9 @@ try {
 					initVizmapper();
 				}
 			}
+		} catch (Throwable t) {
+			System.out.println("Caught initialization error:");
+			t.printStackTrace();
 		} finally {
 			// Always restore the cursor and hide the splash, even there is
 			// exception
