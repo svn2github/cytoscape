@@ -75,7 +75,7 @@ public class Aliases {
 	/**
 	 * Name of the attribute for aliases
 	 */
-	public static final String ALIAS = "alias";
+	public static final String ALIAS = "cytoscape.alias.list";
 	private final AliasType objectType;
 	CyAttributes attributes;
 
