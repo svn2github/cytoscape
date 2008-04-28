@@ -58,6 +58,8 @@ import java.awt.event.ActionEvent;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.IOException;
 
 import java.net.URISyntaxException;
@@ -167,7 +169,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-		enableForNetworkAndView();	
+		enableForNetwork();	
 	}
 } 
 
@@ -206,9 +208,9 @@ class ExportAsXGMMLTask implements Task {
 
 		int numNodes = network.getNodeCount();
 
-		if (numNodes == 0) {
-			throw new IllegalArgumentException("Network is empty.");
-		}
+//		if (numNodes == 0) {
+//			throw new IllegalArgumentException("Network is empty.");
+//		}
 
 		try {
 			saveGraph();
@@ -260,7 +262,7 @@ class ExportAsXGMMLTask implements Task {
 	private void saveGraph()
 	    throws IOException, JAXBException, URISyntaxException, XMLStreamException,
 	               FactoryConfigurationError {
-		final FileWriter fileWriter = new FileWriter(fileName);
+		OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
 		final XGMMLWriter writer = new XGMMLWriter(network, view);
 
 		try {
