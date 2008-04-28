@@ -125,7 +125,8 @@ public class CyLayouts implements BundleActivator {
 	 * @return CyLayoutAlgorithm to use as the default layout algorithm
 	 */
 	public static CyLayoutAlgorithm getDefaultLayout() {
-		return getLayout("grid");
+		return new GridNodeLayout();
+		//return getLayout("grid");
 	}
 
 	// Ack. 
