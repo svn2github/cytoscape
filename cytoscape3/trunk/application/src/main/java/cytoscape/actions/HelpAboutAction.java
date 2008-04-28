@@ -58,7 +58,7 @@ public class HelpAboutAction extends CytoscapeAction {
 	 * Creates a new HelpAboutAction object.
 	 */
 	public HelpAboutAction() {
-		super("About");
+		super("About...");
 		setPreferredMenu("Help");
 	}
 
