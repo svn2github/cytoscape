@@ -40,30 +40,39 @@ import java.util.EventObject;
 /**
  * Event object used by Web Service Clients and the core.
  */
-public class CyWebServiceEvent extends EventObject {
-	private final static long serialVersionUID = 1202339872405859L;
+public class CyWebServiceEvent<P> extends EventObject {
 	
+	private final static long serialVersionUID = 1202339872405859L;
+
 	public enum WSEventType {
 		SEARCH_DATABASE,
 		IMPORT_NETWORK,
 		EXPAND_NETWORK,
 		IMPORT_ATTRIBUTE,
-		EXECUTE_ANALYSIS;
+		EXECUTE_ANALYSIS,
+		CANCEL;
 	}
 
+	/**
+	 * Will be used to catch the signal from WS.
+	 * Core will listen to this event to determine next move.
+	 * 
+	 * @author kono
+	 *
+	 */
+	public enum WSResponseType {
+		SEARCH_FINISHED, DATA_IMPORT_FINISHED;
+	}
+	
 	private final WSEventType type;
-	private final Object parameter;
+	private final P parameter;
 	private final WSEventType nextMove; 
 
-//	public CyWebServiceEvent(Object source) {
-//		this((String) source, null, null);
-//	}
-
-	public CyWebServiceEvent(String compatibleClient, WSEventType type, Object parameter) {
+	public CyWebServiceEvent(String compatibleClient, WSEventType type, P parameter) {
 		this(compatibleClient, type, parameter, null);
 	}
 	
-	public CyWebServiceEvent(String compatibleClient, WSEventType type, Object parameter, WSEventType nextMove) {
+	public CyWebServiceEvent(String compatibleClient, WSEventType type, P parameter, WSEventType nextMove) {
 		super(compatibleClient);
 		this.type = type;
 		this.parameter = parameter;
@@ -74,7 +83,7 @@ public class CyWebServiceEvent extends EventObject {
 		return type;
 	}
 
-	public Object getParameter() {
+	public P getParameter() {
 		return parameter;
 	}
 	

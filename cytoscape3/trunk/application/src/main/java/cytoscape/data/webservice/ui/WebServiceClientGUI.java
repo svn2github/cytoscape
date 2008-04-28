@@ -32,19 +32,74 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.webservice;
+package cytoscape.data.webservice.ui;
 
-import org.cytoscape.vizmap.VisualStyle;
+import java.awt.Container;
+import java.util.List;
+
+import javax.swing.Icon;
+import javax.swing.JMenuItem;
+
+import org.cytoscape.view.NodeView;
+import org.cytoscape.view.EdgeView;
 
 /**
- *
-  */
-public interface NetworkImportWebServiceClient {
+ * Web service client which has custom component should implements this interface.
+ * Otherwise, default GUI will be used in the desktop.
+ * If this client will be used only through CLI or scripts, this is not required.
+  *
+ * @param <U>  GUI component for this service.
+ */
+public interface WebServiceClientGUI<U extends Container> {
 	/**
-	 *  Return default vixual style for this network import client.
+	 * Defines icon type.
 	 *
-	 * @return  default visual style.
+	 * @author kono
+	 *
 	 */
-	public VisualStyle getDefaultVisualStyle();
+	public enum IconSize {
+		SMALL,
+		MEDIUM,
+		FULL;
+	}
 
+	/**
+	 *  Returns GUI for this client.
+	 *  Will be used only with Cytoscape Desktop.
+	 *
+	 *  U is the Component for GUI.  In many cases, this is a JPanel.
+	 *
+	 *
+	 * @return  GUI for this service.
+	 */
+	public U getGUI();
+
+	/**
+	 *  Set GUI for this service.
+	 *
+	 * @param gui GUI for this service.
+	 */
+	public void setGUI(U gui);
+
+	/**
+	 * Returns icon for the GUI.  May be used for about page.
+	 *
+	 * @param t
+	 * @return
+	 */
+	public Icon getIcon(IconSize t);
+
+	/**
+	 * Return node context menu item if available.
+	 * 
+	 * @return Custom context menu.
+	 * 
+	 */
+	public List<JMenuItem> getNodeContextMenuItems(NodeView nv);
+	
+	/**
+	 * Return edge context menu if available.
+	 * @return
+	 */
+	public List<JMenuItem> getEdgeContextMenuItems(EdgeView ev);
 }

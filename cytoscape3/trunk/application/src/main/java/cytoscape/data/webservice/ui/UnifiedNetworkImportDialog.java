@@ -34,59 +34,85 @@
 */
 package cytoscape.data.webservice.ui;
 
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-
-import org.cytoscape.tunable.Tunable;
-import org.cytoscape.tunable.ModuleProperties;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.task.ui.JTaskConfig;
-
-import cytoscape.task.util.TaskManager;
-
-
-import org.cytoscape.vizmap.VisualStyle;
-
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.GridLayout;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.tunable.Tunable;
+import org.cytoscape.vizmap.VisualStyle;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.webservice.CyWebServiceEvent;
+import cytoscape.data.webservice.CyWebServiceException;
+import cytoscape.data.webservice.DatabaseSearchResult;
+import cytoscape.data.webservice.NetworkImportWebServiceClient;
+import cytoscape.data.webservice.WebServiceClient;
+import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
+import cytoscape.data.webservice.ui.WebServiceClientGUI.IconSize;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import cytoscape.util.swing.AboutDialog;
 
 
 /**
  *
  * @author  kono
  */
-public class UnifiedNetworkImportDialog extends javax.swing.JDialog
-    implements PropertyChangeListener {
-	private final static long serialVersionUID = 1202339872434259L;
+public class UnifiedNetworkImportDialog extends JDialog implements PropertyChangeListener {
+	// This is a singleton.
 	private static final UnifiedNetworkImportDialog dialog;
+
+	// Selected web service client ID
 	private String selectedClientID = null;
+
+	// Task to run in the separate thread.
+	private WSNetworkImportTask task;
 
 	// Key is display name, value is actual service name.
 	private Map<String, String> clientNames;
 
-	static {
+	// Client-Dependent GUI panels
+	private Map<String, Container> serviceUIPanels = new HashMap<String, Container>();
+	
+	//Default icon for about dialog
+	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_internet-32.png"));
+
+    private int numDataSources = 0;
+    private int numClients = 0;
+    
+    private boolean cancelFlag = false;
+
+    static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
 	}
 
@@ -99,77 +125,63 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	}
 
 	/** Creates new form NetworkImportDialog */
-	public UnifiedNetworkImportDialog(java.awt.Frame parent, boolean modal) {
+	public UnifiedNetworkImportDialog(Frame parent, boolean modal) {
 		super(parent, modal);
 
 		// Register as listener.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 
-		clientNames = new HashMap<String, String>();
-
-		initComponents();
-		setDatasource();
-
-		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
+        initGUI();
 	}
 
-	/** This method is called from within the constructor to
+    /**
+     * Resets the GUI w/ all new info.
+     */
+    public void resetGUI() {
+        this.getContentPane().removeAll();
+        initGUI();
+    }
+
+    private void initGUI() {
+        clientNames = new HashMap<String, String>();
+
+        List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
+		for (WebServiceClient client : clients) {
+			if (client instanceof NetworkImportWebServiceClient) {
+                numClients++;
+            }
+		}
+
+        initComponents();
+        setDatasource();
+
+        //  If we have no data sources, show the install panel
+        getContentPane().setLayout(new BorderLayout());
+        if (numClients <= 1) {
+            this.getContentPane().add(installPanel, BorderLayout.SOUTH);
+        }
+        if (numClients > 0) {
+            this.getContentPane().add(queryPanel, BorderLayout.CENTER);
+        }
+
+        this.pack();
+        setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
+        selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
+
+        // Initialize GUI panel.
+        datasourceComboBoxActionPerformed(null);
+    }
+
+    /** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
 	 * always regenerated by the Form Editor.
-	 */
-
-	// <editor-fold defaultstate="collapsed" desc=" Generated Code">                          
+	 */                   
 	private void initComponents() {
-		mainPanel = new javax.swing.JPanel();
-		titleLabel = new javax.swing.JLabel();
-		datasourceLabel = new javax.swing.JLabel();
-		datasourceComboBox = new javax.swing.JComboBox();
-		searchButton = new javax.swing.JButton();
-		cancelButton = new javax.swing.JButton();
-		resetButton = new javax.swing.JButton();
 		mainTabbedPane = new javax.swing.JTabbedPane();
 		searchTermScrollPane = new javax.swing.JScrollPane();
 		searchTermTextPane = new javax.swing.JTextPane();
 		propertyPanel = new javax.swing.JPanel();
-
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Import Network from Web Services");
-		setBackground(new java.awt.Color(255, 255, 255));
-		mainPanel.setBackground(new java.awt.Color(255, 255, 255));
-		titleLabel.setBackground(new java.awt.Color(255, 255, 255));
-		titleLabel.setFont(new java.awt.Font("SansSerif", 1, 18));
-		titleLabel.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/network.png")));
-		titleLabel.setText("Import Network from Database");
-
-		datasourceLabel.setText("Datasource:");
-
-		datasourceComboBox.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					datasourceComboBoxActionPerformed(evt);
-				}
-			});
-
-		searchButton.setText("Search");
-		searchButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					searchButtonActionPerformed(evt);
-				}
-			});
-
-		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					cancelButtonActionPerformed(evt);
-				}
-			});
-
-		resetButton.setText("Clear Query");
-		resetButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					resetButtonActionPerformed(evt);
-				}
-			});
 
 		searchTermTextPane.setFont(new java.awt.Font("SansSerif", 0, 12));
 		searchTermTextPane.setText("Please enter search terms...");
@@ -188,83 +200,253 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		propertyScrollPane.setViewportView(propertyPanel);
 		mainTabbedPane.addTab("Search Property", propertyScrollPane);
 
-		org.jdesktop.layout.GroupLayout mainPanelLayout = new org.jdesktop.layout.GroupLayout(mainPanel);
-		mainPanel.setLayout(mainPanelLayout);
-		mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                  .add(mainPanelLayout.createSequentialGroup()
-		                                                                      .addContainerGap()
-		                                                                      .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                                                          .add(mainPanelLayout.createSequentialGroup()
-		                                                                                                              .add(resetButton)
-		                                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-		                                                                                                                               151,
-		                                                                                                                               Short.MAX_VALUE)
-		                                                                                                              .add(cancelButton)
-		                                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                                              .add(searchButton))
-		                                                                                          .add(mainPanelLayout.createSequentialGroup()
-		                                                                                                              .add(datasourceLabel)
-		                                                                                                              .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                                              .add(datasourceComboBox,
-		                                                                                                                   0,
-		                                                                                                                   328,
-		                                                                                                                   Short.MAX_VALUE))
-		                                                                                          .add(titleLabel,
-		                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                               413,
-		                                                                                               Short.MAX_VALUE)
-		                                                                                          .add(mainTabbedPane,
-		                                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                               413,
-		                                                                                               Short.MAX_VALUE))
-		                                                                      .addContainerGap()));
-		mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                     mainPanelLayout.createSequentialGroup()
-		                                                                    .addContainerGap()
-		                                                                    .add(titleLabel)
-		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                    .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                        .add(datasourceLabel)
-		                                                                                        .add(datasourceComboBox,
-		                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                             org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                    .add(mainTabbedPane,
-		                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                         330,
-		                                                                         Short.MAX_VALUE)
-		                                                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                    .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                        .add(resetButton)
-		                                                                                        .add(searchButton)
-		                                                                                        .add(cancelButton))
-		                                                                    .addContainerGap()));
+		titlePanel = new javax.swing.JPanel();
+		titleIconLabel = new javax.swing.JLabel();
+		datasourcePanel = new javax.swing.JPanel();
+		datasourceLabel = new javax.swing.JLabel();
+		datasourceComboBox = new javax.swing.JComboBox();
+		aboutButton = new javax.swing.JButton();
+		buttonPanel = new javax.swing.JPanel();
+		searchButton = new javax.swing.JButton();
+		cancelButton = new javax.swing.JButton();
+		clearButton = new javax.swing.JButton();
+		dataQueryPanel = new javax.swing.JPanel();
 
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
+		setTitle("Import Network from Database");
+
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+		titlePanel.setBackground(new java.awt.Color(0, 0, 0));
+
+		titleIconLabel.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("images/networkImportIcon.png"))); // NOI18N
+
+		org.jdesktop.layout.GroupLayout titlePanelLayout = new org.jdesktop.layout.GroupLayout(titlePanel);
+		titlePanel.setLayout(titlePanelLayout);
+		titlePanelLayout.setHorizontalGroup(titlePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                    .add(titleIconLabel,
+		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                         461,
+		                                                         org.jdesktop.layout.GroupLayout.PREFERRED_SIZE));
+		titlePanelLayout.setVerticalGroup(titlePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                  .add(titleIconLabel));
+
+		datasourceLabel.setFont(new java.awt.Font("SansSerif", 0, 12));
+		datasourceLabel.setText("Data Source");
+
+		datasourceComboBox.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					datasourceComboBoxActionPerformed(evt);
+				}
+			});
+
+		aboutButton.setText("About");
+		aboutButton.setMargin(new java.awt.Insets(2, 5, 2, 5));
+		aboutButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					aboutButtonActionPerformed(evt);
+				}
+			});
+
+		org.jdesktop.layout.GroupLayout datasourcePanelLayout = new org.jdesktop.layout.GroupLayout(datasourcePanel);
+		datasourcePanel.setLayout(datasourcePanelLayout);
+		datasourcePanelLayout.setHorizontalGroup(datasourcePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                              .add(datasourcePanelLayout.createSequentialGroup()
+		                                                                                        .addContainerGap()
+		                                                                                        .add(datasourceLabel)
+		                                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                        .add(datasourceComboBox,
+		                                                                                             0,
+		                                                                                             301,
+		                                                                                             Short.MAX_VALUE)
+		                                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                        .add(aboutButton)
+		                                                                                        .addContainerGap()));
+		datasourcePanelLayout.setVerticalGroup(datasourcePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                            .add(datasourcePanelLayout.createSequentialGroup()
+		                                                                                      .addContainerGap()
+		                                                                                      .add(datasourcePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                                                .add(datasourceLabel)
+		                                                                                                                .add(aboutButton)
+		                                                                                                                .add(datasourceComboBox,
+		                                                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                                                                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+		                                                                                      .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                                       Short.MAX_VALUE)));
+
+		buttonPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+		searchButton.setText("Search");
+		searchButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					searchButtonActionPerformed(evt);
+				}
+			});
+
+		cancelButton.setText("Cancel");
+		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					cancelButtonActionPerformed(evt);
+				}
+			});
+
+		clearButton.setText("Clear");
+		clearButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					clearButtonActionPerformed(evt);
+				}
+			});
+
+		org.jdesktop.layout.GroupLayout buttonPanelLayout = new org.jdesktop.layout.GroupLayout(buttonPanel);
+		buttonPanel.setLayout(buttonPanelLayout);
+		buttonPanelLayout.setHorizontalGroup(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                           buttonPanelLayout.createSequentialGroup()
+		                                                                            .addContainerGap()
+		                                                                            .add(clearButton)
+		                                                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+		                                                                                             225,
+		                                                                                             Short.MAX_VALUE)
+		                                                                            .add(cancelButton)
+		                                                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                            .add(searchButton)
+		                                                                            .addContainerGap()));
+		buttonPanelLayout.setVerticalGroup(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                    .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                         buttonPanelLayout.createSequentialGroup()
+		                                                                          .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                           Short.MAX_VALUE)
+		                                                                          .add(buttonPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                                .add(searchButton)
+		                                                                                                .add(cancelButton)
+		                                                                                                .add(clearButton))
+		                                                                          .addContainerGap()));
+
+		org.jdesktop.layout.GroupLayout dataQueryPanelLayout = new org.jdesktop.layout.GroupLayout(dataQueryPanel);
+		dataQueryPanel.setLayout(dataQueryPanelLayout);
+		dataQueryPanelLayout.setHorizontalGroup(dataQueryPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                            .add(0, 461, Short.MAX_VALUE));
+		dataQueryPanelLayout.setVerticalGroup(dataQueryPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                          .add(0, 247, Short.MAX_VALUE));
+
+
+        queryPanel = new JPanel();
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(queryPanel);
+		queryPanel.setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(mainPanel,
+		                                .add(titlePanel,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     Short.MAX_VALUE)
+		                                .add(datasourcePanel,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     Short.MAX_VALUE)
+		                                .add(buttonPanel,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                     Short.MAX_VALUE)
+		                                .add(dataQueryPanel,
 		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                     Short.MAX_VALUE));
 		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                              .add(mainPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                   Short.MAX_VALUE));
-		pack();
-	} // </editor-fold>                        
+		                              .add(layout.createSequentialGroup()
+		                                         .add(titlePanel,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                         .add(datasourcePanel,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                         .add(dataQueryPanel,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              Short.MAX_VALUE)
+		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                         .add(buttonPanel,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
 
-	private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		dataQueryPanel.setLayout(new BorderLayout());
+        createInstallPanel();
+	} // </editor-fold>
+
+    private void createInstallPanel() {
+        installPanel = new JPanel();
+        installPanel.setLayout(new BorderLayout());
+        JLabel titleIconLabel2 = new JLabel();
+        titleIconLabel2.setIcon(new ImageIcon
+                (Cytoscape.class.getResource("images/networkImportIcon.png")));
+        JPanel titlePanel2 = new JPanel();
+        titlePanel2.add(titleIconLabel2);
+        titlePanel2.setBackground(new Color(0, 0, 0));
+        titlePanel2.setLayout(new FlowLayout(FlowLayout.LEFT));
+        if (numClients ==0) {
+            installPanel.add(titlePanel2, BorderLayout.NORTH);
+        }
+
+        JPanel internalPanel = new JPanel();
+        internalPanel.setBorder(new EmptyBorder(10,10,10,10));
+        internalPanel.setLayout(new BoxLayout(internalPanel, BoxLayout.PAGE_AXIS));
+        JTextArea area = new JTextArea (1, 40);
+        area.setBorder(new EmptyBorder(0,0,0,0));
+        if (numClients == 0) {
+            area.setText("There are no network import web service clients installed.");
+        } else {
+            area.setText("To install additional web service clients, click the install button below.");
+        }
+        area.setEditable(false);
+        area.setOpaque(false);
+        area.setAlignmentX(Component.LEFT_ALIGNMENT);
+        internalPanel.add(area);
+        JButton installButton = new JButton ("Install Web Services Pack");
+        installButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        internalPanel.add(Box.createVerticalStrut(15));
+        internalPanel.add(installButton);
+        installPanel.add(internalPanel, BorderLayout.CENTER);
+        createInstallButtonListener(installButton);
+    }
+
+    private void createInstallButtonListener(JButton installButton) {
+        installButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                    cytoscape.data.webservice.util.WebServiceThemeInstall wst
+                            = new cytoscape.data.webservice.util.WebServiceThemeInstall
+                            (UnifiedNetworkImportDialog.this);
+            	boolean displayError = false;
+            	try {
+            		cytoscape.plugin.DownloadableInfo InstalledTheme = wst.installTheme();
+            		if (InstalledTheme == null)
+            			displayError = true;
+            	} catch (java.io.IOException ioe) {
+            		displayError = true;
+            		ioe.printStackTrace();
+            	} catch (org.jdom.JDOMException jde) {
+            		displayError = true;
+            		jde.printStackTrace();
+            	} finally {
+            		if (displayError)
+            			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                                "Failed to install the WebServiceThemePack",
+                                "Install Error", JOptionPane.ERROR_MESSAGE);
+            	}
+                setDatasource();
+            }
+        });
+    }
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
-		final CyWebServiceEvent event = buildEvent();
+		final CyWebServiceEvent<String> event = buildEvent();
 		System.out.println("Start importing network: " + evt.getActionCommand());
 
-		//		WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
-		WSNetworkImportTask task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem()
-		                                                                     .toString(), event);
+		task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem().toString(), event);
 
 		// Configure JTask Dialog Pop-Up Box
 		final JTaskConfig jTaskConfig = new JTaskConfig();
@@ -277,12 +459,30 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 		// Execute Task in New Thread; pops open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 
-		System.out.println("-------------------- Done!--------------");
+		System.out.println("Network Import from WS Success!");
 		dispose();
 	}
 
+	private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		WebServiceClient wsc = WebServiceClientManager.getClient(selectedClientID);
+		final String clientName = wsc.getDisplayName();
+		final String description = wsc.getDescription();
+		Icon icon = null;
+		if(wsc instanceof WebServiceClientGUI) {
+			icon = ((WebServiceClientGUI)wsc).getIcon(IconSize.FULL);
+		}
+		
+		if(icon == null) {
+			icon = DEF_ICON;
+		}
+		AboutDialog.showDialog(clientName, icon, description);
+	}
+
+	private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+	}
+
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
 		dispose();
 	}
 
@@ -291,8 +491,29 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	}
 
 	private void datasourceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
+		
 		searchTermTextPane.setText("");
 		setProperty(clientNames.get(datasourceComboBox.getSelectedItem()));
+		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
+
+		// Update Panel
+		dataQueryPanel.removeAll();
+
+		final Container gui = serviceUIPanels.get(selectedClientID);
+		if (gui != null) {
+				// This service has custom panel.
+				dataQueryPanel.add(gui, BorderLayout.CENTER);
+				// Hide button panel.
+				buttonPanel.setVisible(false);
+		} else {
+				// Otherwise, use the default panel.
+				System.out.println("No custom GUI.  Use default panel.");
+				dataQueryPanel.add(mainTabbedPane, BorderLayout.CENTER);
+				buttonPanel.setVisible(true);
+		}
+			
+		pack();
+		repaint();
 	}
 
 	private void setProperty(String clientID) {
@@ -321,31 +542,30 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 
 	private void setDatasource() {
 		List<WebServiceClient> clients = WebServiceClientManager.getAllClients();
-
-		ClientType[] compatibleTypes = null;
-
 		for (WebServiceClient client : clients) {
-			compatibleTypes = client.getClientType();
+			if (client instanceof NetworkImportWebServiceClient) {
+				this.datasourceComboBox.addItem(client.getDisplayName());
+				this.clientNames.put(client.getDisplayName(), client.getClientID());
 
-			for (ClientType type : compatibleTypes) {
-				if (type.equals(ClientType.NETWORK)) {
-					this.datasourceComboBox.addItem(client.getDisplayName());
-					this.clientNames.put(client.getDisplayName(), client.getClientID());
-
-					break;
-				}
-			}
+				if (client instanceof WebServiceClientGUI
+				    && (((WebServiceClientGUI) client).getGUI() != null)) {
+                    serviceUIPanels.put(client.getClientID(),
+					                     ((WebServiceClientGUI) client).getGUI());
+                }
+                numDataSources++;
+            }
 		}
 	}
 
-	private CyWebServiceEvent buildEvent() {
+	private CyWebServiceEvent<String> buildEvent() {
 		final String clientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
 		// Update props here.
 		WebServiceClientManager.getClient(clientID).getProps().updateValues();
 
-		return new CyWebServiceEvent(clientID, WSEventType.SEARCH_DATABASE,
-		                             searchTermTextPane.getText(), WSEventType.IMPORT_NETWORK);
+		return new CyWebServiceEvent<String>(clientID, WSEventType.SEARCH_DATABASE,
+		                                     searchTermTextPane.getText(),
+		                                     WSEventType.IMPORT_NETWORK);
 	}
 
 	// Variables declaration - do not modify                     
@@ -361,43 +581,80 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	private javax.swing.JScrollPane searchTermScrollPane;
 	private javax.swing.JTextPane searchTermTextPane;
 	private javax.swing.JLabel titleLabel;
+	private javax.swing.JButton aboutButton;
+	private javax.swing.JPanel buttonPanel;
+    private JPanel queryPanel;
+    private JPanel installPanel;
+
+    //    private javax.swing.JButton cancelButton;
+	private javax.swing.JButton clearButton;
+	private javax.swing.JPanel dataQueryPanel;
+
+	//    private javax.swing.JComboBox datasourceComboBox;
+	//    private javax.swing.JLabel datasourceLabel;
+	private javax.swing.JPanel datasourcePanel;
+
+	//    private javax.swing.JButton searchButton;
+	private javax.swing.JLabel titleIconLabel;
+	private javax.swing.JPanel titlePanel;
 
 	// End of variables declaration        
 	class WSNetworkImportTask implements Task {
 		private String serviceName;
-		private CyWebServiceEvent evt;
+		private CyWebServiceEvent<String> evt;
 		private TaskMonitor taskMonitor;
 
-		public WSNetworkImportTask(String serviceName, CyWebServiceEvent evt) {
+		public WSNetworkImportTask(final String serviceName, final CyWebServiceEvent<String> evt) {
 			this.evt = evt;
 			this.serviceName = serviceName;
 		}
 
 		public String getTitle() {
-			// TODO Auto-generated method stub
 			return "Loading network from web service...";
 		}
 
 		public void halt() {
 			
+			cancelFlag = true;
+			Thread.currentThread().interrupt();		
+			taskMonitor.setPercentCompleted(100);
+
+			// Kill the import task.
+			CyWebServiceEvent<String> cancelEvent = new CyWebServiceEvent<String>(serviceName, WSEventType.CANCEL,
+                     null,
+                     null);
+			try {
+				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(cancelEvent);
+			} catch (CyWebServiceException e) {
+				// TODO Auto-generated catch block
+				taskMonitor.setException(e, "Cancel Failed.");
+			}
 		}
 
 		public void run() {
+			cancelFlag = false;
 			taskMonitor.setStatus("Loading interactions from " + serviceName);
 			taskMonitor.setPercentCompleted(-1);
+
 			// this even will load the file
 			try {
 				WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt);
 			} catch (Exception e) {
 				taskMonitor.setException(e, "Failed to load network from web service.");
+
 				return;
 			}
+
 			taskMonitor.setPercentCompleted(100);
 			taskMonitor.setStatus("Network successfully loaded.");
 		}
 
 		public void setTaskMonitor(TaskMonitor arg0) throws IllegalThreadStateException {
 			this.taskMonitor = arg0;
+		}
+
+		protected TaskMonitor getTaskMonitor() {
+			return taskMonitor;
 		}
 	}
 
@@ -407,63 +664,78 @@ public class UnifiedNetworkImportDialog extends javax.swing.JDialog
 	 * @param evt DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
+		
+		if(cancelFlag) return;
+		
 		Object resultObject = evt.getNewValue();
 
-		if (evt.getPropertyName().equals("SEARCH_RESULT") && (resultObject != null)
-		    && ((DatabaseSearchResult) resultObject).getNextMove().equals(WSEventType.IMPORT_NETWORK)) {
-			System.out.println("Got search result from: " + evt.getSource() + ", Num result = "
-			                   + ((DatabaseSearchResult) resultObject).getResultSize() + ", Source name = " + evt.getOldValue());
+		if (evt.getPropertyName().equals(WSResponseType.SEARCH_FINISHED.toString())
+		    && (resultObject != null) && resultObject instanceof DatabaseSearchResult) {
+			DatabaseSearchResult result = (DatabaseSearchResult) resultObject;
 
-			String[] message = {
-			                       ((DatabaseSearchResult) resultObject).getResultSize()
-			                       + " records found in " + selectedClientID,
-			                       "Do you want to create new network from the search result?"
-			                   };
-			int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
-			                                          "Import network", JOptionPane.YES_NO_OPTION);
+			if (result.getNextMove().equals(WSEventType.IMPORT_NETWORK)) {
+				System.out.println("Got search result from: " + evt.getSource() + ", Num result = "
+				                   + result.getResultSize() + ", Source name = "
+				                   + evt.getOldValue());
 
-			if (value == JOptionPane.YES_OPTION) {
-				CyWebServiceEvent evt2 = new CyWebServiceEvent(evt.getOldValue().toString(),
-				                                               WSEventType.IMPORT_NETWORK,
-				                                               ((DatabaseSearchResult) resultObject)
-				                                               .getResult());
-				try {
-					WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				String[] message = {
+				                       result.getResultSize() + " records found in "
+				                       + selectedClientID,
+				                       "Do you want to create new network from the search result?"
+				                   };
+				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
+				                                          "Import network",
+				                                          JOptionPane.YES_NO_OPTION);
+
+				if (value == JOptionPane.YES_OPTION) {
+					CyWebServiceEvent<Object> evt2 = new CyWebServiceEvent<Object>(evt.getOldValue()
+					                                                                  .toString(),
+					                                                               WSEventType.IMPORT_NETWORK,
+					                                                               result.getResult());
+
+					try {
+						WebServiceClientManager.getCyWebServiceEventSupport()
+						                       .fireCyWebServiceEvent(evt2);
+					} catch (CyWebServiceException e) {
+						// TODO Auto-generated catch block
+						if (task.getTaskMonitor() != null) {
+							task.getTaskMonitor().setException(e, "Database search failed.");
+						}
+					}
 				}
 			}
-		} else if (evt.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
+		} else if (evt.getPropertyName().equals(WSResponseType.DATA_IMPORT_FINISHED.toString())) {
+			
+			// If network is empty, just ignore it.
+			if(evt.getNewValue() == null)
+				return;
+			
 			String[] message = { "Network loaded.", "Please enter name for new network:" };
 			String value = JOptionPane.showInputDialog(Cytoscape.getDesktop(), message,
 			                                           "Name new network",
 			                                           JOptionPane.QUESTION_MESSAGE);
+			if (value == null || value.length() == 0 )
+				value = selectedClientID + " Network";
 
-			if ((value != null) || (value.length() != 0)) {
+			
 				final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
-				cyNetwork.setTitle(value);
 				Cytoscape.getCurrentNetwork().setTitle(value);
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
-				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager
-				                                                                                                                                                                                                                                                                                                                                                                                                                                    .getClient(selectedClientID))
-				                          .getDefaultVisualStyle();
+				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager.getClient(selectedClientID))
+				                    .getDefaultVisualStyle();
 				if(style == null) {
 					style = Cytoscape.getVisualMappingManager().getVisualStyle();
 				}
-				VisualStyle testStyle = Cytoscape.getVisualMappingManager().getCalculatorCatalog()
-				                                 .getVisualStyle(style.getName());
 
-				if (testStyle == null) {
+
+
+				if (Cytoscape.getVisualMappingManager().getCalculatorCatalog()
+                .getVisualStyle(style.getName()) == null)
 					Cytoscape.getVisualMappingManager().getCalculatorCatalog().addVisualStyle(style);
-				}
 
 				Cytoscape.getVisualMappingManager().setVisualStyle(style);
-				Cytoscape.getVisualMappingManager().setVisualStyleForView(
-						Cytoscape.getNetworkView(cyNetwork.getIdentifier()), style);
-				Cytoscape.redrawGraph(Cytoscape.getNetworkView(cyNetwork.getIdentifier()));
-			}
+
 		}
 	}
 }

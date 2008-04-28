@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,19 +33,35 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.data.webservice;
 
-import org.cytoscape.vizmap.VisualStyle;
+package cytoscape.data.webservice.ui;
+
+import cytoscape.Cytoscape;
+
+import cytoscape.view.CytoscapeDesktop;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 
 /**
  *
-  */
-public interface NetworkImportWebServiceClient {
-	/**
-	 *  Return default vixual style for this network import client.
-	 *
-	 * @return  default visual style.
-	 */
-	public VisualStyle getDefaultVisualStyle();
+ */
+public class WebServiceContextMenuListener implements PropertyChangeListener {
+	private WebServiceContextMenu cMenu = null;
 
+	/**
+	 *  Add expander.
+	 *
+	 * @param evt DOCUMENT ME!
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
+			if (cMenu == null)
+				cMenu = new WebServiceContextMenu();
+
+			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(cMenu);
+			Cytoscape.getCurrentNetworkView().addEdgeContextMenuListener(cMenu);
+		}
+	}
 }

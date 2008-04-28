@@ -2,19 +2,19 @@ package cytoscape.data.webservice;
 
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 
-public class DatabaseSearchResult {
+public class DatabaseSearchResult<R> {
 	private final Integer resultSize;
-	private final Object resultObject;
+	private final R searchResult;
 	private final WSEventType nextMove;
 	
-	public DatabaseSearchResult(Integer resultSize, Object resultObject, WSEventType nextMove) {
+	public DatabaseSearchResult(Integer resultSize, R searchResult, WSEventType nextMove) {
 		this.resultSize = resultSize;
-		this.resultObject = resultObject;
+		this.searchResult = searchResult;
 		this.nextMove = nextMove;
 	}
 	
-	public Object getResult() {
-		return resultObject;
+	public R getResult() {
+		return searchResult;
 	}
 	
 	public Integer getResultSize() {

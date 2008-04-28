@@ -37,10 +37,12 @@ package cytoscape.data.webservice;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 import org.cytoscape.tunable.ModuleProperties;
 
+import java.io.Serializable;
+
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 
 /**
@@ -50,16 +52,42 @@ import java.util.List;
  * @author Keiichiro Ono
  * @since Cytoscape 2.6
  * @version 0.5
+ *
+ * @param <S>  Stub object type.  This is service dependent.
  */
-public abstract class WebServiceClientImpl implements WebServiceClient, CyWebServiceEventListener {
-	protected Object stub;
-	protected String displayName;
-	protected String clientID;
-	protected ClientType[] types;
-	protected ModuleProperties props;
+public abstract class WebServiceClientImpl<S> implements Serializable, WebServiceClient<S>,
+                                                         CyWebServiceEventListener {
+	// Default ID
 	protected static final String DEF_NAME = "default";
+
+	// Default Display Name
 	protected static final String DEF_DISPLAY_NAME = "Default Web Service Cilent";
-	protected List<Method> availableMethods = null;
+
+	// Stub object.
+	protected S clientStub;
+
+	// Client ID.  This should be unique.
+	protected String clientID;
+
+	// Display Name for this client.
+	protected String displayName;
+
+	// Compatible types.
+	protected ClientType[] type;
+
+	// Properties for this client.  Will be used by Tunable.
+	protected ModuleProperties props;
+
+	// Methods available through the client stub.
+	protected Collection<Method> availableMethods = null;
+	protected String description = "Description for " + displayName + " is not available.";
+
+	/**
+	 * Creates a new WebServiceClientImpl object.
+	 */
+	public WebServiceClientImpl() {
+		this(DEF_NAME, DEF_DISPLAY_NAME);
+	}
 
 	/**
 	 * Creates a new WebServiceClientImpl object.
@@ -93,10 +121,25 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 */
 	public WebServiceClientImpl(final String serviceName, final String displayName,
 	                            final ClientType[] types, final ModuleProperties props) {
+		this(serviceName, displayName, types, props, null);
+	}
+
+	/**
+	 * Creates a new WebServiceClientImpl object.
+	 *
+	 * @param serviceName  DOCUMENT ME!
+	 * @param displayName  DOCUMENT ME!
+	 * @param types  DOCUMENT ME!
+	 * @param props  DOCUMENT ME!
+	 */
+	public WebServiceClientImpl(final String serviceName, final String displayName,
+	                            final ClientType[] types, final ModuleProperties props,
+	                            final S clientStub) {
 		this.clientID = serviceName;
 		this.displayName = displayName;
-		this.types = types;
+		this.type = types;
 		this.props = props;
+		this.clientStub = clientStub;
 
 		WebServiceClientManager.getCyWebServiceEventSupport().addCyWebServiceEventListener(this);
 	}
@@ -104,32 +147,13 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @param methodName DOCUMENT ME!
-	 * @param parameterTypes DOCUMENT ME!
-	 * @param parameters DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
-	 */
-	public Object execute(String methodName, Class[] parameterTypes, Object[] parameters)
-	    throws Exception {
-		Method method = stub.getClass().getMethod(methodName, parameterTypes);
-		Object ret = method.invoke(stub, parameters);
-
-		return ret;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<Method> getAllServices() {
+	public Collection<Method> getAccessibleMethods() {
 		if (availableMethods == null) {
 			availableMethods = new ArrayList<Method>();
 
-			final Class stubClass = stub.getClass();
+			final Class stubClass = clientStub.getClass();
 			final Method[] methods = stubClass.getMethods();
 
 			for (Method m : methods) {
@@ -166,7 +190,7 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 * @return  DOCUMENT ME!
 	 */
 	public ClientType[] getClientType() {
-		return types;
+		return type;
 	}
 
 	/**
@@ -177,7 +201,7 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 * @return  DOCUMENT ME!
 	 */
 	public boolean isCompatibleType(ClientType ct) {
-		for (ClientType t : types) {
+		for (ClientType t : type) {
 			if (t.equals(ct)) {
 				return true;
 			}
@@ -192,8 +216,8 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object getClientStub() {
-		return stub;
+	public S getClientStub() {
+		return clientStub;
 	}
 
 	/**
@@ -210,8 +234,30 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 *
 	 * @param props DOCUMENT ME!
 	 */
-	public void setPorps(ModuleProperties props) {
+	public void setProps(ModuleProperties props) {
 		this.props = props;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param description DOCUMENT ME!
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+	
+	public void setClientStub(S stub) {
+		this.clientStub = stub;
 	}
 
 	/**
@@ -219,5 +265,5 @@ public abstract class WebServiceClientImpl implements WebServiceClient, CyWebSer
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public abstract void executeService(CyWebServiceEvent e) throws Exception;
+	public abstract void executeService(CyWebServiceEvent e) throws CyWebServiceException;
 }
