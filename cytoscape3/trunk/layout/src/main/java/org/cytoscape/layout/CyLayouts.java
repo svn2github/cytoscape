@@ -38,34 +38,58 @@ package org.cytoscape.layout;
 
 import org.cytoscape.layout.algorithms.GridNodeLayout;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 
-import java.util.Hashtable;
+/**
+ * CyLayouts is a singleton class that is used to register all available
+ * layout algorithms.  
+ */
+public class CyLayouts {
+	private static HashMap<String, CyLayoutAlgorithm> layoutMap;
+	private static HashMap<CyLayoutAlgorithm, String> menuNameMap;
 
-public class CyLayouts implements BundleActivator {
-
-	static BundleContext bc;
-
-	public void start(BundleContext bc) {
-		this.bc = bc;
-
-		// add the default layout
-		CyLayoutAlgorithm def = new GridNodeLayout();
-        Hashtable props = new Hashtable();
-        props.put("preferredMenu", "Cytoscape Layouts");
-        props.put("name", def.getName());
-        ServiceRegistration reg = bc.registerService(CyLayoutAlgorithm.class.getName(), def, props);
+	static {
+		new CyLayouts();
 	}
 
-	public void stop(BundleContext bc) {
+	private CyLayouts() {
+		layoutMap = new HashMap<String,CyLayoutAlgorithm>();
+		menuNameMap = new HashMap<CyLayoutAlgorithm,String>();
+
+		addLayout(new GridNodeLayout(), "Cytoscape Layouts");
 	}
 
+	/**
+	 * Add a layout to the layout manager's list.  If menu is "null"
+	 * it will be assigned to the "none" menu, which is not displayed.
+	 * This can be used to register layouts that are to be used for
+	 * specific algorithmic purposes, but not, in general, supposed
+	 * to be for direct user use.
+	 *
+	 * @param layout The layout to be added
+	 * @param menu The menu that this should appear under
+	 */
+	public static void addLayout(CyLayoutAlgorithm layout, String menu) {
+		layoutMap.put(layout.getName(),layout);
+		menuNameMap.put(layout,menu);
+	}
+
+	/**
+	 * Remove a layout from the layout maanger's list.
+	 *
+	 * @param layout The layout to remove
+	 */
+	public static void removeLayout(CyLayoutAlgorithm layout) {
+		layoutMap.remove(layout.getName());
+		menuNameMap.remove(layout);
+	}
 
 	/**
 	 * Get the layout named "name".  If "name" does
@@ -75,21 +99,8 @@ public class CyLayouts implements BundleActivator {
 	 * @return the layout of that name or null if it is not reigstered
 	 */
 	public static CyLayoutAlgorithm getLayout(String name) {
-		if ( bc == null )
-			return null;
-
-		String query = "(&(name="+ name +"))";
-
-		try {
-		ServiceReference[] sr = bc.getServiceReferences(CyLayoutAlgorithm.class.getName(), query);
-		if ( sr != null )
-			for (ServiceReference r : sr ) {
-				CyLayoutAlgorithm cla = (CyLayoutAlgorithm)bc.getService(r);
-				if ( cla != null )
-					return cla;
-			}
-		} catch (Exception e) { e.printStackTrace(); }
-	
+		if (layoutMap.containsKey(name))
+			return layoutMap.get(name);
 		return null;
 	}
 
@@ -99,23 +110,7 @@ public class CyLayouts implements BundleActivator {
 	 * @return a Collection of all the available layouts
 	 */
 	public static Collection<CyLayoutAlgorithm> getAllLayouts() {
-
-		Collection<CyLayoutAlgorithm> allLayouts = new LinkedList<CyLayoutAlgorithm>();
-
-		if ( bc == null )
-			return allLayouts;
-
-		try {
-		ServiceReference[] sr = bc.getServiceReferences(CyLayoutAlgorithm.class.getName(), null);
-		if ( sr != null )
-			for (ServiceReference r : sr ) {
-				CyLayoutAlgorithm cla = (CyLayoutAlgorithm)bc.getService(r);
-				if ( cla != null )
-					allLayouts.add( cla );
-			}
-		} catch (Exception e) { e.printStackTrace(); }
-
-		return allLayouts;
+		return layoutMap.values();
 	}
 
 	/**
@@ -125,24 +120,21 @@ public class CyLayouts implements BundleActivator {
 	 * @return CyLayoutAlgorithm to use as the default layout algorithm
 	 */
 	public static CyLayoutAlgorithm getDefaultLayout() {
-		return new GridNodeLayout();
-		//return getLayout("grid");
+		// See if the user has set the layout.default property
+//		String defaultLayout = CytoscapeInit.getProperties().getProperty("layout.default");
+//
+//		if ((defaultLayout == null) || !layoutMap.containsKey(defaultLayout)) {
+//			defaultLayout = "grid";
+//		}
+		String defaultLayout = "grid"; 
+
+		CyLayoutAlgorithm l = layoutMap.get(defaultLayout);
+
+		return l;
 	}
 
-	// Ack. 
-	// TODO this really shouldn't be here
+	// Ack.
 	public static String getMenuName(CyLayoutAlgorithm layout) {
-		if ( bc == null )
-			return null;
-
-		try {
-		ServiceReference[] sr = bc.getServiceReferences(CyLayoutAlgorithm.class.getName(), layout.getName());
-		if ( sr != null )
-			for (ServiceReference r : sr ) {
-				return (String)r.getProperty("preferredMenu");
-			}
-		} catch (Exception e) { e.printStackTrace(); }
-	
-		return null;
+		return menuNameMap.get(layout); 
 	}
 }
