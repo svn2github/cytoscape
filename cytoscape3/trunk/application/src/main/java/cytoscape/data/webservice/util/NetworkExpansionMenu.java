@@ -1,3 +1,39 @@
+
+/*
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package cytoscape.data.webservice.util;
 
 import java.awt.event.ActionEvent;
@@ -9,6 +45,9 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import org.cytoscape.Node;
+import org.cytoscape.layout.CyLayouts;
+
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.data.webservice.CyWebServiceEvent;
@@ -17,34 +56,41 @@ import cytoscape.data.webservice.NetworkImportWebServiceClient;
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import org.cytoscape.layout.CyLayouts;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
 
+/**
+ *
+ */
 public class NetworkExpansionMenu implements PropertyChangeListener {
-	
 	// Default layout algorithm name in property.
 	private static final String LAYOUT_PROP = "expanderDefaultLayout";
 	private static final String DEF_LAYOUT = "force-directed";
-	
 	private static NetworkExpansionMenu expander;
-	
+
 	static {
 		expander = new NetworkExpansionMenu();
 	}
-	
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param client DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public static JMenuItem getExpander(WebServiceClient client) {
 		return expander.getMenuItem(client);
-		
 	}
 
 	private String defLayout;
-	
+
+	/**
+	 * Creates a new NetworkExpansionMenu object.
+	 */
 	public NetworkExpansionMenu() {
 		// Listening to event from core.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -54,9 +100,8 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 		if (defLayout == null)
 			defLayout = DEF_LAYOUT;
-
 	}
-	
+
 	private JMenuItem getMenuItem(final WebServiceClient client) {
 		final JMenuItem expandMenu = new JMenuItem(new AbstractAction("Get neighbours by ID(s)") {
 				public void actionPerformed(ActionEvent e) {
@@ -119,10 +164,10 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 			                                          "Expand network", JOptionPane.YES_NO_OPTION);
 
 			if (value == JOptionPane.YES_OPTION) {
-				
 				CyWebServiceEvent evt2 = new CyWebServiceEvent(evt.getOldValue().toString(),
 				                                               WSEventType.EXPAND_NETWORK,
-				                                               ((DatabaseSearchResult) resultObj).getResult());
+				                                               ((DatabaseSearchResult) resultObj)
+				                                                                                                                                                                  .getResult());
 
 				try {
 					WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
@@ -148,7 +193,6 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 			}
 		}
 	}
-
 
 	class SearchTask implements Task {
 		private CyWebServiceEvent evt;
@@ -186,8 +230,9 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 			String curNetID = Cytoscape.getCurrentNetwork().getIdentifier();
 
-//			Cytoscape.getNetworkView(curNetID).
-//			         .setVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+			Cytoscape.getVisualMappingManager()
+			         .setVisualStyleForView(Cytoscape.getNetworkView(curNetID),
+			                                Cytoscape.getVisualMappingManager().getVisualStyle());
 			Cytoscape.redrawGraph(Cytoscape.getNetworkView(curNetID));
 		}
 
