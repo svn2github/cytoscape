@@ -36,18 +36,15 @@
 
 package cytoscape.filters;
 
-
 import java.util.List;
 import cytoscape.Cytoscape;
-
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.BitSet;
 import java.util.LinkedList;
-
 import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
+import csplugins.quickfind.util.QuickFind;
 
 public class CompositeFilter implements CyFilter {
 
@@ -258,6 +255,8 @@ public class CompositeFilter implements CyFilter {
 			return;
 		}
 
+		updateSelectionType();
+
 		if (advancedSetting.isNodeChecked()) {
 			calculateNodeBitSet();
 		}
@@ -267,6 +266,36 @@ public class CompositeFilter implements CyFilter {
 				
 		// record that we've calculated the bits
 		childChanged = false;
+	}
+	
+	private void updateSelectionType() {
+		boolean selectNode = false;
+		boolean selectEdge = false;
+		//List<CyFilter> childFilters = theFilter.getChildren();
+		for (int i=0; i< children.size(); i++) {
+			CyFilter child = children.get(i);
+			if (child instanceof AtomicFilter) {
+				AtomicFilter tmp = (AtomicFilter) child;
+				if (tmp.getIndexType() == QuickFind.INDEX_NODES) {
+					selectNode = true;
+				}
+				if (tmp.getIndexType() == QuickFind.INDEX_EDGES) {
+					selectEdge = true;
+				}
+			}
+			else if (child instanceof CompositeFilter) {
+				CompositeFilter tmp = (CompositeFilter) child;
+				if (tmp.getAdvancedSetting().isNodeChecked()) {
+					selectNode = true;
+				}
+				if (tmp.getAdvancedSetting().isEdgeChecked()) {
+					selectEdge = true;
+				}
+			}
+		}//end of for loop
+
+		advancedSetting.setNode(selectNode);
+		advancedSetting.setEdge(selectEdge);
 	}
 	
 	public BitSet getEdgeBits() {
