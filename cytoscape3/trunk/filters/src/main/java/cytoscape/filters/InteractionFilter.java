@@ -50,7 +50,7 @@ public class InteractionFilter extends CompositeFilter {
 	protected boolean isSourceChecked = true;
 	protected boolean isTargetChecked = true;
 	
-	protected CompositeFilter passFilter = null;
+	protected CompositeFilter passFilter = new CompositeFilter("None");
 	
 	public InteractionFilter() {
 	}
@@ -92,7 +92,7 @@ public class InteractionFilter extends CompositeFilter {
 		childChanged = true;
 	}
 
-	public boolean isSorceChecked() {
+	public boolean isSourceChecked() {
 		return isSourceChecked;
 	}
 	
@@ -100,7 +100,7 @@ public class InteractionFilter extends CompositeFilter {
 		return isTargetChecked;
 	}
 	
-	public void setSorceChecked(boolean pIsChecked) {
+	public void setSourceChecked(boolean pIsChecked) {
 		isSourceChecked =pIsChecked;
 		updateNodeType();		
 	}
