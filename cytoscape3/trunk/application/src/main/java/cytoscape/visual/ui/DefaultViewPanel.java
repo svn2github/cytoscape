@@ -96,7 +96,12 @@ public class DefaultViewPanel extends JPanel {
 		dummyNet = Cytoscape.getRootGraph().createGraphPerspective(nodes, edges);
 		dummyNet.setTitle("Default Appearance");
 
-
+		view = GraphViewFactory.createGraphView(dummyNet);
+		view.setIdentifier(dummyNet.getIdentifier());
+		view.getNodeView(source).setOffset(0, 0);
+		view.getNodeView(target).setOffset(150, 10);
+		Cytoscape.getVisualMappingManager().setNetworkView(view);
+		
 		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
 
 		background = Cytoscape.getVisualMappingManager().getVisualStyle()
@@ -117,17 +122,6 @@ public class DefaultViewPanel extends JPanel {
 	 */
 	public Component getCanvas() {
 		return canvas;
-	}
-
-	/**
-	 * Create dummy network
-	 */
-	protected void createDummyNetworkView() {
-		view = GraphViewFactory.createGraphView(dummyNet);
-		view.setIdentifier(dummyNet.getIdentifier());
-		view.getNodeView(source).setOffset(0, 0);
-		view.getNodeView(target).setOffset(150, 10);
-		Cytoscape.getVisualMappingManager().setNetworkView(view);
 	}
 
 	/**
