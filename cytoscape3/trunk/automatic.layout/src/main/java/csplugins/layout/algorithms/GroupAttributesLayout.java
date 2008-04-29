@@ -183,7 +183,7 @@ public class GroupAttributesLayout extends AbstractLayout {
 		layoutProperties.add(TunableFactory.getTunable("radmult", "Scale of the radius of the partition",
 		                                 Tunable.DOUBLE, new Double(50.0)));
 		layoutProperties.add(TunableFactory.getTunable("attributeName", "The attribute to use for the layout",
-		                                 Tunable.NODEATTRIBUTE, "", "","",0,false,Cytoscape.getNodeAttributes()));
+		                                 Tunable.NODEATTRIBUTE, ""));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties(CytoscapeInit.getProperties());

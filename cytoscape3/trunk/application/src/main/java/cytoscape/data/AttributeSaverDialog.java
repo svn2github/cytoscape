@@ -38,10 +38,9 @@ package cytoscape.data;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.data.writers.CyAttributesWriter;
 
-import cytoscape.data.writers.CyAttributesWriter2;
 import org.cytoscape.attributes.CyAttributes; 
-
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -53,10 +52,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -69,7 +66,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.AbstractTableModel;
 
 import org.cytoscape.GraphObject;
 
@@ -140,6 +138,8 @@ public class AttributeSaverDialog extends JDialog {
 		showDialog(NODES);
 	}
 
+	protected JButton saveButton = new JButton("Choose Directory and Save");
+
 	/**
 	 * Create a dialog box of the specified type. Instead of constructor, use
 	 * static methods to create dialog box
@@ -165,12 +165,25 @@ public class AttributeSaverDialog extends JDialog {
 
 		state = new AttributeSaverState(attributes, suffix, type);
 
+		// Add TableModelListener to syn the state of saveButton
+		TableModelListener tmListener = new TableModelListener() {
+			public void tableChanged(TableModelEvent e)  {
+				if (state.saveChecked()){
+					AttributeSaverDialog.this.saveButton.setEnabled(true);
+				}
+				else {
+					AttributeSaverDialog.this.saveButton.setEnabled(false);
+				}
+			}
+		};
+		state.addTableModelListener(tmListener);
+
 		attributeTable = new JTable(state);
 		attributeTable.setToolTipText("Select multiple attributes to save. Modify \"Filename\" field to specify filename");
 		attributeTable.setCellSelectionEnabled(false);
 
 		// initialize the directory browser component
-		JButton saveButton = new JButton("Choose Directory and Save");
+		saveButton.setEnabled(false);
 		saveButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					final JFileChooser myChooser = new JFileChooser(CytoscapeInit.getMRUD());
@@ -215,7 +228,7 @@ public class AttributeSaverDialog extends JDialog {
 /**
  * Holds the state associated with the dialog.<br>
  */
-class AttributeSaverState implements TableModel {
+class AttributeSaverState extends AbstractTableModel {
 	/**
 	 *
 	 */
@@ -252,11 +265,6 @@ class AttributeSaverState implements TableModel {
 	private Vector<Boolean> selectedAttributes;
 
 	/**
-	 * A vector of all the objects that are listening to this TableModel
-	 */
-	private Vector<TableModelListener> listeners;
-
-	/**
 	 * Network to from which to read graph objects
 	 */
 
@@ -279,7 +287,7 @@ class AttributeSaverState implements TableModel {
 	public AttributeSaverState(final String[] nodeAttributes, final String suffix, int type) {
 		this.type = type;
 		this.suffix = suffix;
-		this.listeners = new Vector<TableModelListener>();
+		// this.listeners = new Vector<TableModelListener>();
 		this.attributeNames = new Vector<String>();
 		this.filenames = new Vector<String>();
 		this.selectedAttributes = new Vector<Boolean>();
@@ -324,18 +332,13 @@ class AttributeSaverState implements TableModel {
 
 		for (int idx = 0; idx < attributeNames.size(); idx++) {
 			if (selectedAttributes.get(idx)) {
-				final String attributeName = attributeNames.get(idx);
+				final CyAttributesWriter writer = new CyAttributesWriter(cyAttributes,
+				                                                         attributeNames.get(idx),
+				                                                         new FileWriter(new File(saveDirectory,
+				                                                                                 filenames
+				                                                                                 .get(idx))));
 
-				final File attributeFile = new File(saveDirectory, filenames.get(idx));
-				final FileWriter fileWriter = new FileWriter(attributeFile);
-				fileWriter.write(attributeName + newline);
-
-				final CyAttributesWriter2 writer = new CyAttributesWriter2(cyAttributes,
-				                                                           attributeNames.get(idx),
-				                                                           fileWriter);
 				writer.writeAttributes();
-
-				fileWriter.close();
 				count++;
 			}
 		}
@@ -343,29 +346,17 @@ class AttributeSaverState implements TableModel {
 		return count;
 	}
 
+	// Retrun true only if there are at least one checkbox is checked
+	public boolean saveChecked() {
+		for (int i=0; i<selectedAttributes.size(); i++) {
+			if (selectedAttributes.elementAt(i).booleanValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// below here is implementing the tableModel
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param tml DOCUMENT ME!
-	 */
-	public void addTableModelListener(TableModelListener tml) {
-		this.listeners.add(tml);
-
-		return;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param tml DOCUMENT ME!
-	 */
-	public void removeTableModelListener(TableModelListener tml) {
-		this.listeners.remove(tml);
-
-		return;
-	}
-
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -477,6 +468,7 @@ class AttributeSaverState implements TableModel {
 
 			case SAVE_COLUMN:
 				selectedAttributes.set(rowIndex, (Boolean) aValue);
+				fireTableDataChanged();
 
 				break;
 

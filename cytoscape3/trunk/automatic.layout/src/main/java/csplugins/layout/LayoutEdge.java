@@ -45,11 +45,6 @@ import cytoscape.Cytoscape;
  * LayoutNodes that are joined by this edge.
  */
 public class LayoutEdge {
-	// static variables
-	static double logWeightCeiling;
-	static final double EPSILON = 0.0000001D;
-	static CyAttributes edgeAttributes = null;
-
 	// instance variables
 	private LayoutNode v1;
 	private LayoutNode v2;
@@ -61,8 +56,6 @@ public class LayoutEdge {
 	 * An empty constructor
 	 */
 	public LayoutEdge() {
-		if (edgeAttributes == null)
-			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
 
 	/**
@@ -73,9 +66,6 @@ public class LayoutEdge {
 	 */
 	public LayoutEdge(Edge edge) {
 		this.edge = edge;
-
-		if (edgeAttributes == null)
-			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
 
 	/**
@@ -95,9 +85,6 @@ public class LayoutEdge {
 			v1.addNeighbor(v2);
 			v2.addNeighbor(v1);
 		}
-
-		if (edgeAttributes == null)
-			this.edgeAttributes = Cytoscape.getEdgeAttributes();
 	}
 
 	/**
@@ -120,58 +107,23 @@ public class LayoutEdge {
 	}
 
 	/**
-	 * Get and set the weights for this LayoutEdge.  Note that we calculate
-	 * both the weight and the log of the weight in case we need to result to
-	 * log values to get a reasonable spread.
+	 * Set the weight for this LayoutEdge.  This assumes that all of the weight
+	 * calculations are being handled externally.
 	 *
-	 * @param weightedAttribute the name of the attribute to use to get the weight
+	 * @param weight the actual weight
 	 */
-	public void setWeight(String weightedAttribute) {
-		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
-		double eValue = 1;
-
-		if ((weightedAttribute != null)
-		    && edgeAttributes.hasAttribute(edge.getIdentifier(), weightedAttribute)) {
-			if (edgeAttributes.getType(weightedAttribute) == CyAttributes.TYPE_INTEGER) {
-				Integer val = edgeAttributes.getIntegerAttribute(edge.getIdentifier(),
-				                                                 weightedAttribute);
-				eValue = (double) val.intValue();
-			} else {
-				Double val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(),
-				                                               weightedAttribute);
-				eValue = val.doubleValue();
-			}
-		}
-
-		if (eValue == 0) {
-			this.logWeight = logWeightCeiling;
-		} else {
-			this.logWeight = Math.min(-Math.log10(eValue), logWeightCeiling);
-		}
-
-		// System.out.println("Setting weight to "+eValue+" logWeight to "+logWeight);
-		this.weight = eValue;
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 	/**
-	 * Normalize the weights to fall between 0 and 1.
+	 * Set the log weight for this LayoutEdge.  This assumes that all of the weight
+	 * calculations are being handled externally.
 	 *
-	 * @param minWeight    The minimum weight value
-	 * @param maxWeight    The maximum weight value
-	 * @param useLogWeights If "true", set the weight to be the logWeight.  minWeight
-	 *                      and maxWeight values are already in log format.
+	 * @param logWeight the actual -log of the weight	
 	 */
-	public void normalizeWeight(double minWeight, double maxWeight, boolean useLogWeights) {
-		// Normalize the weights to fall between 0 and 1
-		if (useLogWeights) {
-			if (logWeight == 0)
-				weight = maxWeight + 1;
-			else
-				weight = logWeight;
-		}
-
-		// System.out.println("Normalize weight ("+weight+") to between ("+minWeight+" and "+maxWeight+")");
-		weight = (weight - minWeight) / (maxWeight - minWeight);
+	public void setLogWeight(double logWeight) {
+		this.logWeight = logWeight;
 	}
 
 	/**
@@ -237,16 +189,5 @@ public class LayoutEdge {
 
 		return "Edge " + edge.getIdentifier() + " connecting " + source + " and " + target
 		       + " with weight " + weight;
-	}
-
-	/**
-	 * Set the maximum log weight that we will consider.  This is a static and only needs to be
-	 * set once for all LayoutEdges.
-	 *
-	 * @param ceiling    the maximum log weight to consider.  Edges with weights above this
-	 *                value will be dropped.
-	 */
-	public static void setLogWeightCeiling(double ceiling) {
-		logWeightCeiling = ceiling;
 	}
 }

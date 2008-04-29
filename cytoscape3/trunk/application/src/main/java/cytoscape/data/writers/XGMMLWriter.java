@@ -370,7 +370,7 @@ public class XGMMLWriter {
 		writeElement("<dc:date>"+df.format(now)+"</dc:date>\n");
 		writeElement("<dc:title>"+network.getTitle()+"</dc:title>\n");
 		writeElement("<dc:source>http://www.cytoscape.org/</dc:source>\n");
-		writeElement("<dc:format>Xytoscape-XGMML</dc:format>\n");
+		writeElement("<dc:format>Cytoscape-XGMML</dc:format>\n");
 		depth--;
 		writeElement("</rdf:Description>\n");
 		depth--;
@@ -436,8 +436,7 @@ public class XGMMLWriter {
 		// Output the node attributes
 		for (int att = 0; att < nodeAttNames.length; att++) {
 			if (nodeAttributes.hasAttribute(node.getIdentifier(), nodeAttNames[att]))
-				if (!nodeAttNames[att].startsWith("vizmap:"))
-					writeAttribute(node.getIdentifier(), nodeAttributes, nodeAttNames[att]);
+				writeAttribute(node.getIdentifier(), nodeAttributes, nodeAttNames[att]);
 		}
 
 		if (groupList != null && groupList.size() > 0) {
@@ -644,8 +643,7 @@ public class XGMMLWriter {
 		// Write the edge attributes
 		for (int att = 0; att < edgeAttNames.length; att++) {
 			if (edgeAttributes.hasAttribute(curEdge.getIdentifier(), edgeAttNames[att]))
-				if (!edgeAttNames[att].startsWith("vizmap:"))
-					writeAttribute(curEdge.getIdentifier(), edgeAttributes, edgeAttNames[att]);
+				writeAttribute(curEdge.getIdentifier(), edgeAttributes, edgeAttNames[att]);
 		}
 
 		// Write the edge graphics

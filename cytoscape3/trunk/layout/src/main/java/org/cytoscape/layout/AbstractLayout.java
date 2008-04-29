@@ -38,10 +38,11 @@ package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
 
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CyAttributesFactory;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.ViewChangeEdit;
-import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
 import org.cytoscape.RootGraph;
@@ -51,20 +52,14 @@ import java.awt.Dimension;
 import java.awt.geom.Point2D;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JPanel;
 
-import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 
 import org.cytoscape.tunable.ModuleProperties;
 
@@ -73,10 +68,12 @@ import org.cytoscape.tunable.ModuleProperties;
  * written for Cytoscape.
  */
 abstract public class AbstractLayout implements CyLayoutAlgorithm {
+	// Graph Objects and Views
 	protected Set<NodeView> staticNodes;
 	protected GraphView networkView;
 	protected GraphPerspective network;
-	protected TaskMonitor taskMonitor; 
+
+	//
 	protected boolean selectedOnly = false;
 	protected String edgeAttribute = null;
 	protected String nodeAttribute = null;
@@ -86,12 +83,26 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	protected HashMap savedPropertyMap = null;  // TODO figure out if this is used in a child somewhere
 	private ViewChangeEdit undoableEdit;
 
+	// Monitor
+	protected TaskMonitor taskMonitor;
+
 	protected static TaskMonitor nullTaskMonitor = new TaskMonitor() {
-		public void setPercentCompleted(int percent) {}
-		public void setEstimatedTimeRemaining(long time) throws IllegalThreadStateException {}
-		public void setException(Throwable t, String userErrorMessage) {}
-  	        public void setException(Throwable t, String userErrorMessage, String recoveryTip) {}
-		public void setStatus(String message) throws IllegalThreadStateException, NullPointerException {}
+		public void setPercentCompleted(int percent) {
+		}
+
+		public void setEstimatedTimeRemaining(long time) throws IllegalThreadStateException{
+		}
+
+		public void setException(Throwable t, String userErrorMessage) {
+		}
+
+		public void setException(Throwable t, String userErrorMessage, String recoveryTip) {
+		}
+
+		public void setStatus(String message)
+			throws IllegalThreadStateException, NullPointerException {
+		}
+
 	};
 
 	// Should definitely be overridden!
@@ -229,31 +240,30 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * doLayout on specified network view.
 	 */
 	public void doLayout(GraphView nview) {
-		doLayout(nview,nullTaskMonitor);
+		doLayout(nview, nullTaskMonitor);
 	}
 
 	/**
 	 * doLayout on specified network view with specified monitor.
 	 */
 	public void doLayout(GraphView nview, TaskMonitor monitor) {
-
 		canceled = false;
 
 		networkView = nview;
 
 		// do some sanity checking
-		if (networkView == null || networkView == GraphViewFactory.getNullGraphView())
+		if ((networkView == null) || (networkView == GraphViewFactory.getNullGraphView()))
 			return;
 
 		this.network = networkView.getGraphPerspective();
 
-		if (network == null || network == RootGraphFactory.getRootGraph().getNullGraphPerspective()) 
+		if ((network == null) || (network == RootGraphFactory.getRootGraph().getNullGraphPerspective()))
 			return;
 
-		if (network.getNodeCount() <= 0) 
+		if (network.getNodeCount() <= 0)
 			return;
 
-		if ( monitor == null )
+		if (monitor == null)
 			monitor = nullTaskMonitor;
 
 		taskMonitor = monitor;
@@ -272,6 +282,15 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 
 		// post the edit 
 		undoableEdit.post();
+
+		// update the __layoutAlgorithm attribute
+		CyAttributes networkAttributes = CyAttributesFactory.getCyAttributes("network");
+		networkAttributes.setAttribute(network.getIdentifier(), "__layoutAlgorithm", getName());
+		networkAttributes.setUserVisible("__layoutAlgorithm", false);
+
+		this.network = null;
+		this.networkView = null;
+
 	}
 
 	/**

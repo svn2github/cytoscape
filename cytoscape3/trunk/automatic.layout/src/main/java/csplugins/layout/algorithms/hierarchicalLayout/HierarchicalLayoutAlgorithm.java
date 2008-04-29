@@ -816,16 +816,18 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 				Edge theEdge = dummy2Edge[cI[node.graphIndex]].get(new Integer(renumber[node.graphIndex]));
 				EdgeView ev = myEdges2EdgeViews[cI[node.graphIndex]].get(theEdge);
 
-				Point2D[] bends = ev.getBend().getDrawPoints();
-
-				for (int i = 0; i < bends.length; i++)
-					if (bends[i].getY() == node.yPos) {
-						Point2D p2d = new Point2D.Double();
-						p2d.setLocation(node.xPos, node.yPos);
-						ev.getBend().moveHandle(i, p2d);
-
-						break;
+				if (ev != null) {
+					Point2D[] bends = ev.getBend().getDrawPoints();
+					for (int i = 0; i < bends.length; i++) {
+						if (bends[i].getY() == node.yPos) {
+							Point2D p2d = new Point2D.Double();
+							p2d.setLocation(node.xPos, node.yPos);
+							ev.getBend().moveHandle(i, p2d);
+	
+							break;
+						}
 					}
+				}
 			}
 		}
 

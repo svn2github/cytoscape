@@ -325,6 +325,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		/**
 		 * Tuning values
 		 */
+		layoutProperties.add(TunableFactory.getTunable("algorithm_settings", "Algorithm settings",
+		                                               Tunable.GROUP, new Integer(7)));
 		if (supportWeights)
 			layoutProperties.add(TunableFactory.getTunable("iterations_pernode",
 			                                 "Number of iteratations for each node",
@@ -339,7 +341,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		layoutProperties.add(TunableFactory.getTunable("distance_strength", "Spring strength", Tunable.DOUBLE,
 		                                 new Double(15.0)));
 		layoutProperties.add(TunableFactory.getTunable("rest_length", "Spring rest length", Tunable.DOUBLE,
-		                                 new Double(15.0)));
+		                                 new Double(45.0)));
 		layoutProperties.add(TunableFactory.getTunable("disconnected_strength",
 		                                 "Strength of a 'disconnected' spring", Tunable.DOUBLE,
 		                                 new Double(0.05)));
@@ -412,8 +414,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	/**
 	 * Perform a layout
 	 */
-	public void layout(LayoutPartition partition) {
-		Iterator iter = null;
+	public void layoutPartion(LayoutPartition partition) {
 		Dimension initialLocation = null;
 		this.partition = partition;
 		// Initialize all of our values.  This will create
@@ -528,11 +529,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			// partialProfile.start();
 
 			// Calculate all node distances.  Keep track of the furthest.
-			Iterator nodeIter = partition.nodeIterator();
 			euclideanLoop = 0;
-
-			while (nodeIter.hasNext()) {
-				LayoutNode v = (LayoutNode) nodeIter.next();
+			for (LayoutNode v: partition.getNodeList()) {
 
 				if (canceled)
 					return;
@@ -584,10 +582,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		// Note that we reset our min/max values before we start this
 		// so we can get an accurate min/max for paritioning
 		partition.resetNodes();
-		iter = partition.nodeIterator();
-
-		while (iter.hasNext()) {
-			LayoutNode v = (LayoutNode) iter.next();
+		for (LayoutNode v: partition.getNodeList()) {
 			partition.moveNodeToLocation(v);
 		}
 
@@ -599,11 +594,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			Dimension finalLocation = partition.getAverageLocation();
 			xDelta = finalLocation.getWidth() - initialLocation.getWidth();
 			yDelta = finalLocation.getHeight() - initialLocation.getHeight();
-			iter = partition.nodeIterator();
-
-			while (iter.hasNext()) {
-				LayoutNode v = (LayoutNode) iter.next();
-
+			for (LayoutNode v: partition.getNodeList()) {
 				if (!v.isLocked()) {
 					v.decrement(xDelta, yDelta);
 					partition.moveNodeToLocation(v);
@@ -621,10 +612,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		int neighbor;
 		int toNodeDistance;
 		int neighborDistance;
-		Iterator nodeIter = partition.nodeIterator();
 
-		while (nodeIter.hasNext()) {
-			LayoutNode v = (LayoutNode) nodeIter.next();
+		for (LayoutNode v: partition.getNodeList()) {
 			fromNode = v.getIndex();
 
 			if (distances[fromNode] == null)
@@ -673,11 +662,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 					continue;
 				} // End if toNode has already had all of its distances calculated.
 
-				List neighborList = v.getNeighbors();
-				Iterator neighbors = neighborList.iterator();
-
-				while (neighbors.hasNext()) {
-					LayoutNode neighbor_v = (LayoutNode) neighbors.next();
+				List<LayoutNode> neighborList = v.getNeighbors();
+				for (LayoutNode neighbor_v: neighborList) {
 					neighbor = neighbor_v.getIndex();
 
 					// We've already done everything we can here.
@@ -708,10 +694,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		}
 
 		// Calculate rest lengths and strengths based on node distance data.
-		Iterator edgeIter = partition.edgeIterator();
-
-		while (edgeIter.hasNext()) {
-			LayoutEdge edge = (LayoutEdge) edgeIter.next();
+		for (LayoutEdge edge: partition.getEdgeList()) {
 			int node_i = edge.getSource().getIndex();
 			int node_j = edge.getTarget().getIndex();
 			double weight = edge.getWeight();

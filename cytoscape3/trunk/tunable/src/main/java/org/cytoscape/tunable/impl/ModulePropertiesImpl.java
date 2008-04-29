@@ -46,6 +46,7 @@ import java.util.Set;
 
 import java.awt.GridLayout;
 import javax.swing.JPanel;
+import javax.swing.BoxLayout;
 
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
@@ -66,8 +67,8 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 * Constructor.
 	 *
 	 * @param propertyPrefix String representing the prefix to be used
-	 *                       when pulling properties from the property
-	 *                       list.
+	 *			when pulling properties from the property
+	 *			list.
 	 */
 	public ModulePropertiesImpl(String propertyPrefix, String moduleType) {
 		this.moduleType = moduleType;
@@ -96,7 +97,7 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 *
 	 * @param name The name of the Tunable to retrieve.
 	 * @return Tunable associated with <tt>name</tt> or null if
-	 *         there is no Tunable with that name.
+	 *	 there is no Tunable with that name.
 	 */
 	public Tunable get(String name) {
 		if (tunablesMap.containsKey(name))
@@ -121,9 +122,9 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 * value is always returned as a String.
 	 *
 	 * @param name The name of the Tunable whose value you
-	 *             want to retrieve.
+	 *	     want to retrieve.
 	 * @return String value from the Tunable or null if
-	 *         there is no Tunable with that name.
+	 *	 there is no Tunable with that name.
 	 */
 	public String getValue(String name) {
 		if (tunablesMap.containsKey(name)) {
@@ -277,17 +278,30 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 * @return JPanel that contains all of the Tunable widgets
 	 */
 	public JPanel getTunablePanel() {
-		JPanel tunablesPanel = new JPanel(new GridLayout(0, 1));
+		JPanel tunablesPanel = new JPanel();
+		BoxLayout box = new BoxLayout(tunablesPanel, BoxLayout.Y_AXIS);
+		tunablesPanel.setLayout(box);
 
-		for (Iterator iter = tunablesList.iterator(); iter.hasNext();) {
-			Tunable tunable = (Tunable) iter.next();
-			JPanel p = tunable.getPanel();
+		addSubPanels(tunablesPanel, tunablesList.iterator(), new Integer(100000));
 
-			if (p != null)
-				tunablesPanel.add(p);
-		}
-
+		tunablesPanel.validate();
 		return tunablesPanel;
 	}
 
+	private void addSubPanels(JPanel panel, Iterator<Tunable>iter, Object count) {
+		int groupCount = ((Integer)count).intValue();
+		for (int n = 0; n < groupCount; n++) {
+			if (!iter.hasNext()) {
+				return;
+			}
+			// Get the next tunable
+			Tunable tunable = iter.next();
+			JPanel p = tunable.getPanel();
+			if (tunable.getType() == Tunable.GROUP) {
+				addSubPanels(p, iter, tunable.getValue());
+			}
+			if (p != null)
+				panel.add(p);
+		}
+	}
 }

@@ -73,7 +73,7 @@ public class CyAttributesWriterTest extends TestCase {
 		CyAttributesReader.loadAttributes(cyAttributes, reader);
 
 		Writer writer = new StringWriter();
-		CyAttributesWriter2 cw2 = new CyAttributesWriter2(cyAttributes, "TestNodeAttribute1", writer);
+		CyAttributesWriter cw2 = new CyAttributesWriter(cyAttributes, "TestNodeAttribute1", writer);
 		cw2.writeAttributes();
 		writer.close();
 
@@ -114,7 +114,7 @@ public class CyAttributesWriterTest extends TestCase {
 		cyAttributes.setListAttribute("ABC_123", "GO_molecular_function_level_4", list);
 
 		Writer writer = new StringWriter();
-		CyAttributesWriter2 cw2 = new CyAttributesWriter2(cyAttributes, "GO_molecular_function_level_4", writer);
+		CyAttributesWriter cw2 = new CyAttributesWriter(cyAttributes, "GO_molecular_function_level_4", writer);
 		cw2.writeAttributes();
 
 		String output = writer.toString();

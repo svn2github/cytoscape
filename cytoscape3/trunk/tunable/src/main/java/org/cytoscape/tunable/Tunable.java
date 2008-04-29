@@ -14,8 +14,14 @@ public interface Tunable {
 	final public static int NODEATTRIBUTE = 4;
 	final public static int EDGEATTRIBUTE = 5;
 	final public static int LIST = 6;
+	final public static int GROUP = 7;
+	final public static int BUTTON = 8;
+
+	// Flags
 	final public static int NOINPUT = 0x1;
 	final public static int NUMERICATTRIBUTE = 0x2;
+	final public static int MULTISELECT = 0x4;
+	final public static int USESLIDER = 0x8;
 
 	public void setFlag(int flag) ;
 	public void clearFlag(int flag) ;
@@ -28,6 +34,8 @@ public interface Tunable {
 	public Object getUpperBound() ;
 	public String toString() ;
 	public String getName() ;
+	public int getType() ;
+	public String getDescription() ;
 	public JPanel getPanel() ;
 	public void updateValue() ;
 }

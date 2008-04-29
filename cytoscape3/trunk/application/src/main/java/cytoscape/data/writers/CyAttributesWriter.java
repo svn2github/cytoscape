@@ -37,26 +37,28 @@ package cytoscape.data.writers;
 import org.cytoscape.attributes.CyAttributes;
 
 import org.cytoscape.attributes.MultiHashMap;
+import org.cytoscape.attributes.MultiHashMapDefinition;
 
 import java.io.IOException;
 import java.io.Writer;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * CyAttributeWriter extracted from AttributeSaverDialog.
  *
  */
-public class CyAttributesWriter2 {
+public class CyAttributesWriter {
 	/**
 	 *
 	 */
 	public static String newline = System.getProperty("line.separator");
 	private final CyAttributes cyAttributes;
 	private final String attributeName;
-	private final Writer fileWriter;
+	private Writer fileWriter;
 
 	/**
 	 * Creates a new CyAttributesWriter2 object.
@@ -65,7 +67,7 @@ public class CyAttributesWriter2 {
 	 * @param attributeName  DOCUMENT ME!
 	 * @param fileWriter  DOCUMENT ME!
 	 */
-	public CyAttributesWriter2(final CyAttributes attributes, final String attributeName,
+	public CyAttributesWriter(final CyAttributes attributes, final String attributeName,
 	                           final Writer fileWriter) {
 		this.cyAttributes = attributes;
 		this.attributeName = attributeName;
@@ -84,38 +86,68 @@ public class CyAttributesWriter2 {
 	 *
 	 */
 	public void writeAttributes() throws IOException {
+		final String className;
+		final byte dataType = cyAttributes.getMultiHashMapDefinition()
+		                                  .getAttributeValueType(attributeName);
+
+		if ((dataType == CyAttributes.TYPE_COMPLEX) || (dataType == CyAttributes.TYPE_SIMPLE_MAP)
+		    || (dataType == CyAttributes.TYPE_UNDEFINED))
+			throw new IOException("Unsupported Datatype.");
+
+		if (dataType == MultiHashMapDefinition.TYPE_BOOLEAN)
+			className = "java.lang.Boolean";
+		else if (dataType == MultiHashMapDefinition.TYPE_INTEGER)
+			className = "java.lang.Integer";
+		else if (dataType == MultiHashMapDefinition.TYPE_FLOATING_POINT)
+			className = "java.lang.Double";
+		else
+			className = "java.lang.String";
+
+		fileWriter.write(attributeName + " (class=" + className + ")" + newline);
+
 		final MultiHashMap attributeMap = cyAttributes.getMultiHashMap();
 
 		if (attributeMap != null) {
-			final Iterator keys = cyAttributes.getMultiHashMap().getObjectKeys(attributeName);
+			final Iterator<String> keys = cyAttributes.getMultiHashMap().getObjectKeys(attributeName);
+
+			String key;
+			Object value;
+			Iterator objIt;
+			StringBuilder result = new StringBuilder();
 
 			while (keys.hasNext()) {
-				final String key = (String) keys.next();
-				Object value = attributeMap.getAttributeValue(key, attributeName, null);
+				key = keys.next();
+
+				if (cyAttributes.getType(attributeName) == CyAttributes.TYPE_SIMPLE_LIST)
+					value = cyAttributes.getListAttribute(key, attributeName);
+				else
+					value = cyAttributes.getAttribute(key, attributeName);
+					
 
 				if (value != null) {
-					if (value instanceof Collection) {
-						String result = key + " = ";
-						Collection collection = (Collection) value;
+					if (value instanceof List) {
+						result.append(key + " = ");
 
-						if (collection.size() > 0) {
-							Iterator objIt = collection.iterator();
-							result += ("(" + objIt.next());
+						if (((Collection) value).size() > 0) {
+							objIt = ((Collection) value).iterator();
+							result.append("(" + objIt.next());
 
-							while (objIt.hasNext()) {
-								result += ("::" + objIt.next());
-							}
+							while (objIt.hasNext())
+								result.append("::" + objIt.next());
 
-							result += (")" + newline);
-							fileWriter.write(result);
+							result.append(")" + newline);
+							fileWriter.write(result.toString());
+							result = new StringBuilder();
 						}
-					} else {
+					} else
 						fileWriter.write(key + " = " + value + newline);
-					}
 				}
 			}
 
 			fileWriter.flush();
 		}
+
+		fileWriter.close();
+		fileWriter = null;
 	}
 }

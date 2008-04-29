@@ -378,7 +378,7 @@ public class CytoscapeSessionWriter {
 		GraphView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
-		Writer writer = new OutputStreamWriter(zos);
+		Writer writer = new OutputStreamWriter(zos, "UTF-8");
 
 		// Write the XGMML file *without* our graphics attributes
 		// We'll let the Vizmapper handle those

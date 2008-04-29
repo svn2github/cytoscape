@@ -54,6 +54,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import java.util.Stack;
 import java.util.HashMap;
 import java.util.Map;
@@ -608,6 +609,25 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	public void characters(char[] ch, int start, int length) {
 			currentCData = new String(ch, start, length);
+	}
+
+	/**
+	 * fatalError -- handle a fatal parsing error
+	 *
+	 * @param e the exception that generated the error
+	 */
+	public void fatalError(SAXParseException e) throws SAXException {
+		String err = "Fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'";
+		throw new SAXException(err);
+	}
+
+	/**
+	 * error -- handle a parsing error
+	 *
+	 * @param e the exception that generated the error
+	 */
+	public void error(SAXParseException e) {
+		System.err.println("Parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'.  Attempting to recover");
 	}
    
 	/********************************************************************
@@ -1414,7 +1434,7 @@ class XGMMLParser extends DefaultHandler {
 	private Edge createEdge (Node source, Node target, 
                              String interaction, String label) throws SAXException {
 		// OK create it
-		Edge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, false);
+		Edge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
 		edgeList.add(edge);
 		return edge;
 	}

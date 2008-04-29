@@ -364,6 +364,11 @@ public class ExpressionData implements Serializable {
 		String[] lines = rawText.split(System.getProperty("line.separator"));
 
 		int lineCount = 0;
+
+		// allow file to start with an arbitrary number
+		// of comment lines starting with '#' symbol
+		while (lines[lineCount].startsWith("#")) ++lineCount;
+
 		String headerLine = lines[lineCount++];
 
 		if ((headerLine == null) || (headerLine.length() == 0))

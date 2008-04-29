@@ -138,8 +138,7 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 		layoutProperties.add(TunableFactory.getTunable("spacing", "Circle size", Tunable.DOUBLE, new Double(100.0)));
 		layoutProperties.add(TunableFactory.getTunable("attribute", "The attribute to use for the layout",
 		                                 Tunable.NODEATTRIBUTE, "(none)",
-		                                 (Object) getInitialAttributeList(), (Object) null, 0,false,
-																		 Cytoscape.getNodeAttributes()));
+		                                 (Object) getInitialAttributeList(), (Object) null, 0));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties(CytoscapeInit.getProperties());

@@ -203,6 +203,9 @@ public class OBOFlatFileReader implements OntologyReader {
 		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
 
+		String key;
+		String val;
+		int colonInx;
 		while ((line = bufRd.readLine()) != null) {
 			// Read header
 			if (line.startsWith(TERM_TAG)) {
@@ -210,9 +213,10 @@ public class OBOFlatFileReader implements OntologyReader {
 
 				break;
 			} else if (line.length() != 0) {
-				final int colonInx = line.indexOf(':');
-				final String key = line.substring(0, colonInx).trim();
-				final String val = line.substring(colonInx + 1).trim();
+				colonInx = line.indexOf(':');
+				if (colonInx == -1) continue;
+				key = line.substring(0, colonInx).trim();
+				val = line.substring(colonInx + 1).trim();
 				header.put(key, val);
 			}
 		}
@@ -248,15 +252,18 @@ public class OBOFlatFileReader implements OntologyReader {
 		String id = "";
 		String line = null;
 
+		String key;
+		String val;
+		int colonInx;
 		while (true) {
 			line = rd.readLine().trim();
 
 			if (line.length() == 0)
 				break;
 
-			final int colonInx = line.indexOf(':');
-			final String key = line.substring(0, colonInx).trim();
-			final String val = line.substring(colonInx + 1).trim();
+			colonInx = line.indexOf(':');
+			key = line.substring(0, colonInx).trim();
+			val = line.substring(colonInx + 1).trim();
 			Node source = null;
 
 			if (key.equals(ID.toString())) {

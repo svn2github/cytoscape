@@ -33,9 +33,10 @@
 package csplugins.layout.algorithms.bioLayout;
 
 import csplugins.layout.LayoutNode;
+import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.Profile;
-
+import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 
 import org.cytoscape.attributes.CyAttributes;
 
@@ -45,8 +46,6 @@ import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.view.*;
 
 import java.awt.GridLayout;
 
@@ -58,17 +57,13 @@ import java.util.Properties;
 
 import javax.swing.JPanel;
 
-import org.cytoscape.*;
-import org.cytoscape.data.*;
-
-
 /**
  * Superclass for the two bioLayout algorithms (KK and FR).
  *
  * @author <a href="mailto:scooter@cgl.ucsf.edu">Scooter Morris</a>
  * @version 0.9
  */
-public abstract class BioLayoutAlgorithm extends AbstractLayout {
+public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	/**
 	 * Properties
 	 */
@@ -78,11 +73,10 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	private static final int MAXWEIGHT = 3;
 	private static final int SELECTEDONLY = 4;
 	private static final int LAYOUTATTRIBUTE = 5;
-	ModuleProperties layoutProperties;
 
 	/**
 	 * A small value used to avoid division by zero
-	   */
+   */
 	protected double EPSILON = 0.0000001D;
 
 	/**
@@ -91,23 +85,15 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
 
 	/**
+ 	 * Our list of Tunables
+ 	 */
+	protected ModuleProperties layoutProperties;
+
+	/**
 	 * Enables/disables debugging messages
 	 */
 	private final static boolean DEBUG = false;
 	protected static boolean debug = DEBUG; // so we can overload it with a property
-
-	/**
-	 * Minimum and maximum weights.  This is used to
-	 * provide a bounds on the weights.
-	 */
-	protected double minWeightCutoff = 0;
-	protected double maxWeightCutoff = Double.MAX_VALUE;
-
-	/**
-	 * The computed width and height of the resulting layout
-	 */
-	protected double width = 0;
-	protected double height = 0;
 
 	/**
 	 * Whether or not to initialize by randomizing all points
@@ -120,48 +106,38 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	protected boolean supportWeights = true;
 
 	/**
-	 * Whether or not to partition the graph before layout
-	 */
-	protected boolean partitionGraph = true;
-
-	/**
-	 * The list of partitions in this graph
-	 */
-	protected List<LayoutPartition> partitionList;
-
-	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 */
 	public BioLayoutAlgorithm() {
 		super();
+
+		if (edgeWeighter == null)
+			edgeWeighter = new EdgeWeighter();
+
 		layoutProperties = TunableFactory.getModuleProperties(getName(),"layout");
 	}
 
-	// We do support selected only
 	/**
-	 *  DOCUMENT ME!
+	 * Tells Cytoscape whether we support selected nodes only or not
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  true - we do support selected only
 	 */
-	public boolean supportsSelectedOnly() {
-		return true;
-	}
+	public boolean supportsSelectedOnly() { return true; }
 
-	// We don't support node attribute-based layouts
 	/**
-	 *  DOCUMENT ME!
+	 * Tells Cytoscape whether we support node attribute based layouts
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  null, which indicates that we don't
 	 */
 	public byte[] supportsNodeAttributes() {
 		return null;
 	}
 
-	// We do support edge attribute-based layouts
 	/**
-	 *  DOCUMENT ME!
+	 * Tells Cytoscape whether we support edge attribute based layouts
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  null if supportWeights is false, otherwise return the attribute
+	 *          types that can be used for weights.
 	 */
 	public byte[] supportsEdgeAttributes() {
 		if (!supportWeights)
@@ -170,19 +146,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
 
 		return attrs;
-	}
-
-	/**
-	 * Sets the attribute to use for the weights
-	 *
-	 * @param value the name of the attribute
-	 */
-	public void setLayoutAttribute(String value) {
-		if ((value == null) || value.equals(UNWEIGHTEDATTRIBUTE)) {
-			edgeAttribute = null;
-		} else {
-			edgeAttribute = value;
-		}
 	}
 
 	/**
@@ -239,25 +202,6 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	}
 
 	/**
-	 * Sets the partition flag
-	 *
-	 * @param flag boolean value that turns initial randomization on or off
-	 */
-	public void setPartition(boolean flag) {
-		partitionGraph = flag;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 */
-	public void setPartition(String value) {
-		Boolean val = new Boolean(value);
-		partitionGraph = val.booleanValue();
-	}
-
-	/**
 	 * Sets the randomize flag
 	 *
 	 * @param flag boolean value that turns initial randomization on or off
@@ -267,9 +211,9 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Sets the randomize flag
 	 *
-	 * @param value DOCUMENT ME!
+	 * @param flag boolean string that turns initial randomization on or off
 	 */
 	public void setRandomize(String value) {
 		Boolean val = new Boolean(value);
@@ -277,65 +221,26 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	}
 
 	/**
-	 * Sets the minimum weight cutoff
-	 *
-	 * @param value minimum weight cutoff
-	 */
-	public void setMinWeight(double value) {
-		this.minWeightCutoff = value;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 */
-	public void setMinWeight(String value) {
-		Double val = new Double(value);
-		this.minWeightCutoff = val.doubleValue();
-	}
-
-	/**
-	 * Sets the maximum weight cutoff
-	 *
-	 * @param value maximum weight cutoff
-	 */
-	public void setMaxWeight(double value) {
-		this.maxWeightCutoff = value;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param value DOCUMENT ME!
-	 */
-	public void setMaxWeight(String value) {
-		Double val = new Double(value);
-		this.maxWeightCutoff = val.doubleValue();
-	}
-
-	/**
 	 * Reads all of our properties from the cytoscape properties map and sets
 	 * the values as appropriates.
 	 */
 	protected void initializeProperties() {
+
+		layoutProperties.add(TunableFactory.getTunable("standard", "Standard settings", Tunable.GROUP,
+		                                               new Integer(3)));
+/*
 		layoutProperties.add(TunableFactory.getTunable("debug", "Enable debugging", Tunable.BOOLEAN,
 		                                 new Boolean(false), Tunable.NOINPUT));
+*/
 		layoutProperties.add(TunableFactory.getTunable("partition", "Partition graph before layout",
 		                                 Tunable.BOOLEAN, new Boolean(true)));
 		layoutProperties.add(TunableFactory.getTunable("randomize", "Randomize graph before layout",
 		                                 Tunable.BOOLEAN, new Boolean(true)));
-		layoutProperties.add(TunableFactory.getTunable("min_weight", "The minimum edge weight to consider",
-		                                 Tunable.DOUBLE, new Double(0)));
-		layoutProperties.add(TunableFactory.getTunable("max_weight", "The maximum edge weight to consider",
-		                                 Tunable.DOUBLE, new Double(Double.MAX_VALUE)));
 		layoutProperties.add(TunableFactory.getTunable("selected_only", "Only layout selected nodes",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
-		layoutProperties.add(TunableFactory.getTunable("edge_attribute",
-		                                 "The edge attribute that contains the weights",
-		                                 Tunable.EDGEATTRIBUTE, "weight",
-		                                 (Object) getInitialAttributeList(), (Object) null,
-		                                 Tunable.NUMERICATTRIBUTE, false, Cytoscape.getEdgeAttributes()));
+		if (supportWeights) {
+			edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
+		}
 	}
 
 	/**
@@ -353,191 +258,53 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Update the settings the user has requested
 	 */
 	public void updateSettings() {
 		updateSettings(false);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Update the settings the user has requested
 	 *
-	 * @param force DOCUMENT ME!
+	 * @param force if true, always read the settings
 	 */
 	public void updateSettings(boolean force) {
 		layoutProperties.updateValues();
 
 		Tunable t = layoutProperties.get("debug");
-
 		if ((t != null) && (t.valueChanged() || force))
 			setDebug(t.getValue().toString());
 
 		t = layoutProperties.get("partition");
-
 		if ((t != null) && (t.valueChanged() || force))
 			setPartition(t.getValue().toString());
 
 		t = layoutProperties.get("randomize");
-
 		if ((t != null) && (t.valueChanged() || force))
 			setRandomize(t.getValue().toString());
 
-		t = layoutProperties.get("min_weight");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setMinWeight(t.getValue().toString());
-
-		t = layoutProperties.get("max_weight");
-
-		if ((t != null) && (t.valueChanged() || force))
-			setMaxWeight(t.getValue().toString());
-
 		t = layoutProperties.get("selected_only");
-
 		if ((t != null) && (t.valueChanged() || force))
 			setSelectedOnly(t.getValue().toString());
 
-		t = layoutProperties.get("edge_attribute");
-
-		if ((t != null) && (t.valueChanged() || force)) {
-			setLayoutAttribute(t.getValue().toString());
-		}
+		if (supportWeights)
+			edgeWeighter.updateSettings(layoutProperties, force);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * Revert to the default settings
 	 */
 	public void revertSettings() {
 		layoutProperties.revertProperties();
 	}
 
 	/**
-	 * Main entry point for AbstractLayout classes
-	 */
-	public void construct() {
-		taskMonitor.setStatus("Initializing");
-		initialize(); // Calls initialize_local
-
-		if (partitionList == null) {
-			System.out.println("Nothing to layout!");
-
-			return;
-		} else {
-			// Set up offsets -- we start with the overall min and max
-			double xStart = partitionList.get(0).getMinX();
-			double yStart = partitionList.get(0).getMinY();
-			Iterator partIter = partitionList.iterator();
-
-			while (partIter.hasNext()) {
-				LayoutPartition part = (LayoutPartition) partIter.next();
-				xStart = Math.min(xStart, part.getMinX());
-				yStart = Math.min(yStart, part.getMinY());
-			}
-
-			double next_x_start = xStart;
-			double next_y_start = yStart;
-			double current_max_y = 0;
-			double incr = 50;
-
-			double max_dimensions = Math.sqrt((double) network.getNodeCount());
-			// give each node room
-			max_dimensions *= incr;
-			max_dimensions += xStart;
-
-			// System.out.println("Laying out with "+partitionList.size()+" partitions");
-			int partCount = 1;
-
-			// For each partition, layout the graph
-			partIter = partitionList.iterator();
-
-			while (partIter.hasNext()) {
-				LayoutPartition partition = (LayoutPartition) partIter.next();
-
-				if (partition.nodeCount() > 1) {
-					layout(partition);
-
-					// Offset if we have more than one partition
-					if (partitionList.size() > 1)
-						partition.offset(next_x_start, next_y_start);
-				} else {
-					// System.out.println(" done");
-
-					// NodeList is either empty or contains a single node
-					if (partition.nodeCount() == 0)
-						continue;
-
-					// Reset our bounds
-					partition.resetNodes();
-
-					// Single node -- get it
-					LayoutNode node = (LayoutNode) partition.getNodeList().get(0);
-					node.setX(next_x_start);
-					node.setY(next_y_start);
-					partition.moveNodeToLocation(node);
-				}
-
-				double last_max_x = partition.getMaxX();
-				double last_max_y = partition.getMaxY();
-
-				if (last_max_y > current_max_y) {
-					current_max_y = last_max_y;
-				}
-
-				if (last_max_x > max_dimensions) {
-					max_dimensions = last_max_x;
-					next_x_start = xStart;
-					next_y_start = current_max_y;
-					next_y_start += (incr * 2);
-				} else {
-					next_x_start = last_max_x;
-					next_x_start += (incr * 2);
-				}
-
-				partCount++;
-			}
-		}
-	}
-
-	/**
 	 * Main function that must be implemented by the child class.
 	 */
-	public abstract void layout(LayoutPartition partition);
+	public abstract void layoutPartion(LayoutPartition partition);
 
-	/**
-	 * Call all of the initializtion code.  Called from
-	 * AbstractLayout.initialize().
-	 */
 	protected void initialize_local() {
-		LayoutPartition.setWeightCutoffs(minWeightCutoff, maxWeightCutoff);
-
-		// Depending on whether we are partitioned or not,
-		// we use different initialization.  Note that if the user only wants
-		// to lay out selected nodes, partitioning becomes a very bad idea!
-		if (!partitionGraph || selectedOnly || (staticNodes != null && staticNodes.size() > 0)) {
-			// We still use the partition abstraction, even if we're
-			// not partitioning.  This makes the code further down
-			// much cleaner
-			LayoutPartition partition = null;
-			if (selectedOnly || !partitionGraph) {
-				partition = new LayoutPartition(network, networkView, selectedOnly,
-			                                  edgeAttribute);
-			} else {
-      	// Someone has programmatically locked a set of nodes -- construct
-      	// the list of unlocked nodes
-      	List<Node> unlockedNodes = new ArrayList();
-      	for (Node node: (List<Node>)network.nodesList()) {
-      		if (!isLocked(networkView.getNodeView(node.getRootGraphIndex()))) {
-      			unlockedNodes.add(node);
-      		}
-      	}
-      	partition = new LayoutPartition(network, networkView, unlockedNodes, null);
-			}
-			partitionList = new ArrayList<LayoutPartition>(1);
-			partitionList.add(partition);
-		} else {
-			partitionList = LayoutPartition.partition(network, networkView, selectedOnly,
-			                                          edgeAttribute);
-		}
 	}
 
 	/**
@@ -560,12 +327,5 @@ public abstract class BioLayoutAlgorithm extends AbstractLayout {
 		if (debug) {
 			System.err.print(message);
 		}
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void setCancel() {
-		canceled = true;
 	}
 }

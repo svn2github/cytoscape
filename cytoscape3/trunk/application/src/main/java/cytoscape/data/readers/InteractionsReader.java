@@ -45,8 +45,9 @@ package cytoscape.data.readers;
 
 
 import org.cytoscape.Edge;
-import cytoscape.Cytoscape;
+import org.cytoscape.GraphPerspective;
 
+import cytoscape.Cytoscape;
 import cytoscape.data.Interaction;
 
 import cytoscape.task.TaskMonitor;
@@ -213,12 +214,6 @@ public class InteractionsReader extends AbstractGraphReader {
 	 * @return  DOCUMENT ME!
 	 */
 	public Interaction[] getAllInteractions() {
-		//		Interaction[] result = new Interaction[allInteractions.size()];
-		//
-		//		for (int i = 0; i < allInteractions.size(); i++) {
-		//			Interaction inter = (Interaction) allInteractions.elementAt(i);
-		//			result[i] = inter;
-		//		}
 		return allInteractions.toArray(new Interaction[0]);
 	}
 
@@ -345,5 +340,16 @@ public class InteractionsReader extends AbstractGraphReader {
 			ret[i++] = I.intValue();
 			
 		return ret;
+	}
+
+	public void doPostProcessing(GraphPerspective net) {
+		// Cleanup unnecessary references.
+		edges.clear();
+		node_indices.clear();
+		edges = null;
+		node_indices = null;
+	
+		allInteractions.clear();
+		allInteractions = null;
 	}
 } // InteractionsReader

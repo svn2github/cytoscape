@@ -98,20 +98,16 @@ public class OntologyFactory {
 	 */
 	public GeneOntology createGeneOntology(URL dataSource, String name, String description)
 	    throws IOException, URISyntaxException {
+
 		OBOFlatFileReader reader = new OBOFlatFileReader(dataSource, name);
 		reader.readOntology();
 
-		GeneOntology go = new GeneOntology(name, "GO", description, reader.getDag());
+		final GeneOntology go = new GeneOntology(name, "GO", description, reader.getDag());
 		Map header = reader.getHeader();
 
 		mdp = new MetadataParser(reader.getDag());
 		mdp.setMetadata(MetadataEntries.DATE, header.get(DATE.toString()).toString());
-
+		reader = null;
 		return go;
 	}
-
-	// public KEGGOntology createKEGGOntology(URL dataSource, String name) {
-	// KEGGOntology kegg = null;
-	// return kegg;
-	// }
 }

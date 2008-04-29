@@ -36,25 +36,17 @@
 */
 package org.cytoscape.layout.algorithms;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-
-import org.cytoscape.layout.AbstractLayout;
-
-import cytoscape.task.Task;
-
-import org.cytoscape.view.GraphView;
-
 import org.cytoscape.*;
 
+import org.cytoscape.Edge;
+import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
 import java.awt.Dimension;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -138,6 +130,8 @@ public class GridNodeLayout extends AbstractLayout {
 		double initialY = 0.0d;
 		int columns;
 
+		NodeView nView = null;
+
 		// Selected only?
 		if (selectedOnly) {
 			// Yes, our size and starting points need to be different
@@ -146,10 +140,10 @@ public class GridNodeLayout extends AbstractLayout {
 
 			// Calculate our starting point as the geographical center of the
 			// selected nodes.
-			Iterator nodeViews = networkView.getNodeViewsIterator();
+			Iterator<NodeView>nodeViews = networkView.getNodeViewsIterator();
 
 			while (nodeViews.hasNext()) {
-				NodeView nView = (NodeView) nodeViews.next();
+				nView = (NodeView) nodeViews.next();
 
 				if (!isLocked(nView)) {
 					initialX += (nView.getXPosition() / nodeCount);
@@ -167,11 +161,18 @@ public class GridNodeLayout extends AbstractLayout {
 			columns = (int) Math.sqrt(networkView.nodeCount());
 		}
 
-		Iterator nodeViews = networkView.getNodeViewsIterator();
+		Iterator<NodeView> nodeViews = networkView.getNodeViewsIterator();
 		int count = 0;
 
+		List<Edge> edgeList;
+		EdgeView ev;
 		while (nodeViews.hasNext()) {
-			NodeView nView = (NodeView) nodeViews.next();
+			nView = (NodeView) nodeViews.next();
+			edgeList = network.getAdjacentEdgesList(nView.getNode(),true,true,true);
+			for (Edge edge: edgeList) { 
+				ev = networkView.getEdgeView(edge);
+				ev.clearBends(); 
+			}
 
 			if (isLocked(nView)) {
 				continue;

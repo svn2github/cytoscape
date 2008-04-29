@@ -360,8 +360,7 @@ public class GMLWriter {
 		if (view != Cytoscape.getNullNetworkView()) {
 			if (graphicsPair == null) {
 				graphicsPair = new KeyValue(GMLReader.GRAPHICS, new Vector());
-
-				// will eventually make a new graphics pair here
+				oldList.add(graphicsPair);
 			}
 
 			writeGraphEdgeGraphics(network, view.getEdgeView(edge), (List<KeyValue>) graphicsPair.value);
