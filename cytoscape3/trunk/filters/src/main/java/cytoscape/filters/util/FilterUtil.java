@@ -8,19 +8,36 @@ import org.cytoscape.Edge;
 import org.cytoscape.Node;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Cursor;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.quickfind.util.TaskMonitorBase;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.filters.FilterPlugin;
 import csplugins.widgets.autocomplete.index.GenericIndex;
+import cytoscape.init.CyInitParams;
 
 public class FilterUtil {
 		
 	// do selection on given network
 	public static void doSelection(CompositeFilter pFilter) {
 		//System.out.println("Entering FilterUtil.doSelection() ...");
-		
+		CyInitParams init = CytoscapeInit.getCyInitParams();
+
+		if (init == null)
+			return;
+
+		if (pFilter.getNetwork() == null)
+			return;
+
+		// Set wait cursor
+		if ((init.getMode() == CyInitParams.GUI)
+				|| (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+			// set the wait cursor
+			Cytoscape.getDesktop().setCursor(
+					Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));                
+		}
+
 		pFilter.apply();
 		
 		GraphPerspective network = pFilter.getNetwork();
@@ -63,7 +80,15 @@ public class FilterUtil {
 			}
 			network.setSelectedEdgeState(passedEdges, true);
 		}
-		Cytoscape.getCurrentNetworkView().updateView();		
+		Cytoscape.getCurrentNetworkView().updateView();
+		
+		//Restore cursor
+		if ((init.getMode() == CyInitParams.GUI)
+				|| (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+			// set the wait cursor
+			Cytoscape.getDesktop().setCursor(
+					Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));             
+		}
 	}
 	
 	
