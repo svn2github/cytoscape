@@ -13,6 +13,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.DefaultFontMapper;
 
 /**
  * PDF exporter by the iText library.
@@ -20,8 +21,12 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class PDFExporter implements Exporter
 {
+	private boolean exportTextAsFont = true;
+
 	public void export(GraphView view, FileOutputStream stream) throws IOException
 	{
+		view.setPrintingTextAsShape(!exportTextAsFont);
+		
 		Rectangle pageSize = PageSize.LETTER;
 		Document document = new Document(pageSize);
 		try
@@ -29,7 +34,12 @@ public class PDFExporter implements Exporter
 			PdfWriter writer = PdfWriter.getInstance(document, stream);
 			document.open();
 			PdfContentByte cb = writer.getDirectContent();
-			Graphics2D g = cb.createGraphicsShapes((int) pageSize.getWidth(), (int) pageSize.getHeight());
+			Graphics2D g = null;
+			if ( exportTextAsFont ) {
+				g = cb.createGraphics(pageSize.getWidth(), pageSize.getHeight(), new DefaultFontMapper());
+			} else {
+				g = cb.createGraphicsShapes(pageSize.getWidth(), pageSize.getHeight());
+			}
 			double imageScale = Math.min(pageSize.getWidth()  / ((double) view.getComponent().getWidth()),
 			                             pageSize.getHeight() / ((double) view.getComponent().getHeight()));
 			g.scale(imageScale, imageScale);
@@ -42,5 +52,8 @@ public class PDFExporter implements Exporter
 		}
 
 		document.close();
+	}
+	public void setExportTextAsFont(boolean pExportTextAsFont) {
+		exportTextAsFont = pExportTextAsFont;
 	}
 }

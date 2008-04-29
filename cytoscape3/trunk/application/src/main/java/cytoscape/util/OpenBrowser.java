@@ -36,9 +36,9 @@
 */
 
 //-------------------------------------------------------------------------
-// $Revision: 9565 $
-// $Date: 2007-02-13 11:36:50 -0800 (Tue, 13 Feb 2007) $
-// $Author: mes $
+// $Revision: 13206 $
+// $Date: 2008-02-26 16:37:29 -0800 (Tue, 26 Feb 2008) $
+// $Author: kono $
 //-------------------------------------------------------------------------
 package cytoscape.util;
 
@@ -54,9 +54,9 @@ import java.util.Properties;
  */
 public abstract class OpenBrowser {
 	static String UNIX_PROTOCOL = "file:";
-	static String UNIX_PATH = "gnome-moz-remote";
+//	static String UNIX_PATH = "gnome-moz-remote";
 
-	//static String UNIX_PATH = "firefox";
+	static String UNIX_PATH = "htmlview";
 	static String UNIX_FLAG = "-remote openURL";
 
 	//static String WINDOWS_PATH = "cmd.exe /c start";

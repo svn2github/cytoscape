@@ -158,10 +158,10 @@ public class URLUtil {
 			TaskMonitor taskMonitor) throws IOException {
 		URL url = new URL(urlString);
 		InputStream is = null;
-		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
+//		Proxy CytoProxyHandler = ProxyHandler.getProxyServer();
 		int maxCount = 0; // -1 if unknown
 		int progressCount = 0;
-		if (CytoProxyHandler == null) {
+//		if (CytoProxyHandler == null) {
 			URLConnection conn = getURLConnection(url);
 			//URLConnection conn = url.openConnection();
 			// Ensure we are reading the real content from url,
@@ -178,7 +178,7 @@ public class URLUtil {
 //
 //			maxCount = conn.getContentLength();
 //			is = conn.getInputStream();
-		}
+//		}
 		FileOutputStream os = new FileOutputStream(downloadFile);
 		double percent = 0.0d;
 		byte[] buffer = new byte[1];
