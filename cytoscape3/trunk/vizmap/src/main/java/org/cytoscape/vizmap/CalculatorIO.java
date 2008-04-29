@@ -86,6 +86,7 @@ import org.cytoscape.vizmap.calculators.CalculatorFactory;
  * CalculatorCatalog.
  */
 public class CalculatorIO {
+
 	private static final String nodeColorBaseKey = "nodeColorCalculator";
 	private static final String nodeSizeBaseKey = "nodeSizeCalculator";
 	private static final String edgeArrowBaseKey = "edgeArrowCalculator";
@@ -104,6 +105,16 @@ public class CalculatorIO {
 	private static final String edgeSrcArrowDefaultLabel = "defaultEdgeSourceArrow"; 
 	private static final String edgeTgtArrowLabel = "edgeTargetArrowCalculator";
 	private static final String edgeTgtArrowDefaultLabel = "defaultEdgeTargetArrow";
+
+    private static final List<String> OLD_CALC_KEYS;
+
+    static {
+        OLD_CALC_KEYS = new ArrayList<String>();
+        OLD_CALC_KEYS.add("EDGELINETYPE");
+        OLD_CALC_KEYS.add("NODELINETYPE");
+        OLD_CALC_KEYS.add(edgeSrcArrowDefaultLabel.toUpperCase() + "=");
+        OLD_CALC_KEYS.add(edgeTgtArrowDefaultLabel.toUpperCase() + "=");
+    }
 
 	/**
 	 * Writes the contents of a CalculatorCatalog to the specified file as a
@@ -165,9 +176,20 @@ public class CalculatorIO {
 			while (oneLine != null) {
 				if (oneLine.startsWith("#"))
 					headerLines.add(oneLine);
-				else if ((oneLine.toUpperCase().contains("EDGELINETYPE") == false)
-				         && (oneLine.toUpperCase().contains("NODELINETYPE") == false))
-					lines.add(oneLine);
+				else {
+                    boolean test = true;
+                    for (String key : OLD_CALC_KEYS) {
+                        if (oneLine.toUpperCase().contains(key) == false)
+                            continue;                        
+						else {
+                            test = false;                            
+							break;
+                        }                    
+					}
+
+                    if (test)
+                        lines.add(oneLine);
+                }
 
 				oneLine = reader.readLine();
 			}

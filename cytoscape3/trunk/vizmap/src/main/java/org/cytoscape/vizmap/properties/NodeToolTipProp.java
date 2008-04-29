@@ -109,6 +109,13 @@ public class NodeToolTipProp extends AbstractVisualProperty {
 			nv.setToolTip((String) o);
 			return;
 		}
+
+		// Setting the tooltip to null is preferred because otherwise a small icon
+		// indicating the empty tooltip appears.
+		if (((String)o).equals("")) {
+			nv.setToolTip(null);
+			return;
+		}
 		
 		buf = new StringBuilder();
 		buf.append("<html><body bgcolor=\"white\"><Div Align=\"center\"><Font Size=\"4\">");
