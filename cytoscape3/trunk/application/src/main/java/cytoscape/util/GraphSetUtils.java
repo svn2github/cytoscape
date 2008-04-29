@@ -188,8 +188,7 @@ public class GraphSetUtils {
 			GraphView newView = Cytoscape.getNetworkView( newNetwork.getIdentifier() );
 			if ( newView != null && newView != Cytoscape.getNullNetworkView() && firstVS != null ) {
 				Cytoscape.getVisualMappingManager().setVisualStyleForView(newView, firstVS);
-				//newView.redrawGraph(true,true);
-				newView.updateView(); //equivalent to redrawGraph??
+				Cytoscape.redrawGraph(newView);
 			}
 		}
 
