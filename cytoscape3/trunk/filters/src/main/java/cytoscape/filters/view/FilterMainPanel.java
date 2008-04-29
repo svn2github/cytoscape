@@ -92,13 +92,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private CytoPanelImp cytoPanelWest = (CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST);
 
-	
-	//private SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
-	//public SwingPropertyChangeSupport getSwingPropertyChangeSupport() {
-	//	return pcs;
-	//}
-
-	
 	public FilterMainPanel(Vector<CompositeFilter> pAllFilterVect) {
 		allFilterVect = pAllFilterVect;
 		//Initialize the option menu with menuItems
@@ -156,7 +149,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		this.cmbSelectFilter.repaint();
 	}
 	
-	public void refreshAttributeCMB() {
+	private void refreshAttributeCMB() {
 		updateCMBAttributes();
 		cmbAttributes.repaint();
 	}
@@ -354,32 +347,9 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			return;
 		}
 
-		if (selectedFilter.getAdvancedSetting().isNodeChecked() 
-				&& !selectedFilter.getAdvancedSetting().isEdgeChecked())
-		{
-			//System.out.println("Only Node is checked");
-			attributeList.addAll(getCyAttributesList("node"));
-			//attributeList = getCyAttributesList("node");
-		}
-		else if (selectedFilter.getAdvancedSetting().isEdgeChecked()
-				&& !selectedFilter.getAdvancedSetting().isNodeChecked())
-		{
-			//System.out.println("Only Edge is checked");
-			attributeList.addAll(getCyAttributesList("edge"));
-			//attributeList = getCyAttributesList("edge");
-		}
-		else if (selectedFilter.getAdvancedSetting().isNodeChecked()
-				&& selectedFilter.getAdvancedSetting().isEdgeChecked())
-		{
-			//System.out.println("Both Node and edge are checked");
-			attributeList.addAll(getCyAttributesList("node"));
-			//attributeList = getCyAttributesList("node");
-			attributeList.addAll(getCyAttributesList("edge"));
-		}
-		//else {
-		//	System.out.println("Neither Node nore edge is checked");
-		//}
-
+        attributeList.addAll(getCyAttributesList("node"));
+        attributeList.addAll(getCyAttributesList("edge"));
+        
 		attributeList.add("-- Filters --");
 		
 		if (allFilterVect != null) {
@@ -628,7 +598,8 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				refreshAttributeCMB();
 			}
 			else if (cmb == cmbAttributes) {
-				String selectItem = (String) cmbAttributes.getSelectedItem();
+                String selectItem = (String) cmbAttributes.getSelectedItem().toString();
+
 				// Disable the Add button if "--Attribute--" or "-- Filter ---" is selected
 				if (selectItem.equalsIgnoreCase("-- Filters --") ||selectItem.equalsIgnoreCase("-- Attributes --")) {
 					btnAddFilterWidget.setEnabled(false);
@@ -656,11 +627,12 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			JButton _btn = (JButton) _actionObject;
 
 			if (_btn == btnApplyFilter) {
-				//ApplyButton is clicked!
-				System.out.println("\nApplyButton is clicked!");
+				//System.out.println("\nApplyButton is clicked!");
 				//System.out.println("\tThe Filter to apply is \n" + cmbSelectFilter.getSelectedItem().toString()+"\n");
 				
-				FilterUtil.doSelection((CompositeFilter) cmbSelectFilter.getSelectedItem());
+                CompositeFilter theFilterToApply = (CompositeFilter) cmbSelectFilter.getSelectedItem();
+                theFilterToApply.setNetwork(Cytoscape.getCurrentNetwork());
+                FilterUtil.doSelection(theFilterToApply);
 			}
 			if (_btn == btnAddFilterWidget) {
 				//btnAddFilterWidget is clicked!
@@ -797,11 +769,54 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (FilterPlugin.getAllFilterVect() == null || FilterPlugin.getAllFilterVect().size() == 0) {
 			newNodeInteractionFilterMenuItem.setEnabled(false);
 			newEdgeInteractionFilterMenuItem.setEnabled(false);
+			return;
+		}
+
+		// Set newEdgeInteractionFilterMenuItem on only if there are at least one 
+		// Node Filter
+		if (hasNodeFilter(FilterPlugin.getAllFilterVect())) {
+			newEdgeInteractionFilterMenuItem.setEnabled(true);      
 		}
 		else {
+			newEdgeInteractionFilterMenuItem.setEnabled(false);
+		}
+
+		// Set newNodeInteractionFilterMenuItem on only if there are at least one 
+		// Edge Filter
+		if (hasEdgeFilter(FilterPlugin.getAllFilterVect())) {
 			newNodeInteractionFilterMenuItem.setEnabled(true);
-			newEdgeInteractionFilterMenuItem.setEnabled(true);
-		}	
+		}       
+		else {
+			newNodeInteractionFilterMenuItem.setEnabled(false);
+		}
+	}
+	
+	// Check if there are any NodeFilter in the AllFilterVect
+	private boolean hasNodeFilter(Vector<CompositeFilter> pAllFilterVect) {
+		boolean selectNode = false;
+
+		for (int i=0; i< pAllFilterVect.size(); i++) {
+			CompositeFilter curFilter = (CompositeFilter) pAllFilterVect.elementAt(i);
+			if (curFilter.getAdvancedSetting().isNodeChecked()) {
+				selectNode = true;
+			}                       
+		}//end of for loop
+
+		return selectNode;
+	}
+
+	// Check if there are any NodeFilter in the AllFilterVect
+	private boolean hasEdgeFilter(Vector<CompositeFilter> pAllFilterVect) {
+		boolean selectEdge = false;
+
+		for (int i=0; i< pAllFilterVect.size(); i++) {
+			CompositeFilter curFilter = (CompositeFilter) pAllFilterVect.elementAt(i);
+			if (curFilter.getAdvancedSetting().isEdgeChecked()) {
+				selectEdge = true;
+			}                       
+		}//end of for loop
+
+		return selectEdge;
 	}
 	
     //Each time, the FilterMainPanel become visible, update the status of InteractionMaenuItems
@@ -948,27 +963,19 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 
 	private void createNewFilter(String pFilterName, String pFilterType) {
 		// Create an empty filter, add it to the current filter list
-		
-		System.out.println("Entering FilterMainPanel.createNewFilter() ...");
 		CompositeFilter newFilter = null;
 		
 		if (pFilterType.equalsIgnoreCase("Topology")) {
-			System.out.println("\tCreate a topology filter");
-
 			newFilter =  new TopologyFilter();
 			newFilter.getAdvancedSetting().setEdge(false);
 			newFilter.setName(pFilterName);			
 		}
 		else if (pFilterType.equalsIgnoreCase("NodeInteraction")) {
-			System.out.println("\tCreate an NodeInteraction filter");
-
 			newFilter =  new NodeInteractionFilter();
 			//newFilter.getAdvancedSetting().setEdge(false);
 			newFilter.setName(pFilterName);			
 		}		
 		else if (pFilterType.equalsIgnoreCase("EdgeInteraction")) {
-			System.out.println("\tCreate an EdgeInteraction filter");
-
 			newFilter =  new EdgeInteractionFilter();
 			//newFilter.getAdvancedSetting().setEdge(false);
 			newFilter.setName(pFilterName);			
@@ -990,8 +997,6 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		if (pFilterType.equalsIgnoreCase("Composite")) {
 			updateCMBAttributes();
 		}
-		
-		System.out.println("Leaving FilterMainPanel.createNewFilter() ...");
 	}
 
 	class FilterRenderer extends JLabel implements ListCellRenderer {
@@ -1017,7 +1022,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 			else { // value == null
 				setText(""); 
 			}
-/*
+
 			if (isSelected) {
 				setBackground(list.getSelectionBackground());
 				setForeground(list.getSelectionForeground());
@@ -1025,7 +1030,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 				setBackground(list.getBackground());
 				setForeground(list.getForeground());
 			}
-*/
+
 			return this;
 		}
 	}// FilterRenderer
