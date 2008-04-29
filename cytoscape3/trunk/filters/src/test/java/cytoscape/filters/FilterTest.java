@@ -7,13 +7,6 @@ import cytoscape.Cytoscape;
 import junit.framework.TestCase;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.filters.StringFilter;
-import java.util.BitSet;
-
-import csplugins.quickfind.util.QuickFind;
-import csplugins.quickfind.util.QuickFindFactory;
-import csplugins.quickfind.util.TaskMonitorBase;
-import csplugins.widgets.autocomplete.index.TextIndex;
 
 public class FilterTest extends TestCase {
 	
@@ -61,11 +54,12 @@ public class FilterTest extends TestCase {
 		edgeAttributes.setAttribute(edge1.getIdentifier(), PMID, "12345");
 		edgeAttributes.setAttribute(edge2.getIdentifier(), PMID, "12666");
 	}
-
-	public void testNothing() {
-		// dummy test
+    
+	public void testDumb() {
+		//No test for FilterTest. It holds test data only!
+		// Without this dumb test-case, a warning message will be printed out
 	}
-	
+
 	protected static final String LOCATION = "location";
 	protected static final String NUCLEUS = "nucleus";
 	protected static final String CYTOPLASM = "cytoplasm";
