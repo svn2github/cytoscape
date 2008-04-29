@@ -105,7 +105,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	private Map<String, Container> serviceUIPanels = new HashMap<String, Container>();
 	
 	//Default icon for about dialog
-	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_internet-32.png"));
+	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_internet-32.png"));
 
     private int numDataSources = 0;
     private int numClients = 0;
@@ -218,7 +218,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 		titlePanel.setBackground(new java.awt.Color(0, 0, 0));
 
-		titleIconLabel.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("images/networkImportIcon.png"))); // NOI18N
+		titleIconLabel.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("/images/networkImportIcon.png"))); // NOI18N
 
 		org.jdesktop.layout.GroupLayout titlePanelLayout = new org.jdesktop.layout.GroupLayout(titlePanel);
 		titlePanel.setLayout(titlePanelLayout);
@@ -381,7 +381,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
         installPanel.setLayout(new BorderLayout());
         JLabel titleIconLabel2 = new JLabel();
         titleIconLabel2.setIcon(new ImageIcon
-                (Cytoscape.class.getResource("images/networkImportIcon.png")));
+                (Cytoscape.class.getResource("/images/networkImportIcon.png")));
         JPanel titlePanel2 = new JPanel();
         titlePanel2.add(titleIconLabel2);
         titlePanel2.setBackground(new Color(0, 0, 0));

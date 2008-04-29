@@ -1,10 +1,10 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
 import cytoscape.CytoscapeInit;
-import cytoscape.plugin.PluginProperties;
 
 import java.util.Properties;
 import java.util.ArrayList;
+import java.io.IOException;
 
 import org.cytoscape.coreplugin.cpath2.view.model.Organism;
 
@@ -70,8 +70,15 @@ public class CPathProperties {
      */
     public static CPathProperties getInstance() {
         if (cpathProperties == null) {
-               cpathProperties = new CPathProperties();
-               cpathProperties.initProperties (new Properties());
+            cpathProperties = new CPathProperties();
+			Properties def = new Properties();
+			try {
+				def.load( CPathProperties.class.getClassLoader().getResourceAsStream("/cpath2.props") );
+			} catch (IOException ioe) {
+			   	System.out.println("Couldn't read cpath2 props");
+				ioe.printStackTrace();
+			}
+            cpathProperties.initProperties(def);
         }
         return cpathProperties;
     }

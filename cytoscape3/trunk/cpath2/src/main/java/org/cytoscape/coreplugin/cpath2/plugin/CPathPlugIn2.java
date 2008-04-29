@@ -35,7 +35,6 @@ package org.cytoscape.coreplugin.cpath2.plugin;
 
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.plugin.PluginProperties;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
 import org.cytoscape.coreplugin.cpath2.mapping.MapCPathToCytoscape;
 import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
@@ -66,7 +65,8 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         String debugProperty = System.getProperty("DEBUG");
         Boolean debug = (debugProperty != null && debugProperty.length() > 0) &&
                 new Boolean(debugProperty.toLowerCase());
-        initProperties();
+
+        CPathProperties cpathProperties = CPathProperties.getInstance();
 
         // to catch network creation events - to setup context menu
         NetworkListener networkListener = new NetworkListener();
@@ -77,12 +77,6 @@ public class CPathPlugIn2 extends CytoscapePlugin {
 
         //  Register Web Service
         WebServiceClientManager.registerClient(CytoscapeCPathWebService.getClient());
-    }
-
-    private void initProperties() throws IOException {
-        PluginProperties pluginProperties = new PluginProperties(this);
-        CPathProperties cpathProperties = CPathProperties.getInstance();
-        cpathProperties.initProperties(pluginProperties);
     }
 
     public static JScrollPane createConfigPanel() {
