@@ -27,7 +27,7 @@ public class PSExporter implements Exporter
 		p.setProperty("org.freehep.graphicsio.AbstractVectorGraphicsIO.TEXT_AS_SHAPES",
 		              Boolean.toString(!exportTextAsFont)); 
 
-	    PSGraphics2D g = new PSGraphics2D(stream, view); 
+	    PSGraphics2D g = new PSGraphics2D(stream, view.getComponent()); 
 	    g.setMultiPage(false); // true for PS file
 	    g.setProperties(p); 
 
