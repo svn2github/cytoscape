@@ -45,7 +45,9 @@ public class StringFilterTest extends FilterTest {
 		// Created two StringFilter objects
 		theFirstFilter = new StringFilter();
 		theFirstFilter.setName("firstStringFilter");
-		theFirstFilter.setControllingAttribute(QuickFind.UNIQUE_IDENTIFIER);
+        //theFirstFilter.setControllingAttribute(QuickFind.UNIQUE_IDENTIFIER);
+        theFirstFilter.setControllingAttribute("canonicalName");
+
 		theFirstFilter.setSearchStr("rai*");
 		theFirstFilter.setIndex(index_by_UniqueIdentification);
 		theFirstFilter.setNetwork(cyNetwork);
@@ -94,7 +96,8 @@ public class StringFilterTest extends FilterTest {
 
 	// String representation of a filter 
 	public void test_toString() { 
-		String theFirstFilter_expectStr = "StringFilter=Unique Identifier:false:rai*:"+QuickFind.INDEX_NODES;
+        String theFirstFilter_expectStr = "StringFilter=canonicalName:false:rai*:"+QuickFind.INDEX_NODES;
+
 		assertEquals(theFirstFilter_expectStr, theFirstFilter.toString());	
 		
 		String theSecondFilter_expectStr = "StringFilter=location:false:nu*:"+QuickFind.INDEX_NODES;
