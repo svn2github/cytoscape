@@ -183,13 +183,13 @@ public class GraphSetUtils {
 		GraphPerspective firstNetwork = (GraphPerspective)networkList.get(0);
 		GraphView firstView =  Cytoscape.getNetworkView( firstNetwork.getIdentifier() );
 		if ( firstView != null && firstView != Cytoscape.getNullNetworkView() ) {
-			VisualStyle firstVS = firstView.getVisualStyle();
+			VisualStyle firstVS = Cytoscape.getVisualMappingManager().getVisualStyleForView(firstView);
 
 			GraphView newView = Cytoscape.getNetworkView( newNetwork.getIdentifier() );
 			if ( newView != null && newView != Cytoscape.getNullNetworkView() && firstVS != null ) {
-				newView.setVisualStyle(firstVS.getName()); 
-				Cytoscape.getVisualMappingManager().setVisualStyle(firstVS);
-				newView.redrawGraph(true,true);
+				Cytoscape.getVisualMappingManager().setVisualStyleForView(newView, firstVS);
+				//newView.redrawGraph(true,true);
+				newView.updateView(); //equivalent to redrawGraph??
 			}
 		}
 
