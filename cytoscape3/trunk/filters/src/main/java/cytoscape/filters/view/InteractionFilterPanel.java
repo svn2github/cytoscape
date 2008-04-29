@@ -49,7 +49,7 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 		pFilter.childChanged();
 
 		// Recovery initial values
-        chkSource.setSelected(pFilter.isSorceChecked());        	
+        chkSource.setSelected(pFilter.isSourceChecked());        	
         chkTarget.setSelected(pFilter.isTargetChecked());        	
     }
     
@@ -100,7 +100,7 @@ public class InteractionFilterPanel extends JPanel implements ItemListener{
 			JCheckBox theCheckBox = (JCheckBox) soureObj;
 			
 			if (theCheckBox == chkSource) {
-				theFilter.setSorceChecked(chkSource.isSelected());
+				theFilter.setSourceChecked(chkSource.isSelected());
 			}
 			if (theCheckBox == chkTarget) {
 				theFilter.setTargetChecked(chkTarget.isSelected());
