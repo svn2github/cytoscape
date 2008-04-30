@@ -34,7 +34,9 @@ public class PluginFileReaderTest extends TestCase {
 		String FS = "/";
 		String UserDir = System.getProperty("user.dir");
 		UserDir = UserDir.replaceFirst(FS, "");
-		return "file:///" + UserDir + FS + "src/test/resources/testData" + FS + "plugins" + FS;
+    String Url = UserDir + FS + "src" + FS + "test" + FS + "resources" + FS + "testData" + FS + "plugins" + FS;
+  
+    return "file:///" + Url;
 	}
 
 	/*
@@ -44,7 +46,8 @@ public class PluginFileReaderTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		// transform the test files first to get the version numbers up to date
-		tempTestFile = PluginTestXML.transformXML("test_plugin.xml", getFileUrl());
+    InputStream is = PluginTestXML.class.getResourceAsStream("/testData/plugins/test_plugin.xml");
+    tempTestFile = PluginTestXML.transformXML(is, getFileUrl());
 		url = "file:///" + tempTestFile.getAbsolutePath();
 		reader = new PluginFileReader(url);
 		assertNotNull(reader);
@@ -117,13 +120,12 @@ public class PluginFileReaderTest extends TestCase {
 	}
 
 	// regression test, not all files will contain the <theme> tags
-	public void testReadFileMissingThemes() throws Exception {
-		url = getFileUrl() + "test_plugin_no_themes.xml";
-		PluginFileReader readerNoThemes = new PluginFileReader(url);
+	public void testReadFileMissingThemes() throws org.jdom.JDOMException,
+			java.io.IOException {
+    InputStream is = PluginFileReaderTest.class.getResourceAsStream("/testData/plugins/test_plugin_no_themes.xml");
+    PluginFileReader readerNoThemes = new PluginFileReader(is);
 		assertNotNull(readerNoThemes.getThemes());
 		assertEquals(readerNoThemes.getThemes().size(), 0);
 	}
 	
-	// regression test, make sure versions are working
-
 }

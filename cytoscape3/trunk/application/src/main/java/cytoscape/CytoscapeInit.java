@@ -229,21 +229,20 @@ public class CytoscapeInit {
 					}
 				}
 
-// TODO this exception wasn't getting caught
-try {
-				mgr.loadPlugins(InstalledPlugins);
-} catch ( Exception mue ) {
-	mue.printStackTrace();
-}
-//				TODO SARAH
-//			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
-//
-//			for (Throwable t : pluginLoadingErrors) {
-//				//errorDialog.addError(t);
-//				t.printStackTrace();
-//			}
-//
-//			mgr.clearErrorList();
+      // TODO this exception wasn't getting caught
+      try {
+              mgr.loadPlugins(InstalledPlugins);
+      } catch ( Exception mue ) {
+        mue.printStackTrace();
+      }
+			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
+
+			for (Throwable t : pluginLoadingErrors) {
+				//errorDialog.addError(t);
+				t.printStackTrace();
+			}
+
+			mgr.clearErrorList();
 
 			System.out.println("loading session...");
 

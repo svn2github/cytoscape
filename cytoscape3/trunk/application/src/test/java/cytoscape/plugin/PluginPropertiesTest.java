@@ -5,6 +5,8 @@ package cytoscape.plugin;
 
 import junit.framework.TestCase;
 
+import java.io.InputStream;
+
 /**
  * @author skillcoy
  *
@@ -19,8 +21,9 @@ public class PluginPropertiesTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		String FS = java.io.File.separator;
-		String TestProps = System.getProperty("user.dir") + FS + "src/test/resources/testData" + FS + "plugins" + FS + "test_plugin.props";
-		pp = new PluginProperties(TestProps);
+		String TestProps = System.getProperty("user.dir") + FS + "testData" + FS + "plugins" + FS + "test_plugin.props";
+	  InputStream is = PluginPropertiesTest.class.getResourceAsStream(FS + "testData" + FS + "plugins" + FS + "test_plugin.props");
+    pp = new PluginProperties(is);
 	}
 
 	/* (non-Javadoc)
@@ -31,7 +34,7 @@ public class PluginPropertiesTest extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link cytoscape.plugin.PluginProperties#fillPluginInfoObject(cytoscape.plugin.PluginInfo)}.
+	 * Test method for {@link cytoscape.plugin.PluginProperties#fillPluginInfoObject(DownloadableInfo)} 
 	 */
 	public void testNoMatchingCyVersion() throws cytoscape.plugin.ManagerException {
 		cytoscape.CytoscapeInit.getProperties().setProperty("cytoscape.version.number", "2.4");

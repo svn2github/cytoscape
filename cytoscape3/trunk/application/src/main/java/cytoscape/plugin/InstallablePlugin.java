@@ -65,6 +65,8 @@ public class InstallablePlugin implements Installable {
 		}
 
 		File Download = new File(PluginDir, createFileName(infoObj));
+		if (taskMonitor != null)
+			taskMonitor.setStatus(infoObj.toString() + " loading...");
 		URLUtil.download(infoObj.getObjectUrl(), Download, taskMonitor);
 
 		try {
@@ -73,14 +75,13 @@ public class InstallablePlugin implements Installable {
 
 			if (ClassName != null) {
 				infoObj.setPluginClassName(ClassName);
-			} else {
+			} else { // no class name so delete the plugin
 				Download.delete();
 				Download.getParentFile().delete();
-				ManagerException E = new ManagerException(
+				throw new ManagerException(
 						infoObj.getName()
 								+ " does not define the attribute 'Cytoscape-Plugin' in the jar manifest file.\n"
 								+ "This plugin cannot be auto-installed.  Please install manually or contact the plugin author.");
-				throw E;
 			}
 		} catch (IOException ioe) {
 			Download.delete();
@@ -291,7 +292,7 @@ public class InstallablePlugin implements Installable {
 				is.close();
 			}
 		}
-		;
+		
 		return PluginClassName;
 	}
 

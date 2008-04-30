@@ -53,14 +53,12 @@ import java.util.List;
  * does not have any arguments, since it is Network agnostic. Instead all access
  * to the Cytoscape Data Structures is handled throught the static methods
  * provided by cytoscape.Cytoscape.
- * 
- * It is encouraged, but not mandatory, for plugins to override the
- * {@link #describe describe} method to state what the plugin does and how it
- * should be used.
  */
 public abstract class CytoscapePlugin implements PropertyChangeListener {
 
-	/**
+  private HashMap<String, List<File>> pluginFileListMap;
+
+  /**
 	 * There are no arguments required or allowed in a CytoscapePlugin
 	 * constructor.
 	 */
@@ -76,7 +74,8 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	/**
 	 * If true, this plugin is capable if accepting scripts, and we will find
 	 * out what its script name is
-	 */
+   * @return
+   */
 	public boolean isScriptable() {
 		return false;
 	}
@@ -84,6 +83,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	/**
 	 * If this plugin is scriptable, then this will return a unique script name,
 	 * that will come after the colon like: :name
+   * @return
 	 */
 	public String getScriptName() {
 		return "default";
@@ -93,6 +93,9 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	 * Take a CyNetwork as input along with some arguments, and return a
 	 * CyNetwork, which can be the same, or different, it doesn't really matter,
 	 * and is up to the individual plugin.
+   * @param args
+   * @param network
+   * @return
 	 */
 	public GraphPerspective interpretScript(String[] args, GraphPerspective network) {
 		return null;
@@ -114,14 +117,14 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 
 	/**
 	 * Attempts to instantiate a plugin of the class argument.
-	 * 
+	 *
+   * @param pluginClass
+   * @throws PluginException
 	 * @return The object, if it was not successfully constructed object will be
 	 *         null
-	 * @return true if the plugin was successfulyl constructed, false otherwise
 	 */
 	public static Object loadPlugin(Class pluginClass)
-			throws InstantiationException, IllegalAccessException,
-			PluginException {
+			throws PluginException {
 
 		if (pluginClass == null) {
 			return false;
@@ -146,23 +149,19 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			// for the class cytoscape.CyWindow, which is no longer defined,
 			// propagates a ClassNotFoundException (which, if we don't
 			// catch causes the application to crash).
-			String ErrorMsg = "Unchecked '" + e.getClass().getName() 
-			        + "' exception while attempting to load plugin.\n"
-					+ "This may happen when loading a plugin written for a different "
-					+ "version of Cytoscape than this one, or if the plugin is dependent "
-					+ "on another plugin that isn't available. Consult the documentation "
-					+ "for the plugin or contact the plugin author for more information.";
+    String ErrorMsg = "Unchecked '" + e.getClass().getName() + "'exception while attempting to load plugin "
+        + pluginClass.getName() + ".\n"
+        + "This may happen when loading a plugin written for a different \n"
+        + "version of Cytoscape than this one, or if the plugin is dependent \n"
+        + "on another plugin that isn't available. Consult the documentation \n"
+        + "for the plugin or contact the plugin author for more information.";
 
-			//System.err.println(ErrorMsg);
-			// System.err.println(e);
-			// e.printStackTrace();
 			throw new PluginException(ErrorMsg, e);
 		} 
 		System.out.println("Successfully loaded: " + pluginClass);
 		return object;
 	}
 
-	private HashMap<String, List<File>> pluginFileListMap;
 
 	/**
 	 * DOCUMENT ME!

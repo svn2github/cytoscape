@@ -31,13 +31,12 @@ public class PluginTestXML {
 			UserDir = UserDir.replaceFirst("\\w:", "");
 			UserDir = UserDir.replaceAll("\\\\", FS);
 		}
-		return UserDir + FS + "src/test/resources/testData" + FS + "plugins" + FS;
+		return UserDir + FS + "src" + FS + "test" + FS + "resources" + FS +  "testData" + FS + "plugins" + FS;
 	}
 
 	// get the xsl file as a stream
 	private static  StreamSource getXSL() throws IOException {
-		String XSLFile = testFileDir() + "test_plugins.xsl";
-		InputStream instream = new FileInputStream(  XSLFile );
+    InputStream instream = PluginTestXML.class.getResourceAsStream("/testData/plugins/test_plugins.xsl");
 
 		if (instream == null || instream.available() == 0) {
 			// throw an error!
@@ -54,29 +53,38 @@ public class PluginTestXML {
 		return new StreamSource(instream);
 	}
 
-	public static File transformXML(String FileName, String FileUrl) throws IOException {
-		StreamSource xsltSource = getXSL();
-		String XmlFile = testFileDir() + FileName;
-		StreamSource testFile = new StreamSource( XmlFile );
+  public static File transformXML(InputStream is, String FileUrl) throws IOException
+    {
+    StreamSource xsltSource = getXSL();
+    StreamSource testFile = new StreamSource(is);
 
-		File TempTestFile = File.createTempFile("test_plugins", ".xml");
-		StreamResult resultFile = new StreamResult(TempTestFile.getAbsolutePath());
+    File TempTestFile = File.createTempFile("test_plugins", ".xml");
+    StreamResult resultFile = new StreamResult(TempTestFile.getAbsolutePath());
 
-		TransformerFactory transFact = javax.xml.transform.TransformerFactory
-				.newInstance();
-		try {
-			Transformer trans = transFact.newTransformer(xsltSource);
-			trans.setOutputProperty(OutputKeys.METHOD, "xml");
-			trans.setOutputProperty(OutputKeys.INDENT, "yes");
-			trans.setParameter("cytoscapeVersion", CytoscapeVersion.version);
-			trans.setParameter("fileUrl", FileUrl);
+    TransformerFactory transFact = javax.xml.transform.TransformerFactory
+        .newInstance();
+    try {
+      Transformer trans = transFact.newTransformer(xsltSource);
+      trans.setOutputProperty(OutputKeys.METHOD, "xml");
+      trans.setOutputProperty(OutputKeys.INDENT, "yes");
+      trans.setParameter("cytoscapeVersion", CytoscapeVersion.version);
+      trans.setParameter("fileUrl", FileUrl);
 
-			trans.transform(testFile, resultFile);
-		} catch (TransformerException te) {
-			te.printStackTrace();
-		}
-		return TempTestFile;
-	}
+      trans.transform(testFile, resultFile);
+    } catch (TransformerException te) {
+      te.printStackTrace();
+    }
+    return TempTestFile;
+    }
+
+  public static File transformXML(String FileName, String FileUrl) throws IOException
+    {
+    String XmlFile = testFileDir() + FileName;
+    System.out.println("PluginTestXml: " + XmlFile);
+    InputStream is = new FileInputStream(XmlFile);
+    //StreamSource testFile = new StreamSource( XmlFile );
+    return transformXML(is, FileUrl);
+	  }
 
 	
 	

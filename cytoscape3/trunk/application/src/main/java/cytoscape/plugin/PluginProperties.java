@@ -58,10 +58,14 @@ public class PluginProperties extends Properties {
 	 */
 	PluginProperties(String fileName) throws IOException {
 		java.io.FileInputStream fis = new java.io.FileInputStream( new java.io.File(fileName) );
-		readPluginProperties(fis);
+		this.readPluginProperties(fis);
 	}
-	
-	/**
+
+  PluginProperties(InputStream is) throws IOException {
+    this.readPluginProperties(is);
+  }
+
+  /**
 	 * The plugin.props file is expected to be in the jar file under the package directory.  
 	 * It will not be found if it is anywhere else.
 	 * @param Plugin
@@ -77,21 +81,20 @@ public class PluginProperties extends Properties {
 	}
 	
 	private void readPluginProperties(InputStream is) throws IOException {
-		if (is == null || is.available() == 0) {
 			// throw an error!
-			String Msg = "";
+			String Msg = null;
 			if (is == null) {
-				Msg = "File is not in the expected location: " + packageName;
-			} else if (is.available() == 0) {
+				Msg = "File is not in the expected location (null): " + packageName;
+			}
+      if (is.available() == 0) {
 				Msg = "0 bytes in input stream";
 			}
-	
-			IOException Error = new IOException("Unable to load "
+	    if (Msg != null) {
+        throw new IOException("Unable to load "
 					+ configFileName + ". " + Msg);
-			throw Error;
-		} else {
-			load(is);
-		}
+      }
+
+		load(is);
 	}
 	
 	/**

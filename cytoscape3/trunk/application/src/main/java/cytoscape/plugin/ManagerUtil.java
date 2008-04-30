@@ -129,7 +129,7 @@ public class ManagerUtil {
 		for (DownloadableInfo infoAvail : Available) {
 			for (DownloadableInfo infoCur : Current) {
 				if (!PluginManager.getPluginManager().usingWebstartManager()) {
-					if (infoCur.equalsDifferentObjectVersion(infoAvail)) {
+					if (infoCur.getType().equals(infoAvail.getType()) && infoCur.equalsDifferentObjectVersion(infoAvail)) {
 						UniqueAvail.remove(infoAvail);
 					}
 				} else { // in webstart

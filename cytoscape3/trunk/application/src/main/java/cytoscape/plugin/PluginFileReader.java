@@ -3,8 +3,6 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.util.ProxyHandler;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -20,6 +18,7 @@ import java.util.List;
 import java.net.URL;
 
 import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * @author skillcoy
@@ -30,7 +29,13 @@ public class PluginFileReader {
 
 	private String downloadUrl;
 
-	/**
+  protected PluginFileReader(InputStream is) throws IOException, JDOMException {
+    SAXBuilder Builder = new SAXBuilder(false);
+    document = Builder.build(is);
+  }
+
+
+  /**
 	 * Creates a new PluginFileReader object.
 	 * 
 	 * @param Url
@@ -46,28 +51,6 @@ public class PluginFileReader {
 		// would be nice to validate later
 		SAXBuilder Builder = new SAXBuilder(false);
 		document = Builder.build(is);
-
-		// don't use this xsd it's no longer valid
-		// InputStream is = URLUtil.getInputStream( new URL(downloadUrl) );
-		// BufferedReader xsdReader = new BufferedReader( new
-		// InputStreamReader(PluginFileReader.class.getResourceAsStream("plugins.xsd"))
-		// );
-		// String line = null;
-		// String Xsd = "";
-		// while ( (line = xsdReader.readLine()) != null)
-		// Xsd += line;
-		//		
-		// // validate
-		// SAXBuilder Builder = new
-		// SAXBuilder("org.apache.xerces.parsers.SAXParser", true);
-		// Builder.setFeature("http://apache.org/xml/features/validation/schema",
-		// true);
-		// Builder.setProperty(
-		// "http://apache.org/xml/properties/schema"
-		// + "/external-noNamespaceSchemaLocation",
-		// Xsd );
-		// document = Builder.build(is);
-
 	}
 
 	/**
@@ -112,7 +95,6 @@ public class PluginFileReader {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked") // jdom
 	protected List<ThemeInfo> getThemes() {
 		List<ThemeInfo> Themes = new ArrayList<ThemeInfo>();
 
@@ -140,7 +122,6 @@ public class PluginFileReader {
 	 * 
 	 * @return The list of PluginInfo objects specified by the xml document.
 	 */
-	@SuppressWarnings("unchecked") // jdom
 	protected List<PluginInfo> getPlugins() {
 		List<PluginInfo> Plugins = new ArrayList<PluginInfo>();
 
@@ -160,7 +141,6 @@ public class PluginFileReader {
 		return Plugins;
 	}
 
-	@SuppressWarnings("unchecked") // jdom
 	protected ThemeInfo createThemeObject(Element CurrentTheme) {
 		ThemeInfo Info = (ThemeInfo) this.createBasicInfoObject(CurrentTheme,
 				DownloadableType.THEME);
@@ -198,7 +178,6 @@ public class PluginFileReader {
 		return Info;
 	}
 
-	@SuppressWarnings("unchecked") // jdom
 	private DownloadableInfo createBasicInfoObject(Element E,
 			DownloadableType Type) {
 		
@@ -322,7 +301,6 @@ public class PluginFileReader {
 	}
 
 	// get the authors, add to info object
-	@SuppressWarnings("unchecked") // jdom
 	private PluginInfo addAuthors(PluginInfo obj, Element Plugin) {
 		if (Plugin.getChild(authorListTag) != null) {
 			List<Element> Authors = Plugin.getChild(authorListTag).getChildren(authorTag);
