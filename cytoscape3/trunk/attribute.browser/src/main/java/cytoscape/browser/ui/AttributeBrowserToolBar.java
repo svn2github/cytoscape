@@ -307,6 +307,12 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private JToolBar getJToolBar() {
 		if (jToolBar == null) {
 			jToolBar = new JToolBar();
+            jToolBar.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                        AttributeBrowser.getPropertyChangeSupport().firePropertyChange(AttributeBrowser.CLEAR_INTERNAL_SELECTION, null, objectType);
+                }
+            });
+
 			jToolBar.setMargin(new java.awt.Insets(0, 0, 0, 0));
 			jToolBar.setPreferredSize(new java.awt.Dimension(200, 28));
 			jToolBar.setFloatable(false);
@@ -604,7 +610,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		attrModel.sortAtttributes();
 
 		final List<String> atNames = new ArrayList<String>();
-		for(String attName: attributes.getAttributeNames()) {
+        for(String attName: CyAttributesUtils.getVisibleAttributeNames(attributes)) {
 			atNames.add(attName);
 		}
 		final List<String> toBeRemoved = new ArrayList<String>();
@@ -619,8 +625,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		}
 
 		tableModel.setTableData(null, orderedCol);
-		AttributeBrowserPlugin.firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
-		
+        AttributeBrowser.firePropertyChange(AttributeBrowser.RESTORE_COLUMN, null, objectType);
 	}
 	
 
@@ -745,6 +750,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			orderedCol.add(name);
 			Cytoscape.getSwingPropertyChangeSupport()
 			         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+            Cytoscape.getPropertyChangeSupport().firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 
 			tableModel.setTableData(null, orderedCol);
 		}
