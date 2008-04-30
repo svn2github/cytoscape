@@ -32,6 +32,7 @@
 package org.mskcc.biopax_plugin.view;
 
 import cytoscape.Cytoscape;
+import org.cytoscape.GraphPerspective;
 
 import org.cytoscape.attributes.CyAttributes;
 
@@ -39,6 +40,7 @@ import org.mskcc.biopax_plugin.action.LaunchExternalBrowser;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxPlainEnglish;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
 
 import java.awt.*;
 
@@ -169,6 +171,9 @@ public class BioPaxDetailsPanel extends JPanel {
             buf.append("<h3>" + stringRef + "</h3>");
         }
 
+        //  Add (optional) cPath Link
+        addCPathLink(nodeID, buf);
+
         // synonyms
         addAttributeList(nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, "Synonyms:", buf);
         
@@ -197,11 +202,29 @@ public class BioPaxDetailsPanel extends JPanel {
 		}
     }
 
+    private void addCPathLink(String nodeID, StringBuffer buf) {
+        GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+        String serverName = networkAttributes.getStringAttribute(cyNetwork.getIdentifier(),
+            "CPATH_SERVER_NAME");
+        String serverDetailsUrl = networkAttributes.getStringAttribute(cyNetwork.getIdentifier(),
+            "CPATH_SERVER_DETAILS_URL");
+        if (serverName != null && serverDetailsUrl != null) {
+            String type = nodeAttributes.getStringAttribute(nodeID,
+            MapNodeAttributes.BIOPAX_ENTITY_TYPE);
+            BioPaxConstants constants = new BioPaxConstants();
+            if (type != null) {
+                if (constants.isPhysicalEntity(type.toLowerCase())) {
+                String url = serverDetailsUrl + nodeID;
+                buf.append ("<h3><A href='" + url + "'>" + serverName + ": " + nodeID + "</A>");
+                }
+            }
+        }
+    }
+
     private void addType(String nodeID, StringBuffer buf) {
         String type = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_ENTITY_TYPE);
-        if (type != null && !type.equalsIgnoreCase("Protein")) {
-            buf.append("<h3>" + type + "</h3>");
-        }
+        buf.append("<h3>" + type + "</h3>");
     }
 
     private void addLinks(String nodeID, StringBuffer buf) {
