@@ -110,12 +110,6 @@ import org.cytoscape.vizmap.VisualMappingManager;
 public class CyAttributeBrowserTable extends JTable implements MouseListener, ActionListener,
                                                                PropertyChangeListener,
                                                                SelectEventListener, MouseMotionListener {
-	// Local Signal
-	/**
-	 *
-	 */
-	public final static String RESTORE_COLUMN = "RESTORE_COLUMN";
-
 	/**
 	 *
 	 */
@@ -1024,15 +1018,24 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 		if(ignore) return;
 		
 		
-		if (e.getPropertyName().equals(RESTORE_COLUMN)) {
+        if(e.getPropertyName().equals(AttributeBrowser.RESTORE_COLUMN) && e.getNewValue() != null && e.getNewValue().equals(objectType)) {
 			ColumnResizer.adjustColumnPreferredWidths(this);
 			return;
+		}
+		
+		if(e.getPropertyName().equals(AttributeBrowser.CLEAR_INTERNAL_SELECTION)) {
+
+			if(e.getNewValue() != null && e.getNewValue().equals(objectType)) {
+				getSelectionModel().clearSelection();
+				//Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+			}
 		}
 
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-			AttributeBrowserPlugin.getPropertyChangeSupport().addPropertyChangeListener(this);
+            AttributeBrowser.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_CREATED)
@@ -1244,7 +1247,9 @@ class BrowserTableCellRenderer extends JLabel implements TableCellRenderer {
 		if (value != null) {
 			// Set HTML style tooltip
 			setToolTipText(getFormattedToolTipText(colName, value));
-		}
+		}else {
+            setToolTipText(null);
+        }
 
 		// If selected, return
 		if (isSelected) {
