@@ -54,10 +54,12 @@ public class TopologyFilter extends CompositeFilter {
 	private CompositeFilter passFilter = null;
 	
 	public TopologyFilter() {
+        super.advancedSetting.setNode(true);
 	}
 
 	public TopologyFilter(String pName) {
 		name = pName;
+        super.advancedSetting.setNode(true);
 	}
 
 	public void setPassFilter(CompositeFilter pFilter) {
@@ -102,42 +104,46 @@ public class TopologyFilter extends CompositeFilter {
 		if ( !childChanged ) 
 			return;
 
+		if (network == null) {
+			return;
+		}
+
 		//Make sure the pass filter is current
 		if (passFilter == null) {
 			passFilter = new TopologyFilter("None");
 		}
-		
+
 		if (!passFilter.getName().equalsIgnoreCase("None")) {
 			passFilter.setNetwork(network);
-			passFilter.apply();			
-		}	
+			passFilter.apply();                     
+		}       
 
 		List<Node> nodes_list = null;
 		List<Edge> edges_list=null;
 
 		int objectCount = -1;
-		
+
 		if (advancedSetting.isNodeChecked()) {
 			nodes_list = network.nodesList();
 			objectCount = nodes_list.size();
-			node_bits = new BitSet(objectCount); // all the bits are false at very beginning
-			
+
+			//Create an index mapping between RootGraphIndex and index in current network
+			HashMap<Integer, Integer> indexMap = new HashMap<Integer, Integer>();
+			Object [] nodeArray = network.nodesList().toArray();
+			int rootgraphIndex = -1;
 			for (int i=0; i<objectCount; i++) {
-				if (isHit(nodes_list.get(i))) {
-					node_bits.set(i);
-				}
+				rootgraphIndex = network.getIndex((Node)nodeArray[i]);
+				indexMap.put(new Integer(rootgraphIndex), new Integer(i));
 			}
-		}
-		else if (advancedSetting.isEdgeChecked()) {
-			edges_list = network.edgesList();
-			objectCount = edges_list.size();
-			edge_bits = new BitSet(objectCount); // all the bits are false at very beginning			
+
+			//
+			node_bits = new BitSet(objectCount); // all the bits are false at very beginning
 
 			for (int i=0; i<objectCount; i++) {
-				if (isHit(edges_list.get(i))) {
-					edge_bits.set(i);
+				if (isHit(nodes_list.get(i), indexMap)) {
+					node_bits.set(i);
 				}
-			}
+			}                       
 		}
 		else {
 			System.out.println("TopologyFilter: objectType is undefined.");
@@ -148,40 +154,45 @@ public class TopologyFilter extends CompositeFilter {
 			if (advancedSetting.isNodeChecked()) {
 				node_bits.flip(0, objectCount);
 			}
-			if (advancedSetting.isEdgeChecked()) {
-				edge_bits.flip(0, objectCount);
-			}
 		}
 
 		childChanged = false;
 	}
 
 	
-	private boolean isHit(Object pObj) {
+	private boolean isHit(Object pObj, HashMap<Integer, Integer> pIndexMap) {
 		// Get all the neighbors for pNode that pass the given filter
 		HashSet neighborSet = new HashSet();
 		getNeighbors(pObj, neighborSet, withinDistance);
-		
+
 		//Exclude self from the neighbor
 		if (neighborSet.contains(pObj)) {
 			neighborSet.remove(pObj);
+		}
+
+		// Obviously, this does not meet the criteria, don't do extra work 
+		if (neighborSet.size() < minNeighbors) {
+			return false;
 		}
 
 		// remove all the neighbors that do not pass the given filter
 		if (!passFilter.getName().equalsIgnoreCase("None")) {
 			Object [] nodeArray = neighborSet.toArray();
 			for (int i=0; i< nodeArray.length; i++) {
-				int nodeIndex = network.nodesList().indexOf(nodeArray[i]);
+				//int nodeIndex = network.nodesList().indexOf(nodeArray[i]); //This works, but very slow
+				int rootgraphIndex = network.getIndex((Node)nodeArray[i]);
+				int nodeIndex = pIndexMap.get(new Integer(rootgraphIndex)).intValue();                          
 
 				if (!passFilter.getNodeBits().get(nodeIndex)) {
 					neighborSet.remove(nodeArray[i]);
-				}
-			}							
+				}                               
+			}                                                       
 		}
+
 		if (neighborSet.size() < minNeighbors) {
 			return false;
 		}
-		
+
 		return true;
 	}
 	
