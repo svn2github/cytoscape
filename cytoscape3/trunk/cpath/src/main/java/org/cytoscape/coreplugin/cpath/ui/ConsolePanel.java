@@ -64,8 +64,12 @@ public class ConsolePanel extends JPanel implements Console {
 
         StyledDocument doc = ta.getStyledDocument();
         try {
-            doc.insertString(doc.getLength(), "Welcome to Cytoscape"
-                    + "\n", doc.getStyle("regular"));
+            doc.insertString(doc.getLength(), "Note:  As of January 1, 2008, the " +
+                "cPath plugin will continue to operate, but will no longer be maintained.  "
+                + "Users are advised to use the Pathway Commons plugin instead. "
+                + "\n\nTo access the Pathway Commons plugin, select File -> Import -> "
+                + "Network from Web Services, and select the Pathway Commons Web Service."
+                + "\n\n", doc.getStyle("red-bold"));            
         } catch (BadLocationException e) {
         }
         add(scrollPane, BorderLayout.CENTER);
@@ -143,6 +147,10 @@ public class ConsolePanel extends JPanel implements Console {
 
         s = doc.addStyle("red", regular);
         StyleConstants.setForeground(s, Color.RED);
+
+        s = doc.addStyle("red-bold", regular);
+        StyleConstants.setBold(s, true);
+        StyleConstants.setForeground(s, Color.RED);        
     }
 
     /**
@@ -151,6 +159,6 @@ public class ConsolePanel extends JPanel implements Console {
      * @return Dimension Object.CP
      */
     public Dimension getPreferredSize () {
-        return new Dimension(2, 100);
+        return new Dimension(2, 150);
     }
 }
