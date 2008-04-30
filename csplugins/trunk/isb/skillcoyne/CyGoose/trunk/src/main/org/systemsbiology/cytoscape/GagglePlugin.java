@@ -61,12 +61,12 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
     public GagglePlugin() {
         // constructor gets called at load time and every time the toolbar is used
-        if (pluginInitialized) {
+        if (pluginInitialized) 
             return;
-        }
+        
         Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
 
-        ORIGINAL_GOOSE_NAME = "Cytoscape" + " v." + CytoscapeVersion.version;
+        ORIGINAL_GOOSE_NAME = "Cytoscape" + " v." + new CytoscapeVersion().getFullVersion();
         myGaggleName = ORIGINAL_GOOSE_NAME;
 
         networkGeese = new HashMap<String, CyGoose>();
@@ -77,27 +77,21 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         //GooseCyPanel.add("CyGoose", null, gDialog, "Gaggle Goose");
         GooseCyPanel.setSelectedIndex(GooseCyPanel.indexOfComponent(gDialog));
         
- //       connectAction();
-
         try {
             // this gives an initial goose that is cytoscape with a null network
             createDefaultGoose();
             gDialog.displayMessage("Connected To Gaggle Boss");
-
             registered = true;
         }
-        catch (Exception E) { // TODO add error message text area to goose panel and stop popping error box up
+        catch (RemoteException re) { 
             registered = false;
             this.gDialog.displayMessage("Not connected to Gaggle Boss");
-            //GagglePlugin.showDialogBox("Failed to connect to the Boss", "Error", JOptionPane.ERROR_MESSAGE);
-//            System.err.println(E.getMessage());
-            E.printStackTrace();
+            re.printStackTrace();
         }
 
         broadcast = new CyBroadcast(gDialog, gaggleBoss);
         this.addButtonActions();
         pluginInitialized = true;
-        connectAction();
     }
 
 
@@ -110,6 +104,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
 
     public void gooseListChanged(String[] gooseList) {
+    	System.err.println("gooseListChanged() " + gooseList.toString());
         if (connectedToGaggle) {
             if (gDialog.getGooseChooser() != null && defaultGoose != null) {
                 System.out.println("how many geese are there? " + networkGeese.size());
@@ -122,6 +117,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
     }
 
     public void setConnected(boolean connected, Boss boss) {
+    	System.err.println("setConnected() " + boss.toString());
         gaggleBoss = boss;
         connectedToGaggle = connected;
         gDialog.setConnectButtonStatus(connected);
@@ -140,6 +136,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
 
     // creates the "null" network goose
     private void createDefaultGoose() throws RemoteException {
+    	System.err.println("Creating default goose...");
         // this gives an initial goose that is cytoscape with a null network
         CyNetwork CurrentNet = Cytoscape.getNullNetwork();
         CurrentNet.setTitle(myGaggleName);
@@ -147,15 +144,20 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         defaultGoose.addGooseListChangedListener(this);
 
         networkGeese.put(CurrentNet.getIdentifier(), defaultGoose);
-        System.out.println("size of active names: " + defaultGoose.getActiveGooseNames().length);
-
+        System.err.println("size of active names: " + defaultGoose.getActiveGooseNames().length);
+        for (String g: defaultGoose.getActiveGooseNames()) 
+        	System.err.println(g);
+        
+        if (gDialog.getGooseChooser() == null)
+        	System.err.println("goose dialog NULL before updating");
+        
         MiscUtil.updateGooseChooser(gDialog.getGooseChooser(), defaultGoose.getName(), defaultGoose.getActiveGooseNames());
         gDialog.getGooseChooser().setSelectedIndex(0);
 
         Cytoscape.getDesktop().setTitle(defaultGoose.getName());
     }
 
-    // Network created: create goose  Network destroyed: remove goose Network title changed: change the goose name??
+    // Network created: create goose  Network destroyed: remove goose Network title changed: change the goose name
     public void propertyChange(PropertyChangeEvent Event) {
         // nothing has been registered, don't try to handle events
         if (!registered) return;
@@ -188,6 +190,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         		System.err.println("Caught a ClassNotFoundException for cytoscape.CyNetworkTitleChange");
         	}
         } else if (Event.getPropertyName() == Cytoscape.NETWORK_CREATED) { // register a goose
+            System.out.println("==== Event "+ Event.getPropertyName() + "====");
             String netId = Event.getNewValue().toString();
             CyNetwork net = Cytoscape.getNetwork(netId);
 
@@ -201,6 +204,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                 E.printStackTrace();
             }
         } else if (Event.getPropertyName() == Cytoscape.NETWORK_DESTROYED) { // remove a goose
+        	System.out.println("==== Event " + Event.getPropertyName() + "====");
             String netId = Event.getNewValue().toString();
             CyNetwork net = Cytoscape.getNetwork(netId);
 
@@ -238,50 +242,6 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
     }
 
 
-    private void connectAction() {
-        System.out.println("in connectAction");
-        gDialog.addButtonAction(GooseButton.CONNECT, new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                System.out.println("in connectAction's listener");
-                try {
-                    if (event.getActionCommand().equals("connect")) {
-                        // reconnect all geese
-                        for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
-                            String gooseNetworkId = it.next();
-                            CyGoose goose = networkGeese.get(gooseNetworkId);
-                            String newName = gaggleBoss.register(goose);
-                            if (gooseNetworkId.equals("0")) {
-                                Cytoscape.getDesktop().setTitle(newName);
-                            } else {
-                                CyNetwork cyNet = Cytoscape.getNetwork(gooseNetworkId);
-                                System.out.println("old name: " + cyNet.getTitle());
-                                cyNet.setTitle(newName);
-                                System.out.println("new name is: " + cyNet.getIdentifier());
-                            }
-                        }
-                        gDialog.setConnectButtonStatus(true);
-                    } else if (event.getActionCommand().equals("disconnect")) {
-                        // disconnect all geese
-                        for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
-                            String gooseNetworkId = it.next();
-                            CyGoose goose = networkGeese.get(gooseNetworkId);
-                            gaggleBoss.unregister(goose.getName());
-                        }
-                        gDialog.setConnectButtonStatus(false);
-                        myGaggleName = ORIGINAL_GOOSE_NAME;
-                        defaultGoose.setName(ORIGINAL_GOOSE_NAME);
-                        Cytoscape.getDesktop().setTitle(ORIGINAL_GOOSE_NAME);
-                    }
-
-                }
-                catch (Exception E) {  // TODO quit popping box up, add error message bar to goose panel
-                    GagglePlugin.showDialogBox("Failed to communicate with Gaggle", "Error", JOptionPane.ERROR_MESSAGE);
-                    E.printStackTrace();
-                }
-            }
-        });
-    }
-
     /*
       * action button
       */
@@ -291,7 +251,7 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
       */
 
     private CyGoose createNewGoose(CyNetwork Network) throws RemoteException, IllegalArgumentException {
-        System.out.println("initial network name: " + Network.getTitle());
+        System.out.println("createNewGoose(): initial network name: " + Network.getTitle());
         CyGoose Goose = new CyGoose(gDialog);//, gaggleBoss);
         Goose.setNetworkId(Network.getIdentifier());
         Goose.setName(Network.getTitle());
@@ -308,12 +268,10 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
         }
 
         System.out.println("goose name after registration: " + Goose.getName());
+        System.out.println("setting title on network " + Network.getIdentifier());
         Network.setTitle(Goose.getName());
         gaggleBoss = connector.getBoss();
         Goose.setBoss(gaggleBoss);
-
-
-        
         
         return Goose;
     }
@@ -395,7 +353,55 @@ public class GagglePlugin extends CytoscapePlugin implements PropertyChangeListe
                 }
             }
         });
+    this.connectAction();
     }
+    
+    private void connectAction() {
+        System.err.println("in connectAction");
+        gDialog.addButtonAction(GooseButton.CONNECT, new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                System.out.println("in connectAction's listener");
+                try {
+                    if (event.getActionCommand().equals("connect")) {
+                        // reconnect all geese
+                        for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
+                            String gooseNetworkId = it.next();
+                            CyGoose goose = networkGeese.get(gooseNetworkId);
+                            String newName = gaggleBoss.register(goose);
+                            if (gooseNetworkId.equals("0")) {
+                                Cytoscape.getDesktop().setTitle(newName);
+                            } else {
+                                CyNetwork cyNet = Cytoscape.getNetwork(gooseNetworkId);
+                                System.out.println("old name: " + cyNet.getTitle());
+                                cyNet.setTitle(newName);
+                                System.out.println("new name is: " + cyNet.getIdentifier());
+                            }
+                        }
+                        gDialog.setConnectButtonStatus(true);
+                    } else if (event.getActionCommand().equals("disconnect")) {
+                        // disconnect all geese
+                        for (Iterator<String> it = networkGeese.keySet().iterator(); it.hasNext();) {
+                            String gooseNetworkId = it.next();
+                            CyGoose goose = networkGeese.get(gooseNetworkId);
+                            gaggleBoss.unregister(goose.getName());
+                        }
+                        gDialog.setConnectButtonStatus(false);
+                        myGaggleName = ORIGINAL_GOOSE_NAME;
+                        defaultGoose.setName(ORIGINAL_GOOSE_NAME);
+                        Cytoscape.getDesktop().setTitle(ORIGINAL_GOOSE_NAME);
+                    }
+
+                }
+                catch (Exception E) {  // TODO quit popping box up, add error message bar to goose panel
+                	gDialog.setConnectButtonStatus(false);
+                	gDialog.displayMessage("Failed to communicate with Gaggle");
+//                    GagglePlugin.showDialogBox("Failed to communicate with Gaggle", "Error", JOptionPane.ERROR_MESSAGE);
+                    E.printStackTrace();
+                }
+            }
+        });
+    }
+
 
 
     public static void showDialogBox(String message, String title, int msgType) {

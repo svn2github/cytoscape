@@ -3,7 +3,6 @@ package org.systemsbiology.cytoscape;
 import org.systemsbiology.cytoscape.dialog.GooseDialog;
 import org.systemsbiology.cytoscape.dialog.GooseDialog.GooseButton;
 import org.systemsbiology.cytoscape.task.HandleNetworkTask;
-//import org.systemsbiology.cytoscape.Attributes;
 
 import org.systemsbiology.cytoscape.visual.SeedMappings;
 import org.systemsbiology.cytoscape.script.*;
@@ -24,12 +23,10 @@ import cytoscape.*;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualStyle;
 
-//import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
 
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
-
 
 import giny.model.Node;
 import giny.model.Edge;
@@ -484,8 +481,10 @@ public class CyGoose implements Goose
 				CyNetwork NewNet = Cytoscape.createNetwork(title, true);
 				for (String CurrentName : names)
 					{
-					Node NewNode = (Node) Cytoscape.getCyNode(CurrentName, true);
-					NewNet.addNode(NewNode);
+					//Node NewNode = (Node) Cytoscape.getCyNode(CurrentName, true);
+					CyNode NewNode = Cytoscape.getCyNode(CurrentName, true);
+					NewNet.addNode(NewNode.getRootGraphIndex());
+					//NewNet.addNode(NewNode);
 					}
 				Cytoscape.getNetworkView(NewNet.getIdentifier()).applyLayout(
 						CyLayouts.getDefaultLayout());
@@ -574,7 +573,7 @@ public class CyGoose implements Goose
 			
 			CyNetwork NewNet = Cytoscape.createNetwork(title, false);
 			
-			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, NewNet);
+			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, NewNet, true);
 
 			// basic layout
 			CyLayoutAlgorithm Layout = CyLayouts.getDefaultLayout();
@@ -583,11 +582,14 @@ public class CyGoose implements Goose
 					.getLayout(LayoutName);
 			Cytoscape.createNetworkView(NewNet, NewNet.getTitle(), Layout);
 			NetworkId = NewNet.getIdentifier();
+
+			NewNet.unselectAllEdges();
+			NewNet.unselectAllNodes();
 			}
 		else
 			{
 			System.out.println("  --Network " + this.getNetworkId());
-			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, Cytoscape.getNetwork(this.getNetworkId()));
+			HandleNetworkTask.createHandleNetworkTask(source, gNetwork, Cytoscape.getNetwork(this.getNetworkId()), false);
 			NetworkId = getNetworkId();
 			}
 		// refresh network to flag selected nodes
@@ -609,9 +611,8 @@ public class CyGoose implements Goose
 
 	// sets the name goose is identified by in the boos
 	public void setName(String newName)
-		{// throws RemoteException
+		{
 		gooseName = newName;
-		System.out.println("!!!! Setting goose name to: " + newName);
 		}
 
 	// I think this is used to choose the identifier to broadcast/handle nodes

@@ -35,13 +35,15 @@ public class HandleNetworkTask implements Task
 	private Network gaggleNetwork;
 	private CyNetwork cyNetwork;
 	private String bSource;
-
+	private boolean create;
+	
 	public HandleNetworkTask(String broadcastSource, Network gNetwork,
-			CyNetwork cyNet)
+			CyNetwork cyNet, boolean createNetwork)
 		{
 		this.bSource = broadcastSource;
 		this.gaggleNetwork = gNetwork;
 		this.cyNetwork = cyNet;
+		this.create = createNetwork;
 		}
 
 	/*
@@ -72,10 +74,10 @@ public class HandleNetworkTask implements Task
 	public void run()
 		{
 		System.out.println("======> Creating network in " + this.getClass().getName());
-		if (taskMonitor == null) { throw new IllegalStateException(
-				"Task Monitor is not set."); }
-		taskMonitor.setStatus("Creating new network from " + this.bSource
-				+ " broadcast...");
+		if (taskMonitor == null)  
+			throw new IllegalStateException("Task Monitor is not set.");
+		
+		taskMonitor.setStatus("Creating new network from " + this.bSource+ " broadcast...");
 		taskMonitor.setPercentCompleted(-1);
 
 		Collection<Node> srcCollection = new ArrayList<Node>();
@@ -83,8 +85,7 @@ public class HandleNetworkTask implements Task
 		Collection<Edge> edgeCollection = new ArrayList<Edge>();
 
 		double percent = 0.0d;
-		int maxCount = this.gaggleNetwork.getNodes().length
-				+ this.gaggleNetwork.getInteractions().length;
+		int maxCount = this.gaggleNetwork.getNodes().length + this.gaggleNetwork.getInteractions().length;
 		int progressCount = 0;
 
 		int i = 0;
@@ -94,15 +95,14 @@ public class HandleNetworkTask implements Task
 
 			for (String NodeName : this.gaggleNetwork.getNodes())
 				{
-				Node NewNode = (Node) Cytoscape.getCyNode(NodeName, true);
+				Node NewNode = (Node) Cytoscape.getCyNode(NodeName, create);
 				this.cyNetwork.addNode(NewNode);
 				this.cyNetwork.setSelectedNodeState(NewNode, true);
 				i++;
 				}
 
 			Attributes.addAttributes(this.gaggleNetwork, NetworkObject.NODE);
-			for (Interaction CurrentInteraction : this.gaggleNetwork
-					.getInteractions())
+			for (Interaction CurrentInteraction : this.gaggleNetwork.getInteractions())
 				{
 				String srcNodeName = CurrentInteraction.getSource();
 				String targetNodeName = CurrentInteraction.getTarget();
@@ -116,8 +116,7 @@ public class HandleNetworkTask implements Task
 				this.cyNetwork.addNode(targetNode);
 				targetCollection.add(targetNode);
 				// flag edge (create a new edge if it's not found)
-				Edge selectEdge = (Edge) Cytoscape.getCyEdge(srcNode, targetNode,
-						Semantics.INTERACTION, interactionType, true);
+				Edge selectEdge = (Edge) Cytoscape.getCyEdge(srcNode, targetNode, Semantics.INTERACTION, interactionType, create);
 				// add newly created edge to current network
 				if (!this.cyNetwork.containsEdge(selectEdge))
 					this.cyNetwork.addEdge(selectEdge);
@@ -142,7 +141,8 @@ public class HandleNetworkTask implements Task
 		this.cyNetwork.setSelectedNodeState(targetCollection, true);
 		this.cyNetwork.setSelectedEdgeState(edgeCollection, true);
 		}
-
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -160,10 +160,10 @@ public class HandleNetworkTask implements Task
 	 */
 
 	public static void createHandleNetworkTask(String broadcastSource,
-			Network gNet, CyNetwork cNet)
+			Network gNet, CyNetwork cNet, boolean createNet)
 		{
 		// Create Task
-		HandleNetworkTask task = new HandleNetworkTask(broadcastSource, gNet, cNet);
+		HandleNetworkTask task = new HandleNetworkTask(broadcastSource, gNet, cNet, createNet);
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();

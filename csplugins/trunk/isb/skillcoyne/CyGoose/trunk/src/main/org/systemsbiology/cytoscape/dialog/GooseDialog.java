@@ -159,7 +159,7 @@ public class GooseDialog extends javax.swing.JPanel {
 
         setFont(new java.awt.Font("Lucida Grande", 0, 12));
         setPreferredSize(new java.awt.Dimension(300, 600));
-        gooseComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "galFiltered.sif", "Bind Yeast (entire list of something or other)", "Cytoscape v2.5" }));
+        //gooseComboBox.setModel(new javax.swing.DefaultComboBoxModel());
         gooseComboBox.setToolTipText("List of Geese currently connected to Gaggle");
         gooseComboBox.setMaximumSize(new java.awt.Dimension(120, 30));
         gooseComboBox.setMinimumSize(new java.awt.Dimension(80, 27));
