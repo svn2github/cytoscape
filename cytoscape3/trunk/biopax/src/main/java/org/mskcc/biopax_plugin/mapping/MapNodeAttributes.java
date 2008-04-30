@@ -145,7 +145,12 @@ public class MapNodeAttributes {
 	 */
 	public static final String BIOPAX_XREF_IDS = "biopax.xref_ids";
 
-	/**
+ 	/**
+    * BioPAX Node Attribute:  BIOPAX_XREF_PREFIX.
+    */
+    public static final String BIOPAX_XREF_PREFIX = "biopax.xref.";
+
+    /**
 	 * BioPax Node Attribute: AVAILABILITY
 	 */
 	public static final String BIOPAX_AVAILABILITY = "biopax.availability";
@@ -359,6 +364,18 @@ public class MapNodeAttributes {
 
             if (idList != null) {
                 nodeAttributes.setListAttribute(nodeID, BIOPAX_XREF_IDS, idList);
+                for (int i=0; i<idList.size(); i++) {
+                    String idPair = (String) idList.get(i);
+                    String parts[] = idPair.split(":");
+                    String dbName = parts[0];
+                    String id = parts[1];
+                    String key = BIOPAX_XREF_PREFIX + dbName.toUpperCase();
+                    //  Set individual XRefs;  Max of 1 per database.
+                    String existingId = nodeAttributes.getStringAttribute(nodeID, key);
+                    if (existingId == null) {
+                        nodeAttributes.setAttribute(nodeID, key, id);
+                    }
+                }
             }
 
             //  Optionally add Node Label
@@ -730,7 +747,11 @@ public class MapNodeAttributes {
 
 			for (int i = 0; i < xrefList.size(); i++) {
 				ExternalLink link = (ExternalLink) xrefList.get(i);
-				temp.append("<LI>- ");
+                //  Ignore cPath Link.
+                if (link.getDbName() != null && link.getDbName().equalsIgnoreCase("CPATH")) {
+                    continue;
+                }
+                temp.append("<LI>- ");
 				temp.append(ExternalLinkUtil.createLink(link.getDbName(), link.getId()));
                 temp.append("</LI>");
 			}
