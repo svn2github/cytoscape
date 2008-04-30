@@ -1,15 +1,40 @@
 <html>
+<head>
+<link href="netlink.css" type="text/css" rel="stylesheet"/>
+</head>
 <body>
-<h2>NetLink Plugin</h2>
-The NetLink plugin is a simple plugin for connecting nodes or edges in one network
-with another network.  The basic idea is to create an attribute which 
-point to the names of the other network.   The NetLink plugin simply looks for an
-attribute named <b>netlink.connection</b> or and if that attribute exists for the given
-node or edge, it then creates a menu item in the right-click (context) popup menu.  
-If the menu item exists, then chosing the menu item will switch the selected view
-focuse from the current network to the new network. 
+<div id="container">
+<h2>Cytoscape NetLink Plugin</h2>
+<p>
+The NetLink plugin is a simple <a href="http://cytoscape.org">Cytoscape</a> 
+plugin for connecting nodes or edges in one network
+with another network.  The basic idea is to use an attribute which 
+points to a network name which is in turned used for linking nodes and
+edges to other networks.
+</p>
 
-<h3>Parent -&gt; Child Links</h3>
+<p>
+The NetLink plugin simply looks for an
+attribute named <b>netlink.connection</b> and if that attribute exists for the given
+node or edge, it then creates a menu item in the right-click (context) popup menu.  
+If the menu item exists, then chosing the menu item will switch the selected network view
+focus from the current network to the new network. 
+</p>
+
+<h3>Download + Install</h3>
+<p>
+You can install the NetLink plugin automatically from the
+<a href="http://cytoscape.org/manual/Cytoscape2_6Manual.html#Plugins%20and%20the%20Plugin%20Manager">PluginManager</a> found in the <i>Plugin -&gt Manage Plugins</i> menu within Cytoscape.
+</p>
+
+
+<p>
+Alternatively, you can download the plugin manually from 
+the <a href="http://cytoscape.org/plugins/index.php">Cytoscape Plugins Page</a>, copy the NetLink.jar
+file to your plugins directory, and restart Cytoscape.
+</p>
+
+<h3>Example:  Parent -&gt; Child Links</h3>
 <p>
 Begin with a simple network called <i>Parent.sif</i>:
 </p>
@@ -62,7 +87,7 @@ Now load all networks and the node attributes file.  When you right click on a n
 network, you should see a menu item that says: "asdf".
 </p>
 
-<h3>Child -&gt; Parent Links</h3>
+<h3>Example:  Child -&gt; Parent Links</h3>
 <p>
 If you want to add Child -&gt;Parent links, then simply append the node names found in the child networks 
 the node attributes file that you just created:
@@ -80,6 +105,6 @@ cat = Parent.sif
 dog = Parent.sif
 ...
 </pre>
-
+</div>
 </body>
 </html>
