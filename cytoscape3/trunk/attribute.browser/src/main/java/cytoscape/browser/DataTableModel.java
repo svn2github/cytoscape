@@ -408,7 +408,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			setDataVector(data_vector, column_names);
 //			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 //			         .firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
-			AttributeBrowserPlugin.getPropertyChangeSupport().firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+            AttributeBrowser.getPropertyChangeSupport()
+            .firePropertyChange(AttributeBrowser.RESTORE_COLUMN, null, objectType);
 
 			return;
 		} else if (attributeNames.contains(AttributeBrowser.ID) == false) {
@@ -453,7 +454,8 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 
 		setDataVector(data_vector, column_names);
 		
-		AttributeBrowserPlugin.getPropertyChangeSupport().firePropertyChange(CyAttributeBrowserTable.RESTORE_COLUMN, null, null);
+        AttributeBrowser.getPropertyChangeSupport()
+        .firePropertyChange(AttributeBrowser.RESTORE_COLUMN, null, objectType);
 	}
 
 	/**
@@ -563,12 +565,17 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 	 * Instead of using a listener, just overwrite this method to save time and
 	 * write to the temp object
 	 */
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+	public void setValueAt(Object newValue, int rowIdx, int colIdx) {
+//		System.out.println("Edit Cell: new Val = " + newValue + ", row = " + rowIdx + ", col = "
+//		+ colIdx + ", col name = " + getColumnName(colIdx));
+//		System.out.println("           OLD Val = " + getValueAt(rowIdx, colIdx));
+
 		DataEditAction edit = null;
 
 		// Find key
 		int keyIndex = -1;
 		int columnOffset = 0;
+
 		if (attributeNames.contains(AttributeBrowser.ID) == false) {
 			// The ID is not in our attribute list, so it must be in the first column
 			// We will need to offset our index into the attribute names list to get
@@ -577,29 +584,37 @@ public class DataTableModel extends DefaultTableModel implements SortTableModel 
 			keyIndex = 0;
 			columnOffset = 1;
 		} else {
-			for(int i=0; i<attributeNames.size(); i++) {
-				if(attributeNames.get(i).equals(AttributeBrowser.ID)) {
+			for (int i = 0; i < attributeNames.size(); i++) {
+				if (attributeNames.get(i).equals(AttributeBrowser.ID)) {
 					keyIndex = i;
+
 					break;
 				}
 			}
 		}
-		if(keyIndex == -1) return;
-		
+
+		if (keyIndex == -1)
+			return;
+
+//		System.out.println("           Object Val = " + getValueAt(rowIdx, keyIndex)
+//		+ ", Attr Name = " + getColumnName(colIdx) + "OLD version = "
+//		+ attributeNames.get(colIdx - columnOffset));
+
 		if (this.objectType != NETWORK) {
-			edit = new DataEditAction(this, getValueAt(rowIndex, keyIndex).toString(),
-			                          attributeNames.get(columnIndex-columnOffset), null,
-			                          getValueAt(rowIndex, columnIndex), aValue, objectType);
+			// This edit is for node or edge.
+			edit = new DataEditAction(this, getValueAt(rowIdx, keyIndex).toString(),
+					getColumnName(colIdx), getValueAt(rowIdx, colIdx), newValue,
+					objectType);
 		} else {
 			edit = new DataEditAction(this, Cytoscape.getCurrentNetwork().getIdentifier(),
-			                          (String) this.getValueAt(rowIndex, 0), null,
-			                          getValueAt(rowIndex, columnIndex), aValue, objectType);
+					(String) this.getValueAt(rowIdx, 0),
+					getValueAt(rowIdx, colIdx), newValue, objectType);
 		}
 
 		if (edit.isValid()) {
-			Vector rowVector = (Vector) dataVector.elementAt(rowIndex);
-			rowVector.setElementAt(aValue, columnIndex);
-			fireTableCellUpdated(rowIndex, columnIndex);
+			Vector rowVector = (Vector) dataVector.elementAt(rowIdx);
+			rowVector.setElementAt(newValue, colIdx);
+			fireTableCellUpdated(rowIdx, colIdx);
 		}
 
 		cytoscape.util.undo.CyUndo.getUndoableEditSupport().postEdit(edit);
