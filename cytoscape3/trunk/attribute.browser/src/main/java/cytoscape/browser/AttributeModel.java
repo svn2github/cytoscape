@@ -36,14 +36,12 @@ package cytoscape.browser;
 
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
-
 import org.cytoscape.attributes.MultiHashMapDefinitionListener;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.ComboBoxModel;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
@@ -73,12 +71,17 @@ public class AttributeModel implements ListModel, ComboBoxModel, MultiHashMapDef
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void sortAtttributes() {
-		attributeNames = CyAttributesUtils.getVisibleAttributeNames(attributes);
-		Collections.sort(attributeNames);
-		notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0,
-		                                  attributeNames.size()));
-	}
+    public void sortAtttributes() {
+        attributeNames = new ArrayList<String>();
+        for(String attrName: CyAttributesUtils.getVisibleAttributeNames(attributes)) {
+                if(attributes.getUserVisible(attrName)) {
+                        attributeNames.add(attrName);
+                }
+        }
+        Collections.sort(attributeNames);
+        notifyListeners(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0,
+                                          attributeNames.size()));
+}
 
 	/**
 	 *  DOCUMENT ME!
