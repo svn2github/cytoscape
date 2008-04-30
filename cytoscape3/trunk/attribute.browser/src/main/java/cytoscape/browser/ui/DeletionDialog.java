@@ -7,18 +7,13 @@ package cytoscape.browser.ui;
 
 import cytoscape.browser.DataTableModel;
 import cytoscape.Cytoscape;
-
 import org.cytoscape.attributes.CyAttributes;
-
 import org.jdesktop.layout.GroupLayout;
-
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.AbstractListModel;
 import javax.swing.JDialog;
-
 
 /**
  *
@@ -30,13 +25,14 @@ public class DeletionDialog extends JDialog {
 	private DataTableModel model;
 
 	/** Creates new form DeletionDialog */
-	protected DeletionDialog(Frame parent, boolean modal, String[] attributes, String type, DataTableModel model) {
+	protected DeletionDialog(Frame parent, boolean modal, String[] attributes, String type,
+	                         DataTableModel model) {
 		super(parent, modal);
 
 		this.type = type;
 		this.attributes = attributes;
 		this.model = model;
-		
+
 		String title = "Delete " + type + " Attributes";
 		this.setTitle(title);
 		initComponents();
@@ -121,26 +117,31 @@ public class DeletionDialog extends JDialog {
 	} // </editor-fold>
 
 	private void deleteButtonActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
 		CyAttributes attr = null;
 
 		if (type.equalsIgnoreCase("node")) {
 			attr = Cytoscape.getNodeAttributes();
-		} else {
+		} else if (type.equalsIgnoreCase("edge")) {
 			attr = Cytoscape.getEdgeAttributes();
+		} else {
+			attr = Cytoscape.getNetworkAttributes();
 		}
 
 		Object[] selected = attributeList.getSelectedValues();
 
-		for (int i = 0; i < selected.length; i++) {
+		for (int i = 0; i < selected.length; i++)
 			attr.deleteAttribute(selected[i].toString());
-		}
+
+		Cytoscape.getSwingPropertyChangeSupport()
+		         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+		Cytoscape.getPropertyChangeSupport()
+		         .firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+
 		model.setTableData();
-		this.dispose();
+		dispose();
 	}
 
 	private void cancelButtonActionPerformed(ActionEvent evt) {
-		// TODO add your handling code here:
 		this.dispose();
 	}
 
