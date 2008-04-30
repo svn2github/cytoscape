@@ -14,11 +14,12 @@ pluginDescription=Links network nodes or edges to other networks via the right-c
 pluginVersion=0.1
 
 # Compatible Cytoscape version
-cytoscapeVersion=2.5
 cytoscapeVersion=2.6
 
 # Category, use one of the categories listed on the website or create your own
 pluginCategory=Other
+
+projectURL=http://chianti.ucsd.edu/netlink-plugin
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
