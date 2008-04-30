@@ -56,7 +56,12 @@ public class InteractionVocab extends CommonVocab {
 	 */
 	public static final String EXPERIMENTAL_SYSTEM_NAME = "EXPERIMENTAL_SYSTEM_NAME";
 
-	/**
+    /**
+     * Experimental System Name.
+     */
+    public static final String INTERACTION_TYPE_NAME = "INTERACTION_TYPE_NAME";
+
+    /**
 	 * Experimental System XRef Database.
 	 */
 	public static final String EXPERIMENTAL_SYSTEM_XREF_DB = "EXPERIMENTAL_SYSTEM_XREF_DB";
