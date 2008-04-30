@@ -19,7 +19,7 @@ body {
 }
 
 h1 {
-	font-size:200%;
+	font-size:300%;
 	font-weight:normal;
 	font-style:italic;
 	color:#092;
@@ -30,7 +30,7 @@ h1 {
 h2 {
 	background-color:#DDD;
 	color:#237;
-	font-size:180%;
+	font-size:250%;
 	font-weight:normal;
 	padding:5px;
 	border-style: solid;
