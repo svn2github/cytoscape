@@ -61,7 +61,8 @@ public class ExternalLinkUtil {
 	 * @return a URL String, or null, if dbName is not found.
 	 */
 	public static String getUrl(String dbName, String id) {
-		if (dbMap == null) {
+        dbName = dbName.toUpperCase();
+        if (dbMap == null) {
 			initMap();
 		}
 
@@ -148,17 +149,16 @@ public class ExternalLinkUtil {
 			String dbParameter = createDbParameter(dbList, synList);
 
 			url.append(synonymParameter);
-			appendAmpersand(synonymParameter, url);
-			url.append(dbParameter);
-			appendAmpersand(dbParameter, url);
+            if (dbParameter != null && dbParameter.length() > 0) {
+                appendAmpersand(synonymParameter, url);
+                url.append(dbParameter);
+            }
 
 			//  Taxonomy ID appears like this:
 			//  ncbi_tax_id_1=9609
 			if (url.length() > 0) {
-				if (taxonomyId > 0) {
-					url.append("ncbi_tax_id_1=" + taxonomyId);
-				}
-
+                //  removed NCBI Taxonomy ID;  results in nearly always getting a hit w/i iHOP.
+                //	url.append("ncbi_tax_id_1=" + taxonomyId);
 				url.insert(0, "http://www.ihop-net.org/UniPub/iHOP/in?");
 
 				// return string - but encode spaces first
@@ -272,7 +272,11 @@ public class ExternalLinkUtil {
 		dbMap.put("PUBMED", url);
 		dbMap.put("PMID", url);
 
-		//  UniProt
+        //  HPRD
+        url = "http://hprd.org/protein/";
+        dbMap.put ("HPRD", url);
+        
+        //  UniProt
 		url = "http://www.pir.uniprot.org/cgi-bin/upEntry?id=";
 
 		HashMap temp = new HashMap();
@@ -311,7 +315,8 @@ public class ExternalLinkUtil {
 		//  Entrez Gene
 		url = "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene&" + "cmd=search&term=";
 		temp = new HashMap();
-		temp.put("ENTREZ_GENE", url);
+        temp.put("ENTREZGENE", url);
+        temp.put("ENTREZ_GENE", url);
 		temp.put("LOCUS_LINK", url);
 		temp.put("LOCUSLINK", url);
 		temp.put("LOCUS-LINK", url);
