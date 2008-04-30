@@ -108,22 +108,26 @@ public class NetworkListener implements PropertyChangeListener {
 
 		// network destroyed, we may have to remove it from our list
 		if (event.getPropertyName() == Cytoscape.NETWORK_CREATED) {
-			networkCreatedEvent(event);
+			networkFocusEvent(event, false);
 		} else if (event.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			networkDestroyed((String) event.getNewValue());
 			relevantEventFlag = true;
 		} else if (event.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
 			relevantEventFlag = true;
 		} else if (event.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			networkFocusEvent(event);
+			networkFocusEvent(event, true);
 		} else if (event.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
-			networkFocusEvent(event);
+			networkFocusEvent(event, false);
 		} else if (event.getPropertyName() == Cytoscape.SESSION_LOADED) {
-			networkCreatedEvent(event);
-			networkFocusEvent(event);
-		}
+            CySessionUtil.setSessionReadingInProgress(false);
+            networkCreatedEvent(event);
+            networkFocusEvent(event, true);
+        } else if (event.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
+            CySessionUtil.setSessionReadingInProgress(true);
+        }
 
-		if (relevantEventFlag && !networkViewsRemain()) {
+
+        if (relevantEventFlag && !networkViewsRemain()) {
 			onZeroNetworkViewsRemain();
 		}
 	}
@@ -149,7 +153,7 @@ public class NetworkListener implements PropertyChangeListener {
 	/**
 	 * Network Focus Event.
 	 */
-	private void networkFocusEvent(PropertyChangeEvent event) {
+	private void networkFocusEvent(PropertyChangeEvent event, boolean sessionLoaded) {
 		// get network id
 		String networkId = null;
 		GraphPerspective cyNetwork = null;
@@ -167,20 +171,21 @@ public class NetworkListener implements PropertyChangeListener {
 		}
 
 		if (networkId != null) {
-			// due to quirky-ness in event model, we could get here without registering network
-			// check if this is a biopax network
-			if (isBioPaxNetwork(cyNetwork) && !cyNetworkList.contains(networkId)) {
-				registerNetwork(cyNetwork);
-			}
+            if (!sessionLoaded) {
+                if (cyNetworkList.contains(networkId)) {
+                    bpPanel.resetText();
+                } else {
+                    bpPanel.resetText("Node details are not provided for"
+                        + " the currently selected network.");
+                }
+            }
 
-			// update bpPanel accordingly
-			if (cyNetworkList.contains(networkId)) {
-				bpPanel.resetText();
-			} else {
-				bpPanel.resetText("Node details are not provided for"
-				                  + " the currently selected network.");
-			}
-		}
+            // due to quirky-ness in event model, we could get here without registering network
+            // check if this is a biopax network
+            if (isBioPaxNetwork(cyNetwork) && !cyNetworkList.contains(networkId)) {
+                registerNetwork(cyNetwork);
+            }
+        }
 	}
 
 	/*
@@ -242,14 +247,14 @@ public class NetworkListener implements PropertyChangeListener {
 		String networkID = cyNetwork.getIdentifier();
 
 		// is the biopax network attribute true ?
-		Boolean b = networkAttributes.getBooleanAttribute(networkID,
+		Boolean b1 = networkAttributes.getBooleanAttribute(networkID,
 		                                                  MapBioPaxToCytoscape.BIOPAX_NETWORK);
-
-		// outta here
-		if (b == null) {
+        Boolean b2 = networkAttributes.getBooleanAttribute(networkID, "BINARY_NETWORK");
+        // outta here
+        if (b1 == null && b2 == null) {
 			return false;
-		}
-
-		return (b.booleanValue());
+        } else {
+            return true;
+        }
 	}
 }
