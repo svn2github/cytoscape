@@ -44,6 +44,7 @@ import org.mskcc.biopax_plugin.view.BioPaxContainer;
 import org.cytoscape.view.GraphView;
 
 import cytoscape.Cytoscape;
+import cytoscape.util.CyNetworkNaming;
 import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.readers.GraphReader;
 import org.cytoscape.view.GraphView;
@@ -96,8 +97,10 @@ public class BioPaxGraphReader implements GraphReader {
 			BioPaxUtil bpUtil = new BioPaxUtil(reader, null);
 
 			//  set network name - use pathway name
-			networkName = getPathwayName(bpUtil);
-			networkName = (networkName == null) ? "Unknown" : networkName;
+            String candidateName = getPathwayName(bpUtil);
+            candidateName = (candidateName == null) ? "Unknown" : candidateName;
+            //  Take appropriate adjustments, if name already exists
+            networkName = CyNetworkNaming.getSuggestedNetworkTitle(candidateName);
 
 			//  Map BioPAX Data to Cytoscape Nodes/Edges
 			MapBioPaxToCytoscape mapper = new MapBioPaxToCytoscape(bpUtil, null);
