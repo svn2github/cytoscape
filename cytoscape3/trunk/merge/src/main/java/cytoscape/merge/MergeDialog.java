@@ -39,20 +39,6 @@ package cytoscape.merge;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
-import cytoscape.plugin.CytoscapePlugin;
-
-import cytoscape.util.GraphSetUtils;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.Label;
-import org.cytoscape.view.NodeView;
-
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
@@ -61,13 +47,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
-import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -76,15 +59,11 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -137,7 +116,7 @@ class MergeDialog extends JDialog {
 		}
 
 		networkList = new JList(networkData);
-		networkList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		networkList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		networkList.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent e) {
 					int index = networkList.getMinSelectionIndex();
@@ -215,10 +194,30 @@ class MergeDialog extends JDialog {
 			});
 		leftButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
-					int currentIndex = networkList.getMinSelectionIndex();
-					Object removed = networkData.remove(currentIndex);
-					unselectedNetworkData.addElement(removed);
-					unselectedNetworkList.setSelectedIndex(unselectedNetworkData.getSize() - 1);
+					int [] indices = networkList.getSelectedIndices();
+					
+					if (indices == null || indices.length == 0) {
+						return;
+					}
+
+					// Remove the objects from right list
+					Vector<Object> objs = new Vector<Object>();
+					for (int i= indices.length-1; i>=0; i--) {
+						Object removed = networkData.remove(indices[i]);
+						objs.add(removed);						
+					}
+
+					// Add the objects to the left list in the same order as left
+					for (int i=objs.size()-1; i>=0; i--) {
+						unselectedNetworkData.addElement(objs.elementAt(i));
+					}
+
+					// Select new objects in left list
+					int [] indices2 = new int[indices.length];
+					for (int i=0; i< indices.length; i++) {
+						indices2[i] = unselectedNetworkData.getSize() - 1 -i; 
+					}
+					unselectedNetworkList.setSelectedIndices(indices2);
 					networkList.repaint();
 					unselectedNetworkList.repaint();
 
@@ -233,10 +232,31 @@ class MergeDialog extends JDialog {
 			});
 		rightButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
-					int currentIndex = unselectedNetworkList.getMinSelectionIndex();
-					Object removed = unselectedNetworkData.remove(currentIndex);
-					networkData.addElement(removed);
-					networkList.setSelectedIndex(networkData.getSize() - 1);
+					int [] indices = unselectedNetworkList.getSelectedIndices();
+					
+					if (indices == null || indices.length == 0) {
+						return;
+					}
+
+					// Remove the objects from left list
+					Vector<Object> objs = new Vector<Object>();
+					for (int i= indices.length-1; i>=0; i--) {
+						Object removed = unselectedNetworkData.remove(indices[i]);
+						objs.add(removed);						
+					}
+
+					// Add the objects to the right list in the same order as left
+					for (int i=objs.size()-1; i>=0; i--) {
+						networkData.addElement(objs.elementAt(i));
+					}
+					
+					// Select new objects in right list
+					int [] indices2 = new int[indices.length];
+					for (int i=0; i< indices.length; i++) {
+						indices2[i] = networkData.getSize() - 1 -i; 
+					}
+					
+					networkList.setSelectedIndices(indices2);
 					networkList.repaint();
 					unselectedNetworkList.repaint();
 

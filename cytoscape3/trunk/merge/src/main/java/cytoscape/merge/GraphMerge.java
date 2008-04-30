@@ -36,50 +36,17 @@
 */
 package cytoscape.merge;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 
 import cytoscape.plugin.CytoscapePlugin;
 
 import cytoscape.util.GraphSetUtils;
+import cytoscape.util.CyNetworkNaming;
 
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.Label;
-import org.cytoscape.view.NodeView;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+
 
 
 /**
@@ -110,12 +77,14 @@ public class GraphMerge extends CytoscapePlugin {
 
 			if (!dialog.isCancelled()) {
 				if (dialog.getOperation() == MergeDialog.UNION) {
-					GraphSetUtils.createUnionGraph(dialog.getNetworkList(), true, "Union");
+					GraphSetUtils.createUnionGraph(dialog.getNetworkList(), true, 
+			                CyNetworkNaming.getSuggestedNetworkTitle("Union"));
 				} else if (dialog.getOperation() == MergeDialog.INTERSECTION) {
 					GraphSetUtils.createIntersectionGraph(dialog.getNetworkList(), true,
-					                                      "Intersection");
+						    CyNetworkNaming.getSuggestedNetworkTitle("Intersection"));
 				} else if (dialog.getOperation() == MergeDialog.DIFFERENCE) {
-					GraphSetUtils.createDifferenceGraph(dialog.getNetworkList(), true, "Difference");
+					GraphSetUtils.createDifferenceGraph(dialog.getNetworkList(), true, 
+			                CyNetworkNaming.getSuggestedNetworkTitle("Difference"));
 				}
 			}
 		}
