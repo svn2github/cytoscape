@@ -1,28 +1,14 @@
 # This props file would be filled out and included in the plugin jar file.  This props file will be used 
 # to put information into the Plugin Manager about the plugin 
 
+
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users
 pluginName=CyGoose
 
 # Description used to give users information about the plugin such as what it does
-pluginDescription=The CyGoose Cytoscape Plugin gives any network in Cytoscape full access to the Gaggle.<br>As of version 2.6 of the plugin, it works with the current (2007-04) revision of the Gaggle API.<br>
-The Gaggle is a tool to create a data exploration and analysis environment. Other geese (independent threads/tools which Cytoscape can now interact with through the Gaggle Boss) 
-can be found at <a href="http://gaggle.systemsbiology.org/docs/geese/">http://gaggle.systemsbiology.org/docs/geese/</a>.<p>
-<p><b>Known bug:</b> This goose does not work with a local install of Cytoscape on a Windows machine. It will work with Mac or Linux and as a webstart on Mac/Linux/Windows.
-<br>We are working on this and will release a fix as soon as we can.
-
-<b>News:</b>
-This version now works with a local install of Cytoscape on Windows XP (Vista has not been tested).
-
-New Features:<ul>
-<li>Broadcasts will send both edge and name lists now
-<li>CyGoose handles incoming broadcasts that contain edge names
-<li>Namelist broadcasts sent to the default goose (ie. not to a specific network) will be handled by all available network geese
-</ul>
-
-
+pluginDescription=The CyGoose Cytoscape Plugin gives any network in Cytoscape full access to the Gaggle.  The Gaggle is a tool to create a data exploration and analysis environment. Other geese (independent threads/tools which Cytoscape can now interact with through the Gaggle Boss) can be found at <a href="http://gaggle.systemsbiology.org/docs/geese/">http://gaggle.systemsbiology.org/docs/geese/</a>.<p><b>News:</b>This version now works with a local install of Cytoscape on Windows XP (Vista has not been tested).<p><i>New Features:</i><ul><li>This version is compatible with the current (2007-04) revision of the Gaggle API.<li>Broadcasts will send both edge and name lists now<li>CyGoose handles incoming broadcasts that contain edge names<li>Namelist broadcasts sent to the default goose (ie. not to a specific network) will be handled by all available network geese</ul>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=2.61
