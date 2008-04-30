@@ -59,6 +59,7 @@ public class RedoAction extends CytoscapeAction {
 		super("Redo");
 		setAcceleratorCombo(KeyEvent.VK_Y, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
+		setEnabled(true);
 	}
 
 	/**

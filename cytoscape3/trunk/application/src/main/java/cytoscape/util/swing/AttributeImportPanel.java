@@ -38,6 +38,7 @@ import cytoscape.Cytoscape;
 
 import org.cytoscape.attributes.CyAttributes;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -124,11 +125,14 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 		databasePanel.setBackground(new java.awt.Color(255, 255, 255));
 		databasePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(DATASOURCE));
 
+		attributeComboBox.setBackground(Color.white);
+
 		databaseComboBox.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					databaseComboBoxActionPerformed(evt);
 				}
 			});
+		databaseComboBox.setBackground(Color.white);
 
 		org.jdesktop.layout.GroupLayout databasePanelLayout = new org.jdesktop.layout.GroupLayout(databasePanel);
 		databasePanel.setLayout(databasePanelLayout);
@@ -160,6 +164,7 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 					attributeTypeComboBoxActionPerformed(evt);
 				}
 			});
+		attributeTypeComboBox.setBackground(Color.white);
 
 		org.jdesktop.layout.GroupLayout attributePanelLayout = new org.jdesktop.layout.GroupLayout(attributePanel);
 		attributePanel.setLayout(attributePanelLayout);
@@ -228,6 +233,7 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 					importButtonActionPerformed(evt);
 				}
 			});
+		importButton.setBackground(Color.white);
 
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -235,6 +241,7 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 					cancelButtonActionPerformed(evt);
 				}
 			});
+		cancelButton.setBackground(Color.white);
 
 		resetButton.setText("Reset");
 		resetButton.addActionListener(new java.awt.event.ActionListener() {
@@ -242,6 +249,7 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 					resetButtonActionPerformed(evt);
 				}
 			});
+		resetButton.setBackground(Color.white);
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
 		this.setLayout(layout);

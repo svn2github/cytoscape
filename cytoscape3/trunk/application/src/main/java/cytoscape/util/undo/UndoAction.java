@@ -57,9 +57,9 @@ public class UndoAction extends CytoscapeAction {
 	 */
 	public UndoAction() {
 		super("Undo");
-		setEnabled(false);
 		setAcceleratorCombo(KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
+		setEnabled(true);
 	}
 
     /**
