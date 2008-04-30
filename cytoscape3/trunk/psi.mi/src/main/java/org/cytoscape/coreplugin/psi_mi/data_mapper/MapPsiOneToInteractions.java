@@ -40,6 +40,16 @@ import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.BibrefType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.CvType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.DbReferenceType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.EntrySet;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.ExperimentType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.InteractionElementType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.NamesType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.ObjectFactory;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.XrefType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.*;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
 
 import org.jdom.Text;
@@ -50,6 +60,7 @@ import java.math.BigInteger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -185,6 +196,7 @@ public class MapPsiOneToInteractions implements Mapper {
 			Interaction interaction = new Interaction();
 			InteractionElementType cInteraction = interactionList.getInteraction().get(i);
 			interaction.setInteractionId(cInteraction.getInteractionType().size());
+            List<CvType> interactionTypes = cInteraction.getInteractionType();
 
 			InteractionElementType.ParticipantList pList = cInteraction.getParticipantList();
 			int pCount = pList.getProteinParticipant().size();
@@ -212,13 +224,31 @@ public class MapPsiOneToInteractions implements Mapper {
 				interaction = (Interaction) list.get(j);
 				interaction.addAttribute(InteractionVocab.BAIT_MAP, interactorRoles);
 				extractInteractionNamesXrefs(cInteraction, interaction);
-			}
+                addInteractorType(interactionTypes, interaction);
+            }
 
-			interactions.addAll(list);
+            interactions.addAll(list);
 		}
 	}
 
-	/**
+    private void addInteractorType(List<CvType> interactionTypes, Interaction interaction) {
+        if (interactionTypes != null) {
+            if (interactionTypes.size() ==1) {
+                CvType interactionType = interactionTypes.get(0);
+                NamesType namesType = interactionType.getNames();
+                if (namesType != null) {
+                    String shortName = namesType.getShortLabel();
+                    if (shortName != null) {
+                        interaction.addAttribute(InteractionVocab.INTERACTION_TYPE_NAME,
+                            shortName);
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
 	 * Extracts Interaction Names.
 	 */
 	private void extractInteractionNamesXrefs(InteractionElementType cInteraction,
@@ -504,9 +534,16 @@ public class MapPsiOneToInteractions implements Mapper {
 			String commonName = names.getShortLabel();
 			String fullName = names.getFullName();
 			BigInteger ncbiTaxID = organism.getNcbiTaxId();
-			interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME, commonName);
-			interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME, fullName);
-			interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID, ncbiTaxID.toString());
-		}
-	}
+            if (commonName != null && commonName.length() > 0) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME, commonName);
+            }
+            if (fullName != null && fullName.length() > 0) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME, fullName);
+            }
+            if (ncbiTaxID != null) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID,
+                    ncbiTaxID.toString());
+            }
+        }
+    }
 }

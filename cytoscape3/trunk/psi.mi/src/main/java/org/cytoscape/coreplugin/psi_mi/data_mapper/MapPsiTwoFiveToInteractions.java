@@ -207,6 +207,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			org.cytoscape.coreplugin.psi_mi.model.Interaction interaction = new org.cytoscape.coreplugin.psi_mi.model.Interaction();
 			EntrySet.Entry.InteractionList.Interaction cInteraction = (EntrySet.Entry.InteractionList.Interaction) list
 			                                                                                                   .get(i);
+            List<CvType> interactionTypes = cInteraction.getInteractionType();
 
 			InteractionElementType.ParticipantList pList = cInteraction.getParticipantList();
 			int pCount = pList.getParticipant().size();
@@ -242,7 +243,8 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 				interaction = (org.cytoscape.coreplugin.psi_mi.model.Interaction) expDatalist.get(j);
 				interaction.addAttribute(InteractionVocab.BAIT_MAP, interactorRoles);
 				extractInteractionNamesXrefs(cInteraction, interaction);
-			}
+                addInteractorType(interactionTypes, interaction);
+            }
 
 			log("Adding num interactions:  " + expDatalist.size());
 			interactions.addAll(expDatalist);
@@ -251,7 +253,24 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 		log("Extracting Interaction List: End");
 	}
 
-	/**
+    private void addInteractorType(List<CvType> interactionTypes,
+        org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
+        if (interactionTypes != null) {
+            if (interactionTypes.size() ==1) {
+                CvType interactionType = interactionTypes.get(0);
+                NamesType namesType = interactionType.getNames();
+                if (namesType != null) {
+                    String shortName = namesType.getShortLabel();
+                    if (shortName != null) {
+                        interaction.addAttribute(InteractionVocab.INTERACTION_TYPE_NAME,
+                            shortName);
+                    }
+                }
+            }
+        }
+    }    
+
+    /**
 	 * Extracts Interaction Names.
 	 */
 	private void extractInteractionNamesXrefs(InteractionElementType cInteraction,
@@ -534,11 +553,17 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			String commonName = names.getShortLabel();
 			String fullName = names.getFullName();
 			int ncbiTaxID = organism.getNcbiTaxId();
-			interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME, commonName);
-			interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME, fullName);
-			interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID,
+            if (commonName != null && commonName.length() > 0) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME, commonName);
+            }
+            if (fullName != null && fullName.length() > 0) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME, fullName);
+            }
+            if (ncbiTaxID > 0) {
+                interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID,
 			                        Integer.toString(ncbiTaxID));
-		}
+            }
+        }
 	}
 
 	private void log(String msg) {
