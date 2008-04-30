@@ -10,6 +10,9 @@ import cytoscape.data.Semantics;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -38,7 +41,7 @@ public class EdgeFilterUi extends JDialog {
      */
     private void initGui() {
         this.setModal(true);
-        this.setTitle("Dynamic Edge Filter");
+        this.setTitle("Edge Filter");
         checkBoxSet = new HashSet();
         Set interactionSet = new TreeSet();
         CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -52,7 +55,10 @@ public class EdgeFilterUi extends JDialog {
         Iterator interactionIterator = interactionSet.iterator();
 
         JPanel edgeSetPanel = new JPanel();
-        edgeSetPanel.setBorder(new TitledBorder("Edge Filter"));
+        Border emptyBorder = new EmptyBorder (10,10,10,100);
+        Border titledBorder = new TitledBorder ("Edge Filter");
+        CompoundBorder compoundBorder = new CompoundBorder (titledBorder, emptyBorder);
+        edgeSetPanel.setBorder(compoundBorder);
         edgeSetPanel.setLayout(new BoxLayout(edgeSetPanel, BoxLayout.Y_AXIS));
         while (interactionIterator.hasNext()) {
             String interactionType = (String) interactionIterator.next();
@@ -64,9 +70,27 @@ public class EdgeFilterUi extends JDialog {
             checkBoxSet.add(checkBox);
         }
 
+        //  Select all edges
+        ApplyEdgeFilter apply = new ApplyEdgeFilter (cyNetwork, checkBoxSet);
+        apply.executeFilter();
+        
         Container contentPane = this.getContentPane();
         contentPane.setLayout (new BorderLayout());
         contentPane.add(edgeSetPanel, BorderLayout.CENTER);
+
+        JPanel panel = new JPanel();
+        JButton closeButton = new JButton ("Close");
+        closeButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent actionEvent) {
+                EdgeFilterUi.this.dispose();
+
+            }
+        });
+        panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        panel.add(closeButton);
+        contentPane.add(panel, BorderLayout.SOUTH);
+ 
         this.setLocationRelativeTo(Cytoscape.getDesktop());
         this.pack();
         this.setVisible(true);
@@ -96,6 +120,13 @@ class ApplyEdgeFilter implements ActionListener {
      * @param actionEvent Action Event.
      */
     public void actionPerformed(ActionEvent actionEvent) {
+        executeFilter();
+    }
+
+    /**
+     * Executes the Edge Filter.
+     */
+    public void executeFilter() {        
         HashSet selectedInteractionSet = new HashSet();
         Iterator checkBoxIterator = checkBoxSet.iterator();
         while (checkBoxIterator.hasNext()) {
