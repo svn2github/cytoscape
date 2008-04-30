@@ -8,7 +8,7 @@ pluginName=NetLink
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Links parent network edges to subnetworks.
+pluginDescription=Links network nodes or edges to other networks via the right-click menu based on an attribute (called netlink.connection) that maps the node/edge id to a network name. 
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=0.1
@@ -18,8 +18,7 @@ cytoscapeVersion=2.5
 cytoscapeVersion=2.6
 
 # Category, use one of the categories listed on the website or create your own
-pluginCategory=Analysis
-
+pluginCategory=Other
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
