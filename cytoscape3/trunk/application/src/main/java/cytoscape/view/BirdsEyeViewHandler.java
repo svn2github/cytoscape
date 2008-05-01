@@ -65,9 +65,13 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
 	BirdsEyeViewHandler(Component desktopPane) {
-		bev = new BirdsEyeView(Cytoscape.getCurrentNetworkView(), desktopPane);
-
-		if (desktopPane != null)
+		bev = new BirdsEyeView(Cytoscape.getCurrentNetworkView(), desktopPane) {
+				public Dimension getMinimumSize() {
+					return new Dimension(180, 180);
+				}
+			};
+  
+    if (desktopPane != null)
 			desktopPane.addComponentListener(new DesktopListener());
 	}
 

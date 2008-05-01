@@ -335,7 +335,8 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new SaveSessionAction("Save"),2);
 		addAction(new SaveSessionAsAction("Save As..."),3);
 
-		fileMenu.add(new JSeparator(), 4);
+    fileMenu.add(new JSeparator(), 2);
+    fileMenu.add(new JSeparator(), 5);
 
 		// Import submenu
 		addAction(new ImportGraphFileAction(this));
@@ -351,6 +352,8 @@ public class CyMenus implements GraphViewChangeListener {
 
 		addAction(new ImportVizmapAction());
 
+		
+		loadSubMenu.add(new JSeparator());
 		// Save submenu
 		addAction(new ExportAsXGMMLAction());
 		addAction(new ExportAsGMLAction());
@@ -361,7 +364,9 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new ExportAsGraphicsAction());
 
 		addAction(new PrintAction());
+		fileMenu.add(new JSeparator());
 		addAction(new ExitAction());
+		fileMenu.add(new JSeparator());
 
 		//
 		// Edit menu
@@ -384,7 +389,6 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new PreferenceAction());
 		addAction(new BookmarkAction());
 		addAction(new ProxyServerAction());
-
 		//
 		// Select menu
 		//
@@ -425,12 +429,18 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new CytoPanelAction(CytoPanelName.WEST,true));
 		addAction(new CytoPanelAction(CytoPanelName.SOUTH,true));
 		addAction(new CytoPanelAction(CytoPanelName.EAST,false));
+		
+		viewMenu.add(new JSeparator());
+		
 		addAction(new ShowGraphicsDetailsAction());
 
-		menuBar.getMenu("View").add(new JSeparator());
+		viewMenu.add(new JSeparator());
 
 		addAction(new SetVisualPropertiesAction());
-
+		viewMenu.add(new JSeparator());
+		
+		viewMenu.add(new ArrangeAction());
+		
 		//
 		// Layout menu
 		//

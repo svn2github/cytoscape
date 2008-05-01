@@ -43,6 +43,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
 
 import cytoscape.data.webservice.ui.NetworkExpanderListener;
+import cytoscape.data.webservice.ui.WebServiceContextMenuListener;
 import cytoscape.util.undo.CyUndo;
 
 import cytoscape.view.cytopanels.BiModalJSplitPane;
@@ -246,49 +247,54 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		cyMenus = new CyMenus();
 
-		// Listener Setup
-		// ----------------------------------------
-		// |----------|
-		// | CyMenus  |
-		// |----------|
-		// |
-		// |
-		// |-----|      |---------|    |------|  |-------|
-		// | N P |------| Desktop |----| NVM  |--| Views |
-		// |-----|      |---------|    |------|  |-------|
-		// |
-		// |
-		// |-----------|
-		// | Cytoscape |
-		// |-----------|
+/*
+		 Listener Setup
+		 ----------------------------------------
+		 |----------|
+		 | CyMenus  |
+		 |----------|
+		 |
+		 |
+		 |-----|      |---------|    |------|  |-------|
+		 | N P |------| Desktop |----| NVM  |--| Views |
+		 |-----|      |---------|    |------|  |-------|
+		 |
+		 |
+		 |-----------|
+		 | Cytoscape |
+		 |-----------|
+*/
 
-		// The CytoscapeDesktop listens to NETWORK_VIEW_CREATED events,
-		// and passes them on, The NetworkPanel listens for them
-		// The Desktop also keeps Cytoscape up2date, but NOT via events
+/*
+		The CytoscapeDesktop listens to NETWORK_VIEW_CREATED events,
+		and passes them on, The NetworkPanel listens for them
+		The Desktop also keeps Cytoscape up2date, but NOT via events
+*/
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
-		// The Networkviewmanager listens to the CytoscapeDesktop to know when
-		// to
-		// put new NetworkViews in the userspace and to get passed focus events
-		// from
-		// the NetworkPanel. The CytoscapeDesktop also listens to the NVM
+/*
+		The Networkviewmanager listens to the CytoscapeDesktop to know when
+		to put new NetworkViews in the userspace and to get passed focus events
+		from the NetworkPanel. The CytoscapeDesktop also listens to the NVM
+*/
 		this.getSwingPropertyChangeSupport().addPropertyChangeListener(networkViewManager);
 		networkViewManager.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
-		// The NetworkPanel listens to the CytoscapeDesktop for
-		// NETWORK_CREATED_EVENTS a
-		// as well as for passing focused events from the Networkviewmanager.
-		// The
-		// CytoscapeDesktop also listens to the NetworkPanel
+/*
+		The NetworkPanel listens to the CytoscapeDesktop for
+		NETWORK_CREATED_EVENTS a as well as for passing focused events from the Networkviewmanager.
+		The CytoscapeDesktop also listens to the NetworkPanel
+*/
 		this.getSwingPropertyChangeSupport().addPropertyChangeListener(networkPanel);
 		networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
 		// add a listener for node bypass
 		Cytoscape.getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(new VizMapBypassNetworkListener());
-		
-		Cytoscape.getSwingPropertyChangeSupport()
-        .addPropertyChangeListener(new NetworkExpanderListener());
+
+    // Web Service Client context menu.
+    Cytoscape.getSwingPropertyChangeSupport()
+        .addPropertyChangeListener(new WebServiceContextMenuListener());
 
 		// initialize Menus
 		cyMenus.initializeMenus();
@@ -308,9 +314,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		//setupVizMapper();
 		getVizMapperUI();
 
-		// don't automatically close window. Let Cytoscape.exit(returnVal)
-		// handle this,
-		// based upon user confirmation.
+/*
+		don't automatically close window. Let Cytoscape.exit(returnVal)
+		handle this, based upon user confirmation.
+*/
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		addWindowListener(new WindowAdapter() {
@@ -407,31 +414,36 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public VisualStyle setVisualStyle(VisualStyle style) {
 		vmm.setVisualStyle(style);
-
-		return null;
+		return null; // TODO why does this return null, should the method just return void instead?
 	}
 
 	protected void updateFocus(String network_id) {
 		final VisualStyle old_style = vmm.getVisualStyle();
 		final GraphView old_view = Cytoscape.getCurrentNetworkView();
 
-		// set the current Network/View
-		Cytoscape.setCurrentNetwork(network_id);
+    // set the current Network/View
+    Cytoscape.setCurrentNetwork(network_id);
 
-		if (Cytoscape.setCurrentNetworkView(network_id)) {
-			// deal with the new Network
-			final GraphView new_view = Cytoscape.getCurrentNetworkView();
+    if (Cytoscape.setCurrentNetworkView(network_id)) {
+      // deal with the new Network
+      final GraphView new_view = Cytoscape.getCurrentNetworkView();
 
-			VisualStyle new_style = vmm.getVisualStyleForView( new_view );
+      //			VisualStyle new_style = (VisualStyle) new_view.getClientData(VISUAL_STYLE);
+    VisualMappingManager visMgr = new VisualMappingManager();
+    VisualStyle new_style = visMgr.getVisualStyleForView(new_view);
 
-			vmm.setNetworkView(new_view);
+      if (new_style == null)
+        new_style = vmm.getCalculatorCatalog().getVisualStyle("default");
 
-			if (new_style.getName().equals(old_style.getName()) == false) {
-				vmm.setVisualStyle(new_style);
-				
-				Cytoscape.redrawGraph(new_view);
-			}
-		}
+      vmm.setNetworkView(new_view);
+
+      if (new_style.getName().equals(old_style.getName()) == false) {
+        vmm.setVisualStyle(new_style);
+
+        // Is this necessary?
+        Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+      }
+    }
 	}
 
 	/**
