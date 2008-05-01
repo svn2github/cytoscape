@@ -24,7 +24,13 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.export.Exporter;
 import cytoscape.util.export.BitmapExporter;
 import cytoscape.util.export.PDFExporter;
+import cytoscape.util.export.PSExporter;
 import cytoscape.util.export.SVGExporter;
+
+
+// AJK: merge with Cy3.0 import cytoscape.util.export.PSExporter;
+import cytoscape.actions.ExportFilter;
+import cytoscape.actions.ExportTask;
 import cytoscape.dialogs.ExportBitmapOptionsDialog;
 import cytoscape.dialogs.ExportAsGraphicsFileChooser;
 
@@ -40,7 +46,8 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 	private static ExportFilter PDF_FILTER = new PDFExportFilter();
 	private static ExportFilter PNG_FILTER = new BitmapExportFilter("png", "PNG");
 	private static ExportFilter SVG_FILTER = new SVGExportFilter();
-	private static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
+    private static ExportFilter EPS_FILTER = new PSExportFilter("eps", "EPS");
+	private static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER, EPS_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
 
 	private static String TITLE = "Network View as Graphics";
 
@@ -65,6 +72,8 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 			public void actionPerformed(ActionEvent event)
 			{
 				ExportFilter filter = (ExportFilter) chooser.getSelectedFormat();
+				filter.setExportTextAsFont(chooser.getExportTextAsFont());
+				
 				File file = chooser.getSelectedFile();
 				chooser.dispose();
 
@@ -143,6 +152,8 @@ class ExportTask
 
 abstract class ExportFilter extends CyFileFilter
 {
+	protected boolean exportTextAsFont = false;
+
 	public ExportFilter(String extension, String description)
 	{
 		super(extension, description);
@@ -158,6 +169,14 @@ abstract class ExportFilter extends CyFileFilter
 		return getDescription();
 	}
 
+	public void setExportTextAsFont(boolean pExportTextAsFont) {
+		exportTextAsFont = pExportTextAsFont;
+	}
+	
+	public boolean getExportTextAsFont() {
+		return exportTextAsFont;
+	}
+	
 	public abstract void export(GraphView view, FileOutputStream stream);
 }
 
@@ -170,6 +189,7 @@ class PDFExportFilter extends ExportFilter
 	public void export(final GraphView view, final FileOutputStream stream)
 	{
 		PDFExporter exporter = new PDFExporter();
+		exporter.setExportTextAsFont(this.getExportTextAsFont());
 		ExportTask.run("Exporting to PDF", exporter, view, stream);
 	}
 }
@@ -211,6 +231,22 @@ class SVGExportFilter extends ExportFilter
 	public void export(final GraphView view, final FileOutputStream stream)
 	{
 		SVGExporter exporter = new SVGExporter();
+		exporter.setExportTextAsFont(this.getExportTextAsFont());
 		ExportTask.run("Exporting to SVG", exporter, view, stream);
+	}
+}
+
+class PSExportFilter extends ExportFilter
+{
+	public PSExportFilter(String extension, String description)
+	{
+		super(extension, description);
+	}
+
+	public void export(final GraphView view, final FileOutputStream stream)
+	{
+		PSExporter exporter = new PSExporter();
+		exporter.setExportTextAsFont(this.getExportTextAsFont());
+		ExportTask.run("Exporting to EPS", exporter, view, stream);
 	}
 }
