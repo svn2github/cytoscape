@@ -67,6 +67,8 @@ public static int NODE_X_POSITION = 0;
 
 
   public  GraphPerspective getGraphPerspective();
+  
+  public GraphPerspective getNetwork();
 
 
   //----------------------------------------//
