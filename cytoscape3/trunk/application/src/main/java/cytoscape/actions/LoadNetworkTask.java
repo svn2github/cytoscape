@@ -52,13 +52,33 @@ import javax.swing.JOptionPane;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
 import cytoscape.data.readers.GraphReader;
 import cytoscape.init.CyInitParams;
+
+import org.cytoscape.layout.CyLayoutAlgorithm;
+
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
+
+import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
+
 import cytoscape.task.util.TaskManager;
+
+import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
+
+import java.io.File;
+import java.io.IOException;
+
+import java.net.URI;
+import java.net.URL;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+import javax.swing.JOptionPane;
 
 
 /**
@@ -66,33 +86,77 @@ import cytoscape.view.CytoscapeDesktop;
  */
 public class LoadNetworkTask implements Task {
 	/**
-	 *  DOCUMENT ME!
+	 *  Load a network from a url.  The reader code will attempt to determine
+	 *  the format of the network (GML, XGMML, SIF) from the HTTP content-type
+	 *  header.  If it is unable to figure it out from there, it will try writing
+	 *  the HTTP stream to a file to look at the first couple of bytes.  Note that
+	 *  the actual opening of the HTTP stream is postponed until the task is
+	 *  initiated to facility the ability of the user to abort the attempt.
 	 *
-	 * @param u DOCUMENT ME!
-	 * @param skipMessage DOCUMENT ME!
+	 * @param u the URL to load the network from
+	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
 	public static void loadURL(URL u, boolean skipMessage) {
-		LoadNetworkTask task = new LoadNetworkTask(u);
-		setupTask(task, skipMessage);
+		loadURL(u, skipMessage, null);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Load a network from a file.  The reader code will attempt to determine
+	 *  the format of the network (GML, XGMML, SIF) from the file extension.
+	 *  If it is unable to figure it out from there, it will try reading
+	 *  the the first couple of bytes from the file.
 	 *
-	 * @param file DOCUMENT ME!
-	 * @param skipMessage DOCUMENT ME!
+	 * @param file the file to load the network from
+	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
 	public static void loadFile(File file, boolean skipMessage) {
 		// Create LoadNetwork Task
-		LoadNetworkTask task = new LoadNetworkTask(file);
-		setupTask(task, skipMessage);
+		loadFile(file, skipMessage, null);
 	}
 
-	private static void setupTask(LoadNetworkTask task, boolean skipMessage) {
+	/**
+	 *  Load a network from a url.  The reader code will attempt to determine
+	 *  the format of the network (GML, XGMML, SIF) from the HTTP content-type
+	 *  header.  If it is unable to figure it out from there, it will try writing
+	 *  the HTTP stream to a file to look at the first couple of bytes.  Note that
+	 *  the actual opening of the HTTP stream is postponed until the task is
+	 *  initiated to facility the ability of the user to abort the attempt.
+	 *
+	 * @param u the URL to load the network from
+	 * @param skipMessage if true, dispose of the task monitor dialog immediately
+	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
+	 *                        after it has been read in (provided that a view was created).
+	 */
+	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
+		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm);
+		setupTask(task, skipMessage, true);
+	}
+
+	/**
+	 *  Load a network from a file.  The reader code will attempt to determine
+	 *  the format of the network (GML, XGMML, SIF) from the file extension.
+	 *  If it is unable to figure it out from there, it will try reading
+	 *  the the first couple of bytes from the file.
+	 *
+	 * @param file the file to load the network from
+	 * @param skipMessage if true, dispose of the task monitor dialog immediately
+	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
+	 *                        after it has been read in (provided that a view was created).
+	 */
+	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm) {
+		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm);
+		setupTask(task, skipMessage, true);
+	}
+
+	private static void setupTask(LoadNetworkTask task, boolean skipMessage, boolean cancelable) {
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
 		jTaskConfig.setOwner(Cytoscape.getDesktop());
 		jTaskConfig.displayCloseButton(true);
+
+		if (cancelable)
+			jTaskConfig.displayCancelButton(true);
+
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(skipMessage);
 
@@ -104,35 +168,30 @@ public class LoadNetworkTask implements Task {
 	private TaskMonitor taskMonitor;
 	private GraphReader reader;
 	private String name;
+	private URL url;
+	private Thread myThread = null;
+	private boolean interrupted = false;
+	private CyLayoutAlgorithm layoutAlgorithm = null;
 
-	private LoadNetworkTask(URL u) {
+	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout) {
+		url = u;
 		name = u.toString();
-		try {
-			reader = Cytoscape.getImportHandler().getReader(u);
-			uri = u.toURI();
-		} catch (Exception e) {
-			uri = null;
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-			                              "Unable to connect to URL "+name+": "+e.getMessage(),
-			                              "URL Syntax Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		} 
-		if (reader == null) {
-			uri = null;
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-			                              "Unable to connect to URL "+name, 
-			                              "URL Connect Error", JOptionPane.ERROR_MESSAGE);
-		}
+		reader = null;
+		layoutAlgorithm = layout;
+
+		// Postpone getting the reader since we want to do that in a thread
 	}
 
-	private LoadNetworkTask(File file) {
+	private LoadNetworkTask(File file, CyLayoutAlgorithm layout) {
 		reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
 		uri = file.toURI();
 		name = file.getName();
+		layoutAlgorithm = layout;
+
 		if (reader == null) {
 			uri = null;
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-			                              "Unable to open file "+name, 
+			url = null;
+			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "Unable to open file " + name,
 			                              "File Open Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -141,15 +200,47 @@ public class LoadNetworkTask implements Task {
 	 * Executes Task.
 	 */
 	public void run() {
-		if (reader == null) return;
+		if ((reader == null) && (url == null))
+			return;
+
+		myThread = Thread.currentThread();
+
+		if ((reader == null) && (url != null)) {
+			try {
+				taskMonitor.setStatus("Opening URL " + url);
+				reader = Cytoscape.getImportHandler().getReader(url);
+
+				if (interrupted)
+					return;
+
+				uri = url.toURI();
+			} catch (Exception e) {
+				uri = null;
+				taskMonitor.setException(e,
+				                         "Unable to connect to URL " + name + ": " + e.getMessage());
+
+				return;
+			}
+
+			if (reader == null) {
+				uri = null;
+				taskMonitor.setException(null, "Unable to connect to URL " + name);
+
+				return;
+			}
+
+			// URL is open, things will get very messy if the user cancels the actual
+			// network load, so prevent them from doing so
+			((JTask) taskMonitor).setCancel(false);
+		}
 
 		taskMonitor.setStatus("Reading in Network Data...");
-		
+
 		// Remove unnecessary listeners:
-		if((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
-			    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+		if ((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
+		    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-	         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+			         .removePropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
 		}
 		
 		try {
@@ -159,18 +250,32 @@ public class LoadNetworkTask implements Task {
 
 			GraphPerspective cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
+			// Are we supposed to lay this out?
+			GraphView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+
+			if ((layoutAlgorithm != null) && (view != null)) {
+				// Yes, do it
+				// Layouts are, in general cancelable
+				((JTask) taskMonitor).setCancel(true);
+				taskMonitor.setStatus("Performing layout...");
+				layoutAlgorithm.doLayout(view, taskMonitor);
+				taskMonitor.setStatus("Layout complete");
+			}
+
 			Object[] ret_val = new Object[2];
 			ret_val[0] = cyNetwork;
 			ret_val[1] = uri;
 
-			if((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
-				    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+			if ((CytoscapeInit.getCyInitParams().getMode() == CyInitParams.GUI)
+			    || (CytoscapeInit.getCyInitParams().getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-		         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
-				Cytoscape.getDesktop().getNetworkViewManager().firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, Cytoscape.getCurrentNetworkView()
-						.getGraphPerspective().getIdentifier());
+				         .addPropertyChangeListener(Cytoscape.getDesktop().getBirdsEyeViewHandler());
+				Cytoscape.getDesktop().getNetworkViewManager()
+				         .firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
+				                             Cytoscape.getCurrentNetworkView().getNetwork()
+				                                      .getIdentifier());
 			}
-			
+
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 
 			if (cyNetwork != null) {
@@ -186,8 +291,11 @@ public class LoadNetworkTask implements Task {
 			taskMonitor.setPercentCompleted(100);
 		} catch (Exception e) {
 			taskMonitor.setException(e, "Unable to load network.");
+
+			return;
+		} finally {
+			reader = null;
 		}
-		
 		
 	}
 
@@ -232,6 +340,13 @@ public class LoadNetworkTask implements Task {
 	 */
 	public void halt() {
 		// Task can not currently be halted.
+		System.out.println("Halt called");
+
+		if (myThread != null) {
+			myThread.interrupt();
+			this.interrupted = true;
+			((JTask) taskMonitor).setDone();
+		}
 	}
 
 	/**
