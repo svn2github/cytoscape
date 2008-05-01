@@ -206,8 +206,8 @@ class OpenSessionTask implements Task {
 		CytoscapeSessionReader sr;
 
 		// Turn off the network panel & bird's eye view
-		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
-		Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
+//		Cytoscape.getDesktop().getNetworkPanel().getTreeTable().setVisible(false);
+//		Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane().setVisible(false);
 
 		try {
 			sr = new CytoscapeSessionReader(fileName, taskMonitor);
