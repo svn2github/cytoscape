@@ -37,6 +37,8 @@
 package org.cytoscape.view.impl;
 
 import cytoscape.render.stateful.NodeDetails;
+import cytoscape.render.stateful.CustomGraphic;
+
 
 import cytoscape.util.intr.IntObjHash;
 
@@ -48,6 +50,7 @@ import java.awt.Paint;
 import java.awt.Shape;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 /*
@@ -307,12 +310,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	public Font labelFont(int node, int labelInx) {
 		final long key = (((long) node) << 32) | ((long) labelInx);
-		final Font o = m_labelFonts.get(new Long(key));
+		final Object o = m_labelFonts.get(new Long(key));
 
 		if (o == null)
 			return super.labelFont(node, labelInx);
 
-		return o;
+		return (Font) o;
 	}
 
 	/*
@@ -337,12 +340,12 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	public Paint labelPaint(int node, int labelInx) {
 		final long key = (((long) node) << 32) | ((long) labelInx);
-		final Paint o = m_labelPaints.get(new Long(key));
+		final Object o = m_labelPaints.get(new Long(key));
 
 		if (o == null)
 			return super.labelPaint(node, labelInx);
 
-		return o;
+		return (Paint) o;
 	}
 
 	/*
@@ -364,7 +367,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int graphicCount(int node) {
+	@Deprecated public int graphicCount(int node) {
 		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
 
 		return nv.getCustomGraphicCount();
@@ -378,7 +381,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Shape graphicShape(int node, int inx) {
+	@Deprecated public Shape graphicShape(int node, int inx) {
 		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
 
 		return nv.getCustomGraphicShape(inx);
@@ -392,11 +395,27 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Paint graphicPaint(int node, int inx) {
+	@Deprecated public Paint graphicPaint(int node, int inx) {
 		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
 
 		return nv.getCustomGraphicPaint(inx);
 	}
+    // overrides NodeDetails.customGraphicCount():
+    public int customGraphicCount(final int node) {
+	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);	
+	return dnv.getNumCustomGraphics();
+    }
+
+    // overrides NodeDetails.customGraphics():
+    public Iterator<CustomGraphic> customGraphics (final int node) {
+	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
+	return dnv.customGraphicIterator();
+    }
+    // overrides NodeDetails.customGraphicLock():
+    public Object customGraphicLock (final int node) {
+	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
+	return dnv.customGraphicLock();	
+    }
 
 	// label positioning
 	/**
