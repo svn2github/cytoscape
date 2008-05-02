@@ -106,6 +106,12 @@ public class NodeDetails {
 	 */
 	public static final byte ANCHOR_NORTHWEST = 8;
 
+        /**
+         * Used for range checking the anchor values. 
+         */
+        // Seems like these values should really be an enum...:
+        public static final byte MAX_ANCHOR_VAL = 8;
+
 	/**
 	 * Specifies that the lines in a multi-line node label should each have
 	 * a center point with similar X coordinate.
@@ -227,6 +233,29 @@ public class NodeDetails {
 	}
 
 	/**
+	 * By returning one of the ANCHOR_* constants, specifies
+	 * where on a text label's logical bounds box an anchor point lies.  This
+	 * <i>text anchor point</i> together with the
+	 * node anchor point and label offset vector
+	 * determines where, relative to the node, the text's logical bounds
+	 * box is to be placed.  The text's logical bounds box is placed such that
+	 * the label offset vector plus the node anchor point equals the text anchor
+	 * point.<p>
+	 * By default this method always returns ANCHOR_CENTER.
+	 * This method is only called by the rendering engine if labelCount(node)
+	 * returns a value greater than zero.
+	 * @param labelInx a value in the range [0, labelCount(node)-1] indicating
+	 *   which node label in question.
+	 * @see #ANCHOR_CENTER
+	 * @see #labelNodeAnchor(int, int)
+	 * @see #labelOffsetVectorX(int, int)
+	 * @see #labelOffsetVectorY(int, int)
+	 */
+	public byte labelTextAnchor(final int node, final int labelInx) {
+		return ANCHOR_CENTER;
+	}
+	
+	/**
 	 * Returns an additional scaling factor that is to be applied to the font
 	 * used to render this label; this scaling factor, applied to the point
 	 * size of the font returned by labelFont(node, labelInx), yields a new
@@ -253,28 +282,7 @@ public class NodeDetails {
 		return null;
 	}
 
-	/**
-	 * By returning one of the ANCHOR_* constants, specifies
-	 * where on a text label's logical bounds box an anchor point lies.  This
-	 * <i>text anchor point</i> together with the
-	 * node anchor point and label offset vector
-	 * determines where, relative to the node, the text's logical bounds
-	 * box is to be placed.  The text's logical bounds box is placed such that
-	 * the label offset vector plus the node anchor point equals the text anchor
-	 * point.<p>
-	 * By default this method always returns ANCHOR_CENTER.
-	 * This method is only called by the rendering engine if labelCount(node)
-	 * returns a value greater than zero.
-	 * @param labelInx a value in the range [0, labelCount(node)-1] indicating
-	 *   which node label in question.
-	 * @see #ANCHOR_CENTER
-	 * @see #labelNodeAnchor(int, int)
-	 * @see #labelOffsetVectorX(int, int)
-	 * @see #labelOffsetVectorY(int, int)
-	 */
-	public byte labelTextAnchor(final int node, final int labelInx) {
-		return ANCHOR_CENTER;
-	}
+
 
 	/**
 	 * By returning one of the ANCHOR_* constants, specifies
