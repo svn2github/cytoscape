@@ -239,7 +239,6 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		pluginTree.expandPath( new TreePath(availableNode.getPath()) );
 		pluginTree.expandPath( new TreePath(installedNode.getPath()) );
 	}
-
 	// add category to the set of plugins under given node
 	private void addCategory(String CategoryName,
 			List<DownloadableInfo> Plugins, TreeNode node) {
@@ -723,6 +722,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			taskMonitor.setPercentCompleted(-1);
 
 			PluginManager Mgr = PluginManager.getPluginManager();
+			cytoscape.plugin.Installable ins = infoObj.getInstallable();
 			try {
 				infoObj = Mgr.download(infoObj, taskMonitor);
 				taskMonitor.setStatus(infoObj.getName() + " v"
@@ -764,7 +764,12 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}
-
+			try {
+			if (infoObj == null)
+				ins.uninstall();
+			} catch (cytoscape.plugin.ManagerException me) {
+				me.printStackTrace();
+			}
 		}
 
 		public DownloadableInfo getDownloadedPlugin() {
