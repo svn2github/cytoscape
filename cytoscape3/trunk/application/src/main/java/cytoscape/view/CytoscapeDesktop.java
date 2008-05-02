@@ -428,9 +428,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
       // deal with the new Network
       final GraphView new_view = Cytoscape.getCurrentNetworkView();
 
-      //			VisualStyle new_style = (VisualStyle) new_view.getClientData(VISUAL_STYLE);
-    VisualMappingManager visMgr = new VisualMappingManager();
-    VisualStyle new_style = visMgr.getVisualStyleForView(new_view);
+      VisualMappingManager visMgr = new VisualMappingManager();
+      VisualStyle new_style = visMgr.getVisualStyleForView(new_view);
 
       if (new_style == null)
         new_style = vmm.getCalculatorCatalog().getVisualStyle("default");

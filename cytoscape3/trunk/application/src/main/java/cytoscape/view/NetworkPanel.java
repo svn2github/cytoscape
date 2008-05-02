@@ -93,7 +93,6 @@ import javax.swing.tree.TreePath;
  */
 public class NetworkPanel extends JPanel implements PropertyChangeListener, TreeSelectionListener,
                                                     SelectEventListener {
-	private final static long serialVersionUID = 1202339866885341L;
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
@@ -165,9 +164,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 
 		add(split);
 
-		// this mouse listener listens for the right-click event and will show
-		// the pop-up
-		// window when that occurrs
+		/* this mouse listener listens for the right-click event and will show
+		the pop-up window when that occurrs */
 		treeTable.addMouseListener(new PopupListener());
 
 		// create and populate the popup window
@@ -235,13 +233,15 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	public void removeNetwork(final String network_id) {
 		final NetworkTreeNode node = getNetworkNode(network_id);
 		final Enumeration children = node.children();
-		final List<NetworkTreeNode> removed_children = new ArrayList<NetworkTreeNode>();
+		NetworkTreeNode child = null;
+		final List removed_children = new ArrayList();
 
 		while (children.hasMoreElements()) {
-			removed_children.add((NetworkTreeNode)children.nextElement());
+			removed_children.add(children.nextElement());
 		}
 
-		for (NetworkTreeNode child: removed_children) {
+		for (Iterator i = removed_children.iterator(); i.hasNext();) {
+			child = (NetworkTreeNode) i.next();
 			child.removeFromParent();
 			root.add(child);
 		}
@@ -252,15 +252,19 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		treeTable.doLayout();
 	}
 
-	// JBK added updateTitle
-	// 11-13-05
 	/**
 	 * update a network title
+   * @param network
 	 */
 	public void updateTitle(final GraphPerspective network) {
-		// updates the title in the network panel
-		treeTableModel.setValueAt(network.getTitle(),
+		// updates the title in the network panel 
+		if (treeTable.getTree().getSelectionPath() != null) { // user has selected something
+			treeTableModel.setValueAt(network.getTitle(),
 		                          treeTable.getTree().getSelectionPath().getLastPathComponent(), 0);
+		} else { // no selection, means the title has been changed programmatically
+			NetworkTreeNode node = getNetworkNode(network.getIdentifier());
+			treeTableModel.setValueAt(network.getTitle(), node, 0);
+		}
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
 		// updates the title in the networkViewMap
@@ -290,14 +294,13 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			                                           network_id);
 			Cytoscape.getNetwork(network_id).addSelectEventListener(this);
 
-			if (parent_id != null) {
-				NetworkTreeNode parent = getNetworkNode(parent_id);
-				parent.add(dmtn);
+			if (parent_id != null && getNetworkNode(parent_id) != null) {
+				getNetworkNode(parent_id).add(dmtn);
 			} else {
 				root.add(dmtn);
 			}
 
-			// fires valueChanged
+			// apparently this doesn't fire valueChanged 
 			treeTable.getTree().collapsePath(new TreePath(new TreeNode[] { root }));
 
 			treeTable.getTree().updateUI();
@@ -306,8 +309,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			treeTable.getTree().scrollPathToVisible(path);
 			treeTable.doLayout();
 		
-			// shouldn't need this because valueChanged is fired above
-			//focusNetworkNode(network_id);
+			// this is necessary because valueChanged is not fired above 
+			focusNetworkNode(network_id);
 		}
 	}
 
@@ -354,7 +357,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		// System.out.println("NetworkPanel: VALUE changed -  " + e.getSource().toString()); 
+		// System.out.println("NetworkPanel: valueChanged - " + e.getSource().getClass().getName()); 
 		JTree mtree = treeTable.getTree();
 
 		// sets the "current" network based on last node in the tree selected
@@ -364,28 +367,25 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			return;
 		}
 
-		// only fire NETWORK_VIEW_FOCUS events if a view actually exists for this network
-		if ( Cytoscape.viewExists( (String) node.getNetworkID() ) ) {
-			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
-		                                                   null, (String) node.getNetworkID()));
+		// System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
+		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
+	                                                   null, (String) node.getNetworkID()));
 
-			// creates a list of all selected networks 
-			List<String> networkList = new LinkedList<String>();
-			try {
-				for ( int i = mtree.getMinSelectionRow(); i <= mtree.getMaxSelectionRow(); i++ ) {
-					NetworkTreeNode n = (NetworkTreeNode) mtree.getPathForRow(i).getLastPathComponent();
-					if ( n != null && n.getUserObject() != null && mtree.isRowSelected(i) )
-						networkList.add( n.getNetworkID() );
-				}
-			} catch (Exception ex) { 
-				ex.printStackTrace();
+		// creates a list of all selected networks 
+		List<String> networkList = new LinkedList<String>();
+		try {
+			for ( int i = mtree.getMinSelectionRow(); i <= mtree.getMaxSelectionRow(); i++ ) {
+				NetworkTreeNode n = (NetworkTreeNode) mtree.getPathForRow(i).getLastPathComponent();
+				if ( n != null && n.getUserObject() != null && mtree.isRowSelected(i) )
+					networkList.add( n.getNetworkID() );
 			}
+		} catch (Exception ex) { 
+			ex.printStackTrace();
+		}
 
-			if ( networkList.size() > 0 ) {
-				// System.out.println("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
-				pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
-			                                                   null, networkList));
-			} 
+		if ( networkList.size() > 0 ) {
+			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
+		                                                   null, networkList));
 		} 
 	}
 
@@ -402,11 +402,9 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			if ( e.getSource() != this )
 				focusNetworkNode((String) e.getNewValue());
-		}
-		else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
+		} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
 			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
 			String newID = cyNetworkTitleChange.getNetworkIdentifier();
-			//String newTitle = cyNetworkTitleChange.getNetworkTitle();
 			GraphPerspective _network = Cytoscape.getNetwork(newID);
 			if (_network != null) {
 				updateTitle(_network);				
@@ -485,20 +483,17 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 			return "";
 		}
 
-		// Brad
 		public void setValueAt(Object aValue, Object node, int column) {
 			if (column == 0) {
 				((DefaultMutableTreeNode) node).setUserObject(aValue);
 			} else
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 				                              "Error: assigning value at in NetworkPanel");
-
 			// This function is not used to set node and edge values.
 		}
 	}
 
 	public class NetworkTreeNode extends DefaultMutableTreeNode {
-	private final static long serialVersionUID = 1202339866853418L;
 		protected String network_uid;
 
 		public NetworkTreeNode(Object userobj, String id) {
@@ -516,7 +511,6 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	}
 
 	private class TreeCellRenderer extends DefaultTreeCellRenderer {
-	private final static long serialVersionUID = 1202339866868101L;
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
 		                                              boolean expanded, boolean leaf, int row,
 		                                              boolean hasFocus) {
@@ -583,9 +577,8 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 					GraphPerspective cyNetwork = Cytoscape.getNetwork(networkID);
 
 					if (cyNetwork != null) {
-						// disable or enable specific options with respect to
-						// the actual network
-						// that is selected
+						/* disable or enable specific options with respect to
+						 the actual network that is selected */
 						if (Cytoscape.viewExists(networkID)) {
 							// disable the view creation item
 							createViewItem.setEnabled(false);
@@ -594,10 +587,10 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 						else {
 							createViewItem.setEnabled(true);
 							destroyViewItem.setEnabled(false);
-						} // end of else
-						  // let the actionlistener know which network it should
-						  // be operating
-						  // on when (if) it is called
+						} /* end of else
+						   let the actionlistener know which network it should
+						   be operating
+						   on when (if) it is called */
 
 						popupActionListener.setActiveNetwork(cyNetwork);
 						// display the popup
