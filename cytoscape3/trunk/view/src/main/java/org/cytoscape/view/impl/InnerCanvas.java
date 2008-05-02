@@ -112,6 +112,7 @@ import javax.swing.JTextPane;
 import javax.swing.JToolTip;
 import javax.swing.TransferHandler;
 
+import java.awt.FontMetrics;
 
 // AJK: 04/26/06 END
 /**
@@ -149,6 +150,9 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	private ViewChangeEdit m_undoable_edit;
 
 	//final boolean[] m_printingTextAsShape = new boolean[1];
+	FontMetrics m_fontMetrics = null;
+	
+	private boolean NodeMovement = true;
 
 	/**
 	 * String used to compare against os.name System property -
@@ -254,6 +258,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		double xCenter = 0.0d;
 		double yCenter = 0.0d;
 		double scaleFactor = 1.0d;
+		m_fontMetrics = g.getFontMetrics();
 
 		// set color alpha based on opacity setting
 		int alpha = (m_isOpaque) ? 255 : 0;
@@ -1475,4 +1480,16 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
 	}
 
+	public void enableNodeMovement(){
+		this.NodeMovement = true;
+	}
+	
+	public void disableNodeMovement(){
+		this.NodeMovement = false;
+	}
+	
+	public boolean isNodeMovementDisabled(){
+		return !(this.NodeMovement);
+	}
+	
 }
