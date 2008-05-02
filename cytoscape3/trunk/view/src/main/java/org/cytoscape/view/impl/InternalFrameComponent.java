@@ -172,15 +172,6 @@ public class InternalFrameComponent extends JComponent implements Printable {
 	}
 
 	/**
-	 * This method is used by freehep lib to export network as graphics in EPS format.
-	 * Because opacity is an issue for eps format, foregroundCanvas and backgroundCanvas
-	 * are not rendered.
-	 */
-	public void printEPS(Graphics g) {
-		networkCanvas.print(g);			
-	}
-
-	/**
 	 * This method is used by freehep lib to export network as graphics.
 	 */
 	public void print(Graphics g) {
@@ -190,16 +181,6 @@ public class InternalFrameComponent extends JComponent implements Printable {
 		networkCanvas.setBackground(backgroundCanvas.getBackground());
 		
 		networkCanvas.print(g);
-		foregroundCanvas.print(g);
-	}
-
-	/**
-	 * This method is used by BitmapExporter to export network as graphics (png, jpg, bmp)
-	 */
-	public void printNoImposter(Graphics g) {
-		// Note: This method will generate image correctly, but very low quality
-		backgroundCanvas.print(g);
-		networkCanvas.printNoImposter(g);
 		foregroundCanvas.print(g);
 	}
 
