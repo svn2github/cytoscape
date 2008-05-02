@@ -310,7 +310,17 @@ public class JTask extends JDialog implements TaskMonitor, ActionListener {
 				}
 			});
 	}
-
+	/**
+	 * Call to externally control whether the cancel button is enabled
+	 * or disabled.  This can be used by threads which have some sections
+	 * that can be canceled and some that can not.
+	 *
+	 * @param enable if true, enable the cancel button
+	 */
+	public void setCancel(boolean enable) {
+		cancelButton.setEnabled(enable);
+	}
+	
 	/**
 	 * Sets the Status Message.
 	 * Called by a child task thread.
