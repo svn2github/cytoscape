@@ -108,19 +108,19 @@ public class LicenseDialog extends javax.swing.JDialog {
         acceptRadio.setText("Accept All");
         acceptRadio.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         acceptRadio.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        acceptRadio.addChangeListener(new javax.swing.event.ChangeListener() {
-        	public void stateChanged(javax.swing.event.ChangeEvent evt) {
-        		radioStateChanged(evt);
+        acceptRadio.addActionListener( new java.awt.event.ActionListener () {
+        	public void actionPerformed(java.awt.event.ActionEvent evt) {
+        		radioAcceptEvent(evt);
         	}
         });
-        
+        		
         declineRadio.setText("Decline All");
         declineRadio.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         declineRadio.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        declineRadio.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                radioStateChanged(evt);
-            }
+        declineRadio.addActionListener( new java.awt.event.ActionListener() {
+        	public void actionPerformed(java.awt.event.ActionEvent evt) {
+        		radioDeclineEvent(evt);
+        	}
         });
 
         org.jdesktop.layout.GroupLayout buttonPaneLayout = new org.jdesktop.layout.GroupLayout(buttonPane);
@@ -177,18 +177,18 @@ public class LicenseDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>                        
 
-    private void radioStateChanged(javax.swing.event.ChangeEvent evt) {                                          
-    	javax.swing.JRadioButton radioButton = (javax.swing.JRadioButton) evt.getSource();
-    	if (radioButton.equals(declineRadio)) {
-				this.acceptRadio.setSelected(false);
-				this.okButton.setEnabled(false);
-    	} 
-    	if (radioButton.equals(acceptRadio)) {
-				this.declineRadio.setSelected(false);
-				this.okButton.setEnabled(true);
-    	}
-    }                                         
+    private void radioAcceptEvent(java.awt.event.ActionEvent evt) {
+    	acceptRadio.setSelected(true);
+    	declineRadio.setSelected(false);
+    	okButton.setEnabled(true);
+    }
 
+    private void radioDeclineEvent(java.awt.event.ActionEvent evt) {
+    	declineRadio.setSelected(true);
+    	acceptRadio.setSelected(false);
+    	okButton.setEnabled(false);
+    }
+    
     // a listener has to be added in order to decide what to do after 'ok'
     public void addListenerToOk(java.awt.event.ActionListener listener) {
 			okButton.addActionListener(listener);
