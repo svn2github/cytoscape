@@ -1,5 +1,5 @@
 /*
-  File: CyNodeView.java
+  File: CyDesktopManager.java
 
   Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
