@@ -43,7 +43,7 @@ public class GpmlEdge extends GpmlNetworkElement<CyEdge> {
 	 * @param parent
 	 */
 	public GpmlEdge(EdgeView eview, GpmlNode source, GpmlNode target, AttributeMapper attributeMapper) {
-		this((CyEdge)eview.getEdge(), new PathwayElement(ObjectType.LINE), source, target, attributeMapper);
+		this((CyEdge)eview.getEdge(), PathwayElement.createPathwayElement(ObjectType.LINE), source, target, attributeMapper);
 		PathwayElement psource = source.getPathwayElement();
 		PathwayElement ptarget = target.getPathwayElement();
 

@@ -45,7 +45,7 @@ public class GpmlNode extends GpmlNetworkElement<CyNode> {
 	 * @param parent
 	 */
 	public GpmlNode(NodeView view, AttributeMapper attributeMapper) {
-		super((CyNode)view.getNode(), new PathwayElement(
+		super((CyNode)view.getNode(), PathwayElement.createPathwayElement(
 				CyGroupManager.isaGroup((CyNode)view.getNode()) ? 
 						ObjectType.GROUP : ObjectType.DATANODE));
 		pwElmOrig.setTextLabel(parent.getIdentifier());
@@ -113,6 +113,10 @@ public class GpmlNode extends GpmlNetworkElement<CyNode> {
 	
 	private void resetPosition(GraphView view) {
 		NodeView nv = view.getNodeView(parent);
+		if(nv == null) {
+			Logger.log.trace("Null node view found in GpmlNode.resetPosition, a group?");
+			return;
+		}
 		nv.setXPosition(GpmlPlugin.mToV(pwElmOrig.getMCenterX()), false);
 		nv.setYPosition(GpmlPlugin.mToV(pwElmOrig.getMCenterY()), false);
 	}

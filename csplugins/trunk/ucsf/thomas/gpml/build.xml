@@ -51,7 +51,7 @@
 			<fileset dir="${build.dir}" includes="**/*.class"/>	
 			<fileset dir="${class.dir}" includes="**/*.class"/>
 			<fileset dir="${class.dir}" includes="**/*.xsd"/>
-			<fileset dir="${class.dir}" includes="**/*.props"/>	
+			<fileset dir="${build.dir}" includes="**/*.props"/>	
 			<fileset dir="${pathvisio.class.dir}">
 				<include name="org/pathvisio/model/*.class"/>
 				<include name="org/pathvisio/view/*.class"/>

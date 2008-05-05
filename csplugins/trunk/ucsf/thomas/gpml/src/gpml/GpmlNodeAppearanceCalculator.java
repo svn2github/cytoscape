@@ -4,6 +4,7 @@ import giny.model.Node;
 
 import java.awt.Color;
 
+import org.pathvisio.model.ObjectType;
 import org.pathvisio.model.PathwayElement;
 
 import cytoscape.CyNetwork;
@@ -47,6 +48,12 @@ public class GpmlNodeAppearanceCalculator extends NodeAppearanceCalculator {
 			//Node width/height
 			appr.set(VisualPropertyType.NODE_WIDTH, GpmlPlugin.mToV(e.getMWidth()));
 			appr.set(VisualPropertyType.NODE_HEIGHT, GpmlPlugin.mToV(e.getMHeight()));
+			
+			//For groups
+			if(e.getObjectType() == ObjectType.GROUP) {
+				appr.set(VisualPropertyType.NODE_SIZE, 5);
+				appr.set(VisualPropertyType.NODE_LABEL, "");
+			}
 		}
 	}
 		

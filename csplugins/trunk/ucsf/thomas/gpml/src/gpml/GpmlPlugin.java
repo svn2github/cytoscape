@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.ConverterException;
 import org.pathvisio.model.Pathway;
@@ -120,9 +122,13 @@ public class GpmlPlugin extends CytoscapePlugin implements PhoebeCanvasDropListe
 					view = Cytoscape.getCurrentNetworkView();
 				}
 				converter.layout(view);
-				
+				view.redrawGraph(true, false);
 			} catch(Exception ex) {
 				Logger.log.error("Unable to process pasted data", ex);
+				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
+						"Error while importing GPML: " + ex.getMessage(),
+						"Error", 
+						JOptionPane.ERROR_MESSAGE);
 			}
 	}
 

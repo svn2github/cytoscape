@@ -6,14 +6,17 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.pathvisio.debug.Logger;
 import org.pathvisio.model.ConverterException;
 import org.pathvisio.model.GpmlFormat;
+import org.pathvisio.model.GroupStyle;
 import org.pathvisio.model.ObjectType;
 import org.pathvisio.model.Pathway;
 import org.pathvisio.model.PathwayElement;
 import org.pathvisio.model.GraphLink.GraphRefContainer;
+import org.pathvisio.model.PathwayElement.MAnchor;
 import org.pathvisio.model.PathwayElement.MPoint;
 
 import cytoscape.CyEdge;
@@ -50,6 +53,10 @@ public class GpmlConverter {
 	}
 	
 	private void convert() {
+		edgeMap.clear();
+		edges.clear();
+		nodeMap.clear();
+		
 		findNodes();
 		findEdges();
 	}
@@ -59,7 +66,6 @@ public class GpmlConverter {
 	}
 	
 	private void findNodes() {
-		nodeMap.clear();
 		for(PathwayElement o : pathway.getDataObjects()) {
 			int type = o.getObjectType();
 			if(type == ObjectType.LEGEND || type == ObjectType.INFOBOX || type == ObjectType.MAPPINFO) {
@@ -68,13 +74,26 @@ public class GpmlConverter {
 			String id = o.getGraphId();
 			//Get an id if it's not already there
 			if(id == null) {
-				id = pathway.getUniqueId();
+				id = pathway.getUniqueGraphId();
 				o.setGraphId(id);
 			}
 			CyNode n = null;
 			if(type == ObjectType.GROUP) {
 				Logger.log.trace("Creating group: " + id);
 				n = addGroup(o);
+				if(n == null) {
+					Logger.log.error("Group node is null");
+				} else {
+					Logger.log.trace("Created group node: " + n.getIdentifier());
+				}
+			} else if(type == ObjectType.LINE) {
+				//Process anchors
+				for(MAnchor a : o.getMAnchors()) {
+					Logger.log.trace("Creating anchor: " + id);
+					addAnchor(a);
+				}
+				Logger.log.trace("Creating node: " + id + " for " + o.getGraphId() + "@" + o.getObjectType());
+				n = Cytoscape.getCyNode(id, true);
 			} else {
 				//Create a node for every pathway element
 				Logger.log.trace("Creating node: " + id + " for " + o.getGraphId() + "@" + o.getObjectType());
@@ -87,9 +106,9 @@ public class GpmlConverter {
 	}
 	
 	private void findEdges() {
-		edgeMap.clear();
-		edges.clear();
+		Logger.log.trace("Start finding edges");
 		for(PathwayElement o : pathway.getDataObjects()) {
+			System.out.println("\tProcessing " + o.getGraphId());
 			//no edges between annotations
 			int type = o.getObjectType();
 			if(type != ObjectType.DATANODE && type != ObjectType.GROUP) {
@@ -124,7 +143,12 @@ public class GpmlConverter {
 			gpmlHandler.unlinkNode(nodeMap.get(o));
 			Cytoscape.getRootGraph().removeNode(nodeMap.get(o));		
 			nodeMap.remove(o);
-			CyEdge e = Cytoscape.getCyEdge(einfo[0], o.getGraphId(), einfo[1], einfo[2] + ", " + einfo[3]);
+			String graphId = o.getGraphId();
+			if(graphId == null) {
+				graphId = o.getParent().getUniqueGraphId();
+				o.setGraphId(graphId);
+			}
+			CyEdge e = Cytoscape.getCyEdge(einfo[0], graphId, einfo[1], einfo[2] + ", " + einfo[3]);
 			gpmlHandler.addEdge(e, o);
 			edges.add(e);
 		}
@@ -152,30 +176,57 @@ public class GpmlConverter {
 			cyGroup = CyGroupManager.createGroup(group.getGroupId(), null);
 		}
 		CyNode gn = cyGroup.getGroupNode();
+		gn.setIdentifier(group.getGraphId());
 		return gn;
+	}
+	
+	private CyNode addAnchor(MAnchor anchor) {
+		return Cytoscape.getCyNode(anchor.getGraphId(), true);
 	}
 	
 	//Add all nodes to the group
 	private void processGroups() {
-		//Not for now
 		for(PathwayElement pwElm : pathway.getDataObjects()) {
 			if(pwElm.getObjectType() == ObjectType.GROUP) {
 				
-				//lala
-				GpmlNode gpmlNode = gpmlHandler.getNode(pwElm.getGroupId());
+				GpmlNode gpmlNode = gpmlHandler.getNode(pwElm.getGraphId());
 				CyGroup cyGroup = CyGroupManager.getCyGroup(gpmlNode.getParent());
 				if(cyGroup == null) {
 					Logger.log.warn("Couldn't create group: CyGroupManager returned null");
 					return;
 				}
-				for(PathwayElement ge : pathway.getGroupElements(pwElm.getGroupId())) {
-					GpmlNetworkElement<?> ne = gpmlHandler.getNetworkElement(ge.getGraphId());
-					if(ne instanceof GpmlNode) {
-						cyGroup.addNode(((GpmlNode)ne).getParent());
-					} else if (ne instanceof GpmlEdge) {
-						cyGroup.addInnerEdge(((GpmlEdge)ne).getParent());
-					} else {
-						Logger.log.warn("Can't add network elements of type " + ne + " to group");
+				
+				//The interaction name
+				GroupStyle groupStyle = pwElm.getGroupStyle();
+				String interaction = groupStyle.name();
+				if(groupStyle == GroupStyle.NONE) {
+					interaction = "group";
+				}
+				
+				PathwayElement[] groupElements = pathway.getGroupElements(
+						pwElm.getGroupId()
+					).toArray(new PathwayElement[0]);
+
+				//Create the cytoscape parts of the group
+				for(int i = 0; i < groupElements.length; i++) {
+					PathwayElement pe_i = groupElements[i];
+					GpmlNetworkElement<?> ne_i = gpmlHandler.getNetworkElement(pe_i.getGraphId());
+					//Only add links to nodes, not to annotations
+					if(ne_i instanceof GpmlNode) {
+						cyGroup.addNode(((GpmlNode)ne_i).getParent());
+
+						//Add links between all elements of the group
+						for(int j = i + 1; j < groupElements.length; j++) {
+							PathwayElement pe_j = groupElements[j];
+							GpmlNetworkElement<?> ne_j = gpmlHandler.getNetworkElement(pe_j.getGraphId());
+							if(ne_j instanceof GpmlNode) {
+								edges.add(Cytoscape.getCyEdge(
+										ne_i.getParentIdentifier(), 
+										"inGroup: " + cyGroup.getGroupName(),
+										ne_j.getParentIdentifier(), interaction)
+								);
+							}
+						}
 					}
 				}
 			}
@@ -192,11 +243,14 @@ public class GpmlConverter {
 	}
 	
 	public void layout(GraphView view) {
+		String viewerName = "metaNode";
+		Logger.log.trace(CyGroupManager.getGroupViewers() + "");
+		if(CyGroupManager.getGroupViewer(viewerName) != null) {
+			setGroupViewer((CyNetworkView)view, viewerName);
+		}
 		gpmlHandler.addAnnotations(view, nodeMap.values());
 		gpmlHandler.applyGpmlLayout(view, nodeMap.values());
 		gpmlHandler.applyGpmlVisualStyle();
-		setGroupViewer((CyNetworkView)view, "namedSelection");
-		
 		view.fitContent();
 	}
 }
