@@ -36,12 +36,9 @@
 */
 package cytoscape.view;
 
-import javax.swing.DefaultDesktopManager;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
-
 import cytoscape.Cytoscape;
-
 import java.awt.Dimension;
 
 /**
@@ -50,10 +47,13 @@ import java.awt.Dimension;
 public class CyDesktopManager  {
 	
 	public static enum Arrange {
-		GRID,CASCADE,HORIZONTAL,VERTICAL
+		GRID,CASCADE,HORIZONTAL,VERTICAL,DEFAULT
 	}
 	public static int MINIMUM_WIN_WIDTH = 200;
 	public static int MINIMUM_WIN_HEIGHT = 200;
+	
+	public static int DEFAULT_WIN_WIDTH = 400;
+	public static int DEFAULT_WIN_HEIGHT = 400;
 		
 	protected static JDesktopPane desktop;
 	private CyDesktopManager() {
@@ -111,10 +111,9 @@ public class CyDesktopManager  {
 			int[] y = new int[frameCount];
 			int[] w = new int[frameCount];
 			int[] h = new int[frameCount];
-			x[0] = 0;
-			y[0] = 0;
-			w[0] = allFrames[0].getWidth();
-			h[0] =allFrames[0].getHeight();
+			x[0] = 0; y[0] = 0; w[0] = 0; h[0] =0;
+			int width = 0;
+			int height = 0;
 
 			boolean multiBlock = false;
 			int blockSize =0;
@@ -127,29 +126,47 @@ public class CyDesktopManager  {
 					y[i] =0;
 					multiBlock = true;
 				}
-				if (desktopSize.width - x[i]<MINIMUM_WIN_WIDTH && !multiBlock) {
+				if (desktopSize.width - x[i]<MINIMUM_WIN_WIDTH) {
 					x[i] = x[i-1];
 				}
 				
 				// Determine the w,h for the previous block and start of another block 
 				if (y[i]==0 && multiBlock) {
-										
-					for (int j=0; j< blockSize; j++) {
-						if (i-blockSize>0) { //use the same (w, h) as previous block
-							w[i-j-1] = w[i-blockSize];
-							h[i-j-1] = h[i-blockSize];							
+					// The first block
+					if (i == blockSize) {
+						width = desktopSize.width - x[i-1];
+						height = desktopSize.height - y[i-1];
+					}
+					
+					// The blocks other than the first (i.e. 2nd, 3rd, 4th, ...)
+					if (i > blockSize) { 					
+						//try to use the same (w, h) as previous block
+						width = w[i-blockSize -1];
+						height = h[i-blockSize -1];
+						
+						if (desktopSize.width - x[i-1] < width) {
+							width = desktopSize.width - x[i-1];
+							if (width < MINIMUM_WIN_WIDTH) {
+								width = MINIMUM_WIN_WIDTH;								
+							}
 						}
-						else {
-							w[i-j-1] = desktopSize.width - x[i-1];
-							h[i-j-1] = desktopSize.height - y[i-1];							
-						}
+						if (desktopSize.height - y[i-1]<MINIMUM_WIN_HEIGHT) {
+							height = MINIMUM_WIN_HEIGHT;	
+						}						
 					}									
+
+					// Set width the same for the whole block
+					for (int j=0; j< blockSize; j++) {
+						w[i-j-1] = width;
+						h[i-j-1] = height;	
+					}
+					
 					//start of another block
 					x[i] = x[i-blockSize] + delta_block; 
-					if (x[i] > (desktopSize.width - delta_x * blockSize)) {
+					if (x[i] > (desktopSize.width - delta_x * blockSize - MINIMUM_WIN_WIDTH)) {						
 						x[i] = x[i-blockSize];
 					}
-					blockSize =1;	
+					blockSize =0;	
 				}
 			}
 
@@ -158,17 +175,33 @@ public class CyDesktopManager  {
 				for (int i = 0; i < frameCount; i++) {
 					w[frameCount-1-i] = desktopSize.width - x[frameCount - 1];
 					h[frameCount-1-i] = desktopSize.height - y[frameCount - 1];					
+
+					if (desktopSize.width - x[frameCount-1-i]<MINIMUM_WIN_WIDTH) {
+						w[frameCount-1-i] = MINIMUM_WIN_WIDTH;	
+					}
+					if (desktopSize.height - y[frameCount-1-i]<MINIMUM_WIN_HEIGHT) {
+						h[frameCount-1-i] = MINIMUM_WIN_HEIGHT;	
+					}
 				}
 			}
 			else { //case for multiBlock
-				for (int i = 0; i < blockSize; i++) {
-					//use the same (w, h) as previous block
-					w[frameCount-1-i] = w[frameCount - blockSize-1];
-					h[frameCount-1-i] = h[frameCount - blockSize-1];
-					// If w is too wider to fit to the screen, adjust it
-					if (w[frameCount-1-i] > desktopSize.width - x[frameCount - 1]) {
-						w[frameCount-1-i] = desktopSize.width - x[frameCount - 1];
+				//try to use the same (w, h) as previous block
+				width = w[frameCount-blockSize -1];
+				height = h[frameCount-blockSize -1];
+								
+				if (desktopSize.width - x[frameCount-1] < width) {
+					width = desktopSize.width - x[frameCount-1];
+					if (width < MINIMUM_WIN_WIDTH) {
+						width = MINIMUM_WIN_WIDTH;								
 					}
+				}
+				if (desktopSize.height - y[frameCount-1]<MINIMUM_WIN_HEIGHT) {
+					height = MINIMUM_WIN_HEIGHT;	
+				}						
+				
+				for (int i = 0; i < blockSize; i++) {
+					w[frameCount-1-i] = width;
+					h[frameCount-1-i] = height;
 				}				
 			}
 			
@@ -268,6 +301,16 @@ public class CyDesktopManager  {
 				if (x > desktopSize.width - MINIMUM_WIN_WIDTH) {
 					x = desktopSize.width - MINIMUM_WIN_WIDTH;
 				}
+				allFrames[frameCount-i-1].setBounds(x, y, w, h);
+			}
+		}
+		else if (pStyle == Arrange.DEFAULT) {
+			int x = 0;
+			int y = 0;
+			int w = DEFAULT_WIN_WIDTH;
+			int h = DEFAULT_WIN_HEIGHT;
+						
+			for (int i=0; i< frameCount; i++) {
 				allFrames[frameCount-i-1].setBounds(x, y, w, h);
 			}
 		}
