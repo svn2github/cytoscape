@@ -62,7 +62,7 @@ public class ArrangeAction extends JMenu {
 	private JMenuItem tiled; 
 	private JMenuItem horizontal; 
 	private JMenuItem vertical; 
-
+	private JMenuItem bydefault; 
 
 	public ArrangeAction() {
 		super("Arrange Network Windows");
@@ -107,10 +107,21 @@ public class ArrangeAction extends JMenu {
 			}
 		});
 
+		bydefault = new JMenuItem(new AbstractAction("Default") {
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							CyDesktopManager.arrangeFrames(CyDesktopManager.Arrange.DEFAULT);
+						}
+					});
+			}
+		});
+
 		this.add(cascade);
 		this.add(tiled);		
 		this.add(horizontal);		
-		this.add(vertical);		
+		this.add(vertical);
+		this.add(bydefault);
 	}	
 }
 
