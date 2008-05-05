@@ -41,9 +41,6 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import org.cytoscape.view.GraphView;
-import org.cytoscape.view.impl.InternalFrameComponent;
-import org.cytoscape.view.impl.InnerCanvas;
-import org.cytoscape.view.impl.DGraphView;
 
 import java.awt.Component;
 import java.awt.event.WindowEvent;
@@ -71,19 +68,22 @@ import javax.swing.event.SwingPropertyChangeSupport;
 /**
  * 
  */
-public class NetworkViewManager implements PropertyChangeListener, InternalFrameListener {
-
+public class NetworkViewManager implements PropertyChangeListener,
+		InternalFrameListener {
 	private JDesktopPane desktopPane;
+
 	private Map<String, JInternalFrame> networkViewMap;
+
 	private Map<JInternalFrame, String> componentMap;
-  private Map<String, InternalFrameComponent> internalFrameComponentMap;
 
-  protected CytoscapeDesktop cytoscapeDesktop;
-  protected SwingPropertyChangeSupport pcs;
-  protected int MINIMUM_WIN_WIDTH = 200;
-  protected int MINIMUM_WIN_HEIGHT = 200;
+	protected CytoscapeDesktop cytoscapeDesktop;
 
-  /**
+	protected SwingPropertyChangeSupport pcs;
+
+	protected int MINIMUM_WIN_WIDTH = 200;
+	protected int MINIMUM_WIN_HEIGHT = 200;
+
+	/**
 	 * Creates a new NetworkViewManager object.
 	 * 
 	 * @param desktop
@@ -95,14 +95,12 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		pcs = new SwingPropertyChangeSupport(this);
 
 		// add Help hooks
-		CyHelpBroker.getHelpBroker().enableHelp(desktopPane,"network-view-manager", null);
+		CyHelpBroker.getHelpBroker().enableHelp(desktopPane,
+				"network-view-manager", null);
 
-    Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
-
-    networkViewMap = new HashMap<String, JInternalFrame>();
+		networkViewMap = new HashMap<String, JInternalFrame>();
 		componentMap = new HashMap<JInternalFrame, String>();
-    internalFrameComponentMap = new HashMap<String, InternalFrameComponent>();
-  }
+	}
 
 	/**
 	 * DOCUMENT ME!
@@ -123,27 +121,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	}
 
 
-    /**
-     * Given a CyNetworkView, returns the InternalFrameComponent that wraps it.
-     *
-     * @param view
-     *            CyNetworkView
-     * @return InternalFrameComponent
-     * @throws IllegalArgumentException
-     */
-    public InternalFrameComponent getInternalFrameComponent(GraphView view)
-        throws IllegalArgumentException {
-      // check args
-      if (view == null) {
-        throw new IllegalArgumentException("NetworkViewManager.getInternalFrameComponent(), argument is null");
-      }
-
-      // outta here
-      return internalFrameComponentMap.get(view.getIdentifier());
-    }
-
-
-  /**
+	/**
 	 * Given a GraphView, returns the internal frame.
 	 * 
 	 * @param view
@@ -250,15 +228,14 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	 * want your NetworkViewManagers to behave differently.
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
+
 		// handle focus event
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
 			String network_id = (String) e.getNewValue();
 			e = null;
-			unsetFocus(); // in case the newly focused network doesn't have a view
+			unsetFocus(); // in case the newly focused network doesn't have a
+							// view
 			setFocus(network_id);
-
-      // hack to add transfer handlers to canvas
-      InnerCanvas canvas = ((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas();
 
 			if (this.getDesktopPane() != null) {
 				Cytoscape.getCurrentNetworkView().addTransferComponent(this.getDesktopPane());
@@ -322,23 +299,14 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	}
 
 	protected void removeView(GraphView view) {
-    try {
-      final String targetID = view.getIdentifier();
+		try {
+			networkViewMap.get(view.getGraphPerspective().getIdentifier()).dispose();
+		} catch (Exception e) {
+			System.err.println("Network View unable to be killed");
+		}
 
-      if ((targetID != null) && (networkViewMap.get(targetID) != null)) {
-        networkViewMap.get(targetID).dispose();
-
-        JInternalFrame target = networkViewMap.remove(targetID);
-        target.removeAll();
-        target = null;
-      }
-    } catch (Exception e) {
-      System.err.println("Network View unable to be killed: " + view.getIdentifier());
-      e.printStackTrace();
-    }
-
-    view = null;
-    }
+		networkViewMap.remove(view.getGraphPerspective().getIdentifier());
+	}
 
 	/**
 	 * Contains a GraphView.
@@ -351,7 +319,8 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 		// create a new InternalFrame and put the GraphViews Component into
 		// it
-		JInternalFrame iframe = new JInternalFrame(view.getTitle(), true, true,true, true);
+		JInternalFrame iframe = new JInternalFrame(view.getTitle(), true, true,
+				true, true);
 		iframe.addInternalFrameListener(new InternalFrameAdapter() {
 			public void internalFrameClosing(InternalFrameEvent e) {
 				Cytoscape.destroyNetworkView(view);
@@ -360,57 +329,43 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		desktopPane.add(iframe);
 
 
-    // code added to support layered canvas for each CyNetworkView
-    if (view instanceof DGraphView) {
-      InternalFrameComponent internalFrameComp = new InternalFrameComponent(iframe.getLayeredPane(), (DGraphView) view);
-      iframe.setContentPane(internalFrameComp);
-      internalFrameComponentMap.put(view.getGraphPerspective().getIdentifier(), internalFrameComp);
-    } else {
-      System.out.println("NetworkViewManager.createContainer() - DGraphView not found!");
-      iframe.getContentPane().add(view.getComponent());
-    }
+		iframe.setContentPane( view.getContainer(iframe.getLayeredPane()) );
 
 		iframe.pack();
-    // create cascade iframe
-    int x = 0;
 
-    //iframe.setSize(400, 400);
-    // create cascade iframe
-    int y = 0;
-    JInternalFrame refFrame = null;
-    JInternalFrame[] allFrames = desktopPane.getAllFrames();
+		// create cascade iframe
+		int x = 0;
+		int y = 0;
+		JInternalFrame refFrame = null;
+		JInternalFrame[] allFrames = desktopPane.getAllFrames();
 
-    if (allFrames.length > 1) {
-      refFrame = allFrames[0];
-    }
+		if (allFrames.length > 1) {
+			refFrame = allFrames[0];
+		}
 
-    if (refFrame != null) {
-      x = refFrame.getLocation().x + 20;
-      y = refFrame.getLocation().y + 20;
-    }
+		if (refFrame != null) {
+			x = refFrame.getLocation().x + 20;
+			y = refFrame.getLocation().y + 20;
+		}
 
-    if (x > (desktopPane.getWidth() - MINIMUM_WIN_WIDTH)) {
-      x = desktopPane.getWidth() - MINIMUM_WIN_WIDTH;
-    }
+		if (x > (desktopPane.getWidth() - MINIMUM_WIN_WIDTH)) {
+			x = desktopPane.getWidth() - MINIMUM_WIN_WIDTH;
+		}
+		if (y > (desktopPane.getHeight() - MINIMUM_WIN_HEIGHT)) {
+			y = desktopPane.getHeight() - MINIMUM_WIN_HEIGHT;
+		}
 
-    if (y > (desktopPane.getHeight() - MINIMUM_WIN_HEIGHT)) {
-      y = desktopPane.getHeight() - MINIMUM_WIN_HEIGHT;
-    }
+		if (x < 0) {
+			x = 0;
+		}
+		if (y < 0) {
+			y = 0;
+		}
+		iframe.setBounds(x, y, 400, 400);
 
-    if (x < 0) {
-      x = 0;
-    }
-
-    if (y < 0) {
-      y = 0;
-    }
-
-    iframe.setBounds(x, y, 400, 400);
-		
 		// maximize the frame if the specified property is set
 		try {
-			String max = CytoscapeInit.getProperties().getProperty(
-					"maximizeViewOnCreate");
+			String max = CytoscapeInit.getProperties().getProperty("maximizeViewOnCreate");
 
 			if ((max != null) && Boolean.parseBoolean(max))
 				iframe.setMaximum(true);
