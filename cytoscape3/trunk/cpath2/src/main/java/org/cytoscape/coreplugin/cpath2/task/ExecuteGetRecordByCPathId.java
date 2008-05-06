@@ -268,15 +268,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 LayoutUtil layoutAlgorithm = new LayoutUtil();
 
                 //  Now, create the view.
-                //  Use local create view option, so that we don't mess up the visual style.
-                createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
-                        null);
-
-                //  Now apply the visual style;
-                //  Doing this as a separate step ensures that the visual style appears
-                //  in the visual style drop-down menu.
-                view.applyVizmapper(visualStyle);
-
+                createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm, visualStyle);
 
                 // Set up clickable node details.
                 CytoscapeWrapper.initBioPaxPlugInUI();
@@ -328,13 +320,7 @@ public class ExecuteGetRecordByCPathId implements Task {
                 LayoutUtil layoutAlgorithm = new LayoutUtil();
 
                 //  Now, create the view.
-                //  Use local create view option, so that we don't mess up the visual style.
-                createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
-                        null);
-                //  Now apply the visual style;
-                //  Doing this as a separate step ensures that the visual style appears
-                //  in the visual style drop-down menu.
-                view.applyVizmapper(visualStyle);
+                createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm, visualStyle);
             }
         } else {
             //  If we have requested a halt, and we have a network, destroy it.
