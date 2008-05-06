@@ -270,7 +270,13 @@ public class ExecuteGetRecordByCPathId implements Task {
                 //  Now, create the view.
                 //  Use local create view option, so that we don't mess up the visual style.
                 createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
-                        visualStyle);
+                        null);
+
+                //  Now apply the visual style;
+                //  Doing this as a separate step ensures that the visual style appears
+                //  in the visual style drop-down menu.
+                view.applyVizmapper(visualStyle);
+
 
                 // Set up clickable node details.
                 CytoscapeWrapper.initBioPaxPlugInUI();
@@ -324,7 +330,11 @@ public class ExecuteGetRecordByCPathId implements Task {
                 //  Now, create the view.
                 //  Use local create view option, so that we don't mess up the visual style.
                 createNetworkView(cyNetwork, cyNetwork.getTitle(), layoutAlgorithm,
-                        visualStyle);
+                        null);
+                //  Now apply the visual style;
+                //  Doing this as a separate step ensures that the visual style appears
+                //  in the visual style drop-down menu.
+                view.applyVizmapper(visualStyle);
             }
         } else {
             //  If we have requested a halt, and we have a network, destroy it.
@@ -376,7 +386,7 @@ public class ExecuteGetRecordByCPathId implements Task {
         //  Apply Layout
         Object[] options = {"Yes", "No"};
         int n = JOptionPane.showOptionDialog(Cytoscape.getDesktop(),
-            "Would you like layout the modified network?",
+            "Would you like to layout the modified network?",
             "Adjust Layout?",
             JOptionPane.YES_NO_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE,
