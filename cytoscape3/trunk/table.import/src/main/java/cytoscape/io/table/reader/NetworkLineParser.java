@@ -88,8 +88,8 @@ public class NetworkLineParser {
 
 	private Edge addNodeAndEdge(final String[] parts) {
 		final Node source;
-
-		if ((nmp.getSourceIndex() <= (parts.length - 1)) && (parts[nmp.getSourceIndex()] != null)) {
+		
+		if (nmp.getSourceIndex().equals(-1) == false && (nmp.getSourceIndex() <= (parts.length - 1)) && (parts[nmp.getSourceIndex()] != null)) {
 			source = Cytoscape.getCyNode(parts[nmp.getSourceIndex()].trim(), true);
 			nodeList.add(source.getRootGraphIndex());
 		} else {
@@ -98,11 +98,17 @@ public class NetworkLineParser {
 
 		final Node target;
 
-		if ((nmp.getTargetIndex() <= (parts.length - 1)) && (parts[nmp.getTargetIndex()] != null)) {
+		if (nmp.getTargetIndex().equals(-1) == false && (nmp.getTargetIndex() <= (parts.length - 1)) && (parts[nmp.getTargetIndex()] != null)) {
 			target = Cytoscape.getCyNode(parts[nmp.getTargetIndex()].trim(), true);
 			nodeList.add(target.getRootGraphIndex());
 		} else {
 			target = null;
+		}
+		
+		// Single column nodes list.  Just add nodes.
+		if(source == null || target == null) {
+			// do not create edge.
+			return null;
 		}
 
 		final String interaction;
@@ -115,21 +121,16 @@ public class NetworkLineParser {
 		}
 
 		final Edge edge;
-
-		if ((source != null) && (target != null)) {
-			edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
-			edgeList.add(edge.getRootGraphIndex());
-		} else {
-			edge = null;
-		}
-
+		edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
+		edgeList.add(edge.getRootGraphIndex());
+		
 		return edge;
 	}
 
 	private void addEdgeAttributes(final Edge edge, final String[] parts) {
 		for (int i = 0; i < parts.length; i++) {
 			if ((i != nmp.getSourceIndex()) && (i != nmp.getTargetIndex())
-			    && (i != nmp.getInteractionIndex())) {
+			    && (i != nmp.getInteractionIndex()) && parts[i] != null ) {
 				if ((nmp.getImportFlag().length > i) && (nmp.getImportFlag()[i] == true)) {
 					mapAttribute(edge.getIdentifier(), parts[i].trim(), i);
 				}

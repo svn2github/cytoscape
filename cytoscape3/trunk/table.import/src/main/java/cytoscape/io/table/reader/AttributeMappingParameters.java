@@ -57,6 +57,8 @@ import java.util.Set;
 
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
+import org.cytoscape.Edge;
+
 
 /**
  * Parameter object for text table <---> CyAttributes mapping.<br>
@@ -91,6 +93,35 @@ public class AttributeMappingParameters implements MappingParameter {
 	private Aliases existingAliases;
 	private final Map<String, String> networkTitle2ID;
 
+	// Case sensitivity
+	private Boolean caseSensitive;
+
+	/**
+	 * Creates a new AttributeMappingParameters object.
+	 *
+	 * @param objectType  DOCUMENT ME!
+	 * @param delimiters  DOCUMENT ME!
+	 * @param listDelimiter  DOCUMENT ME!
+	 * @param keyIndex  DOCUMENT ME!
+	 * @param mappingAttribute  DOCUMENT ME!
+	 * @param aliasIndex  DOCUMENT ME!
+	 * @param attrNames  DOCUMENT ME!
+	 * @param attributeTypes  DOCUMENT ME!
+	 * @param listAttributeTypes  DOCUMENT ME!
+	 * @param importFlag  DOCUMENT ME!
+	 *
+	 * @throws Exception  DOCUMENT ME!
+	 */
+	public AttributeMappingParameters(final ObjectType objectType, final List<String> delimiters,
+	                                  final String listDelimiter, final int keyIndex,
+	                                  final String mappingAttribute,
+	                                  final List<Integer> aliasIndex, final String[] attrNames,
+	                                  Byte[] attributeTypes, Byte[] listAttributeTypes,
+	                                  boolean[] importFlag) throws Exception {
+		this(objectType, delimiters, listDelimiter, keyIndex, mappingAttribute, aliasIndex,
+		     attrNames, attributeTypes, listAttributeTypes, importFlag, true);
+	}
+
 	/**
 	 * Creates a new AttributeMappingParameters object.
 	 *
@@ -111,11 +142,12 @@ public class AttributeMappingParameters implements MappingParameter {
 	public AttributeMappingParameters(final ObjectType objectType, final List<String> delimiters,
 	                                  final String listDelimiter, final int keyIndex,
 	                                  final String mappingAttribute,
-	                                  final List<Integer> aliasIndex,
-	                                  final String[] attrNames, Byte[] attributeTypes,
-	                                  Byte[] listAttributeTypes, boolean[] importFlag)
+	                                  final List<Integer> aliasIndex, final String[] attrNames,
+	                                  Byte[] attributeTypes, Byte[] listAttributeTypes,
+	                                  boolean[] importFlag, Boolean caseSensitive)
 	    throws Exception {
 		this.listAttributeTypes = listAttributeTypes;
+		this.caseSensitive = caseSensitive;
 
 		if (attrNames == null) {
 			throw new Exception("attributeNames should not be null.");
@@ -328,9 +360,9 @@ public class AttributeMappingParameters implements MappingParameter {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 *  Returns attribute name for mapping.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  Key CyAttribute name for mapping.
 	 */
 	public String getMappingAttribute() {
 		return mappingAttribute;
@@ -365,6 +397,10 @@ public class AttributeMappingParameters implements MappingParameter {
 		delimiterBuffer.append("[");
 
 		for (String delimiter : delimiters) {
+			if (delimiter.equals(" += +")) {
+				return " += +";
+			}
+
 			delimiterBuffer.append(delimiter);
 		}
 
@@ -398,6 +434,7 @@ public class AttributeMappingParameters implements MappingParameter {
 	 *
 	 */
 	private void buildAttribute2IDMap(Iterator it) {
+		// Mapping from attribute value to object ID.
 		attr2id = new HashMap<String, List<String>>();
 
 		String objectID = null;
@@ -416,9 +453,16 @@ public class AttributeMappingParameters implements MappingParameter {
 					break;
 
 				case EDGE:
+					Edge edge = (Edge) it.next();
+					objectID = edge.getIdentifier();
+					attributeValue = attributes.getStringAttribute(objectID, mappingAttribute);
+				
 					break;
 
 				case NETWORK:
+					// Not supported yet.
+					it.next();
+
 					break;
 
 				default:
@@ -449,5 +493,14 @@ public class AttributeMappingParameters implements MappingParameter {
 
 	protected Map<String, String> getnetworkTitleMap() {
 		return networkTitle2ID;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Boolean getCaseSensitive() {
+		return caseSensitive;
 	}
 }

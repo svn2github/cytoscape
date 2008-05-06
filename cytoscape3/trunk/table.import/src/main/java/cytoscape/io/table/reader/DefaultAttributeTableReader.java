@@ -191,6 +191,8 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		 * Read & extract one line at a time. The line can be Tab delimited,
 		 */
 		String[] parts = null;
+		
+		final String delimiter = mapping.getDelimiterRegEx();
 		while ((line = bufRd.readLine()) != null) {
 			/*
 			 * Ignore Empty & Commnet lines.
@@ -198,13 +200,17 @@ public class DefaultAttributeTableReader implements TextTableReader {
 			if ((commentChar != null) && line.startsWith(commentChar)) {
 				// Do nothing
 			} else if ((lineCount >= startLineNumber) && (line.trim().length() > 0)) {
-				parts = line.split(mapping.getDelimiterRegEx());
+				parts = line.split(delimiter);
 				// If key dos not exists, ignore the line.
 				if(parts.length>=mapping.getKeyIndex()+1) {
+					try {
 					if(importAll) {
 						parser.parseAll(parts);
 					} else
 						parser.parseEntry(parts);
+					} catch (Exception ex) {
+						System.out.println("Couldn't parse row: " + lineCount);
+					}
 					globalCounter++;
 				}
 			}
@@ -227,10 +233,16 @@ public class DefaultAttributeTableReader implements TextTableReader {
 		sb.append(globalCounter + " entries are loaded and mapped onto\n");
 		sb.append(mapping.getObjectType().toString() + " attributes.");
 		
-		if(invalid.size() != 0) {
-			sb.append("\n\nThe following enties are invalid and not imported:\n");
+		if(invalid.size() > 0) {
+			sb.append("\n\nThe following enties are invalid and were not imported:\n");
+			int limit = 10;
 			for(String key: invalid.keySet()) {
 				sb.append(key + " = " + invalid.get(key) + "\n");
+				if ( limit-- <= 0 ) {
+					sb.append("Approximately " + (invalid.size() - 10) + 
+					          " additional entries were not imported...");
+					break;
+				}
 			}
 		}
 		return sb.toString();

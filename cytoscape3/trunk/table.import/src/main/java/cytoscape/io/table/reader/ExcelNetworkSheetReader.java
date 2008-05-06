@@ -101,7 +101,11 @@ public class ExcelNetworkSheetReader extends NetworkTableReader {
 
 		while ((row = sheet.getRow(rowCount)) != null) {
 			cellsInOneRow = createElementStringArray(row);
-			parser.parseEntry(cellsInOneRow);
+			try {
+				parser.parseEntry(cellsInOneRow);
+			} catch (Exception e) {
+				System.out.println("Couldn't parse row: " + rowCount);
+			}
 			rowCount++;
 		}
 	}

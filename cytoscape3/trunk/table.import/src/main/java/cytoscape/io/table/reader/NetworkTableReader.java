@@ -135,7 +135,11 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 				skipped++;
 			} else if ((line.trim().length() > 0) && ((startLineNumber + skipped) <= lineCount)) {
 				String[] parts = line.split(nmp.getDelimiterRegEx());
-				parser.parseEntry(parts);
+				try {
+					parser.parseEntry(parts);
+				} catch (Exception ex) {
+					System.out.println("Couldn't parse row: " + lineCount);
+				}
 			}
 
 			lineCount++;

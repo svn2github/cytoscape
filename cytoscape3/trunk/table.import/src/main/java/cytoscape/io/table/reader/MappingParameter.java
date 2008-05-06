@@ -107,4 +107,11 @@ public interface MappingParameter {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getListDelimiter();
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Boolean getCaseSensitive();
 }

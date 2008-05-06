@@ -99,6 +99,7 @@ import javax.imageio.ImageIO;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -656,38 +657,42 @@ public class PreviewTablePanel extends JPanel {
 			fileTypeLabel.setText("Excel" + '\u2122' + " Workbook");
 
 			POIFSFileSystem excelIn = new POIFSFileSystem(sourceURL.openStream());
-//			POIFSDocument excelIn = new POIFSDocument("foo", sourceURL.openStream());
 			HSSFWorkbook wb = new HSSFWorkbook(excelIn, true);
 
-//			HSSFWorkbook wb = new HSSFWorkbook(sourceURL.openStream());
-			
-			if(wb.getNumberOfSheets() == 0) {
+			if (wb.getNumberOfSheets() == 0) {
 				return;
 			}
+
 			/*
 			 * Load each sheet in the workbook.
 			 */
-			
 			System.out.println("# of Sheets = " + wb.getNumberOfSheets());
-			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-				HSSFSheet sheet = wb.getSheetAt(i);
-				System.out.println("Sheet name = " + wb.getSheetName(i) +", ROW = " + sheet.rowIterator().hasNext());
-				
-				System.out.println("TS = " + sheet.toString());
-				
-				newModel = parseExcel(sourceURL, size, curRenderer, sheet, startLine);
-				if(newModel.getRowCount() == 0) {
-					return;
-				}
-				guessDataTypes(newModel, wb.getSheetName(i));
-				listDataTypeMap.put(wb.getSheetName(i), initListDataTypes(newModel));
-				addTableTab(newModel, wb.getSheetName(i), curRenderer);
-			}
-		} else {
-			fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
-			fileTypeLabel.setText("Text File");
 
-			newModel = parseText(sourceURL, size, curRenderer, delimiters, startLine);
+			HSSFSheet sheet = wb.getSheetAt(0);
+			System.out.println("Sheet name = " + wb.getSheetName(0) + ", ROW = "
+			                   + sheet.rowIterator().hasNext());
+
+			System.out.println("TS = " + sheet.toString());
+
+			newModel = parseExcel(sourceURL, size, curRenderer, sheet, startLine);
+
+			if (newModel.getRowCount() == 0) {
+				return;
+			}
+
+			guessDataTypes(newModel, wb.getSheetName(0));
+			listDataTypeMap.put(wb.getSheetName(0), initListDataTypes(newModel));
+			addTableTab(newModel, wb.getSheetName(0), curRenderer);
+		} else {
+			if (isCytoscapeAttributeFile(sourceURL)) {
+				fileTypeLabel.setText("Cytoscape Attribute File");
+				fileTypeLabel.setIcon(new ImageIcon(Cytoscape.class.getResource("images/icon48.png")));
+				newModel = parseText(sourceURL, size, curRenderer, null, 1);
+			} else {
+				fileTypeLabel.setText("Text File");
+				fileTypeLabel.setIcon(TEXT_FILE_ICON.getIcon());
+				newModel = parseText(sourceURL, size, curRenderer, delimiters, startLine);
+			}
 
 			String[] urlParts = sourceURL.toString().split("/");
 			final String tabName = urlParts[urlParts.length - 1];
@@ -702,6 +707,48 @@ public class PreviewTablePanel extends JPanel {
 		}
 
 		loadFlag = true;
+	}
+
+	protected boolean isCytoscapeAttributeFile(final URL sourceURL) throws IOException {
+		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(URLUtil.getInputStream(sourceURL)));
+		String line = null;
+		int i = 0;
+
+		boolean testResult = true;
+
+		// Test first two lines to check the file type.
+		while ((line = bufRd.readLine()) != null) {
+			if (i == 0) {
+				String[] elements = line.split(" +");
+
+				if (elements.length == 1) {
+					// True so far.
+				} else {
+					elements = line.split("[(]");
+
+					if ((elements.length == 2) && elements[1].startsWith("class=")) {
+						// true so far.
+					} else {
+						testResult = false;
+
+						break;
+					}
+				}
+			} else if (i == 1) {
+				String[] elements = line.split(" += +");
+
+				if (elements.length != 2)
+					testResult = false;
+			} else if (i >= 2) {
+				break;
+			}
+
+			i++;
+		}
+
+		bufRd.close();
+
+		return testResult;
 	}
 
 	private void addTableTab(TableModel newModel, final String tabName, TableCellRenderer renderer) {
@@ -809,16 +856,30 @@ public class PreviewTablePanel extends JPanel {
 		/*
 		 * Generate reg. exp. for delimiter.
 		 */
-		StringBuffer delimiterBuffer = new StringBuffer();
+		final String delimiterRegEx;
+		String attrName = "Attr1";
+		
+		if (delimiters != null) {
+			StringBuffer delimiterBuffer = new StringBuffer();
 
-		if (delimiters.size() != 0) {
-			delimiterBuffer.append("[");
+			if (delimiters.size() != 0) {
+				delimiterBuffer.append("[");
 
-			for (String delimiter : delimiters) {
-				delimiterBuffer.append(delimiter);
+				for (String delimiter : delimiters) {
+					delimiterBuffer.append(delimiter);
+				}
+
+				delimiterBuffer.append("]");
 			}
 
-			delimiterBuffer.append("]");
+			delimiterRegEx = delimiterBuffer.toString();
+		} else {
+			// treat as cytoscape attribute files.
+			delimiterRegEx = " += +";
+			// Extract first column for attr name.
+			line = bufRd.readLine();
+			String[] line1 = line.split(" +");
+			attrName= line1[0];
 		}
 
 		/*
@@ -834,8 +895,6 @@ public class PreviewTablePanel extends JPanel {
 		int maxColumn = 0;
 		String[] parts;
 		Vector data = new Vector();
-
-		final String delimiterRegEx = delimiterBuffer.toString();
 
 		while ((line = bufRd.readLine()) != null) {
 			if (((commentChar != null) && line.startsWith(commentChar))
@@ -871,7 +930,14 @@ public class PreviewTablePanel extends JPanel {
 
 		bufRd.close();
 
-		return new DefaultTableModel(data, getDefaultColumnNames(maxColumn, sourceURL));
+		if(delimiters == null) {
+			// Cytoscape attr file.
+			Vector<String> columnNames = new Vector<String>();
+			columnNames.add("Key");
+			columnNames.add(attrName);
+			return new DefaultTableModel(data, columnNames);
+		} else
+			return new DefaultTableModel(data, getDefaultColumnNames(maxColumn, sourceURL));
 	}
 
 	private TableModel parseExcel(URL sourceURL, int size, TableCellRenderer renderer,

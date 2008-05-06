@@ -108,7 +108,11 @@ public class OntologyAnnotationReader implements TextTableReader {
 				// Do nothing
 			} else if ((lineCount > startLineNumber) && (line.trim().length() > 0)) {
 				String[] parts = line.split(mapping.getDelimiterRegEx());
-				parser.parseEntry(parts);
+				try {
+					parser.parseEntry(parts);
+				} catch (Exception ex) {
+					System.out.println("Couldn't parse line: " + lineCount);
+				}
 			}
 
 			lineCount++;

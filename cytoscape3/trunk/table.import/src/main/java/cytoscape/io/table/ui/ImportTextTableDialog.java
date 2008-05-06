@@ -234,6 +234,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	// Key column index
 	private int keyInFile;
 
+	// Case sensitivity
+	private Boolean caseSensitive = true;
+
 	// Data Type
 	private cytoscape.io.table.reader.TextTableReader.ObjectType objType;
 	private final int dialogType;
@@ -410,6 +413,19 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				}
 			});
 
+		caseSensitiveCheckBox = new JCheckBox("Case Sensitive");
+		caseSensitiveCheckBox.setToolTipText("<html><strong><font color=\"red\">Caution! If you uncheck this, import can be extrelely slow.</font></strong></html>");
+		caseSensitiveCheckBox.setSelected(true);
+		caseSensitiveCheckBox.addActionListener(new ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					ignoreCaseCheckBoxActionPerformed(evt);
+				}
+
+				private void ignoreCaseCheckBoxActionPerformed(ActionEvent evt) {
+					caseSensitive = caseSensitiveCheckBox.isSelected();
+				}
+			});
+
 		importTypeButtonGroup = new ButtonGroup();
 
 		attrTypePanel = new JPanel();
@@ -467,7 +483,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		spaceCheckBox = new javax.swing.JCheckBox();
 		otherCheckBox = new javax.swing.JCheckBox();
 		otherDelimiterTextField = new javax.swing.JTextField();
-		attrNameCheckBox = new javax.swing.JCheckBox();
+		transferNameCheckBox = new javax.swing.JCheckBox();
 
 		attributeNamePanel = new JPanel();
 		previewOptionPanel = new JPanel();
@@ -1075,6 +1091,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		if (dialogType == NETWORK_IMPORT) {
 			networkImportPanel = new NetworkImportOptionsPanel();
 			networkImportPanel.addPropertyChangeListener(this);
+			caseSensitiveCheckBox.setVisible(false);
 		}
 
 		textImportOptionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED),
@@ -1205,7 +1222,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		                                                                                   .addContainerGap(GroupLayout.DEFAULT_SIZE,
 		                                                                                                    Short.MAX_VALUE)));
 
-		attrNameCheckBox.setEnabled(false);
+		transferNameCheckBox.setEnabled(false);
 
 		SpinnerNumberModel spinnerModel = new SpinnerNumberModel(100, 1, 10000000, 10);
 		counterSpinner.setModel(spinnerModel);
@@ -1226,7 +1243,6 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					try {
 						reloadButtonActionPerformed(evt);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -1269,13 +1285,13 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		attributeNamePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Attribute Names"));
 
-		attrNameCheckBox.setText("Transfer first line as attribute names");
+		transferNameCheckBox.setText("Transfer first line as attribute names");
 
-		attrNameCheckBox.setBorder(null);
-		attrNameCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		attrNameCheckBox.addActionListener(new java.awt.event.ActionListener() {
+		transferNameCheckBox.setBorder(null);
+		transferNameCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+		transferNameCheckBox.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					attrNameCheckBoxActionPerformed(evt);
+					transferNameCheckBoxActionPerformed(evt);
 				}
 			});
 
@@ -1304,7 +1320,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		attributeNamePanelLayout.setHorizontalGroup(attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                                    .add(attributeNamePanelLayout.createSequentialGroup()
-		                                                                                                 .add(attrNameCheckBox)
+		                                                                                                 .add(transferNameCheckBox)
 		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                                 .add(startRowLabel)
 		                                                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -1324,7 +1340,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		attributeNamePanelLayout.setVerticalGroup(attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                                  .add(attributeNamePanelLayout.createSequentialGroup()
 		                                                                                               .add(attributeNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                                                            .add(attrNameCheckBox,
+		                                                                                                                            .add(transferNameCheckBox,
 		                                                                                                                                 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                                                                                                 21,
 		                                                                                                                                 Short.MAX_VALUE)
@@ -1430,7 +1446,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		                                                                                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                  .add(textImportCheckBox)
 		                                                                                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                  .add(importAllCheckBox))
+		                                                                                  .add(importAllCheckBox)
+		                                                                                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                  .add(caseSensitiveCheckBox))
 		                                                          .add(attr2annotationPanel,
 		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
@@ -1448,7 +1466,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		                                                                                .add(advancedPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 		                                                                                                        .add(advancedOptionCheckBox)
 		                                                                                                        .add(textImportCheckBox)
-		                                                                                                        .add(importAllCheckBox))
+		                                                                                                        .add(importAllCheckBox)
+		                                                                                                        .add(caseSensitiveCheckBox))
 		                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                                .add(attr2annotationPanel,
 		                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
@@ -1602,10 +1621,10 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		}
 	}
 
-	private void attrNameCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
+	private void transferNameCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
 
-		if (attrNameCheckBox.isSelected()) {
+		if (transferNameCheckBox.isSelected()) {
 			if ((previewPanel.getPreviewTable() != null) && (model != null)) {
 				columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
 
@@ -1673,7 +1692,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		int startLineNumber;
 		final int spinnerNumber = Integer.parseInt(startRowSpinner.getValue().toString());
 
-		if (attrNameCheckBox.isSelected()) {
+		if (transferNameCheckBox.isSelected()) {
 			startLineNumber = spinnerNumber;
 		} else {
 			startLineNumber = spinnerNumber - 1;
@@ -1799,24 +1818,26 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 				// Make sure primary key index is up-to-date.
 				keyInFile = primaryKeyComboBox.getSelectedIndex();
-				
-				int idx=0;
-				for(String name: attributeNames) {
-					System.out.println(name + " = " + importFlag[idx] + ", type = " + attributeTypes[idx]);
-					idx++;
-				}
-				
+
 				// Build mapping parameter object.
-				final AttributeMappingParameters mapping = new AttributeMappingParameters(objType,
-				                                                                          checkDelimiter(),
-				                                                                          listDelimiter,
-				                                                                          keyInFile,
-				                                                                          mappingAttribute,
-				                                                                          aliasList,
-				                                                                          attributeNames,
-				                                                                          attributeTypes,
-				                                                                          listDataTypes,
-				                                                                          importFlag);
+				final AttributeMappingParameters mapping;
+
+				if (previewPanel.isCytoscapeAttributeFile(source)) {
+					List<String> del = new ArrayList<String>();
+					del.add(" += +");
+					mapping = new AttributeMappingParameters(objType, del,
+                            listDelimiter, keyInFile,
+                            mappingAttribute, aliasList,
+                            attributeNames, attributeTypes,
+                            listDataTypes, importFlag,
+                            caseSensitive);
+				} else
+					mapping = new AttributeMappingParameters(objType, checkDelimiter(),
+					                                         listDelimiter, keyInFile,
+					                                         mappingAttribute, aliasList,
+					                                         attributeNames, attributeTypes,
+					                                         listDataTypes, importFlag,
+					                                         caseSensitive);
 
 				if (source.toString().endsWith(EXCEL_EXT)) {
 					/*
@@ -1828,22 +1849,26 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					// Load all sheets in the table
 					for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 						HSSFSheet sheet = wb.getSheetAt(i);
-						if(importAllCheckBox.isSelected()) {
-							loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping, startLineNumber, true),
-						               source.toString());
+
+						if (importAllCheckBox.isSelected()) {
+							loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
+							                                             startLineNumber, true),
+							               source.toString());
 						} else {
-							loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping, startLineNumber, false),
-						               source.toString());
+							loadAnnotation(new ExcelAttributeSheetReader(sheet, mapping,
+							                                             startLineNumber, false),
+							               source.toString());
 						}
 					}
 				} else {
-					if(importAllCheckBox.isSelected()) {
+					if (importAllCheckBox.isSelected()) {
 						loadAnnotation(new DefaultAttributeTableReader(source, mapping,
-					                                               startLineNumber, null, true),
-					               source.toString());
+						                                               startLineNumber, null, true),
+						               source.toString());
 					} else {
 						loadAnnotation(new DefaultAttributeTableReader(source, mapping,
-                                startLineNumber, null, false), source.toString());
+						                                               startLineNumber, null, false),
+						               source.toString());
 					}
 				}
 
@@ -1860,9 +1885,8 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				/*
 				 * If selected ontology is not loaded, load it first.
 				 */
-				if (Cytoscape.getOntologyServer().getOntologyNames().contains(selectedOntologyName) == false) {
+				if (Cytoscape.getOntologyServer().getOntologyNames().contains(selectedOntologyName) == false)
 					loadOntology(ontologySourceLocation, selectedOntologyName);
-				}
 
 				/*
 				 * Now, load & map annotation.
@@ -1971,7 +1995,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 					} else {
 						// Get name from URL.
 						if ((commentChar != null) && (commentChar.length() != 0)
-						    && attrNameCheckBox.isSelected()) {
+						    && transferNameCheckBox.isSelected()) {
 							startLineNumber++;
 						}
 
@@ -2116,15 +2140,15 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		}
 
 		columnHeaders = new String[previewPanel.getPreviewTable().getColumnCount()];
-		attrNameCheckBox.setEnabled(true);
-		attrNameCheckBox.setSelected(false);
+		transferNameCheckBox.setEnabled(true);
+		transferNameCheckBox.setSelected(false);
 
 		ColumnResizer.adjustColumnPreferredWidths(previewPanel.getPreviewTable());
 		previewPanel.getPreviewTable().repaint();
 	}
 
 	private void delimiterCheckBoxActionPerformed(ActionEvent evt) throws IOException {
-		attrNameCheckBox.setSelected(false);
+		transferNameCheckBox.setSelected(false);
 		displayPreview();
 	}
 
@@ -2141,7 +2165,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private void reloadButtonActionPerformed(java.awt.event.ActionEvent evt)
 	    throws IOException {
 		displayPreview();
-		attrNameCheckBox.setSelected(false);
+
+		if (transferNameCheckBox.isSelected())
+			this.transferNameCheckBoxActionPerformed(null);
 	}
 
 	/**
@@ -3112,7 +3138,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			                              JOptionPane.INFORMATION_MESSAGE);
 
 			return false;
-		} else if (table.getColumnCount() < 2) {
+		} else if ((table.getColumnCount() < 2) && (dialogType != NETWORK_IMPORT)) {
 			JOptionPane.showMessageDialog(this, "Table should contain at least 2 columns.",
 			                              "Invalid Table!", JOptionPane.INFORMATION_MESSAGE);
 
@@ -3124,14 +3150,13 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 			final int tIdx = networkImportPanel.getTargetIndex();
 			final int iIdx = networkImportPanel.getInteractionIndex();
 
-			if ((sIdx == -1) || (tIdx == -1)) {
-				JOptionPane.showMessageDialog(this, "Source or Target index not selected.",
-				                              "Please select both source & target index.",
-				                              JOptionPane.INFORMATION_MESSAGE);
-
-				return false;
-			}
-
+			//			if ((sIdx == -1) || (tIdx == -1)) {
+			//				JOptionPane.showMessageDialog(this, "Source or Target index not selected.",
+			//				                              "Please select both source & target index.",
+			//				                              JOptionPane.INFORMATION_MESSAGE);
+			//
+			//				return false;
+			//			}
 			if ((sIdx == tIdx) || (((iIdx == sIdx) || (iIdx == tIdx)) && (iIdx != -1))) {
 				JOptionPane.showMessageDialog(this,
 				                              "Columns for source, target, and interaction type must be distinct.",
@@ -3452,6 +3477,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 	// Variables declaration - do not modify
 	private javax.swing.JCheckBox advancedOptionCheckBox;
+	private javax.swing.JCheckBox caseSensitiveCheckBox;
 	private javax.swing.JPanel advancedPanel;
 
 	// private JTable aliasTable;
@@ -3460,7 +3486,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private javax.swing.JButton arrowButton1;
 	private javax.swing.JButton arrowButton2;
 	private javax.swing.JPanel attr2annotationPanel;
-	private javax.swing.JCheckBox attrNameCheckBox;
+	private javax.swing.JCheckBox transferNameCheckBox;
 	private javax.swing.ButtonGroup attrTypeButtonGroup;
 	private javax.swing.JLabel attribuiteLabel;
 	private javax.swing.JLabel attributeFileLabel;

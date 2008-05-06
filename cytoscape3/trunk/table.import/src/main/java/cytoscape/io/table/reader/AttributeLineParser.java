@@ -36,6 +36,7 @@ package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
 
+import org.cytoscape.RootGraph;
 import org.cytoscape.attributes.CyAttributes;
 
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
@@ -149,6 +150,8 @@ public class AttributeLineParser {
 			List<String> objectIDs = null;
 
 			for (String id : aliasSet) {
+				// Normal Mapping.  Case sensitive.
+				
 				if (mapping.getAttributeToIDMap().containsKey(id)) {
 					objectIDs = mapping.toID(id);
 
@@ -157,6 +160,29 @@ public class AttributeLineParser {
 					}
 
 					break;
+				} else if (mapping.getCaseSensitive() == false) {
+					
+					Set<String> keySet = mapping.getAttributeToIDMap().keySet();
+
+					String newKey = null;
+
+					for (String key : keySet) {
+						if (key.equalsIgnoreCase(id)) {
+							newKey = key;
+							
+							break;
+						}
+					}
+
+					if (newKey != null) {
+						objectIDs = mapping.toID(newKey);
+
+						for (String objectID : objectIDs) {
+							mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
+						}
+
+						break;
+					}
 				}
 			}
 
@@ -180,9 +206,41 @@ public class AttributeLineParser {
 
 				Node node = Cytoscape.getCyNode(primaryKey);
 
+				if ((mapping.getCaseSensitive() == false) && (node == null)) {
+					// This is extremely slow, but we have no choice.
+					final RootGraph rg = Cytoscape.getRootGraph();
+					int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
+					int nodeCount = nodes.length;
+
+					for (int i = 0; i < nodeCount; i++) {
+						if (rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
+							node = rg.getNode(nodes[i]);
+							primaryKey = node.getIdentifier();
+
+							break;
+						}
+					}
+				}
+
 				if (node == null) {
 					for (String alias : aliasSet) {
 						node = Cytoscape.getCyNode(alias);
+
+						if ((mapping.getCaseSensitive() == false) && (node == null)) {
+							// This is extremely slow, but we have no choice.
+							final RootGraph rg = Cytoscape.getRootGraph();
+							int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
+							int nodeCount = nodes.length;
+
+							for (int i = 0; i < nodeCount; i++) {
+								if (rg.getNode(nodes[i]).getIdentifier().equalsIgnoreCase(alias)) {
+									node = rg.getNode(nodes[i]);
+									alias = node.getIdentifier();
+
+									break;
+								}
+							}
+						}
 
 						if (node != null) {
 							altKey = alias;
@@ -200,11 +258,43 @@ public class AttributeLineParser {
 
 			case EDGE:
 
-				Edge edge = Cytoscape.getCyEdge(primaryKey);
+				Edge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
+
+				if ((mapping.getCaseSensitive() == false) && (edge == null)) {
+					// This is extremely slow, but we have no choice.
+					final RootGraph rg = Cytoscape.getRootGraph();
+					int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
+					int edgeCount = edges.length;
+
+					for (int i = 0; i < edgeCount; i++) {
+						if (rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(primaryKey)) {
+							edge = rg.getEdge(edges[i]);
+							primaryKey = edge.getIdentifier();
+
+							break;
+						}
+					}
+				}
 
 				if (edge == null) {
 					for (String alias : aliasSet) {
-						edge = Cytoscape.getCyEdge(alias);
+						edge = Cytoscape.getRootGraph().getEdge(alias);
+
+						if ((mapping.getCaseSensitive() == false) && (edge == null)) {
+							// This is extremely slow, but we have no choice.
+							final RootGraph rg = Cytoscape.getRootGraph();
+							int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
+							int edgeCount = edges.length;
+
+							for (int i = 0; i < edgeCount; i++) {
+								if (rg.getEdge(edges[i]).getIdentifier().equalsIgnoreCase(alias)) {
+									edge = rg.getEdge(edges[i]);
+									alias = edge.getIdentifier();
+
+									break;
+								}
+							}
+						}
 
 						if (edge != null) {
 							altKey = alias;
@@ -348,7 +438,11 @@ public class AttributeLineParser {
 				break;
 
 			case CyAttributes.TYPE_STRING:
-				mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+				try {
+					mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 
 				break;
 
@@ -379,13 +473,21 @@ public class AttributeLineParser {
 				}
 
 				curList.addAll(buildList(entry, listType));
-				mapping.getAttributes()
-				       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
+				try {
+					mapping.getAttributes()
+					       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 
 				break;
 
 			default:
-				mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+				try {
+					mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+				} catch (Exception e) {
+					invalid.put(key, entry);
+				}
 		}
 	}
 

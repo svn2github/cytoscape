@@ -136,4 +136,52 @@ public class ExcelNetworkSheetReaderTest extends TestCase {
 
 		Cytoscape.destroyNetwork(net);
 	}
+
+	public void testReadTableWithEmptyRows() throws Exception {
+		File network = new File("src/test/resources/testData/empty_attr_row.xls");
+
+		POIFSFileSystem excelIn = new POIFSFileSystem(new FileInputStream(network));
+		HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+
+		HSSFSheet sheet = wb.getSheetAt(0);
+
+		List<String> delimiters = new ArrayList<String>();
+		delimiters.add(TextFileDelimiters.TAB.toString());
+
+		String[] galAttrName = { "Gene 1", "Gene 2", "Interaction Type", "Gene", "GO Group" };
+		Byte[] galAttrTypes = { CyAttributes.TYPE_STRING, CyAttributes.TYPE_STRING,
+		                        CyAttributes.TYPE_STRING, CyAttributes.TYPE_STRING,
+								CyAttributes.TYPE_STRING };
+		NetworkTableMappingParameters mapping = new NetworkTableMappingParameters(delimiters,
+		                                                                          TextFileDelimiters.PIPE
+		                                                                          .toString(),
+		                                                                          galAttrName,
+		                                                                          galAttrTypes,
+		                                                                          null, null, 0, 1,
+		                                                                          2, null);
+
+		GraphPerspective net = null; 
+		try {
+			reader = new ExcelNetworkSheetReader(wb.getSheetName(0), sheet, mapping, 1);
+			net = Cytoscape.createNetwork(reader, false, null);
+		} catch (Exception ee) {
+			ee.printStackTrace();
+			fail("Caught exception");
+		}
+
+		assertEquals(222, net.getNodeCount());
+		assertEquals(443, net.getEdgeCount());
+
+		CyAttributes attr = Cytoscape.getEdgeAttributes();
+
+		// test some random edges
+		assertEquals("cc", attr.getStringAttribute("YDR459C (cc) YNL271C", "interaction"));
+		assertEquals("Transport", attr.getStringAttribute("YDR459C (cc) YNL271C", "GO Group"));
+		assertEquals("YPR011C", attr.getStringAttribute("YDR459C (cc) YNL271C", "Gene"));
+
+		assertNull(attr.getStringAttribute("YEL040W (cc) YER016W","GO Group"));
+		assertNull(attr.getStringAttribute("YEL040W (cc) YER016W","Gene"));
+
+		Cytoscape.destroyNetwork(net);
+	}
 }

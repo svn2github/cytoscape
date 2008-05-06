@@ -32,7 +32,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package cytoscape.io.table.reader;
+package cytoscape.io.table.reader;;
 
 import org.cytoscape.attributes.CyAttributes;
 
@@ -120,10 +120,15 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 
 		while ((row = sheet.getRow(rowCount)) != null) {
 			cellsInOneRow = createElementStringArray(row);
-			if(importAll)
-				parser.parseAll(cellsInOneRow);
-			else
-				parser.parseEntry(cellsInOneRow);
+			try {
+				if(importAll)
+					parser.parseAll(cellsInOneRow);
+				else 
+					parser.parseEntry(cellsInOneRow);
+			} catch (Exception ex) {
+				System.out.println("Couldn't parse row: " + rowCount);
+				ex.printStackTrace();
+			}
 			
 			rowCount++;
 			globalCounter++;
@@ -179,11 +184,18 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 		sb.append(globalCounter + " entries are loaded and mapped onto\n");
 		sb.append(mapping.getObjectType().toString() + " attributes.");
 
-		if (invalid.size() != 0) {
-			sb.append("\n\nThe following enties are invalid and not imported:\n");
+		int limit = 10;
+		if (invalid.size() > 0) {
+			sb.append("\n\nThe following enties are invalid and were not imported:\n");
 
 			for (String key : invalid.keySet()) {
 				sb.append(key + " = " + invalid.get(key) + "\n");
+				if ( limit-- <= 0 ) {
+					sb.append("Approximately " + (invalid.size() - 10) +
+					          " additional entries were not imported...");
+					break;
+				}
+
 			}
 		}
 

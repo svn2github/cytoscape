@@ -52,9 +52,9 @@ import java.util.List;
  */
 public class NetworkTableMappingParameters extends AttributeMappingParameters {
 	private static final String DEF_INTERACTION = "pp";
-	private final int source;
-	private final int target;
-	private final int interaction;
+	private final Integer source;
+	private final Integer target;
+	private final Integer interaction;
 	private final String defInteraction;
 
 	/**
@@ -76,7 +76,7 @@ public class NetworkTableMappingParameters extends AttributeMappingParameters {
 	public NetworkTableMappingParameters(List<String> delimiters, String listDelimiter,
 	                                     String[] attributeNames, Byte[] attributeTypes,
 	                                     Byte[] listAttributeTypes, boolean[] importFlag,
-	                                     int source, int target, int interaction,
+	                                     Integer source, Integer target, Integer interaction,
 	                                     final String defInteraction) throws Exception {
 		super(EDGE, delimiters, listDelimiter, -1, null, null, attributeNames, attributeTypes,
 		      listAttributeTypes, importFlag);
@@ -93,7 +93,7 @@ public class NetworkTableMappingParameters extends AttributeMappingParameters {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getSourceIndex() {
+	public Integer getSourceIndex() {
 		return source;
 	}
 
@@ -102,7 +102,7 @@ public class NetworkTableMappingParameters extends AttributeMappingParameters {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getTargetIndex() {
+	public Integer getTargetIndex() {
 		return target;
 	}
 
@@ -111,7 +111,7 @@ public class NetworkTableMappingParameters extends AttributeMappingParameters {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getInteractionIndex() {
+	public Integer getInteractionIndex() {
 		return interaction;
 	}
 
