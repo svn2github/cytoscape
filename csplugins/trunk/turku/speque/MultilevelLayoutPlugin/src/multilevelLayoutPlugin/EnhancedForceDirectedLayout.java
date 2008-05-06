@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import metricTree.MetricNode;
-import metricTree.MetricNodeTree;
+import mTree.MTree;
+import mTree.MTreeNode;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
@@ -79,7 +79,7 @@ public class EnhancedForceDirectedLayout {
 	private Point2D.Double DispVector, DiffVector, vOldPosition ;
 	
 	//just some variables used in performance testing
-	private long start=0L, gridTime=0L, attTime=0L, repTime=0L;
+	private long start=0L, attTime=0L, repTime=0L, treeTime=0L;
 	
 	/**
 	 * Class constructor.
@@ -106,12 +106,12 @@ public class EnhancedForceDirectedLayout {
 		boolean converged= false;
 		double t = k;
 		
-		MetricNodeTree metricNodeTree;
-		MetricNode.posman = posManager;
+		MTree mTree;
+		MTreeNode.posman = posManager;
 		
 		HashSet<Node> neighboringNodesOfV = new HashSet<Node>();
 		HashSet<Edge> edgesConnectedToV = new HashSet<Edge>();
-		ArrayList<MetricNode> closeNodes = new ArrayList<MetricNode>();	
+		ArrayList<Node> closeNodes = new ArrayList<Node>();	
 		
 		ClusteringCoefficientManager ccm = null;
 		if(MultilevelConfig.clusteringEnabled){
@@ -124,27 +124,33 @@ public class EnhancedForceDirectedLayout {
 			converged = true;
 			
 			Iterator<Node> iterator = network.nodesIterator();
-			metricNodeTree = new MetricNodeTree();
-			HashSet<MetricNode> mNodeSet = new HashSet<MetricNode>();
 			
+			HashSet<MTreeNode> mNodeSet = new HashSet<MTreeNode>();
+			mTree = new MTree();
+			mTree.setRoot(true);
+			MTree.root = mTree;
+			
+			start = System.currentTimeMillis();
 			while(iterator.hasNext()){
-				MetricNode mn = new MetricNode(iterator.next());
-				metricNodeTree.insert(mn);
+				MTreeNode mn = new MTreeNode(iterator.next());
+				MTree.root.insert(mn);
 				mNodeSet.add(mn);
 			}
+			treeTime += System.currentTimeMillis() -start;
+			
 			
 			//iterate over all metric nodes
-			Iterator<MetricNode> mIterator = mNodeSet.iterator();
+			Iterator<MTreeNode> mIterator = mNodeSet.iterator();
 			
 			while(mIterator.hasNext()) {
-				MetricNode mnode = mIterator.next();
-				
-				Node v = mnode.getValue();
+				MTreeNode mnode = mIterator.next();
+				Node v = mnode.getGraphNode();
 				
 				//FIND NODES IN A RANGE OF R FROM NODE v
 				start = System.currentTimeMillis();
-				closeNodes = metricNodeTree.getRange(mnode, R);
-				gridTime += System.currentTimeMillis() -start;
+				closeNodes = new ArrayList<Node>();
+				MTree.root.getRange(new MTreeNode(v), R, closeNodes, 0);	
+				repTime += System.currentTimeMillis() -start;
 				
 				//FIND NODES CONNECTED TO NODE v
 				edgesConnectedToV.clear();
@@ -158,17 +164,15 @@ public class EnhancedForceDirectedLayout {
 					if(!e.getTarget().equals(v)) neighboringNodesOfV.add(e.getTarget());
 				}
 				
-				start = System.currentTimeMillis();
-				
 				//CALCULATE REPULSIVE FORCES
 				DispVector = new Point2D.Double(0, 0);
 				double diffLength, uWeight, fRep, newX, newY;
 				//iterate over nodes in a range of R
-				for (MetricNode temp : closeNodes){
-					Node u = temp.getValue();
+				for (Node u : closeNodes){
 					if (u != v){
 						DiffVector = getDifferenceVector(u, v, posManager);
 						diffLength = getVectorLength(DiffVector);
+						
 						//do the nodes share the exact same position
 						if (diffLength == 0.0){
 							posManager.setPosition(
@@ -201,7 +205,7 @@ public class EnhancedForceDirectedLayout {
 					}						
 				 }
 				
-				repTime += System.currentTimeMillis() -start;
+
 				
 				start = System.currentTimeMillis();
 				
@@ -261,7 +265,7 @@ public class EnhancedForceDirectedLayout {
 			t = cool(t);
 		}
 		
-		System.out.println("grid: " + gridTime + " rep: " + repTime + " attr: " + attTime);
+		System.out.println("grid: " + treeTime + " rep: " + repTime + " attr: " + attTime);
 	}
 	
 	/**
