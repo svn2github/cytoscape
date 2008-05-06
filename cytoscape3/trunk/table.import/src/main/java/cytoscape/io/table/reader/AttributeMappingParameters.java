@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -39,6 +38,7 @@ package cytoscape.io.table.reader;
 import cytoscape.Cytoscape;
 
 import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CyAttributesUtils;
 
 import cytoscape.data.synonyms.Aliases;
 import static cytoscape.io.table.reader.TextFileDelimiters.*;
@@ -55,10 +55,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
-import org.cytoscape.Edge;
-
 
 /**
  * Parameter object for text table <---> CyAttributes mapping.<br>
@@ -73,7 +72,7 @@ import org.cytoscape.Edge;
  */
 public class AttributeMappingParameters implements MappingParameter {
 	/**
-	 * 
+	 *
 	 */
 	public static final String ID = "ID";
 	private static final String DEF_LIST_DELIMITER = PIPE.toString();
@@ -438,9 +437,7 @@ public class AttributeMappingParameters implements MappingParameter {
 		attr2id = new HashMap<String, List<String>>();
 
 		String objectID = null;
-
-		String attributeValue = null;
-		List<String> objIdList = null;
+		Object valObj = null;
 
 		while (it.hasNext()) {
 			switch (objectType) {
@@ -448,15 +445,26 @@ public class AttributeMappingParameters implements MappingParameter {
 
 					Node node = (Node) it.next();
 					objectID = node.getIdentifier();
-					attributeValue = attributes.getStringAttribute(objectID, mappingAttribute);
+
+					if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
+						valObj = attributes.getListAttribute(objectID, mappingAttribute);
+					} else if (CyAttributesUtils.getClass(mappingAttribute, attributes) != Map.class) {
+						valObj = attributes.getAttribute(objectID, mappingAttribute);
+					}
 
 					break;
 
 				case EDGE:
+
 					Edge edge = (Edge) it.next();
 					objectID = edge.getIdentifier();
-					attributeValue = attributes.getStringAttribute(objectID, mappingAttribute);
-				
+
+					if (CyAttributesUtils.getClass(mappingAttribute, attributes) == List.class) {
+						valObj = attributes.getListAttribute(objectID, mappingAttribute);
+					} else if (CyAttributesUtils.getClass(mappingAttribute, attributes) != Map.class) {
+						valObj = attributes.getAttribute(objectID, mappingAttribute);
+					}
+
 					break;
 
 				case NETWORK:
@@ -468,17 +476,34 @@ public class AttributeMappingParameters implements MappingParameter {
 				default:
 			}
 
-			if (attributeValue != null) {
-				if (attr2id.containsKey(attributeValue)) {
-					objIdList = (List<String>) attr2id.get(attributeValue);
-				} else {
-					objIdList = new ArrayList<String>();
-				}
+			// Put the <attribute value>-<object ID list> pair to the Map object.
+			if (valObj != null) {
+				if (valObj instanceof List) {
+					List keys = (List) valObj;
 
-				objIdList.add(objectID);
-				attr2id.put(attributeValue, objIdList);
+					for (Object key : keys) {
+						if (key != null) {
+							putAttrValue(key.toString(), objectID);
+						}
+					}
+				} else {
+					putAttrValue(valObj.toString(), objectID);
+				}
 			}
 		}
+	}
+
+	private void putAttrValue(String attributeValue, String objectID) {
+		List<String> objIdList = null;
+
+		if (attr2id.containsKey(attributeValue)) {
+			objIdList = attr2id.get(attributeValue);
+		} else {
+			objIdList = new ArrayList<String>();
+		}
+
+		objIdList.add(objectID);
+		attr2id.put(attributeValue, objIdList);
 	}
 
 	/**

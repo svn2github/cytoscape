@@ -51,6 +51,7 @@ import java.util.TreeSet;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
+import org.cytoscape.RootGraph;
 
 
 /**
@@ -74,11 +75,10 @@ public class AttributeLineParser {
 		this.mapping = mapping;
 	}
 
-	// Import everything.
 	/**
-	 *  DOCUMENT ME!
+	 *  Import everything regardless associated nodes/edges exist or not.
 	 *
-	 * @param parts DOCUMENT ME!
+	 * @param parts entries in a line.
 	 */
 	public void parseAll(String[] parts) {
 		// Get key
@@ -135,7 +135,6 @@ public class AttributeLineParser {
 				}
 			}
 		}
-
 		aliasSet.add(primaryKey);
 
 		/*
@@ -391,9 +390,8 @@ public class AttributeLineParser {
 	private void mapAttribute(final String key, final String entry, final int index) {
 		final Byte type = mapping.getAttributeTypes()[index];
 
-//		System.out.println("Index = " + mapping.getAttributeNames()[index] + ", " + key + " = "
-//		                   + entry);
-
+		//		System.out.println("Index = " + mapping.getAttributeNames()[index] + ", " + key + " = "
+		//		                   + entry);
 		switch (type) {
 			case CyAttributes.TYPE_BOOLEAN:
 

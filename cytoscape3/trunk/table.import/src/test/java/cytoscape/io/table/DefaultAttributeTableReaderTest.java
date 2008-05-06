@@ -130,23 +130,13 @@ public class DefaultAttributeTableReaderTest extends TestCase {
 		tableReader.readTable();
 
 		assertEquals("ribosomal protein S28A (S33A) (YS27)",
-		             Cytoscape.getNodeAttributes() .getStringAttribute("YOR167C", "Description of Genes"));
-		assertEquals(new Integer(20010118), Cytoscape.getNodeAttributes().getIntegerAttribute("YHR141C", "Date"));
-
-		List<String> nms = CyAttributesUtils.getVisibleAttributeNames(Cytoscape.getNodeAttributes());
-		for ( String name : nms ) {
-			System.out.println ("got attr name: " + name);
-		}
-
-// TODO - something very weird is happening here 
-// This used to work, but apparently not any more
-// Perhaps someone or something was secretly setting an "alias" attribute than no longer exists
-//		List l = Cytoscape.getNodeAttributes().getListAttribute("YER112W", "alias");
-//		assertNotNull(l);
-//		assertEquals(4, l.size());
-		// TODO - I'm guessing this is failing because the attr list is being loaded twice
-		//assertEquals(7,
-		 //            Cytoscape.getNodeAttributes().getListAttribute("YDR277C", "String List").size());
+		             Cytoscape.getNodeAttributes()
+		                      .getStringAttribute("YOR167C", "Description of Genes"));
+		assertEquals(new Integer(20010118),
+		             Cytoscape.getNodeAttributes().getIntegerAttribute("YHR141C", "Date"));
+		//assertEquals(4, Cytoscape.getNodeAttributes().getListAttribute("YER112W", "alias").size());
+//		assertEquals(7,
+//		             Cytoscape.getNodeAttributes().getListAttribute("YDR277C", "String List").size());
 
 		assertEquals("List",
 		             Cytoscape.getNodeAttributes().getListAttribute("YDR277C", "String List").get(5));

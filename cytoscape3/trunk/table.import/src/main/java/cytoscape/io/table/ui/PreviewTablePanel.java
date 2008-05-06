@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package cytoscape.io.table.ui;
 
 import cytoscape.Cytoscape;
@@ -127,18 +125,19 @@ public class PreviewTablePanel extends JPanel {
 	/*
 	 * Define type of preview.
 	 */
+
 	/**
-	 * 
+	 *
 	 */
 	public static final int ATTRIBUTE_PREVIEW = 1;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int ONTOLOGY_PREVIEW = 2;
 
 	/**
-	 * 
+	 *
 	 */
 	public static final int NETWORK_PREVIEW = 3;
 
@@ -484,10 +483,11 @@ public class PreviewTablePanel extends JPanel {
 	 */
 	public JTable getPreviewTable() {
 		JScrollPane selected = (JScrollPane) tableTabbedPane.getSelectedComponent();
+
 		if(selected == null) {
-		
 			return null;
 		}
+
 		return (JTable) selected.getViewport().getComponent(0);
 	}
 
@@ -770,7 +770,7 @@ public class PreviewTablePanel extends JPanel {
 		// for (int j = 0; j < newModel.getColumnCount(); j++) {
 		// dataTypes[j] = CyAttributes.TYPE_STRING;
 		// }
-		
+
 		// Setting table properties	 
 		newTable.setCellSelectionEnabled(false);
 		newTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -829,6 +829,7 @@ public class PreviewTablePanel extends JPanel {
 	 * @return
 	 */
 	private Vector<String> getDefaultColumnNames(final int colCount, final URL sourceURL) {
+		
 		final Vector<String> colNames = new Vector<String>();
 
 		String[] parts = sourceURL.toString().split("/");
@@ -1085,7 +1086,7 @@ public class PreviewTablePanel extends JPanel {
 	 */
 	public int checkKeyMatch(int targetColumn) {
 		final List fileKeyList = Arrays.asList(((DefaultListModel) keyPreviewList.getModel())
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         .toArray());
+		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .toArray());
 		int matched = 0;
 
 		TableModel curModel = getPreviewTable().getModel();

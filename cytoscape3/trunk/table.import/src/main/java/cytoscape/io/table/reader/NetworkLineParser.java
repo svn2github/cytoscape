@@ -95,7 +95,7 @@ public class NetworkLineParser {
 		} else {
 			source = null;
 		}
-
+		
 		final Node target;
 
 		if (nmp.getTargetIndex().equals(-1) == false && (nmp.getTargetIndex() <= (parts.length - 1)) && (parts[nmp.getTargetIndex()] != null)) {

@@ -45,6 +45,7 @@ import cytoscape.data.ontology.Ontology;
 
 import cytoscape.data.synonyms.Aliases;
 
+import cytoscape.util.BioDataServerUtil;
 import cytoscape.util.URLUtil;
 import static cytoscape.io.table.reader.TextFileDelimiters.*;
 
@@ -120,6 +121,7 @@ public class GeneAssociationReader implements TextTableReader {
 	private Map<String, List<String>> attr2id;
 	private CyAttributes nodeAttributes;
 	private GeneOntology geneOntology;
+	private HashMap speciesMap;
 	private boolean importAll = false;
 
 	/**
@@ -191,7 +193,6 @@ public class GeneAssociationReader implements TextTableReader {
 		this.nodeAttributes = Cytoscape.getNodeAttributes();
 
 		final Ontology testOntology = Cytoscape.getOntologyServer().getOntologies().get(ontologyName);
-
 		/*
 		 * Ontology type should be GO.
 		 */
@@ -207,6 +208,9 @@ public class GeneAssociationReader implements TextTableReader {
 		final BufferedReader taxonFileReader = new BufferedReader(new InputStreamReader(getClass()
 		                                                                                    .getResource(TAXON_RESOURCE_FILE)
 		                                                                                    .openStream()));
+		final BioDataServerUtil bdsu = new BioDataServerUtil();
+		this.speciesMap = bdsu.getTaxonMap(taxonFileReader);
+
 		taxonFileReader.close();
 
 		if ((this.keyAttributeName != null) && !this.keyAttributeName.equals(ID)) {
@@ -423,6 +427,15 @@ public class GeneAssociationReader implements TextTableReader {
 					}
 
 					nodeAttributes.setListAttribute(key, attributeName, new ArrayList(goTermSet));
+
+					break;
+
+				case TAXON:
+					if(speciesMap.get(entries[i].split(":")[1]) != null) {
+						nodeAttributes.setAttribute(key, ANNOTATION_PREFIX + "." + tag.toString(),
+	                            (String) speciesMap.get(entries[i].split(":")[1]));
+					}
+					
 
 					break;
 

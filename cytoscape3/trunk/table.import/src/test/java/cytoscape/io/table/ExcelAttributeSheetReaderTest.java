@@ -131,14 +131,7 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 		                      .getStringAttribute("YOR167C", "Description of Genes"));
 		assertEquals(new Integer(20010118),
 		             Cytoscape.getNodeAttributes().getIntegerAttribute("YHR141C", "Date"));
-		// TODO the alias attribute has mysteriously disappeared
-		// 
 		//assertEquals(4, Cytoscape.getNodeAttributes().getListAttribute("YER112W", "alias").size());
-		//		assertEquals(7, Cytoscape.getNodeAttributes().getAttributeList(
-		//				"YDR277C", "String List").size());
-		//
-		//		assertEquals("List", Cytoscape.getNodeAttributes().getAttributeList(
-		//				"YDR277C", "String List").get(5));
 
 		/*
 		 * Multiple sheet test (not yet supported)
