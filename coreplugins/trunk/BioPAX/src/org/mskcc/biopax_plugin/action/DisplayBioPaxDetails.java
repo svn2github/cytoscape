@@ -125,9 +125,6 @@ public class DisplayBioPaxDetails implements SelectEventListener {
             //  Show the details
             bpPanel.showDetails(id);
 
-            //  If we are part of an embedded set of tabs, activate our Tab(s)
-            activateTabs(bpPanel);
-
             //  If legend is showing, show details
             BioPaxContainer bpContainer = BioPaxContainer.getInstance();
             bpContainer.showDetails();
