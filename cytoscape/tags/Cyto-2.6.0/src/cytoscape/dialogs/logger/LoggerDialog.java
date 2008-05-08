@@ -2,6 +2,7 @@ package cytoscape.dialogs.logger;
 
 import cytoscape.logger.LogLevel;
 import cytoscape.logger.CyLogHandler;
+import cytoscape.Cytoscape;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Singleton dialog */
-public class LoggerDialog extends javax.swing.JFrame implements CyLogHandler
+public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
   {
 
   private static LoggerDialog dialog;
@@ -23,11 +24,26 @@ public class LoggerDialog extends javax.swing.JFrame implements CyLogHandler
     if (dialog == null)
       {
       dialog = new LoggerDialog();
+      dialog.setTitle("Cytoscape Error Console");
       }
     return dialog;
     }
 
   protected LoggerDialog()
+    {
+    super();
+    setModal(false);
+    init();
+    }
+
+  // aware no one can currently create the console with an owner, gotta see how headless mode works
+  protected LoggerDialog(JFrame owner)
+    {
+    super(owner, false);
+    init();
+    }
+
+  private void init()
     {
     messageMap = new HashMap<LogLevel, List<String>>();
     logTabMap = new HashMap<LogLevel, JScrollPane>();
@@ -65,7 +81,6 @@ public class LoggerDialog extends javax.swing.JFrame implements CyLogHandler
     });
 
     logTabs.setAutoscrolls(true);
-
 
     org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -138,7 +153,6 @@ public class LoggerDialog extends javax.swing.JFrame implements CyLogHandler
     sb.append("</style><body>");
 
     sb.append("<table width='100%' cellspacing='5'>");
-
     int line = 1;
     for (int i=messageMap.get(level).size()-1; i >= 0; i--) {
       sb.append("<tr><td width='5%'>" + line + "</td><td width='95%'>");
@@ -147,15 +161,22 @@ public class LoggerDialog extends javax.swing.JFrame implements CyLogHandler
       if (i > 0) { sb.append("<tr><td colspan='2'><hr></td></tr>"); }
       line++;
     }
-    sb.append("</table></body></html>");
+    sb.append("</table></body></html");
 
     MessagePane.setContentType("text/html");
     MessagePane.setText(sb.toString());
 
 
 		// We want to pop the dialog up if we get an error or warning
+    /*
+       Don't think this is a good idea.  I think instead after
+       the xgmml loader is done or the plugin manager is done (or errors out) we can pop it up
+       otherwise a user can access it via the Help->Error Console menu.  Less intrusive that way.
+    */
+/*
     if (level.equals(LogLevel.LOG_ERROR) || level.equals(LogLevel.LOG_WARN))
 			{ setVisible(true); }
+*/
     }
 
   private JEditorPane addTab(LogLevel level)
@@ -177,14 +198,30 @@ public class LoggerDialog extends javax.swing.JFrame implements CyLogHandler
     return MessagesPane;
     }
 
+  private void addEmptyMessage() {
+    this.addTab(LogLevel.LOG_ERROR);
+  }
 
+  public void setVisible(boolean vis) {
+    if (this.messageMap.size() <= 0) {
+      this.addEmptyMessage();
+    }
+    super.setVisible(vis);
+  }
+
+
+  /* -------------------------------------- */
   public static void main(String args[]) {
     LoggerDialog dialog = LoggerDialog.getLoggerDialog();
+    dialog.setVisible(true);
+
     dialog.handleLog(LogLevel.LOG_ERROR, "Error, error!");
     dialog.handleLog(LogLevel.LOG_ERROR, "It's gonna blow!!!");
 
     dialog.handleLog(LogLevel.LOG_WARN, "Canna take much more Cap'n!");
     dialog.handleLog(LogLevel.LOG_WARN, "Foobared");
+
+    dialog.handleLog(LogLevel.LOG_INFO, "Just sayin'...");
   }
 
   // Variables declaration - do not modify
