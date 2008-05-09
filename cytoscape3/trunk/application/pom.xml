@@ -294,75 +294,12 @@
 		</dependency>
 
 	</dependencies>
-<!-- not sure if this needs to be here
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>dependencies</report>
-							<report>project-team</report>
-							<report>mailing-list</report>
-							<report>cim</report>
-							<report>issue-tracking</report>
-							<report>license</report>
-							<report>scm</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			<plugin> 
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jxr-maven-plugin</artifactId>
-			</plugin>
-
-		</plugins>
-	</reporting>
--->
 	<build>
 		<plugins>
 
-<!--
-			<plugin>   
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<finalName>cytoscape</finalName>
-					<archive>
-						<manifest>
-							<mainClass>cytoscape.CyMain</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
--->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<!-- this version makes resolution optional for imports
-				<version>1.4.0</version>
-				-->
 				<version>1.4.1-SNAPSHOT</version>
 				<extensions>true</extensions>
 				<configuration>
