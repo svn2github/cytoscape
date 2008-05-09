@@ -65,7 +65,7 @@ import structureViz.model.ChimeraModel;
  * @author scooter
  */
 public class CyChimera {
-	public static final String[] structureKeys = {"Structure","pdb","pdbFileName",null};
+	public static final String[] structureKeys = {"Structure","pdb","pdbFileName","PDB ID",null};
 	public static final String[] residueKeys = {"FunctionalResidues","ResidueList",null};
 	public static final String[] sequenceKeys = {"sequence",null};
 	private static CyAttributes cyAttributes;
@@ -84,7 +84,7 @@ public class CyChimera {
 	public static List getSelectedStructures(NodeView nodeView, boolean overNodeOnly) {
 		String structureAttribute = getProperty("structureAttribute");
 		if (structureAttribute != null) {
-			structureKeys[3] = structureAttribute;
+			structureKeys[4] = structureAttribute;
 		}
 		String residueAttribute = getProperty("residueAttribute");
 		if (residueAttribute != null) {
@@ -128,11 +128,13 @@ public class CyChimera {
 				// It does, so add them all
 				for (int i = 0; i < sList.length; i++) {
 					Structure s = new Structure(sList[i].trim(),node, Structure.StructureType.PDB_MODEL);
+					// System.out.println("Setting residue list for "+s);
 					s.setResidueList(residues);
 					structureList.add(s);
 				}
 			} else if (structure != null) {
 				Structure s = new Structure(structure,node, Structure.StructureType.PDB_MODEL);
+				// System.out.println("Setting residue list for "+s);
 				s.setResidueList(residues);
         structureList.add(s);
 			}
@@ -153,7 +155,17 @@ public class CyChimera {
 			if (structureKeys[key] == null) continue;
      	if (cyAttributes.hasAttribute(nodeID, structureKeys[key])) {
        	// Add it to our list
-       	return cyAttributes.getStringAttribute(nodeID, structureKeys[key]);
+				if (cyAttributes.getType(structureKeys[key]) == CyAttributes.TYPE_STRING) {
+       		return cyAttributes.getStringAttribute(nodeID, structureKeys[key]);
+				} else if (cyAttributes.getType(structureKeys[key]) == CyAttributes.TYPE_SIMPLE_LIST) {
+					List<String>structList = cyAttributes.getListAttribute(nodeID, structureKeys[key]);
+					String structures = "";
+					for (String s: structList) {
+						structures += s+",";
+					}
+					// Make sure to remove the training ","
+					return structures.substring(0,structures.length()-1);
+				}
 			}
     }
 		return null;
@@ -172,8 +184,19 @@ public class CyChimera {
 		for (int key = 0; key < residueKeys.length; key++) {
 			if (residueKeys[key] == null) continue;
      	if (cyAttributes.hasAttribute(nodeID, residueKeys[key])) {
-       	// Add it to our list
-       	return cyAttributes.getStringAttribute(nodeID, residueKeys[key]);
+				// Get the type
+				if (cyAttributes.getType(residueKeys[key]) == CyAttributes.TYPE_STRING) {
+       		// Add it to our list
+       		return cyAttributes.getStringAttribute(nodeID, residueKeys[key]);
+				} else if (cyAttributes.getType(residueKeys[key]) == CyAttributes.TYPE_SIMPLE_LIST) {
+					List<String>residueList = cyAttributes.getListAttribute(nodeID, residueKeys[key]);
+					String residues = "";
+					for (String res: residueList) {
+						residues = residues.concat(res+",");
+					}
+					// Make sure to remove the training ","
+					return residues.substring(0, residues.length()-1);
+				}
 			}
     }
 		return null;

@@ -145,13 +145,29 @@ public class Structure {
 		}
 		String[] list = residues.split(",");
 		for (int i = 0; i < list.length; i++) {
+			String residue = "";
 			// Parse out the structure, if there is one
 			String[] components = list[i].split("#");
 			if (components.length > 1 && structureName.equals(components[0])) {
-				this.residueList.add(components[1]);
+				residue = components[1];
 			} else if (components.length == 1) {
-				this.residueList.add(components[0]);
+				residue = components[0];
 			}
+			// Check to see if we have a range-spec
+			String resRange = "";
+			String[] range = residue.split("-",2);
+			for (int res = 0; res < range.length; res++) {
+				if (res == 1) resRange = resRange.concat("-");
+				// Convert to legal atom-spec
+				if (Character.isDigit(residue.charAt(0))) {
+					resRange = resRange.concat(range[res]);
+				} else if (Character.isDigit(residue.charAt(1))) {
+					resRange = resRange.concat(range[res].substring(1));
+				} else {
+					resRange = resRange.concat(range[res].substring(3));
+				}
+			}
+			this.residueList.add(resRange);
 		}
 	}
 }

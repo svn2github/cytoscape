@@ -435,12 +435,7 @@ public class StructureViz extends CytoscapePlugin
 				// to reformat this to nnn,nnn
 				String residues = new String();
 				for (String residue: residueL) {
-					// Are residues three-letter or one-letter
-					if (Character.isDigit(residue.charAt(1))) {
-						residues = residues.concat(residue.substring(1)+",");
-					} else {
-						residues = residues.concat(residue.substring(3)+",");
-					}
+					residues = residues.concat(residue+",");
 				}
 				residues = residues.substring(0,residues.length()-1);
 

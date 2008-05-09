@@ -432,13 +432,9 @@ public class ActionPopupMenu extends JPopupMenu {
 					// to reformat this to nnn,nnn
 					String residues = new String();
 					for (String residue: residueL) {
-						if (Character.isDigit(residue.charAt(1))) {
-							residues = residues.concat(residue.substring(1)+",");
-						} else {
-							residues = residues.concat(residue.substring(3)+",");
-						}
+						residues = residues.concat(residue+",");
 					}
-					residues = residues.substring(1,residues.length()-1);
+					residues = residues.substring(0,residues.length()-1);
 					String command = "select #"+model.getModelNumber()+":"+residues;
 					chimeraObject.select(command);
 				}
