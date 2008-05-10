@@ -33,15 +33,17 @@
 package SFLDLoader;
 
 // System imports
-import javax.swing.JOptionPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
-import java.awt.*;
-import java.io.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
 
+import javax.swing.JDialog;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -54,6 +56,7 @@ import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.URLUtil;
 
 // SFLDloader imports
 import SFLDLoader.ui.SFLDQueryDialog;
@@ -146,6 +149,7 @@ public class SFLDLoader extends CytoscapePlugin {
 
 			DocumentBuilder builder = null;
 			Document enumeration = null;
+			InputStream input = null;
 			try {
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				builder = factory.newDocumentBuilder();
@@ -155,7 +159,8 @@ public class SFLDLoader extends CytoscapePlugin {
 				return;
 			}
 			try {
-				enumeration = builder.parse(URLBase+"?query=enumerate&level=all&id=0");
+				input = URLUtil.getBasicInputStream(new URL(URLBase+"?query=enumerate&level=all&id=0"));
+				enumeration = builder.parse(input);
 				// enumeration = builder.parse("file:///Users/scooter/Desktop/SFLDvm.py.xml");
 			} catch (Exception e) {
 				System.err.println(e.getMessage());
