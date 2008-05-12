@@ -125,6 +125,9 @@ public class DownloadableInfoTest extends TestCase {
 	 * Test method for {@link cytoscape.plugin.DownloadableInfo#setCytoscapeVersion(java.lang.String)}.
 	 */
 	public void testCytoscapeVersion() {
+		// store original version number so that we can restore it after the test.
+		// without this running this unit test would change global state as a side-effect.
+		String original_version =  cytoscape.CytoscapeVersion.version;
 		cytoscape.CytoscapeVersion.version = "2.5";
 
 		di.addCytoscapeVersion("2.5");
@@ -138,6 +141,9 @@ public class DownloadableInfoTest extends TestCase {
 		di.addCytoscapeVersion("2.5.6");
 		assertTrue(di.containsVersion("2.5.6"));
 		assertEquals(di.getCytoscapeVersion(), "2.5.6");
+		
+		// restore global state:
+		cytoscape.CytoscapeVersion.version = original_version;
 	}
 
 	/**
