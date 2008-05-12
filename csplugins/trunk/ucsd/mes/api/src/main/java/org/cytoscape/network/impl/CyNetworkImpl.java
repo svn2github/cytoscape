@@ -3,7 +3,6 @@ package org.cytoscape.network.impl;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.lang.RuntimeException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cytoscape.graph.dynamic.DynamicGraph;
