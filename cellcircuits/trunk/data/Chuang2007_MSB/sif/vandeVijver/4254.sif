@@ -1,0 +1,12 @@
+RL4	ipp	STA5A
+SCF	ipp	EPOR
+JAK2	ipp	STA5A
+FOS	ipp	UBP4
+RB	ipp	TGFB1
+FOS	ipp	MYB
+EPOR	ipp	STA5A
+MYB	ipp	UBP4
+JAK2	ipp	EPOR
+FOS	ipp	RB
+SCF	ipp	UBP4
+RS9	ipp	RL4

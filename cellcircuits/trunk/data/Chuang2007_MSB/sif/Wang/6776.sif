@@ -1,0 +1,8 @@
+IL4	ipp	STA5A
+NMI	ipp	MYC
+STA5A	ipp	NMI
+MYC	ipp	STA5A
+MYC	ipp	USF2
+AP2B	ipp	MYC
+CSF1	ipp	IL4
+CSF1	ipp	MYC

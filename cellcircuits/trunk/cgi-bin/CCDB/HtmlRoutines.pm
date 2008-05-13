@@ -182,7 +182,7 @@ sub query_form
     </tr>
     <tr>
       <td align='center' valign='top'>
-        <input type="submit" name="search_query_button" value="Search" title='Click to find models matching your query'/><input type="submit" value="Load Example Query" title="requires javaScript" onClick="LoadExampleQuery('gcn* gal4 GO:0003677','DNA binding');return false;" />
+        <input type="submit" name="search_query_button" value="Search" title='Click to find models matching your query'/><input type="submit" value="Load Example Query" title="requires javaScript" onClick="LoadExampleQuery('rad51 GO:0006950 ercc1_human', 'DNA repair');return false;" />
       </td>
     </tr>
   </table>
@@ -993,7 +993,9 @@ sub format_model_thm_td
 	 <a class='white-bg-link' href='$pubInfo->{$pub}->{citation}' title='PubMed abstract'>[PubMed]</a>
 MODEL_HTML
       
-    if(exists($pubInfo->{$pub}->{supplement_URL})) { 
+   if(exists($pubInfo->{$pub}->{supplement_URL}) &&
+       $pubInfo->{$pub}->{supplement_URL} ne "") 
+    { 
         $model_thm_html .= "<a class='white-bg-link' href='$pubInfo->{$pub}->{supplement_URL}' title='Online publication supplement'>[web site]</a>\n";
     }
 

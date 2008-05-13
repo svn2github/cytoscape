@@ -1,0 +1,6 @@
+CDK2	ipp	RBL1
+CDKA1	ipp	CDK2
+RBL1	ipp	RBL2
+CDK2	ipp	MCM2
+CDK2	ipp	CDK5
+RBL2	ipp	CDK2

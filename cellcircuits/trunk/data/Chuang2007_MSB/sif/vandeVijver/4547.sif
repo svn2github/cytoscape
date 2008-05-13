@@ -1,0 +1,7 @@
+APOB	ipp	MTP
+PSD1	ipp	PSD7
+APOB	ipp	PSDE
+APOB	ipp	APOC3
+PSDE	ipp	PSD1
+PGS1	ipp	APOB
+PSD7	ipp	PSDE

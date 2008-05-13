@@ -1,4 +1,4 @@
-#!/usr/bin/perl -I../meta-analysis -w
+#!/usr/bin/perl -I../perl-lib -w
 
 #
 # Adapted from Mike Daly's sif2gl.pl script
@@ -21,7 +21,6 @@ my $OUTPUT_DIR = shift @ARGV;
 my $cacheDir = $OUTPUT_DIR . "/cache";
 
 my $GOMap = YeastHumanGeneMapper->new($cacheDir);
-my $human2go = $GOMap->getHumanMap();
 
 my $nm = GeneNameMapper->new();
 my $em = EdgeMapper->new();

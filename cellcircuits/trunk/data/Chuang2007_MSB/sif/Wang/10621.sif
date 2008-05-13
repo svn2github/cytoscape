@@ -1,0 +1,11 @@
+TAF12	ipp	TBP
+TAF5	ipp	TBP
+TAF5	ipp	TAF12
+BCL3	ipp	TBP
+ING1	ipp	P53
+RPC6	ipp	TBP
+TBP	ipp	P53
+RHOH	ipp	C1orf103
+RPC6	ipp	C1orf103
+SP1	ipp	P53
+SP1	ipp	TBP

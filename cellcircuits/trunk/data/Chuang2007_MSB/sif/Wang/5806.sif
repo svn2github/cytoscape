@@ -1,0 +1,10 @@
+C1QA	ipp	CR1
+CR1	ipp	ITAM
+CR1	ipp	CO3
+SAMP	ipp	C1QA
+ITAM	ipp	CFAH
+CO3	ipp	ITAM
+C1QA	ipp	PTX3
+CO3	ipp	PAPPA
+CO3	ipp	CFAH
+PTX3	ipp	CO3
