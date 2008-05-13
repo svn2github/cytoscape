@@ -110,14 +110,14 @@ public class EisenCluster {
 			if (min1 < 0) {
 				int index1 = -min1-1;
 				order1 = nodeOrder[index1];
-				// System.out.println("1: order1 = "+order1);
+				System.out.println("1: order1 = "+order1);
 				counts1 = (double) nodeCounts[index1];
 				// ID1 = nodeID[index1];
 				ID1 = nodeList[index1].getName();
 				nodeList[node].setDistance(Math.max(nodeList[node].getDistance(), nodeList[index1].getDistance()));
 			} else {
 				order1 = min1;
-				// System.out.println("2: order1 = "+order1+", min1 = "+min1);
+				System.out.println("2: order1 = "+order1+", min1 = "+min1);
 				counts1 = 1.0;
 				// ID1 = keyword+min1+"X"; // Shouldn't this be the name of the gene/condition?
 				ID1 = matrix.getRowLabel(min1);
@@ -126,14 +126,14 @@ public class EisenCluster {
 			if (min2 < 0) {
 				int index2 = -min2-1;
 				order2 = nodeOrder[index2];
-				// System.out.println("3: order2 = "+order2);
+				System.out.println("3: order2 = "+order2);
 				counts2 = (double) nodeCounts[index2];
 				// ID2 = nodeID[index2];
 				ID2 = nodeList[index2].getName();
 				nodeList[node].setDistance(Math.max(nodeList[node].getDistance(), nodeList[index2].getDistance()));
 			} else {
 				order2 = (double) min2;
-				// System.out.println("4: order2 = "+order2+", min2 = "+min2);
+				System.out.println("4: order2 = "+order2+", min2 = "+min2);
 				counts2 = 1.0;
 				// ID2 = keyword+min2+"X"; // Shouldn't this be the name of the gene/condition?
 				ID2 = matrix.getRowLabel(min2);
@@ -144,7 +144,7 @@ public class EisenCluster {
 
 			nodeCounts[node] = (int)counts1 + (int)counts2;
 			nodeOrder[node] = (counts1*order1 + counts2*order2) / (counts1 + counts2);
-			// System.out.println(""+node+": nodeCounts = "+nodeCounts[node]+", nodeorder = "+nodeOrder[node]);
+			System.out.println(""+node+": nodeCounts = "+nodeCounts[node]+", nodeorder = "+nodeOrder[node]);
 		}
 
 		// Now sort based on tree structure
@@ -210,6 +210,13 @@ public class EisenCluster {
 		matrix.printMatrix();
 		double[][] distanceMatrix = matrix.getDistanceMatrix(metric);
 		TreeNode[] result = null;
+		// For debugging purposes, output the distance matrix
+		// for (int row = 1; row < matrix.nRows(); row++) {
+		// 	for (int col = 0; col < row; col++) {
+		// 		System.out.print(distanceMatrix[row][col]+"\t");
+		// 	}
+		// 	System.out.println();
+		// }
 
 		switch (clusterMethod) {
 			case SINGLE_LINKAGE:

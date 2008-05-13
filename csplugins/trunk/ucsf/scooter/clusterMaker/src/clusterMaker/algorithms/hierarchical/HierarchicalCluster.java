@@ -161,6 +161,9 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		System.out.println("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
 		// Get our attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
+		// To make debugging easier, sort the attribute array
+		Arrays.sort(attributeArray);
+
 		// Cluster!
 		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, transposeMatrix);
 	}

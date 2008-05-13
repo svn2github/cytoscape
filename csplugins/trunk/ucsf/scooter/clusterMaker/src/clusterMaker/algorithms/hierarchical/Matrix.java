@@ -338,6 +338,10 @@ public class Matrix {
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		// Get the list of edges
 		List<CyNode>nodeList = network.nodesList();
+
+		// For debugging purposes, sort the node list by identifier
+		nodeList = sortNodeList(nodeList);
+
 		this.nRows = nodeList.size();
 		this.nColumns = this.nRows;
 		this.matrix = new Double[nRows][nColumns];
@@ -372,11 +376,14 @@ public class Matrix {
 		// Get the list of nodes
 		List<CyNode>nodeList = network.nodesList();
 
+		// For debugging purposes, sort the node list by identifier
+		nodeList = sortNodeList(nodeList);
+
 		// Make a map of the conditions, indexed by CyNode
 		HashMap<CyNode,HashMap<String,Double>>nodeCondMap = new HashMap();
 
 		// Make a map of the conditions, by name
-		HashMap<String,String>condMap = new HashMap();
+		List<String>condList = Arrays.asList(weightAttributes);
 
 		// Get our node attribute list
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -389,8 +396,6 @@ public class Matrix {
 			for (int attrIndex = 0; attrIndex < weightAttributes.length; attrIndex++) {
 				String attr = weightAttributes[attrIndex];
 				Double value = null;
-				// Remember the condition name
-				condMap.put(attr,attr);
 				// Get the attribute type
 				if (nodeAttributes.getType(attr) == CyAttributes.TYPE_INTEGER) {
 					Integer intVal = nodeAttributes.getIntegerAttribute(node.getIdentifier(), attr);
@@ -409,13 +414,13 @@ public class Matrix {
 		// We've got all of the information, get our counts and create the
 		// matrix
 		if (transpose) {
-			this.nRows = condMap.keySet().size();
+			this.nRows = condList.size();
 			this.nColumns = nodeList.size();
 			this.matrix = new Double[nRows][nColumns];
 			this.rowLabels = new String[nRows];
 			this.columnLabels = new String[nColumns];
 			this.columnNodes = new CyNode[nColumns];
-			assignRowLabels(condMap.keySet());
+			assignRowLabels(condList);
 
 			int column = 0;
 			for (CyNode node: nodeList) {
@@ -431,12 +436,12 @@ public class Matrix {
 			}
 		} else {
 			this.nRows = nodeList.size();
-			this.nColumns = condMap.keySet().size();
+			this.nColumns = condList.size();
 			this.rowLabels = new String[nRows];
 			this.rowNodes = new CyNode[nRows];
 			this.columnLabels = new String[nColumns];
 			this.matrix = new Double[nRows][nColumns];
-			assignColumnLabels(condMap.keySet());
+			assignColumnLabels(condList);
 
 			int row = 0;
 			for (CyNode node: nodeList) {
@@ -455,18 +460,38 @@ public class Matrix {
 		}
 	}
 
-	private void assignRowLabels(Set<String>labelList) {
+	private void assignRowLabels(List<String>labelList) {
 		int index = 0;
 		for (String label: labelList){
 			this.rowLabels[index++] = label;
 		}
 	}
 
-	private void assignColumnLabels(Set<String>labelList) {
+	private void assignColumnLabels(List<String>labelList) {
 		int index = 0;
 		for (String label: labelList){
 			this.columnLabels[index++] = label;
 		}
+	}
+
+	// sortNodeList does an alphabetical sort on the names of the nodes.
+	private List<CyNode>sortNodeList(List<CyNode>nodeList) {
+		HashMap<String,CyNode>nodeMap = new HashMap();
+		// First build a string array
+		String nodeNames[] = new String[nodeList.size()];
+		int index = 0;
+		for (CyNode node: nodeList) {
+			nodeNames[index++] = node.getIdentifier();
+			nodeMap.put(node.getIdentifier(), node);
+		}
+		// Sort it
+		Arrays.sort(nodeNames);
+		// Build the node list again
+		ArrayList<CyNode>newList = new ArrayList(nodeList.size());
+		for (index = 0; index < nodeNames.length; index++) {
+			newList.add(nodeMap.get(nodeNames[index]));
+		}
+		return newList;
 	}
 
 	private class IndexComparator implements Comparator<Integer> {
