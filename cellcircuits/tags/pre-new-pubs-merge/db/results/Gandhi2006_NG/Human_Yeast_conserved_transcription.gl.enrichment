@@ -1,0 +1,266 @@
+#NOT FOUND: GTF3C3_HUMAN in Homo sapiens
+#NOT FOUND: GTF2A1_HUMAN in Homo sapiens
+#NOT FOUND: GTF2A2_HUMAN in Homo sapiens
+#NOT FOUND: BRF1_HUMAN in Homo sapiens
+#NOT FOUND: TAF2_HUMAN in Homo sapiens
+#NOT FOUND: POLR3F_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.759680e-01	1	4	1307	27672	92001	Homo	sapiens	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	TAF1
+3.776120e-02	1	4	265	27672	92001	Homo	sapiens	GO:0008026	molecular_function	"ATP-dependent helicase activity"	BTAF1
+1.213570e-02	1	4	71	23297	92001	Homo	sapiens	GO:0016485	biological_process	"protein processing"	TAF1
+1.511880e-01	1	4	1111	27672	92001	Homo	sapiens	GO:0004672	molecular_function	"protein kinase activity"	TAF1
+6.959420e-01	4	4	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	BTAF1	TAF1	TAF6	TBP
+7.495990e-03	1	4	52	27672	92001	Homo	sapiens	GO:0008080	molecular_function	"N-acetyltransferase activity"	TAF1
+7.722820e-02	4	4	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	BTAF1	TAF1	TAF6	TBP
+8.521580e-03	3	4	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	TAF1	TAF6	TBP
+2.392040e-01	1	4	1539	23297	92001	Homo	sapiens	GO:0006796	biological_process	"phosphate metabolism"	TAF1
+1.864110e-03	4	4	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	BTAF1	TAF1	TAF6	TBP
+1.482360e-05	3	4	327	20974	92001	Homo	sapiens	GO:0005654	cellular_component	"nucleoplasm"	TAF1	TAF6	TBP
+3.635590e-02	1	4	255	27672	92001	Homo	sapiens	GO:0016746	molecular_function	"transferase activity, transferring acyl groups"	TAF1
+1.103480e-01	4	4	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	BTAF1	TAF1	TAF6	TBP
+1.249270e-01	4	4	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	BTAF1	TAF1	TAF6	TBP
+4.120330e-01	2	4	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	BTAF1	TAF1
+1.289370e-08	3	4	32	20974	92001	Homo	sapiens	GO:0005669	cellular_component	"transcription factor TFIID complex"	TAF1	TAF6	TBP
+1.725740e-01	4	4	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	BTAF1	TAF1	TAF6	TBP
+4.286070e-03	1	4	25	23297	92001	Homo	sapiens	GO:0046777	biological_process	"protein amino acid autophosphorylation"	TAF1
+7.874490e-01	1	4	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	TAF1
+6.630550e-01	1	4	5547	23297	92001	Homo	sapiens	GO:0019538	biological_process	"protein metabolism"	TAF1
+5.071020e-02	2	4	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	BTAF1	TAF1
+1.644650e-02	4	4	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	BTAF1	TAF1	TAF6	TBP
+8.423020e-06	3	4	271	20974	92001	Homo	sapiens	GO:0044451	cellular_component	"nucleoplasm part"	TAF1	TAF6	TBP
+1.000000e+00	4	4	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	BTAF1	TAF1	TAF6	TBP
+6.768800e-05	3	4	543	20974	92001	Homo	sapiens	GO:0043233	cellular_component	"organelle lumen"	TAF1	TAF6	TBP
+3.957810e-02	1	4	234	23297	92001	Homo	sapiens	GO:0000278	biological_process	"mitotic cell cycle"	TAF1
+5.810540e-03	3	4	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	BTAF1	TAF1	TBP
+4.719180e-02	2	4	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	BTAF1	TAF1
+5.720550e-04	1	4	3	20974	92001	Homo	sapiens	GO:0005673	cellular_component	"transcription factor TFIIE complex"	TAF6
+1.483880e-03	3	4	2027	27672	92001	Homo	sapiens	GO:0030528	molecular_function	"transcription regulator activity"	BTAF1	TAF6	TBP
+1.000000e+00	4	4	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	BTAF1	TAF1	TAF6	TBP
+3.230400e-05	3	4	424	20974	92001	Homo	sapiens	GO:0031981	cellular_component	"nuclear lumen"	TAF1	TAF6	TBP
+9.584270e-02	2	4	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	BTAF1	TAF1
+1.367800e-01	1	4	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	BTAF1
+6.043260e-04	4	4	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	BTAF1	TAF1	TAF6	TBP
+3.772550e-03	1	4	22	23297	92001	Homo	sapiens	GO:0051318	biological_process	"G1 phase"	TAF1
+3.043720e-02	1	4	213	27672	92001	Homo	sapiens	GO:0016747	molecular_function	"transferase activity, transferring groups other than amino-acyl groups"	TAF1
+3.255680e-07	3	4	99	20974	92001	Homo	sapiens	GO:0016591	cellular_component	"DNA-directed RNA polymerase II, holoenzyme"	TAF1	TAF6	TBP
+1.642900e-02	4	4	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	BTAF1	TAF1	TAF6	TBP
+1.000000e+00	4	4	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	BTAF1	TAF1	TAF6	TBP
+3.140050e-03	4	4	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	BTAF1	TAF1	TAF6	TBP
+9.647660e-03	3	4	3242	23297	92001	Homo	sapiens	GO:0006351	biological_process	"transcription, DNA-dependent"	TAF1	TAF6	TBP
+6.476240e-04	2	4	290	27672	92001	Homo	sapiens	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	TAF6	TBP
+5.654530e-03	1	4	33	23297	92001	Homo	sapiens	GO:0051090	biological_process	"regulation of transcription factor activity"	TAF6
+3.271500e-02	3	4	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	BTAF1	TAF1	TBP
+6.388110e-01	1	4	5236	23297	92001	Homo	sapiens	GO:0044260	biological_process	"cellular macromolecule metabolism"	TAF1
+6.689810e-04	4	4	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	BTAF1	TAF1	TAF6	TBP
+3.750550e-01	1	4	2583	23297	92001	Homo	sapiens	GO:0006464	biological_process	"protein modification"	TAF1
+8.962620e-02	1	4	642	27672	92001	Homo	sapiens	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	TAF1
+1.303950e-02	3	4	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	TAF1	TAF6	TBP
+2.411860e-03	4	4	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	BTAF1	TAF1	TAF6	TBP
+3.258440e-03	1	4	19	23297	92001	Homo	sapiens	GO:0000080	biological_process	"G1 phase of mitotic cell cycle"	TAF1
+1.979680e-01	1	4	1250	23297	92001	Homo	sapiens	GO:0016310	biological_process	"phosphorylation"	TAF1
+9.686230e-06	2	4	36	27672	92001	Homo	sapiens	GO:0016251	molecular_function	"general RNA polymerase II transcription factor activity"	TAF6	TBP
+2.599510e-03	1	4	18	27672	92001	Homo	sapiens	GO:0004468	molecular_function	"lysine N-acetyltransferase activity"	TAF1
+1.676930e-07	3	4	82	23297	92001	Homo	sapiens	GO:0006352	biological_process	"transcription initiation"	TAF1	TAF6	TBP
+5.063490e-04	4	4	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	BTAF1	TAF1	TAF6	TBP
+6.330160e-01	1	4	5164	23297	92001	Homo	sapiens	GO:0044267	biological_process	"cellular protein metabolism"	TAF1
+6.901640e-02	4	4	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	BTAF1	TAF1	TAF6	TBP
+1.441350e-01	1	4	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	BTAF1
+1.296770e-01	1	4	795	23297	92001	Homo	sapiens	GO:0043118	biological_process	"negative regulation of physiological process"	BTAF1
+4.069430e-02	3	4	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	TAF1	TAF6	TBP
+4.439370e-01	1	4	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	BTAF1
+1.473340e-01	1	4	910	23297	92001	Homo	sapiens	GO:0048519	biological_process	"negative regulation of biological process"	BTAF1
+1.373870e-01	1	4	845	23297	92001	Homo	sapiens	GO:0048523	biological_process	"negative regulation of cellular process"	BTAF1
+4.307160e-02	1	4	255	23297	92001	Homo	sapiens	GO:0031324	biological_process	"negative regulation of cellular metabolism"	BTAF1
+1.880280e-01	1	4	1404	27672	92001	Homo	sapiens	GO:0003700	molecular_function	"transcription factor activity"	BTAF1
+9.177990e-02	1	4	658	27672	92001	Homo	sapiens	GO:0016887	molecular_function	"ATPase activity"	BTAF1
+6.768800e-05	3	4	543	20974	92001	Homo	sapiens	GO:0031974	cellular_component	"membrane-enclosed lumen"	TAF1	TAF6	TBP
+4.981030e-01	4	4	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	BTAF1	TAF1	TAF6	TBP
+4.457200e-03	1	4	26	23297	92001	Homo	sapiens	GO:0016540	biological_process	"protein autoprocessing"	TAF1
+2.135650e-01	1	4	1613	27672	92001	Homo	sapiens	GO:0016301	molecular_function	"kinase activity"	TAF1
+1.416880e-01	1	4	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	BTAF1
+1.730900e-01	1	4	1081	23297	92001	Homo	sapiens	GO:0006468	biological_process	"protein amino acid phosphorylation"	TAF1
+6.957970e-01	4	4	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	BTAF1	TAF1	TAF6	TBP
+2.929200e-03	4	4	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	BTAF1	TAF1	TAF6	TBP
+1.094420e-02	1	4	64	23297	92001	Homo	sapiens	GO:0051325	biological_process	"interphase"	TAF1
+3.473800e-02	1	4	205	23297	92001	Homo	sapiens	GO:0016481	biological_process	"negative regulation of transcription"	BTAF1
+5.611890e-04	4	4	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	BTAF1	TAF1	TAF6	TBP
+1.424620e-01	1	4	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	BTAF1
+3.693350e-01	1	4	3012	27672	92001	Homo	sapiens	GO:0016740	molecular_function	"transferase activity"	TAF1
+5.950820e-01	4	4	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	BTAF1	TAF1	TAF6	TBP
+2.166610e-03	1	4	15	27672	92001	Homo	sapiens	GO:0016986	molecular_function	"transcription initiation factor activity"	TAF6
+8.387280e-03	1	4	49	23297	92001	Homo	sapiens	GO:0006367	biological_process	"transcription initiation from RNA polymerase II promoter"	TBP
+4.824410e-04	4	4	3454	23297	92001	Homo	sapiens	GO:0045449	biological_process	"regulation of transcription"	BTAF1	TAF1	TAF6	TBP
+7.575610e-02	2	4	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	BTAF1	TAF1
+3.995420e-02	4	4	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	BTAF1	TAF1	TAF6	TBP
+9.033970e-03	3	4	3169	23297	92001	Homo	sapiens	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	TAF1	TAF6	TBP
+2.776760e-01	4	4	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	BTAF1	TAF1	TAF6	TBP
+5.653060e-01	1	4	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	TAF1
+4.378610e-02	1	4	308	27672	92001	Homo	sapiens	GO:0004386	molecular_function	"helicase activity"	BTAF1
+8.521580e-03	3	4	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	TAF1	TAF6	TBP
+3.741070e-02	1	4	221	23297	92001	Homo	sapiens	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	BTAF1
+1.153000e-06	3	4	142	20974	92001	Homo	sapiens	GO:0005667	cellular_component	"transcription factor complex"	TAF1	TAF6	TBP
+1.681740e-03	4	4	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	BTAF1	TAF1	TAF6	TBP
+6.719300e-02	4	4	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	BTAF1	TAF1	TAF6	TBP
+5.118600e-02	1	4	304	23297	92001	Homo	sapiens	GO:0009892	biological_process	"negative regulation of metabolism"	BTAF1
+9.506860e-03	1	4	66	27672	92001	Homo	sapiens	GO:0016407	molecular_function	"acetyltransferase activity"	TAF1
+1.043320e-02	1	4	61	23297	92001	Homo	sapiens	GO:0051329	biological_process	"interphase of mitotic cell cycle"	TAF1
+9.076210e-03	1	4	63	27672	92001	Homo	sapiens	GO:0016410	molecular_function	"N-acyltransferase activity"	TAF1
+3.997120e-02	4	4	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	BTAF1	TAF1	TAF6	TBP
+4.759180e-03	4	4	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	BTAF1	TAF1	TAF6	TBP
+1.251810e-01	1	4	766	23297	92001	Homo	sapiens	GO:0051243	biological_process	"negative regulation of cellular physiological process"	BTAF1
+2.599510e-03	1	4	18	27672	92001	Homo	sapiens	GO:0004402	molecular_function	"histone acetyltransferase activity"	TAF1
+2.392040e-01	1	4	1539	23297	92001	Homo	sapiens	GO:0006793	biological_process	"phosphorus metabolism"	TAF1
+8.425450e-02	1	4	507	23297	92001	Homo	sapiens	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	TBP
+7.934360e-02	1	4	566	27672	92001	Homo	sapiens	GO:0042623	molecular_function	"ATPase activity, coupled"	BTAF1
+3.043720e-02	1	4	213	27672	92001	Homo	sapiens	GO:0008415	molecular_function	"acyltransferase activity"	TAF1
+3.834600e-01	1	4	2653	23297	92001	Homo	sapiens	GO:0043412	biological_process	"biopolymer modification"	TAF1
+1.415290e-01	1	4	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	TAF1
+2.444860e-01	1	4	1873	27672	92001	Homo	sapiens	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	TAF1
+1.636030e-04	3	4	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	TAF1	TAF6	TBP
+#USING RPC34 instead of its synonym YNR003C in Saccharomyces cerevisiae
+#USING SPT15 instead of its synonym YER148W in Saccharomyces cerevisiae
+#USING TAF1 instead of its synonym YGR274C in Saccharomyces cerevisiae
+#USING MOT1 instead of its synonym YPL082C in Saccharomyces cerevisiae
+#USING BRF1 instead of its synonym YGR246C in Saccharomyces cerevisiae
+#USING TAF2 instead of its synonym YCR042C in Saccharomyces cerevisiae
+#USING TOA1 instead of its synonym YOR194C in Saccharomyces cerevisiae
+#USING TFC4 instead of its synonym YGR047C in Saccharomyces cerevisiae
+#USING TAF6 instead of its synonym YGL112C in Saccharomyces cerevisiae
+#USING TOA2 instead of its synonym YKL058W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.875540e-02	1	10	19	6526	97048	Saccharomyces	cerevisiae	GO:0000124	cellular_component	"SAGA complex"	YGL112C
+2.345440e-01	1	10	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	YGR274C
+4.359120e-02	1	10	29	6526	97048	Saccharomyces	cerevisiae	GO:0006360	biological_process	"transcription from RNA polymerase I promoter"	YER148W
+9.956320e-01	2	10	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YNR003C	YPL082C
+1.798160e-01	1	10	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	YGR274C
+1.221300e-03	10	10	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+4.405430e-01	2	10	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YER148W	YPL082C
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0045898	biological_process	"regulation of transcriptional preinitiation complex formation"	YPL082C
+1.489710e-11	9	10	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C
+1.584710e-03	10	10	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0042802	molecular_function	"identical protein binding"	YER148W
+7.209990e-02	10	10	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+6.203000e-01	3	10	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YGR274C	YNR003C	YPL082C
+8.607760e-01	1	10	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YER148W
+4.946700e-02	1	10	33	6526	97048	Saccharomyces	cerevisiae	GO:0003899	molecular_function	"DNA-directed RNA polymerase activity"	YNR003C
+6.335490e-06	2	10	3	6526	97048	Saccharomyces	cerevisiae	GO:0000126	cellular_component	"transcription factor TFIIIB complex"	YER148W	YGR246C
+9.396290e-01	2	10	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YGL112C	YGR274C
+6.965800e-01	2	10	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YGL112C	YGR274C
+1.000000e+00	10	10	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+5.292810e-08	9	10	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C
+4.584500e-03	3	10	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YCR042C	YGL112C	YGR274C
+2.802820e-01	1	10	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	YER148W
+3.729240e-09	9	10	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C
+1.988560e-01	1	10	143	6526	97048	Saccharomyces	cerevisiae	GO:0044452	cellular_component	"nucleolar part"	YER148W
+3.755810e-01	1	10	300	6526	97048	Saccharomyces	cerevisiae	GO:0005730	cellular_component	"nucleolus"	YER148W
+3.093910e-01	1	10	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	YPL082C
+3.060990e-03	4	10	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YCR042C	YGL112C	YGR274C	YPL082C
+8.233540e-01	1	10	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YPL082C
+1.324460e-01	1	10	92	6526	97048	Saccharomyces	cerevisiae	GO:0016747	molecular_function	"transferase activity, transferring groups other than amino-acyl groups"	YGR274C
+2.500730e-01	1	10	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	YGL112C
+1.371510e-02	1	10	9	6526	97048	Saccharomyces	cerevisiae	GO:0000120	cellular_component	"RNA polymerase I transcription factor complex"	YER148W
+7.835940e-09	6	10	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	YCR042C	YER148W	YGL112C	YGR274C	YKL058W	YOR194C
+5.531040e-02	1	10	37	6526	97048	Saccharomyces	cerevisiae	GO:0006473	biological_process	"protein amino acid acetylation"	YGL112C
+6.662210e-01	2	10	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YGL112C	YGR274C
+2.123990e-01	2	10	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	YGL112C	YGR274C
+1.022990e-01	1	10	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	YGR274C
+1.243620e-05	9	10	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C
+4.248690e-07	3	10	11	6526	97048	Saccharomyces	cerevisiae	GO:0006384	biological_process	"transcription initiation from RNA polymerase III promoter"	YER148W	YGR047C	YGR246C
+1.156060e-02	4	10	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YCR042C	YGL112C	YGR274C	YPL082C
+3.195000e-06	3	10	25	6526	97048	Saccharomyces	cerevisiae	GO:0000080	biological_process	"G1 phase of mitotic cell cycle"	YCR042C	YGL112C	YGR274C
+2.038660e-01	1	10	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	YGR274C
+1.171090e-10	6	10	62	6526	97048	Saccharomyces	cerevisiae	GO:0016251	molecular_function	"general RNA polymerase II transcription factor activity"	YCR042C	YER148W	YGL112C	YGR274C	YKL058W	YOR194C
+5.274610e-01	1	10	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YGL112C
+9.251150e-02	1	10	63	6526	97048	Saccharomyces	cerevisiae	GO:0016570	biological_process	"histone modification"	YGL112C
+3.174080e-02	1	10	21	6526	97048	Saccharomyces	cerevisiae	GO:0004468	molecular_function	"lysine N-acetyltransferase activity"	YGR274C
+6.116660e-03	1	10	4	6526	97048	Saccharomyces	cerevisiae	GO:0046983	molecular_function	"protein dimerization activity"	YER148W
+6.438620e-01	2	10	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YGL112C	YGR274C
+6.695210e-02	10	10	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+5.292810e-08	9	10	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C
+4.869060e-02	10	10	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+2.814210e-01	1	10	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	YGL112C
+3.289190e-01	1	10	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	YPL082C
+2.653170e-01	1	10	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	YGR274C
+2.255310e-07	10	10	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+2.738640e-04	3	10	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	YCR042C	YGL112C	YGR274C
+9.251150e-02	1	10	63	6526	97048	Saccharomyces	cerevisiae	GO:0016569	biological_process	"covalent chromatin modification"	YGL112C
+7.230440e-12	10	10	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+3.299890e-01	1	10	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	YPL082C
+2.849540e-01	2	10	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	YGR274C	YNR003C
+1.222730e-03	4	10	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YCR042C	YGL112C	YGR274C	YPL082C
+4.224210e-02	10	10	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+4.405430e-01	2	10	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YER148W	YPL082C
+2.426510e-02	1	10	16	6526	97048	Saccharomyces	cerevisiae	GO:0046695	cellular_component	"SLIK (SAGA-like) complex"	YGL112C
+7.276240e-01	2	10	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YGL112C	YGR274C
+2.119340e-05	10	10	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+6.308730e-13	8	10	125	6526	97048	Saccharomyces	cerevisiae	GO:0005667	cellular_component	"transcription factor complex"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YOR194C
+6.537550e-04	10	10	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+7.693650e-02	1	10	52	6526	97048	Saccharomyces	cerevisiae	GO:0016407	molecular_function	"acetyltransferase activity"	YGR274C
+2.738640e-04	3	10	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	YCR042C	YGL112C	YGR274C
+6.401490e-02	1	10	43	6526	97048	Saccharomyces	cerevisiae	GO:0016410	molecular_function	"N-acyltransferase activity"	YGR274C
+6.149340e-03	10	10	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+3.174080e-02	1	10	21	6526	97048	Saccharomyces	cerevisiae	GO:0004402	molecular_function	"histone acetyltransferase activity"	YGR274C
+5.211760e-01	1	10	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YGL112C
+2.653170e-01	1	10	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	YGR274C
+2.576400e-02	1	10	17	6526	97048	Saccharomyces	cerevisiae	GO:0005666	cellular_component	"DNA-directed RNA polymerase III complex"	YNR003C
+8.457960e-01	1	10	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YGL112C
+9.350490e-07	3	10	14	6526	97048	Saccharomyces	cerevisiae	GO:0000114	biological_process	"G1-specific transcription in mitotic cell cycle"	YCR042C	YGL112C	YGR274C
+2.113550e-06	2	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0005672	cellular_component	"transcription factor TFIIA complex"	YKL058W	YOR194C
+2.957010e-01	2	10	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	YGL112C	YGR274C
+9.932960e-01	1	10	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YPL082C
+1.522850e-02	1	10	10	6526	97048	Saccharomyces	cerevisiae	GO:0008301	molecular_function	"DNA bending activity"	YER148W
+1.433610e-08	10	10	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+2.229870e-07	4	10	39	6526	97048	Saccharomyces	cerevisiae	GO:0006383	biological_process	"transcription from RNA polymerase III promoter"	YER148W	YGR047C	YGR246C	YNR003C
+3.092400e-07	3	10	10	6526	97048	Saccharomyces	cerevisiae	GO:0003709	molecular_function	"RNA polymerase III transcription factor activity"	YER148W	YGR047C	YGR246C
+5.124110e-01	1	10	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YGL112C
+1.611840e-01	10	10	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+2.119340e-05	10	10	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+5.676620e-02	1	10	38	6526	97048	Saccharomyces	cerevisiae	GO:0008080	molecular_function	"N-acetyltransferase activity"	YGR274C
+5.967170e-02	1	10	40	6526	97048	Saccharomyces	cerevisiae	GO:0000123	cellular_component	"histone acetyltransferase complex"	YGL112C
+2.653170e-01	1	10	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	YGR274C
+1.522850e-02	1	10	10	6526	97048	Saccharomyces	cerevisiae	GO:0003701	molecular_function	"RNA polymerase I transcription factor activity"	YER148W
+1.268240e-02	4	10	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YCR042C	YGL112C	YGR274C	YPL082C
+1.524740e-01	1	10	107	6526	97048	Saccharomyces	cerevisiae	GO:0016746	molecular_function	"transferase activity, transferring acyl groups"	YGR274C
+3.739310e-09	4	10	15	6526	97048	Saccharomyces	cerevisiae	GO:0005669	cellular_component	"transcription factor TFIID complex"	YCR042C	YER148W	YGL112C	YGR274C
+7.407900e-02	1	10	50	6526	97048	Saccharomyces	cerevisiae	GO:0043543	biological_process	"protein amino acid acylation"	YGL112C
+2.602070e-03	10	10	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+8.079070e-12	9	10	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C
+1.507250e-09	8	10	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YOR194C
+4.800110e-02	1	10	32	6526	97048	Saccharomyces	cerevisiae	GO:0030880	cellular_component	"RNA polymerase complex"	YNR003C
+1.000000e+00	10	10	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+3.195000e-06	3	10	25	6526	97048	Saccharomyces	cerevisiae	GO:0051318	biological_process	"G1 phase"	YCR042C	YGL112C	YGR274C
+4.480620e-10	6	10	77	6526	97048	Saccharomyces	cerevisiae	GO:0016591	cellular_component	"DNA-directed RNA polymerase II, holoenzyme"	YCR042C	YER148W	YGL112C	YGR274C	YKL058W	YOR194C
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0051123	biological_process	"transcriptional preinitiation complex formation"	YPL082C
+1.000000e+00	10	10	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+2.602070e-03	10	10	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+1.358780e-02	4	10	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YCR042C	YGL112C	YGR274C	YPL082C
+4.064110e-02	1	10	27	6526	97048	Saccharomyces	cerevisiae	GO:0016573	biological_process	"histone acetylation"	YGL112C
+2.886370e-12	10	10	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0042803	molecular_function	"protein homodimerization activity"	YER148W
+6.518260e-01	1	10	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YER148W
+3.779840e-03	4	10	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YCR042C	YGL112C	YGR274C	YPL082C
+2.814210e-01	1	10	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	YGL112C
+9.531950e-01	1	10	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YGL112C
+9.032720e-16	8	10	57	6526	97048	Saccharomyces	cerevisiae	GO:0006352	biological_process	"transcription initiation"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YOR194C
+1.759010e-03	4	10	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YCR042C	YGL112C	YGR274C	YPL082C
+3.299890e-01	1	10	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	YPL082C
+5.570510e-01	1	10	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YER148W
+7.163220e-01	1	10	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YPL082C
+2.429410e-01	1	10	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	YPL082C
+1.608870e-01	10	10	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+1.324460e-01	1	10	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	YGR274C
+2.836960e-01	1	10	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YPL082C
+4.536330e-02	10	10	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+1.799780e-11	6	10	46	6526	97048	Saccharomyces	cerevisiae	GO:0006367	biological_process	"transcription initiation from RNA polymerase II promoter"	YCR042C	YER148W	YGL112C	YGR274C	YKL058W	YOR194C
+6.149340e-03	10	10	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+9.637970e-04	4	10	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YCR042C	YGL112C	YGR274C	YPL082C
+1.434590e-04	4	10	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YCR042C	YGL112C	YGR274C	YPL082C
+1.149680e-02	4	10	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YCR042C	YGL112C	YGR274C	YPL082C
+6.568590e-06	10	10	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YCR042C	YER148W	YGL112C	YGR047C	YGR246C	YGR274C	YKL058W	YNR003C	YOR194C	YPL082C
+1.733790e-01	1	10	123	6526	97048	Saccharomyces	cerevisiae	GO:0016779	molecular_function	"nucleotidyltransferase activity"	YNR003C
+9.162340e-03	1	10	6	6526	97048	Saccharomyces	cerevisiae	GO:0000127	cellular_component	"transcription factor TFIIIC complex"	YGR047C
+3.750390e-08	7	10	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YCR042C	YER148W	YGL112C	YGR274C	YKL058W	YOR194C	YPL082C
+1.310950e-01	1	10	91	6526	97048	Saccharomyces	cerevisiae	GO:0008415	molecular_function	"acyltransferase activity"	YGR274C
+2.381530e-01	1	10	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	YPL082C
+2.147740e-02	3	10	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YCR042C	YGL112C	YGR274C
+9.002350e-02	2	10	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	YGR274C	YNR003C

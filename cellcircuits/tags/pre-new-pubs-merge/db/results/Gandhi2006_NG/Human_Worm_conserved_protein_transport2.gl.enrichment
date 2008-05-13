@@ -1,0 +1,132 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+8.638450e-01	3	8	3289	6495	88307	Caenorhabditis	elegans	GO:0016020	cellular_component	"membrane"	F08F8.8	F55A11.2	F55A4.1
+7.426450e-01	1	8	1013	6495	88307	Caenorhabditis	elegans	GO:0005737	cellular_component	"cytoplasm"	D1014.3
+9.969570e-01	2	8	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	F08F8.8	F55A4.1
+9.999940e-01	4	8	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+1.107570e-05	3	8	164	27713	88307	Caenorhabditis	elegans	GO:0015031	biological_process	"protein transport"	D1014.3	F08F8.8	F55A11.2
+9.879170e-01	2	8	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	D1014.3	F55A4.1
+1.160310e-03	4	8	1870	27713	88307	Caenorhabditis	elegans	GO:0051234	biological_process	"establishment of localization"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+9.872260e-01	2	8	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	D1014.3	F55A4.1
+2.967660e-01	1	8	1193	27713	88307	Caenorhabditis	elegans	GO:0007610	biological_process	"behavior"	D1014.3
+5.156150e-05	3	8	274	27713	88307	Caenorhabditis	elegans	GO:0051649	biological_process	"establishment of cellular localization"	D1014.3	F08F8.8	F55A11.2
+9.946550e-01	1	8	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	D1014.3
+9.811800e-01	1	8	4582	11710	88307	Caenorhabditis	elegans	GO:0003824	molecular_function	"catalytic activity"	H15N14.2
+9.668600e-01	2	8	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	D1014.3	H15N14.2
+9.872260e-01	2	8	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	D1014.3	F55A4.1
+6.055200e-01	1	8	1285	11710	88307	Caenorhabditis	elegans	GO:0030554	molecular_function	"adenyl nucleotide binding"	H15N14.2
+9.296590e-01	1	8	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	D1014.3
+9.903610e-01	3	8	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	D1014.3	F08F8.8	F55A4.1
+2.043290e-05	3	8	201	27713	88307	Caenorhabditis	elegans	GO:0008104	biological_process	"protein localization"	D1014.3	F08F8.8	F55A11.2
+5.520590e-02	1	8	196	27713	88307	Caenorhabditis	elegans	GO:0018987	biological_process	"osmoregulation"	D1014.3
+1.000000e+00	4	8	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+5.947960e-01	1	8	1250	11710	88307	Caenorhabditis	elegans	GO:0005524	molecular_function	"ATP binding"	H15N14.2
+2.300100e-02	1	8	34	11710	88307	Caenorhabditis	elegans	GO:0008565	molecular_function	"protein transporter activity"	F55A11.2
+4.773670e-03	1	8	7	11710	88307	Caenorhabditis	elegans	GO:0005478	molecular_function	"intracellular transporter activity"	D1014.3
+9.985870e-01	1	8	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	F55A4.1
+1.000000e+00	3	8	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	D1014.3	F55A11.2	H15N14.2
+7.161400e-01	1	8	1705	11710	88307	Caenorhabditis	elegans	GO:0000166	molecular_function	"nucleotide binding"	H15N14.2
+2.411940e-01	1	8	397	11710	88307	Caenorhabditis	elegans	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	H15N14.2
+9.969570e-01	2	8	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	F08F8.8	F55A4.1
+9.291740e-01	1	8	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	D1014.3
+8.547900e-04	4	8	1725	27713	88307	Caenorhabditis	elegans	GO:0006810	biological_process	"transport"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+1.000000e+00	4	8	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+9.943280e-01	2	8	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	D1014.3	F55A4.1
+9.969610e-01	2	8	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	F08F8.8	F55A4.1
+9.895170e-01	3	8	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	D1014.3	F08F8.8	F55A4.1
+5.471760e-04	3	8	610	27713	88307	Caenorhabditis	elegans	GO:0016043	biological_process	"cell organization and biogenesis"	D1014.3	F08F8.8	F55A11.2
+1.837080e-05	3	8	194	27713	88307	Caenorhabditis	elegans	GO:0046907	biological_process	"intracellular transport"	D1014.3	F08F8.8	F55A11.2
+7.735370e-02	1	8	65	6495	88307	Caenorhabditis	elegans	GO:0005783	cellular_component	"endoplasmic reticulum"	D1014.3
+9.880680e-01	2	8	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	D1014.3	F55A4.1
+5.792520e-01	2	8	1489	6495	88307	Caenorhabditis	elegans	GO:0031224	cellular_component	"intrinsic to membrane"	F08F8.8	F55A4.1
+9.879510e-01	1	8	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	D1014.3
+2.523930e-01	1	8	418	11710	88307	Caenorhabditis	elegans	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	H15N14.2
+9.970200e-01	2	8	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	F08F8.8	F55A4.1
+7.275150e-01	1	8	1756	11710	88307	Caenorhabditis	elegans	GO:0016787	molecular_function	"hydrolase activity"	H15N14.2
+3.587340e-01	1	8	1497	27713	88307	Caenorhabditis	elegans	GO:0050896	biological_process	"response to stimulus"	D1014.3
+9.952650e-01	4	8	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+9.970860e-01	2	8	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	F08F8.8	F55A4.1
+6.885450e-02	1	8	246	27713	88307	Caenorhabditis	elegans	GO:0042592	biological_process	"homeostasis"	D1014.3
+2.502710e-01	1	8	414	11710	88307	Caenorhabditis	elegans	GO:0016462	molecular_function	"pyrophosphatase activity"	H15N14.2
+9.999890e-01	4	8	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+6.354570e-01	2	8	1630	6495	88307	Caenorhabditis	elegans	GO:0044425	cellular_component	"membrane part"	F08F8.8	F55A4.1
+3.836350e-06	3	8	116	27713	88307	Caenorhabditis	elegans	GO:0006886	biological_process	"intracellular protein transport"	D1014.3	F08F8.8	F55A11.2
+9.912340e-01	3	8	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	D1014.3	F08F8.8	F55A4.1
+2.502710e-01	1	8	414	11710	88307	Caenorhabditis	elegans	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	H15N14.2
+1.626960e-01	4	8	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+6.655900e-01	1	8	1498	11710	88307	Caenorhabditis	elegans	GO:0017076	molecular_function	"purine nucleotide binding"	H15N14.2
+1.838120e-01	2	8	1159	11710	88307	Caenorhabditis	elegans	GO:0005215	molecular_function	"transporter activity"	D1014.3	F55A11.2
+9.663390e-01	1	8	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	D1014.3
+1.055030e-01	4	8	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+2.144940e-02	1	8	75	27713	88307	Caenorhabditis	elegans	GO:0016192	biological_process	"vesicle-mediated transport"	F55A4.1
+9.902000e-01	3	8	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	D1014.3	F08F8.8	F55A4.1
+5.771760e-01	2	8	1484	6495	88307	Caenorhabditis	elegans	GO:0016021	cellular_component	"integral to membrane"	F08F8.8	F55A4.1
+9.884370e-01	2	8	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	D1014.3	F55A4.1
+9.985650e-01	1	8	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	F55A4.1
+5.269000e-05	3	8	276	27713	88307	Caenorhabditis	elegans	GO:0051641	biological_process	"cellular localization"	D1014.3	F08F8.8	F55A11.2
+1.191210e-05	3	8	168	27713	88307	Caenorhabditis	elegans	GO:0045184	biological_process	"establishment of protein localization"	D1014.3	F08F8.8	F55A11.2
+9.663390e-01	1	8	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	D1014.3
+2.594340e-01	1	8	1021	27713	88307	Caenorhabditis	elegans	GO:0007626	biological_process	"locomotory behavior"	D1014.3
+6.464390e-02	1	8	54	6495	88307	Caenorhabditis	elegans	GO:0005794	cellular_component	"Golgi apparatus"	D1014.3
+1.229710e-03	4	8	1899	27713	88307	Caenorhabditis	elegans	GO:0051179	biological_process	"localization"	D1014.3	F08F8.8	F55A11.2	F55A4.1
+9.898090e-01	2	8	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	D1014.3	F55A4.1
+5.101440e-01	1	8	554	6495	88307	Caenorhabditis	elegans	GO:0044444	cellular_component	"cytoplasmic part"	D1014.3
+#NOT FOUND: STX5A_HUMAN in Homo sapiens
+#NOT FOUND: SEC22L1_HUMAN in Homo sapiens
+#NOT FOUND: NAPA_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.444260e-01	1	2	8467	20974	92001	Homo	sapiens	GO:0016020	cellular_component	"membrane"	GOSR1
+7.593740e-02	1	2	902	23297	92001	Homo	sapiens	GO:0046907	biological_process	"intracellular transport"	GOSR1
+1.808840e-01	1	2	2212	23297	92001	Homo	sapiens	GO:0016043	biological_process	"cell organization and biogenesis"	GOSR1
+6.425380e-02	1	2	685	20974	92001	Homo	sapiens	GO:0005783	cellular_component	"endoplasmic reticulum"	NSF
+3.939650e-01	1	2	4646	20974	92001	Homo	sapiens	GO:0005737	cellular_component	"cytoplasm"	NSF
+4.819720e-01	1	2	5878	20974	92001	Homo	sapiens	GO:0031224	cellular_component	"intrinsic to membrane"	GOSR1
+1.053170e-02	1	2	123	23297	92001	Homo	sapiens	GO:0048193	biological_process	"Golgi vesicle transport"	GOSR1
+7.624400e-01	1	2	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	NSF
+7.486770e-02	1	2	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	NSF
+2.542950e-01	1	2	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	NSF
+8.342390e-01	2	2	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	GOSR1	NSF
+1.007610e-03	2	2	740	23297	92001	Homo	sapiens	GO:0015031	biological_process	"protein transport"	GOSR1	NSF
+2.979850e-02	2	2	4022	23297	92001	Homo	sapiens	GO:0051234	biological_process	"establishment of localization"	GOSR1	NSF
+7.057760e-01	2	2	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	GOSR1	NSF
+7.668000e-02	1	2	911	23297	92001	Homo	sapiens	GO:0051649	biological_process	"establishment of cellular localization"	GOSR1
+7.354640e-02	1	2	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	NSF
+5.171790e-01	1	2	6400	20974	92001	Homo	sapiens	GO:0044425	cellular_component	"membrane part"	GOSR1
+8.341520e-01	2	2	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	GOSR1	NSF
+8.356180e-01	1	2	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	NSF
+5.590260e-01	1	2	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	NSF
+8.736640e-01	1	2	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	NSF
+3.657470e-02	1	2	430	23297	92001	Homo	sapiens	GO:0006886	biological_process	"intracellular protein transport"	GOSR1
+5.880490e-01	1	2	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	NSF
+1.870600e-01	1	2	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	NSF
+2.109250e-02	1	2	247	23297	92001	Homo	sapiens	GO:0045045	biological_process	"secretory pathway"	GOSR1
+1.207400e-03	2	2	810	23297	92001	Homo	sapiens	GO:0008104	biological_process	"protein localization"	GOSR1	NSF
+7.396370e-02	1	2	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	NSF
+7.714250e-01	2	2	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	GOSR1	NSF
+1.000000e+00	2	2	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	GOSR1	NSF
+2.719860e-02	1	2	319	23297	92001	Homo	sapiens	GO:0046903	biological_process	"secretion"	GOSR1
+1.544830e-01	1	2	2227	27672	92001	Homo	sapiens	GO:0005215	molecular_function	"transporter activity"	GOSR1
+2.296280e-01	1	2	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	NSF
+5.058720e-04	1	2	7	27672	92001	Homo	sapiens	GO:0005484	molecular_function	"SNAP receptor activity"	GOSR1
+2.463720e-02	1	2	343	27672	92001	Homo	sapiens	GO:0000287	molecular_function	"magnesium ion binding"	NSF
+6.943410e-01	1	2	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	NSF
+1.803340e-01	1	2	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	NSF
+5.269660e-01	2	2	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	GOSR1	NSF
+1.373130e-03	1	2	16	23297	92001	Homo	sapiens	GO:0006891	biological_process	"intra-Golgi vesicle-mediated transport"	GOSR1
+3.851190e-02	1	2	453	23297	92001	Homo	sapiens	GO:0016192	biological_process	"vesicle-mediated transport"	GOSR1
+3.033380e-03	1	2	42	27672	92001	Homo	sapiens	GO:0005478	molecular_function	"intracellular transporter activity"	GOSR1
+3.959480e-01	1	2	6165	27672	92001	Homo	sapiens	GO:0043167	molecular_function	"ion binding"	NSF
+2.168180e-04	1	2	3	27672	92001	Homo	sapiens	GO:0005485	molecular_function	"v-SNARE activity"	GOSR1
+1.000000e+00	2	2	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	GOSR1	NSF
+2.590930e-01	1	2	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	NSF
+4.811480e-01	1	2	5866	20974	92001	Homo	sapiens	GO:0016021	cellular_component	"integral to membrane"	GOSR1
+7.090090e-02	1	2	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	NSF
+7.742230e-02	1	2	920	23297	92001	Homo	sapiens	GO:0051641	biological_process	"cellular localization"	GOSR1
+6.943940e-01	1	2	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	NSF
+5.879270e-01	1	2	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	NSF
+1.000000e+00	2	2	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	GOSR1	NSF
+2.572460e-02	2	2	3737	23297	92001	Homo	sapiens	GO:0006810	biological_process	"transport"	GOSR1	NSF
+1.122440e-03	2	2	781	23297	92001	Homo	sapiens	GO:0045184	biological_process	"establishment of protein localization"	GOSR1	NSF
+3.897530e-01	1	2	6055	27672	92001	Homo	sapiens	GO:0046872	molecular_function	"metal ion binding"	NSF
+3.025970e-02	2	2	4053	23297	92001	Homo	sapiens	GO:0051179	biological_process	"localization"	GOSR1	NSF
+7.455030e-03	1	2	87	23297	92001	Homo	sapiens	GO:0006888	biological_process	"ER to Golgi vesicle-mediated transport"	GOSR1
+2.957000e-01	1	2	3372	20974	92001	Homo	sapiens	GO:0044444	cellular_component	"cytoplasmic part"	NSF

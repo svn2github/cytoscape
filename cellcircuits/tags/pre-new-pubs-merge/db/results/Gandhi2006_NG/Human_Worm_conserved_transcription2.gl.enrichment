@@ -1,0 +1,191 @@
+#USING lin-35 instead of its synonym C32F10.2 in Caenorhabditis elegans
+#USING lin-53 instead of its synonym K07A1.12 in Caenorhabditis elegans
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+9.281240e-03	1	3	86	27713	88307	Caenorhabditis	elegans	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	C53A5.3
+7.295990e-01	2	3	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	C32F10.2	K07A1.12
+9.999270e-01	1	3	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	C53A5.3
+4.124050e-01	1	3	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	C53A5.3
+9.246650e-01	1	3	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	C32F10.2
+1.236700e-01	1	3	1193	27713	88307	Caenorhabditis	elegans	GO:0007610	biological_process	"behavior"	C32F10.2
+9.226780e-01	1	3	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	C32F10.2
+4.683970e-01	1	3	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	C53A5.3
+8.592520e-01	1	3	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	C53A5.3
+7.744930e-01	1	3	4582	11710	88307	Caenorhabditis	elegans	GO:0003824	molecular_function	"catalytic activity"	C53A5.3
+9.226780e-01	1	3	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	C32F10.2
+2.638570e-01	1	3	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	C53A5.3
+2.071200e-01	1	3	2063	27713	88307	Caenorhabditis	elegans	GO:0019538	biological_process	"protein metabolism"	C53A5.3
+6.302570e-01	1	3	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	C53A5.3
+1.021380e-02	1	3	40	11710	88307	Caenorhabditis	elegans	GO:0016811	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in linear amides"	C53A5.3
+7.949150e-01	2	3	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	C32F10.2	K07A1.12
+1.000000e+00	3	3	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C32F10.2	C53A5.3	K07A1.12
+9.739910e-04	1	3	9	27713	88307	Caenorhabditis	elegans	GO:0006476	biological_process	"protein amino acid deacetylation"	C53A5.3
+5.012700e-02	1	3	471	27713	88307	Caenorhabditis	elegans	GO:0040014	biological_process	"regulation of body size"	C32F10.2
+1.000000e+00	1	3	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	C53A5.3
+9.145910e-01	1	3	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	C32F10.2
+5.732670e-02	1	3	540	27713	88307	Caenorhabditis	elegans	GO:0040035	biological_process	"hermaphrodite genitalia development"	K07A1.12
+1.625780e-02	1	3	151	27713	88307	Caenorhabditis	elegans	GO:0002164	biological_process	"larval development"	C32F10.2
+1.947350e-03	1	3	18	27713	88307	Caenorhabditis	elegans	GO:0016568	biological_process	"chromatin modification"	C53A5.3
+7.295990e-01	2	3	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	C32F10.2	K07A1.12
+6.293040e-01	1	3	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	C53A5.3
+1.000000e+00	1	3	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C53A5.3
+6.769630e-02	1	3	640	27713	88307	Caenorhabditis	elegans	GO:0048513	biological_process	"organ development"	K07A1.12
+9.469610e-01	1	3	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	C32F10.2
+5.628550e-02	1	3	530	27713	88307	Caenorhabditis	elegans	GO:0007568	biological_process	"aging"	C32F10.2
+2.052630e-01	1	3	2043	27713	88307	Caenorhabditis	elegans	GO:0044260	biological_process	"cellular macromolecule metabolism"	C53A5.3
+8.565960e-02	1	3	815	27713	88307	Caenorhabditis	elegans	GO:0050874	biological_process	"organismal physiological process"	C32F10.2
+1.128190e-01	1	3	1084	27713	88307	Caenorhabditis	elegans	GO:0006464	biological_process	"protein modification"	C53A5.3
+2.559940e-03	1	3	10	11710	88307	Caenorhabditis	elegans	GO:0019213	molecular_function	"deacetylase activity"	C53A5.3
+8.205000e-03	1	3	76	27713	88307	Caenorhabditis	elegans	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	C53A5.3
+7.296960e-01	2	3	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	C32F10.2	K07A1.12
+1.959910e-02	1	3	77	11710	88307	Caenorhabditis	elegans	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	C53A5.3
+1.604370e-02	1	3	149	27713	88307	Caenorhabditis	elegans	GO:0002119	biological_process	"larval development (sensu Nematoda)"	C32F10.2
+7.891670e-01	2	3	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	C32F10.2	K07A1.12
+2.596990e-02	1	3	242	27713	88307	Caenorhabditis	elegans	GO:0002009	biological_process	"morphogenesis of an epithelium"	C32F10.2
+6.459340e-02	1	3	610	27713	88307	Caenorhabditis	elegans	GO:0016043	biological_process	"cell organization and biogenesis"	C53A5.3
+9.251080e-01	1	3	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	C32F10.2
+2.682070e-02	1	3	250	27713	88307	Caenorhabditis	elegans	GO:0006259	biological_process	"DNA metabolism"	C53A5.3
+8.658010e-04	1	3	8	27713	88307	Caenorhabditis	elegans	GO:0016570	biological_process	"histone modification"	C53A5.3
+1.994910e-01	1	3	1981	27713	88307	Caenorhabditis	elegans	GO:0044267	biological_process	"cellular protein metabolism"	C53A5.3
+8.091340e-01	1	3	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	C53A5.3
+7.310590e-01	2	3	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	C32F10.2	K07A1.12
+3.858100e-01	1	3	1756	11710	88307	Caenorhabditis	elegans	GO:0016787	molecular_function	"hydrolase activity"	C53A5.3
+1.534630e-01	1	3	1497	27713	88307	Caenorhabditis	elegans	GO:0050896	biological_process	"response to stimulus"	C32F10.2
+5.765010e-01	3	3	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	C32F10.2	C53A5.3	K07A1.12
+7.326130e-01	2	3	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	C32F10.2	K07A1.12
+8.205000e-03	1	3	76	27713	88307	Caenorhabditis	elegans	GO:0006323	biological_process	"DNA packaging"	C53A5.3
+9.998970e-01	1	3	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	C53A5.3
+1.744070e-01	1	3	1715	27713	88307	Caenorhabditis	elegans	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	C53A5.3
+5.012700e-02	1	3	471	27713	88307	Caenorhabditis	elegans	GO:0035264	biological_process	"body growth"	C32F10.2
+6.200250e-02	1	3	585	27713	88307	Caenorhabditis	elegans	GO:0007548	biological_process	"sex differentiation"	K07A1.12
+8.658010e-04	1	3	8	27713	88307	Caenorhabditis	elegans	GO:0016569	biological_process	"covalent chromatin modification"	C53A5.3
+8.012280e-01	2	3	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	C32F10.2	K07A1.12
+5.826310e-02	1	3	549	27713	88307	Caenorhabditis	elegans	GO:0048806	biological_process	"genitalia development"	K07A1.12
+6.298660e-01	1	3	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	C53A5.3
+8.658010e-04	1	3	8	27713	88307	Caenorhabditis	elegans	GO:0016575	biological_process	"histone deacetylation"	C53A5.3
+7.194980e-01	1	3	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	C53A5.3
+5.677500e-01	1	3	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	C53A5.3
+1.657070e-01	1	3	1624	27713	88307	Caenorhabditis	elegans	GO:0043283	biological_process	"biopolymer metabolism"	C53A5.3
+2.883920e-02	1	3	269	27713	88307	Caenorhabditis	elegans	GO:0019098	biological_process	"reproductive behavior"	C32F10.2
+7.937960e-01	2	3	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	C32F10.2	K07A1.12
+3.935240e-01	1	3	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	C53A5.3
+9.261990e-01	1	3	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	C32F10.2
+9.141070e-01	1	3	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	C32F10.2
+2.048310e-03	1	3	8	11710	88307	Caenorhabditis	elegans	GO:0004407	molecular_function	"histone deacetylase activity"	C53A5.3
+7.194980e-01	1	3	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	C53A5.3
+5.565900e-01	1	3	1542	6495	88307	Caenorhabditis	elegans	GO:0005634	cellular_component	"nucleus"	C53A5.3
+2.830830e-02	1	3	264	27713	88307	Caenorhabditis	elegans	GO:0018991	biological_process	"oviposition"	C32F10.2
+1.164620e-02	1	3	108	27713	88307	Caenorhabditis	elegans	GO:0051276	biological_process	"chromosome organization and biogenesis"	C53A5.3
+4.310110e-02	1	3	404	27713	88307	Caenorhabditis	elegans	GO:0006996	biological_process	"organelle organization and biogenesis"	C53A5.3
+5.618140e-02	1	3	529	27713	88307	Caenorhabditis	elegans	GO:0008340	biological_process	"determination of adult life span"	C32F10.2
+1.167120e-01	1	3	1123	27713	88307	Caenorhabditis	elegans	GO:0043412	biological_process	"biopolymer modification"	C53A5.3
+4.257540e-02	1	3	399	27713	88307	Caenorhabditis	elegans	GO:0040018	biological_process	"positive regulation of body size"	C32F10.2
+9.304200e-01	1	3	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	C32F10.2
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.073480e-03	2	3	444	23297	92001	Homo	sapiens	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	HDAC1	RBBP4
+5.282220e-01	1	3	4646	20974	92001	Homo	sapiens	GO:0005737	cellular_component	"cytoplasm"	HDAC1
+7.619610e-01	3	3	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	HDAC1	RBBP4	RBL2
+1.465070e-01	3	3	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	HDAC1	RBBP4	RBL2
+3.489940e-01	1	3	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	HDAC1
+2.084420e-02	1	3	163	23297	92001	Homo	sapiens	GO:0008285	biological_process	"negative regulation of cell proliferation"	RBBP4
+8.973480e-03	3	3	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	HDAC1	RBBP4	RBL2
+4.604900e-02	1	3	327	20974	92001	Homo	sapiens	GO:0005654	cellular_component	"nucleoplasm"	HDAC1
+1.914670e-01	3	3	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	HDAC1	RBBP4	RBL2
+2.312900e-02	1	3	215	27672	92001	Homo	sapiens	GO:0042802	molecular_function	"identical protein binding"	HDAC1
+2.101420e-01	3	3	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	HDAC1	RBBP4	RBL2
+2.627270e-01	2	3	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	HDAC1	RBBP4
+2.677590e-01	3	3	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	HDAC1	RBBP4	RBL2
+8.649310e-02	1	3	692	23297	92001	Homo	sapiens	GO:0006915	biological_process	"apoptosis"	HDAC1
+2.429420e-01	2	3	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	HDAC1	RBBP4
+5.577400e-01	1	3	5547	23297	92001	Homo	sapiens	GO:0019538	biological_process	"protein metabolism"	HDAC1
+4.593160e-02	3	3	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	HDAC1	RBBP4	RBL2
+8.001470e-03	1	3	74	27672	92001	Homo	sapiens	GO:0016811	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in linear amides"	HDAC1
+6.744880e-02	1	3	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	RBL2
+1.015660e-02	1	3	94	27672	92001	Homo	sapiens	GO:0008094	molecular_function	"DNA-dependent ATPase activity"	RBBP4
+3.826540e-02	1	3	271	20974	92001	Homo	sapiens	GO:0044451	cellular_component	"nucleoplasm part"	HDAC1
+1.000000e+00	3	3	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	HDAC1	RBBP4	RBL2
+7.567770e-02	1	3	543	20974	92001	Homo	sapiens	GO:0043233	cellular_component	"organelle lumen"	HDAC1
+2.830690e-03	1	3	22	23297	92001	Homo	sapiens	GO:0006476	biological_process	"protein amino acid deacetylation"	HDAC1
+3.772930e-02	2	3	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	HDAC1	RBL2
+2.040560e-01	1	3	2027	27672	92001	Homo	sapiens	GO:0030528	molecular_function	"transcription regulator activity"	HDAC1
+1.000000e+00	3	3	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	HDAC1	RBBP4	RBL2
+5.943160e-02	1	3	424	20974	92001	Homo	sapiens	GO:0031981	cellular_component	"nuclear lumen"	HDAC1
+1.044450e-01	1	3	999	27672	92001	Homo	sapiens	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	RBBP4
+3.855710e-03	3	3	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	HDAC1	RBBP4	RBL2
+1.580150e-04	2	3	170	23297	92001	Homo	sapiens	GO:0016568	biological_process	"chromatin modification"	HDAC1	RBBP4
+1.000000e+00	3	3	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	HDAC1	RBBP4	RBL2
+4.589490e-02	3	3	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	HDAC1	RBBP4	RBL2
+6.683400e-02	1	3	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	RBL2
+1.326760e-02	3	3	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	HDAC1	RBBP4	RBL2
+2.692730e-03	3	3	3242	23297	92001	Homo	sapiens	GO:0006351	biological_process	"transcription, DNA-dependent"	HDAC1	RBBP4	RBL2
+4.589680e-02	1	3	362	23297	92001	Homo	sapiens	GO:0050790	biological_process	"regulation of catalytic activity"	RBL2
+1.173470e-01	2	3	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	HDAC1	RBL2
+5.340820e-01	1	3	5236	23297	92001	Homo	sapiens	GO:0044260	biological_process	"cellular macromolecule metabolism"	HDAC1
+4.161090e-03	3	3	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	HDAC1	RBBP4	RBL2
+2.971140e-01	1	3	2583	23297	92001	Homo	sapiens	GO:0006464	biological_process	"protein modification"	HDAC1
+2.599940e-03	1	3	24	27672	92001	Homo	sapiens	GO:0019213	molecular_function	"deacetylase activity"	HDAC1
+8.505790e-04	2	3	395	23297	92001	Homo	sapiens	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	HDAC1	RBBP4
+3.956460e-01	1	3	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	HDAC1
+2.350840e-02	1	3	184	23297	92001	Homo	sapiens	GO:0043549	biological_process	"regulation of kinase activity"	RBL2
+1.649620e-02	1	3	153	27672	92001	Homo	sapiens	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	HDAC1
+4.063520e-02	1	3	380	27672	92001	Homo	sapiens	GO:0008134	molecular_function	"transcription factor binding"	HDAC1
+1.088580e-02	3	3	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	HDAC1	RBBP4	RBL2
+2.532440e-02	2	3	2212	23297	92001	Homo	sapiens	GO:0016043	biological_process	"cell organization and biogenesis"	HDAC1	RBBP4
+2.452210e-02	1	3	192	23297	92001	Homo	sapiens	GO:0045786	biological_process	"negative regulation of progression through cell cycle"	RBL2
+6.168710e-03	1	3	48	23297	92001	Homo	sapiens	GO:0006338	biological_process	"chromatin remodeling"	RBBP4
+3.964290e-02	1	3	312	23297	92001	Homo	sapiens	GO:0006260	biological_process	"DNA replication"	RBBP4
+2.109820e-02	1	3	165	23297	92001	Homo	sapiens	GO:0043069	biological_process	"negative regulation of programmed cell death"	HDAC1
+4.052010e-02	1	3	319	23297	92001	Homo	sapiens	GO:0042127	biological_process	"regulation of cell proliferation"	RBBP4
+9.000460e-02	1	3	721	23297	92001	Homo	sapiens	GO:0016265	biological_process	"death"	HDAC1
+6.788740e-03	2	3	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	HDAC1	RBBP4
+4.885710e-03	1	3	38	23297	92001	Homo	sapiens	GO:0016570	biological_process	"histone modification"	HDAC1
+3.376740e-03	3	3	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	HDAC1	RBBP4	RBL2
+5.284880e-01	1	3	5164	23297	92001	Homo	sapiens	GO:0044267	biological_process	"cellular protein metabolism"	HDAC1
+5.708540e-02	1	3	452	23297	92001	Homo	sapiens	GO:0043067	biological_process	"regulation of programmed cell death"	HDAC1
+1.101750e-01	1	3	1056	27672	92001	Homo	sapiens	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	RBBP4
+1.346620e-01	3	3	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	HDAC1	RBBP4	RBL2
+1.230330e-02	3	3	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	HDAC1	RBBP4	RBL2
+5.076950e-02	2	3	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	HDAC1	RBBP4
+3.958610e-05	3	3	795	23297	92001	Homo	sapiens	GO:0043118	biological_process	"negative regulation of physiological process"	HDAC1	RBBP4	RBL2
+5.940240e-05	3	3	910	23297	92001	Homo	sapiens	GO:0048519	biological_process	"negative regulation of biological process"	HDAC1	RBBP4	RBL2
+4.754720e-05	3	3	845	23297	92001	Homo	sapiens	GO:0048523	biological_process	"negative regulation of cellular process"	HDAC1	RBBP4	RBL2
+2.852150e-03	1	3	20	20974	92001	Homo	sapiens	GO:0000118	cellular_component	"histone deacetylase complex"	HDAC1
+1.446240e-01	1	3	1404	27672	92001	Homo	sapiens	GO:0003700	molecular_function	"transcription factor activity"	HDAC1
+6.965530e-02	1	3	658	27672	92001	Homo	sapiens	GO:0016887	molecular_function	"ATPase activity"	RBBP4
+7.567770e-02	1	3	543	20974	92001	Homo	sapiens	GO:0031974	cellular_component	"membrane-enclosed lumen"	HDAC1
+5.929180e-01	3	3	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	HDAC1	RBBP4	RBL2
+8.852220e-04	2	3	403	23297	92001	Homo	sapiens	GO:0006323	biological_process	"DNA packaging"	HDAC1	RBBP4
+1.082670e-01	1	3	1037	27672	92001	Homo	sapiens	GO:0016462	molecular_function	"pyrophosphatase activity"	RBBP4
+7.618420e-01	3	3	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	HDAC1	RBBP4	RBL2
+2.097120e-02	1	3	164	23297	92001	Homo	sapiens	GO:0043066	biological_process	"negative regulation of apoptosis"	HDAC1
+1.259370e-02	3	3	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	HDAC1	RBBP4	RBL2
+2.388860e-02	1	3	187	23297	92001	Homo	sapiens	GO:0051338	biological_process	"regulation of transferase activity"	RBL2
+4.885710e-03	1	3	38	23297	92001	Homo	sapiens	GO:0016569	biological_process	"covalent chromatin modification"	HDAC1
+3.647430e-03	3	3	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	HDAC1	RBBP4	RBL2
+1.088700e-01	1	3	1043	27672	92001	Homo	sapiens	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	RBBP4
+6.775420e-01	3	3	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	HDAC1	RBBP4	RBL2
+3.256460e-03	3	3	3454	23297	92001	Homo	sapiens	GO:0045449	biological_process	"regulation of transcription"	HDAC1	RBBP4	RBL2
+2.567990e-03	1	3	20	23297	92001	Homo	sapiens	GO:0016575	biological_process	"histone deacetylation"	HDAC1
+8.937380e-02	3	3	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	HDAC1	RBBP4	RBL2
+2.514840e-03	3	3	3169	23297	92001	Homo	sapiens	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	HDAC1	RBBP4	RBL2
+3.825280e-01	3	3	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	HDAC1	RBBP4	RBL2
+9.273680e-02	2	3	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	HDAC1	RBBP4
+3.489940e-01	1	3	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	HDAC1
+7.113150e-02	1	3	566	23297	92001	Homo	sapiens	GO:0008283	biological_process	"cell proliferation"	RBBP4
+8.306720e-03	3	3	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	HDAC1	RBBP4	RBL2
+2.017470e-02	1	3	142	20974	92001	Homo	sapiens	GO:0005667	cellular_component	"transcription factor complex"	HDAC1
+1.319840e-01	3	3	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	HDAC1	RBBP4	RBL2
+8.940240e-02	3	3	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	HDAC1	RBBP4	RBL2
+2.058500e-03	1	3	19	27672	92001	Homo	sapiens	GO:0004407	molecular_function	"histone deacetylase activity"	HDAC1
+1.812330e-02	3	3	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	HDAC1	RBBP4	RBL2
+3.540410e-05	3	3	766	23297	92001	Homo	sapiens	GO:0051243	biological_process	"negative regulation of cellular physiological process"	HDAC1	RBBP4	RBL2
+1.804800e-02	1	3	141	23297	92001	Homo	sapiens	GO:0006916	biological_process	"anti-apoptosis"	HDAC1
+1.243160e-03	2	3	478	23297	92001	Homo	sapiens	GO:0051276	biological_process	"chromosome organization and biogenesis"	HDAC1	RBBP4
+9.000460e-02	1	3	721	23297	92001	Homo	sapiens	GO:0008219	biological_process	"cell death"	HDAC1
+9.524290e-03	2	3	1339	23297	92001	Homo	sapiens	GO:0006996	biological_process	"organelle organization and biogenesis"	HDAC1	RBBP4
+6.011730e-02	1	3	566	27672	92001	Homo	sapiens	GO:0042623	molecular_function	"ATPase activity, coupled"	RBBP4
+8.673560e-02	1	3	694	23297	92001	Homo	sapiens	GO:0012501	biological_process	"programmed cell death"	HDAC1
+3.042160e-01	1	3	2653	23297	92001	Homo	sapiens	GO:0043412	biological_process	"biopolymer modification"	HDAC1
+4.093780e-03	2	3	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	RBBP4	RBL2
+5.671380e-02	1	3	449	23297	92001	Homo	sapiens	GO:0042981	biological_process	"regulation of apoptosis"	HDAC1
+5.150210e-04	1	3	4	23297	92001	Homo	sapiens	GO:0043550	biological_process	"regulation of lipid kinase activity"	RBL2
+1.008280e-01	1	3	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	HDAC1

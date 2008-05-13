@@ -1,0 +1,102 @@
+#USING BIR1 instead of its synonym YJR089W in Saccharomyces cerevisiae
+#USING MCM21 instead of its synonym YDR318W in Saccharomyces cerevisiae
+#USING MIF2 instead of its synonym YKL089W in Saccharomyces cerevisiae
+#USING CBF1 instead of its synonym YJR060W in Saccharomyces cerevisiae
+#USING CBF2 instead of its synonym YGR140W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.692480e-06	2	5	5	6526	97048	Saccharomyces	cerevisiae	GO:0051233	cellular_component	"spindle midzone"	YGR140W	YJR089W
+7.640550e-03	1	5	10	6526	97048	Saccharomyces	cerevisiae	GO:0000097	biological_process	"sulfur amino acid biosynthesis"	YJR060W
+3.016240e-01	1	5	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YJR060W
+8.702040e-01	2	5	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YJR060W	YJR089W
+7.150920e-05	2	5	18	6526	97048	Saccharomyces	cerevisiae	GO:0051231	biological_process	"spindle elongation"	YGR140W	YJR089W
+6.461580e-01	1	5	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	YJR060W
+4.016310e-01	5	5	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+9.722680e-01	1	5	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YJR060W
+4.624390e-03	5	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+2.428650e-02	1	5	32	6526	97048	Saccharomyces	cerevisiae	GO:0000096	biological_process	"sulfur amino acid metabolism"	YJR060W
+1.371930e-02	1	5	18	6526	97048	Saccharomyces	cerevisiae	GO:0044272	biological_process	"sulfur compound biosynthesis"	YJR060W
+1.441660e-01	1	5	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	YJR060W
+6.543610e-05	5	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+1.265250e-07	4	5	84	6526	97048	Saccharomyces	cerevisiae	GO:0000793	cellular_component	"condensed chromosome"	YDR318W	YGR140W	YJR089W	YKL089W
+9.758930e-01	1	5	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YJR060W
+1.332850e-01	1	5	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	YJR060W
+9.614740e-07	4	5	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	YDR318W	YGR140W	YJR089W	YKL089W
+2.686690e-01	5	5	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+4.364980e-03	4	5	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YDR318W	YGR140W	YJR060W	YKL089W
+1.750480e-02	1	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0006555	biological_process	"methionine metabolism"	YJR060W
+9.078050e-01	1	5	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YJR060W
+5.109040e-02	5	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+3.211530e-11	5	5	54	6526	97048	Saccharomyces	cerevisiae	GO:0000776	cellular_component	"kinetochore"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+4.440770e-02	1	5	59	6526	97048	Saccharomyces	cerevisiae	GO:0006790	biological_process	"sulfur metabolism"	YJR060W
+7.504690e-02	1	5	101	6526	97048	Saccharomyces	cerevisiae	GO:0006333	biological_process	"chromatin assembly or disassembly"	YJR060W
+3.174620e-04	3	5	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	YGR140W	YJR060W	YKL089W
+4.368180e-04	3	5	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YGR140W	YJR089W	YKL089W
+1.301350e-09	5	5	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+1.516670e-08	4	5	50	6526	97048	Saccharomyces	cerevisiae	GO:0000779	cellular_component	"condensed chromosome, pericentric region"	YDR318W	YGR140W	YJR089W	YKL089W
+1.516670e-08	4	5	50	6526	97048	Saccharomyces	cerevisiae	GO:0000780	cellular_component	"condensed nuclear chromosome, pericentric region"	YDR318W	YGR140W	YJR089W	YKL089W
+2.361740e-04	3	5	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	YDR318W	YGR140W	YJR089W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+2.578840e-02	1	5	34	6526	97048	Saccharomyces	cerevisiae	GO:0005875	cellular_component	"microtubule associated complex"	YDR318W
+9.818670e-09	4	5	45	6526	97048	Saccharomyces	cerevisiae	GO:0000778	cellular_component	"condensed nuclear chromosome kinetochore"	YDR318W	YGR140W	YJR089W	YKL089W
+1.530730e-06	3	5	36	6526	97048	Saccharomyces	cerevisiae	GO:0043565	molecular_function	"sequence-specific DNA binding"	YGR140W	YJR060W	YKL089W
+1.816500e-01	2	5	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YJR060W	YJR089W
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+5.109040e-02	5	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+1.702830e-05	3	5	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	YGR140W	YJR089W	YKL089W
+8.545050e-03	3	5	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YGR140W	YJR060W	YKL089W
+1.522550e-01	1	5	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	YJR060W
+3.186220e-01	2	5	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YDR318W	YGR140W
+2.128940e-01	1	5	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	YJR060W
+1.899930e-02	4	5	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YGR140W	YJR060W	YJR089W	YKL089W
+3.061850e-03	1	5	4	6526	97048	Saccharomyces	cerevisiae	GO:0031518	cellular_component	"CBF3 complex"	YGR140W
+3.061850e-03	1	5	4	6526	97048	Saccharomyces	cerevisiae	GO:0000817	cellular_component	"COMA complex"	YDR318W
+3.124830e-01	1	5	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YJR060W
+3.401630e-02	1	5	45	6526	97048	Saccharomyces	cerevisiae	GO:0009066	biological_process	"aspartate family amino acid metabolism"	YJR060W
+2.589050e-01	5	5	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+2.772710e-06	3	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0007051	biological_process	"spindle organization and biogenesis"	YGR140W	YJR089W	YKL089W
+3.343480e-01	1	5	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YDR318W
+9.818670e-09	4	5	45	6526	97048	Saccharomyces	cerevisiae	GO:0000777	cellular_component	"condensed chromosome kinetochore"	YDR318W	YGR140W	YJR089W	YKL089W
+4.589960e-03	1	5	6	6526	97048	Saccharomyces	cerevisiae	GO:0009086	biological_process	"methionine biosynthesis"	YJR060W
+1.689380e-08	5	5	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+2.914150e-04	3	5	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	YDR318W	YGR140W	YJR089W
+2.208090e-01	5	5	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+1.826020e-02	1	5	24	6526	97048	Saccharomyces	cerevisiae	GO:0030472	biological_process	"mitotic spindle organization and biogenesis in nucleus"	YKL089W
+1.522550e-01	1	5	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	YJR060W
+3.592880e-05	3	5	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	YDR318W	YGR140W	YJR089W
+4.012620e-01	5	5	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+7.134660e-01	1	5	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YJR060W
+3.622970e-08	5	5	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+3.402960e-04	3	5	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	YGR140W	YJR089W	YKL089W
+2.309600e-06	3	5	45	6526	97048	Saccharomyces	cerevisiae	GO:0007052	biological_process	"mitotic spindle organization and biogenesis"	YGR140W	YJR089W	YKL089W
+2.131350e-01	5	5	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+1.596160e-01	1	5	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	YJR060W
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+7.648610e-02	1	5	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	YJR060W
+1.447700e-02	1	5	19	6526	97048	Saccharomyces	cerevisiae	GO:0009067	biological_process	"aspartate family amino acid biosynthesis"	YJR060W
+6.543610e-05	5	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+2.056760e-01	5	5	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+7.429100e-01	1	5	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YJR060W
+4.624390e-03	5	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+1.715520e-01	1	5	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	YJR060W
+9.622860e-01	1	5	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YJR060W
+1.558650e-03	2	5	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	YGR140W	YJR089W
+2.892660e-05	3	5	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	YGR140W	YJR089W	YKL089W
+6.179250e-01	1	5	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	YJR060W
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+2.581360e-03	5	5	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+4.306760e-09	3	5	6	6526	97048	Saccharomyces	cerevisiae	GO:0019237	molecular_function	"centromeric DNA binding"	YGR140W	YJR060W	YKL089W
+8.294020e-02	1	5	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	YJR060W
+3.079270e-01	1	5	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YJR060W
+6.041140e-11	5	5	61	6526	97048	Saccharomyces	cerevisiae	GO:0000775	cellular_component	"chromosome, pericentric region"	YDR318W	YGR140W	YJR060W	YJR089W	YKL089W
+3.625850e-03	4	5	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YGR140W	YJR060W	YJR089W	YKL089W
+2.128940e-01	1	5	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	YJR060W
+2.263890e-06	4	5	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	YDR318W	YGR140W	YJR089W	YKL089W
+8.294020e-02	1	5	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	YJR060W
+8.421400e-08	4	5	76	6526	97048	Saccharomyces	cerevisiae	GO:0000794	cellular_component	"condensed nuclear chromosome"	YDR318W	YGR140W	YJR089W	YKL089W
+8.879640e-01	1	5	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YJR089W
+7.150920e-05	2	5	18	6526	97048	Saccharomyces	cerevisiae	GO:0000022	biological_process	"mitotic spindle elongation"	YGR140W	YJR089W
+7.640550e-03	1	5	10	6526	97048	Saccharomyces	cerevisiae	GO:0008301	molecular_function	"DNA bending activity"	YGR140W
+6.518000e-01	2	5	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YJR060W	YJR089W
+2.269850e-03	3	5	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YGR140W	YJR089W	YKL089W
+3.194290e-03	4	5	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YDR318W	YGR140W	YJR089W	YKL089W

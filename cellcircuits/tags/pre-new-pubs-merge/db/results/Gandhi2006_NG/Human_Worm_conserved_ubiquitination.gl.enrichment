@@ -1,0 +1,47 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.984760e-11	4	4	60	27713	88307	Caenorhabditis	elegans	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+4.825410e-06	4	4	551	11710	88307	Caenorhabditis	elegans	GO:0008233	molecular_function	"peptidase activity"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.984760e-11	4	4	60	27713	88307	Caenorhabditis	elegans	GO:0044257	biological_process	"cellular protein catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+2.603340e-05	4	4	1981	27713	88307	Caenorhabditis	elegans	GO:0044267	biological_process	"cellular protein metabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+3.233140e-02	4	4	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	C15H11.7	CD4.6	D1054.2	ZK945.2
+5.041980e-04	4	4	1756	11710	88307	Caenorhabditis	elegans	GO:0016787	molecular_function	"hydrolase activity"	C15H11.7	CD4.6	D1054.2	ZK945.2
+8.426840e-01	4	4	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	C15H11.7	CD4.6	D1054.2	ZK945.2
+6.950500e-04	4	4	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+4.798010e-01	4	4	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.299560e-03	4	4	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+5.292220e-02	4	4	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	C15H11.7	CD4.6	D1054.2	ZK945.2
+8.249470e-01	4	4	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	C15H11.7	CD4.6	D1054.2	ZK945.2
+2.342320e-02	4	4	4582	11710	88307	Caenorhabditis	elegans	GO:0003824	molecular_function	"catalytic activity"	C15H11.7	CD4.6	D1054.2	ZK945.2
+4.870190e-09	4	4	233	27713	88307	Caenorhabditis	elegans	GO:0044248	biological_process	"cellular catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.240240e-07	4	4	533	27713	88307	Caenorhabditis	elegans	GO:0006508	biological_process	"proteolysis"	C15H11.7	CD4.6	D1054.2	ZK945.2
+8.859080e-05	4	4	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+3.062320e-05	4	4	2063	27713	88307	Caenorhabditis	elegans	GO:0019538	biological_process	"protein metabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+6.320370e-03	4	4	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.000000e+00	4	4	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.726870e-11	4	4	58	27713	88307	Caenorhabditis	elegans	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+4.341730e-10	4	4	128	27713	88307	Caenorhabditis	elegans	GO:0043285	biological_process	"biopolymer catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+2.549310e-05	4	4	20	6495	88307	Caenorhabditis	elegans	GO:0000502	cellular_component	"proteasome complex (sensu Eukaryota)"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.182330e-09	4	4	164	27713	88307	Caenorhabditis	elegans	GO:0044265	biological_process	"cellular macromolecule catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+3.535930e-03	4	4	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.174790e-05	4	4	1624	27713	88307	Caenorhabditis	elegans	GO:0043283	biological_process	"biopolymer metabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.726870e-11	4	4	58	27713	88307	Caenorhabditis	elegans	GO:0019941	biological_process	"modification-dependent protein catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.000000e+00	4	4	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.726870e-11	4	4	58	27713	88307	Caenorhabditis	elegans	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+5.550660e-04	4	4	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.000000e+00	4	4	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C15H11.7	CD4.6	D1054.2	ZK945.2
+8.001970e-07	4	4	356	11710	88307	Caenorhabditis	elegans	GO:0004175	molecular_function	"endopeptidase activity"	C15H11.7	CD4.6	D1054.2	ZK945.2
+9.886430e-12	4	4	14	11710	88307	Caenorhabditis	elegans	GO:0004298	molecular_function	"threonine endopeptidase activity"	C15H11.7	CD4.6	D1054.2	ZK945.2
+3.123160e-10	4	4	118	27713	88307	Caenorhabditis	elegans	GO:0006512	biological_process	"ubiquitin cycle"	C15H11.7	CD4.6	D1054.2	ZK945.2
+5.221750e-11	4	4	76	27713	88307	Caenorhabditis	elegans	GO:0030163	biological_process	"protein catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+6.812390e-12	4	4	14	6495	88307	Caenorhabditis	elegans	GO:0005839	cellular_component	"proteasome core complex (sensu Eukaryota)"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.799860e-09	4	4	182	27713	88307	Caenorhabditis	elegans	GO:0009057	biological_process	"macromolecule catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+2.945190e-05	4	4	2043	27713	88307	Caenorhabditis	elegans	GO:0044260	biological_process	"cellular macromolecule metabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+2.322900e-06	4	4	1084	27713	88307	Caenorhabditis	elegans	GO:0006464	biological_process	"protein modification"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.746290e-04	4	4	748	6495	88307	Caenorhabditis	elegans	GO:0043234	cellular_component	"protein complex"	C15H11.7	CD4.6	D1054.2	ZK945.2
+2.677230e-06	4	4	1123	27713	88307	Caenorhabditis	elegans	GO:0043412	biological_process	"biopolymer modification"	C15H11.7	CD4.6	D1054.2	ZK945.2
+1.005540e-08	4	4	279	27713	88307	Caenorhabditis	elegans	GO:0009056	biological_process	"catabolism"	C15H11.7	CD4.6	D1054.2	ZK945.2
+#NOT FOUND: PSMA6_HUMAN in Homo sapiens
+#NOT FOUND: PSMA1_HUMAN in Homo sapiens
+#NOT FOUND: PSMA3_HUMAN in Homo sapiens
+#NOT FOUND: PSMA2_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term

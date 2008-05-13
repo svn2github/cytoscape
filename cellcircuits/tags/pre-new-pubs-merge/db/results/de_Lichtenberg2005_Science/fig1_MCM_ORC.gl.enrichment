@@ -1,0 +1,186 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.131460e-01	2	22	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	CDC7	DBF4
+7.576790e-01	11	22	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	BIR1	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6	TPS1	TPS2	TPS3	TSL1
+5.077680e-05	3	22	24	6526	97048	Saccharomyces	cerevisiae	GO:0008194	molecular_function	"UDP-glycosyltransferase activity"	TPS1	TPS3	TSL1
+6.828140e-02	2	22	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	CDC7	DBF4
+1.979860e-03	20	22	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+1.163880e-03	14	22	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	BIR1	CDC45	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.001460e-04	16	22	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.033930e-03	20	22	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+8.564270e-17	13	22	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	BIR1	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+6.863960e-03	4	22	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	TPS1	TPS2	TPS3	TSL1
+2.504110e-02	21	22	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+4.655030e-03	4	22	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	TPS1	TPS2	TPS3	TSL1
+1.893950e-03	16	22	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC5	TPS1	TPS2	TPS3	TSL1	YIL177C
+1.445630e-03	14	22	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	CDC45	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+5.444950e-12	6	22	16	6526	97048	Saccharomyces	cerevisiae	GO:0004003	molecular_function	"ATP-dependent DNA helicase activity"	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6
+9.717290e-01	2	22	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	CDC7	DBF4
+1.884770e-03	20	22	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+1.673280e-01	1	22	54	6526	97048	Saccharomyces	cerevisiae	GO:0000776	cellular_component	"kinetochore"	BIR1
+5.457500e-12	7	22	32	6526	97048	Saccharomyces	cerevisiae	GO:0008094	molecular_function	"DNA-dependent ATPase activity"	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6
+9.117090e-04	16	22	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.000000e+00	22	22	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1	YIL177C
+3.174590e-13	6	22	11	6526	97048	Saccharomyces	cerevisiae	GO:0003688	molecular_function	"DNA replication origin binding"	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+5.543010e-01	1	22	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	BIR1
+5.271830e-06	8	22	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	CDC45	CDC6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+3.148120e-01	1	22	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	BIR1
+4.944730e-02	1	22	15	6526	97048	Saccharomyces	cerevisiae	GO:0005524	molecular_function	"ATP binding"	CDC47
+1.149620e-06	3	22	7	6526	97048	Saccharomyces	cerevisiae	GO:0019203	molecular_function	"carbohydrate phosphatase activity"	TPS2	TPS3	TSL1
+4.803370e-01	1	22	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	BIR1
+2.041060e-03	3	22	77	6526	97048	Saccharomyces	cerevisiae	GO:0016758	molecular_function	"transferase activity, transferring hexosyl groups"	TPS1	TPS3	TSL1
+9.798080e-01	1	22	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	YIL177C
+5.335910e-04	16	22	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+3.313490e-08	3	22	3	6526	97048	Saccharomyces	cerevisiae	GO:0004805	molecular_function	"trehalose-phosphatase activity"	TPS2	TPS3	TSL1
+2.337340e-02	1	22	7	6526	97048	Saccharomyces	cerevisiae	GO:0003689	molecular_function	"DNA clamp loader activity"	CDC6
+1.414340e-01	1	22	45	6526	97048	Saccharomyces	cerevisiae	GO:0000778	cellular_component	"condensed nuclear chromosome kinetochore"	BIR1
+1.660330e-36	14	22	15	6526	97048	Saccharomyces	cerevisiae	GO:0005656	cellular_component	"pre-replicative complex"	CDC45	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.677420e-04	9	22	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	CDC46	CDC7	DBF4	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.140310e-05	9	22	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC5
+6.455350e-03	4	22	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	TPS1	TPS2	TPS3	TSL1
+8.849230e-01	2	22	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	BIR1	TPS2
+1.556490e-06	7	22	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.380130e-01	1	22	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	BIR1
+6.738780e-11	6	22	23	6526	97048	Saccharomyces	cerevisiae	GO:0030466	biological_process	"chromatin silencing at silent mating-type cassette"	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+9.656050e-02	1	22	30	6526	97048	Saccharomyces	cerevisiae	GO:0006271	biological_process	"DNA strand elongation"	CDC45
+9.638850e-01	2	22	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	CDC7	DBF4
+9.651430e-11	4	22	4	6526	97048	Saccharomyces	cerevisiae	GO:0046351	biological_process	"disaccharide biosynthesis"	TPS1	TPS2	TPS3	TSL1
+5.790830e-01	2	22	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	CDC7	DBF4
+2.279730e-02	2	22	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	CDC7	DBF4
+1.696140e-03	18	22	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	CDC45	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+7.244750e-04	9	22	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	CDC46	CDC7	DBF4	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+8.678450e-02	2	22	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	CDC7	DBF4
+1.819560e-07	7	22	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+6.875440e-25	16	22	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+4.774410e-04	2	22	10	6526	97048	Saccharomyces	cerevisiae	GO:0006275	biological_process	"regulation of DNA replication"	CDC7	DBF4
+3.141440e-04	16	22	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+9.572070e-01	2	22	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	CDC7	DBF4
+1.472540e-01	1	22	47	6526	97048	Saccharomyces	cerevisiae	GO:0007051	biological_process	"spindle organization and biogenesis"	BIR1
+2.210160e-02	21	22	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+1.734520e-06	7	22	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.142240e-06	7	22	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.614040e-06	7	22	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+4.990530e-11	6	22	22	6526	97048	Saccharomyces	cerevisiae	GO:0003682	molecular_function	"chromatin binding"	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6
+5.050590e-01	1	22	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	BIR1
+1.329930e-07	7	22	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+9.117090e-04	16	22	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.309670e-02	21	22	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+9.481880e-06	7	22	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+9.651430e-11	4	22	4	6526	97048	Saccharomyces	cerevisiae	GO:0005992	biological_process	"trehalose biosynthesis"	TPS1	TPS2	TPS3	TSL1
+1.425030e-01	2	22	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	CDC7	DBF4
+3.493400e-05	9	22	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC5
+1.674490e-03	16	22	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.728740e-07	7	22	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.355630e-03	7	22	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+5.236890e-01	1	22	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	BIR1
+3.573810e-05	9	22	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC5
+7.482050e-02	5	22	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	CDC7	DBF4	TPS1	TPS3	TSL1
+2.142670e-04	7	22	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+8.808500e-10	6	22	34	6526	97048	Saccharomyces	cerevisiae	GO:0003678	molecular_function	"DNA helicase activity"	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6
+1.087410e-01	1	22	34	6526	97048	Saccharomyces	cerevisiae	GO:0017076	molecular_function	"purine nucleotide binding"	CDC47
+1.048060e-02	21	22	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+1.163880e-03	14	22	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	BIR1	CDC45	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.734170e-03	16	22	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+5.553310e-02	4	22	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	TPS1	TPS2	TPS3	TSL1
+1.076380e-08	7	22	90	6526	97048	Saccharomyces	cerevisiae	GO:0004386	molecular_function	"helicase activity"	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6	YIL177C
+1.917240e-03	17	22	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.918620e-03	20	22	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+2.761470e-01	1	22	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	BIR1
+9.146440e-07	7	22	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+4.990530e-11	6	22	22	6526	97048	Saccharomyces	cerevisiae	GO:0043596	cellular_component	"replication fork (sensu Eukaryota)"	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6
+2.892030e-02	18	22	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS2
+8.759110e-04	7	22	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.425030e-01	2	22	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	CDC7	DBF4
+1.869510e-01	1	22	61	6526	97048	Saccharomyces	cerevisiae	GO:0000775	cellular_component	"chromosome, pericentric region"	BIR1
+2.482690e-02	8	22	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	BIR1	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+6.740010e-02	3	22	283	6526	97048	Saccharomyces	cerevisiae	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	TPS2	TPS3	TSL1
+7.607370e-08	7	22	119	6526	97048	Saccharomyces	cerevisiae	GO:0042623	molecular_function	"ATPase activity, coupled"	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6
+9.980560e-01	1	22	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	BIR1
+7.041930e-01	2	22	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	CDC7	DBF4
+9.679140e-01	5	22	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	BIR1	TPS1	TPS2	TPS3	TSL1
+3.355670e-09	4	22	7	6526	97048	Saccharomyces	cerevisiae	GO:0005991	biological_process	"trehalose metabolism"	TPS1	TPS2	TPS3	TSL1
+1.336210e-03	17	22	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.674900e-02	1	22	5	6526	97048	Saccharomyces	cerevisiae	GO:0051233	cellular_component	"spindle midzone"	BIR1
+6.335810e-13	6	22	12	6526	97048	Saccharomyces	cerevisiae	GO:0006268	biological_process	"DNA unwinding during replication"	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6
+7.796400e-04	7	22	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.997920e-03	3	22	88	6526	97048	Saccharomyces	cerevisiae	GO:0016791	molecular_function	"phosphoric monoester hydrolase activity"	TPS2	TPS3	TSL1
+3.377540e-09	6	22	42	6526	97048	Saccharomyces	cerevisiae	GO:0008026	molecular_function	"ATP-dependent helicase activity"	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6
+5.905260e-02	1	22	18	6526	97048	Saccharomyces	cerevisiae	GO:0051231	biological_process	"spindle elongation"	BIR1
+6.126310e-01	4	22	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	TPS1	TPS2	TPS3	TSL1
+9.869350e-02	21	22	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+1.874930e-06	4	22	28	6526	97048	Saccharomyces	cerevisiae	GO:0005984	biological_process	"disaccharide metabolism"	TPS1	TPS2	TPS3	TSL1
+4.670650e-09	7	22	80	6526	97048	Saccharomyces	cerevisiae	GO:0031507	biological_process	"heterochromatin formation"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.917240e-03	17	22	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.425030e-01	2	22	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	CDC7	DBF4
+2.483650e-01	1	22	84	6526	97048	Saccharomyces	cerevisiae	GO:0000793	cellular_component	"condensed chromosome"	BIR1
+7.825170e-04	9	22	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	CDC46	CDC7	DBF4	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+5.905260e-02	1	22	18	6526	97048	Saccharomyces	cerevisiae	GO:0030554	molecular_function	"adenyl nucleotide binding"	CDC47
+1.048540e-02	18	22	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS2
+1.629920e-26	16	22	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+7.724650e-05	14	22	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	CDC45	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+7.183650e-09	7	22	85	6526	97048	Saccharomyces	cerevisiae	GO:0031497	biological_process	"chromatin assembly"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.423040e-08	7	22	101	6526	97048	Saccharomyces	cerevisiae	GO:0006333	biological_process	"chromatin assembly or disassembly"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.559130e-01	1	22	50	6526	97048	Saccharomyces	cerevisiae	GO:0000780	cellular_component	"condensed nuclear chromosome, pericentric region"	BIR1
+1.559130e-01	1	22	50	6526	97048	Saccharomyces	cerevisiae	GO:0000779	cellular_component	"condensed chromosome, pericentric region"	BIR1
+1.000000e+00	22	22	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1	YIL177C
+1.014790e-05	3	22	15	6526	97048	Saccharomyces	cerevisiae	GO:0046527	molecular_function	"glucosyltransferase activity"	TPS1	TPS3	TSL1
+1.117610e-01	1	22	35	6526	97048	Saccharomyces	cerevisiae	GO:0000166	molecular_function	"nucleotide binding"	CDC47
+1.270260e-09	6	22	36	6526	97048	Saccharomyces	cerevisiae	GO:0043565	molecular_function	"sequence-specific DNA binding"	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.000000e+00	22	22	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1	YIL177C
+1.048540e-02	18	22	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS2
+8.301770e-04	9	22	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	CDC46	CDC7	DBF4	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+6.944130e-16	6	22	6	6526	97048	Saccharomyces	cerevisiae	GO:0005664	cellular_component	"nuclear origin of replication recognition complex"	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.851320e-03	2	22	24	6526	97048	Saccharomyces	cerevisiae	GO:0051052	biological_process	"regulation of DNA metabolism"	CDC7	DBF4
+1.231100e-01	2	22	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	TPS3	TSL1
+8.667610e-04	7	22	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+4.312350e-03	3	22	100	6526	97048	Saccharomyces	cerevisiae	GO:0042578	molecular_function	"phosphoric ester hydrolase activity"	TPS2	TPS3	TSL1
+3.620170e-03	4	22	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	TPS1	TPS2	TPS3	TSL1
+1.501010e-03	8	22	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	CDC45	CDC6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+3.135390e-04	9	22	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	CDC46	CDC7	DBF4	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+4.072770e-03	3	22	98	6526	97048	Saccharomyces	cerevisiae	GO:0016757	molecular_function	"transferase activity, transferring glycosyl groups"	TPS1	TPS3	TSL1
+4.670650e-09	7	22	80	6526	97048	Saccharomyces	cerevisiae	GO:0045814	biological_process	"negative regulation of gene expression, epigenetic"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+9.481880e-06	7	22	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+6.732020e-03	1	22	2	6526	97048	Saccharomyces	cerevisiae	GO:0006343	biological_process	"establishment of chromatin silencing"	CDC46
+2.022620e-01	8	22	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	BIR1	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+4.840000e-05	4	22	68	6526	97048	Saccharomyces	cerevisiae	GO:0016051	biological_process	"carbohydrate biosynthesis"	TPS1	TPS2	TPS3	TSL1
+9.963090e-01	1	22	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YIL177C
+1.726700e-04	9	22	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CDC46	CDC7	DBF4	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+3.573810e-05	9	22	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC5
+8.331890e-01	1	22	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	CDC6
+8.650260e-04	12	22	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC5	TPS2	TPS3	TSL1
+5.298290e-06	4	22	36	6526	97048	Saccharomyces	cerevisiae	GO:0006112	biological_process	"energy reserve metabolism"	TPS1	TPS2	TPS3	TSL1
+6.944130e-16	6	22	6	6526	97048	Saccharomyces	cerevisiae	GO:0042555	cellular_component	"MCM complex"	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6
+6.887780e-07	7	22	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.395820e-01	4	22	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	TPS1	TPS2	TPS3	TSL1
+1.414340e-01	1	22	45	6526	97048	Saccharomyces	cerevisiae	GO:0000777	cellular_component	"condensed chromosome kinetochore"	BIR1
+2.621430e-09	9	22	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	MCM6	ORC1	ORC5
+3.204110e-17	14	22	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	BIR1	CDC45	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+4.670650e-09	7	22	80	6526	97048	Saccharomyces	cerevisiae	GO:0006342	biological_process	"chromatin silencing"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.933120e-01	1	22	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	BIR1
+3.780310e-02	2	22	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	CDC7	DBF4
+9.838820e-02	21	22	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+1.036880e-33	15	22	26	6526	97048	Saccharomyces	cerevisiae	GO:0006270	biological_process	"DNA replication initiation"	CDC45	CDC46	CDC47	CDC54	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+6.736150e-06	14	22	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	BIR1	CDC45	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+5.332330e-06	3	22	13	6526	97048	Saccharomyces	cerevisiae	GO:0035251	molecular_function	"UDP-glucosyltransferase activity"	TPS1	TPS3	TSL1
+6.944130e-16	6	22	6	6526	97048	Saccharomyces	cerevisiae	GO:0000808	cellular_component	"origin recognition complex"	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.414340e-01	1	22	45	6526	97048	Saccharomyces	cerevisiae	GO:0007052	biological_process	"mitotic spindle organization and biogenesis"	BIR1
+3.334860e-01	4	22	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	TPS1	TPS2	TPS3	TSL1
+1.170840e-02	21	22	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS1	TPS2	TPS3	TSL1
+2.458230e-11	7	22	39	6526	97048	Saccharomyces	cerevisiae	GO:0005657	cellular_component	"replication fork"	CDC45	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6
+2.892030e-02	18	22	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6	TPS2
+1.597540e-04	7	22	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+3.313490e-08	3	22	3	6526	97048	Saccharomyces	cerevisiae	GO:0003825	molecular_function	"alpha,alpha-trehalose-phosphate synthase (UDP-forming) activity"	TPS1	TPS3	TSL1
+7.212000e-04	9	22	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	CDC46	CDC7	DBF4	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.972610e-07	7	22	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+2.457900e-01	1	22	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	BIR1
+5.528970e-01	4	22	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	TPS1	TPS2	TPS3	TSL1
+1.859040e-03	17	22	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	BIR1	CDC45	CDC46	CDC47	CDC54	CDC6	CDC7	DBF4	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+7.183650e-09	7	22	85	6526	97048	Saccharomyces	cerevisiae	GO:0040029	biological_process	"regulation of gene expression, epigenetic"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+1.614040e-06	7	22	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+4.670650e-09	7	22	80	6526	97048	Saccharomyces	cerevisiae	GO:0016458	biological_process	"gene silencing"	CDC46	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+9.651430e-11	4	22	4	6526	97048	Saccharomyces	cerevisiae	GO:0005946	cellular_component	"alpha,alpha-trehalose-phosphate synthase complex (UDP-forming)"	TPS1	TPS2	TPS3	TSL1
+9.542820e-16	13	22	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	BIR1	CDC46	CDC47	CDC54	MCM2	MCM3	MCM6	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+8.019380e-35	13	22	13	6526	97048	Saccharomyces	cerevisiae	GO:0006267	biological_process	"pre-replicative complex formation and maintenance"	CDC45	CDC46	CDC47	CDC54	CDC6	MCM2	MCM3	ORC1	ORC2	ORC3	ORC4	ORC5	ORC6
+5.905260e-02	1	22	18	6526	97048	Saccharomyces	cerevisiae	GO:0000022	biological_process	"mitotic spindle elongation"	BIR1
+2.275240e-01	1	22	76	6526	97048	Saccharomyces	cerevisiae	GO:0000794	cellular_component	"condensed nuclear chromosome"	BIR1
+7.621580e-01	1	22	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	BIR1
+3.127450e-01	2	22	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	CDC7	DBF4

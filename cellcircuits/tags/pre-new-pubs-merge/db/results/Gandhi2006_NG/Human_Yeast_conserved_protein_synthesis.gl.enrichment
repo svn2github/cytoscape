@@ -1,0 +1,148 @@
+#NOT FOUND: POLR2A_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.941930e-01	1	2	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	PIN1
+1.488210e-02	1	2	174	23297	92001	Homo	sapiens	GO:0007067	biological_process	"mitosis"	PIN1
+3.941930e-01	1	2	5164	23297	92001	Homo	sapiens	GO:0044267	biological_process	"cellular protein metabolism"	PIN1
+2.627340e-01	2	2	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	CPSF2	PIN1
+4.084660e-01	1	2	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	PIN1
+8.342390e-01	2	2	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	CPSF2	PIN1
+2.779210e-01	2	2	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	CPSF2	PIN1
+7.057760e-01	2	2	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	CPSF2	PIN1
+3.185010e-02	1	2	374	23297	92001	Homo	sapiens	GO:0006457	biological_process	"protein folding"	PIN1
+3.724860e-01	1	2	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	PIN1
+3.322070e-01	2	2	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	CPSF2	PIN1
+3.534730e-01	2	2	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	CPSF2	PIN1
+8.341520e-01	2	2	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	CPSF2	PIN1
+4.112440e-01	1	2	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CPSF2
+5.590260e-01	1	2	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	PIN1
+4.154370e-01	2	2	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	CPSF2	PIN1
+4.195150e-01	1	2	5547	23297	92001	Homo	sapiens	GO:0019538	biological_process	"protein metabolism"	PIN1
+1.030220e-01	2	2	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	CPSF2	PIN1
+1.282660e-01	2	2	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	CPSF2	PIN1
+7.714250e-01	2	2	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	CPSF2	PIN1
+4.548610e-02	1	2	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	PIN1
+1.000000e+00	2	2	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	CPSF2	PIN1
+4.271630e-02	1	2	503	23297	92001	Homo	sapiens	GO:0006396	biological_process	"RNA processing"	CPSF2
+1.999090e-01	2	2	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	CPSF2	PIN1
+6.608760e-02	1	2	930	27672	92001	Homo	sapiens	GO:0003723	molecular_function	"RNA binding"	CPSF2
+3.610620e-03	1	2	50	27672	92001	Homo	sapiens	GO:0003755	molecular_function	"peptidyl-prolyl cis-trans isomerase activity"	PIN1
+1.998800e-02	1	2	234	23297	92001	Homo	sapiens	GO:0000278	biological_process	"mitotic cell cycle"	PIN1
+1.530810e-02	1	2	179	23297	92001	Homo	sapiens	GO:0000087	biological_process	"M phase of mitotic cell cycle"	PIN1
+5.269660e-01	2	2	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	CPSF2	PIN1
+3.406740e-01	1	2	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	CPSF2
+4.373620e-03	1	2	51	23297	92001	Homo	sapiens	GO:0007088	biological_process	"regulation of mitosis"	PIN1
+1.000000e+00	2	2	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	CPSF2	PIN1
+1.964800e-02	1	2	230	23297	92001	Homo	sapiens	GO:0000279	biological_process	"M phase"	PIN1
+3.640940e-01	1	2	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	PIN1
+2.592380e-01	2	2	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	CPSF2	PIN1
+2.075270e-02	1	2	243	23297	92001	Homo	sapiens	GO:0006397	biological_process	"mRNA processing"	CPSF2
+5.602510e-02	1	2	662	23297	92001	Homo	sapiens	GO:0016070	biological_process	"RNA metabolism"	CPSF2
+1.281980e-01	2	2	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CPSF2	PIN1
+1.000000e+00	2	2	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	CPSF2	PIN1
+1.999520e-01	2	2	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	CPSF2	PIN1
+6.900530e-02	2	2	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	CPSF2	PIN1
+4.506670e-02	1	2	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	PIN1
+4.174860e-01	1	2	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	PIN1
+1.705620e-02	1	2	237	27672	92001	Homo	sapiens	GO:0016853	molecular_function	"isomerase activity"	PIN1
+3.815390e-01	1	2	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	CPSF2
+3.989950e-01	1	2	5236	23297	92001	Homo	sapiens	GO:0044260	biological_process	"cellular macromolecule metabolism"	PIN1
+2.491110e-02	1	2	292	23297	92001	Homo	sapiens	GO:0016071	biological_process	"mRNA metabolism"	CPSF2
+3.682770e-03	1	2	51	27672	92001	Homo	sapiens	GO:0016859	molecular_function	"cis-trans isomerase activity"	PIN1
+7.346000e-02	1	2	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	PIN1
+#USING ESS1 instead of its synonym YJR017C in Saccharomyces cerevisiae
+#USING CFT2 instead of its synonym YLR115W in Saccharomyces cerevisiae
+#USING RPO21 instead of its synonym YDL140C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.965110e-03	1	3	13	6526	97048	Saccharomyces	cerevisiae	GO:0005665	cellular_component	"DNA-directed RNA polymerase II, core complex"	YDL140C
+9.097340e-01	1	3	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YDL140C
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YDL140C	YJR017C	YLR115W
+2.700510e-01	2	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YDL140C	YLR115W
+1.338810e-01	3	3	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YDL140C	YJR017C	YLR115W
+8.830010e-02	1	3	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	YJR017C
+2.708140e-01	1	3	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YJR017C
+7.795750e-03	1	3	17	6526	97048	Saccharomyces	cerevisiae	GO:0006353	biological_process	"transcription termination"	YJR017C
+7.043900e-03	2	3	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	YDL140C	YLR115W
+1.447510e-01	3	3	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YDL140C	YJR017C	YLR115W
+1.053840e-02	1	3	23	6526	97048	Saccharomyces	cerevisiae	GO:0003711	molecular_function	"transcriptional elongation regulator activity"	YJR017C
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YDL140C	YJR017C	YLR115W
+2.173530e-01	2	3	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YDL140C	YJR017C
+4.463100e-01	1	3	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YLR115W
+1.509640e-02	1	3	33	6526	97048	Saccharomyces	cerevisiae	GO:0003899	molecular_function	"DNA-directed RNA polymerase activity"	YDL140C
+3.221570e-01	2	3	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YJR017C	YLR115W
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDL140C	YJR017C	YLR115W
+6.167390e-03	2	3	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	YDL140C	YLR115W
+4.126190e-02	2	3	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YDL140C	YLR115W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YDL140C	YJR017C	YLR115W
+8.160370e-03	2	3	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	YJR017C	YLR115W
+1.378680e-03	1	3	3	6526	97048	Saccharomyces	cerevisiae	GO:0042325	biological_process	"regulation of phosphorylation"	YJR017C
+3.214940e-03	1	3	7	6526	97048	Saccharomyces	cerevisiae	GO:0051174	biological_process	"regulation of phosphorus metabolism"	YJR017C
+8.253050e-03	1	3	18	6526	97048	Saccharomyces	cerevisiae	GO:0043631	biological_process	"RNA polyadenylation"	YLR115W
+1.429360e-01	1	3	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	YJR017C
+1.464120e-02	1	3	32	6526	97048	Saccharomyces	cerevisiae	GO:0030880	cellular_component	"RNA polymerase complex"	YDL140C
+2.331490e-02	2	3	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YDL140C	YLR115W
+2.100110e-02	1	3	46	6526	97048	Saccharomyces	cerevisiae	GO:0000122	biological_process	"negative regulation of transcription from RNA polymerase II promoter"	YJR017C
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YDL140C	YJR017C	YLR115W
+1.885640e-01	1	3	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YJR017C
+4.053470e-01	1	3	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YDL140C
+3.498640e-02	1	3	77	6526	97048	Saccharomyces	cerevisiae	GO:0016591	cellular_component	"DNA-directed RNA polymerase II, holoenzyme"	YDL140C
+1.257030e-03	2	3	135	6526	97048	Saccharomyces	cerevisiae	GO:0006397	biological_process	"mRNA processing"	YJR017C	YLR115W
+1.972860e-02	2	3	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YJR017C	YLR115W
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDL140C	YJR017C	YLR115W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YDL140C	YJR017C	YLR115W
+2.756450e-01	1	3	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YJR017C
+2.552710e-02	1	3	56	6526	97048	Saccharomyces	cerevisiae	GO:0016853	molecular_function	"isomerase activity"	YJR017C
+1.429970e-02	2	3	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YDL140C	YJR017C
+2.711860e-01	1	3	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YLR115W
+1.989190e-01	1	3	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YJR017C
+1.310840e-01	2	3	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YDL140C	YLR115W
+3.214940e-03	1	3	7	6526	97048	Saccharomyces	cerevisiae	GO:0019220	biological_process	"regulation of phosphate metabolism"	YJR017C
+6.880710e-03	1	3	15	6526	97048	Saccharomyces	cerevisiae	GO:0006379	biological_process	"mRNA cleavage"	YLR115W
+2.429650e-03	2	3	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	YJR017C	YLR115W
+5.965110e-03	1	3	13	6526	97048	Saccharomyces	cerevisiae	GO:0016859	molecular_function	"cis-trans isomerase activity"	YJR017C
+1.099480e-02	1	3	24	6526	97048	Saccharomyces	cerevisiae	GO:0031123	biological_process	"RNA 3'-end processing"	YLR115W
+2.644630e-01	1	3	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YJR017C
+6.607510e-02	1	3	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	YJR017C
+6.880710e-03	1	3	15	6526	97048	Saccharomyces	cerevisiae	GO:0005847	cellular_component	"mRNA cleavage and polyadenylation specificity factor complex"	YLR115W
+9.625020e-03	1	3	21	6526	97048	Saccharomyces	cerevisiae	GO:0031124	biological_process	"mRNA 3'-end processing"	YLR115W
+8.253050e-03	1	3	18	6526	97048	Saccharomyces	cerevisiae	GO:0006378	biological_process	"mRNA polyadenylylation"	YLR115W
+1.639200e-01	1	3	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YJR017C
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YDL140C	YJR017C	YLR115W
+8.397040e-02	1	3	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	YJR017C
+7.352310e-02	1	3	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	YJR017C
+8.310280e-02	1	3	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	YJR017C
+8.656980e-02	1	3	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	YJR017C
+4.126190e-02	2	3	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YDL140C	YLR115W
+5.814570e-02	1	3	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	YJR017C
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YDL140C	YJR017C	YLR115W
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YDL140C	YJR017C	YLR115W
+1.079330e-02	3	3	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDL140C	YJR017C	YLR115W
+1.378680e-03	1	3	3	6526	97048	Saccharomyces	cerevisiae	GO:0042326	biological_process	"negative regulation of phosphorylation"	YJR017C
+6.035280e-02	1	3	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	YJR017C
+1.707540e-02	2	3	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YDL140C	YJR017C
+2.841410e-01	1	3	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	YDL140C
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YDL140C	YJR017C	YLR115W
+1.495570e-01	1	3	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YJR017C
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YDL140C	YJR017C	YLR115W
+5.965110e-03	1	3	13	6526	97048	Saccharomyces	cerevisiae	GO:0003755	molecular_function	"peptidyl-prolyl cis-trans isomerase activity"	YJR017C
+1.720540e-01	1	3	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	YLR115W
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YDL140C	YJR017C	YLR115W
+1.408600e-01	1	3	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YJR017C
+1.427280e-01	2	3	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YJR017C	YLR115W
+6.880710e-03	1	3	15	6526	97048	Saccharomyces	cerevisiae	GO:0006369	biological_process	"transcription termination from RNA polymerase II promoter"	YJR017C
+2.700510e-01	2	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YDL140C	YLR115W
+8.743520e-02	1	3	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YJR017C
+6.519630e-02	1	3	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YJR017C
+2.640890e-01	1	3	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YJR017C
+1.110160e-01	3	3	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YDL140C	YJR017C	YLR115W
+7.657840e-02	1	3	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	YJR017C
+9.148190e-03	1	3	20	6526	97048	Saccharomyces	cerevisiae	GO:0005849	cellular_component	"mRNA cleavage factor complex"	YLR115W
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YDL140C	YJR017C	YLR115W
+2.802650e-02	3	3	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YDL140C	YJR017C	YLR115W
+8.310280e-02	1	3	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	YJR017C
+5.549250e-02	1	3	123	6526	97048	Saccharomyces	cerevisiae	GO:0016779	molecular_function	"nucleotidyltransferase activity"	YDL140C
+8.830010e-02	1	3	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	YJR017C
+5.887740e-03	2	3	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YDL140C	YJR017C
+7.769730e-01	1	3	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YDL140C
+1.378680e-03	1	3	3	6526	97048	Saccharomyces	cerevisiae	GO:0045936	biological_process	"negative regulation of phosphate metabolism"	YJR017C
+1.462510e-01	1	3	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	YDL140C
+7.254830e-02	2	3	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YDL140C	YLR115W

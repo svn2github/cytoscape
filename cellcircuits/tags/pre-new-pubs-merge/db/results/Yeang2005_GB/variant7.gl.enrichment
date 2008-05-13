@@ -1,0 +1,446 @@
+#USING GAS3 instead of its synonym YMR215W in Saccharomyces cerevisiae
+#USING YCG1 instead of its synonym YDR325W in Saccharomyces cerevisiae
+#USING SFG1 instead of its synonym YOR315W in Saccharomyces cerevisiae
+#USING PDS5 instead of its synonym YMR076C in Saccharomyces cerevisiae
+#USING UTP4 instead of its synonym YDR324C in Saccharomyces cerevisiae
+#USING DSE2 instead of its synonym YHR143W in Saccharomyces cerevisiae
+#USING DSE1 instead of its synonym YER124C in Saccharomyces cerevisiae
+#USING YHP1 instead of its synonym YDR451C in Saccharomyces cerevisiae
+#USING MNT2 instead of its synonym YGL257C in Saccharomyces cerevisiae
+#USING SLM4 instead of its synonym YBR077C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.044220e-01	1	29	81	6526	97048	Saccharomyces	cerevisiae	GO:0019867	cellular_component	"outer membrane"	UTH1
+3.558230e-01	1	29	98	6526	97048	Saccharomyces	cerevisiae	GO:0048622	biological_process	"reproductive sporulation"	SUR7
+3.075520e-01	1	29	82	6526	97048	Saccharomyces	cerevisiae	GO:0007114	biological_process	"cell budding"	CDC42
+6.050900e-02	1	29	14	6526	97048	Saccharomyces	cerevisiae	GO:0031109	biological_process	"microtubule polymerization or depolymerization"	KIP2
+5.184020e-01	1	29	162	6526	97048	Saccharomyces	cerevisiae	GO:0006066	biological_process	"alcohol metabolism"	ADH2
+9.028170e-01	13	29	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	ADH2	CIS3	CLB2	CLN1	CTS1	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YIL158W	YOR315W
+1.327480e-02	1	29	3	6526	97048	Saccharomyces	cerevisiae	GO:0051443	biological_process	"positive regulation of ubiquitin ligase activity"	CDC20
+4.377210e-01	1	29	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	ALK1
+1.523260e-01	1	29	37	6526	97048	Saccharomyces	cerevisiae	GO:0006914	biological_process	"autophagy"	YBR077C
+8.921050e-01	12	29	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	ADH2	CDC20	CTS1	EXG1	FKH2	KIP2	SRL1	UTH1	YDR324C	YDR451C	YGL257C	YOR315W
+2.789320e-02	2	29	59	6526	97048	Saccharomyces	cerevisiae	GO:0044264	biological_process	"cellular polysaccharide metabolism"	CTS1	EXG1
+8.516780e-02	1	29	20	6526	97048	Saccharomyces	cerevisiae	GO:0007097	biological_process	"nuclear migration"	KIP2
+1.186900e-01	7	29	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	CLB2	KIP2	SUR7	YDR324C	YDR325W	YDR451C	YMR076C
+4.436840e-02	2	29	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	UTH1	YOR315W
+9.166680e-01	12	29	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	ADH2	CDC20	CTS1	EXG1	FKH2	KIP2	SRL1	UTH1	YDR324C	YDR451C	YGL257C	YOR315W
+6.508260e-01	1	29	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	ADH2
+3.931600e-02	1	29	9	6526	97048	Saccharomyces	cerevisiae	GO:0006345	biological_process	"loss of chromatin silencing"	UTH1
+2.145530e-01	1	29	54	6526	97048	Saccharomyces	cerevisiae	GO:0003924	molecular_function	"GTPase activity"	CDC42
+6.469310e-02	1	29	15	6526	97048	Saccharomyces	cerevisiae	GO:0007091	biological_process	"mitotic metaphase/anaphase transition"	CDC20
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0046348	biological_process	"amino sugar catabolism"	CTS1
+3.931600e-02	1	29	9	6526	97048	Saccharomyces	cerevisiae	GO:0009306	biological_process	"protein secretion"	NCE102
+1.370070e-01	1	29	33	6526	97048	Saccharomyces	cerevisiae	GO:0001302	biological_process	"replicative cell aging"	UTH1
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0006046	biological_process	"N-acetylglucosamine catabolism"	CTS1
+9.349080e-02	1	29	22	6526	97048	Saccharomyces	cerevisiae	GO:0007096	biological_process	"regulation of exit from mitosis"	CDC42
+1.000000e+00	29	29	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	ADH2	ALK1	CDC20	CDC42	CIS3	CLB2	CLN1	CTS1	ERP3	EXG1	EXG2	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YER124C	YGL257C	YHR143W	YIL158W	YMR076C	YMR215W	YOR248W	YOR315W
+2.759110e-02	3	29	149	6526	97048	Saccharomyces	cerevisiae	GO:0000323	cellular_component	"lytic vacuole"	SRL1	YBR077C	YIL158W
+8.125030e-02	1	29	19	6526	97048	Saccharomyces	cerevisiae	GO:0010008	cellular_component	"endosome membrane"	YBR077C
+7.957500e-01	1	29	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	YDR324C
+3.931600e-02	1	29	9	6526	97048	Saccharomyces	cerevisiae	GO:0045815	biological_process	"positive regulation of gene expression, epigenetic"	UTH1
+2.408310e-01	2	29	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	FKH2	YDR451C
+4.667000e-07	9	29	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	ALK1	CDC20	CDC42	CLB2	FKH2	KIP2	YDR325W	YDR451C	YMR076C
+1.266500e-02	3	29	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	CDC20	YDR325W	YMR076C
+4.443990e-03	1	29	1	6526	97048	Saccharomyces	cerevisiae	GO:0051319	biological_process	"G2 phase"	FKH2
+2.354440e-01	1	29	60	6526	97048	Saccharomyces	cerevisiae	GO:0005816	cellular_component	"spindle pole body"	CLB2
+9.643680e-01	2	29	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	YGL257C	YOR248W
+4.748060e-01	1	29	143	6526	97048	Saccharomyces	cerevisiae	GO:0044452	cellular_component	"nucleolar part"	YDR324C
+7.453930e-01	1	29	300	6526	97048	Saccharomyces	cerevisiae	GO:0005730	cellular_component	"nucleolus"	YDR324C
+6.588010e-01	1	29	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	CDC42
+1.327480e-02	1	29	3	6526	97048	Saccharomyces	cerevisiae	GO:0007026	biological_process	"negative regulation of microtubule depolymerization"	KIP2
+2.691350e-01	2	29	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	CTS1	EXG1
+1.327480e-02	1	29	3	6526	97048	Saccharomyces	cerevisiae	GO:0031114	biological_process	"regulation of microtubule depolymerization"	KIP2
+4.221910e-01	1	29	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	CDC42
+1.331360e-01	1	29	32	6526	97048	Saccharomyces	cerevisiae	GO:0007117	biological_process	"budding cell bud growth"	CDC42
+9.776410e-02	3	29	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	CDC42	CIS3	SUR7
+5.665140e-01	1	29	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	UTH1
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0006043	biological_process	"glucosamine catabolism"	CTS1
+6.064280e-01	4	29	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	CDC42	ERP3	KIP2	SUR7
+4.866480e-02	2	29	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	CDC20	KIP2
+9.753280e-02	1	29	23	6526	97048	Saccharomyces	cerevisiae	GO:0032005	biological_process	"signal transduction during conjugation with cellular fusion"	CDC42
+4.248070e-01	1	29	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	YOR315W
+5.161970e-01	1	29	161	6526	97048	Saccharomyces	cerevisiae	GO:0030163	biological_process	"protein catabolism"	CDC20
+5.584940e-01	1	29	181	6526	97048	Saccharomyces	cerevisiae	GO:0006512	biological_process	"ubiquitin cycle"	CDC20
+7.765990e-01	5	29	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	CDC20	CTS1	EXG1	KIP2	YGL257C
+2.690760e-01	1	29	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	ALK1
+1.785040e-01	1	29	44	6526	97048	Saccharomyces	cerevisiae	GO:0030490	biological_process	"processing of 20S pre-rRNA"	YDR324C
+2.226250e-01	2	29	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	CDC42	SUR7
+1.675930e-03	2	29	14	6526	97048	Saccharomyces	cerevisiae	GO:0000079	biological_process	"regulation of cyclin-dependent protein kinase activity"	CLB2	CLN1
+2.110180e-01	1	29	53	6526	97048	Saccharomyces	cerevisiae	GO:0051640	biological_process	"organelle localization"	KIP2
+3.323560e-01	2	29	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	CDC42	SUR7
+6.258050e-01	1	29	217	6526	97048	Saccharomyces	cerevisiae	GO:0007046	biological_process	"ribosome biogenesis"	YDR324C
+3.843250e-01	1	29	108	6526	97048	Saccharomyces	cerevisiae	GO:0030467	biological_process	"establishment and/or maintenance of cell polarity (sensu Fungi)"	CDC42
+5.630690e-02	1	29	13	6526	97048	Saccharomyces	cerevisiae	GO:0005881	cellular_component	"cytoplasmic microtubule"	KIP2
+8.867620e-01	1	29	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	UTH1
+1.894830e-01	1	29	47	6526	97048	Saccharomyces	cerevisiae	GO:0007051	biological_process	"spindle organization and biogenesis"	CDC20
+1.636420e-01	1	29	40	6526	97048	Saccharomyces	cerevisiae	GO:0030479	cellular_component	"actin cortical patch"	SUR7
+2.145530e-01	1	29	54	6526	97048	Saccharomyces	cerevisiae	GO:0030864	cellular_component	"cortical actin cytoskeleton"	SUR7
+8.744670e-01	20	29	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	ADH2	ALK1	CDC20	CIS3	CLB2	CLN1	CTS1	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YIL158W	YMR076C	YOR315W
+2.029340e-01	2	29	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	KIP2	YDR451C
+5.234460e-04	2	29	8	6526	97048	Saccharomyces	cerevisiae	GO:0000920	biological_process	"cell separation during cytokinesis"	CTS1	YHR143W
+2.127530e-01	2	29	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	KIP2	YDR451C
+5.769090e-02	2	29	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	UTH1	YOR315W
+4.035480e-01	1	29	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	CDC42
+6.885920e-02	1	29	16	6526	97048	Saccharomyces	cerevisiae	GO:0030705	biological_process	"cytoskeleton-dependent intracellular transport"	KIP2
+2.853520e-01	1	29	75	6526	97048	Saccharomyces	cerevisiae	GO:0016614	molecular_function	"oxidoreductase activity, acting on CH-OH group of donors"	ADH2
+4.402700e-01	1	29	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	YDR451C
+8.392690e-02	3	29	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	CDC42	FKH2	YOR315W
+5.916200e-01	1	29	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	ALK1
+6.451670e-01	6	29	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	FKH2	SRL1	UTH1	YDR324C	YDR451C	YOR315W
+2.203010e-02	1	29	5	6526	97048	Saccharomyces	cerevisiae	GO:0042123	molecular_function	"glucanosyltransferase activity"	YMR215W
+4.359120e-02	1	29	10	6526	97048	Saccharomyces	cerevisiae	GO:0005619	cellular_component	"spore wall (sensu Fungi)"	SUR7
+3.044220e-01	1	29	81	6526	97048	Saccharomyces	cerevisiae	GO:0031968	cellular_component	"organelle outer membrane"	UTH1
+4.359120e-02	1	29	10	6526	97048	Saccharomyces	cerevisiae	GO:0006067	biological_process	"ethanol metabolism"	ADH2
+5.058540e-01	2	29	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	CDC20	CTS1
+2.637950e-02	1	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0045121	cellular_component	"lipid raft"	SUR7
+5.208660e-02	1	29	12	6526	97048	Saccharomyces	cerevisiae	GO:0008054	biological_process	"cyclin catabolism"	CDC20
+6.875350e-01	1	29	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	CDC42
+2.458150e-01	2	29	214	6526	97048	Saccharomyces	cerevisiae	GO:0045045	biological_process	"secretory pathway"	CDC42	ERP3
+6.031120e-01	3	29	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	ALK1	YGL257C	YMR215W
+2.215770e-01	1	29	56	6526	97048	Saccharomyces	cerevisiae	GO:0000749	biological_process	"response to pheromone during conjugation with cellular fusion"	CDC42
+6.360140e-01	1	29	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	CTS1
+1.186900e-01	7	29	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CLB2	KIP2	SUR7	YDR324C	YDR325W	YDR451C	YMR076C
+3.990740e-01	11	29	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	CDC20	CLB2	CTS1	KIP2	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YMR076C
+6.714340e-04	2	29	9	6526	97048	Saccharomyces	cerevisiae	GO:0007076	biological_process	"mitotic chromosome condensation"	YDR325W	YMR076C
+2.637950e-02	1	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0031383	biological_process	"regulation of mating projection biogenesis"	CDC42
+1.523260e-01	1	29	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	CDC42
+8.125030e-02	1	29	19	6526	97048	Saccharomyces	cerevisiae	GO:0007064	biological_process	"mitotic sister chromatid cohesion"	YMR076C
+6.914140e-03	3	29	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	CLB2	FKH2	YDR451C
+1.174830e-01	1	29	28	6526	97048	Saccharomyces	cerevisiae	GO:0007186	biological_process	"G-protein coupled receptor protein signaling pathway"	CDC42
+9.753280e-02	1	29	23	6526	97048	Saccharomyces	cerevisiae	GO:0000152	cellular_component	"nuclear ubiquitin ligase complex"	CDC20
+3.926350e-01	1	29	111	6526	97048	Saccharomyces	cerevisiae	GO:0030435	biological_process	"sporulation"	SUR7
+2.759110e-02	3	29	149	6526	97048	Saccharomyces	cerevisiae	GO:0000324	cellular_component	"vacuole (sensu Fungi)"	SRL1	YBR077C	YIL158W
+3.721500e-01	6	29	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	CDC20	KIP2	UTH1	YDR324C	YDR325W	YMR076C
+5.310760e-02	2	29	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	UTH1	YOR315W
+2.285410e-01	1	29	58	6526	97048	Saccharomyces	cerevisiae	GO:0043161	biological_process	"proteasomal ubiquitin-dependent protein catabolism"	CDC20
+7.510770e-01	9	29	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	ERP3	NCE102	SRL1	SUR7	UTH1	YDR325W	YER124C	YIL158W	YOR248W
+8.375080e-01	2	29	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	CDC20	YGL257C
+3.815300e-01	1	29	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	CDC42
+4.700010e-01	1	29	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	YDR451C
+1.931940e-02	3	29	130	6526	97048	Saccharomyces	cerevisiae	GO:0040007	biological_process	"growth"	CDC42	FKH2	YOR315W
+3.414920e-01	6	29	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	CDC20	CTS1	YDR324C	YDR325W	YDR451C	YMR076C
+8.603260e-02	8	29	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	CDC42	CIS3	CTS1	ERP3	NCE102	SUR7	UTH1	YBR077C
+3.815300e-01	1	29	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	CDC42
+7.713770e-02	1	29	18	6526	97048	Saccharomyces	cerevisiae	GO:0003774	molecular_function	"motor activity"	KIP2
+8.759500e-01	1	29	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	UTH1
+1.261680e-05	6	29	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	ALK1	CDC20	CDC42	KIP2	YDR325W	YMR076C
+7.713770e-02	1	29	18	6526	97048	Saccharomyces	cerevisiae	GO:0051231	biological_process	"spindle elongation"	CDC20
+9.978860e-01	1	29	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	YGL257C
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0007092	biological_process	"anaphase-promoting complex activation during mitotic cell cycle"	CDC20
+5.630690e-02	1	29	13	6526	97048	Saccharomyces	cerevisiae	GO:0031110	biological_process	"regulation of microtubule polymerization or depolymerization"	KIP2
+1.766190e-02	1	29	4	6526	97048	Saccharomyces	cerevisiae	GO:0030071	biological_process	"regulation of mitotic metaphase/anaphase transition"	CDC20
+3.990740e-01	11	29	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	CDC20	CLB2	CTS1	KIP2	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YMR076C
+1.332200e-03	9	29	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	CDC20	CDC42	CLB2	CLN1	FKH2	KIP2	UTH1	YDR451C	YOR315W
+1.786820e-01	2	29	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	CDC42	YBR077C
+8.281450e-03	3	29	95	6526	97048	Saccharomyces	cerevisiae	GO:0030447	biological_process	"filamentous growth"	CDC42	FKH2	YOR315W
+5.310760e-02	2	29	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	UTH1	YOR315W
+1.598870e-01	1	29	39	6526	97048	Saccharomyces	cerevisiae	GO:0005625	cellular_component	"soluble fraction"	CDC42
+3.787230e-01	1	29	106	6526	97048	Saccharomyces	cerevisiae	GO:0007005	biological_process	"mitochondrion organization and biogenesis"	UTH1
+5.208660e-02	1	29	12	6526	97048	Saccharomyces	cerevisiae	GO:0035091	molecular_function	"phosphoinositide binding"	YBR077C
+1.485210e-01	1	29	36	6526	97048	Saccharomyces	cerevisiae	GO:0000151	cellular_component	"ubiquitin ligase complex"	CDC20
+1.763780e-01	19	29	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	ALK1	CDC20	CIS3	CLB2	CLN1	CTS1	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YIL158W	YMR076C	YOR315W
+2.354440e-01	1	29	60	6526	97048	Saccharomyces	cerevisiae	GO:0045944	biological_process	"positive regulation of transcription from RNA polymerase II promoter"	YOR315W
+1.785040e-01	1	29	44	6526	97048	Saccharomyces	cerevisiae	GO:0016564	molecular_function	"transcriptional repressor activity"	YDR451C
+3.382180e-05	6	29	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	CDC20	CDC42	CLB2	CLN1	FKH2	YDR451C
+6.757330e-01	1	29	248	6526	97048	Saccharomyces	cerevisiae	GO:0016072	biological_process	"rRNA metabolism"	YDR324C
+6.050900e-02	1	29	14	6526	97048	Saccharomyces	cerevisiae	GO:0006030	biological_process	"chitin metabolism"	CTS1
+3.759040e-01	1	29	105	6526	97048	Saccharomyces	cerevisiae	GO:0030468	biological_process	"establishment of cell polarity (sensu Fungi)"	CDC42
+6.469310e-02	1	29	15	6526	97048	Saccharomyces	cerevisiae	GO:0030473	biological_process	"nuclear migration, microtubule-mediated"	KIP2
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0051488	biological_process	"anaphase-promoting complex activation"	CDC20
+1.408620e-01	1	29	34	6526	97048	Saccharomyces	cerevisiae	GO:0005875	cellular_component	"microtubule associated complex"	KIP2
+4.700010e-01	1	29	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	YDR451C
+1.007840e-04	3	29	22	6526	97048	Saccharomyces	cerevisiae	GO:0005576	cellular_component	"extracellular region"	CIS3	CTS1	YHR143W
+2.821250e-01	1	29	74	6526	97048	Saccharomyces	cerevisiae	GO:0016052	biological_process	"carbohydrate catabolism"	CTS1
+1.000000e+00	29	29	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	ADH2	ALK1	CDC20	CDC42	CIS3	CLB2	CLN1	CTS1	ERP3	EXG1	EXG2	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YER124C	YGL257C	YHR143W	YIL158W	YMR076C	YMR215W	YOR248W	YOR315W
+7.300740e-02	1	29	17	6526	97048	Saccharomyces	cerevisiae	GO:0006044	biological_process	"N-acetylglucosamine metabolism"	CTS1
+3.382180e-05	6	29	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	CDC20	CDC42	CLB2	CLN1	FKH2	YDR451C
+1.454680e-01	4	29	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	FKH2	UTH1	YDR451C	YOR315W
+7.300740e-02	1	29	17	6526	97048	Saccharomyces	cerevisiae	GO:0005543	molecular_function	"phospholipid binding"	YBR077C
+5.660100e-01	3	29	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	FKH2	YDR324C	YDR451C
+3.558230e-01	1	29	98	6526	97048	Saccharomyces	cerevisiae	GO:0016757	molecular_function	"transferase activity, transferring glycosyl groups"	YGL257C
+8.248080e-10	9	29	114	6526	97048	Saccharomyces	cerevisiae	GO:0005618	cellular_component	"cell wall"	CIS3	CTS1	EXG1	EXG2	SRL1	SUR7	UTH1	YHR143W	YMR215W
+6.170870e-01	1	29	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	UTH1
+6.885920e-02	1	29	16	6526	97048	Saccharomyces	cerevisiae	GO:0006493	biological_process	"protein amino acid O-linked glycosylation"	YGL257C
+4.779660e-01	2	29	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	CIS3	YMR076C
+3.780120e-03	2	29	21	6526	97048	Saccharomyces	cerevisiae	GO:0043549	biological_process	"regulation of kinase activity"	CLB2	CLN1
+1.867530e-01	3	29	337	6526	97048	Saccharomyces	cerevisiae	GO:0005783	cellular_component	"endoplasmic reticulum"	CIS3	CTS1	NCE102
+9.075730e-03	14	29	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	CDC20	CDC42	CIS3	EXG1	EXG2	FKH2	KIP2	UTH1	YDR324C	YDR325W	YER124C	YHR143W	YMR076C	YOR315W
+4.651540e-01	1	29	139	6526	97048	Saccharomyces	cerevisiae	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	CDC20
+2.637950e-02	1	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0000090	biological_process	"mitotic anaphase"	KIP2
+4.866340e-01	1	29	148	6526	97048	Saccharomyces	cerevisiae	GO:0044257	biological_process	"cellular protein catabolism"	CDC20
+2.203010e-02	1	29	5	6526	97048	Saccharomyces	cerevisiae	GO:0042124	molecular_function	"1,3-beta-glucanosyltransferase activity"	YMR215W
+1.331360e-01	1	29	32	6526	97048	Saccharomyces	cerevisiae	GO:0043332	cellular_component	"mating projection tip"	CDC42
+9.857420e-01	3	29	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YIL158W	YMR215W	YOR248W
+1.747870e-02	2	29	46	6526	97048	Saccharomyces	cerevisiae	GO:0019207	molecular_function	"kinase regulator activity"	CLB2	CLN1
+2.354440e-01	1	29	60	6526	97048	Saccharomyces	cerevisiae	GO:0003700	molecular_function	"transcription factor activity"	FKH2
+5.645230e-01	1	29	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	YDR325W
+1.327480e-02	1	29	3	6526	97048	Saccharomyces	cerevisiae	GO:0051340	biological_process	"regulation of ligase activity"	CDC20
+4.359120e-02	1	29	10	6526	97048	Saccharomyces	cerevisiae	GO:0031160	cellular_component	"spore wall"	SUR7
+3.981150e-01	1	29	113	6526	97048	Saccharomyces	cerevisiae	GO:0030154	biological_process	"cell differentiation"	SUR7
+1.297550e-02	3	29	112	6526	97048	Saccharomyces	cerevisiae	GO:0008361	biological_process	"regulation of cell size"	CDC42	FKH2	YOR315W
+6.797390e-02	3	29	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YDR325W	YDR451C	YMR076C
+2.789320e-02	2	29	59	6526	97048	Saccharomyces	cerevisiae	GO:0005976	biological_process	"polysaccharide metabolism"	CTS1	EXG1
+9.753280e-02	1	29	23	6526	97048	Saccharomyces	cerevisiae	GO:0008289	molecular_function	"lipid binding"	YBR077C
+3.759040e-01	1	29	105	6526	97048	Saccharomyces	cerevisiae	GO:0030010	biological_process	"establishment of cell polarity"	CDC42
+1.785040e-01	1	29	44	6526	97048	Saccharomyces	cerevisiae	GO:0003704	molecular_function	"specific RNA polymerase II transcription factor activity"	YOR315W
+9.843540e-01	1	29	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	YGL257C
+2.456880e-01	1	29	63	6526	97048	Saccharomyces	cerevisiae	GO:0008047	molecular_function	"enzyme activator activity"	CDC20
+3.502240e-02	1	29	8	6526	97048	Saccharomyces	cerevisiae	GO:0051261	biological_process	"protein depolymerization"	KIP2
+3.071020e-02	1	29	7	6526	97048	Saccharomyces	cerevisiae	GO:0031382	biological_process	"mating projection biogenesis"	CDC42
+3.645040e-01	1	29	101	6526	97048	Saccharomyces	cerevisiae	GO:0005635	cellular_component	"nuclear envelope"	CTS1
+5.215510e-02	4	29	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	FKH2	UTH1	YDR451C	YOR315W
+4.602650e-01	1	29	137	6526	97048	Saccharomyces	cerevisiae	GO:0019941	biological_process	"modification-dependent protein catabolism"	CDC20
+1.757170e-03	3	29	55	6526	97048	Saccharomyces	cerevisiae	GO:0000070	biological_process	"mitotic sister chromatid segregation"	CDC20	YDR325W	YMR076C
+4.795690e-01	1	29	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDR451C
+1.065410e-03	9	29	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	CDC20	CDC42	CLB2	CLN1	FKH2	KIP2	UTH1	YDR451C	YOR315W
+9.965420e-01	1	29	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	YGL257C
+3.502240e-02	1	29	8	6526	97048	Saccharomyces	cerevisiae	GO:0043085	biological_process	"positive regulation of enzyme activity"	CDC20
+2.637950e-02	1	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0005871	cellular_component	"kinesin complex"	KIP2
+3.168610e-01	1	29	85	6526	97048	Saccharomyces	cerevisiae	GO:0040029	biological_process	"regulation of gene expression, epigenetic"	UTH1
+6.469310e-02	1	29	15	6526	97048	Saccharomyces	cerevisiae	GO:0007018	biological_process	"microtubule-based movement"	KIP2
+8.516780e-02	1	29	20	6526	97048	Saccharomyces	cerevisiae	GO:0000767	biological_process	"cellular morphogenesis during conjugation"	CDC42
+1.996740e-01	2	29	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	KIP2	YDR451C
+3.381150e-01	1	29	92	6526	97048	Saccharomyces	cerevisiae	GO:0044448	cellular_component	"cell cortex part"	SUR7
+1.146650e-02	3	29	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	CDC42	CLB2	YER124C
+2.885650e-01	1	29	76	6526	97048	Saccharomyces	cerevisiae	GO:0019236	biological_process	"response to pheromone"	CDC42
+1.401890e-01	3	29	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	FKH2	YDR451C	YOR315W
+4.154060e-02	3	29	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	YDR325W	YDR451C	YMR076C
+6.469310e-02	1	29	15	6526	97048	Saccharomyces	cerevisiae	GO:0051248	biological_process	"negative regulation of protein metabolism"	KIP2
+7.300740e-02	1	29	17	6526	97048	Saccharomyces	cerevisiae	GO:0006040	biological_process	"amino sugar metabolism"	CTS1
+7.713770e-02	1	29	18	6526	97048	Saccharomyces	cerevisiae	GO:0000022	biological_process	"mitotic spindle elongation"	CDC20
+4.436840e-02	2	29	76	6526	97048	Saccharomyces	cerevisiae	GO:0000794	cellular_component	"condensed nuclear chromosome"	YDR325W	YMR076C
+5.244140e-01	2	29	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	CDC20	CTS1
+6.074770e-06	10	29	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	ALK1	CDC20	CDC42	CLB2	CLN1	FKH2	KIP2	YDR325W	YDR451C	YMR076C
+2.486160e-03	3	29	62	6526	97048	Saccharomyces	cerevisiae	GO:0007124	biological_process	"pseudohyphal growth"	CDC42	FKH2	YOR315W
+2.657780e-01	1	29	69	6526	97048	Saccharomyces	cerevisiae	GO:0043413	biological_process	"biopolymer glycosylation"	YGL257C
+3.558230e-01	1	29	98	6526	97048	Saccharomyces	cerevisiae	GO:0030437	biological_process	"sporulation (sensu Fungi)"	SUR7
+5.399220e-01	1	29	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	ALK1
+4.541990e-03	2	29	23	6526	97048	Saccharomyces	cerevisiae	GO:0016538	molecular_function	"cyclin-dependent protein kinase regulator activity"	CLB2	CLN1
+1.711060e-01	1	29	42	6526	97048	Saccharomyces	cerevisiae	GO:0007166	biological_process	"cell surface receptor linked signal transduction"	CDC42
+1.327480e-02	1	29	3	6526	97048	Saccharomyces	cerevisiae	GO:0031111	biological_process	"negative regulation of microtubule polymerization or depolymerization"	KIP2
+1.523260e-01	1	29	37	6526	97048	Saccharomyces	cerevisiae	GO:0001403	biological_process	"invasive growth (sensu Saccharomyces)"	CDC42
+8.516780e-02	1	29	20	6526	97048	Saccharomyces	cerevisiae	GO:0051647	biological_process	"nucleus localization"	KIP2
+6.860830e-01	1	29	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	YDR324C
+2.624660e-01	1	29	68	6526	97048	Saccharomyces	cerevisiae	GO:0000329	cellular_component	"vacuolar membrane (sensu Fungi)"	YBR077C
+1.327480e-02	1	29	3	6526	97048	Saccharomyces	cerevisiae	GO:0051351	biological_process	"positive regulation of ligase activity"	CDC20
+2.637950e-02	1	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0016237	biological_process	"microautophagy"	YBR077C
+2.203010e-02	1	29	5	6526	97048	Saccharomyces	cerevisiae	GO:0031902	cellular_component	"late endosome membrane"	YBR077C
+8.895030e-01	20	29	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	ADH2	ALK1	CDC20	CIS3	CLB2	CLN1	CTS1	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YIL158W	YMR076C	YOR315W
+4.819340e-01	1	29	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	YDR325W
+5.260190e-01	9	29	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	ADH2	ALK1	CDC42	CTS1	EXG1	EXG2	YGL257C	YHR143W	YMR215W
+2.358540e-01	2	29	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	CTS1	EXG1
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0010032	biological_process	"meiotic chromosome condensation"	YDR325W
+7.885530e-01	4	29	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	FKH2	YBR077C	YDR324C	YDR451C
+5.335650e-01	1	29	169	6526	97048	Saccharomyces	cerevisiae	GO:0006364	biological_process	"rRNA processing"	YDR324C
+2.267760e-04	3	29	28	6526	97048	Saccharomyces	cerevisiae	GO:0015926	molecular_function	"glucosidase activity"	EXG1	EXG2	YHR143W
+2.529080e-06	3	29	8	6526	97048	Saccharomyces	cerevisiae	GO:0008422	molecular_function	"beta-glucosidase activity"	EXG1	EXG2	YHR143W
+9.606530e-01	7	29	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	CDC20	CTS1	EXG1	KIP2	UTH1	YDR324C	YGL257C
+9.739650e-01	3	29	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	CDC20	KIP2	YGL257C
+1.331360e-01	1	29	32	6526	97048	Saccharomyces	cerevisiae	GO:0048590	biological_process	"non-developmental growth"	CDC42
+7.489370e-01	1	29	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	NCE102
+2.203010e-02	1	29	5	6526	97048	Saccharomyces	cerevisiae	GO:0000799	cellular_component	"nuclear condensin complex"	YDR325W
+9.777490e-01	1	29	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YDR324C
+7.338130e-02	3	29	221	6526	97048	Saccharomyces	cerevisiae	GO:0046903	biological_process	"secretion"	CDC42	ERP3	NCE102
+4.443990e-03	1	29	1	6526	97048	Saccharomyces	cerevisiae	GO:0008843	molecular_function	"endochitinase activity"	CTS1
+8.125030e-02	1	29	19	6526	97048	Saccharomyces	cerevisiae	GO:0005199	molecular_function	"structural constituent of cell wall"	CIS3
+2.657780e-01	1	29	69	6526	97048	Saccharomyces	cerevisiae	GO:0006486	biological_process	"protein amino acid glycosylation"	YGL257C
+1.748130e-01	1	29	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	CDC42
+2.524430e-01	1	29	65	6526	97048	Saccharomyces	cerevisiae	GO:0000922	cellular_component	"spindle pole"	CLB2
+3.008200e-01	2	29	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	CDC20	CTS1
+9.753280e-02	1	29	23	6526	97048	Saccharomyces	cerevisiae	GO:0031137	biological_process	"regulation of conjugation with cellular fusion"	CDC42
+2.917640e-01	1	29	77	6526	97048	Saccharomyces	cerevisiae	GO:0016758	molecular_function	"transferase activity, transferring hexosyl groups"	YGL257C
+5.160680e-02	3	29	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	CLB2	KIP2	SUR7
+2.637950e-02	1	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0051322	biological_process	"anaphase"	KIP2
+6.914140e-03	3	29	89	6526	97048	Saccharomyces	cerevisiae	GO:0016049	biological_process	"cell growth"	CDC42	FKH2	YOR315W
+2.046410e-02	2	29	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	CDC20	CDC42
+3.921370e-02	2	29	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	UTH1	YOR315W
+3.815300e-01	1	29	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	CDC42
+1.858400e-01	1	29	46	6526	97048	Saccharomyces	cerevisiae	GO:0000122	biological_process	"negative regulation of transcription from RNA polymerase II promoter"	YDR451C
+9.377250e-01	1	29	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YDR324C
+2.853520e-01	1	29	75	6526	97048	Saccharomyces	cerevisiae	GO:0009100	biological_process	"glycoprotein metabolism"	YGL257C
+8.227660e-05	4	29	56	6526	97048	Saccharomyces	cerevisiae	GO:0004553	molecular_function	"hydrolase activity, hydrolyzing O-glycosyl compounds"	CTS1	EXG1	EXG2	YHR143W
+6.860830e-01	1	29	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	YDR324C
+2.180730e-01	1	29	55	6526	97048	Saccharomyces	cerevisiae	GO:0007264	biological_process	"small GTPase mediated signal transduction"	CDC42
+3.843250e-01	1	29	108	6526	97048	Saccharomyces	cerevisiae	GO:0007163	biological_process	"establishment and/or maintenance of cell polarity"	CDC42
+3.677700e-04	5	29	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	CDC42	CIS3	CLB2	SRL1	YER124C
+1.270310e-01	4	29	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	FKH2	UTH1	YDR451C	YOR315W
+6.998050e-01	4	29	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	KIP2	NCE102	SUR7	UTH1
+8.392690e-02	3	29	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	CDC42	FKH2	YOR315W
+1.748130e-01	1	29	43	6526	97048	Saccharomyces	cerevisiae	GO:0007569	biological_process	"cell aging"	UTH1
+3.953810e-01	1	29	112	6526	97048	Saccharomyces	cerevisiae	GO:0044437	cellular_component	"vacuolar part"	YBR077C
+2.536870e-04	3	29	29	6526	97048	Saccharomyces	cerevisiae	GO:0050790	biological_process	"regulation of catalytic activity"	CDC20	CLB2	CLN1
+7.295370e-01	2	29	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	CDC20	YGL257C
+6.469310e-02	1	29	15	6526	97048	Saccharomyces	cerevisiae	GO:0031145	biological_process	"anaphase-promoting complex-dependent proteasomal ubiquitin-dependent protein catabolism"	CDC20
+9.221720e-01	4	29	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	CDC20	KIP2	YDR324C	YDR325W
+9.066370e-01	1	29	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	YDR324C
+1.854320e-02	3	29	128	6526	97048	Saccharomyces	cerevisiae	GO:0051301	biological_process	"cell division"	CDC42	CTS1	YHR143W
+1.095540e-01	1	29	26	6526	97048	Saccharomyces	cerevisiae	GO:0000086	biological_process	"G2/M transition of mitotic cell cycle"	CLB2
+1.079080e-03	9	29	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	CDC20	CDC42	CLB2	CLN1	FKH2	KIP2	UTH1	YDR451C	YOR315W
+9.075370e-01	1	29	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	KIP2
+4.553320e-01	1	29	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	UTH1
+5.630690e-02	1	29	13	6526	97048	Saccharomyces	cerevisiae	GO:0007346	biological_process	"regulation of progression through mitotic cell cycle"	YDR451C
+1.766190e-02	1	29	4	6526	97048	Saccharomyces	cerevisiae	GO:0007019	biological_process	"microtubule depolymerization"	KIP2
+7.724430e-01	1	29	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	CDC42
+2.821250e-01	1	29	74	6526	97048	Saccharomyces	cerevisiae	GO:0044275	biological_process	"cellular carbohydrate catabolism"	CTS1
+1.096630e-01	3	29	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	ERP3	NCE102	SUR7
+9.566230e-01	3	29	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	CDC20	KIP2	YGL257C
+4.443990e-03	1	29	1	6526	97048	Saccharomyces	cerevisiae	GO:0000085	biological_process	"G2 phase of mitotic cell cycle"	FKH2
+4.089330e-01	1	29	117	6526	97048	Saccharomyces	cerevisiae	GO:0000267	cellular_component	"cell fraction"	CDC42
+1.996740e-01	2	29	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	KIP2	YDR451C
+3.502240e-02	1	29	8	6526	97048	Saccharomyces	cerevisiae	GO:0001308	biological_process	"loss of chromatin silencing during replicative cell aging"	UTH1
+3.453630e-02	26	29	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	ADH2	ALK1	CDC20	CDC42	CIS3	CLB2	CLN1	CTS1	ERP3	EXG1	EXG2	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YER124C	YGL257C	YHR143W	YMR076C	YOR315W
+9.777490e-01	1	29	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YDR324C
+6.130960e-02	3	29	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	CLB2	KIP2	SUR7
+1.020770e-03	2	29	11	6526	97048	Saccharomyces	cerevisiae	GO:0030261	biological_process	"chromosome condensation"	YDR325W	YMR076C
+6.170870e-01	1	29	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	UTH1
+6.860830e-01	1	29	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	CDC42
+4.359120e-02	1	29	10	6526	97048	Saccharomyces	cerevisiae	GO:0007119	biological_process	"budding cell isotropic bud growth"	CDC42
+6.848620e-02	2	29	97	6526	97048	Saccharomyces	cerevisiae	GO:0000910	biological_process	"cytokinesis"	CTS1	YHR143W
+6.885920e-02	1	29	16	6526	97048	Saccharomyces	cerevisiae	GO:0005680	cellular_component	"anaphase-promoting complex"	CDC20
+3.012780e-01	1	29	80	6526	97048	Saccharomyces	cerevisiae	GO:0005768	cellular_component	"endosome"	YBR077C
+2.637950e-02	1	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0004022	molecular_function	"alcohol dehydrogenase activity"	ADH2
+3.780120e-03	2	29	21	6526	97048	Saccharomyces	cerevisiae	GO:0051338	biological_process	"regulation of transferase activity"	CLB2	CLN1
+8.248080e-10	9	29	114	6526	97048	Saccharomyces	cerevisiae	GO:0009277	cellular_component	"cell wall (sensu Fungi)"	CIS3	CTS1	EXG1	EXG2	SRL1	SUR7	UTH1	YHR143W	YMR215W
+6.914140e-03	3	29	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	CLB2	FKH2	YDR451C
+4.528490e-01	1	29	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	YDR451C
+1.835570e-01	4	29	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	FKH2	UTH1	YDR451C	YOR315W
+2.602440e-02	5	29	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	CDC42	FKH2	SUR7	UTH1	YOR315W
+2.529080e-06	3	29	8	6526	97048	Saccharomyces	cerevisiae	GO:0004338	molecular_function	"glucan 1,3-beta-glucosidase activity"	EXG1	EXG2	YHR143W
+2.491400e-01	2	29	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	CDC20	KIP2
+6.307430e-02	4	29	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	FKH2	UTH1	YDR451C	YOR315W
+8.395070e-01	1	29	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	YDR324C
+7.357600e-02	25	29	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	ADH2	ALK1	CDC20	CDC42	CIS3	CLB2	CLN1	CTS1	ERP3	EXG1	EXG2	FKH2	KIP2	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YER124C	YGL257C	YHR143W	YMR076C	YOR315W
+7.205930e-01	6	29	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	CDC20	CTS1	EXG1	UTH1	YDR324C	YGL257C
+3.044220e-01	1	29	81	6526	97048	Saccharomyces	cerevisiae	GO:0005741	cellular_component	"mitochondrial outer membrane"	UTH1
+3.781870e-01	2	29	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	CDC42	SUR7
+5.208660e-02	1	29	12	6526	97048	Saccharomyces	cerevisiae	GO:0000083	biological_process	"G1/S-specific transcription in mitotic cell cycle"	YDR451C
+1.041010e-01	3	29	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	ERP3	NCE102	SUR7
+8.994370e-01	11	29	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	CDC20	CTS1	EXG1	FKH2	KIP2	SRL1	UTH1	YDR324C	YDR451C	YGL257C	YOR315W
+1.095540e-01	1	29	26	6526	97048	Saccharomyces	cerevisiae	GO:0051656	biological_process	"establishment of organelle localization"	KIP2
+6.603180e-02	2	29	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	CDC20	KIP2
+1.754870e-01	2	29	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	KIP2	YDR451C
+3.502240e-02	1	29	8	6526	97048	Saccharomyces	cerevisiae	GO:0030031	biological_process	"cell projection biogenesis"	CDC42
+3.484030e-01	19	29	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	ALK1	CDC20	CIS3	CLB2	CLN1	CTS1	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YIL158W	YMR076C	YOR315W
+7.099070e-01	1	29	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	NCE102
+7.300740e-02	1	29	17	6526	97048	Saccharomyces	cerevisiae	GO:0006041	biological_process	"glucosamine metabolism"	CTS1
+1.327480e-02	1	29	3	6526	97048	Saccharomyces	cerevisiae	GO:0051438	biological_process	"regulation of ubiquitin ligase activity"	CDC20
+3.393550e-01	3	29	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	UTH1	YDR325W	YMR076C
+1.296040e-04	4	29	62	6526	97048	Saccharomyces	cerevisiae	GO:0016798	molecular_function	"hydrolase activity, acting on glycosyl bonds"	CTS1	EXG1	EXG2	YHR143W
+4.443990e-03	1	29	1	6526	97048	Saccharomyces	cerevisiae	GO:0000116	biological_process	"G2-specific transcription in mitotic cell cycle"	FKH2
+1.214210e-01	1	29	29	6526	97048	Saccharomyces	cerevisiae	GO:0007062	biological_process	"sister chromatid cohesion"	YMR076C
+4.606120e-01	5	29	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	CDC42	ERP3	KIP2	NCE102	SUR7
+5.251510e-04	5	29	157	6526	97048	Saccharomyces	cerevisiae	GO:0045229	biological_process	"external encapsulating structure organization and biogenesis"	CIS3	EXG1	EXG2	YER124C	YHR143W
+7.632160e-01	10	29	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	CIS3	CLB2	CTS1	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YIL158W
+1.523260e-01	1	29	37	6526	97048	Saccharomyces	cerevisiae	GO:0006887	biological_process	"exocytosis"	CDC42
+7.682150e-01	2	29	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	UTH1	YBR077C
+8.248080e-10	9	29	114	6526	97048	Saccharomyces	cerevisiae	GO:0030312	cellular_component	"external encapsulating structure"	CIS3	CTS1	EXG1	EXG2	SRL1	SUR7	UTH1	YHR143W	YMR215W
+2.203010e-02	1	29	5	6526	97048	Saccharomyces	cerevisiae	GO:0051129	biological_process	"negative regulation of cell organization and biogenesis"	KIP2
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0006032	biological_process	"chitin catabolism"	CTS1
+1.155480e-01	27	29	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	ADH2	ALK1	CDC20	CDC42	CIS3	CLB2	CLN1	CTS1	ERP3	EXG1	EXG2	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YER124C	YHR143W	YIL158W	YMR076C	YMR215W	YOR315W
+2.759110e-02	3	29	149	6526	97048	Saccharomyces	cerevisiae	GO:0000322	cellular_component	"storage vacuole"	SRL1	YBR077C	YIL158W
+8.516780e-02	1	29	20	6526	97048	Saccharomyces	cerevisiae	GO:0040023	biological_process	"establishment of nucleus localization"	KIP2
+2.524430e-01	1	29	65	6526	97048	Saccharomyces	cerevisiae	GO:0004871	molecular_function	"signal transducer activity"	CDC42
+4.138360e-01	5	29	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	CDC42	ERP3	KIP2	NCE102	SUR7
+5.310760e-02	2	29	84	6526	97048	Saccharomyces	cerevisiae	GO:0000793	cellular_component	"condensed chromosome"	YDR325W	YMR076C
+1.949520e-03	3	29	57	6526	97048	Saccharomyces	cerevisiae	GO:0000819	biological_process	"sister chromatid segregation"	CDC20	YDR325W	YMR076C
+9.119130e-01	1	29	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	KIP2
+2.127530e-01	2	29	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	CDC42	YBR077C
+1.178770e-03	3	29	48	6526	97048	Saccharomyces	cerevisiae	GO:0005934	cellular_component	"bud tip"	CDC42	CIS3	SRL1
+7.300740e-02	1	29	17	6526	97048	Saccharomyces	cerevisiae	GO:0007266	biological_process	"Rho protein signal transduction"	CDC42
+9.780890e-01	1	29	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	YGL257C
+2.769610e-04	5	29	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	CDC42	CIS3	CLB2	SRL1	YER124C
+8.516780e-02	1	29	20	6526	97048	Saccharomyces	cerevisiae	GO:0005770	cellular_component	"late endosome"	YBR077C
+2.821250e-01	1	29	74	6526	97048	Saccharomyces	cerevisiae	GO:0009101	biological_process	"glycoprotein biosynthesis"	YGL257C
+1.755480e-01	3	29	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	FKH2	YDR451C	YOR315W
+1.673820e-01	1	29	41	6526	97048	Saccharomyces	cerevisiae	GO:0006073	biological_process	"glucan metabolism"	EXG1
+5.087370e-01	2	29	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	CTS1	UTH1
+8.125030e-02	1	29	19	6526	97048	Saccharomyces	cerevisiae	GO:0044440	cellular_component	"endosomal part"	YBR077C
+4.784800e-02	1	29	11	6526	97048	Saccharomyces	cerevisiae	GO:0007118	biological_process	"budding cell apical bud growth"	CDC42
+1.000000e+00	29	29	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	ADH2	ALK1	CDC20	CDC42	CIS3	CLB2	CLN1	CTS1	ERP3	EXG1	EXG2	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YER124C	YGL257C	YHR143W	YIL158W	YMR076C	YMR215W	YOR248W	YOR315W
+5.769090e-02	2	29	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	UTH1	YOR315W
+4.602650e-01	1	29	137	6526	97048	Saccharomyces	cerevisiae	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	CDC20
+2.226250e-01	2	29	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	CDC42	SUR7
+4.443990e-03	1	29	1	6526	97048	Saccharomyces	cerevisiae	GO:0043325	molecular_function	"phosphatidylinositol-3,4-bisphosphate binding"	YBR077C
+6.961130e-01	1	29	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	ADH2
+1.763780e-01	19	29	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ALK1	CDC20	CIS3	CLB2	CLN1	CTS1	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YIL158W	YMR076C	YOR315W
+9.208490e-01	1	29	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YDR324C
+6.666010e-01	1	29	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	CDC42
+1.554010e-03	9	29	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	CDC20	CDC42	CLB2	CLN1	FKH2	KIP2	UTH1	YDR451C	YOR315W
+4.518530e-02	3	29	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	CDC20	CLB2	CLN1
+3.075520e-01	1	29	82	6526	97048	Saccharomyces	cerevisiae	GO:0019954	biological_process	"asexual reproduction"	CDC42
+3.502240e-02	1	29	8	6526	97048	Saccharomyces	cerevisiae	GO:0030030	biological_process	"cell projection organization and biogenesis"	CDC42
+5.087370e-01	2	29	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	CTS1	UTH1
+1.785040e-01	1	29	44	6526	97048	Saccharomyces	cerevisiae	GO:0007568	biological_process	"aging"	UTH1
+5.840490e-01	1	29	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	ADH2
+5.227250e-02	3	29	192	6526	97048	Saccharomyces	cerevisiae	GO:0005773	cellular_component	"vacuole"	SRL1	YBR077C	YIL158W
+2.203010e-02	1	29	5	6526	97048	Saccharomyces	cerevisiae	GO:0000092	biological_process	"mitotic anaphase B"	KIP2
+5.146880e-02	5	29	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	FKH2	KIP2	UTH1	YDR451C	YOR315W
+3.931600e-02	1	29	9	6526	97048	Saccharomyces	cerevisiae	GO:0001304	biological_process	"progressive alteration of chromatin during replicative cell aging"	UTH1
+6.742280e-01	1	29	247	6526	97048	Saccharomyces	cerevisiae	GO:0031966	cellular_component	"mitochondrial membrane"	UTH1
+7.300740e-02	1	29	17	6526	97048	Saccharomyces	cerevisiae	GO:0006113	biological_process	"fermentation"	ADH2
+3.780120e-03	2	29	21	6526	97048	Saccharomyces	cerevisiae	GO:0045859	biological_process	"regulation of protein kinase activity"	CLB2	CLN1
+3.673730e-01	1	29	102	6526	97048	Saccharomyces	cerevisiae	GO:0005938	cellular_component	"cell cortex"	SUR7
+1.408620e-01	1	29	34	6526	97048	Saccharomyces	cerevisiae	GO:0005874	cellular_component	"microtubule"	KIP2
+2.203010e-02	1	29	5	6526	97048	Saccharomyces	cerevisiae	GO:0000033	molecular_function	"alpha-1,3-mannosyltransferase activity"	YGL257C
+5.769090e-02	2	29	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	UTH1	YOR315W
+8.379810e-02	4	29	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	FKH2	UTH1	YDR451C	YOR315W
+2.145530e-01	1	29	54	6526	97048	Saccharomyces	cerevisiae	GO:0030863	cellular_component	"cortical cytoskeleton"	SUR7
+6.875350e-01	1	29	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	CDC42
+2.637950e-02	1	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0031344	biological_process	"regulation of cell projection organization and biogenesis"	CDC42
+2.540040e-01	5	29	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	CDC42	CTS1	EXG1	EXG2	YHR143W
+5.227820e-01	1	29	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	YDR451C
+9.404230e-01	1	29	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	CDC42
+4.443990e-03	1	29	1	6526	97048	Saccharomyces	cerevisiae	GO:0004568	molecular_function	"chitinase activity"	CTS1
+1.748130e-01	1	29	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	CDC42
+7.243830e-01	1	29	283	6526	97048	Saccharomyces	cerevisiae	GO:0005740	cellular_component	"mitochondrial envelope"	UTH1
+2.591390e-01	1	29	67	6526	97048	Saccharomyces	cerevisiae	GO:0016616	molecular_function	"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor"	ADH2
+2.354440e-01	1	29	60	6526	97048	Saccharomyces	cerevisiae	GO:0005815	cellular_component	"microtubule organizing center"	CLB2
+2.203010e-02	1	29	5	6526	97048	Saccharomyces	cerevisiae	GO:0000796	cellular_component	"condensin complex"	YDR325W
+7.475380e-02	2	29	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	CLB2	KIP2
+1.151420e-01	27	29	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	ADH2	ALK1	CDC20	CDC42	CIS3	CLB2	CLN1	CTS1	ERP3	EXG1	EXG2	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YER124C	YHR143W	YIL158W	YMR076C	YMR215W	YOR315W
+2.693780e-01	4	29	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	ERP3	NCE102	SUR7	UTH1
+5.251510e-04	5	29	157	6526	97048	Saccharomyces	cerevisiae	GO:0007047	biological_process	"cell wall organization and biogenesis"	CIS3	EXG1	EXG2	YER124C	YHR143W
+9.753280e-02	1	29	23	6526	97048	Saccharomyces	cerevisiae	GO:0046999	biological_process	"regulation of conjugation"	CDC42
+5.399220e-01	1	29	172	6526	97048	Saccharomyces	cerevisiae	GO:0006508	biological_process	"proteolysis"	CDC20
+1.858400e-01	1	29	46	6526	97048	Saccharomyces	cerevisiae	GO:0000082	biological_process	"G1/S transition of mitotic cell cycle"	YDR451C
+1.821800e-01	1	29	45	6526	97048	Saccharomyces	cerevisiae	GO:0007052	biological_process	"mitotic spindle organization and biogenesis"	CDC20
+3.931600e-02	1	29	9	6526	97048	Saccharomyces	cerevisiae	GO:0003777	molecular_function	"microtubule motor activity"	KIP2
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0051439	biological_process	"regulation of ubiquitin ligase activity during mitotic cell cycle"	CDC20
+8.238940e-02	25	29	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	ADH2	ALK1	CDC20	CDC42	CIS3	CLB2	CLN1	CTS1	ERP3	EXG1	EXG2	FKH2	KIP2	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YER124C	YGL257C	YHR143W	YMR076C	YOR315W
+4.602650e-01	1	29	137	6526	97048	Saccharomyces	cerevisiae	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	CDC20
+3.484030e-01	19	29	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	ALK1	CDC20	CIS3	CLB2	CLN1	CTS1	FKH2	KIP2	NCE102	SRL1	SUR7	UTH1	YBR077C	YDR324C	YDR325W	YDR451C	YIL158W	YMR076C	YOR315W
+8.660790e-01	1	29	436	6526	97048	Saccharomyces	cerevisiae	GO:0044429	cellular_component	"mitochondrial part"	UTH1
+1.322340e-05	6	29	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	ALK1	CDC20	CDC42	KIP2	YDR325W	YMR076C
+3.651940e-01	2	29	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	CDC20	CTS1
+2.815840e-04	2	29	6	6526	97048	Saccharomyces	cerevisiae	GO:0007109	biological_process	"cytokinesis, completion of separation"	CTS1	YHR143W
+4.784800e-02	1	29	11	6526	97048	Saccharomyces	cerevisiae	GO:0016566	molecular_function	"specific transcriptional repressor activity"	YDR451C
+5.208660e-02	1	29	12	6526	97048	Saccharomyces	cerevisiae	GO:0044247	biological_process	"cellular polysaccharide catabolism"	CTS1
+7.269390e-01	1	29	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	CTS1
+8.868910e-03	1	29	2	6526	97048	Saccharomyces	cerevisiae	GO:0051437	biological_process	"positive regulation of ubiquitin ligase activity during mitotic cell cycle"	CDC20
+5.497780e-02	3	29	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	FKH2	YDR451C	YOR315W
+7.613930e-05	7	29	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	ALK1	CDC20	CDC42	KIP2	YDR325W	YDR451C	YMR076C
+6.650550e-01	1	29	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	CTS1
+1.537400e-02	2	29	43	6526	97048	Saccharomyces	cerevisiae	GO:0019887	molecular_function	"protein kinase regulator activity"	CLB2	CLN1
+3.106680e-01	1	29	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	CLB2
+2.949490e-01	1	29	78	6526	97048	Saccharomyces	cerevisiae	GO:0015629	cellular_component	"actin cytoskeleton"	SUR7
+2.885650e-01	1	29	76	6526	97048	Saccharomyces	cerevisiae	GO:0006897	biological_process	"endocytosis"	SUR7
+5.208660e-02	1	29	12	6526	97048	Saccharomyces	cerevisiae	GO:0000272	biological_process	"polysaccharide catabolism"	CTS1
+8.523720e-03	3	29	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	CDC20	UTH1	YOR315W
+4.359120e-02	1	29	10	6526	97048	Saccharomyces	cerevisiae	GO:0001301	biological_process	"progressive alteration of chromatin during cell aging"	UTH1
+9.227540e-01	1	29	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	KIP2
+1.095540e-01	1	29	26	6526	97048	Saccharomyces	cerevisiae	GO:0030515	molecular_function	"snoRNA binding"	YDR324C
+1.766190e-02	1	29	4	6526	97048	Saccharomyces	cerevisiae	GO:0031384	biological_process	"regulation of initiation of mating projection growth"	CDC42
+2.426340e-01	11	29	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	ALK1	CDC20	CLB2	CLN1	CTS1	FKH2	YDR324C	YDR325W	YDR451C	YMR076C	YOR315W
+2.320000e-01	1	29	59	6526	97048	Saccharomyces	cerevisiae	GO:0044459	cellular_component	"plasma membrane part"	SUR7
+3.616230e-01	1	29	100	6526	97048	Saccharomyces	cerevisiae	GO:0005732	cellular_component	"small nucleolar ribonucleoprotein complex"	YDR324C
+1.711060e-01	1	29	42	6526	97048	Saccharomyces	cerevisiae	GO:0000030	molecular_function	"mannosyltransferase activity"	YGL257C
+8.942340e-02	1	29	21	6526	97048	Saccharomyces	cerevisiae	GO:0040020	biological_process	"regulation of meiosis"	YDR451C
+2.145530e-01	1	29	54	6526	97048	Saccharomyces	cerevisiae	GO:0051246	biological_process	"regulation of protein metabolism"	KIP2
+4.022800e-01	2	29	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	CDC20	CTS1
+3.759040e-01	1	29	105	6526	97048	Saccharomyces	cerevisiae	GO:0005774	cellular_component	"vacuolar membrane"	YBR077C
+7.713770e-02	1	29	18	6526	97048	Saccharomyces	cerevisiae	GO:0000753	biological_process	"cellular morphogenesis during conjugation with cellular fusion"	CDC42
+4.700010e-01	1	29	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	YDR451C
+4.757670e-02	2	29	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	UTH1	YOR315W
+4.157020e-03	2	29	22	6526	97048	Saccharomyces	cerevisiae	GO:0051128	biological_process	"regulation of cell organization and biogenesis"	CDC42	KIP2
+9.753280e-02	1	29	23	6526	97048	Saccharomyces	cerevisiae	GO:0000750	biological_process	"pheromone-dependent signal transduction during conjugation with cellular fusion"	CDC42
+7.838930e-01	1	29	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	ALK1

@@ -1,0 +1,151 @@
+#USING dm instead of its synonym CG10798 in Drosophila melanogaster
+#USING Max instead of its synonym CG9648 in Drosophila melanogaster
+#USING Mnt instead of its synonym CG13316 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+7.348380e-03	1	3	25	10183	157890	Drosophila	melanogaster	GO:0046620	biological_process	"regulation of organ size"	CG10798
+2.649400e-03	1	3	9	10183	157890	Drosophila	melanogaster	GO:0042023	biological_process	"DNA endoreduplication"	CG10798
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG10798	CG13316	CG9648
+1.301520e-01	3	3	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG10798	CG13316	CG9648
+7.055180e-03	1	3	24	10183	157890	Drosophila	melanogaster	GO:0045927	biological_process	"positive regulation of growth"	CG10798
+2.930070e-03	3	3	1458	10183	157890	Drosophila	melanogaster	GO:0050791	biological_process	"regulation of physiological process"	CG10798	CG13316	CG9648
+5.868960e-03	1	3	20	10183	157890	Drosophila	melanogaster	GO:0001558	biological_process	"regulation of cell growth"	CG10798
+1.669910e-01	3	3	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG10798	CG13316	CG9648
+1.303160e-01	3	3	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG10798	CG13316	CG9648
+4.119260e-03	1	3	14	10183	157890	Drosophila	melanogaster	GO:0045793	biological_process	"positive regulation of cell size"	CG10798
+7.557670e-02	3	3	4319	10214	157890	Drosophila	melanogaster	GO:0005488	molecular_function	"binding"	CG10798	CG13316	CG9648
+7.277710e-01	1	3	3583	10183	157890	Drosophila	melanogaster	GO:0043170	biological_process	"macromolecule metabolism"	CG10798
+4.027800e-02	3	3	2600	7583	157890	Drosophila	melanogaster	GO:0043227	cellular_component	"membrane-bound organelle"	CG10798	CG13316	CG9648
+1.399370e-01	1	3	499	10183	157890	Drosophila	melanogaster	GO:0009790	biological_process	"embryonic development"	CG10798
+1.932050e-02	1	3	66	10183	157890	Drosophila	melanogaster	GO:0006261	biological_process	"DNA-dependent DNA replication"	CG10798
+5.890990e-02	1	3	204	10183	157890	Drosophila	melanogaster	GO:0051726	biological_process	"regulation of cell cycle"	CG10798
+1.000000e+00	3	3	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG10798	CG13316	CG9648
+6.331820e-04	3	3	878	10214	157890	Drosophila	melanogaster	GO:0003677	molecular_function	"DNA binding"	CG10798	CG13316	CG9648
+1.367350e-01	1	3	487	10183	157890	Drosophila	melanogaster	GO:0048477	biological_process	"oogenesis"	CG10798
+4.413060e-03	1	3	15	10183	157890	Drosophila	melanogaster	GO:0040014	biological_process	"regulation of body size"	CG10798
+5.563730e-04	3	3	841	10214	157890	Drosophila	melanogaster	GO:0030528	molecular_function	"transcription regulator activity"	CG10798	CG13316	CG9648
+3.531490e-03	1	3	12	10183	157890	Drosophila	melanogaster	GO:0030307	biological_process	"positive regulation of cell growth"	CG10798
+9.399200e-03	1	3	32	10183	157890	Drosophila	melanogaster	GO:0016049	biological_process	"cell growth"	CG10798
+2.040890e-01	1	3	746	10183	157890	Drosophila	melanogaster	GO:0019953	biological_process	"sexual reproduction"	CG10798
+1.000000e+00	3	3	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG10798	CG13316	CG9648
+5.607760e-02	1	3	194	10183	157890	Drosophila	melanogaster	GO:0048522	biological_process	"positive regulation of cellular process"	CG10798
+1.186730e-03	3	3	1079	10183	157890	Drosophila	melanogaster	GO:0031323	biological_process	"regulation of cellular metabolism"	CG10798	CG13316	CG9648
+1.097460e-01	1	3	387	10183	157890	Drosophila	melanogaster	GO:0000902	biological_process	"cellular morphogenesis"	CG10798
+4.018500e-02	3	3	2598	7583	157890	Drosophila	melanogaster	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CG10798	CG13316	CG9648
+1.000000e+00	3	3	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG10798	CG13316	CG9648
+5.890990e-02	1	3	204	10183	157890	Drosophila	melanogaster	GO:0000074	biological_process	"regulation of progression through cell cycle"	CG10798
+4.309900e-03	3	3	1658	10183	157890	Drosophila	melanogaster	GO:0050789	biological_process	"regulation of biological process"	CG10798	CG13316	CG9648
+8.112480e-02	1	3	284	10214	157890	Drosophila	melanogaster	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	CG13316
+2.654870e-02	2	3	991	10183	157890	Drosophila	melanogaster	GO:0006351	biological_process	"transcription, DNA-dependent"	CG10798	CG9648
+5.886030e-03	3	3	1845	10214	157890	Drosophila	melanogaster	GO:0003676	molecular_function	"nucleic acid binding"	CG10798	CG13316	CG9648
+1.356030e-03	3	3	1128	10183	157890	Drosophila	melanogaster	GO:0019222	biological_process	"regulation of metabolism"	CG10798	CG13316	CG9648
+2.241610e-01	1	3	826	10183	157890	Drosophila	melanogaster	GO:0000003	biological_process	"reproduction"	CG10798
+3.197230e-03	3	3	1501	10183	157890	Drosophila	melanogaster	GO:0050794	biological_process	"regulation of cellular process"	CG10798	CG13316	CG9648
+3.968150e-01	1	3	1579	10183	157890	Drosophila	melanogaster	GO:0016043	biological_process	"cell organization and biogenesis"	CG10798
+3.724160e-02	1	3	128	10183	157890	Drosophila	melanogaster	GO:0006260	biological_process	"DNA replication"	CG10798
+1.844780e-02	1	3	63	10183	157890	Drosophila	melanogaster	GO:0040008	biological_process	"regulation of growth"	CG10798
+1.428640e-01	1	3	510	10183	157890	Drosophila	melanogaster	GO:0007292	biological_process	"female gamete generation"	CG10798
+1.305760e-01	1	3	464	10183	157890	Drosophila	melanogaster	GO:0006259	biological_process	"DNA metabolism"	CG10798
+5.891590e-04	1	3	2	10183	157890	Drosophila	melanogaster	GO:0035212	biological_process	"cell competition (sensu Metazoa)"	CG10798
+4.982650e-02	1	3	172	10183	157890	Drosophila	melanogaster	GO:0043119	biological_process	"positive regulation of physiological process"	CG10798
+8.726350e-04	3	3	974	10183	157890	Drosophila	melanogaster	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG10798	CG13316	CG9648
+1.199260e-01	3	3	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG10798	CG13316	CG9648
+4.925680e-02	1	3	170	10183	157890	Drosophila	melanogaster	GO:0051242	biological_process	"positive regulation of cellular physiological process"	CG10798
+5.738400e-05	3	3	395	10214	157890	Drosophila	melanogaster	GO:0003700	molecular_function	"transcription factor activity"	CG10798	CG13316	CG9648
+7.348380e-03	1	3	25	10183	157890	Drosophila	melanogaster	GO:0035265	biological_process	"organ growth"	CG10798
+4.594850e-01	3	3	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG10798	CG13316	CG9648
+2.502340e-01	1	3	932	10183	157890	Drosophila	melanogaster	GO:0009653	biological_process	"morphogenesis"	CG10798
+1.115480e-02	1	3	38	10183	157890	Drosophila	melanogaster	GO:0008361	biological_process	"regulation of cell size"	CG10798
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG10798	CG13316	CG9648
+7.024320e-03	3	3	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG10798	CG13316	CG9648
+4.413060e-03	1	3	15	10183	157890	Drosophila	melanogaster	GO:0035264	biological_process	"body growth"	CG10798
+5.087570e-01	1	3	2148	10183	157890	Drosophila	melanogaster	GO:0007275	biological_process	"development"	CG10798
+1.081050e-03	3	3	1046	10183	157890	Drosophila	melanogaster	GO:0006350	biological_process	"transcription"	CG10798	CG13316	CG9648
+4.445610e-01	3	3	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG10798	CG13316	CG9648
+7.233210e-04	3	3	915	10183	157890	Drosophila	melanogaster	GO:0045449	biological_process	"regulation of transcription"	CG10798	CG13316	CG9648
+6.231830e-02	3	3	3007	7583	157890	Drosophila	melanogaster	GO:0043229	cellular_component	"intracellular organelle"	CG10798	CG13316	CG9648
+2.044810e-02	2	3	866	10183	157890	Drosophila	melanogaster	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	CG10798	CG9648
+3.446770e-01	3	3	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG10798	CG13316	CG9648
+4.561730e-01	1	3	1871	10183	157890	Drosophila	melanogaster	GO:0043283	biological_process	"biopolymer metabolism"	CG10798
+1.311130e-01	1	3	466	10183	157890	Drosophila	melanogaster	GO:0009993	biological_process	"oogenesis (sensu Insecta)"	CG10798
+7.885670e-02	1	3	275	10183	157890	Drosophila	melanogaster	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	CG10798
+1.542460e-01	1	3	553	10183	157890	Drosophila	melanogaster	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	CG9648
+8.359050e-02	1	3	292	10183	157890	Drosophila	melanogaster	GO:0008283	biological_process	"cell proliferation"	CG10798
+2.661220e-03	3	3	1412	10183	157890	Drosophila	melanogaster	GO:0051244	biological_process	"regulation of cellular physiological process"	CG10798	CG13316	CG9648
+1.241910e-01	3	3	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG10798	CG13316	CG9648
+6.483940e-02	1	3	225	10183	157890	Drosophila	melanogaster	GO:0048518	biological_process	"positive regulation of biological process"	CG10798
+1.977460e-01	1	3	721	10183	157890	Drosophila	melanogaster	GO:0007276	biological_process	"gametogenesis"	CG10798
+6.231830e-02	3	3	3007	7583	157890	Drosophila	melanogaster	GO:0043226	cellular_component	"organelle"	CG10798	CG13316	CG9648
+1.185860e-02	3	3	1730	7583	157890	Drosophila	melanogaster	GO:0005634	cellular_component	"nucleus"	CG10798	CG13316	CG9648
+1.911140e-01	1	3	695	10183	157890	Drosophila	melanogaster	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	CG9648
+3.237510e-03	1	3	11	10183	157890	Drosophila	melanogaster	GO:0040018	biological_process	"positive regulation of body size"	CG10798
+2.975310e-02	1	3	102	10183	157890	Drosophila	melanogaster	GO:0040007	biological_process	"growth"	CG10798
+1.813550e-01	1	3	657	10183	157890	Drosophila	melanogaster	GO:0007049	biological_process	"cell cycle"	CG10798
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+7.619610e-01	3	3	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	MAD	MAX	MYC
+1.677520e-02	1	3	131	23297	92001	Homo	sapiens	GO:0030005	biological_process	"di-, tri-valent inorganic cation homeostasis"	MYC
+1.465070e-01	3	3	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	MAD	MAX	MYC
+8.973480e-03	3	3	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	MAD	MAX	MYC
+1.914670e-01	3	3	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	MAD	MAX	MYC
+2.101420e-01	3	3	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	MAD	MAX	MYC
+2.677590e-01	3	3	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	MAD	MAX	MYC
+4.593160e-02	3	3	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	MAD	MAX	MYC
+6.744880e-02	1	3	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	MYC
+1.863910e-02	1	3	173	27672	92001	Homo	sapiens	GO:0016564	molecular_function	"transcriptional repressor activity"	MAD
+1.000000e+00	3	3	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	MAD	MAX	MYC
+1.591970e-03	3	3	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	MAD	MAX	MYC
+2.414200e-02	1	3	189	23297	92001	Homo	sapiens	GO:0050801	biological_process	"ion homeostasis"	MYC
+3.925010e-04	3	3	2027	27672	92001	Homo	sapiens	GO:0030528	molecular_function	"transcription regulator activity"	MAD	MAX	MYC
+1.000000e+00	3	3	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	MAD	MAX	MYC
+2.401530e-02	1	3	188	23297	92001	Homo	sapiens	GO:0019725	biological_process	"cell homeostasis"	MYC
+7.993050e-02	1	3	638	23297	92001	Homo	sapiens	GO:0048522	biological_process	"positive regulation of cellular process"	MYC
+2.983810e-02	1	3	278	27672	92001	Homo	sapiens	GO:0003712	molecular_function	"transcription cofactor activity"	MAD
+3.855710e-03	3	3	3654	23297	92001	Homo	sapiens	GO:0031323	biological_process	"regulation of cellular metabolism"	MAD	MAX	MYC
+5.783920e-03	1	3	45	23297	92001	Homo	sapiens	GO:0046916	biological_process	"transition metal ion homeostasis"	MYC
+4.589490e-02	3	3	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	MAD	MAX	MYC
+1.000000e+00	3	3	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	MAD	MAX	MYC
+6.683400e-02	1	3	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	MYC
+1.326760e-02	3	3	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	MAD	MAX	MYC
+2.692730e-03	3	3	3242	23297	92001	Homo	sapiens	GO:0006351	biological_process	"transcription, DNA-dependent"	MAD	MAX	MYC
+9.737950e-03	3	3	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	MAD	MAX	MYC
+4.161090e-03	3	3	3748	23297	92001	Homo	sapiens	GO:0019222	biological_process	"regulation of metabolism"	MAD	MAX	MYC
+4.063520e-02	1	3	380	27672	92001	Homo	sapiens	GO:0008134	molecular_function	"transcription factor binding"	MAD
+1.088580e-02	3	3	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	MAD	MAX	MYC
+4.885710e-03	1	3	38	23297	92001	Homo	sapiens	GO:0006879	biological_process	"iron ion homeostasis"	MYC
+2.452210e-02	1	3	192	23297	92001	Homo	sapiens	GO:0045786	biological_process	"negative regulation of progression through cell cycle"	MYC
+4.052010e-02	1	3	319	23297	92001	Homo	sapiens	GO:0042127	biological_process	"regulation of cell proliferation"	MYC
+3.376740e-03	3	3	3496	23297	92001	Homo	sapiens	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MAD	MAX	MYC
+7.088630e-02	1	3	564	23297	92001	Homo	sapiens	GO:0043119	biological_process	"positive regulation of physiological process"	MYC
+1.842960e-02	1	3	144	23297	92001	Homo	sapiens	GO:0030003	biological_process	"cation homeostasis"	MYC
+1.346620e-01	3	3	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	MAD	MAX	MYC
+1.352950e-01	2	3	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	MAD	MYC
+9.892410e-02	1	3	795	23297	92001	Homo	sapiens	GO:0043118	biological_process	"negative regulation of physiological process"	MYC
+1.126690e-01	1	3	910	23297	92001	Homo	sapiens	GO:0048519	biological_process	"negative regulation of biological process"	MYC
+1.049180e-01	1	3	845	23297	92001	Homo	sapiens	GO:0048523	biological_process	"negative regulation of cellular process"	MYC
+6.806320e-02	1	3	541	23297	92001	Homo	sapiens	GO:0051242	biological_process	"positive regulation of cellular physiological process"	MYC
+7.456880e-03	2	3	1404	27672	92001	Homo	sapiens	GO:0003700	molecular_function	"transcription factor activity"	MAD	MYC
+5.929180e-01	3	3	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	MAD	MAX	MYC
+3.512320e-02	1	3	276	23297	92001	Homo	sapiens	GO:0042592	biological_process	"homeostasis"	MYC
+7.618420e-01	3	3	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	MAD	MAX	MYC
+1.259370e-02	3	3	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MAD	MAX	MYC
+2.474270e-01	1	3	2106	23297	92001	Homo	sapiens	GO:0007275	biological_process	"development"	MAD
+3.647430e-03	3	3	3587	23297	92001	Homo	sapiens	GO:0006350	biological_process	"transcription"	MAD	MAX	MYC
+6.775420e-01	3	3	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	MAD	MAX	MYC
+3.256460e-03	3	3	3454	23297	92001	Homo	sapiens	GO:0045449	biological_process	"regulation of transcription"	MAD	MAX	MYC
+8.937380e-02	3	3	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	MAD	MAX	MYC
+1.004900e-02	1	3	93	27672	92001	Homo	sapiens	GO:0003714	molecular_function	"transcription corepressor activity"	MAD
+2.514840e-03	3	3	3169	23297	92001	Homo	sapiens	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	MAD	MAX	MYC
+3.825280e-01	3	3	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	MAD	MAX	MYC
+1.128970e-02	1	3	88	23297	92001	Homo	sapiens	GO:0007050	biological_process	"cell cycle arrest"	MYC
+3.600310e-02	1	3	283	23297	92001	Homo	sapiens	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	MYC
+1.739140e-03	2	3	566	23297	92001	Homo	sapiens	GO:0008283	biological_process	"cell proliferation"	MAD	MYC
+8.306720e-03	3	3	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	MAD	MAX	MYC
+1.319840e-01	3	3	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	MAD	MAX	MYC
+9.651920e-02	1	3	775	23297	92001	Homo	sapiens	GO:0048518	biological_process	"positive regulation of biological process"	MYC
+8.940240e-02	3	3	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	MAD	MAX	MYC
+1.812330e-02	3	3	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	MAD	MAX	MYC
+9.543560e-02	1	3	766	23297	92001	Homo	sapiens	GO:0051243	biological_process	"negative regulation of cellular physiological process"	MYC
+1.957390e-02	1	3	153	23297	92001	Homo	sapiens	GO:0006873	biological_process	"cell ion homeostasis"	MYC
+6.387960e-02	1	3	507	23297	92001	Homo	sapiens	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	MYC
+1.766630e-02	1	3	138	23297	92001	Homo	sapiens	GO:0006875	biological_process	"metal ion homeostasis"	MYC
+1.081430e-01	1	3	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	MYC
+1.842960e-02	1	3	144	23297	92001	Homo	sapiens	GO:0008284	biological_process	"positive regulation of cell proliferation"	MYC

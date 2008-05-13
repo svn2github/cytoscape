@@ -1,0 +1,104 @@
+#NOT FOUND: EIF3S9_HUMAN in Homo sapiens
+#NOT FOUND: EIF3S4_HUMAN in Homo sapiens
+#NOT FOUND: EIF2B2_HUMAN in Homo sapiens
+#NOT FOUND: EIF2B1_HUMAN in Homo sapiens
+#NOT FOUND: EIF3S10_HUMAN in Homo sapiens
+#NOT FOUND: EIF2B5_HUMAN in Homo sapiens
+#NOT FOUND: EIF2S2_HUMAN in Homo sapiens
+#NOT FOUND: EIF3S2_HUMAN in Homo sapiens
+#NOT FOUND: EIF2B4_HUMAN in Homo sapiens
+#NOT FOUND: EIF5_HUMAN in Homo sapiens
+#NOT FOUND: EIF2S1_HUMAN in Homo sapiens
+#NOT FOUND: EIF2B3_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+#USING SUI3 instead of its synonym YPL237W in Saccharomyces cerevisiae
+#USING GCD1 instead of its synonym YOR260W in Saccharomyces cerevisiae
+#USING GCD2 instead of its synonym YGR083C in Saccharomyces cerevisiae
+#USING SUI2 instead of its synonym YJR007W in Saccharomyces cerevisiae
+#USING PRT1 instead of its synonym YOR361C in Saccharomyces cerevisiae
+#USING RPG1 instead of its synonym YBR079C in Saccharomyces cerevisiae
+#USING TIF5 instead of its synonym YPR041W in Saccharomyces cerevisiae
+#USING GCD7 instead of its synonym YLR291C in Saccharomyces cerevisiae
+#USING GCD6 instead of its synonym YDR211W in Saccharomyces cerevisiae
+#USING TIF35 instead of its synonym YDR429C in Saccharomyces cerevisiae
+#USING TIF34 instead of its synonym YMR146C in Saccharomyces cerevisiae
+#USING GCN3 instead of its synonym YKR026C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.057920e-03	2	12	27	6526	97048	Saccharomyces	cerevisiae	GO:0005085	molecular_function	"guanyl-nucleotide exchange factor activity"	YDR211W	YOR260W
+9.290160e-06	2	12	3	6526	97048	Saccharomyces	cerevisiae	GO:0005850	cellular_component	"eukaryotic translation initiation factor 2 complex"	YJR007W	YPL237W
+1.677250e-01	1	12	99	6526	97048	Saccharomyces	cerevisiae	GO:0015935	cellular_component	"small ribosomal subunit"	YPR041W
+7.822920e-04	12	12	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+2.313650e-04	3	12	69	6526	97048	Saccharomyces	cerevisiae	GO:0030695	molecular_function	"GTPase regulator activity"	YDR211W	YOR260W	YPR041W
+4.196160e-30	12	12	29	6526	97048	Saccharomyces	cerevisiae	GO:0003743	molecular_function	"translation initiation factor activity"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+1.813490e-09	12	12	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+3.804190e-01	1	12	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	YPR041W
+1.118470e-01	12	12	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+6.254650e-02	1	12	35	6526	97048	Saccharomyces	cerevisiae	GO:0000131	cellular_component	"incipient bud site"	YBR079C
+5.737610e-26	12	12	57	6526	97048	Saccharomyces	cerevisiae	GO:0045182	molecular_function	"translation regulator activity"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+1.116290e-01	1	12	64	6526	97048	Saccharomyces	cerevisiae	GO:0005843	cellular_component	"cytosolic small ribosomal subunit (sensu Eukaryota)"	YPR041W
+9.933760e-01	1	12	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YPR041W
+3.187020e-04	12	12	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+5.842360e-13	12	12	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+5.704510e-05	8	12	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YBR079C	YDR211W	YGR083C	YJR007W	YLR291C	YOR260W	YPL237W	YPR041W
+7.175420e-01	1	12	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YPR041W
+4.357030e-04	12	12	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+4.258740e-02	12	12	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+1.020560e-09	12	12	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+5.652690e-27	12	12	48	6526	97048	Saccharomyces	cerevisiae	GO:0006413	biological_process	"translational initiation"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+9.999350e-01	1	12	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YLR291C
+1.674940e-08	12	12	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+8.627860e-06	12	12	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+1.103600e-11	12	12	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+6.600960e-02	1	12	37	6526	97048	Saccharomyces	cerevisiae	GO:0006445	biological_process	"regulation of translation"	YPR041W
+1.000000e+00	12	12	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+4.966280e-09	8	12	284	6526	97048	Saccharomyces	cerevisiae	GO:0005840	cellular_component	"ribosome"	YBR079C	YDR211W	YGR083C	YJR007W	YLR291C	YOR260W	YPL237W	YPR041W
+9.665450e-02	1	12	55	6526	97048	Saccharomyces	cerevisiae	GO:0031326	biological_process	"regulation of cellular biosynthesis"	YPR041W
+1.000000e+00	12	12	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+3.804190e-01	1	12	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	YPR041W
+5.667310e-01	1	12	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YPR041W
+8.751550e-01	1	12	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YLR291C
+1.838800e-03	1	12	1	6526	97048	Saccharomyces	cerevisiae	GO:0042256	biological_process	"mature ribosome assembly"	YPR041W
+9.999350e-01	1	12	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YLR291C
+1.000000e+00	12	12	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+3.157280e-27	12	12	46	6526	97048	Saccharomyces	cerevisiae	GO:0008135	molecular_function	"translation factor activity, nucleic acid binding"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+7.249590e-01	1	12	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YPR041W
+3.372180e-07	6	12	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	YDR211W	YGR083C	YKR026C	YLR291C	YOR260W	YPR041W
+9.192510e-13	12	12	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+9.076070e-09	12	12	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+5.884440e-01	1	12	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YPR041W
+3.490670e-07	8	12	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	YBR079C	YDR211W	YGR083C	YJR007W	YLR291C	YOR260W	YPL237W	YPR041W
+1.802550e-08	12	12	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+2.744250e-01	1	12	172	6526	97048	Saccharomyces	cerevisiae	GO:0005830	cellular_component	"cytosolic ribosome (sensu Eukaryota)"	YPR041W
+2.166180e-10	4	12	7	6526	97048	Saccharomyces	cerevisiae	GO:0005852	cellular_component	"eukaryotic translation initiation factor 3 complex"	YBR079C	YDR429C	YMR146C	YOR361C
+5.558500e-02	1	12	31	6526	97048	Saccharomyces	cerevisiae	GO:0005096	molecular_function	"GTPase activator activity"	YPR041W
+7.075650e-01	1	12	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YPR041W
+9.746450e-01	1	12	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YPR041W
+5.802090e-09	12	12	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+3.896450e-02	12	12	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+2.658590e-02	12	12	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+1.116000e-01	12	12	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+9.665450e-02	1	12	55	6526	97048	Saccharomyces	cerevisiae	GO:0009889	biological_process	"regulation of biosynthesis"	YPR041W
+3.027080e-01	1	12	193	6526	97048	Saccharomyces	cerevisiae	GO:0044445	cellular_component	"cytosolic part"	YPR041W
+8.041490e-15	5	12	5	6526	97048	Saccharomyces	cerevisiae	GO:0005851	cellular_component	"eukaryotic translation initiation factor 2B complex"	YDR211W	YGR083C	YKR026C	YLR291C	YOR260W
+2.829120e-11	12	12	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+2.442060e-02	12	12	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+1.099760e-01	1	12	63	6526	97048	Saccharomyces	cerevisiae	GO:0008047	molecular_function	"enzyme activator activity"	YPR041W
+2.450940e-01	1	12	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	YPR041W
+4.417510e-01	8	12	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YBR079C	YDR211W	YGR083C	YJR007W	YLR291C	YOR260W	YPL237W	YPR041W
+2.241800e-02	12	12	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+5.704510e-05	8	12	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YBR079C	YDR211W	YGR083C	YJR007W	YLR291C	YOR260W	YPL237W	YPR041W
+9.933760e-01	1	12	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YPR041W
+6.916800e-01	1	12	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	YPR041W
+7.069680e-01	1	12	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YPR041W
+1.505060e-04	12	12	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+7.860310e-10	12	12	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W
+1.116290e-01	1	12	64	6526	97048	Saccharomyces	cerevisiae	GO:0042255	biological_process	"ribosome assembly"	YPR041W
+4.417510e-01	8	12	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YBR079C	YDR211W	YGR083C	YJR007W	YLR291C	YOR260W	YPL237W	YPR041W
+1.116290e-01	1	12	64	6526	97048	Saccharomyces	cerevisiae	GO:0016283	cellular_component	"eukaryotic 48S initiation complex"	YPR041W
+9.497640e-02	1	12	54	6526	97048	Saccharomyces	cerevisiae	GO:0051246	biological_process	"regulation of protein metabolism"	YPR041W
+6.773680e-02	1	12	38	6526	97048	Saccharomyces	cerevisiae	GO:0006417	biological_process	"regulation of protein biosynthesis"	YPR041W
+8.939400e-01	1	12	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YPR041W
+9.513290e-19	7	12	10	6526	97048	Saccharomyces	cerevisiae	GO:0043614	cellular_component	"multi-eIF complex"	YDR211W	YJR007W	YKR026C	YMR146C	YOR361C	YPL237W	YPR041W
+1.366570e-11	7	12	74	6526	97048	Saccharomyces	cerevisiae	GO:0016282	cellular_component	"eukaryotic 43S preinitiation complex"	YBR079C	YDR429C	YJR007W	YMR146C	YOR361C	YPL237W	YPR041W
+9.163040e-03	1	12	5	6526	97048	Saccharomyces	cerevisiae	GO:0006446	biological_process	"regulation of translational initiation"	YPR041W
+1.353280e-05	12	12	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YBR079C	YDR211W	YDR429C	YGR083C	YJR007W	YKR026C	YLR291C	YMR146C	YOR260W	YOR361C	YPL237W	YPR041W

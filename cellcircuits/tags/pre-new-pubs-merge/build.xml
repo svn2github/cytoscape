@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+
+<project name="CellCircuits" default="deploy">
+
+ 	<property name="deploy.version" value="v1.0"/>
+ 	<property name="dev.version" value="v1.0"/>
+ 	<property name="deploy.docroot" value="/var/www/html"/>
+ 	<property name="deploy.html" value="${deploy.docroot}/search/${deploy.version}"/>
+ 	<property name="deploy.cgi" value="/var/www/cgi-bin/search/${deploy.version}"/>
+	<property name="deploy.data" value="${deploy.docroot}/search/data"/>
+
+
+        <target name="deploy-prepare" description="Make deployment dirs">
+           <mkdir dir="${deploy.html}"/>
+           <mkdir dir="${deploy.cgi}"/>
+           <mkdir dir="${deploy.data}"/>
+
+        </target>
+
+	
+   	<target name="deploy" description="Deploy html and cgi-bin files"
+                depends="deploy-prepare">
+
+          <echo message="Copying html files"/>
+          <copy todir="${deploy.html}">
+             <fileset dir="html" followsymlinks="no" defaultexcludes="yes"
+                      excludes="test,bin"/>
+          </copy>
+          
+          <echo message="Copying cgi-bin files"/>
+          <copy todir="${deploy.cgi}">
+             <fileset dir="cgi-bin" followsymlinks="no" defaultexcludes="yes"/>
+          </copy>
+
+          <echo message="Updating permissions"/>
+          <chmod dir="${deploy.html}" perm="444" 
+                 includes="**/*"/>
+          <chmod dir="${deploy.cgi}" perm="444" 
+                 includes="**/*"/>
+          <chmod dir="${deploy.cgi}" 
+                 includes="search.pl,get_genes_by_eid.pl" 
+                 perm="ugo+x"/>
+
+          <echo message="Updating version strings"/>
+          <exec executable="update-version.sh" inputstring="y">
+              <arg line="${deploy.html} ${deploy.cgi} ${dev.version} ${deploy.version}"/>
+          </exec>
+
+          <echo message="Removing backup files"/>
+          <delete>
+             <fileset dir="${deploy.cgi}" includes="**/*.backup"/>
+             <fileset dir="${deploy.html}" includes="**/*.backup"/>
+          </delete>
+
+          <echo message="Creating sym links in ${deploy.html}"/>
+          <exec executable="create-html-links.sh">
+              <arg line="${deploy.docroot} ${deploy.html}"/>
+          </exec>
+
+	</target>
+	
+   	<target name="deploy-data" description="Deploy data files"
+                depends="deploy-prepare">
+
+          <echo message="Copying data files"/>
+          <copy todir="${deploy.data}">
+             <fileset dir="data" followsymlinks="no" defaultexcludes="yes"
+                      includes="**/legend_FAQ.html"/>
+          </copy>
+
+         <chmod dir="${deploy.data}" perm="444" includes="**/legend_FAQ.html"/>
+
+        </target>  
+
+   	<target name="deploy-clean" description="Clean deployment dirs">
+
+          <echo message="Removing deployed html and cgi-binfiles"/>
+           <exec executable="rm">
+              <arg line="-rf ${deploy.html} ${deploy.cgi}"/>
+          </exec>
+        </target>
+
+       <target name="deploy-link" description="Create symlinks so that the deployment dirs are linked to the development dirs."
+               depends="">
+
+          <symlink link="${deploy.cgi}" resource="${basedir}/cgi-bin" overwrite="yes"/>
+          <symlink link="${deploy.html}" resource="${basedir}/html" overwrite="yes"/>
+      </target>
+
+
+</project>

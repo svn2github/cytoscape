@@ -1,0 +1,88 @@
+#NOT FOUND: STX5A_HUMAN in Homo sapiens
+#NOT FOUND: SEC22L1_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.036900e-01	1	1	8467	20974	92001	Homo	sapiens	GO:0016020	cellular_component	"membrane"	GOSR1
+3.871740e-02	1	1	902	23297	92001	Homo	sapiens	GO:0046907	biological_process	"intracellular transport"	GOSR1
+9.494780e-02	1	1	2212	23297	92001	Homo	sapiens	GO:0016043	biological_process	"cell organization and biogenesis"	GOSR1
+2.802520e-01	1	1	5878	20974	92001	Homo	sapiens	GO:0031224	cellular_component	"intrinsic to membrane"	GOSR1
+5.279660e-03	1	1	123	23297	92001	Homo	sapiens	GO:0048193	biological_process	"Golgi vesicle transport"	GOSR1
+9.133690e-01	1	1	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	GOSR1
+3.176370e-02	1	1	740	23297	92001	Homo	sapiens	GO:0015031	biological_process	"protein transport"	GOSR1
+1.726400e-01	1	1	4022	23297	92001	Homo	sapiens	GO:0051234	biological_process	"establishment of localization"	GOSR1
+8.401080e-01	1	1	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	GOSR1
+3.910370e-02	1	1	911	23297	92001	Homo	sapiens	GO:0051649	biological_process	"establishment of cellular localization"	GOSR1
+3.051400e-01	1	1	6400	20974	92001	Homo	sapiens	GO:0044425	cellular_component	"membrane part"	GOSR1
+9.133210e-01	1	1	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	GOSR1
+1.845730e-02	1	1	430	23297	92001	Homo	sapiens	GO:0006886	biological_process	"intracellular protein transport"	GOSR1
+3.476840e-02	1	1	810	23297	92001	Homo	sapiens	GO:0008104	biological_process	"protein localization"	GOSR1
+1.060220e-02	1	1	247	23297	92001	Homo	sapiens	GO:0045045	biological_process	"secretory pathway"	GOSR1
+8.783110e-01	1	1	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	GOSR1
+1.000000e+00	1	1	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	GOSR1
+1.369280e-02	1	1	319	23297	92001	Homo	sapiens	GO:0046903	biological_process	"secretion"	GOSR1
+8.047850e-02	1	1	2227	27672	92001	Homo	sapiens	GO:0005215	molecular_function	"transporter activity"	GOSR1
+2.529630e-04	1	1	7	27672	92001	Homo	sapiens	GO:0005484	molecular_function	"SNAP receptor activity"	GOSR1
+7.259300e-01	1	1	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	GOSR1
+6.867840e-04	1	1	16	23297	92001	Homo	sapiens	GO:0006891	biological_process	"intra-Golgi vesicle-mediated transport"	GOSR1
+1.517820e-03	1	1	42	27672	92001	Homo	sapiens	GO:0005478	molecular_function	"intracellular transporter activity"	GOSR1
+1.944460e-02	1	1	453	23297	92001	Homo	sapiens	GO:0016192	biological_process	"vesicle-mediated transport"	GOSR1
+1.084130e-04	1	1	3	27672	92001	Homo	sapiens	GO:0005485	molecular_function	"v-SNARE activity"	GOSR1
+1.000000e+00	1	1	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	GOSR1
+2.796800e-01	1	1	5866	20974	92001	Homo	sapiens	GO:0016021	cellular_component	"integral to membrane"	GOSR1
+3.949010e-02	1	1	920	23297	92001	Homo	sapiens	GO:0051641	biological_process	"cellular localization"	GOSR1
+1.000000e+00	1	1	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	GOSR1
+1.604070e-01	1	1	3737	23297	92001	Homo	sapiens	GO:0006810	biological_process	"transport"	GOSR1
+3.352360e-02	1	1	781	23297	92001	Homo	sapiens	GO:0045184	biological_process	"establishment of protein localization"	GOSR1
+1.739710e-01	1	1	4053	23297	92001	Homo	sapiens	GO:0051179	biological_process	"localization"	GOSR1
+3.734410e-03	1	1	87	23297	92001	Homo	sapiens	GO:0006888	biological_process	"ER to Golgi vesicle-mediated transport"	GOSR1
+#USING GOS1 instead of its synonym YHL031C in Saccharomyces cerevisiae
+#USING SED5 instead of its synonym YLR026C in Saccharomyces cerevisiae
+#USING SEC22 instead of its synonym YLR268W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+7.078540e-02	2	3	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YHL031C	YLR268W
+1.470780e-01	1	3	337	6526	97048	Saccharomyces	cerevisiae	GO:0005783	cellular_component	"endoplasmic reticulum"	YLR268W
+4.830960e-04	3	3	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YHL031C	YLR026C	YLR268W
+1.828460e-02	3	3	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YHL031C	YLR026C	YLR268W
+5.965110e-03	1	3	13	6526	97048	Saccharomyces	cerevisiae	GO:0005801	cellular_component	"Golgi cis-face"	YLR026C
+5.767410e-01	2	3	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YLR026C	YLR268W
+4.725030e-03	2	3	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	YHL031C	YLR268W
+8.584370e-01	2	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YLR026C	YLR268W
+1.107090e-05	3	3	147	6526	97048	Saccharomyces	cerevisiae	GO:0048193	biological_process	"Golgi vesicle transport"	YHL031C	YLR026C	YLR268W
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YHL031C	YLR026C	YLR268W
+7.144020e-01	1	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YLR026C
+3.037740e-03	3	3	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YHL031C	YLR026C	YLR268W
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YHL031C	YLR026C	YLR268W
+5.119620e-04	3	3	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YHL031C	YLR026C	YLR268W
+8.645330e-01	2	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YLR026C	YLR268W
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YHL031C	YLR026C	YLR268W
+2.339100e-02	2	3	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YHL031C	YLR268W
+5.858740e-02	1	3	130	6526	97048	Saccharomyces	cerevisiae	GO:0044431	cellular_component	"Golgi apparatus part"	YLR026C
+5.774230e-01	2	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YLR026C	YLR268W
+3.469480e-05	3	3	214	6526	97048	Saccharomyces	cerevisiae	GO:0045045	biological_process	"secretory pathway"	YHL031C	YLR026C	YLR268W
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YHL031C	YLR026C	YLR268W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YHL031C	YLR026C	YLR268W
+3.824110e-05	3	3	221	6526	97048	Saccharomyces	cerevisiae	GO:0046903	biological_process	"secretion"	YHL031C	YLR026C	YLR268W
+2.590950e-04	3	3	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	YHL031C	YLR026C	YLR268W
+6.498750e-01	2	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YLR026C	YLR268W
+4.373570e-08	3	3	24	6526	97048	Saccharomyces	cerevisiae	GO:0005484	molecular_function	"SNAP receptor activity"	YHL031C	YLR026C	YLR268W
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YHL031C	YLR026C	YLR268W
+2.689080e-06	3	3	94	6526	97048	Saccharomyces	cerevisiae	GO:0016044	biological_process	"membrane organization and biogenesis"	YHL031C	YLR026C	YLR268W
+7.144020e-01	1	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YLR026C
+5.987420e-07	3	3	56	6526	97048	Saccharomyces	cerevisiae	GO:0006944	biological_process	"membrane fusion"	YHL031C	YLR026C	YLR268W
+2.861130e-08	3	3	21	6526	97048	Saccharomyces	cerevisiae	GO:0006891	biological_process	"intra-Golgi vesicle-mediated transport"	YHL031C	YLR026C	YLR268W
+8.771420e-08	3	3	30	6526	97048	Saccharomyces	cerevisiae	GO:0005478	molecular_function	"intracellular transporter activity"	YHL031C	YLR026C	YLR268W
+9.047800e-05	3	3	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	YHL031C	YLR026C	YLR268W
+1.280650e-05	2	3	14	6526	97048	Saccharomyces	cerevisiae	GO:0005485	molecular_function	"v-SNARE activity"	YHL031C	YLR268W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YHL031C	YLR026C	YLR268W
+4.514340e-03	2	3	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	YHL031C	YLR268W
+4.590660e-03	1	3	10	6526	97048	Saccharomyces	cerevisiae	GO:0005486	molecular_function	"t-SNARE activity"	YLR026C
+5.955920e-04	3	3	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YHL031C	YLR026C	YLR268W
+5.774230e-01	2	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YLR026C	YLR268W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YHL031C	YLR026C	YLR268W
+2.858170e-03	3	3	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YHL031C	YLR026C	YLR268W
+6.498750e-01	2	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YLR026C	YLR268W
+3.798140e-05	2	3	24	6526	97048	Saccharomyces	cerevisiae	GO:0006890	biological_process	"retrograde vesicle-mediated transport, Golgi to ER"	YLR026C	YLR268W
+7.077970e-08	3	3	28	6526	97048	Saccharomyces	cerevisiae	GO:0006906	biological_process	"vesicle fusion"	YHL031C	YLR026C	YLR268W
+2.036040e-03	2	3	172	6526	97048	Saccharomyces	cerevisiae	GO:0005794	cellular_component	"Golgi apparatus"	YLR026C	YLR268W
+3.545890e-03	3	3	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YHL031C	YLR026C	YLR268W
+3.982960e-04	2	3	76	6526	97048	Saccharomyces	cerevisiae	GO:0006888	biological_process	"ER to Golgi vesicle-mediated transport"	YLR026C	YLR268W
+3.426470e-01	2	3	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YLR026C	YLR268W

@@ -1,0 +1,151 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.063810e-01	1	9	81	6526	97048	Saccharomyces	cerevisiae	GO:0019867	cellular_component	"outer membrane"	NCA2
+3.908060e-02	8	9	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	GLC3	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	YDL121C
+8.492900e-02	1	9	64	6526	97048	Saccharomyces	cerevisiae	GO:0005843	cellular_component	"cytosolic small ribosomal subunit (sensu Eukaryota)"	RPS7B
+5.286560e-01	5	9	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	GLC3	MRPL24	NCA2	RPS7B	SUA7
+3.811210e-02	2	9	231	6526	97048	Saccharomyces	cerevisiae	GO:0003735	molecular_function	"structural constituent of ribosome"	MRPL24	RPS7B
+3.065900e-01	1	9	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	SEC65
+7.853300e-02	1	9	59	6526	97048	Saccharomyces	cerevisiae	GO:0044264	biological_process	"cellular polysaccharide metabolism"	GLC3
+3.862500e-01	2	9	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	MRPL24	RPS7B
+3.659870e-01	1	9	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	SUA7
+5.616740e-01	5	9	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	GLC3	MRPL24	NCA2	RPS7B	SUA7
+2.059600e-01	1	9	165	6526	97048	Saccharomyces	cerevisiae	GO:0031980	cellular_component	"mitochondrial lumen"	MRPL24
+3.841590e-02	2	9	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	GLC3	NCA2
+9.380620e-02	9	9	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	GLC3	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	SUA7	YDL121C
+2.530120e-01	1	9	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	GLC3
+8.061430e-01	2	9	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	GLC3	SCW10
+3.798370e-02	1	9	28	6526	97048	Saccharomyces	cerevisiae	GO:0015926	molecular_function	"glucosidase activity"	SCW10
+1.643800e-02	1	9	12	6526	97048	Saccharomyces	cerevisiae	GO:0005978	biological_process	"glycogen biosynthesis"	GLC3
+4.646400e-01	4	9	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	GLC3	MRPL24	NCA2	RPS7B
+6.372930e-01	2	9	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	MRPL24	RPS7B
+3.482850e-01	1	9	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	SEC65
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	GLC3	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	SUA7	YDL121C
+8.727350e-02	3	9	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	MRPL24	RPS7B	SUA7
+2.667400e-01	1	9	221	6526	97048	Saccharomyces	cerevisiae	GO:0046903	biological_process	"secretion"	SEC65
+1.877910e-01	1	9	149	6526	97048	Saccharomyces	cerevisiae	GO:0000323	cellular_component	"lytic vacuole"	PRY1
+5.549720e-02	2	9	284	6526	97048	Saccharomyces	cerevisiae	GO:0005840	cellular_component	"ribosome"	MRPL24	RPS7B
+1.379100e-03	1	9	1	6526	97048	Saccharomyces	cerevisiae	GO:0003844	molecular_function	"1,4-alpha-glucan branching enzyme activity"	GLC3
+1.013740e-01	1	9	77	6526	97048	Saccharomyces	cerevisiae	GO:0016758	molecular_function	"transferase activity, transferring hexosyl groups"	GLC3
+1.383270e-01	1	9	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	SCW10
+1.945190e-01	2	9	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	RPS7B	SUA7
+7.467640e-02	1	9	56	6526	97048	Saccharomyces	cerevisiae	GO:0004553	molecular_function	"hydrolase activity, hydrolyzing O-glycosyl compounds"	SCW10
+1.808830e-01	1	9	143	6526	97048	Saccharomyces	cerevisiae	GO:0044452	cellular_component	"nucleolar part"	RPS7B
+4.462910e-02	1	9	33	6526	97048	Saccharomyces	cerevisiae	GO:0045047	biological_process	"protein targeting to ER"	SEC65
+3.454500e-01	1	9	300	6526	97048	Saccharomyces	cerevisiae	GO:0005730	cellular_component	"nucleolus"	RPS7B
+2.740390e-01	1	9	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	GLC3
+4.317020e-01	2	9	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	MRPL24	NCA2
+1.562920e-01	1	9	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	SCW10
+7.483640e-01	1	9	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	SEC65
+1.739230e-01	1	9	137	6526	97048	Saccharomyces	cerevisiae	GO:0015934	cellular_component	"large ribosomal subunit"	MRPL24
+1.574770e-01	1	9	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	SUA7
+3.003360e-01	3	9	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	GLC3	MRPL24	RPS7B
+3.348900e-01	3	9	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	MRPL24	RPS7B	SEC65
+2.805900e-02	3	9	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	MRPL24	RPS7B	SEC65
+2.314450e-01	1	9	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	NCA2
+2.444500e-01	1	9	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	SCW10
+3.125460e-01	1	9	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	SCW10
+5.215990e-01	1	9	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	SEC65
+8.237540e-02	1	9	62	6526	97048	Saccharomyces	cerevisiae	GO:0016251	molecular_function	"general RNA polymerase II transcription factor activity"	SUA7
+5.834990e-01	2	9	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	MRPL24	RPS7B
+8.775690e-02	9	9	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	GLC3	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	SUA7	YDL121C
+8.727350e-02	3	9	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	MRPL24	RPS7B	SUA7
+5.708300e-01	7	9	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	GLC3	MRPL24	NCA2	RPS7B	SCW10	SEC65	SUA7
+6.251080e-01	2	9	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	NCA2	SUA7
+2.720610e-02	1	9	20	6526	97048	Saccharomyces	cerevisiae	GO:0006614	biological_process	"SRP-dependent cotranslational protein targeting to membrane"	SEC65
+1.063810e-01	1	9	81	6526	97048	Saccharomyces	cerevisiae	GO:0031968	cellular_component	"organelle outer membrane"	NCA2
+1.467520e-01	1	9	114	6526	97048	Saccharomyces	cerevisiae	GO:0009277	cellular_component	"cell wall (sensu Fungi)"	SCW10
+5.165590e-01	1	9	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	SUA7
+2.593760e-01	1	9	214	6526	97048	Saccharomyces	cerevisiae	GO:0045045	biological_process	"secretory pathway"	SEC65
+6.333340e-01	1	9	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	GLC3
+3.862500e-01	2	9	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	MRPL24	RPS7B
+5.417610e-01	7	9	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	GLC3	MRPL24	NCA2	RPS7B	SCW10	SEC65	SUA7
+6.696180e-01	2	9	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	GLC3	NCA2
+1.063810e-01	1	9	81	6526	97048	Saccharomyces	cerevisiae	GO:0005741	cellular_component	"mitochondrial outer membrane"	NCA2
+1.573870e-01	5	9	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	MRPL24	NCA2	PRY1	RPS7B	SUA7
+3.931600e-02	1	9	29	6526	97048	Saccharomyces	cerevisiae	GO:0005977	biological_process	"glycogen metabolism"	GLC3
+1.088760e-01	1	9	83	6526	97048	Saccharomyces	cerevisiae	GO:0005761	cellular_component	"mitochondrial ribosome"	MRPL24
+5.861490e-01	1	9	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	RPS7B
+4.525510e-01	5	9	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	GLC3	MRPL24	NCA2	RPS7B	SUA7
+3.184580e-01	1	9	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	SEC65
+2.340430e-01	7	9	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	MRPL24	NCA2	PRY1	RPS7B	SCW10	SUA7	YDL121C
+1.877910e-01	1	9	149	6526	97048	Saccharomyces	cerevisiae	GO:0000324	cellular_component	"vacuole (sensu Fungi)"	PRY1
+8.237540e-02	1	9	62	6526	97048	Saccharomyces	cerevisiae	GO:0016798	molecular_function	"hydrolase activity, acting on glycosyl bonds"	SCW10
+9.760280e-02	1	9	74	6526	97048	Saccharomyces	cerevisiae	GO:0016282	cellular_component	"eukaryotic 43S preinitiation complex"	RPS7B
+4.021970e-01	4	9	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	NCA2	PRY1	SEC65	YDL121C
+7.749540e-01	1	9	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	SEC65
+1.383270e-01	1	9	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	SCW10
+2.263520e-02	7	9	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	YDL121C
+1.739650e-01	3	9	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	PRY1	RPS7B	SUA7
+4.441870e-01	2	9	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	NCA2	PRY1
+1.383270e-01	1	9	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	SCW10
+1.467520e-01	1	9	114	6526	97048	Saccharomyces	cerevisiae	GO:0030312	cellular_component	"external encapsulating structure"	SCW10
+5.861490e-01	1	9	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	NCA2
+1.286070e-01	1	9	99	6526	97048	Saccharomyces	cerevisiae	GO:0015935	cellular_component	"small ribosomal subunit"	RPS7B
+5.910600e-02	1	9	44	6526	97048	Saccharomyces	cerevisiae	GO:0005762	cellular_component	"mitochondrial large ribosomal subunit"	MRPL24
+2.293830e-01	3	9	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	GLC3	MRPL24	RPS7B
+1.934860e-01	9	9	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	GLC3	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	SUA7	YDL121C
+1.877910e-01	1	9	149	6526	97048	Saccharomyces	cerevisiae	GO:0000322	cellular_component	"storage vacuole"	PRY1
+1.573870e-01	5	9	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	MRPL24	NCA2	PRY1	RPS7B	SUA7
+2.126980e-01	2	9	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	MRPL24	RPS7B
+7.559510e-01	1	9	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	SEC65
+2.812730e-01	1	9	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	SEC65
+4.330330e-02	1	9	32	6526	97048	Saccharomyces	cerevisiae	GO:0006612	biological_process	"protein targeting to membrane"	SEC65
+9.618250e-03	1	9	7	6526	97048	Saccharomyces	cerevisiae	GO:0005786	cellular_component	"signal recognition particle (sensu Eukaryota)"	SEC65
+5.287160e-01	1	9	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	SEC65
+1.518770e-01	7	9	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	MRPL24	NCA2	PRY1	RPS7B	SCW10	SUA7	YDL121C
+3.053310e-01	2	9	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	MRPL24	RPS7B
+2.059600e-01	1	9	165	6526	97048	Saccharomyces	cerevisiae	GO:0005759	cellular_component	"mitochondrial matrix"	MRPL24
+5.517720e-02	1	9	41	6526	97048	Saccharomyces	cerevisiae	GO:0006073	biological_process	"glucan metabolism"	GLC3
+3.705740e-01	1	9	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	SUA7
+9.618250e-03	1	9	7	6526	97048	Saccharomyces	cerevisiae	GO:0048500	cellular_component	"signal recognition particle"	SEC65
+9.238180e-02	2	9	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	NCA2	PRY1
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	GLC3	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	SUA7	YDL121C
+2.444500e-01	1	9	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	SCW10
+2.995510e-02	1	9	22	6526	97048	Saccharomyces	cerevisiae	GO:0005576	cellular_component	"extracellular region"	PRY1
+1.518770e-01	7	9	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	MRPL24	NCA2	PRY1	RPS7B	SCW10	SUA7	YDL121C
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	GLC3	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	SUA7	YDL121C
+5.440450e-01	1	9	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	NCA2
+9.238180e-02	2	9	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	NCA2	PRY1
+4.837900e-01	1	9	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	SUA7
+2.358020e-01	1	9	192	6526	97048	Saccharomyces	cerevisiae	GO:0005773	cellular_component	"vacuole"	PRY1
+2.758240e-02	2	9	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	GLC3	NCA2
+1.467520e-01	1	9	114	6526	97048	Saccharomyces	cerevisiae	GO:0005618	cellular_component	"cell wall"	SCW10
+1.273860e-01	1	9	98	6526	97048	Saccharomyces	cerevisiae	GO:0016757	molecular_function	"transferase activity, transferring glycosyl groups"	GLC3
+8.367140e-02	2	9	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	MRPL24	RPS7B
+2.935260e-01	1	9	247	6526	97048	Saccharomyces	cerevisiae	GO:0031966	cellular_component	"mitochondrial membrane"	NCA2
+2.137940e-01	1	9	172	6526	97048	Saccharomyces	cerevisiae	GO:0005830	cellular_component	"cytosolic ribosome (sensu Eukaryota)"	RPS7B
+9.364130e-01	1	9	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	SEC65
+9.081840e-03	3	9	337	6526	97048	Saccharomyces	cerevisiae	GO:0005783	cellular_component	"endoplasmic reticulum"	PRY1	SCW10	YDL121C
+9.001740e-02	1	9	68	6526	97048	Saccharomyces	cerevisiae	GO:0016051	biological_process	"carbohydrate biosynthesis"	GLC3
+4.462910e-02	1	9	33	6526	97048	Saccharomyces	cerevisiae	GO:0000271	biological_process	"polysaccharide biosynthesis"	GLC3
+6.922330e-01	2	9	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	PRY1	YDL121C
+7.596350e-02	1	9	57	6526	97048	Saccharomyces	cerevisiae	GO:0006352	biological_process	"transcription initiation"	SUA7
+6.782020e-01	1	9	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	SCW10
+3.129730e-02	1	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0006613	biological_process	"cotranslational protein targeting to membrane"	SEC65
+4.859680e-02	1	9	36	6526	97048	Saccharomyces	cerevisiae	GO:0006112	biological_process	"energy reserve metabolism"	GLC3
+1.088760e-01	1	9	83	6526	97048	Saccharomyces	cerevisiae	GO:0000313	cellular_component	"organellar ribosome"	MRPL24
+3.291780e-01	1	9	283	6526	97048	Saccharomyces	cerevisiae	GO:0005740	cellular_component	"mitochondrial envelope"	NCA2
+1.931660e-01	9	9	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	GLC3	MRPL24	NCA2	PRY1	RPS7B	SCW10	SEC65	SUA7	YDL121C
+5.772470e-01	1	9	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	NCA2
+5.910600e-02	1	9	44	6526	97048	Saccharomyces	cerevisiae	GO:0000315	cellular_component	"organellar large ribosomal subunit"	MRPL24
+7.853300e-02	1	9	59	6526	97048	Saccharomyces	cerevisiae	GO:0005976	biological_process	"polysaccharide metabolism"	GLC3
+2.995820e-01	1	9	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	SEC65
+2.368880e-01	1	9	193	6526	97048	Saccharomyces	cerevisiae	GO:0044445	cellular_component	"cytosolic part"	RPS7B
+9.618250e-03	1	9	7	6526	97048	Saccharomyces	cerevisiae	GO:0006617	biological_process	"SRP-dependent cotranslational protein targeting to membrane, signal sequence recognition"	SEC65
+1.061230e-01	3	9	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	GLC3	MRPL24	RPS7B
+5.562710e-01	7	9	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	GLC3	MRPL24	NCA2	RPS7B	SCW10	SEC65	SUA7
+6.171710e-02	1	9	46	6526	97048	Saccharomyces	cerevisiae	GO:0006367	biological_process	"transcription initiation from RNA polymerase II promoter"	SUA7
+2.340430e-01	7	9	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	MRPL24	NCA2	PRY1	RPS7B	SCW10	SUA7	YDL121C
+1.173790e-01	2	9	436	6526	97048	Saccharomyces	cerevisiae	GO:0044429	cellular_component	"mitochondrial part"	MRPL24	NCA2
+1.310460e-01	1	9	101	6526	97048	Saccharomyces	cerevisiae	GO:0005635	cellular_component	"nuclear envelope"	PRY1
+3.311100e-01	1	9	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	PRY1
+1.088760e-01	1	9	83	6526	97048	Saccharomyces	cerevisiae	GO:0045333	biological_process	"cellular respiration"	NCA2
+1.980420e-01	3	9	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	GLC3	MRPL24	RPS7B
+5.474660e-01	1	9	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	SEC65
+2.720610e-02	1	9	20	6526	97048	Saccharomyces	cerevisiae	GO:0009250	biological_process	"glucan biosynthesis"	GLC3
+5.475210e-01	3	9	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	PRY1	RPS7B	SUA7
+1.298280e-01	1	9	100	6526	97048	Saccharomyces	cerevisiae	GO:0005732	cellular_component	"small nucleolar ribonucleoprotein complex"	RPS7B
+8.492900e-02	1	9	64	6526	97048	Saccharomyces	cerevisiae	GO:0016283	cellular_component	"eukaryotic 48S initiation complex"	RPS7B
+1.026290e-01	1	9	78	6526	97048	Saccharomyces	cerevisiae	GO:0009060	biological_process	"aerobic respiration"	NCA2
+3.397470e-01	1	9	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	SUA7
+4.462910e-02	1	9	33	6526	97048	Saccharomyces	cerevisiae	GO:0043284	biological_process	"biopolymer biosynthesis"	GLC3

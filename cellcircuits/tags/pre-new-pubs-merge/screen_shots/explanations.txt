@@ -1,0 +1,171 @@
+<html>
+<head>
+
+<title>Advanced Search</title>
+
+</head>
+<body>
+
+<h1>Advanced Search</h1>
+
+<h3>1. The Search Box.
+   Enter your search terms here. Gene names, GO term accessions, and 
+   double quote-enclosed full or partial GO term names are valid queries.
+
+     Gene name examples:
+	  gcn4
+	OR
+	  rad52
+	OR
+	  gal4
+
+     Gene name regular expression examples:
+	  yap*
+	OR
+	  rad*
+	OR
+	  gcn*
+
+     GO term accession examples:
+          GO:0006366
+	OR
+	  GO:0004402
+
+	  Visit http://www.geneontology.org to find GO term accessions
+
+     GO term names:
+	  "DNA binding"
+	OR
+	  "cell cycle"
+	OR
+	  "acetylation"
+
+	  Visit http://www.geneontology.org to find GO term accessions
+   
+   Any combination of any of the above is valid, however the longer and
+   more complex the query, the longer the search will take to retrieve
+   the relevant models.  Please note that regular expressions may match
+   many different gene names across multiple organisms which is not always
+   desirable.  Moreover, regular expressions will significantly slow the
+   search time, so use them wisely (as in the cases given above like yap* 
+   and gcn*, where families of genes have been grouped by name).
+	  
+2. The 'Load Example Query' Button.
+
+   At a loss for how to start or what to do?  Click this button and a 
+   valid example query will populate the search box.  All that remains 
+   for you to do is hit the 'Search' button.  Or if you're feeling 
+   adventurous, edit it to your liking and give it a shot, keeping in mind
+   the search guidelines outlined above.
+
+3. The 'Species to include' selection menu.
+
+   The only requirement is that you select at least one species for your
+   search.  Holding the 'Ctrl' key down, use your mouse to scroll and 
+   select/deselect species one at a time to include in your search.
+
+4. The Sort results drop-down menu.
+
+   Use your mouse to select a method to sort results.
+
+   Currently there is only 1 method, however more sorting methods will be
+   available in the future.
+
+   'By Number of Query Terms Matching Model':
+
+   If your query is:
+
+	   gcn4
+
+   Then all models containing the gene gcn4 will be returned, receiving a
+   score of 1, since each model matched 1 term in the query.
+
+
+   If your query is:
+
+	   gcn4 "DNA binding"
+
+   Then all models containing the gene gcn4 that are also annotated with 
+   a GO term name matching "DNA binding" will be returned with a score of 2, 
+   and will show up at the top of your search results.  Notice here that 
+   although "DNA binding" is two words, it is treated as one search term 
+   entity, and thus contributes only 1 to the score.
+
+   Models that contain only 1 of your search terms will show up with a score 
+   of 1.  Therefore, if a model contains gcn4, but is not annotated with 
+   "DNA binding", then it will receive a score of 1, as would a model that 
+   is annotated with "DNA binding" but does not contain gcn4.
+
+   If your query is:
+
+	   gcn*
+
+   Then all models containing any genes starting with the letters gcn, 
+   followed by 0 or more characters, will be returned in your search results.
+
+   If a model contains gcn3, gcn4, gcn5, and dGcn5, then it will be returned
+   in the results with a score of 4.
+
+   In this case, dGcn5 is the synonym of a fly gene called Pcaf.  You will 
+   be warned that Pcaf is displayed in the results instead of dGcn5 because 
+   Pcaf is the more standard/accepted name for this gene.
+
+   You may or may not have intended to find models with this fly gene in 
+   them.  If you didnt, you can always explicitly specify the gcn genes you 
+   wish to search for with a query like:
+	
+	   gcn3 gcn4 gcn5
+
+
+5. P-value cutoff.
+
+   Here you can specify a P-value cutoff to filter your search results.
+
+   An alternative to expressing a decimal number such as 0.0001 is scientific 
+   notation, e.g. 1e-4.
+
+   Valid entries are numbers: (0,1].  An entry of 1 is the most lax filter,
+   as it is essentially equivalent to the complete absence of any P-value 
+   filtering.  The smaller the value, the more stringent the P-value criterion
+   becomes and the fewer search results you will obtain.
+
+   What do we mean by P-value?
+
+   By P-value, we mean the uncorrected hypergeometric P-value obtained from
+   GO biological process, molecular function, and cellular component 
+   enrichment analysis for each model.  The GO term annotations naturally 
+   lend themselves to a tree (DAG) representation since they follow a subsumption
+   architecture.  There are three large roots of the tree: biological process,
+   molecular function, and cellular component.  The further away from each of
+   these roots you get (equivalently, as you approach the leaves of each 
+   tree), the more specific the terms become.  For instance, "binding" would 
+   be closer to the molecular function root than any of its children, 
+   e.g. "DNA binding".  Terms like "binding" and "DNA binding" have genes
+   from various organisms annotated to them (the result of scientific papers 
+   and research).
+
+   So how do we get a P-value out of this tree?  We use the hypergeometric 
+   test, which requires 4 numbers:
+	 (1) No. of genes in the model
+	 (2) No. of genes in the model annotated with GO term 
+	 (3) No. of genes annotated with GO term
+	 (4) No. of genes annotated in GO
+
+   It is extremely important to note 2 things:
+      (1) each of the numbers above is specific to a particular organism.
+      (2) each of the numbers above is specific to 1 of the 3 major trees 
+          in GO (biological process, molecular function, cellular component)
+
+   Since each term subsumes its children (i.e. is more general and therefore contains its more specific children), it makes sense to calculate (3) using the following scheme:
+   If a gene is annotated with DNA binding, then we also annotate it recursively up the tree to the root (i.e. to each of its parents, and each of its parents' parents, etc. to the root, e.g. molecular function ).  Since each term subsumes its children,
+
+   
+
+
+
+
+
+6. 
+
+</body>
+</html>

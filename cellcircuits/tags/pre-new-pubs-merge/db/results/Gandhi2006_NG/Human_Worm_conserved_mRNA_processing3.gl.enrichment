@@ -1,0 +1,88 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.082130e-03	1	6	5	27713	88307	Caenorhabditis	elegans	GO:0000004	biological_process	"biological process unknown"	Y71G12G.14
+5.318480e-02	5	6	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+9.765600e-01	5	6	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+5.852940e-04	5	6	4501	27713	88307	Caenorhabditis	elegans	GO:0044237	biological_process	"cellular metabolism"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.786080e-05	5	6	519	6495	88307	Caenorhabditis	elegans	GO:0044422	cellular_component	"organelle part"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+2.155210e-05	5	6	539	6495	88307	Caenorhabditis	elegans	GO:0043228	cellular_component	"non-membrane-bound organelle"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+7.342430e-01	5	6	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+2.025540e-09	5	6	85	6495	88307	Caenorhabditis	elegans	GO:0031974	cellular_component	"membrane-enclosed lumen"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.245870e-03	5	6	5263	27713	88307	Caenorhabditis	elegans	GO:0008152	biological_process	"metabolism"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+9.142360e-02	5	6	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+9.709200e-01	5	6	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+5.132160e-06	5	6	1715	27713	88307	Caenorhabditis	elegans	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+4.736280e-05	5	6	2690	27713	88307	Caenorhabditis	elegans	GO:0043170	biological_process	"macromolecule metabolism"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+8.188130e-03	5	6	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+8.179060e-03	5	6	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.000000e+00	6	6	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	Y71G12G.14	ZK593.7
+2.025540e-09	5	6	85	6495	88307	Caenorhabditis	elegans	GO:0043233	cellular_component	"organelle lumen"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+2.094110e-02	5	6	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.306380e-11	5	6	131	27713	88307	Caenorhabditis	elegans	GO:0006396	biological_process	"RNA processing"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+2.155210e-05	5	6	539	6495	88307	Caenorhabditis	elegans	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+4.121420e-03	5	6	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+3.916040e-06	5	6	1624	27713	88307	Caenorhabditis	elegans	GO:0043283	biological_process	"biopolymer metabolism"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.786080e-05	5	6	519	6495	88307	Caenorhabditis	elegans	GO:0044446	cellular_component	"intracellular organelle part"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+5.682740e-02	1	6	63	6495	88307	Caenorhabditis	elegans	GO:0008372	cellular_component	"cellular component unknown"	Y71G12G.14
+1.000000e+00	1	6	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	Y71G12G.14
+6.954590e-10	5	6	69	6495	88307	Caenorhabditis	elegans	GO:0031981	cellular_component	"nuclear lumen"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+3.812800e-05	5	6	20	6495	88307	Caenorhabditis	elegans	GO:0044452	cellular_component	"nucleolar part"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+2.086890e-12	5	6	23	6495	88307	Caenorhabditis	elegans	GO:0005730	cellular_component	"nucleolus"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+4.456260e-04	5	6	4255	27713	88307	Caenorhabditis	elegans	GO:0044238	biological_process	"primary metabolism"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+2.094110e-02	5	6	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.000000e+00	6	6	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	Y71G12G.14	ZK593.7
+8.104510e-03	5	6	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.796030e-10	5	6	220	27713	88307	Caenorhabditis	elegans	GO:0016070	biological_process	"RNA metabolism"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+9.324930e-14	5	6	50	27713	88307	Caenorhabditis	elegans	GO:0006397	biological_process	"mRNA processing"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+3.614490e-03	5	6	1542	6495	88307	Caenorhabditis	elegans	GO:0005634	cellular_component	"nucleus"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+7.241510e-13	5	6	19	6495	88307	Caenorhabditis	elegans	GO:0005732	cellular_component	"small nucleolar ribonucleoprotein complex"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.817820e-01	1	6	385	11710	88307	Caenorhabditis	elegans	GO:0005554	molecular_function	"molecular function unknown"	Y71G12G.14
+1.086080e-04	5	6	748	6495	88307	Caenorhabditis	elegans	GO:0043234	cellular_component	"protein complex"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.970650e-07	5	6	210	6495	88307	Caenorhabditis	elegans	GO:0030529	cellular_component	"ribonucleoprotein complex"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+2.846750e-13	5	6	62	27713	88307	Caenorhabditis	elegans	GO:0016071	biological_process	"mRNA metabolism"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+1.440700e-08	5	6	125	6495	88307	Caenorhabditis	elegans	GO:0044428	cellular_component	"nuclear part"	F28F8.3	F32A5.7	F40F8.9	Y62E10A.12	ZK593.7
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.896870e-03	1	6	18	27672	92001	Homo	sapiens	GO:0031202	molecular_function	"RNA splicing factor activity, transesterification mechanism"	LSM1
+2.286640e-03	1	6	8	20974	92001	Homo	sapiens	GO:0005684	cellular_component	"major (U2-dependent) spliceosome"	LSM4
+1.812630e-02	6	6	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.512050e-04	6	6	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+5.805610e-01	6	6	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.850150e-01	2	6	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	LSM4	LSM6
+2.145670e-02	6	6	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+3.515260e-01	6	6	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+3.664900e-02	6	6	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+5.935930e-14	6	6	148	23297	92001	Homo	sapiens	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+5.935930e-14	6	6	148	23297	92001	Homo	sapiens	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+4.414680e-02	6	6	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+5.803790e-01	6	6	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.583970e-04	6	6	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+7.168230e-02	6	6	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+5.935930e-14	6	6	148	23297	92001	Homo	sapiens	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.092250e-03	6	6	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+2.108090e-03	6	6	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+4.590390e-01	6	6	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+2.163880e-13	6	6	183	23297	92001	Homo	sapiens	GO:0008380	biological_process	"RNA splicing"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.083740e-03	1	6	5	27672	92001	Homo	sapiens	GO:0017069	molecular_function	"snRNA binding"	LSM7
+1.000000e+00	6	6	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+7.983430e-03	6	6	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+9.837620e-11	6	6	503	23297	92001	Homo	sapiens	GO:0006396	biological_process	"RNA processing"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.418640e-09	6	6	930	27672	92001	Homo	sapiens	GO:0003723	molecular_function	"RNA binding"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.463070e-01	6	6	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+4.403630e-05	6	6	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.850150e-01	2	6	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	LSM4	LSM6
+1.000000e+00	6	6	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+2.407380e-02	1	6	85	20974	92001	Homo	sapiens	GO:0005681	cellular_component	"spliceosome complex"	LSM4
+1.741320e-02	6	6	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+2.104720e-03	6	6	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.000000e+00	6	6	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+7.988540e-03	6	6	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.210900e-12	6	6	243	23297	92001	Homo	sapiens	GO:0006397	biological_process	"mRNA processing"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+5.149440e-10	6	6	662	23297	92001	Homo	sapiens	GO:0016070	biological_process	"RNA metabolism"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+3.280550e-04	6	6	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+6.503600e-04	1	6	3	27672	92001	Homo	sapiens	GO:0017070	molecular_function	"U6 snRNA binding"	LSM7
+9.471240e-05	6	6	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+2.860680e-04	1	6	1	20974	92001	Homo	sapiens	GO:0005688	cellular_component	"snRNP U6"	LSM4
+9.257420e-06	2	6	17	20974	92001	Homo	sapiens	GO:0030532	cellular_component	"small nuclear ribonucleoprotein complex"	LSM4	LSM6
+1.063810e-08	6	6	986	20974	92001	Homo	sapiens	GO:0030529	cellular_component	"ribonucleoprotein complex"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.355700e-05	6	6	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+3.684070e-12	6	6	292	23297	92001	Homo	sapiens	GO:0016071	biological_process	"mRNA metabolism"	LSM1	LSM3	LSM4	LSM5	LSM6	LSM7
+1.653130e-02	2	6	730	20974	92001	Homo	sapiens	GO:0044428	cellular_component	"nuclear part"	LSM4	LSM6

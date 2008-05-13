@@ -1,0 +1,86 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.400300e-02	1	4	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	KAR4
+7.603640e-01	2	4	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	MUM2	YGL036W
+7.272340e-02	1	4	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	KAR4
+8.680380e-01	3	4	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	KAR4	MUM2	YGL036W
+3.301140e-01	3	4	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	IME4	KAR4	MUM2
+7.734930e-02	1	4	130	6526	97048	Saccharomyces	cerevisiae	GO:0009451	biological_process	"RNA modification"	IME4
+3.436990e-01	1	4	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	KAR4
+4.578610e-02	1	4	76	6526	97048	Saccharomyces	cerevisiae	GO:0045941	biological_process	"positive regulation of transcription"	KAR4
+3.510590e-01	3	4	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	IME4	KAR4	MUM2
+7.698170e-01	3	4	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	KAR4	MUM2	YGL036W
+5.051250e-02	1	4	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	KAR4
+7.615050e-01	1	4	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	IME4
+3.628060e-02	1	4	60	6526	97048	Saccharomyces	cerevisiae	GO:0045944	biological_process	"positive regulation of transcription from RNA polymerase II promoter"	KAR4
+9.596890e-01	1	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	KAR4
+4.884170e-01	2	4	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	IME4	MUM2
+6.116660e-03	1	4	10	6526	97048	Saccharomyces	cerevisiae	GO:0000742	biological_process	"karyogamy during conjugation with cellular fusion"	KAR4
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	IME4	KAR4	MUM2	YGL036W
+1.364740e-01	1	4	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	KAR4
+7.336610e-03	1	4	12	6526	97048	Saccharomyces	cerevisiae	GO:0000741	biological_process	"karyogamy"	KAR4
+1.859010e-01	1	4	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	KAR4
+4.282320e-02	1	4	71	6526	97048	Saccharomyces	cerevisiae	GO:0045893	biological_process	"positive regulation of transcription, DNA-dependent"	KAR4
+5.136840e-01	1	4	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	IME4
+2.450040e-03	1	4	4	6526	97048	Saccharomyces	cerevisiae	GO:0006279	biological_process	"premeiotic DNA synthesis"	MUM2
+6.400300e-02	1	4	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	KAR4
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	IME4	KAR4	MUM2	YGL036W
+5.286910e-02	1	4	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	KAR4
+5.051250e-02	1	4	84	6526	97048	Saccharomyces	cerevisiae	GO:0016741	molecular_function	"transferase activity, transferring one-carbon groups"	IME4
+1.170910e-01	1	4	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	KAR4
+2.702900e-03	2	4	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	IME4	KAR4
+2.431740e-01	1	4	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	KAR4
+7.272340e-02	1	4	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	KAR4
+9.596890e-01	1	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	KAR4
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	IME4	KAR4	MUM2	YGL036W
+2.945430e-01	1	4	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	IME4
+3.494910e-01	1	4	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	KAR4
+1.402750e-02	1	4	23	6526	97048	Saccharomyces	cerevisiae	GO:0008173	molecular_function	"RNA methyltransferase activity"	IME4
+2.545510e-01	1	4	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	KAR4
+2.560250e-01	1	4	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	KAR4
+1.103710e-01	1	4	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	IME4
+1.170910e-01	1	4	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	KAR4
+3.360660e-01	1	4	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	KAR4
+1.533730e-01	1	4	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	KAR4
+3.747260e-02	1	4	62	6526	97048	Saccharomyces	cerevisiae	GO:0008757	molecular_function	"S-adenosylmethionine-dependent methyltransferase activity"	IME4
+7.059620e-01	1	4	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	KAR4
+2.970440e-02	1	4	49	6526	97048	Saccharomyces	cerevisiae	GO:0006997	biological_process	"nuclear organization and biogenesis"	KAR4
+6.458630e-02	1	4	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	MUM2
+4.933260e-02	1	4	82	6526	97048	Saccharomyces	cerevisiae	GO:0008168	molecular_function	"methyltransferase activity"	IME4
+2.589680e-01	1	4	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	MUM2
+6.783560e-01	1	4	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YGL036W
+2.123690e-01	1	4	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	KAR4
+5.286910e-02	1	4	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	KAR4
+7.604760e-01	3	4	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	KAR4	MUM2	YGL036W
+5.286910e-02	1	4	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	KAR4
+7.202170e-01	3	4	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	IME4	KAR4	MUM2
+8.678250e-01	3	4	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	KAR4	MUM2	YGL036W
+3.602510e-02	3	4	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	IME4	KAR4	MUM2
+2.759570e-01	1	4	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	KAR4
+3.596450e-01	1	4	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	IME4
+7.112820e-01	3	4	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	IME4	KAR4	MUM2
+1.942760e-01	1	4	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	KAR4
+9.747630e-01	1	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	KAR4
+7.330260e-02	1	4	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	KAR4
+7.022980e-01	3	4	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	IME4	KAR4	MUM2
+1.832710e-01	1	4	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	KAR4
+2.413010e-01	2	4	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	IME4	MUM2
+6.129330e-04	1	4	1	6526	97048	Saccharomyces	cerevisiae	GO:0016556	biological_process	"mRNA modification"	IME4
+8.074640e-03	2	4	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	IME4	KAR4
+1.148560e-01	1	4	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	KAR4
+1.038160e-02	1	4	17	6526	97048	Saccharomyces	cerevisiae	GO:0048284	biological_process	"organelle fusion"	KAR4
+1.225580e-03	1	4	2	6526	97048	Saccharomyces	cerevisiae	GO:0008174	molecular_function	"mRNA methyltransferase activity"	IME4
+3.356150e-01	1	4	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	KAR4
+2.840500e-01	3	4	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	IME4	KAR4	MUM2
+5.756910e-02	1	4	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	KAR4
+9.747630e-01	1	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	KAR4
+7.652490e-01	1	4	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	KAR4
+5.264100e-01	1	4	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	KAR4
+5.051250e-02	1	4	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	KAR4
+1.684230e-01	1	4	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	KAR4
+4.756060e-02	1	4	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	KAR4
+2.702900e-03	2	4	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	IME4	KAR4
+4.448810e-01	2	4	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	MUM2	YGL036W
+3.675080e-01	1	4	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	IME4
+6.400300e-02	1	4	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	KAR4
+2.702900e-03	2	4	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	IME4	KAR4
+2.190730e-02	2	4	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	IME4	KAR4

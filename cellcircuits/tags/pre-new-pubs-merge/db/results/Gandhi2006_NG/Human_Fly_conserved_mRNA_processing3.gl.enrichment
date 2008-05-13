@@ -1,0 +1,124 @@
+#USING Prosbeta5 instead of its synonym CG12323 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.931230e-01	1	3	705	10214	157890	Drosophila	melanogaster	GO:0008233	molecular_function	"peptidase activity"	CG12323
+1.465990e-02	1	3	50	10183	157890	Drosophila	melanogaster	GO:0000381	biological_process	"regulation of alternative nuclear mRNA splicing, via spliceosome"	CG10418
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG10418	CG12323	CG4279
+1.301520e-01	3	3	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG10418	CG12323	CG4279
+1.189810e-01	2	3	1632	7583	157890	Drosophila	melanogaster	GO:0044422	cellular_component	"organelle part"	CG10418	CG4279
+3.161210e-02	2	3	808	7583	157890	Drosophila	melanogaster	GO:0043228	cellular_component	"non-membrane-bound organelle"	CG10418	CG4279
+3.710040e-01	1	3	1458	10183	157890	Drosophila	melanogaster	GO:0050791	biological_process	"regulation of physiological process"	CG10418
+1.669910e-01	3	3	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG10418	CG12323	CG4279
+1.303160e-01	3	3	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG10418	CG12323	CG4279
+7.826010e-01	1	3	4072	10214	157890	Drosophila	melanogaster	GO:0003824	molecular_function	"catalytic activity"	CG12323
+5.728830e-01	1	3	2514	10183	157890	Drosophila	melanogaster	GO:0019538	biological_process	"protein metabolism"	CG12323
+4.353890e-02	3	3	3583	10183	157890	Drosophila	melanogaster	GO:0043170	biological_process	"macromolecule metabolism"	CG10418	CG12323	CG4279
+2.720390e-01	2	3	2600	7583	157890	Drosophila	melanogaster	GO:0043227	cellular_component	"membrane-bound organelle"	CG10418	CG4279
+1.611790e-02	1	3	55	10183	157890	Drosophila	melanogaster	GO:0048024	biological_process	"regulation of nuclear mRNA splicing, via spliceosome"	CG10418
+1.000000e+00	3	3	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG10418	CG12323	CG4279
+1.318920e-02	2	3	515	7583	157890	Drosophila	melanogaster	GO:0043233	cellular_component	"organelle lumen"	CG10418	CG4279
+2.494500e-03	2	3	297	10183	157890	Drosophila	melanogaster	GO:0006396	biological_process	"RNA processing"	CG10418	CG4279
+3.896420e-02	1	3	134	10183	157890	Drosophila	melanogaster	GO:0043285	biological_process	"biopolymer catabolism"	CG12323
+2.277430e-02	1	3	58	7583	157890	Drosophila	melanogaster	GO:0000502	cellular_component	"proteasome complex (sensu Eukaryota)"	CG12323
+1.000000e+00	1	3	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG12323
+6.283400e-03	2	3	353	7583	157890	Drosophila	melanogaster	GO:0031981	cellular_component	"nuclear lumen"	CG10418	CG4279
+3.319440e-05	2	3	26	7583	157890	Drosophila	melanogaster	GO:0044452	cellular_component	"nucleolar part"	CG10418	CG4279
+2.222590e-02	1	3	76	10183	157890	Drosophila	melanogaster	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	CG12323
+1.611790e-02	1	3	55	10183	157890	Drosophila	melanogaster	GO:0050684	biological_process	"regulation of mRNA processing"	CG10418
+5.431710e-04	2	3	103	7583	157890	Drosophila	melanogaster	GO:0005730	cellular_component	"nucleolus"	CG10418	CG4279
+8.127360e-04	2	3	126	7583	157890	Drosophila	melanogaster	GO:0005681	cellular_component	"spliceosome complex"	CG10418	CG4279
+2.854140e-01	1	3	1079	10183	157890	Drosophila	melanogaster	GO:0031323	biological_process	"regulation of cellular metabolism"	CG10418
+1.400640e-01	1	3	501	10214	157890	Drosophila	melanogaster	GO:0004175	molecular_function	"endopeptidase activity"	CG12323
+2.716820e-01	2	3	2598	7583	157890	Drosophila	melanogaster	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CG10418	CG4279
+1.000000e+00	3	3	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG10418	CG12323	CG4279
+1.633760e-03	2	3	240	10183	157890	Drosophila	melanogaster	GO:0006397	biological_process	"mRNA processing"	CG10418	CG4279
+4.836730e-03	2	3	415	10183	157890	Drosophila	melanogaster	GO:0016070	biological_process	"RNA metabolism"	CG10418	CG4279
+4.132800e-01	1	3	1658	10183	157890	Drosophila	melanogaster	GO:0050789	biological_process	"regulation of biological process"	CG10418
+2.657320e-02	1	3	91	10183	157890	Drosophila	melanogaster	GO:0030163	biological_process	"protein catabolism"	CG12323
+6.849750e-02	1	3	238	10183	157890	Drosophila	melanogaster	GO:0006512	biological_process	"ubiquitin cycle"	CG12323
+5.661640e-01	1	3	2474	10183	157890	Drosophila	melanogaster	GO:0044260	biological_process	"cellular macromolecule metabolism"	CG12323
+2.968920e-01	1	3	1128	10183	157890	Drosophila	melanogaster	GO:0019222	biological_process	"regulation of metabolism"	CG10418
+2.475560e-01	1	3	921	10183	157890	Drosophila	melanogaster	GO:0006464	biological_process	"protein modification"	CG12323
+1.240170e-02	3	3	1756	7583	157890	Drosophila	melanogaster	GO:0043234	cellular_component	"protein complex"	CG10418	CG12323	CG4279
+7.492450e-03	2	3	386	7583	157890	Drosophila	melanogaster	GO:0030529	cellular_component	"ribonucleoprotein complex"	CG10418	CG4279
+1.785980e-03	2	3	251	10183	157890	Drosophila	melanogaster	GO:0016071	biological_process	"mRNA metabolism"	CG10418	CG4279
+3.802590e-01	1	3	1501	10183	157890	Drosophila	melanogaster	GO:0050794	biological_process	"regulation of cellular process"	CG10418
+2.425630e-02	1	3	83	10183	157890	Drosophila	melanogaster	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	CG12323
+2.425630e-02	1	3	83	10183	157890	Drosophila	melanogaster	GO:0044257	biological_process	"cellular protein catabolism"	CG12323
+2.604000e-01	1	3	974	10183	157890	Drosophila	melanogaster	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG10418
+5.530320e-01	1	3	2397	10183	157890	Drosophila	melanogaster	GO:0044267	biological_process	"cellular protein metabolism"	CG12323
+2.549920e-02	1	3	65	7583	157890	Drosophila	melanogaster	GO:0005684	cellular_component	"major (U2-dependent) spliceosome"	CG10418
+1.199260e-01	3	3	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG10418	CG12323	CG4279
+4.675040e-01	1	3	1935	10214	157890	Drosophila	melanogaster	GO:0016787	molecular_function	"hydrolase activity"	CG12323
+1.318920e-02	2	3	515	7583	157890	Drosophila	melanogaster	GO:0031974	cellular_component	"membrane-enclosed lumen"	CG10418	CG4279
+4.594850e-01	3	3	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG10418	CG12323	CG4279
+1.026180e-03	2	3	190	10183	157890	Drosophila	melanogaster	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	CG10418	CG4279
+1.026180e-03	2	3	190	10183	157890	Drosophila	melanogaster	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	CG10418	CG4279
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG10418	CG12323	CG4279
+9.603030e-02	2	3	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG10418	CG4279
+1.026180e-03	2	3	190	10183	157890	Drosophila	melanogaster	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	CG10418	CG4279
+9.024590e-02	1	3	316	10183	157890	Drosophila	melanogaster	GO:0044248	biological_process	"cellular catabolism"	CG12323
+2.106500e-01	1	3	772	10183	157890	Drosophila	melanogaster	GO:0006508	biological_process	"proteolysis"	CG12323
+1.091760e-03	2	3	196	10183	157890	Drosophila	melanogaster	GO:0008380	biological_process	"RNA splicing"	CG10418	CG4279
+4.445610e-01	3	3	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG10418	CG12323	CG4279
+3.470120e-01	2	3	3007	7583	157890	Drosophila	melanogaster	GO:0043229	cellular_component	"intracellular organelle"	CG10418	CG4279
+2.280630e-02	1	3	78	10183	157890	Drosophila	melanogaster	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	CG12323
+5.153410e-02	1	3	178	10183	157890	Drosophila	melanogaster	GO:0044265	biological_process	"cellular macromolecule catabolism"	CG12323
+3.446770e-01	3	3	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG10418	CG12323	CG4279
+3.161210e-02	2	3	808	7583	157890	Drosophila	melanogaster	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CG10418	CG4279
+6.194770e-03	3	3	1871	10183	157890	Drosophila	melanogaster	GO:0043283	biological_process	"biopolymer metabolism"	CG10418	CG12323	CG4279
+2.280630e-02	1	3	78	10183	157890	Drosophila	melanogaster	GO:0019941	biological_process	"modification-dependent protein catabolism"	CG12323
+1.189810e-01	2	3	1632	7583	157890	Drosophila	melanogaster	GO:0044446	cellular_component	"intracellular organelle part"	CG10418	CG4279
+3.610020e-01	1	3	1412	10183	157890	Drosophila	melanogaster	GO:0051244	biological_process	"regulation of cellular physiological process"	CG10418
+1.241910e-01	3	3	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG10418	CG12323	CG4279
+1.670070e-02	1	3	57	10183	157890	Drosophila	melanogaster	GO:0051252	biological_process	"regulation of RNA metabolism"	CG10418
+3.470120e-01	2	3	3007	7583	157890	Drosophila	melanogaster	GO:0043226	cellular_component	"organelle"	CG10418	CG4279
+1.323590e-01	2	3	1730	7583	157890	Drosophila	melanogaster	GO:0005634	cellular_component	"nucleus"	CG10418	CG4279
+3.612170e-05	2	3	20	7583	157890	Drosophila	melanogaster	GO:0005732	cellular_component	"small nucleolar ribonucleoprotein complex"	CG10418	CG4279
+1.495160e-02	1	3	51	10183	157890	Drosophila	melanogaster	GO:0000380	biological_process	"alternative nuclear mRNA splicing, via spliceosome"	CG10418
+5.721120e-02	1	3	198	10183	157890	Drosophila	melanogaster	GO:0009057	biological_process	"macromolecule catabolism"	CG12323
+1.103860e-02	1	3	28	7583	157890	Drosophila	melanogaster	GO:0005839	cellular_component	"proteasome core complex (sensu Eukaryota)"	CG12323
+5.431710e-04	2	3	103	7583	157890	Drosophila	melanogaster	GO:0030532	cellular_component	"small nuclear ribonucleoprotein complex"	CG10418	CG4279
+4.740580e-03	1	3	12	7583	157890	Drosophila	melanogaster	GO:0005688	cellular_component	"snRNP U6"	CG10418
+2.577470e-01	1	3	963	10183	157890	Drosophila	melanogaster	GO:0043412	biological_process	"biopolymer modification"	CG12323
+9.604280e-02	1	3	337	10183	157890	Drosophila	melanogaster	GO:0009056	biological_process	"catabolism"	CG12323
+2.088150e-02	2	3	652	7583	157890	Drosophila	melanogaster	GO:0044428	cellular_component	"nuclear part"	CG10418	CG4279
+#NOT FOUND: PSMB5_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.300550e-03	1	2	18	27672	92001	Homo	sapiens	GO:0031202	molecular_function	"RNA splicing factor activity, transesterification mechanism"	LSM1
+2.627340e-01	2	2	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	LSM1	LSM2
+5.330060e-02	2	2	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	LSM1	LSM2
+8.342390e-01	2	2	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	LSM1	LSM2
+2.779210e-01	2	2	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	LSM1	LSM2
+7.057760e-01	2	2	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	LSM1	LSM2
+3.322070e-01	2	2	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	LSM1	LSM2
+4.006250e-05	2	2	148	23297	92001	Homo	sapiens	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	LSM1	LSM2
+4.006250e-05	2	2	148	23297	92001	Homo	sapiens	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	LSM1	LSM2
+3.534730e-01	2	2	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	LSM1	LSM2
+8.341520e-01	2	2	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	LSM1	LSM2
+5.413740e-02	2	2	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	LSM1	LSM2
+4.154370e-01	2	2	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	LSM1	LSM2
+4.006250e-05	2	2	148	23297	92001	Homo	sapiens	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	LSM1	LSM2
+1.030220e-01	2	2	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	LSM1	LSM2
+1.282660e-01	2	2	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	LSM1	LSM2
+7.714250e-01	2	2	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	LSM1	LSM2
+6.134860e-05	2	2	183	23297	92001	Homo	sapiens	GO:0008380	biological_process	"RNA splicing"	LSM1	LSM2
+3.613500e-04	1	2	5	27672	92001	Homo	sapiens	GO:0017069	molecular_function	"snRNA binding"	LSM2
+1.000000e+00	2	2	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	LSM1	LSM2
+1.999090e-01	2	2	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	LSM1	LSM2
+4.652470e-04	2	2	503	23297	92001	Homo	sapiens	GO:0006396	biological_process	"RNA processing"	LSM1	LSM2
+1.128320e-03	2	2	930	27672	92001	Homo	sapiens	GO:0003723	molecular_function	"RNA binding"	LSM1	LSM2
+5.269660e-01	2	2	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	LSM1	LSM2
+3.534010e-02	2	2	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	LSM1	LSM2
+1.000000e+00	2	2	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	LSM1	LSM2
+2.592380e-01	2	2	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	LSM1	LSM2
+1.281980e-01	2	2	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	LSM1	LSM2
+1.000000e+00	2	2	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	LSM1	LSM2
+1.999520e-01	2	2	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	LSM1	LSM2
+1.083380e-04	2	2	243	23297	92001	Homo	sapiens	GO:0006397	biological_process	"mRNA processing"	LSM1	LSM2
+8.062600e-04	2	2	662	23297	92001	Homo	sapiens	GO:0016070	biological_process	"RNA metabolism"	LSM1	LSM2
+6.900530e-02	2	2	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	LSM1	LSM2
+2.168180e-04	1	2	3	27672	92001	Homo	sapiens	GO:0017070	molecular_function	"U6 snRNA binding"	LSM2
+4.560750e-02	2	2	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	LSM1	LSM2
+2.207860e-03	2	2	986	20974	92001	Homo	sapiens	GO:0030529	cellular_component	"ribonucleoprotein complex"	LSM1	LSM2
+2.387160e-02	2	2	3241	20974	92001	Homo	sapiens	GO:0043234	cellular_component	"protein complex"	LSM1	LSM2
+1.565530e-04	2	2	292	23297	92001	Homo	sapiens	GO:0016071	biological_process	"mRNA metabolism"	LSM1	LSM2

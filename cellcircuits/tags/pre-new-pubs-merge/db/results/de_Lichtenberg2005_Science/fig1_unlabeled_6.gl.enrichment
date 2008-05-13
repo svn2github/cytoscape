@@ -1,0 +1,55 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+4.373570e-08	3	3	24	6526	97048	Saccharomyces	cerevisiae	GO:0031123	biological_process	"RNA 3'-end processing"	FIP1	PTA1	YTH1
+9.817930e-09	3	3	15	6526	97048	Saccharomyces	cerevisiae	GO:0005847	cellular_component	"mRNA cleavage and polyadenylation specificity factor complex"	FIP1	PTA1	YTH1
+2.861130e-08	3	3	21	6526	97048	Saccharomyces	cerevisiae	GO:0031124	biological_process	"mRNA 3'-end processing"	FIP1	PTA1	YTH1
+1.760950e-08	3	3	18	6526	97048	Saccharomyces	cerevisiae	GO:0006378	biological_process	"mRNA polyadenylylation"	FIP1	PTA1	YTH1
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	FIP1	PTA1	YTH1
+2.166330e-01	1	3	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	FIP1
+4.590660e-03	1	3	10	6526	97048	Saccharomyces	cerevisiae	GO:0030846	biological_process	"transcription termination from Pol II promoter, RNA polymerase(A) coupled"	PTA1
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	FIP1	PTA1	YTH1
+1.338810e-01	3	3	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	FIP1	PTA1	YTH1
+3.975750e-02	3	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	FIP1	PTA1	YTH1
+7.795750e-03	1	3	17	6526	97048	Saccharomyces	cerevisiae	GO:0006353	biological_process	"transcription termination"	PTA1
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	FIP1	PTA1	YTH1
+1.829200e-03	3	3	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	FIP1	PTA1	YTH1
+1.190010e-04	3	3	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	FIP1	PTA1	YTH1
+1.447510e-01	3	3	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	FIP1	PTA1	YTH1
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	FIP1	PTA1	YTH1
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	FIP1	PTA1	YTH1
+1.079330e-02	3	3	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	FIP1	PTA1	YTH1
+5.706270e-03	3	3	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	FIP1	PTA1	YTH1
+2.150690e-01	1	3	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	PTA1
+5.444160e-02	3	3	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	FIP1	PTA1	YTH1
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	FIP1	PTA1	YTH1
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	FIP1	PTA1	YTH1
+9.712530e-05	3	3	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	FIP1	PTA1	YTH1
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	FIP1	PTA1	YTH1
+1.829200e-03	3	3	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	FIP1	PTA1	YTH1
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	FIP1	PTA1	YTH1
+1.490470e-04	3	3	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	FIP1	PTA1	YTH1
+2.251820e-04	3	3	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	FIP1	PTA1	YTH1
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	FIP1	PTA1	YTH1
+1.760950e-08	3	3	18	6526	97048	Saccharomyces	cerevisiae	GO:0043631	biological_process	"RNA polyadenylation"	FIP1	PTA1	YTH1
+1.343050e-02	3	3	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	FIP1	PTA1	YTH1
+6.880710e-03	1	3	15	6526	97048	Saccharomyces	cerevisiae	GO:0006369	biological_process	"transcription termination from RNA polymerase II promoter"	PTA1
+3.975750e-02	3	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	FIP1	PTA1	YTH1
+7.505900e-04	3	3	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	FIP1	PTA1	YTH1
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	FIP1	PTA1	YTH1
+1.110160e-01	3	3	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	FIP1	PTA1	YTH1
+3.673650e-03	1	3	8	6526	97048	Saccharomyces	cerevisiae	GO:0030847	biological_process	"transcription termination from Pol II promoter, RNA polymerase(A)-independent"	PTA1
+1.908160e-05	3	3	20	6526	97048	Saccharomyces	cerevisiae	GO:0005849	cellular_component	"mRNA cleavage factor complex"	FIP1	PTA1	YTH1
+5.794650e-04	3	3	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	FIP1	PTA1	YTH1
+8.517680e-06	3	3	135	6526	97048	Saccharomyces	cerevisiae	GO:0006397	biological_process	"mRNA processing"	FIP1	PTA1	YTH1
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	FIP1	PTA1	YTH1
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	FIP1	PTA1	YTH1
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	FIP1	PTA1	YTH1
+2.802650e-02	3	3	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	FIP1	PTA1	YTH1
+4.750340e-02	1	3	105	6526	97048	Saccharomyces	cerevisiae	GO:0006399	biological_process	"tRNA metabolism"	PTA1
+1.977290e-01	1	3	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	PTA1
+1.555150e-02	1	3	34	6526	97048	Saccharomyces	cerevisiae	GO:0008033	biological_process	"tRNA processing"	PTA1
+1.291730e-01	1	3	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	PTA1
+9.976710e-04	3	3	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	FIP1	PTA1	YTH1
+1.166920e-02	3	3	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	FIP1	PTA1	YTH1
+2.343570e-05	3	3	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	FIP1	PTA1	YTH1
+9.817930e-09	3	3	15	6526	97048	Saccharomyces	cerevisiae	GO:0006379	biological_process	"mRNA cleavage"	FIP1	PTA1	YTH1
+4.471790e-03	3	3	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	FIP1	PTA1	YTH1

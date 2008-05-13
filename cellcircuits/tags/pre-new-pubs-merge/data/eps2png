@@ -1,0 +1,10 @@
+#!/bin/sh
+# /usr/local/bin/ps2png
+for i in "$@"
+do
+        i_new=`dirname $i`/`basename $i .eps`.png
+        echo convert $i to $i_new
+        gs -dNOPAUSE -sDEVICE=png256 -sOutputFile=$i_new -q -dBATCH $i
+#        convert -rotate 90 $i_new $i_new
+        convert -resize 25% $i_new $i_new
+done

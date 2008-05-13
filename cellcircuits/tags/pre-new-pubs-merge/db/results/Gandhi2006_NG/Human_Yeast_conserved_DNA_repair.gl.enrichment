@@ -1,0 +1,132 @@
+#NOT FOUND: PMS2L3_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.941930e-01	1	2	5164	23297	92001	Homo	sapiens	GO:0050794	biological_process	"regulation of cellular process"	MLH1
+1.641530e-02	1	2	192	23297	92001	Homo	sapiens	GO:0045786	biological_process	"negative regulation of progression through cell cycle"	MLH1
+1.787750e-04	2	2	312	23297	92001	Homo	sapiens	GO:0006260	biological_process	"DNA replication"	MLH1	MLH3
+2.338190e-03	2	2	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	MLH1	MLH3
+7.609430e-06	2	2	65	23297	92001	Homo	sapiens	GO:0045005	biological_process	"maintenance of fidelity during DNA-dependent DNA replication"	MLH1	MLH3
+2.627340e-01	2	2	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	MLH1	MLH3
+1.973730e-03	1	2	23	23297	92001	Homo	sapiens	GO:0007131	biological_process	"meiotic recombination"	MLH3
+6.708610e-02	1	2	795	23297	92001	Homo	sapiens	GO:0043118	biological_process	"negative regulation of physiological process"	MLH1
+5.330060e-02	2	2	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	MLH1	MLH3
+7.122750e-02	1	2	845	23297	92001	Homo	sapiens	GO:0048523	biological_process	"negative regulation of cellular process"	MLH1
+7.659750e-02	1	2	910	23297	92001	Homo	sapiens	GO:0048519	biological_process	"negative regulation of biological process"	MLH1
+8.342390e-01	2	2	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	MLH1	MLH3
+1.946790e-02	2	2	3251	23297	92001	Homo	sapiens	GO:0050896	biological_process	"response to stimulus"	MLH1	MLH3
+2.779210e-01	2	2	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	MLH1	MLH3
+7.057760e-01	2	2	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	MLH1	MLH3
+3.724860e-01	1	2	4842	23297	92001	Homo	sapiens	GO:0050791	biological_process	"regulation of physiological process"	MLH1
+2.488220e-03	1	2	29	23297	92001	Homo	sapiens	GO:0007127	biological_process	"meiosis I"	MLH3
+3.322070e-01	2	2	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	MLH1	MLH3
+3.534730e-01	2	2	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	MLH1	MLH3
+8.341520e-01	2	2	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	MLH1	MLH3
+5.413740e-02	2	2	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	MLH1	MLH3
+4.154370e-01	2	2	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	MLH1	MLH3
+3.575200e-04	2	2	441	23297	92001	Homo	sapiens	GO:0009719	biological_process	"response to endogenous stimulus"	MLH1	MLH3
+1.030220e-01	2	2	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	MLH1	MLH3
+9.672780e-03	2	2	2722	27672	92001	Homo	sapiens	GO:0030554	molecular_function	"adenyl nucleotide binding"	MLH1	MLH3
+1.282660e-01	2	2	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	MLH1	MLH3
+3.844790e-05	2	2	145	23297	92001	Homo	sapiens	GO:0006261	biological_process	"DNA-dependent DNA replication"	MLH1	MLH3
+7.714250e-01	2	2	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	MLH1	MLH3
+4.548610e-02	1	2	536	23297	92001	Homo	sapiens	GO:0051726	biological_process	"regulation of cell cycle"	MLH1
+1.462650e-02	1	2	171	23297	92001	Homo	sapiens	GO:0006310	biological_process	"DNA recombination"	MLH3
+1.000000e+00	2	2	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	MLH1	MLH3
+1.495090e-02	2	2	3384	27672	92001	Homo	sapiens	GO:0017076	molecular_function	"purine nucleotide binding"	MLH1	MLH3
+1.999090e-01	2	2	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	MLH1	MLH3
+2.199560e-01	1	2	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	MLH3
+2.890850e-04	1	2	4	27672	92001	Homo	sapiens	GO:0003696	molecular_function	"satellite DNA binding"	MLH3
+8.954470e-03	2	2	2619	27672	92001	Homo	sapiens	GO:0005524	molecular_function	"ATP binding"	MLH1	MLH3
+5.269660e-01	2	2	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	MLH1	MLH3
+3.516580e-03	2	2	1382	23297	92001	Homo	sapiens	GO:0006950	biological_process	"response to stress"	MLH1	MLH3
+3.534010e-02	2	2	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	MLH1	MLH3
+1.000000e+00	2	2	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	MLH1	MLH3
+1.964800e-02	1	2	230	23297	92001	Homo	sapiens	GO:0000279	biological_process	"M phase"	MLH3
+5.058790e-03	1	2	59	23297	92001	Homo	sapiens	GO:0051321	biological_process	"meiotic cell cycle"	MLH3
+3.640940e-01	1	2	4719	23297	92001	Homo	sapiens	GO:0051244	biological_process	"regulation of cellular physiological process"	MLH1
+1.938290e-02	2	2	3853	27672	92001	Homo	sapiens	GO:0000166	molecular_function	"nucleotide binding"	MLH1	MLH3
+5.705560e-02	1	2	801	27672	92001	Homo	sapiens	GO:0043565	molecular_function	"sequence-specific DNA binding"	MLH3
+2.592380e-01	2	2	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	MLH1	MLH3
+3.059580e-04	2	2	408	23297	92001	Homo	sapiens	GO:0006974	biological_process	"response to DNA damage stimulus"	MLH1	MLH3
+1.281980e-01	2	2	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	MLH1	MLH3
+1.000000e+00	2	2	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	MLH1	MLH3
+1.999520e-01	2	2	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	MLH1	MLH3
+6.900530e-02	2	2	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	MLH1	MLH3
+4.506670e-02	1	2	531	23297	92001	Homo	sapiens	GO:0000074	biological_process	"regulation of progression through cell cycle"	MLH1
+6.467980e-02	1	2	766	23297	92001	Homo	sapiens	GO:0051243	biological_process	"negative regulation of cellular physiological process"	MLH1
+2.529170e-04	2	2	371	23297	92001	Homo	sapiens	GO:0006281	biological_process	"DNA repair"	MLH1	MLH3
+4.174860e-01	1	2	5516	23297	92001	Homo	sapiens	GO:0050789	biological_process	"regulation of biological process"	MLH1
+7.609430e-06	2	2	65	23297	92001	Homo	sapiens	GO:0006298	biological_process	"mismatch repair"	MLH1	MLH3
+3.815390e-01	1	2	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	MLH3
+4.973150e-03	1	2	58	23297	92001	Homo	sapiens	GO:0007126	biological_process	"meiosis"	MLH3
+4.973150e-03	1	2	58	23297	92001	Homo	sapiens	GO:0051327	biological_process	"M phase of meiotic cell cycle"	MLH3
+1.399430e-03	2	2	872	23297	92001	Homo	sapiens	GO:0007049	biological_process	"cell cycle"	MLH1	MLH3
+#USING PMS1 instead of its synonym YNL082W in Saccharomyces cerevisiae
+#USING MLH1 instead of its synonym YMR167W in Saccharomyces cerevisiae
+#USING MLH3 instead of its synonym YPL164C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.158230e-05	2	3	22	6526	97048	Saccharomyces	cerevisiae	GO:0006311	biological_process	"meiotic gene conversion"	YMR167W	YNL082W
+9.097340e-01	1	3	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YMR167W
+4.373570e-08	3	3	24	6526	97048	Saccharomyces	cerevisiae	GO:0045005	biological_process	"maintenance of fidelity during DNA-dependent DNA replication"	YMR167W	YNL082W	YPL164C
+3.735990e-07	3	3	48	6526	97048	Saccharomyces	cerevisiae	GO:0007131	biological_process	"meiotic recombination"	YMR167W	YNL082W	YPL164C
+5.785440e-01	3	3	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YMR167W	YNL082W	YPL164C
+1.338810e-01	3	3	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YMR167W	YNL082W	YPL164C
+7.144020e-01	1	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YNL082W
+3.769460e-01	1	3	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YNL082W
+1.447510e-01	3	3	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YMR167W	YNL082W	YPL164C
+4.545590e-01	3	3	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YMR167W	YNL082W	YPL164C
+2.173530e-01	2	3	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YMR167W	YNL082W
+8.445310e-02	2	3	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YMR167W	YNL082W
+3.324430e-05	3	3	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	YMR167W	YNL082W	YPL164C
+5.444160e-02	3	3	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YMR167W	YNL082W	YPL164C
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YMR167W	YNL082W	YPL164C
+2.152310e-05	2	3	18	6526	97048	Saccharomyces	cerevisiae	GO:0030554	molecular_function	"adenyl nucleotide binding"	YMR167W	YNL082W
+2.066510e-06	3	3	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	YMR167W	YNL082W	YPL164C
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YMR167W	YNL082W	YPL164C
+3.298870e-06	3	3	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	YMR167W	YNL082W	YPL164C
+3.054980e-03	2	3	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	YMR167W	YNL082W
+1.477530e-05	2	3	15	6526	97048	Saccharomyces	cerevisiae	GO:0005524	molecular_function	"ATP binding"	YMR167W	YNL082W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YMR167W	YNL082W	YPL164C
+9.740100e-06	3	3	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	YMR167W	YNL082W	YPL164C
+8.300380e-05	2	3	35	6526	97048	Saccharomyces	cerevisiae	GO:0000166	molecular_function	"nucleotide binding"	YMR167W	YNL082W
+3.845830e-03	2	3	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	YMR167W	YNL082W
+4.053470e-01	1	3	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YMR167W
+1.000000e+00	3	3	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YMR167W	YNL082W	YPL164C
+1.679450e-01	3	3	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YMR167W	YNL082W	YPL164C
+4.373570e-08	3	3	24	6526	97048	Saccharomyces	cerevisiae	GO:0006298	biological_process	"mismatch repair"	YMR167W	YNL082W	YPL164C
+2.800000e-02	2	3	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YMR167W	YNL082W
+4.230300e-06	3	3	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	YMR167W	YNL082W	YPL164C
+3.736830e-04	3	3	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YMR167W	YNL082W	YPL164C
+4.479670e-03	2	3	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	YMR167W	YNL082W
+4.445760e-01	3	3	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YMR167W	YNL082W	YPL164C
+2.957470e-06	2	3	7	6526	97048	Saccharomyces	cerevisiae	GO:0000710	biological_process	"meiotic mismatch repair"	YMR167W	YNL082W
+3.863440e-02	2	3	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YMR167W	YNL082W
+7.852890e-04	3	3	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YMR167W	YNL082W	YPL164C
+2.204050e-03	2	3	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	YMR167W	YNL082W
+4.040920e-01	3	3	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YMR167W	YNL082W	YPL164C
+6.935730e-07	3	3	66	6526	97048	Saccharomyces	cerevisiae	GO:0007127	biological_process	"meiosis I"	YMR167W	YNL082W	YPL164C
+4.445140e-03	2	3	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	YMR167W	YNL082W
+5.782250e-01	3	3	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YMR167W	YNL082W	YPL164C
+9.519930e-02	1	3	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	YNL082W
+1.079330e-02	3	3	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YMR167W	YNL082W	YPL164C
+4.479670e-03	2	3	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	YMR167W	YNL082W
+3.956080e-01	3	3	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YMR167W	YNL082W	YPL164C
+7.822020e-05	2	3	34	6526	97048	Saccharomyces	cerevisiae	GO:0017076	molecular_function	"purine nucleotide binding"	YMR167W	YNL082W
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YMR167W	YNL082W	YPL164C
+3.769460e-01	1	3	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YNL082W
+3.872430e-01	3	3	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YMR167W	YNL082W	YPL164C
+2.982990e-04	3	3	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	YMR167W	YNL082W	YPL164C
+1.343050e-02	3	3	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YMR167W	YNL082W	YPL164C
+7.144020e-01	1	3	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YNL082W
+5.285770e-05	3	3	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	YMR167W	YNL082W	YPL164C
+1.110160e-01	3	3	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YMR167W	YNL082W	YPL164C
+3.046510e-05	3	3	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	YMR167W	YNL082W	YPL164C
+2.173270e-01	3	3	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YMR167W	YNL082W	YPL164C
+2.802650e-02	3	3	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YMR167W	YNL082W	YPL164C
+1.434840e-05	3	3	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	YMR167W	YNL082W	YPL164C
+7.832120e-02	1	3	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	YNL082W
+9.740100e-06	3	3	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	YMR167W	YNL082W	YPL164C
+7.310180e-01	1	3	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YPL164C
+9.740100e-06	3	3	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	YMR167W	YNL082W	YPL164C
+2.498620e-04	3	3	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YMR167W	YNL082W	YPL164C
+7.769730e-01	1	3	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YMR167W
+4.176170e-01	1	3	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YNL082W

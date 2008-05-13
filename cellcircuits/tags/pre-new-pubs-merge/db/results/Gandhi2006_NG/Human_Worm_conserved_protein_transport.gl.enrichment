@@ -1,0 +1,198 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+9.703630e-01	3	11	3289	6495	88307	Caenorhabditis	elegans	GO:0016020	cellular_component	"membrane"	C13B9.3	F45G2.4	Y71F9AL.17
+2.233630e-02	2	11	140	6495	88307	Caenorhabditis	elegans	GO:0031090	cellular_component	"organelle membrane"	C13B9.3	Y71F9AL.17
+4.374120e-03	2	11	60	6495	88307	Caenorhabditis	elegans	GO:0031988	cellular_component	"membrane-bound vesicle"	C13B9.3	Y71F9AL.17
+7.809450e-02	4	11	1013	6495	88307	Caenorhabditis	elegans	GO:0005737	cellular_component	"cytoplasm"	C13B9.3	F45G2.4	Y25C1A.5	Y71F9AL.17
+8.263840e-04	2	11	26	6495	88307	Caenorhabditis	elegans	GO:0044433	cellular_component	"cytoplasmic vesicle part"	C13B9.3	Y71F9AL.17
+9.999930e-01	1	11	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	F45G2.4
+1.000000e+00	4	11	6223	6495	88307	Caenorhabditis	elegans	GO:0005623	cellular_component	"cell"	C13B9.3	F45G2.4	Y25C1A.5	Y71F9AL.17
+5.159960e-02	3	11	519	6495	88307	Caenorhabditis	elegans	GO:0044422	cellular_component	"organelle part"	C13B9.3	Y25C1A.5	Y71F9AL.17
+3.064730e-09	5	11	164	27713	88307	Caenorhabditis	elegans	GO:0015031	biological_process	"protein transport"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+4.555050e-04	5	11	1870	27713	88307	Caenorhabditis	elegans	GO:0051234	biological_process	"establishment of localization"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+9.587500e-01	4	11	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+1.341590e-02	1	11	34	27713	88307	Caenorhabditis	elegans	GO:0006605	biological_process	"protein targeting"	Y25C1A.5
+8.841500e-04	4	11	1193	27713	88307	Caenorhabditis	elegans	GO:0007610	biological_process	"behavior"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+9.564580e-01	4	11	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+7.841470e-02	1	11	48	6495	88307	Caenorhabditis	elegans	GO:0030136	cellular_component	"clathrin-coated vesicle"	C13B9.3
+4.009060e-08	5	11	274	27713	88307	Caenorhabditis	elegans	GO:0051649	biological_process	"establishment of cellular localization"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+8.586750e-01	4	11	3116	6495	88307	Caenorhabditis	elegans	GO:0005622	cellular_component	"intracellular"	C13B9.3	F45G2.4	Y25C1A.5	Y71F9AL.17
+9.946350e-01	2	11	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	F45G2.4	Y25C1A.5
+9.564580e-01	4	11	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+6.398760e-01	3	11	1833	6495	88307	Caenorhabditis	elegans	GO:0043227	cellular_component	"membrane-bound organelle"	C13B9.3	Y25C1A.5	Y71F9AL.17
+8.515210e-09	5	11	201	27713	88307	Caenorhabditis	elegans	GO:0008104	biological_process	"protein localization"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+9.995490e-01	3	11	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	F38E11.5	F45G2.4	Y71F9AL.17
+2.624490e-03	2	11	196	27713	88307	Caenorhabditis	elegans	GO:0018987	biological_process	"osmoregulation"	F38E11.5	Y25C1A.5
+1.000000e+00	6	11	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	C13B9.3	F38E11.5	F45G2.4	T14G10.5	Y25C1A.5	Y71F9AL.17
+2.445940e-06	3	11	34	11710	88307	Caenorhabditis	elegans	GO:0008565	molecular_function	"protein transporter activity"	F38E11.5	F45G2.4	Y71F9AL.17
+6.441400e-04	2	11	23	6495	88307	Caenorhabditis	elegans	GO:0048475	cellular_component	"coated membrane"	C13B9.3	Y71F9AL.17
+1.030430e-03	2	11	29	6495	88307	Caenorhabditis	elegans	GO:0012506	cellular_component	"vesicle membrane"	C13B9.3	Y71F9AL.17
+9.981930e-01	2	11	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	F38E11.5	F45G2.4
+1.000000e+00	4	11	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+1.848690e-02	1	11	11	6495	88307	Caenorhabditis	elegans	GO:0005798	cellular_component	"Golgi-associated vesicle"	Y71F9AL.17
+3.300770e-03	2	11	52	6495	88307	Caenorhabditis	elegans	GO:0030135	cellular_component	"coated vesicle"	C13B9.3	Y71F9AL.17
+9.999930e-01	1	11	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	F45G2.4
+3.173610e-02	1	11	19	6495	88307	Caenorhabditis	elegans	GO:0030125	cellular_component	"clathrin vesicle coat"	C13B9.3
+6.381620e-01	3	11	1829	6495	88307	Caenorhabditis	elegans	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	C13B9.3	Y25C1A.5	Y71F9AL.17
+3.125620e-04	5	11	1725	27713	88307	Caenorhabditis	elegans	GO:0006810	biological_process	"transport"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+1.000000e+00	4	11	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	C13B9.3	F45G2.4	Y25C1A.5	Y71F9AL.17
+9.804660e-01	4	11	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+3.173610e-02	1	11	19	6495	88307	Caenorhabditis	elegans	GO:0030118	cellular_component	"clathrin coat"	C13B9.3
+1.791000e-02	2	11	530	27713	88307	Caenorhabditis	elegans	GO:0007568	biological_process	"aging"	F45G2.4	Y25C1A.5
+3.984400e-02	2	11	815	27713	88307	Caenorhabditis	elegans	GO:0050874	biological_process	"organismal physiological process"	F45G2.4	Y25C1A.5
+6.441400e-04	2	11	23	6495	88307	Caenorhabditis	elegans	GO:0030117	cellular_component	"membrane coat"	C13B9.3	Y71F9AL.17
+9.999930e-01	1	11	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	F45G2.4
+9.263780e-01	6	11	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	C13B9.3	F38E11.5	F45G2.4	T14G10.5	Y25C1A.5	Y71F9AL.17
+2.077100e-06	5	11	610	27713	88307	Caenorhabditis	elegans	GO:0016043	biological_process	"cell organization and biogenesis"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+7.128270e-09	5	11	194	27713	88307	Caenorhabditis	elegans	GO:0046907	biological_process	"intracellular transport"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+9.592530e-01	4	11	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+3.954910e-03	2	11	57	6495	88307	Caenorhabditis	elegans	GO:0031410	cellular_component	"cytoplasmic vesicle"	C13B9.3	Y71F9AL.17
+1.693610e-03	1	11	1	6495	88307	Caenorhabditis	elegans	GO:0030137	cellular_component	"COPI-coated vesicle"	Y71F9AL.17
+3.954910e-03	2	11	57	6495	88307	Caenorhabditis	elegans	GO:0016023	cellular_component	"cytoplasmic membrane-bound vesicle"	C13B9.3	Y71F9AL.17
+4.374120e-03	2	11	60	6495	88307	Caenorhabditis	elegans	GO:0031982	cellular_component	"vesicle"	C13B9.3	Y71F9AL.17
+7.581030e-01	4	11	2755	6495	88307	Caenorhabditis	elegans	GO:0044424	cellular_component	"intracellular part"	C13B9.3	F45G2.4	Y25C1A.5	Y71F9AL.17
+9.999930e-01	1	11	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	F45G2.4
+6.441400e-04	2	11	23	6495	88307	Caenorhabditis	elegans	GO:0030120	cellular_component	"vesicle coat"	C13B9.3	Y71F9AL.17
+1.693610e-03	1	11	1	6495	88307	Caenorhabditis	elegans	GO:0030663	cellular_component	"COPI coated vesicle membrane"	Y71F9AL.17
+2.059860e-03	4	11	1497	27713	88307	Caenorhabditis	elegans	GO:0050896	biological_process	"response to stimulus"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+6.441400e-04	2	11	23	6495	88307	Caenorhabditis	elegans	GO:0030662	cellular_component	"coated vesicle membrane"	C13B9.3	Y71F9AL.17
+9.952470e-01	6	11	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	C13B9.3	F38E11.5	F45G2.4	T14G10.5	Y25C1A.5	Y71F9AL.17
+4.094120e-03	2	11	246	27713	88307	Caenorhabditis	elegans	GO:0042592	biological_process	"homeostasis"	F38E11.5	Y25C1A.5
+9.999930e-01	1	11	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	F45G2.4
+1.693610e-03	1	11	1	6495	88307	Caenorhabditis	elegans	GO:0030126	cellular_component	"COPI vesicle coat"	Y71F9AL.17
+1.000000e+00	4	11	6190	6495	88307	Caenorhabditis	elegans	GO:0044464	cellular_component	"cell part"	C13B9.3	F45G2.4	Y25C1A.5	Y71F9AL.17
+8.051200e-01	2	11	1630	6495	88307	Caenorhabditis	elegans	GO:0044425	cellular_component	"membrane part"	C13B9.3	Y71F9AL.17
+1.503250e-03	2	11	35	6495	88307	Caenorhabditis	elegans	GO:0044431	cellular_component	"Golgi apparatus part"	Y25C1A.5	Y71F9AL.17
+5.333840e-10	5	11	116	27713	88307	Caenorhabditis	elegans	GO:0006886	biological_process	"intracellular protein transport"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+9.969170e-01	4	11	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+1.724000e-01	5	11	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+8.729980e-02	3	11	1159	11710	88307	Caenorhabditis	elegans	GO:0005215	molecular_function	"transporter activity"	F38E11.5	F45G2.4	Y71F9AL.17
+7.909570e-01	3	11	2243	6495	88307	Caenorhabditis	elegans	GO:0043229	cellular_component	"intracellular organelle"	C13B9.3	Y25C1A.5	Y71F9AL.17
+1.050150e-01	5	11	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+5.159960e-02	3	11	519	6495	88307	Caenorhabditis	elegans	GO:0044446	cellular_component	"intracellular organelle part"	C13B9.3	Y25C1A.5	Y71F9AL.17
+9.995370e-01	3	11	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	F38E11.5	F45G2.4	Y71F9AL.17
+8.442010e-03	1	11	5	6495	88307	Caenorhabditis	elegans	GO:0005795	cellular_component	"Golgi stack"	Y25C1A.5
+1.156570e-02	2	11	99	6495	88307	Caenorhabditis	elegans	GO:0012505	cellular_component	"endomembrane system"	C13B9.3	Y71F9AL.17
+3.173610e-02	1	11	19	6495	88307	Caenorhabditis	elegans	GO:0030665	cellular_component	"clathrin coated vesicle membrane"	C13B9.3
+9.604810e-01	4	11	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+9.981610e-01	2	11	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	F38E11.5	F45G2.4
+6.441400e-04	2	11	23	6495	88307	Caenorhabditis	elegans	GO:0030659	cellular_component	"cytoplasmic vesicle membrane"	C13B9.3	Y71F9AL.17
+4.157120e-08	5	11	276	27713	88307	Caenorhabditis	elegans	GO:0051641	biological_process	"cellular localization"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+7.909570e-01	3	11	2243	6495	88307	Caenorhabditis	elegans	GO:0043226	cellular_component	"organelle"	C13B9.3	Y25C1A.5	Y71F9AL.17
+3.459770e-09	5	11	168	27713	88307	Caenorhabditis	elegans	GO:0045184	biological_process	"establishment of protein localization"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+4.910780e-04	4	11	1021	27713	88307	Caenorhabditis	elegans	GO:0007626	biological_process	"locomotory behavior"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+1.784620e-02	2	11	529	27713	88307	Caenorhabditis	elegans	GO:0008340	biological_process	"determination of adult life span"	F45G2.4	Y25C1A.5
+3.555710e-03	2	11	54	6495	88307	Caenorhabditis	elegans	GO:0005794	cellular_component	"Golgi apparatus"	Y25C1A.5	Y71F9AL.17
+4.892820e-04	5	11	1899	27713	88307	Caenorhabditis	elegans	GO:0051179	biological_process	"localization"	C13B9.3	F38E11.5	F45G2.4	Y25C1A.5	Y71F9AL.17
+9.650710e-01	4	11	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	F38E11.5	F45G2.4	T14G10.5	Y71F9AL.17
+6.072450e-02	3	11	554	6495	88307	Caenorhabditis	elegans	GO:0044444	cellular_component	"cytoplasmic part"	C13B9.3	Y25C1A.5	Y71F9AL.17
+#NOT FOUND: ARCN1_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.071360e-02	5	5	8467	20974	92001	Homo	sapiens	GO:0016020	cellular_component	"membrane"	COPA	COPB	COPB2	COPE	COPG2
+1.783550e-01	1	5	808	20974	92001	Homo	sapiens	GO:0044421	cellular_component	"extracellular region part"	COPA
+1.408620e-02	1	5	66	23297	92001	Homo	sapiens	GO:0007586	biological_process	"digestion"	COPA
+3.001330e-03	1	5	14	23297	92001	Homo	sapiens	GO:0000097	biological_process	"sulfur amino acid biosynthesis"	COPG2
+1.902170e-08	5	5	674	20974	92001	Homo	sapiens	GO:0031090	cellular_component	"organelle membrane"	COPA	COPB	COPB2	COPE	COPG2
+1.299340e-10	5	5	223	20974	92001	Homo	sapiens	GO:0031988	cellular_component	"membrane-bound vesicle"	COPA	COPB	COPB2	COPE	COPG2
+5.324270e-04	5	5	4646	20974	92001	Homo	sapiens	GO:0005737	cellular_component	"cytoplasm"	COPA	COPB	COPB2	COPE	COPG2
+3.016780e-02	1	5	169	27672	92001	Homo	sapiens	GO:0005179	molecular_function	"hormone activity"	COPA
+2.115670e-12	5	5	99	20974	92001	Homo	sapiens	GO:0044433	cellular_component	"cytoplasmic vesicle part"	COPA	COPB	COPB2	COPE	COPG2
+3.548580e-02	1	5	151	20974	92001	Homo	sapiens	GO:0042598	cellular_component	"vesicular fraction"	COPA
+4.064760e-01	1	5	2308	23297	92001	Homo	sapiens	GO:0009058	biological_process	"biosynthesis"	COPG2
+9.031790e-04	1	5	5	27672	92001	Homo	sapiens	GO:0008705	molecular_function	"methionine synthase activity"	COPG2
+6.356400e-01	5	5	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	COPA	COPB	COPB2	COPE	COPG2
+5.933360e-01	1	5	4557	27672	92001	Homo	sapiens	GO:0004871	molecular_function	"signal transducer activity"	COPA
+9.763840e-01	1	5	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	COPG2
+4.196580e-05	5	5	2796	20974	92001	Homo	sapiens	GO:0044422	cellular_component	"organelle part"	COPA	COPB	COPB2	COPE	COPG2
+5.141110e-03	1	5	24	23297	92001	Homo	sapiens	GO:0000096	biological_process	"sulfur amino acid metabolism"	COPG2
+7.916680e-03	1	5	37	23297	92001	Homo	sapiens	GO:0044272	biological_process	"sulfur compound biosynthesis"	COPG2
+1.981590e-08	5	5	740	23297	92001	Homo	sapiens	GO:0015031	biological_process	"protein transport"	COPA	COPB	COPB2	COPE	COPG2
+9.193400e-02	1	5	445	23297	92001	Homo	sapiens	GO:0006519	biological_process	"amino acid and derivative metabolism"	COPG2
+1.530420e-04	5	5	4022	23297	92001	Homo	sapiens	GO:0051234	biological_process	"establishment of localization"	COPA	COPB	COPB2	COPE	COPG2
+6.442010e-04	2	5	189	23297	92001	Homo	sapiens	GO:0006605	biological_process	"protein targeting"	COPA	COPB
+3.455890e-02	1	5	147	20974	92001	Homo	sapiens	GO:0005792	cellular_component	"microsome"	COPA
+9.863660e-01	1	5	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	COPG2
+7.954740e-02	1	5	383	23297	92001	Homo	sapiens	GO:0006520	biological_process	"amino acid metabolism"	COPG2
+8.063250e-08	5	5	911	23297	92001	Homo	sapiens	GO:0051649	biological_process	"establishment of cellular localization"	COPA	COPB	COPB2	COPE	COPG2
+7.426510e-02	5	5	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	COPA	COPB	COPB2	COPE	COPG2
+8.708860e-01	1	5	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	COPG2
+4.678190e-02	1	5	200	20974	92001	Homo	sapiens	GO:0005625	cellular_component	"soluble fraction"	COPA
+4.179750e-01	4	5	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	COPA	COPB	COPE	COPG2
+3.001330e-03	1	5	14	23297	92001	Homo	sapiens	GO:0006555	biological_process	"methionine metabolism"	COPG2
+5.888440e-03	5	5	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	COPA	COPB	COPB2	COPE	COPG2
+8.582590e-04	1	5	4	23297	92001	Homo	sapiens	GO:0030157	biological_process	"pancreatic juice secretion"	COPA
+3.913400e-08	5	5	810	23297	92001	Homo	sapiens	GO:0008104	biological_process	"protein localization"	COPA	COPB	COPB2	COPE	COPG2
+1.000000e+00	5	5	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	COPA	COPB	COPB2	COPE	COPG2
+4.666200e-10	5	5	319	23297	92001	Homo	sapiens	GO:0046903	biological_process	"secretion"	COPA	COPB	COPB2	COPE	COPG2
+1.472270e-02	1	5	69	23297	92001	Homo	sapiens	GO:0006790	biological_process	"sulfur metabolism"	COPG2
+8.112870e-07	3	5	124	27672	92001	Homo	sapiens	GO:0008565	molecular_function	"protein transporter activity"	COPA	COPB2	COPE
+4.443220e-13	5	5	73	20974	92001	Homo	sapiens	GO:0048475	cellular_component	"coated membrane"	COPA	COPB	COPB2	COPE	COPG2
+7.770770e-12	5	5	16	23297	92001	Homo	sapiens	GO:0006891	biological_process	"intra-Golgi vesicle-mediated transport"	COPA	COPB	COPB2	COPE	COPG2
+1.000000e+00	5	5	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	COPA	COPB	COPB2	COPE	COPG2
+2.463780e-12	5	5	102	20974	92001	Homo	sapiens	GO:0012506	cellular_component	"vesicle membrane"	COPA	COPB	COPB2	COPE	COPG2
+3.772610e-02	1	5	212	27672	92001	Homo	sapiens	GO:0016741	molecular_function	"transferase activity, transferring one-carbon groups"	COPG2
+3.184560e-01	1	5	1548	20974	92001	Homo	sapiens	GO:0005576	cellular_component	"extracellular region"	COPA
+2.255500e-13	5	5	64	20974	92001	Homo	sapiens	GO:0005798	cellular_component	"Golgi-associated vesicle"	COPA	COPB	COPB2	COPE	COPG2
+3.201190e-11	5	5	169	20974	92001	Homo	sapiens	GO:0030135	cellular_component	"coated vesicle"	COPA	COPB	COPB2	COPE	COPG2
+1.059570e-04	5	5	3737	23297	92001	Homo	sapiens	GO:0006810	biological_process	"transport"	COPA	COPB	COPB2	COPE	COPG2
+1.000000e+00	5	5	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	COPA	COPB	COPB2	COPE	COPG2
+5.880600e-03	5	5	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	COPA	COPB	COPB2	COPE	COPG2
+1.805710e-03	1	5	10	27672	92001	Homo	sapiens	GO:0008172	molecular_function	"S-methyltransferase activity"	COPG2
+4.752990e-01	1	5	2819	23297	92001	Homo	sapiens	GO:0050874	biological_process	"organismal physiological process"	COPA
+4.443220e-13	5	5	73	20974	92001	Homo	sapiens	GO:0030117	cellular_component	"membrane coat"	COPA	COPB	COPB2	COPE	COPG2
+1.378690e-01	1	5	681	23297	92001	Homo	sapiens	GO:0006082	biological_process	"organic acid metabolism"	COPG2
+1.077960e-01	1	5	473	20974	92001	Homo	sapiens	GO:0005615	cellular_component	"extracellular space"	COPA
+9.974350e-03	2	5	685	20974	92001	Homo	sapiens	GO:0005783	cellular_component	"endoplasmic reticulum"	COPA	COPB2
+7.680970e-06	5	5	2212	23297	92001	Homo	sapiens	GO:0016043	biological_process	"cell organization and biogenesis"	COPA	COPB	COPB2	COPE	COPG2
+7.614430e-08	5	5	902	23297	92001	Homo	sapiens	GO:0046907	biological_process	"intracellular transport"	COPA	COPB	COPB2	COPE	COPG2
+1.270200e-10	5	5	222	20974	92001	Homo	sapiens	GO:0031410	cellular_component	"cytoplasmic vesicle"	COPA	COPB	COPB2	COPE	COPG2
+3.702500e-02	1	5	208	27672	92001	Homo	sapiens	GO:0008168	molecular_function	"methyltransferase activity"	COPG2
+1.420500e-01	1	5	835	27672	92001	Homo	sapiens	GO:0005102	molecular_function	"receptor binding"	COPA
+1.566810e-11	5	5	12	20974	92001	Homo	sapiens	GO:0030137	cellular_component	"COPI-coated vesicle"	COPA	COPB	COPB2	COPE	COPG2
+1.213500e-10	5	5	220	20974	92001	Homo	sapiens	GO:0016023	cellular_component	"cytoplasmic membrane-bound vesicle"	COPA	COPB	COPB2	COPE	COPG2
+1.389960e-10	5	5	226	20974	92001	Homo	sapiens	GO:0031982	cellular_component	"vesicle"	COPA	COPB	COPB2	COPE	COPG2
+9.031790e-04	1	5	5	27672	92001	Homo	sapiens	GO:0042084	molecular_function	"5-methyltetrahydrofolate-dependent methyltransferase activity"	COPG2
+4.927350e-03	1	5	23	23297	92001	Homo	sapiens	GO:0009066	biological_process	"aspartate family amino acid metabolism"	COPG2
+3.537050e-02	5	5	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	COPA	COPB	COPB2	COPE	COPG2
+3.779870e-12	5	5	123	23297	92001	Homo	sapiens	GO:0048193	biological_process	"Golgi vesicle transport"	COPA	COPB	COPB2	COPE	COPG2
+1.781510e-01	1	5	807	20974	92001	Homo	sapiens	GO:0000267	cellular_component	"cell fraction"	COPA
+3.269140e-01	2	5	6389	27672	92001	Homo	sapiens	GO:0005515	molecular_function	"protein binding"	COPA	COPB
+3.851490e-13	5	5	71	20974	92001	Homo	sapiens	GO:0030120	cellular_component	"vesicle coat"	COPA	COPB	COPB2	COPE	COPG2
+1.545950e-11	5	5	11	20974	92001	Homo	sapiens	GO:0030663	cellular_component	"COPI coated vesicle membrane"	COPA	COPB	COPB2	COPE	COPG2
+1.030190e-12	5	5	86	20974	92001	Homo	sapiens	GO:0030662	cellular_component	"coated vesicle membrane"	COPA	COPB	COPB2	COPE	COPG2
+1.715930e-03	1	5	8	23297	92001	Homo	sapiens	GO:0009086	biological_process	"methionine biosynthesis"	COPG2
+4.184470e-01	5	5	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	COPA	COPB	COPB2	COPE	COPG2
+1.545950e-11	5	5	11	20974	92001	Homo	sapiens	GO:0030126	cellular_component	"COPI vesicle coat"	COPA	COPB	COPB2	COPE	COPG2
+2.642540e-03	5	5	6400	20974	92001	Homo	sapiens	GO:0044425	cellular_component	"membrane part"	COPA	COPB	COPB2	COPE	COPG2
+6.354750e-01	5	5	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	COPA	COPB	COPB2	COPE	COPG2
+9.367120e-11	5	5	209	20974	92001	Homo	sapiens	GO:0044431	cellular_component	"Golgi apparatus part"	COPA	COPB	COPB2	COPE	COPG2
+5.431460e-07	4	5	430	23297	92001	Homo	sapiens	GO:0006886	biological_process	"intracellular protein transport"	COPA	COPB	COPB2	COPE
+1.286720e-10	5	5	247	23297	92001	Homo	sapiens	GO:0045045	biological_process	"secretory pathway"	COPA	COPB	COPB2	COPE	COPG2
+4.379910e-01	1	5	3012	27672	92001	Homo	sapiens	GO:0016740	molecular_function	"transferase activity"	COPG2
+5.226540e-01	5	5	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	COPA	COPB	COPB2	COPE	COPG2
+1.083070e-01	1	5	528	23297	92001	Homo	sapiens	GO:0009308	biological_process	"amine metabolism"	COPG2
+4.598460e-03	3	5	2227	27672	92001	Homo	sapiens	GO:0005215	molecular_function	"transporter activity"	COPA	COPB2	COPE
+1.786030e-02	5	5	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	COPA	COPB	COPB2	COPE	COPG2
+1.811170e-02	1	5	85	23297	92001	Homo	sapiens	GO:0008652	biological_process	"amino acid biosynthesis"	COPG2
+2.573010e-03	1	5	12	23297	92001	Homo	sapiens	GO:0009067	biological_process	"aspartate family amino acid biosynthesis"	COPG2
+2.015600e-01	5	5	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	COPA	COPB	COPB2	COPE	COPG2
+4.196580e-05	5	5	2796	20974	92001	Homo	sapiens	GO:0044446	cellular_component	"intracellular organelle part"	COPA	COPB	COPB2	COPE	COPG2
+3.687470e-02	1	5	157	20974	92001	Homo	sapiens	GO:0000139	cellular_component	"Golgi membrane"	COPB
+2.719940e-09	5	5	453	23297	92001	Homo	sapiens	GO:0016192	biological_process	"vesicle-mediated transport"	COPA	COPB	COPB2	COPE	COPG2
+5.132110e-09	5	5	463	20974	92001	Homo	sapiens	GO:0012505	cellular_component	"endomembrane system"	COPA	COPB	COPB2	COPE	COPG2
+1.155290e-01	1	5	565	23297	92001	Homo	sapiens	GO:0006807	biological_process	"nitrogen compound metabolism"	COPG2
+9.554250e-02	1	5	417	20974	92001	Homo	sapiens	GO:0005829	cellular_component	"cytosol"	COPB
+9.715230e-01	1	5	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	COPG2
+1.382730e-01	1	5	615	20974	92001	Homo	sapiens	GO:0005624	cellular_component	"membrane fraction"	COPA
+3.738230e-01	1	5	2082	23297	92001	Homo	sapiens	GO:0044249	biological_process	"cellular biosynthesis"	COPG2
+2.008820e-12	5	5	98	20974	92001	Homo	sapiens	GO:0030659	cellular_component	"cytoplasmic vesicle membrane"	COPA	COPB	COPB2	COPE	COPG2
+8.528950e-08	5	5	920	23297	92001	Homo	sapiens	GO:0051641	biological_process	"cellular localization"	COPA	COPB	COPB2	COPE	COPG2
+1.786980e-02	5	5	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	COPA	COPB	COPB2	COPE	COPG2
+3.034320e-08	5	5	781	23297	92001	Homo	sapiens	GO:0045184	biological_process	"establishment of protein localization"	COPA	COPB	COPB2	COPE	COPG2
+2.633340e-02	1	5	124	23297	92001	Homo	sapiens	GO:0044271	biological_process	"nitrogen compound biosynthesis"	COPG2
+5.508940e-12	5	5	14	23297	92001	Homo	sapiens	GO:0006890	biological_process	"retrograde vesicle-mediated transport, Golgi to ER"	COPA	COPB	COPB2	COPE	COPG2
+1.374880e-01	1	5	679	23297	92001	Homo	sapiens	GO:0019752	biological_process	"carboxylic acid metabolism"	COPG2
+2.633340e-02	1	5	124	23297	92001	Homo	sapiens	GO:0009309	biological_process	"amine biosynthesis"	COPG2
+7.644230e-10	5	5	317	20974	92001	Homo	sapiens	GO:0005794	cellular_component	"Golgi apparatus"	COPA	COPB	COPB2	COPE	COPG2
+1.590340e-04	5	5	4053	23297	92001	Homo	sapiens	GO:0051179	biological_process	"localization"	COPA	COPB	COPB2	COPE	COPG2
+1.367550e-04	2	5	87	23297	92001	Homo	sapiens	GO:0006888	biological_process	"ER to Golgi vesicle-mediated transport"	COPA	COPB2
+1.071370e-04	5	5	3372	20974	92001	Homo	sapiens	GO:0044444	cellular_component	"cytoplasmic part"	COPA	COPB	COPB2	COPE	COPG2

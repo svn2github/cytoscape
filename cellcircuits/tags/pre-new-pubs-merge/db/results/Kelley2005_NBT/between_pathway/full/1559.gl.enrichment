@@ -1,0 +1,97 @@
+#USING TUB4 instead of its synonym YLR212C in Saccharomyces cerevisiae
+#USING YKE2 instead of its synonym YLR200W in Saccharomyces cerevisiae
+#USING PAC10 instead of its synonym YGR078C in Saccharomyces cerevisiae
+#USING GIM3 instead of its synonym YNL153C in Saccharomyces cerevisiae
+#USING PDA1 instead of its synonym YER178W in Saccharomyces cerevisiae
+#USING GIM4 instead of its synonym YEL003W in Saccharomyces cerevisiae
+#USING GIM5 instead of its synonym YML094W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.050980e-02	1	9	15	6526	97048	Saccharomyces	cerevisiae	GO:0044450	cellular_component	"microtubule organizing center part"	YLR212C
+3.215670e-13	5	9	10	6526	97048	Saccharomyces	cerevisiae	GO:0007021	biological_process	"tubulin folding"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+4.685680e-03	9	9	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C	YPL017C
+1.934860e-01	9	9	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C	YPL017C
+2.772160e-01	6	9	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YEL003W	YER178W	YGR078C	YLR200W	YML094W	YNL153C
+8.681050e-01	2	9	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YER178W	YLR212C
+7.583040e-01	1	9	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YLR212C
+1.989280e-08	5	9	74	6526	97048	Saccharomyces	cerevisiae	GO:0006457	biological_process	"protein folding"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+3.056430e-01	6	9	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YEL003W	YER178W	YGR078C	YLR200W	YML094W	YNL153C
+2.059600e-01	1	9	165	6526	97048	Saccharomyces	cerevisiae	GO:0031980	cellular_component	"mitochondrial lumen"	YER178W
+2.143280e-09	5	9	48	6526	97048	Saccharomyces	cerevisiae	GO:0008092	molecular_function	"cytoskeletal protein binding"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+9.380620e-02	9	9	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C	YPL017C
+5.401930e-01	3	9	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YER178W	YLR089C	YPL017C
+1.209020e-02	5	9	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+9.912200e-01	2	9	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YER178W	YLR089C
+2.243340e-01	5	9	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+3.219130e-02	5	9	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+2.186370e-02	1	9	16	6526	97048	Saccharomyces	cerevisiae	GO:0008483	molecular_function	"transaminase activity"	YLR089C
+6.915490e-01	1	9	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YER178W
+5.506260e-03	1	9	4	6526	97048	Saccharomyces	cerevisiae	GO:0016624	molecular_function	"oxidoreductase activity, acting on the aldehyde or oxo group of donors, disulfide as acceptor"	YER178W
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C	YPL017C
+2.059600e-01	1	9	165	6526	97048	Saccharomyces	cerevisiae	GO:0005759	cellular_component	"mitochondrial matrix"	YER178W
+2.186370e-02	1	9	16	6526	97048	Saccharomyces	cerevisiae	GO:0016769	molecular_function	"transferase activity, transferring nitrogenous groups"	YLR089C
+2.812730e-01	1	9	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YLR212C
+8.249270e-03	1	9	6	6526	97048	Saccharomyces	cerevisiae	GO:0005824	cellular_component	"outer plaque of spindle pole body"	YLR212C
+8.620350e-02	1	9	65	6526	97048	Saccharomyces	cerevisiae	GO:0000922	cellular_component	"spindle pole"	YLR212C
+3.129730e-02	1	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0042645	cellular_component	"mitochondrial nucleoid"	YER178W
+7.981540e-02	1	9	60	6526	97048	Saccharomyces	cerevisiae	GO:0005816	cellular_component	"spindle pole body"	YLR212C
+2.347150e-01	1	9	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	YLR212C
+7.868030e-12	5	9	17	6526	97048	Saccharomyces	cerevisiae	GO:0015631	molecular_function	"tubulin binding"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C	YPL017C
+1.101200e-01	1	9	84	6526	97048	Saccharomyces	cerevisiae	GO:0016741	molecular_function	"transferase activity, transferring one-carbon groups"	YPL017C
+6.878600e-03	1	9	5	6526	97048	Saccharomyces	cerevisiae	GO:0045254	cellular_component	"pyruvate dehydrogenase complex"	YER178W
+4.317020e-01	2	9	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	YER178W	YLR089C
+3.085800e-01	1	9	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	YER178W
+9.912200e-01	2	9	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YER178W	YLR089C
+1.000000e+00	9	9	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C	YPL017C
+1.051320e-01	1	9	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	YLR212C
+3.129730e-02	1	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0007020	biological_process	"microtubule nucleation"	YLR212C
+2.609070e-02	5	9	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+4.132230e-03	1	9	3	6526	97048	Saccharomyces	cerevisiae	GO:0000930	cellular_component	"gamma-tubulin complex"	YLR212C
+7.108630e-04	7	9	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YEL003W	YER178W	YGR078C	YLR200W	YLR212C	YML094W	YNL153C
+3.501690e-01	1	9	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	YER178W
+3.129730e-02	1	9	23	6526	97048	Saccharomyces	cerevisiae	GO:0009295	cellular_component	"nucleoid"	YER178W
+4.132230e-03	1	9	3	6526	97048	Saccharomyces	cerevisiae	GO:0004739	molecular_function	"pyruvate dehydrogenase (acetyl-transferring) activity"	YER178W
+3.983600e-01	1	9	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	YLR212C
+4.132230e-03	1	9	3	6526	97048	Saccharomyces	cerevisiae	GO:0000928	cellular_component	"gamma-tubulin complex (sensu Saccharomyces)"	YLR212C
+9.364130e-01	1	9	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YLR212C
+8.237540e-02	1	9	62	6526	97048	Saccharomyces	cerevisiae	GO:0008757	molecular_function	"S-adenosylmethionine-dependent methyltransferase activity"	YPL017C
+1.076290e-01	1	9	82	6526	97048	Saccharomyces	cerevisiae	GO:0008168	molecular_function	"methyltransferase activity"	YPL017C
+6.922330e-01	2	9	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YLR089C	YPL017C
+3.397680e-02	1	9	25	6526	97048	Saccharomyces	cerevisiae	GO:0016903	molecular_function	"oxidoreductase activity, acting on the aldehyde or oxo group of donors"	YER178W
+7.672050e-15	5	9	6	6526	97048	Saccharomyces	cerevisiae	GO:0016272	cellular_component	"prefoldin complex"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+2.234290e-02	5	9	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+8.775690e-02	9	9	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C	YPL017C
+6.302020e-02	1	9	47	6526	97048	Saccharomyces	cerevisiae	GO:0007051	biological_process	"spindle organization and biogenesis"	YLR212C
+2.762980e-04	5	9	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+6.915490e-01	1	9	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YER178W
+2.498110e-01	1	9	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	YLR212C
+3.263790e-02	1	9	24	6526	97048	Saccharomyces	cerevisiae	GO:0030472	biological_process	"mitotic spindle organization and biogenesis in nucleus"	YLR212C
+5.708300e-01	7	9	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YEL003W	YER178W	YGR078C	YLR200W	YLR212C	YML094W	YNL153C
+7.981540e-02	1	9	60	6526	97048	Saccharomyces	cerevisiae	GO:0005815	cellular_component	"microtubule organizing center"	YLR212C
+4.859680e-02	1	9	36	6526	97048	Saccharomyces	cerevisiae	GO:0006090	biological_process	"pyruvate metabolism"	YER178W
+1.322640e-01	1	9	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	YLR212C
+1.931660e-01	9	9	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C	YPL017C
+2.158770e-06	5	9	193	6526	97048	Saccharomyces	cerevisiae	GO:0044445	cellular_component	"cytosolic part"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+4.132230e-03	1	9	3	6526	97048	Saccharomyces	cerevisiae	GO:0004738	molecular_function	"pyruvate dehydrogenase activity"	YER178W
+6.041230e-02	1	9	45	6526	97048	Saccharomyces	cerevisiae	GO:0007052	biological_process	"mitotic spindle organization and biogenesis"	YLR212C
+2.614870e-01	1	9	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	YLR212C
+5.562710e-01	7	9	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YEL003W	YER178W	YGR078C	YLR200W	YLR212C	YML094W	YNL153C
+2.439010e-01	2	9	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	YLR089C	YPL017C
+6.878600e-03	1	9	5	6526	97048	Saccharomyces	cerevisiae	GO:0005967	cellular_component	"pyruvate dehydrogenase complex (sensu Eukaryota)"	YER178W
+9.755190e-01	3	9	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YER178W	YLR089C	YLR212C
+4.635120e-01	1	9	436	6526	97048	Saccharomyces	cerevisiae	GO:0044429	cellular_component	"mitochondrial part"	YER178W
+7.583040e-01	1	9	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YLR212C
+5.417610e-01	7	9	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YEL003W	YER178W	YGR078C	YLR200W	YLR212C	YML094W	YNL153C
+8.681050e-01	2	9	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YER178W	YLR212C
+6.377170e-04	5	9	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+1.088760e-01	1	9	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	YLR212C
+5.506260e-03	1	9	4	6526	97048	Saccharomyces	cerevisiae	GO:0005822	cellular_component	"inner plaque of spindle pole body"	YLR212C
+4.525510e-01	5	9	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YEL003W	YGR078C	YLR200W	YML094W	YNL153C
+1.237110e-01	1	9	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	YLR212C
+9.755190e-01	3	9	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YER178W	YLR089C	YLR212C
+6.692000e-02	1	9	50	6526	97048	Saccharomyces	cerevisiae	GO:0005200	molecular_function	"structural constituent of cytoskeleton"	YLR212C
+8.140710e-01	1	9	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YLR212C
+4.132230e-03	1	9	3	6526	97048	Saccharomyces	cerevisiae	GO:0008275	cellular_component	"gamma-tubulin small complex"	YLR212C
+3.501690e-01	1	9	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	YER178W
+3.345400e-03	8	9	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YEL003W	YER178W	YGR078C	YLR089C	YLR200W	YLR212C	YML094W	YNL153C
+4.441680e-01	1	9	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YLR212C

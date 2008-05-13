@@ -1,0 +1,84 @@
+#USING VPS5 instead of its synonym YOR069W in Saccharomyces cerevisiae
+#USING NIP100 instead of its synonym YPL174C in Saccharomyces cerevisiae
+#USING JNM1 instead of its synonym YMR294W in Saccharomyces cerevisiae
+#USING VPS29 instead of its synonym YHR012W in Saccharomyces cerevisiae
+#USING VPS35 instead of its synonym YJL154C in Saccharomyces cerevisiae
+#USING PEP8 instead of its synonym YJL053W in Saccharomyces cerevisiae
+#USING ARP1 instead of its synonym YHR129C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.538100e-05	2	7	9	6526	97048	Saccharomyces	cerevisiae	GO:0000132	biological_process	"establishment of mitotic spindle orientation"	YHR129C	YPL174C
+1.614390e-02	4	7	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	YHR012W	YJL053W	YJL154C	YOR069W
+2.316860e-12	4	7	5	6526	97048	Saccharomyces	cerevisiae	GO:0030904	cellular_component	"retromer complex"	YHR012W	YJL053W	YJL154C	YOR069W
+3.189350e-01	5	7	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YHR012W	YJL053W	YJL154C	YOR069W	YPL174C
+2.291220e-04	2	7	20	6526	97048	Saccharomyces	cerevisiae	GO:0051647	biological_process	"nucleus localization"	YHR129C	YMR294W
+2.291220e-04	2	7	20	6526	97048	Saccharomyces	cerevisiae	GO:0040023	biological_process	"establishment of nucleus localization"	YHR129C	YMR294W
+2.787820e-01	7	7	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+4.479570e-01	3	7	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YHR129C	YMR294W	YPL174C
+2.291220e-04	2	7	20	6526	97048	Saccharomyces	cerevisiae	GO:0007097	biological_process	"nuclear migration"	YHR129C	YMR294W
+6.866990e-02	3	7	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YHR129C	YMR294W	YPL174C
+1.271110e-06	7	7	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+5.038770e-02	1	7	48	6526	97048	Saccharomyces	cerevisiae	GO:0008092	molecular_function	"cytoskeletal protein binding"	YPL174C
+2.045830e-08	7	7	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+1.587690e-01	7	7	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+7.483760e-01	1	7	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YPL174C
+6.121390e-01	4	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YHR012W	YJL053W	YJL154C	YOR069W
+3.016860e-03	3	7	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	YJL053W	YJL154C	YOR069W
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+2.405800e-02	2	7	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YHR129C	YPL174C
+6.770300e-02	1	7	65	6526	97048	Saccharomyces	cerevisiae	GO:0000922	cellular_component	"spindle pole"	YPL174C
+6.263860e-02	1	7	60	6526	97048	Saccharomyces	cerevisiae	GO:0005816	cellular_component	"spindle pole body"	YPL174C
+1.439330e-07	4	7	54	6526	97048	Saccharomyces	cerevisiae	GO:0008565	molecular_function	"protein transporter activity"	YHR012W	YJL053W	YJL154C	YOR069W
+7.917080e-04	3	7	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	YHR129C	YMR294W	YPL174C
+1.810110e-02	1	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0015631	molecular_function	"tubulin binding"	YPL174C
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+3.538100e-05	2	7	9	6526	97048	Saccharomyces	cerevisiae	GO:0051294	biological_process	"establishment of spindle orientation"	YHR129C	YPL174C
+4.506000e-05	3	7	20	6526	97048	Saccharomyces	cerevisiae	GO:0045053	biological_process	"protein retention in Golgi"	YJL053W	YJL154C	YOR069W
+3.104780e-06	3	7	34	6526	97048	Saccharomyces	cerevisiae	GO:0005875	cellular_component	"microtubule associated complex"	YHR129C	YMR294W	YPL174C
+6.121390e-01	4	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YHR012W	YJL053W	YJL154C	YOR069W
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+4.181420e-08	4	7	40	6526	97048	Saccharomyces	cerevisiae	GO:0016197	biological_process	"endosome transport"	YHR012W	YJL053W	YJL154C	YOR069W
+9.901600e-03	4	7	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YHR012W	YJL053W	YJL154C	YOR069W
+2.994280e-03	2	7	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	YHR129C	YPL174C
+2.166180e-10	4	7	12	6526	97048	Saccharomyces	cerevisiae	GO:0042147	biological_process	"retrograde transport, endosome to Golgi"	YHR012W	YJL053W	YJL154C	YOR069W
+3.062880e-05	7	7	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+5.246090e-02	2	7	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	YHR129C	YMR294W
+1.644600e-05	3	7	53	6526	97048	Saccharomyces	cerevisiae	GO:0051640	biological_process	"organelle localization"	YHR129C	YMR294W	YPL174C
+8.752200e-05	7	7	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+1.090080e-03	4	7	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YHR012W	YJL053W	YJL154C	YOR069W
+3.538100e-05	2	7	9	6526	97048	Saccharomyces	cerevisiae	GO:0051653	biological_process	"spindle localization"	YHR129C	YPL174C
+1.507480e-01	7	7	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+3.017160e-09	3	7	4	6526	97048	Saccharomyces	cerevisiae	GO:0005869	cellular_component	"dynactin complex"	YHR129C	YMR294W	YPL174C
+4.344040e-01	1	7	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YPL174C
+1.206310e-01	7	7	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+9.735980e-04	3	7	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	YHR129C	YMR294W	YPL174C
+6.263860e-02	1	7	60	6526	97048	Saccharomyces	cerevisiae	GO:0005815	cellular_component	"microtubule organizing center"	YPL174C
+1.235480e-04	3	7	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	YHR129C	YMR294W	YPL174C
+2.784230e-01	7	7	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+1.913440e-03	4	7	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	YHR012W	YJL053W	YJL154C	YOR069W
+8.553490e-03	1	7	8	6526	97048	Saccharomyces	cerevisiae	GO:0008017	molecular_function	"microtubule binding"	YPL174C
+7.128630e-07	4	7	80	6526	97048	Saccharomyces	cerevisiae	GO:0005768	cellular_component	"endosome"	YHR012W	YJL053W	YJL154C	YOR069W
+2.257600e-06	3	7	32	6526	97048	Saccharomyces	cerevisiae	GO:0051235	biological_process	"maintenance of localization"	YJL053W	YJL154C	YOR069W
+2.051780e-02	2	7	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	YHR129C	YPL174C
+1.148010e-01	7	7	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+3.538100e-05	2	7	9	6526	97048	Saccharomyces	cerevisiae	GO:0051293	biological_process	"establishment of spindle localization"	YHR129C	YPL174C
+4.925780e-04	4	7	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	YHR012W	YJL053W	YJL154C	YOR069W
+2.835600e-02	7	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+1.092150e-01	7	7	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+6.866990e-02	3	7	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YHR129C	YMR294W	YPL174C
+3.032060e-06	3	7	30	6526	97048	Saccharomyces	cerevisiae	GO:0045185	biological_process	"maintenance of protein localization"	YJL053W	YJL154C	YOR069W
+4.479570e-01	3	7	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YHR129C	YMR294W	YPL174C
+1.266850e-04	4	7	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	YHR012W	YJL053W	YJL154C	YOR069W
+1.121590e-04	4	7	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	YHR012W	YJL053W	YJL154C	YOR069W
+4.964560e-01	1	7	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	YOR069W
+5.497220e-05	3	7	78	6526	97048	Saccharomyces	cerevisiae	GO:0015629	cellular_component	"actin cytoskeleton"	YHR129C	YMR294W	YPL174C
+8.574120e-02	1	7	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	YPL174C
+1.945510e-06	3	7	26	6526	97048	Saccharomyces	cerevisiae	GO:0051656	biological_process	"establishment of organelle localization"	YHR129C	YMR294W	YPL174C
+4.198680e-03	2	7	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	YHR129C	YPL174C
+2.915820e-08	7	7	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+2.835600e-02	7	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+1.178110e-03	2	7	50	6526	97048	Saccharomyces	cerevisiae	GO:0005200	molecular_function	"structural constituent of cytoskeleton"	YHR129C	YMR294W
+3.406970e-01	2	7	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YHR129C	YPL174C
+3.538100e-05	2	7	9	6526	97048	Saccharomyces	cerevisiae	GO:0040001	biological_process	"establishment of mitotic spindle localization"	YHR129C	YPL174C
+1.848360e-06	7	7	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YHR012W	YHR129C	YJL053W	YJL154C	YMR294W	YOR069W	YPL174C
+6.757990e-02	2	7	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YHR129C	YPL174C
+8.998810e-02	5	7	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YHR012W	YJL053W	YJL154C	YOR069W	YPL174C

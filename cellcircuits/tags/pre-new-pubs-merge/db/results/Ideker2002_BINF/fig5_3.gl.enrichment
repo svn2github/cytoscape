@@ -1,0 +1,402 @@
+#USING NPA3 instead of its synonym YJR072C in Saccharomyces cerevisiae
+#USING BUD27 instead of its synonym YFL023W in Saccharomyces cerevisiae
+#USING BUD14 instead of its synonym YAR014C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.352780e-02	2	25	98	6526	97048	Saccharomyces	cerevisiae	GO:0048622	biological_process	"reproductive sporulation"	GIP1	GLC7
+3.580650e-03	3	25	82	6526	97048	Saccharomyces	cerevisiae	GO:0007114	biological_process	"cell budding"	GLC7	LAS17	SLA1
+5.237100e-02	1	25	14	6526	97048	Saccharomyces	cerevisiae	GO:0031109	biological_process	"microtubule polymerization or depolymerization"	MHP1
+4.137520e-02	1	25	11	6526	97048	Saccharomyces	cerevisiae	GO:0000782	cellular_component	"telomere cap complex"	STM1
+6.662660e-02	18	25	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	NAM7	NMD2	NMD3	SLA1	STM1	UPF3	YFL023W	YJR072C	YKE2	YPL245W
+3.911600e-01	1	25	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	MEK1
+1.398000e-01	16	25	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	BNI4	CIT2	GIM5	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	RPB5	SNF12	UPF3	YAR014C	YKE2
+4.760640e-05	4	25	59	6526	97048	Saccharomyces	cerevisiae	GO:0044264	biological_process	"cellular polysaccharide metabolism"	BNI4	GIP2	GLC7	GLC8
+6.537470e-03	9	25	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	BNI4	GLC7	LAS17	MHP1	NMD3	RED1	RPB5	SLA1	STM1
+8.837330e-02	17	25	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	BNI4	CIT2	GIM5	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RPB5	SNF12	UPF3	YAR014C	YKE2
+7.384670e-02	1	25	20	6526	97048	Saccharomyces	cerevisiae	GO:0031577	biological_process	"spindle checkpoint"	GLC7
+2.912400e-05	4	25	48	6526	97048	Saccharomyces	cerevisiae	GO:0008092	molecular_function	"cytoskeletal protein binding"	GIM5	LAS17	SLA1	YKE2
+1.087710e-02	4	25	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	CIT2	GIP2	GLC7	GLC8
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0000163	molecular_function	"protein phosphatase type 1 activity"	GLC7
+1.090060e-01	1	25	30	6526	97048	Saccharomyces	cerevisiae	GO:0043566	molecular_function	"structure-specific DNA binding"	RED1
+4.505400e-02	1	25	12	6526	97048	Saccharomyces	cerevisiae	GO:0005978	biological_process	"glycogen biosynthesis"	GLC8
+1.000000e+00	25	25	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YJR072C	YKE2	YLR243W	YPL245W
+7.456140e-01	1	25	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	GLC7
+2.972860e-01	2	25	284	6526	97048	Saccharomyces	cerevisiae	GO:0005840	cellular_component	"ribosome"	NMD3	STM1
+6.009780e-01	1	25	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	GLC7
+1.928610e-01	2	25	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	RED1	STM1
+6.672640e-02	2	25	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	GLC7	GLC8
+2.065500e-01	1	25	60	6526	97048	Saccharomyces	cerevisiae	GO:0005816	cellular_component	"spindle pole body"	GLC7
+4.871930e-02	1	25	13	6526	97048	Saccharomyces	cerevisiae	GO:0006537	biological_process	"glutamate biosynthesis"	CIT2
+9.888830e-01	1	25	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	YLR243W
+1.845930e-03	2	25	17	6526	97048	Saccharomyces	cerevisiae	GO:0015631	molecular_function	"tubulin binding"	GIM5	YKE2
+4.259290e-01	1	25	143	6526	97048	Saccharomyces	cerevisiae	GO:0044452	cellular_component	"nucleolar part"	RPB5
+3.202970e-01	2	25	300	6526	97048	Saccharomyces	cerevisiae	GO:0005730	cellular_component	"nucleolus"	GLC7	RPB5
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0007026	biological_process	"negative regulation of microtubule depolymerization"	MHP1
+2.296570e-01	2	25	237	6526	97048	Saccharomyces	cerevisiae	GO:0017111	molecular_function	"nucleoside-triphosphatase activity"	NAM7	YJR072C
+1.429860e-03	5	25	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	BNI4	CIT2	GIP2	GLC7	GLC8
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0031114	biological_process	"regulation of microtubule depolymerization"	MHP1
+1.752340e-01	1	25	50	6526	97048	Saccharomyces	cerevisiae	GO:0006611	biological_process	"protein export from nucleus"	NMD3
+3.025700e-02	1	25	8	6526	97048	Saccharomyces	cerevisiae	GO:0030847	biological_process	"transcription termination from Pol II promoter, RNA polymerase(A)-independent"	GLC7
+1.571150e-01	2	25	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	GLC7	SNF12
+7.103870e-01	3	25	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	LAS17	NMD3	SLA1
+2.657930e-01	1	25	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	MHP1
+3.791280e-01	1	25	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	SNF12
+1.125500e-03	3	25	55	6526	97048	Saccharomyces	cerevisiae	GO:0006402	biological_process	"mRNA catabolism"	NAM7	NMD2	UPF3
+3.400860e-03	12	25	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	BNI4	GIM5	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	UPF3	YKE2
+2.367230e-01	1	25	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	MEK1
+3.643880e-01	1	25	117	6526	97048	Saccharomyces	cerevisiae	GO:0006913	biological_process	"nucleocytoplasmic transport"	NMD3
+4.137520e-02	1	25	11	6526	97048	Saccharomyces	cerevisiae	GO:0000783	cellular_component	"nuclear telomere cap complex"	STM1
+3.393300e-02	3	25	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	NAM7	NMD2	UPF3
+1.775780e-01	2	25	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	GIP1	GLC7
+5.963420e-02	1	25	16	6526	97048	Saccharomyces	cerevisiae	GO:0005628	cellular_component	"prospore membrane"	GIP1
+1.730200e-02	4	25	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	GIP1	GLC7	LAS17	SLA1
+4.348740e-01	1	25	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	MEK1
+2.012790e-01	2	25	217	6526	97048	Saccharomyces	cerevisiae	GO:0007046	biological_process	"ribosome biogenesis"	GLC7	NMD3
+7.752060e-03	3	25	108	6526	97048	Saccharomyces	cerevisiae	GO:0030467	biological_process	"establishment and/or maintenance of cell polarity (sensu Fungi)"	LAS17	SLA1	YFL023W
+2.652350e-02	1	25	7	6526	97048	Saccharomyces	cerevisiae	GO:0016265	biological_process	"death"	STM1
+9.864250e-02	1	25	27	6526	97048	Saccharomyces	cerevisiae	GO:0004722	molecular_function	"protein serine/threonine phosphatase activity"	GLC7
+5.479130e-01	2	25	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	GLC7	SNF12
+2.157200e-01	1	25	63	6526	97048	Saccharomyces	cerevisiae	GO:0016570	biological_process	"histone modification"	GLC7
+2.078400e-04	2	25	6	6526	97048	Saccharomyces	cerevisiae	GO:0016272	cellular_component	"prefoldin complex"	GIM5	YKE2
+1.004280e-02	2	25	40	6526	97048	Saccharomyces	cerevisiae	GO:0030479	cellular_component	"actin cortical patch"	LAS17	SLA1
+1.784040e-02	2	25	54	6526	97048	Saccharomyces	cerevisiae	GO:0030864	cellular_component	"cortical actin cytoskeleton"	LAS17	SLA1
+1.090170e-02	24	25	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YJR072C	YKE2	YPL245W
+1.611680e-01	2	25	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	MHP1	STM1
+1.693350e-01	2	25	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	MHP1	STM1
+6.684390e-02	1	25	18	6526	97048	Saccharomyces	cerevisiae	GO:0005048	molecular_function	"signal sequence binding"	YLR243W
+1.610980e-03	5	25	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	GLC7	LAS17	SLA1	YAR014C	YFL023W
+5.378240e-01	1	25	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	MEK1
+3.069590e-01	7	25	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	GLC7	NAM7	NMD2	RPB5	SNF12	UPF3	YAR014C
+1.125500e-03	3	25	55	6526	97048	Saccharomyces	cerevisiae	GO:0009889	biological_process	"regulation of biosynthesis"	NAM7	NMD2	UPF3
+1.727480e-01	3	25	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	NAM7	NMD2	UPF3
+2.569210e-01	2	25	256	6526	97048	Saccharomyces	cerevisiae	GO:0016818	molecular_function	"hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides"	NAM7	YJR072C
+4.995670e-01	3	25	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	CIT2	MEK1	RPB5
+2.097460e-01	2	25	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	BNI4	CIT2
+6.537470e-03	9	25	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	BNI4	GLC7	LAS17	MHP1	NMD3	RED1	RPB5	SLA1	STM1
+5.064430e-01	2	25	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	GLC7	LAS17
+3.356410e-01	10	25	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	BNI4	GLC7	LAS17	MHP1	NMD3	RED1	RPB5	SLA1	SNF12	STM1
+1.327460e-01	1	25	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	GLC7
+1.999280e-01	4	25	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	GIM5	NMD3	STM1	YKE2
+7.384670e-02	1	25	20	6526	97048	Saccharomyces	cerevisiae	GO:0005849	cellular_component	"mRNA cleavage factor complex"	GLC7
+6.672640e-02	2	25	111	6526	97048	Saccharomyces	cerevisiae	GO:0030435	biological_process	"sporulation"	GIP1	GLC7
+6.324570e-02	1	25	17	6526	97048	Saccharomyces	cerevisiae	GO:0005666	cellular_component	"DNA-directed RNA polymerase III complex"	RPB5
+1.847510e-01	1	25	53	6526	97048	Saccharomyces	cerevisiae	GO:0042257	biological_process	"ribosomal subunit assembly"	NMD3
+1.650540e-03	11	25	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	GLC7	LAS17	MHP1	NAM7	NMD2	NMD3	SLA1	SNF12	STM1	UPF3	YAR014C
+9.966540e-01	3	25	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	UPF3	YFL023W	YPL245W
+5.176840e-01	3	25	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	GIP2	GLC7	MEK1
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0051598	biological_process	"meiotic recombination checkpoint"	RED1
+1.600530e-02	3	25	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	GLC7	MEK1	RED1
+1.394170e-01	1	25	39	6526	97048	Saccharomyces	cerevisiae	GO:0006383	biological_process	"transcription from RNA polymerase III promoter"	RPB5
+3.962630e-01	5	25	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	GLC7	RED1	RPB5	SNF12	STM1
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0046349	biological_process	"amino sugar biosynthesis"	BNI4
+4.871930e-02	1	25	13	6526	97048	Saccharomyces	cerevisiae	GO:0005665	cellular_component	"DNA-directed RNA polymerase II, core complex"	RPB5
+9.881710e-01	1	25	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	GIP1
+9.864250e-02	1	25	27	6526	97048	Saccharomyces	cerevisiae	GO:0000781	cellular_component	"chromosome, telomeric region"	STM1
+5.957710e-03	6	25	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	GLC7	NAM7	NMD2	SNF12	STM1	UPF3
+2.025520e-04	3	25	20	6526	97048	Saccharomyces	cerevisiae	GO:0019888	molecular_function	"protein phosphatase regulator activity"	GIP1	GIP2	YAR014C
+3.766940e-01	1	25	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	GLC7
+1.493300e-01	1	25	42	6526	97048	Saccharomyces	cerevisiae	GO:0008026	molecular_function	"ATP-dependent helicase activity"	NAM7
+3.221400e-01	6	25	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	BNI4	CIT2	GLC8	NAM7	NMD2	UPF3
+3.019990e-01	1	25	93	6526	97048	Saccharomyces	cerevisiae	GO:0051168	biological_process	"nuclear export"	NMD3
+4.871930e-02	1	25	13	6526	97048	Saccharomyces	cerevisiae	GO:0031110	biological_process	"regulation of microtubule polymerization or depolymerization"	MHP1
+1.721880e-06	3	25	7	6526	97048	Saccharomyces	cerevisiae	GO:0000164	cellular_component	"protein phosphatase type 1 complex"	GIP1	GIP2	GLC7
+3.356410e-01	10	25	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	BNI4	GLC7	LAS17	MHP1	NMD3	RED1	RPB5	SLA1	SNF12	STM1
+3.869740e-02	3	25	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	GIP2	GLC7	MEK1
+5.414700e-01	1	25	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	CIT2
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0051324	biological_process	"prophase"	RED1
+2.070280e-03	8	25	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	GLC7	MHP1	NAM7	NMD2	RED1	STM1	UPF3	YAR014C
+3.390720e-01	1	25	107	6526	97048	Saccharomyces	cerevisiae	GO:0016746	molecular_function	"transferase activity, transferring acyl groups"	CIT2
+5.115130e-01	1	25	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	CIT2
+4.111650e-06	3	25	9	6526	97048	Saccharomyces	cerevisiae	GO:0000184	biological_process	"mRNA catabolism, nonsense-mediated decay"	NAM7	NMD2	UPF3
+1.427330e-01	1	25	40	6526	97048	Saccharomyces	cerevisiae	GO:0000027	biological_process	"ribosomal large subunit assembly and maintenance"	NMD3
+2.652350e-02	1	25	7	6526	97048	Saccharomyces	cerevisiae	GO:0006915	biological_process	"apoptosis"	STM1
+9.061730e-01	11	25	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	CIT2	GLC7	GLC8	MEK1	NAM7	RED1	RPB5	SNF12	STM1	UPF3	YPL245W
+1.055520e-01	2	25	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	GLC7	RED1
+6.211330e-01	1	25	248	6526	97048	Saccharomyces	cerevisiae	GO:0016072	biological_process	"rRNA metabolism"	GLC7
+2.096180e-01	1	25	61	6526	97048	Saccharomyces	cerevisiae	GO:0006970	biological_process	"response to osmotic stress"	LAS17
+5.237100e-02	1	25	14	6526	97048	Saccharomyces	cerevisiae	GO:0006030	biological_process	"chitin metabolism"	BNI4
+1.125500e-03	3	25	55	6526	97048	Saccharomyces	cerevisiae	GO:0031326	biological_process	"regulation of cellular biosynthesis"	NAM7	NMD2	UPF3
+7.170560e-03	3	25	105	6526	97048	Saccharomyces	cerevisiae	GO:0030468	biological_process	"establishment of cell polarity (sensu Fungi)"	LAS17	SLA1	YFL023W
+3.768280e-02	1	25	10	6526	97048	Saccharomyces	cerevisiae	GO:0046912	molecular_function	"transferase activity, transferring acyl groups, acyl groups converted into alkyl on transfer"	CIT2
+1.600530e-02	3	25	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	GLC7	MEK1	RED1
+2.571860e-01	1	25	77	6526	97048	Saccharomyces	cerevisiae	GO:0016591	cellular_component	"DNA-directed RNA polymerase II, holoenzyme"	RPB5
+1.524000e-02	1	25	4	6526	97048	Saccharomyces	cerevisiae	GO:0006101	biological_process	"citrate metabolism"	CIT2
+1.000000e+00	25	25	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YJR072C	YKE2	YLR243W	YPL245W
+1.055520e-01	2	25	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	GLC7	RED1
+6.324570e-02	1	25	17	6526	97048	Saccharomyces	cerevisiae	GO:0006044	biological_process	"N-acetylglucosamine metabolism"	BNI4
+1.460380e-01	1	25	41	6526	97048	Saccharomyces	cerevisiae	GO:0003724	molecular_function	"RNA helicase activity"	NAM7
+2.571860e-01	1	25	77	6526	97048	Saccharomyces	cerevisiae	GO:0006365	biological_process	"35S primary transcript processing"	GLC7
+2.587200e-01	3	25	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	GLC7	RPB5	YAR014C
+2.364050e-01	4	25	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	NAM7	NMD3	RED1	STM1
+1.942600e-01	2	25	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	GLC7	SNF12
+1.901510e-02	1	25	5	6526	97048	Saccharomyces	cerevisiae	GO:0000795	cellular_component	"synaptonemal complex"	RED1
+4.021540e-01	2	25	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	MHP1	RED1
+1.726160e-02	12	25	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	GLC7	LAS17	MHP1	NAM7	NMD2	NMD3	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0005847	cellular_component	"mRNA cleavage and polyadenylation specificity factor complex"	GLC7
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0043069	biological_process	"negative regulation of programmed cell death"	STM1
+7.648100e-03	1	25	2	6526	97048	Saccharomyces	cerevisiae	GO:0031490	molecular_function	"chromatin DNA binding"	RED1
+9.647480e-01	3	25	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YJR072C	YLR243W	YPL245W
+1.591340e-01	1	25	45	6526	97048	Saccharomyces	cerevisiae	GO:0004721	molecular_function	"phosphoprotein phosphatase activity"	GLC7
+3.122720e-04	3	25	36	6526	97048	Saccharomyces	cerevisiae	GO:0006112	biological_process	"energy reserve metabolism"	GIP2	GLC7	GLC8
+5.963420e-02	1	25	16	6526	97048	Saccharomyces	cerevisiae	GO:0030865	biological_process	"cortical cytoskeleton organization and biogenesis"	SLA1
+1.557690e-01	2	25	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	RED1	STM1
+3.742520e-01	1	25	121	6526	97048	Saccharomyces	cerevisiae	GO:0042592	biological_process	"homeostasis"	GLC7
+6.884640e-02	2	25	113	6526	97048	Saccharomyces	cerevisiae	GO:0030154	biological_process	"cell differentiation"	GIP1	GLC7
+2.992760e-01	1	25	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	MEK1
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0043066	biological_process	"negative regulation of apoptosis"	STM1
+1.970640e-01	2	25	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	RED1	STM1
+4.760640e-05	4	25	59	6526	97048	Saccharomyces	cerevisiae	GO:0005976	biological_process	"polysaccharide metabolism"	BNI4	GIP2	GLC7	GLC8
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0032156	cellular_component	"septin cytoskeleton"	BNI4
+7.170560e-03	3	25	105	6526	97048	Saccharomyces	cerevisiae	GO:0030010	biological_process	"establishment of cell polarity"	LAS17	SLA1	YFL023W
+6.286220e-01	1	25	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	NMD3
+5.711830e-03	4	25	193	6526	97048	Saccharomyces	cerevisiae	GO:0044445	cellular_component	"cytosolic part"	GIM5	NMD3	STM1	YKE2
+9.516220e-02	1	25	26	6526	97048	Saccharomyces	cerevisiae	GO:0004004	molecular_function	"ATP-dependent RNA helicase activity"	NAM7
+2.312040e-01	5	25	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	BNI4	GLC8	NAM7	NMD2	UPF3
+2.157200e-01	1	25	63	6526	97048	Saccharomyces	cerevisiae	GO:0008047	molecular_function	"enzyme activator activity"	GLC8
+3.025700e-02	1	25	8	6526	97048	Saccharomyces	cerevisiae	GO:0051261	biological_process	"protein depolymerization"	MHP1
+1.526100e-01	1	25	43	6526	97048	Saccharomyces	cerevisiae	GO:0009064	biological_process	"glutamine family amino acid metabolism"	CIT2
+2.455580e-01	1	25	73	6526	97048	Saccharomyces	cerevisiae	GO:0016585	cellular_component	"chromatin remodeling complex"	SNF12
+7.185230e-01	1	25	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YAR014C
+9.516220e-02	1	25	26	6526	97048	Saccharomyces	cerevisiae	GO:0008186	molecular_function	"RNA-dependent ATPase activity"	NAM7
+1.705950e-03	8	25	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	GLC7	MHP1	NAM7	NMD2	RED1	STM1	UPF3	YAR014C
+5.000020e-03	2	25	28	6526	97048	Saccharomyces	cerevisiae	GO:0006470	biological_process	"protein amino acid dephosphorylation"	GIP2	GLC7
+2.637370e-01	6	25	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	BNI4	CIT2	GLC8	NAM7	NMD2	UPF3
+3.025700e-02	1	25	8	6526	97048	Saccharomyces	cerevisiae	GO:0043085	biological_process	"positive regulation of enzyme activity"	RED1
+1.394170e-01	1	25	39	6526	97048	Saccharomyces	cerevisiae	GO:0030476	biological_process	"spore wall assembly (sensu Fungi)"	GIP1
+1.584640e-01	2	25	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	MHP1	STM1
+3.518490e-01	1	25	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	CIT2
+4.957680e-03	3	25	92	6526	97048	Saccharomyces	cerevisiae	GO:0044448	cellular_component	"cell cortex part"	BNI4	LAS17	SLA1
+1.901510e-02	1	25	5	6526	97048	Saccharomyces	cerevisiae	GO:0001400	cellular_component	"mating projection base"	GLC7
+2.652350e-02	1	25	7	6526	97048	Saccharomyces	cerevisiae	GO:0008219	biological_process	"cell death"	STM1
+1.919170e-03	3	25	66	6526	97048	Saccharomyces	cerevisiae	GO:0007105	biological_process	"cytokinesis, site selection"	LAS17	SLA1	YFL023W
+7.555210e-03	3	25	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	BNI4	GLC7	YAR014C
+3.116790e-01	2	25	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	GLC7	RPB5
+6.985430e-01	1	25	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	CIT2
+1.437670e-01	2	25	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	RED1	STM1
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0051248	biological_process	"negative regulation of protein metabolism"	MHP1
+3.518490e-01	1	25	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	CIT2
+6.324570e-02	1	25	17	6526	97048	Saccharomyces	cerevisiae	GO:0006040	biological_process	"amino sugar metabolism"	BNI4
+2.542950e-01	1	25	76	6526	97048	Saccharomyces	cerevisiae	GO:0000794	cellular_component	"condensed nuclear chromosome"	RED1
+1.852900e-01	3	25	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	NAM7	NMD2	UPF3
+2.070840e-01	3	25	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	GLC7	MEK1	RED1
+3.768280e-02	1	25	10	6526	97048	Saccharomyces	cerevisiae	GO:0019899	molecular_function	"enzyme binding"	GIP1
+1.524000e-02	1	25	4	6526	97048	Saccharomyces	cerevisiae	GO:0042981	biological_process	"regulation of apoptosis"	STM1
+5.352780e-02	2	25	98	6526	97048	Saccharomyces	cerevisiae	GO:0030437	biological_process	"sporulation (sensu Fungi)"	GIP1	GLC7
+1.055640e-01	1	25	29	6526	97048	Saccharomyces	cerevisiae	GO:0006360	biological_process	"transcription from RNA polymerase I promoter"	RPB5
+4.878220e-01	1	25	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	MEK1
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0019903	molecular_function	"protein phosphatase binding"	GIP1
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0031111	biological_process	"negative regulation of microtubule polymerization or depolymerization"	MHP1
+6.197690e-04	2	25	10	6526	97048	Saccharomyces	cerevisiae	GO:0007021	biological_process	"tubulin folding"	GIM5	YKE2
+2.808370e-05	3	25	17	6526	97048	Saccharomyces	cerevisiae	GO:0008287	cellular_component	"protein serine/threonine phosphatase complex"	GIP1	GIP2	GLC7
+3.467670e-01	1	25	110	6526	97048	Saccharomyces	cerevisiae	GO:0051169	biological_process	"nuclear transport"	NMD3
+2.554810e-01	2	25	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	GLC7	NMD3
+7.748550e-03	2	25	35	6526	97048	Saccharomyces	cerevisiae	GO:0000131	cellular_component	"incipient bud site"	BNI4	YAR014C
+5.237100e-02	1	25	14	6526	97048	Saccharomyces	cerevisiae	GO:0005736	cellular_component	"DNA-directed RNA polymerase I complex"	RPB5
+6.388680e-01	1	25	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	NMD3
+9.864250e-02	1	25	27	6526	97048	Saccharomyces	cerevisiae	GO:0009084	biological_process	"glutamine family amino acid biosynthesis"	CIT2
+3.397680e-02	1	25	9	6526	97048	Saccharomyces	cerevisiae	GO:0007129	biological_process	"synapsis"	RED1
+1.230740e-01	3	25	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	GLC7	RPB5	SNF12
+5.949070e-02	2	25	104	6526	97048	Saccharomyces	cerevisiae	GO:0030036	biological_process	"actin cytoskeleton organization and biogenesis"	LAS17	SLA1
+1.257360e-02	24	25	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YJR072C	YKE2	YPL245W
+1.067740e-01	2	25	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	RED1	STM1
+9.316350e-04	5	25	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	BNI4	CIT2	GIP2	GLC7	GLC8
+8.088230e-01	6	25	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	CIT2	GLC7	MEK1	NAM7	RPB5	YJR072C
+4.817290e-01	1	25	169	6526	97048	Saccharomyces	cerevisiae	GO:0006364	biological_process	"rRNA processing"	GLC7
+6.684390e-02	1	25	18	6526	97048	Saccharomyces	cerevisiae	GO:0009408	biological_process	"response to heat"	GLC7
+7.944480e-04	12	25	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	BNI4	GIM5	GIP1	LAS17	NAM7	NMD2	NMD3	RED1	SLA1	STM1	YKE2	YLR243W
+1.192560e-01	1	25	33	6526	97048	Saccharomyces	cerevisiae	GO:0003899	molecular_function	"DNA-directed RNA polymerase activity"	RPB5
+2.198320e-02	15	25	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	BNI4	CIT2	GIM5	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	SNF12	UPF3	YKE2
+3.842290e-02	10	25	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	GIM5	GIP2	GLC7	MEK1	MHP1	NAM7	NMD2	NMD3	UPF3	YKE2
+3.245990e-01	2	25	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	BNI4	NMD3
+1.524000e-02	1	25	4	6526	97048	Saccharomyces	cerevisiae	GO:0046487	biological_process	"glyoxylate metabolism"	CIT2
+3.400360e-04	3	25	37	6526	97048	Saccharomyces	cerevisiae	GO:0006445	biological_process	"regulation of translation"	NAM7	NMD2	UPF3
+6.059670e-01	3	25	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	GLC7	RPB5	SNF12
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0004108	molecular_function	"citrate (Si)-synthase activity"	CIT2
+1.526100e-01	1	25	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	GLC7
+2.217770e-01	1	25	65	6526	97048	Saccharomyces	cerevisiae	GO:0000922	cellular_component	"spindle pole"	GLC7
+6.670320e-02	3	25	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	NAM7	NMD2	UPF3
+5.237100e-02	1	25	14	6526	97048	Saccharomyces	cerevisiae	GO:0000147	biological_process	"actin cortical patch assembly"	SLA1
+6.190090e-04	5	25	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	BNI4	GLC7	LAS17	MHP1	SLA1
+1.752340e-01	1	25	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	GLC7
+4.009690e-01	3	25	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	GLC7	RPB5	SNF12
+3.397680e-02	1	25	9	6526	97048	Saccharomyces	cerevisiae	GO:0008154	biological_process	"actin polymerization and/or depolymerization"	LAS17
+2.554810e-01	2	25	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	GLC7	NMD3
+7.384670e-02	1	25	20	6526	97048	Saccharomyces	cerevisiae	GO:0006081	biological_process	"aldehyde metabolism"	CIT2
+5.963420e-02	1	25	16	6526	97048	Saccharomyces	cerevisiae	GO:0042763	cellular_component	"immature spore"	GIP1
+1.756270e-02	3	25	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	BNI4	GLC7	YAR014C
+7.752060e-03	3	25	108	6526	97048	Saccharomyces	cerevisiae	GO:0007163	biological_process	"establishment and/or maintenance of cell polarity"	LAS17	SLA1	YFL023W
+8.311800e-02	4	25	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	NAM7	NMD2	UPF3	YAR014C
+9.248850e-01	2	25	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	CIT2	NAM7
+5.963420e-02	1	25	16	6526	97048	Saccharomyces	cerevisiae	GO:0042764	cellular_component	"prospore"	GIP1
+1.610980e-03	5	25	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	GLC7	LAS17	SLA1	YAR014C	YFL023W
+4.122560e-01	1	25	137	6526	97048	Saccharomyces	cerevisiae	GO:0015934	cellular_component	"large ribosomal subunit"	NMD3
+1.055640e-01	1	25	29	6526	97048	Saccharomyces	cerevisiae	GO:0050790	biological_process	"regulation of catalytic activity"	RED1
+1.901510e-02	1	25	5	6526	97048	Saccharomyces	cerevisiae	GO:0007130	biological_process	"synaptonemal complex formation"	RED1
+7.560350e-04	2	25	11	6526	97048	Saccharomyces	cerevisiae	GO:0008599	molecular_function	"protein phosphatase type 1 regulator activity"	GIP1	YAR014C
+3.696610e-01	3	25	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	GIP2	GLC7	MEK1
+6.812640e-05	5	25	128	6526	97048	Saccharomyces	cerevisiae	GO:0051301	biological_process	"cell division"	BNI4	GLC7	LAS17	SLA1	YFL023W
+5.351040e-03	12	25	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	GIM5	GIP1	GIP2	GLC7	NAM7	NMD2	NMD3	RPB5	SNF12	STM1	UPF3	YKE2
+4.128790e-02	5	25	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	NAM7	NMD2	NMD3	STM1	UPF3
+1.708530e-02	4	25	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	NAM7	NMD2	STM1	UPF3
+4.505400e-02	1	25	12	6526	97048	Saccharomyces	cerevisiae	GO:0016514	cellular_component	"SWI/SNF complex"	SNF12
+7.489390e-06	3	25	12	6526	97048	Saccharomyces	cerevisiae	GO:0005844	cellular_component	"polysome"	NAM7	NMD2	UPF3
+1.724820e-03	8	25	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	GLC7	MHP1	NAM7	NMD2	RED1	STM1	UPF3	YAR014C
+8.714780e-01	1	25	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	NMD3
+1.524000e-02	1	25	4	6526	97048	Saccharomyces	cerevisiae	GO:0006097	biological_process	"glyoxylate cycle"	CIT2
+4.076300e-01	1	25	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	SNF12
+2.126740e-01	1	25	62	6526	97048	Saccharomyces	cerevisiae	GO:0016251	molecular_function	"general RNA polymerase II transcription factor activity"	SNF12
+1.524000e-02	1	25	4	6526	97048	Saccharomyces	cerevisiae	GO:0007019	biological_process	"microtubule depolymerization"	MHP1
+3.545450e-01	2	25	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	GLC7	LAS17
+5.602190e-02	9	25	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	GIM5	GIP2	GLC7	MEK1	MHP1	NAM7	NMD2	UPF3	YKE2
+1.524000e-02	1	25	4	6526	97048	Saccharomyces	cerevisiae	GO:0043067	biological_process	"regulation of programmed cell death"	STM1
+2.277620e-02	1	25	6	6526	97048	Saccharomyces	cerevisiae	GO:0045835	biological_process	"negative regulation of meiosis"	RED1
+8.111200e-02	1	25	22	6526	97048	Saccharomyces	cerevisiae	GO:0003682	molecular_function	"chromatin binding"	RED1
+4.969750e-08	3	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0006452	biological_process	"translational frameshifting"	NAM7	NMD2	UPF3
+1.584640e-01	2	25	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	MHP1	STM1
+7.846500e-02	22	25	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YKE2
+8.696470e-04	5	25	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	BNI4	GLC7	LAS17	MHP1	SLA1
+6.059670e-01	3	25	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	GLC7	RPB5	SNF12
+1.942600e-01	2	25	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	GLC7	SNF12
+2.554810e-01	2	25	255	6526	97048	Saccharomyces	cerevisiae	GO:0016462	molecular_function	"pyrophosphatase activity"	NAM7	YJR072C
+4.290400e-04	4	25	97	6526	97048	Saccharomyces	cerevisiae	GO:0000910	biological_process	"cytokinesis"	BNI4	LAS17	SLA1	YFL023W
+7.756090e-02	1	25	21	6526	97048	Saccharomyces	cerevisiae	GO:0007093	biological_process	"mitotic checkpoint"	GLC7
+2.157200e-01	1	25	63	6526	97048	Saccharomyces	cerevisiae	GO:0016569	biological_process	"covalent chromatin modification"	GLC7
+3.057450e-01	3	25	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	GLC7	RPB5	YAR014C
+2.709750e-03	6	25	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	GIP1	GLC7	LAS17	SLA1	YAR014C	YFL023W
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0019902	molecular_function	"phosphatase binding"	GIP1
+1.919170e-03	3	25	66	6526	97048	Saccharomyces	cerevisiae	GO:0000282	biological_process	"bud site selection"	LAS17	SLA1	YFL023W
+8.491840e-03	4	25	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	LAS17	MHP1	SLA1	YAR014C
+7.414550e-01	1	25	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YAR014C
+4.436850e-01	1	25	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	NMD3
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0008157	molecular_function	"protein phosphatase 1 binding"	GIP1
+7.933340e-01	1	25	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	NMD3
+3.286770e-01	1	25	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	CIT2
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0016576	biological_process	"histone dephosphorylation"	GLC7
+6.352300e-02	22	25	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YKE2
+1.174210e-01	9	25	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	BNI4	GIP2	GLC7	GLC8	MEK1	NAM7	NMD2	SNF12	UPF3
+2.937990e-01	1	25	90	6526	97048	Saccharomyces	cerevisiae	GO:0004386	molecular_function	"helicase activity"	NAM7
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0006045	biological_process	"N-acetylglucosamine biosynthesis"	BNI4
+3.116790e-01	2	25	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	LAS17	SLA1
+1.566140e-04	3	25	29	6526	97048	Saccharomyces	cerevisiae	GO:0005977	biological_process	"glycogen metabolism"	GIP2	GLC7	GLC8
+1.021100e-01	1	25	28	6526	97048	Saccharomyces	cerevisiae	GO:0006109	biological_process	"regulation of carbohydrate metabolism"	GLC7
+8.235880e-02	16	25	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	BNI4	CIT2	GIM5	GIP2	GLC7	GLC8	MEK1	MHP1	NAM7	NMD2	NMD3	RPB5	SNF12	UPF3	YAR014C	YKE2
+4.857980e-01	1	25	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	MHP1
+3.074150e-01	1	25	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	MHP1
+2.187540e-01	1	25	64	6526	97048	Saccharomyces	cerevisiae	GO:0042255	biological_process	"ribosome assembly"	NMD3
+6.324570e-02	1	25	17	6526	97048	Saccharomyces	cerevisiae	GO:0006041	biological_process	"glucosamine metabolism"	BNI4
+4.299300e-01	16	25	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	BNI4	CIT2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YPL245W
+6.558050e-01	1	25	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	NMD3
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0006916	biological_process	"anti-apoptosis"	STM1
+6.707380e-03	6	25	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	GLC7	NAM7	NMD2	SNF12	STM1	UPF3
+3.312910e-01	1	25	104	6526	97048	Saccharomyces	cerevisiae	GO:0006873	biological_process	"cell ion homeostasis"	GLC7
+3.869740e-02	3	25	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	GIP2	GLC7	MEK1
+2.025520e-04	3	25	20	6526	97048	Saccharomyces	cerevisiae	GO:0019208	molecular_function	"phosphatase regulator activity"	GIP1	GIP2	YAR014C
+6.706590e-01	1	25	283	6526	97048	Saccharomyces	cerevisiae	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	GLC7
+3.693380e-01	1	25	119	6526	97048	Saccharomyces	cerevisiae	GO:0042623	molecular_function	"ATPase activity, coupled"	NAM7
+6.358970e-02	2	25	108	6526	97048	Saccharomyces	cerevisiae	GO:0030029	biological_process	"actin filament-based process"	LAS17	SLA1
+2.455580e-01	1	25	73	6526	97048	Saccharomyces	cerevisiae	GO:0006092	biological_process	"main pathways of carbohydrate metabolism"	CIT2
+2.652350e-02	1	25	7	6526	97048	Saccharomyces	cerevisiae	GO:0012501	biological_process	"programmed cell death"	STM1
+5.435850e-01	4	25	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	BNI4	LAS17	NMD3	SLA1
+1.204670e-01	2	25	157	6526	97048	Saccharomyces	cerevisiae	GO:0045229	biological_process	"external encapsulating structure organization and biogenesis"	MHP1	SLA1
+2.463250e-01	12	25	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	LAS17	NAM7	NMD3	SLA1	STM1	YKE2
+1.708530e-02	4	25	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	NAM7	NMD2	STM1	UPF3
+2.882810e-01	1	25	88	6526	97048	Saccharomyces	cerevisiae	GO:0016791	molecular_function	"phosphoric monoester hydrolase activity"	GLC7
+1.901510e-02	1	25	5	6526	97048	Saccharomyces	cerevisiae	GO:0051129	biological_process	"negative regulation of cell organization and biogenesis"	MHP1
+1.145110e-02	1	25	3	6526	97048	Saccharomyces	cerevisiae	GO:0006449	biological_process	"regulation of translational termination"	NAM7
+3.025700e-02	1	25	8	6526	97048	Saccharomyces	cerevisiae	GO:0000055	biological_process	"ribosomal large subunit export from nucleus"	NMD3
+3.019990e-01	1	25	93	6526	97048	Saccharomyces	cerevisiae	GO:0005842	cellular_component	"cytosolic large ribosomal subunit (sensu Eukaryota)"	NMD3
+3.397680e-02	1	25	9	6526	97048	Saccharomyces	cerevisiae	GO:0042162	molecular_function	"telomeric DNA binding"	STM1
+3.768280e-02	1	25	10	6526	97048	Saccharomyces	cerevisiae	GO:0030846	biological_process	"transcription termination from Pol II promoter, RNA polymerase(A) coupled"	GLC7
+6.265050e-02	24	25	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YJR072C	YKE2	YPL245W
+4.383280e-01	3	25	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	NAM7	NMD2	UPF3
+7.240790e-01	3	25	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	LAS17	NMD3	SLA1
+2.771210e-01	1	25	84	6526	97048	Saccharomyces	cerevisiae	GO:0000793	cellular_component	"condensed chromosome"	RED1
+6.324570e-02	1	25	17	6526	97048	Saccharomyces	cerevisiae	GO:0006353	biological_process	"transcription termination"	GLC7
+6.009780e-01	1	25	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	NMD3
+3.215170e-02	2	25	74	6526	97048	Saccharomyces	cerevisiae	GO:0006457	biological_process	"protein folding"	GIM5	YKE2
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0008105	biological_process	"asymmetric protein localization"	BNI4
+8.767330e-01	1	25	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	NMD3
+1.688300e-01	1	25	48	6526	97048	Saccharomyces	cerevisiae	GO:0005934	cellular_component	"bud tip"	YAR014C
+1.600600e-02	2	25	51	6526	97048	Saccharomyces	cerevisiae	GO:0000075	biological_process	"cell cycle checkpoint"	GLC7	RED1
+6.086510e-01	3	25	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	NAM7	NMD2	UPF3
+1.058170e-01	3	25	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	GLC7	RPB5	SNF12
+1.511030e-02	3	25	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	BNI4	GLC7	YAR014C
+3.416470e-01	1	25	108	6526	97048	Saccharomyces	cerevisiae	GO:0050801	biological_process	"ion homeostasis"	GLC7
+4.663050e-04	3	25	41	6526	97048	Saccharomyces	cerevisiae	GO:0006073	biological_process	"glucan metabolism"	GIP2	GLC7	GLC8
+7.241540e-01	1	25	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	SNF12
+5.963420e-02	1	25	16	6526	97048	Saccharomyces	cerevisiae	GO:0030866	biological_process	"cortical actin cytoskeleton organization and biogenesis"	SLA1
+7.384670e-02	1	25	20	6526	97048	Saccharomyces	cerevisiae	GO:0007094	biological_process	"mitotic spindle checkpoint"	GLC7
+1.158520e-01	1	25	32	6526	97048	Saccharomyces	cerevisiae	GO:0030880	cellular_component	"RNA polymerase complex"	RPB5
+1.394170e-01	1	25	39	6526	97048	Saccharomyces	cerevisiae	GO:0042244	biological_process	"spore wall assembly"	GIP1
+1.000000e+00	25	25	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YJR072C	YKE2	YLR243W	YPL245W
+3.594010e-01	1	25	115	6526	97048	Saccharomyces	cerevisiae	GO:0019725	biological_process	"cell homeostasis"	GLC7
+1.775780e-01	2	25	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	GIP1	GLC7
+1.293920e-01	1	25	36	6526	97048	Saccharomyces	cerevisiae	GO:0043565	molecular_function	"sequence-specific DNA binding"	STM1
+1.508430e-01	4	25	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	GLC7	NAM7	NMD2	UPF3
+1.754990e-03	3	25	64	6526	97048	Saccharomyces	cerevisiae	GO:0006401	biological_process	"RNA catabolism"	NAM7	NMD2	UPF3
+9.061730e-01	11	25	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CIT2	GLC7	GLC8	MEK1	NAM7	RED1	RPB5	SNF12	STM1	UPF3	YPL245W
+6.503070e-03	2	25	32	6526	97048	Saccharomyces	cerevisiae	GO:0007121	biological_process	"bipolar bud site selection"	LAS17	SLA1
+2.277620e-02	1	25	6	6526	97048	Saccharomyces	cerevisiae	GO:0006415	biological_process	"translational termination"	NAM7
+7.756090e-02	1	25	21	6526	97048	Saccharomyces	cerevisiae	GO:0000054	biological_process	"ribosome export from nucleus"	NMD3
+2.367840e-03	8	25	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	GLC7	MHP1	NAM7	NMD2	RED1	STM1	UPF3	YAR014C
+4.540400e-03	4	25	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	GIP1	GIP2	GLC8	YAR014C
+3.207780e-01	1	25	100	6526	97048	Saccharomyces	cerevisiae	GO:0042578	molecular_function	"phosphoric ester hydrolase activity"	GLC7
+3.580650e-03	3	25	82	6526	97048	Saccharomyces	cerevisiae	GO:0019954	biological_process	"asexual reproduction"	GLC7	LAS17	SLA1
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0007128	biological_process	"meiotic prophase I"	RED1
+5.817740e-03	4	25	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	CIT2	GIP2	GLC7	GLC8
+6.850760e-03	6	25	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	GLC7	MHP1	NAM7	NMD2	UPF3	YAR014C
+6.985430e-01	1	25	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	CIT2
+3.869860e-04	2	25	8	6526	97048	Saccharomyces	cerevisiae	GO:0000903	biological_process	"cellular morphogenesis during vegetative growth"	GLC7	YAR014C
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0005940	cellular_component	"septin ring"	BNI4
+1.398150e-01	2	25	172	6526	97048	Saccharomyces	cerevisiae	GO:0005830	cellular_component	"cytosolic ribosome (sensu Eukaryota)"	NMD3	STM1
+8.464420e-02	1	25	23	6526	97048	Saccharomyces	cerevisiae	GO:0000784	cellular_component	"nuclear chromosome, telomeric region"	STM1
+1.226470e-01	1	25	34	6526	97048	Saccharomyces	cerevisiae	GO:0005874	cellular_component	"microtubule"	MHP1
+6.616010e-03	3	25	102	6526	97048	Saccharomyces	cerevisiae	GO:0005938	cellular_component	"cell cortex"	BNI4	LAS17	SLA1
+2.749540e-02	2	25	68	6526	97048	Saccharomyces	cerevisiae	GO:0016051	biological_process	"carbohydrate biosynthesis"	BNI4	GLC8
+6.907110e-03	2	25	33	6526	97048	Saccharomyces	cerevisiae	GO:0000271	biological_process	"polysaccharide biosynthesis"	BNI4	GLC8
+7.757450e-01	1	25	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YAR014C
+1.784040e-02	2	25	54	6526	97048	Saccharomyces	cerevisiae	GO:0030863	cellular_component	"cortical cytoskeleton"	LAS17	SLA1
+2.244860e-02	2	25	61	6526	97048	Saccharomyces	cerevisiae	GO:0007015	biological_process	"actin filament organization"	LAS17	SLA1
+2.569210e-01	2	25	256	6526	97048	Saccharomyces	cerevisiae	GO:0016817	molecular_function	"hydrolase activity, acting on acid anhydrides"	NAM7	YJR072C
+6.622470e-05	9	25	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	BNI4	GIM5	GIP1	LAS17	NMD2	NMD3	RED1	SLA1	YKE2
+5.813300e-01	3	25	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	GLC7	NAM7	YJR072C
+6.865990e-01	2	25	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	GLC7	LAS17
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0006042	biological_process	"glucosamine biosynthesis"	BNI4
+1.526100e-01	1	25	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	GLC7
+1.490750e-01	2	25	179	6526	97048	Saccharomyces	cerevisiae	GO:0016887	molecular_function	"ATPase activity"	NAM7	YJR072C
+2.247880e-01	1	25	66	6526	97048	Saccharomyces	cerevisiae	GO:0007127	biological_process	"meiosis I"	RED1
+2.065500e-01	1	25	60	6526	97048	Saccharomyces	cerevisiae	GO:0005815	cellular_component	"microtubule organizing center"	GLC7
+5.747780e-02	2	25	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	GLC7	MHP1
+6.242170e-02	24	25	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YJR072C	YKE2	YPL245W
+6.684390e-02	1	25	18	6526	97048	Saccharomyces	cerevisiae	GO:0042277	molecular_function	"peptide binding"	YLR243W
+7.756090e-02	1	25	21	6526	97048	Saccharomyces	cerevisiae	GO:0009266	biological_process	"response to temperature stimulus"	GLC7
+1.204670e-01	2	25	157	6526	97048	Saccharomyces	cerevisiae	GO:0007047	biological_process	"cell wall organization and biogenesis"	MHP1	SLA1
+5.963420e-02	1	25	16	6526	97048	Saccharomyces	cerevisiae	GO:0006536	biological_process	"glutamate metabolism"	CIT2
+7.065500e-02	22	25	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	BNI4	CIT2	GIM5	GIP1	GIP2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD2	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YAR014C	YFL023W	YKE2
+3.831100e-03	1	25	1	6526	97048	Saccharomyces	cerevisiae	GO:0000917	biological_process	"barrier septum formation"	BNI4
+4.299300e-01	16	25	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	BNI4	CIT2	GLC7	GLC8	LAS17	MEK1	MHP1	NAM7	NMD3	RED1	RPB5	SLA1	SNF12	STM1	UPF3	YPL245W
+3.791280e-01	1	25	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	GLC7
+9.415710e-02	3	25	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	NAM7	NMD2	UPF3
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0030674	molecular_function	"protein binding, bridging"	SLA1
+5.600930e-02	1	25	15	6526	97048	Saccharomyces	cerevisiae	GO:0006369	biological_process	"transcription termination from RNA polymerase II promoter"	GLC7
+6.605700e-02	3	25	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	GLC7	MEK1	RED1
+4.505400e-02	1	25	12	6526	97048	Saccharomyces	cerevisiae	GO:0006031	biological_process	"chitin biosynthesis"	BNI4
+2.353780e-01	2	25	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	BNI4	CIT2
+2.743050e-01	1	25	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	GLC7
+3.541760e-02	2	25	78	6526	97048	Saccharomyces	cerevisiae	GO:0015629	cellular_component	"actin cytoskeleton"	LAS17	SLA1
+3.376880e-02	2	25	76	6526	97048	Saccharomyces	cerevisiae	GO:0006897	biological_process	"endocytosis"	LAS17	SLA1
+3.101080e-01	1	25	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	RED1
+8.633890e-03	2	25	37	6526	97048	Saccharomyces	cerevisiae	GO:0016311	biological_process	"dephosphorylation"	GIP2	GLC7
+8.899100e-01	1	25	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	NMD3
+7.384670e-02	1	25	20	6526	97048	Saccharomyces	cerevisiae	GO:0009250	biological_process	"glucan biosynthesis"	GLC8
+3.386130e-01	9	25	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	GLC7	GLC8	MEK1	RED1	RPB5	SNF12	STM1	UPF3	YPL245W
+7.042890e-02	1	25	19	6526	97048	Saccharomyces	cerevisiae	GO:0006100	biological_process	"tricarboxylic acid cycle intermediate metabolism"	CIT2
+3.791280e-01	1	25	123	6526	97048	Saccharomyces	cerevisiae	GO:0016779	molecular_function	"nucleotidyltransferase activity"	RPB5
+7.756090e-02	1	25	21	6526	97048	Saccharomyces	cerevisiae	GO:0040020	biological_process	"regulation of meiosis"	RED1
+1.752340e-01	1	25	50	6526	97048	Saccharomyces	cerevisiae	GO:0005200	molecular_function	"structural constituent of cytoskeleton"	MHP1
+3.692870e-04	3	25	38	6526	97048	Saccharomyces	cerevisiae	GO:0006417	biological_process	"regulation of protein biosynthesis"	NAM7	NMD2	UPF3
+2.909540e-05	4	25	54	6526	97048	Saccharomyces	cerevisiae	GO:0051246	biological_process	"regulation of protein metabolism"	MHP1	NAM7	NMD2	UPF3
+1.122670e-01	3	25	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	NAM7	NMD2	UPF3
+1.600530e-02	3	25	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	GLC7	MEK1	RED1
+6.907110e-03	2	25	33	6526	97048	Saccharomyces	cerevisiae	GO:0043284	biological_process	"biopolymer biosynthesis"	BNI4	GLC8
+8.111200e-02	1	25	22	6526	97048	Saccharomyces	cerevisiae	GO:0051128	biological_process	"regulation of cell organization and biogenesis"	MHP1
+3.700850e-01	2	25	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	MEK1	RPB5

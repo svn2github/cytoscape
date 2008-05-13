@@ -1,0 +1,328 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+9.339810e-02	2	41	82	6526	97048	Saccharomyces	cerevisiae	GO:0007114	biological_process	"cell budding"	CMD1	SPA2
+1.461800e-08	5	41	14	6526	97048	Saccharomyces	cerevisiae	GO:0031109	biological_process	"microtubule polymerization or depolymerization"	BIM1	DAD1	DUO1	MHP1	SPC34
+2.886560e-02	29	41	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	BBP1	BIK1	BIM1	BIR1	CDC31	CIN4	CMD1	CNM67	CYK3	DUO1	HEK2	KAR1	MAK21	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4
+1.917450e-01	2	41	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	CDC5	CDC7
+5.629010e-01	1	41	130	6526	97048	Saccharomyces	cerevisiae	GO:0009451	biological_process	"RNA modification"	CBF5
+9.999990e-01	7	41	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	BIM1	CBF5	CDC5	CDC7	MHP1	PWP1	RBL2
+1.241440e-01	1	41	21	6526	97048	Saccharomyces	cerevisiae	GO:0042273	biological_process	"ribosomal large subunit biogenesis"	YTM1
+7.027460e-03	2	41	20	6526	97048	Saccharomyces	cerevisiae	GO:0007097	biological_process	"nuclear migration"	BIM1	SPC72
+1.806580e-22	34	41	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CMD1	CNM67	CSE4	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4	YTM1
+9.999970e-01	8	41	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	BIM1	CBF5	CDC5	CDC7	MAK21	MHP1	PWP1	RBL2
+1.183460e-01	1	41	20	6526	97048	Saccharomyces	cerevisiae	GO:0031577	biological_process	"spindle checkpoint"	BIM1
+1.069080e-05	5	41	48	6526	97048	Saccharomyces	cerevisiae	GO:0008092	molecular_function	"cytoskeletal protein binding"	ASE1	BIK1	RBL2	SPA2	STU2
+1.406190e-01	1	41	24	6526	97048	Saccharomyces	cerevisiae	GO:0042144	biological_process	"vacuole fusion, non-autophagic"	CMD1
+6.677180e-09	4	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0005823	cellular_component	"central plaque of spindle pole body"	CMD1	SPC110	SPC29	SPC42
+6.112140e-02	1	41	10	6526	97048	Saccharomyces	cerevisiae	GO:0000742	biological_process	"karyogamy during conjugation with cellular fusion"	KAR1
+1.000000e+00	41	41	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN2	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+6.494190e-01	2	41	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	CBF5	PWP1
+3.844490e-01	2	41	211	6526	97048	Saccharomyces	cerevisiae	GO:0003677	molecular_function	"DNA binding"	CSE4	MIF2
+3.930450e-12	15	41	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	ASE1	BIK1	BIM1	BIR1	CMD1	CNM67	CSE4	DAD1	DUO1	MIF2	SPC34	SPC72	SPC98	STU2	TUB4
+4.754560e-06	7	41	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	BIM1	BIR1	CSE4	MIF2	SPC24	SPC25	SPC72
+1.280930e-31	20	41	60	6526	97048	Saccharomyces	cerevisiae	GO:0005816	cellular_component	"spindle pole body"	BBP1	BIK1	BIM1	CDC31	CMD1	CNM67	DUO1	KAR1	NUD1	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+9.996030e-01	1	41	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	CIN2
+3.009570e-06	4	41	17	6526	97048	Saccharomyces	cerevisiae	GO:0015631	molecular_function	"tubulin binding"	ASE1	BIK1	RBL2	STU2
+2.263630e-01	2	41	143	6526	97048	Saccharomyces	cerevisiae	GO:0044452	cellular_component	"nucleolar part"	CBF5	MAK21
+1.175420e-01	4	41	300	6526	97048	Saccharomyces	cerevisiae	GO:0005730	cellular_component	"nucleolus"	CBF5	MAK21	PWP1	YTM1
+4.502300e-12	9	41	45	6526	97048	Saccharomyces	cerevisiae	GO:0000778	cellular_component	"condensed nuclear chromosome kinetochore"	BIK1	BIR1	DAD1	DUO1	MIF2	SPC24	SPC25	SPC34	STU2
+1.146140e-04	2	41	3	6526	97048	Saccharomyces	cerevisiae	GO:0007026	biological_process	"negative regulation of microtubule depolymerization"	BIM1	MHP1
+1.146140e-04	2	41	3	6526	97048	Saccharomyces	cerevisiae	GO:0031114	biological_process	"regulation of microtubule depolymerization"	BIM1	MHP1
+1.781230e-01	2	41	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	KAR1	SPA2
+7.290070e-02	1	41	12	6526	97048	Saccharomyces	cerevisiae	GO:0000786	cellular_component	"nucleosome"	CSE4
+8.538580e-01	4	41	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	BIM1	CMD1	SPC72	SVL3
+3.103080e-02	1	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0030686	cellular_component	"90S preribosome"	MAK21
+1.210330e-41	26	41	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	ASE1	BBP1	BIK1	BIM1	BIR1	CDC31	CNM67	DAD1	DUO1	MHP1	MIF2	NUD1	RBL2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+6.112140e-02	1	41	10	6526	97048	Saccharomyces	cerevisiae	GO:0008298	biological_process	"intracellular mRNA localization"	HEK2
+9.577010e-01	5	41	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	BIM1	CDC5	CDC7	MHP1	RBL2
+7.114740e-02	2	41	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	CDC5	CDC7
+2.490070e-02	1	41	4	6526	97048	Saccharomyces	cerevisiae	GO:0005509	molecular_function	"calcium ion binding"	CMD1
+3.593830e-01	2	41	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	KAR1	SPA2
+2.302700e-07	3	41	3	6526	97048	Saccharomyces	cerevisiae	GO:0000928	cellular_component	"gamma-tubulin complex (sensu Saccharomyces)"	SPC97	SPC98	TUB4
+4.337470e-02	2	41	53	6526	97048	Saccharomyces	cerevisiae	GO:0051640	biological_process	"organelle localization"	BIM1	SPC72
+2.330120e-01	3	41	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	CMD1	KAR1	SPA2
+1.545840e-01	3	41	217	6526	97048	Saccharomyces	cerevisiae	GO:0007046	biological_process	"ribosome biogenesis"	CBF5	PWP1	YTM1
+2.356900e-01	2	41	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	CDC5	CDC7
+7.873620e-02	1	41	13	6526	97048	Saccharomyces	cerevisiae	GO:0005881	cellular_component	"cytoplasmic microtubule"	BIM1
+4.965930e-01	1	41	108	6526	97048	Saccharomyces	cerevisiae	GO:0030467	biological_process	"establishment and/or maintenance of cell polarity (sensu Fungi)"	SPA2
+3.103080e-02	1	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0000133	cellular_component	"polarisome"	SPA2
+8.067800e-01	2	41	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	CDC5	CDC7
+4.387300e-01	1	41	91	6526	97048	Saccharomyces	cerevisiae	GO:0000154	biological_process	"rRNA modification"	CBF5
+2.055790e-04	40	41	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+2.900870e-17	12	41	47	6526	97048	Saccharomyces	cerevisiae	GO:0007051	biological_process	"spindle organization and biogenesis"	ASE1	BIK1	BIR1	CNM67	DAD1	DUO1	MIF2	SPC34	SPC72	SPC98	STU2	TUB4
+3.316720e-01	2	41	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	BIM1	MHP1
+4.919620e-02	1	41	8	6526	97048	Saccharomyces	cerevisiae	GO:0030685	cellular_component	"nucleolar preribosome"	MAK21
+3.455700e-01	2	41	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	BIM1	MHP1
+5.186900e-01	1	41	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	SPA2
+4.368890e-03	2	41	16	6526	97048	Saccharomyces	cerevisiae	GO:0030705	biological_process	"cytoskeleton-dependent intracellular transport"	BIM1	SPC72
+7.773150e-01	1	41	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	SPA2
+3.547890e-01	2	41	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	CDC5	CDC7
+9.890280e-01	4	41	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CBF5	CDC5	CDC7	PWP1
+1.133760e-05	3	41	8	6526	97048	Saccharomyces	cerevisiae	GO:0008017	molecular_function	"microtubule binding"	ASE1	BIK1	STU2
+9.701500e-05	3	41	15	6526	97048	Saccharomyces	cerevisiae	GO:0005828	cellular_component	"kinetochore microtubule"	DAD1	DUO1	SPC34
+7.290070e-02	1	41	12	6526	97048	Saccharomyces	cerevisiae	GO:0019001	molecular_function	"guanyl nucleotide binding"	CIN4
+9.401260e-01	2	41	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	CDC5	CDC7
+2.490070e-02	1	41	4	6526	97048	Saccharomyces	cerevisiae	GO:0007023	biological_process	"post-chaperonin tubulin folding pathway"	RBL2
+2.984430e-01	1	41	56	6526	97048	Saccharomyces	cerevisiae	GO:0000749	biological_process	"response to pheromone during conjugation with cellular fusion"	SPA2
+6.282720e-03	1	41	1	6526	97048	Saccharomyces	cerevisiae	GO:0005821	cellular_component	"intermediate layer of spindle pole body"	SPC42
+1.806580e-22	34	41	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CMD1	CNM67	CSE4	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4	YTM1
+4.167970e-01	1	41	85	6526	97048	Saccharomyces	cerevisiae	GO:0006403	biological_process	"RNA localization"	HEK2
+1.598290e-11	35	41	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CMD1	CNM67	CSE4	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4	YTM1
+1.017220e-01	1	41	17	6526	97048	Saccharomyces	cerevisiae	GO:0048284	biological_process	"organelle fusion"	KAR1
+1.567760e-01	1	41	27	6526	97048	Saccharomyces	cerevisiae	GO:0016836	molecular_function	"hydro-lyase activity"	CBF5
+3.712320e-02	1	41	6	6526	97048	Saccharomyces	cerevisiae	GO:0031383	biological_process	"regulation of mating projection biogenesis"	SPA2
+2.231750e-02	2	41	37	6526	97048	Saccharomyces	cerevisiae	GO:0044463	cellular_component	"cell projection part"	CMD1	SPA2
+1.341520e-09	4	41	4	6526	97048	Saccharomyces	cerevisiae	GO:0005822	cellular_component	"inner plaque of spindle pole body"	SPC110	SPC97	SPC98	TUB4
+1.130040e-01	1	41	19	6526	97048	Saccharomyces	cerevisiae	GO:0007064	biological_process	"mitotic sister chromatid cohesion"	BIM1
+2.286300e-04	2	41	4	6526	97048	Saccharomyces	cerevisiae	GO:0031262	cellular_component	"Ndc80 complex"	SPC24	SPC25
+2.849390e-01	1	41	53	6526	97048	Saccharomyces	cerevisiae	GO:0042257	biological_process	"ribosomal subunit assembly"	MAK21
+4.155280e-23	36	41	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CIN2	CIN4	CMD1	CNM67	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4	YTM1
+4.709100e-14	11	41	61	6526	97048	Saccharomyces	cerevisiae	GO:0000775	cellular_component	"chromosome, pericentric region"	BIK1	BIM1	BIR1	CSE4	DAD1	DUO1	MIF2	SPC24	SPC25	SPC34	STU2
+7.290070e-02	1	41	12	6526	97048	Saccharomyces	cerevisiae	GO:0000788	cellular_component	"nuclear nucleosome"	CSE4
+1.461800e-08	5	41	14	6526	97048	Saccharomyces	cerevisiae	GO:0051300	biological_process	"spindle pole body organization and biogenesis"	BBP1	CDC31	KAR1	SPC29	SPC42
+9.979550e-01	7	41	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	BIR1	CIN2	CYK3	MAK21	PWP1	SVL3	YTM1
+8.359520e-01	3	41	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	CBF5	CDC5	CDC7
+5.629010e-01	1	41	130	6526	97048	Saccharomyces	cerevisiae	GO:0040007	biological_process	"growth"	SPA2
+1.448920e-01	2	41	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	KAR1	SPA2
+3.172500e-05	18	41	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	ASE1	BIK1	BIR1	CBF5	CDC31	CDC7	CSE4	DAD1	DUO1	HEK2	MAK21	MIF2	PWP1	SPC24	SPC25	SPC34	STU2	YTM1
+9.995330e-01	1	41	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	CDC31
+1.448920e-01	2	41	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	KAR1	SPA2
+1.567760e-01	1	41	27	6526	97048	Saccharomyces	cerevisiae	GO:0000781	cellular_component	"chromosome, telomeric region"	HEK2
+7.874580e-01	2	41	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	HEK2	YTM1
+3.103080e-02	1	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0031385	biological_process	"regulation of termination of mating projection growth"	SPA2
+7.735410e-05	6	41	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	ASE1	BIK1	BIM1	CMD1	CSE4	SPC72
+5.526630e-03	2	41	18	6526	97048	Saccharomyces	cerevisiae	GO:0051231	biological_process	"spindle elongation"	BIR1	SPC72
+9.440710e-09	5	41	13	6526	97048	Saccharomyces	cerevisiae	GO:0031110	biological_process	"regulation of microtubule polymerization or depolymerization"	BIM1	DAD1	DUO1	MHP1	SPC34
+1.598290e-11	35	41	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CMD1	CNM67	CSE4	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4	YTM1
+3.547890e-01	2	41	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	CDC5	CDC7
+1.090520e-01	7	41	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	BIM1	CDC7	DAD1	DUO1	MHP1	SPA2	SPC34
+6.688140e-01	1	41	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	SPA2
+2.234320e-01	1	41	40	6526	97048	Saccharomyces	cerevisiae	GO:0000027	biological_process	"ribosomal large subunit assembly and maintenance"	MAK21
+4.529020e-01	1	41	95	6526	97048	Saccharomyces	cerevisiae	GO:0030447	biological_process	"filamentous growth"	SPA2
+8.383920e-01	20	41	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	ASE1	BIK1	BIR1	CBF5	CDC31	CDC5	CDC7	CSE4	DAD1	DUO1	HEK2	MAK21	MIF2	PWP1	SPC105	SPC24	SPC25	SPC34	STU2	YTM1
+6.031420e-01	1	41	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	BIM1
+4.655390e-01	2	41	248	6526	97048	Saccharomyces	cerevisiae	GO:0016072	biological_process	"rRNA metabolism"	CBF5	PWP1
+4.545640e-11	5	41	6	6526	97048	Saccharomyces	cerevisiae	GO:0005824	cellular_component	"outer plaque of spindle pole body"	CNM67	SPC72	SPC97	SPC98	TUB4
+4.868230e-01	1	41	105	6526	97048	Saccharomyces	cerevisiae	GO:0030468	biological_process	"establishment of cell polarity (sensu Fungi)"	SPA2
+2.527070e-13	10	41	50	6526	97048	Saccharomyces	cerevisiae	GO:0000779	cellular_component	"condensed chromosome, pericentric region"	BIK1	BIR1	CSE4	DAD1	DUO1	MIF2	SPC24	SPC25	SPC34	STU2
+3.837840e-03	2	41	15	6526	97048	Saccharomyces	cerevisiae	GO:0030473	biological_process	"nuclear migration, microtubule-mediated"	BIM1	SPC72
+1.190310e-03	3	41	34	6526	97048	Saccharomyces	cerevisiae	GO:0005875	cellular_component	"microtubule associated complex"	DAD1	DUO1	SPC34
+1.000000e+00	41	41	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN2	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+6.031420e-01	1	41	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	BIM1
+3.862490e-01	1	41	77	6526	97048	Saccharomyces	cerevisiae	GO:0006365	biological_process	"35S primary transcript processing"	CBF5
+1.406190e-01	1	41	24	6526	97048	Saccharomyces	cerevisiae	GO:0051052	biological_process	"regulation of DNA metabolism"	CDC7
+3.028890e-01	1	41	57	6526	97048	Saccharomyces	cerevisiae	GO:0044453	cellular_component	"nuclear membrane part"	CDC31
+3.103080e-02	1	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0004730	molecular_function	"pseudouridylate synthase activity"	CBF5
+7.927790e-01	3	41	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	CSE4	HEK2	MIF2
+2.286300e-04	2	41	4	6526	97048	Saccharomyces	cerevisiae	GO:0005825	cellular_component	"half bridge of spindle pole body"	CDC31	KAR1
+1.862250e-16	21	41	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	BBP1	BIM1	CDC31	CNM67	DAD1	DUO1	MHP1	NUD1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+2.520020e-05	3	41	10	6526	97048	Saccharomyces	cerevisiae	GO:0042729	cellular_component	"DASH complex"	DAD1	DUO1	SPC34
+1.891040e-16	36	41	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CIN2	CIN4	CMD1	CNM67	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4	YTM1
+5.676590e-04	2	41	6	6526	97048	Saccharomyces	cerevisiae	GO:0000090	biological_process	"mitotic anaphase"	ASE1	BIK1
+1.694890e-02	2	41	32	6526	97048	Saccharomyces	cerevisiae	GO:0043332	cellular_component	"mating projection tip"	CMD1	SPA2
+6.831600e-10	12	41	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	BIK1	BIM1	BIR1	CSE4	DAD1	DUO1	HEK2	MIF2	SPC24	SPC25	SPC34	STU2
+7.263440e-15	9	41	24	6526	97048	Saccharomyces	cerevisiae	GO:0030472	biological_process	"mitotic spindle organization and biogenesis in nucleus"	ASE1	BIK1	DAD1	DUO1	MIF2	SPC34	SPC98	STU2	TUB4
+5.093380e-01	1	41	112	6526	97048	Saccharomyces	cerevisiae	GO:0008361	biological_process	"regulation of cell size"	SPA2
+1.132760e-01	2	41	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	CDC5	CDC7
+3.886440e-09	12	41	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	BIK1	BIM1	BIR1	CSE4	DAD1	DUO1	HEK2	MIF2	SPC24	SPC25	SPC34	STU2
+4.868230e-01	1	41	105	6526	97048	Saccharomyces	cerevisiae	GO:0030010	biological_process	"establishment of cell polarity"	SPA2
+1.051710e-03	2	41	8	6526	97048	Saccharomyces	cerevisiae	GO:0051261	biological_process	"protein depolymerization"	BIM1	MHP1
+4.317830e-02	1	41	7	6526	97048	Saccharomyces	cerevisiae	GO:0031382	biological_process	"mating projection biogenesis"	SPA2
+4.735080e-01	1	41	101	6526	97048	Saccharomyces	cerevisiae	GO:0005635	cellular_component	"nuclear envelope"	CDC31
+4.802650e-03	3	41	55	6526	97048	Saccharomyces	cerevisiae	GO:0000070	biological_process	"mitotic sister chromatid segregation"	BIM1	CSE4	SPC72
+9.738120e-02	7	41	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	BIM1	CDC7	DAD1	DUO1	MHP1	SPA2	SPC34
+7.873620e-02	1	41	13	6526	97048	Saccharomyces	cerevisiae	GO:0007004	biological_process	"telomere maintenance via telomerase"	HEK2
+3.837840e-03	2	41	15	6526	97048	Saccharomyces	cerevisiae	GO:0007018	biological_process	"microtubule-based movement"	BIM1	SPC72
+3.270240e-01	2	41	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	BIM1	MHP1
+9.602840e-02	1	41	16	6526	97048	Saccharomyces	cerevisiae	GO:0005057	molecular_function	"receptor signaling protein activity"	CDC5
+1.183460e-01	1	41	20	6526	97048	Saccharomyces	cerevisiae	GO:0000767	biological_process	"cellular morphogenesis during conjugation"	SPA2
+4.423060e-01	1	41	92	6526	97048	Saccharomyces	cerevisiae	GO:0044448	cellular_component	"cell cortex part"	SPA2
+3.416850e-01	1	41	66	6526	97048	Saccharomyces	cerevisiae	GO:0007105	biological_process	"cytokinesis, site selection"	SPA2
+4.857860e-04	5	41	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	CDC5	CMD1	CYK3	SPA2	SVL3
+1.461800e-08	5	41	14	6526	97048	Saccharomyces	cerevisiae	GO:0031023	biological_process	"microtubule organizing center organization and biogenesis"	BBP1	CDC31	KAR1	SPC29	SPC42
+3.823230e-01	1	41	76	6526	97048	Saccharomyces	cerevisiae	GO:0019236	biological_process	"response to pheromone"	SPA2
+2.302700e-07	3	41	3	6526	97048	Saccharomyces	cerevisiae	GO:0008275	cellular_component	"gamma-tubulin small complex"	SPC97	SPC98	TUB4
+5.923500e-09	11	41	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	BIK1	BIR1	CSE4	DAD1	DUO1	HEK2	MIF2	SPC24	SPC25	SPC34	STU2
+3.837840e-03	2	41	15	6526	97048	Saccharomyces	cerevisiae	GO:0051248	biological_process	"negative regulation of protein metabolism"	BIM1	MHP1
+1.130040e-01	1	41	19	6526	97048	Saccharomyces	cerevisiae	GO:0046872	molecular_function	"metal ion binding"	CMD1
+5.526630e-03	2	41	18	6526	97048	Saccharomyces	cerevisiae	GO:0000022	biological_process	"mitotic spindle elongation"	BIR1	SPC72
+2.096130e-11	10	41	76	6526	97048	Saccharomyces	cerevisiae	GO:0000794	cellular_component	"condensed nuclear chromosome"	BIK1	BIR1	CSE4	DAD1	DUO1	MIF2	SPC24	SPC25	SPC34	STU2
+1.091050e-08	15	41	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	ASE1	BIK1	BIM1	BIR1	CMD1	CNM67	CSE4	DAD1	DUO1	MIF2	SPC34	SPC72	SPC98	STU2	TUB4
+3.247100e-01	1	41	62	6526	97048	Saccharomyces	cerevisiae	GO:0007124	biological_process	"pseudohyphal growth"	SPA2
+1.868190e-22	11	41	15	6526	97048	Saccharomyces	cerevisiae	GO:0044450	cellular_component	"microtubule organizing center part"	CDC31	CMD1	CNM67	KAR1	SPC110	SPC29	SPC42	SPC72	SPC97	SPC98	TUB4
+2.943110e-01	2	41	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	CDC5	CDC7
+1.146140e-04	2	41	3	6526	97048	Saccharomyces	cerevisiae	GO:0031111	biological_process	"negative regulation of microtubule polymerization or depolymerization"	BIM1	MHP1
+6.112140e-02	1	41	10	6526	97048	Saccharomyces	cerevisiae	GO:0007021	biological_process	"tubulin folding"	RBL2
+7.027460e-03	2	41	20	6526	97048	Saccharomyces	cerevisiae	GO:0051647	biological_process	"nucleus localization"	BIM1	SPC72
+1.252690e-02	1	41	2	6526	97048	Saccharomyces	cerevisiae	GO:0048487	molecular_function	"beta-tubulin binding"	RBL2
+7.457740e-02	4	41	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	CBF5	MAK21	PWP1	YTM1
+2.009490e-02	2	41	35	6526	97048	Saccharomyces	cerevisiae	GO:0000131	cellular_component	"incipient bud site"	CMD1	SPA2
+9.440710e-09	5	41	13	6526	97048	Saccharomyces	cerevisiae	GO:0007103	biological_process	"spindle pole body duplication in nuclear envelope"	BBP1	CDC31	KAR1	SPC29	SPC42
+3.028890e-01	1	41	57	6526	97048	Saccharomyces	cerevisiae	GO:0031965	cellular_component	"nuclear membrane"	CDC31
+8.752680e-01	1	41	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	CDC7
+4.835260e-01	1	41	104	6526	97048	Saccharomyces	cerevisiae	GO:0030036	biological_process	"actin cytoskeleton organization and biogenesis"	SPA2
+2.707260e-04	40	41	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+8.567330e-10	11	41	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	BIK1	BIR1	CSE4	DAD1	DUO1	HEK2	MIF2	SPC24	SPC25	SPC34	STU2
+9.999310e-01	3	41	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	CBF5	CDC5	CDC7
+1.011970e-01	11	41	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	ASE1	BIK1	CIN4	CMD1	CSE4	HEK2	KAR1	MIF2	RBL2	SPA2	STU2
+2.872750e-01	2	41	169	6526	97048	Saccharomyces	cerevisiae	GO:0006364	biological_process	"rRNA processing"	CBF5	PWP1
+9.266220e-01	6	41	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	BIM1	CDC5	CDC7	MAK21	MHP1	RBL2
+9.975160e-01	8	41	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	BIM1	CBF5	CDC5	CDC7	MAK21	MHP1	PWP1	RBL2
+1.110820e-14	11	41	54	6526	97048	Saccharomyces	cerevisiae	GO:0000776	cellular_component	"kinetochore"	BIK1	BIM1	BIR1	CSE4	DAD1	DUO1	MIF2	SPC24	SPC25	SPC34	STU2
+5.752910e-01	5	41	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	CBF5	CDC7	MAK21	PWP1	YTM1
+5.951990e-33	21	41	65	6526	97048	Saccharomyces	cerevisiae	GO:0000922	cellular_component	"spindle pole"	BBP1	BIK1	BIM1	CDC31	CDC5	CMD1	CNM67	DUO1	KAR1	NUD1	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+2.955680e-02	2	41	43	6526	97048	Saccharomyces	cerevisiae	GO:0042995	cellular_component	"cell projection"	CMD1	SPA2
+6.414890e-29	25	41	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	ASE1	BBP1	BIK1	BIM1	BIR1	CDC31	CDC5	CMD1	CNM67	DAD1	DUO1	KAR1	MHP1	NUD1	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+5.676590e-04	2	41	6	6526	97048	Saccharomyces	cerevisiae	GO:0051322	biological_process	"anaphase"	ASE1	BIK1
+4.315100e-01	1	41	89	6526	97048	Saccharomyces	cerevisiae	GO:0016049	biological_process	"cell growth"	SPA2
+2.711810e-01	1	41	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	BIM1
+3.160160e-01	5	41	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	CBF5	CDC7	MAK21	PWP1	YTM1
+1.448920e-01	2	41	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	KAR1	SPA2
+7.457740e-02	4	41	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	CBF5	MAK21	PWP1	YTM1
+2.024590e-03	5	41	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	CDC5	CMD1	CYK3	SPA2	SVL3
+4.965930e-01	1	41	108	6526	97048	Saccharomyces	cerevisiae	GO:0007163	biological_process	"establishment and/or maintenance of cell polarity"	SPA2
+2.939700e-01	1	41	55	6526	97048	Saccharomyces	cerevisiae	GO:0007264	biological_process	"small GTPase mediated signal transduction"	SPA2
+9.430520e-01	1	41	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	CDC7
+9.931160e-01	2	41	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	BIR1	SPC105
+7.773150e-01	1	41	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	SPA2
+6.282720e-03	1	41	1	6526	97048	Saccharomyces	cerevisiae	GO:0042801	molecular_function	"polo kinase kinase activity"	CDC5
+9.490370e-38	18	41	23	6526	97048	Saccharomyces	cerevisiae	GO:0007020	biological_process	"microtubule nucleation"	BBP1	BIM1	CDC31	CNM67	NUD1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+8.816140e-01	2	41	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	CDC5	CDC7
+1.178640e-01	13	41	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	CBF5	CDC31	CSE4	DAD1	DUO1	MAK21	SPA2	SPC24	SPC25	SPC34	SPC97	SPC98	TUB4
+8.182670e-01	1	41	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	HEK2
+4.574450e-02	3	41	128	6526	97048	Saccharomyces	cerevisiae	GO:0051301	biological_process	"cell division"	CMD1	CYK3	SPA2
+8.425730e-01	2	41	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	CBF5	MAK21
+9.800980e-02	7	41	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	BIM1	CDC7	DAD1	DUO1	MHP1	SPA2	SPC34
+8.441990e-01	2	41	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	BIM1	SPC72
+1.470630e-01	2	41	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	CDC5	CDC7
+6.112140e-02	1	41	10	6526	97048	Saccharomyces	cerevisiae	GO:0006275	biological_process	"regulation of DNA replication"	CDC7
+2.286300e-04	2	41	4	6526	97048	Saccharomyces	cerevisiae	GO:0007019	biological_process	"microtubule depolymerization"	BIM1	MHP1
+8.769120e-01	1	41	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	SPA2
+8.158630e-01	1	41	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	CDC31
+9.461320e-01	5	41	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	BIM1	CDC5	CDC7	MHP1	RBL2
+3.270240e-01	2	41	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	BIM1	MHP1
+6.282720e-03	1	41	1	6526	97048	Saccharomyces	cerevisiae	GO:0048306	molecular_function	"calcium-dependent protein binding"	CMD1
+4.013550e-06	41	41	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN2	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+4.085580e-28	25	41	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	ASE1	BBP1	BIK1	BIM1	BIR1	CDC31	CDC5	CMD1	CNM67	DAD1	DUO1	KAR1	MHP1	NUD1	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+5.752910e-01	5	41	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	CBF5	CDC7	MAK21	PWP1	YTM1
+1.235990e-01	2	41	97	6526	97048	Saccharomyces	cerevisiae	GO:0000910	biological_process	"cytokinesis"	CYK3	SPA2
+1.241440e-01	1	41	21	6526	97048	Saccharomyces	cerevisiae	GO:0007093	biological_process	"mitotic checkpoint"	BIM1
+9.191530e-01	1	41	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	SPA2
+1.178780e-36	30	41	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	ASE1	BBP1	BIK1	BIM1	BIR1	CDC31	CIN2	CIN4	CMD1	CNM67	DAD1	DUO1	MHP1	MIF2	NUD1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+3.416850e-01	1	41	66	6526	97048	Saccharomyces	cerevisiae	GO:0000282	biological_process	"bud site selection"	SPA2
+6.182050e-01	1	41	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	MAK21
+1.933320e-01	1	41	34	6526	97048	Saccharomyces	cerevisiae	GO:0017076	molecular_function	"purine nucleotide binding"	CIN4
+9.249100e-01	1	41	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	HEK2
+2.237360e-06	41	41	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN2	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+1.252690e-02	1	41	2	6526	97048	Saccharomyces	cerevisiae	GO:0030690	cellular_component	"Noc1p-Noc2p complex"	MAK21
+9.943490e-01	4	41	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	CBF5	CDC5	CDC7	PWP1
+4.493920e-01	1	41	94	6526	97048	Saccharomyces	cerevisiae	GO:0016044	biological_process	"membrane organization and biogenesis"	CMD1
+5.575010e-01	2	41	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	CMD1	SVL3
+3.103080e-02	1	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0005519	molecular_function	"cytoskeletal regulatory protein binding"	SPA2
+4.055200e-01	1	41	82	6526	97048	Saccharomyces	cerevisiae	GO:0016829	molecular_function	"lyase activity"	CBF5
+8.084630e-01	1	41	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	CDC31
+1.136760e-02	2	41	26	6526	97048	Saccharomyces	cerevisiae	GO:0051656	biological_process	"establishment of organelle localization"	BIM1	SPC72
+9.999660e-01	8	41	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	BIM1	CBF5	CDC5	CDC7	MAK21	MHP1	PWP1	RBL2
+2.919660e-01	2	41	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	BIM1	MHP1
+7.198890e-44	28	41	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	ASE1	BBP1	BIK1	BIM1	BIR1	CDC31	CIN2	CIN4	CNM67	DAD1	DUO1	MHP1	MIF2	NUD1	RBL2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+4.919620e-02	1	41	8	6526	97048	Saccharomyces	cerevisiae	GO:0030031	biological_process	"cell projection biogenesis"	SPA2
+3.332500e-01	1	41	64	6526	97048	Saccharomyces	cerevisiae	GO:0042255	biological_process	"ribosome assembly"	MAK21
+4.245240e-04	35	41	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CMD1	CNM67	CSE4	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4	YTM1
+3.103080e-02	1	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0030689	cellular_component	"Noc complex"	MAK21
+5.676590e-04	2	41	6	6526	97048	Saccharomyces	cerevisiae	GO:0019237	molecular_function	"centromeric DNA binding"	CSE4	MIF2
+7.988360e-01	2	41	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	HEK2	YTM1
+3.547890e-01	2	41	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	CDC5	CDC7
+4.965930e-01	1	41	108	6526	97048	Saccharomyces	cerevisiae	GO:0030029	biological_process	"actin filament-based process"	SPA2
+1.673820e-01	1	41	29	6526	97048	Saccharomyces	cerevisiae	GO:0007062	biological_process	"sister chromatid cohesion"	BIM1
+7.716580e-01	5	41	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	BIM1	CMD1	HEK2	SPC72	SVL3
+6.327110e-01	1	41	157	6526	97048	Saccharomyces	cerevisiae	GO:0045229	biological_process	"external encapsulating structure organization and biogenesis"	MHP1
+2.087000e-02	23	41	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	BBP1	BIK1	BIM1	BIR1	CDC31	CMD1	CNM67	DUO1	KAR1	MAK21	NUD1	SPA2	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+8.182670e-01	1	41	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	HEK2
+3.103080e-02	1	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0051233	cellular_component	"spindle midzone"	BIR1
+9.823250e-01	1	41	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	CDC31
+3.797950e-04	2	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0051129	biological_process	"negative regulation of cell organization and biogenesis"	BIM1	MHP1
+3.712320e-02	1	41	6	6526	97048	Saccharomyces	cerevisiae	GO:0005880	cellular_component	"nuclear microtubule"	ASE1
+4.899060e-03	40	41	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+7.027460e-03	2	41	20	6526	97048	Saccharomyces	cerevisiae	GO:0040023	biological_process	"establishment of nucleus localization"	BIM1	SPC72
+7.290070e-02	1	41	12	6526	97048	Saccharomyces	cerevisiae	GO:0004702	molecular_function	"receptor signaling protein serine/threonine kinase activity"	CDC5
+3.374800e-01	1	41	65	6526	97048	Saccharomyces	cerevisiae	GO:0004871	molecular_function	"signal transducer activity"	CDC5
+8.651470e-01	4	41	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	BIM1	CMD1	SPC72	SVL3
+5.854890e-11	10	41	84	6526	97048	Saccharomyces	cerevisiae	GO:0000793	cellular_component	"condensed chromosome"	BIK1	BIR1	CSE4	DAD1	DUO1	MIF2	SPC24	SPC25	SPC34	STU2
+3.743960e-01	1	41	74	6526	97048	Saccharomyces	cerevisiae	GO:0006457	biological_process	"protein folding"	RBL2
+1.984260e-01	1	41	35	6526	97048	Saccharomyces	cerevisiae	GO:0003729	molecular_function	"mRNA binding"	HEK2
+5.311420e-03	3	41	57	6526	97048	Saccharomyces	cerevisiae	GO:0000819	biological_process	"sister chromatid segregation"	BIM1	CSE4	SPC72
+8.521140e-01	2	41	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	BIM1	SPC72
+1.873290e-02	1	41	3	6526	97048	Saccharomyces	cerevisiae	GO:0007025	biological_process	"beta-tubulin folding"	RBL2
+3.620620e-02	2	41	48	6526	97048	Saccharomyces	cerevisiae	GO:0005934	cellular_component	"bud tip"	CMD1	SPA2
+7.109860e-01	1	41	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	SPA2
+2.135220e-01	1	41	38	6526	97048	Saccharomyces	cerevisiae	GO:0000790	cellular_component	"nuclear chromatin"	CSE4
+2.757960e-01	1	41	51	6526	97048	Saccharomyces	cerevisiae	GO:0000075	biological_process	"cell cycle checkpoint"	BIM1
+1.017220e-01	1	41	17	6526	97048	Saccharomyces	cerevisiae	GO:0007266	biological_process	"Rho protein signal transduction"	SPA2
+2.283410e-01	1	41	41	6526	97048	Saccharomyces	cerevisiae	GO:0007033	biological_process	"vacuole organization and biogenesis"	CMD1
+1.032010e-01	2	41	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	CDC5	CDC7
+1.573900e-03	5	41	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	CDC5	CMD1	CYK3	SPA2	SVL3
+2.757960e-01	1	41	51	6526	97048	Saccharomyces	cerevisiae	GO:0005643	cellular_component	"nuclear pore"	CDC31
+7.290070e-02	1	41	12	6526	97048	Saccharomyces	cerevisiae	GO:0000741	biological_process	"karyogamy"	KAR1
+2.527070e-13	10	41	50	6526	97048	Saccharomyces	cerevisiae	GO:0000780	cellular_component	"condensed nuclear chromosome, pericentric region"	BIK1	BIR1	CSE4	DAD1	DUO1	MIF2	SPC24	SPC25	SPC34	STU2
+1.183460e-01	1	41	20	6526	97048	Saccharomyces	cerevisiae	GO:0007094	biological_process	"mitotic spindle checkpoint"	BIM1
+9.146990e-01	1	41	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	CDC31
+1.000000e+00	41	41	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN2	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+3.593830e-01	2	41	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	KAR1	SPA2
+1.984260e-01	1	41	35	6526	97048	Saccharomyces	cerevisiae	GO:0000166	molecular_function	"nucleotide binding"	CIN4
+2.119390e-02	2	41	36	6526	97048	Saccharomyces	cerevisiae	GO:0043565	molecular_function	"sequence-specific DNA binding"	CSE4	MIF2
+8.682910e-01	2	41	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	CBF5	PWP1
+8.383920e-01	20	41	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ASE1	BIK1	BIR1	CBF5	CDC31	CDC5	CDC7	CSE4	DAD1	DUO1	HEK2	MAK21	MIF2	PWP1	SPC105	SPC24	SPC25	SPC34	STU2	YTM1
+1.830480e-01	1	41	32	6526	97048	Saccharomyces	cerevisiae	GO:0007121	biological_process	"bipolar bud site selection"	SPA2
+2.234320e-01	1	41	40	6526	97048	Saccharomyces	cerevisiae	GO:0000785	cellular_component	"chromatin"	CSE4
+1.179460e-01	7	41	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	BIM1	CDC7	DAD1	DUO1	MHP1	SPA2	SPC34
+7.886710e-01	1	41	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	SPA2
+9.146990e-01	1	41	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	CDC31
+4.919620e-02	1	41	8	6526	97048	Saccharomyces	cerevisiae	GO:0030030	biological_process	"cell projection organization and biogenesis"	SPA2
+9.339810e-02	2	41	82	6526	97048	Saccharomyces	cerevisiae	GO:0019954	biological_process	"asexual reproduction"	CMD1	SPA2
+5.675010e-01	3	41	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	BIM1	CDC7	MHP1
+3.797950e-04	2	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0000092	biological_process	"mitotic anaphase B"	ASE1	BIK1
+2.302700e-07	3	41	3	6526	97048	Saccharomyces	cerevisiae	GO:0000930	cellular_component	"gamma-tubulin complex"	SPC97	SPC98	TUB4
+2.665380e-01	1	41	49	6526	97048	Saccharomyces	cerevisiae	GO:0006997	biological_process	"nuclear organization and biogenesis"	KAR1
+1.351670e-01	1	41	23	6526	97048	Saccharomyces	cerevisiae	GO:0000784	cellular_component	"nuclear chromosome, telomeric region"	HEK2
+2.571220e-02	3	41	102	6526	97048	Saccharomyces	cerevisiae	GO:0005938	cellular_component	"cell cortex"	BIK1	SPA2	STU2
+1.901150e-11	8	41	34	6526	97048	Saccharomyces	cerevisiae	GO:0005874	cellular_component	"microtubule"	ASE1	BIK1	BIM1	DAD1	DUO1	MHP1	SPC34	STU2
+9.141260e-01	1	41	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CDC7
+3.203990e-01	1	41	61	6526	97048	Saccharomyces	cerevisiae	GO:0007015	biological_process	"actin filament organization"	SPA2
+3.747270e-02	7	41	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	ASE1	BIK1	CMD1	KAR1	RBL2	SPA2	STU2
+3.712320e-02	1	41	6	6526	97048	Saccharomyces	cerevisiae	GO:0031344	biological_process	"regulation of cell projection organization and biogenesis"	SPA2
+9.815670e-01	1	41	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	SPA2
+4.502300e-12	9	41	45	6526	97048	Saccharomyces	cerevisiae	GO:0000777	cellular_component	"condensed chromosome kinetochore"	BIK1	BIR1	DAD1	DUO1	MIF2	SPC24	SPC25	SPC34	STU2
+1.984260e-01	1	41	35	6526	97048	Saccharomyces	cerevisiae	GO:0016835	molecular_function	"carbon-oxygen lyase activity"	CBF5
+2.955680e-02	2	41	43	6526	97048	Saccharomyces	cerevisiae	GO:0005937	cellular_component	"mating projection"	CMD1	SPA2
+6.112140e-02	1	41	10	6526	97048	Saccharomyces	cerevisiae	GO:0030684	cellular_component	"preribosome"	MAK21
+1.280930e-31	20	41	60	6526	97048	Saccharomyces	cerevisiae	GO:0005815	cellular_component	"microtubule organizing center"	BBP1	BIK1	BIM1	CDC31	CMD1	CNM67	DUO1	KAR1	NUD1	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+2.564460e-36	25	41	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	ASE1	BBP1	BIK1	BIM1	BIR1	CDC31	CDC5	CMD1	CNM67	DAD1	DUO1	KAR1	MHP1	NUD1	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+9.805070e-01	1	41	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	CDC31
+1.514230e-01	1	41	26	6526	97048	Saccharomyces	cerevisiae	GO:0006270	biological_process	"DNA replication initiation"	CDC7
+4.865300e-03	40	41	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+3.103080e-02	1	41	5	6526	97048	Saccharomyces	cerevisiae	GO:0030687	cellular_component	"nucleolar preribosome, large subunit precursor"	MAK21
+6.327110e-01	1	41	157	6526	97048	Saccharomyces	cerevisiae	GO:0007047	biological_process	"cell wall organization and biogenesis"	MHP1
+9.029980e-02	1	41	15	6526	97048	Saccharomyces	cerevisiae	GO:0043169	molecular_function	"cation binding"	CMD1
+1.610050e-17	12	41	45	6526	97048	Saccharomyces	cerevisiae	GO:0007052	biological_process	"mitotic spindle organization and biogenesis"	ASE1	BIK1	BIR1	CNM67	DAD1	DUO1	MIF2	SPC34	SPC72	SPC98	STU2	TUB4
+6.702920e-02	1	41	11	6526	97048	Saccharomyces	cerevisiae	GO:0005525	molecular_function	"GTP binding"	CIN4
+2.999750e-06	41	41	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CIN2	CIN4	CMD1	CNM67	CSE4	CYK3	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	RBL2	SPA2	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	SVL3	TUB4	YTM1
+4.245240e-04	35	41	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	ASE1	BBP1	BIK1	BIM1	BIR1	CBF5	CDC31	CDC5	CDC7	CMD1	CNM67	CSE4	DAD1	DUO1	HEK2	KAR1	MAK21	MHP1	MIF2	NUD1	PWP1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4	YTM1
+4.317830e-02	1	41	7	6526	97048	Saccharomyces	cerevisiae	GO:0004680	molecular_function	"casein kinase activity"	CDC5
+8.182010e-05	6	41	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	ASE1	BIK1	BIM1	CMD1	CSE4	SPC72
+2.757960e-01	1	41	51	6526	97048	Saccharomyces	cerevisiae	GO:0046930	cellular_component	"pore complex"	CDC31
+2.984430e-01	1	41	56	6526	97048	Saccharomyces	cerevisiae	GO:0006944	biological_process	"membrane fusion"	CMD1
+1.130040e-01	1	41	19	6526	97048	Saccharomyces	cerevisiae	GO:0043167	molecular_function	"ion binding"	CMD1
+8.406850e-01	1	41	285	6526	97048	Saccharomyces	cerevisiae	GO:0012505	cellular_component	"endomembrane system"	CDC31
+3.964750e-03	6	41	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	ASE1	BIK1	BIM1	CMD1	CSE4	SPC72
+1.090770e-36	24	41	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	ASE1	BBP1	BIK1	BIM1	BIR1	CDC31	CDC5	CMD1	CNM67	DAD1	DUO1	KAR1	NUD1	SPC105	SPC110	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+8.203280e-02	2	41	76	6526	97048	Saccharomyces	cerevisiae	GO:0006897	biological_process	"endocytosis"	CMD1	SVL3
+8.717410e-01	2	41	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	BIM1	SPC72
+2.119340e-09	6	41	21	6526	97048	Saccharomyces	cerevisiae	GO:0005876	cellular_component	"spindle microtubule"	ASE1	BIK1	DAD1	DUO1	SPC34	STU2
+2.205060e-02	19	41	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	ASE1	BIK1	BIR1	CBF5	CDC31	CDC5	CDC7	CSE4	DAD1	DUO1	HEK2	MAK21	MIF2	PWP1	SPC24	SPC25	SPC34	STU2	YTM1
+2.490070e-02	1	41	4	6526	97048	Saccharomyces	cerevisiae	GO:0031384	biological_process	"regulation of initiation of mating projection growth"	SPA2
+4.701270e-01	1	41	100	6526	97048	Saccharomyces	cerevisiae	GO:0005732	cellular_component	"small nucleolar ribonucleoprotein complex"	CBF5
+6.901990e-36	21	41	50	6526	97048	Saccharomyces	cerevisiae	GO:0005200	molecular_function	"structural constituent of cytoskeleton"	BBP1	BIM1	CDC31	CNM67	DAD1	DUO1	MHP1	NUD1	SPC105	SPC110	SPC24	SPC25	SPC29	SPC34	SPC42	SPC72	SPC97	SPC98	STU1	STU2	TUB4
+4.486740e-02	2	41	54	6526	97048	Saccharomyces	cerevisiae	GO:0051246	biological_process	"regulation of protein metabolism"	BIM1	MHP1
+1.073800e-01	1	41	18	6526	97048	Saccharomyces	cerevisiae	GO:0000753	biological_process	"cellular morphogenesis during conjugation with cellular fusion"	SPA2
+2.901200e-09	6	41	22	6526	97048	Saccharomyces	cerevisiae	GO:0051128	biological_process	"regulation of cell organization and biogenesis"	BIM1	DAD1	DUO1	MHP1	SPA2	SPC34
+1.461800e-08	5	41	14	6526	97048	Saccharomyces	cerevisiae	GO:0030474	biological_process	"spindle pole body duplication"	BBP1	CDC31	KAR1	SPC29	SPC42
+6.299610e-01	2	41	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	CDC5	CDC7

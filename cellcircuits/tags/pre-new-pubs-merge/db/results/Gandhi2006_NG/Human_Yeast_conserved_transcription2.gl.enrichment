@@ -1,0 +1,145 @@
+#NOT FOUND: GTF2E1_HUMAN in Homo sapiens
+#NOT FOUND: GTF2H1_HUMAN in Homo sapiens
+#NOT FOUND: GTF2E2_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.146200e-04	1	1	5	23297	92001	Homo	sapiens	GO:0006283	biological_process	"transcription-coupled nucleotide-excision repair"	ERCC5
+4.837530e-02	1	1	1127	23297	92001	Homo	sapiens	GO:0006259	biological_process	"DNA metabolism"	ERCC5
+1.373630e-03	1	1	32	23297	92001	Homo	sapiens	GO:0006289	biological_process	"nucleotide-excision repair"	ERCC5
+5.125870e-01	1	1	10751	20974	92001	Homo	sapiens	GO:0044424	cellular_component	"intracellular part"	ERCC5
+1.806910e-03	1	1	50	27672	92001	Homo	sapiens	GO:0003697	molecular_function	"single-stranded DNA binding"	ERCC5
+1.364560e-01	1	1	3776	27672	92001	Homo	sapiens	GO:0016787	molecular_function	"hydrolase activity"	ERCC5
+9.133690e-01	1	1	19157	20974	92001	Homo	sapiens	GO:0005623	cellular_component	"cell"	ERCC5
+1.395460e-01	1	1	3251	23297	92001	Homo	sapiens	GO:0050896	biological_process	"response to stimulus"	ERCC5
+5.271920e-01	1	1	12282	23297	92001	Homo	sapiens	GO:0044237	biological_process	"cellular metabolism"	ERCC5
+4.004810e-02	1	1	933	23297	92001	Homo	sapiens	GO:0050877	biological_process	"neurophysiological process"	ERCC5
+8.401080e-01	1	1	19572	23297	92001	Homo	sapiens	GO:0007582	biological_process	"physiological process"	ERCC5
+5.763830e-01	1	1	13428	23297	92001	Homo	sapiens	GO:0008152	biological_process	"metabolism"	ERCC5
+9.133210e-01	1	1	19156	20974	92001	Homo	sapiens	GO:0044464	cellular_component	"cell part"	ERCC5
+5.945460e-01	1	1	12470	20974	92001	Homo	sapiens	GO:0005622	cellular_component	"intracellular"	ERCC5
+2.326910e-01	1	1	5421	23297	92001	Homo	sapiens	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	ERCC5
+3.359350e-01	1	1	9296	27672	92001	Homo	sapiens	GO:0003824	molecular_function	"catalytic activity"	ERCC5
+6.445500e-01	1	1	17836	27672	92001	Homo	sapiens	GO:0005488	molecular_function	"binding"	ERCC5
+1.892950e-02	1	1	441	23297	92001	Homo	sapiens	GO:0009719	biological_process	"response to endogenous stimulus"	ERCC5
+2.457380e-03	1	1	68	27672	92001	Homo	sapiens	GO:0043566	molecular_function	"structure-specific DNA binding"	ERCC5
+3.209860e-01	1	1	7478	23297	92001	Homo	sapiens	GO:0043170	biological_process	"macromolecule metabolism"	ERCC5
+3.581580e-01	1	1	7512	20974	92001	Homo	sapiens	GO:0043227	cellular_component	"membrane-bound organelle"	ERCC5
+8.783110e-01	1	1	20462	23297	92001	Homo	sapiens	GO:0009987	biological_process	"cellular process"	ERCC5
+1.000000e+00	1	1	23297	23297	92001	Homo	sapiens	GO:0008150	biological_process	"biological_process"	ERCC5
+4.444940e-03	1	1	123	27672	92001	Homo	sapiens	GO:0004519	molecular_function	"endonuclease activity"	ERCC5
+4.471250e-01	1	1	9378	20974	92001	Homo	sapiens	GO:0043229	cellular_component	"intracellular organelle"	ERCC5
+1.167970e-01	1	1	3232	27672	92001	Homo	sapiens	GO:0003677	molecular_function	"DNA binding"	ERCC5
+2.978920e-02	1	1	694	23297	92001	Homo	sapiens	GO:0007600	biological_process	"sensory perception"	ERCC5
+1.084180e-03	1	1	30	27672	92001	Homo	sapiens	GO:0004536	molecular_function	"deoxyribonuclease activity"	ERCC5
+7.259300e-01	1	1	16912	23297	92001	Homo	sapiens	GO:0050875	biological_process	"cellular physiological process"	ERCC5
+5.932090e-02	1	1	1382	23297	92001	Homo	sapiens	GO:0006950	biological_process	"response to stress"	ERCC5
+1.880070e-01	1	1	4380	23297	92001	Homo	sapiens	GO:0043283	biological_process	"biopolymer metabolism"	ERCC5
+5.782020e-04	1	1	16	27672	92001	Homo	sapiens	GO:0004520	molecular_function	"endodeoxyribonuclease activity"	ERCC5
+1.000000e+00	1	1	27672	27672	92001	Homo	sapiens	GO:0003674	molecular_function	"molecular_function"	ERCC5
+5.091640e-01	1	1	11862	23297	92001	Homo	sapiens	GO:0044238	biological_process	"primary metabolism"	ERCC5
+1.751300e-02	1	1	408	23297	92001	Homo	sapiens	GO:0006974	biological_process	"response to DNA damage stimulus"	ERCC5
+1.000000e+00	1	1	20974	20974	92001	Homo	sapiens	GO:0005575	cellular_component	"cellular_component"	ERCC5
+4.471730e-01	1	1	9379	20974	92001	Homo	sapiens	GO:0043226	cellular_component	"organelle"	ERCC5
+3.580620e-01	1	1	7510	20974	92001	Homo	sapiens	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	ERCC5
+2.627060e-01	1	1	5510	20974	92001	Homo	sapiens	GO:0005634	cellular_component	"nucleus"	ERCC5
+1.592480e-02	1	1	371	23297	92001	Homo	sapiens	GO:0006281	biological_process	"DNA repair"	ERCC5
+2.135730e-01	1	1	5910	27672	92001	Homo	sapiens	GO:0003676	molecular_function	"nucleic acid binding"	ERCC5
+8.853720e-03	1	1	245	27672	92001	Homo	sapiens	GO:0004518	molecular_function	"nuclease activity"	ERCC5
+4.137760e-02	1	1	1145	27672	92001	Homo	sapiens	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	ERCC5
+1.210030e-01	1	1	2819	23297	92001	Homo	sapiens	GO:0050874	biological_process	"organismal physiological process"	ERCC5
+4.592880e-03	1	1	107	23297	92001	Homo	sapiens	GO:0007605	biological_process	"sensory perception of sound"	ERCC5
+4.592880e-03	1	1	107	23297	92001	Homo	sapiens	GO:0050954	biological_process	"sensory perception of mechanical stimulus"	ERCC5
+#USING TFB1 instead of its synonym YDR311W in Saccharomyces cerevisiae
+#USING RAD2 instead of its synonym YGR258C in Saccharomyces cerevisiae
+#USING TFA2 instead of its synonym YKR062W in Saccharomyces cerevisiae
+#USING TFA1 instead of its synonym YKL028W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.381210e-04	2	4	32	6526	97048	Saccharomyces	cerevisiae	GO:0006289	biological_process	"nucleotide-excision repair"	YDR311W	YGR258C
+7.272340e-02	1	4	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	YDR311W
+4.820460e-01	4	4	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YDR311W	YGR258C	YKL028W	YKR062W
+6.846930e-02	4	4	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YDR311W	YGR258C	YKL028W	YKR062W
+1.356130e-02	4	4	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YDR311W	YGR258C	YKL028W	YKR062W
+3.436990e-01	1	4	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	YDR311W
+4.586970e-04	3	4	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	YDR311W	YKL028W	YKR062W
+7.598130e-02	4	4	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YDR311W	YGR258C	YKL028W	YKR062W
+3.494740e-01	4	4	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YDR311W	YGR258C	YKL028W	YKR062W
+7.615050e-01	1	4	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	YGR258C
+6.116660e-03	1	4	10	6526	97048	Saccharomyces	cerevisiae	GO:0005675	cellular_component	"transcription factor TFIIH complex"	YDR311W
+5.979870e-03	2	4	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	YDR311W	YGR258C
+4.884170e-01	2	4	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YDR311W	YGR258C
+9.263600e-02	4	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDR311W	YGR258C	YKL028W	YKR062W
+3.753520e-04	3	4	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	YDR311W	YKL028W	YKR062W
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YDR311W	YGR258C	YKL028W	YKR062W
+6.647200e-03	3	4	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	YDR311W	YKL028W	YKR062W
+1.364740e-01	1	4	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	YDR311W
+2.818030e-07	2	4	2	6526	97048	Saccharomyces	cerevisiae	GO:0005673	cellular_component	"transcription factor TFIIE complex"	YKL028W	YKR062W
+4.801860e-04	3	4	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	YDR311W	YKL028W	YKR062W
+1.159760e-02	1	4	19	6526	97048	Saccharomyces	cerevisiae	GO:0004520	molecular_function	"endodeoxyribonuclease activity"	YGR258C
+2.790510e-02	1	4	46	6526	97048	Saccharomyces	cerevisiae	GO:0000122	biological_process	"negative regulation of transcription from RNA polymerase II promoter"	YDR311W
+2.798420e-03	3	4	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	YDR311W	YKL028W	YKR062W
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YDR311W	YGR258C	YKL028W	YKR062W
+2.431740e-01	1	4	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	YDR311W
+5.929790e-06	3	4	77	6526	97048	Saccharomyces	cerevisiae	GO:0016591	cellular_component	"DNA-directed RNA polymerase II, holoenzyme"	YDR311W	YKL028W	YKR062W
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YDR311W	YGR258C	YKL028W	YKR062W
+9.263600e-02	4	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDR311W	YGR258C	YKL028W	YKR062W
+3.494910e-01	1	4	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	YDR311W
+1.336150e-03	3	4	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	YDR311W	YKL028W	YKR062W
+2.557400e-05	3	4	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	YDR311W	YKL028W	YKR062W
+8.597610e-02	1	4	145	6526	97048	Saccharomyces	cerevisiae	GO:0004518	molecular_function	"nuclease activity"	YGR258C
+2.560250e-01	1	4	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	YDR311W
+2.644040e-03	4	4	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YDR311W	YGR258C	YKL028W	YKR062W
+3.360660e-01	1	4	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	YDR311W
+2.826480e-06	3	4	62	6526	97048	Saccharomyces	cerevisiae	GO:0016251	molecular_function	"general RNA polymerase II transcription factor activity"	YDR311W	YKL028W	YKR062W
+6.129330e-04	1	4	1	6526	97048	Saccharomyces	cerevisiae	GO:0006295	biological_process	"nucleotide-excision repair, DNA incision, 3'-to lesion"	YGR258C
+2.828260e-02	2	4	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YDR311W	YGR258C
+2.123690e-01	1	4	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDR311W
+2.056020e-06	3	4	57	6526	97048	Saccharomyces	cerevisiae	GO:0006352	biological_process	"transcription initiation"	YDR311W	YKL028W	YKR062W
+3.392770e-01	4	4	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YDR311W	YGR258C	YKL028W	YKR062W
+3.957210e-01	1	4	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	YGR258C
+1.103710e-01	1	4	188	6526	97048	Saccharomyces	cerevisiae	GO:0043118	biological_process	"negative regulation of physiological process"	YDR311W
+1.137360e-01	1	4	194	6526	97048	Saccharomyces	cerevisiae	GO:0048519	biological_process	"negative regulation of biological process"	YDR311W
+1.092480e-01	1	4	186	6526	97048	Saccharomyces	cerevisiae	GO:0048523	biological_process	"negative regulation of cellular process"	YDR311W
+9.681650e-02	1	4	164	6526	97048	Saccharomyces	cerevisiae	GO:0031324	biological_process	"negative regulation of cellular metabolism"	YDR311W
+4.508320e-02	2	4	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	YDR311W	YGR258C
+5.911920e-06	2	4	7	6526	97048	Saccharomyces	cerevisiae	GO:0000112	cellular_component	"nucleotide-excision repair factor 3 complex"	YDR311W	YGR258C
+6.647200e-03	3	4	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	YDR311W	YKL028W	YKR062W
+7.677200e-02	1	4	129	6526	97048	Saccharomyces	cerevisiae	GO:0045892	biological_process	"negative regulation of transcription, DNA-dependent"	YDR311W
+2.987170e-01	4	4	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YDR311W	YGR258C	YKL028W	YKR062W
+4.816920e-01	4	4	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YDR311W	YGR258C	YKL028W	YKR062W
+2.382680e-03	4	4	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDR311W	YGR258C	YKL028W	YKR062W
+7.965570e-02	1	4	134	6526	97048	Saccharomyces	cerevisiae	GO:0016481	biological_process	"negative regulation of transcription"	YDR311W
+1.747050e-03	3	4	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	YDR311W	YKL028W	YKR062W
+5.506260e-03	1	4	9	6526	97048	Saccharomyces	cerevisiae	GO:0007068	biological_process	"negative regulation of transcription, mitotic"	YDR311W
+2.903830e-01	4	4	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YDR311W	YGR258C	YKL028W	YKR062W
+3.449040e-02	1	4	57	6526	97048	Saccharomyces	cerevisiae	GO:0004519	molecular_function	"endonuclease activity"	YGR258C
+1.942760e-01	1	4	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	YDR311W
+7.372860e-07	3	4	46	6526	97048	Saccharomyces	cerevisiae	GO:0006367	biological_process	"transcription initiation from RNA polymerase II promoter"	YDR311W	YKL028W	YKR062W
+1.306360e-01	4	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YDR311W	YGR258C	YKL028W	YKR062W
+4.895580e-03	1	4	8	6526	97048	Saccharomyces	cerevisiae	GO:0046021	biological_process	"regulation of transcription from RNA polymerase II promoter, mitotic"	YDR311W
+7.330260e-02	1	4	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	YDR311W
+1.524000e-02	1	4	25	6526	97048	Saccharomyces	cerevisiae	GO:0004536	molecular_function	"deoxyribonuclease activity"	YGR258C
+1.832710e-01	1	4	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	YDR311W
+2.822250e-01	4	4	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YDR311W	YGR258C	YKL028W	YKR062W
+2.413010e-01	2	4	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YDR311W	YGR258C
+2.451950e-02	2	4	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	YDR311W	YGR258C
+3.673370e-03	1	4	6	6526	97048	Saccharomyces	cerevisiae	GO:0000717	biological_process	"nucleotide-excision repair, DNA duplex unwinding"	YDR311W
+1.356130e-02	4	4	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YDR311W	YGR258C	YKL028W	YKR062W
+1.424990e-01	1	4	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	YDR311W
+1.148560e-01	1	4	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	YDR311W
+5.506260e-03	1	4	9	6526	97048	Saccharomyces	cerevisiae	GO:0045896	biological_process	"regulation of transcription, mitotic"	YDR311W
+8.597610e-02	1	4	145	6526	97048	Saccharomyces	cerevisiae	GO:0045934	biological_process	"negative regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDR311W
+3.356150e-01	1	4	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	YDR311W
+2.686010e-05	3	4	125	6526	97048	Saccharomyces	cerevisiae	GO:0005667	cellular_component	"transcription factor complex"	YDR311W	YKL028W	YKR062W
+5.333820e-02	4	4	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YDR311W	YGR258C	YKL028W	YKR062W
+1.007860e-01	1	4	171	6526	97048	Saccharomyces	cerevisiae	GO:0009892	biological_process	"negative regulation of metabolism"	YDR311W
+5.650870e-03	2	4	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	YDR311W	YGR258C
+1.306360e-01	4	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YDR311W	YGR258C	YKL028W	YKR062W
+8.507200e-03	4	4	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YDR311W	YGR258C	YKL028W	YKR062W
+1.092480e-01	1	4	186	6526	97048	Saccharomyces	cerevisiae	GO:0051243	biological_process	"negative regulation of cellular physiological process"	YDR311W
+4.895580e-03	1	4	8	6526	97048	Saccharomyces	cerevisiae	GO:0007070	biological_process	"negative regulation of transcription from RNA polymerase II promoter, mitotic"	YDR311W
+3.469760e-03	2	4	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	YDR311W	YGR258C
+3.061850e-03	1	4	5	6526	97048	Saccharomyces	cerevisiae	GO:0000014	molecular_function	"single-stranded DNA specific endodeoxyribonuclease activity"	YGR258C
+1.625350e-01	1	4	283	6526	97048	Saccharomyces	cerevisiae	GO:0016788	molecular_function	"hydrolase activity, acting on ester bonds"	YGR258C
+3.499690e-04	3	4	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	YDR311W	YKL028W	YKR062W
+2.296530e-01	1	4	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	YDR311W
+7.849750e-05	2	4	20	6526	97048	Saccharomyces	cerevisiae	GO:0000109	cellular_component	"nucleotide-excision repair complex"	YDR311W	YGR258C
+7.355660e-04	4	4	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YDR311W	YGR258C	YKL028W	YKR062W

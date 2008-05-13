@@ -1,0 +1,58 @@
+#USING PRP3 instead of its synonym YDR473C in Saccharomyces cerevisiae
+#USING MUD2 instead of its synonym YKL074C in Saccharomyces cerevisiae
+#USING PRP21 instead of its synonym YJL203W in Saccharomyces cerevisiae
+#USING PRP9 instead of its synonym YDL030W in Saccharomyces cerevisiae
+#USING PRP4 instead of its synonym YPR178W in Saccharomyces cerevisiae
+#USING PRP11 instead of its synonym YDL043C in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.566200e-07	3	6	14	6526	97048	Saccharomyces	cerevisiae	GO:0005686	cellular_component	"snRNP U2"	YDL030W	YDL043C	YJL203W
+1.106020e-05	3	6	56	6526	97048	Saccharomyces	cerevisiae	GO:0031202	molecular_function	"RNA splicing factor activity, transesterification mechanism"	YDR473C	YKL074C	YPR178W
+8.081520e-06	3	6	51	6526	97048	Saccharomyces	cerevisiae	GO:0005684	cellular_component	"major (U2-dependent) spliceosome"	YDL030W	YDL043C	YJL203W
+1.975640e-01	6	6	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+3.346210e-01	6	6	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.790040e-02	6	6	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.576430e-03	6	6	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.632110e-01	6	6	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+3.176370e-02	1	6	35	6526	97048	Saccharomyces	cerevisiae	GO:0003729	molecular_function	"mRNA binding"	YKL074C
+2.092660e-02	6	6	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.113700e-11	6	6	100	6526	97048	Saccharomyces	cerevisiae	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.184030e-11	6	6	101	6526	97048	Saccharomyces	cerevisiae	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+3.342520e-01	6	6	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+2.065390e-01	6	6	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.159010e-04	6	6	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+3.232150e-05	6	6	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.787760e-11	6	6	108	6526	97048	Saccharomyces	cerevisiae	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+2.756080e-03	1	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0000370	biological_process	"U2-type nuclear mRNA branch site recognition"	YKL074C
+4.072750e-01	2	6	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YDL043C	YKL074C
+2.957170e-03	6	6	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+2.817370e-02	6	6	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+2.756080e-03	1	6	3	6526	97048	Saccharomyces	cerevisiae	GO:0000348	biological_process	"nuclear mRNA branch site recognition"	YKL074C
+1.564270e-01	6	6	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+5.314170e-11	6	6	129	6526	97048	Saccharomyces	cerevisiae	GO:0008380	biological_process	"RNA splicing"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+7.504820e-03	2	6	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	YDL043C	YKL074C
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.098640e-02	1	6	12	6526	97048	Saccharomyces	cerevisiae	GO:0000243	cellular_component	"commitment complex"	YKL074C
+4.718770e-02	6	6	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+2.168810e-08	6	6	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+4.965600e-08	6	6	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.498800e-01	6	6	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.795560e-04	6	6	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.576430e-03	6	6	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+3.440020e-04	2	6	32	6526	97048	Saccharomyces	cerevisiae	GO:0046540	cellular_component	"U4/U6 x U5 tri-snRNP complex"	YDR473C	YPR178W
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+3.243250e-07	4	6	81	6526	97048	Saccharomyces	cerevisiae	GO:0005681	cellular_component	"spliceosome complex"	YDL030W	YDL043C	YJL203W	YKL074C
+1.230620e-02	6	6	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+2.817370e-02	6	6	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+4.718770e-02	6	6	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.000000e+00	6	6	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+7.017900e-11	6	6	135	6526	97048	Saccharomyces	cerevisiae	GO:0006397	biological_process	"mRNA processing"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+2.597430e-07	6	6	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+7.829830e-04	6	6	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+9.236250e-07	6	6	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.007470e-02	1	6	11	6526	97048	Saccharomyces	cerevisiae	GO:0006374	biological_process	"nuclear mRNA splicing via U2-type spliceosome"	YKL074C
+1.355050e-04	6	6	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+4.993910e-10	5	6	65	6526	97048	Saccharomyces	cerevisiae	GO:0030532	cellular_component	"small nuclear ribonucleoprotein complex"	YDL030W	YDL043C	YDR473C	YJL203W	YPR178W
+1.486330e-07	6	6	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+9.522870e-05	2	6	17	6526	97048	Saccharomyces	cerevisiae	GO:0000245	biological_process	"spliceosome assembly"	YDL043C	YKL074C
+5.285370e-10	6	6	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W
+1.982070e-05	6	6	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	YDL030W	YDL043C	YDR473C	YJL203W	YKL074C	YPR178W

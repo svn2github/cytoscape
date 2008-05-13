@@ -1,0 +1,50 @@
+#USING Elongin-B instead of its synonym CG4204 in Drosophila melanogaster
+#USING Elongin-C instead of its synonym CG9291 in Drosophila melanogaster
+#USING EloA instead of its synonym CG6755 in Drosophila melanogaster
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.199260e-01	3	3	3740	7583	157890	Drosophila	melanogaster	GO:0044424	cellular_component	"intracellular part"	CG4204	CG6755	CG9291
+4.308930e-02	2	3	1279	10214	157890	Drosophila	melanogaster	GO:0005515	molecular_function	"protein binding"	CG4204	CG6755
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0005623	cellular_component	"cell"	CG4204	CG6755	CG9291
+1.277060e-05	2	3	22	10183	157890	Drosophila	melanogaster	GO:0006354	biological_process	"RNA elongation"	CG4204	CG6755
+1.301520e-01	3	3	5161	10183	157890	Drosophila	melanogaster	GO:0044237	biological_process	"cellular metabolism"	CG4204	CG6755	CG9291
+9.954280e-03	3	3	1632	7583	157890	Drosophila	melanogaster	GO:0044422	cellular_component	"organelle part"	CG4204	CG6755	CG9291
+1.468000e-03	1	3	5	10214	157890	Drosophila	melanogaster	GO:0008159	molecular_function	"positive transcription elongation factor activity"	CG6755
+4.594850e-01	3	3	7858	10183	157890	Drosophila	melanogaster	GO:0007582	biological_process	"physiological process"	CG4204	CG6755	CG9291
+3.115240e-04	3	3	515	7583	157890	Drosophila	melanogaster	GO:0031974	cellular_component	"membrane-enclosed lumen"	CG4204	CG6755	CG9291
+3.708870e-05	3	3	254	7583	157890	Drosophila	melanogaster	GO:0005654	cellular_component	"nucleoplasm"	CG4204	CG6755	CG9291
+1.669910e-01	3	3	5608	10183	157890	Drosophila	melanogaster	GO:0008152	biological_process	"metabolism"	CG4204	CG6755	CG9291
+2.068430e-09	3	3	14	10214	157890	Drosophila	melanogaster	GO:0003711	molecular_function	"transcriptional elongation regulator activity"	CG4204	CG6755	CG9291
+1.303160e-01	3	3	3845	7583	157890	Drosophila	melanogaster	GO:0005622	cellular_component	"intracellular"	CG4204	CG6755	CG9291
+3.270830e-01	3	3	5225	7583	157890	Drosophila	melanogaster	GO:0044464	cellular_component	"cell part"	CG4204	CG6755	CG9291
+7.024320e-03	3	3	1951	10183	157890	Drosophila	melanogaster	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CG4204	CG6755	CG9291
+3.851840e-01	2	3	4319	10214	157890	Drosophila	melanogaster	GO:0005488	molecular_function	"binding"	CG4204	CG6755
+8.809710e-04	1	3	3	10214	157890	Drosophila	melanogaster	GO:0016944	molecular_function	"RNA polymerase II transcription elongation factor activity"	CG6755
+1.081050e-03	3	3	1046	10183	157890	Drosophila	melanogaster	GO:0006350	biological_process	"transcription"	CG4204	CG6755	CG9291
+4.027800e-02	3	3	2600	7583	157890	Drosophila	melanogaster	GO:0043227	cellular_component	"membrane-bound organelle"	CG4204	CG6755	CG9291
+4.445610e-01	3	3	7772	10183	157890	Drosophila	melanogaster	GO:0009987	biological_process	"cellular process"	CG4204	CG6755	CG9291
+2.784250e-05	3	3	231	7583	157890	Drosophila	melanogaster	GO:0044451	cellular_component	"nucleoplasm part"	CG4204	CG6755	CG9291
+1.000000e+00	3	3	10183	10183	157890	Drosophila	melanogaster	GO:0008150	biological_process	"biological_process"	CG4204	CG6755	CG9291
+3.115240e-04	3	3	515	7583	157890	Drosophila	melanogaster	GO:0043233	cellular_component	"organelle lumen"	CG4204	CG6755	CG9291
+6.231830e-02	3	3	3007	7583	157890	Drosophila	melanogaster	GO:0043229	cellular_component	"intracellular organelle"	CG4204	CG6755	CG9291
+3.446770e-01	3	3	7140	10183	157890	Drosophila	melanogaster	GO:0050875	biological_process	"cellular physiological process"	CG4204	CG6755	CG9291
+5.563730e-04	3	3	841	10214	157890	Drosophila	melanogaster	GO:0030528	molecular_function	"transcription regulator activity"	CG4204	CG6755	CG9291
+9.954280e-03	3	3	1632	7583	157890	Drosophila	melanogaster	GO:0044446	cellular_component	"intracellular organelle part"	CG4204	CG6755	CG9291
+8.844620e-06	2	3	18	10183	157890	Drosophila	melanogaster	GO:0006368	biological_process	"RNA elongation from RNA polymerase II promoter"	CG4204	CG6755
+1.000000e+00	3	3	10214	10214	157890	Drosophila	melanogaster	GO:0003674	molecular_function	"molecular_function"	CG4204	CG6755	CG9291
+1.000160e-04	3	3	353	7583	157890	Drosophila	melanogaster	GO:0031981	cellular_component	"nuclear lumen"	CG4204	CG6755	CG9291
+1.241910e-01	3	3	5081	10183	157890	Drosophila	melanogaster	GO:0044238	biological_process	"primary metabolism"	CG4204	CG6755	CG9291
+1.717150e-04	2	3	78	10214	157890	Drosophila	melanogaster	GO:0003712	molecular_function	"transcription cofactor activity"	CG4204	CG6755
+6.231830e-02	3	3	3007	7583	157890	Drosophila	melanogaster	GO:0043226	cellular_component	"organelle"	CG4204	CG6755	CG9291
+1.000000e+00	3	3	7583	7583	157890	Drosophila	melanogaster	GO:0005575	cellular_component	"cellular_component"	CG4204	CG6755	CG9291
+4.018500e-02	3	3	2598	7583	157890	Drosophila	melanogaster	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CG4204	CG6755	CG9291
+1.185860e-02	3	3	1730	7583	157890	Drosophila	melanogaster	GO:0005634	cellular_component	"nucleus"	CG4204	CG6755	CG9291
+9.191790e-04	3	3	991	10183	157890	Drosophila	melanogaster	GO:0006351	biological_process	"transcription, DNA-dependent"	CG4204	CG6755	CG9291
+3.166310e-04	3	3	695	10183	157890	Drosophila	melanogaster	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	CG4204	CG6755	CG9291
+7.627750e-10	3	3	8	7583	157890	Drosophila	melanogaster	GO:0008023	cellular_component	"transcription elongation factor complex"	CG4204	CG6755	CG9291
+1.240170e-02	3	3	1756	7583	157890	Drosophila	melanogaster	GO:0043234	cellular_component	"protein complex"	CG4204	CG6755	CG9291
+2.551320e-04	2	3	95	10214	157890	Drosophila	melanogaster	GO:0008134	molecular_function	"transcription factor binding"	CG4204	CG6755
+6.329560e-04	3	3	652	7583	157890	Drosophila	melanogaster	GO:0044428	cellular_component	"nuclear part"	CG4204	CG6755	CG9291
+#NOT FOUND: TCEB3_HUMAN in Homo sapiens
+#NOT FOUND: TCEB2_HUMAN in Homo sapiens
+#NOT FOUND: TCEB1_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term

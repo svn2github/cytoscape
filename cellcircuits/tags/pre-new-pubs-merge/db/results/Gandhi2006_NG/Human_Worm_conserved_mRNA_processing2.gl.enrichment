@@ -1,0 +1,33 @@
+#USING pab-1 instead of its synonym Y106G6H.2 in Caenorhabditis elegans
+#USING ife-3 instead of its synonym B0348.6 in Caenorhabditis elegans
+#USING ifg-1 instead of its synonym M110.4 in Caenorhabditis elegans
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+3.490610e-01	3	3	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	B0348.6	M110.4	Y106G6H.2
+2.596990e-02	1	3	242	27713	88307	Caenorhabditis	elegans	GO:0002009	biological_process	"morphogenesis of an epithelium"	Y106G6H.2
+1.935520e-01	3	3	16031	27713	88307	Caenorhabditis	elegans	GO:0040008	biological_process	"regulation of growth"	B0348.6	M110.4	Y106G6H.2
+3.546180e-01	3	3	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	B0348.6	M110.4	Y106G6H.2
+7.295990e-01	2	3	18245	27713	88307	Caenorhabditis	elegans	GO:0040032	biological_process	"post-embryonic body morphogenesis"	M110.4	Y106G6H.2
+5.889690e-01	2	3	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	B0348.6	Y106G6H.2
+7.310590e-01	2	3	18275	27713	88307	Caenorhabditis	elegans	GO:0009791	biological_process	"post-embryonic development"	M110.4	Y106G6H.2
+5.732670e-02	1	3	540	27713	88307	Caenorhabditis	elegans	GO:0040035	biological_process	"hermaphrodite genitalia development"	Y106G6H.2
+1.956240e-01	3	3	16088	27713	88307	Caenorhabditis	elegans	GO:0048518	biological_process	"positive regulation of biological process"	B0348.6	M110.4	Y106G6H.2
+5.877420e-01	2	3	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	B0348.6	Y106G6H.2
+1.927200e-01	3	3	16008	27713	88307	Caenorhabditis	elegans	GO:0045927	biological_process	"positive regulation of growth"	B0348.6	M110.4	Y106G6H.2
+7.295990e-01	2	3	18245	27713	88307	Caenorhabditis	elegans	GO:0009886	biological_process	"post-embryonic morphogenesis"	M110.4	Y106G6H.2
+9.952850e-01	1	3	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	B0348.6
+1.890590e-01	3	3	15906	27713	88307	Caenorhabditis	elegans	GO:0040009	biological_process	"regulation of growth rate"	B0348.6	M110.4	Y106G6H.2
+7.326130e-01	2	3	18307	27713	88307	Caenorhabditis	elegans	GO:0009653	biological_process	"morphogenesis"	M110.4	Y106G6H.2
+6.769630e-02	1	3	640	27713	88307	Caenorhabditis	elegans	GO:0048513	biological_process	"organ development"	Y106G6H.2
+2.432540e-01	3	3	17300	27713	88307	Caenorhabditis	elegans	GO:0050789	biological_process	"regulation of biological process"	B0348.6	M110.4	Y106G6H.2
+1.890590e-01	3	3	15906	27713	88307	Caenorhabditis	elegans	GO:0040010	biological_process	"positive regulation of growth rate"	B0348.6	M110.4	Y106G6H.2
+6.200250e-02	1	3	585	27713	88307	Caenorhabditis	elegans	GO:0007548	biological_process	"sex differentiation"	Y106G6H.2
+3.637530e-01	3	3	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	B0348.6	M110.4	Y106G6H.2
+5.826310e-02	1	3	549	27713	88307	Caenorhabditis	elegans	GO:0048806	biological_process	"genitalia development"	Y106G6H.2
+3.559760e-01	3	3	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	B0348.6	M110.4	Y106G6H.2
+7.296960e-01	2	3	18247	27713	88307	Caenorhabditis	elegans	GO:0010171	biological_process	"body morphogenesis"	M110.4	Y106G6H.2
+2.039850e-01	3	3	16314	27713	88307	Caenorhabditis	elegans	GO:0040007	biological_process	"growth"	B0348.6	M110.4	Y106G6H.2
+1.000000e+00	3	3	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	B0348.6	M110.4	Y106G6H.2
+#NOT FOUND: EIF4E_HUMAN in Homo sapiens
+#NOT FOUND: PABPC1_HUMAN in Homo sapiens
+#NOT FOUND: EIF4G1_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term

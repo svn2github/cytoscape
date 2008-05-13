@@ -1,0 +1,133 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+6.055640e-02	1	5	81	6526	97048	Saccharomyces	cerevisiae	GO:0019867	cellular_component	"outer membrane"	PIL1
+1.250510e-01	1	5	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	PKH1
+2.581260e-01	4	5	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	MRP8	NUM1	PIL1	PKH1
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0051647	biological_process	"nucleus localization"	NUM1
+9.432500e-02	1	5	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	PKH1
+1.649380e-01	1	5	231	6526	97048	Saccharomyces	cerevisiae	GO:0003735	molecular_function	"structural constituent of ribosome"	MRP8
+5.218350e-01	3	5	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	MRP8	PKH1	YRF1-4
+5.455500e-01	1	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	MRP8
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0007097	biological_process	"nuclear migration"	NUM1
+5.470540e-01	3	5	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	MRP8	PKH1	YRF1-4
+1.202200e-01	1	5	165	6526	97048	Saccharomyces	cerevisiae	GO:0031980	cellular_component	"mitochondrial lumen"	MRP8
+3.625060e-02	1	5	48	6526	97048	Saccharomyces	cerevisiae	GO:0008092	molecular_function	"cytoskeletal protein binding"	NUM1
+2.686690e-01	5	5	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+4.740820e-01	2	5	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	PKH1	YRF1-4
+6.267170e-01	1	5	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	NUM1
+1.371930e-02	1	5	18	6526	97048	Saccharomyces	cerevisiae	GO:0009408	biological_process	"response to heat"	PIL1
+3.157300e-01	2	5	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	MRP8	PKH1
+2.819300e-01	3	5	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	MRP8	PKH1	YRF1-4
+2.116280e-01	1	5	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	PIL1
+4.796360e-01	1	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	MRP8
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+1.995150e-01	1	5	284	6526	97048	Saccharomyces	cerevisiae	GO:0005840	cellular_component	"ribosome"	MRP8
+1.296110e-02	1	5	17	6526	97048	Saccharomyces	cerevisiae	GO:0015631	molecular_function	"tubulin binding"	NUM1
+1.069970e-01	1	5	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	NUM1
+3.119360e-02	3	5	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	MRP8	NUM1	PIL1
+2.285260e-02	3	5	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	NUM1	PIL1	PKH1
+1.296110e-02	1	5	17	6526	97048	Saccharomyces	cerevisiae	GO:0000165	biological_process	"MAPKKK cascade"	PKH1
+5.982710e-02	1	5	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	NUM1
+2.923700e-01	2	5	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	MRP8	PKH1
+3.642340e-01	1	5	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	PKH1
+3.349010e-01	1	5	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	MRP8
+3.186220e-01	2	5	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	MRP8	PIL1
+1.872540e-01	1	5	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	YRF1-4
+2.052350e-02	1	5	27	6526	97048	Saccharomyces	cerevisiae	GO:0006312	biological_process	"mitotic recombination"	YRF1-4
+3.996520e-02	1	5	53	6526	97048	Saccharomyces	cerevisiae	GO:0051640	biological_process	"organelle localization"	NUM1
+1.076970e-01	1	5	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	PKH1
+3.360060e-01	1	5	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	NUM1
+3.124830e-01	1	5	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	YRF1-4
+2.248450e-01	1	5	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	PIL1
+2.761760e-01	2	5	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	MRP8	PKH1
+2.589050e-01	5	5	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+8.508350e-02	1	5	115	6526	97048	Saccharomyces	cerevisiae	GO:0007242	biological_process	"intracellular signaling cascade"	PKH1
+1.220240e-02	1	5	16	6526	97048	Saccharomyces	cerevisiae	GO:0030705	biological_process	"cytoskeleton-dependent intracellular transport"	NUM1
+4.796360e-01	1	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	MRP8
+2.208090e-01	5	5	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+1.428120e-01	1	5	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	PKH1
+7.134660e-01	1	5	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YRF1-4
+6.055640e-02	1	5	81	6526	97048	Saccharomyces	cerevisiae	GO:0031968	cellular_component	"organelle outer membrane"	PIL1
+1.549380e-01	1	5	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	NUM1
+4.271950e-01	1	5	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	PKH1
+2.578840e-02	1	5	34	6526	97048	Saccharomyces	cerevisiae	GO:0003678	molecular_function	"DNA helicase activity"	YRF1-4
+5.455500e-01	1	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	MRP8
+2.056760e-01	5	5	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+3.414970e-01	2	5	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	PKH1	YRF1-4
+2.929560e-01	1	5	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	PIL1
+6.709940e-02	1	5	90	6526	97048	Saccharomyces	cerevisiae	GO:0004386	molecular_function	"helicase activity"	YRF1-4
+6.055640e-02	1	5	81	6526	97048	Saccharomyces	cerevisiae	GO:0005741	cellular_component	"mitochondrial outer membrane"	PIL1
+5.549920e-01	2	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	MRP8	PIL1
+1.847850e-02	2	5	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	PIL1	PKH1
+6.201360e-02	1	5	83	6526	97048	Saccharomyces	cerevisiae	GO:0005761	cellular_component	"mitochondrial ribosome"	MRP8
+3.873620e-01	1	5	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	PKH1
+1.976950e-02	1	5	26	6526	97048	Saccharomyces	cerevisiae	GO:0051656	biological_process	"establishment of organelle localization"	NUM1
+4.638240e-01	3	5	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	MRP8	PKH1	YRF1-4
+7.071870e-02	1	5	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	NUM1
+3.391090e-01	4	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	MRP8	NUM1	PIL1	YRF1-4
+3.079270e-01	1	5	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	YRF1-4
+1.428120e-01	1	5	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	PKH1
+6.878600e-03	1	5	9	6526	97048	Saccharomyces	cerevisiae	GO:0019210	molecular_function	"kinase inhibitor activity"	PIL1
+2.034220e-01	2	5	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	NUM1	YRF1-4
+4.359740e-01	1	5	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	PKH1
+2.785470e-02	3	5	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	NUM1	PIL1	PKH1
+1.146720e-01	1	5	157	6526	97048	Saccharomyces	cerevisiae	GO:0045229	biological_process	"external encapsulating structure organization and biogenesis"	PKH1
+8.206360e-02	4	5	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	MRP8	NUM1	PIL1	PKH1
+1.872540e-01	1	5	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	YRF1-4
+5.886720e-01	1	5	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	PIL1
+3.873620e-01	1	5	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	PIL1
+3.016240e-01	1	5	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	YRF1-4
+6.461580e-01	1	5	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	MRP8
+4.016310e-01	5	5	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0040023	biological_process	"establishment of nucleus localization"	NUM1
+3.976500e-01	1	5	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	MRP8
+5.549920e-01	2	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	MRP8	PIL1
+1.428120e-01	1	5	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	PKH1
+2.417080e-02	3	5	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	NUM1	PIL1	PKH1
+1.257400e-01	1	5	173	6526	97048	Saccharomyces	cerevisiae	GO:0007165	biological_process	"signal transduction"	PKH1
+3.415110e-01	1	5	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	NUM1
+3.625060e-02	1	5	48	6526	97048	Saccharomyces	cerevisiae	GO:0005934	cellular_component	"bud tip"	NUM1
+1.400990e-01	1	5	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	PKH1
+2.588180e-01	4	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	MRP8	NUM1	PIL1	YRF1-4
+4.809970e-01	1	5	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	MRP8
+7.432670e-02	1	5	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	YRF1-4
+1.013830e-01	1	5	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	NUM1
+1.202200e-01	1	5	165	6526	97048	Saccharomyces	cerevisiae	GO:0005759	cellular_component	"mitochondrial matrix"	MRP8
+1.144330e-02	1	5	15	6526	97048	Saccharomyces	cerevisiae	GO:0030473	biological_process	"nuclear migration, microtubule-mediated"	NUM1
+2.586220e-01	1	5	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	PIL1
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+1.068370e-02	1	5	14	6526	97048	Saccharomyces	cerevisiae	GO:0000722	biological_process	"telomere maintenance via recombination"	YRF1-4
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+2.588180e-01	4	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	MRP8	NUM1	PIL1	YRF1-4
+1.312320e-01	1	5	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	PIL1
+2.586220e-01	1	5	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	PIL1
+1.755000e-01	1	5	247	6526	97048	Saccharomyces	cerevisiae	GO:0031966	cellular_component	"mitochondrial membrane"	PIL1
+2.458670e-01	1	5	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	MRP8
+1.182500e-01	3	5	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	NUM1	PKH1	YRF1-4
+2.345720e-03	2	5	102	6526	97048	Saccharomyces	cerevisiae	GO:0005938	cellular_component	"cell cortex"	NUM1	PIL1
+6.116190e-03	1	5	8	6526	97048	Saccharomyces	cerevisiae	GO:0004860	molecular_function	"protein kinase inhibitor activity"	PIL1
+3.343480e-01	1	5	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	NUM1
+3.476150e-02	1	5	46	6526	97048	Saccharomyces	cerevisiae	GO:0019207	molecular_function	"kinase regulator activity"	PIL1
+3.842480e-01	1	5	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	PIL1
+1.826020e-02	1	5	24	6526	97048	Saccharomyces	cerevisiae	GO:0004857	molecular_function	"enzyme inhibitor activity"	PIL1
+6.201360e-02	1	5	83	6526	97048	Saccharomyces	cerevisiae	GO:0000313	cellular_component	"organellar ribosome"	MRP8
+1.988740e-01	1	5	283	6526	97048	Saccharomyces	cerevisiae	GO:0005740	cellular_component	"mitochondrial envelope"	PIL1
+3.800770e-01	1	5	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	PIL1
+4.012620e-01	5	5	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+6.854850e-02	1	5	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	PKH1
+1.599250e-02	1	5	21	6526	97048	Saccharomyces	cerevisiae	GO:0009266	biological_process	"response to temperature stimulus"	PIL1
+1.146720e-01	1	5	157	6526	97048	Saccharomyces	cerevisiae	GO:0007047	biological_process	"cell wall organization and biogenesis"	PKH1
+3.061850e-03	1	5	4	6526	97048	Saccharomyces	cerevisiae	GO:0000196	biological_process	"MAPKKK cascade during cell wall biogenesis"	PKH1
+5.098140e-01	1	5	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	MRP8
+2.131350e-01	5	5	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	MRP8	NUM1	PIL1	PKH1	YRF1-4
+3.391090e-01	4	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	MRP8	NUM1	PIL1	YRF1-4
+3.890370e-02	2	5	436	6526	97048	Saccharomyces	cerevisiae	GO:0044429	cellular_component	"mitochondrial part"	MRP8	PIL1
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0007243	biological_process	"protein kinase cascade"	PKH1
+3.252440e-02	1	5	43	6526	97048	Saccharomyces	cerevisiae	GO:0019887	molecular_function	"protein kinase regulator activity"	PIL1
+1.308090e-03	2	5	76	6526	97048	Saccharomyces	cerevisiae	GO:0006897	biological_process	"endocytosis"	PIL1	PKH1
+1.531860e-03	1	5	2	6526	97048	Saccharomyces	cerevisiae	GO:0032126	cellular_component	"eisosome"	PIL1
+6.179250e-01	1	5	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	MRP8
+3.561920e-01	1	5	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	NUM1
+8.366240e-01	1	5	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	YRF1-4
+1.144330e-02	1	5	15	6526	97048	Saccharomyces	cerevisiae	GO:0007018	biological_process	"microtubule-based movement"	NUM1
+6.854850e-02	1	5	92	6526	97048	Saccharomyces	cerevisiae	GO:0044448	cellular_component	"cell cortex part"	PIL1
+2.316970e-01	1	5	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	PKH1

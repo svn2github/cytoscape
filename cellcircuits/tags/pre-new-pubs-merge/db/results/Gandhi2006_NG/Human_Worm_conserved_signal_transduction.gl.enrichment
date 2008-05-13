@@ -1,0 +1,24 @@
+#USING csn-1 instead of its synonym Y59A8A.1 in Caenorhabditis elegans
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+9.741010e-01	1	3	19513	27713	88307	Caenorhabditis	elegans	GO:0000003	biological_process	"reproduction"	Y59A8A.1
+5.677500e-01	1	3	6759	27713	88307	Caenorhabditis	elegans	GO:0050875	biological_process	"cellular physiological process"	Y59A8A.1
+5.411840e-04	1	3	5	27713	88307	Caenorhabditis	elegans	GO:0000004	biological_process	"biological process unknown"	Y38C1AA.2
+9.750650e-01	1	3	19616	27713	88307	Caenorhabditis	elegans	GO:0009792	biological_process	"embryonic development (sensu Metazoa)"	Y59A8A.1
+2.882270e-02	1	3	63	6495	88307	Caenorhabditis	elegans	GO:0008372	cellular_component	"cellular component unknown"	Y38C1AA.2
+9.145910e-01	1	3	15508	27713	88307	Caenorhabditis	elegans	GO:0019953	biological_process	"sexual reproduction"	Y59A8A.1
+1.000000e+00	2	3	11710	11710	88307	Caenorhabditis	elegans	GO:0003674	molecular_function	"molecular_function"	B0025.2	Y38C1AA.2
+9.141070e-01	1	3	15485	27713	88307	Caenorhabditis	elegans	GO:0007276	biological_process	"gametogenesis"	Y59A8A.1
+1.000000e+00	1	3	6495	6495	88307	Caenorhabditis	elegans	GO:0005575	cellular_component	"cellular_component"	Y38C1AA.2
+9.952850e-01	1	3	23065	27713	88307	Caenorhabditis	elegans	GO:0007582	biological_process	"physiological process"	Y59A8A.1
+1.272000e-02	1	3	118	27713	88307	Caenorhabditis	elegans	GO:0000910	biological_process	"cytokinesis"	Y59A8A.1
+8.784590e-01	1	3	5909	11710	88307	Caenorhabditis	elegans	GO:0005488	molecular_function	"binding"	B0025.2
+9.543420e-02	1	3	385	11710	88307	Caenorhabditis	elegans	GO:0005554	molecular_function	"molecular function unknown"	Y38C1AA.2
+1.722120e-02	1	3	160	27713	88307	Caenorhabditis	elegans	GO:0051301	biological_process	"cell division"	Y59A8A.1
+9.765770e-01	1	3	19783	27713	88307	Caenorhabditis	elegans	GO:0007275	biological_process	"development"	Y59A8A.1
+9.752950e-01	1	3	19641	27713	88307	Caenorhabditis	elegans	GO:0009790	biological_process	"embryonic development"	Y59A8A.1
+6.298660e-01	1	3	7815	27713	88307	Caenorhabditis	elegans	GO:0009987	biological_process	"cellular process"	Y59A8A.1
+1.000000e+00	2	3	27713	27713	88307	Caenorhabditis	elegans	GO:0008150	biological_process	"biological_process"	Y38C1AA.2	Y59A8A.1
+#NOT FOUND: GPS1_HUMAN in Homo sapiens
+#NOT FOUND: COPS3_HUMAN in Homo sapiens
+#NOT FOUND: COPS2_HUMAN in Homo sapiens
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term

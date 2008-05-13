@@ -1,0 +1,85 @@
+##TYPE = (+/-) control: general description of query type
+##NOTE = notes about expected behavior
+##SPEC = species name(s) (of the form: 'genus species')
+##PUBL = publications
+##SRTM = sort method
+#1
+TYPE	(+) control: gene symbol only
+NOTE	gcn4 (6 models)
+QUER	gcn4
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#2
+TYPE	(+) control: gene synonym only
+NOTE	aas3 is a synonym of gcn4 (6 models)
+QUER	aas3
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#3
+TYPE	(+) control: gene symbol regex only
+NOTE	gcn* will match gcn1,2,3,4,5,20 (yeast, plas)
+NOTE	44 models, 7 (mid=1636,1460,1250,1035,1077,1305,1354) of which match gcn3 and gcn5
+QUER	gcn*
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#4
+TYPE	(+) control: gene symbol regex only
+NOTE	aas* will match aas1,aas2,aas3, synonyms of gcn2, gcn3, gcn4 respectively
+NOTE	30 models (mid 2001 matches AAS2 and AAS3)
+QUER	aas*
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#5
+TYPE	(+) control: accession only
+NOTE 	GO:0030528 (plas,yeast,worm,fly,human) : 88 models (P<0.01)
+QUER	GO:0030528
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#6
+TYPE	(+) control: term name only, with part of the term name < 4 characters
+NOTE 	"DNA binding" (worm,human,yeast,fly) : 227 models (P<0.01)
+QUER	"DNA binding"
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#7
+TYPE	(+) control: gene symbol, term name
+NOTE 	gcn4 and DNA binding are both known to exist in yeast in our db
+QUER	gcn4 "DNA binding"
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#8
+TYPE	(+) control: multiple genes symbols
+NOTE	gcn4 and gal4 are both known to exist in yeast in our db
+QUER	gcn4 gal4
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#9
+TYPE	(+) control: gene synonym, gene symbol
+NOTE	aas3 is a synonym of gcn4.  gcn4 and gal4 are both known to exist in yeast in our db
+QUER	aas3 gal4
+SPEC	'Saccharomyces cerevisiae'
+PUBL	all
+#10
+TYPE	(+) control: multiple gene symbols, multiple term accessions
+NOTE	gcn4, swi4, GO:0030528, GO:0005488, GO:0003713 are known to exist in yeast in our db
+QUER	gcn4 swi4 GO:0030528 GO:0005488 GO:0003713
+SPEC	'Saccharomyces cerevisiae'	'Drosophila melanogaster'
+PUBL	all
+#11
+TYPE	(+) control: gene symbol regex, gene symbol, multiple term names, multiple term accessions
+NOTE	gcn*, swi4, "DNA binding", "sister chromatid", GO:0000097, GO:0004527 are known to exist in our db
+QUER	gcn* swi4 "DNA binding" "sister chromatid" GO:0000097 GO:0004527
+SPEC	'Saccharomyces cerevisiae'	'Drosophila melanogaster'
+PUBL	all
+#12
+TYPE	(-) control: error checking
+NOTE	adr1 is known not to exist in Plas in our db
+QUER	adr1
+SPEC	'Plasmodium falciparum'
+PUBL	all
+#13
+TYPE	(+) control: gene symbol regex only
+NOTE	rad* will match gcn1,2,3,4,5,20 (yeast, plas)
+QUER	rad*
+SPEC	'Saccharomyces cerevisiae'	'Drosophila melanogaster'	'Caenorhabditis elegans'	'Homo sapiens'
+PUBL	all

@@ -1,0 +1,137 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+8.375180e-02	1	7	81	6526	97048	Saccharomyces	cerevisiae	GO:0019867	cellular_component	"outer membrane"	MMR1
+4.284620e-03	1	7	4	6526	97048	Saccharomyces	cerevisiae	GO:0005981	biological_process	"regulation of glycogen catabolism"	PCL7
+4.061300e-09	4	7	23	6526	97048	Saccharomyces	cerevisiae	GO:0016538	molecular_function	"cyclin-dependent protein kinase regulator activity"	PCL1	PCL2	PCL5	PCL7
+1.706020e-01	1	7	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	PHO85
+9.649330e-01	2	7	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	MMR1	SWI5
+1.295340e-01	1	7	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	PHO85
+3.696150e-02	1	7	35	6526	97048	Saccharomyces	cerevisiae	GO:0000131	cellular_component	"incipient bud site"	MMR1
+7.922240e-01	3	7	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	PCL7	PHO85	SWI5
+1.638400e-03	2	7	59	6526	97048	Saccharomyces	cerevisiae	GO:0044264	biological_process	"cellular polysaccharide metabolism"	PCL7	PHO85
+8.126950e-01	3	7	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	PCL7	PHO85	SWI5
+2.348270e-02	2	7	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	PCL7	PHO85
+1.587690e-01	7	7	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+1.910140e-02	2	7	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	PCL7	PHO85
+9.186630e-01	1	7	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	PHO85
+4.007420e-02	1	7	38	6526	97048	Saccharomyces	cerevisiae	GO:0048308	biological_process	"organelle inheritance"	MMR1
+5.448650e-02	1	7	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	SWI5
+1.280670e-02	1	7	12	6526	97048	Saccharomyces	cerevisiae	GO:0005978	biological_process	"glycogen biosynthesis"	PCL7
+8.125180e-01	2	7	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	PCL7	PHO85
+8.330790e-01	1	7	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	PHO85
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+2.367820e-01	1	7	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	PCL7
+2.265080e-01	1	7	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	SWI5
+1.386750e-02	1	7	13	6526	97048	Saccharomyces	cerevisiae	GO:0009894	biological_process	"regulation of catabolism"	PCL7
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0000001	biological_process	"mitochondrion inheritance"	MMR1
+1.465400e-01	1	7	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	MMR1
+7.566650e-02	2	7	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	PCL7	SWI5
+2.272510e-02	2	7	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	PCL7	PHO85
+7.027620e-01	1	7	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	MMR1
+4.625090e-01	2	7	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	PCL7	PHO85
+4.696390e-01	1	7	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	PHO85
+7.274390e-02	1	7	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	PHO85
+5.111810e-02	4	7	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	PCL1	PCL2	PCL5	PCL7
+2.519730e-01	1	7	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	PHO85
+5.550880e-02	1	7	53	6526	97048	Saccharomyces	cerevisiae	GO:0051640	biological_process	"organelle localization"	MMR1
+1.429680e-01	2	7	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	PCL7	SWI5
+1.810110e-02	1	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0043255	biological_process	"regulation of carbohydrate biosynthesis"	PCL7
+1.474770e-01	1	7	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	PHO85
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0000080	biological_process	"G1 phase of mitotic cell cycle"	SWI5
+7.675980e-02	1	7	74	6526	97048	Saccharomyces	cerevisiae	GO:0044275	biological_process	"cellular carbohydrate catabolism"	PCL7
+8.021930e-01	1	7	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	PHO85
+1.507480e-01	7	7	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+1.206310e-01	7	7	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0051646	biological_process	"mitochondrion localization"	MMR1
+1.940800e-01	1	7	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	PHO85
+8.262540e-01	1	7	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	SWI5
+5.755060e-02	1	7	55	6526	97048	Saccharomyces	cerevisiae	GO:0009889	biological_process	"regulation of biosynthesis"	PCL7
+8.375180e-02	1	7	81	6526	97048	Saccharomyces	cerevisiae	GO:0031968	cellular_component	"organelle outer membrane"	MMR1
+9.168710e-02	1	7	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	SWI5
+3.408020e-01	1	7	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	PCL7
+4.317650e-01	1	7	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	SWI5
+5.416950e-01	1	7	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	PHO85
+3.148470e-01	1	7	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	SWI5
+1.092150e-01	7	7	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+5.243050e-01	2	7	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	PCL7	PHO85
+8.375180e-02	1	7	81	6526	97048	Saccharomyces	cerevisiae	GO:0005741	cellular_component	"mitochondrial outer membrane"	MMR1
+9.463450e-01	1	7	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	MMR1
+8.563820e-11	4	7	10	6526	97048	Saccharomyces	cerevisiae	GO:0000307	cellular_component	"cyclin-dependent protein kinase holoenzyme complex"	PCL1	PCL2	PCL5	PCL7
+3.934450e-04	2	7	29	6526	97048	Saccharomyces	cerevisiae	GO:0005977	biological_process	"glycogen metabolism"	PCL7	PHO85
+2.966500e-02	1	7	28	6526	97048	Saccharomyces	cerevisiae	GO:0006109	biological_process	"regulation of carbohydrate metabolism"	PCL7
+7.406750e-01	3	7	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	PCL7	PHO85	SWI5
+9.168710e-02	1	7	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	SWI5
+9.051020e-01	3	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	MMR1	PHO85	SWI5
+4.027220e-01	1	7	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	PHO85
+1.940800e-01	1	7	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	PHO85
+3.406970e-01	2	7	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	MMR1	PHO85
+1.492740e-02	1	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0000114	biological_process	"G1-specific transcription in mitotic cell cycle"	SWI5
+6.421020e-03	1	7	6	6526	97048	Saccharomyces	cerevisiae	GO:0005979	biological_process	"regulation of glycogen biosynthesis"	PCL7
+9.533510e-01	1	7	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	MMR1
+6.864590e-01	1	7	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	MMR1
+5.515010e-01	1	7	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	PHO85
+9.698770e-01	1	7	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	MMR1
+2.519730e-01	1	7	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	PHO85
+7.117470e-01	1	7	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	MMR1
+4.964560e-01	1	7	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	MMR1
+3.950910e-01	1	7	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	PHO85
+7.487740e-03	1	7	7	6526	97048	Saccharomyces	cerevisiae	GO:0004693	molecular_function	"cyclin-dependent protein kinase activity"	PHO85
+7.665330e-01	1	7	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	PCL7
+2.787820e-01	7	7	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+9.463450e-01	1	7	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	MMR1
+1.940800e-01	1	7	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	PHO85
+1.493900e-01	2	7	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	PCL7	SWI5
+7.487740e-03	1	7	7	6526	97048	Saccharomyces	cerevisiae	GO:0005980	biological_process	"glycogen catabolism"	PCL7
+1.083540e-01	1	7	106	6526	97048	Saccharomyces	cerevisiae	GO:0007005	biological_process	"mitochondrion organization and biogenesis"	MMR1
+8.495260e-01	3	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	MMR1	PHO85	SWI5
+1.390170e-01	1	7	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	MMR1
+9.618250e-03	1	7	9	6526	97048	Saccharomyces	cerevisiae	GO:0009251	biological_process	"glucan catabolism"	PCL7
+7.917780e-04	2	7	41	6526	97048	Saccharomyces	cerevisiae	GO:0006073	biological_process	"glucan metabolism"	PCL7	PHO85
+3.023330e-01	1	7	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	SWI5
+5.755060e-02	1	7	55	6526	97048	Saccharomyces	cerevisiae	GO:0031326	biological_process	"regulation of cellular biosynthesis"	PCL7
+3.423020e-01	1	7	379	6526	97048	Saccharomyces	cerevisiae	GO:0031967	cellular_component	"organelle envelope"	MMR1
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0051318	biological_process	"G1 phase"	SWI5
+7.675980e-02	1	7	74	6526	97048	Saccharomyces	cerevisiae	GO:0016052	biological_process	"carbohydrate catabolism"	PCL7
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+8.495260e-01	3	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	MMR1	PHO85	SWI5
+1.543520e-01	2	7	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	PCL7	SWI5
+1.852420e-05	4	7	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	PCL1	PCL2	PCL5	PCL7
+4.020320e-01	1	7	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	SWI5
+3.423020e-01	1	7	379	6526	97048	Saccharomyces	cerevisiae	GO:0031975	cellular_component	"envelope"	MMR1
+1.673120e-02	2	7	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	PCL7	PHO85
+8.376100e-02	2	7	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	PCL7	SWI5
+2.367820e-01	1	7	247	6526	97048	Saccharomyces	cerevisiae	GO:0031966	cellular_component	"mitochondrial membrane"	MMR1
+5.883220e-01	2	7	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	MMR1	PHO85
+7.073030e-02	1	7	68	6526	97048	Saccharomyces	cerevisiae	GO:0016051	biological_process	"carbohydrate biosynthesis"	PCL7
+3.488160e-02	1	7	33	6526	97048	Saccharomyces	cerevisiae	GO:0000271	biological_process	"polysaccharide biosynthesis"	PCL7
+3.415520e-01	1	7	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	SWI5
+6.094800e-04	2	7	36	6526	97048	Saccharomyces	cerevisiae	GO:0006112	biological_process	"energy reserve metabolism"	PCL7	PHO85
+7.449320e-08	4	7	46	6526	97048	Saccharomyces	cerevisiae	GO:0019207	molecular_function	"kinase regulator activity"	PCL1	PCL2	PCL5	PCL7
+2.669050e-01	1	7	283	6526	97048	Saccharomyces	cerevisiae	GO:0005740	cellular_component	"mitochondrial envelope"	MMR1
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0048311	biological_process	"mitochondrion distribution"	MMR1
+9.464760e-02	1	7	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	PHO85
+2.784230e-01	7	7	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+4.880520e-01	1	7	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	MMR1
+1.638400e-03	2	7	59	6526	97048	Saccharomyces	cerevisiae	GO:0005976	biological_process	"polysaccharide metabolism"	PCL7	PHO85
+6.315030e-01	1	7	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	PCL7
+1.148010e-01	7	7	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	MMR1	PCL1	PCL2	PCL5	PCL7	PHO85	SWI5
+9.051020e-01	3	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	MMR1	PHO85	SWI5
+2.693680e-01	1	7	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	PCL7
+3.838430e-01	1	7	436	6526	97048	Saccharomyces	cerevisiae	GO:0044429	cellular_component	"mitochondrial part"	MMR1
+2.983830e-01	1	7	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	SWI5
+1.280670e-02	1	7	12	6526	97048	Saccharomyces	cerevisiae	GO:0044247	biological_process	"cellular polysaccharide catabolism"	PCL7
+1.922940e-01	1	7	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	SWI5
+1.425930e-01	2	7	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	PCL7	SWI5
+5.640010e-08	4	7	43	6526	97048	Saccharomyces	cerevisiae	GO:0019887	molecular_function	"protein kinase regulator activity"	PCL1	PCL2	PCL5	PCL7
+1.280670e-02	1	7	12	6526	97048	Saccharomyces	cerevisiae	GO:0000272	biological_process	"polysaccharide catabolism"	PCL7
+7.400380e-01	1	7	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	PCL7
+4.602210e-01	1	7	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	MMR1
+2.122190e-02	1	7	20	6526	97048	Saccharomyces	cerevisiae	GO:0009250	biological_process	"glucan biosynthesis"	PCL7
+6.788320e-01	2	7	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	PHO85	SWI5
+1.093260e-01	1	7	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	MMR1
+2.759030e-01	1	7	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	SWI5
+2.880210e-01	1	7	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	PCL7
+3.488160e-02	1	7	33	6526	97048	Saccharomyces	cerevisiae	GO:0043284	biological_process	"biopolymer biosynthesis"	PCL7
+3.505000e-01	1	7	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	PCL7
+1.839180e-05	5	7	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	PCL1	PCL2	PCL5	PHO85	SWI5
+3.086140e-01	1	7	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	PHO85

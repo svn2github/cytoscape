@@ -1,0 +1,197 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.791870e-02	2	15	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	CDC28	SWE1
+6.846140e-20	9	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0016538	molecular_function	"cyclin-dependent protein kinase regulator activity"	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3
+1.222150e-01	11	15	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLN1	CLN2	SIC1	YPL014W
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0051443	biological_process	"positive regulation of ubiquitin ligase activity"	CDH1
+3.392210e-02	2	15	128	6526	97048	Saccharomyces	cerevisiae	GO:0004672	molecular_function	"protein kinase activity"	CDC28	SWE1
+9.509060e-01	5	15	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	CDC28	CDH1	CKS1	CLB5	CLB6
+6.657510e-01	2	15	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	CLB2	CLB4
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0051351	biological_process	"positive regulation of ligase activity"	CDH1
+9.607090e-01	5	15	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	CDC28	CDH1	CKS1	CLB5	CLB6
+1.066890e-01	14	15	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+9.655480e-01	2	15	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	CDC28	SWE1
+9.481170e-01	1	15	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	SIC1
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0042144	biological_process	"vacuole fusion, non-autophagic"	CLN3
+3.396410e-02	1	15	15	6526	97048	Saccharomyces	cerevisiae	GO:0007091	biological_process	"mitotic metaphase/anaphase transition"	CDH1
+6.916660e-01	3	15	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	CDC28	CDH1	CLB5
+8.801520e-01	4	15	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	CDC28	CDH1	CLB5	CLB6
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+4.397580e-01	1	15	247	6526	97048	Saccharomyces	cerevisiae	GO:0043285	biological_process	"biopolymer catabolism"	CDH1
+9.433960e-03	2	15	65	6526	97048	Saccharomyces	cerevisiae	GO:0000922	cellular_component	"spindle pole"	CLB2	CLB4
+1.260710e-13	11	15	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	CDC28	CDH1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN3	SIC1	SWE1
+2.271020e-01	1	15	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	CDH1
+8.081010e-03	2	15	60	6526	97048	Saccharomyces	cerevisiae	GO:0005816	cellular_component	"spindle pole body"	CLB2	CLB4
+6.970010e-02	2	15	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	CLB2	CLB4
+4.931630e-06	2	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0051054	biological_process	"positive regulation of DNA metabolism"	CLB5	CLB6
+1.090740e-01	1	15	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	CDH1
+9.331870e-01	1	15	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	CLB6
+2.198330e-01	1	15	107	6526	97048	Saccharomyces	cerevisiae	GO:0019953	biological_process	"sexual reproduction"	CLN2
+4.314030e-02	2	15	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	CLB2	SWE1
+2.675120e-01	2	15	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	CLB5	CLB6
+2.467660e-01	1	15	122	6526	97048	Saccharomyces	cerevisiae	GO:0051704	biological_process	"interaction between organisms"	CLN2
+1.504490e-02	3	15	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	CDH1	CLN3	SWE1
+7.246860e-04	3	15	80	6526	97048	Saccharomyces	cerevisiae	GO:0000226	biological_process	"microtubule cytoskeleton organization and biogenesis"	CDH1	CLB1	CLB5
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0000321	biological_process	"re-entry into mitotic cell cycle after pheromone arrest"	CLN2
+3.127850e-01	1	15	161	6526	97048	Saccharomyces	cerevisiae	GO:0030163	biological_process	"protein catabolism"	CDH1
+3.445070e-01	1	15	181	6526	97048	Saccharomyces	cerevisiae	GO:0006512	biological_process	"ubiquitin cycle"	CDH1
+1.895490e-27	12	15	29	6526	97048	Saccharomyces	cerevisiae	GO:0050790	biological_process	"regulation of catalytic activity"	CDH1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+8.637720e-01	2	15	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	CDC28	CDH1
+3.774920e-01	2	15	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	CDC28	CDH1
+1.495080e-01	1	15	70	6526	97048	Saccharomyces	cerevisiae	GO:0004674	molecular_function	"protein serine/threonine kinase activity"	CDC28
+4.633970e-01	1	15	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	CDH1
+3.396410e-02	1	15	15	6526	97048	Saccharomyces	cerevisiae	GO:0031145	biological_process	"anaphase-promoting complex-dependent proteasomal ubiquitin-dependent protein catabolism"	CDH1
+9.790510e-01	1	15	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	CDH1
+4.146430e-14	7	15	26	6526	97048	Saccharomyces	cerevisiae	GO:0000086	biological_process	"G2/M transition of mitotic cell cycle"	CDC28	CLB1	CLB2	CLB3	CLB4	CLB5	SWE1
+3.733710e-01	1	15	200	6526	97048	Saccharomyces	cerevisiae	GO:0048610	biological_process	"reproductive cellular physiological process"	CLN2
+2.183740e-29	11	15	14	6526	97048	Saccharomyces	cerevisiae	GO:0000079	biological_process	"regulation of cyclin-dependent protein kinase activity"	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+4.646830e-01	1	15	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	CLN2
+8.180100e-14	14	15	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+2.897340e-01	1	15	147	6526	97048	Saccharomyces	cerevisiae	GO:0016310	biological_process	"phosphorylation"	CDC28
+3.790860e-04	2	15	13	6526	97048	Saccharomyces	cerevisiae	GO:0007346	biological_process	"regulation of progression through mitotic cell cycle"	CLB5	CLB6
+2.475950e-02	2	15	108	6526	97048	Saccharomyces	cerevisiae	GO:0006260	biological_process	"DNA replication"	CLB5	CLB6
+2.195770e-04	2	15	10	6526	97048	Saccharomyces	cerevisiae	GO:0006275	biological_process	"regulation of DNA replication"	CLB5	CLB6
+5.345160e-01	1	15	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	CLN2
+2.955940e-01	2	15	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	CLB5	CLB6
+8.477780e-01	2	15	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	CDC28	CDH1
+1.478790e-04	3	15	47	6526	97048	Saccharomyces	cerevisiae	GO:0007051	biological_process	"spindle organization and biogenesis"	CDH1	CLB1	CLB5
+9.797870e-02	14	15	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+1.684270e-02	2	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0051242	biological_process	"positive regulation of cellular physiological process"	CLB5	CLB6
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0008315	biological_process	"meiotic G2/MI transition"	CLB1
+7.885820e-02	2	15	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	CLB2	CLB4
+6.758740e-02	14	15	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+1.504490e-02	3	15	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	CDH1	CLN3	SWE1
+7.423090e-02	2	15	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	CDC28	SWE1
+4.316180e-01	4	15	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CDC28	CKS1	CLB5	CLB6
+4.931630e-06	2	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0045740	biological_process	"positive regulation of DNA replication"	CLB5	CLB6
+3.618960e-02	1	15	16	6526	97048	Saccharomyces	cerevisiae	GO:0005680	cellular_component	"anaphase-promoting complex"	CDH1
+2.099370e-26	11	15	21	6526	97048	Saccharomyces	cerevisiae	GO:0051338	biological_process	"regulation of transferase activity"	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+3.768070e-16	10	15	89	6526	97048	Saccharomyces	cerevisiae	GO:0051325	biological_process	"interphase"	CDC28	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN3	SIC1	SWE1
+5.908030e-01	1	15	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	CDH1
+3.262810e-01	2	15	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	CDC28	CKS1
+5.530390e-02	3	15	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	CDH1	CLN3	SWE1
+1.211940e-02	3	15	216	6526	97048	Saccharomyces	cerevisiae	GO:0007010	biological_process	"cytoskeleton organization and biogenesis"	CDH1	CLB1	CLB5
+4.797400e-01	2	15	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	CDC28	SWE1
+2.963920e-01	1	15	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	CLB5
+6.657510e-01	2	15	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	CLB2	CLB4
+5.713120e-02	14	15	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+1.131970e-01	1	15	52	6526	97048	Saccharomyces	cerevisiae	GO:0016567	biological_process	"protein ubiquitination"	CDH1
+4.942680e-01	4	15	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	CDC28	CDH1	CLB5	CLB6
+1.957670e-01	1	15	94	6526	97048	Saccharomyces	cerevisiae	GO:0016044	biological_process	"membrane organization and biogenesis"	CLN3
+9.298560e-01	3	15	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	CDH1	CLB2	CLB4
+9.211650e-01	5	15	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	CDC28	CDH1	CKS1	CLB5	CLB6
+1.196760e-03	3	15	95	6526	97048	Saccharomyces	cerevisiae	GO:0007017	biological_process	"microtubule-based process"	CDH1	CLB1	CLB5
+3.768070e-16	10	15	89	6526	97048	Saccharomyces	cerevisiae	GO:0051329	biological_process	"interphase of mitotic cell cycle"	CDC28	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN3	SIC1	SWE1
+5.163940e-02	1	15	23	6526	97048	Saccharomyces	cerevisiae	GO:0000152	cellular_component	"nuclear ubiquitin ligase complex"	CDH1
+5.275550e-03	14	15	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0051438	biological_process	"regulation of ubiquitin ligase activity"	CDH1
+6.688130e-01	1	15	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	CDH1
+2.050980e-02	1	15	9	6526	97048	Saccharomyces	cerevisiae	GO:0019210	molecular_function	"kinase inhibitor activity"	SIC1
+3.703900e-01	1	15	198	6526	97048	Saccharomyces	cerevisiae	GO:0006793	biological_process	"phosphorus metabolism"	CDC28
+2.441520e-01	4	15	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	CDH1	CLB1	CLB5	CLN3
+1.477530e-05	2	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0007090	biological_process	"regulation of S phase of mitotic cell cycle"	CLB5	CLB6
+1.541920e-02	2	15	84	6526	97048	Saccharomyces	cerevisiae	GO:0031325	biological_process	"positive regulation of cellular metabolism"	CLB5	CLB6
+1.254580e-01	1	15	58	6526	97048	Saccharomyces	cerevisiae	GO:0043161	biological_process	"proteasomal ubiquitin-dependent protein catabolism"	CDH1
+9.986030e-01	1	15	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YPL014W
+4.940000e-01	2	15	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	CDC28	CDH1
+2.198330e-01	1	15	107	6526	97048	Saccharomyces	cerevisiae	GO:0000746	biological_process	"conjugation"	CLN2
+3.712360e-03	3	15	141	6526	97048	Saccharomyces	cerevisiae	GO:0051327	biological_process	"M phase of meiotic cell cycle"	CDC28	CLB1	SWE1
+9.941120e-01	2	15	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	CLB2	CLB4
+4.633970e-01	1	15	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	CDH1
+9.331870e-01	1	15	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	CDH1
+2.198330e-01	1	15	107	6526	97048	Saccharomyces	cerevisiae	GO:0000747	biological_process	"conjugation with cellular fusion"	CLN2
+6.596740e-01	1	15	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	CDH1
+2.467660e-01	1	15	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	CDH1
+4.062640e-02	1	15	18	6526	97048	Saccharomyces	cerevisiae	GO:0051231	biological_process	"spindle elongation"	CDH1
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0007092	biological_process	"anaphase-promoting complex activation during mitotic cell cycle"	CDH1
+1.598630e-02	1	15	7	6526	97048	Saccharomyces	cerevisiae	GO:0004693	molecular_function	"cyclin-dependent protein kinase activity"	CDC28
+2.591200e-01	14	15	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+9.164440e-03	1	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0030071	biological_process	"regulation of mitotic metaphase/anaphase transition"	CDH1
+9.298560e-01	3	15	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	CDH1	CLB2	CLB4
+3.703900e-01	1	15	198	6526	97048	Saccharomyces	cerevisiae	GO:0006796	biological_process	"phosphate metabolism"	CDC28
+1.185430e-13	14	15	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0031569	biological_process	"G2/M transition size control checkpoint"	SWE1
+1.234260e-01	1	15	57	6526	97048	Saccharomyces	cerevisiae	GO:0000819	biological_process	"sister chromatid segregation"	CDH1
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0051225	biological_process	"spindle assembly"	CLB5
+1.541920e-02	2	15	84	6526	97048	Saccharomyces	cerevisiae	GO:0009893	biological_process	"positive regulation of metabolism"	CLB5	CLB6
+1.700940e-12	5	15	8	6526	97048	Saccharomyces	cerevisiae	GO:0000084	biological_process	"S phase of mitotic cell cycle"	CDC28	CLB3	CLB4	CLB5	CLB6
+1.111380e-01	1	15	51	6526	97048	Saccharomyces	cerevisiae	GO:0000075	biological_process	"cell cycle checkpoint"	SWE1
+1.748060e-03	14	15	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+9.029980e-02	1	15	41	6526	97048	Saccharomyces	cerevisiae	GO:0007033	biological_process	"vacuole organization and biogenesis"	CLN3
+7.971090e-02	1	15	36	6526	97048	Saccharomyces	cerevisiae	GO:0000151	cellular_component	"ubiquitin ligase complex"	CDH1
+1.648160e-02	2	15	87	6526	97048	Saccharomyces	cerevisiae	GO:0006261	biological_process	"DNA-dependent DNA replication"	CLB5	CLB6
+5.579650e-23	14	15	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+3.893510e-02	2	15	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	CLB2	SWE1
+1.825040e-02	1	15	8	6526	97048	Saccharomyces	cerevisiae	GO:0030295	molecular_function	"protein kinase activator activity"	CKS1
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0031567	biological_process	"cell size control checkpoint"	SWE1
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0000320	biological_process	"re-entry into mitotic cell cycle"	CLN2
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+2.951130e-05	2	15	4	6526	97048	Saccharomyces	cerevisiae	GO:0006279	biological_process	"premeiotic DNA synthesis"	CLB5	CLB6
+1.684270e-02	2	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0048522	biological_process	"positive regulation of cellular process"	CLB5	CLB6
+3.733710e-01	1	15	200	6526	97048	Saccharomyces	cerevisiae	GO:0050876	biological_process	"reproductive physiological process"	CLN2
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0051488	biological_process	"anaphase-promoting complex activation"	CDH1
+2.728290e-01	1	15	137	6526	97048	Saccharomyces	cerevisiae	GO:0006511	biological_process	"ubiquitin-dependent protein catabolism"	CDH1
+3.712360e-03	3	15	141	6526	97048	Saccharomyces	cerevisiae	GO:0051321	biological_process	"meiotic cell cycle"	CDC28	CLB1	SWE1
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0000078	biological_process	"cell morphogenesis checkpoint"	SWE1
+1.000000e+00	15	15	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+1.748060e-03	14	15	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+5.579650e-23	14	15	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+4.330210e-01	1	15	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	CLN2
+1.563950e-13	14	15	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+6.100860e-17	12	15	181	6526	97048	Saccharomyces	cerevisiae	GO:0030234	molecular_function	"enzyme regulator activity"	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1
+1.318170e-03	2	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0051052	biological_process	"regulation of DNA metabolism"	CLB5	CLB6
+2.903260e-01	2	15	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	CLB5	CLB6
+2.298500e-03	1	15	1	6526	97048	Saccharomyces	cerevisiae	GO:0031576	biological_process	"G2/M transition checkpoint"	SWE1
+2.099370e-26	11	15	21	6526	97048	Saccharomyces	cerevisiae	GO:0043549	biological_process	"regulation of kinase activity"	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+2.099370e-26	11	15	21	6526	97048	Saccharomyces	cerevisiae	GO:0045859	biological_process	"regulation of protein kinase activity"	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+3.589310e-01	5	15	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	CDH1	CLB1	CLB5	CLN3	SWE1
+2.762390e-01	1	15	139	6526	97048	Saccharomyces	cerevisiae	GO:0051603	biological_process	"proteolysis during cellular protein catabolism"	CDH1
+2.914040e-01	1	15	148	6526	97048	Saccharomyces	cerevisiae	GO:0044257	biological_process	"cellular protein catabolism"	CDH1
+1.700940e-12	5	15	8	6526	97048	Saccharomyces	cerevisiae	GO:0051320	biological_process	"S phase"	CDC28	CLB3	CLB4	CLB5	CLB6
+9.858470e-01	1	15	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YPL014W
+1.684270e-02	2	15	88	6526	97048	Saccharomyces	cerevisiae	GO:0043119	biological_process	"positive regulation of physiological process"	CLB5	CLB6
+2.144800e-01	2	15	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CLB5	CLB6
+7.053420e-01	1	15	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	SIC1
+7.864730e-22	11	15	46	6526	97048	Saccharomyces	cerevisiae	GO:0019207	molecular_function	"kinase regulator activity"	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1
+7.668110e-01	1	15	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	CLN2
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0004857	molecular_function	"enzyme inhibitor activity"	SIC1
+5.382670e-02	1	15	24	6526	97048	Saccharomyces	cerevisiae	GO:0030472	biological_process	"mitotic spindle organization and biogenesis in nucleus"	CLB1
+6.880710e-03	1	15	3	6526	97048	Saccharomyces	cerevisiae	GO:0051340	biological_process	"regulation of ligase activity"	CDH1
+2.050980e-02	1	15	9	6526	97048	Saccharomyces	cerevisiae	GO:0019209	molecular_function	"kinase activator activity"	CKS1
+1.415610e-01	1	15	66	6526	97048	Saccharomyces	cerevisiae	GO:0007127	biological_process	"meiosis I"	CLB1
+8.081010e-03	2	15	60	6526	97048	Saccharomyces	cerevisiae	GO:0005815	cellular_component	"microtubule organizing center"	CLB2	CLB4
+1.925560e-03	3	15	112	6526	97048	Saccharomyces	cerevisiae	GO:0008361	biological_process	"regulation of cell size"	CDH1	CLN3	SWE1
+2.224840e-02	2	15	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	CLB2	CLB4
+2.586200e-01	14	15	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+1.920040e-01	1	15	92	6526	97048	Saccharomyces	cerevisiae	GO:0006468	biological_process	"protein amino acid phosphorylation"	CDC28
+3.304050e-01	1	15	172	6526	97048	Saccharomyces	cerevisiae	GO:0006508	biological_process	"proteolysis"	CDH1
+4.609590e-03	2	15	45	6526	97048	Saccharomyces	cerevisiae	GO:0007052	biological_process	"mitotic spindle organization and biogenesis"	CDH1	CLB1
+3.966520e-08	5	15	46	6526	97048	Saccharomyces	cerevisiae	GO:0000082	biological_process	"G1/S transition of mitotic cell cycle"	CDC28	CLB5	CLB6	CLN3	SIC1
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0051439	biological_process	"regulation of ubiquitin ligase activity during mitotic cell cycle"	CDH1
+6.216910e-02	14	15	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+8.881330e-03	2	15	63	6526	97048	Saccharomyces	cerevisiae	GO:0008047	molecular_function	"enzyme activator activity"	CDH1	CKS1
+2.728290e-01	1	15	137	6526	97048	Saccharomyces	cerevisiae	GO:0043632	biological_process	"modification-dependent macromolecule catabolism"	CDH1
+5.275550e-03	14	15	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+4.897980e-01	1	15	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	CDH1
+2.485300e-01	1	15	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	CDH1
+2.728290e-01	1	15	137	6526	97048	Saccharomyces	cerevisiae	GO:0019941	biological_process	"modification-dependent protein catabolism"	CDH1
+1.213890e-01	1	15	56	6526	97048	Saccharomyces	cerevisiae	GO:0006944	biological_process	"membrane fusion"	CLN3
+2.949860e-02	1	15	13	6526	97048	Saccharomyces	cerevisiae	GO:0000754	biological_process	"adaptation to pheromone during conjugation with cellular fusion"	CLN2
+4.592060e-03	1	15	2	6526	97048	Saccharomyces	cerevisiae	GO:0051437	biological_process	"positive regulation of ubiquitin ligase activity during mitotic cell cycle"	CDH1
+1.193470e-01	1	15	55	6526	97048	Saccharomyces	cerevisiae	GO:0000070	biological_process	"mitotic sister chromatid segregation"	CDH1
+1.935790e-03	4	15	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	CDC28	CDH1	CLB1	SWE1
+1.468160e-19	10	15	43	6526	97048	Saccharomyces	cerevisiae	GO:0019887	molecular_function	"protein kinase regulator activity"	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3
+8.001010e-14	14	15	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+1.507200e-02	2	15	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	CLB2	CLB4
+1.233700e-03	3	15	96	6526	97048	Saccharomyces	cerevisiae	GO:0048518	biological_process	"positive regulation of biological process"	CDH1	CLB5	CLB6
+1.825040e-02	1	15	8	6526	97048	Saccharomyces	cerevisiae	GO:0043085	biological_process	"positive regulation of enzyme activity"	CDH1
+5.416850e-07	14	15	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLN1	CLN2	CLN3	SIC1	SWE1	YPL014W
+1.003240e-03	2	15	21	6526	97048	Saccharomyces	cerevisiae	GO:0040020	biological_process	"regulation of meiosis"	CDC28	SWE1
+2.433310e-02	2	15	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	CLB2	SWE1
+1.613000e-01	1	15	76	6526	97048	Saccharomyces	cerevisiae	GO:0019236	biological_process	"response to pheromone"	CLN2
+5.173200e-01	1	15	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	CDH1
+1.371810e-02	2	15	79	6526	97048	Saccharomyces	cerevisiae	GO:0045935	biological_process	"positive regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	CLB5	CLB6
+3.712360e-03	3	15	141	6526	97048	Saccharomyces	cerevisiae	GO:0007126	biological_process	"meiosis"	CDC28	CLB1	SWE1
+4.062640e-02	1	15	18	6526	97048	Saccharomyces	cerevisiae	GO:0000022	biological_process	"mitotic spindle elongation"	CDH1
+6.036040e-01	1	15	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	CDH1
+1.832980e-16	14	15	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	CDC28	CDH1	CKS1	CLB1	CLB2	CLB3	CLB4	CLB5	CLB6	CLN1	CLN2	CLN3	SIC1	SWE1
+1.780500e-01	2	15	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	CDC28	SWE1

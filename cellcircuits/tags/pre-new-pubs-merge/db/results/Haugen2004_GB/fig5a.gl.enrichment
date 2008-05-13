@@ -1,0 +1,167 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.445130e-01	1	10	101	6526	97048	Saccharomyces	cerevisiae	GO:0031988	cellular_component	"membrane-bound vesicle"	GAP1
+2.345440e-01	1	10	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	THR1
+2.507400e-04	2	10	16	6526	97048	Saccharomyces	cerevisiae	GO:0015179	molecular_function	"L-amino acid transporter activity"	GAP1	GNP1
+2.363270e-02	9	10	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR4
+6.321990e-02	8	10	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+7.245660e-04	2	10	27	6526	97048	Saccharomyces	cerevisiae	GO:0009084	biological_process	"glutamine family amino acid biosynthesis"	ARG1	ARG4
+7.454030e-02	8	10	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+3.038770e-01	1	10	232	6526	97048	Saccharomyces	cerevisiae	GO:0006091	biological_process	"generation of precursor metabolites and energy"	AAT2
+2.891630e-01	9	10	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR4
+2.768530e-01	1	10	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	AAT2
+1.620450e-03	8	10	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0004412	molecular_function	"homoserine dehydrogenase activity"	HOM6
+2.419780e-08	4	10	23	6526	97048	Saccharomyces	cerevisiae	GO:0006555	biological_process	"methionine metabolism"	HOM2	HOM3	HOM6	THR1
+9.915200e-01	1	10	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	AAT2
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0005771	cellular_component	"multivesicular body"	GAP1
+2.426510e-02	1	10	16	6526	97048	Saccharomyces	cerevisiae	GO:0008483	molecular_function	"transaminase activity"	AAT2
+7.293660e-01	1	10	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	GAP1
+1.000000e+00	10	10	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR1	THR4
+2.063610e-01	1	10	149	6526	97048	Saccharomyces	cerevisiae	GO:0000323	cellular_component	"lytic vacuole"	GAP1
+1.371510e-02	1	10	9	6526	97048	Saccharomyces	cerevisiae	GO:0019794	biological_process	"nonprotein amino acid metabolism"	ARG1
+1.215590e-06	4	10	59	6526	97048	Saccharomyces	cerevisiae	GO:0006790	biological_process	"sulfur metabolism"	HOM2	HOM3	HOM6	THR1
+1.522850e-02	1	10	10	6526	97048	Saccharomyces	cerevisiae	GO:0015846	biological_process	"polyamine transport"	GAP1
+2.426510e-02	1	10	16	6526	97048	Saccharomyces	cerevisiae	GO:0016769	molecular_function	"transferase activity, transferring nitrogenous groups"	AAT2
+1.677280e-03	2	10	41	6526	97048	Saccharomyces	cerevisiae	GO:0005275	molecular_function	"amine transporter activity"	GAP1	GNP1
+8.352210e-01	1	10	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	THR1
+2.294860e-03	2	10	48	6526	97048	Saccharomyces	cerevisiae	GO:0015837	biological_process	"amine transport"	GAP1	GNP1
+2.195770e-04	2	10	15	6526	97048	Saccharomyces	cerevisiae	GO:0006525	biological_process	"arginine metabolism"	ARG1	ARG4
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0006107	biological_process	"oxaloacetate metabolism"	AAT2
+2.994370e-01	1	10	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	AAT2
+2.587800e-03	2	10	51	6526	97048	Saccharomyces	cerevisiae	GO:0046942	biological_process	"carboxylic acid transport"	GAP1	GNP1
+1.153930e-04	2	10	11	6526	97048	Saccharomyces	cerevisiae	GO:0005279	molecular_function	"amino acid-polyamine transporter activity"	GAP1	GNP1
+8.233540e-01	1	10	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	GNP1
+5.369620e-02	2	10	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	GAP1	GNP1
+8.563820e-11	4	10	7	6526	97048	Saccharomyces	cerevisiae	GO:0009092	biological_process	"homoserine metabolism"	HOM2	HOM3	HOM6	THR1
+1.594490e-01	3	10	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	GAP1	GNP1	THR4
+6.116660e-03	1	10	4	6526	97048	Saccharomyces	cerevisiae	GO:0006529	biological_process	"asparagine biosynthesis"	AAT2
+1.590580e-01	1	10	112	6526	97048	Saccharomyces	cerevisiae	GO:0044437	cellular_component	"vacuolar part"	GAP1
+4.211720e-02	1	10	28	6526	97048	Saccharomyces	cerevisiae	GO:0009063	biological_process	"amino acid catabolism"	AAT2
+1.441170e-03	2	10	38	6526	97048	Saccharomyces	cerevisiae	GO:0015290	molecular_function	"electrochemical potential-driven transporter activity"	GAP1	GNP1
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0004795	molecular_function	"threonine synthase activity"	THR4
+1.445130e-01	1	10	101	6526	97048	Saccharomyces	cerevisiae	GO:0016023	cellular_component	"cytoplasmic membrane-bound vesicle"	GAP1
+3.768280e-02	1	10	25	6526	97048	Saccharomyces	cerevisiae	GO:0016903	molecular_function	"oxidoreductase activity, acting on the aldehyde or oxo group of donors"	HOM2
+3.374370e-01	1	10	263	6526	97048	Saccharomyces	cerevisiae	GO:0031224	cellular_component	"intrinsic to membrane"	GAP1
+1.565870e-11	6	10	45	6526	97048	Saccharomyces	cerevisiae	GO:0009066	biological_process	"aspartate family amino acid metabolism"	AAT2	HOM2	HOM3	HOM6	THR1	THR4
+2.749990e-01	9	10	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR4
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0004072	molecular_function	"aspartate kinase activity"	HOM3
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0004056	molecular_function	"argininosuccinate lyase activity"	ARG4
+1.092320e-01	1	10	75	6526	97048	Saccharomyces	cerevisiae	GO:0016614	molecular_function	"oxidoreductase activity, acting on CH-OH group of donors"	HOM6
+7.293660e-01	1	10	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	GAP1
+4.869060e-02	10	10	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR1	THR4
+4.653320e-02	1	10	31	6526	97048	Saccharomyces	cerevisiae	GO:0044270	biological_process	"nitrogen compound catabolism"	AAT2
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0043649	biological_process	"dicarboxylic acid catabolism"	AAT2
+3.511020e-02	2	10	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	HOM3	THR1
+1.823780e-01	1	10	130	6526	97048	Saccharomyces	cerevisiae	GO:0044431	cellular_component	"Golgi apparatus part"	GAP1
+1.161170e-01	1	10	80	6526	97048	Saccharomyces	cerevisiae	GO:0005768	cellular_component	"endosome"	GAP1
+4.486970e-01	1	10	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	AAT2
+1.366300e-03	2	10	37	6526	97048	Saccharomyces	cerevisiae	GO:0006865	biological_process	"amino acid transport"	GAP1	GNP1
+7.968990e-02	3	10	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	AAT2	HOM3	THR1
+5.660420e-07	3	10	12	6526	97048	Saccharomyces	cerevisiae	GO:0009070	biological_process	"serine family amino acid biosynthesis"	HOM2	HOM3	HOM6
+6.971850e-11	8	10	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+1.305060e-01	2	10	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	GAP1	GNP1
+2.689180e-03	2	10	52	6526	97048	Saccharomyces	cerevisiae	GO:0005342	molecular_function	"organic acid transporter activity"	GAP1	GNP1
+2.664940e-09	6	10	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6
+2.875540e-02	1	10	19	6526	97048	Saccharomyces	cerevisiae	GO:0009067	biological_process	"aspartate family amino acid biosynthesis"	AAT2
+4.224210e-02	10	10	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR1	THR4
+7.550870e-02	1	10	51	6526	97048	Saccharomyces	cerevisiae	GO:0005777	cellular_component	"peroxisome"	AAT2
+9.847020e-01	1	10	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	GAP1
+3.695330e-01	1	10	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	THR4
+3.916300e-02	1	10	26	6526	97048	Saccharomyces	cerevisiae	GO:0030134	cellular_component	"ER to Golgi transport vesicle"	GAP1
+6.573790e-03	2	10	82	6526	97048	Saccharomyces	cerevisiae	GO:0016829	molecular_function	"lyase activity"	ARG4	THR4
+2.380880e-01	2	10	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	ARG1	ARG4
+3.310570e-01	1	10	257	6526	97048	Saccharomyces	cerevisiae	GO:0016021	cellular_component	"integral to membrane"	GAP1
+9.162340e-03	1	10	6	6526	97048	Saccharomyces	cerevisiae	GO:0000328	cellular_component	"vacuolar lumen (sensu Fungi)"	GAP1
+4.225070e-02	8	10	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+2.689180e-03	2	10	52	6526	97048	Saccharomyces	cerevisiae	GO:0015849	biological_process	"organic acid transport"	GAP1	GNP1
+3.018510e-02	1	10	20	6526	97048	Saccharomyces	cerevisiae	GO:0016620	molecular_function	"oxidoreductase activity, acting on the aldehyde or oxo group of donors, NAD or NADP as acceptor"	HOM2
+6.364070e-01	6	10	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	AAT2	GAP1	GNP1	HOM2	HOM6	THR4
+1.266060e-05	2	10	4	6526	97048	Saccharomyces	cerevisiae	GO:0005296	molecular_function	"L-proline permease activity"	GAP1	GNP1
+2.063610e-01	1	10	149	6526	97048	Saccharomyces	cerevisiae	GO:0000324	cellular_component	"vacuole (sensu Fungi)"	GAP1
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0006531	biological_process	"aspartate metabolism"	AAT2
+4.590660e-03	1	10	3	6526	97048	Saccharomyces	cerevisiae	GO:0006549	biological_process	"isoleucine metabolism"	THR1
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0006533	biological_process	"aspartate catabolism"	AAT2
+4.590660e-03	1	10	3	6526	97048	Saccharomyces	cerevisiae	GO:0016054	biological_process	"organic acid catabolism"	AAT2
+1.064650e-01	1	10	73	6526	97048	Saccharomyces	cerevisiae	GO:0006092	biological_process	"main pathways of carbohydrate metabolism"	AAT2
+1.865260e-01	3	10	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	GAP1	GNP1	THR4
+3.506060e-01	5	10	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	AAT2	ARG1	ARG4	GAP1	GNP1
+5.017930e-01	2	10	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	GAP1	GNP1
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0004413	molecular_function	"homoserine kinase activity"	THR1
+4.523810e-03	6	10	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6
+4.359120e-02	1	10	29	6526	97048	Saccharomyces	cerevisiae	GO:0005887	cellular_component	"integral to plasma membrane"	GAP1
+4.842050e-01	9	10	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR4
+2.063610e-01	1	10	149	6526	97048	Saccharomyces	cerevisiae	GO:0000322	cellular_component	"storage vacuole"	GAP1
+9.847020e-01	1	10	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	GAP1
+9.800730e-08	4	10	32	6526	97048	Saccharomyces	cerevisiae	GO:0000096	biological_process	"sulfur amino acid metabolism"	HOM2	HOM3	HOM6	THR1
+1.667500e-01	3	10	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	GAP1	GNP1	THR4
+2.894200e-11	8	10	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+1.068200e-02	1	10	7	6526	97048	Saccharomyces	cerevisiae	GO:0005775	cellular_component	"vacuolar lumen"	GAP1
+6.116660e-03	1	10	4	6526	97048	Saccharomyces	cerevisiae	GO:0016774	molecular_function	"phosphotransferase activity, carboxyl group as acceptor"	HOM3
+1.266060e-05	2	10	4	6526	97048	Saccharomyces	cerevisiae	GO:0015193	molecular_function	"L-proline transporter activity"	GAP1	GNP1
+5.889000e-05	2	10	8	6526	97048	Saccharomyces	cerevisiae	GO:0015175	molecular_function	"neutral amino acid transporter activity"	GAP1	GNP1
+1.473490e-11	8	10	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+2.583120e-09	3	10	3	6526	97048	Saccharomyces	cerevisiae	GO:0009090	biological_process	"homoserine biosynthesis"	HOM2	HOM3	HOM6
+5.090610e-01	6	10	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	AAT2	GAP1	GNP1	HOM2	HOM6	THR4
+6.730620e-03	2	10	83	6526	97048	Saccharomyces	cerevisiae	GO:0005386	molecular_function	"carrier activity"	GAP1	GNP1
+1.441170e-03	2	10	38	6526	97048	Saccharomyces	cerevisiae	GO:0015291	molecular_function	"porter activity"	GAP1	GNP1
+4.946700e-02	1	10	33	6526	97048	Saccharomyces	cerevisiae	GO:0031226	cellular_component	"intrinsic to plasma membrane"	GAP1
+3.018510e-02	1	10	20	6526	97048	Saccharomyces	cerevisiae	GO:0005770	cellular_component	"late endosome"	GAP1
+1.000000e+00	10	10	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR1	THR4
+2.839390e-04	2	10	17	6526	97048	Saccharomyces	cerevisiae	GO:0015203	molecular_function	"polyamine transporter activity"	GAP1	GNP1
+9.251150e-02	1	10	63	6526	97048	Saccharomyces	cerevisiae	GO:0005798	cellular_component	"Golgi-associated vesicle"	GAP1
+1.119920e-01	1	10	77	6526	97048	Saccharomyces	cerevisiae	GO:0030135	cellular_component	"coated vesicle"	GAP1
+5.840850e-02	2	10	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	HOM2	HOM6
+9.951250e-02	1	10	68	6526	97048	Saccharomyces	cerevisiae	GO:0016879	molecular_function	"ligase activity, forming carbon-nitrogen bonds"	ARG1
+1.000000e+00	10	10	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR1	THR4
+5.090610e-01	6	10	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	AAT2	GAP1	GNP1	HOM2	HOM6	THR4
+1.522850e-02	1	10	10	6526	97048	Saccharomyces	cerevisiae	GO:0009068	biological_process	"aspartate family amino acid catabolism"	AAT2
+2.914110e-08	4	10	24	6526	97048	Saccharomyces	cerevisiae	GO:0009069	biological_process	"serine family amino acid metabolism"	HOM2	HOM3	HOM6	THR1
+1.430100e-13	5	10	8	6526	97048	Saccharomyces	cerevisiae	GO:0006566	biological_process	"threonine metabolism"	HOM2	HOM3	HOM6	THR1	THR4
+2.583160e-01	1	10	192	6526	97048	Saccharomyces	cerevisiae	GO:0005773	cellular_component	"vacuole"	GAP1
+2.606560e-01	1	10	194	6526	97048	Saccharomyces	cerevisiae	GO:0015980	biological_process	"energy derivation by oxidation of organic compounds"	AAT2
+4.653320e-02	1	10	31	6526	97048	Saccharomyces	cerevisiae	GO:0009310	biological_process	"amine catabolism"	AAT2
+6.335490e-06	2	10	3	6526	97048	Saccharomyces	cerevisiae	GO:0019202	molecular_function	"amino acid kinase activity"	HOM3	THR1
+5.967170e-02	1	10	40	6526	97048	Saccharomyces	cerevisiae	GO:0030133	cellular_component	"transport vesicle"	GAP1
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0019266	biological_process	"asparagine biosynthesis from oxaloacetate"	AAT2
+8.633670e-10	8	10	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+1.371510e-02	1	10	9	6526	97048	Saccharomyces	cerevisiae	GO:0006528	biological_process	"asparagine metabolism"	AAT2
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0000052	biological_process	"citrulline metabolism"	ARG1
+1.021030e-03	2	10	32	6526	97048	Saccharomyces	cerevisiae	GO:0015171	molecular_function	"amino acid transporter activity"	GAP1	GNP1
+9.162340e-03	1	10	6	6526	97048	Saccharomyces	cerevisiae	GO:0043648	biological_process	"dicarboxylic acid metabolism"	AAT2
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0006532	biological_process	"aspartate biosynthesis"	AAT2
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0004055	molecular_function	"argininosuccinate synthase activity"	ARG1
+1.445130e-01	1	10	101	6526	97048	Saccharomyces	cerevisiae	GO:0031410	cellular_component	"cytoplasmic vesicle"	GAP1
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0000053	biological_process	"argininosuccinate metabolism"	ARG1
+9.449000e-05	2	10	10	6526	97048	Saccharomyces	cerevisiae	GO:0006526	biological_process	"arginine biosynthesis"	ARG1	ARG4
+4.420370e-05	2	10	7	6526	97048	Saccharomyces	cerevisiae	GO:0015359	molecular_function	"amino acid permease activity"	GAP1	GNP1
+1.445130e-01	1	10	101	6526	97048	Saccharomyces	cerevisiae	GO:0031982	cellular_component	"vesicle"	GAP1
+1.707920e-01	1	10	121	6526	97048	Saccharomyces	cerevisiae	GO:0016874	molecular_function	"ligase activity"	ARG1
+5.239280e-02	1	10	35	6526	97048	Saccharomyces	cerevisiae	GO:0016835	molecular_function	"carbon-oxygen lyase activity"	THR4
+1.532330e-03	1	10	1	6526	97048	Saccharomyces	cerevisiae	GO:0004073	molecular_function	"aspartate-semialdehyde dehydrogenase activity"	HOM2
+9.811620e-02	1	10	67	6526	97048	Saccharomyces	cerevisiae	GO:0016616	molecular_function	"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor"	HOM6
+4.836700e-01	9	10	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR4
+6.158440e-01	1	10	595	6526	97048	Saccharomyces	cerevisiae	GO:0044425	cellular_component	"membrane part"	GAP1
+7.550870e-02	1	10	51	6526	97048	Saccharomyces	cerevisiae	GO:0042579	cellular_component	"microbody"	AAT2
+2.426510e-02	1	10	16	6526	97048	Saccharomyces	cerevisiae	GO:0006536	biological_process	"glutamate metabolism"	AAT2
+2.426510e-02	1	10	16	6526	97048	Saccharomyces	cerevisiae	GO:0009081	biological_process	"branched chain family amino acid metabolism"	THR1
+4.536330e-02	10	10	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	AAT2	ARG1	ARG4	GAP1	GNP1	HOM2	HOM3	HOM6	THR1	THR4
+6.364070e-01	6	10	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	AAT2	GAP1	GNP1	HOM2	HOM6	THR4
+2.945180e-05	3	10	43	6526	97048	Saccharomyces	cerevisiae	GO:0009064	biological_process	"glutamine family amino acid metabolism"	AAT2	ARG1	ARG4
+1.303190e-10	8	10	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0016842	molecular_function	"amidine-lyase activity"	ARG4
+1.106130e-01	1	10	76	6526	97048	Saccharomyces	cerevisiae	GO:0006897	biological_process	"endocytosis"	THR4
+4.590660e-03	1	10	3	6526	97048	Saccharomyces	cerevisiae	GO:0016838	molecular_function	"carbon-oxygen lyase activity, acting on phosphates"	THR4
+3.135290e-03	6	10	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6
+1.068200e-02	1	10	7	6526	97048	Saccharomyces	cerevisiae	GO:0016840	molecular_function	"carbon-nitrogen lyase activity"	ARG4
+6.276020e-01	3	10	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	HOM2	HOM6	THR4
+2.195770e-04	2	10	15	6526	97048	Saccharomyces	cerevisiae	GO:0000051	biological_process	"urea cycle intermediate metabolism"	ARG1	ARG4
+8.687540e-02	1	10	59	6526	97048	Saccharomyces	cerevisiae	GO:0044459	cellular_component	"plasma membrane part"	GAP1
+2.875540e-02	1	10	19	6526	97048	Saccharomyces	cerevisiae	GO:0006100	biological_process	"tricarboxylic acid cycle intermediate metabolism"	AAT2
+4.437610e-09	6	10	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6
+3.062550e-03	1	10	2	6526	97048	Saccharomyces	cerevisiae	GO:0004069	molecular_function	"aspartate transaminase activity"	AAT2
+8.633670e-10	8	10	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6	THR1	THR4
+4.437610e-09	6	10	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	AAT2	ARG1	ARG4	HOM2	HOM3	HOM6
+2.345440e-01	1	10	172	6526	97048	Saccharomyces	cerevisiae	GO:0005794	cellular_component	"Golgi apparatus"	GAP1
+4.602510e-01	1	10	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	AAT2
+9.002350e-02	2	10	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	HOM3	THR1
+2.390640e-03	2	10	49	6526	97048	Saccharomyces	cerevisiae	GO:0046943	molecular_function	"carboxylic acid transporter activity"	GAP1	GNP1

@@ -1,0 +1,114 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.217980e-02	1	4	20	6526	97048	Saccharomyces	cerevisiae	GO:0046148	biological_process	"pigment biosynthesis"	BAS1
+7.603640e-01	2	4	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	CAR1	SHM2
+1.098970e-02	1	4	18	6526	97048	Saccharomyces	cerevisiae	GO:0051278	biological_process	"cell wall polysaccharide biosynthesis (sensu Fungi)"	GFA1
+1.619470e-01	2	4	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	BAS1	GFA1
+8.680380e-01	3	4	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	BAS1	CAR1	SHM2
+6.846930e-02	4	4	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	BAS1	CAR1	GFA1	SHM2
+3.568410e-02	1	4	59	6526	97048	Saccharomyces	cerevisiae	GO:0044264	biological_process	"cellular polysaccharide metabolism"	GFA1
+5.383520e-03	2	4	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	BAS1	CAR1
+7.598130e-02	4	4	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	BAS1	CAR1	GFA1	SHM2
+4.569770e-03	2	4	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	BAS1	CAR1
+7.698170e-01	3	4	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	BAS1	CAR1	SHM2
+1.215500e-01	1	4	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	GFA1
+8.447260e-02	3	4	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	CAR1	GFA1	SHM2
+5.453680e-01	1	4	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	CAR1
+1.281370e-02	1	4	21	6526	97048	Saccharomyces	cerevisiae	GO:0046112	biological_process	"nucleobase biosynthesis"	BAS1
+6.129330e-04	1	4	1	6526	97048	Saccharomyces	cerevisiae	GO:0019547	biological_process	"arginine catabolism to ornithine"	CAR1
+4.284620e-03	1	4	7	6526	97048	Saccharomyces	cerevisiae	GO:0004372	molecular_function	"glycine hydroxymethyltransferase activity"	SHM2
+9.596890e-01	1	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	BAS1
+8.514590e-01	1	4	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	GFA1
+9.773160e-03	1	4	16	6526	97048	Saccharomyces	cerevisiae	GO:0008483	molecular_function	"transaminase activity"	GFA1
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	BAS1	CAR1	GFA1	SHM2
+1.463390e-02	1	4	24	6526	97048	Saccharomyces	cerevisiae	GO:0019748	biological_process	"secondary metabolism"	BAS1
+5.506260e-03	1	4	9	6526	97048	Saccharomyces	cerevisiae	GO:0019794	biological_process	"nonprotein amino acid metabolism"	CAR1
+9.773160e-03	1	4	16	6526	97048	Saccharomyces	cerevisiae	GO:0016769	molecular_function	"transferase activity, transferring nitrogenous groups"	GFA1
+8.555450e-03	1	4	14	6526	97048	Saccharomyces	cerevisiae	GO:0006030	biological_process	"chitin metabolism"	GFA1
+3.673370e-03	1	4	6	6526	97048	Saccharomyces	cerevisiae	GO:0009113	biological_process	"purine base biosynthesis"	BAS1
+1.859010e-01	1	4	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	BAS1
+5.136840e-01	1	4	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	GFA1
+9.164440e-03	1	4	15	6526	97048	Saccharomyces	cerevisiae	GO:0006525	biological_process	"arginine metabolism"	CAR1
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	BAS1	CAR1	GFA1	SHM2
+5.051250e-02	1	4	84	6526	97048	Saccharomyces	cerevisiae	GO:0016741	molecular_function	"transferase activity, transferring one-carbon groups"	SHM2
+8.555450e-03	1	4	14	6526	97048	Saccharomyces	cerevisiae	GO:0009075	biological_process	"histidine family amino acid metabolism"	BAS1
+1.326230e-01	1	4	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	GFA1
+3.673370e-03	1	4	6	6526	97048	Saccharomyces	cerevisiae	GO:0006591	biological_process	"ornithine metabolism"	CAR1
+6.129330e-04	1	4	1	6526	97048	Saccharomyces	cerevisiae	GO:0030145	molecular_function	"manganese ion binding"	CAR1
+1.645150e-02	1	4	27	6526	97048	Saccharomyces	cerevisiae	GO:0009272	biological_process	"cell wall biosynthesis (sensu Fungi)"	GFA1
+9.596890e-01	1	4	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	BAS1
+1.000000e+00	4	4	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	BAS1	CAR1	GFA1	SHM2
+8.555450e-03	1	4	14	6526	97048	Saccharomyces	cerevisiae	GO:0009076	biological_process	"histidine family amino acid biosynthesis"	BAS1
+1.038160e-02	1	4	17	6526	97048	Saccharomyces	cerevisiae	GO:0006044	biological_process	"N-acetylglucosamine metabolism"	GFA1
+2.249220e-02	1	4	37	6526	97048	Saccharomyces	cerevisiae	GO:0031505	biological_process	"cell wall organization and biogenesis (sensu Fungi)"	GFA1
+1.645150e-02	1	4	27	6526	97048	Saccharomyces	cerevisiae	GO:0042546	biological_process	"cell wall biosynthesis"	GFA1
+2.545510e-01	1	4	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	BAS1
+7.330260e-02	1	4	123	6526	97048	Saccharomyces	cerevisiae	GO:0003702	molecular_function	"RNA polymerase II transcription factor activity"	BAS1
+7.946170e-03	1	4	13	6526	97048	Saccharomyces	cerevisiae	GO:0009065	biological_process	"glutamine family amino acid catabolism"	CAR1
+1.887110e-02	1	4	31	6526	97048	Saccharomyces	cerevisiae	GO:0009310	biological_process	"amine catabolism"	CAR1
+1.837950e-03	1	4	3	6526	97048	Saccharomyces	cerevisiae	GO:0016813	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds, in linear amidines"	CAR1
+6.191480e-01	1	4	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	GFA1
+2.007930e-02	1	4	33	6526	97048	Saccharomyces	cerevisiae	GO:0009112	biological_process	"nucleobase metabolism"	BAS1
+1.705680e-02	1	4	28	6526	97048	Saccharomyces	cerevisiae	GO:0009063	biological_process	"amino acid catabolism"	CAR1
+1.226960e-02	2	4	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	BAS1	CAR1
+3.806820e-02	1	4	63	6526	97048	Saccharomyces	cerevisiae	GO:0016810	molecular_function	"hydrolase activity, acting on carbon-nitrogen (but not peptide) bonds"	CAR1
+7.059620e-01	1	4	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	GFA1
+4.104220e-02	1	4	68	6526	97048	Saccharomyces	cerevisiae	GO:0016051	biological_process	"carbohydrate biosynthesis"	GFA1
+4.933260e-02	1	4	82	6526	97048	Saccharomyces	cerevisiae	GO:0008168	molecular_function	"methyltransferase activity"	SHM2
+3.389310e-02	1	4	56	6526	97048	Saccharomyces	cerevisiae	GO:0006725	biological_process	"aromatic compound metabolism"	BAS1
+6.726780e-03	1	4	11	6526	97048	Saccharomyces	cerevisiae	GO:0006037	biological_process	"cell wall chitin metabolism"	GFA1
+2.007930e-02	1	4	33	6526	97048	Saccharomyces	cerevisiae	GO:0000271	biological_process	"polysaccharide biosynthesis"	GFA1
+7.604760e-01	3	4	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	BAS1	CAR1	SHM2
+3.957210e-01	1	4	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	CAR1
+8.555450e-03	1	4	14	6526	97048	Saccharomyces	cerevisiae	GO:0000105	biological_process	"histidine biosynthesis"	BAS1
+9.164440e-03	1	4	15	6526	97048	Saccharomyces	cerevisiae	GO:0006042	biological_process	"glucosamine biosynthesis"	GFA1
+2.987170e-01	4	4	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	BAS1	CAR1	GFA1	SHM2
+1.887110e-02	1	4	31	6526	97048	Saccharomyces	cerevisiae	GO:0044270	biological_process	"nitrogen compound catabolism"	CAR1
+4.341640e-02	1	4	72	6526	97048	Saccharomyces	cerevisiae	GO:0046483	biological_process	"heterocycle metabolism"	BAS1
+7.336610e-03	1	4	12	6526	97048	Saccharomyces	cerevisiae	GO:0006730	biological_process	"one-carbon compound metabolism"	SHM2
+8.678250e-01	3	4	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	BAS1	CAR1	SHM2
+6.129330e-04	1	4	1	6526	97048	Saccharomyces	cerevisiae	GO:0004053	molecular_function	"arginase activity"	CAR1
+8.555450e-03	1	4	14	6526	97048	Saccharomyces	cerevisiae	GO:0006547	biological_process	"histidine metabolism"	BAS1
+6.320590e-01	1	4	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	BAS1
+9.283390e-02	1	4	157	6526	97048	Saccharomyces	cerevisiae	GO:0007047	biological_process	"cell wall organization and biogenesis"	GFA1
+3.568410e-02	1	4	59	6526	97048	Saccharomyces	cerevisiae	GO:0005976	biological_process	"polysaccharide metabolism"	GFA1
+2.118570e-01	1	4	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	CAR1
+9.164440e-03	1	4	15	6526	97048	Saccharomyces	cerevisiae	GO:0043169	molecular_function	"cation binding"	CAR1
+2.759570e-01	1	4	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	BAS1
+4.346610e-01	1	4	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	GFA1
+5.762960e-02	2	4	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	GFA1	SHM2
+2.903830e-01	4	4	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	BAS1	CAR1	GFA1	SHM2
+1.534330e-04	3	4	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	BAS1	CAR1	GFA1
+9.747630e-01	1	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	BAS1
+2.610330e-02	1	4	43	6526	97048	Saccharomyces	cerevisiae	GO:0009064	biological_process	"glutamine family amino acid metabolism"	CAR1
+6.166720e-02	1	4	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	BAS1
+6.116660e-03	1	4	10	6526	97048	Saccharomyces	cerevisiae	GO:0006038	biological_process	"cell wall chitin biosynthesis"	GFA1
+2.822250e-01	4	4	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	BAS1	CAR1	GFA1	SHM2
+6.626270e-01	1	4	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	GFA1
+1.281370e-02	1	4	21	6526	97048	Saccharomyces	cerevisiae	GO:0042440	biological_process	"pigment metabolism"	BAS1
+9.164440e-03	1	4	15	6526	97048	Saccharomyces	cerevisiae	GO:0006045	biological_process	"N-acetylglucosamine biosynthesis"	GFA1
+1.159760e-02	1	4	19	6526	97048	Saccharomyces	cerevisiae	GO:0043167	molecular_function	"ion binding"	CAR1
+7.336610e-03	1	4	12	6526	97048	Saccharomyces	cerevisiae	GO:0006031	biological_process	"chitin biosynthesis"	GFA1
+1.934890e-04	3	4	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	BAS1	CAR1	GFA1
+3.242640e-01	1	4	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	CAR1
+9.773160e-03	1	4	16	6526	97048	Saccharomyces	cerevisiae	GO:0006144	biological_process	"purine base metabolism"	BAS1
+2.450040e-03	1	4	4	6526	97048	Saccharomyces	cerevisiae	GO:0008270	molecular_function	"zinc ion binding"	CAR1
+2.840500e-01	3	4	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	BAS1	CAR1	GFA1
+1.436260e-01	2	4	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	BAS1	GFA1
+6.129330e-04	1	4	1	6526	97048	Saccharomyces	cerevisiae	GO:0004360	molecular_function	"glutamine-fructose-6-phosphate transaminase (isomerizing) activity"	GFA1
+9.747630e-01	1	4	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	BAS1
+1.038160e-02	1	4	17	6526	97048	Saccharomyces	cerevisiae	GO:0006041	biological_process	"glucosamine metabolism"	GFA1
+7.652490e-01	1	4	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	BAS1
+9.164440e-03	1	4	15	6526	97048	Saccharomyces	cerevisiae	GO:0000051	biological_process	"urea cycle intermediate metabolism"	CAR1
+6.691660e-02	1	4	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	BAS1
+6.726780e-03	1	4	11	6526	97048	Saccharomyces	cerevisiae	GO:0046914	molecular_function	"transition metal ion binding"	CAR1
+1.684230e-01	1	4	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	BAS1
+1.226960e-02	2	4	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	BAS1	CAR1
+1.159760e-02	1	4	19	6526	97048	Saccharomyces	cerevisiae	GO:0046872	molecular_function	"metal ion binding"	CAR1
+6.691660e-02	1	4	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	BAS1
+1.038160e-02	1	4	17	6526	97048	Saccharomyces	cerevisiae	GO:0006040	biological_process	"amino sugar metabolism"	GFA1
+2.007930e-02	1	4	33	6526	97048	Saccharomyces	cerevisiae	GO:0043284	biological_process	"biopolymer biosynthesis"	GFA1
+2.185020e-01	1	4	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	CAR1
+9.283390e-02	1	4	157	6526	97048	Saccharomyces	cerevisiae	GO:0045229	biological_process	"external encapsulating structure organization and biogenesis"	GFA1
+8.647750e-01	1	4	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	CAR1
+1.225580e-03	1	4	2	6526	97048	Saccharomyces	cerevisiae	GO:0006527	biological_process	"arginine catabolism"	CAR1
+9.164440e-03	1	4	15	6526	97048	Saccharomyces	cerevisiae	GO:0046349	biological_process	"amino sugar biosynthesis"	GFA1

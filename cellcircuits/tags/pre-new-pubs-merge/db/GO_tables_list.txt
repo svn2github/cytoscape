@@ -1,0 +1,15 @@
+association
+db
+dbxref
+evidence
+evidence_dbxref
+gene_product
+gene_product_count
+gene_product_synonym
+graph_path
+species
+term
+term2term
+term_dbxref
+term_definition
+term_synonym

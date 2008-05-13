@@ -1,0 +1,23 @@
+==LEGEND
+
+
+==CITATION
+Bernard et al. (2005)
+
+==TITLE
+Informative structure priors: joint learning of dynamic regulatory networks from multiple types of data
+
+==FULLTEXT
+http://helix-web.stanford.edu/psb05/bernard.pdf
+
+==SUPPL
+
+
+==ABSTRACT
+We present a method for jointly learning dynamic models of transcriptional regulatory networks from gene expression data and transcription factor binding location data. Models are automatically learned using dynamic Bayesian network inference algorithms; joint learning is accomplished by incorporating evidence from gene expression data through the likelihood, and from transcription factor binding location data through the prior. We propose a new informative structure prior with two advantages. First, the prior incorporates evidence from location data probabilistically, allowing it to be weighed against evidence from expression data. Second, the prior takes on a factorable form that is computationally efficient when learning dynamic regulatory networks. Results obtained from both simulated and experimental data from the yeast cell cycle demonstrate that this joint learning algorithm can recover dynamic regulatory networks from multiple types of data that are more accurate than those recovered from each type of data in isolation.
+
+==ORGANISM
+Yeast <i>(Saccharomyces cerevisiae)</i>
+
+==FIGURE:./fig3_lrg.jpg:./fig3_thm.jpg
+Figure 3. Partial regulatory network recovered using expression data from Spellman et al. and location data from Lee et al. Shaded elliptical nodes are transcription factors for which location data is available. Unshaded circular nodes are genes for which no location data is available.  Solid edges represent interactions that have been independently verified in the literature. Dashed edges represent interactions that have not been verified; either the edge is incorrect or the evidence from the literature is inconclusive. Observe the cyclic regulation of transcription factors across phases of the cell cycle.

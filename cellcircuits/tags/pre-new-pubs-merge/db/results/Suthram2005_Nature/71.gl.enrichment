@@ -1,0 +1,103 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+9.496280e-01	1	15	373	2072	7015	Plasmodium	falciparum	GO:0016020	cellular_component	"membrane"	PF11_0507
+4.772270e-01	1	15	119	2819	7015	Plasmodium	falciparum	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	PF11_0127
+1.500810e-01	1	15	28	2604	7015	Plasmodium	falciparum	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	PF10_0232
+9.997770e-01	1	15	886	2072	7015	Plasmodium	falciparum	GO:0005737	cellular_component	"cytoplasm"	PF13_0132
+1.791660e-01	1	15	27	2072	7015	Plasmodium	falciparum	GO:0005842	cellular_component	"cytosolic large ribosomal subunit (sensu Eukaryota)"	PF13_0132
+9.105160e-01	1	15	386	2604	7015	Plasmodium	falciparum	GO:0009058	biological_process	"biosynthesis"	PF13_0132
+4.126250e-01	1	15	98	2819	7015	Plasmodium	falciparum	GO:0004672	molecular_function	"protein kinase activity"	PF11_0127
+9.999980e-01	3	15	1512	2072	7015	Plasmodium	falciparum	GO:0005623	cellular_component	"cell"	PF10_0232	PF11_0507	PF13_0132
+5.246000e-01	1	15	136	2819	7015	Plasmodium	falciparum	GO:0003735	molecular_function	"structural constituent of ribosome"	PF13_0132
+9.922880e-01	3	15	1211	2604	7015	Plasmodium	falciparum	GO:0044237	biological_process	"cellular metabolism"	PF10_0232	PF11_0127	PF13_0132
+7.409080e-01	2	15	345	2072	7015	Plasmodium	falciparum	GO:0044422	cellular_component	"organelle part"	PF10_0232	PF13_0132
+5.618260e-01	1	15	139	2604	7015	Plasmodium	falciparum	GO:0006796	biological_process	"phosphate metabolism"	PF11_0127
+5.493820e-01	2	15	247	2072	7015	Plasmodium	falciparum	GO:0043228	cellular_component	"non-membrane-bound organelle"	PF10_0232	PF13_0132
+7.850780e-01	1	15	253	2604	7015	Plasmodium	falciparum	GO:0051234	biological_process	"establishment of localization"	PFC0760C
+9.947430e-01	3	15	1258	2604	7015	Plasmodium	falciparum	GO:0008152	biological_process	"metabolism"	PF10_0232	PF11_0127	PF13_0132
+9.999760e-01	2	15	1241	2072	7015	Plasmodium	falciparum	GO:0005622	cellular_component	"intracellular"	PF10_0232	PF13_0132
+9.907510e-01	2	15	1046	2819	7015	Plasmodium	falciparum	GO:0003824	molecular_function	"catalytic activity"	PF10_0232	PF11_0127
+1.092660e-01	1	15	20	2604	7015	Plasmodium	falciparum	GO:0009408	biological_process	"response to heat"	PF11_0351
+5.953510e-01	6	15	1126	2819	7015	Plasmodium	falciparum	GO:0005488	molecular_function	"binding"	MAL13P1.269	PF10_0232	PF11_0127	PF11_0351	PF13_0132	PFC0760C
+3.856760e-01	1	15	83	2604	7015	Plasmodium	falciparum	GO:0007155	biological_process	"cell adhesion"	MAL13P1.269
+9.303410e-01	2	15	673	2604	7015	Plasmodium	falciparum	GO:0019538	biological_process	"protein metabolism"	PF11_0127	PF13_0132
+9.484890e-01	3	15	940	2604	7015	Plasmodium	falciparum	GO:0043170	biological_process	"macromolecule metabolism"	PF10_0232	PF11_0127	PF13_0132
+9.998010e-01	1	15	895	2072	7015	Plasmodium	falciparum	GO:0043227	cellular_component	"membrane-bound organelle"	PF10_0232
+2.982680e-01	3	15	360	2819	7015	Plasmodium	falciparum	GO:0030554	molecular_function	"adenyl nucleotide binding"	PF10_0232	PF11_0127	PF11_0351
+7.931840e-01	1	15	259	2604	7015	Plasmodium	falciparum	GO:0006412	biological_process	"protein biosynthesis"	PF13_0132
+1.000000e+00	15	15	2604	2604	7015	Plasmodium	falciparum	GO:0008150	biological_process	"biological_process"	MAL13P1.269	MAL13P1.323	PF07_0044	PF10_0232	PF11_0127	PF11_0351	PF11_0507	PF13_0132	PFC0150W	PFC0760C	PFD0080C	PFD0885C	PFE1335C	PFE1590W	PFL1385C
+6.401030e-01	1	15	136	2072	7015	Plasmodium	falciparum	GO:0005840	cellular_component	"ribosome"	PF13_0132
+9.907060e-02	1	15	18	2604	7015	Plasmodium	falciparum	GO:0006333	biological_process	"chromatin assembly or disassembly"	PF10_0232
+5.703720e-01	1	15	154	2819	7015	Plasmodium	falciparum	GO:0003677	molecular_function	"DNA binding"	PF10_0232
+2.844880e-01	3	15	351	2819	7015	Plasmodium	falciparum	GO:0005524	molecular_function	"ATP binding"	PF10_0232	PF11_0127	PF11_0351
+7.213280e-02	1	15	14	2819	7015	Plasmodium	falciparum	GO:0005506	molecular_function	"iron ion binding"	PFC0760C
+2.339270e-03	9	15	481	2072	7015	Plasmodium	falciparum	GO:0008372	cellular_component	"cellular component unknown"	MAL13P1.323	PF07_0044	PF11_0351	PFC0150W	PFD0080C	PFD0885C	PFE1335C	PFE1590W	PFL1385C
+1.000000e+00	15	15	2819	2819	7015	Plasmodium	falciparum	GO:0003674	molecular_function	"molecular_function"	MAL13P1.269	MAL13P1.323	PF07_0044	PF10_0232	PF11_0127	PF11_0351	PF11_0507	PF13_0132	PFC0150W	PFC0760C	PFD0080C	PFD0885C	PFE1335C	PFE1590W	PFL1385C
+4.331970e-01	3	15	447	2819	7015	Plasmodium	falciparum	GO:0000166	molecular_function	"nucleotide binding"	PF10_0232	PF11_0127	PF11_0351
+9.998010e-01	1	15	895	2072	7015	Plasmodium	falciparum	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	PF10_0232
+7.780980e-01	1	15	248	2604	7015	Plasmodium	falciparum	GO:0006810	biological_process	"transport"	PFC0760C
+1.000000e+00	12	15	2072	2072	7015	Plasmodium	falciparum	GO:0005575	cellular_component	"cellular_component"	MAL13P1.323	PF07_0044	PF10_0232	PF11_0351	PF11_0507	PF13_0132	PFC0150W	PFD0080C	PFD0885C	PFE1335C	PFE1590W	PFL1385C
+3.329850e-01	1	15	55	2072	7015	Plasmodium	falciparum	GO:0015934	cellular_component	"large ribosomal subunit"	PF13_0132
+1.697150e-01	1	15	32	2604	7015	Plasmodium	falciparum	GO:0042221	biological_process	"response to chemical stimulus"	PF11_0351
+9.700810e-02	1	15	14	2072	7015	Plasmodium	falciparum	GO:0000785	cellular_component	"chromatin"	PF10_0232
+7.785340e-01	2	15	504	2819	7015	Plasmodium	falciparum	GO:0003676	molecular_function	"nucleic acid binding"	PF10_0232	PF13_0132
+9.199400e-01	2	15	650	2604	7015	Plasmodium	falciparum	GO:0044260	biological_process	"cellular macromolecule metabolism"	PF11_0127	PF13_0132
+8.060630e-01	1	15	269	2604	7015	Plasmodium	falciparum	GO:0006464	biological_process	"protein modification"	PF11_0127
+9.814480e-01	1	15	482	2072	7015	Plasmodium	falciparum	GO:0043234	cellular_component	"protein complex"	PF13_0132
+7.494190e-01	1	15	182	2072	7015	Plasmodium	falciparum	GO:0030529	cellular_component	"ribonucleoprotein complex"	PF13_0132
+1.300140e-01	1	15	24	2604	7015	Plasmodium	falciparum	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	PF10_0232
+2.644850e-01	1	15	57	2819	7015	Plasmodium	falciparum	GO:0005509	molecular_function	"calcium ion binding"	MAL13P1.269
+5.846920e-01	1	15	160	2819	7015	Plasmodium	falciparum	GO:0005198	molecular_function	"structural molecule activity"	PF13_0132
+1.061560e-02	1	15	2	2819	7015	Plasmodium	falciparum	GO:0005344	molecular_function	"oxygen transporter activity"	PFC0760C
+3.279900e-01	1	15	54	2072	7015	Plasmodium	falciparum	GO:0005830	cellular_component	"cytosolic ribosome (sensu Eukaryota)"	PF13_0132
+5.141010e-01	1	15	122	2604	7015	Plasmodium	falciparum	GO:0016310	biological_process	"phosphorylation"	PF11_0127
+6.760560e-01	1	15	188	2604	7015	Plasmodium	falciparum	GO:0016043	biological_process	"cell organization and biogenesis"	PF10_0232
+1.936630e-01	1	15	37	2604	7015	Plasmodium	falciparum	GO:0009628	biological_process	"response to abiotic stimulus"	PF11_0351
+1.669410e-02	10	15	949	2604	7015	Plasmodium	falciparum	GO:0000004	biological_process	"biological process unknown"	MAL13P1.323	PF07_0044	PF11_0127	PF11_0507	PFC0150W	PFD0080C	PFD0885C	PFE1335C	PFE1590W	PFL1385C
+5.051910e-01	1	15	119	2604	7015	Plasmodium	falciparum	GO:0006259	biological_process	"DNA metabolism"	PF10_0232
+9.194590e-01	2	15	649	2604	7015	Plasmodium	falciparum	GO:0044267	biological_process	"cellular protein metabolism"	PF11_0127	PF13_0132
+9.999580e-01	2	15	1207	2072	7015	Plasmodium	falciparum	GO:0044424	cellular_component	"intracellular part"	PF10_0232	PF13_0132
+4.183490e-02	1	15	8	2819	7015	Plasmodium	falciparum	GO:0003682	molecular_function	"chromatin binding"	PF10_0232
+7.931840e-01	1	15	259	2604	7015	Plasmodium	falciparum	GO:0050896	biological_process	"response to stimulus"	PF11_0351
+1.911660e-01	1	15	29	2072	7015	Plasmodium	falciparum	GO:0044427	cellular_component	"chromosomal part"	PF10_0232
+9.968080e-01	4	15	1507	2604	7015	Plasmodium	falciparum	GO:0007582	biological_process	"physiological process"	PF10_0232	PF11_0127	PF13_0132	PFC0760C
+1.350720e-01	1	15	25	2604	7015	Plasmodium	falciparum	GO:0006323	biological_process	"DNA packaging"	PF10_0232
+5.192420e-01	1	15	134	2819	7015	Plasmodium	falciparum	GO:0016301	molecular_function	"kinase activity"	PF11_0127
+4.517530e-01	1	15	102	2604	7015	Plasmodium	falciparum	GO:0006468	biological_process	"protein amino acid phosphorylation"	PF11_0127
+9.999980e-01	3	15	1512	2072	7015	Plasmodium	falciparum	GO:0044464	cellular_component	"cell part"	PF10_0232	PF11_0507	PF13_0132
+2.030020e-01	1	15	31	2072	7015	Plasmodium	falciparum	GO:0005694	cellular_component	"chromosome"	PF10_0232
+9.224510e-01	1	15	407	2604	7015	Plasmodium	falciparum	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	PF10_0232
+1.092660e-01	1	15	20	2604	7015	Plasmodium	falciparum	GO:0009266	biological_process	"response to temperature stimulus"	PF11_0351
+4.127750e-01	1	15	72	2072	7015	Plasmodium	falciparum	GO:0044445	cellular_component	"cytosolic part"	PF13_0132
+1.842750e-01	2	15	148	2819	7015	Plasmodium	falciparum	GO:0043169	molecular_function	"cation binding"	MAL13P1.269	PFC0760C
+8.048090e-01	1	15	268	2604	7015	Plasmodium	falciparum	GO:0009059	biological_process	"macromolecule biosynthesis"	PF13_0132
+8.158970e-01	1	15	300	2819	7015	Plasmodium	falciparum	GO:0016740	molecular_function	"transferase activity"	PF11_0127
+9.907160e-01	5	15	1561	2604	7015	Plasmodium	falciparum	GO:0009987	biological_process	"cellular process"	MAL13P1.269	PF10_0232	PF11_0127	PF13_0132	PFC0760C
+5.219280e-01	1	15	135	2819	7015	Plasmodium	falciparum	GO:0005215	molecular_function	"transporter activity"	PFC0760C
+4.146900e-01	3	15	435	2819	7015	Plasmodium	falciparum	GO:0017076	molecular_function	"purine nucleotide binding"	PF10_0232	PF11_0127	PF11_0351
+9.996560e-01	2	15	1060	2072	7015	Plasmodium	falciparum	GO:0043229	cellular_component	"intracellular organelle"	PF10_0232	PF13_0132
+6.185660e-01	1	15	175	2819	7015	Plasmodium	falciparum	GO:0003723	molecular_function	"RNA binding"	PF13_0132
+8.853350e-02	1	15	16	2604	7015	Plasmodium	falciparum	GO:0006986	biological_process	"response to unfolded protein"	PF11_0351
+9.952490e-01	4	15	1463	2604	7015	Plasmodium	falciparum	GO:0050875	biological_process	"cellular physiological process"	PF10_0232	PF11_0127	PF13_0132	PFC0760C
+5.493820e-01	2	15	247	2072	7015	Plasmodium	falciparum	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	PF10_0232	PF13_0132
+3.362620e-01	1	15	70	2604	7015	Plasmodium	falciparum	GO:0006950	biological_process	"response to stress"	PF11_0351
+8.625470e-01	2	15	556	2604	7015	Plasmodium	falciparum	GO:0043283	biological_process	"biopolymer metabolism"	PF10_0232	PF11_0127
+3.297000e-01	1	15	74	2819	7015	Plasmodium	falciparum	GO:0004386	molecular_function	"helicase activity"	PF10_0232
+7.409080e-01	2	15	345	2072	7015	Plasmodium	falciparum	GO:0044446	cellular_component	"intracellular organelle part"	PF10_0232	PF13_0132
+2.197930e-01	2	15	166	2819	7015	Plasmodium	falciparum	GO:0043167	molecular_function	"ion binding"	MAL13P1.269	PFC0760C
+4.302080e-01	1	15	76	2072	7015	Plasmodium	falciparum	GO:0005829	cellular_component	"cytosol"	PF13_0132
+9.857580e-01	3	15	1131	2604	7015	Plasmodium	falciparum	GO:0044238	biological_process	"primary metabolism"	PF10_0232	PF11_0127	PF13_0132
+8.961880e-01	1	15	364	2604	7015	Plasmodium	falciparum	GO:0044249	biological_process	"cellular biosynthesis"	PF13_0132
+1.061560e-02	1	15	2	2819	7015	Plasmodium	falciparum	GO:0019843	molecular_function	"rRNA binding"	PF13_0132
+9.996560e-01	2	15	1060	2072	7015	Plasmodium	falciparum	GO:0043226	cellular_component	"organelle"	PF10_0232	PF13_0132
+7.982270e-01	1	15	209	2072	7015	Plasmodium	falciparum	GO:0005634	cellular_component	"nucleus"	PF10_0232
+8.853350e-02	1	15	16	2604	7015	Plasmodium	falciparum	GO:0051789	biological_process	"response to protein stimulus"	PF11_0351
+3.894850e-01	1	15	91	2819	7015	Plasmodium	falciparum	GO:0046914	molecular_function	"transition metal ion binding"	PFC0760C
+1.550300e-01	1	15	29	2604	7015	Plasmodium	falciparum	GO:0051276	biological_process	"chromosome organization and biogenesis"	PF10_0232
+5.618260e-01	1	15	139	2604	7015	Plasmodium	falciparum	GO:0006793	biological_process	"phosphorus metabolism"	PF11_0127
+4.451240e-01	1	15	100	2604	7015	Plasmodium	falciparum	GO:0006996	biological_process	"organelle organization and biogenesis"	PF10_0232
+2.197930e-01	2	15	166	2819	7015	Plasmodium	falciparum	GO:0046872	molecular_function	"metal ion binding"	MAL13P1.269	PFC0760C
+2.556030e-02	10	15	1087	2819	7015	Plasmodium	falciparum	GO:0005554	molecular_function	"molecular function unknown"	MAL13P1.323	PF07_0044	PF11_0127	PF11_0507	PFC0150W	PFD0080C	PFD0885C	PFE1335C	PFE1590W	PFL1385C
+8.350600e-01	1	15	294	2604	7015	Plasmodium	falciparum	GO:0043412	biological_process	"biopolymer modification"	PF11_0127
+7.850780e-01	1	15	253	2604	7015	Plasmodium	falciparum	GO:0051179	biological_process	"localization"	PFC0760C
+9.996500e-01	1	15	850	2072	7015	Plasmodium	falciparum	GO:0044444	cellular_component	"cytoplasmic part"	PF13_0132
+6.518450e-01	1	15	191	2819	7015	Plasmodium	falciparum	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	PF11_0127

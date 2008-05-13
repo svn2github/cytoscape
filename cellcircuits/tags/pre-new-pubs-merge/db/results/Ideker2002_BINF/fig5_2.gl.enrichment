@@ -1,0 +1,83 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+7.776150e-02	1	7	75	6526	97048	Saccharomyces	cerevisiae	GO:0050658	biological_process	"RNA transport"	SXM1
+3.950910e-01	1	7	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	RPL34B
+1.035680e-01	6	7	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+4.928020e-11	6	7	93	6526	97048	Saccharomyces	cerevisiae	GO:0005842	cellular_component	"cytosolic large ribosomal subunit (sensu Eukaryota)"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+9.563250e-02	1	7	93	6526	97048	Saccharomyces	cerevisiae	GO:0051168	biological_process	"nuclear export"	SXM1
+1.122370e-01	1	7	110	6526	97048	Saccharomyces	cerevisiae	GO:0051169	biological_process	"nuclear transport"	SXM1
+2.533510e-04	6	7	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.835900e-03	3	7	255	6526	97048	Saccharomyces	cerevisiae	GO:0007028	biological_process	"cytoplasm organization and biogenesis"	RPL10	RPL11A	RPL11B
+2.787820e-01	7	7	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+4.970240e-06	6	7	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+7.039900e-02	6	7	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+7.811640e-03	6	7	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.254360e-08	6	7	231	6526	97048	Saccharomyces	cerevisiae	GO:0003735	molecular_function	"structural constituent of ribosome"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+6.660570e-01	1	7	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	SXM1
+5.822960e-05	6	7	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+8.060590e-02	6	7	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+4.429080e-01	1	7	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	SXM1
+9.759980e-02	1	7	95	6526	97048	Saccharomyces	cerevisiae	GO:0030447	biological_process	"filamentous growth"	RPL34B
+6.196460e-06	3	7	40	6526	97048	Saccharomyces	cerevisiae	GO:0000027	biological_process	"ribosomal large subunit assembly and maintenance"	RPL10	RPL11A	RPL11B
+1.587690e-01	7	7	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+7.776150e-02	1	7	75	6526	97048	Saccharomyces	cerevisiae	GO:0050657	biological_process	"nucleic acid transport"	SXM1
+8.673450e-02	1	7	84	6526	97048	Saccharomyces	cerevisiae	GO:0015931	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid transport"	SXM1
+3.643820e-01	2	7	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	RPL16B	SXM1
+9.963810e-01	1	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	SXM1
+7.382990e-04	6	7	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.398400e-02	6	7	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+8.574120e-02	1	7	83	6526	97048	Saccharomyces	cerevisiae	GO:0005386	molecular_function	"carrier activity"	SXM1
+2.118120e-05	6	7	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+4.353810e-08	6	7	284	6526	97048	Saccharomyces	cerevisiae	GO:0005840	cellular_component	"ribosome"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+5.653020e-02	1	7	54	6526	97048	Saccharomyces	cerevisiae	GO:0008565	molecular_function	"protein transporter activity"	SXM1
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+1.835900e-03	3	7	255	6526	97048	Saccharomyces	cerevisiae	GO:0042254	biological_process	"ribosome biogenesis and assembly"	RPL10	RPL11A	RPL11B
+6.580110e-01	1	7	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	SXM1
+9.963810e-01	1	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	SXM1
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+5.282090e-10	6	7	137	6526	97048	Saccharomyces	cerevisiae	GO:0015934	cellular_component	"large ribosomal subunit"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+5.221020e-01	1	7	653	6526	97048	Saccharomyces	cerevisiae	GO:0003676	molecular_function	"nucleic acid binding"	RPL16B
+5.502810e-04	6	7	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.189980e-01	1	7	117	6526	97048	Saccharomyces	cerevisiae	GO:0006913	biological_process	"nucleocytoplasmic transport"	SXM1
+2.519730e-01	1	7	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	RPL34B
+7.647270e-04	6	7	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.377630e-06	6	7	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.748420e-07	6	7	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+2.106320e-09	6	7	172	6526	97048	Saccharomyces	cerevisiae	GO:0005830	cellular_component	"cytosolic ribosome (sensu Eukaryota)"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.624970e-02	5	7	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	RPL10	RPL11A	RPL11B	RPL34B	SXM1
+4.363760e-01	1	7	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	SXM1
+6.669200e-02	1	7	64	6526	97048	Saccharomyces	cerevisiae	GO:0051028	biological_process	"mRNA transport"	SXM1
+4.437960e-04	6	7	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.507480e-01	7	7	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+9.618250e-03	1	7	9	6526	97048	Saccharomyces	cerevisiae	GO:0008320	molecular_function	"protein carrier activity"	SXM1
+4.344040e-01	1	7	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	SXM1
+7.776150e-02	1	7	75	6526	97048	Saccharomyces	cerevisiae	GO:0051236	biological_process	"establishment of RNA localization"	SXM1
+1.206310e-01	7	7	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+2.784230e-01	7	7	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+4.233260e-09	6	7	193	6526	97048	Saccharomyces	cerevisiae	GO:0044445	cellular_component	"cytosolic part"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+3.356980e-05	6	7	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.148010e-01	7	7	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+3.967260e-04	3	7	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	RPL10	RPL11A	RPL11B
+3.702530e-01	1	7	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	SXM1
+2.835600e-02	7	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+6.669200e-02	1	7	64	6526	97048	Saccharomyces	cerevisiae	GO:0006406	biological_process	"mRNA export from nucleus"	SXM1
+3.564080e-01	1	7	398	6526	97048	Saccharomyces	cerevisiae	GO:0003723	molecular_function	"RNA binding"	RPL16B
+1.092150e-01	7	7	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+5.822960e-05	6	7	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+7.811640e-03	6	7	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+8.772680e-02	1	7	85	6526	97048	Saccharomyces	cerevisiae	GO:0006403	biological_process	"RNA localization"	SXM1
+7.675980e-02	1	7	74	6526	97048	Saccharomyces	cerevisiae	GO:0006405	biological_process	"RNA export from nucleus"	SXM1
+4.087890e-06	6	7	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+5.068580e-02	6	7	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+1.691020e-04	6	7	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+4.602210e-01	1	7	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	SXM1
+2.991280e-05	3	7	64	6526	97048	Saccharomyces	cerevisiae	GO:0042255	biological_process	"ribosome assembly"	RPL10	RPL11A	RPL11B
+2.835600e-02	7	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B	SXM1
+9.208850e-01	1	7	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	SXM1
+4.027220e-01	1	7	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	RPL34B
+1.644600e-05	3	7	53	6526	97048	Saccharomyces	cerevisiae	GO:0042257	biological_process	"ribosomal subunit assembly"	RPL10	RPL11A	RPL11B
+1.900910e-02	4	7	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	RPL10	RPL11A	RPL11B	RPL34B
+6.864590e-01	1	7	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	SXM1
+1.314370e-01	1	7	130	6526	97048	Saccharomyces	cerevisiae	GO:0040007	biological_process	"growth"	RPL34B
+1.717450e-02	6	7	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	RPL10	RPL11A	RPL11B	RPL16B	RPL34A	RPL34B
+2.519730e-01	1	7	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	RPL34B

@@ -1,0 +1,176 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+2.935830e-01	1	13	172	6526	97048	Saccharomyces	cerevisiae	GO:0016773	molecular_function	"phosphotransferase activity, alcohol group as acceptor"	GAL1
+1.406280e-10	8	13	162	6526	97048	Saccharomyces	cerevisiae	GO:0006066	biological_process	"alcohol metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1
+9.430950e-02	10	13	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	GAL1	GAL3	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C	YBR241C
+3.599590e-01	1	13	220	6526	97048	Saccharomyces	cerevisiae	GO:0044255	biological_process	"cellular lipid metabolism"	YBR042C
+3.743350e-01	1	13	231	6526	97048	Saccharomyces	cerevisiae	GO:0003735	molecular_function	"structural constituent of ribosome"	RPL1B
+1.383460e-02	11	13	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	RPL1B	SER3	YBR042C
+8.715100e-01	1	13	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	RPL1B
+2.256420e-01	1	13	127	6526	97048	Saccharomyces	cerevisiae	GO:0008610	biological_process	"lipid biosynthesis"	YBR042C
+1.274160e-01	1	13	68	6526	97048	Saccharomyces	cerevisiae	GO:0000329	cellular_component	"vacuolar membrane (sensu Fungi)"	YBR241C
+4.871930e-02	1	13	25	6526	97048	Saccharomyces	cerevisiae	GO:0009605	biological_process	"response to external stimulus"	GAL1
+1.758750e-02	11	13	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	RPL1B	SER3	YBR042C
+1.865790e-03	2	13	33	6526	97048	Saccharomyces	cerevisiae	GO:0015144	molecular_function	"carbohydrate transporter activity"	GAL2	HXT6
+3.923500e-01	11	13	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	GAL1	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C	YBR241C
+1.674580e-01	6	13	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	GAL1	GAL10	GAL7	GCY1	SER3	YBR042C
+1.046110e-09	8	13	208	6526	97048	Saccharomyces	cerevisiae	GO:0044262	biological_process	"cellular carbohydrate metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1
+7.044920e-01	2	13	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	GAL3	GAL80
+9.886350e-02	1	13	52	6526	97048	Saccharomyces	cerevisiae	GO:0016563	molecular_function	"transcriptional activator activity"	GAL4
+7.475840e-04	2	13	21	6526	97048	Saccharomyces	cerevisiae	GO:0015149	molecular_function	"hexose transporter activity"	GAL2	HXT6
+9.640800e-01	1	13	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	RPL1B
+2.204850e-02	9	13	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	RPL1B
+1.189740e-02	1	13	6	6526	97048	Saccharomyces	cerevisiae	GO:0019321	biological_process	"pentose metabolism"	GCY1
+1.000000e+00	13	13	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C	YBR241C
+2.595770e-01	1	13	149	6526	97048	Saccharomyces	cerevisiae	GO:0000323	cellular_component	"lytic vacuole"	YBR241C
+4.395200e-01	1	13	284	6526	97048	Saccharomyces	cerevisiae	GO:0005840	cellular_component	"ribosome"	RPL1B
+9.041230e-01	1	13	1076	6526	97048	Saccharomyces	cerevisiae	GO:0008372	cellular_component	"cellular component unknown"	GAL10
+2.949860e-02	1	13	15	6526	97048	Saccharomyces	cerevisiae	GO:0005353	molecular_function	"fructose transporter activity"	HXT6
+8.865560e-03	4	13	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	GAL1	GAL3	GAL4	GAL80
+2.176250e-09	8	13	228	6526	97048	Saccharomyces	cerevisiae	GO:0005975	biological_process	"carbohydrate metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1
+1.992030e-03	1	13	1	6526	97048	Saccharomyces	cerevisiae	GO:0006859	biological_process	"extracellular carbohydrate transport"	GAL2
+8.950490e-01	1	13	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	HXT6
+1.686820e-01	1	13	92	6526	97048	Saccharomyces	cerevisiae	GO:0016747	molecular_function	"transferase activity, transferring groups other than amino-acyl groups"	YBR042C
+8.636940e-02	2	13	250	6526	97048	Saccharomyces	cerevisiae	GO:0005886	cellular_component	"plasma membrane"	GAL2	HXT6
+5.700340e-01	2	13	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	GAL2	HXT6
+2.412410e-01	1	13	137	6526	97048	Saccharomyces	cerevisiae	GO:0015934	cellular_component	"large ribosomal subunit"	RPL1B
+2.949860e-02	1	13	15	6526	97048	Saccharomyces	cerevisiae	GO:0015578	molecular_function	"mannose transporter activity"	HXT6
+2.016870e-01	1	13	112	6526	97048	Saccharomyces	cerevisiae	GO:0044437	cellular_component	"vacuolar part"	YBR241C
+4.107400e-02	1	13	21	6526	97048	Saccharomyces	cerevisiae	GO:0008645	biological_process	"hexose transport"	HXT6
+3.980400e-03	1	13	2	6526	97048	Saccharomyces	cerevisiae	GO:0004617	molecular_function	"phosphoglycerate dehydrogenase activity"	SER3
+9.567100e-01	1	13	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	RPL1B
+4.169090e-01	1	13	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	RPL1B
+6.538940e-01	1	13	511	6526	97048	Saccharomyces	cerevisiae	GO:0030529	cellular_component	"ribonucleoprotein complex"	RPL1B
+9.649040e-01	1	13	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	RPL1B
+3.110530e-02	4	13	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	GAL1	GAL3	GAL4	GAL80
+4.107400e-02	1	13	21	6526	97048	Saccharomyces	cerevisiae	GO:0015749	biological_process	"monosaccharide transport"	HXT6
+9.923590e-03	1	13	5	6526	97048	Saccharomyces	cerevisiae	GO:0016854	molecular_function	"racemase and epimerase activity"	GAL10
+1.337250e-01	2	13	324	6526	97048	Saccharomyces	cerevisiae	GO:0009628	biological_process	"response to abiotic stimulus"	GAL1	GCY1
+9.125310e-03	2	13	74	6526	97048	Saccharomyces	cerevisiae	GO:0044275	biological_process	"cellular carbohydrate catabolism"	GAL1	GCY1
+9.507570e-01	1	13	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	RPL1B
+3.738070e-01	11	13	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	GAL1	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C	YBR241C
+2.873450e-03	2	13	41	6526	97048	Saccharomyces	cerevisiae	GO:0046164	biological_process	"alcohol catabolism"	GAL1	GCY1
+9.364840e-03	2	13	75	6526	97048	Saccharomyces	cerevisiae	GO:0016614	molecular_function	"oxidoreductase activity, acting on CH-OH group of donors"	GCY1	SER3
+1.098950e-01	12	13	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C
+3.302860e-01	1	13	198	6526	97048	Saccharomyces	cerevisiae	GO:0016301	molecular_function	"kinase activity"	GAL1
+3.196340e-01	4	13	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	GAL1	GAL3	GAL4	GAL80
+1.707950e-01	2	13	377	6526	97048	Saccharomyces	cerevisiae	GO:0044248	biological_process	"cellular catabolism"	GAL1	GCY1
+1.451820e-02	4	13	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	GAL1	GAL3	GAL4	GAL80
+1.503150e-01	3	13	688	6526	97048	Saccharomyces	cerevisiae	GO:0016740	molecular_function	"transferase activity"	GAL1	GAL7	YBR042C
+2.366390e-02	1	13	12	6526	97048	Saccharomyces	cerevisiae	GO:0009070	biological_process	"serine family amino acid biosynthesis"	SER3
+3.639090e-01	1	13	223	6526	97048	Saccharomyces	cerevisiae	GO:0009308	biological_process	"amine metabolism"	SER3
+3.671170e-03	4	13	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	GAL1	GAL3	GAL4	GAL80
+1.999710e-01	2	13	417	6526	97048	Saccharomyces	cerevisiae	GO:0005215	molecular_function	"transporter activity"	GAL2	HXT6
+1.869870e-01	1	13	103	6526	97048	Saccharomyces	cerevisiae	GO:0008652	biological_process	"amino acid biosynthesis"	SER3
+3.722810e-02	1	13	19	6526	97048	Saccharomyces	cerevisiae	GO:0003714	molecular_function	"transcription corepressor activity"	GAL80
+8.715100e-01	1	13	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	RPL1B
+5.505220e-04	2	13	18	6526	97048	Saccharomyces	cerevisiae	GO:0005355	molecular_function	"glucose transporter activity"	GAL2	HXT6
+9.547440e-02	12	13	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C
+5.942000e-01	1	13	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	GCY1
+7.946170e-03	1	13	4	6526	97048	Saccharomyces	cerevisiae	GO:0042843	biological_process	"D-xylose catabolism"	GCY1
+9.661860e-01	2	13	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	RPL1B	YBR241C
+7.205050e-01	1	13	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	RPL1B
+7.711440e-03	11	13	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	RPL1B	SER3	YBR042C
+1.779690e-02	1	13	9	6526	97048	Saccharomyces	cerevisiae	GO:0007584	biological_process	"response to nutrient"	GAL1
+9.042280e-01	6	13	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	GAL4	GAL80	GCY1	HXT6	RPL1B	YBR241C
+9.923590e-03	1	13	5	6526	97048	Saccharomyces	cerevisiae	GO:0019323	biological_process	"pentose catabolism"	GCY1
+2.595770e-01	1	13	149	6526	97048	Saccharomyces	cerevisiae	GO:0000324	cellular_component	"vacuole (sensu Fungi)"	YBR241C
+3.337050e-02	1	13	17	6526	97048	Saccharomyces	cerevisiae	GO:0019200	molecular_function	"carbohydrate kinase activity"	GAL1
+6.161780e-01	1	13	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	RPL1B
+9.120460e-01	1	13	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	RPL1B
+9.966390e-01	1	13	2313	6526	97048	Saccharomyces	cerevisiae	GO:0005554	molecular_function	"molecular function unknown"	YBR241C
+1.551310e-01	1	13	84	6526	97048	Saccharomyces	cerevisiae	GO:0006644	biological_process	"phospholipid metabolism"	YBR042C
+6.383860e-02	1	13	33	6526	97048	Saccharomyces	cerevisiae	GO:0019320	biological_process	"hexose catabolism"	GAL1
+1.583400e-02	1	13	8	6526	97048	Saccharomyces	cerevisiae	GO:0004033	molecular_function	"aldo-keto reductase activity"	GCY1
+6.121450e-01	2	13	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	GAL2	HXT6
+7.946170e-03	1	13	4	6526	97048	Saccharomyces	cerevisiae	GO:0042732	biological_process	"D-xylose metabolism"	GCY1
+8.193980e-01	4	13	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	HXT6	RPL1B	YBR042C	YBR241C
+4.169090e-01	1	13	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	RPL1B
+9.427270e-11	7	13	87	6526	97048	Saccharomyces	cerevisiae	GO:0019318	biological_process	"hexose metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80
+2.471360e-03	2	13	38	6526	97048	Saccharomyces	cerevisiae	GO:0046365	biological_process	"monosaccharide catabolism"	GAL1	GCY1
+3.567730e-01	3	13	1062	6526	97048	Saccharomyces	cerevisiae	GO:0016020	cellular_component	"membrane"	GAL2	HXT6	YBR241C
+7.205050e-01	1	13	609	6526	97048	Saccharomyces	cerevisiae	GO:0031090	cellular_component	"organelle membrane"	YBR241C
+6.070170e-01	1	13	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	RPL1B
+2.016870e-01	1	13	112	6526	97048	Saccharomyces	cerevisiae	GO:0006643	biological_process	"membrane lipid metabolism"	YBR042C
+9.886350e-02	1	13	52	6526	97048	Saccharomyces	cerevisiae	GO:0008654	biological_process	"phospholipid biosynthesis"	YBR042C
+1.703620e-01	1	13	93	6526	97048	Saccharomyces	cerevisiae	GO:0005842	cellular_component	"cytosolic large ribosomal subunit (sensu Eukaryota)"	RPL1B
+7.946170e-03	1	13	4	6526	97048	Saccharomyces	cerevisiae	GO:0019568	biological_process	"arabinose catabolism"	GCY1
+4.519290e-01	3	13	1224	6526	97048	Saccharomyces	cerevisiae	GO:0009058	biological_process	"biosynthesis"	RPL1B	SER3	YBR042C
+2.595770e-01	1	13	149	6526	97048	Saccharomyces	cerevisiae	GO:0000322	cellular_component	"storage vacuole"	YBR241C
+3.360230e-01	12	13	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	GAL1	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C	YBR241C
+9.661860e-01	2	13	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	RPL1B	YBR241C
+7.325530e-01	1	13	629	6526	97048	Saccharomyces	cerevisiae	GO:0043037	biological_process	"translation"	RPL1B
+1.189740e-02	1	13	6	6526	97048	Saccharomyces	cerevisiae	GO:0005354	molecular_function	"galactose transporter activity"	GAL2
+3.330350e-01	1	13	200	6526	97048	Saccharomyces	cerevisiae	GO:0006519	biological_process	"amino acid and derivative metabolism"	SER3
+5.819010e-01	2	13	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	GAL2	HXT6
+3.390610e-02	4	13	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	GAL1	GAL3	GAL4	GAL80
+1.935510e-01	1	13	107	6526	97048	Saccharomyces	cerevisiae	GO:0016746	molecular_function	"transferase activity, transferring acyl groups"	YBR042C
+3.107480e-01	1	13	184	6526	97048	Saccharomyces	cerevisiae	GO:0006520	biological_process	"amino acid metabolism"	SER3
+3.247570e-01	1	13	194	6526	97048	Saccharomyces	cerevisiae	GO:0007154	biological_process	"cell communication"	GAL1
+1.189740e-02	1	13	6	6526	97048	Saccharomyces	cerevisiae	GO:0045990	biological_process	"regulation of transcription by carbon catabolites"	GAL1
+9.321050e-01	5	13	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	GAL4	GAL80	GCY1	HXT6	YBR241C
+8.184670e-01	1	13	802	6526	97048	Saccharomyces	cerevisiae	GO:0006412	biological_process	"protein biosynthesis"	RPL1B
+8.426620e-02	1	13	44	6526	97048	Saccharomyces	cerevisiae	GO:0016564	molecular_function	"transcriptional repressor activity"	GAL80
+3.769170e-01	1	13	233	6526	97048	Saccharomyces	cerevisiae	GO:0006629	biological_process	"lipid metabolism"	YBR042C
+7.946170e-03	1	13	4	6526	97048	Saccharomyces	cerevisiae	GO:0019566	biological_process	"arabinose metabolism"	GCY1
+1.150290e-01	1	13	61	6526	97048	Saccharomyces	cerevisiae	GO:0006970	biological_process	"response to osmotic stress"	GCY1
+2.450740e-02	3	13	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	GAL1	GAL4	GAL80
+1.000000e+00	13	13	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C	YBR241C
+7.475840e-04	2	13	21	6526	97048	Saccharomyces	cerevisiae	GO:0015145	molecular_function	"monosaccharide transporter activity"	GAL2	HXT6
+2.366390e-02	1	13	12	6526	97048	Saccharomyces	cerevisiae	GO:0009651	biological_process	"response to salt stress"	GCY1
+7.503250e-02	1	13	39	6526	97048	Saccharomyces	cerevisiae	GO:0003712	molecular_function	"transcription cofactor activity"	GAL80
+9.361710e-02	2	13	262	6526	97048	Saccharomyces	cerevisiae	GO:0016491	molecular_function	"oxidoreductase activity"	GCY1	SER3
+9.125310e-03	2	13	74	6526	97048	Saccharomyces	cerevisiae	GO:0016052	biological_process	"carbohydrate catabolism"	GAL1	GCY1
+1.000000e+00	13	13	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C	YBR241C
+9.321050e-01	5	13	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	GAL4	GAL80	GCY1	HXT6	YBR241C
+1.060810e-01	1	13	56	6526	97048	Saccharomyces	cerevisiae	GO:0016853	molecular_function	"isomerase activity"	GAL10
+3.884130e-01	1	13	242	6526	97048	Saccharomyces	cerevisiae	GO:0042221	biological_process	"response to chemical stimulus"	GAL1
+3.614940e-02	4	13	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	GAL1	GAL3	GAL4	GAL80
+4.681370e-02	1	13	24	6526	97048	Saccharomyces	cerevisiae	GO:0009069	biological_process	"serine family amino acid metabolism"	SER3
+1.059970e-02	4	13	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	GAL1	GAL3	GAL4	GAL80
+3.219760e-01	1	13	192	6526	97048	Saccharomyces	cerevisiae	GO:0005773	cellular_component	"vacuole"	YBR241C
+1.084130e-02	4	13	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	GAL1	GAL3	GAL4	GAL80
+1.992030e-03	1	13	1	6526	97048	Saccharomyces	cerevisiae	GO:0019388	biological_process	"galactose catabolism"	GAL1
+4.635670e-01	1	13	305	6526	97048	Saccharomyces	cerevisiae	GO:0006082	biological_process	"organic acid metabolism"	SER3
+5.200870e-01	1	13	358	6526	97048	Saccharomyces	cerevisiae	GO:0005198	molecular_function	"structural molecule activity"	RPL1B
+8.058290e-02	1	13	42	6526	97048	Saccharomyces	cerevisiae	GO:0008134	molecular_function	"transcription factor binding"	GAL80
+2.935830e-01	1	13	172	6526	97048	Saccharomyces	cerevisiae	GO:0005830	cellular_component	"cytosolic ribosome (sensu Eukaryota)"	RPL1B
+9.813400e-01	1	13	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	RPL1B
+5.965110e-03	1	13	3	6526	97048	Saccharomyces	cerevisiae	GO:0016857	molecular_function	"racemase and epimerase activity, acting on carbohydrates and derivatives"	GAL10
+1.342140e-03	2	13	28	6526	97048	Saccharomyces	cerevisiae	GO:0051119	molecular_function	"sugar transporter activity"	GAL2	HXT6
+9.750140e-01	1	13	1611	6526	97048	Saccharomyces	cerevisiae	GO:0000004	biological_process	"biological process unknown"	YBR241C
+5.212500e-03	4	13	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	GAL1	GAL3	GAL4	GAL80
+2.701230e-01	2	13	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	GAL3	GAL80
+3.412160e-01	2	13	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	GAL1	GCY1
+7.528510e-03	2	13	67	6526	97048	Saccharomyces	cerevisiae	GO:0016616	molecular_function	"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor"	GCY1	SER3
+4.871930e-02	1	13	25	6526	97048	Saccharomyces	cerevisiae	GO:0009991	biological_process	"response to extracellular stimulus"	GAL1
+3.354870e-01	12	13	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	GAL1	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C	YBR241C
+1.662490e-12	8	13	94	6526	97048	Saccharomyces	cerevisiae	GO:0005996	biological_process	"monosaccharide metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1
+1.980390e-03	2	13	34	6526	97048	Saccharomyces	cerevisiae	GO:0008643	biological_process	"carbohydrate transport"	GAL2	HXT6
+3.233680e-01	1	13	193	6526	97048	Saccharomyces	cerevisiae	GO:0044445	cellular_component	"cytosolic part"	RPL1B
+6.196090e-02	1	13	32	6526	97048	Saccharomyces	cerevisiae	GO:0005811	cellular_component	"lipid particle"	YBR042C
+8.435380e-01	1	13	867	6526	97048	Saccharomyces	cerevisiae	GO:0009059	biological_process	"macromolecule biosynthesis"	RPL1B
+3.980400e-03	1	13	2	6526	97048	Saccharomyces	cerevisiae	GO:0051748	molecular_function	"UDP-sugar pyrophosphorylase activity"	GAL7
+1.024740e-01	12	13	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80	GCY1	HXT6	RPL1B	SER3	YBR042C
+1.326760e-01	1	13	71	6526	97048	Saccharomyces	cerevisiae	GO:0046467	biological_process	"membrane lipid biosynthesis"	YBR042C
+1.992030e-03	1	13	1	6526	97048	Saccharomyces	cerevisiae	GO:0004335	molecular_function	"galactokinase activity"	GAL1
+9.042280e-01	6	13	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	GAL4	GAL80	GCY1	HXT6	RPL1B	YBR241C
+1.086480e-01	2	13	286	6526	97048	Saccharomyces	cerevisiae	GO:0044265	biological_process	"cellular macromolecule catabolism"	GAL1	GCY1
+2.916630e-03	4	13	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	GAL1	GAL3	GAL4	GAL80
+1.992030e-03	1	13	1	6526	97048	Saccharomyces	cerevisiae	GO:0017103	molecular_function	"UTP:galactose-1-phosphate uridylyltransferase activity"	GAL7
+3.871460e-01	1	13	241	6526	97048	Saccharomyces	cerevisiae	GO:0006807	biological_process	"nitrogen compound metabolism"	SER3
+3.094520e-02	4	13	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	GAL1	GAL3	GAL4	GAL80
+1.992030e-03	1	13	1	6526	97048	Saccharomyces	cerevisiae	GO:0003978	molecular_function	"UDP-glucose 4-epimerase activity"	GAL10
+6.920690e-01	2	13	1142	6526	97048	Saccharomyces	cerevisiae	GO:0044249	biological_process	"cellular biosynthesis"	RPL1B	SER3
+8.060880e-01	3	13	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	GAL4	GAL80	GCY1
+2.016870e-01	1	13	112	6526	97048	Saccharomyces	cerevisiae	GO:0044271	biological_process	"nitrogen compound biosynthesis"	SER3
+2.193190e-01	1	13	123	6526	97048	Saccharomyces	cerevisiae	GO:0016779	molecular_function	"nucleotidyltransferase activity"	GAL7
+1.992030e-03	1	13	1	6526	97048	Saccharomyces	cerevisiae	GO:0006858	biological_process	"extracellular transport"	GAL2
+1.236550e-01	2	13	309	6526	97048	Saccharomyces	cerevisiae	GO:0009057	biological_process	"macromolecule catabolism"	GAL1	GCY1
+1.902750e-01	1	13	105	6526	97048	Saccharomyces	cerevisiae	GO:0005774	cellular_component	"vacuolar membrane"	YBR241C
+4.635670e-01	1	13	305	6526	97048	Saccharomyces	cerevisiae	GO:0019752	biological_process	"carboxylic acid metabolism"	SER3
+1.669990e-01	1	13	91	6526	97048	Saccharomyces	cerevisiae	GO:0008415	molecular_function	"acyltransferase activity"	YBR042C
+2.016870e-01	1	13	112	6526	97048	Saccharomyces	cerevisiae	GO:0009309	biological_process	"amine biosynthesis"	SER3
+4.871930e-02	1	13	25	6526	97048	Saccharomyces	cerevisiae	GO:0031667	biological_process	"response to nutrient levels"	GAL1
+1.801820e-01	2	13	390	6526	97048	Saccharomyces	cerevisiae	GO:0009056	biological_process	"catabolism"	GAL1	GCY1
+1.375800e-19	7	13	8	6526	97048	Saccharomyces	cerevisiae	GO:0006012	biological_process	"galactose metabolism"	GAL1	GAL10	GAL2	GAL3	GAL4	GAL7	GAL80
+1.412390e-01	2	13	335	6526	97048	Saccharomyces	cerevisiae	GO:0016772	molecular_function	"transferase activity, transferring phosphorus-containing groups"	GAL1	GAL7

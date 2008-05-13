@@ -1,0 +1,62 @@
+# Install MySQL (4.1.21)
+rpm -ivh MySQL-client-standard-4.1.21-0.rhel4.i386.rpm
+rpm -ivh MySQL-server-standard-4.1.21-0.rhel4.i386.rpm
+rpm -ivh MySQL-compat-standard-4.1.21-0.rhel4.i386.rpm
+rpm -ivh MySQL-devel-standard-4.1.21-0.rhel4.i386.rpm
+
+# Copy cellcircuits MySQL database files from chianti
+mkdir $HOME/cc-backup
+mysql-hotbackup.sh $HOME/cc-backup
+cp cc-backup/cc <MySQL data directory>
+
+
+# Install Apache (2.0.52)
+
+cd /opt/www
+gzip -d httpd-2.0.59.tar.gz
+tar xf httpd-2.0.59.tar
+rm httpd-2.0.59.tar
+cd httpd-2.0.59/
+./configure --prefix=/opt/www
+make
+make install
+
+cp httpd /etc/init.d
+
+ln -s /etc/init.d/httpd /etc/rc1.d/K15httpd
+ln -s /etc/init.d/httpd /etc/rc2.d/K15httpd
+ln -s /etc/init.d/httpd /etc/rc3.d/S85httpd
+ln -s /etc/init.d/httpd /etc/rc4.d/S85httpd
+ln -s /etc/init.d/httpd /etc/rc5.d/S85httpd
+
+mkdir /etc/httpd
+cd /etc/httpd/
+ln -s /opt/www/conf .
+ln -s /opt/www/build .
+ln -s /opt/www/logs .
+ln -s /opt/www/modules .
+ln -s /opt/www/run .
+ln -s /opt/www/conf.d .
+
+ln -s /opt/www/bin/* /usr/sbin
+
+/etc/init.d/httpd start
+
+ln -s /opt/www /var/www
+
+
+ln -s /opt/www/htdocs /opt/www/html
+
+# Install Perl modules
+DBI (1.52)
+DBD::mysql (3.0006)
+CGI (3.25)
+mod_perl (2.0.2)
+
+# Copy data files from chianti
+copy-data-files.sh
+
+
+# Install CellCircuits
+cd <subversion workspace>
+ant deploy

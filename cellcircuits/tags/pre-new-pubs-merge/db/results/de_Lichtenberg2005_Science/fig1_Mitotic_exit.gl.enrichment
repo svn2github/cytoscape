@@ -1,0 +1,145 @@
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+1.167550e-01	1	5	160	6526	97048	Saccharomyces	cerevisiae	GO:0008233	molecular_function	"peptidase activity"	ESP1
+8.702040e-01	2	5	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	AMN1	ESP1
+8.150910e-02	1	5	110	6526	97048	Saccharomyces	cerevisiae	GO:0051169	biological_process	"nuclear transport"	PDS1
+2.154410e-04	2	5	31	6526	97048	Saccharomyces	cerevisiae	GO:0006354	biological_process	"RNA elongation"	PAF1	SPT16
+5.218350e-01	3	5	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	PAF1	PDS1	SPT16
+1.840020e-01	1	5	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	PDS1
+2.459640e-02	3	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	ESP1	PDS1	SPT16
+2.197850e-02	2	5	322	6526	97048	Saccharomyces	cerevisiae	GO:0005654	cellular_component	"nucleoplasm"	PAF1	SPT16
+5.470540e-01	3	5	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	PAF1	PDS1	SPT16
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0008213	biological_process	"protein amino acid alkylation"	PAF1
+1.166550e-04	2	5	23	6526	97048	Saccharomyces	cerevisiae	GO:0003711	molecular_function	"transcriptional elongation regulator activity"	PAF1	SPT16
+1.069970e-01	1	5	146	6526	97048	Saccharomyces	cerevisiae	GO:0044454	cellular_component	"nuclear chromosome part"	SPT16
+2.686690e-01	5	5	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	AMN1	ESP1	PAF1	PDS1	SPT16
+5.353310e-03	1	5	7	6526	97048	Saccharomyces	cerevisiae	GO:0016593	cellular_component	"Cdc73/Paf1 complex"	PAF1
+8.333600e-01	1	5	1965	6526	97048	Saccharomyces	cerevisiae	GO:0003824	molecular_function	"catalytic activity"	ESP1
+1.220240e-02	1	5	16	6526	97048	Saccharomyces	cerevisiae	GO:0030894	cellular_component	"replisome"	SPT16
+2.199740e-01	2	5	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	AMN1	PDS1
+1.515840e-01	1	5	211	6526	97048	Saccharomyces	cerevisiae	GO:0009719	biological_process	"response to endogenous stimulus"	PDS1
+3.061850e-03	1	5	4	6526	97048	Saccharomyces	cerevisiae	GO:0004197	molecular_function	"cysteine-type endopeptidase activity"	ESP1
+2.819300e-01	3	5	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	PAF1	PDS1	SPT16
+7.215500e-01	1	5	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	PAF1
+3.550630e-02	1	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0006606	biological_process	"protein import into nucleus"	PDS1
+2.116280e-01	1	5	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	PDS1
+1.063520e-04	2	5	22	6526	97048	Saccharomyces	cerevisiae	GO:0007096	biological_process	"regulation of exit from mitosis"	AMN1	ESP1
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	AMN1	ESP1	PAF1	PDS1	SPT16
+1.163900e-01	2	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0043233	cellular_component	"organelle lumen"	PAF1	SPT16
+4.368180e-04	3	5	235	6526	97048	Saccharomyces	cerevisiae	GO:0000278	biological_process	"mitotic cell cycle"	AMN1	ESP1	PDS1
+2.772520e-03	2	5	111	6526	97048	Saccharomyces	cerevisiae	GO:0007059	biological_process	"chromosome segregation"	ESP1	PDS1
+8.039030e-03	2	5	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	ESP1	PDS1
+5.663250e-04	2	5	50	6526	97048	Saccharomyces	cerevisiae	GO:0007088	biological_process	"regulation of mitosis"	AMN1	ESP1
+6.870360e-02	2	5	594	6526	97048	Saccharomyces	cerevisiae	GO:0031981	cellular_component	"nuclear lumen"	PAF1	SPT16
+2.941160e-01	1	5	439	6526	97048	Saccharomyces	cerevisiae	GO:0031323	biological_process	"regulation of cellular metabolism"	SPT16
+5.795550e-01	1	5	1038	6526	97048	Saccharomyces	cerevisiae	GO:0005739	cellular_component	"mitochondrion"	ESP1
+7.554670e-03	2	5	185	6526	97048	Saccharomyces	cerevisiae	GO:0016568	biological_process	"chromatin modification"	PAF1	SPT16
+5.352640e-01	1	5	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	PDS1
+7.008430e-01	1	5	1399	6526	97048	Saccharomyces	cerevisiae	GO:0044260	biological_process	"cellular macromolecule metabolism"	PAF1
+8.651020e-02	1	5	117	6526	97048	Saccharomyces	cerevisiae	GO:0006913	biological_process	"nucleocytoplasmic transport"	PDS1
+3.642340e-01	1	5	565	6526	97048	Saccharomyces	cerevisiae	GO:0006464	biological_process	"protein modification"	PAF1
+1.872540e-01	1	5	265	6526	97048	Saccharomyces	cerevisiae	GO:0032200	biological_process	"telomere organization and biogenesis"	PAF1
+3.186220e-01	2	5	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	PAF1	SPT16
+4.589960e-03	1	5	6	6526	97048	Saccharomyces	cerevisiae	GO:0005658	cellular_component	"alpha DNA polymerase:primase complex"	SPT16
+7.891670e-03	3	5	635	6526	97048	Saccharomyces	cerevisiae	GO:0050794	biological_process	"regulation of cellular process"	AMN1	ESP1	SPT16
+3.360060e-01	1	5	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	PDS1
+9.927010e-02	1	5	135	6526	97048	Saccharomyces	cerevisiae	GO:0006338	biological_process	"chromatin remodeling"	SPT16
+1.220240e-02	1	5	16	6526	97048	Saccharomyces	cerevisiae	GO:0043601	cellular_component	"replisome (sensu Eukaryota)"	SPT16
+3.346490e-03	3	5	471	6526	97048	Saccharomyces	cerevisiae	GO:0006259	biological_process	"DNA metabolism"	PAF1	PDS1	SPT16
+4.736020e-02	1	5	63	6526	97048	Saccharomyces	cerevisiae	GO:0016570	biological_process	"histone modification"	PAF1
+6.856590e-01	1	5	1348	6526	97048	Saccharomyces	cerevisiae	GO:0044267	biological_process	"cellular protein metabolism"	PAF1
+2.589050e-01	5	5	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	AMN1	ESP1	PAF1	PDS1	SPT16
+2.203010e-02	1	5	29	6526	97048	Saccharomyces	cerevisiae	GO:0008234	molecular_function	"cysteine-type peptidase activity"	ESP1
+9.223800e-03	2	5	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	ESP1	PDS1
+1.163900e-01	2	5	799	6526	97048	Saccharomyces	cerevisiae	GO:0031974	cellular_component	"membrane-enclosed lumen"	PAF1	SPT16
+2.208090e-01	5	5	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	AMN1	ESP1	PAF1	PDS1	SPT16
+9.844590e-03	2	5	212	6526	97048	Saccharomyces	cerevisiae	GO:0006323	biological_process	"DNA packaging"	PAF1	SPT16
+1.520270e-02	1	5	20	6526	97048	Saccharomyces	cerevisiae	GO:0006479	biological_process	"protein amino acid methylation"	PAF1
+7.534670e-02	3	5	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	PAF1	PDS1	SPT16
+1.599250e-02	1	5	21	6526	97048	Saccharomyces	cerevisiae	GO:0007093	biological_process	"mitotic checkpoint"	AMN1
+7.150920e-05	2	5	18	6526	97048	Saccharomyces	cerevisiae	GO:0016944	molecular_function	"RNA polymerase II transcription elongation factor activity"	PAF1	SPT16
+4.736020e-02	1	5	63	6526	97048	Saccharomyces	cerevisiae	GO:0016569	biological_process	"covalent chromatin modification"	PAF1
+5.126220e-02	2	5	506	6526	97048	Saccharomyces	cerevisiae	GO:0006350	biological_process	"transcription"	PAF1	SPT16
+2.366500e-01	1	5	343	6526	97048	Saccharomyces	cerevisiae	GO:0045449	biological_process	"regulation of transcription"	SPT16
+2.459640e-02	3	5	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	ESP1	PDS1	SPT16
+2.056760e-01	5	5	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	AMN1	ESP1	PAF1	PDS1	SPT16
+2.929560e-01	1	5	437	6526	97048	Saccharomyces	cerevisiae	GO:0006950	biological_process	"response to stress"	PDS1
+9.100760e-02	3	5	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	PAF1	PDS1	SPT16
+4.930890e-02	4	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	ESP1	PAF1	PDS1	SPT16
+1.749860e-04	2	5	28	6526	97048	Saccharomyces	cerevisiae	GO:0006368	biological_process	"RNA elongation from RNA polymerase II promoter"	PAF1	SPT16
+4.638240e-01	3	5	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	PAF1	PDS1	SPT16
+1.475440e-01	1	5	205	6526	97048	Saccharomyces	cerevisiae	GO:0006974	biological_process	"response to DNA damage stimulus"	PDS1
+1.674900e-02	1	5	22	6526	97048	Saccharomyces	cerevisiae	GO:0043596	cellular_component	"replication fork (sensu Eukaryota)"	SPT16
+1.917890e-01	1	5	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	PDS1
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	AMN1	ESP1	PAF1	PDS1	SPT16
+1.447700e-02	1	5	19	6526	97048	Saccharomyces	cerevisiae	GO:0000725	biological_process	"recombinational repair"	PDS1
+2.297090e-03	1	5	3	6526	97048	Saccharomyces	cerevisiae	GO:0001100	biological_process	"negative regulation of exit from mitosis"	AMN1
+4.350290e-02	2	5	463	6526	97048	Saccharomyces	cerevisiae	GO:0051276	biological_process	"chromosome organization and biogenesis"	PAF1	SPT16
+5.982710e-02	1	5	80	6526	97048	Saccharomyces	cerevisiae	GO:0043414	biological_process	"biopolymer methylation"	PAF1
+2.034220e-01	2	5	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	PAF1	SPT16
+1.274120e-04	2	5	24	6526	97048	Saccharomyces	cerevisiae	GO:0008023	cellular_component	"transcription elongation factor complex"	PAF1	SPT16
+5.632120e-01	1	5	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	PDS1
+4.359740e-01	1	5	706	6526	97048	Saccharomyces	cerevisiae	GO:0043412	biological_process	"biopolymer modification"	PAF1
+9.180190e-01	1	5	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	ESP1
+1.927540e-01	2	5	1076	6526	97048	Saccharomyces	cerevisiae	GO:0044428	cellular_component	"nuclear part"	PAF1	SPT16
+1.872540e-01	1	5	265	6526	97048	Saccharomyces	cerevisiae	GO:0000723	biological_process	"telomere maintenance"	PAF1
+4.160320e-02	2	5	452	6526	97048	Saccharomyces	cerevisiae	GO:0007001	biological_process	"chromosome organization and biogenesis (sensu Eukaryota)"	PAF1	SPT16
+6.854850e-02	1	5	92	6526	97048	Saccharomyces	cerevisiae	GO:0017038	biological_process	"protein import"	PDS1
+6.177010e-05	3	5	122	6526	97048	Saccharomyces	cerevisiae	GO:0007067	biological_process	"mitosis"	AMN1	ESP1	PDS1
+4.016310e-01	5	5	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	AMN1	ESP1	PAF1	PDS1	SPT16
+4.930890e-02	4	5	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	ESP1	PAF1	PDS1	SPT16
+2.297090e-03	1	5	3	6526	97048	Saccharomyces	cerevisiae	GO:0006358	biological_process	"regulation of global transcription from RNA polymerase II promoter"	SPT16
+5.430980e-01	1	5	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	PDS1
+1.675880e-01	1	5	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	PDS1
+8.507890e-03	3	5	652	6526	97048	Saccharomyces	cerevisiae	GO:0050791	biological_process	"regulation of physiological process"	AMN1	ESP1	SPT16
+7.365180e-04	2	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0000819	biological_process	"sister chromatid segregation"	ESP1	PDS1
+3.415110e-01	1	5	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	PDS1
+2.878680e-02	1	5	38	6526	97048	Saccharomyces	cerevisiae	GO:0000790	cellular_component	"nuclear chromatin"	SPT16
+3.848070e-02	1	5	51	6526	97048	Saccharomyces	cerevisiae	GO:0000075	biological_process	"cell cycle checkpoint"	AMN1
+5.109040e-02	5	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	AMN1	ESP1	PAF1	PDS1	SPT16
+1.932800e-02	2	5	301	6526	97048	Saccharomyces	cerevisiae	GO:0044451	cellular_component	"nucleoplasm part"	PAF1	SPT16
+4.691810e-03	2	5	145	6526	97048	Saccharomyces	cerevisiae	GO:0051726	biological_process	"regulation of cell cycle"	AMN1	ESP1
+2.255560e-03	2	5	100	6526	97048	Saccharomyces	cerevisiae	GO:0006310	biological_process	"DNA recombination"	PAF1	PDS1
+1.013830e-01	1	5	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	AMN1
+2.263180e-02	2	5	327	6526	97048	Saccharomyces	cerevisiae	GO:0030528	molecular_function	"transcription regulator activity"	PAF1	SPT16
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	AMN1	ESP1	PAF1	PDS1	SPT16
+5.763660e-02	1	5	77	6526	97048	Saccharomyces	cerevisiae	GO:0016591	cellular_component	"DNA-directed RNA polymerase II, holoenzyme"	PAF1
+5.109040e-02	5	5	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	AMN1	ESP1	PAF1	PDS1	SPT16
+1.000000e+00	5	5	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	AMN1	ESP1	PAF1	PDS1	SPT16
+4.736020e-02	1	5	63	6526	97048	Saccharomyces	cerevisiae	GO:0004175	molecular_function	"endopeptidase activity"	ESP1
+4.691810e-03	2	5	145	6526	97048	Saccharomyces	cerevisiae	GO:0000074	biological_process	"regulation of progression through cell cycle"	AMN1	ESP1
+8.998860e-03	3	5	665	6526	97048	Saccharomyces	cerevisiae	GO:0050789	biological_process	"regulation of biological process"	AMN1	ESP1	SPT16
+3.028320e-02	1	5	40	6526	97048	Saccharomyces	cerevisiae	GO:0000785	cellular_component	"chromatin"	SPT16
+4.332870e-02	2	5	462	6526	97048	Saccharomyces	cerevisiae	GO:0006351	biological_process	"transcription, DNA-dependent"	PAF1	SPT16
+3.090690e-01	1	5	465	6526	97048	Saccharomyces	cerevisiae	GO:0019222	biological_process	"regulation of metabolism"	SPT16
+9.844590e-03	2	5	212	6526	97048	Saccharomyces	cerevisiae	GO:0006325	biological_process	"establishment and/or maintenance of chromatin architecture"	PAF1	SPT16
+1.296110e-02	1	5	17	6526	97048	Saccharomyces	cerevisiae	GO:0016571	biological_process	"histone methylation"	PAF1
+1.182500e-01	3	5	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	PAF1	PDS1	SPT16
+4.292870e-02	1	5	57	6526	97048	Saccharomyces	cerevisiae	GO:0006352	biological_process	"transcription initiation"	SPT16
+2.580190e-01	1	5	378	6526	97048	Saccharomyces	cerevisiae	GO:0019219	biological_process	"regulation of nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	SPT16
+5.201030e-02	2	5	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	AMN1	PDS1
+4.672490e-01	1	5	772	6526	97048	Saccharomyces	cerevisiae	GO:0016787	molecular_function	"hydrolase activity"	ESP1
+3.842480e-01	1	5	603	6526	97048	Saccharomyces	cerevisiae	GO:0050896	biological_process	"response to stimulus"	PDS1
+1.332850e-01	1	5	184	6526	97048	Saccharomyces	cerevisiae	GO:0044427	cellular_component	"chromosomal part"	SPT16
+2.345720e-03	2	5	102	6526	97048	Saccharomyces	cerevisiae	GO:0015630	cellular_component	"microtubule cytoskeleton"	ESP1	PDS1
+4.012620e-01	5	5	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	AMN1	ESP1	PAF1	PDS1	SPT16
+1.535970e-01	1	5	214	6526	97048	Saccharomyces	cerevisiae	GO:0005694	cellular_component	"chromosome"	SPT16
+1.794330e-01	1	5	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	PDS1
+2.131350e-01	5	5	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	AMN1	ESP1	PAF1	PDS1	SPT16
+3.476150e-02	1	5	46	6526	97048	Saccharomyces	cerevisiae	GO:0006367	biological_process	"transcription initiation from RNA polymerase II promoter"	SPT16
+2.953530e-02	1	5	39	6526	97048	Saccharomyces	cerevisiae	GO:0005657	cellular_component	"replication fork"	SPT16
+7.851780e-02	5	5	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	AMN1	ESP1	PAF1	PDS1	SPT16
+6.330830e-05	3	5	123	6526	97048	Saccharomyces	cerevisiae	GO:0000087	biological_process	"M phase of mitotic cell cycle"	AMN1	ESP1	PDS1
+2.235940e-01	1	5	322	6526	97048	Saccharomyces	cerevisiae	GO:0006355	biological_process	"regulation of transcription, DNA-dependent"	SPT16
+5.000880e-04	3	5	246	6526	97048	Saccharomyces	cerevisiae	GO:0000279	biological_process	"M phase"	AMN1	ESP1	PDS1
+6.856580e-04	2	5	55	6526	97048	Saccharomyces	cerevisiae	GO:0000070	biological_process	"mitotic sister chromatid segregation"	ESP1	PDS1
+1.414560e-01	1	5	196	6526	97048	Saccharomyces	cerevisiae	GO:0006357	biological_process	"regulation of transcription from RNA polymerase II promoter"	SPT16
+7.856320e-03	3	5	634	6526	97048	Saccharomyces	cerevisiae	GO:0051244	biological_process	"regulation of cellular physiological process"	AMN1	ESP1	SPT16
+1.558650e-03	2	5	83	6526	97048	Saccharomyces	cerevisiae	GO:0005819	cellular_component	"spindle"	ESP1	PDS1
+3.561920e-01	1	5	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	PDS1
+2.581360e-03	5	5	1983	6526	97048	Saccharomyces	cerevisiae	GO:0005634	cellular_component	"nucleus"	AMN1	ESP1	PAF1	PDS1	SPT16
+1.167550e-01	1	5	160	6526	97048	Saccharomyces	cerevisiae	GO:0006281	biological_process	"DNA repair"	PDS1
+3.550630e-02	1	5	47	6526	97048	Saccharomyces	cerevisiae	GO:0051170	biological_process	"nuclear import"	PDS1
+3.061850e-03	1	5	4	6526	97048	Saccharomyces	cerevisiae	GO:0035101	cellular_component	"FACT complex"	SPT16
+1.847850e-02	2	5	294	6526	97048	Saccharomyces	cerevisiae	GO:0006366	biological_process	"transcription from RNA polymerase II promoter"	PAF1	SPT16
+1.271160e-01	1	5	175	6526	97048	Saccharomyces	cerevisiae	GO:0000228	cellular_component	"nuclear chromosome"	SPT16
+2.269850e-03	3	5	412	6526	97048	Saccharomyces	cerevisiae	GO:0007049	biological_process	"cell cycle"	AMN1	ESP1	PDS1

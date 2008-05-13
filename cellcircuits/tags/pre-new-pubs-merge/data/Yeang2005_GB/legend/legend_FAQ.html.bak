@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+ <head>
+  <title>Cell Circuit Search : Yeang 2005 Legend</title>
+  <link rel="stylesheet" type="text/css" href="/search/v1.4/master.css" />
+ </head>
+<body>
+
+<img src="Yeang_legend_only.jpg">
+<br>
+
+<b>FAQ: Yeang et al. (2005) <br>"Validation and refinement of gene regulatory pathways on a network of physical interactions"</b>
+
+<a href="http://genomebiology.com/2005/6/7/R62">[fulltext]</a>
+<a href="/Yeang2005">[suppl. website]</a>
+<br>
+<br>
+
+<ol>
+<li><a href="#abstract"><b><a href="#abstract">Abstract</a><b><br>
+<li><a href="#organisms"><b>What organism is being modeled?</b></a><br>
+</ol>
+
+<center>
+<table width="90%">
+<tr><td name="abstract">
+<b>Abstract.</b>
+As genome-scale measurements lead to increasingly complex models of gene regulation, systematic approaches are needed to validate and refine these models.  Towards this goal, we describe an automated procedure for prioritizing genetic perturbations to optimally discriminate among alternative models of a gene regulatory network.  Using this procedure, we evaluate 38 candidate regulatory networks in yeast and perform four high priority gene knockout experiments.  The refined networks support previously-unknown regulatory mechanisms downstream of SOK2 and SWI4.  
+</td>
+</tr>
+</table>
+</center>
+
+<ol>
+<li><a name="organisms"><b>What organism is being modeled?</b></a>
+<p>
+Yeast <i>(Saccharomyces cerevisiae)</i>
+<p>
+
+<li><a name="model_interpretation"><b>How do I interpret the network models from this paper?</b></a>
+<p>
+The models represent hypothetical transcriptional regulatory pathways.  They show observed physical interactions that may be used to explain expression changes that are observed (yellow boxes) due to knockouts of individual transcription factors (red nodes).  In the models, a connection from gene <i>a</i> to <i>b</i> represents the experimental observation that the proteins encoded by <i>a</i> and <i>b</i> physically interact (dotted links), or that the protein encoded by <i>a</i> binds the promoter of <i>b</i> (solid links).
+</p>
+
+<li><a name="data_sources"><b>What data were used to generate these models?</b></a>
+<p>
+The models were generated using three types of publically available data.
+<br><br>
+<table>
+   <tr>
+      <td valign="top"><b>Protein-protein interactions</b></td>
+      <td>
+The set of all 15,116 pair-wise protein-protein interactions recorded in the Database of Interacting Proteins (DIP) as of April 2004.  DIP contains data from both high-throughput  (e.g. yeast two-hybrid) and low-throughput experiments.
+
+<font size="-1"><p>Deane, C.M., Salwinski, L., Xenarios, I. &amp; Eisenberg, D. 2002. Protein interactions: two methods for assessment of the reliability of high throughput observations. <i>Mol Cell Proteomics</i> <b>1</b>, 349-56.</p></font>
+      <hr>
+      </td>
+   </tr>
+   <tr>
+      <td valign="top"><b>Protein-DNA interactions</b></td>
+      <td>
+5558 promoter-binding interactions (p-value < 0.001) for 106 transcription factors measured using genome-wide location analysis (i.e. chromatin immunoprecipitation followed by microarray chip) 
+
+<font size="-1"><p>Lee, T.I., Rinaldi, N., Robert, F., Odom, D., Bar-Joseph, Z., Gerber,G., Hannett, N., Harbison, C., Thimpson, C., Simon, I. et al. 2002. Transcriptional regulatory networks in Saccharomyces cerevisiae. <i>Science</i> <b>298</b>, 799-804.</p></font>
+      <hr>
+      </td>
+   </tr>
+   <tr>
+      <td valign="top"><b>Single-gene knockout expression profiles</b></td>
+      <td>
+273 microarray profiles measuring the expression changes in a single-gene deletion mutant compared to wild-type yeast.  Expression changes with a p-value < 0.02 were considered significant.
+
+<font size="-1"><p>Hughes, T.R., Marton, M., Jones, A., Roberts, C., Stoughton, R., Armour, C., Bennett, H., Coffey, E., Dai, H., He, Y. et al. 2000. Functional discovery via a compendium of expression profiles. <i>Cell</i> <b>102</b>, 109-26.</p></font>
+      <hr>
+      </td>
+   </tr>
+</table>
+
+</p>
+<li><a name="computational_methods"><b>What computational methods were used to generate these models?</b></a>
+<p>
+We applied the Physical Network Modeling procedure described in Yeang 2004 (see reference below).
+</p>
+<p>
+For each gene deletion experiment (red circles), the modeling procedure identified the most probable paths of protein-protein and promoter-binding interactions that connect the deleted gene (the perturbation) to genes that were differentially expressed in response to the deletion (the effects of perturbation).  Thus, a path represents one possible physical explanation by which a deleted gene regulates a second gene downstream.  
+</p>
+<p>Based on the expression data (ie whether the knockout caused an increase of decrease in expression), each interaction on a path was annotated with (1) its probable direction of information flow and (2) its probable regulatory effect as an inducer or repressor.  In most cases, the available experimental data was not sufficient to completely specify whether a regulatory interaction was an inducer or repressor.  In these cases, the algorithm picked one (of many) internally consistent set of annotations, and these consistent (but ambiguous) annotations are displayed in the models.
+<\p>
+
+<p> The computational problem was formalized using a factor graph and the most probable set of paths and annotations was found using the max-product algorithm (see Kschischang 2001) for a more detailed description of factor graphs and the max-product algorithm).  The resulting set of paths was partitioned into smaller network models for easier visualization.</p>
+
+<font size="-1">
+<p >Kschischang, F., Frey, B. &amp; Loeliger, H. 2001. Factor graphs and the sum-product algorithm. <i>IEEE Transactions on Information Theory</i> <b>47</b>, 498-519.</p>
+
+<p >Yeang, C.H., Ideker, T., Jaakkola, T. 2004. Physical network models. <i>Journal of Computational Biology</i> <b>11(2-3)</b>, 243-262.</p>
+</font>
+
+<li><a name="software_download"><b>Can I download the software used to generate these models?</b></a>
+<p>
+Yes, the software is available on the <a href="/Yeang2005/plugin.shtml">supplementary website</a>.  It is packaged as a plug-in for the <a href=http://www.cytoscape.org>Cytoscape</a> network modeling and analysis platform.  
+</p>
+</ol>
+
+
+</body>
+</html>
+  

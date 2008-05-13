@@ -1,0 +1,131 @@
+#USING SEC6 instead of its synonym YIL068C in Saccharomyces cerevisiae
+#USING PEX7 instead of its synonym YDR142C in Saccharomyces cerevisiae
+#USING MYO2 instead of its synonym YOR326W in Saccharomyces cerevisiae
+#USING SEC15 instead of its synonym YGL233W in Saccharomyces cerevisiae
+#USING SEC10 instead of its synonym YLR166C in Saccharomyces cerevisiae
+#USING EXO84 instead of its synonym YBR102C in Saccharomyces cerevisiae
+#USING SEC8 instead of its synonym YPR055W in Saccharomyces cerevisiae
+pval	n_genes_in_model_with_term	n_genes_in_model	n_genes_with_term	n_genes_in_GO	species_id	genus	species	term_acc	term_type	term_name	genes_in_model_with_term
+5.704270e-09	5	7	82	6526	97048	Saccharomyces	cerevisiae	GO:0007114	biological_process	"cell budding"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.915710e-02	1	7	18	6526	97048	Saccharomyces	cerevisiae	GO:0003774	molecular_function	"motor activity"	YOR326W
+1.544400e-02	7	7	3598	6526	97048	Saccharomyces	cerevisiae	GO:0005737	cellular_component	"cytoplasm"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+3.488160e-02	1	7	33	6526	97048	Saccharomyces	cerevisiae	GO:0044438	cellular_component	"microbody part"	YDR142C
+3.214940e-03	1	7	3	6526	97048	Saccharomyces	cerevisiae	GO:0000268	molecular_function	"peroxisome targeting sequence binding"	YDR142C
+2.787820e-01	7	7	5438	6526	97048	Saccharomyces	cerevisiae	GO:0005623	cellular_component	"cell"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+5.758110e-04	2	7	35	6526	97048	Saccharomyces	cerevisiae	GO:0000131	cellular_component	"incipient bud site"	YBR102C	YPR055W
+1.072630e-03	1	7	1	6526	97048	Saccharomyces	cerevisiae	GO:0005053	molecular_function	"peroxisome targeting signal-2 binding"	YDR142C
+9.933980e-01	1	7	3339	6526	97048	Saccharomyces	cerevisiae	GO:0044237	biological_process	"cellular metabolism"	YBR102C
+7.513770e-01	2	7	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044422	cellular_component	"organelle part"	YDR142C	YOR326W
+2.477800e-01	1	7	260	6526	97048	Saccharomyces	cerevisiae	GO:0015031	biological_process	"protein transport"	YDR142C
+6.685630e-01	1	7	952	6526	97048	Saccharomyces	cerevisiae	GO:0043228	cellular_component	"non-membrane-bound organelle"	YOR326W
+1.271110e-06	7	7	946	6526	97048	Saccharomyces	cerevisiae	GO:0051234	biological_process	"establishment of localization"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+2.265080e-01	1	7	235	6526	97048	Saccharomyces	cerevisiae	GO:0006605	biological_process	"protein targeting"	YDR142C
+9.945740e-01	1	7	3427	6526	97048	Saccharomyces	cerevisiae	GO:0008152	biological_process	"metabolism"	YBR102C
+5.939770e-05	5	7	523	6526	97048	Saccharomyces	cerevisiae	GO:0051649	biological_process	"establishment of cellular localization"	YDR142C	YGL233W	YIL068C	YLR166C	YPR055W
+8.875790e-08	4	7	48	6526	97048	Saccharomyces	cerevisiae	GO:0005934	cellular_component	"bud tip"	YBR102C	YGL233W	YIL068C	YPR055W
+1.587690e-01	7	7	5018	6526	97048	Saccharomyces	cerevisiae	GO:0005622	cellular_component	"intracellular"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+4.007420e-02	1	7	38	6526	97048	Saccharomyces	cerevisiae	GO:0048308	biological_process	"organelle inheritance"	YOR326W
+1.918810e-04	6	7	1167	6526	97048	Saccharomyces	cerevisiae	GO:0005488	molecular_function	"binding"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YPR055W
+1.083540e-01	1	7	106	6526	97048	Saccharomyces	cerevisiae	GO:0007005	biological_process	"mitochondrion organization and biogenesis"	YOR326W
+4.892810e-09	4	7	24	6526	97048	Saccharomyces	cerevisiae	GO:0006893	biological_process	"Golgi to plasma membrane transport"	YGL233W	YIL068C	YLR166C	YPR055W
+9.644940e-01	1	7	2474	6526	97048	Saccharomyces	cerevisiae	GO:0043170	biological_process	"macromolecule metabolism"	YBR102C
+8.330790e-01	1	7	1472	6526	97048	Saccharomyces	cerevisiae	GO:0019538	biological_process	"protein metabolism"	YBR102C
+4.317830e-02	1	7	41	6526	97048	Saccharomyces	cerevisiae	GO:0007033	biological_process	"vacuole organization and biogenesis"	YOR326W
+9.963810e-01	1	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043227	cellular_component	"membrane-bound organelle"	YDR142C
+3.384020e-02	1	7	32	6526	97048	Saccharomyces	cerevisiae	GO:0048590	biological_process	"non-developmental growth"	YOR326W
+6.421020e-03	1	7	6	6526	97048	Saccharomyces	cerevisiae	GO:0000146	molecular_function	"microfilament motor activity"	YOR326W
+2.831950e-01	1	7	303	6526	97048	Saccharomyces	cerevisiae	GO:0008104	biological_process	"protein localization"	YDR142C
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0008150	biological_process	"biological_process"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+6.427180e-07	5	7	221	6526	97048	Saccharomyces	cerevisiae	GO:0046903	biological_process	"secretion"	YBR102C	YGL233W	YIL068C	YLR166C	YPR055W
+6.052710e-06	4	7	138	6526	97048	Saccharomyces	cerevisiae	GO:0005933	cellular_component	"bud"	YBR102C	YGL233W	YIL068C	YPR055W
+3.179450e-01	1	7	347	6526	97048	Saccharomyces	cerevisiae	GO:0006396	biological_process	"RNA processing"	YBR102C
+3.488160e-02	1	7	33	6526	97048	Saccharomyces	cerevisiae	GO:0044439	cellular_component	"peroxisomal part"	YDR142C
+1.878160e-01	1	7	191	6526	97048	Saccharomyces	cerevisiae	GO:0044430	cellular_component	"cytoskeletal part"	YOR326W
+2.006680e-08	5	7	105	6526	97048	Saccharomyces	cerevisiae	GO:0030468	biological_process	"establishment of cell polarity (sensu Fungi)"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+2.166180e-10	4	7	12	6526	97048	Saccharomyces	cerevisiae	GO:0006904	biological_process	"vesicle docking during exocytosis"	YGL233W	YIL068C	YLR166C	YPR055W
+5.353310e-03	1	7	5	6526	97048	Saccharomyces	cerevisiae	GO:0030482	cellular_component	"actin cable"	YOR326W
+1.174480e-02	1	7	11	6526	97048	Saccharomyces	cerevisiae	GO:0007118	biological_process	"budding cell apical bud growth"	YOR326W
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0003674	molecular_function	"molecular_function"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0000001	biological_process	"mitochondrion inheritance"	YOR326W
+2.314700e-08	5	7	108	6526	97048	Saccharomyces	cerevisiae	GO:0007163	biological_process	"establishment and/or maintenance of cell polarity"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+7.679110e-06	4	7	146	6526	97048	Saccharomyces	cerevisiae	GO:0030427	cellular_component	"site of polarized growth"	YBR102C	YGL233W	YIL068C	YPR055W
+1.598630e-02	1	7	15	6526	97048	Saccharomyces	cerevisiae	GO:0006625	biological_process	"protein targeting to peroxisome"	YDR142C
+3.384020e-02	1	7	32	6526	97048	Saccharomyces	cerevisiae	GO:0007117	biological_process	"budding cell bud growth"	YOR326W
+4.570500e-01	1	7	545	6526	97048	Saccharomyces	cerevisiae	GO:0016070	biological_process	"RNA metabolism"	YBR102C
+1.361810e-01	1	7	135	6526	97048	Saccharomyces	cerevisiae	GO:0006397	biological_process	"mRNA processing"	YBR102C
+9.963810e-01	1	7	3601	6526	97048	Saccharomyces	cerevisiae	GO:0043231	cellular_component	"intracellular membrane-bound organelle"	YDR142C
+9.330390e-07	5	7	234	6526	97048	Saccharomyces	cerevisiae	GO:0000902	biological_process	"cellular morphogenesis"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.650400e-08	4	7	32	6526	97048	Saccharomyces	cerevisiae	GO:0007121	biological_process	"bipolar bud site selection"	YGL233W	YIL068C	YLR166C	YPR055W
+1.094930e-06	7	7	927	6526	97048	Saccharomyces	cerevisiae	GO:0006810	biological_process	"transport"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.000000e+00	7	7	6526	6526	97048	Saccharomyces	cerevisiae	GO:0005575	cellular_component	"cellular_component"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+5.704270e-09	5	7	82	6526	97048	Saccharomyces	cerevisiae	GO:0019954	biological_process	"asexual reproduction"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+9.412140e-09	4	7	28	6526	97048	Saccharomyces	cerevisiae	GO:0006906	biological_process	"vesicle fusion"	YGL233W	YIL068C	YLR166C	YPR055W
+5.465350e-08	5	7	128	6526	97048	Saccharomyces	cerevisiae	GO:0051301	biological_process	"cell division"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+8.290720e-03	5	7	1481	6526	97048	Saccharomyces	cerevisiae	GO:0043234	cellular_component	"protein complex"	YBR102C	YGL233W	YIL068C	YLR166C	YPR055W
+1.851180e-01	1	7	188	6526	97048	Saccharomyces	cerevisiae	GO:0016071	biological_process	"mRNA metabolism"	YBR102C
+5.550880e-02	1	7	53	6526	97048	Saccharomyces	cerevisiae	GO:0051640	biological_process	"organelle localization"	YOR326W
+1.959970e-06	5	7	266	6526	97048	Saccharomyces	cerevisiae	GO:0000003	biological_process	"reproduction"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.805940e-03	6	7	1720	6526	97048	Saccharomyces	cerevisiae	GO:0016043	biological_process	"cell organization and biogenesis"	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+5.404990e-05	5	7	513	6526	97048	Saccharomyces	cerevisiae	GO:0046907	biological_process	"intracellular transport"	YDR142C	YGL233W	YIL068C	YLR166C	YPR055W
+8.695110e-11	6	7	102	6526	97048	Saccharomyces	cerevisiae	GO:0005938	cellular_component	"cell cortex"	YBR102C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+2.314700e-08	5	7	108	6526	97048	Saccharomyces	cerevisiae	GO:0030467	biological_process	"establishment and/or maintenance of cell polarity (sensu Fungi)"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+5.653020e-02	1	7	54	6526	97048	Saccharomyces	cerevisiae	GO:0030863	cellular_component	"cortical cytoskeleton"	YOR326W
+5.653020e-02	1	7	54	6526	97048	Saccharomyces	cerevisiae	GO:0030864	cellular_component	"cortical actin cytoskeleton"	YOR326W
+1.507480e-01	7	7	4981	6526	97048	Saccharomyces	cerevisiae	GO:0044424	cellular_component	"intracellular part"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+7.901580e-06	4	7	147	6526	97048	Saccharomyces	cerevisiae	GO:0048193	biological_process	"Golgi vesicle transport"	YGL233W	YIL068C	YLR166C	YPR055W
+5.252180e-05	5	7	510	6526	97048	Saccharomyces	cerevisiae	GO:0005515	molecular_function	"protein binding"	YBR102C	YGL233W	YIL068C	YLR166C	YPR055W
+1.193120e-14	5	7	8	6526	97048	Saccharomyces	cerevisiae	GO:0000145	cellular_component	"exocyst"	YBR102C	YGL233W	YIL068C	YLR166C	YPR055W
+2.003030e-01	1	7	205	6526	97048	Saccharomyces	cerevisiae	GO:0005856	cellular_component	"cytoskeleton"	YOR326W
+4.007420e-02	1	7	38	6526	97048	Saccharomyces	cerevisiae	GO:0007031	biological_process	"peroxisome organization and biogenesis"	YDR142C
+1.206310e-01	7	7	4825	6526	97048	Saccharomyces	cerevisiae	GO:0007582	biological_process	"physiological process"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.915710e-02	1	7	18	6526	97048	Saccharomyces	cerevisiae	GO:0005048	molecular_function	"signal sequence binding"	YDR142C
+9.330390e-07	5	7	234	6526	97048	Saccharomyces	cerevisiae	GO:0009653	biological_process	"morphogenesis"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.025020e-01	1	7	100	6526	97048	Saccharomyces	cerevisiae	GO:0000398	biological_process	"nuclear mRNA splicing, via spliceosome"	YBR102C
+1.034790e-01	1	7	101	6526	97048	Saccharomyces	cerevisiae	GO:0000377	biological_process	"RNA splicing, via transesterification reactions with bulged adenosine as nucleophile"	YBR102C
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0051646	biological_process	"mitochondrion localization"	YOR326W
+2.652350e-02	1	7	25	6526	97048	Saccharomyces	cerevisiae	GO:0048311	biological_process	"mitochondrion distribution"	YOR326W
+1.068200e-02	1	7	10	6526	97048	Saccharomyces	cerevisiae	GO:0007119	biological_process	"budding cell isotropic bud growth"	YOR326W
+1.386750e-02	1	7	13	6526	97048	Saccharomyces	cerevisiae	GO:0005782	cellular_component	"peroxisomal matrix"	YDR142C
+2.784230e-01	7	7	5437	6526	97048	Saccharomyces	cerevisiae	GO:0044464	cellular_component	"cell part"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.085750e-06	4	7	97	6526	97048	Saccharomyces	cerevisiae	GO:0000910	biological_process	"cytokinesis"	YGL233W	YIL068C	YLR166C	YPR055W
+8.262540e-01	1	7	1443	6526	97048	Saccharomyces	cerevisiae	GO:0006139	biological_process	"nucleobase, nucleoside, nucleotide and nucleic acid metabolism"	YBR102C
+5.346320e-02	1	7	51	6526	97048	Saccharomyces	cerevisiae	GO:0042579	cellular_component	"microbody"	YDR142C
+1.915710e-02	1	7	18	6526	97048	Saccharomyces	cerevisiae	GO:0042277	molecular_function	"peptide binding"	YDR142C
+1.102980e-01	1	7	108	6526	97048	Saccharomyces	cerevisiae	GO:0000375	biological_process	"RNA splicing, via transesterification reactions"	YBR102C
+2.418750e-01	1	7	253	6526	97048	Saccharomyces	cerevisiae	GO:0006886	biological_process	"intracellular protein transport"	YDR142C
+2.006680e-08	5	7	105	6526	97048	Saccharomyces	cerevisiae	GO:0030010	biological_process	"establishment of cell polarity"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.348240e-05	5	7	387	6526	97048	Saccharomyces	cerevisiae	GO:0007275	biological_process	"development"	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.598630e-02	1	7	15	6526	97048	Saccharomyces	cerevisiae	GO:0030478	cellular_component	"actin cap"	YOR326W
+3.265490e-07	4	7	66	6526	97048	Saccharomyces	cerevisiae	GO:0000282	biological_process	"bud site selection"	YGL233W	YIL068C	YLR166C	YPR055W
+5.104880e-07	5	7	214	6526	97048	Saccharomyces	cerevisiae	GO:0045045	biological_process	"secretory pathway"	YBR102C	YGL233W	YIL068C	YLR166C	YPR055W
+1.304860e-01	1	7	129	6526	97048	Saccharomyces	cerevisiae	GO:0008380	biological_process	"RNA splicing"	YBR102C
+1.148010e-01	7	7	4791	6526	97048	Saccharomyces	cerevisiae	GO:0009987	biological_process	"cellular process"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.512130e-01	1	7	151	6526	97048	Saccharomyces	cerevisiae	GO:0006461	biological_process	"protein complex assembly"	YBR102C
+9.815390e-01	2	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043229	cellular_component	"intracellular organelle"	YDR142C	YOR326W
+6.685630e-01	1	7	952	6526	97048	Saccharomyces	cerevisiae	GO:0043232	cellular_component	"intracellular non-membrane-bound organelle"	YOR326W
+1.092150e-01	7	7	4757	6526	97048	Saccharomyces	cerevisiae	GO:0050875	biological_process	"cellular physiological process"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+8.507290e-01	1	7	1552	6526	97048	Saccharomyces	cerevisiae	GO:0043283	biological_process	"biopolymer metabolism"	YBR102C
+8.862310e-07	4	7	94	6526	97048	Saccharomyces	cerevisiae	GO:0016044	biological_process	"membrane organization and biogenesis"	YGL233W	YIL068C	YLR166C	YPR055W
+5.346320e-02	1	7	51	6526	97048	Saccharomyces	cerevisiae	GO:0005777	cellular_component	"peroxisome"	YDR142C
+1.670370e-07	4	7	56	6526	97048	Saccharomyces	cerevisiae	GO:0006944	biological_process	"membrane fusion"	YGL233W	YIL068C	YLR166C	YPR055W
+7.513770e-01	2	7	2228	6526	97048	Saccharomyces	cerevisiae	GO:0044446	cellular_component	"intracellular organelle part"	YDR142C	YOR326W
+5.360940e-08	6	7	294	6526	97048	Saccharomyces	cerevisiae	GO:0016192	biological_process	"vesicle-mediated transport"	YBR102C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+4.964560e-01	1	7	609	6526	97048	Saccharomyces	cerevisiae	GO:0005829	cellular_component	"cytosol"	YDR142C
+9.898450e-01	1	7	3137	6526	97048	Saccharomyces	cerevisiae	GO:0044238	biological_process	"primary metabolism"	YBR102C
+7.876220e-02	1	7	76	6526	97048	Saccharomyces	cerevisiae	GO:0006897	biological_process	"endocytosis"	YOR326W
+1.598630e-02	1	7	15	6526	97048	Saccharomyces	cerevisiae	GO:0000011	biological_process	"vacuole inheritance"	YOR326W
+8.076080e-02	1	7	78	6526	97048	Saccharomyces	cerevisiae	GO:0015629	cellular_component	"actin cytoskeleton"	YOR326W
+4.446870e-10	4	7	14	6526	97048	Saccharomyces	cerevisiae	GO:0048278	biological_process	"vesicle docking"	YGL233W	YIL068C	YLR166C	YPR055W
+2.189230e-06	6	7	550	6526	97048	Saccharomyces	cerevisiae	GO:0051641	biological_process	"cellular localization"	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+2.578110e-01	1	7	272	6526	97048	Saccharomyces	cerevisiae	GO:0045184	biological_process	"establishment of protein localization"	YDR142C
+9.815390e-01	2	7	3924	6526	97048	Saccharomyces	cerevisiae	GO:0043226	cellular_component	"organelle"	YDR142C	YOR326W
+4.610700e-11	6	7	92	6526	97048	Saccharomyces	cerevisiae	GO:0044448	cellular_component	"cell cortex part"	YBR102C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.093260e-01	1	7	107	6526	97048	Saccharomyces	cerevisiae	GO:0005935	cellular_component	"bud neck"	YBR102C
+3.406970e-01	2	7	1112	6526	97048	Saccharomyces	cerevisiae	GO:0006996	biological_process	"organelle organization and biogenesis"	YDR142C	YOR326W
+3.265490e-07	4	7	66	6526	97048	Saccharomyces	cerevisiae	GO:0007105	biological_process	"cytokinesis, site selection"	YGL233W	YIL068C	YLR166C	YPR055W
+1.848360e-06	7	7	996	6526	97048	Saccharomyces	cerevisiae	GO:0051179	biological_process	"localization"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+1.551640e-07	4	7	55	6526	97048	Saccharomyces	cerevisiae	GO:0006892	biological_process	"post-Golgi vesicle-mediated transport"	YGL233W	YIL068C	YLR166C	YPR055W
+1.810110e-02	1	7	17	6526	97048	Saccharomyces	cerevisiae	GO:0000245	biological_process	"spliceosome assembly"	YBR102C
+1.314370e-01	1	7	130	6526	97048	Saccharomyces	cerevisiae	GO:0040007	biological_process	"growth"	YOR326W
+1.453690e-03	7	7	2568	6526	97048	Saccharomyces	cerevisiae	GO:0044444	cellular_component	"cytoplasmic part"	YBR102C	YDR142C	YGL233W	YIL068C	YLR166C	YOR326W	YPR055W
+9.221640e-11	5	7	37	6526	97048	Saccharomyces	cerevisiae	GO:0006887	biological_process	"exocytosis"	YBR102C	YGL233W	YIL068C	YLR166C	YPR055W
