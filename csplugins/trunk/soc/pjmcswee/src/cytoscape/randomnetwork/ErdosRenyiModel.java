@@ -1,0 +1,179 @@
+/*
+File: RandomNetworkPlugin
+
+References:
+Erdos, P.; Renyi A. (1959). "On Random Graphs. I.".  Publications Matheaticae 6: 290-297.
+Erdos, P.; Renyi A. (1960). "The Evolution of Random Graphs".  Magyar Tud. Akad. Math. Kutato INt. Koxl. 5:17-61.
+Gilber, E.N. (1959). "Random Graphs".  Annals of Mathematical Statistics 30: 1141 - 1144.
+
+
+
+Author: Patrick J. McSweeney
+Creation Date: 5/07/08
+
+*/
+
+package cytoscape.randomnetwork;
+
+import cytoscape.plugin.*;
+import cytoscape.*;
+import cytoscape.view.*;
+import giny.view.*;
+import cytoscape.data.*;
+
+
+
+
+public class ErdosRenyiModel extends RandomNetworkModel   
+{
+	private double probability;
+
+   /**
+	*	Creates a model for constructing random graphs according to the erdos-renyi model.
+	*   This constructor will create random graphs with a given number of edges. 
+	*	Each call to generate will create networks with the specified number of edges.
+	*	G(n,m) model
+	*
+	*	@param pNumNodes<int> : # of nodes in Network
+	*	@param pNumEdges<int> : # of edges in Network
+	*	@param pDirected<boolean> : Network is directed(TRUE) or undirected(FALSE)
+	*
+	*/
+	public ErdosRenyiModel(int pNumNodes, int pNumEdges, boolean pDirected)
+	{
+		super(pNumNodes,pNumEdges,pDirected);
+		probability = UNSPECIFIED;
+	}
+
+   /**
+	*	Creates a model for constructing random graphs according to the erdos-renyi model.
+	*   This constructor will create random graphs with a given probability.  So that
+	*	each call to generate can create networks with a different number of edges.
+	*   G(n,p)
+	*
+	*	@param pNumNodes<int> : # of nodes in Network
+	*	@param pDirected<boolean> : Network is directed(TRUE) or undirected(FALSE)
+	*	@param pProbability<double> : probability of an edge
+	*
+	*/
+	public ErdosRenyiModel(int pNumNodes, boolean pDirected, double pProbability)
+	{
+		super(pNumNodes,UNSPECIFIED,pDirected);
+	
+		//TODO: Is it common practice to throw exceptions in these cases?
+		//For now just force to valid range
+		if(probability < 0d)
+		{
+			 probability = 0d;
+		}
+		if(probability > 1.0d)
+		{
+			probability = 1.0d;
+		}
+		
+		probability = pProbability;
+	}
+
+   /* 
+	*	Generates a random graph based on the model specified by the constructor: 
+	*	G(n,m) or G(n,p)
+	*/	
+	public  void Generate()
+	{
+
+	    CyNetwork random_network = Cytoscape.createNetwork("Erdos-Renyi network");
+	    CyNetworkView view = Cytoscape.createNetworkView(random_network);
+
+
+	    //Create N nodes
+	    CyNode[] nodes = new CyNode[numNodes];
+
+
+		//For each edge
+	    for(int i = 0; i < numNodes; i++)
+		{
+			//Create a new node nodeID = i, create = true
+		    CyNode node = Cytoscape.getCyNode(""+i, true);
+
+			//Add this node to the network
+		    random_network.addNode(node);
+			
+			//Save node in array
+		    nodes[i] = node;
+		    
+			//Create a Node view
+			NodeView nv = view.addNodeView(node.getRootGraphIndex());
+			
+			double x_pos = random.nextDouble();
+			double y_pos = random.nextDouble();
+			nv.setXPosition(x_pos * 200.0d);
+			nv.setYPosition(y_pos * 200.0d);
+
+		}
+		
+		//If we are creating a random network with a specified number of edges
+		//G(n,m) Model
+		if(probability == UNSPECIFIED) 
+		{
+			for(int i = 0; i < numEdges; i++)
+			{
+				//Select two nodes (source and target only apply if directed)
+				int source = Math.abs(random.nextInt()) % numNodes;
+				int target = Math.abs(random.nextInt()) % numNodes;
+				
+				//Check to see if this edge already exists
+				CyEdge check = Cytoscape.getCyEdge(nodes[source], nodes[target], new String("Exists"), new String("("+source +"," +target+")"), true, directed);
+				
+				//If this edge already exists ... I hope this method won't take too long... we may need a faster way of checking...
+				if(check != null)
+				{
+					i--;
+					continue;
+				}					
+				
+				//Create and edge between node i and node j
+				CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target], Semantics.INTERACTION, new String("("+source +"," +target+")"), true, directed);
+
+				//Add this edge to the network
+				random_network.addEdge(edge);
+			}
+		}
+		//G(n,m) Model
+		else
+		{
+			//TODO:  This algorithm runs in N^2 time.  With millions of edges this is not optimal.
+			//A faster algorithm will randomly select a number of edges 'm' based on p and then do the G(n,m) model
+		
+		
+			//For each node
+			for(int i = 0; i < numNodes; i++)
+			{
+				//For every other node
+				for(int j = 0; j < numNodes; j++)
+				{
+					//If random indicates this edge exists
+					if(random.nextDouble() <= probability)
+					{
+					
+						//Create and edge between node i and node j
+						CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j], Semantics.INTERACTION, new String("("+i +"," +j+")"), true, directed);
+
+						//add 
+						random_network.addEdge(edge);
+					}
+				}
+			}
+
+		}
+	
+	}
+
+	public  void Compare()
+	{
+	
+	
+	}
+
+
+
+}
