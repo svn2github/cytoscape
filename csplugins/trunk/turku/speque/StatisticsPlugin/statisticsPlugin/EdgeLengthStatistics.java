@@ -106,8 +106,8 @@ public class EdgeLengthStatistics {
 	public String reportStatistics(){
 		DecimalFormat df = new DecimalFormat("0.##");
 	    String result = "";
-	    result += "Number Of (non-loop) Edges: " + getCount() + " (total: " + (count + totalCount) + ")\n";
-	    result += "Edge Length Standard Deviation: " + df.format(getStandardDeviation()) + "\n";
+	    result += "Number of (non-loop) edges: " + getCount() + " (total: " + (count + totalCount) + ")\n";
+	    result += "Edge length standard deviation: " + df.format(getStandardDeviation()) + "\n";
 	    //result += "Edge Length Mean Deviation: " + df.format(getMeanDeviation()) + "\n";
 	    return result;
 	}

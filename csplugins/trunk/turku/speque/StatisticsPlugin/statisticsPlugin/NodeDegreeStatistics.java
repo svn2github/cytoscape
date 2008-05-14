@@ -104,9 +104,9 @@ public class NodeDegreeStatistics {
 	public String reportStatistics(){
 		DecimalFormat df = new DecimalFormat("0.##");
 		String result = "";
-		result += "Node Degree Mean: " + df.format(getMean()) + "\n";
-		result += "Maximum Node Degree: " + getMax() + "\n";
-		result += "Minimum Node Degree: " + getMin() + "\n";
+		result += "Node degree mean: " + df.format(getMean()) + "\n";
+		result += "Maximum node degree: " + getMax() + "\n";
+		result += "Minimum node degree: " + getMin() + "\n";
 		return result;
 	}
 	

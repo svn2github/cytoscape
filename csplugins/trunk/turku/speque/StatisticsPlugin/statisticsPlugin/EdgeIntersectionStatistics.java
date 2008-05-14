@@ -22,7 +22,9 @@
 package statisticsPlugin;
 
 import giny.model.Edge;
+import giny.model.Node;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
@@ -50,12 +52,16 @@ public class EdgeIntersectionStatistics {
 	/**
 	 * Number of intersections found.
 	 */
-	private int intersections;
+	private double intersections;
 	
 	/**
 	 * Number of edges checked.
 	 */
 	private int checkedEdges = 0;
+	
+	private double cImpossible;
+	private double cAll;
+	private double cMax;
 	
 	/**
 	 * Class constructor.
@@ -85,7 +91,7 @@ public class EdgeIntersectionStatistics {
 			}
 		}
 		else{
-			//else pick (max) 1000 random nodes with different source and target nodes 
+			//else pick (max) 1000 random nodes with different source and target nodes (= no loops)
 			Iterator<CyEdge> iter = network.edgesIterator();
 			Vector<Integer> allEdgeIndices = new Vector<Integer>();
 			while(iter.hasNext()){
@@ -116,6 +122,39 @@ public class EdgeIntersectionStatistics {
 		}
 		checkedEdges = selectedEdges.size();
 		intersections = intersections/2;
+		
+		iter1 = selectedEdges.iterator();
+		Vector<Integer> checkedNodes = new Vector<Integer>();
+		int sumOfDegrees = 0;
+		System.out.println("Valittuja viivoja on " + selectedEdges.size());
+		while(iter1.hasNext()){
+			Edge e = iter1.next();
+			Node n1 = e.getSource();
+			Node n2 = e.getTarget();
+			ArrayList<Node> twoNodes = new ArrayList<Node>();
+			twoNodes.add(n1);
+			twoNodes.add(n2);
+			for(Node n : twoNodes){
+				if(!checkedNodes.contains(new Integer(n.getRootGraphIndex()))){
+					checkedNodes.add(new Integer(n.getRootGraphIndex()));
+					int[] adjEdges = network.getAdjacentEdgeIndicesArray(n.getRootGraphIndex(), true, true, true);
+					int degree = 0;
+					for(int i = 0; i < adjEdges.length; i++){
+						if(selectedEdges.contains(network.getEdge(adjEdges[i]))){
+							degree++;
+						}
+					}
+					sumOfDegrees += degree*(degree-1);
+				}
+			}
+		}
+		cImpossible = sumOfDegrees/2;
+		cAll = (selectedEdges.size()*(selectedEdges.size()-1))/2;
+		cMax = cAll - cImpossible;
+		System.out.println(intersections);
+		System.out.println(cImpossible);
+		System.out.println(cAll);
+		System.out.println(cMax);
 	}
 	
 	/**
@@ -124,7 +163,12 @@ public class EdgeIntersectionStatistics {
 	 * @return Calculation results.
 	 */
 	public String reportStatistics(){
-		return "Number of intersections of " + checkedEdges + " random edges: " + (intersections) + "\n";
+		if(cMax == 0){
+			return "Intersection ratio (0 = worst, 1 = best, " + checkedEdges + " edges examined: 0 \n";
+		}
+		else{
+			return "Intersection ratio (0 = worst, 1 = best, " + checkedEdges + " edges examined): " + (1 - intersections/cMax) + "\n";
+		}
 	}
 	
 	/**
@@ -185,7 +229,14 @@ public class EdgeIntersectionStatistics {
 	 * Gets the number of intersections found. 
 	 * @return The number of intersections found.
 	 */
-	public int getIntersections() {
+	public double getIntersections() {
 		return intersections;
+	}
+
+	/**
+	 * @return the cImpossible
+	 */
+	public double getCImpossible() {
+		return cImpossible;
 	}	
 }

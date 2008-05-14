@@ -152,7 +152,7 @@ public class StatisticsManager {
 		System.out.println(df.format(nds.getXStandardDeviation()));
 		System.out.println(df.format(nds.getYStandardDeviation()));
 		System.out.println(eis.getIntersections() + "(" + eis.getCheckedEdges() + ")");
-		System.out.println(df.format(as.getSum()/(double)as.getCheckedNodes()) + "(" + as.getCheckedNodes() + ")");
+		System.out.println(df.format(1.0 - (as.getSum()/(double)as.getCheckedNodes())) + "(" + as.getCheckedNodes() + ")");
 		System.out.println(df.format(es.getStandardDeviation()));
 		
 		

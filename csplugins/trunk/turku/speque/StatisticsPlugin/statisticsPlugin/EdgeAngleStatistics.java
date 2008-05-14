@@ -145,6 +145,7 @@ public class EdgeAngleStatistics {
 				//sort the angles in ascending order
 				angles = sortEdgeAngles(angles);
 				//calculate angle between edges next to each other and store the smallest one
+				double realAngles = 0;
 				double smallestAngle = 360.0;
 				for (int i = 0; i < angles.size(); i++) {
 					if (i != angles.size() - 1) {
@@ -152,23 +153,26 @@ public class EdgeAngleStatistics {
 						Edge second = angles.elementAt(i + 1).getEdge();
 						double candidate = angleBetweenEdges(n, first, second);
 						if (candidate < smallestAngle && 
-								!(first.getSource() == second.getSource() && first.getTarget() == first.getTarget()) &&
-								!(first.getTarget() == second.getSource() && first.getSource() == first.getTarget()))
+								!(first.getSource() == second.getSource() && first.getTarget() == second.getTarget()) &&
+								!(first.getTarget() == second.getSource() && first.getSource() == second.getTarget()))
 							smallestAngle = candidate;
+							realAngles++;
 					} else {
 						//let's not forget the angle between the first and the last one
 						Edge first = angles.elementAt(i).getEdge();
 						Edge second = angles.elementAt(0).getEdge();
 						double candidate = angleBetweenEdges(n, first, second);
 						if (candidate < smallestAngle && 
-								!(first.getSource() == second.getSource() && first.getTarget() == first.getTarget()) &&
-								!(first.getTarget() == second.getSource() && first.getSource() == first.getTarget()))
+								//are the end points of both edgees same? 
+								!(first.getSource() == second.getSource() && first.getTarget() == second.getTarget()) &&
+								!(first.getTarget() == second.getSource() && first.getSource() == second.getTarget()))
 							smallestAngle = candidate;
+							realAngles++;
 					}
 				}
-				//add the smallest angle to the sum
+				//
 				if(smallestAngle != 360.0){
-					sum += smallestAngle;
+					sum += ((360.0/realAngles)-smallestAngle)/(360.0/realAngles);
 					checkedNodes++;
 				}
 			}		
@@ -182,8 +186,8 @@ public class EdgeAngleStatistics {
 	public String reportStatistics(){
 		//return information about the mean of the smallest angles
 		DecimalFormat df = new DecimalFormat("0.##");
-		if(checkedNodes != 0) return "Mean of the smallest angles between edges (" + checkedNodes + " nodes checked): " + (df.format(sum/checkedNodes)) + "\n";
-		else return "No nodes checked!";
+		if(checkedNodes != 0) return "Angle deviation (0 = worst, 1 = best, " + checkedNodes + " nodes examined): " + (df.format(1.0 - sum/checkedNodes)) + "\n";
+		else return "No nodes checked for angle deviation! \n";
 	}
 	
 	/**
