@@ -113,7 +113,7 @@ public class MetricNodeTree {
 	}
 	
 	/**
-	 * Palauttaa kaikki puun objektit.
+	 * Palauttaa vasemman alipuun.
 	 */
 	public MetricNodeTree getLeft() {
 		return left;
@@ -121,7 +121,7 @@ public class MetricNodeTree {
 	
 	
 	/**
-	 * Palauttaa kaikki puun objektit.
+	 * Palauttaa oikean alipuun.
 	 */
 	public MetricNodeTree getRight() {
 		return right;
@@ -195,22 +195,47 @@ public class MetricNodeTree {
 		}
 	}
 	
+//	/**
+//	 * Lis‰‰ objektista 'object' korkeintaan et‰isyydell‰ 'range' sijaitsevat alkiot listaan 'result'.
+//	 */
+//	private void getRange(ArrayList<MetricNode> result, MetricNode object, double range, double leftDistance) {
+//		if (isLeaf()) {
+//			result.add(getObject());
+//			result.get(result.size() - 1);
+//			return;
+//		}
+//		else {
+//			double rightDistance = object.distance(right.getObject());
+//			if (left.getRadius() + range >= leftDistance) {
+//				left.getRange(result, object, range, leftDistance);
+//			}	
+//			if (right.getRadius() + range >= rightDistance) {
+//				right.getRange(result, object, range, rightDistance);
+//			}
+//		}
+//	}
+	
 	/**
 	 * Lis‰‰ objektista 'object' korkeintaan et‰isyydell‰ 'range' sijaitsevat alkiot listaan 'result'.
 	 */
-	private void getRange(ArrayList<MetricNode> result, MetricNode object, double range, double leftDistance) {
+	private void getRange(ArrayList<MetricNode> result, MetricNode object, double range, double parentDistance) {
 		if (isLeaf()) {
 			result.add(getObject());
 			result.get(result.size() - 1);
 			return;
 		}
 		else {
-			double rightDistance = object.distance(right.getObject());
-			if (left.getRadius() + range >= leftDistance) {
+			if(Math.abs(parentDistance - left.getObject().getDistance()) <= range + radius){
+			double leftDistance = object.distance(left.getObject());
+			if (leftDistance <= range + radius) {
 				left.getRange(result, object, range, leftDistance);
-			}	
-			if (right.getRadius() + range >= rightDistance) {
+			}
+			}
+			if(Math.abs(parentDistance - right.getObject().getDistance()) <= range + radius){
+			double rightDistance = object.distance(right.getObject());
+			if (rightDistance <= range + radius) {
 				right.getRange(result, object, range, rightDistance);
+			}
 			}
 		}
 	}
