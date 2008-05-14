@@ -106,6 +106,17 @@ public class EnhancedForceDirectedLayout {
 		boolean converged= false;
 		double t = k;
 		
+//		System.out.println("Size of this network = " + network.getNodeCount());
+//		Iterator<Node> test = network.nodesIterator();
+//		while(test.hasNext()){
+//			System.out.println(test.next().getRootGraphIndex());
+//		}
+//		Set<Integer> setti = posManager.positions.keySet();
+//		Iterator<Integer> test2 = setti.iterator();
+//		while(test2.hasNext()){
+//			System.out.print(test2.next() + ", ");
+//		}
+		
 		MTree mTree;
 		MTreeNode.posman = posManager;
 		
@@ -265,7 +276,7 @@ public class EnhancedForceDirectedLayout {
 			t = cool(t);
 		}
 		
-		System.out.println("grid: " + treeTime + " rep: " + repTime + " attr: " + attTime);
+		//System.out.println("grid: " + treeTime + " rep: " + repTime + " attr: " + attTime);
 	}
 	
 	/**

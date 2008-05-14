@@ -172,6 +172,7 @@ public class MultilevelLayoutAlgorithm extends AbstractLayout{
 		double nodesSoFar = 0.0; 
 		
 		for(CyNetwork cn : components){
+			//System.out.println("Komponentin vaihto");
 			Vector<CyNetwork> networkSet = new Vector<CyNetwork>((int)Math.sqrt(cn.getNodeCount()), 5);
 			networkSet.add(cn);
 			boolean goOn = true;

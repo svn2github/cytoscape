@@ -22,7 +22,9 @@
 package multilevelLayoutPlugin;
 
 import java.awt.geom.Point2D;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Container class used to store node positions. Each node is referred by 
@@ -35,14 +37,14 @@ public class NodePositionManager {
 	/**
 	 * Mapping from root graph indices to node positions.
 	 */
-	private HashMap<Integer, Point2D> positions;
+	public Map<Integer, Point2D> positions;
 	
 	/**
 	 * Class constructor.
 	 *
 	 */
 	public NodePositionManager(){
-		positions = new HashMap<Integer, Point2D>();
+		positions = Collections.synchronizedMap(new HashMap<Integer, Point2D>());
 	}
 	
 	/**
@@ -52,7 +54,7 @@ public class NodePositionManager {
 	 * @param initialCapacity
 	 */
 	public NodePositionManager(int initialCapacity) throws IllegalArgumentException{
-		positions = new HashMap<Integer, Point2D>(initialCapacity);
+		positions = Collections.synchronizedMap(new HashMap<Integer, Point2D>(initialCapacity));
 	}
 	
 	/**
@@ -64,6 +66,7 @@ public class NodePositionManager {
 	public void addNode(int id, double x, double y) throws IllegalStateException{
 		if(x == Double.NaN  || y == Double.NaN) throw new IllegalStateException();
 		positions.put(new Integer(id), new Point2D.Double(x, y));
+		//System.out.println("Added node with index " + id);
 	}
 	
 	/**
@@ -113,7 +116,10 @@ public class NodePositionManager {
 	 * @return X-coordinate of the node with the given root graph index.
 	 */
 	public double getX(int id) throws NullPointerException{
-		if (!positions.containsKey(new Integer(id))) System.out.println("Wtf, ei löytynyt nodea ID:llä" + id);
+		if (!positions.containsKey(new Integer(id))){
+			System.out.println("Wtf, ei löytynyt nodea ID:llä " + id);
+			positions.put(id, new Point2D.Double(0, 0));
+		}
 		return positions.get(new Integer(id)).getX();
 	}
 	
