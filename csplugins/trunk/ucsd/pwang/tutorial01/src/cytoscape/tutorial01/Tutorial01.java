@@ -8,13 +8,13 @@ import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 
 /**
- * 
+ * A sample plugin to show how to add a tabbed Panel to Cytoscape
+ * Control panel. Deploy this plugin (tutorial01.jar) to the plugins
+ * directory. A new tabbed panel "MyPanel" will appear at the 
+ * control panel of Cytoscape.
  */
 public class Tutorial01 extends CytoscapePlugin {
 
-	/**
-	 * Add a tabbed panel to the control panel
-	 */
 	public Tutorial01() {
 
 		// Three steps
@@ -28,7 +28,6 @@ public class Tutorial01 extends CytoscapePlugin {
 		// (3) Add the JPanel object to the cytoPanel west
 		ctrlPanel.add("myPanel", myPanel);
 
-
 		// Select the panel after the plugin is initialized
 		int indexInCytoPanel = ctrlPanel.indexOfComponent("myPanel");
 		ctrlPanel.setSelectedIndex(indexInCytoPanel);						
@@ -38,5 +37,4 @@ public class Tutorial01 extends CytoscapePlugin {
 		public MyPanel() {
 		}
 	}
-
 }
