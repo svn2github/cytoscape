@@ -477,7 +477,6 @@ public class CyMenus implements GraphViewChangeListener {
 		helpMenu.addSeparator();
 
 		addAction(new HelpAboutAction());
-    addAction(new LoggerAction()) ;
   }
 
 	/**
