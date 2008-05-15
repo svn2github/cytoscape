@@ -61,7 +61,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
     clearButton = new javax.swing.JButton();
     logTabs = new javax.swing.JTabbedPane();
 
-    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     closeButton.setText("Close");
     closeButton.addActionListener(new java.awt.event.ActionListener()
     {

@@ -222,10 +222,10 @@
 		<copy todir="${build.classes}">
 			<fileset dir="${tests.dir}" includes="**/*.xml" />
 		</copy>
-
+<!--		
 		<antcall target="splash" />
-		
-	</target>
+-->	
+</target>
 
 	<!-- ======================================================= -->
 	<!-- Create the PNG splash screen from the SVG file with the -->
@@ -642,7 +642,7 @@
 	<!--                                                         -->
 	<!-- ======================================================= -->
 	<target name="release" 
-	        depends="jar, test" 
+	        depends="jar" 
 		description="Creates Cytoscape Release">
 
 		<echo>
