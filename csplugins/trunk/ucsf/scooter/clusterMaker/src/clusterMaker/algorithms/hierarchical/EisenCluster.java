@@ -55,7 +55,8 @@ public class EisenCluster {
 
 	final static String GROUP_ATTRIBUTE = "__hierarchicalGroups";
 	final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
-	final static String CLUSTER_ATTRIBUTE = "__hierarchicalClusters";
+	final static String CLUSTER_NODE_ATTRIBUTE = "__hierarchicalNodeClusters";
+	final static String CLUSTER_ATTR_ATTRIBUTE = "__hierarchicalAttrClusters";
 	final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
 	final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
 
@@ -110,14 +111,12 @@ public class EisenCluster {
 			if (min1 < 0) {
 				int index1 = -min1-1;
 				order1 = nodeOrder[index1];
-				System.out.println("1: order1 = "+order1);
 				counts1 = (double) nodeCounts[index1];
 				// ID1 = nodeID[index1];
 				ID1 = nodeList[index1].getName();
 				nodeList[node].setDistance(Math.max(nodeList[node].getDistance(), nodeList[index1].getDistance()));
 			} else {
 				order1 = min1;
-				System.out.println("2: order1 = "+order1+", min1 = "+min1);
 				counts1 = 1.0;
 				// ID1 = keyword+min1+"X"; // Shouldn't this be the name of the gene/condition?
 				ID1 = matrix.getRowLabel(min1);
@@ -126,14 +125,12 @@ public class EisenCluster {
 			if (min2 < 0) {
 				int index2 = -min2-1;
 				order2 = nodeOrder[index2];
-				System.out.println("3: order2 = "+order2);
 				counts2 = (double) nodeCounts[index2];
 				// ID2 = nodeID[index2];
 				ID2 = nodeList[index2].getName();
 				nodeList[node].setDistance(Math.max(nodeList[node].getDistance(), nodeList[index2].getDistance()));
 			} else {
 				order2 = (double) min2;
-				System.out.println("4: order2 = "+order2+", min2 = "+min2);
 				counts2 = 1.0;
 				// ID2 = keyword+min2+"X"; // Shouldn't this be the name of the gene/condition?
 				ID2 = matrix.getRowLabel(min2);
@@ -144,7 +141,6 @@ public class EisenCluster {
 
 			nodeCounts[node] = (int)counts1 + (int)counts2;
 			nodeOrder[node] = (counts1*order1 + counts2*order2) / (counts1 + counts2);
-			System.out.println(""+node+": nodeCounts = "+nodeCounts[node]+", nodeorder = "+nodeOrder[node]);
 		}
 
 		// Now sort based on tree structure
@@ -153,19 +149,18 @@ public class EisenCluster {
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
-		netAttr.setListAttribute(netID, CLUSTER_ATTRIBUTE, attrList);
+
+		if (matrix.isTransposed()) {
+			netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
+		} else {
+			netAttr.setListAttribute(netID, CLUSTER_NODE_ATTRIBUTE, attrList);
+		}
 
 		ArrayList<String> orderList = new ArrayList();
 		String[] rowArray = matrix.getRowLabels();
 		for (int i = 0; i < order.length; i++) {
 			orderList.add(rowArray[order[i]]);
 		}
-
-		// Remove the attributes that are lingering
-		if (netAttr.hasAttribute(netID, ARRAY_ORDER_ATTRIBUTE))
-			netAttr.deleteAttribute(netID, ARRAY_ORDER_ATTRIBUTE);
-		if (netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
-		netAttr.deleteAttribute(netID, NODE_ORDER_ATTRIBUTE);
 
 		String[] columnArray = matrix.getColLabels();
 		ArrayList<String>columnList = new ArrayList(columnArray.length);
@@ -177,20 +172,15 @@ public class EisenCluster {
 			// We did an Array cluster -- output the calculated array order
 			// and the actual node order
 			netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, orderList);
-			netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, columnList);
+
+			// Don't override the columnlist if a node order already exists
+			if (!netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
+				netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, columnList);
 		} else {
 			netAttr.setListAttribute(netID, NODE_ORDER_ATTRIBUTE, orderList);
-			netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, columnList);
-		}
-
-		// See if we have any old groups in this network
-		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE)) {
-			List<String>clList = (List<String>)netAttr.getListAttribute(netID, GROUP_ATTRIBUTE);
-			for (String groupName: clList) {
-				CyGroup group = CyGroupManager.findGroup(groupName);
-				if (group != null)
-					CyGroupManager.removeGroup(group);
-			}
+			// Don't override the columnlist if a node order already exists
+			if (!netAttr.hasAttribute(netID, ARRAY_ORDER_ATTRIBUTE))
+				netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, columnList);
 		}
 
 		// Finally, create the group hierarchy
@@ -203,6 +193,35 @@ public class EisenCluster {
 		}
 
 		return "Complete";
+	}
+
+	public static void resetAttributes() {
+		// Update the network attribute "HierarchicalCluster" and make it hidden
+		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+
+		// Remove the attributes that are lingering
+		if (netAttr.hasAttribute(netID, ARRAY_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, ARRAY_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, NODE_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, NODE_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, GROUP_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, CLUSTER_ATTR_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, CLUSTER_ATTR_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, CLUSTER_NODE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, CLUSTER_NODE_ATTRIBUTE);
+
+		// See if we have any old groups in this network
+		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE)) {
+			List<String>clList = (List<String>)netAttr.getListAttribute(netID, GROUP_ATTRIBUTE);
+			for (String groupName: clList) {
+				CyGroup group = CyGroupManager.findGroup(groupName);
+				if (group != null)
+					CyGroupManager.removeGroup(group);
+			}
+			netAttr.deleteAttribute(netID, GROUP_ATTRIBUTE);
+		}
 	}
 
 	private static TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric, ClusterMethod clusterMethod) { 
@@ -618,9 +637,9 @@ public class EisenCluster {
 			// If order1 and order2 are equal, their order is determined by the
 			// order in which they were clustered
 			if (i1 < i2) {
-				double increase = count1;
+				double increase = count2;
 				if (order1 < order2)
-					increase = count2;
+					increase = count1;
 				for (int j = 0; j < nElements; j++) {
 					int clusterID = clusterIDs[j];
 					if (clusterID == i1 && order1 >= order2) newOrder[j] += increase;
@@ -628,9 +647,9 @@ public class EisenCluster {
 					if (clusterID == i1 || clusterID == i2) clusterIDs[j] = -i-1;
 				}
 			} else {
-				double increase = count1;
+				double increase = count2;
 				if (order1 <= order2)
-					increase = count2;
+					increase = count1;
 				for (int j = 0; j < nElements; j++) {
 					int clusterID = clusterIDs[j];
 					if (clusterID == i1 && order1 > order2) newOrder[j] += increase;

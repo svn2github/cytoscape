@@ -69,7 +69,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 
 	ClusterMethod clusterMethod =  ClusterMethod.AVERAGE_LINKAGE;
 	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
-	boolean transposeMatrix = false;
+	boolean clusterAttributes = false;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 
@@ -120,9 +120,9 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		                                  Tunable.LIST, "",
 		                                  (Object)attributeArray, (Object)null, Tunable.MULTISELECT));
 
-		// Whether or not to transpose the matrix
-		clusterProperties.add(new Tunable("transposeMatrix",
-		                                  "Transpose matrix (if using node attributes)",
+		// Whether or not to cluster attributes as well as nodes
+		clusterProperties.add(new Tunable("clusterAttributes",
+		                                  "Cluster attributes as well as nodes", 
 		                                  Tunable.BOOLEAN, new Boolean(false)));
 
 		clusterProperties.initializeProperties();
@@ -145,9 +145,9 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		if ((t != null) && (t.valueChanged() || force))
 			distanceMetric = distanceTypes[((Integer) t.getValue()).intValue()];
 
-		t = clusterProperties.get("transposeMatrix");
+		t = clusterProperties.get("clusterAttributes");
 		if ((t != null) && (t.valueChanged() || force))
-			transposeMatrix = ((Boolean) t.getValue()).booleanValue();
+			clusterAttributes = ((Boolean) t.getValue()).booleanValue();
 
 		t = clusterProperties.get("attributeList");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -164,8 +164,15 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		// To make debugging easier, sort the attribute array
 		Arrays.sort(attributeArray);
 
-		// Cluster!
-		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, transposeMatrix);
+		// Start by cleaning up and resetting
+		EisenCluster.resetAttributes();
+
+		// Cluster the attributes, if requested
+		if (clusterAttributes)
+			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true);
+
+		// Cluster the nodes
+		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false);
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 

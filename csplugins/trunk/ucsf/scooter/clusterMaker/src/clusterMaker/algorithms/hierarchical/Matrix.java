@@ -80,14 +80,17 @@ public class Matrix {
 	public Matrix(String[] weightAttributes, boolean transpose) {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		this.transpose = transpose;
+
+		// Create our local copy of the weightAtributes array
+		String[] attributeArray = new String[weightAttributes.length];
 		
 		// If our weightAttribute is on edges, we're looking at a symmetrical matrix
-		if (weightAttributes.length > 1 || weightAttributes[0].startsWith("node.")) {
+		if (weightAttributes.length > 1 && weightAttributes[0].startsWith("node.")) {
 			// Get rid of the leading type information
 			for (int i = 0; i < weightAttributes.length; i++) {
-				weightAttributes[i] = weightAttributes[i].substring(5);
+				attributeArray[i] = weightAttributes[i].substring(5);
 			}
-			buildGeneArrayMatrix(network, weightAttributes, transpose);
+			buildGeneArrayMatrix(network, attributeArray, transpose);
 		} else if (weightAttributes.length == 1 && weightAttributes[0].startsWith("edge.")) {
 			buildSymmetricalMatrix(network, weightAttributes[0].substring(5));
 		} else {
@@ -216,10 +219,7 @@ public class Matrix {
 	}
 
 	public double[] getWeights() {
-		if (transpose)
-			return rowWeights;
-		else
-			return colWeights;
+		return colWeights;
 	}
 
 	public void setRowWeight(int row, double value) {
@@ -433,6 +433,7 @@ public class Matrix {
 						matrix[row][column] = thisCondMap.get(rowLabel);
 					}
 				}
+				column++;
 			}
 		} else {
 			this.nRows = nodeList.size();
