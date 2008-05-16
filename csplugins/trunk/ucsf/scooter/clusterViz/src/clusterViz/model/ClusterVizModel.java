@@ -122,48 +122,45 @@ public class ClusterVizModel extends TVModel {
 		}
 
 		setExprData(exprData);
+		hashGIDs();
+		hashAIDs();
+		gidFound(true);
+		aidFound(true);
 
 		// Now, get the gene tree results (GTR) or array tree results (ATR) from Cytoscape, depending on
 		// what we clustered
-		List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), "__hierarchicalClusters");
 
-		boolean geneCluster = true;
+		if (networkAttributes.hasAttribute(network.getIdentifier(), "__hierarchicalNodeClusters")) {
+			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), "__hierarchicalNodeClusters");
+			setGtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
+			String [][] gtrHeaders = new String[groupList.size()][4];
 
-		setGtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
-		String [][] gtrHeaders = new String[groupList.size()][4];
+			parseGroupHeaders(groupList, gtrHeaders);
 
-		// Parse the group data: format is NAME\tID1\tID2\tdistance
-		headerNumber = 0;
-		for (String group: groupList) {
-			String[] tokens = group.split("[\t ]");
-			String name = tokens[0];
-			String id1 = tokens[1];
-			String id2 = tokens[2];
-			Double distance = new Double(tokens[3]);
-			if (geneCluster && (arrayList.contains(id1) || arrayList.contains(id2))) {
-				geneCluster = false;
-			}
-
-			gtrHeaders[headerNumber][0] = name;
-			gtrHeaders[headerNumber][1] = id1;
-			gtrHeaders[headerNumber][2] = id2;
-			gtrHeaders[headerNumber++][3] = distance.toString();
+			setGtrHeaders(gtrHeaders);
+			hashGTRs();
 		}
 
-		setGtrHeaders(gtrHeaders);
+		// If we're not a gene cluster, we need to transpose the matrix
+		// when we save it
+		if (networkAttributes.hasAttribute(network.getIdentifier(), "__hierarchicalAttrClusters")) {
+			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), "__hierarchicalAttrClusters");
+			setAtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
+			String [][] atrHeaders = new String[groupList.size()][4];
+
+			parseGroupHeaders(groupList, atrHeaders);
+
+			setAtrHeaders(atrHeaders);
+			hashATRs();
+		}
+
 
 		// We don't use weights
 		setEweightFound(false);
 		setGweightFound(false);
 
-		// If we're not a gene cluster, we need to transpose the matrix
-		// when we save it
-
 		// Set up our hashes
-		hashGIDs();
-		hashGTRs();
 
-		gidFound(true);
 	}
 
 	public String getName() {
@@ -174,4 +171,21 @@ public class ClusterVizModel extends TVModel {
 		return Cytoscape.getCurrentNetwork().getIdentifier();
 	}
 
+	private void parseGroupHeaders (List<String>groupList, String [][] headers) {
+
+		// Parse the group data: format is NAME\tID1\tID2\tdistance
+		int headerNumber = 0;
+		for (String group: groupList) {
+			String[] tokens = group.split("[\t ]");
+			String name = tokens[0];
+			String id1 = tokens[1];
+			String id2 = tokens[2];
+			Double distance = new Double(tokens[3]);
+
+			headers[headerNumber][0] = name;
+			headers[headerNumber][1] = id1;
+			headers[headerNumber][2] = id2;
+			headers[headerNumber++][3] = distance.toString();
+		}
+	}
 }
