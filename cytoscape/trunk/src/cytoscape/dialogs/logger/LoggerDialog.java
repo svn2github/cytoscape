@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /** Singleton dialog */
 public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
@@ -17,7 +18,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
   private static LoggerDialog dialog;
   private Map<LogLevel, List<String>> messageMap;
   private Map<LogLevel, JScrollPane> logTabMap;
-
+	private boolean messageAdded = false;
 
   public static LoggerDialog getLoggerDialog()
     {
@@ -127,6 +128,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
 
   public void handleLog(LogLevel level, String msg)
     {
+
     if (level.getLevel() > 3) return; // not adding messages for "fatal" errors
     
     if (level.equals(LogLevel.LOG_DEBUG))
@@ -141,31 +143,16 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
     // Make sure it gets added back in
     this.messageMap.put(level, Messages);
 
-    // obviously not the way it *will* be done in the end...
-    JEditorPane MessagePane = addTab(level);
-    StringBuffer sb = new StringBuffer();
-    sb.append("<html><style type='text/css'>");
-    sb.append("body,th,td,div,p,h1,h2,li,dt,dd ");
-    sb.append("{ font-family: Tahoma, \"Gill Sans\", Arial, sans-serif; }");
-    sb.append("body { margin: 0px; color: #333333; background-color: #ffffff; }");
-    sb.append("#indent { padding-left: 30px; }");
-    sb.append("ul {list-style-type: none}");
-    sb.append("</style><body>");
+		messageAdded = true;
 
-    sb.append("<table width='100%' cellspacing='5'>");
-    int line = 1;
-    for (int i=messageMap.get(level).size()-1; i >= 0; i--) {
-      sb.append("<tr><td width='5%'>" + line + "</td><td width='95%'>");
-      sb.append(messageMap.get(level).get(i));
-      sb.append("</td></tr>");
-      if (i > 0) { sb.append("<tr><td colspan='2'><hr></td></tr>"); }
-      line++;
-    }
-    sb.append("</table></body></html");
+		if (isVisible()) {
+    	JEditorPane MessagePane = addTab(level);
+    	StringBuffer sb = createMessages(level);
 
-    MessagePane.setContentType("text/html");
-    MessagePane.setText(sb.toString());
-
+    	MessagePane.setContentType("text/html");
+    	MessagePane.setText(sb.toString());
+			messageAdded = false;
+		}
 
 		// We want to pop the dialog up if we get an error or warning
     /*
@@ -202,10 +189,47 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
     this.addTab(LogLevel.LOG_ERROR);
   }
 
+	private StringBuffer createMessages(LogLevel level) {
+    StringBuffer sb = new StringBuffer();
+    sb.append("<html><style type='text/css'>");
+    sb.append("body,th,td,div,p,h1,h2,li,dt,dd ");
+    sb.append("{ font-family: Tahoma, \"Gill Sans\", Arial, sans-serif; }");
+    sb.append("body { margin: 0px; color: #333333; background-color: #ffffff; }");
+    sb.append("#indent { padding-left: 30px; }");
+    sb.append("ul {list-style-type: none}");
+    sb.append("</style><body>");
+
+    sb.append("<table width='100%' cellspacing='5'>");
+    int line = 1;
+    for (int i=0; i < messageMap.get(level).size(); i++) {
+      sb.append("<tr><td width='5%'>" + line + "</td><td width='95%'>");
+      sb.append(messageMap.get(level).get(i));
+      sb.append("</td></tr>");
+      if (i > 0) { sb.append("<tr><td colspan='2'><hr></td></tr>"); }
+      line++;
+		}
+    sb.append("</table></body></html");
+		return sb;
+	}
+
   public void setVisible(boolean vis) {
     if (this.messageMap.size() <= 0) {
       this.addEmptyMessage();
     }
+
+		// Have we updated any messages?
+		if (messageAdded) {
+    	Set<LogLevel> levels = this.messageMap.keySet();
+			for (LogLevel level: levels) {
+    		JEditorPane MessagePane = addTab(level);
+    		StringBuffer sb = createMessages(level);
+
+    		MessagePane.setContentType("text/html");
+    		MessagePane.setText(sb.toString());
+			}
+			messageAdded = false;
+		}
+		// Yes, rebuild the list
     super.setVisible(vis);
   }
 
