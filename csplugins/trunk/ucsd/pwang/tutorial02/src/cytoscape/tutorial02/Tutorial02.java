@@ -11,14 +11,12 @@ import javax.swing.JOptionPane;
 
 
 /**
- * 
+ * A sample plugin to show how to add an image icon (menu item) to the toolbar. 
+ * Deploy this plugin (tutorial02.jar) to the plugins directory. An image icon 
+ * (tiger) will show up on the toolbar. Click on the icon will trigger a message box.
  */
 public class Tutorial02 extends CytoscapePlugin {
 
-	/**
-	 *   Add an image icon (menu item) to the toolbar
-	 */
-	
 	protected ImageIcon icon = new ImageIcon(getClass().getResource("/tiger.jpg"));
 
 	public Tutorial02() {
