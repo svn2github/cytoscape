@@ -108,24 +108,6 @@ public class Tutorial20 extends CytoscapePlugin {
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),"MyNodeMenuItem on node "+ nodeView.getNode().getIdentifier() + " is clicked");	
 			}
 		}
-
-		/**
-		 *  DOCUMENT ME!
-		 *
-		 * @return  DOCUMENT ME!
-		 */
-		public boolean isInToolBar() {
-			return false;
-		}
-
-		/**
-		 *  DOCUMENT ME!
-		 *
-		 * @return  DOCUMENT ME!
-		 */
-		public boolean isInMenuBar() {
-			return true;
-		}
 	}
 
 }
