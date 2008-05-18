@@ -15,7 +15,7 @@ import cytoscape.util.CytoscapeAction;
 public class Tutorial04 extends CytoscapePlugin {
 
 	/**
-	 * create a menu item
+	 * 
 	 */
 	public Tutorial04() {
 		// Create an Action, add the action to Cytoscape menu
@@ -61,24 +61,5 @@ public class Tutorial04 extends CytoscapePlugin {
 			//Cytoscape.destroyNetwork(cyNetwork);
 			//Cytoscape.firePropertyChange(Cytoscape.NETWORK_DESTROYED, cyNetwork, null);
 		}
-
-		/**
-		 *  DOCUMENT ME!
-		 *
-		 * @return  DOCUMENT ME!
-		 */
-		public boolean isInToolBar() {
-			return false;
-		}
-
-		/**
-		 *  DOCUMENT ME!
-		 *
-		 * @return  DOCUMENT ME!
-		 */
-		public boolean isInMenuBar() {
-			return true;
-		}
 	}
-
 }
