@@ -38,9 +38,13 @@ package cytoscape;
 
 import cytoscape.data.readers.CytoscapeSessionReader;
 
-//import cytoscape.dialogs.ErrorDialog;
+import cytoscape.dialogs.logger.LoggerDialog;
 
 import cytoscape.init.CyInitParams;
+
+import cytoscape.logger.LogLevel;
+import cytoscape.logger.CyLogger;
+import cytoscape.logger.ConsoleLogger;
 
 import cytoscape.plugin.PluginManager;
 
@@ -106,9 +110,11 @@ public class CytoscapeInit {
 	private static final String SPLASH_SCREEN_LOCATION = "/cytoscape/images/CytoscapeSplashScreen.png";
 	private static Properties properties;
 	private static Properties visualProperties;
+	private static CyLogger logger;
 
 	static {
-		System.out.println("CytoscapeInit static initialization");
+		logger = CyLogger.getLogger();
+		logger.info("CytoscapeInit static initialization");
 		initProperties();
 	}
 
@@ -136,7 +142,7 @@ public class CytoscapeInit {
 	 */
 	public boolean init(CyInitParams params) {
 		long begintime = System.currentTimeMillis();
-		//ErrorDialog errorDialog = null;
+		logger = CyLogger.getLogger();
 
 		try {
 			initParams = params;
@@ -155,7 +161,8 @@ public class CytoscapeInit {
 
 			// see if we are in headless mode
 			// show splash screen, if appropriate
-			System.out.println("init mode: " + initParams.getMode());
+
+			String consoleLogger = properties.getProperty("logger.console");
 
 			/*
 			 * Initialize as GUI mode
@@ -166,6 +173,9 @@ public class CytoscapeInit {
 				                                          .getResource(SPLASH_SCREEN_LOCATION));
 				WindowUtilities.showSplash(image, 8000);
 
+				// Register the logger dialog as a log handler
+				logger.addLogHandler(LoggerDialog.getLoggerDialog(), LogLevel.LOG_DEBUG);
+
 				/*
 				 * Create Desktop. This includes Vizmapper GUI initialization.
 				 */
@@ -175,23 +185,29 @@ public class CytoscapeInit {
 				Cytoscape.getDesktop().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 				setUpAttributesChangedListener();
+			} else {
+				consoleLogger = null;  // Force logging to the console
 			}
 
-			//errorDialog = new ErrorDialog(Cytoscape.getDesktop(), "Cytoscape Initialization Errors");
+			// Register the console logger, if we're not told not to
+			if (consoleLogger == null || Boolean.getBoolean(consoleLogger))
+				logger.addLogHandler(ConsoleLogger.getLogger(), LogLevel.LOG_DEBUG);
+
+			logger.info("init mode: " + initParams.getMode());
 
 			PluginManager mgr = PluginManager.getPluginManager();
 
 			try {
-				System.out.println("Updating plugins...");
+				logger.info("Updating plugins...");
 				mgr.delete();
 			} catch (cytoscape.plugin.ManagerException me) {
-				//errorDialog.addError(me);
+				logger.error(me.getMessage());
 				me.printStackTrace();
 			}
 
 			mgr.install();
 
-			System.out.println("loading plugins....");
+			logger.info("loading plugins....");
 
 			/*
 			 * TODO smart plugin loading. If there are multiple of the same
@@ -238,13 +254,13 @@ public class CytoscapeInit {
 			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
 
 			for (Throwable t : pluginLoadingErrors) {
-				//errorDialog.addError(t);
+				logger.error(t.getMessage());
 				t.printStackTrace();
 			}
 
 			mgr.clearErrorList();
 
-			System.out.println("loading session...");
+			logger.info("loading session...");
 
 			boolean sessionLoaded = false;
 			if ((initParams.getMode() == CyInitParams.GUI)
@@ -253,19 +269,19 @@ public class CytoscapeInit {
 				sessionLoaded = true;
 			}
 
-			System.out.println("loading networks...");
+			logger.info("loading networks...");
 			loadNetworks();
 
-			System.out.println("loading attributes...");
+			logger.info("loading attributes...");
 			loadAttributes();
 
-			System.out.println("loading expression files...");
+			logger.info("loading expression files...");
 			loadExpressionFiles();
 
 			if ((initParams.getMode() == CyInitParams.GUI)
 			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
 				if(sessionLoaded == false) {
-					System.out.println("Initializing VizMapper...");
+					logger.info("Initializing VizMapper...");
 					initVizmapper();
 				}
 			}
@@ -283,11 +299,8 @@ public class CytoscapeInit {
 		}
 
 		long endtime = System.currentTimeMillis() - begintime;
-		System.out.println("\nCytoscape initialized successfully in: " + endtime + " ms");
+		logger.info("\nCytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
-
-//		if (errorDialog.hasErrors())
-//			errorDialog.setVisible(true);
 
 		return true;
 	}
@@ -368,11 +381,11 @@ public class CytoscapeInit {
 			File parent_dir = new File(dirName, ".cytoscape");
 
 			if (parent_dir.mkdir())
-				System.err.println("Parent_Dir: " + parent_dir + " created.");
+				logger.error("Parent_Dir: " + parent_dir + " created.");
 
 			return parent_dir;
 		} catch (Exception e) {
-			System.err.println("error getting config directory");
+			logger.error("error getting config directory");
 		}
 
 		return null;
@@ -392,11 +405,11 @@ public class CytoscapeInit {
 			File file = new File(parent_dir, file_name);
 
 			if (file.createNewFile())
-				System.err.println("Config file: " + file + " created.");
+				logger.error("Config file: " + file + " created.");
 
 			return file;
 		} catch (Exception e) {
-			System.err.println("error getting config file:" + file_name);
+			logger.error("error getting config file:" + file_name);
 		}
 
 		return null;
@@ -413,7 +426,7 @@ public class CytoscapeInit {
 
 	private static void loadStaticProperties(String defaultName, Properties props) {
 		if (props == null) {
-			System.out.println("input props is null");
+			logger.info("input props is null");
 			props = new Properties();
 		}
 
@@ -432,7 +445,7 @@ public class CytoscapeInit {
 			if (cl != null)
 				vmu = cl.getResource(defaultName);
 			else
-				System.out.println("ClassLoader for reading cytoscape.jar is null");
+				logger.error("ClassLoader for reading cytoscape.jar is null");
 
 			if (vmu != null)
 				// We'd like to use URLUtil.getBasicInputStream() to get
@@ -442,7 +455,7 @@ public class CytoscapeInit {
 				// it directly:
 				props.load(vmu.openStream());
 			else
-				System.out.println("couldn't read " + defaultName + " from " + tryName);
+				logger.error("couldn't read " + defaultName + " from " + tryName);
 
 			// load the props file from $HOME/.cytoscape
 			tryName = "$HOME/.cytoscape";
@@ -452,10 +465,10 @@ public class CytoscapeInit {
 			if (vmp != null)
 				props.load(new FileInputStream(vmp));
 			else
-				System.out.println("couldn't read " + defaultName + " from " + tryName);
+				logger.error("couldn't read " + defaultName + " from " + tryName);
 		} catch (IOException ioe) {
-			System.err.println("couldn't open " + tryName + " " + defaultName
-			                   + " file - creating a hardcoded default");
+			logger.error("couldn't open " + tryName + " " + defaultName
+			             + " file - creating a hardcoded default");
 			ioe.printStackTrace();
 		}
 	}
@@ -511,7 +524,7 @@ public class CytoscapeInit {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("couldn't create session from file: '" + sessionFile + "'");
+			logger.error("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
 			System.gc();
@@ -559,7 +572,7 @@ public class CytoscapeInit {
 	private void loadNetworks() {
 		for (Iterator i = initParams.getGraphFiles().iterator(); i.hasNext();) {
 			String net = (String) i.next();
-			System.out.println("Load: " + net);
+			logger.info("Load: " + net);
 
 			CyNetwork network = null;
 
@@ -574,7 +587,7 @@ public class CytoscapeInit {
 					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
 				} catch (MalformedURLException mue) {
 					mue.printStackTrace();
-					System.out.println("Couldn't load network.  Bad URL!");
+					logger.error("Couldn't load network.  Bad URL!");
 				}
 			} else {
 				network = Cytoscape.createNetworkFromFile(net, createView);
@@ -599,7 +612,7 @@ public class CytoscapeInit {
 			                                              .toArray(new String[] {  }));
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("failure loading specified attributes");
+			logger.error("failure loading specified attributes");
 		}
 	}
 

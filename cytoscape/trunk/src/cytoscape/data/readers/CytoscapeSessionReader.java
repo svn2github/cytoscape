@@ -86,7 +86,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
 import cytoscape.util.URLUtil;
 import cytoscape.view.CyNetworkView;
-
+import cytoscape.logger.CyLogger;
 
 /**
  * Reader to load CYtoscape Session file (.cys).<br>
@@ -156,6 +156,9 @@ public class CytoscapeSessionReader {
 	private long start;
 	private String lastVSName = null;
 
+	// Logging
+	private CyLogger logger = null;
+
 	/**
 	 * Constructor for remote file (specified by an URL)<br>
 	 *
@@ -181,6 +184,8 @@ public class CytoscapeSessionReader {
 		if (monitor != null) {
 			percentUtil = new PercentUtil(1);
 		}
+
+		this.logger = CyLogger.getLogger();
 	}
 
 	/**
@@ -272,7 +277,7 @@ public class CytoscapeSessionReader {
 			} else if (entryName.endsWith(BOOKMARKS_FILE)) {
 				bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
 			} else {
-				System.out.println("Unknown entry found in session zip file!\n" + entryName);
+				logger.warn("Unknown entry found in session zip file!\n" + entryName);
 			}
 		} // while loop
 
@@ -325,7 +330,7 @@ public class CytoscapeSessionReader {
 		try {
 			unzipSessionFromURL();
 		} catch (cytoscape.visual.DuplicateCalculatorNameException dcne) {
-			System.out.println("Duplicate VS name found.  It will be ignored...");
+			logger.warn("Duplicate VS name found.  It will be ignored...");
 		}
 
 		//System.out.println("unzipSessionFromURL: " + (System.currentTimeMillis() - start) + " msec.");
@@ -370,7 +375,7 @@ public class CytoscapeSessionReader {
 			Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
 		}
 
-		System.out.println("Session loaded in " + (System.currentTimeMillis() - start) + " msec.");
+		logger.info("Session loaded in " + (System.currentTimeMillis() - start) + " msec.");
 	}
 
 	// Delete tmp files (the plugin state files) to cleanup
@@ -399,7 +404,7 @@ public class CytoscapeSessionReader {
 	 */
 	private void unzipSessionFromURL() throws IOException, JAXBException, Exception {
 		extractEntry();
-		System.out.println("extractEntry: " + (System.currentTimeMillis() - start) + " msec.");
+		logger.info("extractEntry: " + (System.currentTimeMillis() - start) + " msec.");
 
 		/*
 		 * Check the contents.  If broken/invalid, throw exception.
@@ -427,7 +432,7 @@ public class CytoscapeSessionReader {
 		// handles proxy servers and cached pages):
 		CytoscapeInit.getProperties().load(URLUtil.getBasicInputStream(cytoscapePropsURL));
 		loadCySession();
-		System.out.println("loadCySession: " + (System.currentTimeMillis() - start) + " msec.");
+		logger.info("loadCySession: " + (System.currentTimeMillis() - start) + " msec.");
 
 		// restore plugin state files
 		restorePlugnStateFilesFromZip();
@@ -486,7 +491,7 @@ public class CytoscapeSessionReader {
 					out.close();
 				} catch (IOException e) {
 					theFile = null;
-					System.out.println("\nError: read from zip: " + URLstr);
+					logger.error("\nError: read from zip: " + URLstr);
 				}
 
 				if (theFile == null)
@@ -631,7 +636,7 @@ public class CytoscapeSessionReader {
 
 			// handle the unlikely event that the stored network is corrupted with a bad filename (bug fix)
 			if (targetNetworkURL == null) {
-				System.err.println("Session file corrupt: Filename " + childNet.getFilename()
+				logger.error("Session file corrupt: Filename " + childNet.getFilename()
 				                      + " does not correspond to a network of that name in session file");
 				continue;
 			}
@@ -651,7 +656,7 @@ public class CytoscapeSessionReader {
 				new_network = Cytoscape.createNetwork(reader, false, parent);
 			} catch (Exception e) {
 				String message = "Unable to read XGMML file: "+childNet.getFilename()+".  "+e.getMessage();
-				System.err.println(message);
+				logger.error(message);
 				Cytoscape.destroyNetwork(new_network);
 				if (taskMonitor != null)
 					taskMonitor.setException(e, message);
@@ -660,7 +665,7 @@ public class CytoscapeSessionReader {
 					walkTree(childNet, new_network, sessionSource);
 				continue;
 			}
-			System.out.println("XGMMLReader " + new_network.getIdentifier() + ": "
+			logger.info("XGMMLReader " + new_network.getIdentifier() + ": "
 			                   + (System.currentTimeMillis() - start) + " msec.");
 
 			// Restore the original state of the vsbSwitch
@@ -928,11 +933,11 @@ public class CytoscapeSessionReader {
 			return tempFile.toURL();
 		} catch (FileNotFoundException e) {
 			// This could happen if the OS' temp directory doesn't exist
-			System.err.println("Can't create a temporary file.");
+			logger.error("Can't create a temporary file.");
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
 			// If the provided URL is bad, this will happen
-			System.err.println("Bad URL provided: " + remoteURL.toString());
+			logger.error("Bad URL provided: " + remoteURL.toString());
 			e.printStackTrace();
 		} catch (IOException e) {
 			// Any problem read or writing from either the remoteURL or the tempFile

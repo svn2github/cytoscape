@@ -37,6 +37,7 @@
 package cytoscape.plugin;
 
 import cytoscape.*;
+import cytoscape.logger.CyLogger;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -147,7 +148,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			// cytoscape app to crash, which a plugin should not do.
 		} catch (Throwable e) {
 			object = null;
-			System.err.println("Instantiation has failed for: " + pluginClass);
+			CyLogger.getLogger().error("Instantiation has failed for: " + pluginClass);
 			// Here's a bit of Java strangeness: newInstance() throws
 			// two exceptions (above) -- however, it also propagates any
 			// exception that occurs during the creation of that new instance.
@@ -167,7 +168,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			// e.printStackTrace();
 			throw new PluginException(ErrorMsg, e);
 		} 
-		System.out.println("Successfully loaded: " + pluginClass);
+		CyLogger.getLogger().info("Successfully loaded: " + pluginClass);
 		return object;
 	}
 

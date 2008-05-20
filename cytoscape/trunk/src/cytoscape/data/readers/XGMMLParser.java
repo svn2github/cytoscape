@@ -49,6 +49,7 @@ import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.IntEnumerator;
+import cytoscape.logger.CyLogger;
 
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -627,7 +628,7 @@ class XGMMLParser extends DefaultHandler {
  	 * @param e the exception that generated the error
  	 */
 	public void error(SAXParseException e) {
-		System.err.println("Parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'.  Attempting to recover");
+		CyLogger.getLogger().error("Parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'.  Attempting to recover");
 	}
    
 	/********************************************************************
@@ -1438,13 +1439,15 @@ class XGMMLParser extends DefaultHandler {
 	private CyEdge createEdge (String source, String target, String interaction, String label) {
 		// Make sure the target and destination nodes exist
 		if (Cytoscape.getCyNode(source, false) == null) {
-			System.out.println("Warning: skipping edge "+label);
-			System.out.println("         node "+source+" doesn't exist");
+			String warn = "Warning: skipping edge "+label+"\n";
+			warn += "         node "+source+" doesn't exist";
+			CyLogger.getLogger().warn(warn);
 			return null;
 		}
 		if (Cytoscape.getCyNode(target, false) == null) {
-			System.out.println("Warning: skipping edge "+label);
-			System.out.println("         node "+target+" doesn't exist");
+			String warn = "Warning: skipping edge "+label+"\n";
+			warn += "         node "+target+" doesn't exist";
+			CyLogger.getLogger().warn(warn);
 			return null;
 		}
 		CyEdge edge =  Cytoscape.getCyEdge(source, label, target, interaction);

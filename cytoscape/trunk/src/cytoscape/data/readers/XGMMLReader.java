@@ -90,6 +90,7 @@ import cytoscape.visual.LineStyle;
 import cytoscape.visual.ArrowShape;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.logger.CyLogger;
 import ding.view.DGraphView;
 
 import java.lang.management.ManagementFactory;
@@ -294,7 +295,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			throw new XGMMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
 		} catch (ParserConfigurationException e) {
 		} catch (SAXParseException e) {
-			System.err.println("XGMMLParser: fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'");
+			CyLogger.getLogger().error("XGMMLParser: fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'");
 			throw e;
 		} finally {
 			if (networkStream != null) {

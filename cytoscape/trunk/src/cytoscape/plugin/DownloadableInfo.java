@@ -38,6 +38,7 @@ package cytoscape.plugin;
 import java.net.URL;
 
 import cytoscape.util.URLUtil;
+import cytoscape.logger.CyLogger;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -475,7 +476,7 @@ public abstract class DownloadableInfo {
 			int b = 0;
 
 			if (i == (max - 1)) {
-				System.out.println("A length: " + SplitVersionA.length
+				CyLogger.getLogger().debug("A length: " + SplitVersionA.length
 						+ " B length: " + SplitVersionB.length);
 				a = (SplitVersionA.length == max) ? Integer
 						.valueOf(SplitVersionA[i]) : 0;
