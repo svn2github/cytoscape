@@ -43,11 +43,12 @@ import java.awt.event.ActionListener;
 
 import java.util.Map;
 
+import cytoscape.logger.CyLogger;
 
 /*
- * This panel is for new Gene Ontology data formats. Ask user a OBO file and
- * multiple Gene Association Files.
- */
+* This panel is for new Gene Ontology data formats. Ask user a OBO file and
+* multiple Gene Association Files.
+*/
 
 /**
  *
@@ -122,7 +123,7 @@ public class AnotationPanelDescriptor extends WizardPanelDescriptor implements A
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Annotation button pushed.");
+		CyLogger.getLogger().info("Annotation button pushed.");
 		anotationPanel.gaButtonMouseClicked();
 
 		if (anotationPanel.isFilesSelected() == true) {

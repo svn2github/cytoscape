@@ -36,6 +36,7 @@
 package cytoscape.dialogs.plugins;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.ThemeInfo;
@@ -113,7 +114,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 
 	// trying to listen to events in the Url dialog
 	public void actionPerformed(ActionEvent evt) {
-		System.out.println("URL DIALOG: " + evt.getSource().toString());
+		CyLogger.getLogger().info("URL DIALOG: " + evt.getSource().toString());
 	}
 
 	/**
@@ -690,7 +691,7 @@ public class PluginManageDialog extends javax.swing.JDialog implements
 		if (imgURL != null) {
 			return new javax.swing.ImageIcon(imgURL, description);
 		} else {
-			System.err.println("Couldn't find file: " + path);
+			CyLogger.getLogger().warn("Couldn't find file: " + path);
 			return null;
 		}
 	}

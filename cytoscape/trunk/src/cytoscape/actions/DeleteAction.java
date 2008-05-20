@@ -44,6 +44,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
@@ -83,11 +84,11 @@ public class DeleteAction extends CytoscapeAction {
 
 	public DeleteAction(GraphObject obj) {
 		super(ACTION_TITLE);
-		System.out.println("starting delete action");
+		CyLogger.getLogger().info("starting delete action");
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
 		graphObj = obj;
-		System.out.println("ending delete action");
+		CyLogger.getLogger().info("ending delete action");
 	}
 
 

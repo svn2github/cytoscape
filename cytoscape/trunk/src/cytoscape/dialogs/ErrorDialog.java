@@ -1,5 +1,7 @@
 package cytoscape.dialogs;
 
+import cytoscape.logger.CyLogger;
+
 public class ErrorDialog extends javax.swing.JDialog {
     
 	private static final String defaultTitle = "Cytoscape Errors";
@@ -85,7 +87,7 @@ public class ErrorDialog extends javax.swing.JDialog {
 		if (imgURL != null) {
 			return new javax.swing.ImageIcon(imgURL, description);
 		} else {
-			System.err.println("Couldn't find file: " + path);
+			CyLogger.getLogger().warn("Couldn't find file: " + path);
 			return null;
 		}
 	}

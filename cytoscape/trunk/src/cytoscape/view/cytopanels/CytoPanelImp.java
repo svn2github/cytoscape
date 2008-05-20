@@ -43,6 +43,7 @@
 package cytoscape.view.cytopanels;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -756,7 +757,7 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 			// add this cytopanel back to cytopanel container
 			if (cytoPanelContainer == null) {
-				System.out.println("CytoPanel::DockCytoPanel() -"
+				CyLogger.getLogger().info("CytoPanel::DockCytoPanel() -"
 				                   + "cytoPanelContainer reference has not been set!");
 				Cytoscape.exit(1);
 			}

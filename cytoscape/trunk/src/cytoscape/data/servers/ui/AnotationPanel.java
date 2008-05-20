@@ -7,6 +7,7 @@ package cytoscape.data.servers.ui;
 
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -393,7 +394,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 	private void speciesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		if (speciesCheckBox.isSelected() == true) {
-			//System.out.println("Sync!");
+			//CyLogger.getLogger().info("Sync!");
 			syncSpecies(true);
 		} else {
 			syncSpecies(false);
@@ -569,7 +570,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 			// handles proxy servers and cached pages):
 			spListReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 
-			System.out.println("Taxonomy table found in jar file...");
+			CyLogger.getLogger().info("Taxonomy table found in jar file...");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -605,7 +606,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 				} else if ((i == 10) && (rowString[i] != null)) {
 					row.add(rowString[i]);
 
-					// System.out.println("!!!!!!! Making SynoMap = " +
+					// CyLogger.getLogger().info("!!!!!!! Making SynoMap = " +
 					// row.get(0)
 					// + " = " + rowString[i]);
 					// This is the Synonym field.
@@ -619,7 +620,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 					// We need to convert this into species name
 					taxonID = rowString[i].split(":");
 
-					// System.out.println("!!!!!!! taxon ID = " + taxonID[0] +
+					// CyLogger.getLogger().info("!!!!!!! taxon ID = " + taxonID[0] +
 					// ", " + taxonID[1]);
 					if (taxonID.length != 2) {
 						row.add("ERROR!: Invalid Taxon ID " + rowString[i]);

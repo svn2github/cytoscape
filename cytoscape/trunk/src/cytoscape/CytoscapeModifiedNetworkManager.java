@@ -93,9 +93,9 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 *
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		//		System.out.println ("Property changed: " + e.getPropertyName());
-		//		System.out.println ("Old value = " + e.getOldValue());
-		//		System.out.println ("New value = " + e.getNewValue());
+		//		CyLogger.getLogger().info ("Property changed: " + e.getPropertyName());
+		//		CyLogger.getLogger().info ("Old value = " + e.getOldValue());
+		//		CyLogger.getLogger().info ("New value = " + e.getNewValue());
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
 			CyNetwork net = (CyNetwork) e.getNewValue();
 

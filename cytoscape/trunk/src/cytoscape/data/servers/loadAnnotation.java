@@ -46,6 +46,7 @@ package cytoscape.data.servers;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.annotation.readers.*;
+import cytoscape.logger.CyLogger;
 
 import java.io.*;
 
@@ -77,7 +78,7 @@ public class loadAnnotation {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.err.println("usage:  loadAnnotation <server name> <annotation.xml>");
+			CyLogger.getLogger().warn("usage:  loadAnnotation <server name> <annotation.xml>");
 			System.exit(1);
 		}
 
@@ -89,15 +90,15 @@ public class loadAnnotation {
 		File xmlFile = new File(filename);
 
 		if (!xmlFile.canRead()) {
-			System.err.println("--- cytoscape.data.servers.loadAnnotation error:  cannot read");
-			System.err.println("        " + filename);
+			CyLogger.getLogger().warn("--- cytoscape.data.servers.loadAnnotation error:  cannot read");
+			CyLogger.getLogger().warn("        " + filename);
 			System.exit(1);
 		}
 
 		AnnotationXmlReader reader = new AnnotationXmlReader(xmlFile);
 		server.addAnnotation(reader.getAnnotation());
 
-		System.out.println(server.describe());
+		CyLogger.getLogger().info(server.describe());
 	} // main
 	  //------------------------------------------------------------------------------
 } // loadAnnotation

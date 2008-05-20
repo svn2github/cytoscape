@@ -115,12 +115,12 @@ public class AnimatedLayoutAction extends AbstractAction {
 
 								while (nvi.hasNext()) {
 									NodeView nv = (NodeView) nvi.next();
-
-									// System.out.print( "Index: "+nv.getRootGraphIndex() );
-									//                     System.out.print( "Index: "+nv.getRootGraphIndex() );
-									//                     System.out.print( " X: "+gv.getNodeDoubleProperty( nv.getRootGraphIndex(), GraphView.NODE_X_POSITION ) );
-									//                     System.out.print( " Y: "+gv.getNodeDoubleProperty( nv.getRootGraphIndex(), GraphView.NODE_Y_POSITION ) );
-									//                     System.out.println( " Z: "+gv.getNodeDoubleProperty( nv.getRootGraphIndex(), GraphView.NODE_Z_POSITION ) );
+                                                             
+									// CyLogger.getLogger().info( "Index: "+nv.getRootGraphIndex() );
+									//                     CyLogger.getLogger().info( "Index: "+nv.getRootGraphIndex() );
+									//                     CyLogger.getLogger().info( " X: "+gv.getNodeDoubleProperty( nv.getRootGraphIndex(), GraphView.NODE_X_POSITION ) );
+									//                     CyLogger.getLogger().info( " Y: "+gv.getNodeDoubleProperty( nv.getRootGraphIndex(), GraphView.NODE_Y_POSITION ) );
+									//                     CyLogger.getLogger().info( " Z: "+gv.getNodeDoubleProperty( nv.getRootGraphIndex(), GraphView.NODE_Z_POSITION ) );
 									if (maxZ == Double.MAX_VALUE) {
 										maxZ = gv.getNodeDoubleProperty(nv.getRootGraphIndex(),
 										                                GraphView.NODE_Z_POSITION);
@@ -141,7 +141,7 @@ public class AnimatedLayoutAction extends AbstractAction {
 									}
 								}
 
-								//                   System.out.println( "Z-RAnge: "+minZ+ " to "+maxZ );
+								//                   CyLogger.getLogger().info( "Z-RAnge: "+minZ+ " to "+maxZ );
 								nvi = gv.getNodeViewsIterator();
 
 								while (nvi.hasNext()) {

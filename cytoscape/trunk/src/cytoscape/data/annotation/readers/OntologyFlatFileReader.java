@@ -44,6 +44,7 @@ import cytoscape.data.annotation.OntologyTerm;
 import cytoscape.data.readers.TextFileReader;
 import cytoscape.data.readers.TextHttpReader;
 import cytoscape.data.readers.TextJarReader;
+import cytoscape.logger.CyLogger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -91,7 +92,7 @@ public class OntologyFlatFileReader {
 		while ((curLine = rd.readLine()) != null) {
 			extractedLines.add(curLine);
 
-			// System.out.println( curLine );
+			// CyLogger.getLogger().info( curLine );
 		}
 
 		rd.close();
@@ -135,8 +136,8 @@ public class OntologyFlatFileReader {
 				fullText = reader.getText();
 			}
 		} catch (Exception e0) {
-			System.err.println("-- Exception while reading ontology flat file " + filename);
-			System.err.println(e0.getMessage());
+			CyLogger.getLogger().warn("-- Exception while reading ontology flat file " + filename);
+			CyLogger.getLogger().warn(e0.getMessage());
 
 			return;
 		}

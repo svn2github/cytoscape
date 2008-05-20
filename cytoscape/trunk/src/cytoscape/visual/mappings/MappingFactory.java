@@ -43,6 +43,7 @@
 package cytoscape.visual.mappings;
 
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.logger.CyLogger;
 
 import java.lang.reflect.Constructor;
 
@@ -73,7 +74,7 @@ public class MappingFactory {
         String typeName = props.getProperty(baseKey + ".type");
 
         if (typeName == null) {
-            System.err.println(
+            CyLogger.getLogger().warn(
                 "MappingFactory: no Mapping class specified in properties");
 
             return null;
@@ -93,7 +94,7 @@ public class MappingFactory {
 
             return m;
         } else {
-            System.err.println("MappingFactory: unknown Mapping type: " +
+            CyLogger.getLogger().warn("MappingFactory: unknown Mapping type: " +
                 typeName);
 
             return null;
@@ -122,7 +123,7 @@ public class MappingFactory {
 
             String c = m.getClass()
                         .getName();
-            System.err.println("MappingFactory: unknown Mapping type: " + c);
+            CyLogger.getLogger().warn("MappingFactory: unknown Mapping type: " + c);
 
             return null;
         }

@@ -44,6 +44,7 @@ import javax.swing.event.*;
 import javax.swing.undo.*;
 
 import cytoscape.util.CytoscapeAction;
+import cytoscape.logger.CyLogger;
 
 /**
  * An action that calls undo for the most recent edit in the
@@ -70,7 +71,7 @@ public class UndoAction extends CytoscapeAction {
 			if ( CyUndo.undoManager.canUndo() )
 				CyUndo.undoManager.undo();
 		} catch (CannotUndoException ex) {
-			System.out.println("Unable to undo: " + ex);
+			CyLogger.getLogger().warn("Unable to undo: " + ex);
 			ex.printStackTrace();
 		}
 	}

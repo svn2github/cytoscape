@@ -10,6 +10,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import cytoscape.util.URLUtil;
+import cytoscape.logger.CyLogger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +25,8 @@ import java.io.InputStream;
  * 
  */
 public class PluginFileReader {
+  private static CyLogger logger = CyLogger.getLogger(PluginFileReader.class);
+
 	private Document document;
 
 	private String downloadUrl;
@@ -252,7 +255,7 @@ public class PluginFileReader {
 			// file type
 			PluginInfo.FileType Type = getType(CurrentPlugin);
 			if (Type == null) { // unknown type error and move on
-				System.err.println("Unknown plugin file type '" + Type
+				logger.warn("Unknown plugin file type '" + Type
 						+ " skipping plugin " + Info.getName());
 				return null;
 			} else {

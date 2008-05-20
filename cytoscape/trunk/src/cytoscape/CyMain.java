@@ -61,6 +61,7 @@ import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 
 import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
+import cytoscape.logger.CyLogger;
 
 /**
  * This is the main startup class for Cytoscape. This parses the command line
@@ -142,7 +143,7 @@ public class CyMain implements CyInitParams {
 		options = new org.apache.commons.cli.Options();
 
 		// for (String asdf: args)
-		// System.out.println("arg: '" + asdf + "'");
+		// CyLogger.getLogger().info("arg: '" + asdf + "'");
 		parseCommandLine(args);
 
 		// Register CyStartupListener to intercept arguments passed by file
@@ -241,7 +242,7 @@ public class CyMain implements CyInitParams {
 
 		if (line.hasOption("v")) {
 			CytoscapeVersion version = new CytoscapeVersion();
-			System.out.println(version.getVersion());
+			CyLogger.getLogger().info(version.getVersion());
 			System.exit(0);
 		}
 
@@ -327,7 +328,7 @@ public class CyMain implements CyInitParams {
 				UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
 			}
 		} catch (Exception e) {
-			System.err.println("Can't set look & feel:" + e);
+			CyLogger.getLogger().warn("Can't set look & feel:" + e);
 		}
 	}
 
@@ -357,7 +358,7 @@ public class CyMain implements CyInitParams {
 
 	private Properties createProperties(String[] potentialProps) {
 		// for ( String asdf: potentialProps)
-		// System.out.println("prop: '" + asdf + "'");
+		// CyLogger.getLogger().info("prop: '" + asdf + "'");
 		Properties props = new Properties();
 		Properties argProps = new Properties();
 
@@ -380,10 +381,10 @@ public class CyMain implements CyInitParams {
 					if (in != null)
 						props.load(in);
 					else
-						System.out.println("Couldn't load property: "
+						CyLogger.getLogger().info("Couldn't load property: "
 								+ potentialProps[i]);
 				} catch (IOException e) {
-					System.out.println("Couldn't load property: "
+					CyLogger.getLogger().info("Couldn't load property: "
 							+ potentialProps[i]);
 					e.printStackTrace();
 				}

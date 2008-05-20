@@ -49,6 +49,8 @@ package cytoscape.util;
 
 
 //----------------------------------------------------------------------
+import cytoscape.logger.CyLogger;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -144,12 +146,12 @@ public class CytoscapeProgressMonitor extends JFrame implements Runnable {
 
 			public void run() {
 				//  if(firstTick){
-				//System.out.println("UpdateProgressMonitor: " + Thread.currentThread());
+				//CyLogger.getLogger().info("UpdateProgressMonitor: " + Thread.currentThread());
 				//firstTick = false;
 				//System.out.flush(); 
 				//}
 				if (pMonitor.isCanceled()) {
-					//System.out.println("pMonitor.isCanceled() == " + pMonitor.isCanceled());
+					//CyLogger.getLogger().info("pMonitor.isCanceled() == " + pMonitor.isCanceled());
 					pMonitor.close();
 					monitoredTask.cancel();
 					myTimer.cancel();
@@ -158,7 +160,7 @@ public class CytoscapeProgressMonitor extends JFrame implements Runnable {
 						parentComponent.setEnabled(true);
 					}
 				} else if (monitoredTask.done()) {
-					//System.out.println(monitoredTask.getTaskName() + " monitoredTask.done() == " + monitoredTask.done());
+					//CyLogger.getLogger().info(monitoredTask.getTaskName() + " monitoredTask.done() == " + monitoredTask.done());
 					pMonitor.close();
 					monitoredTask.stop();
 					myTimer.cancel();
@@ -182,8 +184,8 @@ public class CytoscapeProgressMonitor extends JFrame implements Runnable {
 		pMonitor = new ProgressMonitor(this.parentComponent, new Object[] { message }, null, 0,
 		                               monitoredTask.getLengthOfTask());
 
-		System.out.println(monitoredTask.getLengthOfTask());
-		System.out.println("About to Popup");
+		CyLogger.getLogger().info("Task length: " + monitoredTask.getLengthOfTask());
+		CyLogger.getLogger().info("About to Popup");
 		pMonitor.setProgress(0);
 		pMonitor.setMillisToDecideToPopup(0);
 		pMonitor.setMillisToPopup(0);

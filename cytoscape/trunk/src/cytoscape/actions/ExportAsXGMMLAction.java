@@ -38,6 +38,7 @@ package cytoscape.actions;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.writers.XGMMLWriter;
 
@@ -220,7 +221,7 @@ class ExportAsXGMMLTask implements Task {
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("Network and attributes are successfully saved to:  " + fileName);
 
-		System.out.println("Network and attributes are exported as an XGMML file: " + fileName);
+		CyLogger.getLogger().info("Network and attributes are exported as an XGMML file: " + fileName);
 	}
 
 	/**

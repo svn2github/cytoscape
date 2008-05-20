@@ -46,6 +46,7 @@ import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
+import cytoscape.logger.CyLogger;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -96,7 +97,7 @@ public class ParserFactory {
         else if (c.isAssignableFrom(Color.class))
             parser = new ColorParser();
         else
-            System.err.println("couldn't construct parser for class: " +
+            CyLogger.getLogger().warn("couldn't construct parser for class: " +
                 c.toString());
 
         return parser;

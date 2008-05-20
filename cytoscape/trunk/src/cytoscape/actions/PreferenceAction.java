@@ -43,6 +43,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.dialogs.preferences.*;
 
@@ -69,7 +70,7 @@ public class PreferenceAction extends CytoscapeAction {
 	public PreferenceAction() {
 		super("Properties...");
 
-		System.out.println("PreferenceAction()...");
+		CyLogger.getLogger().info("PreferenceAction()...");
 		setPreferredMenu("Edit.Preferences");
 	}
 

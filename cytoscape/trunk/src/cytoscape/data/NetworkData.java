@@ -46,6 +46,7 @@ import com.sosnoski.util.hashmap.*;
 
 // cytoscape import
 import cytoscape.*;
+import cytoscape.logger.CyLogger;
 
 // giny import
 import giny.model.*;
@@ -662,7 +663,7 @@ public abstract class NetworkData {
 			                                                      .get(att_id);
 
 			if (n2v == null) {
-				System.out.println("n2v is null");
+				CyLogger.getLogger().info("n2v is null");
 
 				return Double.NaN;
 			}
@@ -742,7 +743,7 @@ public abstract class NetworkData {
 			                                                      .get(att_id);
 
 			if (n2v == null) {
-				System.out.println("n2v is null");
+				CyLogger.getLogger().info("n2v is null");
 
 				return Double.NaN;
 			}

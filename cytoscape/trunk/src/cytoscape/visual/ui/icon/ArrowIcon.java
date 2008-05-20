@@ -182,7 +182,7 @@ public class ArrowIcon extends VisualPropertyIcon {
 		if ((width < 20) || (height < 20)) {
 //			g2d.setStroke(EDGE_STROKE_SMALL);
 //			
-//			System.out.println("==== Small icon height = " + height +", " + c.getHeight());
+//			CyLogger.getLogger().info("==== Small icon height = " + height +", " + c.getHeight());
 //			
 //			
 //			g2d.drawLine(3, c.getHeight()/2,

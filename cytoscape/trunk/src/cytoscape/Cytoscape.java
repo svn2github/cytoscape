@@ -84,6 +84,7 @@ import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
+import cytoscape.logger.CyLogger;
 
 
 /**
@@ -435,10 +436,10 @@ public abstract class Cytoscape {
 				try {
 					firePropertyChange(CYTOSCAPE_EXIT, null, "now");
 				} catch (Exception e) {
-					System.out.println("Errors on close, closed anyways.");
+					CyLogger.getLogger().info("Errors on close, closed anyways.");
 				}
 
-				System.out.println("Cytoscape Exiting....");
+				CyLogger.getLogger().info("Cytoscape Exiting....");
 
 				if (mode == CyInitParams.EMBEDDED_WINDOW) {
 					// don't system exit since we are running as part
@@ -452,7 +453,7 @@ public abstract class Cytoscape {
 				return;
 			}
 		} else {
-			System.out.println("Cytoscape Exiting....");
+			CyLogger.getLogger().info("Cytoscape Exiting....");
 			System.exit(returnVal);
 		}
 	}
@@ -915,9 +916,9 @@ public abstract class Cytoscape {
 	/**
 	 */
 	public static void setCurrentNetwork(String id) {
-		//System.out.println("- TRY setting current network" + id);
+		//CyLogger.getLogger().info("- TRY setting current network" + id);
 		if (getNetworkMap().containsKey(id)) {
-			//System.out.println("- SUCCEED setting current network " + id);
+			//CyLogger.getLogger().info("- SUCCEED setting current network " + id);
 			currentNetworkID = id;
 
 			// reset selected networks 
@@ -930,9 +931,9 @@ public abstract class Cytoscape {
 	 * @return true if there is network view, false if not
 	 */
 	public static boolean setCurrentNetworkView(String id) {
-		//System.out.println("= TRY setting current network VIEW " + id);
+		//CyLogger.getLogger().info("= TRY setting current network VIEW " + id);
 		if (getNetworkViewMap().containsKey(id)) {
-			//System.out.println("= SUCCEED setting current network VIEW " + id);
+			//CyLogger.getLogger().info("= SUCCEED setting current network VIEW " + id);
 			currentNetworkViewID = id;
 
 			// reset selected network views 
@@ -1391,11 +1392,11 @@ public abstract class Cytoscape {
 		final int[] edges = reader.getEdgeIndicesArray();
 
 		if (nodes == null) {
-			System.err.println("reader returned null nodes");
+			CyLogger.getLogger().warn("reader returned null nodes");
 		}
 
 		if (edges == null) {
-			System.err.println("reader returned null edges");
+			CyLogger.getLogger().warn("reader returned null edges");
 		}
 
 		// Create the network
@@ -1485,7 +1486,7 @@ public abstract class Cytoscape {
 		try {
 			expressionData = new ExpressionData(filename);
 		} catch (Exception e) {
-			System.err.println("Unable to Load Expression Data");
+			CyLogger.getLogger().warn("Unable to Load Expression Data");
 
 			String errString = "Unable to load expression data from " + filename;
 			String title = "Load Expression Data";
@@ -1554,7 +1555,7 @@ public abstract class Cytoscape {
 		try {
 			bioDataServer = new BioDataServer(location);
 		} catch (Exception e) {
-			System.err.println("Could not Load BioDataServer from: " + location);
+			CyLogger.getLogger().warn("Could not Load BioDataServer from: " + location);
 
 			return null;
 		}
@@ -1577,7 +1578,7 @@ public abstract class Cytoscape {
 		try {
 			ontologyServer = new OntologyServer();
 		} catch (Exception e) {
-			System.err.println("Could not build OntologyServer.");
+			CyLogger.getLogger().warn("Could not build OntologyServer.");
 			e.printStackTrace();
 
 			return null;
@@ -1839,7 +1840,7 @@ public abstract class Cytoscape {
 		firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 		cytoscapeRootGraph = null;
 		cytoscapeRootGraph = new CytoscapeFingRootGraph();
-		System.out.println("Cytoscape Session Initialized.");
+		CyLogger.getLogger().info("Cytoscape Session Initialized.");
 		System.gc();
 	}
 

@@ -35,6 +35,7 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 
@@ -121,7 +122,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 		setSpinner();
 		this.addWindowListener(new WindowAdapter() {
 				public void windowOpened(WindowEvent e) {
-					System.out.println("windowOpened");
+					CyLogger.getLogger().info("windowOpened");
 					firePropertyChange(EDITOR_WINDOW_OPENED, null, type);
 				}
 

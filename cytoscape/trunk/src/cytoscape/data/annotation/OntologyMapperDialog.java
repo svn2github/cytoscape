@@ -38,6 +38,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -555,7 +556,7 @@ public class OntologyMapperDialog extends JDialog {
 		while (termIt.hasNext()) {
 			Object id = termIt.next();
 			OntologyTerm term = (OntologyTerm) terms.get(id);
-			// System.out.println("ID = " + formatGOID((Integer) id) + ", term =
+			// CyLogger.getLogger().info("ID = " + formatGOID((Integer) id) + ", term =
 			// " + term.getName());
 			reverse.put(term.getName(), id);
 		}
@@ -637,7 +638,7 @@ public class OntologyMapperDialog extends JDialog {
 		while (termIt.hasNext()) {
 			Object id = termIt.next();
 			OntologyTerm term = (OntologyTerm) terms.get(id);
-			// System.out.println("ID = " + formatGOID((Integer) id) + ", term =
+			// CyLogger.getLogger().info("ID = " + formatGOID((Integer) id) + ", term =
 			// " + term.getName());
 			reverse.put(term.getName(), id);
 		}
@@ -757,7 +758,7 @@ public class OntologyMapperDialog extends JDialog {
 		Set keys = onto.getTerms().keySet();
 		Iterator it = keys.iterator();
 
-		System.out.println("Ontology for: " + anno.getType() + " ::: " + anno.getOntologyType());
+		CyLogger.getLogger().info("Ontology for: " + anno.getType() + " ::: " + anno.getOntologyType());
 
 		// Traverse tree
 

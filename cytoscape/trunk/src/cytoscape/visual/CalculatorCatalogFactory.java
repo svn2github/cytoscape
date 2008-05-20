@@ -44,6 +44,7 @@ package cytoscape.visual;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.util.FileUtil;
 import cytoscape.util.URLUtil;
@@ -160,13 +161,13 @@ public abstract class CalculatorCatalogFactory {
                 if (propertiesFile != null) {
                     Set test = calculatorCatalog.getVisualStyleNames();
                     Iterator it = test.iterator();
-                    System.out.println("Saving the following Visual Styles: ");
+                    CyLogger.getLogger().info("Saving the following Visual Styles: ");
 
                     while (it.hasNext())
-                        System.out.println("    - " + it.next().toString());
+                        CyLogger.getLogger().info("    - " + it.next().toString());
 
                     CalculatorIO.storeCatalog(calculatorCatalog, propertiesFile);
-                    System.out.println("Vizmap saved to: " + propertiesFile);
+                    CyLogger.getLogger().info("Vizmap saved to: " + propertiesFile);
                 }
             } else if ((e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) ||
                     (e.getPropertyName() == Cytoscape.VIZMAP_LOADED)) {
@@ -181,7 +182,7 @@ public abstract class CalculatorCatalogFactory {
 
                 // get the new vizmap.props and apply it the existing properties
                 Object vizmapSource = e.getNewValue();
-                System.out.println("vizmapSource: '" + vizmapSource.toString() +
+                CyLogger.getLogger().info("vizmapSource: '" + vizmapSource.toString() +
                     "'");
 
                 try {
@@ -222,7 +223,7 @@ public abstract class CalculatorCatalogFactory {
                  * something like
                  * Cytoscape.getDesktop.getVisualMappingManger.apply(VS_NAME);
                  */
-                System.out.println("Applying visual styles from: " +
+                CyLogger.getLogger().info("Applying visual styles from: " +
                     vizmapSource.toString());
                 // Always re-create the vizmapper, otherwise things won't
                 // initialize correctly... or figure out how to reinitialize

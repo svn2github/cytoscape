@@ -46,6 +46,7 @@ package cytoscape.visual.ui;
 import cytoscape.visual.*;
 
 import cytoscape.visual.calculators.*;
+import cytoscape.logger.CyLogger;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -195,7 +196,7 @@ public class VizMapSizeTab extends VizMapTab {
 
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                System.out.println("node size selected");
+                CyLogger.getLogger().info("node size selected");
                 mainPanel.removeAll();
                 mainPanel.add(lockPanel);
                 locked = true;
@@ -216,7 +217,7 @@ public class VizMapSizeTab extends VizMapTab {
                 // set the locked calculator as memoized
                 size.setComboBox(this.lockCalc);
             } else {
-                System.out.println("node size UNselected");
+                CyLogger.getLogger().info("node size UNselected");
                 mainPanel.removeAll();
                 mainPanel.add(hwPanel);
                 locked = false;

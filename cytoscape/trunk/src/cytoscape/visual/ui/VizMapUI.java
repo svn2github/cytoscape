@@ -46,6 +46,7 @@ import cytoscape.CyNetwork;
 import cytoscape.CyNetworkEvent;
 import cytoscape.CyNetworkListener;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.dialogs.GridBagGroup;
 import cytoscape.dialogs.MiscGB;
@@ -669,7 +670,7 @@ public class VizMapUI extends JDialog
                 String oldName = currentStyle.getName();
                 String name = getStyleName(currentStyle);
 
-                // System.out.println("******** Old VS name = " + oldName + ",
+                // CyLogger.getLogger().info("******** Old VS name = " + oldName + ",
                 // New VS name = " + name);
                 if (name == null)
                     return;
@@ -732,7 +733,7 @@ public class VizMapUI extends JDialog
                 try {
                     clone = (VisualStyle) currentStyle.clone();
                 } catch (CloneNotSupportedException exc) {
-                    System.err.println("Clone not supported exception!");
+                    CyLogger.getLogger().warn("Clone not supported exception!");
                 }
 
                 // get new name for clone

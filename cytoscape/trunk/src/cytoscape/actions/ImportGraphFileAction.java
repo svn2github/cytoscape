@@ -43,6 +43,7 @@ package cytoscape.actions;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.ImportHandler;
 
@@ -172,7 +173,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 
 		if (fd.isRemote()) {
 			String URLstr = fd.getURLStr();
-			System.out.println("URL: "+URLstr);
+			CyLogger.getLogger().info("URL: "+URLstr);
 			try {
 				LoadNetworkTask.loadURL(new URL(URLstr), false);
 			} catch (MalformedURLException e3) {

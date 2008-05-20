@@ -65,6 +65,7 @@ import javax.swing.border.EmptyBorder;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.CyWebServiceException;
 import cytoscape.data.webservice.DatabaseSearchResult;
@@ -444,7 +445,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
 		final CyWebServiceEvent<String> event = buildEvent();
-		System.out.println("Start importing network: " + evt.getActionCommand());
+		CyLogger.getLogger().info("Start importing network: " + evt.getActionCommand());
 
 		task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem().toString(), event);
 
@@ -459,7 +460,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		// Execute Task in New Thread; pops open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 
-		System.out.println("Network Import from WS Success!");
+		CyLogger.getLogger().info("Network Import from WS Success!");
 		dispose();
 	}
 
@@ -507,7 +508,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				buttonPanel.setVisible(false);
 		} else {
 				// Otherwise, use the default panel.
-				System.out.println("No custom GUI.  Use default panel.");
+				CyLogger.getLogger().info("No custom GUI.  Use default panel.");
 				dataQueryPanel.add(mainTabbedPane, BorderLayout.CENTER);
 				buttonPanel.setVisible(true);
 		}
@@ -674,7 +675,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 			DatabaseSearchResult result = (DatabaseSearchResult) resultObject;
 
 			if (result.getNextMove().equals(WSEventType.IMPORT_NETWORK)) {
-				System.out.println("Got search result from: " + evt.getSource() + ", Num result = "
+				CyLogger.getLogger().info("Got search result from: " + evt.getSource() + ", Num result = "
 				                   + result.getResultSize() + ", Source name = "
 				                   + evt.getOldValue());
 

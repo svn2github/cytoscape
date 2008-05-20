@@ -44,6 +44,8 @@
 //-----------------------------------------------------------------------------------
 package cytoscape.data.servers;
 
+import cytoscape.logger.CyLogger;
+
 import java.io.*;
 
 //-----------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ public class clear {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.err.println("usage:   clear <rmi host name> <rmi service name>");
+			CyLogger.getLogger().warn("usage:   clear <rmi host name> <rmi service name>");
 			System.exit(1);
 		}
 
@@ -75,12 +77,12 @@ public class clear {
 		String serviceName = args[1];
 
 		String serverName = "rmi://" + hostname + "/" + serviceName;
-		System.out.println("--- checking clear of " + serverName);
+		CyLogger.getLogger().info("--- checking clear of " + serverName);
 
 		BioDataServer server = new BioDataServer(serverName);
-		System.out.println(server.describe());
+		CyLogger.getLogger().info(server.describe());
 		server.clear();
-		System.out.println(server.describe());
+		CyLogger.getLogger().info(server.describe());
 	} // main
 	  //------------------------------------------------------------------------------
 } // clear

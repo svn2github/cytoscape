@@ -37,6 +37,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.data.readers.XGMMLException;
@@ -133,7 +134,7 @@ public class OpenSessionAction extends CytoscapeAction {
 			Cytoscape.createNewSession();
 			Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
 
-			System.out.println("Opening session file: " + name);
+			CyLogger.getLogger().info("Opening session file: " + name);
 
 			// Create Task
 			final OpenSessionTask task = new OpenSessionTask(name);
@@ -241,7 +242,7 @@ class OpenSessionTask implements Task {
 	public void halt() {
 		// Task can not currently be halted.
 		
-		System.out.println("HALT called!!!");
+		CyLogger.getLogger().info("HALT called!!!");
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("Failed!!!");
 	}

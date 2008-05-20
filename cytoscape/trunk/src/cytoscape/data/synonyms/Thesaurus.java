@@ -45,6 +45,8 @@ package cytoscape.data.synonyms;
 
 
 //-----------------------------------------------------------------------------
+import cytoscape.logger.CyLogger;
+
 import java.io.Serializable;
 
 import java.util.HashMap;
@@ -116,7 +118,7 @@ public class Thesaurus implements Serializable {
 		}
 
 		if (commonToLabel.containsKey(commonName)) {
-			// System.out.println ("commonName " + commonName + " already has
+			// CyLogger.getLogger().info ("commonName " + commonName + " already has
 			// canonicalName " +
 			// commonToCanonical.get (commonName) + " skipping new map: " +
 			// commonName + " -> " + canonicalName);
@@ -288,15 +290,15 @@ public class Thesaurus implements Serializable {
 		while (it.hasNext()) {
 			String label = (String) it.next();
 
-			System.out.print("Key is " + label + ", and commons are ");
+			CyLogger.getLogger().info("Key is " + label + ", and commons are ");
 
 			String[] alias = this.getAllCommonNames(label);
 
 			for (int i = 0; i < alias.length; i++) {
-				System.out.print(alias[i] + ", ");
+				CyLogger.getLogger().info(alias[i] + ", ");
 			}
 
-			System.out.println("");
+			CyLogger.getLogger().info("");
 		}
 	}
 

@@ -44,6 +44,7 @@ import javax.swing.event.*;
 import javax.swing.undo.*;
 
 import cytoscape.util.CytoscapeAction;
+import cytoscape.logger.CyLogger;
 
 /**
  * An action that calls redo for the most recent edit in the
@@ -70,7 +71,7 @@ public class RedoAction extends CytoscapeAction {
 			if ( CyUndo.undoManager.canRedo() )
 				CyUndo.undoManager.redo();
 		} catch (CannotUndoException ex) {
-			System.out.println("Unable to redo: " + ex);
+			CyLogger.getLogger().warn("Unable to redo: " + ex);
 			ex.printStackTrace();
 		}
 	}

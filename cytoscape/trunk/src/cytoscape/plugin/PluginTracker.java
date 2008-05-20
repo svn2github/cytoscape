@@ -55,7 +55,8 @@ import java.util.*;
 
 
 public class PluginTracker {
-	private Document trackerDoc;
+  private static CyLogger logger = CyLogger.getLogger(PluginTracker.class);
+  private Document trackerDoc;
 	private File installFile;
 	private HashMap<String, Element> infoObjMap;
 	private Set<Element> corruptedElements;
@@ -119,7 +120,7 @@ public class PluginTracker {
 	}
 
 	private void createCleanDoc() {
-		System.err.println("Plugin tracker file: " + installFile.getAbsolutePath());
+		logger.warn("Plugin tracker file: " + installFile.getAbsolutePath());
 		trackerDoc = new Document();
 		trackerDoc.setRootElement(new Element("CytoscapePlugin"));
 		trackerDoc.getRootElement().addContent(new Element(PluginStatus.CURRENT.getTagName()));
@@ -219,7 +220,7 @@ public class PluginTracker {
 			Theme = createThemeContent(obj);
 			ThemeParent.addContent(Theme);
 			this.infoObjMap.put(infoMapKey(obj, Status), Theme);
-			CyLogger.getLogger().info("Adding theme " + obj.getName() + " status " + Status.name());
+			logger.info("Adding theme " + obj.getName() + " status " + Status.name());
 		}
 		write();
 	}
@@ -290,7 +291,7 @@ public class PluginTracker {
 			Element NewPlugin = createPluginContent(obj);
 			PluginParent.addContent(NewPlugin);
 			infoObjMap.put(this.infoMapKey(obj, Status), NewPlugin);
-			CyLogger.getLogger().info("Adding plugin " + obj.getName() + " status " + Status.name());
+			logger.info("Adding plugin " + obj.getName() + " status " + Status.name());
 		}
 		write();
 	}
@@ -315,7 +316,7 @@ public class PluginTracker {
 					infoObjMap.remove( this.infoMapKey(themePlugin, Status) );
 				}
 			}
-			CyLogger.getLogger().info("Removing plugin/theme " + obj.getName() + " status " + Status.name());
+			logger.info("Removing plugin/theme " + obj.getName() + " status " + Status.name());
 			write();
 		}
 	}
@@ -366,7 +367,7 @@ public class PluginTracker {
 					String key = this.infoMapKey(el, ps); 
 					infoObjMap.put(key, el);
 				} else {
-					CyLogger.getLogger().error("er....??");
+					logger.error("er....??");
 				}
 			}
 		}
@@ -425,7 +426,7 @@ public class PluginTracker {
 	}
 	
 	private void addCorruptedElement(Element e) {
-		CyLogger.getLogger().warn("** Adding corrupted element **");
+		logger.warn("** Adding corrupted element **");
 		corruptedElements.add(e);
 		corruptedElementsFound = true;
 	}

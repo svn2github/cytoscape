@@ -59,6 +59,8 @@ import java.util.HashMap;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import cytoscape.logger.CyLogger;
+
 
 /**
  *
@@ -131,7 +133,7 @@ public class JnlpWriterUtil {
 	}
 
 	private static void print(String s) {
-		System.out.println(s);
+		CyLogger.getLogger().info(s);
 	}
 
 	/*
@@ -270,7 +272,7 @@ public class JnlpWriterUtil {
 		File JarDir = new File(Dir);
 
 		if (!JarDir.exists()) {
-			System.err.println("Required directory '" + JarDir.getAbsolutePath()
+			CyLogger.getLogger().warn("Required directory '" + JarDir.getAbsolutePath()
 			                   + "' does not exist");
 			System.exit(-1);
 		}
@@ -332,7 +334,7 @@ public class JnlpWriterUtil {
 		HashMap<String, String> Opts = new HashMap<String, String>();
 
 		if (args.length < 2) {
-			System.err.println("Too few arguments (" + args.length + "). " + Usage);
+			CyLogger.getLogger().warn("Too few arguments (" + args.length + "). " + Usage);
 			System.exit(-1);
 		}
 
@@ -352,7 +354,7 @@ public class JnlpWriterUtil {
 
 		if (!Opts.containsKey("filename") || !Opts.containsKey("cyto_dir")
 		    || !Opts.containsKey("save_dir")) {
-			System.err.println("Required arguments missing. " + Usage);
+			CyLogger.getLogger().warn("Required arguments missing. " + Usage);
 			System.exit(-1);
 		}
 

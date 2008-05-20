@@ -38,6 +38,7 @@ package cytoscape.util;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.plugin.CytoscapePlugin;
 
@@ -158,7 +159,7 @@ public class GraphSetUtils {
 			case INTERSECTION:
 				new_nodes = GraphSetUtils.intersectNodes(networkList);
 				new_edges = GraphSetUtils.intersectEdges(networkList);
-				System.err.println("number of intersecting nodes is " + new_nodes.length);
+				CyLogger.getLogger().warn("number of intersecting nodes is " + new_nodes.length);
 
 				break;
 

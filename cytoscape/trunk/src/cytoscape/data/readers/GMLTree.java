@@ -497,7 +497,7 @@ public class GMLTree {
 		if (mapped != null) {
 			Iterator it = mapped.iterator();
 
-			// System.out.println("Level " + index + " " +
+			// CyLogger.getLogger().info("Level " + index + " " +
 			// (String)keys.get(index) + " has " + mapped.size());
 			if (index >= (keys.size() - 1)) {
 				while (it.hasNext()) {
@@ -511,7 +511,7 @@ public class GMLTree {
 					} else if (type == DOUBLE) {
 						result.add(current.doubleValue());
 					} else if (type == GMLTREE) {
-						// System.out.println(current.toString());
+						// CyLogger.getLogger().info(current.toString());
 						result.add(new GMLTree(current));
 					} else {
 						throw new IllegalArgumentException("bad type");
@@ -530,7 +530,7 @@ public class GMLTree {
 			}
 		} // may need to handle missing/empty values
 		  // else {
-		  // System.out.println("ADDING NULL AT LEVEL " + index + " " +
+		  // CyLogger.getLogger().info("ADDING NULL AT LEVEL " + index + " " +
 		  // (String)keys.get(index));
 		  // result.add(null);
 		  // }

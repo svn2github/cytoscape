@@ -40,6 +40,7 @@ import ViolinStrings.Strings;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 
@@ -139,7 +140,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
 		for (int i = 0; i < node_attribute_names.length; ++i) {
 			Class type = deduceClass(node_attribute_names[i]);
-			System.out.println("Attr: " + node_attribute_names[i] + " Class: " + type.getName());
+			CyLogger.getLogger().info("Attr: " + node_attribute_names[i] + " Class: " + type.getName());
 
 			if (type.getName().equals(String.class.getName())) {
 				string_attributes.add(node_attribute_names[i]);
@@ -302,7 +303,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 		}
 
 		if (regexpSearch.isSelected()) {
-			System.out.println("not Implemented");
+			CyLogger.getLogger().info("not Implemented");
 		} else {
 			String[] pattern = searchField.getText().split("\\s");
 			String[] nodes_with_attribute;
@@ -327,7 +328,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 							// box, which includes wildcards.
 							// passes.add( graphView.getNodeView(
 							// nodes_with_attribute[j] ) );
-							// System.out.println( nodes_with_attribute[j]+"
+							// CyLogger.getLogger().info( nodes_with_attribute[j]+"
 							// Matches Pattern: "+pattern[p]+" on Attribute:
 							// "+selected_attributes[i]+" and the object is a:
 							// "+ ( nodeAttributes.getGraphObject(
@@ -336,7 +337,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 							// passes.add( graphView.getNodeView( ( Node
 							// )nodeAttributes.getGraphObject(
 							// nodes_with_attribute[j]) ) );
-							// System.out.println( "This got added to Passed:
+							// CyLogger.getLogger().info( "This got added to Passed:
 							// "+graphView.getNodeView( ( Node
 							// )nodeAttributes.getGraphObject(
 							// nodes_with_attribute[j]) ) );
@@ -348,7 +349,7 @@ public class GraphObjectSelection extends JPanel implements ActionListener {
 
 		// Iterator views = networkView.getView().getNodeViewsList().iterator();
 		// while ( views.hasNext() ) {
-		// System.out.println( "On Crack: "+views.next() );
+		// CyLogger.getLogger().info( "On Crack: "+views.next() );
 		// }
 
 		// Hide the Failed Nodes

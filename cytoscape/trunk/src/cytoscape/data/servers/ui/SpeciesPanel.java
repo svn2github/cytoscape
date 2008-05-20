@@ -6,6 +6,7 @@
 package cytoscape.data.servers.ui;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 import cytoscape.util.URLUtil;
 
 import java.io.BufferedReader;
@@ -168,7 +169,7 @@ public class SpeciesPanel extends JPanel {
 			// side of caution and use URLUtil to get the input stream (which
 			// handles proxy servers and cached pages):
 			spListReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
-			System.out.println("Taxonomy table found in jar file...");
+			CyLogger.getLogger().info("Taxonomy table found in jar file...");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -405,7 +405,7 @@ public class CyAttributesUtils {
 	 *                                                  CyAttributes attrs,
 	 *                                                  Object[] keySpace,
 	 *                                                  Object visitedValue) {
-	 *                  System.out.println ("traversing " + visitedValue);
+	 *                  CyLogger.getLogger().info ("traversing " + visitedValue);
 	 *              }});
 	 * </PRE>
 	 * No traversal is performed if objToTraverseID or attrName are null,
@@ -494,7 +494,7 @@ public class CyAttributesUtils {
 
 		while (dimIt.hasNext()) {
 			nextValue = dimIt.next();
-			// System.out.println("dim " + keyTypesIndex + " value = " + nextValue);
+			// CyLogger.getLogger().info("dim " + keyTypesIndex + " value = " + nextValue);
 			nextDimensionKeys[keyTypesIndex - 1] = nextValue;
 
 			// have we reached the last dimension, or do we need to continue building
@@ -508,7 +508,7 @@ public class CyAttributesUtils {
 				Object finalVal = attrs.getMultiHashMap()
 				                       .getAttributeValue(objToTraverseID, attrName,
 				                                          nextDimensionKeys);
-				// System.out.println("dim " + keyTypesIndex + " final value = " +
+				// CyLogger.getLogger().info("dim " + keyTypesIndex + " final value = " +
 				//           finalVal);
 				visitor.visitingAttributeValue(objToTraverseID, attrName, attrs, nextDimensionKeys,
 				                               finalVal);

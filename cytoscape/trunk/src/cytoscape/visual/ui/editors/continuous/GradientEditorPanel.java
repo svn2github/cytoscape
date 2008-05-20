@@ -35,6 +35,7 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.util.CyColorChooser;
 
@@ -184,7 +185,7 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 
 		lowerRange.lesserValue = slider.getModel().getSortedThumbs()
 		                             .get(slider.getModel().getThumbCount() - 1);
-		System.out.println("EQ color = " + lowerRange.lesserValue);
+		CyLogger.getLogger().info("EQ color = " + lowerRange.lesserValue);
 		lowerRange.equalValue = Color.white;
 		lowerRange.greaterValue = previousRange.greaterValue;
 		mapping.addPoint(maxValue, lowerRange);

@@ -43,6 +43,7 @@ package cytoscape.actions;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.readers.GraphReader;
 
@@ -331,7 +332,7 @@ public class LoadNetworkTask implements Task {
 	 */
 	public void halt() {
 		// Task can not currently be halted.
-		System.out.println("Halt called");
+		CyLogger.getLogger().info("Halt called");
 
 		if (myThread != null) {
 			myThread.interrupt();

@@ -36,6 +36,7 @@ package cytoscape.dialogs;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
@@ -347,11 +348,11 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 		try {
 			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURL());
 		} catch (IOException e) {
-			System.out.println("IOException -- bookmarkSource");
+			CyLogger.getLogger().warn("IOException -- bookmarkSource");
 		} catch (JAXBException e) {
-			System.out.println("JAXBException -- bookmarkSource");
+			CyLogger.getLogger().warn("JAXBException -- bookmarkSource");
 		} catch (Exception e) {
-			System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
+			CyLogger.getLogger().warn("Can not read the bookmark file, the bookmark file may not exist!");
 		}
 
 		return tmpBookmarks;

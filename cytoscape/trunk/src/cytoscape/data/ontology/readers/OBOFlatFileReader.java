@@ -269,7 +269,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				// There's only one id.
 				id = val;
 			} else if (key.equals(DEF.toString())) {
-				// System.out.println("DEF: " + id + " = " + val);
+				// CyLogger.getLogger().info("DEF: " + id + " = " + val);
 				String[] definitionParts = val.split("\"");
 				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, definitionParts[1]);
 

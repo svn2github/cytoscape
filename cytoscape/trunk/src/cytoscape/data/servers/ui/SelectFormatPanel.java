@@ -6,6 +6,7 @@
 package cytoscape.data.servers.ui;
 
 import cytoscape.util.OpenBrowser;
+import cytoscape.logger.CyLogger;
 
 import java.io.IOException;
 
@@ -177,7 +178,7 @@ public class SelectFormatPanel extends javax.swing.JPanel {
 				Class c = Class.forName("cytoscape.util.swing.BioDataServerWizard");
 				url = c.getResource(name);
 			} catch (ClassNotFoundException cnfe) {
-				System.err.println("Unable to find Parent class");
+				CyLogger.getLogger().warn("Unable to find Parent class");
 			}
 
 			return url;

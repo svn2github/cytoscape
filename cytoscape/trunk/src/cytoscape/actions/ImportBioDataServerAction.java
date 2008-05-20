@@ -43,6 +43,7 @@ package cytoscape.actions;
 import cytoscape.data.servers.ui.GeneOntologyWizard;
 
 import cytoscape.util.CytoscapeAction;
+import cytoscape.logger.CyLogger;
 
 import java.awt.event.ActionEvent;
 
@@ -85,7 +86,7 @@ public class ImportBioDataServerAction extends CytoscapeAction {
 		wizardResult = wiz.show();
 
 		if (wizardResult == SUCCESS) {
-			System.out.println("Successfully loaded Data Server.");
+			CyLogger.getLogger().info("Successfully loaded Data Server.");
 		}
 	}
 }

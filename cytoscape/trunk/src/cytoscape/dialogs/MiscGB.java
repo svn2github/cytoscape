@@ -39,6 +39,8 @@
 package cytoscape.dialogs;
 
 
+import cytoscape.logger.CyLogger;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -150,16 +152,16 @@ public class MiscGB {
 	 */
 	public static void insert(JPanel panel, Component comp, GridBagLayout bag, GridBagConstraints c) {
 		if (bag == null)
-			System.out.println("bag is null");
+			CyLogger.getLogger().info("bag is null");
 
 		if (comp == null)
-			System.out.println("comp is null");
+			CyLogger.getLogger().info("comp is null");
 
 		if (c == null)
-			System.out.println("c is null");
+			CyLogger.getLogger().info("c is null");
 
 		if (panel == null)
-			System.out.println("panel is null");
+			CyLogger.getLogger().info("panel is null");
 
 		bag.setConstraints(comp, c);
 		panel.add(comp);

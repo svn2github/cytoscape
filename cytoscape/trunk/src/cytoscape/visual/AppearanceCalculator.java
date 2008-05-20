@@ -37,6 +37,7 @@
 package cytoscape.visual;
 
 import cytoscape.visual.calculators.Calculator;
+import cytoscape.logger.CyLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ abstract class AppearanceCalculator implements Cloneable {
 		try {
 			copy = super.clone();
 		} catch (CloneNotSupportedException e) {
-			System.err.println("Error cloning!");
+			CyLogger.getLogger().warn("Error cloning!");
 		}
 
 		return copy;
@@ -72,12 +73,12 @@ abstract class AppearanceCalculator implements Cloneable {
 	public Object clone(String vsName) {
 		Object copy = null;
 
-		System.out.println("====Cloning: " + this.toString());
+		CyLogger.getLogger().info("====Cloning: " + this.toString());
 		
 		try {
 			copy = super.clone();
 		} catch (CloneNotSupportedException e) {
-			System.err.println("Error cloning!");
+			CyLogger.getLogger().warn("Error cloning!");
 		}
 
 		return copy;
@@ -109,7 +110,7 @@ abstract class AppearanceCalculator implements Cloneable {
 			return;
 
 		for (Calculator c : toCopy.getCalculators()) {
-			System.out.println("New calc = " + c.toString());
+			CyLogger.getLogger().info("New calc = " + c.toString());
 			setCalculator(c);
 		}
 

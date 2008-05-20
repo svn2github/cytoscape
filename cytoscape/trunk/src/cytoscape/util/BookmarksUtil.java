@@ -40,6 +40,7 @@ import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
 
 import cytoscape.data.readers.BookmarkReader;
+import cytoscape.logger.CyLogger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -188,9 +189,9 @@ public abstract class BookmarksUtil {
 		try {
 			theBookmarks = BookmarksUtil.getBookmarks(pBookmarkFile.toURL());
 		} catch (IOException e) {
-			System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
+			CyLogger.getLogger().warn("Can not read the bookmark file, the bookmark file may not exist!");
 		} catch (JAXBException e) {
-			System.out.println("JAXBException -- bookmarkSource");
+			CyLogger.getLogger().warn("JAXBException -- bookmarkSource");
 		}
 
 		return theBookmarks;
@@ -261,7 +262,7 @@ public abstract class BookmarksUtil {
 			try {
 				tmpFile.createNewFile();
 			} catch (Exception ex) {
-				System.out.println("Bookmark file may not exist, failed to create new one.");
+				CyLogger.getLogger().info("Bookmark file may not exist, failed to create new one.");
 			}
 		}
 

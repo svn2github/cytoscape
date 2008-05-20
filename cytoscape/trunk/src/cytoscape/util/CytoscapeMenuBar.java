@@ -37,6 +37,8 @@
 package cytoscape.util;
 
 
+import cytoscape.logger.CyLogger;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -195,13 +197,13 @@ public class CytoscapeMenuBar extends JMenuBar {
 				try {
 					index = Integer.parseInt((String) index_object);
 				} catch (NumberFormatException e) {
-					System.err.println("WARNING: The action " + action
+					CyLogger.getLogger().warn("WARNING: The action " + action
 					                   + " has an \"index\" property but its String value" 
 									   + " cannot be converted to an int.  Ignoring.");
 					index_object = null;
 				}
 			} else {
-				System.err.println("WARNING: The action " + action
+				CyLogger.getLogger().warn("WARNING: The action " + action
 				                   + " has an \"index\" property but its value is neither" 
 								   + " an Integer nor a String.  Ignoring.");
 				index_object = null;

@@ -42,6 +42,8 @@
 // our package
 package cytoscape.view.cytopanels;
 
+import cytoscape.logger.CyLogger;
+
 import java.awt.Dimension;
 
 // imports
@@ -138,9 +140,9 @@ public class CytoPanelUtil {
 	 */
 	private static void outputDiagnostics(Dimension screenDimension, Rectangle containerBounds,
 	                                      Dimension preferredSizeOfPanel, int compassDirection) {
-		System.err.println("Compass Direction:  " + compassDirection);
-		System.err.println("Screen Dimension:  " + screenDimension);
-		System.err.println("Container Bounds:  " + containerBounds.toString());
-		System.err.println("Preferred Size of Panel:  " + preferredSizeOfPanel.toString());
+		CyLogger.getLogger().warn("Compass Direction:  " + compassDirection);
+		CyLogger.getLogger().warn("Screen Dimension:  " + screenDimension);
+		CyLogger.getLogger().warn("Container Bounds:  " + containerBounds.toString());
+		CyLogger.getLogger().warn("Preferred Size of Panel:  " + preferredSizeOfPanel.toString());
 	}
 }

@@ -6,6 +6,7 @@ package cytoscape.actions;
 import java.awt.event.ActionEvent;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.util.CytoscapeAction;
@@ -62,14 +63,14 @@ public class PluginUpdateAction extends CytoscapeAction {
 						updateFound = true;
 					}
 				} catch (org.jdom.JDOMException jde) {
-//					System.err.println("Failed to retrieve updates for "
+//					CyLogger.getLogger().warn("Failed to retrieve updates for "
 //							+ Current.getName() + ", XML incorrect at "
 //							+ Current.getDownloadableURL());
-					System.err.println(jde.getMessage());
+					CyLogger.getLogger().warn(jde.getMessage());
 					XmlIncorrect.add(Current.toString());
 					// jde.printStackTrace();
 				} catch (java.io.IOException ioe) {
-					System.err.println("Failed to read XML file for "
+					CyLogger.getLogger().warn("Failed to read XML file for "
 							+ Current.getName() + " at "
 							+ Current.getDownloadableURL());
 					ioe.printStackTrace();

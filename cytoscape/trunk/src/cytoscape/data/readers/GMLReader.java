@@ -45,6 +45,7 @@ import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -292,7 +293,7 @@ public class GMLReader extends AbstractGraphReader {
 
 		// File fileTest = new File(fileName);
 		// target = fileTest.getName();
-		//System.out.println("Target GML file is " + fileName);
+		//CyLogger.getLogger().info("Target GML file is " + fileName);
 
 		mapSuffix = " for " + fileName;
 
@@ -799,7 +800,7 @@ public class GMLReader extends AbstractGraphReader {
 		if (graphics_list != null) {
 			if (label == null) {
 				label = "node" + tempid;
-				System.out.println("Warning: node label is missing for node ID: " + tempid);
+				CyLogger.getLogger().info("Warning: node label is missing for node ID: " + tempid);
 			}
 
 			extractNodeAttributes(graphics_list, label);
@@ -882,8 +883,8 @@ public class GMLReader extends AbstractGraphReader {
 			}
 		}
 
-		// System.out.print( "In layout, Root index is: " + root_index );
-		// System.out.print( " Checking label: " + label );
+		// CyLogger.getLogger().info( "In layout, Root index is: " + root_index );
+		// CyLogger.getLogger().info( " Checking label: " + label );
 		view = myView.getNodeView(root_index.intValue());
 
 		if (label != null) {
@@ -1070,7 +1071,7 @@ public class GMLReader extends AbstractGraphReader {
 			temp = temp + edgeWidth.get(e) + ", ";
 			temp = temp + edgeArrow.get(e) + ", ";
 			temp = temp + edgeShape.get(e) + ", ";
-			System.out.println(temp);
+			CyLogger.getLogger().info(temp);
 			temp = null;
 		}
 	}

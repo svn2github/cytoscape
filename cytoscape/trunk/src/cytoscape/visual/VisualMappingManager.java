@@ -46,6 +46,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import ding.view.DingCanvas;
@@ -303,7 +304,7 @@ public class VisualMappingManager extends SubjectBase {
 			DingCanvas backgroundCanvas = ((DGraphView) network_view).getCanvas(DGraphView.Canvas.BACKGROUND_CANVAS);
 			backgroundCanvas.setBackground(myGlobalApp.getBackgroundColor());
 		} else {
-			System.out.println("VisualMappingManager.applyGlobalAppearances() - DGraphView not found!");
+			CyLogger.getLogger().info("VisualMappingManager.applyGlobalAppearances() - DGraphView not found!");
 			network_view.setBackgroundPaint(myGlobalApp.getBackgroundColor());
 		}
 

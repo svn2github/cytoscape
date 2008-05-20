@@ -39,6 +39,7 @@ package cytoscape.visual.calculators;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.logger.CyLogger;
 
 import java.lang.reflect.Constructor;
 
@@ -77,7 +78,7 @@ public class CalculatorFactory {
 			VisualPropertyType t = VisualPropertyType.valueOf(typeName);
 			return new BasicCalculator(name,calcProps,baseKey,t);
 		} catch (IllegalArgumentException e) { 
-			System.out.println("Couldn't parse visual property type: " + typeName);
+			CyLogger.getLogger().info("Couldn't parse visual property type: " + typeName);
 			return null;	
 		}
 	}
@@ -109,7 +110,7 @@ public class CalculatorFactory {
         try {
             realClass = Class.forName(className);
         } catch (Exception e) {
-            System.err.println(errString + " class not found: " + className);
+            CyLogger.getLogger().warn(errString + " class not found: " + className);
 
             return null;
         }
@@ -118,7 +119,7 @@ public class CalculatorFactory {
         Class calcClass = Calculator.class;
 
         if (!calcClass.isAssignableFrom(realClass)) {
-            System.err.println(errString + " requested class " + className +
+            CyLogger.getLogger().warn(errString + " requested class " + className +
                 " does not implement the Calculator interface");
 
             return null;
@@ -130,7 +131,7 @@ public class CalculatorFactory {
                 className);
 
         if (constructor == null) {
-            System.err.println(errString + " requested constructor for " +
+            CyLogger.getLogger().warn(errString + " requested constructor for " +
                 className + " could not be created");
 
             return null;
@@ -141,7 +142,7 @@ public class CalculatorFactory {
         Calculator calculator = getCalculator(constructor, params, className);
 
         if (calculator == null)
-            System.err.println(errString + " requested calculator for " +
+            CyLogger.getLogger().warn(errString + " requested calculator for " +
                 className + " could not be created");
 
         return calculator;
@@ -185,14 +186,14 @@ public class CalculatorFactory {
             constructor = realClass.getDeclaredConstructor(parameterTypes);
         } catch (NoSuchMethodException nsme) {
             String s = "no suitable constructor found in class " + className;
-            System.err.println(s);
+            CyLogger.getLogger().warn(s);
             nsme.printStackTrace();
 
             return null;
         } catch (SecurityException se) { // highly unlikely
 
             String s = "could not access constructors for class " + className;
-            System.err.println(s);
+            CyLogger.getLogger().warn(s);
             se.printStackTrace();
 
             return null;
@@ -211,9 +212,9 @@ public class CalculatorFactory {
         } catch (Exception e) {
             String s = "unable to construct an instance of class " + className;
             for(Object p: params) {
-            	System.out.println("-- Parameter = " + p);
+            	CyLogger.getLogger().info("-- Parameter = " + p);
             }
-            System.err.println(s);
+            CyLogger.getLogger().warn(s);
             e.printStackTrace();
 
             return null;

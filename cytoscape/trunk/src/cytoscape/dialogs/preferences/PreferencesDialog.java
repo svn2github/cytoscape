@@ -38,6 +38,7 @@ package cytoscape.dialogs.preferences;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -116,9 +117,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equals(Cytoscape.PREFERENCE_MODIFIED)) {
-			System.out.println("Cytoscape Prop. has changed: ");
-			System.out.println(" - Old value is " + e.getOldValue());
-			System.out.println(" - New value is " + e.getNewValue());
+			CyLogger.getLogger().info("Cytoscape Prop. has changed: ");
+			CyLogger.getLogger().info(" - Old value is " + e.getOldValue());
+			CyLogger.getLogger().info(" - New value is " + e.getNewValue());
 
 			String propName = null;
  
@@ -137,7 +138,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 				CytoscapeInit.getProperties().setProperty(propName, (String) e.getNewValue());
 				prefsTM.setProperty(propName, (String) e.getNewValue());
 				// refresh();
-				System.out.println(propName + " updated to "
+				CyLogger.getLogger().info(propName + " updated to "
 				                   + CytoscapeInit.getProperties().getProperty(propName));
 			}
 		}
@@ -440,11 +441,11 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 					File file = CytoscapeInit.getConfigFile("cytoscape.props");
 					FileOutputStream output = new FileOutputStream(file);
 					CytoscapeInit.getProperties().store(output, "Cytoscape Property File");
-					System.out.println("wrote Cytoscape properties file to: "
+					CyLogger.getLogger().info("wrote Cytoscape properties file to: "
 					                   + file.getAbsolutePath());
 				} catch (Exception ex) {
 					ex.printStackTrace();
-					System.out.println("Could not write cytoscape.props file!");
+					CyLogger.getLogger().info("Could not write cytoscape.props file!");
 				}
 
 				saveCyPropsAsDefault = false;

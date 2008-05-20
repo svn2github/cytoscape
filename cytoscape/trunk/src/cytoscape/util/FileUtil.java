@@ -38,6 +38,7 @@ package cytoscape.util;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.task.TaskMonitor;
 
@@ -243,7 +244,7 @@ public abstract class FileUtil {
 
 		String osName = System.getProperty("os.name");
 
-		//System.out.println( "Os name: "+osName );
+		//CyLogger.getLogger().info( "Os name: "+osName );
 		if (osName.startsWith("Mac")) {
 			// this is a Macintosh, use the AWT style file dialog
 			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(),title, load_save_custom);
@@ -399,7 +400,7 @@ public abstract class FileUtil {
 			ioe.printStackTrace();
 		}
 
-		System.out.println("couldn't create string from '" + filename + "'");
+		CyLogger.getLogger().warn("couldn't create string from '" + filename + "'");
 
 		return null;
 	}

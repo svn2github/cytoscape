@@ -42,6 +42,7 @@ import cytoscape.data.annotation.Annotation;
 import cytoscape.data.annotation.AnnotationDescription;
 
 import cytoscape.data.synonyms.Thesaurus;
+import cytoscape.logger.CyLogger;
 
 import java.io.Serializable;
 
@@ -347,7 +348,7 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 	 */
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			System.err.println("usage:  BioDataServerRmi <server name>");
+			CyLogger.getLogger().warn("usage:  BioDataServerRmi <server name>");
 			System.exit(1);
 		}
 
@@ -356,9 +357,9 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		try {
 			BioDataServerRmi rmiServer = new BioDataServerRmi();
 			Naming.rebind(name, rmiServer);
-			System.out.println("BioDataServer bound as '" + name + "'");
+			CyLogger.getLogger().info("BioDataServer bound as '" + name + "'");
 		} catch (Exception e) {
-			System.err.println("BioDataServer exception: " + e.getMessage());
+			CyLogger.getLogger().warn("BioDataServer exception: " + e.getMessage());
 			e.printStackTrace();
 		}
 	} // main

@@ -41,6 +41,7 @@ import com.nexes.wizard.WizardPanelDescriptor;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.actions.MapOntologyAction;
 
@@ -154,7 +155,7 @@ public class GeneOntologyWizard {
 			// First, create manifest if necessary.
 			if (oldManifest == null) {
 				flip = ((AnotationPanelDescriptor) annotationDescriptor).isFlip();
-				System.out.println("Flip = " + flip);
+				CyLogger.getLogger().info("Flip = " + flip);
 				generateManifest();
 				task = new LoadGeneOntologyTask(manifestFullPath);
 			} else {
@@ -257,7 +258,7 @@ public class GeneOntologyWizard {
 				wt.close();
 			}
 
-			System.out.println("Manifest Created.");
+			CyLogger.getLogger().info("Manifest Created.");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

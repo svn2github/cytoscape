@@ -174,7 +174,7 @@ public class Appearance {
 			String key = type.getDefaultPropertyKey(baseKey);
 			String value = ObjectToString.getStringValue(vizProps[type.ordinal()]);
 			if ( key != null && value != null ) {
-//				System.out.println("(Key,val) = " + key + ", " + value + ", basekey = " + baseKey);
+//				CyLogger.getLogger().info("(Key,val) = " + key + ", " + value + ", basekey = " + baseKey);
 				props.setProperty(key,value);
 			}
 		}

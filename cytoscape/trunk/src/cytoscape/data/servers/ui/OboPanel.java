@@ -8,6 +8,7 @@ package cytoscape.data.servers.ui;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.util.OpenBrowser;
+import cytoscape.logger.CyLogger;
 
 import java.awt.event.ActionListener;
 
@@ -194,7 +195,7 @@ public class OboPanel extends javax.swing.JPanel {
 
 	private void oboFileNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
-		System.out.println("VC!!!");
+		CyLogger.getLogger().info("VC!!!");
 	}
 
 	private String getHeader(BufferedReader br) throws IOException {

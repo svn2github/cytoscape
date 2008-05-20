@@ -39,6 +39,7 @@ package cytoscape.view;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetworkTitleChange;
+import cytoscape.logger.CyLogger;
 import cytoscape.actions.CreateNetworkViewAction;
 
 import cytoscape.data.SelectEvent;
@@ -291,7 +292,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	public void addNetwork(String network_id, String parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
-			//System.out.println("NetworkPanel: addNetwork " + network_id);
+			//CyLogger.getLogger().info("NetworkPanel: addNetwork " + network_id);
 			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(network_id).getTitle(),
 			                                           network_id);
 			Cytoscape.getNetwork(network_id).addSelectEventListener(this);
@@ -322,7 +323,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param network_id DOCUMENT ME!
 	 */
 	public void focusNetworkNode(String network_id) {
-		//System.out.println("NetworkPanel: focus network node");
+		//CyLogger.getLogger().info("NetworkPanel: focus network node");
 		DefaultMutableTreeNode node = getNetworkNode(network_id);
 
 		if (node != null) {
@@ -367,17 +368,17 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		// System.out.println("NetworkPanel: valueChanged - " + e.getSource().getClass().getName()); 
+		// CyLogger.getLogger().info("NetworkPanel: valueChanged - " + e.getSource().getClass().getName());
 		JTree mtree = treeTable.getTree();
 
 		// sets the "current" network based on last node in the tree selected
 		NetworkTreeNode node = (NetworkTreeNode) mtree.getLastSelectedPathComponent();
 		if ( node == null || node.getUserObject() == null ) {
-			// System.out.println("NetworkPanel: null node - returning");
+			// CyLogger.getLogger().info("NetworkPanel: null node - returning");
 			return;
 		}
 
-		// System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
+		// CyLogger.getLogger().info("NetworkPanel: firing NETWORK_VIEW_FOCUS");
 		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
 	                                                   null, (String) node.getNetworkID()));
 
@@ -394,7 +395,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 		}
 
 		if ( networkList.size() > 0 ) {
-			// System.out.println("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
+			// CyLogger.getLogger().info("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
 			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
 		                                                   null, networkList));
 		} 
@@ -673,7 +674,7 @@ class PopupActionListener implements ActionListener {
 		} // end of if ()
 		else {
 			// throw an exception here?
-			System.err.println("Unexpected network panel popup option");
+			CyLogger.getLogger().warn("Unexpected network panel popup option");
 		} // end of else
 	}
 

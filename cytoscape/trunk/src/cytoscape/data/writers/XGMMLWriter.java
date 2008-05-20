@@ -536,10 +536,10 @@ public class XGMMLWriter {
 			final float[] dash = borderType.getDashArray();
 
 			if (dash == null) {
-				// System.out.println("##Border is NORMAL LINE");
+				// CyLogger.getLogger().info("##Border is NORMAL LINE");
 				writeAttributePair("cy:borderLineType", "solid");
 			} else {
-				// System.out.println("##Border is DASHED LINE");
+				// CyLogger.getLogger().info("##Border is DASHED LINE");
 				String dashArray = null;
 				final StringBuilder dashBuf = new StringBuilder();
 

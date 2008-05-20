@@ -37,6 +37,7 @@
 package cytoscape.dialogs.preferences;
 
 import cytoscape.*;
+import cytoscape.logger.CyLogger;
 
 import java.io.*;
 
@@ -254,7 +255,7 @@ public class PluginsTableModel extends AbstractTableModel {
 
 				addPlugin(url);
 			} catch (Exception ue) {
-				System.err.println("Error: cannot construct URL from: " + plugin[i]);
+				CyLogger.getLogger().warn("Error: cannot construct URL from: " + plugin[i]);
 			}
 		}
 	}

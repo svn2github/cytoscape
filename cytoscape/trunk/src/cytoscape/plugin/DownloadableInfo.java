@@ -43,7 +43,9 @@ import java.util.Set;
 import java.util.HashSet;
 
 public abstract class DownloadableInfo {
-	protected String versionMatch = "^\\d+\\.\\d+";
+  private static CyLogger logger = CyLogger.getLogger(DownloadableInfo.class);	
+
+  protected String versionMatch = "^\\d+\\.\\d+";
 
 	protected String versionSplit = "\\.";
 
@@ -74,7 +76,7 @@ public abstract class DownloadableInfo {
 	private DownloadableInfo parentObj = null;
 
 	public DownloadableInfo() {
-		compatibleCyVersions = new HashSet<String>();
+    compatibleCyVersions = new HashSet<String>();
 	}
 
 	public DownloadableInfo(String ID) {
@@ -476,7 +478,7 @@ public abstract class DownloadableInfo {
 			int b = 0;
 
 			if (i == (max - 1)) {
-				CyLogger.getLogger().debug("A length: " + SplitVersionA.length
+				logger.debug("A length: " + SplitVersionA.length
 						+ " B length: " + SplitVersionB.length);
 				a = (SplitVersionA.length == max) ? Integer
 						.valueOf(SplitVersionA[i]) : 0;

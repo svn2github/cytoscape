@@ -44,6 +44,7 @@ import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
@@ -800,7 +801,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		closeEditorWindow();
 
-		System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
+		CyLogger.getLogger().info("VS Switched --> " + vsName + ", Last = " + lastVSName);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		
 		// MLC 03/31/08:
@@ -915,7 +916,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
 
 			if (view != null) {
-				System.out.println("Creating Default Image for " + name);
+				CyLogger.getLogger().info("Creating Default Image for " + name);
 				updateDefaultImage(name, view, panelSize);
 			}
 		}
@@ -1456,9 +1457,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			try {
 				val = discMapping.get(key);
 			} catch (Exception e) {
-				System.out.println("------- Map = " + discMapping.getClass() + ", class = "
+				CyLogger.getLogger().info("------- Map = " + discMapping.getClass() + ", class = "
 				                   + key.getClass() + ", err = " + e.getMessage());
-				System.out.println("------- Key = " + key + ", val = " + val + ", disp = " + strVal);
+				CyLogger.getLogger().info("------- Key = " + key + ", val = " + val + ", disp = " + strVal);
 			}
 
 			if (val != null)
@@ -1946,7 +1947,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Got global event
 		 */
 
-		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
+		//CyLogger.getLogger().info("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			String vmName = vmm.getVisualStyle().getName();
 			setDefaultPanel(defaultImageManager.get(vmName));
@@ -2041,7 +2042,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		if (prop.getHiddenObject() instanceof ObjectMapping
 		    || prop.getDisplayName().equals("Mapping Type")) {
-			System.out.println("Mapping type changed: " + prop.getHiddenObject());
+			CyLogger.getLogger().info("Mapping type changed: " + prop.getHiddenObject());
 
 			if (e.getNewValue() == null)
 				return;
@@ -2404,7 +2405,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	private Calculator getNewCalculator(final VisualPropertyType type, final String newMappingName,
 	                                    final String newCalcName) {
-		System.out.println("Mapper = " + newMappingName);
+		CyLogger.getLogger().info("Mapper = " + newMappingName);
 
 		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 
@@ -2422,7 +2423,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			mapperCon = mapperClass.getConstructor(conTypes);
 		} catch (NoSuchMethodException exc) {
 			// Should not happen...
-			System.err.println("Invalid mapper " + mapperClass.getName());
+			CyLogger.getLogger().warn("Invalid mapper " + mapperClass.getName());
 
 			return null;
 		}
@@ -2437,7 +2438,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		final Object defaultObj = type.getDefault(vmm.getVisualStyle());
 
-		System.out.println("defobj = " + defaultObj.getClass() + ", Type = " + type.getName());
+		CyLogger.getLogger().info("defobj = " + defaultObj.getClass() + ", Type = " + type.getName());
 
 		final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
 		ObjectMapping mapper = null;
@@ -2445,7 +2446,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		try {
 			mapper = (ObjectMapping) mapperCon.newInstance(invokeArgs);
 		} catch (Exception exc) {
-			System.err.println("Error creating mapping");
+			CyLogger.getLogger().warn("Error creating mapping");
 
 			return null;
 		}
@@ -2545,7 +2546,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final Dimension panelSize = defaultAppearencePanel.getSize();
 
 			if (view != null) {
-				System.out.println("Creating Default Image for new visual style " + name);
+				CyLogger.getLogger().info("Creating Default Image for new visual style " + name);
 				updateDefaultImage(name, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(name));
 			}
@@ -2696,7 +2697,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			try {
 				clone = (VisualStyle) currentStyle.clone();
 			} catch (CloneNotSupportedException exc) {
-				System.err.println("Clone not supported exception!");
+				CyLogger.getLogger().warn("Clone not supported exception!");
 			}
 
 			final String newName = getStyleName(clone);
@@ -2716,7 +2717,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final Dimension panelSize = defaultAppearencePanel.getSize();
 
 			if (view != null) {
-				System.out.println("Creating Default Image for new visual style " + newName);
+				CyLogger.getLogger().info("Creating Default Image for new visual style " + newName);
 				updateDefaultImage(newName, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(newName));
 			}
@@ -2949,7 +2950,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		for (Property p : targets) {
-			System.out.println("Removed: " + p.getDisplayName());
+			CyLogger.getLogger().info("Removed: " + p.getDisplayName());
 			propertyMap.get(vmm.getVisualStyle().getName()).remove(p);
 		}
 	}
@@ -3092,7 +3093,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				expandLastSelectedItem(type.getName());
 			} else {
-				System.out.println("Invalid.");
+				CyLogger.getLogger().info("Invalid.");
 			}
 
 			return;
@@ -3198,7 +3199,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				expandLastSelectedItem(type.getName());
 			} else {
-				System.out.println("Invalid.");
+				CyLogger.getLogger().info("Invalid.");
 			}
 
 			return;
@@ -3452,7 +3453,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				expandLastSelectedItem(type.getName());
 			} else {
-				System.out.println("Invalid.");
+				CyLogger.getLogger().info("Invalid.");
 			}
 
 			return;
@@ -3561,7 +3562,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				expandLastSelectedItem(type.getName());
 			} else {
-				System.out.println("Invalid.");
+				CyLogger.getLogger().info("Invalid.");
 			}
 
 			return;
@@ -3704,7 +3705,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (ignore)
 			return;
 
-		System.out.println("Got VMM Change event.  Cur VS in VMM: "
+		CyLogger.getLogger().info("Got VMM Change event.  Cur VS in VMM: "
 		                   + vmm.getVisualStyle().getName());
 
 		if ((selectedName == null) || (currentName == null) || (curView == null)

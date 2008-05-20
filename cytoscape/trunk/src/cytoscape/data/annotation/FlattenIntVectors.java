@@ -71,7 +71,7 @@ public class FlattenIntVectors {
 		String className = o.getClass().getName();
 
 		if (!className.equalsIgnoreCase("java.util.Vector")) {
-			// System.out.println (v);
+			// CyLogger.getLogger().info (v);
 			result.addElement(v);
 		} else {
 			for (int i = 0; i < v.size(); i++) {

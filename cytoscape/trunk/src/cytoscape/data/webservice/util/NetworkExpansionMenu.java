@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.DatabaseSearchResult;
 import cytoscape.data.webservice.NetworkImportWebServiceClient;
@@ -59,7 +60,7 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 	private JMenuItem getMenuItem(final WebServiceClient client) {
 		final JMenuItem expandMenu = new JMenuItem(new AbstractAction("Get neighbours by ID(s)") {
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("Start expanding network: " + e.getActionCommand());
+					CyLogger.getLogger().info("Start expanding network: " + e.getActionCommand());
 
 					final CyWebServiceEvent evt = new CyWebServiceEvent(client.getClientID(),
 					                                                    WSEventType.SEARCH_DATABASE,
@@ -104,7 +105,7 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 		if (evt.getPropertyName().equals(CyWebServiceEvent.WSResponseType.SEARCH_FINISHED.toString())
 		    && ((DatabaseSearchResult) resultObj).getNextMove().equals(WSEventType.EXPAND_NETWORK)) {
-			System.out.println("Search result from " + evt.getSource() + ", Number of result = "
+			CyLogger.getLogger().info("Search result from " + evt.getSource() + ", Number of result = "
 			                   + evt.getNewValue() + ", Source name = " + evt.getOldValue());
 
 			String[] message = {

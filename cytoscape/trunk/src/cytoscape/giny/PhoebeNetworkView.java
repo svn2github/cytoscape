@@ -144,7 +144,7 @@ public class PhoebeNetworkView extends PGraphView implements CyNetworkView {
 		//TODO:
 		//     Add NetworkView specific ToolBars
 
-		// System.out.println( "Image::::: "+ getClass().getResource("images/new/zui_cursor.gif") );
+		// CyLogger.getLogger().info( "Image::::: "+ getClass().getResource("images/new/zui_cursor.gif") );
 
 		//  try {
 		//       Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -165,7 +165,7 @@ public class PhoebeNetworkView extends PGraphView implements CyNetworkView {
 	 * @param VSName DOCUMENT ME!
 	 */
 	public void setVisualStyle(String VSName) {
-		//System.out.println("New Vsial Style for " + title + ": " + VSName );
+		//CyLogger.getLogger().info("New Vsial Style for " + title + ": " + VSName );
 		vs = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(VSName);
 	}
 
@@ -226,8 +226,8 @@ public class PhoebeNetworkView extends PGraphView implements CyNetworkView {
 				}
 
 				public void keyPressed(PInputEvent event) {
-					//System.out.println( "Key Code Pressed: "+event.getKeyCode() );
-					//System.out.println( "Key text: "+KeyEvent.getKeyText( event.getKeyCode() ) );
+					//CyLogger.getLogger().info( "Key Code Pressed: "+event.getKeyCode() );
+					//CyLogger.getLogger().info( "Key text: "+KeyEvent.getKeyText( event.getKeyCode() ) );
 					if (event.getKeyCode() == KeyEvent.VK_SPACE) {
 						space_down = true;
 						getCanvas().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -242,7 +242,7 @@ public class PhoebeNetworkView extends PGraphView implements CyNetworkView {
 							getCanvas().removeInputEventListener(getEdgeSelectionHandler());
 						}
 					} else if (!slash_pressed && (event.getKeyCode() == KeyEvent.VK_SLASH)) {
-						//System.out.println( "start taf " );
+						//CyLogger.getLogger().info( "start taf " );
 						slash_pressed = true;
 						getCanvas().getCamera().addChild(typeAheadNode);
 						typeAheadNode.setOffset(20, 20);
@@ -251,15 +251,15 @@ public class PhoebeNetworkView extends PGraphView implements CyNetworkView {
 						typeAheadNode.setFont(typeAheadNode.getFont().deriveFont(30f));
 					} else if (slash_pressed && (event.getKeyCode() != KeyEvent.VK_ESCAPE)
 					           && (event.getKeyCode() != KeyEvent.VK_BACK_SPACE)) {
-						//System.out.println( "Normal Press" );
+						//CyLogger.getLogger().info( "Normal Press" );
 						typeBuffer.append(KeyEvent.getKeyText(event.getKeyCode()));
 						length++;
 						selectAndZoom();
 					} else if (slash_pressed && (event.getKeyCode() == KeyEvent.VK_ESCAPE)) {
-						// System.out.println( "ESCAPRE PRESSED" );
+						// CyLogger.getLogger().info( "ESCAPRE PRESSED" );
 						resetFind();
 					} else if (slash_pressed && (event.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {
-						//System.out.println( "back space: "+length+" "+typeBuffer.toString() );
+						//CyLogger.getLogger().info( "back space: "+length+" "+typeBuffer.toString() );
 						if (length != 0) {
 							typeBuffer.deleteCharAt(length - 1);
 							length--;

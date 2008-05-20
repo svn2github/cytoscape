@@ -47,6 +47,7 @@ import cytoscape.visual.mappings.Interpolator;
 import cytoscape.visual.mappings.InterpolatorFactory;
 
 import cytoscape.visual.parsers.ValueParser;
+import cytoscape.logger.CyLogger;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -125,9 +126,9 @@ public class ContinuousMappingReader {
                 int numBV = Integer.parseInt(bvNumString);
                 getBoundaryValues(numBV, baseKey, props);
             } catch (NumberFormatException e) {
-                System.err.println("Error parsing attributeMap properties:");
-                System.err.println("    Expected number value for key: " +
-                    bvNumString);
+                CyLogger.getLogger().warn("Error parsing attributeMap properties:\n\t" +
+                    "Expected number value for key " + bvNumString );
+
             }
         }
     }
@@ -146,9 +147,8 @@ public class ContinuousMappingReader {
                     Double dVal = Double.valueOf(dvString);
                     getLesserEqualGreater(bvBase, props, dVal);
                 } catch (NumberFormatException e) {
-                    System.err.println("Error parsing attributeMap properties:");
-                    System.err.println("    expected number value for key: " +
-                        dvKey);
+                    CyLogger.getLogger().warn("Error parsing attributeMap properties:\n\t" +
+                    "Expected number value for key " + dvKey);
                 }
             }
         }

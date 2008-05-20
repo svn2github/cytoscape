@@ -36,6 +36,8 @@
 */
 package cytoscape.util;
 
+import cytoscape.logger.CyLogger;
+
 import java.io.File;
 
 import javax.xml.transform.Transformer;
@@ -83,7 +85,7 @@ public class Transform {
 		Transformer tf = tff.newTransformer(ss);
 		tf.transform(in, out);
 
-		System.out.println("File conversion done!: " + output.getName());
+		CyLogger.getLogger().info("File conversion done!: " + output.getName());
 	}
 
 	/**
@@ -101,6 +103,6 @@ public class Transform {
 		TransformerFactory tff = TransformerFactory.newInstance();
 		Transformer tf = tff.newTransformer(ss);
 		tf.transform(in, out);
-		System.out.println("Done: " + args[2]);
+		CyLogger.getLogger().info("Done: " + args[2]);
 	}
 }

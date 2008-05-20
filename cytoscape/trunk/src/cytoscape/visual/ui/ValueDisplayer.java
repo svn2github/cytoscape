@@ -42,6 +42,7 @@ import cytoscape.visual.Arrow;
 import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
+import cytoscape.logger.CyLogger;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -296,7 +297,7 @@ public class ValueDisplayer extends JButton {
      */
     protected void fireItemSelected() {
     	
-    	System.out.println("----------Firing!: ");
+    	CyLogger.getLogger().info("----------Firing!: ");
     	
     	
         this.fireItemStateChanged(

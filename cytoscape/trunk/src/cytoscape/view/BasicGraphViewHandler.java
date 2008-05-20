@@ -55,6 +55,8 @@ import giny.view.NodeView;
 
 import java.util.*;
 
+import cytoscape.logger.CyLogger;
+
 
 /**
  * A basic <code>GraphViewHandler</code> that simply reflects <code>GraphPerspective</code>
@@ -77,20 +79,20 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 */
 	public void handleGraphPerspectiveEvent(GraphPerspectiveChangeEvent event, GraphView graph_view) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.handleGraphPerspectiveEvent().");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.handleGraphPerspectiveEvent().");
 		int numTypes = 0; // An event may have more than one type
 
 		// Node Events:
 		if (event.isNodesHiddenType()) {
 			//TODO: Remove
-			//System.out.println("isNodesHiddenType == " + event.isNodesHiddenType());
+			//CyLogger.getLogger().info("isNodesHiddenType == " + event.isNodesHiddenType());
 			removeGraphViewNodes(graph_view, event.getHiddenNodeIndices());
 			numTypes++;
 		}
 
 		if (event.isNodesRestoredType()) {
 			//TODO: Remove
-			//System.out.println("isNodesRestoredType == " + event.isNodesRestoredType());
+			//CyLogger.getLogger().info("isNodesRestoredType == " + event.isNodesRestoredType());
 			restoreGraphViewNodes(graph_view, event.getRestoredNodeIndices(), true);
 			numTypes++;
 		}
@@ -110,14 +112,14 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		// Edge events:
 		if (event.isEdgesHiddenType()) {
 			//TODO: Remove
-			//System.out.println("isEdgesHiddenType == " + event.isEdgesHiddenType());
+			//CyLogger.getLogger().info("isEdgesHiddenType == " + event.isEdgesHiddenType());
 			removeGraphViewEdges(graph_view, event.getHiddenEdgeIndices());
 			numTypes++;
 		}
 
 		if (event.isEdgesRestoredType()) {
 			//TODO: Remove
-			//System.out.println("isEdgesRestoredType == " + event.isEdgesRestoredType());
+			//CyLogger.getLogger().info("isEdgesRestoredType == " + event.isEdgesRestoredType());
 			restoreGraphViewEdges(graph_view, event.getRestoredEdgeIndices());
 			numTypes++;
 		}
@@ -134,7 +136,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		//numTypes++;
 		//}
 		if (numTypes == 0) {
-			//System.err.println("In BasicGraphViewHandler.handleGraphPerspectiveEvent, "
+			//CyLogger.getLogger().warn("In BasicGraphViewHandler.handleGraphPerspectiveEvent, "
 			//+ "unrecognized event type");
 			return;
 		}
@@ -146,7 +148,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		//     }
 
 		//TODO: Remove
-		//System.out.println("Leaving BasicGraphViewHandler.handleGraphPerspectiveEvent()." +
+		//CyLogger.getLogger().info("Leaving BasicGraphViewHandler.handleGraphPerspectiveEvent()." +
 		//" numTypes caught = " + numTypes);
 	} //handleGraphPerspectiveEvent
 
@@ -163,7 +165,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	// USE INSTEAD: removeGraphViewEdges(GraphView, int [])
 	static public Edge[] removeGraphViewEdges(GraphView graph_view, Edge[] edges) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.removeGraphViewEdges()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.removeGraphViewEdges()");
 		Set removedEdges = new HashSet();
 
 		for (int i = 0; i < edges.length; i++) {
@@ -174,7 +176,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} //for i
 		  //TODO: Remove
-		  //System.out.println("Leaving BasicGraphViewHandler.removeGraphViewEdges()," + "num removed edges = " + removedEdges.size());
+		  //CyLogger.getLogger().info("Leaving BasicGraphViewHandler.removeGraphViewEdges()," + "num removed edges = " + removedEdges.size());
 
 		return (Edge[]) removedEdges.toArray(new Edge[removedEdges.size()]);
 	} //removeGraphViewEdges
@@ -192,7 +194,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	// NOTE: USE THIS INSTEAD OF removeGraphViewEdges (GraphView,Edge[])
 	static public int[] removeGraphViewEdges(GraphView graph_view, int[] edge_indices) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.removeGraphViewEdges()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.removeGraphViewEdges()");
 		IntArrayList removedEdges = new IntArrayList(edge_indices.length);
 
 		for (int i = 0; i < edge_indices.length; i++) {
@@ -206,7 +208,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		removedEdges.trimToSize();
 
 		//TODO: Remove
-		//System.out.println("Leaving BasicGraphViewHandler.removeGraphViewEdges()," + "num removed edges = " + removedEdges.size());
+		//CyLogger.getLogger().info("Leaving BasicGraphViewHandler.removeGraphViewEdges()," + "num removed edges = " + removedEdges.size());
 		return removedEdges.elements();
 	} //removeGraphViewEdges
 
@@ -222,7 +224,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	// TESTED
 	static public Edge[] restoreGraphViewEdges(GraphView graph_view, Edge[] edges) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.restoreGraphViewEdges()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.restoreGraphViewEdges()");
 		Set restoredEdges = new HashSet();
 
 		for (int i = 0; i < edges.length; i++) {
@@ -248,7 +250,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} //for i
 		  //TODO: Remove
-		  //System.out.println("Leaving BasicGraphViewHandler.restoreGraphViewEdges(), "+"num restored edges = " + restoredEdges.size() );
+		  //CyLogger.getLogger().info("Leaving BasicGraphViewHandler.restoreGraphViewEdges(), "+"num restored edges = " + restoredEdges.size() );
 
 		return (Edge[]) restoredEdges.toArray(new Edge[restoredEdges.size()]);
 	} //restoreGraphViewEdges
@@ -266,7 +268,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	// TODO: What if a connected node is not in the graph view or graph perspective?
 	static public int[] restoreGraphViewEdges(GraphView graph_view, int[] edge_indices) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.restoreGraphViewEdges()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.restoreGraphViewEdges()");
 		IntArrayList restoredEdgeIndices = new IntArrayList(edge_indices.length);
 
 		for (int i = 0; i < edge_indices.length; i++) {
@@ -280,10 +282,10 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			//NodeView sourceNodeView = graph_view.getNodeView(sourceRootIndex);
 			//NodeView targetNodeView = graph_view.getNodeView(targetRootIndex);
 			//if(sourceNodeView == null){
-			//System.err.println("ERROR: Source NodeView for edge "+edge_indices[i]+" is null");
+			//CyLogger.getLogger().warn("ERROR: Source NodeView for edge "+edge_indices[i]+" is null");
 			//}
 			//if(targetNodeView == null){
-			//System.err.println("ERROR: Target NodeView for edge "+edge_indices[i]+" is null");
+			//CyLogger.getLogger().warn("ERROR: Target NodeView for edge "+edge_indices[i]+" is null");
 			//}
 
 			// The given index can be either RootGraph index or GraphPerspective index
@@ -312,7 +314,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		restoredEdgeIndices.trimToSize();
 
 		//TODO: Remove
-		//System.out.println("Leaving BasicGraphViewHandler.restoreGraphViewEdges(), "+"num restored edges = " + restoredEdgeIndices.size() );
+		//CyLogger.getLogger().info("Leaving BasicGraphViewHandler.restoreGraphViewEdges(), "+"num restored edges = " + restoredEdgeIndices.size() );
 		return restoredEdgeIndices.elements();
 	} //restoreGraphViewEdges
 
@@ -325,7 +327,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 */
 	static public Edge[] selectGraphViewEdges(GraphView graph_view, Edge[] edges) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.selectGraphViewEdges()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.selectGraphViewEdges()");
 		Set selectedEdges = new HashSet();
 
 		for (int i = 0; i < edges.length; i++) {
@@ -337,7 +339,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} //for i
 		  //TODO: Remove
-		  //System.out.println("Leaving BasicGraphViewHandler.selectGraphViewEdges()," +"num selected edges = " + selectedEdges.size());
+		  //CyLogger.getLogger().info("Leaving BasicGraphViewHandler.selectGraphViewEdges()," +"num selected edges = " + selectedEdges.size());
 
 		return (Edge[]) selectedEdges.toArray(new Edge[selectedEdges.size()]);
 	} //selectGraphViewEdges
@@ -351,7 +353,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 */
 	static public Edge[] unselectGraphViewEdges(GraphView graph_view, Edge[] edges) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.unselectGraphViewEdges()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.unselectGraphViewEdges()");
 		Set unselectedEdges = new HashSet();
 
 		for (int i = 0; i < edges.length; i++) {
@@ -363,7 +365,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} //for i
 		  //TODO: Remove
-		  //System.out.println("Leaving BasicGraphViewHandler.unselectGraphViewEdges()," +"num unselected edges = " + unselectedEdges.size());
+		  //CyLogger.getLogger().info("Leaving BasicGraphViewHandler.unselectGraphViewEdges()," +"num unselected edges = " + unselectedEdges.size());
 
 		return (Edge[]) unselectedEdges.toArray(new Edge[unselectedEdges.size()]);
 	} //unselectGraphViewEdges
@@ -384,7 +386,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	// TESTED
 	static public Node[] removeGraphViewNodes(GraphView graph_view, Node[] nodes) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.removeGraphViewNodes()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.removeGraphViewNodes()");
 		Set removedNodes = new HashSet();
 
 		for (int i = 0; i < nodes.length; i++) {
@@ -395,7 +397,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} //for i
 		  //TODO: Remove
-		  //System.out.println("Leaving BasicGraphViewHandler.removeGraphViewNodes(), " +"num removed nodes = " + removedNodes.size());
+		  //CyLogger.getLogger().info("Leaving BasicGraphViewHandler.removeGraphViewNodes(), " +"num removed nodes = " + removedNodes.size());
 
 		return (Node[]) removedNodes.toArray(new Node[removedNodes.size()]);
 	} //removeGraphViewNodes
@@ -415,7 +417,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	// edges and we don't need to remove them in this method
 	static public int[] removeGraphViewNodes(GraphView graph_view, int[] node_indices) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.removeGraphViewNodes()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.removeGraphViewNodes()");
 		IntArrayList removedNodesIndices = new IntArrayList(node_indices.length);
 
 		for (int i = 0; i < node_indices.length; i++) {
@@ -429,7 +431,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		removedNodesIndices.trimToSize();
 
 		//TODO: Remove
-		//System.out.println("Leaving BasicGraphViewHandler.removeGraphViewNodes(), " +"num removed nodes = " + removedNodesIndices.size());
+		//CyLogger.getLogger().info("Leaving BasicGraphViewHandler.removeGraphViewNodes(), " +"num removed nodes = " + removedNodesIndices.size());
 		return removedNodesIndices.elements();
 	} //removeGraphViewNodes
 
@@ -449,7 +451,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	static public Node[] restoreGraphViewNodes(GraphView graph_view, Node[] nodes,
 	                                           boolean restore_connected_edges) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.restoreGraphViewNodes()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.restoreGraphViewNodes()");
 		Set restoredNodes = new HashSet();
 
 		for (int i = 0; i < nodes.length; i++) {
@@ -472,13 +474,13 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 			if (restored) {
 				//TODO: Remove
-				//System.err.println("Restored node w/index " + nodes[i].getRootGraphIndex());
+				//CyLogger.getLogger().warn("Restored node w/index " + nodes[i].getRootGraphIndex());
 				positionToBarycenter(nodeView);
 				restoredNodes.add(nodeView.getNode());
 			}
 		} //for i
 		  //TODO: Remove
-		  //System.out.println("Leaving BasicGraphViewHandler.restoreGraphViewNodes()." +"Total restored nodes == " + restoredNodes.size());
+		  //CyLogger.getLogger().info("Leaving BasicGraphViewHandler.restoreGraphViewNodes()." +"Total restored nodes == " + restoredNodes.size());
 
 		return (Node[]) restoredNodes.toArray(new Node[restoredNodes.size()]);
 	} //restoreGraphViewNodes
@@ -498,7 +500,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	static public int[] restoreGraphViewNodes(GraphView graph_view, int[] node_indices,
 	                                          boolean restore_connected_edges) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.restoreGraphViewNodes()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.restoreGraphViewNodes()");
 		IntArrayList restoredNodeIndices = new IntArrayList(node_indices.length);
 
 		for (int i = 0; i < node_indices.length; i++) {
@@ -524,17 +526,17 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 				positionToBarycenter(nodeView);
 
 				//TODO: Remove
-				//System.err.println("NodeView for node index " + node_indices[i] + " was added to graph_view");
+				//CyLogger.getLogger().warn("NodeView for node index " + node_indices[i] + " was added to graph_view");
 			} else {
 				//TODO: Remove
-				//System.err.println("ERROR: NodeView for node index " + node_indices[i] +" was NOT added to graph_view");
+				//CyLogger.getLogger().warn("ERROR: NodeView for node index " + node_indices[i] +" was NOT added to graph_view");
 			}
 		} //for i
 
 		restoredNodeIndices.trimToSize();
 
 		//TODO: Remove
-		//System.out.println("Leaving BasicGraphViewHandler.restoreGraphViewNodes()." +"Showed in graph_view/Restored in GP == " + restoredNodeIndices.size() +"/" + node_indices.length);
+		//CyLogger.getLogger().info("Leaving BasicGraphViewHandler.restoreGraphViewNodes()." +"Showed in graph_view/Restored in GP == " + restoredNodeIndices.size() +"/" + node_indices.length);
 		return restoredNodeIndices.elements();
 	} //restoreGraphViewNodes
 
@@ -547,7 +549,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 */
 	static public Node[] selectGraphViewNodes(GraphView graph_view, Node[] nodes) {
 		//TODO: Remove
-		////System.out.println("In BasicGraphViewHandler.selectGraphViewNodes()"); 
+		////CyLogger.getLogger().info("In BasicGraphViewHandler.selectGraphViewNodes()");
 		Set selectedNodes = new HashSet();
 
 		for (int i = 0; i < nodes.length; i++) {
@@ -559,7 +561,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} //for i
 		  //TODO: Remove
-		  //System.out.println("Leaving BasicGraphViewHandler.selectGraphViewNodes(),"+"num selected nodes = " + selectedNodes.size()); 
+		  //CyLogger.getLogger().info("Leaving BasicGraphViewHandler.selectGraphViewNodes(),"+"num selected nodes = " + selectedNodes.size());
 
 		return (Node[]) selectedNodes.toArray(new Node[selectedNodes.size()]);
 	} //selectGraphViewNodes
@@ -573,7 +575,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 */
 	static public Node[] unselectGraphViewNodes(GraphView graph_view, Node[] nodes) {
 		//TODO: Remove
-		//System.out.println("In BasicGraphViewHandler.unselectGraphViewNodes()");
+		//CyLogger.getLogger().info("In BasicGraphViewHandler.unselectGraphViewNodes()");
 		Set unselectedNodes = new HashSet();
 
 		for (int i = 0; i < nodes.length; i++) {
@@ -585,7 +587,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} //for i
 		  //TODO: Remove
-		  //System.out.println("Leaving BasicGraphViewHandler.unselectGraphViewNodes()," +"num unselected nodes = " + unselectedNodes.size());
+		  //CyLogger.getLogger().info("Leaving BasicGraphViewHandler.unselectGraphViewNodes()," +"num unselected nodes = " + unselectedNodes.size());
 
 		return (Node[]) unselectedNodes.toArray(new Node[unselectedNodes.size()]);
 	} //unselectGraphViewNodes
@@ -669,7 +671,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			Node gvNode = nodeView.getNode();
 
 			if (gvNode == null) {
-				System.err.println("Node for nodeView is null (nodeView  = " + nodeView + ")");
+				CyLogger.getLogger().warn("Node for nodeView is null (nodeView  = " + nodeView + ")");
 
 				continue;
 			}
@@ -687,7 +689,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			Edge gvEdge = edgeView.getEdge();
 
 			if (gvEdge == null) {
-				System.err.println("Edge for edgeView is null (edgeView  = " + edgeView + ")");
+				CyLogger.getLogger().warn("Edge for edgeView is null (edgeView  = " + edgeView + ")");
 
 				continue;
 			}

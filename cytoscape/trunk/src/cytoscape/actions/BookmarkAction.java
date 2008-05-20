@@ -43,6 +43,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.dialogs.preferences.BookmarkDialog;
 
@@ -67,7 +68,7 @@ public class BookmarkAction extends CytoscapeAction {
 	public BookmarkAction() {
 		super("Bookmarks...");
 
-		System.out.println("BookmarkAction()...");
+		CyLogger.getLogger().info("BookmarkAction()...");
 		setPreferredMenu("Edit.Preferences");
 	}
 

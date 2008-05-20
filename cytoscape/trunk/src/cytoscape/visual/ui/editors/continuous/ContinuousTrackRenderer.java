@@ -36,6 +36,7 @@ package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.visual.VisualPropertyType;
 
@@ -176,16 +177,16 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 	 * @param index
 	 */
 	protected void removeSquare(Integer index) {
-		System.out.println("\n\nTrying to remove " + index);
+		CyLogger.getLogger().info("\n\nTrying to remove " + index);
 
 		for (Object key : verticesList.keySet()) {
-			System.out.println("Key = " + key + ", " + verticesList.get(key));
+			CyLogger.getLogger().info("Key = " + key + ", " + verticesList.get(key));
 		}
 
 		verticesList.remove(index);
 
 		for (Object key : verticesList.keySet()) {
-			System.out.println("Key After = " + key + ", " + verticesList.get(key));
+			CyLogger.getLogger().info("Key After = " + key + ", " + verticesList.get(key));
 		}
 	}
 

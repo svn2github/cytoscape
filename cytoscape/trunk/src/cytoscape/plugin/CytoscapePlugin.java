@@ -133,9 +133,10 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 	 */
 	public static Object loadPlugin(Class pluginClass)
 			//throws InstantiationException, IllegalAccessException,
-			throws PluginException {
+      throws PluginException {
+    CyLogger logger = CyLogger.getLogger(pluginClass);
 
-		if (pluginClass == null) {
+    if (pluginClass == null) {
 			return false;
 		}
 
@@ -148,7 +149,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			// cytoscape app to crash, which a plugin should not do.
 		} catch (Throwable e) {
 			object = null;
-			CyLogger.getLogger().error("Instantiation has failed for: " + pluginClass);
+			logger.error("Instantiation has failed for");
 			// Here's a bit of Java strangeness: newInstance() throws
 			// two exceptions (above) -- however, it also propagates any
 			// exception that occurs during the creation of that new instance.
@@ -163,12 +164,12 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 					+ "on another plugin that isn't available. Consult the documentation \n"
 					+ "for the plugin or contact the plugin author for more information.";
 
-			//System.err.println(ErrorMsg);
-			// System.err.println(e);
+			//CyLogger.getLogger().warn(ErrorMsg);
+			// CyLogger.getLogger().warn(e);
 			// e.printStackTrace();
 			throw new PluginException(ErrorMsg, e);
 		} 
-		CyLogger.getLogger().info("Successfully loaded: " + pluginClass);
+		logger.info("Plugin successfully loaded");
 		return object;
 	}
 

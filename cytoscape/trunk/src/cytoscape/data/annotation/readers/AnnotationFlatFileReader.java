@@ -45,6 +45,7 @@ import cytoscape.data.readers.TextHttpReader;
 import cytoscape.data.readers.TextJarReader;
 
 import cytoscape.data.synonyms.Thesaurus;
+import cytoscape.logger.CyLogger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -131,7 +132,7 @@ public class AnnotationFlatFileReader {
 	 * @throws Exception  DOCUMENT ME!
 	 */
 	public AnnotationFlatFileReader(String filename, Thesaurus th) throws Exception {
-		// System.out.println ("AnnotationFlatFileReader on " + filename);
+		// CyLogger.getLogger().info ("AnnotationFlatFileReader on " + filename);
 		this.filename = filename;
 		this.thr = th;
 
@@ -150,8 +151,8 @@ public class AnnotationFlatFileReader {
 				fullText = reader.getText();
 			}
 		} catch (Exception e0) {
-			System.err.println("-- Exception while reading ontology flat file " + filename);
-			System.err.println(e0.getMessage());
+			CyLogger.getLogger().warn("-- Exception while reading ontology flat file " + filename);
+			CyLogger.getLogger().warn(e0.getMessage());
 
 			return;
 		}
@@ -163,7 +164,7 @@ public class AnnotationFlatFileReader {
 		 * reader.read (); fullText = reader.getText ();
 		 **********************************************************************/
 		lines = fullText.split("\n");
-		// System.out.println ("number of lines: " + lines.length);
+		// CyLogger.getLogger().info ("number of lines: " + lines.length);
 		parseHeader(lines[0]);
 		parse();
 	}
@@ -239,18 +240,18 @@ public class AnnotationFlatFileReader {
 					annotation.add(syno[idx], id);
 				}
 			} else if (flip == true) {
-				// System.out.println ( "EntityName is " + entityName );
+				// CyLogger.getLogger().info ( "EntityName is " + entityName );
 				key = thr.getNodeLabel(entityName);
 
 				if (key != null) {
-					// System.out.println ("Found: Key is " + key );
+					// CyLogger.getLogger().info ("Found: Key is " + key );
 					annotation.add(key, id);
 				} else {
 					// annotation.add ( "Undef", id);
 				}
 			}
 
-			// System.out.println ("Anno# Key = " + entityName + ", ID = " +
+			// CyLogger.getLogger().info ("Anno# Key = " + entityName + ", ID = " +
 			// id);
 		}
 	} // parse

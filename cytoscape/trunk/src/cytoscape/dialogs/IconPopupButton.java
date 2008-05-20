@@ -46,6 +46,8 @@ package cytoscape.dialogs;
 
 
 //---------------------------------------------------------------------------------------
+import cytoscape.logger.CyLogger;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -117,7 +119,7 @@ public class IconPopupButton extends JPanel
         }
 
         if ((icons[0] == null) || (icons[0].getIconWidth() < 0)) {
-            System.out.println(icons[0].getImage().getWidth(parentDialog));
+            CyLogger.getLogger().info("Icon width: " + icons[0].getImage().getWidth(parentDialog));
             setupErrorWindow();
 
             return;
@@ -133,7 +135,7 @@ public class IconPopupButton extends JPanel
         if (startIconObject != null)
             this.setIconObject(startIconObject);
         else {
-            System.out.println("starticon null " + title);
+            CyLogger.getLogger().info("starticon null " + title);
 
             ImageIcon icon = (ImageIcon) iconList.getModel()
                                                  .getElementAt(0); // default icon

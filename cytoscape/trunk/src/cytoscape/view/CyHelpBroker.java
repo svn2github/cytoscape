@@ -36,6 +36,8 @@
  */
 package cytoscape.view;
 
+import cytoscape.logger.CyLogger;
+
 import java.net.URL;
 
 import javax.help.HelpBroker;
@@ -68,8 +70,8 @@ public class CyHelpBroker {
 			hs = new HelpSet(null, hsURL);
 			hb = hs.createHelpBroker();
 		} catch (Exception e) {
-			System.out.println("HelpSet " + e.getMessage());
-			System.out.println("HelpSet " + hs + " not found.");
+			CyLogger.getLogger().info("HelpSet " + e.getMessage());
+			CyLogger.getLogger().info("HelpSet " + hs + " not found.");
 		}
 	}
 

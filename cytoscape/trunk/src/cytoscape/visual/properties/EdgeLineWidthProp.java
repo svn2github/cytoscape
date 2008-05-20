@@ -98,10 +98,10 @@ public class EdgeLineWidthProp extends AbstractVisualProperty {
 			final Stroke newLine = new BasicStroke(((Number)o).floatValue(), oldValue.getEndCap(), oldValue.getLineJoin(),
 					oldValue.getMiterLimit(), oldValue.getDashArray(), oldValue.getDashPhase() );
 		
-			//System.out.println("*** o = " + o + ", new w = " + ev.getStrokeWidth());
+			//CyLogger.getLogger().info("*** o = " + o + ", new w = " + ev.getStrokeWidth());
 			
 			ev.setStroke(newLine);
-			//System.out.println("Changed w = " + ev.getStrokeWidth());
+			//CyLogger.getLogger().info("Changed w = " + ev.getStrokeWidth());
 		}
 	}
 

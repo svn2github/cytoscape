@@ -63,6 +63,7 @@ import cytoscape.visual.LabelPosition;
 import cytoscape.visual.LineStyle;
 import cytoscape.visual.LineType;
 import cytoscape.visual.NodeShape;
+import cytoscape.logger.CyLogger;
 
 
 /**
@@ -153,7 +154,7 @@ public class IconSupport {
             }
 
             if (iconIndex == icons.length) { // not found
-                System.err.println("Icon for object " + startObject +
+                CyLogger.getLogger().warn("Icon for object " + startObject +
                     " not found!");
                 iconIndex = 0;
             }

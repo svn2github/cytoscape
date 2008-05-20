@@ -333,28 +333,28 @@ public class CytoscapeSessionReader {
 			logger.warn("Duplicate VS name found.  It will be ignored...");
 		}
 
-		//System.out.println("unzipSessionFromURL: " + (System.currentTimeMillis() - start) + " msec.");
+		//CyLogger.getLogger().info("unzipSessionFromURL: " + (System.currentTimeMillis() - start) + " msec.");
 		if (session.getSessionState().getDesktop() != null) {
 			restoreDesktopState();
 
-			//System.out.println("restoreDesktopState: " + (System.currentTimeMillis() - start) + " msec.");
+			//CyLogger.getLogger().info("restoreDesktopState: " + (System.currentTimeMillis() - start) + " msec.");
 		}
 
 		if (session.getSessionState().getServer() != null) {
 			restoreOntologyServerStatus();
-			//System.out.println("restoreOntologyServerStatus: " + (System.currentTimeMillis() - start) + " msec.");
+			//CyLogger.getLogger().info("restoreOntologyServerStatus: " + (System.currentTimeMillis() - start) + " msec.");
 		}
 
 		// Send signal to others
 		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, null);
-		//System.out.println("fire attrs and network loaded: " + (System.currentTimeMillis() - start) + " msec.");
+		//CyLogger.getLogger().info("fire attrs and network loaded: " + (System.currentTimeMillis() - start) + " msec.");
 
 		// Send signal to plugins
 		Cytoscape.firePropertyChange(Cytoscape.RESTORE_PLUGIN_STATE, pluginFileListMap, null);
-		//System.out.println("fire restore_plugin_state: " + (System.currentTimeMillis() - start) + " msec.");
+		//CyLogger.getLogger().info("fire restore_plugin_state: " + (System.currentTimeMillis() - start) + " msec.");
 		deleteTmpPluginFiles();
-		//System.out.println("deleteTmpPluginFiles: " + (System.currentTimeMillis() - start) + " msec.");
+		//CyLogger.getLogger().info("deleteTmpPluginFiles: " + (System.currentTimeMillis() - start) + " msec.");
 
 		// Send message with list of loaded networks.
 		Cytoscape.firePropertyChange(Cytoscape.SESSION_LOADED, null, networkList);
@@ -421,7 +421,7 @@ public class CytoscapeSessionReader {
 		if (bookmarksFileURL != null) {
 			bookmarks = getBookmarksFromZip(bookmarksFileURL);
 			Cytoscape.setBookmarks(bookmarks);
-//			System.out.println("getBookmarksFromZip: " + (System.currentTimeMillis() - start)
+//			CyLogger.getLogger().info("getBookmarksFromZip: " + (System.currentTimeMillis() - start)
 //			                   + " msec.");
 		}
 
@@ -436,7 +436,7 @@ public class CytoscapeSessionReader {
 
 		// restore plugin state files
 		restorePlugnStateFilesFromZip();
-//		System.out.println("restorePlugnStateFilesFromZip: " + (System.currentTimeMillis() - start)
+//		CyLogger.getLogger().info("restorePlugnStateFilesFromZip: " + (System.currentTimeMillis() - start)
 //		                   + " msec.");
 	}
 
@@ -703,15 +703,15 @@ public class CytoscapeSessionReader {
 				curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
 				                                         reader.getLayoutAlgorithm());
 
-				//System.out.println("createNetworkView "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+				//CyLogger.getLogger().info("createNetworkView "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 				curNetView.setVisualStyle(vsName);
 
 				Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
 				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 
-				//System.out.println("setVisualStyle stuff "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+				//CyLogger.getLogger().info("setVisualStyle stuff "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 				reader.doPostProcessing(new_network);
-				//System.out.println("doPostProcessing "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
+				//CyLogger.getLogger().info("doPostProcessing "+new_network.getIdentifier()+": " + (System.currentTimeMillis() - start) + " msec.");
 
 				// Set hidden nodes + edges
 				setHiddenNodes(curNetView, (HiddenNodes) childNet.getHiddenNodes());

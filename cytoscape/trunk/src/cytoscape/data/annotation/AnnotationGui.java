@@ -561,7 +561,7 @@ public class AnnotationGui extends CytoscapeAction {
 		int unAnnotatedNodeCount = 0;
 
 		for (int i = 0; i < nodeLabelArray.length; i++) {
-			//System.out.println("Applying: " + nodeLabelArray[i] + ", aDesc = " + aDesc.toString() );
+			//CyLogger.getLogger().info("Applying: " + nodeLabelArray[i] + ", aDesc = " + aDesc.toString() );
 			String[][] fullAnnotations = dataServer.getAllAnnotations(aDesc, nodeLabelArray[i]);
 
 			if (fullAnnotations.length == 0)
@@ -579,9 +579,9 @@ public class AnnotationGui extends CytoscapeAction {
 				} else {
 					// Extract all values in the current level
 					for (int j = 0; j < uniqueAnnotationsAtLevel.length; j++) {
-						//						System.out.print("node cn = " + canonicalNodeNames[i]
+						//						CyLogger.getLogger().info("node cn = " + canonicalNodeNames[i]
 						//								+ ",  and an@level = " + annotationNameAtLevel);
-						//						System.out.println(",  an value@level = "
+						//						CyLogger.getLogger().info(",  an value@level = "
 						//								+ uniqueAnnotationsAtLevel[j]);
 
 						// we can do this because at the begining of the method
@@ -600,7 +600,7 @@ public class AnnotationGui extends CytoscapeAction {
 						// annotationNameAtLevel,annotsList);
 						// annotsList.add(uniqueAnnotationsAtLevel[j]);
 						// }
-						//System.out.println("    " + uniqueAnnotationsAtLevel[j]);
+						//CyLogger.getLogger().info("    " + uniqueAnnotationsAtLevel[j]);
 						annotsList.add(uniqueAnnotationsAtLevel[j]);
 					} // for j
 
@@ -733,7 +733,7 @@ public class AnnotationGui extends CytoscapeAction {
 
 			// } catch (Exception e1) {
 			if (uniqueAnnotationValues.length == 0) {
-				// System.err.println( "No match exception" + e1 );
+				// CyLogger.getLogger().warn( "No match exception" + e1 );
 				JOptionPane.showMessageDialog(null,
 				                              "There is no match between the selected annotation \n"
 				                              + "and current nodes in the network.\n"

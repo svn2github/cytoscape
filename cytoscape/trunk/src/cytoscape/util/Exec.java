@@ -40,6 +40,8 @@
 // exec a child process, and get its stdout & stderr
 package cytoscape.util;
 
+import cytoscape.logger.CyLogger;
+
 import java.io.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -144,7 +146,7 @@ public class Exec {
 		try {
 			Runtime runtime = Runtime.getRuntime();
 
-			// System.out.println (" --> just before exec: \n\t" + getCmd ());
+			// CyLogger.getLogger().info (" --> just before exec: \n\t" + getCmd ());
 			//Process process = runtime.exec (cmd);
 			Process process = runtime.exec(cmdSB.toString());
 			BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process
@@ -230,7 +232,7 @@ public class Exec {
 					} // while
 				} // trey
 				catch (Exception exc0) {
-					System.out.println("--- error: " + exc0.getMessage());
+					CyLogger.getLogger().error("--- error: " + exc0.getMessage());
 					exc0.printStackTrace();
 				} // catch
 			}
@@ -247,7 +249,7 @@ public class Exec {
 					} // while
 				} // try
 				catch (Exception exc1) {
-					System.out.println("--- error: " + exc1.getMessage());
+					CyLogger.getLogger().info("--- error: " + exc1.getMessage());
 					exc1.printStackTrace();
 				} // catch
 			}

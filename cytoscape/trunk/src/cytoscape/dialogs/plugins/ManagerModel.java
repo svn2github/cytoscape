@@ -35,6 +35,8 @@
  */
 package cytoscape.dialogs.plugins;
 
+import cytoscape.logger.CyLogger;
+
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
@@ -293,7 +295,7 @@ public class ManagerModel implements TreeModel {
 	 * NOT IMPLEMENTED
 	 */
 	public void valueForPathChanged(TreePath path, Object newValue) {
-		System.err.println("valueForPathChanged NOT IMPLEMENTED");
+		CyLogger.getLogger().warn("valueForPathChanged NOT IMPLEMENTED");
 	}
 
 }

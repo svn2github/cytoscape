@@ -260,10 +260,10 @@ public class XGMMLReader extends AbstractGraphReader {
 		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
 		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
 
-//		System.out.println("Heap Memory status (SAX): used = " + heapUsage.getUsed()/1000+"KB");
-//		System.out.println("Heap Memory status (SAX): MAX = " + heapUsage.getMax()/1000+"KB");
-//		System.out.println("Non-heap Memory status (SAX): used = " + nonHeapUsage.getUsed()/1000+"KB");
-//		System.out.println("Non-heap Memory status (SAX): MAX = " + nonHeapUsage.getMax()/1000+"KB");
+//		CyLogger.getLogger().info("Heap Memory status (SAX): used = " + heapUsage.getUsed()/1000+"KB");
+//		CyLogger.getLogger().info("Heap Memory status (SAX): MAX = " + heapUsage.getMax()/1000+"KB");
+//		CyLogger.getLogger().info("Non-heap Memory status (SAX): used = " + nonHeapUsage.getUsed()/1000+"KB");
+//		CyLogger.getLogger().info("Non-heap Memory status (SAX): MAX = " + nonHeapUsage.getMax()/1000+"KB");
 		
 		try {
 			/*
@@ -308,11 +308,11 @@ public class XGMMLReader extends AbstractGraphReader {
 		nonHeapUsage = mbean.getNonHeapMemoryUsage();
 		long memend = Runtime.getRuntime().freeMemory();
 
-//		System.out.println("============= Total time for " + networkName + " = "
+//		CyLogger.getLogger().info("============= Total time for " + networkName + " = "
 //		                   + (System.currentTimeMillis() - start));
-//		System.out.println("Heap memory after parsing = " + (heapUsage.getUsed() / 1000)
+//		CyLogger.getLogger().info("Heap memory after parsing = " + (heapUsage.getUsed() / 1000)
 //			                   + "KB");
-//		System.out.println("Non-heap memory after parsing = " + (nonHeapUsage.getUsed() / 1000)
+//		CyLogger.getLogger().info("Non-heap memory after parsing = " + (nonHeapUsage.getUsed() / 1000)
 //			                   + "KB");
 	}
 
@@ -567,11 +567,11 @@ public class XGMMLReader extends AbstractGraphReader {
 	                                final VisualStyleBuilder graphStyle,
 	                                final boolean buildStyle) {
 	/*
-		System.out.print("LayoutEdgeGraphics: ");
+		CyLogger.getLogger().info("LayoutEdgeGraphics: ");
 		for (int i = 0; i < graphics.getLength(); i++) {
-			System.out.print(graphics.getQName(i)+"="+graphics.getValue(i)+" ");
+			CyLogger.getLogger().info(graphics.getQName(i)+"="+graphics.getValue(i)+" ");
 		}
-		System.out.println();
+		CyLogger.getLogger().info();
 	*/
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		String edgeID = edgeView.getEdge().getIdentifier();
@@ -631,7 +631,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 
 	 	if (XGMMLParser.getAttribute(graphics,"edgeHandleList") != null) {
-			// System.out.println("See edgeHandleList");
+			// CyLogger.getLogger().info("See edgeHandleList");
 			String handles[] = XGMMLParser.getAttribute(graphics, "edgeHandleList").split(";");
 			for (int i = 0; i < handles.length; i++) {
 				String points[] = handles[i].split(",");

@@ -71,7 +71,7 @@ public class Misc {
 		StringTokenizer strtok = new StringTokenizer(text, ",");
 
 		if (strtok.countTokens() != 3) {
-			//System.err.println("illegal RGB string in EdgeViz.parseRGBText: " + text);
+			//CyLogger.getLogger().warn("illegal RGB string in EdgeViz.parseRGBText: " + text);
 
 			return Color.black;
 		}

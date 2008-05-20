@@ -49,6 +49,7 @@ import cytoscape.data.readers.TextHttpReader;
 import cytoscape.data.readers.TextJarReader;
 
 import cytoscape.data.synonyms.Thesaurus;
+import cytoscape.logger.CyLogger;
 
 // ------------------------------------------------------------------------------
 import java.io.BufferedReader;
@@ -94,8 +95,8 @@ public class ThesaurusFlatFileReader {
 				fullText = reader.getText();
 			}
 		} catch (Exception e0) {
-			System.err.println("-- Exception while reading ontology flat file " + filename);
-			System.err.println(e0.getMessage());
+			CyLogger.getLogger().warn("-- Exception while reading ontology flat file " + filename);
+			CyLogger.getLogger().warn(e0.getMessage());
 
 			return;
 		}
@@ -126,7 +127,7 @@ public class ThesaurusFlatFileReader {
 		while (null != (curLine = rd.readLine())) {
 			extractedLines.add(curLine);
 
-			// System.out.println( curLine );
+			// CyLogger.getLogger().info( curLine );
 		}
 
 		rd.close();
@@ -184,12 +185,12 @@ public class ThesaurusFlatFileReader {
 			if (flip == false) {
 				thesaurus.add(canonicalName, commonName);
 
-				// System.out.println("Cannonical = " + canonicalName
+				// CyLogger.getLogger().info("Cannonical = " + canonicalName
 				// + " Common 1 = " + commonName);
 				for (int t = 2; t < tokens.length; t++) {
 					thesaurus.addAlternateCommonName(canonicalName, tokens[t].trim());
 
-					// System.out.println(" Cannonical = " + canonicalName + "
+					// CyLogger.getLogger().info(" Cannonical = " + canonicalName + "
 					// Common " + t + " = " + tokens [t].trim() );
 				} // for i
 			} else if (flip == true) {

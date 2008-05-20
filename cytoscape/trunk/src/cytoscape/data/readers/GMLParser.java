@@ -37,6 +37,7 @@
 package cytoscape.data.readers;
 
 import cytoscape.util.FileUtil;
+import cytoscape.logger.CyLogger;
 
 import java.io.FileReader;
 import java.io.FilterReader;
@@ -141,13 +142,13 @@ public class GMLParser {
 	public static void main(String[] args) {
 		//test pattersn
 		if (!integerPattern.matcher("9").matches())
-			System.out.println("integer failed");
+			CyLogger.getLogger().info("integer failed");
 
 		if (!integerPattern.matcher("+11").matches())
-			System.out.println("integer failed");
+			CyLogger.getLogger().info("integer failed");
 
 		if (!realPattern.matcher("11.9e-07").matches())
-			System.out.println("real failed");
+			CyLogger.getLogger().info("real failed");
 
 		try {
 			GMLParser parser = new GMLParser("test.gml");

@@ -37,6 +37,7 @@
 package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.data.CyAttributes;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
@@ -130,7 +131,7 @@ public class VisualStyleBuilder {
 														   ObjectMapping.NODE_MAPPING : 
 														   ObjectMapping.EDGE_MAPPING );
 
-				System.out.println( "ValueMaps size: " + valueMaps.get(type).size() );
+				CyLogger.getLogger().info( "ValueMaps size: " + valueMaps.get(type).size() );
 				dm.putAll( valMap );
 
 				Calculator calc = new BasicCalculator("VisualStyleBuilder-" + getAttrName(type), dm, type);
@@ -234,7 +235,7 @@ public class VisualStyleBuilder {
 				total += counts.get(vpt).get(o);
 			}
 			cm.put(vpt,total);
-			System.out.println(vpt + "  " + total);
+			CyLogger.getLogger().info(vpt + "  " + total);
 		}
 		
 		nodeMax = 0;

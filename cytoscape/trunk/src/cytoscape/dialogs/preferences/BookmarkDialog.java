@@ -35,6 +35,7 @@
 package cytoscape.dialogs.preferences;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
@@ -601,17 +602,17 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 		Bookmarks tmpBookmarks = null;
 
 		java.io.File tmpBookmarkFile = new java.io.File("bookmarks_kei.xml");
-		System.out.println("tmpBookmarkFile =" + tmpBookmarkFile.getAbsolutePath());
+		CyLogger.getLogger().info("tmpBookmarkFile =" + tmpBookmarkFile.getAbsolutePath());
 
 		// Load the Bookmarks object from given xml file
 		try {
 			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURL());
 		} catch (IOException e) {
-			System.out.println("IOException -- bookmarkSource");
+			CyLogger.getLogger().info("IOException -- bookmarkSource");
 		} catch (JAXBException e) {
-			System.out.println("JAXBException -- bookmarkSource");
+			CyLogger.getLogger().info("JAXBException -- bookmarkSource");
 		} catch (Exception e) {
-			System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
+			CyLogger.getLogger().info("Can not read the bookmark file, the bookmark file may not exist!");
 		}
 
 		return tmpBookmarks;

@@ -46,6 +46,8 @@ package cytoscape.dialogs;
 
 
 //---------------------------------------------------------------------------------------
+import cytoscape.logger.CyLogger;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -138,12 +140,12 @@ public class IntegerEntryField extends JPanel {
 		}
 
 		public void focusGained(FocusEvent e) {
-			//System.out.println("gained");
+			//CyLogger.getLogger().info("gained");
 			validate((JTextField) e.getSource());
 		}
 
 		public void focusLost(FocusEvent e) {
-			//System.out.println("lost");
+			//CyLogger.getLogger().info("lost");
 			validate((JTextField) e.getSource());
 		}
 
@@ -155,7 +157,7 @@ public class IntegerEntryField extends JPanel {
 				if (fieldStr.length() > digits) {
 					field.setText(maxvalString);
 				} else {
-					//System.out.println(" length " + fieldStr.length());
+					//CyLogger.getLogger().info(" length " + fieldStr.length());
 					try {
 						int val = Integer.parseInt(fieldStr);
 
@@ -167,7 +169,7 @@ public class IntegerEntryField extends JPanel {
 							field.setText(fieldStr);
 						}
 					} catch (NumberFormatException nfe) {
-						System.out.println("Not an integer: " + fieldStr);
+						CyLogger.getLogger().info("Not an integer: " + fieldStr);
 						field.setText(defaultString);
 					}
 				}

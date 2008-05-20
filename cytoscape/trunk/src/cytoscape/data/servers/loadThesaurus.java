@@ -46,6 +46,7 @@ package cytoscape.data.servers;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.annotation.readers.*;
+import cytoscape.logger.CyLogger;
 
 import java.io.*;
 
@@ -77,7 +78,7 @@ public class loadThesaurus {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.err.println("usage:  loadThesaurus <server name> <thesaurus flat file>");
+			CyLogger.getLogger().warn("usage:  loadThesaurus <server name> <thesaurus flat file>");
 			System.exit(1);
 		}
 
@@ -87,12 +88,12 @@ public class loadThesaurus {
 		String[] filenames = new String[1];
 		filenames[0] = args[1];
 
-		System.out.println("---------- server: " + server);
-		System.out.println("---------- file:   " + filenames[0]);
+		CyLogger.getLogger().info("---------- server: " + server);
+		CyLogger.getLogger().info("---------- file:   " + filenames[0]);
 
 		server.loadThesaurusFiles(filenames);
 
-		System.out.println(server.describe());
+		CyLogger.getLogger().info(server.describe());
 	} // main
 	  //------------------------------------------------------------------------------
 } // loadThesaurus

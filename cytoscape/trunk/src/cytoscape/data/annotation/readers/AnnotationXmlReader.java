@@ -39,6 +39,7 @@
 package cytoscape.data.annotation.readers;
 
 import cytoscape.data.annotation.*;
+import cytoscape.logger.CyLogger;
 
 import org.jdom.*;
 
@@ -70,8 +71,8 @@ public class AnnotationXmlReader {
 	 */
 	public AnnotationXmlReader(File xmlFile) throws Exception {
 		if (!xmlFile.canRead()) {
-			System.out.println("---- data.annotation.readers.AnnotationXmlReader error, cannot read");
-			System.out.println("        " + xmlFile);
+			CyLogger.getLogger().info("---- data.annotation.readers.AnnotationXmlReader error, cannot read");
+			CyLogger.getLogger().info("        " + xmlFile);
 			throw new Exception("cannot read input: " + xmlFile);
 		}
 
@@ -92,11 +93,11 @@ public class AnnotationXmlReader {
 		File ontologyXmlFileAbsolutePath = new File(directoryAbsolute, ontologyXmlFileName);
 
 		if (!ontologyXmlFileAbsolutePath.canRead()) {
-			System.err.println("annotation xml file must name its associated ontology xml file");
-			System.err.println("by giving its path relative to the actual location of the");
-			System.err.println("annotation xml file.\n");
-			System.err.println("could not find:");
-			System.err.println("  " + ontologyXmlFileAbsolutePath);
+			CyLogger.getLogger().warn("annotation xml file must name its associated ontology xml file");
+			CyLogger.getLogger().warn("by giving its path relative to the actual location of the");
+			CyLogger.getLogger().warn("annotation xml file.\n");
+			CyLogger.getLogger().warn("could not find:");
+			CyLogger.getLogger().warn("  " + ontologyXmlFileAbsolutePath);
 			throw new FileNotFoundException(ontologyXmlFileAbsolutePath.getPath());
 		}
 

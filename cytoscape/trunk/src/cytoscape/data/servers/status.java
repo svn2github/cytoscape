@@ -44,6 +44,8 @@
 //-----------------------------------------------------------------------------------
 package cytoscape.data.servers;
 
+import cytoscape.logger.CyLogger;
+
 import java.io.*;
 
 //-----------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ public class status {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.err.println("usage:  status <rmi host name> <rmi service name>");
+			CyLogger.getLogger().warn("usage:  status <rmi host name> <rmi service name>");
 			System.exit(1);
 		}
 
@@ -75,10 +77,10 @@ public class status {
 		String serviceName = args[1];
 
 		String serverName = "rmi://" + hostname + "/" + serviceName;
-		System.out.println("--- checking status of " + serverName);
+		CyLogger.getLogger().info("--- checking status of " + serverName);
 
 		BioDataServer server = new BioDataServer(serverName);
-		System.out.println(server.describe());
+		CyLogger.getLogger().info(server.describe());
 	} // main
 	  //------------------------------------------------------------------------------
 } // status

@@ -37,6 +37,7 @@
 package cytoscape.util;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -86,7 +87,7 @@ public class BioDataServerUtil {
 			// Skip comment
 			if (curLine.startsWith("!")) {
 				// do nothing
-				// System.out.println("Comment: " + curLine);
+				// CyLogger.getLogger().info("Comment: " + curLine);
 			} else {
 				StringTokenizer st = new StringTokenizer(curLine, "\t");
 
@@ -99,7 +100,7 @@ public class BioDataServerUtil {
 						curToken = st.nextToken();
 						st = new StringTokenizer(curToken, "|");
 						curToken = st.nextToken();
-						// System.out.println("Taxon ID found: " + curToken);
+						// CyLogger.getLogger().info("Taxon ID found: " + curToken);
 						sp = curToken;
 						sp = taxIdToName(sp, taxRd);
 						taxRd.close();
@@ -175,9 +176,9 @@ public class BioDataServerUtil {
 
 		if (txName == null) {
 			txName = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-			System.out.println("Warning: Cannot recognize speices.  Speices field is set to defaultSpeciesName ("
+			CyLogger.getLogger().info("Warning: Cannot recognize speices.  Speices field is set to defaultSpeciesName ("
 			                   + txName + ")");
-			System.out.println("Warning: Please check your tax_report.txt file.");
+			CyLogger.getLogger().info("Warning: Please check your tax_report.txt file.");
 		}
 
 		return txName;
@@ -241,11 +242,11 @@ public class BioDataServerUtil {
 		taxonFileReader.readLine();
 
 		while ((curLine = taxonFileReader.readLine()) != null) {
-			// System.out.println("===========Line: " + curLine + "
+			// CyLogger.getLogger().info("===========Line: " + curLine + "
 			// ===============");
 			String[] parts = curLine.split("\\|");
 
-			// System.out.println("####ID = " + parts[3].trim() + ", Name = "
+			// CyLogger.getLogger().info("####ID = " + parts[3].trim() + ", Name = "
 			// + parts[1].trim());
 			taxonMap.put(parts[3].trim(), parts[1].trim());
 		}
@@ -278,16 +279,16 @@ public class BioDataServerUtil {
 			while ((curLine = htmlPageReader.readLine()) != null) {
 				curLine.trim();
 
-				// System.out.println("HTML:" + curLine);
+				// CyLogger.getLogger().info("HTML:" + curLine);
 				if (curLine.startsWith("<title>Taxonomy")) {
-					System.out.println("HTML:" + curLine);
+					CyLogger.getLogger().info("HTML:" + curLine);
 
 					StringTokenizer st = new StringTokenizer(curLine, "(");
 					st.nextToken();
 					curLine = st.nextToken();
 					st = new StringTokenizer(curLine, ")");
 					txName = st.nextToken().trim();
-					System.out.println("Fetch result: NCBI code " + id + " is " + txName);
+					CyLogger.getLogger().info("Fetch result: NCBI code " + id + " is " + txName);
 
 					return txName;
 				}

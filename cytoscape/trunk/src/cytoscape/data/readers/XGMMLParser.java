@@ -571,15 +571,15 @@ class XGMMLParser extends DefaultHandler {
                            Attributes atts) throws SAXException {
 
 			/*
-			System.out.print("startElement("+namespace+", "+localName+", "+qName+", ");
+			CyLogger.getLogger().info("startElement("+namespace+", "+localName+", "+qName+", ");
 			for (int i = 0; i < atts.getLength(); i++) {
-				System.out.print(atts.getQName(i)+"="+atts.getValue(i)+" ");
+				CyLogger.getLogger().info(atts.getQName(i)+"="+atts.getValue(i)+" ");
 			}
-			System.out.println(") State: "+printState(parseState));
+			CyLogger.getLogger().info(") State: "+printState(parseState));
 			*/
 
 			ParseState nextState = handleState(startParseTable, parseState, localName, atts);
-		  // System.out.println("Next state: "+printState(nextState));
+		  // CyLogger.getLogger().info("Next state: "+printState(nextState));
 
 			stateStack.push(parseState);
 			parseState = nextState;
@@ -594,7 +594,7 @@ class XGMMLParser extends DefaultHandler {
 	 * @param qName the tag with the namespace prefix
 	 */
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-			// System.out.println("endElement("+uri+", "+localName+", "+qName+") State: "+printState(parseState));
+			// CyLogger.getLogger().info("endElement("+uri+", "+localName+", "+qName+") State: "+printState(parseState));
 
 			handleState(endParseTable, parseState, localName, null);
 
@@ -723,7 +723,7 @@ class XGMMLParser extends DefaultHandler {
 				nextState = handleAttribute(atts, currentAttributes, networkName);
 			}
 
-			// System.out.println("Network attribute: "+printAttribute(atts));
+			// CyLogger.getLogger().info("Network attribute: "+printAttribute(atts));
 			if (nextState != ParseState.NONE)
 				return nextState;
 			
@@ -738,7 +738,7 @@ class XGMMLParser extends DefaultHandler {
 			String href = atts.getValue(XLINK, "href");
 
 			if (href != null) {
-				// System.out.print(" href=\""+href+"\"");
+				// CyLogger.getLogger().info(" href=\""+href+"\"");
 				throw new SAXException("Can't have a node reference outside of a group");
 			}
 			// Create the node
@@ -754,7 +754,7 @@ class XGMMLParser extends DefaultHandler {
 				return current;
 
 			attState = current;
-			// System.out.println("Node attribute: "+printAttribute(atts));
+			// CyLogger.getLogger().info("Node attribute: "+printAttribute(atts));
 			// Is this a graphics override?
 			String name = atts.getValue("name");
 
@@ -829,7 +829,7 @@ class XGMMLParser extends DefaultHandler {
 				sourceAlias = parts[0];
 				interaction = parts[1];
 				targetAlias = parts[2];
-				// System.out.println("Edge label parse: interaction = "+interaction);
+				// CyLogger.getLogger().info("Edge label parse: interaction = "+interaction);
 			}
 
 			if (idMap.containsKey(source) && idMap.containsKey(target)) {
@@ -848,7 +848,7 @@ class XGMMLParser extends DefaultHandler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 
 			attState = current;
-			// System.out.println("Edge attribute: "+printAttribute(atts));
+			// CyLogger.getLogger().info("Edge attribute: "+printAttribute(atts));
 			/*
 			if (atts.getValue("name").startsWith("edge.")) {
 				// Yes, add it to our nodeGraphicsMap
@@ -875,7 +875,7 @@ class XGMMLParser extends DefaultHandler {
 
 	class handleEdgeGraphics implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			// System.out.println("Atts for "+currentEdge.getIdentifier()+": "+printAttributes(atts));
+			// CyLogger.getLogger().info("Atts for "+currentEdge.getIdentifier()+": "+printAttributes(atts));
 			if (tag.equals("graphics")) {
 				if (edgeGraphicsMap.containsKey(currentEdge)) {
 					addAttributes(edgeGraphicsMap.get(currentEdge),atts);
@@ -905,7 +905,7 @@ class XGMMLParser extends DefaultHandler {
 			if (currentGroupNode != null) groupStack.push(currentGroupNode);
 			currentGroupNode = currentNode;
 			groupMap.put(currentGroupNode, new ArrayList<CyNode>());
-			// System.out.println("Found group: "+currentNode);
+			// CyLogger.getLogger().info("Found group: "+currentNode);
 			return current;
 		}
 	}
@@ -917,7 +917,7 @@ class XGMMLParser extends DefaultHandler {
 			String href = atts.getValue(XLINK, "href");
 
 
-			// System.out.print("<node");
+			// CyLogger.getLogger().info("<node");
 			if (href == null) {
 				// Create the node
 				currentNode = createUniqueNode(label,id);
@@ -929,7 +929,7 @@ class XGMMLParser extends DefaultHandler {
 			// even if we know about it now, so that we can get the edges associated
 			// with the group when we add it.
 
-			// System.out.print(" href=\""+href+"\"");
+			// CyLogger.getLogger().info(" href=\""+href+"\"");
 			// Add it to the list of nodes to be resolved for this group
 			if (currentGroupNode == null)
 				throw new SAXException("No group to add node reference to");
@@ -947,7 +947,7 @@ class XGMMLParser extends DefaultHandler {
 				List<String> links = nodeLinks.get(currentGroupNode);
 				links.add(id);
 			}
-			// System.out.println(">");
+			// CyLogger.getLogger().info(">");
 			return current;
 		}
 	}
@@ -1001,7 +1001,7 @@ class XGMMLParser extends DefaultHandler {
 				if (getAttribute(atts, "y") != null) {
 					edgeBendY = getAttribute(atts, "y");
 				}
-				// System.out.println("x="+edgeBendX+" y="+edgeBendY);
+				// CyLogger.getLogger().info("x="+edgeBendX+" y="+edgeBendY);
 				if (edgeBendX != null && edgeBendY != null) {
 					if (handleList == null) handleList = new ArrayList();
 					handleList.add(edgeBendX+","+edgeBendY);
@@ -1035,7 +1035,7 @@ class XGMMLParser extends DefaultHandler {
 						list += handleList.get(i);
 					}
 				}
-				// System.out.println("Setting edgeHandleList to: "+list);
+				// CyLogger.getLogger().info("Setting edgeHandleList to: "+list);
 				// Add this as a graphics attribute to the end of our list
 				((AttributesImpl)edgeGraphicsMap.get(currentEdge)).
 						addAttribute("", "", "edgeHandleList", "string", list);
@@ -1047,7 +1047,7 @@ class XGMMLParser extends DefaultHandler {
 	class handleGroupDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			currentNode = currentGroupNode;
-			// System.out.println("Group "+currentNode+" done.");
+			// CyLogger.getLogger().info("Group "+currentNode+" done.");
 			if (!groupStack.empty())
 				currentGroupNode = groupStack.pop();
 			else
@@ -1153,7 +1153,7 @@ class XGMMLParser extends DefaultHandler {
 			// Get our attributes
 			ObjectType type = getType(atts.getValue("type"));
 			String value = atts.getValue("value");
-			// System.out.println("Complex attribute: "+currentAttributeID+" level "+level+" value="+atts.getValue("value"));
+			// CyLogger.getLogger().info("Complex attribute: "+currentAttributeID+" level "+level+" value="+atts.getValue("value"));
 
 			if (level == numKeys) {
 				complexMap[level-1].put(complexKey[level-1], getTypedValue(type, value));
@@ -1190,7 +1190,7 @@ class XGMMLParser extends DefaultHandler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			if (level == 0) {
 				// We are done, and have read in all of our attributes
-				// System.out.println("Complex attribute "+currentAttributeID+" ComplexMap["+level+"] = "+complexMap[level]);
+				// CyLogger.getLogger().info("Complex attribute "+currentAttributeID+" ComplexMap["+level+"] = "+complexMap[level]);
 			} else if (level < numKeys) {
 				complexMap[level] = null;
 				complexKey[level] = null;
@@ -1415,15 +1415,15 @@ class XGMMLParser extends DefaultHandler {
 		if (label != null) {
 			if (id == null)
 				id = label;
-				// System.out.print(" label=\""+label+"\"");
+				// CyLogger.getLogger().info(" label=\""+label+"\"");
 		}
 		// OK, now actually create it
 		CyNode node = Cytoscape.getCyNode(label, true);
-		// System.out.println("Created new node("+label+") id="+node.getRootGraphIndex());
+		// CyLogger.getLogger().info("Created new node("+label+") id="+node.getRootGraphIndex());
 
 		// Add it our indices
 		nodeList.add(node);
-		// System.out.println("Adding node "+node.getIdentifier()+"("+id+") to map");
+		// CyLogger.getLogger().info("Adding node "+node.getIdentifier()+"("+id+") to map");
 		idMap.put(id, node);
 		return node;
 	}

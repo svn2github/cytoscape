@@ -43,6 +43,7 @@
 package cytoscape.util;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import java.io.IOException;
 
@@ -88,21 +89,21 @@ public abstract class OpenBrowser {
 				// cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
 				if (defBrowser != null) {
 					cmd = defBrowser + " " + url;
-					System.out.println("Opening URL by command \"" + defBrowser + "\"");
+					CyLogger.getLogger().info("Opening URL by command \"" + defBrowser + "\"");
 				} else {
 					cmd = UNIX_PATH + " " + url;
-					System.out.println("Opening URL by command \"" + UNIX_PATH + "\"");
+					CyLogger.getLogger().info("Opening URL by command \"" + UNIX_PATH + "\"");
 				}
 			}
 
-			// System.out.println("cmd=" + cmd);
+			// CyLogger.getLogger().info("cmd=" + cmd);
 			Process p = Runtime.getRuntime().exec(cmd);
 
 			try {
 				int exitCode = p.waitFor();
 
 				if (exitCode != 0) {
-					System.out.println("cmd failed, start new browser");
+					CyLogger.getLogger().warn("cmd failed, start new browser");
 					cmd = UNIX_PATH + " " + url;
 					p = Runtime.getRuntime().exec(cmd);
 				}

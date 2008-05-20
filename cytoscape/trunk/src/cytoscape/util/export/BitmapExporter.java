@@ -44,7 +44,7 @@ public class BitmapExporter implements Exporter
 		int width  = (int) (ifc.getWidth() * scale);
 		int height = (int) (ifc.getHeight() * scale);
 
-		// System.out.println("Exporting "+width+"X"+height+" image");
+		// CyLogger.getLogger().info("Exporting "+width+"X"+height+" image");
 
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) image.getGraphics();

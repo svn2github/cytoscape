@@ -96,8 +96,9 @@ public class PluginManager {
 
 	private static String cyVersion = new CytoscapeVersion().getMajorVersion();
 
-	private static CyLogger logger = null;
+	private static CyLogger logger = CyLogger.getLogger(PluginManager.class);
 
+	/**
 	/**
 	 * Returns list of loading exceptions.
 	 */
@@ -246,7 +247,7 @@ public class PluginManager {
 		// XXX is this needed anymore?
 		loadingErrors = new HashSet<Throwable>();
 
-		logger = CyLogger.getLogger();
+		logger = logger;
 		setWebstart();
 		String trackerFileName = "track_plugins.xml";
 
@@ -728,21 +729,21 @@ public class PluginManager {
 
 					// If the name doesn't match a url, turn it into one.
 					if (!currentPlugin.matches(FileUtil.urlPattern)) {
-						logger.debug(" - file: " + f.getAbsolutePath());
+						logger.info(" - file: " + f.getAbsolutePath());
 						pluginURLs.add(jarURL(f.getAbsolutePath()));
 					} else {
-						logger.debug(" - url: " + f.getAbsolutePath());
+						logger.info(" - url: " + f.getAbsolutePath());
 						pluginURLs.add(jarURL(currentPlugin));
 					}
 				} else if (!f.exists()) {
 					// If the file doesn't exists, assume
 					// that it's a resource plugin.
-					logger.debug(" - classpath: " + currentPlugin);
+					logger.info(" - classpath: " + currentPlugin);
 					resourcePlugins.add(currentPlugin);
 				} else if (f.isDirectory()) {
 					// If the file is a directory, load
 					// all of the jars in the directory.
-					logger.debug(" - directory: " + f.getAbsolutePath());
+					logger.info(" - directory: " + f.getAbsolutePath());
 
 					for (String fileName : f.list()) {
 						if (!fileName.endsWith(".jar")) {
@@ -758,7 +759,7 @@ public class PluginManager {
 				} else {
 					// Assume the file is a manifest (i.e. list of jar names)
 					// and make urls out of them.
-					logger.debug(" - file manifest: "
+					logger.info(" - file manifest: "
 							+ f.getAbsolutePath());
 
 					String text = FileUtil.getInputString(currentPlugin);

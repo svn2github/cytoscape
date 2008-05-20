@@ -39,6 +39,7 @@ package cytoscape.view;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
@@ -219,7 +220,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			return;
 		}
 
-		//System.out.println("NetworkViewManager: firing NETWORK_VIEW_FOCUSED (intenalFrameActivate)");
+		//CyLogger.getLogger().info("NetworkViewManager: firing NETWORK_VIEW_FOCUSED (intenalFrameActivate)");
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, network_id);
 	}
 
@@ -298,7 +299,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	public void propertyChange(PropertyChangeEvent e) {
 		// handle focus event
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
-			//System.out.println("NetworkViewManager got NETWORK_VIEW_FOCUS " + e.getSource().getClass().getName());
+			//CyLogger.getLogger().info("NetworkViewManager got NETWORK_VIEW_FOCUS " + e.getSource().getClass().getName());
 			String network_id = (String) e.getNewValue();
 			e = null;
 			unsetFocus(); // in case the newly focused network doesn't have a
@@ -316,11 +317,11 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		// handle putting a newly created CyNetworkView into a Container
 		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			CyNetworkView new_view = (CyNetworkView) e.getNewValue();
-			//System.out.println("NetworkViewManager got NETWORK_VIEW_CREATED " + e.getSource().getClass().getName() + ", view = " + new_view);
+			//CyLogger.getLogger().info("NetworkViewManager got NETWORK_VIEW_CREATED " + e.getSource().getClass().getName() + ", view = " + new_view);
 			createContainer(new_view);
 			e = null;
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
-			//System.out.println("NetworkViewManager got NETWORK_VIEW_DEST");
+			//CyLogger.getLogger().info("NetworkViewManager got NETWORK_VIEW_DEST");
 			CyNetworkView view = (CyNetworkView) e.getNewValue();
 			removeView(view);
 			e = null;
@@ -343,7 +344,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			try {
 				f.setSelected(false);
 			} catch (PropertyVetoException pve) {
-				System.out.println("NetworkViewManager: Couldn't unset focus for internal frame.");
+				CyLogger.getLogger().info("NetworkViewManager: Couldn't unset focus for internal frame.");
 			}
 		}
 	}
@@ -360,7 +361,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 				// fires internalFrameActivated
 				networkViewMap.get(network_id).setSelected(true);
 			} catch (Exception e) {
-				System.err.println("Network View unable to be focused");
+				CyLogger.getLogger().warn("Network View unable to be focused");
 			}
 		}
 	}
@@ -377,7 +378,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 				target = null;
 			}
 		} catch (Exception e) {
-			System.err.println("Network View unable to be killed: " + view.getIdentifier());
+			CyLogger.getLogger().warn("Network View unable to be killed: " + view.getIdentifier());
 			e.printStackTrace();
 		}
 
@@ -409,7 +410,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			iframe.setContentPane(internalFrameComp);
 			internalFrameComponentMap.put(view.getNetwork().getIdentifier(), internalFrameComp);
 		} else {
-			System.out.println("NetworkViewManager.createContainer() - DGraphView not found!");
+			CyLogger.getLogger().info("NetworkViewManager.createContainer() - DGraphView not found!");
 			iframe.getContentPane().add(view.getComponent());
 		}
 

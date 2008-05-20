@@ -37,6 +37,7 @@
 package cytoscape.visual.ui;
 
 import cytoscape.visual.LabelPosition;
+import cytoscape.logger.CyLogger;
 
 import giny.view.Label;
 
@@ -206,7 +207,7 @@ class LabelPlacerControl extends JPanel
 
             return d;
         } catch (Exception ex) {
-            System.err.println("not a number!");
+            CyLogger.getLogger().warn("not a number!");
             jtf.setText("0");
 
             return 0.0;

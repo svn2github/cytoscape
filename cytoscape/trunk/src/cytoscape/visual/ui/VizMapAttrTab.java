@@ -48,6 +48,7 @@ import cytoscape.visual.calculators.CalculatorFactory;
 import cytoscape.visual.calculators.BasicCalculator;
 
 import cytoscape.visual.mappings.ObjectMapping;
+import cytoscape.logger.CyLogger;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -575,7 +576,7 @@ public class VizMapAttrTab extends VizMapTab {
 				mapperCon = mapperClass.getConstructor(conTypes);
 			} catch (NoSuchMethodException exc) {
 				// show error message, mapper was not programmed correctly
-				System.err.println("Invalid mapper " + mapperClass.getName());
+				CyLogger.getLogger().warn("Invalid mapper " + mapperClass.getName());
 				JOptionPane.showMessageDialog(mainUIDialog,
 				                              "Mapper " + mapperClass.getName()
 				                              + " does not have an acceptable constructor. See documentation for ObjectMapper.",
@@ -601,7 +602,7 @@ public class VizMapAttrTab extends VizMapTab {
 			try {
 				mapper = (ObjectMapping) mapperCon.newInstance(invokeArgs);
 			} catch (Exception exc) {
-				System.err.println("Error creating mapping");
+				CyLogger.getLogger().warn("Error creating mapping");
 				JOptionPane.showMessageDialog(mainUIDialog,
 				                              "Error creating mapping " + mapperClass.getName(),
 				                              "Error", JOptionPane.ERROR_MESSAGE);
@@ -609,7 +610,7 @@ public class VizMapAttrTab extends VizMapTab {
 
 			Calculator calc = new BasicCalculator(calcName, mapper, vizType);
 
-			System.out.println("*** Calc type = " + calc.getVisualPropertyType().getPropertyLabel());
+			CyLogger.getLogger().info("*** Calc type = " + calc.getVisualPropertyType().getPropertyLabel());
 
 			// set current calculator to the new calculator
 			switchCalculator(calc); // handles listeners
@@ -641,7 +642,7 @@ public class VizMapAttrTab extends VizMapTab {
 		try {
 			clone = (Calculator) c.clone();
 		} catch (CloneNotSupportedException exc) { // this will never happen
-			System.err.println("Fatal error - Calculator didn't support Cloneable");
+			CyLogger.getLogger().error("Fatal error - Calculator didn't support Cloneable");
 			exc.printStackTrace();
 
 			return null;

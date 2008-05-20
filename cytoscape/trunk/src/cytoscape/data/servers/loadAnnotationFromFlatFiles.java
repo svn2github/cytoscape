@@ -46,6 +46,7 @@ package cytoscape.data.servers;
 
 import cytoscape.data.annotation.*;
 import cytoscape.data.annotation.readers.*;
+import cytoscape.logger.CyLogger;
 
 import java.io.*;
 
@@ -77,7 +78,7 @@ public class loadAnnotationFromFlatFiles {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length != 3) {
-			System.err.println("usage:  loadAnnotationFromFaltFile <server name> <annotation.txt> <ontology.txt>");
+			CyLogger.getLogger().warn("usage:  loadAnnotationFromFaltFile <server name> <annotation.txt> <ontology.txt>");
 			System.exit(1);
 		}
 
@@ -90,16 +91,16 @@ public class loadAnnotationFromFlatFiles {
 		File annotationFile = new File(annotationFilename);
 
 		if (!annotationFile.canRead()) {
-			System.err.println("--- cytoscape.data.servers.loadAnnotationFromFlatfiles error:  cannot read");
-			System.err.println("        " + annotationFilename);
+			CyLogger.getLogger().warn("--- cytoscape.data.servers.loadAnnotationFromFlatfiles error:  cannot read");
+			CyLogger.getLogger().warn("        " + annotationFilename);
 			System.exit(1);
 		}
 
 		File ontologyFile = new File(ontologyFilename);
 
 		if (!ontologyFile.canRead()) {
-			System.err.println("--- cytoscape.data.servers.loadAnnotationFromFlatfiles error:  cannot read");
-			System.err.println("        " + ontologyFilename);
+			CyLogger.getLogger().warn("--- cytoscape.data.servers.loadAnnotationFromFlatfiles error:  cannot read");
+			CyLogger.getLogger().warn("        " + ontologyFilename);
 			System.exit(1);
 		}
 
@@ -110,9 +111,9 @@ public class loadAnnotationFromFlatFiles {
 		Ontology ontology = ontologyReader.getOntology();
 
 		if (!annotation.getCurator().equals(ontology.getCurator())) {
-			System.err.println("annotation is curated by " + annotation.getCurator());
-			System.err.println("ontology is curated by " + ontology.getCurator());
-			System.err.println(" --> these disagree.  Exiting....");
+			CyLogger.getLogger().warn("annotation is curated by " + annotation.getCurator());
+			CyLogger.getLogger().warn("ontology is curated by " + ontology.getCurator());
+			CyLogger.getLogger().warn(" --> these disagree.  Exiting....");
 			System.exit(1);
 		}
 
@@ -120,7 +121,7 @@ public class loadAnnotationFromFlatFiles {
 
 		server.addAnnotation(annotation);
 
-		System.out.println(server.describe());
+		CyLogger.getLogger().info(server.describe());
 	} // main
 	  //------------------------------------------------------------------------------
 } // loadAnnotationFromFlatFiles

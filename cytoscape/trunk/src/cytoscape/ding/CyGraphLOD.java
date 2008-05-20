@@ -95,12 +95,12 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 		edgeLabelThreshold = getInt("render.edgeLabelThreshold", 120);
 
 		/*
-		        System.out.println("(re)initializing level of detail (LOD)");
-		        System.out.println("  coarseDetailThreshold: " + coarseDetailThreshold);
-		        System.out.println("  nodeBorderThreshold: " + nodeBorderThreshold);
-		        System.out.println("  nodeLabelThreshold: " + nodeLabelThreshold);
-		        System.out.println("  edgeArrowThreshold: " + edgeArrowThreshold);
-		        System.out.println("  edgeLabelThreshold: " + edgeLabelThreshold);
+		        CyLogger.getLogger().info("(re)initializing level of detail (LOD)");
+		        CyLogger.getLogger().info("  coarseDetailThreshold: " + coarseDetailThreshold);
+		        CyLogger.getLogger().info("  nodeBorderThreshold: " + nodeBorderThreshold);
+		        CyLogger.getLogger().info("  nodeLabelThreshold: " + nodeLabelThreshold);
+		        CyLogger.getLogger().info("  edgeArrowThreshold: " + edgeArrowThreshold);
+		        CyLogger.getLogger().info("  edgeLabelThreshold: " + edgeLabelThreshold);
 		*/
 
 		//Cytoscape.getCurrentNetworkView().updateView();

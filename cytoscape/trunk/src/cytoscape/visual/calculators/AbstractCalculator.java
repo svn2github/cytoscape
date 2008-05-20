@@ -603,7 +603,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param net DOCUMENT ME!
 	 */
 	public void apply(Appearance appr, Edge e, CyNetwork net) {
-		//System.out.println("AbstractCalculator.apply(edge) " + type.toString());
+		//CyLogger.getLogger().info("AbstractCalculator.apply(edge) " + type.toString());
 		Object o = getRangeValue(e);
 
 		// default has already been set - no need to do anything
@@ -621,7 +621,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param net DOCUMENT ME!
 	 */
 	public void apply(Appearance appr, Node n, CyNetwork net) {
-		//System.out.println("AbstractCalculator.apply(node) " + type.toString());
+		//CyLogger.getLogger().info("AbstractCalculator.apply(node) " + type.toString());
 		Object o = getRangeValue(n);
 
 		// default has already been set - no need to do anything

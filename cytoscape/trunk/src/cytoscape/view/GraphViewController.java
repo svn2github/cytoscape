@@ -52,6 +52,8 @@ import giny.view.GraphView;
 
 import java.util.*;
 
+import cytoscape.logger.CyLogger;
+
 
 /**
  *
@@ -409,7 +411,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 	 */
 	public void graphPerspectiveChanged(GraphPerspectiveChangeEvent event) {
 		//TODO: Remove
-		//System.out.println("In GraphViewController.graphPerspectiveChanged()");
+		//CyLogger.getLogger().info("In GraphViewController.graphPerspectiveChanged()");
 		Object source = event.getSource();
 
 		if (!(source instanceof GraphPerspective)) {
@@ -424,7 +426,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 		if (graphView == null) {
 			// Somehow, we are listening to events of a GraphPerspective that
 			// no GraphView in our data structures views
-			System.err.println("Oops! the GraphPerspective " + changedGraphPers
+			CyLogger.getLogger().warn("Oops! the GraphPerspective " + changedGraphPers
 			                   + " does not have a corresponding GraphView in the GraphViewController!!!");
 
 			return;
@@ -434,7 +436,7 @@ public class GraphViewController implements giny.model.GraphPerspectiveChangeLis
 
 		if (gvHandler == null) {
 			// Somehow, we have a graphView with no handler!
-			System.err.println("Oops! the GraphView " + graphView
+			CyLogger.getLogger().warn("Oops! the GraphView " + graphView
 			                   + " has no GraphViewHandler in the GraphViewController!!!");
 
 			return;

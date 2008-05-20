@@ -44,6 +44,8 @@ package cytoscape.visual.mappings;
 
 
 //----------------------------------------------------------------------------
+import cytoscape.logger.CyLogger;
+
 import java.util.Properties;
 
 
@@ -62,7 +64,7 @@ public class InterpolatorFactory {
 	public static Interpolator newInterpolator(String typeName) {
 		if (typeName == null) {
 			String s = "InterpolatorFactory: no Interpolator class specified";
-			System.err.println(s);
+			CyLogger.getLogger().warn(s);
 
 			return null;
 		} else if (typeName.equals("LinearNumberToColorInterpolator")) {
@@ -73,7 +75,7 @@ public class InterpolatorFactory {
 			return new FlatInterpolator();
 		} else {
 			String s = "InterpolatorFactory: unknown Interpolator type: " + typeName;
-			System.err.println(s);
+			CyLogger.getLogger().warn(s);
 
 			return null;
 		}
@@ -95,7 +97,7 @@ public class InterpolatorFactory {
 			return new String("FlatInterpolator");
 		} else {
 			String c = fInt.getClass().getName();
-			System.err.println("Unknown Interpolator type: " + c);
+			CyLogger.getLogger().warn("Unknown Interpolator type: " + c);
 
 			return null;
 		}

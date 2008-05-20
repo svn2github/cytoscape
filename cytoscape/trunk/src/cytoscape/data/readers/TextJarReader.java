@@ -37,6 +37,7 @@
 package cytoscape.data.readers;
 
 import cytoscape.*;
+import cytoscape.logger.CyLogger;
 import cytoscape.util.URLUtil;
 
 import java.io.*;
@@ -100,7 +101,7 @@ public class TextJarReader {
 	 * @throws IOException DOCUMENT ME!
 	 */
 	public int read() throws IOException {
-		System.out.println("-- reading " + filename);
+		CyLogger.getLogger().info("-- reading " + filename);
 
 		char[] cBuffer = new char[1024];
 		int bytesRead;

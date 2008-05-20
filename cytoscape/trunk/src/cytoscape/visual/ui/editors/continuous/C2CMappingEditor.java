@@ -35,6 +35,7 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.visual.VisualPropertyType;
 
@@ -148,7 +149,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 	// Add slider to the editor.
 	private void addSlider(float position, float value) {
-		System.out.println("=====Adding slider\n");
+		CyLogger.getLogger().info("=====Adding slider\n");
 
 		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 
@@ -181,7 +182,7 @@ public class C2CMappingEditor extends ContinuousMappingEditorPanel {
 
 		newRange.lesserValue = slider.getModel().getSortedThumbs()
 		                             .get(slider.getModel().getThumbCount() - 1);
-		System.out.println("EQ color = " + newRange.lesserValue);
+		CyLogger.getLogger().info("EQ color = " + newRange.lesserValue);
 		newRange.equalValue = 5f;
 		newRange.greaterValue = previousRange.greaterValue;
 		mapping.addPoint(maxValue, newRange);

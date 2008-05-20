@@ -72,7 +72,7 @@ public class URLUtil {
 		if (source.toString().toLowerCase().endsWith(GZIP)) {
 			newIs = new GZIPInputStream(proxyIs);
 		} else if (source.toString().toLowerCase().endsWith(ZIP)) {
-			// System.err.println(source.toString() + " ZIP ");
+			// CyLogger.getLogger().warn(source.toString() + " ZIP ");
 			newIs = new ZipInputStream(proxyIs);
 		} else if (source.toString().toLowerCase().endsWith(JAR)) {
 			newIs = new JarInputStream(proxyIs);

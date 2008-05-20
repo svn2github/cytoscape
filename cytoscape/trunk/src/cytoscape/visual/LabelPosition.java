@@ -43,6 +43,8 @@ import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cytoscape.logger.CyLogger;
+
 
 /**
  *
@@ -272,38 +274,38 @@ public class LabelPosition {
 			LabelPosition LP = (LabelPosition) lp;
 
 			if (Math.abs(LP.getOffsetX() - xOffset) > 0.0000001) {
-				System.out.println("xoff");
+				CyLogger.getLogger().info("xoff");
 
 				return false;
 			}
 
 			if (Math.abs(LP.getOffsetY() - yOffset) > 0.0000001) {
-				System.out.println("yoff");
+				CyLogger.getLogger().info("yoff");
 
 				return false;
 			}
 
 			if (LP.getLabelAnchor() != labelAnchor) {
-				System.out.println("label");
+				CyLogger.getLogger().info("label");
 
 				return false;
 			}
 
 			if (LP.getTargetAnchor() != targetAnchor) {
-				System.out.println("taret");
+				CyLogger.getLogger().info("taret");
 
 				return false;
 			}
 
 			if (LP.getJustify() != justify) {
-				System.out.println("justify");
+				CyLogger.getLogger().info("justify");
 
 				return false;
 			}
 
 			return true;
 		} else {
-			System.out.println("not lp");
+			CyLogger.getLogger().info("not lp");
 
 			return false;
 		}
@@ -527,7 +529,7 @@ public class LabelPosition {
 				return justifyRName;
 
 			default:
-				System.out.println("don't recognize type: " + x);
+				CyLogger.getLogger().info("don't recognize type: " + x);
 
 				return "x";
 		}

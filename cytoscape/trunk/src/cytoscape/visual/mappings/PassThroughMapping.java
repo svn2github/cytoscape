@@ -43,6 +43,7 @@
 package cytoscape.visual.mappings;
 
 import cytoscape.CyNetwork;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.visual.ShapeNodeRealizer;
 import cytoscape.visual.VisualPropertyType;
@@ -136,7 +137,7 @@ public class PassThroughMapping implements ObjectMapping {
 		try {
 			copy = (PassThroughMapping) super.clone();
 		} catch (CloneNotSupportedException e) {
-			System.err.println("Critical error in PassThroughMapping - was not cloneable");
+			CyLogger.getLogger().warn("Critical error in PassThroughMapping - was not cloneable");
 			e.printStackTrace();
 
 			return null;

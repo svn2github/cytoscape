@@ -225,7 +225,7 @@ public class CyNetworkUtilities {
 			network.setSelectedNodeState(matchedNodes, true);
 		}
 
-		//System.out.println("node found = " + nodeFound);
+		//CyLogger.getLogger().info("node found = " + nodeFound);
 		return found;
 	}
 

@@ -45,6 +45,7 @@
 package cytoscape.data.servers;
 
 import cytoscape.data.annotation.*;
+import cytoscape.logger.CyLogger;
 
 import java.io.*;
 
@@ -69,7 +70,7 @@ public class getCommonName {
 	 */
 	public static void main(String[] args) throws Exception {
 		if (args.length != 4) {
-			System.err.println("usage:  getCommonName <rmi host name> <rmi service name> \"<species>\" <canonicalName>");
+			CyLogger.getLogger().warn("usage:  getCommonName <rmi host name> <rmi service name> \"<species>\" <canonicalName>");
 			System.exit(1);
 		}
 
@@ -80,7 +81,7 @@ public class getCommonName {
 
 		String serverName = "rmi://" + hostname + "/" + serviceName;
 		BioDataServer server = new BioDataServer(serverName);
-		System.out.println(canonicalName + " -> " + server.getCommonName(species, canonicalName));
+		CyLogger.getLogger().info(canonicalName + " -> " + server.getCommonName(species, canonicalName));
 	} // main
 	  //------------------------------------------------------------------------------
 } // getCommonName

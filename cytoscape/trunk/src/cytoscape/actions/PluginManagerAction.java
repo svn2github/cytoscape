@@ -44,6 +44,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 //import cytoscape.CytoscapeInit;
 
 import cytoscape.bookmarks.Bookmarks;
@@ -117,7 +118,7 @@ public class PluginManagerAction extends CytoscapeAction {
 				}
 			}
 		} catch (Exception E) {
-			System.err.println("There was an error while reading the bookmarks file.");
+			CyLogger.getLogger().warn("There was an error while reading the bookmarks file.");
 		}
 
 		List<DownloadableInfo> Current = Mgr.getDownloadables(PluginStatus.CURRENT);

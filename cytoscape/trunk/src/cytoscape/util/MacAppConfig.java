@@ -37,6 +37,7 @@
 package cytoscape.util;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -107,7 +108,7 @@ public class MacAppConfig {
 		FileWriter writer = new FileWriter(configFile);
 		outputter.output(doc, writer);
 		writer.close();
-		System.out.println("File is now updated with correct JARs:  " + configFile);
+		CyLogger.getLogger().info("File is now updated with correct JARs:  " + configFile);
 	}
 
 	/**
@@ -153,8 +154,8 @@ public class MacAppConfig {
 			SAXBuilder saxBuilder = new SAXBuilder();
 			doc = saxBuilder.build(reader);
 		} catch (FileNotFoundException e) {
-			System.out.println("Cannot find:  " + configFile);
-			System.out.println("Try running:  'ant mac' first.");
+			CyLogger.getLogger().info("Cannot find:  " + configFile);
+			CyLogger.getLogger().info("Try running:  'ant mac' first.");
 			Cytoscape.exit(-1);
 		}
 

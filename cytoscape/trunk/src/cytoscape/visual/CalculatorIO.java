@@ -64,6 +64,7 @@ import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
 
 import cytoscape.visual.calculators.Calculator;
 import cytoscape.visual.calculators.CalculatorFactory;
+import cytoscape.logger.CyLogger;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -250,7 +251,7 @@ public class CalculatorIO {
 				// object
 				newProps.putAll(styleProps);
 			} catch (Exception e) {
-				System.out.println("Exception while saving visual style " + name);
+				CyLogger.getLogger().info("Exception while saving visual style " + name);
 				e.printStackTrace();
 			}
 		}
@@ -580,7 +581,7 @@ public class CalculatorIO {
 		final String calcTypeKey = extractCalcType(key);
 
 		if (calcTypeKey == null) {
-			System.err.println("couldn't parse calcTypeKey from '" + key + "'");
+			CyLogger.getLogger().warn("couldn't parse calcTypeKey from '" + key + "'");
 
 			return;
 		}

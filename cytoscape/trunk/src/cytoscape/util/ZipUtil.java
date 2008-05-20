@@ -203,7 +203,7 @@ public class ZipUtil {
 
 		// final double stop = System.currentTimeMillis();
 		// final double diff = stop - start;
-		// System.out.println("Compression time 3 = " + diff / 1000 + " sec.");
+		// CyLogger.getLogger().info("Compression time 3 = " + diff / 1000 + " sec.");
 		if (cleanFlag) {
 			clean();
 		}

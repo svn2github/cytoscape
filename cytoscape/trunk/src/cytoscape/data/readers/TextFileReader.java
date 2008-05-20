@@ -38,6 +38,8 @@
 // TextFileReader.java
 package cytoscape.data.readers;
 
+import cytoscape.logger.CyLogger;
+
 import java.io.*;
 
 
@@ -117,7 +119,7 @@ public class TextFileReader {
 
 		TextFileReader reader = new TextFileReader(fileToRead);
 		int size = reader.read();
-		System.out.println("size of text block: " + size);
-		System.out.println(reader.getText());
+		CyLogger.getLogger().info("size of text block: " + size);
+		CyLogger.getLogger().info(reader.getText());
 	} // main
 }

@@ -175,7 +175,7 @@ public class Tunable implements FocusListener,ChangeListener {
 		this.lowerBound = lowerBound;
 		this.flag = flag;
 		this.immutable = immutable;
-		// System.out.println("Tunable "+desc+" has value "+value);
+		// CyLogger.getLogger().info("Tunable "+desc+" has value "+value);
 	}
 
 	/**
@@ -209,22 +209,22 @@ public class Tunable implements FocusListener,ChangeListener {
 		if (value.getClass() == String.class) {
 			switch (type) {
 				case INTEGER:
-					// System.out.println("Setting Integer tunable "+desc+" value to "+value);
+					// CyLogger.getLogger().info("Setting Integer tunable "+desc+" value to "+value);
 					this.value = new Integer((String) value);
 					break;
 
 				case DOUBLE:
-					// System.out.println("Setting Double tunable "+desc+" value to "+value);
+					// CyLogger.getLogger().info("Setting Double tunable "+desc+" value to "+value);
 					this.value = new Double((String) value);
 					break;
 
 				case BOOLEAN:
-					// System.out.println("Setting Boolean tunable "+desc+" value to "+value);
+					// CyLogger.getLogger().info("Setting Boolean tunable "+desc+" value to "+value);
 					this.value = new Boolean((String) value);
 					break;
 
 				case LIST:
-					// System.out.println("Setting List tunable "+desc+" value to "+value);
+					// CyLogger.getLogger().info("Setting List tunable "+desc+" value to "+value);
 					if ((flag & MULTISELECT) != 0) {
 						// Multiselect LIST -- value is a List of Integers, or String values
 						this.value = value;
@@ -234,12 +234,12 @@ public class Tunable implements FocusListener,ChangeListener {
 					return;
 
 				case GROUP:
-					// System.out.println("Setting Group tunable "+desc+" value to "+value);
+					// CyLogger.getLogger().info("Setting Group tunable "+desc+" value to "+value);
 					this.value = new Integer((String) value);
 					return;
 
 				default:
-					// System.out.println("Setting String tunable "+desc+" value to "+value);
+					// CyLogger.getLogger().info("Setting String tunable "+desc+" value to "+value);
 					this.value = value;
 					break;
 			}

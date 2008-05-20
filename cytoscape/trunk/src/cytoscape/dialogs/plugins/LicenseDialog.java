@@ -1,6 +1,7 @@
 package cytoscape.dialogs.plugins;
 
 import cytoscape.plugin.DownloadableInfo;
+import cytoscape.logger.CyLogger;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -195,7 +196,7 @@ public class LicenseDialog extends javax.swing.JDialog {
 
     
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {                                         
-			System.out.println("FINISHED");
+			CyLogger.getLogger().info("FINISHED");
 			dispose(); 
     }                                        
 
