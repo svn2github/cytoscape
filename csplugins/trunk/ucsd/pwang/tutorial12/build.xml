@@ -25,7 +25,7 @@
     <property name="lib.dir" value="${root.dir}/lib"/>
 
   	<!-- Define the Cytoscape directories -->
-    <property name="cytoscape.dir" value="../cytoscape2p6"/>
+    <property name="cytoscape.dir" value="../../cytoscape"/>
   	<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib"/>
     <property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins"/>
 
@@ -44,10 +44,8 @@
     <!-- Define the java class path -->
     <path id="project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
-    	<fileset dir="C:\work\eclipse\tutorial13">
-    		<include name="tutorial13.jar" />
-    	</fileset>
-    	<fileset dir="C:\work\eclipse\tutorial13\lib">
+
+    	<fileset dir="lib.dir">
     		<include name="*.jar" />
     	</fileset>
 
@@ -109,16 +107,6 @@
   <!-- =================================================================== -->
   <target name="clean" depends="init">
   	<delete dir="${build.dir}"/>
-  </target>
-
-	
-  <!-- =================================================================== -->
-  <!-- For debug only                                                      -->
-  <!-- =================================================================== -->
-  <target name="myjar" depends="jar"  >
-	  		  	
-    <copy todir="${cytoscape.dir}/build/cytoscape-v2.6.0-beta2/plugins" file="${project.jar}"/>
-
   </target>
 
 </project>
