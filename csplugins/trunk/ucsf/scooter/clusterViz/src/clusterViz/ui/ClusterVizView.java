@@ -54,6 +54,8 @@ import java.net.MalformedURLException;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
+import cytoscape.CyEdge;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
@@ -85,18 +87,23 @@ public class ClusterVizView extends TreeViewApp implements Observer, GraphViewCh
 	private ClusterVizModel dataModel = null;
 	private CyNetworkView myView = null;
 	private CyNetwork myNetwork = null;
+	private	List<CyNode>selectedNodes;
+	private	List<CyNode>selectedArrays;
+	private CyLogger myLogger;
 
 	private static String appName = "ClusterViz";
 
 	public ClusterVizView() {
 		super();
-		// scanForPlugins();
 		setExitOnWindowsClosed(false);
+		selectedNodes = new ArrayList();
+		selectedArrays = new ArrayList();
 	}
 
 	public ClusterVizView(XmlConfig xmlConfig) {
 		super(xmlConfig);
-		// scanForPlugins();
+		selectedNodes = new ArrayList();
+		selectedArrays = new ArrayList();
 		// setExitOnWindowsClosed(false);
 	}
 
@@ -109,12 +116,15 @@ public class ClusterVizView extends TreeViewApp implements Observer, GraphViewCh
 		return appName;
 	}
 
-	public void startup() {
+	public void startup(CyLogger logger) {
 		// Get our data model
 		dataModel = new ClusterVizModel();
 
+		// Get our logger
+		this.myLogger = logger;
+
 		// Set up our configuration
-		XmlConfig documentConfig = new XmlConfig("<ClusterVizConfig/>","ClusterVizConfig");
+		XmlConfig documentConfig = new XmlConfig("<DocumentConfig><Views><View type=\"Dendrogram\" dock=\"1\"><ColorExtractor contrast=\"3.0\"><ColorSet up=\"#FFFF00\" down=\"#0000FF\"/></ColorExtractor></View></Views></DocumentConfig>","DocumentConfig");
 		dataModel.setDocumentConfig(documentConfig);
 
 		// Create our view frame
@@ -128,6 +138,7 @@ public class ClusterVizView extends TreeViewApp implements Observer, GraphViewCh
 		geneSelection = frame.getGeneSelection();
 		geneSelection.addObserver(this);
 		arraySelection = frame.getArraySelection();
+		arraySelection.addObserver(this);
 
 		// Now set up to receive selection events
 		myView = Cytoscape.getCurrentNetworkView();
@@ -218,25 +229,59 @@ public class ClusterVizView extends TreeViewApp implements Observer, GraphViewCh
 
 	public void update(Observable o, Object arg) {
 		if (o == geneSelection) {
-			List<CyNode>nodes = new ArrayList();
+			selectedNodes = new ArrayList();
 			int[] selections = geneSelection.getSelectedIndexes();
 			HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
 			String [] names = geneInfo.getNames();
 			for (int i = 0; i < selections.length; i++) {
 				String nodeName = geneInfo.getHeader(selections[i])[0];
 				CyNode node = Cytoscape.getCyNode(nodeName, false);
-				if (node != null) nodes.add(node);
+				if (node != null) selectedNodes.add(node);
 			}
 			// myView.removeGraphViewChangeListener(this);
 			// System.out.println("Selecting "+nodes.size()+" nodes");
-			myNetwork.unselectAllNodes();
-			myNetwork.setSelectedNodeState(nodes, true);
+			if (!dataModel.isSymmetrical() || selectedArrays.size() == 0) {
+				myNetwork.unselectAllNodes();
+				myNetwork.setSelectedNodeState(selectedNodes, true);
+				return;
+			}
 			// myView.addGraphViewChangeListener(this);
+		} else if (o == arraySelection) {
+			// We only care about array selection for symmetrical models
+			if (!dataModel.isSymmetrical())
+				return;
+			selectedArrays = new ArrayList();
+			int[] selections = arraySelection.getSelectedIndexes();
+			if (selections.length == dataModel.nExpr())
+				return;
+			HeaderInfo arrayInfo = dataModel.getArrayHeaderInfo();
+			String [] names = arrayInfo.getNames();
+			for (int i = 0; i < selections.length; i++) {
+				String nodeName = arrayInfo.getHeader(selections[i])[0];
+				CyNode node = Cytoscape.getCyNode(nodeName, false);
+				if (node != null) selectedArrays.add(node);
+			}
 		}
+
+		// If we've gotten here, we want to select edges
+		myNetwork.unselectAllEdges();
+		myNetwork.unselectAllNodes();
+		List<CyEdge>edgesToSelect = new ArrayList();
+		for (CyNode node1: selectedNodes) {
+			int [] nodes = new int[2];
+			nodes[0] = node1.getRootGraphIndex();
+			for (CyNode node2: selectedArrays) {
+				nodes[1] = node2.getRootGraphIndex();
+				int edges[] = myNetwork.getConnectingEdgeIndicesArray(nodes);
+				for (int i = 0; i < edges.length; i++)
+					edgesToSelect.add((CyEdge)myNetwork.getEdge(edges[i]));
+			}
+		}
+		myNetwork.setSelectedEdgeState(edgesToSelect, true);
 	}
 
 	public void graphViewChanged(GraphViewChangeEvent event) {
-		System.out.println("graphViewChanged");
+		// System.out.println("graphViewChanged");
 		if (event.isNodesSelectedType()) {
 			Node[] nodeArray = event.getSelectedNodes();
 			// setSelection(nodeArray, true);
@@ -252,7 +297,7 @@ public class ClusterVizView extends TreeViewApp implements Observer, GraphViewCh
 		geneSelection.setSelectedNode(null);
 		for (int index = 0; index < nodeArray.length; index++) {
 			CyNode cyNode = (CyNode) nodeArray[index];
-			System.out.println("setting "+cyNode.getIdentifier()+" to "+select);
+			// System.out.println("setting "+cyNode.getIdentifier()+" to "+select);
 			int geneIndex = geneInfo.getIndex(cyNode.getIdentifier());
 			geneSelection.setIndex(geneIndex, select);
 		}

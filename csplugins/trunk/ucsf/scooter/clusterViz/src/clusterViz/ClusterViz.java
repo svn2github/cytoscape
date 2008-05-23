@@ -45,6 +45,7 @@ import java.util.List;
 import cytoscape.Cytoscape;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
+import cytoscape.logger.CyLogger;
 
 // clusterViz imports
 import clusterViz.ui.ClusterVizView;
@@ -58,6 +59,7 @@ public class ClusterViz extends CytoscapePlugin {
 
 	static final int NONE = 1;
 	static final int LAUNCH = 1;
+	private CyLogger myLogger = null;
 
 	ClusterVizView cvView = null;
 
@@ -68,11 +70,14 @@ public class ClusterViz extends CytoscapePlugin {
 
 		JMenu menu = new JMenu("ClusterViz");
 		addSubMenu(menu, "Launch clusterViz", LAUNCH, null);
+
+		if (myLogger == null)
+			myLogger = CyLogger.getLogger(CytoscapePlugin.class);
 		
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
-		System.out.println("clusterMaker "+VERSION+" initialized");
+		myLogger.info("clusterMaker "+VERSION+" initialized");
 
   }
 
@@ -107,10 +112,10 @@ public class ClusterViz extends CytoscapePlugin {
 			if (command == LAUNCH) {
 				if (cvView == null) {
 					cvView = new ClusterVizView();
-					cvView.startup();
+					cvView.startup(myLogger);
 					cvView.setVisible(true);
 				} else {
-					cvView.startup();
+					cvView.startup(myLogger);
 					cvView.setVisible(true);
 				}
 			}

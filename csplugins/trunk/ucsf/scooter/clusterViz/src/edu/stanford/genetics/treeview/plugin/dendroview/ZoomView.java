@@ -175,12 +175,12 @@ class ZoomView extends ModelViewProduced implements MouseMotionListener {
 			if (xmap.contains(overx) && 
 			ymap.contains(overy)) {
 				statustext[0] = "Row:    " + (overy + 1);
-				if (geneHI != null) {
+				if (geneHI != null && overy >= 0) {
 					int realGene = overy;
 					statustext[0] += " (" + geneHI.getHeader(realGene,1) + ")";
 				}
 				statustext[1] = "Column: " + (overx + 1);
-				if (arrayHI != null) {
+				if (arrayHI != null && overx >= 0) {
 					statustext[1] += " (" + arrayHI.getHeader(overx, 0) + ")";
 				}
 				

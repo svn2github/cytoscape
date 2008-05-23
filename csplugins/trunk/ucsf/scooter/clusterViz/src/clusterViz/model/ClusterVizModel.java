@@ -33,6 +33,7 @@
 package clusterViz.model;
 
 // System imports
+import java.util.Iterator;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +42,9 @@ import java.net.MalformedURLException;
 
 // Cytoscape imports
 import cytoscape.Cytoscape;
+import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.view.CyNetworkView;
 
@@ -58,12 +61,12 @@ import edu.stanford.genetics.treeview.core.MenuHelpPluginsFrame;
  * The ClusterVizModel provides the data that links the results of a cluster run
  * in Cytoscape with the Java TreeView code
  *
- * TODO: Figure out how to select edge weights
  */
 public class ClusterVizModel extends TVModel {
 	// Keep track of gene to node references
 	CyNetwork network;
 	CyNetworkView networkView;
+	boolean isSymmetrical = false;
 
 	public ClusterVizModel() {
 		super();
@@ -103,22 +106,53 @@ public class ClusterVizModel extends TVModel {
 		int nExpr = arrayList.size();
 		// The CDT is the Gene x Array matrix
 		double[] exprData = new double[nGene * nExpr];
-		
-		// Get the data
-		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-		int gene = 0;
-		for (String nodeName: geneList) {
-			int expr = 0;
-			for (String attribute: arrayList) {
-				Double val = nodeAttributes.getDoubleAttribute(nodeName, attribute);
-				if (val == null)
-					exprData[gene*nExpr + expr] = DataModel.NODATA;
-				else {
-					exprData[gene*nExpr + expr] = val.doubleValue();
+
+		// Check for a symmetrical matrix
+		if (geneList.get(0).equals(arrayList.get(0))) {
+			// Matrix is symmetrical.  Get the edge attribute
+			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), "__hierarchicalEdgeWeight");
+			attribute = attribute.substring(5);
+			// System.out.println("Edge attribute is "+attribute);
+
+			CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+
+			// Initialize the data
+			for (int cell = 0; cell < nGene*nExpr; cell++)
+				exprData[cell] = DataModel.NODATA;
+
+			Iterator edgeIterator = network.edgesIterator();
+			while (edgeIterator.hasNext()) {
+				CyEdge edge = (CyEdge)edgeIterator.next();
+				CyNode source = (CyNode)edge.getSource();
+				CyNode target = (CyNode)edge.getTarget();
+				Double val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), attribute);
+				int gene = geneList.indexOf(source.getIdentifier());
+				int expr = geneList.indexOf(target.getIdentifier());
+				// System.out.println("Edge "+source.getIdentifier()+"("+gene+") "+
+				//                    target.getIdentifier()+"("+expr+") = "+val);
+				if (val != null) {
+					exprData[gene*nExpr + expr] = val;
+					exprData[expr*nExpr + gene] = val;
 				}
-				expr++;
 			}
-			gene++;
+			isSymmetrical = true;
+		} else {
+			// Get the data
+			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+			int gene = 0;
+			for (String nodeName: geneList) {
+				int expr = 0;
+				for (String attribute: arrayList) {
+					Double val = nodeAttributes.getDoubleAttribute(nodeName, attribute);
+					if (val == null)
+						exprData[gene*nExpr + expr] = DataModel.NODATA;
+					else {
+						exprData[gene*nExpr + expr] = val.doubleValue();
+					}
+					expr++;
+				}
+				gene++;
+			}
 		}
 
 		setExprData(exprData);
@@ -169,6 +203,10 @@ public class ClusterVizModel extends TVModel {
 
 	public String getSource() {
 		return Cytoscape.getCurrentNetwork().getIdentifier();
+	}
+
+	public boolean isSymmetrical() {
+		return isSymmetrical;
 	}
 
 	private void parseGroupHeaders (List<String>groupList, String [][] headers) {

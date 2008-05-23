@@ -232,7 +232,11 @@ public class ATRZoomView extends ModelView implements
 				String [] names = atrInfo.getNames();
 				for (int i = 0; i < nameIndex.length; i++) {
 					status[2*i] = names[nameIndex[i]] +":";
-					status[2*i+1] = " " +atrInfo.getHeader(atrInfo.getHeaderIndex(selectedNode.getId()))[ nameIndex[i]];
+					int index = atrInfo.getHeaderIndex(selectedNode.getId());
+					if (index >= 0)
+						status[2*i+1] = " " +atrInfo.getHeader(atrInfo.getHeaderIndex(selectedNode.getId()))[ nameIndex[i]];
+					else
+						status[2*i+1] = " ";
 				}
 			} else {
 				status = new String [2];
@@ -310,7 +314,7 @@ public class ATRZoomView extends ModelView implements
 		if (enclosingWindow().isActive() == false) {
 			return;
 		}
-		if (drawer != null) {
+		if (drawer != null && xScaleEq != null && yScaleEq != null) {
 			// the trick is translating back to the normalized space...
 			setSelectedNode
 					(drawer.getClosest(xScaleEq.inverseTransform(e.getX()),

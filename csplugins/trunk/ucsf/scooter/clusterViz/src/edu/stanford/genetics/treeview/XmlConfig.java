@@ -41,11 +41,13 @@ import net.n3.nanoxml.*;
  * is associated with a file, and knows how to store itself.
  */
 public class XmlConfig {
-    /**
-     * Construct new configuration information source
-     * 
-     * @param xmlFile xml file associated with configuration info
-     */
+	private boolean rawXML = false;
+
+	/**
+	 * Construct new configuration information source
+	 * 
+	 * @param xmlFile xml file associated with configuration info
+	 */
 	 public XmlConfig(String xmlFile, String tag) {
 		 file = xmlFile;
 		 XMLElement el = null;
@@ -77,11 +79,12 @@ public class XmlConfig {
 		 } catch (java.io.FileNotFoundException e) {
 		 	 try {
 				 // We might have gotten raw XML
-			 	 IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
-		 		 Reader sreader = new StringReader(xmlFile);
-		 		 IXMLReader reader = new StdXMLReader(sreader);
-		 		 parser.setReader(reader);
-		 		 el = (XMLElement) parser.parse();
+				 IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+				 Reader sreader = new StringReader(xmlFile);
+				 IXMLReader reader = new StdXMLReader(sreader);
+				 parser.setReader(reader);
+				 el = (XMLElement) parser.parse();
+				 rawXML = true;
 			 } catch (XMLException ex) {
 				 el = null;
 			 } catch (Exception ex) {
@@ -152,9 +155,11 @@ public class XmlConfig {
      * returns node if it exists, otherwise makes a new one.
      */
     public ConfigNode getNode(String name) {
+			System.out.println("Getting node: "+name);
 	ConfigNode t =root.fetchFirst(name);
 	// just return if exists
 	if (t != null) return t;
+	System.out.println("Doesn't exist, creating node: "+name);
 	//otherwise, create and return
 	return root.create(name);
     }
@@ -171,7 +176,7 @@ public class XmlConfig {
      *
      */
 	 public void store() {
-		 if (changed == false) return;
+		 if (changed == false || rawXML == true) return;
 		 if (file == null) {
 			 LogBuffer.println("Not printing config to file");
 			 return;

@@ -61,13 +61,13 @@ public class TreeViewFrame extends ViewFrame {
 		loaded = false;
 		setWindowActive(true);
 		waiting = new JPanel();
-		waiting.add(new WaitScreen(
-				new String[] { "Hello How are you Gentlepeople",
-						"Welcome to " + getAppName() }));
+		 waiting.add(new WaitScreen(
+		 		new String[] { "Hello How are you Gentlepeople",
+		 				"Welcome to " + getAppName() }));
 
 		setupPresets();
 		setupMenuBar();
-		setupFileMru(treeView.getGlobalConfig().getNode("FileMru"));
+		// setupFileMru(treeView.getGlobalConfig().getNode("FileMru"));
 
 		centerOnscreen();
 		setLoaded(false);
