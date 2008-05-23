@@ -93,6 +93,9 @@ public class NamedSelection extends CytoscapePlugin
 
 	private static GroupPanel groupPanel = null;
 
+	private boolean needReload = false;
+	private List<CyNetwork>networkList = null;
+
   /**
    * Create our action and add it to the plugins menu
    */
@@ -101,11 +104,8 @@ public class NamedSelection extends CytoscapePlugin
 		// Now that the group panel supports group creation, do we still
 		// want to do this?
 		try {
-			// Add ourselves to the network view created change list
-			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
-			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
-			// Add our context menu
-			// ((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
+			// Listen for network and session load events
+			Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
 		} catch (ClassCastException e) {
 			System.out.println(e.getMessage());
 		}
@@ -127,6 +127,7 @@ public class NamedSelection extends CytoscapePlugin
 		CyGroupManager.registerGroupViewer(this);
 		this.groupViewer = this; // this makes it easier to get at from inner classes
 		System.out.println("namedSelectionPlugin "+VERSION+" initialized");
+		networkList = new ArrayList();
 	}
 
 	// These are required by the CyGroupViewer interface
@@ -147,7 +148,11 @@ public class NamedSelection extends CytoscapePlugin
 	 * @param group the CyGroup that was just created
 	 */
 	public void groupCreated(CyGroup group) { 
-		groupPanel.groupCreated(group);
+		if (networkList.contains(Cytoscape.getCurrentNetwork())) {
+			groupPanel.groupCreated(group);
+			needReload = false;
+		} else
+			needReload = true;
 	}
 
 	/**
@@ -163,8 +168,7 @@ public class NamedSelection extends CytoscapePlugin
 		// Make sure we get rid of the group node
 		CyNode node = group.getGroupNode();
 		view.getNetwork().removeNode(node.getRootGraphIndex(), false);
-		// In our case, we don't really care about the network view
-		groupPanel.groupCreated(group);
+		groupCreated(group);
 	}
 
 	/**
@@ -200,10 +204,20 @@ public class NamedSelection extends CytoscapePlugin
 	 * @param e the property change event
 	 */
 	public void propertyChange (PropertyChangeEvent e) {
-		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
-			CyNetworkView newView = (CyNetworkView)e.getNewValue();
-      newView.addNodeContextMenuListener(this);
-			newView.addGraphViewChangeListener(groupPanel);
+		if (e.getPropertyName() == Cytoscape.NETWORK_LOADED) {
+			if (e.getNewValue() != null) {
+				// Get the name of the network we loaded
+				CyNetwork network = (CyNetwork) e.getNewValue();
+
+				// Add it to the list we respond to
+				networkList.add(network);
+			}
+
+			// Update the tree (if we've seen any activity)
+			if (needReload) {
+				groupPanel.reload();
+				needReload = false;
+			}
 		}
 	}
 

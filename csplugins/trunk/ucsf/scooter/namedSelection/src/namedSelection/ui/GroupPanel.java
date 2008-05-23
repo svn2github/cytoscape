@@ -316,6 +316,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				// Yes, create the group
 				ArrayList<CyNode>currentNodes = new ArrayList(nodeSet);
 				GroupCreationDialog dd = new GroupCreationDialog(Cytoscape.getDesktop(), currentNodes, viewerList);
+				reload();
 			} else {
 				// No, tell the user
 				JOptionPane.showMessageDialog(this, "You must select a set of nodes to be part of the group", 
