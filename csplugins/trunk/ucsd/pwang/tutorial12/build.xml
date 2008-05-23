@@ -79,7 +79,12 @@
   <!-- Creates the plugin jar file                                           -->
   <!-- =================================================================== -->
   <target name="jar" depends="compile, copy_plugin_prop, copy_images"  >
-  	
+	<unjar dest="${build.dir}">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</unjar>
+
     <jar destfile="${project.jar}">
       <manifest> <attribute name="Cytoscape-Plugin" value="${plugin_class}"/> </manifest>
       <fileset dir="${build.dir}" includes="**"/>
