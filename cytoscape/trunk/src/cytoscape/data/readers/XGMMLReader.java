@@ -156,6 +156,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	private TaskMonitor taskMonitor;
 	private PercentUtil percentUtil;
 	private int nextID = 0; // Used to assign ID's to nodes that didn't have them
+	private CyLogger logger = null;
 
 	/**
 	 * Constructor.<br>
@@ -224,6 +225,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	}
 
 	private void initialize() {
+		logger = CyLogger.getLogger(XGMMLReader.class);
 	}
 
 	/**
@@ -260,10 +262,10 @@ public class XGMMLReader extends AbstractGraphReader {
 		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
 		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
 
-//		CyLogger.getLogger().info("Heap Memory status (SAX): used = " + heapUsage.getUsed()/1000+"KB");
-//		CyLogger.getLogger().info("Heap Memory status (SAX): MAX = " + heapUsage.getMax()/1000+"KB");
-//		CyLogger.getLogger().info("Non-heap Memory status (SAX): used = " + nonHeapUsage.getUsed()/1000+"KB");
-//		CyLogger.getLogger().info("Non-heap Memory status (SAX): MAX = " + nonHeapUsage.getMax()/1000+"KB");
+//		logger.debug("Heap Memory status (SAX): used = " + heapUsage.getUsed()/1000+"KB");
+//		logger.debug("Heap Memory status (SAX): MAX = " + heapUsage.getMax()/1000+"KB");
+//		logger.debug("Non-heap Memory status (SAX): used = " + nonHeapUsage.getUsed()/1000+"KB");
+//		logger.debug("Non-heap Memory status (SAX): MAX = " + nonHeapUsage.getMax()/1000+"KB");
 		
 		try {
 			/*
@@ -295,7 +297,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			throw new XGMMLException("Out of memory error caught! The network being loaded is too large for the current memory allocation.  Use the -Xmx flag for the java virtual machine to increase the amount of memory available, e.g. java -Xmx1G cytoscape.jar -p plugins ....");
 		} catch (ParserConfigurationException e) {
 		} catch (SAXParseException e) {
-			CyLogger.getLogger().error("XGMMLParser: fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'");
+			logger.error("XGMMLParser: fatal parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'");
 			throw e;
 		} finally {
 			if (networkStream != null) {
@@ -308,11 +310,11 @@ public class XGMMLReader extends AbstractGraphReader {
 		nonHeapUsage = mbean.getNonHeapMemoryUsage();
 		long memend = Runtime.getRuntime().freeMemory();
 
-//		CyLogger.getLogger().info("============= Total time for " + networkName + " = "
+//		logger.debug("============= Total time for " + networkName + " = "
 //		                   + (System.currentTimeMillis() - start));
-//		CyLogger.getLogger().info("Heap memory after parsing = " + (heapUsage.getUsed() / 1000)
+//		logger.debug("Heap memory after parsing = " + (heapUsage.getUsed() / 1000)
 //			                   + "KB");
-//		CyLogger.getLogger().info("Non-heap memory after parsing = " + (nonHeapUsage.getUsed() / 1000)
+//		logger.debug("Non-heap memory after parsing = " + (nonHeapUsage.getUsed() / 1000)
 //			                   + "KB");
 	}
 
@@ -363,6 +365,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 * @param myView the view of the network we want to layout
 	 */
 	private void layout(CyNetworkView myView) {
+		// logger.debug("layout");
 		if ((myView == null) || (myView.nodeCount() == 0)) {
 			return;
 		}
@@ -567,11 +570,11 @@ public class XGMMLReader extends AbstractGraphReader {
 	                                final VisualStyleBuilder graphStyle,
 	                                final boolean buildStyle) {
 	/*
-		CyLogger.getLogger().info("LayoutEdgeGraphics: ");
+		logger.debug("LayoutEdgeGraphics: ");
 		for (int i = 0; i < graphics.getLength(); i++) {
-			CyLogger.getLogger().info(graphics.getQName(i)+"="+graphics.getValue(i)+" ");
+			logger.debug(graphics.getQName(i)+"="+graphics.getValue(i)+" ");
 		}
-		CyLogger.getLogger().info();
+		logger.debug();
 	*/
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		String edgeID = edgeView.getEdge().getIdentifier();
@@ -631,7 +634,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		}
 
 	 	if (XGMMLParser.getAttribute(graphics,"edgeHandleList") != null) {
-			// CyLogger.getLogger().info("See edgeHandleList");
+			// logger.debug("See edgeHandleList");
 			String handles[] = XGMMLParser.getAttribute(graphics, "edgeHandleList").split(";");
 			for (int i = 0; i < handles.length; i++) {
 				String points[] = handles[i].split(",");
