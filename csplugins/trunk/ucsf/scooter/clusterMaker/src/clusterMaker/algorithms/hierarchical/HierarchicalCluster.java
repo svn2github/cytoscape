@@ -168,7 +168,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		EisenCluster.resetAttributes();
 
 		// Cluster the attributes, if requested
-		if (clusterAttributes)
+		if (clusterAttributes && attributeArray.length > 1)
 			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true);
 
 		// Cluster the nodes

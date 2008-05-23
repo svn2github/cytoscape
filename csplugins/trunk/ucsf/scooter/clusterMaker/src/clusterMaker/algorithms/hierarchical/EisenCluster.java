@@ -57,6 +57,7 @@ public class EisenCluster {
 	final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
 	final static String CLUSTER_NODE_ATTRIBUTE = "__hierarchicalNodeClusters";
 	final static String CLUSTER_ATTR_ATTRIBUTE = "__hierarchicalAttrClusters";
+	final static String CLUSTER_EDGE_ATTRIBUTE = "__hierarchicalEdgeWeight";
 	final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
 	final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
 
@@ -137,7 +138,7 @@ public class EisenCluster {
 			}
 
 			attrList.add(node, nodeList[node].getName()+"\t"+ID1+"\t"+ID2+"\t"+(1.0-nodeList[node].getDistance()));
-			System.out.println(attrList.get(node));
+			// System.out.println(attrList.get(node));
 
 			nodeCounts[node] = (int)counts1 + (int)counts2;
 			nodeOrder[node] = (counts1*order1 + counts2*order2) / (counts1 + counts2);
@@ -154,18 +155,28 @@ public class EisenCluster {
 			netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
 		} else {
 			netAttr.setListAttribute(netID, CLUSTER_NODE_ATTRIBUTE, attrList);
+			if (matrix.isSymmetrical()) {
+				netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
+				netAttr.setAttribute(netID, CLUSTER_EDGE_ATTRIBUTE, weightAttributes[0]);
+			}
 		}
 
-		ArrayList<String> orderList = new ArrayList();
 		String[] rowArray = matrix.getRowLabels();
-		for (int i = 0; i < order.length; i++) {
-			orderList.add(rowArray[order[i]]);
-		}
+		ArrayList<String> orderList = new ArrayList();
 
 		String[] columnArray = matrix.getColLabels();
 		ArrayList<String>columnList = new ArrayList(columnArray.length);
-		for (int col = 0; col < columnArray.length; col++) {
-			columnList.add(columnArray[col]);
+
+		for (int i = 0; i < order.length; i++) {
+			orderList.add(rowArray[order[i]]);
+			if (matrix.isSymmetrical())
+				columnList.add(rowArray[order[i]]);
+		}
+
+		if (!matrix.isSymmetrical()) {
+			for (int col = 0; col < columnArray.length; col++) {
+				columnList.add(columnArray[col]);
+			}
 		}
 
 		if (matrix.isTransposed()) {
@@ -211,6 +222,8 @@ public class EisenCluster {
 			netAttr.deleteAttribute(netID, CLUSTER_ATTR_ATTRIBUTE);
 		if (netAttr.hasAttribute(netID, CLUSTER_NODE_ATTRIBUTE))
 			netAttr.deleteAttribute(netID, CLUSTER_NODE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, CLUSTER_EDGE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, CLUSTER_EDGE_ATTRIBUTE);
 
 		// See if we have any old groups in this network
 		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE)) {

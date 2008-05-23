@@ -59,6 +59,7 @@ public class Matrix {
 	private CyNode rowNodes[];
 	private CyNode columnNodes[];
 	protected boolean transpose;
+	protected boolean symmetrical;
 
 	/**
 	 * Create a data matrix from the current nodes in the network.  There are two ways
@@ -91,8 +92,10 @@ public class Matrix {
 				attributeArray[i] = weightAttributes[i].substring(5);
 			}
 			buildGeneArrayMatrix(network, attributeArray, transpose);
+			symmetrical = false;
 		} else if (weightAttributes.length == 1 && weightAttributes[0].startsWith("edge.")) {
 			buildSymmetricalMatrix(network, weightAttributes[0].substring(5));
+			symmetrical = true;
 		} else {
 			// Throw an exception?
 			return;
@@ -333,6 +336,8 @@ public class Matrix {
 
 	public boolean isTransposed() { return this.transpose; }
 
+	public boolean isSymmetrical() { return this.symmetrical; }
+
 	private void buildSymmetricalMatrix(CyNetwork network, String weight) {
 
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
@@ -369,6 +374,7 @@ public class Matrix {
 					matrix[index][column] = val;
 				}
 			}
+			index++;
 		}
 	}
 
