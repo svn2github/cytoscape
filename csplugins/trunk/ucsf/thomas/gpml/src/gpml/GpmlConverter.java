@@ -214,19 +214,24 @@ public class GpmlConverter {
 					//Only add links to nodes, not to annotations
 					if(ne_i instanceof GpmlNode) {
 						cyGroup.addNode(((GpmlNode)ne_i).getParent());
-
-						//Add links between all elements of the group
-						for(int j = i + 1; j < groupElements.length; j++) {
-							PathwayElement pe_j = groupElements[j];
-							GpmlNetworkElement<?> ne_j = gpmlHandler.getNetworkElement(pe_j.getGraphId());
-							if(ne_j instanceof GpmlNode) {
-								edges.add(Cytoscape.getCyEdge(
-										ne_i.getParentIdentifier(), 
-										"inGroup: " + cyGroup.getGroupName(),
-										ne_j.getParentIdentifier(), interaction)
-								);
-							}
-						}
+						edges.add(Cytoscape.getCyEdge(
+								cyGroup.getGroupNode().getIdentifier(), 
+								"inGroup: " + cyGroup.getGroupName(),
+								ne_i.getParentIdentifier(), interaction)
+						);
+						
+//						//Add links between all elements of the group
+//						for(int j = i + 1; j < groupElements.length; j++) {
+//							PathwayElement pe_j = groupElements[j];
+//							GpmlNetworkElement<?> ne_j = gpmlHandler.getNetworkElement(pe_j.getGraphId());
+//							if(ne_j instanceof GpmlNode) {
+//								edges.add(Cytoscape.getCyEdge(
+//										ne_i.getParentIdentifier(), 
+//										"inGroup: " + cyGroup.getGroupName(),
+//										ne_j.getParentIdentifier(), interaction)
+//								);
+//							}
+//						}
 					}
 				}
 			}
@@ -243,11 +248,11 @@ public class GpmlConverter {
 	}
 	
 	public void layout(GraphView view) {
-		String viewerName = "metaNode";
-		Logger.log.trace(CyGroupManager.getGroupViewers() + "");
-		if(CyGroupManager.getGroupViewer(viewerName) != null) {
-			setGroupViewer((CyNetworkView)view, viewerName);
-		}
+//		String viewerName = "metaNode";
+//		Logger.log.trace(CyGroupManager.getGroupViewers() + "");
+//		if(CyGroupManager.getGroupViewer(viewerName) != null) {
+//			setGroupViewer((CyNetworkView)view, viewerName);
+//		}
 		gpmlHandler.addAnnotations(view, nodeMap.values());
 		gpmlHandler.applyGpmlLayout(view, nodeMap.values());
 		gpmlHandler.applyGpmlVisualStyle();
