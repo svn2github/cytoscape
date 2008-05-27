@@ -2,6 +2,7 @@ USE cellcircuits_dev;
 
 DROP TABLE IF EXISTS journals;
 DROP TABLE IF EXISTS publications;
+DROP TABLE IF EXISTS pdf_files;
 DROP TABLE IF EXISTS file_info;
 DROP TABLE IF EXISTS sif_files;
 DROP TABLE IF EXISTS images;
@@ -27,7 +28,13 @@ CREATE TABLE publications (
 	page_start		varchar(8),
 	page_end		varchar(8),
 	year			int,
-	month			int
+	month			int,
+	pdf_file_id		int
+);
+
+CREATE TABLE pdf_files (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	data			blob
 );
 
 CREATE TABLE file_info (
