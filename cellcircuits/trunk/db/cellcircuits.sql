@@ -2,8 +2,10 @@ USE cellcircuits_dev;
 
 DROP TABLE IF EXISTS journals;
 DROP TABLE IF EXISTS publications;
-DROP TABLE IF EXISTS sif_file_info;
+DROP TABLE IF EXISTS file_info;
 DROP TABLE IF EXISTS sif_files;
+DROP TABLE IF EXISTS images;
+DROP TABLE IF EXISTS legends;
 DROP TABLE IF EXISTS model;
 DROP TABLE IF EXISTS gene_model;
 DROP TABLE IF EXISTS model_similarity;
@@ -28,15 +30,29 @@ CREATE TABLE publications (
 	month			int
 );
 
-CREATE TABLE sif_file_info (
+CREATE TABLE file_info (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	pub_id			int,
-	file_name		varchar(99),
-	data_file_id	int
+	sif_file_name	varchar(99),
+	sif_data_id		int,
+	image_id		int
 );
 
 CREATE TABLE sif_files (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	data			blob
+);
+
+CREATE TABLE images (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	large_img		blob,
+	thm_img			blob
+);
+
+CREATE TABLE legends (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	pub_id			int,
+	file_name		varchar(40),
 	data			blob
 );
 
