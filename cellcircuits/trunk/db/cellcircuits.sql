@@ -1,16 +1,49 @@
 USE cellcircuits_dev;
 
+DROP TABLE IF EXISTS journals;
+DROP TABLE IF EXISTS publications;
+DROP TABLE IF EXISTS sif_file_info;
+DROP TABLE IF EXISTS sif_files;
 DROP TABLE IF EXISTS model;
 DROP TABLE IF EXISTS gene_model;
 DROP TABLE IF EXISTS model_similarity;
 DROP TABLE IF EXISTS enrichment;
-DROP TABLE IF EXISTS journals;
-DROP TABLE IF EXISTS publications;
+
+CREATE TABLE journals (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name			varchar(99),
+	name_short		varchar(10),
+	image			blob
+);
+
+CREATE TABLE publications (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	journal_id		int,
+	authors			varchar(20),
+	vol				varchar(20),
+	issue			varchar(10),
+	page_start		varchar(8),
+	page_end		varchar(8),
+	year			int,
+	month			int
+);
+
+CREATE TABLE sif_file_info (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	pub_id			int,
+	file_name		varchar(99),
+	data_file_id	int
+);
+
+CREATE TABLE sif_files (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	data			blob
+);
 
 CREATE TABLE model (
-    id      int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    pub     varchar(255) NOT NULL,
-    name    varchar(255) NOT NULL,
+	id      int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	pub     varchar(255) NOT NULL,
+	name    varchar(255) NOT NULL,
 	UNIQUE INDEX model_idx (id,pub),
 	INDEX m0 (pub)
 );
@@ -25,9 +58,9 @@ CREATE TABLE gene_model (
 );
 
 CREATE TABLE model_similarity (
-    id      	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    model_id_a     	int NOT NULL,
-    model_id_b     	int NOT NULL,
+	id      	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	model_id_a     	int NOT NULL,
+	model_id_b     	int NOT NULL,
 	gene_score     	int NOT NULL,
 	INDEX ms1 (model_id_a),	
 	INDEX ms2 (model_id_b),
@@ -51,23 +84,4 @@ CREATE TABLE enrichment (
 	UNIQUE INDEX e1 (model_id,species_id,term_id),
 	INDEX e2 (species_id,term_id),
 	INDEX e3 (term_id)
-);
-
-CREATE TABLE journals (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	name			varchar(99),
-	name_short		varchar(10),
-	image			blob
-);
-
-CREATE TABLE publications (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	journal_id		int,
-	authors			varchar(20),
-	vol				varchar(20),
-	issue			varchar(10),
-	page_start		varchar(8),
-	page_end		varchar(8),
-	year			int,
-	month			int
 );
