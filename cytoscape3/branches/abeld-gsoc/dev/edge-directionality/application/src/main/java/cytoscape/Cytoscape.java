@@ -628,10 +628,7 @@ public abstract class Cytoscape {
 	/**
 	 * Gets the first CyEdge found between the two nodes (direction does not
 	 * matter) that has the given value for the given attribute. If the edge
-	 * doesn't exist, then it creates an undirected edge.
-	 *
-	 * This method MIGHT be deprecated, or even removed, because Cytoscape
-	 * shouldn't really be using undirected edges.
+	 * doesn't exist, then it creates a directed edge.
 	 *
 	 * @param node_1
 	 *            one end of the edge
@@ -651,7 +648,7 @@ public abstract class Cytoscape {
 	 */
 	public static Edge getCyEdge(Node node_1, Node node_2, String attribute,
 	                               Object attribute_value, boolean create) {
-		return getCyEdge(node_1, node_2, attribute, attribute_value, create, false);
+		return getCyEdge(node_1, node_2, attribute, attribute_value, create, true);
 	}
 
 	/**
@@ -716,7 +713,7 @@ public abstract class Cytoscape {
 			// create the edge
 			Edge edge = (Edge) Cytoscape.getRootGraph()
 			                                .getEdge(Cytoscape.getRootGraph()
-			                                                  .createEdge(source, target));
+			                                                  .createEdge(source, target, directed));
 
 			// create the edge id
 			String edge_name = Cytoscape.createEdgeIdentifier(source.getIdentifier(),
