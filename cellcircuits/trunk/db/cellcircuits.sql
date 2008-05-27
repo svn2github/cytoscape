@@ -65,6 +65,7 @@ CREATE TABLE publications (
 	journal_id		int,
 	authors			varchar(20),
 	vol				varchar(20),
+	issue			varchar(10),
 	page_start		varchar(8),
 	page_end		varchar(8),
 	year			int,
