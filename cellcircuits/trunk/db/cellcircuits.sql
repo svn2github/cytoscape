@@ -1,10 +1,9 @@
 USE cellcircuits_dev;
 
-DROP TABLE IF EXISTS journals;
 DROP TABLE IF EXISTS publications;
 DROP TABLE IF EXISTS pdf_files;
 DROP TABLE IF EXISTS file_info;
-DROP TABLE IF EXISTS sif_files;
+DROP TABLE IF EXISTS network_files;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS legends;
 DROP TABLE IF EXISTS model;
@@ -12,17 +11,13 @@ DROP TABLE IF EXISTS gene_model;
 DROP TABLE IF EXISTS model_similarity;
 DROP TABLE IF EXISTS enrichment;
 
-CREATE TABLE journals (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	name			varchar(99),
-	name_short		varchar(10),
-	image			blob
-);
 
 CREATE TABLE publications (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	journal_id		int,
-	authors			varchar(20),
+	pubmed_id		int,
+	journal_name	int,
+	cover_image		blob,
+	authors			varchar(120),
 	vol				varchar(20),
 	issue			varchar(10),
 	page_start		varchar(8),
@@ -40,20 +35,22 @@ CREATE TABLE pdf_files (
 CREATE TABLE file_info (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	pub_id			int,
-	sif_file_name	varchar(99),
-	sif_data_id		int,
-	image_id		int
+	network_file_name	varchar(99),
+	network_file_id		int,
+	network_type		varchar(10),
+	large_image_id		int,
+	thm_image_id		int
 );
 
-CREATE TABLE sif_files (
+
+CREATE TABLE network_files (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	data			blob
 );
 
 CREATE TABLE images (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	large_img		blob,
-	thm_img			blob
+	data			blob
 );
 
 CREATE TABLE legends (
