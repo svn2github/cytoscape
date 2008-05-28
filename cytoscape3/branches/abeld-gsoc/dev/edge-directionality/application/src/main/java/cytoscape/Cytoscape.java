@@ -731,7 +731,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Returns and edge if it exists, otherwise creates a directed edge.
+	 * Returns an edge if it exists, otherwise creates a directed edge.
 	 *
 	 * @param source_alias
 	 *            an alias of a node
@@ -742,7 +742,24 @@ public abstract class Cytoscape {
 	 * @return will always return an edge
 	 */
 	public static Edge getCyEdge(String source_alias, String edge_name, String target_alias,
-	                               String interaction_type) {
+            String interaction_type) {
+			return getCyEdge(source_alias, edge_name, target_alias, interaction_type, true);
+	}
+	/**
+	 * Returns an edge if it exists, otherwise creates an edge with given directionality.
+	 *
+	 * @param source_alias
+	 *            an alias of a node
+	 * @param edge_name
+	 *            the name of the node
+	 * @param target_alias
+	 *            an alias of a node
+	 * @param directed
+	 * 			directedness of edge
+	 * @return will always return an edge
+	 */	
+	public static Edge getCyEdge(String source_alias, String edge_name, String target_alias,
+	                               String interaction_type, boolean directed) {
 
 		Edge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 
