@@ -12,6 +12,24 @@ DROP TABLE IF EXISTS model_similarity;
 DROP TABLE IF EXISTS enrichment;
 
 
+CREATE TABLE submission_data (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	pubmed_id		int,
+	contact_person	varchar(100),
+	email			varchar(100),
+	comment			text,
+	cover_image_id	int,
+	pdf_file_id		int,
+	zip_file_id		int
+);
+
+CREATE TABLE raw_data (
+	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	file_name		varchar(100),
+	data			blob
+);
+
+
 CREATE TABLE publications (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	pubmed_id		int,
