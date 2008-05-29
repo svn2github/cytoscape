@@ -19,6 +19,7 @@ public class LabelPosition {
 		SOUTHWEST,
 		WEST,
 		NORTHWEST,
+		CENTER,
 		;
 	}
 }

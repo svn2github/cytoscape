@@ -1,0 +1,11 @@
+
+package org.cytoscape.network.events;
+
+import org.cytoscape.event.CyEventListener;
+
+/**
+ * Listener for AboutToRemoveNodeEvents. 
+ */
+public interface AboutToRemoveNodeListener extends CyEventListener<AboutToRemoveNodeEvent> {
+	public void handleEvent(AboutToRemoveNodeEvent e);
+}

@@ -8,8 +8,8 @@ public enum LineStyle {
 	DASH_DOT("dash dot", new float[] {12.0f,3.0f,3.0f,3.0f}),
 	;
 
-	private String name;
-	private float[]  dashDescription;
+	final private String name;
+	final private float[]  dashDescription;
 
 	private LineStyle(String n, float[] dd) {
 		name = n;
