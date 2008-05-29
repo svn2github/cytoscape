@@ -42,43 +42,32 @@ import cern.colt.map.OpenIntIntHashMap;
 
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
-import cytoscape.view.CyNetworkView;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
-import cytoscape.layout.LayoutAdapter;
-import cytoscape.layout.CyLayoutAlgorithm;
-
 import cytoscape.init.CyInitParams;
+
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.LayoutAdapter;
+
+import cytoscape.logger.CyLogger;
 
 import cytoscape.task.TaskMonitor;
 
-import cytoscape.util.PercentUtil;
 import cytoscape.util.FileUtil;
+import cytoscape.util.PercentUtil;
+
+import cytoscape.view.CyNetworkView;
 
 import cytoscape.visual.ArrowShape;
-import cytoscape.visual.CalculatorCatalog;
-import cytoscape.visual.EdgeAppearanceCalculator;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.LineStyle;
 import cytoscape.visual.NodeShape;
 import cytoscape.visual.VisualMappingManager;
-import cytoscape.visual.LineStyle;
-import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualPropertyType;
 
-import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.calculators.BasicCalculator;
-
-import cytoscape.visual.mappings.DiscreteMapping;
-import cytoscape.visual.mappings.ObjectMapping;
-import cytoscape.visual.mappings.PassThroughMapping;
-
-// -----------------------------------------------------------------------------------------
 import giny.model.Edge;
 import giny.model.Node;
 
@@ -89,14 +78,13 @@ import giny.view.NodeView;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
-import java.io.StringWriter;
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -158,6 +146,16 @@ public class GMLReader extends AbstractGraphReader {
 	protected static String SOURCE_ARROW = "source_arrow";
 	protected static String TARGET_ARROW = "target_arrow";
 
+	// Support for yEd GML dialect
+	protected static String YED_SOURCE_ARROW = "sourceArrow";
+	protected static String YED_TARGET_ARROW = "targetArrow";
+	protected static String YED_DELTA = "delta";
+	protected static String YED_STANDARD = "standard";
+	protected static String YED_DIAMOND = "diamond";
+	protected static String YED_SHORT = "short";
+	protected static String YED_WHITE_DELTA = "white_delta";
+	protected static String YED_WHITE_DIAMOND = "white_diamond";
+
 	// States of the ends of arrows
 	protected static String ARROW = "arrow";
 	protected static String ARROW_NONE = "none";
@@ -171,10 +169,9 @@ public class GMLReader extends AbstractGraphReader {
 	protected static String CREATOR = "Creator";
 	private String mapSuffix;
 	private Color DEF_COLOR = new Color(153, 153, 255);
-
 	private String vsbSwitch = CytoscapeInit.getProperties().getProperty("visualStyleBuilder");
 	private VisualStyleBuilder graphStyle = null;
-	
+
 	// Entries in the file
 	List keyVals;
 
@@ -205,21 +202,19 @@ public class GMLReader extends AbstractGraphReader {
 
 	// Hashes for node & edge attributes
 	HashMap nodeH;
-
 	// Hashes for node & edge attributes
-	HashMap<String,NodeShape> nodeShape;
+	HashMap<String, NodeShape> nodeShape;
 
 	// Hashes for node & edge attributes
 	HashMap nodeCol;
-
 	// Hashes for node & edge attributes
-	HashMap<String,Double> nodeBWidth;
+	HashMap<String, Double> nodeBWidth;
 
 	// Hashes for node & edge attributes
 	HashMap nodeBCol;
 	HashMap edgeCol;
-	HashMap<String,Float> edgeWidth;
-	HashMap<String,String> edgeArrow;
+	HashMap<String, Float> edgeWidth;
+	HashMap<String, String> edgeArrow;
 	HashMap edgeShape;
 
 	// The InputStream
@@ -254,7 +249,6 @@ public class GMLReader extends AbstractGraphReader {
 		this.inputStream = is;
 	}
 
-
 	/**
 	 * Constructor.
 	 *
@@ -277,15 +271,14 @@ public class GMLReader extends AbstractGraphReader {
 	}
 
 	/**
- 	 * Sets the task monitor we want to use
- 	 *
- 	 * @param monitor the TaskMonitor to use
- 	 */
+	  * Sets the task monitor we want to use
+	  *
+	  * @param monitor the TaskMonitor to use
+	  */
 	public void setTaskMonitor(TaskMonitor monitor) {
 		this.taskMonitor = monitor;
 		percentUtil = new PercentUtil(3);
 	}
-
 
 	private String createVSName() {
 		// Create new style name
@@ -294,10 +287,9 @@ public class GMLReader extends AbstractGraphReader {
 		// File fileTest = new File(fileName);
 		// target = fileTest.getName();
 		//CyLogger.getLogger().info("Target GML file is " + fileName);
-
 		mapSuffix = " for " + fileName;
 
-		return getNetworkName();//fileName.concat("_GML_style");
+		return getNetworkName(); //fileName.concat("_GML_style");
 	}
 
 	private void initializeHash() {
@@ -312,7 +304,6 @@ public class GMLReader extends AbstractGraphReader {
 		//edgeWidth = new HashMap<String,Float>();
 		//edgeArrow = new HashMap<String,String>();
 		//edgeShape = new HashMap();
-
 		edge_names = new Vector();
 		node_names = new Vector();
 	}
@@ -343,11 +334,9 @@ public class GMLReader extends AbstractGraphReader {
 	 * @deprecated Don't use this. Gone 2/2009.
 	 */
 	@Deprecated
-
 	public void setEdgeMaps(VisualMappingManager vizmapper) {
 	}
 
-	
 	/**
 	 *  DOCUMENT ME!
 	 *
@@ -361,11 +350,11 @@ public class GMLReader extends AbstractGraphReader {
 		// VisualMappingManager vizmapper = cyDesktop.getVizMapManager();
 		/*
 		if (VSName != null) {
-			styleName = VSName;
+		    styleName = VSName;
 		}
 
 		if (mapSuffix != null) {
-			this.mapSuffix = mapSuffix;
+		    this.mapSuffix = mapSuffix;
 		}
 
 		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
@@ -414,14 +403,7 @@ public class GMLReader extends AbstractGraphReader {
 		// 2 Generate new VS
 		// 3 Apply the new VS to the current window of Cytoscape
 		//
-		extract(); // Extract node & edge attributes
-		           // Properties prop = CytoscapeInit.getProperties();
-		           // String vsbSwitch = prop.getProperty("visualStyleBuilder");
-		           // if(vsbSwitch != null) {
-		           // if(vsbSwitch.equals("on")) {
-		           // applyMaps(null, null); // generate new VS and apply it.
-		           // }
-		           // }
+		extract();
 
 		releaseStructures();
 	}
@@ -462,7 +444,6 @@ public class GMLReader extends AbstractGraphReader {
 	 * on a node that was skipped, then that edge will be skipped as well.
 	 */
 	protected void createGraph() {
-		
 		Cytoscape.ensureCapacity(nodes.size(), sources.size());
 		nodeIDMap = new OpenIntIntHashMap(nodes.size());
 		giny_nodes = new IntArrayList(nodes.size());
@@ -485,7 +466,7 @@ public class GMLReader extends AbstractGraphReader {
 				nodeIDMap.put(nodes.get(idx), node.getRootGraphIndex());
 				gml_id2order.put(nodes.get(idx), idx);
 				((KeyValue) node_root_index_pairs.get(idx)).value = (new Integer(node
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   .getRootGraphIndex()));
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                     .getRootGraphIndex()));
 			} else {
 				throw new GMLException("GML id " + nodes.get(idx) + " has a duplicated label: "
 				                       + label);
@@ -545,7 +526,7 @@ public class GMLReader extends AbstractGraphReader {
 
 				giny_edges.add(edge.getRootGraphIndex());
 				((KeyValue) edge_root_index_pairs.get(idx)).value = (new Integer(edge
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .getRootGraphIndex()));
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 .getRootGraphIndex()));
 			} else {
 				throw new GMLException("Non-existant source/target node for edge with gml (source,target): "
 				                       + sources.get(idx) + "," + targets.get(idx));
@@ -709,10 +690,10 @@ public class GMLReader extends AbstractGraphReader {
 	 */
 	public CyLayoutAlgorithm getLayoutAlgorithm() {
 		return new LayoutAdapter() {
-			public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
-				layout(networkView);
-			}
-		};
+				public void doLayout(CyNetworkView networkView, TaskMonitor monitor) {
+					layout(networkView);
+				}
+			};
 	}
 
 	/**
@@ -807,12 +788,10 @@ public class GMLReader extends AbstractGraphReader {
 		}
 	}
 
-	protected void extractEdge(List list, String edgeName) {
+	protected void extractEdge(List<KeyValue> list, String edgeName) {
 		List graphics_list = null;
 
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			KeyValue keyVal = (KeyValue) it.next();
-
+		for (KeyValue keyVal : list) {
 			if (keyVal.key.equals(ROOT_INDEX)) {
 				if (keyVal.value == null) {
 					return;
@@ -822,9 +801,8 @@ public class GMLReader extends AbstractGraphReader {
 			}
 		}
 
-		if (graphics_list != null) {
+		if (graphics_list != null)
 			extractEdgeAttributes(graphics_list, edgeName);
-		}
 	}
 
 	/**
@@ -839,13 +817,14 @@ public class GMLReader extends AbstractGraphReader {
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			final KeyValue keyVal = (KeyValue) it.next();
 
-			if (keyVal.key.equals(NODE)) {
+			if (keyVal.key.equals(NODE))
 				layoutNode(myView, (List) keyVal.value);
-			} else if (keyVal.key.equals(EDGE)) {
-				edgeName = (String) edge_names.get(ePtr);
-				ePtr++;
-				layoutEdge(myView, (List) keyVal.value, edgeName);
-			}
+
+			//			} else if (keyVal.key.equals(EDGE)) {
+			//				edgeName = (String) edge_names.get(ePtr);
+			//				ePtr++;
+			//				layoutEdge(myView, (List) keyVal.value, edgeName);
+			//			}
 		}
 	}
 
@@ -893,11 +872,8 @@ public class GMLReader extends AbstractGraphReader {
 			view.getLabel().setText("node(" + tempid + ")");
 		}
 
-		if (graphics_list != null) {
+		if (graphics_list != null)
 			layoutNodeGraphics(myView, graphics_list, view);
-
-			// extractNodeAttributes( graphics_list, label );
-		}
 	}
 
 	/**
@@ -952,72 +928,73 @@ public class GMLReader extends AbstractGraphReader {
 		// (Assume we do not have duplicate node name.)
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
-			
+
 			if (keyVal.key.equals(X) || keyVal.key.equals(Y)) {
 				// Do nothing.
 			} else if (keyVal.key.equals(H)) {
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_HEIGHT, ""+keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_HEIGHT, "" + keyVal.value);
 			} else if (keyVal.key.equals(W)) {
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_WIDTH, ""+keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_WIDTH, "" + keyVal.value);
 			} else if (keyVal.key.equals(FILL)) {
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_FILL_COLOR, ""+keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_FILL_COLOR,
+				                       "" + keyVal.value);
 			} else if (keyVal.key.equals(OUTLINE)) {
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_BORDER_COLOR, ""+keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_BORDER_COLOR,
+				                       "" + keyVal.value);
 			} else if (keyVal.key.equals(WIDTH)) {
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_LINE_WIDTH, ""+keyVal.value);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_LINE_WIDTH,
+				                       "" + keyVal.value);
 			} else if (keyVal.key.equals(TYPE)) {
 				String type = (String) keyVal.value;
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_SHAPE,type);
+				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_SHAPE, type);
 			}
 		}
 	}
 
-
 	//
 	// Extract edge attributes from GML input
 	//
-	protected void extractEdgeAttributes(List list, String edgeName) {
+	protected void extractEdgeAttributes(List<KeyValue> list, String edgeName) {
 		String value = null;
 
 		boolean isArrow = false;
 		String edgeFill = DEF_COLOR.toString();
 		String arrowShape = ARROW_NONE;
-		
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			KeyValue keyVal = (KeyValue) it.next();
 
+		for (KeyValue keyVal : list) {
 			if (keyVal.key.equals(LINE)) {
 				// This represents "Polyline," which is a line (usually an edge)
 				// with arbitrary number of anchors.
 				// Current version of CS does not support this, so ignore this
 				// at this point of time...
 			} else if (keyVal.key.equals(WIDTH)) {
-				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_LINE_WIDTH, new String(keyVal.value.toString()));
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_LINE_WIDTH,
+				                       new String(keyVal.value.toString()));
 			} else if (keyVal.key.equals(FILL)) {
-				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_COLOR, new String(keyVal.value.toString()));
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_COLOR,
+				                       new String(keyVal.value.toString()));
 				edgeFill = keyVal.value.toString();
 			} else if (keyVal.key.equals(ARROW)) {
-				//edgeArrow.put(edgeName, (String) keyVal.value);
 				isArrow = true;
+
 				ArrowShape shape = ArrowShape.ARROW;
 				String arrowName = shape.getName();
-				
+
 				if (keyVal.value.toString().equalsIgnoreCase(ARROW_FIRST)) {
 					arrowShape = ARROW_FIRST;
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
-				}				
-				else if (keyVal.value.toString().equalsIgnoreCase(ARROW_LAST)) {
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE,
+					                       arrowName);
+				} else if (keyVal.value.toString().equalsIgnoreCase(ARROW_LAST)) {
 					arrowShape = ARROW_LAST;
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);	
-				}
-				else if (keyVal.value.toString().equalsIgnoreCase(ARROW_BOTH)) {
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE,
+					                       arrowName);
+				} else if (keyVal.value.toString().equalsIgnoreCase(ARROW_BOTH)) {
 					arrowShape = ARROW_BOTH;
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE, arrowName);
-					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE, arrowName);		
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE,
+					                       arrowName);
+					graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE,
+					                       arrowName);
 				}
-				else {// none
-				}
-				
 			} else if (keyVal.key.equals(TYPE)) {
 				value = (String) keyVal.value;
 
@@ -1026,26 +1003,51 @@ public class GMLReader extends AbstractGraphReader {
 				} else if (value.equals(CURVED_LINES)) {
 					// edgeView.setLineType(EdgeView.CURVED_LINES);
 				}
-			} else if (keyVal.value.equals(SOURCE_ARROW)) {
-				// edgeView.setSourceEdgeEnd(((Number)keyVal.value).intValue());
-			} else if (keyVal.value.equals(TARGET_ARROW)) {
-				// edgeView.setTargetEdgeEnd(((Number)keyVal.value).intValue());
+			} else if (keyVal.key.equals(SOURCE_ARROW)) {
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE,
+				                       ArrowShape.getArrowShape(((Number) keyVal.value).intValue())
+				                                 .getName());
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, edgeFill);
+			} else if (keyVal.key.equals(TARGET_ARROW)) {
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE,
+				                       ArrowShape.getArrowShape(((Number) keyVal.value).intValue())
+				                                 .getName());
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, edgeFill);
+			} else if (keyVal.key.equals(YED_SOURCE_ARROW)) {
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_SHAPE,
+				                       convertYEDArrowShape(keyVal.value.toString()));
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, edgeFill);
+			} else if (keyVal.key.equals(YED_TARGET_ARROW)) {
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_SHAPE,
+				                       convertYEDArrowShape(keyVal.value.toString()));
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, edgeFill);
 			}
 		}
-		
+
 		// make the arrow color the same as edge
 		if (isArrow) {
 			if (arrowShape.equals(ARROW_FIRST)) {
-				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, edgeFill);				
-			}
-			else if (arrowShape.equals(ARROW_LAST)) {
+				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, edgeFill);
+			} else if (arrowShape.equals(ARROW_LAST)) {
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, edgeFill);
-			}
-			else if (arrowShape.equals(ARROW_BOTH)) {
+			} else if (arrowShape.equals(ARROW_BOTH)) {
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, edgeFill);
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, edgeFill);
 			}
 		}
+	}
+
+	private String convertYEDArrowShape(String yedArrow) {
+		String shape = ArrowShape.NONE.getName();
+
+		if (yedArrow.equals(YED_DELTA) || yedArrow.equals(YED_WHITE_DELTA))
+			shape = ArrowShape.DELTA.getName();
+		else if (yedArrow.equals(YED_DIAMOND) || yedArrow.equals(YED_WHITE_DIAMOND))
+			shape = ArrowShape.DIAMOND.getName();
+		else if (yedArrow.equals(YED_STANDARD) || yedArrow.equals(YED_SHORT))
+			shape = ArrowShape.ARROW.getName();
+
+		return shape;
 	}
 
 	/**
@@ -1102,31 +1104,19 @@ public class GMLReader extends AbstractGraphReader {
 			}
 		}
 
-		if ((edgeView != null) && (graphics_list != null)) {
+		if ((edgeView != null) && (graphics_list != null))
 			layoutEdgeGraphics(myView, graphics_list, edgeView);
-
-			// extractEdgeAttributes( graphics_list, edgeName );
-		}
 	}
 
 	/**
 	 * Assign edge graphics properties
 	 */
-
-	// Bug fix by Kei
-	// Some of the conditions used "value."
-	// They should be key.
-	// Now this method correctly translate the GML input file
-	// into graphics.
-	//
-	protected void layoutEdgeGraphics(GraphView myView, List list, EdgeView edgeView) {
+	protected void layoutEdgeGraphics(GraphView myView, List<KeyValue> list, EdgeView edgeView) {
 		// Local vars.
 		String value = null;
-		KeyValue keyVal = null;
 
-		for (Iterator it = list.iterator(); it.hasNext();) {
-			keyVal = (KeyValue) it.next();
-
+		//		KeyValue keyVal = null;
+		for (KeyValue keyVal : list) {
 			// This is a polyline obj. However, it will be translated into
 			// straight line.
 			if (keyVal.key.equals(LINE)) {
@@ -1160,12 +1150,10 @@ public class GMLReader extends AbstractGraphReader {
 				} else if (keyVal.value.equals(ARROW_NONE)) {
 					// Do nothing. No arrows.
 				}
-
-				if (keyVal.key.equals(SOURCE_ARROW)) {
-					edgeView.setSourceEdgeEnd(((Number) keyVal.value).intValue());
-				} else if (keyVal.value.equals(TARGET_ARROW)) {
-					edgeView.setTargetEdgeEnd(((Number) keyVal.value).intValue());
-				}
+			} else if (keyVal.key.equals(SOURCE_ARROW)) {
+				edgeView.setSourceEdgeEnd(((Number) keyVal.value).intValue());
+			} else if (keyVal.key.equals(TARGET_ARROW)) {
+				edgeView.setTargetEdgeEnd(((Number) keyVal.value).intValue());
 			}
 		}
 	}
@@ -1226,14 +1214,12 @@ public class GMLReader extends AbstractGraphReader {
 		return new Color(Integer.parseInt(colorString.substring(1), 16));
 	}
 
-	
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param net DOCUMENT ME!
 	 */
 	public void doPostProcessing(CyNetwork net) {
-		 
 		// 
 		CyInitParams init = CytoscapeInit.getCyInitParams();
 
@@ -1241,12 +1227,10 @@ public class GMLReader extends AbstractGraphReader {
 			return;
 
 		if ((init.getMode() == CyInitParams.GUI)
-			    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-		
-			if (!(vsbSwitch != null && vsbSwitch.equals("off"))) {
-				graphStyle.buildStyle();	
-			}			
+		    || (init.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+			if (!((vsbSwitch != null) && vsbSwitch.equals("off"))) {
+				graphStyle.buildStyle();
+			}
 		}
 	}
-	
 }
