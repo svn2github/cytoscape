@@ -1,10 +1,8 @@
 USE cellcircuits_dev;
 
 DROP TABLE IF EXISTS submission_data;
-DROP TABLE IF EXISTS raw_data;
-DROP TABLE IF EXISTS cover_image_files;
+DROP TABLE IF EXISTS raw_files;
 DROP TABLE IF EXISTS publications;
-DROP TABLE IF EXISTS pdf_files;
 DROP TABLE IF EXISTS file_info;
 DROP TABLE IF EXISTS network_files;
 DROP TABLE IF EXISTS image_files;
@@ -14,7 +12,7 @@ DROP TABLE IF EXISTS gene_model;
 DROP TABLE IF EXISTS model_similarity;
 DROP TABLE IF EXISTS enrichment;
 
-
+-- data collected from submission form
 CREATE TABLE submission_data (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	pmid			int, -- PuMed id
@@ -26,21 +24,11 @@ CREATE TABLE submission_data (
 	zip_file_id		int
 );
 
-CREATE TABLE raw_data (
+-- All files submitted by end users
+CREATE TABLE raw_files (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	file_name		varchar(100),
-	data			blob
-);
-
-CREATE TABLE cover_image_files (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(100),
-	data			blob
-);
-
-CREATE TABLE pdf_files (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(100),
+	file_type		varchar(12), -- zip/pdf/cover_image
 	data			blob
 );
 
