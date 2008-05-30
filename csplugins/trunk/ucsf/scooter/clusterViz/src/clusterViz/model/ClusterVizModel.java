@@ -46,6 +46,7 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 // clusterViz imports
@@ -67,9 +68,14 @@ public class ClusterVizModel extends TVModel {
 	CyNetwork network;
 	CyNetworkView networkView;
 	boolean isSymmetrical = false;
+	CyLogger myLogger = null;
 
-	public ClusterVizModel() {
+	public ClusterVizModel(CyLogger logger) {
 		super();
+
+		// Get our logger
+		this.myLogger = logger;
+
 		network = Cytoscape.getCurrentNetwork();
 		networkView = Cytoscape.getCurrentNetworkView();
 
@@ -109,6 +115,7 @@ public class ClusterVizModel extends TVModel {
 
 		// Check for a symmetrical matrix
 		if (geneList.get(0).equals(arrayList.get(0))) {
+
 			// Matrix is symmetrical.  Get the edge attribute
 			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), "__hierarchicalEdgeWeight");
 			attribute = attribute.substring(5);
@@ -159,7 +166,6 @@ public class ClusterVizModel extends TVModel {
 		hashGIDs();
 		hashAIDs();
 		gidFound(true);
-		aidFound(true);
 
 		// Now, get the gene tree results (GTR) or array tree results (ATR) from Cytoscape, depending on
 		// what we clustered
@@ -186,6 +192,7 @@ public class ClusterVizModel extends TVModel {
 
 			setAtrHeaders(atrHeaders);
 			hashATRs();
+			aidFound(true);
 		}
 
 

@@ -93,18 +93,20 @@ public class ClusterVizView extends TreeViewApp implements Observer, GraphViewCh
 
 	private static String appName = "ClusterViz";
 
-	public ClusterVizView() {
+	public ClusterVizView(CyLogger logger) {
 		super();
 		setExitOnWindowsClosed(false);
 		selectedNodes = new ArrayList();
 		selectedArrays = new ArrayList();
+		myLogger = logger;
 	}
 
-	public ClusterVizView(XmlConfig xmlConfig) {
+	public ClusterVizView(XmlConfig xmlConfig, CyLogger logger) {
 		super(xmlConfig);
 		selectedNodes = new ArrayList();
 		selectedArrays = new ArrayList();
 		// setExitOnWindowsClosed(false);
+		myLogger = logger;
 	}
 
 	public void setVisible(boolean visibility) {
@@ -118,7 +120,7 @@ public class ClusterVizView extends TreeViewApp implements Observer, GraphViewCh
 
 	public void startup(CyLogger logger) {
 		// Get our data model
-		dataModel = new ClusterVizModel();
+		dataModel = new ClusterVizModel(myLogger);
 
 		// Get our logger
 		this.myLogger = logger;

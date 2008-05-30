@@ -75,7 +75,7 @@ public class TreeViewFrame extends ViewFrame {
 
 	protected void setupMenuBar() {
 		menubar = new JMenuBar();
-		setJMenuBar(menubar);
+		// setJMenuBar(menubar);
 		programMenu = new ProgramMenu(); // rebuilt when fileMru notifies
 		menubar.add(programMenu);
 		documentMenu = new JMenu("Settings");
@@ -253,6 +253,7 @@ public class TreeViewFrame extends ViewFrame {
 		setGeneFinder(null);
 		loaded = flag;
 		getContentPane().removeAll();
+		getContentPane().add(menubar, BorderLayout.NORTH);
 		if (loaded) {
 			if (running == null) {
 				JOptionPane.showMessageDialog(this, "TreeViewFrame 253: No plugins to display");

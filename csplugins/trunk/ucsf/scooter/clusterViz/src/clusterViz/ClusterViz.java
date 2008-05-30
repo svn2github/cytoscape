@@ -111,7 +111,7 @@ public class ClusterViz extends CytoscapePlugin {
 			// Create the dialog
 			if (command == LAUNCH) {
 				if (cvView == null) {
-					cvView = new ClusterVizView();
+					cvView = new ClusterVizView(myLogger);
 					cvView.startup(myLogger);
 					cvView.setVisible(true);
 				} else {
