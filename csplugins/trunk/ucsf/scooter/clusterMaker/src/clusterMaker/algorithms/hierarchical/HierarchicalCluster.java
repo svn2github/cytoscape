@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
 
@@ -72,9 +73,11 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	boolean clusterAttributes = false;
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
+	CyLogger logger = null;
 
 	public HierarchicalCluster() {
 		super();
+		logger = CyLogger.getLogger(HierarchicalCluster.class);
 		initializeProperties();
 	}
 
@@ -158,7 +161,7 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
 		// Sanity check all of our settings
-		System.out.println("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
+		logger.debug("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
 		// Get our attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
 		// To make debugging easier, sort the attribute array
@@ -169,10 +172,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1)
-			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true);
+			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true, logger);
 
 		// Cluster the nodes
-		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false);
+		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false, logger);
 	}
 
 	private void getAttributesList(List<String>attributeList, CyAttributes attributes, 
