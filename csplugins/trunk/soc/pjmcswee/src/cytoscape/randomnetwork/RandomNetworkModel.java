@@ -11,18 +11,20 @@ public abstract class RandomNetworkModel
 	protected int numNodes;
 	protected int numEdges;
 	protected boolean directed;
+	protected boolean allowSelfEdge;
 	protected long seed;
 	protected Random random;
-
+	
 
 	protected static int UNSPECIFIED = -1;
 
 	
-	RandomNetworkModel(int pNumNodes, int pNumEdges, boolean pDirected)
+	RandomNetworkModel(int pNumNodes, int pNumEdges, boolean pAllowSelfEdge, boolean pDirected)
 	{
 		numNodes = pNumNodes;
 		numEdges = pNumEdges;
 		directed = pDirected;
+		allowSelfEdge = pAllowSelfEdge;
 		seed = UNSPECIFIED;
 		random = new Random();
 	}

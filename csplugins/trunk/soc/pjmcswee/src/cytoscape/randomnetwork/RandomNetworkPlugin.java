@@ -55,8 +55,11 @@ public class RandomNetworkPlugin extends CytoscapePlugin
 
 		public void actionPerformed(ActionEvent ae)
 		{
-			ErdosRenyiModel erm = new ErdosRenyiModel(20,40,true);
-			erm.Generate();
+			ErdosRenyiDialog erd = new ErdosRenyiDialog(Cytoscape.getDesktop());
+			erd.pack();
+			erd.setLocationRelativeTo(Cytoscape.getDesktop());
+			erd.show();
+			
 		}
 	}
 
@@ -72,8 +75,10 @@ public class RandomNetworkPlugin extends CytoscapePlugin
 
 		public void actionPerformed(ActionEvent ae)
 		{
-			BarabasiAlbertModel bam = new BarabasiAlbertModel(20,true,3);
-			bam.Generate();
+			BarabasiAlbertDialog bad = new BarabasiAlbertDialog(Cytoscape.getDesktop());
+			bad.pack();
+			bad.setLocationRelativeTo(Cytoscape.getDesktop());
+			bad.show();
 		}
 	}
 
@@ -89,7 +94,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin
 
 		public void actionPerformed(ActionEvent ae)
 		{
-			WattsStrogatzModel wam = new WattsStrogatzModel(20,true,.5,5);
+			WattsStrogatzModel wam = new WattsStrogatzModel(20,true,true,.5,5);
 			wam.Generate();
 		}
 	}

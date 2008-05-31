@@ -39,9 +39,9 @@ public class ErdosRenyiModel extends RandomNetworkModel
 	*	@param pDirected<boolean> : Network is directed(TRUE) or undirected(FALSE)
 	*
 	*/
-	public ErdosRenyiModel(int pNumNodes, int pNumEdges, boolean pDirected)
+	public ErdosRenyiModel(int pNumNodes, int pNumEdges, boolean pAllowSelfEdge, boolean pDirected)
 	{
-		super(pNumNodes,pNumEdges,pDirected);
+		super(pNumNodes,pNumEdges, pAllowSelfEdge, pDirected);
 		probability = UNSPECIFIED;
 	}
 
@@ -56,9 +56,9 @@ public class ErdosRenyiModel extends RandomNetworkModel
 	*	@param pProbability<double> : probability of an edge
 	*
 	*/
-	public ErdosRenyiModel(int pNumNodes, boolean pDirected, double pProbability)
+	public ErdosRenyiModel(int pNumNodes,boolean pAllowSelfEdge, boolean pDirected, double pProbability)
 	{
-		super(pNumNodes,UNSPECIFIED,pDirected);
+		super(pNumNodes,UNSPECIFIED,pAllowSelfEdge, pDirected);
 	
 		//TODO: Is it common practice to throw exceptions in these cases?
 		//For now just force to valid range
@@ -131,6 +131,13 @@ public class ErdosRenyiModel extends RandomNetworkModel
 					continue;
 				}					
 				
+				if((!allowSelfEdge) && (source == target))
+				{
+					i--;
+					continue;
+				}
+				
+				
 				//Create and edge between node i and node j
 				CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target], Semantics.INTERACTION, new String("("+source +"," +target+")"), true, directed);
 
@@ -138,7 +145,7 @@ public class ErdosRenyiModel extends RandomNetworkModel
 				random_network.addEdge(edge);
 			}
 		}
-		//G(n,m) Model
+		//G(n,p) Model
 		else
 		{
 			//TODO:  This algorithm runs in N^2 time.  With millions of edges this is not optimal.
@@ -148,9 +155,25 @@ public class ErdosRenyiModel extends RandomNetworkModel
 			//For each node
 			for(int i = 0; i < numNodes; i++)
 			{
-				//For every other node
-				for(int j = 0; j < numNodes; j++)
+				int start = 0;
+				if(!directed)
 				{
+					start = i + 1;
+					if(allowSelfEdge)
+					{
+						start = i;
+					}
+				}
+				
+
+				//For every other node
+				for(int j = start; j < numNodes; j++)
+				{
+					if((!allowSelfEdge) && (i == j))
+					{
+						continue;
+					}
+				
 					//If random indicates this edge exists
 					if(random.nextDouble() <= probability)
 					{
@@ -158,13 +181,14 @@ public class ErdosRenyiModel extends RandomNetworkModel
 						//Create and edge between node i and node j
 						CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j], Semantics.INTERACTION, new String("("+i +"," +j+")"), true, directed);
 
-						//add 
+						//Add this edge
 						random_network.addEdge(edge);
 					}
 				}
 			}
 
 		}
+	
 	
 	}
 

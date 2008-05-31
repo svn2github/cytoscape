@@ -35,9 +35,9 @@ public class WattsStrogatzModel extends RandomNetworkModel
 	*	@param pProbability<double> : probability of an edge
 	*
 	*/
-	public WattsStrogatzModel(int pNumNodes, boolean pDirected, double pBeta, double pDegree)
+	public WattsStrogatzModel(int pNumNodes, boolean pAllowSelfEdge, boolean pDirected, double pBeta, double pDegree)
 	{
-		super(pNumNodes,UNSPECIFIED,pDirected);
+		super(pNumNodes,UNSPECIFIED,pAllowSelfEdge, pDirected);
 	
 		//TODO: Is it common practice to throw exceptions in these cases?
 		//For now just force to valid range
