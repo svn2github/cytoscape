@@ -178,7 +178,7 @@ public class LayoutRegionManager {
 	 * @param region
 	 *            the region you are adding
 	 */
-	private static void addRegionForView(CyNetworkView view, LayoutRegion region) {
+	public static void addRegionForView(CyNetworkView view, LayoutRegion region) {
 		List<LayoutRegion> regionList = regionViewMap.get(view);
 		if (regionList == null) {
 			regionList = new ArrayList<LayoutRegion>();
