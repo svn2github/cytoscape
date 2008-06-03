@@ -1,19 +1,19 @@
 <!-- =================================================================== -->
-<!-- Table Import plugin (tableImport.jar) build file     
+<!-- Table Import plugin (GenMAPPImport.jar) build file     
 			11/16/2006 Written by Keiichiro Ono (kono@ucsd.edu)       -->
 <!-- =================================================================== -->
 
-<project name="tableImport" default="tableImport" basedir=".">
+<project name="GenMAPPImport" default="tableImport" basedir=".">
 
 	<!-- =================================================================== -->
 	<!-- Initialization target                                               -->
 	<!-- =================================================================== -->
 	<target name="init-tableImport">
 		<tstamp />
-		<property name="tableImport.Name" value="Table Import Plugin" />
+		<property name="tableImport.Name" value="GenMAPP Import Plugin" />
 		<property name="tableImport.name" value="tableImport" />
-		<property name="tableImport.version" value="0.5" />
-		<property name="tableImport.year" value="200" />
+		<property name="tableImport.version" value="0.1" />
+		<property name="tableImport.year" value="2008" />
 
 		<echo message="Building ${tableImport.name} version ${tableImport.version}." />
 
@@ -26,11 +26,11 @@
 		<property name="tableImport.root.dir" value="." />
 
 		<!-- You need to modify this line to point to Cytoscape directory.  -->
-		<property name="cytoscape.dir" value="${tableImport.root.dir}/../../cytoscape" />
+		<property name="cytoscape.dir" value="${tableImport.root.dir}/../cytoscape2.6" />
 
 		<property name="cytoscape.lib.dir" value="${cytoscape.dir}/lib" />
-		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins" />
-		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build/cytoscape-v2.4.0-b1" />
+		<property name="cytoscape.plugin.dir" value="${cytoscape.dir}/plugins/core" />
+		<property name="cytoscape.build.dir" value="${cytoscape.dir}/build" />
 
 		<!-- JUnit report directory -->
 		<property name="junit.report.dir" value="${tableImport.root.dir}/junit-reports" />
@@ -94,8 +94,8 @@
 		<delete dir="${tableImport.classes.dir}" />
 		<delete dir="${tableImport.testclasses.dir}" />
 		<delete dir="${tableImport.tests.reports.dir}"/>
-		<delete file="TableImport.jar" />
-		<delete file="${tableImport.lib.dir}/TableImport.jar" />
+		<delete file="GenMAPPImport.jar" />
+		<delete file="${tableImport.lib.dir}/GenMAPPImport.jar" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -103,35 +103,37 @@
 	<!-- =================================================================== -->
 	<target name="compile-tableImport" depends="init-tableImport">
 
-		<echo message=" COMPILE tableImport " />
+		<echo message=" COMPILE GenMAPPImport " />
 
 		<mkdir dir="${tableImport.classes.dir}" />
 		<javac srcdir="${tableImport.src.dir}" excludes="${tableImport.excludes}" classpathref="tableImport.project.class.path" destdir="${tableImport.classes.dir}" debug="${debug}" nowarn="${nowarn}" deprecation="${deprecation}" optimize="${optimize}" fork="${fork}" />
 	</target>
 
 	<!-- =================================================================== -->
-	<!-- Creates the tableImport.jar file                                           -->
+	<!-- Creates the GenMAPPImport.jar file                                           -->
 	<!-- =================================================================== -->
 	<target name="tableImport" depends="compile-tableImport">
 		<!-- copy over images -->
 		<copy todir="${tableImport.classes.dir}/images">
 			<fileset dir="${tableImport.root.dir}/images" />
 		</copy>
-		<copy todir="${tableImport.classes.dir}/edu/ucsd/bioeng/coreplugin/tableImport" 
+		<copy todir="${tableImport.classes.dir}/edu/ucsf/genmapp/tableImport" 
 			file="${tableImport.manifest.dir}/plugin.props"/>
 
 		<unjar dest="${tableImport.classes.dir}">
 			<fileset dir="${tableImport.lib.dir}">
 				<include name="*.jar" />
 
-				<exclude name="TableImport.jar" />
+				<exclude name="GenMAPPImport.jar" />
 				<exclude name="TableImportTest.jar" />
 			</fileset>
 		</unjar>
-		<jar destfile="TableImport.jar" manifest="${tableImport.manifest.dir}/tableImport.manifest">
+		<jar destfile="GenMAPPImport.jar" manifest="${tableImport.manifest.dir}/tableImport.manifest">
 			<fileset dir="${tableImport.classes.dir}" includes="**" />
 			<fileset dir="${tableImport.root.dir}/lib" includes="resources/**" />
 		</jar>
+		
+  		<copy file="GenMAPPImport.jar" todir="${cytoscape.plugin.dir}"/>
 
 	</target>
 
@@ -139,7 +141,7 @@
 	<!-- release                                             -->
 	<!-- =================================================================== -->
 	<target name="release" depends="testAll">
-		<copy todir="${tableImport.lib.dir}" file="TableImport.jar" />
+		<copy todir="${tableImport.lib.dir}" file="GenMAPPImport.jar" />
 	</target>
 
 	<!-- =================================================================== -->
@@ -167,7 +169,7 @@
 	<!-- =================================================================== -->
 	<target name="run" depends="tableImport">
 		<java classname="cytoscape.cytoscape" classpathref="tableImport.project.class.path" fork="true" />
-		<arg line="-p ${tableImport.lib.dir}/TableImport.jar" />
+		<arg line="-p ${tableImport.lib.dir}/GenMAPPImport.jar" />
 	</target>
 
 
