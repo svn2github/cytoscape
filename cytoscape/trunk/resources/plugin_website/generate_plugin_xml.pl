@@ -213,6 +213,17 @@ sub createThemeNode
 	my ($ThemeAutoId, $Name, $UniqueId, $Description, 
 	    $ThemeVersionId, $CyVersion, $ThemeVersion, $ReleaseDate) = @theme;
 	    
+	if (isNull($Name, $UniqueId, $CyVersion, $ThemeVersion, $ThemeVersionId))
+		{
+		warn "One of the following required parameters was null in the database, skipping this theme: 
+  - Theme Name ($Name)
+  - Unique Id ($UniqueId)
+  - Theme Version ($ThemeVersion)
+  - Cytoscape Version ($CyVersion)
+  - Version Id ($ThemeVersionId)";
+  		return undef;
+		}	    
+	    
 	my $ThemeEl = $Doc->createElement('theme');
 	
 	$ThemeEl->appendChild( createIdNode($UniqueId) );
@@ -241,7 +252,12 @@ sub createThemeNode
 
 			if ($plugin->[12] eq 'yes')
 				{
-				$PluginEl = createPluginNode(@$Plugins);
+				$PluginEl = createPluginNode(@$plugin);
+				if (!$PluginEl)
+					{
+					warn "A plugin in the theme '$Name' cannot be retrieved due to a missing parameter.  Skipping this theme."; 
+					return undef; 
+					}
 				}
 			else # create the short hand version
 				{
@@ -260,13 +276,35 @@ sub createThemeNode
 	return $ThemeEl;
 	}
 
+sub isNull
+	{
+	my @pluginInfo = @_;
+	foreach my $info (@pluginInfo)
+		{ # one of the parameters is null, return true
+		if (!$info) { return 1; }	
+		}			
+	return 0;
+	}
+
 sub createPluginNode
 	{
 	my @plugin = @_;
+	
 	my ($PluginAutoId, $PluginName, $UniqueId, $Description, 
 			$License, $LicenseReq, $Category, $PluginVersion, 
 			$ReleaseDate, $CyVersion, $PluginFileId, 
 			$PluginVersionId, $ThemeOnly) = @plugin;
+	
+	if (isNull($PluginName, $UniqueId, $PluginVersion, $CyVersion, $PluginVersionId))
+		{
+		warn "One of the following required parameters was null in the database, skipping this plugin: 
+  - Plugin Name ($PluginName)
+  - Unique Id ($UniqueId)
+  - Plugin Version ($PluginVersion)
+  - Cytoscape Version ($CyVersion)
+  - Version Id ($PluginVersionId)";
+		return undef;
+		}
 
 	my $PluginEl = $Doc->createElement('plugin');
 	
@@ -307,13 +345,10 @@ sub createPluginNode
 
 	if ($FileTag)
 		{
-		$PluginEl->appendChild(addFileInfo($PluginFileId));
+		$PluginEl->appendChild($FileTag);
 		return $PluginEl;	
 		}
-	else
-		{
-		return undef;
-		}
+	else { return undef; }
 	}
 	
 	
@@ -415,8 +450,8 @@ sub isJar
 sub dbConnect
 	{
 	my $DSN = "DBI:mysql:host=$Host;database=".DATABASE_NAME;
-	my %attr;
-	$dbh = DBI->connect($DSN, $UserName, $PassWord, \%attr);
+	my $attr = {RaiseError => 1};
+	$dbh = DBI->connect($DSN, $UserName, $PassWord, $attr);
 	}
 
 # check usage
