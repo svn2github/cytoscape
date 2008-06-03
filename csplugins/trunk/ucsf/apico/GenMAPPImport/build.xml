@@ -117,7 +117,7 @@
 		<copy todir="${tableImport.classes.dir}/images">
 			<fileset dir="${tableImport.root.dir}/images" />
 		</copy>
-		<copy todir="${tableImport.classes.dir}/edu/ucsf/genmapp/tableImport" 
+		<copy todir="${tableImport.classes.dir}/org/genmapp/tableImport" 
 			file="${tableImport.manifest.dir}/plugin.props"/>
 
 		<unjar dest="${tableImport.classes.dir}">
