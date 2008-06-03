@@ -36,8 +36,6 @@
 
 package edu.ucsf.genmapp.tableImport.ui.theme;
 
-import edu.ucsf.genmapp.tableImport.TableImportPlugin;
-
 import javax.swing.ImageIcon;
 
 /**
