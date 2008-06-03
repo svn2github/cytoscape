@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.6.2
 Created-By: 1.4.2-54 ("Apple Computer, Inc.")
-Main-Class: edu.ucsf.genmapp.tableImport.GenMAPPImportPlugin
+Main-Class: org.genmapp.tableImport.GenMAPPImportPlugin
 Class-Path: .
-Cytoscape-Plugin: edu.ucsf.genmapp.tableImport.GenMAPPImportPlugin
+Cytoscape-Plugin: org.genmapp.tableImport.GenMAPPImportPlugin
