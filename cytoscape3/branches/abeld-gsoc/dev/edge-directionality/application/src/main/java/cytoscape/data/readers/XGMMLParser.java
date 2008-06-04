@@ -815,7 +815,6 @@ class XGMMLParser extends DefaultHandler {
 			String label = atts.getValue("label");
 			String source = atts.getValue("source");
 			String target = atts.getValue("target");
-			String isDirected = atts.getValue("directed");
 			String sourceAlias = null;
 			String targetAlias = null;
 			String interaction = "pp";
@@ -831,20 +830,13 @@ class XGMMLParser extends DefaultHandler {
 				targetAlias = parts[2];
 				// System.out.println("Edge label parse: interaction = "+interaction);
 			}
-			
-			boolean directed;
-			if (isDirected == null){ // old xgmml files won't have directedness flag, in which case create directed edges by default
-				// (org.xml.sax.Attributes.getValue() returns null if attribute does not exists)
-				directed = true;
-			} else {
-				directed = new Boolean(isDirected).booleanValue(); // parse directedness flag
-			}
+
 			if (idMap.containsKey(source) && idMap.containsKey(target)) {
 				Node sourceNode = idMap.get(source);
 				Node targetNode = idMap.get(target);
-				currentEdge = createEdge(sourceNode, targetNode, interaction, label, directed);
+				currentEdge = createEdge(sourceNode, targetNode, interaction, label);
 			} else if (sourceAlias != null && targetAlias != null) {
-				currentEdge = createEdge(sourceAlias, targetAlias, interaction, label, directed);
+				currentEdge = createEdge(sourceAlias, targetAlias, interaction, label);
 			}
 			
 			return current;
@@ -1440,14 +1432,14 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 	private Edge createEdge (Node source, Node target, 
-                             String interaction, String label, boolean directed) throws SAXException {
+                             String interaction, String label) throws SAXException {
 		// OK create it
-		Edge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, directed);
+		Edge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
 		edgeList.add(edge);
 		return edge;
 	}
 
-	private Edge createEdge (String source, String target, String interaction, String label, boolean directed) {
+	private Edge createEdge (String source, String target, String interaction, String label) {
 		// Make sure the target and destination nodes exist
 		if (Cytoscape.getCyNode(source, false) == null) {
 			System.out.println("Warning: skipping edge "+label);
@@ -1459,7 +1451,7 @@ class XGMMLParser extends DefaultHandler {
 			System.out.println("         node "+target+" doesn't exist");
 			return null;
 		}
-		Edge edge =  Cytoscape.getCyEdge(source, label, target, interaction, directed);
+		Edge edge =  Cytoscape.getCyEdge(source, label, target, interaction);
 		edgeList.add(edge);
 		return edge;
 	}
