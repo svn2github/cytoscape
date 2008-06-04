@@ -548,10 +548,6 @@ public class PreviewTablePanel extends JPanel {
 	public FileTypes getFileType() {
 		final String sheetName = getSheetName(tableTabbedPane.getSelectedIndex());
 
-		if (sheetName.startsWith("gene_association")) {
-			return FileTypes.GENE_ASSOCIATION_FILE;
-		}
-
 		return FileTypes.ATTRIBUTE_FILE;
 	}
 
@@ -701,10 +697,6 @@ public class PreviewTablePanel extends JPanel {
 			addTableTab(newModel, tabName, curRenderer);
 		}
 
-		if (getFileType() == FileTypes.GENE_ASSOCIATION_FILE) {
-			fileTypeLabel.setText("Gene Association");
-			fileTypeLabel.setToolTipText("This is a fixed-format Gene Association file.");
-		}
 
 		loadFlag = true;
 	}

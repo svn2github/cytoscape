@@ -36,7 +36,6 @@
 
 package org.genmapp.tableImport;
 
-import org.genmapp.tableImport.actions.ImportAnnotationAndOntologyAction;
 import org.genmapp.tableImport.actions.ImportAttributeTableAction;
 import org.genmapp.tableImport.actions.ImportNetworkTableAction;
 
@@ -63,8 +62,6 @@ public class GenMAPPImportPlugin extends CytoscapePlugin {
 		final CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
 		
 		// Register each menu item
-		cyMenus.addAction(new ImportNetworkTableAction(), 1);
 		cyMenus.addAction(new ImportAttributeTableAction(), 5);
-		cyMenus.addAction(new ImportAnnotationAndOntologyAction(), 7);
 	}
 }
