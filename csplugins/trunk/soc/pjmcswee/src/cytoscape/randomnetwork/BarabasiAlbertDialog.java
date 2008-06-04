@@ -21,6 +21,7 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import giny.view.*;
 
+import java.awt.*;
 import java.awt.Font;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -61,6 +62,8 @@ public class BarabasiAlbertDialog extends JDialog
 	private javax.swing.JLabel edgeLabel;
 	private javax.swing.JRadioButton directedRadioButton;
 	private javax.swing.JRadioButton selfEdgeRadioButton;
+	private javax.swing.JLabel explainLabel;
+	
 	public BarabasiAlbertDialog(java.awt.Frame parent)
 	{
 		super(parent, true);
@@ -85,17 +88,18 @@ public class BarabasiAlbertDialog extends JDialog
 		nodeLabel = new javax.swing.JLabel();
 		initLabel = new javax.swing.JLabel();
 		edgeLabel = new javax.swing.JLabel();
-		directedLabel = new javax.swing.JLabel();
-		selfEdgeLabel = new javax.swing.JLabel();
+		explainLabel = new javax.swing.JLabel();
 		
+		
+		explainLabel.setText("<html><font size=2 face=Verdana>The Barabasi-Albert model begins with a connected seed network of s nodes.<br>Every other node (n - s) is added one at a time,<br> and initially connected to existing node u,<br> with probability  degree(u)/(2*E) </font></html>");
+		directedRadioButton.setText("Undirected");
 		
 		nodeLabel.setText("Number of Nodes:");
 		powerLabel.setText("Set Power:");
 		initLabel.setText("Initial Number of Nodes:");
 		edgeLabel.setText("Minimum Edges per node:");
-		directedLabel.setText("Directed");
-		selfEdgeLabel.setText("Allow reflexive edge");
-		
+
+			
 		
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
@@ -129,42 +133,34 @@ public class BarabasiAlbertDialog extends JDialog
 		                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                                           350,
 		                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+																.add(explainLabel)   
 																.add(layout.createSequentialGroup()
 																		 .add(nodeLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE) 
+																			  20, 170) 
 		                                                                 //.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 																		 .add(nodeTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE))
-															/*	.add(layout.createSequentialGroup()
-																		 .add(powerLabel,
-																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE) 
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		 .add(powerTextField,
-		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE) )*/
+		                                                                      10, 50))
+															
 																.add(layout.createSequentialGroup()
 																		 .add(initLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
+																			  20, 170)
 																		 // .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED) 
 																		  .add(initTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE))
+		                                                                      10, 50))
 																.add(layout.createSequentialGroup()
 																		 .add(edgeLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
+																			  20, 170)
 																		 // .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED) 
 																		  .add(edgeTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE))																				  
+		                                                                      10, 50))																				  
 																.add(layout.createSequentialGroup()
-																	 .add(directedLabel,
-																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
+																	
 																  	.add(directedRadioButton))
 																	
 															/*	.add(layout.createSequentialGroup()
@@ -181,7 +177,7 @@ public class BarabasiAlbertDialog extends JDialog
 		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                              .add(layout.createSequentialGroup().addContainerGap()
 		                                         .add(titleLabel).add(8, 8, 8)
-		                                     
+												 .add(explainLabel)
 		                                         .add(7, 7, 7)
 		                                      /*   .add(radioButtonPanel,
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
@@ -206,7 +202,7 @@ public class BarabasiAlbertDialog extends JDialog
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
 		                                                          3, Short.MAX_VALUE)
 												.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)												 
-													.add(directedLabel)
+													
 													.add(directedRadioButton))
 												/*.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)												 
 													.add(selfEdgeLabel)
@@ -230,10 +226,45 @@ public class BarabasiAlbertDialog extends JDialog
 		//String powerString = powerTextField.getText();
 		String initString = initTextField.getText();
 		String edgeString = edgeTextField.getText();
-		numNodes = Integer.parseInt(numNodeString);
-		//power = Double.parseDouble(powerString);
-		initNumNodes = Integer.parseInt(initString);
-		edgesToAdd = Integer.parseInt(edgeString);
+		
+
+		try
+		{
+			numNodes = Integer.parseInt(numNodeString);
+			
+		}catch(Exception e)
+		{
+			nodeLabel.setForeground(java.awt.Color.RED);
+			initLabel.setForeground(java.awt.Color.BLACK);
+			edgeLabel.setForeground(java.awt.Color.BLACK);
+			return;
+		}
+		
+		try
+		{
+			initNumNodes = Integer.parseInt(initString);
+		}catch(Exception e)
+		{
+			nodeLabel.setForeground(java.awt.Color.BLACK);
+			initLabel.setForeground(java.awt.Color.RED);
+			edgeLabel.setForeground(java.awt.Color.BLACK);
+			return;
+		}
+		
+		
+		try
+		{
+			edgesToAdd = Integer.parseInt(edgeString);
+		
+		}catch(Exception e)
+		{
+			nodeLabel.setForeground(java.awt.Color.BLACK);
+			initLabel.setForeground(java.awt.Color.BLACK);
+			edgeLabel.setForeground(java.awt.Color.RED);
+			return;
+		}
+		
+		
 		
 		directed = false;
 		if(directedRadioButton.isSelected())
@@ -249,7 +280,7 @@ public class BarabasiAlbertDialog extends JDialog
 	
 	
 	
-		BarabasiAlbertModel bam = new BarabasiAlbertModel(numNodes,allowSelfEdge,directed,initNumNodes,power,edgesToAdd);
+		BarabasiAlbertModel bam = new BarabasiAlbertModel(numNodes,allowSelfEdge, !directed,initNumNodes,power,edgesToAdd);
 		bam.Generate();
 		
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(0);

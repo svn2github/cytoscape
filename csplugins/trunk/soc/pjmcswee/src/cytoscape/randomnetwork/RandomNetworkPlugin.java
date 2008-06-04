@@ -94,8 +94,10 @@ public class RandomNetworkPlugin extends CytoscapePlugin
 
 		public void actionPerformed(ActionEvent ae)
 		{
-			WattsStrogatzModel wam = new WattsStrogatzModel(20,true,true,.5,5);
-			wam.Generate();
+			WattsStrogatzDialog wsd = new WattsStrogatzDialog(Cytoscape.getDesktop());
+			wsd.pack();
+			wsd.setLocationRelativeTo(Cytoscape.getDesktop());
+			wsd.show();
 		}
 	}
 

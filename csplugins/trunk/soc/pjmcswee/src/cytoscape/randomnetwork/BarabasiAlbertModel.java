@@ -52,7 +52,8 @@ public class BarabasiAlbertModel extends RandomNetworkModel
 
 	    CyNetwork random_network = Cytoscape.createNetwork("Barabasi-Albert Network");
 	    CyNetworkView view = Cytoscape.createNetworkView(random_network);
-
+	
+		long time = System.currentTimeMillis();
 
 	    //Create N nodes
 	    CyNode[] nodes = new CyNode[numNodes];
@@ -64,7 +65,7 @@ public class BarabasiAlbertModel extends RandomNetworkModel
 	    for(int i = 0; i < numNodes; i++)
 		{
 			//Create a new node nodeID = i, create = true
-		    CyNode node = Cytoscape.getCyNode(""+i, true);
+		    CyNode node = Cytoscape.getCyNode(time+"("+i +")", true);
 
 			//Add this node to the network
 		    random_network.addNode(node);
@@ -94,7 +95,7 @@ public class BarabasiAlbertModel extends RandomNetworkModel
 				if(random.nextDouble() <= 1)
 				{
 					//Create and edge between node i and node j
-					CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j], Semantics.INTERACTION, new String("("+i +"," +j+")"), true, directed);
+					CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j], Semantics.INTERACTION, new String("("+Math.min(i,j) +"," +Math.max(i,j)+")"), true, directed);
 
 					//Add this edge to the network
 					random_network.addEdge(edge);
@@ -129,19 +130,19 @@ public class BarabasiAlbertModel extends RandomNetworkModel
 						if(!directed)
 						{
 							//Create and edge between node i and node j
-							edge = Cytoscape.getCyEdge(nodes[i], nodes[j], Semantics.INTERACTION, new String("("+i +"," +j+")"), true, directed);
+							edge = Cytoscape.getCyEdge(nodes[i], nodes[j], Semantics.INTERACTION, new String("("+Math.min(i,j) +"," +Math.max(i,j)+")"), true, directed);
 						}
 						else
 						{
 							if(random.nextDouble() < .5)
 							{
 								//Create and edge between node i and node j
-								edge = Cytoscape.getCyEdge(nodes[i], nodes[j], Semantics.INTERACTION, new String("("+i +"," +j+")"), true, directed);	
+								edge = Cytoscape.getCyEdge(nodes[i], nodes[j], Semantics.INTERACTION, new String("("+Math.min(i,j) +"," +Math.max(i,j)+")"), true, directed);	
 							}
 							else
 							{
 								//Create and edge between node i and node j
-								edge = Cytoscape.getCyEdge(nodes[j], nodes[i], Semantics.INTERACTION, new String("("+i +"," +j+")"), true, directed);	
+								edge = Cytoscape.getCyEdge(nodes[j], nodes[i], Semantics.INTERACTION, new String("("+Math.min(i,j) +"," +Math.max(i,j)+")"), true, directed);	
 							}
 						}
 						

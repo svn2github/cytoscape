@@ -37,30 +37,28 @@ import javax.swing.border.LineBorder;
 
 public class WattsStrogatzDialog extends JDialog
 {
-	int initNumNodes;
-	double power;
+	int degree;
+	double beta;
 	int numNodes;
 	boolean directed;
-	int edgesToAdd;
 	boolean allowSelfEdge;
 	
 	
 	
 	private javax.swing.JTextField nodeTextField;
-	private javax.swing.JTextField powerTextField;
-	private javax.swing.JTextField initTextField;
-	private javax.swing.JTextField edgeTextField;
+	private javax.swing.JTextField betaTextField;
+	private javax.swing.JTextField degreeTextField;
+
 	private javax.swing.JButton runButton;
 	private javax.swing.JButton cancelButton;
-	private javax.swing.JLabel directedLabel;
-	private javax.swing.JLabel selfEdgeLabel;
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JLabel nodeLabel;
-	private javax.swing.JLabel powerLabel;	
-	private javax.swing.JLabel initLabel;	
-	private javax.swing.JLabel edgeLabel;
+	private javax.swing.JLabel betaLabel;	
+	private javax.swing.JLabel degreeLabel;
+	
 	private javax.swing.JRadioButton directedRadioButton;
 	private javax.swing.JRadioButton selfEdgeRadioButton;
+	
 	public WattsStrogatzDialog(java.awt.Frame parent)
 	{
 		super(parent, true);
@@ -70,9 +68,8 @@ public class WattsStrogatzDialog extends JDialog
 	private void initComponents() 
 	{		
 		nodeTextField = new javax.swing.JTextField();
-		powerTextField = new javax.swing.JTextField();	
-		initTextField = new javax.swing.JTextField();
-		edgeTextField = new javax.swing.JTextField();
+		betaTextField = new javax.swing.JTextField();	
+		degreeTextField = new javax.swing.JTextField();
 		
 		directedRadioButton = new javax.swing.JRadioButton();
 		selfEdgeRadioButton = new javax.swing.JRadioButton();
@@ -81,21 +78,20 @@ public class WattsStrogatzDialog extends JDialog
 		cancelButton = new javax.swing.JButton();
 		
 		titleLabel = new javax.swing.JLabel();
-		powerLabel = new javax.swing.JLabel();
+		
 		nodeLabel = new javax.swing.JLabel();
-		initLabel = new javax.swing.JLabel();
-		edgeLabel = new javax.swing.JLabel();
-		directedLabel = new javax.swing.JLabel();
-		selfEdgeLabel = new javax.swing.JLabel();
+		degreeLabel = new javax.swing.JLabel();
+		betaLabel = new javax.swing.JLabel();
+
 		
 		
 		nodeLabel.setText("Number of Nodes:");
-		powerLabel.setText("Set Power:");
-		initLabel.setText("Initial Number of Nodes:");
-		edgeLabel.setText("Minimum Edges per node:");
-		directedLabel.setText("Directed");
-		selfEdgeLabel.setText("Allow reflexive edge");
-		
+		betaLabel.setText("<html> &#x3B2; :</html>");
+
+		degreeLabel.setText("Node Degree:");
+
+		selfEdgeRadioButton.setText("Allow reflexive Edges (u,u)");
+		directedRadioButton.setText("Undirected");
 		
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
@@ -132,39 +128,28 @@ public class WattsStrogatzDialog extends JDialog
 																.add(layout.createSequentialGroup()
 																		 .add(nodeLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE) 
+																			  20,170) 
 		                                                                 //.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 																		 .add(nodeTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE))
-															/*	.add(layout.createSequentialGroup()
-																		 .add(powerLabel,
+		                                                                      10, 50))
+																		.add(layout.createSequentialGroup()
+																		 .add(betaLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE) 
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		 .add(powerTextField,
-		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE) )*/
-																.add(layout.createSequentialGroup()
-																		 .add(initLabel,
-																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
+																			  20, 170)
 																		 // .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED) 
-																		  .add(initTextField,
+																		  .add(betaTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE))
+		                                                                      10, 50))
 																.add(layout.createSequentialGroup()
-																		 .add(edgeLabel,
+																		 .add(degreeLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
+																			  20,170)
 																		 // .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED) 
-																		  .add(edgeTextField,
+																		  .add(degreeTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE))																				  
+		                                                                      10, 50))																				  
 																.add(layout.createSequentialGroup()
-																	 .add(directedLabel,
-																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
 																  	.add(directedRadioButton))
 																	
 															/*	.add(layout.createSequentialGroup()
@@ -198,15 +183,15 @@ public class WattsStrogatzDialog extends JDialog
 												      .add(powerLabel)
 												      .add(powerTextField))*/
 												 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)												 
-													  .add(initLabel)
-												      .add(initTextField))
+													  .add(betaLabel)
+												      .add(betaTextField))
 											      .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)												 
-													  .add(edgeLabel)
-												      .add(edgeTextField))
+													  .add(degreeLabel)
+												      .add(degreeTextField))
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
 		                                                          3, Short.MAX_VALUE)
 												.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)												 
-													.add(directedLabel)
+												
 													.add(directedRadioButton))
 												/*.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)												 
 													.add(selfEdgeLabel)
@@ -228,12 +213,43 @@ public class WattsStrogatzDialog extends JDialog
 	{	
 		String numNodeString = nodeTextField.getText();
 		//String powerString = powerTextField.getText();
-		String initString = initTextField.getText();
-		String edgeString = edgeTextField.getText();
+		String betaString = betaTextField.getText();
+		String degreeString = degreeTextField.getText();
+
+try{
 		numNodes = Integer.parseInt(numNodeString);
-		//power = Double.parseDouble(powerString);
-		initNumNodes = Integer.parseInt(initString);
-		edgesToAdd = Integer.parseInt(edgeString);
+		}
+catch(Exception e)
+{
+			degreeLabel.setForeground(java.awt.Color.BLACK);
+			nodeLabel.setForeground(java.awt.Color.RED);
+			betaLabel.setForeground(java.awt.Color.BLACK);
+			return;
+		}
+
+
+	try
+	{
+		beta = Double.parseDouble(betaString);
+		}catch(Exception e)
+		{
+			degreeLabel.setForeground(java.awt.Color.BLACK);
+			nodeLabel.setForeground(java.awt.Color.BLACK);
+			betaLabel.setForeground(java.awt.Color.RED);
+			return;
+		}
+
+		try
+		{
+			degree = Integer.parseInt(degreeString);
+			}catch(Exception e)
+		{
+			degreeLabel.setForeground(java.awt.Color.RED);
+			nodeLabel.setForeground(java.awt.Color.BLACK);
+			betaLabel.setForeground(java.awt.Color.BLACK);
+			return;
+		}
+		
 		
 		directed = false;
 		if(directedRadioButton.isSelected())
@@ -249,8 +265,8 @@ public class WattsStrogatzDialog extends JDialog
 	
 	
 	
-		BarabasiAlbertModel bam = new BarabasiAlbertModel(numNodes,allowSelfEdge,directed,initNumNodes,power,edgesToAdd);
-		bam.Generate();
+		WattsStrogatzModel wsm = new WattsStrogatzModel(numNodes,allowSelfEdge,!directed,beta,degree);
+		wsm.Generate();
 		
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(0);
 

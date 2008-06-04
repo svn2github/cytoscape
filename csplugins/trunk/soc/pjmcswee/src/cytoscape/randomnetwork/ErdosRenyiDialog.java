@@ -1,5 +1,3 @@
-
-
 /*
 File: BarabasiAlbertDialog
 
@@ -21,7 +19,10 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import giny.view.*;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.*;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -34,10 +35,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
 
-public class ErdosRenyiDialog extends JDialog
+public class ErdosRenyiDialog extends JDialog  
+							  implements ActionListener 
 {
-	int numNodes;
-	double probability;
+
+
+	int numNodes;   //number of nodes 
+	double probability;   
 	int numEdges;
 	boolean directed;
 	boolean allowSelfEdge;
@@ -55,11 +59,14 @@ public class ErdosRenyiDialog extends JDialog
 	private javax.swing.JLabel nodeLabel;
 	private javax.swing.JLabel probabilityLabel;	
 	private javax.swing.JLabel edgeLabel;	
-	private javax.swing.JLabel directedLabel;
-	private javax.swing.JLabel selfEdgeLabel;
+	//private javax.swing.JLabel directedLabel;
+//	private javax.swing.JLabel selfEdgeLabel;
 	private javax.swing.ButtonGroup group;
 	private javax.swing.JRadioButton gnp;	
 	private javax.swing.JRadioButton gnm;
+	
+	private javax.swing.JLabel gnpExplain;
+	private javax.swing.JLabel gnmExplain;
 	
 	public ErdosRenyiDialog(java.awt.Frame parent)
 	{
@@ -78,11 +85,28 @@ public class ErdosRenyiDialog extends JDialog
 		group = new javax.swing.ButtonGroup();
 		gnm = new javax.swing.JRadioButton();
 		gnp = new javax.swing.JRadioButton();
+		gnpExplain = new javax.swing.JLabel();
+		gnmExplain = new javax.swing.JLabel();
+		
+		
+		//<font color=#C0C0C0>
+		gnmExplain.setText("<html><font size=2 face=Verdana>Uniformly generate a random <br> graph with n nodes and m edges.</font></html>");
+		gnpExplain.setText("<html><font size=2 face=Verdana>Generate a random graph with n <br> nodes and each edge has probability p to be included.</font></html>");
+
+		
+		gnmExplain.setOpaque(true);
+		gnpExplain.setOpaque(true);
 		gnp.setText("G(n,p)");
 		gnm.setText("G(n,m)");
 		gnp.setSelected(true);
 		group.add(gnm);
 		group.add(gnp);
+		
+	
+		directedRadioButton.setText("Undirected");
+		selfEdgeRadioButton.setText("Allow Reflexive Edges (u,u)");
+		
+		
 		
 		runButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
@@ -90,17 +114,18 @@ public class ErdosRenyiDialog extends JDialog
 		probabilityLabel = new javax.swing.JLabel();
 		nodeLabel = new javax.swing.JLabel();
 		edgeLabel = new javax.swing.JLabel();
-		directedLabel = new javax.swing.JLabel();
-		selfEdgeLabel = new javax.swing.JLabel();
+		//directedLabel = new javax.swing.JLabel();
+//		selfEdgeLabel = new javax.swing.JLabel();
 		edgeTextField.setEnabled(false);
+		edgeTextField.setBackground(Color.LIGHT_GRAY);
+		gnm.addActionListener(this);
+		gnp.addActionListener(this);
 		
-		
-		
-		nodeLabel.setText("Number of Nodes:");
-		edgeLabel.setText("Number of Edges:");
-		probabilityLabel.setText("Edge Probability:");
-		directedLabel.setText("Directed");
-		selfEdgeLabel.setText("Allow reflexive edges" );
+		nodeLabel.setText("Number of Nodes (n):");
+		edgeLabel.setText("Number of Edges (m):");
+		probabilityLabel.setText("Edge Probability (p):   ");
+	//	directedLabel.setText("Directed");
+	//	selfEdgeLabel.setText("Allow reflexive edges" );
 		
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
@@ -127,6 +152,7 @@ public class ErdosRenyiDialog extends JDialog
 		
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);		
+
 		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                .add(layout.createSequentialGroup().addContainerGap()
 		                                           .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -134,17 +160,25 @@ public class ErdosRenyiDialog extends JDialog
 		                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                                           350,
 		                                                           org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-																.add(layout.createSequentialGroup()
-																.add(gnm,
-		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE)
-																.add(gnp,
-		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                      10, Short.MAX_VALUE))
+																
+																 .add(layout.createSequentialGroup()			  
+																     .add(gnm,
+																	      1,//org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																		  1, 80)
+																	 .add(gnmExplain,
+																	      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																	      10, Short.MAX_VALUE))
+																.add(layout.createSequentialGroup()			  
+																  .add(gnp,
+																	   org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                               10, 70)
+																  .addPreferredGap(1)
+																  .add(gnpExplain,org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																		  10, Short.MAX_VALUE))
 																.add(layout.createSequentialGroup()
 																		 .add(nodeLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE) 
+																			  20, 150) 
 		                                                                 //.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 																		 .add(nodeTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
@@ -152,7 +186,7 @@ public class ErdosRenyiDialog extends JDialog
 																.add(layout.createSequentialGroup()
 																		 .add(probabilityLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE) 
+																			  20, 150) 
 																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 																		 .add(probabilityTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
@@ -160,23 +194,23 @@ public class ErdosRenyiDialog extends JDialog
 																.add(layout.createSequentialGroup()
 																		 .add(edgeLabel,
 																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
+																			  20,150)
 																		 // .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED) 
 																		  .add(edgeTextField,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                                      10, Short.MAX_VALUE))	
 																.add(layout.createSequentialGroup()
-																		 .add(directedLabel,
-																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
+																		 //.add(directedLabel,
+																		//	  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																		//	  20, Short.MAX_VALUE)
 																		 // .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED) 
 																		  .add(directedRadioButton,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                                      10, Short.MAX_VALUE))
 																	.add(layout.createSequentialGroup()
-																		 .add(selfEdgeLabel,
-																			  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			  20, Short.MAX_VALUE)
+																		// .add(selfEdgeLabel,
+																		//	  org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																		//	  20, Short.MAX_VALUE)
 																		 // .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED) 
 																		  .add(selfEdgeRadioButton,
 		                                                                      org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
@@ -187,15 +221,34 @@ public class ErdosRenyiDialog extends JDialog
 		                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                 .add(cancelButton)))
 		                                           .addContainerGap()));
+												   
+												   
 		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                              .add(layout.createSequentialGroup().addContainerGap()
 		                                         .add(titleLabel).add(8, 8, 8)
 		                                     
 		                                         .add(7, 7, 7)
 												 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-												 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+/*
+												.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 												     .add(gnm)
-													 .add(gnp))
+													 .add(gnmExplain))
+												 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+													  .add(gnp)
+													  .add(gnpExplain))*/
+
+												//.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+												 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+											
+													 .add(gnm)
+													  .add(gnmExplain))
+													  
+												.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+		                                                          3, Short.MAX_VALUE)	 
+												 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+													 .add(gnp)
+													  .add(gnpExplain))
+													  													
 												 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 												     .add(nodeLabel)
 												     .add(nodeTextField))
@@ -206,16 +259,17 @@ public class ErdosRenyiDialog extends JDialog
 													  .add(edgeLabel)
 												      .add(edgeTextField))
 												 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)												 
-													  .add(directedLabel)
+													  //.add(directedLabel)
 												      .add(directedRadioButton))
 												.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)												 
-													  .add(selfEdgeLabel)
+													//  .add(selfEdgeLabel)
 												      .add(selfEdgeRadioButton))												 	  
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
 		                                                          3, Short.MAX_VALUE)
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 		                                                    .add(cancelButton).add(runButton))
 		                                         .addContainerGap()));
+		pack();
 		pack();
 	}
 
@@ -228,10 +282,22 @@ public class ErdosRenyiDialog extends JDialog
 	
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) 
 	{	
+		
 		String numNodeString = nodeTextField.getText();
 		
-			
-		numNodes = Integer.parseInt(numNodeString);
+		try
+		{
+			numNodes = Integer.parseInt(numNodeString);
+		}catch(Exception e)
+		{
+			nodeLabel.setForeground(java.awt.Color.RED);
+			pack();
+			return;
+		}
+		
+		nodeLabel.setForeground(java.awt.Color.BLACK);
+		
+		
 		
 		directed = false;
 		if(directedRadioButton.isSelected())
@@ -251,7 +317,18 @@ public class ErdosRenyiDialog extends JDialog
 		if(gnm.isSelected())
 		{
 			String edgeString = edgeTextField.getText();
-			numEdges = Integer.parseInt(edgeString);
+			
+			try
+			{
+				numEdges = Integer.parseInt(edgeString);
+			}catch(Exception e)
+			{
+			probabilityLabel.setForeground(java.awt.Color.BLACK);
+				edgeLabel.setForeground(java.awt.Color.RED);
+				pack();
+				return;
+			}
+			
 			
 			ErdosRenyiModel erm = new ErdosRenyiModel(numNodes, numEdges, allowSelfEdge, directed);
 			erm.Generate();
@@ -260,9 +337,21 @@ public class ErdosRenyiDialog extends JDialog
 		{
 			String probabilityString = probabilityTextField.getText();
 		
-			probability = Double.parseDouble(probabilityString);
+			try
+			{
+				probability = Double.parseDouble(probabilityString);
+			}catch(Exception e)
+			{
+				probabilityLabel.setForeground(java.awt.Color.RED);
+				edgeLabel.setForeground(java.awt.Color.BLACK);
+				pack();
+				return;
+			}
+		
+		
+		
 			
-			ErdosRenyiModel erm = new ErdosRenyiModel(numNodes, allowSelfEdge, directed, probability);
+			ErdosRenyiModel erm = new ErdosRenyiModel(numNodes, allowSelfEdge, !directed, probability);
 			erm.Generate();
 		}
 		
@@ -274,7 +363,31 @@ public class ErdosRenyiDialog extends JDialog
 		
 		this.dispose();
 	}
+	
+	/*
+	
+	*/
+	public void actionPerformed(ActionEvent e) 
+	{
 		
+	
+		if("G(n,m)".equals(e.getActionCommand()))
+		{
+			probabilityTextField.setEnabled(false);
+			probabilityTextField.setBackground(Color.LIGHT_GRAY);
+			edgeTextField.setBackground(Color.WHITE);
+			edgeTextField.setEnabled(true);
+		} 
+		else if("G(n,p)".equals(e.getActionCommand()))
+		{
+			probabilityTextField.setEnabled(true);
+			probabilityTextField.setBackground(Color.WHITE);
+			edgeTextField.setBackground(Color.LIGHT_GRAY);
+			edgeTextField.setEnabled(false);		
+		}
+		
+		pack();
+	} 
 			
 					
 	

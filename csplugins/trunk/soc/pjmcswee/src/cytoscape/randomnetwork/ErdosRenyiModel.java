@@ -20,7 +20,7 @@ import cytoscape.*;
 import cytoscape.view.*;
 import giny.view.*;
 import cytoscape.data.*;
-
+import java.util.*;
 
 
 
@@ -84,16 +84,18 @@ public class ErdosRenyiModel extends RandomNetworkModel
 	    CyNetwork random_network = Cytoscape.createNetwork("Erdos-Renyi network");
 	    CyNetworkView view = Cytoscape.createNetworkView(random_network);
 
-
+		System.out.println(random_network);
 	    //Create N nodes
 	    CyNode[] nodes = new CyNode[numNodes];
 
+		//Time t = new Time();
+		long time = System.currentTimeMillis();
 
 		//For each edge
 	    for(int i = 0; i < numNodes; i++)
 		{
 			//Create a new node nodeID = i, create = true
-		    CyNode node = Cytoscape.getCyNode(""+i, true);
+		    CyNode node = Cytoscape.getCyNode(time +"("+i +")", true);
 
 			//Add this node to the network
 		    random_network.addNode(node);
@@ -115,34 +117,160 @@ public class ErdosRenyiModel extends RandomNetworkModel
 		//G(n,m) Model
 		if(probability == UNSPECIFIED) 
 		{
+			//System.out.println("old:" + numEdges );
+			if(directed)
+			{
+				if(allowSelfEdge)
+				{
+					numEdges = Math.min(numEdges, numNodes * numNodes);
+				}
+				else
+				{
+					numEdges = Math.min(numEdges, numNodes * (numNodes - 1));
+				}
+			}
+			
+			else
+			{
+				if(allowSelfEdge)
+				{
+					numEdges = Math.min(numEdges, (int)((numNodes * (numNodes - 1))/2.0) + numNodes);
+				}
+				else
+				{
+					numEdges = Math.min(numEdges, (int)((numNodes * (numNodes - 1))/2.0));
+				}
+			
+			}
+			
+			/*
+			LinkedList edges = new LinkedList();
+			
+			for(int i = 0; i < numNodes; i++)
+			{
+			
+				int start = 0;
+				if(!directed)
+				{
+					start = i;
+				}
+				
+				for(int j = start; j < numNodes; j++)
+				{
+					if((i != j) || (allowSelfEdge))
+					{
+						Integer pair = new Integer(i * numNodes + j);
+						edges.addLast(pair);
+					}
+					
+				}
+			}
+			
+			java.util.Collections.shuffle(edges,random);
+			//System.out.println("new:" + numEdges );
+
+			for(int i = 0; i < numEdges; i++)
+			{
+				int index = ((Integer)edges.removeFirst()).intValue();
+				
+				int source = index / numNodes;
+				int target = index % numNodes;
+				
+				
+				
+				//Check to see if this edge already exists
+				CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target], Semantics.INTERACTION, new String(time + "("+source +"," +target+")"), true, directed);
+				//Add this edge to the network
+				random_network.addEdge(edge);
+					
+			
+			}
+			
+			*/
+			
+		
 			for(int i = 0; i < numEdges; i++)
 			{
 				//Select two nodes (source and target only apply if directed)
 				int source = Math.abs(random.nextInt()) % numNodes;
 				int target = Math.abs(random.nextInt()) % numNodes;
 				
-				//Check to see if this edge already exists
-				CyEdge check = Cytoscape.getCyEdge(nodes[source], nodes[target], new String("Exists"), new String("("+source +"," +target+")"), true, directed);
 				
-				//If this edge already exists ... I hope this method won't take too long... we may need a faster way of checking...
-				if(check != null)
-				{
-					i--;
-					continue;
+				
+				//Check to see if this edge already exists
+				CyEdge check = Cytoscape.getCyEdge(nodes[source], nodes[target], Semantics.INTERACTION, new String(time + "("+Math.min(source,target) +"," +Math.max(source,target)+")"), false, directed);
+				
+				
+				
+				//System.out.println(source + "\t" + target);
+				
+				int higher = source * numNodes + target + 1;
+				int  lower = source * numNodes + target - 1;
+				
+				//If this edge already exists ... I hope this method won't take too long... we may need a faster way of checking...?
+				while((check != null) || ((!allowSelfEdge) && (source == target)))
+				{		
+					if(lower < 0)
+					{
+						lower = (numNodes * numNodes - 1);
+					}
+					if(higher == numNodes * numNodes)
+					{
+						higher = 0;
+					}
+				
+					int source_lo = lower / numNodes;
+					int target_lo = lower % numNodes;
+					
+					int source_hi = higher /numNodes;
+					int target_hi = higher % numNodes;
+					
+					//System.out.println(i+ " low:  " +source_lo +"\t" + target_lo + "\t" + lower);
+					//System.out.println(i+ " High: " +source_hi +"\t" + target_hi + "\t" + higher);
+					
+					if(((allowSelfEdge) && (source_lo == target_lo)) ||(source_lo != target_lo))
+					{
+						check = Cytoscape.getCyEdge(nodes[source_lo], nodes[target_lo], Semantics.INTERACTION,new String(time + "("+Math.min(source_lo,target_lo) +"," +Math.max(source_lo,target_lo)+")"), false, directed);
+					
+						if(check == null)
+						{
+							source = source_lo;
+							target = target_lo;
+							break;
+						}
+					}
+					
+					
+					if(((allowSelfEdge) && (source_hi == target_hi)) ||(source_hi != target_hi))
+					{
+						check = Cytoscape.getCyEdge(nodes[source_hi], nodes[target_hi], Semantics.INTERACTION, new String(time + "("+Math.min(source_hi,target_hi) +"," +Math.max(source_hi,target_hi)+")"), false, directed);
+					
+						if(check == null)
+						{
+							source = source_hi;
+							target = target_hi;
+							break;
+						}
+					}
+
+
+					higher++;
+					lower--;
+
 				}					
 				
-				if((!allowSelfEdge) && (source == target))
-				{
-					i--;
-					continue;
-				}
-				
+			
 				
 				//Create and edge between node i and node j
-				CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target], Semantics.INTERACTION, new String("("+source +"," +target+")"), true, directed);
+				CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target], Semantics.INTERACTION,new String(time + "("+Math.min(source,target) +"," +Math.max(source,target)+")"), true, directed);
+
+				
 
 				//Add this edge to the network
 				random_network.addEdge(edge);
+				
+					
+				
 			}
 		}
 		//G(n,p) Model
