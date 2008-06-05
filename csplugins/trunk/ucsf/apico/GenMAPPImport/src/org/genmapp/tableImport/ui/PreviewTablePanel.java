@@ -343,61 +343,61 @@ public class PreviewTablePanel extends JPanel {
 		previewTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		previewTable.setDefaultEditor(Object.class, null);
 
-		this.setBorder(BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED),
+		this.setBorder(BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null,
 		                                                "Preview",
 		                                                javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 		                                                javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                new java.awt.Font("Dialog", 1, 11)));
+		                                                new java.awt.Font("Dialog", 1, 11))));
 
-		instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		instructionLabel.setText("Left Click: Enable/Disable Column, Right Click: Edit Column");
-		instructionLabel.setFont(LABEL_FONT.getFont());
-		instructionLabel.setForeground(Color.red);
+//		instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//		instructionLabel.setText("Left Click: Enable/Disable Column, Right Click: Edit Column");
+//		instructionLabel.setFont(LABEL_FONT.getFont());
+//		instructionLabel.setForeground(Color.red);
 
-		legendLabel.setFont(LABEL_FONT.getFont());
-		legendLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		legendLabel.setText(message);
-
-		primaryKeyLabel.setFont(LABEL_FONT.getFont());
-		primaryKeyLabel.setForeground(Color.WHITE);
-		primaryKeyLabel.setBackground(PRIMARY_KEY_COLOR.getColor());
-		primaryKeyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		// onLabel
-		// .setIcon(CHECKED_ICON.getIcon());
-		primaryKeyLabel.setText("Key");
-		primaryKeyLabel.setToolTipText("Column in this color is the Primary Key.");
-		// onLabel.setBorder(new javax.swing.border.LineBorder(new
-		// java.awt.Color(
-		// 0, 0, 0), 1, true));
-		primaryKeyLabel.setOpaque(true);
-
-		aliasLabel.setFont(LABEL_FONT.getFont());
-		aliasLabel.setForeground(Color.WHITE);
-		aliasLabel.setBackground(ALIAS_COLOR.getColor());
-		aliasLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		// offLabel
-		// .setIcon(UNCHECKED_ICON.getIcon());
-		aliasLabel.setText("Alias");
-		aliasLabel.setToolTipText("Columns in this color are Aliases.");
-		// offLabel.setBorder(new javax.swing.border.LineBorder(
-		// new java.awt.Color(0, 0, 0), 1, true));
-		aliasLabel.setOpaque(true);
-
-		ontologyTermLabel.setFont(LABEL_FONT.getFont());
-		ontologyTermLabel.setForeground(Color.WHITE);
-		ontologyTermLabel.setBackground(ONTOLOGY_COLOR.getColor());
-		ontologyTermLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		ontologyTermLabel.setText("Ontology");
-		ontologyTermLabel.setToolTipText("Column in this color is Ontology Term.");
-		ontologyTermLabel.setOpaque(true);
-
-		taxonomyLabel.setFont(LABEL_FONT.getFont());
-		taxonomyLabel.setForeground(Color.WHITE);
-		taxonomyLabel.setBackground(SPECIES_COLOR.getColor());
-		taxonomyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		taxonomyLabel.setText("Taxon");
-		taxonomyLabel.setToolTipText("Columns in this color is Taxon (for Gene Association files only).");
-		taxonomyLabel.setOpaque(true);
+//		legendLabel.setFont(LABEL_FONT.getFont());
+//		legendLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+//		legendLabel.setText(message);
+//
+//		primaryKeyLabel.setFont(LABEL_FONT.getFont());
+//		primaryKeyLabel.setForeground(Color.WHITE);
+//		primaryKeyLabel.setBackground(PRIMARY_KEY_COLOR.getColor());
+//		primaryKeyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//		// onLabel
+//		// .setIcon(CHECKED_ICON.getIcon());
+//		primaryKeyLabel.setText("Key");
+//		primaryKeyLabel.setToolTipText("Column in this color is the Primary Key.");
+//		// onLabel.setBorder(new javax.swing.border.LineBorder(new
+//		// java.awt.Color(
+//		// 0, 0, 0), 1, true));
+//		primaryKeyLabel.setOpaque(true);
+//
+//		aliasLabel.setFont(LABEL_FONT.getFont());
+//		aliasLabel.setForeground(Color.WHITE);
+//		aliasLabel.setBackground(ALIAS_COLOR.getColor());
+//		aliasLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//		// offLabel
+//		// .setIcon(UNCHECKED_ICON.getIcon());
+//		aliasLabel.setText("Alias");
+//		aliasLabel.setToolTipText("Columns in this color are Aliases.");
+//		// offLabel.setBorder(new javax.swing.border.LineBorder(
+//		// new java.awt.Color(0, 0, 0), 1, true));
+//		aliasLabel.setOpaque(true);
+//
+//		ontologyTermLabel.setFont(LABEL_FONT.getFont());
+//		ontologyTermLabel.setForeground(Color.WHITE);
+//		ontologyTermLabel.setBackground(ONTOLOGY_COLOR.getColor());
+//		ontologyTermLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//		ontologyTermLabel.setText("Ontology");
+//		ontologyTermLabel.setToolTipText("Column in this color is Ontology Term.");
+//		ontologyTermLabel.setOpaque(true);
+//
+//		taxonomyLabel.setFont(LABEL_FONT.getFont());
+//		taxonomyLabel.setForeground(Color.WHITE);
+//		taxonomyLabel.setBackground(SPECIES_COLOR.getColor());
+//		taxonomyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//		taxonomyLabel.setText("Taxon");
+//		taxonomyLabel.setToolTipText("Columns in this color is Taxon (for Gene Association files only).");
+//		taxonomyLabel.setOpaque(true);
 
 		GroupLayout previewPanelLayout = new GroupLayout(this);
 		this.setLayout(previewPanelLayout);
@@ -408,69 +408,11 @@ public class PreviewTablePanel extends JPanel {
 		                                                                               .add(tableTabbedPane,
 		                                                                                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                                                    250,
-		                                                                                    Short.MAX_VALUE)
-		                                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                               .add(rightArrowLabel)
-		                                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                               .add(keyPreviewScrollPane,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                    180,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-		                                                        .add(previewPanelLayout.createSequentialGroup()
-		                                                                               .add(fileTypeLabel)
-		                                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                               .add(instructionLabel,
-		                                                                                    org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                    60,
-		                                                                                    Short.MAX_VALUE)
-		                                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                               .add(legendLabel,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                    60,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                               .add(primaryKeyLabel,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                    60,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                               .add(aliasLabel,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                    60,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                               .add(ontologyTermLabel,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                    70,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                               .add(taxonomyLabel,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                    60,
-		                                                                                    org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                               .addContainerGap()));
+		                                                                                    Short.MAX_VALUE)));
 		previewPanelLayout.setVerticalGroup(previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                      .add(previewPanelLayout.createSequentialGroup()
-		                                                                             .add(previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                                    .add(fileTypeLabel)
-		                                                                                                    .add(primaryKeyLabel)
-		                                                                                                    .add(aliasLabel)
-		                                                                                                    .add(ontologyTermLabel)
-		                                                                                                    .add(taxonomyLabel)
-		                                                                                                    .add(legendLabel)
-		                                                                                                    .add(instructionLabel))
-		                                                                             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 		                                                                             .add(previewPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
 		                                                                                                    .add(tableTabbedPane,
-		                                                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                         200,
-		                                                                                                         Short.MAX_VALUE)
-		                                                                                                    .add(keyPreviewScrollPane,
-		                                                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                         200,
-		                                                                                                         Short.MAX_VALUE)
-		                                                                                                    .add(org.jdesktop.layout.GroupLayout.LEADING,
-		                                                                                                         rightArrowLabel,
 		                                                                                                         org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                                                                                         200,
 		                                                                                                         Short.MAX_VALUE))));
