@@ -36,27 +36,26 @@
 */
 package cytoscape.dialogs.preferences;
 
-import cytoscape.*;
+import cytoscape.CytoscapeInit;
 
-import java.io.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Vector;
 
-import java.net.URL;
-
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
 
 
 /**
  *
  */
 public class PreferenceTableModel extends AbstractTableModel {
-	static int[] columnWidth = new int[] { 150, 250 };
-	static int[] alignment = new int[] { JLabel.LEFT, JLabel.LEFT };
+	protected static String[] columnHeader = new String[] { "Property Name", "Value" };
+	
 	private Properties properties;
-	Vector propertiesList = new Vector();
-	static String[] columnHeader = new String[] { "Property Name", "Value" };
+	private Vector<String[]> propertiesList = new Vector<String[]>();
 
 	/**
 	 * Creates a new PreferenceTableModel object.
@@ -74,8 +73,10 @@ public class PreferenceTableModel extends AbstractTableModel {
 	public void loadProperties() {
 		clearVector();
 
+		String name;
+
 		for (Enumeration names = properties.propertyNames(); names.hasMoreElements();) {
-			String name = (String) names.nextElement();
+			name = (String) names.nextElement();
 			addProperty(new String[] { name, properties.getProperty(name) });
 		}
 	}
@@ -114,9 +115,7 @@ public class PreferenceTableModel extends AbstractTableModel {
 		properties.setProperty(key, value);
 
 		// update table model (propertiesList)
-		for (Iterator it = propertiesList.iterator(); it.hasNext();) {
-			String[] prop = (String[]) it.next();
-
+		for (String[] prop : propertiesList) {
 			if (prop[0].equals(key)) {
 				prop[1] = value;
 			}
@@ -133,9 +132,7 @@ public class PreferenceTableModel extends AbstractTableModel {
 		properties.remove(key);
 
 		// remove property from table model (propertiesList)
-		for (Iterator it = propertiesList.iterator(); it.hasNext();) {
-			String[] prop = (String[]) it.next();
-
+		for (String[] prop : propertiesList) {
 			if (prop[0].equals(key)) {
 				propertiesList.remove(prop);
 

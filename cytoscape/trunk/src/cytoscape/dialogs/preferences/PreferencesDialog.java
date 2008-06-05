@@ -38,11 +38,14 @@ package cytoscape.dialogs.preferences;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
 import cytoscape.logger.CyLogger;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,30 +54,29 @@ import java.awt.event.ItemListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
@@ -83,6 +85,9 @@ import javax.swing.table.TableModel;
  *
  */
 public class PreferencesDialog extends JDialog implements PropertyChangeListener {
+	private static final int[] alignment = new int[] { JLabel.LEFT, JLabel.LEFT };
+	private static final int[] columnWidth = new int[] { 200, 350 };
+	
 	int[] selection = null;
 	JScrollPane propsTablePane = new JScrollPane();
 	JTable prefsTable = new JTable();
@@ -105,7 +110,6 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	 */
 	public PreferenceTableModel prefsTM = null;
 	private ListSelectionModel lsm = null;
-	private ListSelectionModel lsmA = null;
 	private boolean saveCyPropsAsDefault = false;
 	private boolean saveVizmapAsDefault = false;
 
@@ -122,7 +126,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 			CyLogger.getLogger().info(" - New value is " + e.getNewValue());
 
 			String propName = null;
- 
+
 			if ((CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getOldValue())
 			    || (CytoscapeInit.getProperties().getProperty("defaultSpeciesName") == e.getNewValue())) {
 				propName = "defaultSpeciesName";
@@ -138,8 +142,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 				CytoscapeInit.getProperties().setProperty(propName, (String) e.getNewValue());
 				prefsTM.setProperty(propName, (String) e.getNewValue());
 				// refresh();
-				CyLogger.getLogger().info(propName + " updated to "
-				                   + CytoscapeInit.getProperties().getProperty(propName));
+				CyLogger.getLogger()
+				        .info(propName + " updated to "
+				              + CytoscapeInit.getProperties().getProperty(propName));
 			}
 		}
 	}
@@ -218,14 +223,30 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 
 		prefsTable.setModel(prefsTM);
 
-		for (int i = 0; i < PreferenceTableModel.columnHeader.length; i++) {
-			DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-			renderer.setHorizontalAlignment(PreferenceTableModel.alignment[i]);
+		prefsTable.setRowHeight(16);
+		TableColumn column;
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
 
-			TableColumn Column = new TableColumn(i, PreferenceTableModel.columnWidth[i], renderer,
-			                                     null);
-			Column.setIdentifier(PreferenceTableModel.columnHeader[i]);
-			prefsTable.addColumn(Column);
+			public Component getTableCellRendererComponent(JTable table,
+					Object value, boolean isSelected, boolean hasFocus,
+					int row, int column) {
+				
+				setFont(new Font("SansSerif", Font.PLAIN, 12));
+				setVerticalTextPosition(SwingConstants.CENTER);
+				
+				if(value != null) {
+					setToolTipText(value.toString());
+					setText(value.toString());
+				} else
+					setText("");
+				return this;
+			}};
+
+		for (int i = 0; i < PreferenceTableModel.columnHeader.length; i++) {
+			renderer.setHorizontalAlignment(alignment[i]);
+			column = new TableColumn(i, columnWidth[i], renderer, null);
+			column.setIdentifier(PreferenceTableModel.columnHeader[i]);
+			prefsTable.addColumn(column);
 		}
 	}
 
@@ -256,37 +277,35 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	}
 
 	private void prefPopupInit() throws Exception {
-
 		java.awt.GridBagConstraints gridBagConstraints;
 
 		JPanel outerPanel = new JPanel(new java.awt.GridBagLayout());
-		
+
 		JPanel propsTablePanel = new JPanel(new java.awt.GridBagLayout());
 		propsTablePanel.setBorder(BorderFactory.createTitledBorder("Properties"));
-		
+
 		propsTablePane.setBorder(BorderFactory.createEmptyBorder(2, 9, 4, 9));
 		propsTablePane.getViewport().add(prefsTable, null);
-		prefsTable.setPreferredScrollableViewportSize(new Dimension(400, 200));
-		
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        propsTablePanel.add(propsTablePane, gridBagConstraints);
+		prefsTable.setPreferredScrollableViewportSize(new Dimension(500, 300));
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
-        propsTablePanel.add(propBtnPane, gridBagConstraints);
-		
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        outerPanel.add(propsTablePanel, gridBagConstraints);
-		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
+		propsTablePanel.add(propsTablePane, gridBagConstraints);
+
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+		propsTablePanel.add(propBtnPane, gridBagConstraints);
+
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
+		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		outerPanel.add(propsTablePanel, gridBagConstraints);
 
 		JTextArea textArea = new JTextArea("NOTE: Changes to these properties are used in the current session ONLY unless otherwise specified below.");
 
@@ -296,12 +315,12 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-        outerPanel.add(textArea, gridBagConstraints);
-		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+		outerPanel.add(textArea, gridBagConstraints);
+
 		Box vizmapBox = Box.createVerticalBox();
 		vizmapBox.setBorder(BorderFactory.createTitledBorder("Default Visual Styles"));
 		vizmapText.setBackground(outerPanel.getBackground());
@@ -315,11 +334,11 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 		vizmapBox.add(vizmapPane);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-        outerPanel.add(vizmapBox, gridBagConstraints);
-		
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+		outerPanel.add(vizmapBox, gridBagConstraints);
+
 		Box cyPropsBox = Box.createVerticalBox();
 		cyPropsBox.setBorder(BorderFactory.createTitledBorder("Default Cytoscape Properties"));
 		cyPropsText.setBackground(outerPanel.getBackground());
@@ -332,18 +351,18 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 		cyPropsPane.add(saveCyPropsBtn);
 		cyPropsBox.add(cyPropsPane);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-        outerPanel.add(cyPropsBox, gridBagConstraints);
-		
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
-        outerPanel.add(okButtonPane, gridBagConstraints);
-        
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 3;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+		outerPanel.add(cyPropsBox, gridBagConstraints);
+
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 4;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 10);
+		outerPanel.add(okButtonPane, gridBagConstraints);
+
 		this.getContentPane().add(outerPanel, BorderLayout.CENTER);
 	}
 
@@ -441,8 +460,8 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 					File file = CytoscapeInit.getConfigFile("cytoscape.props");
 					FileOutputStream output = new FileOutputStream(file);
 					CytoscapeInit.getProperties().store(output, "Cytoscape Property File");
-					CyLogger.getLogger().info("wrote Cytoscape properties file to: "
-					                   + file.getAbsolutePath());
+					CyLogger.getLogger()
+					        .info("wrote Cytoscape properties file to: " + file.getAbsolutePath());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					CyLogger.getLogger().info("Could not write cytoscape.props file!");
@@ -500,7 +519,6 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 
 		public void valueChanged(ListSelectionEvent lse) {
 			if (!lse.getValueIsAdjusting()) {
-				StringBuffer buf = new StringBuffer();
 				selection = getSelectedIndices(model.getMinSelectionIndex(),
 				                               model.getMaxSelectionIndex());
 
