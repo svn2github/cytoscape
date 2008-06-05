@@ -42,6 +42,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.logger.CyLogger;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -87,6 +88,8 @@ import javax.swing.table.TableModel;
 public class PreferencesDialog extends JDialog implements PropertyChangeListener {
 	private static final int[] alignment = new int[] { JLabel.LEFT, JLabel.LEFT };
 	private static final int[] columnWidth = new int[] { 200, 350 };
+	
+	private static final Color SELECTED_CELL_COLOR = new Color(0, 100, 255, 40);
 	
 	int[] selection = null;
 	JScrollPane propsTablePane = new JScrollPane();
@@ -233,6 +236,10 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 				
 				setFont(new Font("SansSerif", Font.PLAIN, 12));
 				setVerticalTextPosition(SwingConstants.CENTER);
+				if(isSelected)
+					setBackground(SELECTED_CELL_COLOR);
+				else
+					setBackground(Color.WHITE);
 				
 				if(value != null) {
 					setToolTipText(value.toString());
