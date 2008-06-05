@@ -29,6 +29,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.BorderFactory;
 
 import edu.stanford.genetics.treeview.*;
 import edu.stanford.genetics.treeview.model.*;
@@ -72,6 +74,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	 */
 	public DendroView(DataModel dataModel, ConfigNode root, ViewFrame vFrame, String name) {
 		super.setName(name);
+
 		viewFrame = vFrame;
 		if (root == null) {
 			if (dataModel.getDocumentConfig() != null ) {
@@ -510,8 +513,9 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	 *
 	 */
 	protected void setupViews() {
-
-		ColorPresets colorPresets = DendrogramFactory.getColorPresets();
+		colorPresets = new ColorPresets();
+		cpresetEditor = new ColorPresetEditor(colorPresets);
+		colorPresets.addDefaultPresets();
 		ColorExtractor colorExtractor = new ColorExtractor();
 		colorExtractor.setDefaultColorSet(colorPresets.getDefaultColorSet());
 		colorExtractor.setMissing(DataModel.NODATA, DataModel.EMPTY);
@@ -519,35 +523,29 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		hintpanel = new MessagePanel("Usage Hints");
 		statuspanel = new MessagePanel("View Status");
 
-
 		DoubleArrayDrawer dArrayDrawer = new DoubleArrayDrawer();
 		dArrayDrawer.setColorExtractor(colorExtractor);
 		arrayDrawer = dArrayDrawer;
 		((Observable)getDataModel()).addObserver(arrayDrawer);
+
+		globalview = new GlobalView();
 		
-		
+		// scrollbars, mostly used by maps
+		globalXscrollbar = new JScrollBar(JScrollBar.HORIZONTAL, 0,1,0,1);
+		globalYscrollbar = new JScrollBar(JScrollBar.VERTICAL,0,1,0,1);
+		zoomXscrollbar = new JScrollBar(JScrollBar.HORIZONTAL, 0,1,0,1);
+		zoomYscrollbar = new JScrollBar(JScrollBar.VERTICAL,0,1,0,1);
 
+		zoomXmap = new MapContainer();
+		zoomXmap.setDefaultScale(12.0);
+		zoomXmap.setScrollbar(zoomXscrollbar);
+		zoomYmap = new MapContainer();
+		zoomYmap.setDefaultScale(12.0);
+		zoomYmap.setScrollbar(zoomYscrollbar);
 
-	globalview = new GlobalView();
-	
-	// scrollbars, mostly used by maps
-	globalXscrollbar = new JScrollBar(JScrollBar.HORIZONTAL, 0,1,0,1);
-	globalYscrollbar = new JScrollBar(JScrollBar.VERTICAL,0,1,0,1);
-	zoomXscrollbar = new JScrollBar(JScrollBar.HORIZONTAL, 0,1,0,1);
-	zoomYscrollbar = new JScrollBar(JScrollBar.VERTICAL,0,1,0,1);
-
-
-
-		 zoomXmap = new MapContainer();
-		 zoomXmap.setDefaultScale(12.0);
-		 zoomXmap.setScrollbar(zoomXscrollbar);
-		 zoomYmap = new MapContainer();
-		 zoomYmap.setDefaultScale(12.0);
-		 zoomYmap.setScrollbar(zoomYscrollbar);
-
-		 // globalmaps tell globalview, atrview, and gtrview
-		 // where to draw each data point.
-	// the scrollbars "scroll" by communicating with the maps.
+		// globalmaps tell globalview, atrview, and gtrview
+		// where to draw each data point.
+		// the scrollbars "scroll" by communicating with the maps.
 		globalXmap = new MapContainer();
 		globalXmap.setDefaultScale(2.0);
 		globalXmap.setScrollbar(globalXscrollbar);
@@ -562,7 +560,6 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		globalview.setZoomXMap(getZoomXmap());
 		
 		globalview.setArrayDrawer(arrayDrawer);
-
 
 		arraynameview = new ArrayNameView(getDataModel().getArrayHeaderInfo());
 		arraynameview.setUrlExtractor(viewFrame.getArrayUrlExtractor());
@@ -592,15 +589,11 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 
 		arraynameview.setMapping(getZoomXmap());
 
-		
-		
 		textview = new TextViewManager(getDataModel().getGeneHeaderInfo(), viewFrame.getUrlExtractor());
 		
 		textview.setMap(getZoomYmap());
-		
 
 		doDoubleLayout();
-		
 
 		// reset persistent popups
 		settingsFrame = null;
@@ -716,81 +709,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		leftTreeDrawer.notifyObservers();
 
 	}
-/**
- * Lays out components in a single DragGridPanel
- *
- */
-	private void doSingleLayout() {
-		Rectangle rectangle  = new Rectangle(0, 0, 1, 2);
 
-		DragGridPanel innerPanel = new DragGridPanel(4, 3);
-		innerPanel.setBorderWidth(2);
-		innerPanel.setBorderHeight(2);
-		innerPanel.setMinimumWidth(1);
-		innerPanel.setMinimumHeight(1);
-		innerPanel.setFocusWidth(1);
-		innerPanel.setFocusHeight(1);
-
-		innerPanel.addComponent(statuspanel, rectangle);
-		rectangle.translate(1, 0);
-
-		innerPanel.addComponent(atrview, rectangle);
-		registerView(atrview);
-
-		rectangle.translate(1, 0);
-		rectangle.setSize(1, 1);
-		innerPanel.addComponent(arraynameview, rectangle);
-		registerView(arraynameview);
-		rectangle.translate(0, 1);
-		innerPanel.addComponent(atrzview, rectangle);
-		registerView(atrzview);
-
-		rectangle.setSize(1, 2);
-		rectangle.translate(1, -1);
-		innerPanel.addComponent(hintpanel, rectangle);
-
-		rectangle = new Rectangle(0, 2, 1, 1);
-		JPanel gtrPanel = new JPanel();
-		gtrPanel.setLayout(new BorderLayout());
-		gtrPanel.add(gtrview, BorderLayout.CENTER);
-		gtrPanel.add(new JScrollBar(JScrollBar.HORIZONTAL, 0,1,0,0), BorderLayout.SOUTH);
-		innerPanel.addComponent(gtrPanel, rectangle);
-		gtrview.setHintPanel(hintpanel);
-		gtrview.setStatusPanel(statuspanel);
-		gtrview.setViewFrame(viewFrame);
-
-		// global view
-		rectangle.translate(1, 0);
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.add(globalview, BorderLayout.CENTER);
-		panel.add(globalYscrollbar, BorderLayout.EAST);
-		panel.add(globalXscrollbar, BorderLayout.SOUTH);	
-		innerPanel.addComponent(panel, rectangle);
-		globalview.setHintPanel(hintpanel);
-		globalview.setStatusPanel(statuspanel);
-		globalview.setViewFrame(viewFrame);
-
-		// zoom view
-		rectangle.translate(1, 0);
-		JPanel zoompanel = new JPanel();
-		zoompanel.setLayout(new BorderLayout());
-		zoompanel.add(zoomview, BorderLayout.CENTER);
-		zoompanel.add(zoomYscrollbar, BorderLayout.EAST);
-		zoompanel.add(zoomXscrollbar, BorderLayout.SOUTH);	
-		innerPanel.addComponent(zoompanel, rectangle);
-		zoomview.setHintPanel(hintpanel);
-		zoomview.setStatusPanel(statuspanel);
-		zoomview.setViewFrame(viewFrame);
-
-
-
-		rectangle.translate(1, 0);
-		innerPanel.addComponent(textview, rectangle);
-		registerView(textview);
-		add(innerPanel);
-		
-	}
 	/**
 	 * Lays out components in two DragGridPanel separated by a
 	 * JSplitPane, so that you can expand/contract with one click.
@@ -895,11 +814,85 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 				left, right);
 		innerPanel.setOneTouchExpandable(true);
 		innerPanel.setDividerLocation(300);
+
+		JPanel outerPanel = new JPanel(new BorderLayout());
+		outerPanel.add(innerPanel, BorderLayout.CENTER);
+		outerPanel.add(getButtonBox(), BorderLayout.SOUTH);
 		setLayout(new CardLayout());
-		add(innerPanel, "running");
+		add(outerPanel, "running");
 
 	}
 
+	private JPanel getButtonBox() {
+		// Get our border
+		JPanel buttonBox = new JPanel();
+		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+
+		// Now add our buttons
+
+		// The Settings button will bring up the Pixel Settings dialog
+		{
+			JButton settingsButton = new JButton("Settings...");
+			settingsButton.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent actionEvent) {
+						ColorExtractor ce = null;
+						try {
+							ce = ((DoubleArrayDrawer) arrayDrawer).getColorExtractor();
+						} catch (Exception e) {
+						}
+						PixelSettingsSelector pssSelector
+									 = new PixelSettingsSelector
+									(globalXmap, globalYmap,
+									getZoomXmap(), getZoomYmap(),
+									ce, colorPresets);
+	
+						JDialog popup = new ModelessSettingsDialog(viewFrame, "Pixel Settings", pssSelector);
+				 		popup.addWindowListener(XmlConfig.getStoreOnWindowClose(getDataModel().getDocumentConfig()));	
+						popup.pack();
+						popup.setVisible(true);
+					}
+				});
+			buttonBox.add(settingsButton);
+		}
+
+		// The Save Data button brings up a file dialog and saves the .CDT, .GTR, and .ATR files
+		{
+			JButton saveButton = new JButton("Save Data...");
+			saveButton.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent actionEvent) {
+						JFileChooser chooser = new JFileChooser();
+						int returnVal = chooser.showSaveDialog(viewFrame);
+						if (returnVal == JFileChooser.APPROVE_OPTION) {
+							// Save the data
+						}
+					}
+				});
+			buttonBox.add(saveButton);
+		}
+
+		// The Export Graphics button brings up a new dialog that allows the user
+		// to produce images for publication
+		{
+			JButton exportButton = new JButton("Export Graphics...");
+			buttonBox.add(exportButton);
+		}
+
+		// The Close button exits clusterViz
+		{
+			JButton closeButton = new JButton("Close");
+    	closeButton.addActionListener(new ActionListener() {
+      	// called when close button hit
+      	public void actionPerformed(ActionEvent evt) {
+					viewFrame.closeWindow();
+      	}
+      });
+      //
+			buttonBox.add(closeButton);
+		}
+		return buttonBox;
+	}
 
 
 	/**
@@ -1293,7 +1286,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 								 = new PixelSettingsSelector
 								(globalXmap, globalYmap,
 								getZoomXmap(), getZoomYmap(),
-								ce, DendrogramFactory.getColorPresets());
+								ce, colorPresets);
 
 				JDialog popup = new ModelessSettingsDialog(viewFrame, "Pixel Settings", pssSelector);
 			 System.out.println("showing popup...");
@@ -1523,6 +1516,8 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	protected BrowserControl browserControl;
 	protected ArrayDrawer arrayDrawer;
 	protected ConfigNode root;
+	private ColorPresets colorPresets;
+	private ColorPresetEditor  cpresetEditor;
 	/** Setter for root  - may not work properly
 	public void setConfigNode(ConfigNode root) {
 		this.root = root;

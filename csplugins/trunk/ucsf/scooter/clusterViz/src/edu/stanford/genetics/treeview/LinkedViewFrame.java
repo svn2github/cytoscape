@@ -138,7 +138,7 @@ public class LinkedViewFrame extends TreeViewFrame implements Observer
 				 public void stateChanged(ChangeEvent e) {
 					 // rebulid menus...?
 					 //				 menuBar.rebuildMainPanel();
-					 rebuildMainPanelMenu();
+					 // rebuildMainPanelMenu();
 				 }
 			 });
 			 ConfigNode documentConfig = getDataModel().getDocumentConfig();

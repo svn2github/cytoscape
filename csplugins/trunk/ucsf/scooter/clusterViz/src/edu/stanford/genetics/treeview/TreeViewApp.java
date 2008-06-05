@@ -223,7 +223,7 @@ public abstract class TreeViewApp implements WindowListener {
 		for (int i = 0; i < max; i++) {
 			ViewFrame source  = (ViewFrame) windows.elementAt(i);
 //			rebuildWindowMenu( source.getWindowMenu());
-			source.rebuildWindowMenu(windows);
+//			source.rebuildWindowMenu(windows);
 		}
 	}
 
