@@ -1079,11 +1079,12 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			// First, load existing property
 			Properties props = CytoscapeInit.getProperties();
 
+			// TODO  Is this the best way to do this?
 			// Use reflection to get resource 
 			Class linkout = null;
 
 			try {
-				linkout = Class.forName("linkout.LinkOut");
+				linkout = Class.forName("cytoscape.linkout.LinkOut");
 			} catch (ClassNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
