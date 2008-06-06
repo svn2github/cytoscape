@@ -43,11 +43,14 @@ import java.util.List;
 
 // Cytoscape imports
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
 
 // clusterMaker imports
 import clusterMaker.ui.ClusterSettingsDialog;
+import clusterMaker.ui.ClusterViz;
+import clusterMaker.ui.TreeView;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.MCL.MCLMenu;
@@ -77,11 +80,13 @@ public class ClusterMaker extends CytoscapePlugin {
 		// addClusterAlgorithm(new FORCECLuster());
 		// addClusterAlgorithm(new KMeansCluster());
 		// addClusterAlgorithm(new SOMCluster());
+		menu.addSeparator();
+		addClusterViz(menu, new TreeView());
 		
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
-		System.out.println("clusterMaker "+VERSION+" initialized");
+		CyLogger.getLogger(ClusterMaker.class).info("clusterMaker "+VERSION+" initialized");
 
   }
 
@@ -100,36 +105,36 @@ public class ClusterMaker extends CytoscapePlugin {
 		menu.add(item);
 	}
 
-	/**
-	 * Add a submenu item to an existing menu
-	 *
-	 * @param menu the JMenu to add the new submenu to
-	 * @param label the label for the submenu
-	 * @param command the command to execute when selected
-	 * @param userData data associated with the menu
-	 */
-	private void addSubMenu(JMenu menu, String label, int command, Object userData) {
-		// ClusterMakerCommandListener l = new ClusterMakerCommandListener(command, userData);
-		JMenuItem item = new JMenuItem(label);
-		// item.addActionListener(l);
-	  menu.add(item);
+	private void addClusterViz(JMenu menu, ClusterViz viz) {
+		JMenuItem item = new JMenuItem(viz.getName());
+		item.addActionListener(new ClusterMakerCommandListener(viz));
+		menu.add(item);
 	}
 
 	/**
 	 * Inner class to handle commands
 	 */
 	class ClusterMakerCommandListener implements ActionListener {
-		ClusterAlgorithm alg;
+		ClusterAlgorithm alg = null;
+		ClusterViz viz = null;
 
 		public ClusterMakerCommandListener(ClusterAlgorithm algorithm) {
 			this.alg = algorithm;
 		}
 
+		public ClusterMakerCommandListener(ClusterViz vizualizer) {
+			this.viz = vizualizer;
+		}
+
 		public void actionPerformed(ActionEvent e) {
-			// Create the dialog
-			ClusterSettingsDialog settingsDialog = new ClusterSettingsDialog(alg);
-			// Pop it up
-			settingsDialog.actionPerformed(e);
+			if (alg != null) {
+				// Create the dialog
+				ClusterSettingsDialog settingsDialog = new ClusterSettingsDialog(alg);
+				// Pop it up
+				settingsDialog.actionPerformed(e);
+			} else if (viz != null) {
+				viz.startViz();
+			}
 		}
 	}
 }
