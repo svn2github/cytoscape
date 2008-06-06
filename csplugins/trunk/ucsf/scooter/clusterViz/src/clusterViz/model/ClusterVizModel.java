@@ -199,9 +199,6 @@ public class ClusterVizModel extends TVModel {
 		// We don't use weights
 		setEweightFound(false);
 		setGweightFound(false);
-
-		// Set up our hashes
-
 	}
 
 	public String getName() {

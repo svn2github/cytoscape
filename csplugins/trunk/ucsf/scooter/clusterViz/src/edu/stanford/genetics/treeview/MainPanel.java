@@ -52,7 +52,7 @@ public interface MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateSettingsMenu(JMenu menu);
+	// public void populateSettingsMenu(JMenu menu);
 
 
 	/**
@@ -60,7 +60,7 @@ public interface MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateAnalysisMenu(JMenu menu);
+	// public void populateAnalysisMenu(JMenu menu);
 
 
 	/**
@@ -68,7 +68,7 @@ public interface MainPanel {
 	 *
 	 * @param  menu  A menu to add items to.
 	 */
-	public void populateExportMenu(JMenu menu);
+	// public void populateExportMenu(JMenu menu);
 
 
 	/**

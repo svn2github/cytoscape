@@ -195,7 +195,7 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 	 public void populateSettingsMenu(JMenu menu) {
 		 MainPanel panel = (MainPanel) getSelectedComponent();
 		 if (panel != null) {
-			 panel.populateSettingsMenu(menu);
+			 // panel.populateSettingsMenu(menu);
 		 }
 	 }
 
@@ -208,7 +208,7 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 	public void populateAnalysisMenu(JMenu menu) {
 		MainPanel panel = (MainPanel) getSelectedComponent();
 		if (panel != null) {
-			panel.populateAnalysisMenu(menu);
+			// panel.populateAnalysisMenu(menu);
 		}
 		if (menu.getItemCount() > 0) menu.addSeparator();					
 		PluginFactory [] plugins = PluginManager.getPluginManager().getPluginFactories();
@@ -262,7 +262,7 @@ public class LinkedPanel extends JTabbedPane implements MainPanel {
 		 MainPanel panel = (MainPanel) getSelectedComponent();
 		 if (panel != null) {
 			 if (menu.getItemCount() > 0) menu.addSeparator();					
-			 panel.populateExportMenu(menu);
+			 // panel.populateExportMenu(menu);
 		 }
 	 }
 
