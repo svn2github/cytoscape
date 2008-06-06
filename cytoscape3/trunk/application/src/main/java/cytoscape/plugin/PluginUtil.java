@@ -66,6 +66,7 @@ public class PluginUtil {
 			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
 
 			for (Throwable t : pluginLoadingErrors) {
+				System.out.println("Caught this exception while loading plugins:");
 				t.printStackTrace();
 			}
 
