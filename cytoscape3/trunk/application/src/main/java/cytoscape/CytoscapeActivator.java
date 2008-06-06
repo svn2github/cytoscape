@@ -1,5 +1,5 @@
 /*
- File: OSGIPlugin.java
+ File: CytoscapeActivator.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,57 +34,44 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.plugin;
+package cytoscape;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import cytoscape.CyMain;
-import cytoscape.Cytoscape;
-import cytoscape.ServiceHandler;
+import javax.swing.UIManager;
 
-public class HostActivator implements BundleActivator
-{
+public class CytoscapeActivator implements BundleActivator {
+
     private BundleContext m_context = null;
     
-    public void start(BundleContext context)
-    {
-		System.out.println("host activator start");
-        m_context = context;
+    public void start(BundleContext context) {
+		System.out.println("CytoscapeActivator start");
+		m_context = context;
+
+		UIManager.put("ClassLoader", this.getClass().getClassLoader());
        
-        new Thread() {
-        	public void run() {
-        		try {
-        			String params = m_context.getProperty("cytoscape.old.params");
-					String[] args = null; 
-					if ( params != null )
-						args = params.split(" ");
-					else
-						args = new String[]{"-p","plugins"};
+		try {
+			String[] args = new String[]{"-p","plugins"};
+			CyMain.main(args);
 
-        			CyMain.main(args);
-					ServiceHandler sh = new ServiceHandler(m_context);
-        		} catch (Exception e) {
-        			e.printStackTrace();
-        		}
-        	}
-        }.start();
+
+			//ServiceHandler sh = new ServiceHandler(m_context);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
-    public void stop(BundleContext context)
-    {
-		System.out.println("host activator stop");
-        m_context = null;
-        Cytoscape.exit(0);
+    public void stop(BundleContext context) {
+		System.out.println("CytoscapeActivator stop");
+		m_context = null;
+		Cytoscape.exit(0);
     }
 
-    public Bundle[] getBundles()
-    {
-        if (m_context != null)
-        {
-            return m_context.getBundles();
-        }
-        return null;
+    public Bundle[] getBundles() {
+		if (m_context != null)
+			return m_context.getBundles();
+		return null;
     }
 }
