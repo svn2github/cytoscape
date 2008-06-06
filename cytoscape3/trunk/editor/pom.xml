@@ -8,6 +8,7 @@
   <groupId>cytoscape</groupId>
   <artifactId>editor</artifactId>
   <name>editor</name>
+  <packaging>bundle</packaging>
   <version>1.0-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -30,6 +31,38 @@
       <artifactId>phoebe.dnd</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
+        <!-- for OSGi activator -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi_R4_core</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi_R4_compendium</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
 
   </dependencies>
+
+	<build>
+      <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>cytoscape.editor.CytoscapeEditorPlugin</Bundle-Activator>
+                        <Private-Package>cytoscape.editor.*</Private-Package>
+                    </instructions>
+                </configuration>
+         </plugin>
+      </plugins>
+	</build>
 </project>
