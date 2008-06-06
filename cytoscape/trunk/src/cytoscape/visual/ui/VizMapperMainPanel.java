@@ -322,9 +322,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *
 	 * @param isLock
 	 */
-	private void switchNodeSizeLock(boolean isLock) {
+	protected void switchNodeSizeLock(boolean isLock) {
 		final Property[] props = visualPropertySheetPanel.getProperties();
-
+		
+		lockSize.setSelected(isLock);
+		
 		if (isLock && (nodeSize != null)) {
 			// Case 1: Locked. Need to remove width/height props.
 			boolean isNodeSizeExist = false;
