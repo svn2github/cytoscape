@@ -34,9 +34,22 @@
 */
 package cytoscape.visual.ui;
 
+import cytoscape.Cytoscape;
+
+import cytoscape.util.CyColorChooser;
+
+import cytoscape.visual.GlobalAppearanceCalculator;
+import cytoscape.visual.NodeAppearanceCalculator;
+import cytoscape.visual.VisualPropertyType;
 import static cytoscape.visual.VisualPropertyType.NODE_HEIGHT;
 import static cytoscape.visual.VisualPropertyType.NODE_SIZE;
 import static cytoscape.visual.VisualPropertyType.NODE_WIDTH;
+
+import cytoscape.visual.ui.icon.VisualPropertyIcon;
+
+import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -53,6 +66,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -66,17 +80,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
-
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
-
-import cytoscape.Cytoscape;
-import cytoscape.util.CyColorChooser;
-import cytoscape.visual.GlobalAppearanceCalculator;
-import cytoscape.visual.NodeAppearanceCalculator;
-import cytoscape.visual.VisualPropertyType;
-import cytoscape.visual.ui.icon.VisualPropertyIcon;
 
 
 /**
@@ -99,9 +102,9 @@ import cytoscape.visual.ui.icon.VisualPropertyIcon;
 public class DefaultAppearenceBuilder extends JDialog {
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
+
+	// This editor should be a singleton.
 	private static DefaultAppearenceBuilder dab = null;
-	private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
-	                                                      .getNodeAppearanceCalculator();
 
 	static {
 		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
@@ -134,12 +137,16 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public static JPanel showDialog(Frame parent) {
-		if(dab == null)
+		if (dab == null)
 			dab = new DefaultAppearenceBuilder(parent, true);
+
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(900, 400);
+		
+		dab.lockNodeSizeCheckBox.setSelected(Cytoscape.getVisualMappingManager().getVisualStyle()
+		                                              .getNodeAppearanceCalculator()
+		                                              .getNodeSizeLocked());
 		dab.lockSize();
-		dab.lockNodeSizeCheckBox.setSelected(dab.nac.getNodeSizeLocked());
 		dab.mainView.updateView();
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
@@ -153,8 +160,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @return DOCUMENT ME!
 	 */
 	public static JPanel getDefaultView(String vsName) {
-		if(dab == null)
+		if (dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
+
 		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
@@ -163,7 +171,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 		return dab.getPanel();
 	}
-
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -258,9 +265,11 @@ public class DefaultAppearenceBuilder extends JDialog {
 		lockNodeSizeCheckBox.setText("Lock Node Width/Height");
 		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+		lockNodeSizeCheckBox.setSelected(Cytoscape.getVisualMappingManager().getVisualStyle()
+		                                          .getNodeAppearanceCalculator().getNodeSizeLocked());
 		lockNodeSizeCheckBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					Cytoscape.getDesktop().getVizMapperUI().switchNodeSizeLock(lockNodeSizeCheckBox.isSelected());
 					lockSize();
 				}
 			});
@@ -268,8 +277,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					
-					Cytoscape.getVisualMappingManager().setNetworkView(Cytoscape.getCurrentNetworkView());
+					Cytoscape.getVisualMappingManager()
+					         .setNetworkView(Cytoscape.getCurrentNetworkView());
 					Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
 					dispose();
 				}
@@ -357,7 +366,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 				}
 
 				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list
-				                                                                                                                                                                                                                                                                                                                                                              .getSelectedValue(),
+				                                                                                                                                                                                                                                                                                                                                                               .getSelectedValue(),
 				                                                    this);
 				VizMapperMainPanel.apply(newValue, (VisualPropertyType) list.getSelectedValue());
 			} catch (Exception e1) {
@@ -481,12 +490,14 @@ public class DefaultAppearenceBuilder extends JDialog {
 			NODE_PROPS.remove(NODE_WIDTH);
 			NODE_PROPS.remove(NODE_HEIGHT);
 			NODE_PROPS.add(NODE_SIZE);
-			nac.setNodeSizeLocked(true);
+			Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator()
+			         .setNodeSizeLocked(true);
 		} else {
 			NODE_PROPS.add(NODE_WIDTH);
 			NODE_PROPS.add(NODE_HEIGHT);
 			NODE_PROPS.remove(NODE_SIZE);
-			nac.setNodeSizeLocked(false);
+			Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator()
+			         .setNodeSizeLocked(false);
 		}
 
 		buildList();
