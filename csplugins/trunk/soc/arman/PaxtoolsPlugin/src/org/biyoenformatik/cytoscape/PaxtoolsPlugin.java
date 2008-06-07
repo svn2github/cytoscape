@@ -32,8 +32,6 @@ import cytoscape.data.ImportHandler;
 
 public class PaxtoolsPlugin extends CytoscapePlugin {
     public PaxtoolsPlugin() {
-        System.out.println("Hello world! Here I come.");
-
         ImportHandler importHandler = new ImportHandler();
 		importHandler.addFilter(new PaxtoolsFileFilter());
     }

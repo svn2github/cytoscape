@@ -31,10 +31,13 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.CyEdge;
 import cytoscape.view.CyNetworkView;
 import org.biopax.paxtools.model.Model;
-import org.biopax.paxtools.model.level2.pathway;
+import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.io.jena.JenaIOHandler;
+import org.biyoenformatik.cytoscape.util.BioPAXUtil;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,6 +48,8 @@ public class PaxtoolsReader implements GraphReader {
     private Model biopaxModel = null;
     private final String fileName;
 
+    private int[] nodeIndices, edgeIndices;
+
     public PaxtoolsReader(String fileName) {
         this.fileName = fileName;
     }
@@ -52,6 +57,21 @@ public class PaxtoolsReader implements GraphReader {
     public void read() throws IOException {
         FileInputStream ioStream = new FileInputStream(fileName);
         biopaxModel = new JenaIOHandler().convertFromOWL(ioStream);
+
+        BioPAXUtil.CytoscapeGraphElements csGraphEls
+                        = BioPAXUtil.bioPAXtoCytoscapeGraph(biopaxModel);
+
+        nodeIndices = new int[csGraphEls.nodes.size()];
+        edgeIndices = new int[csGraphEls.edges.size()];
+
+        int count = 0;
+        for(CyNode node: csGraphEls.nodes)
+            nodeIndices[count++] = node.getRootGraphIndex();
+
+        count = 0;
+        for(CyEdge edge: csGraphEls.edges)
+            edgeIndices[count++] = edge.getRootGraphIndex();
+
     }
 
     public void layout(GraphView view) {
@@ -67,13 +87,11 @@ public class PaxtoolsReader implements GraphReader {
     }
 
     public int[] getNodeIndicesArray() {
-        // TODO
-        return new int[0];
+        return nodeIndices;
     }
 
     public int[] getEdgeIndicesArray() {
-        // TODO
-        return new int[0];
+        return edgeIndices;
     }
 
     public void doPostProcessing(CyNetwork network) {
@@ -84,10 +102,7 @@ public class PaxtoolsReader implements GraphReader {
         String backupName = "Unknown", networkName = null;
 
         for(pathway aPathway: biopaxModel.getObjects(pathway.class)) {
-            String aName = (aPathway.getNAME() == null
-                                ? aPathway.getSHORT_NAME()
-                                : aPathway.getNAME());
-
+            String aName = BioPAXUtil.getNameSmart(aPathway);
             if( aName != null && aName.length() != 0 )
                 backupName = aName; // back-up name
             else
