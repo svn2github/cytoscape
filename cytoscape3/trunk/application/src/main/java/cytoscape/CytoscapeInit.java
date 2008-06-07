@@ -359,7 +359,8 @@ public class CytoscapeInit {
 
 			// This somewhat unusual way of getting the ClassLoader is because
 			// other methods don't work from WebStart.
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			//ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			ClassLoader cl = CyMain.class.getClassLoader();
 
 			URL vmu = null;
 
