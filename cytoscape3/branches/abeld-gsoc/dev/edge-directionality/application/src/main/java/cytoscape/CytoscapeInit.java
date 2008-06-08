@@ -43,6 +43,7 @@ import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.init.CyInitParams;
 
 import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.PluginUtil;
 
 import cytoscape.util.FileUtil;
 
@@ -177,72 +178,7 @@ public class CytoscapeInit {
 				setUpAttributesChangedListener();
 			}
 
-			//errorDialog = new ErrorDialog(Cytoscape.getDesktop(), "Cytoscape Initialization Errors");
-
-			PluginManager mgr = PluginManager.getPluginManager();
-			try {
-				System.out.println("updating plugins...");
-				mgr.delete();
-			} catch (cytoscape.plugin.ManagerException me) {
-				//errorDialog.addError(me);
-				me.printStackTrace();
-			}
-			
-			mgr.install();
-
-				System.out.println("loading plugins....");
-
-			/*
-			 * TODO smart plugin loading. If there are multiple of the same
-			 * plugin (this will only work in the .cytoscape directory) load the
-			 * newest version first. Should be able to examine the directories
-			 * for this information. All installed plugins are named like
-			 * 'MyPlugin-1.0' currently this isn't necessary as old version are
-			 * not kept around
-				 */ 
-				List<String> InstalledPlugins = new ArrayList<String>();
-				// load from those listed on the command line
-				InstalledPlugins.addAll(initParams.getPlugins());
-				
-				// Get all directories where plugins have been installed
-				// going to have to be a little smart...themes contain their plugins in subdirectories
-				List<cytoscape.plugin.DownloadableInfo> MgrInstalledPlugins = mgr.getDownloadables(cytoscape.plugin.PluginStatus.CURRENT);
-
-			for (cytoscape.plugin.DownloadableInfo dInfo : MgrInstalledPlugins) {
-					if (dInfo.getCategory().equals(cytoscape.plugin.Category.CORE.getCategoryText()))
-						continue;
-					
-				switch (dInfo.getType()) { // TODO get rid of switches
-					case PLUGIN:
-						InstalledPlugins.add(((cytoscape.plugin.PluginInfo) dInfo)
-						                                                                                                                                                                                                    .getInstallLocation());
-
-						break;
-					case THEME:
-						cytoscape.plugin.ThemeInfo tInfo = (cytoscape.plugin.ThemeInfo) dInfo;
-
-						for (cytoscape.plugin.PluginInfo plugin : tInfo.getPlugins()) {
-							InstalledPlugins.add(plugin.getInstallLocation());
-						}
-
-						break;
-					}
-				}
-
-      // TODO this exception wasn't getting caught
-      try {
-              mgr.loadPlugins(InstalledPlugins);
-      } catch ( Exception mue ) {
-        mue.printStackTrace();
-      }
-			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
-
-			for (Throwable t : pluginLoadingErrors) {
-				//errorDialog.addError(t);
-				t.printStackTrace();
-			}
-
-			mgr.clearErrorList();
+			PluginUtil.loadPlugins(initParams.getPlugins());
 
 			System.out.println("loading session...");
 
@@ -288,9 +224,6 @@ public class CytoscapeInit {
 		long endtime = System.currentTimeMillis() - begintime;
 		System.out.println("\nCytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
-
-//		if (errorDialog.hasErrors())
-//			errorDialog.setVisible(true);
 
 		return true;
 	}
@@ -426,7 +359,8 @@ public class CytoscapeInit {
 
 			// This somewhat unusual way of getting the ClassLoader is because
 			// other methods don't work from WebStart.
-			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			//ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			ClassLoader cl = CyMain.class.getClassLoader();
 
 			URL vmu = null;
 

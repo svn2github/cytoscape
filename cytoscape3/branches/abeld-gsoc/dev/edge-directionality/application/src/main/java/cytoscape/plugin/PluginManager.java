@@ -807,16 +807,9 @@ public class PluginManager {
 		duplicateClasses = new ArrayList<String>();
 		duplicateLoadError = false;
 
-		for (URL url : urls) {
-			try {
-				addClassPath(url);
-			} catch (Exception e) {
-				loadingErrors.add(new IOException("Classloader Error: " + url));
-			}
-		}
-
-		// the creation of the class loader automatically loads the plugins
-		classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		// note that the urls point to the jars that provide the classpath
+		// to be searched.
+		classLoader = new URLClassLoader(urls,Cytoscape.class.getClassLoader());
 
 		// iterate through the given jar files and find classes that are
 		// assignable from CytoscapePlugin
@@ -840,8 +833,7 @@ public class PluginManager {
 				}
 
 				// try to get class name from the manifest file
-				String className = getPluginClass(jar.getName(),
-						PluginInfo.FileType.JAR);
+				String className = getPluginClassName(jar.getName(), PluginInfo.FileType.JAR);
 
 				if (className != null) {
 					Class pc = getPluginClass(className);
@@ -900,6 +892,9 @@ public class PluginManager {
 			} catch (PluginException pe) {
 				pe.printStackTrace();
 				loadingErrors.add(pe);
+			} catch (NoClassDefFoundError ncdfe) {
+				ncdfe.printStackTrace();
+				loadingErrors.add(ncdfe);
 			}
 		}
 		System.out.println("");
@@ -980,7 +975,7 @@ public class PluginManager {
 	 * Only plugins with manifest files that describe the class of the
 	 * CytoscapePlugin are valid.
 	 */
-	private String getPluginClass(String FileName, PluginInfo.FileType Type)
+	private String getPluginClassName(String FileName, PluginInfo.FileType Type)
 			throws IOException {
 		String PluginClassName = null;
 
@@ -1025,22 +1020,4 @@ public class PluginManager {
 		}
 		return Value;
 	}
-
-	/**
-	 * This will be used to add plugin jars' URL to the System Loader's
-	 * classpath.
-	 * 
-	 * @param url
-	 * @throws NoSuchMethodException
-	 * @throws IllegalAccessException
-	 * @throws InvocationTargetException
-	 */
-	private void addClassPath(URL url) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
-		Method method = URLClassLoader.class.getDeclaredMethod("addURL",
-				new Class[] { URL.class });
-		method.setAccessible(true);
-		method.invoke(ClassLoader.getSystemClassLoader(), new Object[] { url });
-	}
-
 }

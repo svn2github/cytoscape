@@ -81,19 +81,16 @@ public class PluginProperties extends Properties {
 	}
 	
 	private void readPluginProperties(InputStream is) throws IOException {
-			// throw an error!
-			String Msg = null;
-			if (is == null) {
-				Msg = "File is not in the expected location (null): " + packageName;
-			}
-      if (is.available() == 0) {
-				Msg = "0 bytes in input stream";
-			}
-	    if (Msg != null) {
-        throw new IOException("Unable to load "
-					+ configFileName + ". " + Msg);
-      }
-
+		// throw an error!
+		String Msg = null;
+		if (is == null) {
+			Msg = "File is not in the expected location (null): " + packageName;
+		} else if (is.available() == 0) {
+			Msg = "0 bytes in input stream";
+		}
+		if (Msg != null) {
+			throw new IOException("Unable to load " + configFileName + ". " + Msg);
+		}
 		load(is);
 	}
 	
