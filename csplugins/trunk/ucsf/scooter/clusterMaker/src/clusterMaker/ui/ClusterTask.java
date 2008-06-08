@@ -54,6 +54,7 @@ import cytoscape.task.ui.JTaskConfig;
 public class ClusterTask implements Task {
 
 	ClusterAlgorithm cluster;
+	ClusterSettingsDialog dialog;
 	TaskMonitor monitor;
 
 	/**
@@ -61,8 +62,9 @@ public class ClusterTask implements Task {
 	 * 
 	 * @param cluster The CyClusterAlgorithm to apply.
 	 */
-	public ClusterTask(ClusterAlgorithm cluster) {
+	public ClusterTask(ClusterAlgorithm cluster, ClusterSettingsDialog dialog) {
 		this.cluster = cluster; 
+		this.dialog = dialog;
 	}
 
 	/**
@@ -77,6 +79,7 @@ public class ClusterTask implements Task {
 	 */
 	public void run() {
 		cluster.doCluster(monitor);
+		dialog.updateVizButton();
 	}
 
 	/**

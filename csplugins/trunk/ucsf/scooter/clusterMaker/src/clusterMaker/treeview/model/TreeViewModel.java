@@ -53,6 +53,8 @@ import cytoscape.view.CyNetworkView;
 import clusterMaker.treeview.DataModel;
 import clusterMaker.treeview.model.TVModel;
 
+import clusterMaker.algorithms.hierarchical.EisenCluster;
+
 /**
  * The ClusterVizModel provides the data that links the results of a cluster run
  * in Cytoscape with the Java TreeView code
@@ -79,7 +81,7 @@ public class TreeViewModel extends TVModel {
 		// annotated distance matrix
 		
 		// Gene annotations are just the list of node names
-		List<String>geneList = networkAttributes.getListAttribute(network.getIdentifier(), "__nodeOrder");
+		List<String>geneList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.NODE_ORDER_ATTRIBUTE);
 		String [][] gHeaders = new String[geneList.size()][4];
 		int headerNumber = 0;
 		for (String nodeName: geneList) {
@@ -93,7 +95,7 @@ public class TreeViewModel extends TVModel {
 
 
 		// Array annotations are the list of attributes we used (note: order matters)
-		List<String>arrayList = networkAttributes.getListAttribute(network.getIdentifier(), "__arrayOrder");
+		List<String>arrayList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.ARRAY_ORDER_ATTRIBUTE);
 		String [][] aHeaders = new String[arrayList.size()][2];
 		headerNumber = 0;
 		for (String attribute: arrayList) {
@@ -112,7 +114,7 @@ public class TreeViewModel extends TVModel {
 		if (geneList.get(0).equals(arrayList.get(0))) {
 
 			// Matrix is symmetrical.  Get the edge attribute
-			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), "__hierarchicalEdgeWeight");
+			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_EDGE_ATTRIBUTE);
 			attribute = attribute.substring(5);
 			// System.out.println("Edge attribute is "+attribute);
 
@@ -165,8 +167,8 @@ public class TreeViewModel extends TVModel {
 		// Now, get the gene tree results (GTR) or array tree results (ATR) from Cytoscape, depending on
 		// what we clustered
 
-		if (networkAttributes.hasAttribute(network.getIdentifier(), "__hierarchicalNodeClusters")) {
-			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), "__hierarchicalNodeClusters");
+		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE)) {
+			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE);
 			setGtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
 			String [][] gtrHeaders = new String[groupList.size()][4];
 
@@ -178,8 +180,8 @@ public class TreeViewModel extends TVModel {
 
 		// If we're not a gene cluster, we need to transpose the matrix
 		// when we save it
-		if (networkAttributes.hasAttribute(network.getIdentifier(), "__hierarchicalAttrClusters")) {
-			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), "__hierarchicalAttrClusters");
+		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE)) {
+			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE);
 			setAtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
 			String [][] atrHeaders = new String[groupList.size()][4];
 

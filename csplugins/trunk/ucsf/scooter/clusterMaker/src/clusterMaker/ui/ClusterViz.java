@@ -95,4 +95,8 @@ public interface ClusterViz {
 	 */
 	public void startViz();
 
+	/**
+ 	 * Returns true if the data is available to visualize
+ 	 */
+	public boolean isAvailable();
 }

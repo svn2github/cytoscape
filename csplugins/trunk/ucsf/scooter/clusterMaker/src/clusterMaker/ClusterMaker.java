@@ -35,10 +35,13 @@ package clusterMaker;
 // System imports
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import java.util.HashMap;
 import java.util.List;
 
 // Cytoscape imports
@@ -50,9 +53,9 @@ import cytoscape.plugin.PluginInfo;
 // clusterMaker imports
 import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.ui.ClusterViz;
-import clusterMaker.ui.TreeView;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
+import clusterMaker.algorithms.kmeans.KMeansCluster;
 import clusterMaker.algorithms.MCL.MCLMenu;
 import clusterMaker.algorithms.FORCE.CytoscapeFORCEmenu;
 // import clusterMaker.algorithms.MCLCluster;
@@ -63,16 +66,19 @@ import clusterMaker.algorithms.FORCE.CytoscapeFORCEmenu;
  * The ClusterMaker class provides the primary interface to the
  * Cytoscape plugin mechanism
  */
-public class ClusterMaker extends CytoscapePlugin {
+public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListener {
 	static final double VERSION = 0.1;
+	HashMap<JMenuItem,ClusterViz> vizMenus;
 
   /**
    * Create our action and add it to the plugins menu
    */
   public ClusterMaker() {
 
+		vizMenus = new HashMap();
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
+		addClusterAlgorithm(menu, new KMeansCluster());
 		// At some point, we need to convert these over to be clusterAlgorithms.  In the meantime...
 		menu.add(new MCLMenu());
 		menu.add(new CytoscapeFORCEmenu());
@@ -81,14 +87,28 @@ public class ClusterMaker extends CytoscapePlugin {
 		// addClusterAlgorithm(new KMeansCluster());
 		// addClusterAlgorithm(new SOMCluster());
 		menu.addSeparator();
-		addClusterViz(menu, new TreeView());
+
+		// Add the visualization menu items
+		for (JMenuItem item: vizMenus.keySet()) {
+			menu.add(item);
+		}
 		
+		Cytoscape.getPropertyChangeSupport()
+        .addPropertyChangeListener( Cytoscape.NETWORK_LOADED, this );
+
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
 		CyLogger.getLogger(ClusterMaker.class).info("clusterMaker "+VERSION+" initialized");
 
   }
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ( evt.getPropertyName() == Cytoscape.NETWORK_LOADED || 
+		     evt.getPropertyName() == ClusterAlgorithm.CLUSTER_COMPUTED){
+			updateVizMenus();
+    }
+	}
 
 	/**
  	 * addClusterAlgorithm does some basic inquiry of the algorithm to see what it
@@ -100,15 +120,32 @@ public class ClusterMaker extends CytoscapePlugin {
  	 * @param algorithm the cluster algorithm itself
  	 */  
 	private void addClusterAlgorithm(JMenu menu, ClusterAlgorithm algorithm) {
+		ClusterViz visualizer = algorithm.getVisualizer();
+
+		if (visualizer != null) {
+			// We have a visualizer, so we're interested in any clusters that get completed
+			algorithm.getPropertyChangeSupport().
+					addPropertyChangeListener(ClusterAlgorithm.CLUSTER_COMPUTED, this);
+			JMenuItem vizItem = new JMenuItem(visualizer.getName());
+			vizMenus.put(vizItem, visualizer);
+			vizItem.addActionListener(new ClusterMakerCommandListener(visualizer));
+			if (!visualizer.isAvailable())
+				vizItem.setEnabled(false);
+		}
+
 		JMenuItem item = new JMenuItem(algorithm.getName());
 		item.addActionListener(new ClusterMakerCommandListener(algorithm));
 		menu.add(item);
 	}
 
-	private void addClusterViz(JMenu menu, ClusterViz viz) {
-		JMenuItem item = new JMenuItem(viz.getName());
-		item.addActionListener(new ClusterMakerCommandListener(viz));
-		menu.add(item);
+	private void updateVizMenus() {
+		for (JMenuItem item: vizMenus.keySet()) {
+			ClusterViz viz = vizMenus.get(item);
+			if (!viz.isAvailable())
+				item.setEnabled(false);
+			else
+				item.setEnabled(true);
+		}
 	}
 
 	/**

@@ -43,6 +43,10 @@ import cytoscape.Cytoscape;
 
 import cytoscape.task.util.TaskManager;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -73,8 +77,10 @@ import javax.swing.text.Position;
  * various settings for cluster algorithms.  Each ClusterAlgorithm must return a single
  * JPanel that provides all of its settings.
  */
-public class ClusterSettingsDialog extends JDialog implements ActionListener {
+public class ClusterSettingsDialog extends JDialog implements ActionListener, PropertyChangeListener {
 	private ClusterAlgorithm currentAlgorithm = null;
+	private ClusterViz visualizer = null;
+	private JButton vizButton = null;
 
 	// Dialog components
 	private JLabel titleLabel; // Our title
@@ -89,6 +95,8 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener {
 	public ClusterSettingsDialog(ClusterAlgorithm algorithm) {
 		super(Cytoscape.getDesktop(), algorithm.getName()+" Settings", false);
 		currentAlgorithm = algorithm;
+		visualizer = algorithm.getVisualizer();
+		if (visualizer != null) algorithm.getPropertyChangeSupport().addPropertyChangeListener(this);
 		initializeOnce(); // Initialize the components we only do once
 	}
 
@@ -109,8 +117,10 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener {
 		} else if (command.equals("execute")) {
 			// Cluster using the current layout
 			updateAllSettings();
-			TaskManager.executeTask( new ClusterTask(currentAlgorithm),
+			TaskManager.executeTask( new ClusterTask(currentAlgorithm, this),
 			                         ClusterTask.getDefaultTaskConfig() );
+		} else if (command.equals("visualize")) {
+			visualizer.startViz();
 		} else if (command.equals("cancel")) {
 			// Call revertSettings for each layout
 			revertAllSettings();
@@ -122,6 +132,19 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener {
 			setLocationRelativeTo(Cytoscape.getDesktop());
 			setVisible(true);
 		}
+	}
+
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ( evt.getPropertyName() == ClusterAlgorithm.CLUSTER_COMPUTED ){
+			updateVizButton();
+    }
+	}
+
+	public void updateVizButton() {
+		if (visualizer != null && visualizer.isAvailable())
+			vizButton.setEnabled(true);
+		else
+			vizButton.setEnabled(false);
 	}
 
 	private void initializeOnce() {
@@ -157,10 +180,19 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener {
 		executeButton.setActionCommand("execute");
 		executeButton.addActionListener(this);
 
+		vizButton = new JButton("Visualize Clusters");
+		vizButton.setActionCommand("visualize");
+		vizButton.addActionListener(this);
+		if (visualizer != null && visualizer.isAvailable())
+			vizButton.setEnabled(true);
+		else
+			vizButton.setEnabled(false);
+
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setActionCommand("cancel");
 		cancelButton.addActionListener(this);
 		buttonBox.add(executeButton);
+		buttonBox.add(vizButton);
 		buttonBox.add(saveButton);
 		buttonBox.add(cancelButton);
 		buttonBox.add(doneButton);

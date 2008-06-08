@@ -54,13 +54,13 @@ public class EisenCluster {
 	final static int IS = 0;
 	final static int JS = 1;
 
-	final static String GROUP_ATTRIBUTE = "__hierarchicalGroups";
-	final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
-	final static String CLUSTER_NODE_ATTRIBUTE = "__hierarchicalNodeClusters";
-	final static String CLUSTER_ATTR_ATTRIBUTE = "__hierarchicalAttrClusters";
-	final static String CLUSTER_EDGE_ATTRIBUTE = "__hierarchicalEdgeWeight";
-	final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
-	final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
+	public final static String GROUP_ATTRIBUTE = "__clusterGroups";
+	public final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
+	public final static String CLUSTER_NODE_ATTRIBUTE = "__nodeClusters";
+	public final static String CLUSTER_ATTR_ATTRIBUTE = "__attrClusters";
+	public final static String CLUSTER_EDGE_ATTRIBUTE = "__clusterEdgeWeight";
+	public final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
+	public final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
 	static CyLogger logger;
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
@@ -150,6 +150,24 @@ public class EisenCluster {
 		// Now sort based on tree structure
 		Integer order[] = TreeSort(matrix, nodeList.length, nodeOrder, nodeCounts, nodeList);
 
+		updateAttributes(matrix, attrList, weightAttributes, order);
+
+		// Finally, create the group hierarchy
+		// The root is the last entry in our nodeList
+		if (!matrix.isTransposed()) {
+			CyAttributes netAttr = Cytoscape.getNetworkAttributes();
+			String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+			ArrayList<String> groupNames = new ArrayList(nodeList.length);
+			CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1], groupNames);
+			// Remember this in the _hierarchicalGroups attribute
+			netAttr.setListAttribute(netID, GROUP_ATTRIBUTE, groupNames);
+		}
+
+		return "Complete";
+	}
+
+	public static void updateAttributes(Matrix matrix, List<String>attrList, 
+	                                    String[] weightAttributes, Integer[] order) {
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
@@ -197,16 +215,6 @@ public class EisenCluster {
 				netAttr.setListAttribute(netID, ARRAY_ORDER_ATTRIBUTE, columnList);
 		}
 
-		// Finally, create the group hierarchy
-		// The root is the last entry in our nodeList
-		if (!matrix.isTransposed()) {
-			ArrayList<String> groupNames = new ArrayList(nodeList.length);
-			CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1], groupNames);
-			// Remember this in the _hierarchicalGroups attribute
-			netAttr.setListAttribute(netID, GROUP_ATTRIBUTE, groupNames);
-		}
-
-		return "Complete";
 	}
 
 	public static void resetAttributes() {

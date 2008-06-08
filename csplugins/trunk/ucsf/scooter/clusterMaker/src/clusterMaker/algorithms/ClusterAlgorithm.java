@@ -33,14 +33,20 @@
 package clusterMaker.algorithms;
 
 import cytoscape.task.TaskMonitor;
+import clusterMaker.ui.ClusterViz;
 
-import java.util.Arrays;
+import java.beans.PropertyChangeSupport;
 import java.lang.Math;
+import java.util.Arrays;
+
 import javax.swing.JPanel;
 
 // clusterMaker imports
 
 public interface ClusterAlgorithm {
+
+	// Property change
+	public static String CLUSTER_COMPUTED = "CLUSTER_COMPUTED";
 
 	/**
  	 * Get the short name of this algorithm
@@ -104,5 +110,19 @@ public interface ClusterAlgorithm {
 	 * @param monitor a TaskMonitor
 	 */
 	public void doCluster(TaskMonitor monitor);
+
+	/**
+ 	 * Hooks for the visualizer
+ 	 *
+ 	 * @return the visualizer or null if one doesn't exist
+ 	 */
+	public ClusterViz getVisualizer();
+
+	/**
+ 	 * This is a hook to notify interested parties that we have finished
+ 	 * computing a cluster.  The major use is for clusters with visualizers
+ 	 * to inform UI components that the visualizer can now be launched.
+ 	 */
+	public PropertyChangeSupport getPropertyChangeSupport();
 
 }

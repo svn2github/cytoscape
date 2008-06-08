@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package clusterMaker.algorithms.hierarchical;
+package clusterMaker.algorithms.kmeans;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -48,20 +48,17 @@ import cytoscape.task.TaskMonitor;
 
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.AbstractClusterAlgorithm;
+import clusterMaker.algorithms.hierarchical.DistanceMetric;
+import clusterMaker.algorithms.hierarchical.Matrix;
 import clusterMaker.ui.ClusterViz;
 import clusterMaker.ui.TreeView;
 
 // clusterMaker imports
 
-public class HierarchicalCluster extends AbstractClusterAlgorithm {
+public class KMeansCluster extends AbstractClusterAlgorithm {
 	/**
 	 * Linkage types
 	 */
-	ClusterMethod[] linkageTypes = { ClusterMethod.AVERAGE_LINKAGE,
-	                                 ClusterMethod.SINGLE_LINKAGE,
-	                                 ClusterMethod.MAXIMUM_LINKAGE,
-	                                 ClusterMethod.CENTROID_LINKAGE };
-
 	DistanceMetric[] distanceTypes = { DistanceMetric.EUCLIDEAN,
 	                                   DistanceMetric.CITYBLOCK,
 	                                   DistanceMetric.CORRELATION,
@@ -72,7 +69,8 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	                                   DistanceMetric.KENDALLS_TAU };
 	String[] attributeArray = new String[1];
 
-	ClusterMethod clusterMethod =  ClusterMethod.AVERAGE_LINKAGE;
+	int kNumber = 0;
+	int rNumber = 0;
 	DistanceMetric distanceMetric = DistanceMetric.EUCLIDEAN;
 	boolean clusterAttributes = false;
 	String dataAttributes = null;
@@ -80,14 +78,14 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	CyLogger logger = null;
 	TreeView treeView = null;
 
-	public HierarchicalCluster() {
+	public KMeansCluster() {
 		super();
-		logger = CyLogger.getLogger(HierarchicalCluster.class);
+		logger = CyLogger.getLogger(KMeansCluster.class);
 		initializeProperties();
 	}
 
-	public String getShortName() {return "hierarchical";};
-	public String getName() {return "Hierarchical cluster";};
+	public String getShortName() {return "kmeans";};
+	public String getName() {return "K-Means cluster";};
 
 	public JPanel getSettingsPanel() {
 		// Everytime we ask for the panel, we want to update our attributes
@@ -112,11 +110,17 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		 * Tuning values
 		 */
 
-		// The linkage to use
-		clusterProperties.add(new Tunable("linkage",
-		                                  "Linkage",
-		                                  Tunable.LIST, new Integer(0),
-		                                  (Object)linkageTypes, (Object)null, 0));
+		// K
+		clusterProperties.add(new Tunable("knumber",
+		                                  "Number of clusters",
+		                                  Tunable.INTEGER, new Integer(0),
+		                                  (Object)kNumber, (Object)null, 0));
+
+		// Number of iterations
+		clusterProperties.add(new Tunable("rnumber",
+		                                  "Number of iterations",
+		                                  Tunable.INTEGER, new Integer(0),
+		                                  (Object)rNumber, (Object)null, 0));
 
 		// The distance metric to use
 		clusterProperties.add(new Tunable("dMetric",
@@ -152,9 +156,13 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		clusterProperties.updateValues();
 		super.updateSettings(force);
 
-		Tunable t = clusterProperties.get("linkage");
+		Tunable t = clusterProperties.get("knumber");
 		if ((t != null) && (t.valueChanged() || force))
-			clusterMethod = linkageTypes[((Integer) t.getValue()).intValue()];
+			kNumber = ((Integer) t.getValue()).intValue();
+
+		t = clusterProperties.get("rnumber");
+		if ((t != null) && (t.valueChanged() || force))
+			rNumber = ((Integer) t.getValue()).intValue();
 
 		t = clusterProperties.get("dMetric");
 		if ((t != null) && (t.valueChanged() || force))
@@ -173,21 +181,22 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
 		// Sanity check all of our settings
-		logger.debug("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
+		logger.debug("Performing k-means cluster with k="+kNumber+" using "+distanceMetric+" and attributes: "+dataAttributes);
+
 		// Get our attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
 		// To make debugging easier, sort the attribute array
 		Arrays.sort(attributeArray);
 
 		// Start by cleaning up and resetting
-		EisenCluster.resetAttributes();
+		KCluster.resetAttributes();
 
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1)
-			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true, logger);
+			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, true, logger);
 
 		// Cluster the nodes
-		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false, logger);
+		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, false, logger);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

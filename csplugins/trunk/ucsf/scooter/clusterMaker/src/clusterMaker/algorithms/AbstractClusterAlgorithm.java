@@ -35,8 +35,10 @@ package clusterMaker.algorithms;
 import cytoscape.layout.Tunable;
 import cytoscape.task.TaskMonitor;
 
-import java.util.Arrays;
 import java.lang.Math;
+import java.util.Arrays;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeSupport;
 import javax.swing.JPanel;
 
 // clusterMaker imports
@@ -44,10 +46,12 @@ import javax.swing.JPanel;
 public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	// Common class values
 	protected ClusterProperties clusterProperties = null;
+	protected PropertyChangeSupport pcs;
 	boolean debug = false;
 	boolean canceled = false;
 
 	public AbstractClusterAlgorithm() {
+		pcs = new PropertyChangeSupport(new Object());
 		clusterProperties = new ClusterProperties(getShortName());
 	}
 
@@ -115,4 +119,6 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 		}
 		return ((vectorCopy[mid-1].doubleValue()+vectorCopy[mid].doubleValue()) / 2);
 	}
+
+	public PropertyChangeSupport getPropertyChangeSupport() {return pcs;}
 }

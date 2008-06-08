@@ -334,6 +334,14 @@ public class Matrix {
 		return index;
 	}
 
+	public Integer[] indexSort(int[] tData, int nVals) {
+		Integer[] index = new Integer[nVals];
+		for (int i = 0; i < nVals; i++) index[i] = new Integer(i);
+		IndexComparator iCompare = new IndexComparator(tData);
+		Arrays.sort(index, iCompare);
+		return index;
+	}
+
 	public boolean isTransposed() { return this.transpose; }
 
 	public boolean isSymmetrical() { return this.symmetrical; }
@@ -502,13 +510,23 @@ public class Matrix {
 	}
 
 	private class IndexComparator implements Comparator<Integer> {
-		double[] data;
+		double[] data = null;
+		int[] intData = null;
 
 		public IndexComparator(double[] data) { this.data = data; }
 
+		public IndexComparator(int[] data) { this.intData = data; }
+
 		public int compare(Integer o1, Integer o2) {
-			if (data[o1.intValue()] < data[o2.intValue()]) return -1;
-			if (data[o1.intValue()] > data[o2.intValue()]) return 1;
+			if (data != null) {
+				if (data[o1.intValue()] < data[o2.intValue()]) return -1;
+				if (data[o1.intValue()] > data[o2.intValue()]) return 1;
+				return 0;
+			} else if (intData != null) {
+				if (intData[o1.intValue()] < intData[o2.intValue()]) return -1;
+				if (intData[o1.intValue()] > intData[o2.intValue()]) return 1;
+				return 0;
+			}
 			return 0;
 		}
 

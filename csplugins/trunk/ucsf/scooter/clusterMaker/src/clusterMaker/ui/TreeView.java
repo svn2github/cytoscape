@@ -56,6 +56,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
+import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
@@ -66,6 +67,7 @@ import giny.view.GraphViewChangeEvent;
 
 // ClusterMaker imports
 import clusterMaker.algorithms.ClusterProperties;
+import clusterMaker.algorithms.hierarchical.EisenCluster;
 
 // TreeView imports
 import clusterMaker.treeview.FileSet;
@@ -123,13 +125,29 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 
 	// ClusterViz methods
 	public String getShortName() { return "treeView"; }
+
 	public String getName() { return "Eisen TreeView"; }
+
 	public JPanel getSettingsPanel() { return null; }
+
 	public void revertSettings() {}
+
 	public void updateSettings() {}
+
 	public ClusterProperties getSettings() { return null; }
+
 	public void startViz() {
 		startup();
+	}
+
+	public boolean isAvailable() {
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE) ||
+		    networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE)) {
+			return true;
+		}
+		return false;
 	}
 
 	public void startup() {
