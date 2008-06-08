@@ -28,16 +28,24 @@
 package org.biyoenformatik.cytoscape;
 
 import cytoscape.data.readers.GraphReader;
+import cytoscape.data.CyAttributes;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
+import cytoscape.Cytoscape;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.VisualMappingManager;
 import cytoscape.view.CyNetworkView;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.io.jena.JenaIOHandler;
 import org.biyoenformatik.cytoscape.util.BioPAXUtil;
+import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
+import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -94,8 +102,67 @@ public class PaxtoolsReader implements GraphReader {
         return edgeIndices;
     }
 
-    public void doPostProcessing(CyNetwork network) {
-        // TODO
+    public void doPostProcessing(CyNetwork cyNetwork) {
+        /**
+             * Sets a network attribute which indicates this network
+             * is a biopax network
+             */
+            CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+
+            // get cyNetwork id
+            String networkID = cyNetwork.getIdentifier();
+
+            // set biopax network attribute
+            networkAttributes.setAttribute(networkID, BioPAXUtil.BIOPAX_NETWORK, Boolean.TRUE);
+
+            //  Repair Canonical Name
+            BioPAXUtil.repairCanonicalName(cyNetwork);
+
+            // repair network name
+            if (getNetworkName().equals("")) {
+                BioPAXUtil.repairNetworkName(cyNetwork);
+            }
+
+            //  Set default Quick Find Index
+            networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
+                                           BioPAXUtil.BIOPAX_SHORT_NAME);
+
+            // set url to pathway commons -
+            // used for pathway commons context menus
+            String urlToBioPAXWebServices = System.getProperty("biopax.web_services_url");
+            if (urlToBioPAXWebServices != null && urlToBioPAXWebServices.length() > 0) {
+                networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                                               "biopax.web_services_url",
+                                               urlToBioPAXWebServices);
+                System.setProperty("biopax.web_services_url", "");
+            }
+
+            // set data source attribute
+            // used for pathway commons context menus
+            String dataSources = System.getProperty("biopax.data_sources");
+            if (dataSources != null && dataSources.length() > 0) {
+                networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                                               "biopax.data_sources",
+                                               dataSources);
+                System.setProperty("biopax.data_sources", "");
+            }
+
+            //  Set-up the BioPax Visual Style
+            final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
+            final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+            final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+            view.setVisualStyle(bioPaxVisualStyle.getName());
+            manager.setVisualStyle(bioPaxVisualStyle);
+            view.applyVizmapper(bioPaxVisualStyle);
+
+            //  Set up BP UI
+            CytoscapeWrapper.initBioPaxPlugInUI();
+
+            BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+            bpContainer.showLegend();
+            NetworkListener networkListener = bpContainer.getNetworkListener();
+            networkListener.registerNetwork(cyNetwork);
+
     }
 
     public String getNetworkName() {

@@ -29,12 +29,16 @@ package org.biyoenformatik.cytoscape.util;
 
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.model.Model;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
+import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
+import javax.swing.*;
 import java.util.*;
 
 public class BioPAXUtil {
@@ -72,7 +76,7 @@ public class BioPAXUtil {
     public static final String COFACTOR = "COFACTOR";
     public static final String CONTAINS = "CONTAINS";
 
-    /* ~ end of constants ~ */
+    /* ~ end of biopax plugin constants ~ */
 
     public static final int MAX_SHORT_NAME_LENGTH = 25;
 
@@ -231,6 +235,10 @@ public class BioPAXUtil {
         edges.put(edge.getRootGraphIndex(), edge);
     }
 
+    public static void customNodes(CyNetworkView networkView) {
+        // TODO
+    }
+
 
     public static class CytoscapeGraphElements {
         public Collection<CyNode> nodes;
@@ -272,6 +280,60 @@ public class BioPAXUtil {
             return "";
     }
 
+    /**
+     * Repairs Canonical Name;  temporary fix for bug:  1001.
+     * By setting Canonical name to BIOPAX_NODE_LABEL, users can search for
+     * nodes via the Select Nodes --> By Name feature.
+     *
+     * @param cyNetwork CyNetwork Object.
+     */
+    public static void repairCanonicalName(CyNetwork cyNetwork) {
+        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+        Iterator iter = cyNetwork.nodesIterator();
+
+        while (iter.hasNext()) {
+            CyNode node = (CyNode) iter.next();
+            String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
+                                                             BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
+
+            if (label != null) {
+                nodeAttributes.setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME, label);
+            }
+        }
+    }
+
+    /**
+     * Repairs Network Name.  Temporary fix to automatically set network
+     * name to match BioPAX Pathway name.
+     *
+     * @param cyNetwork CyNetwork Object.
+     */
+    public static void repairNetworkName(final CyNetwork cyNetwork) {
+
+        try {
+            CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+            Iterator iter = cyNetwork.nodesIterator();
+            CyNode node = (CyNode) iter.next();
+
+            if (node != null) {
+                String pathwayName = nodeAttributes.getStringAttribute(node.getIdentifier(),
+                                                                       BioPAXUtil.BIOPAX_PATHWAY_NAME);
+                if (pathwayName != null) {
+                    cyNetwork.setTitle(pathwayName);
+
+                    //  Update UI.  Must be done via SwingUtilities,
+                    // or it won't work.
+                    SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
+                            }
+                        });
+                }
+            }
+        }
+        catch (java.util.NoSuchElementException e) {
+            // network is empty, do nothing
+        }
+    }
+
 }
-
-
