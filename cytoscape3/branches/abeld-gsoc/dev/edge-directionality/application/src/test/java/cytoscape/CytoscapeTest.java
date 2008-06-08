@@ -223,8 +223,8 @@ public class CytoscapeTest extends TestCase {
 		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "pd", false, true));
 		assertNull(Cytoscape.getCyEdge(b, a, attr, "pd", false, true));
 
-		// test undirectedness
-		assertNotNull(Cytoscape.getCyEdge(b, a, attr, "pd", false, false));
+		// test undirectedness -- directed edge mustn't be returned as undirected edge
+		assertNull(Cytoscape.getCyEdge(b, a, attr, "pd", false, false));
 
 		// test non-existent edge
 		assertNull(Cytoscape.getCyEdge(a, c, attr, "pp", false, true));
@@ -273,22 +273,17 @@ public class CytoscapeTest extends TestCase {
 
 		// check isDirected() flag for directed edges:
 		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "d", true, true) );
-		e = Cytoscape.getCyEdge(a, b, attr, "d", false, false);
+		e = Cytoscape.getCyEdge(a, b, attr, "d", false, true);
 		assertTrue("edge created is of correct directionality", e.isDirected());
 
 		assertNull("directed edge is not visible in reverse dir.", Cytoscape.getCyEdge(b, a, attr, "d", false, true) );
 	}
 
 	/**
-	 * This tests for current behaviour: getCyEdge() can return undirected edge
-	 * even if directed flag is set (i.e. directed flag doesn't mean "return
-	 * edge with this direction")
+	 * This tests that getCyEdge() will allways return edge with given directionality;
 	 * 
-	 * This is caused by the assumption that the end points and the interaction
-	 * define the edge (they appear in edge's string identifier); thus edge
-	 * directedness is not taken into account
 	 */
-	public void testGetCyEdgeMisfeature() {
+	public void testGetCyEdgeStrictness() {
 		// create nodes
 		Node a = Cytoscape.getCyNode("from", true);
 		Node b = Cytoscape.getCyNode("to", true);
@@ -296,10 +291,17 @@ public class CytoscapeTest extends TestCase {
 		String attr = Semantics.INTERACTION;
 		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, false));
 		
+		// the tests: no directed edge exsists:
 		Edge test_edge = Cytoscape.getCyEdge(a, b, attr, "u", false, true);
-		assertNotNull("got an edge", test_edge);
+		assertNull("didn't get an edge", test_edge);
+		
+		test_edge = Cytoscape.getCyEdge(b, a, attr, "u", false, true);
+		assertNull("didn't get an edge", test_edge);
+		
+		// undirected edge, in other direction:
+		test_edge = Cytoscape.getCyEdge(b, a, attr, "u", false, false);
+		assertNotNull("got get an edge", test_edge);
 		assertFalse("edge is of correct directionality", test_edge.isDirected());
-		assertNull("no directed edge exists in reverse direction", Cytoscape.getCyEdge(b, a, attr, "u", false, true));
 	}
 	
 	/**
@@ -321,14 +323,13 @@ public class CytoscapeTest extends TestCase {
 
 		// create undirected edge:
 		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, false) );
-		// create directed edge over it:
-		// (need to do it in other dir, otherwise will get back prev. one, see 'feature'/bug)
-		assertNotNull(Cytoscape.getCyEdge(b, a, attr, "u", true, true) );
+		// create directed edge over it: (same source, target, and interaction)
+		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, true) );
 		// test directionality:
 		Edge e1 = Cytoscape.getCyEdge(a, b, attr, "u", false, false);
 		assertFalse("edge is created with correct directionality", e1.isDirected());
 
-		Edge e2 = Cytoscape.getCyEdge(b, a, attr, "u", false, true);
+		Edge e2 = Cytoscape.getCyEdge(a, b, attr, "u", false, true);
 		assertTrue("edge is created with correct directionality", e2.isDirected());
 
 		assertTrue("the two edges are different", e1 != e2);
@@ -336,6 +337,6 @@ public class CytoscapeTest extends TestCase {
 
 		// check existence in reverse direction:
 		assertNotNull(Cytoscape.getCyEdge(b, a, attr, "u", false, false));
-		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", false, true)); // check 'feature' / bug
+		assertNull(Cytoscape.getCyEdge(b, a, attr, "u", false, true));
 	}
 }

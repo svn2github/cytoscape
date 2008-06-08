@@ -627,9 +627,12 @@ public abstract class Cytoscape {
 
 	/**
 	 * Gets the first CyEdge found between the two nodes (direction does not
-	 * matter) that has the given value for the given attribute. If the edge
-	 * doesn't exist, then it creates a directed edge.
-	 *
+	 * matter, but tries directed edge first) that has the given value for the
+	 * given attribute. If the edge doesn't exist, then it creates a directed
+	 * edge.
+	 * 
+	 * Thus, if create is true, this method will allways return a directed edge.
+	 * 
 	 * @param node_1
 	 *            one end of the edge
 	 * @param node_2
@@ -648,7 +651,14 @@ public abstract class Cytoscape {
 	 */
 	public static Edge getCyEdge(Node node_1, Node node_2, String attribute,
 	                               Object attribute_value, boolean create) {
-		return getCyEdge(node_1, node_2, attribute, attribute_value, create, true);
+		if (!create){
+			Edge e = getCyEdge(node_1, node_2, attribute, attribute_value, create, true);
+			if (e == null){
+				return getCyEdge(node_1, node_2, attribute, attribute_value, create, false);
+			} else { return e;}
+		} else {
+			return getCyEdge(node_1, node_2, attribute, attribute_value, create, true);
+		}
 	}
 
 	/**
@@ -694,14 +704,16 @@ public abstract class Cytoscape {
 					Node edgeSource = (Node) edge.getSource();
 
 					if ((edgeTarget.getRootGraphIndex() == target.getRootGraphIndex())
-					    && (edgeSource.getRootGraphIndex() == source.getRootGraphIndex())) {
+					    && (edgeSource.getRootGraphIndex() == source.getRootGraphIndex())
+					    && (edge.isDirected() == directed)) {
 						return edge;
 					}
 
 					if (!directed) {
 						// note that source and target are switched
 						if ((edgeTarget.getRootGraphIndex() == source.getRootGraphIndex())
-						    && (edgeSource.getRootGraphIndex() == target.getRootGraphIndex())) {
+						    && (edgeSource.getRootGraphIndex() == target.getRootGraphIndex())
+						    && (edge.isDirected() == directed)) {
 							return edge;
 						}
 					}
@@ -731,7 +743,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Returns an edge if it exists, otherwise creates a directed edge.
+	 * Returns a directed edge if it exists, otherwise creates a directed edge.
 	 *
 	 * @param source_alias
 	 *            an alias of a node
@@ -771,7 +783,7 @@ public abstract class Cytoscape {
 		Node source = getCyNode(source_alias);
 		Node target = getCyNode(target_alias);
 
-		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, true);
+		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, directed);
 	}
 
 	private static Object private_getEdgeAttributeValue(Edge edge, String attribute) {
