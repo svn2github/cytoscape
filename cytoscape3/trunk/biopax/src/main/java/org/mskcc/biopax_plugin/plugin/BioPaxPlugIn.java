@@ -35,7 +35,9 @@ import org.mskcc.biopax_plugin.view.BioPaxContainer;
 
 import cytoscape.CytoscapeInit;
 import cytoscape.data.ImportHandler;
-import cytoscape.plugin.CytoscapePlugin;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 import java.util.Properties;
 
@@ -44,7 +46,7 @@ import java.util.Properties;
  *
  * @author Ethan Cerami.
  */
-public class BioPaxPlugIn extends CytoscapePlugin {
+public class BioPaxPlugIn implements BundleActivator {
 	/**
 	 * Version Major Number.
 	 */
@@ -79,7 +81,7 @@ public class BioPaxPlugIn extends CytoscapePlugin {
 	 * Constructor.
 	 * This method is called by the main Cytoscape Application upon startup.
 	 */
-	public BioPaxPlugIn() {
+	public void start(BundleContext bc) {
 		ImportHandler importHandler = new ImportHandler();
 		importHandler.addFilter(new BioPaxFilter());
 
@@ -99,5 +101,8 @@ public class BioPaxPlugIn extends CytoscapePlugin {
 		// to start listening to network events, we grab an instance of
 		// a BioPaxContainerClass - this contains the network listener
 		BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+	}
+
+	public void stop(BundleContext bc) {
 	}
 }

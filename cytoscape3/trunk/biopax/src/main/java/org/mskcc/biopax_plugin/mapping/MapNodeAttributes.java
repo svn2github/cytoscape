@@ -189,15 +189,15 @@ public class MapNodeAttributes {
 	static {
 		try {
 			phosNode = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node.jpg"));
+                    (MapNodeAttributes.class.getResource("/images/phos-node.jpg"));
 			phosNodeSelectedTop = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-top.jpg"));
+                    (MapNodeAttributes.class.getResource("/images/phos-node-selected-top.jpg"));
 			phosNodeSelectedRight = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-right.jpg"));
+                    (MapNodeAttributes.class.getResource("/images/phos-node-selected-right.jpg"));
 			phosNodeSelectedBottom = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-bottom.jpg"));
+                    (MapNodeAttributes.class.getResource("/images/phos-node-selected-bottom.jpg"));
 			phosNodeSelectedLeft = javax.imageio.ImageIO.read
-                    (MapNodeAttributes.class.getResource("resources/phos-node-selected-left.jpg"));
+                    (MapNodeAttributes.class.getResource("/images/phos-node-selected-left.jpg"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
