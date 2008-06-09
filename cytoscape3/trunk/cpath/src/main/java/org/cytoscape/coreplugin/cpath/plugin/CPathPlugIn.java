@@ -36,7 +36,6 @@ package org.cytoscape.coreplugin.cpath.plugin;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.plugin.CytoscapePlugin;
 
 import cytoscape.view.CyMenus;
 import cytoscape.view.CytoscapeDesktop;
@@ -48,26 +47,31 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 /**
  * PlugIn For exchanging Data with CPath.
  *
  * @author Robert Sheridan, Ethan Cerami
  */
-public class CPathPlugIn extends CytoscapePlugin implements ActionListener {
+public class CPathPlugIn implements BundleActivator, ActionListener {
 	private CPathDesktop cPathDesktop;
 
 	/**
 	 * Constructor.
 	 * This method is called by the main Cytoscape Application upon startup.
 	 */
-	public CPathPlugIn() {
+	public void start(BundleContext bc) {
 		CytoscapeDesktop desktop = Cytoscape.getDesktop();
 		CyMenus cyMenus = desktop.getCyMenus();
 		JMenu plugInMenu = cyMenus.getNewNetworkMenu();
 		JMenuItem menuItem = new JMenuItem("Construct network using cPath...");
 		plugInMenu.add(menuItem);
 		menuItem.addActionListener(this);
+	}
+
+	public void stop(BundleContext bc) {
 	}
 
 	/**
