@@ -13,9 +13,10 @@ cp application/target/classes/*.jar $target/bundle
 cp automatic.layout/target/automatic.layout-1.0-SNAPSHOT.jar $target/bundle
 cp automatic.layout/target/classes/colt*.jar $target/bundle
 cp editor/target/editor-1.0-SNAPSHOT.jar $target/bundle
+cp biopax/target/biopax-1.0-SNAPSHOT.jar $target/bundle
+cp cpath/target/cpath-1.0-SNAPSHOT.jar $target/bundle
 
 #copy over plugins
-cp biopax/target/biopax-1.0-SNAPSHOT.jar $target/plugins
 cp merge/target/merge-1.0-SNAPSHOT.jar $target/plugins
 cp manual.layout/target/manual.layout-1.0-SNAPSHOT.jar $target/plugins
 cp psi.mi/target/psi.mi-1.0-SNAPSHOT.jar $target/plugins
@@ -26,7 +27,6 @@ cp sbml.reader/target/sbml.reader-1.0-SNAPSHOT.jar $target/plugins
 cp table.import/target/table.import-1.0-SNAPSHOT.jar $target/plugins
 cp attribute.browser/target/attribute.browser-1.0-SNAPSHOT.jar $target/plugins
 cp linkout/target/linkout-1.0-SNAPSHOT.jar $target/plugins
-cp cpath/target/cpath-1.0-SNAPSHOT.jar $target/plugins
 cp cpath2/target/cpath2-1.0-SNAPSHOT.jar $target/plugins
 
 
