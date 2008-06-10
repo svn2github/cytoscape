@@ -3,4 +3,5 @@
 #-----------------------------------------------------------------
 
 Bundle-Activator: org.mskcc.biopax_plugin.plugin.BioPaxPlugIn
-Private-Package: org.mskcc.biopax_plugin.*,legacy.*
+Private-Package: legacy.*
+Export-Package: org.mskcc.biopax_plugin.*
