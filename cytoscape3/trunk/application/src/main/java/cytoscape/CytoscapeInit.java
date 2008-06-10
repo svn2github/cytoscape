@@ -42,8 +42,8 @@ import cytoscape.data.readers.CytoscapeSessionReader;
 
 import cytoscape.init.CyInitParams;
 
-import cytoscape.plugin.PluginManager;
-import cytoscape.plugin.PluginUtil;
+//import cytoscape.plugin.PluginManager;
+//import cytoscape.plugin.PluginUtil;
 
 import cytoscape.util.FileUtil;
 
@@ -151,7 +151,7 @@ public class CytoscapeInit {
 			Cytoscape.buildOntologyServer();
 
 			// get the manager so it can test for webstart before menus are created (little hacky)
-			PluginManager.getPluginManager();
+			//PluginManager.getPluginManager();
 			
 			// see if we are in headless mode
 			// show splash screen, if appropriate
@@ -178,7 +178,7 @@ public class CytoscapeInit {
 				setUpAttributesChangedListener();
 			}
 
-			PluginUtil.loadPlugins(initParams.getPlugins());
+			//PluginUtil.loadPlugins(initParams.getPlugins());
 
 			System.out.println("loading session...");
 
@@ -458,12 +458,12 @@ public class CytoscapeInit {
 	private static void initProperties() {
 		if (properties == null) {
 			properties = new Properties();
-			loadStaticProperties("cytoscape.props", properties);
+			loadStaticProperties("/cytoscape.props", properties);
 		}
 
 		if (visualProperties == null) {
 			visualProperties = new Properties();
-			loadStaticProperties("vizmap.props", visualProperties);
+			loadStaticProperties("/vizmap.props", visualProperties);
 		}
 	}
 

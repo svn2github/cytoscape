@@ -84,13 +84,15 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 /**
  * Quick Find PlugIn.
  *
  * @author Ethan Cerami.
  */
-public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeListener,
+public class QuickFindPlugIn implements BundleActivator, PropertyChangeListener,
                                                                 QuickFindListener {
     static final int REINDEX_THRESHOLD = 1000;
     private QuickFindPanel quickFindToolBar;
@@ -99,10 +101,13 @@ public class QuickFindPlugIn extends CytoscapePlugin implements PropertyChangeLi
 	/**
 	 * Constructor.
 	 */
-	public QuickFindPlugIn() {
+	public void start(BundleContext bc) {
 		initListeners();
 		initToolBar();
 		initIndex();
+	}
+
+	public void stop(BundleContext bc) {
 	}
 
 	/**

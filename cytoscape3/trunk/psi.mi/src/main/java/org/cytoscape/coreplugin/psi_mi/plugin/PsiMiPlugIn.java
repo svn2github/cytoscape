@@ -38,7 +38,8 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.ImportHandler;
 
-import cytoscape.plugin.CytoscapePlugin;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 
 /**
@@ -47,16 +48,19 @@ import cytoscape.plugin.CytoscapePlugin;
  * @author Ethan Cerami.
  * @author Nisha Vinod.
  */
-public class PsiMiPlugIn extends CytoscapePlugin {
+public class PsiMiPlugIn implements BundleActivator {
 	/**
 	 * PSI-MI Plugin
 	 */
-	public PsiMiPlugIn() {
+	public void start(BundleContext bc) {
 		//  Register PsiMiFilter
 		ImportHandler importHandler = new ImportHandler();
 		importHandler.addFilter(new PsiMiFilter());
 
 		Cytoscape.getDesktop().getCyMenus().addAction(new ExportNetworkAsPsiMiOne());
 		Cytoscape.getDesktop().getCyMenus().addAction(new ExportNetworkAsPsiMiTwoFive());
+	}
+
+	public void stop(BundleContext bc) {
 	}
 }

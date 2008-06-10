@@ -46,10 +46,13 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
+
 /**
  * 
  */
-public class FilterPlugin extends CytoscapePlugin {
+public class FilterPlugin implements BundleActivator {
 
 	private static Vector<CompositeFilter> allFilterVect = null;
 	private FilterIO filterIO = new FilterIO();
@@ -79,7 +82,7 @@ public class FilterPlugin extends CytoscapePlugin {
 	 * @param csfilter
 	 *            DOCUMENT ME!
 	 */
-	public FilterPlugin() {
+	public void start(BundleContext bc) {
 
 		// Add a menuItem on "select" menu
 		FilterMenuItemAction menuAction = new FilterMenuItemAction(icon2, this);
@@ -104,6 +107,9 @@ public class FilterPlugin extends CytoscapePlugin {
 		.getCytoPanel(SwingConstants.WEST);
 
 		cytoPanelWest.add("Filters", new FilterMainPanel(allFilterVect));
+	}
+
+	public void stop(BundleContext bc) {
 	}
 
 

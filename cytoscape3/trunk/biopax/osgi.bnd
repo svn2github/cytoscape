@@ -1,0 +1,6 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Bundle-Activator: org.mskcc.biopax_plugin.plugin.BioPaxPlugIn
+Private-Package: org.mskcc.biopax_plugin.*,legacy.*

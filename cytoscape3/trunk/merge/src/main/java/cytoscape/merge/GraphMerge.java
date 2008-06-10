@@ -38,16 +38,8 @@ package cytoscape.merge;
 
 import cytoscape.Cytoscape;
 
-import cytoscape.plugin.CytoscapePlugin;
-
-import cytoscape.util.GraphSetUtils;
-import cytoscape.util.CyNetworkNaming;
-
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
-
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 /**
  * This is a plugin which is used to merge different graph objects into a single
@@ -55,38 +47,14 @@ import javax.swing.AbstractAction;
  * user specifies an ordering. The visual mapping information is taken from the
  * highest network in that ordering.
  */
-public class GraphMerge extends CytoscapePlugin {
+public class GraphMerge implements BundleActivator {
 	/**
 	 * This constructor registers the plugin action in hte operations menu
 	 */
-	public GraphMerge() {
-		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new TestAction());
+	public void start(BundleContext bc) {
+		Cytoscape.getDesktop().getCyMenus().getOperationsMenu().add(new MergeAction());
 	}
 
-	public class TestAction extends AbstractAction {
-		public TestAction() {
-			super("Merge networks");
-		}
-
-		/**
-		 * This method is called when the user selects the menu item.
-		 */
-		public void actionPerformed(ActionEvent ae) {
-			MergeDialog dialog = new MergeDialog();
-			dialog.setVisible(true);
-
-			if (!dialog.isCancelled()) {
-				if (dialog.getOperation() == MergeDialog.UNION) {
-					GraphSetUtils.createUnionGraph(dialog.getNetworkList(), true, 
-			                CyNetworkNaming.getSuggestedNetworkTitle("Union"));
-				} else if (dialog.getOperation() == MergeDialog.INTERSECTION) {
-					GraphSetUtils.createIntersectionGraph(dialog.getNetworkList(), true,
-						    CyNetworkNaming.getSuggestedNetworkTitle("Intersection"));
-				} else if (dialog.getOperation() == MergeDialog.DIFFERENCE) {
-					GraphSetUtils.createDifferenceGraph(dialog.getNetworkList(), true, 
-			                CyNetworkNaming.getSuggestedNetworkTitle("Difference"));
-				}
-			}
-		}
+	public void stop(BundleContext bc) {
 	}
 }

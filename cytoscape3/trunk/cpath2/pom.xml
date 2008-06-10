@@ -1,16 +1,39 @@
-<?xml version="1.0"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
   <parent>
-    <artifactId>cytoscape</artifactId>
-    <groupId>cytoscape</groupId>
+    <relativePath>../poms/compiled/</relativePath>
+    <groupId>cytoscape.core.build</groupId>
+    <artifactId>compiled-bundle-settings</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
+  <properties>
+    <bundle.symbolicName>org.cytoscape.coreplugin.cpath2</bundle.symbolicName>
+    <bundle.namespace>org.cytoscape</bundle.namespace>
+  </properties>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape.coreplugin</groupId>
   <artifactId>cpath2</artifactId>
-  <name>cpath2</name>
   <version>1.0-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+
+  <name>${bundle.symbolicName} [${bundle.namespace}]</name>
+
+  <packaging>bundle</packaging>
+
   <dependencies>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_compendium</artifactId>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -36,7 +59,7 @@
       <artifactId>commons-httpclient</artifactId>
       <version>3.1</version>
     </dependency>
-
+<!--
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
@@ -48,7 +71,7 @@
       <artifactId>commons-logging</artifactId>
       <version>1.1</version>
     </dependency>
-
+-->
   </dependencies>
 
         <build>

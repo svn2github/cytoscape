@@ -49,18 +49,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
+
 /**
  * The cPath plugin class.  It gets called by Cytoscape's plugin manager
  * to install inself.  The main job of this guy is to instantiate our http server.
  *
  * @author Benjamin Gross.
  */
-public class CPathPlugIn2 extends CytoscapePlugin {
+public class CPathPlugIn2 implements BundleActivator {
 
     /**
      * Constructor.
      */
-    public CPathPlugIn2() throws IOException {
+    public void start(BundleContext bc) {
 
         String debugProperty = System.getProperty("DEBUG");
         Boolean debug = (debugProperty != null && debugProperty.length() > 0) &&
@@ -78,6 +81,9 @@ public class CPathPlugIn2 extends CytoscapePlugin {
         //  Register Web Service
         WebServiceClientManager.registerClient(CytoscapeCPathWebService.getClient());
     }
+
+    public void stop(BundleContext bc) {
+	}
 
     public static JScrollPane createConfigPanel() {
         JPanel configPanel = new JPanel();

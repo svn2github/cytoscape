@@ -55,16 +55,19 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.SwingConstants;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
+
 
 /**
  *
  */
-public class ManualLayoutPlugin extends CytoscapePlugin {
+public class ManualLayoutPlugin implements BundleActivator {
 
 	/**
 	 * Creates a new ManualLayoutPlugin object.
 	 */
-	public ManualLayoutPlugin() {
+	public void start(BundleContext bc) {
 
 		// create the panels 
 		RotatePanel rotatePanel = new RotatePanel();
@@ -82,5 +85,8 @@ public class ManualLayoutPlugin extends CytoscapePlugin {
 		Cytoscape.getDesktop().getCyMenus().addAction( new ScalePanelAction(), 1);
 		Cytoscape.getDesktop().getCyMenus().addAction( new ControlPanelAction(), 2);
 
+	}
+
+	public void stop(BundleContext bc) {
 	}
 }

@@ -1,18 +1,47 @@
-<?xml version="1.0"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
   <parent>
-    <artifactId>cytoscape</artifactId>
-    <groupId>cytoscape</groupId>
+    <relativePath>../poms/compiled/</relativePath>
+    <groupId>cytoscape.core.build</groupId>
+    <artifactId>compiled-bundle-settings</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
+  <properties>
+    <bundle.symbolicName>org.cytoscape.vizmap</bundle.symbolicName>
+    <bundle.namespace>org.cytoscape.vizmap</bundle.namespace>
+  </properties>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>vizmap</artifactId>
-  <packaging>bundle</packaging>
-  <name>vizmap</name>
   <version>1.0-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
-  <dependencies>
 
+  <name>${bundle.symbolicName}</name>
+
+  <packaging>bundle</packaging>
+
+  <dependencies>
+    <!--
+     | uncomment to add all imported (non-local) bundles to your compilation classpath
+    <dependency>
+      <type>pom</type>
+      <groupId>${parent.groupId}</groupId>
+      <artifactId>provision</artifactId>
+      <optional>true</optional>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_compendium</artifactId>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -44,29 +73,12 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
 
-	<dependency>
-		<groupId>cytoscape-temp</groupId>
-		<artifactId>swingx</artifactId>
-		<version>1.0</version>
-	</dependency>
+    <dependency>
+        <groupId>cytoscape-temp</groupId>
+        <artifactId>swingx</artifactId>
+        <version>1.0</version>
+    </dependency>
 
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>org.cytoscape.vizmap,org.cytoscape.vizmap.calculators,org.cytoscape.vizmap.mappings,org.cytoscape.vizmap.icon,org.cytoscape.vizmap.mappings.discrete,org.cytoscape.vizmap.mappings.continuous</Export-Package>
-            <Private-Package>org.cytoscape.vizmap.parsers,org.cytoscape.vizmap.properties</Private-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
 
 </project>

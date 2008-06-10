@@ -63,7 +63,7 @@ public class LayoutActivator implements BundleActivator {
 	private Set<ServiceRegistration> regSet;
 
 	public void start(BundleContext bc) {
-		System.out.println("org.cytoscape.layout.automatic.LayoutActivator start");	
+		System.out.println("csplugins.layout.LayoutActivator start");	
 		// initialize the set of registrations
 		regSet = new HashSet<ServiceRegistration>();
 

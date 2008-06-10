@@ -1,43 +1,47 @@
-<?xml version="1.0"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
   <parent>
-    <artifactId>cytoscape</artifactId>
-    <groupId>cytoscape</groupId>
+    <relativePath>../poms/compiled/</relativePath>
+    <groupId>cytoscape.core.build</groupId>
+    <artifactId>compiled-bundle-settings</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+
+  <properties>
+    <bundle.symbolicName>org.cytoscape.view</bundle.symbolicName>
+    <bundle.namespace>org.cytoscape.view</bundle.namespace>
+  </properties>
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.cytoscape</groupId>
   <artifactId>view</artifactId>
-  <packaging>bundle</packaging>
-  <name>view</name>
   <version>1.0-SNAPSHOT</version>
-  <url>http://maven.apache.org</url>
+
+  <name>${bundle.symbolicName}</name>
+
+  <packaging>bundle</packaging>
+
   <dependencies>
-
+    <!--
+     | uncomment to add all imported (non-local) bundles to your compilation classpath
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+      <type>pom</type>
+      <groupId>${parent.groupId}</groupId>
+      <artifactId>provision</artifactId>
+      <optional>true</optional>
     </dependency>
-
+    -->
     <dependency>
-      <groupId>org.cytoscape</groupId>
-      <artifactId>network</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_core</artifactId>
+      <optional>true</optional>
     </dependency>
-
     <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>geom.rtree</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi_R4_compendium</artifactId>
+      <optional>true</optional>
     </dependency>
-
-    <dependency>
-      <groupId>cytoscape</groupId>
-      <artifactId>geom.spacial</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-
     <dependency>
       <groupId>cytoscape</groupId>
       <artifactId>util.intr</artifactId>
@@ -74,22 +78,31 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
 
-	</dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Export-Package>org.cytoscape.view</Export-Package>
-						<Private-Package>org.cytoscape.view.impl</Private-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-  </build>
+    <dependency>
+      <groupId>org.cytoscape</groupId>
+      <artifactId>network</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>geom.rtree</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>cytoscape</groupId>
+      <artifactId>geom.spacial</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+  </dependencies>
 
 </project>

@@ -38,8 +38,6 @@ import static cytoscape.browser.DataObjectType.EDGES;
 import static cytoscape.browser.DataObjectType.NETWORK;
 import static cytoscape.browser.DataObjectType.NODES;
 
-import cytoscape.plugin.CytoscapePlugin;
-
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
@@ -57,6 +55,8 @@ import java.util.Properties;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 /**
  * Attribute browser's main class.<br>
@@ -66,7 +66,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
  * @author xmas kono
  *
  */
-public class AttributeBrowserPlugin extends CytoscapePlugin {
+public class AttributeBrowserPlugin implements BundleActivator {
 		
 	// Name of browser's property file.
 	private static final String PROP_FILE_NAME = "attributeBrowser.props";
@@ -88,7 +88,7 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 	}
 
 	// Global properties for this plugin.
-	private final Properties prop;
+	private final Properties prop = new Properties();
 
 	/**
 	 * Constructor for this plugin.
@@ -97,8 +97,10 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 	 *  Filter functions are implemented in Advanced Window.
 	 *
 	 */
-	public AttributeBrowserPlugin() {
-		prop = new Properties();
+	public void start(BundleContext bc) {
+	}
+
+	public void stop(BundleContext bc) {
 	}
 
 	/**

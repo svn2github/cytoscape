@@ -4,22 +4,22 @@ package cytoscape.linkout;
 import org.cytoscape.*;
 import cytoscape.Cytoscape;
 
-import cytoscape.plugin.*;
-
 import org.cytoscape.view.*;
 
 import java.util.*;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 
 /**
  * LinkOut plugin for customized URL links
  */
-public class LinkOutPlugin extends CytoscapePlugin {
+public class LinkOutPlugin implements BundleActivator {
 	/**
 	 * Creates a new LinkOutPlugin object.
 	 */
-	public LinkOutPlugin() {
+	public void start(BundleContext bc) {
 		try {
 			//Create a Network create event listener
 			LinkOutNetworkListener m_listener = new LinkOutNetworkListener();
@@ -46,5 +46,8 @@ public class LinkOutPlugin extends CytoscapePlugin {
 
 			return;
 		}
+	}
+
+	public void stop(BundleContext bc) {
 	}
 }

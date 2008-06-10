@@ -40,24 +40,23 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.ImportHandler;
 
-import cytoscape.plugin.CytoscapePlugin;
-
-import java.awt.event.ActionEvent;
-
-import java.util.*;
-
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 /**
  This plugin will allow the reading of an SBML level 2 file.
  *
  *W.P.A. Ligtenberg, Eindhoven University of Technology
  */
-public class SBMLReaderPlugin extends CytoscapePlugin {
+public class SBMLReaderPlugin implements BundleActivator {
 	/**
 	 * This constructor creates an action and adds it to the Plugins menu.
 	 */
-	public SBMLReaderPlugin() {
+	public void start(BundleContext bc) {
 		ImportHandler ih = Cytoscape.getImportHandler();
 		ih.addFilter(new SBMLFilter());
+	}
+
+	public void stop(BundleContext bc) {
 	}
 }

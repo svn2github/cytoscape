@@ -63,19 +63,26 @@ import java.util.*;
 
 import javax.swing.*;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
+
+
 
 /**
  *
  */
-public class CsFilter extends CytoscapePlugin implements PropertyChangeListener {
+public class CsFilter  implements BundleActivator, PropertyChangeListener {
 	protected JFrame frame;
 	protected FilterUsePanel filterUsePanel;
 
 	/**
 	 * Creates a new CsFilter object.
 	 */
-	public CsFilter() {
+	public void start(BundleContext bc) {
 		initialize();
+	}
+
+	public void stop(BundleContext bc) {
 	}
 
 	
