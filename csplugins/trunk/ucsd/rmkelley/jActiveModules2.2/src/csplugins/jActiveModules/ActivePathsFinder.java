@@ -225,21 +225,6 @@ public class ActivePathsFinder {
 	}
 
 	/**
-	 * this function restores all the graphs to the nodes that have been
-	 * removed. The nodes are removed instead of hidden because it seems like
-	 * the y files component finder goes wonky if the nodes are only hidden
-	 */
-	/*
-	 * private void restoreNodes(){ //for each node not present in the graph, go
-	 * through and toggle //its state back GraphPerspective graph =
-	 * cyNetwork.getGraphPerspective(); for(int i=0;i<nodes.length;i++){
-	 * if(!graph.containsNode(nodes[i],false)){ graph.restoreNode(nodes[i]);
-	 * Edge [] e_array = (Edge[])node2edges.get(nodes[i]); for(int j=0;j<e_array.length;j++){
-	 * Edge e = e_array[j]; if(graph.containsNode(e.getSource(),false) &&
-	 * graph.containsNode(e.getTarget(),false)){ graph.restoreEdge(e); } } } } }
-	 */
-
-	/**
 	 * This is hte method called to determine the activePaths. Its operation
 	 * depends on the parameters specified in hte activePathsFinderParameters
 	 * object passed into the constructor.
@@ -260,7 +245,6 @@ public class ActivePathsFinder {
 			// take the values from this hashmap and put them into a vector
 			// so that there are no duplicates.
 			comps = new Vector(new HashSet(node2BestComponent.values()));
-			Collections.sort(comps);
 
 		} else {
 			System.err.println("Starting simulated annealing");
@@ -309,53 +293,19 @@ public class ActivePathsFinder {
 			// restoreNodes();
 		}
 
-		// the old code liked to deal with these ActivePaths objects which it
-		// used
-		// to report back the ActivePaths back to the user. I didn't want to
-		// deal with
-		// them directly, so I have to map back from the Component object to the
-		// ActivePath
-		// object so the information can be conveyed to the user
+		Collections.sort(comps);
+		comps = filterResults(comps);
 
-		// System.out.println("Mapping component objects into ActivePaths");
-		// ActivePath [] activePaths = new
-		// ActivePath[apfParams.getNumberOfPaths()];
-		// for(int i = 0;i<apfParams.getNumberOfPaths();i++){
-		// Component current = ((Component)comps.get(i));
-		// System.out.println(current);
-		// Vector nodeVector = current.getNodes();
-		// String [] genes = new String[nodeVector.size()];
-		// for(int j = 0;j<nodeVector.size();j++){
-		// genes[j] =
-		// (cytoscapeWindow.getCanonicalNodeName((Node)nodeVector.elementAt(j)));
-		// }
-		// activePaths[i] = new
-		// ActivePath(current.getScore(),genes,current.getSignificantConditions());
-		// }
-		// System.out.println("Done mapping component objects");
-		// restoreNodes();
-		
 		/*
 		 * Finalize the display information
 		 */
-		for(Iterator compIt = comps.iterator();compIt.hasNext();){
-			((Component)compIt.next()).finalizeDisplay();
-		}
-		
-		/*
-		 * Apply any post-filtering to the results
-		 */
-		//if(apfParams.getEnableFiltering()){
-		//	comps = filterResults(comps);
+		//for(Iterator compIt = comps.iterator();compIt.hasNext();){
+		//	((Component)compIt.next()).finalizeDisplay();
 		//}
-		
 		
 		Component [] temp = new Component[0];
 		int size = Math.min(comps.size(), apfParams.getNumberOfPaths());
 		temp = (Component[]) comps.subList(0, size).toArray(temp);
-		//for(int idx = 0;idx<temp.length;idx++){
-		//	temp[idx].finalizeDisplay();
-		//}
 		return temp;
 	}
 	
@@ -364,27 +314,30 @@ public class ActivePathsFinder {
 		UNFILTERED_LOOP:
 		for(Iterator unfilteredIt = unfiltered.iterator();unfilteredIt.hasNext();){
 			Component component = (Component)unfilteredIt.next();
+			component.finalizeDisplay();
 			for(Iterator resultIt = result.iterator();resultIt.hasNext();){
 				Component prevComponent  = (Component)resultIt.next();
 				if(overlap(component,prevComponent) > apfParams.getOverlapThreshold()){
-					System.err.println("Filtering out result");
-					continue UNFILTERED_LOOP;
+				    continue UNFILTERED_LOOP;
 				}				
 			}
 			result.add(component);
+			if(result.size() >= apfParams.getNumberOfPaths()){
+			    break;
+			}
 		}
 		return result;
 	}
 
 	private double overlap(Component component, Component prevComponent) {
-		HashSet nodeSet = new HashSet(prevComponent.getDisplayNodes());
-		int intersection = 0;
-		for(Iterator nodeIt = component.getDisplayNodes().iterator();nodeIt.hasNext();){
-			if(nodeSet.contains(nodeIt.next())){
-				intersection++;
-			}
+	    HashSet nodeSet = new HashSet(prevComponent.getDisplayNodes());
+	    int intersection = 0;
+	    for(Iterator nodeIt = component.getDisplayNodes().iterator();nodeIt.hasNext();){
+		if(nodeSet.contains(nodeIt.next())){
+		    intersection++;
 		}
-		return intersection/(double)(component.getDisplayNodes().size());
+	    }
+	    return intersection/(double)(component.getDisplayNodes().size());
 	}
 
 	/**

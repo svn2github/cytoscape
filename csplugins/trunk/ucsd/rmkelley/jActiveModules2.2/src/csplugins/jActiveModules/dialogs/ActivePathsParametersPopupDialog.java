@@ -86,6 +86,10 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 	JTextField intervalNum;
 	JLabel intervalLabel;
 
+    JPanel overlapPanel;
+    JTextField overlapNum;
+    JLabel overlapLabel;
+
 	JPanel pathPanel;
 	JTextField pathNum;
 	JLabel pathLabel;
@@ -356,10 +360,12 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 
 		createRegionalScoringController();
 		createPathsController();
+		createOverlapController();
 
 		layout.setHorizontalGroup(
 			layout.createParallelGroup()
 				.add(pathPanel)
+			.add(overlapPanel)
 				.add(mcBox)
 				.add(regionalBox)
 		);
@@ -367,6 +373,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		layout.setVerticalGroup(
 			layout.createSequentialGroup()
 				.add(pathPanel)
+			.add(overlapPanel)
 				.add(mcBox)
 				.add(regionalBox)
 		);
@@ -603,6 +610,30 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		);
 	} // createPathsController
 
+	private void createOverlapController() {
+		overlapPanel = new JPanel();
+		GroupLayout layout = new GroupLayout(overlapPanel);
+		overlapPanel.setLayout(layout);
+
+		overlapLabel = new JLabel("Overlap Threshold: ");
+		overlapNum = new JTextField(Double.toString(apfParams.getOverlapThreshold()));
+		java.awt.FontMetrics fontMetrics = overlapNum.getFontMetrics(pathNum.getFont());
+		overlapNum.setMaximumSize(new Dimension( fontMetrics.charWidth('m') * 7, fontMetrics.getHeight() ));
+		overlapNum.addFocusListener(new OverlapListener());
+
+		layout.setHorizontalGroup(
+			layout.createSequentialGroup()
+				.add(overlapLabel)
+				.add(overlapNum)
+		);
+
+		layout.setVerticalGroup(
+			layout.createParallelGroup()
+				.add(overlapLabel)
+				.add(overlapNum)
+		);
+	} // createPathsController
+    
 	// -----------------------------------------------------------------------------
 
 	class TempController {
@@ -668,6 +699,7 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 		// regionalBox.setEnabled(false);
 		regionalBox.addItemListener(new RSListener());
 	} // createRegionalScoringController
+
 
 	private void createHelpDialog()
 	{
@@ -1030,6 +1062,35 @@ public class ActivePathsParametersPopupDialog extends JPanel {
 	} // IterListener
 
 	// -----------------------------------------------------------------------------
+	class OverlapListener implements FocusListener {
+		public void focusGained(FocusEvent e) {
+			// System.out.println("gained");
+			validate();
+		}
+		public void focusLost(FocusEvent e) {
+			// System.out.println("lost");
+			validate();
+		}
+
+		private void validate() {
+			String pt = overlapNum.getText();
+			try{
+			    double overlap = Double.parseDouble(pt);
+			    if(overlap < 0.0){
+				overlap = 0.0;
+			    }
+			    if(overlap > 1.0){
+				overlap = 1.0;
+			    }
+			    overlapNum.setText((new Double(overlap)).toString());
+			    apfParams.setOverlapThreshold(overlap);
+			} catch (NumberFormatException nfe) {
+			    overlapNum.setText("0.8");
+			    apfParams.setOverlapThreshold(0.8);
+			}
+		}
+
+	} // PathListener
 	class PathListener implements FocusListener {
 		public void focusGained(FocusEvent e) {
 			// System.out.println("gained");
