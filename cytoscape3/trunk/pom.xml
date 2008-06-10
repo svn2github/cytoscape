@@ -90,6 +90,36 @@
 
   <packaging>pom</packaging>
 
+   <repositories>
+       <!-- for biojava -->
+       <repository>
+           <id>wwmm</id>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+           <name>Murray-Rust Research Group</name>
+           <url>http://wwmm.ch.cam.ac.uk/maven2</url>
+       </repository>
+    
+	   <!-- for jars I can't find anywhere else -->
+       <repository>
+           <id>chianti</id>
+           <snapshots>
+               <enabled>false</enabled>
+           </snapshots>
+           <name>Cytoscape Internal Repository</name>
+           <url>http://chianti.ucsd.edu/maven2</url>
+       </repository>
+
+		<!-- for freehep jars -->
+		<repository>
+			<id>freehep-maven</id>
+			<name>Maven FreeHEP</name>
+			<url>http://java.freehep.org/maven2</url>
+		</repository>
+
+   </repositories>
+
   <build>
     <plugins>
       <plugin>
@@ -102,9 +132,9 @@
       <plugin>
         <groupId>org.ops4j</groupId>
         <artifactId>maven-pax-plugin</artifactId>
-        <version>1.0-RC3</version>
         <configuration>
           <!--
+        <version>1.RC3</version>
            | some example Pax-Runner settings
           -->
           <provision>
