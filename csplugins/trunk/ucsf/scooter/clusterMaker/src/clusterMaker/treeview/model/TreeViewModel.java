@@ -77,8 +77,9 @@ public class TreeViewModel extends TVModel {
 		networkView = Cytoscape.getCurrentNetworkView();
 
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-		// Get the cluster data table (CDT) from Cytoscape.  This is really just the
-		// annotated distance matrix
+
+		// Get the type of cluster
+		String clusterType = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
 		
 		// Gene annotations are just the list of node names
 		List<String>geneList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.NODE_ORDER_ATTRIBUTE);
@@ -165,16 +166,25 @@ public class TreeViewModel extends TVModel {
 		gidFound(true);
 
 		// Now, get the gene tree results (GTR) or array tree results (ATR) from Cytoscape, depending on
-		// what we clustered
+		// what we clustered.  Note that the way we put this together really depends on whether we've done
+		// a som, kmeans, or hierarchical cluster
 
 		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE)) {
 			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE);
-			setGtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
-			String [][] gtrHeaders = new String[groupList.size()][4];
+			String [][] gtrHeaders = null;
+
+			if (clusterType.equals("hierarchical")) {
+				setGtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
+				gtrHeaders = new String[groupList.size()][4];
+			} else if (clusterType.equals("kmeans")) {
+				setGtrPrefix(new String [] {"NODEID", "GROUP"});
+				gtrHeaders = new String[groupList.size()][2];
+			}
 
 			parseGroupHeaders(groupList, gtrHeaders);
 
 			setGtrHeaders(gtrHeaders);
+
 			hashGTRs();
 		}
 
@@ -182,8 +192,15 @@ public class TreeViewModel extends TVModel {
 		// when we save it
 		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE)) {
 			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE);
-			setAtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
-			String [][] atrHeaders = new String[groupList.size()][4];
+			String [][] atrHeaders = null;
+
+			if (clusterType.equals("hierarchical")) {
+				setAtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
+				atrHeaders = new String[groupList.size()][4];
+			} else if (clusterType.equals("kmeans")) {
+				setAtrPrefix(new String [] {"NODEID", "GROUP"});
+				atrHeaders = new String[groupList.size()][2];
+			}
 
 			parseGroupHeaders(groupList, atrHeaders);
 
@@ -214,17 +231,13 @@ public class TreeViewModel extends TVModel {
 
 		// Parse the group data: format is NAME\tID1\tID2\tdistance
 		int headerNumber = 0;
+		int headerLength = headers[0].length;
 		for (String group: groupList) {
 			String[] tokens = group.split("[\t ]");
-			String name = tokens[0];
-			String id1 = tokens[1];
-			String id2 = tokens[2];
-			Double distance = new Double(tokens[3]);
-
-			headers[headerNumber][0] = name;
-			headers[headerNumber][1] = id1;
-			headers[headerNumber][2] = id2;
-			headers[headerNumber++][3] = distance.toString();
+			for (int t = 0; t < headerLength; t++) {
+				headers[headerNumber][t] = tokens[t];
+			}
+			headerNumber++;
 		}
 	}
 }

@@ -113,13 +113,13 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 		// K
 		clusterProperties.add(new Tunable("knumber",
 		                                  "Number of clusters",
-		                                  Tunable.INTEGER, new Integer(0),
+		                                  Tunable.INTEGER, new Integer(10),
 		                                  (Object)kNumber, (Object)null, 0));
 
 		// Number of iterations
 		clusterProperties.add(new Tunable("rnumber",
 		                                  "Number of iterations",
-		                                  Tunable.INTEGER, new Integer(0),
+		                                  Tunable.INTEGER, new Integer(1),
 		                                  (Object)rNumber, (Object)null, 0));
 
 		// The distance metric to use

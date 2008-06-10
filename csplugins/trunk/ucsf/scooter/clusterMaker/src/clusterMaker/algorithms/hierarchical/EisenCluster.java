@@ -61,6 +61,7 @@ public class EisenCluster {
 	public final static String CLUSTER_EDGE_ATTRIBUTE = "__clusterEdgeWeight";
 	public final static String NODE_ORDER_ATTRIBUTE = "__nodeOrder";
 	public final static String ARRAY_ORDER_ATTRIBUTE = "__arrayOrder";
+	public final static String CLUSTER_TYPE_ATTRIBUTE = "__clusterType";
 	static CyLogger logger;
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
@@ -150,7 +151,7 @@ public class EisenCluster {
 		// Now sort based on tree structure
 		Integer order[] = TreeSort(matrix, nodeList.length, nodeOrder, nodeCounts, nodeList);
 
-		updateAttributes(matrix, attrList, weightAttributes, order);
+		updateAttributes(matrix, attrList, weightAttributes, order, "hierarchical");
 
 		// Finally, create the group hierarchy
 		// The root is the last entry in our nodeList
@@ -167,10 +168,13 @@ public class EisenCluster {
 	}
 
 	public static void updateAttributes(Matrix matrix, List<String>attrList, 
-	                                    String[] weightAttributes, Integer[] order) {
+	                                    String[] weightAttributes, Integer[] order,
+	                                    String cluster_type) {
 		// Update the network attribute "HierarchicalCluster" and make it hidden
 		CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 		String netID = Cytoscape.getCurrentNetwork().getIdentifier();
+
+		netAttr.setAttribute(netID, CLUSTER_TYPE_ATTRIBUTE, cluster_type);
 
 		if (matrix.isTransposed()) {
 			netAttr.setListAttribute(netID, CLUSTER_ATTR_ATTRIBUTE, attrList);
@@ -235,6 +239,8 @@ public class EisenCluster {
 			netAttr.deleteAttribute(netID, CLUSTER_NODE_ATTRIBUTE);
 		if (netAttr.hasAttribute(netID, CLUSTER_EDGE_ATTRIBUTE))
 			netAttr.deleteAttribute(netID, CLUSTER_EDGE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, CLUSTER_TYPE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, CLUSTER_TYPE_ATTRIBUTE);
 
 		// See if we have any old groups in this network
 		if (netAttr.hasAttribute(netID, GROUP_ATTRIBUTE)) {

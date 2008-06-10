@@ -81,18 +81,19 @@ public class KCluster {
 		// Cluster
 		int ifound = kmeans(nClusters, nIterations, matrix, metric, clusters);
 
-		HashMap<String,List<Integer>> groupMap = new HashMap();
+		HashMap<String,List<CyNode>> groupMap = new HashMap();
 		ArrayList<String> attrList = new ArrayList(matrix.nRows());
 		// Create the attribute list
 		for (int cluster = 0; cluster < nClusters; cluster++) {
-			List<Integer> memberList = new ArrayList<Integer>();
+			List<CyNode> memberList = new ArrayList<CyNode>();
 			for (int i = 0; i < matrix.nRows(); i++) {
 				if (clusters[i] == cluster) {
 					attrList.add(matrix.getRowLabel(i)+"\t"+cluster);
-					memberList.add(Integer.valueOf(i));
+					logger.debug(matrix.getRowLabel(i)+"\t"+cluster);
+					memberList.add(matrix.getRowNode(i));
 				}
 			}
-			groupMap.put("Cluster "+cluster, memberList);
+			groupMap.put("Cluster_"+cluster, memberList);
 		}
 
 		if (!matrix.isTransposed()) {
@@ -100,15 +101,13 @@ public class KCluster {
 
 			// Create our groups
 			for (String clusterName: groupMap.keySet()) {
-				List<Integer> memberList = groupMap.get(clusterName);
+				List<CyNode> memberList = groupMap.get(clusterName);
 				groupNames.add(clusterName);
 
-				List<CyNode> nodeList = new ArrayList();
-				for (Integer index: memberList) {
-					nodeList.add(matrix.getRowNode(index.intValue()));
-				}
+				logger.debug("Creating group: "+clusterName);
+
 				// Create the group
-				CyGroup group = CyGroupManager.createGroup(clusterName, nodeList, null);
+				CyGroup group = CyGroupManager.createGroup(clusterName, memberList, null);
 				if (group != null) 
 					CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
 			}
@@ -121,11 +120,11 @@ public class KCluster {
 		// Sort the appropriate list (Nodes or Attributes)
 		Integer rowOrder[] = matrix.indexSort(clusters, clusters.length);
     for (int i = 0; i < rowOrder.length; i++) {
-      logger.debug(""+i+": "+matrix.getRowLabel(rowOrder[i].intValue()));
+      // logger.debug(""+i+": "+matrix.getRowLabel(rowOrder[i].intValue()));
     }
 
 		// Update the network attributes
-		EisenCluster.updateAttributes(matrix, attrList, weightAttributes, rowOrder);
+		EisenCluster.updateAttributes(matrix, attrList, weightAttributes, rowOrder, "kmeans");
 
 		return "Complete";
 	}
@@ -165,9 +164,9 @@ public class KCluster {
 		Matrix cData = new Matrix(matrix.nRows(), matrix.nColumns());
 
 		// Outer initialization
-		if (nIterations == 0) {
+		if (nIterations <= 1) {
 			for (int i=0; i < clusterID.length; i++) {
-				tclusterid[i] = clusterID[i];
+				tclusterid = clusterID;
 			}
 			nIterations = 1;
 		} else {

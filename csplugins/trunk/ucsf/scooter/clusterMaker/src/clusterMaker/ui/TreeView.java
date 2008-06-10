@@ -155,7 +155,7 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		dataModel = new TreeViewModel(myLogger);
 
 		// Set up our configuration
-		XmlConfig documentConfig = new XmlConfig("<DocumentConfig><Views><View type=\"Dendrogram\" dock=\"1\"><ColorExtractor contrast=\"3.0\"><ColorSet up=\"#FFFF00\" down=\"#0000FF\"/></ColorExtractor></View></Views></DocumentConfig>","DocumentConfig");
+		XmlConfig documentConfig = new XmlConfig("<DocumentConfig></DocumentConfig>","DocumentConfig");
 		dataModel.setDocumentConfig(documentConfig);
 
 		// Create our view frame
