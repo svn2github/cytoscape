@@ -133,10 +133,7 @@
         <groupId>org.ops4j</groupId>
         <artifactId>maven-pax-plugin</artifactId>
         <configuration>
-          <!--
-        <version>1.RC3</version>
-           | some example Pax-Runner settings
-          -->
+          <!--  some example Pax-Runner settings -->
           <provision>
             <param>--platform=felix</param>
             <param>--profiles=minimal</param>
