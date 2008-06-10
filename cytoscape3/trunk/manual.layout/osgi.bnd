@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Bundle-Activator: cytoscape.layout.manual.ManualLayoutPlugin
-Private-Package: cytoscape.layout.manual.*
+Private-Package: cytoscape.layout.manual.*,cytoscape.graph.layout.*
