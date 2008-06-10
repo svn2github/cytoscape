@@ -539,7 +539,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		titleIconLabel2.setIcon(RIGHT_ARROW_ICON.getIcon());
 
-		titleIconLabel3.setIcon(new ImageIcon(Cytoscape.class.getResource("images/icon48.png")));
+		titleIconLabel3.setIcon(new ImageIcon(Cytoscape.class.getResource("/images/icon48.png")));
 
 		titleSeparator.setForeground(java.awt.Color.blue);
 
@@ -1039,7 +1039,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 				});
 
 			arrowButton2.setBackground(new java.awt.Color(250, 250, 250));
-			arrowButton2.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_right-16.png")));
+			arrowButton2.setIcon(new javax.swing.ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_right-16.png")));
 			arrowButton2.setBorder(null);
 			arrowButton2.setBorderPainted(false);
 
