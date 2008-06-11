@@ -161,7 +161,7 @@ public class KCluster {
 		double error = Double.MAX_VALUE;
 
 		// This matrix will store the centroid data
-		Matrix cData = new Matrix(matrix.nRows(), matrix.nColumns());
+		Matrix cData = new Matrix(nClusters, matrix.nColumns());
 
 		// Outer initialization
 		if (nIterations <= 1) {
@@ -182,6 +182,7 @@ public class KCluster {
 
 			// Randomly assign elements to clusters
 			if (nIterations != 0) randomAssign(nClusters, nelements, tclusterid);
+			// if (nIterations != 0) debugAssign(nClusters, nelements, tclusterid);
 
 			// Initialize
 			for (int i = 0; i < nClusters; i++) counts[i] = 0;
@@ -201,6 +202,16 @@ public class KCluster {
 
 				// Find the center
 				getClusterMeans(nClusters, matrix, cData, tclusterid);
+
+				/*
+				for (int i = 0; i < nClusters; i++) {
+					System.out.print("cluster "+i+": ");
+					for (int j = 0; j < matrix.nColumns(); j++) {
+						System.out.print(cData.getValue(i,j)+"\t");
+					}
+					System.out.println();
+				}
+				*/
 
 				for (int i = 0; i < nelements; i++) {
 					// Calculate the distances
@@ -226,6 +237,7 @@ public class KCluster {
           }
         	total += distance;
         }
+				// System.out.println("total = "+total+", previous = "+previous);
       	if (total>=previous) break;
       	/* total>=previous is FALSE on some machines even if total and previous
 				 * are bitwise identical. */
@@ -256,6 +268,7 @@ public class KCluster {
         	{ 
 						ifound = 1;
           	error = total;
+						// System.out.println("Mapping tclusterid to clusterid");
           	for (int i = 0; i < nelements; i++) clusterID[i] = tclusterid[i];
         	}
         	break;
@@ -264,17 +277,18 @@ public class KCluster {
     	if (element==nelements) ifound++; /* break statement not encountered */
   	} while (++iteration < nIterations);
 
+		// System.out.println("ifound = "+ifound+", error = "+error);
   	return ifound;
 	}
 
 	private static void getClusterMeans(int nClusters, Matrix data, Matrix cdata, int[] clusterid) {
 
-		int[][]cmask = new int[cdata.nRows()][cdata.nColumns()];
+		double[][]cmask = new double[nClusters][cdata.nColumns()];
 
 		for (int i = 0; i < nClusters; i++) {
 			for (int j = 0; j < data.nColumns(); j++) {
 				cdata.setValue(i, j, null);
-				cmask[i][j] = 0;
+				cmask[i][j] = 0.0;
 			}
 		}
 
@@ -282,20 +296,19 @@ public class KCluster {
 			int i = clusterid[k];
 			for (int j = 0; j < data.nColumns(); j++) {
 				if (data.hasValue(k,j)) {
+					double cValue = 0.0;
 					double dataValue = data.getValue(k,j).doubleValue();
 					if (cdata.hasValue(i,j)) {
-						double cValue = cdata.getValue(i,j).doubleValue();
-						cdata.setValue(i,j, Double.valueOf(cValue+dataValue));
-					} else {
-						cdata.setValue(i,j, Double.valueOf(dataValue));
+						cValue = cdata.getValue(i,j).doubleValue();
 					}
-					cmask[i][j]++;
+					cdata.setValue(i,j, Double.valueOf(cValue+dataValue));
+					cmask[i][j] = cmask[i][j] + 1.0;
 				}
 			}
 		}
 		for (int i = 0; i < nClusters; i++) {
 			for (int j = 0; j < data.nColumns(); j++) {
-				if (cmask[i][j] > 0) {
+				if (cmask[i][j] > 0.0) {
 					double cData = cdata.getValue(i,j).doubleValue() / cmask[i][j];
 					cdata.setValue(i,j,Double.valueOf(cData));
 				}
@@ -323,6 +336,13 @@ public class KCluster {
 			k = clusterID[j];
 			clusterID[j] = clusterID[i];
 			clusterID[i] = k;
+		}
+	}
+
+	// Debug version of "randomAssign" that isn't random
+	private static void debugAssign (int nClusters, int nElements, int[] clusterID) {
+		for (int element = 0; element < nElements; element++) {
+			clusterID[element] = element%nClusters;
 		}
 	}
 

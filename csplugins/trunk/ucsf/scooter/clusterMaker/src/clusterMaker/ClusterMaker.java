@@ -69,6 +69,7 @@ import clusterMaker.algorithms.FORCE.CytoscapeFORCEmenu;
 public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListener {
 	static final double VERSION = 0.1;
 	HashMap<JMenuItem,ClusterViz> vizMenus;
+	HashMap<String, ClusterViz> vizMap;
 
   /**
    * Create our action and add it to the plugins menu
@@ -76,6 +77,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
   public ClusterMaker() {
 
 		vizMenus = new HashMap();
+		vizMap = new HashMap();
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
@@ -122,12 +124,13 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 	private void addClusterAlgorithm(JMenu menu, ClusterAlgorithm algorithm) {
 		ClusterViz visualizer = algorithm.getVisualizer();
 
-		if (visualizer != null) {
+		if (visualizer != null && !vizMap.containsKey(visualizer.getShortName())) {
 			// We have a visualizer, so we're interested in any clusters that get completed
 			algorithm.getPropertyChangeSupport().
 					addPropertyChangeListener(ClusterAlgorithm.CLUSTER_COMPUTED, this);
 			JMenuItem vizItem = new JMenuItem(visualizer.getName());
 			vizMenus.put(vizItem, visualizer);
+			vizMap.put(visualizer.getShortName(), visualizer);
 			vizItem.addActionListener(new ClusterMakerCommandListener(visualizer));
 			if (!visualizer.isAvailable())
 				vizItem.setEnabled(false);
