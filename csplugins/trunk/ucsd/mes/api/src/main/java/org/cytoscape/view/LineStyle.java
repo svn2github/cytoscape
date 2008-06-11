@@ -21,6 +21,6 @@ public enum LineStyle {
 	}
 
 	public float[] getDashDescription() {
-		return dashDescription;
+		return (float[])dashDescription.clone();
 	}
 }
