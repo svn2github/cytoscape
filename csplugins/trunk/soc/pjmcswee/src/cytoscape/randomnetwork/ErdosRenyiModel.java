@@ -118,17 +118,18 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	 */
 	public CyNetwork Generate() {
 
+		//Create a network
 		CyNetwork random_network = Cytoscape
 				.createNetwork("Erdos-Renyi network");
 
-
-		System.out.println(random_network);
 		// Create N nodes
 		CyNode[] nodes = new CyNode[numNodes];
 
 		
+		//Get the current system time
 		long time = System.currentTimeMillis();
-		time = time % 10000;
+		
+		
 		// For each edge
 		for (int i = 0; i < numNodes; i++) {
 			// Create a new node nodeID = i, create = true
@@ -139,64 +140,43 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 
 			// Save node in array
 			nodes[i] = node;
-
-		
 		}
 
 		// If we are creating a random network with a specified number of edges
 		// G(n,m) Model
 		if (probability == UNSPECIFIED) {
-			// System.out.println("old:" + numEdges );
+
+			//Here we are ensuring that m is less then the maximum number of
+			//edges given the network properitites: number of nodes, direcetedness,
+			//and reflexive edges.
+			
+			//If directed
 			if (directed) {
+				//If reflexive edges
 				if (allowSelfEdge) {
 					numEdges = Math.min(numEdges, numNodes * numNodes);
 				} else {
+				//if reflexive edges are not allowed
 					numEdges = Math.min(numEdges, numNodes * (numNodes - 1));
 				}
 			}
-
+			//else we are undirected
 			else {
+				//If reflexive edges				
 				if (allowSelfEdge) {
 					numEdges = Math.min(numEdges,
 							(int) ((numNodes * (numNodes - 1)) / 2.0)
 									+ numNodes);
 				} else {
+				//if reflexive edges are not allowed
 					numEdges = Math.min(numEdges,
 							(int) ((numNodes * (numNodes - 1)) / 2.0));
 				}
-
 			}
 
-			/*
-			 * LinkedList edges = new LinkedList();
-			 * 
-			 * for(int i = 0; i < numNodes; i++) {
-			 * 
-			 * int start = 0; if(!directed) { start = i; }
-			 * 
-			 * for(int j = start; j < numNodes; j++) { if((i != j) ||
-			 * (allowSelfEdge)) { Integer pair = new Integer(i * numNodes + j);
-			 * edges.addLast(pair); } } }
-			 * 
-			 * java.util.Collections.shuffle(edges,random);
-			 * //System.out.println("new:" + numEdges );
-			 * 
-			 * for(int i = 0; i < numEdges; i++) { int index =
-			 * ((Integer)edges.removeFirst()).intValue();
-			 * 
-			 * int source = index / numNodes; int target = index % numNodes;
-			 * 
-			 * 
-			 * 
-			 * //Check to see if this edge already exists CyEdge edge =
-			 * Cytoscape.getCyEdge(nodes[source], nodes[target],
-			 * Semantics.INTERACTION, new String(time + "("+source +","
-			 * +target+")"), true, directed); //Add this edge to the network
-			 * random_network.addEdge(edge); }
-			 * 
-			 */
-
+			//Create each edge
 			for (int i = 0; i < numEdges; i++) {
+
 				// Select two nodes (source and target only apply if directed)
 				int source = Math.abs(random.nextInt()) % numNodes;
 				int target = Math.abs(random.nextInt()) % numNodes;
@@ -207,36 +187,46 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 								+ "(" + Math.min(source, target) + ","
 								+ Math.max(source, target) + ")"), false,
 						directed);
-
-				// System.out.println(source + "\t" + target);
-
+				
+				//We can enumerate all pairs of nodes by the formula
+				//source * N + target, where source and target
+				//refer to specific nodes between 0 and N - 1
 				int higher = source * numNodes + target + 1;
 				int lower = source * numNodes + target - 1;
-
-				// If this edge already exists ... I hope this method won't take
-				// too long... we may need a faster way of checking...?
+				
+				
+				//The idea here is that if the source and target we 
+				//initially chose has already been created, then create
+				//the next closest edge according to our enumeration.
+				//Randomly selecting a new edge is computationally 
+				//prohibitive when the number of edges approaches the maximum
 				while ((check != null)
 						|| ((!allowSelfEdge) && (source == target))) {
+						
+					//Check to make sure that lower is 
+					//within bounds	
 					if (lower < 0) {
 						lower = (numNodes * numNodes - 1);
 					}
+					//Chck to make sure that higher is within bounds
 					if (higher == numNodes * numNodes) {
 						higher = 0;
 					}
 
+					//Get the source and target from the lower number
 					int source_lo = lower / numNodes;
 					int target_lo = lower % numNodes;
 
+					//Get the source and target from the higher number
 					int source_hi = higher / numNodes;
 					int target_hi = higher % numNodes;
 
-					// System.out.println(i+ " low: " +source_lo +"\t" +
-					// target_lo + "\t" + lower);
-					// System.out.println(i+ " High: " +source_hi +"\t" +
-					// target_hi + "\t" + higher);
-
+					//Either this is a reflexive edge and they are allowed,
+					//or it is not a reflexive edge
 					if (((allowSelfEdge) && (source_lo == target_lo))
 							|| (source_lo != target_lo)) {
+					
+						//Try to get this edge
 						check = Cytoscape
 								.getCyEdge(nodes[source_lo], nodes[target_lo],
 										Semantics.INTERACTION, new String(time
@@ -249,16 +239,21 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 														.max(source_lo,
 																target_lo)
 												+ ")"), false, directed);
-
+						
+						//If this edge does not exist, choose this edge
 						if (check == null) {
 							source = source_lo;
 							target = target_lo;
 							break;
 						}
 					}
-
+				
+					//Either this is a reflexive edge and they are allowed,
+					//or it is not a reflexive edge
 					if (((allowSelfEdge) && (source_hi == target_hi))
 							|| (source_hi != target_hi)) {
+				
+						//try to get the higher edge
 						check = Cytoscape
 								.getCyEdge(nodes[source_hi], nodes[target_hi],
 										Semantics.INTERACTION, new String(time
@@ -272,6 +267,7 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 																target_hi)
 												+ ")"), false, directed);
 
+						//If the edge does not exist choose this edge
 						if (check == null) {
 							source = source_hi;
 							target = target_hi;
@@ -296,15 +292,15 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 
 			}
 		}
-		// G(n,p) Model
+		
+		// G(n,p) Model, runs n*n
+		//Here we independently create every edge with probability p
 		else {
-			// TODO: This algorithm runs in N^2 time. With millions of edges
-			// this is not optimal.
-			// A faster algorithm will randomly select a number of edges 'm'
-			// based on p and then do the G(n,m) model
 
 			// For each node
 			for (int i = 0; i < numNodes; i++) {
+			
+				//start defines valid targets for the source node i
 				int start = 0;
 				if (!directed) {
 					start = i + 1;
@@ -315,6 +311,9 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 
 				// For every other node
 				for (int j = start; j < numNodes; j++) {
+
+					//If this i,j represents a reflexive edge, and we
+					//do not allow reflexive edges, ignore it.
 					if ((!allowSelfEdge) && (i == j)) {
 						continue;
 					}
@@ -335,6 +334,7 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 
 		}
 
+		//Return this network
 		return random_network;
 	}
 
