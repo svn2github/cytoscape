@@ -1,4 +1,4 @@
-/*  File: BarabasiAlbertDialog
+/* File: GenerateRandomPanel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -42,78 +42,115 @@ import cytoscape.view.*;
 import cytoscape.visual.*;
 import giny.view.*;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.*;
+
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.SwingConstants;
+
 
 /*
- * This class is responsible for handling the user interface
- * to generate a random model according to barabasi-albert.
- * 
+ * GenerateRandomPanel is used for selecting which random 
+ * network model to use.
  */
-public class BarabasiAlbertDialog extends JPanel {
-	// TextFields
-	private javax.swing.JTextField nodeTextField;
-	private javax.swing.JTextField initTextField;
-	private javax.swing.JTextField edgeTextField;
+public class GenerateRandomPanel extends JPanel {
 
-	// Buttons
+	//Next Button
 	private javax.swing.JButton runButton;
+	//Cancel Button
 	private javax.swing.JButton cancelButton;
-	private javax.swing.JCheckBox directedCheckBox;
-
-	// Labels
+	//Title Label
 	private javax.swing.JLabel titleLabel;
-	private javax.swing.JLabel nodeLabel;
-	private javax.swing.JLabel initLabel;
-	private javax.swing.JLabel edgeLabel;
-	private javax.swing.JLabel explainLabel;
+	//Group together the different options
+	private javax.swing.ButtonGroup group;
+
+	//Checkbox for erdos-renyi model
+	private javax.swing.JCheckBox erm;
+	//Checkbox for watts-strogatz model
+	private javax.swing.JCheckBox wsm;
+	//Checkbox for barabasi-albert model
+	private javax.swing.JCheckBox bam;
+
+	//Label to describe erdos-renyi model
+	private javax.swing.JLabel ermExplain;
+	//Label to describe watts-strogatz model
+	private javax.swing.JLabel wsmExplain;
+	//Checkbox for barabasi-albert model
+	private javax.swing.JLabel bamExplain;
 
 	/*
-	 * Default Constructor 
+	 *  Default constructor
 	 */
-	public BarabasiAlbertDialog( ){
-		super();
+	public GenerateRandomPanel( ){
+		super( ); 
 		initComponents();
 	}
 
 	/*
-	 * 
+	 * Initialize the components
 	 */
 	private void initComponents() {
-		// TextFields
-		nodeTextField = new javax.swing.JTextField();
-		initTextField = new javax.swing.JTextField();
-		edgeTextField = new javax.swing.JTextField();
 
-		// Buttons
-		directedCheckBox = new javax.swing.JCheckBox();
+		//Create the group 
+		group = new javax.swing.ButtonGroup();
+		//Create the erdos-renyi checkbox
+		erm = new javax.swing.JCheckBox();
+		//Create the watts-strogatz checkbox
+		wsm = new javax.swing.JCheckBox();
+		//Create the barabasi-albert checkbox		
+		bam = new javax.swing.JCheckBox();
+		//Create the erdos-renyi label
+		ermExplain = new javax.swing.JLabel();
+		//Create the watts-strogatz label
+		wsmExplain = new javax.swing.JLabel();
+		//Create the barabasi-albert  label
+		bamExplain = new javax.swing.JLabel();
+
+		//Set the erdos-renyi text
+		ermExplain
+				.setText("<html><font size=2 face=Verdana>Uniformly generate a random <br> graph with n nodes and m edges.</font></html>");
+
+		//Set the watts-strogatz text
+		wsmExplain
+				.setText("<html><font size=2 face=Verdana>Generate a random graph with n <br> nodes and each edge has probability p to be included.</font></html>");
+
+		//Set the barabasi-albert text
+		bamExplain
+				.setText("<html><font size=2 face=Verdana>Generate a random graph with n <br> nodes and each edge has probability p to be included.</font></html>");
+
+
+		//set the labels to opaque
+		ermExplain.setOpaque(true);
+		wsmExplain.setOpaque(true);
+		bamExplain.setOpaque(true);
+		
+		//Set the text for the checkboxes
+		erm.setText("Erdos-Renyi Model");
+		wsm.setText("Watts-Strogatz Model");
+		bam.setText("Barabasi-Albert Model");
+
+		//Make barabasi-albert the default
+		bam.setSelected(true);
+		
+		//Add each checkbox to the group
+		group.add(bam);
+		group.add(wsm);
+		group.add(erm);
+
+		//Create the butons
 		runButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 
-		// Labels
+		//Set up the title
 		titleLabel = new javax.swing.JLabel();
-		nodeLabel = new javax.swing.JLabel();
-		initLabel = new javax.swing.JLabel();
-		edgeLabel = new javax.swing.JLabel();
-		explainLabel = new javax.swing.JLabel();
-
-		//Add the explanation label
-		explainLabel
-				.setText("<html><font size=2 face=Verdana>The Barabasi-Albert model begins with a connected seed network of s nodes.<br>Every other node (n - s) is added one at a time,<br> and initially connected to existing node u,<br> with probability  degree(u)/(2*E) </font></html>");
-
-		//Set the text for the labels
-		directedCheckBox.setText("Undirected");
-		nodeLabel.setText("Number of Nodes:");
-		initLabel.setText("Initial Number of Nodes:");
-		edgeLabel.setText("Minimum Edges per node:");
-		
-		//Set the title for the panel
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Generate Barabasi-Albert Model");
+		titleLabel.setText("Generate Random Network");
 
-		//Set up the generate button
-		runButton.setText("Generate");
+		//Set up the run button
+		runButton.setText("Next");
 		runButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				runButtonActionPerformed(evt);
@@ -128,9 +165,12 @@ public class BarabasiAlbertDialog extends JPanel {
 			}
 		});
 
-	org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+
+		//Set up the layout
+		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
 		setLayout(layout);
-			layout
+
+		layout
 				.setHorizontalGroup(layout
 						.createParallelGroup(
 								org.jdesktop.layout.GroupLayout.LEADING)
@@ -147,57 +187,52 @@ public class BarabasiAlbertDialog extends JPanel {
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																350,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(explainLabel)
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				nodeLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				nodeTextField,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				50))
 
 														.add(
 																layout
 																		.createSequentialGroup()
 																		.add(
-																				initLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				initTextField,
+																				erm,
 																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																				10,
-																				50))
+																				170)
+																		.addPreferredGap(1)
+																		
+																		.add(ermExplain,
+																			 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																			 10,
+																			 Short.MAX_VALUE))
 														.add(
 																layout
 																		.createSequentialGroup()
 																		.add(
-																				edgeLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				edgeTextField,
+																				wsm,
 																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																				10,
-																				50))
+																			170)
+																		.addPreferredGap(
+																				1)
+																		.add(
+																				wsmExplain,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				10,
+																				Short.MAX_VALUE))
 														.add(
 																layout
 																		.createSequentialGroup()
-
 																		.add(
-																				directedCheckBox))
-
+																				bam,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				10,
+																				170)
+																		.addPreferredGap(
+																				1)
+																		.add(
+																				bamExplain,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				10,
+																				Short.MAX_VALUE))
+													
 														.add(
 																org.jdesktop.layout.GroupLayout.TRAILING,
 																layout
@@ -209,6 +244,7 @@ public class BarabasiAlbertDialog extends JPanel {
 																		.add(
 																				cancelButton)))
 										.addContainerGap()));
+
 		layout
 				.setVerticalGroup(layout
 						.createParallelGroup(
@@ -219,31 +255,19 @@ public class BarabasiAlbertDialog extends JPanel {
 										.addContainerGap()
 										.add(titleLabel)
 										.add(8, 8, 8)
-										.add(explainLabel)
-										.add(7, 7, 7)
-									
 
+										.add(7, 7, 7)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
+									
 										.add(
 												layout
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(nodeLabel).add(
-																nodeTextField))
 
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(initLabel).add(
-																initTextField))
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(edgeLabel).add(
-																edgeTextField))
+														.add(erm).add(
+																ermExplain))
+
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED,
 												3, Short.MAX_VALUE)
@@ -251,10 +275,21 @@ public class BarabasiAlbertDialog extends JPanel {
 												layout
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
-
-														.add(
-																directedCheckBox))
-
+														.add(wsm).add(
+																wsmExplain))
+										
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED,
+												3, Short.MAX_VALUE)
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(bam).add(
+																bamExplain))
+										.addPreferredGap(
+												org.jdesktop.layout.LayoutStyle.RELATED,
+												3, Short.MAX_VALUE)
 										.add(
 												layout
 														.createParallelGroup(
@@ -262,15 +297,15 @@ public class BarabasiAlbertDialog extends JPanel {
 														.add(cancelButton).add(
 																runButton))
 										.addContainerGap()));
-		//pack();
 	}
 
+
 	/*
-	 *  Callback for the cancel button
+	 * cancelButtonActionPerformed call back when the cancel button is pushed
 	 */
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-		//Go up through the parents and close the window
+		
+		//Go up through the parents to the main window
 		JTabbedPane parent = (JTabbedPane)getParent();
 		java.awt.Container p = parent.getParent();
 		p = p.getParent();
@@ -281,99 +316,47 @@ public class BarabasiAlbertDialog extends JPanel {
 	}
 	
 	/*
-	 *  Callback for the generate button
+	 *  Callback for when the "Next" button is pushed
 	 */
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-		// The number of initial nodes
-		int initNumNodes; 
-		//number of nodes in the network
-		int numNodes;
-		//If the network is directed/undirected
-		boolean directed;
-		//The number of edges to add for each node
-		int edgesToAdd;
-		//Allow reflexive edges
-		boolean allowSelfEdge;
-
-		//Get the string values for each of the textfields
-		String numNodeString = nodeTextField.getText();
-		String initString = initTextField.getText();
-		String edgeString = edgeTextField.getText();
-
-		//Try to read the number of nodes from the textfield
-		try {
-			numNodes = Integer.parseInt(numNodeString);
-		} catch (Exception e) {
-			//If there is an error change the colors
-			nodeLabel.setForeground(java.awt.Color.RED);
-			initLabel.setForeground(java.awt.Color.BLACK);
-			edgeLabel.setForeground(java.awt.Color.BLACK);
-			return;
-		}
-
-		//Try to read this string into a number
-		try {
-			initNumNodes = Integer.parseInt(initString);
-		} catch (Exception e) {
-			//If there is an error change the colors to red	
-			nodeLabel.setForeground(java.awt.Color.BLACK);
-			initLabel.setForeground(java.awt.Color.RED);
-			edgeLabel.setForeground(java.awt.Color.BLACK);
-			return;
-		}
-
-		//Try read this string into a number
-		try {
-			edgesToAdd = Integer.parseInt(edgeString);
-		} catch (Exception e) {
-			//If there is an error change the colors to red	
-			nodeLabel.setForeground(java.awt.Color.BLACK);
-			initLabel.setForeground(java.awt.Color.BLACK);
-			edgeLabel.setForeground(java.awt.Color.RED);
-			return;
-		}
-
-		//Set the boolean based on the checkbox
-		directed = false;
-		if (directedCheckBox.isSelected()) {
-			directed = true;
-		}
-
-		//Set to no reflexive edges for now
-		allowSelfEdge = false;
-
-		//Create the model
-		BarabasiAlbertModel bam = new BarabasiAlbertModel(numNodes, allowSelfEdge, !directed, initNumNodes, edgesToAdd);
 		
-		//Create the network
-		CyNetwork randomNet = bam.Generate();
-
-		//Switch to the Network view
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
-				.setSelectedIndex(0);
-
-		//returns CytoscapeWindow's VisualMappingManager object
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-    
-		//gets the global catalog of visual styles and calculators
-		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
+		//Panel to display	
+		JPanel displayPanel = null;
+		//Title for this Panel
+		String title = null;
 		
-		//get the random network visual style
-		VisualStyle newStyle = catalog.getVisualStyle("random network");
+		//See which checkbox is selected and then display the appropriate panel
+		if (erm.isSelected()) {
+			displayPanel = new ErdosRenyiDialog();
+			title = new String("Erdos-Renyi Random Network");
+		} else if(wsm.isSelected()){
+			displayPanel = new WattsStrogatzDialog();
+			title = new String("WattsStrogatz Random Network");
+		}else{
+			displayPanel = new BarabasiAlbertDialog();
+			title = new String("Barabasi-Albert Random Network");
+		}
 		
-		//Set this as the current visual style
-		vmm.setVisualStyle(newStyle);
-
-		//Traverse to the JDialog parent and close this window
+		//Get the TabbedPanel
 		JTabbedPane parent = (JTabbedPane)getParent();
+		//Remove this Panel
+		parent.remove(0);
+		//Replace it with the panel
+		parent.add(displayPanel,0);
+		//Set the title for this panel
+		parent.setTitleAt(0,title);
+		//Display this panel
+		parent.setSelectedIndex(0);
+		//Enforce this Panel
+		parent.validate();
+		
+		
+		//Re-pack the window based on this new panel
 		java.awt.Container p = parent.getParent();
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
 		JDialog dialog = (JDialog)p;
-		dialog.dispose();
-
+		dialog.pack();
 	}
-
 }
