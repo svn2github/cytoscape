@@ -84,6 +84,21 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	public NetworkTableReader(final String networkName, final URL sourceURL,
 	                          final NetworkTableMappingParameters nmp, final int startLineNumber,
 	                          final String commentChar) {
+		this(networkName, sourceURL, nmp, startLineNumber, commentChar, true);
+	}
+	/**
+	 * Creates a new NetworkTableReader object.
+	 *
+	 * @param networkName  DOCUMENT ME!
+	 * @param sourceURL  DOCUMENT ME!
+	 * @param nmp  DOCUMENT ME!
+	 * @param startLineNumber  DOCUMENT ME!
+	 * @param commentChar  DOCUMENT ME!
+	 * @param directed_edges  if true, create directed edges, otherwise create undirected ones
+	 */
+	public NetworkTableReader(final String networkName, final URL sourceURL,
+                final NetworkTableMappingParameters nmp, final int startLineNumber,
+                final String commentChar, final boolean directed_edges) {
 		super(networkName);
 		this.sourceURL = sourceURL;
 		this.nmp = nmp;
@@ -92,7 +107,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 		this.edgeList = new ArrayList<Integer>();
 		this.commentChar = commentChar;
 
-		parser = new NetworkLineParser(nodeList, edgeList, nmp);
+		parser = new NetworkLineParser(nodeList, edgeList, nmp, directed_edges);
 	}
 
 	/**

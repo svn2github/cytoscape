@@ -58,9 +58,10 @@ public class NetworkLineParser {
 	private final NetworkTableMappingParameters nmp;
 	private final List<Integer> nodeList;
 	private final List<Integer> edgeList;
+	private final boolean directed_edges;
 
 	/**
-	 * Creates a new NetworkLineParser object.
+	 * Creates a new NetworkLineParser object, which will create directed edges
 	 *
 	 * @param nodeList  DOCUMENT ME!
 	 * @param edgeList  DOCUMENT ME!
@@ -68,9 +69,22 @@ public class NetworkLineParser {
 	 */
 	public NetworkLineParser(List<Integer> nodeList, List<Integer> edgeList,
 	                         final NetworkTableMappingParameters nmp) {
+		this(nodeList, edgeList, nmp, true);
+	}
+	/**
+	 * Creates a new NetworkLineParser object, which will create directed edges
+	 *
+	 * @param nodeList  DOCUMENT ME!
+	 * @param edgeList  DOCUMENT ME!
+	 * @param nmp  DOCUMENT ME!
+	 * @param directed_edges if true, create directed edges, otherwise create undirected ones
+	 */	
+	public NetworkLineParser(List<Integer> nodeList, List<Integer> edgeList,
+            final NetworkTableMappingParameters nmp, final boolean directed_edges) {
 		this.nmp = nmp;
 		this.nodeList = nodeList;
 		this.edgeList = edgeList;
+		this.directed_edges = directed_edges;
 	}
 
 	/**
@@ -121,7 +135,7 @@ public class NetworkLineParser {
 		}
 
 		final Edge edge;
-		edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
+		edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, directed_edges);
 		edgeList.add(edge.getRootGraphIndex());
 		
 		return edge;
