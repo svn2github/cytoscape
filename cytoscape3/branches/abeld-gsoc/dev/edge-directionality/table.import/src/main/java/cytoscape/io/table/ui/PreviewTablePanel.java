@@ -312,9 +312,9 @@ public class PreviewTablePanel extends JPanel {
 		previewScrollPane.setViewportView(previewTable);
 		previewScrollPane.setBackground(Color.WHITE);
 
-		final BufferedImage datasourceImage = getBufferedImage(Cytoscape.class.getResource("images/ximian/data_sources_trans.png"));
+		final BufferedImage datasourceImage = getBufferedImage(Cytoscape.class.getResource("/images/ximian/data_sources_trans.png"));
 
-		final BufferedImage bi = getBufferedImage(Cytoscape.class.getResource("images/icon100_trans.png"));
+		final BufferedImage bi = getBufferedImage(Cytoscape.class.getResource("/images/icon100_trans.png"));
 
 		tableTabbedPane.setBackground(Color.white);
 		tableTabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -686,7 +686,7 @@ public class PreviewTablePanel extends JPanel {
 		} else {
 			if (isCytoscapeAttributeFile(sourceURL)) {
 				fileTypeLabel.setText("Cytoscape Attribute File");
-				fileTypeLabel.setIcon(new ImageIcon(Cytoscape.class.getResource("images/icon48.png")));
+				fileTypeLabel.setIcon(new ImageIcon(Cytoscape.class.getResource("/images/icon48.png")));
 				newModel = parseText(sourceURL, size, curRenderer, null, 1);
 			} else {
 				fileTypeLabel.setText("Text File");

@@ -37,11 +37,13 @@
 package cytoscape.io.table;
 
 import cytoscape.Cytoscape;
-import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.view.CyMenus;
 import cytoscape.io.table.actions.ImportAnnotationAndOntologyAction;
 import cytoscape.io.table.actions.ImportAttributeTableAction;
 import cytoscape.io.table.actions.ImportNetworkTableAction;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleActivator;
 
 
 /**
@@ -52,12 +54,12 @@ import cytoscape.io.table.actions.ImportNetworkTableAction;
  * @author Keiichiro Ono
  *
  */
-public class TableImportPlugin extends CytoscapePlugin {
+public class TableImportPlugin implements BundleActivator {
 	/**
 	 * Constructor for this plugin.
 	 *
 	 */
-	public TableImportPlugin() {
+	public void start(BundleContext bc) {
 		
 		final CyMenus cyMenus = Cytoscape.getDesktop().getCyMenus();
 		
@@ -65,5 +67,8 @@ public class TableImportPlugin extends CytoscapePlugin {
 		cyMenus.addAction(new ImportNetworkTableAction(), 1);
 		cyMenus.addAction(new ImportAttributeTableAction(), 5);
 		cyMenus.addAction(new ImportAnnotationAndOntologyAction(), 7);
+	}
+
+	public void stop(BundleContext bc) {
 	}
 }
