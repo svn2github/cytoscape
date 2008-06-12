@@ -734,6 +734,7 @@ public abstract class Cytoscape {
 			edge.setIdentifier(edge_name);
 
 			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, (String) attribute_value);
+			edgeAttributes.setAttribute(edge_name, Semantics.IS_DIRECTED, new Boolean(directed));
 			edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME, edge_name);
 
 			return edge;
