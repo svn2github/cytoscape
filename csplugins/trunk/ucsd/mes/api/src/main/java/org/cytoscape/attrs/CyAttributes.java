@@ -22,6 +22,11 @@ public interface CyAttributes {
 	/**
 	 *
 	 */
+	public Class getAttributeType(String attributeName);
+
+	/**
+	 *
+	 */
 	public void setUserVisible(String attributeName, boolean value);
 
 	/**
@@ -44,10 +49,6 @@ public interface CyAttributes {
 	 */
 	public void deleteAttribute(String attributeName);
 
-	/**
-	 * Deletes on the mapping between this SUID and this attribute.
-	 */
-	public void deleteAttribute(int suid, String attributeName);
 
 	/**
 	 * Set an attribute value of type T.
@@ -55,15 +56,15 @@ public interface CyAttributes {
 	 * or a List or Map of those types.
 	 * Should fire an event indicating that an attribute has been set.
 	 */
-	public void set(int suid, String attributeName, Object value);
+	public void set(String attributeName, Object value);
 
 	/**
 	 * Get and attribute value of type T.
 	 */
-	public <T> T get(int suid, String attributeName, Class<? extends T> c);
+	public <T> T get(String attributeName, Class<? extends T> c);
 
 	/**
 	 * Does an attribute of type T exist for this SUID?
 	 */
-	public <T> boolean contains(int suid, String attributeName, Class<? extends T> c);
+	public <T> boolean contains(String attributeName, Class<? extends T> c);
 }

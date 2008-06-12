@@ -10,7 +10,9 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import java.lang.RuntimeException;
-import java.util.List;
+import java.util.*;
+
+import java.awt.Color;
 
 public class CyAttributesTest extends TestCase {
 
@@ -28,51 +30,101 @@ public class CyAttributesTest extends TestCase {
 	}
 
 	public void testAddStringAttr() {
-		attrs.set(1,"someString","apple");	
-		attrs.set(2,"someString","orange");	
+		attrs.set("someString","apple");	
+		attrs.set("someStringElse","orange");	
 
-		assertTrue( attrs.contains(1,"someString",String.class) );
-		assertTrue( attrs.contains(2,"someString",String.class) );
-		assertFalse( attrs.contains(3,"someString",String.class) );
+		assertTrue( attrs.contains("someString",String.class) );
+		assertTrue( attrs.contains("someStringElse",String.class) );
+		assertFalse( attrs.contains("yetAnotherString",String.class) );
 
-		assertEquals( "apple", attrs.get(1,"someString",String.class) );
-		assertEquals( "orange", attrs.get(2,"someString",String.class) );
+		assertEquals( "apple", attrs.get("someString",String.class) );
+		assertEquals( "orange", attrs.get("someStringElse",String.class) );
 	}
 
 	public void testAddIntAttr() {
-		attrs.set(1,"someInt",50);	
-		attrs.set(2,"someInt",100);	
+		attrs.set("someInt",50);	
+		attrs.set("someOtherInt",100);	
 
-		assertTrue( attrs.contains(1,"someInt",Integer.class) );
-		assertTrue( attrs.contains(2,"someInt",Integer.class) );
-		assertFalse( attrs.contains(3,"someInt",Integer.class) );
+		assertTrue( attrs.contains("someInt",Integer.class) );
+		assertTrue( attrs.contains("someOtherInt",Integer.class) );
+		assertFalse( attrs.contains("yetAnotherInteger",Integer.class) );
 
-		assertEquals( 50, attrs.get(1,"someInt",Integer.class).intValue() );
-		assertEquals( 100, attrs.get(2,"someInt",Integer.class).intValue() );
+		assertEquals( 50, attrs.get("someInt",Integer.class).intValue() );
+		assertEquals( 100, attrs.get("someOtherInt",Integer.class).intValue() );
 	}
 
 	public void testAddDoubleAttr() {
-		attrs.set(1,"someDouble",3.14);	
-		attrs.set(2,"someDouble",2.76);	
+		attrs.set("someDouble",3.14);	
+		attrs.set("someOtherDouble",2.76);	
 
-		assertTrue( attrs.contains(1,"someDouble",Double.class) );
-		assertTrue( attrs.contains(2,"someDouble",Double.class) );
-		assertFalse( attrs.contains(3,"someDouble",Double.class) );
+		assertTrue( attrs.contains("someDouble",Double.class) );
+		assertTrue( attrs.contains("someOtherDouble",Double.class) );
+		assertFalse( attrs.contains("yetAnotherDouble",Double.class) );
 
-		assertEquals( 3.14, attrs.get(1,"someDouble", Double.class).doubleValue() ); 
-		assertEquals( 2.76, attrs.get(2,"someDouble", Double.class).doubleValue() ); 
+		assertEquals( 3.14, attrs.get("someDouble", Double.class).doubleValue() ); 
+		assertEquals( 2.76, attrs.get("someOtherDouble", Double.class).doubleValue() ); 
 	}
 
 	public void testAddBooleanAttr() {
-		attrs.set(1,"someBoolean",true);	
-		attrs.set(2,"someBoolean",false);	
+		attrs.set("someBoolean",true);	
+		attrs.set("someOtherBoolean",false);	
 
-		assertTrue( attrs.contains(1,"someBoolean",Boolean.class) );
-		assertTrue( attrs.contains(2,"someBoolean",Boolean.class) );
-		assertFalse( attrs.contains(3,"someBoolean",Boolean.class) );
+		assertTrue( attrs.contains("someBoolean",Boolean.class) );
+		assertTrue( attrs.contains("someOtherBoolean",Boolean.class) );
+		assertFalse( attrs.contains("yetAnotherBoolean",Boolean.class) );
 
-		assertTrue( attrs.get(1,"someBoolean",Boolean.class) );
-		assertFalse( attrs.get(2,"someBoolean",Boolean.class) );
+		assertTrue( attrs.get("someBoolean",Boolean.class) );
+		assertFalse( attrs.get("someOtherBoolean",Boolean.class) );
+	}
+
+	public void testAddListAttr() {
+		List<String> l = new LinkedList<String>();
+		l.add("orange");
+		l.add("banana");
+
+		attrs.set("someList",l);	
+
+		assertTrue( attrs.contains("someList",List.class) );
+
+		assertEquals( 2, attrs.get("someList",List.class).size() );
+	}
+
+	public void testAddMapAttr() {
+		Map<String,Integer> m = new HashMap<String,Integer>();
+		m.put("orange",1);
+		m.put("banana",2);
+
+		attrs.set("someList",m);	
+
+		assertTrue( attrs.contains("someList",Map.class) );
+
+		assertEquals( 2, attrs.get("someList",Map.class).size() );
+	}
+
+	public void testAddBadAttr() {
+		try {
+			attrs.set("nodeColor",Color.white);
+		} catch (IllegalArgumentException e) {
+			// successfully caught the exception
+			return;	
+		}
+		// shouldn't get here
+		fail();
+	}
+
+	public void testAddBadList() {
+		List<Color> l = new LinkedList<Color>();
+		l.add(Color.white);
+		l.add(Color.red);
+
+		try {
+			attrs.set("someList",l);	
+		} catch (IllegalArgumentException e) {
+			// successfully caught the exception
+			return;	
+		}
+		// shouldn't get here
+		fail();
 	}
 
 	// lots more needed

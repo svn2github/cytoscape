@@ -4,6 +4,9 @@ package org.cytoscape.network.impl;
 
 import org.cytoscape.network.GraphObject;
 
+import org.cytoscape.attrs.CyAttributes;
+import org.cytoscape.attrs.impl.CyAttributesImpl;
+
 class GraphObjImpl implements GraphObject {
 
 	private static int count = 0;
@@ -12,13 +15,19 @@ class GraphObjImpl implements GraphObject {
 		return count++;	
 	}
 
-	final private int suid;
+	private final int suid;
+	private final CyAttributes attrs;
 
 	GraphObjImpl() {
 		suid = getNextSUID();
+		attrs = new CyAttributesImpl();
 	}
 
 	public int getSUID() {
 		return suid;
+	}
+
+	public CyAttributes getAttributes() {
+		return attrs;
 	}
 }

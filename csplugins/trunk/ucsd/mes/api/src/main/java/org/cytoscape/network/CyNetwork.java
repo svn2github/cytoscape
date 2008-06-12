@@ -1,6 +1,7 @@
 package org.cytoscape.network;
 
 import java.util.List;
+import org.cytoscape.attrs.CyAttributes;
 
 public interface CyNetwork {
 	public String getIdentifier();
@@ -28,4 +29,5 @@ public interface CyNetwork {
 	public List<CyEdge> getAdjacentEdgeList( CyNode node, EdgeType edgeType );
 	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, EdgeType edgeType );
 
+	public CyAttributes getAttributes();
 }

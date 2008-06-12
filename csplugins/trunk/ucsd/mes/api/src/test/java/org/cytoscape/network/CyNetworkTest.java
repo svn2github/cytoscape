@@ -14,6 +14,8 @@ import junit.framework.TestSuite;
 import java.lang.RuntimeException;
 import java.util.List;
 
+import org.cytoscape.attrs.CyAttributes;
+
 public class CyNetworkTest extends TestCase {
 
 	private CyNetwork net;
@@ -703,6 +705,9 @@ public class CyNetworkTest extends TestCase {
 		public int getSUID() {
 			return suid;
 		}
+		public CyAttributes getAttributes() {
+			return null;
+		}
 	}
 
 	private class DummyCyNode extends SUID implements CyNode {
@@ -718,6 +723,7 @@ public class CyNetworkTest extends TestCase {
 		public List<CyNode> getNeighborList( EdgeType edgeType ) { return null; }
 		public List<CyEdge> getAdjacentEdgeList( EdgeType edgeType ) { return null; }
 		public List<CyEdge> getConnectingEdgeList( CyNode target, EdgeType edgeType ) { return null; }
+
 	}
 
 	private class DummyCyEdge extends SUID implements CyEdge {

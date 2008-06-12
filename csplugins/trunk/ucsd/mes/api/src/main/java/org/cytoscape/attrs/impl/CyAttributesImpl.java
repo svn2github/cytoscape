@@ -5,18 +5,10 @@ import org.cytoscape.attrs.CyAttributes;
 
 public class CyAttributesImpl implements CyAttributes {
 
-	private Map<String, Map<Integer, Object>> attributes;
-	private Map<String, Class> types;
-	private Map<String, String> descriptions;
-	private Map<String, Boolean> editable;
-	private Map<String, Boolean> visible;
+	private final Map<String, Attr> attributes;
 
 	public CyAttributesImpl() {
-		attributes = new HashMap<String,Map<Integer,Object>>();
-		types = new HashMap<String,Class>();
-		descriptions = new HashMap<String,String>();
-		editable = new HashMap<String,Boolean>();
-		visible = new HashMap<String,Boolean>();
+		attributes = Collections.synchronizedMap( new HashMap<String,Attr>() );
 	}
 
 	public String[] getAttributeNames() {
@@ -35,15 +27,19 @@ public class CyAttributesImpl implements CyAttributes {
 	public void setAttributeDescription(String attributeName, String description) {
 		if ( attributeName != null &&
 		     description != null && 
-			 attributes.containsKey( attributeName ) )
-			descriptions.put( attributeName, description );
+		     attributes.containsKey( attributeName ) )
+			attributes.get( attributeName ).setDescription( description );
 	}
 
 	/**
 	 *
 	 */
 	public String getAttributeDescription(String attributeName) {
-		return descriptions.get(attributeName);
+		return attributes.get(attributeName).getDescription();
+	}
+
+	public Class getAttributeType(String attributeName) {
+		return attributes.get(attributeName).getType();
 	}
 
 	/**
@@ -52,14 +48,14 @@ public class CyAttributesImpl implements CyAttributes {
 	public void setUserVisible(String attributeName, boolean value) {
 		if ( attributeName != null &&
 			 attributes.containsKey( attributeName ) )
-			 visible.put(attributeName, value);
+			 attributes.get(attributeName).setVisible(value);
 	}
 
 	/**
 	 *
 	 */
 	public boolean getUserVisible(String attributeName) {
-		return visible.get(attributeName);
+		return attributes.get(attributeName).isVisible();
 	}
 
 	/**
@@ -68,87 +64,82 @@ public class CyAttributesImpl implements CyAttributes {
 	public void setUserEditable(String attributeName, boolean value) {
 		if ( attributeName != null &&
 			 attributes.containsKey( attributeName ) )
-			 editable.put(attributeName, value);
+			 attributes.get(attributeName).setEditable(value);
 	}
 
 	/**
 	 *
 	 */
 	public boolean getUserEditable(String attributeName) {
-		return editable.get(attributeName);
+		return attributes.get(attributeName).isEditable();
 	}
 
 
 	public void deleteAttribute(String attributeName) {
-		if ( attributes.containsKey(attributeName) )
-			attributes.remove( attributeName );
-	}
-
-	public void deleteAttribute(int suid, String attributeName) {
 		if ( attributes.containsKey(attributeName) ) {
-			Map<Integer,Object> map = attributes.get(attributeName);
-			if ( map.containsKey( suid ) )
-				map.remove( suid );
+			// TODO fire AttributeDeletedEvent
+			attributes.remove( attributeName );
 		}
 	}
 
-	public void set(int suid, String attrName, Object value) {
+	public void set(String attrName, Object value) {
 		if ( value == null )
-			throw new RuntimeException("value is null");
+			throw new NullPointerException("value is null");
+		if ( attrName == null )
+			throw new NullPointerException("attribute name is null");
 
 		checkType(value);
-		
-		if ( !types.containsKey(attrName) ) 
-			types.put(attrName,value.getClass());
 
+		// create new attribute
 		if ( !attributes.containsKey(attrName) ) {
-			attributes.put( attrName, new HashMap<Integer,Object>() );	
-			visible.put( attrName, true );
-			editable.put( attrName, true );
+			attributes.put( attrName, new Attr( value, "", true, true ) );	
+
+		// set existing attribute
+		} else {
+			attributes.get( attrName ).setAttr(value);
 		}
 
-		Map<Integer,Object> vls = attributes.get(attrName);
-
-		if ( value.getClass().equals( types.get( attrName ) ) )
-			vls.put(suid,value);
-		else
-			throw new RuntimeException("value is not of type: " + types.get(attrName));
+		// TODO AttributeSetEvent 
 	}
 
-	public <T> T get(int suid, String attrName, Class<? extends T> type) {
-		Map<Integer,Object> vls = attributes.get(attrName);
+	public <T> T get(String attrName, Class<? extends T> type) {
+		checkType(type);
 
-		if (vls == null) {
-			return null;
-		}
-
-		Object vl = vls.get(suid);
+		Attr vl = attributes.get(attrName);
 
 		if (vl == null) {
 			return null;
 		}
 
-		return type.cast(vl);
+		return type.cast(vl.getAttr());
 	}
 
-	public <T> boolean contains(int suid, String attrName, Class<? extends T> type) {
-		Map<Integer,Object> vls = attributes.get(attrName);
+	public <T> boolean contains(String attrName, Class<? extends T> type) {
+		checkType(type);
+
+		Attr vl = attributes.get(attrName);
 		
-		if (vls == null) {
-			return false;
-		}
-
-		Object vl = vls.get(suid);
-
 		if (vl == null) {
 			return false;
 		}
 
-		if ( vl.getClass() == type ) {
+		if ( type.isAssignableFrom(vl.getType()) ) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	private <T> void checkType(Class<? extends T> type) {
+		if ( type == Integer.class ||
+		     type == Double.class ||
+		     type == Boolean.class ||
+		     type == String.class ||
+		     type == List.class ||
+		     type == Map.class )
+		 	return;
+		else
+			throw new IllegalArgumentException("invalid type: " + type.getName());
 	}
 
 	private void checkType(Object o) {
@@ -163,19 +154,19 @@ public class CyAttributesImpl implements CyAttributes {
 		else if ( o instanceof List ) {
 			List l = (List)o;
 			if ( l.size() <= 0 )
-				throw new RuntimeException("empty list");
+				throw new IllegalArgumentException("empty list");
 			else
 				checkType(l.get(0));
 		} else if ( o instanceof Map ) {
 			Map m = (Map)o;
 			Object[] keys = m.keySet().toArray();
 			if ( keys.length <= 0 ) {
-				throw new RuntimeException("empty map");
+				throw new IllegalArgumentException("empty map");
 			} else {
 				checkType(m.get(keys[0]));
 				checkType(keys[0]);
 			}
 		} else
-			throw new RuntimeException("invalid type: " + o.getClass().toString() );	
+			throw new IllegalArgumentException("invalid type: " + o.getClass().toString() );	
 	}
 }

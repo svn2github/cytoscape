@@ -3,7 +3,6 @@
 package org.cytoscape.event;
 
 import java.util.List;
-import java.util.LinkedList;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
