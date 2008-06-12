@@ -154,8 +154,8 @@ public class NumericAttributeFilter implements Filter {
 		this.comparison = comparison;
 
 		try {
-			NODE_CLASS = Class.forName("cytoscape.Node");
-			EDGE_CLASS = Class.forName("cytoscape.Edge");
+			NODE_CLASS = Class.forName("org.cytoscape.Node");
+			EDGE_CLASS = Class.forName("org.cytoscape.Edge");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
