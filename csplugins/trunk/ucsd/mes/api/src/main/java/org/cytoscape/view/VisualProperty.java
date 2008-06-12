@@ -3,6 +3,13 @@ package org.cytoscape.view;
 import java.awt.Color;
 import java.awt.Font;
 
+/**
+ * Defines all of the possible visual properties of a network in Cytoscape as
+ * well as the type of that property.
+ * The benefit of making this an enum is that it allows us to quickly see all
+ * properties that have been set.  We'll probably want some way to distinguish
+ * node properties from edge and network properties.
+ */
 public enum VisualProperty {
 
 	NODE_X_POSITION(Double.class),

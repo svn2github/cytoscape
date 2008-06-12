@@ -1,6 +1,9 @@
 
 package org.cytoscape.view;
 
+/**
+ * The dash style of a line.
+ */
 public enum LineStyle {
 	SOLID("line",null),
 	DASH("dash",new float[] {4.0f,4.0f}),

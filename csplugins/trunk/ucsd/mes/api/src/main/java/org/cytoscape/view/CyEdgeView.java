@@ -2,6 +2,9 @@ package org.cytoscape.view;
 
 import org.cytoscape.network.CyEdge;
 
+/**
+ * Contains the visual representation of an Edge.
+ */
 public interface CyEdgeView extends View {
 	public CyNetworkView getNetworkView();
 	public CyEdge getEdge();

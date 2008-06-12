@@ -1,5 +1,8 @@
 package org.cytoscape.view; 
 
+/**
+ * The available node shapes in Cytoscape.
+ */
 public enum NodeShape {
 	RECT("Rectangle"),
 	ROUND_RECT("Round Rectangle"),

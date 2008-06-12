@@ -1,6 +1,9 @@
 
 package org.cytoscape.view;
 
+/**
+ * Defines the different types of edges we can have.
+ */
 public enum EdgeStyle {
 	CURVED("Curved"),
 	STRAIGHT("Straight"),

@@ -4,6 +4,12 @@ package org.cytoscape.view.vizmap;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.View;
 
+/**
+ * This class defines how an attribute gets mapped to a visual property.
+ * It takes two values: an attribute and a visual property and provides
+ * the mapping function from converting the attribute to the visual
+ * property.
+ */
 public interface MappingCalculator {
 
 	public void setMappingAttributeName(String name);

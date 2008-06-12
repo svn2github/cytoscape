@@ -2,7 +2,12 @@ package org.cytoscape.view.layout;
 
 import org.cytoscape.view.CyNodeView;
 
-public interface SelectedOnlyLayout {
+/**
+ * To simplify the Layout interface we provide this supplemental
+ * interface that layout authors can implement if they want their
+ * layout algorithm to just draw selected nodes.
+ */
+public interface SelectedOnlyLayout extends Layout {
 
 	public void layoutSelectedOnly(boolean selectedOnly);
 	public void lockNode(CyNodeView v);

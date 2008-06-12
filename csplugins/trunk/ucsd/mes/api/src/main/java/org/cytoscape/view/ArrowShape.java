@@ -1,5 +1,8 @@
 package org.cytoscape.view;
 
+/**
+ * Defines the possible shapes for edge arrows.
+ */
 public enum ArrowShape {
 	NONE("No Arrow"),
 	DIAMOND("Diamond"),
