@@ -1,0 +1,17 @@
+##########################################################################
+#  cheminfo.props
+#  This file contains messages to be used in ChemInfoPlugin
+##########################################################################
+
+##
+# Common Messages
+##
+
+# general system error
+cheminfo.system.error=An error occurred with the ChemInfoPlugin.
+
+##
+# 2D Structure Depictor Messages
+##
+cheminfo.depictor.noSmilesError=No smiles found in the current node. 
+
