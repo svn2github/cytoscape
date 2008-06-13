@@ -46,6 +46,13 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-mock</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+
   </dependencies>
     <build>
         <plugins>
