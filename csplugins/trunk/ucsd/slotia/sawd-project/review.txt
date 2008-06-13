@@ -1,0 +1,31 @@
+THE SAWD PROJECT REVIEW
+
+0. NOTICE. Because the project is divided across several programs,
+   it is recommended to read the section "A Quick Runthrough" in the readme
+   file first. This gives an overview of the various programs in this project.
+
+1. OVERALL DESIGN. In the "Introduction" section of the readme, the goals and
+   motivations of the project are specified. What is your opinion of the
+   client-server paradigm that serves as a basis of this project? Do you feel
+   it correctly addresses the limitations of other projects? What problems
+   you forsee a client-server paradigm introduces not addressed in the readme?
+   (For example, potential problems include performance penalties and security
+   issues.)
+
+2. PROTOCOL DESIGN. Do you feel the protocol is sufficient for a wide range
+   of cases? Do you believe the protocol is simple enough to quickly write
+   clients of the protocol? (This question is about the protocol itself:
+   complaints about things like the way commands were named should be listed
+   here.)
+
+3. USABILITY. What usability issues came up when using SawdServer,
+   SawdVisualizer, load_graph.py, and force_layout.py? What was confusing
+   using the programs?
+
+4. DOCUMENTATION. Any concerns regarding the readme file provided? Was it
+   useful in describing how to use the programs effectively? Was it confusing?
+
+5. BUGS. Did you find any bugs in any of the programs?
+
+6. EXTRA COMMENTS. Add any comments in this section that do not apply to any
+   other.

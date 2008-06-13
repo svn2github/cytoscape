@@ -1,0 +1,67 @@
+<!--
+  ** build.xml - ant build file
+  ** Written by Samad Lotia
+  -->
+
+<project name="SawdVisualizer" default="jar" basedir=".">
+
+  <!-- ===================================================================	-->
+  <!-- Properties								-->
+  <!-- ===================================================================	-->
+
+  <!-- Existing directory structure -->
+  <property name="root.dir"			location="."/>
+  <property name="lib.dir"			location="${root.dir}/lib"/>
+  <property name="main.src.dir"			location="${root.dir}/src"/>
+  <property name="images.dir"			location="${root.dir}/images"/>
+  
+  <!-- Buildfile products -->
+  <property name="build.dir"			location="${root.dir}/build"/>
+  <property name="main.build.dir"		location="${build.dir}/main"/>
+  <property name="main.jar.manifest"		location="${build.dir}/project.manifest"/>
+  <property name="main.jar"			location="${root.dir}/SawdVisualizer.jar"/>
+
+  <!-- Classpaths -->
+  <path id="main.classpath">
+    <pathelement path="${lib.dir}/swing-layout-1.0.1.jar"/>
+    <pathelement path="${lib.dir}/jgraph.jar"/>
+  </path>
+
+  <!-- ===================================================================	-->
+  <!-- compile									-->
+  <!-- ===================================================================	-->
+
+  <target name="compile" description="compile project's class files"> 
+    <mkdir dir="${main.build.dir}"/>
+    <javac srcdir="${main.src.dir}" destdir="${main.build.dir}" debug="yes" classpathref="main.classpath"/>
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- jar									-->
+  <!-- ===================================================================	-->
+
+  <target name="jar" depends="compile" description="package class and manifest files into a jar"> 
+    <manifest file="${main.jar.manifest}">
+      <attribute name="Main-Class" value="SawdVisualizer.Main"/>
+    </manifest>
+    <copy todir="${main.build.dir}">
+      <fileset dir="${images.dir}"/>
+    </copy>
+    <unjar src="${lib.dir}/swing-layout-1.0.1.jar" dest="${main.build.dir}"/>
+    <unjar src="${lib.dir}/jgraph.jar" dest="${main.build.dir}"/>
+    <jar jarfile="${main.jar}" basedir="${main.build.dir}" manifest="${main.jar.manifest}"/>
+  </target>
+
+  <!-- ===================================================================	-->
+  <!-- clean 									-->
+  <!-- ===================================================================	-->
+  <target name="clean" description="remove all buildfile products">
+  
+    <delete dir="${main.build.dir}"/>
+    <delete dir="${main.jar.manifest}"/>
+    <delete dir="${build.dir}"/>
+    <delete file="${main.jar}"/>
+    
+  </target>
+
+</project>

@@ -1,0 +1,554 @@
+\documentclass{article}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Sawd}
+\rhead{Samad Lotia}
+\begin{document}
+
+\title{Sawd---A protocol for graphs}
+\author{Samad Lotia}
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+\emph{Sawd} is a protocol for creating, accessing, and modifying
+graphs\footnote{A graph in the mathematical sense consists of nodes and edges. Graphs are also known as networks, but to avoid confusion with
+computer and internet communication, they will be exclusively referred to as graphs.}
+across computer networks. Graphs are an abstraction to model aspects of biology, such as:
+
+\begin{enumerate}
+\item \emph{Co-regulated genes}. Nodes represent genes, and edges represent two genes with evidence of co-regulation. Co-regulation of genes is
+determined from gene expression data.
+\item \emph{Gene-to-gene interactions}. Nodes represent genes and their products. An edge represents a gene-to-gene interaction.
+The source node of an edge is a gene product that affects the expression of the gene represented by the target node. Gene-to-gene
+interactions are obtained from ChIP-Chip data.
+\item \emph{Protein-to-protein interactions}. Nodes represent proteins, and edges represent a empirically determined interaction between
+proteins. Protein-to-protein interactions are determined from yeast-two-hybrid experimental data.
+\end{enumerate}
+
+There are several popular open-source projects for viewing and analyzing graphs. Such projects include Cytoscape\footnote{
+Website: http://www.cytoscape.org. It is developed by UCSD, UCSF, Memorial Sloan-Kettering Cancer Center, Agilent Technologies,
+and Le Institut Pasteur. It is exclusively used in biology.}
+and Network Workbench\footnote{Website: http://nwb.slis.indiana.edu/. It is developed by Indiana U. It is used in biology and
+sociology.}.
+Not only do they provide tools for visualizing graphs, they also allow extending their capabilities through plugins.
+Such plugins can implement sophisticated algorithms that perform computation on graphs.
+The Sawd project is an attempt to expand the capabilities of these projects in two principle ways:
+
+\begin{enumerate}
+\item \emph{Platform independence}. Cytoscape and Network Workbench are written in Java. Algorithms must be implemented in Java and 
+use the APIs they provide. These projects also provide plugins for executing scripts in various languages, but they are ultimately restricted
+by the capabilities of the Java virtual machine. For example, Cytoscape provides a plugin for executing Python scripts through the
+Jython project. However, these Python scripts cannot execute code in native Python modules such as rpy, which allow 
+execution of R commands for statistical calculations. By providing platform independence, tools available to the developer are
+no longer restricted to those available in Java.
+\item \emph{Distribution of computation}. The price of CPUs has fallen to the point where average consumers can
+purchase multi-core CPUs. This trend is apparent in CPU clusters that have become cheap enough where institutions with modest budgets
+can afford them. It is for this reason distributable algorithms are favored over those that are not. Cytoscape and Network Workbench
+do not provide facilities for distributing calculations. If distribution is necessary, programmers must develop their own facilities to do
+this. By providing facilities for distribution, programmers can dispense with the time and cost associated with developing their own
+distribution facilities.
+\end{enumerate}
+
+To achieve these capabilities, the Sawd project employs a \emph{client-server paradigm}. Clients and servers are separated by a TCP/IP network.
+
+\begin{itemize}
+\item The \emph{server} stores graph topologies and data associated with graphs. Data are stored in terms of \emph{attributes}. Nodes, edges,
+and graphs have attributes. Attributes are key-value pairs that are arbitrarily defined by clients.
+While the server understands graph topology, it does not associate any meaning to an attribute. Identities of
+nodes, edges, or graphs are not determined by any attribute, but are determined by integers. By 
+doing so, the topology of graphs and the attributes stored in them are completely
+divorced\footnote{This is analogous to the idea of Unix files.
+The identity of a file is specified by an inode number, not a file path. File paths point
+to an inode. By separating a file's identity from its file path, the Unix file system allows advanced features like hard links.}.
+\item \emph{Clients} connect to the server to create, query, and modify graphs, their topologies, and their attributes. Clients include:
+	\begin{itemize}
+	\item \emph{Visualizers} display graphs on the screen to be inspected by individuals.
+	\item \emph{Algorithms} operate on the graphs stored on the server to perform calculations. Because clients are separated
+	from servers by a network, the language or platform used to implement an algorithm is irrelevant as long as the implementation
+	respects the protocol. Multiple instances of an algorithm spread across a network can connect to the server at the same
+	time to perform calculations concurrently.
+	\end{itemize}
+\end{itemize}
+
+\section{A Quick Runthrough}
+\begin{enumerate}
+\item Start the server on port 2607 by typing: \verb|java -jar SawdServer.jar 2607|
+\item Load some graphs by typing:
+	\begin{enumerate}
+	\item \verb|python load_graph.py localhost 2607 sample1.txt|
+	\item \verb|python load_graph.py localhost 2607 sample2.txt|
+	\item \verb|python load_graph.py localhost 2607 sample3.txt|
+	\end{enumerate}
+\item Start the visualizer by typing: \verb|java -jar SawdVisualizer.jar|.
+Connect to the server by choosing \verb|Session > Connect...|. Enter \verb|localhost| for the server field
+and \verb|2607| for the port number. Open the graphs a notice the placement of the nodes.
+\item Run the force-directed layout algorithm on the graphs by typing:
+	\begin{enumerate}
+	\item \verb|python force_layout.py localhost 2607 0|
+	\item \verb|python force_layout.py localhost 2607 1|
+	\item \verb|python force_layout.py localhost 2607 2|
+	\end{enumerate}
+\item In the visualizer, select \verb|Graph > Refresh| in each graph. Notice how the node positions have changed.
+\end{enumerate}
+
+\section{The Protocol}
+The foundation of the Sawd project is its protocol. The implementation details of the server and clients are irrelevant so long as
+they respect the established protocol. This section provides the details of the protocol. 
+
+\subsection{Connecting}
+When a client completes a TCP/IP connection to the server, the server begins processing commands immediately. The server
+does not issue a welcome message.
+
+\subsection{Disconnecting}
+A client disconnects from the server by closing its socket. It does not issue a command to the server. When a client disconnects
+while a server is processing a command, it is not guaranteed the command is completed by server. The client should wait for the server
+to finish processing the command before disconnecting.
+
+\subsection{Errors}
+If a client issues a command that cannot be completed by the server, the server will respond with a single line beginning with \verb|ERROR:|
+followed by a human-readable string.
+
+\subsection{Commands}
+There are a few things to note about the protocol specification:
+\begin{itemize}
+\item Text in the \verb|verbatim font| are to be issued as-is.
+\item Text in the \emph{emphasized font} are to be filled in by the client or the server.
+\item $\otimes$ specifies the newline character.
+\item Each command has three sections:
+	\begin{description}
+	\item[Purpose] The reason, goal, or purpose of the command.
+	\item[Client] What the client issues to the server.
+	\item[Server] What the server responds back to the client if the command was completed successfully.
+	\end{description}
+\end{itemize}
+
+\subsection{Global Commands}
+
+\subsubsection{get\_global\_attribute\_names}
+\begin{description}
+\item[Purpose] Obtain the names of global attributes.
+\item[Client] \verb|get_global_attribute_names|$\otimes$
+\item[Server] \emph{global-attribute-name-1}\verb|,|\emph{global-attribute-name-2}\verb|,|\emph{global-attribute-name-3 ...}\verb|,|\emph{global-attribute-name-n}$\otimes$
+\end{description}
+
+\subsubsection{get\_global\_attribute}
+\begin{description}
+\item[Purpose] Obtain the value of a global attribute.
+\item[Client] \verb|get_global_attribute,|\emph{graph-attribute-name}$\otimes$
+\item[Server] \emph{global-attribute-value}$\otimes$
+\end{description}
+
+\subsubsection{set\_global\_attribute}
+\begin{description}
+\item[Purpose] Set the value of a global attribute.
+\item[Client] \verb|set_global_attribute,|\emph{global-attribute-name}\verb|,|\emph{global-attribute-value}$\otimes$
+\item[Server] $\otimes$
+\end{description}
+
+\subsection{Commands for Graphs}
+
+\subsubsection{list\_graphs}
+\begin{description}
+\item[Purpose] Determine what graphs are available on the server. The server responds with a list of graph indices.
+\item[Client] \verb|list_graphs|$\otimes$
+\item[Server] \emph{graph-index-1}\verb|,|\emph{graph-index-2}\verb|,|\emph{graph-index-3 ...}\verb|,|\emph{graph-index-n}$\otimes$
+\end{description}
+
+\subsubsection{new\_graph}
+\begin{description}
+\item[Purpose] Create a new graph.
+\item[Client] \verb|new_graph|$\otimes$
+\item[Server] \emph{graph-index}$\otimes$
+\end{description}
+
+\subsubsection{delete\_graph}
+\begin{description}
+\item[Purpose] Delete a graph.
+\item[Client] \verb|delete_graph,|\emph{graph-index}$\otimes$
+\item[Server] $\otimes$
+\end{description}
+
+\subsubsection{get\_graph\_attribute\_names}
+\begin{description}
+\item[Purpose] Obtain the names of attributes associated with a graph.
+\item[Client] \verb|get_graph_attribute_names,|\emph{graph index}$\otimes$
+\item[Server] \emph{graph-attribute-name-1}\verb|,|\emph{graph-attribute-name-2}\verb|,|\emph{graph-attribute-name-3 ...}\verb|,|\emph{graph-attribute-name-n}$\otimes$
+\end{description}
+
+\subsubsection{get\_graph\_attribute}
+\begin{description}
+\item[Purpose] Obtain the value of an attribute associated with a graph.
+\item[Client] \verb|get_graph_attribute,|\emph{graph-index}\verb|,|\emph{graph-attribute-name}$\otimes$
+\item[Server] \emph{graph-attribute-value}$\otimes$
+\end{description}
+
+\subsubsection{set\_graph\_attribute}
+\begin{description}
+\item[Purpose] Set the value of an attribute associated with a graph.
+\item[Client] \verb|set_graph_attribute,|\emph{graph-index}\verb|,|\emph{graph-attribute-name}\verb|,|\emph{graph-attribute-value}$\otimes$
+\item[Server] $\otimes$
+\end{description}
+
+\subsection{Commands for Nodes}
+
+\subsubsection{list\_nodes}
+\begin{description}
+\item[Purpose] Determine the nodes in a graph.
+\item[Client] \verb|list_nodes,|\emph{graph-index}$\otimes$
+\item[Server] \emph{node-index-1}\verb|,|\emph{node-index-2}\verb|,|\emph{node-index-3 ...}\verb|,|\emph{node-index-n}$\otimes$
+\end{description}
+
+\subsubsection{new\_node}
+\begin{description}
+\item[Purpose] Create a new node in a graph.
+\item[Client] \verb|new_node,|\emph{graph-index}$\otimes$
+\item[Server] \emph{node-index}$\otimes$
+\end{description}
+
+\subsubsection{delete\_node}
+\begin{description}
+\item[Purpose] Delete a node and all edges connected to it from a graph.
+\item[Client] \verb|delete_node,|\emph{graph-index}\verb|,|\emph{node-index}$\otimes$
+\item[Server] $\otimes$
+\end{description}
+
+\subsubsection{get\_node\_attribute\_names}
+\begin{description}
+\item[Purpose] Obtain the names of attributes associated with nodes of a graph.
+\item[Client] \verb|get_node_attribute_names,|\emph{graph-index}$\otimes$
+\item[Server] \emph{node-attribute-name-1}\verb|,|\emph{node-attribute-name-2}\verb|,|\emph{node-attribute-name-3 ...}\verb|,|\emph{node-attribute-name-n}$\otimes$
+\end{description}
+
+\subsubsection{get\_node\_attribute}
+\begin{description}
+\item[Purpose] Obtain the value of an attribute associated with a node.
+\item[Client] \verb|get_node_attribute,|\emph{graph-index}\verb|,|\emph{node-index}\verb|,|\emph{node-attribute-name}$\otimes$
+\item[Server] \emph{node-attribute-value}$\otimes$
+\end{description}
+
+\subsubsection{set\_node\_attribute}
+\begin{description}
+\item[Purpose] Set the value of an attribute associated with a node.
+\item[Client] \verb|set_node_attribute,|\emph{graph-index}\verb|,|\emph{node-index}\verb|,|\emph{node-attribute-name}\verb|,|\emph{node-attribute-value}$\otimes$
+\item[Server] $\otimes$
+\end{description}
+
+\subsubsection{get\_adjacent\_nodes}
+\begin{description}
+\item[Purpose] Obtain node indices that have edges connected to a node.
+\item[Client] \verb|get_adjacent_nodes,|\emph{graph-index}\verb|,|\emph{node-index}$\otimes$
+\item[Server] \emph{node-index-1}\verb|,|\emph{node-index-2}\verb|,|\emph{node-index-3 ...}\verb|,|\emph{node-index-n}$\otimes$
+\end{description}
+
+\subsubsection{get\_incident\_edges}
+\begin{description}
+\item[Purpose] Obtain edges indices connected to a node.
+\item[Client] \verb|get_incident_edges,|\emph{graph-index}\verb|,|\emph{node-index}$\otimes$
+\item[Server] \emph{edge-index-1}\verb|,|\emph{edge-index-2}\verb|,|\emph{edge-index-3 ...}\verb|,|\emph{edge-index-n}$\otimes$
+\end{description}
+
+\subsection{Commands for Edges}
+
+\subsubsection{new\_edge}
+\begin{description}
+\item[Purpose] Create a new edge between two nodes in a graph.
+\item[Client] \verb|new_edge,|\emph{graph-index}\verb|,|\emph{source-node-index}\verb|,|\emph{target-node-index}$\otimes$
+\item[Server] \emph{edge-index}$\otimes$
+\end{description}
+
+\subsubsection{delete\_edge}
+\begin{description}
+\item[Purpose] Delete an edge from a graph.
+\item[Client] \verb|delete_edge,|\emph{graph-index}\verb|,|\emph{edge-index}$\otimes$
+\item[Server] $\otimes$
+\end{description}
+
+\subsubsection{get\_edge\_attribute\_names}
+\begin{description}
+\item[Purpose] Obtain the names of attributes associated with edges of a graph.
+\item[Client] \verb|get_edge_attribute_names,|\emph{graph-index}$\otimes$
+\item[Server] \emph{edge-attribute-name-1}\verb|,|\emph{edge-attribute-name-2}\verb|,|\emph{edge-attribute-name-3 ...}\verb|,|\emph{edge-attribute-name-n}$\otimes$
+\end{description}
+
+\subsubsection{get\_edge\_attribute}
+\begin{description}
+\item[Purpose] Obtain the value of an attribute associated with an edge.
+\item[Client] \verb|get_edge_attribute,|\emph{graph-index}\verb|,|\emph{edge-index}\verb|,|\emph{edge-attribute-name}$\otimes$
+\item[Server] \emph{edge-attribute-value}$\otimes$
+\end{description}
+
+\subsubsection{set\_edge\_attribute}
+\begin{description}
+\item[Purpose] Set a value of an attribute associated with an edge.
+\item[Client] \verb|set_edge_attribute,|\emph{graph-index}\verb|,|\emph{edge-index}\verb|,|\emph{edge-attribute-name}\verb|,|\emph{edge-attribute-value}$\otimes$
+\item[Server] $\otimes$
+\end{description}
+
+\subsubsection{get\_edge\_source}
+\begin{description}
+\item[Purpose] Get the node index of the source of the edge.
+\item[Client] \verb|get_edge_source,|\emph{graph-index}\verb|,|\emph{edge-index}$\otimes$
+\item[Server] \emph{source-node-index}$\otimes$
+\end{description}
+
+\subsubsection{get\_edge\_target}
+\begin{description}
+\item[Purpose] Get the node index of the target of the edge.
+\item[Client] \verb|get_edge_target,|\emph{graph-index}\verb|,|\emph{edge-index}$\otimes$
+\item[Server] \emph{target-node-index}$\otimes$
+\end{description}
+
+\subsection{Example}
+The following is an example transaction between a client and a server.
+
+\begin{description}
+\item[Client] \verb|list_graphs| $\otimes$
+\item[Server] $\otimes$ \emph{(There are no graphs, so the server returns a blank line.)}
+\item[Client] \verb|new_graph| $\otimes$
+\item[Server] \verb|0| $\otimes$
+\item[Client] \verb|new_graph| $\otimes$
+\item[Server] \verb|1| $\otimes$
+\item[Client] \verb|list_graphs| $\otimes$
+\item[Server] \verb|0,1| $\otimes$
+\item[Client] \verb|new_node,0| $\otimes$
+\item[Server] \verb|0| $\otimes$
+\item[Client] \verb|new_node,0| $\otimes$
+\item[Server] \verb|1| $\otimes$
+\item[Client] \verb|get_node_attribute_names,0| $\otimes$
+\item[Server] $\otimes$ \emph{(There are no attributes associated with the nodes, so the server returns a blank line.)}
+\item[Client] \verb|set_node_attribute,0,0,name,a| $\otimes$
+\item[Server] $\otimes$
+\item[Client] \verb|get_node_attribute,0,0,name| $\otimes$
+\item[Server] \verb|a|$\otimes$
+\item[Client] \verb|set_node_attribute,0,1,name,b| $\otimes$
+\item[Server] $\otimes$
+\item[Client] \verb|get_node_attribute,0,1,name| $\otimes$
+\item[Server] \verb|b|$\otimes$
+\item[Client] \verb|get_node_attribute_names,0| $\otimes$
+\item[Server] \verb|name|$\otimes$
+\item[Client] \verb|new_edge,0,0,1| $\otimes$
+\item[Server] \verb|0| $\otimes$
+\item[Client] \verb|get_edge_attribute_names,0| $\otimes$
+\item[Server] $\otimes$ \emph{(There are no attributes associated with the edges, so the server returns a blank line.)}
+\item[Client] \verb|set_edge_attribute,0,0,cost,1.0| $\otimes$
+\item[Server] $\otimes$
+\item[Client] \verb|get_edge_attribute,0,0,cost| $\otimes$
+\item[Server] \verb|1.0|$\otimes$
+\item[Client] \verb|get_edge_source,0,0| $\otimes$
+\item[Server] \verb|0|$\otimes$
+\item[Client] \verb|get_edge_target,0,0| $\otimes$
+\item[Server] \verb|1|$\otimes$
+\item[Client] \verb|get_adjacent_nodes,0,0| $\otimes$
+\item[Server] \verb|1|$\otimes$
+\item[Client] \verb|get_adjacent_nodes,0,1| $\otimes$
+\item[Server] \verb|0|$\otimes$
+\item[Client] \verb|get_incident_edges,0,0| $\otimes$
+\item[Server] \verb|0|$\otimes$
+\item[Client] \verb|get_incident_edges,0,1| $\otimes$
+\item[Server] \verb|0|$\otimes$
+\end{description}
+
+\section{Software Prerequisites}
+The following software packages are required to use the progams in the Sawd project:
+\begin{itemize}
+\item Java 1.5 JRE. This is needed to run Java programs in this project.
+\item Python 2.3+. This is needed to run Python scripts in this project.
+\end{itemize}
+
+The following software packages are required to compile the programs in the Sawd project:
+\begin{itemize}
+\item Java 1.5 JDK. This is needed to compile and run Java programs in this project.
+\item Apache Ant. This is needed to compile Java programs in this project.
+\item (Optional) JUnit Apache Ant Task. This is needed to run SawdServer's JUnit tests.
+\end{itemize}
+
+\section{SawdServer}
+SawdServer is a server implementation of the Sawd protocol in Java.
+\subsection{Compiling}
+To compile SawdServer, \verb|cd| into its directory and type \verb|ant clean jar|. If compiling is successful, \verb|ant| will terminate
+with the line \verb|BUILD SUCCESSFUL|. The file \verb|SawdServer.jar| will also be present in the directory.
+\subsubsection{JUnit Tests}
+Before running the JUnit tests, make sure a server is running on localhost at port 2626.
+To run the JUnit tests, type \verb|ant run-tests|. The JUnit Apache Ant Task must be installed to run the JUnit tests. This step is optional.
+JUnit tests are used to ensure the server is functioning as specified by the protocol.
+\subsection{Starting}
+To start the server once compiling is complete, type: \verb|java -jar SawdServer.jar|. The default port is 2626.
+\subsubsection{Using a Different Port}
+To use a different port, type: \verb|java -jar SawdServer.jar|~\emph{port}.
+Port numbers higher than 1024 are not available to the outside network; clients must be run on the same computer as the server.
+Port numbers lower than 1024 are available to the outside network, but require root privileges. 
+\subsubsection{Interacting with the Server at the Protocol Level}
+To interact with the server at the protocol level, use the \verb|terminal| command. This only works on Linux or Mac.
+If the server is running on localhost at port 2626, type \verb|terminal localhost 2626|.
+
+\subsection{Stopping}
+To stop the server, hit Control-C or use the \verb|kill| command. Upon exiting, the server will save the graphs
+to a file called \verb|.SawdServer.persist|. When the server is started up again, it looks for the file in the
+current directory. If it cannot be found or is corrupted, it will start without any graphs. To start the server
+without loading any graphs, delete \verb|.SawdServer.persist| in the current directory and start the server.
+
+\section{SawdVisualizer}
+SawdVisualizer is a Sawd client in Java that visualizes graphs stored on a server. It does not create or manipulate
+graphs.
+
+\subsection{Compiling}
+To compile SawdVisualizer, \verb|cd| into its directory and type \verb|ant jar|. Upon completion, \verb|ant| will
+terminate with the line \verb|BUILD SUCCESSFUL|.
+
+\subsection{Starting}
+To start the program once compiling is complete, type: \verb|java -jar SawdVisualizer.jar|.
+
+\subsection{Sessions}
+A \emph{session} represents a connection to a server. SawdVisualizer starts up with a single session.
+However, SawdVisualizer allows multiple sessions at once.
+To create a new session, choose \verb|Session > New Session...|. Closing a session can be done by
+choosing \verb|Session > Close Session|. If all sessions have been closed, SawdVisualizer will quit.
+Choosing \verb|SawdVisualizer > Quit SawdVisualizer| closes all sessions and quits.
+
+\subsection{Connecting}
+To connect to a server, choose \verb|Session > Connect...|. A dialog will ask for the server address
+and port number. If the connection is successful, the title of the session window will change, indicating
+the server and port the session is connected to.
+Otherwise, an error window pops up explaining the reason the connection failed.
+There is no disconnect menu item; one disconnects from the server by closing the session or connecting to
+another server.
+
+\subsection{Graphs}
+The \emph{Graphs} panel displays the list of graphs. If the \verb|name|
+attribute for a graph is specified, it will display that value; otherwise, it will display \verb|index=|\emph{graph-index}.
+The list of graphs can be refreshed by choosing \verb|Session > Refresh List of Graphs|. Refreshing the list of graphs
+closes all open graphs in case there are stale graphs that have been deleted in the server.
+
+To open a graph, double-click on its name. A window will pop up containing the graph and its attributes. Clicking
+on a node or edge attribute will select that node or edge; clicking on a node or an edge will select its corresponding
+attributes. SawdVisualizer reads the \verb|x| and \verb|y| attributes of nodes to place them.
+Labels for nodes are read from its \verb|name| attribute values. To refresh the graph, choose \verb|Graph > Refresh|.
+This downloads the graph from the server and displays it. Zooming in and out is done by choosing
+\verb|Graph > Zoom In| and \verb|Graph > Zoom Out|, respectively. Choosing \verb|Graph > Zoom to Scale|
+will reset the zoom to its default level.
+
+\section{load\_graph}
+load\_graph is a Python script that loads graphs from a text file and stores them in the server.
+The distribution includes the following sample graph files: \verb|sample1.txt|, \verb|sample2.txt|, and \verb|sample3.txt|.
+\subsection{Running}
+To load a graph, type: \verb|python load_graph.py|~\emph{server}~\emph{port}~\emph{file-name}
+\subsection{File Format}
+The lines of a graph file specify edges and have the following format:
+\newline
+\newline
+\emph{source-node} \emph{target-node} [\emph{attribute-1}\verb|=|\emph{value-1}\verb|,|\emph{attribute-2}\verb|=|\emph{value-2}\emph{...}]
+\newline
+\newline
+The source node and target node names specified in the file are placed in the \verb|name| attribute of the nodes.
+Specifying edge attributes is optional.
+
+\section{force\_layout}
+force\_layout is a Python script that performs the force-directed layout algorithm on a graph stored in the server.
+The purpose of this script is to demonstrate Sawd's platform independence. Since the server is written in Java,
+this script can interact with the server even though it is not written in Java.
+\subsection{Running}
+To run the force directed layout algorithm, type:
+\newline
+\newline
+\verb|python force_layout.py|~\emph{server}~\emph{port}~\emph{graph-index}
+
+\section{SawdPinnacleZ}
+SawdPinnacleZ is a Sawd client in Java that calculates regions of a graph that are biologically relevant.
+The purpose of SawdPinnacleZ is to demonstrate Sawd's ability to perform calculations distributively
+across computer networks and the project's biological relevancy.
+SawdPinnacleZ takes three inputs:
+\begin{description}
+\item[Expression Matrix] Gene expression data in a table. The columns of the table are various conditions, the rows are
+genes, and the individual values are expression levels of a gene under a condition.
+\item[Protein Interaction Graph] A graph that specifies protein interactions. The names of the proteins in this graph
+must match with the gene names in the expression matrix. The graph must be in SIF format, where each line specifies
+an edge in the graph. A line has the following format:
+\newline
+\newline
+\emph{source-node} \verb|     ipp    | \emph{target-node}
+\item[Class File] A file that specifies the classification of the conditions in the expression matrix. The conditions
+are broken into two classes. Each class specifies a unique phenotype. For example, PinnacleZ was developed to
+study breast cancer in humans, so the first class represents the breast cancer phenotype,
+and the second represents the healthy phenotype. Each line in the class file specifies the classification
+of a condition. A line consists of the condition name, a tab, and \verb|1| or \verb|2|, depending on whether
+the condition is in the first class or the second.
+\end{description}
+
+As output, SawdPinnacleZ produces biologically relevant graphs stored in the server.
+
+\subsection{Compiling}
+To compile SawdPinnacleZ, \verb|cd| into its directory and type \verb|ant jar|. Upon completion, \verb|ant| will
+terminate with the line \verb|BUILD SUCCESSFUL|.
+
+\subsection{Running}
+To invoke SawdPinnacleZ, type:
+\newline
+\verb|java -jar SawdPinnacleZ.jar| \emph{server} \emph{port} \emph{class-file} \emph{expression-matrix} \emph{graph}
+
+Sample data files are provided in the \verb|sampleData| directory. To invoke SawdPinnacleZ with the sample data, type:
+\newline
+\verb|java -jar SawdPinnacleZ.jar| \emph{server} \emph{port} \verb|sampleData/classes| \verb|sampleData/expression_data| \verb|sampleData/network|
+
+There are many options available to configure the algorithm SawdPinnacleZ employs.
+These options can be viewed by typing: \verb|java -jar SawdPinnacleZ.jar --help|.
+The details of the options are not relevant to the project and will not be discussed here.
+The defaults work fine for the sample data provided.
+
+SawdPinnacleZ first calculates all possible subregions of the graph. This calculation is called the \emph{real iteration}.
+Most of these subregions are statistically insignificant. In order to weed out these insignificant subgraphs, the
+expression matrix is randomized and the subregions based on this randomized matrix are computed. If the results of the random
+subgraph are similar to the real subgraph, that subgraph is statistically insignificant. The process of randomization
+is called the \emph{random iteration}. Once all the random iterations are completed, the process of performing
+statistical calculations on each subgraph to determine its statistical significance and removing insignificant
+graphs is called \emph{filtering}. Only one computer can do a real iteration, but many computers can do random iterations
+concurrently. Filtering is done only one one computer.
+SawdPinnacleZ can be invoked on multiple computers across a network so long as clients can access the same server and input files.
+The options passed to each instance of SawdPinnacleZ must be the same. The more instances of SawdPinnacleZ are invoked, the faster
+the random iterations are completed. Instances can be invoked at any time.
+
+\section{Dependencies}
+The project uses the following external libraries.
+\begin{enumerate}
+\item The JGraph library. \verb|http://www.jgraph.com|. This is used by SawdVisualizer to display graphs.
+\item The Swing-layout library. \verb|https://swing-layout.dev.java.net|. This is used by SawdVisualizer to display dialogs.
+\item The JUnit library. \verb|http://www.junit.org|. This is used by SawdServer to ensure it properly adheres to the protocol.
+\item The Apache Commons CLI library. \verb|http://commons.apache.org/cli|. This is used by SawdPinnacleZ to parse the command-line.
+\item The CERN Colt library. \verb|http://acs.lbl.gov/~hoschek/colt|. This is used by SawdPinnacleZ for statistics calculations.
+\end{enumerate}
+
+\section{Tested platforms}
+This project was tested on the following platforms.
+\newline
+\newline
+\begin{tabular}{l|l|l|l|l|l}
+Architecture 	& OS		& Distribution		& Version		& Java		& Python \\
+\hline
+x86		& Linux		& RedHat		& Enterprise Edition 5	& Sun JDK 6	& 2.3 \\
+amd64		& Linux		& Ubuntu		& Desktop Edition 8.4	& Sun JDK 6	& 2.5 \\
+x86		& Windows	& Vista			& Ultimate Edition	& Sun JRE 6	& 2.5
+\end{tabular}
+
+\section{What's next?}
+This project was developed within the time frame of ten weeks. Given more time, I would have liked to add the
+following features.
+\begin{itemize}
+\item Add command line options to control the persist file when invoking the server.
+\item Use a SSL (Secure Socket Layer) socket instead of the standard, plain-text socket. This solves security issues present in
+the current setup.
+\item Add support for mixed graphs, where both directed and undirected edges are allowed in a single graph.
+\item Create a more sophisticated attributes value system
+where attribute values can be lists, floats, maps, booleans, integers, and strings.
+\item Change the way the server reports errors. When an error occurs, the server should print an integer specifying the error code
+and a human readable string. This makes detecting errors by a computer much easier.
+\item Add the ability to download or upload an entire graph with a single command. The graph is serialized to a text format that can be
+readily parsed by the client. The client can then modify the graph, reserialize it, and send it back to the server. This feature would
+drastically increase the speed of communicating between the client and server.
+\item Add support for events. The client can listen to events on the server, like a node attribute value changing or a new graph being
+created. This is especially useful for the visualizer, which can listen to events and update its graphs accordingly.
+\item Add the ability to create and modify graphs and edit attributes in the visualizer.
+\end{itemize}
+\end{document}

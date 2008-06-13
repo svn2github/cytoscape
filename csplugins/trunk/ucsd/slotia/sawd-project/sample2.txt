@@ -1,0 +1,11 @@
+briggs	jason	relationship=TA
+jason	albert	relationship=student
+jason	allan	relationship=student
+jason	charles	relationship=student
+jason	chris	relationship=student
+jason	craig	relationship=student
+jason	martin	relationship=student
+jason	peter	relationship=student
+jason	ryan	relationship=student
+jason	samad	relationship=student
+jason	steven	relationship=student

@@ -1,0 +1,4 @@
+a	b	cost=1.4,value=-7
+b	c	cost=2.1,value=-26
+a	c	cost=3.3,value=-1985
+c	d	cost=4.4,value=-3

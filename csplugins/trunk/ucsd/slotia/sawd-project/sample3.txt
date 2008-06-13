@@ -1,0 +1,8 @@
+oxaloacetate	citrate	enzyme=citrate_synthetase
+citrate	isocitrate	enzyme=aconitase
+isocitrate	alpha_ketoglutarate	enzyme=isocitrate_dehydrogenase
+alpha_ketoglutarate	succinyl_coa	enzyme=alpha_ketoglutarate_dehydrogenase
+succinyl_coa	succinate	enzyme=succinal_coa_synthetase
+succinate	fumarate	enzyme=succinate_dehydrogenase
+fumarate	malate	enzyme=fumarase
+malate	oxaloacetate	enzyme=malate_dehydrogenase
