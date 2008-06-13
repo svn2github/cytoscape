@@ -87,11 +87,11 @@ import clusterMaker.treeview.model.TreeViewModel;
 public class TreeView extends TreeViewApp implements Observer, GraphViewChangeListener, ClusterViz {
 	private URL codeBase = null;
 	private ViewFrame viewFrame = null;
-	private TreeSelectionI geneSelection = null;
-	private TreeSelectionI arraySelection = null;
-	private TreeViewModel dataModel = null;
-	private CyNetworkView myView = null;
-	private CyNetwork myNetwork = null;
+	protected TreeSelectionI geneSelection = null;
+	protected TreeSelectionI arraySelection = null;
+	protected TreeViewModel dataModel = null;
+	protected CyNetworkView myView = null;
+	protected CyNetwork myNetwork = null;
 	private	List<CyNode>selectedNodes;
 	private	List<CyNode>selectedArrays;
 	private CyLogger myLogger;
@@ -143,8 +143,14 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 	public boolean isAvailable() {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE) ||
-		    networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE)) {
+		String netId = network.getIdentifier();
+		if (networkAttributes.hasAttribute(netId, EisenCluster.CLUSTER_TYPE_ATTRIBUTE) &&
+		    !networkAttributes.getStringAttribute(netId, EisenCluster.CLUSTER_TYPE_ATTRIBUTE).equals("hierarchical")) {
+			return false;
+		}
+
+		if (networkAttributes.hasAttribute(netId, EisenCluster.CLUSTER_NODE_ATTRIBUTE) ||
+		    networkAttributes.hasAttribute(netId, EisenCluster.CLUSTER_ATTR_ATTRIBUTE)) {
 			return true;
 		}
 		return false;

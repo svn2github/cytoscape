@@ -51,7 +51,7 @@ import clusterMaker.algorithms.AbstractClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.DistanceMetric;
 import clusterMaker.algorithms.hierarchical.Matrix;
 import clusterMaker.ui.ClusterViz;
-import clusterMaker.ui.TreeView;
+import clusterMaker.ui.KnnView;
 
 // clusterMaker imports
 
@@ -76,7 +76,7 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	String dataAttributes = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
-	TreeView treeView = null;
+	KnnView knnView = null;
 
 	public KMeansCluster() {
 		super();
@@ -97,7 +97,10 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	}
 
 	public ClusterViz getVisualizer() {
-		return null;
+		if (knnView == null)
+			knnView = new KnnView();
+
+		return knnView;
 	}
 
 	protected void initializeProperties() {

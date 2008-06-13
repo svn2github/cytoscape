@@ -66,6 +66,7 @@ public class TreeViewModel extends TVModel {
 	CyNetworkView networkView;
 	boolean isSymmetrical = false;
 	CyLogger myLogger = null;
+	private String [] clusterHeaders = {"NODEID", "LEFT", "RIGHT", "CORRELATION"};
 
 	public TreeViewModel(CyLogger logger) {
 		super();
@@ -163,7 +164,6 @@ public class TreeViewModel extends TVModel {
 		setExprData(exprData);
 		hashGIDs();
 		hashAIDs();
-		gidFound(true);
 
 		// Now, get the gene tree results (GTR) or array tree results (ATR) from Cytoscape, depending on
 		// what we clustered.  Note that the way we put this together really depends on whether we've done
@@ -171,36 +171,22 @@ public class TreeViewModel extends TVModel {
 
 		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE)) {
 			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_NODE_ATTRIBUTE);
-			String [][] gtrHeaders = null;
-
-			if (clusterType.equals("hierarchical")) {
-				setGtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
-				gtrHeaders = new String[groupList.size()][4];
-			} else if (clusterType.equals("kmeans")) {
-				setGtrPrefix(new String [] {"NODEID", "GROUP"});
-				gtrHeaders = new String[groupList.size()][2];
-			}
+			setGtrPrefix(getClusterHeaders());
+			String [][] gtrHeaders = new String[groupList.size()][getClusterHeaders().length];
 
 			parseGroupHeaders(groupList, gtrHeaders);
 
 			setGtrHeaders(gtrHeaders);
-
 			hashGTRs();
+			gidFound(true);
 		}
 
 		// If we're not a gene cluster, we need to transpose the matrix
 		// when we save it
 		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE)) {
 			List<String>groupList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.CLUSTER_ATTR_ATTRIBUTE);
-			String [][] atrHeaders = null;
-
-			if (clusterType.equals("hierarchical")) {
-				setAtrPrefix(new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"});
-				atrHeaders = new String[groupList.size()][4];
-			} else if (clusterType.equals("kmeans")) {
-				setAtrPrefix(new String [] {"NODEID", "GROUP"});
-				atrHeaders = new String[groupList.size()][2];
-			}
+			setAtrPrefix(getClusterHeaders());
+			String [][] atrHeaders = new String[groupList.size()][getClusterHeaders().length];
 
 			parseGroupHeaders(groupList, atrHeaders);
 
@@ -225,6 +211,10 @@ public class TreeViewModel extends TVModel {
 
 	public boolean isSymmetrical() {
 		return isSymmetrical;
+	}
+
+	protected String[] getClusterHeaders() {
+		return new String [] {"NODEID", "LEFT", "RIGHT", "CORRELATION"};
 	}
 
 	private void parseGroupHeaders (List<String>groupList, String [][] headers) {
