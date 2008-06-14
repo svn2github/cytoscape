@@ -637,7 +637,10 @@ public class XGMMLWriter {
 		if (!nodeMap.containsKey(curEdge.getTarget()) || !nodeMap.containsKey(curEdge.getSource()))
 			return;
 
-		writeElement("<edge label="+quote(curEdge.getIdentifier())+" source="+source+" target="+target+">\n");
+		String directedness;
+		if (curEdge.isDirected()){ directedness="\"true\""; } else { directedness="\"false\""; }
+		writeElement("<edge label="+quote(curEdge.getIdentifier())+" source="+source+" target="+target+" directed="+directedness+">\n");
+
 		depth++;
 
 		// Write the edge attributes
