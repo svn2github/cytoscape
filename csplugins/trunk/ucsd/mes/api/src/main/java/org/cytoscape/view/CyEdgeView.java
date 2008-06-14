@@ -1,6 +1,6 @@
 package org.cytoscape.view;
 
-import org.cytoscape.network.CyEdge;
+import org.cytoscape.model.network.CyEdge;
 
 /**
  * Contains the visual representation of an Edge.

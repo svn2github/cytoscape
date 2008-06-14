@@ -1,6 +1,6 @@
 package org.cytoscape.view;
 
-import org.cytoscape.network.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import java.util.List; 
 
 /**

@@ -51,13 +51,15 @@ public class CyEventHelperTest extends TestCase {
 
 	public void testSychronous() {
 
-		helper.fireSynchronousEvent( new StubCyEventImpl("homer"), StubCyEventListener.class );
+		// TODO figure out why I need to cast the StubCyEventImpl
+		helper.fireSynchronousEvent( (StubCyEvent) new StubCyEventImpl("homer"), StubCyEventListener.class );
 		assertEquals( 1, service.getNumCalls() );
 
 	}
 
 	public void testASychronous() {
 		try {
+		// TODO figure out why I need to cast the StubCyEventImpl
 		helper.fireAsynchronousEvent( (StubCyEvent) new StubCyEventImpl("marge"), StubCyEventListener.class );
 		Thread.sleep(500); // TODO is there a better way to wait?
 		assertEquals( 1, service.getNumCalls() );
