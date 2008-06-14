@@ -7,7 +7,7 @@ import org.example.tunable.Tunable;
 public class PrintSomethingElse implements Command {
 
 	@Tunable(description="the value we need")
-	public int value = 4; 
+	private int value = 4; 
 
 
 	public void execute() {

@@ -15,7 +15,7 @@ public class CLTunableInterceptor {
 			java.util.List<CLHandler> lh = new LinkedList<CLHandler>();
 
 			// Find each field in the class.
-			for (Field f : d.getClass().getFields()) {
+			for (Field f : d.getClass().getDeclaredFields()) {
 
 				// See if the field is annotated as a Tunable.
    				if (f.isAnnotationPresent(Tunable.class)) {

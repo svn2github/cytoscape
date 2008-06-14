@@ -17,7 +17,7 @@ public class TunableInterceptor {
 			java.util.List<GuiHandler> lh = new LinkedList<GuiHandler>();
 
 			// Find each field in the class.
-			for (Field f : d.getClass().getFields()) {
+			for (Field f : d.getClass().getDeclaredFields()) {
 
 				// See if the field is annotated as a Tunable.
    				if (f.isAnnotationPresent(Tunable.class)) {
