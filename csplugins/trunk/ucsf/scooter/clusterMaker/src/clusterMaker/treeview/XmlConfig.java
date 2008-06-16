@@ -157,7 +157,6 @@ public class XmlConfig {
      * returns node if it exists, otherwise makes a new one.
      */
     public ConfigNode getNode(String name) {
-			System.out.println("Getting node: "+name);
 	ConfigNode t =root.fetchFirst(name);
 	// just return if exists
 	if (t != null) return t;

@@ -53,6 +53,7 @@ import cytoscape.plugin.PluginInfo;
 // clusterMaker imports
 import clusterMaker.ui.ClusterSettingsDialog;
 import clusterMaker.ui.ClusterViz;
+import clusterMaker.ui.HeatMapView;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.kmeans.KMeansCluster;
@@ -94,6 +95,12 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		for (JMenuItem item: vizMenus.keySet()) {
 			menu.add(item);
 		}
+
+		// Add the heat map visualization
+		HeatMapView viz = new HeatMapView();
+		JMenuItem item = new JMenuItem(viz.getName());
+		item.addActionListener(new ClusterMakerCommandListener((ClusterAlgorithm)viz));
+		menu.add(item);
 		
 		Cytoscape.getPropertyChangeSupport()
         .addPropertyChangeListener( Cytoscape.NETWORK_LOADED, this );

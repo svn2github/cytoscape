@@ -96,7 +96,7 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener, Pr
 		super(Cytoscape.getDesktop(), algorithm.getName()+" Settings", false);
 		currentAlgorithm = algorithm;
 		visualizer = algorithm.getVisualizer();
-		if (visualizer != null) algorithm.getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (visualizer != null && visualizer != algorithm) algorithm.getPropertyChangeSupport().addPropertyChangeListener(this);
 		initializeOnce(); // Initialize the components we only do once
 	}
 
@@ -176,25 +176,32 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener, Pr
 		saveButton.setActionCommand("save");
 		saveButton.addActionListener(this);
 
-		JButton executeButton = new JButton("Create Clusters");
-		executeButton.setActionCommand("execute");
-		executeButton.addActionListener(this);
+		if (currentAlgorithm != visualizer) {
+			JButton executeButton = new JButton("Create Clusters");
+			executeButton.setActionCommand("execute");
+			executeButton.addActionListener(this);
 
-		vizButton = new JButton("Visualize Clusters");
-		vizButton.setActionCommand("visualize");
-		vizButton.addActionListener(this);
-		if (visualizer != null && visualizer.isAvailable())
-			vizButton.setEnabled(true);
-		else
-			vizButton.setEnabled(false);
+			vizButton = new JButton("Visualize Clusters");
+			vizButton.setActionCommand("visualize");
+			vizButton.addActionListener(this);
+			if (visualizer != null && visualizer.isAvailable())
+				vizButton.setEnabled(true);
+			else
+				vizButton.setEnabled(false);
 
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setActionCommand("cancel");
-		cancelButton.addActionListener(this);
-		buttonBox.add(executeButton);
-		buttonBox.add(vizButton);
-		buttonBox.add(saveButton);
-		buttonBox.add(cancelButton);
+			JButton cancelButton = new JButton("Cancel");
+			cancelButton.setActionCommand("cancel");
+			cancelButton.addActionListener(this);
+			buttonBox.add(executeButton);
+			buttonBox.add(vizButton);
+			buttonBox.add(saveButton);
+			buttonBox.add(cancelButton);
+		} else {
+			vizButton = new JButton("Show");
+			vizButton.setActionCommand("visualize");
+			vizButton.addActionListener(this);
+			buttonBox.add(vizButton);
+		}
 		buttonBox.add(doneButton);
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		mainPanel.add(buttonBox);

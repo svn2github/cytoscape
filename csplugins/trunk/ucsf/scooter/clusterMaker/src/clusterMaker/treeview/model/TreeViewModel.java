@@ -80,7 +80,9 @@ public class TreeViewModel extends TVModel {
 		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 
 		// Get the type of cluster
-		String clusterType = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
+		String clusterType = null;
+		if (networkAttributes.hasAttribute(network.getIdentifier(), EisenCluster.CLUSTER_TYPE_ATTRIBUTE))
+			clusterType = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
 		
 		// Gene annotations are just the list of node names
 		List<String>geneList = networkAttributes.getListAttribute(network.getIdentifier(), EisenCluster.NODE_ORDER_ATTRIBUTE);
@@ -150,9 +152,9 @@ public class TreeViewModel extends TVModel {
 				int expr = 0;
 				for (String attribute: arrayList) {
 					Double val = nodeAttributes.getDoubleAttribute(nodeName, attribute);
-					if (val == null)
+					if (val == null) {
 						exprData[gene*nExpr + expr] = DataModel.NODATA;
-					else {
+					} else {
 						exprData[gene*nExpr + expr] = val.doubleValue();
 					}
 					expr++;
