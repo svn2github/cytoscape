@@ -51,6 +51,7 @@ import cytoscape.view.CyNetworkView;
 
 // TreeView imports
 import clusterMaker.treeview.DataModel;
+import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.model.TVModel;
 
 import clusterMaker.algorithms.hierarchical.EisenCluster;
@@ -65,8 +66,29 @@ public class KnnViewModel extends TreeViewModel {
 
 	public KnnViewModel(CyLogger logger) {
 		super(logger);
-		gidFound(false);
-		aidFound(false);
+
+		// Now we have a sort of TreeView model, modify it to add the GROUP information
+		if (gidFound()) {
+			// We have Gene clusters
+			HeaderInfo geneHeader = getGeneHeaderInfo();
+			HeaderInfo gtrHeader = getGtrHeaderInfo();
+			geneHeader.addName("GROUP", geneHeader.getNumNames());
+			for (int row = 0; row < geneHeader.getNumHeaders(); row++) {
+				geneHeader.setHeader(row, "GROUP", gtrHeader.getHeader(row, "GROUP"));
+			}
+			gidFound(false);
+		}
+
+		if (aidFound()) {
+			// We have Gene clusters
+			HeaderInfo arrayHeader = getArrayHeaderInfo();
+			HeaderInfo atrHeader = getAtrHeaderInfo();
+			arrayHeader.addName("GROUP", arrayHeader.getNumNames());
+			for (int row = 0; row < arrayHeader.getNumHeaders(); row++) {
+				arrayHeader.setHeader(row, "GROUP", atrHeader.getHeader(row, "GROUP"));
+			}
+			aidFound(false);
+		}
 	}
 
 	protected String[] getClusterHeaders() {

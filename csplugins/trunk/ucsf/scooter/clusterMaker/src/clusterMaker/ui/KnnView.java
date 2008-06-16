@@ -85,7 +85,6 @@ import clusterMaker.treeview.model.KnnViewModel;
  * Cytoscape plugin mechanism
  */
 public class KnnView extends TreeView {
-	private KnnViewModel dataModel = null;
 	private CyLogger myLogger;
 
 	private static String appName = "ClusterMaker KnnView";
