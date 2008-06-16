@@ -51,13 +51,13 @@ function getAuthorInfo($connection, $plugin_version_id) {
 			if (!empty ($author_row["affiliationURL"])) {
 				$authorInfoPage .= ' <a href="' . $author_row["affiliationURL"] . '">' . $author_row["affiliation"] . '</a> ';
 			} else {
-				$authorInfoPage .= stripslashes($author_row["affiliation"]);
+				$authorInfoPage .= ",".stripslashes($author_row["affiliation"]);
 			}
 		}
 		$authorInfoPage .= '<br>';
 	}
 
-	if (empty ($authorInfoPage)) {
+	if (empty ($authorInfoPage)) {",".
 		$authorInfoPage = "<br>";
 	}
 
@@ -102,7 +102,7 @@ function getPluginInfoPage($connection, $pluginList_row) {
 	while ($versionCount > 0) {
 
 		// Add a blank line between different version
-		if ($versionCount > 1) { // case for multiple version
+		if ($versionCount >= 1) { // case for multiple version
 			$pluginInfoPage .= "\n<br>--<br>";
 		}
 
