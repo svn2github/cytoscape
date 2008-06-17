@@ -21,6 +21,7 @@ import java.awt.datatransfer.Transferable;
  * forwards the drop event and its location
  */
 public class PhoebeCanvasDropEvent  extends AWTEvent {
+	private final static long serialVersionUID = 1213746928492377L;
 	
 	Transferable transferable;
 	Point location;
