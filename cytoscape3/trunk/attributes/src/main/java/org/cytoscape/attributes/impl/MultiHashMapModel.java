@@ -47,11 +47,11 @@ import java.util.HashMap;
 
 class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 	private final static class AttrDefData {
-		private final HashMap objMap; // Keys are objectKey.
+		private final HashMap<String,Object> objMap; // Keys are objectKey.
 		private final byte valueType;
 		private final byte[] keyTypes;
 
-		private AttrDefData(final HashMap objMap, final byte valueType, final byte[] keyTypes) {
+		private AttrDefData(final HashMap<String,Object> objMap, final byte valueType, final byte[] keyTypes) {
 			this.objMap = objMap;
 			this.valueType = valueType;
 			this.keyTypes = keyTypes;
@@ -240,12 +240,12 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 	};
 
 	// Keys are attributeName, values are AttrDefData.
-	private final HashMap m_attrMap;
+	private final HashMap<String,AttrDefData> m_attrMap;
 	private MultiHashMapDefinitionListener m_dataDefListener;
 	private MultiHashMapListener m_dataListener;
 
 	MultiHashMapModel() {
-		m_attrMap = new HashMap();
+		m_attrMap = new HashMap<String,AttrDefData>();
 		m_dataDefListener = null;
 		m_dataListener = null;
 	}
@@ -301,7 +301,7 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 			}
 
 		// Finally, create the definition.
-		final AttrDefData def = new AttrDefData(new HashMap(), valueType, keyTypesCopy);
+		final AttrDefData def = new AttrDefData(new HashMap<String,Object>(), valueType, keyTypesCopy);
 		m_attrMap.put(attributeName, def);
 
 		// Call listeners.  Make sure this is done after we actually create def.
@@ -524,13 +524,14 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 			return returnThis;
 		} else { // Recurse.
 
-			final Object o = def.objMap.get(objectKey);
-			final HashMap firstDim;
+			@SuppressWarnings("unchecked") 
+			HashMap<Object,Object> firstDim = (HashMap<Object,Object>) def.objMap.get(objectKey);
+			boolean initNull = false;
 
-			if (o == null)
-				firstDim = new HashMap();
-			else
-				firstDim = (HashMap) o;
+			if (firstDim == null) {
+				firstDim = new HashMap<Object,Object>();
+				initNull = true;
+			}
 
 			final Object returnThis = r_setAttributeValue(firstDim, attributeValue, keyIntoValue,
 			                                              def.keyTypes, 0);
@@ -538,7 +539,7 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 			// If firstDim is a new HashMap add it to the definition after the
 			// recursion completes so that if an exception is thrown, we can avoid
 			// cleanup.
-			if (o == null)
+			if (initNull)
 				def.objMap.put(objectKey, firstDim);
 
 			if (listener != null)
@@ -550,7 +551,7 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 	}
 
 	// Recursive helper method.
-	private final Object r_setAttributeValue(final HashMap hash, final Object attributeValue,
+	private final Object r_setAttributeValue(final HashMap<Object,Object> hash, final Object attributeValue,
 	                                         final Object[] keyIntoValue, final byte[] keyTypes,
 	                                         final int currOffset) {
 		// Error check type of object keyIntoValue[currOffset].
@@ -596,20 +597,22 @@ class MultiHashMapModel implements MultiHashMapDefinition, MultiHashMap {
 			return hash.put(currKey, attributeValue);
 		} else { // Must recurse further.
 
-			final Object o = hash.get(currKey);
-			final HashMap dim;
+		//	final Object o = hash.get(currKey);
+			@SuppressWarnings("unchecked") 
+			HashMap<Object,Object> dim = (HashMap<Object,Object>) hash.get(currKey);;
+			boolean initNull = false;
 
-			if (o == null)
-				dim = new HashMap();
-			else
-				dim = (HashMap) o;
+			if (dim == null) {
+				dim = new HashMap<Object,Object>();
+				initNull = true;
+			}
 
 			final Object returnThis = r_setAttributeValue(dim, attributeValue, keyIntoValue,
 			                                              keyTypes, currOffset + 1);
 
 			// Put new HashMap in after recursive call to prevent the need for
 			// cleanup in case exception is thrown.
-			if (o == null)
+			if (initNull)
 				hash.put(currKey, dim);
 
 			return returnThis;

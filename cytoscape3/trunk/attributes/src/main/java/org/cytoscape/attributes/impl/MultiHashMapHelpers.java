@@ -93,7 +93,7 @@ public final class MultiHashMapHelpers {
 	public static List getAllAttributeValues(final String objectKey, final String attributeName,
 	                                         final MultiHashMap cyData,
 	                                         final MultiHashMapDefinition cyDataDef) {
-		final ArrayList bucket = new ArrayList();
+		final ArrayList<Object> bucket = new ArrayList<Object>();
 		final int keyspaceDims = cyDataDef.getAttributeKeyspaceDimensionTypes(attributeName).length;
 
 		if (keyspaceDims < 1) { // It's either 0 or -1.
@@ -148,7 +148,7 @@ public final class MultiHashMapHelpers {
 	                                                    final Object[] keyPrefix,
 	                                                    final MultiHashMap cyData,
 	                                                    final MultiHashMapDefinition cyDataDef) {
-		final ArrayList bucket = new ArrayList();
+		final ArrayList<Object> bucket = new ArrayList<Object>();
 		final int keyspaceDims = cyDataDef.getAttributeKeyspaceDimensionTypes(attributeName).length;
 		final int prefixDims = ((keyPrefix == null) ? 0 : keyPrefix.length);
 
@@ -174,7 +174,7 @@ public final class MultiHashMapHelpers {
 	// getAllAttributeValuesAlongPrefix().
 	private static void r_getAllAttributeValues(final String objectKey, final String attributeName,
 	                                            final MultiHashMap dataRegistry,
-	                                            final ArrayList bucket, final Object[] prefixSoFar,
+	                                            final ArrayList<Object> bucket, final Object[] prefixSoFar,
 	                                            final int keyspaceDims) {
 		final CountedIterator currentKeyspan = dataRegistry.getAttributeKeyspan(objectKey,
 		                                                                        attributeName,
@@ -219,7 +219,7 @@ public final class MultiHashMapHelpers {
 	public static List getAllAttributeKeys(final String objectKey, final String attributeName,
 	                                       final MultiHashMap cyData,
 	                                       final MultiHashMapDefinition cyDataDef) {
-		final ArrayList bucket = new ArrayList();
+		final ArrayList<Object> bucket = new ArrayList<Object>();
 		final int keyspaceDims = cyDataDef.getAttributeKeyspaceDimensionTypes(attributeName).length;
 
 		if (keyspaceDims < 1) { // It's either 0 or -1.
@@ -274,7 +274,7 @@ public final class MultiHashMapHelpers {
 	                                                  final Object[] keyPrefix,
 	                                                  final MultiHashMap cyData,
 	                                                  final MultiHashMapDefinition cyDataDef) {
-		final ArrayList bucket = new ArrayList();
+		final ArrayList<Object> bucket = new ArrayList<Object>();
 		final int keyspaceDims = cyDataDef.getAttributeKeyspaceDimensionTypes(attributeName).length;
 		final int prefixDims = ((keyPrefix == null) ? 0 : keyPrefix.length);
 		final Object[] keyPrefixCopy = new Object[prefixDims];
@@ -299,7 +299,7 @@ public final class MultiHashMapHelpers {
 	// getAllAttributeKeysAlongPrefix().
 	private static void r_getAllAttributeKeys(final String objectKey, final String attributeName,
 	                                          final MultiHashMap dataRegistry,
-	                                          final ArrayList bucket, final Object[] prefixSoFar,
+	                                          final ArrayList<Object> bucket, final Object[] prefixSoFar,
 	                                          final int keyspaceDims) {
 		final CountedIterator currentKeyspan = dataRegistry.getAttributeKeyspan(objectKey,
 		                                                                        attributeName,

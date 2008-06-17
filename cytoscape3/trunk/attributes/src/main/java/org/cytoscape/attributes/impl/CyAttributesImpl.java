@@ -52,15 +52,15 @@ public class CyAttributesImpl implements CyAttributes {
 	private final MultiHashMapDefinition mmapDef;
 
 	//  used to store human readable descriptions of attributes.
-	private Map descriptionMap;
+	private Map<String,String> descriptionMap;
 
 	//  used to store only those attributes, which should be hidden from
 	//  the end user.
-	private Set userInvisibleSet;
+	private Set<String> userInvisibleSet;
 
 	//  used to store only those attributes, which should not be editable
 	//  by the end user.
-	private Set userNonEditableSet;
+	private Set<String> userNonEditableSet;
 
 	/**
 	 * Creates a new CyAttributesImpl object.
@@ -69,9 +69,9 @@ public class CyAttributesImpl implements CyAttributes {
 		Object model = MultiHashMapFactory.instantiateDataModel();
 		mmap = (MultiHashMap) model;
 		mmapDef = (MultiHashMapDefinition) model;
-		descriptionMap = new HashMap();
-		userInvisibleSet = new HashSet();
-		userNonEditableSet = new HashSet();
+		descriptionMap = new HashMap<String,String>();
+		userInvisibleSet = new HashSet<String>();
+		userNonEditableSet = new HashSet<String>();
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class CyAttributesImpl implements CyAttributes {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getAttributeDescription(String attributeName) {
-		return (String) descriptionMap.get(attributeName);
+		return descriptionMap.get(attributeName);
 	}
 
 	/**
@@ -617,7 +617,7 @@ public class CyAttributesImpl implements CyAttributes {
 			                             + "' is not of TYPE_SIMPLE_LIST");
 		}
 
-		final ArrayList returnThis = new ArrayList();
+		final ArrayList<Object> returnThis = new ArrayList<Object>();
 		final Object[] key = new Object[1];
 
 		for (int i = 0;; i++) {
@@ -743,13 +743,14 @@ public class CyAttributesImpl implements CyAttributes {
 			                             + "' is not of TYPE_SIMPLE_MAP");
 		}
 
-		final Map returnThis = new HashMap();
+		final Map<Object,Object> returnThis = new HashMap<Object,Object>();
 		final Iterator keyspan = mmap.getAttributeKeyspan(id, attributeName, null);
 		final Object[] key = new Object[1];
 
 		while (keyspan.hasNext()) {
 			key[0] = keyspan.next();
-			returnThis.put(key[0], mmap.getAttributeValue(id, attributeName, key));
+			Object val = mmap.getAttributeValue(id, attributeName, key);
+			returnThis.put(key[0], val); 
 		}
 
 		return returnThis;

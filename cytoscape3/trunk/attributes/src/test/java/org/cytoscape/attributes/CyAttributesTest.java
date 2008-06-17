@@ -209,7 +209,8 @@ public class CyAttributesTest extends TestCase {
 	/**
 	 * Tests Simple Lists.
 	 */
-	public void testSimpleLists() {
+	@SuppressWarnings("unchecked") // OK because it's for a unit test
+	public void testBadLists() {
 		// First, try setting a not-so simple list
 		List list = new ArrayList();
 		list.add(new Integer(5));
@@ -230,12 +231,14 @@ public class CyAttributesTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
 		}
+	}
 
+	public void testSimpleLists() {
 		// Try again with a valid list
-		list = new ArrayList();
-		list.add(new Integer(5));
-		list.add(new Integer(6));
-		cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
+		List<Integer> list2 = new ArrayList<Integer>();
+		list2.add(new Integer(5));
+		list2.add(new Integer(6));
+		cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list2);
 
 		// Verify type
 		byte type = cyAttributes.getType(DUMMY_LIST_ATTRIBUTE);
@@ -264,8 +267,8 @@ public class CyAttributesTest extends TestCase {
 
 		// Try storing an Empty List; previously, this resulted in
 		// a NoSuchElementException.
-		list = new ArrayList();
-		cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list);
+		List list3 = new ArrayList();
+		cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list3);
 	}
 
 	/**
@@ -275,7 +278,7 @@ public class CyAttributesTest extends TestCase {
 		// First, try setting a not-so simple map
 		// The following map is considered invalid because all keys must
 		// be of type String.
-		Map map = new HashMap();
+		Map<Integer,String> map = new HashMap<Integer,String>();
 		map.put(new Integer(1), new String("One"));
 		map.put(new Integer(2), new String("Two"));
 
@@ -289,23 +292,23 @@ public class CyAttributesTest extends TestCase {
 
 		// Now, try another invalid map. This map is invalid because the
 		// values are not all of one type
-		map = new HashMap();
-		map.put(new String("first"), new String("One"));
-		map.put(new String("second"), new Integer(2));
+		Map<String,Object> map2 = new HashMap<String,Object>();
+		map2.put(new String("first"), new String("One"));
+		map2.put(new String("second"), new Integer(2));
 
 		// This should fail too, b/c of invalid values
 		try {
-			cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
+			cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map2);
 			fail("IllegalArgumentException should have been thrown.");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
 		}
 
 		// Now, try a valid map
-		map = new HashMap();
-		map.put(new String("first"), new Integer(1));
-		map.put(new String("second"), new Integer(2));
-		cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map);
+		Map<String,Integer> map3 = new HashMap<String,Integer>();
+		map3.put(new String("first"), new Integer(1));
+		map3.put(new String("second"), new Integer(2));
+		cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map3);
 
 		// Verify type
 		byte type = cyAttributes.getType(DUMMY_MAP_ATTRIBUTE);
@@ -332,8 +335,8 @@ public class CyAttributesTest extends TestCase {
 
 		// Try storing an Empty Map; previously, this resulted in
 		// a NoSuchElementException.
-		map = new HashMap();
-		cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, map);
+		Map map4 = new HashMap();
+		cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, map4);
 	}
 
 	/**
