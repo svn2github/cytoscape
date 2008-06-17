@@ -645,7 +645,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 		if (type == INTEGER) {
 			return slider.createStandardLabels((getIntValue(upperBound)-getIntValue(lowerBound))/5);
 		}
-		Hashtable<Integer,JComponent>table = new Hashtable();
+		Hashtable<Integer,JComponent>table = new Hashtable<Integer,JComponent>();
 		// Create our table in 5 steps from lowerBound to upperBound
 		// This could obviously be much fancier, but it's probably sufficient for now.
 		for (int label = 0; label < 6; label++) {
