@@ -59,6 +59,7 @@ package cytoscape.util.intr;
  * class versioning.
  */
 public final class MinIntHeap implements java.io.Serializable {
+	private final static long serialVersionUID = 1213745949141430L;
 	// This must be a non-negative integer.
 	private static final int DEFAULT_CAPACITY = 11;
 	private int[] m_heap;

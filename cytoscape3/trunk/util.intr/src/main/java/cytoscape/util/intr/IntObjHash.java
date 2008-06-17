@@ -60,6 +60,7 @@ import java.util.NoSuchElementException;
  * serializable.
  */
 public final class IntObjHash implements java.io.Serializable {
+	private final static long serialVersionUID = 121374594955439L;
 	private static final int[] PRIMES = {
 	                                        11, 23, 53, 113, 251, 509, 1019, 2039, 4079, 8179, 16369,
 	                                        32749, 65521, 131063, 262133, 524269, 1048571, 2097143,

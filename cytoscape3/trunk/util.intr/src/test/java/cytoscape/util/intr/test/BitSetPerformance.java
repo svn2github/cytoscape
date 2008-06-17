@@ -48,6 +48,7 @@ import java.util.BitSet;
 /**
  *
  */
+ // TODO Turn into JUnit tests
 public class BitSetPerformance {
 	/**
 	 * This test is analagous to

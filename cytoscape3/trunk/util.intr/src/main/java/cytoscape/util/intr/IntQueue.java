@@ -50,6 +50,7 @@ package cytoscape.util.intr;
  * class versioning.
  */
 public final class IntQueue implements java.io.Serializable {
+	private final static long serialVersionUID = 121374594921419L;
 	// This must be a non-negative integer.
 	private static final int DEFAULT_CAPACITY = 12;
 	private int[] m_queue;

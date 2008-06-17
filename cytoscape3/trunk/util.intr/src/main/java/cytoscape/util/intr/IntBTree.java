@@ -52,6 +52,7 @@ package cytoscape.util.intr;
  * class versioning.
  */
 public final class IntBTree implements java.io.Serializable {
+	private final static long serialVersionUID = 1213745949101434L;
 	// This quantity must be at least 3.
 	/**
 	 * 
@@ -925,6 +926,7 @@ public final class IntBTree implements java.io.Serializable {
 	}
 
 	private final static class Node implements java.io.Serializable {
+	private final static long serialVersionUID = 121374594970366L;
 		private int sliceCount = 0;
 		private final int[] values; // null if and only if internal node.
 		private final InternalNodeData data;
@@ -941,6 +943,7 @@ public final class IntBTree implements java.io.Serializable {
 	}
 
 	private final static class InternalNodeData implements java.io.Serializable {
+	private final static long serialVersionUID = 121374594986257L;
 		private int deepCount;
 		private final int[] splitVals;
 		private final Node[] children;

@@ -49,6 +49,7 @@ import java.util.Collections;
 /**
  *
  */
+ // TODO Turn into JUnit tests
 public class IntHashPerformance {
 	/**
 	 * This test is analagous to
@@ -116,7 +117,7 @@ public class IntHashPerformance {
 
 		// Print sorted array to standard out.
 		if (!repeat) {
-			ArrayList arrList = new ArrayList();
+			ArrayList<Integer> arrList = new ArrayList<Integer>();
 
 			for (int i = 0; i < uniqueElements.length; i++)
 				arrList.add(new Integer(uniqueElements[i]));
@@ -137,7 +138,7 @@ public class IntHashPerformance {
 			millisEnd = System.currentTimeMillis();
 			System.err.println((millisEnd - millisBegin) + " (repeated test)");
 
-			ArrayList arrList = new ArrayList();
+			ArrayList<Integer> arrList = new ArrayList<Integer>();
 
 			for (int i = 0; i < uniqueElements.length; i++)
 				arrList.add(new Integer(uniqueElements[i]));

@@ -54,6 +54,7 @@ package cytoscape.util.intr;
  * class versioning.
  */
 public final class IntArray implements java.io.Serializable {
+	private final static long serialVersionUID = 121374594932593L;
 	private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
 	private int[] m_arr;
 

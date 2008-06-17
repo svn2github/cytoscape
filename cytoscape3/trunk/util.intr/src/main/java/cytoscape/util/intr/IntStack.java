@@ -47,6 +47,7 @@ package cytoscape.util.intr;
  * class versioning.
  */
 public final class IntStack implements java.io.Serializable {
+	private final static long serialVersionUID = 1213745949153047L;
 	// This must be a non-negative integer.
 	private static final int DEFAULT_CAPACITY = 11;
 	private int[] m_stack;
