@@ -2,10 +2,13 @@ package cytoscape.plugin.cheminfo;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+
+import cytoscape.util.URLUtil;
 
 public class StructureDepictor {
 	
@@ -17,7 +20,8 @@ public class StructureDepictor {
 			"smiles=" + smiles;
 		Image image = null;
 		try {
-			image = ImageIO.read(new URL(url));
+			InputStream in = URLUtil.getInputStream(new URL(url));
+			image = ImageIO.read(in);
 		} catch (MalformedURLException muex) {
 			muex.printStackTrace();
 		} catch (IOException ioex) {

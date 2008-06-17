@@ -124,9 +124,9 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 				return;
 			}
 			JDialog dialog = new JDialog(Cytoscape.getDesktop(), smiles, false);
-			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			JLabel label = new JLabel(new ImageIcon(image));
 			dialog.getContentPane().add(label, BorderLayout.CENTER);
+			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			dialog.pack();
 			dialog.setVisible(true);
 		}
