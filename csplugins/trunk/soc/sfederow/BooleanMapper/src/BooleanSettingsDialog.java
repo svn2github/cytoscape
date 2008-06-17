@@ -63,7 +63,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener {
 		if (command.equals("exit")) {
 			setVisible(false);
 		} else if (command.equals("apply")) {
-			updateAllSettings();
+			updateAllSettings(true);
 			
 			System.out.println(currentAlgorithm.getSettings().get("operationsList").valueChanged());
 			currentAlgorithm.getSettings().updateValues();
@@ -153,6 +153,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener {
 	
 	private void updateAllSettings() {
 		currentAlgorithm.updateSettings();
+	}
+	private void updateAllSettings(boolean force) {
+		currentAlgorithm.updateSettings(force);
 	}
 
 	private void revertAllSettings() {
