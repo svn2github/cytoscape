@@ -174,6 +174,7 @@
             <!--
                         <Xlint:all></Xlint:all>
                     -->
+            <Xlint:unchecked></Xlint:unchecked>
             <Xmaxwarns>10000</Xmaxwarns>
             <Xmaxerrs>10000</Xmaxerrs>
           </compilerArguments>
