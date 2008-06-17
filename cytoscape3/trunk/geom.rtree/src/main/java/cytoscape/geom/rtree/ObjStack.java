@@ -46,6 +46,7 @@ package cytoscape.geom.rtree;
  * package location for it is found.
  */
 final class ObjStack implements java.io.Serializable {
+	private final static long serialVersionUID = 1213746741406103L;
 	// This must be a non-negative integer.
 	private static final int DEFAULT_CAPACITY = 11;
 	private Object[] m_stack;

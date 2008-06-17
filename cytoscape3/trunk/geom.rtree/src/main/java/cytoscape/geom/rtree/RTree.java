@@ -56,6 +56,7 @@ import java.util.Iterator;
 public final class RTree implements MutableSpacialIndex2D, java.io.Serializable {
 	public final static int DEFAULT_MAX_BRANCHES = 11;
 	private final float[] m_MBR; // { xMin, yMin, xMax, yMax }.
+	private final static long serialVersionUID = 1213746741383404L;
 	private final int m_maxBranches;
 	private final int m_minBranches;
 	private Node m_root;
@@ -1682,6 +1683,7 @@ public final class RTree implements MutableSpacialIndex2D, java.io.Serializable 
 	}
 
 	private final static class Node implements java.io.Serializable {
+	private final static long serialVersionUID = 1213746741283564L;
 		private Node parent;
 		private int entryCount = 0;
 		private final float[] xMins;
@@ -1708,6 +1710,7 @@ public final class RTree implements MutableSpacialIndex2D, java.io.Serializable 
 	}
 
 	private final static class InternalNodeData implements java.io.Serializable {
+	private final static long serialVersionUID = 1213746741362592L;
 		private int deepCount = 0;
 		private final Node[] children;
 
