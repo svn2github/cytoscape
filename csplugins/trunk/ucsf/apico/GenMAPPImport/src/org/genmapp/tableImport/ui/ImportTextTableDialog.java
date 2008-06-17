@@ -826,16 +826,16 @@ public class ImportTextTableDialog extends JDialog implements
 														.add(startRowLabel)
 														.add(
 																startRowSpinner,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+																21,
+																21,
+																21)
 														.add(commentLineLabel)
 														.add(
 																commentLineTextField,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 																org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-										.addContainerGap(50, Short.MAX_VALUE)));
+										.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		org.jdesktop.layout.GroupLayout textImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(
 				textImportOptionPanel);
@@ -850,7 +850,7 @@ public class ImportTextTableDialog extends JDialog implements
 								textImportOptionPanelLayout
 										.createSequentialGroup()
 										.add(
-												headerRowsPanel,
+												delimiterPanel,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												Short.MAX_VALUE)
@@ -861,7 +861,7 @@ public class ImportTextTableDialog extends JDialog implements
 								textImportOptionPanelLayout
 										.createSequentialGroup()
 										.add(
-												delimiterPanel,
+												headerRowsPanel,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 												Short.MAX_VALUE)
@@ -897,7 +897,7 @@ public class ImportTextTableDialog extends JDialog implements
 														.add(
 																headerRowsPanel,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																45,
+																49,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))));
 
 		org.jdesktop.layout.GroupLayout advancedPanelLayout = new org.jdesktop.layout.GroupLayout(
