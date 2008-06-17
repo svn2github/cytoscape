@@ -63,7 +63,7 @@ public class ImportAttributeTableAction extends CytoscapeAction {
 	 * Creates a new ImportAttributeTableAction object.
 	 */
 	public ImportAttributeTableAction() {
-		super("Attribute from Table (Text/MS Excel)...");
+		super("GenMAPP Import...");
 		setPreferredMenu("File.Import");
 	}
 
