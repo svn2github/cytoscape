@@ -209,7 +209,9 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		List<String> attributeList = new ArrayList<String>();
 		getAttributesList(attributeList, Cytoscape.getNodeAttributes(),"node.");
 		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(),"edge.");
-		return attributeList.toArray(attributeArray);
+		String[] attrArray = attributeList.toArray(attributeArray);
+		Arrays.sort(attrArray);
+		return attrArray;
 	}
 
 	private String[] getAttributeArray(String dataAttributes) {

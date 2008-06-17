@@ -144,6 +144,20 @@ public class KCluster {
 			}
 			netAttr.deleteAttribute(netID, EisenCluster.GROUP_ATTRIBUTE);
 		}
+
+		// Clear of the other attributes
+		if (netAttr.hasAttribute(netID, EisenCluster.ARRAY_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, EisenCluster.ARRAY_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, EisenCluster.NODE_ORDER_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, EisenCluster.NODE_ORDER_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, EisenCluster.CLUSTER_ATTR_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, EisenCluster.CLUSTER_ATTR_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, EisenCluster.CLUSTER_NODE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, EisenCluster.CLUSTER_NODE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, EisenCluster.CLUSTER_EDGE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, EisenCluster.CLUSTER_EDGE_ATTRIBUTE);
+		if (netAttr.hasAttribute(netID, EisenCluster.CLUSTER_TYPE_ATTRIBUTE))
+			netAttr.deleteAttribute(netID, EisenCluster.CLUSTER_TYPE_ATTRIBUTE);
 	}
 
 	private static int kmeans(int nClusters, int nIterations, Matrix matrix, DistanceMetric metric, 
