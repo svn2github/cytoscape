@@ -252,7 +252,7 @@ public class SelectFilterTest extends TestCase {
 		Set testSet = null; //return value from filter methods
 		checkState(false, false, false, false);
 
-		Set nodeSet1 = new HashSet();
+		Set<Node> nodeSet1 = new HashSet<Node>();
 		nodeSet1.add(node1);
 		testSet = filter.setSelectedNodes(nodeSet1, true);
 		checkState(true, false, false, false);
@@ -260,7 +260,7 @@ public class SelectFilterTest extends TestCase {
 		assertTrue(testSet.size() == 1);
 		assertTrue(testSet.contains(node1));
 
-		Set edgeSet1 = new HashSet();
+		Set<Edge> edgeSet1 = new HashSet<Edge>();
 		edgeSet1.add(edge2);
 		testSet = filter.setSelectedEdges(edgeSet1, true);
 		checkState(true, false, false, true);
@@ -268,7 +268,7 @@ public class SelectFilterTest extends TestCase {
 		assertTrue(testSet.size() == 1);
 		assertTrue(testSet.contains(edge2));
 
-		Set nodeSet2 = new HashSet();
+		Set<Node> nodeSet2 = new HashSet<Node>();
 		nodeSet2.add(node1);
 		nodeSet2.add(node2);
 		testSet = filter.setSelectedNodes(nodeSet2, true);
@@ -277,7 +277,7 @@ public class SelectFilterTest extends TestCase {
 		assertTrue(testSet.size() == 1);
 		assertTrue(testSet.contains(node2));
 
-		Set edgeSet2 = new HashSet();
+		Set<Edge> edgeSet2 = new HashSet<Edge>();
 		edgeSet2.add(edge1);
 		edgeSet2.add(edge2);
 		testSet = filter.setSelectedEdges(edgeSet2, true);

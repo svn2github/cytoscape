@@ -111,11 +111,11 @@ public class SelectEventTest extends TestCase {
 		Edge[] edgeArray = { edge1, edge2 };
 		GraphPerspective gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
 		SelectFilter source = new SelectFilterImpl(gp);
-		Set nodeSet = new HashSet();
+		Set<Node> nodeSet = new HashSet<Node>();
 		nodeSet.add(node1);
 		nodeSet.add(node2);
 
-		Set edgeSet = new HashSet();
+		Set<Edge> edgeSet = new HashSet<Edge>();
 		edgeSet.add(edge1);
 		edgeSet.add(edge2);
 
