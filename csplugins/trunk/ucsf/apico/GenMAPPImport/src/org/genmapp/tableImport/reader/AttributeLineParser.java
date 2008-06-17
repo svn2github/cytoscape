@@ -63,16 +63,16 @@ import org.genmapp.tableImport.reader.TextTableReader.ObjectType;
  *
  */
 public class AttributeLineParser {
-	private AttributeMappingParameters mapping;
+	private AttributeMappingParameters amp;
 	private Map<String, Object> invalid = new HashMap<String, Object>();
 
 	/**
 	 * Creates a new AttributeLineParser object.
 	 *
-	 * @param mapping  DOCUMENT ME!
+	 * @param amp  DOCUMENT ME!
 	 */
-	public AttributeLineParser(AttributeMappingParameters mapping) {
-		this.mapping = mapping;
+	public AttributeLineParser(AttributeMappingParameters amp) {
+		this.amp = amp;
 	}
 
 	/**
@@ -82,15 +82,15 @@ public class AttributeLineParser {
 	 */
 	public void parseAll(String[] parts) {
 		// Get key
-		final String primaryKey = parts[mapping.getKeyIndex()].trim();
+		final String primaryKey = parts[amp.getKeyIndex()].trim();
 		final int partsLen = parts.length;
 
 		for (int i = 0; i < partsLen; i++) {
-			if ((i != mapping.getKeyIndex()) && !mapping.getAliasIndexList().contains(i)
-			    && mapping.getImportFlag()[i]) {
+			if ((i != amp.getKeyIndex()) && !amp.getAliasIndexList().contains(i)
+			    && amp.getImportFlag()[i]) {
 				if (parts[i] == null) {
 					continue;
-				} else if (mapping.getObjectType() == ObjectType.NETWORK) {
+				} else if (amp.getObjectType() == ObjectType.NETWORK) {
 					//mapAttribute(targetNetworkID, parts[i].trim(), i);
 				} else {
 					mapAttribute(primaryKey, parts[i].trim(), i);
@@ -109,7 +109,7 @@ public class AttributeLineParser {
 		/*
 		 * Split the line and extract values
 		 */
-		final String primaryKey = parts[mapping.getKeyIndex()].trim();
+		final String primaryKey = parts[amp.getKeyIndex()].trim();
 
 		/*
 		 * Set aliases In this case, "aliases" means alias entries in the TEXT
@@ -119,13 +119,13 @@ public class AttributeLineParser {
 		 */
 		final Set<String> aliasSet = new TreeSet<String>();
 
-		if (mapping.getAliasIndexList().size() != 0) {
+		if (amp.getAliasIndexList().size() != 0) {
 			/*
 			 * Alias column exists. Extract those keys.
 			 */
 			String aliasCell = null;
 
-			for (int aliasIndex : mapping.getAliasIndexList()) {
+			for (int aliasIndex : amp.getAliasIndexList()) {
 				if (parts.length > aliasIndex) {
 					aliasCell = parts[aliasIndex];
 
@@ -140,7 +140,7 @@ public class AttributeLineParser {
 		/*
 		 * Case 1: use node ID as the key
 		 */
-		if (mapping.getMappingAttribute().equals(mapping.ID)) {
+		if (amp.getMappingAttribute().equals(amp.ID)) {
 			transfer2cyattributes(primaryKey, aliasSet, parts);
 		} else {
 			/*
@@ -151,17 +151,17 @@ public class AttributeLineParser {
 			for (String id : aliasSet) {
 				// Normal Mapping.  Case sensitive.
 				
-				if (mapping.getAttributeToIDMap().containsKey(id)) {
-					objectIDs = mapping.toID(id);
+				if (amp.getAttributeToIDMap().containsKey(id)) {
+					objectIDs = amp.toID(id);
 
 					for (String objectID : objectIDs) {
-						mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
+						amp.getAlias().add(objectID, new ArrayList<String>(aliasSet));
 					}
 
 					break;
-				} else if (mapping.getCaseSensitive() == false) {
+				} else if (amp.getCaseSensitive() == false) {
 					
-					Set<String> keySet = mapping.getAttributeToIDMap().keySet();
+					Set<String> keySet = amp.getAttributeToIDMap().keySet();
 
 					String newKey = null;
 
@@ -174,10 +174,10 @@ public class AttributeLineParser {
 					}
 
 					if (newKey != null) {
-						objectIDs = mapping.toID(newKey);
+						objectIDs = amp.toID(newKey);
 
 						for (String objectID : objectIDs) {
-							mapping.getAlias().add(objectID, new ArrayList<String>(aliasSet));
+							amp.getAlias().add(objectID, new ArrayList<String>(aliasSet));
 						}
 
 						break;
@@ -200,12 +200,12 @@ public class AttributeLineParser {
 		/*
 		 * Search the key
 		 */
-		switch (mapping.getObjectType()) {
+		switch (amp.getObjectType()) {
 			case NODE:
 
 				Node node = Cytoscape.getCyNode(primaryKey);
 
-				if ((mapping.getCaseSensitive() == false) && (node == null)) {
+				if ((amp.getCaseSensitive() == false) && (node == null)) {
 					// This is extremely slow, but we have no choice.
 					final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
 					int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
@@ -225,7 +225,7 @@ public class AttributeLineParser {
 					for (String alias : aliasSet) {
 						node = Cytoscape.getCyNode(alias);
 
-						if ((mapping.getCaseSensitive() == false) && (node == null)) {
+						if ((amp.getCaseSensitive() == false) && (node == null)) {
 							// This is extremely slow, but we have no choice.
 							final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
 							int[] nodes = Cytoscape.getRootGraph().getNodeIndicesArray();
@@ -259,7 +259,7 @@ public class AttributeLineParser {
 
 				Edge edge = Cytoscape.getRootGraph().getEdge(primaryKey);
 
-				if ((mapping.getCaseSensitive() == false) && (edge == null)) {
+				if ((amp.getCaseSensitive() == false) && (edge == null)) {
 					// This is extremely slow, but we have no choice.
 					final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
 					int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
@@ -279,7 +279,7 @@ public class AttributeLineParser {
 					for (String alias : aliasSet) {
 						edge = Cytoscape.getRootGraph().getEdge(alias);
 
-						if ((mapping.getCaseSensitive() == false) && (edge == null)) {
+						if ((amp.getCaseSensitive() == false) && (edge == null)) {
 							// This is extremely slow, but we have no choice.
 							final CytoscapeRootGraph rg = Cytoscape.getRootGraph();
 							int[] edges = Cytoscape.getRootGraph().getEdgeIndicesArray();
@@ -317,16 +317,16 @@ public class AttributeLineParser {
 				 * This is a special case: Since network IDs are only integers and
 				 * not always the same, we need to use title instead of ID.
 				 */
-				if (mapping.getnetworkTitleMap().containsKey(primaryKey)) {
-					targetNetworkID = mapping.getnetworkTitleMap().get(primaryKey);
+				if (amp.getnetworkTitleMap().containsKey(primaryKey)) {
+					targetNetworkID = amp.getnetworkTitleMap().get(primaryKey);
 
 					break;
 				}
 
 				if (targetNetworkID == null) {
 					for (String alias : aliasSet) {
-						if (mapping.getnetworkTitleMap().containsKey(alias)) {
-							targetNetworkID = mapping.getnetworkTitleMap().get(alias);
+						if (amp.getnetworkTitleMap().containsKey(alias)) {
+							targetNetworkID = amp.getnetworkTitleMap().get(alias);
 
 							break;
 						}
@@ -349,11 +349,11 @@ public class AttributeLineParser {
 		 * Now, transfer entries into CyAttributes.
 		 */
 		for (int i = 0; i < parts.length; i++) {
-			if ((i != mapping.getKeyIndex()) && !mapping.getAliasIndexList().contains(i)
-			    && mapping.getImportFlag()[i]) {
+			if ((i != amp.getKeyIndex()) && !amp.getAliasIndexList().contains(i)
+			    && amp.getImportFlag()[i]) {
 				if (parts[i] == null) {
 					// Do nothing
-				} else if (mapping.getObjectType() == ObjectType.NETWORK) {
+				} else if (amp.getObjectType() == ObjectType.NETWORK) {
 					mapAttribute(targetNetworkID, parts[i].trim(), i);
 				}
 				/*
@@ -370,10 +370,10 @@ public class AttributeLineParser {
 		/*
 		 * Finally, add aliases and primary key.
 		 */
-		mapping.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
-		mapping.getAttributes()
-		       .setAttribute(primaryKey, mapping.getAttributeNames()[mapping.getKeyIndex()],
-		                     parts[mapping.getKeyIndex()]);
+		amp.getAlias().add(primaryKey, new ArrayList<String>(aliasSet));
+		amp.getAttributes()
+		       .setAttribute(primaryKey, amp.getAttributeNames()[amp.getKeyIndex()],
+		                     parts[amp.getKeyIndex()]);
 
 		/*
 		 * Add primary key as an attribute
@@ -388,7 +388,7 @@ public class AttributeLineParser {
 	 * @param index
 	 */
 	private void mapAttribute(final String key, final String entry, final int index) {
-		final Byte type = mapping.getAttributeTypes()[index];
+		final Byte type = amp.getAttributeTypes()[index];
 
 		//		System.out.println("Index = " + mapping.getAttributeNames()[index] + ", " + key + " = "
 		//		                   + entry);
@@ -399,8 +399,8 @@ public class AttributeLineParser {
 
 				try {
 					newBool = new Boolean(entry);
-					mapping.getAttributes()
-					       .setAttribute(key, mapping.getAttributeNames()[index], newBool);
+					amp.getAttributes()
+					       .setAttribute(key, amp.getAttributeNames()[index], newBool);
 				} catch (Exception e) {
 					invalid.put(key, entry);
 				}
@@ -413,8 +413,8 @@ public class AttributeLineParser {
 
 				try {
 					newInt = new Integer(entry);
-					mapping.getAttributes()
-					       .setAttribute(key, mapping.getAttributeNames()[index], newInt);
+					amp.getAttributes()
+					       .setAttribute(key, amp.getAttributeNames()[index], newInt);
 				} catch (Exception e) {
 					invalid.put(key, entry);
 				}
@@ -427,8 +427,8 @@ public class AttributeLineParser {
 
 				try {
 					newDouble = new Double(entry);
-					mapping.getAttributes()
-					       .setAttribute(key, mapping.getAttributeNames()[index], newDouble);
+					amp.getAttributes()
+					       .setAttribute(key, amp.getAttributeNames()[index], newDouble);
 				} catch (Exception e) {
 					invalid.put(key, entry);
 				}
@@ -437,7 +437,7 @@ public class AttributeLineParser {
 
 			case CyAttributes.TYPE_STRING:
 				try {
-					mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+					amp.getAttributes().setAttribute(key, amp.getAttributeNames()[index], entry);
 				} catch (Exception e) {
 					invalid.put(key, entry);
 				}
@@ -454,7 +454,7 @@ public class AttributeLineParser {
 				 * extract it first.
 				 *
 				 */
-				final Byte[] listTypes = mapping.getListAttributeTypes();
+				final Byte[] listTypes = amp.getListAttributeTypes();
 				final Byte listType;
 
 				if (listTypes != null) {
@@ -463,8 +463,8 @@ public class AttributeLineParser {
 					listType = CyAttributes.TYPE_STRING;
 				}
 
-				List curList = mapping.getAttributes()
-				                      .getListAttribute(key, mapping.getAttributeNames()[index]);
+				List curList = amp.getAttributes()
+				                      .getListAttribute(key, amp.getAttributeNames()[index]);
 
 				if (curList == null) {
 					curList = new ArrayList();
@@ -472,8 +472,8 @@ public class AttributeLineParser {
 
 				curList.addAll(buildList(entry, listType));
 				try {
-					mapping.getAttributes()
-					       .setListAttribute(key, mapping.getAttributeNames()[index], curList);
+					amp.getAttributes()
+					       .setListAttribute(key, amp.getAttributeNames()[index], curList);
 				} catch (Exception e) {
 					invalid.put(key, entry);
 				}
@@ -482,7 +482,7 @@ public class AttributeLineParser {
 
 			default:
 				try {
-					mapping.getAttributes().setAttribute(key, mapping.getAttributeNames()[index], entry);
+					amp.getAttributes().setAttribute(key, amp.getAttributeNames()[index], entry);
 				} catch (Exception e) {
 					invalid.put(key, entry);
 				}
@@ -503,7 +503,7 @@ public class AttributeLineParser {
 			return null;
 		}
 
-		final String[] parts = (entry.replace("\"", "")).split(mapping.getListDelimiter());
+		final String[] parts = (entry.replace("\"", "")).split(amp.getListDelimiter());
 
 		final List listAttr = new ArrayList();
 
