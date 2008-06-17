@@ -1198,7 +1198,7 @@ public class DNodeView implements NodeView, Label {
 	return CG_LOCK;
     }
 
-    private class ReadOnlyIterator<T> implements Iterator {
+    private class ReadOnlyIterator<T> implements Iterator<T> {
 	private Iterator<? extends T> _iterator;
 	public ReadOnlyIterator (Iterable<T> toIterate) {
 	    _iterator = toIterate.iterator();
@@ -1265,8 +1265,8 @@ public class DNodeView implements NodeView, Label {
 				index = getCustomGraphicCount();
 
 			if (m_graphicShapes == null) {
-				m_graphicShapes = new ArrayList();
-				m_graphicPaints = new ArrayList();
+				m_graphicShapes = new ArrayList<Shape>();
+				m_graphicPaints = new ArrayList<Paint>();
 			}
 
 			m_graphicShapes.add(index, s);
