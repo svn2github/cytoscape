@@ -106,6 +106,8 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 
 		//The panel used for generating random networks
 		GenerateRandomPanel generateRandomPanel;
+		javax.swing.JPanel verifyRandomPanel;
+
 		javax.swing.JPanel randomizePane;
 		javax.swing.JPanel compareRandomPane;
 	
@@ -127,7 +129,8 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 			//Initialize the tabbed panel
 			mainPane = new JTabbedPane();
 			//Create the Panel
-			generateRandomPanel = new GenerateRandomPanel();
+			generateRandomPanel = new GenerateRandomPanel(0);
+			verifyRandomPanel = new GenerateRandomPanel(1);
 			randomizePane = new JPanel();
 			compareRandomPane = new JPanel();
 			
@@ -136,6 +139,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 			
 			//Add the three tabs for our application
 			mainPane.addTab("Generate Random Network", generateRandomPanel);
+			mainPane.addTab("Verify Random Network", verifyRandomPanel);
 			mainPane.addTab("Randomize Existing Network", randomizePane);
 			mainPane.addTab("Compare to Random Network", compareRandomPane);
 

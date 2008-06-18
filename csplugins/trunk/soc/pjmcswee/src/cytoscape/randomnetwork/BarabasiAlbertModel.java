@@ -36,15 +36,19 @@
 
 package cytoscape.randomnetwork;
 
-import cytoscape.plugin.*;
+
 import cytoscape.*;
 import cytoscape.data.*;
-import cytoscape.view.*;
-import giny.view.*;
+
+
 
 
 /*
- * Barabasi-Albert Model x
+ * Barabasi-Albert Model:
+ *
+ * References: Albert-L‡szl— Barab‡si & RŽka Albert (October 1999). 
+ *			  "Emergence of scaling in random networks". 
+ *			   Science 286: 509Ð512. doi:10.1126/science.286.5439.509.
  *
  *
  */
@@ -81,10 +85,10 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 	 *  Generate a network according to the model
 	 * 
 	 */
-	public CyNetwork Generate() {
+	public CyNetwork generate() {
 
-		CyNetwork random_network = Cytoscape
-				.createNetwork("Barabasi-Albert Network");
+		CyNetwork random_network = 
+			Cytoscape.createNetwork(new int[] {  }, new int[] {  }, ("Barabasi-Albert Network"), null, createView);
 
 		//Get the current time
 		long time = System.currentTimeMillis();
@@ -111,87 +115,91 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 		numEdges = 0;
 		
 		//Set up the initial network
-		for (int i = 0; i < init_num_nodes; i++) {
-
-			for (int j = (i + 1); j < init_num_nodes; j++) {
-
-				if (random.nextDouble() <= 1) {
-					// Create and edge between node i and node j
-					CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
+		for (int i = 0; i < init_num_nodes; i++) 
+		{
+			for (int j = (i + 1); j < init_num_nodes; j++) 
+			{
+				
+				// Create and edge between node i and node j
+				CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
 							Semantics.INTERACTION, new String("("
 									+ Math.min(i, j) + "," + Math.max(i, j)
 									+ ")"), true, directed);
-
+	
+				// Add this edge to the network
+				random_network.addEdge(edge);
+				
+				//If the network is undirected then add
+				//edges in both directions
+				if(!directed)
+				{
+					edge = Cytoscape.getCyEdge(nodes[j], nodes[i],
+							Semantics.INTERACTION, new String("("
+									+ Math.min(i, j) + "," + Math.max(i, j)
+									+ ")"), true, directed);
+	
 					// Add this edge to the network
 					random_network.addEdge(edge);
-					
-					//increment the degrees for each nodes
-					degrees[i]++;
-					degrees[j]++;
-
-					//Increment the edges
-					numEdges++;
+				
 				}
+					
+				//increment the degrees for each nodes
+				degrees[i]++;
+				degrees[j]++;
 
+				//Increment the edges
+				numEdges++;
 			}
 		}
 
 
-		//Add each node once
-		for (int i = init_num_nodes; i < numNodes; i++) {
-
-			//For each edge to add
-			for (int m = 0; m < edgesToAdd; m++) {
-			
+		//Add each node one at a time
+		for (int i = init_num_nodes; i < numNodes; i++) 
+		{
+			//Add the appropriate number of edges
+			for (int m = 0; m < edgesToAdd; m++) 
+			{
 				//keep a running talley of the probability
 				double prob = 0;
 				//Choose a random number
 				double randNum = random.nextDouble();
 				
 				//Try to add this node to every existing node
-				for (int j = 0; j < i; j++) {
+				for (int j = 0; j < i; j++) 
+				{
 				
 					//Increment the talley by the jth node's probability
 					prob += (double) ((double) degrees[j])
 							/ ((double) (2.0d * (double) numEdges));
 
 					//If this pushes us past the the probability
-					if (randNum <= prob) {
-					
-						//Store the pointer for the edge
-						CyEdge edge = null;
-
-						if (!directed) {
-							// Create and edge between node i and node j
-							// that is undirected
-							edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
-									Semantics.INTERACTION, new String("("
-											+ Math.min(i, j) + ","
-											+ Math.max(i, j) + ")"), true,
-									directed);
-						} else {
-							//If the network is directed, randomly pick
-							//a direction.
-						
-							if (random.nextDouble() < .5) {
-								// Create and edge between node i and node j
-								edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
-										Semantics.INTERACTION, new String("("
-												+ Math.min(i, j) + ","
-												+ Math.max(i, j) + ")"), true,
-										directed);
-							} else {
-								// Create and edge between node i and node j
-								edge = Cytoscape.getCyEdge(nodes[j], nodes[i],
-										Semantics.INTERACTION, new String("("
-												+ Math.min(i, j) + ","
-												+ Math.max(i, j) + ")"), true,
-										directed);
-							}
-						}
+					if (randNum <= prob) 
+					{
+						// Create and edge between node i and node j
+						// that is undirected
+						CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
+								Semantics.INTERACTION, new String("("
+										+ Math.min(i, j) + ","
+										+ Math.max(i, j) + ")"), true,
+								directed);
 
 						// Add this edge to the network
 						random_network.addEdge(edge);
+						
+						//if the network is undirected make edges in both 
+						//directions
+						if(!directed)
+						{
+							// Create and edge between node j and node i
+							edge = Cytoscape.getCyEdge(nodes[j], nodes[i],
+								Semantics.INTERACTION, new String("("
+										+ Math.min(i, j) + ","
+										+ Math.max(i, j) + ")"), true,
+								directed);
+
+							// Add this edge to the network
+							random_network.addEdge(edge);
+						}
 
 						//increment the number of edges
 						numEdges++;
@@ -200,7 +208,7 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 						degrees[i]++;
 						degrees[j]++;
 						
-						//Stop iterating 
+						//Stop iterating for this probability
 						break;
 					}
 				}
@@ -213,11 +221,5 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 
 	}
 
-	/*
-	 *
-	 */
-	public void Compare() {
-		//Do nothing for now
-	}
 
 }

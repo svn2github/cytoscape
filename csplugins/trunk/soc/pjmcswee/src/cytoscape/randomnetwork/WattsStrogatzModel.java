@@ -1,4 +1,4 @@
-/*
+/* File: WattsStrogatzModel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -35,17 +35,27 @@
 
 package cytoscape.randomnetwork;
 
-import cytoscape.plugin.*;
 import cytoscape.*;
-import cytoscape.view.*;
-import giny.view.*;
 import cytoscape.data.*;
 import java.util.*;
 
+
+/**
+*	This model is used to create random networks with the 
+*	small world property.  
+*
+*
+*  References: Watts, D.J.; Strogatz, S.H. (1998). 
+*			   "Collective dynamics of 'small-world' networks.". 
+*			   Nature 393 (6684): 409Ð10. doi:10.1038/30918.
+*/
+
 public class WattsStrogatzModel extends RandomNetworkModel {
 
+	//Used to linearly interpolate between lattice and erdos-renyi graph
 	private double beta;
 
+	//The number of edges to add 
 	private double degree;
 
 	/**
@@ -56,33 +66,36 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 	 *            <int> : # of nodes in Network
 	 * @param pDirected
 	 *            <boolean> : Network is directed(TRUE) or undirected(FALSE)
-	 * @param pProbability
-	 *            <double> : probability of an edge
+	 * @param pBeta:
+	 *            <double> : interpolates between erdos-renyi graph and 
+	 *						 lattice
 	 * 
 	 */
 	public WattsStrogatzModel(int pNumNodes, boolean pAllowSelfEdge,
 			boolean pDirected, double pBeta, double pDegree) {
 		super(pNumNodes, UNSPECIFIED, pAllowSelfEdge, pDirected);
 
-		// TODO: Is it common practice to throw exceptions in these cases?
-		// For now just force to valid range
 
 		degree = pDegree;
 		beta = pBeta;
 	}
 
 	/*
-	 * Generates a random graph based on the model specified by the constructor:
-	 * G(n,m) or G(n,p)
+	 * Generates the random graph
 	 */
-	public CyNetwork Generate() {
+	public CyNetwork generate() 
+	{
 
-		CyNetwork random_network = Cytoscape
-				.createNetwork("Watts-Strogatz Network");
-		//CyNetworkView view = Cytoscape.createNetworkView(random_network);
+		//Create the random graph
+		CyNetwork random_network =
+					Cytoscape.createNetwork(new int[] {  }, new int[] {  }, ("Watts-Strogatz Network"), null, createView);
 
+//		  Cytoscape.createNetwork("Watts-Strogatz Network");
+
+		//Keep track of the number 
 		numEdges = 0;
 
+		//get the system time
 		long time = System.currentTimeMillis();
 
 		// Create N nodes
@@ -98,45 +111,59 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 
 			// Save node in array
 			nodes[i] = node;
-
-
-			/*
-			// Create a Node view
-			NodeView nv = view.addNodeView(node.getRootGraphIndex());
-
-			double x_pos = random.nextDouble();
-			double y_pos = random.nextDouble();
-			nv.setXPosition(x_pos * 200.0d);
-			nv.setYPosition(y_pos * 200.0d);
-			*/
 		}
-
+		
+		//Create a linked list to store edges
+		//as we create edges and then change them 
+		//with probability beta
 		LinkedList edges = new LinkedList();
-		for (int i = 0; i < numNodes; i++) {
-			for (int j = 0; j < numNodes; j++) {
+		
+		//for all pairs of nodes
+		for (int i = 0; i < numNodes; i++) 
+		{
+			for (int j = i + 1; j < numNodes; j++) 
+			{
+				//get the lattice difference
 				int value = i - j;
-				if (value < 0) {
+				if (value < 0) 
+				{
 					value = (value + numNodes) % numNodes;
 				}
-
-				if ((i != j) && (value <= degree)) {
+				
+				//no relfexive edges here
+				if ((i != j) && (value <= degree)) 
+				{
+					//Create a single number which represents this edge
 					int index = i * numNodes + j;
+					//store this edge
 					edges.add(new Integer(index));
+
+					//increment our count of edges
 					numEdges++;
 				}
 			}
 		}
 
-		while (edges.size() != 0) {
+		//Iterate through all of our edges
+		while (edges.size() != 0) 
+		{
+			
+			//Get the edge index
 			int e = ((Integer) edges.remove()).intValue();
 
+			//Extract the source and target from the edge
 			int source = e / numNodes;
 			int target = e % numNodes;
 
+			//Throw a random dart
 			double percent = random.nextDouble();
-			if (percent < beta) {
+
+			//If the dart lands in beta
+			if (percent <= beta) 
+			{
+				//Choose a new node 
 				int k = Math.abs(random.nextInt() % numNodes);
-				while (source == k) // || (connect[i][k] == 1))
+				while (source == k) 
 				{
 					k = Math.abs(random.nextInt() % numNodes);
 				}
@@ -144,34 +171,30 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 
 			}
 
+			//Create the edge between these two nodes
 			CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target],
 					Semantics.INTERACTION, new String("("
 							+ Math.min(source, target) + ","
 							+ Math.max(source, target) + ")"), true, directed);
+
+			//add the edge to this network
 			random_network.addEdge(edge);
+			
+			//If this network is undirected 
+			if(!directed)
+			{
+				edge = Cytoscape.getCyEdge(nodes[target], nodes[source],
+					Semantics.INTERACTION, new String("("
+							+ Math.min(source, target) + ","
+							+ Math.max(source, target) + ")"), true, directed);
+				random_network.addEdge(edge);
+			
+			}
 		}
 
-		/*
-		 * for(int i = 0; i < nuN; i++) { for(int j = i + 1; j < N; j++) {
-		 * if(connect[i][j] == 1) { double percent = rand.nextDouble();
-		 * if(percent < Beta) { int k = Math.abs(random.nextInt() % N); while((i ==
-		 * k) || (connect[i][k] == 1)) { k = Math.abs(rand.nextInt() % N); }
-		 * 
-		 * connect[i][k] = 1; connect[k][i] = 1; /* k = Math.abs(rand.nextInt() %
-		 * N); while((j == k) || (connect[j][k] == 1)) { k =
-		 * Math.abs(rand.nextInt() % N); }
-		 * 
-		 * connect[j][k] = 1; connect[k][j] = 1;
-		 * 
-		 * connect[i][j] = 0; connect[j][i] = 0; } } }
-		 *  }
-		 */
-		 
+				 
 		 return random_network;
 	}
 
-	public void Compare() {
-
-	}
 
 }

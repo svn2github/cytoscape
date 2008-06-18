@@ -54,23 +54,8 @@ import javax.swing.*;
  * 
  */
 public class WattsStrogatzDialog extends JPanel {
-
-	//The degree of each node
-	int degree;
-
-	//How much to interpolate between a lattice
-	//and erdos-renyi model
-	double beta;
-
-	//The number of nodes in the network
-	int numNodes;
-
-	//Whether or not the network is directed
-	boolean directed;
-
-	//Whether or not the network allows reflexive edge
-	boolean allowSelfEdge;
-
+	
+	int mode;
 
 	//TextFields
 	private javax.swing.JTextField nodeTextField;
@@ -93,8 +78,9 @@ public class WattsStrogatzDialog extends JPanel {
 	/*
 	 * Default constructor
 	 */
-	public WattsStrogatzDialog( ){
+	public WattsStrogatzDialog(int pMode ){
 		super( );
+		mode = pMode;
 		initComponents();
 	}
 	
@@ -148,138 +134,92 @@ public class WattsStrogatzDialog extends JPanel {
 			}
 		});
 
+		//Create the layout
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
 		setLayout(layout);
-				layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																titleLabel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																350,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				nodeLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				nodeTextField,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				50))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				betaLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				betaTextField,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				50))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				degreeLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				degreeTextField,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				50))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				directedCheckBox))
+		
+		layout.setHorizontalGroup(layout
+			.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+				.add(layout.createSequentialGroup()
+					.addContainerGap()
+					.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+					.add(titleLabel,
+						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+						350,
+						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+						
+					//Add the node group
+					.add(layout.createSequentialGroup()
+						.add(nodeLabel,
+							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+							 20,
+							 170)
+						.add(nodeTextField,
+							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+							10,
+							50))
+							
+					//Add the beta group 
+					.add(layout.createSequentialGroup()
+						.add(betaLabel,
+							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+							 20,
+							 170)
+						.add(betaTextField,
+							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+							 10,
+							 50))
+					//Add the group latout for degree
+					.add(layout.createSequentialGroup()
+						.add(degreeLabel,
+							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+							 20,
+							 170)
+						.add(degreeTextField,
+							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+							10,
+							50))
+					//.add(layout.createSequentialGroup()
+					.add(directedCheckBox)//)
+					
+					//Add the Run/Cancel buttons
+					.add(org.jdesktop.layout.GroupLayout.TRAILING,
+						 layout.createSequentialGroup()
+						 .add(runButton)
+						 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+						 .add(cancelButton)))
+				.addContainerGap()));
 
+	
+		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			.add(layout.createSequentialGroup()
+				.addContainerGap()
+				.add(titleLabel)
+				.add(8, 8, 8)
+				.add(7, 7, 7)
+				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+					.add(nodeLabel)
+					.add(nodeTextField))
 
-														.add(
-																org.jdesktop.layout.GroupLayout.TRAILING,
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				runButton)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				cancelButton)))
-										.addContainerGap()));
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(titleLabel)
-										.add(8, 8, 8)
+				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+					.add(betaLabel)
+					.add(betaTextField))
+				
+				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+					.add(degreeLabel)
+					.add(degreeTextField))
 
-										.add(7, 7, 7)
+				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+								 3, Short.MAX_VALUE)
 
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(nodeLabel).add(
-																nodeTextField))
-
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(betaLabel).add(
-																betaTextField))
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(degreeLabel)
-														.add(degreeTextField))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-
-														.add(
-																directedCheckBox))
-
-										 
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(cancelButton).add(
-																runButton))
-										.addContainerGap()));
+				//.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+				.add(directedCheckBox)//)
+				
+				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+					.add(cancelButton)
+					.add(runButton))
+			.addContainerGap()));
 
 	}
 
@@ -303,7 +243,25 @@ public class WattsStrogatzDialog extends JPanel {
 	/*
 	 *  Callback for the generate button
 	 */
-	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) 
+	{
+		//The degree of each node
+		int degree;
+
+		//How much to interpolate between a lattice
+		//and erdos-renyi model
+		double beta;
+
+		//The number of nodes in the network
+		int numNodes;
+
+		//Whether or not the network is directed
+		boolean directed;
+
+		//Whether or not the network allows reflexive edge
+		boolean allowSelfEdge;
+
+
 
 		//Get the strings from the textfields
 		String numNodeString = nodeTextField.getText();
@@ -363,8 +321,45 @@ public class WattsStrogatzDialog extends JPanel {
 		WattsStrogatzModel wsm = new WattsStrogatzModel(numNodes,
 				allowSelfEdge, !directed, beta, degree);
 		
+		
+		
+		
+		if(mode == 1)
+		{
+			
+			wsm.setCreateView(false);
+			AnalyzePanel analyzePanel = new AnalyzePanel(wsm, wsm.getDirected());
+		
+			//Get the TabbedPanel
+			JTabbedPane parent = (JTabbedPane)getParent();
+			int index = parent.getSelectedIndex();
+			
+			//Remove this Panel
+			parent.remove(index);
+			//Replace it with the panel
+			parent.add(analyzePanel, index);
+			//Set the title for this panel
+			parent.setTitleAt(index,"Analyze network statistics");
+			//Display this panel
+			parent.setSelectedIndex(index);
+			//Enforce this Panel
+			parent.validate();
+		
+		
+			//Re-pack the window based on this new panel
+			java.awt.Container p = parent.getParent();
+			p = p.getParent();
+			p = p.getParent();
+			p = p.getParent();
+			JDialog dialog = (JDialog)p;
+			dialog.pack();
+
+			return;
+		}
+
+		
 		//Generate the random network
-		CyNetwork randomNet = wsm.Generate();
+		CyNetwork randomNet = wsm.generate();
 
 		//Change to the Network view
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)

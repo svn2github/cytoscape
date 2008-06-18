@@ -1,4 +1,4 @@
-/*
+/* File: ErdosRenyiModel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -35,30 +35,27 @@
 
 
 
-/*
 
+
+package cytoscape.randomnetwork;
+
+
+import cytoscape.*;
+import cytoscape.data.*;
+import java.util.*;
+
+
+/*
+ This class generates random networks according to the two Erdos-Renyi models
+ G(n,m) which generates nodes with a specific number of edges and 
+ G(n,p) which generates a random network where each edge has the probability p of existing
 
  References:
  Erdos, P.; Renyi A. (1959). "On Random Graphs. I.".  Publications Matheaticae 6: 290-297.
  Erdos, P.; Renyi A. (1960). "The Evolution of Random Graphs".  Magyar Tud. Akad. Math. Kutato INt. Koxl. 5:17-61.
  Gilber, E.N. (1959). "Random Graphs".  Annals of Mathematical Statistics 30: 1141 - 1144.
 
-
-
- Author: Patrick J. McSweeney
- Creation Date: 5/07/08
-
  */
-
-package cytoscape.randomnetwork;
-
-import cytoscape.plugin.*;
-import cytoscape.*;
-import cytoscape.view.*;
-import giny.view.*;
-import cytoscape.data.*;
-import java.util.*;
-
 public class ErdosRenyiModel extends RandomNetworkModel {
 	private double probability;
 
@@ -108,7 +105,6 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 		if (probability > 1.0d) {
 			probability = 1.0d;
 		}
-
 		probability = pProbability;
 	}
 
@@ -116,11 +112,30 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	 * Generates a random graph based on the model specified by the constructor:
 	 * G(n,m) or G(n,p)
 	 */
-	public CyNetwork Generate() {
+	public CyNetwork generate() {
+		
+		CyNetwork random_network = null;
+		if(probability == UNSPECIFIED)
+		{
+			random_network = gnmModel();
+		}
+		else
+		{
+			random_network = gnpModel();
+		}
+	
+		//Return this network
+		return random_network;
+	}
 
+	/**
+	*  Create a random network according to the G(n,m) model
+	*/
+	public CyNetwork gnmModel()
+	{
 		//Create a network
-		CyNetwork random_network = Cytoscape
-				.createNetwork("Erdos-Renyi network");
+		CyNetwork random_network = 
+			Cytoscape.createNetwork(new int[] {  }, new int[] {  }, ("Erdos-Renyi network"), null, createView);
 
 		// Create N nodes
 		CyNode[] nodes = new CyNode[numNodes];
@@ -142,146 +157,156 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 			nodes[i] = node;
 		}
 
-		// If we are creating a random network with a specified number of edges
-		// G(n,m) Model
-		if (probability == UNSPECIFIED) {
+		
+		//Here we are ensuring that m is less then the maximum number of
+		//edges given the network properitites: number of nodes, direcetedness,
+		//and reflexive edges.
+		
+		//If directed
+		if (directed) {
+			//If reflexive edges
+			if (allowSelfEdge) {
+				numEdges = Math.min(numEdges, numNodes * numNodes);
+			} else {
+			//if reflexive edges are not allowed
+				numEdges = Math.min(numEdges, numNodes * (numNodes - 1));
+			}
+		}
+		//else we are undirected
+		else {
+			//If reflexive edges				
+			if (allowSelfEdge) {
+				numEdges = Math.min(numEdges,
+						(int) ((numNodes * (numNodes - 1)) / 2.0)
+								+ numNodes);
+			} else {
+			//if reflexive edges are not allowed
+				numEdges = Math.min(numEdges,
+						(int) ((numNodes * (numNodes - 1)) / 2.0));
+			}
+		}
 
-			//Here we are ensuring that m is less then the maximum number of
-			//edges given the network properitites: number of nodes, direcetedness,
-			//and reflexive edges.
+		//Create each edge
+		for (int i = 0; i < numEdges; i++) {
+
+			// Select two nodes (source and target only apply if directed)
+			int source = Math.abs(random.nextInt()) % numNodes;
+			int target = Math.abs(random.nextInt()) % numNodes;
+
+			// Check to see if this edge already exists
+			CyEdge check = Cytoscape.getCyEdge(nodes[source],
+					nodes[target], Semantics.INTERACTION, new String(time
+							+ "(" + Math.min(source, target) + ","
+							+ Math.max(source, target) + ")"), false,
+					directed);
 			
-			//If directed
-			if (directed) {
-				//If reflexive edges
-				if (allowSelfEdge) {
-					numEdges = Math.min(numEdges, numNodes * numNodes);
-				} else {
-				//if reflexive edges are not allowed
-					numEdges = Math.min(numEdges, numNodes * (numNodes - 1));
-				}
-			}
-			//else we are undirected
-			else {
-				//If reflexive edges				
-				if (allowSelfEdge) {
-					numEdges = Math.min(numEdges,
-							(int) ((numNodes * (numNodes - 1)) / 2.0)
-									+ numNodes);
-				} else {
-				//if reflexive edges are not allowed
-					numEdges = Math.min(numEdges,
-							(int) ((numNodes * (numNodes - 1)) / 2.0));
-				}
-			}
-
-			//Create each edge
-			for (int i = 0; i < numEdges; i++) {
-
-				// Select two nodes (source and target only apply if directed)
-				int source = Math.abs(random.nextInt()) % numNodes;
-				int target = Math.abs(random.nextInt()) % numNodes;
-
-				// Check to see if this edge already exists
-				CyEdge check = Cytoscape.getCyEdge(nodes[source],
-						nodes[target], Semantics.INTERACTION, new String(time
-								+ "(" + Math.min(source, target) + ","
-								+ Math.max(source, target) + ")"), false,
-						directed);
-				
-				//We can enumerate all pairs of nodes by the formula
-				//source * N + target, where source and target
-				//refer to specific nodes between 0 and N - 1
-				int higher = source * numNodes + target + 1;
-				int lower = source * numNodes + target - 1;
-				
-				
-				//The idea here is that if the source and target we 
-				//initially chose has already been created, then create
-				//the next closest edge according to our enumeration.
-				//Randomly selecting a new edge is computationally 
-				//prohibitive when the number of edges approaches the maximum
-				while ((check != null)
-						|| ((!allowSelfEdge) && (source == target))) {
-						
-					//Check to make sure that lower is 
-					//within bounds	
-					if (lower < 0) {
-						lower = (numNodes * numNodes - 1);
-					}
-					//Chck to make sure that higher is within bounds
-					if (higher == numNodes * numNodes) {
-						higher = 0;
-					}
-
-					//Get the source and target from the lower number
-					int source_lo = lower / numNodes;
-					int target_lo = lower % numNodes;
-
-					//Get the source and target from the higher number
-					int source_hi = higher / numNodes;
-					int target_hi = higher % numNodes;
-
-					//Either this is a reflexive edge and they are allowed,
-					//or it is not a reflexive edge
-					if (((allowSelfEdge) && (source_lo == target_lo))
-							|| (source_lo != target_lo)) {
+			//We can enumerate all pairs of nodes by the formula
+			//source * N + target, where source and target
+			//refer to specific nodes between 0 and N - 1
+			int higher = source * numNodes + target + 1;
+			int lower = source * numNodes + target - 1;
+			
+			
+			//The idea here is that if the source and target we 
+			//initially chose has already been created, then create
+			//the next closest edge according to our enumeration.
+			//Randomly selecting a new edge is computationally 
+			//prohibitive when the number of edges approaches the maximum
+			while ((check != null)
+					|| ((!allowSelfEdge) && (source == target))) {
 					
-						//Try to get this edge
-						check = Cytoscape
-								.getCyEdge(nodes[source_lo], nodes[target_lo],
-										Semantics.INTERACTION, new String(time
-												+ "("
-												+ Math
-														.min(source_lo,
-																target_lo)
-												+ ","
-												+ Math
-														.max(source_lo,
-																target_lo)
-												+ ")"), false, directed);
-						
-						//If this edge does not exist, choose this edge
-						if (check == null) {
-							source = source_lo;
-							target = target_lo;
-							break;
-						}
-					}
-				
-					//Either this is a reflexive edge and they are allowed,
-					//or it is not a reflexive edge
-					if (((allowSelfEdge) && (source_hi == target_hi))
-							|| (source_hi != target_hi)) {
-				
-						//try to get the higher edge
-						check = Cytoscape
-								.getCyEdge(nodes[source_hi], nodes[target_hi],
-										Semantics.INTERACTION, new String(time
-												+ "("
-												+ Math
-														.min(source_hi,
-																target_hi)
-												+ ","
-												+ Math
-														.max(source_hi,
-																target_hi)
-												+ ")"), false, directed);
-
-						//If the edge does not exist choose this edge
-						if (check == null) {
-							source = source_hi;
-							target = target_hi;
-							break;
-						}
-					}
-
-					higher++;
-					lower--;
-
+				//Check to make sure that lower is 
+				//within bounds	
+				if (lower < 0) {
+					lower = (numNodes * numNodes - 1);
+				}
+				//Chck to make sure that higher is within bounds
+				if (higher == numNodes * numNodes) {
+					higher = 0;
 				}
 
-				// Create and edge between node i and node j
-				CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target],
+				//Get the source and target from the lower number
+				int source_lo = lower / numNodes;
+				int target_lo = lower % numNodes;
+
+				//Get the source and target from the higher number
+				int source_hi = higher / numNodes;
+				int target_hi = higher % numNodes;
+
+				//Either this is a reflexive edge and they are allowed,
+				//or it is not a reflexive edge
+				if (((allowSelfEdge) && (source_lo == target_lo))
+						|| (source_lo != target_lo)) {
+				
+					//Try to get this edge
+					check = Cytoscape
+							.getCyEdge(nodes[source_lo], nodes[target_lo],
+									Semantics.INTERACTION, new String(time
+											+ "("
+											+ Math
+													.min(source_lo,
+															target_lo)
+											+ ","
+											+ Math
+													.max(source_lo,
+															target_lo)
+											+ ")"), false, directed);
+					
+					//If this edge does not exist, choose this edge
+					if (check == null) {
+						source = source_lo;
+						target = target_lo;
+						break;
+					}
+				}
+			
+				//Either this is a reflexive edge and they are allowed,
+				//or it is not a reflexive edge
+				if (((allowSelfEdge) && (source_hi == target_hi))
+						|| (source_hi != target_hi)) {
+			
+					//try to get the higher edge
+					check = Cytoscape
+							.getCyEdge(nodes[source_hi], nodes[target_hi],
+									Semantics.INTERACTION, new String(time
+											+ "("
+											+ Math
+													.min(source_hi,
+															target_hi)
+											+ ","
+											+ Math
+													.max(source_hi,
+															target_hi)
+											+ ")"), false, directed);
+
+					//If the edge does not exist choose this edge
+					if (check == null) {
+						source = source_hi;
+						target = target_hi;
+						break;
+					}
+				}
+
+				higher++;
+				lower--;
+
+			}
+
+			// Create and edge between node i and node j
+			CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target],
+					Semantics.INTERACTION, new String(time + "("
+							+ Math.min(source, target) + ","
+							+ Math.max(source, target) + ")"), true,
+					directed);
+
+			// Add this edge to the network
+			random_network.addEdge(edge);
+			
+			//If the network is undirected add edges in both directions
+			if(!directed)
+			{
+			
+				 edge = Cytoscape.getCyEdge(nodes[target], nodes[source],
 						Semantics.INTERACTION, new String(time + "("
 								+ Math.min(source, target) + ","
 								+ Math.max(source, target) + ")"), true,
@@ -289,57 +314,80 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 
 				// Add this edge to the network
 				random_network.addEdge(edge);
-
-			}
-		}
-		
-		// G(n,p) Model, runs n*n
-		//Here we independently create every edge with probability p
-		else {
-
-			// For each node
-			for (int i = 0; i < numNodes; i++) {
 			
-				//start defines valid targets for the source node i
-				int start = 0;
-				if (!directed) {
-					start = i + 1;
-					if (allowSelfEdge) {
-						start = i;
-					}
-				}
-
-				// For every other node
-				for (int j = start; j < numNodes; j++) {
-
-					//If this i,j represents a reflexive edge, and we
-					//do not allow reflexive edges, ignore it.
-					if ((!allowSelfEdge) && (i == j)) {
-						continue;
-					}
-
-					// If random indicates this edge exists
-					if (random.nextDouble() <= probability) {
-
-						// Create and edge between node i and node j
-						CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
-								Semantics.INTERACTION, new String("(" + i + ","
-										+ j + ")"), true, directed);
-
-						// Add this edge
-						random_network.addEdge(edge);
-					}
-				}
 			}
 
 		}
+		return random_network;
+	}
+	
+	
+	/**
+	* Create a random network by the G(n,p) model
+	*/
+	public CyNetwork gnpModel()
+	{
+		//Create a network
+		CyNetwork random_network = 
+			Cytoscape.createNetwork(new int[] {  }, new int[] {  }, ("Erdos-Renyi network"), null, createView);
+		// Create N nodes
+		CyNode[] nodes = new CyNode[numNodes];
 
-		//Return this network
+		
+		//Get the current system time
+		long time = System.currentTimeMillis();
+		
+		
+		// For each edge
+		for (int i = 0; i < numNodes; i++) 
+		{
+			// Create a new node nodeID = i, create = true
+			CyNode node = Cytoscape.getCyNode(time + "." + i, true);
+
+			// Add this node to the network
+			random_network.addNode(node);
+
+			// Save node in array
+			nodes[i] = node;
+		}
+
+		// For each node
+		for (int i = 0; i < numNodes; i++) {
+		
+			//start defines valid targets for the source node i
+			int start = 0;
+			if (!directed) {
+				start = i + 1;
+				if (allowSelfEdge) {
+					start = i;
+				}
+			}
+
+			// For every other node
+			for (int j = start; j < numNodes; j++) {
+
+				//If this i,j represents a reflexive edge, and we
+				//do not allow reflexive edges, ignore it.
+				if ((!allowSelfEdge) && (i == j)) {
+					continue;
+				}
+
+				// If random indicates this edge exists
+				if (random.nextDouble() <= probability) {
+
+					// Create and edge between node i and node j
+					CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
+							Semantics.INTERACTION, new String("(" + i + ","
+									+ j + ")"), true, directed);
+
+					// Add this edge
+					random_network.addEdge(edge);
+				}
+			}
+		}
+
 		return random_network;
 	}
 
-	public void Compare() {
-
-	}
 
 }

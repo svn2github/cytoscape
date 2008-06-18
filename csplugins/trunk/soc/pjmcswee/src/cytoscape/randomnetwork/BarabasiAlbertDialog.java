@@ -52,6 +52,9 @@ import javax.swing.*;
  * 
  */
 public class BarabasiAlbertDialog extends JPanel {
+
+	private int mode;
+
 	// TextFields
 	private javax.swing.JTextField nodeTextField;
 	private javax.swing.JTextField initTextField;
@@ -72,26 +75,36 @@ public class BarabasiAlbertDialog extends JPanel {
 	/*
 	 * Default Constructor 
 	 */
-	public BarabasiAlbertDialog( ){
+	public BarabasiAlbertDialog(int pMode ){
 		super();
+		mode = pMode;
 		initComponents();
 	}
 
-	/*
-	 * 
+	/**
+	 * Initialize all of the swing components
 	 */
 	private void initComponents() {
-		// TextFields
+	
+	
+		final int textFieldStart = 10;
+		final int textFieldLength = 50;
+		final int labelStart = 20;
+		final int labelLength = 170;
+ 
+	
+	
+		// TextField creation
 		nodeTextField = new javax.swing.JTextField();
 		initTextField = new javax.swing.JTextField();
 		edgeTextField = new javax.swing.JTextField();
 
-		// Buttons
+		// Button creation
 		directedCheckBox = new javax.swing.JCheckBox();
 		runButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 
-		// Labels
+		// Label creation
 		titleLabel = new javax.swing.JLabel();
 		nodeLabel = new javax.swing.JLabel();
 		initLabel = new javax.swing.JLabel();
@@ -100,13 +113,17 @@ public class BarabasiAlbertDialog extends JPanel {
 
 		//Add the explanation label
 		explainLabel
-				.setText("<html><font size=2 face=Verdana>The Barabasi-Albert model begins with a connected seed network of s nodes.<br>Every other node (n - s) is added one at a time,<br> and initially connected to existing node u,<br> with probability  degree(u)/(2*E) </font></html>");
+				.setText("<html><font size=2 face=Verdana>" +
+				"The Barabasi-Albert model begins with a connected seed network of s nodes.<br>" +
+				"Every other node (n - s) is added one at a time,<br>" +
+				"and initially connected to m existing nodes.<br>" +
+				"Each existing node u has probability  degree(u)/(2*E), E is the number of edges </font></html>");
 
 		//Set the text for the labels
 		directedCheckBox.setText("Undirected");
-		nodeLabel.setText("Number of Nodes:");
-		initLabel.setText("Initial Number of Nodes:");
-		edgeLabel.setText("Minimum Edges per node:");
+		nodeLabel.setText("Number of Nodes (n):");
+		initLabel.setText("Initial Number of Nodes (s):");
+		edgeLabel.setText("Minimum Edges per node (m):");
 		
 		//Set the title for the panel
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
@@ -128,141 +145,98 @@ public class BarabasiAlbertDialog extends JPanel {
 			}
 		});
 
-	org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+		//Create the layout for the dialog (really a panel)
+		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+		//Make the laout active.
 		setLayout(layout);
-			layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																titleLabel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																350,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-														.add(explainLabel)
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				nodeLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				nodeTextField,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				50))
+		
+		//Set the Horizontal Layout
+		layout.setHorizontalGroup(layout
+			.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+				.add(layout.createSequentialGroup()
+					.addContainerGap()
+						.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+							.add(titleLabel,
+								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
+								350,
+								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				initLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				initTextField,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				50))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				edgeLabel,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				20,
-																				170)
-																		// .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				edgeTextField,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				50))
-														.add(
-																layout
-																		.createSequentialGroup()
+							//Add the dscription
+							.add(explainLabel)
+							
+							//Add the node label & textField
+							.add(layout.createSequentialGroup()
+								.add(nodeLabel,
+									org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+									labelStart,
+									labelLength)
+								.add(nodeTextField,
+									org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+									textFieldStart,
+									textFieldLength))
+							//Add the initial graph size: s
+							.add(layout.createSequentialGroup()
+								.add(initLabel,
+									 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+									 labelStart,
+									 labelLength)
+								.add(initTextField,
+									 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+									 textFieldStart,
+									 textFieldLength))
+							//Add the number of edges to add edges: m
+							.add(layout.createSequentialGroup()
+								.add(edgeLabel,
+									 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+									 labelStart,
+									 labelLength)
+								.add(edgeTextField,
+									org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+									textFieldStart,
+									textFieldLength))
+							//Add the directed button
+							//.add(layout.createSequentialGroup()
+							.add(directedCheckBox) //)
+							//Add the Run/Cancel buttons
+							.add(org.jdesktop.layout.GroupLayout.TRAILING,
+								layout.createSequentialGroup()
+									.add(runButton)
+									.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+									.add(cancelButton)))
+					.addContainerGap()));
+		
+		//Set the vertical Layout
+		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+			.add(layout.createSequentialGroup()
+				.addContainerGap()
+				.add(titleLabel) //Add title
+				.add(8, 8, 8)
+				.add(explainLabel)  //Add the description
+				.add(7, 7, 7)
+				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+				//Add the node label textfield pair: n
+				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+					.add(nodeLabel)
+					.add(nodeTextField))
+				//add the initial number of nodes: s
+				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+					.add(initLabel)
+					.add(initTextField))
+				//add the number of edges to add at each time step: m
+				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+					.add(edgeLabel)
+					.add(edgeTextField))
+				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+								  3, Short.MAX_VALUE)
+				//Add the directed checkbox
+				//.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+				.add(directedCheckBox)//)
+				//Add the Run/Cancel buttons
+				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+					.add(cancelButton)
+					.add(runButton))
+			.addContainerGap()));
 
-																		.add(
-																				directedCheckBox))
-
-														.add(
-																org.jdesktop.layout.GroupLayout.TRAILING,
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				runButton)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				cancelButton)))
-										.addContainerGap()));
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(titleLabel)
-										.add(8, 8, 8)
-										.add(explainLabel)
-										.add(7, 7, 7)
-									
-
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(nodeLabel).add(
-																nodeTextField))
-
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(initLabel).add(
-																initTextField))
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(edgeLabel).add(
-																edgeTextField))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-
-														.add(
-																directedCheckBox))
-
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(cancelButton).add(
-																runButton))
-										.addContainerGap()));
-		//pack();
 	}
 
 	/*
@@ -293,8 +267,9 @@ public class BarabasiAlbertDialog extends JPanel {
 		boolean directed;
 		//The number of edges to add for each node
 		int edgesToAdd;
-		//Allow reflexive edges
-		boolean allowSelfEdge;
+		
+		//Allow reflexive edges N/A for Barabasi-Albert
+		boolean allowSelfEdge = false;
 
 		//Get the string values for each of the textfields
 		String numNodeString = nodeTextField.getText();
@@ -346,8 +321,45 @@ public class BarabasiAlbertDialog extends JPanel {
 		//Create the model
 		BarabasiAlbertModel bam = new BarabasiAlbertModel(numNodes, allowSelfEdge, !directed, initNumNodes, edgesToAdd);
 		
+		
+			
+		if(mode == 1)
+		{
+			
+			bam.setCreateView(false);
+			AnalyzePanel analyzePanel = new AnalyzePanel(bam, bam.getDirected());
+		
+			//Get the TabbedPanel
+			JTabbedPane parent = (JTabbedPane)getParent();
+			int index = parent.getSelectedIndex();
+			
+			//Remove this Panel
+			parent.remove(index);
+			//Replace it with the panel
+			parent.add(analyzePanel, index);
+			//Set the title for this panel
+			parent.setTitleAt(index,"Analyze network statistics");
+			//Display this panel
+			parent.setSelectedIndex(index);
+			//Enforce this Panel
+			parent.validate();
+		
+		
+			//Re-pack the window based on this new panel
+			java.awt.Container p = parent.getParent();
+			p = p.getParent();
+			p = p.getParent();
+			p = p.getParent();
+			JDialog dialog = (JDialog)p;
+			dialog.pack();
+
+			return;
+		}
+
+		
+		
 		//Create the network
-		CyNetwork randomNet = bam.Generate();
+		CyNetwork randomNet = bam.generate();
 
 		//Switch to the Network view
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)

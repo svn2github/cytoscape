@@ -34,11 +34,6 @@
  */
 
 
-/*
- File: RandomNetworkPlugin
- Author: Patrick J. McSweeney
- Creation Date: 5/07/08
- */
 package cytoscape.randomnetwork;
 
 import cytoscape.*;
@@ -48,7 +43,7 @@ import java.util.Random;
 /* The base class for all random network 
  * models
  */
-public abstract class RandomNetworkModel {
+public abstract class RandomNetworkModel implements RandomNetworkGenerator{
 
 	//The number of nodes in network
 	protected int numNodes;
@@ -68,6 +63,9 @@ public abstract class RandomNetworkModel {
 	//Random number generated
 	protected Random random;
 
+	//Whether or not to create a view
+	protected boolean createView;
+
 	//A Flag to represent that a value is not set
 	protected static int UNSPECIFIED = -1;
 
@@ -82,6 +80,7 @@ public abstract class RandomNetworkModel {
 		directed = pDirected;
 		allowSelfEdge = pAllowSelfEdge;
 		seed = UNSPECIFIED;
+		createView = true;
 		random = new Random();
 	}
 
@@ -93,6 +92,9 @@ public abstract class RandomNetworkModel {
 		random = new Random(seed);
 	}
 
+	/*
+	 *
+	 */
 	public long getSeed() {
 		return seed;
 	}
@@ -108,8 +110,13 @@ public abstract class RandomNetworkModel {
 	public boolean getDirected() {
 		return directed;
 	}
+	
+	public boolean getCreateView(){
+		return createView;
+	}
+	
+	public void setCreateView(boolean pCreateView){
+		createView = pCreateView;
+	}
 
-	public abstract CyNetwork Generate();
-
-	public abstract void Compare();
 }

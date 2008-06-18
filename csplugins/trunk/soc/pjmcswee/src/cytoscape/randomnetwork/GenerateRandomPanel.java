@@ -58,6 +58,8 @@ import javax.swing.SwingConstants;
  */
 public class GenerateRandomPanel extends JPanel {
 
+	private int mode;
+
 	//Next Button
 	private javax.swing.JButton runButton;
 	//Cancel Button
@@ -80,12 +82,15 @@ public class GenerateRandomPanel extends JPanel {
 	private javax.swing.JLabel wsmExplain;
 	//Checkbox for barabasi-albert model
 	private javax.swing.JLabel bamExplain;
+	
 
 	/*
 	 *  Default constructor
 	 */
-	public GenerateRandomPanel( ){
+	public GenerateRandomPanel(int pMode ){
+		
 		super( ); 
+		mode = pMode;
 		initComponents();
 	}
 
@@ -111,7 +116,7 @@ public class GenerateRandomPanel extends JPanel {
 
 		//Set the erdos-renyi text
 		ermExplain
-				.setText("<html><font size=2 face=Verdana>Uniformly generate a random <br> graph with n nodes and m edges.</font></html>");
+				.setText("<html><font size=2 face=Verdana>Generate a random network <br> graph with n nodes and m edges.</font></html>");
 
 		//Set the watts-strogatz text
 		wsmExplain
@@ -149,6 +154,8 @@ public class GenerateRandomPanel extends JPanel {
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
 		titleLabel.setText("Generate Random Network");
 
+
+	
 		//Set up the run button
 		runButton.setText("Next");
 		runButton.addActionListener(new java.awt.event.ActionListener() {
@@ -232,6 +239,7 @@ public class GenerateRandomPanel extends JPanel {
 																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																				10,
 																				Short.MAX_VALUE))
+																											
 													
 														.add(
 																org.jdesktop.layout.GroupLayout.TRAILING,
@@ -287,6 +295,7 @@ public class GenerateRandomPanel extends JPanel {
 																org.jdesktop.layout.GroupLayout.BASELINE)
 														.add(bam).add(
 																bamExplain))
+									
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED,
 												3, Short.MAX_VALUE)
@@ -327,15 +336,17 @@ public class GenerateRandomPanel extends JPanel {
 		
 		//See which checkbox is selected and then display the appropriate panel
 		if (erm.isSelected()) {
-			displayPanel = new ErdosRenyiDialog();
+			displayPanel = new ErdosRenyiDialog(mode);
 			title = new String("Erdos-Renyi Random Network");
 		} else if(wsm.isSelected()){
-			displayPanel = new WattsStrogatzDialog();
+			displayPanel = new WattsStrogatzDialog(mode);
 			title = new String("WattsStrogatz Random Network");
 		}else{
-			displayPanel = new BarabasiAlbertDialog();
+			displayPanel = new BarabasiAlbertDialog(mode);
 			title = new String("Barabasi-Albert Random Network");
 		}
+		
+		
 		
 		//Get the TabbedPanel
 		JTabbedPane parent = (JTabbedPane)getParent();
