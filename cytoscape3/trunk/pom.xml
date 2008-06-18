@@ -228,6 +228,17 @@
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <excludePackageNames>*.impl</excludePackageNames>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>javadoc</report>
+              <!-- <report>test-javadoc</report> -->
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
