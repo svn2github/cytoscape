@@ -199,6 +199,12 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * PaletteNetworkEditEventHandler
 	 */
 	public boolean handlingEdgeDrop = false;
+	
+	/**
+	 * String used to compare against os.name System property -
+	 * to determine if we are running on Windows platform.
+	 */
+	static final String MAC_OS_ID = "mac";
 
 	/**
 	 * node or edge which has been highlighted for drop or edge connection
@@ -247,6 +253,17 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	public InnerCanvas getCanvas() {
 		return canvas;
 	}
+	
+	/**
+	 * Routine which determines if we are running on mac platform
+	 *
+	 * @return boolean
+	 */
+	private boolean isMacPlatform() {
+		String os = System.getProperty("os.name");
+
+		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
+	}
 
 	/**
 	 * The <b>mousePressed() </b> method is at the heart of the basic Cytoscape
@@ -275,13 +292,13 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		// if we have control-clicked on an edge, then just return
 		// because the user is adding edge anchors for bending edges in
 		// Cytoscape:
-		if (e.isControlDown()) {
+		if (e.isControlDown() && !(isMacPlatform())) {
 			if (view.getPickedEdgeView(nextPoint) != null) {
 				return;
 			}
 		}
 
-		if (onNode && !edgeStarted && (e.isControlDown())) {
+		if (onNode && !edgeStarted && (e.isControlDown()) && !(isMacPlatform())) {
 			// begin edge creation
 			beginEdge(nextPoint, nv);
 
@@ -299,7 +316,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			saveY1 = Double.MIN_VALUE;
 			saveY2 = Double.MIN_VALUE;
 			this.setHandlingEdgeDrop(false);
-		} else if (!onNode && !edgeStarted && (e.isControlDown())) {
+		} else if (!onNode && !edgeStarted && (e.isControlDown()) && !(isMacPlatform())) {
 			// control-click on a empty place will make a new Node:
 			createNode(nextPoint);
 		}
@@ -564,7 +581,7 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			onNode = true;
 		}
 
-		if (onNode && !edgeStarted && (e.isControlDown())) {
+		if (onNode && !edgeStarted && (e.isControlDown() && !(isMacPlatform()))) {
 			// begin edge creation
 			beginEdge(nextPoint, nv);
 		}
