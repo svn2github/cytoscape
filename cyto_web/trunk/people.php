@@ -107,6 +107,39 @@
 
   
 </table>
+<h2>Scientific Advisory Board:</h2>
+			<table cellpadding="2" cellspacing="2" border="0" width="100%">
+				<tbody>
+					<tr>
+						<td>
+						Ewan Birney  	
+						<br/>
+						Hamid Bolouri
+						<br/>
+						Joel Bader
+						<br/>
+						Bruce Conklin
+						<br/>
+						David J. States 
+						<br/>
+						John Whitmarsh
+						<br/>
+						Manuel Peitsch
+						<br/>
+						Ilya Shmulevich
+						<br/>
+						John T. Armstrong
+						<br/>
+						Marc Vidal
+						<br/>
+						Mark Gerstein 
+						<br/>
+						Nevan Krogan
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
 <h2>Past Developers and Directors:</h2>
 			<table cellpadding="2" cellspacing="2" border="0" width="100%">
 				<tbody>
