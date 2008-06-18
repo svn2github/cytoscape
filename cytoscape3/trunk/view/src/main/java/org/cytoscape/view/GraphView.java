@@ -265,7 +265,7 @@ public static int NODE_X_POSITION = 0;
    * nodeViewsIterator only returns the NodeViews that are explicitly
    * associated with this GraphView
    */
-  public Iterator getNodeViewsIterator(); 
+  public Iterator<NodeView> getNodeViewsIterator(); 
   
   /**
    * @return the number of node views present
