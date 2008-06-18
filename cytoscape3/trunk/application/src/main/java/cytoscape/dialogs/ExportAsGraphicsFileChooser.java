@@ -22,6 +22,7 @@ import org.cytoscape.vizmap.calculators.Calculator;
  */
 public class ExportAsGraphicsFileChooser extends JDialog implements ActionListener
 {
+	private final static long serialVersionUID = 1213748837168600L;
 	protected File selectedFile;
 
 	private boolean exportTextAsFont = !(new Boolean(CytoscapeInit.getProperties().getProperty("exportTextAsShape")).booleanValue());

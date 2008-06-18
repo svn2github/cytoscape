@@ -40,6 +40,7 @@ package cytoscape.data.webservice;
  *
  */
 public class CyWebServiceException extends Exception {
+	private final static long serialVersionUID = 1213748836602572L;
 	public enum WSErrorCode {
 		NO_RESULT("Service returned no result."), 
 		REMOTE_EXEC_FAILED("Remote service failed."), 

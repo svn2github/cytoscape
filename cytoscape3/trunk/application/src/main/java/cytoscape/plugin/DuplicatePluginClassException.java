@@ -1,6 +1,7 @@
 package cytoscape.plugin;
 
 public class DuplicatePluginClassException extends PluginException {
+	private final static long serialVersionUID = 1213748836652960L;
 
 	public DuplicatePluginClassException() {
 		super("Failed to load duplicate plugin class");

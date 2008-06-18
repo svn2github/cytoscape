@@ -645,6 +645,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			});
 
 		optionButton = new DropDownMenuButton(new AbstractAction() {
+	private final static long serialVersionUID = 1213748836776579L;
 				public void actionPerformed(ActionEvent ae) {
 					DropDownMenuButton b = (DropDownMenuButton) ae.getSource();
 					optionMenu.show(b, 0, b.getHeight());
@@ -957,6 +958,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Set Tooltiptext for the table.
 		 */
 		visualPropertySheetPanel.setTable(new PropertySheetTable() {
+	private final static long serialVersionUID = 1213748836812161L;
 				public String getToolTipText(MouseEvent me) {
 					final Point pt = me.getPoint();
 					final int row = rowAtPoint(pt);
@@ -2490,6 +2492,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * Actions for option menu
 	 */
 	protected class CreateLegendListener extends AbstractAction {
+	private final static long serialVersionUID = 1213748836842554L;
 		public void actionPerformed(ActionEvent e) {
 			final SwingWorker worker = new SwingWorker() {
 				public Object construct() {
@@ -2512,6 +2515,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *
 	 */
 	private class NewStyleListener extends AbstractAction {
+	private final static long serialVersionUID = 1213748836872046L;
 		public void actionPerformed(ActionEvent e) {
 			final String name = getStyleName(null);
 
@@ -2599,6 +2603,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *
 	 */
 	private class RenameStyleListener extends AbstractAction {
+	private final static long serialVersionUID = 1213748836901018L;
 		public void actionPerformed(ActionEvent e) {
 			final VisualStyle currentStyle = vmm.getVisualStyle();
 			final String oldName = currentStyle.getName();
@@ -2642,6 +2647,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * Remove selected visual style.
 	 */
 	private class RemoveStyleListener extends AbstractAction {
+	private final static long serialVersionUID = 1213748836929313L;
 		public void actionPerformed(ActionEvent e) {
 			if (vmm.getVisualStyle().getName().equals(DEFAULT_VS_NAME)) {
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
@@ -2683,6 +2689,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	protected class CopyStyleListener extends AbstractAction {
+	private final static long serialVersionUID = 1213748836957944L;
 		public void actionPerformed(ActionEvent e) {
 			final VisualStyle currentStyle = vmm.getVisualStyle();
 			VisualStyle clone = null;
@@ -2947,6 +2954,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private class GenerateValueListener extends AbstractAction {
+	private final static long serialVersionUID = 1213748836986412L;
 		private final int MAX_COLOR = 256 * 256 * 256;
 		private DiscreteMapping dm;
 		protected static final int RAINBOW1 = 1;
@@ -3093,6 +3101,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private class GenerateSeriesListener extends AbstractAction {
+	private final static long serialVersionUID = 121374883715581L;
 		private DiscreteMapping dm;
 
 		/**
@@ -3199,6 +3208,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private class FitLabelListener extends AbstractAction {
+	private final static long serialVersionUID = 121374883744077L;
 		private DiscreteMapping dm;
 
 		/**
@@ -3450,6 +3460,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private class BrightnessListener extends AbstractAction {
+	private final static long serialVersionUID = 121374883775182L;
 		private DiscreteMapping dm;
 		protected static final int DARKER = 1;
 		protected static final int BRIGHTER = 2;

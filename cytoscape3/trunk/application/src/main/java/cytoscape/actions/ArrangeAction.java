@@ -54,6 +54,7 @@ import cytoscape.view.CyDesktopManager;
  *
  */
 public class ArrangeAction extends JMenu {
+	private final static long serialVersionUID = 1213748836699929L;
 	/**
 	 * .
 	 */
@@ -68,6 +69,7 @@ public class ArrangeAction extends JMenu {
 		super("Arrange Network Windows");
 		
 		cascade = new JMenuItem(new AbstractAction("Cascade") {
+			private final static long serialVersionUID = 1213748836660996L;
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
@@ -78,6 +80,7 @@ public class ArrangeAction extends JMenu {
 		});
 
 		tiled = new JMenuItem(new AbstractAction("Tiled") {
+			private final static long serialVersionUID = 1213748836670122L;
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
@@ -88,6 +91,7 @@ public class ArrangeAction extends JMenu {
 		});
 
 		horizontal = new JMenuItem(new AbstractAction("Horizontal") {
+			private final static long serialVersionUID = 1213748836679747L;
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
@@ -98,6 +102,7 @@ public class ArrangeAction extends JMenu {
 		});
 
 		vertical = new JMenuItem(new AbstractAction("Vertical") {
+			private final static long serialVersionUID = 1213748836689377L;
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
 						public void run() {

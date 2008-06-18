@@ -42,6 +42,7 @@ import cytoscape.Cytoscape;
  * @author  kono
  */
 public class MinMaxDialog extends javax.swing.JDialog {
+	private final static long serialVersionUID = 1213748836709924L;
 	private static MinMaxDialog dialog;
 
 	/** Creates new form MinMaxDialog */
