@@ -705,7 +705,8 @@ public class EisenCluster {
 		if (node.getRight() < 0) {
 			int index = -node.getRight() - 1;
 			CyGroup rightGroup = createGroups(matrix, nodeList, nodeList[index], groupNames);
-			memberList.add(rightGroup.getGroupNode());
+			if (rightGroup != null)
+				memberList.add(rightGroup.getGroupNode());
 		} else {
 			memberList.add(matrix.getRowNode(node.getRight()));
 		}
@@ -713,6 +714,7 @@ public class EisenCluster {
 		if (node.getLeft() < 0) {
 			int index = -node.getLeft() - 1;
 			CyGroup leftGroup = createGroups(matrix, nodeList, nodeList[index], groupNames);
+			if (leftGroup != null)
 			memberList.add(leftGroup.getGroupNode());
 		} else {
 			memberList.add(matrix.getRowNode(node.getLeft()));
@@ -722,10 +724,19 @@ public class EisenCluster {
 
 		// Create the group for this level
 		CyGroup group = CyGroupManager.createGroup(node.getName(), memberList, null);
-		if (group != null)
-			CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+		if (group == null) {
+			// Hmmm....the group already exists -- clean it up
+			group = CyGroupManager.findGroup(node.getName());
+			// Remove the group
+			CyGroupManager.removeGroup(group);
+			// Try again to create it
+			group = CyGroupManager.createGroup(node.getName(), memberList, null);
+		}
 
-		groupNames.add(node.getName());
+		if (group != null) {
+			CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+			groupNames.add(node.getName());
+		}
 
 		return group;
 	}
