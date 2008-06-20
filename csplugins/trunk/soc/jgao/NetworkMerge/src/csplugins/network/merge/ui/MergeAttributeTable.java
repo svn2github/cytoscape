@@ -1,0 +1,280 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package csplugins.network.merge.ui;
+
+import csplugins.network.merge.AttributeMapping;
+import csplugins.network.merge.MatchingAttribute;
+        
+import cytoscape.Cytoscape;
+
+import java.util.Collections;
+import java.util.Vector;
+import java.util.Iterator;
+import java.util.Arrays;
+
+import java.awt.Component;
+import java.awt.Color;
+
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.DefaultCellEditor;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author gjj
+ */
+public class MergeAttributeTable extends JTable{
+    private MatchingAttribute matchingAttribute;
+    private AttributeMapping attributeMapping; //attribute mapping
+    private String mergedNetworkName;
+    private MergeAttributeTableModel model;
+    private boolean isNode;
+    
+    public MergeAttributeTable(String mergedNetworkName ,AttributeMapping attributeMapping, MatchingAttribute matchingAttribute) {
+        super();
+        this.mergedNetworkName = mergedNetworkName;
+        this.attributeMapping = attributeMapping;
+        isNode = true;
+        model = new MergeAttributeTableModel();
+        setModel(model);
+    }
+    
+    public MergeAttributeTable(String mergedNetworkName ,AttributeMapping attributeMapping) {
+        super();        
+        this.mergedNetworkName = mergedNetworkName;
+        this.attributeMapping = attributeMapping;
+        model = new MergeAttributeTableModel();
+        isNode = false;
+        setModel(model);
+    }
+
+
+    public void setMergedNetworkName(String mergedNetworkName) {
+        this.mergedNetworkName = mergedNetworkName;
+        fireTableStructureChanged();
+    }
+
+    public void setColumnEditor() {
+        int n = attributeMapping.getSizeNetwork();
+        for (int i=0; i<n; i++) { // for each network
+            Vector<String> attrs = new Vector();
+            attrs.add("");
+            //attrs.add(NetworkMerge.ID);
+            attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+            JComboBox comboBox = new JComboBox(attrs);
+            TableColumn column = getColumnModel().getColumn(i);
+            column.setCellEditor(new DefaultCellEditor(comboBox));
+        }
+    }
+
+        
+    public void setCellRender() {
+        int n = attributeMapping.getSizeNetwork();
+        if (n==0) return;
+        for (int i=0; i<n+1; i++) { // for each network
+        TableColumn column = getColumnModel().getColumn(i);
+        
+        column.setCellRenderer(new TableCellRenderer() {
+            private DefaultTableCellRenderer defaultRender = new DefaultTableCellRenderer();
+            public Component getTableCellRendererComponent(
+                            JTable table, Object color,
+                            boolean isSelected, boolean hasFocus,
+                            int row, int column) {
+                JLabel renderer = (JLabel) defaultRender.getTableCellRendererComponent(table, color, isSelected, hasFocus, row, column);
+                if (row<2) {
+                    renderer.setBackground(Color.LIGHT_GRAY);
+                    if (isSelected) {
+                        renderer.setForeground(table.getSelectionForeground());
+                    } else {
+                        renderer.setForeground(table.getForeground());
+                    }
+                } else {
+                    if (isSelected) {
+                        renderer.setForeground(table.getSelectionForeground());
+                        renderer.setBackground(table.getSelectionBackground());
+                    } else {
+                        renderer.setForeground(table.getForeground());
+                        renderer.setBackground(table.getBackground());
+                    }
+                    if (column<attributeMapping.getSizeNetwork()) {
+                        renderer.setToolTipText("Click for combo box");
+                    }
+                }
+                return renderer;
+            }
+
+        });
+        }
+    }
+    
+    public void fireTableStructureChanged() {
+        //pack();
+        model.fireTableStructureChanged();
+        setCellRender();
+        setColumnEditor();
+    }
+
+    private class MergeAttributeTableModel extends AbstractTableModel {
+        Vector<String> netNames; // network titles
+        Vector<String> netIDs; //network identifiers
+
+        public MergeAttributeTableModel() {
+            resetNetworks();
+        }
+
+        public int getColumnCount() {
+            int n = attributeMapping.getSizeNetwork();
+            return n==0?0:n+1;
+        }
+
+        public int getRowCount() {
+            int n = attributeMapping.getSizeMergedAttributes();
+            //n = n+1; // +1: add an empty row in the end (TODO: use this one in Cytoscape3.0)
+            n = n+3; // TODO REMOVE in Cytoscape3.0
+            return attributeMapping.getSizeNetwork()==0?0:n; 
+        }
+
+        public String getColumnName(int col) {
+            if (col==getColumnCount()-1) {
+                return mergedNetworkName;
+            } else {
+                return netNames.get(col);
+            }
+        }
+
+        public Object getValueAt(int row, int col) {
+            int iAttr;
+            // TODO remove in Cytoscape3.0
+            if (row==0) {
+                return "ID";
+            } else if (row==1) {
+                return "canonicalName";
+            } else {
+                iAttr = row-2;
+            }// TODO remove in Cytoscape3.0
+            
+            //iAttr=row; //TODO use this one in Cytoscape3.0
+            
+            if (col==getColumnCount()-1) {
+                String[] mergedAttrs = attributeMapping.getMergedAttributes();
+                if (iAttr>=mergedAttrs.length) return null; // the last row
+                return mergedAttrs[iAttr];
+            } else {
+                return attributeMapping.getOriginalAttribute(netIDs.get(col), iAttr);
+            }
+        }
+
+        /*
+         * JTable uses this method to determine the default renderer/
+         * editor for each cell.  If we didn't implement this method,
+         * then the last column would contain text ("true"/"false"),
+         * rather than a check box.
+         */
+        public Class getColumnClass(int c) {
+            return String.class;
+        }
+
+        /*
+         * 
+         * 
+         */
+        public boolean isCellEditable(int row, int col) {
+            // TODO remove in Cytoscape3.0
+            if (row<2) return false;// TODO remove in Cytoscape3.0
+            
+            if (row!=getRowCount()-1) return true;
+            return (col!=getColumnCount()-1);
+        }
+
+        /* 
+         * Don't need to implement this method unless your table's
+         * data can change.
+         */
+        public void setValueAt(Object value, int row, int col) {
+            String attr = (String) value;
+            int iAttr = row-2;// TODO remove in Cytoscape3.0
+            //int iAttr = row; // TODO use in Cytoscape3.0
+            
+            if (attr==null) return; // click on the last row, but not selected
+            int n = attributeMapping.getSizeMergedAttributes();
+            if (iAttr>n) return;
+
+            if (col==getColumnCount()-1) { //column of merged network
+                if (iAttr==n) return;
+                if (attributeMapping.getMergedAttribute(iAttr).compareTo(attr)==0) { //if the same
+                    return;
+                }
+                
+                // TODO remove in Cytoscape3.0
+                if (attr.compareTo("ID")==0||attr.compareTo("canonicalName")==0) {
+                    JOptionPane.showMessageDialog(getParent(),"Atribute "+attr+" is reserved! Please use another name for this attribute!", "Error: duplicated attribute Name", JOptionPane.ERROR_MESSAGE );
+                    return;
+                }// TODO remove in Cytoscape3.0
+                
+                if (attributeMapping.containsMergedAttributes(attr)) {
+                    JOptionPane.showMessageDialog(getParent(),"Atribute "+attr+" is already exist! Please use another name for this attribute!", "Error: duplicated attribute Name", JOptionPane.ERROR_MESSAGE );
+                    return;
+                }  
+                attributeMapping.setMergedAttribute(iAttr, attr);
+                fireTableDataChanged();
+                return;
+            } else { //column of original network
+                String netID = netIDs.get(col);
+                if (iAttr==n) { // the last row
+                    if (attr.length()==0) return;
+
+                    // TODO remove in Cytoscape3.0
+                    if (attr.compareTo("canonicalName")==0) {
+                        attributeMapping.addNewAttribute(netID, attr, attributeMapping.getDefaultMergedAttrName(netID+".canonicalName"));
+                        fireTableDataChanged();
+                        return;
+                    }// TODO remove in Cytoscape3.0
+
+                    attributeMapping.addNewAttribute(netID, attr, attributeMapping.getDefaultMergedAttrName(attr));
+                    fireTableDataChanged();
+                    return;
+
+                } else {
+                    if (attributeMapping.getOriginalAttribute(netID, iAttr).compareTo(attr)==0) {
+                        return;
+                    }
+                    attributeMapping.setOriginalAttribute(netID, attr, iAttr);// set the attr
+                    fireTableDataChanged();
+                    return;
+                }       
+            }
+        }
+
+        public void fireTableStructureChanged() {
+            resetNetworks();
+            super.fireTableStructureChanged();
+        }
+
+        private void resetNetworks() {
+            netNames = new Vector<String>();
+            netIDs = new Vector<String>();
+            int size=0;
+            Iterator<String> it = attributeMapping.getNetworkSet().iterator();
+            while (it.hasNext()) {
+               String netID = it.next();
+                String netName = Cytoscape.getNetwork(netID).getTitle();
+                int index = 0;
+                while (index<size && netNames.get(index).compareTo(netName)<0) index++;
+                
+                netIDs.add(index,netID);
+                netNames.add(index,netName);
+                size++;
+            }
+        }
+    }
+
+}
