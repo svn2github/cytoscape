@@ -1,4 +1,4 @@
-/* File: RandomNetworkPlugin.java
+/* File: MatchingAttribute.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
