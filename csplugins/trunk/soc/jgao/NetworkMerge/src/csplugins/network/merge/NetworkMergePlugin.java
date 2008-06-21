@@ -47,7 +47,7 @@ import java.awt.event.ActionEvent;
 /**
  * Plugin to merge networks
  * 
- * @author Jianjiong Gao
+ * @author JGao
  */
 public class NetworkMergePlugin extends CytoscapePlugin {
     public NetworkMergePlugin() {

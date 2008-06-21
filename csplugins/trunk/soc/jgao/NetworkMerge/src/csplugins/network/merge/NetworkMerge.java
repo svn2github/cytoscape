@@ -43,6 +43,12 @@ import cytoscape.CyNetwork;
 
 import giny.model.Node;
 
+/**
+ * Interface of merging networks
+ * 
+ * @author JGao
+ */
+
 public interface NetworkMerge {
     public final String ID = "ID";
     
