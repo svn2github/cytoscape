@@ -11,5 +11,13 @@ package cytoscape.layout;
  * to be used as part of the LayoutSettingsDialog (see getPanel).
  */
 public interface TunableListener {
+	/**
+	 * The tunableChanged method is called whenever a tunable value
+	 * has been changed by the user (as opposed to programmatically).
+	 * It can be used by systems to react to user input to improve
+	 * interactivity or user feedback.
+	 *
+	 * @param tunable the Tunable that was changed
+	 */
 	public void tunableChanged(Tunable tunable);
 }

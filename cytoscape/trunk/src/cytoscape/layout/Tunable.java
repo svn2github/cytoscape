@@ -43,13 +43,145 @@ import javax.swing.event.ChangeEvent;
 
 
 /**
- * The Tunable class provides a convenient way to encapsulate
- * CyLayoutAlgorithm property and settings values.  Each Tunable
- * has a name, which corresponds to the property name, a description,
- * which is used as the label in the settings dialog, a type, a
- * value, and information about the value, such as a list of options
- * or the lower and upper bounds for the value.  These are meant
- * to be used as part of the LayoutSettingsDialog (see getPanel).
+ * Tunables are typed objects that maintain properties and an
+ * easy way to generate a settings panel to allow user manipulation
+ * of them.
+ * <p>
+ * A Tunable is a utility that serves two important functions:
+ * <ol><li>It provides a convenient way to read, set, and save
+ * properties that can be used to influence algorithms or presentation</li>
+ * <li>It provides a quick way to present an interface to the user
+ * to allow them to update and change those properties.</li></ol>
+ * <p>Tunables were originally written to support the needs of users
+ * of Cytoscape's various layout algorithms (see {@link CyLayoutAlgorithm})
+ * to access the various tunable parameters in the algorithms.  In general,
+ * Tunables are collected together by the {@link cytoscape.util.ModuleProperties} system.
+ * See {@link LayoutProperties} as a good example.
+ * <h3>Basic Concepts</h3>
+ * A Tunable can be thought of as a typed variable that knowns how
+ * to initialize and save itself as a Cytoscape property, and present
+ * itself to the user for input.  All tunables have the following
+ * information:
+ * <ul><li><b>name</b>: the name of the tunable, which is used to access
+ * the tunable and to save it as a property.</li>
+ * <li><b>description</b>: the description of the tunable, which is displayed
+ * to the user for input.</li>
+ * <li><b>type</b>: the type of the tunable, which must be one of 
+ * {@link #INTEGER}, {@link #DOUBLE}, {@link #BOOLEAN}, {@link #STRING},
+ * {@link #NODEATTRIBUTE}, {@link #EDGEATTRIBUTE}, {@link #LIST}, {@link #GROUP},
+ * or {@link #BUTTON}.</li>
+ * <li><b>value</b>: this is set in construction as the initial value, but is
+ * also maintained as the value loaded from the Cytoscape properties or entered
+ * by the user.  The type of this value depends on the <b>type</b> of the
+ * Tunable:
+ * <ul>
+ * <li>{@link #INTEGER}: {@link Integer}</li>
+ * <li>{@link #DOUBLE}: {@link Double}</li>
+ * <li>{@link #BOOLEAN}: {@link Boolean}</li>
+ * <li>{@link #STRING}: {@link String}</li>
+ * <li>{@link #NODEATTRIBUTE}: {@link String}, or if {@link #MULTISELECT}, comma-separated list of Strings representing the selected attributes</li>
+ * <li>{@link #EDGEATTRIBUTE}: {@link String}, or if {@link #MULTISELECT}, comma-separated list of Strings representing the selected attributes</li>
+ * <li>{@link #LIST}: {@link Integer}, or if {@link #MULTISELECT}, comma-separated list of integers representing the selected attributes</li>
+ * </ul></li>
+ * <li><b>lowerBound</b>: for {@link #INTEGER} or {@link #DOUBLE} tunables,
+ * the lowerBound is an optional {@link Integer} or {@link Double} value representing
+ * the smallest integer or double that constitutes a legal
+ * input.  For {@link #LIST} tunables, the lowerBound is an array of Objects representing the list to choose from, and for
+ * {@link #NODEATTRIBUTE}, and {@link #EDGEATTRIBUTE} tunables, lowerBound is an optional array of {@link String}s that will
+ * prefix the list of attributes.  This allows users to provide their own overrides into the list.</li>
+ * <li><b>upperBound</b>: for {@link #INTEGER} or {@link #DOUBLE} tunables,
+ * the upperBound is an optional {@link Integer} or {@link Double} value representing
+ * the larget integer or double that constitutes a legal
+ * input. </li>
+ * <li><b>flag</b>: Flags provide hints as to the desired presentation of the Tunable or restrictions on the values. Currently, the flags
+ * include: {@link #IMMUTABLE}, which prevents user entry; {@link #MULTISELECT}, which presents lists as a {@link javax.swing.JList} rather
+ * than {@link javax.swing.JComboBox}; {@link #NOINPUT}, which indicates that this tunable should not be 
+ * presented to the user; {@link #NUMERICATTRIBUTE}, which indicates for attribute lists that only numeric attributes 
+ * should be used; and {@link #USESLIDER}, which suggests to the UI to use a slider to present this value.</li>
+ *
+ * </ul>
+ * <h3>Common Usage</h3>
+ * <p>
+ * The most common usage of Tunables is to provide a list of values that influences the presentation or calculation of
+ * a layout, clustering algorithm, etc.  When combined with {@link LayoutProperties}, tunables provide a very quick way
+ * to put together a user interface and get the results from it.  A common approach would be for the algorithm to
+ * include a section of code that creates all of the Tunables associated with the algorithm's parameters.  For example
+ * this section from {@link csplugins.layout.algorithms.force#ForceDirectedLayout}:
+ *
+ * <pre><code>
+ *     layoutProperties = new LayoutProperties("my_module");
+ *     layoutProperties.add(new Tunable("standard", "Standard settings",
+ *                          Tunable.GROUP, new Integer(2)));
+ *
+ *     layoutProperties.add(new Tunable("partition", "Partition graph before layout",
+ *                          Tunable.BOOLEAN, new Boolean(true)));
+ *
+ *     layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
+ *                          Tunable.BOOLEAN, new Boolean(false)));
+ *
+ *     layoutProperties.add(new Tunable("force_alg_settings", "Algorithm settings",
+ *                          Tunable.GROUP, new Integer(5)));
+ *
+ *     layoutProperties.add(new Tunable("defaultSpringCoefficient", "Default Spring Coefficient",
+ *                          Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
+ *
+ *     layoutProperties.add(new Tunable("defaultSpringLength", "Default Spring Length",
+ *                          Tunable.DOUBLE, new Double(defaultSpringLength)));
+ *
+ *     layoutProperties.add(new Tunable("defaultNodeMass", "Default Node Mass",
+ *                          Tunable.DOUBLE, new Double(defaultNodeMass)));
+ *
+ *     layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
+ *                          Tunable.INTEGER, new Integer(numIterations)));
+ *
+ *     layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
+ *                          Tunable.LIST, new Integer(0),
+ *                          (Object) integratorArray, (Object) null, 0));
+ *
+ * </code></pre>
+ *
+ * The values are read in an update method:
+ * <pre><code>
+ *  Tunable t = layoutProperties.get("selected_only");
+ *  if ((t != null) && (t.valueChanged() || force))
+ *    selectedOnly = ((Boolean) t.getValue()).booleanValue();
+ *
+ *  t = layoutProperties.get("partition");
+ *  if ((t != null) && (t.valueChanged() || force))
+ *       setPartition(t.getValue().toString());
+ *
+ *  t = layoutProperties.get("defaultSpringCoefficient");
+ *  if ((t != null) && (t.valueChanged() || force))
+ *    defaultSpringCoefficient = ((Double) t.getValue()).doubleValue();
+ *
+ *  t = layoutProperties.get("defaultSpringLength");
+ *  if ((t != null) && (t.valueChanged() || force))
+ *    defaultSpringLength = ((Double) t.getValue()).doubleValue();
+ *
+ *  t = layoutProperties.get("defaultNodeMass");
+ *  if ((t != null) && (t.valueChanged() || force))
+ *    defaultNodeMass = ((Double) t.getValue()).doubleValue();
+ *
+ *  t = layoutProperties.get("numIterations");
+ *  if ((t != null) && (t.valueChanged() || force))
+ *    numIterations = ((Integer) t.getValue()).intValue();
+ *
+ *  t = layoutProperties.get("integrator");
+ *  if ((t != null) && (t.valueChanged() || force)) {
+ *    if (((Integer) t.getValue()).intValue() == 0)
+ *      integrator = new RungeKuttaIntegrator();
+ *    else if (((Integer) t.getValue()).intValue() == 1)
+ *      integrator = new EulerIntegrator();
+ *    else
+ *      return;
+ *  }
+ * </code></pre>
+ *
+ * {@link LayoutProperties} has a method {@link LayoutProperties#getTunablePanel()} that can be called to 
+ * return a {@link javax.awt.JPanel} that contains all of the Tunable panels.  These are combined into
+ * a dialog to allow users to set and update the values.  By using {@link #addTunableValueListener()} a
+ * caller can be notified when a user changes a value.
+ *
  */
 public class Tunable implements FocusListener,ChangeListener,ActionListener,ItemListener {
 	private String name;
@@ -67,23 +199,103 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	private List<String>attributeList = null;
 	private List<TunableListener>listenerList = null;
 	
-	private boolean immutable = false;
+	/****************************************************
+	 * Types
+	 ***************************************************/
 
 	/**
-	 * Types
+	 * Tunables of type INTEGER allow data entry of integer
+	 * values, possibly bounded between lowerBound and
+	 * upperBound: if the flag {@link #USESLIDER} is set,
+	 * and the caller provides both lower and upper bounds,
+	 * the user is presented with a slider interface.
 	 */
 	final public static int INTEGER = 0;
-	final public static int DOUBLE = 1;
-	final public static int BOOLEAN = 2;
-	final public static int STRING = 3;
-	final public static int NODEATTRIBUTE = 4;
-	final public static int EDGEATTRIBUTE = 5;
-	final public static int LIST = 6;
-	final public static int GROUP = 7;
-	final public static int BUTTON = 8;
 
 	/**
+	 * Tunables of type DOUBLE allow data entry of double
+	 * values, possibly bounded between lowerBound and
+	 * upperBound: if the flag {@link #USESLIDER} is set,
+	 * and the caller provides both lower and upper bounds,
+	 * the user is presented with a slider interface.
+	 */
+	final public static int DOUBLE = 1;
+
+	/**
+	 * Tunables of type BOOLEAN allow data entry of a
+	 * boolean value: this is presented to the user
+	 * as a simple check box.
+	 */
+	final public static int BOOLEAN = 2;
+
+	/**
+	 * Tunables of type STRING allow data entry of
+	 * text.
+	 */
+	final public static int STRING = 3;
+
+	/**
+	 * Tunables of type NODEATTRIBUTE present a
+	 * user with a list of the currently defined
+	 * node attributes for selection: if the
+	 * flag {@link #NUMERICATTRIBUTE} is set, only
+	 * integer or double attributes are shown, and if
+	 * the {@link #MULTISELECT} flag is set, the user
+	 * is presented with a list from which multiple
+	 * values can be selected, otherwise, the user
+	 * is presented with a combo box.
+	 */
+	final public static int NODEATTRIBUTE = 4;
+
+	/**
+	 * Tunables of type EDGEATTRIBUTE present a
+	 * user with a list of the currently defined
+	 * edge attributes for selection:  if the
+	 * flag {@link #NUMERICATTRIBUTE} is set, only
+	 * integer or double attributes are shown, and if
+	 * the {@link #MULTISELECT} flag is set, the user
+	 * is presented with a list from which multiple
+	 * values can be selected, otherwise, the user
+	 * is presented with a combo box.
+	 */
+	final public static int EDGEATTRIBUTE = 5;
+
+	/**
+	 * Tunables of type LIST present a
+	 * user with a list of values to select
+	 * from: if the {@link MULTISELECT</b> flag is 
+	 * set, the user is presented with a list 
+	 * from which multiple values can be selected, 
+	 * otherwise, the user is presented with a 
+	 * combo box.
+	 */
+	final public static int LIST = 6;
+
+	/**
+	 * The GROUP Tunable provides a mechanism to
+	 * improve the asthetics of the interface:
+	 * the value of the GROUP Tunable indicates the
+	 * number of the subsequent tunables that should
+	 * be grouped together.
+	 */
+	final public static int GROUP = 7;
+
+	/**
+	 * The BUTTON Tunable provides a simple button
+	 * to be presented to the user: the caller can
+	 * provide an ActionListener to be called when
+	 * the button is selected.
+	 */
+	final public static int BUTTON = 8;
+
+	/****************************************************
 	 * Flags
+	 ***************************************************/
+
+	/**
+	 * When the NOINPUT flag is set, this Tunable is not
+	 * presented to the user, it is only used for property
+	 * settings.
 	 */
 	final public static int NOINPUT = 0x1;
 
@@ -100,10 +312,16 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	final public static int MULTISELECT = 0x4;
 
 	/**
- 	 * For INTEGER or DOUBLE tunables, preferentially use a slider widget.  This
+ 	 * For INTEGER or DOUBLE tunables, preferentially use a slider widget --  this
  	 * will *only* take effect if the upper and lower bounds are provided.
  	 */
 	final public static int USESLIDER = 0x8;
+
+	/**
+	 * If the IMMUTABLE flag is set, then the Tunable is presented as usual,
+	 * with both label and user widget, but the user widget is disabled.
+	 */
+	final public static int IMMUTABLE =0x10;
 
 	/**
 	 * Constructor to create a Tunable with no bounds
@@ -170,6 +388,33 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		this(name, desc, type, value, lowerBound, upperBound, flag, false);
 	}
 	
+	/**
+	 * Constructor to create a Tunable with bounds
+	 * information as well as a flag.
+	 *
+	 * @param name The name of the Tunable
+	 * @param desc The description of the Tunable
+	 * @param type Integer value that represents the type of
+	 *             the Tunable.  The type not only impact the
+	 *             way that the value is interpreted, but also
+	 *             the component used for the LayoutSettingsDialog
+	 * @param value The initial (default) value of the Tunable.  This
+	 *             is a String in the case of an EDGEATTRIBUTE or
+	 *             NODEATTRIBUTE tunable, it is an Integer index
+	 *             a LIST tunable.
+	 * @param lowerBound An Object that either represents the lower
+	 *             bounds of a numeric Tunable or an array of values
+	 *             for an attribute (or other type of) list.
+	 * @param upperBound An Object that represents the upper bounds
+	 *             of a numeric Tunable.
+	 * @param flag The initial value of the flag.  This can be
+	 *             used to indicate that this tunable is not user
+	 *             changeable (e.g. debug), or to indicate if there
+	 *             is a specific type for the attributes.
+	 * @param immutable If 'true', this Tunable is immutable
+	 *
+	 * @deprecated Use the <b>IMMUTABLE</b> flag directly rather than this special constructor. 
+	 */
 	public Tunable(String name, String desc, int type, Object value, Object lowerBound,
             Object upperBound, int flag, boolean immutable) {
 		this.name = name;
@@ -179,7 +424,8 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		this.upperBound = upperBound;
 		this.lowerBound = lowerBound;
 		this.flag = flag;
-		this.immutable = immutable;
+		if (immutable)
+			setFlag(IMMUTABLE);
 		// CyLogger.getLogger().info("Tunable "+desc+" has value "+value);
 	}
 
@@ -202,6 +448,18 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	}
 
 	/**
+	 * This method is used to check the value of a flag.  It
+	 * returns <b>true</b> if the flag is set, <b>false</b>
+	 * otherwise.
+	 *
+	 * @param flag integer value the contains the flag to be checked.
+	 * @return true if the flag is set.
+	 */
+	public boolean checkFlag(int flag) {
+		return ( (this.flag & flag) != 0 );
+	}
+
+	/**
  	 * This method can be used to set the "immutable" boolean,
  	 * which essentially get's mapped to the appropriate mechanism
  	 * for allowing a value to be editted.
@@ -209,18 +467,12 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
  	 * @param immutable 'true' if this is an immutable value
  	 */
 	public void setImmutable(boolean immutable) {
-		this.immutable = immutable;
+		if (immutable)
+			setFlag(IMMUTABLE);
+		else
+			clearFlag(IMMUTABLE);
 		if (inputField != null)
-			inputField.setEnabled(!immutable);
-	}
-
-	/**
-	 * This method returns the value of the immutable boolean.
-	 *
-	 * @return 'true' if this Tunable is immutable
-	 */
-	public boolean getImmutable() {
-		return this.immutable;
+			inputField.setEnabled(checkFlag(IMMUTABLE));
 	}
 
 	/**
@@ -241,7 +493,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 				else
 					this.value = value;
 
-				if ((slider != null) && ((flag & USESLIDER) != 0))
+				if ((slider != null) && checkFlag(USESLIDER))
 					slider.setValue(sliderScale(this.value));
 				else if (inputField != null) {
 					((JTextField)inputField).setText(this.value.toString());
@@ -254,7 +506,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 					this.value = new Double((String) value);
 				else
 					this.value = value;
-				if ((slider != null) && ((flag & USESLIDER) != 0))
+				if ((slider != null) && checkFlag(USESLIDER))
 					slider.setValue(sliderScale(value));
 				else if (inputField != null) {
 					((JTextField)inputField).setText((String)value);
@@ -273,7 +525,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 
 			case LIST:
 				// CyLogger.getLogger().info("Setting List tunable "+desc+" value to "+value);
-				if ((flag & MULTISELECT) != 0) {
+				if (checkFlag(MULTISELECT)) {
 					// Multiselect LIST -- value is a List of Integers, or String values
 					this.value = value;
 					if (inputField != null) {
@@ -293,7 +545,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			case NODEATTRIBUTE:
 			case EDGEATTRIBUTE:
 				// CyLogger.getLogger().info("Setting List tunable "+desc+" value to "+value);
-				if ((flag & MULTISELECT) != 0) {
+				if (checkFlag(MULTISELECT)) {
 					// Multiselect LIST -- value is a List of Integers, or String values
 					this.value = value;
 					if (inputField != null) {
@@ -371,7 +623,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		// If we're a slider or a list, this might require us to reset things...
 		if (type == LIST) {
 			Object[] listData = (Object[])lowerBound;
-			if ((flag & MULTISELECT) != 0) {
+			if (checkFlag(MULTISELECT)) {
 				JList list = (JList)inputField;
 				list.setListData(listData);
 			} else {
@@ -382,7 +634,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			}
 		} else if (type == NODEATTRIBUTE) {
 		} else if (type == EDGEATTRIBUTE) {
-		} else if ((flag & USESLIDER) != 0) {
+		} else if (checkFlag(USESLIDER)) {
 			slider.setMinimum(sliderScale(lowerBound));
 			slider.setLabelTable(createLabels(slider));
 		}
@@ -409,7 +661,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			return;
 
 		// If we're a slider, this might require us to reset things
-		if ((flag & USESLIDER) != 0) {
+		if (checkFlag(USESLIDER)) {
 			slider.setMaximum(sliderScale(upperBound));
 			slider.setLabelTable(createLabels(slider));
 		}
@@ -520,7 +772,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	 * @return JPanel that can be used to enter values for this Tunable
 	 */
 	public JPanel getPanel() {
-		if ((flag & NOINPUT) != 0)
+		if (checkFlag(NOINPUT))
 			return null;
 
 		if (type == GROUP) {
@@ -544,7 +796,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		String fieldLocation = BorderLayout.LINE_END;
 
 		if ((type == DOUBLE) || (type == INTEGER)) {
-			if ( ((flag & USESLIDER) != 0) && (lowerBound != null) && (upperBound != null)) {
+			if ( (checkFlag(USESLIDER)) && (lowerBound != null) && (upperBound != null)) {
 				// We're going to use a slider,  We need to be somewhat intelligent about the bounds and
 				// labels.  It would also be nice to provide feedback, which we do by providing a text field
 				// in addition to the slider.  The text field can also be used to enter the desired value
@@ -604,7 +856,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 
 		// Added by kono
 		// This allow immutable value.
-		if(immutable) {
+		if(checkFlag(IMMUTABLE)) {
 			inputField.setEnabled(false);
 		}
 		inputField.setBackground(Color.white);
@@ -613,7 +865,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 
 		// Special case for MULTISELECT lists
 		if ((type == LIST || type == NODEATTRIBUTE || type == EDGEATTRIBUTE) 
-			  && (flag & MULTISELECT) != 0) {
+			  && checkFlag(MULTISELECT)) {
 			JScrollPane listScroller = new JScrollPane(inputField);
 			listScroller.setPreferredSize(new Dimension(200,100));
 			tunablePanel.add(listScroller, fieldLocation);
@@ -656,7 +908,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 
 		attributeList = list;
 
-		if ((flag & MULTISELECT) != 0) {
+		if (checkFlag(MULTISELECT)) {
 			// Set our current value as selected
 			JList jList = new JList(list.toArray());
 			int [] indices = getSelectedValues(attributeList, decodeArray((String)value));
@@ -680,7 +932,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	 * @return a JComboBox with an entry for each item on the list
 	 */
 	private JComponent getListPanel(Object[] list) {
-		if ((flag & MULTISELECT) != 0) {
+		if (checkFlag(MULTISELECT)) {
 			JList jList =  new JList(list);
 			if (value != null && ((String)value).length() > 0) {
 				jList.setSelectedIndices(decodeIntegerArray((String)value));
@@ -756,7 +1008,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		} else if (type == BOOLEAN) {
 			newValue = new Boolean(((JCheckBox) inputField).isSelected());
 		} else if (type == LIST) {
-			if ((flag & MULTISELECT) != 0) {
+			if (checkFlag(MULTISELECT)) {
 				int [] selVals = ((JList) inputField).getSelectedIndices();
 				String newString = "";
 				for (int i = 0; i < selVals.length; i++) {
@@ -768,7 +1020,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 				newValue = new Integer(((JComboBox) inputField).getSelectedIndex());
 			}
 		} else if ((type == NODEATTRIBUTE) || (type == EDGEATTRIBUTE)) {
-			if ((flag & MULTISELECT) != 0) {
+			if (checkFlag(MULTISELECT)) {
 				Object [] selVals = ((JList) inputField).getSelectedValues();
 				String newString = "";
 				for (int i = 0; i < selVals.length; i++) {
@@ -826,7 +1078,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			value = (Object)newValue;
 		}
 
-		if ((flag & USESLIDER) != 0) {
+		if (checkFlag(USESLIDER)) {
 			// Update the slider with this new value
 			slider.setValue(sliderScale(value));
 		} else {
@@ -834,13 +1086,19 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		}
 	}
 
+	/**
+	 * This method is public as a byproduct of the implementation.
+	 */
 	public void focusGained(FocusEvent ev) {
 		// Save the current value
 		savedValue = ((JTextField) inputField).getText();
 	}
 
+	/**
+	 * This method is public as a byproduct of the implementation.
+	 */
 	public void stateChanged(ChangeEvent e) {
-		if (((type == DOUBLE) || (type == INTEGER)) && ((flag & USESLIDER) != 0)) {
+		if (((type == DOUBLE) || (type == INTEGER)) && (checkFlag(USESLIDER))) {
 			// Get the widget
 			JSlider slider = (JSlider) e.getSource();
 
@@ -854,10 +1112,16 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		}
 	}
 
+	/**
+	 * This method is public as a byproduct of the implementation.
+	 */
 	public void actionPerformed(ActionEvent e) {
 		updateValueListeners();
 	}
 
+	/**
+	 * This method is public as a byproduct of the implementation.
+	 */
 	public void itemStateChanged(ItemEvent e) {
 		updateValueListeners();
 	}
