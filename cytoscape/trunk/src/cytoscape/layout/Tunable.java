@@ -9,9 +9,12 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -48,7 +51,7 @@ import javax.swing.event.ChangeEvent;
  * or the lower and upper bounds for the value.  These are meant
  * to be used as part of the LayoutSettingsDialog (see getPanel).
  */
-public class Tunable implements FocusListener,ChangeListener {
+public class Tunable implements FocusListener,ChangeListener,ActionListener,ItemListener {
 	private String name;
 	private String desc;
 	private int type = STRING;
@@ -56,11 +59,13 @@ public class Tunable implements FocusListener,ChangeListener {
 	private Object value;
 	private Object lowerBound;
 	private Object upperBound;
-	private JComponent inputField;
-	private JSlider slider;
+	private JComponent inputField = null;
+	private JSlider slider = null;
 	private boolean valueChanged = true;
 	private String savedValue = null;
 	private boolean usingSlider = false;
+	private List<String>attributeList = null;
+	private List<TunableListener>listenerList = null;
 	
 	private boolean immutable = false;
 
@@ -197,6 +202,28 @@ public class Tunable implements FocusListener,ChangeListener {
 	}
 
 	/**
+ 	 * This method can be used to set the "immutable" boolean,
+ 	 * which essentially get's mapped to the appropriate mechanism
+ 	 * for allowing a value to be editted.
+ 	 *
+ 	 * @param immutable 'true' if this is an immutable value
+ 	 */
+	public void setImmutable(boolean immutable) {
+		this.immutable = immutable;
+		if (inputField != null)
+			inputField.setEnabled(!immutable);
+	}
+
+	/**
+	 * This method returns the value of the immutable boolean.
+	 *
+	 * @return 'true' if this Tunable is immutable
+	 */
+	public boolean getImmutable() {
+		return this.immutable;
+	}
+
+	/**
 	 * This method is used to set the value for this Tunable.  If
 	 * this is an INTEGER, DOUBLE, or BOOLEAN Tunable, then value
 	 * is assumed to be a String.  This also sets the "changed" state
@@ -205,48 +232,105 @@ public class Tunable implements FocusListener,ChangeListener {
 	 * @param value Object (usually String) containing the value to be set
 	 */
 	public void setValue(Object value) {
-		// Did the user hand us a string representation?
-		if (value.getClass() == String.class) {
-			switch (type) {
-				case INTEGER:
-					// CyLogger.getLogger().info("Setting Integer tunable "+desc+" value to "+value);
+
+		switch (type) {
+			case INTEGER:
+				// CyLogger.getLogger().info("Setting Integer tunable "+desc+" value to "+value);
+				if (value.getClass() == String.class)
 					this.value = new Integer((String) value);
-					break;
-
-				case DOUBLE:
-					// CyLogger.getLogger().info("Setting Double tunable "+desc+" value to "+value);
-					this.value = new Double((String) value);
-					break;
-
-				case BOOLEAN:
-					// CyLogger.getLogger().info("Setting Boolean tunable "+desc+" value to "+value);
-					this.value = new Boolean((String) value);
-					break;
-
-				case LIST:
-					// CyLogger.getLogger().info("Setting List tunable "+desc+" value to "+value);
-					if ((flag & MULTISELECT) != 0) {
-						// Multiselect LIST -- value is a List of Integers, or String values
-						this.value = value;
-					} else {
-						this.value = new Integer((String) value);
-					}
-					return;
-
-				case GROUP:
-					// CyLogger.getLogger().info("Setting Group tunable "+desc+" value to "+value);
-					this.value = new Integer((String) value);
-					return;
-
-				default:
-					// CyLogger.getLogger().info("Setting String tunable "+desc+" value to "+value);
+				else
 					this.value = value;
-					break;
-			}
-		} else {
-			this.value = value;
+
+				if ((slider != null) && ((flag & USESLIDER) != 0))
+					slider.setValue(sliderScale(this.value));
+				else if (inputField != null) {
+					((JTextField)inputField).setText(this.value.toString());
+				}
+				break;
+
+			case DOUBLE:
+					// CyLogger.getLogger().info("Setting Double tunable "+desc+" value to "+value);
+				if (value.getClass() == String.class)
+					this.value = new Double((String) value);
+				else
+					this.value = value;
+				if ((slider != null) && ((flag & USESLIDER) != 0))
+					slider.setValue(sliderScale(value));
+				else if (inputField != null) {
+					((JTextField)inputField).setText((String)value);
+				}
+				break;
+
+			case BOOLEAN:
+				// CyLogger.getLogger().info("Setting Boolean tunable "+desc+" value to "+value);
+				if (value.getClass() == String.class)
+					this.value = new Boolean((String) value);
+				else
+					this.value = value;
+				if (inputField != null)
+					((JCheckBox)inputField).setSelected(((Boolean)this.value).booleanValue());
+				break;
+
+			case LIST:
+				// CyLogger.getLogger().info("Setting List tunable "+desc+" value to "+value);
+				if ((flag & MULTISELECT) != 0) {
+					// Multiselect LIST -- value is a List of Integers, or String values
+					this.value = value;
+					if (inputField != null) {
+						((JList)inputField).setSelectedIndices(decodeIntegerArray((String)value));
+					}
+				} else {
+					if (value.getClass() == String.class)
+						this.value = new Integer((String) value);
+					else
+						this.value = value;
+
+					if (inputField != null)
+						((JComboBox)inputField).setSelectedIndex(((Integer)this.value).intValue());
+				}
+				break;
+
+			case NODEATTRIBUTE:
+			case EDGEATTRIBUTE:
+				// CyLogger.getLogger().info("Setting List tunable "+desc+" value to "+value);
+				if ((flag & MULTISELECT) != 0) {
+					// Multiselect LIST -- value is a List of Integers, or String values
+					this.value = value;
+					if (inputField != null) {
+						((JList)inputField).setSelectedIndices(getSelectedValues(attributeList, decodeArray((String)value)));
+					}
+				} else {
+					this.value = value;
+
+					if (inputField != null)
+						((JComboBox)inputField).setSelectedItem(this.value);
+				}
+				break;
+
+			case GROUP:
+				// CyLogger.getLogger().info("Setting Group tunable "+desc+" value to "+value);
+				if (value.getClass() == String.class)
+					this.value = new Integer((String) value);
+				else
+					this.value = value;
+				return;
+
+			case STRING:
+				// CyLogger.getLogger().info("Setting String tunable "+desc+" value to "+value);
+				this.value = value;
+				if (inputField != null)
+					((JTextField)inputField).setText((String)value);
+				break;
+
+			case BUTTON:
+				// CyLogger.getLogger().info("Setting String tunable "+desc+" value to "+value);
+				this.value = value;
+				if (inputField != null)
+					((JButton)inputField).setText((String)value);
+				break;
 		}
 
+		inputField.validate();
 		valueChanged = true;
 	}
 
@@ -281,6 +365,27 @@ public class Tunable implements FocusListener,ChangeListener {
 	 */
 	public void setLowerBound(Object lowerBound) {
 		this.lowerBound = lowerBound;
+		if (inputField == null)
+			return;
+
+		// If we're a slider or a list, this might require us to reset things...
+		if (type == LIST) {
+			Object[] listData = (Object[])lowerBound;
+			if ((flag & MULTISELECT) != 0) {
+				JList list = (JList)inputField;
+				list.setListData(listData);
+			} else {
+				JComboBox cbox = (JComboBox)inputField;
+				cbox.removeAllItems();
+				for (int i = 0; i < listData.length; i++)
+					cbox.addItem(listData[i]);
+			}
+		} else if (type == NODEATTRIBUTE) {
+		} else if (type == EDGEATTRIBUTE) {
+		} else if ((flag & USESLIDER) != 0) {
+			slider.setMinimum(sliderScale(lowerBound));
+			slider.setLabelTable(createLabels(slider));
+		}
 	}
 
 	/**
@@ -300,6 +405,14 @@ public class Tunable implements FocusListener,ChangeListener {
 	 */
 	public void setUpperBound(Object upperBound) {
 		this.upperBound = upperBound;
+		if (inputField == null)
+			return;
+
+		// If we're a slider, this might require us to reset things
+		if ((flag & USESLIDER) != 0) {
+			slider.setMaximum(sliderScale(upperBound));
+			slider.setLabelTable(createLabels(slider));
+		}
 	}
 
 	/**
@@ -347,6 +460,53 @@ public class Tunable implements FocusListener,ChangeListener {
 	 */
 	public String getDescription() {
 		return desc;
+	}
+
+
+	/**
+ 	 * Method to add a value listener to this Tunable.  A value
+ 	 * listener is called whenever a tunable value is updated
+ 	 * by the user (as opposed to programmatically).  This can
+ 	 * be used to change the UI based on certain inputs.
+ 	 *
+ 	 * @param listener the TunableListener to add
+ 	 */
+	public void addTunableValueListener(TunableListener listener) {
+		if (listener == null)
+			return;
+
+		if (listenerList == null)
+			listenerList = new ArrayList();
+
+		listenerList.add(listener);
+	}
+
+	/**
+ 	 * Method to remove a value listener from this Tunable.  A value
+ 	 * listener is called whenever a tunable value is updated
+ 	 * by the user (as opposed to programmatically).  This can
+ 	 * be used to change the UI based on certain inputs.
+ 	 *
+ 	 * @param listener the TunableListener to remove
+ 	 */
+	public void removeTunableValueListener(TunableListener listener) {
+		if (listener == null || listenerList == null)
+			return;
+
+		listenerList.remove(listener);
+	}
+
+	/**
+ 	 * Method to call all of the value listeners.
+ 	 */
+	public void updateValueListeners() {
+		if (listenerList == null)
+			return;
+
+		updateValue();
+
+		for (TunableListener listener: listenerList)
+			listener.tunableChanged(this);
 	}
 
 	/**
@@ -414,14 +574,13 @@ public class Tunable implements FocusListener,ChangeListener {
 				JTextField field = new JTextField(value.toString(), 8);
 				field.setHorizontalAlignment(JTextField.RIGHT);
 				// If we have an upper and/or lower bounds, we want to "listen" for changes
-				if (upperBound != null || lowerBound != null) {
-					field.addFocusListener(this);
-				}
+				field.addFocusListener(this);
 				inputField = field;
 			}
 		} else if (type == BOOLEAN) {
 			JCheckBox box = new JCheckBox();
 			box.setSelected(((Boolean) value).booleanValue());
+			box.addItemListener(this);
 			inputField = box;
 		} else if (type == NODEATTRIBUTE) {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -433,6 +592,7 @@ public class Tunable implements FocusListener,ChangeListener {
 			inputField = getListPanel((Object[]) lowerBound);
 		} else if (type == STRING) {
 			JTextField field = new JTextField(value.toString(), 20);
+			field.addFocusListener(this);
 			field.setHorizontalAlignment(JTextField.RIGHT);
 			inputField = field;
 		} else if (type == BUTTON) {
@@ -494,15 +654,20 @@ public class Tunable implements FocusListener,ChangeListener {
 			}
 		}
 
+		attributeList = list;
+
 		if ((flag & MULTISELECT) != 0) {
 			// Set our current value as selected
 			JList jList = new JList(list.toArray());
-			jList.setSelectedIndices(getSelectedValues(list, decodeArray((String)value)));
+			int [] indices = getSelectedValues(attributeList, decodeArray((String)value));
+			if (indices != null && indices.length > 0)
+				jList.setSelectedIndices(indices);
 			return jList;
 		} else {
 			// Set our current value as selected
-			JComboBox box = new JComboBox(list.toArray());
+			JComboBox box = new JComboBox(attributeList.toArray());
 			box.setSelectedItem((String) value);
+			box.addActionListener(this);
 			return box;
 		}
 	}
@@ -525,6 +690,7 @@ public class Tunable implements FocusListener,ChangeListener {
 			// Set our current value as selected
 			JComboBox box = new JComboBox(list);
 			box.setSelectedIndex(((Integer) value).intValue());
+			box.addActionListener(this);
 			return box;
 		}
 	}
@@ -658,14 +824,13 @@ public class Tunable implements FocusListener,ChangeListener {
 				return;
 			}
 			value = (Object)newValue;
-		} else {
-			// Ooops -- shouldn't be here!
-			return;
 		}
 
 		if ((flag & USESLIDER) != 0) {
 			// Update the slider with this new value
 			slider.setValue(sliderScale(value));
+		} else {
+			updateValueListeners();
 		}
 	}
 
@@ -675,14 +840,26 @@ public class Tunable implements FocusListener,ChangeListener {
 	}
 
 	public void stateChanged(ChangeEvent e) {
-		// Get the widget
-		JSlider slider = (JSlider) e.getSource();
+		if (((type == DOUBLE) || (type == INTEGER)) && ((flag & USESLIDER) != 0)) {
+			// Get the widget
+			JSlider slider = (JSlider) e.getSource();
 
-		// Get the value
-		int value = slider.getValue();
+			// Get the value
+			int value = slider.getValue();
 
-		// Update the text box
-		((JTextField) inputField).setText(sliderScale(value).toString());
+			// Update the text box
+			((JTextField) inputField).setText(sliderScale(value).toString());
+		} else {
+			updateValueListeners();
+		}
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		updateValueListeners();
+	}
+
+	public void itemStateChanged(ItemEvent e) {
+		updateValueListeners();
 	}
 
 	private void displayBoundsError(String typeString) {

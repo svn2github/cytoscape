@@ -21,7 +21,9 @@ import javax.swing.BoxLayout;
  * using the <tt>add</tt> method and are retrieved with the <tt>get</tt>
  * method.
  */
-public class LayoutProperties extends ModulePropertiesImpl {
+public class LayoutProperties extends ModulePropertiesImpl implements TunableListener {
+	JPanel tunablesPanel = null;
+
 	/**
 	 * Constructor.
 	 *
@@ -41,17 +43,32 @@ public class LayoutProperties extends ModulePropertiesImpl {
 	 * @return JPanel that contains all of the Tunable widgets
 	 */
 	public JPanel getTunablePanel() {
-		JPanel tunablesPanel = new JPanel();
+		if (tunablesPanel != null) return tunablesPanel;
+
+		tunablesPanel = new JPanel();
 		BoxLayout box = new BoxLayout(tunablesPanel, BoxLayout.Y_AXIS);
 		tunablesPanel.setLayout(box);
 
-		addSubPanels(tunablesPanel, tunablesList.iterator(), new Integer(100000));
+		addSubPanels(tunablesPanel, tunablesList.iterator(), new Integer(100000), this);
 
 		tunablesPanel.validate();
 		return tunablesPanel;
 	}
 
-	private void addSubPanels(JPanel panel, Iterator<Tunable>iter, Object count) {
+	/**
+ 	 * This method is called to update the panel for this property sheet.
+ 	 */
+	public void updateTunablePanel() {
+		if (tunablesPanel == null) return;
+
+		tunablesPanel.removeAll();
+
+		addSubPanels(tunablesPanel, tunablesList.iterator(), new Integer(100000), null);
+
+		tunablesPanel.validate();
+	}
+
+	private void addSubPanels(JPanel panel, Iterator<Tunable>iter, Object count, TunableListener listener) {
 		int groupCount = ((Integer)count).intValue();
 		for (int n = 0; n < groupCount; n++) {
 			if (!iter.hasNext()) {
@@ -61,10 +78,15 @@ public class LayoutProperties extends ModulePropertiesImpl {
 			Tunable tunable = iter.next();
 			JPanel p = tunable.getPanel();
 			if (tunable.getType() == Tunable.GROUP) {
-				addSubPanels(p, iter, tunable.getValue());
+				addSubPanels(p, iter, tunable.getValue(), listener);
 			}
 			if (p != null)
 				panel.add(p);
 		}
+	}
+
+	public void tunableChanged(Tunable tunable) {
+		// In our case, we just update our display
+		updateTunablePanel();
 	}
 }

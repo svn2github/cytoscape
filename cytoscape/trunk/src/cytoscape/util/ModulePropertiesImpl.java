@@ -217,6 +217,8 @@ public class ModulePropertiesImpl implements ModuleProperties {
 	 */
 	public void revertProperties() {
 		propertyMap = new HashMap();
+		if (savedPropertyMap == null)
+			return;
 
 		Set keys = savedPropertyMap.keySet();
 
