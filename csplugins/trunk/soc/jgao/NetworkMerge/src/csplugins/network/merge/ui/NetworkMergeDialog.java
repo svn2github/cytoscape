@@ -43,13 +43,13 @@ import csplugins.network.merge.AttributeMapping;
 import csplugins.network.merge.AttributeMappingImpl;
 import csplugins.network.merge.MatchingAttribute;
 import csplugins.network.merge.MatchingAttributeImpl;
-import csplugins.network.merge.util.SortedListModel;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.util.CyNetworkNaming;
 
 import java.util.Iterator;
+import java.util.TreeMap;
 
 import java.awt.Component;
 import java.awt.Frame;
@@ -74,6 +74,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ListModel;
+import javax.swing.AbstractListModel;
 import javax.swing.JComboBox;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
@@ -116,13 +118,13 @@ public class NetworkMergeDialog extends JDialog {
         javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
         javax.swing.JPanel selectNetworkPanel = new javax.swing.JPanel();
         javax.swing.JScrollPane unselectedNetworkScrollPane = new javax.swing.JScrollPane();
-        unselectedNetworkData = new SortedListModel();
+        unselectedNetworkData = new NetworkListModel();
         unselectedNetworkList = new javax.swing.JList(unselectedNetworkData);
         javax.swing.JPanel udButtonPanel = new javax.swing.JPanel();
         rightButton = new javax.swing.JButton();
         leftButton = new javax.swing.JButton();
         javax.swing.JScrollPane selectedNetworkScrollPane = new javax.swing.JScrollPane();
-        selectedNetworkData = new SortedListModel();
+        selectedNetworkData = new NetworkListModel();
         selectedNetworkList = new javax.swing.JList(selectedNetworkData);
         javax.swing.JSeparator jSeparator2 = new javax.swing.JSeparator();
         attributePanel = new javax.swing.JPanel();
@@ -197,7 +199,7 @@ public class NetworkMergeDialog extends JDialog {
 
         for (Iterator<CyNetwork> it = Cytoscape.getNetworkSet().iterator(); it.hasNext(); ) {
             CyNetwork network = it.next();
-            unselectedNetworkData.add(network.getIdentifier(), network);
+            unselectedNetworkData.add(network);
         }
 
         unselectedNetworkList.setCellRenderer(new ListCellRenderer() {
@@ -248,11 +250,9 @@ public class NetworkMergeDialog extends JDialog {
                 }
 
                 for (int i= indices.length-1; i>=0; i--) {
-                    Object removed = unselectedNetworkData.getKeyAt(indices[i]);
-                    Object element = unselectedNetworkData.getElementAt(indices[i]);
-                    unselectedNetworkData.removeElement(removed);
-                    selectedNetworkData.add(removed,element);
-                    addRemoveAttributeMapping((CyNetwork)element,true);
+                    CyNetwork removed = unselectedNetworkData.removeElement(indices[i]);
+                    selectedNetworkData.add(removed);
+                    addRemoveAttributeMapping(removed,true);
                 }
 
                 if (unselectedNetworkData.getSize()==0) {
@@ -286,11 +286,9 @@ public class NetworkMergeDialog extends JDialog {
                 }
 
                 for (int i= indices.length-1; i>=0; i--) {
-                    Object removed = selectedNetworkData.getKeyAt(indices[i]);
-                    Object element = selectedNetworkData.getElementAt(indices[i]);
-                    selectedNetworkData.removeElement(removed);
-                    unselectedNetworkData.add(removed,element);
-                    addRemoveAttributeMapping((CyNetwork)element,false);
+                    CyNetwork removed = selectedNetworkData.removeElement(indices[i]);
+                    unselectedNetworkData.add(removed);
+                    addRemoveAttributeMapping(removed,false);
                 }
 
                 if (selectedNetworkData.getSize()==0) {
@@ -646,8 +644,38 @@ public boolean isCancelled() {
     private javax.swing.JLabel operationIcon;
     private javax.swing.JButton rightButton;
     private javax.swing.JList selectedNetworkList;
-    private SortedListModel selectedNetworkData;
+    private NetworkListModel selectedNetworkData;
     private javax.swing.JList unselectedNetworkList;
-    private SortedListModel unselectedNetworkData;
+    private NetworkListModel unselectedNetworkData;
     // End of variables declaration//GEN-END:variables
+
+    private class NetworkListModel extends AbstractListModel {
+        // Using a SortedMap from String to network
+        TreeMap<String,CyNetwork> model;
+
+        public NetworkListModel() {
+            model = new TreeMap<String,CyNetwork>();
+        }
+
+        public int getSize() {
+            return model.size();
+        }
+
+        public CyNetwork getElementAt(int index) {
+            return (CyNetwork) model.values().toArray()[index];
+        }
+
+        public void add(CyNetwork network) {
+            model.put(network.getTitle(),network);
+            fireContentsChanged(this, 0, getSize());
+        }
+
+        public CyNetwork removeElement(int index) {
+            CyNetwork removed = model.remove(getElementAt(index).getTitle());
+            if (removed!=null) {
+                fireContentsChanged(this, 0, getSize());
+            }
+            return removed;   
+        }
+    }
 }
