@@ -52,12 +52,13 @@ import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
+import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
-import cytoscape.data.CyAttributes;
-import cytoscape.util.CytoscapeAction;
 
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
@@ -95,6 +96,7 @@ public class NamedSelection extends CytoscapePlugin
 
 	private boolean needReload = false;
 	private List<CyNetwork>networkList = null;
+	private CyLogger myLogger = null;
 
   /**
    * Create our action and add it to the plugins menu
@@ -106,8 +108,9 @@ public class NamedSelection extends CytoscapePlugin
 		try {
 			// Listen for network and session load events
 			Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.NETWORK_LOADED, this);
+			Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SESSION_LOADED, this);
 		} catch (ClassCastException e) {
-			System.out.println(e.getMessage());
+			myLogger.error(e.getMessage());
 		}
 		// Create our main plugin menu
 		JMenu menu = new JMenu("Named Selection Tool");
@@ -126,8 +129,12 @@ public class NamedSelection extends CytoscapePlugin
 		// Register with CyGroup
 		CyGroupManager.registerGroupViewer(this);
 		this.groupViewer = this; // this makes it easier to get at from inner classes
-		System.out.println("namedSelectionPlugin "+VERSION+" initialized");
+		myLogger = CyLogger.getLogger(NamedSelection.class);
+		myLogger.info("namedSelectionPlugin "+VERSION+" initialized");
 		networkList = new ArrayList();
+
+		// Add the currently loaded network
+		networkList.add(Cytoscape.getCurrentNetwork());
 	}
 
 	// These are required by the CyGroupViewer interface
@@ -204,20 +211,27 @@ public class NamedSelection extends CytoscapePlugin
 	 * @param e the property change event
 	 */
 	public void propertyChange (PropertyChangeEvent e) {
-		if (e.getPropertyName() == Cytoscape.NETWORK_LOADED) {
-			if (e.getNewValue() != null) {
-				// Get the name of the network we loaded
-				CyNetwork network = (CyNetwork) e.getNewValue();
+		if (e.getPropertyName() == Cytoscape.NETWORK_LOADED && 
+		    e.getNewValue() != null) {
+			// Get the name of the network we loaded
+			CyNetwork network = (CyNetwork) e.getNewValue();
 
-				// Add it to the list we respond to
-				networkList.add(network);
+			// Add it to the list we respond to
+			networkList.add(network);
+		} else if (e.getPropertyName() == Cytoscape.SESSION_LOADED &&
+		           e.getNewValue() != null) {
+			List<String> netList = (List<String>) e.getNewValue();
+			for (String network: netList) {
+				CyNetwork net = Cytoscape.getNetwork(network);
+				if (net != null)
+					networkList.add(net);
 			}
+		}
 
-			// Update the tree (if we've seen any activity)
-			if (needReload) {
-				groupPanel.reload();
-				needReload = false;
-			}
+		// Update the tree (if we've seen any activity)
+		if (needReload) {
+			groupPanel.reload();
+			needReload = false;
 		}
 	}
 
