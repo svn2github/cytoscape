@@ -62,9 +62,8 @@ public interface MatchingAttribute {
     /*
      * add/select the attribute of network for matching node
      * 
-     *
+     */
     public void addNetwork(String netID, String[] attributeNames);
-    */
     
     /*
      * Remove the network, return the attribute

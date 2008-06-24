@@ -84,10 +84,10 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
         String attr2 = matchingAttribute.getAttributeForMatching(net2.getIdentifier());
                         
         // TODO: remove in cytoscape3
-        if (attr1.compareTo(NetworkMerge.ID)==0) {
+        if (attr1.compareTo("ID")==0) {
             attr1 = Semantics.CANONICAL_NAME;
         }
-        if (attr1.compareTo(NetworkMerge.ID)==0) {
+        if (attr1.compareTo("ID")==0) {
             attr1 = Semantics.CANONICAL_NAME;
         }// TODO: remove in cytoscape3
         

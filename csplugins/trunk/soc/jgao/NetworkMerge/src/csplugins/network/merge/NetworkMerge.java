@@ -48,8 +48,6 @@ import cytoscape.CyNetwork;
  */
 
 public interface NetworkMerge {
-    // TODO remove in Cytoscape 3.0
-    public final String ID = "ID";
     
     public enum Operation {
         UNION("union"),INTERSECTION("intersection"),DIFFERENCE("difference");

@@ -36,8 +36,7 @@
 
 package csplugins.network.merge;
 
-import cytoscape.data.Semantics;
-
+import java.util.Collection;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
@@ -71,6 +70,21 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         attributeForMatching.put(netID, attributeName);
     }
 
+    /*
+     * add/select the attribute of network for matching node
+     * 
+     */
+    public void addNetwork(String netID, String[] attributeNames) {
+        Collection<String> values = attributeForMatching.values();
+        int n = attributeNames.length;
+        for (int i=0; i<n; i++) {
+            if (values.contains(attributeNames[i])) {
+                putAttributeForMatching(netID,attributeNames[i]);
+            }
+        }
+        putAttributeForMatching(netID,attributeNames[0]);
+    }
+            
     /*
      * Remove the network, return the attribute
      * 

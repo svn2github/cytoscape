@@ -513,14 +513,6 @@ public class NetworkMergeDialog extends JDialog {
         okButton.setEnabled(false);
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NetworkMerge networkMerge = new DefaultNetworkMerge(
-                    matchingAttribute,
-                    nodeAttributeMapping,
-                    edgeAttributeMapping);
-                CyNetwork network = networkMerge.mergeNetwork(
-                    selectedNetworkData.getNetworkList(),
-                    getOperation(),
-                    getDefaultMergedNetworkName());
                 cancelled = false;
                 setVisible(false);
                 dispose();
@@ -551,22 +543,12 @@ private void addRemoveAttributeMapping(CyNetwork network, boolean isAdd) {
     if (isAdd) {
         nodeAttributeMapping.addNetwork(netID,nodeAttrNames);
         edgeAttributeMapping.addNetwork(netID,edgeAttrNames);
-        matchingAttribute.putAttributeForMatching(netID,NetworkMerge.ID);
+        matchingAttribute.addNetwork(netID,edgeAttrNames);
     } else {
         nodeAttributeMapping.removeNetwork(netID);
         edgeAttributeMapping.removeNetwork(netID);
         matchingAttribute.removeNetwork(netID);
     }
-}
-
-/*
- * Get suggested network title for the resulting network
- * 
- */
-private String getDefaultMergedNetworkName() {
-    String name = "network."+getOperation();
-    return CyNetworkNaming.getSuggestedNetworkTitle(name);
-    
 }
 
 private void updataIdMappingButtonEnable() {
@@ -622,12 +604,62 @@ private void updateMergeAttributeTable() {
     mergeEdgeAttributeTable.fireTableStructureChanged();
 }
 
-private Operation getOperation() {
+/*
+ * Get suggested network title for the resulting network
+ * 
+ */
+public String getDefaultMergedNetworkName() {
+    String name = "network."+getOperation();
+    return CyNetworkNaming.getSuggestedNetworkTitle(name);
+    
+}
+
+/*
+ * Get currently selected operation
+ * 
+ */
+public Operation getOperation() {
     return (Operation) operationComboBox.getSelectedItem();
 }
 
+/*
+ * return whether the dialog has been cancelled
+ * 
+ */
 public boolean isCancelled() {
     return cancelled;
+}
+
+/*
+ * return node attribute for matching
+ * 
+ */
+public MatchingAttribute getMatchingAttribute() {
+    return matchingAttribute;
+}
+
+/*
+ * return node attribute mapping
+ * 
+ */
+public AttributeMapping getNodeAttributeMapping() {
+    return nodeAttributeMapping;
+}
+
+/*
+ * return node attribute mapping
+ * 
+ */
+public AttributeMapping getEdgeAttributeMapping() {
+    return edgeAttributeMapping;
+}
+
+/*
+ * return selected network list
+ * 
+ */
+public List<CyNetwork> getSelectedNetworkList() {
+    return selectedNetworkData.getNetworkList();
 }
 
     private MergeAttributeTable mergeNodeAttributeTable;

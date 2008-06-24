@@ -103,7 +103,6 @@ class MergeAttributeTable extends JTable{
         int n = attributeMapping.getSizeNetwork();
         for (int i=0; i<n; i++) { // for each network
             Vector<String> attrs = new Vector();
-            //attrs.add(NetworkMerge.ID);
             attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));            
             attrs.add(nullAttr);
             JComboBox comboBox = new JComboBox(attrs);
@@ -191,7 +190,7 @@ class MergeAttributeTable extends JTable{
             int iAttr;
             // TODO remove in Cytoscape3.0
             if (row==0) {
-                return NetworkMerge.ID;
+                return "ID";
             } else if (row==1) {
                 return Semantics.CANONICAL_NAME;
             } else {
@@ -251,7 +250,7 @@ class MergeAttributeTable extends JTable{
                 }
                 
                 // TODO remove in Cytoscape3.0
-                if (attr.compareTo(NetworkMerge.ID)==0||attr.compareTo(Semantics.CANONICAL_NAME)==0) {
+                if (attr.compareTo("ID")==0||attr.compareTo(Semantics.CANONICAL_NAME)==0) {
                     JOptionPane.showMessageDialog(getParent(),"Atribute "+attr+" is reserved! Please use another name for this attribute!", "Error: duplicated attribute Name", JOptionPane.ERROR_MESSAGE );
                     return;
                 }// TODO remove in Cytoscape3.0

@@ -72,7 +72,8 @@ class MatchNodeTable extends JTable{
         int n = matchingAttribute.size();
         for (int i=0; i<n; i++) {
             Vector<String> attrs = new Vector<String>();
-            attrs.add(NetworkMerge.ID);
+            // TODO remove in Cytoscape3
+            attrs.add("ID");
             // TODO: modify if local attribute implemented
             attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
             JComboBox comboBox = new JComboBox(attrs);

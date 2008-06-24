@@ -67,6 +67,16 @@ public class NetworkMergePlugin extends CytoscapePlugin {
             NetworkMergeDialog dialog = new NetworkMergeDialog(new javax.swing.JFrame(), true);
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setVisible(true);
+            if (!dialog.isCancelled()) {
+                NetworkMerge networkMerge = new DefaultNetworkMerge(
+                                    dialog.getMatchingAttribute(),
+                                    dialog.getNodeAttributeMapping(),
+                                    dialog.getEdgeAttributeMapping());
+                networkMerge.mergeNetwork(
+                                    dialog.getSelectedNetworkList(),
+                                    dialog.getOperation(),
+                                    dialog.getDefaultMergedNetworkName());
+            }
         }
     }
 }
