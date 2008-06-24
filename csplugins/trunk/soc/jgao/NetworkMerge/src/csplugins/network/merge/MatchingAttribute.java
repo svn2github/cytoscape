@@ -83,12 +83,6 @@ public interface MatchingAttribute {
      * 
      */
     public Set<String> getNetworkSet();
-    
-    /*
-     * 
-     * 
-     */
-    public Collection<String> getAttributes();
             
     //TODO: ID types of the attribute could be store here
 }

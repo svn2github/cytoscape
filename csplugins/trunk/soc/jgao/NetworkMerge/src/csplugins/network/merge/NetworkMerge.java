@@ -37,7 +37,8 @@
 
 package csplugins.network.merge;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 import cytoscape.CyNetwork;
 
@@ -67,32 +68,13 @@ public interface NetworkMerge {
     }
     
     /**
-     * Check whether two nodes match
-     *
-     * @param n1 Node 1
-     * @param n2 Node 2
-     * 
-     * return true if n1 and n2 matches
-     */
-    public boolean matchNode(Node n1, Node n2);
-    
-    /**
-     * Merge (matched) nodes into one
-     *
-     * @param nodes Nodes to be merged
-     * 
-     * return merged Node
-     */
-    public Node mergeNode(Set<Node> nodes);
-    
-    /**
      * Merge networks into one
      *
      * @param networks Networks to be merged
      * 
-     * return merged Node
+     * @return merged Node
      */
-    public CyNetwork mergeNetwork(Set<CyNetwork> networks, Operation op);
+    public CyNetwork mergeNetwork(List<CyNetwork> networks, Operation op, String title);
     
     
 }

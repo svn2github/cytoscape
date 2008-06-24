@@ -91,12 +91,14 @@ public interface AttributeMapping {
     /*
      * Get the original attribute name in the network before merged, corresponding to the merged attribute
      * 
+     * @return the original attribute if exist, null otherwise
      */
     public String getOriginalAttribute(String netID, String mergedAttributeName);
     
     /*
      * Get the original attribute name before merged, corresponding to the ith merged attribute
      * 
+     * @return the original attribute if exist, null otherwise
      */
     public String getOriginalAttribute(String netID, int index);
     
@@ -111,6 +113,18 @@ public interface AttributeMapping {
      * 
      */
     public String setOriginalAttribute(String netID, String attributeName, int index);
+    
+    /*
+     * remove original attribute 
+     * 
+     */
+    public String removeOriginalAttribute(String netID, String mergedAttributeName);
+    
+    /*
+     * remove original attribute 
+     * 
+     */
+    public String removeOriginalAttribute(String netID, int index);
     
     /*
      * Add a new attribute at ith with attributeName in the original network and add a new attribute as attrMerged in resulting network

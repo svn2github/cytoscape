@@ -36,6 +36,8 @@
 
 package csplugins.network.merge;
 
+import cytoscape.data.Semantics;
+
 import java.util.Vector;
 import java.util.Set;
 import java.util.HashSet;
@@ -52,6 +54,7 @@ import java.util.Iterator;
 public class AttributeMappingImpl implements AttributeMapping {
     private Map<String,Vector<String>> attributeMapping; //attribute mapping
     private Vector<String> attributeMerged;
+    private final String nullAttr = ""; // to hold a position in vector standing that it's not a attribute
 
     public AttributeMappingImpl() {
         attributeMapping = new HashMap<String,Vector<String>>();
@@ -116,7 +119,9 @@ public class AttributeMappingImpl implements AttributeMapping {
         Vector<String> attrs = attributeMapping.get(netID);
         if (attrs==null) return null;
         if (index>=attrs.size()||index<0) return null;
-        return attrs.get(index);
+        String attr = attrs.get(index);
+        if (attr.compareTo(nullAttr)==0) return null;
+        return attr;
     }
     
     /*
@@ -136,17 +141,37 @@ public class AttributeMappingImpl implements AttributeMapping {
         Vector<String> attrs = attributeMapping.get(netID);
         if (attrs==null) return null;
         if (index>=attrs.size()||index<0) return null;
-        String old = attrs.set(index, attributeName);
-        if (attributeName.length()==0) {
+        String old;
+        if (attributeName==null) {
+            old = attrs.set(index, nullAttr);
             pack(index);
+        } else {
+            old = attrs.set(index, attributeName);
         }
         return old;
+    }
+    
+    /*
+     * remove original attribute 
+     * 
+     */
+    public String removeOriginalAttribute(String netID, String mergedAttributeName) {
+        int index = attributeMerged.indexOf(mergedAttributeName);
+        return removeOriginalAttribute(netID, index);
+    }
+    
+    /*
+     * remove original attribute 
+     * 
+     */
+    public String removeOriginalAttribute(String netID, int index) {
+        return setOriginalAttribute(netID,null,index);
     }
     
     public void addNewAttribute(String netID, String attributeName, String attrMerged) {
         Iterator<Vector<String>> it = attributeMapping.values().iterator();
         while (it.hasNext()) { // add an empty attr for each network
-            it.next().add("");
+            it.next().add(nullAttr);
         }
         Vector<String> attrs = attributeMapping.get(netID);
         attrs.set(attrs.size()-1, attributeName); // set attr
@@ -180,7 +205,7 @@ public class AttributeMappingImpl implements AttributeMapping {
 
             for (int i=0; i<nAttr; i++) {
                 // TODO REMOVE IN Cytoscape3.0
-                if (attributeNames[i].compareTo("canonicalName")==0) {
+                if (attributeNames[i].compareTo(Semantics.CANONICAL_NAME)==0) {
                     continue;
                 }// TODO REMOVE IN Cytoscape3.0
                 
@@ -188,7 +213,7 @@ public class AttributeMappingImpl implements AttributeMapping {
             }
             
             // TODO REMOVE IN 3.0, canonicalName in each network form a separate attribute in resulting network
-            addNewAttribute(netID, "canonicalName",netID+"."+getDefaultMergedAttrName("canonicalName"));// TODO REMOVE IN Cytoscape3.0
+            addNewAttribute(netID, Semantics.CANONICAL_NAME,netID+"."+getDefaultMergedAttrName(Semantics.CANONICAL_NAME));// TODO REMOVE IN Cytoscape3.0
             
 
         } else {
@@ -202,7 +227,7 @@ public class AttributeMappingImpl implements AttributeMapping {
 
             attrs = new Vector<String>(nr); // new map
             for (int i=0; i<nr; i++) {
-                attrs.add("");
+                attrs.add(nullAttr);
             }
             attributeMapping.put(netID, attrs);
 
@@ -210,14 +235,14 @@ public class AttributeMappingImpl implements AttributeMapping {
                 String at = attributeNames[i];
                  
                 // TODO REMOVE IN Cytoscape3.0, canonicalName in each network form a separate attribute in resulting network
-                if (at.compareTo("canonicalName")==0) {
-                    addNewAttribute(netID, "canonicalName",netID+"."+getDefaultMergedAttrName("canonicalName"));
+                if (at.compareTo(Semantics.CANONICAL_NAME)==0) {
+                    addNewAttribute(netID, Semantics.CANONICAL_NAME,netID+"."+getDefaultMergedAttrName(Semantics.CANONICAL_NAME));
                     continue;
                 }// TODO REMOVE IN Cytoscape3.0
                  
                 boolean found = false;             
                 for (int ir=0; ir<nr; ir++) {
-                    if (attrs.get(ir).length()>0) continue; // if the row is occupied
+                    if (attrs.get(ir).compareTo(nullAttr)!=0) continue; // if the row is occupied
                     if (attributeMerged.get(ir).compareTo(at)==0) {
                         found = true;
                         attrs.set(ir, at);// add the attribute on the ir row
@@ -269,7 +294,7 @@ public class AttributeMappingImpl implements AttributeMapping {
         Vector<String> removed = attributeMapping.remove(netID);
         int n = removed.size();
         for (int i=n-1; i>=0; i--) {
-            if (removed.get(i).length()!=0) { // if the attribute is not empty
+            if (removed.get(i).compareTo(nullAttr)!=0) { // if the attribute is not empty
                 pack(i);
             }
         }
@@ -285,7 +310,7 @@ public class AttributeMappingImpl implements AttributeMapping {
 
         Iterator<Vector<String>> it = attributeMapping.values().iterator();
         while (it.hasNext()) {
-            if (it.next().get(index).length()>0) {
+            if (it.next().get(index).compareTo(nullAttr)!=0) {
                 return;
             }
         }
