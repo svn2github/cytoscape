@@ -38,11 +38,8 @@
 package csplugins.network.merge;
 
 import java.util.List;
-import java.util.Map;
 
 import cytoscape.CyNetwork;
-
-import giny.model.Node;
 
 /**
  * Interface of merging networks

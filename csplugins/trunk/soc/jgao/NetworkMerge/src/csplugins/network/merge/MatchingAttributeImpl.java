@@ -38,7 +38,6 @@ package csplugins.network.merge;
 
 import cytoscape.data.Semantics;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
@@ -61,12 +60,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * 
      */
     public String getAttributeForMatching(String netID) {
-        String attr = attributeForMatching.get(netID);
-        // TODO: remove in cytoscape3
-        if (attr.compareTo(NetworkMerge.ID)==0) {
-            attr = Semantics.CANONICAL_NAME;
-        }// TODO: remove in cytoscape3
-        return attr;
+        return attributeForMatching.get(netID);
     }
     
     /*

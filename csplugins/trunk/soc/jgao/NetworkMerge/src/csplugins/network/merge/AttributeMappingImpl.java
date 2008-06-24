@@ -40,7 +40,6 @@ import cytoscape.data.Semantics;
 
 import java.util.Vector;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -168,14 +167,21 @@ public class AttributeMappingImpl implements AttributeMapping {
         return setOriginalAttribute(netID,null,index);
     }
     
-    public void addNewAttribute(String netID, String attributeName, String attrMerged) {
+    public void addNewAttribute(String netID, String attributeName) {
         Iterator<Vector<String>> it = attributeMapping.values().iterator();
         while (it.hasNext()) { // add an empty attr for each network
             it.next().add(nullAttr);
         }
         Vector<String> attrs = attributeMapping.get(netID);
         attrs.set(attrs.size()-1, attributeName); // set attr
-        attributeMerged.add(attrMerged); // add in merged attr  
+        
+        String attrMerged = attributeName;
+        // TODO remove in Cytosape3
+        if (attributeName.compareTo(Semantics.CANONICAL_NAME)==0) {
+            attributeName = netID+"."+Semantics.CANONICAL_NAME;
+        }// TODO remove in Cytosape3
+        
+        attributeMerged.add(getDefaultMergedAttrName(attributeName)); // add in merged attr  
     }
 
     public String getDefaultMergedAttrName(String attr) {
@@ -209,11 +215,11 @@ public class AttributeMappingImpl implements AttributeMapping {
                     continue;
                 }// TODO REMOVE IN Cytoscape3.0
                 
-                addNewAttribute(netID, attributeNames[i],getDefaultMergedAttrName(attributeNames[i]));
+                addNewAttribute(netID, attributeNames[i]);
             }
             
             // TODO REMOVE IN 3.0, canonicalName in each network form a separate attribute in resulting network
-            addNewAttribute(netID, Semantics.CANONICAL_NAME,netID+"."+getDefaultMergedAttrName(Semantics.CANONICAL_NAME));// TODO REMOVE IN Cytoscape3.0
+            addNewAttribute(netID, Semantics.CANONICAL_NAME);// TODO REMOVE IN Cytoscape3.0
             
 
         } else {
@@ -236,7 +242,7 @@ public class AttributeMappingImpl implements AttributeMapping {
                  
                 // TODO REMOVE IN Cytoscape3.0, canonicalName in each network form a separate attribute in resulting network
                 if (at.compareTo(Semantics.CANONICAL_NAME)==0) {
-                    addNewAttribute(netID, Semantics.CANONICAL_NAME,netID+"."+getDefaultMergedAttrName(Semantics.CANONICAL_NAME));
+                    addNewAttribute(netID, Semantics.CANONICAL_NAME);
                     continue;
                 }// TODO REMOVE IN Cytoscape3.0
                  
@@ -264,7 +270,7 @@ public class AttributeMappingImpl implements AttributeMapping {
                 }
 
                 if (!found) { //no same attribute found
-                    addNewAttribute(netID,at,getDefaultMergedAttrName(at));
+                    addNewAttribute(netID,at);
                 }                 
             }
         }

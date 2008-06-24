@@ -10,7 +10,7 @@ pluginName=NetworkMergePlugin
 
 # Description used to give users information about the plugin such as what it does.
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Provides set oprations (union, intersection and difference) on networks
+pluginDescription=Provides set operations (union, intersection and difference) on networks
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=1.0

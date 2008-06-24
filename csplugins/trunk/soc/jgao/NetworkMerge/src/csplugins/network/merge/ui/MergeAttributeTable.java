@@ -273,14 +273,7 @@ class MergeAttributeTable extends JTable{
                 if (iAttr==n) { // the last row
                     if (attr.compareTo(nullAttr)==0) return;
 
-                    // TODO remove in Cytoscape3.0
-                    if (attr.compareTo(Semantics.CANONICAL_NAME)==0) {
-                        attributeMapping.addNewAttribute(netID, attr, attributeMapping.getDefaultMergedAttrName(netID+".canonicalName"));
-                        fireTableDataChanged();
-                        return;
-                    }// TODO remove in Cytoscape3.0
-
-                    attributeMapping.addNewAttribute(netID, attr, attributeMapping.getDefaultMergedAttrName(attr));
+                    attributeMapping.addNewAttribute(netID, attr);
                     fireTableDataChanged();
                     return;
 

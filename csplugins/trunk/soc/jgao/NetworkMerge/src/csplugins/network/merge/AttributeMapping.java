@@ -130,12 +130,12 @@ public interface AttributeMapping {
      * Add a new attribute at ith with attributeName in the original network and add a new attribute as attrMerged in resulting network
      * 
      */
-    public void addNewAttribute(String netID, String attributeName, String attrMerged);
+    public void addNewAttribute(String netID, String attributeName);
 
     /*
      * Get the default attribute name for a new merged one 
      * 
-     */
+     
     public String getDefaultMergedAttrName(String attr);
     
     /*

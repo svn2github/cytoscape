@@ -82,6 +82,15 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
     public boolean matchNode(CyNetwork net1, Node n1, CyNetwork net2, Node n2) {
         String attr1 = matchingAttribute.getAttributeForMatching(net1.getIdentifier());
         String attr2 = matchingAttribute.getAttributeForMatching(net2.getIdentifier());
+                        
+        // TODO: remove in cytoscape3
+        if (attr1.compareTo(NetworkMerge.ID)==0) {
+            attr1 = Semantics.CANONICAL_NAME;
+        }
+        if (attr1.compareTo(NetworkMerge.ID)==0) {
+            attr1 = Semantics.CANONICAL_NAME;
+        }// TODO: remove in cytoscape3
+        
         CyAttributes attributes = Cytoscape.getNodeAttributes();
         Object value1 = attributes.getAttribute(n1.getIdentifier(), attr1);
         Object value2 = attributes.getAttribute(n2.getIdentifier(), attr2);
@@ -158,8 +167,6 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
         if (mapNetEdge==null||mapNetEdge.isEmpty()||source==null||target==null) {
             return null;
         }
-        
-        
         
         // Get the edge or create a new one
         // attribute confilict handling?
