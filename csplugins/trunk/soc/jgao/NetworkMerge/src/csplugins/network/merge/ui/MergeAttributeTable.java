@@ -38,8 +38,10 @@ package csplugins.network.merge.ui;
 
 import csplugins.network.merge.AttributeMapping;
 import csplugins.network.merge.MatchingAttribute;
+import csplugins.network.merge.NetworkMerge;
         
 import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
 
 import java.util.Collections;
 import java.util.Vector;
@@ -66,6 +68,7 @@ import javax.swing.JOptionPane;
  * @author JGao
  */
 class MergeAttributeTable extends JTable{
+    private final String nullAttr = "[DELETE THIS]";
     private MatchingAttribute matchingAttribute;
     private AttributeMapping attributeMapping; //attribute mapping
     private String mergedNetworkName;
@@ -100,9 +103,9 @@ class MergeAttributeTable extends JTable{
         int n = attributeMapping.getSizeNetwork();
         for (int i=0; i<n; i++) { // for each network
             Vector<String> attrs = new Vector();
-            attrs.add("");
             //attrs.add(NetworkMerge.ID);
-            attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+            attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));            
+            attrs.add(nullAttr);
             JComboBox comboBox = new JComboBox(attrs);
             TableColumn column = getColumnModel().getColumn(i);
             column.setCellEditor(new DefaultCellEditor(comboBox));
@@ -188,9 +191,9 @@ class MergeAttributeTable extends JTable{
             int iAttr;
             // TODO remove in Cytoscape3.0
             if (row==0) {
-                return "ID";
+                return NetworkMerge.ID;
             } else if (row==1) {
-                return "canonicalName";
+                return Semantics.CANONICAL_NAME;
             } else {
                 iAttr = row-2;
             }// TODO remove in Cytoscape3.0
@@ -198,9 +201,7 @@ class MergeAttributeTable extends JTable{
             //iAttr=row; //TODO use this one in Cytoscape3.0
             
             if (col==getColumnCount()-1) {
-                String[] mergedAttrs = attributeMapping.getMergedAttributes();
-                if (iAttr>=mergedAttrs.length) return null; // the last row
-                return mergedAttrs[iAttr];
+                return attributeMapping.getMergedAttribute(iAttr);
             } else {
                 return attributeMapping.getOriginalAttribute(netIDs.get(col), iAttr);
             }
@@ -233,13 +234,15 @@ class MergeAttributeTable extends JTable{
          * data can change.
          */
         public void setValueAt(Object value, int row, int col) {
+            if (value==null) return;
+            
             String attr = (String) value;
             int iAttr = row-2;// TODO remove in Cytoscape3.0
             //int iAttr = row; // TODO use in Cytoscape3.0
             
-            if (attr==null) return; // click on the last row, but not selected
+            //if (attr==null) return; // click on the last row, but not selected
             int n = attributeMapping.getSizeMergedAttributes();
-            if (iAttr>n) return;
+            if (iAttr>n) return; // should not happen
 
             if (col==getColumnCount()-1) { //column of merged network
                 if (iAttr==n) return;
@@ -248,10 +251,15 @@ class MergeAttributeTable extends JTable{
                 }
                 
                 // TODO remove in Cytoscape3.0
-                if (attr.compareTo("ID")==0||attr.compareTo("canonicalName")==0) {
+                if (attr.compareTo(NetworkMerge.ID)==0||attr.compareTo(Semantics.CANONICAL_NAME)==0) {
                     JOptionPane.showMessageDialog(getParent(),"Atribute "+attr+" is reserved! Please use another name for this attribute!", "Error: duplicated attribute Name", JOptionPane.ERROR_MESSAGE );
                     return;
                 }// TODO remove in Cytoscape3.0
+                
+                if (attr.length()==0) {
+                    JOptionPane.showMessageDialog(getParent(),"Please use a non-empty name for the attribute!", "Error: empty attribute Name", JOptionPane.ERROR_MESSAGE );
+                    return;
+                } 
                 
                 if (attributeMapping.containsMergedAttributes(attr)) {
                     JOptionPane.showMessageDialog(getParent(),"Atribute "+attr+" is already exist! Please use another name for this attribute!", "Error: duplicated attribute Name", JOptionPane.ERROR_MESSAGE );
@@ -263,10 +271,10 @@ class MergeAttributeTable extends JTable{
             } else { //column of original network
                 String netID = netIDs.get(col);
                 if (iAttr==n) { // the last row
-                    if (attr.length()==0) return;
+                    if (attr.compareTo(nullAttr)==0) return;
 
                     // TODO remove in Cytoscape3.0
-                    if (attr.compareTo("canonicalName")==0) {
+                    if (attr.compareTo(Semantics.CANONICAL_NAME)==0) {
                         attributeMapping.addNewAttribute(netID, attr, attributeMapping.getDefaultMergedAttrName(netID+".canonicalName"));
                         fireTableDataChanged();
                         return;
@@ -277,10 +285,16 @@ class MergeAttributeTable extends JTable{
                     return;
 
                 } else {
-                    if (attributeMapping.getOriginalAttribute(netID, iAttr).compareTo(attr)==0) {
-                        return;
+                    //if (attributeMapping.getOriginalAttribute(netID, iAttr).compareTo(attr)==0) {
+                    //    return;
+                    //}
+                    if (attr.compareTo(nullAttr)==0) {
+                        //if (attributeMapping.getOriginalAttribute(netID, iAttr)==null) return;
+                        attributeMapping.removeOriginalAttribute(netID, iAttr);
+                    } else {
+                        //if (attributeMapping.getOriginalAttribute(netID, iAttr).compareTo(attr)==0) return;
+                        attributeMapping.setOriginalAttribute(netID, attr, iAttr);// set the attr
                     }
-                    attributeMapping.setOriginalAttribute(netID, attr, iAttr);// set the attr
                     fireTableDataChanged();
                     return;
                 }       

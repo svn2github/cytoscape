@@ -39,6 +39,7 @@ package csplugins.network.merge.ui;
 
 import csplugins.network.merge.NetworkMerge;
 import csplugins.network.merge.NetworkMerge.Operation;
+import csplugins.network.merge.DefaultNetworkMerge;
 import csplugins.network.merge.AttributeMapping;
 import csplugins.network.merge.AttributeMappingImpl;
 import csplugins.network.merge.MatchingAttribute;
@@ -48,6 +49,9 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.util.CyNetworkNaming;
 
+import java.util.List;
+import java.util.Vector;
+import java.util.Set;
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -509,6 +513,14 @@ public class NetworkMergeDialog extends JDialog {
         okButton.setEnabled(false);
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NetworkMerge networkMerge = new DefaultNetworkMerge(
+                    matchingAttribute,
+                    nodeAttributeMapping,
+                    edgeAttributeMapping);
+                CyNetwork network = networkMerge.mergeNetwork(
+                    selectedNetworkData.getNetworkList(),
+                    getOperation(),
+                    getDefaultMergedNetworkName());
                 cancelled = false;
                 setVisible(false);
                 dispose();
@@ -552,7 +564,7 @@ private void addRemoveAttributeMapping(CyNetwork network, boolean isAdd) {
  * 
  */
 private String getDefaultMergedNetworkName() {
-    String name = "network"+getOperation();
+    String name = "network."+getOperation();
     return CyNetworkNaming.getSuggestedNetworkTitle(name);
     
 }
@@ -676,6 +688,10 @@ public boolean isCancelled() {
                 fireContentsChanged(this, 0, getSize());
             }
             return removed;   
+        }
+        
+        public List<CyNetwork> getNetworkList() {
+            return new Vector<CyNetwork>(model.values());
         }
     }
 }
