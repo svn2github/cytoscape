@@ -60,8 +60,7 @@ public class MyGridLayout extends CytoscapePlugin {
 	    }
 	    
 	    /**
-	     * Constructs the grid layout.  This assumes that the size of each
-	     * node is the same.  (this could be modified later)
+	     * Constructs the grid layout.  Nodes can be of different sizes.
 	     */
 	    public void construct() {
 	    	
