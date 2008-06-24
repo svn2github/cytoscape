@@ -3,6 +3,8 @@ package org.cytoscape.model.network.impl;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cytoscape.graph.dynamic.DynamicGraph;
@@ -17,34 +19,58 @@ import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.model.network.EdgeType;
 
 import org.cytoscape.model.attrs.CyAttributes;
-import org.cytoscape.model.attrs.impl.CyAttributesImpl;
+import org.cytoscape.model.attrs.CyAttributesManager;
+import org.cytoscape.model.attrs.impl.CyAttributesManagerImpl;
 
 public class CyNetworkImpl implements CyNetwork {
 
-	final private String id;
+	final private long suid;
 	final private DynamicGraph dg;
 	final private ArrayList<CyNode> nodeList; 
 	final private ArrayList<CyEdge> edgeList; 
 	final private AtomicInteger nodeCount;
 	final private AtomicInteger edgeCount;
-	final private CyAttributes attrs;
 
 	final static private int OUT = 0;
 	final static private int IN = 1;
 	final static private int UN = 2;
 
-	public CyNetworkImpl(final String ident) {
-		id = ident;
+	final private Map<String,CyAttributesManagerImpl> netAttrMgr;
+	final private Map<String,CyAttributesManagerImpl> nodeAttrMgr;
+	final private Map<String,CyAttributesManagerImpl> edgeAttrMgr;
+
+	public CyNetworkImpl( final Map<String,CyAttributesManager> netm, 
+	                      final Map<String,CyAttributesManager> nodem, 
+						  final Map<String,CyAttributesManager> edgem ) {
+		suid = IdFactory.getNextSUID();
 		dg = DynamicGraphFactory.instantiateDynamicGraph();
 		nodeList = new ArrayList<CyNode>();
 		edgeList = new ArrayList<CyEdge>();
 		nodeCount = new AtomicInteger(0);
 		edgeCount = new AtomicInteger(0);
-		attrs = new CyAttributesImpl();
-	}
+
+		netAttrMgr = new HashMap<String,CyAttributesManagerImpl>();
+		nodeAttrMgr = new HashMap<String,CyAttributesManagerImpl>();
+		edgeAttrMgr = new HashMap<String,CyAttributesManagerImpl>();
 		
-	public String getIdentifier() {
-		return id;
+		loadMgrs(netm,netAttrMgr);
+		loadMgrs(nodem,nodeAttrMgr);
+		loadMgrs(edgem,edgeAttrMgr);
+	}
+
+	private void loadMgrs(final Map<String,CyAttributesManager> in, 
+	                      Map<String,CyAttributesManagerImpl> local) {
+		for ( String key : in.keySet() ) {
+			CyAttributesManager mgr = in.get(key);
+			// this is bad because it means we now depend on this particular impl
+			
+			local.put( key, new CyAttributesManagerImpl( mgr.getTypeMap() ) );
+		}
+	}
+
+		
+	public long getSUID() {
+		return suid;
 	}
 
 	public synchronized CyNode addNode() {
@@ -283,7 +309,27 @@ public class CyNetworkImpl implements CyNetwork {
 			return new boolean[] { true, true, true }; 
 	}
 
-	public CyAttributes getAttributes() {
-		return attrs;
+	public CyAttributes getCyAttributes(String namespace) {
+		if ( namespace == null )
+			throw new NullPointerException("namespace is null");
+
+		// argh!
+		CyAttributesManagerImpl mgr = netAttrMgr.get(namespace);
+		if ( mgr == null )
+			throw new NullPointerException("attribute manager is null for namespace: " + namespace);
+
+		return mgr.getAccess(suid);
+	}
+
+	public Map<String,? extends CyAttributesManager> getNetworkCyAttributesManagers() {
+		return netAttrMgr;	
+	}
+
+	public Map<String,? extends CyAttributesManager> getNodeCyAttributesManagers() {
+		return nodeAttrMgr;
+	}
+
+	public Map<String,? extends CyAttributesManager> getEdgeCyAttributesManagers() {
+		return edgeAttrMgr;
 	}
 }

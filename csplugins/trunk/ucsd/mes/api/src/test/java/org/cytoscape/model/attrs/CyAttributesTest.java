@@ -2,7 +2,8 @@
 package org.cytoscape.model.attrs;
 
 import org.cytoscape.model.attrs.CyAttributes;
-import org.cytoscape.model.attrs.impl.CyAttributesImpl;
+import org.cytoscape.model.attrs.CyAttributesManager;
+import org.cytoscape.model.attrs.impl.CyAttributesManagerImpl;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -16,6 +17,7 @@ import java.awt.Color;
 
 public class CyAttributesTest extends TestCase {
 
+	private CyAttributesManagerImpl mgr;
 	private CyAttributes attrs;
 
 	public static Test suite() {
@@ -23,13 +25,17 @@ public class CyAttributesTest extends TestCase {
 	}
 
 	public void setUp() {
-		attrs = new CyAttributesImpl();
+		mgr = new CyAttributesManagerImpl(null);
+		attrs = mgr.getAccess(1);
 	}
 
 	public void tearDown() {
 	}
 
 	public void testAddStringAttr() {
+		mgr.createAttribute("someString",String.class);
+		mgr.createAttribute("someStringElse",String.class);
+
 		attrs.set("someString","apple");	
 		attrs.set("someStringElse","orange");	
 
@@ -42,6 +48,9 @@ public class CyAttributesTest extends TestCase {
 	}
 
 	public void testAddIntAttr() {
+		mgr.createAttribute("someInt",Integer.class);
+		mgr.createAttribute("someOtherInt",Integer.class);
+
 		attrs.set("someInt",50);	
 		attrs.set("someOtherInt",100);	
 
@@ -54,6 +63,9 @@ public class CyAttributesTest extends TestCase {
 	}
 
 	public void testAddDoubleAttr() {
+		mgr.createAttribute("someDouble",Double.class);
+		mgr.createAttribute("someOtherDouble",Double.class);
+
 		attrs.set("someDouble",3.14);	
 		attrs.set("someOtherDouble",2.76);	
 
@@ -66,6 +78,9 @@ public class CyAttributesTest extends TestCase {
 	}
 
 	public void testAddBooleanAttr() {
+		mgr.createAttribute("someBoolean",Boolean.class);
+		mgr.createAttribute("someOtherBoolean",Boolean.class);
+
 		attrs.set("someBoolean",true);	
 		attrs.set("someOtherBoolean",false);	
 
@@ -78,6 +93,8 @@ public class CyAttributesTest extends TestCase {
 	}
 
 	public void testAddListAttr() {
+		mgr.createAttribute("someList",List.class);
+
 		List<String> l = new LinkedList<String>();
 		l.add("orange");
 		l.add("banana");
@@ -90,15 +107,17 @@ public class CyAttributesTest extends TestCase {
 	}
 
 	public void testAddMapAttr() {
+		mgr.createAttribute("someMap",Map.class);
+
 		Map<String,Integer> m = new HashMap<String,Integer>();
 		m.put("orange",1);
 		m.put("banana",2);
 
-		attrs.set("someList",m);	
+		attrs.set("someMap",m);	
 
-		assertTrue( attrs.contains("someList",Map.class) );
+		assertTrue( attrs.contains("someMap",Map.class) );
 
-		assertEquals( 2, attrs.get("someList",Map.class).size() );
+		assertEquals( 2, attrs.get("someMap",Map.class).size() );
 	}
 
 	public void testAddBadAttr() {

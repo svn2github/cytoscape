@@ -9,11 +9,6 @@ import java.util.List;
 public interface CyNetworkView extends View {
 	public CyNetwork getNetwork();
 
-	/**
-	 * Should probably be an SUID.
-	 */
-	public String getIdentifier();
-
 	public List<CyNodeView> getNodeViewList();
 	public List<CyEdgeView> getEdgeViewList();
 

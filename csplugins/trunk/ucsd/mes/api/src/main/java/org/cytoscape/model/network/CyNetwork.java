@@ -1,10 +1,11 @@
 package org.cytoscape.model.network;
 
 import java.util.List;
+import java.util.Map;
 import org.cytoscape.model.attrs.CyAttributes;
+import org.cytoscape.model.attrs.CyAttributesManager;
 
-public interface CyNetwork {
-	public String getIdentifier();
+public interface CyNetwork extends Identifiable {
 
 	public CyNode addNode();
 	public boolean removeNode(CyNode node);
@@ -29,5 +30,23 @@ public interface CyNetwork {
 	public List<CyEdge> getAdjacentEdgeList( CyNode node, EdgeType edgeType );
 	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, EdgeType edgeType );
 
-	public CyAttributes getAttributes();
+	/**
+	 * Access to network specific attributes.
+	 */
+	public CyAttributes getCyAttributes(String namespace);
+
+	/**
+	 * Defines the attributes available for the CyNetwork.
+	 */
+	public Map<String,? extends CyAttributesManager> getNetworkCyAttributesManagers();
+
+	/**
+	 * Defines the attributes available for all of the CyNode objects in the CyNetwork. 
+	 */
+	public Map<String,? extends CyAttributesManager> getNodeCyAttributesManagers();
+
+	/**
+	 * Defines the attributes available for all of the CyEdge objects in the CyNetwork. 
+	 */
+	public Map<String,? extends CyAttributesManager> getEdgeCyAttributesManagers();
 }

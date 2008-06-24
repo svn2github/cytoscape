@@ -5,6 +5,8 @@ import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.model.network.CyNode;
 import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.model.network.impl.CyNetworkImpl;
+import org.cytoscape.model.attrs.CyAttributesManager;
+import org.cytoscape.model.attrs.InitialCyAttributesManager;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -13,6 +15,8 @@ import junit.framework.TestSuite;
 
 import java.lang.RuntimeException;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.cytoscape.model.attrs.CyAttributes;
 
@@ -25,7 +29,16 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	public void setUp() {
-		net = new CyNetworkImpl("test");
+		Map<String,CyAttributesManager> netm = new HashMap<String,CyAttributesManager>();
+		netm.put("USER",InitialCyAttributesManager.getInstance());
+
+		Map<String,CyAttributesManager> nodem = new HashMap<String,CyAttributesManager>();
+		nodem.put("USER",InitialCyAttributesManager.getInstance());
+
+		Map<String,CyAttributesManager> edgem = new HashMap<String,CyAttributesManager>();
+		edgem.put("USER",InitialCyAttributesManager.getInstance());
+
+		net = new CyNetworkImpl(netm,nodem,edgem);
 	}
 
 	public void tearDown() {
@@ -697,15 +710,15 @@ public class CyNetworkTest extends TestCase {
 
 	private static int suidBase = 0;
 	private class SUID implements GraphObject {
-		int suid;
+		long suid;
 		SUID() {
 			suid = suidBase++; 
 		}
 
-		public int getSUID() {
+		public long getSUID() {
 			return suid;
 		}
-		public CyAttributes getAttributes() {
+		public CyAttributes getCyAttributes(String ns) {
 			return null;
 		}
 	}

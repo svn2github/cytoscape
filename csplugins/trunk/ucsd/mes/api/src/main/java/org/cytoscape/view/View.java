@@ -3,11 +3,13 @@ package org.cytoscape.view;
 import java.awt.Shape;
 import java.awt.Paint;
 
+import org.cytoscape.model.network.Identifiable;
+
 /**
  * The base interface that defines the methods used to set visual properties
  * for nodes, edges, and networks.  
  */
-public interface View  {
+public interface View extends Identifiable {
 
 	/**
 	 * The VisualProperty object identifies which visual property to

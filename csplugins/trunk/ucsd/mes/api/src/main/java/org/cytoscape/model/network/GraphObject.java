@@ -3,7 +3,6 @@ package org.cytoscape.model.network;
 
 import org.cytoscape.model.attrs.CyAttributes;
 
-public interface GraphObject { 
-	public int getSUID();
-	public CyAttributes getAttributes();
+public interface GraphObject extends Identifiable { 
+	public CyAttributes getCyAttributes(String namespace);
 }
