@@ -6,13 +6,13 @@ import org.example.tunable.Tunable;
 
 public class PrintSomething implements Command {
 
-	@Tunable(description="your first name")
+	@Tunable(description="your first name",namespace="printSomething")
 	private String firstName = "homer";
 
-	@Tunable(description="your last name")
+	@Tunable(description="your last name",namespace="printSomething")
 	private String lastName = "simpson";
 
-	@Tunable(description="your age")
+	@Tunable(description="your age",namespace="printSomething")
 	private int age;
 
 	public void execute() {
