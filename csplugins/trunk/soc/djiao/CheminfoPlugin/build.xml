@@ -8,11 +8,13 @@
   Version      : $Revision: $ $Date: $
 =====================================================================
 -->
-<project name="ChemInfoPlugin" default="jar" basedir=".">
+<project name="ChemInfoPlugin" default="run" basedir=".">
   <property name="src.dir" location="${basedir}/src" />
   <property name="build.dir" location="build" />
   <property name="doc.dir" location="doc" />
   <property name="test.dir" location="testData" />
+  <property name="lib.dir" location="lib" />
+
   <property name="cytoscape.dir" location="../../../../cytoscape" />
   <property name="cytoscape.plugin" value="${cytoscape.dir}/plugins" />
 
@@ -32,6 +34,13 @@
     </fileset>
   </path>
 
+  <!-- classpath for junit -->
+  <path id="test.classpath">
+    <path refid="compile.classpath" />
+    <pathelement location="${build.dir}/classes/core" />
+    <pathelement location="${build.dir}/classes/test" />
+  </path>
+
   <!--
   =====================================================================
     I N I T
@@ -42,6 +51,8 @@
   <target name="init" depends="clean" description="Preparing for building">
     <mkdir dir="${build.dir}" />
     <mkdir dir="${build.dir}/classes" />
+    <mkdir dir="${build.dir}/classes/core" />
+    <available property="junit.present" type="file" file="${lib.dir}/junit.jar" />
   </target>
 
   <!--
@@ -50,10 +61,19 @@
   =====================================================================
     Compile with Cytoscape under deveopment
   =====================================================================
-  -->  
-  <target name="compile" depends="init" description="Compile with Cytoscape under development">
-    <javac source="1.5" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" srcdir="${src.dir}" destdir="${build.dir}/classes">
+  -->
+  <target name="compile" depends="compile-core" description="Compile with Cytoscape under development" />
+
+  <target name="compile-core" depends="init">
+    <javac source="1.5" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" srcdir="${src.dir}/core" destdir="${build.dir}/classes/core">
       <classpath refid="compile.classpath" />
+    </javac>
+  </target>
+
+  <target name="compile-test" depends="compile">
+    <mkdir dir="${build.dir}/classes/test" />
+    <javac source="1.5" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" srcdir="${src.dir}/test" destdir="${build.dir}/classes/test">
+      <classpath refid="test.classpath" />
     </javac>
   </target>
 
@@ -63,7 +83,7 @@
   =====================================================================
     Removes the built and distrabution files
   =====================================================================
-  -->  
+  -->
   <target name="clean" description="clean up">
     <!-- Delete the ${build} and ${src} directory trees -->
     <delete dir="${build.dir}" />
@@ -75,16 +95,16 @@
   =====================================================================
     Build jar files for distribution
   =====================================================================
-  -->  
+  -->
   <target name="jar" depends="compile" description="makes a jar for Cytoscape under development">
-    <copy todir="build/classes/cytoscape/plugin/cheminfo">
-      <fileset file="${src.dir}/cytoscape/plugin/cheminfo/*.props" />
+    <copy todir="build/classes/core/cytoscape/plugin/cheminfo">
+      <fileset file="${src.dir}/core/cytoscape/plugin/cheminfo/*.props" />
     </copy>
     <jar jarfile="${build.dir}/cheminfo.jar">
       <manifest>
         <attribute name="Cytoscape-Plugin" value="cytoscape.plugin.cheminfo.ChemInfoPlugin" />
       </manifest>
-      <fileset dir="${build.dir}/classes" />
+      <fileset dir="${build.dir}/classes/core" />
     </jar>
   </target>
 
@@ -94,16 +114,40 @@
   =====================================================================
     Run cytoscape with the plugin
   =====================================================================
-  -->    
+  -->
   <target name="run" depends="jar" description="Run under development">
     <copy todir="${cytoscape.dir}/plugins/core">
       <fileset file="${basedir}/build/cheminfo.jar" />
     </copy>
     <java classname="cytoscape.CyMain" classpathref="compile.classpath" fork="true" maxmemory="1g">
-      <arg value="-s"/>
-      <arg value="${test.dir}/cheminfoTest.cys"/>
-      <arg value="-p"/> 
+      <arg value="-s" />
+      <arg value="${test.dir}/cheminfoTest.cys" />
+      <arg value="-p" />
       <arg value="${cytoscape.dir}/plugins/core" />
     </java>
+  </target>
+
+  <!--
+  =====================================================================
+    T E S T
+  =====================================================================
+    Targets that buids or run the junit test
+  =====================================================================
+  -->
+  <target name="test" depends="compile-test" description="Runs unit tests">
+    <mkdir dir="${test.dir}/unittest"/>
+    <junit printsummary="off" haltonfailure="no" errorProperty="tests.failed" failureProperty="tests.failed">
+      <classpath refid="test.classpath" />
+      <sysproperty key="dataDir" file="${src.dir}/test" />
+      <formatter type="xml" />
+      <formatter type="brief" usefile="false" />
+      <batchtest fork="yes" todir="${test.dir}/unittest" unless="testcase">
+        <fileset dir="${src.dir}/test" includes="**/*Test.java" />
+      </batchtest>
+      <batchtest fork="yes" todir="${test.dir}/unittest" if="testcase">
+        <fileset dir="${src.dir}/test" includes="**/${testcase}.java" />
+      </batchtest>
+    </junit>
+    <fail if="tests.failed">Tests failed!</fail>
   </target>
 </project>

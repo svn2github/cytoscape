@@ -95,26 +95,36 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 					.addNodeContextMenuListener(this);
 		}
 	}
+	
+	private String getAttribute(CyNode node, String attr) {
+		CyAttributes attributes = Cytoscape.getNodeAttributes();
+		String value = attributes.getStringAttribute(node.getIdentifier(),
+				attr);
+		if (null == value || "".equals(value)) {
+			// Now search for smiles
+			String[] names = attributes.getAttributeNames();
+			for (String string : names) { 
+				if (attr.equalsIgnoreCase(string)) {
+					value = attributes.getStringAttribute(node.getIdentifier(), string);
+					break;
+				}
+			}
+		}			
+		return value;
+	}
 
 	public void actionPerformed(ActionEvent evt) {
 		String cmd = evt.getActionCommand();
 		if (cmd.equals(DEPICT)) {
-			CyAttributes attributes = Cytoscape.getNodeAttributes();
 			CyNode node = (CyNode) nodeView.getNode();
-			
-			String smiles = attributes.getStringAttribute(node.getIdentifier(),
-					"smiles");
+			String smiles = getAttribute(node, "smiles");
+			// now search for inchi
 			if (null == smiles || "".equals(smiles)) {
-				// Now search for smiles
-				String[] names = attributes.getAttributeNames();
-				for (String string : names) { 
-					if ("smiles".equalsIgnoreCase(string)) {
-						smiles = attributes.getStringAttribute(node.getIdentifier(), string);
-						break;
-					}
-				}
-			}				
-			if (null == smiles || "".equals(smiles)) {			
+				String inchi = getAttribute(node, "inchi");
+				smiles = StructureDepictor.convertInchiToSmiles(inchi);
+			}
+			
+			if (null == smiles || "".equals(smiles)) {
 				displayErrorDialog(systemProps.getProperty("cheminfo.depictor.noSmilesError"));
 				return;
 			}
