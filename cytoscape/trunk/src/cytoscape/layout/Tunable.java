@@ -40,6 +40,8 @@ import javax.swing.border.TitledBorder;
 
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 
 /**
@@ -183,7 +185,7 @@ import javax.swing.event.ChangeEvent;
  * caller can be notified when a user changes a value.
  *
  */
-public class Tunable implements FocusListener,ChangeListener,ActionListener,ItemListener {
+public class Tunable implements FocusListener,ChangeListener,ActionListener,ItemListener,ListSelectionListener {
 	private String name;
 	private String desc;
 	private int type = STRING;
@@ -914,6 +916,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			int [] indices = getSelectedValues(attributeList, decodeArray((String)value));
 			if (indices != null && indices.length > 0)
 				jList.setSelectedIndices(indices);
+			jList.addListSelectionListener(this);
 			return jList;
 		} else {
 			// Set our current value as selected
@@ -937,6 +940,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			if (value != null && ((String)value).length() > 0) {
 				jList.setSelectedIndices(decodeIntegerArray((String)value));
 			}
+			jList.addListSelectionListener(this);
 			return jList;
 		} else {
 			// Set our current value as selected
@@ -1123,6 +1127,13 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	 * This method is public as a byproduct of the implementation.
 	 */
 	public void itemStateChanged(ItemEvent e) {
+		updateValueListeners();
+	}
+
+	/**
+	 * This method is public as a byproduct of the implementation.
+	 */
+	public void valueChanged(ListSelectionEvent e) {
 		updateValueListeners();
 	}
 
