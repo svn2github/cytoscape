@@ -80,9 +80,13 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         for (int i=0; i<n; i++) {
             if (values.contains(attributeNames[i])) {
                 putAttributeForMatching(netID,attributeNames[i]);
+                return;
             }
         }
-        putAttributeForMatching(netID,attributeNames[0]);
+        //TODO remove in Cytoscape3
+        putAttributeForMatching(netID,"canonicalName");
+        
+        //putAttributeForMatching(netID,attributeNames[i]); //use in Cytoscape3
     }
             
     /*
