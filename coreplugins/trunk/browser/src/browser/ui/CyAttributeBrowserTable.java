@@ -163,6 +163,21 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private boolean ignore = false;
 
 	/**
+	 * String used to compare against os.name System property -
+	 * to determine if we are running on Windows platform.
+	 */
+	static final String MAC_OS_ID = "mac";
+	/**
+	 * Routine which determines if we are running on mac platform
+	 *
+	 * @return boolean
+	 */
+	private boolean isMacPlatform() {
+		String os = System.getProperty("os.name");
+
+		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
+	}
+	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
@@ -627,7 +642,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					getSelected();
 
 					// If action is right click, then show edit pop-up menu
-					if (SwingUtilities.isRightMouseButton(e)) {
+					if ((SwingUtilities.isRightMouseButton(e)) ||
+							(isMacPlatform() && e.isControlDown())){
 						if (value != null) {
 							rightClickPopupMenu.remove(rightClickPopupMenu.getComponentCount() - 1);
 							rightClickPopupMenu.add(new HyperLinkOut(value.toString(), linkoutProps));
