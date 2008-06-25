@@ -218,6 +218,18 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 				                                  "reaction-modifier", true);
 				edgeIds.add(edge.getRootGraphIndex());
 			}
+
+			KineticLaw law = reaction.getKineticLaw();
+			List<Parameter>parameters = law.getParameter();
+
+			for (Parameter p: parameters) {
+				String id = p.getName();
+				String units = p.getUnits();
+				double value = p.getValue();
+				nodeAttributes.setAttribute(reaction.getId(), "kineticLaw-"+id, new Double(value));
+				if (units != null)
+					nodeAttributes.setAttribute(reaction.getId(), "kineticLaw-"+id+"-units", units);
+			}
 		}
 	}
 
