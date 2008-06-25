@@ -36,11 +36,12 @@
 
 package csplugins.network.merge;
 
-
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Arrays;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -55,7 +56,7 @@ import giny.model.GraphObject;
 /**
  * Attribute based Network merge
  * 
- * @author JGao
+ * 
  */
 public class DefaultNetworkMerge extends AbstractNetworkMerge{
     private MatchingAttribute matchingAttribute;
@@ -83,13 +84,13 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
         String attr1 = matchingAttribute.getAttributeForMatching(net1.getIdentifier());
         String attr2 = matchingAttribute.getAttributeForMatching(net2.getIdentifier());
                         
-        // TODO: remove in cytoscape3
+        //TODO: remove in cytoscape3
         if (attr1.compareTo("ID")==0) {
             attr1 = Semantics.CANONICAL_NAME;
         }
         if (attr1.compareTo("ID")==0) {
             attr1 = Semantics.CANONICAL_NAME;
-        }// TODO: remove in cytoscape3
+        }//TODO: remove in cytoscape3
         
         CyAttributes attributes = Cytoscape.getNodeAttributes();
         Object value1 = attributes.getAttribute(n1.getIdentifier(), attr1);
@@ -106,7 +107,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
      * @return merged Node
      */
     public Node mergeNode(Map<CyNetwork,GraphObject> mapNetNode) {
-        // TODO: refactor in Cytoscape3, 
+        //TODO: refactor in Cytoscape3, 
         // in 2.x node with the same identifier be the same node
         // and different nodes must have different identifier.
         // Is this true in 3.0?
@@ -163,7 +164,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
      */
     public Edge mergeEdge(Map<CyNetwork,GraphObject> mapNetEdge, Node source, 
                                 Node target, String interaction, boolean directed) {
-        // TODO: refactor in Cytoscape3
+        //TODO: refactor in Cytoscape3
         if (mapNetEdge==null||mapNetEdge.isEmpty()||source==null||target==null) {
             return null;
         }
@@ -188,36 +189,51 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
      * 
      */
     protected void setAttribute(String id, Map<CyNetwork,GraphObject> mapNetGO, CyAttributes cyAttributes, AttributeMapping attributeMapping) {
+        final Set<Map.Entry<CyNetwork,GraphObject>> entrySet = mapNetGO.entrySet();
+        
         int nattr = attributeMapping.getSizeMergedAttributes();
         for (int i=0; i<nattr; i++) {
             String attr_merged = attributeMapping.getMergedAttribute(i);
-            Set values_ori = new HashSet<String>(); // how to handle different attribute type?
-            Iterator<CyNetwork> itNet = mapNetGO.keySet().iterator();
-            while (itNet.hasNext()) {
-                CyNetwork network = itNet.next();
+            Set values_ori = new HashSet(); // how to handle different attribute type?            
+            
+            byte type = -1;
+            
+            Iterator<Map.Entry<CyNetwork,GraphObject>> itEntry = entrySet.iterator();
+            while (itEntry.hasNext()) {
+                Map.Entry<CyNetwork,GraphObject> entry = itEntry.next();
+                CyNetwork network = entry.getKey();
                 String attr_ori = attributeMapping.getOriginalAttribute(network.getIdentifier(), i);
                 if (attr_ori==null) continue;
                                 
-                GraphObject go = mapNetGO.get(network);
+                type = cyAttributes.getType(attr_ori);
+                
+                GraphObject go = entry.getValue();
                 String id_ori = go.getIdentifier();
                 
                 Object value_ori = cyAttributes.getAttribute(id_ori, attr_ori);
-                if (value_ori==null) continue; // TODO null attribute 
-                if (value_ori.equals("")) continue; // TODO empty attribute 
+                if (value_ori==null) continue; //TODO null attribute 
+                if (value_ori.equals("")) continue; //TODO empty attribute 
                 values_ori.add(value_ori);
             }
             if (values_ori.isEmpty()) {
                 continue;
             } else if (values_ori.size()==1) { // no attribute conflict
-                cyAttributes.setAttribute(id, attr_merged, values_ori.iterator().next().toString()); // TODO modify to support other types
-            } else {
-                // TODO: modify the code--use a conflict node and put to conflictHandler later
-                String value = new String();
-                Iterator<String> itValue = values_ori.iterator();
-                while (itValue.hasNext()) {
-                    value += itValue.next()+"_";
+                //cyAttributes.setAttribute(id, attr_merged, values_ori.iterator().next().toString()); //TODO modify to support other types
+                
+                if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(attr_merged)) {
+                    cyAttributes.getMultiHashMapDefinition().defineAttribute(attr_merged, type, null);
                 }
-                cyAttributes.setAttribute(id, attr_merged, value); // add a new attribute?
+                
+                Object obj = values_ori.iterator().next();
+                cyAttributes.getMultiHashMap().setAttributeValue(id, attr_merged, obj, null);
+            } else {
+                //TODO: modify the code--use a conflict node and put to conflictHandler later
+                if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(attr_merged)) {
+                    cyAttributes.getMultiHashMapDefinition().defineAttribute(attr_merged, type, null);
+                }
+                
+                Object obj = values_ori.iterator().next();
+                cyAttributes.getMultiHashMap().setAttributeValue(id, attr_merged, obj, null);
             }
         }
     }

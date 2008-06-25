@@ -48,7 +48,7 @@ import java.util.Iterator;
  * Class to instore the information how to mapping the attributes 
  * in the original networks to those in the resulting networks
  * 
- * @author JGao
+ * 
  */
 public class AttributeMappingImpl implements AttributeMapping {
     private Map<String,Vector<String>> attributeMapping; //attribute mapping
@@ -176,10 +176,10 @@ public class AttributeMappingImpl implements AttributeMapping {
         attrs.set(attrs.size()-1, attributeName); // set attr
         
         String attrMerged = attributeName;
-        // TODO remove in Cytosape3
+        //TODO remove in Cytosape3
         if (attributeName.compareTo(Semantics.CANONICAL_NAME)==0) {
             attributeName = netID+"."+Semantics.CANONICAL_NAME;
-        }// TODO remove in Cytosape3
+        }//TODO remove in Cytosape3
         
         attributeMerged.add(getDefaultMergedAttrName(attributeName)); // add in merged attr  
     }
@@ -210,16 +210,16 @@ public class AttributeMappingImpl implements AttributeMapping {
                             
 
             for (int i=0; i<nAttr; i++) {
-                // TODO REMOVE IN Cytoscape3.0
+                //TODO REMOVE IN Cytoscape3.0
                 if (attributeNames[i].compareTo(Semantics.CANONICAL_NAME)==0) {
                     continue;
-                }// TODO REMOVE IN Cytoscape3.0
+                }//TODO REMOVE IN Cytoscape3.0
                 
                 addNewAttribute(netID, attributeNames[i]);
             }
             
-            // TODO REMOVE IN 3.0, canonicalName in each network form a separate attribute in resulting network
-            addNewAttribute(netID, Semantics.CANONICAL_NAME);// TODO REMOVE IN Cytoscape3.0
+            //TODO REMOVE IN 3.0, canonicalName in each network form a separate attribute in resulting network
+            addNewAttribute(netID, Semantics.CANONICAL_NAME);//TODO REMOVE IN Cytoscape3.0
             
 
         } else {
@@ -240,11 +240,11 @@ public class AttributeMappingImpl implements AttributeMapping {
             for (int i=0; i<nAttr; i++) {
                 String at = attributeNames[i];
                  
-                // TODO REMOVE IN Cytoscape3.0, canonicalName in each network form a separate attribute in resulting network
+                //TODO REMOVE IN Cytoscape3.0, canonicalName in each network form a separate attribute in resulting network
                 if (at.compareTo(Semantics.CANONICAL_NAME)==0) {
                     addNewAttribute(netID, Semantics.CANONICAL_NAME);
                     continue;
-                }// TODO REMOVE IN Cytoscape3.0
+                }//TODO REMOVE IN Cytoscape3.0
                  
                 boolean found = false;             
                 for (int ir=0; ir<nr; ir++) {

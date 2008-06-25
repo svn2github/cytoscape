@@ -53,7 +53,7 @@ import giny.model.Edge;
 /**
  * NetworkMerge implement
  * 
- * @author JGao
+ * 
  */
 public abstract class AbstractNetworkMerge implements NetworkMerge {
      /**
@@ -98,7 +98,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * @return true if n1 and n2 matches
      */
     public boolean matchEdge(CyNetwork net1, Edge e1, CyNetwork net2, Edge e2) {
-        // TODO should interaction be considered or not?
+        //TODO should interaction be considered or not?
         CyAttributes attributes = Cytoscape.getEdgeAttributes();
         if (!attributes.getAttribute(e1.getIdentifier(),Semantics.INTERACTION)
                 .equals(attributes.getAttribute(e2.getIdentifier(), Semantics.INTERACTION)))

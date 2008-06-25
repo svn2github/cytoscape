@@ -44,7 +44,7 @@ import cytoscape.CyNetwork;
 /**
  * Interface of merging networks
  * 
- * @author JGao
+ * 
  */
 
 public interface NetworkMerge {

@@ -43,7 +43,7 @@ import java.util.Collection;
 /**
  * Information which attribute to be used for matching nodes
  * 
- * @author JGao
+ * 
  */
 public interface MatchingAttribute {
 

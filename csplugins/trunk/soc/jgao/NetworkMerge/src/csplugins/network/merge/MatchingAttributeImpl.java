@@ -45,7 +45,7 @@ import java.util.HashMap;
  * Class to instore the information which attribute to be used 
  * for matching nodes
  * 
- * @author JGao
+ * 
  */
 public class MatchingAttributeImpl implements MatchingAttribute {
     private Map<String,String> attributeForMatching; // network name to attribute name

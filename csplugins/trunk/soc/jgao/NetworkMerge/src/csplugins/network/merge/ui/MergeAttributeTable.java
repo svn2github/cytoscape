@@ -65,7 +65,7 @@ import javax.swing.JOptionPane;
  * Table for customizing attribute mapping from original netowrks
  * to resulting network
  * 
- * @author JGao
+ * 
  */
 class MergeAttributeTable extends JTable{
     private final String nullAttr = "[DELETE THIS]";
@@ -174,7 +174,7 @@ class MergeAttributeTable extends JTable{
         public int getRowCount() {
             int n = attributeMapping.getSizeMergedAttributes();
             //n = n+1; // +1: add an empty row in the end (TODO: use this one in Cytoscape3.0)
-            n = n+3; // TODO REMOVE in Cytoscape3.0
+            n = n+3; //TODO REMOVE in Cytoscape3.0
             return attributeMapping.getSizeNetwork()==0?0:n; 
         }
 
@@ -188,14 +188,14 @@ class MergeAttributeTable extends JTable{
 
         public Object getValueAt(int row, int col) {
             int iAttr;
-            // TODO remove in Cytoscape3.0
+            //TODO remove in Cytoscape3.0
             if (row==0) {
                 return "ID";
             } else if (row==1) {
                 return Semantics.CANONICAL_NAME;
             } else {
                 iAttr = row-2;
-            }// TODO remove in Cytoscape3.0
+            }//TODO remove in Cytoscape3.0
             
             //iAttr=row; //TODO use this one in Cytoscape3.0
             
@@ -221,8 +221,8 @@ class MergeAttributeTable extends JTable{
          * 
          */
         public boolean isCellEditable(int row, int col) {
-            // TODO remove in Cytoscape3.0
-            if (row<2) return false;// TODO remove in Cytoscape3.0
+            //TODO remove in Cytoscape3.0
+            if (row<2) return false;//TODO remove in Cytoscape3.0
             
             if (row!=getRowCount()-1) return true;
             return (col!=getColumnCount()-1);
@@ -236,8 +236,8 @@ class MergeAttributeTable extends JTable{
             if (value==null) return;
             
             String attr = (String) value;
-            int iAttr = row-2;// TODO remove in Cytoscape3.0
-            //int iAttr = row; // TODO use in Cytoscape3.0
+            int iAttr = row-2;//TODO remove in Cytoscape3.0
+            //int iAttr = row; //TODO use in Cytoscape3.0
             
             //if (attr==null) return; // click on the last row, but not selected
             int n = attributeMapping.getSizeMergedAttributes();
@@ -249,11 +249,11 @@ class MergeAttributeTable extends JTable{
                     return;
                 }
                 
-                // TODO remove in Cytoscape3.0
+                //TODO remove in Cytoscape3.0
                 if (attr.compareTo("ID")==0||attr.compareTo(Semantics.CANONICAL_NAME)==0) {
                     JOptionPane.showMessageDialog(getParent(),"Atribute "+attr+" is reserved! Please use another name for this attribute!", "Error: duplicated attribute Name", JOptionPane.ERROR_MESSAGE );
                     return;
-                }// TODO remove in Cytoscape3.0
+                }//TODO remove in Cytoscape3.0
                 
                 if (attr.length()==0) {
                     JOptionPane.showMessageDialog(getParent(),"Please use a non-empty name for the attribute!", "Error: empty attribute Name", JOptionPane.ERROR_MESSAGE );

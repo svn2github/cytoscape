@@ -90,7 +90,7 @@ import javax.swing.event.ListSelectionEvent;
 /**
  * Main dialog for advance network merge
  * 
- * @author  JGao
+ * 
  */
 public class NetworkMergeDialog extends JDialog {
 

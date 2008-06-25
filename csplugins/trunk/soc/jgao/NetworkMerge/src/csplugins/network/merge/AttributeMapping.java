@@ -42,7 +42,7 @@ import java.util.Set;
  * Instore the information how to mapping the attributes 
  * in the original networks to those in the resulting networks
  * 
- * @author JGao
+ * 
  */
 public interface AttributeMapping {
     

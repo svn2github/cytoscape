@@ -55,7 +55,7 @@ import javax.swing.JComboBox;
 /**
  * Table for selecting which attribute to use for matching nodes
  * 
- * @author JGao
+ * 
  */
 class MatchNodeTable extends JTable{ 
     private MatchingAttribute matchingAttribute;
@@ -72,9 +72,9 @@ class MatchNodeTable extends JTable{
         int n = matchingAttribute.size();
         for (int i=0; i<n; i++) {
             Vector<String> attrs = new Vector<String>();
-            // TODO remove in Cytoscape3
+            //TODO remove in Cytoscape3
             attrs.add("ID");
-            // TODO: modify if local attribute implemented
+            //TODO: modify if local attribute implemented
             attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
             JComboBox comboBox = new JComboBox(attrs);
             TableColumn column = getColumnModel().getColumn(i);
