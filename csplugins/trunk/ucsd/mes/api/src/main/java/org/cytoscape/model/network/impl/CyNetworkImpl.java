@@ -63,7 +63,6 @@ public class CyNetworkImpl implements CyNetwork {
 		for ( String key : in.keySet() ) {
 			CyAttributesManager mgr = in.get(key);
 			// this is bad because it means we now depend on this particular impl
-			
 			local.put( key, new CyAttributesManagerImpl( mgr.getTypeMap() ) );
 		}
 	}

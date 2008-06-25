@@ -1,8 +1,6 @@
 
 
-package org.cytoscape.event;
-
-import java.util.List;
+package org.cytoscape.event.impl;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

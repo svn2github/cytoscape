@@ -15,7 +15,7 @@ public class CLTunableInterceptor extends AbstractTunableInterceptor<CLHandler>{
 	
 	public CLTunableInterceptor(String[] args) {
 		super(new CLHandlerFactory());
-		this.args = args;
+		this.args = (String[])args.clone();
 	}
 
 	protected void process(List<CLHandler> lh) {

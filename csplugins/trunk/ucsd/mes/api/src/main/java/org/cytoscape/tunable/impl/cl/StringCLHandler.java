@@ -6,23 +6,10 @@ import java.util.*;
 import org.apache.commons.cli.*;
 import org.cytoscape.tunable.*;
 
-public class StringCLHandler implements CLHandler {
-
-	Field f;
-	Object o;
-	Tunable t;
+public class StringCLHandler extends AbstractCLHandler {
 
 	public StringCLHandler(Field f, Object o, Tunable t) {
-		this.f = f;
-		this.o = o;
-		this.t = t;
-	}
-
-	
-	public Option getOption() {
-		String n = f.getName();
-
-		return new Option(n.substring(0,1), n, true, t.description());
+		super(f,o,t);
 	}
 
 	public void handleLine( CommandLine line ) {

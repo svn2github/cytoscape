@@ -1,10 +1,9 @@
 
 package org.cytoscape.tunable.impl.cl;
 
-import java.lang.reflect.*;
-import javax.swing.JPanel;
-import org.apache.commons.cli.*;
-import org.cytoscape.tunable.*;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.CommandLine;
+import org.cytoscape.tunable.Handler;
 
 public interface CLHandler extends Handler {
 	public Option getOption();
