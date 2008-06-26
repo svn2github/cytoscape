@@ -4,6 +4,8 @@ package cytoscape.layout;
 import cytoscape.CytoscapeInit;
 import cytoscape.util.ModulePropertiesImpl;
 
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Iterator;
 
 import javax.swing.JPanel;
@@ -65,7 +67,15 @@ public class LayoutProperties extends ModulePropertiesImpl implements TunableLis
 
 		addSubPanels(tunablesPanel, tunablesList.iterator(), new Integer(100000), null);
 
+		tunablesPanel.doLayout();
 		tunablesPanel.validate();
+		// now signal any listeners that we've resized
+		ComponentListener[] resizeListeners = tunablesPanel.getComponentListeners();
+		if (resizeListeners == null) return;
+
+		for (int i = 0; i < resizeListeners.length; i++) {
+			resizeListeners[i].componentResized(new ComponentEvent(tunablesPanel, ComponentEvent.COMPONENT_RESIZED));
+		}
 	}
 
 	private void addSubPanels(JPanel panel, Iterator<Tunable>iter, Object count, TunableListener listener) {
@@ -76,9 +86,22 @@ public class LayoutProperties extends ModulePropertiesImpl implements TunableLis
 			}
 			// Get the next tunable
 			Tunable tunable = iter.next();
+
+			if (panel == null) 
+				continue;
+
 			JPanel p = tunable.getPanel();
 			if (tunable.getType() == Tunable.GROUP) {
-				addSubPanels(p, iter, tunable.getValue(), listener);
+				if (!tunable.checkFlag(Tunable.COLLAPSABLE)) {
+					addSubPanels(p, iter, tunable.getValue(), listener);
+				} else {
+					tunable.addTunableValueListener(listener); // We need to listen to collapse/expand changes
+					Boolean collapsed = (Boolean)tunable.getLowerBound();
+					if (!collapsed.booleanValue())
+						addSubPanels(p, iter, tunable.getValue(), listener);
+					else 
+						addSubPanels(null, iter, tunable.getValue(), listener);
+				}
 			}
 			if (p != null)
 				panel.add(p);

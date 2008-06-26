@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 import javax.swing.BoxLayout;
 import javax.swing.border.Border;
@@ -90,7 +91,8 @@ import javax.swing.event.ListSelectionEvent;
  * the smallest integer or double that constitutes a legal
  * input.  For {@link #LIST} tunables, the lowerBound is an array of Objects representing the list to choose from, and for
  * {@link #NODEATTRIBUTE}, and {@link #EDGEATTRIBUTE} tunables, lowerBound is an optional array of {@link String}s that will
- * prefix the list of attributes.  This allows users to provide their own overrides into the list.</li>
+ * prefix the list of attributes.  This allows users to provide their own overrides into the list. For {@link #GROUP} tunables,
+ * that have the {@link #COLLAPSABLE} flag set, this is a Boolean value that indicates whether the group is collapsed or expanded.</li>
  * <li><b>upperBound</b>: for {@link #INTEGER} or {@link #DOUBLE} tunables,
  * the upperBound is an optional {@link Integer} or {@link Double} value representing
  * the larget integer or double that constitutes a legal
@@ -122,7 +124,7 @@ import javax.swing.event.ListSelectionEvent;
  *                          Tunable.BOOLEAN, new Boolean(false)));
  *
  *     layoutProperties.add(new Tunable("force_alg_settings", "Algorithm settings",
- *                          Tunable.GROUP, new Integer(5)));
+ *                          Tunable.GROUP, new Integer(5), new Boolean(true), null, Tunable.COLLAPSABLE));
  *
  *     layoutProperties.add(new Tunable("defaultSpringCoefficient", "Default Spring Coefficient",
  *                          Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
@@ -198,6 +200,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	private boolean valueChanged = true;
 	private String savedValue = null;
 	private boolean usingSlider = false;
+	private boolean collapsed = false;
 	private List<String>attributeList = null;
 	private List<TunableListener>listenerList = null;
 	
@@ -326,6 +329,13 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	final public static int IMMUTABLE =0x10;
 
 	/**
+	 * If the COLLAPSABLE flag is set for a GROUP Tunable, then this Group of Tunables
+	 * should be collapsable, and will be rendered with a button to allow 
+	 * collapse/expand.
+	 */
+	final public static int COLLAPSABLE =0x20;
+
+	/**
 	 * Constructor to create a Tunable with no bounds
 	 * information, and no flag.
 	 *
@@ -387,7 +397,13 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	 */
 	public Tunable(String name, String desc, int type, Object value, Object lowerBound,
 	               Object upperBound, int flag) {
-		this(name, desc, type, value, lowerBound, upperBound, flag, false);
+		this.name = name;
+		this.desc = desc;
+		this.type = type;
+		this.value = value;
+		this.upperBound = upperBound;
+		this.lowerBound = lowerBound;
+		this.flag = flag;
 	}
 	
 	/**
@@ -419,13 +435,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	 */
 	public Tunable(String name, String desc, int type, Object value, Object lowerBound,
             Object upperBound, int flag, boolean immutable) {
-		this.name = name;
-		this.desc = desc;
-		this.type = type;
-		this.value = value;
-		this.upperBound = upperBound;
-		this.lowerBound = lowerBound;
-		this.flag = flag;
+		this(name, desc, type, value, lowerBound, upperBound, flag);
 		if (immutable)
 			setFlag(IMMUTABLE);
 		// CyLogger.getLogger().info("Tunable "+desc+" has value "+value);
@@ -639,6 +649,13 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		} else if (checkFlag(USESLIDER)) {
 			slider.setMinimum(sliderScale(lowerBound));
 			slider.setLabelTable(createLabels(slider));
+		} else if (type == GROUP) {
+			// This indicates whether this GROUP is collapsed
+			// or not
+			if (!checkFlag(COLLAPSABLE))
+				return;
+			// Update presentation
+			updateValueListeners();
 		}
 	}
 
@@ -726,11 +743,11 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
  	 * @param listener the TunableListener to add
  	 */
 	public void addTunableValueListener(TunableListener listener) {
-		if (listener == null)
-			return;
-
 		if (listenerList == null)
 			listenerList = new ArrayList();
+
+		if (listener == null || listenerList.contains(listener))
+			return;
 
 		listenerList.add(listener);
 	}
@@ -788,6 +805,25 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			titleBorder.setTitlePosition(TitledBorder.LEFT);
 			titleBorder.setTitlePosition(TitledBorder.TOP);
 			tunablesPanel.setBorder(titleBorder);
+			if (checkFlag(COLLAPSABLE)) {
+				String label = "<html><b><i>&nbsp;&nbsp;Hide "+desc+"</i></b></html>";
+				// Update the internal collapsed flag
+				this.collapsed = ((Boolean)lowerBound).booleanValue();
+				if (collapsed)
+					label = "<html><b><i>&nbsp;&nbsp;Show "+desc+"</i></b></html>";
+				// Add collapse/expand button
+				JPanel collapsePanel = new JPanel(new BorderLayout(0, 2));
+				JButton collapseButton = null;
+				if (collapsed)
+					collapseButton = new JButton(UIManager.getIcon("Tree.collapsedIcon"));
+				else
+					collapseButton = new JButton(UIManager.getIcon("Tree.expandedIcon"));
+				collapseButton.setActionCommand("collapse");
+				collapseButton.addActionListener(this);
+				collapsePanel.add(collapseButton, BorderLayout.LINE_START);
+				collapsePanel.add(new JLabel(label), BorderLayout.CENTER);
+				tunablesPanel.add(collapsePanel);
+			}
 
 			return tunablesPanel;
 		}
@@ -1120,6 +1156,13 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	 * This method is public as a byproduct of the implementation.
 	 */
 	public void actionPerformed(ActionEvent e) {
+		if (type == GROUP && checkFlag(COLLAPSABLE)) {
+			if (collapsed) 
+				collapsed = false;
+			else
+				collapsed = true;
+			lowerBound = Boolean.valueOf(collapsed);
+		}
 		updateValueListeners();
 	}
 
