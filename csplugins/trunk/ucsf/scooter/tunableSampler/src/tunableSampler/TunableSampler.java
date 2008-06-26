@@ -45,6 +45,8 @@ import cytoscape.plugin.CytoscapePlugin;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentListener;
+import java.awt.event.ComponentEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +160,8 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 		}
 
 		properties.add(new Tunable("group2", "Attribute Tunables",
-		                            Tunable.GROUP, new Integer(2)));
+		                            Tunable.GROUP, new Integer(2), 
+		                            new Boolean(true), null, Tunable.COLLAPSABLE));
 
 		{
 			ArrayList<String>initialValues = new ArrayList();
@@ -299,7 +302,7 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 	// For simplicity, I've implemented this as an inner class, but in reality
 	// I would always recommend a cleaner division where this would be in a
 	// separate tunableSampler.ui package.
-	public class SamplerDialog extends JDialog implements ActionListener {
+	public class SamplerDialog extends JDialog implements ActionListener,ComponentListener {
 		LayoutProperties properties = null;
 		JPanel tunablePanel = null;
 		TunableSampler caller = null;
@@ -322,6 +325,8 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 
 			// Create a panel for the Tunables
 			this.tunablePanel = properties.getTunablePanel();
+
+			tunablePanel.addComponentListener(this);
 
 			Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 			TitledBorder titleBorder = BorderFactory.createTitledBorder(selBorder, "Tunable Settings");
@@ -351,6 +356,17 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 			mainPanel.add(buttonBox);
 			setContentPane(mainPanel);
 		}
+
+		public void componentHidden(ComponentEvent e) { }
+
+		public void componentMoved(ComponentEvent e) { }
+
+		public void componentResized(ComponentEvent e) {
+			doLayout();
+			pack();
+		}
+
+		public void componentShown(ComponentEvent e) { }
 
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
