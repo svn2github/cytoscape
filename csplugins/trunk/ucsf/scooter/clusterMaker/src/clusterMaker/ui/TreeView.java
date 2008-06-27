@@ -160,6 +160,9 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		// Get our data model
 		dataModel = new TreeViewModel(myLogger);
 
+		// Set up the global config
+		setConfigDefaults(new PropertyConfig(globalConfigName(),"ProgramConfig"));
+
 		// Set up our configuration
 		PropertyConfig documentConfig = new PropertyConfig(getShortName(),"DocumentConfig");
 		dataModel.setDocumentConfig(documentConfig);

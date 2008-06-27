@@ -157,6 +157,9 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 	public void startup() {
 		updateSettings();
 
+		// Set up the global config
+		setConfigDefaults(new PropertyConfig(globalConfigName(),"ProgramConfig"));
+
 		myNetwork = Cytoscape.getCurrentNetwork();
 
 		// Set the "cluster" attributes, as appropriate

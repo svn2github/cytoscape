@@ -78,21 +78,6 @@ public abstract class TreeViewApp implements WindowListener {
 		return versionTag;
 	}
 
-	// url of homepage to go for updates
-	protected static String updateUrl = "http://jtreeview.sourceforge.net";
-	// url of announcements mailing list
-	protected static String announcementUrl = "http://lists.sourceforge.net/lists/listinfo/jtreeview-announce";
-	/** 
-	* Getter for updateUrl, a string representing a website where you can download newer versions.
-	*/
-	public static String getUpdateUrl() {
-		return updateUrl;
-	}
-	public static String getAnnouncementUrl() {
-		return announcementUrl;
-	}
-	
-	
 	/**  holds all open windows */
 	protected java.util.Vector windows;
 	/**  holds global config */
@@ -103,7 +88,7 @@ public abstract class TreeViewApp implements WindowListener {
 	* Opens up a globalConfig from the default location.
 	*/
 	public TreeViewApp() {
-		this (new PropertyConfig(globalConfigName(), "ProgramConfig"));
+		this (null);
 	}
 
 	/**
@@ -112,16 +97,9 @@ public abstract class TreeViewApp implements WindowListener {
 	*/
 	public TreeViewApp(PropertyConfig propertyConfig) {
 		windows = new java.util.Vector();
-		globalConfig = propertyConfig;
+
+		setConfigDefaults(propertyConfig);
 		
-		geneUrlPresets = new UrlPresets(getGlobalConfig().getNode("GeneUrlPresets"));
-		arrayUrlPresets = new UrlPresets();
-		arrayUrlPresets.bindConfig(getGlobalConfig().getNode("ArrayUrlPresets"));
-		if(arrayUrlPresets.getPresetNames().length == 0) {
-		  	arrayUrlPresets.addPreset("Google",
-		  "http://www.google.com/search?hl=en&ie=ISO-8859-1&q=HEADER");
-		  	arrayUrlPresets.setDefaultPreset(-1);
-		}
 		try {
 			ToolTipManager ttm  = ToolTipManager.sharedInstance();
 			ttm.setEnabled(true);
@@ -131,12 +109,28 @@ public abstract class TreeViewApp implements WindowListener {
 
 	private UrlPresets geneUrlPresets, arrayUrlPresets;
 	private boolean exitOnWindowsClosed = true;
-	  public UrlPresets getGeneUrlPresets() {
+
+	public void setConfigDefaults(PropertyConfig propertyConfig) {
+		globalConfig = propertyConfig;
+
+		if (globalConfig != null) {
+			geneUrlPresets = new UrlPresets(getGlobalConfig().getNode("GeneUrlPresets"));
+			arrayUrlPresets = new UrlPresets();
+			arrayUrlPresets.bindConfig(getGlobalConfig().getNode("ArrayUrlPresets"));
+			if(arrayUrlPresets.getPresetNames().length == 0) {
+		 	 	arrayUrlPresets.addPreset("Google",
+		 		 "http://www.google.com/search?hl=en&ie=ISO-8859-1&q=HEADER");
+		  	arrayUrlPresets.setDefaultPreset(-1);
+			}
+		}
+	}
+
+	public UrlPresets getGeneUrlPresets() {
 		return geneUrlPresets;
-	  }
-	  public UrlPresets getArrayUrlPresets() {
+	}
+	public UrlPresets getArrayUrlPresets() {
 		return arrayUrlPresets;
-	  }
+	}
 
 	public ViewFrame openNew() {
 		TreeViewFrame tvFrame = new TreeViewFrame(this);
@@ -263,7 +257,7 @@ public abstract class TreeViewApp implements WindowListener {
 	 *
 	 * @return    A system-specific guess at a global config file name.
 	 */
-	private static String globalConfigName() {
+	protected static String globalConfigName() {
 		return "TreeViewConfig";
 	}
 

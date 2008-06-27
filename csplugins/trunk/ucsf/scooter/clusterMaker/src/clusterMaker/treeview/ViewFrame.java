@@ -86,6 +86,7 @@ public abstract class ViewFrame extends JFrame implements Observer {
 
 		// XXX should drag out of global config
 		// setSize(rectangle.width * 3 / 4, rectangle.height * 4 / 5);
+		System.out.println(rectangle.toString());
 		setSize(rectangle.width / 4, rectangle.height / 4);
 		center(rectangle);
 	}
@@ -111,7 +112,6 @@ public abstract class ViewFrame extends JFrame implements Observer {
 				}
 			});
 	}
-
 
 	/**
 	 *  Constructor for the ViewFrame object

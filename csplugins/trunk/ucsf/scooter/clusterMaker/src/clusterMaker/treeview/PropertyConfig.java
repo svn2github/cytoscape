@@ -69,7 +69,7 @@ public class PropertyConfig {
 		this.prefix = prefix;
 		Properties props = CytoscapeInit.getProperties();
 		String xml = props.getProperty(prefix+"."+tag);
-		System.out.println("Property "+prefix+"."+tag+" from Cytoscape = "+xml);
+		// System.out.println("Property "+prefix+"."+tag+" from Cytoscape = "+xml);
 		this.root = xmlParse(xml, tag);
 		if (this.root == null)
 			this.root = new PropertyConfigNode(tag);
@@ -104,7 +104,7 @@ public class PropertyConfig {
 		// added indices to indicate children.
 		Properties props = CytoscapeInit.getProperties();
 		String config = getProperty(root);
-		System.out.println("Setting property "+prefix+"."+root.getName()+" to "+config);
+		// System.out.println("Setting property "+prefix+"."+root.getName()+" to "+config);
 		props.setProperty(prefix+"."+root.getName(),config);
 	}
     
