@@ -225,7 +225,7 @@ public class TreeViewModel extends TVModel {
 		int headerNumber = 0;
 		int headerLength = headers[0].length;
 		for (String group: groupList) {
-			String[] tokens = group.split("[\t ]");
+			String[] tokens = group.split("[\t]");
 			for (int t = 0; t < headerLength; t++) {
 				headers[headerNumber][t] = tokens[t];
 			}

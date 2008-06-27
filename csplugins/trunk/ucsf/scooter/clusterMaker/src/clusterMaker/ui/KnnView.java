@@ -72,12 +72,12 @@ import clusterMaker.algorithms.hierarchical.EisenCluster;
 // TreeView imports
 import clusterMaker.treeview.FileSet;
 import clusterMaker.treeview.HeaderInfo;
+import clusterMaker.treeview.KnnViewFrame;
 import clusterMaker.treeview.LoadException;
+import clusterMaker.treeview.PropertyConfig;
 import clusterMaker.treeview.TreeSelectionI;
 import clusterMaker.treeview.TreeViewApp;
-import clusterMaker.treeview.KnnViewFrame;
 import clusterMaker.treeview.ViewFrame;
-import clusterMaker.treeview.XmlConfig;
 import clusterMaker.treeview.model.KnnViewModel;
 
 /**
@@ -94,8 +94,8 @@ public class KnnView extends TreeView {
 		myLogger = CyLogger.getLogger(KnnView.class);
 	}
 
-	public KnnView(XmlConfig xmlConfig) {
-		super(xmlConfig);
+	public KnnView(PropertyConfig propConfig) {
+		super(propConfig);
 		myLogger = CyLogger.getLogger(KnnView.class);
 	}
 
@@ -129,7 +129,7 @@ public class KnnView extends TreeView {
 		dataModel = new KnnViewModel(myLogger);
 
 		// Set up our configuration
-		XmlConfig documentConfig = new XmlConfig("<DocumentConfig></DocumentConfig>","DocumentConfig");
+		PropertyConfig documentConfig = new PropertyConfig(getShortName(),"DocumentConfig");
 		dataModel.setDocumentConfig(documentConfig);
 
 		// Create our view frame

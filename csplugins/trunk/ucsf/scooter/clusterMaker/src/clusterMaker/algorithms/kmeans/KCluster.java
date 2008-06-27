@@ -100,6 +100,7 @@ public class KCluster {
 			List<String> groupNames = new ArrayList();
 
 			// Create our groups
+			CyGroup group = null;
 			for (String clusterName: groupMap.keySet()) {
 				List<CyNode> memberList = groupMap.get(clusterName);
 				groupNames.add(clusterName);
@@ -107,10 +108,11 @@ public class KCluster {
 				logger.debug("Creating group: "+clusterName);
 
 				// Create the group
-				CyGroup group = CyGroupManager.createGroup(clusterName, memberList, null);
+				group = CyGroupManager.createGroup(clusterName, memberList, null);
 				if (group != null) 
-					CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+					CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), false);
 			}
+			CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
 
 			CyAttributes netAttr = Cytoscape.getNetworkAttributes();
 			String netID = Cytoscape.getCurrentNetwork().getIdentifier();

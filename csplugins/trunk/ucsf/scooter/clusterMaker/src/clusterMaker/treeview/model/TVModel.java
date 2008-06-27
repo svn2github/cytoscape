@@ -30,7 +30,7 @@ import clusterMaker.treeview.DataModel;
 import clusterMaker.treeview.FileSet;
 import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.LoadException;
-import clusterMaker.treeview.XmlConfig;
+import clusterMaker.treeview.PropertyConfig;
 
 public class TVModel extends Observable implements DataModel {
   /*
@@ -138,7 +138,7 @@ public class TVModel extends Observable implements DataModel {
 	  return source;
 	}
     public ConfigNode getDocumentConfig() {return documentConfig.getRoot();}
-    public void setDocumentConfig(XmlConfig newVal) { documentConfig = newVal;}
+    public void setDocumentConfig(PropertyConfig newVal) { documentConfig = newVal;}
     public TVModel() {
 	  super();
 	  /* build TVModel, initially empty... */	
@@ -530,7 +530,7 @@ public class TVModel extends Observable implements DataModel {
 		
     protected boolean eweightFound = false;
     protected boolean gweightFound = false;
-    protected XmlConfig documentConfig; // holds document config
+    protected PropertyConfig documentConfig; // holds document config
 	/**
 	 * Really just a thin wrapper around exprData array.
 	 * @author aloksaldanha

@@ -29,7 +29,8 @@ import java.util.*;
 
 import javax.swing.ToolTipManager;
 
-import clusterMaker.treeview.XmlConfig;
+// import clusterMaker.treeview.XmlConfig;
+import clusterMaker.treeview.PropertyConfig;
 import clusterMaker.treeview.UrlPresets;
 import clusterMaker.treeview.ViewFrame;
 
@@ -95,22 +96,23 @@ public abstract class TreeViewApp implements WindowListener {
 	/**  holds all open windows */
 	protected java.util.Vector windows;
 	/**  holds global config */
-	private XmlConfig globalConfig;
+	private PropertyConfig globalConfig;
 
 
 	/**  Constructor for the TreeViewApp object.
 	* Opens up a globalConfig from the default location.
 	*/
 	public TreeViewApp() {
-		this (new XmlConfig(globalConfigName(), "ProgramConfig"));
+		this (new PropertyConfig(globalConfigName(), "ProgramConfig"));
 	}
+
 	/**
 	* Constructor for the TreeViewApp object
 	* takes configuration from the passed in XmlConfig.
 	*/
-	public TreeViewApp(XmlConfig xmlConfig) {
+	public TreeViewApp(PropertyConfig propertyConfig) {
 		windows = new java.util.Vector();
-		globalConfig = xmlConfig;
+		globalConfig = propertyConfig;
 		
 		geneUrlPresets = new UrlPresets(getGlobalConfig().getNode("GeneUrlPresets"));
 		arrayUrlPresets = new UrlPresets();
@@ -126,6 +128,7 @@ public abstract class TreeViewApp implements WindowListener {
 		} catch (Exception e) {
 		}
 	}
+
 	private UrlPresets geneUrlPresets, arrayUrlPresets;
 	private boolean exitOnWindowsClosed = true;
 	  public UrlPresets getGeneUrlPresets() {
@@ -146,7 +149,7 @@ public abstract class TreeViewApp implements WindowListener {
 	 *
 	 * @return    The globalConfig value
 	 */
-	public XmlConfig getGlobalConfig() {
+	public PropertyConfig getGlobalConfig() {
 		return globalConfig;
 	}
 
@@ -261,25 +264,7 @@ public abstract class TreeViewApp implements WindowListener {
 	 * @return    A system-specific guess at a global config file name.
 	 */
 	private static String globalConfigName() {
-		// must find and construct the properties object...
-		String dir   = System.getProperty("user.home");
-		;
-		String fsep  = System.getProperty("file.separator");
-		;
-		String os    = System.getProperty("os.name");
-		;
-		String file;
-		if (os.indexOf("Mac") >= 0) {
-			file = "JavaTreeView Config";
-		} else if (fsep.equals("/")) {
-			file = ".javaTreeViewXmlrc";
-		} else if (fsep.equals("\\")) {
-			file = "jtview.xml";
-		} else {
-			System.out.println("Could not determine sys type! using name jtview.cfg");
-			file = "jtview.xml";
-		}
-		return dir + fsep + file;
+		return "TreeViewConfig";
 	}
 
 	/**

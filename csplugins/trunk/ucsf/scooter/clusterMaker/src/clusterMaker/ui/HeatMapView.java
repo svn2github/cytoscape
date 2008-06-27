@@ -79,11 +79,11 @@ import clusterMaker.algorithms.hierarchical.EisenCluster;
 import clusterMaker.treeview.FileSet;
 import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.LoadException;
+import clusterMaker.treeview.PropertyConfig;
 import clusterMaker.treeview.TreeSelectionI;
 import clusterMaker.treeview.TreeViewApp;
 import clusterMaker.treeview.TreeViewFrame;
 import clusterMaker.treeview.ViewFrame;
-import clusterMaker.treeview.XmlConfig;
 import clusterMaker.treeview.model.TreeViewModel;
 
 /**
@@ -121,8 +121,8 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		initializeProperties();
 	}
 
-	public HeatMapView(XmlConfig xmlConfig) {
-		super(xmlConfig);
+	public HeatMapView(PropertyConfig propConfig) {
+		super(propConfig);
 		selectedNodes = new ArrayList();
 		selectedArrays = new ArrayList();
 		// setExitOnWindowsClosed(false);
@@ -195,7 +195,7 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		dataModel = new TreeViewModel(myLogger);
 
 		// Set up our configuration
-		XmlConfig documentConfig = new XmlConfig("<DocumentConfig></DocumentConfig>","DocumentConfig");
+		PropertyConfig documentConfig = new PropertyConfig(getShortName(),"DocumentConfig");
 		dataModel.setDocumentConfig(documentConfig);
 
 		// Create our view frame

@@ -73,11 +73,11 @@ import clusterMaker.algorithms.hierarchical.EisenCluster;
 import clusterMaker.treeview.FileSet;
 import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.LoadException;
+import clusterMaker.treeview.PropertyConfig;
 import clusterMaker.treeview.TreeSelectionI;
 import clusterMaker.treeview.TreeViewApp;
 import clusterMaker.treeview.TreeViewFrame;
 import clusterMaker.treeview.ViewFrame;
-import clusterMaker.treeview.XmlConfig;
 import clusterMaker.treeview.model.TreeViewModel;
 
 /**
@@ -106,8 +106,8 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		myLogger = CyLogger.getLogger(TreeView.class);
 	}
 
-	public TreeView(XmlConfig xmlConfig) {
-		super(xmlConfig);
+	public TreeView(PropertyConfig propConfig) {
+		super(propConfig);
 		selectedNodes = new ArrayList();
 		selectedArrays = new ArrayList();
 		// setExitOnWindowsClosed(false);
@@ -161,7 +161,7 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		dataModel = new TreeViewModel(myLogger);
 
 		// Set up our configuration
-		XmlConfig documentConfig = new XmlConfig("<DocumentConfig></DocumentConfig>","DocumentConfig");
+		PropertyConfig documentConfig = new PropertyConfig(getShortName(),"DocumentConfig");
 		dataModel.setDocumentConfig(documentConfig);
 
 		// Create our view frame

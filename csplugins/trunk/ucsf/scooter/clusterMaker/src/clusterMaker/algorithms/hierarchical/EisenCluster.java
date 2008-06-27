@@ -71,6 +71,9 @@ public class EisenCluster {
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
 
+		for (int att = 0; att < weightAttributes.length; att++)
+			logger.debug("Attribute: '"+weightAttributes[att]+"'");
+
 		// Create the matrix
 		Matrix matrix = new Matrix(weightAttributes, transpose);
 
@@ -160,6 +163,7 @@ public class EisenCluster {
 			String netID = Cytoscape.getCurrentNetwork().getIdentifier();
 			ArrayList<String> groupNames = new ArrayList(nodeList.length);
 			CyGroup top = createGroups(matrix, nodeList, nodeList[nodeList.length-1], groupNames);
+			CyGroupManager.setGroupViewer(top, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
 			// Remember this in the _hierarchicalGroups attribute
 			netAttr.setListAttribute(netID, GROUP_ATTRIBUTE, groupNames);
 		}
@@ -734,7 +738,7 @@ public class EisenCluster {
 		}
 
 		if (group != null) {
-			CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), true);
+			CyGroupManager.setGroupViewer(group, "namedSelection", Cytoscape.getCurrentNetworkView(), false);
 			groupNames.add(node.getName());
 		}
 
