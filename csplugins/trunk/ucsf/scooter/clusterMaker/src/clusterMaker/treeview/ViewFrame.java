@@ -86,8 +86,11 @@ public abstract class ViewFrame extends JFrame implements Observer {
 
 		// XXX should drag out of global config
 		// setSize(rectangle.width * 3 / 4, rectangle.height * 4 / 5);
-		System.out.println(rectangle.toString());
-		setSize(rectangle.width / 4, rectangle.height / 4);
+		int width = rectangle.width * 3 / 4;
+		int height = rectangle.height * 4 / 5;
+		if (width > 800) width = 800;
+		if (height > 600) height = 600;
+		setSize(width, height);
 		center(rectangle);
 	}
 
@@ -160,7 +163,7 @@ public abstract class ViewFrame extends JFrame implements Observer {
 	* causes documentConfig to be stored. 
 	*/
 	public void closeWindow() {
-		CyLogger.getLogger(ViewFrame.class).info("ViewFrame.dispose");
+		// CyLogger.getLogger(ViewFrame.class).info("ViewFrame.dispose");
 		dispose();
 	}
 

@@ -47,7 +47,7 @@ public abstract class AbstractClusterAlgorithm implements ClusterAlgorithm {
 	// Common class values
 	protected ClusterProperties clusterProperties = null;
 	protected PropertyChangeSupport pcs;
-	boolean debug = false;
+	protected boolean debug = false;
 	boolean canceled = false;
 
 	public AbstractClusterAlgorithm() {

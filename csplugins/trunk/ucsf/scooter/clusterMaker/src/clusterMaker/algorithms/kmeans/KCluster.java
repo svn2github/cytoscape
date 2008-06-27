@@ -62,11 +62,14 @@ public class KCluster {
 	// Random seeds for uniform()
 	static int seed1 = 0;
 	static int seed2 = 0;
+	static boolean debug = false;
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
-	                      int nClusters, int nIterations, boolean transpose, CyLogger log) {
+	                      int nClusters, int nIterations, boolean transpose, 
+	                      CyLogger log, boolean dbg) {
 
 		logger = log;
+		debug = dbg;
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
 
@@ -89,7 +92,8 @@ public class KCluster {
 			for (int i = 0; i < matrix.nRows(); i++) {
 				if (clusters[i] == cluster) {
 					attrList.add(matrix.getRowLabel(i)+"\t"+cluster);
-					logger.debug(matrix.getRowLabel(i)+"\t"+cluster);
+					if (debug)
+						logger.debug(matrix.getRowLabel(i)+"\t"+cluster);
 					memberList.add(matrix.getRowNode(i));
 				}
 			}
@@ -105,7 +109,8 @@ public class KCluster {
 				List<CyNode> memberList = groupMap.get(clusterName);
 				groupNames.add(clusterName);
 
-				logger.debug("Creating group: "+clusterName);
+				if (debug)
+					logger.debug("Creating group: "+clusterName);
 
 				// Create the group
 				group = CyGroupManager.createGroup(clusterName, memberList, null);

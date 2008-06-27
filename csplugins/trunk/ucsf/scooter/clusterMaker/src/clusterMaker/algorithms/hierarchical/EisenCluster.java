@@ -53,6 +53,7 @@ import cytoscape.groups.CyGroupManager;
 public class EisenCluster {
 	final static int IS = 0;
 	final static int JS = 1;
+	static boolean debug = false;
 
 	public final static String GROUP_ATTRIBUTE = "__clusterGroups";
 	public final static String MATRIX_ATTRIBUTE = "__distanceMatrix";
@@ -65,14 +66,17 @@ public class EisenCluster {
 	static CyLogger logger;
 
 	public static String cluster(String weightAttributes[], DistanceMetric metric, 
-	                      ClusterMethod clusterMethod, boolean transpose, CyLogger log) {
+	                      ClusterMethod clusterMethod, boolean transpose, CyLogger log,
+	                      boolean dbg) {
 
 		logger = log;
+		debug = dbg;
 		String keyword = "GENE";
 		if (transpose) keyword = "ARRY";
 
 		for (int att = 0; att < weightAttributes.length; att++)
-			logger.debug("Attribute: '"+weightAttributes[att]+"'");
+			if (debug)
+				logger.debug("Attribute: '"+weightAttributes[att]+"'");
 
 		// Create the matrix
 		Matrix matrix = new Matrix(weightAttributes, transpose);
@@ -260,7 +264,8 @@ public class EisenCluster {
 
 	private static TreeNode[] treeCluster(Matrix matrix, DistanceMetric metric, ClusterMethod clusterMethod) { 
 
-		matrix.printMatrix();
+		if (debug)
+			matrix.printMatrix();
 		double[][] distanceMatrix = matrix.getDistanceMatrix(metric);
 		TreeNode[] result = null;
 		// For debugging purposes, output the distance matrix
@@ -273,22 +278,26 @@ public class EisenCluster {
 
 		switch (clusterMethod) {
 			case SINGLE_LINKAGE:
-				logger.debug("Calculating single linkage hierarchical cluster");
+				if (debug) 
+					logger.debug("Calculating single linkage hierarchical cluster");
 				result = pslCluster(matrix, distanceMatrix, metric);
 				break;
 
 			case MAXIMUM_LINKAGE:
-				logger.debug("Calculating maximum linkage hierarchical cluster");
+				if (debug) 
+					logger.debug("Calculating maximum linkage hierarchical cluster");
 				result = pmlcluster(matrix.nRows(), distanceMatrix);
 				break;
 
 			case AVERAGE_LINKAGE:
-				logger.debug("Calculating average linkage hierarchical cluster");
+				if (debug) 
+					logger.debug("Calculating average linkage hierarchical cluster");
 				result = palcluster(matrix.nRows(), distanceMatrix);
 				break;
 
 			case CENTROID_LINKAGE:
-				logger.debug("Calculating centroid linkage hierarchical cluster");
+				if (debug) 
+					logger.debug("Calculating centroid linkage hierarchical cluster");
 				result = pclcluster(matrix, distanceMatrix, metric);
 				break;
 		}
@@ -696,8 +705,10 @@ public class EisenCluster {
 		// 	System.out.println("newOrder["+i+"] = "+newOrder[i]);
 
 		Integer[] rowOrder = matrix.indexSort(newOrder, newOrder.length);
-		for (int i = 0; i < rowOrder.length; i++) {
-			logger.debug(""+i+": "+matrix.getRowLabel(rowOrder[i].intValue()));
+		if (debug) {
+			for (int i = 0; i < rowOrder.length; i++) {
+				logger.debug(""+i+": "+matrix.getRowLabel(rowOrder[i].intValue()));
+			}
 		}
 		return rowOrder;
 	}

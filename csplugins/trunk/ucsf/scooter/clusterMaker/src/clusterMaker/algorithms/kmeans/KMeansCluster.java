@@ -181,7 +181,8 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
 		// Sanity check all of our settings
-		logger.debug("Performing k-means cluster with k="+kNumber+" using "+distanceMetric+" and attributes: "+dataAttributes);
+		if (debug)
+			logger.debug("Performing k-means cluster with k="+kNumber+" using "+distanceMetric+" and attributes: "+dataAttributes);
 
 		// Get our attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
@@ -193,10 +194,10 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1)
-			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, true, logger);
+			KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, true, logger, debug);
 
 		// Cluster the nodes
-		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, false, logger);
+		KCluster.cluster(attributeArray, distanceMetric, kNumber, rNumber, false, logger, debug);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);

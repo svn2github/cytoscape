@@ -173,7 +173,8 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 	public void doCluster(TaskMonitor monitor) {
 		this.monitor = monitor;
 		// Sanity check all of our settings
-		logger.debug("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
+		if (debug)
+			logger.debug("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
 		// Get our attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
 		// To make debugging easier, sort the attribute array
@@ -184,10 +185,10 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 
 		// Cluster the attributes, if requested
 		if (clusterAttributes && attributeArray.length > 1)
-			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true, logger);
+			EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, true, logger, debug);
 
 		// Cluster the nodes
-		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false, logger);
+		EisenCluster.cluster(attributeArray, distanceMetric, clusterMethod, false, logger, debug);
 
 		// Tell any listeners that we're done
 		pcs.firePropertyChange(ClusterAlgorithm.CLUSTER_COMPUTED, null, this);
