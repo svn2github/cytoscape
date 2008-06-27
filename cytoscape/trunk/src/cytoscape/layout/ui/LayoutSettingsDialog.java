@@ -214,7 +214,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		}
 	}
 
-	private class AlgorithmItemListener implements ItemListener {
+	private class AlgorithmItemListener implements ItemListener, ComponentListener {
 		public AlgorithmItemListener() {
 		}
 
@@ -233,6 +233,9 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 					algorithmPanel.removeAll();
 					algorithmPanel.add(panel);
 
+					// Add a component listener to the panel in case it gets dynamically updated
+					panel.addComponentListener(this);
+
 					Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 					TitledBorder titleBorder = BorderFactory.createTitledBorder(selBorder,
 					                                                            newLayout.toString()
@@ -247,6 +250,22 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 				pack();
 			}
 		}
+
+		public void componentHidden(ComponentEvent e) { }
+
+		public void componentMoved(ComponentEvent e) { }
+
+		// This gets called by the Tunable mechanism is one of our
+		// Tunable GUI's changes size.  This allows us to dynamically
+		// repaint our layout in response
+		public void componentResized(ComponentEvent e) {
+			validate();
+			doLayout();
+			pack();
+		}
+
+		public void componentShown(ComponentEvent e) { }
+
 	}
 
 	private class MyItemRenderer extends JLabel implements ListCellRenderer {
