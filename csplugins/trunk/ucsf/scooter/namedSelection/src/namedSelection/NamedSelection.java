@@ -214,7 +214,8 @@ public class NamedSelection extends CytoscapePlugin
 		if (e.getPropertyName() == Cytoscape.NETWORK_LOADED && 
 		    e.getNewValue() != null) {
 			// Get the name of the network we loaded
-			CyNetwork network = (CyNetwork) e.getNewValue();
+			Object[] ret_val = (Object []) e.getNewValue();
+			CyNetwork network = (CyNetwork)ret_val[0];
 
 			// Add it to the list we respond to
 			networkList.add(network);
