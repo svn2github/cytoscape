@@ -48,12 +48,12 @@ import clusterMaker.treeview.MainPanel;
 import clusterMaker.treeview.MessagePanel;
 import clusterMaker.treeview.ModelessSettingsDialog;
 import clusterMaker.treeview.ModelView;
+import clusterMaker.treeview.PropertyConfig;
 import clusterMaker.treeview.ReorderedTreeSelection;
 import clusterMaker.treeview.ViewFrame;
 import clusterMaker.treeview.TabbedSettingsPanel;
 import clusterMaker.treeview.TreeDrawerNode;
 import clusterMaker.treeview.TreeSelectionI;
-import clusterMaker.treeview.XmlConfig;
 import clusterMaker.treeview.model.AtrTVModel;
 import clusterMaker.treeview.model.DataModelWriter;
 import clusterMaker.treeview.model.ReorderedDataModel;
@@ -707,7 +707,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 									ce, colorPresets);
 	
 						JDialog popup = new ModelessSettingsDialog(viewFrame, "Pixel Settings", pssSelector);
-				 		popup.addWindowListener(XmlConfig.getStoreOnWindowClose(getDataModel().getDocumentConfig()));	
+				 		popup.addWindowListener(PropertyConfig.getStoreOnWindowClose(getDataModel().getDocumentConfig()));	
 						popup.pack();
 						popup.setVisible(true);
 					}

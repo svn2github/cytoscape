@@ -38,7 +38,7 @@ import clusterMaker.treeview.ConfigNode;
 import clusterMaker.treeview.DummyConfigNode;
 import clusterMaker.treeview.FileSet;
 import clusterMaker.treeview.LoadException;
-import clusterMaker.treeview.XmlConfig;
+import clusterMaker.treeview.PropertyConfig;
 
 
 public class AtrTVModel extends TVModel {
@@ -63,7 +63,7 @@ public class AtrTVModel extends TVModel {
 		return documentConfig;
 	}
 	
-	public void setDocumentConfig(XmlConfig newVal) {
+	public void setDocumentConfig(PropertyConfig newVal) {
 	}
 	
 	public void setFrame(Frame f) {
