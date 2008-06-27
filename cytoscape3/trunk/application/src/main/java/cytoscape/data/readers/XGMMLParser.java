@@ -346,8 +346,12 @@ class XGMMLParser extends DefaultHandler {
 				return new Integer(value);
 			break;
 		case STRING:
-			if (value != null)
-				return value;
+			if (value != null) {
+ 				// Make sure we convert our newlines and tabs back
+ 				String sAttr = value.replace("\\t","\t");
+ 				sAttr = sAttr.replace("\\n","\n");
+ 				return sAttr;
+			}
 			break;
 		case LIST:
 			return new ArrayList();

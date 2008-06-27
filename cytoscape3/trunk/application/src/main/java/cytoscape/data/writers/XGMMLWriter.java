@@ -747,8 +747,10 @@ public class XGMMLWriter {
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
 			String sAttr = attributes.getStringAttribute(id, attributeName);
+			// Protect tabs and returns
 			if (sAttr != null) {
 				sAttr = sAttr.replace("\n", "\\n");
+				sAttr = sAttr.replace("\t", "\\t");
 			} 
 			writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true);
 		}
@@ -766,8 +768,14 @@ public class XGMMLWriter {
 			depth++;
 			// interate through the list
 			for (Object obj: listAttr) {
+				// Protect tabs and returns (if necessary)
+				String sAttr = obj.toString();
+				if (sAttr != null) {
+					sAttr = sAttr.replace("\n", "\\n");
+					sAttr = sAttr.replace("\t", "\\t");
+				} 
 				// set child attribute value & label
-				writeAttributeXML(attributeName, checkType(obj), obj.toString(), true);
+				writeAttributeXML(attributeName, checkType(obj), sAttr, true);
 			}
 			depth--;
 			writeAttributeXML(null, null, null, true);
@@ -784,8 +792,13 @@ public class XGMMLWriter {
 				// get the attribute from the map
 				String key = (String) obj;
 				Object val = mapAttr.get(key);
+				String sAttr = val.toString();
+				if (sAttr != null) {
+					sAttr = sAttr.replace("\n", "\\n");
+					sAttr = sAttr.replace("\t", "\\t");
+				} 
 
-				writeAttributeXML(key, checkType(val), val.toString(), true);
+				writeAttributeXML(key, checkType(val), sAttr, true);
 			}
 			depth--;
 			writeAttributeXML(null, null, null, true);
