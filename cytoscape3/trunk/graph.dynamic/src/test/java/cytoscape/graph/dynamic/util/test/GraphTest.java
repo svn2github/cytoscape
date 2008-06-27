@@ -42,38 +42,55 @@ import cytoscape.graph.dynamic.DynamicGraphFactory;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
+import junit.framework.*;
 
-/**
- * DOCUMENT ME!
- *
- * @author $author$
- * @version $Revision: 9567 $
-  */
-public class GraphTest {
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 */
-	public static void main(String[] args) {
-		final DynamicGraph graph = DynamicGraphFactory.instantiateDynamicGraph();
-		System.out.println("Creating 10 nodes...");
+import java.util.HashMap;
 
-		for (int i = 0; i < 10; i++)
-			graph.nodeCreate();
+public class GraphTest extends TestCase {
 
+	DynamicGraph graph;
+
+	public void setUp() {
+		graph = DynamicGraphFactory.instantiateDynamicGraph();
+	}
+
+	public void tearDown() {
+		graph = null;
+	}
+
+	public void testNodeCreate() {
+	
+		// before creation
 		IntEnumerator nodesEnum = graph.nodes();
-		int index = -1;
-		int[] nodes = new int[nodesEnum.numRemaining()];
-		System.out.print("Here are the nodes: ");
+		assertNotNull( nodesEnum );
 
-		while (nodesEnum.numRemaining() > 0) {
-			nodes[++index] = nodesEnum.nextInt();
-			System.out.print(nodes[index] + " ");
+		for (int i = 0; i < 10; i++) {
+			// non-negative
+			int x = graph.nodeCreate();
+			assertTrue( x >= 0);
 		}
 
-		System.out.println();
-		System.out.println();
+		nodesEnum = graph.nodes();
+		assertNotNull( nodesEnum );
+
+		assertEquals(10,nodesEnum.numRemaining());
+
+		while (nodesEnum.numRemaining() > 0) {
+			int index = nodesEnum.nextInt();
+			assertTrue( index >= 0 ); 
+		}
+	}
+
+	public void testEdgeCreate() {
+		// create nodes
+		int[] nodes = new int[10];
+		for (int i = 0; i < 10; i++) {
+			nodes[i] = graph.nodeCreate();
+		}
+
+		// not null
+		IntEnumerator edgesEnum = graph.edges();
+		assertNotNull( edgesEnum );
 
 		boolean[] edgesDir = new boolean[] {
 		                         false, true, true, true, false, true, false, false, true, true,
@@ -97,25 +114,36 @@ public class GraphTest {
 		                       { 4, 9 }
 		                   };
 
+		HashMap<Integer,Boolean> edgeDirMap = new HashMap<Integer,Boolean>();
+		HashMap<Integer,Integer> edgeSrcTgtMap = new HashMap<Integer,Integer>();
 		for (int i = 0; i < edgesDir.length; i++) {
-			System.out.println("Creating " + (edgesDir[i] ? "directed" : "undirected")
-			                   + " edge from node " + nodes[edgesDef[i][0]] + " to node "
-			                   + nodes[edgesDef[i][1]] + "...");
-			graph.edgeCreate(nodes[edgesDef[i][0]], nodes[edgesDef[i][1]], edgesDir[i]);
+			int x = graph.edgeCreate(nodes[edgesDef[i][0]], nodes[edgesDef[i][1]], edgesDir[i]);
+			assertTrue( x >= 0 );
+			// track the edge directedness
+			edgeDirMap.put(x,edgesDir[i]);
+			edgeSrcTgtMap.put(x,i);
 		}
 
-		IntEnumerator edgesEnum = graph.edges();
-		System.out.println();
-		System.out.println("Here are the edges:");
+		edgesEnum = graph.edges();
+		assertNotNull( edgesEnum );
+
+		assertEquals(15,edgesEnum.numRemaining());
 
 		while (edgesEnum.numRemaining() > 0) {
 			final int edge = edgesEnum.nextInt();
-			System.out.println(((graph.edgeType(edge) == DynamicGraph.DIRECTED_EDGE) ? "Directed"
-			                                                                         : "Undirected")
-			                   + " edge " + edge + " with source " + graph.edgeSource(edge)
-			                   + " and target " + graph.edgeTarget(edge) + ".");
-		}
+			// edge ind is non-negative
+			assertTrue(edge >= 0);
+			byte dir = graph.edgeType(edge);
+			// make sure edge has correct directedness
+			assertEquals( edgeDirMap.get(edge).booleanValue(), dir == DynamicGraph.DIRECTED_EDGE );
 
+			// make sure the source and targets are ok
+			assertEquals( edgesDef[edgeSrcTgtMap.get(edge).intValue()][0], graph.edgeSource(edge) );
+			assertEquals( edgesDef[edgeSrcTgtMap.get(edge).intValue()][1], graph.edgeTarget(edge) );
+		}
+	}
+
+	/*
 		System.out.println();
 		System.out.println("All adjacent edges...");
 		nodesEnum = graph.nodes();
@@ -246,4 +274,5 @@ public class GraphTest {
 			}
 		}
 	}
+	*/
 }
