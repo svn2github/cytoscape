@@ -199,42 +199,6 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
     }
         
     /**
-     * Select nodes for merge according to different op
-     *
-     * @param networks
-     *           Networks to be merged
-     * @param op
-     *           Operation
-     * @param size
-     *           Number of networks
-     * 
-     * @return list of matched nodes
-     */    
-    protected List<Map<CyNetwork,GraphObject>> selectMatchedNodeList(List<Map<CyNetwork,GraphObject>> matchedNodeList, Operation op, int size) {
-        List<Map<CyNetwork,GraphObject>> list = new Vector<Map<CyNetwork,GraphObject>>(matchedNodeList);
-        
-        if (op==Operation.UNION) {
-            
-        } else if (op==Operation.INTERSECTION) {
-            for (int i=list.size()-1; i>=0; i--) {
-                Map<CyNetwork,GraphObject> map = list.get(i);
-                if(map.size()!=size) { // if not contained in all the networks, remove
-                    list.remove(i);
-                }
-            }
-        } else { //if (op==Operation.DIFFERENCE)
-            for (int i=list.size()-1; i>=0; i--) {
-                Map<CyNetwork,GraphObject> map = list.get(i);
-                if(map.size()==size) { // if contained in all the networks, remove
-                    list.remove(i);
-                }
-            }
-        }
-        
-        return list;
-    }
-    
-    /**
      * Get a list of matched nodes/edges
      *
      * @param networks
@@ -269,9 +233,9 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
                         CyNetwork net2 = itNet.next();
                         if (net1==net2) continue; // assume the same network don't have nodes match to each other
                         GraphObject go2 = matchedGO.get(net2);
-                        if (isNode) {
+                        if (isNode) { //NODE
                             matched = matchNode(net1,(Node)go1,net2,(Node)go2);
-                        } else {
+                        } else {// EDGE
                             matched = matchEdge(net1,(Edge)go1,net2,(Edge)go2);
                         }
                         if (matched) {
@@ -293,4 +257,40 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
         
         return matchedList;
     }
+    /**
+     * Select nodes for merge according to different op
+     *
+     * @param networks
+     *           Networks to be merged
+     * @param op
+     *           Operation
+     * @param size
+     *           Number of networks
+     * 
+     * @return list of matched nodes
+     */    
+    protected List<Map<CyNetwork,GraphObject>> selectMatchedNodeList(List<Map<CyNetwork,GraphObject>> matchedNodeList, Operation op, int size) {
+        List<Map<CyNetwork,GraphObject>> list = new Vector<Map<CyNetwork,GraphObject>>(matchedNodeList);
+        
+        if (op==Operation.UNION) {
+            
+        } else if (op==Operation.INTERSECTION) {
+            for (int i=list.size()-1; i>=0; i--) {
+                Map<CyNetwork,GraphObject> map = list.get(i);
+                if(map.size()!=size) { // if not contained in all the networks, remove
+                    list.remove(i);
+                }
+            }
+        } else { //if (op==Operation.DIFFERENCE)
+            for (int i=list.size()-1; i>=0; i--) {
+                Map<CyNetwork,GraphObject> map = list.get(i);
+                if(map.size()==size) { // if contained in all the networks, remove
+                    list.remove(i);
+                }
+            }
+        }
+        
+        return list;
+    }
+ 
 }

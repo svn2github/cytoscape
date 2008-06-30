@@ -47,6 +47,7 @@ import csplugins.network.merge.MatchingAttributeImpl;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.data.CyAttributes;
 import cytoscape.util.CyNetworkNaming;
 
 import java.util.List;
@@ -99,9 +100,9 @@ public class NetworkMergeDialog extends JDialog {
         super(parent, modal);
         frame = parent;
         //idMapping = new TreeMap<String,Map<String,Vector<CyIDMapping>>>();
-        nodeAttributeMapping = new AttributeMappingImpl();
-        edgeAttributeMapping = new AttributeMappingImpl();
-        matchingAttribute = new MatchingAttributeImpl();
+        matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
+        nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());
+        edgeAttributeMapping = new AttributeMappingImpl(Cytoscape.getEdgeAttributes());
         initComponents();
     }
 
@@ -536,14 +537,12 @@ public class NetworkMergeDialog extends JDialog {
  * 
  */
 private void addRemoveAttributeMapping(CyNetwork network, boolean isAdd) {
-    String[] nodeAttrNames = Cytoscape.getNodeAttributes().getAttributeNames();
-    String[] edgeAttrNames = Cytoscape.getEdgeAttributes().getAttributeNames();
-    String netID = network.getIdentifier();
+    final String netID = network.getIdentifier();
     
     if (isAdd) {
-        nodeAttributeMapping.addNetwork(netID,nodeAttrNames);
-        edgeAttributeMapping.addNetwork(netID,edgeAttrNames);
-        matchingAttribute.addNetwork(netID,edgeAttrNames);
+        nodeAttributeMapping.addNetwork(netID);
+        edgeAttributeMapping.addNetwork(netID);
+        matchingAttribute.addNetwork(netID);
     } else {
         nodeAttributeMapping.removeNetwork(netID);
         edgeAttributeMapping.removeNetwork(netID);
@@ -609,7 +608,7 @@ private void updateMergeAttributeTable() {
  * 
  */
 public String getDefaultMergedNetworkName() {
-    String name = "network."+getOperation();
+    final String name = "network."+getOperation();
     return CyNetworkNaming.getSuggestedNetworkTitle(name);
     
 }

@@ -75,7 +75,7 @@ class MergeAttributeTable extends JTable{
     private MergeAttributeTableModel model;
     private boolean isNode;
     
-    public MergeAttributeTable(String mergedNetworkName ,AttributeMapping attributeMapping, MatchingAttribute matchingAttribute) {
+    public MergeAttributeTable(final String mergedNetworkName ,final AttributeMapping attributeMapping, final MatchingAttribute matchingAttribute) {
         super();
         this.mergedNetworkName = mergedNetworkName;
         this.attributeMapping = attributeMapping;
@@ -84,7 +84,7 @@ class MergeAttributeTable extends JTable{
         setModel(model);
     }
     
-    public MergeAttributeTable(String mergedNetworkName ,AttributeMapping attributeMapping) {
+    public MergeAttributeTable(final String mergedNetworkName ,final AttributeMapping attributeMapping) {
         super();        
         this.mergedNetworkName = mergedNetworkName;
         this.attributeMapping = attributeMapping;
@@ -94,29 +94,29 @@ class MergeAttributeTable extends JTable{
     }
 
 
-    public void setMergedNetworkName(String mergedNetworkName) {
+    public void setMergedNetworkName(final String mergedNetworkName) {
         this.mergedNetworkName = mergedNetworkName;
         fireTableStructureChanged();
     }
 
     public void setColumnEditor() {
-        int n = attributeMapping.getSizeNetwork();
+        final int n = attributeMapping.getSizeNetwork();
         for (int i=0; i<n; i++) { // for each network
-            Vector<String> attrs = new Vector();
-            attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));            
+            final Vector<String> attrs = new Vector();
+            attrs.addAll(Arrays.asList(attributeMapping.getCyAttributes().getAttributeNames()));            
             attrs.add(nullAttr);
-            JComboBox comboBox = new JComboBox(attrs);
-            TableColumn column = getColumnModel().getColumn(i);
+            final JComboBox comboBox = new JComboBox(attrs);
+            final TableColumn column = getColumnModel().getColumn(i);
             column.setCellEditor(new DefaultCellEditor(comboBox));
         }
     }
 
         
     public void setCellRender() {
-        int n = attributeMapping.getSizeNetwork();
+        final int n = attributeMapping.getSizeNetwork();
         if (n==0) return;
         for (int i=0; i<n+1; i++) { // for each network
-        TableColumn column = getColumnModel().getColumn(i);
+        final TableColumn column = getColumnModel().getColumn(i);
         
         column.setCellRenderer(new TableCellRenderer() {
             private DefaultTableCellRenderer defaultRender = new DefaultTableCellRenderer();
@@ -124,7 +124,7 @@ class MergeAttributeTable extends JTable{
                             JTable table, Object color,
                             boolean isSelected, boolean hasFocus,
                             int row, int column) {
-                JLabel renderer = (JLabel) defaultRender.getTableCellRendererComponent(table, color, isSelected, hasFocus, row, column);
+                final JLabel renderer = (JLabel) defaultRender.getTableCellRendererComponent(table, color, isSelected, hasFocus, row, column);
                 if (row<2) {
                     renderer.setBackground(Color.LIGHT_GRAY);
                     if (isSelected) {
@@ -167,7 +167,7 @@ class MergeAttributeTable extends JTable{
         }
 
         public int getColumnCount() {
-            int n = attributeMapping.getSizeNetwork();
+            final int n = attributeMapping.getSizeNetwork();
             return n==0?0:n+1;
         }
 
@@ -178,7 +178,7 @@ class MergeAttributeTable extends JTable{
             return attributeMapping.getSizeNetwork()==0?0:n; 
         }
 
-        public String getColumnName(int col) {
+        public String getColumnName(final int col) {
             if (col==getColumnCount()-1) {
                 return mergedNetworkName;
             } else {
@@ -186,19 +186,20 @@ class MergeAttributeTable extends JTable{
             }
         }
 
-        public Object getValueAt(int row, int col) {
-            int iAttr;
-            //TODO remove in Cytoscape3.0
+        public Object getValueAt(final int row, final int col) {
+            //final int iAttr = row; //TODO used in Cytoscape3
+            
+            //TODO remove in Cytoscape3
             if (row==0) {
                 return "ID";
             } else if (row==1) {
                 return Semantics.CANONICAL_NAME;
-            } else {
-                iAttr = row-2;
-            }//TODO remove in Cytoscape3.0
-            
-            //iAttr=row; //TODO use this one in Cytoscape3.0
-            
+            }
+            final int iAttr = row - 2;
+            //TODO remove in Cytoscape3
+            if (row==getRowCount()-1) {
+                return null;
+            }
             if (col==getColumnCount()-1) {
                 return attributeMapping.getMergedAttribute(iAttr);
             } else {
@@ -212,7 +213,7 @@ class MergeAttributeTable extends JTable{
          * then the last column would contain text ("true"/"false"),
          * rather than a check box.
          */
-        public Class getColumnClass(int c) {
+        public Class getColumnClass(final int c) {
             return String.class;
         }
 
@@ -220,7 +221,7 @@ class MergeAttributeTable extends JTable{
          * 
          * 
          */
-        public boolean isCellEditable(int row, int col) {
+        public boolean isCellEditable(final int row, final int col) {
             //TODO remove in Cytoscape3.0
             if (row<2) return false;//TODO remove in Cytoscape3.0
             
@@ -232,20 +233,21 @@ class MergeAttributeTable extends JTable{
          * Don't need to implement this method unless your table's
          * data can change.
          */
-        public void setValueAt(Object value, int row, int col) {
+        public void setValueAt(final Object value, final int row, final int col) {
             if (value==null) return;
             
-            String attr = (String) value;
-            int iAttr = row-2;//TODO remove in Cytoscape3.0
-            //int iAttr = row; //TODO use in Cytoscape3.0
+            final String attr = (String) value;
+            final int iAttr = row-2;//TODO remove in Cytoscape3.0
+            //final int iAttr = row; //TODO use in Cytoscape3.0
             
-            //if (attr==null) return; // click on the last row, but not selected
-            int n = attributeMapping.getSizeMergedAttributes();
+            final int n = attributeMapping.getSizeMergedAttributes();
             if (iAttr>n) return; // should not happen
 
             if (col==getColumnCount()-1) { //column of merged network
                 if (iAttr==n) return;
-                if (attributeMapping.getMergedAttribute(iAttr).compareTo(attr)==0) { //if the same
+                
+                String attr_curr = attributeMapping.getMergedAttribute(iAttr);
+                if (attr_curr.compareTo(attr)==0) { //if the same
                     return;
                 }
                 
@@ -263,7 +265,8 @@ class MergeAttributeTable extends JTable{
                 if (attributeMapping.containsMergedAttributes(attr)) {
                     JOptionPane.showMessageDialog(getParent(),"Atribute "+attr+" is already exist! Please use another name for this attribute!", "Error: duplicated attribute Name", JOptionPane.ERROR_MESSAGE );
                     return;
-                }  
+                }
+                                
                 attributeMapping.setMergedAttribute(iAttr, attr);
                 fireTableDataChanged();
                 return;
@@ -277,14 +280,25 @@ class MergeAttributeTable extends JTable{
                     return;
 
                 } else {
-                    //if (attributeMapping.getOriginalAttribute(netID, iAttr).compareTo(attr)==0) {
-                    //    return;
-                    //}
+                    String curr_attr = attributeMapping.getOriginalAttribute(netID, iAttr);
+                    if (curr_attr.compareTo(attr)==0) {
+                        return;
+                    }
                     if (attr.compareTo(nullAttr)==0) {
                         //if (attributeMapping.getOriginalAttribute(netID, iAttr)==null) return;
                         attributeMapping.removeOriginalAttribute(netID, iAttr);
                     } else {
                         //if (attributeMapping.getOriginalAttribute(netID, iAttr).compareTo(attr)==0) return;
+                        if (attributeMapping.isAttributeTypeSame(iAttr)&&!attributeMapping.isAttributeTypeSame(curr_attr, attr)) {
+                            int ioption = JOptionPane.showConfirmDialog(getParent(),
+                                    "Atribute "+attr+" have a different type to the other attributes to be merged. Are you sure to select "+attr+"? ",
+                                    "Warning: types are different",
+                                    JOptionPane.YES_NO_OPTION );
+                            if (ioption==JOptionPane.NO_OPTION) {
+                                return;
+                            }
+                        }
+                        
                         attributeMapping.setOriginalAttribute(netID, attr, iAttr);// set the attr
                     }
                     fireTableDataChanged();

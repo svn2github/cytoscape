@@ -36,6 +36,8 @@
 
 package csplugins.network.merge;
 
+import cytoscape.data.CyAttributes;
+
 import java.util.Collection;
 import java.util.Set;
 import java.util.Map;
@@ -49,8 +51,10 @@ import java.util.HashMap;
  */
 public class MatchingAttributeImpl implements MatchingAttribute {
     private Map<String,String> attributeForMatching; // network name to attribute name
-
-    public MatchingAttributeImpl() {
+    private CyAttributes cyAttributes; // use map if local attribute realized
+    
+    public MatchingAttributeImpl(final CyAttributes cyAttributes) {
+        this.cyAttributes = cyAttributes;
         attributeForMatching = new HashMap<String,String>();
     }
     
@@ -58,7 +62,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * Get the attribute of network for matching node
      * 
      */
-    public String getAttributeForMatching(String netID) {
+    public String getAttributeForMatching(final String netID) {
         return attributeForMatching.get(netID);
     }
     
@@ -66,7 +70,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * Set the attribute of network for matching node
      * 
      */
-    public void putAttributeForMatching(String netID, String attributeName) {
+    public void putAttributeForMatching(final String netID, final String attributeName) {
         attributeForMatching.put(netID, attributeName);
     }
 
@@ -74,9 +78,10 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * add/select the attribute of network for matching node
      * 
      */
-    public void addNetwork(String netID, String[] attributeNames) {
-        Collection<String> values = attributeForMatching.values();
-        int n = attributeNames.length;
+    public void addNetwork(final String netID) {
+        final String[] attributeNames = cyAttributes.getAttributeNames();
+        final Collection<String> values = attributeForMatching.values();
+        final int n = attributeNames.length;
         for (int i=0; i<n; i++) {
             if (values.contains(attributeNames[i])) {
                 putAttributeForMatching(netID,attributeNames[i]);
@@ -93,7 +98,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * Remove the network, return the attribute
      * 
      */
-    public String removeNetwork(String netID) {
+    public String removeNetwork(final String netID) {
         return attributeForMatching.remove(netID);
     }
     

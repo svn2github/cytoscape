@@ -36,6 +36,8 @@
 
 package csplugins.network.merge;
 
+import cytoscape.data.CyAttributes;
+
 import java.util.Set;
 
 /**
@@ -45,6 +47,8 @@ import java.util.Set;
  * 
  */
 public interface AttributeMapping {
+    
+    public CyAttributes getCyAttributes();
     
     /*
      * Get attributes' names in the merged network
@@ -142,12 +146,41 @@ public interface AttributeMapping {
      * 
      * 
      */
-    public void addNetwork(String netID, String[] attributeNames);
+    public void addNetwork(String netID);
 
     /*
      * 
      * 
      */
     public void removeNetwork(String netID);
-
+        
+    /*
+     * Check whether original attribute in each network has the same type for the merged attribute
+     * 
+     */    
+    public boolean isAttributeTypeSame(String mergedAttributeName);
+    
+    /*
+     * Check whether ith original attribute in each network has the same type
+     * 
+     */    
+    public boolean isAttributeTypeSame(int index);
+    
+    /*
+     * Check whether two attributes have the same types
+     * 
+     */    
+    public boolean isAttributeTypeSame(String attr1, String attr2);
+    
+    /*
+     * Return the type of merged attribute
+     * 
+     */
+    public byte getMergedAttributeType(String mergedAttributeName);
+    
+    /*
+     * Return the type of merged attribute
+     * 
+     */
+    public byte getMergedAttributeType(int index);
 }
