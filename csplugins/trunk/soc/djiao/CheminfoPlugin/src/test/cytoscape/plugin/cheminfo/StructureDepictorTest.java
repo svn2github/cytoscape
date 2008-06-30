@@ -18,5 +18,4 @@ public class StructureDepictorTest extends TestCase {
 	public void testDepiectInchi() {
 		fail("Not yet implemented");
 	}
-
 }

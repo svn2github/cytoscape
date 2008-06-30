@@ -3,12 +3,15 @@ package cytoscape.plugin.cheminfo;
 import giny.view.NodeView;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
@@ -17,7 +20,9 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -70,6 +75,11 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		pmenu.add(menu);
 	}
 
+	/**
+	 * Builds the popup menu
+	 * 
+	 * @return
+	 */
 	public JMenu buildMenu() {
 		JMenu menu = new JMenu("Cheminformatics Tools");
 		JMenuItem depict = buildMenuItem("Depict 2D Structure", DEPICT);
@@ -77,6 +87,13 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		return menu;
 	}
 
+	/**
+	 * Builds a menu item in the popup menu
+	 * 
+	 * @param label
+	 * @param command
+	 * @return
+	 */
 	public JMenuItem buildMenuItem(String label, String command) {
 		JMenuItem item = new JMenuItem(label);
 		item.setActionCommand(command);
@@ -96,7 +113,14 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		}
 	}
 	
-	private String getAttribute(CyNode node, String attr) {
+	/**
+	 * Get an attribute from a node
+	 * 
+	 * @param node
+	 * @param attr
+	 * @return
+	 */
+	public static String getAttribute(CyNode node, String attr) {
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 		String value = attributes.getStringAttribute(node.getIdentifier(),
 				attr);
@@ -113,35 +137,83 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	public void actionPerformed(ActionEvent evt) {
 		String cmd = evt.getActionCommand();
 		if (cmd.equals(DEPICT)) {
-			CyNode node = (CyNode) nodeView.getNode();
-			String smiles = getAttribute(node, "smiles");
-			// now search for inchi
-			if (null == smiles || "".equals(smiles)) {
-				String inchi = getAttribute(node, "inchi");
-				smiles = StructureDepictor.convertInchiToSmiles(inchi);
+			List nodes = Cytoscape.getCurrentNetworkView().getSelectedNodes();
+			if (nodes.size() > 1) {
+				depictMultipleNodes(nodes);
+			} else if (nodes.size() == 1) {
+				CyNode node = (CyNode) nodeView.getNode();				
+				depictSingleNode(node);
 			}
-			
-			if (null == smiles || "".equals(smiles)) {
-				displayErrorDialog(systemProps.getProperty("cheminfo.depictor.noSmilesError"));
-				return;
-			}
-			Image image = new StructureDepictor().depictWithUCSFSmi2Gif(smiles);
-			if (image == null) {
-				displayErrorDialog(systemProps.getProperty("cheminfo.system.error"));
-				return;
-			}
-			JDialog dialog = new JDialog(Cytoscape.getDesktop(), smiles, false);
-			JLabel label = new JLabel(new ImageIcon(image));
-			dialog.getContentPane().add(label, BorderLayout.CENTER);
-			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-			dialog.pack();
-			dialog.setVisible(true);
 		}
 	}
+	
+	/**
+	 * Depict 2D structure for multiple nodes
+	 * 
+	 * @param nodes
+	 */
+	private void depictMultipleNodes(List nodes) {
+		JDialog dialog = new JDialog(Cytoscape.getDesktop(), "View 2D Structures", false);
+		List rows = new ArrayList();
+		for (Object node : nodes) {
+			NodeView nodeView = (NodeView)node;
+			//depictSingleNode((CyNode)nodeView.getNode());
+			StructureDepictor depictor = new StructureDepictor((CyNode)nodeView.getNode());
+			//Image image = depictor.
+			String text = depictor.getNodeText();
+			String id = nodeView.getNode().getIdentifier();
+			List row = new ArrayList();
+			row.add(id);
+			row.add(text);
+			row.add(depictor);
+			rows.add(row);
+		}
+		
+		List colNames = new ArrayList();
+		colNames.add("Identifier");
+		colNames.add("Smiles/InChI");
+		colNames.add("2D Structure");
+		
+        ChemTableSorter sorter = new ChemTableSorter(rows, colNames);
+        ChemTable table = new ChemTable(sorter);
+        sorter.setTableHeader(table.getTableHeader());
+        
+        JScrollPane spane = new JScrollPane();
+        spane.getViewport().add(table);
+        dialog.getContentPane().setLayout(new BorderLayout());
+		dialog.getContentPane().add(spane, BorderLayout.CENTER);
+		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
+		dialog.pack();
+		dialog.setVisible(true);		
+	}
 
+
+	/**
+	 * Depict 2D structure for a single node
+	 * 
+	 * @param node
+	 */
+	private void depictSingleNode(CyNode node) {
+		StructureDepictor depictor = new StructureDepictor(node);
+		MoleculeViewDialog dialog = new MoleculeViewDialog(Cytoscape.getDesktop());
+		dialog.setSize(320, 320);
+		dialog.setDepictor(depictor);
+		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
+		dialog.pack();
+		dialog.setVisible(true);
+	}
+
+	/**
+	 * Display an error message
+	 * 
+	 * @param message
+	 */
 	public void displayErrorDialog(String message) {
 		JOptionPane.showMessageDialog(Cytoscape.getDesktop(), message, "ChemInfo Plugin Error!", JOptionPane.ERROR_MESSAGE);
 	}
