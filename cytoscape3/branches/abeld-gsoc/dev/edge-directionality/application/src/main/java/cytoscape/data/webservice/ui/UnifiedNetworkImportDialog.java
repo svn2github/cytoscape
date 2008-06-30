@@ -89,6 +89,7 @@ import cytoscape.util.swing.AboutDialog;
  * @author  kono
  */
 public class UnifiedNetworkImportDialog extends JDialog implements PropertyChangeListener {
+	private final static long serialVersionUID = 1213748836720749L;
 	// This is a singleton.
 	private static final UnifiedNetworkImportDialog dialog;
 

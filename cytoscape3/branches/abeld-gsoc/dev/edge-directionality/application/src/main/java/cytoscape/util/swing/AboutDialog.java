@@ -55,6 +55,7 @@ import javax.swing.event.HyperlinkListener;
  * @author  kono
  */
 public class AboutDialog extends javax.swing.JDialog implements HyperlinkListener {
+	private final static long serialVersionUID = 1213748837120927L;
 	// Singleton.
 	private static final AboutDialog about;
 

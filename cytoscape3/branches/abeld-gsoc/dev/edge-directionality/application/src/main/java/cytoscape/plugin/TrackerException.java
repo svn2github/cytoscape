@@ -1,6 +1,7 @@
 package cytoscape.plugin;
 
 public class TrackerException extends PluginException {
+	private final static long serialVersionUID = 1213748836633573L;
 
 	public TrackerException() {
 		super();

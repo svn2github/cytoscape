@@ -360,7 +360,7 @@ public class CytoscapeInit {
 			// This somewhat unusual way of getting the ClassLoader is because
 			// other methods don't work from WebStart.
 			//ClassLoader cl = Thread.currentThread().getContextClassLoader();
-			ClassLoader cl = CyMain.class.getClassLoader();
+			ClassLoader cl = Cytoscape.class.getClassLoader();
 
 			URL vmu = null;
 
@@ -458,12 +458,12 @@ public class CytoscapeInit {
 	private static void initProperties() {
 		if (properties == null) {
 			properties = new Properties();
-			loadStaticProperties("/cytoscape.props", properties);
+			loadStaticProperties("cytoscape.props", properties);
 		}
 
 		if (visualProperties == null) {
 			visualProperties = new Properties();
-			loadStaticProperties("/vizmap.props", visualProperties);
+			loadStaticProperties("vizmap.props", visualProperties);
 		}
 	}
 

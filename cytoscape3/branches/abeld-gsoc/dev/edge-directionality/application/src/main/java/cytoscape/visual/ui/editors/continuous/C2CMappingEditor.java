@@ -64,6 +64,7 @@ import javax.swing.ImageIcon;
  *
   */
 public class C2CMappingEditor extends ContinuousMappingEditorPanel {
+	private final static long serialVersionUID = 1213748836613718L;
 	// Default value for below and above.
 	private static final Float DEF_BELOW_AND_ABOVE = 1f;
 

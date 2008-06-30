@@ -104,6 +104,7 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 	private JMenuItem getMenuItem(final WebServiceClient client) {
 		final JMenuItem expandMenu = new JMenuItem(new AbstractAction("Get neighbours by ID(s)") {
+	private final static long serialVersionUID = 1213748837134204L;
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("Start expanding network: " + e.getActionCommand());
 

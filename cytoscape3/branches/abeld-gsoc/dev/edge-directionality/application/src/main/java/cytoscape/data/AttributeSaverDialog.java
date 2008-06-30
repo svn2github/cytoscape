@@ -229,6 +229,7 @@ public class AttributeSaverDialog extends JDialog {
  * Holds the state associated with the dialog.<br>
  */
 class AttributeSaverState extends AbstractTableModel {
+	private final static long serialVersionUID = 1213748837156007L;
 	/**
 	 *
 	 */

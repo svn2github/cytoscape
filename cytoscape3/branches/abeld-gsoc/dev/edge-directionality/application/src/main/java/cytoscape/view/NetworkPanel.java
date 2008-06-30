@@ -93,6 +93,7 @@ import javax.swing.tree.TreePath;
  */
 public class NetworkPanel extends JPanel implements PropertyChangeListener, TreeSelectionListener,
                                                     SelectEventListener {
+	private final static long serialVersionUID = 1213748836763243L;
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
@@ -494,6 +495,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	}
 
 	public class NetworkTreeNode extends DefaultMutableTreeNode {
+	private final static long serialVersionUID = 1213748836736485L;
 		protected String network_uid;
 
 		public NetworkTreeNode(Object userobj, String id) {
@@ -511,6 +513,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	}
 
 	private class TreeCellRenderer extends DefaultTreeCellRenderer {
+	private final static long serialVersionUID = 1213748836751014L;
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
 		                                              boolean expanded, boolean leaf, int row,
 		                                              boolean hasFocus) {

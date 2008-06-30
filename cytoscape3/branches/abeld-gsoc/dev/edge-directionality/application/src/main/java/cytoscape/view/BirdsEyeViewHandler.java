@@ -66,6 +66,7 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 	 */
 	BirdsEyeViewHandler(Component desktopPane) {
 		bev = new BirdsEyeView(Cytoscape.getCurrentNetworkView(), desktopPane) {
+	private final static long serialVersionUID = 1213748836623570L;
 				public Dimension getMinimumSize() {
 					return new Dimension(180, 180);
 				}
