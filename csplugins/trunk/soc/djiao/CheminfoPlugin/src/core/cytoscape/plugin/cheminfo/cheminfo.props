@@ -13,5 +13,5 @@ cheminfo.system.error=An error occurred with the ChemInfoPlugin.
 ##
 # 2D Structure Depictor Messages
 ##
-cheminfo.depictor.noSmilesError=No smiles found in the current node. 
+cheminfo.depictor.noSmilesError=No smiles/InChI found in the current node. 
 

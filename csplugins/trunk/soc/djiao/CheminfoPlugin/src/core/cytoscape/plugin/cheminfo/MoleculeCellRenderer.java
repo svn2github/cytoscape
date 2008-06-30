@@ -48,8 +48,6 @@ public class MoleculeCellRenderer extends JPanel
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int rowIndex, int vColIndex) {
         StructureDepictor depictor = (StructureDepictor)value;
-        
-        //label.setSmiles((String)value);
         Dimension d = label.getPreferredSize();
         int width = (int)d.getWidth();
         int height = (int)d.getHeight();
@@ -65,7 +63,16 @@ public class MoleculeCellRenderer extends JPanel
             	selectedImage = depictor.depictWithUCSFSmi2Gif(width, height, "cyan");
             	selectedImageMap.put(depictor.getNode().getIdentifier(), selectedImage);
             }
-            label.setIcon(new ImageIcon(selectedImage));
+            if (selectedImage == null) {
+            	if (!depictor.hasMolecule()) {
+            		label.setText("No Smiles/InChI!");
+            	} else {
+            		label.setText("Error Getting Image!");
+            	}
+            	label.setIcon(null);
+            } else {
+                label.setIcon(new ImageIcon(selectedImage));
+            }
         } else {
             label.setForeground(table.getForeground());
             label.setBackground(table.getBackground());            
@@ -76,9 +83,17 @@ public class MoleculeCellRenderer extends JPanel
             	image = depictor.depictWithUCSFSmi2Gif(width, height, "white");
             	imageMap.put(depictor.getNode().getIdentifier(), image);            	
             }
-            label.setIcon(new ImageIcon(image));
+            if (image == null) {
+            	if (!depictor.hasMolecule()) {
+            		label.setText("No Smiles/InChI!");
+            	} else {
+            		label.setText("Error Getting Image!");
+            	}
+            	label.setIcon(null);
+            } else {
+            	label.setIcon(new ImageIcon(image));
+            }
         }
-        
         if (hasFocus) {
             // show tooltips?
             Border border = null;

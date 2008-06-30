@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -25,11 +26,17 @@ public class MoleculeViewDialog extends JDialog {
         label.setPreferredSize(new Dimension(l - 15, l - 15));
     }
     
-    public void setDepictor(StructureDepictor depictor) {
-    	this.setTitle(depictor.getNodeText());
+    public boolean setDepictor(StructureDepictor depictor) {
+    	this.setTitle(depictor.getMoleculeString());
     	Dimension d = label.getPreferredSize();
-    	label.setIcon(new ImageIcon(depictor.depictWithUCSFSmi2Gif((int)d.getWidth(), (int)d.getHeight(), "white")));
-        this.getContentPane().add(label, BorderLayout.CENTER);  
+    	Image image = depictor.depictWithUCSFSmi2Gif((int)d.getWidth(), (int)d.getHeight(), "white");
+    	if (null != image) {
+        	label.setIcon(new ImageIcon(image));
+    	} else {
+    		return false;
+    	}
+        this.getContentPane().add(label, BorderLayout.CENTER);
+        return true;
     }
 
     public void init() {

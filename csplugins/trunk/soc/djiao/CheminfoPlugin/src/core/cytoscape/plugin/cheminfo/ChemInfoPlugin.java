@@ -60,7 +60,6 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(systemProps.get("cheminfo.error"));
 	}
 
 	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu pmenu) {
@@ -166,7 +165,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 			//depictSingleNode((CyNode)nodeView.getNode());
 			StructureDepictor depictor = new StructureDepictor((CyNode)nodeView.getNode());
 			//Image image = depictor.
-			String text = depictor.getNodeText();
+			String text = depictor.getMoleculeString();
 			String id = nodeView.getNode().getIdentifier();
 			List row = new ArrayList();
 			row.add(id);
@@ -201,12 +200,19 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 	 */
 	private void depictSingleNode(CyNode node) {
 		StructureDepictor depictor = new StructureDepictor(node);
+		if (null == depictor.getMoleculeString() || "".equals(depictor.getMoleculeString())) {
+			displayErrorDialog(systemProps.getProperty("cheminfo.depictor.noSmilesError"));
+			return;
+		}
 		MoleculeViewDialog dialog = new MoleculeViewDialog(Cytoscape.getDesktop());
 		dialog.setSize(320, 320);
-		dialog.setDepictor(depictor);
-		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-		dialog.pack();
-		dialog.setVisible(true);
+		if (dialog.setDepictor(depictor)) {
+			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
+			dialog.pack();
+			dialog.setVisible(true);
+		} else {
+			displayErrorDialog(systemProps.getProperty("cheminfo.system.error"));
+		}
 	}
 
 	/**

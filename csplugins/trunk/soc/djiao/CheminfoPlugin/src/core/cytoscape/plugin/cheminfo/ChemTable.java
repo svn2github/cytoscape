@@ -34,7 +34,6 @@ public class ChemTable extends JTable implements ClipboardOwner {
     private String[] popupItems = { "Copy Selected", "View Structure" };
 
     private MoleculeViewDialog moleculeDialog;
-    
 
     public ChemTable(ChemTableModel model) {
         super(model);
@@ -48,7 +47,8 @@ public class ChemTable extends JTable implements ClipboardOwner {
         MoleculeCellRenderer mcr = new MoleculeCellRenderer(new Dimension(120, 120));
         col.setCellRenderer(mcr);
         
-        getColumnModel().getColumn(1).setPreferredWidth(150);
+        getColumnModel().getColumn(1).setPreferredWidth(250);
+        getColumnModel().getColumn(1).setCellRenderer(new TextAreaRenderer());
         
         setColumnSelectionAllowed(false);
         setRowSelectionAllowed(true);

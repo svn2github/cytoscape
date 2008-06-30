@@ -15,8 +15,8 @@ import cytoscape.util.URLUtil;
 
 public class StructureDepictor {
 	private CyNode node;
-	private String smiles;
-	private String nodeText;
+	private String smilesStr;
+	private String moleculeString;
 
 	public StructureDepictor(CyNode node) {
 		this.node = node;
@@ -25,16 +25,18 @@ public class StructureDepictor {
 		// now search for inchi
 		if (null == smiles || "".equals(smiles)) {
 			String inchi = ChemInfoPlugin.getAttribute(node, "inchi");
-			this.nodeText = inchi;
-			smiles = convertInchiToSmiles(inchi);
+			if (null != inchi && !"".equals(inchi)) {
+				this.moleculeString = inchi;
+				smiles = convertInchiToSmiles(inchi);
+			}
 		} else {
-			this.nodeText = smiles;
+			this.moleculeString = smiles;
 		}
-		this.smiles = smiles;
+		this.smilesStr = smiles;
 	}
 
-	public String getNodeText() {
-		return nodeText;
+	public String getMoleculeString() {
+		return moleculeString;
 	}
 
 	public CyNode getNode() {
@@ -46,22 +48,25 @@ public class StructureDepictor {
 	}
 
 	public String getSmiles() {
-		return smiles;
+		return smilesStr;
 	}
 	
 	public String getDepictURL() {
 		String url = "http://chimeraservices.compbio.ucsf.edu/cgi-bin/smi2gif.cgi?"
-			+ "smiles=" + this.smiles;
+			+ "smiles=" + this.smilesStr;
 		return url;
 	}	
 	
-	public String getDepictURL(int width, int height, String bgcolor) {
+	private String getDepictURL(int width, int height, String bgcolor) {
 		String url = "http://chimeraservices.compbio.ucsf.edu/cgi-bin/smi2gif.cgi?"
-			+ "smiles=" + this.smiles + "&width=" + width + "&height=" + height + "&bgcolor=" + bgcolor;
+			+ "smiles=" + this.smilesStr + "&width=" + width + "&height=" + height + "&bgcolor=" + bgcolor;
 		return url;
 	}
 
 	public Image depictWithUCSFSmi2Gif() {
+		if (this.moleculeString == null || "".equals(moleculeString)) {
+			return null;
+		}
 		String url = getDepictURL();
 		Image image = null;
 		try {
@@ -76,6 +81,9 @@ public class StructureDepictor {
 	}
 	
 	public Image depictWithUCSFSmi2Gif(int width, int height, String bgcolor) {
+		if (this.moleculeString == null || "".equals(moleculeString)) {
+			return null;
+		}
 		String url = getDepictURL(width, height, bgcolor);
 		Image image = null;
 		try {
@@ -109,9 +117,8 @@ public class StructureDepictor {
 
 		return smiles;
 	}
-
-	public Image depiectInchi(String inchi) {
-		this.smiles = convertInchiToSmiles(inchi);
-		return depictWithUCSFSmi2Gif();
+	
+	public boolean hasMolecule() {
+		return null != moleculeString && !"".equals(moleculeString);
 	}
 }
