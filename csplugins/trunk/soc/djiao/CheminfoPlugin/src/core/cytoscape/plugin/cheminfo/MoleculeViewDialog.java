@@ -11,8 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class MoleculeViewDialog extends JDialog {
-
-    private StructureDepictor depictor;
     private JLabel label;
 
     public MoleculeViewDialog(Frame owner) {
@@ -28,7 +26,6 @@ public class MoleculeViewDialog extends JDialog {
     }
     
     public void setDepictor(StructureDepictor depictor) {
-    	this.depictor = depictor;
     	this.setTitle(depictor.getNodeText());
     	Dimension d = label.getPreferredSize();
     	label.setIcon(new ImageIcon(depictor.depictWithUCSFSmi2Gif((int)d.getWidth(), (int)d.getHeight(), "white")));

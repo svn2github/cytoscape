@@ -16,8 +16,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
-import cytoscape.CyNode;
-
 /**
  * Cell Renderer of the column to display 2 dimentional molecule structure
  * 
@@ -97,20 +95,7 @@ public class MoleculeCellRenderer extends JPanel
 
         return this;
     }
-    
-    // This is a hack to paint the background.  Normally a JLabel can
-    // paint its own background, but due to an apparent bug or
-    // limitation in the TreeCellRenderer, the paint method is
-    // required to handle this.
-    public void paint( Graphics g )
-    {
-        // Draw a rectangle in the background of the cell
-        g.fillRect( 0, 0, getWidth() - 1, getHeight() - 1 );
 
-        super.paint( g );
-    }    
-    
-    
     private static Border getNoFocusBorder() {
         if (System.getSecurityManager() != null) {
             return SAFE_NO_FOCUS_BORDER;

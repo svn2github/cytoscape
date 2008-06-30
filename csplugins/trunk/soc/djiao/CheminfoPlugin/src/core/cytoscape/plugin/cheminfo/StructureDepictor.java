@@ -17,7 +17,6 @@ public class StructureDepictor {
 	private CyNode node;
 	private String smiles;
 	private String nodeText;
-	private Image image;
 
 	public StructureDepictor(CyNode node) {
 		this.node = node;
@@ -32,7 +31,6 @@ public class StructureDepictor {
 			this.nodeText = smiles;
 		}
 		this.smiles = smiles;
-		//this.image = depictWithUCSFSmi2Gif(smiles);
 	}
 
 	public String getNodeText() {

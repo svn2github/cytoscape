@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
@@ -138,9 +139,13 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 	public void actionPerformed(ActionEvent evt) {
 		String cmd = evt.getActionCommand();
 		if (cmd.equals(DEPICT)) {
-			List nodes = Cytoscape.getCurrentNetworkView().getSelectedNodes();
+			final List nodes = Cytoscape.getCurrentNetworkView().getSelectedNodes();
 			if (nodes.size() > 1) {
-				depictMultipleNodes(nodes);
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						depictMultipleNodes(nodes);
+					}
+				});
 			} else if (nodes.size() == 1) {
 				CyNode node = (CyNode) nodeView.getNode();				
 				depictSingleNode(node);
