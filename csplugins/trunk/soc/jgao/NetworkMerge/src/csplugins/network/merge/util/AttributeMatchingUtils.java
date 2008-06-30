@@ -100,6 +100,10 @@ public class AttributeMatchingUtils {
         if ((id1 == null) || (attrName1 == null) || (id2 == null) || (attrName2==null) || (attrs == null)) {
             throw new java.lang.IllegalArgumentException("Null argument.");
         }
+        
+        //if (!isAttributeTypeSame(attrName1,attrName2,attrs)) {
+        //    throw new java.lang.UnsupportedOperationException("isAttributeValueSame does not support two attribute with diffrent types");
+        //}
 
         if (id1.compareTo(id2)==0 && attrName1.compareTo(attrName2)==0) {
                 return true;

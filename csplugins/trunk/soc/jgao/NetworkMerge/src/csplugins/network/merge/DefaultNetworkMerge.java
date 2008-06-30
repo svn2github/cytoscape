@@ -211,61 +211,84 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                                 AttributeMapping attributeMapping) {
         
         final Set<Map.Entry<CyNetwork,GraphObject>> entrySet = mapNetGO.entrySet();
-        //final CyNetwork[] networks = mapNetGO.keySet().toArray(new CyNetwork[0]);
                 
         final int nattr = attributeMapping.getSizeMergedAttributes();
         for (int i=0; i<nattr; i++) {
-            boolean sameType = attributeMapping.isAttributeTypeSame(i); 
-            //TODO: working with different types
-            
-            // find non-redundent object attribute pair first
-            final Vector<String[]> nrGOAttrPair = new Vector<String[]>(); // vector of pair
-            
             final Iterator<Map.Entry<CyNetwork,GraphObject>> itEntry = entrySet.iterator();
-            while (itEntry.hasNext()) {
-                final Map.Entry<CyNetwork,GraphObject> entry = itEntry.next();
-                final String id1 = entry.getValue().getIdentifier(); // id of node/edge
-                final String idNet = entry.getKey().getIdentifier();
-                final String attrName1 = attributeMapping.getOriginalAttribute(idNet, i);
-                if (attrName1==null) { // not in the attribute mapping
-                    continue;
-                }
-                int nnr = nrGOAttrPair.size();
-                boolean match = false;
-                for (int inr=0; inr<nnr; inr++) {
-                    final String[] pair = nrGOAttrPair.get(inr);
-                    final String id2 = pair[0];
-                    final String attrName2 = pair[1]; 
-                    if (AttributeMatchingUtils.isAttributeValueSame(id1, 
-                                                                attrName1,
-                                                                id2, 
-                                                                attrName2, 
-                                                                cyAttributes)) {
-                        match = true;
-                        break;
-                    } 
-                }
-                if (!match) {
-                    final String[] idAttrPair = new String[]{id1,attrName1};
-                    nrGOAttrPair.add(idAttrPair);
-                }
-            }
             
-            // copy the attribute to the merged node
-            final String attr_merged = attributeMapping.getMergedAttribute(i);
-            if (nrGOAttrPair.isEmpty()) {
-                continue;
-            } else if (nrGOAttrPair.size()==1) { // no attribute conflict
-                final String[] pair = nrGOAttrPair.get(0);
-                final String id_ori = pair[0];
-                final String attrName_ori = pair[1];
-                AttributeMatchingUtils.copyAttribute(id_ori, attrName_ori, id, attr_merged, cyAttributes);
-            } else {
-                //TODO: modify the code--use a conflict node and put to conflictHandler later
-                final String[] pair = nrGOAttrPair.get(0);
-                final String id_ori = pair[0];
-                final String attrName_ori = pair[1];
-                AttributeMatchingUtils.copyAttribute(id_ori, attrName_ori, id, attr_merged, cyAttributes);
+            if (attributeMapping.isAttributeTypeSame(i)) { // if same type            
+                // find non-redundent object attribute pair first
+                final Vector<String[]> nrGOAttrPair = new Vector<String[]>(); // vector of pair
+
+                while (itEntry.hasNext()) {
+                    final Map.Entry<CyNetwork,GraphObject> entry = itEntry.next();
+                    final String id1 = entry.getValue().getIdentifier(); // id of node/edge
+                    final String idNet = entry.getKey().getIdentifier();
+                    final String attrName1 = attributeMapping.getOriginalAttribute(idNet, i);
+                    if (attrName1==null) { // not in the attribute mapping
+                        continue;
+                    }
+                    int nnr = nrGOAttrPair.size();
+                    boolean match = false;
+                    for (int inr=0; inr<nnr; inr++) {
+                        final String[] pair = nrGOAttrPair.get(inr);
+                        final String id2 = pair[0];
+                        final String attrName2 = pair[1]; 
+                        if (AttributeMatchingUtils.isAttributeValueSame(id1, 
+                                                                    attrName1,
+                                                                    id2, 
+                                                                    attrName2, 
+                                                                    cyAttributes)) {
+                            match = true;
+                            break;
+                        } 
+                    }
+                    if (!match) {
+                        final String[] idAttrPair = new String[]{id1,attrName1};
+                        nrGOAttrPair.add(idAttrPair);
+                    }
+                }
+
+                // copy the attribute to the merged node
+                final String attr_merged = attributeMapping.getMergedAttribute(i);
+                if (nrGOAttrPair.isEmpty()) {
+                    continue;
+                } else if (nrGOAttrPair.size()==1) { // no attribute conflict
+                    final String[] pair = nrGOAttrPair.get(0);
+                    final String id_ori = pair[0];
+                    final String attrName_ori = pair[1];
+                    AttributeMatchingUtils.copyAttribute(id_ori, attrName_ori, id, attr_merged, cyAttributes);
+                } else {
+                    //TODO: modify the code--use a conflict node and put to conflictHandler later
+                    final String[] pair = nrGOAttrPair.get(0);
+                    final String id_ori = pair[0];
+                    final String attrName_ori = pair[1];
+                    AttributeMatchingUtils.copyAttribute(id_ori, attrName_ori, id, attr_merged, cyAttributes);
+                }
+            } else { // if different type
+                final Set<String> values = new HashSet<String>();
+                while (itEntry.hasNext()) {
+                    final Map.Entry<CyNetwork,GraphObject> entry = itEntry.next();
+                    final String id_ori = entry.getValue().getIdentifier(); // id of node/edge
+                    final String idNet = entry.getKey().getIdentifier();
+                    final String attrName_ori = attributeMapping.getOriginalAttribute(idNet, i);
+                    if (attrName_ori==null) { // not in the attribute mapping
+                        continue;
+                    }
+                    String value = cyAttributes.getAttribute(id_ori, attrName_ori).toString();
+                    values.add(value);
+                }
+                
+                final String attr_merged = attributeMapping.getMergedAttribute(i);
+                if (values.isEmpty()) {
+                    continue;
+                } if (values.size()==1) {
+                    String value = values.iterator().next();
+                    cyAttributes.setAttribute(id, attr_merged, value);
+                } else { //conflict
+                    String value = values.iterator().next();
+                    cyAttributes.setAttribute(id, attr_merged, value);                    
+                }
             }
         }
     }
