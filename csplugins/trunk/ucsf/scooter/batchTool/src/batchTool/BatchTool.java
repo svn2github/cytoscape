@@ -60,13 +60,14 @@ public class BatchTool extends CytoscapePlugin {
 
 		if (!initialized) {
 			// Initialize our built-ins
-			addCommand(new OpenCommand());
+			addCommand(new ApplyCommand());
+			addCommand(new DestroyCommand());
+			addCommand(new ExitCommand());
+			addCommand(new ExportCommand());
 			addCommand(new ImportCommand());
 			addCommand(new LayoutCommand());
-			addCommand(new ApplyCommand());
+			addCommand(new OpenCommand());
 			addCommand(new SaveCommand());
-			addCommand(new ExportCommand());
-			addCommand(new ExitCommand());
 			initialized = true;
 		}
 
