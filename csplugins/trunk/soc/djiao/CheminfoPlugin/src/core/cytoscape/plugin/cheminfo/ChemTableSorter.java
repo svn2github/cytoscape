@@ -45,39 +45,18 @@ public class ChemTableSorter extends ChemTableModel {
         }
     };
 
-    /**
-     * @uml.property  name="viewToModel"
-     * @uml.associationEnd  multiplicity="(0 -1)" inverse="this$0:edu.indiana.cheminfo.chem2dviewer.ChemTableSorter$Row"
-     */
     private Row[] viewToModel;
-    /**
-     * @uml.property  name="modelToView"
-     */
+
     private int[] modelToView;
 
-    /**
-     * @uml.property  name="tableHeader"
-     * @uml.associationEnd  
-     */
     private JTableHeader tableHeader;
-    /**
-     * @uml.property  name="mouseListener"
-     */
+
     private MouseListener mouseListener;
-    /**
-     * @uml.property  name="tableModelListener"
-     * @uml.associationEnd  
-     */
+
     private TableModelListener tableModelListener;
-    /**
-     * @uml.property  name="columnComparators"
-     * @uml.associationEnd  qualifier="columnType:java.lang.Class java.util.Comparator"
-     */
+
     private Map columnComparators = new HashMap();
-    /**
-     * @uml.property  name="sortingColumns"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="edu.indiana.cheminfo.chem2dviewer.ChemTableSorter$Directive"
-     */
+
     private List sortingColumns = new ArrayList();
     
     protected ChemTableSorter() {
@@ -107,7 +86,6 @@ public class ChemTableSorter extends ChemTableModel {
 
     /**
      * @return  Returns the tableModel.
-     * @uml.property  name="tableModel"
      */
     public TableModel getTableModel() {
         return tableModel;
@@ -115,7 +93,6 @@ public class ChemTableSorter extends ChemTableModel {
 
     /**
      * @param tableModel  The tableModel to set.
-     * @uml.property  name="tableModel"
      */
     public void setTableModel(TableModel tableModel) {
         if (this.tableModel != null) {
@@ -133,7 +110,6 @@ public class ChemTableSorter extends ChemTableModel {
 
     /**
      * @return  Returns the tableHeader.
-     * @uml.property  name="tableHeader"
      */
     public JTableHeader getTableHeader() {
         return tableHeader;
@@ -141,7 +117,6 @@ public class ChemTableSorter extends ChemTableModel {
 
     /**
      * @param tableHeader  The tableHeader to set.
-     * @uml.property  name="tableHeader"
      */
     public void setTableHeader(JTableHeader tableHeader) {
         if (this.tableHeader != null) {
@@ -231,7 +206,6 @@ public class ChemTableSorter extends ChemTableModel {
 
     /**
      * @return  Returns the viewToModel.
-     * @uml.property  name="viewToModel"
      */
     private Row[] getViewToModel() {
         if (viewToModel == null) {
@@ -254,7 +228,6 @@ public class ChemTableSorter extends ChemTableModel {
 
     /**
      * @return  Returns the modelToView.
-     * @uml.property  name="modelToView"
      */
     private int[] getModelToView() {
         if (modelToView == null) {

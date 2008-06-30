@@ -4,13 +4,9 @@ import java.util.Comparator;
 import java.util.Vector;
 
 public class ColumnSorter implements Comparator {
-    /**
-     * @uml.property  name="colIndex"
-     */
+
     private int colIndex;
-    /**
-     * @uml.property  name="ascending"
-     */
+
     private boolean ascending;
     
     ColumnSorter(int colIndex, boolean ascending) {
