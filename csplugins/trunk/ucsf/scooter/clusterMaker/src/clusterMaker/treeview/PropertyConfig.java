@@ -58,6 +58,7 @@ import cytoscape.logger.CyLogger;
  * property mechanism.
  */
 public class PropertyConfig {
+	static int depth = 0;
 
 	/**
 	 * Construct new configuration information source
@@ -129,28 +130,33 @@ public class PropertyConfig {
 		if (xml == null) 
 			return null;
 
+		Document doc = null;
+
+		// System.out.println("parsing "+xml);
 		try {
 			// Parse the config
 			DocumentBuilderFactory dbf =  DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Reader is = new StringReader(xml);
-			Document doc = db.parse(new InputSource(is));
+			doc = db.parse(new InputSource(is));
 			doc.getDocumentElement().normalize();
 			if (doc.getDocumentElement().getNodeName() != docTag)
 				return null;
 
-			// Now create all of our config nodes, top-down
-			return createConfigFromXML(doc.getDocumentElement());
-
+			depth = 0;
 		} catch (Exception e) {
 			return null;
 		}
+
+		// Now create all of our config nodes, top-down
+		return createConfigFromXML(doc.getDocumentElement());
 	}
 
 	private PropertyConfigNode createConfigFromXML(Element node) {
 		PropertyConfigNode newConfigNode = new PropertyConfigNode(node.getTagName());
 		// Get any attributes
 		NamedNodeMap attrs = node.getAttributes();
+		depth++;
 		for (int attrIndex = 0; attrIndex < attrs.getLength(); attrIndex++) {
 			Attr attrNode = (Attr)attrs.item(attrIndex);
 			// Clean up any entity references we set on storage
@@ -159,11 +165,21 @@ public class PropertyConfig {
 		}
 		// Now get all of our children and add them
 		NodeList children = node.getChildNodes();
-		for (int childIndex = 0; childIndex < children.getLength(); childIndex++) {
+		int nChildren = children.getLength();
+		for (int childIndex = 0; childIndex < nChildren; childIndex++) {
 			Element child = (Element)children.item(childIndex);
 			newConfigNode.add(createConfigFromXML(child));
 		}
+		--depth;
 		return newConfigNode;
+	}
+
+	private String indent() {
+		String dStr = "";
+		for (int i = 0; i < depth; i++) {
+			dStr += "\t";
+		}
+		return dStr;
 	}
 
 	// inner class, used to implement ConfigNode
@@ -245,7 +261,7 @@ public class PropertyConfig {
 
 		public void setLast(ConfigNode configNode) {
 			String childName = ((PropertyConfigNode)configNode).getName();
-			List<PropertyConfigNode>childList = children.get(childName);
+			List<PropertyConfigNode>childList = getChildren(childName);
 			childList.remove(((PropertyConfigNode)configNode));
 			childList.add(((PropertyConfigNode)configNode));
 			children.put(childName, childList);
@@ -254,7 +270,7 @@ public class PropertyConfig {
 
 		public void add(ConfigNode configNode) {
 			String childName = ((PropertyConfigNode)configNode).getName();
-			List<PropertyConfigNode>childList = children.get(childName);
+			List<PropertyConfigNode>childList = getChildren(childName);
 			childList.add(((PropertyConfigNode)configNode));
 			children.put(childName, childList);
 			PropertyConfig.this.changed = true;
@@ -271,16 +287,31 @@ public class PropertyConfig {
 			if (!attributes.containsKey(string))
 				return d;
 
-			Double val = (Double)attributes.get(string);
-			return val.doubleValue();
+			double val = 0;
+			Object attr = attributes.get(string);
+			if (attr.getClass() == Integer.class)
+				val = ((Integer)attr).doubleValue();
+			else if (attr.getClass() == Double.class)
+				val = ((Double)attr).doubleValue();
+			else if (attr.getClass() == String.class)
+				val = Double.parseDouble((String)attr);
+
+			return val;
 		}
 
 		public int getAttribute(String string, int i) {
 			if (!attributes.containsKey(string))
 				return i;
 
-			Integer val = (Integer)attributes.get(string);
-			return val.intValue();
+			int val = 0;
+			Object attr = attributes.get(string);
+			if (attr.getClass() == Integer.class)
+				val = ((Integer)attr).intValue();
+			else if (attr.getClass() == Double.class)
+				val = ((Double)attr).intValue();
+			else if (attr.getClass() == String.class)
+				val = Integer.parseInt((String)attr);
+			return val;
 		}
 
 		public String getAttribute(String string, String dval) {
@@ -323,6 +354,7 @@ public class PropertyConfig {
 			}
 			return ret;
 		}
+
 
 		public String getName() { return name; }
 
