@@ -91,6 +91,11 @@ public class EdgeSourceArrowShapeProp extends AbstractVisualProperty {
 	public void applyToEdgeView(EdgeView ev, Object o) {
 		if ((o == null) || (ev == null))
 			return;
+		
+		if (!ev.getEdge().isDirected()){
+			return; // force undirected edges to have NO_END  
+		}
+
 		final int newSourceEnd;
 		
 		newSourceEnd = ((ArrowShape) o).getGinyArrow();
