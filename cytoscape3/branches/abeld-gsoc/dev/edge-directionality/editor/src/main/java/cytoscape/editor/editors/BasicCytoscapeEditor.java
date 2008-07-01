@@ -797,6 +797,10 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 					                                                null, possibilities,
 					                                                possibilities[0]);
 
+					if (s == null){
+						// dialog was canceled, don't create any edges
+						return;
+					}
 					// If a string was returned, say so.
 					if ((s != null) && (s.length() > 0)) {
 						edgeTypeValue = s;
@@ -806,12 +810,11 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 			}
 
 			for (int i = 0; i < (nodes.size() - 1); i++) {
-				NodeView nv = (NodeView) nodes.get(i);
-				Node firstNode = (Node) nv.getNode();
-
+				Node firstNode = (Node) nodes.get(i);
+				
 				for (int j = i + 1; j < nodes.size(); j++) {
-					NodeView nv2 = (NodeView) nodes.get(j);
-					Node secondNode = (Node) nv2.getNode();
+					Node secondNode = (Node) nodes.get(j);
+					
 					addEdge(firstNode, secondNode, Semantics.INTERACTION, edgeTypeValue, true,
 					        edgeTypeName);
 				}
