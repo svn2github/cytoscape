@@ -98,11 +98,17 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
             attr1 = Semantics.CANONICAL_NAME;
         }//TODO: remove in cytoscape3
         
-        
         final CyAttributes attributes = Cytoscape.getNodeAttributes();
-        return AttributeMatchingUtils.isAttributeValueSame(n1.getIdentifier(),
+        String id1 = n1.getIdentifier();
+        String id2 = n2.getIdentifier();
+        
+        if (!attributes.hasAttribute(id1, attr1)
+                ||!attributes.hasAttribute(id2, attr2)) { //ignore null attribute
+            return false;
+        }
+        return AttributeMatchingUtils.isAttributeValueSame(id1,
                                                            attr1,
-                                                           n2.getIdentifier(),
+                                                           id2,
                                                            attr2,
                                                            attributes);
     }

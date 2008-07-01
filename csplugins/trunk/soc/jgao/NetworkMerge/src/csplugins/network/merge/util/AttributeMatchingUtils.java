@@ -109,7 +109,11 @@ public class AttributeMatchingUtils {
                 return true;
         }
         
+        
         if (!attrs.hasAttribute(id1, attrName1) 
+                && !attrs.hasAttribute(id2, attrName2)) {
+            return true; // if both of them are null
+        } else if (!attrs.hasAttribute(id1, attrName1) 
                 || !attrs.hasAttribute(id2, attrName2)) { // Is it neccessary to handle empty string?
             return false; // 
         }
