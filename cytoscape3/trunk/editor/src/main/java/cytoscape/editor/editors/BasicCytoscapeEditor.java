@@ -797,6 +797,10 @@ public class BasicCytoscapeEditor implements CytoscapeEditor, SelectEventListene
 					                                                null, possibilities,
 					                                                possibilities[0]);
 
+					if (s == null){
+						// dialog was canceled, don't create any edges
+						return;
+					}
 					// If a string was returned, say so.
 					if ((s != null) && (s.length() > 0)) {
 						edgeTypeValue = s;
