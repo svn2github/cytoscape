@@ -28,7 +28,7 @@ projectURL=http://www.cytoscape.org/cgi-bin/moin.cgi/Advanced_Network_Merge_and_
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsInstitutions= Jianjiong Gao : Mizzou
+pluginAuthorsInstitutions=Jianjiong Gao : U. Missouri
 
 # Date this plugin/plugin version was released
 releaseDate=Sep 1, 2008

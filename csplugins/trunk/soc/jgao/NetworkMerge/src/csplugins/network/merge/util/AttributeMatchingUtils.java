@@ -108,6 +108,12 @@ public class AttributeMatchingUtils {
         if (id1.compareTo(id2)==0 && attrName1.compareTo(attrName2)==0) {
                 return true;
         }
+        
+        if (!attrs.hasAttribute(id1, attrName1) 
+                || !attrs.hasAttribute(id2, attrName2)) { // Is it neccessary to handle empty string?
+            return false; // 
+        }
+              
 
         //TODO use a idmapping visitor to compare
         CmpAttributeValueVisitor cmpVisitor = new CmpAttributeValueVisitor(id1,attrName1);
