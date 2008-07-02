@@ -161,7 +161,12 @@ class XGMMLParser extends DefaultHandler {
 	private	Node currentNode = null;
 	private	Edge currentEdge = null;
 	private	Node currentGroupNode = null;
-
+	
+	/*
+	 * The graph-global directedness, which will be used as default directedness
+	 * of edges. */
+	private boolean currentNetworkisDirected = true; 
+	
 	/* Attribute values */
 	private ParseState attState = ParseState.NONE;
 	private String currentAttributeID = null;
@@ -677,6 +682,22 @@ class XGMMLParser extends DefaultHandler {
 			String name = getLabel(atts);
 			if (name != null) 
 				networkName = name;
+			
+			/* 
+			 * Read and store the graph-global default directedness of edges.
+			 * Note that XGMML gives the default value of this as false (i.e.
+			 * undirected is the default) but because older (pre-cy3.0) cytoscape used
+			 * directed edges by default, and because compatibility with older cytoscape
+			 * versions is more important than compatibility with XGMML standard, using
+			 * directed edges by default makes more sense.
+			 */
+			String directed = atts.getValue("directed");
+			if ("0".equals(directed)){
+				currentNetworkisDirected = false;
+			} else {
+				currentNetworkisDirected = true;
+			}
+						
 			return current;
 		}
 	}
@@ -837,9 +858,17 @@ class XGMMLParser extends DefaultHandler {
 			}
 
 			boolean directed;
-			if (isDirected == null){ // old xgmml files won't have directedness flag, in which case create directed edges by default
-									 // (org.xml.sax.Attributes.getValue() returns null if attribute does not exists)
-				directed = true;
+			if (isDirected == null){
+				// xgmml files made by pre-3.0 cytoscape and strictly
+				// upstream-XGMML conforming files
+				// won't have directedness flag, in which case use the
+				// graph-global directedness setting.
+				//
+				// (org.xml.sax.Attributes.getValue() returns null if attribute does not exists)
+				//
+				// This is the correct way to read the edge-directionality of
+				// non-cytoscape xgmml files as well.
+				directed = currentNetworkisDirected;
 			} else {
 				directed = new Boolean(isDirected).booleanValue(); // parse directedness flag
 			}

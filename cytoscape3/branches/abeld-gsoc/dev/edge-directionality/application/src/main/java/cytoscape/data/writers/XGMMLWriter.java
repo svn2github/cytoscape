@@ -320,7 +320,7 @@ public class XGMMLWriter {
 	 */
 	private void writePreamble() throws IOException {
 		writeElement(XML_STRING+"\n");
-		writeElement("<graph label=\""+network.getTitle()+"\" "); 
+		writeElement("<graph label=\""+network.getTitle()+"\" directed=\"1\" "); 
 		for (int ns = 0; ns < NAMESPACES.length; ns++)
 			writer.write(NAMESPACES[ns]+" ");
 		writer.write(">\n");
