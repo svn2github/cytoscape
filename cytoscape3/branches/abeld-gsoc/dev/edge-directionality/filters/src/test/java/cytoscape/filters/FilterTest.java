@@ -65,7 +65,7 @@ public class FilterTest extends TestCase {
 		edgeAttributes.setAttribute(edge0.getIdentifier(), PMID, "12345");
 		edgeAttributes.setAttribute(edge1.getIdentifier(), PMID, "12345");
 		edgeAttributes.setAttribute(edge2.getIdentifier(), PMID, "12666");
-		edgeAttributes.setAttribute(edge3.getIdentifier(), PMID, "99999");
+		edgeAttributes.setAttribute(edge3.getIdentifier(), PMID, "12345");
 		
 	}
     

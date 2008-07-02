@@ -198,11 +198,15 @@ public class EdgeInteractionFilter implements Filter {
 		//get the list of all relevant edges
 		Node adjacentNode;
 
-		if (target == SOURCE) {
-			return filter.passesFilter(edge.getSource());
-		} else if (target == TARGET) {
-			return filter.passesFilter(edge.getTarget());
-		} else {
+		if (edge.isDirected()){
+			if (target == SOURCE) {
+				return filter.passesFilter(edge.getSource());
+			} else if (target == TARGET) {
+				return filter.passesFilter(edge.getTarget());
+			} else {
+				return filter.passesFilter(edge.getSource()) || filter.passesFilter(edge.getTarget());
+			}
+		} else { // undirected case, both ends are equivalent:
 			return filter.passesFilter(edge.getSource()) || filter.passesFilter(edge.getTarget());
 		}
 	}
