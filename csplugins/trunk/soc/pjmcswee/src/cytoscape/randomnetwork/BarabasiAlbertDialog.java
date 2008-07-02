@@ -35,6 +35,7 @@
 
 package cytoscape.randomnetwork;
 
+import cytoscape.layout.algorithms.*;
 import cytoscape.plugin.*;
 import cytoscape.*;
 import cytoscape.data.*;
@@ -376,6 +377,11 @@ public class BarabasiAlbertDialog extends JPanel {
 		
 		//Set this as the current visual style
 		vmm.setVisualStyle(newStyle);
+
+
+		GridNodeLayout alg = new GridNodeLayout();
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		view.applyLayout(alg); 
 
 		//Traverse to the JDialog parent and close this window
 		JTabbedPane parent = (JTabbedPane)getParent();

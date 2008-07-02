@@ -35,6 +35,7 @@
 
 package cytoscape.randomnetwork;
 
+import cytoscape.layout.algorithms.*;
 import cytoscape.plugin.*;
 import cytoscape.*;
 import cytoscape.data.*;
@@ -474,6 +475,10 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		//Set this as the current visualStyle
 		vmm.setVisualStyle(newStyle);
 		
+
+		GridNodeLayout alg = new GridNodeLayout();
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		view.applyLayout(alg); 
 		
 
 		//Go up to the parent window and close it		

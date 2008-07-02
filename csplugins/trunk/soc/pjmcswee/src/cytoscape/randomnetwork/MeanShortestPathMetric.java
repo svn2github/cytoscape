@@ -48,7 +48,7 @@ import giny.model.*;
 */
 public  class MeanShortestPathMetric implements NetworkMetric {
 	
-	public Comparable analyze(CyNetwork network, boolean directed)
+	public double analyze(CyNetwork network, boolean directed)
 	{
 		//Accumlate the distances between all nodes
 		double averageShortestPath = 0;
@@ -184,7 +184,7 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 		
 		
 		//return the average distance between nodes, 
-		return new Double(averageShortestPath/((double)( N * (N - 1.0d) - invalidPaths)));
+		return averageShortestPath/((double)( N * (N - 1.0d) - invalidPaths));
 	}
 	
 }

@@ -36,7 +36,10 @@
 package cytoscape.randomnetwork;
 
 
-import cytoscape.*;
+
+
+//import cytoscape.*;
+import cytoscape.graph.dynamic.*;
 
 /*
  *  Interface for network metric analyzing
@@ -47,7 +50,7 @@ public interface  NetworkMetric {
 	* This method takes the network and whether or not it should be treated
 	* as directed. The method returns a comparable object.
 	*/
-	public abstract Comparable analyze(CyNetwork net, boolean directed);
+	public abstract double analyze(DynamicGraph net, boolean directed);
 	
 	
 }

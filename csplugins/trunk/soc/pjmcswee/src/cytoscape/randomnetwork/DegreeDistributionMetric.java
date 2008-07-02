@@ -49,7 +49,7 @@ import giny.model.*;
  */
 public  class DegreeDistributionMetric implements NetworkMetric {
 	
-	public Comparable analyze(CyNetwork network, boolean directed)
+	public double analyze(CyNetwork network, boolean directed)
 	{
 		//The value to store alpha in
 		double power = 0;
@@ -97,7 +97,7 @@ public  class DegreeDistributionMetric implements NetworkMetric {
 		
 		System.out.println(N);
 		//return the average K^(-power)
-		return new Double(power/count);
+		return power/count;
 	}
 	
 }

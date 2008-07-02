@@ -34,9 +34,10 @@
  */
 
 package cytoscape.randomnetwork;
-
-import cytoscape.*;
-import cytoscape.data.*;
+import cytoscape.graph.dynamic.util.*;
+import cytoscape.graph.dynamic.*;
+//import cytoscape.*;
+///import cytoscape.data.*;
 import java.util.*;
 
 
@@ -83,14 +84,14 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 	/*
 	 * Generates the random graph
 	 */
-	public CyNetwork generate() 
+	public DynamicGraph generate() 
 	{
 
 		//Create the random graph
-		CyNetwork random_network =
-					Cytoscape.createNetwork(new int[] {  }, new int[] {  }, ("Watts-Strogatz Network"), null, createView);
+		//CyNetwork random_network =
+		//			Cytoscape.createNetwork(new int[] {  }, new int[] {  }, ("Watts-Strogatz Network"), null, createView);
+		DynamicGraph random_network =  DynamicGraphFactory.instantiateDynamicGraph();
 
-//		  Cytoscape.createNetwork("Watts-Strogatz Network");
 
 		//Keep track of the number 
 		numEdges = 0;
@@ -99,18 +100,19 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 		long time = System.currentTimeMillis();
 
 		// Create N nodes
-		CyNode[] nodes = new CyNode[numNodes];
+		int[] nodes = new int[numNodes];
 
 		// For each edge
 		for (int i = 0; i < numNodes; i++) {
 			// Create a new node nodeID = i, create = true
-			CyNode node = Cytoscape.getCyNode(time + "(" + i + ")", true);
+			//CyNode node = Cytoscape.getCyNode("Rand." + i , true);
 
 			// Add this node to the network
-			random_network.addNode(node);
+			//random_network.addNode(node);
 
 			// Save node in array
-			nodes[i] = node;
+			//nodes[i] = node;
+			nodes[i] = random_network.nodeCreate();
 		}
 		
 		//Create a linked list to store edges
@@ -172,24 +174,15 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 			}
 
 			//Create the edge between these two nodes
-			CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target],
+		/*	CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target],
 					Semantics.INTERACTION, new String("("
 							+ Math.min(source, target) + ","
 							+ Math.max(source, target) + ")"), true, directed);
 
 			//add the edge to this network
 			random_network.addEdge(edge);
-			
-			//If this network is undirected 
-			if(!directed)
-			{
-				edge = Cytoscape.getCyEdge(nodes[target], nodes[source],
-					Semantics.INTERACTION, new String("("
-							+ Math.min(source, target) + ","
-							+ Math.max(source, target) + ")"), true, directed);
-				random_network.addEdge(edge);
-			
-			}
+		*/
+			random_network.edgeCreate(nodes[source],nodes[target],directed);
 		}
 
 				 

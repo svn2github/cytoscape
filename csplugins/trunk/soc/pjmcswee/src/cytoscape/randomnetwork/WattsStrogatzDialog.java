@@ -35,6 +35,7 @@
 
 package cytoscape.randomnetwork;
 
+import cytoscape.layout.algorithms.*;
 import cytoscape.plugin.*;
 import cytoscape.*;
 import cytoscape.data.*;
@@ -374,6 +375,10 @@ public class WattsStrogatzDialog extends JPanel {
 		VisualStyle newStyle = catalog.getVisualStyle("random network");
 		//set this as the current visualStyle
 		vmm.setVisualStyle(newStyle);
+
+		GridNodeLayout alg = new GridNodeLayout();
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		view.applyLayout(alg); 
 
 
 		//Go up to the Dialog and close this window

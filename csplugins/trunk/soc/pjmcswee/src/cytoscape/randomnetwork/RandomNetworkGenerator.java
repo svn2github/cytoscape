@@ -35,7 +35,7 @@
 
 package cytoscape.randomnetwork;
 
-import cytoscape.*;
+import cytoscape.graph.dynamic.*;
 
 
 
@@ -45,6 +45,6 @@ import cytoscape.*;
 public interface RandomNetworkGenerator  {
 	
 	//used to generate random networks 
-	CyNetwork generate();
+	DynamicGraph generate();
  
 }

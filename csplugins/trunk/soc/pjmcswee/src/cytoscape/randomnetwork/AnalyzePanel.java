@@ -35,12 +35,16 @@
 
 package cytoscape.randomnetwork;
 
+import cytoscape.graph.dynamic.*;
 
 import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
+import cytoscape.giny.*;
+import fing.model.*;
 import giny.view.*;
+import giny.model.*;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -286,29 +290,63 @@ public class AnalyzePanel extends JPanel {
 		double results[] = new double[metrics.size()];
 		System.out.println("Free:" + Runtime.getRuntime().freeMemory());
 		
-		//networkModel.setCreateView(false);
+
 		for(int i = 0; i < rounds; i++)
 		{
+			//Cytoscape.createNewSession();
 			
-			CyNetwork net = networkModel.generate();
+			DynamicGraph net = networkModel.generate();
+			System.out.println("generateed" );
 			for(int j = 0; j < metrics.size(); j++)
 			{
+				long startTime = System.currentTimeMillis();
 				NetworkMetric metric = (NetworkMetric)metrics.get(j);
 
-				results[j] += ((Double)metric.analyze(net,  directed)).doubleValue();
-
+				double t = metric.analyze(net,  directed);
+				results[j] += t;
+				long endTime = System.currentTimeMillis();
+				
+				
+				System.out.println(i + ": \t" + t);
+				System.out.println("After :" +Runtime.getRuntime().freeMemory());
+				System.out.println((endTime - startTime)/1000.0d);
 			}
 		
+		
 			/*
-			Iterator edgeIter = net.edgeIterator();
+
+			//Iterate over all of the nodes in the network
+			Iterator netIter = net.nodesIterator();
+			while(netIter.hasNext())
+			{
+				Node node = (Node)netIter.next();
+				net.removeNode(node.getRootGraphIndex(),false);
+				node = null;
+			}
+			
+			Iterator edgeIter = net.edgesIterator();
 			while(edgeIter.hasNext())
 			{
-				CyEdge edge  = (CyEdge)edgeIter.next();
-				net.removeEdge.destroyEdge(edge);
+				Edge edge = (Edge)edgeIter.next();
+				net.removeEdge(edge.getRootGraphIndex(),false);
+				edge = null;
 			}
 			*/
-			Cytoscape.destroyNetwork(net,true);
+	
+			//Cytoscape.destroyNetwork(net);	
+			net = null;
+		/*
+			List edges =  Cytoscape.getCyEdgesList();
+			List nodes =  Cytoscape.getCyNodesList();
+			System.out.println("NumEdges : " + edges.size());
+			System.out.println("NumNodes : " + nodes.size());
+
+			edges = null;
+			nodes = null;
+			*/
+			//Runtime.getRuntime().gc();
 			
+
 		}
 	
 		for(int j = 0; j < metrics.size(); j++)

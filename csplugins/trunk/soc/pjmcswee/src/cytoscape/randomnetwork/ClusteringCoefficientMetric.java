@@ -36,9 +36,12 @@
 package cytoscape.randomnetwork;
 
 
-import cytoscape.*;
+//import cytoscape.*;
 import java.util.*;
-import giny.model.*;
+//import giny.model.*;
+import cytoscape.graph.dynamic.*;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 
 /**
  *	Used to determine the clustering coefficient for a CyNetwork
@@ -53,75 +56,118 @@ import giny.model.*;
  */
 public class ClusteringCoefficientMetric implements NetworkMetric {
 	
-	public Comparable analyze(CyNetwork network, boolean directed)
+	public double analyze(DynamicGraph network, boolean directed)
 	{
 		//used to accumulate the clustering coefficient of each node
 		double averageClusteringCoefficient = 0;
 		
+		//Use as the number of nodes in the network
+		int N  = nodeIterator.numRemaining();
 		
-		//Iterate over all of the nodes in the network
-		Iterator netIter = network.nodesIterator();
-		while(netIter.hasNext())
+		//Use this to temo
+		LinkedList nodeRep[] = new LinkedList[N];
+		
+		//Keep track of the node index
+		int nodeCount = 0;
+		
+		//Iterate through all of thie nodes in this network
+		IntEnumerator nodeIterator = network.nodes();
+		while(nodeIterator.numRemaining() > 0)
 		{
-				//Get the next node
-				Node current = (Node)netIter.next();
+			//Get the next node
+			int nodeIndex = nodeIterator.nextInt();
 			
-				//Iterate through the neighborhood
-				List neighbors = network.neighborsList(current);
-				double neighborhoodSize = neighbors.size();
-
-				//Get the list of connecting edges in the neighborhood
-				List edges = network.getConnectingEdges(neighbors);
-			
-				//Number of edges in the neighborhood
-				double edgesFound = edges.size();
+			//Create a new linked list to store these edges
+			nodeRep[nodeCount] = new LinkedList<Integer>();
+		
+			//Iterate through all of this nodes edges
+			//Only outgoing edges should be counted if directed
+			//Second false does not include incoming edges
+			IntEnumerator edgeIterator = network.edgesAdjacent(nodeIndex,true,false,true);
+			while(edgeIterator.numRemaining() > 0)
+			{
+				//Get the next edge
+				int edgeIndex = edgeIterator.nextInt();
 				
+				//Find the other side of this edge
+				int neighborIndex = network.edgeSource(edgeIndex);
 				
-				//While there are still more edges to check
-				while(neighbors.size() > 0)
+				//If we got the wrong side
+				if(neighborIndex == nodeIndex)
 				{
-					//Get the next Node from the neighborhood
-					Node neighbor = (Node)neighbors.remove(neighbors.size() - 1);
-				
-					//Check for self-reflective loops on this node
-					List reflexive = network.edgesList(neighbor,neighbor);
-					
-					//if any are found then subtract from the number of edges
-					edgesFound -= reflexive.size();
-
+					//grab the other side
+					neighborIndex = network.edgeTarget(edgeIndex);
 				}
 				
-				//local variable for this node
-				double nodeClusteringCoefficient = 0;
-				
-				//Compute the maximum possible number of edges
-				double divisor =  neighborhoodSize * (neighborhoodSize - 1);
-
-				//If the network is directed
-				nodeClusteringCoefficient = edgesFound / divisor;
-				
-				//Multiple by two if not directed
-				if(!directed)
-				{
-					nodeClusteringCoefficient *= 2.0d;
-				}
-				
-				//Neighborhoods with less than 1 node have no edges
-				if((divisor > 0) && (edgesFound > 0))
-				{
-					averageClusteringCoefficient += nodeClusteringCoefficient;
-				}
+				//Add this node to the list of neighboring nodes
+				nodeRep[nodeCount].add(neighborIndex);
+			}
+		
+			//Increment the number of nodes
+			nodeCount++;	
 		}
 		
-		//The number of nodes
-		double N = network.getNodeCount();
+		
+		//For each node
+		for(int i = 0; i < N; i++)
+		{
+			//If the node degree is less than 2
+			if(nodeRep[i].size() < 2)
+			{
+				//Skip it since edgeCount must be 0
+				continue;
+			}
 
-		//return the average clustering coefficient
-		return new Double(averageClusteringCoefficient/N);
-	}	
+			//Count the number of edges shared amongst its neighbors
+			double edgeCount = 0;
+			
+			//How big is this nodes neighborhood
+			double size = nodeRep[i].size() * (nodeRep[i].size()  -1 );
+
+			//Iterate through this nodes edges
+			ListIterator inner_iter = nodeRep[i].listIterator();
+			while(inner_iter.hasNext())
+			{			
+				//Get the next neighbor
+				int neighbor1 = (Integer)inner_iter.next(); 
+
+				//Iterate through all of the other neighbors
+				ListIterator outer_iter = nodeRep[i].listIterator();
+				while(outer_iter.hasNext())
+				{
+					//Get the next neighbor
+					int neighbor2 = (Integer) outer_iter.next();
+					
+					//If these are the same then skip it
+					//We do not count reflexive loops
+					if(neighbor1 != neighbor2)
+					{
+						//Check to see if this node is connected  to the other
+						if(nodeRep[neighbor1].contains(neighbor2))
+						{
+							//Increment the edge count
+							edgeCount++;
+						}
+					}
+				}
+			}
+			
+			//If this network is not directed, double the edge count
+			if(!directed)
+			{
+				edgeCount *= 2;
+			}
+			
+			//Increment the global count by this edges clustering coefficient
+			averageClusteringCoefficient += edgeCount / size;
+		}
+		
+		//Remove this datastructure
+		nodeRep = null;
+		
+		//return the average over all of the nodes
+		return averageClusteringCoefficient/N;	
+		
+	}
 }
-
-
-
-
-
+		
