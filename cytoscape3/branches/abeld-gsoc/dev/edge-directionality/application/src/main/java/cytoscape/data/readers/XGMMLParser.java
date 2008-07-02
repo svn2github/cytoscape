@@ -819,7 +819,7 @@ class XGMMLParser extends DefaultHandler {
 			String label = atts.getValue("label");
 			String source = atts.getValue("source");
 			String target = atts.getValue("target");
-			String isDirected = atts.getValue("directed");
+			String isDirected = atts.getValue("cy:directed");
 			String sourceAlias = null;
 			String targetAlias = null;
 			String interaction = "pp";
