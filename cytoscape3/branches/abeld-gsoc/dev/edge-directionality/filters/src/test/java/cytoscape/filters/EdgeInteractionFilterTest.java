@@ -40,10 +40,11 @@ public class EdgeInteractionFilterTest extends FilterTest {
 		
 		edgeInteractionFilter.apply();
 		
-		BitSet expectedEdgeBitSet = new BitSet(3);
+		BitSet expectedEdgeBitSet = new BitSet(4);
 		expectedEdgeBitSet.set(0, true);
 		expectedEdgeBitSet.set(1, true);
 		expectedEdgeBitSet.set(2, true);
+		expectedEdgeBitSet.set(3, true);
 		
 		assertEquals(expectedEdgeBitSet.toString(), edgeInteractionFilter.getEdgeBits().toString());
 	}
@@ -82,10 +83,11 @@ public class EdgeInteractionFilterTest extends FilterTest {
 		
 		edgeInteractionFilter.apply();
 
-		BitSet expectedEdgeBitSet = new BitSet(3);
+		BitSet expectedEdgeBitSet = new BitSet(4);
 		expectedEdgeBitSet.set(0, true);
 		expectedEdgeBitSet.set(1, true);
 		expectedEdgeBitSet.set(2, true);
+		expectedEdgeBitSet.set(3, true);
 		
 		assertEquals(expectedEdgeBitSet.toString(), edgeInteractionFilter.getEdgeBits().toString());
 	}
@@ -106,9 +108,10 @@ public class EdgeInteractionFilterTest extends FilterTest {
 		
 		edgeInteractionFilter.apply();
 
-		BitSet expectedEdgeBitSet = new BitSet(3);
+		BitSet expectedEdgeBitSet = new BitSet(4);
 		expectedEdgeBitSet.set(0, true);
 		expectedEdgeBitSet.set(1, true);
+		expectedEdgeBitSet.set(3, true);
 		
 		assertEquals(expectedEdgeBitSet.toString(), edgeInteractionFilter.getEdgeBits().toString());
 	}

@@ -82,9 +82,10 @@ public class NodeInteractionFilterTest extends FilterTest {
 		
 		nodeInteractionFilter.apply();
 
-		BitSet expectedNodeBitSet = new BitSet(4);
+		BitSet expectedNodeBitSet = new BitSet(5);
 		expectedNodeBitSet.set(0, true);
 		expectedNodeBitSet.set(3, true);
+		expectedNodeBitSet.set(4, true);
 		
 		assertEquals(expectedNodeBitSet.toString(), nodeInteractionFilter.getNodeBits().toString());
 	}
