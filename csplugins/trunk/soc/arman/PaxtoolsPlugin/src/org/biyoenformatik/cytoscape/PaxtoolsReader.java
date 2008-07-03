@@ -46,6 +46,8 @@ import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
+import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
+import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -113,7 +115,7 @@ public class PaxtoolsReader implements GraphReader {
             String networkID = cyNetwork.getIdentifier();
 
             // set biopax network attribute
-            networkAttributes.setAttribute(networkID, BioPAXUtil.BIOPAX_NETWORK, Boolean.TRUE);
+            networkAttributes.setAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
             //  Repair Canonical Name
             BioPAXUtil.repairCanonicalName(cyNetwork);
@@ -125,7 +127,7 @@ public class PaxtoolsReader implements GraphReader {
 
             //  Set default Quick Find Index
             networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
-                                           BioPAXUtil.BIOPAX_SHORT_NAME);
+                                           MapNodeAttributes.BIOPAX_SHORT_NAME);
 
             // set url to pathway commons -
             // used for pathway commons context menus

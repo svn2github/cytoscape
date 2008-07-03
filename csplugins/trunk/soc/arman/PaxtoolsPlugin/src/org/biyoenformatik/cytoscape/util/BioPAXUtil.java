@@ -30,7 +30,8 @@ package org.biyoenformatik.cytoscape.util;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.model.Model;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
-import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
+import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
+import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
@@ -38,50 +39,11 @@ import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
-import cytoscape.data.attr.MultiHashMapDefinition;
-import cytoscape.data.attr.MultiHashMap;
-import cytoscape.data.attr.CountedIterator;
 
 import javax.swing.*;
 import java.util.*;
 
 public class BioPAXUtil {
-    /* org.mskcc.biopax_plugin.mapping.MapNodeAttributes constants */
-    public static final String BIOPAX_RDF_ID = "biopax.rdf_id";
-    public static final String BIOPAX_ENTITY_TYPE = "biopax.entity_type";
-    public static final String BIOPAX_NAME = "biopax.name";
-    public static final String BIOPAX_CHEMICAL_MODIFICATIONS_MAP = "biopax.chemical_modifications_map";
-    public static final String BIOPAX_CHEMICAL_MODIFICATIONS_LIST = "biopax.chemical_modifications";
-    public static final String BIOPAX_CELLULAR_LOCATIONS = "biopax.cellular_location";
-    public static final String BIOPAX_SHORT_NAME = "biopax.short_name";
-    public static final String BIOPAX_SYNONYMS = "biopax.synonyms";
-    public static final String BIOPAX_ORGANISM_NAME = "biopax.organism_name";
-    public static final String BIOPAX_COMMENT = "biopax.comment";
-    public static final String BIOPAX_UNIFICATION_REFERENCES = "biopax.unification_references";
-    public static final String BIOPAX_RELATIONSHIP_REFERENCES = "biopax.relationship_references";
-    public static final String BIOPAX_PUBLICATION_REFERENCES = "biopax.publication_references";
-    public static final String BIOPAX_XREF_IDS = "biopax.xref_ids";
-    public static final String BIOPAX_XREF_PREFIX = "biopax.xref.";
-    public static final String BIOPAX_AVAILABILITY = "biopax.availability";
-    public static final String BIOPAX_DATA_SOURCES = "biopax.data_sources";
-    public static final String BIOPAX_IHOP_LINKS = "biopax.ihop_links";
-    public static final String BIOPAX_PATHWAY_NAME = "biopax.pathway_name";
-    public static final String BIOPAX_AFFYMETRIX_REFERENCES_LIST
-            = "biopax.affymetrix_references_list";
-
-    /* org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape constants */
-    public static final String BIOPAX_NETWORK = "BIOPAX_NETWORK";
-    public static final String BIOPAX_EDGE_TYPE = "BIOPAX_EDGE_TYPE";
-    public static final String RIGHT = "RIGHT";
-    public static final String LEFT = "LEFT";
-    public static final String PARTICIPANT = "PARTICIPANT";
-    public static final String CONTROLLER = "CONTROLLER";
-    public static final String CONTROLLED = "CONTROLLED";
-    public static final String COFACTOR = "COFACTOR";
-    public static final String CONTAINS = "CONTAINS";
-
-    /* ~ end of biopax plugin constants ~ */
-
     public static final int MAX_SHORT_NAME_LENGTH = 25;
 
     private static final boolean CREATE = true;
@@ -140,10 +102,10 @@ public class BioPAXUtil {
             interactionNode.setIdentifier(interactionID);
             String name = BioPAXUtil.getNameSmart(aInteraction);
             nodeAttributes.setAttribute(interactionID, Semantics.CANONICAL_NAME, name);
-            nodeAttributes.setAttribute(interactionID, BioPAXUtil.BIOPAX_NAME, name);
-            nodeAttributes.setAttribute(interactionID, BioPAXUtil.BIOPAX_ENTITY_TYPE,
+            nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_NAME, name);
+            nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_ENTITY_TYPE,
                                                     aInteraction.getClass().getName());
-            nodeAttributes.setAttribute(interactionID, BioPAXUtil.BIOPAX_RDF_ID, interactionID);
+            nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_RDF_ID, interactionID);
             /* */
         }
 
@@ -157,10 +119,10 @@ public class BioPAXUtil {
                 conversion aConversion = (conversion) aInteraction;
 
                 for(physicalEntityParticipant leftPEP: aConversion.getLEFT())
-                    createNodesAndEdges(nodes, edges, leftPEP, interactionNode, LEFT);
+                    createNodesAndEdges(nodes, edges, leftPEP, interactionNode, MapBioPaxToCytoscape.LEFT);
                 // Once again for the other side
                 for(physicalEntityParticipant rightPEP: aConversion.getRIGHT())
-                    createNodesAndEdges(nodes, edges, rightPEP, interactionNode, RIGHT);
+                    createNodesAndEdges(nodes, edges, rightPEP, interactionNode, MapBioPaxToCytoscape.RIGHT);
 
             } else if( aInteraction instanceof control) {
                 control aControl = (control) aInteraction;
@@ -174,17 +136,17 @@ public class BioPAXUtil {
                         CyEdge edge = Cytoscape.getCyEdge(interactionNode, controlledNode,
                                                             Semantics.INTERACTION, controlStr,
                                                             CREATE);
-                        edgeAttributes.setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE, controlStr);
+                        edgeAttributes.setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE, controlStr);
                         edges.put(edge.getRootGraphIndex(), edge);
                     } // TODO: else? what we gonna do if it is a pathway? Wups?
                 }
 
                 for(physicalEntityParticipant pep: aControl.getCONTROLLER())
-                    createNodesAndEdges(nodes, edges, pep, interactionNode, CONTROLLER);
+                    createNodesAndEdges(nodes, edges, pep, interactionNode, MapBioPaxToCytoscape.CONTROLLER);
 
                 if(aControl instanceof catalysis) {
                     for(physicalEntityParticipant pep: ((catalysis) aControl).getCOFACTOR())
-                        createNodesAndEdges(nodes, edges, pep, interactionNode, COFACTOR);
+                        createNodesAndEdges(nodes, edges, pep, interactionNode, MapBioPaxToCytoscape.COFACTOR);
                 }
 
             } else if( aInteraction instanceof physicalInteraction ) {
@@ -196,12 +158,12 @@ public class BioPAXUtil {
                         assert interactedNode != null; // By part 1
 
                         CyEdge edge = Cytoscape.getCyEdge(interactionNode, interactedNode,
-                                                            Semantics.INTERACTION, PARTICIPANT,
+                                                            Semantics.INTERACTION, MapBioPaxToCytoscape.PARTICIPANT,
                                                             CREATE);
                         edges.put(edge.getRootGraphIndex(), edge);
                     } else if( participant instanceof physicalEntityParticipant ) {
                         physicalEntityParticipant pep = (physicalEntityParticipant) participant;
-                        createNodesAndEdges(nodes, edges, pep, interactionNode, PARTICIPANT);
+                        createNodesAndEdges(nodes, edges, pep, interactionNode, MapBioPaxToCytoscape.PARTICIPANT);
                     } // TODO: else? I don't think so, or wait!?! hmm?
                 }
             }
@@ -224,23 +186,23 @@ public class BioPAXUtil {
         if(pe instanceof complex) {
             complex aComplex = (complex) pep.getPHYSICAL_ENTITY();
             for(physicalEntityParticipant aPEP: aComplex.getCOMPONENTS())
-                createNodesAndEdges(nodes, edges, aPEP, peNode, CONTAINS);
+                createNodesAndEdges(nodes, edges, aPEP, peNode, MapBioPaxToCytoscape.CONTAINS);
         }
 
         CyEdge edge;
-        if( type.equals(RIGHT) || type.equals(COFACTOR) || type.equals(PARTICIPANT) )
+        if( type.equals(MapBioPaxToCytoscape.RIGHT) || type.equals(MapBioPaxToCytoscape.COFACTOR) || type.equals(MapBioPaxToCytoscape.PARTICIPANT) )
             edge = Cytoscape.getCyEdge(mainNode, peNode, Semantics.INTERACTION, type, CREATE);
-        else if( type.equals(LEFT) || type.equals(CONTAINS) )
+        else if( type.equals(MapBioPaxToCytoscape.LEFT) || type.equals(MapBioPaxToCytoscape.CONTAINS) )
             edge = Cytoscape.getCyEdge(peNode, mainNode, Semantics.INTERACTION, type, CREATE);
         else
             edge = Cytoscape.getCyEdge(peNode, mainNode, Semantics.INTERACTION, type, CREATE);
 
-        edgeAttributes.setAttribute(edge.getIdentifier(), BIOPAX_EDGE_TYPE, type);
+        edgeAttributes.setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE, type);
         edges.put(edge.getRootGraphIndex(), edge);
     }
 
     public static void customNodes(CyNetworkView networkView) {
-    // TODO
+        MapNodeAttributes.customNodes(networkView);
     }
 
 
@@ -321,7 +283,7 @@ public class BioPAXUtil {
 
             if (node != null) {
                 String pathwayName = nodeAttributes.getStringAttribute(node.getIdentifier(),
-                                                                       BioPAXUtil.BIOPAX_PATHWAY_NAME);
+                                                                       MapNodeAttributes.BIOPAX_PATHWAY_NAME);
                 if (pathwayName != null) {
                     cyNetwork.setTitle(pathwayName);
 
