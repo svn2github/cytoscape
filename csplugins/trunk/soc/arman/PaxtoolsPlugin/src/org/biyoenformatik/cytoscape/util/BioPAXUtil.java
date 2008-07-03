@@ -29,22 +29,29 @@ package org.biyoenformatik.cytoscape.util;
 
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.model.Model;
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxChemicalModificationMap;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxCellularLocationMap;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.attr.MultiHashMap;
 
-import javax.swing.*;
 import java.util.*;
 
 public class BioPAXUtil {
     public static final int MAX_SHORT_NAME_LENGTH = 25;
+
+    private static Map<String, String> chemModAbbrList = new BioPAXChemModAbbrMap();
+    private static Map<String, String> cellularLocAbbrList = new BioPAXCellularLocAbbrMap();
+
 
     private static final boolean CREATE = true;
 
@@ -178,10 +185,7 @@ public class BioPAXUtil {
                                                     physicalEntityParticipant pep,
                                                     CyNode mainNode, String type) {
         physicalEntity pe = pep.getPHYSICAL_ENTITY();
-        // TODO: Consider modifications :'(
-        String peID = pe.getRDFId();
-        CyNode peNode = Cytoscape.getCyNode(peID, CREATE);
-        nodes.put(peID, peNode);
+        CyNode peNode = createPEStateNode(nodes, pep, type);
 
         if(pe instanceof complex) {
             complex aComplex = (complex) pep.getPHYSICAL_ENTITY();
@@ -200,6 +204,124 @@ public class BioPAXUtil {
         edgeAttributes.setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE, type);
         edges.put(edge.getRootGraphIndex(), edge);
     }
+
+    private static CyNode createPEStateNode(Map<String, CyNode> nodes, physicalEntityParticipant pep, String type) {
+        String rdfId= pep.getPHYSICAL_ENTITY().getRDFId(), nodeId = rdfId;
+        String nodeName = BioPAXUtil.getShortNameSmart(pep.getPHYSICAL_ENTITY()); // TODO: Short or long?
+
+        String chemicalModifications = "",
+               cellularLocation = "";
+
+        Map<String, Integer> chemModCounts = new HashMap<String, Integer>();
+
+        if( pep instanceof sequenceParticipant ) { // We have some modifications
+            for( sequenceFeature sf: ((sequenceParticipant) pep).getSEQUENCE_FEATURE_LIST()) {
+                openControlledVocabulary ocv = sf.getFEATURE_TYPE();
+                if( ocv != null ) {
+                    for( String aTerm: ocv.getTERM() ) {
+                        Integer cnt = chemModCounts.get(aTerm);
+                        if( cnt == null ) {
+                            cnt = 0;
+
+                            String abbr = chemModAbbrList.get(aTerm);
+                            if( abbr == null || abbr.length() == 0)
+                                abbr = aTerm;
+
+                            chemicalModifications += abbr;
+                        }
+                        chemModCounts.put(aTerm, ++cnt);
+                    }
+                }
+            }
+
+            if( chemicalModifications.length() > 0 )
+                chemicalModifications = "-" + chemicalModifications;
+
+            nodeName += chemicalModifications;
+            nodeId += chemicalModifications;
+        }
+
+        openControlledVocabulary ocv = pep.getCELLULAR_LOCATION();
+        if( ocv != null && ocv.getTERM().iterator().hasNext() ) {
+            String aTerm =  ocv.getTERM().iterator().next();
+            String abbr = cellularLocAbbrList.get(aTerm);
+            if( abbr == null ) {
+                if( aTerm == null )
+                    abbr = "";
+                else
+                    abbr = aTerm;
+            }
+
+            if( abbr.length() > 0 )
+                abbr = "(" + abbr + ")";
+
+            nodeId += abbr;
+            nodeName += (abbr.length() == 0) ? abbr : "\n" + abbr;
+            cellularLocation = aTerm;
+        }
+
+        CyNode node = Cytoscape.getCyNode(nodeId, CREATE);
+        nodes.put(nodeId, node);
+        node.setIdentifier(nodeId);
+
+        String nid = node.getIdentifier();
+        nodeAttributes.setAttribute(nid, Semantics.CANONICAL_NAME, getNameSmart(pep.getPHYSICAL_ENTITY()));
+        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_NAME, getNameSmart(pep.getPHYSICAL_ENTITY()));
+        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_ENTITY_TYPE, type);
+        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_RDF_ID, rdfId);
+        nodeAttributes.setAttribute(nid, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, nodeName);
+
+        List<String> chemModList = new ArrayList<String>(chemModAbbrList.keySet());
+        nodeAttributes.setListAttribute(nid, MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, chemModList);
+        setMultiHashMap(nid, nodeAttributes,
+			                MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_MAP, chemModCounts);
+
+	    if (chemModCounts.containsKey(BioPaxConstants.PHOSPHORYLATION_SITE)) {
+		    nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_ENTITY_TYPE,
+                    BioPaxConstants.PROTEIN_PHOSPHORYLATED);
+		}
+
+
+        if (cellularLocation != null && cellularLocation.length() != 0) {
+            List<String> cellularLocationsList = new ArrayList<String>();
+            cellularLocationsList.add(cellularLocation);
+			nodeAttributes.setListAttribute(nid, MapNodeAttributes.BIOPAX_CELLULAR_LOCATIONS,
+											cellularLocationsList);
+		}
+
+        return node;
+    }
+
+    /*
+     * A helper function to set a multihashmap consisting of name - value pairs.
+     */
+    private static void setMultiHashMap(String cyNodeId, CyAttributes attributes, String attributeName,
+                                 Map<String, Integer> map) {
+        // our key format
+        final byte[] mhmKeyFormat = new byte[] { MultiHashMapDefinition.TYPE_STRING };
+
+        // define multihashmap if necessary
+        MultiHashMapDefinition mmapDefinition = attributes.getMultiHashMapDefinition();
+
+        try {
+            mmapDefinition.getAttributeKeyspaceDimensionTypes(attributeName);
+        } catch (IllegalStateException e) {
+            // define the multihashmap attribute
+            mmapDefinition.defineAttribute(attributeName, MultiHashMapDefinition.TYPE_STRING,
+                                           mhmKeyFormat);
+        }
+
+        // add the map attributes
+        MultiHashMap mhmap = attributes.getMultiHashMap();
+        Set<Map.Entry<String, Integer>> entrySet = map.entrySet();
+
+        for(Map.Entry<String, Integer> me : entrySet ) {
+            String[] key = { me.getKey() };
+            Integer value = me.getValue();
+            mhmap.setAttributeValue(cyNodeId, attributeName, value.toString(), key);
+        }
+    }
+
 
     public static void customNodes(CyNetworkView networkView) {
         MapNodeAttributes.customNodes(networkView);
@@ -246,60 +368,26 @@ public class BioPAXUtil {
             return "";
     }
 
-    /**
-     * Repairs Canonical Name;  temporary fix for bug:  1001.
-     * By setting Canonical name to BIOPAX_NODE_LABEL, users can search for
-     * nodes via the Select Nodes --> By Name feature.
-     *
-     * @param cyNetwork CyNetwork Object.
-     */
-    public static void repairCanonicalName(CyNetwork cyNetwork) {
-        CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-        Iterator iter = cyNetwork.nodesIterator();
-
-        while (iter.hasNext()) {
-            CyNode node = (CyNode) iter.next();
-            String label = nodeAttributes.getStringAttribute(node.getIdentifier(),
-                                                             BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
-
-            if (label != null) {
-                nodeAttributes.setAttribute(node.getIdentifier(), Semantics.CANONICAL_NAME, label);
+    // Wrapping the wrappers (generics support, less warnings)
+    private static class BioPAXChemModAbbrMap extends HashMap<String, String> {
+        public BioPAXChemModAbbrMap() {
+            HashMap abbrMap = new BioPaxChemicalModificationMap();
+            for(Object key: abbrMap.keySet()) {
+                Object value = abbrMap.get(key);
+                if( key instanceof String && value instanceof String )
+                    this.put((String) key, (String) value);
             }
         }
     }
 
-    /**
-     * Repairs Network Name.  Temporary fix to automatically set network
-     * name to match BioPAX Pathway name.
-     *
-     * @param cyNetwork CyNetwork Object.
-     */
-    public static void repairNetworkName(final CyNetwork cyNetwork) {
-
-        try {
-            CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-            Iterator iter = cyNetwork.nodesIterator();
-            CyNode node = (CyNode) iter.next();
-
-            if (node != null) {
-                String pathwayName = nodeAttributes.getStringAttribute(node.getIdentifier(),
-                                                                       MapNodeAttributes.BIOPAX_PATHWAY_NAME);
-                if (pathwayName != null) {
-                    cyNetwork.setTitle(pathwayName);
-
-                    //  Update UI.  Must be done via SwingUtilities,
-                    // or it won't work.
-                    SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
-                            }
-                        });
-                }
+    private static class BioPAXCellularLocAbbrMap extends HashMap<String, String> {
+        public BioPAXCellularLocAbbrMap() {
+            HashMap abbrMap = new BioPaxCellularLocationMap();
+            for(Object key: abbrMap.keySet()) {
+                Object value = abbrMap.get(key);
+                if( key instanceof String && value instanceof String )
+                    this.put((String) key, (String) value);
             }
         }
-        catch (java.util.NoSuchElementException e) {
-            // network is empty, do nothing
-        }
     }
-
 }

@@ -44,6 +44,7 @@ import org.biopax.paxtools.io.jena.JenaIOHandler;
 import org.biyoenformatik.cytoscape.util.BioPAXUtil;
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
 import org.mskcc.biopax_plugin.util.cytoscape.NetworkListener;
+import org.mskcc.biopax_plugin.util.cytoscape.LayoutUtil;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
@@ -57,11 +58,13 @@ import giny.view.GraphView;
 public class PaxtoolsReader implements GraphReader {
     private Model biopaxModel = null;
     private final String fileName;
+    private CyLayoutAlgorithm layoutAlgorithm;
 
     private int[] nodeIndices, edgeIndices;
 
     public PaxtoolsReader(String fileName) {
         this.fileName = fileName;
+        this.layoutAlgorithm = new LayoutUtil();
     }
 
     public void read() throws IOException {
@@ -89,11 +92,7 @@ public class PaxtoolsReader implements GraphReader {
     }
 
     public CyLayoutAlgorithm getLayoutAlgorithm() {
-        CyLayoutAlgorithm myAlgorithm = cytoscape.layout.CyLayouts.getLayout("Organic");
-        if( myAlgorithm == null )
-            myAlgorithm = cytoscape.layout.CyLayouts.getDefaultLayout();
-
-        return myAlgorithm;
+        return layoutAlgorithm;
     }
 
     public int[] getNodeIndicesArray() {
@@ -118,11 +117,11 @@ public class PaxtoolsReader implements GraphReader {
             networkAttributes.setAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
             //  Repair Canonical Name
-            BioPAXUtil.repairCanonicalName(cyNetwork);
+            MapBioPaxToCytoscape.repairCanonicalName(cyNetwork);
 
             // repair network name
             if (getNetworkName().equals("")) {
-                BioPAXUtil.repairNetworkName(cyNetwork);
+                MapBioPaxToCytoscape.repairNetworkName(cyNetwork);
             }
 
             //  Set default Quick Find Index
