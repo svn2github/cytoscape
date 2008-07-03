@@ -5,6 +5,7 @@ import giny.view.NodeView;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -142,7 +143,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 			if (nodes.size() > 1) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						depictMultipleNodes(nodes);
+						depictMultipleNodes(nodes, Cytoscape.getCurrentNetworkView());
 					}
 				});
 			} else if (nodes.size() == 1) {
@@ -157,8 +158,7 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 	 * 
 	 * @param nodes
 	 */
-	private void depictMultipleNodes(List nodes) {
-		JDialog dialog = new JDialog(Cytoscape.getDesktop(), "View 2D Structures", false);
+	private void depictMultipleNodes(List nodes, CyNetworkView networkView) {
 		List rows = new ArrayList();
 		for (Object node : nodes) {
 			NodeView nodeView = (NodeView)node;
@@ -180,16 +180,10 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		colNames.add("2D Structure");
 		
         ChemTableSorter sorter = new ChemTableSorter(rows, colNames);
-        ChemTable table = new ChemTable(sorter);
+        ChemTable table = new ChemTable(sorter, networkView.getIdentifier());
+        networkView.getNetwork().addSelectEventListener(table);
         sorter.setTableHeader(table.getTableHeader());
-        
-        JScrollPane spane = new JScrollPane();
-        spane.getViewport().add(table);
-        dialog.getContentPane().setLayout(new BorderLayout());
-		dialog.getContentPane().add(spane, BorderLayout.CENTER);
-		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-		dialog.pack();
-		dialog.setVisible(true);		
+        table.showDialog();
 	}
 
 

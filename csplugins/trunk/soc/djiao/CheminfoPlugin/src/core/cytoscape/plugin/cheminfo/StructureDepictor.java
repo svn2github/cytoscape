@@ -88,7 +88,6 @@ public class StructureDepictor {
 		Image image = null;
 		try {
 			InputStream in = URLUtil.getInputStream(new URL(url));
-			System.out.println(url);
 			image = ImageIO.read(in);
 		} catch (MalformedURLException muex) {
 			muex.printStackTrace();

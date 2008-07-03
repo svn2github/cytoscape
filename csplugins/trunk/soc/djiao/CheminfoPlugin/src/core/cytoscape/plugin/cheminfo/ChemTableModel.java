@@ -1,7 +1,9 @@
 package cytoscape.plugin.cheminfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -17,6 +19,8 @@ public class ChemTableModel extends AbstractTableModel {
     protected List records;
     protected List colNames;
     
+    protected Map<String, List> recordHash;
+    
     public ChemTableModel() {
         super();
     }
@@ -25,6 +29,11 @@ public class ChemTableModel extends AbstractTableModel {
         super();
         this.records = records;
         this.colNames = colNames;
+        this.recordHash = new HashMap<String, List>();
+        for (Object object : records) {
+			List record = (List)object;
+			recordHash.put((String)record.get(0), record);
+		}
     }
     
     public String getColumnName(int columnIndex) {
@@ -90,5 +99,39 @@ public class ChemTableModel extends AbstractTableModel {
             values.add(getRecords().get(rows[i]));
         }
         return values;
+    }
+    
+    public void addAll(List records) {
+    	synchronized (records) {
+        	this.records.addAll(records);
+        	for (Object object : records) {
+				List record = (List)object;
+				recordHash.put((String)record.get(0), record);
+			}
+		}
+    }
+    
+    public void removeAll(List records) {
+    	synchronized (records) {
+    		for (Object object : records) {
+				List record = (List)object;
+				this.records.remove(recordHash.get(record.get(0)));
+				recordHash.remove(record.get(0));
+			}
+		}
+    }
+    
+    public List removeOthers(List records) {
+		List removed = new ArrayList();
+    	synchronized (records) {
+    		for (Map.Entry<String, List> object : recordHash.entrySet()) {
+				if (!records.contains(object.getKey())) {
+					this.records.remove(object.getValue());
+					removed.add(object.getValue());
+					recordHash.remove(object.getKey());
+				}
+			}
+    	}
+    	return removed;
     }
 }

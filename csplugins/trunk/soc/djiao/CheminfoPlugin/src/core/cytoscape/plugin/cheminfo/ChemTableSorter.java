@@ -26,7 +26,7 @@ import javax.swing.table.TableModel;
 
 public class ChemTableSorter extends ChemTableModel {
 
-    protected TableModel tableModel;
+    protected ChemTableModel tableModel;
 
     public static final int DESCENDING = -1;
     public static final int NOT_SORTED = 0;
@@ -68,16 +68,6 @@ public class ChemTableSorter extends ChemTableModel {
     	this();
     	setTableModel(new ChemTableModel(records, colNames));
     }    
-    
-    public ChemTableSorter(TableModel tableModel) {
-    	this();
-        setTableModel(tableModel);
-    }
-
-    public ChemTableSorter(TableModel tableModel, JTableHeader tableHeader) {
-        this(tableModel);
-        setTableHeader(tableHeader);
-    }
 
     private void clearSortingState() {
         viewToModel = null;
@@ -91,10 +81,20 @@ public class ChemTableSorter extends ChemTableModel {
         return tableModel;
     }
 
+    public void addAll(List records) {
+    	tableModel.addAll(records);
+    	sortingStatusChanged();
+    }
+    
+    public void removeAll(List records) {
+    	tableModel.removeAll(records);
+    	sortingStatusChanged();
+    }
+    
     /**
      * @param tableModel  The tableModel to set.
      */
-    public void setTableModel(TableModel tableModel) {
+    public void setTableModel(ChemTableModel tableModel) {
         if (this.tableModel != null) {
             this.tableModel.removeTableModelListener(tableModelListener);
         }
@@ -474,4 +474,12 @@ public class ChemTableSorter extends ChemTableModel {
     public List getValuesAt(int[] rows) {
         return ((ChemTableModel)tableModel).getValuesAt(rows);
     }    
+    
+    public List getRecords() {
+    	return ((ChemTableModel)tableModel).getRecords();
+    }
+    
+    public List removeOthers(List records) {
+    	return ((ChemTableModel)tableModel).removeOthers(records);
+    }
 }
