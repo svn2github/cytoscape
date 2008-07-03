@@ -30,6 +30,7 @@ package org.biyoenformatik.cytoscape.util;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.model.Model;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
@@ -37,6 +38,9 @@ import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
+import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.data.attr.MultiHashMap;
+import cytoscape.data.attr.CountedIterator;
 
 import javax.swing.*;
 import java.util.*;
@@ -236,7 +240,7 @@ public class BioPAXUtil {
     }
 
     public static void customNodes(CyNetworkView networkView) {
-        // TODO
+    // TODO
     }
 
 
