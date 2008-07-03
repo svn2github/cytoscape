@@ -25,7 +25,7 @@
     <javac srcdir="${src}" destdir="${build.classes}">
       <classpath>
         <pathelement location="lib/giny.jar"/>
-        <pathelement location="cytoscape.jar"/>
+        <pathelement location="lib/cytoscape.jar"/>
       </classpath>
     </javac>
   </target>

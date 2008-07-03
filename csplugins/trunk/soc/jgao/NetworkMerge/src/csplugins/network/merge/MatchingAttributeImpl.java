@@ -63,6 +63,10 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * 
      */
     public String getAttributeForMatching(final String netID) {
+        if (netID == null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         return attributeForMatching.get(netID);
     }
     
@@ -71,6 +75,10 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * 
      */
     public void putAttributeForMatching(final String netID, final String attributeName) {
+        if (netID==null || attributeName==null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         attributeForMatching.put(netID, attributeName);
     }
 
@@ -79,6 +87,10 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * 
      */
     public void addNetwork(final String netID) {
+        if (netID == null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         final String[] attributeNames = cyAttributes.getAttributeNames();
         final Collection<String> values = attributeForMatching.values();
         final int n = attributeNames.length;
@@ -99,6 +111,10 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * 
      */
     public String removeNetwork(final String netID) {
+        if (netID == null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         return attributeForMatching.remove(netID);
     }
     

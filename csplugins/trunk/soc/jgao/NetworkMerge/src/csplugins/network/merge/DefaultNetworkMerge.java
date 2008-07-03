@@ -87,8 +87,16 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                              final Node n1, 
                              final CyNetwork net2, 
                              final Node n2) {
+        if (net1==null || net2==null || n1==null || n2==null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         String attr1 = matchingAttribute.getAttributeForMatching(net1.getIdentifier());
         String attr2 = matchingAttribute.getAttributeForMatching(net2.getIdentifier());
+        
+        if (attr1==null || attr2==null) {
+            throw new java.lang.IllegalArgumentException("No such network selected");
+        }
                         
         //TODO: remove in cytoscape3
         if (attr1.compareTo("ID")==0) {
@@ -99,8 +107,8 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
         }//TODO: remove in cytoscape3
         
         final CyAttributes attributes = Cytoscape.getNodeAttributes();
-        String id1 = n1.getIdentifier();
-        String id2 = n2.getIdentifier();
+        final String id1 = n1.getIdentifier();
+        final String id2 = n2.getIdentifier();
         
         if (!attributes.hasAttribute(id1, attr1)
                 ||!attributes.hasAttribute(id2, attr2)) { //ignore null attribute
@@ -161,7 +169,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
         //}
 
         // merging attribute according to attrbute mapping
-        CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
+        final CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
         
         // set the canonicalName the same as id -- remove in Cytoscape3
         cyAttributes.setAttribute(id, Semantics.CANONICAL_NAME, id);
@@ -211,10 +219,13 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
      * set attribute for the merge node/edge according to attribute mapping
      * 
      */
-    protected void setAttribute(String id, 
-                                Map<CyNetwork,GraphObject> mapNetGO,
-                                CyAttributes cyAttributes,
-                                AttributeMapping attributeMapping) {
+    protected void setAttribute(final String id, 
+                                final Map<CyNetwork,GraphObject> mapNetGO,
+                                final CyAttributes cyAttributes,
+                                final AttributeMapping attributeMapping) {
+        if (id==null || mapNetGO==null || cyAttributes==null || attributeMapping==null) {
+            throw new java.lang.NullPointerException();
+        }
         
         final Set<Map.Entry<CyNetwork,GraphObject>> entrySet = mapNetGO.entrySet();
                 
@@ -281,7 +292,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                     if (attrName_ori==null) { // not in the attribute mapping
                         continue;
                     }
-                    String value = cyAttributes.getAttribute(id_ori, attrName_ori).toString();
+                    final String value = cyAttributes.getAttribute(id_ori, attrName_ori).toString();
                     values.add(value);
                 }
                 
@@ -289,10 +300,10 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                 if (values.isEmpty()) {
                     continue;
                 } if (values.size()==1) {
-                    String value = values.iterator().next();
+                    final String value = values.iterator().next();
                     cyAttributes.setAttribute(id, attr_merged, value);
                 } else { //conflict
-                    String value = values.iterator().next();
+                    final String value = values.iterator().next();
                     cyAttributes.setAttribute(id, attr_merged, value);                    
                 }
             }

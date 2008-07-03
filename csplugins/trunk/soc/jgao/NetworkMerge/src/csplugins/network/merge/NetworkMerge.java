@@ -53,7 +53,7 @@ public interface NetworkMerge {
         UNION("union"),INTERSECTION("intersection"),DIFFERENCE("difference");
         private String opName;
         
-        private Operation(String opName) {
+        private Operation(final String opName) {
             this.opName = opName;            
         }
 

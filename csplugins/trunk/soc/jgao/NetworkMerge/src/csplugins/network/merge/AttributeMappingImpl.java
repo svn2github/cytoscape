@@ -43,6 +43,7 @@ import cytoscape.data.Semantics;
 
 import java.util.Vector;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -135,9 +136,12 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public String getOriginalAttribute(final String netID, final String mergedAttributeName) {
+        if (netID==null||mergedAttributeName==null) {
+            throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
+        }
         final int index = attributeMerged.indexOf(mergedAttributeName);
         if (index==-1) {
-            return null;
+            throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
         }
         return getOriginalAttribute(netID, index);
     }
@@ -148,11 +152,57 @@ public class AttributeMappingImpl implements AttributeMapping {
      */
     public String getOriginalAttribute(final String netID, final int index) {
         final Vector<String> attrs = attributeMapping.get(netID);
-        if (attrs==null) return null;
-        if (index>=attrs.size()||index<0) return null;
+        if (attrs==null) {
+            throw new java.lang.IllegalArgumentException(netID+" is not selected as merging network");
+        }
+        if (index>=attrs.size()||index<0)  {
+            throw new java.lang.IndexOutOfBoundsException();
+        }
         final String attr = attrs.get(index);
         if (attr.compareTo(nullAttr)==0) return null;
         return attr;
+    }
+        
+    /*
+     * Get the original attribute name in the network before merged, corresponding to the merged attribute
+     * 
+     * @return the original attribute if exist, null otherwise
+     */
+    public Map<String,String> getOriginalAttributeMap(String mergedAttributeName) {
+        if (mergedAttributeName==null) {
+            throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
+        }
+        final int index = attributeMerged.indexOf(mergedAttributeName);
+        if (index==-1) {
+            throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
+        }
+        return getOriginalAttributeMap(index);        
+    }
+    
+    /*
+     * Get the original attribute name before merged, corresponding to the ith merged attribute
+     * 
+     * @return the original attribute if exist, null otherwise
+     */
+    public Map<String,String> getOriginalAttributeMap(int index) {
+        if (index>=this.getSizeMergedAttributes()||index<0) {
+            throw new java.lang.IndexOutOfBoundsException();
+        }
+        
+        Map<String,String> return_this = new HashMap<String,String>();
+        
+        final Iterator<Map.Entry<String,Vector<String>>> it = attributeMapping.entrySet().iterator();
+        while (it.hasNext()) {
+            final Map.Entry<String,Vector<String>> entry = it.next();
+            final String netID = entry.getKey();
+            final Vector<String> attrs = entry.getValue();
+            final String attr = attrs.get(index);
+            if (attr.compareTo(nullAttr)!=0) {
+                return_this.put(netID, attr);
+            }
+        }
+        
+        return return_this;
     }
     
     /*
@@ -160,9 +210,12 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public String setOriginalAttribute(final String netID, final String attributeName, final String mergedAttributeName) {
+        if (netID==null||mergedAttributeName==null) {
+            throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
+        }
         final int index = attributeMerged.indexOf(mergedAttributeName);
         if (index==-1) {
-            return null;
+            throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
         }
         return setOriginalAttribute(netID, attributeName, index);
     }
@@ -172,11 +225,20 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public String setOriginalAttribute(final String netID, final String attributeName, final int index){
+        if (netID==null||attributeName==null) {
+            throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
+        }
+        
+        if (Arrays.asList(cyAttributes.getAttributeNames()).contains(attributeName)) {
+            throw new java.lang.IllegalArgumentException("No "+attributeName+" is contained in attributes");
+        }
+        
         final Vector<String> attrs = attributeMapping.get(netID);
         if (attrs==null) return null;
         if (index>=attrs.size()||index<0) {
             throw new java.lang.IndexOutOfBoundsException();
         }
+        
         final String old;
         if (attributeName==null) {
             old = attrs.set(index, nullAttr);
@@ -203,7 +265,15 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public String removeOriginalAttribute(final String netID, final String mergedAttributeName) {
+        if (netID==null||mergedAttributeName==null) {
+            throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
+        }
+        
         final int index = attributeMerged.indexOf(mergedAttributeName);
+        if (index==-1) {
+            throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
+        }
+        
         return removeOriginalAttribute(netID, index);
     }
     
@@ -212,24 +282,85 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public String removeOriginalAttribute(final String netID, final int index) {
+        if (netID==null) {
+            throw new java.lang.NullPointerException("Null netID");
+        }
+        
+        if (index<0 || index>=getSizeMergedAttributes()) {
+            throw new java.lang.IndexOutOfBoundsException("Index out of bounds");
+        }
+        
         return setOriginalAttribute(netID,null,index);
     }
-    
-    public void addNewAttribute(final String netID, final String attributeName) {
-        final Iterator<Vector<String>> it = attributeMapping.values().iterator();
-        while (it.hasNext()) { // add an empty attr for each network
-            it.next().add(nullAttr);
+
+    /*
+     * remove merged attribute, along with the corresponding origianl attribute
+     * 
+     */
+    public String removeMergedAttribute(final String mergedAttributeName) {
+        if (mergedAttributeName==null) {
+            throw new java.lang.NullPointerException("Null mergedAttributeName");
         }
-        final Vector<String> attrs = attributeMapping.get(netID);
-        attrs.set(attrs.size()-1, attributeName); // set attr
         
-        String attrMerged = attributeName;
-        //TODO remove in Cytosape3
-        if (attributeName.compareTo(Semantics.CANONICAL_NAME)==0) {
-            attrMerged = netID+"."+Semantics.CANONICAL_NAME;
-        }//TODO remove in Cytosape3
+        final int index = attributeMerged.indexOf(mergedAttributeName);
+        if (index ==-1 ) {
+            return null;
+        }
         
-        attributeMerged.add(getDefaultMergedAttrName(attrMerged,false)); // add in merged attr  
+        return removeMergedAttribute(index);
+    }
+    
+    /*
+     * remove merged attribute, along with the corresponding origianl attribute
+     * 
+     */
+    public String removeMergedAttribute(final int index) {
+        if (index<0 || index>=getSizeMergedAttributes()) {
+            throw new java.lang.IndexOutOfBoundsException("Index out of bounds");
+        }
+        
+        String old = attributeMerged.remove(index);
+        int n = attributeMapping.size();
+        for (int i=0; i<n; i++) {
+            attributeMapping.get(i).remove(index);
+        }
+        
+        return old;
+    }
+    
+    /*
+     * Add new attribute in the end for the current network
+     * 
+     */
+    public void addAttributes(final Map<String,String> mapNetIDAttributeName, final String mergedAttrName) {
+        if (mapNetIDAttributeName==null || mergedAttrName==null) {
+            throw new java.lang.NullPointerException();
+        }
+        
+        if (mapNetIDAttributeName.isEmpty()) {
+            throw new java.lang.IllegalArgumentException("Empty map");
+        }
+        
+        final Set<String> networkSet = getNetworkSet();
+        if (!networkSet.containsAll(mapNetIDAttributeName.keySet())) {
+            throw new java.lang.IllegalArgumentException("Non-exist network(s)");
+        }        
+        
+        final Iterator<Map.Entry<String,Vector<String>>> it = attributeMapping.entrySet().iterator();
+        //final Iterator<Vector<String>> it = attributeMapping.values().iterator();
+        while (it.hasNext()) { // add an empty attr for each network
+            final Map.Entry<String,Vector<String>> entry = it.next();
+            final String netID = entry.getKey();
+            final Vector<String> attrs = entry.getValue();
+            
+            if (mapNetIDAttributeName.containsKey(netID)) {
+                attrs.add(mapNetIDAttributeName.get(netID));
+            } else {
+                attrs.add(nullAttr);
+            }
+        }
+        
+        attributeMerged.add(getDefaultMergedAttrName(mergedAttrName,false)); // add in merged attr  
     }
 
     /*
@@ -237,6 +368,10 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public void addNetwork(final String netID) {
+        if (netID==null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         final String[] attributeNames = cyAttributes.getAttributeNames();
         final int nAttr = attributeNames.length;
         if (attributeMapping.isEmpty()) { // for the first network added
@@ -336,6 +471,9 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public void removeNetwork(final String netID) {
+        if (netID==null) {
+            throw new java.lang.NullPointerException();
+        }
         final Vector<String> removed = attributeMapping.remove(netID);
         final int n = removed.size();
         for (int i=n-1; i>=0; i--) {
@@ -349,7 +487,11 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Check whether original attribute in each network has the same type for the merged attribute
      * 
      */    
-    public boolean isAttributeTypeSame(final String mergedAttributeName) {        
+    public boolean isAttributeTypeSame(final String mergedAttributeName) {
+        if (mergedAttributeName==null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         final int index = attributeMerged.indexOf(mergedAttributeName);
         if (index==-1) {
             throw new java.lang.IllegalArgumentException("No attribute has such a name!");
@@ -372,17 +514,9 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.IllegalStateException("No network has been added");
         }
         
-        Iterator<Vector<String>> it = attributeMapping.values().iterator();
+        Set<String> attrset = new HashSet(this.getOriginalAttributeMap(index).values());
         
-        // check whether all the type of the original attribute are the same
-        String attrName = it.next().get(index);
-        while (it.hasNext()) {
-            if (!isAttributeTypeSame(attrName, it.next().get(index))) {
-                return false;
-            }
-        }
-        
-        return true;        
+        return AttributeMatchingUtils.isAttributeTypeSame(attrset, cyAttributes);     
     }
     
     
@@ -390,7 +524,10 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Check whether two attributes have the same types
      * 
      */    
-    public boolean isAttributeTypeSame(final String attr1, final String attr2) {        
+    public boolean isAttributeTypeSame(final String attr1, final String attr2) {
+        if (attr1==null || attr2==null) {
+            throw new java.lang.NullPointerException();
+        }
         return AttributeMatchingUtils.isAttributeTypeSame(attr1, attr2, cyAttributes);            
     }
     
@@ -399,6 +536,10 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public byte getMergedAttributeType(final String mergedAttributeName) {
+        if (mergedAttributeName==null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         final int index = attributeMerged.indexOf(mergedAttributeName);
         if (index==-1) {
             throw new java.lang.IllegalArgumentException("No attribute has such a name!");
@@ -436,8 +577,11 @@ public class AttributeMappingImpl implements AttributeMapping {
      * @param attributeMapping the current attribute mapping
      * 
      */
-    private void pack(final int index) {
-
+    protected void pack(final int index) {
+        if (index<0 || index>=getSizeMergedAttributes()) {
+            throw new java.lang.IndexOutOfBoundsException("Index out of boundary.");
+        }
+        
         Iterator<Vector<String>> it = attributeMapping.values().iterator();
         while (it.hasNext()) {
             if (it.next().get(index).compareTo(nullAttr)!=0) {
@@ -458,11 +602,18 @@ public class AttributeMappingImpl implements AttributeMapping {
 
     }
     
-    private boolean attributeExistsInOriginalNetwork(String attr) {
+    protected boolean attributeExistsInOriginalNetwork(String attr) {
+        if (attr==null) {
+            throw new java.lang.NullPointerException();
+        }
         return Arrays.asList(cyAttributes.getAttributeNames()).contains(attr);
     }
     
     private String getDefaultMergedAttrName(final String attr, boolean excludeOriginalAttribute) {
+        if (attr==null) {
+            throw new java.lang.NullPointerException();
+        }
+        
         String appendix = "";
         int i = 0;
 
@@ -474,6 +625,28 @@ public class AttributeMappingImpl implements AttributeMapping {
                 return attr+appendix;
             } 
         }
+    }
+    
+        
+    protected void addNewAttribute(final String netID, final String attributeName) {
+        if (netID==null || attributeName==null) {
+            throw new java.lang.NullPointerException();
+        }
+        
+        final Iterator<Vector<String>> it = attributeMapping.values().iterator();
+        while (it.hasNext()) { // add an empty attr for each network
+            it.next().add(nullAttr);
+        }
+        final Vector<String> attrs = attributeMapping.get(netID);
+        attrs.set(attrs.size()-1, attributeName); // set attr
+        
+        String attrMerged = attributeName;
+        //TODO remove in Cytosape3
+        if (attributeName.compareTo(Semantics.CANONICAL_NAME)==0) {
+            attrMerged = netID+"."+Semantics.CANONICAL_NAME;
+        }//TODO remove in Cytosape3
+        
+        attributeMerged.add(getDefaultMergedAttrName(attrMerged,false)); // add in merged attr  
     }
 
 }

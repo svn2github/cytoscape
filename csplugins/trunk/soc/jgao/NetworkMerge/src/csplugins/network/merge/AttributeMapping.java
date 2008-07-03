@@ -39,6 +39,7 @@ package csplugins.network.merge;
 import cytoscape.data.CyAttributes;
 
 import java.util.Set;
+import java.util.Map;
 
 /**
  * Instore the information how to mapping the attributes 
@@ -107,6 +108,20 @@ public interface AttributeMapping {
     public String getOriginalAttribute(String netID, int index);
     
     /*
+     * Get the original attribute name in the network before merged, corresponding to the merged attribute
+     * 
+     * @return the original attribute if exist, null otherwise
+     */
+    public Map<String,String> getOriginalAttributeMap(String mergedAttributeName);
+    
+    /*
+     * Get the original attribute name before merged, corresponding to the ith merged attribute
+     * 
+     * @return the original attribute if exist, null otherwise
+     */
+    public Map<String,String> getOriginalAttributeMap(int index);   
+    
+    /*
      * Set attribute mapping
      * 
      */
@@ -131,10 +146,22 @@ public interface AttributeMapping {
     public String removeOriginalAttribute(String netID, int index);
     
     /*
-     * Add a new attribute at ith with attributeName in the original network and add a new attribute as attrMerged in resulting network
+     * remove merged attribute, along with the corresponding origianl attribute
      * 
      */
-    public void addNewAttribute(String netID, String attributeName);
+    public String removeMergedAttribute(String mergedAttributeName);
+    
+    /*
+     * remove merged attribute, along with the corresponding origianl attribute
+     * 
+     */
+    public String removeMergedAttribute(int index);
+    
+    /*
+     * Add new attribute in the end for the current network
+     * 
+     */
+    public void addAttributes(Map<String,String> mapNetIDAttributeName, String mergedAttrName);
 
     /*
      * Get the default attribute name for a new merged one 

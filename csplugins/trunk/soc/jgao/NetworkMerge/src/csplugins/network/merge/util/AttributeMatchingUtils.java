@@ -45,6 +45,8 @@ import cytoscape.data.AttributeValueVisitor;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.List;
 
 /**
  *
@@ -52,6 +54,24 @@ import java.util.Iterator;
  */
 public class AttributeMatchingUtils {
     
+    public static boolean isAttributeTypeSame(final Set<String> attrNames, final CyAttributes attrs) {
+        if (attrNames==null || attrs==null) {
+            throw new java.lang.NullPointerException("Null attrNames or attrs");
+        }
+        
+        final Iterator<String> it = attrNames.iterator();
+        if (!it.hasNext()) {
+            throw new java.lang.IllegalArgumentException("Empty attrNames");
+        }
+        
+        final String first = it.next();
+        while (it.hasNext()) {
+            if (!isAttributeTypeSame(first,it.next(),attrs)) {
+                return false;
+            }
+        }
+        return true;
+    }
     /*
      * Check if the types are the same for two attributes
      * 
@@ -61,6 +81,15 @@ public class AttributeMatchingUtils {
     public static boolean isAttributeTypeSame(final String attrName1, 
                                               final String attrName2, 
                                               final CyAttributes attrs) {
+        if (attrName1==null || attrName2==null || attrs==null) {
+            throw new java.lang.NullPointerException("Null attrName1 or attrName2 or attrs");
+        }
+        
+        final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
+        if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
+            throw new java.lang.IllegalArgumentException("attrName1 or/and attrNames not exists");
+        }
+        
         final MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
         final byte valType1 = mmapDef.getAttributeValueType(attrName1);
         final byte valType2 = mmapDef.getAttributeValueType(attrName2);
@@ -99,6 +128,11 @@ public class AttributeMatchingUtils {
                                                final CyAttributes attrs) {
         if ((id1 == null) || (attrName1 == null) || (id2 == null) || (attrName2==null) || (attrs == null)) {
             throw new java.lang.IllegalArgumentException("Null argument.");
+        }        
+                
+        final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
+        if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
+            throw new java.lang.IllegalArgumentException("attrName1 or/and attrNames not exists");
         }
         
         //if (!isAttributeTypeSame(attrName1,attrName2,attrs)) {
@@ -146,6 +180,12 @@ public class AttributeMatchingUtils {
                                      final CyAttributes attrs) {
         if ((fromID == null) || (fromAttrName == null) || (toID == null) || (toAttrName == null) || (attrs==null)) {
             throw new java.lang.IllegalArgumentException("Null argument.");
+        }
+        
+                
+        final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
+        if (!attrNames.contains(fromAttrName)) {
+            throw new java.lang.IllegalArgumentException("fromAttrName not exists");
         }
 
         if (toID.compareTo(fromID)==0 && toAttrName.compareTo(fromAttrName)==0) {

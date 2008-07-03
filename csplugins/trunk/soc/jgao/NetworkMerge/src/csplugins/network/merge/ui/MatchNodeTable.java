@@ -66,6 +66,7 @@ class MatchNodeTable extends JTable{
         this.matchingAttribute = matchingAttribute;
         model = new MatchNodeTableModel();
         setModel(model);
+        setRowHeight(20);
     }
     
     public void setColumnEditor() {

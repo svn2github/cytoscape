@@ -165,8 +165,8 @@ public class NetworkMergeDialog extends JDialog {
         operationComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 operationIcon.setIcon(OPERATION_ICONS[operationComboBox.getSelectedIndex()]);
-                mergeNodeAttributeTable.setMergedNetworkName(getDefaultMergedNetworkName());
-                mergeEdgeAttributeTable.setMergedNetworkName(getDefaultMergedNetworkName());
+                //mergeNodeAttributeTable.setMergedNetworkName(getDefaultMergedNetworkName());
+                //mergeEdgeAttributeTable.setMergedNetworkName(getDefaultMergedNetworkName());
                 pack();
             }
         });
@@ -379,10 +379,11 @@ public class NetworkMergeDialog extends JDialog {
 
         attributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select an attribute for each network to match/identify nodes"));
         attributePanel.setMinimumSize(new java.awt.Dimension(400, 70));
-        attributePanel.setPreferredSize(new java.awt.Dimension(466, 70));
+        attributePanel.setPreferredSize(new java.awt.Dimension(466, 73));
         attributePanel.setLayout(new javax.swing.BoxLayout(attributePanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        attributeScrollPane.setPreferredSize(new java.awt.Dimension(450, 100));
+        attributeScrollPane.setMinimumSize(new java.awt.Dimension(100, 50));
+        attributeScrollPane.setPreferredSize(new java.awt.Dimension(450, 50));
 
         attributeScrollPane.setViewportView(matchNodeTable);
 
@@ -459,7 +460,6 @@ public class NetworkMergeDialog extends JDialog {
         mergeNodeAttributePanel.setLayout(new javax.swing.BoxLayout(mergeNodeAttributePanel, javax.swing.BoxLayout.LINE_AXIS));
 
         mergeNodeAttributeTable = new MergeAttributeTable(
-            getDefaultMergedNetworkName(),
             nodeAttributeMapping,
             matchingAttribute);
         mergeNodeAttributeScrollPane.setViewportView(mergeNodeAttributeTable);
@@ -470,9 +470,7 @@ public class NetworkMergeDialog extends JDialog {
 
         mergeEdgeAttributePanel.setLayout(new javax.swing.BoxLayout(mergeEdgeAttributePanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        mergeEdgeAttributeTable = new MergeAttributeTable(
-            getDefaultMergedNetworkName(),
-            edgeAttributeMapping);
+        mergeEdgeAttributeTable = new MergeAttributeTable(edgeAttributeMapping);
         mergeEdgeAttributeScrollPane.setViewportView(mergeEdgeAttributeTable);
 
         mergeEdgeAttributePanel.add(mergeEdgeAttributeScrollPane);
@@ -604,13 +602,11 @@ private void updateMergeAttributeTable() {
 }
 
 /*
- * Get suggested network title for the resulting network
+ * Get network title for the resulting network
  * 
  */
-public String getDefaultMergedNetworkName() {
-    final String name = "network."+getOperation();
-    return CyNetworkNaming.getSuggestedNetworkTitle(name);
-    
+public String getMergedNetworkName() {
+        return mergeNodeAttributeTable.getMergedNetworkName();
 }
 
 /*
