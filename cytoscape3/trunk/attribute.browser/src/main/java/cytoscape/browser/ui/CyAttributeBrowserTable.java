@@ -205,7 +205,8 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 		setKeyStroke();
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		
 		setSelectedColor(SELECTED_NODE);
 		setSelectedColor(REV_SELECTED_NODE);
 		setSelectedColor(SELECTED_EDGE);
