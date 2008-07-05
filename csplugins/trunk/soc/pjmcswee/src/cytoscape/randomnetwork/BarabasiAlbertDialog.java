@@ -42,6 +42,8 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
 import giny.view.*;
+import cytoscape.graph.dynamic.*;
+
 
 import java.awt.*;
 import java.awt.Font;
@@ -65,7 +67,8 @@ public class BarabasiAlbertDialog extends JPanel {
 	private javax.swing.JButton runButton;
 	private javax.swing.JButton cancelButton;
 	private javax.swing.JCheckBox directedCheckBox;
-
+	private javax.swing.JButton backButton;
+	
 	// Labels
 	private javax.swing.JLabel titleLabel;
 	private javax.swing.JLabel nodeLabel;
@@ -104,6 +107,7 @@ public class BarabasiAlbertDialog extends JPanel {
 		directedCheckBox = new javax.swing.JCheckBox();
 		runButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
+		backButton = new javax.swing.JButton();
 
 		// Label creation
 		titleLabel = new javax.swing.JLabel();
@@ -145,6 +149,16 @@ public class BarabasiAlbertDialog extends JPanel {
 				cancelButtonActionPerformed(evt);
 			}
 		});
+		
+		//Set up the Cancel Button
+		backButton.setText("Back");
+		backButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				backButtonActionPerformed(evt);
+			}
+		});
+
+
 
 		//Create the layout for the dialog (really a panel)
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -201,6 +215,8 @@ public class BarabasiAlbertDialog extends JPanel {
 							//Add the Run/Cancel buttons
 							.add(org.jdesktop.layout.GroupLayout.TRAILING,
 								layout.createSequentialGroup()
+									.add(backButton)
+									.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 									.add(runButton)
 									.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 									.add(cancelButton)))
@@ -235,7 +251,8 @@ public class BarabasiAlbertDialog extends JPanel {
 				//Add the Run/Cancel buttons
 				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 					.add(cancelButton)
-					.add(runButton))
+					.add(runButton)
+					.add(backButton))
 			.addContainerGap()));
 
 	}
@@ -254,6 +271,44 @@ public class BarabasiAlbertDialog extends JPanel {
 		JDialog dialog = (JDialog)p;
 		dialog.dispose();
 	}
+	
+		/**
+	 *  Call back for the cancel button
+	 */
+	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	
+		GenerateRandomPanel generateRandomPanel = new GenerateRandomPanel(mode);
+
+		//Get the TabbedPanel
+		JTabbedPane parent = (JTabbedPane)getParent();
+		int index = parent.getSelectedIndex();
+			
+		//Remove this Panel
+		parent.remove(index);
+		
+		//Replace it with the panel
+		parent.add(generateRandomPanel, index);
+		//Set the title for this panel
+		parent.setTitleAt(index,"Analyze network statistics");
+		//Display this panel
+		parent.setSelectedIndex(index);
+		//Enforce this Panel
+		parent.validate();
+		
+		
+		//Re-pack the window based on this new panel
+		java.awt.Container p = parent.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		JDialog dialog = (JDialog)p;
+		dialog.pack();
+
+		return;
+
+	}
+
+	
 	
 	/*
 	 *  Callback for the generate button
@@ -360,8 +415,10 @@ public class BarabasiAlbertDialog extends JPanel {
 		
 		
 		//Create the network
-		CyNetwork randomNet = bam.generate();
-
+		DynamicGraph graph = bam.generate();
+		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork(graph);
+		graph = null;
+		
 		//Switch to the Network view
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
 				.setSelectedIndex(0);

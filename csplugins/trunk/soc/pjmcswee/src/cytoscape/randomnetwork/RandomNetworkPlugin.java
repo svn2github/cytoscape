@@ -131,7 +131,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 			//Create the Panel
 			generateRandomPanel = new GenerateRandomPanel(0);
 			verifyRandomPanel = new GenerateRandomPanel(1);
-			randomizePane = new JPanel();
+			randomizePane = new RandomizeExistingPanel(0);
 			compareRandomPane = new JPanel();
 			
 			//Default is to dispose on close

@@ -293,7 +293,7 @@ public class AnalyzePanel extends JPanel {
 
 		for(int i = 0; i < rounds; i++)
 		{
-			//Cytoscape.createNewSession();
+		
 			
 			DynamicGraph net = networkModel.generate();
 			System.out.println("generateed" );
@@ -313,38 +313,8 @@ public class AnalyzePanel extends JPanel {
 			}
 		
 		
-			/*
-
-			//Iterate over all of the nodes in the network
-			Iterator netIter = net.nodesIterator();
-			while(netIter.hasNext())
-			{
-				Node node = (Node)netIter.next();
-				net.removeNode(node.getRootGraphIndex(),false);
-				node = null;
-			}
-			
-			Iterator edgeIter = net.edgesIterator();
-			while(edgeIter.hasNext())
-			{
-				Edge edge = (Edge)edgeIter.next();
-				net.removeEdge(edge.getRootGraphIndex(),false);
-				edge = null;
-			}
-			*/
-	
-			//Cytoscape.destroyNetwork(net);	
 			net = null;
-		/*
-			List edges =  Cytoscape.getCyEdgesList();
-			List nodes =  Cytoscape.getCyNodesList();
-			System.out.println("NumEdges : " + edges.size());
-			System.out.println("NumNodes : " + nodes.size());
-
-			edges = null;
-			nodes = null;
-			*/
-			//Runtime.getRuntime().gc();
+		
 			
 
 		}

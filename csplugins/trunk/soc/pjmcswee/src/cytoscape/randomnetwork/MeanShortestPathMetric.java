@@ -36,9 +36,11 @@
 package cytoscape.randomnetwork;
 
 
-import cytoscape.*;
+
 import java.util.*;
-import giny.model.*;
+import cytoscape.graph.dynamic.*;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 
 
 
@@ -48,57 +50,13 @@ import giny.model.*;
 */
 public  class MeanShortestPathMetric implements NetworkMetric {
 	
-	public double analyze(CyNetwork network, boolean directed)
+	public double analyze(DynamicGraph network, boolean directed)
 	{
 		//Accumlate the distances between all nodes
 		double averageShortestPath = 0;
 		
-		//Get the number of nodes
-		int N = network.getNodeCount();
-		
-		//Create the adjacency matrix
-		int adjacencyMatrix[][] = new int[N][N];
-		
-		//Create a node place to hold the nodes, assigns
-		//them a location between 0 and N - 1.
-		Node nodes[] = new Node[N];
-
-		//Keep track of the number of nodes seen so far
-		int count = 0;
-		
-		//Iterate through all of the ndes
-		Iterator iter = network.nodesIterator();
-		while(iter.hasNext())
-		{
-			//get the enxt node
-			Node next = (Node)iter.next();
-			//Save a pointer to that node in the array
-			nodes[count] = next;
-			//increment the count
-			count++;
-		}	
-		
-
-		//Iterate through all pairs of nodes
-		for(int i = 0; i < N; i++)
-		{
-			for(int j = 0; j < N; j++)
-			{
-				//Check to see if the edge exists
-				if(network.edgeExists(nodes[i],nodes[j]))
-				{
-					//Update the value in the Adjacency matrix
-					adjacencyMatrix[i][j] = 1;
-					
-					//if undirected 
-					if(!directed)
-					{
-						adjacencyMatrix[j][i] = 1;
-					}
-				}
-			}
-		}
-		
+		//Use as the number of nodes in the network
+		int N  =  network.nodes().numRemaining();
 
 	
 		int invalidPaths = 0;
@@ -117,15 +75,28 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 				//Pretened the distanc is infinite
 				distance[j] = Integer.MAX_VALUE;
 				
-				//Mark all nodes as unused
-				used[j] = false;
+			}
+			
+			
+			//Iterate through all of thie nodes in this network
+			IntEnumerator edgeIterator = network.edgesAdjacent(i,true,false,true);
+			while(edgeIterator.numRemaining() > 0)
+			{
+				//Get the next edge
+				int edgeIndex = edgeIterator.nextInt();
 				
-				//If this node is connected
-				if(adjacencyMatrix[i][j] == 1)
+				//Find the other side of this edge
+				int neighborIndex = network.edgeSource(edgeIndex);
+				
+				//If we got the wrong side
+				if(neighborIndex == i)
 				{
-					//set its distance as 1
-					distance[j] = 1; 
+					//grab the other side
+					neighborIndex = network.edgeTarget(edgeIndex);
 				}
+				
+				//set its distance as 1
+				distance[neighborIndex] = 1; 
 			}
 			
 			//Nodes that can be used on a path from i to j
@@ -148,11 +119,25 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 				//Mark the closest node as used
 				used[index] = true;
 				
-				//Update the distances for all nodes
-				for(int k = 0; k < N; k++)
+				
+				IntEnumerator adjIterator = network.edgesAdjacent(index,true,false,true);
+				while(adjIterator.numRemaining() > 0)
 				{
-					//If this node is not yet used
-					if((!used[k]) && (adjacencyMatrix[index][k] == 1))
+				
+					//Get the next edge
+					int edgeIndex = adjIterator.nextInt();
+				
+					//Find the other side of this edge
+					int k = network.edgeSource(edgeIndex);
+				
+					//If we got the wrong side
+					if(k == index)
+					{
+						//grab the other side
+						k = network.edgeTarget(edgeIndex);
+					}
+					
+					if(!used[k])
 					{
 						int sum = distance[index] + 1;
 						if(sum < distance[k])

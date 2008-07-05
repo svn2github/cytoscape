@@ -41,8 +41,7 @@ package cytoscape.randomnetwork;
 
 import cytoscape.graph.dynamic.util.*;
 import cytoscape.graph.dynamic.*;
-//import cytoscape.*;
-//import cytoscape.data.*;
+
 import java.util.*;
 
 
@@ -134,33 +133,20 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	*/
 	public DynamicGraph gnmModel()
 	{
-		//Create a network
-		//CyNetwork random_network = 
-		//	Cytoscape.createNetwork(new int[] {  }, new int[] {  }, ("Erdos-Renyi network"), null, createView);
-
+		//Create the graph object
 		DynamicGraph random_network =  DynamicGraphFactory.instantiateDynamicGraph();
 
 		// Create N nodes
 		int[] nodes = new int[numNodes];
 
 		
-		//Get the current system time
-		long time = System.currentTimeMillis();
-		
-		
-		boolean adjacency[][] = new boolean[numNodes][numNodes];
+		LinkedList<Integer> existingEdges  = new LinkedList<Integer>();
+
 		
 		// For each edge
-		for (int i = 0; i < numNodes; i++) {
+		for (int i = 0; i < numNodes; i++) 
+		{
 			// Create a new node nodeID = i, create = true
-		/*	CyNode node = Cytoscape.getCyNode("Rand." + i, true);
-
-			// Add this node to the network
-			random_network.addNode(node);
-
-			// Save node in array
-			nodes[i] = node;
-			*/
 			nodes[i] = random_network.nodeCreate();
 		}
 
@@ -201,7 +187,8 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 			int target = Math.abs(random.nextInt()) % numNodes;
 
 			
-			boolean check = adjacency[source][target];
+			boolean check =   existingEdges.contains(source*numNodes + target); 
+			//adjacency[source][target];
 
 						
 			//We can enumerate all pairs of nodes by the formula
@@ -243,7 +230,8 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 						|| (source_lo != target_lo)) {
 				
 					//Try to get this edge
-					check = adjacency[source_lo][target_lo];
+					check = existingEdges.contains(source_lo*numNodes + target_lo); 
+					//adjacency[source_lo][target_lo];
 					
 					//If this edge does not exist, choose this edge
 					if (!check) {
@@ -259,7 +247,7 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 						|| (source_hi != target_hi)) {
 			
 					//try to get the higher edge
-					check = adjacency[source_hi][target_hi];
+					check = existingEdges.contains(source_hi * numNodes + target_hi); //adjacency[source_hi][target_hi];
 
 					//If the edge does not exist choose this edge
 					if (!check) {
@@ -274,28 +262,19 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 
 			}
 			
-			adjacency[source][target] = true;
-			
+			//adjacency[source][target] = true;
+			existingEdges.add(new Integer(source *numNodes + target));
 			if(!directed)
 			{
-				adjacency[target][source] = true;
+				existingEdges.add(new Integer(target * numNodes + source));
+				//	adjacency[target][source] = true;
 			}
 
-			/*
-			// Create and edge between node i and node j
-			CyEdge edge = Cytoscape.getCyEdge(nodes[source], nodes[target],
-					Semantics.INTERACTION, new String(time + "("
-							+ Math.min(source, target) + ","
-							+ Math.max(source, target) + ")"), true,
-					directed);
-
-			// Add this edge to the network
-			random_network.addEdge(edge);
-			*/
+		
 			random_network.edgeCreate(nodes[source], nodes[target], directed);
 			
 		}
-		adjacency= null;
+		existingEdges = null;
 		return random_network;
 	}
 	
@@ -306,28 +285,16 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	public DynamicGraph gnpModel()
 	{
 		//Create a network
-		//CyNetwork random_network = 
-		//	Cytoscape.createNetwork(new int[] {  }, new int[] {  }, ("Erdos-Renyi network"), null, createView);
-		// Create N nodes
-		//CyNode[] nodes = new CyNode[numNodes];
 		DynamicGraph random_network =  DynamicGraphFactory.instantiateDynamicGraph();
 		int[] nodes = new int[numNodes];
-		
-		//Get the current system time
-		//long time = System.currentTimeMillis();	
 		
 		
 		// For each edge
 		for (int i = 0; i < numNodes; i++) 
 		{
 			// Create a new node nodeID = i, create = true
-			//CyNode node = Cytoscape.getCyNode("Rand." + i, true);
 			nodes[i] = random_network.nodeCreate();
-			// Add this node to the network
-			//random_network.addNode(node);
-
-			// Save node in array
-			//nodes[i] = node;
+		
 		}
 
 		// For each node
@@ -355,15 +322,6 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 				if (random.nextDouble() <= probability) {
 
 					// Create and edge between node i and node j
-				/*	CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
-							Semantics.INTERACTION, new String("("
-									+ Math.min(i, j) + ","
-									+ Math.max(i, j) + ")"), true,
-							directed);
-
-					// Add this edge
-					random_network.addEdge(edge);
-				*/
 					random_network.edgeCreate(nodes[i],nodes[j],directed);
 				}
 			}

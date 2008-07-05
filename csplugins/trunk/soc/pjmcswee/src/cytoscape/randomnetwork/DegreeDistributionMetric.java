@@ -35,10 +35,10 @@
 
 package cytoscape.randomnetwork;
 
-
-import cytoscape.*;
 import java.util.*;
-import giny.model.*;
+import cytoscape.graph.dynamic.*;
+import cytoscape.util.intr.IntEnumerator;
+import cytoscape.util.intr.IntIterator;
 
 
 
@@ -49,41 +49,32 @@ import giny.model.*;
  */
 public  class DegreeDistributionMetric implements NetworkMetric {
 	
-	public double analyze(CyNetwork network, boolean directed)
+	public double analyze(DynamicGraph network, boolean directed)
 	{
 		//The value to store alpha in
 		double power = 0;
 		
-		//The number of nodes in the network
-		int N = network.getNodeCount();
-
-		int maxDegree = N;
-		if(directed)
-		{
-			maxDegree *= N;
-		}
+		//Iterate through all of thie nodes in this network
+		IntEnumerator nodeIterator = network.nodes();
+		
+		//Use as the number of nodes in the network
+		int N  = nodeIterator.numRemaining();
+		
+		
 		//Store the degree distribution 
-		int degree[] = new int[maxDegree];
-		
+		int degree[] = new int[N];
+	
 
-		//Iterate through all of the nodes
-		Iterator iter = network.nodesIterator();
-		while(iter.hasNext())
+		while(nodeIterator.numRemaining() > 0)
 		{
-			//get the next node
-			Node next = (Node)iter.next();
-			
-			//increment the according degree bin
-			degree[network.getDegree(next)]++;
-			
-		}	
+			int nodeIndex = nodeIterator.nextInt();
+			IntEnumerator edgeIterator = network.edgesAdjacent(nodeIndex,true,false,true);
+			int nodeDegree = edgeIterator.numRemaining();
+			degree[nodeDegree]++;
+		}
 		
-		//Count how many bins are filled
-		double count = 0;
-		
-		//This really should encoporate the number of nodes
-		//with 1 edge.
-		for(int i = 2; i < (maxDegree-1); i ++)
+		int count = 0;
+		for(int i = 2; i < (N-1); i ++)
 		{
 			//If this bin is not populated ignore it
 			if(degree[i] != 0)
@@ -95,14 +86,6 @@ public  class DegreeDistributionMetric implements NetworkMetric {
 			}
 		}
 		
-		System.out.println(N);
-		//return the average K^(-power)
 		return power/count;
 	}
-	
 }
-
-
-
-
-

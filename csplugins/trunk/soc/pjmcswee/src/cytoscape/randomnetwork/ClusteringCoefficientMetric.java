@@ -36,9 +36,7 @@
 package cytoscape.randomnetwork;
 
 
-//import cytoscape.*;
 import java.util.*;
-//import giny.model.*;
 import cytoscape.graph.dynamic.*;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
@@ -56,10 +54,21 @@ import cytoscape.util.intr.IntIterator;
  */
 public class ClusteringCoefficientMetric implements NetworkMetric {
 	
+	
+	
+	/*---------------------------------------------------------------
+	 *
+	 * @param Network network the network to analyze s
+	 *
+	 *---------------------------------------------------------------*/
 	public double analyze(DynamicGraph network, boolean directed)
 	{
 		//used to accumulate the clustering coefficient of each node
 		double averageClusteringCoefficient = 0;
+		
+		
+		//Iterate through all of thie nodes in this network
+		IntEnumerator nodeIterator = network.nodes();
 		
 		//Use as the number of nodes in the network
 		int N  = nodeIterator.numRemaining();
@@ -70,8 +79,7 @@ public class ClusteringCoefficientMetric implements NetworkMetric {
 		//Keep track of the node index
 		int nodeCount = 0;
 		
-		//Iterate through all of thie nodes in this network
-		IntEnumerator nodeIterator = network.nodes();
+	
 		while(nodeIterator.numRemaining() > 0)
 		{
 			//Get the next node

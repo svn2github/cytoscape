@@ -42,6 +42,7 @@ import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
 import giny.view.*;
+import cytoscape.graph.dynamic.*;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -71,6 +72,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 	private javax.swing.JCheckBox gnm;
 	private javax.swing.JButton runButton;
 	private javax.swing.JButton cancelButton;
+	private javax.swing.JButton backButton;
 
 	//Labels
 	private javax.swing.JLabel titleLabel;
@@ -109,7 +111,8 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		gnp = new javax.swing.JCheckBox();
 		runButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
-
+		backButton = new javax.swing.JButton();
+		
 		//Labels
 		gnpExplain = new javax.swing.JLabel();
 		gnmExplain = new javax.swing.JLabel();
@@ -171,6 +174,17 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 				cancelButtonActionPerformed(evt);
 			}
 		});
+
+
+		//Set up the Cancel Button
+		backButton.setText("Back");
+		backButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				backButtonActionPerformed(evt);
+			}
+		});
+
+
 
 		//Create the layout
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -252,6 +266,8 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 					//Add the Run/Cancel button	
 					.add(org.jdesktop.layout.GroupLayout.TRAILING,
 						layout.createSequentialGroup()
+							.add(backButton)
+							.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 							.add(runButton)
 							.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
 							.add(cancelButton)))
@@ -304,7 +320,8 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 				//Add the Run/Cancel group
 				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 					.add(cancelButton)
-					.add(runButton))
+					.add(runButton)
+					.add(backButton))
 			.addContainerGap()));
 
 	}
@@ -323,6 +340,46 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		JDialog dialog = (JDialog)p;
 		dialog.dispose();
 	}
+
+
+	/**
+	 *  Call back for the cancel button
+	 */
+	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	
+		GenerateRandomPanel generateRandomPanel = new GenerateRandomPanel(mode);
+
+		//Get the TabbedPanel
+		JTabbedPane parent = (JTabbedPane)getParent();
+		int index = parent.getSelectedIndex();
+			
+		//Remove this Panel
+		parent.remove(index);
+		
+		//Replace it with the panel
+		parent.add(generateRandomPanel, index);
+		//Set the title for this panel
+		parent.setTitleAt(index,"Analyze network statistics");
+		//Display this panel
+		parent.setSelectedIndex(index);
+		//Enforce this Panel
+		parent.validate();
+		
+		
+		//Re-pack the window based on this new panel
+		java.awt.Container p = parent.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		JDialog dialog = (JDialog)p;
+		dialog.pack();
+
+		return;
+
+	}
+
+
+
 
 	/**
 	 * Call back for the generate button
@@ -459,8 +516,10 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		
 		
 		//Generate the network
-		CyNetwork network = erm.generate();
-		
+		DynamicGraph graph = erm.generate();
+		CyNetwork network = CytoscapeConversion.DynamicGraphToCyNetwork(graph);
+		graph = null;
+				
 		//Set the network pane as active
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
 				.setSelectedIndex(0);
