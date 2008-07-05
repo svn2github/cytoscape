@@ -48,6 +48,8 @@ import java.util.*;
 
 public class BioPAXUtil {
     public static final int MAX_SHORT_NAME_LENGTH = 25;
+    public static Map<String, Model> networkModelMap = new HashMap<String, Model>();
+
 
     private static Map<String, String> chemModAbbrList = new BioPAXChemModAbbrMap();
     private static Map<String, String> cellularLocAbbrList = new BioPAXCellularLocAbbrMap();
@@ -63,9 +65,9 @@ public class BioPAXUtil {
         String name = bpe.getNAME();
         String sName = bpe.getSHORT_NAME();
 
-        if( !name.equals("") )
+        if( name != null && !name.equals("") )
             return name;
-        else if( !sName.equals("") )
+        else if( sName != null && !sName.equals("") )
             return sName;
         else if( !bpe.getSYNONYMS().isEmpty() )
             return bpe.getSYNONYMS().iterator().next();
@@ -77,9 +79,9 @@ public class BioPAXUtil {
         String name = bpe.getNAME();
         String sName = bpe.getSHORT_NAME();
 
-        if( !sName.equals("") )
+        if( sName != null && !sName.equals("") )
             return sName;
-        else if( !name.equals("") )
+        else if( name != null && !name.equals("") )
             return wrapName(name);
         else if( !bpe.getSYNONYMS().isEmpty() )
             return wrapName(bpe.getSYNONYMS().iterator().next());
@@ -111,7 +113,7 @@ public class BioPAXUtil {
             nodeAttributes.setAttribute(interactionID, Semantics.CANONICAL_NAME, name);
             nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_NAME, name);
             nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_ENTITY_TYPE,
-                                                    aInteraction.getClass().getName());
+                                                                        BioPaxConstants.CONVERSION);
             nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_RDF_ID, interactionID);
             /* */
         }
@@ -143,7 +145,10 @@ public class BioPAXUtil {
                         CyEdge edge = Cytoscape.getCyEdge(interactionNode, controlledNode,
                                                             Semantics.INTERACTION, controlStr,
                                                             CREATE);
-                        edgeAttributes.setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE, controlStr);
+
+                        edgeAttributes.setAttribute(edge.getIdentifier(), MapBioPaxToCytoscape.BIOPAX_EDGE_TYPE,
+                                                                                            BioPaxConstants.CONTROL);
+
                         edges.put(edge.getRootGraphIndex(), edge);
                     } // TODO: else? what we gonna do if it is a pathway? Wups?
                 }
@@ -206,8 +211,9 @@ public class BioPAXUtil {
     }
 
     private static CyNode createPEStateNode(Map<String, CyNode> nodes, physicalEntityParticipant pep, String type) {
-        String rdfId= pep.getPHYSICAL_ENTITY().getRDFId(), nodeId = rdfId;
-        String nodeName = BioPAXUtil.getShortNameSmart(pep.getPHYSICAL_ENTITY()); // TODO: Short or long?
+        physicalEntity pe = pep.getPHYSICAL_ENTITY();
+        String rdfId= pe.getRDFId(), nodeId = rdfId;
+        String nodeName = BioPAXUtil.getShortNameSmart(pe); // TODO: Short or long?
 
         String chemicalModifications = "",
                cellularLocation = "";
@@ -265,9 +271,17 @@ public class BioPAXUtil {
         node.setIdentifier(nodeId);
 
         String nid = node.getIdentifier();
-        nodeAttributes.setAttribute(nid, Semantics.CANONICAL_NAME, getNameSmart(pep.getPHYSICAL_ENTITY()));
-        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_NAME, getNameSmart(pep.getPHYSICAL_ENTITY()));
-        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_ENTITY_TYPE, type);
+        nodeAttributes.setAttribute(nid, Semantics.CANONICAL_NAME, getNameSmart(pe));
+        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_NAME, getNameSmart(pe));
+
+        String eType;
+        if(pe instanceof complex)
+            eType = BioPaxConstants.COMPLEX;
+        else
+            eType = BioPaxConstants.PHYSICAL_ENTITY;
+
+        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_ENTITY_TYPE, eType);
+
         nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_RDF_ID, rdfId);
         nodeAttributes.setAttribute(nid, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, nodeName);
 

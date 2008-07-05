@@ -128,6 +128,9 @@ public class PaxtoolsReader implements GraphReader {
             networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
                                            MapNodeAttributes.BIOPAX_SHORT_NAME);
 
+            // Keep the model map
+            BioPAXUtil.networkModelMap.put(cyNetwork.getIdentifier(), biopaxModel);
+
             // set url to pathway commons -
             // used for pathway commons context menus
             String urlToBioPAXWebServices = System.getProperty("biopax.web_services_url");

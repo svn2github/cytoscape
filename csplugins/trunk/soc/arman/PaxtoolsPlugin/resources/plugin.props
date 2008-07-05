@@ -1,0 +1,7 @@
+#plugin.props
+
+pluginName=PaxtoolsPlugin
+pluginDescription=This plug-in utilizes Paxtools in order to handle BioPAX related operations.
+pluginVersion=0.1
+cytoscapeVersion=2.6
+pluginCategory=Functional Enrichment

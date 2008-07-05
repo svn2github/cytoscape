@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="plugins" default="all">
+  
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.sbas/**"/>
+    <exclude name="**/.IJI.*/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+  </patternset>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module PaxtoolsPlugin -->
+  
+  <dirname property="module.paxtoolsplugin.basedir" file="${ant.file}"/>
+  
+  
+  <property name="compiler.args.paxtoolsplugin" value="${compiler.args}"/>
+  
+  <property name="paxtoolsplugin.output.dir" value="${module.paxtoolsplugin.basedir}/out/production"/>
+  <property name="paxtoolsplugin.testoutput.dir" value="${module.paxtoolsplugin.basedir}/out/test"/>
+  <property name="paxtoolsplugin.jaroutput.dir" value="${module.paxtoolsplugin.basedir}/out/jar"/>
+  
+  <path id="paxtoolsplugin.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="paxtoolsplugin.module.classpath">
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/cytoscape.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtools/paxtools.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/biopax.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/giny.jar"/>
+  </path>
+  
+  <path id="paxtoolsplugin.runtime.module.classpath">
+    <pathelement location="${paxtoolsplugin.output.dir}"/>
+    <pathelement location="${paxtoolsplugin.testoutput.dir}"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/cytoscape.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtools/paxtools.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/biopax.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/giny.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.paxtoolsplugin">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.paxtoolsplugin">
+    <patternset refid="excluded.from.module.paxtoolsplugin"/>
+  </patternset>
+  
+  <path id="paxtoolsplugin.module.sourcepath">
+    <dirset dir="${module.paxtoolsplugin.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.paxtoolsplugin" depends="compile.module.paxtoolsplugin.production,compile.module.paxtoolsplugin.tests" description="Compile module PaxtoolsPlugin"/>
+  
+  <target name="compile.module.paxtoolsplugin.production" description="Compile module PaxtoolsPlugin; production classes">
+    <mkdir dir="${paxtoolsplugin.output.dir}"/>
+    <javac destdir="${paxtoolsplugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.paxtoolsplugin}"/>
+      <bootclasspath refid="paxtoolsplugin.module.bootclasspath"/>
+      <classpath refid="paxtoolsplugin.module.classpath"/>
+      <src refid="paxtoolsplugin.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.paxtoolsplugin"/>
+    </javac>
+    
+    <copy todir="${paxtoolsplugin.output.dir}">
+      <fileset dir="${module.paxtoolsplugin.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.paxtoolsplugin.tests" depends="compile.module.paxtoolsplugin.production" description="compile module PaxtoolsPlugin; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.paxtoolsplugin" description="cleanup module">
+    <delete dir="${paxtoolsplugin.output.dir}"/>
+    <delete dir="${paxtoolsplugin.testoutput.dir}"/>
+    <delete dir="${paxtoolsplugin.jaroutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.paxtoolsplugin" description="cleanup all"/>
+  
+  <target name="all.but.jar" depends="init, clean, compile.module.paxtoolsplugin" description="build all but jar file"/>
+
+  <!-- Jar -->
+  <target name="jar" description="create plugin jar file" depends="all.but.jar">
+      <mkdir dir="${paxtoolsplugin.jaroutput.dir}"/>
+
+      <copy file="${basedir}/resources/plugin.props" todir="${paxtoolsplugin.output.dir}/org/biyoenformatik/cytoscape/" />
+      <jar destfile="${paxtoolsplugin.jaroutput.dir}/PaxtoolsPlugin.jar">
+           <manifest>
+           	<attribute name="Cytoscape-Plugin" value="org.biyoenformatik.cytoscape.PaxtoolsPlugin" />
+           </manifest>
+           <fileset dir="${paxtoolsplugin.output.dir}" />
+      </jar>
+  </target>
+
+  <target name="all" depends="jar" description="all in all">
+  	<echo>That was all, may the force with you!</echo>
+  </target>
+
+</project>
