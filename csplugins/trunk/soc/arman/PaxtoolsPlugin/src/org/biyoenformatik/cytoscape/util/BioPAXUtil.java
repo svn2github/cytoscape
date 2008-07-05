@@ -29,11 +29,14 @@ package org.biyoenformatik.cytoscape.util;
 
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.BioPAXElement;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxChemicalModificationMap;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxCellularLocationMap;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
+import org.mskcc.biopax_plugin.util.biopax.BioPaxPlainEnglish;
+import org.mskcc.biopax_plugin.util.links.ExternalLinkUtil;
 import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
@@ -109,12 +112,8 @@ public class BioPAXUtil {
             CyNode interactionNode = Cytoscape.getCyNode(interactionID, CREATE);
             nodes.put(interactionID, interactionNode);
             interactionNode.setIdentifier(interactionID);
-            String name = BioPAXUtil.getNameSmart(aInteraction);
-            nodeAttributes.setAttribute(interactionID, Semantics.CANONICAL_NAME, name);
-            nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_NAME, name);
-            nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_ENTITY_TYPE,
-                                                                        BioPaxConstants.CONVERSION);
-            nodeAttributes.setAttribute(interactionID, MapNodeAttributes.BIOPAX_RDF_ID, interactionID);
+
+            setNodeAttributes(interactionID, aInteraction);
             /* */
         }
 
@@ -183,14 +182,153 @@ public class BioPAXUtil {
 
         }
 
+        MapNodeAttributes.initAttributes(nodeAttributes);
+
         return new CytoscapeGraphElements(nodes.values(), edges.values());
+    }
+
+    public static String getBPEntityType(BioPAXElement bpElement) {
+        String rawType = "", plainEng = rawType;
+
+        if(bpElement != null) {
+            // Thank God, Java hackers are really smart
+            rawType = bpElement.getClass().getName();
+
+            String[] tempStr = rawType.split("\\.");
+            if( tempStr.length > 0 ) {
+                rawType = tempStr[tempStr.length-1].replace("Impl", "");
+                plainEng =  BioPaxPlainEnglish.getTypeInPlainEnglish(rawType);
+            }
+        }
+
+        return plainEng;
+    }
+
+    private static void setNodeAttributes(String nodeID, entity bpe) {
+        String name = getNameSmart(bpe),
+               sName = getShortNameSmart(bpe),
+               rdfID = bpe.getRDFId();
+
+        nodeAttributes.setAttribute(nodeID, Semantics.CANONICAL_NAME, name);
+        nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_NAME, name);
+        nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_SHORT_NAME, sName);
+
+        nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_ENTITY_TYPE,
+                                                                getBPEntityType(bpe));
+        nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_RDF_ID, rdfID);
+
+        ArrayList<String> synList = new ArrayList<String>(bpe.getSYNONYMS());
+        nodeAttributes.setListAttribute(nodeID, MapNodeAttributes.BIOPAX_SYNONYMS, synList);
+
+        String comment = "";
+        for(String aComment: bpe.getCOMMENT())
+            comment += aComment + "<BR><BR>";
+
+        if(comment.length() > 0)
+            nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_COMMENT, comment);
+
+        String uniRefs = "", pubRefs = "", relRefs = "";
+        ArrayList<String> otherRefs = new ArrayList<String>();
+
+        ArrayList<String> dbList = new ArrayList<String>();
+
+        for(xref ref: bpe.getXREF()) {
+            if( ref.getDB() == null || ref.getID() == null )
+                continue;
+            else
+                dbList.add( ref.getDB() );
+
+            if( ref instanceof unificationXref && !ref.getDB().equalsIgnoreCase("CPATH") ) {
+                uniRefs += "<LI>- " + ExternalLinkUtil.createLink(ref.getDB(), ref.getID()) + "</LI>";
+            } else if( ref instanceof publicationXref) {
+                publicationXref pRef = (publicationXref) ref;
+                String pubTxt = "";
+
+                String authors = "";
+                for(String anAuthor: pRef.getAUTHORS())
+                    authors += anAuthor + ", ";
+                pubTxt += (authors.length() > 0 ) ? authors + " et. al, " : authors;
+
+                if( pRef.getTITLE() != null || pRef.getTITLE().length() > 0 )
+                    pubTxt += pRef.getTITLE();
+
+                String sources = "";
+                for(String aSrc: pRef.getSOURCE())
+                    sources += aSrc + ", ";
+                if( pRef.getYEAR() > 0 )
+                    sources += pRef.getYEAR();
+                pubTxt += (sources.length() > 0 ) ? "(" + sources + ") " : sources;
+
+                pubTxt += ExternalLinkUtil.createLink(pRef.getDB(), pRef.getID());
+                pubTxt += "<BR>";
+                pubRefs += pubTxt;
+            } else if( ref instanceof relationshipXref  && !ref.getDB().equalsIgnoreCase("CPATH") ) {
+                relRefs += "<LI>- " + ExternalLinkUtil.createLink(ref.getDB(), ref.getID()) + "</LI>";
+            } else {
+                otherRefs.add(ExternalLinkUtil.createLink(ref.getDB(), ref.getID()));
+            }
+        }
+
+        if( uniRefs.length() > 0 )
+            nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_UNIFICATION_REFERENCES, uniRefs);
+
+        if( relRefs.length() > 0 )
+            nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_RELATIONSHIP_REFERENCES, relRefs);
+
+        if( pubRefs.length() > 0 )
+            nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_PUBLICATION_REFERENCES, pubRefs);
+
+        if( !otherRefs.isEmpty() )
+            nodeAttributes.setListAttribute(nodeID, MapNodeAttributes.BIOPAX_AFFYMETRIX_REFERENCES_LIST, otherRefs);
+
+        String avaliability = "";
+        for( String anAvaliability : bpe.getAVAILABILITY() )
+            avaliability += anAvaliability + "<BR>";
+        if( avaliability.length() > 0 )
+            nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_AVAILABILITY, avaliability);
+
+        String datasources = "";
+        for( dataSource aDataSrc: bpe.getDATA_SOURCE() )
+            for(String aName: aDataSrc.getNAME() )
+                datasources += "<LI> - " + aName + "</LI>";
+        if( datasources.length() > 0 )
+            nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_DATA_SOURCES, datasources);
+
+        if( bpe instanceof sequenceEntity ) {
+            bioSource bioSrc = ((sequenceEntity) bpe).getORGANISM();
+            if( bioSrc != null
+                        && bioSrc.getTAXON_XREF() != null
+                        && bioSrc.getTAXON_XREF().getID() != null ) {
+
+                nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_ORGANISM_NAME, bioSrc.getNAME());
+
+                String httpLink = ExternalLinkUtil.createIHOPLink(getBPEntityType(bpe), synList, dbList,
+                                                                    Integer.parseInt(bioSrc.getTAXON_XREF().getID()) );
+
+                if( httpLink != null )
+                    nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_IHOP_LINKS, "- " + httpLink);
+            }
+        }
+
+        String pathways = "";
+        for(interaction anInteraction: bpe.isPARTICIPANTSof())
+            for(pathway aPathway: anInteraction.isPATHWAY_COMPONENTSof() )
+                pathways += aPathway.getNAME() + "<BR>";
+
+        if( pathways.length() > 0 )
+            nodeAttributes.setAttribute(nodeID, MapNodeAttributes.BIOPAX_PATHWAY_NAME, pathways);
+    }
+
+    private static void setNodeAttributes(String nodeID, entity bpe, String labelName) {
+        setNodeAttributes(nodeID, bpe);
+        nodeAttributes.setAttribute(nodeID, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, labelName);
     }
 
     private static void createNodesAndEdges(Map<String, CyNode> nodes, Map<Integer, CyEdge> edges,
                                                     physicalEntityParticipant pep,
                                                     CyNode mainNode, String type) {
         physicalEntity pe = pep.getPHYSICAL_ENTITY();
-        CyNode peNode = createPEStateNode(nodes, pep, type);
+        CyNode peNode = createPEStateNode(nodes, pep);
 
         if(pe instanceof complex) {
             complex aComplex = (complex) pep.getPHYSICAL_ENTITY();
@@ -210,10 +348,10 @@ public class BioPAXUtil {
         edges.put(edge.getRootGraphIndex(), edge);
     }
 
-    private static CyNode createPEStateNode(Map<String, CyNode> nodes, physicalEntityParticipant pep, String type) {
+    private static CyNode createPEStateNode(Map<String, CyNode> nodes, physicalEntityParticipant pep) {
         physicalEntity pe = pep.getPHYSICAL_ENTITY();
         String rdfId= pe.getRDFId(), nodeId = rdfId;
-        String nodeName = BioPAXUtil.getShortNameSmart(pe); // TODO: Short or long?
+        String nodeName = BioPAXUtil.getNameSmart(pe);
 
         String chemicalModifications = "",
                cellularLocation = "";
@@ -271,19 +409,7 @@ public class BioPAXUtil {
         node.setIdentifier(nodeId);
 
         String nid = node.getIdentifier();
-        nodeAttributes.setAttribute(nid, Semantics.CANONICAL_NAME, getNameSmart(pe));
-        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_NAME, getNameSmart(pe));
-
-        String eType;
-        if(pe instanceof complex)
-            eType = BioPaxConstants.COMPLEX;
-        else
-            eType = BioPaxConstants.PHYSICAL_ENTITY;
-
-        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_ENTITY_TYPE, eType);
-
-        nodeAttributes.setAttribute(nid, MapNodeAttributes.BIOPAX_RDF_ID, rdfId);
-        nodeAttributes.setAttribute(nid, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL, nodeName);
+        setNodeAttributes(nid, pe, nodeName);
 
         List<String> chemModList = new ArrayList<String>(chemModAbbrList.keySet());
         nodeAttributes.setListAttribute(nid, MapNodeAttributes.BIOPAX_CHEMICAL_MODIFICATIONS_LIST, chemModList);
