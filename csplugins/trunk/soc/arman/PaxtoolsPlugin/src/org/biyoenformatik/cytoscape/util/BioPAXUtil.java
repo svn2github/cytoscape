@@ -30,6 +30,8 @@ package org.biyoenformatik.cytoscape.util;
 import org.biopax.paxtools.model.level2.*;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.BioPAXElement;
+import org.biopax.paxtools.io.simpleIO.SimpleExporter;
+import org.biopax.paxtools.io.jena.JenaIOHandler;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.mskcc.biopax_plugin.util.biopax.BioPaxChemicalModificationMap;
@@ -41,6 +43,7 @@ import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -48,11 +51,15 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMap;
 
 import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 
 public class BioPAXUtil {
     public static final int MAX_SHORT_NAME_LENGTH = 25;
-    public static Map<String, Model> networkModelMap = new HashMap<String, Model>();
+    public static final String BIOPAX_MODEL_STRING = "biopax.model.string";
 
+    private static Map<CyNetwork, Model> networkModelMap = new HashMap<CyNetwork, Model>();
 
     private static Map<String, String> chemModAbbrList = new BioPAXChemModAbbrMap();
     private static Map<String, String> cellularLocAbbrList = new BioPAXCellularLocAbbrMap();
@@ -63,6 +70,8 @@ public class BioPAXUtil {
     // Just to shorten the names
     private static CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
     private static CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
+    private static CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+
 
     public static String getNameSmart(entity bpe) {
         String name = bpe.getNAME();
@@ -467,6 +476,52 @@ public class BioPAXUtil {
         MapNodeAttributes.customNodes(networkView);
     }
 
+    public static boolean setNetworkModel(CyNetwork cyNetwork, Model bpModel) {
+        networkModelMap.put(cyNetwork, bpModel);
+
+        SimpleExporter simpleExporter = new SimpleExporter(bpModel.getLevel());
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            simpleExporter.convertToOWL(bpModel, outputStream);
+        } catch (Exception e) {
+            return false;
+        }
+
+        try {
+            networkAttributes.setAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING,
+                                                         outputStream.toString("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("UTF-8 is not supported. BioPAX model could not be saved.");
+        }
+
+        return true;
+    }
+
+    public static Model getNetworkModel(CyNetwork cyNetwork) {
+        Model bpModel = networkModelMap.get(cyNetwork);
+        if( bpModel != null )
+            return bpModel;
+
+        String modelStr = (String) networkAttributes.getAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING);
+        if( modelStr == null )
+            return bpModel; // return null
+        else
+            modelStr = modelStr.replace("\\n", "\n"); // Hrr...
+
+        ByteArrayInputStream inputStream;
+        try {
+            inputStream = new ByteArrayInputStream(modelStr.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            return bpModel; // return null
+        }
+
+        bpModel = new JenaIOHandler().convertFromOWL(inputStream);
+
+        if( bpModel != null )
+            setNetworkModel(cyNetwork, bpModel);
+
+        return bpModel;
+    }
 
     public static class CytoscapeGraphElements {
         public Collection<CyNode> nodes;

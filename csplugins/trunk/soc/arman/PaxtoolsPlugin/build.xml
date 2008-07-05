@@ -55,6 +55,7 @@
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtools/paxtools.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/biopax.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/giny.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/cytoscape-task.jar"/>
   </path>
   
   <path id="paxtoolsplugin.runtime.module.classpath">
@@ -64,6 +65,7 @@
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtools/paxtools.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/biopax.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/giny.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/cytoscape-task.jar"/>
   </path>
   
   
@@ -132,7 +134,7 @@
   </target>
 
   <target name="all" depends="jar" description="all in all">
-  	<echo>That was all, may the force with you!</echo>
+  	<echo>That was all, may the force be with you!</echo>
   </target>
 
 </project>

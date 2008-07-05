@@ -50,8 +50,7 @@ import org.mskcc.biopax_plugin.view.BioPaxContainer;
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
 import giny.view.GraphView;
 
@@ -105,68 +104,67 @@ public class PaxtoolsReader implements GraphReader {
 
     public void doPostProcessing(CyNetwork cyNetwork) {
         /**
-             * Sets a network attribute which indicates this network
-             * is a biopax network
-             */
-            CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+         * Sets a network attribute which indicates this network
+         * is a biopax network
+         */
+        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 
-            // get cyNetwork id
-            String networkID = cyNetwork.getIdentifier();
+        // get cyNetwork id
+        String networkID = cyNetwork.getIdentifier();
 
-            // set biopax network attribute
-            networkAttributes.setAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
+        // set biopax network attribute
+        networkAttributes.setAttribute(networkID, MapBioPaxToCytoscape.BIOPAX_NETWORK, Boolean.TRUE);
 
-            //  Repair Canonical Name
-            MapBioPaxToCytoscape.repairCanonicalName(cyNetwork);
+        //  Repair Canonical Name
+        MapBioPaxToCytoscape.repairCanonicalName(cyNetwork);
 
-            // repair network name
-            if (getNetworkName().equals("")) {
-                MapBioPaxToCytoscape.repairNetworkName(cyNetwork);
-            }
+        // repair network name
+        if (getNetworkName().equals("")) {
+            MapBioPaxToCytoscape.repairNetworkName(cyNetwork);
+        }
 
-            //  Set default Quick Find Index
-            networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
-                                           MapNodeAttributes.BIOPAX_SHORT_NAME);
+        //  Set default Quick Find Index
+        networkAttributes.setAttribute(cyNetwork.getIdentifier(), "quickfind.default_index",
+                                       MapNodeAttributes.BIOPAX_SHORT_NAME);
 
-            // Keep the model map
-            BioPAXUtil.networkModelMap.put(cyNetwork.getIdentifier(), biopaxModel);
+        // Keep the model map
+        BioPAXUtil.setNetworkModel(cyNetwork, biopaxModel);
 
-            // set url to pathway commons -
-            // used for pathway commons context menus
-            String urlToBioPAXWebServices = System.getProperty("biopax.web_services_url");
-            if (urlToBioPAXWebServices != null && urlToBioPAXWebServices.length() > 0) {
-                networkAttributes.setAttribute(cyNetwork.getIdentifier(),
-                                               "biopax.web_services_url",
-                                               urlToBioPAXWebServices);
-                System.setProperty("biopax.web_services_url", "");
-            }
+        // set url to pathway commons -
+        // used for pathway commons context menus
+        String urlToBioPAXWebServices = System.getProperty("biopax.web_services_url");
+        if (urlToBioPAXWebServices != null && urlToBioPAXWebServices.length() > 0) {
+            networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                                           "biopax.web_services_url",
+                                           urlToBioPAXWebServices);
+            System.setProperty("biopax.web_services_url", "");
+        }
 
-            // set data source attribute
-            // used for pathway commons context menus
-            String dataSources = System.getProperty("biopax.data_sources");
-            if (dataSources != null && dataSources.length() > 0) {
-                networkAttributes.setAttribute(cyNetwork.getIdentifier(),
-                                               "biopax.data_sources",
-                                               dataSources);
-                System.setProperty("biopax.data_sources", "");
-            }
+        // set data source attribute
+        // used for pathway commons context menus
+        String dataSources = System.getProperty("biopax.data_sources");
+        if (dataSources != null && dataSources.length() > 0) {
+            networkAttributes.setAttribute(cyNetwork.getIdentifier(),
+                                           "biopax.data_sources",
+                                           dataSources);
+            System.setProperty("biopax.data_sources", "");
+        }
 
-            //  Set-up the BioPax Visual Style
-            final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
-            final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
-            final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
-            view.setVisualStyle(bioPaxVisualStyle.getName());
-            manager.setVisualStyle(bioPaxVisualStyle);
-            view.applyVizmapper(bioPaxVisualStyle);
+        //  Set-up the BioPax Visual Style
+        final VisualStyle bioPaxVisualStyle = BioPaxVisualStyleUtil.getBioPaxVisualStyle();
+        final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+        final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+        view.setVisualStyle(bioPaxVisualStyle.getName());
+        manager.setVisualStyle(bioPaxVisualStyle);
+        view.applyVizmapper(bioPaxVisualStyle);
 
-            //  Set up BP UI
-            CytoscapeWrapper.initBioPaxPlugInUI();
+        //  Set up BP UI
+        CytoscapeWrapper.initBioPaxPlugInUI();
 
-            BioPaxContainer bpContainer = BioPaxContainer.getInstance();
-            bpContainer.showLegend();
-            NetworkListener networkListener = bpContainer.getNetworkListener();
-            networkListener.registerNetwork(cyNetwork);
-
+        BioPaxContainer bpContainer = BioPaxContainer.getInstance();
+        bpContainer.showLegend();
+        NetworkListener networkListener = bpContainer.getNetworkListener();
+        networkListener.registerNetwork(cyNetwork);
     }
 
     public String getNetworkName() {

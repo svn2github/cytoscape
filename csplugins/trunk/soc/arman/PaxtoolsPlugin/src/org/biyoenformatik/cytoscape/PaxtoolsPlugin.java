@@ -29,11 +29,16 @@ package org.biyoenformatik.cytoscape;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.data.ImportHandler;
+import cytoscape.Cytoscape;
+import org.biyoenformatik.cytoscape.action.ExportAsBioPAXAction;
 
 public class PaxtoolsPlugin extends CytoscapePlugin {
     public PaxtoolsPlugin() {
         ImportHandler importHandler = new ImportHandler();
 		importHandler.addFilter(new PaxtoolsFileFilter());
+
+        ExportAsBioPAXAction biopaxAction = new ExportAsBioPAXAction();
+        Cytoscape.getDesktop().getCyMenus().addAction(biopaxAction);
     }
     
 }
