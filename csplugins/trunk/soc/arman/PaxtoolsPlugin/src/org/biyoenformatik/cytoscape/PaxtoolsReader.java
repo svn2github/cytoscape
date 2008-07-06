@@ -56,7 +56,7 @@ import giny.view.GraphView;
 
 public class PaxtoolsReader implements GraphReader {
     private Model biopaxModel = null;
-    private final String fileName;
+    private String fileName = null;
     private CyLayoutAlgorithm layoutAlgorithm;
 
     private int[] nodeIndices, edgeIndices;
@@ -66,9 +66,16 @@ public class PaxtoolsReader implements GraphReader {
         this.layoutAlgorithm = new LayoutUtil();
     }
 
+    public PaxtoolsReader(Model biopaxModel) {
+        this.biopaxModel = biopaxModel;
+        this.layoutAlgorithm = new LayoutUtil();
+    }
+
     public void read() throws IOException {
-        FileInputStream ioStream = new FileInputStream(fileName);
-        biopaxModel = new JenaIOHandler().convertFromOWL(ioStream);
+        if( biopaxModel == null ) {
+            FileInputStream ioStream = new FileInputStream(fileName);
+            biopaxModel = new JenaIOHandler().convertFromOWL(ioStream);
+        }
 
         BioPAXUtil.CytoscapeGraphElements csGraphEls
                         = BioPAXUtil.bioPAXtoCytoscapeGraph(biopaxModel);

@@ -57,7 +57,8 @@ import java.io.UnsupportedEncodingException;
 
 public class BioPAXUtil {
     public static final int MAX_SHORT_NAME_LENGTH = 25;
-    public static final String BIOPAX_MODEL_STRING = "biopax.model.string";
+    public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
+    public static final String DEFAULT_CHARSET = "UTF-8";
 
     private static Map<CyNetwork, Model> networkModelMap = new HashMap<CyNetwork, Model>();
 
@@ -489,9 +490,9 @@ public class BioPAXUtil {
 
         try {
             networkAttributes.setAttribute(cyNetwork.getIdentifier(), BIOPAX_MODEL_STRING,
-                                                         outputStream.toString("UTF-8"));
+                                                         outputStream.toString(DEFAULT_CHARSET));
         } catch (UnsupportedEncodingException e) {
-            System.out.println("UTF-8 is not supported. BioPAX model could not be saved.");
+            System.out.println(DEFAULT_CHARSET + " is not supported. BioPAX model could not be saved.");
         }
 
         return true;
@@ -510,7 +511,7 @@ public class BioPAXUtil {
 
         ByteArrayInputStream inputStream;
         try {
-            inputStream = new ByteArrayInputStream(modelStr.getBytes("UTF-8"));
+            inputStream = new ByteArrayInputStream(modelStr.getBytes(DEFAULT_CHARSET));
         } catch (UnsupportedEncodingException e) {
             return bpModel; // return null
         }
@@ -521,6 +522,13 @@ public class BioPAXUtil {
             setNetworkModel(cyNetwork, bpModel);
 
         return bpModel;
+    }
+
+    public static boolean isBioPAXNetwork(CyNetwork cyNetwork) {
+        Object answer = networkAttributes.getAttribute(cyNetwork.getIdentifier(),
+                MapBioPaxToCytoscape.BIOPAX_NETWORK);
+
+        return (answer != null) && answer.equals(Boolean.TRUE);
     }
 
     public static class CytoscapeGraphElements {

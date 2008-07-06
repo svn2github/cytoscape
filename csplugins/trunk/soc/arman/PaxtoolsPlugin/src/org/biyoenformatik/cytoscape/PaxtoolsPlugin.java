@@ -31,6 +31,7 @@ import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.data.ImportHandler;
 import cytoscape.Cytoscape;
 import org.biyoenformatik.cytoscape.action.ExportAsBioPAXAction;
+import org.biyoenformatik.cytoscape.action.MergeBioPAXAction;
 
 public class PaxtoolsPlugin extends CytoscapePlugin {
     public PaxtoolsPlugin() {
@@ -39,6 +40,9 @@ public class PaxtoolsPlugin extends CytoscapePlugin {
 
         ExportAsBioPAXAction biopaxAction = new ExportAsBioPAXAction();
         Cytoscape.getDesktop().getCyMenus().addAction(biopaxAction);
+
+        MergeBioPAXAction mergeAction = new MergeBioPAXAction();
+        Cytoscape.getDesktop().getCyMenus().addAction(mergeAction);
     }
     
 }

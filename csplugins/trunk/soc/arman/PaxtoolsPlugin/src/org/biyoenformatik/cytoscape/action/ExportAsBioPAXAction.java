@@ -43,7 +43,6 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 
-import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.io.simpleIO.SimpleExporter;
 import org.biyoenformatik.cytoscape.util.BioPAXUtil;
@@ -77,7 +76,7 @@ public class ExportAsBioPAXAction extends CytoscapeAction {
 			if (!fileName.endsWith(".xml"))
 				fileName = fileName + ".xml";
 
-			SaveAsBioPAXTask task = new SaveAsBioPAXTask(fileName);
+			ExportAsBioPAXTask task = new ExportAsBioPAXTask(fileName);
 
 			JTaskConfig jTaskConfig = new JTaskConfig();
 			jTaskConfig.setOwner(Cytoscape.getDesktop());
@@ -91,24 +90,19 @@ public class ExportAsBioPAXAction extends CytoscapeAction {
 
     public void menuSelected(MenuEvent e) {
         CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-        CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-        Object answer = networkAttributes.getAttribute(cyNetwork.getIdentifier(),
-                                                MapBioPaxToCytoscape.BIOPAX_NETWORK);
-        if( answer == null ) {
-            setEnabled(false);
-        } else if ( answer.equals(Boolean.TRUE) ) {
+
+        if( BioPAXUtil.isBioPAXNetwork(cyNetwork) )
             enableForNetwork();
-        } else {
+        else
             setEnabled(false);
-        }
     }
 }
 
-class SaveAsBioPAXTask implements Task {
+class ExportAsBioPAXTask implements Task {
 	private String fileName;
 	private TaskMonitor taskMonitor;
 
-	SaveAsBioPAXTask(String fileName) {
+	ExportAsBioPAXTask(String fileName) {
 		this.fileName = fileName;
 	}
 
