@@ -477,6 +477,11 @@ public class BioPAXUtil {
         MapNodeAttributes.customNodes(networkView);
     }
 
+    public static void resetNetworkModel(CyNetwork cyNetwork) {
+        networkModelMap.remove(cyNetwork);
+        getNetworkModel(cyNetwork);
+    }
+
     public static boolean setNetworkModel(CyNetwork cyNetwork, Model bpModel) {
         networkModelMap.put(cyNetwork, bpModel);
 
