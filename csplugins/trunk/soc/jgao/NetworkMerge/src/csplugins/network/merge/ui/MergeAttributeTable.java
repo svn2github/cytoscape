@@ -93,7 +93,6 @@ class MergeAttributeTable extends JTable{
         this.matchingAttribute = matchingAttribute;
         model = new MergeAttributeTableModel();
         setModel(model);
-        //System.out.println(this.getRowHeight());
         setRowHeight(20);
     }
     
@@ -104,6 +103,7 @@ class MergeAttributeTable extends JTable{
         model = new MergeAttributeTableModel();
         isNode = false;
         setModel(model);
+        setRowHeight(20);
     }
 
     public String getMergedNetworkName() {

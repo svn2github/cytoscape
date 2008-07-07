@@ -161,7 +161,7 @@ public interface AttributeMapping {
      * Add new attribute in the end for the current network
      * 
      */
-    public void addAttributes(Map<String,String> mapNetIDAttributeName, String mergedAttrName);
+    public String addAttributes(Map<String,String> mapNetIDAttributeName, String mergedAttrName);
 
     /*
      * Get the default attribute name for a new merged one 

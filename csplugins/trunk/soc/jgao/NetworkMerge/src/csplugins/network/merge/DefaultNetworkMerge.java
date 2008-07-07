@@ -114,7 +114,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                 ||!attributes.hasAttribute(id2, attr2)) { //ignore null attribute
             return false;
         }
-        return AttributeMatchingUtils.isAttributeValueSame(id1,
+        return AttributeMatchingUtils.isAttributeValueMatched(id1,
                                                            attr1,
                                                            id2,
                                                            attr2,
@@ -251,7 +251,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                         final String[] pair = nrGOAttrPair.get(inr);
                         final String id2 = pair[0];
                         final String attrName2 = pair[1]; 
-                        if (AttributeMatchingUtils.isAttributeValueSame(id1, 
+                        if (!AttributeMatchingUtils.isAttributeValueConflict(id1, 
                                                                     attrName1,
                                                                     id2, 
                                                                     attrName2, 

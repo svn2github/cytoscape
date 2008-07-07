@@ -332,7 +332,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Add new attribute in the end for the current network
      * 
      */
-    public void addAttributes(final Map<String,String> mapNetIDAttributeName, final String mergedAttrName) {
+    public String addAttributes(final Map<String,String> mapNetIDAttributeName, final String mergedAttrName) {
         if (mapNetIDAttributeName==null || mergedAttrName==null) {
             throw new java.lang.NullPointerException();
         }
@@ -360,7 +360,12 @@ public class AttributeMappingImpl implements AttributeMapping {
             }
         }
         
-        attributeMerged.add(getDefaultMergedAttrName(mergedAttrName,false)); // add in merged attr  
+        String defaultName = getDefaultMergedAttrName(mergedAttrName,false);
+        if (attributeMerged.add(defaultName)) {// add in merged attr  
+            return defaultName;
+        } else {
+            return null;
+        }
     }
 
     /*
@@ -602,7 +607,7 @@ public class AttributeMappingImpl implements AttributeMapping {
 
     }
     
-    protected boolean attributeExistsInOriginalNetwork(String attr) {
+    protected boolean attributeExistsInOriginalNetwork(final String attr) {
         if (attr==null) {
             throw new java.lang.NullPointerException();
         }

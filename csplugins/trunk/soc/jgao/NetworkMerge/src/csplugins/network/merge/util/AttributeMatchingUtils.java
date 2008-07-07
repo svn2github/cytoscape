@@ -121,7 +121,91 @@ public class AttributeMatchingUtils {
         return true;
     }
     
-    public static boolean isAttributeValueSame(final String id1,
+    public static boolean isAttributeValueMatched(final String id1,
+                                               final String attrName1,
+                                               final String id2, 
+                                               final String attrName2, 
+                                               final CyAttributes attrs) {
+        if ((id1 == null) || (attrName1 == null) || (id2 == null) || (attrName2==null) || (attrs == null)) {
+            throw new java.lang.IllegalArgumentException("Null argument.");
+        }        
+                
+        final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
+        if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
+            throw new java.lang.IllegalArgumentException("attrName1 or/and attrNames not exists");
+        }
+
+        if (id1.compareTo(id2)==0 && attrName1.compareTo(attrName2)==0) {
+                return true;
+        }
+        
+        if (!attrs.hasAttribute(id1, attrName1) 
+                || !attrs.hasAttribute(id2, attrName2)) { // Is it neccessary to handle empty string?
+            return false; // return false for null attribute
+        }              
+
+        //TODO use a idmapping visitor to compare
+        //CmpAttributeValueVisitor cmpVisitor = new CmpAttributeValueVisitor(id1,attrName1);
+
+        //CyAttributesUtils.traverseAttributeValues(id2, attrName2, attrs, cmpVisitor);
+
+        //return cmpVisitor.getIsSame();
+        
+        byte type1 = attrs.getType(attrName1);
+        byte type2 = attrs.getType(attrName2);
+        
+        if ((type1<0&&type1!=CyAttributes.TYPE_SIMPLE_LIST)
+                ||(type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST)) { // only support matching between simple types
+                                                                     // and simple lists for now
+                                                                     //TODO: support simple and complex map?
+            return false;
+        }
+        
+        if (type1>0&&type2>0) { // simple type
+            Object v1 = attrs.getAttribute(id1, attrName1);
+            Object v2 = attrs.getAttribute(id2, attrName2);
+            return v1.equals(v2);
+        } else {
+            if (type1>0||type2>0) { // then one is simple type; the other is simple list
+                Object o;
+                List l;
+                if (type1>0) { // then type2 is simple list
+                    o = attrs.getAttribute(id1, attrName1);
+                    l = attrs.getListAttribute(id2, attrName2);
+                } else { // type2 is simple type and type 1 is simple list
+                    l = attrs.getListAttribute(id1, attrName1);
+                    o = attrs.getAttribute(id2, attrName2);
+                }
+                
+                int nl = l.size();
+                for (int il=0; il<nl; il++) { // for each value in the list, find if match
+                                              // cannot use List.contains(), because type may be different
+                    Object o2 = l.get(il);
+                    if (o.equals(o2)) {// if one of the value in the list is the same as the other value
+                        return true; 
+                    }
+                }
+                return false; // if no value match
+            } else { // both of them are simple lists
+                List l1 = attrs.getListAttribute(id1, attrName1);
+                List l2 = attrs.getListAttribute(id2, attrName2);
+                int nl1 = l1.size();
+                int nl2 = l2.size();
+                for (int il1=0; il1<nl1; il1++) {
+                    Object o1 = l1.get(il1);
+                    for (int il2=0; il2<nl2; il2++) {
+                        Object o2 = l2.get(il2);
+                        if (o1.equals(o2)) { // if the two lists have intersections
+                            return true; 
+                        }
+                    }
+                }
+                return false;
+            }
+        } 
+    }
+    
+    public static boolean isAttributeValueConflict(final String id1,
                                                final String attrName1,
                                                final String id2, 
                                                final String attrName2, 
@@ -140,16 +224,15 @@ public class AttributeMatchingUtils {
         //}
 
         if (id1.compareTo(id2)==0 && attrName1.compareTo(attrName2)==0) {
-                return true;
-        }
-        
+                return false;
+        }        
         
         if (!attrs.hasAttribute(id1, attrName1) 
                 && !attrs.hasAttribute(id2, attrName2)) {
-            return true; // if both of them are null
+            return false; // if both of them are null
         } else if (!attrs.hasAttribute(id1, attrName1) 
                 || !attrs.hasAttribute(id2, attrName2)) { // Is it neccessary to handle empty string?
-            return false; // 
+            return true; // 
         }
               
 
@@ -158,10 +241,10 @@ public class AttributeMatchingUtils {
 
         CyAttributesUtils.traverseAttributeValues(id2, attrName2, attrs, cmpVisitor);
 
-        return cmpVisitor.getIsSame();
+        return !cmpVisitor.getIsSame();
     }
     
-    //TODO could this function move to cytoscape.data.CyAttributeUtil
+    //TODO could this function move to cytoscape.data.CyAttributeUtil?
     /**
      * Copy a specific attribute of a given object to another attribute in
      * the same or another object. This includes complex attributes.
@@ -228,6 +311,7 @@ public class AttributeMatchingUtils {
                 return;
             }
 
+            //attrs.getMultiHashMap().
             Object cmpToValue = attrs.getMultiHashMap().getAttributeValue(cmpToID, cmpToAttr, keySpace);
             if (cmpToValue==null||visitedValue==null) {
                 return; // ignore null
