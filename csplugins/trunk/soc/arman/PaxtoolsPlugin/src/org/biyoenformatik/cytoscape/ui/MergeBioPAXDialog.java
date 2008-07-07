@@ -91,8 +91,9 @@ public class MergeBioPAXDialog extends JDialog {
         jTaskConfig.displayStatus(true);
         jTaskConfig.setAutoDispose(false);
 
-        TaskManager.executeTask(task, jTaskConfig);
         dispose();
+
+        TaskManager.executeTask(task, jTaskConfig);
     }
 
     private void onCancel() {
@@ -179,7 +180,7 @@ public class MergeBioPAXDialog extends JDialog {
         list1.setModel(defaultListModel1);
         scrollPane1.setViewportView(list1);
         final JLabel label1 = new JLabel();
-        label1.setText("Please select the networks to be merged.");
+        label1.setText("Please select the networks to be merged. (Ctrl + Click)");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;

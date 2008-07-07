@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.biyoenformatik.cytoscape.ui.MergeBioPAXDialog">
   <grid id="cbd77" binding="contentPane" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="48" y="54" width="267" height="292"/>
+      <xy x="48" y="54" width="320" height="292"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -77,7 +77,7 @@
           <gridbag weightx="1.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <text value="Please select the networks to be merged."/>
+          <text value="Please select the networks to be merged. (Ctrl + Click)"/>
         </properties>
       </component>
     </children>
