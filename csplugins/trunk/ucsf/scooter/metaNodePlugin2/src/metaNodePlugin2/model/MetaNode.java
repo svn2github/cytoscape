@@ -155,6 +155,7 @@ public class MetaNode {
 	 * @param metaNode the metaNode to remove
 	 */
 	static public void removeMetaNode(MetaNode metaNode) {
+		if (metaNode == null) return;
 		removeMetaNode(metaNode.getCyGroup().getGroupNode());
 	}
 
@@ -168,8 +169,8 @@ public class MetaNode {
 			if (mNode.isCollapsed)
 				mNode.expand(true, nView, false);
 		}
-		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-		vizmapper.applyAppearances();
+		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+		// vizmapper.applyAppearances();
 		nView.updateView();
 	}
 
@@ -183,8 +184,8 @@ public class MetaNode {
 			if (!mNode.isCollapsed)
 				mNode.collapse(true, true, false, nView);
 		}
-		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-		vizmapper.applyAppearances();
+		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+		// vizmapper.applyAppearances();
 		nView.updateView();
 	}
 
@@ -766,6 +767,8 @@ public class MetaNode {
 		if (!isNodeHidden(partner)) {
 			if (DEBUG) System.out.println("Restoring edge "+edge.getIdentifier()+" partner = "+partner.getIdentifier());
 			network.restoreEdge(edge);
+			if (networkView != null)
+				networkView.applyVizMap(edge);
 		} else {
 			if (DEBUG) System.out.println("Not restoring edge "+edge.getIdentifier()+". "+
 			                    partner.getIdentifier()+" is hidden");
@@ -928,6 +931,7 @@ public class MetaNode {
 			}
 
 			if (nv != null) {
+				networkView.applyVizMap(node);
 				nv.setXPosition(center.getWidth());
 				nv.setYPosition(center.getHeight());
 			}
@@ -1035,8 +1039,8 @@ public class MetaNode {
 	 * Update the display
 	 */
 	private void updateDisplay() {
-		VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
-		vizmapper.applyAppearances();
+		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
+		// vizmapper.applyAppearances();
 		networkView.updateView();
 	}
 

@@ -673,7 +673,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		 */
 		private void collapse() {
 			MetaNode mNode = MetaNode.getMetaNode(group);
-			mNode.collapse(recursive, multipleEdges, true, null);
+			mNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
 		}
 
 		/**
@@ -681,7 +681,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		 */
 		private void expand() {
 			MetaNode mNode = MetaNode.getMetaNode(group);
-			mNode.expand(recursive, null, true);
+			mNode.expand(recursive, Cytoscape.getCurrentNetworkView(), true);
 		}
 
 		/**
