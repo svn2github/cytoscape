@@ -72,7 +72,7 @@ public class NetworkLineParser {
 		this(nodeList, edgeList, nmp, true);
 	}
 	/**
-	 * Creates a new NetworkLineParser object, which will create directed edges
+	 * Creates a new NetworkLineParser object, which will create edges of the given directionality
 	 *
 	 * @param nodeList  DOCUMENT ME!
 	 * @param edgeList  DOCUMENT ME!
