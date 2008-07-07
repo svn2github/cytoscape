@@ -1,0 +1,337 @@
+package cytoscape.render.stateful;
+
+//import cytoscape.render.immed.GraphGraphics;
+import java.awt.*;
+import java.awt.geom.*;
+
+public class ShapeRenderer implements NodeRenderer {
+	public static final int CUSTOM_SHAPE_MAX_VERTICES = 100;
+	private final double[] m_polyCoords = // I need this for extra precision.
+		new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
+	public static final byte SHAPE_RECTANGLE = 0;
+	public static final byte SHAPE_DIAMOND = 1;
+	public static final byte SHAPE_ELLIPSE = 2;
+	public static final byte SHAPE_HEXAGON = 3;
+	public static final byte SHAPE_OCTAGON = 4;
+	public static final byte SHAPE_PARALLELOGRAM = 5;
+	public static final byte SHAPE_ROUNDED_RECTANGLE = 6;
+	public static final byte SHAPE_TRIANGLE = 7;
+	public static final byte SHAPE_VEE = 8;
+	private static final byte s_last_shape = SHAPE_VEE;
+	
+	/*
+	 * A constant for controlling how cubic Bezier curves are drawn; This
+	 * particular constant results in elliptical-looking curves.
+	 */
+	private static final double CURVE_ELLIPTICAL = (4.0d * (Math.sqrt(2.0d) - 1.0d)) / 3.0d;
+	
+	private final GeneralPath m_path2d = new GeneralPath();
+	private final GeneralPath m_path2dPrime = new GeneralPath();
+	private final Ellipse2D.Double m_ellp2d = new Ellipse2D.Double();
+	
+	private final double[] m_ptsBuff = new double[4];
+	private int m_polyNumPoints; // Used with m_polyCoords.
+
+	
+	public void render(Graphics2D m_g2d, NodeDetails nodeDetails, float[] floatBuff1, int node) {
+		m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD); // TODO constr-ba
+		
+		// TODO Auto-generated method stub
+		byte nodeShape = nodeDetails.shape(node);
+		float xMin = floatBuff1[0]; 
+		float yMin =  floatBuff1[1];
+		float xMax = floatBuff1[2];
+		float yMax = floatBuff1[3];
+		Paint fillPaint = nodeDetails.fillPaint(node);
+		float borderWidth = nodeDetails.borderWidth(node);
+		Paint borderPaint = nodeDetails.borderPaint(node);
+		
+		if (borderWidth == 0.0f) {
+			m_g2d.setPaint(fillPaint);
+			m_g2d.fill(getShape(nodeShape, xMin, yMin, xMax, yMax));
+		} else { // There is a border.
+			m_path2dPrime.reset();
+			m_path2dPrime.append(getShape(nodeShape, xMin, yMin, xMax, yMax),
+					false); // Make a copy, essentially.
+
+			final Shape innerShape;
+
+			if (nodeShape == SHAPE_ELLIPSE) {
+				// TODO: Compute a more accurate inner area for ellipse +
+				// border.
+				innerShape = getShape(SHAPE_ELLIPSE, ((double) xMin)
+						+ borderWidth, ((double) yMin) + borderWidth,
+						((double) xMax) - borderWidth, ((double) yMax)
+								- borderWidth);
+			} else if (nodeShape == SHAPE_ROUNDED_RECTANGLE) {
+				computeRoundedRectangle(((double) xMin) + borderWidth,
+						((double) yMin) + borderWidth, ((double) xMax)
+								- borderWidth, ((double) yMax) - borderWidth,
+						(Math.max(((double) xMax) - xMin, ((double) yMax)
+								- yMin) / 4.0d)
+								- borderWidth, m_path2d);
+				innerShape = m_path2d;
+			} else {
+				// A general [possibly non-convex] polygon with certain
+				// restrictions: no two consecutive line segments can be
+				// parallel,
+				// each line segment must have nonzero length, the polygon
+				// cannot
+				// self-intersect, and the polygon must be clockwise
+				// in the node coordinate system.
+				m_path2d.reset();
+
+				final double xNot = m_polyCoords[0];
+				final double yNot = m_polyCoords[1];
+				final double xOne = m_polyCoords[2];
+				final double yOne = m_polyCoords[3];
+				double xPrev = xNot;
+				double yPrev = yNot;
+				double xCurr = xOne;
+				double yCurr = yOne;
+				double xNext = m_polyCoords[4];
+				double yNext = m_polyCoords[5];
+				computeInnerPoint(m_ptsBuff, xPrev, yPrev, xCurr, yCurr, xNext,
+						yNext, borderWidth);
+				m_path2d.moveTo((float) m_ptsBuff[0], (float) m_ptsBuff[1]);
+
+				int i = 6;
+
+				while (true) {
+					if (i == (m_polyNumPoints * 2)) {
+						computeInnerPoint(m_ptsBuff, xCurr, yCurr, xNext,
+								yNext, xNot, yNot, borderWidth);
+						m_path2d.lineTo((float) m_ptsBuff[0],
+								(float) m_ptsBuff[1]);
+						computeInnerPoint(m_ptsBuff, xNext, yNext, xNot, yNot,
+								xOne, yOne, borderWidth);
+						m_path2d.lineTo((float) m_ptsBuff[0],
+								(float) m_ptsBuff[1]);
+						m_path2d.closePath();
+
+						break;
+					} else {
+						xPrev = xCurr;
+						yPrev = yCurr;
+						xCurr = xNext;
+						yCurr = yNext;
+						xNext = m_polyCoords[i++];
+						yNext = m_polyCoords[i++];
+						computeInnerPoint(m_ptsBuff, xPrev, yPrev, xCurr,
+								yCurr, xNext, yNext, borderWidth);
+						m_path2d.lineTo((float) m_ptsBuff[0],
+								(float) m_ptsBuff[1]);
+					}
+				}
+
+				innerShape = m_path2d;
+			}
+
+			m_g2d.setPaint(fillPaint);
+			m_g2d.fill(innerShape);
+
+			// Render the border such that it does not overlap with the fill
+			// region because translucent colors may be used. Don't do
+			// things differently for opaque and translucent colors for the
+			// sake of consistency.
+			
+			m_path2dPrime.append(innerShape, false);
+			m_g2d.setPaint(borderPaint);
+			m_g2d.fill(m_path2dPrime);
+			
+		}
+	}
+	
+	/*
+	 * This method has the side effect of setting m_ellp2d or m_path2d; if
+	 * m_path2d is set (every case but the ellipse and rounded rectangle), then
+	 * m_polyCoords and m_polyNumPoints are also set.
+	 */
+	private final Shape getShape(final byte nodeShape, final double xMin,
+			final double yMin, final double xMax, final double yMax) {
+		switch (nodeShape) {
+		case SHAPE_ELLIPSE:
+			m_ellp2d.setFrame(xMin, yMin, xMax - xMin, yMax - yMin);
+
+			return m_ellp2d;
+
+		case SHAPE_RECTANGLE:
+			m_polyNumPoints = 4;
+			m_polyCoords[0] = xMin;
+			m_polyCoords[1] = yMin;
+			m_polyCoords[2] = xMax;
+			m_polyCoords[3] = yMin;
+			m_polyCoords[4] = xMax;
+			m_polyCoords[5] = yMax;
+			m_polyCoords[6] = xMin;
+			m_polyCoords[7] = yMax;
+
+			break;
+
+		case SHAPE_DIAMOND:
+			m_polyNumPoints = 4;
+			m_polyCoords[0] = (xMin + xMax) / 2.0d;
+			m_polyCoords[1] = yMin;
+			m_polyCoords[2] = xMax;
+			m_polyCoords[3] = (yMin + yMax) / 2.0d;
+			m_polyCoords[4] = (xMin + xMax) / 2.0d;
+			m_polyCoords[5] = yMax;
+			m_polyCoords[6] = xMin;
+			m_polyCoords[7] = (yMin + yMax) / 2.0d;
+
+			break;
+
+		case SHAPE_HEXAGON:
+			m_polyNumPoints = 6;
+			m_polyCoords[0] = ((2.0d * xMin) + xMax) / 3.0d;
+			m_polyCoords[1] = yMin;
+			m_polyCoords[2] = ((2.0d * xMax) + xMin) / 3.0d;
+			m_polyCoords[3] = yMin;
+			m_polyCoords[4] = xMax;
+			m_polyCoords[5] = (yMin + yMax) / 2.0d;
+			m_polyCoords[6] = ((2.0d * xMax) + xMin) / 3.0d;
+			m_polyCoords[7] = yMax;
+			m_polyCoords[8] = ((2.0d * xMin) + xMax) / 3.0d;
+			m_polyCoords[9] = yMax;
+			m_polyCoords[10] = xMin;
+			m_polyCoords[11] = (yMin + yMax) / 2.0d;
+
+			break;
+
+		case SHAPE_OCTAGON:
+			m_polyNumPoints = 8;
+			m_polyCoords[0] = ((2.0d * xMin) + xMax) / 3.0d;
+			m_polyCoords[1] = yMin;
+			m_polyCoords[2] = ((2.0d * xMax) + xMin) / 3.0d;
+			m_polyCoords[3] = yMin;
+			m_polyCoords[4] = xMax;
+			m_polyCoords[5] = ((2.0d * yMin) + yMax) / 3.0d;
+			m_polyCoords[6] = xMax;
+			m_polyCoords[7] = ((2.0d * yMax) + yMin) / 3.0d;
+			m_polyCoords[8] = ((2.0d * xMax) + xMin) / 3.0d;
+			m_polyCoords[9] = yMax;
+			m_polyCoords[10] = ((2.0d * xMin) + xMax) / 3.0d;
+			m_polyCoords[11] = yMax;
+			m_polyCoords[12] = xMin;
+			m_polyCoords[13] = ((2.0d * yMax) + yMin) / 3.0d;
+			m_polyCoords[14] = xMin;
+			m_polyCoords[15] = ((2.0d * yMin) + yMax) / 3.0d;
+
+			break;
+
+		case SHAPE_PARALLELOGRAM:
+			m_polyNumPoints = 4;
+			m_polyCoords[0] = xMin;
+			m_polyCoords[1] = yMin;
+			m_polyCoords[2] = ((2.0d * xMax) + xMin) / 3.0d;
+			m_polyCoords[3] = yMin;
+			m_polyCoords[4] = xMax;
+			m_polyCoords[5] = yMax;
+			m_polyCoords[6] = ((2.0d * xMin) + xMax) / 3.0d;
+			m_polyCoords[7] = yMax;
+
+			break;
+
+		case SHAPE_ROUNDED_RECTANGLE:
+			// A condition that must be satisfied (pertaining to radius) is that
+			// max(width, height) <= 2 * min(width, height).
+			computeRoundedRectangle(xMin, yMin, xMax, yMax, Math.max(xMax
+					- xMin, yMax - yMin) / 4.0d, m_path2d);
+
+			return m_path2d;
+
+		case SHAPE_TRIANGLE:
+			m_polyNumPoints = 3;
+			m_polyCoords[0] = (xMin + xMax) / 2.0d;
+			m_polyCoords[1] = yMin;
+			m_polyCoords[2] = xMax;
+			m_polyCoords[3] = yMax;
+			m_polyCoords[4] = xMin;
+			m_polyCoords[5] = yMax;
+
+			break;
+
+		case SHAPE_VEE:
+			m_polyNumPoints = 4;
+			m_polyCoords[0] = xMin;
+			m_polyCoords[1] = yMin;
+			m_polyCoords[2] = (xMin + xMax) / 2.0d;
+			m_polyCoords[3] = ((2.0d * yMin) + yMax) / 3.0d;
+			m_polyCoords[4] = xMax;
+			m_polyCoords[5] = yMin;
+			m_polyCoords[6] = (xMin + xMax) / 2.0d;
+			m_polyCoords[7] = yMax;
+
+			break;
+
+		}
+
+		m_path2d.reset();
+
+		m_path2d.moveTo((float) m_polyCoords[0], (float) m_polyCoords[1]);
+
+		for (int i = 2; i < (m_polyNumPoints * 2);)
+			m_path2d.lineTo((float) m_polyCoords[i++],
+					(float) m_polyCoords[i++]);
+
+		m_path2d.closePath();
+
+		return m_path2d;
+	}
+	
+	private final static void computeRoundedRectangle(final double xMin,
+			final double yMin, final double xMax, final double yMax,
+			final double radius, final GeneralPath path2d) {
+		path2d.reset();
+		path2d.moveTo((float) (xMax - radius), (float) yMin);
+		path2d.curveTo((float) (((CURVE_ELLIPTICAL - 1.0d) * radius) + xMax),
+				(float) yMin, (float) xMax,
+				(float) (((1.0d - CURVE_ELLIPTICAL) * radius) + yMin),
+				(float) xMax, (float) (radius + yMin));
+		path2d.lineTo((float) xMax, (float) (yMax - radius));
+		path2d.curveTo((float) xMax,
+				(float) (((CURVE_ELLIPTICAL - 1.0d) * radius) + yMax),
+				(float) (((CURVE_ELLIPTICAL - 1.0d) * radius) + xMax),
+				(float) yMax, (float) (xMax - radius), (float) yMax);
+		path2d.lineTo((float) (radius + xMin), (float) yMax);
+		path2d.curveTo((float) (((1.0d - CURVE_ELLIPTICAL) * radius) + xMin),
+				(float) yMax, (float) xMin,
+				(float) (((CURVE_ELLIPTICAL - 1.0d) * radius) + yMax),
+				(float) xMin, (float) (yMax - radius));
+		path2d.lineTo((float) xMin, (float) (radius + yMin));
+		path2d.curveTo((float) xMin,
+				(float) (((1.0d - CURVE_ELLIPTICAL) * radius) + yMin),
+				(float) (((1.0d - CURVE_ELLIPTICAL) * radius) + xMin),
+				(float) yMin, (float) (radius + xMin), (float) yMin);
+		path2d.closePath();
+	}
+	/*
+	 * This method is used to construct an inner shape for node border.
+	 * output[0] is the x return value and output[1] is the y return value. The
+	 * line prev->curr cannot be parallel to curr->next.
+	 */
+	private final static void computeInnerPoint(final double[] output,
+			final double xPrev, final double yPrev, final double xCurr,
+			final double yCurr, final double xNext, final double yNext,
+			final double borderWidth) {
+		final double segX1 = xCurr - xPrev;
+		final double segY1 = yCurr - yPrev;
+		final double segLength1 = Math.sqrt((segX1 * segX1) + (segY1 * segY1));
+		final double segX2 = xNext - xCurr;
+		final double segY2 = yNext - yCurr;
+		final double segLength2 = Math.sqrt((segX2 * segX2) + (segY2 * segY2));
+		final double segX2Normal = segX2 / segLength2;
+		final double segY2Normal = segY2 / segLength2;
+		final double xNextPrime = (segX2Normal * segLength1) + xPrev;
+		final double yNextPrime = (segY2Normal * segLength1) + yPrev;
+		final double segPrimeX = xNextPrime - xCurr;
+		final double segPrimeY = yNextPrime - yCurr;
+		final double distancePrimeToSeg1 = (((segX1 * yNextPrime)
+				- (segY1 * xNextPrime) + (xPrev * yCurr)) - (xCurr * yPrev))
+				/ segLength1;
+		final double multFactor = borderWidth / distancePrimeToSeg1;
+		output[0] = (multFactor * segPrimeX) + xCurr;
+		output[1] = (multFactor * segPrimeY) + yCurr;
+	}
+
+}

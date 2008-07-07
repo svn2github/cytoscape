@@ -298,6 +298,9 @@ public final class GraphGraphics {
 		m_cleared = false;
 	}
 
+	public Graphics2D getCanvas(){
+		return m_g2d;
+	}
 	/**
 	 * Clears image area with background paint specified and sets an appropriate
 	 * transformation of coordinate systems. See the class description for a

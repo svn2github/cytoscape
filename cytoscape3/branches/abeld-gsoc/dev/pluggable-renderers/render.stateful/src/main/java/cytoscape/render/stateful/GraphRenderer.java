@@ -51,6 +51,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.Iterator;
@@ -666,11 +667,14 @@ public final class GraphRenderer {
 						                  floatBuff1[3], nodeDetails.colorLowDetail(node));
 				}
 			} else { // High detail.
-
+				NodeRenderer nodeRenderer = new ShapeRenderer();
+				Graphics2D canvas = grafx.getCanvas();
 				while (nodeHits.numRemaining() > 0) {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
 
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
+						nodeRenderer.render(canvas, nodeDetails, floatBuff1, node);
+						/*
 						// Compute visual attributes that do not depend on LOD.
 						final byte shape = nodeDetails.shape(node);
 						final Paint fillPaint = nodeDetails.fillPaint(node);
@@ -692,8 +696,11 @@ public final class GraphRenderer {
 						}
 
 						// Draw the node.
+						
+						
 						grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1], floatBuff1[2],
 						                   floatBuff1[3], fillPaint, borderWidth, borderPaint);
+						                   */
 					}
 
 					// Take care of custom graphic rendering.
