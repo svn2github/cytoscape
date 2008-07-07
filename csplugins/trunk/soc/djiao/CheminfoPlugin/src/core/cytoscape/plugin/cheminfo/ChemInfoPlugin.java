@@ -1,4 +1,3 @@
-//$Revision$ $Author$ $Date$
 /*
   Copyright (c) 2006, 2007, 2008 The Cytoscape Consortium (www.cytoscape.org)
 
