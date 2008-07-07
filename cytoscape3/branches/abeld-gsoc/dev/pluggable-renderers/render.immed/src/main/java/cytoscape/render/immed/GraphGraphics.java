@@ -546,6 +546,18 @@ public final class GraphGraphics {
 				RenderingHints.VALUE_RENDER_SPEED);
 	}
 
+	public void drawEdgeAnchor(float x, float y, float anchorSize, Paint anchorFillPaint){
+
+		byte nodeShape = GraphGraphics.SHAPE_RECTANGLE;
+		double xMin = x - (anchorSize / 2.0d); 
+		double yMin = y - (anchorSize / 2.0d);
+		double xMax = x + (anchorSize / 2.0d);
+		double yMax = x - (anchorSize / 2.0d);
+		Paint fillPaint = anchorFillPaint;
+		
+		m_g2d.setPaint(fillPaint);
+		m_g2d.fill(getShape(nodeShape, xMin, yMin, xMax, yMax));
+	}
 
 	/**
 	 * Computes the path a node shape takes; this method is useful if a user

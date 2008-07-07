@@ -466,17 +466,8 @@ public final class GraphRenderer {
 
 									if ((anchorSize = edgeDetails.anchorSize(edge, k)) > 0.0f) {
 										anchors.getAnchor(k, floatBuff4, 0);
-										grafx.drawNodeFull(GraphGraphics.SHAPE_RECTANGLE,
-										                   (float) (floatBuff4[0]
-										                   - (anchorSize / 2.0d)),
-										                   (float) (floatBuff4[1]
-										                   - (anchorSize / 2.0d)),
-										                   (float) (floatBuff4[0]
-										                   + (anchorSize / 2.0d)),
-										                   (float) (floatBuff4[1]
-										                   + (anchorSize / 2.0d)),
-										                   edgeDetails.anchorPaint(edge, k), 0.0f,
-										                   null);
+										grafx.drawEdgeAnchor(floatBuff4[0], floatBuff4[1], anchorSize,
+										                   edgeDetails.anchorPaint(edge, k));
 									}
 								}
 							}
