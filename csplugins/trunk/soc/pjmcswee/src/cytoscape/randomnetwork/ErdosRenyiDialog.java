@@ -490,13 +490,13 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 			//Get the TabbedPanel
 			JTabbedPane parent = (JTabbedPane)getParent();
 			int index = parent.getSelectedIndex();
-			
+			System.out.println(index);
 			//Remove this Panel
 			parent.remove(index);
 			//Replace it with the panel
 			parent.add(analyzePanel, index);
 			//Set the title for this panel
-			parent.setTitleAt(index,"Analyze network statistics");
+			parent.setTitleAt(index,"Generate Random Network");
 			//Display this panel
 			parent.setSelectedIndex(index);
 			//Enforce this Panel
@@ -517,7 +517,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		
 		//Generate the network
 		DynamicGraph graph = erm.generate();
-		CyNetwork network = CytoscapeConversion.DynamicGraphToCyNetwork(graph);
+		CyNetwork network = CytoscapeConversion.DynamicGraphToCyNetwork(graph,null);
 		graph = null;
 				
 		//Set the network pane as active

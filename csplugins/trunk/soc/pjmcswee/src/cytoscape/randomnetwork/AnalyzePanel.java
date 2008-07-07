@@ -56,11 +56,18 @@ import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
 import java.util.*;
 
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+
+
+
 /*
  * AnalyzePanel is used for selecting which random 
  * network model to use.
  */
-public class AnalyzePanel extends JPanel {
+public class AnalyzePanel extends JPanel implements Task {
 
 	private RandomNetworkGenerator networkModel;
 	private boolean directed;
@@ -80,6 +87,10 @@ public class AnalyzePanel extends JPanel {
 
 	private javax.swing.JLabel roundsLabel;
 	private javax.swing.JTextField roundsTextField;
+	
+    private TaskMonitor taskMonitor = null;
+	private boolean interrupted = false;
+	
 	
 	/**
 	 *  Default constructor
@@ -250,6 +261,30 @@ public class AnalyzePanel extends JPanel {
 	 *  Callback for when the "Next" button is pushed
 	 */
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+		JTaskConfig config = new JTaskConfig();
+
+		JFrame frame = Cytoscape.getDesktop();
+		
+		config.setOwner(frame);
+		config.displayStatus(true);
+		config.displayTimeElapsed(true);
+		config.displayTimeRemaining(false);
+		config.displayCancelButton(true);
+		config.displayCloseButton(true);
+		config.setAutoDispose(true);
+		
+		//Run our task
+		boolean success = TaskManager.executeTask(this, config);
+
+	
+	}
+	
+	/**
+	* Run our task
+	*/
+	public void run() {
+
 	
 		int rounds = 0;
 		
@@ -290,26 +325,33 @@ public class AnalyzePanel extends JPanel {
 		double results[] = new double[metrics.size()];
 		System.out.println("Free:" + Runtime.getRuntime().freeMemory());
 		
+		int totalToAnalyze = metrics.size() * rounds;
+		int totalCompleted = 0;
 
-		for(int i = 0; i < rounds; i++)
+		for(int i = 0;((i < rounds)&(!interrupted)) ; i++)
 		{
 		
 			
 			DynamicGraph net = networkModel.generate();
 			System.out.println("generateed" );
-			for(int j = 0; j < metrics.size(); j++)
+			for(int j = 0; ((j < metrics.size())&(!interrupted)); j++)
 			{
-				long startTime = System.currentTimeMillis();
+				//long startTime = System.currentTimeMillis();
 				NetworkMetric metric = (NetworkMetric)metrics.get(j);
 
 				double t = metric.analyze(net,  directed);
 				results[j] += t;
 				long endTime = System.currentTimeMillis();
 				
-				
-				System.out.println(i + ": \t" + t);
-				System.out.println("After :" +Runtime.getRuntime().freeMemory());
-				System.out.println((endTime - startTime)/1000.0d);
+				totalCompleted++;
+				int percentComplete = (int) (((double) totalCompleted / totalToAnalyze) * 100);
+			
+			
+				if (taskMonitor != null) {
+                    taskMonitor.setPercentCompleted(percentComplete);
+                    taskMonitor.setStatus("Analyzing Network");
+                }
+
 			}
 		
 		
@@ -324,12 +366,39 @@ public class AnalyzePanel extends JPanel {
 
 			System.out.println(results[j]/rounds);
 		}
-		
-		//Runtime.getRuntime().gc();
-		System.out.println("After :" +Runtime.getRuntime().freeMemory());
-	
-	
-	
-	
 	}
+	
+	
+	/**
+     * Gets the Task Title.
+     *
+     * @return human readable task title.
+     */
+    public String getTitle() {
+        return new String("Analyzing Network");
+    }
+	
+	  /**
+     * Non-blocking call to interrupt the task.
+     */
+    public void halt() {
+		interrupted = true;
+    }
+
+	/**
+     * Sets the Task Monitor.
+     *
+     * @param taskMonitor TaskMonitor Object.
+     */
+    public void setTaskMonitor(TaskMonitor taskMonitor) {
+        //if (this.taskMonitor != null) {
+         //   throw new IllegalStateException("Task Monitor is already set.");
+       // }
+        this.taskMonitor = taskMonitor;
+    }
+
+
+	
+	
+	
 }

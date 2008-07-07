@@ -48,6 +48,12 @@ import cytoscape.util.intr.IntIterator;
  *  alpha value between 2 and 3, sometimes between 1 and 2.
  */
 public  class DegreeDistributionMetric implements NetworkMetric {
+
+	public String getDisplayName()
+	{
+		return new String("Degree Distribution");
+	}
+
 	
 	public double analyze(DynamicGraph network, boolean directed)
 	{

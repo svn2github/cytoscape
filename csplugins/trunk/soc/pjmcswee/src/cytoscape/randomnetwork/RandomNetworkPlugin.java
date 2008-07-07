@@ -130,16 +130,16 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 			mainPane = new JTabbedPane();
 			//Create the Panel
 			generateRandomPanel = new GenerateRandomPanel(0);
-			verifyRandomPanel = new GenerateRandomPanel(1);
+			//verifyRandomPanel = new GenerateRandomPanel(1);
 			randomizePane = new RandomizeExistingPanel(0);
-			compareRandomPane = new JPanel();
+			compareRandomPane = new RandomComparisonPanel();
 			
 			//Default is to dispose on close
 			setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 			
 			//Add the three tabs for our application
 			mainPane.addTab("Generate Random Network", generateRandomPanel);
-			mainPane.addTab("Verify Random Network", verifyRandomPanel);
+			//mainPane.addTab("Verify Random Network", verifyRandomPanel);
 			mainPane.addTab("Randomize Existing Network", randomizePane);
 			mainPane.addTab("Compare to Random Network", compareRandomPane);
 

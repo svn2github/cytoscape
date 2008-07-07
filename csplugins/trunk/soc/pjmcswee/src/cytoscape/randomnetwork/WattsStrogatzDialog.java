@@ -394,7 +394,7 @@ public class WattsStrogatzDialog extends JPanel {
 			//Replace it with the panel
 			parent.add(analyzePanel, index);
 			//Set the title for this panel
-			parent.setTitleAt(index,"Analyze network statistics");
+			parent.setTitleAt(index,"Generate Random Network");
 			//Display this panel
 			parent.setSelectedIndex(index);
 			//Enforce this Panel
@@ -415,7 +415,7 @@ public class WattsStrogatzDialog extends JPanel {
 		
 		//Generate the random network
 		DynamicGraph graph = wsm.generate();
-		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork(graph);
+		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork(graph,null);
 		graph = null;
 
 		//Change to the Network view

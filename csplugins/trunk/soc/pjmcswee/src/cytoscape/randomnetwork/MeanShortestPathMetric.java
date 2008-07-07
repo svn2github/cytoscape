@@ -50,6 +50,13 @@ import cytoscape.util.intr.IntIterator;
 */
 public  class MeanShortestPathMetric implements NetworkMetric {
 	
+	
+	public String getDisplayName()
+	{
+		return new String("Mean Shortest Path");
+	}
+	
+	
 	public double analyze(DynamicGraph network, boolean directed)
 	{
 		//Accumlate the distances between all nodes

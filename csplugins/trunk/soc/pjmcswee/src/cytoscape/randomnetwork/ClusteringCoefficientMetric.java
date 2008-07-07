@@ -54,6 +54,11 @@ import cytoscape.util.intr.IntIterator;
  */
 public class ClusteringCoefficientMetric implements NetworkMetric {
 	
+	public String getDisplayName()
+	{
+		return new String("Clustering Coefficient");
+	}
+	
 	
 	
 	/*---------------------------------------------------------------

@@ -1,4 +1,4 @@
-/* File: GenerateRandomPanel.java
+/* File: RandomizeExistingPanel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -35,12 +35,16 @@
 
 package cytoscape.randomnetwork;
 
+import java.util.*;
 import cytoscape.plugin.*;
+import cytoscape.layout.algorithms.*;
 import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
 import giny.view.*;
+import cytoscape.graph.dynamic.*;
+import cytoscape.graph.dynamic.util.*;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -53,10 +57,10 @@ import javax.swing.SwingConstants;
 
 
 /*
- * GenerateRandomPanel is used for selecting which random 
+ * RandomizeExistingPanel is used for selecting which randomizing 
  * network model to use.
  */
-public class GenerateRandomPanel extends JPanel {
+public class RandomizeExistingPanel extends JPanel {
 
 	private int mode;
 
@@ -64,32 +68,26 @@ public class GenerateRandomPanel extends JPanel {
 	private javax.swing.JButton runButton;
 	//Cancel Button
 	private javax.swing.JButton cancelButton;
-	//Back button
+	//Back Button
 	private javax.swing.JButton backButton;
 	//Title Label
 	private javax.swing.JLabel titleLabel;
 	//Group together the different options
 	private javax.swing.ButtonGroup group;
 
-	//Checkbox for erdos-renyi model
-	private javax.swing.JCheckBox erm;
-	//Checkbox for watts-strogatz model
-	private javax.swing.JCheckBox wsm;
-	//Checkbox for barabasi-albert model
-	private javax.swing.JCheckBox bam;
+	//Treat this network as directed
+	private javax.swing.JCheckBox directedCheckBox;
 
-	//Label to describe erdos-renyi model
-	private javax.swing.JLabel ermExplain;
-	//Label to describe watts-strogatz model
-	private javax.swing.JLabel wsmExplain;
+	//Checkbox for erdos-renyi model
+	private javax.swing.JCheckBox degreePreserving;
 	//Checkbox for barabasi-albert model
-	private javax.swing.JLabel bamExplain;
+	private javax.swing.JLabel degreePreservingExplain;
 	
 
 	/*
 	 *  Default constructor
 	 */
-	public GenerateRandomPanel(int pMode ){
+	public RandomizeExistingPanel(int pMode ){
 		
 		super( ); 
 		mode = pMode;
@@ -101,61 +99,43 @@ public class GenerateRandomPanel extends JPanel {
 	 */
 	private void initComponents() {
 
-		//Create the group 
-		group = new javax.swing.ButtonGroup();
 		//Create the erdos-renyi checkbox
-		erm = new javax.swing.JCheckBox();
-		//Create the watts-strogatz checkbox
-		wsm = new javax.swing.JCheckBox();
-		//Create the barabasi-albert checkbox		
-		bam = new javax.swing.JCheckBox();
-		//Create the erdos-renyi label
-		ermExplain = new javax.swing.JLabel();
-		//Create the watts-strogatz label
-		wsmExplain = new javax.swing.JLabel();
+		degreePreserving = new javax.swing.JCheckBox();
+	
+		
 		//Create the barabasi-albert  label
-		bamExplain = new javax.swing.JLabel();
+		degreePreservingExplain = new javax.swing.JLabel();
 
 		//Set the erdos-renyi text
-		ermExplain
+		degreePreservingExplain
 				.setText("<html><font size=2 face=Verdana>Generate a random network <br> graph with n nodes and m edges.</font></html>");
 
-		//Set the watts-strogatz text
-		wsmExplain
-				.setText("<html><font size=2 face=Verdana>Generate a random graph with n <br> nodes and each edge has probability p to be included.</font></html>");
-
-		//Set the barabasi-albert text
-		bamExplain
-				.setText("<html><font size=2 face=Verdana>Generate a random graph with n <br> nodes and each edge has probability p to be included.</font></html>");
-
-
+		
+		
+		directedCheckBox = new javax.swing.JCheckBox();
+		directedCheckBox.setText("Treat as undirected?");
 		//set the labels to opaque
-		ermExplain.setOpaque(true);
-		wsmExplain.setOpaque(true);
-		bamExplain.setOpaque(true);
+		degreePreservingExplain.setOpaque(true);
 		
 		//Set the text for the checkboxes
-		erm.setText("Erdos-Renyi Model");
-		wsm.setText("Watts-Strogatz Model");
-		bam.setText("Barabasi-Albert Model");
+		degreePreserving.setText("shuffle edges keeping degree Model");
 
 		//Make barabasi-albert the default
-		bam.setSelected(true);
+		degreePreserving.setSelected(true);
 		
-		//Add each checkbox to the group
-		group.add(bam);
-		group.add(wsm);
-		group.add(erm);
-
 		//Create the butons
 		runButton = new javax.swing.JButton();
+		backButton = new javax.swing.JButton(); 
 		cancelButton = new javax.swing.JButton();
-		backButton = new javax.swing.JButton();
+
 		//Set up the title
 		titleLabel = new javax.swing.JLabel();
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Generate Random Network");
+		titleLabel.setText("Randomize Network");
 
+	
+
+			
 
 	
 		//Set up the run button
@@ -166,21 +146,18 @@ public class GenerateRandomPanel extends JPanel {
 			}
 		});
 		
-		
-		
-		//Set up the cancel button
+		//Set up the run button
 		backButton.setText("Back");
 		backButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
+				backButtonActionPerformed(evt);
 			}
 		});
-		
+
 		if(mode == 0)
 		{
 			backButton.setVisible(false);
 		}
-		
 
 		//Set up the cancel button
 		cancelButton.setText("Cancel");
@@ -217,47 +194,17 @@ public class GenerateRandomPanel extends JPanel {
 																layout
 																		.createSequentialGroup()
 																		.add(
-																				erm,
+																				degreePreserving,
 																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																				10,
 																				170)
 																		.addPreferredGap(1)
 																		
-																		.add(ermExplain,
+																		.add(degreePreservingExplain,
 																			 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																			 10,
 																			 Short.MAX_VALUE))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				wsm,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																			170)
-																		.addPreferredGap(
-																				1)
-																		.add(
-																				wsmExplain,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				Short.MAX_VALUE))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				bam,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				170)
-																		.addPreferredGap(
-																				1)
-																		.add(
-																				bamExplain,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				Short.MAX_VALUE))
-																											
+																	.add(directedCheckBox)
 													
 														.add(
 																org.jdesktop.layout.GroupLayout.TRAILING,
@@ -265,8 +212,8 @@ public class GenerateRandomPanel extends JPanel {
 																		.createSequentialGroup()
 																		.add(
 																				backButton)
-
-																		
+																		.addPreferredGap(
+																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
 																				runButton)
 																		.addPreferredGap(
@@ -295,42 +242,61 @@ public class GenerateRandomPanel extends JPanel {
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
 
-														.add(erm).add(
-																ermExplain))
-
+														.add(degreePreserving).add(
+																degreePreservingExplain))
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED,
 												3, Short.MAX_VALUE)
+										.add(directedCheckBox)
 										.add(
 												layout
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(wsm).add(
-																wsmExplain))
-										
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(bam).add(
-																bamExplain))
-									
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(backButton)
-														.add(cancelButton)
-														.add(
-																runButton))
+														.add(cancelButton).add(
+																runButton).add(backButton))
 										.addContainerGap()));
 	}
+
+
+
+
+	
+	/**
+	 *  Call back for the cancel button
+	 */
+	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	
+		RandomComparisonPanel compareToRandom = new RandomComparisonPanel();
+
+		//Get the TabbedPanel
+		JTabbedPane parent = (JTabbedPane)getParent();
+		int index = parent.getSelectedIndex();
+			
+		//Remove this Panel
+		parent.remove(index);
+		
+		//Replace it with the panel
+		parent.add(compareToRandom, index);
+		//Set the title for this panel
+		parent.setTitleAt(index,"Compare to Random Network");
+		//Display this panel
+		parent.setSelectedIndex(index);
+		//Enforce this Panel
+		parent.validate();
+		
+		
+		//Re-pack the window based on this new panel
+		java.awt.Container p = parent.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		JDialog dialog = (JDialog)p;
+		dialog.pack();
+
+		return;
+
+	}
+
 
 
 	/*
@@ -353,45 +319,98 @@ public class GenerateRandomPanel extends JPanel {
 	 */
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		
-		//Panel to display	
-		JPanel displayPanel = null;
-		//Title for this Panel
-		String title = null;
+			boolean directed = directedCheckBox.isSelected();
+		CyNetwork net = Cytoscape.getCurrentNetwork();
+
+		LinkedList network = CytoscapeConversion.CyNetworkToDynamicGraph(net,!directed);
 		
-		//See which checkbox is selected and then display the appropriate panel
-		if (erm.isSelected()) {
-			displayPanel = new ErdosRenyiDialog(mode);
-			title = new String("Erdos-Renyi Random Network");
-		} else if(wsm.isSelected()){
-			displayPanel = new WattsStrogatzDialog(mode);
-			title = new String("WattsStrogatz Random Network");
-		}else{
-			displayPanel = new BarabasiAlbertDialog(mode);
-			title = new String("Barabasi-Albert Random Network");
+
+		DynamicGraph graph = (DynamicGraph)network.get(0);
+
+		int E = graph.edges().numRemaining();
+		System.out.println("Edges Found:" + E);
+		
+
+		String ids[] = (String[])network.get(1);
+		DegreePreservingNetworkRandomizer dpnr = new DegreePreservingNetworkRandomizer(graph,ids,!directed);
+
+
+
+
+
+		if(mode == 1)
+		{
+			AnalyzePanel analzyePanel = new AnalyzePanel(dpnr, !directed);
+			
+			//Get the TabbedPanel
+			JTabbedPane parent = (JTabbedPane)getParent();
+			int index = parent.getSelectedIndex();
+			
+			//Remove this Panel
+			parent.remove(index);
+			//Replace it with the panel
+			parent.add(analzyePanel, index);
+			//Set the title for this panel
+			parent.setTitleAt(index,"Analyze network statistics");
+			//Display this panel
+			parent.setSelectedIndex(index);
+			//Enforce this Panel
+			parent.validate();
+		
+		
+			//Re-pack the window based on this new panel
+			java.awt.Container p = parent.getParent();
+			p = p.getParent();
+			p = p.getParent();
+			p = p.getParent();
+			JDialog dialog = (JDialog)p;
+			dialog.pack();
+
+			return;
+
+		
 		}
+
+
+
+
+		DynamicGraph randGraph = dpnr.generate();
+		
+		CyNetwork randNetwork = CytoscapeConversion.DynamicGraphToCyNetwork(randGraph,ids);
+				
 		
 		
 		
-		//Get the TabbedPanel
+		//Set the network pane as active
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
+				.setSelectedIndex(0);
+		
+		
+		//returns CytoscapeWindow's VisualMappingManager object
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		//gets the global catalog of visual styles and calculators
+		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
+		//Get the random network vistualStyle
+		VisualStyle newStyle = catalog.getVisualStyle("random network");
+		//Set this as the current visualStyle
+		vmm.setVisualStyle(newStyle);
+		
+
+		GridNodeLayout alg = new GridNodeLayout();
+		CyNetworkView view = Cytoscape.getCurrentNetworkView();
+		view.applyLayout(alg); 
+		
+
+		
+		//Go up through the parents to the main window
 		JTabbedPane parent = (JTabbedPane)getParent();
-		//Remove this Panel
-		parent.remove(0);
-		//Replace it with the panel
-		parent.add(displayPanel,0);
-		//Set the title for this panel
-		parent.setTitleAt(0,title);
-		//Display this panel
-		parent.setSelectedIndex(0);
-		//Enforce this Panel
-		parent.validate();
-		
-		
-		//Re-pack the window based on this new panel
 		java.awt.Container p = parent.getParent();
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
 		JDialog dialog = (JDialog)p;
-		dialog.pack();
+		dialog.dispose();
+
+		
 	}
 }

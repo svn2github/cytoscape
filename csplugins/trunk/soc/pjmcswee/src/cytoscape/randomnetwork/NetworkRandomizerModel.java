@@ -1,4 +1,4 @@
-/* File: NetworkMetric.java
+/* File: RandomNetworkModel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -33,35 +33,75 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
+
 package cytoscape.randomnetwork;
 
-
-
-
-
 import cytoscape.graph.dynamic.*;
+import java.util.Random;
 
-/*
- *  Interface for network metric analyzing
+
+/* The base class for all random network 
+ * models
  */
-public interface  NetworkMetric {
+public abstract class NetworkRandomizerModel implements RandomNetworkGenerator{
+
+
+	//Experimental seed
+	protected long seed;
+
+	//Random number generated
+	protected Random random;
+
+	//Is this network directed
+	protected boolean directed;
+
+	//The graph to randomize
+	protected DynamicGraph original;
+
+	protected String nodeIds[];
 	
-	/**
-	* This method takes the network and whether or not it should be treated
-	* as directed. The method returns a comparable object.
-	*/
-	public abstract double analyze(DynamicGraph net, boolean directed);
+	/*
+	 * Constructor
+	 */
+	NetworkRandomizerModel(DynamicGraph pOriginal, String[] pNodeIds,
+			boolean pDirected) {
+			
+		original = pOriginal;
+		directed = pDirected;
+		nodeIds = pNodeIds;
+		random = new Random();
+	}
+
+	/*
+	 * @param pSeed the seed to set for the random # generator 
+	 */
+	public void setSeed(long pSeed) {
+		seed = pSeed;
+		random = new Random(seed);
+	}
+
+	/*
+	 *
+	 */
+	public long getSeed() {
+		return seed;
+	}
+
+	/* return if this is directed or not*/
+	public boolean getDirected() {
+		return directed;
+	}
 	
+	/*	return the nodeIds*/
+	public String[] getNodeIds()
+	{
+		return nodeIds;
+	}
 	
-	/**
-	* Used for displaying a name in the results panel
-	* 
-	*/
-	public abstract String getDisplayName();
-	
+	/*  return the original */
+	public DynamicGraph getOriginal()
+	{
+		return original;
+	}
+
 }
-
-
-
-
-

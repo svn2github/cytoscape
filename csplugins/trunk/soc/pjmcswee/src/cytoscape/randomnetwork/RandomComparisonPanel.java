@@ -1,4 +1,4 @@
-/* File: GenerateRandomPanel.java
+/* File: RandomizeExistingPanel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -35,12 +35,16 @@
 
 package cytoscape.randomnetwork;
 
+import java.util.*;
 import cytoscape.plugin.*;
+import cytoscape.layout.algorithms.*;
 import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
 import giny.view.*;
+import cytoscape.graph.dynamic.*;
+import cytoscape.graph.dynamic.util.*;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -53,46 +57,44 @@ import javax.swing.SwingConstants;
 
 
 /*
- * GenerateRandomPanel is used for selecting which random 
+ * RandomizeExistingPanel is used for selecting which randomizing 
  * network model to use.
  */
-public class GenerateRandomPanel extends JPanel {
+public class RandomComparisonPanel extends JPanel {
 
-	private int mode;
+
+
+	
 
 	//Next Button
 	private javax.swing.JButton runButton;
 	//Cancel Button
 	private javax.swing.JButton cancelButton;
-	//Back button
-	private javax.swing.JButton backButton;
 	//Title Label
 	private javax.swing.JLabel titleLabel;
 	//Group together the different options
 	private javax.swing.ButtonGroup group;
 
-	//Checkbox for erdos-renyi model
-	private javax.swing.JCheckBox erm;
-	//Checkbox for watts-strogatz model
-	private javax.swing.JCheckBox wsm;
-	//Checkbox for barabasi-albert model
-	private javax.swing.JCheckBox bam;
-
-	//Label to describe erdos-renyi model
-	private javax.swing.JLabel ermExplain;
-	//Label to describe watts-strogatz model
-	private javax.swing.JLabel wsmExplain;
-	//Checkbox for barabasi-albert model
-	private javax.swing.JLabel bamExplain;
+	//Checkbox for generating random networks
+	private javax.swing.JCheckBox generateRandomNetwork;
 	
+	//Checkbox for randomizing an existing network
+	private javax.swing.JCheckBox randomizeExistingNetwork;
+
+	
+	
+	//Explain what this checkbox means
+	private javax.swing.JLabel generateRandomExplain;
+	
+	//Explain what this checkbox means	
+	private javax.swing.JLabel randomizeExistingExplain;
 
 	/*
 	 *  Default constructor
 	 */
-	public GenerateRandomPanel(int pMode ){
+	public RandomComparisonPanel( ){
 		
 		super( ); 
-		mode = pMode;
 		initComponents();
 	}
 
@@ -100,61 +102,59 @@ public class GenerateRandomPanel extends JPanel {
 	 * Initialize the components
 	 */
 	private void initComponents() {
-
+	
 		//Create the group 
 		group = new javax.swing.ButtonGroup();
-		//Create the erdos-renyi checkbox
-		erm = new javax.swing.JCheckBox();
-		//Create the watts-strogatz checkbox
-		wsm = new javax.swing.JCheckBox();
-		//Create the barabasi-albert checkbox		
-		bam = new javax.swing.JCheckBox();
-		//Create the erdos-renyi label
-		ermExplain = new javax.swing.JLabel();
-		//Create the watts-strogatz label
-		wsmExplain = new javax.swing.JLabel();
-		//Create the barabasi-albert  label
-		bamExplain = new javax.swing.JLabel();
 
-		//Set the erdos-renyi text
-		ermExplain
-				.setText("<html><font size=2 face=Verdana>Generate a random network <br> graph with n nodes and m edges.</font></html>");
+		//Create the randomizeExisting checkbox
+		randomizeExistingNetwork = new javax.swing.JCheckBox();
+	
+		//Create the generate random graph check box
+		generateRandomNetwork = new javax.swing.JCheckBox();
+		
+		
+		//create the generate random label
+		generateRandomExplain = new javax.swing.JLabel();
+		
+		//Create the randomize existing  label
+		randomizeExistingExplain = new javax.swing.JLabel();
 
-		//Set the watts-strogatz text
-		wsmExplain
-				.setText("<html><font size=2 face=Verdana>Generate a random graph with n <br> nodes and each edge has probability p to be included.</font></html>");
+		//Set the randomize existing text
+		randomizeExistingExplain
+				.setText("<html><font size=2 face=Verdana>Compare against a randomized existing network.</font></html>");
 
-		//Set the barabasi-albert text
-		bamExplain
-				.setText("<html><font size=2 face=Verdana>Generate a random graph with n <br> nodes and each edge has probability p to be included.</font></html>");
+
+		//Set the randomize existing text
+		generateRandomExplain
+				.setText("<html><font size=2 face=Verdana>Compare against a new random network.</font></html>");
+
+		
+		//Add these buttons to the group
+		group.add(generateRandomNetwork);
+		group.add(randomizeExistingNetwork);
+		
+		
+		
+		randomizeExistingNetwork.setText("Randomize Existing Network");
+		generateRandomNetwork.setText("Generate a Random Network");
 
 
 		//set the labels to opaque
-		ermExplain.setOpaque(true);
-		wsmExplain.setOpaque(true);
-		bamExplain.setOpaque(true);
+		generateRandomExplain.setOpaque(true);		
+		randomizeExistingExplain.setOpaque(true);
 		
-		//Set the text for the checkboxes
-		erm.setText("Erdos-Renyi Model");
-		wsm.setText("Watts-Strogatz Model");
-		bam.setText("Barabasi-Albert Model");
-
-		//Make barabasi-albert the default
-		bam.setSelected(true);
 		
-		//Add each checkbox to the group
-		group.add(bam);
-		group.add(wsm);
-		group.add(erm);
-
+		//Make randomize existing network
+		randomizeExistingNetwork.setSelected(true);
+		
 		//Create the butons
 		runButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
-		backButton = new javax.swing.JButton();
+
 		//Set up the title
 		titleLabel = new javax.swing.JLabel();
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Generate Random Network");
+		titleLabel.setText("Compare to Random");
 
 
 	
@@ -165,22 +165,6 @@ public class GenerateRandomPanel extends JPanel {
 				runButtonActionPerformed(evt);
 			}
 		});
-		
-		
-		
-		//Set up the cancel button
-		backButton.setText("Back");
-		backButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
-			}
-		});
-		
-		if(mode == 0)
-		{
-			backButton.setVisible(false);
-		}
-		
 
 		//Set up the cancel button
 		cancelButton.setText("Cancel");
@@ -217,56 +201,36 @@ public class GenerateRandomPanel extends JPanel {
 																layout
 																		.createSequentialGroup()
 																		.add(
-																				erm,
+																				randomizeExistingNetwork,
 																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																				10,
 																				170)
 																		.addPreferredGap(1)
 																		
-																		.add(ermExplain,
+																		.add(randomizeExistingExplain,
 																			 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																			 10,
 																			 Short.MAX_VALUE))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				wsm,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
+															.add(
+															layout
+																	.createSequentialGroup()
+																	.add(
+																			generateRandomNetwork,
+																			org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																			10,
 																			170)
-																		.addPreferredGap(
-																				1)
-																		.add(
-																				wsmExplain,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				Short.MAX_VALUE))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				bam,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				170)
-																		.addPreferredGap(
-																				1)
-																		.add(
-																				bamExplain,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				Short.MAX_VALUE))
-																											
+																	.addPreferredGap(1)
+																	
+																	.add(generateRandomExplain,
+																		 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																		 10,
+																		 Short.MAX_VALUE))
+																										
 													
 														.add(
 																org.jdesktop.layout.GroupLayout.TRAILING,
 																layout
 																		.createSequentialGroup()
-																		.add(
-																				backButton)
-
-																		
 																		.add(
 																				runButton)
 																		.addPreferredGap(
@@ -295,9 +259,15 @@ public class GenerateRandomPanel extends JPanel {
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
 
-														.add(erm).add(
-																ermExplain))
+														.add(randomizeExistingNetwork).add(
+																randomizeExistingExplain))
+										.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
 
+														.add(generateRandomNetwork).add(
+																generateRandomExplain))
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED,
 												3, Short.MAX_VALUE)
@@ -305,29 +275,7 @@ public class GenerateRandomPanel extends JPanel {
 												layout
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(wsm).add(
-																wsmExplain))
-										
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(bam).add(
-																bamExplain))
-									
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(backButton)
-														.add(cancelButton)
-														.add(
+														.add(cancelButton).add(
 																runButton))
 										.addContainerGap()));
 	}
@@ -353,35 +301,32 @@ public class GenerateRandomPanel extends JPanel {
 	 */
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		
-		//Panel to display	
+	
 		JPanel displayPanel = null;
 		//Title for this Panel
 		String title = null;
 		
 		//See which checkbox is selected and then display the appropriate panel
-		if (erm.isSelected()) {
-			displayPanel = new ErdosRenyiDialog(mode);
-			title = new String("Erdos-Renyi Random Network");
-		} else if(wsm.isSelected()){
-			displayPanel = new WattsStrogatzDialog(mode);
+		if (randomizeExistingNetwork.isSelected()) {
+			displayPanel = new RandomizeExistingPanel(1);
+			title = new String("Randomize Existing");
+		} else if(generateRandomNetwork.isSelected()){
+			displayPanel = new GenerateRandomPanel(1);
 			title = new String("WattsStrogatz Random Network");
-		}else{
-			displayPanel = new BarabasiAlbertDialog(mode);
-			title = new String("Barabasi-Albert Random Network");
 		}
-		
 		
 		
 		//Get the TabbedPanel
 		JTabbedPane parent = (JTabbedPane)getParent();
+		int index = parent.getSelectedIndex();
 		//Remove this Panel
-		parent.remove(0);
+		parent.remove(index);
 		//Replace it with the panel
-		parent.add(displayPanel,0);
+		parent.add(displayPanel,index);
 		//Set the title for this panel
-		parent.setTitleAt(0,title);
+		parent.setTitleAt(index,title);
 		//Display this panel
-		parent.setSelectedIndex(0);
+		parent.setSelectedIndex(index);
 		//Enforce this Panel
 		parent.validate();
 		
@@ -393,5 +338,8 @@ public class GenerateRandomPanel extends JPanel {
 		p = p.getParent();
 		JDialog dialog = (JDialog)p;
 		dialog.pack();
+
+	
+			
 	}
 }
