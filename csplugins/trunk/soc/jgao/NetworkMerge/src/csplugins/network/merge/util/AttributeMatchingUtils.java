@@ -158,13 +158,15 @@ public class AttributeMatchingUtils {
                 ||(type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST)) { // only support matching between simple types
                                                                      // and simple lists for now
                                                                      //TODO: support simple and complex map?
-            return false;
+            Object o1 = attrs.getAttribute(id1, attrName1);
+            Object o2 = attrs.getAttribute(id2, attrName2);
+            return o1.equals(o2);
         }
         
         if (type1>0&&type2>0) { // simple type
-            Object v1 = attrs.getAttribute(id1, attrName1);
-            Object v2 = attrs.getAttribute(id2, attrName2);
-            return v1.equals(v2);
+            Object o1 = attrs.getAttribute(id1, attrName1);
+            Object o2 = attrs.getAttribute(id2, attrName2);
+            return o1.equals(o2);
         } else {
             if (type1>0||type2>0) { // then one is simple type; the other is simple list
                 Object o;
