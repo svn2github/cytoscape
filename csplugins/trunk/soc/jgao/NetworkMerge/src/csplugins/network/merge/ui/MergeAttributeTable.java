@@ -84,10 +84,13 @@ class MergeAttributeTable extends JTable{
     private String mergedNetworkName;
     private MergeAttributeTableModel model;
     private boolean isNode;
+    private int indexMatchingAttr; // the index of matching attribute in the attribute mapping
+                                   // only used when isNode==true
     
     public MergeAttributeTable(final AttributeMapping attributeMapping, final MatchingAttribute matchingAttribute) {
         super();
         isNode = true;
+        indexMatchingAttr = -1;
         this.mergedNetworkName = CyNetworkNaming.getSuggestedNetworkTitle("Network.Merged");
         this.attributeMapping = attributeMapping;
         this.matchingAttribute = matchingAttribute;
@@ -126,7 +129,6 @@ class MergeAttributeTable extends JTable{
     
     protected void setMergedNetworkNameTableHeaderListener() {
         getTableHeader().addMouseListener(new MouseAdapter() {
-            @Override
             public void mouseClicked(MouseEvent e) {
                 JTableHeader header = (JTableHeader) e.getSource();
                 JTable table = header.getTable();
@@ -159,7 +161,7 @@ class MergeAttributeTable extends JTable{
                             boolean isSelected, boolean hasFocus,
                             int row, int column) {
                 final JLabel renderer = (JLabel) defaultRender.getTableCellRendererComponent(table, color, isSelected, hasFocus, row, column);
-                if (row<2) {
+                if (row<2||(row==2&&column!=table.getColumnCount()-1)) { //TODO do not need this in Cytoscape3
                     renderer.setBackground(Color.LIGHT_GRAY);
                     if (isSelected) {
                         renderer.setForeground(table.getSelectionForeground());
@@ -191,6 +193,36 @@ class MergeAttributeTable extends JTable{
         setCellRender();
         setColumnEditor();
         setMergedNetworkNameTableHeaderListener();
+    }
+    
+    public void updateMatchingAttribute() { 
+        if (!isNode) {
+            throw new java.lang.UnsupportedOperationException("updateMatchingAttribute is only supported for node table");
+        }
+        
+        boolean update = false;
+        if (indexMatchingAttr==-1) {
+            indexMatchingAttr = 0;
+            String attr_merged = "Matching_Attribute";
+            attributeMapping.addAttributes(matchingAttribute.getNetAttrMap(), attr_merged, indexMatchingAttr);
+            update = true;
+        } else {
+            indexMatchingAttr = 0;
+            Set<String> networks = matchingAttribute.getNetworkSet();
+            Iterator<String> it = networks.iterator();
+            while (it.hasNext()) {
+                String network = it.next();
+                String attr = matchingAttribute.getAttributeForMatching(network);
+                String old = attributeMapping.setOriginalAttribute(network, attr, indexMatchingAttr);
+                if (attr.compareTo(old)!=0) {
+                    update=true;
+                }
+            }
+        }
+        
+        if (update) {
+            fireTableStructureChanged();
+        }
     }
     
     protected void fireTableHeaderChanged() {
@@ -265,6 +297,12 @@ class MergeAttributeTable extends JTable{
         public boolean isCellEditable(final int row, final int col) {
             //TODO remove in Cytoscape3.0
             if (row<2) return false;//TODO remove in Cytoscape3.0
+                        
+            if (isNode) { // make the matching attribute ineditable
+                if (row==2) { //TODO use row==0 in Cytoscape3
+                    return col==getColumnCount()-1;
+                }
+            }
             
             if (row!=getRowCount()-1) return true;
             return (col!=getColumnCount()-1);

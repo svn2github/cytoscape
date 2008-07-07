@@ -38,6 +38,7 @@ package csplugins.network.merge;
 
 
 import java.util.Set;
+import java.util.Map;
 import java.util.Collection;
 
 /**
@@ -46,6 +47,12 @@ import java.util.Collection;
  * 
  */
 public interface MatchingAttribute {
+    
+    /*
+     * Get map of network to attribute
+     * 
+     */
+    public Map<String,String> getNetAttrMap();
 
     /*
      * Get the attribute of network for matching node

@@ -87,6 +87,9 @@ import javax.swing.WindowConstants;
 import javax.swing.BoxLayout;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+
 
 /**
  * Main dialog for advance network merge
@@ -101,7 +104,7 @@ public class NetworkMergeDialog extends JDialog {
         frame = parent;
         //idMapping = new TreeMap<String,Map<String,Vector<CyIDMapping>>>();
         matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
-        nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());
+        nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());        
         edgeAttributeMapping = new AttributeMappingImpl(Cytoscape.getEdgeAttributes());
         initComponents();
     }
@@ -384,6 +387,11 @@ public class NetworkMergeDialog extends JDialog {
 
         attributeScrollPane.setMinimumSize(new java.awt.Dimension(100, 50));
         attributeScrollPane.setPreferredSize(new java.awt.Dimension(450, 50));
+        matchNodeTable.getModel().addTableModelListener(new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+                mergeNodeAttributeTable.updateMatchingAttribute();
+            }
+        });
 
         attributeScrollPane.setViewportView(matchNodeTable);
 
@@ -459,9 +467,7 @@ public class NetworkMergeDialog extends JDialog {
 
         mergeNodeAttributePanel.setLayout(new javax.swing.BoxLayout(mergeNodeAttributePanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        mergeNodeAttributeTable = new MergeAttributeTable(
-            nodeAttributeMapping,
-            matchingAttribute);
+        mergeNodeAttributeTable = new MergeAttributeTable(nodeAttributeMapping,matchingAttribute);
         mergeNodeAttributeScrollPane.setViewportView(mergeNodeAttributeTable);
 
         mergeNodeAttributePanel.add(mergeNodeAttributeScrollPane);

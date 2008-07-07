@@ -58,6 +58,10 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         attributeForMatching = new HashMap<String,String>();
     }
     
+    public Map<String,String> getNetAttrMap() {
+        return attributeForMatching;
+    }
+    
     /*
      * Get the attribute of network for matching node
      * 

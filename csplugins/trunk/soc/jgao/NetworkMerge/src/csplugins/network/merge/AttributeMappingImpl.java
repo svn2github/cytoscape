@@ -229,7 +229,7 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
         }
         
-        if (Arrays.asList(cyAttributes.getAttributeNames()).contains(attributeName)) {
+        if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(attributeName)) {
             throw new java.lang.IllegalArgumentException("No "+attributeName+" is contained in attributes");
         }
         
@@ -329,12 +329,24 @@ public class AttributeMappingImpl implements AttributeMapping {
     }
     
     /*
-     * Add new attribute in the end for the current network
+     * Add new attribute in the end of the current network
      * 
      */
     public String addAttributes(final Map<String,String> mapNetIDAttributeName, final String mergedAttrName) {
+        return addAttributes(mapNetIDAttributeName,mergedAttrName,getSizeMergedAttributes());
+    }
+    
+    /*
+     * Add new attribute in the end of the current network
+     * 
+     */
+    public String addAttributes(final Map<String,String> mapNetIDAttributeName, final String mergedAttrName, final int index) {
         if (mapNetIDAttributeName==null || mergedAttrName==null) {
             throw new java.lang.NullPointerException();
+        }
+        
+        if (index<0 || index>getSizeMergedAttributes()) {
+            throw new java.lang.IndexOutOfBoundsException("Index out of bounds");
         }
         
         if (mapNetIDAttributeName.isEmpty()) {
@@ -344,7 +356,11 @@ public class AttributeMappingImpl implements AttributeMapping {
         final Set<String> networkSet = getNetworkSet();
         if (!networkSet.containsAll(mapNetIDAttributeName.keySet())) {
             throw new java.lang.IllegalArgumentException("Non-exist network(s)");
-        }        
+        }
+        
+        if (!Arrays.asList(cyAttributes.getAttributeNames()).containsAll(mapNetIDAttributeName.values())) {
+            throw new java.lang.IllegalArgumentException("Non-exist attribute(s)");
+        }
         
         final Iterator<Map.Entry<String,Vector<String>>> it = attributeMapping.entrySet().iterator();
         //final Iterator<Vector<String>> it = attributeMapping.values().iterator();
@@ -354,18 +370,15 @@ public class AttributeMappingImpl implements AttributeMapping {
             final Vector<String> attrs = entry.getValue();
             
             if (mapNetIDAttributeName.containsKey(netID)) {
-                attrs.add(mapNetIDAttributeName.get(netID));
+                attrs.add(index,mapNetIDAttributeName.get(netID));
             } else {
-                attrs.add(nullAttr);
+                attrs.add(index,nullAttr);
             }
         }
         
         String defaultName = getDefaultMergedAttrName(mergedAttrName,false);
-        if (attributeMerged.add(defaultName)) {// add in merged attr  
-            return defaultName;
-        } else {
-            return null;
-        }
+        attributeMerged.add(index,defaultName);// add in merged attr  
+        return defaultName;
     }
 
     /*
@@ -426,7 +439,7 @@ public class AttributeMappingImpl implements AttributeMapping {
                 boolean found = false;             
                 for (int ir=0; ir<nr; ir++) {
                     if (attrs.get(ir).compareTo(nullAttr)!=0) continue; // if the row is occupied
-                    if (attributeMerged.get(ir).compareTo(at)==0) {
+                    if (attributeMerged.get(ir).compareTo(at)==0) { // same name as the merged attribute
                         found = true;
                         attrs.set(ir, at);// add the attribute on the ir row
                         break; 
@@ -436,16 +449,16 @@ public class AttributeMappingImpl implements AttributeMapping {
                     while (it.hasNext()) {
                         final String net_curr = it.next();
                         final String attr_curr = attributeMapping.get(net_curr).get(ir);
-                        if (attr_curr.compareTo(at)==0) {
+                        if (attr_curr.compareTo(at)==0) { // same name as the original attribute
                             //if (AttributeMatchingUtils.isAttributeTypeSame(attr_curr,at,attributes)) // not neccessay in Cytoscape2.6
                                                                                                        // since attributes are global
                             found = true;
                             attrs.set(ir, at); // add the attribute on the ir row
-                            break;
+                            break; 
                         }
                     }
 
-                    if (found) break;
+                    //if (found) break; // do not need to break, add to multiple line if match
                 }
 
                 if (!found) { //no same attribute found
