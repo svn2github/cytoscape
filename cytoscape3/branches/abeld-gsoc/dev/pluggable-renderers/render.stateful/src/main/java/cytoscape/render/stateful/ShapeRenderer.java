@@ -32,7 +32,68 @@ public class ShapeRenderer implements NodeRenderer {
 	private final double[] m_ptsBuff = new double[4];
 	private int m_polyNumPoints; // Used with m_polyCoords.
 
-	
+	/**
+	 * Draws a node with medium to high detail, depending on parameters
+	 * specified. The xMin, yMin, xMax, and yMax parameters specify the extents
+	 * of the node shape (in the node coordinate system), including the border
+	 * width. That is, the drawn border won't extend beyond the extents
+	 * specified.
+	 * <p>
+	 * There is an imposed constraint on borderWidth which, using the
+	 * implemented algorithms, prevents strange-looking borders. The constraint
+	 * is that borderWidth may not exceed the minimum of the node width and node
+	 * height divided by six. In addition, for custom node shapes, this
+	 * requirement may be more constrained, depending on the kinks in the custom
+	 * node shape.
+	 * <p>
+	 * There is a constraint that only applies to SHAPE_ROUNDED_RECTANGLE which
+	 * imposes that the maximum of the width and height be strictly less than
+	 * twice the minimum of the width and height of the node.
+	 * <p>
+	 * This method will not work unless clear() has been called at least once
+	 * previously.
+	 * 
+	 * @param nodeShape
+	 *            the shape of the node to draw (one of the SHAPE_* constants or
+	 *            a custom node shape).
+	 * @param xMin
+	 *            an extent of the node shape to draw, in node coordinate space;
+	 *            the drawn shape will theoretically contain a point that lies
+	 *            on this X coordinate.
+	 * @param yMin
+	 *            an extent of the node shape to draw, in node coordinate space;
+	 *            the drawn shape will theoretically contain a point that lies
+	 *            on this Y coordinate.
+	 * @param xMax
+	 *            an extent of the node shape to draw, in node coordinate space;
+	 *            the drawn shape will theoretically contain a point that lies
+	 *            on this X coordinate.
+	 * @param yMax
+	 *            an extent of the node shape to draw, in node coordinate space;
+	 *            the drawn shape will theoretically contain a point that lies
+	 *            on this Y coordinate.
+	 * @param fillPaint
+	 *            the paint to use when drawing the node area minus the border
+	 *            (the "interior" of the node).
+	 * @param borderWidth
+	 *            the border width, in node coordinate space; if this value is
+	 *            zero, the rendering engine skips over the process of rendering
+	 *            the border, which gives a significant performance boost.
+	 * @param borderPaint
+	 *            if borderWidth is not zero, this paint is used for rendering
+	 *            the node border; otherwise, this parameter is ignored (and may
+	 *            be null).
+	 * @exception IllegalArgumentException
+	 *                if xMin is not less than xMax or if yMin is not less than
+	 *                yMax, if borderWidth is negative or is greater than
+	 *                Math.min(xMax - xMin, yMax - yMin) / 6 (for custom node
+	 *                shapes borderWidth may be even more limited, depending on
+	 *                the specific shape), if nodeShape is
+	 *                SHAPE_ROUNDED_RECTANGLE and the condition max(width,
+	 *                height) < 2 * min(width, height) does not hold, or if
+	 *                nodeShape is neither one of the SHAPE_* constants nor a
+	 *                previously defined custom node shape.
+	 */
 	public void render(Graphics2D m_g2d, NodeDetails nodeDetails, float[] floatBuff1, int node) {
 		m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD); // TODO constr-ba
 		
