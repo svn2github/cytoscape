@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import cytoscape.CyEdge;
@@ -472,17 +473,16 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 
 		int count = 0;
 		// Arrays.sort(given);
-		HashMap<NodeView,NodeView>viewMap = new HashMap();
+		HashSet<NodeView>viewSet = new HashSet();
 		for (int g = 0; g < given.length; g++)
-			viewMap.put(given[g],given[g]);
+			viewSet.add(given[g]);
 
 		for (NodeView view : node_views) {
-			if (!viewMap.containsKey(view)) {
+			if (!viewSet.contains(view)) {
 				inverse[count] = view;
 				count++;
 			}
 		}
-
 		return inverse;
 	}
 
