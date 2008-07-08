@@ -26,6 +26,7 @@
       <classpath>
         <pathelement location="lib/giny.jar"/>
         <pathelement location="lib/cytoscape.jar"/>
+        <pathelement location="lib/cytoscape-task.jar"/>
       </classpath>
     </javac>
   </target>

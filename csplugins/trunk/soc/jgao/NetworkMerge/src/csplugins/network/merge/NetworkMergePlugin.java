@@ -37,12 +37,21 @@
 package csplugins.network.merge;
 
 import csplugins.network.merge.ui.NetworkMergeDialog;
+import csplugins.network.merge.NetworkMerge.Operation;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
+import cytoscape.CyNetwork;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+
 
 import java.awt.event.ActionEvent;
+
+import java.util.List;
 
 /**
  * Plugin to merge networks
@@ -68,15 +77,109 @@ public class NetworkMergePlugin extends CytoscapePlugin {
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setVisible(true);
             if (!dialog.isCancelled()) {
-                final NetworkMerge networkMerge = new DefaultNetworkMerge(
+                final NetworkMergeSessionTask task = new NetworkMergeSessionTask(
                                     dialog.getMatchingAttribute(),
                                     dialog.getNodeAttributeMapping(),
-                                    dialog.getEdgeAttributeMapping());
-                networkMerge.mergeNetwork(
+                                    dialog.getEdgeAttributeMapping(),
                                     dialog.getSelectedNetworkList(),
                                     dialog.getOperation(),
                                     dialog.getMergedNetworkName());
+                
+                // Configure JTask Dialog Pop-Up Box
+                final JTaskConfig jTaskConfig = new JTaskConfig();
+                jTaskConfig.setOwner(Cytoscape.getDesktop());
+                jTaskConfig.displayCloseButton(true);
+                jTaskConfig.displayCancelButton(false);
+                jTaskConfig.displayStatus(true);
+                jTaskConfig.setAutoDispose(false);
+
+                // Execute Task in New Thread; pop open JTask Dialog Box.
+                TaskManager.executeTask(task, jTaskConfig);
             }
         }
     }
 }
+
+class NetworkMergeSessionTask implements Task {
+    private MatchingAttribute matchingAttribute;
+    private AttributeMapping nodeAttributeMapping;
+    private AttributeMapping edgeAttributeMapping;
+    private List<CyNetwork> selectedNetworkList;
+    private Operation operation;
+    private String mergedNetworkName; 
+    private TaskMonitor taskMonitor;
+
+    /**
+     * Constructor.<br>
+     *
+     */
+    NetworkMergeSessionTask( final MatchingAttribute matchingAttribute,
+                             final AttributeMapping nodeAttributeMapping,
+                             final AttributeMapping edgeAttributeMapping,
+                             final List<CyNetwork> selectedNetworkList,
+                             final Operation operation,
+                             final String mergedNetworkName) {
+        this.matchingAttribute = matchingAttribute;
+        this.nodeAttributeMapping = nodeAttributeMapping;
+        this.edgeAttributeMapping = edgeAttributeMapping;
+        this.selectedNetworkList = selectedNetworkList;
+        this.operation = operation;
+        this.mergedNetworkName = mergedNetworkName;
+    }
+
+    /**
+     * Executes Task
+     *
+     * @throws
+     * @throws Exception
+     */
+    public void run() {
+        taskMonitor.setStatus("Merging networks.\n\nIt may take a while.\nPlease wait...");
+        taskMonitor.setPercentCompleted(0);
+
+        final NetworkMerge networkMerge = new DefaultNetworkMerge(
+                            matchingAttribute,
+                            nodeAttributeMapping,
+                            edgeAttributeMapping);
+        final CyNetwork mergedNetwork = networkMerge.mergeNetwork(
+                            selectedNetworkList,
+                            operation,
+                            mergedNetworkName);
+        
+        //TODO handle attribute conflicts here
+        
+        taskMonitor.setPercentCompleted(100);
+        taskMonitor.setStatus("The selected networks were successfully merged into network '"
+                              + mergedNetwork.getTitle()
+                              + "'");
+    }
+
+    /**
+     * Halts the Task: Not Currently Implemented.
+     */
+    public void halt() {
+            // Task can not currently be halted.
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Failed!!!");
+    }
+
+    /**
+     * Sets the Task Monitor.
+     *
+     * @param taskMonitor
+     *            TaskMonitor Object.
+     */
+    public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+            this.taskMonitor = taskMonitor;
+    }
+
+    /**
+     * Gets the Task Title.
+     *
+     * @return Task Title.
+     */
+    public String getTitle() {
+            return "Merging networks";
+    }
+}
+

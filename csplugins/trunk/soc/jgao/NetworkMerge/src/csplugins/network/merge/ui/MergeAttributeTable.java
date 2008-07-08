@@ -204,15 +204,30 @@ class MergeAttributeTable extends JTable{
         if (indexMatchingAttr==-1) {
             indexMatchingAttr = 0;
             String attr_merged = "Matching_Attribute";
-            attributeMapping.addAttributes(matchingAttribute.getNetAttrMap(), attr_merged, indexMatchingAttr);
+            
+            //TODO: remove in Cytoscape3
+            Map netAttrMap = new HashMap(matchingAttribute.getNetAttrMap());
+            Iterator<Map.Entry<String,String>> it = netAttrMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String,String> entry = it.next();
+                String network = entry.getKey();
+                String attr = entry.getValue();
+                if (attr.compareTo("ID")==0) {
+                    netAttrMap.put(network, Semantics.CANONICAL_NAME);
+                }
+            }//TODO: remove in Cytoscape3
+            
+            attributeMapping.addAttributes(netAttrMap, attr_merged, indexMatchingAttr);
             update = true;
-        } else {
-            indexMatchingAttr = 0;
+        } else {            
             Set<String> networks = matchingAttribute.getNetworkSet();
             Iterator<String> it = networks.iterator();
             while (it.hasNext()) {
                 String network = it.next();
                 String attr = matchingAttribute.getAttributeForMatching(network);
+                if (attr.compareTo("ID")==0) {
+                    attr = Semantics.CANONICAL_NAME;
+                }
                 String old = attributeMapping.setOriginalAttribute(network, attr, indexMatchingAttr);
                 if (attr.compareTo(old)!=0) {
                     update=true;
