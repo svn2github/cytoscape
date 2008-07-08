@@ -98,7 +98,7 @@ import java.util.Map;
  * the following code snippet sets and gets an Integer attribute value:
  * <PRE>
  * cyAttributes.setAttribute (node.getIdentifier(),
- *     "Rank", new Integer(3));
+ *     "Rank", Integer.valueOf(3));
  * Integer value = cyAttributes.getIntegerAttribute
  *     (node.getIdentifier(), "Rank");
  * </PRE>
@@ -117,9 +117,9 @@ import java.util.Map;
  * <CODE>Integer</CODE> Objects:
  * <PRE>
  * ArrayList list = new ArrayList();
- * list.add (new Integer(1));
- * list.add (new Integer(22));
- * list.add (new Integer(5));
+ * list.add (Integer.valueOf(1));
+ * list.add (Integer.valueOf(22));
+ * list.add (Integer.valueOf(5));
  * cyAttributes.setList (node.getIdentifier(),
  *     "Rank List", list).
  * </PRE>
@@ -162,7 +162,7 @@ import java.util.Map;
  * in Plugin 1, the following code sets "RANK" to be of type
  * <CODE>Integer</CODE>:
  * <PRE>
- * cyAttributes.setAttribute (node.getIdentifier(), "Rank", new Integer(3));
+ * cyAttributes.setAttribute (node.getIdentifier(), "Rank", Integer.valueOf(3));
  * </PRE>
  * Later on, Plugin 2 executes the following code:
  * <PRE>

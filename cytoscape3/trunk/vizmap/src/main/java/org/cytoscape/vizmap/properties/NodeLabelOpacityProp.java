@@ -105,6 +105,6 @@ public class NodeLabelOpacityProp extends AbstractVisualProperty {
 	 * @return  DOCUMENT ME!
 	 */
 	public Object getDefaultAppearanceObject() {
-		return new Integer(255);
+		return Integer.valueOf(255);
 	}
 }

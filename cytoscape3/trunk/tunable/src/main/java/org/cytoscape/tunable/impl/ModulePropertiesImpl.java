@@ -282,7 +282,7 @@ public class ModulePropertiesImpl implements ModuleProperties {
 		BoxLayout box = new BoxLayout(tunablesPanel, BoxLayout.Y_AXIS);
 		tunablesPanel.setLayout(box);
 
-		addSubPanels(tunablesPanel, tunablesList.iterator(), new Integer(100000));
+		addSubPanels(tunablesPanel, tunablesList.iterator(), Integer.valueOf(100000));
 
 		tunablesPanel.validate();
 		return tunablesPanel;

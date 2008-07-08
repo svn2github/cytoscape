@@ -72,7 +72,7 @@ public class Option {
 	private Object type;
 
 	/** the list of argument values **/
-	private ArrayList values = new ArrayList();
+	private ArrayList<String> values = new ArrayList<String>();
 
 	/** the character that is the value separator */
 	private char valuesep;
@@ -434,7 +434,7 @@ public class Option {
 		}
 
 		// store value
-		this.values.add(value);
+		values.add(value);
 	}
 
 	/**
@@ -445,7 +445,7 @@ public class Option {
 	 * <code>null</code> if there is no value.
 	 */
 	public String getValue() {
-		return hasNoValues() ? null : (String) this.values.get(0);
+		return hasNoValues() ? null : values.get(0);
 	}
 
 	/**

@@ -258,7 +258,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	protected void initialize_properties() {
 
 		layoutProperties.add(TunableFactory.getTunable("standard", "Standard settings",
-		                                                Tunable.GROUP, new Integer(2)));
+		                                                Tunable.GROUP, Integer.valueOf(2)));
 
 		layoutProperties.add(TunableFactory.getTunable("partition", "Partition graph before layout",
 		                                               Tunable.BOOLEAN, new Boolean(true)));
@@ -269,7 +269,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
 
 		layoutProperties.add(TunableFactory.getTunable("force_alg_settings", "Algorithm settings",
-		                                               Tunable.GROUP, new Integer(5)));
+		                                               Tunable.GROUP, Integer.valueOf(5)));
 
 		layoutProperties.add(TunableFactory.getTunable("defaultSpringCoefficient", "Default Spring Coefficient",
 		                                               Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
@@ -281,10 +281,10 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		                                               Tunable.DOUBLE, new Double(defaultNodeMass)));
 
 		layoutProperties.add(TunableFactory.getTunable("numIterations", "Number of Iterations",
-		                                               Tunable.INTEGER, new Integer(numIterations)));
+		                                               Tunable.INTEGER, Integer.valueOf(numIterations)));
 
 		layoutProperties.add(TunableFactory.getTunable("integrator", "Integration algorithm to use",
-		                                               Tunable.LIST, new Integer(0), 
+		                                               Tunable.LIST, Integer.valueOf(0), 
 		                                               (Object) integratorArray, (Object) null, 0));
 
 		// We've now set all of our tunables, so we can read the property 

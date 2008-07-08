@@ -79,7 +79,7 @@ public class TestCyAttributesUtil extends TestCase {
 		assertEquals("true", values[0]);
 
 		//  Test with Integer value
-		cyAttributes.setAttribute(ID, INTEGER_TYPE, new Integer(25));
+		cyAttributes.setAttribute(ID, INTEGER_TYPE, Integer.valueOf(25));
 		values = CyAttributesUtil.getAttributeValues(cyAttributes, ID, INTEGER_TYPE);
 		assertEquals(1, values.length);
 		assertEquals("25", values[0]);

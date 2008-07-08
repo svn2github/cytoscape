@@ -232,8 +232,8 @@ public final class GraphCompiler implements NodeNeighbors {
 		}
 
 		for (int edgeIndex = 0; edgeIndex < graph.getNumEdges(); edgeIndex++) {
-			Integer nodeA = new Integer(graph.getEdgeNodeIndex(edgeIndex, true));
-			Integer nodeB = new Integer(graph.getEdgeNodeIndex(edgeIndex, false));
+			Integer nodeA = Integer.valueOf(graph.getEdgeNodeIndex(edgeIndex, true));
+			Integer nodeB = Integer.valueOf(graph.getEdgeNodeIndex(edgeIndex, false));
 
 			for (int i = 0; i < 2; i++) {
 				if ((nodeNeighbors[nodeA.intValue()].get(nodeB) == null)

@@ -112,7 +112,7 @@ class NumberIndexImpl extends GenericIndexImpl implements NumberIndex {
 			long bits = Double.doubleToLongBits(upper.doubleValue());
 			upper = new Double(Double.longBitsToDouble(bits + 1));
 		} else if (upper instanceof Integer) {
-			upper = new Integer(upper.intValue() + 1);
+			upper = Integer.valueOf(upper.intValue() + 1);
 		}
 
 		SortedMap map = treeMap.subMap(lower, upper);

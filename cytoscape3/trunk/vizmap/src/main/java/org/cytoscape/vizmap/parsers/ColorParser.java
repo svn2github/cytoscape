@@ -100,9 +100,9 @@ public class ColorParser
 	} 
 
 	public static String getRGBText(Color color) {
-		Integer red = new Integer(color.getRed());
-		Integer green = new Integer(color.getGreen());
-		Integer blue = new Integer(color.getBlue());
+		Integer red = Integer.valueOf(color.getRed());
+		Integer green = Integer.valueOf(color.getGreen());
+		Integer blue = Integer.valueOf(color.getBlue());
 
 		return new String(red.toString() + "," + green.toString() + "," + blue.toString());
 	} 

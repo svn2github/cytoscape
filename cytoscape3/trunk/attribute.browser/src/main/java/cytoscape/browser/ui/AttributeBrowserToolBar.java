@@ -737,7 +737,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			} else if (type.equals("Floating Point")) {
 				attributes.setAttribute(testVal, name, new Double(0));
 			} else if (type.equals("Integer")) {
-				attributes.setAttribute(testVal, name, new Integer(0));
+				attributes.setAttribute(testVal, name, Integer.valueOf(0));
 			} else if (type.equals("Boolean")) {
 				attributes.setAttribute(testVal, name, new Boolean(false));
 			} else {

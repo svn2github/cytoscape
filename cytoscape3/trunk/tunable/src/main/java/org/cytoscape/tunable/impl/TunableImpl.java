@@ -136,7 +136,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 		if (value.getClass() == String.class) {
 			switch (type) {
 				case INTEGER:
-					this.value = new Integer((String) value);
+					this.value = Integer.valueOf((String) value);
 					break;
 
 				case DOUBLE:
@@ -152,13 +152,13 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 						// Multiselect LIST -- value is a List of Integers, or String values
 						this.value = value;
 					} else {
-						this.value = new Integer((String) value);
+						this.value = Integer.valueOf((String) value);
 					}
 					return;
 
 				case GROUP:
 					// System.out.println("Setting Group tunable "+desc+" value to "+value);
-					this.value = new Integer((String) value);
+					this.value = Integer.valueOf((String) value);
 					return;
 
 				default:
@@ -480,9 +480,9 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 			}
 		} else if (type == INTEGER) {
 			if (usingSlider) {
-				newValue = new Integer(((JSlider) inputField).getValue());
+				newValue = Integer.valueOf(((JSlider) inputField).getValue());
 			} else {
-				newValue = new Integer(((JTextField) inputField).getText());
+				newValue = Integer.valueOf(((JTextField) inputField).getText());
 			}
 		} else if (type == BOOLEAN) {
 			newValue = new Boolean(((JCheckBox) inputField).isSelected());
@@ -496,7 +496,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 				}
 				newValue = (Object) newString;
 			} else {
-				newValue = new Integer(((JComboBox) inputField).getSelectedIndex());
+				newValue = Integer.valueOf(((JComboBox) inputField).getSelectedIndex());
 			}
 		} else if ((type == NODEATTRIBUTE) || (type == EDGEATTRIBUTE)) {
 			if ((flag & MULTISELECT) != 0) {
@@ -544,7 +544,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 		} else if (type == INTEGER) {
 			Integer newValue = null;
 			try {
-				newValue = new Integer(((JTextField) inputField).getText());
+				newValue = Integer.valueOf(((JTextField) inputField).getText());
 			} catch (NumberFormatException e) {
 				displayBoundsError("an integer");
 				return;

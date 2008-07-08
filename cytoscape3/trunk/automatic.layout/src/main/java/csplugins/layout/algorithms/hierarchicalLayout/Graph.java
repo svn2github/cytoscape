@@ -260,8 +260,8 @@ public class Graph {
 			}
 
 			edge[x] = new Edge(edgeFrom, edgeTo);
-			edgesFrom[edgeFrom].add(new Integer(edgeTo));
-			edgesTo[edgeTo].add(new Integer(edgeFrom));
+			edgesFrom[edgeFrom].add(Integer.valueOf(edgeTo));
+			edgesTo[edgeTo].add(Integer.valueOf(edgeFrom));
 		}
 
 		acyclic = false;
@@ -362,8 +362,8 @@ public class Graph {
 			int edgeFrom = Integer.parseInt(vertex[0]);
 			int edgeTo = Integer.parseInt(vertex[1]);
 			edges.add(new Edge(edgeFrom, edgeTo));
-			edgesFrom[edgeFrom].add(new Integer(edgeTo));
-			edgesTo[edgeTo].add(new Integer(edgeFrom));
+			edgesFrom[edgeFrom].add(Integer.valueOf(edgeTo));
+			edgesTo[edgeTo].add(Integer.valueOf(edgeFrom));
 		}
 
 		edge = new Edge[edges.size()];
@@ -447,7 +447,7 @@ public class Graph {
 	 * @return True if the queried edge is in the graph
 	*/
 	public boolean hasEdge(int edgeFrom, int edgeTo) {
-		return edgesFrom[edgeFrom].contains(new Integer(edgeTo));
+		return edgesFrom[edgeFrom].contains(Integer.valueOf(edgeTo));
 	}
 
 	/**
@@ -529,7 +529,7 @@ public class Graph {
 		for (x = 0; x < nodecount; x++) {
 			cI[x] = x;
 			componentNode[x] = new LinkedList();
-			componentNode[x].add(new Integer(x));
+			componentNode[x].add(Integer.valueOf(x));
 		}
 
 		for (x = 0; x < edge.length; x++) {
@@ -549,7 +549,7 @@ public class Graph {
 				while (iter.hasNext()) {
 					int nodeIndex = ((Integer) (iter.next())).intValue();
 					cI[nodeIndex] = smaller;
-					componentNode[smaller].add(new Integer(nodeIndex));
+					componentNode[smaller].add(Integer.valueOf(nodeIndex));
 				}
 			}
 		}
@@ -588,7 +588,7 @@ public class Graph {
 				low[current] = Math.min(low[current], low[neigh]);
 
 				if (pred[current] == -1) {
-					Iterator rootChildren = neighbours.get(new Integer(current)).iterator();
+					Iterator rootChildren = neighbours.get(Integer.valueOf(current)).iterator();
 					int noChildren = 0;
 
 					while (rootChildren.hasNext()) {
@@ -599,22 +599,22 @@ public class Graph {
 
 					if (noChildren >= 2) {
 						LinkedList<Integer> singleComponent = new LinkedList<Integer>();
-						singleComponent.add(new Integer(edgesStack.peek().getTo()));
+						singleComponent.add(Integer.valueOf(edgesStack.peek().getTo()));
 
 						while (edgesStack.peek().getFrom() != current) {
 							Edge currEdge = edgesStack.pop();
 
-							if (!singleComponent.contains(new Integer(currEdge.getFrom())))
-								singleComponent.add(new Integer(currEdge.getFrom()));
+							if (!singleComponent.contains(Integer.valueOf(currEdge.getFrom())))
+								singleComponent.add(Integer.valueOf(currEdge.getFrom()));
 
-							if (!singleComponent.contains(new Integer(currEdge.getTo())))
-								singleComponent.add(new Integer(currEdge.getTo()));
+							if (!singleComponent.contains(Integer.valueOf(currEdge.getTo())))
+								singleComponent.add(Integer.valueOf(currEdge.getTo()));
 						}
 
 						edgesStack.pop();
 
-						if (!singleComponent.contains(new Integer(current)))
-							singleComponent.add(new Integer(current));
+						if (!singleComponent.contains(Integer.valueOf(current)))
+							singleComponent.add(Integer.valueOf(current));
 
 						biComponents.add(singleComponent);
 
@@ -622,22 +622,22 @@ public class Graph {
 					}
 				} else if (low[neigh] >= d[current]) {
 					LinkedList<Integer> singleComponent = new LinkedList<Integer>();
-					singleComponent.add(new Integer(edgesStack.peek().getTo()));
+					singleComponent.add(Integer.valueOf(edgesStack.peek().getTo()));
 
 					while (edgesStack.peek().getFrom() != current) {
 						Edge currEdge = edgesStack.pop();
 
-						if (!singleComponent.contains(new Integer(currEdge.getFrom())))
-							singleComponent.add(new Integer(currEdge.getFrom()));
+						if (!singleComponent.contains(Integer.valueOf(currEdge.getFrom())))
+							singleComponent.add(Integer.valueOf(currEdge.getFrom()));
 
-						if (!singleComponent.contains(new Integer(currEdge.getTo())))
-							singleComponent.add(new Integer(currEdge.getTo()));
+						if (!singleComponent.contains(Integer.valueOf(currEdge.getTo())))
+							singleComponent.add(Integer.valueOf(currEdge.getTo()));
 					}
 
 					edgesStack.pop();
 
-					if (!singleComponent.contains(new Integer(current)))
-						singleComponent.add(new Integer(current));
+					if (!singleComponent.contains(Integer.valueOf(current)))
+						singleComponent.add(Integer.valueOf(current));
 
 					biComponents.add(singleComponent);
 
@@ -658,10 +658,10 @@ public class Graph {
 	 */
 	public int[][] biconnectedComponents() {
 		for (int i = 0; i < nodecount; i++)
-			neighbours.put(new Integer(i), new LinkedList<Integer>());
+			neighbours.put(Integer.valueOf(i), new LinkedList<Integer>());
 
 		for (int i = 0; i < edge.length; i++)
-			neighbours.get(new Integer(edge[i].getFrom())).add(new Integer(edge[i].getTo()));
+			neighbours.get(Integer.valueOf(edge[i].getFrom())).add(Integer.valueOf(edge[i].getTo()));
 
 		for (int i = 0; i < nodecount; i++)
 			status[i] = 0;
@@ -830,11 +830,11 @@ public class Graph {
 			outDegree[x] = simpleEdgesFrom[x].size();
 
 			if (outDegree[x] == 0) {
-				sink.add(new Integer(x));
+				sink.add(Integer.valueOf(x));
 			} else if (inDegree[x] == 0) {
-				source.add(new Integer(x));
+				source.add(Integer.valueOf(x));
 			} else {
-				bucket[outDegree[x] - inDegree[x] + bucketOffset].add(new Integer(x));
+				bucket[outDegree[x] - inDegree[x] + bucketOffset].add(Integer.valueOf(x));
 			}
 		}
 
@@ -1063,7 +1063,7 @@ public class Graph {
 
 			for (daughterIndex = 0; daughterIndex < daughter.length; daughterIndex++) {
 				int daughterId = daughter[daughterIndex].getSecond();
-				Integer daughterIdObj = new Integer(daughterId);
+				Integer daughterIdObj = Integer.valueOf(daughterId);
 
 				if (descendants[nodeId] == null) {
 					if (descendants[daughterId] == null) {
@@ -1185,7 +1185,7 @@ public class Graph {
 		/* add all sources and isolated nodes to eligible list */
 		for (x = 0; x < nodecount; x++) {
 			if (edgesTo[x].size() == 0) {
-				eligible.add(new Integer(x));
+				eligible.add(Integer.valueOf(x));
 				onEligible[x] = true;
 			} else {
 				onEligible[x] = false;
@@ -1247,7 +1247,7 @@ NEXTCHILD:
 				}
 
 				/* add to eligible */
-				eligible.add(new Integer(childId));
+				eligible.add(Integer.valueOf(childId));
 				onEligible[childId] = true;
 			}
 		}
@@ -1266,7 +1266,7 @@ NEXTCHILD:
 		/* add all sinks and isolated nodes to eligible */
 		for (x = 0; x < nodecount; x++) {
 			if (edgesFrom[x].size() == 0) {
-				eligible.add(new Integer(x));
+				eligible.add(Integer.valueOf(x));
 			}
 		}
 
@@ -1318,8 +1318,8 @@ NEXTPARENT:
 				}
 
 				/* remove from eligible */
-				eligible.remove(new Integer(nodeId));
-				nominated.remove(new Integer(nodeId));
+				eligible.remove(Integer.valueOf(nodeId));
+				nominated.remove(Integer.valueOf(nodeId));
 			}
 
 			currentLayer++;
@@ -1400,7 +1400,7 @@ NEXTPARENT:
 				nodesOnLayer[nLayer] = new LinkedList();
 			}
 
-			nodesOnLayer[nLayer].add(new Integer(x));
+			nodesOnLayer[nLayer].add(Integer.valueOf(x));
 
 			if (nLayer > topLayer) {
 				topLayer = nLayer;
@@ -1824,7 +1824,7 @@ NEXTPARENT:
 				nodesOnLayer[nLayer] = new LinkedList();
 			}
 
-			nodesOnLayer[nLayer].add(new Integer(x));
+			nodesOnLayer[nLayer].add(Integer.valueOf(x));
 
 			if (nLayer > topLayer) {
 				topLayer = nLayer;
@@ -2341,7 +2341,7 @@ NEXTPARENT:
 				nodesOnLayer[nLayer] = new LinkedList();
 			}
 
-			nodesOnLayer[nLayer].add(new Integer(x));
+			nodesOnLayer[nLayer].add(Integer.valueOf(x));
 
 			if (nLayer > topLayer) {
 				topLayer = nLayer;

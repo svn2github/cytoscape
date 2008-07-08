@@ -175,7 +175,7 @@ public class FilterManager implements ListModel, PropertyChangeListener {
 		}
 
 		ID2Filter.put(ID, filter);
-		Filter2ID.put(filter, new Integer(ID));
+		Filter2ID.put(filter, Integer.valueOf(ID));
 		filterList.add(filter);
 		//System.out.println( "Filter list added: "+filter );
 		filter.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
@@ -294,33 +294,33 @@ public class FilterManager implements ListModel, PropertyChangeListener {
 		if (array[1].equals("class cytoscape.filter.cytoscape.StringPatternFilter")) {
 			//System.out.println( "Found String Filter" );
 			Filter new_filter = new cytoscape.filter.cytoscape.StringPatternFilter(array[2]);
-			addFilter(new_filter); //, (new Integer(array[0])).intValue() );
+			addFilter(new_filter); //, (Integer.valueOf(array[0])).intValue() );
 
 			return new_filter;
 		} else if (array[1].equals("class cytoscape.filter.cytoscape.NumericAttributeFilter")) {
 			//System.out.println( "Found Numeric Filter" );
 			Filter new_filter = new cytoscape.filter.cytoscape.NumericAttributeFilter(array[2]);
-			addFilter(new_filter); //, (new Integer(array[0])).intValue());
+			addFilter(new_filter); //, (Integer.valueOf(array[0])).intValue());
 
 			return new_filter;
 		} else if (array[1].equals("class cytoscape.filter.cytoscape.NodeInteractionFilter")) {
 			Filter new_filter = new cytoscape.filter.cytoscape.NodeInteractionFilter(array[2]);
-			addFilter(new_filter); //, (new Integer(array[0])).intValue());
+			addFilter(new_filter); //, (Integer.valueOf(array[0])).intValue());
 
 			return new_filter;
 		} else if (array[1].equals("class cytoscape.filter.cytoscape.EdgeInteractionFilter")) {
 			Filter new_filter = new cytoscape.filter.cytoscape.EdgeInteractionFilter(array[2]);
-			addFilter(new_filter); //, (new Integer(array[0])).intValue());
+			addFilter(new_filter); //, (Integer.valueOf(array[0])).intValue());
 
 			return new_filter;
 		} else if (array[1].equals("class cytoscape.filter.cytoscape.NodeTopologyFilter")) {
 			Filter new_filter = new cytoscape.filter.cytoscape.NodeTopologyFilter(array[2]);
-			addFilter(new_filter); //, (new Integer(array[0])).intValue());
+			addFilter(new_filter); //, (Integer.valueOf(array[0])).intValue());
 
 			return new_filter;
 		} else if (array[1].equals("class cytoscape.filter.cytoscape.BooleanMetaFilter")) {
 			Filter new_filter = new cytoscape.filter.cytoscape.BooleanMetaFilter(array[2]);
-			addFilter(new_filter); //, (new Integer(array[0])).intValue());
+			addFilter(new_filter); //, (Integer.valueOf(array[0])).intValue());
 
 			return new_filter;
 		} // end of if ()

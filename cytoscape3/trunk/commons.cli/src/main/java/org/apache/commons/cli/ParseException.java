@@ -23,6 +23,7 @@ package org.apache.commons.cli;
  * @version $Revision: 155404 $
  */
 public class ParseException extends Exception {
+	private final static long serialVersionUID = 1215558071514603L;
 	/**
 	 * <p>Construct a new <code>ParseException</code>
 	 * with the specified detail message.</p>

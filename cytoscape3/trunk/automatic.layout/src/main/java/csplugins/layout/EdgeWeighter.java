@@ -96,14 +96,14 @@ public class EdgeWeighter {
 	
 	public void getWeightTunables(ModuleProperties props, List initialAttributes) {
 		props.add(TunableFactory.getTunable("edge_weight_group","Edge Weight Settings",
-		                                    Tunable.GROUP, new Integer(4)));
+		                                    Tunable.GROUP, Integer.valueOf(4)));
 		props.add(TunableFactory.getTunable("edge_attribute",
 			            	                    "The edge attribute that contains the weights",
 			            	                    Tunable.EDGEATTRIBUTE, "weight",
                   	                    (Object) initialAttributes, (Object) null,
                   	                    Tunable.NUMERICATTRIBUTE));
 		props.add(TunableFactory.getTunable("weight_type", "How to interpret weight values",
-                  	                    Tunable.LIST, new Integer(0),
+                  	                    Tunable.LIST, Integer.valueOf(0),
                   	                    (Object) weightChoices, (Object) null, 0));
 		props.add(TunableFactory.getTunable("min_weight", "The minimum edge weight to consider",
                   	                    Tunable.DOUBLE, new Double(0)));

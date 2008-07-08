@@ -76,6 +76,7 @@ public class ParseRequiredTest extends TestCase {
 			assertTrue("Confirm arg of -b", cl.getOptionValue("b").equals("file"));
 			assertTrue("Confirm NO of extra args", cl.getArgList().size() == 0);
 		} catch (ParseException e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 	}
@@ -94,6 +95,7 @@ public class ParseRequiredTest extends TestCase {
 			assertTrue("Confirm arg of -b", cl.getOptionValue("b").equals("file"));
 			assertTrue("Confirm NO of extra args", cl.getArgList().size() == 0);
 		} catch (ParseException e) {
+			e.printStackTrace();
 			fail(e.toString());
 		}
 	}

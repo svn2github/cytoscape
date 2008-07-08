@@ -162,7 +162,7 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 			nodeAttributes.setAttribute(species.getId(), "sbml initial amount",
 			                            new Double(species.getInitialAmount()));
 			nodeAttributes.setAttribute(species.getId(), "sbml charge",
-			                            new Integer(species.getCharge()));
+			                            Integer.valueOf(species.getCharge()));
 
 			String comp = species.getCompartment();
 			if ( comp != null )

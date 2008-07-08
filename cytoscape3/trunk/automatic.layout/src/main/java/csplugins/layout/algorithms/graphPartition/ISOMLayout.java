@@ -105,14 +105,14 @@ public class ISOMLayout extends AbstractGraphPartition {
 
 	protected void initialize_properties() {
 		layoutProperties.add(TunableFactory.getTunable("maxEpoch", "Number of iterations", Tunable.INTEGER,
-		                                 new Integer(5000)));
+		                                 Integer.valueOf(5000)));
 		layoutProperties.add(TunableFactory.getTunable("sizeFactor", "Size factor", Tunable.INTEGER,
-		                                 new Integer(10)));
+		                                 Integer.valueOf(10)));
 		layoutProperties.add(TunableFactory.getTunable("radiusConstantTime", "Radius constant", Tunable.INTEGER,
-		                                 new Integer(20)));
-		layoutProperties.add(TunableFactory.getTunable("radius", "Radius", Tunable.INTEGER, new Integer(5)));
+		                                 Integer.valueOf(20)));
+		layoutProperties.add(TunableFactory.getTunable("radius", "Radius", Tunable.INTEGER, Integer.valueOf(5)));
 		layoutProperties.add(TunableFactory.getTunable("minRadius", "Minimum radius", Tunable.INTEGER,
-		                                 new Integer(1)));
+		                                 Integer.valueOf(1)));
 		layoutProperties.add(TunableFactory.getTunable("initialAdaptation", "Initial adaptation", Tunable.DOUBLE,
 		                                 new Double(0.9)));
 		layoutProperties.add(TunableFactory.getTunable("minAdaptation", "Minimum adaptation value",

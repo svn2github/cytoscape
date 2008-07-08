@@ -40,16 +40,16 @@ import java.util.Map;
  */
 public class CommandLine {
 	/** the unrecognised options/arguments */
-	private List args = new LinkedList();
+	private List<String> args = new LinkedList<String>();
 
 	/** the processed options */
-	private Map options = new HashMap();
+	private Map<String,Option> options = new HashMap<String,Option>();
 
 	/** the option name map */
-	private Map names = new HashMap();
+	private Map<String,String> names = new HashMap<String,String>();
 
 	/** Map of unique options for ease to get complete list of options */
-	private Map hashcodeMap = new HashMap();
+	private Map<Integer,Option> hashcodeMap = new HashMap<Integer,Option>();
 
 	/** the processed options */
 	private Option[] optionsArray;
@@ -94,7 +94,7 @@ public class CommandLine {
 			return null;
 		}
 
-		Object type = ((Option) options.get(opt)).getType();
+		Object type = options.get(opt).getType();
 
 		return (res == null) ? null : TypeHandler.createValue(res, type);
 	}
@@ -146,11 +146,11 @@ public class CommandLine {
 		String key = opt;
 
 		if (names.containsKey(opt)) {
-			key = (String) names.get(opt);
+			key = names.get(opt);
 		}
 
 		if (options.containsKey(key)) {
-			return ((Option) options.get(key)).getValues();
+			return options.get(key).getValues();
 		}
 
 		return null;
@@ -213,31 +213,9 @@ public class CommandLine {
 	 *
 	 * @return remaining items passed in but not parsed as a <code>List</code>.
 	 */
-	public List getArgList() {
+	public List<String> getArgList() {
 		return args;
 	}
-
-	/**
-	 * jkeyes
-	 * - commented out until it is implemented properly
-	 * <p>Dump state, suitable for debugging.</p>
-	 *
-	 * @return Stringified form of this object
-	 */
-
-	/*
-	public String toString() {
-	    StringBuffer buf = new StringBuffer();
-
-	    buf.append("[ CommandLine: [ options: ");
-	    buf.append(options.toString());
-	    buf.append(" ] [ args: ");
-	    buf.append(args.toString());
-	    buf.append(" ] ]");
-
-	    return buf.toString();
-	}
-	*/
 
 	/**
 	 * Add left-over unrecognized option/argument.
@@ -255,7 +233,7 @@ public class CommandLine {
 	 * @param opt the processed option
 	 */
 	void addOption(Option opt) {
-		hashcodeMap.put(new Integer(opt.hashCode()), opt);
+		hashcodeMap.put(Integer.valueOf(opt.hashCode()), opt);
 
 		String key = opt.getKey();
 
@@ -274,7 +252,7 @@ public class CommandLine {
 	 * @return an <code>Iterator</code> over the processed {@link Option}
 	 * members of this {@link CommandLine}
 	 */
-	public Iterator iterator() {
+	public Iterator<Option> iterator() {
 		return hashcodeMap.values().iterator();
 	}
 
@@ -284,7 +262,7 @@ public class CommandLine {
 	 * @return an array of the processed {@link Option}s.
 	 */
 	public Option[] getOptions() {
-		Collection processed = options.values();
+		Collection<Option> processed = options.values();
 
 		// reinitialise array
 		optionsArray = new Option[processed.size()];

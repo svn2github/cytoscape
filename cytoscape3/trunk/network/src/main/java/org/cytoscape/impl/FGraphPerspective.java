@@ -2017,7 +2017,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		}
 
 		m_root.addRootGraphChangeListener(m_changeSniffer);
-		Integer i = new Integer(uid_counter++);
+		Integer i = Integer.valueOf(uid_counter++);
 		identifier = i.toString();
 		selectFilter = new SelectFilterImpl(this);
 	}

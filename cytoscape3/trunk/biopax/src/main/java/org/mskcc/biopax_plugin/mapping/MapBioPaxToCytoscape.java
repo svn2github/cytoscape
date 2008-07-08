@@ -975,11 +975,11 @@ public class MapBioPaxToCytoscape {
 					chemicalModifications += abbr;
 
 					// update our map - modification, count
-					chemicalModificationsMap.put(modification, new Integer(1));
+					chemicalModificationsMap.put(modification, Integer.valueOf(1));
 				} else {
 					// we've seen this modification before, just update the count
 					int count = ((Integer) chemicalModificationsMap.get(modification)).intValue();
-					chemicalModificationsMap.put(modification, new Integer(count + 1));
+					chemicalModificationsMap.put(modification, Integer.valueOf(count + 1));
 				}
 			}
 		}

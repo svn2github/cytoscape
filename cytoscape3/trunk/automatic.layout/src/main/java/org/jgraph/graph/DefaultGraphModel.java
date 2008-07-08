@@ -1114,11 +1114,11 @@ public class DefaultGraphModel extends UndoableEditSupport implements Serializab
 				Integer count = (Integer) childCount.get(parent);
 
 				if (count == null) {
-					count = new Integer(getChildCount(parent));
+					count = Integer.valueOf(getChildCount(parent));
 				}
 
 				int newValue = count.intValue() + change;
-				childCount.put(parent, new Integer(newValue));
+				childCount.put(parent, Integer.valueOf(newValue));
 			}
 		}
 

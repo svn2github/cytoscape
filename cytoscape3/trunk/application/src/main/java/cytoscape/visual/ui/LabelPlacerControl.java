@@ -148,8 +148,8 @@ class LabelPlacerControl extends JPanel
             labelAnchors.setSelectedItem(LabelPosition.convert(labelAnchor));
 
         justifyCombo.setSelectedItem(LabelPosition.convert(lp.getJustify()));
-        xoffsetBox.setText(new Integer((int) lp.getOffsetX()).toString());
-        yoffsetBox.setText(new Integer((int) lp.getOffsetY()).toString());
+        xoffsetBox.setText(Integer.valueOf((int) lp.getOffsetX()).toString());
+        yoffsetBox.setText(Integer.valueOf((int) lp.getOffsetY()).toString());
         ignoreEvents = false;
         repaint();
     }

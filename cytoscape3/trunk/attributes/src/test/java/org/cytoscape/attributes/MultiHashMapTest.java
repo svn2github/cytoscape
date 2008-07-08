@@ -69,23 +69,23 @@ public final class MultiHashMapTest extends TestCase {
 		                        MultiHashMapDefinition.TYPE_INTEGER
 		                    });
 		data.setAttributeValue("node1", "p-values", new Double(0.5),
-		                       new Object[] { "Ideker", new Integer(0) });
+		                       new Object[] { "Ideker", Integer.valueOf(0) });
 		data.setAttributeValue("node1", "p-values", new Double(0.6),
-		                       new Object[] { "Ideker", new Integer(1) });
+		                       new Object[] { "Ideker", Integer.valueOf(1) });
 		data.setAttributeValue("node1", "p-values", new Double(0.6),
-		                       new Object[] { "Ideker", new Integer(2) });
+		                       new Object[] { "Ideker", Integer.valueOf(2) });
 		data.setAttributeValue("node1", "p-values", new Double(0.7),
-		                       new Object[] { "Salk", new Integer(0) });
+		                       new Object[] { "Salk", Integer.valueOf(0) });
 		data.setAttributeValue("node1", "p-values", new Double(0.6),
-		                       new Object[] { "Salk", new Integer(1) });
+		                       new Object[] { "Salk", Integer.valueOf(1) });
 		data.setAttributeValue("node2", "p-values", new Double(0.4),
-		                       new Object[] { "Salk", new Integer(0) });
+		                       new Object[] { "Salk", Integer.valueOf(0) });
 		data.setAttributeValue("node2", "p-values", new Double(0.2),
-		                       new Object[] { "Weirdo", new Integer(0) });
+		                       new Object[] { "Weirdo", Integer.valueOf(0) });
 		data.setAttributeValue("node3", "p-values", new Double(0.1),
-		                       new Object[] { "Foofoo", new Integer(11) });
+		                       new Object[] { "Foofoo", Integer.valueOf(11) });
 		data.setAttributeValue("node4", "p-values", new Double(0.9),
-		                       new Object[] { "BarBar", new Integer(9) });
+		                       new Object[] { "BarBar", Integer.valueOf(9) });
 
 		def.defineAttribute("color", MultiHashMapDefinition.TYPE_STRING, null);
 		data.setAttributeValue("node1", "color", "red", null);
@@ -97,7 +97,7 @@ public final class MultiHashMapTest extends TestCase {
 
 		try {
 			data.setAttributeValue("node4", "p-values", new Double(0.4),
-			                       new Object[] { "BarBar", new Long(1) });
+			                       new Object[] { "BarBar", Long.valueOf(1) });
 		} catch (ClassCastException e) {
 			exc = e;
 		}
@@ -109,7 +109,7 @@ public final class MultiHashMapTest extends TestCase {
 	public void testTwo() {
 		try {
 			data.setAttributeValue("node5", "p-values", new Double(0.4),
-			                       new Object[] { "BarBar", new Long(1) });
+			                       new Object[] { "BarBar", Long.valueOf(1) });
 		} catch (ClassCastException e) {
 			exc = e;
 		}
@@ -121,7 +121,7 @@ public final class MultiHashMapTest extends TestCase {
 
 
 		try {
-			data.removeAttributeValue("node1", "p-values", new Object[] { "Salk", new Long(1) });
+			data.removeAttributeValue("node1", "p-values", new Object[] { "Salk", Long.valueOf(1) });
 		} catch (ClassCastException e) {
 			exc = e;
 		}
@@ -130,7 +130,7 @@ public final class MultiHashMapTest extends TestCase {
 
 	public void testRemove() {
 
-		Double d = (Double) data.removeAttributeValue("node4", "p-values", new Object[] { "BarBar", new Integer(9) });
+		Double d = (Double) data.removeAttributeValue("node4", "p-values", new Object[] { "BarBar", Integer.valueOf(9) });
 
 		assertEquals( new Double(0.9), d );
 

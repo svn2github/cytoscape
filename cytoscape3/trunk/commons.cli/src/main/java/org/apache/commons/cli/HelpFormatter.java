@@ -397,7 +397,7 @@ public class HelpFormatter {
 		StringBuffer buff = new StringBuffer(defaultSyntaxPrefix).append(app).append(" ");
 
 		// create a list for processed option groups
-		final Collection processedGroups = new ArrayList();
+		final Collection<OptionGroup> processedGroups = new ArrayList<OptionGroup>();
 
 		// temp variable
 		Option option;
@@ -583,9 +583,9 @@ public class HelpFormatter {
 		// sort options ascending
 		int max = 0;
 		StringBuffer optBuf;
-		List prefixList = new ArrayList();
+		List<StringBuffer> prefixList = new ArrayList<StringBuffer>();
 		Option option;
-		List optList = options.helpOptions();
+		List<Option> optList = options.helpOptions();
 
 		//Collections.sort(optList, new OptionComparator());
 		for (Iterator i = optList.iterator(); i.hasNext();) {

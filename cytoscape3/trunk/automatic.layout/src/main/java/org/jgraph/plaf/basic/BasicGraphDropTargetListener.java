@@ -117,8 +117,8 @@ public class BasicGraphDropTargetListener implements DropTargetListener, UIResou
 	private void initPropertiesIfNecessary() {
 		if (timer == null) {
 			Toolkit t = Toolkit.getDefaultToolkit();
-			Integer initial = new Integer(100);
-			Integer interval = new Integer(100);
+			Integer initial = Integer.valueOf(100);
+			Integer interval = Integer.valueOf(100);
 
 			try {
 				initial = (Integer) t.getDesktopProperty("DnD.Autoscroll.initialDelay");

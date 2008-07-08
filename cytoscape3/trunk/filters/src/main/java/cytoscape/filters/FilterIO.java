@@ -224,7 +224,7 @@ public class FilterIO {
 				_strFilter.setControllingAttribute(_values[0]);
 				_strFilter.setNegation((new Boolean(_values[1])).booleanValue());				
 				_strFilter.setSearchStr(_values[2]);
-				_strFilter.setIndexType((new Integer(_values[3])).intValue());
+				_strFilter.setIndexType((Integer.valueOf(_values[3])).intValue());
 				retFilter.addChild(_strFilter);
 			}
 			if (line.startsWith("NumericFilter=")) {
@@ -245,7 +245,7 @@ public class FilterIO {
 					_numFilter.setNegation((new Boolean(_values[1])).booleanValue());
 					_numFilter.setLowBound(Double.valueOf(_values[2]));
 					_numFilter.setHighBound(Double.valueOf(_values[3]));
-					_numFilter.setIndexType((new Integer(_values[4])).intValue());					
+					_numFilter.setIndexType((Integer.valueOf(_values[4])).intValue());					
 					retFilter.addChild(_numFilter);
 				}
 				else { // dataType = "int"
@@ -255,7 +255,7 @@ public class FilterIO {
 					_numFilter.setNegation((new Boolean(_values[1])).booleanValue());
 					_numFilter.setLowBound(Integer.valueOf(_values[2]));
 					_numFilter.setHighBound(Integer.valueOf(_values[3]));
-					_numFilter.setIndexType((new Integer(_values[4])).intValue());
+					_numFilter.setIndexType((Integer.valueOf(_values[4])).intValue());
 					retFilter.addChild(_numFilter);
 				}
 			}
@@ -343,12 +343,12 @@ public class FilterIO {
 			
 			if (line.startsWith("minNeighbors=")) {
 				String minNeighbors = line.substring(13);
-				int minN = new Integer(minNeighbors).intValue();
+				int minN = Integer.valueOf(minNeighbors).intValue();
 				pFilter.setMinNeighbors(minN);
 			}
 			if (line.startsWith("withinDistance=")) {
 				String withinDistance = line.substring(15);
-				int distance = new Integer(withinDistance).intValue();
+				int distance = Integer.valueOf(withinDistance).intValue();
 				pFilter.setDistance(distance);
 			}
 			if (line.startsWith("passFilter=")) {
@@ -391,7 +391,7 @@ public class FilterIO {
 			
 			if (line.startsWith("nodeType=")) {
 				String nodeTypeStr = line.substring(9);
-				int nodeType = new Integer(nodeTypeStr).intValue();
+				int nodeType = Integer.valueOf(nodeTypeStr).intValue();
 				pFilter.setNodeType(nodeType);
 			}
 			if (line.startsWith("passFilter=")) {

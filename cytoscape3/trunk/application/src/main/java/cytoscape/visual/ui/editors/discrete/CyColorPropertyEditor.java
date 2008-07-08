@@ -124,15 +124,15 @@ public class CyColorPropertyEditor extends AbstractPropertyEditor {
             if (value == null)
                 return null;
             else
-                return new Integer(((Color) value).getRGB());
+                return Integer.valueOf(((Color) value).getRGB());
         }
 
         protected void firePropertyChange(Object oldValue, Object newValue) {
             if (oldValue instanceof Color)
-                oldValue = new Integer(((Color) oldValue).getRGB());
+                oldValue = Integer.valueOf(((Color) oldValue).getRGB());
 
             if (newValue instanceof Color)
-                newValue = new Integer(((Color) newValue).getRGB());
+                newValue = Integer.valueOf(((Color) newValue).getRGB());
 
             super.firePropertyChange(oldValue, newValue);
         }

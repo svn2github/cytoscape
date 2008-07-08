@@ -173,7 +173,7 @@ class SaveAsSifTask implements Task {
 			Object[] ret_val = new Object[3];
 			ret_val[0] = netToSave;
 			ret_val[1] = new File(fileName).toURI();
-			ret_val[2] = new Integer(Cytoscape.FILE_SIF);
+			ret_val[2] = Integer.valueOf(Cytoscape.FILE_SIF);
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
 
 			taskMonitor.setPercentCompleted(100);

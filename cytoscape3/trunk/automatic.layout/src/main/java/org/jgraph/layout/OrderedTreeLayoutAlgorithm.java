@@ -117,7 +117,7 @@ public class OrderedTreeLayoutAlgorithm extends TreeLayoutAlgorithm {
 				int index1 = (p1 == null) ? m.getIndexOfRoot(c1) : m.getIndexOfChild(p1, c1);
 				int index2 = (p2 == null) ? m.getIndexOfRoot(c2) : m.getIndexOfChild(p2, c2);
 
-				return new Integer(index1).compareTo(new Integer(index2));
+				return Integer.valueOf(index1).compareTo(Integer.valueOf(index2));
 			}
 
 			return -1;

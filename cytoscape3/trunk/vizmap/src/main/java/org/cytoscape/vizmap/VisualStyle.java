@@ -108,7 +108,7 @@ public class VisualStyle implements Cloneable {
 		String dupeFreeName;
 
 		if (dupeCount != 0) {
-			int dupeCountIndex = name.lastIndexOf(new Integer(dupeCount).toString());
+			int dupeCountIndex = name.lastIndexOf(Integer.valueOf(dupeCount).toString());
 
 			if (dupeCountIndex == -1)
 				dupeFreeName = new String(name);

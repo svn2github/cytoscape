@@ -227,7 +227,7 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	protected void initializeProperties() {
 
 		layoutProperties.add(TunableFactory.getTunable("standard", "Standard settings", Tunable.GROUP,
-		                                               new Integer(3)));
+		                                               Integer.valueOf(3)));
 /*
 		layoutProperties.add(TunableFactory.getTunable("debug", "Enable debugging", Tunable.BOOLEAN,
 		                                 new Boolean(false), Tunable.NOINPUT));

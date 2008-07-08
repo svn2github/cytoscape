@@ -27,7 +27,7 @@ import java.util.Iterator;
  */
 public class OptionGroup {
 	/** hold the options */
-	private HashMap optionMap = new HashMap();
+	private HashMap<String,Option> optionMap = new HashMap<String,Option>();
 
 	/** the name of the selected option */
 	private String selected;
@@ -53,7 +53,7 @@ public class OptionGroup {
 	 * @return the names of the options in this group as a
 	 * <code>Collection</code>
 	 */
-	public Collection getNames() {
+	public Collection<String> getNames() {
 		// the key set is the collection of names
 		return optionMap.keySet();
 	}
@@ -61,7 +61,7 @@ public class OptionGroup {
 	/**
 	 * @return the options in this group as a <code>Collection</code>
 	 */
-	public Collection getOptions() {
+	public Collection<Option> getOptions() {
 		// the values are the collection of options
 		return optionMap.values();
 	}

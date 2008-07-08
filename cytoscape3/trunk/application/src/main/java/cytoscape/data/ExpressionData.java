@@ -482,7 +482,7 @@ public class ExpressionData implements Serializable {
 		condNames = cNames;
 
 		for (int i = 0; i < numConds; i++) {
-			condNameToIndex.put(condNames.get(i), new Integer(i));
+			condNameToIndex.put(condNames.get(i), Integer.valueOf(i));
 		}
 
 		/* parse rest of file line by line */
@@ -504,7 +504,7 @@ public class ExpressionData implements Serializable {
 
 		for (int i = 0; i < geneNames.size(); i++) {
 			if (geneNames.get(i) != null) {
-				geneNameToIndex.put(geneNames.get(i), new Integer(i));
+				geneNameToIndex.put(geneNames.get(i), Integer.valueOf(i));
 			}
 		}
 
@@ -862,7 +862,7 @@ public class ExpressionData implements Serializable {
 		geneNameToIndex.clear();
 
 		for (int i = 0; i < geneNames.size(); i++) {
-			geneNameToIndex.put(geneNames.get(i), new Integer(i));
+			geneNameToIndex.put(geneNames.get(i), Integer.valueOf(i));
 		}
 	}
 

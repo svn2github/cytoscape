@@ -519,7 +519,7 @@ public class CytoscapeInit {
 			Object[] ret_val = new Object[3];
 			ret_val[0] = network;
 			ret_val[1] = net;
-			ret_val[2] = new Integer(0);
+			ret_val[2] = Integer.valueOf(0);
 
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 		}

@@ -194,8 +194,8 @@ public class InternalFrameComponent extends JComponent implements Printable {
 		layeredPane.removeAll();
 
 		// foreground followed by network followed by background
-		layeredPane.add(backgroundCanvas, new Integer(ZOrder.BACKGROUND_PANE.layer()));
-		layeredPane.add(networkCanvas, new Integer(ZOrder.NETWORK_PANE.layer()));
-		layeredPane.add(foregroundCanvas, new Integer(ZOrder.FOREGROUND_PANE.layer()));
+		layeredPane.add(backgroundCanvas, Integer.valueOf(ZOrder.BACKGROUND_PANE.layer()));
+		layeredPane.add(networkCanvas, Integer.valueOf(ZOrder.NETWORK_PANE.layer()));
+		layeredPane.add(foregroundCanvas, Integer.valueOf(ZOrder.FOREGROUND_PANE.layer()));
 	}
 }

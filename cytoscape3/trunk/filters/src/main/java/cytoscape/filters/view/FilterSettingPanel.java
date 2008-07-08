@@ -381,7 +381,7 @@ public class FilterSettingPanel extends JPanel {
 		                //if highBound > max, set it to max
 		            	adjustBoundValues(boundVect, "int");
 
-						model.setValueRange(new Integer(boundVect.elementAt(0)),new Integer(boundVect.elementAt(1)), (Integer) model.getMinValue(), (Integer) model.getMaxValue());						
+						model.setValueRange(Integer.valueOf(boundVect.elementAt(0)),Integer.valueOf(boundVect.elementAt(1)), (Integer) model.getMinValue(), (Integer) model.getMaxValue());						
 					}
 					else {
 		            	EditRangeDialog theDialog = new EditRangeDialog(new javax.swing.JFrame(), true, theSlider.getName(), boundVect, "double");												
@@ -397,17 +397,17 @@ public class FilterSettingPanel extends JPanel {
 
 	private void adjustBoundValues(Vector<String> pBoundVect, String pDataType){
 		if (pDataType.equalsIgnoreCase("int")) {
-	    	int lowBound = new Integer(pBoundVect.elementAt(0)).intValue();
-	    	int highBound = new Integer(pBoundVect.elementAt(1)).intValue();
-	    	int min = new Integer(pBoundVect.elementAt(2)).intValue();
-	    	int max = new Integer(pBoundVect.elementAt(3)).intValue();
+	    	int lowBound = Integer.valueOf(pBoundVect.elementAt(0)).intValue();
+	    	int highBound = Integer.valueOf(pBoundVect.elementAt(1)).intValue();
+	    	int min = Integer.valueOf(pBoundVect.elementAt(2)).intValue();
+	    	int max = Integer.valueOf(pBoundVect.elementAt(3)).intValue();
 	    	if (lowBound < min) {
 	    		lowBound = min;
-	    		pBoundVect.setElementAt(new Integer(lowBound).toString(),0);
+	    		pBoundVect.setElementAt(Integer.valueOf(lowBound).toString(),0);
 	    	}
 	    	if (highBound > max) {
 	    		highBound = max;
-	    		pBoundVect.setElementAt(new Integer(highBound).toString(),1);	    		
+	    		pBoundVect.setElementAt(Integer.valueOf(highBound).toString(),1);	    		
 	    	}
 		}
 		else if (pDataType.equalsIgnoreCase("double")) {
@@ -500,7 +500,7 @@ public class FilterSettingPanel extends JPanel {
 		
 		if (_actionObject instanceof JCheckBox) {
 			JCheckBox _chk = (JCheckBox) _actionObject;
-			int widgetGridY = (new Integer(_chk.getName())).intValue();
+			int widgetGridY = (Integer.valueOf(_chk.getName())).intValue();
 			int childIndex =widgetGridY/2;
 			
 			CyFilter childFilter = theFilter.getChildren().get(childIndex);
@@ -722,7 +722,7 @@ public class FilterSettingPanel extends JPanel {
 		
 		if (_actionObject instanceof JLabel) {
 			JLabel _lbl = (JLabel) _actionObject;
-			int widgetGridY = (new Integer(_lbl.getName())).intValue();
+			int widgetGridY = (Integer.valueOf(_lbl.getName())).intValue();
 			int childIndex =widgetGridY /2;
 			
 			theFilter.removeChildAt(childIndex);

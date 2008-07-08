@@ -42,19 +42,19 @@ import java.util.Map;
  */
 public class Options {
 	/** a map of the options with the character key */
-	private Map shortOpts = new HashMap();
+	private Map<String,Option> shortOpts = new HashMap<String,Option>();
 
 	/** a list for storing the help options in the order they were created */
-	private List helpOpts = new ArrayList();
+	private List<Option> helpOpts = new ArrayList<Option>();
 
 	/** a map of the options with the long key */
-	private Map longOpts = new HashMap();
+	private Map<String,Option> longOpts = new HashMap<String,Option>();
 
-	/** a map of the required options */
-	private List requiredOpts = new ArrayList();
+	/** a map of the required option strings */
+	private List<String> requiredOpts = new ArrayList<String>();
 
 	/** a map of the option groups */
-	private Map optionGroups = new HashMap();
+	private Map<String,OptionGroup> optionGroups = new HashMap<String,OptionGroup>();
 
 	/** Construct a new Options descriptor
 	 */
@@ -69,14 +69,16 @@ public class Options {
 	 * @return the resulting Options instance
 	 */
 	public Options addOptionGroup(OptionGroup group) {
-		Iterator options = group.getOptions().iterator();
+		Iterator<Option> options = group.getOptions().iterator();
 
 		if (group.isRequired()) {
-			requiredOpts.add(group);
+			requiredOpts.add(group.toString());
 		}
 
 		while (options.hasNext()) {
-			Option option = (Option) options.next();
+
+			Option option = options.next();
+
 
 			// an Option cannot be required if it is in an
 			// OptionGroup, either the group is required or
@@ -94,8 +96,8 @@ public class Options {
 	 * Lists the OptionGroups that are members of this Options instance.
 	 * @return a Collection of OptionGroup instances.
 	 */
-	Collection getOptionGroups() {
-		return new HashSet(optionGroups.values());
+	Collection<OptionGroup> getOptionGroups() {
+		return new HashSet<OptionGroup>(optionGroups.values());
 	}
 
 	/**
@@ -163,7 +165,7 @@ public class Options {
 	 *
 	 * @return read-only Collection of {@link Option} objects in this descriptor
 	 */
-	public Collection getOptions() {
+	public Collection<Option> getOptions() {
 		return Collections.unmodifiableCollection(helpOptions());
 	}
 
@@ -172,7 +174,7 @@ public class Options {
 	 *
 	 * @return the List of Options
 	 */
-	List helpOptions() {
+	List<Option> helpOptions() {
 		/*
 		    List opts = new ArrayList(shortOpts.values());
 
@@ -201,7 +203,7 @@ public class Options {
 	 *
 	 * @return Collection of required options
 	 */
-	public List getRequiredOptions() {
+	public List<String> getRequiredOptions() {
 		return requiredOpts;
 	}
 

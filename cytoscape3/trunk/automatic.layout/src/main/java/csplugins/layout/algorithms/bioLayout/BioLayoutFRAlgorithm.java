@@ -209,7 +209,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @param value the number of iterations
 	 */
 	public void setNumberOfIterations(String value) {
-		Integer val = new Integer(value);
+		Integer val = Integer.valueOf(value);
 		nIterations = val.intValue();
 	}
 
@@ -324,7 +324,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 * @param value the number of iterations between updates
 	 */
 	public void setUpdateIterations(String value) {
-		Integer val = new Integer(value);
+		Integer val = Integer.valueOf(value);
 		update_iterations = val.intValue();
 	}
 
@@ -393,7 +393,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		 */
 		layoutProperties.add(TunableFactory.getTunable("algorithm_settings",
                          "Algorithm settings",
-                         Tunable.GROUP, new Integer(9)));
+                         Tunable.GROUP, Integer.valueOf(9)));
 
 		layoutProperties.add(TunableFactory.getTunable("repulsion_multiplier",
 		                                 "Multiplier to calculate the repulsion force",
@@ -405,14 +405,14 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		                                 "Multiplier to calculate the gravity force",
 		                                 Tunable.DOUBLE, new Double(1)));
 		layoutProperties.add(TunableFactory.getTunable("iterations", "Number of iterations", Tunable.INTEGER,
-		                                 new Integer(500)));
+		                                 Integer.valueOf(500)));
 		layoutProperties.add(TunableFactory.getTunable("temperature", "Initial temperature", Tunable.DOUBLE,
 		                                 new Double(80)));
 		layoutProperties.add(TunableFactory.getTunable("spread_factor", "Amount of extra room for layout",
 		                                 Tunable.DOUBLE, new Double(2)));
 		layoutProperties.add(TunableFactory.getTunable("update_iterations",
 		                                 "Number of iterations before updating display",
-		                                 Tunable.INTEGER, new Integer(0)));
+		                                 Tunable.INTEGER, Integer.valueOf(0)));
 		layoutProperties.add(TunableFactory.getTunable("conflict_avoidance",
 		                                 "Constant force applied to avoid conflicts",
 		                                 Tunable.DOUBLE, new Double(20.0)));

@@ -131,7 +131,7 @@ public class SaveAsPsiTask implements Task {
 			Object[] retValue = new Object[3];
 			retValue[0] = netToSave;
 			retValue[1] = new File(fileName).toURI();
-			retValue[2] = new Integer(Cytoscape.FILE_PSI_MI);
+			retValue[2] = Integer.valueOf(Cytoscape.FILE_PSI_MI);
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, retValue);
 
 			taskMonitor.setPercentCompleted(100);

@@ -80,7 +80,7 @@ public class MappingUtil {
      */
     public static Object parseObjectType(String key, byte attrType) {
         if (attrType == CyAttributes.TYPE_INTEGER)
-            return new Integer(key);
+            return Integer.valueOf(key);
         else if (attrType == CyAttributes.TYPE_FLOATING)
             return new Double(key);
         else if (attrType == CyAttributes.TYPE_BOOLEAN)

@@ -592,7 +592,7 @@ public class CyAttributesImpl implements CyAttributes {
 		final Object[] key = new Object[1];
 
 		while (itor.hasNext()) {
-			key[0] = new Integer(inx++);
+			key[0] = Integer.valueOf(inx++);
 			mmap.setAttributeValue(id, attributeName, itor.next(), key);
 		}
 	}
@@ -621,7 +621,7 @@ public class CyAttributesImpl implements CyAttributes {
 		final Object[] key = new Object[1];
 
 		for (int i = 0;; i++) {
-			key[0] = new Integer(i);
+			key[0] = Integer.valueOf(i);
 
 			final Object val = mmap.getAttributeValue(id, attributeName, key);
 

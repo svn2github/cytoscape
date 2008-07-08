@@ -130,7 +130,7 @@ public final class GraphConverter {
 				ginyNInx = edge.getTarget().getRootGraphIndex();
 			}
 
-			Object nativeNodeIndex = m_nodeIndexTranslation.get(new Integer(ginyNInx));
+			Object nativeNodeIndex = m_nodeIndexTranslation.get(Integer.valueOf(ginyNInx));
 
 			return ((Integer) nativeNodeIndex).intValue();
 		}
@@ -310,8 +310,8 @@ public final class GraphConverter {
 			NodeView currentNodeView = (NodeView) nodeIterator.next();
 			nodeTranslation[nodeIndex] = currentNodeView;
 
-			if (nodeIndexTranslation.put(new Integer(currentNodeView.getNode().getRootGraphIndex()),
-			                             new Integer(nodeIndex)) != null) {
+			if (nodeIndexTranslation.put(Integer.valueOf(currentNodeView.getNode().getRootGraphIndex()),
+			                             Integer.valueOf(nodeIndex)) != null) {
 				throw new IllegalStateException("Giny farted and someone lit a match");
 			}
 
@@ -342,11 +342,11 @@ public final class GraphConverter {
 
 			if ((!preserveEdgeAnchors)
 			    && (noNodesSelected
-			       || nodeTranslation[((Integer) nodeIndexTranslation.get(new Integer(currentEdgeView.getEdge()
+			       || nodeTranslation[((Integer) nodeIndexTranslation.get(Integer.valueOf(currentEdgeView.getEdge()
 			                                                                                         .getSource()
 			                                                                                         .getRootGraphIndex())))
 			                          .intValue()].isSelected()
-			       || nodeTranslation[((Integer) nodeIndexTranslation.get(new Integer(currentEdgeView.getEdge()
+			       || nodeTranslation[((Integer) nodeIndexTranslation.get(Integer.valueOf(currentEdgeView.getEdge()
 			                                                                                         .getTarget()
 			                                                                                         .getRootGraphIndex())))
 			                          .intValue()].isSelected())) {
@@ -365,9 +365,9 @@ public final class GraphConverter {
 			Edge currentEdge = currentEdgeView.getEdge();
 			int ginySourceNodeIndex = currentEdge.getSource().getRootGraphIndex();
 			int ginyTargetNodeIndex = currentEdge.getTarget().getRootGraphIndex();
-			int nativeSourceNodeIndex = ((Integer) nodeIndexTranslation.get(new Integer(ginySourceNodeIndex)))
+			int nativeSourceNodeIndex = ((Integer) nodeIndexTranslation.get(Integer.valueOf(ginySourceNodeIndex)))
 			                            .intValue();
-			int nativeTargetNodeIndex = ((Integer) nodeIndexTranslation.get(new Integer(ginyTargetNodeIndex)))
+			int nativeTargetNodeIndex = ((Integer) nodeIndexTranslation.get(Integer.valueOf(ginyTargetNodeIndex)))
 			                            .intValue();
 			Vector chosenEdgeVector = undirectedEdgeVector;
 
@@ -436,11 +436,11 @@ public final class GraphConverter {
 
 			if ((!preserveEdgeAnchors)
 			    && (noNodesSelected
-			       || nodeTranslation[((Integer) nodeIndexTranslation.get(new Integer(currentEdge.getEdge()
+			       || nodeTranslation[((Integer) nodeIndexTranslation.get(Integer.valueOf(currentEdge.getEdge()
 			                                                                                     .getSource()
 			                                                                                     .getRootGraphIndex())))
 			                          .intValue()].isSelected()
-			       || nodeTranslation[((Integer) nodeIndexTranslation.get(new Integer(currentEdge.getEdge()
+			       || nodeTranslation[((Integer) nodeIndexTranslation.get(Integer.valueOf(currentEdge.getEdge()
 			                                                                                     .getTarget()
 			                                                                                     .getRootGraphIndex())))
 			                          .intValue()].isSelected())) {
@@ -576,8 +576,8 @@ public final class GraphConverter {
 			NodeView currentNodeView = (NodeView) nodeIterator.next();
 			nodeTranslation[nodeIndex] = currentNodeView;
 
-			if (nodeIndexTranslation.put(new Integer(currentNodeView.getNode().getRootGraphIndex()),
-			                             new Integer(nodeIndex)) != null) {
+			if (nodeIndexTranslation.put(Integer.valueOf(currentNodeView.getNode().getRootGraphIndex()),
+			                             Integer.valueOf(nodeIndex)) != null) {
 				throw new IllegalStateException("Giny farted and someone lit a match");
 			}
 
@@ -601,11 +601,11 @@ public final class GraphConverter {
 
 			if ((!preserveEdgeAnchors)
 			    && (noNodesSelected
-			       || nodeTranslation[((Integer) nodeIndexTranslation.get(new Integer(currentEdge.getEdge()
+			       || nodeTranslation[((Integer) nodeIndexTranslation.get(Integer.valueOf(currentEdge.getEdge()
 			                                                                                     .getSource()
 			                                                                                     .getRootGraphIndex())))
 			                          .intValue()].isSelected()
-			       || nodeTranslation[((Integer) nodeIndexTranslation.get(new Integer(currentEdge.getEdge()
+			       || nodeTranslation[((Integer) nodeIndexTranslation.get(Integer.valueOf(currentEdge.getEdge()
 			                                                                                     .getTarget()
 			                                                                                     .getRootGraphIndex())))
 			                          .intValue()].isSelected())) {

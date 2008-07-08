@@ -48,12 +48,12 @@ public class UserSelection extends Observable {
 	/**
 	 * Property Change:  Interactor Focus Has Changed.
 	 */
-	public static final Integer INTERACTOR_CHANGED = new Integer(1);
+	public static final Integer INTERACTOR_CHANGED = Integer.valueOf(1);
 
 	/**
 	 * Property Change:  Interaction Focus Has Changed.
 	 */
-	public static final Integer INTERACTION_CHANGED = new Integer(2);
+	public static final Integer INTERACTION_CHANGED = Integer.valueOf(2);
 
 	/**
 	 * The Currently Selected Interactor.

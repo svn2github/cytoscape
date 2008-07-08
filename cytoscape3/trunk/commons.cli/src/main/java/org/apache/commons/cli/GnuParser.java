@@ -28,7 +28,7 @@ import java.util.ArrayList;
  */
 public class GnuParser extends Parser {
 	/** holder for flattened tokens */
-	private ArrayList tokens = new ArrayList();
+	private ArrayList<String> tokens = new ArrayList<String>();
 
 	/**
 	 * <p>Resets the members to their original state i.e. remove

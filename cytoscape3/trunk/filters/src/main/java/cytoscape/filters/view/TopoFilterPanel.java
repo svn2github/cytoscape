@@ -68,8 +68,8 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		pFilter.childChanged();
 
 		// Recovery initial values if any
-        tfMinNeighbors.setText(new Integer(pFilter.getMinNeighbors()).toString());        	
-        tfDistance.setText(new Integer(pFilter.getDistance()).toString());
+        tfMinNeighbors.setText(Integer.valueOf(pFilter.getMinNeighbors()).toString());        	
+        tfDistance.setText(Integer.valueOf(pFilter.getDistance()).toString());
     }
     
     public void addParentPanelListener() {
@@ -114,11 +114,11 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 		if (_actionObject instanceof JTextField) {
 			JTextField _tfObj = (JTextField) _actionObject;
 			if (_tfObj == tfMinNeighbors) {
-				int _neighbors = (new Integer(tfMinNeighbors.getText())).intValue();
+				int _neighbors = (Integer.valueOf(tfMinNeighbors.getText())).intValue();
 				theFilter.setMinNeighbors(_neighbors);
 			}
 			else if (_tfObj == tfDistance) {
-				int _distance = (new Integer(tfDistance.getText())).intValue();
+				int _distance = (Integer.valueOf(tfDistance.getText())).intValue();
 				theFilter.setDistance(_distance);				
 			}
 		}
@@ -291,11 +291,11 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 			    	//	return;
 			    	//}
 
-					int _neighbors = (new Integer(tfMinNeighbors.getText())).intValue();
+					int _neighbors = (Integer.valueOf(tfMinNeighbors.getText())).intValue();
 					theFilter.setMinNeighbors(_neighbors);
 				}
 				else if (_tfObj == tfDistance) {
-					int _distance = (new Integer(tfDistance.getText())).intValue();
+					int _distance = (Integer.valueOf(tfDistance.getText())).intValue();
 					theFilter.setDistance(_distance);				
 				}
 			}

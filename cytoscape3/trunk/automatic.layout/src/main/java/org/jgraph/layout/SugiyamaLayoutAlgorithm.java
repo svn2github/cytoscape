@@ -546,7 +546,7 @@ public class SugiyamaLayoutAlgorithm extends JGraphLayoutAlgorithm {
 	 */
 	protected void updateProgress4Movements() {
 		// adds the current loop count
-		movements.add(new Integer(movementsCurrentLoop));
+		movements.add(Integer.valueOf(movementsCurrentLoop));
 		iteration++;
 
 		// if the current loop count is higher than the max movements count

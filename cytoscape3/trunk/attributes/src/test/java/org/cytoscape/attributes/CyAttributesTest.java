@@ -129,7 +129,7 @@ public class CyAttributesTest extends TestCase {
 		// Try setting an integer value; this should trigger an
 		// IllegalArgumentException
 		try {
-			cyAttributes.setAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE, new Integer(5));
+			cyAttributes.setAttribute(DUMMY_ID, DUMMY_BOOLEAN_ATTRIBUTE, Integer.valueOf(5));
 			fail("IllegalArgumentException should have been thrown.");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
@@ -194,7 +194,7 @@ public class CyAttributesTest extends TestCase {
 		// Try setting an integer value; this should trigger an
 		// IllegalArgumentException
 		try {
-			cyAttributes.setAttribute(DUMMY_ID, DUMMY_STRING_ATTRIBUTE, new Integer(5));
+			cyAttributes.setAttribute(DUMMY_ID, DUMMY_STRING_ATTRIBUTE, Integer.valueOf(5));
 			fail("IllegalArgumentException should have been thrown.");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e != null);
@@ -213,7 +213,7 @@ public class CyAttributesTest extends TestCase {
 	public void testBadLists() {
 		// First, try setting a not-so simple list
 		List list = new ArrayList();
-		list.add(new Integer(5));
+		list.add(Integer.valueOf(5));
 		list.add(new String("Cytoscape"));
 
 		// Try setting the list as null; this should fail
@@ -236,8 +236,8 @@ public class CyAttributesTest extends TestCase {
 	public void testSimpleLists() {
 		// Try again with a valid list
 		List<Integer> list2 = new ArrayList<Integer>();
-		list2.add(new Integer(5));
-		list2.add(new Integer(6));
+		list2.add(Integer.valueOf(5));
+		list2.add(Integer.valueOf(6));
 		cyAttributes.setListAttribute(DUMMY_ID, DUMMY_LIST_ATTRIBUTE, list2);
 
 		// Verify type
@@ -279,8 +279,8 @@ public class CyAttributesTest extends TestCase {
 		// The following map is considered invalid because all keys must
 		// be of type String.
 		Map<Integer,String> map = new HashMap<Integer,String>();
-		map.put(new Integer(1), new String("One"));
-		map.put(new Integer(2), new String("Two"));
+		map.put(Integer.valueOf(1), new String("One"));
+		map.put(Integer.valueOf(2), new String("Two"));
 
 		// This should fail, b/c of invalid keys
 		try {
@@ -294,7 +294,7 @@ public class CyAttributesTest extends TestCase {
 		// values are not all of one type
 		Map<String,Object> map2 = new HashMap<String,Object>();
 		map2.put(new String("first"), new String("One"));
-		map2.put(new String("second"), new Integer(2));
+		map2.put(new String("second"), Integer.valueOf(2));
 
 		// This should fail too, b/c of invalid values
 		try {
@@ -306,8 +306,8 @@ public class CyAttributesTest extends TestCase {
 
 		// Now, try a valid map
 		Map<String,Integer> map3 = new HashMap<String,Integer>();
-		map3.put(new String("first"), new Integer(1));
-		map3.put(new String("second"), new Integer(2));
+		map3.put(new String("first"), Integer.valueOf(1));
+		map3.put(new String("second"), Integer.valueOf(2));
 		cyAttributes.setMapAttribute(DUMMY_ID, DUMMY_MAP_ATTRIBUTE, map3);
 
 		// Verify type

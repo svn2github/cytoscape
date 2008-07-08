@@ -42,7 +42,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel, Cloneabl
 	public static final int SELECTED = -1;
 
 	/** Object value that represents the unselected state in cellStates. */
-	public static final Integer UNSELECTED = new Integer(0);
+	public static final Integer UNSELECTED = Integer.valueOf(0);
 
 	/** Reference to the parent graph. Used to find parents and childs. */
 	protected JGraph graph;
@@ -86,8 +86,8 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel, Cloneabl
 			selectionMode = GraphSelectionModel.MULTIPLE_GRAPH_SELECTION;
 
 		if ((oldMode != selectionMode) && (changeSupport != null))
-			changeSupport.firePropertyChange(SELECTION_MODE_PROPERTY, new Integer(oldMode),
-			                                 new Integer(selectionMode));
+			changeSupport.firePropertyChange(SELECTION_MODE_PROPERTY, Integer.valueOf(oldMode),
+			                                 Integer.valueOf(selectionMode));
 	}
 
 	/**
@@ -420,7 +420,7 @@ public class DefaultGraphSelectionModel implements GraphSelectionModel, Cloneabl
 	 * <code>count</code>.
 	 */
 	protected void setSelectedChildCount(Object cell, int count) {
-		Integer i = new Integer(count);
+		Integer i = Integer.valueOf(count);
 		cellStates.put(cell, i);
 	}
 

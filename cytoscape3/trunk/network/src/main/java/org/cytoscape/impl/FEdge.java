@@ -57,7 +57,7 @@ public class FEdge implements Edge {
 	public FEdge(RootGraph root, int rootGraphIndex) {
 		this.m_rootGraph = root;
 		this.m_rootGraphIndex = rootGraphIndex;
-		this.m_identifier = new Integer(m_rootGraphIndex).toString();
+		this.m_identifier = Integer.valueOf(m_rootGraphIndex).toString();
 	}
 
 	// Package visible constructor.

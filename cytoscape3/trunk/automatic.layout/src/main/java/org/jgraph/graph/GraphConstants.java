@@ -723,7 +723,7 @@ public class GraphConstants {
 	 * value.
 	 */
 	public static final void setMoveableAxis(Map map, int axis) {
-		map.put(MOVEABLEAXIS, new Integer(axis));
+		map.put(MOVEABLEAXIS, Integer.valueOf(axis));
 	}
 
 	/**
@@ -743,7 +743,7 @@ public class GraphConstants {
 	 * value.
 	 */
 	public static final void setSizeableAxis(Map map, int axis) {
-		map.put(SIZEABLEAXIS, new Integer(axis));
+		map.put(SIZEABLEAXIS, Integer.valueOf(axis));
 	}
 
 	/**
@@ -922,7 +922,7 @@ public class GraphConstants {
 	 * Default value is JLabel.CENTER. This method has no effect on edge cells.
 	 */
 	public static final void setVerticalAlignment(Map map, int alignment) {
-		map.put(VERTICAL_ALIGNMENT, new Integer(alignment));
+		map.put(VERTICAL_ALIGNMENT, Integer.valueOf(alignment));
 	}
 
 	/**
@@ -943,7 +943,7 @@ public class GraphConstants {
 	 * Default is JLabel.CENTER. This method has no effect on edge cells.
 	 */
 	public static final void setHorizontalAlignment(Map map, int alignment) {
-		map.put(HORIZONTAL_ALIGNMENT, new Integer(alignment));
+		map.put(HORIZONTAL_ALIGNMENT, Integer.valueOf(alignment));
 	}
 
 	/**
@@ -963,7 +963,7 @@ public class GraphConstants {
 	 * See JLabel api. Default value is JLabel.BOTTOM.
 	 */
 	public static final void setVerticalTextPosition(Map map, int textPosition) {
-		map.put(VERTICAL_TEXT_POSITION, new Integer(textPosition));
+		map.put(VERTICAL_TEXT_POSITION, Integer.valueOf(textPosition));
 	}
 
 	/**
@@ -983,7 +983,7 @@ public class GraphConstants {
 	 * See JLabel api. Default value is JLabel.CENTER.
 	 */
 	public static final void setHorizontalTextPosition(Map map, int textPosition) {
-		map.put(HORIZONTAL_TEXT_POSITION, new Integer(textPosition));
+		map.put(HORIZONTAL_TEXT_POSITION, Integer.valueOf(textPosition));
 	}
 
 	/**
@@ -1037,7 +1037,7 @@ public class GraphConstants {
 	 * Sets the linestyle attribute in the specified map to the specified value.
 	 */
 	public static final void setLineStyle(Map map, int style) {
-		map.put(LINESTYLE, new Integer(style));
+		map.put(LINESTYLE, Integer.valueOf(style));
 	}
 
 	/**
@@ -1056,7 +1056,7 @@ public class GraphConstants {
 	 * Sets the beginsize attribute in the specified map to the specified value.
 	 */
 	public static final void setBeginSize(Map map, int style) {
-		map.put(BEGINSIZE, new Integer(style));
+		map.put(BEGINSIZE, Integer.valueOf(style));
 	}
 
 	/**
@@ -1075,7 +1075,7 @@ public class GraphConstants {
 	 * Sets the endsize attribute in the specified map to the specified value.
 	 */
 	public static final void setEndSize(Map map, int style) {
-		map.put(ENDSIZE, new Integer(style));
+		map.put(ENDSIZE, Integer.valueOf(style));
 	}
 
 	/**
@@ -1105,7 +1105,7 @@ public class GraphConstants {
 	 * @see #ARROW_DIAMOND
 	 */
 	public static final void setLineBegin(Map map, int style) {
-		map.put(LINEBEGIN, new Integer(style));
+		map.put(LINEBEGIN, Integer.valueOf(style));
 	}
 
 	/**
@@ -1146,7 +1146,7 @@ public class GraphConstants {
 	 * @see #ARROW_DIAMOND
 	 */
 	public static final void setLineEnd(Map map, int style) {
-		map.put(LINEEND, new Integer(style));
+		map.put(LINEEND, Integer.valueOf(style));
 	}
 
 	/**
@@ -1538,7 +1538,7 @@ public class GraphConstants {
 	 * Sets the inset attribute in the specified map to the specified value.
 	 */
 	public static final void setInset(Map map, int width) {
-		map.put(INSET, new Integer(width));
+		map.put(INSET, Integer.valueOf(width));
 	}
 
 	/**

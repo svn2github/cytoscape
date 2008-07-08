@@ -156,13 +156,13 @@ public class DiscreteMappingReaderTest extends TestCase {
 
 		SortedMap<Object,Object> map = reader.getMap();
 
-		Color color = (Color) map.get(new Integer(1));
+		Color color = (Color) map.get(Integer.valueOf(1));
 		assertEquals(new Color(204, 255, 255), color);
 
-		color = (Color) map.get(new Integer(3));
+		color = (Color) map.get(Integer.valueOf(3));
 		assertEquals(new Color(204, 204, 255), color);
 
-		color = (Color) map.get(new Integer(6));
+		color = (Color) map.get(Integer.valueOf(6));
 		assertEquals(new Color(255, 51, 51), color);
 	}
 }

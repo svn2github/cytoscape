@@ -159,7 +159,7 @@ public class CyAttributesUtilsTest extends TestCase {
 				}
 			}, false);
 
-		assertTrue(new Integer(6).equals(attrs.getIntegerAttribute("copyAnotherTestNode1",
+		assertTrue(Integer.valueOf(6).equals(attrs.getIntegerAttribute("copyAnotherTestNode1",
 		                                                                  "IntegerTest")));
 
 		List<String> attrNames = CyAttributesUtils.getAttributeNamesForObj("copyAnotherTestNode1",
@@ -191,7 +191,7 @@ public class CyAttributesUtilsTest extends TestCase {
 
 		attrs.setAttribute(goID, "BooleanTest", new Boolean(true));
 		attrs.setAttribute(goID, "StringTest", "string test value");
-		attrs.setAttribute(goID, "IntegerTest", new Integer(6));
+		attrs.setAttribute(goID, "IntegerTest", Integer.valueOf(6));
 		attrs.setAttribute(goID, "DoubleTest", new Double(5.0));
 
 		List<String> listTestValue = new ArrayList<String>();
@@ -233,39 +233,39 @@ public class CyAttributesUtilsTest extends TestCase {
 
 		PValues.clear();
 		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.5),
-		                       new Object[] { "Jojo", new Integer(0) });
+		                       new Object[] { "Jojo", Integer.valueOf(0) });
 		PValues.add(new Double(0.5));
 		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
-		                       new Object[] { "Jojo", new Integer(1) });
+		                       new Object[] { "Jojo", Integer.valueOf(1) });
 		PValues.add(new Double(0.6));
 		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
-		                       new Object[] { "Jojo", new Integer(2) });
+		                       new Object[] { "Jojo", Integer.valueOf(2) });
 		PValues.add(new Double(0.6));
 		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.7),
-		                       new Object[] { "Harry", new Integer(0) });
+		                       new Object[] { "Harry", Integer.valueOf(0) });
 		PValues.add(new Double(0.7));
 		mmap.setAttributeValue(goID, "p-valuesTest", new Double(0.6),
-		                       new Object[] { "Harry", new Integer(1) });
+		                       new Object[] { "Harry", Integer.valueOf(1) });
 		PValues.add(new Double(0.6));
 
 		TSIValues.clear();
 		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence1",
-		                       new Object[] { "url1", new Integer(0), new Integer(0) });
+		                       new Object[] { "url1", Integer.valueOf(0), Integer.valueOf(0) });
 		TSIValues.add("url1: sentence1");
 		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence2",
-		                       new Object[] { "url1", new Integer(0), new Integer(1) });
+		                       new Object[] { "url1", Integer.valueOf(0), Integer.valueOf(1) });
 		TSIValues.add("url1: sentence2");
 		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: sentence3",
-		                       new Object[] { "url1", new Integer(0), new Integer(10) });
+		                       new Object[] { "url1", Integer.valueOf(0), Integer.valueOf(10) });
 		TSIValues.add("url1: sentence3");
 		mmap.setAttributeValue(goID, "TextSourceInfo", "url1: publication 1",
-		                       new Object[] { "url1", new Integer(1), new Integer(0) });
+		                       new Object[] { "url1", Integer.valueOf(1), Integer.valueOf(0) });
 		TSIValues.add("url1: publication 1");
 		mmap.setAttributeValue(goID, "TextSourceInfo", "url2: sentence1",
-		                       new Object[] { "url2", new Integer(0), new Integer(6) });
+		                       new Object[] { "url2", Integer.valueOf(0), Integer.valueOf(6) });
 		TSIValues.add("url2: sentence1");
 		mmap.setAttributeValue(goID, "TextSourceInfo", "url2: publication 1",
-		                       new Object[] { "url2", new Integer(1), new Integer(0) });
+		                       new Object[] { "url2", Integer.valueOf(1), Integer.valueOf(0) });
 		TSIValues.add("url2: publication 1");
 	}
 
@@ -274,7 +274,7 @@ public class CyAttributesUtilsTest extends TestCase {
 		assertTrue(Boolean.TRUE.equals(attrs.getBooleanAttribute(goID, "BooleanTest")));
 
 		assertTrue("string test value".equals(attrs.getStringAttribute(goID, "StringTest")));
-		assertTrue(new Integer(6).equals(attrs.getIntegerAttribute(goID, "IntegerTest")));
+		assertTrue(Integer.valueOf(6).equals(attrs.getIntegerAttribute(goID, "IntegerTest")));
 		assertTrue(new Double(5.0).equals(attrs.getDoubleAttribute(goID, "DoubleTest")));
 
 		List<String> listVal = attrs.getListAttribute(goID, "ListTest");
@@ -291,60 +291,60 @@ public class CyAttributesUtilsTest extends TestCase {
 		MultiHashMap mmap = attrs.getMultiHashMap();
 		assertTrue(new Double(0.5).equals(mmap.getAttributeValue(goID, "p-valuesTest",
 		                                                                new Object[] {
-		                                                                    "Jojo", new Integer(0)
+		                                                                    "Jojo", Integer.valueOf(0)
 		                                                                })));
 		assertTrue(new Double(0.6).equals(mmap.getAttributeValue(goID, "p-valuesTest",
 		                                                                new Object[] {
-		                                                                    "Jojo", new Integer(1)
+		                                                                    "Jojo", Integer.valueOf(1)
 		                                                                })));
 		assertTrue(new Double(0.6).equals(mmap.getAttributeValue(goID, "p-valuesTest",
 		                                                                new Object[] {
-		                                                                    "Jojo", new Integer(2)
+		                                                                    "Jojo", Integer.valueOf(2)
 		                                                                })));
 		assertTrue(new Double(0.7).equals(mmap.getAttributeValue(goID, "p-valuesTest",
 		                                                                new Object[] {
-		                                                                    "Harry", new Integer(0)
+		                                                                    "Harry", Integer.valueOf(0)
 		                                                                })));
 		assertTrue(new Double(0.6).equals(mmap.getAttributeValue(goID, "p-valuesTest",
 		                                                                new Object[] {
-		                                                                    "Harry", new Integer(1)
+		                                                                    "Harry", Integer.valueOf(1)
 		                                                                })));
 
 		assertTrue("url1: sentence1".equals(mmap.getAttributeValue(goID, "TextSourceInfo",
 		                                                                  new Object[] {
-		                                                                      "url1", new Integer(0),
-		                                                                      new Integer(0)
+		                                                                      "url1", Integer.valueOf(0),
+		                                                                      Integer.valueOf(0)
 		                                                                  })));
 		assertTrue("url1: sentence2".equals(mmap.getAttributeValue(goID, "TextSourceInfo",
 		                                                                  new Object[] {
-		                                                                      "url1", new Integer(0),
-		                                                                      new Integer(1)
+		                                                                      "url1", Integer.valueOf(0),
+		                                                                      Integer.valueOf(1)
 		                                                                  })));
 		assertTrue("url1: sentence3".equals(mmap.getAttributeValue(goID, "TextSourceInfo",
 		                                                                  new Object[] {
-		                                                                      "url1", new Integer(0),
-		                                                                      new Integer(10)
+		                                                                      "url1", Integer.valueOf(0),
+		                                                                      Integer.valueOf(10)
 		                                                                  })));
 
 		assertTrue("url1: publication 1".equals(mmap.getAttributeValue(goID,
 		                                                                      "TextSourceInfo",
 		                                                                      new Object[] {
 		                                                                          "url1",
-		                                                                          new Integer(1),
-		                                                                          new Integer(0)
+		                                                                          Integer.valueOf(1),
+		                                                                          Integer.valueOf(0)
 		                                                                      })));
 
 		assertTrue("url2: sentence1".equals(mmap.getAttributeValue(goID, "TextSourceInfo",
 		                                                                  new Object[] {
-		                                                                      "url2", new Integer(0),
-		                                                                      new Integer(6)
+		                                                                      "url2", Integer.valueOf(0),
+		                                                                      Integer.valueOf(6)
 		                                                                  })));
 		assertTrue("url2: publication 1".equals(mmap.getAttributeValue(goID,
 		                                                                      "TextSourceInfo",
 		                                                                      new Object[] {
 		                                                                          "url2",
-		                                                                          new Integer(1),
-		                                                                          new Integer(0)
+		                                                                          Integer.valueOf(1),
+		                                                                          Integer.valueOf(0)
 		                                                                      })));
 	}
 }

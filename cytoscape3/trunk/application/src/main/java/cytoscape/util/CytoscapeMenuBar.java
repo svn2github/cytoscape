@@ -172,7 +172,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 		// Add an Accelerator Key, if wanted
 
 		// If it wants to be anywhere in particular, try to put it there..
-		Object index_object = new Integer(-1);
+		Object index_object = Integer.valueOf(-1);
 
 		if (action instanceof CytoscapeAction) {
 			index_object = ((CytoscapeAction) action).getPrefferedIndex();
@@ -218,10 +218,10 @@ public class CytoscapeMenuBar extends JMenuBar {
 						Integer effective_last_index = (Integer) menuEffectiveLastIndexMap.get(menu);
 
 						if (effective_last_index == null) {
-							menuEffectiveLastIndexMap.put(menu, new Integer(index));
+							menuEffectiveLastIndexMap.put(menu, Integer.valueOf(index));
 							index += 1;
 						} else if (effective_last_index.intValue() >= index) {
-							menuEffectiveLastIndexMap.put(menu, new Integer(index));
+							menuEffectiveLastIndexMap.put(menu, Integer.valueOf(index));
 						}
 					}
 				}
@@ -237,7 +237,7 @@ public class CytoscapeMenuBar extends JMenuBar {
 
 			if (effective_last_index != null) {
 				menu.insert(menu_item, effective_last_index.intValue());
-				menuEffectiveLastIndexMap.put(menu, new Integer(effective_last_index.intValue() + 1));
+				menuEffectiveLastIndexMap.put(menu, Integer.valueOf(effective_last_index.intValue() + 1));
 				added_it = true;
 			}
 

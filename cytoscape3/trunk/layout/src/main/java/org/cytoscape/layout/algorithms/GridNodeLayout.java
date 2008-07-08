@@ -140,7 +140,7 @@ public class GridNodeLayout extends AbstractLayout {
 
 			// Calculate our starting point as the geographical center of the
 			// selected nodes.
-			Iterator<NodeView>nodeViews = networkView.getNodeViewsIterator();
+			Iterator<NodeView> nodeViews = networkView.getNodeViewsIterator();
 
 			while (nodeViews.hasNext()) {
 				nView = (NodeView) nodeViews.next();

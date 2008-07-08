@@ -66,7 +66,7 @@ public class NumberRangeModel extends DefaultBoundedRangeModel implements Valued
 	 * @param max the maximum value allowed for ranges
 	 */
 	public NumberRangeModel(int lo, int hi, int min, int max) {
-		this(new Integer(lo), new Integer(hi), new Integer(min), new Integer(max));
+		this(Integer.valueOf(lo), Integer.valueOf(hi), Integer.valueOf(min), Integer.valueOf(max));
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class NumberRangeModel extends DefaultBoundedRangeModel implements Valued
 	 * @param max the maximum value allowed for ranges
 	 */
 	public NumberRangeModel(long lo, long hi, long min, long max) {
-		this(new Long(lo), new Long(hi), new Long(min), new Long(max));
+		this(Long.valueOf(lo), Long.valueOf(hi), Long.valueOf(min), Long.valueOf(max));
 	}
 
 	/**
@@ -199,10 +199,10 @@ public class NumberRangeModel extends DefaultBoundedRangeModel implements Valued
 	 * @param max the maximum value allowed for ranges
 	 */
 	public void setValueRange(int lo, int hi, int min, int max) {
-		m_lo = new Integer(lo);
-		m_hi = new Integer(hi);
-		m_min = new Integer(min);
-		m_max = new Integer(max);
+		m_lo = Integer.valueOf(lo);
+		m_hi = Integer.valueOf(hi);
+		m_min = Integer.valueOf(min);
+		m_max = Integer.valueOf(max);
 		updateRange();
 	}
 
@@ -214,10 +214,10 @@ public class NumberRangeModel extends DefaultBoundedRangeModel implements Valued
 	 * @param max the maximum value allowed for ranges
 	 */
 	public void setValueRange(long lo, long hi, long min, long max) {
-		m_lo = new Long(lo);
-		m_hi = new Long(hi);
-		m_min = new Long(min);
-		m_max = new Long(max);
+		m_lo = Long.valueOf(lo);
+		m_hi = Long.valueOf(hi);
+		m_min = Long.valueOf(min);
+		m_max = Long.valueOf(max);
 		updateRange();
 	}
 
@@ -301,9 +301,9 @@ public class NumberRangeModel extends DefaultBoundedRangeModel implements Valued
 			long m = m_min.longValue();
 			long v = m + (((val - min) * (m_max.longValue() - m)) / (max - min));
 
-			return new Long(v);
+			return Long.valueOf(v);
 		} else {
-			return new Integer(val);
+			return Integer.valueOf(val);
 		}
 	}
 

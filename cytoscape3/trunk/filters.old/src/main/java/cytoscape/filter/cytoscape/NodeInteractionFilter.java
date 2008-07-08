@@ -320,7 +320,7 @@ public class NodeInteractionFilter implements Filter {
 	 */
 	public void input(String desc) {
 		String[] array = desc.split(",");
-		setFilter((new Integer(array[0])).intValue());
+		setFilter((Integer.valueOf(array[0])).intValue());
 
 		if (array[1].equals(TARGET)) {
 			setTarget(TARGET);

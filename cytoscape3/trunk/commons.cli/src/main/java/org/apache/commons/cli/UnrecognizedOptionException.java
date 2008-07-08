@@ -24,6 +24,7 @@ package org.apache.commons.cli;
  * @version $Revision: 155404 $
  */
 public class UnrecognizedOptionException extends ParseException {
+	private final static long serialVersionUID = 1215557233113975L;
 	/**
 	 * <p>Construct a new <code>UnrecognizedArgumentException</code>
 	 * with the specified detail message.</p>

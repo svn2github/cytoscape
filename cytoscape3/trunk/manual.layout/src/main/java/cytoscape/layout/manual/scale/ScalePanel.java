@@ -110,13 +110,13 @@ public class ScalePanel extends JPanel implements ChangeListener, PolymorphicSli
 		prevValue = jSlider.getValue();
 
 		Hashtable<Integer,JLabel> labels = new Hashtable<Integer,JLabel>();
-		labels.put(new Integer(-300), new JLabel("1/8"));
-		labels.put(new Integer(-200), new JLabel("1/4"));
-		labels.put(new Integer(-100), new JLabel("1/2"));
-		labels.put(new Integer(0), new JLabel("1"));
-		labels.put(new Integer(100), new JLabel("2"));
-		labels.put(new Integer(200), new JLabel("4"));
-		labels.put(new Integer(300), new JLabel("8"));
+		labels.put(Integer.valueOf(-300), new JLabel("1/8"));
+		labels.put(Integer.valueOf(-200), new JLabel("1/4"));
+		labels.put(Integer.valueOf(-100), new JLabel("1/2"));
+		labels.put(Integer.valueOf(0), new JLabel("1"));
+		labels.put(Integer.valueOf(100), new JLabel("2"));
+		labels.put(Integer.valueOf(200), new JLabel("4"));
+		labels.put(Integer.valueOf(300), new JLabel("8"));
 
 		jSlider.setLabelTable(labels);
 

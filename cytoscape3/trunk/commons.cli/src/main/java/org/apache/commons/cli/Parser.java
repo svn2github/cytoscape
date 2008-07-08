@@ -38,7 +38,7 @@ public abstract class Parser implements CommandLineParser {
 	private Options options;
 
 	/** list of required options strings */
-	private List requiredOptions;
+	private List<String> requiredOptions;
 
 	/**
 	 * <p>Subclasses must implement this method to reduce
@@ -240,7 +240,7 @@ public abstract class Parser implements CommandLineParser {
 		// if there are required options that have not been
 		// processsed
 		if (requiredOptions.size() > 0) {
-			Iterator iter = requiredOptions.iterator();
+			Iterator<String> iter = requiredOptions.iterator();
 			StringBuffer buff = new StringBuffer();
 
 			// loop through the required options
@@ -326,7 +326,7 @@ public abstract class Parser implements CommandLineParser {
 			OptionGroup group = options.getOptionGroup(opt);
 
 			if (group.isRequired()) {
-				requiredOptions.remove(group);
+				requiredOptions.remove(group.toString());
 			}
 
 			group.setSelected(opt);

@@ -55,7 +55,7 @@ import org.cytoscape.view.GraphView;
 public abstract class CytoscapeAction extends AbstractAction implements MenuListener {
 	protected String preferredMenu = null;
 	protected String preferredButtonGroup = null;
-	protected Integer menuIndex = new Integer(-1);
+	protected Integer menuIndex = Integer.valueOf(-1);
 	protected boolean acceleratorSet = false;
 	protected int keyModifiers;
 	protected int keyCode;
@@ -207,7 +207,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	 * @param index DOCUMENT ME!
 	 */
 	public void setPreferredIndex(int index) {
-		menuIndex = new Integer(index);
+		menuIndex = Integer.valueOf(index);
 	}
 
 	/**

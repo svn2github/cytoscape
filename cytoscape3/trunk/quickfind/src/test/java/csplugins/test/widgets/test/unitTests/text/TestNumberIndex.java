@@ -57,13 +57,13 @@ public class TestNumberIndex extends TestCase {
 	 */
 	public void testNumberIndexInteger() {
 		NumberIndex numberIndex = IndexFactory.createDefaultNumberIndex(QuickFind.INDEX_NODES);
-		numberIndex.addToIndex(new Integer(5), "a");
-		numberIndex.addToIndex(new Integer(2), "b");
-		numberIndex.addToIndex(new Integer(50), "c");
-		numberIndex.addToIndex(new Integer(15), "d");
-		numberIndex.addToIndex(new Integer(3), "e");
-		numberIndex.addToIndex(new Integer(5), "f");
-		numberIndex.addToIndex(new Integer(2), "g");
+		numberIndex.addToIndex(Integer.valueOf(5), "a");
+		numberIndex.addToIndex(Integer.valueOf(2), "b");
+		numberIndex.addToIndex(Integer.valueOf(50), "c");
+		numberIndex.addToIndex(Integer.valueOf(15), "d");
+		numberIndex.addToIndex(Integer.valueOf(3), "e");
+		numberIndex.addToIndex(Integer.valueOf(5), "f");
+		numberIndex.addToIndex(Integer.valueOf(2), "g");
 
 		//  Test Min / Max values
 		Number min = numberIndex.getMinimumValue();

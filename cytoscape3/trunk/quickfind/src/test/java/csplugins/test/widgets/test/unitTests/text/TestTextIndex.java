@@ -56,11 +56,11 @@ public class TestTextIndex extends TestCase {
 	 */
 	public void testTextIndex0() {
 		TextIndex textIndex = IndexFactory.createDefaultTextIndex(QuickFind.INDEX_NODES);
-		textIndex.addToIndex("rain", new Integer(1));
-		textIndex.addToIndex("rain", new Integer(2));
-		textIndex.addToIndex("rainbow", new Integer(3));
-		textIndex.addToIndex("rainbow trout", new Integer(4));
-		textIndex.addToIndex("RABBIT", new Integer(5));
+		textIndex.addToIndex("rain", Integer.valueOf(1));
+		textIndex.addToIndex("rain", Integer.valueOf(2));
+		textIndex.addToIndex("rainbow", Integer.valueOf(3));
+		textIndex.addToIndex("rainbow trout", Integer.valueOf(4));
+		textIndex.addToIndex("RABBIT", Integer.valueOf(5));
 
 		assertEquals(4, textIndex.getNumKeys());
 
@@ -117,11 +117,11 @@ public class TestTextIndex extends TestCase {
 	 */
 	public void testWildCardSearches() {
 		TextIndex textIndex = IndexFactory.createDefaultTextIndex(QuickFind.INDEX_NODES);
-		textIndex.addToIndex("rain", new Integer(1));
-		textIndex.addToIndex("rain", new Integer(2));
-		textIndex.addToIndex("rainbow", new Integer(3));
-		textIndex.addToIndex("rainbow trout", new Integer(4));
-		textIndex.addToIndex("RABBIT", new Integer(5));
+		textIndex.addToIndex("rain", Integer.valueOf(1));
+		textIndex.addToIndex("rain", Integer.valueOf(2));
+		textIndex.addToIndex("rainbow", Integer.valueOf(3));
+		textIndex.addToIndex("rainbow trout", Integer.valueOf(4));
+		textIndex.addToIndex("RABBIT", Integer.valueOf(5));
 
 		Hit[] hits = textIndex.getHits("ra*", Integer.MAX_VALUE);
 		assertEquals(1, hits.length);
@@ -137,7 +137,7 @@ public class TestTextIndex extends TestCase {
 		assertEquals(TextIndex.DEFAULT_MAX_KEY_LENGTH, textIndex.getMaxKeyLength());
 		textIndex.addToIndex("The Associated Press and the New York Times "
 		                     + "are now reporting that Atlantis will not launch Sunday.",
-		                     new Integer(1));
+		                     Integer.valueOf(1));
 
 		Hit[] hits = textIndex.getHits("the", Integer.MAX_VALUE);
 		assertEquals(1, hits.length);
@@ -152,11 +152,11 @@ public class TestTextIndex extends TestCase {
 	 */
 	public void testSortOrder() throws Exception {
 		TextIndex textIndex = IndexFactory.createDefaultTextIndex(QuickFind.INDEX_NODES);
-		textIndex.addToIndex("?", new Integer(1));
-		textIndex.addToIndex("1rain", new Integer(2));
-		textIndex.addToIndex("rainbow", new Integer(3));
-		textIndex.addToIndex("rainbow trout", new Integer(4));
-		textIndex.addToIndex("RABBIT", new Integer(5));
+		textIndex.addToIndex("?", Integer.valueOf(1));
+		textIndex.addToIndex("1rain", Integer.valueOf(2));
+		textIndex.addToIndex("rainbow", Integer.valueOf(3));
+		textIndex.addToIndex("rainbow trout", Integer.valueOf(4));
+		textIndex.addToIndex("RABBIT", Integer.valueOf(5));
 
 		//  Verify that strings starting beginning with letters appear
 		//  at beginning of list.

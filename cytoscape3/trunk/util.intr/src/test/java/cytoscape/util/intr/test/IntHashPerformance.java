@@ -120,7 +120,7 @@ public class IntHashPerformance {
 			ArrayList<Integer> arrList = new ArrayList<Integer>();
 
 			for (int i = 0; i < uniqueElements.length; i++)
-				arrList.add(new Integer(uniqueElements[i]));
+				arrList.add(Integer.valueOf(uniqueElements[i]));
 
 			Collections.sort(arrList);
 
@@ -141,7 +141,7 @@ public class IntHashPerformance {
 			ArrayList<Integer> arrList = new ArrayList<Integer>();
 
 			for (int i = 0; i < uniqueElements.length; i++)
-				arrList.add(new Integer(uniqueElements[i]));
+				arrList.add(Integer.valueOf(uniqueElements[i]));
 
 			Collections.sort(arrList);
 

@@ -197,7 +197,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 * @param value DOCUMENT ME!
 	 */
 	public void setNumberOfIterationsPerNode(String value) {
-		Integer val = new Integer(value);
+		Integer val = Integer.valueOf(value);
 		m_averageIterationsPerNode = val.intValue();
 	}
 
@@ -216,7 +216,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 * @param value DOCUMENT ME!
 	 */
 	public void setNumberOfLayoutPasses(String value) {
-		Integer val = new Integer(value);
+		Integer val = Integer.valueOf(value);
 		m_numLayoutPasses = val.intValue();
 	}
 
@@ -326,18 +326,18 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		 * Tuning values
 		 */
 		layoutProperties.add(TunableFactory.getTunable("algorithm_settings", "Algorithm settings",
-		                                               Tunable.GROUP, new Integer(7)));
+		                                               Tunable.GROUP, Integer.valueOf(7)));
 		if (supportWeights)
 			layoutProperties.add(TunableFactory.getTunable("iterations_pernode",
 			                                 "Number of iteratations for each node",
-			                                 Tunable.INTEGER, new Integer(40)));
+			                                 Tunable.INTEGER, Integer.valueOf(40)));
 		else
 			layoutProperties.add(TunableFactory.getTunable("iterations_pernode",
 			                                 "Number of iteratations for each node",
-			                                 Tunable.INTEGER, new Integer(20)));
+			                                 Tunable.INTEGER, Integer.valueOf(20)));
 
 		layoutProperties.add(TunableFactory.getTunable("layout_passes", "Number of layout passes",
-		                                 Tunable.INTEGER, new Integer(2)));
+		                                 Tunable.INTEGER, Integer.valueOf(2)));
 		layoutProperties.add(TunableFactory.getTunable("distance_strength", "Spring strength", Tunable.DOUBLE,
 		                                 new Double(15.0)));
 		layoutProperties.add(TunableFactory.getTunable("rest_length", "Spring rest length", Tunable.DOUBLE,
@@ -622,7 +622,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			Arrays.fill(distances[fromNode], Integer.MAX_VALUE);
 			distances[fromNode][fromNode] = 0;
 			Arrays.fill(completedNodes, false);
-			queue.add(new Integer(fromNode));
+			queue.add(Integer.valueOf(fromNode));
 
 			while (!(queue.isEmpty())) {
 				int index = ((Integer) queue.removeFirst()).intValue();
@@ -675,7 +675,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 					if ((toNodeDistance != Integer.MAX_VALUE)
 					    && (neighborDistance > (toNodeDistance + 1))) {
 						distances[fromNode][neighbor] = toNodeDistance + 1;
-						queue.addLast(new Integer(neighbor));
+						queue.addLast(Integer.valueOf(neighbor));
 					}
 				}
 			}

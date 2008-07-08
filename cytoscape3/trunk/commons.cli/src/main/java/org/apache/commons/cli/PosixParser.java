@@ -30,7 +30,7 @@ import java.util.Iterator;
  */
 public class PosixParser extends Parser {
 	/** holder for flattened tokens */
-	private ArrayList tokens = new ArrayList();
+	private ArrayList<String> tokens = new ArrayList<String>();
 
 	/** specifies if bursting should continue */
 	private boolean eatTheRest;
@@ -95,7 +95,7 @@ public class PosixParser extends Parser {
 		this.options = options;
 
 		// an iterator for the command line tokens
-		Iterator iter = Arrays.asList(arguments).iterator();
+		Iterator<String> iter = Arrays.asList(arguments).iterator();
 		String token = null;
 
 		// process each command line token
@@ -146,7 +146,7 @@ public class PosixParser extends Parser {
 	 *
 	 * @param iter An iterator over the remaining tokens
 	 */
-	private void gobble(Iterator iter) {
+	private void gobble(Iterator<String> iter) {
 		if (eatTheRest) {
 			while (iter.hasNext()) {
 				tokens.add(iter.next());

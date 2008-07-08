@@ -526,7 +526,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			while (elms.numRemaining() > 0)
 				// GINY requires all node indices to be negative (why?), 
 				// hence the bitwise complement here.
-				returnThis.add(m_nodeViewMap.get(new Integer(~elms.nextInt())).getNode());
+				returnThis.add(m_nodeViewMap.get(Integer.valueOf(~elms.nextInt())).getNode());
 
 			return returnThis;
 		}
@@ -562,7 +562,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			final ArrayList<Edge> returnThis = new ArrayList<Edge>();
 
 			while (elms.numRemaining() > 0)
-				returnThis.add(m_edgeViewMap.get(new Integer(~elms.nextInt())).getEdge());
+				returnThis.add(m_edgeViewMap.get(Integer.valueOf(~elms.nextInt())).getEdge());
 
 			return returnThis;
 		}
@@ -637,7 +637,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			newView = addNodeViewInternal(nodeInx);
 
 			if (newView == null) {
-				return (NodeView) m_nodeViewMap.get(new Integer(nodeInx));
+				return (NodeView) m_nodeViewMap.get(Integer.valueOf(nodeInx));
 			}
 
 			m_contentChanged = true;
@@ -659,7 +659,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 * Should synchronize around m_lock.
 	 */
 	private NodeView addNodeViewInternal(int nodeInx) {
-		final NodeView oldView = (NodeView) m_nodeViewMap.get(new Integer(nodeInx));
+		final NodeView oldView = (NodeView) m_nodeViewMap.get(Integer.valueOf(nodeInx));
 
 		if (oldView != null) {
 			return null;
@@ -678,7 +678,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
 		final NodeView newView;
 		newView = new DNodeView(this, nodeInx);
-		m_nodeViewMap.put(new Integer(nodeInx), newView);
+		m_nodeViewMap.put(Integer.valueOf(nodeInx), newView);
 		m_spacial.insert(~nodeInx, m_defaultNodeXMin, m_defaultNodeYMin, m_defaultNodeXMax,
 		                 m_defaultNodeYMax);
 
@@ -698,7 +698,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 		EdgeView edgeView = null;
 
 		synchronized (m_lock) {
-			final EdgeView oldView = (EdgeView) m_edgeViewMap.get(new Integer(edgeInx));
+			final EdgeView oldView = (EdgeView) m_edgeViewMap.get(Integer.valueOf(edgeInx));
 
 			if (oldView != null) {
 				return oldView;
@@ -724,7 +724,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
 			m_structPersp.restoreEdge(edgeInx);
 			edgeView = new DEdgeView(this, edgeInx);
-			m_edgeViewMap.put(new Integer(edgeInx), edgeView);
+			m_edgeViewMap.put(Integer.valueOf(edgeInx), edgeView);
 			m_contentChanged = true;
 		}
 
@@ -843,7 +843,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			for (int i = 0; i < hiddenEdgeInx.length; i++)
 				removeEdgeViewInternal(hiddenEdgeInx[i]);
 
-			returnThis = (DNodeView) m_nodeViewMap.remove(new Integer(nodeInx));
+			returnThis = (DNodeView) m_nodeViewMap.remove(Integer.valueOf(nodeInx));
 			returnThis.unselectInternal();
 
 			// If this node was hidden, it won't be in m_drawPersp.
@@ -933,7 +933,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 * Should synchronize around m_lock.
 	 */
 	private DEdgeView removeEdgeViewInternal(int edgeInx) {
-		final DEdgeView returnThis = (DEdgeView) m_edgeViewMap.remove(new Integer(edgeInx));
+		final DEdgeView returnThis = (DEdgeView) m_edgeViewMap.remove(Integer.valueOf(edgeInx));
 
 		if (returnThis == null) {
 			return returnThis;
@@ -1104,7 +1104,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 */
 	public NodeView getNodeView(int nodeInx) {
 		synchronized (m_lock) {
-			return (NodeView) m_nodeViewMap.get(new Integer(nodeInx));
+			return (NodeView) m_nodeViewMap.get(Integer.valueOf(nodeInx));
 		}
 	}
 
@@ -1210,7 +1210,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 */
 	public EdgeView getEdgeView(int edgeInx) {
 		synchronized (m_lock) {
-			return (EdgeView) m_edgeViewMap.get(new Integer(edgeInx));
+			return (EdgeView) m_edgeViewMap.get(Integer.valueOf(edgeInx));
 		}
 	}
 
@@ -1318,7 +1318,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				}
 
 				for (int i = 0; i < edges.length; i++)
-					hideGraphObjectInternal(m_edgeViewMap.get(new Integer(edges[i])), false);
+					hideGraphObjectInternal(m_edgeViewMap.get(Integer.valueOf(edges[i])), false);
 
 				nView.unselectInternal();
 				m_spacial.exists(~nodeInx, m_extentsBuff, 0);

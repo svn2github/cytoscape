@@ -196,7 +196,7 @@ public final class SpringEmbeddedLayouter2 implements Task {
 				throw new UnsupportedOperationException();
 			}
 
-			movedNodes.put(new Integer(nodeIndex), new Point2D.Double(X, Y));
+			movedNodes.put(Integer.valueOf(nodeIndex), new Point2D.Double(X, Y));
 		}
 
 		Point2D getNodePosition(int nodeIndex) {
@@ -210,7 +210,7 @@ public final class SpringEmbeddedLayouter2 implements Task {
 				throw new IndexOutOfBoundsException("nodeIndex out of bounds: " + nodeIndex);
 			}
 
-			Object o = movedNodes.get(new Integer(nodeIndex));
+			Object o = movedNodes.get(Integer.valueOf(nodeIndex));
 
 			if (o == null) {
 				return new Point2D.Double(graph.getNodePosition(nodeIndex, true),
@@ -236,7 +236,7 @@ public final class SpringEmbeddedLayouter2 implements Task {
 			for (int nodeIx = 0; nodeIx < graph.getNumNodes(); nodeIx++) {
 				Point2D nodePos;
 
-				if ((nodePos = (Point2D) movedNodes.get(new Integer(nodeIx))) == null) {
+				if ((nodePos = (Point2D) movedNodes.get(Integer.valueOf(nodeIx))) == null) {
 					nodePos = new Point2D.Double(graph.getNodePosition(nodeIx, true),
 					                             graph.getNodePosition(nodeIx, false));
 				}
@@ -268,7 +268,7 @@ public final class SpringEmbeddedLayouter2 implements Task {
 			for (int nodeIx = 0; nodeIx < graph.getNumNodes(); nodeIx++) {
 				Point2D nodePos;
 
-				if (((nodePos = (Point2D) movedNodes.get(new Integer(nodeIx))) != null)
+				if (((nodePos = (Point2D) movedNodes.get(Integer.valueOf(nodeIx))) != null)
 				    && isMovableNode(nodeIx)) {
 					graph.setNodePosition(nodeIx,
 					                      Math.min(Math.max(0,
@@ -351,7 +351,7 @@ public final class SpringEmbeddedLayouter2 implements Task {
 			Arrays.fill(distances[fromNode], Integer.MAX_VALUE);
 			distances[fromNode][fromNode] = 0;
 			Arrays.fill(completedNodes, false);
-			queue.add(new Integer(fromNode));
+			queue.add(Integer.valueOf(fromNode));
 
 			while (!(queue.isEmpty())) {
 				int index = ((Integer) queue.removeFirst()).intValue();
@@ -409,7 +409,7 @@ public final class SpringEmbeddedLayouter2 implements Task {
 					if ((toNodeDistance != Integer.MAX_VALUE)
 					    && (neighborDistance > (toNodeDistance + 1))) {
 						distances[fromNode][neighbor] = toNodeDistance + 1;
-						queue.addLast(new Integer(neighbor));
+						queue.addLast(Integer.valueOf(neighbor));
 					}
 				}
 			}
@@ -446,7 +446,7 @@ public final class SpringEmbeddedLayouter2 implements Task {
 					}
 
 					public Object next() {
-						return new Integer(ix++);
+						return Integer.valueOf(ix++);
 					}
 				};
 		} else {

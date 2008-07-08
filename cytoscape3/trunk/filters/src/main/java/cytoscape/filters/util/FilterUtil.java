@@ -152,7 +152,7 @@ public class FilterUtil {
 			dynamicFilterThresholdValue = FilterPlugin.DEFAULT_DYNAMIC_FILTER_THRESHOLD;
 		}
 		else {
-			dynamicFilterThresholdValue = (new Integer(dynamicFilterThreshold)).intValue();
+			dynamicFilterThresholdValue = (Integer.valueOf(dynamicFilterThreshold)).intValue();
 		}
 		
 		if (pFilter.getAdvancedSetting().isNodeChecked() && pFilter.getAdvancedSetting().isEdgeChecked()) {

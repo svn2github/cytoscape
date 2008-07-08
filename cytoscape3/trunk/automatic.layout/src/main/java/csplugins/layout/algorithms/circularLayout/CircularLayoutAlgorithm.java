@@ -155,11 +155,11 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 		while (iter.hasNext() && !canceled) {
 			NodeView nv = ((LayoutNode) (iter.next())).getNodeView();
-			Integer nodeIndexKey = new Integer(nv.getNode().getRootGraphIndex());
+			Integer nodeIndexKey = Integer.valueOf(nv.getNode().getRootGraphIndex());
 
 			if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
 				nodeView[nextNode] = nv;
-				ginyIndex2Index.put(nodeIndexKey, new Integer(nextNode));
+				ginyIndex2Index.put(nodeIndexKey, Integer.valueOf(nextNode));
 				nextNode++;
 			}
 		}
@@ -173,10 +173,10 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 		while (iter.hasNext()) {
 			LayoutEdge ev = (LayoutEdge) (iter.next());
-			Integer edgeFrom = (Integer) ginyIndex2Index.get(new Integer(ev.getSource().getNodeView()
+			Integer edgeFrom = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getSource().getNodeView()
 			                                                               .getNode()
 			                                                               .getRootGraphIndex()));
-			Integer edgeTo = (Integer) ginyIndex2Index.get(new Integer(ev.getTarget().getNodeView()
+			Integer edgeTo = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getTarget().getNodeView()
 			                                                             .getNode()
 			                                                             .getRootGraphIndex()));
 
@@ -233,10 +233,10 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			if (bc[i].length > 3) {
 				for (int j = 0; j < bc[i].length; j++) {
 					if (!node2BiComp.containsKey(bc[i][j]))
-						node2BiComp.put(new Integer(bc[i][j]), new Integer(i));
+						node2BiComp.put(Integer.valueOf(bc[i][j]), Integer.valueOf(i));
 					else if (bc[i].length > bc[node2BiComp.get(bc[i][j]).intValue()].length) {
-						node2BiComp.remove(new Integer(bc[i][j])); // check this
-						node2BiComp.put(new Integer(bc[i][j]), new Integer(i));
+						node2BiComp.remove(Integer.valueOf(bc[i][j])); // check this
+						node2BiComp.put(Integer.valueOf(bc[i][j]), Integer.valueOf(i));
 					}
 				}
 			}
@@ -313,7 +313,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 				if (!posSet[currNeighbour]) {
 					outerNodesCount += (NoOfChildren(currNeighbour, outerCircle) + 1);
-					outerCircle.put(new Integer(currNeighbour), new Integer(0));
+					outerCircle.put(Integer.valueOf(currNeighbour), Integer.valueOf(0));
 					rnc++;
 				}
 			}
@@ -404,7 +404,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 
 				if (!posSet[currentNeighbour]) {
 					noOfNeighbours += (NoOfChildren(currentNeighbour, addedNeighbours) + 1);
-					addedNeighbours.put(new Integer(currentNeighbour), new Integer(0));
+					addedNeighbours.put(Integer.valueOf(currentNeighbour), Integer.valueOf(0));
 				}
 			}
 
@@ -497,7 +497,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			while (iter.hasNext()) {
 				currentNeighbour = ((Integer) iter.next()).intValue();
 
-				if (!addedNeighbours.containsKey(new Integer(currentNeighbour))) {
+				if (!addedNeighbours.containsKey(Integer.valueOf(currentNeighbour))) {
 					continue;
 				}
 
@@ -566,15 +566,15 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		HashMap<Integer, Integer> forFunct = new HashMap<Integer, Integer>();
 
 		for (int i = 0; i < icNodes.length; i++)
-			forFunct.put(new Integer(icNodes[i]), new Integer(0));
+			forFunct.put(Integer.valueOf(icNodes[i]), Integer.valueOf(0));
 
 		for (int i = 0; i < icNodes.length; i++) {
 			int tmp = NoOfChildren(icNodes[i], forFunct);
 
 			if (tmp > 4)
-				greedyNodes.add(new Integer(icNodes[i]));
+				greedyNodes.add(Integer.valueOf(icNodes[i]));
 			else
-				modestNodes.add(new Integer(icNodes[i]));
+				modestNodes.add(Integer.valueOf(icNodes[i]));
 		}
 
 		int[] toReturn = new int[icNodes.length];
@@ -630,12 +630,12 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		HashMap<Integer, Boolean> alreadySet = new HashMap<Integer, Boolean>();
 
 		for (int i = 0; i < icNodes.length; i++)
-			alreadySet.put(new Integer(icNodes[i]), new Boolean(false));
+			alreadySet.put(Integer.valueOf(icNodes[i]), new Boolean(false));
 
 		int x = 0;
 		int p = 0;
 		toReturn[0] = icNodes[0];
-		alreadySet.put(new Integer(toReturn[0]), new Boolean(true));
+		alreadySet.put(Integer.valueOf(toReturn[0]), new Boolean(true));
 
 		while (p < (icNodes.length - 1)) {
 //			if ((p == x) && (p != 0))
@@ -646,10 +646,10 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			while (iter.hasNext()) {
 				int neigh = ((Integer) iter.next()).intValue();
 
-				if (alreadySet.containsKey(new Integer(neigh))
-				    && !alreadySet.get(new Integer(neigh)).booleanValue()) {
+				if (alreadySet.containsKey(Integer.valueOf(neigh))
+				    && !alreadySet.get(Integer.valueOf(neigh)).booleanValue()) {
 					toReturn[x++] = neigh;
-					alreadySet.put(new Integer(neigh), new Boolean(true));
+					alreadySet.put(Integer.valueOf(neigh), new Boolean(true));
 				}
 			}
 
@@ -672,7 +672,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		HashMap<Integer, Integer> nodeDegree = new HashMap<Integer, Integer>();
 
 		for (int i = 0; i < icNodes.length; i++) {
-			alreadySet.put(new Integer(icNodes[i]), new Boolean(false));
+			alreadySet.put(Integer.valueOf(icNodes[i]), new Boolean(false));
 			toReturn[i] = icNodes[i];
 		}
 
@@ -683,16 +683,16 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			while (iter.hasNext()) {
 				int neigh = ((Integer) iter.next()).intValue();
 
-				if (alreadySet.containsKey(new Integer(neigh)))
+				if (alreadySet.containsKey(Integer.valueOf(neigh)))
 					degree++;
 			}
 
-			nodeDegree.put(new Integer(icNodes[i]), new Integer(degree));
+			nodeDegree.put(Integer.valueOf(icNodes[i]), Integer.valueOf(degree));
 		}
 
 		for (int i = 0; i < (toReturn.length - 1); i++) {
 			for (int j = i + 1; j < toReturn.length; j++) {
-				if (nodeDegree.get(new Integer(toReturn[i])) > nodeDegree.get(new Integer(toReturn[j]))) {
+				if (nodeDegree.get(Integer.valueOf(toReturn[i])) > nodeDegree.get(Integer.valueOf(toReturn[j]))) {
 					int tmp = toReturn[i];
 					toReturn[i] = toReturn[j];
 					toReturn[j] = tmp;
@@ -715,9 +715,9 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	 *                     the child in tree-like parts
 	 */
 	private void DFSSetPos(int nodeID, double theAngle, double theRadius) {
-		if (node2BiComp.containsKey(new Integer(nodeID))
-		    && !drawnBiComps[node2BiComp.get(new Integer(nodeID)).intValue()]) {
-			int comp = node2BiComp.get(new Integer(nodeID)).intValue();
+		if (node2BiComp.containsKey(Integer.valueOf(nodeID))
+		    && !drawnBiComps[node2BiComp.get(Integer.valueOf(nodeID)).intValue()]) {
+			int comp = node2BiComp.get(Integer.valueOf(nodeID)).intValue();
 			double centerX = nodeView[nodeID].getOffset().getX();
 			double centerY = nodeView[nodeID].getOffset().getY();
 			double radius = (48 * bc[comp].length) / (2 * Math.PI);
@@ -782,23 +782,23 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			while (iter.hasNext()) {
 				currentNeighbour = ((Integer) iter.next()).intValue();
 
-				if (!posSet[currentNeighbour] && !tmp.containsKey(new Integer(currentNeighbour))) {
+				if (!posSet[currentNeighbour] && !tmp.containsKey(Integer.valueOf(currentNeighbour))) {
 					neighboursCount++;
-					tmp.put(new Integer(currentNeighbour), new Integer(0));
+					tmp.put(Integer.valueOf(currentNeighbour), Integer.valueOf(0));
 
-					if (nodeHeights.get(new Integer(currentNeighbour)).intValue() < min1) {
+					if (nodeHeights.get(Integer.valueOf(currentNeighbour)).intValue() < min1) {
 						min2 = min1;
 						min2Id = min1Id;
-						min1 = nodeHeights.get(new Integer(currentNeighbour)).intValue();
+						min1 = nodeHeights.get(Integer.valueOf(currentNeighbour)).intValue();
 						min1Id = currentNeighbour;
-					} else if (nodeHeights.get(new Integer(currentNeighbour)).intValue() < min2) {
-						min2 = nodeHeights.get(new Integer(currentNeighbour)).intValue();
+					} else if (nodeHeights.get(Integer.valueOf(currentNeighbour)).intValue() < min2) {
+						min2 = nodeHeights.get(Integer.valueOf(currentNeighbour)).intValue();
 						min2Id = currentNeighbour;
 					}
 
-					if (nodeHeights.get(new Integer(currentNeighbour)).intValue() >= max)//&& currentNeighbour != min2Id && currentNeighbour != min1Id)
+					if (nodeHeights.get(Integer.valueOf(currentNeighbour)).intValue() >= max)//&& currentNeighbour != min2Id && currentNeighbour != min1Id)
 					 {
-						max = nodeHeights.get(new Integer(currentNeighbour)).intValue();
+						max = nodeHeights.get(Integer.valueOf(currentNeighbour)).intValue();
 						maxId = currentNeighbour;
 					}
 				}
@@ -856,7 +856,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 				nodeView[min2Id].setOffset(startX + (Math.cos(remStartAngle + deltaAngle) * r),
 				                           startY - (Math.sin(remStartAngle + deltaAngle) * r));
 
-				if (nodeHeights.get(new Integer(maxId)).intValue() > 8)
+				if (nodeHeights.get(Integer.valueOf(maxId)).intValue() > 8)
 					r = 256;
 
 				nodeView[maxId].setOffset(startX
@@ -874,14 +874,14 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			while (iter.hasNext()) {
 				currentNeighbour = ((Integer) iter.next()).intValue();
 
-				if (!posSet[currentNeighbour] && !tmp.containsKey(new Integer(currentNeighbour))) {
-					if (nodeHeights.get(new Integer(currentNeighbour)).intValue() > 8)
+				if (!posSet[currentNeighbour] && !tmp.containsKey(Integer.valueOf(currentNeighbour))) {
+					if (nodeHeights.get(Integer.valueOf(currentNeighbour)).intValue() > 8)
 						r = 256;
 					else
 						r = rTry;
 
 					posSet[currentNeighbour] = true;
-					tmp.put(new Integer(currentNeighbour), new Integer(0));
+					tmp.put(Integer.valueOf(currentNeighbour), Integer.valueOf(0));
 
 					if (((currentNeighbour != min1Id) && (currentNeighbour != min2Id)
 					    && (currentNeighbour != maxId)) || (neighboursCount <= 2)) {
@@ -921,7 +921,7 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 			while (iter.hasNext()) {
 				currentNeighbour = ((Integer) iter.next()).intValue();
 
-				if (tmp.containsKey(new Integer(currentNeighbour))) {
+				if (tmp.containsKey(Integer.valueOf(currentNeighbour))) {
 					if (((currentNeighbour != min1Id) && (currentNeighbour != min2Id)
 					    && (currentNeighbour != maxId)) || (neighboursCount <= 2)) {
 						DFSSetPos(currentNeighbour, remStartAngle,
@@ -957,9 +957,9 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		while (iter.hasNext()) {
 			currentNeighbour = ((Integer) iter.next()).intValue();
 
-			if (!depthPosSet[currentNeighbour] && !tmp.containsKey(new Integer(currentNeighbour))) {
+			if (!depthPosSet[currentNeighbour] && !tmp.containsKey(Integer.valueOf(currentNeighbour))) {
 				depthPosSet[currentNeighbour] = true;
-				tmp.put(new Integer(currentNeighbour), new Integer(0));
+				tmp.put(Integer.valueOf(currentNeighbour), Integer.valueOf(0));
 			}
 		}
 
@@ -968,15 +968,15 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 		while (iter.hasNext()) {
 			currentNeighbour = ((Integer) iter.next()).intValue();
 
-			if (tmp.containsKey(new Integer(currentNeighbour))) {
+			if (tmp.containsKey(Integer.valueOf(currentNeighbour))) {
 				noOfChildren += EachNodeHeight(currentNeighbour);
 			}
 		}
 
-		if (nodeHeights.containsKey(new Integer(nodeID)))
-			nodeHeights.remove(new Integer(nodeID));
+		if (nodeHeights.containsKey(Integer.valueOf(nodeID)))
+			nodeHeights.remove(Integer.valueOf(nodeID));
 
-		nodeHeights.put(new Integer(nodeID), new Integer(noOfChildren));
+		nodeHeights.put(Integer.valueOf(nodeID), Integer.valueOf(noOfChildren));
 
 		return (noOfChildren + 1);
 	}
@@ -1141,16 +1141,16 @@ public class CircularLayoutAlgorithm extends AbstractGraphPartition {
 	protected void initialize_properties() {
 		layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing",
 		                                 "Horizontal spacing between nodes", Tunable.INTEGER,
-		                                 new Integer(64)));
+		                                 Integer.valueOf(64)));
 		layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes",
-		                                 Tunable.INTEGER, new Integer(32)));
+		                                 Tunable.INTEGER, Integer.valueOf(32)));
 
 		layoutProperties.add(TunableFactory.getTunable("leftEdge", "Left edge margin", Tunable.INTEGER,
-		                                 new Integer(32)));
+		                                 Integer.valueOf(32)));
 		layoutProperties.add(TunableFactory.getTunable("topEdge", "Top edge margin", Tunable.INTEGER,
-		                                 new Integer(32)));
+		                                 Integer.valueOf(32)));
 		layoutProperties.add(TunableFactory.getTunable("rightMargin", "Right edge margin", Tunable.INTEGER,
-		                                 new Integer(1000)));
+		                                 Integer.valueOf(1000)));
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
 		layoutProperties.initializeProperties(CytoscapeInit.getProperties());

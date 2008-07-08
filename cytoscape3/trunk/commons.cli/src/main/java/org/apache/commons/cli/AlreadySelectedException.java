@@ -24,6 +24,7 @@ package org.apache.commons.cli;
  * @see ParseException
  */
 public class AlreadySelectedException extends ParseException {
+	private final static long serialVersionUID = 1215558071536920L;
 	/**
 	 * <p>Construct a new <code>AlreadySelectedException</code>
 	 * with the specified detail message.</p>

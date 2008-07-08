@@ -222,20 +222,20 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 
 		//  This HashMap contains a list of expected node identifiers.
 		HashMap nodeMap = new HashMap();
-		nodeMap.put("protein45", new Integer(0));
-		nodeMap.put("protein32", new Integer(0));
-		nodeMap.put("smallMolecule10", new Integer(0));
-		nodeMap.put("smallMolecule18(CY)", new Integer(0));
-		nodeMap.put("smallMolecule23(CY)", new Integer(0));
-		nodeMap.put("smallMolecule27", new Integer(0));
-		nodeMap.put("smallMolecule39", new Integer(0));
-		nodeMap.put("smallMolecule99", new Integer(0));
+		nodeMap.put("protein45", Integer.valueOf(0));
+		nodeMap.put("protein32", Integer.valueOf(0));
+		nodeMap.put("smallMolecule10", Integer.valueOf(0));
+		nodeMap.put("smallMolecule18(CY)", Integer.valueOf(0));
+		nodeMap.put("smallMolecule23(CY)", Integer.valueOf(0));
+		nodeMap.put("smallMolecule27", Integer.valueOf(0));
+		nodeMap.put("smallMolecule39", Integer.valueOf(0));
+		nodeMap.put("smallMolecule99", Integer.valueOf(0));
 
 		//  These represent interaction nodes
-		nodeMap.put("catalysis43", new Integer(0));
-		nodeMap.put("biochemicalReaction6", new Integer(0));
-		nodeMap.put("biochemicalReaction37", new Integer(0));
-		nodeMap.put("catalysis5", new Integer(0));
+		nodeMap.put("catalysis43", Integer.valueOf(0));
+		nodeMap.put("biochemicalReaction6", Integer.valueOf(0));
+		nodeMap.put("biochemicalReaction37", Integer.valueOf(0));
+		nodeMap.put("catalysis5", Integer.valueOf(0));
 
 		//  We don't know the order of nodes;  so use nodeMap for look up.
 		Iterator nodeIterator = cyNetwork.nodesIterator();
@@ -253,7 +253,7 @@ public class TestBioPaxToCytoscapeMapper extends TestCase {
 			}
 
 			if (nodeMap.containsKey(id)) {
-				nodeMap.put(id, new Integer(1));
+				nodeMap.put(id, Integer.valueOf(1));
 			} else {
 				fail("Network contains an Node that we were not expecting:  " + "\"" + id + "\"");
 			}

@@ -212,7 +212,7 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 
 		InetSocketAddress address = (InetSocketAddress) p.address();
 		tfHost.setText(address.getHostName());
-		tfPort.setText(new Integer(address.getPort()).toString());
+		tfPort.setText(Integer.valueOf(address.getPort()).toString());
 	}
 
 	/**
@@ -285,7 +285,7 @@ public class ProxyServerDialog extends JDialog implements ActionListener, ItemLi
 			int thePort;
 	
 			try {
-				Integer tmpInteger = new Integer(tfPort.getText().trim());
+				Integer tmpInteger = Integer.valueOf(tfPort.getText().trim());
 				thePort = tmpInteger.intValue();
 			} catch (Exception exp) {
 				JOptionPane.showMessageDialog(this, "Port error!", "Warning",

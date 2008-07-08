@@ -311,7 +311,7 @@ public class GMLParser {
 		}
 
 		if (isInteger()) {
-			return new Integer(tokenizer.sval);
+			return Integer.valueOf(tokenizer.sval);
 		}
 
 		if (isReal()) {

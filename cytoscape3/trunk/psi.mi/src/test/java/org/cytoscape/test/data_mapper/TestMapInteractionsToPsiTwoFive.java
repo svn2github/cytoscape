@@ -192,7 +192,7 @@ public class TestMapInteractionsToPsiTwoFive extends TestCase {
 		InteractionElementType.ParticipantList pList = interaction.getParticipantList();
 		ParticipantType participant = pList.getParticipant().get(0);
 		Integer ref = participant.getInteractorRef();
-		assertEquals(new Integer(2), ref);
+		assertEquals(Integer.valueOf(2), ref);
 
 		//  Verify Interaction XRefs.
 		xref = interaction.getXref();

@@ -491,14 +491,14 @@ public class MapToCytoscape implements Mapper {
 				interaction.addAttribute(ROOT_GRAPH_INDEXES, indexes);
 			}
 
-			indexes.add(new Integer(edgeRootGraphIndex));
+			indexes.add(Integer.valueOf(edgeRootGraphIndex));
 
 			//  Add to CyMap
 			cyMap.put(key, interaction);
 
 			//  Add to Edge Map
 			edgeMap.put(key, edge);
-			intMap.put(new Integer(interaction.getInteractionId()), interaction);
+			intMap.put(Integer.valueOf(interaction.getInteractionId()), interaction);
 		}
 	}
 

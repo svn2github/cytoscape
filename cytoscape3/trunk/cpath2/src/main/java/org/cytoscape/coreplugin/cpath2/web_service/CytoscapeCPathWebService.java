@@ -169,7 +169,7 @@ public class CytoscapeCPathWebService extends WebServiceClientImpl implements We
     private void setProperty() {
         props = TunableFactory.getModuleProperties(clientID, "wsc");
         props.add(TunableFactory.getTunable(NCBI_TAXONOMY_ID_FILTER, "Filter by Organism - NCBI Taxonomy ID",
-                Tunable.INTEGER, new Integer(-1)));
+                Tunable.INTEGER, Integer.valueOf(-1)));
         props.add(TunableFactory.getTunable(RESPONSE_FORMAT, "Response Format",
                 Tunable.INTEGER, CPathResponseFormat.BINARY_SIF.getFormatString()));
     }

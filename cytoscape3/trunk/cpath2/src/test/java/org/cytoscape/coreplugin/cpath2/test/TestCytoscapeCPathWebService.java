@@ -75,7 +75,7 @@ public class TestCytoscapeCPathWebService extends TestCase {
         ModuleProperties props = wsClient.getProps();
         props.add(TunableFactory.getTunable(CytoscapeCPathWebService.NCBI_TAXONOMY_ID_FILTER,
                 "Filter by Organism - NCBI Taxonomy ID",
-                Tunable.INTEGER, new Integer(9606)));
+                Tunable.INTEGER, Integer.valueOf(9606)));
         CyWebServiceEvent wsEvent = new CyWebServiceEvent
                 (CPathProperties.getInstance().getWebServicesId(),
                         CyWebServiceEvent.WSEventType.SEARCH_DATABASE, "brca1");

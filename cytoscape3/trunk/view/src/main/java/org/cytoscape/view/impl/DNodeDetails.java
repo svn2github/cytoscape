@@ -88,7 +88,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 		if ((o != null) && (o != m_deletedEntry))
 			m_colorsLowDetail.put(node, m_deletedEntry);
 
-		final Integer key = new Integer(node);
+		final Integer key = Integer.valueOf(node);
 		m_shapes.remove(key);
 		m_fillPaints.remove(key);
 		m_borderWidths.remove(key);
@@ -103,7 +103,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 		final int labelCount = ((intr == null) ? 0 : ((Integer) intr).intValue());
 
 		for (int i = 0; i < labelCount; i++) {
-			final Long lKey = new Long((((long) node) << 32) | ((long) i));
+			final Long lKey = Long.valueOf((((long) node) << 32) | ((long) i));
 			m_labelTexts.remove(lKey);
 			m_labelFonts.remove(lKey);
 			m_labelPaints.remove(lKey);
@@ -147,7 +147,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public byte shape(int node) {
-		final Object o = m_shapes.get(new Integer(node));
+		final Object o = m_shapes.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.shape(node);
@@ -161,9 +161,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	void overrideShape(int node, byte shape) {
 		if ((shape < 0) || (shape == super.shape(node)))
-			m_shapes.remove(new Integer(node));
+			m_shapes.remove(Integer.valueOf(node));
 		else
-			m_shapes.put(new Integer(node), new Byte(shape));
+			m_shapes.put(Integer.valueOf(node), new Byte(shape));
 	}
 
 	/**
@@ -174,7 +174,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint fillPaint(int node) {
-		final Object o = m_fillPaints.get(new Integer(node));
+		final Object o = m_fillPaints.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.fillPaint(node);
@@ -187,9 +187,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	void overrideFillPaint(int node, Paint paint) {
 		if ((paint == null) || paint.equals(super.fillPaint(node)))
-			m_fillPaints.remove(new Integer(node));
+			m_fillPaints.remove(Integer.valueOf(node));
 		else
-			m_fillPaints.put(new Integer(node), paint);
+			m_fillPaints.put(Integer.valueOf(node), paint);
 	}
 
 	/**
@@ -200,7 +200,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public float borderWidth(int node) {
-		final Object o = m_borderWidths.get(new Integer(node));
+		final Object o = m_borderWidths.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.borderWidth(node);
@@ -213,9 +213,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	void overrideBorderWidth(int node, float width) {
 		if ((width < 0.0f) || (width == super.borderWidth(node)))
-			m_borderWidths.remove(new Integer(node));
+			m_borderWidths.remove(Integer.valueOf(node));
 		else
-			m_borderWidths.put(new Integer(node), new Float(width));
+			m_borderWidths.put(Integer.valueOf(node), new Float(width));
 	}
 
 	/**
@@ -226,7 +226,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint borderPaint(int node) {
-		final Object o = m_borderPaints.get(new Integer(node));
+		final Object o = m_borderPaints.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.borderPaint(node);
@@ -239,9 +239,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	void overrideBorderPaint(int node, Paint paint) {
 		if ((paint == null) || paint.equals(super.borderPaint(node)))
-			m_borderPaints.remove(new Integer(node));
+			m_borderPaints.remove(Integer.valueOf(node));
 		else
-			m_borderPaints.put(new Integer(node), paint);
+			m_borderPaints.put(Integer.valueOf(node), paint);
 	}
 
 	/**
@@ -252,7 +252,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public int labelCount(int node) {
-		final Object o = m_labelCounts.get(new Integer(node));
+		final Object o = m_labelCounts.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.labelCount(node);
@@ -265,9 +265,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	void overrideLabelCount(int node, int labelCount) {
 		if ((labelCount < 0) || (labelCount == super.labelCount(node)))
-			m_labelCounts.remove(new Integer(node));
+			m_labelCounts.remove(Integer.valueOf(node));
 		else
-			m_labelCounts.put(new Integer(node), new Integer(labelCount));
+			m_labelCounts.put(Integer.valueOf(node), Integer.valueOf(labelCount));
 	}
 
 	/**
@@ -280,7 +280,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	public String labelText(int node, int labelInx) {
 		final long key = (((long) node) << 32) | ((long) labelInx);
-		final Object o = m_labelTexts.get(new Long(key));
+		final Object o = m_labelTexts.get(Long.valueOf(key));
 
 		if (o == null)
 			return super.labelText(node, labelInx);
@@ -295,9 +295,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 		final long key = (((long) node) << 32) | ((long) labelInx);
 
 		if ((text == null) || text.equals(super.labelText(node, labelInx)))
-			m_labelTexts.remove(new Long(key));
+			m_labelTexts.remove(Long.valueOf(key));
 		else
-			m_labelTexts.put(new Long(key), text);
+			m_labelTexts.put(Long.valueOf(key), text);
 	}
 
 	/**
@@ -310,7 +310,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	public Font labelFont(int node, int labelInx) {
 		final long key = (((long) node) << 32) | ((long) labelInx);
-		final Object o = m_labelFonts.get(new Long(key));
+		final Object o = m_labelFonts.get(Long.valueOf(key));
 
 		if (o == null)
 			return super.labelFont(node, labelInx);
@@ -325,9 +325,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 		final long key = (((long) node) << 32) | ((long) labelInx);
 
 		if ((font == null) || font.equals(super.labelFont(node, labelInx)))
-			m_labelFonts.remove(new Long(key));
+			m_labelFonts.remove(Long.valueOf(key));
 		else
-			m_labelFonts.put(new Long(key), font);
+			m_labelFonts.put(Long.valueOf(key), font);
 	}
 
 	/**
@@ -340,7 +340,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 */
 	public Paint labelPaint(int node, int labelInx) {
 		final long key = (((long) node) << 32) | ((long) labelInx);
-		final Object o = m_labelPaints.get(new Long(key));
+		final Object o = m_labelPaints.get(Long.valueOf(key));
 
 		if (o == null)
 			return super.labelPaint(node, labelInx);
@@ -355,9 +355,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 		final long key = (((long) node) << 32) | ((long) labelInx);
 
 		if ((paint == null) || paint.equals(super.labelPaint(node, labelInx)))
-			m_labelPaints.remove(new Long(key));
+			m_labelPaints.remove(Long.valueOf(key));
 		else
-			m_labelPaints.put(new Long(key), paint);
+			m_labelPaints.put(Long.valueOf(key), paint);
 	}
 
 	/**
@@ -427,7 +427,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public byte labelTextAnchor(final int node, final int labelInx) {
-		final Object o = m_labelTextAnchors.get(new Integer(node));
+		final Object o = m_labelTextAnchors.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.labelTextAnchor(node, labelInx);
@@ -437,9 +437,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 
 	void overrideLabelTextAnchor(final int node, final int inx, final int anchor) {
 		if (convertG2ND(anchor) == super.labelTextAnchor(node, inx))
-			m_labelTextAnchors.remove(new Integer(node));
+			m_labelTextAnchors.remove(Integer.valueOf(node));
 		else
-			m_labelTextAnchors.put(new Integer(node), new Integer(anchor));
+			m_labelTextAnchors.put(Integer.valueOf(node), Integer.valueOf(anchor));
 	}
 
 	/**
@@ -451,7 +451,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public byte labelNodeAnchor(final int node, final int labelInx) {
-		final Object o = m_labelNodeAnchors.get(new Integer(node));
+		final Object o = m_labelNodeAnchors.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.labelNodeAnchor(node, labelInx);
@@ -461,9 +461,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 
 	void overrideLabelNodeAnchor(final int node, final int inx, final int anchor) {
 		if (convertG2ND(anchor) == super.labelNodeAnchor(node, inx))
-			m_labelNodeAnchors.remove(new Integer(node));
+			m_labelNodeAnchors.remove(Integer.valueOf(node));
 		else
-			m_labelNodeAnchors.put(new Integer(node), new Integer(anchor));
+			m_labelNodeAnchors.put(Integer.valueOf(node), Integer.valueOf(anchor));
 	}
 
 	/**
@@ -475,7 +475,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public float labelOffsetVectorX(final int node, final int labelInx) {
-		final Object o = m_labelOffsetXs.get(new Integer(node));
+		final Object o = m_labelOffsetXs.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.labelOffsetVectorX(node, labelInx);
@@ -485,9 +485,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 
 	void overrideLabelOffsetVectorX(final int node, final int inx, final double x) {
 		if (((float) x) == super.labelOffsetVectorX(node, inx))
-			m_labelOffsetXs.remove(new Integer(node));
+			m_labelOffsetXs.remove(Integer.valueOf(node));
 		else
-			m_labelOffsetXs.put(new Integer(node), new Double(x));
+			m_labelOffsetXs.put(Integer.valueOf(node), new Double(x));
 	}
 
 	/**
@@ -499,7 +499,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public float labelOffsetVectorY(final int node, final int labelInx) {
-		final Object o = m_labelOffsetYs.get(new Integer(node));
+		final Object o = m_labelOffsetYs.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.labelOffsetVectorY(node, labelInx);
@@ -509,9 +509,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 
 	void overrideLabelOffsetVectorY(final int node, final int inx, final double y) {
 		if (((float) y) == super.labelOffsetVectorY(node, inx))
-			m_labelOffsetYs.remove(new Integer(node));
+			m_labelOffsetYs.remove(Integer.valueOf(node));
 		else
-			m_labelOffsetYs.put(new Integer(node), new Double(y));
+			m_labelOffsetYs.put(Integer.valueOf(node), new Double(y));
 	}
 
 	/**
@@ -523,7 +523,7 @@ class DNodeDetails extends IntermediateNodeDetails {
 	 * @return  DOCUMENT ME!
 	 */
 	public byte labelJustify(final int node, final int labelInx) {
-		final Object o = m_labelJustifys.get(new Integer(node));
+		final Object o = m_labelJustifys.get(Integer.valueOf(node));
 
 		if (o == null)
 			return super.labelJustify(node, labelInx);
@@ -533,9 +533,9 @@ class DNodeDetails extends IntermediateNodeDetails {
 
 	void overrideLabelJustify(final int node, final int inx, final int justify) {
 		if (convertG2ND(justify) == super.labelJustify(node, inx))
-			m_labelJustifys.remove(new Integer(node));
+			m_labelJustifys.remove(Integer.valueOf(node));
 		else
-			m_labelJustifys.put(new Integer(node), new Integer(justify));
+			m_labelJustifys.put(Integer.valueOf(node), Integer.valueOf(justify));
 	}
 
 	static byte convertG2ND(int giny) {

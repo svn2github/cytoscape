@@ -322,8 +322,8 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 			while (iter.hasNext() && !canceled) {
 				nodeView[nextNode] = (NodeView) (iter.next());
-				ginyIndex2Index.put(new Integer(nodeView[nextNode].getNode().getRootGraphIndex()),
-				                    new Integer(nextNode));
+				ginyIndex2Index.put(Integer.valueOf(nodeView[nextNode].getNode().getRootGraphIndex()),
+				                    Integer.valueOf(nextNode));
 				nextNode++;
 			}
 		} else {
@@ -331,11 +331,11 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 			while (iter.hasNext() && !canceled) {
 				NodeView nv = (NodeView) (iter.next());
-				Integer nodeIndexKey = new Integer(nv.getNode().getRootGraphIndex());
+				Integer nodeIndexKey = Integer.valueOf(nv.getNode().getRootGraphIndex());
 
 				if (!ginyIndex2Index.containsKey(nodeIndexKey)) {
 					nodeView[nextNode] = nv;
-					ginyIndex2Index.put(nodeIndexKey, new Integer(nextNode));
+					ginyIndex2Index.put(nodeIndexKey, Integer.valueOf(nextNode));
 					nextNode++;
 				}
 			}
@@ -350,9 +350,9 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		while (iter.hasNext()) {
 			EdgeView ev = (EdgeView) (iter.next());
-			Integer edgeFrom = (Integer) ginyIndex2Index.get(new Integer(ev.getEdge().getSource()
+			Integer edgeFrom = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getEdge().getSource()
 			                                                               .getRootGraphIndex()));
-			Integer edgeTo = (Integer) ginyIndex2Index.get(new Integer(ev.getEdge().getTarget()
+			Integer edgeTo = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getEdge().getTarget()
 			                                                             .getRootGraphIndex()));
 
 			if ((edgeFrom == null) || (edgeTo == null)) {
@@ -445,7 +445,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			LinkedList<Integer> layerWithDummy = new LinkedList<Integer>();
 
 			for (int i = 0; i < layer[x].length; i++)
-				layerWithDummy.add(new Integer(layer[x][i]));
+				layerWithDummy.add(Integer.valueOf(layer[x][i]));
 
 			/*
 			int y;
@@ -477,13 +477,13 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 						to = tmp;
 					}
 
-					layerWithDummy.add(new Integer(layer[x][to] + 1));
-					dummy2Edge[x].put(new Integer(layerWithDummy.size() - 1), allEdges[i]);
+					layerWithDummy.add(Integer.valueOf(layer[x][to] + 1));
+					dummy2Edge[x].put(Integer.valueOf(layerWithDummy.size() - 1), allEdges[i]);
 					edgesWithAdd.add(new Edge(layerWithDummy.size() - 1, to));
 
 					for (int j = layer[x][to] + 2; j < layer[x][from]; j++) {
-						layerWithDummy.add(new Integer(j));
-						dummy2Edge[x].put(new Integer(layerWithDummy.size() - 1), allEdges[i]);
+						layerWithDummy.add(Integer.valueOf(j));
+						dummy2Edge[x].put(Integer.valueOf(layerWithDummy.size() - 1), allEdges[i]);
 						edgesWithAdd.add(new Edge(layerWithDummy.size() - 1,
 						                          layerWithDummy.size() - 2));
 					}
@@ -740,9 +740,9 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		while (iter.hasNext()) {
 			EdgeView ev = (EdgeView) (iter.next());
-			Integer edgeFrom = (Integer) ginyIndex2Index.get(new Integer(ev.getEdge().getSource()
+			Integer edgeFrom = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getEdge().getSource()
 			                                                               .getRootGraphIndex()));
-			Integer edgeTo = (Integer) ginyIndex2Index.get(new Integer(ev.getEdge().getTarget()
+			Integer edgeTo = (Integer) ginyIndex2Index.get(Integer.valueOf(ev.getEdge().getTarget()
 			                                                             .getRootGraphIndex()));
 
 			if ((edgeFrom == null) || (edgeTo == null)) {
@@ -786,7 +786,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
 
 			if (node.nodeView == null) {
-				Edge theEdge = (Edge) dummy2Edge[cI[node.graphIndex]].get(new Integer(renumber[node.graphIndex]));
+				Edge theEdge = (Edge) dummy2Edge[cI[node.graphIndex]].get(Integer.valueOf(renumber[node.graphIndex]));
 				EdgeView ev = myEdges2EdgeViews[cI[node.graphIndex]].get(theEdge);
 
 				if (ev != null) {
@@ -813,7 +813,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			HierarchyFlowLayoutOrderNode node = flowLayoutOrder[nodeIndex];
 
 			if (node.nodeView == null) {
-				Edge theEdge = dummy2Edge[cI[node.graphIndex]].get(new Integer(renumber[node.graphIndex]));
+				Edge theEdge = dummy2Edge[cI[node.graphIndex]].get(Integer.valueOf(renumber[node.graphIndex]));
 				EdgeView ev = myEdges2EdgeViews[cI[node.graphIndex]].get(theEdge);
 
 				if (ev != null) {
@@ -856,7 +856,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		HashMap<Integer, HierarchyFlowLayoutOrderNode> nodesBak2HFLON = new HashMap<Integer, HierarchyFlowLayoutOrderNode>();
 
 		for (int i = startInd; i <= endInd; i++)
-			nodesBak2HFLON.put(new Integer(nodes[i].graphIndex), nodes[i]);
+			nodesBak2HFLON.put(Integer.valueOf(nodes[i].graphIndex), nodes[i]);
 
 		if (direct == -1) {
 			int xHlp = x;
@@ -955,7 +955,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			                            edgesFrom[nodes[startInd + i].graphIndex].size()
 			                            + edgesTo[nodes[startInd + i].graphIndex].size(),
 			                            nodes[startInd + i].layer);
-			ind2Lon.put(new Integer(startInd + i), lon[i]);
+			ind2Lon.put(Integer.valueOf(startInd + i), lon[i]);
 		}
 
 		Arrays.sort(lon);
@@ -991,7 +991,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 					// enforcing the impact of dummy nodes, it straightens the lines connected to dummy nodes
 					if ((renumber[nodes2HFLON.get(neigh).graphIndex] >= dummyStarts[cI[nodes2HFLON.get(neigh).graphIndex]])
-					    && ind2Lon.get(new Integer(x)).GetIsDummy()) {
+					    && ind2Lon.get(Integer.valueOf(x)).GetIsDummy()) {
 						idealPosXUp += (4 * nodes2HFLON.get(neigh).xPos);
 						neighsCountUp += 4;
 					}
@@ -1008,7 +1008,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 					neighsCountDown++;
 
 					if ((renumber[nodes2HFLON.get(neigh).graphIndex] >= dummyStarts[cI[nodes2HFLON.get(neigh).graphIndex]])
-					    && ind2Lon.get(new Integer(x)).GetIsDummy()) {
+					    && ind2Lon.get(Integer.valueOf(x)).GetIsDummy()) {
 						idealPosXDown += (4 * nodes2HFLON.get(neigh).xPos);
 						neighsCountDown += 4;
 					}
@@ -1050,7 +1050,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 						    && (nodesBak[i].xPos < (nodesBak[i - 1].xPos + nodeHorizontalSpacing))) {
 							nodesBak[i].xPos = nodesBak[i - 1].xPos + nodeHorizontalSpacing;
 
-							/*if (((LayerOrderNode)ind2Lon.get(new Integer(x))).GetPriority() < ((LayerOrderNode)ind2Lon.get(new Integer(i))).GetPriority())
+							/*if (((LayerOrderNode)ind2Lon.get(Integer.valueOf(x))).GetPriority() < ((LayerOrderNode)ind2Lon.get(Integer.valueOf(i))).GetPriority())
 							    q = true;*/
 						} else
 
@@ -1086,7 +1086,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 						    && (nodesBak[i].xPos > (nodesBak[i + 1].xPos - nodeHorizontalSpacing))) {
 							nodesBak[i].xPos = nodesBak[i + 1].xPos - nodeHorizontalSpacing;
 
-							/*if (((LayerOrderNode)ind2Lon.get(new Integer(x))).GetPriority() < ((LayerOrderNode)ind2Lon.get(new Integer(i))).GetPriority())
+							/*if (((LayerOrderNode)ind2Lon.get(Integer.valueOf(x))).GetPriority() < ((LayerOrderNode)ind2Lon.get(Integer.valueOf(i))).GetPriority())
 							{
 							    q = true;
 							}*/
@@ -1185,18 +1185,18 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 	protected void initialize_properties() {
 		layoutProperties.add(TunableFactory.getTunable("nodeHorizontalSpacing",
 		                                 "Horizontal spacing between nodes", Tunable.INTEGER,
-		                                 new Integer(64)));
+		                                 Integer.valueOf(64)));
 		layoutProperties.add(TunableFactory.getTunable("nodeVerticalSpacing", "Vertical spacing between nodes",
-		                                 Tunable.INTEGER, new Integer(32)));
+		                                 Tunable.INTEGER, Integer.valueOf(32)));
 		layoutProperties.add(TunableFactory.getTunable("componentSpacing", "Component spacing", Tunable.INTEGER,
-		                                 new Integer(64)));
-		layoutProperties.add(TunableFactory.getTunable("bandGap", "Band gap", Tunable.INTEGER, new Integer(64)));
+		                                 Integer.valueOf(64)));
+		layoutProperties.add(TunableFactory.getTunable("bandGap", "Band gap", Tunable.INTEGER, Integer.valueOf(64)));
 		layoutProperties.add(TunableFactory.getTunable("leftEdge", "Left edge margin", Tunable.INTEGER,
-		                                 new Integer(32)));
+		                                 Integer.valueOf(32)));
 		layoutProperties.add(TunableFactory.getTunable("topEdge", "Top edge margin", Tunable.INTEGER,
-		                                 new Integer(32)));
+		                                 Integer.valueOf(32)));
 		layoutProperties.add(TunableFactory.getTunable("rightMargin", "Right edge margin", Tunable.INTEGER,
-		                                 new Integer(7000)));
+		                                 Integer.valueOf(7000)));
 		layoutProperties.add(TunableFactory.getTunable("selected_only", "Only layout selected nodes",
 		                                 Tunable.BOOLEAN, new Boolean(false)));
 		// We've now set all of our tunables, so we can read the property 

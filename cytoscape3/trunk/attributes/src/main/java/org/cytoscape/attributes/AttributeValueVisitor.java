@@ -53,7 +53,7 @@ public interface AttributeValueVisitor {
 	 * @param attrs the CyAttributes where this attribute value is stored.
 	 * @param keySpace the key used to obtain this value. For complex
 	 * values, this may consist of several elements (e.g., new
-	 * Object[] {"url1", new Integer(1), new Integer(0)). Modification
+	 * Object[] {"url1", Integer.valueOf(1), Integer.valueOf(0)). Modification
 	 * of this key may lead to unexpected traversal results or errors,
 	 * so copy this key if you wish to make modifications.
 	 * @param visitedValue the actual visited.

@@ -78,7 +78,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		if ((o != null) && (o != m_deletedEntry))
 			m_colorsLowDetail.put(edge, m_deletedEntry);
 
-		final Integer key = new Integer(edge);
+		final Integer key = Integer.valueOf(edge);
 		m_segmentThicknesses.remove(key);
 		m_sourceArrows.remove(key);
 		m_sourceArrowPaints.remove(key);
@@ -129,7 +129,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public byte sourceArrow(int edge) {
-		final Object o = m_sourceArrows.get(new Integer(edge));
+		final Object o = m_sourceArrows.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.sourceArrow(edge);
@@ -143,9 +143,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	void overrideSourceArrow(int edge, byte arrowType) {
 		if ((arrowType >= 0) || (arrowType == super.sourceArrow(edge)))
-			m_sourceArrows.remove(new Integer(edge));
+			m_sourceArrows.remove(Integer.valueOf(edge));
 		else
-			m_sourceArrows.put(new Integer(edge), new Byte(arrowType));
+			m_sourceArrows.put(Integer.valueOf(edge), new Byte(arrowType));
 	}
 
 	/**
@@ -156,7 +156,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint sourceArrowPaint(int edge) {
-		final Object o = m_sourceArrowPaints.get(new Integer(edge));
+		final Object o = m_sourceArrowPaints.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.sourceArrowPaint(edge);
@@ -169,9 +169,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	void overrideSourceArrowPaint(int edge, Paint paint) {
 		if ((paint == null) || paint.equals(super.sourceArrowPaint(edge)))
-			m_sourceArrowPaints.remove(new Integer(edge));
+			m_sourceArrowPaints.remove(Integer.valueOf(edge));
 		else
-			m_sourceArrowPaints.put(new Integer(edge), paint);
+			m_sourceArrowPaints.put(Integer.valueOf(edge), paint);
 	}
 
 	/**
@@ -182,7 +182,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public byte targetArrow(int edge) {
-		final Object o = m_targetArrows.get(new Integer(edge));
+		final Object o = m_targetArrows.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.targetArrow(edge);
@@ -196,9 +196,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	void overrideTargetArrow(int edge, byte arrowType) {
 		if ((arrowType >= 0) || (arrowType == super.targetArrow(edge)))
-			m_targetArrows.remove(new Integer(edge));
+			m_targetArrows.remove(Integer.valueOf(edge));
 		else
-			m_targetArrows.put(new Integer(edge), new Byte(arrowType));
+			m_targetArrows.put(Integer.valueOf(edge), new Byte(arrowType));
 	}
 
 	/**
@@ -209,7 +209,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint targetArrowPaint(int edge) {
-		final Object o = m_targetArrowPaints.get(new Integer(edge));
+		final Object o = m_targetArrowPaints.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.targetArrowPaint(edge);
@@ -222,9 +222,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	void overrideTargetArrowPaint(int edge, Paint paint) {
 		if ((paint == null) || paint.equals(super.targetArrowPaint(edge)))
-			m_targetArrowPaints.remove(new Integer(edge));
+			m_targetArrowPaints.remove(Integer.valueOf(edge));
 		else
-			m_targetArrowPaints.put(new Integer(edge), paint);
+			m_targetArrowPaints.put(Integer.valueOf(edge), paint);
 	}
 
 	private final MinIntHeap m_heap = new MinIntHeap();
@@ -402,7 +402,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public float segmentThickness(int edge) {
-		final Object o = m_segmentThicknesses.get(new Integer(edge));
+		final Object o = m_segmentThicknesses.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.segmentThickness(edge);
@@ -416,9 +416,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	void overrideSegmentThickness(int edge, float thickness) {
 		if ((thickness < 0.0f) || (thickness == super.segmentThickness(edge)))
-			m_segmentThicknesses.remove(new Integer(edge));
+			m_segmentThicknesses.remove(Integer.valueOf(edge));
 		else
-			m_segmentThicknesses.put(new Integer(edge), new Float(thickness));
+			m_segmentThicknesses.put(Integer.valueOf(edge), new Float(thickness));
 	}
 
 	/**
@@ -429,7 +429,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint segmentPaint(int edge) {
-		final Object o = m_segmentPaints.get(new Integer(edge));
+		final Object o = m_segmentPaints.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.segmentPaint(edge);
@@ -442,9 +442,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	void overrideSegmentPaint(int edge, Paint paint) {
 		if ((paint == null) || paint.equals(super.segmentPaint(edge)))
-			m_segmentPaints.remove(new Integer(edge));
+			m_segmentPaints.remove(Integer.valueOf(edge));
 		else
-			m_segmentPaints.put(new Integer(edge), paint);
+			m_segmentPaints.put(Integer.valueOf(edge), paint);
 	}
 
 	/**
@@ -455,7 +455,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public float segmentDashLength(int edge) {
-		final Object o = m_segmentDashLengths.get(new Integer(edge));
+		final Object o = m_segmentDashLengths.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.segmentDashLength(edge);
@@ -469,9 +469,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	void overrideSegmentDashLength(int edge, float length) {
 		if ((length < 0.0f) || (length == super.segmentDashLength(edge)))
-			m_segmentDashLengths.remove(new Integer(edge));
+			m_segmentDashLengths.remove(Integer.valueOf(edge));
 		else
-			m_segmentDashLengths.put(new Integer(edge), new Float(length));
+			m_segmentDashLengths.put(Integer.valueOf(edge), new Float(length));
 	}
 
 	/**
@@ -482,7 +482,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 * @return DOCUMENT ME!
 	 */
 	public int labelCount(int edge) {
-		final Object o = m_labelCounts.get(new Integer(edge));
+		final Object o = m_labelCounts.get(Integer.valueOf(edge));
 
 		if (o == null)
 			return super.labelCount(edge);
@@ -495,9 +495,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	void overrideLabelCount(int edge, int labelCount) {
 		if ((labelCount < 0) || (labelCount == super.labelCount(edge)))
-			m_labelCounts.remove(new Integer(edge));
+			m_labelCounts.remove(Integer.valueOf(edge));
 		else
-			m_labelCounts.put(new Integer(edge), new Integer(labelCount));
+			m_labelCounts.put(Integer.valueOf(edge), Integer.valueOf(labelCount));
 	}
 
 	/**
@@ -510,7 +510,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	public String labelText(int edge, int labelInx) {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
-		final String o = m_labelTexts.get(new Long(key));
+		final String o = m_labelTexts.get(Long.valueOf(key));
 
 		if (o == null)
 			return super.labelText(edge, labelInx);
@@ -525,9 +525,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
 
 		if ((text == null) || text.equals(super.labelText(edge, labelInx)))
-			m_labelTexts.remove(new Long(key));
+			m_labelTexts.remove(Long.valueOf(key));
 		else
-			m_labelTexts.put(new Long(key), text);
+			m_labelTexts.put(Long.valueOf(key), text);
 	}
 
 	/**
@@ -540,7 +540,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	public Font labelFont(int edge, int labelInx) {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
-		final Font o = m_labelFonts.get(new Long(key));
+		final Font o = m_labelFonts.get(Long.valueOf(key));
 
 		if (o == null)
 			return super.labelFont(edge, labelInx);
@@ -555,9 +555,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
 
 		if ((font == null) || font.equals(super.labelFont(edge, labelInx)))
-			m_labelFonts.remove(new Long(key));
+			m_labelFonts.remove(Long.valueOf(key));
 		else
-			m_labelFonts.put(new Long(key), font);
+			m_labelFonts.put(Long.valueOf(key), font);
 	}
 
 	/**
@@ -570,7 +570,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 	 */
 	public Paint labelPaint(int edge, int labelInx) {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
-		final Paint o = m_labelPaints.get(new Long(key));
+		final Paint o = m_labelPaints.get(Long.valueOf(key));
 
 		if (o == null)
 			return super.labelPaint(edge, labelInx);
@@ -585,9 +585,9 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		final long key = (((long) edge) << 32) | ((long) labelInx);
 
 		if ((paint == null) || paint.equals(super.labelPaint(edge, labelInx)))
-			m_labelPaints.remove(new Long(key));
+			m_labelPaints.remove(Long.valueOf(key));
 		else
-			m_labelPaints.put(new Long(key), paint);
+			m_labelPaints.put(Long.valueOf(key), paint);
 	}
 
 	/**

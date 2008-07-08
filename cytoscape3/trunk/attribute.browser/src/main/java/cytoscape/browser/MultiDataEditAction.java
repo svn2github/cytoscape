@@ -213,7 +213,7 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 				Double d = new Double(input);
 				doubleAction(d.doubleValue());
 			} else if (attType == CyAttributes.TYPE_INTEGER) {
-				Integer d = new Integer(input);
+				Integer d = Integer.valueOf(input);
 				integerAction(d.intValue());
 			} else if (attType == CyAttributes.TYPE_STRING) {
 				stringAction(input);
@@ -382,8 +382,8 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 			else
 				new_v = input;
 
-			new_values.add(new Integer(new_v));
-			setAttributeValue(go.getIdentifier(), attributeTo, new Integer(new_v));
+			new_values.add(Integer.valueOf(new_v));
+			setAttributeValue(go.getIdentifier(), attributeTo, Integer.valueOf(new_v));
 		} // iterator
 	} // integerAction
 

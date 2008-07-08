@@ -184,7 +184,7 @@ public class ExportBitmapOptionsDialog extends JDialog
 		c.fill = GridBagConstraints.NONE;
 		sizePanel.add(resolutionLabel, c);
 
-		Integer[] resolutions = { new Integer(72), new Integer(100), new Integer(150), new Integer(300) };
+		Integer[] resolutions = { Integer.valueOf(72), Integer.valueOf(100), Integer.valueOf(150), Integer.valueOf(300) };
 		resolutionComboBox = new JComboBox(resolutions);
 		resolutionComboBox.addActionListener(zoomListener);
 		c.gridx = 1;			c.gridy = 7;
@@ -244,8 +244,8 @@ public class ExportBitmapOptionsDialog extends JDialog
 		zoomField.setValue(new Double(newZoom * 100.0));
 		int newWidth = (int) (newZoom * originalWidth);
 		int newHeight = (int) (newZoom * originalHeight);
-		widthInPixelsField.setValue(new Integer(newWidth));
-		heightInPixelsField.setValue(new Integer(newHeight));
+		widthInPixelsField.setValue(Integer.valueOf(newWidth));
+		heightInPixelsField.setValue(Integer.valueOf(newHeight));
 		double dpi = ((Number) resolutionComboBox.getSelectedItem()).doubleValue();
 		double newWidthInches = newWidth / dpi;
 		double newHeightInches = newHeight / dpi;
