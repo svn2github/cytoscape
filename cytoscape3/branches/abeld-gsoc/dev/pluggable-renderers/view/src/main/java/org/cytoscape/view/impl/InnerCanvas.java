@@ -267,7 +267,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view,
 				                                               m_view.m_spacial, m_lod[0],
 				                                               m_view.m_nodeDetails,
 				                                               m_view.m_edgeDetails, m_hash,
@@ -334,7 +334,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
+			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -355,7 +355,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
+			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);

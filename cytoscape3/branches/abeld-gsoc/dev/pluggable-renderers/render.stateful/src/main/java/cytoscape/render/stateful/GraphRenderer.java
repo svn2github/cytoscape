@@ -44,6 +44,9 @@ import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
+
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 
@@ -142,14 +145,14 @@ public final class GraphRenderer {
 	 * @return bits representing the level of detail that was rendered; the
 	 *   return value is a bitwise-or'ed value of the LOD_* constants.
 	 */
-	public final static int renderGraph(final FixedGraph graph, final SpacialIndex2D nodePositions,
+	public final static int renderGraph(final FixedGraph graph, final GraphView graphView, final SpacialIndex2D nodePositions,
 	                                    final GraphLOD lod, final NodeDetails nodeDetails,
 	                                    final EdgeDetails edgeDetails, final IntHash nodeBuff,
 	                                    final GraphGraphics grafx, final Paint bgPaint,
 	                                    final double xCenter, final double yCenter,
 	                                    final double scaleFactor) {
 		nodeBuff.empty(); // Make sure we keep our promise.
-
+		System.out.println("GraphView:"+ graphView);
 		// Define the visible window in node coordinate space.
 		final float xMin;
 
@@ -664,7 +667,8 @@ public final class GraphRenderer {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
 
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
-						nodeRenderer.render(canvas, nodeDetails, floatBuff1, node);
+						NodeView nodeView = (NodeView) graphView.getNodeView(node);
+						nodeRenderer.render(canvas, nodeDetails, floatBuff1, node, nodeView);
 						/*
 						// Compute visual attributes that do not depend on LOD.
 						final byte shape = nodeDetails.shape(node);

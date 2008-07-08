@@ -2210,7 +2210,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	public void drawSnapshot(Image img, GraphLOD lod, Paint bgPaint, double xCenter,
 	                         double yCenter, double scaleFactor) {
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_drawPersp, m_spacial, lod, m_nodeDetails,
+			GraphRenderer.renderGraph((FixedGraph) m_drawPersp, this, m_spacial, lod, m_nodeDetails,
 			                          m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          bgPaint, xCenter, yCenter, scaleFactor);
 		}

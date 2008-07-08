@@ -3,6 +3,7 @@ package cytoscape.render.stateful;
 //import cytoscape.render.immed.GraphGraphics;
 import java.awt.*;
 import java.awt.geom.*;
+import org.cytoscape.view.NodeView;
 
 public class ShapeRenderer implements NodeRenderer {
 	public static final int CUSTOM_SHAPE_MAX_VERTICES = 100;
@@ -111,7 +112,7 @@ public class ShapeRenderer implements NodeRenderer {
 	 *                nodeShape is neither one of the SHAPE_* constants nor a
 	 *                previously defined custom node shape.
 	 */
-	public void render(Graphics2D m_g2d, NodeDetails nodeDetails, float[] floatBuff1, int node) {
+	public void render(Graphics2D m_g2d, NodeDetails nodeDetails, float[] floatBuff1, int node, NodeView nodeView) {
 
 		
 		// TODO Auto-generated method stub
