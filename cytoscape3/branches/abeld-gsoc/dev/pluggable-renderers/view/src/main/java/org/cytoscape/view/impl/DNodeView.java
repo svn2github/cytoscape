@@ -113,7 +113,7 @@ public class DNodeView implements NodeView, Label {
 		m_view = view;
 		m_inx = ~inx;
 		m_selected = false;
-		m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
+		m_unselectedPaint = Color.red;
 		m_selectedPaint = Color.yellow;
 		m_borderPaint = m_view.m_nodeDetails.borderPaint(m_inx);
 		m_graphicShapes = null;
