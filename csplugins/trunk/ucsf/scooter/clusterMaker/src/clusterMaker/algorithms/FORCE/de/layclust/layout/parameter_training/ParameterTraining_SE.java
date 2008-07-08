@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
-// import org.apache.log4j.Logger;
+import cytoscape.logger.CyLogger;
 
 import de.layclust.layout.ILayoutInitialiser;
 import de.layclust.layout.LayoutFactory;
@@ -23,7 +23,7 @@ import de.layclust.taskmanaging.TaskConfig;
  */
 public class ParameterTraining_SE implements IParameterTraining {
 	
-	// private static org.apache.log4j.Logger log = Logger.getLogger(ParameterTraining_SE.class);
+	private static CyLogger log = CyLogger.getLogger(ParameterTraining_SE.class);
 
 	/* type of layouter that is being used */
 	private int layouterType = -1;
@@ -107,8 +107,7 @@ public class ParameterTraining_SE implements IParameterTraining {
 			return bestConfigsArray[0];
 
 		} catch (InvalidTypeException ex) {
-			// log.fatal(ex.getMessage());
-			System.err.println(ex.getMessage());
+			log.fatal(ex.getMessage());
 			ex.printStackTrace();	
 			System.exit(-1);
 		}
@@ -238,8 +237,7 @@ public class ParameterTraining_SE implements IParameterTraining {
 						generationParameterSet[i], layouterType);
 				/* use threads */
 				if(TaskConfig.useThreadsForParameterTraining){					
-					// log.info("Using threads for layout parameter training");
-					System.out.println("Using threads for layout parameter training");
+					log.info("Using threads for layout parameter training");
 					/* create a semaphore for tracking the thread */
 					semaphore = new Semaphore(1, true);
 					allSemaphore[i] = semaphore;
@@ -265,8 +263,7 @@ public class ParameterTraining_SE implements IParameterTraining {
 		} catch (InterruptedException e) {
 			/* Exception created by Semaphore.aquire() - if the thread is 
 			 * interrupted */
-			// log.fatal(e.getMessage());
-			System.err.println(e.getMessage());
+			log.fatal(e.getMessage());
 			e.printStackTrace();
 			System.exit(-1);
 		}

@@ -797,6 +797,7 @@ public class Playground {
 		// int item = (Integer) entry.getValue();
 		Double key = itemsByPickUpProbability.lastKey();
 		int item = ((Integer) itemsByPickUpProbability.get(key)).intValue();
+
 		JumpingAnt ant = new JumpingAnt(this);
 		ant.setPosition(getItemLocation(item));
 		ant.drop();

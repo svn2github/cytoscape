@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -48,6 +49,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.groups.CyGroup;
+import cytoscape.groups.CyGroupImpl;
 import cytoscape.groups.CyGroupManager;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
@@ -108,6 +110,8 @@ public class CytoscapeFORCEgui extends JPanel implements ActionListener, MouseLi
 	private JTextField stepSizeForComparison = new JTextField("0.5");
 	private JButton runComparisonButton;
 	
+	private String groupAttributeCC = "__FORCEccGroups";
+	private String groupAttribute = "__FORCEGroups";
 	
 	public CytoscapeFORCEgui() {
 		
@@ -198,8 +202,7 @@ public class CytoscapeFORCEgui extends JPanel implements ActionListener, MouseLi
 		
 		makeAdvancedOptionsPanel();
 		
-		
-		// TODO comparison panel
+		// ---- comparison panel
 		
 		JPanel dummy2 = new JPanel();
 		dummy2.setLayout(new BoxLayout(dummy2,BoxLayout.Y_AXIS));
@@ -904,13 +907,58 @@ public class CytoscapeFORCEgui extends JPanel implements ActionListener, MouseLi
 		
 		br.close();
 		
+		Hashtable<Integer, Vector<CyNode>> nodeListForGivenClusterNumber = new Hashtable<Integer, Vector<CyNode>>();
+		
 		for (Iterator<CyNode> i = nodes.iterator(); i.hasNext();) {
 			
 			CyNode n = i.next();
 			
-			cyNodeAttributes.setAttribute(n.getIdentifier(), this.attributeNameCluster.getText(), clusterForGivenNode.get(n.getIdentifier()));
+			int clusterNr =  clusterForGivenNode.get(n.getIdentifier());
+			cyNodeAttributes.setAttribute(n.getIdentifier(), this.attributeNameCluster.getText(), clusterNr);
 			
+			Vector<CyNode> v = new Vector<CyNode>();
+			if (nodeListForGivenClusterNumber.containsKey(clusterNr)) {
+				v = nodeListForGivenClusterNumber.get(clusterNr);
+			}
+			v.add(n);
+			nodeListForGivenClusterNumber.put(clusterNr, v);
 		}
+		
+		
+		
+		
+		
+		// See if we already have groups defined (from a previous run?)
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+		String networkID = Cytoscape.getCurrentNetwork().getIdentifier();
+		if (netAttributes.hasAttribute(networkID, this.groupAttribute)) {
+			List<String> groupList = (List<String>)netAttributes.getListAttribute(networkID, this.groupAttribute);
+			for (String groupName: groupList) {
+				CyGroup group = CyGroupManager.findGroup(groupName);
+				if (group != null)
+					CyGroupManager.removeGroup(group);
+			}
+		}
+		
+		
+		
+		// Now, create the groups
+		List<String>groupList = new ArrayList<String>();
+		for (Integer clusterNumber: nodeListForGivenClusterNumber.keySet()) {
+			String groupName = this.attributeNameCluster.getText()+"_"+clusterNumber;
+			List<CyNode>nodeList = nodeListForGivenClusterNumber.get(clusterNumber);
+			// Create the group
+			CyGroup newgroup = CyGroupManager.createGroup(groupName, nodeList, null);
+			if (newgroup != null) {
+				// Now tell the metanode viewer about it
+				CyGroupManager.setGroupViewer(newgroup, "metaNode", Cytoscape.getCurrentNetworkView(), true);
+				groupList.add(groupName);
+			}
+		}
+
+		// Save the network attribute so we remember which groups are ours
+		netAttributes.setListAttribute(networkID, this.groupAttribute, groupList);
+		
 		
 	}
 
@@ -1089,6 +1137,20 @@ public class CytoscapeFORCEgui extends JPanel implements ActionListener, MouseLi
 		
 		int clusterNr = 0;
 		
+		// TODO: metanode stuff
+		
+		String networkID = Cytoscape.getCurrentNetwork().getIdentifier();
+		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
+		if (netAttributes.hasAttribute(networkID, groupAttributeCC)) {
+			List<String> groupList = (List<String>)netAttributes.getListAttribute(networkID, groupAttributeCC);
+			for (String groupName: groupList) {
+				CyGroup group = CyGroupManager.findGroup(groupName);
+				if (group != null)
+					CyGroupManager.removeGroup(group);
+			}
+		}
+		
+		List<String>groupList = new ArrayList<String>();
 		for (Iterator<CyNode> i = nodes.iterator(); i.hasNext();) {
 			
 			CyNode node = i.next();
@@ -1100,17 +1162,22 @@ public class CytoscapeFORCEgui extends JPanel implements ActionListener, MouseLi
 				assingNodeToCluster(already, node, id, clusterNr, nodesInThisCluster);
 				clusterNr++;
 				
-				//TODO: do metaNode stuff here
-//				CyGroup group = CyGroupManager.createGroup(attributeNameCC.getText() + "_" + clusterNr, nodesInThisCluster, "metaNode");
-//				MetaNode newNode = new MetaNode(group);
-//				newNode.collapse(MetaNodePlugin2.recursive, MetaNodePlugin2.multipleEdges, true, null);
+				String groupName = this.attributeNameCC.getText() +"_" + clusterNr;
+				
+				CyGroup newgroup = CyGroupManager.createGroup(groupName, nodesInThisCluster, null);
+				if (newgroup != null) {
+					CyGroupManager.setGroupViewer(newgroup, "metaNode", Cytoscape.getCurrentNetworkView(), true);
+					groupList.add(groupName);
+				}
 				
 			}
 			
 			step++;
 			if ((step%10) == 0) Console.setBarValue(step);
 		}
-
+		
+		netAttributes.setListAttribute(networkID, groupAttributeCC, groupList);
+		
 		Console.closeWindow();
 		return true;
 	}
@@ -1516,6 +1583,7 @@ public class CytoscapeFORCEgui extends JPanel implements ActionListener, MouseLi
 						
 						
 			t = new JTable(data, columnNames);
+			// Not in Java 1.5
 			// t.setAutoCreateRowSorter(true);
 			
 			

@@ -1,6 +1,6 @@
 package de.layclust.layout.forcend;
 
-// import org.apache.log4j.Logger;
+import cytoscape.logger.CyLogger;
 
 import de.layclust.layout.ILayoutInitialiser;
 import de.layclust.layout.ILayouter;
@@ -12,7 +12,7 @@ import de.layclust.taskmanaging.TaskConfig;
 
 public class FORCEnDLayouter implements ILayouter {
 	
-	// private static org.apache.log4j.Logger log = Logger.getLogger(FORCEnDLayouter.class);
+	private static CyLogger log = CyLogger.getLogger(FORCEnDLayouter.class);
 	
 	private ConnectedComponent cc = null;
 	private int dim = -1;
@@ -68,21 +68,16 @@ public class FORCEnDLayouter implements ILayouter {
 		this.parameters = (FORCEnDParameters) parameters;
 		
 		if(cc.getCCPositions()==null){
-			System.out.println("Positions have not been initialised, perhaps" +
-			 		"wrong use of this constructor!");
-			// log.warn("Positions have not been initialised, perhaps" +
-			// 		"wrong use of this constructor!");
+			log.warn("Positions have not been initialised, perhaps" +
+					"wrong use of this constructor!");
 			ILayoutInitialiser li;
 			try {
 				li = LayoutFactory.getLayouterInitialiserByType(LayoutFactory.FORCEND);
 				li.initLayoutInitialiser(cc);
 				li.run();
 			} catch (InvalidTypeException e) {
-				// log.error(e.getMessage());
-				System.err.println(e.getMessage());
-				// log.warn("Using LayoutInitHSphere as default layout initialiser. If this is" +
-				// 		"unwanted, then the previous error need to be taken care of.");
-				System.out.println("Using LayoutInitHSphere as default layout initialiser. If this is" +
+				log.error(e.getMessage());
+				log.warn("Using LayoutInitHSphere as default layout initialiser. If this is" +
 						"unwanted, then the previous error need to be taken care of.");
 				
 				li = new LayoutInitHSphere(cc);

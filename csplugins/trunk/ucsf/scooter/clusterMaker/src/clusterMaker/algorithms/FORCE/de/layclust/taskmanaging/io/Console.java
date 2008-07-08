@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 
-// import org.apache.log4j.Logger;
+import cytoscape.logger.CyLogger;
 
 import de.layclust.layout.LayoutFactory;
 import de.layclust.layout.acc.ACCConfig;
@@ -35,8 +35,8 @@ import de.layclust.taskmanaging.TaskUtility;
  */
 public class Console {
 	
-//    private static org.apache.log4j.Logger log = Logger
-//    	.getLogger(LogClass.class);
+    private static CyLogger log = CyLogger
+    	.getLogger(LogClass.class);
 
 	private String cmPath = null;
 
@@ -188,8 +188,7 @@ public class Console {
 					throw new ArgsParseException("The dimension given is too small: "+value);
 				}
 				if(dim>3){
-					System.out.println("If using the ACCLayouter, then any dimension greater than 3 is very time expensive. Recommended are dimensions 2 or 3.");
-					// log.warn("If using the ACCLayouter, then any dimension greater than 3 is very time expensive. Recommended are dimensions 2 or 3.");
+					log.warn("If using the ACCLayouter, then any dimension greater than 3 is very time expensive. Recommended are dimensions 2 or 3.");
 				}
 				TaskConfig.dimension = dim;
 			} else if (key.equals("-lp")) {
