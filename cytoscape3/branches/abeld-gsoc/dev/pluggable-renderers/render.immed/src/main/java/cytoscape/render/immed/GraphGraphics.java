@@ -220,7 +220,6 @@ public final class GraphGraphics {
 	private final Line2D.Double m_line2d = new Line2D.Double();
 	private final double[] m_polyCoords = // I need this for extra precision.
 	new double[2 * CUSTOM_SHAPE_MAX_VERTICES];
-	private final HashMap<Byte, double[]> m_customShapes = new HashMap<Byte, double[]>();
 	private final double[] m_ptsBuff = new double[4];
 	private final EdgeAnchors m_noAnchors = new EdgeAnchors() {
 		public final int numAnchors() {
@@ -244,9 +243,6 @@ public final class GraphGraphics {
 	private float m_currStrokeWidth;
 	private final float[] m_currDash = new float[] { 0.0f, 0.0f };
 	private int m_currCapType;
-
-	// This member variable only to be used from within defineCustomNodeShape().
-	private byte m_lastCustomShapeType = s_last_shape;
 
 	// This is only used by computeCubicPolyEdgePath().
 	private final float[] m_floatBuff = new float[2];
@@ -613,280 +609,6 @@ public final class GraphGraphics {
 		path.append(getShape(nodeShape, xMin, yMin, xMax, yMax), false);
 	}
 
-	/**
-	 * The custom node shape that is defined is a polygon specified by the
-	 * coordinates supplied. The polygon must meet several constraints listed
-	 * below.
-	 * <p>
-	 * If we define the value xCenter to be the average of the minimum and
-	 * maximum X values of the vertices and if we define yCenter likewise, then
-	 * the specified polygon must meet the following constraints:
-	 * <ol>
-	 * <li>Each polygon line segment must have nonzero length.</li>
-	 * <li>No two consecutive polygon line segments can be parallel (this
-	 * essentially implies that the polygon must have at least three vertices).</li>
-	 * <li>No two distinct non-consecutive polygon line segments may intersect
-	 * (not even at the endpoints); this makes possible the notion of interior
-	 * of the polygon.</li>
-	 * <li>The polygon must be star-shaped with respect to the point (xCenter,
-	 * yCenter); a polygon is said to be <i>star-shaped with respect to a point
-	 * (a,b)</i> if and only if for every point (x,y) in the interior or on the
-	 * boundary of the polygon, the interior of the segment (a,b)->(x,y) lies in
-	 * the interior of the polygon.</li>
-	 * <li>The path traversed by the polygon must be clockwise where +X points
-	 * right and +Y points down.</li>
-	 * </ol>
-	 * <p>
-	 * In addition to these constraints, when rendering custom nodes with
-	 * nonzero border width, possible problems may arise if the border width is
-	 * large with respect to the kinks in the polygon.
-	 * 
-	 * @param coords
-	 *            vertexCount * 2 consecutive coordinate values are read from
-	 *            this array starting at coords[offset]; coords[offset],
-	 *            coords[offset + 1], coords[offset + 2], coords[offset + 3] and
-	 *            so on are interpreted as x0, y0, x1, y1, and so on; the
-	 *            initial vertex need not be repeated as the last vertex
-	 *            specified.
-	 * @param offset
-	 *            the starting index of where to read coordinates from in the
-	 *            coords parameter.
-	 * @param vertexCount
-	 *            the number of vertices to read from coords; vertexCount * 2
-	 *            entries in coords are read.
-	 * @return the node shape identifier to be used in future rendering calls
-	 *         (to be used as parameter nodeShape in method drawNodeFull()).
-	 * @exception IllegalArgumentException
-	 *                if any of the constraints are not met, or if the specified
-	 *                polygon has more than CUSTOM_SHAPE_MAX_VERTICES vertices.
-	 * @exception IllegalStateException
-	 *                if too many custom node shapes are already defined; a
-	 *                little over one hundered custom node shapes can be
-	 *                defined.
-	 */
-	public final byte defineCustomNodeShape(final float[] coords,
-			final int offset, final int vertexCount) {
-		if (vertexCount > CUSTOM_SHAPE_MAX_VERTICES) {
-			throw new IllegalArgumentException(
-					"too many vertices (greater than "
-							+ CUSTOM_SHAPE_MAX_VERTICES + ")");
-		}
-
-		final double[] polyCoords;
-
-		{
-			polyCoords = new double[vertexCount * 2];
-
-			for (int i = 0; i < polyCoords.length; i++)
-				polyCoords[i] = coords[offset + i];
-
-			// Normalize the polygon so that it spans [-0.5, 0.5] x [-0.5, 0.5].
-			double xMin = Double.POSITIVE_INFINITY;
-			double yMin = Double.POSITIVE_INFINITY;
-			double xMax = Double.NEGATIVE_INFINITY;
-			double yMax = Double.NEGATIVE_INFINITY;
-
-			for (int i = 0; i < polyCoords.length;) {
-				xMin = Math.min(xMin, coords[i]);
-				xMax = Math.max(xMax, coords[i++]);
-				yMin = Math.min(yMin, coords[i]);
-				yMax = Math.max(yMax, coords[i++]);
-			}
-
-			final double xDist = xMax - xMin;
-
-			if (xDist == 0.0d) {
-				throw new IllegalArgumentException(
-						"polygon does not move in the X direction");
-			}
-
-			final double yDist = yMax - yMin;
-
-			if (yDist == 0.0d) {
-				throw new IllegalArgumentException(
-						"polygon does not move in the Y direction");
-			}
-
-			final double xMid = (xMin + xMax) / 2.0d;
-			final double yMid = (yMin + yMax) / 2.0d;
-
-			for (int i = 0; i < polyCoords.length;) {
-				double foo = (polyCoords[i] - xMid) / xDist;
-				polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
-				foo = (polyCoords[i] - yMid) / yDist;
-				polyCoords[i++] = Math.min(Math.max(-0.5d, foo), 0.5d);
-			}
-		}
-
-		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-		}
-
-		{ // Test all criteria regardless of m_debug.
-
-			int yInterceptsCenter = 0;
-
-			for (int i = 0; i < vertexCount; i++) {
-				final double x0 = polyCoords[i * 2];
-				final double y0 = polyCoords[(i * 2) + 1];
-				final double x1 = polyCoords[((i * 2) + 2) % (vertexCount * 2)];
-				final double y1 = polyCoords[((i * 2) + 3) % (vertexCount * 2)];
-				final double x2 = polyCoords[((i * 2) + 4) % (vertexCount * 2)];
-				final double y2 = polyCoords[((i * 2) + 5) % (vertexCount * 2)];
-				final double distP0P1 = Math.sqrt(((x1 - x0) * (x1 - x0))
-						+ ((y1 - y0) * (y1 - y0)));
-
-				if ((float) distP0P1 == 0.0f) { // Too close to distance zero.
-					throw new IllegalArgumentException(
-							"a line segment has distance [too close to] zero");
-				}
-
-				final double distP2fromP0P1 = ((((y0 - y1) * x2)
-						+ ((x1 - x0) * y2) + (x0 * y1)) - (x1 * y0))
-						/ distP0P1;
-
-				if ((float) distP2fromP0P1 == 0.0f) { // Too close to
-					// parallel.
-					throw new IllegalArgumentException(
-							"either a line segment has distance [too close to] zero or "
-									+ "two consecutive line segments are [too close to] parallel");
-				}
-
-				final double distCenterFromP0P1 = ((x0 * y1) - (x1 * y0))
-						/ distP0P1;
-
-				if (!((float) distCenterFromP0P1 > 0.0f)) {
-					throw new IllegalArgumentException(
-							"polygon is going counter-clockwise or is not star-shaped with "
-									+ "respect to center");
-				}
-
-				if ((Math.min(y0, y1) < 0.0d) && (Math.max(y0, y1) >= 0.0d)) {
-					yInterceptsCenter++;
-				}
-			}
-
-			if (yInterceptsCenter != 2) {
-				throw new IllegalArgumentException(
-						"the polygon self-intersects (we know this because the winding "
-								+ "number of the center is not one)");
-			}
-		}
-
-		// polyCoords now contains a polygon spanning [-0.5, 0.5] X [-0.5, 0.5]
-		// that passes all of the criteria.
-		final byte nextCustomShapeType = (byte) (m_lastCustomShapeType + 1);
-
-		if (nextCustomShapeType < 0) {
-			throw new IllegalStateException(
-					"too many custom node shapes are already defined");
-		}
-
-		m_lastCustomShapeType++;
-		m_customShapes.put(new Byte(nextCustomShapeType), polyCoords);
-
-		return nextCustomShapeType;
-	}
-
-	/**
-	 * Determines whether the specified shape is a custom defined node shape.
-	 */
-	public final boolean customNodeShapeExists(final byte shape) {
-		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-		}
-
-		return (shape > s_last_shape) && (shape <= m_lastCustomShapeType);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 * 
-	 * @return DOCUMENT ME!
-	 */
-	public final byte[] getCustomNodeShapes() {
-		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-		}
-
-		final byte[] returnThis = new byte[m_lastCustomShapeType - s_last_shape];
-
-		for (int i = 0; i < returnThis.length; i++) {
-			returnThis[i] = (byte) (s_last_shape + 1 + i);
-		}
-
-		return returnThis;
-	}
-
-	/**
-	 * Returns the vertices of a previously defined custom node shape. The
-	 * polygon will be normalized to fit within the [-0.5, 0.5] x [-0.5, 0.5]
-	 * square. Returns null if specified shape is not a previously defined
-	 * custom shape.
-	 */
-	public final float[] getCustomNodeShape(final byte customShape) {
-		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-		}
-
-		final double[] dCoords = m_customShapes.get(new Byte(customShape));
-
-		if (dCoords == null) {
-			return null;
-		}
-
-		final float[] returnThis = new float[dCoords.length];
-
-		for (int i = 0; i < returnThis.length; i++) {
-			returnThis[i] = (float) dCoords[i];
-		}
-
-		return returnThis;
-	}
-
-	/**
-	 * If this is a new instance, imports the custom node shapes from the
-	 * GraphGraphics specified into this GraphGraphics.
-	 * 
-	 * @param grafx
-	 *            custom node shapes will be imported from this GraphGraphics.
-	 * @exception IllegalStateException
-	 *                if at least one custom node shape is already defined in
-	 *                this GraphGraphics.
-	 */
-	public final void importCustomNodeShapes(final GraphGraphics grafx) {
-		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-		}
-
-		// I define this error check outside the scope of m_debug because
-		// clobbering existing custom node shape definitions could be major.
-		if (m_lastCustomShapeType != s_last_shape) {
-			throw new IllegalStateException(
-					"a custom node shape is already defined in this GraphGraphics");
-		}
-
-		for (Map.Entry<Byte, double[]> entry : grafx.m_customShapes.entrySet()) {
-			m_customShapes.put(entry.getKey(), entry.getValue());
-			m_lastCustomShapeType++;
-		}
-	}
-
 	/*
 	 * This method has the side effect of setting m_ellp2d or m_path2d; if
 	 * m_path2d is set (every case but the ellipse and rounded rectangle), then
@@ -1009,29 +731,9 @@ public final class GraphGraphics {
 
 			break;
 
-		default: // Try a custom node shape or throw an exception.
-
-			final double[] storedPolyCoords = // To optimize don't construct
-			// Byte.
-			(double[]) m_customShapes.get(new Byte(nodeShape));
-
-			if (storedPolyCoords == null) {
-				throw new IllegalArgumentException(
-						"nodeShape is not recognized");
-			}
-
-			m_polyNumPoints = storedPolyCoords.length / 2;
-
-			final double desiredXCenter = (xMin + xMax) / 2.0d;
-			final double desiredYCenter = (yMin + yMax) / 2.0d;
-			final double desiredWidth = xMax - xMin;
-			final double desiredHeight = yMax - yMin;
-			m_xformUtil.setToTranslation(desiredXCenter, desiredYCenter);
-			m_xformUtil.scale(desiredWidth, desiredHeight);
-			m_xformUtil.transform(storedPolyCoords, 0, m_polyCoords, 0,
-					m_polyNumPoints);
-
-			break;
+		default:
+			throw new IllegalArgumentException("nodeShape is not recognized");
+		    //break;
 		}
 
 		m_path2d.reset();
@@ -3148,43 +2850,6 @@ public final class GraphGraphics {
 		}
 
 		return m_fontRenderContextFull;
-	}
-
-	/**
-	 * Fills an arbitrary graphical shape with high detail.
-	 * <p>
-	 * This method will not work unless clear() has been called at least once
-	 * previously.
-	 * 
-	 * @param shape
-	 *            the shape to fill; the shape is specified in node coordinates.
-	 * @param xOffset
-	 *            in node coordinates, a value to add to the X coordinates of
-	 *            the shape's definition.
-	 * @param yOffset
-	 *            in node coordinates, a value to add to the Y coordinates of
-	 *            the shape's definition.
-	 * @param paint
-	 *            the paint to use when filling the shape.
-	 */
-	public final void drawCustomGraphicFull(final Shape shape,
-			final float xOffset, final float yOffset, final Paint paint) {
-		if (m_debug) {
-			if (!EventQueue.isDispatchThread()) {
-				throw new IllegalStateException(
-						"calling thread is not AWT event dispatcher");
-			}
-
-			if (!m_cleared) {
-				throw new IllegalStateException(
-						"clear() has not been called previously");
-			}
-		}
-
-		m_g2d.translate(xOffset, yOffset);
-		m_g2d.setPaint(paint);
-		m_g2d.fill(shape);
-		m_g2d.setTransform(m_currNativeXform);
 	}
 
 	private enum ShapeTypes {

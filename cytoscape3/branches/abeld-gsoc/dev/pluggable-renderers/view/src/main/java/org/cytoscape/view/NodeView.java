@@ -245,10 +245,4 @@ public interface NodeView  extends GraphViewObject {
   public double getLabelOffsetX();
   public double getLabelOffsetY();
   public int getNodeLabelAnchor();
-
-	public int getCustomGraphicCount();
-	public Shape getCustomGraphicShape(int index);
-	public Paint getCustomGraphicPaint(int index);
-	public void removeCustomGraphic(int index);
-	public void addCustomGraphic(Shape s, Paint p, int index);
 }

@@ -37,7 +37,6 @@
 package cytoscape.render.stateful;
 
 import cytoscape.render.immed.GraphGraphics;
-import cytoscape.render.stateful.CustomGraphic;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -367,40 +366,6 @@ public class NodeDetails {
 	}
 
 	/**
-	 * Returns the number of custom graphics that this node has.  By default this
-	 * method returns zero.  A custom graphic extends the concept of node label
-	 * to include any arbitrary filled shape.
-	 */
-	public int graphicCount(final int node) {
-		return 0;
-	}
-
-	/**
-	 * Returns a custom graphic's shape.  This shape will be filled by the
-	 * rendering engine.  By default this method always returns null.  This
-	 * method is only called by the rendering engine if graphicCount(node)
-	 * returns a value greater than zero.  It is an error to return null if
-	 * this method is called by the rendering engine.
-	 * @param graphicInx a value in the range [0, graphicCount(node)-1]
-	 *   indicating which node graphic in question.
-	 */
-	public Shape graphicShape(final int node, final int graphicInx) {
-		return null;
-	}
-
-	/**
-	 * Returns the fill paint of a custom graphic.  By default this
-	 * method always returns null.  This method is only called by the rendering
-	 * engine if graphicCount(node) returns a value greater than zero.  It is
-	 * an error to return null if this method is called by the rendering engine.
-	 * @param graphicInx a value in the range [0, graphicCount(node)-1]
-	 *   indicating which node graphic in question.
-	 */
-	public Paint graphicPaint(final int node, final int graphicInx) {
-		return null;
-	}
-
-	/**
 	 * By returning one of the ANCHOR_* constants, specifies
 	 * where on the node's extents rectangle the graphic anchor point lies.
 	 * The filled shape is rendered at a location which is equal to this
@@ -459,55 +424,6 @@ public class NodeDetails {
      */
     public int customGraphicCount(final int node) {
 	return 0;
-    }
-
-    /**
-     * Return a non-null, read-only Iterator over all CustomGraphics contained in this Node.
-     * The Iterator will return each CustomGraphic in draw order.
-     * The Iterator cannot be used to modify the underlying set of CustomGraphics.
-     * NOTE: This method should be abstract, but since it isn't, any real use should override this
-     *       method in a subclass.
-     * @return The CustomGraphics Iterator. If no CustomGraphics are
-     * associated with this Node, an empty Iterator is returned.
-     * @throws UnsupportedOperationException if an attempt is made to use the Iterator's remove() method.
-     * @since Cytoscape 2.6
-     * @see #customGraphicsLock(int)
-     */
-    // Should probably be getCustomGraphics(), but all the methods
-    // seem to have this form.
-    public Iterator<CustomGraphic> customGraphics (final int node) {
-	return new Iterator<CustomGraphic>() {
-	    private Iterator<CustomGraphic> _iterator =  new ArrayList<CustomGraphic>(0).iterator();
-	    public boolean hasNext() {return _iterator.hasNext();}
-	    public CustomGraphic next() {return _iterator.next();}
-	    public void remove() {
-		throw new UnsupportedOperationException();
-	    }
-	};
-    }
-
-    /**
-     * Return the object used for synchronizing custom graphics operations for a given Node.
-     * This is used in conjunction with the customGraphics() Iterator to allow iteration over
-     * the custom graphics without fear of the underlying CustomGraphics mutating.
-     * For example:
-     * <PRE>
-     *    NodeDetails nd = ...;
-     *    synchronized (nd.customGraphicsLock(node)) {
-     *       Iterator<CustomGraphic> dNodeIt = nodeDetails.customGraphics (node);
-     *       CustomGraphic cg = null;
-     *       while (dNodeIt.hasNext()) {
-     *          cg = dNodeIt.next();
-     *          // DO STUFF WITH cg HERE.
-     *       }
-     *    }
-     * </PRE>
-     * NOTE: This method should be abstract, but since it isn't, any real use should override this
-     *       method in a subclass.
-     * @since Cytoscape 2.6
-     */
-    public Object customGraphicsLock(final int node) {
-	return this;
     }
 
 	/**

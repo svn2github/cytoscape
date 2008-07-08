@@ -37,7 +37,6 @@
 package org.cytoscape.view.impl;
 
 import cytoscape.render.stateful.NodeDetails;
-import cytoscape.render.stateful.CustomGraphic;
 
 
 import cytoscape.util.intr.IntObjHash;
@@ -359,63 +358,6 @@ class DNodeDetails extends IntermediateNodeDetails {
 		else
 			m_labelPaints.put(new Long(key), paint);
 	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	@Deprecated public int graphicCount(int node) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
-
-		return nv.getCustomGraphicCount();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param inx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	@Deprecated public Shape graphicShape(int node, int inx) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
-
-		return nv.getCustomGraphicShape(inx);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 * @param inx DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	@Deprecated public Paint graphicPaint(int node, int inx) {
-		final DNodeView nv = (DNodeView) m_view.getNodeView(~node);
-
-		return nv.getCustomGraphicPaint(inx);
-	}
-    // overrides NodeDetails.customGraphicCount():
-    public int customGraphicCount(final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);	
-	return dnv.getNumCustomGraphics();
-    }
-
-    // overrides NodeDetails.customGraphics():
-    public Iterator<CustomGraphic> customGraphics (final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
-	return dnv.customGraphicIterator();
-    }
-    // overrides NodeDetails.customGraphicLock():
-    public Object customGraphicLock (final int node) {
-	final DNodeView dnv = (DNodeView) m_view.getNodeView(~node);
-	return dnv.customGraphicLock();	
-    }
 
 	// label positioning
 	/**
