@@ -119,6 +119,12 @@ public class DNodeView implements NodeView, Label {
 		m_graphicShapes = null;
 		m_graphicPaints = null;
 		visualAttributes = new HashMap<String, Object>();
+		/* default values -- FIXME: should be somewhere else */
+		visualAttributes.put("selectedPaint", Color.orange);
+		visualAttributes.put("unselectedPaint", Color.blue);
+		visualAttributes.put("borderWidth", new Double(0.1));
+		visualAttributes.put("borderPaint", Color.green);
+		visualAttributes.put("borderStroke", new BasicStroke((float) 0.1));
 	}
 
 	public HashMap<String, Object> getVisualAttributes(){

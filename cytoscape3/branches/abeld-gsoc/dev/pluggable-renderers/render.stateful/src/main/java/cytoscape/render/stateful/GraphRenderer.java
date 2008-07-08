@@ -152,7 +152,7 @@ public final class GraphRenderer {
 	                                    final double xCenter, final double yCenter,
 	                                    final double scaleFactor) {
 		nodeBuff.empty(); // Make sure we keep our promise.
-		System.out.println("GraphView:"+ graphView);
+		
 		// Define the visible window in node coordinate space.
 		final float xMin;
 
@@ -663,11 +663,12 @@ public final class GraphRenderer {
 			} else { // High detail.
 				NodeRenderer nodeRenderer = new ShapeRenderer();
 				Graphics2D canvas = grafx.getCanvas();
+
 				while (nodeHits.numRemaining() > 0) {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
 
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
-						NodeView nodeView = (NodeView) graphView.getNodeView(node);
+						NodeView nodeView = (NodeView) graphView.getNodeView(~node); // need to ~ because nodeHits stores node indices that way
 						nodeRenderer.render(canvas, nodeDetails, floatBuff1, node, nodeView);
 					}
 
