@@ -52,6 +52,7 @@ import cytoscape.CyNode;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CytoscapeDesktop;
@@ -86,7 +87,7 @@ public class GroupTool extends CytoscapePlugin
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
 
-		System.out.println("Group Tool Plugin "+VERSION+" initialized");
+		CyLogger.getLogger(GroupTool.class).info("Group Tool Plugin "+VERSION+" initialized");
 	}
 
 	public void actionPerformed(ActionEvent e) {

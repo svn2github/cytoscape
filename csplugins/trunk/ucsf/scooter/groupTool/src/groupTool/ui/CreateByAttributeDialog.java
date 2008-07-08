@@ -96,7 +96,6 @@ public class CreateByAttributeDialog extends JDialog
 	 */
 	private void initComponents() {
 		this.setTitle("Create Groups By Attributes");
-		System.out.println("initComponents");
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -116,7 +115,8 @@ public class CreateByAttributeDialog extends JDialog
 		String nodeNames[] = nodeAttributes.getAttributeNames();
 		attributeSelector.addItem("Select attribute to group by");
 		for (int i = 0; i < nodeNames.length; i++) {
-			if (nodeAttributes.getType(nodeNames[i]) == CyAttributes.TYPE_STRING) {
+			if (nodeAttributes.getType(nodeNames[i]) == CyAttributes.TYPE_STRING
+			    || nodeAttributes.getType(nodeNames[i]) == CyAttributes.TYPE_INTEGER) {
 				attributeSelector.addItem(nodeNames[i]);
 			}
 		}

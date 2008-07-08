@@ -193,7 +193,7 @@ public class GroupToolDialog extends JDialog
 		} else if ("delete".equals(e.getActionCommand())) {
 			int rows[] = groupTable.getSelectedRows();
 			for (int row = 0; row < rows.length; row++) {
-				String groupName = (String) groupTable.getValueAt(row, 0);
+				String groupName = (String) groupTable.getValueAt(rows[row], 0);
 				CyGroup group = CyGroupManager.findGroup(groupName);
 				if (group == null) continue;
 				CyGroupManager.removeGroup(group);
@@ -210,7 +210,7 @@ public class GroupToolDialog extends JDialog
 			if (rows == null) return;
 			int cols[] = groupTable.getSelectedColumns();
 			for (int row = 0; row < rows.length; row++) {
-				String groupName = (String) groupTable.getValueAt(row, 0);
+				String groupName = (String) groupTable.getValueAt(rows[row], 0);
 				CyGroup group = CyGroupManager.findGroup(groupName);
 				if (group == null) continue;
 
@@ -220,13 +220,13 @@ public class GroupToolDialog extends JDialog
 					if ("clear".equals(e.getActionCommand())) 
 						state = false;
 
-					if (col == 1 || col == 0) {
+					if (cols[col] == 1 || cols[col] == 0) {
 						Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getGroupNode(), state);
 						Cytoscape.getCurrentNetwork().setSelectedNodeState(group.getNodes(), state);
 					}
-					if (col == 2 || col == 0)
+					if (cols[col] == 2 || cols[col] == 0)
 						Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getInnerEdges(), state);
-					if (col == 3 || col == 0)
+					if (cols[col] == 3 || cols[col] == 0)
 						Cytoscape.getCurrentNetwork().setSelectedEdgeState(group.getOuterEdges(), state);
 				}
 			}
