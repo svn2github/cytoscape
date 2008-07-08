@@ -38,10 +38,7 @@ import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.*;
-import cytoscape.visual.calculators.GenericNodeColorCalculator;
-import cytoscape.visual.calculators.GenericNodeLabelCalculator;
-import cytoscape.visual.calculators.GenericNodeSizeCalculator;
-import cytoscape.visual.calculators.NodeLabelCalculator;
+import cytoscape.visual.calculators.*;
 import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.ObjectMapping;
@@ -85,44 +82,30 @@ public class TheVisualStyle {
 
 /*-------------------METHODS-----------------------*/
     
-    public void adaptVisualStyle(VisualStyle style, CyNetwork network){
+    public void adaptVisualStyle(VisualStyle style, CyNetwork network) {
 
         //---------------------set defaults--------------------------------------//
 
-        style.getNodeAppearanceCalculator().setDefaultNodeShape(ShapeNodeRealizer.ELLIPSE);
-        style.getNodeAppearanceCalculator().setNodeSizeLocked(true); //but widthcalculator = heightcalculator, so default will be a circle
-        style.getNodeAppearanceCalculator().setDefaultNodeFontSize(24);
-        style.getEdgeAppearanceCalculator().setDefaultEdgeTargetArrow(Arrow.BLACK_DELTA);
-        style.getEdgeAppearanceCalculator().setDefaultEdgeSourceArrow(Arrow.NONE);
-        style.getEdgeAppearanceCalculator().setDefaultEdgeLineType(LineType.LINE_2);
-        style.getEdgeAppearanceCalculator().setDefaultEdgeColor(new Color(0, 0, 0));//black
-        style.getGlobalAppearanceCalculator().setDefaultBackgroundColor(new Color(255, 255, 255));//white
+        style.getNodeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE, NodeShape.ELLIPSE);
+		//but widthcalculator = heightcalculator, so default will be a circle
+        style.getNodeAppearanceCalculator().getDefaultAppearance().setNodeSizeLocked(true); 
+        style.getNodeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.NODE_FONT_SIZE,24);
+        style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_SHAPE,ArrowShape.DELTA);
+        style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_COLOR,Color.black);
+        style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_SRCARROW_SHAPE,ArrowShape.NONE);
+        style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_LINE_STYLE,LineStyle.SOLID);
+        style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_LINE_WIDTH,2.0f);
+        style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_COLOR,Color.black);
+        style.getGlobalAppearanceCalculator().setDefaultBackgroundColor(Color.white);
 
         // ------------------------------ Set the label ------------------------------//
 
         // Display NODE_LABEL as a label
         PassThroughMapping m = new PassThroughMapping(new String(), ObjectMapping.NODE_MAPPING);
         m.setControllingAttributeName(NODE_LABEL, network, false);
-        NodeLabelCalculator nlc = new GenericNodeLabelCalculator("Node Description_" + networkName, m);
-        style.getNodeAppearanceCalculator().setNodeLabelCalculator(nlc);
+        Calculator nlc = new BasicCalculator("Node Description_" + networkName, m,VisualPropertyType.NODE_LABEL);
+        style.getNodeAppearanceCalculator().setCalculator(nlc);
 
-/*		//------------------------------ Color of the nodes --------------------------------//
-
-
-        DiscreteMapping colorMapping = new DiscreteMapping((new Color(255,0,0)),//RED,
-                                                         ObjectMapping.NODE_MAPPING);
-
-        colorMapping.setControllingAttributeName(NODE_COLOR,network,false);
-
-    colorMapping.putMapValue("overrep", new Color(255,127,0)); //orange
-        colorMapping.putMapValue("normal", new Color (255,255,0));//yellow
-        colorMapping.putMapValue("pale", new Color (0,0,255));//light yellow ?
-    GenericNodeColorCalculator colorCalculator =
-      new GenericNodeColorCalculator("Bingo Node Color_"+networkName, colorMapping);
-    nodeAppCalc.setNodeFillColorCalculator(colorCalculator);
-
-
-*/
         //---------------------------Continuous node color--------------------------//
 
         ContinuousMapping colorMapping = new ContinuousMapping(new Color(255, 0, 0), ObjectMapping.NODE_MAPPING);
@@ -148,9 +131,9 @@ public class TheVisualStyle {
         colorMapping.addPoint(cols, colbrVal2);
 
 
-        GenericNodeColorCalculator colorCalculator =
-                new GenericNodeColorCalculator("Bingo Node Color_" + networkName, colorMapping);
-        style.getNodeAppearanceCalculator().setNodeFillColorCalculator(colorCalculator);
+        Calculator colorCalculator =
+                new BasicCalculator("Bingo Node Color_" + networkName, colorMapping,VisualPropertyType.NODE_FILL_COLOR);
+        style.getNodeAppearanceCalculator().setCalculator(colorCalculator);
 
         //--------------------------- Size of the nodes ----------------------------//
 
@@ -175,10 +158,8 @@ public class TheVisualStyle {
             hMapping.addPoint(s, brVals);
         }
 
-        GenericNodeSizeCalculator nodeSizeCalculator = new GenericNodeSizeCalculator("Bingo Node Width_" + networkName, wMapping);
-        style.getNodeAppearanceCalculator().setNodeWidthCalculator(nodeSizeCalculator);
-        GenericNodeSizeCalculator nodeSizeCalculator2 = new GenericNodeSizeCalculator("Bingo Node Height_" + networkName, hMapping);
-        style.getNodeAppearanceCalculator().setNodeHeightCalculator(nodeSizeCalculator2);
+        Calculator nodeSizeCalculator = new BasicCalculator("Bingo Node Size_" + networkName, wMapping, VisualPropertyType.NODE_SIZE);
+        style.getNodeAppearanceCalculator().setCalculator(nodeSizeCalculator);
     }
     
     
@@ -196,6 +177,7 @@ public class TheVisualStyle {
         EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator(currentStyle.getEdgeAppearanceCalculator());
         GlobalAppearanceCalculator globalAppCalc = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
 
+/*
         //---------------------set defaults--------------------------------------//
 
         nodeAppCalc.setDefaultNodeShape(ShapeNodeRealizer.ELLIPSE);
@@ -215,23 +197,6 @@ public class TheVisualStyle {
         NodeLabelCalculator nlc = new GenericNodeLabelCalculator("Node Description_" + networkName, m);
         nodeAppCalc.setNodeLabelCalculator(nlc);
 
-/*		//------------------------------ Color of the nodes --------------------------------//
-
-
-        DiscreteMapping colorMapping = new DiscreteMapping((new Color(255,0,0)),//RED,
-                                                         ObjectMapping.NODE_MAPPING);
-
-        colorMapping.setControllingAttributeName(NODE_COLOR,network,false);
-
-    colorMapping.putMapValue("overrep", new Color(255,127,0)); //orange
-        colorMapping.putMapValue("normal", new Color (255,255,0));//yellow
-        colorMapping.putMapValue("pale", new Color (0,0,255));//light yellow ?
-    GenericNodeColorCalculator colorCalculator =
-      new GenericNodeColorCalculator("Bingo Node Color_"+networkName, colorMapping);
-    nodeAppCalc.setNodeFillColorCalculator(colorCalculator);
-
-
-*/
         //---------------------------Continuous node color--------------------------//
 
         ContinuousMapping colorMapping = new ContinuousMapping(new Color(255, 0, 0), ObjectMapping.NODE_MAPPING);
@@ -290,8 +255,10 @@ public class TheVisualStyle {
         nodeAppCalc.setNodeHeightCalculator(nodeSizeCalculator2);
 
         //------------------------- Create a visual style -------------------------------//
+		*/
 
         VisualStyle visualStyle = new VisualStyle(BINGO_VS, nodeAppCalc, edgeAppCalc, globalAppCalc);
+		adaptVisualStyle(visualStyle,network);
 
         return visualStyle;
     }

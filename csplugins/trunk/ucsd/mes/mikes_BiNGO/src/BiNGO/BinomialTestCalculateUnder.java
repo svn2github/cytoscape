@@ -66,13 +66,13 @@ public class BinomialTestCalculateUnder implements CalculateTestTask {
      */
     private static HashMap mapSmallX;
     /**
-     * int containing value for big N.
+     * hashmap containing values for big N.
      */
-    private static int bigN;
+    private static HashMap mapBigN;
     /**
-     * int containing value for big X.
+     * hashmap containing values for big X.
      */
-    private static int bigX;
+    private static HashMap mapBigX;
     /**
      * hashmap with the Binomial Test results as values and as key the GO label.
      */
@@ -92,19 +92,19 @@ public class BinomialTestCalculateUnder implements CalculateTestTask {
      * the annotation, the ontology and the significance threshold.
      */
 
-    public BinomialTestCalculateUnder(DistributionCountNeg dc) {
+    public BinomialTestCalculateUnder(DistributionCount dc) {
 
         // calculates x (#genes in selection assigned to each GO class), X (total #genes in selection),
         // n (# genes in reference set assigned to each GO class) and N (total # genes in reference set) from input
         dc.calculate();
         this.mapSmallN = dc.getMapSmallN();
         this.mapSmallX = dc.getMapSmallX();
-        this.bigN = dc.getBigN();
-        this.bigX = dc.getBigX();
+        this.mapBigN = dc.getMapBigN();
+        this.mapBigX = dc.getMapBigX();
         this.maxValue = mapSmallX.size();
     }
 
-    public BinomialTestCalculateUnder(DistributionCountNeg dc,TaskMonitor taskMonitor) {
+    public BinomialTestCalculateUnder(DistributionCount dc,TaskMonitor taskMonitor) {
         this(dc);
         this.taskMonitor = taskMonitor;
     }
@@ -126,16 +126,20 @@ public class BinomialTestCalculateUnder implements CalculateTestTask {
         Integer id;
         Integer smallXvalue;
         Integer smallNvalue;
+        Integer bigXvalue;
+        Integer bigNvalue;
         int currentProgress = 0;
         try {
             while (iterator.hasNext()) {
                 id = new Integer(iterator.next().toString());
                 smallXvalue = new Integer(mapSmallX.get(id).toString());
                 smallNvalue = new Integer(mapSmallN.get(id).toString());
+                bigXvalue = new Integer(mapBigX.get(id).toString());
+                bigNvalue = new Integer(mapBigN.get(id).toString());
                 bt = new BinomialDistributionUnder(smallXvalue.intValue(),
-                        bigX,
+                        bigXvalue.intValue(),
                         smallNvalue.intValue(),
-                        bigN);
+                        bigNvalue.intValue());
                 binomialTestMap.put(id, bt.calculateBinomialDistribution());
 
                 // Calculate Percentage.  This must be a value between 0..100.
@@ -195,22 +199,12 @@ public class BinomialTestCalculateUnder implements CalculateTestTask {
         return mapSmallN;
     }
 
-    /**
-     * getter for bigX.
-     *
-     * @return int bigX
-     */
-    public int getBigX() {
-        return bigX;
+    public HashMap getMapBigX() {
+        return mapBigX;
     }
 
-    /**
-     * getter for bigN.
-     *
-     * @return int bigN
-     */
-    public int getBigN() {
-        return bigN;
+    public HashMap getMapBigN() {
+        return mapBigN;
     }
 
     /**

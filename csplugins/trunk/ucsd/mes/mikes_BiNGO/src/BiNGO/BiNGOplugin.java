@@ -36,7 +36,7 @@ package BiNGO;
 
 
 import cytoscape.Cytoscape;
-import cytoscape.plugin.*;
+import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.CytoscapeAction;
 
 import javax.swing.*;

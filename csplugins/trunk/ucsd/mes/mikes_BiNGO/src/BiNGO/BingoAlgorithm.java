@@ -24,6 +24,10 @@ public class BingoAlgorithm {
      */
     public static final String BINOMIAL = "Binomial test";
     /**
+     * constant string for the parent-child intersection test.
+     */
+    public static final String PARENT_CHILD_INTERSECTION = "Parent-child-intersection test";
+    /**
      * constant string for the Benjamini & Hochberg FDR correction.
      */
     public static final String OVERSTRING = "Overrepresentation";
@@ -63,20 +67,27 @@ public class BingoAlgorithm {
         HashMap testMap = null;
 
         if (params.getTest().equals(NONE)){
-            test = new DistributionCount(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias());
+            test = new StandardDistributionCount(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias());
         } else if (params.getTest().equals(HYPERGEOMETRIC)) {
             if (params.getOverOrUnder().equals(OVERSTRING)) {
-                test = new HypergeometricTestCalculate(new DistributionCount(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+                test = new HypergeometricTestCalculate(new StandardDistributionCount(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
             } else {
-                test = new HypergeometricTestCalculateUnder(new DistributionCountNeg(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+                test = new HypergeometricTestCalculateUnder(new StandardDistributionCountNeg(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
             }
         } else if (params.getTest().equals(BINOMIAL)) {
             if (params.getOverOrUnder().equals(OVERSTRING)) {
-                test = new BinomialTestCalculate(new DistributionCount(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+                test = new BinomialTestCalculate(new StandardDistributionCount(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
             } else {
-                test = new BinomialTestCalculateUnder(new DistributionCountNeg(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+                test = new BinomialTestCalculateUnder(new StandardDistributionCountNeg(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+            }        
+        } else if (params.getTest().equals(PARENT_CHILD_INTERSECTION)) {
+            if (params.getOverOrUnder().equals(OVERSTRING)) {
+                test = new HypergeometricTestCalculate(new ParentChildIntersectionCount(params.getAnnotation(), params.getOntology(), params.getSelectedNodes(), params.getAllNodes(), params.getAlias()));
+            } else {
+                //to be implemented
             }
         }
+        
             //  Configure JTask
             /*JTaskConfig config = new JTaskConfig();
 

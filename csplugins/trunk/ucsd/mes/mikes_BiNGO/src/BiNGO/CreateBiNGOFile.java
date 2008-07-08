@@ -86,11 +86,11 @@ public class CreateBiNGOFile {
     /**
      * integer with X.
      */
-    private int bigX;
+    private HashMap mapBigX;
     /**
      * integer with N.
      */
-    private int bigN;
+    private HashMap mapBigN;
     /**
      * String with alpha value.
      */
@@ -295,8 +295,8 @@ public class CreateBiNGOFile {
                            HashMap correctionMap,
                            HashMap mapSmallX,
                            HashMap mapSmallN,
-                           int bigX,
-                           int bigN,
+                           HashMap mapBigX,
+                           HashMap mapBigN,
                            String alphaString,
                            Annotation annotation,
                            HashSet deleteCodes,
@@ -318,8 +318,8 @@ public class CreateBiNGOFile {
         this.correctionMap = correctionMap;
         this.mapSmallX = mapSmallX;
         this.mapSmallN = mapSmallN;
-        this.bigX = bigX;
-        this.bigN = bigN;
+        this.mapBigX = mapBigX;
+        this.mapBigN = mapBigN;
         this.alphaString = alphaString;
         this.annotation = annotation;
         this.ontology = ontology;
@@ -424,15 +424,13 @@ public class CreateBiNGOFile {
                 j++;
             }
             output.write("\n\n");
-            output.write("Number of annotated genes in selection : " + bigX + "\n");
-            output.write("Number of annotated genes in network/whole annotation : " + bigN + "\n");
-            output.write("\n");
+
             if (testString.equals(NONE)) {
-                output.write("GO-ID" + "\t" + "# selected" + "\t" + "# total" + "\t" + "Description" + "\t" + "Genes in test set" + "\n");
+                output.write("GO-ID" + "\t" + "x" + "\t" + "n" + "X" + "\t" + "N" + "\t" + "Description" + "\t" + "Genes in test set" + "\n");
             } else if (correctionString.equals(NONE)) {
-                output.write("GO-ID" + "\t" + "p-value" + "\t" + "# selected" + "\t" + "# total" + "\t" + "Description" + "\t" + "Genes in test set" + "\n");
+                output.write("GO-ID" + "\t" + "p-value" + "\t" + "x" + "\t" + "n" + "X" + "\t" + "N" + "\t" + "Description" + "\t" + "Genes in test set" + "\n");
             } else {
-                output.write("GO-ID" + "\t" + "p-value" + "\t" + "corr p-value" + "\t"  + "# selected" + "\t" + "# total" + "\t" + "Description" + "\t" + "Genes in test set" + "\n");
+                output.write("GO-ID" + "\t" + "p-value" + "\t" + "corr p-value" + "\t"  + "x" + "\t" + "n" + "X" + "\t" + "N" + "\t" + "Description" + "\t" + "Genes in test set" + "\n");
             }
 /*}			
 catch (Exception e){
@@ -467,6 +465,8 @@ catch (Exception e){
                 String correctedPvalue = "";
                 String smallX;
                 String smallN;
+                String bigX;
+                String bigN;
                 String description;
                 // pvalue
                 if (!testString.equals(NONE)) {
@@ -504,6 +504,20 @@ catch (Exception e){
                 catch (Exception e) {
                     smallN = "N/A";
                 }
+                // X
+                try {
+                    bigX = mapBigX.get(new Integer(termID)).toString();
+                }
+                catch (Exception e) {
+                    bigX = "N/A";
+                }
+                // N
+                try {
+                    bigN = mapBigN.get(new Integer(termID)).toString();
+                }
+                catch (Exception e) {
+                    bigN = "N/A";
+                }
                 // name
                 try {
                     description = ontology.getTerm(Integer.parseInt(termID)).getName();
@@ -513,7 +527,7 @@ catch (Exception e){
                 }
 
                 if (testString.equals(NONE)) {
-                    output.write(termID + "\t" + smallX + "\t" + smallN + "\t" + description + "\t");
+                    output.write(termID + "\t" + smallX + "\t" + smallN + bigX + "\t" + bigN + "\t" + "\t" + description + "\t");
                     if (annotatedGenes.containsKey(termID)) {
                         Iterator k = ((HashSet) annotatedGenes.get(termID)).iterator();
                         while (k.hasNext()) {
@@ -528,7 +542,7 @@ catch (Exception e){
                     if (catString.equals(CATEGORY_BEFORE_CORRECTION)) {
                         if ((new BigDecimal(testMap.get(new Integer(ordenedKeySet[i])).toString())).compareTo(new BigDecimal(alphaString)) < 0)
                         {
-                            output.write(termID + "\t" + pvalue + "\t" + smallX + "\t" + smallN + "\t" + description + "\t");
+                            output.write(termID + "\t" + pvalue + "\t" + smallX + "\t" + smallN + "\t" + bigX + "\t" + bigN + "\t" + description + "\t");
                             if (annotatedGenes.containsKey(termID)) {
                                 Iterator k = ((HashSet) annotatedGenes.get(termID)).iterator();
                                 while (k.hasNext()) {
@@ -543,7 +557,7 @@ catch (Exception e){
                             ok = false;
                         }
                     } else {
-                        output.write(termID + "\t" + pvalue + "\t" + smallX + "\t" + smallN + "\t" + description + "\t");
+                        output.write(termID + "\t" + pvalue + "\t" + smallX + "\t" + smallN + bigX + "\t" + bigN + "\t" + "\t" + description + "\t");
                         if (annotatedGenes.containsKey(termID)) {
                             Iterator k = ((HashSet) annotatedGenes.get(termID)).iterator();
                             while (k.hasNext()) {
@@ -559,7 +573,7 @@ catch (Exception e){
                     if (catString.equals(CATEGORY_CORRECTION)) {
                         if ((new BigDecimal(correctionMap.get(ordenedKeySet[i]).toString())).compareTo(new BigDecimal(alphaString)) < 0)
                         {
-                            output.write(termID + "\t" + pvalue + "\t" + correctedPvalue + "\t" + smallX + "\t" + smallN + "\t" + description + "\t");
+                            output.write(termID + "\t" + pvalue + "\t" + correctedPvalue + "\t" + smallX + "\t" + smallN + "\t" + bigX + "\t" + bigN + "\t" + description + "\t");
                             if (annotatedGenes.containsKey(termID)) {
                                 Iterator k = ((HashSet) annotatedGenes.get(termID)).iterator();
                                 while (k.hasNext()) {
@@ -576,7 +590,7 @@ catch (Exception e){
                     } else if (catString.equals(CATEGORY_BEFORE_CORRECTION)) {
                         if ((new BigDecimal(testMap.get(new Integer(ordenedKeySet[i])).toString())).compareTo(new BigDecimal(alphaString)) < 0)
                         {
-                            output.write(termID + "\t" + pvalue + "\t" + correctedPvalue + "\t" + smallX + "\t" + smallN + "\t" + description + "\t");
+                            output.write(termID + "\t" + pvalue + "\t" + correctedPvalue + "\t" + smallX + "\t" + smallN + "\t" + bigX + "\t" + bigN + "\t" + description + "\t");
                             if (annotatedGenes.containsKey(termID)) {
                                 Iterator k = ((HashSet) annotatedGenes.get(termID)).iterator();
                                 while (k.hasNext()) {
@@ -591,7 +605,7 @@ catch (Exception e){
                             ok = false;
                         }
                     } else {
-                        output.write(termID + "\t" + pvalue + "\t" + correctedPvalue + "\t" + smallX + "\t" + smallN + "\t" + description + "\t");
+                        output.write(termID + "\t" + pvalue + "\t" + correctedPvalue + "\t" + smallX + "\t" + smallN + bigX + "\t" + bigN + "\t" + "\t" + description + "\t");
                         if (annotatedGenes.containsKey(termID)) {
                             Iterator k = ((HashSet) annotatedGenes.get(termID)).iterator();
                             while (k.hasNext()) {

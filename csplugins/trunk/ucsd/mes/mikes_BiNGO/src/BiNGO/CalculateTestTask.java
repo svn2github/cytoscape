@@ -52,8 +52,8 @@ public interface CalculateTestTask extends Task {
 
     public HashMap getMapSmallN();
 
-    public int getBigX();
+    public HashMap getMapBigX();
 
-    public int getBigN();
+    public HashMap getMapBigN();
 
 }//class CalculateTestTask

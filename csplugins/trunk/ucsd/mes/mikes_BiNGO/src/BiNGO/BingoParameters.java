@@ -58,6 +58,7 @@ public class BingoParameters {
     //That are available to use for any computation.
     //These are dictated by what is in the properties file.
     private TreeMap speciesfileHash;
+    private TreeMap filespeciesHash;
     //private TreeMap identifierHash;
     private TreeMap ontologyHash;
     private int number_species;
@@ -111,6 +112,7 @@ public class BingoParameters {
         Object f;
         String property_value;
         this.speciesfileHash = new TreeMap();
+        this.filespeciesHash = new TreeMap();
         number_species = 0;
         for (Enumeration e = bingo_props.propertyNames(); e.hasMoreElements();) {
             f = e.nextElement();
@@ -133,12 +135,17 @@ public class BingoParameters {
 				System.out.println(formatted_key);
 
                 speciesfileHash.put(formatted_key,filename);
+                filespeciesHash.put(filename,formatted_key);
             }
         }
     }
 
     public String getSpeciesFilename(String specified_species){
         return (String)speciesfileHash.get(specified_species);
+    }
+    
+    public String getSpeciesNameFromFilename(String filename){
+        return (String)filespeciesHash.get(filename);
     }
 
     /*public void initializeIdentifierHash() {

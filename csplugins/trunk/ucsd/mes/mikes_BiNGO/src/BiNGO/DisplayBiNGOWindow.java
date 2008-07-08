@@ -98,13 +98,13 @@ public class DisplayBiNGOWindow {
      */
     private HashMap mapSmallN;
     /**
-     * integer with X.
+     * hashmap with key termID and value X.
      */
-    private Integer bigX;
+    private HashMap mapBigX;
     /**
-     * integer with N.
+     * hashmap with key termID and value N.
      */
-    private Integer bigN;
+    private HashMap mapBigN;
     /**
      * String with significance level.
      */
@@ -210,8 +210,8 @@ public class DisplayBiNGOWindow {
                               HashMap correctionMap,
                               HashMap mapSmallX,
                               HashMap mapSmallN,
-                              int bigX,
-                              int bigN,
+                              HashMap mapBigX,
+                              HashMap mapBigN,
                               String alpha,
                               Ontology ontology,
                               String clusterName,
@@ -221,8 +221,8 @@ public class DisplayBiNGOWindow {
         this.correctionMap = correctionMap;
         this.mapSmallX = mapSmallX;
         this.mapSmallN = mapSmallN;
-        this.bigX = new Integer(bigX);
-        this.bigN = new Integer(bigN);
+        this.mapBigX = mapBigX;
+        this.mapBigN = mapBigN;
         this.alpha = alpha;
         this.ontology = ontology;
         this.clusterName = clusterName;
@@ -278,11 +278,9 @@ public class DisplayBiNGOWindow {
         CytoscapeDesktop cytoscapedesktop = Cytoscape.getDesktop();
         VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
         try{
-			System.out.println("asdfffffffffasdffffffffffffffffffffff");
             vmm.getCalculatorCatalog().addVisualStyle(visualStyle);
             //VisualStyle oldStyle = vmm.setVisualStyle(visualStyle.getName());
             bingoCyNetworkView.applyVizmapper(visualStyle);
-			vmm.setVisualStyle(visualStyle);
             //bingoCyNetworkView.setVisualStyle(visualStyle.getName());
         }
         catch(Exception e){
@@ -448,6 +446,8 @@ public class DisplayBiNGOWindow {
             String adj_pValue;
             String smallX;
             String smallN;
+            String bigX;
+            String bigN;
             //String color;
             Double color;
             Double size;
@@ -491,6 +491,18 @@ public class DisplayBiNGOWindow {
             }
             catch (Exception e) {
                 smallN = "N/A";
+            }
+             try {
+                bigX = mapBigX.get(new Integer(termID)).toString();
+            }
+            catch (Exception e) {
+                bigX = "N/A";
+            }
+            try {
+                bigN = mapBigN.get(new Integer(termID)).toString();
+            }
+            catch (Exception e) {
+                bigN = "N/A";
             }
             try {
                 if (testMap == null) {

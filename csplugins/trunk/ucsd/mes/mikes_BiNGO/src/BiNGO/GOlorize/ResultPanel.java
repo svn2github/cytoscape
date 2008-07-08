@@ -63,10 +63,10 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel{
 	private HashMap mapSmallX;
 	/** hashmap with key termID and value n.*/
 	private HashMap mapSmallN;
-	/** integer with X.*/
-	private int bigX;
-	/** integer with N.*/
-	private int bigN;
+	/** hashmap with X.*/
+	private HashMap mapBigX;
+	/** hashmap with N.*/
+	private HashMap mapBigN;
 	/** String with alpha value.*/
 	private String alphaString;
 	/** String with used test.*/
@@ -151,8 +151,8 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel{
                                         HashMap correctionMap, 
                                         HashMap mapSmallX, 
                                         HashMap mapSmallN,
-                                        int bigX,
-                                        int bigN,
+                                        HashMap mapBigX,
+                                        HashMap mapBigN,
                                         String alphaString,
                                         Annotation annotation,
                                         HashMap alias,
@@ -176,8 +176,8 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel{
         this.correctionMap = correctionMap;
         this.mapSmallX = mapSmallX;
         this.mapSmallN = mapSmallN;
-        this.bigX = bigX;
-        this.bigN = bigN;
+        this.mapBigX = mapBigX;
+        this.mapBigN = mapBigN;
         this.alphaString = alphaString;
         this.annotation = annotation ;
         this.alias = alias;
@@ -574,6 +574,8 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel{
                         String correctedPvalue = "";
                         String smallX;
                         String smallN;
+                        String bigX;
+                        String bigN;
                         String description;
                         // pvalue
 
@@ -627,6 +629,19 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel{
                         catch (Exception e){
                                 smallN = "N/A";
                         }
+                        try{
+                                bigX = mapBigX.get(new Integer(termID)).toString();
+                        }
+                        catch (Exception e){
+                                bigX = "N/A";
+                        }
+                        // n
+                        try{
+                                bigN = mapBigN.get(new Integer(termID)).toString();
+                        }
+                        catch (Exception e){
+                                bigN = "N/A";
+                        }
                         // name
                         try{			
                                 description = ontology.getTerm(Integer.parseInt(termID)).getName();
@@ -635,9 +650,9 @@ public class ResultPanel extends JPanel implements ResultAndStartPanel{
                                 description = "?";
                         }
   
-                        int percentmp=(Integer.parseInt(smallX)*1000)/bigX;
+                        int percentmp=(Integer.parseInt(smallX)*1000)/Integer.parseInt(bigX);
                         
-                        int percentmp2=(Integer.parseInt(smallN)*1000)/bigN;
+                        int percentmp2=(Integer.parseInt(smallN)*1000)/Integer.parseInt(bigN);
                         double percentClusterFreq=(double)percentmp/10;
                         double percentTotalFreq=(double)percentmp2/10;
                         

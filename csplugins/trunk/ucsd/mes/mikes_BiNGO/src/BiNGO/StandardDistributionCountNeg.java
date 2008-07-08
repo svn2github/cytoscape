@@ -52,7 +52,7 @@ import java.util.Vector;
  */
 
 
-public class DistributionCountNeg implements CalculateTestTask{
+public class StandardDistributionCountNeg implements DistributionCount{
 
     /*--------------------------------------------------------------
     FIELDS.
@@ -84,13 +84,13 @@ public class DistributionCountNeg implements CalculateTestTask{
      */
     private static HashMap mapSmallX;
     /**
-     * int containing value for big N.
+     * hashmap with values for big N.
      */
-    private static int bigN;
+    private static HashMap mapBigN;
     /**
-     * int containing value for big X.
+     * hashmap with values for big X.
      */
-    private static int bigX;
+    private static HashMap mapBigX;
     
     // Keep track of progress for monitoring:
     private int maxValue;
@@ -101,7 +101,7 @@ public class DistributionCountNeg implements CalculateTestTask{
     CONSTRUCTOR.
     --------------------------------------------------------------*/
 
-    public DistributionCountNeg(Annotation annotation,
+    public StandardDistributionCountNeg(Annotation annotation,
                                 Ontology ontology,
                                 HashSet selectedNodes,
                                 HashSet refNodes,
@@ -231,13 +231,14 @@ public class DistributionCountNeg implements CalculateTestTask{
         }
 
         return map;
-    }
-
+    }   
+    
     /**
      * counts big N. unclassified nodes are not counted ; no correction for function_unknown nodes (yet)(requires user input)
      */
     public void countBigN() {
-        bigN = refNodes.size();
+        mapBigN = new HashMap();
+        int bigN = refNodes.size();
         Iterator i = refNodes.iterator();
         while (i.hasNext()) {
             HashSet classifications = getNodeClassifications(i.next().toString());
@@ -246,13 +247,17 @@ public class DistributionCountNeg implements CalculateTestTask{
                 bigN--;
             }
         }
+        for(Object id : this.mapSmallX.keySet()){
+            mapBigN.put(id, new Integer(bigN));
+        }
     }
 
     /**
      * counts big X. unclassified nodes are not counted ; no correction for function_unknown nodes (yet)(requires user input)
      */
     public void countBigX() {
-        bigX = selectedNodes.size();
+        mapBigX = new HashMap();
+        int bigX = selectedNodes.size();
         Iterator i = selectedNodes.iterator();
         while (i.hasNext()) {
             HashSet classifications = getNodeClassifications(i.next().toString());
@@ -260,6 +265,9 @@ public class DistributionCountNeg implements CalculateTestTask{
             if (!iterator.hasNext()) {
                 bigX--;
             }
+        }
+        for(Object id : this.mapSmallX.keySet()){
+            mapBigX.put(id, new Integer(bigX));
         }
     }
 
@@ -287,29 +295,21 @@ public class DistributionCountNeg implements CalculateTestTask{
         return mapSmallX;
     }
 
-    /**
-     * returns the int for the big N.
-     *
-     * @return int bigN
-     */
-    public int getBigN() {
-        return bigN;
+
+    public HashMap getMapBigN() {
+        return mapBigN;
     }
 
-    /**
-     * returns the int for the big X.
-     *
-     * @return int bigX.
-     */
-    public int getBigX(){
-		return bigX;
+
+    public HashMap getMapBigX(){
+        return mapBigX;
     }
     
     public void calculate() {
-        countBigX();
-        countBigN();
         countSmallX();
         countSmallN();
+        countBigX();
+        countBigN();
     }
     
         /**

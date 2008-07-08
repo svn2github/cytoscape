@@ -786,8 +786,8 @@ public class SettingsPanelActionListener implements ActionListener {
         HashMap correctionMap = null;
         HashMap mapSmallX = null;
         HashMap mapSmallN = null;
-        int bigX = 0;
-        int bigN = 0;
+        HashMap mapBigX = null;
+        HashMap mapBigN = null;
 
         BingoAlgorithm algorithm = new BingoAlgorithm(params);
 
@@ -802,8 +802,8 @@ public class SettingsPanelActionListener implements ActionListener {
             }
             mapSmallX = test.getMapSmallX();
             mapSmallN = test.getMapSmallN();
-            bigX = test.getBigX();
-            bigN = test.getBigN();
+            mapBigX = test.getMapBigX();
+            mapBigN = test.getMapBigN();
 
         DisplayBiNGOWindow display;
         CreateBiNGOFile file;
@@ -813,8 +813,8 @@ public class SettingsPanelActionListener implements ActionListener {
                     correctionMap,
                     mapSmallX,
                     mapSmallN,
-                    bigX,
-                    bigN,
+                    mapBigX,
+                    mapBigN,
                     params.getSignificance().toString(),
                     params.getOntology(),
                     params.getCluster_name(),
@@ -839,8 +839,8 @@ public class SettingsPanelActionListener implements ActionListener {
                     correctionMap,
                     mapSmallX,
                     mapSmallN,
-                    bigX,
-                    bigN,
+                    mapBigX,
+                    mapBigN,
                     params.getSignificance().toString(),
                     params.getAnnotation(),
                     params.getAlias(),
@@ -863,8 +863,8 @@ public class SettingsPanelActionListener implements ActionListener {
                     correctionMap,
                     mapSmallX,
                     mapSmallN,
-                    bigX,
-                    bigN,
+                    mapBigX,
+                    mapBigN,
                     params.getSignificance().toString(),
                     params.getAnnotation(),
                     params.getDeleteCodes(),

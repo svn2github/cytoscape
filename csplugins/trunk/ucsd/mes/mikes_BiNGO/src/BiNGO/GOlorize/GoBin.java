@@ -286,8 +286,8 @@ public class GoBin extends javax.swing.JFrame{
                                         HashMap correctionMap, 
                                         HashMap mapSmallX, 
                                         HashMap mapSmallN,
-                                        int bigX,
-                                        int bigN,
+                                        HashMap mapBigX,
+                                        HashMap mapBigN,
                                         String alphaString,
                                         Annotation annotation,
                                         HashMap alias,
@@ -307,7 +307,7 @@ public class GoBin extends javax.swing.JFrame{
         
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();       
-        ResultPanel result=new ResultPanel( testMap,correctionMap,mapSmallX, mapSmallN,bigX, bigN, alphaString,
+        ResultPanel result=new ResultPanel( testMap,correctionMap,mapSmallX, mapSmallN, mapBigX, mapBigN, alphaString,
                                          annotation, alias, ontology, annotationFile, ontologyFile, testString, correctionString,
                                          overUnderString, dirName,fileName, clusterVsString, catString,selectedCanonicalNameVector,
                                          currentNetwork, currentNetworkview, this);

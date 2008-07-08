@@ -66,13 +66,13 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
      */
     private static HashMap mapSmallX;
     /**
-     * int containing value for big N.
+     * hashmap containing values for big N.
      */
-    private static int bigN;
+    private static HashMap mapBigN;
     /**
-     * int containing value for big X.
+     * hashmap containing values for big X.
      */
-    private static int bigX;
+    private static HashMap mapBigX;
     /**
      * hashmap with the hypergeometric distribution results as values ; keys = GO labels
      */
@@ -95,8 +95,8 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
         dc.calculate();
         this.mapSmallN = dc.getMapSmallN();
         this.mapSmallX = dc.getMapSmallX();
-        this.bigN = dc.getBigN();
-        this.bigX = dc.getBigX();
+        this.mapBigN = dc.getMapBigN();
+        this.mapBigX = dc.getMapBigX();
         this.maxValue = mapSmallX.size();
 
     }
@@ -119,20 +119,24 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
         hypergeometricTestMap = new HashMap();
 
         HashSet set = new HashSet(mapSmallX.keySet());
-        Iterator iterator = set.iterator();
+        Iterator iterator = set.iterator();        
         Integer id;
         Integer smallXvalue;
         Integer smallNvalue;
+        Integer bigXvalue;
+        Integer bigNvalue;
         int currentProgress = 0;
         try {
             while (iterator.hasNext()) {
                 id = new Integer(iterator.next().toString());
                 smallXvalue = new Integer(mapSmallX.get(id).toString());
                 smallNvalue = new Integer(mapSmallN.get(id).toString());
+                bigXvalue = new Integer(mapBigX.get(id).toString());
+                bigNvalue = new Integer(mapBigN.get(id).toString());
                 hd = new HypergeometricDistribution(smallXvalue.intValue(),
-                        bigX,
+                        bigXvalue.intValue(),
                         smallNvalue.intValue(),
-                        bigN);
+                        bigNvalue.intValue());
                 hypergeometricTestMap.put(id, hd.calculateHypergDistr());
 
                 // Calculate Percentage.  This must be a value between 0..100.
@@ -192,22 +196,14 @@ public class HypergeometricTestCalculate implements CalculateTestTask {
         return mapSmallN;
     }
 
-    /**
-     * getter for the bigX.
-     *
-     * @return int bigX
-     */
-    public int getBigX() {
-        return bigX;
+
+    public HashMap getMapBigX() {
+        return mapBigX;
     }
 
-    /**
-     * getter for the bigN.
-     *
-     * @return int bigN
-     */
-    public int getBigN() {
-        return bigN;
+
+    public HashMap getMapBigN() {
+        return mapBigN;
     }
 
     /**
