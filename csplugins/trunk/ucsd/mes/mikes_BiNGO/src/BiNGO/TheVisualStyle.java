@@ -87,7 +87,6 @@ public class TheVisualStyle {
         //---------------------set defaults--------------------------------------//
 
         style.getNodeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.NODE_SHAPE, NodeShape.ELLIPSE);
-		//but widthcalculator = heightcalculator, so default will be a circle
         style.getNodeAppearanceCalculator().getDefaultAppearance().setNodeSizeLocked(true); 
         style.getNodeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.NODE_FONT_SIZE,24);
         style.getEdgeAppearanceCalculator().getDefaultAppearance().set(VisualPropertyType.EDGE_TGTARROW_SHAPE,ArrowShape.DELTA);
@@ -165,7 +164,6 @@ public class TheVisualStyle {
     
     public VisualStyle createVisualStyle(CyNetwork network) {
 
-
         CytoscapeDesktop cytoscapeDesktop = Cytoscape.getDesktop();
         VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
         CalculatorCatalog calculatorCatalog = vmm.getCalculatorCatalog();
@@ -177,87 +175,11 @@ public class TheVisualStyle {
         EdgeAppearanceCalculator edgeAppCalc = new EdgeAppearanceCalculator(currentStyle.getEdgeAppearanceCalculator());
         GlobalAppearanceCalculator globalAppCalc = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
 
-/*
-        //---------------------set defaults--------------------------------------//
 
-        nodeAppCalc.setDefaultNodeShape(ShapeNodeRealizer.ELLIPSE);
-        nodeAppCalc.setNodeSizeLocked(true); //but widthcalculator = heightcalculator, so default will be a circle
-        nodeAppCalc.setDefaultNodeFontSize(24);
-        edgeAppCalc.setDefaultEdgeTargetArrow(Arrow.BLACK_DELTA);
-        edgeAppCalc.setDefaultEdgeSourceArrow(Arrow.NONE);
-        edgeAppCalc.setDefaultEdgeLineType(LineType.LINE_2);
-        edgeAppCalc.setDefaultEdgeColor(new Color(0, 0, 0));//black
-        globalAppCalc.setDefaultBackgroundColor(new Color(255, 255, 255));//white
-
-        // ------------------------------ Set the label ------------------------------//
-
-        // Display NODE_LABEL as a label
-        PassThroughMapping m = new PassThroughMapping(new String(), ObjectMapping.NODE_MAPPING);
-        m.setControllingAttributeName(NODE_LABEL, network, false);
-        NodeLabelCalculator nlc = new GenericNodeLabelCalculator("Node Description_" + networkName, m);
-        nodeAppCalc.setNodeLabelCalculator(nlc);
-
-        //---------------------------Continuous node color--------------------------//
-
-        ContinuousMapping colorMapping = new ContinuousMapping(new Color(255, 0, 0), ObjectMapping.NODE_MAPPING);
-        colorMapping.setControllingAttributeName(NODE_COLOR, network, false);
-
-        // The following code defines the range of values
-
-        BoundaryRangeValues colbrVal1 = new BoundaryRangeValues();
-        Color nada = new Color(255, 255, 255);
-        Color colmin = new Color(255, 255, 0);
-        double cols = -(Math.log(alpha) / Math.log(10));
-        colbrVal1.lesserValue = nada;
-        colbrVal1.equalValue = colmin;
-        colbrVal1.greaterValue = colmin;
-        colorMapping.addPoint(cols, colbrVal1);
-
-        BoundaryRangeValues colbrVal2 = new BoundaryRangeValues();
-        Color colmax = new Color(255, 127, 0);
-        cols = - (Math.log(alpha) / Math.log(10)) + 5.0;
-        colbrVal2.lesserValue = colmax;
-        colbrVal2.equalValue = colmax;
-        colbrVal2.greaterValue = colmax;
-        colorMapping.addPoint(cols, colbrVal2);
-
-
-        GenericNodeColorCalculator colorCalculator =
-                new GenericNodeColorCalculator("Bingo Node Color_" + networkName, colorMapping);
-        nodeAppCalc.setNodeFillColorCalculator(colorCalculator);
-
-        //--------------------------- Size of the nodes ----------------------------//
-
-
-        ContinuousMapping wMapping = new ContinuousMapping(new Double(50), ObjectMapping.NODE_MAPPING);
-        wMapping.setControllingAttributeName(NODE_SIZE, network, false);
-        ContinuousMapping hMapping = new ContinuousMapping(new Double(50), ObjectMapping.NODE_MAPPING);
-        hMapping.setControllingAttributeName(NODE_SIZE, network, false);
-
-        // The following code defines the range of values
-
-        BoundaryRangeValues brVals;
-        int j;
-        for (j = 0; j <= 1; j++) {
-            brVals = new BoundaryRangeValues();
-            Double size = new Double(380 * j + 20);
-            double s = 99 * j + 1;
-            brVals.lesserValue = size;
-            brVals.equalValue = size;
-            brVals.greaterValue = size;
-            wMapping.addPoint(s, brVals);
-            hMapping.addPoint(s, brVals);
-        }
-
-        GenericNodeSizeCalculator nodeSizeCalculator = new GenericNodeSizeCalculator("Bingo Node Width_" + networkName, wMapping);
-        nodeAppCalc.setNodeWidthCalculator(nodeSizeCalculator);
-        GenericNodeSizeCalculator nodeSizeCalculator2 = new GenericNodeSizeCalculator("Bingo Node Height_" + networkName, hMapping);
-        nodeAppCalc.setNodeHeightCalculator(nodeSizeCalculator2);
-
-        //------------------------- Create a visual style -------------------------------//
-		*/
-
+		// create the visual style
         VisualStyle visualStyle = new VisualStyle(BINGO_VS, nodeAppCalc, edgeAppCalc, globalAppCalc);
+
+		// update with BiNGO specific style
 		adaptVisualStyle(visualStyle,network);
 
         return visualStyle;
