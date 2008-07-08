@@ -669,33 +669,6 @@ public final class GraphRenderer {
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
 						NodeView nodeView = (NodeView) graphView.getNodeView(node);
 						nodeRenderer.render(canvas, nodeDetails, floatBuff1, node, nodeView);
-						/*
-						// Compute visual attributes that do not depend on LOD.
-						final byte shape = nodeDetails.shape(node);
-						final Paint fillPaint = nodeDetails.fillPaint(node);
-
-						// Compute node border information.
-						final float borderWidth;
-						final Paint borderPaint;
-
-						if ((lodBits & LOD_NODE_BORDERS) == 0) { // Not rendering borders.
-							borderWidth = 0.0f;
-							borderPaint = null;
-						} else { // Rendering node borders.
-							borderWidth = nodeDetails.borderWidth(node);
-
-							if (borderWidth == 0.0f)
-								borderPaint = null;
-							else
-								borderPaint = nodeDetails.borderPaint(node);
-						}
-
-						// Draw the node.
-						
-						
-						grafx.drawNodeFull(shape, floatBuff1[0], floatBuff1[1], floatBuff1[2],
-						                   floatBuff1[3], fillPaint, borderWidth, borderPaint);
-						                   */
 					}
 
 					// Take care of label rendering.
