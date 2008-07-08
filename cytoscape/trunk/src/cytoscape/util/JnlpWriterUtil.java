@@ -133,7 +133,7 @@ public class JnlpWriterUtil {
 	}
 
 	private static void print(String s) {
-		CyLogger.getLogger().info(s);
+		System.out.println(s);
 	}
 
 	/*
