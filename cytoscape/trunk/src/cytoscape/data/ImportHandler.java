@@ -229,7 +229,8 @@ public class ImportHandler {
 		// then write a temp file and handle things that way
 		if (contentType.contains("text/html") ||
 		    contentType.contains("text/plain") ||
-		    contentType.contains("text/xml")) {
+		    contentType.contains("text/xml") ||
+            contentType.contains("application/rdf+xml")) {
 			File tmpFile = null;
 
 			try {
