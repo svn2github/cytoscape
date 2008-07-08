@@ -64,9 +64,6 @@ class DNodeDetails extends IntermediateNodeDetails {
 	// The values are Byte objects; the bytes are shapes defined in
 	// cytoscape.render.immed.GraphGraphics.
 	final HashMap<Integer,Object> m_shapes = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_fillPaints = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_borderWidths = new HashMap<Integer,Object>();
-	final HashMap<Integer,Object> m_borderPaints = new HashMap<Integer,Object>();
 	final HashMap<Integer,Object> m_labelCounts = new HashMap<Integer,Object>();
 	final HashMap<Integer,Object> m_labelTextAnchors = new HashMap<Integer,Object>();
 	final HashMap<Integer,Object> m_labelNodeAnchors = new HashMap<Integer,Object>();
@@ -89,9 +86,6 @@ class DNodeDetails extends IntermediateNodeDetails {
 
 		final Integer key = new Integer(node);
 		m_shapes.remove(key);
-		m_fillPaints.remove(key);
-		m_borderWidths.remove(key);
-		m_borderPaints.remove(key);
 		m_labelTextAnchors.remove(key);
 		m_labelNodeAnchors.remove(key);
 		m_labelJustifys.remove(key);
@@ -165,83 +159,6 @@ class DNodeDetails extends IntermediateNodeDetails {
 			m_shapes.put(new Integer(node), new Byte(shape));
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint fillPaint(int node) {
-		final Object o = m_fillPaints.get(new Integer(node));
-
-		if (o == null)
-			return super.fillPaint(node);
-
-		return (Paint) o;
-	}
-
-	/*
-	 * A null paint has the special meaning to remove overridden paint.
-	 */
-	void overrideFillPaint(int node, Paint paint) {
-		if ((paint == null) || paint.equals(super.fillPaint(node)))
-			m_fillPaints.remove(new Integer(node));
-		else
-			m_fillPaints.put(new Integer(node), paint);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public float borderWidth(int node) {
-		final Object o = m_borderWidths.get(new Integer(node));
-
-		if (o == null)
-			return super.borderWidth(node);
-
-		return ((Float) o).floatValue();
-	}
-
-	/*
-	 * A negative width value has the special meaning to remove overridden width.
-	 */
-	void overrideBorderWidth(int node, float width) {
-		if ((width < 0.0f) || (width == super.borderWidth(node)))
-			m_borderWidths.remove(new Integer(node));
-		else
-			m_borderWidths.put(new Integer(node), new Float(width));
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param node DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Paint borderPaint(int node) {
-		final Object o = m_borderPaints.get(new Integer(node));
-
-		if (o == null)
-			return super.borderPaint(node);
-
-		return (Paint) o;
-	}
-
-	/*
-	 * A null paint has the special meaning to remove overridden paint.
-	 */
-	void overrideBorderPaint(int node, Paint paint) {
-		if ((paint == null) || paint.equals(super.borderPaint(node)))
-			m_borderPaints.remove(new Integer(node));
-		else
-			m_borderPaints.put(new Integer(node), paint);
-	}
 
 	/**
 	 * DOCUMENT ME!

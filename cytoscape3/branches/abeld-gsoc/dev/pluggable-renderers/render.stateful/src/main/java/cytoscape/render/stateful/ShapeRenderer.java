@@ -4,6 +4,7 @@ package cytoscape.render.stateful;
 import java.awt.*;
 import java.awt.geom.*;
 import org.cytoscape.view.NodeView;
+import java.util.HashMap;
 
 public class ShapeRenderer implements NodeRenderer {
 	public static final int CUSTOM_SHAPE_MAX_VERTICES = 100;
@@ -121,9 +122,16 @@ public class ShapeRenderer implements NodeRenderer {
 		float yMin =  floatBuff1[1];
 		float xMax = floatBuff1[2];
 		float yMax = floatBuff1[3];
-		Paint fillPaint = nodeDetails.fillPaint(node);
-		float borderWidth = nodeDetails.borderWidth(node);
-		Paint borderPaint = nodeDetails.borderPaint(node);
+		
+		HashMap <String, Object> attrs = nodeView.getVisualAttributes();
+		Paint fillPaint; 
+		if (nodeView.isSelected()) {
+			fillPaint = (Paint) attrs.get("selectedPaint");
+		} else {
+			fillPaint = (Paint) attrs.get("unselectedPaint");
+		}
+		float borderWidth = ((Double)attrs.get("borderWidth")).floatValue();
+		Paint borderPaint = (Paint) attrs.get("borderPaint");
 		
 		if (borderWidth == 0.0f) {
 			m_g2d.setPaint(fillPaint);

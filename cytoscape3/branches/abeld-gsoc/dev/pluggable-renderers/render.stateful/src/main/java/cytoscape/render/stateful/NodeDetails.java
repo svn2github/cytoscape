@@ -173,33 +173,6 @@ public class NodeDetails {
 	}
 
 	/**
-	 * Returns the paint of the interior of the node shape.  By default this
-	 * method returns Color.red.  It is an error to return null in this method.
-	 */
-	public Paint fillPaint(final int node) {
-		return Color.red;
-	}
-
-	/**
-	 * Returns the border width of the node shape.  By default this method
-	 * returns zero.  Take note of certain constraints specified in
-	 * GraphGraphics.drawNodeFull().
-	 */
-	public float borderWidth(final int node) {
-		return 0.0f;
-	}
-
-	/**
-	 * Returns the paint of the border of the node shape.  By default this method
-	 * returns null.  This return value is ignored if borderWidth(node)
-	 * returns zero; it is an error to return null if borderWidth(node) returns
-	 * a value greater than zero.
-	 */
-	public Paint borderPaint(final int node) {
-		return null;
-	}
-
-	/**
 	 * Returns the number of labels that this node has.  By default this method
 	 * returns zero.
 	 */

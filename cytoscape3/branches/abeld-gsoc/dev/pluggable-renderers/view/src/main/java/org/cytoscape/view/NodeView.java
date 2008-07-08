@@ -3,6 +3,7 @@ package org.cytoscape.view;
 import java.awt.*;
 import org.cytoscape.*;
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 
 /** 
  * Any and all questions should be directed to me.
@@ -25,6 +26,8 @@ public interface NodeView  extends GraphViewObject {
    */
   public Node getNode () ;
 
+  public HashMap<String, Object> getVisualAttributes();
+  
   /**
    * @return the index of this node in the perspective to which we are in a view on.
    */

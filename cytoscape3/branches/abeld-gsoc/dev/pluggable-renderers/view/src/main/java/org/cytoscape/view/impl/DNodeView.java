@@ -64,6 +64,7 @@ import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -89,6 +90,7 @@ public class DNodeView implements NodeView, Label {
 	Paint m_selectedPaint;
 	Paint m_borderPaint;
 
+	public HashMap<String, Object>visualAttributes;
 	/**
 	 * Stores the position of a nodeView when it's hidden so that when the 
 	 * nodeView is retored we can restore the view into the same position.
@@ -116,8 +118,12 @@ public class DNodeView implements NodeView, Label {
 		m_borderPaint = m_view.m_nodeDetails.borderPaint(m_inx);
 		m_graphicShapes = null;
 		m_graphicPaints = null;
+		visualAttributes = new HashMap<String, Object>();
 	}
 
+	public HashMap<String, Object> getVisualAttributes(){
+		return visualAttributes;
+	}
 	/**
 	 * DOCUMENT ME!
 	 *
@@ -188,21 +194,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param paint DOCUMENT ME!
 	 */
 	public void setSelectedPaint(Paint paint) {
-		synchronized (m_view.m_lock) {
-			if (paint == null)
-				throw new NullPointerException("paint is null");
-
-			m_selectedPaint = paint;
-
-			if (isSelected()) {
-				m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
-
-				if (m_selectedPaint instanceof Color)
-					m_view.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_selectedPaint);
-
-				m_view.m_contentChanged = true;
-			}
-		}
+		visualAttributes.put("selectedPaint", paint);
 	}
 
 	/**
@@ -211,7 +203,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getSelectedPaint() {
-		return m_selectedPaint;
+		return (Paint) visualAttributes.get("selectedPaint");
 	}
 
 	/**
@@ -220,21 +212,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param paint DOCUMENT ME!
 	 */
 	public void setUnselectedPaint(Paint paint) {
-		synchronized (m_view.m_lock) {
-			if (paint == null)
-				throw new NullPointerException("paint is null");
-
-			m_unselectedPaint = paint;
-
-			if (!isSelected()) {
-				m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
-
-				if (m_unselectedPaint instanceof Color)
-					m_view.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_unselectedPaint);
-
-				m_view.m_contentChanged = true;
-			}
-		}
+		visualAttributes.put("unselectedPaint", paint);
 	}
 
 	/**
@@ -243,7 +221,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getUnselectedPaint() {
-		return m_unselectedPaint;
+		return (Paint) visualAttributes.get("unselectedPaint");
 	}
 
 	/**
@@ -252,11 +230,8 @@ public class DNodeView implements NodeView, Label {
 	 * @param paint DOCUMENT ME!
 	 */
 	public void setBorderPaint(Paint paint) {
-		synchronized (m_view.m_lock) {
-			m_borderPaint = paint;
-			fixBorder();
-			m_view.m_contentChanged = true;
-		}
+		visualAttributes.put("borderPaint", paint);
+		//m_view.m_contentChanged = true; // TODO
 	}
 
 	/**
@@ -265,7 +240,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public Paint getBorderPaint() {
-		return m_borderPaint;
+		return (Paint)visualAttributes.get("borderPaint");
 	}
 
 	/**
@@ -274,10 +249,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param width DOCUMENT ME!
 	 */
 	public void setBorderWidth(float width) {
-		synchronized (m_view.m_lock) {
-			m_view.m_nodeDetails.overrideBorderWidth(m_inx, width);
-			m_view.m_contentChanged = true;
-		}
+		visualAttributes.put("borderWidth", new Double(width));
 	}
 
 	/**
@@ -286,9 +258,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public float getBorderWidth() {
-		synchronized (m_view.m_lock) {
-			return m_view.m_nodeDetails.borderWidth(m_inx);
-		}
+		return ((Double) visualAttributes.get("borderWidth")).floatValue();
 	}
 
 	/**
@@ -297,54 +267,7 @@ public class DNodeView implements NodeView, Label {
 	 * @param stroke DOCUMENT ME!
 	 */
 	public void setBorder(Stroke stroke) {
-		if (stroke instanceof BasicStroke) {
-			synchronized (m_view.m_lock) {
-				setBorderWidth(((BasicStroke) stroke).getLineWidth());
-
-				final float[] dashArray = ((BasicStroke) stroke).getDashArray();
-
-				if ((dashArray != null) && (dashArray.length > 1)) {
-					m_borderDash = dashArray[0];
-					m_borderDash2 = dashArray[1];
-				} else {
-					m_borderDash = 0.0f;
-					m_borderDash2 = 0.0f;
-				}
-
-				fixBorder();
-			}
-		}
-	}
-
-	private float m_borderDash = 0.0f;
-	private float m_borderDash2 = 0.0f;
-	private final static Color s_transparent = new Color(0, 0, 0, 0);
-
-	// Callers of this method must be holding m_view.m_lock.
-	private void fixBorder() {
-		if ((m_borderDash == 0.0f) && (m_borderDash2 == 0.0f))
-			m_view.m_nodeDetails.overrideBorderPaint(m_inx, m_borderPaint);
-		else {
-			final int size = (int) Math.max(1.0f, (int) (m_borderDash + m_borderDash2)); // Average times two.
-
-			if ((size == m_view.m_lastSize) && (m_borderPaint == m_view.m_lastPaint)) {
-				/* Use the cached texture paint. */ } else {
-				final BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-				final Graphics2D g2 = (Graphics2D) img.getGraphics();
-				g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-				g2.setPaint(s_transparent);
-				g2.fillRect(0, 0, size, size);
-				g2.setPaint(m_borderPaint);
-				g2.fillRect(0, 0, size / 2, size / 2);
-				g2.fillRect(size / 2, size / 2, size / 2, size / 2);
-				m_view.m_lastTexturePaint = new TexturePaint(img,
-				                                             new Rectangle2D.Double(0, 0, size, size));
-				m_view.m_lastSize = size;
-				m_view.m_lastPaint = m_borderPaint;
-			}
-
-			m_view.m_nodeDetails.overrideBorderPaint(m_inx, m_view.m_lastTexturePaint);
-		}
+		visualAttributes.put("borderStroke", stroke);
 	}
 
 	/**
@@ -353,15 +276,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public Stroke getBorder() {
-		synchronized (m_view.m_lock) {
-			if ((m_borderDash == 0.0f) && (m_borderDash2 == 0.0f))
-				return new BasicStroke(getBorderWidth());
-			else
-
-				return new BasicStroke(getBorderWidth(), BasicStroke.CAP_SQUARE,
-				                       BasicStroke.JOIN_MITER, 10.0f,
-				                       new float[] { m_borderDash, m_borderDash2 }, 0.0f);
-		}
+		return (Stroke) visualAttributes.get("borderStroke");
 	}
 
 	/**
@@ -685,14 +600,8 @@ public class DNodeView implements NodeView, Label {
 	boolean selectInternal() {
 		if (m_selected)
 			return false;
-
+		
 		m_selected = true;
-		m_view.m_nodeDetails.overrideFillPaint(m_inx, m_selectedPaint);
-
-		if (m_selectedPaint instanceof Color)
-			m_view.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_selectedPaint);
-
-		m_view.m_selectedNodes.insert(m_inx);
 
 		return true;
 	}
@@ -725,12 +634,6 @@ public class DNodeView implements NodeView, Label {
 			return false;
 
 		m_selected = false;
-		m_view.m_nodeDetails.overrideFillPaint(m_inx, m_unselectedPaint);
-
-		if (m_unselectedPaint instanceof Color)
-			m_view.m_nodeDetails.overrideColorLowDetail(m_inx, (Color) m_unselectedPaint);
-
-		m_view.m_selectedNodes.delete(m_inx);
 
 		return true;
 	}
