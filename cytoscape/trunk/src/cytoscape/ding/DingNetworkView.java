@@ -471,10 +471,13 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 		final List<NodeView> node_views = getNodeViewsList();
 
 		int count = 0;
-		Arrays.sort(given);
+		// Arrays.sort(given);
+		HashMap<NodeView,NodeView>viewMap = new HashMap();
+		for (int g = 0; g < given.length; g++)
+			viewMap.put(given[g],given[g]);
 
 		for (NodeView view : node_views) {
-			if (Arrays.binarySearch(given, view) < 0) {
+			if (!viewMap.containsKey(view)) {
 				inverse[count] = view;
 				count++;
 			}
