@@ -43,10 +43,12 @@ import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.AttributeValueVisitor;
 
 import java.util.Arrays;
+import java.util.Vector;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.List;
+import java.util.HashSet;
 
 /**
  *
@@ -121,6 +123,10 @@ public class AttributeMatchingUtils {
             return true; // any type can convert to String
         }
         
+        if (n1==0 && n2==0) { // simple types
+            return true;
+        }
+        
         if (n1==0 && n2==1) {
             return dimTypes2[0] == MultiHashMapDefinition.TYPE_INTEGER; // converting from simple type to simpl list
         }
@@ -135,7 +141,7 @@ public class AttributeMatchingUtils {
             }
         }
         
-        return true;
+        return valType1==valType2; // for complex case, type must be the same
     }
     
     /*
@@ -147,28 +153,52 @@ public class AttributeMatchingUtils {
             throw new java.lang.NullPointerException("Null attrNames or attrs");
         }
         
-        final Iterator<String> it = attrNames.iterator();
-        String attr = null;
-        
-        while (it.hasNext() && attr==null) {
-            attr = it.next();
-        }
-        
-        if (attr==null) {
+        attrNames.remove(null);
+        if (attrNames.isEmpty()) {
             throw new java.lang.IllegalArgumentException("Empty attrNames");
         }
         
-        while (it.hasNext()) {
-            String attr1 = it.next();
-            if (attr1!=null)  continue;
-            if (AttributeMatchingUtils.isAttributeTypeConvertable(attr, attr1, attrs)) {
-                attr = attr1;
-            } else if (!AttributeMatchingUtils.isAttributeTypeConvertable(attr1, attr, attrs)) {
-                return null;
-            }            
+        if (!Arrays.asList(attrs.getAttributeNames()).containsAll(attrNames)) {
+            throw new java.lang.IllegalStateException("Attribute not exists");
         }
-                
-        return attr;
+        
+        String[] attrArray = attrNames.toArray(new String[0]);
+        Set<String> compatibleSet = new HashSet<String>();
+        
+        int n = attrArray.length;
+        for (int i=0; i<n; i++) {
+            String attr1 = attrArray[i];
+            
+            boolean compatible = true;
+            for (int j=0; j<n; j++) {
+                if (j==i) continue;
+                String attr2 = attrArray[j];
+                if (!AttributeMatchingUtils.isAttributeTypeConvertable(attr2, attr1, attrs)) {
+                    compatible = false;
+                    break;
+                }
+            }
+            
+            if (compatible) {
+                compatibleSet.add(attr1);
+            }
+        }
+        
+        if (compatibleSet.isEmpty()) {
+            return null;
+        }
+        
+        final Iterator<String> it = compatibleSet.iterator();
+        while (it.hasNext()) { 
+            // if exists list, return it
+            String attr = it.next();
+            byte type = attrs.getType(attr);
+            if (type==CyAttributes.TYPE_SIMPLE_LIST) {
+                return attr;
+            }
+        }
+        return compatibleSet.iterator().next();
+        
     }
     
     public static boolean isAttributeValueMatched(final String id1,
@@ -210,13 +240,17 @@ public class AttributeMatchingUtils {
                                                                      //TODO: support simple and complex map?
             Object o1 = attrs.getAttribute(id1, attrName1);
             Object o2 = attrs.getAttribute(id2, attrName2);
-            return o1.equals(o2);
+            
+            type1 = attrs.getMultiHashMapDefinition().getAttributeValueType(attrName1);
+            type2 = attrs.getMultiHashMapDefinition().getAttributeValueType(attrName2);
+            
+            return (o1.equals(o2) && type1==type2); // must be the same type for complex map
         }
         
         if (type1>0&&type2>0) { // simple type
             Object o1 = attrs.getAttribute(id1, attrName1);
             Object o2 = attrs.getAttribute(id2, attrName2);
-            return o1.equals(o2);
+            return o1.equals(o2); //TODO: idmapping
         } else {
             if (type1>0||type2>0) { // then one is simple type; the other is simple list
                 Object o;
@@ -285,7 +319,7 @@ public class AttributeMatchingUtils {
         }
               
 
-        //TODO use a idmapping visitor to compare
+        //TODO use a idmapping 
         
         byte type1 = attrs.getType(attrName1);
         byte type2 = attrs.getType(attrName2);
@@ -328,22 +362,144 @@ public class AttributeMatchingUtils {
                                      final CyAttributes attrs) {
         if ((fromID == null) || (fromAttrName == null) || (toID == null) || (toAttrName == null) || (attrs==null)) {
             throw new java.lang.IllegalArgumentException("Null argument.");
-        }
-        
+        }        
                 
         final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
-        if (!attrNames.contains(fromAttrName)) {
-            throw new java.lang.IllegalArgumentException("fromAttrName not exists");
+        if (!attrNames.contains(fromAttrName)||!attrNames.contains(toAttrName)) { // toAttrName must be defined before calling this method
+            throw new java.lang.IllegalArgumentException("'"+fromAttrName+"' or '"+toAttrName+"' not exists");
+        }
+        
+        if (!isAttributeTypeConvertable(fromAttrName,toAttrName,attrs)) {
+            throw new java.lang.IllegalArgumentException("'"+fromAttrName+"' cannot be converted to '"+toAttrName+"'");
         }
 
         if (toID.compareTo(fromID)==0 && toAttrName.compareTo(fromAttrName)==0) {
             //TODO: if local attribute is realized, process here
             return;
         }
-
-        AttributeValueVisitor copyVisitor = new CopyingAttributeValueVisitor(toID,toAttrName);
-
-        CyAttributesUtils.traverseAttributeValues(fromID, fromAttrName, attrs, copyVisitor);
+        
+        if (!attrs.hasAttribute(fromID, fromAttrName)) {
+            return;
+        }
+        
+        //if (isAttributeValueConflict())
+        
+        //TODO use a idmapping 
+        
+        //byte type1 = attrs.getType(fromAttrName);
+        byte type2 = attrs.getType(toAttrName);
+        
+        if (type2 == CyAttributes.TYPE_STRING) { // the case of inconvertable attributes and simple attributes to String
+            Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
+            Object o2 = attrs.getAttribute(toID, toAttrName);
+            if (o2==null) {
+                attrs.setAttribute(toID, toAttrName, (String)o1);
+            } else if (o1.equals(o2)) {
+                return;// the same, do nothing
+            } else { // attribute conflict
+                //TODO handle the conflicts
+                return;
+            }
+        }
+        
+        if (type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST) { // only support matching between simple types
+                                                                     // and simple lists for now
+                                                                     //TODO: support simple and complex map?            
+            Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
+            Object o2 = attrs.getAttribute(toID, toAttrName);
+            if (o2==null) {
+                AttributeValueVisitor copyVisitor = new CopyingAttributeValueVisitor(toID,toAttrName);
+                CyAttributesUtils.traverseAttributeValues(fromID, fromAttrName, attrs, copyVisitor);
+                return;
+            } else if (o1.equals(o2)) {
+                return; // the same, do nothing
+            } else { // attribute conflict
+                //TODO handle the conflicts
+                return;
+            }
+        }
+        
+        if (type2>0) { // simple type (type1>0)
+            Object o1 = attrs.getAttribute(fromID, fromAttrName);
+            byte type1 = attrs.getType(fromAttrName);
+            if (type1!=type2) {
+                o1 = attributeValueCast(type2,o1);
+            }
+            
+            Object o2 = attrs.getAttribute(toID, toAttrName);
+            if (o2==null) {
+                attrs.getMultiHashMap().setAttributeValue(toID, toAttrName, o1, null);                
+            } else if (o1.equals(o2)) {
+                return; // the same, do nothing
+            } else { // attribute conflict
+                //TODO handle the conflicts
+                return;
+            }
+        } else { // toattr is list type
+            type2 = attrs.getMultiHashMapDefinition().getAttributeValueType(toAttrName);
+            byte type1 = attrs.getType(fromAttrName);
+            if (type1>0) {
+                Object o1 = attrs.getAttribute(fromID, fromAttrName);
+                if (type1!=type2) {
+                    o1 = attributeValueCast(type2,o1);
+                }
+                
+                List l2 = attrs.getListAttribute(toID, toAttrName);
+                if (l2==null) {
+                    //l2 = new Vector();
+                    throw new java.lang.IllegalStateException("Define '"+toAttrName+"' first");
+                }
+                
+                if (!l2.contains(o1)) {
+                    l2.add(o1);
+                }
+                
+                attrs.setListAttribute(toID, toAttrName, l2);
+                
+                return;
+            } else if (type1==CyAttributes.TYPE_SIMPLE_LIST) {
+                type1 = attrs.getMultiHashMapDefinition().getAttributeValueType(fromAttrName);
+                
+                List l1 = attrs.getListAttribute(fromID, fromAttrName);
+                List l2 = attrs.getListAttribute(toID, toAttrName);
+                if (l2==null) {
+                    //l2 = new Vector();
+                    throw new java.lang.IllegalStateException("Define '"+toAttrName+"' first");
+                }
+                
+                int nl1 = l1.size();
+                for (int il1=0; il1<nl1; il1++) {
+                    Object o1 = l1.get(il1);
+                    if (type1!=type2) {
+                        o1 = attributeValueCast(type2,o1);
+                    }
+                    if (!l2.contains(o1)) {
+                        l2.add(o1);
+                    }
+                }
+                
+                attrs.setListAttribute(toID, toAttrName, l2);
+                
+                return;                
+            } else {
+                throw new java.lang.IllegalStateException("Wrong type");
+            }
+        } 
+    }
+    
+    private static Object attributeValueCast(byte typeTo, Object value) {
+        switch (typeTo) {
+            case CyAttributes.TYPE_BOOLEAN:
+                    return Boolean.valueOf(value.toString());
+            case CyAttributes.TYPE_INTEGER:
+                    return Integer.valueOf(value.toString());
+            case CyAttributes.TYPE_FLOATING:
+                    return Double.valueOf(value.toString());
+            case CyAttributes.TYPE_STRING:
+                    return value.toString();
+            default:
+                    throw new java.lang.IllegalStateException("wrong type");
+        }
     }
         
     // this is different from CopyingAttributeValueVisitor in CyAtributeUtil
@@ -354,23 +510,21 @@ public class AttributeMatchingUtils {
      */
     private static class CopyingAttributeValueVisitor implements AttributeValueVisitor {
         private String toID;
-        private String toAttribute;
+        private String toAttrName;
 
-        public CopyingAttributeValueVisitor(String toID, String toAttribute) {
+        public CopyingAttributeValueVisitor(String toID, String toAttrName) {
             this.toID = toID;
-            this.toAttribute = toAttribute;
+            this.toAttrName = toAttrName;
         }
 
-        public void visitingAttributeValue(String objTraversedID, String attrName,
+        public void visitingAttributeValue(String fromID, String attrName,
                                            CyAttributes attrs, Object[] keySpace,
                                            Object visitedValue) {
-            if (!Arrays.asList(attrs.getAttributeNames()).contains(toAttribute)) { // if toAttribute not exists
-                final MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
-                mmapDef.defineAttribute(toAttribute,
-                                        mmapDef.getAttributeValueType(attrName),
-                                        mmapDef.getAttributeKeyspaceDimensionTypes(attrName));
+            if (!Arrays.asList(attrs.getAttributeNames()).contains(toAttrName)) { // if toAttribute not exists
+                throw new java.lang.IllegalStateException("'"+toAttrName+"' must be defined before calling this method");
             }
-            attrs.getMultiHashMap().setAttributeValue(toID, toAttribute, visitedValue, keySpace);
+            
+            attrs.getMultiHashMap().setAttributeValue(toID, toAttrName, visitedValue, keySpace);
         }
     }
 }

@@ -42,7 +42,12 @@ import csplugins.network.merge.NetworkMerge.Operation;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.data.CyAttributes;
+import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
+
+import giny.model.Node;
+
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -52,6 +57,7 @@ import cytoscape.task.util.TaskManager;
 import java.awt.event.ActionEvent;
 
 import java.util.List;
+import java.util.Arrays;
 
 /**
  * Plugin to merge networks
@@ -73,6 +79,8 @@ public class NetworkMergePlugin extends CytoscapePlugin {
          * This method is called when the user selects the menu item.
          */
         public void actionPerformed(final ActionEvent ae) {
+            prepare(); //TODO: remove in Cytoscape3
+            
             final NetworkMergeDialog dialog = new NetworkMergeDialog(new javax.swing.JFrame(), true);
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setVisible(true);
@@ -97,6 +105,23 @@ public class NetworkMergePlugin extends CytoscapePlugin {
                 TaskManager.executeTask(task, jTaskConfig);
             }
         }
+        
+        //TODO: remove in Cytoscape3
+        /*
+         * Copy node ID to canonicalName if canonicalName does not exist
+         * 
+         */
+        private void prepare() {
+            CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
+            if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(Semantics.CANONICAL_NAME)) {
+                List<Node> nodeList = Cytoscape.getCyNodesList();
+                int n = nodeList.size();
+                for (int i=0; i<n; i++) {
+                    String nodeID = nodeList.get(i).getIdentifier();
+                    cyAttributes.setAttribute(nodeID, Semantics.CANONICAL_NAME, nodeID);
+                }
+            }            
+        }//TODO: remove in Cytoscape3
     }
 }
 
@@ -136,22 +161,32 @@ class NetworkMergeSessionTask implements Task {
     public void run() {
         taskMonitor.setStatus("Merging networks.\n\nIt may take a while.\nPlease wait...");
         taskMonitor.setPercentCompleted(0);
+        
+        CyNetwork mergedNetwork;
 
-        final NetworkMerge networkMerge = new DefaultNetworkMerge(
-                            matchingAttribute,
-                            nodeAttributeMapping,
-                            edgeAttributeMapping);
-        final CyNetwork mergedNetwork = networkMerge.mergeNetwork(
-                            selectedNetworkList,
-                            operation,
-                            mergedNetworkName);
+        try {
+            final NetworkMerge networkMerge = new DefaultNetworkMerge(
+                                matchingAttribute,
+                                nodeAttributeMapping,
+                                edgeAttributeMapping);
+            mergedNetwork = networkMerge.mergeNetwork(
+                                selectedNetworkList,
+                                operation,
+                                mergedNetworkName);
+
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("The selected networks were successfully merged into network '"
+                                  + mergedNetwork.getTitle()
+                                  + "'");
+            
+            //TODO handle attribute conflicts here
         
-        //TODO handle attribute conflicts here
+        } catch(Exception e) {
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Network Merge Failed!");
+            e.printStackTrace();
+        }
         
-        taskMonitor.setPercentCompleted(100);
-        taskMonitor.setStatus("The selected networks were successfully merged into network '"
-                              + mergedNetwork.getTitle()
-                              + "'");
     }
 
     /**
