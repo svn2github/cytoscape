@@ -54,71 +54,121 @@ import java.util.List;
  */
 public class AttributeMatchingUtils {
     
-    public static boolean isAttributeTypeSame(final Set<String> attrNames, final CyAttributes attrs) {
-        if (attrNames==null || attrs==null) {
-            throw new java.lang.NullPointerException("Null attrNames or attrs");
-        }
-        
-        final Iterator<String> it = attrNames.iterator();
-        if (!it.hasNext()) {
-            throw new java.lang.IllegalArgumentException("Empty attrNames");
-        }
-        
-        final String first = it.next();
-        while (it.hasNext()) {
-            if (!isAttributeTypeSame(first,it.next(),attrs)) {
-                return false;
-            }
-        }
-        return true;
-    }
     /*
-     * Check if the types are the same for two attributes
+     * Check if the types are convertable for two attributes
      * 
      * 
      * 
      */
-    public static boolean isAttributeTypeSame(final String attrName1, 
-                                              final String attrName2, 
+    public static boolean isAttributeTypeConvertable(final String fromAttrName, 
+                                              final String toAttrName, 
                                               final CyAttributes attrs) {
-        if (attrName1==null || attrName2==null || attrs==null) {
-            throw new java.lang.NullPointerException("Null attrName1 or attrName2 or attrs");
+        if (fromAttrName==null || toAttrName==null || attrs==null) {
+            throw new java.lang.NullPointerException("Null fromAttrName or toAttrName or attrs");
         }
         
         final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
-        if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
-            throw new java.lang.IllegalArgumentException("attrName1 or/and attrNames not exists");
+        if (!attrNames.contains(fromAttrName)) {
+            throw new java.lang.IllegalArgumentException("'"+fromAttrName+"' not exists");
+        }
+        
+        if (!attrNames.contains(toAttrName)) {
+            return true; // always convertable to a non-existing attribute
         }
         
         final MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
-        final byte valType1 = mmapDef.getAttributeValueType(attrName1);
-        final byte valType2 = mmapDef.getAttributeValueType(attrName2);
+        final byte valType1 = mmapDef.getAttributeValueType(fromAttrName);
+        final byte valType2 = mmapDef.getAttributeValueType(toAttrName);
         
         if (valType1 != valType2) { // if value type is not the same
-                return false; 
+            switch (valType1) {
+                case MultiHashMapDefinition.TYPE_BOOLEAN:
+                    if (valType2!=MultiHashMapDefinition.TYPE_BOOLEAN
+                            && valType2!=MultiHashMapDefinition.TYPE_STRING) {
+                        return false;
+                    }
+                    break;
+                case MultiHashMapDefinition.TYPE_FLOATING_POINT:
+                    if (valType2!=MultiHashMapDefinition.TYPE_FLOATING_POINT
+                            && valType2!=MultiHashMapDefinition.TYPE_STRING) {
+                        return false;
+                    }
+                    break;
+                case MultiHashMapDefinition.TYPE_INTEGER:
+                    if (valType2!=MultiHashMapDefinition.TYPE_INTEGER
+                            && valType2!=MultiHashMapDefinition.TYPE_FLOATING_POINT
+                            && valType2!=MultiHashMapDefinition.TYPE_STRING) {
+                        return false;
+                    }
+                    break;
+                case MultiHashMapDefinition.TYPE_STRING:
+                    if (valType2!=MultiHashMapDefinition.TYPE_STRING) {
+                        return false;
+                    }
+                    break;
+                default:
+                    return false;
+            }
         }
         
-        if (valType1 < 0 || valType2 < 0) { // for undefined type
-                return false;
+        final byte[] dimTypes1 = mmapDef.getAttributeKeyspaceDimensionTypes(fromAttrName);
+        final byte[] dimTypes2 = mmapDef.getAttributeKeyspaceDimensionTypes(toAttrName);
+
+        final int n1 = dimTypes1.length;
+        final int n2 = dimTypes2.length;
+        
+        if (n2==0 && valType2==MultiHashMapDefinition.TYPE_STRING) {
+            return true; // any type can convert to String
         }
-
-        final byte[] dimTypes1 = mmapDef.getAttributeKeyspaceDimensionTypes(attrName1);
-        final byte[] dimTypes2 = mmapDef.getAttributeKeyspaceDimensionTypes(attrName2);
-
-        final int n = dimTypes1.length;
-        if (n!=dimTypes2.length) {
+        
+        if (n1==0 && n2==1) {
+            return dimTypes2[0] == MultiHashMapDefinition.TYPE_INTEGER; // converting from simple type to simpl list
+        }
+        
+        if (n1!=n2) {
             return false;
         }
         
-        for (int i=0; i<n; i++) {
+        for (int i=0; i<n1; i++) {
             if (dimTypes1[i]!=dimTypes2[i]) {
                 return false;
             }
         }
         
-        // do we need to check whether th key span is the same?
-
         return true;
+    }
+    
+    /*
+     * Return the attribute with the highest compatible attribute
+     * 
+     */
+    public static String getMostCompatibleAttribute(final Set<String> attrNames, final CyAttributes attrs) {
+        if (attrNames==null || attrs==null) {
+            throw new java.lang.NullPointerException("Null attrNames or attrs");
+        }
+        
+        final Iterator<String> it = attrNames.iterator();
+        String attr = null;
+        
+        while (it.hasNext() && attr==null) {
+            attr = it.next();
+        }
+        
+        if (attr==null) {
+            throw new java.lang.IllegalArgumentException("Empty attrNames");
+        }
+        
+        while (it.hasNext()) {
+            String attr1 = it.next();
+            if (attr1!=null)  continue;
+            if (AttributeMatchingUtils.isAttributeTypeConvertable(attr, attr1, attrs)) {
+                attr = attr1;
+            } else if (!AttributeMatchingUtils.isAttributeTypeConvertable(attr1, attr, attrs)) {
+                return null;
+            }            
+        }
+                
+        return attr;
     }
     
     public static boolean isAttributeValueMatched(final String id1,
@@ -132,7 +182,7 @@ public class AttributeMatchingUtils {
                 
         final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
         if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
-            throw new java.lang.IllegalArgumentException("attrName1 or/and attrNames not exists");
+            throw new java.lang.IllegalArgumentException("'"+attrName1+"' or/and '"+attrName2+"' not exists");
         }
 
         if (id1.compareTo(id2)==0 && attrName1.compareTo(attrName2)==0) {
@@ -218,7 +268,7 @@ public class AttributeMatchingUtils {
                 
         final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
         if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
-            throw new java.lang.IllegalArgumentException("attrName1 or/and attrNames not exists");
+            throw new java.lang.IllegalArgumentException("'"+attrName1+"' or/and '"+attrName2+"' not exists");
         }
         
         //if (!isAttributeTypeSame(attrName1,attrName2,attrs)) {
@@ -230,20 +280,33 @@ public class AttributeMatchingUtils {
         }        
         
         if (!attrs.hasAttribute(id1, attrName1) 
-                && !attrs.hasAttribute(id2, attrName2)) {
-            return false; // if both of them are null
-        } else if (!attrs.hasAttribute(id1, attrName1) 
                 || !attrs.hasAttribute(id2, attrName2)) { // Is it neccessary to handle empty string?
-            return true; // 
+            return false; // if one of them or both of them are null, no conflicts
         }
               
 
         //TODO use a idmapping visitor to compare
-        CmpAttributeValueVisitor cmpVisitor = new CmpAttributeValueVisitor(id1,attrName1);
-
-        CyAttributesUtils.traverseAttributeValues(id2, attrName2, attrs, cmpVisitor);
-
-        return !cmpVisitor.getIsSame();
+        
+        byte type1 = attrs.getType(attrName1);
+        byte type2 = attrs.getType(attrName2);
+        
+        if ((type1<0&&type1!=CyAttributes.TYPE_SIMPLE_LIST)
+                ||(type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST)) { // only support matching between simple types
+                                                                     // and simple lists for now
+                                                                     //TODO: support simple and complex map?
+            Object o1 = attrs.getAttribute(id1, attrName1);
+            Object o2 = attrs.getAttribute(id2, attrName2);
+            return !o1.equals(o2);
+        }
+        
+        if (type1>0&&type2>0) { // simple type
+            Object o1 = attrs.getAttribute(id1, attrName1);
+            Object o2 = attrs.getAttribute(id2, attrName2);
+            return !o1.equals(o2);
+        } else {
+            return false; // no conflicts in these case
+                          // when merging, copy value of simple type or simple list to the other simple list
+        } 
     }
     
     //TODO could this function move to cytoscape.data.CyAttributeUtil?
@@ -282,46 +345,7 @@ public class AttributeMatchingUtils {
 
         CyAttributesUtils.traverseAttributeValues(fromID, fromAttrName, attrs, copyVisitor);
     }
-    
-    private static class CmpAttributeValueVisitor implements AttributeValueVisitor {
-        private String cmpToID;
-        private String cmpToAttr;
-        private Boolean isSame;
-
-        public CmpAttributeValueVisitor(final String cmpToID, final String cmpToAttr) {
-                this.cmpToID = cmpToID;
-                this.cmpToAttr = cmpToAttr;
-        }
-
-        public boolean getIsSame() {
-            if (isSame==null) {
-                throw new java.lang.IllegalStateException("Has not been travelled");
-            }
-            return isSame;
-        }
-
-        public void visitingAttributeValue(final String objTraversedID, 
-                                           final String attrName,
-                                           final CyAttributes attrs,
-                                           final Object[] keySpace,
-                                           final Object visitedValue) {
-            if (isSame==null) { // first value
-                isSame=true;
-            }
-            
-            if (!isSame) { // if already have different value, return
-                return;
-            }
-
-            //attrs.getMultiHashMap().
-            Object cmpToValue = attrs.getMultiHashMap().getAttributeValue(cmpToID, cmpToAttr, keySpace);
-            if (cmpToValue==null||visitedValue==null) {
-                return; // ignore null
-            }
-            isSame = cmpToValue.equals(visitedValue); //is it OK to use .equal()?
-        }
-    }
-    
+        
     // this is different from CopyingAttributeValueVisitor in CyAtributeUtil
     // the attributes copying from and to can be different
     /**

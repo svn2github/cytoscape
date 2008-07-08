@@ -233,7 +233,9 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
         for (int i=0; i<nattr; i++) {
             final Iterator<Map.Entry<CyNetwork,GraphObject>> itEntry = entrySet.iterator();
             
-            if (attributeMapping.isAttributeTypeSame(i)) { // if same type            
+            final Set<String> attrNames = new HashSet(attributeMapping.getOriginalAttributeMap(i).values());
+            final String attr_mc = AttributeMatchingUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
+            if (attr_mc!=null) { // if compatible type            
                 // find non-redundent object attribute pair first
                 final Vector<String[]> nrGOAttrPair = new Vector<String[]>(); // vector of pair
 
@@ -282,7 +284,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                     final String attrName_ori = pair[1];
                     AttributeMatchingUtils.copyAttribute(id_ori, attrName_ori, id, attr_merged, cyAttributes);
                 }
-            } else { // if different type
+            } else { // if incompatible type
                 final Set<String> values = new HashSet<String>();
                 while (itEntry.hasNext()) {
                     final Map.Entry<CyNetwork,GraphObject> entry = itEntry.next();

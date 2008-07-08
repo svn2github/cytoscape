@@ -44,6 +44,7 @@ import csplugins.network.merge.util.AttributeMatchingUtils;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.data.Semantics;
+import cytoscape.data.CyAttributes;
 
 import java.util.Collections;
 import java.util.Set;
@@ -161,23 +162,40 @@ class MergeAttributeTable extends JTable{
                             boolean isSelected, boolean hasFocus,
                             int row, int column) {
                 final JLabel renderer = (JLabel) defaultRender.getTableCellRendererComponent(table, color, isSelected, hasFocus, row, column);
-                if (row<2||(row==2&&column!=table.getColumnCount()-1)) { //TODO do not need this in Cytoscape3
+                if (row<2||(isNode&&row==2&&column!=table.getColumnCount()-1)) { //TODO do not need this in Cytoscape3
                     renderer.setBackground(Color.LIGHT_GRAY);
                     if (isSelected) {
                         renderer.setForeground(table.getSelectionForeground());
                     } else {
                         renderer.setForeground(table.getForeground());
                     }
-                } else {
-                    if (isSelected) {
-                        renderer.setForeground(table.getSelectionForeground());
-                        renderer.setBackground(table.getSelectionBackground());
+                    if (row==2) {
+                        renderer.setToolTipText("Change this in the matching node table above");
                     } else {
-                        renderer.setForeground(table.getForeground());
-                        renderer.setBackground(table.getBackground());
+                        renderer.setToolTipText("Reserved by system");
                     }
-                    if (column<attributeMapping.getSizeNetwork()) {
-                        renderer.setToolTipText("Click for combo box");
+                } else {
+                    if (isNode&&row==2) {//&&column==table.getColumnCount()-1
+                        renderer.setForeground(Color.RED);
+                        if (isSelected) {
+                            renderer.setBackground(table.getSelectionBackground());
+                        } else {
+                            renderer.setBackground(table.getBackground());
+                        }
+                        renderer.setToolTipText("CHANGE ME!");
+                    } else {                    
+                        if (isSelected) {
+                            renderer.setForeground(table.getSelectionForeground());
+                            renderer.setBackground(table.getSelectionBackground());
+                        } else {
+                            renderer.setForeground(table.getForeground());
+                            renderer.setBackground(table.getBackground());
+                        }
+                        if (column<attributeMapping.getSizeNetwork()) {
+                            renderer.setToolTipText("Click for combo box");
+                        } else {
+                            renderer.setToolTipText("Double click to change");
+                        }
                     }
                 }
                 return renderer;
@@ -246,7 +264,7 @@ class MergeAttributeTable extends JTable{
         setColumnEditor();
     }
 
-    private class MergeAttributeTableModel extends AbstractTableModel {
+    protected class MergeAttributeTableModel extends AbstractTableModel {
         Vector<String> netNames; // network titles
         Vector<String> netIDs; //network identifiers
 
@@ -295,12 +313,6 @@ class MergeAttributeTable extends JTable{
             }
         }
 
-        /*
-         * JTable uses this method to determine the default renderer/
-         * editor for each cell.  If we didn't implement this method,
-         * then the last column would contain text ("true"/"false"),
-         * rather than a check box.
-         */
         public Class getColumnClass(final int c) {
             return String.class;
         }
@@ -393,24 +405,21 @@ class MergeAttributeTable extends JTable{
                         //if (attributeMapping.getOriginalAttribute(netID, iAttr)==null) return;
                         attributeMapping.removeOriginalAttribute(netID, iAttr);
                     } else {
-                        if (attributeMapping.isAttributeTypeSame(iAttr)) {
-                            //check whether the type remains the same after set
-                            final Map<String,String> map = attributeMapping.getOriginalAttributeMap(iAttr);
-                            map.remove(netID);
-                            Set<String> attrs_curr = new HashSet(map.values());
-                            attrs_curr.add(attr);
-                            
-                            if (!AttributeMatchingUtils.isAttributeTypeSame(attrs_curr, attributeMapping.getCyAttributes())) {
-                                final int ioption = JOptionPane.showConfirmDialog(getParent(),
-                                        "Atribute "+attr+" have a different type to the other attributes to be merged. Are you sure to select "+attr+"? ",
+                        String mergedAttr = attributeMapping.getMergedAttribute(iAttr);
+                        CyAttributes cyAttributes = attributeMapping.getCyAttributes();
+                        if (Arrays.asList(cyAttributes.getAttributeNames()).contains(mergedAttr)
+                                && !AttributeMatchingUtils.isAttributeTypeConvertable(attr, 
+                                                                          mergedAttr, 
+                                                                          cyAttributes)) {
+                            final int ioption = JOptionPane.showConfirmDialog(getParent(),
+                                        "Atribute "+attr+" have a type incompatible to the other attributes to be merged. Are you sure to select "+attr+"? ",
                                         "Warning: types are different",
                                         JOptionPane.YES_NO_OPTION );
                                 if (ioption==JOptionPane.NO_OPTION) {
                                     return;
                                 }
-                            }
                         }
-                        
+                                                
                         attributeMapping.setOriginalAttribute(netID, attr, iAttr);// set the attr
                     }
                     fireTableDataChanged();

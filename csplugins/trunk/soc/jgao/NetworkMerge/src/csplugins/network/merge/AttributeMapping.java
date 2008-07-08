@@ -186,34 +186,5 @@ public interface AttributeMapping {
      * 
      */
     public void removeNetwork(String netID);
-        
-    /*
-     * Check whether original attribute in each network has the same type for the merged attribute
-     * 
-     */    
-    public boolean isAttributeTypeSame(String mergedAttributeName);
-    
-    /*
-     * Check whether ith original attribute in each network has the same type
-     * 
-     */    
-    public boolean isAttributeTypeSame(int index);
-    
-    /*
-     * Check whether two attributes have the same types
-     * 
-     */    
-    public boolean isAttributeTypeSame(String attr1, String attr2);
-    
-    /*
-     * Return the type of merged attribute
-     * 
-     */
-    public byte getMergedAttributeType(String mergedAttributeName);
-    
-    /*
-     * Return the type of merged attribute
-     * 
-     */
-    public byte getMergedAttributeType(int index);
+       
 }

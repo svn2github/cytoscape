@@ -109,14 +109,25 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.NullPointerException("Attribute name is null.");
         }
         
-        // check whether all the type of the original attribute are the same
-        if (!isAttributeTypeSame(index)) { // if not same type, not allowed to use existing attributes in original networks
-            if (attributeExistsInOriginalNetwork(attributeName)) {
-                return null;
+        String attr = attributeName;
+        
+        if (attributeExistsInOriginalNetwork(attributeName)) {
+            final Set<String> attrNames = new HashSet(getOriginalAttributeMap(index).values());
+            final String attr_mc = AttributeMatchingUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
+            if (attr_mc==null) { // inconvertible
+                if (cyAttributes.getType(attributeName)!=CyAttributes.TYPE_STRING) {
+                    attr = this.getDefaultMergedAttrName(attr, true);
+                    //return null;
+                }
+            } else { // convertible
+                if (!AttributeMatchingUtils.isAttributeTypeConvertable(attr_mc, attributeName, cyAttributes)) {
+                    attr = this.getDefaultMergedAttrName(attr, true);
+                    //return null;
+                }
             }
         }
         
-        return attributeMerged.set(index, attributeName);
+        return attributeMerged.set(index, attr);
         
     }
             
@@ -225,8 +236,8 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     public String setOriginalAttribute(final String netID, final String attributeName, final int index){
-        if (netID==null||attributeName==null) {
-            throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
+        if (netID==null||attributeName==null||attributeName==null) {
+            throw new java.lang.NullPointerException("Null netID or attributeName or mergedAttributeName");
         }
         
         if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(attributeName)) {
@@ -239,24 +250,19 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.IndexOutOfBoundsException();
         }
         
-        final String old;
-        if (attributeName==null) {
-            old = attrs.set(index, nullAttr);
-            pack(index);
-        } else {
-            old = attrs.get(index);
-            if (old.compareTo(attributeName)!=0) {                           
-                attrs.set(index, attributeName);
+        final String old = attrs.get(index);
+        if (old.compareTo(attributeName)!=0) { // not the same                     
+            attrs.set(index, attributeName);
 
-                if (!isAttributeTypeSame(index)) {// reset the merged attribute names
-                    String mergedAttr = getMergedAttribute(index);
-                    if (attributeExistsInOriginalNetwork(mergedAttr)) {
-                        setMergedAttribute(index,getDefaultMergedAttrName(mergedAttr,true));
-                    }
-                }
+            String mergedAttr = getMergedAttribute(index);
+            if (attributeExistsInOriginalNetwork(mergedAttr)
+                && !AttributeMatchingUtils.isAttributeTypeConvertable(attributeName, 
+                                                                      mergedAttr, 
+                                                                      cyAttributes)) {
+                    setMergedAttribute(index,getDefaultMergedAttrName(mergedAttr,true));
             }
- 
         }
+
         return old;
     }
     
@@ -290,7 +296,12 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.IndexOutOfBoundsException("Index out of bounds");
         }
         
-        return setOriginalAttribute(netID,null,index);
+        final Vector<String> attrs = attributeMapping.get(netID);
+        
+        String old = attrs.set(index, nullAttr);
+        pack(index);
+        
+        return old;
     }
 
     /*
@@ -500,94 +511,6 @@ public class AttributeMappingImpl implements AttributeMapping {
             }
         }
     }
-    
-    /*
-     * Check whether original attribute in each network has the same type for the merged attribute
-     * 
-     */    
-    public boolean isAttributeTypeSame(final String mergedAttributeName) {
-        if (mergedAttributeName==null) {
-            throw new java.lang.NullPointerException();
-        }
-        
-        final int index = attributeMerged.indexOf(mergedAttributeName);
-        if (index==-1) {
-            throw new java.lang.IllegalArgumentException("No attribute has such a name!");
-        }
-        
-        return isAttributeTypeSame(index);        
-    }
-    
-    
-    /*
-     * Check whether ith original attribute in each network has the same type
-     * 
-     */    
-    public boolean isAttributeTypeSame(final int index) {
-        if (index<0 || index>=getSizeMergedAttributes()) {
-            throw new java.lang.IndexOutOfBoundsException("Index out of boundary.");
-        }
-                
-        if (attributeMerged.size()==0) {
-            throw new java.lang.IllegalStateException("No network has been added");
-        }
-        
-        Set<String> attrset = new HashSet(this.getOriginalAttributeMap(index).values());
-        
-        return AttributeMatchingUtils.isAttributeTypeSame(attrset, cyAttributes);     
-    }
-    
-    
-    /*
-     * Check whether two attributes have the same types
-     * 
-     */    
-    public boolean isAttributeTypeSame(final String attr1, final String attr2) {
-        if (attr1==null || attr2==null) {
-            throw new java.lang.NullPointerException();
-        }
-        return AttributeMatchingUtils.isAttributeTypeSame(attr1, attr2, cyAttributes);            
-    }
-    
-    /*
-     * Return the type of merged attribute
-     * 
-     */
-    public byte getMergedAttributeType(final String mergedAttributeName) {
-        if (mergedAttributeName==null) {
-            throw new java.lang.NullPointerException();
-        }
-        
-        final int index = attributeMerged.indexOf(mergedAttributeName);
-        if (index==-1) {
-            throw new java.lang.IllegalArgumentException("No attribute has such a name!");
-        }
-        
-        return getMergedAttributeType(index);
-    }
-            
-    /*
-     * Return the type of merged attribute
-     * 
-     */
-    public byte getMergedAttributeType(final int index) {
-        if (index<0 || index>=getSizeMergedAttributes()) {
-            throw new java.lang.IndexOutOfBoundsException("Index out of boundary.");
-        }
-        
-        if (attributeMerged.size()==0) {
-            throw new java.lang.IllegalStateException("No network has been added");
-        }
-        
-        if (isAttributeTypeSame(index)) {        
-            String attr = attributeMapping.values().iterator().next().get(index);
-            return cyAttributes.getType(attr);
-        } else { // if not the same return type of Strng
-            return CyAttributes.TYPE_STRING;
-        }
-    }
-    
-    
     
     /* 
      * Remove empty rows from the current attribute mapping
