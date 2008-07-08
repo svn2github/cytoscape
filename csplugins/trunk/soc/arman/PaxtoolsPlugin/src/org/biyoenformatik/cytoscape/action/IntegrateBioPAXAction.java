@@ -8,7 +8,7 @@
  * - Agilent Technologies
  *
  * Authors: B. Arman Aksoy, Thomas Kelder, Emek Demir
- *
+ * 
  * This file is part of PaxtoolsPlugin.
  *
  *  PaxtoolsPlugin is free software: you can redistribute it and/or modify
@@ -25,28 +25,40 @@
  *  along with this project.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.biyoenformatik.cytoscape;
+package org.biyoenformatik.cytoscape.action;
 
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.data.ImportHandler;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
-import org.biyoenformatik.cytoscape.action.ExportAsBioPAXAction;
-import org.biyoenformatik.cytoscape.action.MergeBioPAXAction;
-import org.biyoenformatik.cytoscape.action.IntegrateBioPAXAction;
 
-public class PaxtoolsPlugin extends CytoscapePlugin {
-    public PaxtoolsPlugin() {
-        ImportHandler importHandler = new ImportHandler();
-		importHandler.addFilter(new PaxtoolsFileFilter());
+import java.awt.event.ActionEvent;
 
-        ExportAsBioPAXAction biopaxAction = new ExportAsBioPAXAction();
-        Cytoscape.getDesktop().getCyMenus().addAction(biopaxAction);
+import org.biyoenformatik.cytoscape.ui.MergeBioPAXDialog;
+import org.biyoenformatik.cytoscape.ui.IntegrateBioPAXDialog;
+import org.biyoenformatik.cytoscape.util.BioPAXUtil;
 
-        MergeBioPAXAction mergeAction = new MergeBioPAXAction();
-        Cytoscape.getDesktop().getCyMenus().addAction(mergeAction);
+import javax.swing.event.MenuEvent;
 
-        IntegrateBioPAXAction intAction = new IntegrateBioPAXAction();
-        Cytoscape.getDesktop().getCyMenus().addAction(intAction);
+public class IntegrateBioPAXAction extends CytoscapeAction {
+    public IntegrateBioPAXAction() {
+		super("Integrate BioPAX networks");
+		setPreferredMenu("Plugins");
+	}
+
+    public void actionPerformed(ActionEvent e) {
+        IntegrateBioPAXDialog dialog = new IntegrateBioPAXDialog();
+        dialog.pack();
+        dialog.setVisible(true);
     }
-    
+
+    public void menuSelected(MenuEvent e) {
+        for(CyNetwork cyNetwork: Cytoscape.getNetworkSet()) {
+            if( BioPAXUtil.isBioPAXNetwork(cyNetwork) ) {
+                enableForNetwork();
+                return;
+            }
+        }
+
+        setEnabled(false);
+    }
 }

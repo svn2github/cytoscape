@@ -259,7 +259,7 @@ public class BioPAXUtil {
                     authors += anAuthor + ", ";
                 pubTxt += (authors.length() > 0 ) ? authors + " et. al, " : authors;
 
-                if( pRef.getTITLE() != null || pRef.getTITLE().length() > 0 )
+                if( pRef.getTITLE() != null && pRef.getTITLE().length() > 0 )
                     pubTxt += pRef.getTITLE();
 
                 String sources = "";
