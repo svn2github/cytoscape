@@ -155,6 +155,8 @@ public class Structure {
 			}
 			// Check to see if we have a range-spec
 			String resRange = "";
+			if (residue == null || residue.equals("") || residue.length() == 0)
+				continue;
 			String[] range = residue.split("-",2);
 			for (int res = 0; res < range.length; res++) {
 				if (res == 1) resRange = resRange.concat("-");
