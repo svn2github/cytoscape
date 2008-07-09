@@ -59,6 +59,7 @@ import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.kmeans.KMeansCluster;
 import clusterMaker.algorithms.MCL.MCLMenu;
 import clusterMaker.algorithms.FORCE.CytoscapeFORCEmenu;
+import clusterMaker.algorithms.FORCE.FORCECluster;
 // import clusterMaker.algorithms.MCLCluster;
 // import clusterMaker.algorithms.KMeansCluster;
 // import clusterMaker.algorithms.SOMCluster;
@@ -82,12 +83,12 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		JMenu menu = new JMenu("Cluster");
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
+		addClusterAlgorithm(menu, new FORCECluster());
 		// At some point, we need to convert these over to be clusterAlgorithms.  In the meantime...
 		menu.add(new MCLMenu());
-		menu.add(new CytoscapeFORCEmenu());
+		// menu.add(new CytoscapeFORCEmenu());
 		// addClusterAlgorithm(new MCLCLuster());
-		// addClusterAlgorithm(new FORCECLuster());
-		// addClusterAlgorithm(new KMeansCluster());
+		// addClusterAlgorithm(menu, new FORCECLuster());
 		// addClusterAlgorithm(new SOMCluster());
 		menu.addSeparator();
 

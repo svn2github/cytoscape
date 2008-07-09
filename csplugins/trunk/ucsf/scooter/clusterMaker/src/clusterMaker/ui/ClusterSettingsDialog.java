@@ -50,7 +50,10 @@ import java.beans.PropertyChangeSupport;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -77,7 +80,7 @@ import javax.swing.text.Position;
  * various settings for cluster algorithms.  Each ClusterAlgorithm must return a single
  * JPanel that provides all of its settings.
  */
-public class ClusterSettingsDialog extends JDialog implements ActionListener, PropertyChangeListener {
+public class ClusterSettingsDialog extends JDialog implements ActionListener, PropertyChangeListener, ComponentListener {
 	private ClusterAlgorithm currentAlgorithm = null;
 	private ClusterViz visualizer = null;
 	private JButton vizButton = null;
@@ -147,6 +150,18 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener, Pr
 			vizButton.setEnabled(false);
 	}
 
+	public void componentHidden(ComponentEvent e) { }
+
+	public void componentMoved(ComponentEvent e) { }
+
+	public void componentResized(ComponentEvent e) {
+		doLayout();
+		pack();
+	}
+
+	public void componentShown(ComponentEvent e) { }
+
+
 	private void initializeOnce() {
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 
@@ -156,6 +171,7 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener, Pr
 
 		// Create a panel for algorithm's content
 		this.algorithmPanel = currentAlgorithm.getSettingsPanel();
+		this.algorithmPanel.addComponentListener(this);
 
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 		TitledBorder titleBorder = BorderFactory.createTitledBorder(selBorder,

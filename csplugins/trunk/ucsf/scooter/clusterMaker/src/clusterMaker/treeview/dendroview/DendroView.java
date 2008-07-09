@@ -375,8 +375,8 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		colorPresets = new ColorPresets(root);
 		cpresetEditor = new ColorPresetEditor(colorPresets);
 		ColorExtractor colorExtractor = new ColorExtractor();
-		colorExtractor.bindConfig(root);
 		colorExtractor.setDefaultColorSet(colorPresets.getDefaultColorSet());
+		colorExtractor.bindConfig(root);
 		colorExtractor.setMissing(DataModel.NODATA, DataModel.EMPTY);
 		
 		hintpanel = new MessagePanel("Usage Hints");
