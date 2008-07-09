@@ -1241,7 +1241,11 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 
 	private Hashtable createLabels(JSlider slider) {
 		if (type == INTEGER) {
-			return slider.createStandardLabels((getIntValue(upperBound)-getIntValue(lowerBound))/5);
+			int increment = (getIntValue(upperBound)-getIntValue(lowerBound))/5;
+			if (increment > 1)
+				return slider.createStandardLabels(increment);
+			else
+				return slider.createStandardLabels(1);
 		}
 		Hashtable<Integer,JComponent>table = new Hashtable();
 		// Create our table in 5 steps from lowerBound to upperBound

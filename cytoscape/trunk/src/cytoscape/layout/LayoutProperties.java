@@ -87,10 +87,10 @@ public class LayoutProperties extends ModulePropertiesImpl implements TunableLis
 			// Get the next tunable
 			Tunable tunable = iter.next();
 
-			if (panel == null) 
-				continue;
-
 			JPanel p = tunable.getPanel();
+			if (panel == null)
+				p = null;
+
 			if (tunable.getType() == Tunable.GROUP) {
 				if (!tunable.checkFlag(Tunable.COLLAPSABLE)) {
 					addSubPanels(p, iter, tunable.getValue(), listener);
