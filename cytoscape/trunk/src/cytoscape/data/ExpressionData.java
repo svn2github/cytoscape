@@ -368,8 +368,9 @@ public class ExpressionData implements Serializable {
 
 		String headerLine = lines[lineCount++];
 
-		if ((headerLine == null) || (headerLine.length() == 0))
-			return false;
+		if ((headerLine == null) || (headerLine.length() == 0)) {
+			throw new IOException("Missing header in data file.");
+		}
 
 		if (isHeaderLineMTXHeader(headerLine)) {
 			// for sure we know that the file contains lambdas
