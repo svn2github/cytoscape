@@ -483,9 +483,10 @@ public class MetaNode {
 		createMetaEdges();
 		// prf.done("collapse: createMetaEdges=");
 
+		isCollapsed = true;
+
 		// Set our state
 		metaGroup.setState(MetaNodePlugin2.COLLAPSED);
-		isCollapsed = true;
 
 		// If we're supposed to, update the display
 		if (updateNetwork)
@@ -541,8 +542,8 @@ public class MetaNode {
 			updateDisplay();
 		}
 
-		metaGroup.setState(MetaNodePlugin2.EXPANDED);
 		isCollapsed = false;
+		metaGroup.setState(MetaNodePlugin2.EXPANDED);
 
 		// Now, for any of our nodes that are metaNodes and were expanded when we
 		// collapsed, expand them to get them back into their original state
@@ -702,7 +703,11 @@ public class MetaNode {
 		while (iter.hasNext()) {
 			CyEdge edge = iter.next();
 			CyEdge newEdge = createMetaEdge(edge, null, false);
-			if (newEdge != null) network.addEdge(newEdge);
+			if (newEdge != null) {
+				network.addEdge(newEdge);
+				if (networkView != null)
+					networkView.applyVizMap(newEdge);
+			}
 		}
 		return;
 	}
