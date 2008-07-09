@@ -739,6 +739,8 @@ class XGMMLParser extends DefaultHandler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			String id = atts.getValue("id");
 			String label = atts.getValue("label");
+			if (label == null)
+				label = atts.getValue("name");		// For backwards compatibility
 			String href = atts.getValue(XLINK, "href");
 
 			if (href != null) {
