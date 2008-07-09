@@ -200,7 +200,9 @@ public class NamedSelection extends CytoscapePlugin
 	public void groupChanged(CyGroup group, CyNode node, ChangeType change) { 
 		// At some point, this should be a little more granular.  Do we really
 		// need to rebuild the tree when we have a simple node addition/removal?
-		groupPanel.groupChanged(group);
+		if (change == CyGroupViewer.ChangeType.NODE_ADDED ||
+		    change == CyGroupViewer.ChangeType.NODE_REMOVED)
+			groupPanel.groupChanged(group);
 	}
 
 	// PropertyChange support

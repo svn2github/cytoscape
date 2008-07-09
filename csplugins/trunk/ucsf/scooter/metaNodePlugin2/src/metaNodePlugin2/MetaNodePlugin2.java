@@ -236,6 +236,12 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			mn.nodeAdded(node);
 		else if (change == ChangeType.NODE_REMOVED)
 			mn.nodeRemoved(node);
+		else if (change == ChangeType.STATE_CHANGED)
+			if (group.getState() == COLLAPSED) {
+				mn.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+			} else {
+				mn.expand(recursive, Cytoscape.getCurrentNetworkView(), true);
+			}
 	}
 
 	// PropertyChange support
