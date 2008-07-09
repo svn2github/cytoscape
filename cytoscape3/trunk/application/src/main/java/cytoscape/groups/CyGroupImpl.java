@@ -288,6 +288,12 @@ public class CyGroupImpl implements CyGroup {
 		this.groupState = state;
 		attributes.setAttribute(this.groupName, GROUP_STATE_ATTR, this.groupState);
 		attributes.setUserVisible(GROUP_STATE_ATTR, false);
+    // Get our viewer
+    CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
+    if (v != null) {
+    // Tell the viewer that something has changed
+    	v.groupChanged(this, null, CyGroupViewer.ChangeType.STATE_CHANGED);
+    }
 	}
 
 	/**

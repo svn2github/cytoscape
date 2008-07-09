@@ -52,7 +52,7 @@ public interface CyGroupViewer {
 	/**
 	 * The change values
 	 */
-	public static enum ChangeType { NODE_ADDED, NODE_REMOVED }
+	public static enum ChangeType { NODE_ADDED, NODE_REMOVED, STATE_CHANGED }
 
 	/**
 	 * Provide the string name of this viewer.  This will be used to reassociate
