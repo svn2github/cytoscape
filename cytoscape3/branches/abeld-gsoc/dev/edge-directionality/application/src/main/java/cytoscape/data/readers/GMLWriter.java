@@ -454,6 +454,8 @@ public class GMLWriter {
 			oldList.add(outline_width);
 		}
 
+		if (nodeView == null) return; // If no view data, simply don't save it (instead of crashing)
+		
 		x.value = new Double(nodeView.getXPosition());
 		y.value = new Double(nodeView.getYPosition());
 		w.value = new Double(nodeView.getWidth());
@@ -531,7 +533,9 @@ public class GMLWriter {
 			width = new KeyValue(GMLReader.WIDTH, null);
 			oldList.add(width);
 		}
-
+		
+		if (edgeView == null) return; // If no view data, simply don't save it (instead of crashing)
+		
 		width.value = new Double(edgeView.getStrokeWidth());
 
 		if (fill == null) {
