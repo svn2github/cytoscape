@@ -162,18 +162,42 @@ class NetworkMergeSessionTask implements Task {
         taskMonitor.setStatus("Merging networks.\n\nIt may take a while.\nPlease wait...");
         taskMonitor.setPercentCompleted(0);
         
-        CyNetwork mergedNetwork;
-
         try {
-            final NetworkMerge networkMerge = new DefaultNetworkMerge(
+            final NetworkMerge networkMerge = new AttributeBasedNetworkMerge(
                                 matchingAttribute,
                                 nodeAttributeMapping,
                                 edgeAttributeMapping);
-            mergedNetwork = networkMerge.mergeNetwork(
+            CyNetwork mergedNetwork = networkMerge.mergeNetwork(
                                 selectedNetworkList,
                                 operation,
                                 mergedNetworkName);
+/*
+            cytoscape.view.CyNetworkView networkView = Cytoscape.getNetworkView(mergedNetworkName);
+            
+            // get the VisualMappingManager and CalculatorCatalog
+            cytoscape.visual.VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+            cytoscape.visual.CalculatorCatalog catalog = manager.getCalculatorCatalog();
 
+            cytoscape.visual.VisualStyle vs = catalog.getVisualStyle(mergedNetworkName+" Visual Style");
+            if (vs == null) {
+                    // if not, create it and add it to the catalog
+                    //vs = createVisualStyle(networkMerge);
+                    cytoscape.visual.NodeAppearanceCalculator nodeAppCalc = new cytoscape.visual.NodeAppearanceCalculator();
+                    cytoscape.visual.mappings.PassThroughMapping pm = new cytoscape.visual.mappings.PassThroughMapping(new String(), cytoscape.data.Semantics.CANONICAL_NAME);
+
+                    cytoscape.visual.calculators.Calculator nlc = new cytoscape.visual.calculators.BasicCalculator(null, 
+                                                     pm, cytoscape.visual.VisualPropertyType.NODE_LABEL);
+                    nodeAppCalc.setCalculator(nlc);
+                    
+                    vs.setNodeAppearanceCalculator(nodeAppCalc);
+                    
+                    catalog.addVisualStyle(vs);
+            }
+            // actually apply the visual style
+            manager.setVisualStyle(vs);
+            networkView.redrawGraph(true,true);
+*/
+                        
             taskMonitor.setPercentCompleted(100);
             taskMonitor.setStatus("The selected networks were successfully merged into network '"
                                   + mergedNetwork.getTitle()

@@ -39,7 +39,7 @@ package csplugins.network.merge.ui;
 
 import csplugins.network.merge.NetworkMerge;
 import csplugins.network.merge.NetworkMerge.Operation;
-import csplugins.network.merge.DefaultNetworkMerge;
+import csplugins.network.merge.AttributeBasedNetworkMerge;
 import csplugins.network.merge.AttributeMapping;
 import csplugins.network.merge.AttributeMappingImpl;
 import csplugins.network.merge.MatchingAttribute;

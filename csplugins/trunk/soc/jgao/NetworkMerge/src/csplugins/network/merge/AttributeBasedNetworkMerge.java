@@ -62,12 +62,12 @@ import giny.model.GraphObject;
  * 
  * 
  */
-public class DefaultNetworkMerge extends AbstractNetworkMerge{
+public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
     private MatchingAttribute matchingAttribute;
     private AttributeMapping nodeAttributeMapping;
     private AttributeMapping edgeAttributeMapping;   
     
-    public DefaultNetworkMerge(final MatchingAttribute matchingAttribute,
+    public AttributeBasedNetworkMerge(final MatchingAttribute matchingAttribute,
                                final AttributeMapping nodeAttributeMapping,
                                final AttributeMapping edgeAttributeMapping) {
         this.matchingAttribute = matchingAttribute;
@@ -130,7 +130,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
      * 
      * @return merged Node
      */
-    public Node mergeNode(final Map<CyNetwork,GraphObject> mapNetNode) {
+    public Node mergeNode(final Map<CyNetwork,Set<GraphObject>> mapNetNode) {
         //TODO: refactor in Cytoscape3, 
         // in 2.x node with the same identifier be the same node
         // and different nodes must have different identifier.
@@ -139,8 +139,14 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
             return null;
         }
         
-        // Assign ID and canonicalName in resulting network        
-        final Set<GraphObject> nodes = new HashSet<GraphObject>(mapNetNode.values());
+        // Assign ID and canonicalName in resulting network   
+        // remove in Cytoscape3
+        final Iterator<Set<GraphObject>> itNodes = mapNetNode.values().iterator();
+        Set<GraphObject> nodes = new HashSet<GraphObject>();        
+        while (itNodes.hasNext()) {
+            nodes.addAll(itNodes.next());
+        }
+        
         final Iterator<GraphObject> itNode = nodes.iterator();
         String id = new String(itNode.next().getIdentifier());
         
@@ -188,7 +194,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
      * 
      * @return merged Node
      */
-    public Edge mergeEdge(final Map<CyNetwork,GraphObject> mapNetEdge,
+    public Edge mergeEdge(final Map<CyNetwork,Set<GraphObject>> mapNetEdge,
                           final Node source, 
                           final Node target,
                           final String interaction, 
@@ -215,7 +221,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
      * 
      */
     protected void setAttribute(final String id, 
-                                final Map<CyNetwork,GraphObject> mapNetGO,
+                                final Map<CyNetwork,Set<GraphObject>> mapNetGO,
                                 final AttributeMapping attributeMapping) {
         if (id==null || mapNetGO==null || attributeMapping==null) {
             throw new java.lang.NullPointerException();
@@ -223,8 +229,6 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
         
         CyAttributes cyAttributes = attributeMapping.getCyAttributes();
         
-        final Set<Map.Entry<CyNetwork,GraphObject>> entrySet = mapNetGO.entrySet();
-                
         final int nattr = attributeMapping.getSizeMergedAttributes();
         for (int i=0; i<nattr; i++) {
             final String attr_merged = attributeMapping.getMergedAttribute(i);
@@ -232,6 +236,7 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                 throw new java.lang.IllegalStateException("Null or empty name for the merged attribute");
             }
             
+            // define the attribute first
             final Set<String> attrNames = new HashSet(attributeMapping.getOriginalAttributeMap(i).values());
             final String attr_mc = AttributeMatchingUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
             
@@ -264,16 +269,21 @@ public class DefaultNetworkMerge extends AbstractNetworkMerge{
                 }
             }
             
-            final Iterator<Map.Entry<CyNetwork,GraphObject>> itEntry = entrySet.iterator();
+            final Set<Map.Entry<CyNetwork,Set<GraphObject>>> entrySet = mapNetGO.entrySet();
+                
+            final Iterator<Map.Entry<CyNetwork,Set<GraphObject>>> itEntry = entrySet.iterator();
                 
             // for each attribute to be merged
             while (itEntry.hasNext()) {
-                final Map.Entry<CyNetwork,GraphObject> entry = itEntry.next();
+                final Map.Entry<CyNetwork,Set<GraphObject>> entry = itEntry.next();
                 final String idNet = entry.getKey().getIdentifier();
-                final String idGO = entry.getValue().getIdentifier();
                 final String attrName = attributeMapping.getOriginalAttribute(idNet, i);
                 if (attrName!=null) {
-                    AttributeMatchingUtils.copyAttribute(idGO, attrName, id, attr_merged, cyAttributes);
+                    final Iterator<GraphObject> itGO = entry.getValue().iterator();
+                    while (itGO.hasNext()) {
+                        final String idGO = itGO.next().getIdentifier();
+                        AttributeMatchingUtils.copyAttribute(idGO, attrName, id, attr_merged, cyAttributes);
+                    }
                 }                    
             }    
         }
