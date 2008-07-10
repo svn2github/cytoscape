@@ -133,7 +133,7 @@ public class TopologyFilter extends CompositeFilter {
 			int rootgraphIndex = -1;
 			for (int i=0; i<objectCount; i++) {
 				rootgraphIndex = network.getIndex((Node)nodeArray[i]);
-				indexMap.put(new Integer(rootgraphIndex), new Integer(i));
+				indexMap.put(Integer.valueOf(rootgraphIndex), Integer.valueOf(i));
 			}
 
 			//
@@ -181,7 +181,7 @@ public class TopologyFilter extends CompositeFilter {
 			for (int i=0; i< nodeArray.length; i++) {
 				//int nodeIndex = network.nodesList().indexOf(nodeArray[i]); //This works, but very slow
 				int rootgraphIndex = network.getIndex((Node)nodeArray[i]);
-				int nodeIndex = pIndexMap.get(new Integer(rootgraphIndex)).intValue();                          
+				int nodeIndex = pIndexMap.get(Integer.valueOf(rootgraphIndex)).intValue();                          
 
 				if (!passFilter.getNodeBits().get(nodeIndex)) {
 					neighborSet.remove(nodeArray[i]);
