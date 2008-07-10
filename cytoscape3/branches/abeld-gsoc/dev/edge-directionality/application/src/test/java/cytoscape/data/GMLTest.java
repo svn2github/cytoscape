@@ -1,5 +1,5 @@
 /*
- File: XGMMLTest.java
+ File: GMLTest.java
 
  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,28 +36,29 @@
  */
 package cytoscape.data;
 
-import junit.framework.TestCase;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import cytoscape.Cytoscape;
-import cytoscape.data.writers.XGMMLWriter;
-import cytoscape.data.readers.XGMMLReader;
-import cytoscape.data.Semantics;
-import org.cytoscape.RootGraph;
-
-import java.io.StringWriter;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.StringWriter;
 
-/**
- * Tests round-tripping edge directionality:
- * exporting to XGMML and then importing from it must preserve edge directionality
- */
-public class XGMMLTest extends TestCase {
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
+import org.cytoscape.RootGraph;
+import org.cytoscape.view.GraphView;
+
+import cytoscape.Cytoscape;
+import cytoscape.data.readers.GMLReader;
+import cytoscape.data.readers.GMLWriter;
+import cytoscape.data.readers.GMLParser;
+import junit.framework.TestCase;
+import java.util.List;
+import java.util.Vector;
+
+public class GMLTest extends TestCase {
+	/**
+	 * Tests round-tripping edge directionality:
+	 * exporting to XGMML and then importing from it must preserve edge directionality
+	 */
 	public void testRoundtrip() throws Exception {
 		GraphPerspective network = Cytoscape.createNetwork("directed test network"); 
 		GraphView view = Cytoscape.createNetworkView(network);
@@ -82,16 +83,16 @@ public class XGMMLTest extends TestCase {
 		// write network in xgmml format to string
 		StringWriter writer = new StringWriter();
 
-		final XGMMLWriter xgmmlWriter = new XGMMLWriter(network, view);
+		List list = new Vector();
 
-		xgmmlWriter.write(writer);
-		writer.close();
-
+		GMLWriter gmlWriter = new GMLWriter();
+		gmlWriter.writeGML(network, view, list);
+		GMLParser.printList(list, writer);
+		
 		String output = writer.toString();
 		assertTrue("must have some output", output.length() > 0);
-
-		// TODO: could check here whether result is valid xml
-
+		System.out.println(output);
+		
 		// remove graph items so that we can check loading; assert that items are really removed
 		RootGraph rootGraph = Cytoscape.getRootGraph();
 		System.out.println("edges:"+Cytoscape.getRootGraph().getEdgeCount());
@@ -108,8 +109,8 @@ public class XGMMLTest extends TestCase {
 
 		// load from the string created above
 		InputStream input = new ByteArrayInputStream(output.getBytes());
-		XGMMLReader xgmmlReader = new XGMMLReader(input);
-		xgmmlReader.read();
+		GMLReader gmlReader = new GMLReader(input, "string");
+		gmlReader.read();
 
 		// check network contents:
 		a = Cytoscape.getCyNode("from", false);

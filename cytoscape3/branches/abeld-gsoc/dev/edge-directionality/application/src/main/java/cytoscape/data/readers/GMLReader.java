@@ -124,7 +124,8 @@ public class GMLReader extends AbstractGraphReader {
 	protected static String LABEL = "label";
 	protected static String SOURCE = "source";
 	protected static String TARGET = "target";
-
+	protected static String IS_DIRECTED = "directed";
+	
 	// The following elements are in "graphics" section of GML
 	protected static String X = "x";
 	protected static String Y = "y";
