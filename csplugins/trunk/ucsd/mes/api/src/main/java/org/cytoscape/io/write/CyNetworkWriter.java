@@ -9,5 +9,8 @@ import java.util.List;
  */
 public interface CyNetworkWriter extends CyWriter {
 
+	/**
+	 * @param networks A non-null list of {@link CyNetwork} objects.
+	 */
 	public void setNetworks(List<CyNetwork> networks);
 }
