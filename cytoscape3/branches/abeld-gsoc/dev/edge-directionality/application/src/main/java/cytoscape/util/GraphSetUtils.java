@@ -381,7 +381,7 @@ EDGE_LOOP:
 			GraphPerspective currentNetwork = (GraphPerspective) it.next();
 
 			for (Iterator nodeIt = currentNetwork.nodesIterator(); nodeIt.hasNext();) {
-				nodes.add(new Integer(((Node) nodeIt.next()).getRootGraphIndex()));
+				nodes.add(Integer.valueOf(((Node) nodeIt.next()).getRootGraphIndex()));
 			}
 		}
 
@@ -410,7 +410,7 @@ EDGE_LOOP:
 			GraphPerspective currentNetwork = (GraphPerspective) it.next();
 
 			for (Iterator edgeIt = currentNetwork.edgesIterator(); edgeIt.hasNext();) {
-				edges.add(new Integer(((Edge) edgeIt.next()).getRootGraphIndex()));
+				edges.add(Integer.valueOf(((Edge) edgeIt.next()).getRootGraphIndex()));
 			}
 		}
 

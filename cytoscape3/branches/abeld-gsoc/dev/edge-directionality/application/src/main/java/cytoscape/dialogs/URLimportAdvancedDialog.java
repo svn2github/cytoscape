@@ -422,10 +422,10 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 				}
 
 				int thePort;
-				Integer tmpInteger = new Integer(-1);
+				Integer tmpInteger = Integer.valueOf(-1);
 
 				try {
-					tmpInteger = new Integer(tfPort.getText().trim());
+					tmpInteger = Integer.valueOf(tfPort.getText().trim());
 					thePort = tmpInteger.intValue();
 				} catch (Exception exp) {
 					JOptionPane.showMessageDialog(this, "Port error!", "Warning",

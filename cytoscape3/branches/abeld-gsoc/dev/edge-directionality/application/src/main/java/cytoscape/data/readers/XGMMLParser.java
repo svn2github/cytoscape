@@ -348,7 +348,7 @@ class XGMMLParser extends DefaultHandler {
 			break;
 		case INTEGER:
 			if (value != null)
-				return new Integer(value);
+				return Integer.valueOf(value);
 			break;
 		case STRING:
 			if (value != null) {
@@ -408,7 +408,7 @@ class XGMMLParser extends DefaultHandler {
 		String attribute = atts.getValue(key);
 		if (attribute == null)
 			return 0;
-		return (new Integer(attribute)).intValue();
+		return (Integer.valueOf(attribute)).intValue();
 	}
 
 	/**
@@ -424,7 +424,7 @@ class XGMMLParser extends DefaultHandler {
 		String attribute = atts.getValue(ns, key);
 		if (attribute == null)
 			return 0;
-		return (new Integer(attribute)).intValue();
+		return (Integer.valueOf(attribute)).intValue();
 	}
 
 	/**
@@ -759,6 +759,8 @@ class XGMMLParser extends DefaultHandler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			String id = atts.getValue("id");
 			String label = atts.getValue("label");
+			if (label == null)
+				label = atts.getValue("name");    // For backwards compatibility
 			String href = atts.getValue(XLINK, "href");
 
 			if (href != null) {

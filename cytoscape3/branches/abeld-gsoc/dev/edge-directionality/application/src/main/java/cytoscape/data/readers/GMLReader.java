@@ -478,7 +478,7 @@ public class GMLReader extends AbstractGraphReader {
 				giny_nodes.add(node.getRootGraphIndex());
 				nodeIDMap.put(nodes.get(idx), node.getRootGraphIndex());
 				gml_id2order.put(nodes.get(idx), idx);
-				((KeyValue) node_root_index_pairs.get(idx)).value = (new Integer(node.getRootGraphIndex()));
+				((KeyValue) node_root_index_pairs.get(idx)).value = (Integer.valueOf(node.getRootGraphIndex()));
 			} else {
 				throw new GMLException("GML id " + nodes.get(idx) + " has a duplicated label: " + label);
 			}
@@ -527,7 +527,7 @@ public class GMLReader extends AbstractGraphReader {
 				edgeAttributes.setAttribute(edgeName, Semantics.INTERACTION, label);
 
 				giny_edges.add(edge.getRootGraphIndex());
-				((KeyValue) edge_root_index_pairs.get(idx)).value = (new Integer(edge.getRootGraphIndex()));
+				((KeyValue) edge_root_index_pairs.get(idx)).value = (Integer.valueOf(edge.getRootGraphIndex()));
 			} else {
 				throw new GMLException("Non-existant source/target node for edge with gml (source,target): "
 				                       + sources.get(idx) + "," + targets.get(idx));

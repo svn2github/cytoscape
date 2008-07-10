@@ -100,11 +100,11 @@ public class GMLWriter {
 		newEdges = new HashSet<Integer>(network.getEdgeCount());
 
 		for (Iterator<Node> it = network.nodesIterator(); it.hasNext();) {
-			newNodes.add(new Integer((it.next()).getRootGraphIndex()));
+			newNodes.add(Integer.valueOf((it.next()).getRootGraphIndex()));
 		}
 
 		for (Iterator<Edge> it = network.edgesIterator(); it.hasNext();) {
-			newEdges.add(new Integer((it.next()).getRootGraphIndex()));
+			newEdges.add(Integer.valueOf((it.next()).getRootGraphIndex()));
 		}
 
 		/*
@@ -348,14 +348,14 @@ public class GMLWriter {
 			oldList.add(targetPair);
 		}
 
-		targetPair.value = new Integer(edge.getTarget().getRootGraphIndex());
+		targetPair.value = Integer.valueOf(edge.getTarget().getRootGraphIndex());
 
 		if (sourcePair == null) {
 			sourcePair = new KeyValue(GMLReader.SOURCE, null);
 			oldList.add(sourcePair);
 		}
 
-		sourcePair.value = new Integer(edge.getSource().getRootGraphIndex());
+		sourcePair.value = Integer.valueOf(edge.getSource().getRootGraphIndex());
 
 		if (view != Cytoscape.getNullNetworkView()) {
 			if (graphicsPair == null) {
@@ -583,14 +583,14 @@ public class GMLWriter {
 			oldList.add(source_arrow);
 		}
 
-		source_arrow.value = new Integer(edgeView.getSourceEdgeEnd());
+		source_arrow.value = Integer.valueOf(edgeView.getSourceEdgeEnd());
 
 		if (target_arrow == null) {
 			target_arrow = new KeyValue(GMLReader.TARGET_ARROW, null);
 			oldList.add(target_arrow);
 		}
 
-		target_arrow.value = new Integer(edgeView.getTargetEdgeEnd());
+		target_arrow.value = Integer.valueOf(edgeView.getTargetEdgeEnd());
 	}
 
 	/**

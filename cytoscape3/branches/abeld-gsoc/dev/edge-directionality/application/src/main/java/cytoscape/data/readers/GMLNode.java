@@ -184,7 +184,7 @@ public class GMLNode implements Comparator<String> {
 	 * @throws RuntimeException if the value of this node cannot be interpreted as an Integer
 	 */
 	public Integer integerValue() {
-		return new Integer(string_value);
+		return Integer.valueOf(string_value);
 	}
 
 	/**

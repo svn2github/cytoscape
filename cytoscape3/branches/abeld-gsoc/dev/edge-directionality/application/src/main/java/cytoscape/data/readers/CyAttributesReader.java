@@ -200,7 +200,7 @@ public class CyAttributesReader {
 						if (type < 0) {
 							while (true) {
 								try {
-									new Integer((String) elmsBuff.get(0));
+									Integer.valueOf((String) elmsBuff.get(0));
 									type = MultiHashMapDefinition.TYPE_INTEGER;
 
 									break;
@@ -231,7 +231,7 @@ public class CyAttributesReader {
 
 					for (int i = 0; i < elmsBuff.size(); i++) {
 						if (type == MultiHashMapDefinition.TYPE_INTEGER) {
-							elmsBuff.set(i, new Integer((String) elmsBuff.get(i)));
+							elmsBuff.set(i, Integer.valueOf((String) elmsBuff.get(i)));
 						} else if (type == MultiHashMapDefinition.TYPE_BOOLEAN) {
 							elmsBuff.set(i, new Boolean((String) elmsBuff.get(i)));
 						} else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT) {
@@ -283,7 +283,7 @@ public class CyAttributesReader {
 						if (type < 0) {
 							while (true) {
 								try {
-									new Integer(val);
+									Integer.valueOf(val);
 									type = MultiHashMapDefinition.TYPE_INTEGER;
 
 									break;
@@ -313,7 +313,7 @@ public class CyAttributesReader {
 					}
 
 					if (type == MultiHashMapDefinition.TYPE_INTEGER) {
-						cyAttrs.setAttribute(key, attributeName, new Integer(val));
+						cyAttrs.setAttribute(key, attributeName, Integer.valueOf(val));
 					} else if (type == MultiHashMapDefinition.TYPE_BOOLEAN) {
 						cyAttrs.setAttribute(key, attributeName, new Boolean(val));
 					} else if (type == MultiHashMapDefinition.TYPE_FLOATING_POINT) {

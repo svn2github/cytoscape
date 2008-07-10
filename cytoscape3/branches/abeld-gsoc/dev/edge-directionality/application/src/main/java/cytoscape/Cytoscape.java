@@ -888,7 +888,7 @@ public abstract class Cytoscape {
         if (!selectedNetworkViews.contains(view))
             selectedNetworkViews.add(view);
 
-        return (List<GraphView>) selectedNetworkViews.clone();
+        return new ArrayList<GraphView>(selectedNetworkViews);
     }
 
     /**
@@ -924,7 +924,7 @@ public abstract class Cytoscape {
         if (!selectedNetworks.contains(curr))
             selectedNetworks.add(curr);
 
-        return (List<GraphPerspective>) selectedNetworks.clone();
+        return new ArrayList<GraphPerspective>(selectedNetworks);
 	}
 
 	/**

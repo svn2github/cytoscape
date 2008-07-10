@@ -108,7 +108,7 @@ public class CyStringPropertyEditor extends StringPropertyEditor {
 
 					try {
 						val2 = getM.invoke(e.getOppositeComponent(),
-						                   new Object[] { (Integer) val, new Integer(0) });
+						                   new Object[] { (Integer) val, Integer.valueOf(0) });
 					} catch (IllegalArgumentException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

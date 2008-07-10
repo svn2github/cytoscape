@@ -242,7 +242,7 @@ class ExportAsGMLTask implements Task {
 		Object[] ret_val = new Object[3];
 		ret_val[0] = network;
 		ret_val[1] = new File(fileName).toURI();
-		ret_val[2] = new Integer(Cytoscape.FILE_GML);
+		ret_val[2] = Integer.valueOf(Cytoscape.FILE_GML);
 		Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
 	}
 
