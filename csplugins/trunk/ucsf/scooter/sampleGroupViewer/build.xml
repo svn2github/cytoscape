@@ -58,7 +58,7 @@
 
    <!-- Target to Run JavaDoc -->
     <target name="doc" description="Runs JavaDoc.">
-        <javadoc packagenames="metaNodePlugin2.*" sourcepath="src" source="1.5" destdir="doc"
+        <javadoc packagenames="sampleGroupViewer.*" sourcepath="src" source="1.5" destdir="doc"
 			 classpathref="classpath_release" >
         <link href = "http://java.sun.com/j2se/1.4.2/docs/api/"/>
         <link href = "http://csbi.sourceforge.net/API/"/>
