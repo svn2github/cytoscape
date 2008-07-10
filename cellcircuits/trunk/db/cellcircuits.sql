@@ -3,10 +3,14 @@ USE cellcircuits_dev;
 DROP TABLE IF EXISTS submission_data;
 DROP TABLE IF EXISTS raw_files;
 DROP TABLE IF EXISTS publications;
-DROP TABLE IF EXISTS file_info;
+DROP TABLE IF EXISTS supplement_material_files;
+DROP TABLE IF EXISTS cover_image_files;
+DROP TABLE IF EXISTS pdf_files;
+DROP TABLE IF EXISTS network_file_info;
 DROP TABLE IF EXISTS network_files;
-DROP TABLE IF EXISTS image_files;
-DROP TABLE IF EXISTS legends;
+DROP TABLE IF EXISTS network_image_files;
+DROP TABLE IF EXISTS network_thm_image_files;
+DROP TABLE IF EXISTS legend_files;
 DROP TABLE IF EXISTS model;
 DROP TABLE IF EXISTS gene_model;
 DROP TABLE IF EXISTS model_similarity;
@@ -14,76 +18,116 @@ DROP TABLE IF EXISTS enrichment;
 
 -- data collected from submission form
 CREATE TABLE submission_data (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	pmid			int, -- PuMed id
-	contact_person	varchar(100),
-	email			varchar(100),
-	comment			text,
-	cover_image_id	int,
-	pdf_file_id		int,
-	zip_file_id		int
+	raw_data_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	pmid				int, -- PuMed id
+	pubmed_xml_record	text,
+	contact_person		varchar(100),
+	email				varchar(100),
+	data_file_id		int default -1, -- .zip file
+	comment				text default "",
+	status				varchar(15) default 'new',
+	time_stamp			timestamp default CURRENT_TIMESTAMP
 );
 
--- All files submitted by end users
+-- All data files (.zip) submitted by end users
 CREATE TABLE raw_files (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	raw_file_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	file_name		varchar(100),
-	file_type		varchar(12), -- zip/pdf/cover_image
-	data			blob
+	file_type		varchar(100),
+	data			longblob
 );
 
+-- data transferd from submission data
 CREATE TABLE publications (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	pmid			int, -- PubMed ID
-	status_load		boolean,
-	cover_image_id	int,	
-	pdf_file_id		int,
-	journal_name	varchar(100),
-	authors			varchar(120),
-	vol				varchar(20),
-	issue			varchar(10),
-	page_start		varchar(8),
-	page_end		varchar(8),
-	year			int,
-	month			int
+	publication_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	rawdata_id			int	default -1,
+	pmid				int, -- PubMed ID
+	pubmed_xml_record	text,
+	pubmed_html_full		text, -- converted HTML text from XML
+	pubmed_html_medium		text, -- converted HTML text from XML
+	pubmed_html_short		text, -- converted HTML text from XML
+	pub_url				varchar(200  ) default '',	
+	supplement_file_id	int default -1,
+	supplement_url	varchar(150) default 'none',
+	-- network_image_format varchar(10), -- sif, jpg, png
+	cover_image_id		int,	
+	pdf_file_id			int default -1,
+	time_stamp			timestamp default CURRENT_TIMESTAMP	
 );
 
-CREATE TABLE file_info (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	pub_id			int,
+-- data extracted from the zip file submitted (from table raw_files)
+CREATE TABLE supplement_material_files (
+	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	file_name		varchar(99),
+	file_type		varchar(100),
+	data			longblob
+);
+
+
+CREATE TABLE cover_image_files (
+	cover_image_file_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	file_name		varchar(99),
+	file_type		varchar(100),
+	data			mediumblob
+);
+
+CREATE TABLE pdf_files (
+	pdf_file_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	file_name		varchar(99),
+	file_type		varchar(100),
+	data			longblob
+);
+
+CREATE TABLE network_file_info ( 
+	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	publication_id		int,
+	-- genus				varchar(50) default 'unknown', -- 'Saccharomyces'
+	species				varchar(100) default 'unknown', -- 'Saccharomyces cerevisiae, Homo sapients'
+	network_type		varchar(10) default 'sif',
 	network_file_id		int,
-	network_type		varchar(10),
-	large_image_id		int,
-	thm_image_id		int
+	image_file_id		int
 );
 
 CREATE TABLE network_files (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	file_name		varchar(99),
-	data			blob
+	file_type		varchar(100),
+	data			longblob
 );
 
-CREATE TABLE image_files (
-	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE network_image_files (
+	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	file_name		varchar(99),
-	is_thm			boolean,
-	data			blob
+	file_type		varchar(100),
+	data			longblob
 );
 
-CREATE TABLE legends (
+CREATE TABLE network_thm_image_files ( -- derived from network_image_files
+	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	file_name		varchar(99),
+	file_type		varchar(100),
+	data			longblob
+);
+
+
+CREATE TABLE legend_files (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	pub_id			int,
 	file_name		varchar(40),
-	data			blob
+	file_type		varchar(100) default 'unknown',
+	data			longblob
 );
 
+-- Original four tables 
+
 CREATE TABLE model (
-	id      int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	pub     varchar(255) NOT NULL,
-	name    varchar(255) NOT NULL,
-	UNIQUE INDEX model_idx (id,pub),
-	INDEX m0 (pub)
-);
+ 	id      int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+ 	pub     varchar(255) NOT NULL, -- value will be pmid from table publications, which is unique, 
+ 									-- to replace old manually made value, such as 'Begley2002_MCR'
+ 	name    varchar(255) NOT NULL,
+ 	UNIQUE INDEX model_idx (id,pub),
+ 	INDEX m0 (pub)
+ );
 
 CREATE TABLE gene_model (
     id              int NOT NULL PRIMARY KEY AUTO_INCREMENT,
