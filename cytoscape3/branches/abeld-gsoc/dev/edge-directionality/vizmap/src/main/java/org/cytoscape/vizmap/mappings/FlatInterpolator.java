@@ -56,12 +56,12 @@ public class FlatInterpolator
     /**
      *
      */
-    public static final Integer LOWER = new Integer(0);
+    public static final Integer LOWER = Integer.valueOf(0);
 
     /**
      *
      */
-    public static final Integer UPPER = new Integer(1);
+    public static final Integer UPPER = Integer.valueOf(1);
     private boolean useLower;
 
     /**
