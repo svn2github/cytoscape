@@ -674,7 +674,7 @@ public abstract class CytoscapeEditorManager {
 			hiddenNodesList = new ArrayList<Integer>();
 		}
 
-		hiddenNodesList.add(new Integer(nodeIdx)); // don't worry about
+		hiddenNodesList.add(Integer.valueOf(nodeIdx)); // don't worry about
 		                                           // duplicates
 
 		networkHiddenNodesMap.put(net, hiddenNodesList);
@@ -693,7 +693,7 @@ public abstract class CytoscapeEditorManager {
 			hiddenEdgesList = new ArrayList<Integer>();
 		}
 
-		hiddenEdgesList.add(new Integer(edgeIdx)); // don't worry about
+		hiddenEdgesList.add(Integer.valueOf(edgeIdx)); // don't worry about
 		                                           // duplicates
 
 		networkHiddenEdgesMap.put(net, hiddenEdgesList);
