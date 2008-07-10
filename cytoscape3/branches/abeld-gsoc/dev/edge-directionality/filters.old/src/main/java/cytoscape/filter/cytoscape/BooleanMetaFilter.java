@@ -380,7 +380,7 @@ public class BooleanMetaFilter implements Filter {
 		}
 
 		for (int idx = 0; idx < selectedFilters.length; idx++) {
-			selectedFilters[idx] = (new Integer(filterStrings[idx])).intValue();
+			selectedFilters[idx] = (Integer.valueOf(filterStrings[idx])).intValue();
 		} // end of for ()
 
 		setFilters(selectedFilters);

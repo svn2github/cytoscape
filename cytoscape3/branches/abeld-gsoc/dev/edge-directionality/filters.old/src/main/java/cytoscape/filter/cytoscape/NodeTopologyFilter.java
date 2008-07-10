@@ -358,9 +358,9 @@ public class NodeTopologyFilter implements Filter {
 	 */
 	public void input(String desc) {
 		String[] array = desc.split(",");
-		setCount(new Integer(array[0]));
-		setDistance(new Integer(array[1]));
-		setFilter((new Integer(array[2])).intValue());
+		setCount(Integer.valueOf(array[0]));
+		setDistance(Integer.valueOf(array[1]));
+		setFilter((Integer.valueOf(array[2])).intValue());
 		setIdentifier(array[3]);
 	}
 }

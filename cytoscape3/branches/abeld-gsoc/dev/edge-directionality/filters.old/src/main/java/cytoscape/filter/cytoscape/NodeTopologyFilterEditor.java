@@ -79,8 +79,8 @@ public class NodeTopologyFilterEditor extends FilterEditor implements ActionList
 	protected JTextField distanceField;
 	protected JTextField countField;
 	protected String DEFAULT_FILTER_NAME = "NodeTopology: ";
-	protected Integer DEFAULT_DISTANCE = new Integer(1);
-	protected Integer DEFAULT_COUNT = new Integer(1);
+	protected Integer DEFAULT_DISTANCE = Integer.valueOf(1);
+	protected Integer DEFAULT_COUNT = Integer.valueOf(1);
 	protected int DEFAULT_FILTER = 0; // this is the SelectAllFilter
 	protected Class NODE_CLASS;
 	protected Class EDGE_CLASS;
@@ -409,7 +409,7 @@ public class NodeTopologyFilterEditor extends FilterEditor implements ActionList
 			Integer count = null;
 
 			try {
-				count = new Integer(countField.getText());
+				count = Integer.valueOf(countField.getText());
 			} catch (NumberFormatException nfe) {
 				count = DEFAULT_COUNT;
 			}
@@ -419,7 +419,7 @@ public class NodeTopologyFilterEditor extends FilterEditor implements ActionList
 			Integer distance = null;
 
 			try {
-				distance = new Integer(distanceField.getText());
+				distance = Integer.valueOf(distanceField.getText());
 			} catch (NumberFormatException nfe) {
 				distance = DEFAULT_DISTANCE;
 			}
