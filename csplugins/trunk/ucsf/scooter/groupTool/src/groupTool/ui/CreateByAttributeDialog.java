@@ -112,12 +112,12 @@ public class CreateByAttributeDialog extends JDialog
 		attributeSelector = new JComboBox();
 
 		// Add them to the combo box
-		String nodeNames[] = nodeAttributes.getAttributeNames();
+		String attrNames[] = nodeAttributes.getAttributeNames();
 		attributeSelector.addItem("Select attribute to group by");
-		for (int i = 0; i < nodeNames.length; i++) {
-			if (nodeAttributes.getType(nodeNames[i]) == CyAttributes.TYPE_STRING
-			    || nodeAttributes.getType(nodeNames[i]) == CyAttributes.TYPE_INTEGER) {
-				attributeSelector.addItem(nodeNames[i]);
+		for (int i = 0; i < attrNames.length; i++) {
+			if (nodeAttributes.getType(attrNames[i]) == CyAttributes.TYPE_STRING 
+			    || nodeAttributes.getType(attrNames[i]) == CyAttributes.TYPE_INTEGER) {
+				attributeSelector.addItem(attrNames[i]);
 			}
 		}
 
