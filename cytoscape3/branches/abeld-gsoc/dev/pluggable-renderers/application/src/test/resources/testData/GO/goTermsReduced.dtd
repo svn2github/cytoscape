@@ -1,0 +1,10 @@
+<?xml encoding="UTF-8"?>
+
+<!-- $Revision: 4671 $   $Date: 2002-03-29 07:42:24 -0800 (Fri, 29 Mar 2002) $ -->
+
+<!ELEMENT goTerms (goTerm)+>
+<!ELEMENT goTerm (name, id, isa*, partof*)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT isa (#PCDATA)>
+<!ELEMENT partof (#PCDATA)>
