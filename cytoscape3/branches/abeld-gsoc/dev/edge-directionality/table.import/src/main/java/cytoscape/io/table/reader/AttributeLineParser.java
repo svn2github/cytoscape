@@ -412,7 +412,7 @@ public class AttributeLineParser {
 				Integer newInt;
 
 				try {
-					newInt = new Integer(entry);
+					newInt = Integer.valueOf(entry);
 					mapping.getAttributes()
 					       .setAttribute(key, mapping.getAttributeNames()[index], newInt);
 				} catch (Exception e) {

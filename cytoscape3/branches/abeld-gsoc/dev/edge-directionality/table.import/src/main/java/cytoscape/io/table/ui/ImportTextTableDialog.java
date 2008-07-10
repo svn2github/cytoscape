@@ -2190,7 +2190,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		Integer oldValue = (Integer) source.getValue();
 		int intValue = oldValue.intValue()
 		               - (evt.getWheelRotation() * model.getStepSize().intValue());
-		Integer newValue = new Integer(intValue);
+		Integer newValue = Integer.valueOf(intValue);
 
 		if ((model.getMaximum().compareTo(newValue) >= 0)
 		    && (model.getMinimum().compareTo(newValue) <= 0)) {
@@ -2210,7 +2210,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		Integer oldValue = (Integer) source.getValue();
 		int intValue = oldValue.intValue()
 		               - (evt.getWheelRotation() * model.getStepSize().intValue());
-		Integer newValue = new Integer(intValue);
+		Integer newValue = Integer.valueOf(intValue);
 
 		if ((model.getMaximum().compareTo(newValue) >= 0)
 		    && (model.getMinimum().compareTo(newValue) <= 0)) {

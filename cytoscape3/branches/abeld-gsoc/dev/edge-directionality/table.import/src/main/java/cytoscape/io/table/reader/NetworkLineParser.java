@@ -171,7 +171,7 @@ public class NetworkLineParser {
 
 			case CyAttributes.TYPE_INTEGER:
 				nmp.getAttributes()
-				   .setAttribute(key, nmp.getAttributeNames()[index], new Integer(entry));
+				   .setAttribute(key, nmp.getAttributeNames()[index], Integer.valueOf(entry));
 
 				break;
 

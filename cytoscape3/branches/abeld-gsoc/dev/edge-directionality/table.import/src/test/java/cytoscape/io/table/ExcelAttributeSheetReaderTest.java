@@ -129,7 +129,7 @@ public class ExcelAttributeSheetReaderTest extends TestCase {
 		assertEquals("ribosomal protein S28A (S33A) (YS27)",
 		             Cytoscape.getNodeAttributes()
 		                      .getStringAttribute("YOR167C", "Description of Genes"));
-		assertEquals(new Integer(20010118),
+		assertEquals(Integer.valueOf(20010118),
 		             Cytoscape.getNodeAttributes().getIntegerAttribute("YHR141C", "Date"));
 		//assertEquals(4, Cytoscape.getNodeAttributes().getListAttribute("YER112W", "alias").size());
 

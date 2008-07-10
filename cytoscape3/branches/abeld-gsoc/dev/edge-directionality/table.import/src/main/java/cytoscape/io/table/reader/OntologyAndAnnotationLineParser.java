@@ -275,7 +275,7 @@ public class OntologyAndAnnotationLineParser {
 
 			case CyAttributes.TYPE_INTEGER:
 				mapping.getAttributes()
-				       .setAttribute(key, mapping.getAttributeNames()[index], new Integer(entry));
+				       .setAttribute(key, mapping.getAttributeNames()[index], Integer.valueOf(entry));
 
 				break;
 
