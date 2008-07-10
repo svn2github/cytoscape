@@ -12,6 +12,8 @@ import java.util.List;
 import org.springframework.osgi.mock.*;
 import org.osgi.framework.*;
 
+import org.cytoscape.event.impl.*;
+
 public class CyEventHelperTest extends TestCase {
 
 	public static Test suite() {

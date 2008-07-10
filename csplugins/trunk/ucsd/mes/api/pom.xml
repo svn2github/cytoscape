@@ -7,6 +7,7 @@
   <version>1.0-SNAPSHOT</version>
   <name>api</name>
   <url>http://maven.apache.org</url>
+  <description>This package contains the proposed public API for the different core bundles comprising Cytoscape 3.0</description>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -131,5 +132,12 @@
             </plugin>
         </plugins>
     </reporting>
+
+  <distributionManagement>
+    <site>
+      <id>chianti</id>
+	  <url>scpexe://grenache.ucsd.edu/cellar/users/mes/public_html/new_api</url>
+    </site>
+  </distributionManagement>
 
 </project>

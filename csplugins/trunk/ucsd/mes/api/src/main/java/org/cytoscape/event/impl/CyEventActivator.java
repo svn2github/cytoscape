@@ -5,7 +5,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;
 
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyEventHelperImpl;
+import org.cytoscape.event.impl.CyEventHelperImpl;
 
 import java.util.Properties;
 
