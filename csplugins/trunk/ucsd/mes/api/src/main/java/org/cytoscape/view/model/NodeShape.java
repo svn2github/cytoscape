@@ -1,27 +1,19 @@
 package org.cytoscape.view.model; 
 
+import java.awt.Shape;
+
+
 /**
- * The available node shapes in Cytoscape.
+ * Defines the shape of a Node. NodeShape is 
+ * presumed to be an OSGi Service which will then be made
+ * available through the OSGi ServiceRegistry.
  */
-public enum NodeShape {
-	RECT("Rectangle"),
-	ROUND_RECT("Round Rectangle"),
-	TRAPEZOID("Trapezoid"),
-	TRIANGLE("Triangle"),
-	PARALLELOGRAM("Parallelogram"),
-	DIAMOND("Diamond"),
-	ELLIPSE("Ellipse"),
-	HEXAGON("Hexagon"),
-	OCTAGON("Octagon"),
-	;
+public interface NodeShape extends Saveable {
 
-
-	private String name;
-	private NodeShape(String n) {
-		name = n;
-	}
-
-	public String getName() {
-		return name;
-	}
+	/**
+	 * This is where we'd need define the constraints
+	 * on the shape. 
+	 */
+	public Shape getShape();
 }
+

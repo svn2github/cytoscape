@@ -1,40 +1,38 @@
 
-package org.cytoscape.view.model;
+package org.cytoscape.view.model; 
+
 
 /**
- * Defines the position that a label should be rendered in. 
- * This should probably be separated into two visual properties LabelJustification,
- * and LabelPosition.  Or possibly three, justify, text anchor position, object
- * anchor position.  Or maybe that's forces too many attributes to be set? 
+ * Used to define the position of a label relative to 
+ * a target object.
+ * <p>
+ * We should probably have get X offset and get Y offset as well.  Ugh.
  */
-public class LabelPosition {
+public interface LabelPosition extends Saveable {
 
 	/**
-	 * Defines the justification of the text within the bounding box used
-	 * to draw the text.
+	 * This identifies where on the target object the label
+	 * will be drawn.
+	 *
+	 * @return The {@link AnchorLocation} on the target object.
 	 */
-	public enum Justify {
-		CENTER,
-		LEFT,
-		RIGHT,
-		;
-	}
+	public AnchorLocation getTargetAnchor();
 
 	/**
-	 * Defines a point on a rectangle that is used to anchor a bounding
-	 * box. This point is defined for both the bounding box of the rendered 
-	 * text and the bounding box that the text is being rendered on. 
+	 * This identifies where label will be drawn relative to
+	 * to the label's bounding box once the 
+	 * target {@link AnchorLocation} has been identified.
+	 *
+	 * @return The {@link AnchorLocation} on the label bounding box. 
 	 */
-	public enum Location {
-		NORTH,
-		NORTHEAST,
-		EAST,
-		SOUTHEAST,
-		SOUTH,
-		SOUTHWEST,
-		WEST,
-		NORTHWEST,
-		CENTER,
-		;
-	}
+	public AnchorLocation getLabelAnchor();
+
+	/**
+	 * This identifies how the text should be justified within the
+	 * bounding box that the label is drawn in.
+	 * @return The {@link LabelJustify} that defines how the label
+	 * will be drawn within it's bounding box.
+	 */
+	public LabelJustify getJustify();
 }
+

@@ -1,23 +1,20 @@
 package org.cytoscape.view.model;
 
+import java.awt.Shape;
+
 /**
- * Defines the possible shapes for edge arrows.
+ * Defines the shape of an edge Arrow. ArrowShape is 
+ * presumed to be an OSGi Service which will then be made
+ * available through the OSGi ServiceRegistry.
  */
-public enum ArrowShape {
-	NONE("No Arrow"),
-	DIAMOND("Diamond"),
-	DELTA("Delta"),
-	ARROW("Arrow"),
-	T("T"),
-	CIRCLE("Circle"),
-	;
+public interface ArrowShape extends Saveable {
 
-	private String name;
-	private ArrowShape(String n) {
-		name = n;
-	}
-
-	public String getName() {
-		return name;
-	}
+	/**
+	 * This is where we'd need define the constraints
+	 * on the shape and how exactly we'd transform the 
+	 * shape specified into an arrow that lines up with
+	 * the edge stroke and node shapes. 
+	 */
+	public Shape getShape();
 }
+
