@@ -57,10 +57,9 @@ import clusterMaker.ui.HeatMapView;
 import clusterMaker.algorithms.ClusterAlgorithm;
 import clusterMaker.algorithms.hierarchical.HierarchicalCluster;
 import clusterMaker.algorithms.kmeans.KMeansCluster;
-import clusterMaker.algorithms.MCL.MCLMenu;
 import clusterMaker.algorithms.FORCE.CytoscapeFORCEmenu;
 import clusterMaker.algorithms.FORCE.FORCECluster;
-// import clusterMaker.algorithms.MCLCluster;
+import clusterMaker.algorithms.MCL.MCLCluster;
 // import clusterMaker.algorithms.KMeansCluster;
 // import clusterMaker.algorithms.SOMCluster;
 
@@ -84,8 +83,9 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new HierarchicalCluster());
 		addClusterAlgorithm(menu, new KMeansCluster());
 		addClusterAlgorithm(menu, new FORCECluster());
+		addClusterAlgorithm(menu, new MCLCluster());
 		// At some point, we need to convert these over to be clusterAlgorithms.  In the meantime...
-		menu.add(new MCLMenu());
+		// menu.add(new MCLMenu());
 		// menu.add(new CytoscapeFORCEmenu());
 		// addClusterAlgorithm(new MCLCLuster());
 		// addClusterAlgorithm(menu, new FORCECLuster());
