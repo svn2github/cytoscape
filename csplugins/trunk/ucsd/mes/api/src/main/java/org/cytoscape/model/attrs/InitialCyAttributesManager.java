@@ -4,6 +4,13 @@ package org.cytoscape.model.attrs;
 import java.util.Map;
 import java.util.HashMap;
 
+/**
+ * This class provides a basic implementation of a {@link CyAttributesManager}
+ * that can be used to seed the construction of new {@link CyAttributesManager}
+ * objects. This class can be used to define attributes that should exist
+ * for all instances of {@link CyAttributes}.  Currently only the "Name" attribute
+ * with type String has been defined. 
+ */
 public class InitialCyAttributesManager implements CyAttributesManager {
 
 	private static CyAttributesManager initial = new InitialCyAttributesManager();

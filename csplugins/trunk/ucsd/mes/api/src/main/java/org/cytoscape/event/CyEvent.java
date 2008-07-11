@@ -7,5 +7,9 @@ package org.cytoscape.event;
  * relevant to the event. 
  */
 public interface CyEvent<T> {
+
+	/**
+	 * @return The object that fired the event.
+	 */
 	T getSource();
 }

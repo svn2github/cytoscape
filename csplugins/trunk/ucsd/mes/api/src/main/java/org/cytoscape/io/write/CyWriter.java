@@ -12,6 +12,11 @@ import java.io.File;
  * heterogenous data types (i.e. networks AND attributes).
  */
 public interface CyWriter {
-	
+
+	/**
+	 * When called this method will write whatever data it has been
+	 * provided by its extending interfaces to the specified {@link File}.
+	 * @param f The {@link File} that will be written to by this writer.
+	 */
 	public void write(File f);
 }

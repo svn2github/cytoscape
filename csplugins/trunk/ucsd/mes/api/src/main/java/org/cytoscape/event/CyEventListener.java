@@ -19,5 +19,10 @@ package org.cytoscape.event;
  */
 public interface CyEventListener<T extends CyEvent> {
 
+	/**
+	 * This is the basic method that will need to be implemented by classes
+	 * to be able to listen for {@link CyEvent}s.
+	 * @param e The event that was 'heard' by this listener.
+	 */
 	public void handleEvent(T e); 
 }
