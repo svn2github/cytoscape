@@ -1,4 +1,4 @@
-package org.cytoscape.view.layout;
+package org.cytoscape.view.model.layout;
 
 import java.util.List;
 

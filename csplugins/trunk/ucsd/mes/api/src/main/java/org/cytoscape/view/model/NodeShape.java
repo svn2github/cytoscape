@@ -1,4 +1,4 @@
-package org.cytoscape.view; 
+package org.cytoscape.view.model; 
 
 /**
  * The available node shapes in Cytoscape.

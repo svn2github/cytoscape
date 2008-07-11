@@ -1,6 +1,6 @@
-package org.cytoscape.view.layout;
+package org.cytoscape.view.model.layout;
 
-import org.cytoscape.view.CyNodeView;
+import org.cytoscape.view.model.CyNodeView;
 
 /**
  * To simplify the Layout interface we provide this supplemental

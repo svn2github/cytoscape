@@ -1,5 +1,5 @@
 
-package org.cytoscape.view;
+package org.cytoscape.view.model;
 
 /**
  * The dash style of a line.

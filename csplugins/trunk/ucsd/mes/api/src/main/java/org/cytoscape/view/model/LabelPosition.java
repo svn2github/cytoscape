@@ -1,5 +1,5 @@
 
-package org.cytoscape.view;
+package org.cytoscape.view.model;
 
 /**
  * Defines the position that a label should be rendered in. 

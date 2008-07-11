@@ -1,4 +1,4 @@
-package org.cytoscape.view;
+package org.cytoscape.view.model;
 
 /**
  * Defines the possible shapes for edge arrows.

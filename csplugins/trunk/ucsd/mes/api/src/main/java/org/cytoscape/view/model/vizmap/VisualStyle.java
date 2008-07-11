@@ -1,8 +1,8 @@
 
-package org.cytoscape.view.vizmap;
+package org.cytoscape.view.model.vizmap;
 
-import org.cytoscape.view.VisualProperty;
-import org.cytoscape.view.View;
+import org.cytoscape.view.model.VisualProperty;
+import org.cytoscape.view.model.View;
 
 /**
  * This is simply a collection of MappingCalculators that define

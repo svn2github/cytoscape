@@ -1,6 +1,6 @@
-package org.cytoscape.view.layout;
+package org.cytoscape.view.model.layout;
 
-import org.cytoscape.view.CyNetworkView;
+import org.cytoscape.view.model.CyNetworkView;
 
 /** 
  * The central layout interface that all Layouts must support.  

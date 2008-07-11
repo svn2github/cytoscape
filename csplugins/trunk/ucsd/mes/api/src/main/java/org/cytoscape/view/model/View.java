@@ -1,4 +1,4 @@
-package org.cytoscape.view;
+package org.cytoscape.view.model;
 
 import java.awt.Shape;
 import java.awt.Paint;

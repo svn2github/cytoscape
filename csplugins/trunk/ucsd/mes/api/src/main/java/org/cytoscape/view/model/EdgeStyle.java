@@ -1,5 +1,5 @@
 
-package org.cytoscape.view;
+package org.cytoscape.view.model;
 
 /**
  * Defines the different types of edges we can have.
