@@ -17,7 +17,7 @@
        </fileset>
    </path>
 
-   <target name="prepare" depends="clean">
+   <target name="prepare">
       <mkdir dir="${build}"/>
    </target>
 
@@ -62,7 +62,7 @@
 			 classpathref="classpath_release" >
         <link href = "http://java.sun.com/j2se/1.5.0/docs/api/"/>
         <link href = "http://csbi.sourceforge.net/API/"/>
-	<link href = "http://chianti.ucsd.edu/Cyto-2_6_0/javadoc/" />
+       	<link href = "http://chianti.ucsd.edu/Cyto-2_6_0/javadoc/" />
        </javadoc>
     </target>
 
