@@ -1075,7 +1075,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			newValue = ((JTextField) inputField).getText();
 		}
 
-		if (!value.equals(newValue)) {
+		if (value == null || !value.equals(newValue)) {
 			valueChanged = true;
 		}
 
