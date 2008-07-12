@@ -46,6 +46,8 @@ import cytoscape.render.immed.GraphGraphics;
 
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.renderers.NodeRenderer;
+import org.cytoscape.view.renderers.ShapeRenderer;
 
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;

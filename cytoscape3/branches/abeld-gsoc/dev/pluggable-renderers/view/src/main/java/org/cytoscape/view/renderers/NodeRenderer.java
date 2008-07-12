@@ -1,7 +1,8 @@
-package cytoscape.render.stateful;
+package org.cytoscape.view.renderers;
 
 import java.awt.Graphics2D;
 import org.cytoscape.view.NodeView;
+import cytoscape.render.stateful.NodeDetails;
 
 public interface NodeRenderer {
 	/**

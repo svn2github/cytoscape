@@ -1,10 +1,11 @@
-package cytoscape.render.stateful;
+package org.cytoscape.view.renderers;
 
 //import cytoscape.render.immed.GraphGraphics;
 import java.awt.*;
 import java.awt.geom.*;
 import org.cytoscape.view.NodeView;
 import java.util.HashMap;
+import cytoscape.render.stateful.NodeDetails;
 
 public class ShapeRenderer implements NodeRenderer {
 	public static final int CUSTOM_SHAPE_MAX_VERTICES = 100;
