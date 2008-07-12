@@ -946,12 +946,6 @@ public class GMLReader extends AbstractGraphReader {
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_HEIGHT, ""+keyVal.value);
 			} else if (keyVal.key.equals(W)) {
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_WIDTH, ""+keyVal.value);
-			} else if (keyVal.key.equals(FILL)) {
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_FILL_COLOR, ""+keyVal.value);
-			} else if (keyVal.key.equals(OUTLINE)) {
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_BORDER_COLOR, ""+keyVal.value);
-			} else if (keyVal.key.equals(WIDTH)) {
-				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_LINE_WIDTH, ""+keyVal.value);
 			} else if (keyVal.key.equals(TYPE)) {
 				String type = (String) keyVal.value;
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_SHAPE,type);

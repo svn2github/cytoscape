@@ -620,7 +620,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 				break;
 
-			case NODE_LINE_STYLE:
+			//case NODE_LINE_STYLE:
 			case EDGE_LINE_STYLE:
 
 				final Stroke stroke = ((LineStyle) key).getStroke(2.0f);

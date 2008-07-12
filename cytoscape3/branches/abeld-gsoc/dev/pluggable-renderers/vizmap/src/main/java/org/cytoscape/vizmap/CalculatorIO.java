@@ -50,11 +50,7 @@ import static org.cytoscape.vizmap.VisualPropertyType.EDGE_SRCARROW_COLOR;
 import static org.cytoscape.vizmap.VisualPropertyType.EDGE_SRCARROW_SHAPE;
 import static org.cytoscape.vizmap.VisualPropertyType.EDGE_TGTARROW_COLOR;
 import static org.cytoscape.vizmap.VisualPropertyType.EDGE_TGTARROW_SHAPE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_BORDER_COLOR;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_FILL_COLOR;
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_LINE_STYLE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_LINE_WIDTH;
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_SIZE;
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
 
@@ -321,15 +317,6 @@ public class CalculatorIO {
 
 			// separate color into fill color and border color
 			if (key.startsWith(nodeColorBaseKey + ".")) {
-				key = updateLegacyKey(key, props, nodeColorBaseKey,
-				                      NODE_FILL_COLOR.getPropertyLabel(),
-				                      "cytoscape.visual.calculators.GenericNodeFillColorCalculator");
-				storeKey(key, props, calcNames);
-
-				key = updateLegacyKey(key, props, NODE_FILL_COLOR.getPropertyLabel(),
-				                      NODE_BORDER_COLOR.getPropertyLabel(),
-				                      "cytoscape.visual.calculators.GenericNodeBorderColorCalculator");
-				storeKey(key, props, calcNames);
 
 				// separate size into uniform, width, and height 
 			} else if (key.startsWith(nodeSizeBaseKey + ".")) {
@@ -438,17 +425,7 @@ public class CalculatorIO {
 				// This should be replaced with line style and line width.
 				//storeKey(key, props, calcNames);
 
-				// eventually, these should be the only separations
-				key = updateLegacyKey(key, props, nodeLineTypeLabel,
-				                      NODE_LINE_STYLE.getPropertyLabel(),
-				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
-				storeKey(key, props, calcNames);
-
-				key = updateLegacyKey(key, props, NODE_LINE_STYLE.getPropertyLabel(),
-				                      NODE_LINE_WIDTH.getPropertyLabel(),
-				                      "cytoscape.visual.calculators.GenericNodeLineWidthCalculator");
-				storeKey(key, props, calcNames);
-
+				
 			// These change the visual styles (rather than calculators) so that the
 			// visual style, instead of mapping a TGTARROW, now maps a TGTARROW_SHAPE.
 			} else if (key.endsWith(edgeTgtArrowLabel)) {
@@ -467,18 +444,10 @@ public class CalculatorIO {
 				                      "cytoscape.visual.calculators.GenericEdgeLineStyleCalculator");
 				storeKey(key, props, calcNames);
 			} else if (key.endsWith(nodeLineTypeLabel)) {
-				key = updateLegacyKey(key, props, nodeLineTypeLabel,
-				                      NODE_LINE_STYLE.getPropertyLabel(),
-				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
-				storeKey(key, props, calcNames);
 
 			// Likewise, these change the default values of visual styles to so that
 			// the default LINETYPE gets turned into the default LINE_STYLE.
 			} else if (key.endsWith(nodeLineTypeDefaultLabel)) {
-				key = updateLegacyKey(key, props, nodeLineTypeDefaultLabel,
-				                      NODE_LINE_STYLE.getDefaultPropertyLabel(),
-				                      "cytoscape.visual.calculators.GenericNodeLineStyleCalculator");
-				storeKey(key, props, calcNames);
 			} else if (key.endsWith(edgeLineTypeDefaultLabel)) {
 				key = updateLegacyKey(key, props, edgeLineTypeDefaultLabel,
 				                      EDGE_LINE_STYLE.getDefaultPropertyLabel(),

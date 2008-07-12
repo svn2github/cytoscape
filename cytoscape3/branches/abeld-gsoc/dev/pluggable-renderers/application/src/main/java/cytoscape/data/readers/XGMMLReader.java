@@ -470,51 +470,11 @@ public class XGMMLReader extends AbstractGraphReader {
 
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
-		// Set color
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"fill") != null) {
-			String fillColor = XGMMLParser.getAttribute(graphics, "fill");
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FILL_COLOR, fillColor);
-			// nodeView.setUnselectedPaint(fillColor);
-		}
-
-		// Set border line color
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"outline") != null) {
-			String outlineColor = XGMMLParser.getAttribute(graphics, "outline");
-			// nodeView.setBorderPaint(outlineColor);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_BORDER_COLOR, outlineColor);
-		}
-
-		// Set border line width
-		if (buildStyle && XGMMLParser.getAttribute(graphics,"width") != null) {
-			String lineWidth = XGMMLParser.getAttribute(graphics,"width");
-			// nodeView.setBorderWidth(lineWidth);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LINE_WIDTH, lineWidth);
-		}
-
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"nodeTransparency",CY_NAMESPACE) != null) {
-			String opString = XGMMLParser.getAttributeNS(graphics,"nodeTransparency", CY_NAMESPACE);
-			float opacity = (float)Double.parseDouble(opString)*255;
-			// Opacity is saved as a float from 0-1, but internally we use 0-255
-			// nodeView.setTransparency(opacity);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_OPACITY, ""+opacity);
-		}
-
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics, "opacity", CY_NAMESPACE) != null) {
-			String opString = XGMMLParser.getAttributeNS(graphics,"opacity", CY_NAMESPACE);
-			float opacity = (float)Double.parseDouble(opString);
-			// nodeView.setTransparency(opacity);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_OPACITY, opString);
-		}
 
 		// These are saved in the exported XGMML, but it's not clear how they get set
 		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE) != null) {
 			String nodeLabelFont = XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
-		}
-
-		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"borderLineType", CY_NAMESPACE) != null) {
-			String borderLineType = XGMMLParser.getAttributeNS(graphics,"borderLineType", CY_NAMESPACE);
-			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_LINE_STYLE, borderLineType);
 		}
 
 		String type = XGMMLParser.getAttribute(graphics,"type");

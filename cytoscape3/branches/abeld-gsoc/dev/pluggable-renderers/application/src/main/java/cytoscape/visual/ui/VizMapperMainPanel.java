@@ -1552,8 +1552,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					/*
 					 * Color calculators
 					 */
-					case NODE_FILL_COLOR:
-					case NODE_BORDER_COLOR:
+					//case NODE_FILL_COLOR:
+					//case NODE_BORDER_COLOR:
 					case EDGE_COLOR:
 					case EDGE_SRCARROW_COLOR:
 					case EDGE_TGTARROW_COLOR:
@@ -1564,7 +1564,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 						break;
 
-					case NODE_LINE_STYLE:
+					//case NODE_LINE_STYLE:
 					case EDGE_LINE_STYLE:
 						setDiscreteProps(type, discMapping, attrSet, lineCellEditor,
 						                 lineCellRenderer, calculatorTypeProp);
@@ -1617,13 +1617,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					case NODE_SIZE:
 					case NODE_WIDTH:
 					case NODE_HEIGHT:
-					case NODE_LINE_WIDTH:
+					//case NODE_LINE_WIDTH:
 					case EDGE_LINE_WIDTH:
-					case NODE_OPACITY:
+					//case NODE_OPACITY:
 					case EDGE_OPACITY:
 					case NODE_LABEL_OPACITY:
 					case EDGE_LABEL_OPACITY:
-					case NODE_BORDER_OPACITY:
+					//case NODE_BORDER_OPACITY:
 						setDiscreteProps(type, discMapping, attrSet, numberCellEditor,
 						                 defCellRenderer, calculatorTypeProp);
 

@@ -59,9 +59,6 @@ import org.cytoscape.vizmap.properties.EdgeTargetArrowColorProp;
 import org.cytoscape.vizmap.properties.EdgeTargetArrowOpacityProp;
 import org.cytoscape.vizmap.properties.EdgeTargetArrowShapeProp;
 import org.cytoscape.vizmap.properties.EdgeToolTipProp;
-import org.cytoscape.vizmap.properties.NodeBorderColorProp;
-import org.cytoscape.vizmap.properties.NodeBorderOpacityProp;
-import org.cytoscape.vizmap.properties.NodeFillColorProp;
 import org.cytoscape.vizmap.properties.NodeFontFaceProp;
 import org.cytoscape.vizmap.properties.NodeFontSizeProp;
 import org.cytoscape.vizmap.properties.NodeHeightProp;
@@ -69,9 +66,6 @@ import org.cytoscape.vizmap.properties.NodeLabelColorProp;
 import org.cytoscape.vizmap.properties.NodeLabelOpacityProp;
 import org.cytoscape.vizmap.properties.NodeLabelPositionProp;
 import org.cytoscape.vizmap.properties.NodeLabelProp;
-import org.cytoscape.vizmap.properties.NodeLineStyleProp;
-import org.cytoscape.vizmap.properties.NodeLineWidthProp;
-import org.cytoscape.vizmap.properties.NodeOpacityProp;
 import org.cytoscape.vizmap.properties.NodeShapeProp;
 import org.cytoscape.vizmap.properties.NodeSizeProp;
 import org.cytoscape.vizmap.properties.NodeToolTipProp;
@@ -92,12 +86,13 @@ import org.cytoscape.vizmap.ValueParser;
  */
 public enum VisualPropertyType {
 
-	NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
+	/*NODE_FILL_COLOR("Node Color", "nodeFillColorCalculator", "node.fillColor",
 	                "defaultNodeFillColor", Color.class,
 	                new NodeFillColorProp(), new ColorParser(), true, true),
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
 	                  "defaultNodeBorderColor", 
-	                  Color.class, new NodeBorderColorProp(), new ColorParser(), true, true ), 
+	                  Color.class, new NodeBorderColorProp(), new ColorParser(), true, true ),
+	                  */ 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
 	           NodeShape.class, new NodeShapeProp(),
 			   new NodeShapeParser(), true, true), 
@@ -154,15 +149,17 @@ public enum VisualPropertyType {
 				 new StringParser(), false, true), 
 
 	// New from 2.5: line can have arbitrary width.
+				 /*
 	NODE_LINE_WIDTH("Node Line Width", "nodeLineWidthCalculator", "node.lineWidth",
 	                "defaultNodeLineWidth", Number.class,
-	                new NodeLineWidthProp(), new FloatParser(), true, true), 
+	                new NodeLineWidthProp(), new FloatParser(), true, true),
+	                */ 
 	EDGE_LINE_WIDTH("Edge Line Width", "edgeLineWidthCalculator", "edge.lineWidth",
 	                "defaultEdgeLineWidth", Number.class,
 	                new EdgeLineWidthProp(), new FloatParser(), false, true), 
-	NODE_LINE_STYLE("Node Line Style", "nodeLineStyleCalculator", "node.lineStyle",
+	/*NODE_LINE_STYLE("Node Line Style", "nodeLineStyleCalculator", "node.lineStyle",
 	                "defaultNodeLineStyle", LineStyle.class,
-	                new NodeLineStyleProp(), new LineStyleParser(), true, true), 
+	                new NodeLineStyleProp(), new LineStyleParser(), true, true),*/ 
 	EDGE_LINE_STYLE("Edge Line Style", "edgeLineStyleCalculator", "edge.lineStyle",
 	                "defaultEdgeLineStyle", LineStyle.class,
 	                new EdgeLineStyleProp(), new LineStyleParser(), false, true), 
@@ -187,9 +184,10 @@ public enum VisualPropertyType {
 	/*
 	 * New in 2.5: Opacity support
 	 */
+	                    /*
 	NODE_OPACITY("Node Opacity", "nodeOpacityCalculator", "node.opacity", "defaultNodeOpacity",
 	             Number.class, new NodeOpacityProp(),
-				 new FloatParser(), true, true), 
+				 new FloatParser(), true, true), */ 
 	EDGE_OPACITY("Edge Opacity", "edgeOpacityCalculator", "edge.opacity", "defaultEdgeOpacity",
 	    	     Number.class, new EdgeOpacityProp(),
 				 new FloatParser(), false, true), 
@@ -199,9 +197,10 @@ public enum VisualPropertyType {
 	EDGE_LABEL_OPACITY("Edge Label Opacity", "edgeLabelOpacityCalculator", "edge.labelOpacity", "defaultEdgeLabelOpacity",
 	    	    	     Number.class, new EdgeLabelOpacityProp(),
 						 new FloatParser(), false, true), 
+						 /*
     NODE_BORDER_OPACITY("Node Border Opacity", "nodeBorderOpacityCalculator", "node.borderOpacity", "defaultNodeBorderOpacity",
 	    	    	             Number.class, new NodeBorderOpacityProp(),
-								 new FloatParser(), true, true), 
+								 new FloatParser(), true, true),*/ 
 	EDGE_SRCARROW_OPACITY("Edge Source Arrow Opacity", "edgeSourceArrowOpacityCalculator", "edge.sourceArrowOpacity", "defaultEdgeSourceArrowOpacity", Number.class, new EdgeSourceArrowOpacityProp(),
 						 new FloatParser(), false, true), 
 	EDGE_TGTARROW_OPACITY("Edge Target Arrow Opacity", "edgeTargetArrowOpacityCalculator", "edge.targetArrowOpacity", "defaultEdgeTargetArrowOpacity", Number.class, new EdgeTargetArrowOpacityProp(),

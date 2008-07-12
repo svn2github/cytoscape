@@ -53,6 +53,8 @@ import org.cytoscape.vizmap.mappings.PassThroughMapping;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 
+import org.cytoscape.view.renderers.NodeRenderer;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -614,4 +616,7 @@ public class CalculatorCatalog {
 	}
 	*/
 
+	public void addNodeRenderer(NodeRenderer nodeRenderer){
+		// get supported visualAttributes, add them somewhere.. (?)
+	}
 }
