@@ -69,14 +69,21 @@ import cytoscape.task.util.TaskManager;
  */
 public class AnalyzePanel extends JPanel implements Task {
 
+
+	//The generator of our random networks
 	private RandomNetworkGenerator networkModel;
+
+	//Whether we are working with directed or undirected networks
 	private boolean directed;
 
+	int mode;
 
 	//Next Button
 	private javax.swing.JButton runButton;
 	//Cancel Button
 	private javax.swing.JButton cancelButton;
+	//Cancel Button
+	private javax.swing.JButton backButton;
 
 	
 	private javax.swing.JLabel titleLabel;
@@ -88,14 +95,19 @@ public class AnalyzePanel extends JPanel implements Task {
 	private javax.swing.JLabel roundsLabel;
 	private javax.swing.JTextField roundsTextField;
 	
+	
+	//For the Progress Meter
     private TaskMonitor taskMonitor = null;
 	private boolean interrupted = false;
 	
+	private double[][] random_results;
+	private double[] network_results;
+	private String[] metric_names;
 	
 	/**
 	 *  Default constructor
 	 */
-	public AnalyzePanel(RandomNetworkGenerator pNetwork, boolean pDirected ){
+	public AnalyzePanel(RandomNetworkGenerator pNetwork, boolean pDirected,int mode ){
 	
 		super( ); 
 		directed = pDirected;
@@ -123,6 +135,7 @@ public class AnalyzePanel extends JPanel implements Task {
 		//Create the butons
 		runButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
+		backButton = new javax.swing.JButton();
 
 		//Set up the title
 		titleLabel = new javax.swing.JLabel();
@@ -148,6 +161,14 @@ public class AnalyzePanel extends JPanel implements Task {
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				cancelButtonActionPerformed(evt);
+			}
+		});
+
+		//Set up the cancel button
+		backButton.setText("Back");
+		backButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				backButtonActionPerformed(evt);
 			}
 		});
 
@@ -199,8 +220,11 @@ public class AnalyzePanel extends JPanel implements Task {
 																org.jdesktop.layout.GroupLayout.TRAILING,
 																layout
 																		.createSequentialGroup()
-																		.add(
+																			.add(
+																				backButton)
+																				.add(
 																				runButton)
+																			
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
@@ -237,9 +261,58 @@ public class AnalyzePanel extends JPanel implements Task {
 														.createParallelGroup(
 																org.jdesktop.layout.GroupLayout.BASELINE)
 														.add(cancelButton).add(
-																runButton))
+																runButton).add(backButton))
 										.addContainerGap()));
 	}
+
+
+
+	/**
+	 *  Call back for the cancel button
+	 */
+	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	
+		JPanel next = null;
+		
+		if(mode == 0)
+		{
+			next  = new GenerateRandomPanel(1);
+		}
+		else
+		{
+			next  = new RandomizeExistingPanel(1);			
+		}
+		//GenerateRandomPanel generateRandomPanel = new GenerateRandomPanel(mode);
+
+		//Get the TabbedPanel
+		JTabbedPane parent = (JTabbedPane)getParent();
+		int index = parent.getSelectedIndex();
+			
+		//Remove this Panel
+		parent.remove(index);
+		
+		//Replace it with the panel
+		parent.add(next, index);
+		//Set the title for this panel
+		parent.setTitleAt(index,"Analyze network statistics");
+		//Display this panel
+		parent.setSelectedIndex(index);
+		//Enforce this Panel
+		parent.validate();
+		
+		
+		//Re-pack the window based on this new panel
+		java.awt.Container p = parent.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		JFrame frame = (JFrame)p;
+		frame.pack();
+
+		return;
+
+	}
+
 
 
 	/*
@@ -253,8 +326,8 @@ public class AnalyzePanel extends JPanel implements Task {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 	}
 	
 	/*
@@ -267,7 +340,7 @@ public class AnalyzePanel extends JPanel implements Task {
 		JFrame frame = Cytoscape.getDesktop();
 		
 		config.setOwner(frame);
-		config.displayStatus(true);
+		config.displayStatus(false);
 		config.displayTimeElapsed(true);
 		config.displayTimeRemaining(false);
 		config.displayCancelButton(true);
@@ -276,8 +349,39 @@ public class AnalyzePanel extends JPanel implements Task {
 		
 		//Run our task
 		boolean success = TaskManager.executeTask(this, config);
-
+		if(success)
+		{
+			DisplayResultsPanel dpr = new DisplayResultsPanel(networkModel,directed,metric_names, random_results, network_results,mode);
+					//Get the TabbedPanel
+		JTabbedPane parent = (JTabbedPane)getParent();
+		int index = parent.getSelectedIndex();
+			
+		//Remove this Panel
+		parent.remove(dpr);
+		
+		//Replace it with the panel
+		parent.add(dpr, index);
+		//Set the title for this panel
+		parent.setTitleAt(index,"Analyze network statistics");
+		//Display this panel
+		parent.setSelectedIndex(index);
+		//Enforce this Panel
+		parent.validate();
+		
+		
+		//Re-pack the window based on this new panel
+		java.awt.Container p = parent.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		JFrame dframe = (JFrame)p;
+		dframe.pack();
+		
+		
+			return;
+		}
 	
+		return;
 	}
 	
 	/**
@@ -321,50 +425,76 @@ public class AnalyzePanel extends JPanel implements Task {
 			MeanShortestPathMetric msm = new MeanShortestPathMetric();
 			metrics.add(msm);
 		}
-		
-		double results[] = new double[metrics.size()];
-		System.out.println("Free:" + Runtime.getRuntime().freeMemory());
-		
-		int totalToAnalyze = metrics.size() * rounds;
-		int totalCompleted = 0;
-
-		for(int i = 0;((i < rounds)&(!interrupted)) ; i++)
-		{
-		
 			
-			DynamicGraph net = networkModel.generate();
-			System.out.println("generateed" );
-			for(int j = 0; ((j < metrics.size())&(!interrupted)); j++)
-			{
-				//long startTime = System.currentTimeMillis();
+		//Initialize these for passing information to the Display Panel
+		random_results = new double[rounds][metrics.size()];
+		network_results = new double[metrics.size()]; 
+		metric_names = new String[metrics.size()];
+		
+		//Used for the progress meter to show progress
+		int totalToAnalyze = metrics.size() * (rounds + 1);
+		int totalCompleted = 0;
+		
+		//Compute the metrics on the current network
+		DynamicGraph original = (DynamicGraph)(CytoscapeConversion.CyNetworkToDynamicGraph( Cytoscape.getCurrentNetwork() , directed )).get(0);
+		for(int j = 0; ((j < metrics.size())&(!interrupted)); j++)
+		{
+				//Get the next metric
 				NetworkMetric metric = (NetworkMetric)metrics.get(j);
 
-				double t = metric.analyze(net,  directed);
-				results[j] += t;
-				long endTime = System.currentTimeMillis();
-				
+				//Compute the metric on this random network
+				double t = metric.analyze(original,  directed);
+				network_results[j] = t;
+				metric_names[j] = metric.getDisplayName();
+		
+				//Compute how much we have completed
 				totalCompleted++;
 				int percentComplete = (int) (((double) totalCompleted / totalToAnalyze) * 100);
 			
-			
+				//Update the taskMonitor to show our progress
 				if (taskMonitor != null) {
                     taskMonitor.setPercentCompleted(percentComplete);
-                    taskMonitor.setStatus("Analyzing Network");
+
+                }
+
+			
+		}
+		
+
+		//Go for the number of rounds unless we have been interrupted by the user
+		for(int i = 0;((i < rounds)&&(!interrupted)); i++)
+		{
+		
+			//Generate the next random graph
+			DynamicGraph net = networkModel.generate();
+
+
+			//Perform all metrics unless we have been interrupted
+			for(int j = 0; ((j < metrics.size())&&(!interrupted)); j++)
+			{
+			
+				//Get the next metric
+				NetworkMetric metric = (NetworkMetric)metrics.get(j);
+
+				//Compute the metric on this random network
+				double t = metric.analyze(net,  directed);
+				random_results[i][j] = t;
+				
+				
+				//Compute how much we have completed
+				totalCompleted++;
+				int percentComplete = (int) (((double) totalCompleted / totalToAnalyze) * 100);
+			
+				//Update the taskMonitor to show our progress
+				if (taskMonitor != null) {
+                    taskMonitor.setPercentCompleted(percentComplete);
+
                 }
 
 			}
 		
-		
+			//Delete this random network
 			net = null;
-		
-			
-
-		}
-	
-		for(int j = 0; j < metrics.size(); j++)
-		{
-
-			System.out.println(results[j]/rounds);
 		}
 	}
 	
@@ -391,9 +521,6 @@ public class AnalyzePanel extends JPanel implements Task {
      * @param taskMonitor TaskMonitor Object.
      */
     public void setTaskMonitor(TaskMonitor taskMonitor) {
-        //if (this.taskMonitor != null) {
-         //   throw new IllegalStateException("Task Monitor is already set.");
-       // }
         this.taskMonitor = taskMonitor;
     }
 

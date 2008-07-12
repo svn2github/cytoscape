@@ -78,6 +78,8 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 		{
 			int nodeIndex = nodeIterator.nextInt();
 			nodeList.add(nodeIndex);
+			
+			
 		}
 		
 		
@@ -153,13 +155,12 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 				// don't want to stomp on existing edges
 				boolean shouldBreak  = false;
 				aenum = graph.edgesAdjacent(sourceAIndex,directed,false,!directed);
-				while(aenum.numRemaining() > 0)
+				while((aenum.numRemaining() > 0)&&(!shouldBreak))
 				{
 					int nextEdge = aenum.nextInt();
 					if(graph.edgeTarget(nextEdge) == targetBIndex)
 					{
 						shouldBreak = true;
-						break;
 					}
 					
 					if(!directed)
@@ -167,8 +168,6 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 						if(graph.edgeSource(nextEdge) == targetBIndex)
 						{
 							shouldBreak = true;
-							break;
-							
 						}
 					}
 				}
@@ -176,13 +175,12 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 					continue;
 				
 				benum = graph.edgesAdjacent(sourceBIndex,directed,false,!directed);
-				while(benum.numRemaining() > 0)
+				while((benum.numRemaining() > 0)&&(!shouldBreak))
 				{
 					int nextEdge = benum.nextInt();
 					if(graph.edgeTarget(nextEdge) == targetAIndex)
 					{
 						shouldBreak = true;
-						break;
 					}
 					
 					if(!directed)
@@ -190,7 +188,6 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 						if(graph.edgeSource(nextEdge) == targetAIndex)
 						{
 							shouldBreak = true;
-							break;
 						}
 						
 					
@@ -211,7 +208,7 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 			int newEdge1Index = graph.edgeCreate(sourceAIndex,targetBIndex,directed);
 			int newEdge2Index = graph.edgeCreate(sourceBIndex,targetAIndex,directed);
 
-			//System.out.println("A:" + sourceAIndex + "\tB: " + sourceBIndex + "\tC :" + targetAIndex  + "\tD: "  +targetBIndex + "\t Edge1: " + newEdge1Index  + "\tEdge2: " + newEdge2Index);
+			
 		}
 		return graph;
 	}

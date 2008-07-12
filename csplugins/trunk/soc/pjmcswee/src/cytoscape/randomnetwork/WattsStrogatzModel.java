@@ -109,13 +109,23 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 		//for all pairs of nodes
 		for (int i = 0; i < numNodes; i++) 
 		{
-			for (int j = i + 1; j < numNodes; j++) 
+			
+			int start = 0;
+			if(!directed)
 			{
+				start = i + 1;
+			}
+			
+			for (int j = 0; j < numNodes; j++) 
+			{
+				
 				//get the lattice difference
-				int value = i - j;
-				if (value < 0) 
+				int value = Math.abs(i - j);
+				
+				if((i < degree) && (j > numNodes - degree))
 				{
-					value = (value + numNodes) % numNodes;
+					value = 0;
+				
 				}
 				
 				//no relfexive edges here
@@ -132,6 +142,8 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 				}
 			}
 		}
+
+		System.out.println(numEdges);
 
 		//Iterate through all of our edges
 		while (edges.size() != 0) 

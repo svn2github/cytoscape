@@ -252,8 +252,8 @@ public class WattsStrogatzDialog extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 	}
 	
 	
@@ -286,8 +286,8 @@ public class WattsStrogatzDialog extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.pack();
+		JFrame frame = (JFrame)p;
+		frame.pack();
 
 		return;
 
@@ -383,7 +383,7 @@ public class WattsStrogatzDialog extends JPanel {
 		{
 			
 			wsm.setCreateView(false);
-			AnalyzePanel analyzePanel = new AnalyzePanel(wsm, wsm.getDirected());
+			AnalyzePanel analyzePanel = new AnalyzePanel(wsm, wsm.getDirected(),0);
 		
 			//Get the TabbedPanel
 			JTabbedPane parent = (JTabbedPane)getParent();
@@ -394,7 +394,7 @@ public class WattsStrogatzDialog extends JPanel {
 			//Replace it with the panel
 			parent.add(analyzePanel, index);
 			//Set the title for this panel
-			parent.setTitleAt(index,"Generate Random Network");
+			parent.setTitleAt(index,"Analyze Network Statistics");
 			//Display this panel
 			parent.setSelectedIndex(index);
 			//Enforce this Panel
@@ -406,8 +406,8 @@ public class WattsStrogatzDialog extends JPanel {
 			p = p.getParent();
 			p = p.getParent();
 			p = p.getParent();
-			JDialog dialog = (JDialog)p;
-			dialog.pack();
+			JFrame frame = (JFrame)p;
+			frame.pack();
 
 			return;
 		}
@@ -443,8 +443,8 @@ public class WattsStrogatzDialog extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 
 	}
 

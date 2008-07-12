@@ -37,10 +37,12 @@ package cytoscape.randomnetwork;
 
 import java.util.*;
 import cytoscape.plugin.*;
+import cytoscape.layout.*;
 import cytoscape.layout.algorithms.*;
 import cytoscape.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
+import java.awt.*;
 import cytoscape.visual.*;
 import giny.view.*;
 import cytoscape.graph.dynamic.*;
@@ -63,6 +65,7 @@ import javax.swing.SwingConstants;
 public class RandomizeExistingPanel extends JPanel {
 
 	private int mode;
+	private int visualRounds = 1;
 
 	//Next Button
 	private javax.swing.JButton runButton;
@@ -74,6 +77,10 @@ public class RandomizeExistingPanel extends JPanel {
 	private javax.swing.JLabel titleLabel;
 	//Group together the different options
 	private javax.swing.ButtonGroup group;
+
+
+	private javax.swing.JTextField numCreate;
+	private javax.swing.JLabel numCreateExplain;
 
 	//Treat this network as directed
 	private javax.swing.JCheckBox directedCheckBox;
@@ -108,7 +115,7 @@ public class RandomizeExistingPanel extends JPanel {
 
 		//Set the erdos-renyi text
 		degreePreservingExplain
-				.setText("<html><font size=2 face=Verdana>Generate a random network <br> graph with n nodes and m edges.</font></html>");
+				.setText("<html><font size=2 face=Verdana>Shuffle edges while keeping <br>in/out degree of each node.</font></html>");
 
 		
 		
@@ -118,7 +125,7 @@ public class RandomizeExistingPanel extends JPanel {
 		degreePreservingExplain.setOpaque(true);
 		
 		//Set the text for the checkboxes
-		degreePreserving.setText("shuffle edges keeping degree Model");
+		degreePreserving.setText("Edge Shuffle");
 
 		//Make barabasi-albert the default
 		degreePreserving.setSelected(true);
@@ -133,7 +140,11 @@ public class RandomizeExistingPanel extends JPanel {
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
 		titleLabel.setText("Randomize Network");
 
-	
+		numCreate = new javax.swing.JTextField();
+		numCreate.setText("1");
+		
+		numCreateExplain = new javax.swing.JLabel();
+		numCreateExplain.setText("Number of networks to create:");
 
 			
 
@@ -167,6 +178,100 @@ public class RandomizeExistingPanel extends JPanel {
 			}
 		});
 
+
+		setLayout(new GridBagLayout());
+		
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 5;
+		c.anchor =  GridBagConstraints.FIRST_LINE_START;
+		add(titleLabel,c);
+
+
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 1;
+		c.insets = new Insets(5,5,5,5);	
+		c.anchor =  GridBagConstraints.LINE_START;
+		//c.insets = new Insets(10,10,50,10);
+		add(degreePreserving, c);
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 1;
+		c.gridy = 1;
+		c.gridwidth = 5;
+		c.insets = new Insets(15,5,15,5);	
+		c.anchor =  GridBagConstraints.LINE_START;
+		//c.insets = new Insets(10,10,10,10);
+		add(degreePreservingExplain, c);
+		
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 2;
+		c.insets = new Insets(15,5,15,5);	
+		c.gridwidth = 4;
+		c.anchor =  GridBagConstraints.LINE_START;
+		//c.insets = new Insets(10,10,10,10);
+		add(numCreateExplain, c);
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 4;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		c.insets = new Insets(15,5,15,5);	
+		c.anchor =  GridBagConstraints.LINE_START;
+		c.fill =  GridBagConstraints.HORIZONTAL;
+		c.ipadx = 20;
+		//c.insets = new Insets(10,10,10,10);
+		add(numCreate, c);
+		
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 3;	
+		//c.insets = new Insets(5,5,5,5);		
+		c.gridwidth = 4;
+		c.anchor =  GridBagConstraints.LINE_START;
+		add(directedCheckBox, c);
+		
+		
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 6;
+		c.gridy = 4;
+		///c.insets = new Insets(5,5,5,5);			
+		c.anchor = GridBagConstraints.CENTER;
+		add(cancelButton, c);
+
+
+
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 4;		
+		c.anchor = GridBagConstraints.LINE_START;
+		add(backButton, c);
+		
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 5;
+		c.gridy = 4;
+		//c.insets = new Insets(5,5,5,5);			
+		c.anchor = GridBagConstraints.LINE_END;
+		add(runButton, c);
+
+		
+		/*
 
 		//Set up the layout
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -255,6 +360,9 @@ public class RandomizeExistingPanel extends JPanel {
 														.add(cancelButton).add(
 																runButton).add(backButton))
 										.addContainerGap()));
+										
+										
+					*/
 	}
 
 
@@ -290,8 +398,8 @@ public class RandomizeExistingPanel extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.pack();
+		JFrame frame = (JFrame)p;
+		frame.pack();
 
 		return;
 
@@ -310,8 +418,8 @@ public class RandomizeExistingPanel extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 	}
 	
 	/*
@@ -319,7 +427,7 @@ public class RandomizeExistingPanel extends JPanel {
 	 */
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		
-			boolean directed = directedCheckBox.isSelected();
+		boolean directed = directedCheckBox.isSelected();
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 
 		LinkedList network = CytoscapeConversion.CyNetworkToDynamicGraph(net,!directed);
@@ -340,7 +448,7 @@ public class RandomizeExistingPanel extends JPanel {
 
 		if(mode == 1)
 		{
-			AnalyzePanel analzyePanel = new AnalyzePanel(dpnr, !directed);
+			AnalyzePanel analzyePanel = new AnalyzePanel(dpnr, !directed,1);
 			
 			//Get the TabbedPanel
 			JTabbedPane parent = (JTabbedPane)getParent();
@@ -363,22 +471,60 @@ public class RandomizeExistingPanel extends JPanel {
 			p = p.getParent();
 			p = p.getParent();
 			p = p.getParent();
-			JDialog dialog = (JDialog)p;
-			dialog.pack();
+			JFrame frame = (JFrame)p;
+			frame.pack();
 
 			return;
 
 		
 		}
 
+		try
+		{	
+			String value = numCreate.getText().trim();
+			value  = value.trim();
+			visualRounds = Integer.parseInt(value);
+			
+		}catch(Exception e){e.printStackTrace(); numCreateExplain.setForeground(java.awt.Color.RED); return;}
 
-
-
-		DynamicGraph randGraph = dpnr.generate();
+		numCreateExplain.setForeground(java.awt.Color.BLACK);
 		
-		CyNetwork randNetwork = CytoscapeConversion.DynamicGraphToCyNetwork(randGraph,ids);
-				
 		
+
+		CyNetworkView netView = Cytoscape.getCurrentNetworkView();
+		VisualStyle newStyle = netView.getVisualStyle();
+		String visName = newStyle.getName();
+		//returns CytoscapeWindow's VisualMappingManager object
+		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		//gets the global catalog of visual styles and calculators
+		
+		//Get the random network vistualStyle
+		vmm.setVisualStyle(newStyle);
+		System.out.println(visName);
+		
+		
+		CyAttributes attr = Cytoscape.getNetworkAttributes();
+		CyLayoutAlgorithm alg = (CyLayoutAlgorithm)attr.getAttribute( Cytoscape.getCurrentNetwork().getTitle(), "__layoutAlgorithm");
+		if(alg == null)
+		{
+			alg = new GridNodeLayout();
+		}
+		for(int i = 0; i < visualRounds; i++)
+		{
+
+			DynamicGraph randGraph = dpnr.generate();
+		
+			CyNetwork randNetwork = CytoscapeConversion.DynamicGraphToCyNetwork(randGraph,ids);
+
+			//Set this as the current visualStyle
+			vmm.setVisualStyle(newStyle);
+			
+			//Cytoscape.getNetworkView(randNetwork.getTitle()).setVisualStyle(visName);
+			//CyNetwork.getVisualStyle().setVisualStyle(visName);
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			view.applyLayout(alg); 
+	
+		}
 		
 		
 		//Set the network pane as active
@@ -386,20 +532,11 @@ public class RandomizeExistingPanel extends JPanel {
 				.setSelectedIndex(0);
 		
 		
-		//returns CytoscapeWindow's VisualMappingManager object
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-		//gets the global catalog of visual styles and calculators
-		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-		//Get the random network vistualStyle
-		VisualStyle newStyle = catalog.getVisualStyle("random network");
-		//Set this as the current visualStyle
-		vmm.setVisualStyle(newStyle);
+
 		
 
-		GridNodeLayout alg = new GridNodeLayout();
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		view.applyLayout(alg); 
-		
+		//GridNodeLayout alg = new GridNodeLayout();
+	
 
 		
 		//Go up through the parents to the main window
@@ -408,8 +545,8 @@ public class RandomizeExistingPanel extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 
 		
 	}

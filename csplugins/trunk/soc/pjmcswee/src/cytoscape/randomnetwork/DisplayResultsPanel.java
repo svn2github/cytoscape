@@ -45,16 +45,18 @@ import cytoscape.visual.*;
 import giny.view.*;
 import cytoscape.graph.dynamic.*;
 import cytoscape.graph.dynamic.util.*;
-
+import javax.swing.table.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.*;
+import java.text.DecimalFormat;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
 
+import java.awt.Dimension;
 
 /*
  * RandomizeExistingPanel is used for selecting which randomizing 
@@ -62,7 +64,7 @@ import javax.swing.SwingConstants;
  */
 public class DisplayResultsPanel extends JPanel {
 
-	private int mode;
+
 
 	//Next Button
 	private javax.swing.JButton runButton;
@@ -72,24 +74,46 @@ public class DisplayResultsPanel extends JPanel {
 	private javax.swing.JButton backButton;
 	//Title Label
 	private javax.swing.JLabel titleLabel;
-	//Group together the different options
-	private javax.swing.ButtonGroup group;
+	
 
 	//Treat this network as directed
 	private javax.swing.JCheckBox directedCheckBox;
-
-	//Checkbox for erdos-renyi model
-	private javax.swing.JCheckBox degreePreserving;
-	//Checkbox for barabasi-albert model
-	private javax.swing.JLabel degreePreservingExplain;
 	
+	//
+	private javax.swing.JScrollPane scrollPane;
+	
+	
+	//The names of the metrics
+	private String[] metricNames;
+	
+	//The results from the random networks
+	private double[][] randomResults;
+	
+	//The results from the actual network
+	private double[] networkResults;
+	//1 == randomized existing network
+	//0 == generated new random network
+	private int mode;
+	//The Generator that created the networks
+	private RandomNetworkGenerator gen;
+	//true means the network is directed
+	//false means the network is undirected
+	private boolean directed;
+
 
 	/*
 	 *  Default constructor
 	 */
-	public DisplayResultsPanel(int pMode ){
+	public DisplayResultsPanel(RandomNetworkGenerator pGen, boolean pDirected,
+					String pMetricNames[], double pRandomResults[][], double pNetworkResults[],int pMode ){
+		
 		
 		super( ); 
+		metricNames = pMetricNames;
+		randomResults = pRandomResults;
+		networkResults = pNetworkResults;
+		gen = pGen;
+		directed = pDirected;
 		mode = pMode;
 		initComponents();
 	}
@@ -99,30 +123,6 @@ public class DisplayResultsPanel extends JPanel {
 	 */
 	private void initComponents() {
 
-		//Create the erdos-renyi checkbox
-		degreePreserving = new javax.swing.JCheckBox();
-	
-		
-		//Create the barabasi-albert  label
-		degreePreservingExplain = new javax.swing.JLabel();
-
-		//Set the erdos-renyi text
-		degreePreservingExplain
-				.setText("<html><font size=2 face=Verdana>Generate a random network <br> graph with n nodes and m edges.</font></html>");
-
-		
-		
-		directedCheckBox = new javax.swing.JCheckBox();
-
-		//set the labels to opaque
-		degreePreservingExplain.setOpaque(true);
-		
-		//Set the text for the checkboxes
-		degreePreserving.setText("shuffle edges keeping degree Model");
-
-		//Make barabasi-albert the default
-		degreePreserving.setSelected(true);
-		
 		//Create the butons
 		runButton = new javax.swing.JButton();
 		backButton = new javax.swing.JButton(); 
@@ -131,12 +131,75 @@ public class DisplayResultsPanel extends JPanel {
 		//Set up the title
 		titleLabel = new javax.swing.JLabel();
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Randomize Network");
+		titleLabel.setText("Results");
 
 	
 
-			
+		runButton.setVisible(false);
 
+	   
+		//Create the column headings
+		String[] columnNames = 
+		 {"Metric","Existing Network","Average","Standard Deviation"};
+
+		//Information to display in the table
+		Object[][] data = new Object[metricNames.length][4];
+
+		//Used to make information readable
+		DecimalFormat df = new DecimalFormat("0.000");
+
+		//Check how many runs where executed
+		int rounds =  randomResults[0].length;
+
+		//For each metric
+		for(int i = 0; i < metricNames.length; i++)
+		{
+			//Compute the avearge for this metric
+			//accross all of the rounds
+			double average = 0;
+			for(int j = 0; j <rounds; j++)
+			{
+				average += randomResults[j][i];
+			}
+			average /= rounds;
+			
+			//Compute the standard deviation
+			double std = 0;
+			for(int j = 0; j < rounds; j++)
+			{
+				std += Math.pow(randomResults[j][i] - average,2);
+			}		
+			std = Math.sqrt(std / rounds);
+			
+			
+			//Update the table data
+			data[i][0] = metricNames[i];
+			data[i][1] = new Double(df.format(networkResults[i]));
+			data[i][2] = new Double(df.format(average));
+			data[i][3] = new Double(df.format(std));
+			
+		}
+
+		//Set up the Table for displaying 
+		DefaultTableModel model = new DefaultTableModel(data,columnNames);
+		JTable table = new JTable(model) {
+        // Override this method so that it returns the preferred
+        // size of the JTable instead of the default fixed size
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+    };
+
+		table.setGridColor(java.awt.Color.black);
+		scrollPane = new JScrollPane(table);
+
+		int height  = table.getRowHeight() * rounds/2 +1;
+
+		table.setPreferredScrollableViewportSize(new Dimension(300, 16)) ;
+		
+//          Sets the preferred size of the viewport for this table.
+ //void 	setRowHeight(int rowHeight)
+		
 	
 		//Set up the run button
 		runButton.setText("Next");
@@ -154,13 +217,10 @@ public class DisplayResultsPanel extends JPanel {
 			}
 		});
 
-		if(mode == 0)
-		{
-			backButton.setVisible(false);
-		}
+		
 
 		//Set up the cancel button
-		cancelButton.setText("Cancel");
+		cancelButton.setText("Close");
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				cancelButtonActionPerformed(evt);
@@ -190,20 +250,8 @@ public class DisplayResultsPanel extends JPanel {
 																350,
 																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
 
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				degreePreserving,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				170)
-																		.addPreferredGap(1)
-																		
-																		.add(degreePreservingExplain,
-																			 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			 10,
-																			 Short.MAX_VALUE))
+													
+														.add(scrollPane)
 																											
 													
 														.add(
@@ -214,8 +262,7 @@ public class DisplayResultsPanel extends JPanel {
 																				backButton)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				runButton)
+																		.add(runButton)
 																		.addPreferredGap(
 																				org.jdesktop.layout.LayoutStyle.RELATED)
 																		.add(
@@ -236,17 +283,9 @@ public class DisplayResultsPanel extends JPanel {
 										.add(7, 7, 7)
 										.addPreferredGap(
 												org.jdesktop.layout.LayoutStyle.RELATED)
+										
+										.add(scrollPane)
 									
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-
-														.add(degreePreserving).add(
-																degreePreservingExplain))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
 										.add(
 												layout
 														.createParallelGroup(
@@ -265,7 +304,7 @@ public class DisplayResultsPanel extends JPanel {
 	 */
 	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
 	
-		RandomComparisonPanel compareToRandom = new RandomComparisonPanel();
+		AnalyzePanel analyzePanel = new AnalyzePanel(gen,directed,mode);
 
 		//Get the TabbedPanel
 		JTabbedPane parent = (JTabbedPane)getParent();
@@ -275,7 +314,7 @@ public class DisplayResultsPanel extends JPanel {
 		parent.remove(index);
 		
 		//Replace it with the panel
-		parent.add(compareToRandom, index);
+		parent.add(analyzePanel, index);
 		//Set the title for this panel
 		parent.setTitleAt(index,"Compare to Random Network");
 		//Display this panel
@@ -289,122 +328,48 @@ public class DisplayResultsPanel extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.pack();
+		JFrame frame = (JFrame)p;
+		frame.pack();
 
 		return;
 
 	}
 
+	/**
+	*/
+	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	
+		JTabbedPane parent = (JTabbedPane)getParent();
+		
+		
+		//Re-pack the window based on this new panel
+		java.awt.Container p = parent.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		p = p.getParent();
+		JFrame frame = (JFrame)p;
+		frame.pack();
 
+	
+	
+	}
 
 	/*
 	 * cancelButtonActionPerformed call back when the cancel button is pushed
 	 */
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		
+		System.out.println();
+		
 		//Go up through the parents to the main window
 		JTabbedPane parent = (JTabbedPane)getParent();
 		java.awt.Container p = parent.getParent();
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 	}
 	
-	/*
-	 *  Callback for when the "Next" button is pushed
-	 */
-	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		
-		
-		CyNetwork net = Cytoscape.getCurrentNetwork();
-
-		LinkedList network = CytoscapeConversion.CyNetworkToDynamicGraph(net,false);
-
-		DynamicGraph graph = (DynamicGraph)network.get(0);
-
-		String ids[] = (String[])network.get(1);
-		DegreePreservingNetworkRandomizer dpnr = new DegreePreservingNetworkRandomizer(graph,ids,false);
-
-
-		boolean directed = directedCheckBox.isSelected();
-
-
-		if(mode == 1)
-		{
-			AnalyzePanel analzyePanel = new AnalyzePanel(dpnr, directed);
-			
-			//Get the TabbedPanel
-			JTabbedPane parent = (JTabbedPane)getParent();
-			int index = parent.getSelectedIndex();
-			
-			//Remove this Panel
-			parent.remove(index);
-			//Replace it with the panel
-			parent.add(analzyePanel, index);
-			//Set the title for this panel
-			parent.setTitleAt(index,"Analyze network statistics");
-			//Display this panel
-			parent.setSelectedIndex(index);
-			//Enforce this Panel
-			parent.validate();
-		
-		
-			//Re-pack the window based on this new panel
-			java.awt.Container p = parent.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			JDialog dialog = (JDialog)p;
-			dialog.pack();
-
-			return;
-
-		
-		}
-
-
-
-
-		DynamicGraph randGraph = dpnr.generate();
-		
-		CyNetwork randNetwork = CytoscapeConversion.DynamicGraphToCyNetwork(randGraph,ids);
-				
-		
-		
-		
-		//Set the network pane as active
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
-				.setSelectedIndex(0);
-		
-		
-		//returns CytoscapeWindow's VisualMappingManager object
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-		//gets the global catalog of visual styles and calculators
-		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-		//Get the random network vistualStyle
-		VisualStyle newStyle = catalog.getVisualStyle("random network");
-		//Set this as the current visualStyle
-		vmm.setVisualStyle(newStyle);
-		
-
-		GridNodeLayout alg = new GridNodeLayout();
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		view.applyLayout(alg); 
-		
-
-		
-		//Go up through the parents to the main window
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
-
-		
-	}
+	
 }

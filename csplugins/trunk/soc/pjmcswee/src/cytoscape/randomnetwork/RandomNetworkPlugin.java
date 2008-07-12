@@ -40,8 +40,11 @@ import javax.swing.JOptionPane;
 import java.util.*;
 import giny.model.*;
 import giny.view.*;
+import java.awt.Toolkit;
+
 import cytoscape.plugin.*;
 import cytoscape.*;
+import javax.swing.plaf.metal.*;
 import cytoscape.view.*;
 import cytoscape.data.*;
 import cytoscape.util.*;
@@ -99,7 +102,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 	/*
 	 *	This class creates the main window for our plugin
 	 */
-	class RandomNetworkDialog extends JDialog implements ActionListener
+	class RandomNetworkFrame extends JFrame implements ActionListener
 	{
 		//Main Tabbed Pane for our Dialog
 		javax.swing.JTabbedPane mainPane;
@@ -115,10 +118,9 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 		/*
 		 *  The default constructor for this class	
 		 */
-		public RandomNetworkDialog(java.awt.Frame parent) {
-			super(parent, true);
+		public RandomNetworkFrame(  ) { 
+			super("Random Network Plugin");
 			initComponents();
-			pack();
 		}
 
 		/*
@@ -145,6 +147,15 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 
 			//add the main pane to our tabbed panel
 			add(mainPane);
+			
+			setLocationRelativeTo(Cytoscape.getDesktop());
+			final String SMALL_ICON = "images/c16.png";
+
+			setIconImage(Toolkit.getDefaultToolkit().getImage(Cytoscape.getDesktop().getClass().getResource(SMALL_ICON)));
+
+			
+			pack();
+			setVisible(true);
 		}
 		
 		/*
@@ -173,12 +184,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 		 */
 		public void actionPerformed(ActionEvent ae) {
 		
-			//Create our dialog
-			RandomNetworkDialog dialog = new RandomNetworkDialog(Cytoscape.getDesktop());
-			dialog.pack();
-			dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-			dialog.show();
-
+			RandomNetworkFrame frame = new RandomNetworkFrame(); 		
 		}
 	}
 

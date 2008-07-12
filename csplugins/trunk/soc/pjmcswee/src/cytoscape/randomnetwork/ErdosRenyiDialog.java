@@ -331,14 +331,14 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 	 */
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
 
-		//Go up to the JDialog parent and close this window
+		//Go up to the JFrame parent and close this window
 		JTabbedPane parent = (JTabbedPane)getParent();
 		java.awt.Container p = parent.getParent();
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 	}
 
 
@@ -359,7 +359,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		//Replace it with the panel
 		parent.add(generateRandomPanel, index);
 		//Set the title for this panel
-		parent.setTitleAt(index,"Analyze network statistics");
+		parent.setTitleAt(index,"Generate Random Networks");
 		//Display this panel
 		parent.setSelectedIndex(index);
 		//Enforce this Panel
@@ -371,8 +371,8 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.pack();
+		JFrame frame = (JFrame)p;
+		frame.pack();
 
 		return;
 
@@ -485,7 +485,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		{
 			
 			erm.setCreateView(false);
-			AnalyzePanel analyzePanel = new AnalyzePanel(erm, erm.getDirected());
+			AnalyzePanel analyzePanel = new AnalyzePanel(erm, erm.getDirected(), 01);
 		
 			//Get the TabbedPanel
 			JTabbedPane parent = (JTabbedPane)getParent();
@@ -496,7 +496,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 			//Replace it with the panel
 			parent.add(analyzePanel, index);
 			//Set the title for this panel
-			parent.setTitleAt(index,"Generate Random Network");
+			parent.setTitleAt(index,"Analyze Network Statistics");
 			//Display this panel
 			parent.setSelectedIndex(index);
 			//Enforce this Panel
@@ -508,8 +508,8 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 			p = p.getParent();
 			p = p.getParent();
 			p = p.getParent();
-			JDialog dialog = (JDialog)p;
-			dialog.pack();
+			JFrame frame = (JFrame)p;
+			frame.pack();
 
 			return;
 		}
@@ -546,8 +546,8 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 
 	}
 

@@ -292,8 +292,8 @@ public class RandomComparisonPanel extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.dispose();
+		JFrame frame = (JFrame)p;
+		frame.dispose();
 	}
 	
 	/*
@@ -336,8 +336,8 @@ public class RandomComparisonPanel extends JPanel {
 		p = p.getParent();
 		p = p.getParent();
 		p = p.getParent();
-		JDialog dialog = (JDialog)p;
-		dialog.pack();
+		JFrame frame = (JFrame)p;
+		frame.pack();
 
 	
 			
