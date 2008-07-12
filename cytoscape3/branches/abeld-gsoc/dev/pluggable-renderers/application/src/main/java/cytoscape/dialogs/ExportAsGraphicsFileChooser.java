@@ -115,17 +115,6 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 			}
 		}
 
-		//Check opacity in calculators
-		List<Calculator> node_calculators = vs.getNodeAppearanceCalculator().getCalculators();
-		for (Calculator cal: node_calculators) {
-			if (cal.getVisualPropertyType() == org.cytoscape.vizmap.VisualPropertyType.NODE_OPACITY || 
-			cal.getVisualPropertyType() == org.cytoscape.vizmap.VisualPropertyType.NODE_BORDER_OPACITY ||
-			(cal.getVisualPropertyType() == org.cytoscape.vizmap.VisualPropertyType.NODE_LABEL_OPACITY))
-			{
-				return true;
-			}
-		}
-		
 		List<Calculator> edge_calculators = vs.getEdgeAppearanceCalculator().getCalculators();
 		for (Calculator cal: edge_calculators) {
 			if (cal.getVisualPropertyType()== org.cytoscape.vizmap.VisualPropertyType.EDGE_OPACITY ||

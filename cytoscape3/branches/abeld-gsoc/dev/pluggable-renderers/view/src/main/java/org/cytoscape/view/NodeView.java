@@ -2,6 +2,7 @@ package org.cytoscape.view;
 
 import java.awt.*;
 import org.cytoscape.*;
+import org.cytoscape.view.renderers.NodeRenderer;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 
@@ -52,7 +53,9 @@ public interface NodeView  extends GraphViewObject {
    */
   public int getShape () ;
 
-
+  public NodeRenderer getRenderer () ;
+  public void setRenderer (NodeRenderer renderer) ;
+  
   /**
    * This sets the Paint that will be used by this node
    * when it is painted as selected.

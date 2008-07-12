@@ -48,6 +48,7 @@ import org.cytoscape.view.GraphViewChangeListener;
 import org.cytoscape.view.Label;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.renderers.NodeRenderer;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -89,7 +90,8 @@ public class DNodeView implements NodeView, Label {
 	Paint m_unselectedPaint;
 	Paint m_selectedPaint;
 	Paint m_borderPaint;
-
+	NodeRenderer m_renderer;
+	
 	public HashMap<String, Object>visualAttributes;
 	/**
 	 * Stores the position of a nodeView when it's hidden so that when the 
@@ -118,6 +120,7 @@ public class DNodeView implements NodeView, Label {
 		m_borderPaint = m_view.m_nodeDetails.borderPaint(m_inx);
 		m_graphicShapes = null;
 		m_graphicPaints = null;
+		m_renderer = null;
 		visualAttributes = new HashMap<String, Object>();
 		/* default values -- FIXME: should be somewhere else */
 		visualAttributes.put("selectedPaint", Color.orange);
@@ -194,6 +197,13 @@ public class DNodeView implements NodeView, Label {
 		}
 	}
 
+	public NodeRenderer getRenderer(){
+		return m_renderer;
+	}
+	
+	public void setRenderer(NodeRenderer renderer){
+		m_renderer = renderer;
+	}
 	/**
 	 * DOCUMENT ME!
 	 *

@@ -42,34 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.properties.EdgeColorProp;
-import org.cytoscape.vizmap.properties.EdgeFontFaceProp;
-import org.cytoscape.vizmap.properties.EdgeFontSizeProp;
-import org.cytoscape.vizmap.properties.EdgeLabelColorProp;
-import org.cytoscape.vizmap.properties.EdgeLabelOpacityProp;
-import org.cytoscape.vizmap.properties.EdgeLabelPositionProp;
-import org.cytoscape.vizmap.properties.EdgeLabelProp;
-import org.cytoscape.vizmap.properties.EdgeLineStyleProp;
-import org.cytoscape.vizmap.properties.EdgeLineWidthProp;
-import org.cytoscape.vizmap.properties.EdgeOpacityProp;
-import org.cytoscape.vizmap.properties.EdgeSourceArrowColorProp;
-import org.cytoscape.vizmap.properties.EdgeSourceArrowOpacityProp;
-import org.cytoscape.vizmap.properties.EdgeSourceArrowShapeProp;
-import org.cytoscape.vizmap.properties.EdgeTargetArrowColorProp;
-import org.cytoscape.vizmap.properties.EdgeTargetArrowOpacityProp;
-import org.cytoscape.vizmap.properties.EdgeTargetArrowShapeProp;
-import org.cytoscape.vizmap.properties.EdgeToolTipProp;
-import org.cytoscape.vizmap.properties.NodeFontFaceProp;
-import org.cytoscape.vizmap.properties.NodeFontSizeProp;
-import org.cytoscape.vizmap.properties.NodeHeightProp;
-import org.cytoscape.vizmap.properties.NodeLabelColorProp;
-import org.cytoscape.vizmap.properties.NodeLabelOpacityProp;
-import org.cytoscape.vizmap.properties.NodeLabelPositionProp;
-import org.cytoscape.vizmap.properties.NodeLabelProp;
-import org.cytoscape.vizmap.properties.NodeShapeProp;
-import org.cytoscape.vizmap.properties.NodeSizeProp;
-import org.cytoscape.vizmap.properties.NodeToolTipProp;
-import org.cytoscape.vizmap.properties.NodeWidthProp;
+import org.cytoscape.vizmap.properties.*;
 import org.cytoscape.vizmap.parsers.*;
 import org.cytoscape.vizmap.ValueParser;
 
@@ -92,7 +65,10 @@ public enum VisualPropertyType {
 	NODE_BORDER_COLOR("Node Border Color", "nodeBorderColorCalculator", "node.borderColor",
 	                  "defaultNodeBorderColor", 
 	                  Color.class, new NodeBorderColorProp(), new ColorParser(), true, true ),
-	                  */ 
+	                  */
+	NODE_RENDERER("Node Renderer", "nodeRendererCalculator", "node.renderer", "defaultNodeShape",
+	           NodeRenderers.class, new NodeRendererProp(),
+			   new NodeRendererParser(), true, true), 
 	NODE_SHAPE("Node Shape", "nodeShapeCalculator", "node.shape", "defaultNodeShape",
 	           NodeShape.class, new NodeShapeProp(),
 			   new NodeShapeParser(), true, true), 
