@@ -280,7 +280,13 @@ public class CyGroupImpl implements CyGroup {
 	}
 
 	/**
-	 * Set the state of the group
+	 * Set the state of the group.  Setting the state of a group has
+	 * two byproducts.  First, the attribute "__groupState" is set to
+	 * the state value to allow persistance across saves and restores.
+	 * Second, if there is a viewer for this group, it is informed that
+	 * the state has changed.  This is used by the metaNode viewer, for
+	 * example to provide programmatic control of whether the group is
+	 * expanded or collapsed.
 	 *
 	 * @param state the state to set
 	 */
