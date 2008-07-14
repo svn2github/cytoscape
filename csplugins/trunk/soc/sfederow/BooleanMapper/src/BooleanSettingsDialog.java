@@ -46,7 +46,7 @@ import javax.swing.text.Position;
 
 
 
-public class BooleanSettingsDialog extends JDialog implements ActionListener, TableModelListener {
+public class BooleanSettingsDialog extends JDialog implements ActionListener, FocusListener, TableModelListener {
 
 	private BooleanAlgorithm currentAlgorithm = null;
 	private BooleanCalculator calculator = null;
@@ -60,6 +60,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 	private JLabel titleLabel; // Our titl
 	private JPanel mainPanel; // The main content pane
 	private JPanel buttonBox; // Our action buttons (Save Settings, Cancel, Execute, Done)
+	private JPanel tableButtons;
 	private JComboBox algorithmSelector; // Which algorithm we're using
 	private JPanel algorithmPanel; // The panel this algorithm uses
 	private JPanel tablePanel;
@@ -98,9 +99,10 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 		if (command.equals("add")){
 			//System.out.println(currentAlgorithm.getSettings().get("criteriaField").getValue().toString());
 			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
-			
+			System.out.println(criteria);
 			if(calculator.checkCriteria(criteria)){ 
 				value = appendValue(criteria);
+				//System.out.println("somewhwere"+value);
 				populateList(criteria, value);
 			}
 		}
@@ -108,15 +110,13 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 			setVisible(false);
 		} else if (command.equals("apply")) {
 			updateAllSettings(true);
+			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
 			applyCriteria();
 			
 			//System.out.println(currentAlgorithm.getSettings().get("operationsList").valueChanged());
 			
 			
 			//System.out.println(attributes[Integer.parseInt(currentAlgorithm.getSettings().getValue("attributeList"))]);
-		} else if (command.equals("add")) {
-			// Cluster using the current layout
-			updateAllSettings();
 			
 			
 		} else if (command.equals("save")) {
@@ -139,7 +139,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 	
 	public void tableChanged(TableModelEvent e){
 		int row = e.getFirstRow();
-		//System.out.println(row + e.getLastRow());
+		System.out.println(row + e.getLastRow());
 	}
 	
 	private void init(){
@@ -189,7 +189,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 		//algorithmPanel.setBorder(titleBorder);
 		mainPanel.add(algorithmPanel);
 
-
+		mainPanel.addFocusListener(this);
 		
 		// Create a panel for our button box
 		this.buttonBox = new JPanel();
@@ -217,7 +217,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 		
 		
 		buttonBox.add(addButton);
-		buttonBox.add(applyButton);
+		//buttonBox.add(applyButton);
 		
 		buttonBox.add(saveButton);
 		buttonBox.add(exitButton);
@@ -226,11 +226,12 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
 		
-		
+		buttonBox.addFocusListener(this);
 		
 		this.tablePanel = new JPanel();
 		
 		this.table = new JTable(data, columnNames);
+		//table.
 		//System.out.println("made table");
 		//table.setPreferredScrollableViewportSize(table.getPreferredSize());
 		
@@ -246,10 +247,27 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 		
 		this.tablePanel.add(table);
 		
+		this.tableButtons = new JPanel();
+		
+		JButton moveUpButton = new JButton("Exit");
+		exitButton.setActionCommand("exit");
+		exitButton.addActionListener(this);
+		
+		JButton moveDownButton = new JButton("Cancel");
+		cancelButton.setActionCommand("cancel");
+		cancelButton.addActionListener(this);
+		
+		tableButtons.add(moveUpButton);
+		tableButtons.add(moveDownButton);
+		tableButtons.add(applyButton);
+		
+		tableButtons.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		
+		
 		
 		mainPanel.add(buttonBox);
 		mainPanel.add(tablePanel);
-		
+		mainPanel.add(tableButtons);
 		setContentPane(mainPanel);
 		//System.out.println("made window");
 		
@@ -276,7 +294,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 		String[] temp = calculator.parseCriteria(criteria);
 		for(int i=0;i<temp.length;i++){
 			//System.out.println("PARSER: "+parsedCriteria[i]);
-			cleanCriteria = temp[i] + " ";
+			cleanCriteria = cleanCriteria + " "+temp[i];
 		}
 		return cleanCriteria;
 	}
@@ -286,6 +304,13 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Ta
 		calculator.evaluateCriteria(parsedCriteria);
 	}
 	
+	public void focusGained(FocusEvent e){
+		System.out.println(e.toString());
+	}
+	
+	public void focusLost(FocusEvent e){
+		System.out.println(e.toString());
+	}
 	public void populateList(String criteria, String label){
 		
 		//System.out.println("populate List");

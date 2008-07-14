@@ -32,6 +32,8 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	String attribute, operation, criteria, value, criteriaString = "";
 
 	ArrayList attributeList = new ArrayList();
+	
+	int listCount = 2;
 
 	public newWindow() {
 		pcs = new PropertyChangeSupport(new Object());
@@ -108,9 +110,12 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		booleanProperties.add(new Tunable("legendField", "Label", Tunable.STRING,
 				new String()));
 		
-		booleanProperties.add(new Tunable("criteriaField", "Criteria", Tunable.STRING,
-				new String()));
-
+		Tunable critField = new Tunable("criteriaField", "Criteria", Tunable.STRING, new String());
+		critField.addTunableValueListener(this);
+		booleanProperties.add(critField);
+		
+		
+		
 		Tunable clear = new Tunable("clearButton", "", Tunable.BUTTON,
 				new String("Clear"), this, null, 0);
 		clear.addTunableValueListener(this);
@@ -160,9 +165,12 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	}
 
 	public void tunableChanged(Tunable t){
-		//System.out.println(t.getName()  + t.getValue());
+		System.out.println(t.getName()  + t.getValue());
 		
-		if (t.getName().equals("attributeList") && !t.getValue().equals((Object)"")){
+		if	(t.getName().equals("attributeList") || t.getName().equals("operationsList")){ listCount++; }
+		if (listCount%2 == 0 && t.getName().equals("attributeList") && !t.getValue().equals((Object)"")){
+			
+			
 			//System.out.println("AttributeChange");
 			String[] attributes = getAllAttributes();
 			value = booleanProperties.getValue("attributeList");
@@ -170,9 +178,9 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 			if(value.contains(",")){
 				String[] indice = value.split(",");
 				for(int i=0;i<indice.length;i++){
-					if(!criteriaString.contains(attributes[Integer.parseInt(value)])){
+					//if(!criteriaString.contains(attributes[Integer.parseInt(value)])){
 						criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
-					}
+					//}
 				}	
 				booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				
@@ -181,20 +189,21 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 					criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
 					booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				}else{
-				if(!criteriaString.contains(attributes[Integer.parseInt(value)])){
+				//if(!criteriaString.contains(attributes[Integer.parseInt(value)])){
 						criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
-					}
+					//}
 					booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				}	
 				
 			}	
 		//flag = false;
 		} else {
-		if(t.getName().equals("operationsList")){
+			
+		if(t.getName().equals("operationsList") && listCount%2 == 0){
 			value = booleanProperties.getValue("operationsList");
-			if(!criteriaString.contains(opArray[Integer.parseInt(value)])){
+			//if(!criteriaString.contains(opArray[Integer.parseInt(value)])){
 				criteriaString = criteriaString + opArray[Integer.parseInt(value)];
-			}
+			//}
 			booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 			
 		}
