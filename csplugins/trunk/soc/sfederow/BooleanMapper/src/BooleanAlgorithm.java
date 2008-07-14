@@ -2,9 +2,9 @@
 
 import java.util.ArrayList;
 
-import javax.swing.JPanel;
+   import javax.swing.JPanel;
 
-import cytoscape.data.CyAttributes;
+   import cytoscape.data.CyAttributes;
 
 
 
