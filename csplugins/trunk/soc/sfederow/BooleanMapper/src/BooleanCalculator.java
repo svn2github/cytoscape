@@ -18,9 +18,12 @@ import cytoscape.view.CyNetworkView;
 
 public class BooleanCalculator {
 	String criteria;
-	ArrayList attributeList = new ArrayList();
-	ArrayList validCriteria = new ArrayList();
-	ArrayList orderedOperations = new ArrayList();
+	ArrayList<String> attributeList = null;
+	ArrayList<String> validCriteria = null;
+	ArrayList<String> orderedOperations = null;
+	ArrayList<String> operations = null;
+	ArrayList<String> letters = null;
+	ArrayList<String> values = null;
 	String currentOperator = "";
 	HashMap map = null;
 	Iterator t = null;
@@ -33,26 +36,33 @@ public class BooleanCalculator {
 	}
 
 	public String doCalculation(String numericalCriteria) {
+		
+		
 		for(int i=0; i<numericalCriteria.length(); i++){
 			//if( 
-			ArrayList operations = new ArrayList();
-			ArrayList letters = new ArrayList();
-			ArrayList values = new ArrayList();
+			
 			String parse = "" + numericalCriteria.charAt(i);
-			if( parse.matches("[<>=]")){
-				String parse1 = "" + numericalCriteria.charAt(i+1);
+			String parse1 = "";
+			if(parse.matches("[<>=]") || i+1 == numericalCriteria.length()){
+				if(!(i+1 == numericalCriteria.length())){ parse1 = "" + numericalCriteria.charAt(i+1); }
+				String value = "";
+				for(int k=0;k<letters.size();k++){
+					value = value + letters.get(k);
+				}
 				if( parse1.matches("=")){
-					values.add(letters);
+					values.add(value);
 					operations.add(parse+parse1);
 				}else{
-					values.add(letters);
+					letters.add(parse1);
+					values.add(value);
 					operations.add(parse);	
 				}
 			}else{
 				letters.add(parse);
 			}
-			
-				
+		}
+		for(int j=0;j<values.size();j++){
+			System.out.println(values.get(j));
 		}
 		return "valid";
 	}
@@ -60,7 +70,12 @@ public class BooleanCalculator {
 	
 	
 	public boolean checkCriteria(String criteria){
-		
+		attributeList = new ArrayList<String>();
+		validCriteria = new ArrayList<String>();
+		orderedOperations = new ArrayList<String>();
+		operations = new ArrayList<String>();
+		letters = new ArrayList<String>();
+		values = new ArrayList<String>();
 		
 		
 		
@@ -80,11 +95,13 @@ public class BooleanCalculator {
 			for(int i=0;i<temp.length;i++){
 				
 				if(!temp[i].contains("]OR[") && !temp[i].contains("]NOT[")){
-					validCriteria.add(temp[i]);
+					if(doCalculation(temp[i]).equals("valid")){
+						validCriteria.add(temp[i]);
+					}
 					orderedOperations.add(currentOperator);
 					System.out.println(p+" "+currentOperator+i+" "+temp[i]);
 				}else{
-					//checkCriteria(temp[i]);
+					checkCriteria(temp[i]);
 				}
 			}
 			System.out.println(criteria);
@@ -95,11 +112,13 @@ public class BooleanCalculator {
 			String[] temp1 = criteria.split("\\]OR\\[");
 			for(int i=0;i<temp1.length;i++){
 				if(!temp1[i].contains("]AND[") && !temp1[i].contains("]NOT[")){
-					validCriteria.add(temp1[i]);
+					if(doCalculation(temp1[i]).equals("valid")){
+						validCriteria.add(temp1[i]);
+					}
 					orderedOperations.add(currentOperator);
 					System.out.println(p+" "+currentOperator+i+" "+temp1[i]);
 				}else{
-					//checkCriteria(temp1[i]);
+					checkCriteria(temp1[i]);
 				}
 			}
 		}
@@ -108,11 +127,13 @@ public class BooleanCalculator {
 			String[] temp2 = criteria.split("\\]NOT\\[");
 			for(int i=0;i<temp2.length;i++){
 				if(!temp2[i].contains("]OR[") && !temp2[i].contains("]AND[")){
-					validCriteria.add(temp2[i]);
+					if(doCalculation(temp2[i]).equals("valid")){
+						validCriteria.add(temp2[i]);
+					}
 					orderedOperations.add(currentOperator);
 					System.out.println(p+" "+currentOperator+i+" "+temp2[i]);
 				}else{
-					//checkCriteria(temp2[i]);
+					checkCriteria(temp2[i]);
 				}
 			}
 		}

@@ -75,6 +75,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
             };
 	
 	Object[][] data = new Object[4][3];
+	
+	
+	
 	/*{
 		    {"Mary", "Campione", "Snowboarding"},
 		    {"Alison", "Huml", "Rowing"},
@@ -86,6 +89,11 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		super(Cytoscape.getDesktop(), algorithm.getName(), false);
 		currentAlgorithm = algorithm;
 		calculator = new BooleanCalculator();
+		for(int b=0;b<4;b++){
+			for(int c=0;c<3;c++){
+				data[b][c] = "";
+			}
+		}
 		initializeOnce(); // Initialize the components we only do once
 		//init();
 	}
@@ -96,6 +104,16 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		
 		String command = e.getActionCommand();
+		if (command.equals("moveUp")){
+			if(table.getSelectedRowCount() != 0){
+				moveRowUp(table.getSelectedRow());
+			}
+		}
+		if (command.equals("moveDown")){
+			if(table.getSelectedRowCount() != 0){	
+				moveRowDown(table.getSelectedRow());
+			}
+		}
 		if (command.equals("add")){
 			//System.out.println(currentAlgorithm.getSettings().get("criteriaField").getValue().toString());
 			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
@@ -249,13 +267,13 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		this.tableButtons = new JPanel();
 		
-		JButton moveUpButton = new JButton("Exit");
-		exitButton.setActionCommand("exit");
-		exitButton.addActionListener(this);
+		JButton moveUpButton = new JButton("Move Up");
+		moveUpButton.setActionCommand("moveUp");
+		moveUpButton.addActionListener(this);
 		
-		JButton moveDownButton = new JButton("Cancel");
-		cancelButton.setActionCommand("cancel");
-		cancelButton.addActionListener(this);
+		JButton moveDownButton = new JButton("Move Down");
+		moveDownButton.setActionCommand("moveDown");
+		moveDownButton.addActionListener(this);
 		
 		tableButtons.add(moveUpButton);
 		tableButtons.add(moveDownButton);
@@ -322,8 +340,38 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		listCount++;
 	}
 	
-
 	
+	
+	public void moveRowUp(int rowNumber){
+		if(rowNumber != 0){
+			Object criTemp = data[rowNumber][0];
+			Object laTemp = data[rowNumber][1];
+			Object colorTemp = data[rowNumber][2];
+			data[rowNumber][0] = data[rowNumber-1][0];
+			data[rowNumber][1] = data[rowNumber-1][1];
+			data[rowNumber][2] = data[rowNumber-1][2];
+			data[rowNumber-1][0] = criTemp;
+			data[rowNumber-1][1] = laTemp;
+			data[rowNumber-1][2] = colorTemp;
+			initializeOnce();
+		}
+	}
+	
+	public void moveRowDown(int rowNumber){
+		if(rowNumber != 3){
+			Object criTemp = data[rowNumber][0];
+			Object laTemp = data[rowNumber][1];
+			Object colorTemp = data[rowNumber][2];
+			data[rowNumber][0] = data[rowNumber+1][0];
+			data[rowNumber][1] = data[rowNumber+1][1];
+			data[rowNumber][2] = data[rowNumber+1][2];
+			data[rowNumber+1][0] = criTemp;
+			data[rowNumber+1][1] = laTemp;
+			data[rowNumber+1][2] = colorTemp;
+			initializeOnce();
+		}
+		
+	}
 	public void removeListElement(){
 	}
 		

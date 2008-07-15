@@ -110,7 +110,7 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		booleanProperties.add(new Tunable("legendField", "Label", Tunable.STRING,
 				new String()));
 		
-		Tunable critField = new Tunable("criteriaField", "Criteria", Tunable.STRING, new String());
+		Tunable critField = new Tunable("criteriaField", "Criteria", Tunable.STRING, new String(),this,null,0);
 		critField.addTunableValueListener(this);
 		booleanProperties.add(critField);
 		
@@ -165,7 +165,7 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	}
 
 	public void tunableChanged(Tunable t){
-		System.out.println(t.getName()  + t.getValue());
+		//System.out.println(t.getName()  + t.getValue());
 		
 		if	(t.getName().equals("attributeList") || t.getName().equals("operationsList")){ listCount++; }
 		if (listCount%2 == 0 && t.getName().equals("attributeList") && !t.getValue().equals((Object)"")){
@@ -178,9 +178,9 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 			if(value.contains(",")){
 				String[] indice = value.split(",");
 				for(int i=0;i<indice.length;i++){
-					//if(!criteriaString.contains(attributes[Integer.parseInt(value)])){
+					
 						criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
-					//}
+					
 				}	
 				booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				
@@ -189,9 +189,9 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 					criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
 					booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				}else{
-				//if(!criteriaString.contains(attributes[Integer.parseInt(value)])){
+				
 						criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
-					//}
+					
 					booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				}	
 				
