@@ -59,9 +59,6 @@
       </manifest>
       <fileset dir="${build}"/>
    </jar>
-   <jar jarfile="${jar}/just-dynxpr.jar">
-      <fileset dir="${build}"/>
-   </jar>
    </target>
 	
 	<target name = "dist" depends="compile" description="makes stand-alone jar of the plug-in for distribution">
