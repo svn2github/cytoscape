@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package csplugins.network.merge;
+package csplugins.network.merge.model;
 
 import csplugins.network.merge.util.AttributeMatchingUtils;
 

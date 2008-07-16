@@ -36,6 +36,8 @@
 
 package csplugins.network.merge;
 
+import csplugins.network.merge.model.AttributeMapping;
+import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.ui.NetworkMergeDialog;
 import csplugins.network.merge.NetworkMerge.Operation;
 

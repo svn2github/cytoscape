@@ -37,7 +37,7 @@
 package csplugins.network.merge.ui;
 
 import csplugins.network.merge.NetworkMerge;
-import csplugins.network.merge.MatchingAttribute;
+import csplugins.network.merge.model.MatchingAttribute;
 
 import cytoscape.Cytoscape;
 

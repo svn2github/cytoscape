@@ -36,6 +36,8 @@
 
 package csplugins.network.merge;
 
+import csplugins.network.merge.model.AttributeMapping;
+import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.util.AttributeMatchingUtils;
 
 import java.util.Vector;
@@ -170,14 +172,6 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
         // for attribute confilict handling, introduce a conflict node here?
         final Node node = Cytoscape.getCyNode(id, true);
         
-        // if only one node return it
-        //if (nodes.size()==1) {
-        //    return node;
-        //}
-
-        // merging attribute according to attrbute mapping
-        final CyAttributes cyAttributes = Cytoscape.getNodeAttributes();
-                
         // set other attributes as indicated in attributeMapping        
         setAttribute(id,mapNetNode,nodeAttributeMapping);
 
