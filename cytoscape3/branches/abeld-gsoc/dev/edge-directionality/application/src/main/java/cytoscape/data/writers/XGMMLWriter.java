@@ -672,7 +672,7 @@ public class XGMMLWriter {
 			return;
 
 		String directedness;
-		if (curEdge.isDirected()){ directedness="\"true\""; } else { directedness="\"false\""; }
+		if (curEdge.isDirected()){ directedness="\"1\""; } else { directedness="\"0\""; }
 		writeElement("<edge label="+quote(curEdge.getIdentifier())+" source="+source+" target="+target+" cy:directed="+directedness+">\n");
 
 		depth++;

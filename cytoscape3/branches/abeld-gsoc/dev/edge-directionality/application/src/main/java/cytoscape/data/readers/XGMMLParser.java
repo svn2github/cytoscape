@@ -871,10 +871,13 @@ class XGMMLParser extends DefaultHandler {
 				// This is the correct way to read the edge-directionality of
 				// non-cytoscape xgmml files as well.
 				directed = currentNetworkisDirected;
-			} else {
-				directed = new Boolean(isDirected).booleanValue(); // parse directedness flag
+			} else { // parse directedness flag
+				if ("0".equals(isDirected)){
+					directed = false;
+				} else {
+					directed = true;
+				} 
 			}
-
 			if (idMap.containsKey(source) && idMap.containsKey(target)) {
 				Node sourceNode = idMap.get(source);
 				Node targetNode = idMap.get(target);
