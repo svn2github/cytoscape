@@ -50,6 +50,9 @@
 	<!-- Global "magic" property for <javac> -->
 	<property name="build.compiler" value="modern" />
 
+	<!-- Location of the corelibs sources (for javadocs) -->
+	<property name="corelibs.dir" value="${basedir}/../corelibs/" />
+
 	<!-- Release number -->
 	<!-- You should use version wherever you need to reference the
 	     version for something.  Note that version.num is ONLY a number. 
@@ -386,9 +389,30 @@
 				<exclude name="cytoscape/generated2/" />
 				<exclude name="cytoscape/bookmarks/" />
 			</packageset>
+			<packageset dir="${corelibs.dir}/ding/src">
+				<include name="**" />
+				<exclude name="ding/view/test/" />
+			</packageset>
+			<packageset dir="${corelibs.dir}/fing/src">
+				<include name="**" />
+				<exclude name="fing/model/test/" />
+			</packageset>
+			<packageset dir="${corelibs.dir}/giny/src">
+				<include name="**" />
+			</packageset>
+			<packageset dir="${corelibs.dir}/task/src">
+				<include name="cytoscape/**" />
+			</packageset>
+			<packageset dir="${corelibs.dir}/undo.support/src">
+				<include name="undo/**" />
+			</packageset>
+			<packageset dir="${corelibs.dir}/util.intr/src">
+				<include name="cytoscape/**" />
+				<exclude name="cytoscape/util/intr/test/" />
+			</packageset>
 
 			<link href="http://java.sun.com/j2se/1.5/docs/api/" />
-			<link href="http://csbi.sourceforge.net/API/" />
+			<!-- link href="http://csbi.sourceforge.net/API/" / -->
 		</javadoc>
 	</target>
 
