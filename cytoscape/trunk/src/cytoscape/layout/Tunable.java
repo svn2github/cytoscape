@@ -268,7 +268,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	/**
 	 * Tunables of type LIST present a
 	 * user with a list of values to select
-	 * from: if the {@link MULTISELECT</b> flag is 
+	 * from: if the {@link MULTISELECT} flag is 
 	 * set, the user is presented with a list 
 	 * from which multiple values can be selected, 
 	 * otherwise, the user is presented with a 
