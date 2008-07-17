@@ -232,6 +232,7 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 			for (CyNode node2: selectedArrays) {
 				nodes[1] = node2.getRootGraphIndex();
 				int edges[] = myNetwork.getConnectingEdgeIndicesArray(nodes);
+				if (edges == null) continue;
 				for (int i = 0; i < edges.length; i++)
 					edgesToSelect.add((CyEdge)myNetwork.getEdge(edges[i]));
 			}
