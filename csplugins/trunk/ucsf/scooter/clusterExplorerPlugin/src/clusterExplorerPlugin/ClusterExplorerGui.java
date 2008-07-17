@@ -340,6 +340,9 @@ public class ClusterExplorerGui extends JPanel implements ActionListener, MouseL
     		
     		String name = nodeAttributeNames[i];
     		byte type = nodeAttributes.getType(name);
+
+				if (!nodeAttributes.getUserVisible(name))
+					continue;
     		
     		String typeStr = null;
     		if (type == CyAttributes.TYPE_INTEGER) {
@@ -372,9 +375,11 @@ public class ClusterExplorerGui extends JPanel implements ActionListener, MouseL
     	String[] edgeAttributeNames = edgeAttributes.getAttributeNames();
     	
     	for(int i=0; i < edgeAttributeNames.length; i++) {
-    		
     		String name = edgeAttributeNames[i];
     		byte type = edgeAttributes.getType(name);
+
+				if (!edgeAttributes.getUserVisible(name))
+					continue;
     		
     		String typeStr = null;
     		if (type == CyAttributes.TYPE_INTEGER) {
