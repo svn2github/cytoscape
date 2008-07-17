@@ -49,6 +49,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ComponentEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -73,6 +74,12 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 	boolean testBool = false;
 	int testInt = 0;
 	int testIntSlider = 0;
+	double testFloatSlider = 0;
+	String edgeAttribute = null;
+	List<String> nodeAttributes = null;
+	int singleList = 0;
+	int[] multiList = null;
+	String textInput = null;
 
 	List<String>numberList = null;
 	List<String>nameList = null;
@@ -80,7 +87,7 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 
 	// Tunables we want to remember
 	Tunable setTextTunable = null;
-	Tunable multiList = null;
+	Tunable multiListTunable = null;
 	Tunable integerSlider = null;
 	Tunable doubleSlider = null;
 
@@ -149,7 +156,7 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 		}
 		{
 			// Sliders look better when they are grouped
-			properties.add(new Tunable("intSliderGroup", "Test Bounded Double Value (slider)",
+			properties.add(new Tunable("doubleSliderGroup", "Test Bounded Double Value (slider)",
 		                            Tunable.GROUP, new Integer(1)));
 
 			doubleSlider = new Tunable("testFloatSlider", "",
@@ -217,10 +224,10 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 			nameList.add("Sarah");
 			nameList.add("Suzanne");
 			// Note that the initial selected values are encoded as an int string
-			multiList = new Tunable("multiList", "Multiple Selection list",
-		                            Tunable.LIST, "1,3",
-		                            (Object)(colorList.toArray()), null, Tunable.MULTISELECT);
-			properties.add(multiList);
+			multiListTunable = new Tunable("multiList", "Multiple Selection list",
+		                                 Tunable.LIST, "1,3",
+		                                 (Object)(colorList.toArray()), null, Tunable.MULTISELECT);
+			properties.add(multiListTunable);
 		}
 
 		properties.add(new Tunable("group4", "String Tunables",
@@ -272,7 +279,47 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
     if ((t != null) && (t.valueChanged() || force))
       testBool = ((Boolean) t.getValue()).booleanValue();
 
-		// Normally, you would want to get the rest of the values from all the tunables
+		t = properties.get("testInt");
+    if ((t != null) && (t.valueChanged() || force))
+      testInt = ((Integer) t.getValue()).intValue();
+
+		t = properties.get("testIntSlider");
+    if ((t != null) && (t.valueChanged() || force))
+      testIntSlider = ((Integer) t.getValue()).intValue();
+
+		t = properties.get("testFloatSlider");
+    if ((t != null) && (t.valueChanged() || force))
+      testFloatSlider = ((Double) t.getValue()).doubleValue();
+
+		t = properties.get("edgeAttribute");
+    if ((t != null) && (t.valueChanged() || force))
+      edgeAttribute = (String) t.getValue();
+
+		t = properties.get("nodeAttributes");
+    if ((t != null) && (t.valueChanged() || force)) {
+      String nodeList = (String) t.getValue();
+			String[] nodeArray = nodeList.split(",");
+			nodeAttributes = Arrays.asList(nodeArray);
+		}
+
+		// LISTs return an index into the list
+		t = properties.get("singleList");
+    if ((t != null) && (t.valueChanged() || force))
+      singleList = ((Integer) t.getValue()).intValue();
+
+		// LISTs with MULTISELECT return an index into the list
+		t = properties.get("multiList");
+    if ((t != null) && (t.valueChanged() || force)) {
+      String selection = (String) t.getValue();
+			String[] selInts = selection.split(",");
+			multiList = new int[selInts.length];
+			for (int i = 0; i < selInts.length; i++)
+				multiList[i] = Integer.parseInt(selInts[i]);
+		}
+
+		t = properties.get("textInput");
+    if ((t != null) && (t.valueChanged() || force))
+      textInput = (String) t.getValue();
 	}
 
 	public void revertTunables() {
@@ -286,11 +333,11 @@ public class TunableSampler extends CytoscapePlugin implements ActionListener, T
 			int index = ((Integer)t.getValue()).intValue();
 			setTextTunable.setValue("Tunable "+t.getName()+" was set to "+index);
 			if (index == 0) {
-				multiList.setLowerBound(numberList.toArray());
+				multiListTunable.setLowerBound(numberList.toArray());
 			} else if (index == 1) {
-				multiList.setLowerBound(colorList.toArray());
+				multiListTunable.setLowerBound(colorList.toArray());
 			} else if (index == 2) {
-				multiList.setLowerBound(nameList.toArray());
+				multiListTunable.setLowerBound(nameList.toArray());
 			}
 		} else if (t.getName().equals("setIntegerBounds")) {
 			integerSlider.setLowerBound(t.getValue());
