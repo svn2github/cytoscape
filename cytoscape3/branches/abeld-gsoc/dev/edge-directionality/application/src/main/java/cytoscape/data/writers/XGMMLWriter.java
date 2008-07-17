@@ -215,6 +215,7 @@ public class XGMMLWriter {
 	private String[] networkAttNames = null;
 	private GraphPerspective network;
 	private GraphView networkView;
+	private boolean isMixed;
 	private List <CyGroup>groupList;
 	private	HashMap <Node, Node>nodeMap;
 	private	HashMap <Edge, Edge>edgeMap;
@@ -319,11 +320,44 @@ public class XGMMLWriter {
 	 * @throws IOException
 	 */
 	private void writePreamble() throws IOException {
+		String directed = getDirectionality();
 		writeElement(XML_STRING+"\n");
-		writeElement("<graph label=\""+network.getTitle()+"\" directed=\"1\" "); 
+		writeElement("<graph label=\""+network.getTitle()+"\" directed=\""+directed+"\" "); 
 		for (int ns = 0; ns < NAMESPACES.length; ns++)
 			writer.write(NAMESPACES[ns]+" ");
 		writer.write(">\n");
+	}
+    
+	/**
+	 * Check directionality of edges, return directionality string to use in xml
+	 * file as attribute of graph element.
+	 * 
+	 * Set isMixed field true if network is a mixed network (contains directed
+	 * and undirected edges), and false otherwise (if only one type of edges are
+	 * present.)
+	 * 
+	 * @returns flag to use in XGMML file for graph element's 'directed'
+	 *          attribute
+	 */
+	private String getDirectionality() {
+		boolean seen_directed = false;
+		boolean seen_undirected = false;
+		for (Edge edge : network.edgesList()) {
+			if (edge.isDirected())
+				seen_directed = true;
+			else
+				seen_undirected = true;
+		}
+		if (seen_undirected && seen_directed)
+			isMixed = true;
+		else
+			isMixed = false;
+
+		if ((!seen_directed) && seen_undirected)
+			return "0"; // only undir. edges
+		else
+			return "1"; // either only directed or mixed. For both cases, use
+						// dir. as default
 	}
 
 	/**
