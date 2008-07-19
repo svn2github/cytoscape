@@ -36,7 +36,7 @@
 
 package csplugins.id.mapping;
 
-/*
+/**
  * Interface for ID mapping from relational database
  * 
  */ 

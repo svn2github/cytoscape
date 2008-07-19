@@ -39,26 +39,28 @@ package csplugins.id.mapping;
 import java.util.Map;
 import java.util.Set;
 
-/*
+/**
  * class for ID mapping from MS Excel files
  * 
  */ 
 public class IDMapperExcel implements IDMapperFile {
-        /*
-        * Supports one-to-one mapping and one-to-many mapping.
-        *
-        * @param
-        *      ids a set of source IDs
-        * @param
-        *      srcType type of source IDs
-        * @param
-        *      tgtType type of target IDs
-        *
-        * @return
-        *      map from each source ID to a set of target IDs
-        */
+        /**
+         * Supports one-to-one mapping and one-to-many mapping.
+         *
+         * @param
+         *      ids a set of source IDs
+         * @param
+         *      srcType type of source IDs
+         * @param
+         *      tgtType type of target IDs
+         *
+         * @return
+         *      map from each source ID to a set of target IDs
+         *
+         * @throws NullPointerException if ids or srcType or tgtType is null
+         */
         public Map<String, Set<String>> mapID(Set<String> ids, String srcType, String tgtType) {
-        return null;
+                return null;
         }
 
         /*
