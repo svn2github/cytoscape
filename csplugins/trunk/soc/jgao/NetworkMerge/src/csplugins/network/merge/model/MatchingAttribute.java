@@ -39,7 +39,6 @@ package csplugins.network.merge.model;
 
 import java.util.Set;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * Information which attribute to be used for matching nodes
@@ -82,7 +81,7 @@ public interface MatchingAttribute {
      * 
      * 
      */
-    public int size();
+    public int getSizeNetwork();
     
     /*
      * 

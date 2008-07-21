@@ -70,7 +70,7 @@ class MatchNodeTable extends JTable{
     }
     
     public void setColumnEditor() {
-        int n = matchingAttribute.size();
+        int n = matchingAttribute.getSizeNetwork();
         for (int i=0; i<n; i++) {
             Vector<String> attrs = new Vector<String>();
             //TODO remove in Cytoscape3
@@ -101,11 +101,11 @@ class MatchNodeTable extends JTable{
         }
 
         public int getColumnCount() {
-            return matchingAttribute.size();
+            return matchingAttribute.getSizeNetwork();
         }
 
         public int getRowCount() {
-            int n = matchingAttribute.size();
+            int n = matchingAttribute.getSizeNetwork();
             return n==0?0:1;
         }
 

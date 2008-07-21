@@ -54,14 +54,31 @@ public interface IDMappingList {
         public Set<String> getIDTypes();
 
         /**
-         * Set the supported ID types
+         * Add an new ID type
          *
-         * @param idTypes
-         *      the supported ID types
+         * @param type
+         *      ID typs
          *
-         * @throws NullPointerException if idTypes is null
+         * @return
+         *      true if successful; false otherwise, e.g. this ID type has
+         *      already existed
+         *
+         * @throws NullPointerException if type is null
          */
-        public void setIDTypes(Set<String> idTypes);
+        public boolean addIDType(String type);
+
+        /**
+         * Get whether a id type is contained
+         *
+         * @param type
+         *      ID type
+         *
+         * @return
+         *      true if contained; false otherwise
+         *
+         * @throws NullPointerException if type is null
+         */
+        public boolean isIDTypeContained(String type);
 
         /**
          * Get the number of ID mapping
@@ -93,12 +110,25 @@ public interface IDMappingList {
          *      ID type
          *
          * @return
-         *      ID set
+         *      ID set if type exists; null otherwise
          *
          * @throws IndexOutOfBoundsException if i is out of bound
-         * @throws NullPointerException if idTypes is null
+         * @throws NullPointerException if type is null
          */
         public Set<String> getIDMapping(int i, String type);
+
+        /**
+         * Get the index of id of type
+         *
+         * @param type
+         *      ID type
+         * @param id
+         *      ID
+         *
+         * @return
+         *      Index of ID if exists; -1, otherwise
+         */
+        public int indexOf(String type, String id);
 
         /**
          * Add an ID mapping
@@ -106,78 +136,42 @@ public interface IDMappingList {
          * @param idMapping
          *      ID mapping--map from ID types to ID sets
          *
-         * @return true if successful; false otherwise
-         *
          * @throws NullPointerException if idMapping is null
-         * @throws TypeNotPresentException if one of more types are not found
+         * @throws IllegalArgumentException if one of more types are not found
          */
-        public boolean addIDMapping(Map<String,Set<String>> idMapping);
+        public void addIDMapping(Map<String,Set<String>> idMapping);
 
         /**
-         * Add an ID mapping on the ith position
+         * Add an ID mapping
          *
-         * @param i
-         *      index of ID mapping
-         * @param idMapping
-         *      ID mapping--map from ID types to ID sets
+         * @param type1
+         *      ID type 1
+         * @param ids1
+         *      ID set 1
+         * @param type2
+         *      ID type 2
+         * @param ids2
+         *      ID set 2
          *
-         * @return true if successful; false otherwise
-         *
-         * @throws IndexOutOfBoundsException if i is out of bound
-         * @throws NullPointerException if idMapping is null
-         * @throws TypeNotPresentException if one of more types are not found
+         * @throws NullPointerException if type1 or ids1 or type2 or ids2 is null
+         * @throws IllegalArgumentException if type1 or type2 is not found
          */
-        public boolean addIDMapping(int i, Map<String,Set<String>> idMapping);
+        public void addIDMapping(String type1, Set<String> ids1, String type2, Set<String> ids2);
 
         /**
-         * Add an ID id to type in ID mapping on the ith position
+         * Supports one-to-one mapping and one-to-many mapping.
          *
-         * @param i
-         *      index of ID mapping
-         * @param type
-         *      ID type
-         * @param id
-         *      ID
+         * @param
+         *      ids a set of source IDs
+         * @param
+         *      srcType type of source IDs
+         * @param
+         *      tgtType type of target IDs
          *
-         * @return true if successful; false otherwise
+         * @return
+         *      map from each source ID to a set of target IDs
          *
-         * @throws IndexOutOfBoundsException if i is out of bound
-         * @throws NullPointerException if type or id is null
-         * @throws TypeNotPresentException if one of more types are not found
+         * @throws NullPointerException if ids or srcType or tgtType is null
          */
-        public boolean addIDMapping(int i, String type, String id);
-
-        /**
-         * Set the ID mapping on the ith position
-         *
-         * @param i
-         *      index of ID mapping
-         * @param idMapping
-         *      ID mapping--map from ID types to ID sets
-         *
-         * @return the old ID mapping if successful; null otherwise
-         *
-         * @throws IndexOutOfBoundsException if i is out of bound
-         * @throws NullPointerException if idMapping is null
-         * @throws TypeNotPresentException if one of more types are not found
-         */
-        public Map<String,Set<String>> setIDMapping(int i, Map<String,Set<String>> idMapping);
-
-        /**
-         * Set the ID mapping on the ith position
-         *
-         * @param i
-         *      index of ID mapping
-         * @param type
-         *      ID type
-         * @param idSet
-         *      ID set
-         *
-         * @return the old IDs if successful; null otherwise
-         *
-         * @throws IndexOutOfBoundsException if i is out of bound
-         * @throws NullPointerException if type or idSet is null
-         * @throws TypeNotPresentException if one of more types are not found
-         */
-        public Set<String> setIDMapping(int i, String type, Set<String> idSet);
+        public Map<String, Set<String>> mapID(Set<String> ids, String srcType, String tgtType);
 }
