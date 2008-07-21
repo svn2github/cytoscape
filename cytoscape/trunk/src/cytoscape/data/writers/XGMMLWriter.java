@@ -329,7 +329,7 @@ public class XGMMLWriter {
 		writeElement("<graph label=\""+network.getTitle()+"\" "); 
 		for (int ns = 0; ns < NAMESPACES.length; ns++)
 			writer.write(NAMESPACES[ns]+" ");
-		writer.write(">\n");
+		writer.write(" directed=\"1\">\n");
 	}
 
 	/**
@@ -742,16 +742,18 @@ public class XGMMLWriter {
 		final byte attType = attributes.getType(attributeName);
 		String value = null;
 		String type = null;
+		boolean editable = attributes.getUserEditable(attributeName);
+		boolean hidden = !attributes.getUserVisible(attributeName);
 
 		// process float
 		if (attType == CyAttributes.TYPE_FLOATING) {
 			Double dAttr = attributes.getDoubleAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.REAL, dAttr, true);
+			writeAttributeXML(attributeName, ObjectType.REAL, dAttr, true, hidden, editable);
 		}
 		// process integer
 		else if (attType == CyAttributes.TYPE_INTEGER) {
 			Integer iAttr = attributes.getIntegerAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.INTEGER, iAttr, true);
+			writeAttributeXML(attributeName, ObjectType.INTEGER, iAttr, true, hidden, editable);
 		}
 		// process string
 		else if (attType == CyAttributes.TYPE_STRING) {
@@ -761,18 +763,18 @@ public class XGMMLWriter {
 				sAttr = sAttr.replace("\n", "\\n");
 				sAttr = sAttr.replace("\t", "\\t");
 			} 
-			writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true);
+			writeAttributeXML(attributeName, ObjectType.STRING, sAttr, true, hidden, editable);
 		}
 		// process boolean
 		else if (attType == CyAttributes.TYPE_BOOLEAN) {
 			Boolean bAttr = attributes.getBooleanAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.BOOLEAN, bAttr, true);
+			writeAttributeXML(attributeName, ObjectType.BOOLEAN, bAttr, true, hidden, editable);
 		}
 		// process simple list
 		else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
 			// get the attribute list
 			final List listAttr = attributes.getListAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.LIST, null, false);
+			writeAttributeXML(attributeName, ObjectType.LIST, null, false, hidden, editable);
 
 			depth++;
 			// interate through the list
@@ -793,7 +795,7 @@ public class XGMMLWriter {
 		else if (attType == CyAttributes.TYPE_SIMPLE_MAP) {
 			// get the attribute map
 			final Map mapAttr = attributes.getMapAttribute(id, attributeName);
-			writeAttributeXML(attributeName, ObjectType.MAP, null, false);
+			writeAttributeXML(attributeName, ObjectType.MAP, null, false, hidden, editable);
 
 			depth++;
 			// interate through the map
@@ -825,7 +827,7 @@ public class XGMMLWriter {
 				return;
 			}
 			// Output the first <att>
-			writeAttributeXML(attributeName, ObjectType.COMPLEX, String.valueOf(dimTypes.length), false);
+			writeAttributeXML(attributeName, ObjectType.COMPLEX, String.valueOf(dimTypes.length), false, hidden, editable);
 
 			// grab the complex attribute structure
 			Map complexAttributeStructure = getComplexAttributeStructure(mmap, id, attributeName, null,
@@ -951,7 +953,8 @@ public class XGMMLWriter {
 	 *
 	 * @throws IOException
 	 */
-	private void writeAttributeXML(String name, ObjectType type, Object value, boolean end) throws IOException {
+	private void writeAttributeXML(String name, ObjectType type, 
+	                               Object value, boolean end) throws IOException {
 		if (name == null && type == null)
 			writeElement("</att>\n");
 		else {
@@ -960,6 +963,43 @@ public class XGMMLWriter {
 				writer.write(" name="+quote(name));
 			if (value != null)
 				writer.write(" value="+quote(value.toString()));
+			if (end)
+				writer.write("/>\n");
+			else
+				writer.write(">\n");
+		}
+	}
+
+	/**
+	 * writeAttributeXML outputs an XGMML attribute
+	 *
+	 * @param name is the name of the attribute we are outputting
+	 * @param type is the XGMML type of the attribute
+	 * @param value is the value of the attribute we're outputting
+	 * @param end is a flag to tell us if the attribute should include a tag end
+	 * @param hidden is a flag to tell us if the attribute should be hidden
+	 * @param editable is a flag to tell us if the attribute should be user editable
+	 *
+	 * @throws IOException
+	 */
+	private void writeAttributeXML(String name, ObjectType type, 
+	                               Object value, boolean end,
+	                               boolean hidden, boolean editable) throws IOException {
+		if (name == null && type == null)
+			writeElement("</att>\n");
+		else {
+			writeElement("<att type="+quote(type.toString()));
+			if (name != null)
+				writer.write(" name="+quote(name));
+			if (value != null)
+				writer.write(" value="+quote(value.toString()));
+
+			// Only output hidden and editable if they differ from the default.
+			if (hidden)
+				writer.write(" cy:hidden=\"true\"");
+			if (!editable)
+				writer.write(" cy:editable=\"false\"");
+
 			if (end)
 				writer.write("/>\n");
 			else

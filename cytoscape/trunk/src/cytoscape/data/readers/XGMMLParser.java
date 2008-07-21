@@ -1297,6 +1297,20 @@ class XGMMLParser extends DefaultHandler {
 		ObjectType objType = getType(atts.getValue("type"));
 		Object obj = getTypedAttributeValue(objType, atts);
 
+		// Set up defaults
+		boolean hidden = false;
+		boolean editable = true;
+		String hString = atts.getValue("cy:hidden");
+		if (hString != null) {
+			hidden = Boolean.parseBoolean(hString);
+		}
+
+		String eString = atts.getValue("cy:editable");
+		if (hString != null) {
+			editable = Boolean.parseBoolean(hString);
+		}
+
+
 		switch (objType) {
 		case BOOLEAN:
 			if (obj != null && name != null)
@@ -1345,6 +1359,11 @@ class XGMMLParser extends DefaultHandler {
 			level = 0;
 			return ParseState.COMPLEXATT;
 		}
+
+		if (hidden)
+			cyAtts.setUserVisible(name,false);
+		if (!editable)
+			cyAtts.setUserEditable(name,false);
 		return ParseState.NONE;
 	}
 
