@@ -36,9 +36,16 @@
 
 package csplugins.id.mapping.reader;
 
+import csplugins.id.mapping.model.*;
+
 import cytoscape.util.URLUtil;
 
 import java.util.List;
+import java.util.Vector;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.InputStream;
 import java.io.BufferedReader;
@@ -53,31 +60,87 @@ import java.net.URL;
  */
 public class IDMappingTableReader implements TextTableReader {
         protected final URL sourceURL;
+        protected IDMappingList idMappings;
 
         public IDMappingTableReader(final URL sourceURL) {
                 this.sourceURL = sourceURL;
+                idMappings = null;
         }
 
+        @Override
         public void readTable() throws IOException {
+                IDMappingList idMappings = new IDMappingListImpl();
+
                 InputStream is = URLUtil.getInputStream(sourceURL);
 		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
-		String line = bufRd.readLine();
 
-                int lineCount = 0;
+                // add types
+		String line = bufRd.readLine();
+                String typeSeparator = "\t";
+                String[] types = line.split(typeSeparator);
+                for (String type : types) {
+                        if (type.length()==0) {//TODO: how to deal with consecutive separators
+                                return;
+                        }
+                        idMappings.addIDType(type);
+                }
+
+                // read each ID mapping (line)
+                int lineCount = 1;
                 while ((line=bufRd.readLine())!=null) {
                         lineCount++;
+                        String[] strs = line.split(typeSeparator);
+                        if (strs.length>types.length) {
+                                System.err.println("The number of ID is larger than the number of types at row "+lineCount);
+                        }
+
+                        Map<String,Set<String>> idMapping = new HashMap<String,Set<String>>();
+                        for (int i=0; i<strs.length; i++) {
+                                String idstr = strs[i];
+                                Set<String> ids = new HashSet<String>();
+                                String[] strids = idstr.split(";");
+                                for (String id : strids) {
+                                        ids.add(id);
+                                }
+                                idMapping.put(types[i], ids);
+                        }
+
+                        idMappings.addIDMapping(idMapping);
                 }
+
+                is.close();
+                bufRd.close();
+
+                this.idMappings = idMappings;
         }
 
+        @Override
 	public List getColumnNames() {
-                return null;
+                if (idMappings==null) {
+                        return null;
+                }
+
+                return new Vector(idMappings.getIDTypes());
         }
 
 	/**
 	 * Report the result of import as a string.
 	 * @return Description of
 	 */
+        @Override
 	public String getReport() {
-                return null;
+                if (idMappings == null) {
+                        return "No ID mapping is loaded\n";
+                }
+
+                return idMappings.getIDMappingCount()+" ID mappings are loaded.\n";
+        }
+
+        /**
+         *
+         * @return ID Mappings
+         */
+        public IDMappingList getIDMappingList() {
+                return idMappings;
         }
 }

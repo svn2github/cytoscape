@@ -59,6 +59,7 @@ public class IDMappingListImpl implements IDMappingList {
         
         // map key: id type; value: map of id to index in the list
         // this is for fast search for an ID in a type, any better way?
+        // note: one id of a type can only have one entry
         private Map<String,Map<String,Integer>> mapTypeIDIndex;
 
 
@@ -76,8 +77,8 @@ public class IDMappingListImpl implements IDMappingList {
          *      the set of supported ID types
          */
         @Override
-        public Set<String> getIDTypes() {
-                return new HashSet<String>(idTypes);
+        public List<String> getIDTypes() {
+                return idTypes;
         }
 
         /**
@@ -91,6 +92,7 @@ public class IDMappingListImpl implements IDMappingList {
          *
          * @throws NullPointerException if type is null
          */
+        @Override
         public boolean isIDTypeContained(final String type) {
                 if (type==null) {
                         throw new java.lang.NullPointerException();
@@ -111,6 +113,7 @@ public class IDMappingListImpl implements IDMappingList {
          *
          * @throws NullPointerException if type is null
          */
+        @Override
         public boolean addIDType(final String type) {
                 if (type==null) {
                         throw new java.lang.NullPointerException();
@@ -206,6 +209,7 @@ public class IDMappingListImpl implements IDMappingList {
          *
          * @throws NullPointerException if type or id is null
          */
+        @Override
         public int indexOf(final String type, final String id) {
                 if (type==null || id==null ) {
                         throw new java.lang.NullPointerException();

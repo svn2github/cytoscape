@@ -45,8 +45,17 @@ import java.io.IOException;
  */
 public interface TextTableReader {
 
+        /**
+         * Read data
+         *
+         * @throws java.io.IOException if failed when reading
+         */
         public void readTable() throws IOException;
 
+        /**
+         *
+         * @return column names
+         */
 	public List getColumnNames();
 
 	/**
