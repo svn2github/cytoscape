@@ -46,8 +46,8 @@ public class IntegrateBioPAXDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        spinner1.setModel(new SpinnerNumberModel(MAX_SCORE/3, .0, MAX_SCORE, .1));
-        slider1.setModel(new DefaultBoundedRangeModel(MAX_SCORE/3, 0, 0, MAX_SCORE));
+        spinner1.setModel(new SpinnerNumberModel(MAX_SCORE / 3, .0, MAX_SCORE, .1));
+        slider1.setModel(new DefaultBoundedRangeModel(MAX_SCORE / 3, 0, 0, MAX_SCORE));
         slider1.setMinorTickSpacing(5);
         slider1.setMajorTickSpacing(MAX_SCORE);
 
@@ -347,6 +347,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         panel3.add(panel6, gbc);
         panel6.setBorder(BorderFactory.createTitledBorder("Preview"));
@@ -360,6 +361,8 @@ public class IntegrateBioPAXDialog extends JDialog {
         panel6.add(scrollPane1, gbc);
         table1 = new JTable();
         table1.setAutoCreateRowSorter(false);
+        table1.setAutoResizeMode(2);
+        table1.setFillsViewportHeight(true);
         table1.setPreferredScrollableViewportSize(new Dimension(450, 200));
         scrollPane1.setViewportView(table1);
         final JLabel label4 = new JLabel();
@@ -406,17 +409,11 @@ class IntegrateUpdateBioPAXTask implements Task {
         for(ConversionScore aScore: toBeRemoved)
             scores.remove(aScore);
 
-
         if (scores.isEmpty()) {
-            JOptionPane.showMessageDialog(null,
-                    "No matches. Have you tried to lower the threshold value?",
-                    "No matches",
-                    JOptionPane.INFORMATION_MESSAGE);
-
             scoresTable.setModel(new DefaultTableModel());
             taskMonitor.setPercentCompleted(100);
-	        taskMonitor.setStatus("Scoring successful, but no results.");
-
+	        taskMonitor.setStatus("Scoring successful, but no results.\n" +
+                                    "Have you tried to lower the threshold value?");
             return;
         }
 
@@ -431,7 +428,11 @@ class IntegrateUpdateBioPAXTask implements Task {
         }
 
         String[] tableHeader = {"Score", "Name 1", "Name 2"};
-        scoresTable.setModel(new DefaultTableModel(tableData, tableHeader));
+        scoresTable.setModel(new DefaultTableModel(tableData, tableHeader) {
+            public boolean isCellEditable (int row, int column) {
+                return false;
+            }
+        });
 
         taskMonitor.setPercentCompleted(100);
 	    taskMonitor.setStatus("Scoring successful.");

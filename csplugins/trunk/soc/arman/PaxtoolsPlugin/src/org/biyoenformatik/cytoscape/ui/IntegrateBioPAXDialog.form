@@ -158,7 +158,7 @@
           <grid id="40627" layout-manager="GridBagLayout">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-              <gridbag weightx="1.0" weighty="0.0"/>
+              <gridbag weightx="1.0" weighty="1.0"/>
             </constraints>
             <properties/>
             <border type="none" title="Preview"/>
@@ -175,6 +175,8 @@
                     <constraints/>
                     <properties>
                       <autoCreateRowSorter value="false"/>
+                      <autoResizeMode value="2"/>
+                      <fillsViewportHeight value="true"/>
                       <preferredScrollableViewportSize width="450" height="200"/>
                     </properties>
                   </component>
