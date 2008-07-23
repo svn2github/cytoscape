@@ -36,10 +36,24 @@
 
 package csplugins.id.mapping;
 
+import java.net.URL;
+
 /**
  * Interface for ID mapping from files
  * 
  */ 
 public interface IDMapperFile extends IDMapper {
 
+        /**
+         *
+         * @return file URL
+         */
+        public URL getURL();
+
+        /**
+         *
+         * @param url
+         *      file URL
+         */
+        public void setURL(URL url);
 }

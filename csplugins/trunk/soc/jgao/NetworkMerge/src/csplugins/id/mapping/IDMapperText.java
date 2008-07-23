@@ -36,18 +36,29 @@
 
 package csplugins.id.mapping;
 
+import csplugins.id.mapping.model.IDMappingList;
+
 import java.util.Map;
 import java.util.Set;
+
+import java.net.URL;
 
 /**
  * class for ID mapping from Delimited text file
  * 
  */ 
 public class IDMapperText implements IDMapperFile {
-        //private String url;
+        private URL url;
+        private IDMappingList idMappingList;
 
         public IDMapperText() {
-                
+                url = null;
+                idMappingList = null;
+        }
+
+        public IDMapperText(final URL url) {
+                this.url = url;
+                //idMappingList
         }
 
         /**
@@ -65,6 +76,7 @@ public class IDMapperText implements IDMapperFile {
          *
          * @throws NullPointerException if ids or srcType or tgtType is null
          */
+        @Override
         public Map<String, Set<String>> mapID(Set<String> ids, String srcType, String tgtType) {
                 return null;
         }
@@ -73,6 +85,7 @@ public class IDMapperText implements IDMapperFile {
         * @return supported source ID types
         *
         */
+        @Override
         public Set<String> getSupportedSrcIDType() {
                 return null;
         }
@@ -81,8 +94,28 @@ public class IDMapperText implements IDMapperFile {
         * @return supported target ID types
         *
         */
+        @Override
         public Set<String> getSupportedTgtIDType() {
                 return null;
+        }
+
+        /**
+         *
+         * @return file URL
+         */
+        @Override
+        public URL getURL() {
+                return url;
+        }
+
+        /**
+         *
+         * @param url
+         *      file URL
+         */
+        @Override
+        public void setURL(URL url) {
+                this.url = url;
         }
 
 }

@@ -69,7 +69,7 @@ public class IDMappingTableReader implements TextTableReader {
 
         @Override
         public void readTable() throws IOException {
-                IDMappingList idMappings = new IDMappingListImpl();
+                idMappings = new IDMappingListImpl();
 
                 InputStream is = URLUtil.getInputStream(sourceURL);
 		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
@@ -92,26 +92,31 @@ public class IDMappingTableReader implements TextTableReader {
                         String[] strs = line.split(typeSeparator);
                         if (strs.length>types.length) {
                                 System.err.println("The number of ID is larger than the number of types at row "+lineCount);
+                                continue;
                         }
 
-                        Map<String,Set<String>> idMapping = new HashMap<String,Set<String>>();
-                        for (int i=0; i<strs.length; i++) {
-                                String idstr = strs[i];
-                                Set<String> ids = new HashSet<String>();
-                                String[] strids = idstr.split(";");
-                                for (String id : strids) {
-                                        ids.add(id);
-                                }
-                                idMapping.put(types[i], ids);
-                        }
-
-                        idMappings.addIDMapping(idMapping);
+                        this.addIDMapping(types,strs);
                 }
 
                 is.close();
                 bufRd.close();
 
-                this.idMappings = idMappings;
+                //this.idMappings = idMappings;
+        }
+
+        protected void addIDMapping(final String[] types, final String[] strs) {
+                Map<String,Set<String>> idMapping = new HashMap<String,Set<String>>();
+                for (int i=0; i<strs.length; i++) {
+                        String idstr = strs[i];
+                        Set<String> ids = new HashSet<String>();
+                        String[] strids = idstr.split(";");
+                        for (String id : strids) {
+                                ids.add(id);
+                        }
+                        idMapping.put(types[i], ids);
+                }
+
+                idMappings.addIDMapping(idMapping);
         }
 
         @Override

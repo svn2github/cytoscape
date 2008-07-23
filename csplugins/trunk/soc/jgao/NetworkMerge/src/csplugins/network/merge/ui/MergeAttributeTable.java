@@ -442,7 +442,7 @@ class MergeAttributeTable extends JTable{
                String netID = it.next();
                 String netName = Cytoscape.getNetwork(netID).getTitle();
                 int index = 0;
-                while (index<size && netNames.get(index).compareTo(netName)<0) index++;
+                while (index<size && netNames.get(index).compareToIgnoreCase(netName)<0) index++;
                 
                 netIDs.add(index,netID);
                 netNames.add(index,netName);
