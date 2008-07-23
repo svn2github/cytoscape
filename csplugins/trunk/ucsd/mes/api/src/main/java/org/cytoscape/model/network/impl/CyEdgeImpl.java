@@ -3,6 +3,8 @@ package org.cytoscape.model.network.impl;
 
 import org.cytoscape.model.network.CyNode;
 import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.attrs.impl.CyAttributesManagerImpl;
+import java.util.Map;
 
 class CyEdgeImpl extends GraphObjImpl implements CyEdge {
 
@@ -11,8 +13,8 @@ class CyEdgeImpl extends GraphObjImpl implements CyEdge {
 	final private int index;
 	final private boolean directed;
 
-	CyEdgeImpl(CyNode src, CyNode tgt, boolean dir, int ind) {
-		super();
+	CyEdgeImpl(CyNode src, CyNode tgt, boolean dir, int ind, Map<String,CyAttributesManagerImpl> attrMgr) {
+		super(attrMgr);
 		source = src;
 		target = tgt;
 		directed = dir;

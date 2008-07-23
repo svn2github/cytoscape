@@ -75,7 +75,7 @@ public class CyNetworkImpl implements CyNetwork {
 	public synchronized CyNode addNode() {
 
 		int newNodeInd = dg.nodeCreate();	
-		CyNode newNode = new CyNodeImpl(this,newNodeInd);
+		CyNode newNode = new CyNodeImpl(this,newNodeInd,nodeAttrMgr);
 		if ( newNodeInd == nodeList.size() )
 			nodeList.add( newNode );
 		else if ( newNodeInd < nodeList.size() && newNodeInd >= 0 )
@@ -116,7 +116,7 @@ public class CyNetworkImpl implements CyNetwork {
 
 		int newEdgeInd = dg.edgeCreate(source.getIndex(),target.getIndex(),isDirected);
 
-		CyEdge newEdge = new CyEdgeImpl(source,target,isDirected,newEdgeInd);
+		CyEdge newEdge = new CyEdgeImpl(source,target,isDirected,newEdgeInd,edgeAttrMgr);
 		if ( newEdgeInd == edgeList.size() )
 			edgeList.add( newEdge );
 		else if ( newEdgeInd < edgeList.size() && newEdgeInd > 0 )
