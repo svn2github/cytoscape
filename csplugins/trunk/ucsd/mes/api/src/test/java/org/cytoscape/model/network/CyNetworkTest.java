@@ -165,7 +165,7 @@ public class CyNetworkTest extends TestCase {
 
 		// and again
 		try {
-			CyEdge e3 = net.addEdge(null,n2,false);
+			CyEdge e3 = net.addEdge(null,n2,true);
 			fail("successfully added a null edge");
 		} catch (RuntimeException e) {
 			assertEquals("edge count",2,net.getEdgeCount());
@@ -180,7 +180,7 @@ public class CyNetworkTest extends TestCase {
 		assertNotNull("edge is not null",e4);
 		assertEquals("edge count",4,net.getEdgeCount());
 
-		// add self edge
+		// add self edges
 		CyEdge e5 = net.addEdge(n1,n1,false);
 		assertNotNull("edge is not null",e5);
 		assertEquals("edge count",5,net.getEdgeCount());
@@ -188,6 +188,15 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e6 = net.addEdge(n1,n1,true);
 		assertNotNull("edge is not null",e6);
 		assertEquals("edge count",6,net.getEdgeCount());
+
+		// add duplicate edges
+		CyEdge e3_2 = net.addEdge(n1,n2,true);
+		assertNotNull("edge is not null",e3_2);
+		assertEquals("edge count",7,net.getEdgeCount());
+
+		CyEdge e4_2 = net.addEdge(n1,n2,false);
+		assertNotNull("edge is not null",e4_2);
+		assertEquals("edge count",8,net.getEdgeCount());
 	}
 
 	public void testRemoveEdge() {
@@ -369,13 +378,16 @@ public class CyNetworkTest extends TestCase {
 		CyNode n1 = net.addNode();
 		CyNode n2 = net.addNode();
 		CyNode n3 = net.addNode();
+		CyNode n4 = new DummyCyNode(699);
 
 		CyEdge e1 = net.addEdge(n1,n2,true);
 
 		assertTrue("edge 1 is good",net.contains(n1,n2));
-		assertFalse("not and edge",net.contains(n3,n2));
-		assertFalse("not and edge",net.contains(n1,n1));
-		assertFalse("not and edge",net.contains(n2,n3));
+		assertFalse("not an edge",net.contains(n3,n2));
+		assertFalse("not an edge",net.contains(n1,n1));
+		assertFalse("not an edge",net.contains(n2,n3));
+		assertFalse("bad target node",net.contains(n2,n4));
+		assertFalse("bad source node",net.contains(n4,n1));
 	}
 
 	public void testBasicGetNeighborList() {
@@ -408,6 +420,24 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e3 = net.addEdge(n4,n4,false);
 		l = net.getNeighborList(n4,EdgeType.ANY_EDGE);
 		assertEquals("one neighbor?",1,l.size());
+
+		CyEdge e4 = net.addEdge(n4,n4,true);
+		l = net.getNeighborList(n4,EdgeType.ANY_EDGE);
+		assertEquals("two neighbors",2,l.size());
+	}
+
+	public void testBadNodeNeighborList() {
+		CyNode n1 = net.addNode();
+		CyNode n2 = net.addNode();
+		CyNode n3 = new DummyCyNode(699);
+
+		CyEdge e1 = net.addEdge(n1,n2,false);
+
+		try {
+			List<CyNode> l = net.getNeighborList(n3,EdgeType.ANY_EDGE);
+			fail("didn't throw expected illegal arg exception");
+		} catch (IllegalArgumentException iae) { return; }
+		fail("didn't catch thrown exception");
 	}
 
 	public void testUndirectedGetNeighborList() {
@@ -524,6 +554,20 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e3 = net.addEdge(n4,n4,false);
 		l = net.getAdjacentEdgeList(n4,EdgeType.ANY_EDGE);
 		assertEquals("one adjacent edge?",1,l.size());
+	}
+
+	public void testBadNodeAdjacentEdgeList() {
+		CyNode n1 = net.addNode();
+		CyNode n2 = net.addNode();
+		CyNode n3 = new DummyCyNode(699);
+
+		CyEdge e1 = net.addEdge(n1,n2,false);
+
+		try {
+			List<CyEdge> l = net.getAdjacentEdgeList(n3,EdgeType.ANY_EDGE);
+			fail("didn't throw expected illegal arg exception");
+		} catch (IllegalArgumentException iae) { return; }
+		fail("didn't catch thrown exception");
 	}
 
 	public void testUndirectedGetAdjacentEdgeList() {
@@ -646,6 +690,35 @@ public class CyNetworkTest extends TestCase {
 		l = net.getConnectingEdgeList(n2,n3,EdgeType.ANY_EDGE);
 		assertEquals("connecting edges",1,l.size());
 		assertTrue("contains edge 2",l.contains(e2));
+
+	}
+
+	public void testBadTargetNodeConnectingEdgeList() {
+		CyNode n1 = net.addNode();
+		CyNode n2 = net.addNode();
+		CyNode n3 = new DummyCyNode(699);
+
+		CyEdge e1 = net.addEdge(n1,n2,false);
+
+		try {
+			List<CyEdge> l = net.getConnectingEdgeList(n2,n3,EdgeType.ANY_EDGE);
+			fail("didn't throw expected illegal arg exception");
+		} catch (IllegalArgumentException iae) { return; }
+		fail("didn't catch thrown exception");
+	}
+
+	public void testBadSourceNodeConnectingEdgeList() {
+		CyNode n1 = net.addNode();
+		CyNode n2 = net.addNode();
+		CyNode n3 = new DummyCyNode(699);
+
+		CyEdge e1 = net.addEdge(n1,n2,false);
+
+		try {
+			List<CyEdge> l = net.getConnectingEdgeList(n3,n1,EdgeType.ANY_EDGE);
+			fail("didn't throw expected illegal arg exception");
+		} catch (IllegalArgumentException iae) { return; }
+		fail("didn't catch thrown exception");
 	}
 
 	public void testUndirectedBasicGetConnectingEdgeList() {
@@ -692,7 +765,15 @@ public class CyNetworkTest extends TestCase {
 		assertEquals("nodes are equivalent",n1,net.getNode( n1.getIndex() ));
 		assertEquals("nodes are equivalent",n2,net.getNode( n2.getIndex() ));
 		assertEquals("nodes are equivalent",n3,net.getNode( n3.getIndex() ));
+
+		// test random index
 		assertNull("node is null ",net.getNode(72));
+
+		// test 0 index - the first node
+		assertNotNull("node is NOT null ",net.getNode(0));
+
+		// test -1 index
+		assertNull("node is null ",net.getNode(-1));
 	}
 
 	public void testGetEdge() {
@@ -705,8 +786,56 @@ public class CyNetworkTest extends TestCase {
 
 		assertEquals("edges are equivalent",e1,net.getEdge( e1.getIndex() ));
 		assertEquals("edges are equivalent",e2,net.getEdge( e2.getIndex() ));
+
+		// test random index
 		assertNull("edge is null ",net.getEdge(72));
+
+		// test 0 index - the first node
+		assertNotNull("edge is NOT null ",net.getEdge(0));
+
+		// test -1 index
+		assertNull("edge is null ",net.getEdge(-1));
 	}
+
+	
+	public void testGetCyAttributes() {
+		// As long as the object is not null and is an instance of CyAttributes, we
+		// should be satisfied.  Don't test any other properties of CyAttributes.  
+		// Leave that to the CyAttributes unit tests.
+
+		assertNotNull("cyattrs exists",net.getCyAttributes("USER")); 
+		assertTrue("cyattrs is CyAttributes",net.getCyAttributes("USER") instanceof CyAttributes);
+	}
+
+    public void testGetCyAttributesNullNamespace() {
+        try {
+            net.getCyAttributes(null);
+            fail("didn't throw a NullPointerException for null namespace");
+        } catch ( NullPointerException npe ) { return; }
+        fail("didn't catch what was thrown" );
+    }
+
+    public void testCyAttributesBadNamespace() {
+        try {
+            net.getCyAttributes("homeradfasdf");
+            fail("didn't throw a NullPointerException for null namespace");
+        } catch ( NullPointerException npe ) { return; }
+        fail("didn't catch what was thrown");
+    }
+
+	public void testGetCyAttributesManagers() {
+		assertNotNull( net.getNetworkCyAttributesManagers() );
+		assertNotNull( net.getNodeCyAttributesManagers() );
+		assertNotNull( net.getEdgeCyAttributesManagers() );
+
+		assertTrue( net.getNetworkCyAttributesManagers() instanceof Map );
+		assertTrue( net.getNodeCyAttributesManagers() instanceof Map );
+		assertTrue( net.getEdgeCyAttributesManagers() instanceof Map );
+	}
+
+	// 
+	// Internal objects used for testing... 
+	// 
 
 	private static int suidBase = 0;
 	private class SUID implements GraphObject {
