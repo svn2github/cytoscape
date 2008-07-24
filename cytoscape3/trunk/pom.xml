@@ -129,7 +129,8 @@
 						<param>--vmOptions=-Xbootclasspath/a:bundles/com.jgoodies.looks_2.1.2.jar:bundles/cytoscape-sun.jhall_1.0.0.jar</param>
 					</provision>
 				</configuration>
-				<executions>
+				
+				<!-- executions>
 					<execution>
 						<id>ide-support</id>
 						<phase>package</phase>
@@ -137,7 +138,8 @@
 							<goal>eclipse</goal>
 						</goals>
 					</execution>
-				</executions>
+				</executions -->
+				
 			</plugin>
 			<!--
 				<plugin> <artifactId>maven-assembly-plugin</artifactId>
