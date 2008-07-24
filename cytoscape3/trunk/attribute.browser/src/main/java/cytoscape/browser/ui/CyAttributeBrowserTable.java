@@ -156,7 +156,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private StringSelection stsel;
 	private DataTableModel tableModel;
 	private DataObjectType objectType;
-	private Map<String, Map<String, String>> linkoutProps;
+	private Map<String, Map<String, String>> linkoutProps = new HashMap<String,Map<String,String>>();
 	private static final Font BORDER_FONT = new Font("Sans-serif", Font.BOLD, 12);
 	
 	// For turning off listener during session loading
