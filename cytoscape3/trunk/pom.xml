@@ -64,9 +64,20 @@
 			<organizationUrl>http://ucsd.edu</organizationUrl>
 			<roles>
 				<role>Architect</role>
-				<role>Developer</role>
+				<role>Core Developer</role>
 			</roles>
 			<timezone>-8</timezone>
+		</developer>
+		<developer>
+			<id>kono</id>
+			<name>Keiichiro Ono</name>
+			<email>kono at ucsd dot edu</email>
+			<url>http://chianti.ucsd.edu/kono</url>
+			<organization>U.C. San Diego</organization>
+			<timezone>-8</timezone>
+			<roles>
+				<role>Core Developer</role>
+			</roles>
 		</developer>
 	</developers>
 	<modelVersion>4.0.0</modelVersion>
@@ -82,7 +93,7 @@
 	</properties>
 	<packaging>pom</packaging>
 	<repositories>
-       <!-- for biojava -->
+    <!-- for biojava -->
 		<repository>
 			<id>wwmm</id>
 			<snapshots>
@@ -91,8 +102,7 @@
 			<name>Murray-Rust Research Group</name>
 			<url>http://wwmm.ch.cam.ac.uk/maven2</url>
 		</repository>
-    
-	   <!-- for jars I can't find anywhere else -->
+    	<!-- for jars I can't find anywhere else -->
 		<repository>
 			<id>chianti</id>
 			<snapshots>
@@ -101,12 +111,28 @@
 			<name>Cytoscape Internal Repository</name>
 			<url>http://chianti.ucsd.edu/maven2</url>
 		</repository>
-
-		<!-- for freehep jars -->
+    	<!-- for freehep jars -->
 		<repository>
 			<id>freehep-maven</id>
 			<name>Maven FreeHEP</name>
 			<url>http://java.freehep.org/maven2</url>
+		</repository>
+		<!-- SpringSource OSGi Bundle Repository -->
+		<repository>
+			<id>com.springsource.repository.bundles.release</id>
+			<name>SpringSource OSGi Bundle Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource OSGi Bundle Repository</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 	<build>
@@ -129,17 +155,10 @@
 						<param>--vmOptions=-Xbootclasspath/a:bundles/com.jgoodies.looks_2.1.2.jar:bundles/cytoscape-sun.jhall_1.0.0.jar</param>
 					</provision>
 				</configuration>
-				
-				<!-- executions>
-					<execution>
-						<id>ide-support</id>
-						<phase>package</phase>
-						<goals>
-							<goal>eclipse</goal>
-						</goals>
-					</execution>
-				</executions -->
-				
+				<!--
+					executions> <execution> <id>ide-support</id> <phase>package</phase>
+					<goals> <goal>eclipse</goal> </goals> </execution> </executions
+				-->
 			</plugin>
 			<!--
 				<plugin> <artifactId>maven-assembly-plugin</artifactId>
