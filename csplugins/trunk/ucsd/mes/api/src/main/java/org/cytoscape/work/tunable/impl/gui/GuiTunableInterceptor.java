@@ -7,7 +7,6 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import org.cytoscape.work.tunable.*;
-import org.cytoscape.work.Tunable;
 
 /**
  * This would presumably be service. 

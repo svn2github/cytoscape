@@ -5,7 +5,6 @@ import java.lang.annotation.*;
 import java.util.*;
 import org.apache.commons.cli.*;
 import org.cytoscape.work.tunable.*;
-import org.cytoscape.work.Tunable;
 
 /**
  * This would presumably be a Service.

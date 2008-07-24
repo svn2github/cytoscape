@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 
 /**
  * An annotation used to identifiy fields in an object that constitute values
- * which can be modified by a {@link TunableInterceptor}.  The name of the 
+ * which can be modified by a {@link org.cytoscape.work.tunable.TunableInterceptor}.  The name of the 
  * annotation is the name of the {@link java.lang.reflect.Field} being annotated.
  */
 @Retention(RetentionPolicy.RUNTIME) // makes this availabe for reflection

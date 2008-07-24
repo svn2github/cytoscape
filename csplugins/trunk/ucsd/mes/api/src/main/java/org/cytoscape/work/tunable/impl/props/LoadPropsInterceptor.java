@@ -4,7 +4,6 @@ import java.lang.reflect.*;
 import java.lang.annotation.*;
 import java.util.*;
 import org.cytoscape.work.tunable.*;
-import org.cytoscape.work.Tunable;
 
 /**
  * This would presumably be service. 

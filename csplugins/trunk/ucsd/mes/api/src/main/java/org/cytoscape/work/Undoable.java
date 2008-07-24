@@ -5,7 +5,7 @@ package org.cytoscape.work;
 /** 
  * A Cytoscape undo interface.  This is meant to be implemented by {@link Command}s
  * such the operation of the command can be undone.  This is a simplified version of
- * {@link javas.swing.undo.UndoableEdit} suitable for non-Swing environments. 
+ * {@link javax.swing.undo.UndoableEdit} suitable for non-Swing environments. 
  */
 public interface Undoable {
 

@@ -1,6 +1,5 @@
 package org.cytoscape.view.model;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 
