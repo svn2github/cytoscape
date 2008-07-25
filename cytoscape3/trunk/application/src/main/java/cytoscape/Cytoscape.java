@@ -1669,6 +1669,14 @@ public abstract class Cytoscape {
 		view.setGraphLOD(new CyGraphLOD());
 		view.setIdentifier(network.getIdentifier());
 		getNetworkViewMap().put(network.getIdentifier(), view);
+
+		// TODO:  Evaluate this hack.  It is done to make sure that current network view
+		// is set for listeners of NETWORK_VIEW_CREATED.  Apparently in Cytoscape 2.6
+		// the NetworkViewManager heard the CREATED event first, and was able to set the
+		// value in time for others.  Not so in 3.0.  
+		// Ideally we would just get rid of getCurrentNetworkView().
+		setCurrentNetworkView(network.getIdentifier());
+
 		setSelectionMode(Cytoscape.getSelectionMode(), view);
 
 		if (vs != null) {
