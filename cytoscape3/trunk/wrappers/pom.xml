@@ -14,7 +14,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>cytoscape-temp.swingx</module>
-		<module>commons-lang</module>
 		<module>org.freehep.export</module>
 		<module>org.freehep.graphics2d</module>
 		<module>org.freehep.graphicsio</module>
