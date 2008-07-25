@@ -26,7 +26,6 @@
 		<module>org.freehep.swing</module>
 		<module>org.freehep.util</module>
 		<module>org.freehep.xml</module>
-		<module>com.lowagie.itext</module>
 		<module>com.jgoodies.looks</module>
 		<module>biojava</module>
 		<module>javax.activation</module>
