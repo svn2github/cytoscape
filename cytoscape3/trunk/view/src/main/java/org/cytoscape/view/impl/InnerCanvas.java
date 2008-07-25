@@ -1373,19 +1373,12 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	protected synchronized void processNodeContextMenuEvent(MouseEvent event) {
 		NodeView nv = m_view.getPickedNodeView(event.getPoint());
 
-		//         System.out.println ("   over selected nodeview: " + nv);
 		if (nv != null) {
 			String nodeLabel = nv.getNode().getIdentifier();
 			JPopupMenu menu = new JPopupMenu(nodeLabel);
 			menu.setLabel(nodeLabel);
 
-			Enumeration e = nodeContextMenuListeners.elements();
-
-			while (e.hasMoreElements()) {
-				NodeContextMenuListener l = (NodeContextMenuListener) e.nextElement();
-				System.out.println("Adding context menu items for NodeContextMenuListener: " + l);
-
-				//                              EventListener l = (EventListener) e.nextElement();
+			for ( NodeContextMenuListener l : nodeContextMenuListeners ) {
 				l.addNodeContextMenuItems(nv, menu);
 			}
 
@@ -1402,11 +1395,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			JPopupMenu menu = new JPopupMenu(edgeLabel);
 			menu.setLabel(edgeLabel);
 
-			Enumeration e = edgeContextMenuListeners.elements();
-
-			while (e.hasMoreElements()) {
-				EdgeContextMenuListener l = (EdgeContextMenuListener) e.nextElement();
-				System.out.println("Adding context menu items for EdgeContextMenuListener: " + l);
+			for ( EdgeContextMenuListener l : edgeContextMenuListeners ) {	
 				l.addEdgeContextMenuItems(ev, menu);
 			}
 
