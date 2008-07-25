@@ -39,11 +39,6 @@
 		</dependency>
         <!-- gui stuff -->
 		<dependency>
-			<groupId>net.java.dev.swing-layout</groupId>
-			<artifactId>swing-layout</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-		<dependency>
 			<groupId>cytoscape-temp</groupId>
 			<artifactId>l2fprod-common-all</artifactId>
 			<version>1.0</version>
@@ -109,9 +104,9 @@
 			<version>2.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.lowagie</groupId>
-			<artifactId>itext</artifactId>
-			<version>2.0.6</version>
+			<groupId>com.lowagie.text</groupId>
+			<artifactId>com.springsource.com.lowagie.text</artifactId>
+			<version>2.0.8</version>
 		</dependency>
 
         <!-- look and feel -->
