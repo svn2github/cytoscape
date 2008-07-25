@@ -29,7 +29,6 @@
 		<module>com.jgoodies.looks</module>
 		<module>biojava</module>
 		<module>com.sun.xml.fastinfoset.FastInfoset</module>
-		<module>concurrent</module>
 		<module>cytoscape-sun.jhall</module>
 		<module>com.sun.xml.bind.jaxb-xjc</module>
 		<module>net.java.dev.swing-layout</module>
