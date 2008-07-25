@@ -28,7 +28,6 @@
 		<module>org.freehep.xml</module>
 		<module>com.jgoodies.looks</module>
 		<module>biojava</module>
-		<module>javax.activation</module>
 		<module>com.sun.xml.fastinfoset.FastInfoset</module>
 		<module>concurrent</module>
 		<module>cytoscape-sun.jhall</module>
