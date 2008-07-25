@@ -39,7 +39,6 @@
 		<module>com.sun.xml.bind.jaxb-impl</module>
 		<module>javax.xml.jaxb-api</module>
 		<module>javax.xml.stream.stax-api</module>
-		<module>commons-httpclient</module>
 		<module>cytoscape-temp.sbml2</module>
 		<module>colt</module>
 	</modules>
