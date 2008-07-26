@@ -92,7 +92,12 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 		// First half has model number -- get the number
 		int numberOffset = split1[0].indexOf('#');
 		String model = split1[0].substring(numberOffset+1);
-		this.modelNumber = (new Float(model)).floatValue();
+		try {
+			this.modelNumber = (new Float(model)).floatValue();
+		} catch (Exception e) {
+			cytoscape.logger.CyLogger.getLogger(ChimeraResidue.class).error("Unexpected return from Chimera in ChimeraResidue: "+model);
+			this.modelNumber = -1;
+		}
 
 		// Second half has residue info: index & type
 		String[] rTokens = split1[1].split(" ");

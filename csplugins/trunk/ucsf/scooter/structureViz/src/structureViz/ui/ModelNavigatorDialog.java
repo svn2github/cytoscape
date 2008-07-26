@@ -86,6 +86,7 @@ public class ModelNavigatorDialog
 	private static final int REFRESH = 12;
 	private static final int CLEAR = 13;
 	private static final int ALIGN = 14;
+	private static final int FINDCLASH = 15;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private boolean isCollapsing = false;
@@ -376,7 +377,7 @@ public class ModelNavigatorDialog
 		else
 			alignMenu.setEnabled(false);
 		JMenu clashMenu = new JMenu("Clash Detection");
-		addMenuItem(clashMenu, "Find Clashes", COMMAND, "findclash sel");
+		addMenuItem(clashMenu, "Find Clashes", FINDCLASH, "findclash sel");
 		addMenuItem(clashMenu, "Clear Clash", COMMAND, "~findclash");
 		chimeraMenu.add(clashMenu);
 
@@ -454,7 +455,7 @@ public class ModelNavigatorDialog
 																	int type, String command) {
 		JMenuItem menuItem = new JMenuItem(label);
 		{
-			MenuActionListener va = new MenuActionListener(type, command);
+			MenuActionListener va = new MenuActionListener(this, type, command);
 			menuItem.addActionListener(va);
 		}
 		menu.add(menuItem);
@@ -479,7 +480,7 @@ public class ModelNavigatorDialog
 			JMenuItem menuItem = new JMenuItem(label);
 			{
 				String command = "preset apply "+com[0];
-				MenuActionListener va = new MenuActionListener(COMMAND, command);
+				MenuActionListener va = new MenuActionListener(this, COMMAND, command);
 				menuItem.addActionListener(va);
 			}
 			menu.add(menuItem);
@@ -496,6 +497,7 @@ public class ModelNavigatorDialog
 	private class MenuActionListener extends AbstractAction {
 		int type;
 		String command = null;
+		ModelNavigatorDialog dialog;
 
 		/**
 	 	 * Create a new MenuActionListener
@@ -504,9 +506,10 @@ public class ModelNavigatorDialog
 		 * or the residue display type
 		 * @param command the command to execute when this menu is selected
 		 */
-		public MenuActionListener (int type, String command) { 
+		public MenuActionListener (ModelNavigatorDialog dialog, int type, String command) { 
 			this.type = type; 
 			this.command = command;
+			this.dialog = dialog;
 		}
 
 		/**
@@ -532,6 +535,13 @@ public class ModelNavigatorDialog
 				chimeraObject.refresh();
 			} else if (type == ALIGN) {
 				launchAlignDialog();
+			} else if (type == FINDCLASH) {
+				if (selectedObjects.size() > 0) {
+					chimeraObject.select(command);
+				} else {
+ 					JOptionPane.showMessageDialog(dialog, "You must select something to find classes", 
+					                              "Nothing Selected", JOptionPane.ERROR_MESSAGE); 
+				}
 			} else {
 				residueDisplay = type;
 				treeModel.setResidueDisplay(type);

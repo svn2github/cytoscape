@@ -333,8 +333,13 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		int hash = inputLine.indexOf('#');
 		int space = inputLine.indexOf(' ',hash);
 		// model number is between hash+1 and space
-		Float modelNumber = new Float(inputLine.substring(hash+1,space));
-		return modelNumber.floatValue();
+		try {
+			Float modelNumber = new Float(inputLine.substring(hash+1,space));
+			return modelNumber.floatValue();
+		} catch (Exception e) {
+			cytoscape.logger.CyLogger.getLogger(ChimeraResidue.class).error("Unexpected return from Chimera: "+inputLine);
+			return -1;
+		}
 	}
 
 	/**
