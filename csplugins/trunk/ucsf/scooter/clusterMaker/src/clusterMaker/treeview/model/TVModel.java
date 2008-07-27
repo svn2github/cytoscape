@@ -539,6 +539,8 @@ public class TVModel extends Observable implements DataModel {
 	class TVDataMatrix implements DataMatrix {
 		
 	    private double [] exprData = null;
+		private double maxValue = Double.MIN_VALUE;
+		private double minValue = Double.MAX_VALUE;
 
 		public void clear() {
 			exprData = null;
@@ -556,10 +558,14 @@ public class TVModel extends Observable implements DataModel {
 		
 		public void setExprData(double[] newData) {
 			exprData = newData;
+			for (int i = 0; i < newData.length; i++) {
+				updateMinMax(newData[i]);
+			}
 		}
 
 		public void setValue(double value, int x, int y)
 		{
+			updateMinMax(value);
 			exprData[x + y*getNumCol()] = value;
 			setChanged();
 		}
@@ -573,6 +579,23 @@ public class TVModel extends Observable implements DataModel {
 		public int getNumUnappendedCol()
 		{
 			return appendIndex == -1?getNumCol():appendIndex;
+		}
+
+		public double getMaxValue() {
+			return maxValue;
+		}
+
+		public double getMinValue() {
+			return minValue;
+		}
+
+		private void updateMinMax(double value) {
+			if (value != DataModel.NODATA) {
+				if (value < minValue) 
+					minValue = value;
+				else if (value > maxValue)
+					maxValue = value;
+			}
 		}
 	}
 
@@ -835,5 +858,9 @@ public class TVModel extends Observable implements DataModel {
 	}
 	public void setLoaded(boolean loaded) {
 		this.loaded = loaded;
+	}
+
+	public boolean isSymmetrical() {
+		return false;
 	}
 }

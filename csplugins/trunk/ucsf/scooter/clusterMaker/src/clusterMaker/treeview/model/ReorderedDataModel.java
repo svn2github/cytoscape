@@ -127,7 +127,7 @@ public class ReorderedDataModel extends Observable implements DataModel {
 					return i;
 			return -1;
 		}
-		
+
 		public void addObserver(Observer o) {
 			parentHeaderInfo.addObserver(o);
 		}
@@ -375,4 +375,6 @@ public class ReorderedDataModel extends Observable implements DataModel {
 	public boolean isLoaded() {
 		return true;
 	}
+
+	public boolean isSymmetrical() { return parent.isSymmetrical(); }
 }

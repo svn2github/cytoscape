@@ -25,6 +25,8 @@ package clusterMaker.treeview.dendroview;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -58,6 +60,8 @@ import clusterMaker.treeview.model.AtrTVModel;
 import clusterMaker.treeview.model.DataModelWriter;
 import clusterMaker.treeview.model.ReorderedDataModel;
 import clusterMaker.treeview.model.TVModel;
+
+import clusterMaker.ui.NetworkColorDialog;
 
 /**
  *  This class encapsulates a dendrogram view, which is the classic Eisen
@@ -691,7 +695,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 
 		// The Settings button will bring up the Pixel Settings dialog
 		{
-			JButton settingsButton = new JButton("Settings...");
+			JButton settingsButton = createButton("Settings...");
 			settingsButton.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent actionEvent) {
@@ -717,7 +721,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 
 		// The Save Data button brings up a file dialog and saves the .CDT, .GTR, and .ATR files
 		{
-			JButton saveButton = new JButton("Save Data...");
+			JButton saveButton = createButton("Save Data...");
 			saveButton.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent actionEvent) {
@@ -746,13 +750,69 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		// The Export Graphics button brings up a new dialog that allows the user
 		// to produce images for publication
 		{
-			JButton exportButton = new JButton("Export Graphics...");
+			JButton exportButton = createButton("Export Graphics...");
 			buttonBox.add(exportButton);
+		}
+
+		System.out.println(arrayIndex);
+		if (dataModel.aidFound()) {
+			JButton flipButton = createButton("Flip Tree Nodes");
+			flipButton.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent actionEvent) {
+						flipSelectedATRNode();
+					}
+				});
+			buttonBox.add(flipButton);
+		}
+
+		// Map the visual properties onto the network
+		{
+			JButton vizMapButton = createButton("Map Colors Onto Network...");
+    	vizMapButton.addActionListener(new ActionListener() {
+      	public void actionPerformed(ActionEvent evt) {
+					// Get the colors from the view
+					ColorExtractor ce = null;
+					try {
+						ce = ((DoubleArrayDrawer) arrayDrawer).getColorExtractor();
+					} catch (Exception e) {
+						// this shouldn't happen at this point!
+						ce = new ColorExtractor();
+						ce.setDefaultColorSet(colorPresets.getDefaultColorSet());
+					}
+
+					List<String>attributes = new ArrayList();
+					if (dataModel.isSymmetrical()) {
+					} else {
+						// Get the node attributes
+						int[] selections = arraySelection.getSelectedIndexes();
+						HeaderInfo arrayInfo = dataModel.getArrayHeaderInfo();
+						if (selections.length >= 1) {
+							for (int i = 0; i < selections.length; i++) {
+								attributes.add(arrayInfo.getHeader(selections[i])[0]);
+							}
+						} else {
+							// Nothing selected, add them all
+							int count = arrayInfo.getNumHeaders();
+							for (int i = 0; i < count; i++) {
+								attributes.add(arrayInfo.getHeader(i)[0]);
+							}
+						}
+					}
+
+					// Bring up the dialog
+					NetworkColorDialog ncd = new NetworkColorDialog(viewFrame, ce, attributes, 
+					                                                dataModel.getDataMatrix().getMinValue(),
+					                                                dataModel.getDataMatrix().getMaxValue(),
+					                                                dataModel.isSymmetrical());
+				}
+			});
+			buttonBox.add(vizMapButton);
 		}
 
 		// The Close button exits clusterViz
 		{
-			JButton closeButton = new JButton("Close");
+			JButton closeButton = createButton("Close");
     	closeButton.addActionListener(new ActionListener() {
       	// called when close button hit
       	public void actionPerformed(ActionEvent evt) {
@@ -793,6 +853,15 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 			}
 			return null;
 	  }
+
+		/**
+		 * Routine to create a button for the button box
+		 */
+
+		private JButton createButton(String label) {
+			JButton button = new JButton("<html><b style=\"font-size: 80%;\">"+label+"</b></html>");
+			return button;
+		}
 	  
 	  /**
 	   * show summary of the specified indexes

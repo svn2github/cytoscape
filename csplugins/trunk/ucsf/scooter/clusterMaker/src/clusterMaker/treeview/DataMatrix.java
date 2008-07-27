@@ -75,5 +75,19 @@ public interface DataMatrix {
 	 * @return    The number of columns (arrays) in this data matrix before anything was appended.
 	 */
 	int getNumUnappendedCol();
+
+	/**
+	 * Return the maximum, non-empty value in this matrix. 
+	 *
+	 * @return    The maximum value
+	 */
+	double getMaxValue();
+
+	/**
+	 * Return the minimum, non-empty value in this matrix. 
+	 *
+	 * @return    The minimum value
+	 */
+	double getMinValue();
 }
 

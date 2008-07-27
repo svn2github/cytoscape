@@ -147,5 +147,11 @@ public interface DataModel {
 	 * @return true if data model has been sucessfully loaded.
 	 */
 	public boolean isLoaded();
+
+	/**
+	 * 
+	 * @return true if data model represents a symmetrical array
+	 */
+	public boolean isSymmetrical();
 }
 

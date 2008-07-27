@@ -80,7 +80,8 @@ import javax.swing.text.Position;
  * various settings for cluster algorithms.  Each ClusterAlgorithm must return a single
  * JPanel that provides all of its settings.
  */
-public class ClusterSettingsDialog extends JDialog implements ActionListener, PropertyChangeListener, ComponentListener {
+public class ClusterSettingsDialog extends JDialog 
+                                   implements ActionListener, PropertyChangeListener, ComponentListener {
 	private ClusterAlgorithm currentAlgorithm = null;
 	private ClusterViz visualizer = null;
 	private JButton vizButton = null;
@@ -99,7 +100,8 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener, Pr
 		super(Cytoscape.getDesktop(), algorithm.getName()+" Settings", false);
 		currentAlgorithm = algorithm;
 		visualizer = algorithm.getVisualizer();
-		if (visualizer != null && visualizer != algorithm) algorithm.getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (visualizer != null && visualizer != algorithm) 
+		                      algorithm.getPropertyChangeSupport().addPropertyChangeListener(this);
 		initializeOnce(); // Initialize the components we only do once
 	}
 
@@ -124,6 +126,7 @@ public class ClusterSettingsDialog extends JDialog implements ActionListener, Pr
 			                         ClusterTask.getDefaultTaskConfig() );
 		} else if (command.equals("visualize")) {
 			visualizer.startViz();
+			setVisible(false);
 		} else if (command.equals("cancel")) {
 			// Call revertSettings for each layout
 			revertAllSettings();
