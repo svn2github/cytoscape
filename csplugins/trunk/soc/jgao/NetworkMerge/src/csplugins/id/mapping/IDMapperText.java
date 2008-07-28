@@ -38,8 +38,13 @@ package csplugins.id.mapping;
 
 import csplugins.id.mapping.model.IDMappingList;
 
+import csplugins.id.mapping.reader.IDMappingTableReader;
+
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
+
+import java.io.IOException;
 
 import java.net.URL;
 
@@ -51,14 +56,20 @@ public class IDMapperText implements IDMapperFile {
         private URL url;
         private IDMappingList idMappingList;
 
-        public IDMapperText() {
-                url = null;
+        public IDMapperText(final URL url) {
+                this.url = url;
                 idMappingList = null;
         }
 
-        public IDMapperText(final URL url) {
-                this.url = url;
-                //idMappingList
+        /**
+         * Read ID Mapping from file
+         *
+         */
+        @Override
+        public void readIDMapping() throws IOException {
+                IDMappingTableReader reader = new IDMappingTableReader(url);
+                reader.readTable();
+                idMappingList = reader.getIDMappingList();
         }
 
         /**
@@ -78,7 +89,13 @@ public class IDMapperText implements IDMapperFile {
          */
         @Override
         public Map<String, Set<String>> mapID(Set<String> ids, String srcType, String tgtType) {
-                return null;
+                if (ids==null || srcType==null || tgtType==null) {
+                        throw new java.lang.NullPointerException();
+                }
+                if (idMappingList==null) {
+                        return null;
+                }
+                return idMappingList.mapID(ids, srcType, tgtType);
         }
 
         /*
@@ -87,7 +104,12 @@ public class IDMapperText implements IDMapperFile {
         */
         @Override
         public Set<String> getSupportedSrcIDType() {
-                return null;
+                if (idMappingList==null) {
+                        // TODO return null or empty Set?
+                        //return null;
+                        return new HashSet<String>(0);
+                }
+                return idMappingList.getIDTypes();
         }
 
         /*
@@ -96,26 +118,12 @@ public class IDMapperText implements IDMapperFile {
         */
         @Override
         public Set<String> getSupportedTgtIDType() {
-                return null;
-        }
-
-        /**
-         *
-         * @return file URL
-         */
-        @Override
-        public URL getURL() {
-                return url;
-        }
-
-        /**
-         *
-         * @param url
-         *      file URL
-         */
-        @Override
-        public void setURL(URL url) {
-                this.url = url;
+                if (idMappingList==null) {
+                        // TODO return null or empty Set?
+                        //return null;
+                        return new HashSet<String>(0);
+                }
+                return idMappingList.getIDTypes();
         }
 
 }

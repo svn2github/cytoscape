@@ -36,6 +36,13 @@
 
 package csplugins.id.mapping.reader;
 
+import csplugins.id.mapping.model.IDMappingList;
+import csplugins.id.mapping.model.IDMappingListImpl;
+
+import java.util.List;
+import java.util.Vector;
+import java.util.Iterator;
+
 import java.io.IOException;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -49,12 +56,79 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 public class ExcelIDMappingSheetReader extends IDMappingTableReader {
         private final HSSFSheet sheet;
 
+
         public ExcelIDMappingSheetReader(final HSSFSheet sheet) {
                 super(null);
                 this.sheet = sheet;
         }
 
+        @Override
         public void readTable() throws IOException {
-                throw new IOException();
+		idMappings = new IDMappingListImpl();
+
+                // add types
+		HSSFRow row = sheet.getRow(0);
+                if (row == null) {
+                        System.err.println("Empty file");
+                        return;
+                }
+                String[] types = createElementStringList(row);
+                if (types==null || types.length==0) {
+                        return;
+                }
+
+                for (String type : types) {
+                        if (type==null || type.length()==0) {
+                                return;
+                        }
+                        idMappings.addIDType(type);
+                }
+
+                // read each ID mapping (line)
+                int rowCount = 1;
+                while ((row = sheet.getRow(rowCount))!=null) {
+                        rowCount++;
+                        String[] strs = createElementStringList(row);
+                        if (strs.length>types.length) {
+                                System.err.println("The number of ID is larger than the number of types at row "+rowCount);
+                                continue;
+                        }
+
+                        this.addIDMapping(types,strs);
+                }
+
         }
+
+        /**
+	 * For a given Excell row, convert the cells into String.
+	 *
+	 * @param row
+	 * @return
+	 */
+	private String[] createElementStringList(HSSFRow row) {
+                List<String> cells = new Vector<String>();
+                String nullStr = "";
+
+		Iterator<HSSFCell> itCell = row.cellIterator();
+                while (itCell.hasNext()) {
+                        HSSFCell cell = itCell.next();
+
+			if (cell == null) {
+				cells.add(nullStr);
+			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+				cells.add(cell.getRichStringCellValue().getString());
+			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				cells.add(Double.toString(cell.getNumericCellValue()));
+			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+				cells.add(Boolean.toString(cell.getBooleanCellValue()));
+			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK) {
+				cells.add(nullStr);
+			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
+				cells.add(nullStr);
+				System.out.println("Error found when reading a cell!");
+			}
+		}
+
+		return cells.toArray(new String[0]);
+	}
 }

@@ -27,6 +27,7 @@
         <pathelement location="lib/giny.jar"/>
         <pathelement location="lib/cytoscape.jar"/>
         <pathelement location="lib/cytoscape-task.jar"/>
+      	<pathelement location="lib/poi-3.1-FINAL-20080629.jar"/>
       </classpath>
     </javac>
   </target>

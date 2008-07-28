@@ -51,10 +51,10 @@ import java.util.Iterator;
  */
 public class IDMappingListImpl implements IDMappingList {
 
-        private List<String> idTypes;
+        private Set<String> idTypes;
 
         // List of map fromid type to set of ids
-        // Use index instead of actual id type to save memory?
+        // TODO: Use index instead of actual id type to save memory?
         private List<Map<String,Set<String>>> idMappings;
         
         // map key: id type; value: map of id to index in the list
@@ -64,7 +64,7 @@ public class IDMappingListImpl implements IDMappingList {
 
 
         public IDMappingListImpl() {
-                idTypes = new Vector<String>();
+                idTypes = new HashSet<String>();
                 idMappings = new Vector<Map<String,Set<String>>>();
                 mapTypeIDIndex =  new HashMap<String,Map<String,Integer>>();
         }
@@ -77,7 +77,7 @@ public class IDMappingListImpl implements IDMappingList {
          *      the set of supported ID types
          */
         @Override
-        public List<String> getIDTypes() {
+        public Set<String> getIDTypes() {
                 return idTypes;
         }
 
@@ -189,7 +189,7 @@ public class IDMappingListImpl implements IDMappingList {
                 Map<String,Set<String>> map = getIDMapping(i);
 
                 Set<String> ids = map.get(type);
-                if (ids.isEmpty()) {
+                if (ids==null || ids.isEmpty()) {
                         return null;
                 }
 
@@ -346,7 +346,8 @@ public class IDMappingListImpl implements IDMappingList {
                 }
 
                 if (!this.isIDTypeContained(srcType) || !this.isIDTypeContained(tgtType)) {
-                        throw new java.lang.IllegalArgumentException("'"+srcType+"' or '"+tgtType+"' does not supported.");
+                        return null;
+                        //throw new java.lang.IllegalArgumentException("'"+srcType+"' or '"+tgtType+"' does not supported.");
                 }
 
                 Map<String, Set<String>> return_this = new HashMap<String, Set<String>>(ids.size());

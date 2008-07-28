@@ -36,14 +36,43 @@
 
 package csplugins.id.mapping;
 
+import csplugins.id.mapping.model.IDMappingList;
+
+import csplugins.id.mapping.reader.ExcelIDMappingSheetReader;
+import csplugins.id.mapping.reader.IDMappingTableReader;
+
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
+
+import java.io.IOException;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 /**
  * class for ID mapping from MS Excel files
  * 
  */ 
 public class IDMapperExcel implements IDMapperFile {
+        private final HSSFSheet sheet;
+        private IDMappingList idMappingList;
+
+        public IDMapperExcel(final HSSFSheet sheet) {
+                this.sheet = sheet;
+                idMappingList = null;
+        }
+
+        /**
+         * Read ID Mapping from file
+         *
+         */
+        @Override
+        public void readIDMapping() throws IOException {
+                IDMappingTableReader reader = new ExcelIDMappingSheetReader(sheet);
+                reader.readTable();
+                idMappingList = reader.getIDMappingList();
+        }
+
         /**
          * Supports one-to-one mapping and one-to-many mapping.
          *
@@ -59,23 +88,43 @@ public class IDMapperExcel implements IDMapperFile {
          *
          * @throws NullPointerException if ids or srcType or tgtType is null
          */
+        @Override
         public Map<String, Set<String>> mapID(Set<String> ids, String srcType, String tgtType) {
-                return null;
+                if (ids==null || srcType==null || tgtType==null) {
+                        throw new java.lang.NullPointerException();
+                }
+                if (idMappingList==null) {
+                        return null;
+                }
+                return idMappingList.mapID(ids, srcType, tgtType);
         }
 
         /*
         * @return supported source ID types
         *
         */
+        @Override
         public Set<String> getSupportedSrcIDType() {
-        return null;
+                if (idMappingList==null) {
+                        // TODO return null or empty Set?
+                        //return null;
+                        return new HashSet<String>(0);
+                }
+                return idMappingList.getIDTypes();
         }
 
         /*
         * @return supported target ID types
         *
         */
+        @Override
         public Set<String> getSupportedTgtIDType() {
-        return null;
+                if (idMappingList==null) {
+                        // TODO return null or empty Set?
+                        //return null;
+                        return new HashSet<String>(0);
+                }
+                return idMappingList.getIDTypes();
         }
+
 }

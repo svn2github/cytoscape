@@ -36,7 +36,6 @@
 
 package csplugins.id.mapping.model;
 
-import java.util.List;
 import java.util.Set;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ public interface IDMappingList {
          * @return
          *      the set of supported ID types
          */
-        public List<String> getIDTypes();
+        public Set<String> getIDTypes();
 
         /**
          * Add an new ID type

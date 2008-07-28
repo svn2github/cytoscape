@@ -16,6 +16,8 @@ import csplugins.id.mapping.IDMapperFile;
 import csplugins.id.mapping.IDMapperText;
 import csplugins.id.mapping.IDMapperExcel;
 
+import cytoscape.util.FileUtil;
+
 import java.util.Set;
 import java.util.Map;
 import java.util.Iterator;
@@ -27,12 +29,23 @@ import java.awt.event.MouseEvent;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 
+import java.io.IOException;
+import java.io.File;
+
+import java.net.URL;
+import java.net.MalformedURLException;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
  *
  * @author gjj
  */
 public class IDMapperFilePanel extends javax.swing.JPanel {
+
+    private static final String EXCEL_EXT = ".xls";
 
     /** Creates new form IDMapperTextPanel */
     public IDMapperFilePanel(final Frame frame,
@@ -214,41 +227,26 @@ public class IDMapperFilePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_textFileTextFieldKeyTyped
 
     private void textFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFileButtonActionPerformed
-            //TODO: use CyFileFilter
-            javax.swing.JFileChooser fc = new javax.swing.JFileChooser(".");
-            fc.setDialogTitle("Select a ID mapping file...");
-            int returnVal = fc.showOpenDialog(this);
-            if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
-                    java.io.File file = fc.getSelectedFile();
-                    String filePath = file.getParent() + java.io.File.separator + file.getName();
-                    textFileTextField.setText(filePath);
-            }
-/*
-            javax.jnlp.FileOpenService fos = null;
-            javax.jnlp.FileContents fileContents = null;
+            File source = FileUtil.getFile("Select a ID mapping file", FileUtil.LOAD);
+            if (source!=null) {
+                    try {
+                            URL url = source.toURI().toURL();
+                            String strURL = url.toString();
+                            textFileTextField.setText(strURL);
 
-            try {
-                fos = (javax.jnlp.FileOpenService)javax.jnlp.ServiceManager.
-                          lookup("javax.jnlp.FileOpenService");
-            } catch (javax.jnlp.UnavailableServiceException exc) {
-                exc.printStackTrace();
+                            // TODO: MOVE THIS TO TEXTFIELD CHANGED
+                            if (strURL.endsWith(EXCEL_EXT)) {
+                                    POIFSFileSystem excelIn = new POIFSFileSystem(url.openStream());
+                                    HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+                                    idMapper = new IDMapperExcel(wb.getSheetAt(0)); //TODO MULTIPLE SHEETS                                    
+                            } else {
+                                    idMapper = new IDMapperText(url);
+                            }
+                            idMapper.readIDMapping(); // TODO: use task
+                    } catch(IOException e) {
+                            e.printStackTrace();
+                    }
             }
-
-            if (fos != null) {
-                try {
-                    fileContents = fos.openFileDialog(null, null);
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                }
-            }
-
-            if (fileContents != null) {
-                try {
-                   textFileTextField.setText(fileContents.getName());
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                }
-            }//*/
 
             updateGoButtonEnable();
     }//GEN-LAST:event_textFileButtonActionPerformed
@@ -268,7 +266,7 @@ public class IDMapperFilePanel extends javax.swing.JPanel {
                     goButton.setEnabled(false);
                     return;
                 }
-            
+
                 Iterator<String> itNet = selectedNetworkAttributeIDType.keySet().iterator();
                 while (itNet.hasNext()) {
                     String network = itNet.next();
@@ -282,10 +280,10 @@ public class IDMapperFilePanel extends javax.swing.JPanel {
                         }
                     }
                 }
-            
+
 
             goButton.setToolTipText(null);
-            goButton.setEnabled(true);    
+            goButton.setEnabled(true);
         }
 
 
@@ -308,3 +306,5 @@ public class IDMapperFilePanel extends javax.swing.JPanel {
         private IDMapperFile idMapper;
         private Frame frame;
 }
+
+

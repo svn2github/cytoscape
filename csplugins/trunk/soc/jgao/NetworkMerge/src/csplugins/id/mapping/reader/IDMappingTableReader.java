@@ -62,6 +62,9 @@ public class IDMappingTableReader implements TextTableReader {
         protected final URL sourceURL;
         protected IDMappingList idMappings;
 
+        private static final String typeSeparator = "\t";
+        private static final String idSeparator = ";";
+
         public IDMappingTableReader(final URL sourceURL) {
                 this.sourceURL = sourceURL;
                 idMappings = null;
@@ -76,7 +79,10 @@ public class IDMappingTableReader implements TextTableReader {
 
                 // add types
 		String line = bufRd.readLine();
-                String typeSeparator = "\t";
+                if (line==null) {
+                        System.err.println("Empty file");
+                        return;
+                }
                 String[] types = line.split(typeSeparator);
                 for (String type : types) {
                         if (type.length()==0) {//TODO: how to deal with consecutive separators
@@ -108,11 +114,17 @@ public class IDMappingTableReader implements TextTableReader {
                 Map<String,Set<String>> idMapping = new HashMap<String,Set<String>>();
                 for (int i=0; i<strs.length; i++) {
                         String idstr = strs[i];
-                        Set<String> ids = new HashSet<String>();
-                        String[] strids = idstr.split(";");
-                        for (String id : strids) {
-                                ids.add(id);
+                        if (idstr==null||idstr.length()==0) {
+                                continue;
                         }
+
+                        Set<String> ids = new HashSet<String>();
+                        String[] strids = idstr.split(idSeparator);
+                        for (String id : strids) {
+                                if (id!=null && id.length()!=0)
+                                        ids.add(id);
+                        }
+
                         idMapping.put(types[i], ids);
                 }
 

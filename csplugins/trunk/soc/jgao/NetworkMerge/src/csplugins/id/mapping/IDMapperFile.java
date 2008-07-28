@@ -36,7 +36,7 @@
 
 package csplugins.id.mapping;
 
-import java.net.URL;
+import java.io.IOException;
 
 /**
  * Interface for ID mapping from files
@@ -45,15 +45,10 @@ import java.net.URL;
 public interface IDMapperFile extends IDMapper {
 
         /**
+         * Read ID Mapping from file
          *
-         * @return file URL
+         * @throws IOException if it fails to read file
          */
-        public URL getURL();
+        public void readIDMapping() throws IOException;
 
-        /**
-         *
-         * @param url
-         *      file URL
-         */
-        public void setURL(URL url);
 }
