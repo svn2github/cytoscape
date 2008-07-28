@@ -91,7 +91,7 @@ public interface CyGroupViewer {
 	 * notify viewers of changes in group edges, state, or viewObject information.
 	 *
 	 * @param group the CyGroup that will be deleted.
-	 * @param CyNode the node that triggered the change
+	 * @param changedNode the node that triggered the change
 	 * @param change the change that was made (see CyGroup defines)
 	 */
 	public void groupChanged(CyGroup group, CyNode changedNode, ChangeType change);

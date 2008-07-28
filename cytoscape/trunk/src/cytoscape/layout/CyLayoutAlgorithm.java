@@ -186,7 +186,7 @@ public interface CyLayoutAlgorithm {
 	 * Lock this node.  Locking a node prevents the node
 	 * from being moved by layout algorithmes.
 	 *
-	 * @param node the node to lock
+	 * @param v the NodeView of the node to lock
 	 */
 	public void lockNode(NodeView v);
 

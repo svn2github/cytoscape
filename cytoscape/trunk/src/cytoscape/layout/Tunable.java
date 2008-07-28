@@ -182,8 +182,8 @@ import javax.swing.event.ListSelectionEvent;
  * </code></pre>
  *
  * {@link LayoutProperties} has a method {@link LayoutProperties#getTunablePanel()} that can be called to 
- * return a {@link javax.awt.JPanel} that contains all of the Tunable panels.  These are combined into
- * a dialog to allow users to set and update the values.  By using {@link #addTunableValueListener()} a
+ * return a {@link javax.swing.JPanel} that contains all of the Tunable panels.  These are combined into
+ * a dialog to allow users to set and update the values.  By using {@link #addTunableValueListener(cytoscape.layout.TunableListener)} a
  * caller can be notified when a user changes a value.
  *
  */
@@ -268,7 +268,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 	/**
 	 * Tunables of type LIST present a
 	 * user with a list of values to select
-	 * from: if the {@link MULTISELECT} flag is 
+	 * from: if the {@link #MULTISELECT} flag is 
 	 * set, the user is presented with a list 
 	 * from which multiple values can be selected, 
 	 * otherwise, the user is presented with a 
