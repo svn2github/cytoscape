@@ -186,7 +186,7 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		if (attributeArray.length == 1 && attributeArray[0].startsWith("edge.")) {
 			// Yes, symmetrical array
 			netAttributes.setListAttribute(myNetwork.getIdentifier(),EisenCluster.ARRAY_ORDER_ATTRIBUTE,Arrays.asList(nodeArray));
-			netAttributes.setAttribute(myNetwork.getIdentifier(),EisenCluster.CLUSTER_EDGE_ATTRIBUTE, attributeArray[0].substring(5));
+			netAttributes.setAttribute(myNetwork.getIdentifier(),EisenCluster.CLUSTER_EDGE_ATTRIBUTE, attributeArray[0]);
 		} else {
 			for (int i = 0; i < attributeArray.length; i++) {
 				attributeArray[i] = attributeArray[i].substring(5);

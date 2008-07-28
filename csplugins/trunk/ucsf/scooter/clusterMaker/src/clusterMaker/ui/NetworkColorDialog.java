@@ -40,7 +40,9 @@ package clusterMaker.ui;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
+import cytoscape.data.CyAttributes;
 import cytoscape.visual.CalculatorCatalog;
+import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
@@ -52,6 +54,7 @@ import cytoscape.visual.mappings.BoundaryRangeValues;
 import cytoscape.visual.mappings.ObjectMapping;
 
 import clusterMaker.treeview.dendroview.ColorExtractor;
+import clusterMaker.algorithms.hierarchical.EisenCluster;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -114,10 +117,17 @@ public class NetworkColorDialog extends JDialog
 		this.maxValue = maxValue;
 		this.minValue = minValue;
 
+		if (symmetric) {
+			CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+			CyNetwork network = Cytoscape.getCurrentNetwork();
+			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_EDGE_ATTRIBUTE);
+			VisualStyle style = createNewStyle(attribute.substring(5), "-heatMap", true, true);
+			return;
+		}
 		// How many attributes are there?
 		if (attributeList.size() == 1) {
 			// Only one, so just do it (no dialog)
-			VisualStyle style = createNewStyle(attributeList.get(0), "-heatMap", true);
+			VisualStyle style = createNewStyle(attributeList.get(0), "-heatMap", true, false);
 		} else {
 			initializeOnce(); // Initialize the components we only do once
 			pack();
@@ -144,7 +154,7 @@ public class NetworkColorDialog extends JDialog
 		} else if (command.equals("vizmap")) {
 			String attribute = (String)attributeSelector.getSelectedValue();
 
-			VisualStyle style = createNewStyle(attribute, "-heatMap", true);
+			VisualStyle style = createNewStyle(attribute, "-heatMap", true, false);
 		} else if (command.equals("animate")) {
 			if (animating) {
 				animating = false;
@@ -161,7 +171,7 @@ public class NetworkColorDialog extends JDialog
 			// Build the necessary vizmap entries
 			VisualStyle[] styles = new VisualStyle[attributeArray.length];
 			for (int i = 0; i < attributeArray.length; i++) {
-				styles[i] = createNewStyle((String)attributeArray[i], "-"+(String)attributeArray[i], false);
+				styles[i] = createNewStyle((String)attributeArray[i], "-"+(String)attributeArray[i], false, false);
 			}
 
 			// Change the animate button
@@ -173,7 +183,7 @@ public class NetworkColorDialog extends JDialog
 		}
 	}
 			
-	private VisualStyle createNewStyle(String attribute, String suffix, boolean update) { 
+	private VisualStyle createNewStyle(String attribute, String suffix, boolean update, boolean edge) { 
 		boolean newStyle = false;
 
 		// Get our current vizmap
@@ -205,10 +215,16 @@ public class NetworkColorDialog extends JDialog
 			}
 		}
 
-		NodeAppearanceCalculator nodeAppCalc = style.getNodeAppearanceCalculator();
-		
+		// Get the right mapping, depending on whether we are mapping an edge or a node
+		byte mapping = ObjectMapping.NODE_MAPPING;
+		VisualPropertyType vizType = VisualPropertyType.NODE_FILL_COLOR;
+		if (edge) {
+			mapping = ObjectMapping.EDGE_MAPPING;
+			vizType = VisualPropertyType.EDGE_COLOR;
+		}
+
 		// Create the new continuous mapper
-		ContinuousMapping colorMapping = new ContinuousMapping(missingColor, ObjectMapping.NODE_MAPPING);
+		ContinuousMapping colorMapping = new ContinuousMapping(missingColor, mapping);
 		colorMapping.setControllingAttributeName(attribute, Cytoscape.getCurrentNetwork(), false);
 		
 		colorMapping.addPoint (minValue,
@@ -222,14 +238,21 @@ public class NetworkColorDialog extends JDialog
    	colorMapping.addPoint(maxValue,
        new BoundaryRangeValues (upColor, upColor, upColor));
 
-   	Calculator colorCalculator = new BasicCalculator("TreeView Node Color Calculator", colorMapping,
-             VisualPropertyType.NODE_FILL_COLOR);
+   	Calculator colorCalculator = new BasicCalculator("TreeView Color Calculator", 
+		                                                 colorMapping, vizType);
 
 
 		// Apply it
-   	nodeAppCalc.setCalculator(colorCalculator);
-
-		style.setNodeAppearanceCalculator(nodeAppCalc);
+	
+		if (edge) {
+			EdgeAppearanceCalculator edgeAppCalc = style.getEdgeAppearanceCalculator();
+   		edgeAppCalc.setCalculator(colorCalculator);
+			style.setEdgeAppearanceCalculator(edgeAppCalc);
+		} else {
+			NodeAppearanceCalculator nodeAppCalc = style.getNodeAppearanceCalculator();
+   		nodeAppCalc.setCalculator(colorCalculator);
+			style.setNodeAppearanceCalculator(nodeAppCalc);
+		}
 		if (newStyle) {
 			calculatorCatalog.addVisualStyle(style);
 			if (update) {

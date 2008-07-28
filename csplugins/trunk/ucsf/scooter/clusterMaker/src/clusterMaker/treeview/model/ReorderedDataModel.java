@@ -73,6 +73,14 @@ public class ReorderedDataModel extends Observable implements DataModel {
 			return parent.getDataMatrix().getNumUnappendedCol();
 		}
 
+		public double getMinValue() {
+			return parent.getDataMatrix().getMinValue();
+		}
+
+		public double getMaxValue() {
+			return parent.getDataMatrix().getMaxValue();
+		}
+
 	}
 	/**
 	 * 
