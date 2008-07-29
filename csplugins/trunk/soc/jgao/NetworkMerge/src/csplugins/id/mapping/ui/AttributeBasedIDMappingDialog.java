@@ -4,12 +4,15 @@
  */
 
 /*
- * IDMappingDialog.java
+ * AttributeBasedIDMappingDialog.java
  *
  * Created on Jul 22, 2008, 1:41:43 PM
  */
 
 package csplugins.id.mapping.ui;
+
+import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingModelImpl;
 
 import java.util.Map;
 import java.util.Set;
@@ -20,13 +23,20 @@ import java.awt.Frame;
  *
  * @author gjj
  */
-public class IDMappingDialog extends javax.swing.JDialog {
+public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
 
-    /** Creates new form IDMappingDialog */
-    public IDMappingDialog(java.awt.Frame parent, boolean modal, Map<String,Set<String>> selectedNetworkAttribute) {
+    /** Creates new form AttributeBasedIDMappingDialog */
+    public AttributeBasedIDMappingDialog(java.awt.Frame parent,
+                                boolean modal,
+                                Map<String,Set<String>> selectedNetworkAttribute,
+                                boolean isNode) {
         super(parent, modal);
         this.frame = parent;
         this.selectedNetworkAttribute = selectedNetworkAttribute;
+        this.isNode = isNode;
+
+        idMapping = new AttributeBasedIDMappingModelImpl();
+
         initComponents();
     }
 
@@ -43,6 +53,7 @@ public class IDMappingDialog extends javax.swing.JDialog {
                 idMappingPane = new javax.swing.JTabbedPane();
                 optionPanel = new javax.swing.JPanel();
                 optionButton = new javax.swing.JButton();
+                previewButton = new javax.swing.JButton();
                 javax.swing.JPanel okPanel = new javax.swing.JPanel();
                 cancelButton = new javax.swing.JButton();
                 okButton = new javax.swing.JButton();
@@ -51,10 +62,10 @@ public class IDMappingDialog extends javax.swing.JDialog {
                 setTitle("ID Mapping");
                 getContentPane().setLayout(new java.awt.GridBagLayout());
 
-                idMappingPane.setMinimumSize(new java.awt.Dimension(400, 200));
-                idMappingPane.setPreferredSize(new java.awt.Dimension(600, 300));
+                idMappingPane.setMinimumSize(new java.awt.Dimension(400, 400));
+                idMappingPane.setPreferredSize(new java.awt.Dimension(600, 600));
 
-                idMappingFilePanel = new IDMapperFilePanel(frame,selectedNetworkAttribute);
+                idMappingFilePanel = new AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode);
                 idMappingPane.addTab("From file", idMappingFilePanel);
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
@@ -78,6 +89,10 @@ public class IDMappingDialog extends javax.swing.JDialog {
                         }
                 });
                 optionPanel.add(optionButton);
+
+                previewButton.setText("Preview");
+                previewButton.setEnabled(false);
+                optionPanel.add(previewButton);
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
@@ -136,18 +151,29 @@ public boolean isCancelled() {
     return cancelled;
 }
 
+public AttributeBasedIDMappingModel getIDMapping() {
+        return this.idMapping;
+}
+
+void setOKButtonEnable(boolean enable) {
+        okButton.setEnabled(enable);
+}
+
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton cancelButton;
         private javax.swing.JTabbedPane idMappingPane;
-        private IDMapperFilePanel idMappingFilePanel;
+        private AttributeBasedIDMappingFilePanel idMappingFilePanel;
         private javax.swing.JButton okButton;
         private javax.swing.JButton optionButton;
         //private NetworkMergeOptionDialog optionDialog;
         private javax.swing.JPanel optionPanel;
+        private javax.swing.JButton previewButton;
         // End of variables declaration//GEN-END:variables
 
         private boolean cancelled;
         private Frame frame;
         private Map<String,Set<String>> selectedNetworkAttribute;
+        private AttributeBasedIDMappingModel idMapping;
+        private boolean isNode;
 }

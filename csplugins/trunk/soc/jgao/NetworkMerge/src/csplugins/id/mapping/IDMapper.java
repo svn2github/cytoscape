@@ -63,15 +63,27 @@ public interface IDMapper {
         public Map<String, Set<String>> mapID(Set<String> ids, String srcType, String tgtType);
 
         /**
+         * Check whether an ID exists in a specific type
+         * @param srcID
+         *      source ID
+         * @param srcType
+         *      source type
+         *
+         * @return
+         *      true if exists, false otherwise
+         */
+        public boolean idExistsInSrcIDType(String srcID, String srcType);
+
+        /**
          * @return supported source ID types
          *
          */
-        public Set<String> getSupportedSrcIDType();
+        public Set<String> getSupportedSrcIDTypes();
 
         /**
          * @return supported target ID types
          *
          */
-        public Set<String> getSupportedTgtIDType();
+        public Set<String> getSupportedTgtIDTypes();
 }
 

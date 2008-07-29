@@ -45,7 +45,7 @@ import csplugins.network.merge.model.AttributeMappingImpl;
 import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.model.MatchingAttributeImpl;
 
-import csplugins.id.mapping.ui.IDMappingDialog;
+import csplugins.id.mapping.ui.AttributeBasedIDMappingDialog;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -426,7 +426,8 @@ public class NetworkMergeDialog extends JDialog {
                                         attrs.add(attr);
                                         selectedNetworkAttribute.put(netID,attrs);
                                 }
-                                IDMappingDialog dialog = new IDMappingDialog(frame,true,selectedNetworkAttribute);
+                                final boolean isNode = true;
+                                AttributeBasedIDMappingDialog dialog = new AttributeBasedIDMappingDialog(frame,true,selectedNetworkAttribute,isNode);
                                 dialog.setLocationRelativeTo(frame);
                                 dialog.setVisible(true);
                                 if (!dialog.isCancelled()) {

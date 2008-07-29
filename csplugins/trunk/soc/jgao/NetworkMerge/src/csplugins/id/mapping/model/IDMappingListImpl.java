@@ -250,7 +250,7 @@ public class IDMappingListImpl implements IDMappingList {
                         throw new java.lang.IllegalArgumentException("One or more types do not exist. Add type first.");
                 }
 
-                // find the existing id mapping
+                // find the existing id mapping containing the ids to be added
                 TreeSet<Integer> indices = new TreeSet<Integer>();
                 Iterator<String> itType = types.iterator();
                 while (itType.hasNext()) {
@@ -260,7 +260,7 @@ public class IDMappingListImpl implements IDMappingList {
                         while (itID.hasNext()) {
                                 String id = itID.next();
                                 int index = this.indexOf(type, id);
-                                if (index==-1) {
+                                if (index!=-1) {
                                         indices.add(index);
                                 }
                         }

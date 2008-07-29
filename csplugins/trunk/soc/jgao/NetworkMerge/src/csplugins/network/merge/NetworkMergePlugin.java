@@ -80,6 +80,7 @@ public class NetworkMergePlugin extends CytoscapePlugin {
         /**
          * This method is called when the user selects the menu item.
          */
+        @Override
         public void actionPerformed(final ActionEvent ae) {
             prepare(); //TODO: remove in Cytoscape3
             
@@ -160,6 +161,7 @@ class NetworkMergeSessionTask implements Task {
      * @throws
      * @throws Exception
      */
+    @Override
     public void run() {
         taskMonitor.setStatus("Merging networks.\n\nIt may take a while.\nPlease wait...");
         taskMonitor.setPercentCompleted(0);

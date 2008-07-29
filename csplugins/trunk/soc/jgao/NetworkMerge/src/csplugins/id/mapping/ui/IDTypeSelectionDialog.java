@@ -96,9 +96,10 @@ public class IDTypeSelectionDialog extends javax.swing.JDialog {
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 0;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
                 gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
                 getContentPane().add(idTypePanel, gridBagConstraints);
 
@@ -156,17 +157,7 @@ public boolean isCancelled() {
     return cancelled;
 }
 
-public Set<String> getSelectedIDTypes() {
-/*    int n = idTypeCheckBoxes.length;
-    Vector<String> selectedIDTypes = new Vector<String>();
-    for (int i=0; i<n; i++) {
-        javax.swing.JCheckBox cb = idTypeCheckBoxes[i];
-        if (cb.isSelected()) {
-            selectedIDTypes.add(cb.getText());
-        }
-    }
-    return selectedIDTypes;*/
-    
+public Set<String> getSelectedIDTypes() {    
     return selectedIdTypes;
 }
 

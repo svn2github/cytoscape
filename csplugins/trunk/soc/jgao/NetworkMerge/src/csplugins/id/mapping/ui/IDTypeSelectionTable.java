@@ -1,4 +1,4 @@
-/* File: MatchNodeTable.java
+/* File: IDTypeSelectionTable.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -36,16 +36,12 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.network.merge.NetworkMerge;
-import csplugins.network.merge.model.MatchingAttribute;
-
 import cytoscape.Cytoscape;
 
 import java.util.List;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -62,29 +58,24 @@ import java.awt.event.MouseEvent;
  * 
  * 
  */
-class IDTypeSelectionTable extends JTable{
-    //private Map<String,Set<String>> selectedNetworkAttribute;
-    private Map<String,Map<String,Set<String>>> selectedNetworkAttributeIDType;
+public class IDTypeSelectionTable extends JTable{
     private IDTypeSelectionTableModel model;
     private Frame frame;
+    private AttributeBasedIDMappingFilePanel parent;
 
     private Set<String> supportedSrcIDType;
 
     private List<String[]> listNetIDTitleAttr;
 
     public IDTypeSelectionTable(final Frame frame,
-                                final Map<String,Set<String>> selectedNetworkAttribute) {
+                                final AttributeBasedIDMappingFilePanel parent) {
         super();
-        if (selectedNetworkAttribute==null) {
-                throw new java.lang.NullPointerException();
-        }
-
-        initNetworks(selectedNetworkAttribute);
-        
-        initTypes(selectedNetworkAttribute);
-
 
         this.frame = frame;
+        this.parent = parent;
+
+        initNetworks();
+
         supportedSrcIDType = new HashSet<String>();
 
         model = new IDTypeSelectionTableModel();
@@ -93,23 +84,19 @@ class IDTypeSelectionTable extends JTable{
 
         addMouseClickListener();
 
-        System.out.println(this.getRowCount());
-        System.out.println(this.getColumnCount());
     }
 
-    public Map<String,Map<String,Set<String>>> getSelectedNetworkAttributeIDType() {
-            return selectedNetworkAttributeIDType;
-    }
-
-    public void setSupportedSrcIDType(final HashSet<String> types) {
+    void setSupportedSrcIDType(final Set<String> types) {
             supportedSrcIDType = types;
     }
 
-        private void initNetworks(final Map<String,Set<String>> selectedNetworkAttribute) {
+        private void initNetworks() {
+            Map<String,Map<String,Set<String>>> selectedNetworkAttributeIDType = parent.getSrcTypes();
+
             List<String> netTitles = new Vector<String>();
             List<String> netIDs = new Vector<String>();
             int size=0;
-            Iterator<String> it = selectedNetworkAttribute.keySet().iterator();
+            Iterator<String> it = selectedNetworkAttributeIDType.keySet().iterator();
             while (it.hasNext()) {
                 String netID = it.next();
                 String netName = Cytoscape.getNetwork(netID).getTitle();
@@ -126,7 +113,7 @@ class IDTypeSelectionTable extends JTable{
             int n = netIDs.size();
             for (int i=0; i<n; i++) {
                     String id = netIDs.get(i);
-                    Iterator<String> itAttr = selectedNetworkAttribute.get(id).iterator();
+                    Iterator<String> itAttr = selectedNetworkAttributeIDType.get(id).keySet().iterator();
                     while (itAttr.hasNext()) {
                             String attr = itAttr.next();
                             listNetIDTitleAttr.add(new String[]{id,netTitles.get(i),attr});
@@ -134,36 +121,17 @@ class IDTypeSelectionTable extends JTable{
             }
        }
 
-       private void initTypes(final Map<String,Set<String>> selectedNetworkAttribute) {
-                selectedNetworkAttributeIDType = new HashMap<String,Map<String,Set<String>>>();
-                Iterator<Map.Entry<String,Set<String>>> itEntry = selectedNetworkAttribute.entrySet().iterator();
-                while (itEntry.hasNext()) {
-                        Map.Entry<String,Set<String>> entry = itEntry.next();
-                        String netID = entry.getKey();
-                        Map<String,Set<String>> mapAttributeIDType = new HashMap<String,Set<String>>();
-                        selectedNetworkAttributeIDType.put(netID, mapAttributeIDType);
-                        
-                        Iterator<String> itAttr = entry.getValue().iterator();
-                        while (itAttr.hasNext()) {
-                                String attr = itAttr.next();
-                                Set<String> types = new HashSet<String>();
-                                mapAttributeIDType.put(attr, types);
-                        }
-
-                }
-       }
-
     private void addMouseClickListener() {
             addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                         JTable source = (JTable)e.getSource();
+                         IDTypeSelectionTable source = (IDTypeSelectionTable)e.getSource();
                          int column = source.getSelectedColumn();
                          if (column==2) {
                             int row = source.getSelectedRow();
                             String netID = listNetIDTitleAttr.get(row)[0];
                             String attr = listNetIDTitleAttr.get(row)[2];
-                            Map<String,Set<String>> mapAttrType = selectedNetworkAttributeIDType.get(netID);
+                            Map<String,Set<String>> mapAttrType = parent.getSrcTypes().get(netID);
                             IDTypeSelectionDialog dialog = new IDTypeSelectionDialog(frame,
                                                                                      true,
                                                                                      supportedSrcIDType,
@@ -171,14 +139,18 @@ class IDTypeSelectionTable extends JTable{
                             dialog.setLocationRelativeTo(source.getParent());
                             dialog.setVisible(true);
                             if (!dialog.isCancelled()) {
-                                mapAttrType.put(netID, dialog.getSelectedIDTypes());
-                                model.fireTableDataChanged();
+                                mapAttrType.put(attr, dialog.getSelectedIDTypes());
+                                source.fireTableDataChanged();
+                                parent.updateGoButtonEnable();
                             }
                          }
                     }
                 });
     }
 
+    void fireTableDataChanged() {
+            model.fireTableDataChanged();
+    }
 
     private class IDTypeSelectionTableModel extends AbstractTableModel {
         private final String[] columnNames = {"Network","Attribute","ID Type(s)"};
@@ -216,7 +188,7 @@ class IDTypeSelectionTable extends JTable{
                 case 1:
                     return attr;
                 case 2:
-                    return selectedNetworkAttributeIDType.get(netID).get(attr).toString();
+                    return parent.getSrcTypes().get(netID).get(attr).toString();
                 default:
                     throw new java.lang.IndexOutOfBoundsException();
             }

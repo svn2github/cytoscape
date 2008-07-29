@@ -1,4 +1,4 @@
-/* File: IDMappingModel.java
+/* File: IDMappingList.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -40,7 +40,7 @@ import java.util.Set;
 import java.util.Map;
 
 /**
- * Store ID mapping data
+ * Store ID mapping data in a list, could be viewed as a 2-d table
  * 
  */
 public interface IDMappingList {

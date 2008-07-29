@@ -53,8 +53,8 @@ import java.net.URL;
  * 
  */ 
 public class IDMapperText implements IDMapperFile {
-        private URL url;
-        private IDMappingList idMappingList;
+        protected URL url;
+        protected IDMappingList idMappingList;
 
         public IDMapperText(final URL url) {
                 this.url = url;
@@ -88,7 +88,9 @@ public class IDMapperText implements IDMapperFile {
          * @throws NullPointerException if ids or srcType or tgtType is null
          */
         @Override
-        public Map<String, Set<String>> mapID(Set<String> ids, String srcType, String tgtType) {
+        public Map<String, Set<String>> mapID(final Set<String> ids,
+                                              final String srcType,
+                                              final String tgtType) {
                 if (ids==null || srcType==null || tgtType==null) {
                         throw new java.lang.NullPointerException();
                 }
@@ -98,12 +100,28 @@ public class IDMapperText implements IDMapperFile {
                 return idMappingList.mapID(ids, srcType, tgtType);
         }
 
+        /**
+         * Check whether an ID exists in a specific type
+         * @param srcID
+         *      source ID
+         * @param srcType
+         *      source type
+         *
+         * @return
+         *      true if exists, false otherwise
+         */
+        @Override
+        public boolean idExistsInSrcIDType(final String srcID, final String srcType) {
+                int index = idMappingList.indexOf(srcType, srcID);
+                return index > -1;
+        }
+
         /*
         * @return supported source ID types
         *
         */
         @Override
-        public Set<String> getSupportedSrcIDType() {
+        public Set<String> getSupportedSrcIDTypes() {
                 if (idMappingList==null) {
                         // TODO return null or empty Set?
                         //return null;
@@ -117,7 +135,7 @@ public class IDMapperText implements IDMapperFile {
         *
         */
         @Override
-        public Set<String> getSupportedTgtIDType() {
+        public Set<String> getSupportedTgtIDTypes() {
                 if (idMappingList==null) {
                         // TODO return null or empty Set?
                         //return null;
