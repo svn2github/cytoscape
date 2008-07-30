@@ -96,9 +96,15 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 
 	private Integrator integrator = null;
 	
-//	private ArrayList<LayoutNode> labelLayoutNodes = new ArrayList<LayoutNode>();
+	// Maps a label LayoutNode with its parent node's LayoutNode
+	private Map<LayoutNode, LayoutNode> labelToParent = 
+		new HashMap<LayoutNode, LayoutNode>();
 	
-	private Map<LayoutNode, LayoutNode> labelToParent = new HashMap<LayoutNode, LayoutNode>();
+	// List of all LayoutNodes; including network and label nodes
+	ArrayList<LayoutNode> allLayoutNodes = new ArrayList<LayoutNode>();
+	
+	// List of all LayoutEdges; including network and label edges
+	ArrayList<LayoutEdge> allLayoutEdges = new ArrayList<LayoutEdge>();
 
 	
 	public LabelForceDirectedLayout() {
@@ -132,52 +138,59 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	public void layoutPartion(LayoutPartition part) {
 		
 		Dimension initialLocation = null;
+		LabelPosition lp = null;
 		
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
 
 		m_fsim.clear();
-		
-		// =======================================================================================
-		/*
-		 * TODO: Create a new list of LayoutNodes containing:
-		 *   - all network nodes
-		 *     - use part.getNodeList() to get all network nodes
-		 *     - set each network nodes so that they are locked
-		 *   - all newly created LayoutNodes for each label
-		 *     - each label node is to be unlocked
-		 * 
-		 */
-		ArrayList<LayoutNode> allLayoutNodes = new ArrayList<LayoutNode>();
-		ArrayList<LayoutEdge> allLayoutEdges = new ArrayList<LayoutEdge>();
 
+		// Add all existing network nodes to allLayoutNodes
 		allLayoutNodes.addAll(part.getNodeList());
 		
+		
+		// Create LayoutNodes and LayoutEdges for each node label
 		for (LayoutNode ln : allLayoutNodes) {
 			
+			// Create a new LayoutNode object for the current label.
+			// labelNode has same nodeView and index as its parent node.
 			LayoutNode labelNode = new LayoutNode(ln.getNodeView(), ln.getIndex());
 			
+			// Set labelNode's location to parent node's label location
+			nodeAtts = Cytoscape.getNodeAttributes();
+			String labelPosition = (String) nodeAtts.getAttribute(ln.getNode().
+					getIdentifier(), "node.labelPosition");
+
+			if (labelPosition == null) {
+				lp = new LabelPosition();
+			} else {
+				lp = LabelPosition.parse(labelPosition);
+			}
+			
+			labelNode.setX(lp.getOffsetX() + ln.getNodeView().getXPosition());
+			labelNode.setY(lp.getOffsetY() + ln.getNodeView().getYPosition());
+			
+			// Add labelNode --> ln to labelToParent map
 			labelToParent.put(labelNode, ln);
 			
+			// Create a new LayoutEdge between labelNode and its parent ln
+			// Add this new LayoutEdge to allLayoutEdges
 			LayoutEdge labelEdge = new LayoutEdge();
 			labelEdge.addNodes(ln, labelNode);
-			
 			allLayoutEdges.add(labelEdge);
 			
+			// Lock the parent node and unlock labelNode
 			ln.lock();
 			if (labelNode.isLocked()) {
 				labelNode.unLock();
 			}
 		}
 		
+		// Add all labelNodes to the set of all LayoutNodes
 		allLayoutNodes.addAll(labelToParent.keySet());
 		
-		
-		// =======================================================================================
-		
-		
 		// initialize nodes
-		for (LayoutNode ln: allLayoutNodes) { // TODO: replace part.getNodeList() with the list object from above
+		for (LayoutNode ln: allLayoutNodes) {
 			if ( !forceItems.containsKey(ln) )
 				forceItems.put(ln, new ForceItem());
 			ForceItem fitem = forceItems.get(ln);
@@ -219,18 +232,21 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			setTaskStatus((int)(((double)i/(double)numIterations)*90.+5));
 		}
 		
+
+		lp = new LabelPosition();
+		
 		// update positions
 		for (LayoutNode ln: allLayoutNodes) {
+			
 			if (!ln.isLocked()) {
 				ForceItem fitem = forceItems.get(ln);
 				
-				// Case where ln is a label
+				// Case where ln is a label node
 				if (labelToParent.containsKey(ln)) {
+					
 					NodeView lnNodeView = ln.getNodeView();
 					nodeAtts = Cytoscape.getNodeAttributes();
 					ForceItem fitemParent = forceItems.get(labelToParent.get(ln));
-
-					LabelPosition lp = new LabelPosition();
 					
 		    		lp.setOffsetX(fitem.location[0] - fitemParent.location[0]);
 		    		lp.setOffsetY(fitem.location[1] - fitemParent.location[1]);
@@ -238,10 +254,10 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		    		nodeAtts.setAttribute(lnNodeView.getNode().getIdentifier(), 
 		    				"node.labelPosition", lp.shortString());
 		    		
-		    		continue;
+		    		continue; // to the next LayoutNode in allLayoutNodes
 				}
 				
-				// ln is an unlocked network label
+				// Case where ln is a network node (unlocked)
 				ln.setX(fitem.location[0]);
 				ln.setY(fitem.location[1]);
 				part.moveNodeToLocation(ln);
@@ -267,6 +283,14 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			}
 		}
 		
+		clear();
+	}
+	
+	/**
+	 * Clears all LayoutNodes and LayoutEdges created in order to successfully
+	 * perform this label layout algorithm.
+	 */
+	private void clear() {
 		allLayoutNodes.clear();
 		labelToParent.clear();
 		allLayoutEdges.clear();
