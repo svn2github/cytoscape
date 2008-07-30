@@ -33,7 +33,6 @@ import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.HeaderSummary;
 import clusterMaker.treeview.MessagePanel;
 import clusterMaker.treeview.ModelView;
-import clusterMaker.treeview.UrlExtractor;
 import clusterMaker.treeview.ViewFrame;
 import clusterMaker.treeview.TreeSelectionI;
 
@@ -45,11 +44,10 @@ import clusterMaker.treeview.TreeSelectionI;
  */
 public class TextViewManager extends ModelView implements FontSelectable, PropertyChangeListener {
 
-	public TextViewManager(HeaderInfo hI, UrlExtractor uExtractor)
+	public TextViewManager(HeaderInfo hI)
 	{
 		super();
 		this.hI = hI;
-		this.uExtractor = uExtractor;
 		root = null;
 		textViews = new Vector();
 		panel = new JPanel();
@@ -174,7 +172,7 @@ public class TextViewManager extends ModelView implements FontSelectable, Proper
 		numViews = n;
 		for(int i = 0; i < n; i++)
 		{
-			textViews.add(new TextView(hI, uExtractor, i));
+			textViews.add(new TextView(hI, i));
 			((TextView)textViews.lastElement()).setHeaderSummary(headerSummary);
 			headerSummary.addObserver((TextView)textViews.lastElement());
 		}
@@ -388,7 +386,6 @@ public class TextViewManager extends ModelView implements FontSelectable, Proper
 	}
 	
 	boolean ignoreDividerChange = false;
-	UrlExtractor uExtractor;
 	JSplitPane last;
 	Component root;
 	JSplitPane firstNotShown;

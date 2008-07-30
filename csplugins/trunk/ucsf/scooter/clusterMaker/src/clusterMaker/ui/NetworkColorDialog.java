@@ -1,12 +1,13 @@
 /* vim: set ts=2:
 
-  File: ClusterSettingsDialog.java
+  File: NetworkColorDialog.java
 
-  Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
+  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
   The Cytoscape Consortium is:
   - Institute for Systems Biology
   - University of California San Diego
+  - University of California San Francisco
   - Memorial Sloan-Kettering Cancer Center
   - Institut Pasteur
   - Agilent Technologies

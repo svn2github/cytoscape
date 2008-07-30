@@ -7,7 +7,7 @@ import de.layclust.layout.parameter_training.IParameters;
 
 /**
  * A Layouter that uses ant-colony-clustering for layouting.
- * @author Nils Kleinbölting
+ * @author Nils Kleinbolting
  *
  */
 public class ACCLayouter implements ILayouter {

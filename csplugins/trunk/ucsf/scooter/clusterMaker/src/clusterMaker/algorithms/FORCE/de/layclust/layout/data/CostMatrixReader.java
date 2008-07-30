@@ -12,7 +12,7 @@ import de.layclust.taskmanaging.TaskConfig;
 /**
  * This class is used to read a Cost-Matrix from a .cm-file.
  * 
- * @author Nils Kleinbölting
+ * @author Nils Kleinbolting
  */
 
 public class CostMatrixReader {

@@ -36,7 +36,6 @@ import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.HeaderSummary;
 import clusterMaker.treeview.ModelView;
 import clusterMaker.treeview.RotateImageFilter;
-import clusterMaker.treeview.UrlExtractor;
 import clusterMaker.treeview.TreeSelectionI;
 
 /**
@@ -86,7 +85,6 @@ public class ArrayNameView extends ModelView implements MouseListener, FontSelec
 	private int style;
 	private int size;
 
-	private UrlExtractor urlExtractor  = null;
 	private MapContainer map;
 	private int fontsize               = 10;
 	private int maxlength              = 0;
@@ -347,16 +345,6 @@ public class ArrayNameView extends ModelView implements MouseListener, FontSelec
 
 
 	/**
-	 *  Sets the urlExtractor to be used when an array name is clicked on.
-	 *
-	 * @param  ue  Will be fed array indexes.
-	 */
-	public void setUrlExtractor(UrlExtractor ue) {
-		urlExtractor = ue;
-	}
-
-
-	/**
 	 *  Used to space the array names.
 	 *
 	 * @param  im  A new mapcontainer.
@@ -453,16 +441,10 @@ public class ArrayNameView extends ModelView implements MouseListener, FontSelec
 	 *  Starts external browser if the urlExtractor is enabled.
 	 */
 	public void mouseClicked(MouseEvent e) {
-		if (urlExtractor == null) {
-			return;
-		}
-		if (urlExtractor.isEnabled() == false) {
-			return;
-		}
 		// now, want mouse click to signal browser...
 		int index  = map.getIndex(e.getX());
 		if (map.contains(index)) {
-			viewFrame.displayURL(urlExtractor.getUrl(index));
+			// Highlight node in Cytoscape??
 		}
 	}
 

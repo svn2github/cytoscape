@@ -69,14 +69,6 @@ public class TreeViewFrame extends ViewFrame {
 	protected void setupPresets() {
 	}
 
-	public UrlPresets getGeneUrlPresets() {
-		return treeView.getGeneUrlPresets();
-	}
-
-	public UrlPresets getArrayUrlPresets() {
-		return treeView.getArrayUrlPresets();
-	}
-
 	public void closeWindow() {
 		if (running != null) {
 			running.syncConfig();
@@ -93,31 +85,14 @@ public class TreeViewFrame extends ViewFrame {
 	}
 
 	/**
-	 * Sets up the following: 1) urlExtractor, an object that generates urls
-	 * from gene indexes 2) arrayUrlExtractor, similarly 3) geneSelection and 4)
-	 * arraySelection, the two selection objects. It is important that these are
+	 * Sets up the following: 1) geneSelection and 2) arraySelection, the 
+	 * two selection objects. It is important that these are
 	 * set up before any plugins are instantiated. This is called before
 	 * setupRunning by setDataModel.
 	 */
 	protected void setupExtractors() {
 		ConfigNode documentConfig = getDataModel().getDocumentConfig();
 		// extractors...
-		UrlPresets genePresets = getGeneUrlPresets();
-		UrlExtractor urlExtractor = new UrlExtractor(getDataModel()
-				.getGeneHeaderInfo(), genePresets);
-		urlExtractor.setDefaultTemplate(genePresets.getDefaultTemplate());
-		urlExtractor.setDefaultEnabled(genePresets.isDefaultEnabled());
-		urlExtractor.bindConfig(documentConfig.fetchOrCreate("UrlExtractor"));
-		setUrlExtractor(urlExtractor);
-
-		UrlPresets arrayPresets = getArrayUrlPresets();
-		UrlExtractor arrayUrlExtractor = new UrlExtractor(getDataModel()
-				.getArrayHeaderInfo());
-		arrayUrlExtractor.setDefaultTemplate(arrayPresets.getDefaultTemplate());
-		arrayUrlExtractor.setDefaultEnabled(arrayPresets.isDefaultEnabled());
-		arrayUrlExtractor.bindConfig(documentConfig
-				.fetchOrCreate("ArrayUrlExtractor"));
-		setArrayUrlExtractor(arrayUrlExtractor);
 		DataMatrix matrix = getDataModel().getDataMatrix();
 		int ngene = matrix.getNumRow();
 		int nexpr = matrix.getNumCol();

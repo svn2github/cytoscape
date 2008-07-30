@@ -2,7 +2,7 @@ package de.layclust.layout.acc;
 
 /**
  * Interface for all Ant-classes.
- * @author Nils Kleinbölting
+ * @author Nils Kleinbolting
  *
  */
 

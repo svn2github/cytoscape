@@ -37,27 +37,26 @@ import clusterMaker.treeview.TreeSelectionI;
 import clusterMaker.treeview.UrlExtractor;
 
 public class TextView extends ModelView implements FontSelectable,
-    KeyListener, AdjustmentListener,
-    MouseListener, MouseMotionListener {
+                                                   KeyListener, AdjustmentListener,
+                                                   MouseListener, MouseMotionListener {
 
-    public String[]  getHints() {
-	String [] hints = {
+	public String[]  getHints() {
+		String [] hints = {
 	    "Click and drag to scroll",
-	};
-	return hints;
-    }
+		};
+		return hints;
+	}
 
 	/**
-	* should really take a HeaderSummary instead of HeaderInfo, since the mapping should be managed by
-	* Dendroview so that the SummaryView can use the same HeaderSummary.
-	*/
-    public TextView(HeaderInfo hI, UrlExtractor uExtractor) {
+	 * should really take a HeaderSummary instead of HeaderInfo, since the mapping should be managed by
+	 * Dendroview so that the SummaryView can use the same HeaderSummary.
+	 */
+	public TextView(HeaderInfo hI) {
 		super();
-		urlExtractor = uExtractor;
 		headerInfo = hI;
 		col = -1;
 		
-	//  could set up headerSummary...
+		//  could set up headerSummary...
 		int GIDIndex = headerInfo.getIndex("GID");
 		if (GIDIndex == -1) {
 			headerSummary.setIncluded(new int [] {1});
@@ -75,12 +74,11 @@ public class TextView extends ModelView implements FontSelectable,
 		scrollPane = new JScrollPane(this);
 		scrollPane.setBorder(null);
 		panel = scrollPane;
-    }
+	}
     
     
-    public TextView(HeaderInfo hI, UrlExtractor uExtractor, int col) {
+	public TextView(HeaderInfo hI, int col) {
 		super();
-		urlExtractor = uExtractor;
 		headerInfo = hI;
 		this.col = col;
 		
@@ -102,30 +100,28 @@ public class TextView extends ModelView implements FontSelectable,
 		scrollPane = new JScrollPane(this);
 		scrollPane.setBorder(null);
 		panel = scrollPane;
-    }
+	}
 
-    public String viewName() { return "TextView";}
+	public String viewName() { return "TextView";}
 
-    public MenuItem getFontMenuItem() {
-	
-	MenuItem itema = new MenuItem("Gene Font...");
-	itema.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent actionEvent)
-		{
-		    FontSelector fontSelector = new FontSelector
-			(TextView.this, "Select Fonts for Gene Info");
-		    fontSelector.showDialog(viewFrame);
-		}
-	    });
-	
-	return itema;
-    }
+	public MenuItem getFontMenuItem() {
+		MenuItem itema = new MenuItem("Gene Font...");
+		itema.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent)
+			{
+				FontSelector fontSelector = new FontSelector(TextView.this, "Select Fonts for Gene Info");
+				fontSelector.showDialog(viewFrame);
+			}
+		});
 
-    // Canvas methods
-		
+		return itema;
+	}
+
+	// Canvas methods
 	public void updateBuffer(Graphics g) {
 		updateBuffer(g, offscreenSize);
 	}
+
 	public void updateBuffer(Image buf) {
 		Dimension offscreenSize = new Dimension(buf.getWidth(null), buf.getHeight(null));
 		updateBuffer(buf.getGraphics(), offscreenSize);
@@ -243,11 +239,6 @@ public class TextView extends ModelView implements FontSelectable,
 		 repaint();
 	 }
 
-	public UrlExtractor getUrlExtractor()
-	{
-		return urlExtractor;
-	}
-
 	// Observer
 	public void update(Observable o, Object arg) {	
 		if (o == map) {
@@ -262,19 +253,18 @@ public class TextView extends ModelView implements FontSelectable,
 	}
     // MouseListener 
 	public void mouseClicked(MouseEvent e) {
-	  if (urlExtractor == null) return;
-	  urlExtractor.setEnabled(true);
-	  if (urlExtractor.isEnabled() == false) return;
 	  // now, want mouse click to signal browser...
 	  int index = map.getIndex(e.getY());
 	  if (map.contains(index)) {
 	  	if(col != -1)
 	  	{
-	  		viewFrame.displayURL(urlExtractor.getUrl(index, headerInfo.getNames()[col]));
+				// Select node in cytoscape?
+	  		// viewFrame.displayURL(urlExtractor.getUrl(index, headerInfo.getNames()[col]));
 	  	}
 	  	else
 	  	{
-	  		viewFrame.displayURL(urlExtractor.getUrl(index));
+				// Select node in cytoscape?
+	  		// viewFrame.displayURL(urlExtractor.getUrl(index));
 	  	}
 	  }
 	}
@@ -405,7 +395,6 @@ public class TextView extends ModelView implements FontSelectable,
 
 	private TreeSelectionI geneSelection;
     private MapContainer map;
-	private UrlExtractor urlExtractor;
     private JScrollBar scrollbar;
     private int maxlength = 0;
     private int xstart_pos, xoff_pos;

@@ -36,8 +36,9 @@ import cytoscape.logger.CyLogger;
 * This currently consists of buffer management, status and hints panels.
 * Interestingly, but necessarily, it has no dependancy on any models.
 */
-public abstract class ModelView extends JPanel implements java.util.Observer,
-MouseListener {
+public abstract class ModelView extends JPanel 
+                                implements java.util.Observer,
+                                MouseListener {
 	protected ViewFrame    viewFrame = null;
 	protected MessagePanel hint = null;
 	protected MessagePanel status = null;

@@ -142,17 +142,14 @@ public class KnnDendroView extends DendroView implements ConfigNodePersistent, M
 		globalview.setArrayDrawer(arrayDrawer);
 
 		arraynameview.setMapping(getZoomXmap());
-		arraynameview.setUrlExtractor(viewFrame.getArrayUrlExtractor());
 
-
-		textview = new TextViewManager(getDataModel().getGeneHeaderInfo(), viewFrame.getUrlExtractor());
+		textview = new TextViewManager(getDataModel().getGeneHeaderInfo());
 		textview.setMap(getZoomYmap());
 
 		doDoubleLayout();
 
 		// reset persistent popups
 		settingsFrame = null;
-		settingsPanel = null;
 
 		// color extractor
 		colorExtractor.bindConfig(getFirst("ColorExtractor"));

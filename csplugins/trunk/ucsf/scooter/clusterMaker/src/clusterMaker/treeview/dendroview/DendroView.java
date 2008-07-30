@@ -7,13 +7,16 @@
  * $Name:  $
  *
  * This file is part of Java TreeView
- * Copyright (C) 2001-2003 Alok Saldanha, All Rights Reserved. Modified by Alex Segal 2004/08/13. Modifications Copyright (C) Lawrence Berkeley Lab.
+ * Copyright (C) 2001-2003 Alok Saldanha, All Rights Reserved. Modified by Alex Segal 2004/08/13. 
+ * Modifications Copyright (C) Lawrence Berkeley Lab.
  *
  * This software is provided under the GNU GPL Version 2. In particular, 
  *
  * 1) If you modify a source file, make a comment in it containing your name and the date.
  * 2) If you distribute a modified version, you must do it under the GPL 2.
- * 3) Developers are encouraged but not required to notify the Java TreeView maintainers at alok@genome.stanford.edu when they make a useful addition. It would be nice if significant contributions could be merged into the main distribution.
+ * 3) Developers are encouraged but not required to notify the Java TreeView maintainers at 
+ *    alok@genome.stanford.edu when they make a useful addition. It would be nice if 
+ *    significant contributions could be merged into the main distribution.
  *
  * A full copy of the license can be found in gpl.txt or online at
  * http://www.gnu.org/licenses/gpl.txt
@@ -36,7 +39,6 @@ import javax.swing.BorderFactory;
 
 import cytoscape.logger.CyLogger;
 
-import clusterMaker.treeview.BrowserControl;
 import clusterMaker.treeview.ConfigNode;
 import clusterMaker.treeview.ConfigNodePersistent;
 import clusterMaker.treeview.DataModel;
@@ -73,12 +75,16 @@ import clusterMaker.ui.NetworkColorDialog;
  *  the selected genes, and potentially forms a link between different views,
  *  only one of which is the DendroView.
  *
- * The intention here is that you create this from a model, and never replace that model. If you want to show another file, make another dendroview. All views should of course still listen to the model, since that can still be changed ad libitum.
+ * The intention here is that you create this from a model, and never replace 
+ * that model. If you want to show another file, make another dendroview. All 
+ * views should of course still listen to the model, since that can still be 
+ * changed ad libitum.
  *
  * @author     Alok Saldanha <alok@genome.stanford.edu>
  * @version $Revision: 1.4 $ $Date: 2006/10/04 16:17:58 $
  */
-public class DendroView extends JPanel implements ConfigNodePersistent, MainPanel, Observer {
+public class DendroView extends JPanel 
+                        implements ConfigNodePersistent, MainPanel, Observer {
 	/**
 	 *  Constructor for the DendroView object
 	 * note this will reuse any existing MainView subnode of the documentconfig.
@@ -226,14 +232,16 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	}
 	
 	/**
-	 * Finds the currently selected arrays, mirror image flips them, and then rebuilds all necessary trees and saved data to the .jtv file.
+	 * Finds the currently selected arrays, mirror image flips them, and then 
+	 * rebuilds all necessary trees and saved data to the .jtv file.
 	 *
 	 */
 	private void flipSelectedATRNode()
 	{
 			int leftIndex, rightIndex;
 			String selectedID;
-			TreeDrawerNode arrayNode = invertedTreeDrawer.getNodeById(getArraySelection().getSelectedNode());
+			TreeDrawerNode arrayNode = 
+			                  invertedTreeDrawer.getNodeById(getArraySelection().getSelectedNode());
 			
 			if(arrayNode == null || arrayNode.isLeaf())
 			{
@@ -277,8 +285,11 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	
 	
 	/**
-	 * Updates the ATRDrawer to reflect changes in the DataMode array order; rebuilds the TreeDrawerNode tree.
-	 * @param selectedID ID of the node selected before a change in tree structure was made. This node is then found and reselected after the ATR tree is rebuilt.
+	 * Updates the ATRDrawer to reflect changes in the DataMode 
+	 * array order; rebuilds the TreeDrawerNode tree.
+	 * @param selectedID ID of the node selected before a change in 
+	 *                   tree structure was made. This node is then 
+	 *                   found and reselected after the ATR tree is rebuilt.
 	 */
 	private void updateATRDrawer(String selectedID)
 	{
@@ -364,11 +375,12 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		getGlobalXmap().notifyObservers();
 	}
 	
-    public void update(Observable o, Object arg) {
-    		if (o == geneSelection) {
-    			gtrview.scrollToNode(geneSelection.getSelectedNode());
-    		}
+	public void update(Observable o, Object arg) {
+		if (o == geneSelection) {
+			gtrview.scrollToNode(geneSelection.getSelectedNode());
+		}
 	}
+
 	/**
 	 *  This method should be called only during initial setup of the modelview
 	 *
@@ -425,7 +437,6 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		globalview.setArrayDrawer(arrayDrawer);
 
 		arraynameview = new ArrayNameView(getDataModel().getArrayHeaderInfo());
-		arraynameview.setUrlExtractor(viewFrame.getArrayUrlExtractor());
 		arraynameview.setDataModel(getDataModel());
 
 		leftTreeDrawer = new LeftTreeDrawer();
@@ -452,7 +463,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 
 		arraynameview.setMapping(getZoomXmap());
 
-		textview = new TextViewManager(getDataModel().getGeneHeaderInfo(), viewFrame.getUrlExtractor());
+		textview = new TextViewManager(getDataModel().getGeneHeaderInfo());
 		
 		textview.setMap(getZoomYmap());
 
@@ -460,7 +471,6 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 
 		// reset persistent popups
 		settingsFrame = null;
-		settingsPanel = null;
 
 		// urls
 		colorExtractor.bindConfig(getFirst("ColorExtractor"));
@@ -498,6 +508,7 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		getZoomXmap().notifyObservers();
 		getZoomYmap().notifyObservers();
 	}
+
 	/**
 	* this is meant to be called from setupViews.
 	* It make sure that the trees are generated from the current model,
@@ -578,20 +589,19 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	 * JSplitPane, so that you can expand/contract with one click.
 	 *
 	 */
-
 	protected void doDoubleLayout() {
-	  DragGridPanel left = new DragGridPanel(2,2);
-	  left.setName("LeftDrag");
-	  DragGridPanel right = new DragGridPanel(2,3);
-	 right.setName("RightDrag");
-	    left.setBorderWidth(2);
+		DragGridPanel left = new DragGridPanel(2,2);
+		left.setName("LeftDrag");
+		DragGridPanel right = new DragGridPanel(2,3);
+		right.setName("RightDrag");
+		left.setBorderWidth(2);
 		left.setBorderHeight(2);
 		left.setMinimumWidth(1);
 		left.setMinimumHeight(1);
 		left.setFocusWidth(1);
 		left.setFocusHeight(1);
 
-	    right.setBorderWidth(2);
+		right.setBorderWidth(2);
 		right.setBorderHeight(2);
 		right.setMinimumWidth(1);
 		right.setMinimumHeight(1);
@@ -751,10 +761,24 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 		// to produce images for publication
 		{
 			JButton exportButton = createButton("Export Graphics...");
+			exportButton.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent actionevent) {
+						/*
+						GraphicsExportDialog gDialog = new GraphicsExportDialog (
+						                                     arraynameview.getHeaderInfo(),
+						                                     getDataModel().getGeneHeaderInfo(),
+						                                     getGeneSelection(), getArraySelection(),
+						                                     invertedTreeDrawer,
+						                                     leftTreeDrawer, arrayDrawer, initXmap, initYmap);
+						gDialog.pack();
+						gDialog.setVisible(true);
+						*/
+					}
+				});
 			buttonBox.add(exportButton);
 		}
 
-		System.out.println(arrayIndex);
 		if (dataModel.aidFound()) {
 			JButton flipButton = createButton("Flip Tree Nodes");
 			flipButton.addActionListener(
@@ -838,37 +862,21 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	}
 
 	
-	  /**
-	  * prompts and returns file path, or null if cancelled.
-	  */
-	  private String getFilePath() {
-			try {
-			  JFileChooser chooser = new JFileChooser();
-			  int returnVal = chooser.showSaveDialog(this);
-			  if(returnVal == JFileChooser.APPROVE_OPTION) {
-				 return chooser.getSelectedFile().getCanonicalPath();
-			  }
-			} catch (java.io.IOException ex) {
-				CyLogger.getLogger(DendroView.class).warn("Got exception " + ex);
-			}
-			return null;
-	  }
+	/**
+	 * Routine to create a button for the button box
+	 */
 
-		/**
-		 * Routine to create a button for the button box
-		 */
-
-		private JButton createButton(String label) {
-			JButton button = new JButton("<html><b style=\"font-size: 80%;\">"+label+"</b></html>");
-			return button;
-		}
+	private JButton createButton(String label) {
+		JButton button = new JButton("<html><b style=\"font-size: 80%;\">"+label+"</b></html>");
+		return button;
+	}
 	  
-	  /**
-	   * show summary of the specified indexes
-	   */
-	  public void showSubDataModel(int [] indexes) {
-	  	getViewFrame().showSubDataModel(indexes, null, null);
-	  }
+  /**
+   * show summary of the specified indexes
+   */
+  public void showSubDataModel(int [] indexes) {
+  	getViewFrame().showSubDataModel(indexes, null, null);
+  }
 
 
 	/**
@@ -877,33 +885,6 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	 * Actually, in the current layout this isn't even used.
 	 */
 	public void syncConfig() {
-		/*
-		DragGridPanel running   = this;
-		floa	t[] heights         = running.getHeights();
-		ConfigNode heightNodes[]  = root.fetch("Height");
-		for (int i = 0; i < heights.length; i++) {
-			if (i < heightNodes.length) {
-				heightNodes[i].setAttribute("value", (double) heights[i],
-						1.0 / heights.length);
-			} else {
-				ConfigNode n  = root.create("Height");
-					n.setAttribute("value", (double) heights[i],
-							1.0 / heights.length);
-			}
-		}
-
-	float[] widths          = running.getWidths();
-	ConfigNode widthNodes[]   = root.fetch("Width");
-		for (int i = 0; i < widths.length; i++) {
-			if (i < widthNodes.length) {
-				widthNodes[i].setAttribute("value", (double) widths[i],
-						1.0 / widths.length);
-			} else {
-			ConfigNode n  = root.create("Width");
-				n.setAttribute("value", (double) widths[i], 1.0 / widths.length);
-			}
-		}
-*/
 	}
 
 
@@ -916,28 +897,6 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 
 	public void bindConfig(ConfigNode configNode) {
 		root = configNode;
-		/*
-	ConfigNode heightNodes[]  = root.fetch("Height");
-	ConfigNode widthNodes[]   = root.fetch("Width");
-
-	float heights[];
-	float widths[];
-		if (heightNodes.length != 0) {
-			heights = new float[heightNodes.length];
-			widths = new float[widthNodes.length];
-			for (int i = 0; i < heights.length; i++) {
-				heights[i] = (float) heightNodes[i].getAttribute("value", 1.0 / heights.length);
-			}
-			for (int j = 0; j < widths.length; j++) {
-				widths[j] = (float) widthNodes[j].getAttribute("value", 1.0 / widths.length);
-			}
-		} else {
-			widths = new float[]{2 / 11f, 3 / 11f, 3 / 11f, 3 / 11f};
-			heights = new float[]{3 / 16f, 1 / 16f, 3 / 4f};
-		}
-		setHeights(heights);
-		setWidths(widths);
-		*/
 	}
 
 
@@ -950,23 +909,21 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	public ViewFrame getViewFrame() {
 		return viewFrame;
 	}
+
 	// holds the thumb and zoom panels
 	protected ScrollPane panes[];
 	protected boolean loaded;
 
 	private DataModel dataModel;
-	/** Setter for dataModel 
-	 * 
-	 * */
+	/** Setter for dataModel */
 	protected void setDataModel(DataModel dataModel) {
 		this.dataModel = dataModel;
 	}
-	/** 
-	 * 	* gets the model this dendroview is based on
-	 */
+	/** Getter for dataModel */
 	protected DataModel getDataModel() {
 		return this.dataModel;
 	}
+
 	/**
 	 * The following arrays allow translation to and from screen and datamatrix 
 	 * I had to add these in order to have gaps in the dendroview of k-means
@@ -974,10 +931,10 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	private int [] arrayIndex  = null;
 	private int [] geneIndex   = null;
 	
-    protected JScrollBar globalXscrollbar, globalYscrollbar;
-    protected GlobalView globalview;
+	protected JScrollBar globalXscrollbar, globalYscrollbar;
+	protected GlobalView globalview;
 
-    protected JScrollBar zoomXscrollbar, zoomYscrollbar;
+	protected JScrollBar zoomXscrollbar, zoomYscrollbar;
 	protected ZoomView zoomview;
 	protected TextViewManager textview;
 	protected ArrayNameView arraynameview;
@@ -995,15 +952,11 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 
 	protected MessagePanel hintpanel;
 	protected MessagePanel statuspanel;
-	protected BrowserControl browserControl;
 	protected ArrayDrawer arrayDrawer;
 	protected ConfigNode root;
 	private ColorPresets colorPresets;
 	private ColorPresetEditor  cpresetEditor;
-	/** Setter for root  - may not work properly
-	public void setConfigNode(ConfigNode root) {
-		this.root = root;
-	}
+
 	/** Getter for root */
 	public ConfigNode getConfigNode() {
 		return root;
@@ -1011,7 +964,6 @@ public class DendroView extends JPanel implements ConfigNodePersistent, MainPane
 	
 	// persistent popups
 	protected JDialog settingsFrame;
-	protected TabbedSettingsPanel settingsPanel;
 	
 	private static ImageIcon treeviewIcon = null;
 	/**

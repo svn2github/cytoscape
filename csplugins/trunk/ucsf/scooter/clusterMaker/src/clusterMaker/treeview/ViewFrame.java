@@ -7,13 +7,16 @@
  * $Name:  $
  *
  * This file is part of Java TreeView
- * Copyright (C) 2001-2003 Alok Saldanha, All Rights Reserved. Modified by Alex Segal 2004/08/13. Modifications Copyright (C) Lawrence Berkeley Lab.
+ * Copyright (C) 2001-2003 Alok Saldanha, All Rights Reserved. 
+ * Modified by Alex Segal 2004/08/13. Modifications Copyright (C) Lawrence Berkeley Lab.
  *
  * This software is provided under the GNU GPL Version 2. In particular,
  *
  * 1) If you modify a source file, make a comment in it containing your name and the date.
  * 2) If you distribute a modified version, you must do it under the GPL 2.
- * 3) Developers are encouraged but not required to notify the Java TreeView maintainers at alok@genome.stanford.edu when they make a useful addition. It would be nice if significant contributions could be merged into the main distribution.
+ * 3) Developers are encouraged but not required to notify the Java TreeView 
+ *    maintainers at alok@genome.stanford.edu when they make a useful addition. 
+ *    It would be nice if significant contributions could be merged into the main distribution.
  *
  * A full copy of the license can be found in gpl.txt or online at
  * 
@@ -210,24 +213,6 @@ public abstract class ViewFrame extends JFrame implements Observer {
 
 	public abstract double noData();
 
-
-	/**
-	 *  returns the UrlPresets for the views to make use of when configuring linking
-	 *  for genes
-	 *
-	 * @return    The shared <code>UrlPresets</code> object for genes
-	 */
-	public abstract UrlPresets getGeneUrlPresets();
-
-
-	/**
-	 *  returns the UrlPresets for the views to make use of when configuring linking
-	 *  for arrays
-	 *
-	 * @return    The shared <code>UrlPresets</code> object for arrays
-	 */
-	public abstract UrlPresets getArrayUrlPresets();
-
 	/**
 	 *  Gets the loaded attribute of the ViewFrame object
 	 *
@@ -263,10 +248,12 @@ public abstract class ViewFrame extends JFrame implements Observer {
 	/**  The shared selection objects */
 	TreeSelectionI geneSelection = null;
 	TreeSelectionI arraySelection = null;
+
 	public void deselectAll() {
 	  geneSelection.deselectAllIndexes();
 	  arraySelection.deselectAllIndexes();
 	}
+
 	/***
 	* This routine causes all data views to 
 	* select and scroll to a particular gene.
@@ -276,7 +263,8 @@ public abstract class ViewFrame extends JFrame implements Observer {
 	  geneSelection.setIndex(i, true);
 	  geneSelection.notifyObservers();
 	  scrollToGene(i);
-    }
+	}
+
 	/***
 	* This routine causes all data views to 
 	* select and scroll to a particular array.
@@ -286,7 +274,7 @@ public abstract class ViewFrame extends JFrame implements Observer {
 	  arraySelection.setIndex(i, true);
 	  arraySelection.notifyObservers();
 	  scrollToGene(i);
-    }
+	}
 	
 	/**
 	* This routine extends the selected range to include the index 
@@ -299,124 +287,13 @@ public abstract class ViewFrame extends JFrame implements Observer {
 	  geneSelection.notifyObservers();
 
 	  scrollToGene(i);
-    }
+	}
 	
-    public boolean geneIsSelected(int i) {
+	public boolean geneIsSelected(int i) {
 	  return getGeneSelection().isIndexSelected(i);
-    }
-
-
-	/**
-	 *  url linking support
-	 *
-	 * @param  i  index of gene who's url you would like to display.
-	 */
-	public void displayURL(int i) {
-		displayURL(getUrl(i));
 	}
 
-
-	/**
-	 *  Gets the url for a particular gene.
-	 *
-	 * @param  i  index of the gene, for the gene's <code>UrlExtractor</code>
-	 * @return    A string representation of the url
-	 */
-	public String getUrl(int i) {
-		if (urlExtractor == null) {
-			return null;
-		}
-		return urlExtractor.getUrl(i);
-	}
-
-
-	/**
-	 *  Gets the url for a particular array.
-	 *
-	 * @param  i  index of the array, for the array's <code>UrlExtractor</code>
-	 * @return    A string representation of the url
-	 */
-	public String getArrayUrl(int i) {
-		if (arrayUrlExtractor == null) {
-			return null;
-		}
-		return arrayUrlExtractor.getUrl(i);
-	}
-
-
-	/**
-	 *  Pops up a browser window with the specified url
-	 *
-	 * @param  string  String representation of the url.
-	 */
-	public void displayURL(String string) {
-		if (string == null) {
-			return;
-		}
-		try {
-			if (browserControl == null) {
-				browserControl = BrowserControl.getBrowserControl();
-			}
-			browserControl.displayURL(string);
-		} catch (MalformedURLException e) {
-			String message = new StringBuffer("Problem loading url: ").append(e).toString();
-			CyLogger.getLogger(ViewFrame.class).error(message);
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this,message);
-		} catch (IOException e) {
-			String message = new StringBuffer("Could not load url: ").append(e).toString();
-			CyLogger.getLogger(ViewFrame.class).error(message);
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this,message);
-		}
-
-	}
-
-
-	/**
-	 *  Gets the UrlExtractor for the arrays.
-	 *
-	 * This object is used to convert a given array index into a url string. It can be configured to do this in multiple ways.
-	 *
-	 * @return    The UrlExtractor for the arrays
-	 */
-	public UrlExtractor getArrayUrlExtractor() {
-		return arrayUrlExtractor;
-	}
-
-
-	/**
-	 *  Gets the UrlExtractor for the genes.
-	 *
-	 * This object is used to convert a given gene index into a url string. It can be configured to do this in multiple ways.
-	 *
-	 * @return    The UrlExtractor for the genes
-	 */
-	public UrlExtractor getUrlExtractor() {
-		return urlExtractor;
-	}
-
-
-	/**
-	 *  Sets the arrayUrlExtractor attribute of the ViewFrame object
-	 *
-	 * @param  ue  The new arrayUrlExtractor value
-	 */
-	public void setArrayUrlExtractor(UrlExtractor ue) {
-		arrayUrlExtractor = ue;
-	}
-
-
-	/**
-	 *  Sets the urlExtractor attribute of the ViewFrame object
-	 *
-	 * @param  ue  The new urlExtractor value
-	 */
-	public void setUrlExtractor(UrlExtractor ue) {
-		urlExtractor = ue;
-	}
-
-	 public abstract TreeViewApp getApp();
+	public abstract TreeViewApp getApp();
 	 
 	 /**
 	 *  Gets the key corresponding to a particular number.
@@ -450,27 +327,19 @@ public abstract class ViewFrame extends JFrame implements Observer {
 		 return 0;
 	 }
 	 
-	  public void showSubDataModel(int[] indexes, String source, String name) {
-		  	if (indexes.length == 0) {
-		  		JOptionPane.showMessageDialog(this, "No Genes to show summary of!");
-		  		return;
-		  	}
-		  	ReorderedDataModel dataModel = new ReorderedDataModel(getDataModel(), indexes);
-		  	if (source != null) dataModel.setSource(source);
-		  	if (name != null) dataModel.setName(name);
-		  	ViewFrame window = getApp().openNew();
-		  	window.setDataModel(dataModel);
-		  	window.setLoaded(true);
-		  	window.setVisible(true);
-		  }	 
-	 
-	 /**  allows opening of urls in external browser */
-	 protected BrowserControl browserControl = null;
-	 /**  url extractor for genes */
-	 private UrlExtractor urlExtractor;
-	 /**  url extractor for arrays */
-	 private UrlExtractor arrayUrlExtractor;
-
+	public void showSubDataModel(int[] indexes, String source, String name) {
+		if (indexes.length == 0) {
+			JOptionPane.showMessageDialog(this, "No Genes to show summary of!");
+			return;
+		}
+		ReorderedDataModel dataModel = new ReorderedDataModel(getDataModel(), indexes);
+		if (source != null) dataModel.setSource(source);
+		if (name != null) dataModel.setName(name);
+		ViewFrame window = getApp().openNew();
+		window.setDataModel(dataModel);
+		window.setLoaded(true);
+		window.setVisible(true);
+	}	 
 
 }
 

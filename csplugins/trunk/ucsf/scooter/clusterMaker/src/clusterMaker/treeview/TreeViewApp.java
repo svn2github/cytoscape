@@ -31,7 +31,6 @@ import javax.swing.ToolTipManager;
 
 // import clusterMaker.treeview.XmlConfig;
 import clusterMaker.treeview.PropertyConfig;
-import clusterMaker.treeview.UrlPresets;
 import clusterMaker.treeview.ViewFrame;
 
 /**
@@ -42,7 +41,6 @@ import clusterMaker.treeview.ViewFrame;
  *  The main responsibilities of this class are to 
  *  - hold static global configuration variables, such as version and URLs
  *  - hold link to global XmlConfig object
- *  - hold gene and array url preset objects
  *  - keep track of all open windows
  *  - at one point, it kept track of plugins, but now the PluginManager does that.
  *  
@@ -107,29 +105,10 @@ public abstract class TreeViewApp implements WindowListener {
 		}
 	}
 
-	private UrlPresets geneUrlPresets, arrayUrlPresets;
 	private boolean exitOnWindowsClosed = true;
 
 	public void setConfigDefaults(PropertyConfig propertyConfig) {
 		globalConfig = propertyConfig;
-
-		if (globalConfig != null) {
-			geneUrlPresets = new UrlPresets(getGlobalConfig().getNode("GeneUrlPresets"));
-			arrayUrlPresets = new UrlPresets();
-			arrayUrlPresets.bindConfig(getGlobalConfig().getNode("ArrayUrlPresets"));
-			if(arrayUrlPresets.getPresetNames().length == 0) {
-		 	 	arrayUrlPresets.addPreset("Google",
-		 		 "http://www.google.com/search?hl=en&ie=ISO-8859-1&q=HEADER");
-		  	arrayUrlPresets.setDefaultPreset(-1);
-			}
-		}
-	}
-
-	public UrlPresets getGeneUrlPresets() {
-		return geneUrlPresets;
-	}
-	public UrlPresets getArrayUrlPresets() {
-		return arrayUrlPresets;
 	}
 
 	public ViewFrame openNew() {
