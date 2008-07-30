@@ -247,8 +247,7 @@
 							<arguments>-nv</arguments>
 							<packageName>cytoscape.bookmarks</packageName>
 							<schemaFiles>bookmarks.xsd,xlinks-2001.xsd</schemaFiles>
-							<staleFile>${project.build.directory}/generated-sources/jaxb/cytoscape/bookmarks/.
-								staleFlag</staleFile>
+							<staleFile>${project.build.directory}/generated-sources/jaxb/cytoscape/bookmarks/.staleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
 						<goals>
@@ -260,8 +259,7 @@
 						<configuration>
 							<packageName>cytoscape.generated</packageName>
 							<schemaFiles>cysession.xsd,xlinks-2001.xsd</schemaFiles>
-							<staleFile>${project.build.directory}/generated-sources/jaxb/cytoscape/generated/.
-								staleFlag</staleFile>
+							<staleFile>${project.build.directory}/generated-sources/jaxb/cytoscape/generated/.staleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
 						<goals>
