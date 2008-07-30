@@ -83,8 +83,7 @@
 							<arguments>-nv</arguments>
 							<packageName>org.cytoscape.coreplugin.cpath2.schemas.search_response</packageName>
 							<schemaFiles>SearchResponse.xsd</schemaFiles>
-							<staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplu
-								gin/cpath2/schemas/.staleFlagSearch</staleFile>
+							<staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplugin/cpath2/schemas/.staleFlagSearch</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
 						<goals>
@@ -97,8 +96,7 @@
 							<arguments>-nv</arguments>
 							<packageName>org.cytoscape.coreplugin.cpath2.schemas.summary_response</packageName>
 							<schemaFiles>SummaryResponse.xsd</schemaFiles>
-							<staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplu
-								gin/cpath2/schemas/.staleFlagSummary</staleFile>
+							<staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplugin/cpath2/schemas/.staleFlagSummary</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
 						<goals>
