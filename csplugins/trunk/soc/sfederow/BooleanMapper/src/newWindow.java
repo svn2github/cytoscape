@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
@@ -14,27 +16,23 @@ import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 
 public class newWindow implements BooleanAlgorithm, ActionListener, TunableListener {
-
 	protected BooleanProperties booleanProperties = null;
-
 	protected PropertyChangeSupport pcs;
-
-	boolean off = false;
-
-	boolean mapColor, debug = false;
-
 	CyLogger logger = null;
-
-	String[] attributeArray = new String[1];
-
-	String[] opArray = { "=", "<", ">", ">=", "<=", "AND", "OR", "NOT" };
-
-	String attribute, operation, criteria, value, criteriaString = "";
-
 	ArrayList attributeList = new ArrayList();
+	
+	String[] attributeArray;
+	String[] typeArray = {"node", "edge", "network"};
+	String[] opArray = { "", "=", "<", ">", ">=", "<=", "AND", "OR", "NOT" };
+	String[] colors = {"red","green","yellow","blue"};
+	
+	String attribute, operation, criteria, value, criteriaString = "";
+	
+	boolean mapColor, debug, off = false;
 	
 	int listCount = 2;
 
+	
 	public newWindow() {
 		pcs = new PropertyChangeSupport(new Object());
 		booleanProperties = new BooleanProperties(getShortName());
@@ -62,7 +60,8 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	 */
 	public JPanel getSettingsPanel() {
 		Tunable attributeTunable = booleanProperties.get("attributeList");
-		attributeArray = getAllAttributes();
+		
+		String[] attributeArray = getAllAttributes();
 		attributeTunable.setLowerBound((Object) attributeArray);
 		
 		return booleanProperties.getTunablePanel();
@@ -86,19 +85,27 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		booleanProperties.add(criteriaName);
 
 		booleanProperties.add(new Tunable("attributeOperationsGroup",
-				"Choose Criteria", Tunable.GROUP, new Integer(2)));
+				"Choose Criteria", Tunable.GROUP, new Integer(3)));
 
-		attributeArray = getAllAttributes();
+		Tunable typeChooser = new Tunable("attributeTypeChooser" ,"",Tunable.LIST,
+				new Integer(0), (Object) typeArray, (Object) null, 0);
+		typeChooser.addTunableValueListener(this);
+		booleanProperties.add(typeChooser);
+		
+		//String[] attributeArray = getAllAttributes();
 		Tunable attList = new Tunable("attributeList", "Attributes",
 				Tunable.LIST, "", (Object) attributeArray, (Object) null,
 				Tunable.MULTISELECT);
 		attList.addTunableValueListener(this);
 		booleanProperties.add(attList);
-
+		
+		
 		
 		Tunable opList = new Tunable("operationsList", "Operations", Tunable.LIST,
-				"", (Object) opArray, (Object) null, Tunable.MULTISELECT);
-
+				new Integer(0),(Object) opArray,(Object) null, 0);
+ 
+		
+		
 		opList.addTunableValueListener(this);
 		booleanProperties.add(opList);
 		
@@ -127,9 +134,9 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		booleanProperties.add(new Tunable("colorGroup", "Choose Color",Tunable.GROUP,
 				new Integer(1)));
 
-		booleanProperties.add(new Tunable("mapColor", "Map to node Color",Tunable.BOOLEAN,
-				new Boolean(false)));
-
+		Tunable color = new Tunable("mapColor", "Map to node Color",Tunable.LIST,
+				new Integer(0),(Object) colors ,(Object) null ,0 );
+		booleanProperties.add(color);
 		/*
 		 * booleanProperties.add(new Tunable("test", "test", Tunable.INTEGER,
 		 * new Integer(6),(Object)new Integer(0), (Object)new
@@ -167,6 +174,8 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	public void tunableChanged(Tunable t){
 		//System.out.println(t.getName()  + t.getValue());
 		
+		criteriaString = (String)booleanProperties.get("criteriaField").getValue();
+		
 		if	(t.getName().equals("attributeList") || t.getName().equals("operationsList")){ listCount++; }
 		if (listCount%2 == 0 && t.getName().equals("attributeList") && !t.getValue().equals((Object)"")){
 			
@@ -179,32 +188,35 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 				String[] indice = value.split(",");
 				for(int i=0;i<indice.length;i++){
 					
-						criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
+						criteriaString = criteriaString + " "+attributes[Integer.parseInt(value)]+" ";
 					
 				}	
 				booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				
 			}else{
 				if(criteriaString.equals("")){	
-					criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
+					criteriaString = criteriaString + " "+attributes[Integer.parseInt(value)]+ " ";
 					booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				}else{
 				
-						criteriaString = criteriaString + "["+attributes[Integer.parseInt(value)]+"]";
+						criteriaString = criteriaString + " "+attributes[Integer.parseInt(value)]+ " ";
 					
 					booleanProperties.get("criteriaField").setValue((Object)criteriaString);
 				}	
 				
 			}	
+			//booleanProperties.get("attributeList").setValue(0);
 		//flag = false;
 		} else {
 			
-		if(t.getName().equals("operationsList") && listCount%2 == 0){
+		if(t.getName().equals("operationsList")){
 			value = booleanProperties.getValue("operationsList");
 			//if(!criteriaString.contains(opArray[Integer.parseInt(value)])){
-				criteriaString = criteriaString + opArray[Integer.parseInt(value)];
+				criteriaString = criteriaString + " " + opArray[Integer.parseInt(value)] + " ";
 			//}
 			booleanProperties.get("criteriaField").setValue((Object)criteriaString);
+			ItemEvent e = null;
+			booleanProperties.get("operationsList").setValue(0);
 			
 		}
 		}
@@ -240,7 +252,7 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 
 			t = booleanProperties.get("mapColor");
 			if ((t != null) && (t.valueChanged() || force)) {
-				mapColor = ((Boolean) t.getValue()).booleanValue();
+				String colored = t.getValue().toString();
 			}
 
 		}
@@ -277,9 +289,10 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		// Create the list by combining node and edge attributes into a single
 		// list
 
-		getAttributesList(attributeList, Cytoscape.getNodeAttributes(), "");
-		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(), "");
+		getAttributesList(attributeList, Cytoscape.getNodeAttributes(), "node.");
+		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(), "edge.");
 		String[] str = (String[]) attributeList.toArray(new String[attributeList.size()]);
+		attributeList.clear();
 		return str;
 
 	}
@@ -289,7 +302,7 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		String[] names = attributes.getAttributeNames();
 		for (int i = 0; i < names.length; i++) {
 			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING
-					|| attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER) {
+					 || attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER || attributes.getType(names[i]) == CyAttributes.TYPE_BOOLEAN) {
 				attributeList.add(prefix + names[i]);
 			}
 		}

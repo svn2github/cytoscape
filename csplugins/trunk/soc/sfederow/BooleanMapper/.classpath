@@ -97,5 +97,6 @@
 	<classpathentry kind="lib" path="/home/stephen/cytoscape/extra-jars/jfreechart-0.9.20.jar"/>
 	<classpathentry kind="lib" path="/home/stephen/cytoscape/extra-jars/jfreechart-common-0.9.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/stephen/booleanEvaluator/jboolexpr-1.2.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

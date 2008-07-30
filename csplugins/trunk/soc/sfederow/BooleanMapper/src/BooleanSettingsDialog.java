@@ -1,7 +1,8 @@
 
 
 import cytoscape.Cytoscape;
-
+import cytoscape.CyNetwork;
+import cytoscape.visual.*;
 import cytoscape.task.util.TaskManager;
 
 import java.beans.PropertyChangeEvent;
@@ -22,7 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
+import javax.swing.colorchooser.*;
+import javax.swing.JColorChooser;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -69,12 +71,12 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private JPanel panel;
 	private JList list;
 	
-	String[] columnNames = {"Label",
-            "Criteria",
+	String[] columnNames = {"Criteria",
+            "Label",
             "Color",
             };
 	
-	Object[][] data = new Object[4][3];
+	Object[][] data = new Object[6][3];
 	
 	
 	
@@ -88,13 +90,14 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	public BooleanSettingsDialog(BooleanAlgorithm algorithm) {
 		super(Cytoscape.getDesktop(), algorithm.getName(), false);
 		currentAlgorithm = algorithm;
-		calculator = new BooleanCalculator();
+		
 		for(int b=0;b<4;b++){
 			for(int c=0;c<3;c++){
 				data[b][c] = "";
 			}
 		}
 		initializeOnce(); // Initialize the components we only do once
+		calculator = new BooleanCalculator();
 		//init();
 	}
 	
@@ -118,19 +121,26 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			//System.out.println(currentAlgorithm.getSettings().get("criteriaField").getValue().toString());
 			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
 			System.out.println(criteria);
-			if(calculator.checkCriteria(criteria)){ 
-				value = appendValue(criteria);
+			if(calculator.parse2(criteria)){ 
+				
+				value = criteria;
+					//calculator.cleanCritera();
 				//System.out.println("somewhwere"+value);
 				populateList(criteria, value);
+				
 			}
+			calculator.clearList();
 		}
 		if (command.equals("exit")) {
 			setVisible(false);
 		} else if (command.equals("apply")) {
 			updateAllSettings(true);
-			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
-			applyCriteria();
+			//criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
 			
+			
+			applyCriteria();
+			//String 
+			//calculator.evaluate(parsedCriteria);
 			//System.out.println(currentAlgorithm.getSettings().get("operationsList").valueChanged());
 			
 			
@@ -189,7 +199,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	
 	private void initializeOnce() {
 		
-		attributes = Cytoscape.getNodeAttributes().getAttributeNames();
+		
+		//attributes = Cytoscape.getNodeAttributes().getAttributeNames();
 		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 
@@ -281,8 +292,22 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		tableButtons.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
+		JColorChooser chooser = new JColorChooser();
+		AbstractColorChooserPanel cpane = null;
+		
+		Object a = "a";
+		byte b = 0;
+		JDialog dialog = new JDialog();
+		CyNetwork work = Cytoscape.getCurrentNetwork();
+		cytoscape.visual.mappings.ContinuousMapping mapping = new cytoscape.visual.mappings.ContinuousMapping(a,b);
+		//mainPanel.add(mapping.getUI(dialog, work));
+		//cytoscape.visual.mappings.
+		ColorChooserComponentFactory factory = null;
+		DefaultColorSelectionModel mod = new DefaultColorSelectionModel();
 		
 		
+		
+		//mainPanel.add();
 		mainPanel.add(buttonBox);
 		mainPanel.add(tablePanel);
 		mainPanel.add(tableButtons);
@@ -307,7 +332,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	
 	
 	
-	public String appendValue(String criteria){
+	/*public String appendValue(String criteria){
 		String cleanCriteria = "";
 		String[] temp = calculator.parseCriteria(criteria);
 		for(int i=0;i<temp.length;i++){
@@ -315,11 +340,23 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			cleanCriteria = cleanCriteria + " "+temp[i];
 		}
 		return cleanCriteria;
-	}
+	}*/
 	
 	public void applyCriteria(){
-		parsedCriteria = calculator.parseCriteria(criteria);
-		calculator.evaluateCriteria(parsedCriteria);
+		//for(int i=1;i<data.length;i++){
+			
+		
+			String current = (String)data[0][0]; 
+			System.out.println("current: "+ current);
+			calculator.parse2(current);
+			//calculator.clearList();
+			calculator.evaluate();
+		//}
+		//parsedCriteria = calculator.parseCriteria(criteria);
+		
+		
+		
+		//calculator.evaluateCriteria(parsedCriteria);
 	}
 	
 	public void focusGained(FocusEvent e){
@@ -358,7 +395,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	}
 	
 	public void moveRowDown(int rowNumber){
-		if(rowNumber != 3){
+		if(rowNumber != 5){
 			Object criTemp = data[rowNumber][0];
 			Object laTemp = data[rowNumber][1];
 			Object colorTemp = data[rowNumber][2];
