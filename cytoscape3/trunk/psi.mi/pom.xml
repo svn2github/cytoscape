@@ -58,8 +58,7 @@
 							<arguments>-nv</arguments>
 							<packageName>org.cytoscape.coreplugin.psi_mi.schema.mi1</packageName>
 							<schemaFiles>MIF1.xsd</schemaFiles>
-							<staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplu
-								gin/psi_mi/schema/mi1/.staleFlag</staleFile>
+							<staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplugin/psi_mi/schema/mi1/.staleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
 						<goals>
@@ -72,8 +71,7 @@
 							<arguments>-nv</arguments>
 							<packageName>org.cytoscape.coreplugin.psi_mi.schema.mi25</packageName>
 							<schemaFiles>MIF25.xsd</schemaFiles>
-							<staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplu
-								gin/psi_mi/schema/mi25/.staleFlag</staleFile>
+							<staleFile>${project.build.directory}/generated-sources/jaxb/org/cytoscape/coreplugin/psi_mi/schema/mi25/.staleFlag</staleFile>
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
 						<goals>
