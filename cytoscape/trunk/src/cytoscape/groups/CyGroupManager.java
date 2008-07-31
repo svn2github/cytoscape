@@ -338,9 +338,11 @@ public class CyGroupManager {
 		if (group.getViewer() != null) {
 			// get the viewer
 			CyGroupViewer v = (CyGroupViewer) viewerMap.get(group.getViewer());
-			groupViewerMap.get(v).remove(group);
-			if (notify)
-				v.groupWillBeRemoved(group);
+			if (groupViewerMap.containsKey(v)) {
+				groupViewerMap.get(v).remove(group);
+				if (notify)
+					v.groupWillBeRemoved(group);
+			}
 			((CyGroupImpl)group).setViewer(null);
 		}
 
