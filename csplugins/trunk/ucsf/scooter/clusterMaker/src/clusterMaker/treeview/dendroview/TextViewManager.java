@@ -42,7 +42,7 @@ import clusterMaker.treeview.TreeSelectionI;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class TextViewManager extends ModelView implements FontSelectable, PropertyChangeListener {
+public class TextViewManager extends ModelView implements PropertyChangeListener {
 
 	public TextViewManager(HeaderInfo hI)
 	{
@@ -398,7 +398,7 @@ public class TextViewManager extends ModelView implements FontSelectable, Proper
 	HeaderSummary headerSummary = new HeaderSummary();
 	int dividerLocations [];
 	
-	private final String d_face = "Courier";
+	private final String d_face = "Helvetica";
     private final int d_style = 0;
     private final int d_size = 12;
     

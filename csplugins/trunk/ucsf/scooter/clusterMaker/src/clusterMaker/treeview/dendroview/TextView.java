@@ -104,38 +104,26 @@ public class TextView extends ModelView implements FontSelectable,
 
 	public String viewName() { return "TextView";}
 
-	public MenuItem getFontMenuItem() {
-		MenuItem itema = new MenuItem("Gene Font...");
-		itema.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent)
-			{
-				FontSelector fontSelector = new FontSelector(TextView.this, "Select Fonts for Gene Info");
-				fontSelector.showDialog(viewFrame);
-			}
-		});
-
-		return itema;
-	}
-
 	// Canvas methods
 	public void updateBuffer(Graphics g) {
-		updateBuffer(g, offscreenSize);
+		Rectangle rect = new Rectangle(0, 0, offscreenSize.width, offscreenSize.height);
+		updateBuffer(g, rect);
 	}
 
 	public void updateBuffer(Image buf) {
-		Dimension offscreenSize = new Dimension(buf.getWidth(null), buf.getHeight(null));
-		updateBuffer(buf.getGraphics(), offscreenSize);
+		Rectangle rect = new Rectangle(0, 0, buf.getWidth(null), buf.getHeight(null));
+		updateBuffer(buf.getGraphics(), rect);
 	}
 	
 
-	public void updateBuffer(Graphics g, Dimension offscreenSize) {
+	public void updateBuffer(Graphics g, Rectangle offscreenRect) {
 	// clear the pallette...
 	g.setColor(Color.white);
-	g.fillRect(0,0, offscreenSize.width, offscreenSize.height);
+	g.fillRect(offscreenRect.x, offscreenRect.y, offscreenRect.width, offscreenRect.height);
 	g.setColor(Color.black);
 	
 	if ((map.getMinIndex() >= 0) &&
-	    (offscreenSize.height > 0)) {
+	    (offscreenRect.height > 0)) {
 	    
 	    int start = map.getIndex(0);
 	    int end =   map.getIndex(map.getUsedPixels());
@@ -155,7 +143,7 @@ public class TextView extends ModelView implements FontSelectable,
 				    } catch (Exception e) {
 					    // ignore
 				    }
-				    g.fillRect(0, map.getMiddlePixel(j) - ascent / 2, offscreenSize.width, ascent);
+				    g.fillRect(offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) - ascent / 2, offscreenRect.width, ascent);
 			    }
 		    }
 		    g.setColor(back);
@@ -181,11 +169,11 @@ public class TextView extends ModelView implements FontSelectable,
 					if (fgColorIndex > 0) {
 						g.setColor(TreeColorer.getColor(strings[fgColorIndex]));
 					}
-					g.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
+					g.drawString(out, offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) + ascent / 2);
 					if (fgColorIndex > 0) g.setColor(back);
 				} else {
 					g.setColor(Color.gray);
-					g.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
+					g.drawString(out, offscreenRect.x, offscreenRect.y + map.getMiddlePixel(j) + ascent / 2);
 					g.setColor(back);
 				}
 			}
@@ -373,7 +361,7 @@ public class TextView extends ModelView implements FontSelectable,
     }
 
     private final int scrollstep = 5;
-    private final String d_face = "Courier";
+    private final String d_face = "Helvetica";
     private final int d_style = 0;
     private final int d_size = 12;
 

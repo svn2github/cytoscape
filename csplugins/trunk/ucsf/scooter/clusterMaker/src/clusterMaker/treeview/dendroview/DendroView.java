@@ -109,6 +109,8 @@ public class DendroView extends JPanel
 	public DendroView(DataModel dataModel, ConfigNode root, ViewFrame vFrame, String name) {
 		super.setName(name);
 
+		this.myView = this;
+
 		viewFrame = vFrame;
 		if (root == null) {
 			if (dataModel.getDocumentConfig() != null ) {
@@ -195,6 +197,19 @@ public class DendroView extends JPanel
 	public TreeSelectionI getArraySelection() {
 		return arraySelection;
 	}
+
+	public InvertedTreeDrawer getArrayTreeDrawer() {
+		return invertedTreeDrawer;
+	}
+
+	public LeftTreeDrawer getGeneTreeDrawer() {
+		return leftTreeDrawer;
+	}
+
+	public ArrayDrawer getArrayDrawer() {
+		return arrayDrawer;
+	}
+
 	/**
 	 *  This should be called after setDataModel has been set to the appropriate model
 	 * @param arraySelection
@@ -764,16 +779,13 @@ public class DendroView extends JPanel
 			exportButton.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent actionevent) {
-						/*
-						GraphicsExportDialog gDialog = new GraphicsExportDialog (
-						                                     arraynameview.getHeaderInfo(),
-						                                     getDataModel().getGeneHeaderInfo(),
-						                                     getGeneSelection(), getArraySelection(),
-						                                     invertedTreeDrawer,
-						                                     leftTreeDrawer, arrayDrawer, initXmap, initYmap);
-						gDialog.pack();
-						gDialog.setVisible(true);
-						*/
+						GraphicsExportPanel graphicsExport = new GraphicsExportPanel ( myView );
+						graphicsExport.setGeneFont(textview.getFont());
+						graphicsExport.setArrayFont(arraynameview.getFont());
+						JDialog popup = new CancelableSettingsDialog(viewFrame, "Export Graphics", graphicsExport);
+				 		popup.addWindowListener(PropertyConfig.getStoreOnWindowClose(getDataModel().getDocumentConfig()));	
+						popup.pack();
+						popup.setVisible(true);
 					}
 				});
 			buttonBox.add(exportButton);
@@ -920,7 +932,7 @@ public class DendroView extends JPanel
 		this.dataModel = dataModel;
 	}
 	/** Getter for dataModel */
-	protected DataModel getDataModel() {
+	public DataModel getDataModel() {
 		return this.dataModel;
 	}
 
@@ -930,6 +942,8 @@ public class DendroView extends JPanel
 	 */
 	private int [] arrayIndex  = null;
 	private int [] geneIndex   = null;
+
+	protected DendroView myView;
 	
 	protected JScrollBar globalXscrollbar, globalYscrollbar;
 	protected GlobalView globalview;

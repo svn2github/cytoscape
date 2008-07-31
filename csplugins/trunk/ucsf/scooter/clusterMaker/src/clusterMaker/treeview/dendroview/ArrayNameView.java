@@ -46,9 +46,9 @@ import clusterMaker.treeview.TreeSelectionI;
  * @author     Alok Saldanha <alok@genome.stanford.edu>
  * @version    @version $Revision: 1.1 $ $Date: 2006/08/16 19:13:45 $
  */
-public class ArrayNameView extends ModelView implements MouseListener, FontSelectable, ConfigNodePersistent {
+public class ArrayNameView extends ModelView implements MouseListener, ConfigNodePersistent {
 
-	private final String d_face        = "Courier";
+	private final String d_face        = "Helvetica";
 	private final int d_style          = 0;
 	private final int d_size           = 12;
 
@@ -127,25 +127,6 @@ public class ArrayNameView extends ModelView implements MouseListener, FontSelec
 	}
 
 
-	/**
-	 *  Returns a <code>MenuItem</code> which allows selection of the font for this object.
-	 *  I don't actually use this anymore.
-	 *
-	 * @return    A MenuItem with a listener.
-	 */
-	public MenuItem getFontMenuItem() {
-		MenuItem itema  = new MenuItem("Array Font...");
-		itema.addActionListener(
-			new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					FontSelector fs  = new FontSelector(ArrayNameView.this,
-							"Select Array Name Fonts");
-					fs.showDialog(viewFrame);
-				}
-			});
-		return itema;
-	}
-
 	// Canvas methods
 	/**  updates a horizontally oriented test buffer, which will later be rotated to make
 	* vertical text.
@@ -214,135 +195,93 @@ public class ArrayNameView extends ModelView implements MouseListener, FontSelec
 		backBuffer = RotateImageFilter.rotate(this, backBuffer);
 	}
 
-
-	/*inherit description */
+	// Canvas methods
 	public void updateBuffer(Graphics g) {
-		updateBuffer(g, offscreenSize);
+		Rectangle rect = new Rectangle(0, 0, offscreenSize.width, offscreenSize.height);
+		updateBuffer(g, rect);
 	}
+
 	public void updateBuffer(Image buf) {
-		updateBuffer(buf.getGraphics(), new Dimension(buf.getWidth(null), buf.getHeight(null)));
+		Rectangle rect = new Rectangle(0, 0, buf.getWidth(null), buf.getHeight(null));
+		updateBuffer(buf.getGraphics(), rect);
 	}
-	public void updateBuffer(Graphics g, Dimension offscreenSize) {
-		g.setColor(Color.white);
-		g.fillRect(0, 0, offscreenSize.width, offscreenSize.height);
-		g.setColor(Color.black);
+	
+
+	public void updateBuffer(Graphics g, Rectangle offscreenRect) {
+
+		Graphics2D g2d = (Graphics2D) g;
+
+		g2d.setColor(Color.white);
+		g2d.fillRect(offscreenRect.x, offscreenRect.y, offscreenRect.width, offscreenRect.height);
+		g2d.setColor(Color.black);
 
 
-		/* This code is for java2.it's worth supporting two ways. */
-		try {
-			Graphics2D g2d = (Graphics2D) g;
-			g2d.rotate(-90 * 3.14159/180);
-			g2d.translate(-offscreenSize.height, 0);
+		int start            = map.getIndex(0);
+		int end              = map.getIndex(map.getUsedPixels()) - 1;
+		int gidRow           = headerInfo.getIndex("GID");
 
-			int start            = map.getIndex(0);
-			int end              = map.getIndex(map.getUsedPixels()) - 1;
-			int gidRow           = headerInfo.getIndex("GID");
-			if (gidRow == -1) {gidRow = 0;}
-			int colorIndex       = headerInfo.getIndex("FGCOLOR");
-			g.setFont(new Font(face, style, size));
-			FontMetrics metrics = getFontMetrics(g.getFont());
-			int ascent = metrics.getAscent();
+		if (gidRow == -1) {gidRow = 0;}
 
-	    // draw backgrounds first...
-	    int bgColorIndex = headerInfo.getIndex("BGCOLOR");
-	    if (bgColorIndex > 0) {
-		    Color back = g.getColor();
-		    for (int j = start; j <= end;j++) {
-				    String [] strings = headerInfo.getHeader(j);
-				    try {
-				    g.setColor(TreeColorer.getColor(strings[bgColorIndex]));
-				    } catch (Exception e) {
-					    // ingore...
-				    }
-				    g.fillRect(0, map.getMiddlePixel(j) - ascent / 2, offscreenSize.height, ascent);
-		    }
-		    g.setColor(back);
+		int colorIndex       = headerInfo.getIndex("FGCOLOR");
+		g2d.setFont(new Font(face, style, size));
+		FontMetrics metrics = getFontMetrics(g.getFont());
+		int ascent = metrics.getAscent();
+
+    // draw backgrounds first...
+    int bgColorIndex = headerInfo.getIndex("BGCOLOR");
+    if (bgColorIndex > 0) {
+	    Color back = g.getColor();
+	    for (int j = start; j <= end;j++) {
+			    String [] strings = headerInfo.getHeader(j);
+			    try {
+			    g2d.setColor(TreeColorer.getColor(strings[bgColorIndex]));
+			    } catch (Exception e) {
+				    // ingore...
+			    }
+			    g2d.fillRect(offscreenRect.x, offscreenRect.y+map.getMiddlePixel(j) - ascent / 2, offscreenRect.width, ascent);
 	    }
+	    g2d.setColor(back);
+    }
 
+		Color back = g2d.getColor();
+		for (int j = start;j <= end;j++) {
+			try { 
+				String out = headerSummary.getSummary(headerInfo, j);
 
+				String[] headers  = headerInfo.getHeader(j);
+				if (out != null) {
+					if ((arraySelection == null) || arraySelection.isIndexSelected(j)) {
+						if (colorIndex > 0)
+							g2d.setColor(TreeColorer.getColor(headers[colorIndex]));
 
-			Color back = g.getColor();
-			for (int j = start;j <= end;j++) {
-				try { 
-			String out = headerSummary.getSummary(headerInfo, j);
+						g2d.translate(offscreenRect.x, offscreenRect.y-offscreenRect.height);
+						g2d.rotate(-90 * 3.14159/180);
+						g2d.setColor(Color.blue);
+			    	g2d.fillRect(0, 0, 5, 5);
+						g2d.setColor(Color.black);
+						g2d.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
+						g2d.rotate(90 * 3.14159/180);
+						g2d.translate(-offscreenRect.x, -offscreenRect.y+offscreenRect.height);
 
-			String[] headers  = headerInfo.getHeader(j);
-/*
-			String out        = headers[gidRow];
-			*/
-					if (out != null) {
-						if ((arraySelection == null) || arraySelection.isIndexSelected(j)) {
-							if (colorIndex > 0)
-								g.setColor(TreeColorer.getColor(headers[colorIndex]));
-							g.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
-							if (colorIndex > 0)
-								g.setColor(back);
-						} else {
-							g.setColor(Color.gray);
-							g.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
+						if (colorIndex > 0)
 							g.setColor(back);
-						}
-						
+					} else {
+						g2d.setColor(Color.gray);
+						g2d.translate(offscreenRect.x, offscreenRect.y-offscreenRect.height);
+						g2d.rotate(-90 * 3.14159/180);
+						g2d.setColor(Color.blue);
+			    	g2d.fillRect(0, 0, 5, 5);
+						g2d.setColor(Color.black);
+						g2d.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
+						g2d.rotate(90 * 3.14159/180);
+						g2d.translate(-offscreenRect.x, -offscreenRect.y+offscreenRect.height);
+						g2d.setColor(back);
 					}
-				} catch (java.lang.ArrayIndexOutOfBoundsException e) {
 				}
-			}
-			g2d.translate(offscreenSize.height, 0);
-			g2d.rotate(90 * 3.14159/180);
-			
-		} catch (java.lang.NoClassDefFoundError e) {
-			
-			if (backBufferValid == false) {
-				int tstart  = map.getIndex(0);
-				int tend    = map.getIndex(map.getUsedPixels());
-				if ((tstart >= 0 && tend > tstart) &&
-				(offscreenSize.width > 0)) {
-					
-					/* Should have been done by selectionChanged()
-					String [][] aHeaders = model.getArrayHeaders();
-					int gidRow = model.getGIDIndex();
-					int colorIndex = model.getRowIndex("FGCOLOR");
-					
-					g.setFont(new Font(face, style, size));
-					FontMetrics metrics = getFontMetrics(g.getFont());
-					int ascent = metrics.getAscent();
-					
-					// calculate maxlength
-					maxlength = 1;
-					// for some reason, stop at end -1?
-					int start = map.getMinIndex();
-					int end = map.getMaxIndex();
-					for (int j = start;j < end;j++) {
-						String out = aHeaders[j][gidRow];
-						if (out == null) continue;
-						int length = metrics.stringWidth(out);
-						if (maxlength < length) {
-							maxlength = length;
-						}
-					}
-					*/
-					
-					backBuffer = createImage(maxlength, offscreenSize.width);
-					updateBackBuffer();// this flips the backbuffer...
-					
-				} else {
-					// some kind of blank default image?
-				}
-				backBufferValid = true;
-				
-			}
-			
-			if (offscreenSize.height < maxlength) {
-				g.drawImage(backBuffer, 0, 0, null);
-			} else {
-				if ((g != null) && (backBuffer != null)) {
-					g.drawImage(backBuffer, 0, offscreenSize.height - maxlength, null);
-				}
+			} catch (java.lang.ArrayIndexOutOfBoundsException e) {
 			}
 		}
-
 	}
-
 
 	/**
 	 *  Used to space the array names.
