@@ -1,12 +1,37 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* File: AttributeBasedIDMappingFilePanel.java
 
-/*
- * IDMapperTextPanel.java
- *
- * Created on Jul 22, 2008, 11:49:09 AM
+ Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package csplugins.id.mapping.ui;
@@ -47,7 +72,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
  *
- * @author gjj
+ * 
  */
 public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
 
@@ -65,6 +90,7 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
         initSrcTypes();
         this.isNode = isNode;
         this.idMapper = null;
+        isLocal = true;
 
         //addedFiles = new HashSet();
 
@@ -407,13 +433,17 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
         }// </editor-fold>//GEN-END:initComponents
 
     private void localRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localRadioButtonActionPerformed
-            textFileButton.setVisible(true);
+            //textFileButton.setVisible(true);
+            textFileButton.setText("Select file");
             textFileTextField.setText("");
+            isLocal = true;
     }//GEN-LAST:event_localRadioButtonActionPerformed
 
     private void remoteRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remoteRadioButtonActionPerformed
-            textFileButton.setVisible(false);
+            //textFileButton.setVisible(false);
+            textFileButton.setText("Retrieve");
             textFileTextField.setText("");
+            isLocal = false;
     }//GEN-LAST:event_remoteRadioButtonActionPerformed
 
     private void textFileTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textFileTextFieldKeyTyped
@@ -421,50 +451,62 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_textFileTextFieldKeyTyped
 
     private void textFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFileButtonActionPerformed
-            File source = FileUtil.getFile("Select a ID mapping file", FileUtil.LOAD);
-            if (source!=null) {
-                    try {
-                            URL url = source.toURI().toURL();
-                            String strURL = url.toString();
-                            textFileTextField.setText(strURL);
-
-                            // TODO: MOVE THIS TO TEXTFIELD CHANGED
-                            if (strURL.endsWith(EXCEL_EXT)) {
-                                    POIFSFileSystem excelIn = new POIFSFileSystem(url.openStream());
-                                    HSSFWorkbook wb = new HSSFWorkbook(excelIn);
-                                    idMapper = new IDMapperExcel(wb.getSheetAt(0)); //TODO MULTIPLE SHEETS                                    
-                            } else {
-                                    idMapper = new IDMapperText(url);
+            try {
+                    URL url;
+                    String strURL;
+                    if (isLocal) {
+                            File source = FileUtil.getFile("Select a ID mapping file", FileUtil.LOAD);
+                            if (source==null) {
+                                    return;
                             }
-
-                    } catch(IOException e) {
-                            e.printStackTrace();
+                            url = source.toURI().toURL();
+                            strURL = url.toString();
+                            textFileTextField.setText(strURL);
+                    } else {
+                            strURL =  textFileTextField.getText();
+                            if (strURL==null || strURL.length()==0) {
+                                    return;
+                            }
+                            url = new URL(strURL);
                     }
+
+
+                    // TODO: MOVE THIS TO TEXTFIELD CHANGED
+                    if (strURL.endsWith(EXCEL_EXT)) {
+                            POIFSFileSystem excelIn = new POIFSFileSystem(url.openStream());
+                            HSSFWorkbook wb = new HSSFWorkbook(excelIn);
+                            idMapper = new IDMapperExcel(wb.getSheetAt(0)); //TODO MULTIPLE SHEETS
+                    } else {
+                            idMapper = new IDMapperText(url);
+                    }
+
+            } catch(IOException e) {
+                    e.printStackTrace();
+            }
 
 //                            idMapper.readIDMapping();
 
-                    ReadIDMappingFileTask task = new ReadIDMappingFileTask(idMapper);
-                    // Configure JTask Dialog Pop-Up Box
-                    final JTaskConfig jTaskConfig = new JTaskConfig();
-                    jTaskConfig.setOwner(Cytoscape.getDesktop());
-                    jTaskConfig.displayCloseButton(true);
-                    jTaskConfig.displayCancelButton(false);
-                    jTaskConfig.displayStatus(true);
-                    jTaskConfig.setAutoDispose(false);
+            ReadIDMappingFileTask task = new ReadIDMappingFileTask(idMapper);
+            // Configure JTask Dialog Pop-Up Box
+            final JTaskConfig jTaskConfig = new JTaskConfig();
+            jTaskConfig.setOwner(Cytoscape.getDesktop());
+            jTaskConfig.displayCloseButton(true);
+            jTaskConfig.displayCancelButton(false);
+            jTaskConfig.displayStatus(true);
+            jTaskConfig.setAutoDispose(false);
 
-                    // Execute Task in New Thread; pop open JTask Dialog Box.
-                    TaskManager.executeTask(task, jTaskConfig);
+            // Execute Task in New Thread; pop open JTask Dialog Box.
+            TaskManager.executeTask(task, jTaskConfig);
 
-                    String[] srcIDTypes = (String[])new TreeSet(idMapper.getSupportedTgtIDTypes()).toArray(new String[0]);
-                    toComboBox.setModel(new javax.swing.DefaultComboBoxModel(srcIDTypes));
+            String[] srcIDTypes = (String[])new TreeSet(idMapper.getSupportedTgtIDTypes()).toArray(new String[0]);
+            toComboBox.setModel(new javax.swing.DefaultComboBoxModel(srcIDTypes));
 
-                    Set<String> supportedSrcIDTypes = idMapper.getSupportedSrcIDTypes();
-                    this.resetSrcTypes(supportedSrcIDTypes);//reset in case different file selected
-                    idTypeSelectionTable.fireTableDataChanged();
-                    idTypeSelectionTable.setSupportedSrcIDType(supportedSrcIDTypes);
+            Set<String> supportedSrcIDTypes = idMapper.getSupportedSrcIDTypes();
+            this.resetSrcTypes(supportedSrcIDTypes);//reset in case different file selected
+            idTypeSelectionTable.fireTableDataChanged();
+            idTypeSelectionTable.setSupportedSrcIDType(supportedSrcIDTypes);
 
-                    updateGoButtonEnable();
-            }
+            updateGoButtonEnable();
     }//GEN-LAST:event_textFileButtonActionPerformed
 
     private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
@@ -603,6 +645,7 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
         private AttributeBasedIDMappingDialog parent;
         private AttributeBasedIDMappingModel idMapping;
         private boolean isNode;
+        private boolean isLocal;
         //private Set<String> addedFiles;
 }
 
