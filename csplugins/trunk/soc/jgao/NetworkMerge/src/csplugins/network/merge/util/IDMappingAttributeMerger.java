@@ -124,6 +124,11 @@ public class IDMappingAttributeMerger extends DefaultAttributeMerger {
                         
                         String value = ids.iterator().next(); //pick one
 
+                        String value_ori = attrs.getStringAttribute(toID, toAttrName);
+                        if (value_ori!=null && value_ori.compareTo(value)==0) {
+                                return; // no need to change
+                        }
+
                         attrs.setAttribute(toID, toAttrName, value);
                 } else if (type2==CyAttributes.TYPE_SIMPLE_LIST) {
                         //TODO how to select?

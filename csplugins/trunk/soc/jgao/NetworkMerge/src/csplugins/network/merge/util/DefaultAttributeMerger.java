@@ -96,11 +96,11 @@ public class DefaultAttributeMerger implements AttributeMerger {
 
                         if (toID.compareTo(fromID)==0 && toAttrName.compareTo(fromAttrName)==0) {
                             //TODO: if local attribute is realized, process here
-                            return;
+                            continue;
                         }
 
                         if (!attrs.hasAttribute(fromID, fromAttrName)) {
-                            return;
+                            continue;
                         }
 
                         //byte type1 = attrs.getType(fromAttrName);
@@ -108,17 +108,18 @@ public class DefaultAttributeMerger implements AttributeMerger {
 
                         if (type2 == CyAttributes.TYPE_STRING) { // the case of inconvertable attributes and simple attributes to String
                             Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
-                            Object o2 = attrs.getAttribute(toID, toAttrName);
-                            if (o2==null) { //null attribute
-                                            // how about empty attribute?
-                                attrs.setAttribute(toID, toAttrName, (String)o1);
+                            String o2 = attrs.getStringAttribute(toID, toAttrName);
+                            if (o2==null||o2.length()==0) { //null or empty attribute
+                                attrs.setAttribute(toID, toAttrName, o1.toString());
+                                //continue;
                             } else if (o1.equals(o2)) {
-                                return;// the same, do nothing
+                                //continue;// the same, do nothing
                             } else { // attribute conflict
                                 //handle the conflicts
 
-                                // first check whether some entry in conflict collecter have the same from value
+                                // first check whether some entry in conflict collecter have the same from-value
                                 // if yes, skip this one
+                                boolean exist=false;
                                 List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
                                 if (conflicts!=null) {
                                         for (AttributeConflict ac:conflicts) {
@@ -127,19 +128,20 @@ public class DefaultAttributeMerger implements AttributeMerger {
                                                 }
                                                 Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
                                                 if (o.equals(o1)) {
-                                                        return;
+                                                        exist = true;
+                                                        break;
                                                 }
                                         }
                                 }
 
                                 // add to conflict
-                                AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
-                                conflictCollector.addConflict(conflict);
-                                return;
+                                if (!exist) {
+                                        AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
+                                        conflictCollector.addConflict(conflict);
+                                }
+                                //continue;
                             }
-                        }
-
-                        if (type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST) { // only support matching between simple types
+                        } else if (type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST) { // only support matching between simple types
                                                                                      // and simple lists for now
                                                                                      //TODO: support simple and complex map?
                             Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
@@ -147,33 +149,36 @@ public class DefaultAttributeMerger implements AttributeMerger {
                             if (o2==null) {
                                 CopyingAttributeValueVisitor copyVisitor = new CopyingAttributeValueVisitor(toID,toAttrName);
                                 CyAttributesUtils.traverseAttributeValues(fromID, fromAttrName, attrs, copyVisitor);
-                                return;
+                                //continue;
                             } else if (o1.equals(o2)) {
-                                return; // the same, do nothing
+                                //continue; // the same, do nothing
                             } else { // attribute conflict
                                 //handle the conflicts
 
                                 // first check whether some entry in conflict collecter have the same from value
                                 // if yes, skip this one
+                                boolean exist=false;
                                 List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
-                                for (AttributeConflict ac:conflicts) {
-                                        if (!attrs.equals(ac.getCyAttributes())) {
-                                                throw new java.lang.IllegalStateException("different CyAttribute");
-                                        }
-                                        Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
-                                        if (o.equals(o1)) {
-                                                return;
+                                if (conflicts!=null) {
+                                        for (AttributeConflict ac:conflicts) {
+                                                if (!attrs.equals(ac.getCyAttributes())) {
+                                                        throw new java.lang.IllegalStateException("different CyAttribute");
+                                                }
+                                                Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
+                                                if (o.equals(o1)) {
+                                                        exist = true;
+                                                        break;
+                                                }
                                         }
                                 }
-
                                 // add to conflict
-                                AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
-                                conflictCollector.addConflict(conflict);
-                                return;
+                                if (!exist) {
+                                        AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
+                                        conflictCollector.addConflict(conflict);
+                                }
+                                //continue;
                             }
-                        }
-
-                        if (type2>0) { // simple type (type1>0)
+                        } else if (type2>0) { // simple type (type1>0) (Integer, Double, Boolean)
                             Object o1 = attrs.getAttribute(fromID, fromAttrName);
                             byte type1 = attrs.getType(fromAttrName);
                             if (type1!=type2) {
@@ -183,28 +188,34 @@ public class DefaultAttributeMerger implements AttributeMerger {
                             Object o2 = attrs.getAttribute(toID, toAttrName);
                             if (o2==null) {
                                 attrs.getMultiHashMap().setAttributeValue(toID, toAttrName, o1, null);
+                                //continue;
                             } else if (o1.equals(o2)) {
-                                return; // the same, do nothing
+                                //continue; // the same, do nothing
                             } else { // attribute conflict
                                 //handle the conflicts
 
                                 // first check whether some entry in conflict collecter have the same from value
                                 // if yes, skip this one
+                                boolean exist=false;
                                 List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
-                                for (AttributeConflict ac:conflicts) {
-                                        if (!attrs.equals(ac.getCyAttributes())) {
-                                                throw new java.lang.IllegalStateException("different CyAttribute");
-                                        }
-                                        Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
-                                        if (o.equals(o1)) {
-                                                return;
+                                if (conflicts!=null) {
+                                        for (AttributeConflict ac:conflicts) {
+                                                if (!attrs.equals(ac.getCyAttributes())) {
+                                                        throw new java.lang.IllegalStateException("different CyAttribute");
+                                                }
+                                                Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
+                                                if (o.equals(o1)) {
+                                                        exist = true;
+                                                        break;
+                                                }
                                         }
                                 }
-
                                 // add to conflict
-                                AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
-                                conflictCollector.addConflict(conflict);
-                                return;
+                                if (!exist) {
+                                        AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
+                                        conflictCollector.addConflict(conflict);
+                                }
+                                //continue;
                             }
                         } else { // toattr is list type
                             //TODO: use a conflict handler to handle this part?
@@ -229,7 +240,7 @@ public class DefaultAttributeMerger implements AttributeMerger {
 
                                 attrs.setListAttribute(toID, toAttrName, l2);
 
-                                return;
+                                //continue;
                             } else if (type1==CyAttributes.TYPE_SIMPLE_LIST) {
                                 type1 = attrs.getMultiHashMapDefinition().getAttributeValueType(fromAttrName);
 
@@ -253,7 +264,7 @@ public class DefaultAttributeMerger implements AttributeMerger {
 
                                 attrs.setListAttribute(toID, toAttrName, l2);
 
-                                return;
+                                //continue;
                             } else {
                                 throw new java.lang.IllegalStateException("Wrong type");
                             }
