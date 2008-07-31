@@ -130,6 +130,7 @@ class MergeAttributeTable extends JTable{
     
     protected void setMergedNetworkNameTableHeaderListener() {
         getTableHeader().addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 JTableHeader header = (JTableHeader) e.getSource();
                 JTable table = header.getTable();
@@ -157,6 +158,7 @@ class MergeAttributeTable extends JTable{
         
         column.setCellRenderer(new TableCellRenderer() {
             private DefaultTableCellRenderer defaultRender = new DefaultTableCellRenderer();
+            @Override
             public Component getTableCellRendererComponent(
                             JTable table, Object color,
                             boolean isSelected, boolean hasFocus,

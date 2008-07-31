@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -76,7 +77,7 @@ public class IDTypeSelectionTable extends JTable{
 
         initNetworks();
 
-        supportedSrcIDType = new HashSet<String>();
+        supportedSrcIDType = new TreeSet<String>();
 
         model = new IDTypeSelectionTableModel();
         setModel(model);
@@ -87,7 +88,7 @@ public class IDTypeSelectionTable extends JTable{
     }
 
     void setSupportedSrcIDType(final Set<String> types) {
-            supportedSrcIDType = types;
+            supportedSrcIDType = new TreeSet<String>(types);
     }
 
         private void initNetworks() {

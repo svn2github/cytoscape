@@ -36,16 +36,17 @@
 
 package csplugins.network.merge;
 
+import csplugins.network.merge.util.AttributeValueMatcher;
+import csplugins.network.merge.util.DefaultAttributeValueMatcher;
 import csplugins.network.merge.model.AttributeMapping;
 import csplugins.network.merge.model.MatchingAttribute;
+import csplugins.network.merge.conflict.AttributeConflictCollector;
 import csplugins.network.merge.util.AttributeMatchingUtils;
 
-import java.util.Vector;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Arrays;
 
 import cytoscape.Cytoscape;
@@ -53,7 +54,6 @@ import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.data.attr.MultiHashMapDefinition;
-
 
 import giny.model.Node;
 import giny.model.Edge;
@@ -65,16 +65,54 @@ import giny.model.GraphObject;
  * 
  */
 public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
-    private MatchingAttribute matchingAttribute;
-    private AttributeMapping nodeAttributeMapping;
-    private AttributeMapping edgeAttributeMapping;   
-    
+    protected final MatchingAttribute matchingAttribute;
+    protected final AttributeMapping nodeAttributeMapping;
+    protected final AttributeMapping edgeAttributeMapping;
+    protected final AttributeValueMatcher attributeValueMatcher;
+    protected final AttributeConflictCollector conflictCollector;
+
+    /**
+     * Constucter for regular attribute based network merge
+     * @param matchingAttribute
+     * @param nodeAttributeMapping
+     * @param edgeAttributeMapping
+     */
     public AttributeBasedNetworkMerge(final MatchingAttribute matchingAttribute,
                                final AttributeMapping nodeAttributeMapping,
-                               final AttributeMapping edgeAttributeMapping) {
+                               final AttributeMapping edgeAttributeMapping,
+                               final AttributeConflictCollector conflictCollector) {
+            this(matchingAttribute,
+                    nodeAttributeMapping,
+                    edgeAttributeMapping,
+                    conflictCollector,
+                    new DefaultAttributeValueMatcher());
+    }
+
+    /**
+     * Constucter for attribute based network merge with assigned comparator
+     * @param matchingAttribute
+     * @param nodeAttributeMapping
+     * @param edgeAttributeMapping
+     * @param attributeValueMatcher
+     *          compare whether two attributes of nodes
+     */
+    public AttributeBasedNetworkMerge(final MatchingAttribute matchingAttribute,
+                               final AttributeMapping nodeAttributeMapping,
+                               final AttributeMapping edgeAttributeMapping,
+                               final AttributeConflictCollector conflictCollector,
+                               AttributeValueMatcher attributeValueMatcher) {
+        if (matchingAttribute==null
+                || nodeAttributeMapping==null
+                || edgeAttributeMapping==null
+                || conflictCollector==null
+                || attributeValueMatcher==null) {
+                throw new java.lang.NullPointerException();
+        }
         this.matchingAttribute = matchingAttribute;
         this.nodeAttributeMapping = nodeAttributeMapping;
         this.edgeAttributeMapping = edgeAttributeMapping;
+        this.conflictCollector = conflictCollector;
+        this.attributeValueMatcher = attributeValueMatcher;
     }
     
     
@@ -86,12 +124,18 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
      * 
      * @return true if n1 and n2 matches
      */
+    @Override
     public boolean matchNode(final CyNetwork net1, 
                              final Node n1, 
                              final CyNetwork net2, 
                              final Node n2) {
         if (net1==null || net2==null || n1==null || n2==null) {
             throw new java.lang.NullPointerException();
+        }
+
+        //TODO: should it match if n1==n2?
+        if (n1==n2) {
+                return true;
         }
         
         String attr1 = matchingAttribute.getAttributeForMatching(net1.getIdentifier());
@@ -117,11 +161,8 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
                 ||!attributes.hasAttribute(id2, attr2)) { //ignore null attribute
             return false;
         }
-        return AttributeMatchingUtils.isAttributeValueMatched(id1,
-                                                           attr1,
-                                                           id2,
-                                                           attr2,
-                                                           attributes);
+
+        return attributeValueMatcher.matched(id1, attr1, id2, attr2, attributes);
     }
     
     /**
@@ -132,6 +173,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
      * 
      * @return merged Node
      */
+    @Override
     public Node mergeNode(final Map<CyNetwork,Set<GraphObject>> mapNetNode) {
         //TODO: refactor in Cytoscape3, 
         // in 2.x node with the same identifier be the same node
@@ -188,6 +230,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
      * 
      * @return merged Node
      */
+    @Override
     public Edge mergeEdge(final Map<CyNetwork,Set<GraphObject>> mapNetEdge,
                           final Node source, 
                           final Node target,
@@ -215,9 +258,9 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
      * 
      */
     protected void setAttribute(final String id, 
-                                final Map<CyNetwork,Set<GraphObject>> mapNetGO,
+                                final Map<CyNetwork,Set<GraphObject>> mapNetGOs,
                                 final AttributeMapping attributeMapping) {
-        if (id==null || mapNetGO==null || attributeMapping==null) {
+        if (id==null || mapNetGOs==null || attributeMapping==null) {
             throw new java.lang.NullPointerException();
         }
         
@@ -262,21 +305,25 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
                     }
                 }
             }
-            
-            final Set<Map.Entry<CyNetwork,Set<GraphObject>>> entrySet = mapNetGO.entrySet();
-                
-            final Iterator<Map.Entry<CyNetwork,Set<GraphObject>>> itEntry = entrySet.iterator();
+
+            // merge
+            final Iterator<Map.Entry<CyNetwork,Set<GraphObject>>> itEntryNetGOs = mapNetGOs.entrySet().iterator();
                 
             // for each attribute to be merged
-            while (itEntry.hasNext()) {
-                final Map.Entry<CyNetwork,Set<GraphObject>> entry = itEntry.next();
-                final String idNet = entry.getKey().getIdentifier();
+            while (itEntryNetGOs.hasNext()) {
+                final Map.Entry<CyNetwork,Set<GraphObject>> entryNetGOs = itEntryNetGOs.next();
+                final String idNet = entryNetGOs.getKey().getIdentifier();
                 final String attrName = attributeMapping.getOriginalAttribute(idNet, i);
                 if (attrName!=null) {
-                    final Iterator<GraphObject> itGO = entry.getValue().iterator();
+                    final Iterator<GraphObject> itGO = entryNetGOs.getValue().iterator();
                     while (itGO.hasNext()) {
                         final String idGO = itGO.next().getIdentifier();
-                        AttributeMatchingUtils.copyAttribute(idGO, attrName, id, attr_merged, cyAttributes);
+                        AttributeMatchingUtils.copyAttribute(idGO, 
+                                                             attrName,
+                                                             id,
+                                                             attr_merged,
+                                                             cyAttributes,
+                                                             conflictCollector);
                     }
                 }                    
             }    

@@ -36,15 +36,16 @@
 
 package csplugins.network.merge.util;
 
+import csplugins.network.merge.conflict.AttributeConflict;
+import csplugins.network.merge.conflict.AttributeConflictImpl;
+import csplugins.network.merge.conflict.AttributeConflictCollector;
+
 import cytoscape.data.CyAttributes;
-import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.data.AttributeValueVisitor;
 
 import java.util.Arrays;
-import java.util.Vector;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.List;
@@ -200,148 +201,59 @@ public class AttributeMatchingUtils {
         return compatibleSet.iterator().next();
         
     }
-    
-    public static boolean isAttributeValueMatched(final String id1,
-                                               final String attrName1,
-                                               final String id2, 
-                                               final String attrName2, 
-                                               final CyAttributes attrs) {
-        if ((id1 == null) || (attrName1 == null) || (id2 == null) || (attrName2==null) || (attrs == null)) {
-            throw new java.lang.IllegalArgumentException("Null argument.");
-        }        
-                
-        final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
-        if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
-            throw new java.lang.IllegalArgumentException("'"+attrName1+"' or/and '"+attrName2+"' not exists");
-        }
-
-        if (id1.compareTo(id2)==0 && attrName1.compareTo(attrName2)==0) {
-                return true;
-        }
-        
-        if (!attrs.hasAttribute(id1, attrName1) 
-                || !attrs.hasAttribute(id2, attrName2)) { // Is it neccessary to handle empty string?
-            return false; // return false for null attribute
-        }              
-
-        //TODO use a idmapping visitor to compare
-        //CmpAttributeValueVisitor cmpVisitor = new CmpAttributeValueVisitor(id1,attrName1);
-
-        //CyAttributesUtils.traverseAttributeValues(id2, attrName2, attrs, cmpVisitor);
-
-        //return cmpVisitor.getIsSame();
-        
-        byte type1 = attrs.getType(attrName1);
-        byte type2 = attrs.getType(attrName2);
-        
-        if ((type1<0&&type1!=CyAttributes.TYPE_SIMPLE_LIST)
-                ||(type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST)) { // only support matching between simple types
-                                                                     // and simple lists for now
-                                                                     //TODO: support simple and complex map?
-            Object o1 = attrs.getAttribute(id1, attrName1);
-            Object o2 = attrs.getAttribute(id2, attrName2);
-            
-            type1 = attrs.getMultiHashMapDefinition().getAttributeValueType(attrName1);
-            type2 = attrs.getMultiHashMapDefinition().getAttributeValueType(attrName2);
-            
-            return (o1.equals(o2) && type1==type2); // must be the same type for complex map
-        }
-        
-        if (type1>0&&type2>0) { // simple type
-            Object o1 = attrs.getAttribute(id1, attrName1);
-            Object o2 = attrs.getAttribute(id2, attrName2);
-            return o1.equals(o2); //TODO: idmapping
-        } else {
-            if (type1>0||type2>0) { // then one is simple type; the other is simple list
-                Object o;
-                List l;
-                if (type1>0) { // then type2 is simple list
-                    o = attrs.getAttribute(id1, attrName1);
-                    l = attrs.getListAttribute(id2, attrName2);
-                } else { // type2 is simple type and type 1 is simple list
-                    l = attrs.getListAttribute(id1, attrName1);
-                    o = attrs.getAttribute(id2, attrName2);
-                }
-                
-                int nl = l.size();
-                for (int il=0; il<nl; il++) { // for each value in the list, find if match
-                                              // cannot use List.contains(), because type may be different
-                    Object o2 = l.get(il);
-                    if (o.equals(o2)) {// if one of the value in the list is the same as the other value
-                        return true; 
-                    }
-                }
-                return false; // if no value match
-            } else { // both of them are simple lists
-                List l1 = attrs.getListAttribute(id1, attrName1);
-                List l2 = attrs.getListAttribute(id2, attrName2);
-                int nl1 = l1.size();
-                int nl2 = l2.size();
-                for (int il1=0; il1<nl1; il1++) {
-                    Object o1 = l1.get(il1);
-                    for (int il2=0; il2<nl2; il2++) {
-                        Object o2 = l2.get(il2);
-                        if (o1.equals(o2)) { // if the two lists have intersections
-                            return true; 
-                        }
-                    }
-                }
-                return false;
-            }
-        } 
-    }
-    
-    public static boolean isAttributeValueConflict(final String id1,
-                                               final String attrName1,
-                                               final String id2, 
-                                               final String attrName2, 
-                                               final CyAttributes attrs) {
-        if ((id1 == null) || (attrName1 == null) || (id2 == null) || (attrName2==null) || (attrs == null)) {
-            throw new java.lang.IllegalArgumentException("Null argument.");
-        }        
-                
-        final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
-        if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
-            throw new java.lang.IllegalArgumentException("'"+attrName1+"' or/and '"+attrName2+"' not exists");
-        }
-        
-        //if (!isAttributeTypeSame(attrName1,attrName2,attrs)) {
-        //    throw new java.lang.UnsupportedOperationException("isAttributeValueSame does not support two attribute with diffrent types");
-        //}
-
-        if (id1.compareTo(id2)==0 && attrName1.compareTo(attrName2)==0) {
-                return false;
-        }        
-        
-        if (!attrs.hasAttribute(id1, attrName1) 
-                || !attrs.hasAttribute(id2, attrName2)) { // Is it neccessary to handle empty string?
-            return false; // if one of them or both of them are null, no conflicts
-        }
-              
-
-        //TODO use a idmapping 
-        
-        byte type1 = attrs.getType(attrName1);
-        byte type2 = attrs.getType(attrName2);
-        
-        if ((type1<0&&type1!=CyAttributes.TYPE_SIMPLE_LIST)
-                ||(type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST)) { // only support matching between simple types
-                                                                     // and simple lists for now
-                                                                     //TODO: support simple and complex map?
-            Object o1 = attrs.getAttribute(id1, attrName1);
-            Object o2 = attrs.getAttribute(id2, attrName2);
-            return !o1.equals(o2);
-        }
-        
-        if (type1>0&&type2>0) { // simple type
-            Object o1 = attrs.getAttribute(id1, attrName1);
-            Object o2 = attrs.getAttribute(id2, attrName2);
-            return !o1.equals(o2);
-        } else {
-            return false; // no conflicts in these case
-                          // when merging, copy value of simple type or simple list to the other simple list
-        } 
-    }
+//
+//    public static boolean isAttributeValueConflict(final String id1,
+//                                               final String attrName1,
+//                                               final String id2,
+//                                               final String attrName2,
+//                                               final CyAttributes attrs,
+//                                               final Comparator comparator) {
+//        if ((id1 == null) || (attrName1 == null) || (id2 == null) || (attrName2==null) || (attrs == null)) {
+//            throw new java.lang.IllegalArgumentException("Null argument.");
+//        }
+//
+//        final List<String> attrNames = Arrays.asList(attrs.getAttributeNames());
+//        if (!attrNames.contains(attrName1) || !attrNames.contains(attrName2)) {
+//            throw new java.lang.IllegalArgumentException("'"+attrName1+"' or/and '"+attrName2+"' not exists");
+//        }
+//
+//        //if (!isAttributeTypeSame(attrName1,attrName2,attrs)) {
+//        //    throw new java.lang.UnsupportedOperationException("isAttributeValueSame does not support two attribute with diffrent types");
+//        //}
+//
+//        if (id1.compareTo(id2)==0 && attrName1.compareTo(attrName2)==0) {
+//                return false;
+//        }
+//
+//        if (!attrs.hasAttribute(id1, attrName1)
+//                || !attrs.hasAttribute(id2, attrName2)) { // Is it neccessary to handle empty string?
+//            return false; // if one of them or both of them are null, no conflicts
+//        }
+//
+//
+//        //TODO use a idmapping
+//
+//        byte type1 = attrs.getType(attrName1);
+//        byte type2 = attrs.getType(attrName2);
+//
+//        if ((type1<0&&type1!=CyAttributes.TYPE_SIMPLE_LIST)
+//                ||(type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST)) { // only support matching between simple types
+//                                                                     // and simple lists for now
+//                                                                     //TODO: support simple and complex map?
+//            Object o1 = attrs.getAttribute(id1, attrName1);
+//            Object o2 = attrs.getAttribute(id2, attrName2);
+//            return comparator.compare(o1, o2)!=0;
+//        }
+//
+//        if (type1>0&&type2>0) { // simple type
+//            Object o1 = attrs.getAttribute(id1, attrName1);
+//            Object o2 = attrs.getAttribute(id2, attrName2);
+//            return comparator.compare(o1, o2)!=0;
+//        } else {
+//            return false; // no conflicts in these case
+//                          // when merging, copy value of simple type or simple list to the other simple list
+//        }
+//    }
     
     //TODO could this function move to cytoscape.data.CyAttributeUtil?
     /**
@@ -359,7 +271,8 @@ public class AttributeMatchingUtils {
                                      final String fromAttrName,
                                      final String toID, 
                                      final String toAttrName, 
-                                     final CyAttributes attrs) {
+                                     final CyAttributes attrs,
+                                     final AttributeConflictCollector conflictCollector) {
         if ((fromID == null) || (fromAttrName == null) || (toID == null) || (toAttrName == null) || (attrs==null)) {
             throw new java.lang.IllegalArgumentException("Null argument.");
         }        
@@ -381,23 +294,39 @@ public class AttributeMatchingUtils {
         if (!attrs.hasAttribute(fromID, fromAttrName)) {
             return;
         }
-        
-        //if (isAttributeValueConflict())
-        
-        //TODO use a idmapping 
-        
+                
         //byte type1 = attrs.getType(fromAttrName);
         byte type2 = attrs.getType(toAttrName);
         
         if (type2 == CyAttributes.TYPE_STRING) { // the case of inconvertable attributes and simple attributes to String
             Object o1 = attrs.getAttribute(fromID, fromAttrName); //Correct??
             Object o2 = attrs.getAttribute(toID, toAttrName);
-            if (o2==null) {
+            if (o2==null) { //null attribute
+                            // how about empty attribute?
                 attrs.setAttribute(toID, toAttrName, (String)o1);
             } else if (o1.equals(o2)) {
                 return;// the same, do nothing
             } else { // attribute conflict
-                //TODO handle the conflicts
+                //handle the conflicts
+
+                // first check whether some entry in conflict collecter have the same from value
+                // if yes, skip this one
+                List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
+                if (conflicts!=null) {
+                        for (AttributeConflict ac:conflicts) {
+                                if (!attrs.equals(ac.getCyAttributes())) {
+                                        throw new java.lang.IllegalStateException("different CyAttribute");
+                                }
+                                Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
+                                if (o.equals(o1)) {
+                                        return;
+                                }
+                        }
+                }
+
+                // add to conflict
+                AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
+                conflictCollector.addConflict(conflict);
                 return;
             }
         }
@@ -414,7 +343,24 @@ public class AttributeMatchingUtils {
             } else if (o1.equals(o2)) {
                 return; // the same, do nothing
             } else { // attribute conflict
-                //TODO handle the conflicts
+                //handle the conflicts
+
+                // first check whether some entry in conflict collecter have the same from value
+                // if yes, skip this one
+                List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
+                for (AttributeConflict ac:conflicts) {
+                        if (!attrs.equals(ac.getCyAttributes())) {
+                                throw new java.lang.IllegalStateException("different CyAttribute");
+                        }
+                        Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
+                        if (o.equals(o1)) {
+                                return;
+                        }
+                }
+
+                // add to conflict
+                AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
+                conflictCollector.addConflict(conflict);
                 return;
             }
         }
@@ -432,10 +378,29 @@ public class AttributeMatchingUtils {
             } else if (o1.equals(o2)) {
                 return; // the same, do nothing
             } else { // attribute conflict
-                //TODO handle the conflicts
+                //handle the conflicts
+
+                // first check whether some entry in conflict collecter have the same from value
+                // if yes, skip this one
+                List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
+                for (AttributeConflict ac:conflicts) {
+                        if (!attrs.equals(ac.getCyAttributes())) {
+                                throw new java.lang.IllegalStateException("different CyAttribute");
+                        }
+                        Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
+                        if (o.equals(o1)) {
+                                return;
+                        }
+                }
+
+                // add to conflict
+                AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
+                conflictCollector.addConflict(conflict);
                 return;
             }
         } else { // toattr is list type
+            //TODO: use a conflict handler to handle this part?
+
             type2 = attrs.getMultiHashMapDefinition().getAttributeValueType(toAttrName);
             byte type1 = attrs.getType(fromAttrName);
             if (type1>0) {
@@ -517,6 +482,7 @@ public class AttributeMatchingUtils {
             this.toAttrName = toAttrName;
         }
 
+        @Override
         public void visitingAttributeValue(String fromID, String attrName,
                                            CyAttributes attrs, Object[] keySpace,
                                            Object visitedValue) {

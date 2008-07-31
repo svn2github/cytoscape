@@ -40,18 +40,65 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * To store ID mapping for attributes of nodes/edges
  * 
  */
 public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMappingModel {
-        private final Map<String, Map<String,String>> mapGOAttrSrc; // Node/edge id -> attribute name -> souce ID
+        private final Map<String, Map<String,String>> mapGOAttrSrcType; // Node/edge id -> attribute name -> souce ID type
+        //private final Map<String, Map<String,String>> mapGOAttrSrcID; // Node/edge id -> attribute name -> souce ID
         private final Map<String,Map<String, Map<String, Set<String>>>> mapGoAttrTgtTypeTgtIDs; // Node/edge id -> attribute name -> target ID type -> target IDs
+        private final Set<String> idTypes;
 
         public AttributeBasedIDMappingModelImpl() {
-                mapGOAttrSrc = new HashMap<String, Map<String,String>>();
+                mapGOAttrSrcType = new HashMap<String, Map<String,String>>();
+                //mapGOAttrSrcID = new HashMap<String, Map<String,String>>();
                 mapGoAttrTgtTypeTgtIDs = new HashMap<String,Map<String, Map<String, Set<String>>>>();
+                idTypes = new HashSet<String>();
+        }
+
+        @Override
+        public boolean isEmpty() {
+                return mapGOAttrSrcType.isEmpty();
+        }
+
+        /**
+         *
+         * @return id type set of all data
+         */
+        @Override
+        public Set<String> getIDTypes() {
+                return idTypes;
+        }
+
+        /**
+         * remove all data
+         */
+        @Override
+        public void clear() {
+                mapGOAttrSrcType.clear();
+                //mapGOAttrSrcID.clear();
+                mapGoAttrTgtTypeTgtIDs.clear();
+                idTypes.clear();
+        }
+
+        /**
+         *
+         * @return map of nodes/edges to attributes
+         */
+        @Override
+        public Map<String,Set<String>> getMapGOAttrs() {
+                Map<String,Set<String>> mapGOAttrs = new HashMap<String,Set<String>>();
+
+                Iterator<Map.Entry<String,Map<String,String>>> itEntryGOAttrSrc = mapGOAttrSrcType.entrySet().iterator();
+                while (itEntryGOAttrSrc.hasNext()) {
+                        Map.Entry<String,Map<String,String>> entryGOAttrSrc = itEntryGOAttrSrc.next();
+                        mapGOAttrs.put(entryGOAttrSrc.getKey(), entryGOAttrSrc.getValue().keySet());
+                }
+
+                return mapGOAttrs;
         }
 
         /**
@@ -73,13 +120,45 @@ public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMapping
                         throw new java.lang.NullPointerException();
                 }
 
-                final Map<String,String> mapAttrSrc = mapGOAttrSrc.get(id);
+                final Map<String,String> mapAttrSrc = mapGOAttrSrcType.get(id);
                 if (mapAttrSrc==null) {
                         return null;
                 }
 
                 final String src = mapAttrSrc.get(attrName);
                 return src;
+        }
+
+        /**
+         * Get source ID attribute attrName of node/edge id
+         *
+         * @param id
+         *      identifier of the node/edge
+         * @param attrName
+         *      attribute name
+         *
+         * @return
+         *      source ID set if exist, null otherwise
+         *
+         * @throws NullPointerException if id or attrName is null
+         */
+        @Override
+        public Set<String> getSrcIDs(final String id, final String attrName) {
+                if (id==null || attrName==null) {
+                        throw new java.lang.NullPointerException();
+                }
+
+                String type = getSrcIDType(id,attrName);
+                if (type==null) {
+                        return null;
+                }
+
+                return getTgtIDs(id, attrName, type);
+
+//                if (ids==null) {
+//                        throw new java.lang.IllegalStateException();
+//                }
+
         }
 
         /**
@@ -146,6 +225,45 @@ public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMapping
         }
 
         /**
+         * Add id mapping
+         * @param id
+         *      identifier of the node/edge
+         * @param attrName
+         *      attribute name
+         * @param tgtType
+         *      target ID type
+         *
+         * @param tgtIDs
+         *      Set of target IDs
+         */
+        @Override
+        public void addIDMapping(final String idGO,
+                                 final String attrName,
+                                 final String srcIDType,
+                                 final String srcID,
+                                 final String tgtIDType,
+                                 final Set<String> tgtIDs) {
+                if (idGO==null
+                        || attrName==null
+                        || srcIDType==null
+                        || srcID==null
+                        || tgtIDType==null
+                        || tgtIDs==null) {
+                        throw new java.lang.NullPointerException();
+                }
+
+                this.setSrcIDAndType(idGO, attrName, srcIDType);
+
+                if (this.getTgtIDs(idGO, attrName, srcIDType)==null) { //add source type, source id
+                        Set<String> srcIDs = new HashSet<String>();
+                        srcIDs.add(srcID);
+                        this.addTgtIDs(idGO, attrName, srcIDType, srcIDs);
+                }
+
+                this.addTgtIDs(idGO, attrName, tgtIDType, tgtIDs);
+        }
+
+        /**
          * Set source ID type
          * @param id
          *      identifier of the node/edge
@@ -156,19 +274,20 @@ public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMapping
          *
          * @throws NullPointerException if id or attrName or idType is null
          */
-        @Override
-        public void setSrcIDType(final String id, final String attrName, final String idType) {
+        protected void setSrcIDAndType(String id, String attrName, String idType) {
                 if (id==null || attrName==null || idType==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                Map<String,String> mapAttrSrc = mapGOAttrSrc.get(id);
-                if (mapAttrSrc==null) {
-                        mapAttrSrc = new HashMap<String,String>();
-                        mapGOAttrSrc.put(id, mapAttrSrc);
+                // put type
+                Map<String,String> mapAttrSrcType = mapGOAttrSrcType.get(id);
+                if (mapAttrSrcType==null) {
+                        mapAttrSrcType = new HashMap<String,String>();
+                        mapGOAttrSrcType.put(id, mapAttrSrcType);
                 }
 
-                mapAttrSrc.put(attrName, idType);
+                mapAttrSrcType.put(attrName, idType);
+                idTypes.add(idType);
         }
 
         /**
@@ -183,8 +302,7 @@ public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMapping
          * @param tgtIDs
          *      Set of target IDs
          */
-        @Override
-        public void addTgtIDs(final String id, final String attrName, final String tgtType, final Set<String> tgtIDs) {
+        protected void addTgtIDs(final String id, final String attrName, final String tgtType, final Set<String> tgtIDs) {
                 if (id==null || attrName==null || tgtType==null || tgtIDs==null) {
                         throw new java.lang.NullPointerException();
                 }
@@ -207,7 +325,8 @@ public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMapping
                         mapTgtTypeTgtIDs.put(tgtType, ids);
                 }
 
-                ids.addAll(ids);
+                ids.addAll(tgtIDs);
+                idTypes.add(tgtType);
         }
 
 }

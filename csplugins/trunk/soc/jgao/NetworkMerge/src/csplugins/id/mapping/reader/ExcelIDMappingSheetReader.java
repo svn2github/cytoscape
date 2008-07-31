@@ -41,6 +41,8 @@ import csplugins.id.mapping.model.IDMappingListImpl;
 
 import java.util.List;
 import java.util.Vector;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import java.io.IOException;
@@ -77,12 +79,17 @@ public class ExcelIDMappingSheetReader extends IDMappingTableReader {
                         return;
                 }
 
+
+                Set<String> typeSet = new HashSet<String>();
                 for (String type : types) {
                         if (type==null || type.length()==0) {
+                                System.err.println("type is null or empty");
                                 return;
                         }
-                        idMappings.addIDType(type);
+                        typeSet.add(type);
                 }
+
+                idMappings.addIDTypes(typeSet);
 
                 // read each ID mapping (line)
                 int rowCount = 1;
@@ -105,9 +112,9 @@ public class ExcelIDMappingSheetReader extends IDMappingTableReader {
 	 * @param row
 	 * @return
 	 */
-	private String[] createElementStringList(HSSFRow row) {
+	private String[] createElementStringList(final HSSFRow row) {
                 List<String> cells = new Vector<String>();
-                String nullStr = "";
+                final String nullStr = "";
 
 		Iterator<HSSFCell> itCell = row.cellIterator();
                 while (itCell.hasNext()) {
@@ -129,6 +136,13 @@ public class ExcelIDMappingSheetReader extends IDMappingTableReader {
 			}
 		}
 
-		return cells.toArray(new String[0]);
+                final int n = cells.size();
+                String[] return_this = new String[n];
+                for (int i=0; i<n; i++) {
+                        String cell = cells.get(i);
+                        return_this[i] = nullStr.compareTo(cell)==0 ? null:cell;
+                }
+
+		return return_this;
 	}
 }

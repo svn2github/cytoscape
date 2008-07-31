@@ -40,6 +40,16 @@ import csplugins.network.merge.model.AttributeMapping;
 import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.ui.NetworkMergeDialog;
 import csplugins.network.merge.NetworkMerge.Operation;
+import csplugins.network.merge.conflict.AttributeConflictHandler;
+import csplugins.network.merge.conflict.IDMappingAttributeConflictHandler;
+import csplugins.network.merge.conflict.DefaultAttributeConflictHandler;
+import csplugins.network.merge.conflict.AttributeConflictManager;
+import csplugins.network.merge.conflict.AttributeConflictCollector;
+import csplugins.network.merge.conflict.AttributeConflictCollectorImpl;
+import csplugins.network.merge.util.AttributeValueMatcher;
+import csplugins.network.merge.util.DefaultAttributeValueMatcher;
+import csplugins.network.merge.util.IDMappingAttributeValueMatcher;
+import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
@@ -60,6 +70,7 @@ import java.awt.event.ActionEvent;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Vector;
 
 /**
  * Plugin to merge networks
@@ -88,13 +99,20 @@ public class NetworkMergePlugin extends CytoscapePlugin {
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setVisible(true);
             if (!dialog.isCancelled()) {
-                final NetworkMergeSessionTask task = new NetworkMergeSessionTask(
+                AttributeBasedIDMappingModel idMapping = dialog.getIDMapping();
+
+                AttributeConflictCollector conflictCollector = new AttributeConflictCollectorImpl();
+
+                // network merge task
+                Task task = new NetworkMergeSessionTask(
                                     dialog.getMatchingAttribute(),
                                     dialog.getNodeAttributeMapping(),
                                     dialog.getEdgeAttributeMapping(),
                                     dialog.getSelectedNetworkList(),
                                     dialog.getOperation(),
-                                    dialog.getMergedNetworkName());
+                                    dialog.getMergedNetworkName(),
+                                    conflictCollector,
+                                    idMapping);
                 
                 // Configure JTask Dialog Pop-Up Box
                 final JTaskConfig jTaskConfig = new JTaskConfig();
@@ -106,6 +124,12 @@ public class NetworkMergePlugin extends CytoscapePlugin {
 
                 // Execute Task in New Thread; pop open JTask Dialog Box.
                 TaskManager.executeTask(task, jTaskConfig);
+
+                // conflict handling task
+                if (!conflictCollector.isEmpty()) {
+                        task = new HandleConflictsTask(conflictCollector, idMapping);
+                        TaskManager.executeTask(task, jTaskConfig);
+                }
             }
         }
         
@@ -134,7 +158,10 @@ class NetworkMergeSessionTask implements Task {
     private AttributeMapping edgeAttributeMapping;
     private List<CyNetwork> selectedNetworkList;
     private Operation operation;
-    private String mergedNetworkName; 
+    private String mergedNetworkName;
+    AttributeConflictCollector conflictCollector;
+    AttributeBasedIDMappingModel idMapping;
+
     private TaskMonitor taskMonitor;
 
     /**
@@ -146,13 +173,17 @@ class NetworkMergeSessionTask implements Task {
                              final AttributeMapping edgeAttributeMapping,
                              final List<CyNetwork> selectedNetworkList,
                              final Operation operation,
-                             final String mergedNetworkName) {
+                             final String mergedNetworkName,
+                             final AttributeConflictCollector conflictCollector,
+                             final AttributeBasedIDMappingModel idMapping) {
         this.matchingAttribute = matchingAttribute;
         this.nodeAttributeMapping = nodeAttributeMapping;
         this.edgeAttributeMapping = edgeAttributeMapping;
         this.selectedNetworkList = selectedNetworkList;
         this.operation = operation;
         this.mergedNetworkName = mergedNetworkName;
+        this.conflictCollector = conflictCollector;
+        this.idMapping = idMapping;
     }
 
     /**
@@ -165,16 +196,30 @@ class NetworkMergeSessionTask implements Task {
     public void run() {
         taskMonitor.setStatus("Merging networks.\n\nIt may take a while.\nPlease wait...");
         taskMonitor.setPercentCompleted(0);
+
+
         
         try {
+            final AttributeValueMatcher attributeValueMatcher;
+            if (idMapping==null) {
+                    attributeValueMatcher = new DefaultAttributeValueMatcher();
+            } else {
+                    attributeValueMatcher = new IDMappingAttributeValueMatcher(idMapping);
+            }
+
             final NetworkMerge networkMerge = new AttributeBasedNetworkMerge(
                                 matchingAttribute,
                                 nodeAttributeMapping,
-                                edgeAttributeMapping);
+                                edgeAttributeMapping,
+                                conflictCollector,
+                                attributeValueMatcher);
+           
             CyNetwork mergedNetwork = networkMerge.mergeNetwork(
                                 selectedNetworkList,
                                 operation,
                                 mergedNetworkName);
+
+
 /*
             cytoscape.view.CyNetworkView networkView = Cytoscape.getNetworkView(mergedNetworkName);
             
@@ -205,21 +250,22 @@ class NetworkMergeSessionTask implements Task {
             taskMonitor.setPercentCompleted(100);
             taskMonitor.setStatus("The selected networks were successfully merged into network '"
                                   + mergedNetwork.getTitle()
-                                  + "'");
-            
-            //TODO handle attribute conflicts here
-        
+                                  + "' with "
+                                  + conflictCollector.getConfilctCount()
+                                  + " attribute conflicts.");
+                    
         } catch(Exception e) {
             taskMonitor.setPercentCompleted(100);
             taskMonitor.setStatus("Network Merge Failed!");
             e.printStackTrace();
-        }
+        } 
         
     }
 
     /**
      * Halts the Task: Not Currently Implemented.
      */
+    @Override
     public void halt() {
             // Task can not currently be halted.
             taskMonitor.setPercentCompleted(100);
@@ -232,6 +278,7 @@ class NetworkMergeSessionTask implements Task {
      * @param taskMonitor
      *            TaskMonitor Object.
      */
+    @Override
     public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
             this.taskMonitor = taskMonitor;
     }
@@ -241,6 +288,97 @@ class NetworkMergeSessionTask implements Task {
      *
      * @return Task Title.
      */
+    @Override
+    public String getTitle() {
+            return "Merging networks";
+    }
+}
+
+class HandleConflictsTask implements Task {
+    private AttributeConflictCollector conflictCollector;
+    private AttributeBasedIDMappingModel idMapping;
+
+    private TaskMonitor taskMonitor;
+
+    /**
+     * Constructor.<br>
+     *
+     */
+    HandleConflictsTask(final AttributeConflictCollector conflictCollector,
+                        final AttributeBasedIDMappingModel idMapping) {
+        this.conflictCollector = conflictCollector;
+        this.idMapping = idMapping;
+    }
+
+    /**
+     * Executes Task
+     *
+     * @throws
+     * @throws Exception
+     */
+    @Override
+    public void run() {
+        taskMonitor.setStatus("Handle conflicts.\n\nIt may take a while.\nPlease wait...");
+        taskMonitor.setPercentCompleted(0);
+
+        try {
+             int nBefore = conflictCollector.getConfilctCount();
+
+             List<AttributeConflictHandler> conflictHandlers = new Vector<AttributeConflictHandler>();
+
+             AttributeConflictHandler conflictHandler;
+
+             if (idMapping!=null) {
+                conflictHandler = new IDMappingAttributeConflictHandler(idMapping);
+                conflictHandlers.add(conflictHandler);
+             }
+
+             conflictHandler = new DefaultAttributeConflictHandler();
+             conflictHandlers.add(conflictHandler);
+
+             AttributeConflictManager conflictManager = new AttributeConflictManager(conflictCollector,conflictHandlers);
+             conflictManager.handleConflicts();
+
+             int nAfter = conflictCollector.getConfilctCount();
+
+             taskMonitor.setPercentCompleted(100);
+             taskMonitor.setStatus("Successfully handled " + (nBefore-nAfter) + " attribute conflicts. "
+                                        + nAfter+" conflicts remains.");
+        } catch(Exception e) {
+                taskMonitor.setPercentCompleted(100);
+                taskMonitor.setStatus("Conflict handle Failed!");
+                e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Halts the Task: Not Currently Implemented.
+     */
+    @Override
+    public void halt() {
+            // Task can not currently be halted.
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Failed!!!");
+    }
+
+    /**
+     * Sets the Task Monitor.
+     *
+     * @param taskMonitor
+     *            TaskMonitor Object.
+     */
+    @Override
+    public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+            this.taskMonitor = taskMonitor;
+    }
+
+    /**
+     * Gets the Task Title.
+     *
+     * @return Task Title.
+     */
+    @Override
     public String getTitle() {
             return "Merging networks";
     }

@@ -57,7 +57,7 @@ public interface IDMappingList {
          * Add an new ID type
          *
          * @param type
-         *      ID typs
+         *      ID type
          *
          * @return
          *      true if successful; false otherwise, e.g. this ID type has
@@ -66,6 +66,16 @@ public interface IDMappingList {
          * @throws NullPointerException if type is null
          */
         public boolean addIDType(String type);
+
+        /**
+         * Add an new ID type
+         *
+         * @param type
+         *      ID type
+         *
+         * @throws NullPointerException if types is null
+         */
+        public void addIDTypes(Set<String> types);
 
         /**
          * Get whether a id type is contained

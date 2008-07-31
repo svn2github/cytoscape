@@ -131,6 +131,26 @@ public class IDMappingListImpl implements IDMappingList {
                 return success;
         }
 
+                /**
+         * Add an new ID type
+         *
+         * @param type
+         *      ID type
+         *
+         * @throws NullPointerException if types is null
+         */
+        @Override
+        public void addIDTypes(Set<String> types) {
+                if (types==null) {
+                        throw new java.lang.NullPointerException();
+                }
+
+                Iterator<String> it = types.iterator();
+                while (it.hasNext()) {
+                        this.addIDType(it.next());
+                }
+        }
+
         /**
          * Get the number of ID mapping
          *

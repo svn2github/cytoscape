@@ -75,12 +75,11 @@ public class ReadIDMappingFileTask implements Task {
 
                         taskMonitor.setPercentCompleted(100);
                         taskMonitor.setStatus("Succesfully read ID mappings.\n");
-                } catch (IOException e) {
-                        e.printStackTrace();
-                } finally {
+                } catch (Exception e) {
                         taskMonitor.setPercentCompleted(100);
                         taskMonitor.setStatus("Reading ID mappings failed.\n");
-                }
+                        e.printStackTrace();
+                } 
 
 	}
 

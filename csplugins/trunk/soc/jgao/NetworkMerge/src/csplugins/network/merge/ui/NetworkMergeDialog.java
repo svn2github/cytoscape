@@ -45,7 +45,10 @@ import csplugins.network.merge.model.AttributeMappingImpl;
 import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.model.MatchingAttributeImpl;
 
+import csplugins.id.mapping.ui.IDMappingPreviewDialog;
+
 import csplugins.id.mapping.ui.AttributeBasedIDMappingDialog;
+import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -107,7 +110,7 @@ public class NetworkMergeDialog extends JDialog {
     public NetworkMergeDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         frame = parent;
-        //idMapping = new TreeMap<String,Map<String,Vector<CyIDMapping>>>();
+        idMapping = null;
         matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
         nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());        
         edgeAttributeMapping = new AttributeMappingImpl(Cytoscape.getEdgeAttributes());
@@ -144,7 +147,8 @@ public class NetworkMergeDialog extends JDialog {
                 matchNodeTable = new MatchNodeTable(matchingAttribute);
                 attributeScrollPane = new javax.swing.JScrollPane();
                 javax.swing.JPanel idMappingPanel = new javax.swing.JPanel();
-                idMappingButton = new javax.swing.JButton();
+                importIDMappingButton = new javax.swing.JButton();
+                viewIDMappingButton = new javax.swing.JButton();
                 javax.swing.JSeparator jSeparator3 = new javax.swing.JSeparator();
                 javax.swing.JPanel mergeAttributePanel = new javax.swing.JPanel();
                 javax.swing.JTabbedPane mergeAttributeTabbedPane = new javax.swing.JTabbedPane();
@@ -412,9 +416,9 @@ public class NetworkMergeDialog extends JDialog {
 
                 idMappingPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
 
-                idMappingButton.setText("Use ID mappings");
-                idMappingButton.setEnabled(false);
-                idMappingButton.addActionListener(new java.awt.event.ActionListener() {
+                importIDMappingButton.setText("Import ID mappings");
+                importIDMappingButton.setEnabled(false);
+                importIDMappingButton.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 Map<String,Set<String>> selectedNetworkAttribute = new HashMap<String,Set<String>>();
                                 Iterator<Map.Entry<String,String>> itEntry = matchingAttribute.getNetAttrMap().entrySet().iterator();
@@ -427,15 +431,31 @@ public class NetworkMergeDialog extends JDialog {
                                         selectedNetworkAttribute.put(netID,attrs);
                                 }
                                 final boolean isNode = true;
-                                AttributeBasedIDMappingDialog dialog = new AttributeBasedIDMappingDialog(frame,true,selectedNetworkAttribute,isNode);
+                                csplugins.id.mapping.ui.AttributeBasedIDMappingDialog dialog = new csplugins.id.mapping.ui.AttributeBasedIDMappingDialog(frame,true,selectedNetworkAttribute,isNode);
                                 dialog.setLocationRelativeTo(frame);
                                 dialog.setVisible(true);
                                 if (!dialog.isCancelled()) {
-
+                                        idMapping = dialog.getIDMapping();
+                                        if (idMapping!=null) {
+                                                if (idMapping.isEmpty()) {
+                                                        idMapping = null;
+                                                } else {
+                                                        viewIDMappingButton.setEnabled(true);
+                                                }
+                                        }
                                 }
                         }
                 });
-                idMappingPanel.add(idMappingButton);
+                idMappingPanel.add(importIDMappingButton);
+
+                viewIDMappingButton.setText("View ID Mapping");
+                viewIDMappingButton.setEnabled(false);
+                viewIDMappingButton.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                viewIDMappingButtonActionPerformed(evt);
+                        }
+                });
+                idMappingPanel.add(viewIDMappingButton);
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
@@ -530,6 +550,16 @@ public class NetworkMergeDialog extends JDialog {
                 pack();
         }// </editor-fold>//GEN-END:initComponents
 
+    private void viewIDMappingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewIDMappingButtonActionPerformed
+            IDMappingPreviewDialog dialog = new IDMappingPreviewDialog(frame,true,idMapping);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+            if (idMapping.isEmpty()) {
+                    idMapping = null;
+                    viewIDMappingButton.setEnabled(false);
+            }
+}//GEN-LAST:event_viewIDMappingButtonActionPerformed
+
 /*
  * Call when adding or removing a network to/from selected network list
  * 
@@ -550,13 +580,13 @@ private void addRemoveAttributeMapping(CyNetwork network, boolean isAdd) {
 
 private void updataIdMappingButtonEnable() {
     if (selectedNetworkData.getSize()<2) {
-        idMappingButton.setToolTipText("Select at least two networks to merge");
-        idMappingButton.setEnabled(false);
+        importIDMappingButton.setToolTipText("Select at least two networks to merge");
+        importIDMappingButton.setEnabled(false);
         return;
     }
     
-    idMappingButton.setToolTipText("Click to import ID mappings for matching nodes");
-    idMappingButton.setEnabled(true);
+    importIDMappingButton.setToolTipText("Click to import ID mappings for matching nodes");
+    importIDMappingButton.setEnabled(true);
 }
 
 private void updateOKButtonEnable() {
@@ -625,6 +655,10 @@ public boolean isCancelled() {
     return cancelled;
 }
 
+public AttributeBasedIDMappingModel getIDMapping() {
+        return idMapping;
+}
+
 /*
  * return node attribute for matching
  * 
@@ -663,6 +697,7 @@ public List<CyNetwork> getSelectedNetworkList() {
     private AttributeMapping nodeAttributeMapping;
     private AttributeMapping edgeAttributeMapping;
     private MatchingAttribute matchingAttribute;
+    private AttributeBasedIDMappingModel idMapping;
             
     private boolean cancelled = true;
     private Frame frame;
@@ -676,7 +711,7 @@ public List<CyNetwork> getSelectedNetworkList() {
         private javax.swing.JPanel attributePanel;
         private javax.swing.JScrollPane attributeScrollPane;
         private javax.swing.JButton cancelButton;
-        private javax.swing.JButton idMappingButton;
+        private javax.swing.JButton importIDMappingButton;
         private javax.swing.JButton leftButton;
         private javax.swing.JButton okButton;
         private javax.swing.JComboBox operationComboBox;
@@ -686,6 +721,7 @@ public List<CyNetwork> getSelectedNetworkList() {
         private NetworkListModel selectedNetworkData;
         private javax.swing.JList unselectedNetworkList;
         private NetworkListModel unselectedNetworkData;
+        private javax.swing.JButton viewIDMappingButton;
         // End of variables declaration//GEN-END:variables
 
     private class NetworkListModel extends AbstractListModel {
@@ -696,10 +732,12 @@ public List<CyNetwork> getSelectedNetworkList() {
             model = new TreeMap<String,CyNetwork>();
         }
 
+        @Override
         public int getSize() {
             return model.size();
         }
 
+        @Override
         public CyNetwork getElementAt(int index) {
             return (CyNetwork) model.values().toArray()[index];
         }

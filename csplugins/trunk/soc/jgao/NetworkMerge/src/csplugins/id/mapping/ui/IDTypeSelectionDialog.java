@@ -37,7 +37,7 @@
 package csplugins.id.mapping.ui;
 
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public class IDTypeSelectionDialog extends javax.swing.JDialog {
@@ -46,7 +46,7 @@ public class IDTypeSelectionDialog extends javax.swing.JDialog {
     public IDTypeSelectionDialog(java.awt.Frame parent, boolean modal, Set<String> idTypes, Set<String> selectedIdTypes) {
         super(parent, modal);
         this.idTypes = idTypes;
-        this.selectedIdTypes = new TreeSet<String>(selectedIdTypes);
+        this.selectedIdTypes = new HashSet<String>(selectedIdTypes);
         initComponents();
     }
 

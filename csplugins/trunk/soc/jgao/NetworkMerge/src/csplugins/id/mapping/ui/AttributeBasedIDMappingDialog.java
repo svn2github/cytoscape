@@ -35,6 +35,8 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
         this.selectedNetworkAttribute = selectedNetworkAttribute;
         this.isNode = isNode;
 
+        cancelled = true;
+
         idMapping = new AttributeBasedIDMappingModelImpl();
 
         initComponents();
@@ -65,7 +67,7 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
                 idMappingPane.setMinimumSize(new java.awt.Dimension(400, 400));
                 idMappingPane.setPreferredSize(new java.awt.Dimension(600, 600));
 
-                idMappingFilePanel = new AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode);
+                idMappingFilePanel = new csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode);
                 idMappingPane.addTab("From file", idMappingFilePanel);
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
@@ -91,7 +93,11 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
                 optionPanel.add(optionButton);
 
                 previewButton.setText("Preview");
-                previewButton.setEnabled(false);
+                previewButton.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                previewButtonActionPerformed(evt);
+                        }
+                });
                 optionPanel.add(previewButton);
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
@@ -147,6 +153,15 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
             setVisible(false);
     }//GEN-LAST:event_okButtonActionPerformed
 
+    private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
+            IDMappingPreviewDialog dialog = new IDMappingPreviewDialog(frame,true,idMapping);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+            if (idMapping.isEmpty()) {
+                    idMappingFilePanel.clearAddedFiles();
+            }
+    }//GEN-LAST:event_previewButtonActionPerformed
+
 public boolean isCancelled() {
     return cancelled;
 }
@@ -163,7 +178,7 @@ void setOKButtonEnable(boolean enable) {
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JButton cancelButton;
         private javax.swing.JTabbedPane idMappingPane;
-        private AttributeBasedIDMappingFilePanel idMappingFilePanel;
+        private csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel idMappingFilePanel;
         private javax.swing.JButton okButton;
         private javax.swing.JButton optionButton;
         //private NetworkMergeOptionDialog optionDialog;

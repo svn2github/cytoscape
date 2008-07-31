@@ -45,6 +45,14 @@ import java.util.Map;
  */
 public interface AttributeBasedIDMappingModel {
 
+        public boolean isEmpty();
+
+        /**
+         * 
+         * @return map of nodes/edges to attributes
+         */
+        public Map<String,Set<String>> getMapGOAttrs();
+
         /**
          * Get source ID type attribute attrName of node/edge id
          *
@@ -59,6 +67,21 @@ public interface AttributeBasedIDMappingModel {
          * @throws NullPointerException if id or attrName is null
          */
         public String getSrcIDType(String id, String attrName);
+
+        /**
+         * Get source ID attribute attrName of node/edge id
+         *
+         * @param id
+         *      identifier of the node/edge
+         * @param attrName
+         *      attribute name
+         *
+         * @return
+         *      source ID if exist, null otherwise
+         *
+         * @throws NullPointerException if id or attrName is null
+         */
+        public Set<String> getSrcIDs(String id, String attrName);
 
         /**
          * Get target IDs
@@ -91,32 +114,65 @@ public interface AttributeBasedIDMappingModel {
          * @throws NullPointerException if id or attrName or tgtType is null
          */
         public Map<String,Set<String>> getMapTgtTypeIDs(String id, String attrName);
-
+        
         /**
-         * Set source ID type
-         * @param id
-         *      identifier of the node/edge
-         * @param attrName
-         *      attribute name
-         * @param idType
-         *      source ID type
-         *
-         * @throws NullPointerException if id or attrName or idType is null
+         * 
+         * @return id type set of all data
          */
-        public void setSrcIDType(String id, String attrName, String idType);
+        public Set<String> getIDTypes();
 
         /**
-         * Add target IDs
-         * @param id
+         * Add id mapping
+         * @param idGO
          *      identifier of the node/edge
          * @param attrName
          *      attribute name
-         * @param tgtType
+         * @param srcIDType
+         *      source ID type
+         * @param srcID
+         *      source ID
+         * @param tgtIDType
          *      target ID type
-         *
          * @param tgtIDs
          *      Set of target IDs
          */
-        public void addTgtIDs(String id, String attrName, String tgtType, Set<String> tgtIDs);
+        public void addIDMapping(final String idGO,
+                                 final String attrName,
+                                 final String srcIDType,
+                                 final String srcID,
+                                 final String tgtIDType,
+                                 final Set<String> tgtIDs);
+
+//        /**
+//         * Set source ID type
+//         * @param id
+//         *      identifier of the node/edge
+//         * @param attrName
+//         *      attribute name
+//         * @param idType
+//         *      source ID type
+//         *
+//         * @throws NullPointerException if id or attrName or idType is null
+//         */
+//        public void setSrcIDAndType(String id, String attrName, String idType, String idSrc);
+//
+//        /**
+//         * Add target IDs
+//         * @param id
+//         *      identifier of the node/edge
+//         * @param attrName
+//         *      attribute name
+//         * @param tgtType
+//         *      target ID type
+//         *
+//         * @param tgtIDs
+//         *      Set of target IDs
+//         */
+//        public void addTgtIDs(String id, String attrName, String tgtType, Set<String> tgtIDs);
+
+        /**
+         * remove all data
+         */
+        public void clear();
 
 }

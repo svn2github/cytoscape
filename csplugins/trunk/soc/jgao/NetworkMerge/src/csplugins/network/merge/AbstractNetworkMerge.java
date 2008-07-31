@@ -58,6 +58,7 @@ import giny.model.Edge;
  * 
  */
 public abstract class AbstractNetworkMerge implements NetworkMerge {
+
      /**
      * Check whether two nodes match
      *

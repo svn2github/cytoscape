@@ -15,7 +15,7 @@ import csplugins.id.mapping.IDMapperFile;
 import csplugins.id.mapping.IDMapperText;
 import csplugins.id.mapping.IDMapperExcel;
 import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
-import csplugins.id.mapping.util.IDMapperUtils;
+import csplugins.id.mapping.util.IDMappingDataUtils;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -68,6 +68,11 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
         addedFiles = new HashSet();
 
         initComponents();
+    }
+
+    void clearAddedFiles() {
+            addedFiles.clear();
+            this.updateGoButtonEnable();
     }
 
     // initialize selectedNetworkAttributeIDType
@@ -123,6 +128,10 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                 java.awt.GridBagConstraints gridBagConstraints;
 
                 buttonGroup1 = new javax.swing.ButtonGroup();
+                buttonGroup2 = new javax.swing.ButtonGroup();
+                buttonGroup3 = new javax.swing.ButtonGroup();
+                buttonGroup4 = new javax.swing.ButtonGroup();
+                buttonGroup5 = new javax.swing.ButtonGroup();
                 javax.swing.JPanel textFilePanel = new javax.swing.JPanel();
                 javax.swing.JPanel sourcePanel = new javax.swing.JPanel();
                 javax.swing.JLabel typeLabel = new javax.swing.JLabel();
@@ -285,19 +294,23 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                 delemiterTypePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
                 delemiterTypePanel.setVisible(false);
 
+                buttonGroup2.add(tabTypeCheckBox);
                 tabTypeCheckBox.setSelected(true);
                 tabTypeCheckBox.setText("Tab");
                 tabTypeCheckBox.setEnabled(false);
                 delemiterTypePanel.add(tabTypeCheckBox);
 
+                buttonGroup3.add(commaTypeCheckBox);
                 commaTypeCheckBox.setText("Comma");
                 commaTypeCheckBox.setEnabled(false);
                 delemiterTypePanel.add(commaTypeCheckBox);
 
+                buttonGroup4.add(semiTypeCheckBox);
                 semiTypeCheckBox.setText("Semicolon");
                 semiTypeCheckBox.setEnabled(false);
                 delemiterTypePanel.add(semiTypeCheckBox);
 
+                buttonGroup5.add(spaceTypeCheckBox);
                 spaceTypeCheckBox.setSelected(true);
                 spaceTypeCheckBox.setText("Space");
                 spaceTypeCheckBox.setEnabled(false);
@@ -325,20 +338,24 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                 delemiterIDPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
                 delemiterIDPanel.setVisible(false);
 
+                buttonGroup2.add(tabIDCheckBox);
                 tabIDCheckBox.setText("Tab");
                 tabIDCheckBox.setEnabled(false);
                 delemiterIDPanel.add(tabIDCheckBox);
 
+                buttonGroup3.add(commaIDCheckBox);
                 commaIDCheckBox.setSelected(true);
                 commaIDCheckBox.setText("Comma");
                 commaIDCheckBox.setEnabled(false);
                 delemiterIDPanel.add(commaIDCheckBox);
 
+                buttonGroup4.add(semiIDCheckBox);
                 semiIDCheckBox.setSelected(true);
                 semiIDCheckBox.setText("Semicolon");
                 semiIDCheckBox.setEnabled(false);
                 delemiterIDPanel.add(semiIDCheckBox);
 
+                buttonGroup5.add(spaceIDCheckBox);
                 spaceIDCheckBox.setText("Space");
                 spaceIDCheckBox.setEnabled(false);
                 delemiterIDPanel.add(spaceIDCheckBox);
@@ -444,9 +461,9 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                     this.resetSrcTypes(supportedSrcIDTypes);//reset in case different file selected
                     idTypeSelectionTable.fireTableDataChanged();
                     idTypeSelectionTable.setSupportedSrcIDType(supportedSrcIDTypes);
-            }
 
-            updateGoButtonEnable();
+                    updateGoButtonEnable();
+            }
     }//GEN-LAST:event_textFileButtonActionPerformed
 
     private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
@@ -474,7 +491,7 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                             String attr = entryAttrTypes.getKey();
                             Set<String> potentialSrcTypes = entryAttrTypes.getValue();
 
-                            IDMapperUtils.addIDMappingFromIDMapper(idMapping,
+                            IDMappingDataUtils.addAttributeBasedIDMappingFromIDMapper(idMapping,
                                                                    idMapper,
                                                                    goIDs,
                                                                    cyAttributes,
@@ -546,6 +563,10 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JCheckBox advancedOptionCheckBox;
         private javax.swing.ButtonGroup buttonGroup1;
+        private javax.swing.ButtonGroup buttonGroup2;
+        private javax.swing.ButtonGroup buttonGroup3;
+        private javax.swing.ButtonGroup buttonGroup4;
+        private javax.swing.ButtonGroup buttonGroup5;
         private javax.swing.JCheckBox commaIDCheckBox;
         private javax.swing.JCheckBox commaTypeCheckBox;
         private javax.swing.JPanel delemiterIDPanel;
