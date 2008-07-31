@@ -128,74 +128,6 @@ public class ArrayNameView extends ModelView implements MouseListener, ConfigNod
 
 
 	// Canvas methods
-	/**  updates a horizontally oriented test buffer, which will later be rotated to make
-	* vertical text.
-	* This is only used in the abscence of Graphics2D
-	*/
-	public void updateBackBuffer() {
-		Graphics g           = backBuffer.getGraphics();
-		int start            = map.getIndex(0);
-		int end              = map.getIndex(map.getUsedPixels()) - 1;
-
-		g.setColor(Color.white);
-		g.fillRect(0, 0, maxlength, offscreenSize.width);
-		g.setColor(Color.black);
-
-		int gidRow           = headerInfo.getIndex("GID");
-		if (gidRow == -1) {
-			gidRow = 0;
-		}
-		int colorIndex       = headerInfo.getIndex("FGCOLOR");
-
-		g.setFont(new Font(face, style, size));
-		FontMetrics metrics  = getFontMetrics(g.getFont());
-		int ascent           = metrics.getAscent();
-	    // draw backgrounds first...
-	    int bgColorIndex = headerInfo.getIndex("BGCOLOR");
-	    if (bgColorIndex > 0) {
-		    Color back = g.getColor();
-		    for (int j = start; j < end;j++) {
-				    String [] strings = headerInfo.getHeader(j);
-				    try {
-				    g.setColor(TreeColorer.getColor(strings[bgColorIndex]));
-				    } catch (Exception e) {
-				    }
-				    g.fillRect(0, map.getMiddlePixel(j) - ascent / 2, maxlength, ascent);
-		    }
-		    g.setColor(back);
-	    }
-
-		Color back           = g.getColor();
-		for (int j = start; j <= end; j++) {
-			try {
-				String out = headerSummary.getSummary(headerInfo, j);
-			String[] headers  = headerInfo.getHeader(j);
-
-				//		System.out.println("Got row " + gidRow + " value " + out);
-				if (out == null) {
-					continue;
-				}
-				if ((arraySelection == null) || arraySelection.isIndexSelected(j)) {
-
-					if (colorIndex > 0) {
-						g.setColor(TreeColorer.getColor(headers[colorIndex]));
-					}
-					g.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
-					if (colorIndex > 0) {
-						g.setColor(back);
-					}
-				} else {
-					g.setColor(Color.gray);
-					g.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
-					g.setColor(back);
-				}
-			} catch (java.lang.ArrayIndexOutOfBoundsException e) {
-			}
-		}
-		backBuffer = RotateImageFilter.rotate(this, backBuffer);
-	}
-
-	// Canvas methods
 	public void updateBuffer(Graphics g) {
 		Rectangle rect = new Rectangle(0, 0, offscreenSize.width, offscreenSize.height);
 		updateBuffer(g, rect);
@@ -214,7 +146,6 @@ public class ArrayNameView extends ModelView implements MouseListener, ConfigNod
 		g2d.setColor(Color.white);
 		g2d.fillRect(offscreenRect.x, offscreenRect.y, offscreenRect.width, offscreenRect.height);
 		g2d.setColor(Color.black);
-
 
 		int start            = map.getIndex(0);
 		int end              = map.getIndex(map.getUsedPixels()) - 1;
@@ -254,33 +185,34 @@ public class ArrayNameView extends ModelView implements MouseListener, ConfigNod
 						if (colorIndex > 0)
 							g2d.setColor(TreeColorer.getColor(headers[colorIndex]));
 
-						g2d.translate(offscreenRect.x, offscreenRect.y-offscreenRect.height);
-						g2d.rotate(-90 * 3.14159/180);
-						g2d.setColor(Color.blue);
-			    	g2d.fillRect(0, 0, 5, 5);
-						g2d.setColor(Color.black);
-						g2d.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
-						g2d.rotate(90 * 3.14159/180);
-						g2d.translate(-offscreenRect.x, -offscreenRect.y+offscreenRect.height);
+						printRotatedString(g2d, out, offscreenRect.x, 
+						                   offscreenRect.y+offscreenRect.height, 
+						                   map.getMiddlePixel(j)+ascent/2);
 
 						if (colorIndex > 0)
 							g.setColor(back);
 					} else {
 						g2d.setColor(Color.gray);
-						g2d.translate(offscreenRect.x, offscreenRect.y-offscreenRect.height);
-						g2d.rotate(-90 * 3.14159/180);
-						g2d.setColor(Color.blue);
-			    	g2d.fillRect(0, 0, 5, 5);
-						g2d.setColor(Color.black);
-						g2d.drawString(out, 0, map.getMiddlePixel(j) + ascent / 2);
-						g2d.rotate(90 * 3.14159/180);
-						g2d.translate(-offscreenRect.x, -offscreenRect.y+offscreenRect.height);
+
+						printRotatedString(g2d, out, offscreenRect.x, 
+						                   offscreenRect.y+offscreenRect.height, 
+						                   map.getMiddlePixel(j)+ascent/2);
+
 						g2d.setColor(back);
 					}
 				}
 			} catch (java.lang.ArrayIndexOutOfBoundsException e) {
 			}
 		}
+	}
+
+	private void printRotatedString(Graphics2D g2d, String str, int x, int y, int offset) {
+		g2d.translate(x, y);
+		g2d.rotate(-90 * 3.14159/180);
+		// Not sure why we need to fudge the offset, but it looks better if we do
+		g2d.drawString(str, 0, offset-2);
+		g2d.rotate(90 * 3.14159/180);
+		g2d.translate(-x, -y);
 	}
 
 	/**

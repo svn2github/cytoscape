@@ -121,7 +121,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 	*/
 	public GraphicsExportPanel(DendroView view) {
 		this.view = view;
-		logger = CyLogger.getLogger(ExportPanel.class);
+		logger = CyLogger.getLogger(GraphicsExportPanel.class);
 
 		// Get all of the necessary information from our view
 		DataModel model = view.getDataModel();
@@ -176,7 +176,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 	public void synchronizeFrom() {}
 	
 	// NOTE: border pixels appear on all sides.
-	int borderPixels = 0;
+	int borderPixels = 5;
 	/** Setter for borderPixels */
 	public void setBorderPixels(int border) {
 		this.borderPixels = border;
@@ -1353,6 +1353,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 			add(new JScrollPane(arrayList));
 			
 			arrayAnnoInside = new JCheckBox("Below Tree?");
+			arrayAnnoInside.setSelected(true);
 			arrayAnnoInside.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					inclusionPanel.updateSize();
