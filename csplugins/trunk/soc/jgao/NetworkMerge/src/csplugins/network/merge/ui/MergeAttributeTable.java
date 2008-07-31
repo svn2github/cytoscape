@@ -39,7 +39,7 @@ package csplugins.network.merge.ui;
 import csplugins.network.merge.model.AttributeMapping;
 import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.NetworkMerge;
-import csplugins.network.merge.util.AttributeMatchingUtils;
+import csplugins.network.merge.util.AttributeValueCastUtils;
         
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
@@ -410,7 +410,7 @@ class MergeAttributeTable extends JTable{
                         String mergedAttr = attributeMapping.getMergedAttribute(iAttr);
                         CyAttributes cyAttributes = attributeMapping.getCyAttributes();
                         if (Arrays.asList(cyAttributes.getAttributeNames()).contains(mergedAttr)
-                                && !AttributeMatchingUtils.isAttributeTypeConvertable(attr, 
+                                && !AttributeValueCastUtils.isAttributeTypeConvertable(attr,
                                                                           mergedAttr, 
                                                                           cyAttributes)) {
                             final int ioption = JOptionPane.showConfirmDialog(getParent(),

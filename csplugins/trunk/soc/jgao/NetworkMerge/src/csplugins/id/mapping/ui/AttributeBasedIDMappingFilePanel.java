@@ -30,6 +30,7 @@ import giny.model.GraphObject;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,15 +66,15 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
         this.isNode = isNode;
         this.idMapper = null;
 
-        addedFiles = new HashSet();
+        //addedFiles = new HashSet();
 
         initComponents();
     }
 
-    void clearAddedFiles() {
-            addedFiles.clear();
-            this.updateGoButtonEnable();
-    }
+//    void clearAddedFiles() {
+//            addedFiles.clear();
+//            this.updateGoButtonEnable();
+//    }
 
     // initialize selectedNetworkAttributeIDType
     private void initSrcTypes() {
@@ -454,7 +455,7 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                     // Execute Task in New Thread; pop open JTask Dialog Box.
                     TaskManager.executeTask(task, jTaskConfig);
 
-                    String[] srcIDTypes = (String[])idMapper.getSupportedTgtIDTypes().toArray(new String[0]);
+                    String[] srcIDTypes = (String[])new TreeSet(idMapper.getSupportedTgtIDTypes()).toArray(new String[0]);
                     toComboBox.setModel(new javax.swing.DefaultComboBoxModel(srcIDTypes));
 
                     Set<String> supportedSrcIDTypes = idMapper.getSupportedSrcIDTypes();
@@ -501,10 +502,11 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                     }
             }
 
-            addedFiles.add(textFileTextField.getText());
+            //addedFiles.add(textFileTextField.getText());
             
-            updateGoButtonEnable();
-            parent.setOKButtonEnable(true);
+            //updateGoButtonEnable();
+
+            parent.setOKButtonEnable();
     }//GEN-LAST:event_goButtonActionPerformed
 
     private void advancedOptionCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advancedOptionCheckBoxActionPerformed
@@ -528,10 +530,10 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
             goButton.setToolTipText("Please specify the URL of the input file");
             goButton.setEnabled(false);
             return;
-        } else if (addedFiles.contains(url)) {
-            goButton.setToolTipText("This file has been added. Please specify another one.");
-            goButton.setEnabled(false);
-            return;
+//        } else if (addedFiles.contains(url)) {
+//            goButton.setToolTipText("This file has been added. Please specify another one.");
+//            goButton.setEnabled(false);
+//            return;
         }
 
         if (getTgtType()==null) {
@@ -601,7 +603,7 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
         private AttributeBasedIDMappingDialog parent;
         private AttributeBasedIDMappingModel idMapping;
         private boolean isNode;
-        private Set<String> addedFiles;
+        //private Set<String> addedFiles;
 }
 
 

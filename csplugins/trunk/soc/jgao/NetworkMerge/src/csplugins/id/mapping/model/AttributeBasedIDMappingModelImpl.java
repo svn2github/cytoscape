@@ -252,7 +252,7 @@ public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMapping
                         throw new java.lang.NullPointerException();
                 }
 
-                this.setSrcIDAndType(idGO, attrName, srcIDType);
+                this.setSrcIDType(idGO, attrName, srcIDType);
 
                 if (this.getTgtIDs(idGO, attrName, srcIDType)==null) { //add source type, source id
                         Set<String> srcIDs = new HashSet<String>();
@@ -274,7 +274,7 @@ public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMapping
          *
          * @throws NullPointerException if id or attrName or idType is null
          */
-        protected void setSrcIDAndType(String id, String attrName, String idType) {
+        protected void setSrcIDType(String id, String attrName, String idType) {
                 if (id==null || attrName==null || idType==null) {
                         throw new java.lang.NullPointerException();
                 }

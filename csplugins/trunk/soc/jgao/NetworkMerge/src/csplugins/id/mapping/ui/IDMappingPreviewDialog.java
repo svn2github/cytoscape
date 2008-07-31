@@ -198,7 +198,12 @@ public class IDMappingPreviewDialog extends javax.swing.JDialog {
                                     strvec[1] = attr;
 
                                     for (int i=2; i<nColumns; i++) {
-                                            strvec[i] = idMapping.getTgtIDs(node, attr, columnNames.get(i)).toString();
+                                            Set<String> tgtIDs = idMapping.getTgtIDs(node, attr, columnNames.get(i));
+                                            if (tgtIDs==null||tgtIDs.isEmpty()) {
+                                                    strvec[i] = null;
+                                            } else {
+                                                    strvec[i] = tgtIDs.toString();
+                                            }
                                     }
                             }
                       }

@@ -42,6 +42,8 @@ import csplugins.id.mapping.util.IDMappingDataUtils;
 import cytoscape.data.CyAttributes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Arrays;
 
 /**
@@ -50,7 +52,7 @@ import java.util.Arrays;
  * 
  */
 public class IDMappingAttributeValueMatcher implements AttributeValueMatcher {
-        final private AttributeBasedIDMappingModel idMapping;
+        protected final AttributeBasedIDMappingModel idMapping;
 
         public IDMappingAttributeValueMatcher(final AttributeBasedIDMappingModel idMapping) {
                 this.idMapping = idMapping;
@@ -103,8 +105,10 @@ public class IDMappingAttributeValueMatcher implements AttributeValueMatcher {
                             && type1==type2; // must be the same type for complex map
                 }
 
-
-                if (IDMappingDataUtils.getOverlappingIDMapping(idMapping, id1, attr1, id2, attr2)!=null) {
+                Map<String,String> mapGOAttr = new HashMap<String,String>();
+                mapGOAttr.put(id1, attr1);
+                mapGOAttr.put(id2, attr2);
+                if (IDMappingDataUtils.getOverlappingIDMapping(idMapping, mapGOAttr)!=null) {
                         // if they mapped to some common ids
                         return true;
                 }

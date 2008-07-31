@@ -1,4 +1,4 @@
-/* File: DefaultAttributeConflictHandler.java
+/* File: AbstractNetworkMerge.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,48 +34,41 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package csplugins.network.merge.conflict;
+package csplugins.network.merge.util;
+
 
 import cytoscape.data.CyAttributes;
+import cytoscape.data.AttributeValueVisitor;
 
+import java.util.Arrays;
 /**
  *
- * 
+ * @
  */
-public class DefaultAttributeConflictHandler implements AttributeConflictHandler {
 
-        /**
-         * Handle attribute conflict when merging (copying from one attr to another)
-         *
-         * @param conflict
-         *      attribute conflict
-         * @return
-         *      true if successful, false if failed
-         */
-        @Override
-        public boolean handleIt(final AttributeConflict conflict) {
-                //TODO: write a reasonable default one
-                if (conflict==null) {
-                        throw new java.lang.NullPointerException();
-                }
+    // this is different from CopyingAttributeValueVisitor in CyAtributeUtil
+    // the attributes copying from and to can be different
+    /**
+     * copy each attribute value from copyID to an
+     * attribute value of copyAttribute associated with objTraversedCopyID.
+     */
+    public class CopyingAttributeValueVisitor implements AttributeValueVisitor {
+        private String toID;
+        private String toAttrName;
 
-                final CyAttributes attrs = conflict.getCyAttributes();
-                final String fromID = conflict.getFromID();
-                final String fromAttr = conflict.getFromAttr();
-                final String toID = conflict.getToID();
-                final String toAttr = conflict.getToAttr();
-
-                final Object fromValue = attrs.getAttribute(fromID, fromAttr);
-                final Object toValue = attrs.getAttribute(toID, toAttr);
-
-                if (toValue instanceof String) {
-                        String mergedValue = toValue+";"+fromValue.toString();
-                        attrs.setAttribute(toID, toAttr, mergedValue);
-                        return true;
-                }
-
-                // how about Integer, Double, Boolean?
-
-                return false;
+        public CopyingAttributeValueVisitor(String toID, String toAttrName) {
+            this.toID = toID;
+            this.toAttrName = toAttrName;
         }
-}
+
+        @Override
+        public void visitingAttributeValue(String fromID, String attrName,
+                                           CyAttributes attrs, Object[] keySpace,
+                                           Object visitedValue) {
+            if (!Arrays.asList(attrs.getAttributeNames()).contains(toAttrName)) { // if toAttribute not exists
+                throw new java.lang.IllegalStateException("'"+toAttrName+"' must be defined before calling this method");
+            }
+
+            attrs.getMultiHashMap().setAttributeValue(toID, toAttrName, visitedValue, keySpace);
+        }
+    }

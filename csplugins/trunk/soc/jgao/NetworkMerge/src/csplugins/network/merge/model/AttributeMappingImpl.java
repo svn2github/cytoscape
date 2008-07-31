@@ -36,7 +36,7 @@
 
 package csplugins.network.merge.model;
 
-import csplugins.network.merge.util.AttributeMatchingUtils;
+import csplugins.network.merge.util.AttributeValueCastUtils;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -119,14 +119,14 @@ public class AttributeMappingImpl implements AttributeMapping {
         
         if (attributeExistsInOriginalNetwork(attributeName)) {
             final Set<String> attrNames = new HashSet(getOriginalAttributeMap(index).values());
-            final String attr_mc = AttributeMatchingUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
+            final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
             if (attr_mc==null) { // inconvertible
                 if (cyAttributes.getType(attributeName)!=CyAttributes.TYPE_STRING) {
                     attr = this.getDefaultMergedAttrName(attr, true);
                     //return null;
                 }
             } else { // convertible
-                if (!AttributeMatchingUtils.isAttributeTypeConvertable(attr_mc, attributeName, cyAttributes)) {
+                if (!AttributeValueCastUtils.isAttributeTypeConvertable(attr_mc, attributeName, cyAttributes)) {
                     attr = this.getDefaultMergedAttrName(attr, true);
                     //return null;
                 }
@@ -269,7 +269,7 @@ public class AttributeMappingImpl implements AttributeMapping {
 
             String mergedAttr = getMergedAttribute(index);
             if (attributeExistsInOriginalNetwork(mergedAttr)
-                && !AttributeMatchingUtils.isAttributeTypeConvertable(attributeName, 
+                && !AttributeValueCastUtils.isAttributeTypeConvertable(attributeName,
                                                                       mergedAttr, 
                                                                       cyAttributes)) {
                     setMergedAttribute(index,getDefaultMergedAttrName(mergedAttr,true));
@@ -481,7 +481,7 @@ public class AttributeMappingImpl implements AttributeMapping {
                         final String net_curr = it.next();
                         final String attr_curr = attributeMapping.get(net_curr).get(ir);
                         if (attr_curr.compareTo(at)==0) { // same name as the original attribute
-                            //if (AttributeMatchingUtils.isAttributeTypeSame(attr_curr,at,attributes)) // not neccessay in Cytoscape2.6
+                            //if (AttributeValueCastUtils.isAttributeTypeSame(attr_curr,at,attributes)) // not neccessay in Cytoscape2.6
                                                                                                        // since attributes are global
                             found = true;
                             attrs.set(ir, at); // add the attribute on the ir row

@@ -40,13 +40,14 @@ import csplugins.network.merge.util.AttributeValueMatcher;
 import csplugins.network.merge.util.DefaultAttributeValueMatcher;
 import csplugins.network.merge.model.AttributeMapping;
 import csplugins.network.merge.model.MatchingAttribute;
-import csplugins.network.merge.conflict.AttributeConflictCollector;
-import csplugins.network.merge.util.AttributeMatchingUtils;
+import csplugins.network.merge.util.AttributeMerger;
+import csplugins.network.merge.util.AttributeValueCastUtils;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Arrays;
 
 import cytoscape.Cytoscape;
@@ -69,7 +70,7 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
     protected final AttributeMapping nodeAttributeMapping;
     protected final AttributeMapping edgeAttributeMapping;
     protected final AttributeValueMatcher attributeValueMatcher;
-    protected final AttributeConflictCollector conflictCollector;
+    protected final AttributeMerger attributeMerger;
 
     /**
      * Constucter for regular attribute based network merge
@@ -80,11 +81,11 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
     public AttributeBasedNetworkMerge(final MatchingAttribute matchingAttribute,
                                final AttributeMapping nodeAttributeMapping,
                                final AttributeMapping edgeAttributeMapping,
-                               final AttributeConflictCollector conflictCollector) {
+                               final AttributeMerger attributeMerger) {
             this(matchingAttribute,
                     nodeAttributeMapping,
                     edgeAttributeMapping,
-                    conflictCollector,
+                    attributeMerger,
                     new DefaultAttributeValueMatcher());
     }
 
@@ -99,19 +100,19 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
     public AttributeBasedNetworkMerge(final MatchingAttribute matchingAttribute,
                                final AttributeMapping nodeAttributeMapping,
                                final AttributeMapping edgeAttributeMapping,
-                               final AttributeConflictCollector conflictCollector,
+                               final AttributeMerger attributeMerger,
                                AttributeValueMatcher attributeValueMatcher) {
         if (matchingAttribute==null
                 || nodeAttributeMapping==null
                 || edgeAttributeMapping==null
-                || conflictCollector==null
+                || attributeMerger==null
                 || attributeValueMatcher==null) {
                 throw new java.lang.NullPointerException();
         }
         this.matchingAttribute = matchingAttribute;
         this.nodeAttributeMapping = nodeAttributeMapping;
         this.edgeAttributeMapping = edgeAttributeMapping;
-        this.conflictCollector = conflictCollector;
+        this.attributeMerger = attributeMerger;
         this.attributeValueMatcher = attributeValueMatcher;
     }
     
@@ -275,10 +276,10 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
             
             // define the attribute first
             final Set<String> attrNames = new HashSet(attributeMapping.getOriginalAttributeMap(i).values());
-            final String attr_mc = AttributeMatchingUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
+            final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
             
             if (attr_mc!=null) { // if compatible type 
-                if (!AttributeMatchingUtils.isAttributeTypeConvertable(attr_mc, attr_merged, cyAttributes)) {
+                if (!AttributeValueCastUtils.isAttributeTypeConvertable(attr_mc, attr_merged, cyAttributes)) {
                     throw new java.lang.IllegalStateException("'"+attr_mc+"' cannot be converted to '"+attr_merged+"'");
                 }
                 
@@ -307,26 +308,45 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
             }
 
             // merge
+            Map<String,String> mapGOAttr = new HashMap<String,String>();
             final Iterator<Map.Entry<CyNetwork,Set<GraphObject>>> itEntryNetGOs = mapNetGOs.entrySet().iterator();
-                
-            // for each attribute to be merged
             while (itEntryNetGOs.hasNext()) {
-                final Map.Entry<CyNetwork,Set<GraphObject>> entryNetGOs = itEntryNetGOs.next();
-                final String idNet = entryNetGOs.getKey().getIdentifier();
-                final String attrName = attributeMapping.getOriginalAttribute(idNet, i);
-                if (attrName!=null) {
-                    final Iterator<GraphObject> itGO = entryNetGOs.getValue().iterator();
-                    while (itGO.hasNext()) {
-                        final String idGO = itGO.next().getIdentifier();
-                        AttributeMatchingUtils.copyAttribute(idGO, 
-                                                             attrName,
-                                                             id,
-                                                             attr_merged,
-                                                             cyAttributes,
-                                                             conflictCollector);
+                    final Map.Entry<CyNetwork,Set<GraphObject>> entryNetGOs = itEntryNetGOs.next();
+                    final String idNet = entryNetGOs.getKey().getIdentifier();
+                    final String attrName = attributeMapping.getOriginalAttribute(idNet, i);
+                    if (attrName!=null) {
+                            final Iterator<GraphObject> itGO = entryNetGOs.getValue().iterator();
+                            while (itGO.hasNext()) {
+                                    final String idGO = itGO.next().getIdentifier();
+                                    mapGOAttr.put(idGO, attrName);
+                            }
                     }
-                }                    
-            }    
+            }
+
+            attributeMerger.mergeAttribute(mapGOAttr, id, attr_merged, cyAttributes);
+                
+//            // for each attribute to be merged
+//            while (itEntryNetGOs.hasNext()) {
+//                final Map.Entry<CyNetwork,Set<GraphObject>> entryNetGOs = itEntryNetGOs.next();
+//                final String idNet = entryNetGOs.getKey().getIdentifier();
+//                final String attrName = attributeMapping.getOriginalAttribute(idNet, i);
+//                if (attrName!=null) {
+//                    Set<String> idsFrom = new HashSet<String>();
+//                    final Iterator<GraphObject> itGO = entryNetGOs.getValue().iterator();
+//                    while (itGO.hasNext()) {
+//                        final String idGO = itGO.next().getIdentifier();
+//                        idsFrom.add(idGO);
+////                        AttributeValueCastUtils.copyAttribute(idGO,
+////                                                             attrName,
+////                                                             id,
+////                                                             attr_merged,
+////                                                             cyAttributes,
+////                                                             conflictCollector);
+//                    }
+//
+//                    attributeMerger.mergeAttribute(idsFrom, attrName, id, attr_merged, cyAttributes);
+//                }
+//            }
         }
     }
         

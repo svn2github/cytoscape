@@ -208,39 +208,69 @@ public class IDMappingDataUtils {
          */
         public static Map<String,Set<String>> getOverlappingIDMapping(
                                              AttributeBasedIDMappingModel idMapping,
-                                             String idGO1,
-                                             String attr1,
-                                             String idGO2,
-                                             String attr2) {
-                Map<String,Set<String>> mapTypeIDs1 = idMapping.getMapTgtTypeIDs(idGO1, attr1);
-                Map<String,Set<String>> mapTypeIDs2 = idMapping.getMapTgtTypeIDs(idGO2, attr2);
-
-                if (mapTypeIDs1==null || mapTypeIDs2==null) {
-                        return null;
+                                             Map<String,String> mapGOAttr) {
+                if (idMapping==null || mapGOAttr==null) {
+                        throw new java.lang.NullPointerException();
                 }
-                
-                // get overlapped types
-                Set<String> overlappedTypes = new HashSet(mapTypeIDs1.keySet());
-                overlappedTypes.retainAll(mapTypeIDs2.keySet());
 
-                if (overlappedTypes.isEmpty()) {
+                if (mapGOAttr.isEmpty()) {
                         return null;
                 }
 
-                // get overlapped ids
+                Iterator<Map.Entry<String,String>> itEntryGOAttr = mapGOAttr.entrySet().iterator();
+                Map.Entry<String,String> entryGOAttr = itEntryGOAttr.next();
+                String idGO = entryGOAttr.getKey();
+                String attr = entryGOAttr.getValue();
+
+                Map<String,Set<String>> mapTypeIDs = idMapping.getMapTgtTypeIDs(idGO, attr);
+                if (mapTypeIDs==null||mapTypeIDs.isEmpty()) {
+                        return null;
+                }
+
+                //deep copy of the first
                 Map<String,Set<String>> overlappedMapTypeIDs = new HashMap<String,Set<String>>();
-                Iterator<String> it = overlappedTypes.iterator();
-                while (it.hasNext()) { //for each overlapping type
-                        String type = it.next();
-                        Set<String> overlappedIDs = new HashSet(mapTypeIDs1.get(type));
-                        overlappedIDs.retainAll(mapTypeIDs2.get(type));
-                        if (!overlappedIDs.isEmpty()) {
-                                overlappedMapTypeIDs.put(type, overlappedIDs);
+                Iterator<Map.Entry<String,Set<String>>> itEntryTypeIDs = mapTypeIDs.entrySet().iterator();
+                while (itEntryTypeIDs.hasNext()) {
+                        Map.Entry<String,Set<String>> entryTypeIDs = itEntryTypeIDs.next();
+                        String type = entryTypeIDs.getKey();
+                        Set<String> ids = entryTypeIDs.getValue();
+                        overlappedMapTypeIDs.put(type, new HashSet(ids));
+                }
+
+                // for rest
+                while (itEntryGOAttr.hasNext()) {
+                        entryGOAttr = itEntryGOAttr.next();
+                        idGO = entryGOAttr.getKey();
+                        attr = entryGOAttr.getValue();
+                        mapTypeIDs = idMapping.getMapTgtTypeIDs(idGO, attr);
+                        if (mapTypeIDs==null||mapTypeIDs.isEmpty()) {
+                                return null;
+                        }
+                        
+                        Set<String> overlappedTypes = new HashSet<String>(overlappedMapTypeIDs.keySet());
+                        for (String type : overlappedTypes) {
+                                //type
+                                Set<String> ids = mapTypeIDs.get(type);
+                                if (ids==null||ids.isEmpty()) {
+                                        overlappedMapTypeIDs.remove(type);
+                                        continue;
+                                }
+
+                                //ids
+                                Set<String> overlappedIDs = overlappedMapTypeIDs.get(type);
+                                overlappedIDs.retainAll(ids);
+                                if (overlappedIDs.isEmpty()) {
+                                        overlappedMapTypeIDs.remove(type);
+                                }
+                        }
+
+                        if (overlappedMapTypeIDs.isEmpty()) {
+                                return null;
                         }
                 }
 
                 if (overlappedMapTypeIDs.isEmpty()) {
-                        return null;
+                                return null;
                 }
 
                 return overlappedMapTypeIDs;

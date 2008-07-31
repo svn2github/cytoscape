@@ -41,7 +41,7 @@ import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.ui.NetworkMergeDialog;
 import csplugins.network.merge.NetworkMerge.Operation;
 import csplugins.network.merge.conflict.AttributeConflictHandler;
-import csplugins.network.merge.conflict.IDMappingAttributeConflictHandler;
+//import csplugins.network.merge.conflict.IDMappingAttributeConflictHandler;
 import csplugins.network.merge.conflict.DefaultAttributeConflictHandler;
 import csplugins.network.merge.conflict.AttributeConflictManager;
 import csplugins.network.merge.conflict.AttributeConflictCollector;
@@ -49,6 +49,9 @@ import csplugins.network.merge.conflict.AttributeConflictCollectorImpl;
 import csplugins.network.merge.util.AttributeValueMatcher;
 import csplugins.network.merge.util.DefaultAttributeValueMatcher;
 import csplugins.network.merge.util.IDMappingAttributeValueMatcher;
+import csplugins.network.merge.util.AttributeMerger;
+import csplugins.network.merge.util.DefaultAttributeMerger;
+import csplugins.network.merge.util.IDMappingAttributeMerger;
 import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
 
 import cytoscape.plugin.CytoscapePlugin;
@@ -201,17 +204,20 @@ class NetworkMergeSessionTask implements Task {
         
         try {
             final AttributeValueMatcher attributeValueMatcher;
+            final AttributeMerger attributeMerger;
             if (idMapping==null) {
                     attributeValueMatcher = new DefaultAttributeValueMatcher();
+                    attributeMerger = new DefaultAttributeMerger(conflictCollector);
             } else {
                     attributeValueMatcher = new IDMappingAttributeValueMatcher(idMapping);
+                    attributeMerger = new IDMappingAttributeMerger(conflictCollector,idMapping);
             }
 
             final NetworkMerge networkMerge = new AttributeBasedNetworkMerge(
                                 matchingAttribute,
                                 nodeAttributeMapping,
                                 edgeAttributeMapping,
-                                conflictCollector,
+                                attributeMerger,
                                 attributeValueMatcher);
            
             CyNetwork mergedNetwork = networkMerge.mergeNetwork(
@@ -328,10 +334,10 @@ class HandleConflictsTask implements Task {
 
              AttributeConflictHandler conflictHandler;
 
-             if (idMapping!=null) {
-                conflictHandler = new IDMappingAttributeConflictHandler(idMapping);
-                conflictHandlers.add(conflictHandler);
-             }
+//             if (idMapping!=null) {
+//                conflictHandler = new IDMappingAttributeConflictHandler(idMapping);
+//                conflictHandlers.add(conflictHandler);
+//             }
 
              conflictHandler = new DefaultAttributeConflictHandler();
              conflictHandlers.add(conflictHandler);

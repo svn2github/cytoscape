@@ -44,8 +44,6 @@ import cytoscape.data.CyAttributes;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
 
 
 /**
@@ -83,7 +81,10 @@ public class IDMappingAttributeConflictHandler implements AttributeConflictHandl
                         return false;
                 }
 
-                Map<String,Set<String>> overlappedMapTypeIDs = IDMappingDataUtils.getOverlappingIDMapping(idMapping, fromID, fromAttr, toID, toAttr);
+                Map<String,String> mapGOAttr = new HashMap<String,String>();
+                mapGOAttr.put(fromID, fromAttr);
+                mapGOAttr.put(toID, toAttr);
+                Map<String,Set<String>> overlappedMapTypeIDs = IDMappingDataUtils.getOverlappingIDMapping(idMapping, mapGOAttr);
 
                 if (overlappedMapTypeIDs==null||overlappedMapTypeIDs.isEmpty()) {
                         return false;

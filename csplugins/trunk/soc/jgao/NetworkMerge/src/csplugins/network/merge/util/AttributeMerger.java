@@ -1,4 +1,4 @@
-/* File: DefaultAttributeConflictHandler.java
+/* File: AttributeMerger.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,48 +34,31 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package csplugins.network.merge.conflict;
+package csplugins.network.merge.util;
+
+import csplugins.network.merge.conflict.AttributeConflictCollector;
 
 import cytoscape.data.CyAttributes;
+
+import java.util.Map;
 
 /**
  *
  * 
  */
-public class DefaultAttributeConflictHandler implements AttributeConflictHandler {
+public interface AttributeMerger {
 
         /**
-         * Handle attribute conflict when merging (copying from one attr to another)
-         *
-         * @param conflict
-         *      attribute conflict
-         * @return
-         *      true if successful, false if failed
+         * Merge one attribute into another
+         * @param fromIDs
+         * @param fromAttrName
+         * @param toID
+         * @param toAttrName
+         * @param attrs
+         * @param conflictCollector
          */
-        @Override
-        public boolean handleIt(final AttributeConflict conflict) {
-                //TODO: write a reasonable default one
-                if (conflict==null) {
-                        throw new java.lang.NullPointerException();
-                }
-
-                final CyAttributes attrs = conflict.getCyAttributes();
-                final String fromID = conflict.getFromID();
-                final String fromAttr = conflict.getFromAttr();
-                final String toID = conflict.getToID();
-                final String toAttr = conflict.getToAttr();
-
-                final Object fromValue = attrs.getAttribute(fromID, fromAttr);
-                final Object toValue = attrs.getAttribute(toID, toAttr);
-
-                if (toValue instanceof String) {
-                        String mergedValue = toValue+";"+fromValue.toString();
-                        attrs.setAttribute(toID, toAttr, mergedValue);
-                        return true;
-                }
-
-                // how about Integer, Double, Boolean?
-
-                return false;
-        }
+        public void mergeAttribute(Map<String,String> mapGOAttr,
+                                     String toID,
+                                     String toAttrName,
+                                     CyAttributes attrs);
 }

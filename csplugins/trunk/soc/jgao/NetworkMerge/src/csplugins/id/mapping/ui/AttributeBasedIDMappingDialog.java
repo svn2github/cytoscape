@@ -157,9 +157,8 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
             IDMappingPreviewDialog dialog = new IDMappingPreviewDialog(frame,true,idMapping);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
-            if (idMapping.isEmpty()) {
-                    idMappingFilePanel.clearAddedFiles();
-            }
+
+            setOKButtonEnable();
     }//GEN-LAST:event_previewButtonActionPerformed
 
 public boolean isCancelled() {
@@ -170,8 +169,14 @@ public AttributeBasedIDMappingModel getIDMapping() {
         return this.idMapping;
 }
 
-void setOKButtonEnable(boolean enable) {
-        okButton.setEnabled(enable);
+void setOKButtonEnable() {
+        if (idMapping.isEmpty()) {
+                okButton.setEnabled(false);
+                okButton.setToolTipText("No ID mapping has been imported.");
+        } else {
+                okButton.setEnabled(true);
+                okButton.setToolTipText(null);
+        }
 }
 
 
