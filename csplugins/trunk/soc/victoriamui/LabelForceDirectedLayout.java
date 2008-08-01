@@ -192,12 +192,10 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 				if (moveNodes) {
 					ln.unLock();
 				}
-			} else { // selected only
-				if (network.getSelectedNodes().contains(ln.getNode())) { // ln selected
+			} else if (network.getSelectedNodes().contains(ln.getNode())) { // ln selected
 					labelNode.unLock();
-					if (moveNodes) {
-						ln.unLock();
-					}
+				if (moveNodes) {
+					ln.unLock();
 				}
 			}
 			
