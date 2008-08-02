@@ -43,7 +43,6 @@ import java.util.Vector;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.TreeSet;
 
 import javax.swing.JTable;
@@ -206,5 +205,7 @@ public class IDTypeSelectionTable extends JTable{
         }
 
     }
+
+
 
 }

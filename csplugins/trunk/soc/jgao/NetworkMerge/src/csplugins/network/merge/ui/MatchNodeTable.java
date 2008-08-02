@@ -36,7 +36,6 @@
 
 package csplugins.network.merge.ui;
 
-import csplugins.network.merge.NetworkMerge;
 import csplugins.network.merge.model.MatchingAttribute;
 
 import cytoscape.Cytoscape;
@@ -69,27 +68,32 @@ class MatchNodeTable extends JTable{
         setRowHeight(20);
     }
     
-    public void setColumnEditor() {
-        int n = matchingAttribute.getSizeNetwork();
+    protected void setColumnEditorAndCellRenderer() {
+        Vector<String> attrs = new Vector<String>();
+        //TODO remove in Cytoscape3
+        attrs.add("ID");
+        //TODO: modify if local attribute implemented
+        attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+
+        int n = getColumnCount();
         for (int i=0; i<n; i++) {
-            Vector<String> attrs = new Vector<String>();
-            //TODO remove in Cytoscape3
-            attrs.add("ID");
-            //TODO: modify if local attribute implemented
-            attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
-            JComboBox comboBox = new JComboBox(attrs);
             TableColumn column = getColumnModel().getColumn(i);
+            
+            JComboBox comboBox = new JComboBox(attrs);
             column.setCellEditor(new DefaultCellEditor(comboBox));
 
-            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-            renderer.setToolTipText("Click for combo box");
-            column.setCellRenderer(renderer);
+            ComboBoxTableCellRenderer comboRenderer = new ComboBoxTableCellRenderer(attrs);
+            column.setCellRenderer(comboRenderer);
+//            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+//            renderer.setToolTipText("Click for combo box");
+//            column.setCellRenderer(renderer);
         }
     }
 
     public void fireTableStructureChanged() {
         model.fireTableStructureChanged();
-        setColumnEditor();
+        setColumnEditorAndCellRenderer();
+        //setCellRenderer();
     }
 
     private class MatchNodeTableModel extends AbstractTableModel {
@@ -100,46 +104,46 @@ class MatchNodeTable extends JTable{
             resetNetworks();
         }
 
+        @Override
         public int getColumnCount() {
             return matchingAttribute.getSizeNetwork();
         }
 
+        @Override
         public int getRowCount() {
             int n = matchingAttribute.getSizeNetwork();
             return n==0?0:1;
         }
 
+        @Override
         public String getColumnName(int col) {
             return netNames.get(col);
         }
 
+        @Override
         public Object getValueAt(int row, int col) {
             return matchingAttribute.getAttributeForMatching(netIDs.get(col));
         }
 
+        @Override
         public Class getColumnClass(int c) {
             //return JComboBox.class;
             return String.class;
         }
 
-        /*
-         * 
-         * 
-         */
+        @Override
         public boolean isCellEditable(int row, int col) {
             return true;
         }
 
-        /* TODO
-         * Don't need to implement this method unless your table's
-         * data can change.
-         */
+        @Override
         public void setValueAt(Object value, int row, int col) {
             if (value!=null);
             matchingAttribute.putAttributeForMatching(netIDs.get(col), (String)value);
             fireTableDataChanged();
         }
 
+        @Override
         public void fireTableStructureChanged() {
             resetNetworks();
             super.fireTableStructureChanged();
@@ -165,3 +169,5 @@ class MatchNodeTable extends JTable{
     }
 
 }
+
+

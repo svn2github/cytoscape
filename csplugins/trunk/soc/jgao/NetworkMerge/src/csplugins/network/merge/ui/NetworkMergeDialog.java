@@ -416,7 +416,7 @@ public class NetworkMergeDialog extends JDialog {
 
                 idMappingPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
 
-                importIDMappingButton.setText("Import ID mappings");
+                importIDMappingButton.setText("Import ID mapping");
                 importIDMappingButton.setEnabled(false);
                 importIDMappingButton.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -448,7 +448,7 @@ public class NetworkMergeDialog extends JDialog {
                 });
                 idMappingPanel.add(importIDMappingButton);
 
-                viewIDMappingButton.setText("View ID Mapping");
+                viewIDMappingButton.setText("View ID mapping");
                 viewIDMappingButton.setEnabled(false);
                 viewIDMappingButton.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {

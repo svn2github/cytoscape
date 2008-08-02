@@ -38,7 +38,6 @@ package csplugins.network.merge.ui;
 
 import csplugins.network.merge.model.AttributeMapping;
 import csplugins.network.merge.model.MatchingAttribute;
-import csplugins.network.merge.NetworkMerge;
 import csplugins.network.merge.util.AttributeValueCastUtils;
         
 import cytoscape.Cytoscape;
@@ -46,9 +45,7 @@ import cytoscape.util.CyNetworkNaming;
 import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
 
-import java.util.Collections;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -56,7 +53,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
 import java.awt.Component;
 import java.awt.Color;
@@ -113,17 +109,78 @@ class MergeAttributeTable extends JTable{
     public String getMergedNetworkName() {
         return mergedNetworkName;
     }
-    
+
     protected void setColumnEditor() {
+        final Vector<String> attrs = new Vector();
+        attrs.addAll(Arrays.asList(attributeMapping.getCyAttributes().getAttributeNames()));
+        attrs.add(nullAttr);
+
         final int n = attributeMapping.getSizeNetwork();
-        for (int i=0; i<n; i++) { // for each network
-            final Vector<String> attrs = new Vector();
-            attrs.addAll(Arrays.asList(attributeMapping.getCyAttributes().getAttributeNames()));            
-            attrs.add(nullAttr);
+        for (int i=0; i<n+1; i++) { // for each network
             final JComboBox comboBox = new JComboBox(attrs);
             final TableColumn column = getColumnModel().getColumn(i);
-            column.setCellEditor(new DefaultCellEditor(comboBox));
-            //column.setMinWidth(100);
+            if (i<=n) {
+                column.setCellEditor(new DefaultCellEditor(comboBox));
+            }
+
+            column.setCellRenderer(new TableCellRenderer() {
+                    private DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+                    private ComboBoxTableCellRenderer comboBoxRenderer = new ComboBoxTableCellRenderer(attrs);
+                    
+                    @Override
+                    public Component getTableCellRendererComponent(
+                                    JTable table, Object value,
+                                    boolean isSelected, boolean hasFocus,
+                                    int row, int column) {
+                        //final JLabel renderer = (JLabel) defaultRender.getTableCellRendererComponent(table, color, isSelected, hasFocus, row, column);
+                        Component renderer;
+                        if (row<2||(isNode&&row==2&&column!=table.getColumnCount()-1)) { //TODO do not need this in Cytoscape3
+                            JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                            label.setBackground(Color.LIGHT_GRAY);
+                            if (isSelected) {
+                                label.setForeground(table.getSelectionForeground());
+                            } else {
+                                label.setForeground(table.getForeground());
+                            }
+                            if (row==2) {
+                                label.setToolTipText("Change this in the matching node table above");
+                            } else {
+                                label.setToolTipText("Reserved by system");
+                            }
+                            renderer = label;
+                        } else {
+                            if (isNode&&row==2) {//&&column==table.getColumnCount()-1
+                                JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                                label.setForeground(Color.RED);
+                                if (isSelected) {
+                                    label.setBackground(table.getSelectionBackground());
+                                } else {
+                                    label.setBackground(table.getBackground());
+                                }
+                                label.setToolTipText("CHANGE ME!");
+                                renderer = label;
+                            } else {
+                                if (column<n) {
+                                        renderer = comboBoxRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                                } else {
+                                        JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                                        label.setToolTipText("Double click to change");
+                                        renderer = label;
+                                }
+
+                                if (isSelected) {
+                                    renderer.setForeground(table.getSelectionForeground());
+                                    renderer.setBackground(table.getSelectionBackground());
+                                } else {
+                                    renderer.setForeground(table.getForeground());
+                                    renderer.setBackground(table.getBackground());
+                                }
+                            }
+                        }
+                        return renderer;
+                    }
+
+                });
         }
         
     }
@@ -210,7 +267,7 @@ class MergeAttributeTable extends JTable{
     public void fireTableStructureChanged() {
         //pack();
         model.fireTableStructureChanged();
-        setCellRender();
+        //setCellRender();
         setColumnEditor();
         setMergedNetworkNameTableHeaderListener();
     }
@@ -274,11 +331,13 @@ class MergeAttributeTable extends JTable{
             resetNetworks();
         }
 
+        @Override
         public int getColumnCount() {
             final int n = attributeMapping.getSizeNetwork();
             return n==0?0:n+1;
         }
 
+        @Override
         public int getRowCount() {
             int n = attributeMapping.getSizeMergedAttributes();
             //n = n+1; // +1: add an empty row in the end (TODO: use this one in Cytoscape3.0)
@@ -286,6 +345,7 @@ class MergeAttributeTable extends JTable{
             return attributeMapping.getSizeNetwork()==0?0:n; 
         }
 
+        @Override
         public String getColumnName(final int col) {
             if (col==getColumnCount()-1) {
                 return mergedNetworkName;
@@ -294,6 +354,7 @@ class MergeAttributeTable extends JTable{
             }
         }
 
+        @Override
         public Object getValueAt(final int row, final int col) {
             //final int iAttr = row; //TODO used in Cytoscape3
             
@@ -315,14 +376,12 @@ class MergeAttributeTable extends JTable{
             }
         }
 
+        @Override
         public Class getColumnClass(final int c) {
             return String.class;
         }
 
-        /*
-         * 
-         * 
-         */
+        @Override
         public boolean isCellEditable(final int row, final int col) {
             //TODO remove in Cytoscape3.0
             if (row<2) return false;//TODO remove in Cytoscape3.0
@@ -337,10 +396,8 @@ class MergeAttributeTable extends JTable{
             return (col!=getColumnCount()-1);
         }
 
-        /* 
-         * Don't need to implement this method unless your table's
-         * data can change.
-         */
+
+        @Override
         public void setValueAt(final Object value, final int row, final int col) {
             if (value==null) return;
             
@@ -430,6 +487,7 @@ class MergeAttributeTable extends JTable{
             }
         }
 
+        @Override
         public void fireTableStructureChanged() {
             resetNetworks();
             super.fireTableStructureChanged();
