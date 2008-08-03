@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta name="author"      content="Mike Daly, Craig Mak" />
+  <meta name="keywords"    content="biological networks, network models, systems biology, pathway hypotheses, protein network" />
+  <meta name="description" content="CellCircuits" />
+  <meta name="robots"      content="all" />
+
+  <META name="verify-v1" content="CWIdYka5MmVtMrYI6Prw6p6mHSEiqKPSLrodO/l7Kqg=" />
+
+  <script type="text/javascript" src="javascript/advanced_search.js"></script>
+  <script src="javascript/scriptaculous.js" type="text/javascript"></script>
+
+  <link type="text/css" rel="stylesheet" href="css/master.css">
+
+  <title>Cell Circuits - A searchable repository of published network model hypotheses</title>
+
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+</head>
+<body id="body-element">
+  <form method="POST" name="search" action="/cgi-bin/cellcircuits/search.pl"><br />
+  <center><img src="CC-logo-large.jpg" alt="Cell Circuits" /></center><br /><br />
+
+  <table align='center' border='0' cellspacing=0 cellpadding=0 summary='search interface'>
+    <tr>
+      <td align="center" valign="bottom">
+        <input type="text" size="55" name="search_query" value='' title='For information on valid queries, click "About CellCircuits" link below'/>
+      </td>
+    </tr>
+    <tr>
+      <td align='center' valign='top'>
+        <input type="submit" name="search_query_button" value="Search" title='Click to find models matching your query'/><input type="submit" value="Load Example Query" title="requires javaScript" onClick="LoadExampleQuery('rad51 GO:0006950 ercc1_human', 'DNA repair');return false;" />
+      </td>
+    </tr>
+  </table>
+<!-- HIDDEN TAGS -->
+  <input type="hidden" name="results_page" value="1" checked="checked" />
+  <input type="hidden" name="search_condition"   value="default" checked="checked" />
+  </form>
+
+  <br /><br />
+
+  <center>
+    <a class="white-bg-link" href="advanced_search.php">Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class="white-bg-link" href="about_cell_circuits.html">About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class="white-bg-link" href="Tutorial-home.html">Help</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class="white-bg-link" href="http://chianti.ucsd.edu/idekerlab/index.html">Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class="white-bg-link" href="http://www-bioeng.ucsd.edu/">UCSD</a>
+    <p style="font-style:italic;font-size: 0.8em">Funding provided by the National Science Foundation (NSF 0425926).</p>
+  </center>
+
+
+</body>
+</html>
