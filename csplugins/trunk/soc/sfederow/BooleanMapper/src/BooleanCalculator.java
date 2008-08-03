@@ -275,7 +275,7 @@ public class BooleanCalculator {
 				boolean comparisonOutcome = false;
 
 				if(!(attributes.get(i).equals("") || attributes.get(i+2).equals(""))){
-
+					
 					comparisonOutcome = doNumericalOperation(i, attributes.get(i), attributes.get(i+2), nodeValues, operations, node);
 					System.out.println("made it"+comparisonOutcome);
 				}
@@ -378,6 +378,7 @@ public class BooleanCalculator {
 		boolean ii = false;
 		CyNode cnode = (CyNode)node;
 		String nodeID = cnode.getIdentifier();
+		
 		if(firstValue.matches("^[0-9\\.\\-]+")){
 			if(firstValue.matches("^[0-9]+")){
 				ivalue1 = Integer.parseInt(firstValue);
@@ -451,6 +452,7 @@ public class BooleanCalculator {
 					id = false;
 					ii = false;
 				}
+
 			}else{
 				dvalue2 = Double.parseDouble(secondValue);
 				System.out.println("dvalue2: "+dvalue2);
@@ -531,50 +533,205 @@ public class BooleanCalculator {
 					}
 				}
 			}	
+		}
+		
+		System.out.println("dd:"+dd+"di:"+di+"id:"+id+"ii"+ii);
+		
+		if(dd){		
 
-			if(dd){		
+			if(operations.get(position+1).matches("<")){
 
-				if(operations.get(position+1).matches("<")){
+				if(dvalue1 < dvalue2){
+					return true;
+				}else{
+					return false;
+				}
 
-					if(dvalue1 < dvalue2){
+			}else{
+				if(operations.get(position+1).matches(">")){
+
+					if(dvalue1 > dvalue2){
 						return true;
 					}else{
 						return false;
 					}
 
 				}else{
-					if(operations.get(position+1).matches(">")){
+					if(operations.get(position+1).matches("<=")){
 
-						if(dvalue1 > dvalue2){
+						if(dvalue1 <= dvalue2){
 							return true;
 						}else{
 							return false;
 						}
 
 					}else{
-						if(operations.get(position+1).matches("<=")){
-
-							if(dvalue1 <= dvalue2){
+						if(operations.get(position+1).matches(">=")){
+							if(dvalue1 >= dvalue2){
 								return true;
 							}else{
 								return false;
 							}
 
 						}else{
-							if(operations.get(position+1).matches(">=")){
-								if(dvalue1 >= dvalue2){
+							if(operations.get(position+1).matches("=")){
+								if(dvalue1 == dvalue2){
 									return true;
 								}else{
 									return false;
 								}
+							}
+						}
+					}
+				}
+			}
+		}
 
+
+		if(di){		
+
+			if(operations.get(position+1).matches("<")){
+
+				if(dvalue1 < ivalue2){
+					return true;
+				}else{
+					return false;
+				}
+
+			}else{
+				if(operations.get(position+1).matches(">")){
+
+					if(dvalue1 > ivalue2){
+						return true;
+					}else{
+						return false;
+					}
+
+				}else{
+					if(operations.get(position+1).matches("<=")){
+
+						if(dvalue1 <= ivalue2){
+							return true;
+						}else{
+							return false;
+						}
+
+					}else{
+						if(operations.get(position+1).matches(">=")){
+							if(dvalue1 >= ivalue2){
+								return true;
 							}else{
-								if(operations.get(position+1).matches("=")){
-									if(dvalue1 == dvalue2){
-										return true;
-									}else{
-										return false;
-									}
+								return false;
+							}
+
+						}else{
+							if(operations.get(position+1).matches("=")){
+								if(dvalue1 == ivalue2){
+									return true;
+								}else{
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		if(id){		
+
+			if(operations.get(position+1).matches("<")){
+
+				if(ivalue1 < dvalue2){
+					return true;
+				}else{
+					return false;
+				}
+
+			}else{
+				if(operations.get(position+1).matches(">")){
+
+					if(ivalue1 > dvalue2){
+						return true;
+					}else{
+						return false;
+					}
+
+				}else{
+					if(operations.get(position+1).matches("<=")){
+
+						if(ivalue1 <= dvalue2){
+							return true;
+						}else{
+							return false;
+						}
+
+					}else{
+						if(operations.get(position+1).matches(">=")){
+							if(ivalue1 >= dvalue2){
+								return true;
+							}else{
+								return false;
+							}
+
+						}else{
+							if(operations.get(position+1).matches("=")){
+								if(ivalue1 == dvalue2){
+									return true;
+								}else{
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		if(ii){		
+
+			if(operations.get(position+1).matches("<")){
+
+				if(ivalue1 < ivalue2){
+					return true;
+				}else{
+					return false;
+				}
+
+			}else{
+				if(operations.get(position+1).matches(">")){
+
+					if(ivalue1 > ivalue2){
+						return true;
+					}else{
+						return false;
+					}
+
+				}else{
+					if(operations.get(position+1).matches("<=")){
+
+						if(ivalue1 <= ivalue2){
+							return true;
+						}else{
+							return false;
+						}
+
+					}else{
+						if(operations.get(position+1).matches(">=")){
+							if(ivalue1 >= ivalue2){
+								return true;
+							}else{
+								return false;
+							}
+
+						}else{
+							if(operations.get(position+1).matches("=")){
+								if(ivalue1 == ivalue2){
+									return true;
+								}else{
+									return false;
 								}
 							}
 						}
@@ -582,158 +739,6 @@ public class BooleanCalculator {
 				}
 			}
 
-
-			if(di){		
-
-				if(operations.get(position+1).matches("<")){
-
-					if(dvalue1 < ivalue2){
-						return true;
-					}else{
-						return false;
-					}
-
-				}else{
-					if(operations.get(position+1).matches(">")){
-
-						if(dvalue1 > ivalue2){
-							return true;
-						}else{
-							return false;
-						}
-
-					}else{
-						if(operations.get(position+1).matches("<=")){
-
-							if(dvalue1 <= ivalue2){
-								return true;
-							}else{
-								return false;
-							}
-
-						}else{
-							if(operations.get(position+1).matches(">=")){
-								if(dvalue1 >= ivalue2){
-									return true;
-								}else{
-									return false;
-								}
-
-							}else{
-								if(operations.get(position+1).matches("=")){
-									if(dvalue1 == ivalue2){
-										return true;
-									}else{
-										return false;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
-
-			if(id){		
-
-				if(operations.get(position+1).matches("<")){
-
-					if(ivalue1 < dvalue2){
-						return true;
-					}else{
-						return false;
-					}
-
-				}else{
-					if(operations.get(position+1).matches(">")){
-
-						if(ivalue1 > dvalue2){
-							return true;
-						}else{
-							return false;
-						}
-
-					}else{
-						if(operations.get(position+1).matches("<=")){
-
-							if(ivalue1 <= dvalue2){
-								return true;
-							}else{
-								return false;
-							}
-
-						}else{
-							if(operations.get(position+1).matches(">=")){
-								if(ivalue1 >= dvalue2){
-									return true;
-								}else{
-									return false;
-								}
-
-							}else{
-								if(operations.get(position+1).matches("=")){
-									if(ivalue1 == dvalue2){
-										return true;
-									}else{
-										return false;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
-
-			if(ii){		
-
-				if(operations.get(position+1).matches("<")){
-
-					if(ivalue1 < ivalue2){
-						return true;
-					}else{
-						return false;
-					}
-
-				}else{
-					if(operations.get(position+1).matches(">")){
-
-						if(ivalue1 > ivalue2){
-							return true;
-						}else{
-							return false;
-						}
-
-					}else{
-						if(operations.get(position+1).matches("<=")){
-
-							if(ivalue1 <= ivalue2){
-								return true;
-							}else{
-								return false;
-							}
-
-						}else{
-							if(operations.get(position+1).matches(">=")){
-								if(ivalue1 >= ivalue2){
-									return true;
-								}else{
-									return false;
-								}
-
-							}else{
-								if(operations.get(position+1).matches("=")){
-									if(ivalue1 == ivalue2){
-										return true;
-									}else{
-										return false;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
 			//System.out.println("comparisonOutcome: "+comparisonOutcome);
 		}
 		return comparisonOutcome;

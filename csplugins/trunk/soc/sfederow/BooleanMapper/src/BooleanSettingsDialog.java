@@ -120,7 +120,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		if (command.equals("add")){
 			//System.out.println(currentAlgorithm.getSettings().get("criteriaField").getValue().toString());
 			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
-			System.out.println(criteria);
+			System.out.println("ADD CRITERIA: "+criteria);
 			if(calculator.parse2(criteria)){ 
 				
 				value = criteria;
