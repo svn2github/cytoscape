@@ -44,14 +44,31 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.EventObject;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
+import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.DefaultCellEditor;
+import javax.swing.table.TableCellEditor;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.JTextField;
+import javax.swing.event.CellEditorListener;
 
 /**
  * Table for selecting which attribute to use for matching nodes
@@ -82,12 +99,35 @@ public class IDTypeSelectionTable extends JTable{
         setModel(model);
         setRowHeight(20);
 
-        addMouseClickListener();
+        //addMouseClickListener();
 
     }
 
-    void setSupportedSrcIDType(final Set<String> types) {
+    public void setSupportedSrcIDType(final Set<String> types) {
             supportedSrcIDType = new TreeSet<String>(types);
+            setColumnEditorAndCellRenderer();
+    }
+
+    protected void setColumnEditorAndCellRenderer() {
+        int nc = getColumnCount();
+        TableColumn column = getColumnModel().getColumn(nc-1);
+
+        // set up editor
+        RowTableCellEditor rowEditor = new RowTableCellEditor(this);
+        int nr = this.getRowCount();
+        List<CheckComboBox> combos = new Vector<CheckComboBox>(nr);
+        for (int ir=0; ir<nr; ir++) {
+                String net = (String) this.getValueAt(ir, 0);
+                String attr = (String) this.getValueAt(ir, 1);
+                CheckComboBox cc = new  CheckComboBox(net,attr);
+                combos.add(cc);
+                rowEditor.setEditorAt(ir, new  DefaultCellEditor(cc));
+        }
+        column.setCellEditor(rowEditor);
+        //column.setCellEditor(new ComboBoxTableCellEditor(this));
+
+        // set up renderer
+        column.setCellRenderer(new ComboBoxTableCellRenderer(combos));
     }
 
         private void initNetworks() {
@@ -121,45 +161,12 @@ public class IDTypeSelectionTable extends JTable{
             }
        }
 
-    private void addMouseClickListener() {
-            addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                         IDTypeSelectionTable source = (IDTypeSelectionTable)e.getSource();
-                         int column = source.getSelectedColumn();
-                         if (column==2) {
-                            int row = source.getSelectedRow();
-                            String netID = listNetIDTitleAttr.get(row)[0];
-                            String attr = listNetIDTitleAttr.get(row)[2];
-                            Map<String,Set<String>> mapAttrType = parent.getSrcTypes().get(netID);
-                            IDTypeSelectionDialog dialog = new IDTypeSelectionDialog(frame,
-                                                                                     true,
-                                                                                     supportedSrcIDType,
-                                                                                     mapAttrType.get(attr));
-                            dialog.setLocationRelativeTo(source.getParent());
-                            dialog.setVisible(true);
-                            if (!dialog.isCancelled()) {
-                                mapAttrType.put(attr, dialog.getSelectedIDTypes());
-                                source.fireTableDataChanged();
-                                parent.updateGoButtonEnable();
-                            }
-                         }
-                    }
-                });
-    }
-
     void fireTableDataChanged() {
             model.fireTableDataChanged();
     }
 
     private class IDTypeSelectionTableModel extends AbstractTableModel {
         private final String[] columnNames = {"Network","Attribute","ID Type(s)"};
-        //private List<String> netNames;
-        //private List<String> netIDs;
-
-        //public IDTypeSelectionTableModel() {
-            //setNetworks();
-       // }
 
         @Override
         public int getColumnCount() {
@@ -201,11 +208,244 @@ public class IDTypeSelectionTable extends JTable{
 
         @Override
         public boolean isCellEditable(int row, int col) {
-            return false;
+            return col==this.getColumnCount()-1;
         }
 
     }
 
 
+    // render checkcombobox
+    class ComboBoxTableCellRenderer implements TableCellRenderer {
+                private List<CheckComboBox> combos;
+                public ComboBoxTableCellRenderer(List<CheckComboBox> combos) {
+                        this.combos = combos;
+                }
 
+                @Override
+                public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                        if (column==table.getColumnCount()-1) {
+                                return combos.get(row);
+                        } else {
+                                return new DefaultTableCellRenderer();
+                        }
+                }
+        }
+
+        // combobox contains checkboxes
+        class CheckComboBox extends JComboBox {
+               private List<JCheckBox> cbs;
+               private String net;
+               private String attr;
+
+               public CheckComboBox(String net, String attr) {
+                       //super(new JCheckBox[supportedSrcIDType.size()]);
+                       this.net = net;
+                       this.attr = attr;
+                       initCBs();
+
+                       this.addItem(new String());
+                       for (JCheckBox cb : cbs) {
+                               this.addItem(cb);
+                       }
+
+                       setRenderer(new CheckBoxRenderer(net,attr,cbs));
+                       addActionListener(this);
+               }
+
+               private void initCBs() {
+                        Set<String> selectedTypes = parent.getSrcTypes().get(net).get(attr);
+                        cbs = new Vector<JCheckBox>();
+                        JCheckBox cb;
+                        for (String type : supportedSrcIDType) {
+                                cb = new JCheckBox(type);
+                                cb.setSelected(selectedTypes.contains(type));
+                                cbs.add(cb);
+                        }
+
+                        cb = new JCheckBox("Select all");
+                        cb.setSelected(selectedTypes.size()==supportedSrcIDType.size());
+                        cbs.add(cb);
+
+                        cb = new JCheckBox("Select none");
+                        cb.setSelected(selectedTypes.isEmpty());
+                        cbs.add(cb);
+                }
+
+                private void checkBoxSelectionChanged(int index) {
+                        int n = cbs.size();
+                        if (index<0 || index>=n) return;
+
+                        Set<String> selectedTypes = parent.getSrcTypes().get(net).get(attr);
+                        if (index<n-2) {
+                                JCheckBox cb = cbs.get(index);
+                                if (cb.isSelected()) {
+                                        cb.setSelected(false);
+                                        selectedTypes.remove(cb.getText());
+                                        
+                                        cbs.get(n-2).setSelected(false); //Select all
+                                        cbs.get(n-1).setSelected(selectedTypes.isEmpty());
+                                } else {
+                                        cb.setSelected(true);
+                                        selectedTypes.add(cb.getText());
+
+                                        cbs.get(n-2).setSelected(selectedTypes.size()==supportedSrcIDType.size()); // Select all
+                                        cbs.get(n-1).setSelected(false);
+                                }
+                        } else if (index==n-2) {
+                                selectedTypes.addAll(supportedSrcIDType);
+                                for (int i=0; i<n-1; i++) {
+                                        cbs.get(i).setSelected(true);
+                                }
+                                cbs.get(n-1).setSelected(false);
+                        } else { // if (index==n-1)
+                                selectedTypes.clear();
+                                for (int i=0; i<n-1; i++) {
+                                        cbs.get(i).setSelected(false);
+                                }
+                                cbs.get(n-1).setSelected(true);
+                        }
+
+                        parent.updateGoButtonEnable();
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                        int sel = getSelectedIndex();
+
+                        if (sel == 0) {
+                                getUI().setPopupVisible(this, false);
+                        } else if (sel > 0) {
+                                checkBoxSelectionChanged(sel-1);
+                        }
+
+                        this.setSelectedIndex(-1); // clear selection
+                }
+
+                @Override
+                public void setPopupVisible(boolean flag)
+                {
+                        int i=1;
+                        //TODO this not work, fix it
+                        // Not code here prevents the populist from closing
+                }
+        }
+
+        // checkbox renderer for combobox
+        class CheckBoxRenderer implements ListCellRenderer {
+                private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+                private List<JCheckBox> cbs;
+                private String net;
+                private String attr;
+
+                public CheckBoxRenderer(String net, String attr, List<JCheckBox> cbs) {
+                        setOpaque(true);
+                        this.cbs = cbs;
+                        this.net = net;
+                        this.attr = attr;
+                }
+
+                @Override
+                public Component getListCellRendererComponent(
+                        JList list,
+                        Object value,
+                        int index,
+                        boolean isSelected,
+                        boolean cellHasFocus) {
+                                if (index > 0) {
+                                        JCheckBox cb = cbs.get(index-1);
+                                        cb.setBackground(isSelected ? Color.blue : Color.white);
+                                        cb.setForeground(isSelected ? Color.white : Color.black);
+
+                                        return cb;
+                                }
+
+                                Set<String> types = new TreeSet<String>(parent.getSrcTypes().get(net).get(attr));
+
+                                return defaultRenderer.getListCellRendererComponent(list, types.toString(), index, isSelected, cellHasFocus);
+
+
+                }
+        } 
+
+}
+
+// support different editors for each row in a column
+class RowTableCellEditor implements TableCellEditor {
+  protected HashMap editors;
+
+  protected TableCellEditor editor, defaultEditor;
+
+  JTable table;
+
+  /**
+   * Constructs a EachRowEditor. create default editor
+   *
+   * @see TableCellEditor
+   * @see DefaultCellEditor
+   */
+  public RowTableCellEditor(JTable table) {
+    this.table = table;
+    editors = new HashMap();
+    defaultEditor = new DefaultCellEditor(new JTextField());
+  }
+
+  /**
+   * @param row
+   *            table row
+   * @param editor
+   *            table cell editor
+   */
+  public void setEditorAt(int row, TableCellEditor editor) {
+    editors.put(new Integer(row), editor);
+  }
+
+  public Component getTableCellEditorComponent(JTable table, Object value,
+      boolean isSelected, int row, int column) {
+    return editor.getTableCellEditorComponent(table, value, isSelected,
+        row, column);
+  }
+
+  public Object getCellEditorValue() {
+    return editor.getCellEditorValue();
+  }
+
+  public boolean stopCellEditing() {
+    return editor.stopCellEditing();
+  }
+
+  public void cancelCellEditing() {
+    editor.cancelCellEditing();
+  }
+
+  public boolean isCellEditable(EventObject anEvent) {
+    selectEditor((MouseEvent) anEvent);
+    return editor.isCellEditable(anEvent);
+  }
+
+  public void addCellEditorListener(CellEditorListener l) {
+    editor.addCellEditorListener(l);
+  }
+
+  public void removeCellEditorListener(CellEditorListener l) {
+    editor.removeCellEditorListener(l);
+  }
+
+  public boolean shouldSelectCell(EventObject anEvent) {
+    selectEditor((MouseEvent) anEvent);
+    return editor.shouldSelectCell(anEvent);
+  }
+
+  protected void selectEditor(MouseEvent e) {
+    int row;
+    if (e == null) {
+      row = table.getSelectionModel().getAnchorSelectionIndex();
+    } else {
+      row = table.rowAtPoint(e.getPoint());
+    }
+    editor = (TableCellEditor) editors.get(new Integer(row));
+    if (editor == null) {
+      editor = defaultEditor;
+    }
+  }
 }

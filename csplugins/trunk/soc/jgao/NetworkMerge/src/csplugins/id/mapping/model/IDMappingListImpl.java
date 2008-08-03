@@ -394,22 +394,20 @@ public class IDMappingListImpl implements IDMappingList {
                         throw new java.lang.NullPointerException();
                 }
 
-                if (indices.size()==0) {
+                if (indices.isEmpty()) {
                         throw new java.lang.IllegalArgumentException("empty indices");
                 }
 
-                Iterator<Integer> it = indices.iterator();
-                int iMerged = it.next(); //merge to the lowest
+                Integer[] iarray = (Integer[])indices.toArray(new Integer[0]);
+
+                int iMerged = iarray[0]; //merge to the lowest
                 if (iMerged<0 || iMerged>=this.getIDMappingCount()) {
                         throw new java.lang.IndexOutOfBoundsException();
                 }
 
-                //Map<String,Set<String>> idMappingMerged = idMappings.get(iMerged);
-
-                it = indices.descendingIterator(); // from last to second
-                while (it.hasNext()) {
-                        int i = it.next();
-                        if (iMerged==i) break;
+                int n = iarray.length;
+                for (int ia=n-1; ia>0; ia--) {
+                        int i = iarray[ia];
                         if (i<0 || i>=this.getIDMappingCount()) {
                                 throw new java.lang.IndexOutOfBoundsException();
                         }

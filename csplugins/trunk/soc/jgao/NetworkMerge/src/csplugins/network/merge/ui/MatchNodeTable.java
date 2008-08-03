@@ -48,7 +48,6 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.DefaultCellEditor;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JComboBox;
 
 /**
@@ -84,9 +83,6 @@ class MatchNodeTable extends JTable{
 
             ComboBoxTableCellRenderer comboRenderer = new ComboBoxTableCellRenderer(attrs);
             column.setCellRenderer(comboRenderer);
-//            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-//            renderer.setToolTipText("Click for combo box");
-//            column.setCellRenderer(renderer);
         }
     }
 

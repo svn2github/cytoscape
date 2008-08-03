@@ -50,8 +50,8 @@ public class IDMappingPreviewDialog extends javax.swing.JDialog {
                 javax.swing.JPanel prevewTablePanel = new javax.swing.JPanel();
                 javax.swing.JScrollPane previewScrollPane = new javax.swing.JScrollPane();
                 previewTable = new javax.swing.JTable();
-                javax.swing.JPanel OKPanel = new javax.swing.JPanel();
-                OKButton = new javax.swing.JButton();
+                javax.swing.JPanel closePanel = new javax.swing.JPanel();
+                closeButton = new javax.swing.JButton();
                 javax.swing.JPanel opPanel = new javax.swing.JPanel();
                 clearButton = new javax.swing.JButton();
 
@@ -76,33 +76,20 @@ public class IDMappingPreviewDialog extends javax.swing.JDialog {
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
                 getContentPane().add(prevewTablePanel, gridBagConstraints);
 
-                OKButton.setText("    OK    ");
-                OKButton.addActionListener(new java.awt.event.ActionListener() {
+                closeButton.setText("  Close  ");
+                closeButton.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                OKButtonActionPerformed(evt);
+                                closeButtonActionPerformed(evt);
                         }
                 });
-
-                javax.swing.GroupLayout OKPanelLayout = new javax.swing.GroupLayout(OKPanel);
-                OKPanel.setLayout(OKPanelLayout);
-                OKPanelLayout.setHorizontalGroup(
-                        OKPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(OKPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(OKButton)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-                OKPanelLayout.setVerticalGroup(
-                        OKPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(OKButton)
-                );
+                closePanel.add(closeButton);
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 1;
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                getContentPane().add(OKPanel, gridBagConstraints);
+                getContentPane().add(closePanel, gridBagConstraints);
 
                 clearButton.setText("Clear all");
                 clearButton.addActionListener(new java.awt.event.ActionListener() {
@@ -110,23 +97,7 @@ public class IDMappingPreviewDialog extends javax.swing.JDialog {
                                 clearButtonActionPerformed(evt);
                         }
                 });
-
-                javax.swing.GroupLayout opPanelLayout = new javax.swing.GroupLayout(opPanel);
-                opPanel.setLayout(opPanelLayout);
-                opPanelLayout.setHorizontalGroup(
-                        opPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(opPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(clearButton)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-                opPanelLayout.setVerticalGroup(
-                        opPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(opPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(clearButton)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
+                opPanel.add(clearButton);
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
@@ -138,9 +109,9 @@ public class IDMappingPreviewDialog extends javax.swing.JDialog {
                 pack();
         }// </editor-fold>//GEN-END:initComponents
 
-    private void OKButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKButtonActionPerformed
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
             this.setVisible(false);
-}//GEN-LAST:event_OKButtonActionPerformed
+}//GEN-LAST:event_closeButtonActionPerformed
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
             final int ioption = JOptionPane.showConfirmDialog(getParent(),
@@ -155,8 +126,8 @@ public class IDMappingPreviewDialog extends javax.swing.JDialog {
 
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JButton OKButton;
         private javax.swing.JButton clearButton;
+        private javax.swing.JButton closeButton;
         private javax.swing.JTable previewTable;
         private PreviewTableModel tableModel;
         // End of variables declaration//GEN-END:variables
