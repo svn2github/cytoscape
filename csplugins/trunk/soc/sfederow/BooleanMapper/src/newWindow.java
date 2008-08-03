@@ -289,8 +289,8 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		// Create the list by combining node and edge attributes into a single
 		// list
 
-		getAttributesList(attributeList, Cytoscape.getNodeAttributes(), "node.");
-		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(), "edge.");
+		getAttributesList(attributeList, Cytoscape.getNodeAttributes(), "");
+		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(), "");
 		String[] str = (String[]) attributeList.toArray(new String[attributeList.size()]);
 		attributeList.clear();
 		return str;
