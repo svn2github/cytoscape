@@ -244,8 +244,8 @@ public class CytoscapeTest extends TestCase {
 	 */
 	public void testEdgeDirectionality() {
 		// create nodes
-		Node a = Cytoscape.getCyNode("from", true);
-		Node b = Cytoscape.getCyNode("to", true);
+		Node a = Cytoscape.getCyNode("from_directionality", true);
+		Node b = Cytoscape.getCyNode("to_directionality", true);
 
 		String attr = Semantics.INTERACTION;
 
@@ -285,8 +285,8 @@ public class CytoscapeTest extends TestCase {
 	 */
 	public void testGetCyEdgeStrictness() {
 		// create nodes
-		Node a = Cytoscape.getCyNode("from", true);
-		Node b = Cytoscape.getCyNode("to", true);
+		Node a = Cytoscape.getCyNode("from_strictness", true);
+		Node b = Cytoscape.getCyNode("to_strictness", true);
 
 		String attr = Semantics.INTERACTION;
 		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, false));
