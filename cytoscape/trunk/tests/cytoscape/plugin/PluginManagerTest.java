@@ -2,14 +2,11 @@ package cytoscape.plugin;
 
 import cytoscape.*;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.net.URLClassLoader;
 import java.util.*;
 import junit.framework.TestCase;
+import org.jdom.JDOMException;
 
 /**
  * @author skillcoy
@@ -156,7 +153,27 @@ public class PluginManagerTest extends TestCase {
 		assertEquals(mgr.inquire(Url).size(), 10);
 	}
 
-	/**
+  public void testInquirePartialXML() {
+    String Url = getFileUrl() + "partial_plugin_file.xml";
+    System.out.println(Url);
+    try
+      {
+      mgr.inquire(Url);
+      }
+    catch (IOException e)
+      {
+      fail("Should have gotten a JDOMParseException");
+      e.printStackTrace();
+      }
+    catch (JDOMException e)
+      {
+      assertNotNull(e);
+      e.printStackTrace();
+      }
+  }
+
+
+  /**
 	 * NOT IMPLEMENTED
 	 * Test method for
 	 * {@link cytoscape.plugin.PluginManager#register(cytoscape.plugin.CytoscapePlugin, java.lang.String)}.

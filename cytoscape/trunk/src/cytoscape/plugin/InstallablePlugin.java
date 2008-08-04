@@ -18,14 +18,16 @@ import java.util.zip.ZipEntry;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.URLUtil;
 import cytoscape.util.ZipUtil;
+import cytoscape.logger.CyLogger;
 
 /**
  * @author skillcoy
  * 
  */
 public class InstallablePlugin implements Installable {
+  private static CyLogger logger = CyLogger.getLogger(InstallablePlugin.class);
 
-	private PluginInfo infoObj;
+  private PluginInfo infoObj;
 
 	public InstallablePlugin(PluginInfo obj) {
 		this.infoObj = obj;
@@ -87,7 +89,7 @@ public class InstallablePlugin implements Installable {
 		} catch (IOException ioe) {
 			Download.delete();
 			Download.getParentFile().delete();
-			throw ioe;
+      throw ioe;
 		}
 
 		switch (infoObj.getFileType()) {
