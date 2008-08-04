@@ -102,7 +102,11 @@ public class Semantics {
 	 *
 	 */
 	public static final String INTERACTION = "interaction";
-
+	
+	/**
+	 * Edge attribute, if true, edge is directed, if false it is undirected
+	 */
+	public static final String IS_DIRECTED= "is directed";
 	/**
 	 *
 	 */

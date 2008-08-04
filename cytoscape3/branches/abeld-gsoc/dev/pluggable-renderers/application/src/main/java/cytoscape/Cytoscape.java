@@ -627,12 +627,12 @@ public abstract class Cytoscape {
 
 	/**
 	 * Gets the first CyEdge found between the two nodes (direction does not
-	 * matter) that has the given value for the given attribute. If the edge
-	 * doesn't exist, then it creates an undirected edge.
-	 *
-	 * This method MIGHT be deprecated, or even removed, because Cytoscape
-	 * shouldn't really be using undirected edges.
-	 *
+	 * matter, but tries directed edge first) that has the given value for the
+	 * given attribute. If the edge doesn't exist, then it creates a directed
+	 * edge.
+	 * 
+	 * Thus, if create is true, this method will allways return a directed edge.
+	 * 
 	 * @param node_1
 	 *            one end of the edge
 	 * @param node_2
@@ -651,7 +651,14 @@ public abstract class Cytoscape {
 	 */
 	public static Edge getCyEdge(Node node_1, Node node_2, String attribute,
 	                               Object attribute_value, boolean create) {
-		return getCyEdge(node_1, node_2, attribute, attribute_value, create, false);
+		if (!create){
+			Edge e = getCyEdge(node_1, node_2, attribute, attribute_value, create, true);
+			if (e == null){
+				return getCyEdge(node_1, node_2, attribute, attribute_value, create, false);
+			} else { return e;}
+		} else {
+			return getCyEdge(node_1, node_2, attribute, attribute_value, create, true);
+		}
 	}
 
 	/**
@@ -697,14 +704,16 @@ public abstract class Cytoscape {
 					Node edgeSource = (Node) edge.getSource();
 
 					if ((edgeTarget.getRootGraphIndex() == target.getRootGraphIndex())
-					    && (edgeSource.getRootGraphIndex() == source.getRootGraphIndex())) {
+					    && (edgeSource.getRootGraphIndex() == source.getRootGraphIndex())
+					    && (edge.isDirected() == directed)) {
 						return edge;
 					}
 
 					if (!directed) {
 						// note that source and target are switched
 						if ((edgeTarget.getRootGraphIndex() == source.getRootGraphIndex())
-						    && (edgeSource.getRootGraphIndex() == target.getRootGraphIndex())) {
+						    && (edgeSource.getRootGraphIndex() == target.getRootGraphIndex())
+						    && (edge.isDirected() == directed)) {
 							return edge;
 						}
 					}
@@ -716,7 +725,7 @@ public abstract class Cytoscape {
 			// create the edge
 			Edge edge = (Edge) Cytoscape.getRootGraph()
 			                                .getEdge(Cytoscape.getRootGraph()
-			                                                  .createEdge(source, target));
+			                                                  .createEdge(source, target, directed));
 
 			// create the edge id
 			String edge_name = Cytoscape.createEdgeIdentifier(source.getIdentifier(),
@@ -725,6 +734,7 @@ public abstract class Cytoscape {
 			edge.setIdentifier(edge_name);
 
 			edgeAttributes.setAttribute(edge_name, Semantics.INTERACTION, (String) attribute_value);
+			edgeAttributes.setAttribute(edge_name, Semantics.IS_DIRECTED, new Boolean(directed));
 			edgeAttributes.setAttribute(edge_name, Semantics.CANONICAL_NAME, edge_name);
 
 			return edge;
@@ -734,7 +744,7 @@ public abstract class Cytoscape {
 	}
 
 	/**
-	 * Returns and edge if it exists, otherwise creates a directed edge.
+	 * Returns a directed edge if it exists, otherwise creates a directed edge.
 	 *
 	 * @param source_alias
 	 *            an alias of a node
@@ -745,7 +755,24 @@ public abstract class Cytoscape {
 	 * @return will always return an edge
 	 */
 	public static Edge getCyEdge(String source_alias, String edge_name, String target_alias,
-	                               String interaction_type) {
+            String interaction_type) {
+			return getCyEdge(source_alias, edge_name, target_alias, interaction_type, true);
+	}
+	/**
+	 * Returns an edge if it exists, otherwise creates an edge with given directionality.
+	 *
+	 * @param source_alias
+	 *            an alias of a node
+	 * @param edge_name
+	 *            the name of the node
+	 * @param target_alias
+	 *            an alias of a node
+	 * @param directed
+	 * 			directedness of edge
+	 * @return will always return an edge
+	 */	
+	public static Edge getCyEdge(String source_alias, String edge_name, String target_alias,
+	                               String interaction_type, boolean directed) {
 
 		Edge edge = Cytoscape.getRootGraph().getEdge(edge_name);
 
@@ -757,7 +784,7 @@ public abstract class Cytoscape {
 		Node source = getCyNode(source_alias);
 		Node target = getCyNode(target_alias);
 
-		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, true);
+		return getCyEdge(source, target, Semantics.INTERACTION, interaction_type, true, directed);
 	}
 
 	private static Object private_getEdgeAttributeValue(Edge edge, String attribute) {
@@ -1669,6 +1696,14 @@ public abstract class Cytoscape {
 		view.setGraphLOD(new CyGraphLOD());
 		view.setIdentifier(network.getIdentifier());
 		getNetworkViewMap().put(network.getIdentifier(), view);
+
+		// TODO:  Evaluate this hack.  It is done to make sure that current network view
+		// is set for listeners of NETWORK_VIEW_CREATED.  Apparently in Cytoscape 2.6
+		// the NetworkViewManager heard the CREATED event first, and was able to set the
+		// value in time for others.  Not so in 3.0.  
+		// Ideally we would just get rid of getCurrentNetworkView().
+		setCurrentNetworkView(network.getIdentifier());
+
 		setSelectionMode(Cytoscape.getSelectionMode(), view);
 
 		if (vs != null) {

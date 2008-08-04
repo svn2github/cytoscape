@@ -124,7 +124,8 @@ public class GMLReader extends AbstractGraphReader {
 	protected static String LABEL = "label";
 	protected static String SOURCE = "source";
 	protected static String TARGET = "target";
-
+	protected static String IS_DIRECTED = "directed";
+	
 	// The following elements are in "graphics" section of GML
 	protected static String X = "x";
 	protected static String Y = "y";
@@ -180,6 +181,7 @@ public class GMLReader extends AbstractGraphReader {
 	List<Integer> nodes;
 	List<Integer> sources;
 	List<Integer> targets;
+	List<Boolean> directionality_flags;
 	Vector<String> node_labels;
 	Vector<String> edge_labels;
 	Vector<KeyValue> edge_root_index_pairs;
@@ -432,6 +434,7 @@ public class GMLReader extends AbstractGraphReader {
 		nodes = new ArrayList<Integer>();
 		sources = new ArrayList<Integer>();
 		targets = new ArrayList<Integer>();
+		directionality_flags = new ArrayList<Boolean>();
 		node_labels = new Vector<String>();
 		edge_labels = new Vector<String>();
 		edge_root_index_pairs = new Vector<KeyValue>();
@@ -442,6 +445,7 @@ public class GMLReader extends AbstractGraphReader {
 		nodes = null;
 		sources = null;
 		targets = null;
+		directionality_flags = null;
 		node_labels = null;
 		edge_labels = null;
 		edge_root_index_pairs = null;
@@ -505,7 +509,8 @@ public class GMLReader extends AbstractGraphReader {
 				String sourceName = (String) node_labels.get(gml_id2order.get(sources.get(idx)));
 				String targetName = (String) node_labels.get(gml_id2order.get(targets.get(idx)));
 				String edgeName = cytoscape.Cytoscape.createEdgeIdentifier(sourceName, label, targetName);
-
+				Boolean isDirected = (Boolean) directionality_flags.get(idx);
+				
 				int duplicate_count = 1;
 
 				while (!edgeNameSet.add(edgeName)) {
@@ -520,7 +525,7 @@ public class GMLReader extends AbstractGraphReader {
 
 				Node node_1 = Cytoscape.getCyNode(sourceName);
 				Node node_2 = Cytoscape.getCyNode(targetName);
-				Edge edge = Cytoscape.getCyEdge(node_1, node_2, Semantics.INTERACTION, label, true, true);
+				Edge edge = Cytoscape.getCyEdge(node_1, node_2, Semantics.INTERACTION, label, true, isDirected.booleanValue());
 
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
@@ -637,6 +642,7 @@ public class GMLReader extends AbstractGraphReader {
 		String label = DEFAULT_EDGE_INTERACTION;
 		boolean contains_source = false;
 		boolean contains_target = false;
+		Boolean isDirected = Boolean.TRUE; // use pre-3.0 cytoscape's as default
 		int source = 0;
 		int target = 0;
 		KeyValue root_index_pair = null;
@@ -654,6 +660,12 @@ public class GMLReader extends AbstractGraphReader {
 				label = (String) keyVal.value;
 			} else if (keyVal.key.equals(ROOT_INDEX)) {
 				root_index_pair = keyVal;
+			} else if (keyVal.key.equals(IS_DIRECTED)) {
+				if (((Integer)keyVal.value) == 1){
+					isDirected = Boolean.FALSE;
+				} else {
+					isDirected = Boolean.TRUE;
+				}
 			}
 		}
 
@@ -676,7 +688,8 @@ public class GMLReader extends AbstractGraphReader {
 		} else {
 			sources.add(source);
 			targets.add(target);
-
+			directionality_flags.add(isDirected);
+			
 			edge_labels.add(label);
 			edge_root_index_pairs.add(root_index_pair);
 		}
