@@ -14,6 +14,10 @@ else {
 	$image_type = $_GET['image_type'];
 }
 
+if (isset($_GET['return_type'])) {
+	$return_type = $_GET['return_type']; // image/html
+}
+
 if ($image_type == "unknown") {
 	echo "Image type unknown<br>\n";
 	exit;
@@ -27,13 +31,27 @@ else if ($image_type =='network_image') {
 	$image_table = 'network_image_files';
 	$query_attribute = 'id';
 }
+else if ($image_type =='legend_image') {
+	$image_table = 'legend_files';
+	$query_attribute = 'id';
+}
 
 
 list($image_type, $data) = getImage($image_table,$query_attribute,$image_file_id, $connection);
 
 	
-header("Content-type: image/$image_type");
-echo $data;
+if (isset($return_type) && $return_type == "html" ) {
+	//header("Content-type: text/html");
+
+	echo "<img src=\"getImage.php?image_type=legend_image&image_file_id=$image_file_id\" alt=\"\"  id=\"image1\" />";
+	//width=\"500\" height=\"500\"
+}
+else { // image
+	header("Content-type: image/$image_type");
+	echo $data;
+}
+
+
 
 
 function getImage($image_table,$query_attribute, $image_file_id, $connection) {
