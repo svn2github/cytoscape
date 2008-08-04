@@ -361,8 +361,10 @@
 		<dataSource name="Cytoscape"
 			xlink:href="http://cytoscape.org/plugins/plugins.xml"/>
 
+<!--
 		<dataSource name="Test"
-			xlink:href="http://db.systemsbiology.net/cytoscape/skillcoyne/plugins.xml"/>
+			xlink:href="file://Users/skillcoy/cytoscape_projects/Cytoscape_2.6.1/testData/plugins/partial_plugin_file.xml"/>
+-->
 	</category>
 
 </bookmarks>
