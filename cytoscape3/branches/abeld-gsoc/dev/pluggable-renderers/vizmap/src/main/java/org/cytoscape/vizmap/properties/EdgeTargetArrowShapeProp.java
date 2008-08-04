@@ -94,6 +94,10 @@ public class EdgeTargetArrowShapeProp extends AbstractVisualProperty {
 		if ((o == null) || (ev == null))
 			return;
 
+		if (!ev.getEdge().isDirected()){
+			return; // force undirected edges to have NO_END  
+		}
+
 		final int newTargetEnd = ((ArrowShape) o).getGinyArrow();
 
 		if (newTargetEnd != ev.getTargetEdgeEnd()) {
