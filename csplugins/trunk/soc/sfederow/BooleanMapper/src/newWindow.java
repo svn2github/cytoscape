@@ -308,6 +308,15 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		for (int i = 0; i < names.length; i++) {
 			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING
 					 || attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER || attributes.getType(names[i]) == CyAttributes.TYPE_BOOLEAN) {
+				if(names[i].contains(" ")){
+					names[i].replace(" " ,"-");
+					/*for(int j = 0; j < names[i].length(); j++){
+						String temp = names[i].charAt(j) + "";
+						if(temp.matches(" ")){
+							names[i] = names[i].substring(0,j) + "-" + names[i].substring(j+2, names[i].length());
+						}
+					}*/
+				}
 				attributeList.add(prefix + names[i]);
 			}
 		}

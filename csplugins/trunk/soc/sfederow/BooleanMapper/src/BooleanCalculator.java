@@ -384,10 +384,14 @@ public class BooleanCalculator {
 				ivalue1 = Integer.parseInt(firstValue);
 				id = true;
 				ii = true;
-			}else{
-				dvalue1 = Double.parseDouble(firstValue);
 				dd = false;
 				di = false;
+			}else{
+				dvalue1 = Double.parseDouble(firstValue);
+				dd = true;
+				di = true;
+				id = false;
+				ii = false;
 			}
 			System.out.println("digit1: "+dvalue1);
 
@@ -459,12 +463,12 @@ public class BooleanCalculator {
 				if(id || ii){ 
 					dd = false;
 					di = false;
-					id = false;
-					ii = true;	
+					id = true;
+					ii = false;	
 				}
 				if(di || dd){ 
-					dd = false;
-					di = true;
+					dd = true;
+					di = false;
 					id = false;
 					ii = false;
 				}
@@ -481,12 +485,12 @@ public class BooleanCalculator {
 				if(id || ii){ 
 					dd = false;
 					di = false;
-					id = false;
-					ii = true;	
+					id = true;
+					ii = false;	
 				}
 				if(di || dd){ 
-					dd = false;
-					di = true;
+					dd = true;
+					di = false;
 					id = false;
 					ii = false;
 				}
@@ -535,16 +539,20 @@ public class BooleanCalculator {
 			}	
 		}
 		
-		System.out.println("dd:"+dd+"di:"+di+"id:"+id+"ii"+ii);
+		System.out.println("dd:"+dd+" di:"+di+" id:"+id+" ii"+ii);
 		
 		if(dd){		
-
+			
 			if(operations.get(position+1).matches("<")){
 
 				if(dvalue1 < dvalue2){
+					System.out.println("dd");
 					return true;
+					
 				}else{
+					System.out.println("dd");
 					return false;
+					
 				}
 
 			}else{
@@ -591,11 +599,15 @@ public class BooleanCalculator {
 		if(di){		
 
 			if(operations.get(position+1).matches("<")){
-
+				System.out.println("ivalue2: "+ivalue2);
 				if(dvalue1 < ivalue2){
+					System.out.println("di true");
 					return true;
+					
 				}else{
+					System.out.println("di false");
 					return false;
+					
 				}
 
 			}else{
@@ -644,9 +656,13 @@ public class BooleanCalculator {
 			if(operations.get(position+1).matches("<")){
 
 				if(ivalue1 < dvalue2){
+					System.out.println("id");
 					return true;
+					
 				}else{
+					System.out.println("id");
 					return false;
+					
 				}
 
 			}else{
@@ -695,9 +711,13 @@ public class BooleanCalculator {
 			if(operations.get(position+1).matches("<")){
 
 				if(ivalue1 < ivalue2){
+					System.out.println("ii");
 					return true;
+					
 				}else{
+					System.out.println("ii");
 					return false;
+					
 				}
 
 			}else{
