@@ -356,14 +356,15 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		Node source_node = source.getNode();
 		Node target_node = target.getNode();
 
+		String edgeAttrValue =  BasicNetworkEditEventHandler.DEFAULT_EDGE;
+		if (this.getEdgeAttributeValue() != null){ edgeAttrValue = this.getEdgeAttributeValue();}
+		
+		boolean directed = CytoscapeEditorManager.EdgeTypeIsDirected(edgeAttrValue);
+		
 		Edge myEdge = _caller.addEdge(source_node, target_node,
-		                                cytoscape.data.Semantics.INTERACTION,
-		                                (this.getEdgeAttributeValue() != null)
-		                                ? this.getEdgeAttributeValue()
-		                                : BasicNetworkEditEventHandler.DEFAULT_EDGE, true,
-		                                (this.getEdgeAttributeValue() != null)
-		                                ? this.getEdgeAttributeValue()
-		                                : BasicNetworkEditEventHandler.DEFAULT_EDGE);
+		                              cytoscape.data.Semantics.INTERACTION,
+		                              edgeAttrValue, true, directed,
+		                              edgeAttrValue);
 		completeFinishEdge();
 
 		return myEdge;

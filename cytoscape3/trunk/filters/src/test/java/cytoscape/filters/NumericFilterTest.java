@@ -48,19 +48,19 @@ public class NumericFilterTest extends FilterTest {
 		theDoubleFilter.setNetwork(cyNetwork);
 
 		//Expected values
-		expectedBitSet1 = new BitSet(4);
+		expectedBitSet1 = new BitSet(5);
 		expectedBitSet1.set(0, true);
 		expectedBitSet1.set(2, true);
 
-		expectedBitSet2 = new BitSet(4);
+		expectedBitSet2 = new BitSet(5);
 		expectedBitSet2.set(1, true);
 		expectedBitSet2.set(2, true);
 
 		expectedBitSet1_not = (BitSet) expectedBitSet1.clone();
-		expectedBitSet1_not.flip(0,4);
+		expectedBitSet1_not.flip(0,5);
 
 		expectedBitSet2_not = (BitSet) expectedBitSet2.clone();
-		expectedBitSet2_not.flip(0,4);
+		expectedBitSet2_not.flip(0,5);
 		
 	}
 	/**

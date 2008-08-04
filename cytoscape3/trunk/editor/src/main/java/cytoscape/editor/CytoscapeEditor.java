@@ -217,6 +217,8 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * @param create
 	 *            if true, then create an edge if one does not already exist.
 	 *            Otherwise, return the edge if it already exists.
+	 * @param directed
+	 *            if true, create directed edge, if false, create undirected one.
 	 * @param edgeType
 	 *            a value for the "EdgeType" attribute assigned to the edge.
 	 *            This can be used in conjunction with the Visual Mapper.
@@ -224,7 +226,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 *
 	 */
 	public Edge addEdge(Node node_1, Node node_2, String attribute, Object attribute_value,
-	                      boolean create, String edgeType);
+	                      boolean create, boolean directed, String edgeType);
 
 	/**
 	 *
@@ -233,7 +235,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * Cytoscape model. Thus, it provides an insulating level of abstraction
 	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
 	 * for portability and extensibility of the editor. This version always
-	 * creates an edge, whether or not one already exists.
+	 * creates a directed edge, whether or not one already exists.
 	 *
 	 * @param node_1
 	 *            Node at one end of the edge
@@ -256,7 +258,7 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * Cytoscape model. Thus, it provides an insulating level of abstraction
 	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
 	 * for portability and extensibility of the editor. This version always
-	 * creates an edge, whether or not one already exists.
+	 * creates a directed edge, whether or not one already exists.
 	 *
 	 * @param node_1
 	 *            Node at one end of the edge
@@ -283,6 +285,8 @@ public interface CytoscapeEditor extends SelectEventListener {
 	 * Cytoscape model. Thus, it provides an insulating level of abstraction
 	 * between the CytoscapeEditor and the Cytoscape implementation, allowing
 	 * for portability and extensibility of the editor.
+	 *
+	 * Allways assumes edges are directed.
 	 *
 	 * @param node_1
 	 *            Node at one end of the edge

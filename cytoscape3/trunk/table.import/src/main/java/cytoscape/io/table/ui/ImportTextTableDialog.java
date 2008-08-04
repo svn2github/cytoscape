@@ -503,6 +503,9 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		commentLineTextField.setName("commentLineTextField");
 
 		titleLabel.setFont(TITLE_FONT.getFont());
+		directednessLabel = new JLabel();
+		createDirectedRadioButton = new javax.swing.JRadioButton("directed");
+		createUnDirectedRadioButton = new javax.swing.JRadioButton("undirected");
 
 		if (dialogType == NETWORK_IMPORT) {
 			previewPanel = new PreviewTablePanel(null, PreviewTablePanel.NETWORK_PREVIEW);
@@ -1364,7 +1367,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 
 		org.jdesktop.layout.GroupLayout networkImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(networkImportOptionPanel);
 		networkImportOptionPanel.setLayout(networkImportOptionPanelLayout);
-
+		directednessLabel.setText("Create edges:");
 		networkImportOptionPanelLayout.setHorizontalGroup(networkImportOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                                                .add(networkImportOptionPanelLayout.createSequentialGroup()
 		                                                                                                                   .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
@@ -1374,13 +1377,19 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		                                                                                                                   .add(defaultInteractionTextField,
 		                                                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                                                                                                        58,
-		                                                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)));
+		                                                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+		                                                                                                                        .add(directednessLabel)
+		                                                                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                                        .add(createDirectedRadioButton)
+		                                                                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                                                                        .add(createUnDirectedRadioButton)));
 		networkImportOptionPanelLayout.setVerticalGroup(networkImportOptionPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                                                                              .add(defaultInteractionLabel)
 		                                                                              .add(defaultInteractionTextField,
 		                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                                                                   org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE));
+		                                                                                   org.jdesktop.layout.GroupLayout.PREFERRED_SIZE).add(directednessLabel)
+		                                                                                   .add(createDirectedRadioButton).add(createUnDirectedRadioButton));
 
 		org.jdesktop.layout.GroupLayout textImportOptionPanelLayout = new org.jdesktop.layout.GroupLayout(textImportOptionPanel);
 		textImportOptionPanel.setLayout(textImportOptionPanelLayout);
@@ -1990,7 +1999,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						networkName = wb.getSheetName(0);
 
 						reader = new ExcelNetworkSheetReader(networkName, sheet, nmp,
-						                                     startLineNumber);
+						                                     startLineNumber, getDirectednessFromWidget());
 					} else {
 						// Get name from URL.
 						if ((commentChar != null) && (commentChar.length() != 0)
@@ -2001,7 +2010,7 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 						final String[] parts = sources[i].toString().split("/");
 						networkName = parts[parts.length - 1];
 						reader = new NetworkTableReader(networkName, sources[i], nmp,
-						                                startLineNumber, commentChar);
+						                                startLineNumber, commentChar, getDirectednessFromWidget());
 					}
 
 					loadNetwork(networkName, reader, sources[i], multi);
@@ -2362,9 +2371,22 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 		semicolonCheckBox.setEnabled(false);
 		otherCheckBox.setEnabled(false);
 		otherDelimiterTextField.setEnabled(false);
+		
+		directednessButtonGroup = new javax.swing.ButtonGroup();
+		directednessButtonGroup.add(createDirectedRadioButton);
+		directednessButtonGroup.add(createUnDirectedRadioButton);
+		directednessButtonGroup.setSelected(createDirectedRadioButton.getModel(), true);
+	}
+	
+	private boolean getDirectednessFromWidget(){
+		if (createUnDirectedRadioButton.isSelected()){
+			return false;
+		} else {
+			return true;
+		}
 	}
 
-	private void setOntologyInAnnotationComboBox() {
+private void setOntologyInAnnotationComboBox() {
 		final DefaultTableModel model = (DefaultTableModel) previewPanel.getPreviewTable().getModel();
 
 		if ((model != null) && (model.getColumnCount() > 0)) {
@@ -3550,6 +3572,12 @@ public class ImportTextTableDialog extends JDialog implements PropertyChangeList
 	private AliasTableModel aliasTableModel;
 	private JTable aliasTable;
 	private JCheckBox importAllCheckBox;
+
+	private JLabel directednessLabel;
+	private javax.swing.ButtonGroup directednessButtonGroup;
+	private javax.swing.JRadioButton createDirectedRadioButton;
+	private javax.swing.JRadioButton createUnDirectedRadioButton;
+
 }
 
 

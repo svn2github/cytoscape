@@ -161,7 +161,12 @@ class XGMMLParser extends DefaultHandler {
 	private	Node currentNode = null;
 	private	Edge currentEdge = null;
 	private	Node currentGroupNode = null;
-
+	
+	/*
+	 * The graph-global directedness, which will be used as default directedness
+	 * of edges. */
+	private boolean currentNetworkisDirected = true; 
+	
 	/* Attribute values */
 	private ParseState attState = ParseState.NONE;
 	private String currentAttributeID = null;
@@ -677,6 +682,22 @@ class XGMMLParser extends DefaultHandler {
 			String name = getLabel(atts);
 			if (name != null) 
 				networkName = name;
+			
+			/* 
+			 * Read and store the graph-global default directedness of edges.
+			 * Note that XGMML gives the default value of this as false (i.e.
+			 * undirected is the default) but because older (pre-cy3.0) cytoscape used
+			 * directed edges by default, and because compatibility with older cytoscape
+			 * versions is more important than compatibility with XGMML standard, using
+			 * directed edges by default makes more sense.
+			 */
+			String directed = atts.getValue("directed");
+			if ("0".equals(directed)){
+				currentNetworkisDirected = false;
+			} else {
+				currentNetworkisDirected = true;
+			}
+						
 			return current;
 		}
 	}
@@ -821,6 +842,7 @@ class XGMMLParser extends DefaultHandler {
 			String label = atts.getValue("label");
 			String source = atts.getValue("source");
 			String target = atts.getValue("target");
+			String isDirected = atts.getValue("cy:directed");
 			String sourceAlias = null;
 			String targetAlias = null;
 			String interaction = "pp";
@@ -837,12 +859,31 @@ class XGMMLParser extends DefaultHandler {
 				// System.out.println("Edge label parse: interaction = "+interaction);
 			}
 
+			boolean directed;
+			if (isDirected == null){
+				// xgmml files made by pre-3.0 cytoscape and strictly
+				// upstream-XGMML conforming files
+				// won't have directedness flag, in which case use the
+				// graph-global directedness setting.
+				//
+				// (org.xml.sax.Attributes.getValue() returns null if attribute does not exists)
+				//
+				// This is the correct way to read the edge-directionality of
+				// non-cytoscape xgmml files as well.
+				directed = currentNetworkisDirected;
+			} else { // parse directedness flag
+				if ("0".equals(isDirected)){
+					directed = false;
+				} else {
+					directed = true;
+				} 
+			}
 			if (idMap.containsKey(source) && idMap.containsKey(target)) {
 				Node sourceNode = idMap.get(source);
 				Node targetNode = idMap.get(target);
-				currentEdge = createEdge(sourceNode, targetNode, interaction, label);
+				currentEdge = createEdge(sourceNode, targetNode, interaction, label, directed);
 			} else if (sourceAlias != null && targetAlias != null) {
-				currentEdge = createEdge(sourceAlias, targetAlias, interaction, label);
+				currentEdge = createEdge(sourceAlias, targetAlias, interaction, label, directed);
 			}
 			
 			return current;
@@ -1438,14 +1479,14 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 	private Edge createEdge (Node source, Node target, 
-                             String interaction, String label) throws SAXException {
+                             String interaction, String label, boolean directed) throws SAXException {
 		// OK create it
-		Edge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, true);
+		Edge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, directed);
 		edgeList.add(edge);
 		return edge;
 	}
 
-	private Edge createEdge (String source, String target, String interaction, String label) {
+	private Edge createEdge (String source, String target, String interaction, String label, boolean directed) {
 		// Make sure the target and destination nodes exist
 		if (Cytoscape.getCyNode(source, false) == null) {
 			System.out.println("Warning: skipping edge "+label);
@@ -1457,7 +1498,7 @@ class XGMMLParser extends DefaultHandler {
 			System.out.println("         node "+target+" doesn't exist");
 			return null;
 		}
-		Edge edge =  Cytoscape.getCyEdge(source, label, target, interaction);
+		Edge edge =  Cytoscape.getCyEdge(source, label, target, interaction, directed);
 		edgeList.add(edge);
 		return edge;
 	}

@@ -140,25 +140,34 @@ public class ShapePalette extends JPanel {
 	* @param attributeValue value for the attribute assigned to the shape, for example a "NodeType" of "protein"
 	* @param img the icon for the shape
 	* @param name the title of the shape
-	 * @param cursorSetter a possibly null DragSourceContextCursorSetter used to specify
-	 *                     the cursor so show when dragging over the current network view.
+	* @param cursorSetter a possibly null DragSourceContextCursorSetter used to specify
+	*                     the cursor so show when dragging over the current network view.
+	*                     
+	* @param directed_edge if true, the edge type declared with this call is directed
+	* 		(i.e. edges of this type will be created as directed), if false, undirected.
+	* 		
+	*  		used only for when attributeName is EDGE_TYPE, ignored for nodes 
 	*/
 
 	// MLC 12/16/06 BEGIN:
 	public void addShape(String attributeName, String attributeValue, Icon img, String name,
-	                     DragSourceContextCursorSetter cursorSetter) {
+	                     DragSourceContextCursorSetter cursorSetter, boolean directed_edge) {
 		BasicCytoShapeEntity cytoShape = new BasicCytoShapeEntity(attributeName, attributeValue,
 		                                                          img, name, cursorSetter);
 		cytoShape.setTransferHandler(new BasicCytoShapeTransferHandler(cytoShape, null));
 		_shapeMap.put(cytoShape.getTitle(), cytoShape);
 
 		if (attributeName.equals(CytoscapeEditorManager.EDGE_TYPE)) {
-			CytoscapeEditorManager.addEdgeTypeForVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()),attributeValue);
+			CytoscapeEditorManager.addEdgeTypeForVisualStyle(Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()),attributeValue, directed_edge);
+			
 		}
 
 		_shapePane.add(cytoShape);
 	}
-
+	public void addShape(String attributeName, String attributeValue, Icon img, String name,
+            DragSourceContextCursorSetter cursorSetter){
+				addShape(attributeName, attributeValue, img, name, cursorSetter, true);
+	}
 	/**
 	 * show the palette in the WEST cytopanel
 	 *

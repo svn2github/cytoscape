@@ -223,8 +223,8 @@ public class CytoscapeTest extends TestCase {
 		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "pd", false, true));
 		assertNull(Cytoscape.getCyEdge(b, a, attr, "pd", false, true));
 
-		// test undirectedness
-		assertNotNull(Cytoscape.getCyEdge(b, a, attr, "pd", false, false));
+		// test undirectedness -- directed edge mustn't be returned as undirected edge
+		assertNull(Cytoscape.getCyEdge(b, a, attr, "pd", false, false));
 
 		// test non-existent edge
 		assertNull(Cytoscape.getCyEdge(a, c, attr, "pp", false, true));
@@ -237,5 +237,106 @@ public class CytoscapeTest extends TestCase {
 
 		// make sure we got the node we created
 		assertNotNull(Cytoscape.getCyEdge(a, c, attr, "pd", false, true));
+	}
+	/**
+	 *  Check that edge directedness is handled correctly:
+	 *  Creating undirected edges, and value of .isDirected()
+	 */
+	public void testEdgeDirectionality() {
+		// create nodes
+		Node a = Cytoscape.getCyNode("from", true);
+		Node b = Cytoscape.getCyNode("to", true);
+
+		String attr = Semantics.INTERACTION;
+
+		// assert that edge doesn't exist yet
+		assertNull(Cytoscape.getCyEdge(a, b, attr, "u", false, false));
+		assertNull(Cytoscape.getCyEdge(b, a, attr, "u", false, false));
+
+		// create undirected edge 
+		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, false) );
+		// check that it was really created
+		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", false, false) );
+		// check that it is visible in reverse direction
+		assertNotNull(Cytoscape.getCyEdge(b, a, attr, "u", false, false) );
+
+		Edge e = Cytoscape.getCyEdge(a, b, attr, "u", false, false);
+		assertFalse("edge created is of correct directionality", e.isDirected());
+		e = Cytoscape.getCyEdge(b, a, attr, "u", false, false);
+		assertFalse("edge created is of correct directionality", e.isDirected());
+
+		// check that for undirected edges, edge in reverse direction is the same
+		Edge e2 = Cytoscape.getCyEdge(b, a, attr, "u", false, false);
+		assertFalse(e2.isDirected());
+		assertTrue(e == e2);
+		assertTrue(e.getIdentifier() == e2.getIdentifier());
+
+		// check isDirected() flag for directed edges:
+		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "d", true, true) );
+		e = Cytoscape.getCyEdge(a, b, attr, "d", false, true);
+		assertTrue("edge created is of correct directionality", e.isDirected());
+
+		assertNull("directed edge is not visible in reverse dir.", Cytoscape.getCyEdge(b, a, attr, "d", false, true) );
+	}
+
+	/**
+	 * This tests that getCyEdge() will allways return edge with given directionality;
+	 * 
+	 */
+	public void testGetCyEdgeStrictness() {
+		// create nodes
+		Node a = Cytoscape.getCyNode("from", true);
+		Node b = Cytoscape.getCyNode("to", true);
+
+		String attr = Semantics.INTERACTION;
+		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, false));
+		
+		// the tests: no directed edge exsists:
+		Edge test_edge = Cytoscape.getCyEdge(a, b, attr, "u", false, true);
+		assertNull("didn't get an edge", test_edge);
+		
+		test_edge = Cytoscape.getCyEdge(b, a, attr, "u", false, true);
+		assertNull("didn't get an edge", test_edge);
+		
+		// undirected edge, in other direction:
+		test_edge = Cytoscape.getCyEdge(b, a, attr, "u", false, false);
+		assertNotNull("got get an edge", test_edge);
+		assertFalse("edge is of correct directionality", test_edge.isDirected());
+	}
+	
+	/**
+	 *  Check that edge directedness is handled correctly:
+	 *  parallel undirected and directed edges must be distinct
+	 */
+	public void testParallelEdgesWithDifferentDirectionality() {
+		// create nodes
+		Node a = Cytoscape.getCyNode("one", true);
+		Node b = Cytoscape.getCyNode("two", true);
+
+		String attr = Semantics.INTERACTION;
+
+		// assert that edge doesn't exist yet
+		assertNull(Cytoscape.getCyEdge(a, b, attr, "u", false, false));
+		assertNull(Cytoscape.getCyEdge(b, a, attr, "u", false, false));
+		assertNull(Cytoscape.getCyEdge(a, b, attr, "u", false, true));
+		assertNull(Cytoscape.getCyEdge(b, a, attr, "u", false, true));
+
+		// create undirected edge:
+		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, false) );
+		// create directed edge over it: (same source, target, and interaction)
+		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, true) );
+		// test directionality:
+		Edge e1 = Cytoscape.getCyEdge(a, b, attr, "u", false, false);
+		assertFalse("edge is created with correct directionality", e1.isDirected());
+
+		Edge e2 = Cytoscape.getCyEdge(a, b, attr, "u", false, true);
+		assertTrue("edge is created with correct directionality", e2.isDirected());
+
+		assertTrue("the two edges are different", e1 != e2);
+		assertTrue("the two edges are different", e1.getIdentifier() != e2.getIdentifier());
+
+		// check existence in reverse direction:
+		assertNotNull(Cytoscape.getCyEdge(b, a, attr, "u", false, false));
+		assertNull(Cytoscape.getCyEdge(b, a, attr, "u", false, true));
 	}
 }

@@ -190,7 +190,15 @@ public class GMLWriter {
 	 */
 	 @SuppressWarnings("unchecked") // for the casts of KeyValue.value
 	private void writeGraph(final GraphPerspective network, final GraphView view, final List<KeyValue> oldList) {
-		for (Iterator<KeyValue> it = oldList.iterator(); it.hasNext();) {
+
+		 
+		 // To enhance compatibility with non-cytoscape GML-conformant
+		 // programs, add directedness flag to graph: allways use 'directed',
+		 // to match pre-3.0 cytoscape's 'edges are directed' behaviour
+		 // TODO: could use undirected here if network is undirected i.e. all edges are undirected.
+		 oldList.add(new KeyValue("directed", Integer.valueOf(0)));
+		 
+		 for (Iterator<KeyValue> it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = it.next();
 
 			/*
@@ -311,7 +319,8 @@ public class GMLWriter {
 		KeyValue labelPair = null;
 		KeyValue sourcePair = null;
 		KeyValue targetPair = null;
-
+		KeyValue isDirected = null;
+		
 		for (Iterator it = oldList.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
 
@@ -325,6 +334,8 @@ public class GMLWriter {
 				sourcePair = keyVal;
 			} else if (keyVal.key.equals(GMLReader.TARGET)) {
 				targetPair = keyVal;
+			} else if (keyVal.key.equals(GMLReader.IS_DIRECTED)) {
+				isDirected = keyVal;
 			}
 		}
 
@@ -373,6 +384,16 @@ public class GMLWriter {
 
 		labelPair.value = Cytoscape.getEdgeAttributes()
 		                           .getStringAttribute(edge.getIdentifier(), Semantics.INTERACTION);
+
+		if (isDirected == null) {
+			isDirected = new KeyValue(GMLReader.IS_DIRECTED, null);
+			oldList.add(isDirected);
+		}
+		if (edge.isDirected()){
+			isDirected.value = Integer.valueOf(0); 
+		} else {
+			isDirected.value = Integer.valueOf(1);
+		}
 
 		return true;
 	}
@@ -454,6 +475,8 @@ public class GMLWriter {
 			oldList.add(outline_width);
 		}
 
+		if (nodeView == null) return; // If no view data, simply don't save it (instead of crashing)
+		
 		x.value = new Double(nodeView.getXPosition());
 		y.value = new Double(nodeView.getYPosition());
 		w.value = new Double(nodeView.getWidth());
@@ -531,7 +554,9 @@ public class GMLWriter {
 			width = new KeyValue(GMLReader.WIDTH, null);
 			oldList.add(width);
 		}
-
+		
+		if (edgeView == null) return; // If no view data, simply don't save it (instead of crashing)
+		
 		width.value = new Double(edgeView.getStrokeWidth());
 
 		if (fill == null) {

@@ -27,11 +27,12 @@ public class TopologyFilterTest extends FilterTest {
 		topoFilter.setDistance(1);
 		topoFilter.apply();
 
-		BitSet expectedNodeBitSet = new BitSet(4);
+		BitSet expectedNodeBitSet = new BitSet(5);
 		expectedNodeBitSet.set(0, true);
 		expectedNodeBitSet.set(1, true);
 		expectedNodeBitSet.set(2, true);
 		expectedNodeBitSet.set(3, true);
+		expectedNodeBitSet.set(4, true);
 		
 		assertEquals(expectedNodeBitSet.toString(), topoFilter.getNodeBits().toString());
 		topoFilter.setMinNeighbors(3);		
@@ -41,6 +42,8 @@ public class TopologyFilterTest extends FilterTest {
 		expectedNodeBitSet.set(1, false);
 		expectedNodeBitSet.set(2, false);
 		expectedNodeBitSet.set(3, true);
+		expectedNodeBitSet.set(4, false);
+		
 		assertEquals(expectedNodeBitSet.toString(), topoFilter.getNodeBits().toString());		
 	}
 	

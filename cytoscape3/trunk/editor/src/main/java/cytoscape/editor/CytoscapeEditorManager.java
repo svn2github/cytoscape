@@ -193,8 +193,8 @@ public abstract class CytoscapeEditorManager {
 	 * associates a visual style with its set of EDGE_TYPEs
 	 */
 	private static HashMap<VisualStyle, List<String>> visualStyleEdgeTypesMap = new HashMap<VisualStyle, List<String>>();
-
-	// protected static HashMap visualStyleEdgeTypesMap = new HashMap();
+	/* Stores whether given EDGE_TYPE is directed (true meaning directed)*/ 
+	private static HashMap<String, Boolean> edgeTypeIsDirectedMap = new HashMap<String, Boolean>();
 
 	// map String names of visual styles to a list of the names of editors
 	// that use that style:
@@ -705,9 +705,9 @@ public abstract class CytoscapeEditorManager {
 	 * @param vizStyle
 	 * @param edgeType
 	 */
-	public static void addEdgeTypeForVisualStyle(VisualStyle vizStyle, String edgeType) {
+	public static void addEdgeTypeForVisualStyle(VisualStyle vizStyle, String edgeType, boolean directed_edge) {
 		List<String> edgeTypes = visualStyleEdgeTypesMap.get(vizStyle);
-
+				
 		if (edgeTypes == null) {
 			edgeTypes = new ArrayList<String>();
 		}
@@ -717,6 +717,7 @@ public abstract class CytoscapeEditorManager {
 		}
 
 		visualStyleEdgeTypesMap.put(vizStyle, edgeTypes);
+		edgeTypeIsDirectedMap.put(edgeType, new Boolean(directed_edge));
 	}
 
 	/**
@@ -728,6 +729,10 @@ public abstract class CytoscapeEditorManager {
 		return (List) visualStyleEdgeTypesMap.get(vizStyle);
 	}
 
+	public static boolean EdgeTypeIsDirected(String edgeType){
+		return edgeTypeIsDirectedMap.get(edgeType);
+	}
+	
 	/**
 	 * set the editor for a GraphView
 	 *

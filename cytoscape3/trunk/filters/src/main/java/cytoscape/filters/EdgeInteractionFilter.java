@@ -115,17 +115,24 @@ public class EdgeInteractionFilter extends InteractionFilter {
 		// Get the list of relevant nodes for this edge
 		List<Node> adjacentNodes = new ArrayList<Node>();
 		
-		if (nodeType == NODE_SOURCE) {
-			adjacentNodes.add(pEdge.getSource());
-		}
-		else if (nodeType == NODE_TARGET) {
-			adjacentNodes.add(pEdge.getTarget());
-		}
-		else if (nodeType == NODE_SOURCE_TARGET) {
-			adjacentNodes.add(pEdge.getSource());
-			adjacentNodes.add(pEdge.getTarget());		}
-		else { //nodeType == NODE_UNDEFINED --Neither source or target is selected
-			return false;
+		if (pEdge.isDirected()){
+			if (nodeType == NODE_SOURCE) {
+				adjacentNodes.add(pEdge.getSource());
+			} else if (nodeType == NODE_TARGET) {
+				adjacentNodes.add(pEdge.getTarget());
+			} else if (nodeType == NODE_SOURCE_TARGET) {
+				adjacentNodes.add(pEdge.getSource());
+				adjacentNodes.add(pEdge.getTarget());
+			} else { //nodeType == NODE_UNDEFINED --Neither source or target is selected
+				return false;
+			}
+		} else { // undirected edge, force nodeType to be NODE_SOURCE_TARGET or NODE_UNDEFINED
+			if (nodeType == NODE_UNDEFINED) {
+				return false;
+			} else {
+				adjacentNodes.add(pEdge.getSource());
+				adjacentNodes.add(pEdge.getTarget());
+			}
 		}
 						
 		int nodeIndex = -1;
