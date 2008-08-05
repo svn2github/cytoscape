@@ -78,7 +78,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	
 	Object[][] data = new Object[6][3];
 	
-	
+	//String[][] data = new String[6][3];
+	//
 	
 	/*{
 		    {"Mary", "Campione", "Snowboarding"},
@@ -98,6 +99,12 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		}
 		initializeOnce(); // Initialize the components we only do once
 		calculator = new BooleanCalculator();
+		System.out.println(Cytoscape.getDesktop().getHeight());
+		setLocation(2,Cytoscape.getDesktop().getHeight()-557);
+		
+		//setLocationRelativeTo(Cytoscape.getDeskto
+		//this.setLocation(0, this.getHeight());
+		//System.out.println("height: "+this.getHeight()+" width: "+this.getWidth());
 		//init();
 	}
 	
@@ -118,8 +125,10 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			}
 		}
 		if (command.equals("add")){
+			
 			//System.out.println(currentAlgorithm.getSettings().get("criteriaField").getValue().toString());
 			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
+			
 			System.out.println("ADD CRITERIA: "+criteria);
 			if(calculator.parse2(criteria)){ 
 				
@@ -129,7 +138,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 				populateList(criteria, value);
 				
 			}
-			calculator.clearList();
+			//calculator.clearList();
 		}
 		if (command.equals("exit")) {
 			setVisible(false);
@@ -158,9 +167,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			setVisible(false);
 		} else {
 			// OK, initialize and display
-			initialize();
+			//initialize();
 			pack();
-			setLocationRelativeTo(Cytoscape.getDesktop());
+			setLocation(2,Cytoscape.getDesktop().getHeight()-557);
 			setVisible(true);
 		}
 	}
@@ -246,11 +255,11 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		
 		buttonBox.add(addButton);
-		//buttonBox.add(applyButton);
+		
 		
 		buttonBox.add(saveButton);
 		buttonBox.add(exitButton);
-		
+		buttonBox.add(applyButton);
 		
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
@@ -286,9 +295,13 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		moveDownButton.setActionCommand("moveDown");
 		moveDownButton.addActionListener(this);
 		
+		JButton deleteButton = new JButton("Delete");
+		deleteButton.setActionCommand("delete");
+		deleteButton.addActionListener(this);
+		
 		tableButtons.add(moveUpButton);
 		tableButtons.add(moveDownButton);
-		tableButtons.add(applyButton);
+		tableButtons.add(deleteButton);
 		
 		tableButtons.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
@@ -313,9 +326,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		mainPanel.add(tableButtons);
 		setContentPane(mainPanel);
 		//System.out.println("made window");
-		
+		mainPanel.setLocation(Cytoscape.getDesktop().getWidth(), Cytoscape.getDesktop().getHeight());
 	}
-
 	private void initialize() {
 	}
 	
@@ -345,7 +357,10 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	public void applyCriteria(){
 		//for(int i=1;i<data.length;i++){
 			
-		
+		    int[] rowIndexes = table.getSelectedRows();
+		    for(int i = 0; i<rowIndexes.length;i++){
+		    	System.out.println("row index: "+rowIndexes[i]);
+		    }
 			String current = (String)data[0][0]; 
 			System.out.println("current: "+ current);
 			calculator.parse2(current);
@@ -374,38 +389,79 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		data[listCount][1] = label;
 		data[listCount][2] = "";
 		initializeOnce();
-		listCount++;
+		if(listCount < 6){
+			listCount++;
+		}
 	}
 	
 	
 	
 	public void moveRowUp(int rowNumber){
 		if(rowNumber != 0){
-			Object criTemp = data[rowNumber][0];
-			Object laTemp = data[rowNumber][1];
+			
+			
+			/*
+			String criteriaTemp = data[rowNumber][0];
+			String labelTemp = data[rowNumber][1];
+			String colorTemp = data[rowNumber][2];
+			*/
+			Object criteriaTemp = data[rowNumber][0];
+			Object labelTemp = data[rowNumber][1];
 			Object colorTemp = data[rowNumber][2];
+			
+			/*
+			table.getModel().setValueAt(data[rowNumber-1][0], rowNumber, 0);  
+			table.getModel().setValueAt(data[rowNumber-1][1], rowNumber, 1);
+			System.out.println("moving Something");
+			table.getModel().setValueAt(criteriaTemp, rowNumber-1, 0);
+			table.getModel().setValueAt(labelTemp, rowNumber-1, 0);
+			
+			table.setValueAt(data[rowNumber-1][0], rowNumber, 0);
+			table.setValueAt(data[rowNumber-1][1], rowNumber, 1);
+			System.out.println("moving Something");
+			table.setValueAt(criteriaTemp, rowNumber-1, 0);
+			table.setValueAt(labelTemp, rowNumber-1, 0);
+			*/
+			 
+			data[rowNumber][1] = data[rowNumber-1][1];
+			data[rowNumber][2] = data[rowNumber-1][2];
+			
 			data[rowNumber][0] = data[rowNumber-1][0];
 			data[rowNumber][1] = data[rowNumber-1][1];
 			data[rowNumber][2] = data[rowNumber-1][2];
-			data[rowNumber-1][0] = criTemp;
-			data[rowNumber-1][1] = laTemp;
+			data[rowNumber-1][0] = criteriaTemp;
+			data[rowNumber-1][1] = labelTemp;
 			data[rowNumber-1][2] = colorTemp;
 			initializeOnce();
+			
 		}
 	}
 	
 	public void moveRowDown(int rowNumber){
 		if(rowNumber != 5){
-			Object criTemp = data[rowNumber][0];
-			Object laTemp = data[rowNumber][1];
+			
+			
+			
+			Object criteriaTemp = data[rowNumber][0];
+			Object labelTemp = data[rowNumber][1];
 			Object colorTemp = data[rowNumber][2];
+			
+			System.out.println(rowNumber);
+			//table.setValueAt(data[rowNumber+1][0], rowNumber, 0);
+			//table.setValueAt(data[rowNumber+1][1], rowNumber, 1);
+			System.out.println("moving Something");
+			//table.setValueAt("new value", rowNumber+1, 0);
+			//table.setValueAt("new value", rowNumber+1, 0);
+			
+			
 			data[rowNumber][0] = data[rowNumber+1][0];
 			data[rowNumber][1] = data[rowNumber+1][1];
 			data[rowNumber][2] = data[rowNumber+1][2];
-			data[rowNumber+1][0] = criTemp;
-			data[rowNumber+1][1] = laTemp;
+			data[rowNumber+1][0] = criteriaTemp;
+			data[rowNumber+1][1] = labelTemp;
 			data[rowNumber+1][2] = colorTemp;
 			initializeOnce();
+			
 		}
 		
 	}

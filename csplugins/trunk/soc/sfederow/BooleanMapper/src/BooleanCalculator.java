@@ -129,25 +129,37 @@ public class BooleanCalculator {
 			//System.out.println(i);
 			if(!validAttributes.get(i).equals("")){
 				if(validAttributes.get(i).matches("^[0-9\\.\\-]+")){
-					if(!validAttributes.get(i).contains(".")){
-						a = 3;
-					}else{
+					if(validAttributes.get(i).contains(".")){
 						a = 2;
+					}else{
+						a = 3;
 					}
 				}else{
-					a = (Integer)attributeTypeMap.get(validAttributes.get(i));
+					if(validAttributes.get(i).equals("true") || validAttributes.get(i).equals("false")){
+						a = 1;
+					}else{
+						System.out.println(validAttributes.get(i));
+						a = (Integer)attributeTypeMap.get(validAttributes.get(i));
+					}
 				}
 			}
 			if((i+2) < size && !validAttributes.get(i+2).equals("")){
+				
 				if(validAttributes.get(i+2).matches("^[0-9\\.\\-]+")){
-					if(!validAttributes.get(i).contains(".")){
-						b = 3;
-					}else{
+					
+					if(validAttributes.get(i+2).contains(".")){
 						b = 2;
+						//Sytem.out.println("to TWO");
+					}else{
+						
+						b = 3;
 					}
 				}else{
-				
-					b = (Integer)attributeTypeMap.get(validAttributes.get(i+2));
+					if(validAttributes.get(i+2).equals("true") || validAttributes.get(i+2).equals("false")){
+						b = 1;
+					}else{
+						b = (Integer)attributeTypeMap.get(validAttributes.get(i+2));
+					}
 				}
 			}
 			if(cFlag && (a == 2 || a == 3) && (i+1) < size && operations.get(i+1).matches("[<>=]+") && (b == 2 || b == 3)){
@@ -156,7 +168,7 @@ public class BooleanCalculator {
 				i = i + 2;
 				
 			}else{
-				if((a == 1) && operations.get(i+1).matches("[ANDORT]+") && (b == 1)){
+				if((a == 1) && (operations.get(i+1).matches("[ANDORT]+") || operations.get(i+1).equals("=")) && (b == 1)){
 					nFlag = true;
 					cFlag = false;
 					i = i + 2;
@@ -182,7 +194,7 @@ public class BooleanCalculator {
 	
 	
 	public boolean evaluate(){
-		
+		System.out.println("evaluate");
 		for(int j=0; j<masterList.size();j++){
 			
 
@@ -202,6 +214,7 @@ public class BooleanCalculator {
 		int attributeType = 0;
 		int numberValueCount = 0;
 		for(int i=0;i<nodeList.size();i++){
+			System.out.println("heyNODE");
 			CyNode node = (CyNode)nodeList.get(i);
 			Node gnode = nodeList.get(i);
 			String nodeID = node.getIdentifier();
@@ -252,6 +265,7 @@ public class BooleanCalculator {
 			nodeValueMap.clear();
 		}
 		}
+		Cytoscape.getCurrentNetworkView().updateView();
 		return true;
 		}
 	
@@ -267,13 +281,14 @@ public class BooleanCalculator {
 		int k = 0;
 		int size = attributes.size();
 		for(int i=0; i< size; i++){
-
 			
-			//System.out.println(attributes.get(i));
+			
+			
+			System.out.println(attributes.get(i)+ "evaluateOnce");
 			if((i+2) < size && operations.get(i+1).matches("[<>=]+")){
-
+	
 				boolean comparisonOutcome = false;
-
+				
 				if(!(attributes.get(i).equals("") || attributes.get(i+2).equals(""))){
 					
 					comparisonOutcome = doNumericalOperation(i, attributes.get(i), attributes.get(i+2), nodeValues, operations, node);
@@ -322,6 +337,7 @@ public class BooleanCalculator {
 			}
 		}
 		//System.out.println(node.getIdentifier() + logicalString );
+		//network.setSelectedNodeState(node, false);
 		if(!finalValue.isEmpty()){
 			if(finalValue.pop()){
 				network.setSelectedNodeState(node, true);
@@ -379,6 +395,8 @@ public class BooleanCalculator {
 		CyNode cnode = (CyNode)node;
 		String nodeID = cnode.getIdentifier();
 		
+		System.out.println("second Node Value"+ nodeValues.get(secondValue));
+		
 		if(firstValue.matches("^[0-9\\.\\-]+")){
 			if(firstValue.matches("^[0-9]+")){
 				ivalue1 = Integer.parseInt(firstValue);
@@ -387,6 +405,7 @@ public class BooleanCalculator {
 				dd = false;
 				di = false;
 			}else{
+				
 				dvalue1 = Double.parseDouble(firstValue);
 				dd = true;
 				di = true;
@@ -396,7 +415,11 @@ public class BooleanCalculator {
 			System.out.println("digit1: "+dvalue1);
 
 		}else{
-
+			if(firstValue.equals("true") || firstValue.equals("false")){
+				
+			}else{
+				
+			
 			if(attributeTypeMap.get(firstValue) == 2){
 				dd = true;
 				di = true;
@@ -434,9 +457,22 @@ public class BooleanCalculator {
 							//nodeValueMap.put(attribute, stemp); 
 						}
 					}
+				}else{
+					if(attributeTypeMap.get(firstValue) == 1){
+						if(operations.get(position+1).equals("=")){
+							if(secondValue.equals("true") && nodeValues.get(secondValue).equals("true")){
+								System.out.println("ayo");
+								return true;
+							}else{
+								if(secondValue.equals("false") && nodeValues.get(secondValue).equals("false")){
+									return false;
+								}
+							}
+						}
+					}
 				}
 			}
-		}
+			}}
 
 
 
@@ -480,7 +516,9 @@ public class BooleanCalculator {
 
 
 		}else{
-
+			if(secondValue.equals("true") || secondValue.equals("false")){
+				
+			}else{
 			if(attributeTypeMap.get(secondValue) == 2){
 				if(id || ii){ 
 					dd = false;
@@ -535,9 +573,21 @@ public class BooleanCalculator {
 							//nodeValueMap.put(attribute, stemp); 
 						}
 					}
+				}else{
+					if(attributeTypeMap.get(secondValue) == 1){
+						if(operations.get(position+1).equals("=")){
+							if(firstValue.equals("true")){
+								return true;
+							}else{
+								if(firstValue.equals("false")){
+									return false;
+								}
+							}
+						}
+					}
 				}
 			}	
-		}
+			}}
 		
 		System.out.println("dd:"+dd+" di:"+di+" id:"+id+" ii"+ii);
 		

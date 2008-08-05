@@ -179,8 +179,10 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		if	(t.getName().equals("attributeList") || t.getName().equals("operationsList")){ 
 			criteriaString = (String)booleanProperties.get("criteriaField").getValue();
 			listCount++; 
+			//booleanProperties.get("criteriaField").getPanel().requestFocus();
 		}
 		if (listCount%2 == 0 && t.getName().equals("attributeList") && !t.getValue().equals((Object)"")){
+			
 			
 			
 			System.out.println("criteriaString: "+criteriaString);
