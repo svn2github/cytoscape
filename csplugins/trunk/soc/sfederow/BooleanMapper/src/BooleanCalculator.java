@@ -138,7 +138,7 @@ public class BooleanCalculator {
 					if(validAttributes.get(i).equals("true") || validAttributes.get(i).equals("false")){
 						a = 1;
 					}else{
-						System.out.println(validAttributes.get(i));
+						//System.out.println(validAttributes.get(i));
 						a = (Integer)attributeTypeMap.get(validAttributes.get(i));
 					}
 				}
@@ -194,42 +194,43 @@ public class BooleanCalculator {
 	
 	
 	public boolean evaluate(){
-		System.out.println("evaluate");
-		for(int j=0; j<masterList.size();j++){
-			
+		//System.out.println("evaluate");
+		//for(int j=0; j<masterList.size();j++){
 
-			
-		ArrayList<String> attributes = masterList.get(j);
-		j++;
-		ArrayList<String> operations = masterList.get(j);
+		for(int j=0; j<2;j++){	
 
-		int size = attributes.size();
-		System.out.println("size: "+size);
-		
-		
-		nodeValueMap = new HashMap<String, String>();
-		
-		boolean isInteger = false;
-		int criteriaSize = attributes.size();
-		int attributeType = 0;
-		int numberValueCount = 0;
-		for(int i=0;i<nodeList.size();i++){
-			System.out.println("heyNODE");
-			CyNode node = (CyNode)nodeList.get(i);
-			Node gnode = nodeList.get(i);
-			String nodeID = node.getIdentifier();
-			numberValueCount = 0;
-			for(int b=0;b<criteriaSize;b++){
-				isInteger = false;
-				String subbed = "";
-				attributeType = 0;
-				String attribute = attributes.get(b);
-				attribute = attribute.trim();
 
-				if(!attribute.equals("")){
+			ArrayList<String> attributes = masterList.get(j);
+			j++;
+			ArrayList<String> operations = masterList.get(j);
 
-					
-					/*if(attribute.matches("^\\d")){
+			int size = attributes.size();
+			//System.out.println("size: "+size);
+
+
+			nodeValueMap = new HashMap<String, String>();
+
+			boolean isInteger = false;
+			int criteriaSize = attributes.size();
+			int attributeType = 0;
+			int numberValueCount = 0;
+			for(int i=0;i<nodeList.size();i++){
+				//System.out.println("heyNODE");
+				CyNode node = (CyNode)nodeList.get(i);
+				Node gnode = nodeList.get(i);
+				String nodeID = node.getIdentifier();
+				numberValueCount = 0;
+				for(int b=0;b<criteriaSize;b++){
+					isInteger = false;
+					String subbed = "";
+					attributeType = 0;
+					String attribute = attributes.get(b);
+					attribute = attribute.trim();
+
+					if(!attribute.equals("")){
+
+
+						/*if(attribute.matches("^\\d")){
 						isInteger = true;
 						subbed = "number" + numberValueCount;
 						numberValueCount++;
@@ -241,34 +242,34 @@ public class BooleanCalculator {
 							//type = 2;
 							nodeValueMap.put(subbed, attribute);
 						}
-						
+
 					}else{*/
-						
+
 						if(nodeAttributes.hasAttribute(nodeID, attribute)){
 							Object temp = nodeAttributes.getAttribute(nodeID, attribute);
 							String stemp = temp + "";
 							nodeValueMap.put(attribute, stemp);
 						}else{
 							if(edgeAttributes.hasAttribute(nodeID, attribute));
-								Object temp = edgeAttributes.getAttribute(nodeID, attribute);
-								String stemp = temp + "";
-								nodeValueMap.put(attribute, stemp); 
+							Object temp = edgeAttributes.getAttribute(nodeID, attribute);
+							String stemp = temp + "";
+							nodeValueMap.put(attribute, stemp); 
 						}
-							
+
+					}
+
 				}
-				
+				//System.out.println(type);
+				evaluateOnce(nodeValueMap, attributes, operations, gnode, attributeType, numberValueCount);
+				//validAttributes.clear();
+				//operations.clear();
+				nodeValueMap.clear();
 			}
-			//System.out.println(type);
-			evaluateOnce(nodeValueMap, attributes, operations, gnode, attributeType, numberValueCount);
-			//validAttributes.clear();
-			//operations.clear();
-			nodeValueMap.clear();
-		}
 		}
 		Cytoscape.getCurrentNetworkView().updateView();
 		return true;
-		}
-	
+	}
+
 		
 	
 	public void evaluateOnce(HashMap nodeValues, ArrayList<String> attributes, ArrayList<String> operations, Node node, int attributeType, int numberCount){
@@ -284,7 +285,7 @@ public class BooleanCalculator {
 			
 			
 			
-			System.out.println(attributes.get(i)+ "evaluateOnce");
+			//System.out.println(attributes.get(i)+ "evaluateOnce");
 			if((i+2) < size && operations.get(i+1).matches("[<>=]+")){
 	
 				boolean comparisonOutcome = false;
@@ -292,7 +293,7 @@ public class BooleanCalculator {
 				if(!(attributes.get(i).equals("") || attributes.get(i+2).equals(""))){
 					
 					comparisonOutcome = doNumericalOperation(i, attributes.get(i), attributes.get(i+2), nodeValues, operations, node);
-					System.out.println("made it"+comparisonOutcome);
+					//System.out.println("made it"+comparisonOutcome);
 				}
 				
 				logicalString = logicalString + comparisonOutcome;
@@ -323,7 +324,7 @@ public class BooleanCalculator {
 								finalValue.push(outcome);
 								i++;
 							}else{
-								if(i+3 < size && operations.get(i+2).matches("<>=")){
+								if(i+3 < size && operations.get(i+2).matches("[<>=]+")){
 									boolean temp = doNumericalOperation(i+1, attributes.get(i+1), attributes.get(i+3), nodeValues, operations, node);
 									boolean temp2 = finalValue.pop();
 									boolean outcome = doBooleanOperation(operations.get(i), temp, temp2);
@@ -340,7 +341,10 @@ public class BooleanCalculator {
 		//network.setSelectedNodeState(node, false);
 		if(!finalValue.isEmpty()){
 			if(finalValue.pop()){
+				System.out.println("true");
 				network.setSelectedNodeState(node, true);
+			}else{
+				System.out.println("false");
 			}
 		}
 
@@ -394,9 +398,9 @@ public class BooleanCalculator {
 		boolean ii = false;
 		CyNode cnode = (CyNode)node;
 		String nodeID = cnode.getIdentifier();
-		
-		System.out.println("second Node Value"+ nodeValues.get(secondValue));
-		
+
+		//System.out.println("second Node Value"+ nodeValues.get(secondValue));
+
 		if(firstValue.matches("^[0-9\\.\\-]+")){
 			if(firstValue.matches("^[0-9]+")){
 				ivalue1 = Integer.parseInt(firstValue);
@@ -405,7 +409,7 @@ public class BooleanCalculator {
 				dd = false;
 				di = false;
 			}else{
-				
+
 				dvalue1 = Double.parseDouble(firstValue);
 				dd = true;
 				di = true;
@@ -416,63 +420,65 @@ public class BooleanCalculator {
 
 		}else{
 			if(firstValue.equals("true") || firstValue.equals("false")){
-				
+
 			}else{
-				
-			
-			if(attributeTypeMap.get(firstValue) == 2){
-				dd = true;
-				di = true;
-				id = false;
-				ii = false;
-				//value = getValue(node, firstValue);
-				if(nodeAttributes.hasAttribute(nodeID, firstValue)){
-					dvalue1 = nodeAttributes.getDoubleAttribute(nodeID, firstValue);
-					//String stemp = temp + "";
-					//nodeValueMap.put(attribute, stemp);
-					System.out.println("dvalue1: "+dvalue1);
-				}else{
-					if(edgeAttributes.hasAttribute(nodeID, firstValue)){
-						dvalue1 = edgeAttributes.getDoubleAttribute(nodeID, firstValue);
+
+
+				if(attributeTypeMap.get(firstValue) == 2){
+					dd = true;
+					di = true;
+					id = false;
+					ii = false;
+					//value = getValue(node, firstValue);
+					if(nodeAttributes.hasAttribute(nodeID, firstValue)){
+						dvalue1 = nodeAttributes.getDoubleAttribute(nodeID, firstValue);
 						//String stemp = temp + "";
 						//nodeValueMap.put(attribute, stemp);
 						System.out.println("dvalue1: "+dvalue1);
-					}
-				}
-
-			}else{
-				if(attributeTypeMap.get(firstValue) == 3){
-					dd = false;
-					di = false;
-					id = true;
-					ii = true;
-					if(nodeAttributes.hasAttribute(nodeID, firstValue)){
-						ivalue1 = nodeAttributes.getIntegerAttribute(nodeID, firstValue);
-						//String stemp = temp + "";
-						//nodeValueMap.put(attribute, stemp);
 					}else{
 						if(edgeAttributes.hasAttribute(nodeID, firstValue)){
-							ivalue1 = edgeAttributes.getIntegerAttribute(nodeID, firstValue);
+							dvalue1 = edgeAttributes.getDoubleAttribute(nodeID, firstValue);
 							//String stemp = temp + "";
-							//nodeValueMap.put(attribute, stemp); 
+							//nodeValueMap.put(attribute, stemp);
+							System.out.println("dvalue1: "+dvalue1);
 						}
 					}
+
 				}else{
-					if(attributeTypeMap.get(firstValue) == 1){
-						if(operations.get(position+1).equals("=")){
-							if(secondValue.equals("true") && nodeValues.get(secondValue).equals("true")){
-								System.out.println("ayo");
-								return true;
-							}else{
-								if(secondValue.equals("false") && nodeValues.get(secondValue).equals("false")){
-									return false;
+					if(attributeTypeMap.get(firstValue) == 3){
+						dd = false;
+						di = false;
+						id = true;
+						ii = true;
+						if(nodeAttributes.hasAttribute(nodeID, firstValue)){
+							ivalue1 = nodeAttributes.getIntegerAttribute(nodeID, firstValue);
+							//String stemp = temp + "";
+							//nodeValueMap.put(attribute, stemp);
+							System.out.println("ivalue1: "+ivalue1);
+						}else{
+							if(edgeAttributes.hasAttribute(nodeID, firstValue)){
+								ivalue1 = edgeAttributes.getIntegerAttribute(nodeID, firstValue);
+								//String stemp = temp + "";
+								//nodeValueMap.put(attribute, stemp); 
+							}
+						}
+					}else{
+						if(attributeTypeMap.get(firstValue) == 1){
+							if(operations.get(position+1).equals("=")){
+								if(secondValue.equals("true") && nodeValues.get(secondValue).equals("true")){
+									//System.out.println("ayo");
+									return true;
+								}else{
+									if(secondValue.equals("false") && nodeValues.get(secondValue).equals("false")){
+										return false;
+									}
 								}
 							}
 						}
 					}
 				}
 			}
-			}}
+		}
 
 
 
@@ -517,92 +523,93 @@ public class BooleanCalculator {
 
 		}else{
 			if(secondValue.equals("true") || secondValue.equals("false")){
-				
-			}else{
-			if(attributeTypeMap.get(secondValue) == 2){
-				if(id || ii){ 
-					dd = false;
-					di = false;
-					id = true;
-					ii = false;	
-				}
-				if(di || dd){ 
-					dd = true;
-					di = false;
-					id = false;
-					ii = false;
-				}
-				//value = getValue(node, firstValue);
-				if(nodeAttributes.hasAttribute(nodeID, secondValue)){
-					dvalue2 = nodeAttributes.getDoubleAttribute(nodeID, secondValue);
-					//String stemp = temp + "";
-					System.out.println("dvalue2: "+dvalue2);
-					//nodeValueMap.put(attribute, stemp);
-				}else{
-					if(edgeAttributes.hasAttribute(nodeID, secondValue)){
-						dvalue2 = edgeAttributes.getDoubleAttribute(nodeID, secondValue);
-						//String stemp = temp + "";
-						//nodeValueMap.put(attribute, stemp); 
-					}
-				}
 
 			}else{
-				if(attributeTypeMap.get(secondValue) == 3){
+				if(attributeTypeMap.get(secondValue) == 2){
 					if(id || ii){ 
 						dd = false;
 						di = false;
-						id = false;
-						ii = true;	
+						id = true;
+						ii = false;	
 					}
 					if(di || dd){ 
-						dd = false;
-						di = true;
+						dd = true;
+						di = false;
 						id = false;
 						ii = false;
-						System.out.println("di: "+ di);
 					}
+					//value = getValue(node, firstValue);
 					if(nodeAttributes.hasAttribute(nodeID, secondValue)){
-						ivalue2 = nodeAttributes.getIntegerAttribute(nodeID, secondValue);
-						System.out.println("dvalue2: "+dvalue2);
+						dvalue2 = nodeAttributes.getDoubleAttribute(nodeID, secondValue);
 						//String stemp = temp + "";
+						System.out.println("dvalue2: "+dvalue2);
 						//nodeValueMap.put(attribute, stemp);
 					}else{
 						if(edgeAttributes.hasAttribute(nodeID, secondValue)){
-							ivalue2 = edgeAttributes.getIntegerAttribute(nodeID, secondValue);
+							dvalue2 = edgeAttributes.getDoubleAttribute(nodeID, secondValue);
 							//String stemp = temp + "";
 							//nodeValueMap.put(attribute, stemp); 
 						}
 					}
+
 				}else{
-					if(attributeTypeMap.get(secondValue) == 1){
-						if(operations.get(position+1).equals("=")){
-							if(firstValue.equals("true")){
-								return true;
-							}else{
-								if(firstValue.equals("false")){
-									return false;
+					if(attributeTypeMap.get(secondValue) == 3){
+						if(id || ii){ 
+							dd = false;
+							di = false;
+							id = false;
+							ii = true;	
+						}
+						if(di || dd){ 
+							dd = false;
+							di = true;
+							id = false;
+							ii = false;
+							//System.out.println("di: "+ di);
+						}
+						if(nodeAttributes.hasAttribute(nodeID, secondValue)){
+							ivalue2 = nodeAttributes.getIntegerAttribute(nodeID, secondValue);
+							System.out.println("dvalue2: "+dvalue2);
+							//String stemp = temp + "";
+							//nodeValueMap.put(attribute, stemp);
+						}else{
+							if(edgeAttributes.hasAttribute(nodeID, secondValue)){
+								ivalue2 = edgeAttributes.getIntegerAttribute(nodeID, secondValue);
+								//String stemp = temp + "";
+								//nodeValueMap.put(attribute, stemp); 
+							}
+						}
+					}else{
+						if(attributeTypeMap.get(secondValue) == 1){
+							if(operations.get(position+1).equals("=")){
+								if(firstValue.equals("true")){
+									return true;
+								}else{
+									if(firstValue.equals("false")){
+										return false;
+									}
 								}
 							}
 						}
 					}
-				}
-			}	
-			}}
-		
-		System.out.println("dd:"+dd+" di:"+di+" id:"+id+" ii"+ii);
-		
+				}	
+			}
+		}
+
+		//System.out.println("dd:"+dd+" di:"+di+" id:"+id+" ii"+ii);
+
 		if(dd){		
-			
+
 			if(operations.get(position+1).matches("<")){
 
 				if(dvalue1 < dvalue2){
-					System.out.println("dd");
+					//System.out.println("dd");
 					return true;
-					
+
 				}else{
-					System.out.println("dd");
+					//System.out.println("dd");
 					return false;
-					
+
 				}
 
 			}else{
@@ -653,11 +660,11 @@ public class BooleanCalculator {
 				if(dvalue1 < ivalue2){
 					System.out.println("di true");
 					return true;
-					
+
 				}else{
 					System.out.println("di false");
 					return false;
-					
+
 				}
 
 			}else{
@@ -708,11 +715,11 @@ public class BooleanCalculator {
 				if(ivalue1 < dvalue2){
 					System.out.println("id");
 					return true;
-					
+
 				}else{
 					System.out.println("id");
 					return false;
-					
+
 				}
 
 			}else{
@@ -761,13 +768,13 @@ public class BooleanCalculator {
 			if(operations.get(position+1).matches("<")){
 
 				if(ivalue1 < ivalue2){
-					System.out.println("ii");
+					//System.out.println("ii");
 					return true;
-					
+
 				}else{
-					System.out.println("ii");
+					//System.out.println("ii");
 					return false;
-					
+
 				}
 
 			}else{

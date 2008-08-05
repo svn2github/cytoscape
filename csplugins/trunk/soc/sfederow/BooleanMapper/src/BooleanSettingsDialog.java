@@ -97,9 +97,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 				data[b][c] = "";
 			}
 		}
-		initializeOnce(); // Initialize the components we only do once
+		initialize(); // Initialize the components we only do once
 		calculator = new BooleanCalculator();
-		System.out.println(Cytoscape.getDesktop().getHeight());
+		//System.out.println(Cytoscape.getDesktop().getHeight());
 		setLocation(2,Cytoscape.getDesktop().getHeight()-557);
 		
 		//setLocationRelativeTo(Cytoscape.getDeskto
@@ -114,6 +114,14 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		
 		String command = e.getActionCommand();
+		if(command.equals("delete")){
+			int row = table.getSelectedRow();
+			data[row][0] = "";
+			data[row][1] = "";
+			initialize();
+			
+		}
+		
 		if (command.equals("moveUp")){
 			if(table.getSelectedRowCount() != 0){
 				moveRowUp(table.getSelectedRow());
@@ -206,7 +214,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	}
 	
 	
-	private void initializeOnce() {
+	private void initialize() {
 		
 		
 		//attributes = Cytoscape.getNodeAttributes().getAttributeNames();
@@ -319,17 +327,16 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		DefaultColorSelectionModel mod = new DefaultColorSelectionModel();
 		
 		
-		
 		//mainPanel.add();
 		mainPanel.add(buttonBox);
 		mainPanel.add(tablePanel);
 		mainPanel.add(tableButtons);
+		//mainPanel.add(chooser);
 		setContentPane(mainPanel);
 		//System.out.println("made window");
 		mainPanel.setLocation(Cytoscape.getDesktop().getWidth(), Cytoscape.getDesktop().getHeight());
 	}
-	private void initialize() {
-	}
+	
 	
 	private void updateAllSettings() {
 		currentAlgorithm.updateSettings();
@@ -359,10 +366,10 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			
 		    int[] rowIndexes = table.getSelectedRows();
 		    for(int i = 0; i<rowIndexes.length;i++){
-		    	System.out.println("row index: "+rowIndexes[i]);
+		    	//System.out.println("row index: "+rowIndexes[i]);
 		    }
 			String current = (String)data[0][0]; 
-			System.out.println("current: "+ current);
+			//System.out.println("current: "+ current);
 			calculator.parse2(current);
 			//calculator.clearList();
 			calculator.evaluate();
@@ -388,7 +395,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		data[listCount][0] = criteria;
 		data[listCount][1] = label;
 		data[listCount][2] = "";
-		initializeOnce();
+		initialize();
 		if(listCount < 6){
 			listCount++;
 		}
@@ -432,7 +439,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			data[rowNumber-1][0] = criteriaTemp;
 			data[rowNumber-1][1] = labelTemp;
 			data[rowNumber-1][2] = colorTemp;
-			initializeOnce();
+			initialize();
 			
 		}
 	}
@@ -446,10 +453,10 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			Object labelTemp = data[rowNumber][1];
 			Object colorTemp = data[rowNumber][2];
 			
-			System.out.println(rowNumber);
+			//System.out.println(rowNumber);
 			//table.setValueAt(data[rowNumber+1][0], rowNumber, 0);
 			//table.setValueAt(data[rowNumber+1][1], rowNumber, 1);
-			System.out.println("moving Something");
+			//System.out.println("moving Something");
 			//table.setValueAt("new value", rowNumber+1, 0);
 			//table.setValueAt("new value", rowNumber+1, 0);
 			
@@ -460,7 +467,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			data[rowNumber+1][0] = criteriaTemp;
 			data[rowNumber+1][1] = labelTemp;
 			data[rowNumber+1][2] = colorTemp;
-			initializeOnce();
+			initialize();
 			
 		}
 		

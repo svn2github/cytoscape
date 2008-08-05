@@ -174,6 +174,9 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	public void tunableChanged(Tunable t){
 		//System.out.println(t.getName()  + t.getValue());
 		
+		
+		//booleanProperties.get("criteriaField").;
+		
 		criteriaString = (String)booleanProperties.get("criteriaField").getValue();
 		
 		if	(t.getName().equals("attributeList") || t.getName().equals("operationsList")){ 
