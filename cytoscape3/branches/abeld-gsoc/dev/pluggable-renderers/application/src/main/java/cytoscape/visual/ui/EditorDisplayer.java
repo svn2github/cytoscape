@@ -51,6 +51,7 @@ import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.NodeRenderers;
 import org.cytoscape.vizmap.VisualPropertyType;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
@@ -84,7 +85,10 @@ public enum EditorDisplayer {
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
 	               new Class[] { VisualPropertyType.class, JDialog.class },
 	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
-	DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
+	DISCRETE_RENDERER(ValueSelectDialog.class, "showDialog",
+	 	            new Class[] { VisualPropertyType.class, JDialog.class },
+	 	            new Object[] { VisualPropertyType.NODE_RENDERER, null }, NodeRenderers.class), 
+    DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
 	                     new Class[] { VisualPropertyType.class, JDialog.class },
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
@@ -197,7 +201,7 @@ public enum EditorDisplayer {
 		/*
 		 * if not found in the loop above, this might be a C2DEditor.
 		 */
-		
+		System.out.println("returning default");
 		return EditorDisplayer.CONTINUOUS_DISCRETE;
 	}
 }
