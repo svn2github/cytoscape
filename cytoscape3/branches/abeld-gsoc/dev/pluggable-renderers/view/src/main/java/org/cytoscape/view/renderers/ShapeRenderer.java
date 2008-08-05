@@ -35,8 +35,11 @@ public class ShapeRenderer implements NodeRenderer {
 	private final double[] m_ptsBuff = new double[4];
 	private int m_polyNumPoints; // Used with m_polyCoords.
 
-	public ShapeRenderer(){
+	private String name;
+	
+	public ShapeRenderer(String name){
 		m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD);
+		this.name = name;
 	}
 	/**
 	 * Draw a preview image on canvas at given place (using some default NodeDetails that the renderer can make up)
@@ -115,7 +118,7 @@ public class ShapeRenderer implements NodeRenderer {
 	 *                previously defined custom node shape.
 	 */
 	public void render(Graphics2D m_g2d, NodeDetails nodeDetails, float[] floatBuff1, int node, NodeView nodeView) {
-
+		System.out.println("rendering by: "+name);
 		
 		// TODO Auto-generated method stub
 		byte nodeShape = nodeDetails.shape(node);

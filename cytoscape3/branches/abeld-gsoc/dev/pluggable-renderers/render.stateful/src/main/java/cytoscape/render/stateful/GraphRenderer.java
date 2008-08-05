@@ -47,19 +47,15 @@ import cytoscape.render.immed.GraphGraphics;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.renderers.NodeRenderer;
-import org.cytoscape.view.renderers.ShapeRenderer;
 
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
-import java.awt.Shape;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
-import java.util.Iterator;
 
 
 /**
@@ -663,7 +659,6 @@ public final class GraphRenderer {
 						                  floatBuff1[3], nodeDetails.colorLowDetail(node));
 				}
 			} else { // High detail.
-				NodeRenderer nodeRenderer = new ShapeRenderer();
 				Graphics2D canvas = grafx.getCanvas();
 
 				while (nodeHits.numRemaining() > 0) {
@@ -671,6 +666,7 @@ public final class GraphRenderer {
 
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
 						NodeView nodeView = (NodeView) graphView.getNodeView(~node); // need to ~ because nodeHits stores node indices that way
+						NodeRenderer nodeRenderer = nodeView.getRenderer();
 						nodeRenderer.render(canvas, nodeDetails, floatBuff1, node, nodeView);
 					}
 

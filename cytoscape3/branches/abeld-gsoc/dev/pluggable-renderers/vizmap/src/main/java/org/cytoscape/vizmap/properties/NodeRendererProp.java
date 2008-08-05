@@ -92,7 +92,7 @@ public class NodeRendererProp extends AbstractVisualProperty {
 	public void applyToNodeView(NodeView nv, Object o) {
 		if ((o == null) || (nv == null))
 			return;
-		System.out.println("NoodeRendererProp.applytoNodeView: object:"+o);
+		System.out.println("NodeRendererProp.applytoNodeView: object:"+o);
 		NodeRenderer newRenderer = (((NodeRenderers) o).getRenderer());
 
 		if (nv.getRenderer() != newRenderer)

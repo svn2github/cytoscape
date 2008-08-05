@@ -59,8 +59,9 @@ import javax.swing.Icon;
  *
  */
 public enum NodeRenderers {
-    SIMPLE_SHAPE(new ShapeRenderer(), "simple shape");
-
+    SIMPLE_SHAPE(new ShapeRenderer("simple shape"), "simple shape"),
+    SIMPLE_SHAPE2(new ShapeRenderer("simple shape2"), "simple shape2");
+    
 	private NodeRenderer nodeRenderer;
 	private String name;
 	private static Map<Integer, Shape> nodeShapes = ShapeFactory.getNodeShapes();
