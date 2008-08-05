@@ -160,8 +160,10 @@ public class MapFromCytoscape implements Mapper {
 			} else if (attributeName.equals(CommonVocab.XREF_DB_ID)) {
 				dbIds = attributes.getListAttribute(nodeName, attributeName);
 			} else {
-				String value = attributes.getStringAttribute(nodeName, attributeName);
-				bag.addAttribute(attributeName, value);
+				if (attributes.getType(attributeName) == CyAttributes.TYPE_STRING){
+					String value = attributes.getStringAttribute(nodeName, attributeName);
+					bag.addAttribute(attributeName, value);
+				} // skip non-string attributes
 			}
 		}
 
