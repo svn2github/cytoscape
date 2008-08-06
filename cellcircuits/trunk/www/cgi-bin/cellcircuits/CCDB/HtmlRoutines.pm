@@ -5,6 +5,7 @@ require Exporter;
 use strict;
 use warnings;
 
+use CCDB::DB;
 use CCDB::Model;
 use CCDB::Enrichment;
 use CCDB::Error;
@@ -27,6 +28,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw();
 our @EXPORT_OK = qw(highlight gen_go_url $TRAILER format_header query_form);
 our $VERSION = 1.0;
+
+our $dbh = CCDB::DB::getDB();
 
 my $sortMethods = {
     "optionA_by_number_of_query_terms_matching_model" => "By Number of Query Terms Matching Model",
@@ -511,7 +514,7 @@ sub min_pval
 
 sub print_model
 {
-    my ( $hash, $mid, $expanded_query, $counts, $pval_thresh) = @_;
+    my ($hash, $mid, $expanded_query, $counts, $pval_thresh) = @_;
 
     my $mo = $hash->{$mid}{'model'};
     my $pub     = $mo->pub();
@@ -741,12 +744,17 @@ sub format_eo
 
     my $org = get_species_string($eo->sid()); #  join(" ", $eo->genus(), $eo->species());
 
+
+	#my $thm_img_file_name = ${thm_img}.$pubInfo->{$pub}->{img_format};
+	
+	my ($lrg_img_file_id, $thm_img_file_id) = getImageFileIDs_enrichment(${thm_img},$pubInfo->{$pub}->{img_format});
+	
+
     ## Genes in model and enrichment
     my $h = qq( <td align="center">\n);
 
-    my $url = sprintf("$cgi_url/get_genes_by_eid.pl?eid=%s&thm=%s",
-		      $eid,
-		      "$data_url/${thm_img}.$pubInfo->{$pub}->{img_format}");
+    my $url = sprintf("$cgi_url/get_genes_by_eid.pl?eid=%s&lrg_image_file_id=%s&thm_image_file_id=%s",
+		      $eid, $lrg_img_file_id, $thm_img_file_id);  #"$data_url/${thm_img}.$pubInfo->{$pub}->{img_format}");
     
     foreach my $g (@{ $model->eid2genes()->{ $eid } })
     {
@@ -781,6 +789,57 @@ sub format_eo
 
     return $h;
 }
+
+# This is a work-around
+sub getImageFileIDs_enrichment {
+	my ($image_info, $img_format) = @_;
+
+	my @tmpArray = split('/', $image_info);
+	
+	my $pub = $tmpArray[0];
+	my $image_file_name = $tmpArray[2].".".$img_format;
+	
+	### Get large image file id
+	my $lrg_image_file_id = -1;
+
+	my $dbQuery = "SELECT network_file_info.image_file_id as id ";
+	$dbQuery .=   "FROM network_file_info, network_image_files ";
+	$dbQuery .=   "WHERE network_file_info.publication_id = $pub AND network_image_files.file_name='$image_file_name'";
+	
+	my $sth = $dbh->prepare($dbQuery);
+	$sth->execute();
+	
+	# should be one record only
+	while (my $ref = $sth->fetchrow_hashref()) {
+		$lrg_image_file_id = $ref->{'id'}; 
+	}
+
+	### Get large image file id
+	my $thum_image_file_id = -1;
+
+	my $dbQuery = "SELECT network_file_info.thum_image_file_id as id ";
+	$dbQuery .=   "FROM network_file_info, network_thum_image_files ";
+	$dbQuery .=   "WHERE network_file_info.publication_id = $pub AND network_thum_image_files.file_name='$image_file_name'";
+	
+	# TODO
+	#my $sth = $dbh->prepare($dbQuery);
+	#$sth->execute();
+	
+	# should be one record only
+	#while (my $ref = $sth->fetchrow_hashref()) {
+	#	$thum_image_file_id = $ref->{'id'}; 
+	#}
+
+	#print "lrg_image_file_id  = $lrg_image_file_id <br>";
+	#print "thum_image_file_id  = $thum_image_file_id <br>";
+	
+	my @image_file_ids = ($lrg_image_file_id,$thum_image_file_id);
+
+	return @image_file_ids;
+
+}
+	
+
 
 
 sub gen_go_url
@@ -973,19 +1032,42 @@ sub format_query_matched_td
 # image_file_IDs for networkImage and thumImage
 sub getImageFileIDs {
  my ($pubName, $modelName) = @_;
-	#my $query = 
 
-	my @thm_image_file_ids = (0,0);
+	my $img_format = $pubInfo->{$pubName}->{img_format};
+	my $dbQuery = "select network_image_files.id as id from network_file_info, network_image_files where network_file_info.image_file_id = network_image_files.id AND network_file_info.publication_id = $pubName AND network_image_files.file_name = '$modelName.$img_format'";
+	
+	my $get_image_file_id_sth = $dbh->prepare($dbQuery);
+	$get_image_file_id_sth->execute();
+	
+	my $image_file_id = -1;
+	my $thum_image_file_id = -1;
+	
+	# should be one record only
+	while (my $ref = $get_image_file_id_sth->fetchrow_hashref()) {
+		$image_file_id = $ref->{'id'}; 
+	}
 
+	my @image_file_ids = ($image_file_id,$thum_image_file_id);
 
-	return @thm_image_file_ids;
+	return @image_file_ids;
 }
+
 
 sub getSifFileID {
 	my ($pubName, $modelName) = @_;
-
-	my $sif_file_id = 1;
 	
+	my $dbQuery = "select network_files.id as id from network_file_info, network_files where network_file_info.network_file_id = network_files.id AND network_file_info.publication_id = $pubName AND network_files.file_name = '$modelName.sif'";
+	
+	my $get_sif_file_id_sth = $dbh->prepare($dbQuery);
+	$get_sif_file_id_sth->execute();
+	
+	my $sif_file_id = -1;
+	
+	# should be one record only
+	while (my $ref = $get_sif_file_id_sth->fetchrow_hashref()) {
+		$sif_file_id = $ref->{'id'}; 
+	}
+
 	return $sif_file_id;
 }
 
@@ -1012,12 +1094,13 @@ sub format_model_thm_td
 	# image_file_IDs for networkImage and thumImage
 	my ($lrg_image_file_id, $thm_image_file_id) = getImageFileIDs($pubName, $modelName);
 
+	#print "lrg_image_file_id= $lrg_image_file_id<br>";
     my $model_thm_html = <<MODEL_HTML;
       <td class='search-result' align='center' valign='top' >$score</td>
       <td class='search-result' align='center' valign='top' bgcolor='white'>
 	  
-         <a href='getImage.php?type=network&id=$lrg_image_file_id'>
-            <img src='getImage.php?type=network_thm&file_id=$thm_image_file_id' border='0'>
+         <a href='$search_url/getNetworkImage.php?image_type=network_image&image_file_id=$lrg_image_file_id&return_type=html'>
+            <img src='$search_url/getNetworkImage.php?image_type=network_thm_image&image_file_id=$thm_image_file_id' border='0'>
          </a><br />
 		  
 	 <b class='pub-citation'></b><br>
@@ -1036,8 +1119,8 @@ MODEL_HTML
 	
 #### WITHOUT POPUP ####
     $model_thm_html .= <<MODEL_HTML2;
-         <a class="white-bg-link" href="get_legend.php?legend_id=$legend_id" title='Legend and FAQ for [$pubInfo->{$pub}->{name}] and its models.'>[legend]</a>
-         <a class="white-bg-link" href="download_file.php?type=sif&file_id=$sif_file_id" title='(s)imple (i)nteraction (f)ormat: a textual representation of this model.'>[sif]</a>
+         <a class="white-bg-link" href="$search_url/get_legend.php?pub_id=$pubName" title='Legend and FAQ for [$pubInfo->{$pub}->{name}] and its models.'>[legend]</a>
+         <a class="white-bg-link" href="$search_url/file_download.php?file_type=sif&file_id=$sif_file_id" title='(s)imple (i)nteraction (f)ormat: a textual representation of this model.'>[sif]</a>
 	 <br>
        </td>
 MODEL_HTML2
