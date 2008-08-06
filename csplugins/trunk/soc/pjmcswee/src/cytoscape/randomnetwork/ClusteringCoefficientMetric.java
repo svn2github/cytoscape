@@ -118,7 +118,7 @@ public class ClusteringCoefficientMetric implements NetworkMetric {
 			
 			//Iterate through all of this node's incoming edges if directed
 			//or all edges if the network is undirected.
-			IntEnumerator edgeIterator = pNetwork.edgesAdjacent(nodeIndex,directed,false,!directed);
+			IntEnumerator edgeIterator = pNetwork.edgesAdjacent(nodeIndex,pDirected,false,!pDirected);
 			while(edgeIterator.numRemaining() > 0)
 			{
 				//Get the next edge
@@ -238,7 +238,7 @@ public class ClusteringCoefficientMetric implements NetworkMetric {
 			}
 			
 			//If this network is not directed, double the edge count
-			if(!directed)
+			if(!pDirected)
 			{
 				edgeCount *= 2.0;	
 			}

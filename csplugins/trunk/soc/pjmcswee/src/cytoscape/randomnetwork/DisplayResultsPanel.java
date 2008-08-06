@@ -191,7 +191,7 @@ public class DisplayResultsPanel extends JPanel {
 			data[i][1] = new Double(df.format(networkResults[i]));
 			data[i][2] = new Double(df.format(average));
 			data[i][3] = new Double(df.format(std));
-			data[i][4] = new Double(df.format());	
+			//data[i][4] = new Double(df.format());	
 		}
 
 		//Set up the Table for displaying 
