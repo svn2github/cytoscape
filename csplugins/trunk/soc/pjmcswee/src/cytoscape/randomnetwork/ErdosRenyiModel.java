@@ -33,28 +33,25 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-
-
-
-
 package cytoscape.randomnetwork;
 
 import cytoscape.graph.dynamic.util.*;
 import cytoscape.graph.dynamic.*;
-
 import java.util.*;
 
 
-/*
- This class generates random networks according to the two Erdos-Renyi models
- G(n,m) which generates nodes with a specific number of edges and 
- G(n,p) which generates a random network where each edge has the probability p of existing
-
- References:
- Erdos, P.; Renyi A. (1959). "On Random Graphs. I.".  Publications Matheaticae 6: 290-297.
- Erdos, P.; Renyi A. (1960). "The Evolution of Random Graphs".  Magyar Tud. Akad. Math. Kutato INt. Koxl. 5:17-61.
- Gilber, E.N. (1959). "Random Graphs".  Annals of Mathematical Statistics 30: 1141 - 1144.
-
+/**
+ * This class generates random networks according to the two Erdos-Renyi models.
+ * G(n,m) which generates nodes with a specific number of edges <br>
+ * G(n,p) which generates a random network where each edge has the probability p of existing<br>
+ *
+ * References: <br>
+ * Erdos, P.; Renyi A. (1959). "On Random Graphs. I.".  Publications Matheaticae 6: 290-297.<br>
+ * Erdos, P.; Renyi A. (1960). "The Evolution of Random Graphs".  Magyar Tud. Akad. Math. Kutato INt. Koxl. 5:17-61.<br>
+ * Gilber, E.N. (1959). "Random Graphs".  Annals of Mathematical Statistics 30: 1141 - 1144.<br>
+ *
+ * @author Patrick J. McSweeney
+ * @version 1.0
  */
 public class ErdosRenyiModel extends RandomNetworkModel {
 	private double probability;
@@ -63,14 +60,11 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	 * Creates a model for constructing random graphs according to the
 	 * erdos-renyi model. This constructor will create random graphs with a
 	 * given number of edges. Each call to generate will create networks with
-	 * the specified number of edges. G(n,m) model
+	 * the specified number of edges. G(n,m) model.
 	 * 
-	 * @param pNumNodes
-	 *            <int> : # of nodes in Network
-	 * @param pNumEdges
-	 *            <int> : # of edges in Network
-	 * @param pDirected
-	 *            <boolean> : Network is directed(TRUE) or undirected(FALSE)
+	 * @param pNumNodes  The number of nodes in generated networks.
+	 * @param pNumEdges  The number of edges in generated networks.
+	 * @param pDirected  Generated networs are directed(TRUE) or undirected(FALSE).
 	 * 
 	 */
 	public ErdosRenyiModel(int pNumNodes, int pNumEdges,
@@ -79,18 +73,16 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 		probability = UNSPECIFIED;
 	}
 
+
 	/**
 	 * Creates a model for constructing random graphs according to the
 	 * erdos-renyi model. This constructor will create random graphs with a
 	 * given probability. So that each call to generate can create networks with
 	 * a different number of edges. G(n,p)
 	 * 
-	 * @param pNumNodes
-	 *            <int> : # of nodes in Network
-	 * @param pDirected
-	 *            <boolean> : Network is directed(TRUE) or undirected(FALSE)
-	 * @param pProbability
-	 *            <double> : probability of an edge
+	 * @param pNumNodes The number of nodes in generated networks
+	 * @param pDirected Generated networks are directed(TRUE) or undirected(FALSE)
+	 * @param pProbability The probability of a single edge edge.  Probability should be a valid probability in the range [0: 1].
 	 * 
 	 */
 	public ErdosRenyiModel(int pNumNodes, boolean pAllowSelfEdge,
@@ -107,13 +99,39 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 		}
 		probability = pProbability;
 	}
+	
+	
+	/**
+	 *  Copies the RandomNetworkGenerator.
+	 *  This is function is necessary to give each thread its own instance of the RandomNetworkGenerator.
+	 *
+	 * @return The copy of the calling ErdosRenyiModel
+	 */
+	public ErdosRenyiModel copy()
+	{
+		//If no probability
+		if(probability == UNSPECIFIED)
+		{
+			return new ErdosRenyiModel( numNodes, numEdges, allowSelfEdge, directed);
+		}
+		else
+		{
+			return new ErdosRenyiModel( numNodes, allowSelfEdge, directed, probability);		
+		}
+	}
 
-	/*
+	
+
+	/**
 	 * Generates a random graph based on the model specified by the constructor:
 	 * G(n,m) or G(n,p)
+	 *
+	 *
+	 * @return The generated network, whose properties are specified by member variables.
 	 */
 	public DynamicGraph generate() {
 		
+		//Call the appropriate generator
 		DynamicGraph random_network = null;
 		if(probability == UNSPECIFIED)
 		{
@@ -129,9 +147,14 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	}
 
 	/**
-	*  Create a random network according to the G(n,m) model
-	*/
-	public DynamicGraph gnmModel()
+	 *  Create a random network according to the G(n,m) model.
+	 *  <br>
+	 *  In this model each network with n nodes and m edges has
+	 *  equal chance of being created.  
+	 *
+	 * @return The generated network according to the G(n,m) model.
+	 */
+	private DynamicGraph gnmModel()
 	{
 		//Create the graph object
 		DynamicGraph random_network =  DynamicGraphFactory.instantiateDynamicGraph();
@@ -139,7 +162,7 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 		// Create N nodes
 		int[] nodes = new int[numNodes];
 
-		
+		//create a list of existing edges
 		LinkedList<Integer> existingEdges  = new LinkedList<Integer>();
 
 		

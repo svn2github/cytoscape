@@ -34,29 +34,35 @@
  */
 
 package cytoscape.randomnetwork;
-
-
-
-
-
 import cytoscape.graph.dynamic.*;
 
-/*
- *  Interface for network metric analyzing
+/**
+ *  Interface for network metrics.  Metrics compute some attribute or property of networks.
+ *  New metrics can and should be added by implementing this interface.  Currenlty only 
+ *  metrics which return a double are allowed for statistical processing.
+ *
+ *
+ * @author Patrick J. McSweeney
+ * @version 1.0
  */
 public interface  NetworkMetric {
 	
 	/**
-	* This method takes the network and whether or not it should be treated
-	* as directed. The method returns a comparable object.
-	*/
-	public abstract double analyze(DynamicGraph net, boolean directed);
+	 *  This function actually calculates the metric.  Currently it is necessary to again specify 
+	 *  whether or not pNet is directed.
+	 *
+	 * @param pNet The network to analyze.
+	 * @param pDirected Specifices to treat pNet as directed (true) or undirected (false).
+	 * @return The result of this metric on pNet.
+	 */
+	public abstract double analyze(DynamicGraph pNet, boolean pDirected);
 	
 	
 	/**
-	* Used for displaying a name in the results panel
-	* 
-	*/
+	 * Returns the name of this metric, used for display purposes.
+	 *
+	 * @return The string conical name of this metric. 
+	 */
 	public abstract String getDisplayName();
 	
 }

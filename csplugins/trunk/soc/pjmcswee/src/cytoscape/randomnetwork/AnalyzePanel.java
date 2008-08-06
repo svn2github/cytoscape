@@ -63,11 +63,83 @@ import cytoscape.task.util.TaskManager;
 
 
 
+
 /*
  * AnalyzePanel is used for selecting which random 
  * network model to use.
  */
 public class AnalyzePanel extends JPanel implements Task {
+
+
+	
+	/**
+	* Internal data structure for actually doing the analyzing
+	*/
+
+	class AnalyzeWorkerThread implements Runnable
+	{
+		//each thread should have a unique ID
+		private int id;
+		private int numIterations;	
+		private RandomNetworkGenerator myNetworkModel;
+		private LinkedList myMetrics;
+		private double[][] results;
+		public int completed[];
+		
+		/*
+		*
+		*	Constructor
+		*/
+		public AnalyzeWorkerThread(int pID, int pIterations, RandomNetworkGenerator pMyNetworkModel, LinkedList pMyMetrics, double pResults[][], int pCompleted[])
+		{
+			id = pID;
+			numIterations = pIterations;
+			myNetworkModel = pMyNetworkModel;
+			myMetrics = pMyMetrics;
+			results = pResults;
+			completed = pCompleted;
+		}
+	
+		//This is the function that does all of our work.
+		public void run()
+		{
+	
+			//Go for the number of rounds unless we have been interrupted by the user
+			for(int i = 0;((i < numIterations)&&(!interrupted)); i++)
+			{
+		
+				//Generate the next random graph
+				DynamicGraph net = myNetworkModel.generate();
+
+				//Perform all metrics unless we have been interrupted
+				for(int j = 0; ((j < myMetrics.size())&&(!interrupted)); j++)
+				{
+			
+					//Get the next metric
+					NetworkMetric metric = (NetworkMetric)myMetrics.get(j);
+				
+					//Compute the metric on this random network
+					double t = metric.analyze(net,  directed);
+					results[i][j] = t;
+
+					completed[0]++;
+				}
+				
+
+				
+				//System.out.println("Thread:" + id + " Completed:" + completed);
+		
+				//Delete this random network
+				net = null;
+			}
+		}//end run
+	}//ends AnalyzeWorker class
+	
+
+
+
+
+
 
 
 	//The generator of our random networks
@@ -94,16 +166,18 @@ public class AnalyzePanel extends JPanel implements Task {
 
 	private javax.swing.JLabel roundsLabel;
 	private javax.swing.JTextField roundsTextField;
+	private javax.swing.JLabel threadLabel;
+	private javax.swing.JTextField threadTextField;
 	
 	
 	//For the Progress Meter
     private TaskMonitor taskMonitor = null;
 	private boolean interrupted = false;
 	
-	private double[][] random_results;
+	private double[][][] random_results;
 	private double[] network_results;
 	private String[] metric_names;
-	
+	private int rounds;
 	/**
 	 *  Default constructor
 	 */
@@ -146,6 +220,11 @@ public class AnalyzePanel extends JPanel implements Task {
 		roundsTextField = new javax.swing.JTextField();
 		roundsLabel = new javax.swing.JLabel();
 		roundsLabel.setText("How many rounds to run:");
+		
+		threadTextField = new javax.swing.JTextField();
+		threadLabel = new javax.swing.JLabel();
+		threadLabel.setText("How many Threads to run:");
+		
 		
 
 		//Set up the run button
@@ -215,7 +294,25 @@ public class AnalyzePanel extends JPanel implements Task {
 																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 																				10,
 																				Short.MAX_VALUE))
+																
+															.add(
+																layout
+																		.createSequentialGroup()
+																		.add(
+																				threadLabel,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				10,
+																				170)
+																		.addPreferredGap(
+																				1)
+																		.add(
+																				threadTextField,
+																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+																				10,
+																				Short.MAX_VALUE))
 																											
+		
+																
 														.add(
 																org.jdesktop.layout.GroupLayout.TRAILING,
 																layout
@@ -250,6 +347,12 @@ public class AnalyzePanel extends JPanel implements Task {
 														.add(averageDegreeCheckBox)
 														.add(degreeDistCheckBox)
 														.add(averageShortPathCheckBox)
+														.add(
+												layout
+														.createParallelGroup(
+																org.jdesktop.layout.GroupLayout.BASELINE)
+														.add(threadLabel).add(
+																threadTextField))
 														.add(
 												layout
 														.createParallelGroup(
@@ -357,12 +460,12 @@ public class AnalyzePanel extends JPanel implements Task {
 		int index = parent.getSelectedIndex();
 			
 		//Remove this Panel
-		parent.remove(dpr);
+		parent.remove(index);
 		
 		//Replace it with the panel
 		parent.add(dpr, index);
 		//Set the title for this panel
-		parent.setTitleAt(index,"Analyze network statistics");
+		parent.setTitleAt(index,"Compare to Random Network");
 		//Display this panel
 		parent.setSelectedIndex(index);
 		//Enforce this Panel
@@ -389,8 +492,8 @@ public class AnalyzePanel extends JPanel implements Task {
 	*/
 	public void run() {
 
-	
-		int rounds = 0;
+		
+		rounds = 0;
 		
 		String roundString = roundsTextField.getText();
 		try{
@@ -402,45 +505,59 @@ public class AnalyzePanel extends JPanel implements Task {
 		
 		roundsLabel.setForeground(java.awt.Color.BLACK);
 		
+		int numThreads = 1;
+		String threadString = threadTextField.getText();
+		try{
+			numThreads = Integer.parseInt(threadString);
+		}catch(Exception e)
+		{
+			threadLabel.setForeground(java.awt.Color.RED);
+		}
+		
+		threadLabel.setForeground(java.awt.Color.BLACK);
 	
-		LinkedList metrics = new LinkedList();
+	
+	
+		LinkedList netMetrics = new LinkedList();
 
 		if(clusterCheckBox.isSelected())
 		{
 			ClusteringCoefficientMetric ccm = new ClusteringCoefficientMetric();
-			metrics.add(ccm);
+			netMetrics.add(ccm);
 		}
 		if(averageDegreeCheckBox.isSelected())
 		{
 			AverageDegreeMetric adm = new AverageDegreeMetric();
-			metrics.add(adm);
+			netMetrics.add(adm);
 		}
 		if(degreeDistCheckBox.isSelected())
 		{
 			DegreeDistributionMetric ddm = new DegreeDistributionMetric();
-			metrics.add(ddm);
+			netMetrics.add(ddm);
 		}
 		if(averageShortPathCheckBox.isSelected())
 		{
 			MeanShortestPathMetric msm = new MeanShortestPathMetric();
-			metrics.add(msm);
+			netMetrics.add(msm);
 		}
 			
 		//Initialize these for passing information to the Display Panel
-		random_results = new double[rounds][metrics.size()];
-		network_results = new double[metrics.size()]; 
-		metric_names = new String[metrics.size()];
+		//random_results = new double[rounds][netMetrics.size()];
+		network_results = new double[netMetrics.size()]; 
+		metric_names = new String[netMetrics.size()];
 		
 		//Used for the progress meter to show progress
-		int totalToAnalyze = metrics.size() * (rounds + 1);
-		int totalCompleted = 0;
+		int totalToAnalyze = netMetrics.size() * (rounds + 1);
+		//int totalCompleted = 0;
+		
+		
 		
 		//Compute the metrics on the current network
 		DynamicGraph original = (DynamicGraph)(CytoscapeConversion.CyNetworkToDynamicGraph( Cytoscape.getCurrentNetwork() , directed )).get(0);
-		for(int j = 0; ((j < metrics.size())&(!interrupted)); j++)
+		for(int j = 0; ((j < netMetrics.size())&(!interrupted)); j++)
 		{
 				//Get the next metric
-				NetworkMetric metric = (NetworkMetric)metrics.get(j);
+				NetworkMetric metric = (NetworkMetric)netMetrics.get(j);
 
 				//Compute the metric on this random network
 				double t = metric.analyze(original,  directed);
@@ -448,18 +565,94 @@ public class AnalyzePanel extends JPanel implements Task {
 				metric_names[j] = metric.getDisplayName();
 		
 				//Compute how much we have completed
-				totalCompleted++;
-				int percentComplete = (int) (((double) totalCompleted / totalToAnalyze) * 100);
+				
+				int percentComplete = (int) (((double) j / totalToAnalyze) * 100);
 			
 				//Update the taskMonitor to show our progress
 				if (taskMonitor != null) {
                     taskMonitor.setPercentCompleted(percentComplete);
-
-                }
-
-			
+                }	
 		}
 		
+		
+		//Calculate how many rounds are needed per thread
+		int roundsPerThread = rounds / numThreads;
+		
+		//Create an array to store the matrix results for each thread
+		random_results = new double[numThreads][roundsPerThread][netMetrics.size()];
+		
+		//Let them tell us how much they have completed
+		int completed[][] = new int[numThreads][1];
+		
+		//Keep pointers to all of our threads
+		Thread threads[] = new Thread[numThreads];
+		
+		//For each thread
+		for(int i = 0; i < numThreads; i++)
+		{
+			//Create a new copy of the metrics for each thread
+			LinkedList metrics = new LinkedList();
+
+			if(clusterCheckBox.isSelected())
+			{
+				ClusteringCoefficientMetric ccm = new ClusteringCoefficientMetric();
+				metrics.add(ccm);
+			}
+			if(averageDegreeCheckBox.isSelected())
+			{
+				AverageDegreeMetric adm = new AverageDegreeMetric();
+				metrics.add(adm);
+			}
+			if(degreeDistCheckBox.isSelected())
+			{
+				DegreeDistributionMetric ddm = new DegreeDistributionMetric();
+				metrics.add(ddm);
+			}
+			if(averageShortPathCheckBox.isSelected())
+			{
+				MeanShortestPathMetric msm = new MeanShortestPathMetric();
+				metrics.add(msm);
+			}
+			
+			//Create the new thread
+			AnalyzeWorkerThread thread = new AnalyzeWorkerThread(i, roundsPerThread, networkModel.copy(), metrics, random_results[i], completed[i]);
+			
+			//start the thread running
+			threads[i] = new Thread(thread);
+			threads[i].start();
+		}
+		
+		
+		boolean finished = false;
+		while(!finished)
+		{
+			try
+			{
+				Thread.currentThread().sleep(990);
+			}catch(Exception e){e.printStackTrace();}
+		
+			double totalCompleted = netMetrics.size();
+			finished = true;
+			for(int i = 0; i < numThreads; i++)
+			{
+				finished = finished && (!threads[i].isAlive());
+				totalCompleted += completed[i][0];
+				//System.out.println(i +"\t" + completed[i]);
+			}
+			
+			//System.out.println(totalCompleted);
+			int percentComplete = (int) (((double) totalCompleted / totalToAnalyze) * 100);
+		//	System.out.println(percentComplete);		
+			//Update the taskMonitor to show our progress
+			if (taskMonitor != null) {
+				taskMonitor.setPercentCompleted(percentComplete);
+			}
+			
+
+		}
+		
+		
+		/*
 
 		//Go for the number of rounds unless we have been interrupted by the user
 		for(int i = 0;((i < rounds)&&(!interrupted)); i++)
@@ -475,11 +668,11 @@ public class AnalyzePanel extends JPanel implements Task {
 			
 				//Get the next metric
 				NetworkMetric metric = (NetworkMetric)metrics.get(j);
-
+				
 				//Compute the metric on this random network
 				double t = metric.analyze(net,  directed);
 				random_results[i][j] = t;
-				
+				//System.out.println(t);
 				
 				//Compute how much we have completed
 				totalCompleted++;
@@ -496,6 +689,8 @@ public class AnalyzePanel extends JPanel implements Task {
 			//Delete this random network
 			net = null;
 		}
+		*/
+		
 	}
 	
 	

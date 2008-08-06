@@ -33,18 +33,32 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.randomnetwork;
 
+package cytoscape.randomnetwork;
 import cytoscape.graph.dynamic.*;
 
-
-
 /** 
- * The interface for random network 
+ * This is the interface for generating random networks.
+ * All classes that wish to create random networks should implement this interface.
+ * 
+ *
+ * @author Patrick J. McSweeney
+ * @version 1.0
  */
 public interface RandomNetworkGenerator  {
 	
-	//used to generate random networks 
+	/**
+	 * Used to generate random networks 
+	 *
+	 *
+	 *	@return The resulting random network <DynamicGraph>.
+	 */
 	DynamicGraph generate();
- 
+	
+	/**
+	 *  Required to give each thread their own copy of this generator.
+	 *
+	 *  @return An exact copy of this randomNetworkGenerator <RandomNetworkGenerator>.
+	 */
+	RandomNetworkGenerator copy();
 }

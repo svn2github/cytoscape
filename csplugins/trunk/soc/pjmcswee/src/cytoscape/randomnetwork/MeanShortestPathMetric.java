@@ -34,9 +34,6 @@
  */
 
 package cytoscape.randomnetwork;
-
-
-
 import java.util.*;
 import cytoscape.graph.dynamic.*;
 import cytoscape.util.intr.IntEnumerator;
@@ -45,25 +42,45 @@ import cytoscape.util.intr.IntIterator;
 
 
 /**
-*  Compute the avearge shortest path between all pairs of nodes (i,j), where
+*  Computes the avearge shortest path between all pairs of nodes (i,j), where
 *  i != j.
+*  <p>
+*  The algorithm is an implementation of Dijkstra's algorithm, but does not keep the entire adjacency matrix for memory use.
+*
+* @author Patrick J. McSweeney
+* @version 1.0
 */
 public  class MeanShortestPathMetric implements NetworkMetric {
 	
-	
+	/**
+	 * Gets the name of this metric. For display purposes.
+	 *
+	 * @return The string name of this metric
+	 */
 	public String getDisplayName()
 	{
 		return new String("Mean Shortest Path");
 	}
 	
 	
-	public double analyze(DynamicGraph network, boolean directed)
+	/**
+ 	 * Computes the average distance between all pairs of nodes in the network.  This 
+	 * is an implmentation of Dijkstra's algorithm (runs N^3).
+	 * 
+	 *
+	 *
+	 * @param pNetwork The network to compute the average distances over.
+	 * @param pDirected Treat this network as directed or not.
+	 * @return The average all-pairs graph distance of nodes in the network.
+	 *
+	 */
+	public double analyze(DynamicGraph pNetwork, boolean pDirected)
 	{
 		//Accumlate the distances between all nodes
 		double averageShortestPath = 0;
 		
 		//Use as the number of nodes in the network
-		int N  =  network.nodes().numRemaining();
+		int N  =  pNetwork.nodes().numRemaining();
 
 	
 		int invalidPaths = 0;
@@ -86,20 +103,20 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 			
 			
 			//Iterate through all of thie nodes in this network
-			IntEnumerator edgeIterator = network.edgesAdjacent(i,true,false,true);
+			IntEnumerator edgeIterator = pNetwork.edgesAdjacent(i,pDirected,false,!pDirected);
 			while(edgeIterator.numRemaining() > 0)
 			{
 				//Get the next edge
 				int edgeIndex = edgeIterator.nextInt();
 				
 				//Find the other side of this edge
-				int neighborIndex = network.edgeSource(edgeIndex);
+				int neighborIndex = pNetwork.edgeSource(edgeIndex);
 				
 				//If we got the wrong side
 				if(neighborIndex == i)
 				{
 					//grab the other side
-					neighborIndex = network.edgeTarget(edgeIndex);
+					neighborIndex = pNetwork.edgeTarget(edgeIndex);
 				}
 				
 				//set its distance as 1
@@ -127,7 +144,7 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 				used[index] = true;
 				
 				
-				IntEnumerator adjIterator = network.edgesAdjacent(index,true,false,true);
+				IntEnumerator adjIterator = pNetwork.edgesAdjacent(index, pDirected,false, !pDirected);
 				while(adjIterator.numRemaining() > 0)
 				{
 				
@@ -135,17 +152,20 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 					int edgeIndex = adjIterator.nextInt();
 				
 					//Find the other side of this edge
-					int k = network.edgeSource(edgeIndex);
+					int k = pNetwork.edgeSource(edgeIndex);
 				
 					//If we got the wrong side
 					if(k == index)
 					{
 						//grab the other side
-						k = network.edgeTarget(edgeIndex);
+						k = pNetwork.edgeTarget(edgeIndex);
 					}
 					
+					//If k was not used
 					if(!used[k])
 					{
+						//recalculate the distances to
+						//connected nodes 
 						int sum = distance[index] + 1;
 						if(sum < distance[k])
 						{
@@ -162,12 +182,14 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 				//Don't add the distance from a node to another node
 				if( i != j)
 				{
-					if(distance[j] < Integer.MAX_VALUE)
+					///Make sure that the value is real (connceted)
+					if((distance[j] < Integer.MAX_VALUE) && (distance[j] > 0))
 					{	
 						averageShortestPath += distance[j];
 					}
 					else
 					{
+						//keep track of the number paths that are invalid
 						invalidPaths++;
 					}
 				}

@@ -87,7 +87,7 @@ public class DisplayResultsPanel extends JPanel {
 	private String[] metricNames;
 	
 	//The results from the random networks
-	private double[][] randomResults;
+	private double[][][] randomResults;
 	
 	//The results from the actual network
 	private double[] networkResults;
@@ -105,7 +105,7 @@ public class DisplayResultsPanel extends JPanel {
 	 *  Default constructor
 	 */
 	public DisplayResultsPanel(RandomNetworkGenerator pGen, boolean pDirected,
-					String pMetricNames[], double pRandomResults[][], double pNetworkResults[],int pMode ){
+					String pMetricNames[], double pRandomResults[][][], double pNetworkResults[],int pMode){
 		
 		
 		super( ); 
@@ -143,11 +143,14 @@ public class DisplayResultsPanel extends JPanel {
 		 {"Metric","Existing Network","Average","Standard Deviation"};
 
 		//Information to display in the table
-		Object[][] data = new Object[metricNames.length][4];
+		Object[][] data = new Object[metricNames.length][5];
 
 		//Used to make information readable
-		DecimalFormat df = new DecimalFormat("0.000");
+		DecimalFormat df = new DecimalFormat("0.0000000");
 
+		//Check how many threads were run
+		int threads = randomResults.length;
+		
 		//Check how many runs where executed
 		int rounds =  randomResults[0].length;
 
@@ -157,27 +160,38 @@ public class DisplayResultsPanel extends JPanel {
 			//Compute the avearge for this metric
 			//accross all of the rounds
 			double average = 0;
-			for(int j = 0; j <rounds; j++)
+			for(int  t = 0; t < threads; t++)
 			{
-				average += randomResults[j][i];
+				for(int j = 0; j <rounds; j++)
+				{
+					average += randomResults[t][j][i];
+				}
 			}
-			average /= rounds;
+			
+			average /= (double)(threads * rounds);
 			
 			//Compute the standard deviation
 			double std = 0;
-			for(int j = 0; j < rounds; j++)
+			//System.out.println("Rounds:" + rounds);
+			
+			for(int t = 0; t< threads; t++)
 			{
-				std += Math.pow(randomResults[j][i] - average,2);
-			}		
-			std = Math.sqrt(std / rounds);
+				for(int j = 0; j < rounds; j++)
+				{
+					std += Math.pow(randomResults[t][j][i] - average, 2.0d);
+					//System.out.println(randomResults[j][i] + "\t" + average );
+				}
+			}
 			
+			std = Math.sqrt(std / (double)(rounds * threads));
 			
+			//System.out.println(std);
 			//Update the table data
 			data[i][0] = metricNames[i];
 			data[i][1] = new Double(df.format(networkResults[i]));
 			data[i][2] = new Double(df.format(average));
 			data[i][3] = new Double(df.format(std));
-			
+			data[i][4] = new Double(df.format());	
 		}
 
 		//Set up the Table for displaying 
@@ -196,9 +210,6 @@ public class DisplayResultsPanel extends JPanel {
 		int height  = table.getRowHeight() * rounds/2 +1;
 
 		table.setPreferredScrollableViewportSize(new Dimension(300, 16)) ;
-		
-//          Sets the preferred size of the viewport for this table.
- //void 	setRowHeight(int rowHeight)
 		
 	
 		//Set up the run button

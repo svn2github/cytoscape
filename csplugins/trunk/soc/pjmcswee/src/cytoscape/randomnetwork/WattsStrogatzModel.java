@@ -75,9 +75,16 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 			boolean pDirected, double pBeta, double pDegree) {
 		super(pNumNodes, UNSPECIFIED, pAllowSelfEdge, pDirected);
 
-
 		degree = pDegree;
 		beta = pBeta;
+	}
+	
+	/**
+	*
+	*/
+	public WattsStrogatzModel copy()
+	{
+		return new WattsStrogatzModel( numNodes, allowSelfEdge, directed, beta, degree);
 	}
 
 	/*

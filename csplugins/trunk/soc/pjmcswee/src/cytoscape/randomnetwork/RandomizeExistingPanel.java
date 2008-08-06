@@ -433,15 +433,16 @@ public class RandomizeExistingPanel extends JPanel {
 		LinkedList network = CytoscapeConversion.CyNetworkToDynamicGraph(net,!directed);
 		
 
-		DynamicGraph graph = (DynamicGraph)network.get(0);
+		//DynamicGraph graph = (DynamicGraph)network.get(0);
 
-		int E = graph.edges().numRemaining();
-		System.out.println("Edges Found:" + E);
+		//int E = graph.edges().numRemaining();
+		//System.out.println("Edges Found:" + E);
 		
 
-		String ids[] = (String[])network.get(1);
-		DegreePreservingNetworkRandomizer dpnr = new DegreePreservingNetworkRandomizer(graph,ids,!directed);
-
+		//String ids[] = (String[])network.get(1);
+		
+		DegreePreservingNetworkRandomizer dpnr = new DegreePreservingNetworkRandomizer(net,!directed);
+		String ids[] = dpnr.getNodeIds();
 
 
 

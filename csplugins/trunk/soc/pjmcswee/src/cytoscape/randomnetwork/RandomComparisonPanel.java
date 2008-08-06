@@ -154,7 +154,7 @@ public class RandomComparisonPanel extends JPanel {
 		//Set up the title
 		titleLabel = new javax.swing.JLabel();
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Compare to Random");
+		titleLabel.setText("Compare to Random Network");
 
 
 	

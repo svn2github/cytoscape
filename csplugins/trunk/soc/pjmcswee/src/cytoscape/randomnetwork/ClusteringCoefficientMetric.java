@@ -1,4 +1,4 @@
-/* File: ClusteringCoefficient.java
+/* File: ClusteringCoefficientMetric.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -54,6 +54,11 @@ import cytoscape.util.intr.IntIterator;
  */
 public class ClusteringCoefficientMetric implements NetworkMetric {
 	
+	/**
+	 * Returns the name of this metric.
+	 *
+	 * @return The name of this metric.
+	 */
 	public String getDisplayName()
 	{
 		return new String("Clustering Coefficient");
@@ -61,91 +66,155 @@ public class ClusteringCoefficientMetric implements NetworkMetric {
 	
 	
 	
-	/*---------------------------------------------------------------
+	/**
+	 * The clustering coefficient for a network measures how close to complete each node's neighborhood is.
+	 * The neighborhood of a node is the set of nodes that it is connected to by edges.  The clustering coefficent
+	 * is a measure of how close the sub-network is to being complete.  The clustering coefficent of a node, is 1
+	 * if its neighborhood is a complete graph.
+	 * <p><b>Note: </b> The neighborhood of a node <i>u</i> does not include the node itself <i>u</i>.
+	 * <p>
+	 * The clustering coefficent of a graph (network) is the average clustering coefficient of all nodes.
+	 * 
 	 *
-	 * @param Network network the network to analyze s
 	 *
-	 *---------------------------------------------------------------*/
-	public double analyze(DynamicGraph network, boolean directed)
+	 * @param pNetwork The network to analyze.
+	 * @param pDirected Specifices how to treat the network. This matters for this metric.
+	 * @return The clustering coeffcient for this network.
+	 */
+	public double analyze(DynamicGraph pNetwork, boolean pDirected)
 	{
 		//used to accumulate the clustering coefficient of each node
 		double averageClusteringCoefficient = 0;
-		
-		
+				
 		//Iterate through all of thie nodes in this network
-		IntEnumerator nodeIterator = network.nodes();
+		IntEnumerator nodeIterator = pNetwork.nodes();
 		
 		//Use as the number of nodes in the network
 		int N  = nodeIterator.numRemaining();
 		
 		//Use this to temo
-		LinkedList nodeRep[] = new LinkedList[N];
-		
+		LinkedList nodeInRep[] = new LinkedList[N];
+		LinkedList nodeOutRep[] = new LinkedList[N];		
+
 		//Keep track of the node index
 		int nodeCount = 0;
 		
-	
+	    //Do pre-processing for each node
 		while(nodeIterator.numRemaining() > 0)
 		{
+			
 			//Get the next node
 			int nodeIndex = nodeIterator.nextInt();
 			
 			//Create a new linked list to store these edges
-			nodeRep[nodeCount] = new LinkedList<Integer>();
-		
-			//Iterate through all of this nodes edges
-			//Only outgoing edges should be counted if directed
-			//Second false does not include incoming edges
-			IntEnumerator edgeIterator = network.edgesAdjacent(nodeIndex,true,false,true);
+			nodeOutRep[nodeIndex] = new LinkedList<Integer>();
+			
+			//Only create the in lists if the network is directed
+			if(pDirected)
+			{
+				//create a list of all of the nodes that point to this node
+				nodeInRep[nodeIndex] = new LinkedList<Integer>();		
+			}
+			
+			//Iterate through all of this node's incoming edges if directed
+			//or all edges if the network is undirected.
+			IntEnumerator edgeIterator = pNetwork.edgesAdjacent(nodeIndex,directed,false,!directed);
 			while(edgeIterator.numRemaining() > 0)
 			{
 				//Get the next edge
 				int edgeIndex = edgeIterator.nextInt();
 				
 				//Find the other side of this edge
-				int neighborIndex = network.edgeSource(edgeIndex);
+				int neighborIndex = pNetwork.edgeTarget(edgeIndex);
 				
 				//If we got the wrong side
 				if(neighborIndex == nodeIndex)
 				{
 					//grab the other side
-					neighborIndex = network.edgeTarget(edgeIndex);
+					neighborIndex = pNetwork.edgeSource(edgeIndex);
 				}
 				
 				//Add this node to the list of neighboring nodes
-				nodeRep[nodeCount].add(neighborIndex);
+				nodeOutRep[nodeIndex].add(new Integer(neighborIndex));
 			}
 		
-			//Increment the number of nodes
-			nodeCount++;	
+		
+			//If this network is directed
+			if(pDirected)
+			{
+				//Iterate through all of the incoming edges
+				edgeIterator = pNetwork.edgesAdjacent(nodeIndex,false,true,false);
+				while(edgeIterator.numRemaining() > 0)
+				{
+					//Get the next edge
+					int edgeIndex = edgeIterator.nextInt();
+					
+					//Find the other side of this edge
+					int neighborIndex = pNetwork.edgeTarget(edgeIndex);
+					
+					//If we got the wrong side
+					if(neighborIndex == nodeIndex)
+					{
+						//grab the other side
+						neighborIndex = pNetwork.edgeSource(edgeIndex);
+					}
+					
+					//Add this node to the list of neighboring nodes
+					nodeInRep[nodeIndex].add(new Integer(neighborIndex));
+				}
+			}
+			
 		}
 		
 		
-		//For each node
+		//Compute the clustering coefficent for each node
 		for(int i = 0; i < N; i++)
 		{
+			
+			//Count the number of edges shared amongst its neighbors
+			double edgeCount = 0;
+						
+			//Below combines in and out edges without overlap of directed nodes
+			LinkedList neighborhood = (LinkedList)nodeOutRep[i].clone();
+			
+			//If this is a directed network
+			if(pDirected)
+			{
+				//iterate through all of the incoming edges
+				ListIterator iter = nodeInRep[i].listIterator();
+				while(iter.hasNext())
+				{
+					//get the next node
+					Integer next = (Integer)iter.next();
+					
+					//Comparison of Integer class is done by value
+					if(!neighborhood.contains(next))
+					{
+						neighborhood.add(next);
+					}
+				}
+			}
+			
+			
 			//If the node degree is less than 2
-			if(nodeRep[i].size() < 2)
+			if(neighborhood.size() < 2)
 			{
 				//Skip it since edgeCount must be 0
 				continue;
 			}
-
-			//Count the number of edges shared amongst its neighbors
-			double edgeCount = 0;
+			
 			
 			//How big is this nodes neighborhood
-			double size = nodeRep[i].size() * (nodeRep[i].size()  -1 );
+			double size = neighborhood.size() * (neighborhood.size()  - 1);
 
 			//Iterate through this nodes edges
-			ListIterator inner_iter = nodeRep[i].listIterator();
-			while(inner_iter.hasNext())
+			while(neighborhood.size() > 0)  
 			{			
 				//Get the next neighbor
-				int neighbor1 = (Integer)inner_iter.next(); 
+				int neighbor1 = (Integer)neighborhood.removeFirst();   
 
 				//Iterate through all of the other neighbors
-				ListIterator outer_iter = nodeRep[i].listIterator();
+				ListIterator outer_iter = neighborhood.listIterator();
 				while(outer_iter.hasNext())
 				{
 					//Get the next neighbor
@@ -153,14 +222,17 @@ public class ClusteringCoefficientMetric implements NetworkMetric {
 					
 					//If these are the same then skip it
 					//We do not count reflexive loops
-					if(neighbor1 != neighbor2)
+					//Check to see if this node is connected  to the other
+					if(nodeOutRep[neighbor1].contains(neighbor2))
 					{
-						//Check to see if this node is connected  to the other
-						if(nodeRep[neighbor1].contains(neighbor2))
-						{
-							//Increment the edge count
-							edgeCount++;
-						}
+						//Increment the edge count
+						edgeCount++;
+					}
+					//Check to see if this node is connected  to the other
+					if((pDirected) && (nodeOutRep[neighbor2].contains(neighbor1)))
+					{
+						//Increment the edge count
+						edgeCount++;
 					}
 				}
 			}
@@ -168,15 +240,16 @@ public class ClusteringCoefficientMetric implements NetworkMetric {
 			//If this network is not directed, double the edge count
 			if(!directed)
 			{
-				edgeCount *= 2;
+				edgeCount *= 2.0;	
 			}
 			
 			//Increment the global count by this edges clustering coefficient
 			averageClusteringCoefficient += edgeCount / size;
 		}
 		
-		//Remove this datastructure
-		nodeRep = null;
+		//Remove this datastructure to make sure the memory is released
+		nodeInRep = null;
+		nodeOutRep = null;		
 		
 		//return the average over all of the nodes
 		return averageClusteringCoefficient/N;	

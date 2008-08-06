@@ -84,6 +84,16 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 		edgesToAdd = pEdgesToAdd;
 	}
 
+
+	/**
+	*
+	*/
+	public BarabasiAlbertModel copy()
+	{
+		return new BarabasiAlbertModel(numNodes, allowSelfEdge, directed, init_num_nodes, edgesToAdd);
+	}
+
+
 	/*
 	 *  Generate a network according to the model
 	 * 

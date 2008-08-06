@@ -39,7 +39,7 @@
 
 package cytoscape.randomnetwork;
 
-
+import cytoscape.*;
 import cytoscape.graph.dynamic.util.*;
 import cytoscape.graph.dynamic.*;
 import cytoscape.util.intr.IntEnumerator;
@@ -53,10 +53,16 @@ import java.util.*;
 public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 
 	/* Default Constructor */
-	public DegreePreservingNetworkRandomizer(DynamicGraph pOriginal, String[] pNodeIds,
+	public DegreePreservingNetworkRandomizer(CyNetwork network, 
 			boolean pDirected) 
 	{
-		super(pOriginal, pNodeIds, pDirected);
+		super(network,  pDirected);
+	}
+	
+	
+	public RandomNetworkGenerator copy()
+	{
+		return new DegreePreservingNetworkRandomizer(cytoNetwork,  directed); 
 	}
 	
 
