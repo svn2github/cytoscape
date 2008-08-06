@@ -1,4 +1,5 @@
 <?php
+include "logininfo.inc";
 // Include the DBMS credentials
 include_once 'cc_utils.php';
 include 'db.php';
