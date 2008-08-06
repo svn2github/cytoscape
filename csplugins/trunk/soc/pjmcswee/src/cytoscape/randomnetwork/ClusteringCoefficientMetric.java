@@ -42,7 +42,7 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
 /**
- *	Used to determine the clustering coefficient for a CyNetwork
+ *	Used to determine the clustering coefficient for a CyNetwork.
  *  Really determines the average clustering coefficient for
  *  every node in the network.
  *  The clustering coefficient for a node is the number of 

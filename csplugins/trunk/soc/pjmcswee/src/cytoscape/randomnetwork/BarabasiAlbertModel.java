@@ -36,46 +36,41 @@
 
 package cytoscape.randomnetwork;
 
-
-//import cytoscape.*;
-//import cytoscape.data.*;
-
 import cytoscape.graph.dynamic.*;
 import cytoscape.graph.dynamic.util.*;
 
 
-
-
-/*
- * Barabasi-Albert Model:
- *
+/**
+ *  Barabasi-Albert Model: Creates random networks with the scale-free property.  There are many
+ *  nodes with few edges, and only few nodes with many edges.
+ *  The algorithm uses the preferential attachment property.  
+ * 
  * References: Albert-L‡szl— Barab‡si & RŽka Albert (October 1999). 
  *			  "Emergence of scaling in random networks". 
  *			   Science 286: 509Ð512. doi:10.1126/science.286.5439.509.
  *
  *
  */
-
 public class BarabasiAlbertModel extends RandomNetworkModel {
 
-	//The number of initial nodes 
+	/**
+	 * The number of initial nodes.
+	 */
 	private int init_num_nodes;
 	
-	//The number edges to add at each time step
+	/**
+	 * The number edges to add at each time step.
+	 */
 	private int edgesToAdd;
 
 	/**
 	 * Creates a model for constructing random graphs according to the
 	 * Barabasi-Albert model.
 	 * 
-	 * @param pNumNodes
-	 *            <int> : # of nodes in Network
-	 * @param pDirected
-	 *            <boolean> : Network is directed(TRUE) or undirected(FALSE)
-	 * @param pInit
-	 *			   <int> : number of nodes in the seed network
-	 * @param pEdgesToAdd: 
-	 *			   <int> : number of edges to add at each time step
+	 * @param pNumNodes The number of nodes in generated networks
+	 * @param pDirected Specifice if the generated networks are directed(true) or undirected(false)
+	 * @param pInit The number of nodes in the seed network.
+	 * @param pEdgesToAdd The number of edges to add at each time step.
 	 */
 	public BarabasiAlbertModel(int pNumNodes, boolean pAllowSelfEdge,
 			boolean pDirected, int pInit, int pEdgesToAdd) {
@@ -86,21 +81,32 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 
 
 	/**
-	*
-	*/
+	 * Creates a copy of the RandomNetworkModel.  Required to give each thread its own copy of the generator.
+	 * @return A copy of the BarabasiAlbertModel
+	 */
 	public BarabasiAlbertModel copy()
 	{
 		return new BarabasiAlbertModel(numNodes, allowSelfEdge, directed, init_num_nodes, edgesToAdd);
 	}
 
 
-	/*
-	 *  Generate a network according to the model
-	 * 
+	/**
+	 *  Generate a network according to the BarabasiAlbertModel.
+	 *
+	 *  An intial complete network is composed of (init_num_nodes) many nodes.  At each time step afterwards
+	 *  a single node is added to the network, until (num)nodes) many nodes have been added.  When a node is added,
+	 *  it is given (edgeToAdd)-many initial edges, the endpoint of each edge is chosen using preferential attachment.
+	 *  The probability of an existing node <i> u </i> being selected is;  degree(<i>u</i>)/ 2*|E|, where |E| is the 
+	 *  current number of edges in the network, not what it will be when all edges have been added.  In this way 
+	 *  nodes with more edges get more edges and nodes with few edges, remain with low degree.
+	 *
+	 *
+	 *
+	 * @return The generated random network. 
 	 */
 	public DynamicGraph generate() {
 
-		DynamicGraph random_network = DynamicGraphFactory.instantiateDynamicGraph();//new DynamicGraphRepresentation();
+		DynamicGraph random_network = DynamicGraphFactory.instantiateDynamicGraph();
 
 		//Get the current time
 		long time = System.currentTimeMillis();
@@ -112,39 +118,23 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 		int degrees[] = new int[numNodes];
 
 		// For each node
-		for (int i = 0; i < numNodes; i++) {
-			// Create a new node nodeID = i, create = true
-			//CyNode node = Cytoscape.getCyNode("Rand." + i, true);
-
-			// Add this node to the network
-			//random_network.addNode(node);
-
+		for (int i = 0; i < numNodes; i++) 
+		{
 			// Save node in array
-			//nodes[i] = node;
 			nodes[i] = random_network.nodeCreate();
 		}
 
 		//set the number of edges to zero
 		numEdges = 0;
 		
-		//Set up the initial network
+		//Set up the initial  complete seed network
 		for (int i = 0; i < init_num_nodes; i++) 
 		{
 			for (int j = (i + 1); j < init_num_nodes; j++) 
 			{
-				/*
-				// Create and edge between node i and node j
-				CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
-							Semantics.INTERACTION, new String("("
-									+ Math.min(i, j) + "," + Math.max(i, j)
-									+ ")"), true, directed);
-				*/
-				// Add this edge to the network
-			//	random_network.addEdge(edge);
-			
+				//Create the new edge
 				random_network.edgeCreate(nodes[i],nodes[j],directed);	
 				
-					
 				//increment the degrees for each nodes
 				degrees[i]++;
 				degrees[j]++;
@@ -169,7 +159,6 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 				//Try to add this node to every existing node
 				for (int j = 0; j < i; j++) 
 				{
-				
 					//Increment the talley by the jth node's probability
 					prob += (double) ((double) degrees[j])
 							/ ((double) (2.0d * (double) numEdges));
@@ -178,19 +167,7 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 					if (randNum <= prob) 
 					{
 						// Create and edge between node i and node j
-						// that is undirected
-						/*CyEdge edge = Cytoscape.getCyEdge(nodes[i], nodes[j],
-								Semantics.INTERACTION, new String("("
-										+ Math.min(i, j) + ","
-										+ Math.max(i, j) + ")"), true,
-								directed);
-
-						// Add this edge to the network
-						random_network.addEdge(edge);
-						*/
 						random_network.edgeCreate(nodes[i],nodes[j],directed);
-						
-						
 
 						//increment the number of edges
 						numEdges++;
@@ -199,18 +176,14 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 						degrees[i]++;
 						degrees[j]++;
 						
-						//Stop iterating for this probability
+						//Stop iterating for this probability, once we have found a single edge
 						break;
 					}
 				}
 			}
 		}
-
 		
-
-	  return random_network;
-
+		//return the resulting network
+		return random_network;
 	}
-
-
 }

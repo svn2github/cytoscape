@@ -294,6 +294,7 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 			}
 
 		
+			//Create the edge
 			random_network.edgeCreate(nodes[source], nodes[target], directed);
 			
 		}
@@ -303,7 +304,16 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	
 	
 	/**
-	* Create a random network by the G(n,p) model
+	*
+	* Create a random network by the G(n,p) model.
+	* In this model each edge has indpendent probability of existing: p.
+	* Therefore the expected number of edges is: p * n * (n - 1)/2 undirected
+	* <br> or  p * n * (n - 1) directed.
+	*
+	* If self loops are allows the term (n-1) is replaced by n in both of the above formulas.
+	*
+	*
+	* @return The network generated using the G(n,p) model.
 	*/
 	public DynamicGraph gnpModel()
 	{

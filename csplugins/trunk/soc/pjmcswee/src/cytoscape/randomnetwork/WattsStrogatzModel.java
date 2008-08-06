@@ -32,63 +32,71 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
 package cytoscape.randomnetwork;
+
 import cytoscape.graph.dynamic.util.*;
 import cytoscape.graph.dynamic.*;
-
 import java.util.*;
 
-
 /**
-*	This model is used to create random networks with the 
-*	small world property.  
-*
-*
-*  References: Watts, D.J.; Strogatz, S.H. (1998). 
-*			   "Collective dynamics of 'small-world' networks.". 
-*			   Nature 393 (6684): 409Ð10. doi:10.1038/30918.
-*/
-
+ *	This model is used to create random networks with the 
+ *	small world property.  A regular lattics is formed, 
+ *  and then randomly perturbed according to the variable beta.
+ *  Creates a linear interpolation between an erdos-renyi graph and
+ *  a regular lattics.
+ *
+ *
+ *  References: Watts, D.J.; Strogatz, S.H. (1998). 
+ *			   "Collective dynamics of 'small-world' networks.". 
+ *			    Nature 393 (6684): 409Ð10. doi:10.1038/30918.
+ */
 public class WattsStrogatzModel extends RandomNetworkModel {
 
-	//Used to linearly interpolate between lattice and erdos-renyi graph
+	/**
+	 * Used to linearly interpolate between lattice and erdos-renyi graph
+	 */
 	private double beta;
 
-	//The number of edges to add 
+	/**
+	 * The number of edges to add 
+	 */
 	private double degree;
 
 	/**
 	 * Creates a model for constructing random graphs according to the
 	 * watts-strogatz model.
 	 * 
-	 * @param pNumNodes
-	 *            <int> : # of nodes in Network
-	 * @param pDirected
-	 *            <boolean> : Network is directed(TRUE) or undirected(FALSE)
-	 * @param pBeta:
-	 *            <double> : interpolates between erdos-renyi graph and 
-	 *						 lattice
+	 * @param pNumNodes The number of nodes in generated networks.
+	 * @param pDirected Specifices if generated networks are directed(true) or undirected(false)
+	 * @param pBeta  Interpolates between erdos-renyi graph and a regular lattice.
 	 * 
 	 */
 	public WattsStrogatzModel(int pNumNodes, boolean pAllowSelfEdge,
 			boolean pDirected, double pBeta, double pDegree) {
 		super(pNumNodes, UNSPECIFIED, pAllowSelfEdge, pDirected);
-
 		degree = pDegree;
 		beta = pBeta;
 	}
 	
 	/**
-	*
-	*/
+	 * Creats a copy of the RandomNetworkGenerator.  Used to give each thread their own
+	 * copy of the generator.
+	 *
+	 * @return Returns a copy of this generator
+	 */
 	public WattsStrogatzModel copy()
 	{
 		return new WattsStrogatzModel( numNodes, allowSelfEdge, directed, beta, degree);
 	}
 
-	/*
-	 * Generates the random graph
+	/**
+	 *  Generates random networks according to the Watts-Strogatz Model. 
+	 * <br>
+	 *  The algorithm works in two phases:<br>
+	 *  (1) Create a regular lattice, where each node is connected to its (degree)-many nearest neighbors.
+	 *  (2) Perturb each edge created in step (1) with probability Beta.  Notices that we do not add any edges in this step.
+	 * 
+	 * @return The generated random network
 	 */
 	public DynamicGraph generate() 
 	{
@@ -123,16 +131,17 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 				start = i + 1;
 			}
 			
+			//For every other node
 			for (int j = 0; j < numNodes; j++) 
 			{
 				
 				//get the lattice difference
 				int value = Math.abs(i - j);
 				
+				//If we are within range with wrapping
 				if((i < degree) && (j > numNodes - degree))
 				{
 					value = 0;
-				
 				}
 				
 				//no relfexive edges here
@@ -150,12 +159,9 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 			}
 		}
 
-		System.out.println(numEdges);
-
 		//Iterate through all of our edges
 		while (edges.size() != 0) 
 		{
-			
 			//Get the edge index
 			int e = ((Integer) edges.remove()).intValue();
 
@@ -166,19 +172,23 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 			//Throw a random dart
 			double percent = random.nextDouble();
 
-			//If the dart lands in beta
+			//If the dart lands in beta, then shuffle this edge
 			if (percent <= beta) 
 			{
 				//Choose a new node 
 				int k = Math.abs(random.nextInt() % numNodes);
+
+				//Do not choose the same node
 				while (source == k) 
 				{
 					k = Math.abs(random.nextInt() % numNodes);
 				}
+				
+				//save the target k
 				target = k;
-
 			}
-
+			//DANGER WILL ROBINSON:  This may stomp out existing edges... we should check to see if it already exists
+			//create this edge
 			random_network.edgeCreate(nodes[source],nodes[target],directed);
 		}
 
