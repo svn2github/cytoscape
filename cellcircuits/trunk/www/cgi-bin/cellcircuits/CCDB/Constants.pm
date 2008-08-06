@@ -27,6 +27,7 @@ our @EXPORT_OK = qw($cgi_version
 		    $DEFAULT_ENRICHMENT_LIMIT
 		    $species_abbrev
 		    $pubInfo
+			$pubName
 		    $DB_INSTANCE
 			$USER
 			$PASSWORD
@@ -34,12 +35,7 @@ our @EXPORT_OK = qw($cgi_version
 our $VERSION = 1.0;
 
 our $DEBUG = 0;
-
-our $DB_INSTANCE = "cellcircuits_dev";
-#our $DB_INSTANCE = "cc";
-
-#our $USER = "mdaly";
-#our $PASSWORD = "mdalysql";
+our $DB_INSTANCE = "cellcircuits_dev"; # not needed anymore
 
 ## limit the number of enrichment retrieved 
 ## (for model_id based queries only)
@@ -56,7 +52,8 @@ our $chianti_url = 'http://chianti.ucsd.edu';
 
 
 
-our $SYNONYM_FILE = "/opt/www/cgi-bin/search/${cgi_version}/CCDB/synonyms.$DB_INSTANCE.latest.tab";
+#our $SYNONYM_FILE = "/opt/www/cgi-bin/search/${cgi_version}/CCDB/synonyms.$DB_INSTANCE.latest.tab";
+our $SYNONYM_FILE = "./CCDB/synonyms.latest.tab";
 
 my $entrezURLFormat = "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=%s&query_hl=3";
 
