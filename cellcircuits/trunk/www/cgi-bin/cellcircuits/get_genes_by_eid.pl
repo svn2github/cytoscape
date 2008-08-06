@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 use strict;
 use warnings;
 
@@ -10,8 +10,9 @@ use warnings;
 # SetEnvIf Request_URI "search" PERL5LIB /var/www/cgi-bin/search/v1.0
 # NOT USING SetEnvIf (encountered some apache config problems)
 #
-use lib '/var/www/cgi-bin/search/v1.0';
-
+#use lib '/var/www/cgi-bin/search/v1.0';
+#use lib '/var/www/cgi-bin/cellcircuits';
+use lib '.';
 
 use CCDB::Query qw(&get_species_string);
 use CCDB::Enrichment;
@@ -46,12 +47,10 @@ my $html = "";
 if(param("eid"))
 {
     my $eid = param("eid");
-    my $thm_img = param("thm");
+    my $lrg_img_file_id = param("lrg_image_file_id");
+    my $thm_img_file_id = param("thm_image_file_id");
     my @hilite_array = param("h");
     my $eo = CCDB::Query::get_enrichment_object_by_eid($eid);
-
-    my $lrg_img = $thm_img;
-    $lrg_img =~s/thm_img/lrg_img/; 
 
     my $n_genes_in_model_with_term = $eo->n_genes_in_model_with_term(); 
     my $n_genes_in_model           = $eo->n_genes_in_model();           
@@ -140,6 +139,10 @@ if(param("eid"))
     my $go_url = gen_go_url($tacc);
     $pval = sprintf("%.2e", $pval);
     
+	#my $lrg_image_url = "$search_url/getNetworkImage.php?image_type=network_image&image_file_id=$lrg_img_file_id&return_type=html";
+	#my $thm_image_url = "$search_url/getNetworkImage.php?image_type=network_thm_image&image_file_id=$thm_img_file_id";
+
+	
     $html = gen_header("Genes in Model (Annotated with $tname)");
 
     $html .= <<HTML;    
@@ -188,7 +191,9 @@ if(param("eid"))
   </td>
   <td valign="top"><br>
   <div style="background-color:white;">
-  <a href="$lrg_img" bgcolor='#FFFFFF'><img src="$thm_img" border=0></a></div></td>
+  <a href="$search_url/getNetworkImage.php?image_type=network_image&image_file_id=$lrg_img_file_id&return_type=html" bgcolor='#FFFFFF'><img src="$search_url/getNetworkImage.php?image_type=network_thm_image&image_file_id=$thm_img_file_id" border=0></a></div></td>
+      
+  
   </td>
   </tr>
 
