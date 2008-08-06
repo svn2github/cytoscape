@@ -140,6 +140,7 @@ public class CytoscapeInit {
 		long begintime = System.currentTimeMillis();
 
 		try {
+			Cytoscape.defineHardcodedVisualProperties();
 			initParams = params;
 
 			// setup properties

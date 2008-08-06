@@ -69,6 +69,14 @@ import cytoscape.util.FileUtil;
 import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 
+import org.cytoscape.view.VisualPropertyCatalog;
+import cytoscape.LegacyVisualProperty;
+
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.LabelPosition;
+import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.vizmap.NodeRenderers;
+import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.VMMFactory;
@@ -80,6 +88,9 @@ import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphFactory;
 
 import org.cytoscape.view.GraphView;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
@@ -1941,5 +1952,45 @@ public abstract class Cytoscape {
 
 	public static VisualMappingManager getVisualMappingManager() {
 		return VMMFactory.getVisualMappingManager();
+	}
+	
+	/** For the duration of pluggable VisualProperties refactor: add legacy VisualProperties */
+	public static void defineHardcodedVisualProperties(){
+		VisualPropertyCatalog.addVisualProperty(new LegacyVisualProperty("NODE_FILL_COLOR", Color.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_BORDER_COLOR", Color.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_OPACITY", Number.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_BORDER_OPACITY", Number.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL_OPACITY", Number.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_RENDERER", NodeRenderers.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_SHAPE", NodeShape.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_SIZE", Number.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_WIDTH", Number.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_HEIGHT", Number.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL", String.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_FONT_FACE", Font.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_FONT_SIZE", Number.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL_COLOR", Color.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_TOOLTIP", String.class, true));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL_POSITION", LabelPosition.class, true));
+
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_COLOR", Color.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL", String.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_FONT_FACE", Font.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_FONT_SIZE", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_COLOR", Color.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TOOLTIP", String.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LINE_WIDTH", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LINE_STYLE", LineStyle.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_SHAPE", ArrowShape.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_SHAPE", ArrowShape.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_COLOR", Color.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_COLOR", Color.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_OPACITY", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_OPACITY", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_OPACITY", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_OPACITY", Number.class, false));
+		
+		//VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_POSITION", Number.class, false));
+
 	}
 }
