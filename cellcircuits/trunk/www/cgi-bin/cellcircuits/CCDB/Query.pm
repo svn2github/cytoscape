@@ -272,6 +272,11 @@ sub model_id_query
       
       $sth->bind_param(1,$mid); # TYPE=SQL_INTEGER
       $sth->bind_param(2,$enrichment_limit); # TYPE = SQL_INTEGER
+	  
+	  print $sth->{Statement},"\n";
+	  print "<br><br>mid = $mid<br>";
+	  print "<br><br>enrichment_limit = $enrichment_limit<br>";
+
       $sth->execute();
       
       my $matched = 0;
