@@ -114,7 +114,14 @@ public class NetworkMergeDialog extends JDialog {
         matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
         nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());        
         edgeAttributeMapping = new AttributeMappingImpl(Cytoscape.getEdgeAttributes());
+
+        collapsiblePanel = new CollapsiblePanel("Advance Options");
+        
+        collapsiblePanel.addCollapeListener(new ResizeCollapeListener(this));
+
         initComponents();
+
+        //this.setSize(collapedDim);
     }
 
     /** This method is called from within the constructor to
@@ -142,6 +149,8 @@ public class NetworkMergeDialog extends JDialog {
                 javax.swing.JScrollPane selectedNetworkScrollPane = new javax.swing.JScrollPane();
                 selectedNetworkData = new NetworkListModel();
                 selectedNetworkList = new javax.swing.JList(selectedNetworkData);
+                collapsiblePanelAgent = collapsiblePanel;
+                advancedPanel = new javax.swing.JPanel();
                 javax.swing.JSeparator jSeparator2 = new javax.swing.JSeparator();
                 attributePanel = new javax.swing.JPanel();
                 matchNodeTable = new MatchNodeTable(matchingAttribute);
@@ -167,6 +176,7 @@ public class NetworkMergeDialog extends JDialog {
                 setName("MergeDialog"); // NOI18N
                 getContentPane().setLayout(new java.awt.GridBagLayout());
 
+                operationPanel.setMinimumSize(new java.awt.Dimension(211, 20));
                 operationPanel.setLayout(new javax.swing.BoxLayout(operationPanel, javax.swing.BoxLayout.LINE_AXIS));
 
                 operationLabel.setText("Operation:   ");
@@ -202,14 +212,13 @@ public class NetworkMergeDialog extends JDialog {
                 gridBagConstraints.gridx = 0;
                 gridBagConstraints.gridy = 2;
                 gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
                 gridBagConstraints.weightx = 1.0;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
                 getContentPane().add(jSeparator1, gridBagConstraints);
 
                 selectNetworkPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select network to merge"));
-                selectNetworkPanel.setMinimumSize(new java.awt.Dimension(400, 100));
-                selectNetworkPanel.setPreferredSize(new java.awt.Dimension(600, 100));
+                selectNetworkPanel.setMinimumSize(new java.awt.Dimension(490, 100));
+                selectNetworkPanel.setPreferredSize(new java.awt.Dimension(490, 100));
                 selectNetworkPanel.setLayout(new java.awt.GridBagLayout());
 
                 unselectedNetworkScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
@@ -380,14 +389,17 @@ public class NetworkMergeDialog extends JDialog {
                 gridBagConstraints.weighty = 0.5;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
                 getContentPane().add(selectNetworkPanel, gridBagConstraints);
+
+                collapsiblePanelAgent.setLayout(new java.awt.BorderLayout());
+
+                advancedPanel.setLayout(new java.awt.GridBagLayout());
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 4;
+                gridBagConstraints.gridy = 0;
                 gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
                 gridBagConstraints.weightx = 1.0;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                getContentPane().add(jSeparator2, gridBagConstraints);
+                advancedPanel.add(jSeparator2, gridBagConstraints);
 
                 attributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please select an attribute for each network to match/identify nodes"));
                 attributePanel.setMinimumSize(new java.awt.Dimension(400, 70));
@@ -408,11 +420,11 @@ public class NetworkMergeDialog extends JDialog {
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 6;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                gridBagConstraints.gridy = 1;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
                 gridBagConstraints.weightx = 1.0;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                getContentPane().add(attributePanel, gridBagConstraints);
+                advancedPanel.add(attributePanel, gridBagConstraints);
 
                 idMappingPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
 
@@ -459,17 +471,17 @@ public class NetworkMergeDialog extends JDialog {
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 8;
+                gridBagConstraints.gridy = 2;
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                getContentPane().add(idMappingPanel, gridBagConstraints);
+                advancedPanel.add(idMappingPanel, gridBagConstraints);
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 9;
+                gridBagConstraints.gridy = 3;
                 gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
                 gridBagConstraints.weightx = 1.0;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                getContentPane().add(jSeparator3, gridBagConstraints);
+                advancedPanel.add(jSeparator3, gridBagConstraints);
 
                 mergeAttributePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Please specify how to merge attributes"));
                 mergeAttributePanel.setMinimumSize(new java.awt.Dimension(400, 200));
@@ -501,15 +513,29 @@ public class NetworkMergeDialog extends JDialog {
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 10;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                gridBagConstraints.gridy = 4;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
                 gridBagConstraints.weightx = 1.0;
-                gridBagConstraints.weighty = 0.2;
+                gridBagConstraints.weighty = 1.0;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                getContentPane().add(mergeAttributePanel, gridBagConstraints);
+                advancedPanel.add(mergeAttributePanel, gridBagConstraints);
+
+                /*
+
+                collapsiblePanelAgent.add(advancedPanel, java.awt.BorderLayout.CENTER);
+                */
+                collapsiblePanel.getContentPane().add(advancedPanel, java.awt.BorderLayout.CENTER);
+
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 11;
+                gridBagConstraints.gridy = 4;
+                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+                gridBagConstraints.weightx = 1.0;
+                gridBagConstraints.weighty = 1.0;
+                getContentPane().add(collapsiblePanelAgent, gridBagConstraints);
+                gridBagConstraints = new java.awt.GridBagConstraints();
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 5;
                 gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
                 gridBagConstraints.weightx = 1.0;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -541,7 +567,7 @@ public class NetworkMergeDialog extends JDialog {
 
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 12;
+                gridBagConstraints.gridy = 6;
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
                 gridBagConstraints.weightx = 1.0;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -631,6 +657,10 @@ private void updateMergeAttributeTable() {
     mergeEdgeAttributeTable.fireTableStructureChanged();
 }
 
+public boolean isSimpleMergeMode() {
+        return collapsiblePanel.isCollapsed();
+}
+
 /*
  * Get network title for the resulting network
  * 
@@ -707,10 +737,14 @@ public List<CyNetwork> getSelectedNetworkList() {
     private final ImageIcon DIFFERENCE_ICON = new ImageIcon(getClass().getResource("/images/difference.png"));
     private final ImageIcon[] OPERATION_ICONS =  { UNION_ICON, INTERSECTION_ICON, DIFFERENCE_ICON };
 
+    CollapsiblePanel collapsiblePanel;
+
         // Variables declaration - do not modify//GEN-BEGIN:variables
+        private javax.swing.JPanel advancedPanel;
         private javax.swing.JPanel attributePanel;
         private javax.swing.JScrollPane attributeScrollPane;
         private javax.swing.JButton cancelButton;
+        private javax.swing.JPanel collapsiblePanelAgent;
         private javax.swing.JButton importIDMappingButton;
         private javax.swing.JButton leftButton;
         private javax.swing.JButton okButton;
@@ -724,7 +758,41 @@ public List<CyNetwork> getSelectedNetworkList() {
         private javax.swing.JButton viewIDMappingButton;
         // End of variables declaration//GEN-END:variables
 
-    private class NetworkListModel extends AbstractListModel {
+
+class ResizeCollapeListener implements CollapsiblePanel.CollapeListener {
+        private final JDialog dialog;
+        //private final Dimension collapedDim, expandedDim;
+
+        public ResizeCollapeListener(JDialog dialog) {
+                this.dialog = dialog;
+                //this.collapedDim = collapedDim;
+                //this.expandedDim = expandedDim;
+        }
+
+        public void collaped() {
+                Dimension dim;
+                if (getOperation()!=Operation.DIFFERENCE) {
+                        dim = new Dimension(500,300);
+                } else {
+                        dim = new Dimension(500,400);
+                }
+                dialog.setSize(dim);
+        }
+
+        public void expanded() {
+                Dimension dim;
+                if (getOperation()!=Operation.DIFFERENCE) {
+                        dim = new Dimension(700,700);
+                } else {
+                        dim = new Dimension(700,800);
+                }
+                dialog.setSize(dim);
+        }
+}
+
+}
+
+class NetworkListModel extends AbstractListModel {
         // Using a SortedMap from String to network
         TreeMap<String,CyNetwork> model;
 
@@ -759,5 +827,5 @@ public List<CyNetwork> getSelectedNetworkList() {
         public List<CyNetwork> getNetworkList() {
             return new Vector<CyNetwork>(model.values());
         }
-    }
 }
+

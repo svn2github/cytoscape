@@ -60,6 +60,8 @@ import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.util.GraphSetUtils;
+import cytoscape.util.CyNetworkNaming;
 
 import giny.model.Node;
 
@@ -102,36 +104,53 @@ public class NetworkMergePlugin extends CytoscapePlugin {
             dialog.setLocationRelativeTo(Cytoscape.getDesktop());
             dialog.setVisible(true);
             if (!dialog.isCancelled()) {
-                AttributeBasedIDMappingModel idMapping = dialog.getIDMapping();
+                if (dialog.isSimpleMergeMode()) {
+                        if (dialog.getOperation() == Operation.UNION) {
+                                GraphSetUtils.createUnionGraph(dialog.getSelectedNetworkList(), true,
+                                                CyNetworkNaming.getSuggestedNetworkTitle("Union"));
+                        } else if (dialog.getOperation() == Operation.INTERSECTION) {
+                                GraphSetUtils.createIntersectionGraph(dialog.getSelectedNetworkList(), true,
+                                                            CyNetworkNaming.getSuggestedNetworkTitle("Intersection"));
+                        } else if (dialog.getOperation() == Operation.DIFFERENCE) {
+                                GraphSetUtils.createDifferenceGraph(dialog.getSelectedNetworkList(), true,
+                                                CyNetworkNaming.getSuggestedNetworkTitle("Difference"));
+                        }
 
-                AttributeConflictCollector conflictCollector = new AttributeConflictCollectorImpl();
+                } else {
 
-                // network merge task
-                Task task = new NetworkMergeSessionTask(
-                                    dialog.getMatchingAttribute(),
-                                    dialog.getNodeAttributeMapping(),
-                                    dialog.getEdgeAttributeMapping(),
-                                    dialog.getSelectedNetworkList(),
-                                    dialog.getOperation(),
-                                    dialog.getMergedNetworkName(),
-                                    conflictCollector,
-                                    idMapping);
-                
-                // Configure JTask Dialog Pop-Up Box
-                final JTaskConfig jTaskConfig = new JTaskConfig();
-                jTaskConfig.setOwner(Cytoscape.getDesktop());
-                jTaskConfig.displayCloseButton(true);
-                jTaskConfig.displayCancelButton(false);
-                jTaskConfig.displayStatus(true);
-                jTaskConfig.setAutoDispose(false);
 
-                // Execute Task in New Thread; pop open JTask Dialog Box.
-                TaskManager.executeTask(task, jTaskConfig);
+                        AttributeBasedIDMappingModel idMapping = dialog.getIDMapping();
 
-                // conflict handling task
-                if (!conflictCollector.isEmpty()) {
-                        task = new HandleConflictsTask(conflictCollector, idMapping);
+                        AttributeConflictCollector conflictCollector = new AttributeConflictCollectorImpl();
+
+                        // network merge task
+                        Task task = new NetworkMergeSessionTask(
+                                            dialog.getMatchingAttribute(),
+                                            dialog.getNodeAttributeMapping(),
+                                            dialog.getEdgeAttributeMapping(),
+                                            dialog.getSelectedNetworkList(),
+                                            dialog.getOperation(),
+                                            dialog.getMergedNetworkName(),
+                                            conflictCollector,
+                                            idMapping);
+
+                        // Configure JTask Dialog Pop-Up Box
+                        final JTaskConfig jTaskConfig = new JTaskConfig();
+                        jTaskConfig.setOwner(Cytoscape.getDesktop());
+                        jTaskConfig.displayCloseButton(true);
+                        jTaskConfig.displayCancelButton(false);
+                        jTaskConfig.displayStatus(true);
+                        jTaskConfig.setAutoDispose(false);
+
+                        // Execute Task in New Thread; pop open JTask Dialog Box.
                         TaskManager.executeTask(task, jTaskConfig);
+
+                        // conflict handling task
+                        if (!conflictCollector.isEmpty()) {
+                                task = new HandleConflictsTask(conflictCollector, idMapping);
+                                TaskManager.executeTask(task, jTaskConfig);
+                        }
+
                 }
             }
         }

@@ -62,7 +62,7 @@ public class IDMappingTableReader implements TextTableReader {
         protected final URL sourceURL;
         protected IDMappingList idMappings;
 
-        private static final String typeSeparator = "[\t ]";
+        private static final String typeSeparator = "[\t]";
         private static final String idSeparator = "[;,]";
 
         public IDMappingTableReader(final URL sourceURL) {

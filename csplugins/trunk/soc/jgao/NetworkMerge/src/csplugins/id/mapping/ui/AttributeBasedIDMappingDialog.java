@@ -165,8 +165,9 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
         }// </editor-fold>//GEN-END:initComponents
 
     private void optionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optionButtonActionPerformed
-            //optionDialog.setLocationRelativeTo(this);
-            //optionDialog.setVisible(true);
+            IDMappingOptionDialog dialog = new IDMappingOptionDialog(frame,true);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
     }//GEN-LAST:event_optionButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

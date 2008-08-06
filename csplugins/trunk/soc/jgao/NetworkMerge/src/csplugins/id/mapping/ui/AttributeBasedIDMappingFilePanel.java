@@ -173,23 +173,6 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                 javax.swing.JPanel toPanel = new javax.swing.JPanel();
                 toLabel = new javax.swing.JLabel();
                 toComboBox = new javax.swing.JComboBox();
-                delimiterPanel = new javax.swing.JPanel();
-                delemiterTypePanel = new javax.swing.JPanel();
-                tabTypeCheckBox = new javax.swing.JCheckBox();
-                commaTypeCheckBox = new javax.swing.JCheckBox();
-                semiTypeCheckBox = new javax.swing.JCheckBox();
-                spaceTypeCheckBox = new javax.swing.JCheckBox();
-                otherTypeCheckBox = new javax.swing.JCheckBox();
-                otherTypeTextField = new javax.swing.JTextField();
-                delemiterIDPanel = new javax.swing.JPanel();
-                tabIDCheckBox = new javax.swing.JCheckBox();
-                commaIDCheckBox = new javax.swing.JCheckBox();
-                semiIDCheckBox = new javax.swing.JCheckBox();
-                spaceIDCheckBox = new javax.swing.JCheckBox();
-                otherIDCheckBox = new javax.swing.JCheckBox();
-                otherIDTextField = new javax.swing.JTextField();
-                javax.swing.JPanel advancedOptionCheckboxPanel = new javax.swing.JPanel();
-                advancedOptionCheckBox = new javax.swing.JCheckBox();
 
                 setMinimumSize(new java.awt.Dimension(400, 400));
                 setPreferredSize(new java.awt.Dimension(600, 600));
@@ -313,123 +296,6 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                 gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
                 add(toPanel, gridBagConstraints);
-
-                delimiterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Advanced"));
-                delimiterPanel.setLayout(new java.awt.GridBagLayout());
-
-                delemiterTypePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select delimiter between IDs of different types"));
-                delemiterTypePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-                delemiterTypePanel.setVisible(false);
-
-                buttonGroup2.add(tabTypeCheckBox);
-                tabTypeCheckBox.setSelected(true);
-                tabTypeCheckBox.setText("Tab");
-                tabTypeCheckBox.setEnabled(false);
-                delemiterTypePanel.add(tabTypeCheckBox);
-
-                buttonGroup3.add(commaTypeCheckBox);
-                commaTypeCheckBox.setText("Comma");
-                commaTypeCheckBox.setEnabled(false);
-                delemiterTypePanel.add(commaTypeCheckBox);
-
-                buttonGroup4.add(semiTypeCheckBox);
-                semiTypeCheckBox.setText("Semicolon");
-                semiTypeCheckBox.setEnabled(false);
-                delemiterTypePanel.add(semiTypeCheckBox);
-
-                buttonGroup5.add(spaceTypeCheckBox);
-                spaceTypeCheckBox.setSelected(true);
-                spaceTypeCheckBox.setText("Space");
-                spaceTypeCheckBox.setEnabled(false);
-                delemiterTypePanel.add(spaceTypeCheckBox);
-
-                otherTypeCheckBox.setText("Other");
-                otherTypeCheckBox.setEnabled(false);
-                delemiterTypePanel.add(otherTypeCheckBox);
-
-                otherTypeTextField.setEnabled(false);
-                otherTypeTextField.setMinimumSize(new java.awt.Dimension(60, 20));
-                otherTypeTextField.setPreferredSize(new java.awt.Dimension(60, 20));
-                delemiterTypePanel.add(otherTypeTextField);
-
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 1;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-                gridBagConstraints.weightx = 1.0;
-                gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                delimiterPanel.add(delemiterTypePanel, gridBagConstraints);
-
-                delemiterIDPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Select delimiter between IDs of the same type"));
-                delemiterIDPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-                delemiterIDPanel.setVisible(false);
-
-                buttonGroup2.add(tabIDCheckBox);
-                tabIDCheckBox.setText("Tab");
-                tabIDCheckBox.setEnabled(false);
-                delemiterIDPanel.add(tabIDCheckBox);
-
-                buttonGroup3.add(commaIDCheckBox);
-                commaIDCheckBox.setSelected(true);
-                commaIDCheckBox.setText("Comma");
-                commaIDCheckBox.setEnabled(false);
-                delemiterIDPanel.add(commaIDCheckBox);
-
-                buttonGroup4.add(semiIDCheckBox);
-                semiIDCheckBox.setSelected(true);
-                semiIDCheckBox.setText("Semicolon");
-                semiIDCheckBox.setEnabled(false);
-                delemiterIDPanel.add(semiIDCheckBox);
-
-                buttonGroup5.add(spaceIDCheckBox);
-                spaceIDCheckBox.setText("Space");
-                spaceIDCheckBox.setEnabled(false);
-                delemiterIDPanel.add(spaceIDCheckBox);
-
-                otherIDCheckBox.setText("Other");
-                otherIDCheckBox.setEnabled(false);
-                delemiterIDPanel.add(otherIDCheckBox);
-
-                otherIDTextField.setEnabled(false);
-                otherIDTextField.setMinimumSize(new java.awt.Dimension(60, 20));
-                otherIDTextField.setPreferredSize(new java.awt.Dimension(60, 20));
-                delemiterIDPanel.add(otherIDTextField);
-
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 2;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-                gridBagConstraints.weightx = 1.0;
-                gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                delimiterPanel.add(delemiterIDPanel, gridBagConstraints);
-
-                advancedOptionCheckboxPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-
-                advancedOptionCheckBox.setText("Show advanced options");
-                advancedOptionCheckBox.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                advancedOptionCheckBoxActionPerformed(evt);
-                        }
-                });
-                advancedOptionCheckboxPanel.add(advancedOptionCheckBox);
-
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 0;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-                gridBagConstraints.weightx = 1.0;
-                delimiterPanel.add(advancedOptionCheckboxPanel, gridBagConstraints);
-
-                gridBagConstraints = new java.awt.GridBagConstraints();
-                gridBagConstraints.gridx = 0;
-                gridBagConstraints.gridy = 1;
-                gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-                gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-                gridBagConstraints.weightx = 1.0;
-                gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-                add(delimiterPanel, gridBagConstraints);
         }// </editor-fold>//GEN-END:initComponents
 
     private void localRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localRadioButtonActionPerformed
@@ -551,12 +417,6 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
             parent.setOKButtonEnable();
     }//GEN-LAST:event_goButtonActionPerformed
 
-    private void advancedOptionCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advancedOptionCheckBoxActionPerformed
-            boolean isSelected = advancedOptionCheckBox.isSelected();
-            delemiterTypePanel.setVisible(isSelected);
-            delemiterIDPanel.setVisible(isSelected);
-    }//GEN-LAST:event_advancedOptionCheckBoxActionPerformed
-
 
     private String getTgtType() {
             if (toComboBox.getItemCount()==0) {
@@ -605,33 +465,17 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
 
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JCheckBox advancedOptionCheckBox;
         private javax.swing.ButtonGroup buttonGroup1;
         private javax.swing.ButtonGroup buttonGroup2;
         private javax.swing.ButtonGroup buttonGroup3;
         private javax.swing.ButtonGroup buttonGroup4;
         private javax.swing.ButtonGroup buttonGroup5;
-        private javax.swing.JCheckBox commaIDCheckBox;
-        private javax.swing.JCheckBox commaTypeCheckBox;
-        private javax.swing.JPanel delemiterIDPanel;
-        private javax.swing.JPanel delemiterTypePanel;
-        private javax.swing.JPanel delimiterPanel;
         private javax.swing.JButton goButton;
         private javax.swing.JPanel idTypePanel;
         private IDTypeSelectionTable idTypeSelectionTable;
         private javax.swing.JScrollPane idTypeScrollPane;
         private javax.swing.JRadioButton localRadioButton;
-        private javax.swing.JCheckBox otherIDCheckBox;
-        private javax.swing.JTextField otherIDTextField;
-        private javax.swing.JCheckBox otherTypeCheckBox;
-        private javax.swing.JTextField otherTypeTextField;
         private javax.swing.JRadioButton remoteRadioButton;
-        private javax.swing.JCheckBox semiIDCheckBox;
-        private javax.swing.JCheckBox semiTypeCheckBox;
-        private javax.swing.JCheckBox spaceIDCheckBox;
-        private javax.swing.JCheckBox spaceTypeCheckBox;
-        private javax.swing.JCheckBox tabIDCheckBox;
-        private javax.swing.JCheckBox tabTypeCheckBox;
         private javax.swing.JButton textFileButton;
         private javax.swing.JTextField textFileTextField;
         private javax.swing.JComboBox toComboBox;
