@@ -3,15 +3,15 @@ use strict;
 use warnings;
 
 use lib '.';
-
+use CCDB::DB;
 use CCDB::QueryInput;
 use CCDB::Driver;
 use CCDB::Query;
 use CCDB::Model;
 use CCDB::HtmlRoutines;
+
 use CGI::Carp qw(fatalsToBrowser); 
 use CGI qw(:standard);
-
 
 my $publications = {};
 my $species      = {};
@@ -20,20 +20,6 @@ my $page         = 1;
 my $pval_thresh  = 1e-4; 
 my $error_msg    = {};
 
-
-# if 1, debug 
-if (0) {
-	param('search_query', 'gcn* gal4 GO:0003677 "DNA binding"');
-	#param('publication', '35');
-	#param('species', 'all');
-	#param('search_condition', 'default');
-	
-	#print header();
-	#print start_html('Passed parameter from browser');
-	#print h1('Passed parameter from browser\n');
-	#print end_html,"\n";
-	#exit;
-}
 print "Content-type: text/html\n\n";
 
 if(param("search_query"))
@@ -43,23 +29,18 @@ if(param("search_query"))
 	my $sort_method;
 	my $pval_thresh;
 
-    my $query = param("search_query");
-# if 1, debug 
-if (0) {
-
-    $query =  "gcn* gal4 GO:0003677 \"DNA binding\""; # param("search_query");
-#print $query,"<br>\n";
-	my @qs = ('search_query=gcn%2A%20gal4%20GO%3A0003677%20%22DNA%20binding%22','search_query_button=Search','species=Saccharomyces%20cerevisiae
-species=Homo%20sapiens','species=Caenorhabditis%20elegans','species=Drosophila%20melanogaster','sort_method=optionA_by_number_of_query_terms_matching_model','pval_thresh=0.0001','publication=35','publication=36','results_page=1');
-	$sort_method = "optionA_by_number_of_query_terms_matching_model";
-	$pval_thresh = "0.0001";
-	@pubs = ("1"); #,"36");
-	@orgs = ("Saccharomyces cerevisiae","Homo sapiens","Caenorhabditis elegans","Drosophila melanogaster");
-}
-	if (param('search_condition') && param('search_condition') eq 'default') {
+	if ((param('search_condition') && param('search_condition') eq 'default')
+	  || (param("search_query") =~ m/^MODELS_LIKE/i)) {
 		# called from index.html page
-		@pubs         =  (35); #pub_id = -1, will search all pubs, ('Begley2002_MCR'); 
-		@orgs         = ('Saccharomyces cerevisiae');
+		# i.e. search all the publications and all the species
+		
+		my $dbh = CCDB::DB::getDB();
+		my $pubs_ref = getAllPublications($dbh);
+		@pubs = @{$pubs_ref};
+
+		my $orgs_ref = getAllSpecies($dbh);
+		@orgs = @{$orgs_ref};
+								
 		$sort_method  = 'optionA_by_number_of_query_terms_matching_model'; # transfered from old index.html
 		$pval_thresh  = '0.0001'; # transfered from old index.html
 	}
@@ -70,8 +51,10 @@ species=Homo%20sapiens','species=Caenorhabditis%20elegans','species=Drosophila%2
 		$sort_method  = param("sort_method");
 		$pval_thresh  = param("pval_thresh");
 	}
+
+    my $query = param("search_query");
 	
-    #my @qs = split(/;/, query_string()); #query_string is a CGI.pm method
+    my @qs = split(/;/, query_string()); #query_string is a CGI.pm method
     #printf "query_string: %s", join "<br>", @qs,"<br>\n";
 	
 	
@@ -112,7 +95,7 @@ species=Homo%20sapiens','species=Caenorhabditis%20elegans','species=Drosophila%2
     {
 		$page = 1;
     }
-
+	
     if($pval_thresh > 1)     { $pval_thresh = 1; }
     elsif($pval_thresh <= 0) { $pval_thresh = 1; }
 
@@ -148,13 +131,58 @@ sub appendHumanGeneIdentifiers
 
     if(exists($speciesSelected->{"Homo sapiens"}))
     {
-	foreach my $gene (keys %{$queryInput->gene()})
-	{
-	    my $human = $gene . "_HUMAN";
-	    if(!exists($queryInput->gene()->{$human}))
-	    {
-		$queryInput->gene->{$human}++;
-	    }
-	}
+		foreach my $gene (keys %{$queryInput->gene()})
+		{
+			my $human = $gene . "_HUMAN";
+			if(!exists($queryInput->gene()->{$human}))
+			{
+				$queryInput->gene->{$human}++;
+			}
+		}
     }
+}
+
+
+sub getAllSpecies {
+    my ($dbh) = @_;
+
+	my $sth = $dbh->prepare("SELECT distinct species from network_file_info ");
+	$sth->execute();
+
+	my %distinct_species = ();
+	
+	my @all_orgs = ();
+		
+	while (my $ref = $sth->fetchrow_hashref()) {	
+		my $species = $ref->{'species'}; 
+		#$species = "saccharomyces cerevisiae,homo sapiens,homo sapiens";
+		#print "species = $species<br>";
+		my @species_items = split(/,/, $species);
+		for my $item (@species_items) {
+			$distinct_species{ucfirst($item)} = "A";
+		}
+	}
+
+	while (my ($key, $value) = each(%distinct_species)) {
+		push (@all_orgs, $key);
+	}
+
+	return \@all_orgs;
+}
+
+
+sub getAllPublications {
+    my ($dbh) = @_;
+
+	my $get_pubInfo_sth = $dbh->prepare("select publication_auto_id from publications");
+	$get_pubInfo_sth->execute();
+	
+	my @all_pub_ids = ();
+	while (my $ref = $get_pubInfo_sth->fetchrow_hashref()) {	
+		my $pub_id = $ref->{'publication_auto_id'}; 
+		#print "getAllPublications: pub_id = $pub_id<br>";
+		push (@all_pub_ids, $pub_id);
+	}
+
+	return \@all_pub_ids;
 }
