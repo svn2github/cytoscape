@@ -56,6 +56,8 @@ import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
 
 import cytoscape.Cytoscape;
+
+import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeShape;
@@ -575,25 +577,16 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.setColor(ICON_COLOR);
 		g.setStroke(STROKE2);
 
-		switch (type) {
-			case NODE_SHAPE:
+		Class dataTypeClass = type.getDataType();
+		if (dataTypeClass.isAssignableFrom(NodeShape.class)){
+			final VisualPropertyIcon icon = (VisualPropertyIcon) type.getIconSet().get(key);
+			icon.setIconHeight(size);
+			icon.setIconWidth(size);
+			g.fill(icon.getShape());
 
-				final VisualPropertyIcon icon = (VisualPropertyIcon) type.getVisualProperty()
-				                                                         .getIconSet().get(key);
-				icon.setIconHeight(size);
-				icon.setIconWidth(size);
-				g.fill(icon.getShape());
-
-				break;
-
-			case EDGE_SRCARROW_SHAPE:
-			case EDGE_TGTARROW_SHAPE:
-
-				final VisualPropertyIcon arrowIcon = ((VisualPropertyIcon) type.getVisualProperty()
-				                                                         .getIconSet().get(key));
-				if(arrowIcon == null) {
-					break;
-				}
+		} else if (dataTypeClass.isAssignableFrom(ArrowShape.class)){
+			final VisualPropertyIcon arrowIcon = ((VisualPropertyIcon) type.getIconSet().get(key));
+			if(arrowIcon != null) {
 				final int newSize = size;
 				arrowIcon.setIconHeight(newSize);
 				arrowIcon.setIconWidth(((Number)(newSize*2.5)).intValue());
@@ -601,62 +594,37 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 				g.translate(-newSize, 0);
 				arrowIcon.paintIcon(this, g, x, y);
 				g.translate(newSize, 0);
+			}
+		} else if (dataTypeClass.isAssignableFrom(Font.class)){
+			final Font font = (Font) key;
+			final String fontName = font.getFontName();
+			g.setFont(new Font(fontName, font.getStyle(), size));
+			g.drawString("A", 0, size);
 
-				break;
+			final int smallFontSize = ((Number) (size * 0.25)).intValue();
+			g.setFont(new Font(fontName, font.getStyle(), smallFontSize));
 
-			case NODE_FONT_FACE:
-			case EDGE_FONT_FACE:
-
-				final Font font = (Font) key;
-				final String fontName = font.getFontName();
-				g.setFont(new Font(fontName, font.getStyle(), size));
-				g.drawString("A", 0, size);
-
-				final int smallFontSize = ((Number) (size * 0.25)).intValue();
-				g.setFont(new Font(fontName, font.getStyle(), smallFontSize));
-
-				int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fontName);
-				g.drawString(fontName, (size / 2) - (stringWidth / 2), size + smallFontSize + 2);
-
-				break;
-
-			//case NODE_LINE_STYLE:
-			case EDGE_LINE_STYLE:
-
-				final Stroke stroke = ((LineStyle) key).getStroke(2.0f);
-				final int newSize2 = (int) (size * 1.5);
-				g.translate(0, -size * 0.25);
-				g.setColor(Color.DARK_GRAY);
-				g.drawRect(0, 0, size, newSize2);
-				g.setStroke(stroke);
-				g.setColor(ICON_COLOR);
-				g.drawLine(size - 1, 1, 1, newSize2 - 1);
-				g.translate(0, size * 0.25);
-
-				break;
-
-// TODO
-//			case NODE_LABEL_POSITION:
-//
-//				final LabelPlacerGraphic lp = new LabelPlacerGraphic((LabelPosition) key,
-//				                                                     (int) (size * 1.5), false);
-//				lp.paint(g);
-//
-//				break;
-
-			case NODE_LABEL:
-			case NODE_TOOLTIP:
-			case EDGE_LABEL:
-			case EDGE_TOOLTIP:
-				if(key != null) {
-					g.drawString(key.toString(), 0, g.getFont().getSize()*2);
-				}
-				break;
-
-			default:
-				break;
+			int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fontName);
+			g.drawString(fontName, (size / 2) - (stringWidth / 2), size + smallFontSize + 2);
+		} else if (dataTypeClass.isAssignableFrom(LineStyle.class)){
+			final Stroke stroke = ((LineStyle) key).getStroke(2.0f);
+			final int newSize2 = (int) (size * 1.5);
+			g.translate(0, -size * 0.25);
+			g.setColor(Color.DARK_GRAY);
+			g.drawRect(0, 0, size, newSize2);
+			g.setStroke(stroke);
+			g.setColor(ICON_COLOR);
+			g.drawLine(size - 1, 1, 1, newSize2 - 1);
+			g.translate(0, size * 0.25);
+		} else if (dataTypeClass.isAssignableFrom(LabelPosition.class)){
+			// TODO: this was commented out as "TODO" in original (pre-pluggable-renderers refactor) code
+		} else if (dataTypeClass.isAssignableFrom(String.class)){
+			if(key != null) {
+				g.drawString(key.toString(), 0, g.getFont().getSize()*2);
+			}
+		} else {
+			System.out.println("unknown data type:"+dataTypeClass);
 		}
-
 		g.translate(-x, -y);
 	}
 

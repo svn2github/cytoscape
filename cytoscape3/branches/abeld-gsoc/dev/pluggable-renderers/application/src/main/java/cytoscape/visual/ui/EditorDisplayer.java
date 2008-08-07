@@ -49,6 +49,7 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
 
 import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.LineStyle;
@@ -86,16 +87,16 @@ public enum EditorDisplayer {
 	                String.class), 
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
 	               new Class[] { VisualProperty.class, JDialog.class },
-	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
+	               new Object[] { VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"), null }, NodeShape.class), 
 	DISCRETE_RENDERER(ValueSelectDialog.class, "showDialog",
 	 	            new Class[] { VisualProperty.class, JDialog.class },
-	 	            new Object[] { VisualPropertyType.NODE_RENDERER, null }, NodeRenderers.class), 
+	 	            new Object[] { VisualPropertyCatalog.getVisualProperty("NODE_RENDERER"), null }, NodeRenderers.class), 
     DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
 	                     new Class[] { VisualProperty.class, JDialog.class },
-	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 
+	                     new Object[] { VisualPropertyCatalog.getVisualProperty("EDGE_SRCARROW_SHAPE"), null }, ArrowShape.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
 	                   new Class[] { VisualProperty.class, JDialog.class },
-	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class), 
+	                   new Object[] { VisualPropertyCatalog.getVisualProperty("EDGE_LINE_STYLE"), null }, LineStyle.class), 
 	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
 	                        new Class[] { Frame.class, LabelPosition.class },
 	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 

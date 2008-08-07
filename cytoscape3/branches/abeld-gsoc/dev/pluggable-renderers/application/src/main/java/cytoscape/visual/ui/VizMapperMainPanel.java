@@ -66,6 +66,7 @@ import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.CalculatorCatalog;
 import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeShape;
@@ -1435,9 +1436,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	private void setUnused(List<Property> propList) {
 		buildList();
-		Collections.sort(noMapping);
 
-		for (VisualProperty type : noMapping) {
+		for (VisualProperty type : byNameSortedVisualProperties(noMapping)) {
 			VizMapperProperty prop = new VizMapperProperty();
 			prop.setCategory(CATEGORY_UNUSED);
 			prop.setDisplayName(type.getName());
@@ -1448,7 +1448,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			propList.add(prop);
 		}
 	}
-
+	
+	/* Returns a sorted list of the visual properties
+	 * Needed because VisualProperties themselves are not Comparable,
+	 * (forcing them to be comparable would bloat the API and) 
+	 */
+	private List<VisualProperty> byNameSortedVisualProperties(Collection <VisualProperty>input){ // FIXME: I bet this could be done more java-style (i.e. better)
+		List <String> vpNames = new ArrayList<String>();
+		for (VisualProperty vp:input){
+			vpNames.add(vp.getName());
+		}
+		Collections.sort(vpNames);
+		List <VisualProperty> result = new ArrayList<VisualProperty>(input.size());
+		for (String name: vpNames){
+			result.add(VisualPropertyCatalog.getVisualProperty(name));
+		}
+		return result;
+	}
 	/*
 	 * Set value, title, and renderer for each property in the category.
 	 */
@@ -1564,107 +1580,30 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if ((firstMap.getClass() == DiscreteMapping.class) && (attrName != null)) {
 				final Map discMapping = ((DiscreteMapping) firstMap).getAll();
 				final Set<Object> attrSet = loadKeys(attrName, attr, firstMap, nodeOrEdge);
-				switch (type) {
-					/*
-					 * Color calculators
-					 */
-					//case NODE_FILL_COLOR:
-					//case NODE_BORDER_COLOR:
-					case EDGE_COLOR:
-					case EDGE_SRCARROW_COLOR:
-					case EDGE_TGTARROW_COLOR:
-					case NODE_LABEL_COLOR:
-					case EDGE_LABEL_COLOR:
-						setDiscreteProps(type, discMapping, attrSet, colorCellEditor,
-						                 collorCellRenderer, calculatorTypeProp);
+				Class dataTypeClass = type.getDataType();
 
-						break;
-
-					//case NODE_LINE_STYLE:
-					case EDGE_LINE_STYLE:
-						setDiscreteProps(type, discMapping, attrSet, lineCellEditor,
-						                 lineCellRenderer, calculatorTypeProp);
-
-						break;
-
-					/*
-					 * Shape property
-					 */
-					case NODE_SHAPE:
-						setDiscreteProps(type, discMapping, attrSet, shapeCellEditor,
-						                 shapeCellRenderer, calculatorTypeProp);
-
-						break;
-					// node renderer is most similar to shape-setting (i.e. select from list of discrete items)
-					case NODE_RENDERER:
-						setDiscreteProps(type, discMapping, attrSet, nodeRendererCellEditor,
-						                 nodeRendererCellRenderer, calculatorTypeProp);
-
-						break;
-						
-
-					/*
-					 * Arrow Head Shapes
-					 */
-					case EDGE_SRCARROW_SHAPE:
-					case EDGE_TGTARROW_SHAPE:
-						setDiscreteProps(type, discMapping, attrSet, arrowCellEditor,
-						                 arrowShapeCellRenderer, calculatorTypeProp);
-
-						break;
-
-					case NODE_LABEL:
-					case EDGE_LABEL:
-					case NODE_TOOLTIP:
-					case EDGE_TOOLTIP:
-						setDiscreteProps(type, discMapping, attrSet, stringCellEditor,
-						                 defCellRenderer, calculatorTypeProp);
-
-						break;
-
-					/*
-					 * Font props
-					 */
-					case NODE_FONT_FACE:
-					case EDGE_FONT_FACE:
-						setDiscreteProps(type, discMapping, attrSet, fontCellEditor,
-						                 fontCellRenderer, calculatorTypeProp);
-
-						break;
-
-					/*
-					 * Size-related props
-					 */
-					case NODE_FONT_SIZE:
-					case EDGE_FONT_SIZE:
-					case NODE_SIZE:
-					case NODE_WIDTH:
-					case NODE_HEIGHT:
-					//case NODE_LINE_WIDTH:
-					case EDGE_LINE_WIDTH:
-					//case NODE_OPACITY:
-					case EDGE_OPACITY:
-					case NODE_LABEL_OPACITY:
-					case EDGE_LABEL_OPACITY:
-					//case NODE_BORDER_OPACITY:
-						setDiscreteProps(type, discMapping, attrSet, numberCellEditor,
-						                 defCellRenderer, calculatorTypeProp);
-
-						break;
-
-					/*
-					 * Node Label Position. Needs special editor
-					 */
-					case NODE_LABEL_POSITION:
-						setDiscreteProps(type, discMapping, attrSet, labelPositionEditor,
-						                 labelPositionRenderer, calculatorTypeProp);
-
-						break;
-
-					default:
-						System.out.println("unknown type");
-						break;
+				if (dataTypeClass.isAssignableFrom(LineStyle.class)){ // FIXME: these should be Enum-like instead!! (or Discrete or something)
+					setDiscreteProps(type, discMapping, attrSet, lineCellEditor, lineCellRenderer, calculatorTypeProp);
+				} else if (dataTypeClass.isAssignableFrom(NodeShape.class)){
+					setDiscreteProps(type, discMapping, attrSet, shapeCellEditor, shapeCellRenderer, calculatorTypeProp);
+				} else if (dataTypeClass.isAssignableFrom(NodeRenderers.class)){
+					setDiscreteProps(type, discMapping, attrSet, nodeRendererCellEditor, nodeRendererCellRenderer, calculatorTypeProp);
+				} else if (dataTypeClass.isAssignableFrom(ArrowShape.class)){
+					setDiscreteProps(type, discMapping, attrSet, arrowCellEditor, arrowShapeCellRenderer, calculatorTypeProp);
+				} else if (dataTypeClass.isAssignableFrom(LabelPosition.class)){
+					setDiscreteProps(type, discMapping, attrSet, labelPositionEditor, labelPositionRenderer, calculatorTypeProp);
+				} else if (dataTypeClass.isAssignableFrom(Number.class)){
+					setDiscreteProps(type, discMapping, attrSet, numberCellEditor, defCellRenderer, calculatorTypeProp);
+				} else if (dataTypeClass.isAssignableFrom(Font.class)){
+					setDiscreteProps(type, discMapping, attrSet, fontCellEditor, fontCellRenderer, calculatorTypeProp);
+				} else if (dataTypeClass.isAssignableFrom(String.class)){
+					setDiscreteProps(type, discMapping, attrSet, stringCellEditor, defCellRenderer, calculatorTypeProp);
+				} else if (dataTypeClass.isAssignableFrom(Color.class)){
+					setDiscreteProps(type, discMapping, attrSet, colorCellEditor, collorCellRenderer, calculatorTypeProp);
+				} else {
+					System.out.println("unknown datatype:"+dataTypeClass);
 				}
+
 			} else if ((firstMap.getClass() == ContinuousMapping.class) && (attrName != null)) {
 				int wi = this.visualPropertySheetPanel.getTable().getCellRect(0, 1, true).width;
 
