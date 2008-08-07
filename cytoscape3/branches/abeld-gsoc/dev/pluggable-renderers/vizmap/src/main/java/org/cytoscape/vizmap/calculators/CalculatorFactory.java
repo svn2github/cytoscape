@@ -36,7 +36,8 @@
  */
 package org.cytoscape.vizmap.calculators;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
@@ -59,14 +60,14 @@ public class CalculatorFactory {
 	 */
     public static Calculator newCalculator(String name, Properties calcProps, String baseKey) {
         final String typeName = calcProps.getProperty(baseKey + ".visualPropertyType");
-		VisualPropertyType t = null; 
+		VisualProperty t = null; 
 
 		try { 
 
 			if ( typeName == null ) 
 				t = guessType( baseKey );
 			else 
-				t = VisualPropertyType.valueOf(typeName);
+				t = VisualPropertyCatalog.getVisualProperty(typeName);
 
 			if ( t == null ) {
 				//System.out.println("Couldn't parse baseKey: " + baseKey);
@@ -81,10 +82,10 @@ public class CalculatorFactory {
 	}
 
 
-	private static VisualPropertyType guessType(String key) {
+	private static VisualProperty guessType(String key) {
 		String lckey = key.toLowerCase();
-		for ( VisualPropertyType vpt : VisualPropertyType.values() )
-			if ( lckey.startsWith(vpt.getPropertyLabel().toLowerCase()) )
+		for ( VisualProperty vpt : VisualPropertyCatalog.collectionOfVisualProperties() )
+			if ( lckey.startsWith(vpt.getName().toLowerCase()) )
 				return vpt;
 		return null;
 	}

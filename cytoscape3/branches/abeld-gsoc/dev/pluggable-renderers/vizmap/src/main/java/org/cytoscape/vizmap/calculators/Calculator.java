@@ -44,7 +44,7 @@ package org.cytoscape.vizmap.calculators;
 
 
 import org.cytoscape.vizmap.Appearance;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
@@ -130,7 +130,7 @@ public interface Calculator extends Cloneable {
      *
      * @return
      */
-    public VisualPropertyType getVisualPropertyType();
+    public VisualProperty getVisualProperty();
 
     /**
      * DOCUMENT ME!

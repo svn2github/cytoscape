@@ -36,7 +36,7 @@
  */
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
@@ -64,7 +64,7 @@ import javax.swing.table.TableCellRenderer;
   */
 public class LegendTable extends JPanel {
 	private final static long serialVersionUID = 1202339875884157L;
-	private static VisualPropertyType type;
+	private static VisualProperty visualProperty;
 	private JTable legendTable;
 
 	/**
@@ -73,12 +73,12 @@ public class LegendTable extends JPanel {
 	 * @param data  DOCUMENT ME!
 	 * @param vpt  DOCUMENT ME!
 	 */
-	public LegendTable(Object[][] data, VisualPropertyType vpt) {
+	public LegendTable(Object[][] data, VisualProperty vp) {
 		super();
 		legendTable = new JTable(data.length, 2);
 		legendTable.setRowHeight(50);
 		legendTable.setDefaultRenderer(Object.class, (TableCellRenderer) new LegendCellRenderer());
-		type = vpt;
+		visualProperty = vp;
 		setLayout(new BorderLayout());
 
 		Object value = null;
@@ -103,7 +103,7 @@ public class LegendTable extends JPanel {
 			return null;
 		}
 
-		icon = (VisualPropertyIcon) type.getVisualProperty().getIcon(value);
+		icon = (VisualPropertyIcon) visualProperty.getIcon(value);
 		icon.setLeftPadding(5);
 
 		return icon;
@@ -117,7 +117,7 @@ public class LegendTable extends JPanel {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static JPanel getHeader(String attrName, VisualPropertyType type) {
+	public static JPanel getHeader(String attrName, VisualProperty type) {
 		final JPanel titles = new JPanel();
 		final JLabel[] labels = new JLabel[2];
 		labels[0] = new JLabel(type.getName());

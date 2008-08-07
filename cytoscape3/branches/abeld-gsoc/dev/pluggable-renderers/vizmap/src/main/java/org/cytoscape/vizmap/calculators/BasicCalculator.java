@@ -42,7 +42,7 @@
 //------------------------------------------------------------------------------
 package org.cytoscape.vizmap.calculators;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.mappings.MappingFactory;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
@@ -69,7 +69,7 @@ public class BasicCalculator extends AbstractCalculator {
      * @param m DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public BasicCalculator(String name, ObjectMapping m, VisualPropertyType type) {
+    public BasicCalculator(String name, ObjectMapping m, VisualProperty type) {
         super(name, m, type);
     }
 
@@ -82,10 +82,10 @@ public class BasicCalculator extends AbstractCalculator {
      * @param parser DOCUMENT ME!
      * @param type DOCUMENT ME!
      */
-    public BasicCalculator(String name, Properties props, String baseKey, VisualPropertyType type) {
+    public BasicCalculator(String name, Properties props, String baseKey, VisualProperty type) {
         super(name,
               MappingFactory.newMapping(props, baseKey + ".mapping", type.getValueParser(),
-                                        type.getVisualProperty().getDefaultAppearanceObject(), 
+                                        type.getDefaultAppearanceObject(), 
 				                        type.isNodeProp()?
 										    ObjectMapping.NODE_MAPPING:
 											ObjectMapping.EDGE_MAPPING),

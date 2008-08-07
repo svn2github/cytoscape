@@ -34,10 +34,8 @@
 */
 package org.cytoscape.vizmap.icon;
 
-import org.cytoscape.vizmap.VMMFactory;
-
 import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -67,13 +65,9 @@ public class NodeIcon extends VisualPropertyIcon {
 	 * Creates a new NodeIcon object.
 	 */
 	public NodeIcon() {
-		this(((NodeShape) (VisualPropertyType.NODE_SHAPE.getDefault(VMMFactory.getVisualMappingManager()
-		                                                                     .getVisualStyle())))
-		                                                               .getShape(),
+		this(((NodeShape) VisualPropertyCatalog.getVisualProperty("NODE_SHAPE").getDefaultAppearanceObject()).getShape(),// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
 		     DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE,
-		     ((NodeShape) (VisualPropertyType.NODE_SHAPE.getDefault(VMMFactory.getVisualMappingManager()
-		                                                                     .getVisualStyle())))
-		                                                                   .getShapeName(),
+		     ((NodeShape) VisualPropertyCatalog.getVisualProperty("NODE_SHAPE").getDefaultAppearanceObject()).getShapeName(), // FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
 		     DEFAULT_ICON_COLOR);
 	}
 	

@@ -53,7 +53,7 @@ import javax.swing.border.MatteBorder;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.mappings.LegendTable;
 
 
@@ -75,14 +75,14 @@ public class DiscreteLegend extends JPanel {
 	 * @param dataAttr  DOCUMENT ME!
 	 * @param vpt  DOCUMENT ME!
 	 */
-	public DiscreteLegend(Map legendMap, String dataAttr, VisualPropertyType vpt) {
+	public DiscreteLegend(Map legendMap, String dataAttr, VisualProperty vp) {
 		super();
 
 		setLayout(new BorderLayout());
 		setBackground(Color.white);
 		setBorder(BORDER);
 
-		final JLabel title = new JLabel(" " + vpt.getName() + " Mapping");
+		final JLabel title = new JLabel(" " + vp.getName() + " Mapping");
 		title.setFont(TITLE_FONT2);
 		title.setForeground(TITLE_COLOR);
 		title.setBorder(new MatteBorder(0, 10, 1, 0, TITLE_COLOR));
@@ -106,7 +106,7 @@ public class DiscreteLegend extends JPanel {
 			data[i][1] = key;
 		}
 
-		add(LegendTable.getHeader(dataAttr, vpt), BorderLayout.CENTER);
-		add(new LegendTable(data, vpt), BorderLayout.SOUTH);
+		add(LegendTable.getHeader(dataAttr, vp), BorderLayout.CENTER);
+		add(new LegendTable(data, vp), BorderLayout.SOUTH);
 	}
 }

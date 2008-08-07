@@ -37,7 +37,6 @@ package org.cytoscape.vizmap.icon;
 import org.cytoscape.vizmap.VMMFactory;
 
 import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.VisualPropertyType;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -71,10 +70,7 @@ public class ArrowIcon extends VisualPropertyIcon {
 	 * Creates a new ArrowIcon object.
 	 */
 	public ArrowIcon(Shape shape) {
-		this(shape, DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
-		     ((ArrowShape)VisualPropertyType.EDGE_SRCARROW_SHAPE
-		      .getDefault(VMMFactory.getVisualMappingManager().getVisualStyle())).getName(), 
-			  DEFAULT_ICON_COLOR);
+		this(shape, DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE, "default ArrowIcon name", DEFAULT_ICON_COLOR); // FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
 	}
 
 	/**

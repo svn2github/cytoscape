@@ -45,7 +45,7 @@ package org.cytoscape.vizmap.mappings;
 import org.cytoscape.GraphPerspective;
 
 import org.cytoscape.vizmap.ValueParser;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 
 //----------------------------------------------------------------------------
@@ -137,7 +137,7 @@ public interface ObjectMapping extends Cloneable {
 
     Object calculateRangeValue(Map attrBundle);
 
-    JPanel getLegend(VisualPropertyType type);
+    JPanel getLegend(VisualProperty visualProperty);
 
     Object clone();
 

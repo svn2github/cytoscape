@@ -44,7 +44,7 @@ package org.cytoscape.vizmap.mappings;
 
 
 import org.cytoscape.vizmap.SubjectBase;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.mappings.continuous.ContinuousLegend;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
@@ -268,8 +268,8 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	/**
 	 *
 	 */
-	public JPanel getLegend(VisualPropertyType vpt) {
-		return new ContinuousLegend(attrName, points, defaultObj, vpt);
+	public JPanel getLegend(VisualProperty vp) {
+		return new ContinuousLegend(attrName, points, defaultObj, vp);
 	}
 
 	/**

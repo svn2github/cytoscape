@@ -46,7 +46,7 @@ import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
 
 import org.cytoscape.vizmap.Appearance;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.mappings.MappingFactory;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
@@ -99,7 +99,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * Type of this visual property.
 	 * (New in version 2.5)
 	 */
-	protected VisualPropertyType type;
+	protected VisualProperty type;
 
 	/** keep track of how many times I've been duplicated */
 	private int dupeCount = 0;
@@ -122,7 +122,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param type DOCUMENT ME!
 	 */
 	 @SuppressWarnings("unchecked") // TODO figure this one out
-	public AbstractCalculator(String name, ObjectMapping m, VisualPropertyType type) {
+	public AbstractCalculator(String name, ObjectMapping m, VisualProperty type) {
 		if (type == null)
 			throw new NullPointerException("Type parameter for Calculator is null");
 
@@ -246,11 +246,11 @@ public abstract class AbstractCalculator implements Calculator {
 	 * MappingFactory with the ObjectMapping and the augmented base key.
 	 */
 	public Properties getProperties() {
-		final String mapBaseKey = type.getPropertyLabel() + "." + toString() + ".mapping";
+		final String mapBaseKey = type.getName() + "." + toString() + ".mapping";
 		final ObjectMapping m = getMapping(0);
 		final Properties props = MappingFactory.getProperties(m, mapBaseKey);
 
-		props.put(type.getPropertyLabel() + "." + toString() + ".visualPropertyType", type.toString());
+		props.put(type.getName() + "." + toString() + ".visualPropertyType", type.toString());
 
 		return props;
 	}
@@ -437,7 +437,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 *
 	 * The returned enum VisualPropertyType has replacement for these methods.
 	 */
-	public VisualPropertyType getVisualPropertyType() {
+	public VisualProperty getVisualProperty() {
 		return type;
 	}
 

@@ -55,7 +55,7 @@ import javax.swing.event.ChangeListener;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.SubjectBase;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteLegend;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingReader;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingWriter;
@@ -275,7 +275,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public JPanel getLegend(VisualPropertyType vpt) {
-		return new DiscreteLegend(treeMap, attrName, vpt);
+	public JPanel getLegend(VisualProperty vp) {
+		return new DiscreteLegend(treeMap, attrName, vp);
 	}
 }

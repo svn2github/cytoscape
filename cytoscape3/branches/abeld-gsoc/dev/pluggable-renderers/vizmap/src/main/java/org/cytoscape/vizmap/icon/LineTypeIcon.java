@@ -34,9 +34,7 @@
 */
 package org.cytoscape.vizmap.icon;
 
-import org.cytoscape.vizmap.VMMFactory;
-
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualPropertyCatalog;
 import org.cytoscape.vizmap.LineStyle;
 
 import java.awt.BasicStroke;
@@ -70,13 +68,7 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 * Creates a new LineTypeIcon object.
 	 */
 	public LineTypeIcon() {
-		this((BasicStroke) ((LineStyle) VisualPropertyType.EDGE_LINE_STYLE.getDefault(VMMFactory.getVisualMappingManager()
-		                                                                                    .getVisualStyle()))
-		     .getStroke(2f), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE,
-		     ((LineStyle) VisualPropertyType.EDGE_LINE_STYLE
-		      .getDefault(VMMFactory.getVisualMappingManager().getVisualStyle())).toString(),
-		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(VMMFactory.getVisualMappingManager()
-		                                                               .getVisualStyle()));
+		this(LineStyle.SOLID.getStroke(2f), DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE, "default LineTypeIcon name", Color.black);// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
 	}
 
 	/**
@@ -86,10 +78,7 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 */
 	public LineTypeIcon(Object lineStyle) {
 		this((BasicStroke) ((LineStyle) lineStyle).getStroke(2f), DEFAULT_ICON_SIZE * 3,
-		     DEFAULT_ICON_SIZE,
-		     ((LineStyle) lineStyle).toString(),
-		     (Color) VisualPropertyType.EDGE_COLOR.getDefault(VMMFactory.getVisualMappingManager()
-		                                                               .getVisualStyle()));
+		     DEFAULT_ICON_SIZE, ((LineStyle) lineStyle).toString(), Color.black); // FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
 	}
 	
 	public LineTypeIcon(org.cytoscape.vizmap.LineStyle style) {
@@ -122,9 +111,7 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	public LineTypeIcon(Stroke stroke, int width, int height, String name, Color color) {
 		super(null, width, height, name, color);
 
-		final float lineWidth = ((Number) VisualPropertyType.EDGE_LINE_WIDTH.getDefault(VMMFactory.getVisualMappingManager()
-		                                                                                         .getVisualStyle()))
-		                        .floatValue();
+		final float lineWidth = ((Number) VisualPropertyCatalog.getVisualProperty("EDGE_LINE_WIDTH").getDefaultAppearanceObject()).floatValue();// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
 
 		final BasicStroke st = (BasicStroke) stroke;
 		/*

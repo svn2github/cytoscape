@@ -89,12 +89,12 @@ public class VisualStyle implements Cloneable {
 
 		for (Calculator nodeCalcs : nodeAC.getCalculators()) {
 			if (nodeCalcs == c)
-				conflicts.add(nodeCalcs.getVisualPropertyType().getPropertyLabel());
+				conflicts.add(nodeCalcs.getVisualProperty().getName());
 		}
 
 		for (Calculator edgeCalcs : edgeAC.getCalculators()) {
 			if (edgeCalcs == c)
-				conflicts.add(edgeCalcs.getVisualPropertyType().getPropertyLabel());
+				conflicts.add(edgeCalcs.getVisualProperty().getName());
 		}
 
 		return conflicts;

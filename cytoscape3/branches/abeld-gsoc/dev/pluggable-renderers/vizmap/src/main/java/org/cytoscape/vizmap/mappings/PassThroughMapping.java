@@ -44,7 +44,7 @@ package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.GraphPerspective;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.ValueParser;
 
@@ -299,12 +299,12 @@ public class PassThroughMapping implements ObjectMapping {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public JPanel getLegend(VisualPropertyType vpt) {
+	public JPanel getLegend(VisualProperty vp) {
 		JPanel p = new JPanel();
 
 		p.setLayout(new BorderLayout());
 
-		JLabel title = new JLabel(vpt.getName() + " is displayed as " + attrName);
+		JLabel title = new JLabel(vp.getName() + " is displayed as " + attrName);
 		title.setFont(TITLE_FONT);
 		title.setForeground(TITLE_COLOR);
 		title.setHorizontalAlignment(SwingConstants.CENTER);

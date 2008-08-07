@@ -58,7 +58,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.mappings.LegendTable;
 //import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 //import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
@@ -74,7 +74,7 @@ public class ContinuousLegend extends JPanel {
 	private static final Color TITLE_COLOR = new Color(10, 200, 255);
 	private static final Border BORDER = new MatteBorder(0, 6, 3, 0, Color.DARK_GRAY);
 	private List points;
-	private VisualPropertyType type;
+	private VisualProperty visualProperty;
 	private JLabel legend = null;
 
 	/**
@@ -85,10 +85,10 @@ public class ContinuousLegend extends JPanel {
 	 * @param obj  DOCUMENT ME!
 	 * @param vpt  DOCUMENT ME!
 	 */
-	public ContinuousLegend(String dataAttr, List points, Object obj, VisualPropertyType vpt) {
+	public ContinuousLegend(String dataAttr, List points, Object obj, VisualProperty vp) {
 		super();
 		this.points = points;
-		this.type = vpt;
+		this.visualProperty = vp;
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
 				setLegend(e);
@@ -99,7 +99,7 @@ public class ContinuousLegend extends JPanel {
 		setBackground(Color.white);
 		setBorder(BORDER);
 
-		final JLabel title = new JLabel(" " + vpt.getName() + " Mapping");
+		final JLabel title = new JLabel(" " + vp.getName() + " Mapping");
 		title.setFont(TITLE_FONT2);
 		title.setForeground(TITLE_COLOR);
 		title.setBorder(new MatteBorder(0, 10, 1, 0, TITLE_COLOR));
@@ -127,18 +127,18 @@ public class ContinuousLegend extends JPanel {
 			}
 		}
 
-		if (type.getDataType() == Color.class) {
+		if (visualProperty.getDataType() == Color.class) {
 			// TODO - fix
 			//legend = new JLabel(GradientEditorPanel.getLegend(trackW, 100, type));
-			legend = new JLabel(type.getName());
-		} else if (type.getDataType() == Number.class) {
+			legend = new JLabel(visualProperty.getName());
+		} else if (visualProperty.getDataType() == Number.class) {
 			// TODO - fix
 			//legend = new JLabel(C2CMappingEditor.getLegend(trackW, 150, type));
-			legend = new JLabel(type.getName());
+			legend = new JLabel(visualProperty.getName());
 		} else {
 			// TODO - fix
 			//legend = new JLabel(C2DMappingEditor.getLegend(trackW, 150, type));
-			legend = new JLabel(type.getName());
+			legend = new JLabel(visualProperty.getName());
 		}
 
 		legend.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -234,7 +234,7 @@ public class ContinuousLegend extends JPanel {
 		return new ImageIcon(bi);
 	}
 
-	private JPanel getObjectPanel(VisualPropertyType vpt) {
+	private JPanel getObjectPanel(VisualProperty vp) {
 		Object[][] data = new Object[points.size() + 2][2];
 
 		ContinuousMappingPoint curr = null;
@@ -256,7 +256,7 @@ public class ContinuousLegend extends JPanel {
 			}
 		}
 
-		LegendTable lt = new LegendTable(data, vpt);
+		LegendTable lt = new LegendTable(data, vp);
 
 		return lt;
 	}

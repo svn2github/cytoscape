@@ -44,8 +44,6 @@ package org.cytoscape.vizmap;
 
 
 //----------------------------------------------------------------------------
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_LABEL;
-
 import org.cytoscape.vizmap.calculators.*;
 
 import org.cytoscape.vizmap.mappings.ObjectMapping;
@@ -54,10 +52,11 @@ import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 
 import org.cytoscape.view.renderers.NodeRenderer;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +75,8 @@ import javax.swing.event.ChangeListener;
  */
 public class CalculatorCatalog {
 	private static final String label = "label";
-	private Map<VisualPropertyType, Map<String, Calculator>> calculators;
-	private Map<VisualPropertyType, List<ChangeListener>> listeners;
+	private Map<VisualProperty, Map<String, Calculator>> calculators;
+	private Map<VisualProperty, List<ChangeListener>> listeners;
 	private Map<String, VisualStyle> visualStyles;
 	private Map<String, Class> mappers;
 
@@ -102,8 +101,8 @@ public class CalculatorCatalog {
 	 * DOCUMENT ME!
 	 */
 	private void clear() {
-		calculators = new EnumMap<VisualPropertyType, Map<String, Calculator>>(VisualPropertyType.class);
-		listeners = new EnumMap<VisualPropertyType, List<ChangeListener>>(VisualPropertyType.class);
+		calculators = new HashMap<VisualProperty, Map<String, Calculator>>();
+		listeners = new HashMap<VisualProperty, List<ChangeListener>>();
 
 		visualStyles = new HashMap<String, VisualStyle>();
 
@@ -135,7 +134,7 @@ public class CalculatorCatalog {
 	 * @throws IllegalArgumentException
 	 *             if unknown type passed in
 	 */
-	protected List<ChangeListener> getListenerList(final VisualPropertyType type) throws IllegalArgumentException {
+	protected List<ChangeListener> getListenerList(final VisualProperty type) throws IllegalArgumentException {
 		List<ChangeListener> l = listeners.get(type);
 
 		if (l == null) {
@@ -163,7 +162,7 @@ public class CalculatorCatalog {
 	 * @throws IllegalArgumentException
 	 *             if unknown type passed in
 	 */
-	public void addChangeListener(ChangeListener l, VisualPropertyType type)
+	public void addChangeListener(ChangeListener l, VisualProperty type)
 	    throws IllegalArgumentException {
 		List<ChangeListener> theListeners = getListenerList(type);
 		theListeners.add(l);
@@ -187,7 +186,7 @@ public class CalculatorCatalog {
 	 * @throws IllegalArgumentException
 	 *             if type is unknown
 	 */
-	protected void fireStateChanged(final VisualPropertyType type) throws IllegalArgumentException {
+	protected void fireStateChanged(final VisualProperty type) throws IllegalArgumentException {
 		List<ChangeListener> notifyEvents = getListenerList(type);
 
 		ChangeListener listener;
@@ -212,7 +211,7 @@ public class CalculatorCatalog {
 	 *            a known type identifier
 	 * @return Map the matching Map structure
 	 */
-	protected Map<String, Calculator> getCalculatorMap(final VisualPropertyType type) {
+	protected Map<String, Calculator> getCalculatorMap(final VisualProperty type) {
 		Map<String, Calculator> m = calculators.get(type);
 
 		if (m == null) {
@@ -242,7 +241,7 @@ public class CalculatorCatalog {
 	public void addCalculator(Calculator dupe)
 	    throws DuplicateCalculatorNameException, IllegalArgumentException {
 		//System.out.println("adding calculator: " + dupe.getVisualPropertyType());
-		final VisualPropertyType calcType = dupe.getVisualPropertyType();
+		final VisualProperty calcType = dupe.getVisualProperty();
 		Map<String, Calculator> theMap = getCalculatorMap(calcType);
 		addCalculator(dupe, theMap);
 
@@ -262,7 +261,7 @@ public class CalculatorCatalog {
 	 *         numbers are appended until a valid name is found; this valid name
 	 *         is returned to the caller.
 	 */
-	public String checkCalculatorName(String calcName, VisualPropertyType calcType) {
+	public String checkCalculatorName(String calcName, VisualProperty calcType) {
 		Map<String, Calculator> theMap = getCalculatorMap(calcType);
 
 		return checkName(calcName, theMap);
@@ -282,7 +281,7 @@ public class CalculatorCatalog {
 	 */
 	public void renameCalculator(Calculator c, String name)
 	    throws DuplicateCalculatorNameException, IllegalArgumentException {
-		final VisualPropertyType calcType = c.getVisualPropertyType();
+		final VisualProperty calcType = c.getVisualProperty();
 		final Map<String, Calculator> theMap = getCalculatorMap(calcType);
 		final String newName = checkName(name, theMap);
 
@@ -304,7 +303,7 @@ public class CalculatorCatalog {
 	 *             if c is of an unknown calculator type
 	 */
 	public void removeCalculator(Calculator c) throws IllegalArgumentException {
-		final VisualPropertyType calcType = c.getVisualPropertyType();
+		final VisualProperty calcType = c.getVisualProperty();
 		final Map<String, Calculator> theMap = getCalculatorMap(calcType);
 
 		theMap.remove(c.toString());
@@ -467,7 +466,7 @@ public class CalculatorCatalog {
 
 	private void addNodeAppearanceCalculator(NodeAppearanceCalculator c) {
 		for (Calculator cc : c.getCalculators()) {
-			Map<String, Calculator> m = getCalculatorMap(cc.getVisualPropertyType());
+			Map<String, Calculator> m = getCalculatorMap(cc.getVisualProperty());
 
 			if (!m.values().contains(cc))
 				m.put(cc.toString(), cc);
@@ -476,7 +475,7 @@ public class CalculatorCatalog {
 
 	private void addEdgeAppearanceCalculator(EdgeAppearanceCalculator c) {
 		for (Calculator cc : c.getCalculators()) {
-			Map<String, Calculator> m = getCalculatorMap(cc.getVisualPropertyType());
+			Map<String, Calculator> m = getCalculatorMap(cc.getVisualProperty());
 
 			if (!m.values().contains(cc))
 				m.put(cc.toString(), cc);
@@ -521,7 +520,7 @@ public class CalculatorCatalog {
 	public Collection<Calculator> getCalculators() {
 		final List<Calculator> calcList = new ArrayList<Calculator>();
 
-		for (VisualPropertyType type : calculators.keySet()) {
+		for (VisualProperty type : calculators.keySet()) {
 			for (String s : calculators.get(type).keySet())
 				calcList.add(calculators.get(type).get(s));
 		}
@@ -535,7 +534,7 @@ public class CalculatorCatalog {
 	 * @param type
 	 * @return
 	 */
-	public Collection<Calculator> getCalculators(VisualPropertyType type) {
+	public Collection<Calculator> getCalculators(VisualProperty type) {
 		Map<String, Calculator> m = getCalculatorMap(type);
 
 		return m.values();
@@ -548,7 +547,7 @@ public class CalculatorCatalog {
 	 * @param name
 	 * @return
 	 */
-	public Calculator getCalculator(VisualPropertyType type, String name) {
+	public Calculator getCalculator(VisualProperty type, String name) {
 		Map<String, Calculator> m = getCalculatorMap(type);
 
 		return m.get(name);
@@ -561,7 +560,7 @@ public class CalculatorCatalog {
 	 * @param name
 	 * @return
 	 */
-	public String checkCalculatorName(VisualPropertyType type, String name) {
+	public String checkCalculatorName(VisualProperty type, String name) {
 		return checkName(name, getCalculatorMap(type));
 	}
 
@@ -572,7 +571,7 @@ public class CalculatorCatalog {
 	 * @param name
 	 * @return
 	 */
-	public Calculator removeCalculator(VisualPropertyType type, String name) {
+	public Calculator removeCalculator(VisualProperty type, String name) {
 		Map<String, Calculator> m = getCalculatorMap(type);
 
 		return m.remove(name);
@@ -583,7 +582,7 @@ public class CalculatorCatalog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Collection<VisualPropertyType> getCalculatorTypes() {
+	public Collection<VisualProperty> getCalculatorTypes() {
 		return calculators.keySet();
 	}
 
@@ -593,11 +592,11 @@ public class CalculatorCatalog {
 	public void createDefaultVisualStyle() {
 		final VisualStyle defaultVS = new VisualStyle("default");
 
-		Calculator nlc = getCalculator(NODE_LABEL, label);
+		Calculator nlc = getCalculator(VisualPropertyCatalog.getVisualProperty("NODE_LABEL"), label);
 
 		if (nlc == null) {
 			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
-			nlc = new BasicCalculator(label, m, NODE_LABEL);
+			nlc = new BasicCalculator(label, m, VisualPropertyCatalog.getVisualProperty("NODE_LABEL"));
 		}
 
 		defaultVS.getNodeAppearanceCalculator().setCalculator(nlc);
