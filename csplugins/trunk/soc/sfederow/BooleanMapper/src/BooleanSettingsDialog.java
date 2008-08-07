@@ -9,6 +9,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import java.io.*;
+
 import java.util.regex.*;
 import java.awt.Color;
 import java.awt.Component;
@@ -35,6 +37,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.*;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
@@ -71,12 +74,14 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private JPanel panel;
 	private JList list;
 	
+	BooleanTableModel dataModel;
+	
 	String[] columnNames = {"Criteria",
             "Label",
             "Color",
             };
 	
-	Object[][] data = new Object[6][3];
+	Object[][] data = new Object[5][3];
 	
 	//String[][] data = new String[6][3];
 	//
@@ -86,6 +91,23 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		    {"Alison", "Huml", "Rowing"},
 		    {"Kathy", "Walrath", "Knitting"},
 		};*/	
+	class BooleanTableModel extends AbstractTableModel {
+	
+	//TableModel dataModel = new AbstractTableModel() {
+        int colCount = 3;
+        int rowCount = 5;
+		public void setColumnCount(int count) { colCount = count; }
+		public void setRowCount(int count) { rowCount = count; }
+		public int getColumnCount() { return colCount; }
+		public int getRowCount() { return rowCount;}
+		public Object getValueAt(int row, int col) { return data[row][col]; }
+        public void setValueAt(Object value, int row, int col) {
+        	data[row][col] = value;
+        	fireTableCellUpdated(row, col);
+        }
+      }
+	
+	
 	
 	
 	public BooleanSettingsDialog(BooleanAlgorithm algorithm) {
@@ -97,10 +119,14 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 				data[b][c] = "";
 			}
 		}
+		
+		
+		dataModel = new BooleanTableModel();
 		initialize(); // Initialize the components we only do once
 		calculator = new BooleanCalculator();
 		//System.out.println(Cytoscape.getDesktop().getHeight());
 		setLocation(2,Cytoscape.getDesktop().getHeight()-557);
+		
 		
 		//setLocationRelativeTo(Cytoscape.getDeskto
 		//this.setLocation(0, this.getHeight());
@@ -118,6 +144,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			int row = table.getSelectedRow();
 			data[row][0] = "";
 			data[row][1] = "";
+			listCount--;
 			initialize();
 			
 		}
@@ -216,7 +243,10 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	
 	private void initialize() {
 		
-		
+		 
+	      JTable table2 = new JTable(dataModel);
+	      JScrollPane scrollpane = new JScrollPane(table2);
+
 		//attributes = Cytoscape.getNodeAttributes().getAttributeNames();
 		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -327,9 +357,15 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		DefaultColorSelectionModel mod = new DefaultColorSelectionModel();
 		
 		
+		JPanel tpanel = new JPanel();
+		scrollpane.setPreferredSize(new Dimension(110,102));
+		tpanel.setLayout(new BorderLayout());
+		tpanel.add(scrollpane);
+		
 		//mainPanel.add();
 		mainPanel.add(buttonBox);
-		mainPanel.add(tablePanel);
+		//mainPanel.add(tablePanel);
+		mainPanel.add(tpanel);
 		mainPanel.add(tableButtons);
 		//mainPanel.add(chooser);
 		setContentPane(mainPanel);
@@ -363,16 +399,21 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	
 	public void applyCriteria(){
 		//for(int i=1;i<data.length;i++){
-			
+			BooleanScanner scan = new BooleanScanner();
 		    int[] rowIndexes = table.getSelectedRows();
 		    for(int i = 0; i<rowIndexes.length;i++){
 		    	//System.out.println("row index: "+rowIndexes[i]);
 		    }
 			String current = (String)data[0][0]; 
 			//System.out.println("current: "+ current);
-			calculator.parse2(current);
+			try{
+			scan.parse(current);
+			}catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
+			//calculator.parse2(current);
 			//calculator.clearList();
-			calculator.evaluate();
+			//calculator.evaluate();
 		//}
 		//parsedCriteria = calculator.parseCriteria(criteria);
 		
@@ -392,12 +433,17 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		//System.out.println("populate List");
 		//data = new Object[listCount+1][3];
+		//table.
+		
 		data[listCount][0] = criteria;
 		data[listCount][1] = label;
 		data[listCount][2] = "";
 		initialize();
-		if(listCount < 6){
+		if(listCount < 5){
 			listCount++;
+		}else{
+			//dataModel.
+			dataModel.setRowCount(listCount);
 		}
 	}
 	

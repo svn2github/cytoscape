@@ -392,10 +392,7 @@ public class BooleanCalculator {
 		double dvalue2 = 0;
 		int ivalue1 = 0;
 		int ivalue2 = 0;
-		boolean dd = false;
-		boolean di = false;
-		boolean id = false;
-		boolean ii = false;
+		
 		CyNode cnode = (CyNode)node;
 		String nodeID = cnode.getIdentifier();
 
@@ -404,17 +401,12 @@ public class BooleanCalculator {
 		if(firstValue.matches("^[0-9\\.\\-]+")){
 			if(firstValue.matches("^[0-9]+")){
 				ivalue1 = Integer.parseInt(firstValue);
-				id = true;
-				ii = true;
-				dd = false;
-				di = false;
+				
+				dvalue1 = ivalue1;
 			}else{
 
 				dvalue1 = Double.parseDouble(firstValue);
-				dd = true;
-				di = true;
-				id = false;
-				ii = false;
+				
 			}
 			System.out.println("digit1: "+dvalue1);
 
@@ -425,10 +417,7 @@ public class BooleanCalculator {
 
 
 				if(attributeTypeMap.get(firstValue) == 2){
-					dd = true;
-					di = true;
-					id = false;
-					ii = false;
+					
 					//value = getValue(node, firstValue);
 					if(nodeAttributes.hasAttribute(nodeID, firstValue)){
 						dvalue1 = nodeAttributes.getDoubleAttribute(nodeID, firstValue);
@@ -446,10 +435,7 @@ public class BooleanCalculator {
 
 				}else{
 					if(attributeTypeMap.get(firstValue) == 3){
-						dd = false;
-						di = false;
-						id = true;
-						ii = true;
+						
 						if(nodeAttributes.hasAttribute(nodeID, firstValue)){
 							ivalue1 = nodeAttributes.getIntegerAttribute(nodeID, firstValue);
 							//String stemp = temp + "";
@@ -486,34 +472,12 @@ public class BooleanCalculator {
 			if(secondValue.matches("^[0-9]+")){
 				ivalue2 = Integer.parseInt(secondValue);
 				System.out.println("ivalue2: "+ivalue2);
-				if(id || ii){ 
-					dd = false;
-					di = false;
-					id = false;
-					ii = true;	
-				}
-				if(di || dd){ 
-					dd = false;
-					di = true;
-					id = false;
-					ii = false;
-				}
-
+				
+				dvalue2 = ivalue2;
 			}else{
 				dvalue2 = Double.parseDouble(secondValue);
 				System.out.println("dvalue2: "+dvalue2);
-				if(id || ii){ 
-					dd = false;
-					di = false;
-					id = true;
-					ii = false;	
-				}
-				if(di || dd){ 
-					dd = true;
-					di = false;
-					id = false;
-					ii = false;
-				}
+				
 			}
 
 			//dvalue2 = Double.parseDouble(secondValue);
@@ -526,18 +490,7 @@ public class BooleanCalculator {
 
 			}else{
 				if(attributeTypeMap.get(secondValue) == 2){
-					if(id || ii){ 
-						dd = false;
-						di = false;
-						id = true;
-						ii = false;	
-					}
-					if(di || dd){ 
-						dd = true;
-						di = false;
-						id = false;
-						ii = false;
-					}
+					
 					//value = getValue(node, firstValue);
 					if(nodeAttributes.hasAttribute(nodeID, secondValue)){
 						dvalue2 = nodeAttributes.getDoubleAttribute(nodeID, secondValue);
@@ -554,19 +507,7 @@ public class BooleanCalculator {
 
 				}else{
 					if(attributeTypeMap.get(secondValue) == 3){
-						if(id || ii){ 
-							dd = false;
-							di = false;
-							id = false;
-							ii = true;	
-						}
-						if(di || dd){ 
-							dd = false;
-							di = true;
-							id = false;
-							ii = false;
-							//System.out.println("di: "+ di);
-						}
+						
 						if(nodeAttributes.hasAttribute(nodeID, secondValue)){
 							ivalue2 = nodeAttributes.getIntegerAttribute(nodeID, secondValue);
 							System.out.println("dvalue2: "+dvalue2);
@@ -595,10 +536,11 @@ public class BooleanCalculator {
 				}	
 			}
 		}
-
+		
+		
 		//System.out.println("dd:"+dd+" di:"+di+" id:"+id+" ii"+ii);
 
-		if(dd){		
+			
 
 			if(operations.get(position+1).matches("<")){
 
@@ -649,175 +591,14 @@ public class BooleanCalculator {
 						}
 					}
 				}
-			}
+			
 		}
 
 
-		if(di){		
-
-			if(operations.get(position+1).matches("<")){
-				System.out.println("ivalue2: "+ivalue2);
-				if(dvalue1 < ivalue2){
-					System.out.println("di true");
-					return true;
-
-				}else{
-					System.out.println("di false");
-					return false;
-
-				}
-
-			}else{
-				if(operations.get(position+1).matches(">")){
-
-					if(dvalue1 > ivalue2){
-						return true;
-					}else{
-						return false;
-					}
-
-				}else{
-					if(operations.get(position+1).matches("<=")){
-
-						if(dvalue1 <= ivalue2){
-							return true;
-						}else{
-							return false;
-						}
-
-					}else{
-						if(operations.get(position+1).matches(">=")){
-							if(dvalue1 >= ivalue2){
-								return true;
-							}else{
-								return false;
-							}
-
-						}else{
-							if(operations.get(position+1).matches("=")){
-								if(dvalue1 == ivalue2){
-									return true;
-								}else{
-									return false;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-
-		if(id){		
-
-			if(operations.get(position+1).matches("<")){
-
-				if(ivalue1 < dvalue2){
-					System.out.println("id");
-					return true;
-
-				}else{
-					System.out.println("id");
-					return false;
-
-				}
-
-			}else{
-				if(operations.get(position+1).matches(">")){
-
-					if(ivalue1 > dvalue2){
-						return true;
-					}else{
-						return false;
-					}
-
-				}else{
-					if(operations.get(position+1).matches("<=")){
-
-						if(ivalue1 <= dvalue2){
-							return true;
-						}else{
-							return false;
-						}
-
-					}else{
-						if(operations.get(position+1).matches(">=")){
-							if(ivalue1 >= dvalue2){
-								return true;
-							}else{
-								return false;
-							}
-
-						}else{
-							if(operations.get(position+1).matches("=")){
-								if(ivalue1 == dvalue2){
-									return true;
-								}else{
-									return false;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-
-		if(ii){		
-
-			if(operations.get(position+1).matches("<")){
-
-				if(ivalue1 < ivalue2){
-					//System.out.println("ii");
-					return true;
-
-				}else{
-					//System.out.println("ii");
-					return false;
-
-				}
-
-			}else{
-				if(operations.get(position+1).matches(">")){
-
-					if(ivalue1 > ivalue2){
-						return true;
-					}else{
-						return false;
-					}
-
-				}else{
-					if(operations.get(position+1).matches("<=")){
-
-						if(ivalue1 <= ivalue2){
-							return true;
-						}else{
-							return false;
-						}
-
-					}else{
-						if(operations.get(position+1).matches(">=")){
-							if(ivalue1 >= ivalue2){
-								return true;
-							}else{
-								return false;
-							}
-
-						}else{
-							if(operations.get(position+1).matches("=")){
-								if(ivalue1 == ivalue2){
-									return true;
-								}else{
-									return false;
-								}
-							}
-						}
-					}
-				}
-			}
+		
 
 			//System.out.println("comparisonOutcome: "+comparisonOutcome);
-		}
+		
 		return comparisonOutcome;
 
 	}
