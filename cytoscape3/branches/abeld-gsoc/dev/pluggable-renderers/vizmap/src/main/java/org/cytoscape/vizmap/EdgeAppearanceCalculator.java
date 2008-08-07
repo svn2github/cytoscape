@@ -101,12 +101,8 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 		// Copy defaults
 		final EdgeAppearance defAppr = new EdgeAppearance();
 
-		for (VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties()) {
-			if (vp.isNodeProp()){
-				continue;
-			} else {
-				defAppr.set(vp, defaultAppearance.get(vp));
-			}
+		for (VisualProperty vp: VisualPropertyCatalog.getEdgeVisualPropertyList()) {
+			defAppr.set(vp, defaultAppearance.get(vp));
 		}
 
 		copy.setDefaultAppearance(defAppr);

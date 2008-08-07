@@ -103,10 +103,8 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     	
     	// Copy defaults
     	final NodeAppearance defAppr = new NodeAppearance();
-    	for(VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties()) {
-    		if (vp.isNodeProp()){
-    			defAppr.set(vp, defaultAppearance.get(vp));
-			} 
+    	for(VisualProperty vp: VisualPropertyCatalog.getNodeVisualPropertyList()) {
+    		defAppr.set(vp, defaultAppearance.get(vp));
     	}
     	defAppr.setNodeSizeLocked(defaultAppearance.getNodeSizeLocked());
     	copy.setDefaultAppearance(defAppr);

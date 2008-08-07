@@ -1,7 +1,9 @@
 package org.cytoscape.view;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * The singleton class that holds all currently defined VisualProperties.
@@ -26,4 +28,26 @@ public abstract class VisualPropertyCatalog {
 	public static Collection<VisualProperty> collectionOfVisualProperties(){
 		return visualProperties.values();
 	}
+	public static List<VisualProperty> getEdgeVisualPropertyList(){
+		ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
+		for (VisualProperty vp: collectionOfVisualProperties()){
+			if (vp.isNodeProp()){
+				continue;
+			} else {
+				result.add(vp);
+			}
+		}
+		return result;
+	}
+
+	public static List<VisualProperty> getNodeVisualPropertyList(){
+		ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
+		for (VisualProperty vp: collectionOfVisualProperties()){
+			if (vp.isNodeProp()){
+				result.add(vp);
+			}
+		}
+		return result;
+	}
+
 }
