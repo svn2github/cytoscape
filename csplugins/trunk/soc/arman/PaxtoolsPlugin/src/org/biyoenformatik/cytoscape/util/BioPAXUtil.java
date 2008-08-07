@@ -51,6 +51,7 @@ import cytoscape.data.attr.MultiHashMapDefinition;
 import cytoscape.data.attr.MultiHashMap;
 
 import java.util.*;
+import java.util.List;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
@@ -59,6 +60,7 @@ public class BioPAXUtil {
     public static final int MAX_SHORT_NAME_LENGTH = 25;
     public static final String BIOPAX_MODEL_STRING = "biopax.model.xml";
     public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String BIOPAX_MERGE_SRC = "biopax.merge.src";
 
     private static Map<CyNetwork, Model> networkModelMap = new HashMap<CyNetwork, Model>();
 
@@ -212,6 +214,10 @@ public class BioPAXUtil {
         }
 
         return plainEng;
+    }
+    
+    public static CyNode getPEPStateNode(physicalEntityParticipant pep) {
+        return createPEStateNode(null, pep);
     }
 
     private static void setNodeAttributes(String nodeID, entity bpe) {
@@ -415,7 +421,10 @@ public class BioPAXUtil {
         }
 
         CyNode node = Cytoscape.getCyNode(nodeId, CREATE);
-        nodes.put(nodeId, node);
+
+        if( nodes != null )
+            nodes.put(nodeId, node);
+
         node.setIdentifier(nodeId);
 
         String nid = node.getIdentifier();

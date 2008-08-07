@@ -2,6 +2,11 @@ package org.biyoenformatik.cytoscape.ui;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.view.CyNetworkView;
+import cytoscape.visual.VisualStyle;
+import cytoscape.visual.VisualMappingManager;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.util.TaskManager;
@@ -15,12 +20,17 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.text.DecimalFormat;
 
 import org.biyoenformatik.cytoscape.util.BioPAXUtil;
+import org.biyoenformatik.cytoscape.util.BioPAXMergeVisualStyleUtil;
 import org.biyoenformatik.cytoscape.PaxtoolsReader;
 import org.biopax.paxtools.controller.Integrator;
 import org.biopax.paxtools.controller.ConversionScore;
 import org.biopax.paxtools.model.Model;
+import org.biopax.paxtools.model.level2.conversion;
+import org.biopax.paxtools.model.level2.physicalEntityParticipant;
+import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 
 public class IntegrateBioPAXDialog extends JDialog {
     private JPanel contentPane;
@@ -30,11 +40,25 @@ public class IntegrateBioPAXDialog extends JDialog {
     private JComboBox secondNetworkComboBox;
     private JSlider slider1;
     private JSpinner spinner1;
-    private JTable table1;
+    private JTable scoresTable;
     private JButton previewButton;
+    private JCheckBox colorizeNodesAccordingToCheckBox;
+    private JButton firstColorButton;
+    private JButton secondColorButton;
+    private JButton mergedColorButton;
+    private JPanel thresholdPanel;
+    private JPanel colorizeMain;
+    private JPanel colorsPanel;
 
     private ArrayList<CyNetwork> bpNetworks = new ArrayList<CyNetwork>();
     private Integrator integrator = null;
+    private List<ConversionScore> scores;
+
+    private Color firstColor = new Color(255, 0, 0),
+            secondColor = new Color(0, 255, 0),
+            mergedColor = new Color(255, 255, 0);
+
+    private boolean isColorPanelEnabled = false;
 
     // Keep track to reduce CPU work
     private Model oldModel1 = null, oldModel2 = null;
@@ -46,10 +70,18 @@ public class IntegrateBioPAXDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        spinner1.setModel(new SpinnerNumberModel(MAX_SCORE / 3, .0, MAX_SCORE, .1));
-        slider1.setModel(new DefaultBoundedRangeModel(MAX_SCORE / 3, 0, 0, MAX_SCORE));
+        setTitle("Integrate BioPAX networks");
+
+        spinner1.setModel(new SpinnerNumberModel(1, .0, MAX_SCORE, .1));
+        slider1.setModel(new DefaultBoundedRangeModel(1, 0, 0, MAX_SCORE));
         slider1.setMinorTickSpacing(5);
         slider1.setMajorTickSpacing(MAX_SCORE);
+
+        colorsPanel.setVisible(isColorPanelEnabled);
+        colorizeNodesAccordingToCheckBox.setSelected(isColorPanelEnabled);
+        firstColorButton.setBackground(firstColor);
+        secondColorButton.setBackground(secondColor);
+        mergedColorButton.setBackground(mergedColor);
 
         ArrayList<String> comboList = new ArrayList<String>();
 
@@ -94,7 +126,7 @@ public class IntegrateBioPAXDialog extends JDialog {
 
         previewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                onPreview(true);
+                onPreview();
             }
         });
 
@@ -110,9 +142,74 @@ public class IntegrateBioPAXDialog extends JDialog {
                 spinner1.setValue(val);
             }
         });
+
+        scoresTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = scoresTable.getSelectedRow();
+                    ConversionScore convScore = scores.get(index);
+                    if (convScore == null)
+                        return;
+
+                    IntegrateBioPAXDetailsDialog dialog = new IntegrateBioPAXDetailsDialog(convScore);
+                    dialog.setTitle("Match #" + (index + 1));
+                    dialog.setSize(400, 400);
+                    dialog.pack();
+                    dialog.setVisible(true);
+
+                }
+            }
+        });
+
+        colorizeNodesAccordingToCheckBox.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                colorsPanel.setVisible(colorizeNodesAccordingToCheckBox.isSelected());
+            }
+        });
+
+        firstColorButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                Color tempColor = JColorChooser.showDialog(IntegrateBioPAXDialog.this,
+                        "Choose Node Color",
+                        firstColor);
+
+                if (tempColor != null)
+                    firstColor = tempColor;
+
+                firstColorButton.setBackground(firstColor);
+            }
+        });
+
+        secondColorButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                Color tempColor = JColorChooser.showDialog(IntegrateBioPAXDialog.this,
+                        "Choose Node Color",
+                        secondColor);
+
+                if (tempColor != null)
+                    secondColor = tempColor;
+
+                secondColorButton.setBackground(secondColor);
+            }
+        });
+
+        mergedColorButton.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                Color tempColor = JColorChooser.showDialog(IntegrateBioPAXDialog.this,
+                        "Choose Node Color",
+                        mergedColor);
+
+                if (tempColor != null)
+                    mergedColor = tempColor;
+
+                mergedColorButton.setBackground(mergedColor);
+            }
+        });
+
+
     }
 
-    private void onPreview(boolean updateTable) {
+    private void onPreview() {
         CyNetwork network1 = bpNetworks.get(firstNetworkComboBox.getSelectedIndex()),
                 network2 = bpNetworks.get(secondNetworkComboBox.getSelectedIndex());
 
@@ -135,28 +232,62 @@ public class IntegrateBioPAXDialog extends JDialog {
             integrator.setScoresOver(MAX_SCORE);
         }
         integrator.setThreshold(threshold);
+        scores = integrator.integrate();
 
-        IntegrateUpdateBioPAXTask task =
-                new IntegrateUpdateBioPAXTask(this.table1, integrator);
+        Set<ConversionScore> toBeRemoved = new HashSet<ConversionScore>();
+        for (ConversionScore aScore : scores)
+            if (aScore.getScore() < integrator.getThreshold())
+                toBeRemoved.add(aScore);
+        for (ConversionScore aScore : toBeRemoved)
+            scores.remove(aScore);
 
-        JTaskConfig jTaskConfig = new JTaskConfig();
-        jTaskConfig.setOwner(Cytoscape.getDesktop());
-        jTaskConfig.displayCloseButton(true);
-        jTaskConfig.displayStatus(true);
-        jTaskConfig.setAutoDispose(!updateTable);
+        if (scores.isEmpty()) {
+            String[][] tableData = {{"No results"}};
+            String[] tableHeader = {""};
 
-        TaskManager.executeTask(task, jTaskConfig);
+            scoresTable.setModel(new DefaultTableModel(tableData, tableHeader));
+            scoresTable.setEnabled(false);
+
+            return;
+        }
+
+        scoresTable.setEnabled(true);
+        String[][] tableData = new String[scores.size()][];
+
+        DecimalFormat df = new DecimalFormat("###.00");
+
+        int cnt = 0;
+        for (ConversionScore aScore : scores) {
+            String[] cols = {"" + df.format(aScore.getScore()),
+                    BioPAXUtil.getShortNameSmart(aScore.getConversion1()),
+                    BioPAXUtil.getShortNameSmart(aScore.getConversion2())};
+            tableData[cnt++] = cols;
+        }
+
+        String[] tableHeader = {"Score", "Name 1", "Name 2"};
+        scoresTable.setModel(new DefaultTableModel(tableData, tableHeader) {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
 
         oldModel1 = model1;
         oldModel2 = model2;
     }
 
     private void onOK() {
-        CyNetwork network1 = bpNetworks.get(firstNetworkComboBox.getSelectedIndex());
-        onPreview(false);
+        CyNetwork network1 = bpNetworks.get(firstNetworkComboBox.getSelectedIndex()),
+                network2 = bpNetworks.get(secondNetworkComboBox.getSelectedIndex());
+
+        onPreview();
         integrator.setOnlyMapping(false);
 
-        IntegrateBioPAXTask task = new IntegrateBioPAXTask(integrator, network1);
+        boolean isColorize = colorizeNodesAccordingToCheckBox.isSelected();
+
+        IntegrateBioPAXTask task = new IntegrateBioPAXTask(integrator,
+                network1, network2,
+                isColorize,
+                firstColor, secondColor, mergedColor);
 
         JTaskConfig jTaskConfig = new JTaskConfig();
         jTaskConfig.setOwner(Cytoscape.getDesktop());
@@ -247,6 +378,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         panel3.add(panel4, gbc);
         panel4.setBorder(BorderFactory.createTitledBorder("Networks"));
         final JLabel label1 = new JLabel();
+        label1.setFont(new Font(label1.getFont().getName(), Font.BOLD, label1.getFont().getSize()));
         label1.setText("First network");
         label1.setDisplayedMnemonic('F');
         label1.setDisplayedMnemonicIndex(0);
@@ -266,6 +398,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel4.add(firstNetworkComboBox, gbc);
         final JLabel label2 = new JLabel();
+        label2.setFont(new Font(label2.getFont().getName(), Font.BOLD, label2.getFont().getSize()));
         label2.setText("Second network");
         label2.setDisplayedMnemonic('S');
         label2.setDisplayedMnemonicIndex(0);
@@ -289,12 +422,23 @@ public class IntegrateBioPAXDialog extends JDialog {
         panel5.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridheight = 2;
+        gbc.gridy = 2;
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         panel3.add(panel5, gbc);
         panel5.setBorder(BorderFactory.createTitledBorder("Options"));
+        thresholdPanel = new JPanel();
+        thresholdPanel.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel5.add(thresholdPanel, gbc);
+        thresholdPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null));
         final JLabel label3 = new JLabel();
         label3.setText("Score threshold");
         gbc = new GridBagConstraints();
@@ -303,7 +447,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.WEST;
-        panel5.add(label3, gbc);
+        thresholdPanel.add(label3, gbc);
         slider1 = new JSlider();
         slider1.setMajorTickSpacing(100);
         slider1.setMinimum(0);
@@ -321,7 +465,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(0, 0, 0, 10);
-        panel5.add(slider1, gbc);
+        thresholdPanel.add(slider1, gbc);
         spinner1 = new JSpinner();
         spinner1.setEnabled(true);
         gbc = new GridBagConstraints();
@@ -330,7 +474,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel5.add(spinner1, gbc);
+        thresholdPanel.add(spinner1, gbc);
         previewButton = new JButton();
         previewButton.setText("Preview");
         previewButton.setMnemonic('P');
@@ -340,7 +484,91 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.gridy = 2;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        panel5.add(previewButton, gbc);
+        thresholdPanel.add(previewButton, gbc);
+        final JLabel label4 = new JLabel();
+        label4.setFont(new Font(label4.getFont().getName(), label4.getFont().getStyle(), 11));
+        label4.setText("Raise the threshold to eliminate non-specific mathces");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        thresholdPanel.add(label4, gbc);
+        colorizeMain = new JPanel();
+        colorizeMain.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel5.add(colorizeMain, gbc);
+        colorizeMain.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null));
+        colorizeNodesAccordingToCheckBox = new JCheckBox();
+        colorizeNodesAccordingToCheckBox.setText("Colorize nodes according to their source ");
+        colorizeNodesAccordingToCheckBox.setMnemonic('N');
+        colorizeNodesAccordingToCheckBox.setDisplayedMnemonicIndex(9);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        colorizeMain.add(colorizeNodesAccordingToCheckBox, gbc);
+        colorsPanel = new JPanel();
+        colorsPanel.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        colorizeMain.add(colorsPanel, gbc);
+        firstColorButton = new JButton();
+        firstColorButton.setText(" ");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 5, 0, 5);
+        colorsPanel.add(firstColorButton, gbc);
+        secondColorButton = new JButton();
+        secondColorButton.setText(" ");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 5, 0, 5);
+        colorsPanel.add(secondColorButton, gbc);
+        mergedColorButton = new JButton();
+        mergedColorButton.setText(" ");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 5, 0, 5);
+        colorsPanel.add(mergedColorButton, gbc);
+        final JLabel label5 = new JLabel();
+        label5.setFont(new Font(label5.getFont().getName(), Font.BOLD, label5.getFont().getSize()));
+        label5.setText("  First network  ");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        colorsPanel.add(label5, gbc);
+        final JLabel label6 = new JLabel();
+        label6.setFont(new Font(label6.getFont().getName(), Font.BOLD, label6.getFont().getSize()));
+        label6.setText("Second Network");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        colorsPanel.add(label6, gbc);
+        final JLabel label7 = new JLabel();
+        label7.setFont(new Font(label7.getFont().getName(), Font.BOLD, label7.getFont().getSize()));
+        label7.setHorizontalAlignment(10);
+        label7.setHorizontalTextPosition(10);
+        label7.setText("      Merged      ");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        colorsPanel.add(label7, gbc);
         final JPanel panel6 = new JPanel();
         panel6.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -354,25 +582,33 @@ public class IntegrateBioPAXDialog extends JDialog {
         final JScrollPane scrollPane1 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         panel6.add(scrollPane1, gbc);
-        table1 = new JTable();
-        table1.setAutoCreateRowSorter(false);
-        table1.setAutoResizeMode(2);
-        table1.setFillsViewportHeight(true);
-        table1.setPreferredScrollableViewportSize(new Dimension(450, 200));
-        scrollPane1.setViewportView(table1);
-        final JLabel label4 = new JLabel();
-        label4.setText("Please select networks to be integrated.");
+        scoresTable = new JTable();
+        scoresTable.setAutoCreateRowSorter(false);
+        scoresTable.setAutoResizeMode(2);
+        scoresTable.setFillsViewportHeight(true);
+        scoresTable.setPreferredScrollableViewportSize(new Dimension(450, 200));
+        scrollPane1.setViewportView(scoresTable);
+        final JLabel label8 = new JLabel();
+        label8.setFont(new Font(label8.getFont().getName(), label8.getFont().getStyle(), 11));
+        label8.setText("Double click on the row to see match details.");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel6.add(label8, gbc);
+        final JLabel label9 = new JLabel();
+        label9.setText("Please select networks to be integrated.");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.anchor = GridBagConstraints.WEST;
-        contentPane.add(label4, gbc);
+        contentPane.add(label9, gbc);
         label1.setLabelFor(firstNetworkComboBox);
         label2.setLabelFor(secondNetworkComboBox);
     }
@@ -385,8 +621,6 @@ public class IntegrateBioPAXDialog extends JDialog {
     }
 }
 
-
-
 class IntegrateUpdateBioPAXTask implements Task {
     private TaskMonitor taskMonitor;
     private Integrator integrator;
@@ -398,6 +632,7 @@ class IntegrateUpdateBioPAXTask implements Task {
     }
 
     public void run() {
+        taskMonitor.setPercentCompleted(0);
         taskMonitor.setStatus("Matching and scoring reactions...");
         List<ConversionScore> scores = integrator.integrate();
         taskMonitor.setStatus("Updating scores table...");
@@ -410,18 +645,26 @@ class IntegrateUpdateBioPAXTask implements Task {
             scores.remove(aScore);
 
         if (scores.isEmpty()) {
-            scoresTable.setModel(new DefaultTableModel());
+            String[][] tableData = { {"No results"} };
+            String[] tableHeader = { "" };
+
+            scoresTable.setModel(new DefaultTableModel(tableData, tableHeader));
+            scoresTable.setEnabled(false);
+
             taskMonitor.setPercentCompleted(100);
 	        taskMonitor.setStatus("Scoring successful, but no results.\n" +
                                     "Have you tried to lower the threshold value?");
             return;
         }
 
+        scoresTable.setEnabled(true);
         String[][] tableData = new String[scores.size()][];
+
+        DecimalFormat df = new DecimalFormat("###.##");
 
         int cnt = 0;
         for(ConversionScore aScore: scores) {
-            String[] cols = { "" + aScore.getScore(),
+            String[] cols = { "" + df.format(aScore.getScore()),
                     BioPAXUtil.getShortNameSmart(aScore.getConversion1()),
                     BioPAXUtil.getShortNameSmart(aScore.getConversion2()) };
             tableData[cnt++] = cols;
@@ -449,25 +692,92 @@ class IntegrateUpdateBioPAXTask implements Task {
     public String getTitle() {
         return "Match and score";
     }
+
 }
 
 class IntegrateBioPAXTask implements Task {
     private TaskMonitor taskMonitor;
     private Integrator integrator;
-    private CyNetwork network;
+    private CyNetwork network1, network2;
 
-    public IntegrateBioPAXTask(Integrator integrator, CyNetwork network) {
+    private boolean isColorize;
+    private Color firstColor, secondColor, mergedColor;
+
+    public IntegrateBioPAXTask(Integrator integrator, CyNetwork network1, CyNetwork network2,
+                               boolean isColorize,
+                               Color firstColor, Color secondColor, Color mergedColor) {
         this.integrator = integrator;
-        this.network = network;
+        this.network1 = network1;
+        this.network2 = network2;
+
+        this.isColorize = isColorize;
+        this.firstColor= firstColor;
+        this.secondColor = secondColor;
+        this.mergedColor = mergedColor;
     }
 
     public void run() {
         taskMonitor.setStatus("Integrating BioPAX networks...");
-        integrator.integrate();
+        List<ConversionScore> convScores = integrator.integrate();
 
-        Model integratedModel = BioPAXUtil.getNetworkModel(network);
-        Cytoscape.createNetwork(new PaxtoolsReader(integratedModel), true, null);
-        BioPAXUtil.resetNetworkModel(network);
+        taskMonitor.setStatus("Creating network from integration...");
+        Model integratedModel = BioPAXUtil.getNetworkModel(network1);
+        CyNetwork cyNetwork = Cytoscape.createNetwork(new PaxtoolsReader(integratedModel), true, null);
+        cyNetwork.setTitle(CyNetworkNaming.getSuggestedNetworkTitle("Integrated"));
+
+        taskMonitor.setStatus("Recovering integrated models...");
+        BioPAXUtil.resetNetworkModel(network1);
+        BioPAXUtil.resetNetworkModel(network2);
+
+        if(isColorize) {
+            taskMonitor.setStatus("Colorizing nodes...");
+
+            Set<String> integratedRDFs = new HashSet<String>();
+            for(ConversionScore aScore: convScores) {
+                conversion conv = aScore.getConversion1();
+                integratedRDFs.add(conv.getRDFId());
+
+                for(physicalEntityParticipant pep: aScore.getMatchedPEPs())
+                    integratedRDFs.add(pep.getPHYSICAL_ENTITY().getRDFId());
+            }
+
+            Set<String> n1_nodeIDs = new HashSet<String>(),
+                        n2_nodeIDs = new HashSet<String>();
+
+            for(int index: network1.getNodeIndicesArray())
+                n1_nodeIDs.add( network1.getNode(index).getIdentifier() );
+            for(int index: network2.getNodeIndicesArray())
+                n2_nodeIDs.add( network2.getNode(index).getIdentifier() );
+
+            CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
+
+            for(int index: cyNetwork.getNodeIndicesArray()) {
+                String nodeID = cyNetwork.getNode(index).getIdentifier();
+                String rdfId = nodeAttributes.getStringAttribute(nodeID, MapNodeAttributes.BIOPAX_RDF_ID);
+
+                if(rdfId == null)
+                    rdfId = "";
+
+                if(n1_nodeIDs.contains(nodeID) && !n2_nodeIDs.contains(nodeID) && !integratedRDFs.contains(rdfId))
+                    nodeAttributes.setAttribute(nodeID, BioPAXUtil.BIOPAX_MERGE_SRC,
+                                                    BioPAXMergeVisualStyleUtil.BIOPAX_MERGE_SRC_FIRST);
+                else if(!n1_nodeIDs.contains(nodeID) && n2_nodeIDs.contains(nodeID) && !integratedRDFs.contains(rdfId))
+                    nodeAttributes.setAttribute(nodeID, BioPAXUtil.BIOPAX_MERGE_SRC,
+                                                    BioPAXMergeVisualStyleUtil.BIOPAX_MERGE_SRC_SECOND);
+                else
+                    nodeAttributes.setAttribute(nodeID, BioPAXUtil.BIOPAX_MERGE_SRC,
+                                                    BioPAXMergeVisualStyleUtil.BIOPAX_MERGE_SRC_MERGE);
+            }
+
+            final VisualStyle bioPaxVisualStyle = BioPAXMergeVisualStyleUtil.getBioPAXMergeVisualStyle(firstColor,
+                                                                                                       secondColor,
+                                                                                                       mergedColor);
+            final VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+            final CyNetworkView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+            view.setVisualStyle(bioPaxVisualStyle.getName());
+            manager.setVisualStyle(bioPaxVisualStyle);
+            view.applyVizmapper(bioPaxVisualStyle);
+        }
 
         taskMonitor.setPercentCompleted(100);
 	    taskMonitor.setStatus("Integration successful.");
@@ -484,4 +794,5 @@ class IntegrateBioPAXTask implements Task {
     public String getTitle() {
         return "Integrating BioPAX networks";
     }
+
 }

@@ -32,6 +32,8 @@ public class MergeBioPAXDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
+        setTitle("Merge BioPAX networks");
+
         DefaultListModel listModel = new DefaultListModel();
 
         for (CyNetwork cyNetwork : Cytoscape.getNetworkSet()) {
