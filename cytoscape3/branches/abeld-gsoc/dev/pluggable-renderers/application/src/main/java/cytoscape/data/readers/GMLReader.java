@@ -64,11 +64,8 @@ import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.calculators.BasicCalculator;
-
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 import org.cytoscape.vizmap.mappings.PassThroughMapping;
@@ -80,6 +77,7 @@ import org.cytoscape.Node;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.VisualProperty;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -955,6 +953,7 @@ public class GMLReader extends AbstractGraphReader {
 
 			if (keyVal.key.equals(X) || keyVal.key.equals(Y)) {
 				// Do nothing.
+				/* FIXME: comment out IO code during pluggable-renderers refactor. Will have to fix this later
 			} else if (keyVal.key.equals(H)) {
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_HEIGHT, ""+keyVal.value);
 			} else if (keyVal.key.equals(W)) {
@@ -962,6 +961,7 @@ public class GMLReader extends AbstractGraphReader {
 			} else if (keyVal.key.equals(TYPE)) {
 				String type = (String) keyVal.value;
 				graphStyle.addProperty(nodeName, VisualPropertyType.NODE_SHAPE,type);
+				*/
 			}
 		}
 	}
@@ -985,6 +985,7 @@ public class GMLReader extends AbstractGraphReader {
 				// with arbitrary number of anchors.
 				// Current version of CS does not support this, so ignore this
 				// at this point of time...
+				/* FIXME: comment out IO code during pluggable-renderers refactor. Will have to fix this later
 			} else if (keyVal.key.equals(WIDTH)) {
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_LINE_WIDTH, new String(keyVal.value.toString()));
 			} else if (keyVal.key.equals(FILL)) {
@@ -1011,7 +1012,7 @@ public class GMLReader extends AbstractGraphReader {
 				}
 				else {// none
 				}
-				
+				*/
 			} else if (keyVal.key.equals(TYPE)) {
 				value = (String) keyVal.value;
 
@@ -1028,6 +1029,7 @@ public class GMLReader extends AbstractGraphReader {
 		}
 		
 		// make the arrow color the same as edge
+		/* FIXME: comment out IO code during pluggable-renderers refactor. Will have to fix this later
 		if (isArrow) {
 			if (arrowShape.equals(ARROW_FIRST)) {
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_SRCARROW_COLOR, edgeFill);				
@@ -1040,6 +1042,7 @@ public class GMLReader extends AbstractGraphReader {
 				graphStyle.addProperty(edgeName, VisualPropertyType.EDGE_TGTARROW_COLOR, edgeFill);
 			}
 		}
+		*/
 	}
 
 	/**

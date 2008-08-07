@@ -86,9 +86,9 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.VisualMappingManager;
 
 import java.lang.management.ManagementFactory;
@@ -459,6 +459,7 @@ public class XGMMLReader extends AbstractGraphReader {
 		nodeView.setXPosition(x);
 		nodeView.setYPosition(y);
 
+		/* FIXME: comment out IO code during pluggable-renderers refactor. Will have to fix this later
 		if (buildStyle && h != 0.0) {
 			// nodeView.setHeight(h);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_HEIGHT, ""+h);
@@ -467,23 +468,26 @@ public class XGMMLReader extends AbstractGraphReader {
 			// nodeView.setWidth(w);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_WIDTH, ""+w);
 		}
-
+		 */
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
 
 		// These are saved in the exported XGMML, but it's not clear how they get set
+		/* FIXME: comment out IO code during pluggable-renderers refactor. Will have to fix this later
 		if (buildStyle && XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE) != null) {
 			String nodeLabelFont = XGMMLParser.getAttributeNS(graphics,"nodeLabelFont", CY_NAMESPACE);
 			graphStyle.addProperty(nodeID, VisualPropertyType.NODE_FONT_FACE, nodeLabelFont);
 		}
-
+		 */
 		String type = XGMMLParser.getAttribute(graphics,"type");
+		/* FIXME: comment out IO code during pluggable-renderers refactor. Will have to fix this later
 		if (buildStyle && type != null) {
 			if (type.equals("rhombus"))
 				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,"parallelogram");
 			else
 				graphStyle.addProperty(nodeID, VisualPropertyType.NODE_SHAPE,type);
 		}
+		*/
 	}
 
 	/**
@@ -533,7 +537,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	*/
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		String edgeID = edgeView.getEdge().getIdentifier();
-
+		/* FIXME: comment out IO code during pluggable-renderers refactor. Will have to fix this later
 		if (buildStyle && XGMMLParser.getAttribute(graphics,"width") != null) {
 			String lineWidth = XGMMLParser.getAttribute(graphics,"width");
 			// edgeView.setStrokeWidth(lineWidth);
@@ -578,7 +582,7 @@ public class XGMMLReader extends AbstractGraphReader {
 			String value = XGMMLParser.getAttributeNS(graphics, "edgeLineType", CY_NAMESPACE);
 			graphStyle.addProperty(edgeID, VisualPropertyType.EDGE_LINE_STYLE, value);
 		}
-
+		 */
 		if (XGMMLParser.getAttributeNS(graphics,"curved", CY_NAMESPACE) != null) {
 			String value = XGMMLParser.getAttributeNS(graphics, "curved", CY_NAMESPACE);
 			if (value.equals("STRAIGHT_LINES")) {
@@ -587,7 +591,7 @@ public class XGMMLReader extends AbstractGraphReader {
 				edgeView.setLineType(EdgeView.CURVED_LINES);
 			}
 		}
-
+		 
 	 	if (XGMMLParser.getAttribute(graphics,"edgeHandleList") != null) {
 			// System.out.println("See edgeHandleList");
 			String handles[] = XGMMLParser.getAttribute(graphics, "edgeHandleList").split(";");
