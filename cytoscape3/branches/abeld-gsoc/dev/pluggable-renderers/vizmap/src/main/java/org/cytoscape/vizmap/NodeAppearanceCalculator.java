@@ -41,6 +41,9 @@ import org.cytoscape.GraphPerspective;
 import org.cytoscape.vizmap.calculators.*;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
+
 import org.cytoscape.Node;
 
 import java.awt.Color;
@@ -100,8 +103,10 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     	
     	// Copy defaults
     	final NodeAppearance defAppr = new NodeAppearance();
-    	for(VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList()) {
-    		defAppr.set(type, defaultAppearance.get(type));
+    	for(VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties()) {
+    		if (vp.isNodeProp()){
+    			defAppr.set(vp, defaultAppearance.get(vp));
+			} 
     	}
     	defAppr.setNodeSizeLocked(defaultAppearance.getNodeSizeLocked());
     	copy.setDefaultAppearance(defAppr);
@@ -109,7 +114,7 @@ public class NodeAppearanceCalculator extends AppearanceCalculator {
     	//Copy mappings
     	for(Calculator cal  : this.calcs) {
     		ObjectMapping mCopy = (ObjectMapping) cal.getMapping(0).clone();
-    		BasicCalculator bCalc = new BasicCalculator(cal.toString(), mCopy, cal.getVisualPropertyType());
+    		BasicCalculator bCalc = new BasicCalculator(cal.toString(), mCopy, cal.getVisualProperty());
     		copy.setCalculator(bCalc);
     	}
     	

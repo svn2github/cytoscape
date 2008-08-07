@@ -38,6 +38,9 @@ package org.cytoscape.vizmap;
 
 import org.cytoscape.vizmap.calculators.Calculator;
 
+import org.cytoscape.view.VisualProperty;
+//import org.cytoscape.view.VisualPropertyCatalog;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -123,9 +126,9 @@ abstract class AppearanceCalculator implements Cloneable {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Calculator getCalculator(final VisualPropertyType type) {
+	public Calculator getCalculator(final VisualProperty vp) {
 		for (Calculator nc : calcs) {
-			if (nc.getVisualPropertyType() == type)
+			if (nc.getVisualProperty() == vp)
 				return nc;
 		}
 
@@ -146,11 +149,11 @@ abstract class AppearanceCalculator implements Cloneable {
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public void removeCalculator(final VisualPropertyType type) {
+	public void removeCalculator(final VisualProperty vp) {
 		Calculator toBeRemoved = null;
 
 		for (Calculator c : calcs) {
-			if (c.getVisualPropertyType() == type) {
+			if (c.getVisualProperty() == vp) {
 				toBeRemoved = c;
 
 				break;
@@ -172,7 +175,7 @@ abstract class AppearanceCalculator implements Cloneable {
 		Calculator toReplace = null;
 
 		for (Calculator nc : calcs)
-			if (nc.getVisualPropertyType() == c.getVisualPropertyType()) {
+			if (nc.getVisualProperty() == c.getVisualProperty()) {
 				toReplace = nc;
 
 				break;
@@ -205,11 +208,11 @@ abstract class AppearanceCalculator implements Cloneable {
 
 		Calculator newCalc;
 
-		for (VisualPropertyType type : catalog.getCalculatorTypes()) {
-			for (Calculator c : catalog.getCalculators(type)) {
+		for (VisualProperty vp: catalog.getCalculatorTypes()) {
+			for (Calculator c : catalog.getCalculators(vp)) {
 				value = nacProps.getProperty(baseKey + "."
-				                             + c.getVisualPropertyType().getPropertyLabel());
-				newCalc = catalog.getCalculator(c.getVisualPropertyType(), value);
+				                             + c.getVisualProperty().getName());
+				newCalc = catalog.getCalculator(c.getVisualProperty(), value);
 				setCalculator(newCalc);
 			}
 		}
@@ -222,7 +225,7 @@ abstract class AppearanceCalculator implements Cloneable {
 
 		for (Calculator c : calcs) {
 			// do actual
-			key = baseKey + "." + c.getVisualPropertyType().getPropertyLabel();
+			key = baseKey + "." + c.getVisualProperty().getName();
 			value = c.toString();
 			newProps.setProperty(key, value);
 		}

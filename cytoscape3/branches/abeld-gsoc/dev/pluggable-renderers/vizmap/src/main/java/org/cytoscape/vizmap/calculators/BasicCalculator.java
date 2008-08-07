@@ -47,12 +47,9 @@ import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.mappings.MappingFactory;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
-import org.cytoscape.vizmap.ValueParser;
+import org.cytoscape.vizmap.ValueParserCatalog;
 
-import java.util.Map;
 import java.util.Properties;
-
-import org.cytoscape.GraphPerspective;
 
 
 
@@ -84,7 +81,7 @@ public class BasicCalculator extends AbstractCalculator {
      */
     public BasicCalculator(String name, Properties props, String baseKey, VisualProperty type) {
         super(name,
-              MappingFactory.newMapping(props, baseKey + ".mapping", type.getValueParser(),
+              MappingFactory.newMapping(props, baseKey + ".mapping", ValueParserCatalog.getValueParser(type),
                                         type.getDefaultAppearanceObject(), 
 				                        type.isNodeProp()?
 										    ObjectMapping.NODE_MAPPING:

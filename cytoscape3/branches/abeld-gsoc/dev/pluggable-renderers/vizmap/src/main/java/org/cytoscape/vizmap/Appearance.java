@@ -44,6 +44,8 @@ import org.cytoscape.vizmap.ObjectToString;
 
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import java.util.Properties;
 import java.util.Map;
@@ -65,7 +67,7 @@ import org.cytoscape.Node;
 public class Appearance {
 
 	private static final String NODE_SIZE_LOCKED = ".nodeSizeLocked";
-	protected Object[] vizProps;
+	protected HashMap<VisualProperty, Object> vizProps;
 	protected boolean nodeSizeLocked = true;
 	protected CyAttributes attrs;
 
@@ -74,10 +76,10 @@ public class Appearance {
 	 */
 	public Appearance(CyAttributes attrs) {
 		this.attrs = attrs;
-		vizProps = new Object[VisualPropertyType.values().length];
+		vizProps = new HashMap<VisualProperty, Object> ();
 
-		for (VisualPropertyType type : VisualPropertyType.values())
-					vizProps[type.ordinal()] = type.getVisualProperty().getDefaultAppearanceObject();
+		for (VisualProperty vp : VisualPropertyCatalog.collectionOfVisualProperties())
+					vizProps.put(vp, vp.getDefaultAppearanceObject());
 	}
 
 	public CyAttributes getCyAttributes() {
@@ -87,14 +89,14 @@ public class Appearance {
 	/**
 	 * Sets the appearance for the specified VisualPropertyType. 
 	 *
-	 * @param p The VisualPropertyType that identifies which aspect of the appearance
+	 * @param p The VisualProperty that identifies which aspect of the appearance
 	 *          this particular object should be applied to.
 	 * @param o The object the defines the appearance for the aspect of the appearance
 	 *          defined by parameter p.
 	 */
-	public void set(VisualPropertyType p, Object o) {
+	public void set(VisualProperty vp, Object o) {
 		if (o != null)
-			vizProps[p.ordinal()] = o;
+			vizProps.put(vp, o);
 	}
 
 	/**
@@ -105,8 +107,8 @@ public class Appearance {
 	 * @return An Object of varying type depending on the VisualPropertyType. The
 	 *         VisualPropertyType enum defines what the type of this object will be.
 	 */
-	public Object get(VisualPropertyType p) {
-		return vizProps[p.ordinal()];
+	public Object get(VisualProperty vp) {
+		return vizProps.get(vp);
 	}
 
 	/**
@@ -115,19 +117,19 @@ public class Appearance {
 	 * @param nodeView The NodeView that this appearance will be applied to. 
 	 */
 	public void applyAppearance(final NodeView nodeView) {
-        for ( VisualPropertyType type : VisualPropertyType.values() )
-            if ( type == VisualPropertyType.NODE_SIZE ) {
+        for ( VisualProperty vp : VisualPropertyCatalog.collectionOfVisualProperties() )
+            if ( vp.getName().equals("NODE_SIZE")){
                 if ( nodeSizeLocked )
-                    type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);
+                    vp.applyToNodeView(nodeView,vizProps.get(vp));
                 else
                     continue;
-            } else if ( type == VisualPropertyType.NODE_WIDTH || type == VisualPropertyType.NODE_HEIGHT ) {
+            } else if ( vp.getName().equals("NODE_WIDTH")|| vp.getName().equals("NODE_HEIGHT") ) {
                 if ( nodeSizeLocked )
                     continue;
                 else
-                    type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);
+                	vp.applyToNodeView(nodeView,vizProps.get(vp));
             } else
-                type.getVisualProperty().applyToNodeView(nodeView,vizProps[type.ordinal()]);	
+            	vp.applyToNodeView(nodeView,vizProps.get(vp));
 	}
 
 	/**
@@ -136,8 +138,8 @@ public class Appearance {
 	 * @param edgeView The EdgeView that this appearance will be applied to. 
 	 */
 	public void applyAppearance(final EdgeView edgeView) {
-		for (VisualPropertyType type : VisualPropertyType.values())
-			type.getVisualProperty().applyToEdgeView(edgeView, vizProps[type.ordinal()]);
+		for (VisualProperty vp : VisualPropertyCatalog.collectionOfVisualProperties())
+			vp.applyToEdgeView(edgeView, vizProps.get(vp));
 	}
 
 	/**
@@ -148,11 +150,11 @@ public class Appearance {
 	 *                used for the appearance.
 	 */
 	public void applyDefaultProperties(final Properties nacProps, String baseKey) {
-		for (VisualPropertyType type : VisualPropertyType.values()) {
-			Object o = type.getVisualProperty().parseProperty(nacProps, baseKey);
+		for (VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties()) {
+			Object o = vp.parseProperty(nacProps, baseKey);
 
 			if (o != null)
-				vizProps[type.ordinal()] = o;
+				vizProps.put(vp, o);
 		}
 		
 		// Apply nodeSizeLock
@@ -175,9 +177,9 @@ public class Appearance {
 	public Properties getDefaultProperties(String baseKey) {
 		Properties props = new Properties();
 
-		for (VisualPropertyType type : VisualPropertyType.values()) {
-			String key = type.getDefaultPropertyKey(baseKey);
-			String value = ObjectToString.getStringValue(vizProps[type.ordinal()]);
+		for (VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties()) {
+			String key = vp.getName(); // FIXME FIXME: this was something different before refactoring
+			String value = ObjectToString.getStringValue(vizProps.get(vp));
 			if ( key != null && value != null ) {
 //				System.out.println("(Key,val) = " + key + ", " + value + ", basekey = " + baseKey);
 				props.setProperty(key,value);
@@ -206,12 +208,12 @@ public class Appearance {
 		final String lineSep = System.getProperty("line.separator");
 		final StringBuilder sb = new StringBuilder();
 
-		for (VisualPropertyType type : VisualPropertyType.values()) {
-			if (vizProps[type.ordinal()] != null) {
+		for (VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties()) {
+			if (vizProps.get(vp) != null) {
 				sb.append(prefix);
-				sb.append(type.getName());
+				sb.append(vp.getName());
 				sb.append(" = ");
-				sb.append(ObjectToString.getStringValue(vizProps[type.ordinal()]));
+				sb.append(ObjectToString.getStringValue(vizProps.get(vp)));
 				sb.append(lineSep);
 			}
 		}
@@ -241,8 +243,8 @@ public class Appearance {
         setNodeSizeLocked(false);
         na.setNodeSizeLocked(false);
 
-		for (VisualPropertyType type : VisualPropertyType.values())
-			this.vizProps[type.ordinal()] = na.get(type);
+		for (VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties())
+			vizProps.put(vp, na.get(vp));
 
         // now set the lock state correctly
         setNodeSizeLocked(actualLockState);
@@ -274,11 +276,11 @@ public class Appearance {
 
 		final String id = n.getIdentifier();
 
-		for (VisualPropertyType type : VisualPropertyType.values()) {
-			Object bypass = getBypass(attrs, id, type);
+		for (VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties()) {
+			Object bypass = getBypass(attrs, id, vp);
 
 			if (bypass != null)
-				vizProps[type.ordinal()] = bypass;
+				vizProps.put(vp, bypass);
 		}
 	}
 
@@ -290,15 +292,15 @@ public class Appearance {
 	 *
 	 * You really shouldn't have any reason to use this method!
 	 */
-    static Object getBypass( CyAttributes xattrs, String id, VisualPropertyType type ) {
-		String attrName = type.getBypassAttrName();
+    static Object getBypass( CyAttributes xattrs, String id, VisualProperty vp) {
+		String attrName = vp.getName();
 
         final String value = xattrs.getStringAttribute(id, attrName);
 
         if (value == null)
             return null;
 
-        ValueParser p = type.getValueParser(); 
+        ValueParser p = ValueParserCatalog.getValueParser(vp); 
 
         Object ret = null;
         if (p != null)

@@ -49,6 +49,9 @@ import org.cytoscape.vizmap.calculators.Calculator;
 
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
+
 import org.cytoscape.Edge;
 
 import java.awt.Color;
@@ -98,8 +101,12 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 		// Copy defaults
 		final EdgeAppearance defAppr = new EdgeAppearance();
 
-		for (VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList()) {
-			defAppr.set(type, defaultAppearance.get(type));
+		for (VisualProperty vp: VisualPropertyCatalog.collectionOfVisualProperties()) {
+			if (vp.isNodeProp()){
+				continue;
+			} else {
+				defAppr.set(vp, defaultAppearance.get(vp));
+			}
 		}
 
 		copy.setDefaultAppearance(defAppr);
@@ -108,7 +115,7 @@ public class EdgeAppearanceCalculator extends AppearanceCalculator {
 		for (Calculator cal : this.calcs) {
 			final ObjectMapping mCopy = (ObjectMapping) cal.getMapping(0).clone();
 			BasicCalculator bCalc = new BasicCalculator(cal.toString(), mCopy,
-			                                            cal.getVisualPropertyType());
+			                                            cal.getVisualProperty());
 			copy.setCalculator(bCalc);
 		}
 

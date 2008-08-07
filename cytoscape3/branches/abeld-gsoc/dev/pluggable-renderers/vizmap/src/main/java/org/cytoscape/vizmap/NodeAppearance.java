@@ -42,15 +42,9 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_SIZE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 import org.cytoscape.attributes.CyAttributesFactory;
-
-import java.awt.Color;
-import java.awt.Font;
-
 
 /**
  * Objects of this class hold data describing the appearance of a Node.
@@ -73,18 +67,18 @@ public class NodeAppearance extends Appearance {
 		return ga;
 	}
 
-    public Object get(VisualPropertyType p) {
-		if ( p == VisualPropertyType.NODE_WIDTH || p == VisualPropertyType.NODE_HEIGHT ) 
+    public Object get(VisualProperty vp) {
+		if ( vp.getName().equals("NODE_WIDTH") || vp.getName().equals("NODE_HEIGHT") ) 
 			if ( nodeSizeLocked )
-				return vizProps[VisualPropertyType.NODE_SIZE.ordinal()]; 
+				return vizProps.get(VisualPropertyCatalog.getVisualProperty("NODE_SIZE")); 
 
-        return vizProps[p.ordinal()];
+        return vizProps.get(vp);
     }
 
-	public void set(VisualPropertyType p, Object o) {
+	public void set(VisualProperty vp, Object o) {
 		if (o == null)
 			return;
-		vizProps[p.ordinal()] = o;
+		vizProps.put(vp, o);
 	}
 
 
