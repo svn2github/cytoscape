@@ -284,22 +284,8 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     	networkView.updateView();
     	networkView.redrawGraph(true, true);
 		
-		// Not quite done, yet.  If we're only laying out selected nodes, we need
-		// to migrate the selected nodes back to their starting position
-		if (selectedOnly) {
-			double xDelta = 0.0;
-			double yDelta = 0.0;
-			Dimension finalLocation = part.getAverageLocation();
-			xDelta = finalLocation.getWidth() - initialLocation.getWidth();
-			yDelta = finalLocation.getHeight() - initialLocation.getHeight();
-			for (LayoutNode v: allLayoutNodes) {
-				if (!v.isLocked()) {
-					v.decrement(xDelta, yDelta);
-					part.moveNodeToLocation(v);
-				}
-			}
-		}
-		
+    	// VMUI [removed code]
+    	
 		clear();
 		
 		System.out.println("Default Percentage: " + defaultPercentage);
