@@ -4,7 +4,7 @@
  * $RCSfile: TextView.java,v $
  * $Revision: 1.1 $
  * $Date: 2006/08/16 19:13:45 $
- * $Name:  $
+
  *
  * This file is part of Java TreeView
  * Copyright (C) 2001-2003 Alok Saldanha, All Rights Reserved. Modified by Alex Segal 2004/08/13. Modifications Copyright (C) Lawrence Berkeley Lab.
@@ -34,10 +34,8 @@ import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.HeaderSummary;
 import clusterMaker.treeview.ModelView;
 import clusterMaker.treeview.TreeSelectionI;
-import clusterMaker.treeview.UrlExtractor;
 
-public class TextView extends ModelView implements FontSelectable,
-                                                   KeyListener, AdjustmentListener,
+public class TextView extends ModelView implements KeyListener, AdjustmentListener,
                                                    MouseListener, MouseMotionListener {
 
 	public String[]  getHints() {
