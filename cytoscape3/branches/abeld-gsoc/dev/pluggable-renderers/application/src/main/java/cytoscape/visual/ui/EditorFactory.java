@@ -39,14 +39,14 @@ import cytoscape.visual.ui.EditorDisplayer;
 import cytoscape.visual.ui.EditorDisplayer.EditorType;
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import java.lang.reflect.*;
 
 
 public class EditorFactory {
 
-	private static Object showEditor(EditorDisplayer action, VisualPropertyType type)
+	private static Object showEditor(EditorDisplayer action, VisualProperty type)
 	    throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
 	               SecurityException, NoSuchMethodException {
 		Method method = action.getActionClass()
@@ -59,7 +59,7 @@ public class EditorFactory {
 		if ((ret != null) && ret instanceof ContinuousMappingEditorPanel)
 			return ret;
 		
-		else if ((ret != null) && type == VisualPropertyType.EDGE_LINE_WIDTH) {
+		else if ((ret != null) && type.getName().equals("EDGE_LINE_WIDTH")) {
 			try {
 				ret = Float.valueOf(((String)ret));
 			} catch (NumberFormatException e){
@@ -76,13 +76,13 @@ public class EditorFactory {
 		}
 		
 		// If size, it should be greater than 0.  Otherwise, 1 will be set.
-		if((type.name()).toUpperCase().endsWith("WIDTH") || (type.name()).toUpperCase().endsWith("SIZE")) {
+		if((type.getName()).toUpperCase().endsWith("WIDTH") || (type.getName()).toUpperCase().endsWith("SIZE")) {
 			if(((Number)ret).doubleValue() < 0) {
 				ret = 1f;
 			}
 		}
 		
-		if((type.name()).toUpperCase().endsWith("OPACITY")) {
+		if((type.getName()).toUpperCase().endsWith("OPACITY")) {
 			if (((Number)ret).doubleValue() > 255) {
 				ret = 255d;
 			} else if(((Number)ret).doubleValue() < 0) {
@@ -101,7 +101,7 @@ public class EditorFactory {
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public static Object showDiscreteEditor(VisualPropertyType type) throws Exception {
+	public static Object showDiscreteEditor(VisualProperty type) throws Exception {
 		return showEditor(EditorDisplayer.getEditor(type, EditorType.DISCRETE), type);
 	}
 	
@@ -114,7 +114,7 @@ public class EditorFactory {
 	 * </p>
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public static Object showContinuousEditor(VisualPropertyType type) throws Exception {
+	public static Object showContinuousEditor(VisualProperty type) throws Exception {
 		final EditorDisplayer editor = EditorDisplayer.getEditor(type, EditorType.CONTINUOUS);
 
 		if (editor == EditorDisplayer.CONTINUOUS_COLOR)

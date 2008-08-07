@@ -40,7 +40,7 @@ import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CountedIterator;
 import org.cytoscape.attributes.MultiHashMap;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.calculators.Calculator;
 
@@ -100,7 +100,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	 */
 	protected static final String BELOW_VALUE_CHANGED = "BELOW_VALUE_CHANGED";
 	protected static final String ABOVE_VALUE_CHANGED = "ABOVE_VALUE_CHANGED";
-	protected VisualPropertyType type;
+	protected VisualProperty type;
 	protected Calculator calculator;
 	protected ContinuousMapping mapping;
 	protected List<ContinuousMappingPoint> allPoints;
@@ -111,7 +111,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected double lastSpinnerNumber = 0;
 
 	/** Creates new form ContinuousMapperEditorPanel */
-	public ContinuousMappingEditorPanel(final VisualPropertyType type) {
+	public ContinuousMappingEditorPanel(final VisualProperty type) {
 		this.type = type;
 		initComponents();
 		setVisualPropLabel();
@@ -139,7 +139,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public static ImageIcon getIcon(final int width, final int height, VisualPropertyType type) {
+	public static ImageIcon getIcon(final int width, final int height, VisualProperty type) {
 		final Class dataType = type.getDataType();
 
 		if (dataType == Color.class) {

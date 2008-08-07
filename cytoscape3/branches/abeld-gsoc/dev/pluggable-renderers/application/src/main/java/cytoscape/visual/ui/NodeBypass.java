@@ -46,7 +46,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 
 class NodeBypass extends VizMapBypass {
@@ -60,7 +61,7 @@ class NodeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject(n);
 
-		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
+		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList())
 			addMenuItem(menu, type);
 
 		menu.addSeparator();
@@ -73,8 +74,8 @@ class NodeBypass extends VizMapBypass {
 	protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for (VisualPropertyType type : VisualPropertyType.getNodeVisualPropertyList())
-			l.add(type.getBypassAttrName());
+		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList())
+			l.add(type.getName());
 
 		return l;
 	}

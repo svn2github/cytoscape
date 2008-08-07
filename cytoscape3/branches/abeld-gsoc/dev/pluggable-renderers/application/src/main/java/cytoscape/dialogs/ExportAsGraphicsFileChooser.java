@@ -117,10 +117,10 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 
 		List<Calculator> edge_calculators = vs.getEdgeAppearanceCalculator().getCalculators();
 		for (Calculator cal: edge_calculators) {
-			if (cal.getVisualPropertyType()== org.cytoscape.vizmap.VisualPropertyType.EDGE_OPACITY ||
-					cal.getVisualPropertyType()== org.cytoscape.vizmap.VisualPropertyType.EDGE_LABEL_OPACITY ||
-					cal.getVisualPropertyType()== org.cytoscape.vizmap.VisualPropertyType.EDGE_TGTARROW_OPACITY ||
-					cal.getVisualPropertyType()== org.cytoscape.vizmap.VisualPropertyType.EDGE_SRCARROW_OPACITY
+			if (cal.getVisualProperty().getName().equals("EDGE_OPACITY")||
+					cal.getVisualProperty().getName().equals("EDGE_LABEL_OPACITY") ||
+					cal.getVisualProperty().getName().equals("EDGE_TGTARROW_OPACITY") ||
+					cal.getVisualProperty().getName().equals("EDGE_SRCARROW_OPACITY")
 			) {
 				return true;
 			}

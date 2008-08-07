@@ -50,7 +50,7 @@ import javax.swing.JMenuItem;
 import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.ObjectToString;
 
 
@@ -84,14 +84,14 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 	}
 
-	protected void addResetMenuItem(JMenu menu, final VisualPropertyType type) {
+	protected void addResetMenuItem(JMenu menu, final VisualProperty type) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getName() + " ]") {
 	private final static long serialVersionUID = 1202339876709140L;
 				public void actionPerformed(ActionEvent e) {
 					String id = graphObj.getIdentifier();
 
-					if (attrs.hasAttribute(id, type.getBypassAttrName()))
-						attrs.deleteAttribute(id, type.getBypassAttrName());
+					if (attrs.hasAttribute(id, type.getName()))
+						attrs.deleteAttribute(id, type.getName());
 
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
@@ -100,7 +100,7 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 	}
 
-	protected void addMenuItem(JMenu menu, final VisualPropertyType type) {
+	protected void addMenuItem(JMenu menu, final VisualProperty type) {
 		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
 	private final static long serialVersionUID = 1202339876717506L;
 				public void actionPerformed(ActionEvent e) {
@@ -117,7 +117,7 @@ abstract class VizMapBypass {
 						return;
 
 					String val = ObjectToString.getStringValue(obj);
-					attrs.setAttribute(graphObj.getIdentifier(), type.getBypassAttrName(), val);
+					attrs.setAttribute(graphObj.getIdentifier(), type.getName(), val);
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
@@ -126,18 +126,18 @@ abstract class VizMapBypass {
 		menu.add(jmi);
 		
 		// Check node size lock state 
-		if(type.equals(VisualPropertyType.NODE_SIZE)) {
+		if(type.getName().equals("NODE_SIZE")) {
 			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
 				jmi.setEnabled(false);
 			}
-		} else if(type.equals(VisualPropertyType.NODE_WIDTH) || type.equals(VisualPropertyType.NODE_HEIGHT)) {
+		} else if(type.getName().equals("NODE_WIDTH") || type.getName().equals("NODE_HEIGHT")) {
 			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
 				jmi.setEnabled(false);
 			}
 		}
 
 		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),
-		                                             type.getBypassAttrName());
+		                                             type.getName());
 
 		if ((attrString == null) || (attrString.length() == 0))
 			jmi.setSelected(false);

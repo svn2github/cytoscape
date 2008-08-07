@@ -47,12 +47,14 @@ import javax.swing.JOptionPane;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
+
+import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.NodeRenderers;
-import org.cytoscape.vizmap.VisualPropertyType;
+
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
@@ -83,29 +85,29 @@ public enum EditorDisplayer {
 	                new Object[] { Cytoscape.getDesktop(), "Please enter new text value:" },
 	                String.class), 
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
-	               new Class[] { VisualPropertyType.class, JDialog.class },
+	               new Class[] { VisualProperty.class, JDialog.class },
 	               new Object[] { VisualPropertyType.NODE_SHAPE, null }, NodeShape.class), 
 	DISCRETE_RENDERER(ValueSelectDialog.class, "showDialog",
-	 	            new Class[] { VisualPropertyType.class, JDialog.class },
+	 	            new Class[] { VisualProperty.class, JDialog.class },
 	 	            new Object[] { VisualPropertyType.NODE_RENDERER, null }, NodeRenderers.class), 
     DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
-	                     new Class[] { VisualPropertyType.class, JDialog.class },
+	                     new Class[] { VisualProperty.class, JDialog.class },
 	                     new Object[] { VisualPropertyType.EDGE_SRCARROW_SHAPE, null }, ArrowShape.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
-	                   new Class[] { VisualPropertyType.class, JDialog.class },
+	                   new Class[] { VisualProperty.class, JDialog.class },
 	                   new Object[] { VisualPropertyType.EDGE_LINE_STYLE, null }, LineStyle.class), 
 	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
 	                        new Class[] { Frame.class, LabelPosition.class },
 	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 
 	CONTINUOUS_COLOR(GradientEditorPanel.class, "showDialog",
-	                 new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
+	                 new Class[] { int.class, int.class, String.class, VisualProperty.class },
 	                 new Object[] { 450, 180, "Gradient Editor", null }, Color.class), 
 	CONTINUOUS_CONTINUOUS(C2CMappingEditor.class, "showDialog",
-	                      new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
+	                      new Class[] { int.class, int.class, String.class, VisualProperty.class },
 	                      new Object[] { 450, 250, "Continuous-Continuous Editor", null },
 	                      Number.class), 
 	CONTINUOUS_DISCRETE(C2DMappingEditor.class, "showDialog",
-	                    new Class[] { int.class, int.class, String.class, VisualPropertyType.class },
+	                    new Class[] { int.class, int.class, String.class, VisualProperty.class },
 	                    new Object[] { 450, 200, "Continuous-Discrete Editor", null }, Object.class);
 	private Class chooserClass;
 	private String command;
@@ -186,7 +188,7 @@ public enum EditorDisplayer {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static EditorDisplayer getEditor(final VisualPropertyType type, final EditorType editor) {
+	public static EditorDisplayer getEditor(final VisualProperty type, final EditorType editor) {
 		final Class dataType = type.getDataType();
 		for (EditorDisplayer command : values()) {
 			if ((dataType == command.getCompatibleClass())

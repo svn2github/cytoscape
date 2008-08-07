@@ -34,8 +34,6 @@
 */
 package cytoscape.visual.ui;
 
-import static org.cytoscape.vizmap.VisualPropertyType.*;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -59,8 +57,9 @@ import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
+
+import org.cytoscape.view.VisualProperty;
 
 
 /**
@@ -70,7 +69,7 @@ import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 public class ValueSelectDialog extends JDialog {
 	private final static long serialVersionUID = 1202339876950593L;
 	
-	private final VisualPropertyType type;
+	private final VisualProperty type;
 	private Map shapeMap;
 	private List<Object> orderedKeyList;
 	
@@ -85,17 +84,17 @@ public class ValueSelectDialog extends JDialog {
 	 * @param parent
 	 * @return
 	 */
-	public static Object showDialog(VisualPropertyType type, JDialog parent) {
+	public static Object showDialog(VisualProperty type, JDialog parent) {
 	
 		final ValueSelectDialog dialog = new ValueSelectDialog(type, parent, true);
 		dialog.setVisible(true);
 		return dialog.getValue();
 	}
 
-	private ValueSelectDialog(VisualPropertyType type, JDialog parent, boolean modal) {
+	private ValueSelectDialog(VisualProperty type, JDialog parent, boolean modal) {
 		super(Cytoscape.getDesktop(), modal);
 		this.type = type;
-		shapeMap = this.type.getVisualProperty().getIconSet();
+		shapeMap = this.type.getIconSet();
 		initComponents();
 
 		setList();
@@ -241,10 +240,10 @@ public class ValueSelectDialog extends JDialog {
 		for (Object key : shapeMap.keySet()) {
 			icon = (VisualPropertyIcon) shapeMap.get(key);
 
-			if(type == EDGE_SRCARROW_SHAPE || type == EDGE_TGTARROW_SHAPE) {
+			if(type.getName().equals("EDGE_SRCARROW_SHAPE") || type.getName().equals("EDGE_TGTARROW_SHAPE")) {
 				icon.setIconWidth(icon.getIconWidth()*3);
 			}
-			if(type.equals(NODE_SHAPE) && ((NodeShape)key).isSupported() == false) {
+			if(type.getName().equals("NODE_SHAPE") && ((NodeShape)key).isSupported() == false) {
 				// Filter shapes not supported by current rendering engine.
 				// Maybe supported in future versions...
 				continue;

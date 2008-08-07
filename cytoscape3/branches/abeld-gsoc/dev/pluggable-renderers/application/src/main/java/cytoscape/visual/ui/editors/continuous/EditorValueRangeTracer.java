@@ -34,7 +34,8 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,12 +81,12 @@ public class EditorValueRangeTracer {
 		}
 	}
 
-	private Map<VisualPropertyType, Range> rangeMap;
+	private Map<VisualProperty, Range> rangeMap;
 
 	private EditorValueRangeTracer() {
-		rangeMap = new HashMap<VisualPropertyType, Range>();
+		rangeMap = new HashMap<VisualProperty, Range>();
 
-		for (VisualPropertyType v : VisualPropertyType.values()) {
+		for (VisualProperty v : VisualPropertyCatalog.collectionOfVisualProperties()) {
 			Range r = new Range(0d, 0d);
 			rangeMap.put(v, r);
 		}
@@ -107,7 +108,7 @@ public class EditorValueRangeTracer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Double getRange(VisualPropertyType t) {
+	public Double getRange(VisualProperty t) {
 		return rangeMap.get(t).getRange();
 	}
 
@@ -118,7 +119,7 @@ public class EditorValueRangeTracer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Double getMin(VisualPropertyType t) {
+	public Double getMin(VisualProperty t) {
 		return rangeMap.get(t).getMin();
 	}
 
@@ -129,7 +130,7 @@ public class EditorValueRangeTracer {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Double getMax(VisualPropertyType t) {
+	public Double getMax(VisualProperty t) {
 		return rangeMap.get(t).getMax();
 	}
 
@@ -139,7 +140,7 @@ public class EditorValueRangeTracer {
 	 * @param t DOCUMENT ME!
 	 * @param min DOCUMENT ME!
 	 */
-	public void setMin(VisualPropertyType t, Double min) {
+	public void setMin(VisualProperty t, Double min) {
 		rangeMap.get(t).setMin(min);
 	}
 
@@ -149,7 +150,7 @@ public class EditorValueRangeTracer {
 	 * @param t DOCUMENT ME!
 	 * @param max DOCUMENT ME!
 	 */
-	public void setMax(VisualPropertyType t, Double max) {
+	public void setMax(VisualProperty t, Double max) {
 		rangeMap.get(t).setMax(max);
 	}
 }

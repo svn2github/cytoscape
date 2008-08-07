@@ -38,7 +38,9 @@ package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.*;
+import org.cytoscape.vizmap.ValueParserCatalog;
 import org.cytoscape.vizmap.calculators.*;
 import org.cytoscape.vizmap.mappings.*;
 
@@ -54,8 +56,8 @@ import java.awt.Color;
  */
 public class VisualStyleBuilder {
 
-	Map<VisualPropertyType,Map<Object,Object>> valueMaps;
-	Map<VisualPropertyType,Map<Object,Integer>> counts;
+	Map<VisualProperty,Map<Object,Object>> valueMaps;
+	Map<VisualProperty,Map<Object,Integer>> counts;
 	String name;
 	private boolean nodeSizeLocked = true;
 
@@ -71,8 +73,8 @@ public class VisualStyleBuilder {
 		// because visual style parsing breaks with '.' in the names
 		this.name = name.replaceAll("\\.","_");
 
-		valueMaps = new EnumMap<VisualPropertyType,Map<Object,Object>>(VisualPropertyType.class);
-		counts = new EnumMap<VisualPropertyType,Map<Object,Integer>>(VisualPropertyType.class);
+		valueMaps = new HashMap<VisualProperty,Map<Object,Object>>();
+		counts = new HashMap<VisualProperty,Map<Object,Integer>>();
 	}
 
 	/**
@@ -100,7 +102,7 @@ public class VisualStyleBuilder {
 
 		processCounts();
 
-		for ( VisualPropertyType type : valueMaps.keySet() ) {
+		for ( VisualProperty type : valueMaps.keySet() ) {
 
 			Map<Object,Object> valMap = valueMaps.get(type);
 			// If there is more than one value specified for a given
@@ -108,7 +110,7 @@ public class VisualStyleBuilder {
 			// have a property then create a mapping and calculator.
 			if ( createMapping(type) ) {
  
-				DiscreteMapping dm = new DiscreteMapping( type.getVisualProperty().getDefaultAppearanceObject(), 
+				DiscreteMapping dm = new DiscreteMapping( type.getDefaultAppearanceObject(), 
 					                                  getAttrName(type), 
 					                                  type.isNodeProp() ?  
 					                                  ObjectMapping.NODE_MAPPING : ObjectMapping.EDGE_MAPPING );
@@ -153,7 +155,7 @@ public class VisualStyleBuilder {
 		vizmapper.setVisualStyle(graphStyle);
 	}
 
-	private String getAttrName(VisualPropertyType type) {
+	private String getAttrName(VisualProperty type) {
 		return "vizmap:"+name + " " + type.toString();
 	}
 
@@ -165,9 +167,9 @@ public class VisualStyleBuilder {
 	 * @param type the type of the property
 	 * @param desc the property value
 	 */
-	public void addProperty(String id, VisualPropertyType type, String desc) {
+	public void addProperty(String id, VisualProperty type, String desc) {
 		CyAttributes attrs;
-		Object value = type.getValueParser().parseStringValue(desc);
+		Object value = ValueParserCatalog.getValueParser(type).parseStringValue(desc);
 		if (value == null)
 			return;
 		if ( type.isNodeProp() )
@@ -210,8 +212,8 @@ public class VisualStyleBuilder {
 	 * how many nodes and edges there are.
 	 */
 	private void processCounts() {
-		Map<VisualPropertyType,Integer> cm = new EnumMap<VisualPropertyType,Integer>(VisualPropertyType.class);
-		for ( VisualPropertyType vpt : counts.keySet() ) {
+		Map<VisualProperty,Integer> cm = new HashMap<VisualProperty,Integer>();
+		for ( VisualProperty vpt : counts.keySet() ) {
 			int total = 0;
 			for ( Object o : counts.get(vpt).keySet() ) {
 				total += counts.get(vpt).get(o);
@@ -222,7 +224,7 @@ public class VisualStyleBuilder {
 
 		nodeMax = 0;
 		edgeMax = 0;
-		for ( VisualPropertyType vpt : counts.keySet() ) {
+		for ( VisualProperty vpt : counts.keySet() ) {
 			if ( counts.get(vpt).size() == 1 ) {
 				for ( Object o : counts.get(vpt).keySet() ) {
 					if ( vpt.isNodeProp() ) 
@@ -242,7 +244,7 @@ public class VisualStyleBuilder {
 	 * but only a subset of nodes or edges have that mapping (which is
 	 * to say the property doesn't hold for all nodes or all edges).
 	 */
-	private boolean createMapping(VisualPropertyType vpt) {
+	private boolean createMapping(VisualProperty vpt) {
 		// if there is more than one mapping
 		if ( counts.get(vpt).size() > 1 )
 			return true;

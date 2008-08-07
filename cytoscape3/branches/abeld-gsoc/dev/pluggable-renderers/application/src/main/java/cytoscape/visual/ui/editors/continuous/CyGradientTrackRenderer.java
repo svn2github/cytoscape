@@ -34,7 +34,7 @@
 */
 package cytoscape.visual.ui.editors.continuous;
 
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
 
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.multislider.Thumb;
@@ -81,7 +81,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	private Color below;
 	private Color above;
 	private String attrName;
-	private VisualPropertyType type;
+	private VisualProperty type;
 
 	/**
 	 * Creates a new GradientTrackRenderer object.
@@ -89,7 +89,7 @@ public class CyGradientTrackRenderer extends JComponent implements VizMapperTrac
 	 * @param gradientPicker
 	 *            DOCUMENT ME!
 	 */
-	public CyGradientTrackRenderer(VisualPropertyType type, Color below, Color above, String title) {
+	public CyGradientTrackRenderer(VisualProperty type, Color below, Color above, String title) {
 		//checker_paint = ColorUtil.getCheckerPaint();
 		this.below = below;
 		this.above = above;

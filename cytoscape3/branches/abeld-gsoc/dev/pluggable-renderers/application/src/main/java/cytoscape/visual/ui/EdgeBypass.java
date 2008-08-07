@@ -41,7 +41,8 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import org.cytoscape.Edge;
 
@@ -66,7 +67,7 @@ class EdgeBypass extends VizMapBypass {
 		// horrible, horrible hack
 		BypassHack.setCurrentObject( e );
 
-		for ( VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList() ) 
+		for ( VisualProperty type : VisualPropertyCatalog.getEdgeVisualPropertyList() ) 
 			addMenuItem(menu, type);
 
         addResetAllMenuItem(menu);
@@ -77,8 +78,8 @@ class EdgeBypass extends VizMapBypass {
     protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
 
-		for ( VisualPropertyType type : VisualPropertyType.getEdgeVisualPropertyList() )
-			l.add( type.getBypassAttrName() );
+		for ( VisualProperty type : VisualPropertyCatalog.getEdgeVisualPropertyList() )
+			l.add( type.getName() );
 		
 		return l;
     }

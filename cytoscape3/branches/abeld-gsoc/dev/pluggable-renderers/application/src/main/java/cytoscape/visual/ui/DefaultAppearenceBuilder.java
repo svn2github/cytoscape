@@ -39,8 +39,8 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
 import org.cytoscape.vizmap.GlobalAppearanceCalculator;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
-import org.cytoscape.vizmap.VisualPropertyType;
-import static org.cytoscape.vizmap.VisualPropertyType.*;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
@@ -99,15 +99,15 @@ import javax.swing.SwingConstants;
  */
 public class DefaultAppearenceBuilder extends JDialog {
 	private final static long serialVersionUID = 1202339876675416L;
-	private static final Set<VisualPropertyType> EDGE_PROPS;
-	private static final Set<VisualPropertyType> NODE_PROPS;
+	private static final Set<VisualProperty> EDGE_PROPS;
+	private static final Set<VisualProperty> NODE_PROPS;
 	private static DefaultAppearenceBuilder dab = null;
 	private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
 	                                                      .getNodeAppearanceCalculator();
 
 	static {
-		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
-		NODE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getNodeVisualPropertyList());
+		EDGE_PROPS = new TreeSet<VisualProperty>(VisualPropertyCatalog.getEdgeVisualPropertyList());
+		NODE_PROPS = new TreeSet<VisualProperty>(VisualPropertyCatalog.getNodeVisualPropertyList());
 	}
 
 	/**
@@ -358,10 +358,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 					list = edgeList;
 				}
 
-				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list
+				newValue = VizMapperMainPanel.showValueSelectDialog((VisualProperty) list
 				                                                                                                                                                                                                                                                                                                                                                              .getSelectedValue(),
 				                                                    this);
-				VizMapperMainPanel.apply(newValue, (VisualPropertyType) list.getSelectedValue());
+				VizMapperMainPanel.apply(newValue, (VisualProperty) list.getSelectedValue());
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -433,9 +433,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 		DefaultListModel model = new DefaultListModel();
 		nodeList.setModel(model);
 
-		for (VisualPropertyType type : NODE_PROPS) {
-			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getVisualProperty()
-			                                                              .getDefaultIcon());
+		for (VisualProperty type : NODE_PROPS) {
+			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
 			nodeIcon.setLeftPadding(15);
 			model.addElement(type);
 			nodeIcons.add(nodeIcon);
@@ -444,9 +443,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 		DefaultListModel eModel = new DefaultListModel();
 		edgeList.setModel(eModel);
 
-		for (VisualPropertyType type : EDGE_PROPS) {
-			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getVisualProperty()
-			                                                              .getDefaultIcon());
+		for (VisualProperty type : EDGE_PROPS) {
+			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
 
 			if (edgeIcon != null) {
 				edgeIcon.setLeftPadding(15);
@@ -480,14 +478,14 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 	private void lockSize() {
 		if (lockNodeSizeCheckBox.isSelected()) {
-			NODE_PROPS.remove(NODE_WIDTH);
-			NODE_PROPS.remove(NODE_HEIGHT);
-			NODE_PROPS.add(NODE_SIZE);
+			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH"));
+			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT"));
+			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_SIZE"));
 			nac.setNodeSizeLocked(true);
 		} else {
-			NODE_PROPS.add(NODE_WIDTH);
-			NODE_PROPS.add(NODE_HEIGHT);
-			NODE_PROPS.remove(NODE_SIZE);
+			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH"));
+			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT"));
+			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_SIZE"));
 			nac.setNodeSizeLocked(false);
 		}
 
@@ -526,10 +524,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 			this.setVerticalAlignment(SwingConstants.CENTER);
 			this.setIconTextGap(55);
 
-			if (value instanceof VisualPropertyType
-			    && (((VisualPropertyType) value).getDataType() == String.class)) {
-				final Object defVal = ((VisualPropertyType) value).getDefault(Cytoscape.getVisualMappingManager()
-				                                                                       .getVisualStyle());
+			if (value instanceof VisualProperty
+			    && (((VisualProperty) value).getDataType() == String.class)) {
+				final Object defVal = ((VisualProperty) value).getDefaultAppearanceObject();// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
 
 				if (defVal != null) {
 					this.setToolTipText((String) defVal);
