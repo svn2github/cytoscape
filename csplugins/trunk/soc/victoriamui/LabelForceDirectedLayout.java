@@ -71,6 +71,8 @@ import prefuse.util.force.*;
 public class LabelForceDirectedLayout extends AbstractGraphPartition
 {
 	private ForceSimulator m_fsim;
+	private ForceSimulator label_sim;
+	private ForceSimulator node_sim;
 
 	private int numIterations = 100;
 	double defaultSpringCoefficient = 1e-4f;
@@ -119,10 +121,20 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();
 
-		m_fsim = new ForceSimulator();
-		m_fsim.addForce(new NBodyForce());
-		m_fsim.addForce(new SpringForce());
-		m_fsim.addForce(new DragForce());
+//		m_fsim = new ForceSimulator();
+//		m_fsim.addForce(new NBodyForce());
+//		m_fsim.addForce(new SpringForce());
+//		m_fsim.addForce(new DragForce());
+		
+		node_sim = new ForceSimulator();
+		node_sim.addForce(new NBodyForce());
+		node_sim.addForce(new SpringForce());
+		node_sim.addForce(new DragForce());
+		
+		label_sim = new ForceSimulator();
+		label_sim.addForce(new NBodyForce());
+		label_sim.addForce(new SpringForce());
+		label_sim.addForce(new DragForce());
 
 		layoutProperties = new LayoutProperties(getName());
 		initialize_properties();
@@ -149,8 +161,10 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
 
-		m_fsim.clear();
-
+//		m_fsim.clear();
+		node_sim.clear();
+		label_sim.clear();
+		
 		// VMUI --->
 		// Add all existing network nodes to allLayoutNodes
 		allLayoutNodes.addAll(part.getNodeList());
@@ -212,7 +226,14 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			fitem.mass = getMassValue(ln);
 			fitem.location[0] = 0f; 
 			fitem.location[1] = 0f;	
-			m_fsim.addItem(fitem);
+			
+//			m_fsim.addItem(fitem);
+			
+			if (labelToParent.containsKey(ln)) {
+				label_sim.addItem(fitem);
+			} else {
+				node_sim.addItem(fitem);
+			}
 		}
 		
 		allLayoutEdges.addAll(part.getEdgeList());
@@ -225,7 +246,16 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			ForceItem f2 = forceItems.get(n2); 
 			if ( f1 == null || f2 == null )
 				continue;
-			m_fsim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e));
+			
+//			m_fsim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e));
+			
+			// Case: n1 or n2 are label nodes; e is label edge
+			if (labelToParent.containsKey(n1) || labelToParent.containsKey(n2)) {
+				label_sim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e));
+			} else {
+				node_sim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e));
+			}
+			
 		}
 		
 		// <--- VMUI
@@ -234,18 +264,29 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		if (taskMonitor != null) {
 			taskMonitor.setStatus("Initializing partition "+part.getPartitionNumber());
 		}
-
-		// Figure out our starting point
-		if (selectedOnly) {
-			initialLocation = part.getAverageLocation();
-		}
-
+		
+		// VMUI [removed code]
+		
 		// perform layout
 		long timestep = 1000L;
+		int multiple = 0;
+		
+		if (defaultPercentage != 0.0 && numIterations != 0) { // VMUI
+			multiple = (int) (numIterations / (defaultPercentage / 100.0 * numIterations));
+			System.out.println("multiple = " + multiple);
+		}
+		
 		for ( int i = 0; i < numIterations && !canceled; i++ ) {
 			timestep *= (1.0 - i/(double)numIterations);
 			long step = timestep+50;
-			m_fsim.runSimulator(step);
+			
+			if (multiple != 0 && (i % multiple) == 0) { // VMUI
+				node_sim.runSimulator(step);
+				System.out.println("i = " + i);
+			}
+			
+			label_sim.runSimulator(step);
+			
 			setTaskStatus((int)(((double)i/(double)numIterations)*90.+5));
 		}
 		
@@ -274,6 +315,9 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		    				"node.labelPosition", lp.shortString());
 				} else {
 					// Case where ln is a network node (unlocked)
+					if (!moveNodes || defaultPercentage == 0.0) {
+						continue;
+					}
 					ln.setX(fitem.location[0]);
 					ln.setY(fitem.location[1]);
 					part.moveNodeToLocation(ln);
@@ -460,7 +504,9 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 				integrator = new EulerIntegrator();
 			else
 				return;
-			m_fsim.setIntegrator(integrator);
+//			m_fsim.setIntegrator(integrator);
+			label_sim.setIntegrator(integrator);
+			node_sim.setIntegrator(integrator);
 		}
 
 		edgeWeighter.updateSettings(layoutProperties, force);
