@@ -1400,7 +1400,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			while (e.hasMoreElements()) {
 				NodeContextMenuListener l = (NodeContextMenuListener) e.nextElement();
-				System.out.println("Adding context menu items for NodeContextMenuListener: " + l);
+				// System.out.println("Adding context menu items for NodeContextMenuListener: " + l);
 
 				//                              EventListener l = (EventListener) e.nextElement();
 				l.addNodeContextMenuItems(nv, menu);
@@ -1423,7 +1423,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			while (e.hasMoreElements()) {
 				EdgeContextMenuListener l = (EdgeContextMenuListener) e.nextElement();
-				System.out.println("Adding context menu items for EdgeContextMenuListener: " + l);
+				// System.out.println("Adding context menu items for EdgeContextMenuListener: " + l);
 				l.addEdgeContextMenuItems(ev, menu);
 			}
 
