@@ -33,6 +33,7 @@
 package batchTool.commands;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import java.util.List;
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public class ExitCommand extends AbstractCommand {
 	 */
 	public int execute(String[] substitutions) throws Exception {
 		// Do the appropriate substitutions (if any)
-		System.out.println("ExitCommand: exiting");
+		CyLogger.getLogger(ExitCommand.class).debug("executing");
 		// Cytoscape.exit(0);
 		System.exit(0);
 		return 0;

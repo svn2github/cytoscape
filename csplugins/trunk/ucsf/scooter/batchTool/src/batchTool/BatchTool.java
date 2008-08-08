@@ -42,6 +42,7 @@ import java.io.FileReader;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import batchTool.commands.*;
 
@@ -54,9 +55,10 @@ public class BatchTool extends CytoscapePlugin {
 	private HashMap<String,Command> commandMap = new HashMap();
 	private List<File> scriptList = new ArrayList();
 	private boolean initialized = false;
+	private CyLogger logger = null;
 
 	public BatchTool() {
-		System.out.println("BatchTool initializing");
+		logger = CyLogger.getLogger(BatchTool.class);
 
 		if (!initialized) {
 			// Initialize our built-ins
@@ -73,21 +75,23 @@ public class BatchTool extends CytoscapePlugin {
 
 		// Get the command arguments
 		String[] args = CytoscapeInit.getCyInitParams().getArgs();
+		/*
 		System.out.print("BatchTool: args = ");
 		for (int i = 0; i < args.length; i++) {
 			System.out.print(args[i]+" ");
 		}
 		System.out.println();
+		*/
 
 		// See if there are any scripts
 		for (int arg = 0; arg < args.length; arg++) {
 			if (args[arg].equals("-S")) {
 				// Yup, put it in our file list
-				System.out.println("Opening file "+args[arg+1]);
+				logger.debug("Opening file "+args[arg+1]);
 				File file = new File(args[++arg]);
 				if (file == null) {
 					// Display an error
-					System.err.println("Unable to open file "+args[arg]);
+					logger.error("Unable to open file "+args[arg]);
 				} else {
 					scriptList.add(file);
 				}
@@ -99,7 +103,7 @@ public class BatchTool extends CytoscapePlugin {
 			try {
 				processScriptFile(fileIter.next());
 			} catch (Exception e) {
-				System.out.println("Parsing exception: "+e.getMessage());
+				logger.error("Parsing exception: "+e.getMessage());
 			}
 		}
 		// Process each script line
@@ -111,7 +115,7 @@ public class BatchTool extends CytoscapePlugin {
 	}
 
 	private void processScriptFile(File file) throws Exception {
-		System.out.println("Processing script file "+file);
+		logger.info("Processing script file "+file);
 		// Open the file
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line = null;

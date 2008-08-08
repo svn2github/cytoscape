@@ -40,6 +40,7 @@ import java.util.HashMap;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.readers.GraphReader;
 
@@ -103,7 +104,7 @@ public class ImportCommand extends AbstractCommand {
 	public int execute(String[] substitutions) throws Exception {
 		// Do the appropriate substitutions (if any)
 		CyNetwork cyNetwork = null;
-		System.out.println("ImportCommand: executing");
+		CyLogger.getLogger(ImportCommand.class).debug("executing");
 		if (importType == ImportType.NETWORK) {
 			GraphReader reader = Cytoscape.getImportHandler().getReader(file.getAbsolutePath());
 			URI uri = file.toURI();

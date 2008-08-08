@@ -51,6 +51,7 @@ import org.w3c.dom.NodeList;
 
 // Cytoscape imports
 import cytoscape.*;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.view.CyNetworkView;
@@ -90,7 +91,6 @@ public class SFLDLoader extends CytoscapePlugin {
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
-		System.out.println("SFLD Loader "+VERSION+" initialized");
 
 		// Load the initial data from the SFLD
 		SFLDEnumerator enumerator = new SFLDEnumerator();
@@ -145,7 +145,7 @@ public class SFLDLoader extends CytoscapePlugin {
 		}
 
 		public void run() {
-			System.out.println("Initializing SFLD enumeration");
+			CyLogger.getLogger(SFLDLoader.class).info("Initializing SFLD enumeration");
 
 			DocumentBuilder builder = null;
 			Document enumeration = null;
@@ -176,7 +176,7 @@ public class SFLDLoader extends CytoscapePlugin {
 			Object[] sortable = superFamilies.toArray();
 			Arrays.sort(sortable);
 			superFamilies = Arrays.asList(sortable);
-			System.out.println("SFLD enumeration complete");
+			CyLogger.getLogger(SFLDLoader.class).info("SFLD enumeration complete");
 			loadMenu.setText("Browse SFLD...");
 			loadMenu.setEnabled(true);
 		}

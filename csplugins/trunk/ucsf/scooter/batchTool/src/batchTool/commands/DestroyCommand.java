@@ -38,6 +38,7 @@ import java.util.HashMap;
 import cytoscape.data.writers.CytoscapeSessionWriter;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.logger.CyLogger;
 
 import batchTool.commands.ParseException;
 
@@ -75,7 +76,7 @@ public class DestroyCommand extends AbstractCommand {
 	 */
 	public int execute(String[] substitutions) throws Exception {
 		// Do the appropriate substitutions (if any)
-		System.out.println("DestroyCommand: executing");
+		CyLogger.getLogger(DestroyCommand.class).debug("DestroyCommand: executing");
 
 		try {
 			CyNetwork network = Cytoscape.getNetwork(networkName);

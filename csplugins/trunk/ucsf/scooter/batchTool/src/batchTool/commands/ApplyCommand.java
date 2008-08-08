@@ -33,6 +33,7 @@
 package batchTool.commands;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualStyle;
@@ -82,7 +83,7 @@ public class ApplyCommand extends AbstractCommand {
 		VisualMappingManager vizMapper = 
 			new VisualMappingManager(networkView);
 		// Do the appropriate substitutions (if any)
-		System.out.println("ApplyCommand: applying style "+styleName);
+		CyLogger.getLogger(ApplyCommand.class).debug("ApplyCommand: applying style "+styleName);
 		VisualStyle style = vizMapper.setVisualStyle(styleName);
 		if (style == null) {
 			throw new ParseException("Unknown style "+styleName);

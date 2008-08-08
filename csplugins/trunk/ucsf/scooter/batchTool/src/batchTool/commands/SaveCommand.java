@@ -37,6 +37,7 @@ import java.util.HashMap;
 
 import cytoscape.data.writers.CytoscapeSessionWriter;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import batchTool.commands.ParseException;
 
@@ -90,7 +91,7 @@ public class SaveCommand extends AbstractCommand {
 	 */
 	public int execute(String[] substitutions) throws Exception {
 		// Do the appropriate substitutions (if any)
-		System.out.println("SaveCommand: executing");
+		CyLogger.getLogger(SaveCommand.class).debug("executing");
 
 		try {
 			writer = new CytoscapeSessionWriter(fileName);

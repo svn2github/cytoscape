@@ -55,13 +55,14 @@ import cytoscape.Cytoscape;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.CyNetwork;
+import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
+import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CyNodeView;
-import cytoscape.data.CyAttributes;
-import cytoscape.util.CytoscapeAction;
 
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
@@ -82,6 +83,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 
 	public static final String viewerName = "metaNode";
 	public static final double VERSION = 1.2;
+	public CyLogger logger = null;
 	public enum Command {
 		NONE("none"),
 		COLLAPSE("collapse"),
@@ -120,6 +122,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * The main constructor
 	 */
 	public MetaNodePlugin2() {
+		logger = CyLogger.getLogger(MetaNodePlugin2.class);
 		// Listen for network changes (so we can add our context menu)
 		try {
 			// Add ourselves to the network view created change list
@@ -128,7 +131,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			// Add our context menu
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
 		} catch (ClassCastException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 
 		// Create our main plugin menu
@@ -147,7 +150,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		// later if we fail now.
 		registerWithGroupPanel();
 
-		System.out.println("metaNodePlugin2 "+VERSION+" initialized");
+		logger.info("metaNodePlugin2 "+VERSION+" initialized");
 	}
 
 	// These are required by the CyGroupViewer interface

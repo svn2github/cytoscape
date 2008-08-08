@@ -111,8 +111,6 @@ public class EdgeLister extends CytoscapePlugin
 			edgeMenu.add(selectMenu);
 		}
 		pluginMenu.add(edgeMenu);
-
-		System.out.println("Group Tool Plugin "+VERSION+" initialized");
 	}
 
 	public void actionPerformed(ActionEvent e) {

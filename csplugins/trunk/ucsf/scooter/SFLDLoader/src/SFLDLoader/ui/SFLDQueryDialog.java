@@ -273,7 +273,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 			loadURL = loadURL+"&cutoff=1e"+slider.getValue();
 			// Load it
 			try {
-				System.out.println("Loading "+loadURL);
+				// System.out.println("Loading "+loadURL);
 				if (!automaticLayout) {
 					LoadNetworkTask.loadURL(new URL(loadURL), false);
 				} else {

@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.HashMap;
 
 import cytoscape.data.readers.CytoscapeSessionReader;
+import cytoscape.logger.CyLogger;
 
 import batchTool.commands.ParseException;
 
@@ -70,7 +71,7 @@ public class OpenCommand extends AbstractCommand {
 	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
 		// Second argument must be a registered layout
 		fileName = args.get(1);
-		System.out.println("Session name: "+fileName);
+		CyLogger.getLogger(OpenCommand.class).debug("Session name: "+fileName);
 		try {
 			reader = new CytoscapeSessionReader(fileName);
 		} catch (Exception e) {
@@ -87,7 +88,7 @@ public class OpenCommand extends AbstractCommand {
 	 */
 	public int execute(String[] substitutions) throws Exception {
 		// Do the appropriate substitutions (if any)
-		System.out.println("OpenCommand: executing");
+		CyLogger.getLogger(OpenCommand.class).debug("executing");
 		reader.read();
 		return -1;
 	}

@@ -49,6 +49,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.InternalFrameComponent;
 import cytoscape.ding.DingNetworkView;
+import cytoscape.logger.CyLogger;
 
 // Cytoscape exporter imports
 import cytoscape.util.export.BitmapExporter;
@@ -115,7 +116,7 @@ public class ExportCommand extends AbstractCommand {
 		// Second argument must be what we want to export: network, vizmap, node attributes,
 		// edge attributes, graphics
 		String obj = args.get(1);
-		System.out.println("Export "+obj);
+		CyLogger.getLogger(ExportCommand.class).debug("parsing");
 
 		// Get the rest of the information.
 		if (obj.equals("network")) {
@@ -153,7 +154,7 @@ public class ExportCommand extends AbstractCommand {
 	 */
 	public int execute(String[] substitutions) throws Exception {
 		// Do the appropriate substitutions (if any)
-		System.out.println("ExportCommand: executing");
+		CyLogger.getLogger(ExportCommand.class).debug("executing");
 		if (object == ExportObject.NETWORK) {
 			if (isNetwork(type)) {
 				exportNetwork();
@@ -206,7 +207,7 @@ public class ExportCommand extends AbstractCommand {
 			FileOutputStream outputFile = new FileOutputStream(fileName);
 			exporter.export(curr, outputFile);
 		} catch (IOException e) {
-			System.out.println("Unable to export "+fileName+": "+e.getMessage());
+			CyLogger.getLogger(ExportCommand.class).warn("Unable to export "+fileName+": "+e.getMessage());
 			return;
 		}
 	}

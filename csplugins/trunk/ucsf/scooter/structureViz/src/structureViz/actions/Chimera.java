@@ -43,8 +43,9 @@ import java.awt.Color;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
-import cytoscape.view.*;
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
+import cytoscape.view.*;
 
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraChain;
@@ -213,7 +214,7 @@ public class Chimera {
 				} else {
 					path = "chimera";
 				}
-				System.out.println("Path: "+path);
+				CyLogger.getLogger(Chimera.class).info("Path: "+path);
 
 				// Oops -- very platform specific, here!!
 				// XXX FIXME XXX

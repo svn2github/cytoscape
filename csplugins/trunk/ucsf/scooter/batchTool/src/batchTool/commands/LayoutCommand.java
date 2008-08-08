@@ -41,6 +41,7 @@ import cytoscape.layout.CyLayouts;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.LayoutProperties;
+import cytoscape.logger.CyLogger;
 
 import batchTool.commands.ParseException;
 
@@ -78,7 +79,7 @@ public class LayoutCommand extends AbstractCommand {
 	public int parse(List<String> args, HashMap<String,String>optMap) throws ParseException {
 		// Second argument must be a registered layout
 		layoutName = args.get(1);
-		System.out.println("Layout type: "+layoutName);
+		CyLogger.getLogger(LayoutCommand.class).debug("Layout type: "+layoutName);
 		layoutAlgorithm = CyLayouts.getLayout(layoutName);
 		if (layoutAlgorithm == null) {
 			throw new ParseException("The layout "+args.get(1)+" isn't available");
@@ -92,14 +93,13 @@ public class LayoutCommand extends AbstractCommand {
 		Iterator<String>keyIter = keys.iterator();
 		while(keyIter.hasNext()) {
 			String key = keyIter.next();
-			System.out.println(key);
 			// Split the pair
 			Tunable tunable = propertyList.get(key);
 			if (tunable == null) {
 				throw new ParseException("No such property: "+key);
 			}
 			String value = optMap.get(key);
-			System.out.println("Setting tunable "+key+" to "+value);
+			CyLogger.getLogger(LayoutCommand.class).debug("Setting tunable "+key+" to "+value);
 			tunable.setValue(value);
 			layoutAlgorithm.updateSettings();
 		}
@@ -114,7 +114,7 @@ public class LayoutCommand extends AbstractCommand {
 	 */
 	public int execute(String[] substitutions) throws Exception {
 		// Do the appropriate substitutions (if any)
-		System.out.println("LayoutCommand: executing");
+		CyLogger.getLogger(LayoutCommand.class).debug("executing");
 		layoutAlgorithm.doLayout();
 		return -1;
 	}

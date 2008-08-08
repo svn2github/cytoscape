@@ -63,12 +63,13 @@ import ding.view.NodeContextMenuListener;
 // Cytoscape imports
 import cytoscape.Cytoscape;
 import cytoscape.CyNode;
+import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
+import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.CyNetworkView;
-import cytoscape.data.CyAttributes;
-import cytoscape.util.CytoscapeAction;
 
 // structureViz imports
 import structureViz.ui.ModelNavigatorDialog;
@@ -97,10 +98,14 @@ public class StructureViz extends CytoscapePlugin
 	public static final int SELECTRES = 7;
 	public static final int FINDMODELS = 8;
 
+	private CyLogger logger = null;
+
   /**
    * Create our action and add it to the plugins menu
    */
   public StructureViz() {
+		logger = CyLogger.getLogger(StructureViz.class);
+
 		try {
 			// Set ourselves up to listen for new networks
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
@@ -109,7 +114,7 @@ public class StructureViz extends CytoscapePlugin
 			// Add ourselves to the current network context menu
 			((DGraphView)Cytoscape.getCurrentNetworkView()).addNodeContextMenuListener(this);
 		} catch (ClassCastException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 	    
 		JMenu menu = new JMenu("Sequence/Structure Tools");
@@ -118,7 +123,6 @@ public class StructureViz extends CytoscapePlugin
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
-		System.out.println("structureViz "+VERSION+" initialized");
 
   }
 

@@ -72,7 +72,7 @@ public class EdgeLengthPlugin extends CytoscapePlugin implements ActionListener 
 																.getMenu("Plugins");
 		pluginMenu.add(menu);
 
-		System.out.println("Edge Length Plugin "+VERSION+" initialized");
+		// System.out.println("Edge Length Plugin "+VERSION+" initialized");
 	}
 
 	public void actionPerformed(ActionEvent e) {
