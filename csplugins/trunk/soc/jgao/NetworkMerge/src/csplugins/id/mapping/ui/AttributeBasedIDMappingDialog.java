@@ -89,8 +89,8 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
                 setTitle("ID Mapping");
                 getContentPane().setLayout(new java.awt.GridBagLayout());
 
-                idMappingPane.setMinimumSize(new java.awt.Dimension(400, 400));
-                idMappingPane.setPreferredSize(new java.awt.Dimension(600, 600));
+                idMappingPane.setMinimumSize(new java.awt.Dimension(400, 200));
+                idMappingPane.setPreferredSize(new java.awt.Dimension(600, 400));
 
                 idMappingFilePanel = new csplugins.id.mapping.ui.AttributeBasedIDMappingFilePanel(frame,this,selectedNetworkAttribute,isNode);
                 idMappingPane.addTab("From file", idMappingFilePanel);

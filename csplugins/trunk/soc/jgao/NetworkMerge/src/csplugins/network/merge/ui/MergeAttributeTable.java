@@ -119,7 +119,7 @@ class MergeAttributeTable extends JTable{
         for (int i=0; i<n+1; i++) { // for each network
             final JComboBox comboBox = new JComboBox(attrs);
             final TableColumn column = getColumnModel().getColumn(i);
-            if (i<=n) {
+            if (i<n) {
                 column.setCellEditor(new DefaultCellEditor(comboBox));
             }
 

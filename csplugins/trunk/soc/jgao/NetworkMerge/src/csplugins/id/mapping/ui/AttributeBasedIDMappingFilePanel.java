@@ -270,7 +270,7 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                 gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
                 add(idTypePanel, gridBagConstraints);
 
-                goButton.setText("Add ID mappings");
+                goButton.setText("Add ID mapping");
                 goButton.setEnabled(false);
                 goButton.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {

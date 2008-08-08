@@ -392,6 +392,7 @@ public class NetworkMergeDialog extends JDialog {
 
                 collapsiblePanelAgent.setLayout(new java.awt.BorderLayout());
 
+                advancedPanel.setPreferredSize(new java.awt.Dimension(690, 400));
                 advancedPanel.setLayout(new java.awt.GridBagLayout());
                 gridBagConstraints = new java.awt.GridBagConstraints();
                 gridBagConstraints.gridx = 0;

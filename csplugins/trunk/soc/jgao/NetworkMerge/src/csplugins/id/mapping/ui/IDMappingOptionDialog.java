@@ -80,6 +80,7 @@ public class IDMappingOptionDialog extends javax.swing.JDialog {
                 cancelBtn = new javax.swing.JButton();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                setTitle("ID Mapping Options");
                 getContentPane().setLayout(new java.awt.GridBagLayout());
 
                 fileBasedPanel.setLayout(new java.awt.GridBagLayout());
