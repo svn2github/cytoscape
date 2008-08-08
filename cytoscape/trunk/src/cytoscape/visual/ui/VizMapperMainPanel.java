@@ -803,7 +803,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		closeEditorWindow();
 
-		CyLogger.getLogger().info("VS Switched --> " + vsName + ", Last = " + lastVSName);
+		CyLogger.getLogger().debug("VS Switched --> " + vsName + ", Last = " + lastVSName);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		
 		// MLC 03/31/08:
@@ -918,7 +918,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			view = (DGraphView) ((DefaultViewPanel) defPanel).getView();
 
 			if (view != null) {
-				CyLogger.getLogger().info("Creating Default Image for " + name);
+				CyLogger.getLogger().debug("Creating Default Image for " + name);
 				updateDefaultImage(name, view, panelSize);
 			}
 		}
@@ -2044,7 +2044,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		if (prop.getHiddenObject() instanceof ObjectMapping
 		    || prop.getDisplayName().equals("Mapping Type")) {
-			CyLogger.getLogger().info("Mapping type changed: " + prop.getHiddenObject());
+			CyLogger.getLogger().debug("Mapping type changed: " + prop.getHiddenObject());
 
 			if (e.getNewValue() == null)
 				return;
@@ -2407,7 +2407,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	private Calculator getNewCalculator(final VisualPropertyType type, final String newMappingName,
 	                                    final String newCalcName) {
-		CyLogger.getLogger().info("Mapper = " + newMappingName);
+		CyLogger.getLogger().debug("Mapper = " + newMappingName);
 
 		final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 
@@ -2440,7 +2440,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		final Object defaultObj = type.getDefault(vmm.getVisualStyle());
 
-		CyLogger.getLogger().info("defobj = " + defaultObj.getClass() + ", Type = " + type.getName());
+		CyLogger.getLogger().debug("defobj = " + defaultObj.getClass() + ", Type = " + type.getName());
 
 		final Object[] invokeArgs = { defaultObj, new Byte(mapType) };
 		ObjectMapping mapper = null;
@@ -2548,7 +2548,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final Dimension panelSize = defaultAppearencePanel.getSize();
 
 			if (view != null) {
-				CyLogger.getLogger().info("Creating Default Image for new visual style " + name);
+				CyLogger.getLogger().debug("Creating Default Image for new visual style " + name);
 				updateDefaultImage(name, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(name));
 			}
@@ -2719,7 +2719,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final Dimension panelSize = defaultAppearencePanel.getSize();
 
 			if (view != null) {
-				CyLogger.getLogger().info("Creating Default Image for new visual style " + newName);
+				CyLogger.getLogger().debug("Creating Default Image for new visual style " + newName);
 				updateDefaultImage(newName, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(newName));
 			}
@@ -2952,7 +2952,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		for (Property p : targets) {
-			CyLogger.getLogger().info("Removed: " + p.getDisplayName());
+			CyLogger.getLogger().debug("Removed: " + p.getDisplayName());
 			propertyMap.get(vmm.getVisualStyle().getName()).remove(p);
 		}
 	}
@@ -3707,7 +3707,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		if (ignore)
 			return;
 
-		CyLogger.getLogger().info("Got VMM Change event.  Cur VS in VMM: "
+		CyLogger.getLogger().debug("Got VMM Change event.  Cur VS in VMM: "
 		                   + vmm.getVisualStyle().getName());
 
 		if ((selectedName == null) || (currentName == null) || (curView == null)
