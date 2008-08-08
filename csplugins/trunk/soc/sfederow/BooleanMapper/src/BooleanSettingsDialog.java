@@ -42,6 +42,9 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.*;
+import javax.swing.border.Border;
+import javax.swing.table.TableCellRenderer;
+
 
 import javax.swing.WindowConstants.*;
 import javax.swing.border.*;
@@ -70,6 +73,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private JPanel algorithmPanel; // The panel this algorithm uses
 	private JPanel tablePanel;
 	private JTable table;
+	private JTable table2;
 	JTextField field;
 	private JPanel panel;
 	private JList list;
@@ -81,7 +85,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
             "Color",
             };
 	
-	Object[][] data = new Object[5][3];
+	
 	
 	//String[][] data = new String[6][3];
 	//
@@ -91,22 +95,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		    {"Alison", "Huml", "Rowing"},
 		    {"Kathy", "Walrath", "Knitting"},
 		};*/	
-	class BooleanTableModel extends AbstractTableModel {
 	
-	//TableModel dataModel = new AbstractTableModel() {
-        int colCount = 3;
-        int rowCount = 5;
-		public void setColumnCount(int count) { colCount = count; }
-		public void setRowCount(int count) { rowCount = count; }
-		public int getColumnCount() { return colCount; }
-		public int getRowCount() { return rowCount;}
-		public Object getValueAt(int row, int col) { return data[row][col]; }
-        public void setValueAt(Object value, int row, int col) {
-        	data[row][col] = value;
-        	fireTableCellUpdated(row, col);
-        }
-      }
-	
+		
 	
 	
 	
@@ -116,12 +106,13 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		for(int b=0;b<4;b++){
 			for(int c=0;c<3;c++){
-				data[b][c] = "";
+				//data[b][c] = "";
 			}
 		}
 		
 		
 		dataModel = new BooleanTableModel();
+	
 		initialize(); // Initialize the components we only do once
 		calculator = new BooleanCalculator();
 		//System.out.println(Cytoscape.getDesktop().getHeight());
@@ -141,9 +132,15 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		String command = e.getActionCommand();
 		if(command.equals("delete")){
-			int row = table.getSelectedRow();
-			data[row][0] = "";
-			data[row][1] = "";
+			
+			int row = table2.getSelectedRow();
+			//data[row][0] = "";
+			dataModel.data[row][0] = "";
+			dataModel.data[row][1] = "";
+			if(dataModel.rowCount > 5){
+				dataModel.rowCount--;
+			}
+			dataModel.createNewDataObject();
 			listCount--;
 			initialize();
 			
@@ -214,39 +211,23 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		System.out.println(row + e.getLastRow());
 	}
 	
-	private void init(){
-		String labelLocation = BorderLayout.LINE_START;
-		String fieldLocation = BorderLayout.LINE_END;
-		
-		panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		list = new JList(Cytoscape.getNodeAttributes().getAttributeNames());
-		JScrollPane listScroller = new JScrollPane(list);
-		listScroller.setPreferredSize(new Dimension(200,100));
-		panel.add(listScroller, fieldLocation);
-		
-		
-		ListSelectionModel model = null;
-		model = list.getSelectionModel();
-	    //model.addListSelectionListener(this);
-		
-	    field = new JTextField();
-	    
-	    //panel.add(list);
-	    panel.add(field);
-	    setContentPane(panel);
-	    
-	    
-	    
-	}
-	
 	
 	private void initialize() {
 		
 		 
-	      JTable table2 = new JTable(dataModel);
+	     table2 = new JTable(dataModel);
+	     table2.setPreferredScrollableViewportSize(new Dimension(110, 80));
+	     table2.setFillsViewportHeight(true);
+	     //table2.setDefaultRenderer(Color.class, new ColorRenderer(true));
+	     table2.getColumn("Color").setCellRenderer(new ColorRenderer(true));
+	     
 	      JScrollPane scrollpane = new JScrollPane(table2);
-
+	     //scrollpane.getC
+	      //ColorRenderer renderer = new ColorRenderer(true);
+	      //Component rendered = renderer.getTableCellRendererComponent(table2, Color.BLUE,
+			//true, true,
+			//0, 2);
+	      //table2.getColumn("Color").setCellRenderer(renderer);
 		//attributes = Cytoscape.getNodeAttributes().getAttributeNames();
 		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -306,7 +287,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		this.tablePanel = new JPanel();
 		
-		this.table = new JTable(data, columnNames);
+		this.table = new JTable(dataModel.data, columnNames);
 		//table.
 		//System.out.println("made table");
 		//table.setPreferredScrollableViewportSize(table.getPreferredSize());
@@ -358,7 +339,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		
 		JPanel tpanel = new JPanel();
-		scrollpane.setPreferredSize(new Dimension(110,102));
+		
+
+		//scrollpane.setPreferredSize(new Dimension(110,102));
 		tpanel.setLayout(new BorderLayout());
 		tpanel.add(scrollpane);
 		
@@ -404,7 +387,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		    for(int i = 0; i<rowIndexes.length;i++){
 		    	//System.out.println("row index: "+rowIndexes[i]);
 		    }
-			String current = (String)data[0][0]; 
+			String current = (String)dataModel.data[0][0]; 
 			//System.out.println("current: "+ current);
 			try{
 			scan.parse(current);
@@ -434,16 +417,26 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		//System.out.println("populate List");
 		//data = new Object[listCount+1][3];
 		//table.
-		
-		data[listCount][0] = criteria;
-		data[listCount][1] = label;
-		data[listCount][2] = "";
-		initialize();
 		if(listCount < 5){
+			dataModel.data[listCount][0] = criteria;
+			dataModel.data[listCount][1] = label;
+			dataModel.data[listCount][2] = Color.BLUE;
+			initialize();
+		
 			listCount++;
 		}else{
 			//dataModel.
+			listCount++;
+			System.out.println("rows appending");
 			dataModel.setRowCount(listCount);
+			//dataModel.rowCount = listCount;
+			
+			dataModel.createNewDataObject();
+			dataModel.data[listCount-1][0] = criteria;
+			dataModel.data[listCount-1][1] = label;
+			dataModel.data[listCount-1][2] = "";
+			initialize();
+			
 		}
 	}
 	
@@ -458,9 +451,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			String labelTemp = data[rowNumber][1];
 			String colorTemp = data[rowNumber][2];
 			*/
-			Object criteriaTemp = data[rowNumber][0];
-			Object labelTemp = data[rowNumber][1];
-			Object colorTemp = data[rowNumber][2];
+			Object criteriaTemp = dataModel.data[rowNumber][0];
+			Object labelTemp = dataModel.data[rowNumber][1];
+			Object colorTemp = dataModel.data[rowNumber][2];
 			
 			/*
 			table.getModel().setValueAt(data[rowNumber-1][0], rowNumber, 0);  
@@ -476,15 +469,15 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			table.setValueAt(labelTemp, rowNumber-1, 0);
 			*/
 			 
-			data[rowNumber][1] = data[rowNumber-1][1];
-			data[rowNumber][2] = data[rowNumber-1][2];
+			dataModel.data[rowNumber][1] = dataModel.data[rowNumber-1][1];
+			dataModel.data[rowNumber][2] = dataModel.data[rowNumber-1][2];
 			
-			data[rowNumber][0] = data[rowNumber-1][0];
-			data[rowNumber][1] = data[rowNumber-1][1];
-			data[rowNumber][2] = data[rowNumber-1][2];
-			data[rowNumber-1][0] = criteriaTemp;
-			data[rowNumber-1][1] = labelTemp;
-			data[rowNumber-1][2] = colorTemp;
+			dataModel.data[rowNumber][0] = dataModel.data[rowNumber-1][0];
+			dataModel.data[rowNumber][1] = dataModel.data[rowNumber-1][1];
+			dataModel.data[rowNumber][2] = dataModel.data[rowNumber-1][2];
+			dataModel.data[rowNumber-1][0] = criteriaTemp;
+			dataModel.data[rowNumber-1][1] = labelTemp;
+			dataModel.data[rowNumber-1][2] = colorTemp;
 			initialize();
 			
 		}
@@ -495,9 +488,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			
 			
 			
-			Object criteriaTemp = data[rowNumber][0];
-			Object labelTemp = data[rowNumber][1];
-			Object colorTemp = data[rowNumber][2];
+			Object criteriaTemp = dataModel.data[rowNumber][0];
+			Object labelTemp = dataModel.data[rowNumber][1];
+			Object colorTemp = dataModel.data[rowNumber][2];
 			
 			//System.out.println(rowNumber);
 			//table.setValueAt(data[rowNumber+1][0], rowNumber, 0);
@@ -507,26 +500,86 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			//table.setValueAt("new value", rowNumber+1, 0);
 			
 			
-			data[rowNumber][0] = data[rowNumber+1][0];
-			data[rowNumber][1] = data[rowNumber+1][1];
-			data[rowNumber][2] = data[rowNumber+1][2];
-			data[rowNumber+1][0] = criteriaTemp;
-			data[rowNumber+1][1] = labelTemp;
-			data[rowNumber+1][2] = colorTemp;
+			dataModel.data[rowNumber][0] = dataModel.data[rowNumber+1][0];
+			dataModel.data[rowNumber][1] = dataModel.data[rowNumber+1][1];
+			dataModel.data[rowNumber][2] = dataModel.data[rowNumber+1][2];
+			dataModel.data[rowNumber+1][0] = criteriaTemp;
+			dataModel.data[rowNumber+1][1] = labelTemp;
+			dataModel.data[rowNumber+1][2] = colorTemp;
 			initialize();
 			
 		}
 		
 	}
-	public void removeListElement(){
-	}
+	class BooleanTableModel extends AbstractTableModel {
+
+		//TableModel dataModel = new AbstractTableModel() {
+		int colCount = 3;
+		int rowCount = 5;
+		String[] columnNames = { "Criteria", "Label", "Color" };
+		Object[][] data = new Object[rowCount][colCount];
+
+		public void createNewDataObject(){ 
+			Object[][] temp = data;
+			this.data = new Object[rowCount][colCount];
+			for(int i=0; i<rowCount-1; i++){
+				for(int j=0; j<colCount; j++){
+					this.data[i][j] = temp[i][j];
+				}
+			}
+		}
 		
-	public void removeRow(){
-	}
-	
-	
-	    
+		
+		public String getColumnName(int i){ return columnNames[i]; }
+		public void setColumnCount(int count) { colCount = count; }
+		public void setRowCount(int count) { rowCount = count; }
+		public int getColumnCount() { return colCount; }
+		public int getRowCount() { return rowCount;}
+		public Object getValueAt(int row, int col) { return data[row][col]; }
+		public void setValueAt(Object value, int row, int col) {
+			data[row][col] = value;
+			fireTableCellUpdated(row, col);
+		}
 	}
 
-	
+}
+
+
+	class ColorRenderer extends JLabel implements TableCellRenderer {
+		Border unselectedBorder = null;
+		Border selectedBorder = null;
+		boolean isBordered = true;
+
+		public ColorRenderer(boolean isBordered) {
+			this.isBordered = isBordered;
+			setOpaque(true); //MUST do this for background to show up.
+		}
+
+		public Component getTableCellRendererComponent(JTable table, Object color, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		Color newColor = (Color)color;
+		setBackground(newColor);
+		if (isBordered) {
+			if (isSelected) {
+				if (selectedBorder == null) {
+					selectedBorder = BorderFactory.createMatteBorder(2,5,2,5,
+							table.getSelectionBackground());
+				}
+				setBorder(selectedBorder);
+			} else {
+				if (unselectedBorder == null) {
+					unselectedBorder = BorderFactory.createMatteBorder(2,5,2,5,
+							table.getBackground());
+				}
+				setBorder(unselectedBorder);
+			}
+		}
+
+		//setToolTipText("RGB value: " + newColor.getRed() + ", "
+			//	+ newColor.getGreen() + ", "
+				//+ newColor.getBlue());
+		return this;
+	}
+}
+
 

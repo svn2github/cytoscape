@@ -131,8 +131,8 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		//booleanProperties.add(new Tunable("addButton", "", Tunable.BUTTON,
 		//		new String("Add")));
 
-		booleanProperties.add(new Tunable("colorGroup", "Choose Color",Tunable.GROUP,
-				new Integer(1)));
+		booleanProperties.add(new Tunable("colorGroup", "Choose Color",Tunable.BUTTON,
+				new String(1)));
 
 		Tunable color = new Tunable("mapColor", "Map to node Color",Tunable.LIST,
 				new Integer(0),(Object) colors ,(Object) null ,0 );
