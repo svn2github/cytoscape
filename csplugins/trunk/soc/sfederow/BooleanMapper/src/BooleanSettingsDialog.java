@@ -345,20 +345,21 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	public void applyCriteria(){
 		//for(int i=1;i<data.length;i++){
 			BooleanScanner scan = new BooleanScanner();
-		    int[] rowIndexes = table.getSelectedRows();
-		    for(int i = 0; i<rowIndexes.length;i++){
+		    //int[] rowIndexes = table.getSelectedRows();
+		    //for(int i = 0; i<rowIndexes.length;i++){
 		    	//System.out.println("row index: "+rowIndexes[i]);
-		    }
+		    //}
 			String current = (String)criteriaTable.returnCellValue(0,0); 
 			//System.out.println("current: "+ current);
-			try{
+			/*try{
 			scan.parse(current);
 			}catch (IOException e) {
 				System.out.println(e.getMessage());
 			}
-			//calculator.parse2(current);
-			//calculator.clearList();
-			//calculator.evaluate();
+			*/
+			calculator.parse2(current);
+			calculator.clearList();
+			calculator.evaluate();
 		//}
 		//parsedCriteria = calculator.parseCriteria(criteria);
 		
