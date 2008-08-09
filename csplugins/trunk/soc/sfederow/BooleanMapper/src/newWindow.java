@@ -1,3 +1,5 @@
+package src;
+
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
@@ -24,7 +26,7 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	String[] attributeArray;
 	String[] typeArray = {"node", "edge", "network"};
 	String[] opArray = { "", "=", "<", ">", ">=", "<=", "AND", "OR", "NOT" };
-	String[] colors = {"red","green","yellow","blue"};
+	//String[] colors = {"red","green","yellow","blue"};
 	
 	String attribute, operation, criteria, value, criteriaString = "";
 	
@@ -131,12 +133,13 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		//booleanProperties.add(new Tunable("addButton", "", Tunable.BUTTON,
 		//		new String("Add")));
 
-		booleanProperties.add(new Tunable("colorGroup", "Choose Color",Tunable.BUTTON,
-				new String(1)));
+		/*booleanProperties.add(new Tunable("colorGroup", "Choose Color",Tunable.BUTTON,
+				new String("Choose Color")         ));
 
 		Tunable color = new Tunable("mapColor", "Map to node Color",Tunable.LIST,
 				new Integer(0),(Object) colors ,(Object) null ,0 );
 		booleanProperties.add(color);
+		*/
 		/*
 		 * booleanProperties.add(new Tunable("test", "test", Tunable.INTEGER,
 		 * new Integer(6),(Object)new Integer(0), (Object)new

@@ -1,4 +1,4 @@
-
+package src;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -31,6 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -44,6 +45,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.*;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.AbstractCellEditor;
+
 
 
 import javax.swing.WindowConstants.*;
@@ -58,71 +61,39 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 
 	private BooleanAlgorithm currentAlgorithm = null;
 	private BooleanCalculator calculator = null;
+	private Color currentColor = Color.GRAY;
 	private String value, criteria = "";
-	private String[] attributes = {""};
-	private int listCount = 0;
 	String[] parsedCriteria;
 	String test = "test";
 	
-	private JButton vizButton = null;
-	private JLabel titleLabel; // Our titl
+	private JButton colorButton;
+	private JColorChooser colorChooser;
+	private JDialog dialog;
 	private JPanel mainPanel; // The main content pane
 	private JPanel buttonBox; // Our action buttons (Save Settings, Cancel, Execute, Done)
 	private JPanel tableButtons;
-	private JComboBox algorithmSelector; // Which algorithm we're using
 	private JPanel algorithmPanel; // The panel this algorithm uses
 	private JPanel tablePanel;
+	private JPanel colorPanel;
 	private JTable table;
-	private JTable table2;
-	JTextField field;
-	private JPanel panel;
-	private JList list;
-	
-	BooleanTableModel dataModel;
-	
-	String[] columnNames = {"Criteria",
-            "Label",
-            "Color",
-            };
 	
 	
-	
-	//String[][] data = new String[6][3];
-	//
-	
-	/*{
-		    {"Mary", "Campione", "Snowboarding"},
-		    {"Alison", "Huml", "Rowing"},
-		    {"Kathy", "Walrath", "Knitting"},
-		};*/	
-	
+	CriteriaTablePanel criteriaTable;
 		
-	
-	
 	
 	public BooleanSettingsDialog(BooleanAlgorithm algorithm) {
 		super(Cytoscape.getDesktop(), algorithm.getName(), false);
+		
 		currentAlgorithm = algorithm;
-		
-		for(int b=0;b<4;b++){
-			for(int c=0;c<3;c++){
-				//data[b][c] = "";
-			}
-		}
-		
-		
-		dataModel = new BooleanTableModel();
-	
-		initialize(); // Initialize the components we only do once
 		calculator = new BooleanCalculator();
-		//System.out.println(Cytoscape.getDesktop().getHeight());
-		setLocation(2,Cytoscape.getDesktop().getHeight()-557);
+		criteriaTable = new CriteriaTablePanel();
+		
+		initialize(); 
 		
 		
-		//setLocationRelativeTo(Cytoscape.getDeskto
-		//this.setLocation(0, this.getHeight());
-		//System.out.println("height: "+this.getHeight()+" width: "+this.getWidth());
-		//init();
+		
+		
+		
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -131,31 +102,36 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		
 		String command = e.getActionCommand();
-		if(command.equals("delete")){
+		
+		if(command.equals("chooseColor")){
+			colorChooser = new JColorChooser();
+			 JButton button = new JButton();
+		        button.setActionCommand("edit");
+		        button.addActionListener(this);
+		        button.setBorderPainted(false);
+
 			
-			int row = table2.getSelectedRow();
-			//data[row][0] = "";
-			dataModel.data[row][0] = "";
-			dataModel.data[row][1] = "";
-			if(dataModel.rowCount > 5){
-				dataModel.rowCount--;
-			}
-			dataModel.createNewDataObject();
-			listCount--;
-			initialize();
+			dialog = JColorChooser.createDialog(button,
+                    "Pick a Color",
+                    true,  //modal
+                    colorChooser,
+                    this,  //OK button handler
+                    null); //no CANCEL button handler
+			dialog.add(button);
+			dialog.setVisible(true);
+
+		}
+		if(command.equals("OK")){
 			
+			System.out.println(colorChooser.getColor());
+			currentColor = colorChooser.getColor();
+			//colorButton.setBackground(colorChooser.getColor());
 		}
 		
-		if (command.equals("moveUp")){
-			if(table.getSelectedRowCount() != 0){
-				moveRowUp(table.getSelectedRow());
-			}
+		if(command.equals("edit")){
+			System.out.println("found it");
 		}
-		if (command.equals("moveDown")){
-			if(table.getSelectedRowCount() != 0){	
-				moveRowDown(table.getSelectedRow());
-			}
-		}
+		
 		if (command.equals("add")){
 			
 			//System.out.println(currentAlgorithm.getSettings().get("criteriaField").getValue().toString());
@@ -167,7 +143,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 				value = criteria;
 					//calculator.cleanCritera();
 				//System.out.println("somewhwere"+value);
-				populateList(criteria, value);
+				criteriaTable.populateList(criteria, value, currentColor);
+				initialize();
 				
 			}
 			//calculator.clearList();
@@ -199,9 +176,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			setVisible(false);
 		} else {
 			// OK, initialize and display
-			//initialize();
+			initialize();
 			pack();
-			setLocation(2,Cytoscape.getDesktop().getHeight()-557);
 			setVisible(true);
 		}
 	}
@@ -215,21 +191,15 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private void initialize() {
 		
 		 
-	     table2 = new JTable(dataModel);
+	     /*able2 = new JTable(dataModel);
 	     table2.setPreferredScrollableViewportSize(new Dimension(110, 80));
 	     table2.setFillsViewportHeight(true);
 	     //table2.setDefaultRenderer(Color.class, new ColorRenderer(true));
 	     table2.getColumn("Color").setCellRenderer(new ColorRenderer(true));
 	     
 	      JScrollPane scrollpane = new JScrollPane(table2);
-	     //scrollpane.getC
-	      //ColorRenderer renderer = new ColorRenderer(true);
-	      //Component rendered = renderer.getTableCellRendererComponent(table2, Color.BLUE,
-			//true, true,
-			//0, 2);
-	      //table2.getColumn("Color").setCellRenderer(renderer);
-		//attributes = Cytoscape.getNodeAttributes().getAttributeNames();
-		
+	     */
+	     
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 
 		// Create our main panel
@@ -239,18 +209,23 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		// Create a panel for algorithm's content
 		this.algorithmPanel = currentAlgorithm.getSettingsPanel();
 
-		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-		//TitledBorder titleBorder = BorderFactory.createTitledBorder(selBorder,"Settings");
-		//titleBorder.setTitlePosition(TitledBorder.LEFT);
-		//titleBorder.setTitlePosition(TitledBorder.TOP);
-		//algorithmPanel.setBorder(titleBorder);
 		mainPanel.add(algorithmPanel);
-
 		mainPanel.addFocusListener(this);
 		
-		// Create a panel for our button box
+		//Panel for color Button
+		this.colorPanel = new JPanel();
+		
+		colorButton = new JButton("Choose Color");
+		colorButton.setBackground(currentColor);
+		colorButton.setActionCommand("chooseColor");
+		colorButton.addActionListener(this);
+		
+		colorPanel.add(colorButton);
+		colorPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		
+		//Create a panel for our button box
 		this.buttonBox = new JPanel();
-
+		
 		JButton addButton = new JButton("Add");
 		addButton.setActionCommand("add");
 		addButton.addActionListener(this);
@@ -263,7 +238,6 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		saveButton.setActionCommand("save");
 		saveButton.addActionListener(this);
 
-		
 		JButton exitButton = new JButton("Exit");
 		exitButton.setActionCommand("exit");
 		exitButton.addActionListener(this);
@@ -273,9 +247,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		cancelButton.addActionListener(this);
 		
 		
-		buttonBox.add(addButton);
-		
-		
+		buttonBox.add(addButton);		
 		buttonBox.add(saveButton);
 		buttonBox.add(exitButton);
 		buttonBox.add(applyButton);
@@ -283,26 +255,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
 		
+		
 		buttonBox.addFocusListener(this);
-		
-		this.tablePanel = new JPanel();
-		
-		this.table = new JTable(dataModel.data, columnNames);
-		//table.
-		//System.out.println("made table");
-		//table.setPreferredScrollableViewportSize(table.getPreferredSize());
-		
-		//JScrollPane scrollPane = new JScrollPane(table);
-		//table.setFillsViewportHeight(true);
-		//setPreferredSize(new Dimension(450, 110));
-		
-		//add(scrollPane, BorderLayout.CENTER);
-		
-		this.tablePanel.setLayout(new BorderLayout());
-		this.tablePanel.add(table.getTableHeader(), BorderLayout.PAGE_START);
-		this.tablePanel.add(table, BorderLayout.CENTER);
-		
-		this.tablePanel.add(table);
 		
 		this.tableButtons = new JPanel();
 		
@@ -322,7 +276,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		tableButtons.add(moveDownButton);
 		tableButtons.add(deleteButton);
 		
-		tableButtons.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		
+				
+		
 		
 		JColorChooser chooser = new JColorChooser();
 		AbstractColorChooserPanel cpane = null;
@@ -334,26 +290,32 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		cytoscape.visual.mappings.ContinuousMapping mapping = new cytoscape.visual.mappings.ContinuousMapping(a,b);
 		//mainPanel.add(mapping.getUI(dialog, work));
 		//cytoscape.visual.mappings.
-		ColorChooserComponentFactory factory = null;
-		DefaultColorSelectionModel mod = new DefaultColorSelectionModel();
+		//lorChooserComponentFactory factory = null;
+		//faultColorSelectionModel mod = new DefaultColorSelectionModel();
 		
-		
-		JPanel tpanel = new JPanel();
-		
+		 // JComponent newContentPane = new CriteriaTablePanel();
+	       // newContentPane.setOpaque(true); //content panes must be opaque
+	        //setContentPane(newContentPane);
 
-		//scrollpane.setPreferredSize(new Dimension(110,102));
-		tpanel.setLayout(new BorderLayout());
-		tpanel.add(scrollpane);
+
+		
+		
+		tablePanel = criteriaTable.returnTablePanel();
+		tablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+		
 		
 		//mainPanel.add();
+		mainPanel.add(colorPanel);
 		mainPanel.add(buttonBox);
 		//mainPanel.add(tablePanel);
-		mainPanel.add(tpanel);
-		mainPanel.add(tableButtons);
+		
+		mainPanel.add(tablePanel);
+	//mainPanel.add(tableButtons);
 		//mainPanel.add(chooser);
 		setContentPane(mainPanel);
 		//System.out.println("made window");
 		mainPanel.setLocation(Cytoscape.getDesktop().getWidth(), Cytoscape.getDesktop().getHeight());
+		setLocation(2,Cytoscape.getDesktop().getHeight()-557);
 	}
 	
 	
@@ -387,7 +349,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		    for(int i = 0; i<rowIndexes.length;i++){
 		    	//System.out.println("row index: "+rowIndexes[i]);
 		    }
-			String current = (String)dataModel.data[0][0]; 
+			String current = (String)criteriaTable.returnCellValue(0,0); 
 			//System.out.println("current: "+ current);
 			try{
 			scan.parse(current);
@@ -412,174 +374,13 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	public void focusLost(FocusEvent e){
 		System.out.println(e.toString());
 	}
-	public void populateList(String criteria, String label){
-		
-		//System.out.println("populate List");
-		//data = new Object[listCount+1][3];
-		//table.
-		if(listCount < 5){
-			dataModel.data[listCount][0] = criteria;
-			dataModel.data[listCount][1] = label;
-			dataModel.data[listCount][2] = Color.BLUE;
-			initialize();
-		
-			listCount++;
-		}else{
-			//dataModel.
-			listCount++;
-			System.out.println("rows appending");
-			dataModel.setRowCount(listCount);
-			//dataModel.rowCount = listCount;
-			
-			dataModel.createNewDataObject();
-			dataModel.data[listCount-1][0] = criteria;
-			dataModel.data[listCount-1][1] = label;
-			dataModel.data[listCount-1][2] = "";
-			initialize();
-			
-		}
-	}
-	
-	
-	
-	public void moveRowUp(int rowNumber){
-		if(rowNumber != 0){
-			
-			
-			/*
-			String criteriaTemp = data[rowNumber][0];
-			String labelTemp = data[rowNumber][1];
-			String colorTemp = data[rowNumber][2];
-			*/
-			Object criteriaTemp = dataModel.data[rowNumber][0];
-			Object labelTemp = dataModel.data[rowNumber][1];
-			Object colorTemp = dataModel.data[rowNumber][2];
-			
-			/*
-			table.getModel().setValueAt(data[rowNumber-1][0], rowNumber, 0);  
-			table.getModel().setValueAt(data[rowNumber-1][1], rowNumber, 1);
-			System.out.println("moving Something");
-			table.getModel().setValueAt(criteriaTemp, rowNumber-1, 0);
-			table.getModel().setValueAt(labelTemp, rowNumber-1, 0);
-			
-			table.setValueAt(data[rowNumber-1][0], rowNumber, 0);
-			table.setValueAt(data[rowNumber-1][1], rowNumber, 1);
-			System.out.println("moving Something");
-			table.setValueAt(criteriaTemp, rowNumber-1, 0);
-			table.setValueAt(labelTemp, rowNumber-1, 0);
-			*/
-			 
-			dataModel.data[rowNumber][1] = dataModel.data[rowNumber-1][1];
-			dataModel.data[rowNumber][2] = dataModel.data[rowNumber-1][2];
-			
-			dataModel.data[rowNumber][0] = dataModel.data[rowNumber-1][0];
-			dataModel.data[rowNumber][1] = dataModel.data[rowNumber-1][1];
-			dataModel.data[rowNumber][2] = dataModel.data[rowNumber-1][2];
-			dataModel.data[rowNumber-1][0] = criteriaTemp;
-			dataModel.data[rowNumber-1][1] = labelTemp;
-			dataModel.data[rowNumber-1][2] = colorTemp;
-			initialize();
-			
-		}
-	}
-	
-	public void moveRowDown(int rowNumber){
-		if(rowNumber != 5){
-			
-			
-			
-			Object criteriaTemp = dataModel.data[rowNumber][0];
-			Object labelTemp = dataModel.data[rowNumber][1];
-			Object colorTemp = dataModel.data[rowNumber][2];
-			
-			//System.out.println(rowNumber);
-			//table.setValueAt(data[rowNumber+1][0], rowNumber, 0);
-			//table.setValueAt(data[rowNumber+1][1], rowNumber, 1);
-			//System.out.println("moving Something");
-			//table.setValueAt("new value", rowNumber+1, 0);
-			//table.setValueAt("new value", rowNumber+1, 0);
-			
-			
-			dataModel.data[rowNumber][0] = dataModel.data[rowNumber+1][0];
-			dataModel.data[rowNumber][1] = dataModel.data[rowNumber+1][1];
-			dataModel.data[rowNumber][2] = dataModel.data[rowNumber+1][2];
-			dataModel.data[rowNumber+1][0] = criteriaTemp;
-			dataModel.data[rowNumber+1][1] = labelTemp;
-			dataModel.data[rowNumber+1][2] = colorTemp;
-			initialize();
-			
-		}
-		
-	}
-	class BooleanTableModel extends AbstractTableModel {
 
-		//TableModel dataModel = new AbstractTableModel() {
-		int colCount = 3;
-		int rowCount = 5;
-		String[] columnNames = { "Criteria", "Label", "Color" };
-		Object[][] data = new Object[rowCount][colCount];
 
-		public void createNewDataObject(){ 
-			Object[][] temp = data;
-			this.data = new Object[rowCount][colCount];
-			for(int i=0; i<rowCount-1; i++){
-				for(int j=0; j<colCount; j++){
-					this.data[i][j] = temp[i][j];
-				}
-			}
-		}
-		
-		
-		public String getColumnName(int i){ return columnNames[i]; }
-		public void setColumnCount(int count) { colCount = count; }
-		public void setRowCount(int count) { rowCount = count; }
-		public int getColumnCount() { return colCount; }
-		public int getRowCount() { return rowCount;}
-		public Object getValueAt(int row, int col) { return data[row][col]; }
-		public void setValueAt(Object value, int row, int col) {
-			data[row][col] = value;
-			fireTableCellUpdated(row, col);
-		}
-	}
 
 }
 
-
-	class ColorRenderer extends JLabel implements TableCellRenderer {
-		Border unselectedBorder = null;
-		Border selectedBorder = null;
-		boolean isBordered = true;
-
-		public ColorRenderer(boolean isBordered) {
-			this.isBordered = isBordered;
-			setOpaque(true); //MUST do this for background to show up.
-		}
-
-		public Component getTableCellRendererComponent(JTable table, Object color, boolean isSelected, boolean hasFocus,
-			int row, int column) {
-		Color newColor = (Color)color;
-		setBackground(newColor);
-		if (isBordered) {
-			if (isSelected) {
-				if (selectedBorder == null) {
-					selectedBorder = BorderFactory.createMatteBorder(2,5,2,5,
-							table.getSelectionBackground());
-				}
-				setBorder(selectedBorder);
-			} else {
-				if (unselectedBorder == null) {
-					unselectedBorder = BorderFactory.createMatteBorder(2,5,2,5,
-							table.getBackground());
-				}
-				setBorder(unselectedBorder);
-			}
-		}
-
-		//setToolTipText("RGB value: " + newColor.getRed() + ", "
-			//	+ newColor.getGreen() + ", "
-				//+ newColor.getBlue());
-		return this;
-	}
-}
+	
+	
+	
 
 

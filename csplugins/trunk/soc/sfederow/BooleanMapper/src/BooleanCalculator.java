@@ -1,4 +1,4 @@
-
+package src;
 
 import giny.view.NodeView;
 import giny.model.*;
