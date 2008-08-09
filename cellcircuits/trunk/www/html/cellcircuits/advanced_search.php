@@ -32,7 +32,7 @@ $distinct_species = getSpeciesFromDB($connection);
   <script type="text/javascript" src="./javascript/advanced_search.js"></script>
   <script src="./javascript/scriptaculous.js" type="text/javascript"></script>
 
-  <link type="text/css" rel="stylesheet" href="css/master.css">
+  <link type="text/css" rel="stylesheet" href="master.css">
 
   <title>Cell Circuits Advanced Search</title>
 
@@ -47,7 +47,7 @@ $distinct_species = getSpeciesFromDB($connection);
   <table align='center' border='0' cellspacing=0 cellpadding=0 summary='search interface'>
     <tr>
       <td align='right' rowspan=2>
-	<a href='/index.html'><img src='CC-logo-small.jpg' border='0' alt="Cell Circuits" title="Click to go to the Cell Circuits Home Page"/></a>
+	<a href='/cellcircuits/index.html'><img src='CC-logo-small.jpg' border='0' alt="Cell Circuits" title="Click to go to the Cell Circuits Home Page"/></a>
       </td>
       <td align="center" valign="bottom">
         <input type="text" size="55" name="search_query" value='' title='For information on valid queries, click "About CellCircuits" link to the right'/>
@@ -158,8 +158,23 @@ for ($i=0; $i<count($publications)/2; $i++) {
 	    <img src="<?php echo "getImage.php?image_type=cover_image&image_file_id=".$publication['coverimage_id']; ?>" border="0" />	</a>	  
 	  </td>
 	  
-      <td class="advanced-search-citation-right"><p align="right"><?php echo convert_xml2html($publication['pubmed_xml_record'], 'pubmedref_to_html.xsl');?></p>      
-        <p align="right"> 
+	  <?php
+	  
+	  if ($j%2 == 0) {
+		  ?>
+		  <td class="advanced-search-citation">
+		
+		  <?php	
+	  }
+	  else {
+		  ?>
+		  <td class="advanced-search-citation-right">
+		  <?php
+	  }
+	  ?>
+	  <?php echo convert_xml2html($publication['pubmed_xml_record'], 'pubmedref_to_html_advanced_search_full.xsl');?><BR><P align=right>     
+         
+		 		 
 		<?php
 		if ($publication['pdf_file_id'] != -1) {
 			?> <a class="white-bg-link" href="<?php echo "file_download.php?file_type=pdf&file_id=".$publication['pdf_file_id']; ?>">[PDF]</a> <?php
@@ -167,11 +182,13 @@ for ($i=0; $i<count($publications)/2; $i++) {
 		if ($publication['supplement_file_id'] != -1) {
 			?> <a class="white-bg-link" href="<?php echo "file_download.php?file_type=supplement_notes&file_id=".$publication['supplement_file_id']; ?>">[Supplementary Notes]</a> <?php
 		}
-		if ($publication['supplement_url'] != -1) {
+		if (trim($publication['supplement_url']) != "") {
 			?> <a class="white-bg-link" href="<?php echo $publication['supplement_url']; ?>">[Supplemental Website]</a> <?php
 		}
 
 		?>
+		
+		
 		<a class="white-bg-link" href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=<?php echo $publication['pmid']; ?>&query_hl=24"> [PubMed]</a>
 		</p>
 	  </td>
