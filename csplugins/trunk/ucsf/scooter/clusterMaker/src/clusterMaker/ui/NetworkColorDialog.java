@@ -50,8 +50,9 @@ import cytoscape.visual.VisualStyle;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.calculators.BasicCalculator;
 import cytoscape.visual.calculators.Calculator;
-import cytoscape.visual.mappings.ContinuousMapping;
 import cytoscape.visual.mappings.BoundaryRangeValues;
+import cytoscape.visual.mappings.ContinuousMapping;
+import cytoscape.visual.mappings.LinearNumberToColorInterpolator;
 import cytoscape.visual.mappings.ObjectMapping;
 
 import clusterMaker.treeview.dendroview.ColorExtractor;
@@ -195,15 +196,15 @@ public class NetworkColorDialog extends JDialog
 		VisualStyle style = Cytoscape.getCurrentNetworkView().getVisualStyle();
 		// Get our colors
 		Color missingColor = colorExtractor.getMissing();
-		Color zeroColor = colorExtractor.getColor(0.0f);
-		Color upColor = colorExtractor.getColor(maxValue);
-		Color downColor = colorExtractor.getColor(minValue);
+		// Color zeroColor = colorExtractor.getColor(0.0f);
+		// Color upColor = colorExtractor.getColor(maxValue);
+		// Color downColor = colorExtractor.getColor(minValue);
 
 		// Adjust for contrast.  Since we really don't have contrast control,
 		// we try to provide the same basic idea by adding extra points
 		// in the continuous mapper
-		Color downDeltaColor = colorExtractor.getColor(minValue/100.0);
-		Color upDeltaColor = colorExtractor.getColor(maxValue/100.0);
+		// Color downDeltaColor = colorExtractor.getColor(minValue/100.0);
+		// Color upDeltaColor = colorExtractor.getColor(maxValue/100.0);
 
 		if (!style.getName().endsWith(suffix)) {
 			// Create a new vizmap
@@ -227,7 +228,28 @@ public class NetworkColorDialog extends JDialog
 		// Create the new continuous mapper
 		ContinuousMapping colorMapping = new ContinuousMapping(missingColor, mapping);
 		colorMapping.setControllingAttributeName(attribute, Cytoscape.getCurrentNetwork(), false);
+		colorMapping.setInterpolator(new LinearNumberToColorInterpolator());
 		
+		double minStep = minValue/5.0;
+		for (int i = 0; i < 5; i++) {
+			Color color = colorExtractor.getColor(minValue-(minStep*i));
+			colorMapping.addPoint (minValue-(minStep*i),
+				new BoundaryRangeValues(color, color, color));
+		}
+
+		{
+			Color color = colorExtractor.getColor(0.0f);
+			colorMapping.addPoint (0.0f,
+				new BoundaryRangeValues(color, color, color));
+		}
+
+		double maxStep = maxValue/5.0;
+		for (int i = 1; i <= 5; i++) {
+			Color color = colorExtractor.getColor(maxStep*i);
+			colorMapping.addPoint (maxStep*i,
+				new BoundaryRangeValues(color, color, color));
+		}
+/*
 		colorMapping.addPoint (minValue,
        new BoundaryRangeValues (downColor, downColor, downColor));
 		colorMapping.addPoint (minValue/100.0,
@@ -238,6 +260,8 @@ public class NetworkColorDialog extends JDialog
        new BoundaryRangeValues (upDeltaColor, upDeltaColor, upDeltaColor));
    	colorMapping.addPoint(maxValue,
        new BoundaryRangeValues (upColor, upColor, upColor));
+*/
+
 
    	Calculator colorCalculator = new BasicCalculator("TreeView Color Calculator", 
 		                                                 colorMapping, vizType);
