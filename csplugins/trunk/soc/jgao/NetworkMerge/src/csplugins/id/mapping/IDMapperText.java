@@ -36,7 +36,7 @@
 
 package csplugins.id.mapping;
 
-import csplugins.id.mapping.model.IDMappingList;
+import csplugins.id.mapping.model.IDMappingData;
 
 import csplugins.id.mapping.reader.IDMappingTableReader;
 
@@ -54,7 +54,7 @@ import java.net.URL;
  */ 
 public class IDMapperText implements IDMapperFile {
         protected URL url;
-        protected IDMappingList idMappingList;
+        protected IDMappingData idMappingList;
 
         public IDMapperText(final URL url) {
                 this.url = url;
@@ -112,8 +112,7 @@ public class IDMapperText implements IDMapperFile {
          */
         @Override
         public boolean idExistsInSrcIDType(final String srcID, final String srcType) {
-                int index = idMappingList.indexOf(srcType, srcID);
-                return index > -1;
+                return idMappingList.getIDMapping(srcType, srcID)!=null;
         }
 
         /*

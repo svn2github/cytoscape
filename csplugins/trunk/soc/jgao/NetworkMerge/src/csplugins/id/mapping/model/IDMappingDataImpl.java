@@ -1,4 +1,4 @@
-/* File: IDMappingListImpl.java
+/* File: IDMappingDataImpl.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -49,24 +49,18 @@ import java.util.Iterator;
  * Store ID mapping data
  *
  */
-public class IDMappingListImpl implements IDMappingList {
-
-        private Set<String> idTypes;
-
-        // List of map fromid type to set of ids
-        // TODO: Use index instead of actual id type to save memory?
-        private List<Map<String,Set<String>>> idMappings;
+public class IDMappingDataImpl implements IDMappingData {
+       // private Set<Map<String,Set<String>>> idMappings;
         
-        // map key: id type; value: map of id to index in the list
+        // map key: id type; value: map of id to map of type to ids
         // this is for fast search for an ID in a type, any better way?
         // note: one id of a type can only have one entry
-        private Map<String,Map<String,Integer>> mapTypeIDIndex;
+        private Map<String,Map<String,Map<String,Set<String>>>> mapTypeIDMapTypeIDs;
 
 
-        public IDMappingListImpl() {
-                idTypes = new HashSet<String>();
-                idMappings = new Vector<Map<String,Set<String>>>();
-                mapTypeIDIndex =  new HashMap<String,Map<String,Integer>>();
+        public IDMappingDataImpl() {
+                //idMappings = new HashSet<Map<String,Set<String>>>();
+                mapTypeIDMapTypeIDs =  new HashMap<String,Map<String,Map<String,Set<String>>>>();
         }
 
 
@@ -78,7 +72,7 @@ public class IDMappingListImpl implements IDMappingList {
          */
         @Override
         public Set<String> getIDTypes() {
-                return idTypes;
+                return mapTypeIDMapTypeIDs.keySet();
         }
 
         /**
@@ -98,7 +92,7 @@ public class IDMappingListImpl implements IDMappingList {
                         throw new java.lang.NullPointerException();
                 }
 
-                return idTypes.contains(type);
+                return getIDTypes().contains(type);
         }
 
         /**
@@ -123,12 +117,8 @@ public class IDMappingListImpl implements IDMappingList {
                         return false;
                 }
 
-                boolean success = idTypes.add(type);
-                if (success) {
-                        mapTypeIDIndex.put(type, new HashMap<String,Integer>());
-                }
-
-                return success;
+                mapTypeIDMapTypeIDs.put(type, new HashMap<String,Map<String,Set<String>>>());
+                return true;
         }
 
                 /**
@@ -157,95 +147,28 @@ public class IDMappingListImpl implements IDMappingList {
          * @return
          *      the number of ID mapping
          */
-        @Override
-        public int getIDMappingCount() {
-                return idMappings.size();
-        }
+//        @Override
+//        public int getIDMappingCount() {
+//                return idMappings.size();
+//        }
 
         /**
-         * Get the ith ID mapping
-         *
-         * @param i
-         *      index of ID mapping
-         *
-         * @return
-         *      the ith ID mapping
-         *
-         * @throws IndexOutOfBoundsException if i is out of bound
-         */
-        @Override
-        public Map<String,Set<String>> getIDMapping(final int i) {
-                if (i<0||i>=getIDMappingCount()) {
-                        throw new java.lang.IndexOutOfBoundsException();
-                }
-
-                return idMappings.get(i);
-        }
-
-        /**
-         * Get the ID set of type in the ith ID mapping
-         *
-         * @param i
-         *      index of ID mapping
+         * return all the id mapping from id of type
          * @param type
-         *      ID type
-         *
+         * @param id
          * @return
-         *      ID set if type exists; null otherwise
-         *
-         * @throws IndexOutOfBoundsException if i is out of bound
-         * @throws NullPointerException if idTypes is null
          */
-        @Override
-        public Set<String> getIDMapping(final int i, final String type) {
-                if (i<0||i>=getIDMappingCount()) {
-                        throw new java.lang.IndexOutOfBoundsException();
-                }
-
-                if (type==null) {
+        public Map<String,Set<String>> getIDMapping(String type, String id) {
+                if (type==null || id==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                Map<String,Set<String>> map = getIDMapping(i);
-
-                Set<String> ids = map.get(type);
-                if (ids==null || ids.isEmpty()) {
+                Map<String,Map<String,Set<String>>> mapIDMapTypeIDs = mapTypeIDMapTypeIDs.get(type);
+                if (mapIDMapTypeIDs==null) {
                         return null;
                 }
 
-                return ids;               
-        }
-
-        /**
-         * Get the index of id of type
-         *
-         * @param type
-         *      ID type
-         * @param id
-         *      ID
-         *
-         * @return
-         *      Index of ID if exists; -1, otherwise
-         *
-         * @throws NullPointerException if type or id is null
-         */
-        @Override
-        public int indexOf(final String type, final String id) {
-                if (type==null || id==null ) {
-                        throw new java.lang.NullPointerException();
-                }
-
-                Map<String,Integer> map = mapTypeIDIndex.get(type);
-                if (map==null) {
-                        return -1;
-                }
-
-                Integer i = map.get(id);
-                if (i==null) {
-                        return -1;
-                }
-
-                return i;
+                return mapIDMapTypeIDs.get(id);
         }
 
         /**
@@ -266,12 +189,12 @@ public class IDMappingListImpl implements IDMappingList {
                 }
 
                 Set<String> types = idMapping.keySet();
-                if (!idTypes.containsAll(types)) {
+                if (!mapTypeIDMapTypeIDs.keySet().containsAll(types)) {
                         throw new java.lang.IllegalArgumentException("One or more types do not exist. Add type first.");
                 }
 
                 // find the existing id mapping containing the ids to be added
-                TreeSet<Integer> indices = new TreeSet<Integer>();
+                HashSet<Map<String,Set<String>>> toMerge = new HashSet<Map<String,Set<String>>>();
                 Iterator<String> itType = types.iterator();
                 while (itType.hasNext()) {
                         String type = itType.next();
@@ -279,28 +202,28 @@ public class IDMappingListImpl implements IDMappingList {
                         Iterator<String> itID = ids.iterator();
                         while (itID.hasNext()) {
                                 String id = itID.next();
-                                int index = this.indexOf(type, id);
-                                if (index!=-1) {
-                                        indices.add(index);
+                                Map<String,Set<String>> map = this.getIDMapping(type, id);
+                                if (map!=null) {
+                                        toMerge.add(map);
                                 }
                         }
                 }
 
-                // add id mapping
-                int iNewIDMapping;
-                if (indices.isEmpty()) {
-                        Map<String,Set<String>> newIDMapping = new HashMap<String,Set<String>>();
-                        idMappings.add(newIDMapping);
-                        iNewIDMapping = idMappings.size()-1;
+                // merge existing id mapping
+                Map<String,Set<String>> newIDMapping;
+                if (toMerge.isEmpty()) {
+                        newIDMapping = new HashMap<String,Set<String>>();
+                        //idMappings.add(newIDMapping);
                 } else {
-                        iNewIDMapping = this.mergeIDMapping(indices);
+                        newIDMapping = this.mergeIDMapping(toMerge);
                 }
 
+                // add new id mapping
                 itType = types.iterator();
                 while (itType.hasNext()) {
                         String type = itType.next();
                         Set<String> ids = idMapping.get(type);
-                        this.addIDMapping(iNewIDMapping, type, ids);
+                        this.addIDMapping(newIDMapping, type, ids);
                 }
         }
 
@@ -329,7 +252,7 @@ public class IDMappingListImpl implements IDMappingList {
                         throw new java.lang.NullPointerException();
                 }
 
-                if (!idTypes.contains(type1) || !idTypes.contains(type2)) {
+                if (!this.isIDTypeContained(type1) || !this.isIDTypeContained(type2)) {
                         throw new java.lang.IllegalArgumentException("'"+type1+"' or '"+type2+"' do not exist. Add type first.");
                 }
 
@@ -372,11 +295,9 @@ public class IDMappingListImpl implements IDMappingList {
 
                 Map<String, Set<String>> return_this = new HashMap<String, Set<String>>(ids.size());
 
-                final Iterator<String> it = ids.iterator();
-                while (it.hasNext()) {
-                        String id = it.next();
-                        int index = this.indexOf(srcType, id);
-                        Set<String> tgtIDs = idMappings.get(index).get(tgtType);
+                for (String id : ids) {
+                        Map<String,Set<String>> map = this.getIDMapping(srcType, id);
+                        Set<String> tgtIDs = map.get(tgtType);
                         if (tgtIDs!=null) {
                                 return_this.put(id, tgtIDs);
                         }
@@ -389,42 +310,35 @@ public class IDMappingListImpl implements IDMappingList {
          * Merge the id mapping together
          * @param indices
          */
-        protected int mergeIDMapping(final TreeSet<Integer> indices) {
-                if (indices==null) {
+        protected Map<String,Set<String>> mergeIDMapping(final HashSet<Map<String,Set<String>>> toMerge) {
+                if (toMerge==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                if (indices.isEmpty()) {
-                        throw new java.lang.IllegalArgumentException("empty indices");
+                Iterator<Map<String,Set<String>>> it = toMerge.iterator();
+                if (!it.hasNext()) {
+                        throw new java.lang.IllegalArgumentException("empty set");
                 }
 
-                Integer[] iarray = (Integer[])indices.toArray(new Integer[0]);
+                Set<String> types = this.getIDTypes();
 
-                int iMerged = iarray[0]; //merge to the lowest
-                if (iMerged<0 || iMerged>=this.getIDMappingCount()) {
-                        throw new java.lang.IndexOutOfBoundsException();
-                }
+                Map<String,Set<String>> mergeTo = it.next();
 
-                int n = iarray.length;
-                for (int ia=n-1; ia>0; ia--) {
-                        int i = iarray[ia];
-                        if (i<0 || i>=this.getIDMappingCount()) {
-                                throw new java.lang.IndexOutOfBoundsException();
+                while (it.hasNext()) {
+                        Map<String,Set<String>> mergeFrom = it.next();
+                        for (String type : types) {
+                                Set<String> idsFrom = mergeFrom.get(type);
+                                if (idsFrom!=null && !idsFrom.isEmpty()) {
+                                        addIDMapping(mergeTo,type,idsFrom);
+                                }
+
+
                         }
 
-                        Map<String,Set<String>> idMapping = idMappings.get(i);
-                        Iterator<Map.Entry<String,Set<String>>> itEntry = idMapping.entrySet().iterator();
-                        while (itEntry.hasNext()) {
-                                Map.Entry<String,Set<String>> entry = itEntry.next();
-                                String type = entry.getKey();
-                                Set<String> ids = entry.getValue();
-                                this.addIDMapping(iMerged, type, ids);
-                        }
-
-                        idMappings.remove(i); // remove after merged
+                        //idMappings.remove(mergeFrom);
                 }
 
-                return iMerged;
+                return mergeTo;
         }
 
         /**
@@ -433,23 +347,18 @@ public class IDMappingListImpl implements IDMappingList {
          * @param type
          * @param ids
          */
-        protected void addIDMapping(final int index, final String type, final Set<String> ids) {
-                Map<String,Set<String>> idMapping = idMappings.get(index);
-                Set<String> idsMerged = idMapping.get(type);
+        protected void addIDMapping(Map<String,Set<String>> toIDMapping, final String type, final Set<String> ids) {
+                Set<String> idsMerged = toIDMapping.get(type);
                 if (idsMerged==null) {
-                        idMapping.put(type, ids);
+                        toIDMapping.put(type, ids);
                 } else {
                         idsMerged.addAll(ids);
                 }
 
                 // set the mapTypeIDIndex
-                Map<String,Integer> map = mapTypeIDIndex.get(type);
-                final Iterator<String> it = ids.iterator();
-                while (it.hasNext()) {
-                        String id = it.next();
-                        map.put(id, index);
+                Map<String,Map<String,Set<String>>> map = mapTypeIDMapTypeIDs.get(type);
+                for (String id : ids) {
+                        map.put(id, toIDMapping);
                 }
-
-                //return idMapping;
         }
 }

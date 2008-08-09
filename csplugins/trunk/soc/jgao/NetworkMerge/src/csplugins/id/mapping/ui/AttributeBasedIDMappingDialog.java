@@ -36,8 +36,8 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
-import csplugins.id.mapping.model.AttributeBasedIDMappingModelImpl;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
+import csplugins.id.mapping.model.AttributeBasedIDMappingDataImpl;
 
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +62,7 @@ public class AttributeBasedIDMappingDialog extends javax.swing.JDialog {
 
         cancelled = true;
 
-        idMapping = new AttributeBasedIDMappingModelImpl();
+        idMapping = new AttributeBasedIDMappingDataImpl();
 
         initComponents();
     }
@@ -191,7 +191,7 @@ public boolean isCancelled() {
     return cancelled;
 }
 
-public AttributeBasedIDMappingModel getIDMapping() {
+public AttributeBasedIDMappingData getIDMapping() {
         return this.idMapping;
 }
 
@@ -220,6 +220,6 @@ void setOKButtonEnable() {
         private boolean cancelled;
         private Frame frame;
         private Map<String,Set<String>> selectedNetworkAttribute;
-        private AttributeBasedIDMappingModel idMapping;
+        private AttributeBasedIDMappingData idMapping;
         private boolean isNode;
 }

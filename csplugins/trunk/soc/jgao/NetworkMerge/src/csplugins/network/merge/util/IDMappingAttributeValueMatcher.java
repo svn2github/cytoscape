@@ -36,7 +36,7 @@
 
 package csplugins.network.merge.util;
 
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 import csplugins.id.mapping.util.IDMappingDataUtils;
 
 import cytoscape.data.CyAttributes;
@@ -52,9 +52,9 @@ import java.util.Arrays;
  * 
  */
 public class IDMappingAttributeValueMatcher implements AttributeValueMatcher {
-        protected final AttributeBasedIDMappingModel idMapping;
+        protected final AttributeBasedIDMappingData idMapping;
 
-        public IDMappingAttributeValueMatcher(final AttributeBasedIDMappingModel idMapping) {
+        public IDMappingAttributeValueMatcher(final AttributeBasedIDMappingData idMapping) {
                 this.idMapping = idMapping;
         }
         /**

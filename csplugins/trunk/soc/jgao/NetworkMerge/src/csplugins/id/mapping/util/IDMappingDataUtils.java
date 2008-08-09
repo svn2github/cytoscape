@@ -37,7 +37,7 @@
 package csplugins.id.mapping.util;
 
 import csplugins.id.mapping.IDMapper;
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
 import cytoscape.data.CyAttributes;
 
@@ -75,7 +75,7 @@ public class IDMappingDataUtils {
          * @throws IllegalArgumentException if network does not exist or one or more ids in potentialSrcTypes or tgtTypes are not supported by the idMapper
          */
         public static void addAttributeBasedIDMappingFromIDMapper(
-                                             AttributeBasedIDMappingModel idMapping,
+                                             AttributeBasedIDMappingData idMapping,
                                              final IDMapper idMapper,
                                              final Set<String> goIDs,
                                              final CyAttributes cyAttributes,
@@ -207,7 +207,7 @@ public class IDMappingDataUtils {
          * @return map from target id type to target ids
          */
         public static Map<String,Set<String>> getOverlappingIDMapping(
-                                             AttributeBasedIDMappingModel idMapping,
+                                             AttributeBasedIDMappingData idMapping,
                                              Map<String,String> mapGOAttr) {
                 if (idMapping==null || mapGOAttr==null) {
                         throw new java.lang.NullPointerException();

@@ -52,7 +52,7 @@ import csplugins.network.merge.util.IDMappingAttributeValueMatcher;
 import csplugins.network.merge.util.AttributeMerger;
 import csplugins.network.merge.util.DefaultAttributeMerger;
 import csplugins.network.merge.util.IDMappingAttributeMerger;
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
@@ -119,7 +119,7 @@ public class NetworkMergePlugin extends CytoscapePlugin {
                 } else {
 
 
-                        AttributeBasedIDMappingModel idMapping = dialog.getIDMapping();
+                        AttributeBasedIDMappingData idMapping = dialog.getIDMapping();
 
                         AttributeConflictCollector conflictCollector = new AttributeConflictCollectorImpl();
 
@@ -182,7 +182,7 @@ class NetworkMergeSessionTask implements Task {
     private Operation operation;
     private String mergedNetworkName;
     AttributeConflictCollector conflictCollector;
-    AttributeBasedIDMappingModel idMapping;
+    AttributeBasedIDMappingData idMapping;
 
     private TaskMonitor taskMonitor;
 
@@ -197,7 +197,7 @@ class NetworkMergeSessionTask implements Task {
                              final Operation operation,
                              final String mergedNetworkName,
                              final AttributeConflictCollector conflictCollector,
-                             final AttributeBasedIDMappingModel idMapping) {
+                             final AttributeBasedIDMappingData idMapping) {
         this.matchingAttribute = matchingAttribute;
         this.nodeAttributeMapping = nodeAttributeMapping;
         this.edgeAttributeMapping = edgeAttributeMapping;
@@ -321,7 +321,7 @@ class NetworkMergeSessionTask implements Task {
 
 class HandleConflictsTask implements Task {
     private AttributeConflictCollector conflictCollector;
-    private AttributeBasedIDMappingModel idMapping;
+    private AttributeBasedIDMappingData idMapping;
 
     private TaskMonitor taskMonitor;
 
@@ -330,7 +330,7 @@ class HandleConflictsTask implements Task {
      *
      */
     HandleConflictsTask(final AttributeConflictCollector conflictCollector,
-                        final AttributeBasedIDMappingModel idMapping) {
+                        final AttributeBasedIDMappingData idMapping) {
         this.conflictCollector = conflictCollector;
         this.idMapping = idMapping;
     }

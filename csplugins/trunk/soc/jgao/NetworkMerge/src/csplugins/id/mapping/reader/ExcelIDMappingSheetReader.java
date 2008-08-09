@@ -36,8 +36,8 @@
 
 package csplugins.id.mapping.reader;
 
-import csplugins.id.mapping.model.IDMappingList;
-import csplugins.id.mapping.model.IDMappingListImpl;
+import csplugins.id.mapping.model.IDMappingData;
+import csplugins.id.mapping.model.IDMappingDataImpl;
 
 import java.util.List;
 import java.util.Vector;
@@ -66,7 +66,7 @@ public class ExcelIDMappingSheetReader extends IDMappingTableReader {
 
         @Override
         public void readTable() throws IOException {
-		idMappings = new IDMappingListImpl();
+		idMappings = new IDMappingDataImpl();
 
                 // add types
 		HSSFRow row = sheet.getRow(0);

@@ -1,4 +1,4 @@
-/* File: IDMappingList.java
+/* File: IDMappingData.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -43,7 +43,7 @@ import java.util.Map;
  * Store ID mapping data in a list, could be viewed as a 2-d table
  * 
  */
-public interface IDMappingList {
+public interface IDMappingData {
 
         /**
          * Get supported ID types
@@ -96,49 +96,15 @@ public interface IDMappingList {
          * @return
          *      the number of ID mapping
          */
-        public int getIDMappingCount();
+        //public int getIDMappingCount();
 
         /**
-         * Get the ith ID mapping
-         *
-         * @param i
-         *      index of ID mapping
-         *
-         * @return
-         *      the ith ID mapping
-         *
-         * @throws IndexOutOfBoundsException if i is out of bound
-         */
-        public Map<String,Set<String>> getIDMapping(int i);
-
-        /**
-         * Get the ID set of type in the ith ID mapping
-         *
-         * @param i
-         *      index of ID mapping         
+         * return all the id mapping from source ID id of and source type type
          * @param type
-         *      ID type
-         *
-         * @return
-         *      ID set if type exists; null otherwise
-         *
-         * @throws IndexOutOfBoundsException if i is out of bound
-         * @throws NullPointerException if type is null
-         */
-        public Set<String> getIDMapping(int i, String type);
-
-        /**
-         * Get the index of id of type
-         *
-         * @param type
-         *      ID type
          * @param id
-         *      ID
-         *
          * @return
-         *      Index of ID if exists; -1, otherwise
          */
-        public int indexOf(String type, String id);
+        public Map<String,Set<String>> getIDMapping(String type, String id);
 
         /**
          * Add an ID mapping

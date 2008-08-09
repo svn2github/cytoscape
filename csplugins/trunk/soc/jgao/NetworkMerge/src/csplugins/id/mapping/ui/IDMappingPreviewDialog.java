@@ -36,7 +36,7 @@
 
 package csplugins.id.mapping.ui;
 
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
 import java.util.Vector;
 import java.util.Map;
@@ -52,11 +52,11 @@ import javax.swing.table.AbstractTableModel;
  * 
  */
 public class IDMappingPreviewDialog extends javax.swing.JDialog {
-    private final AttributeBasedIDMappingModel idMapping;
+    private final AttributeBasedIDMappingData idMapping;
     
 
     /** Creates new form IDMappingPreviewDialog */
-    public IDMappingPreviewDialog(java.awt.Frame parent, boolean modal, AttributeBasedIDMappingModel idMapping) {
+    public IDMappingPreviewDialog(java.awt.Frame parent, boolean modal, AttributeBasedIDMappingData idMapping) {
         super(parent, modal);
         this.idMapping = idMapping;
         initComponents();

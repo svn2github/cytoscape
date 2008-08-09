@@ -48,7 +48,7 @@ import csplugins.network.merge.model.MatchingAttributeImpl;
 import csplugins.id.mapping.ui.IDMappingPreviewDialog;
 
 import csplugins.id.mapping.ui.AttributeBasedIDMappingDialog;
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
@@ -686,7 +686,7 @@ public boolean isCancelled() {
     return cancelled;
 }
 
-public AttributeBasedIDMappingModel getIDMapping() {
+public AttributeBasedIDMappingData getIDMapping() {
         return idMapping;
 }
 
@@ -728,7 +728,7 @@ public List<CyNetwork> getSelectedNetworkList() {
     private AttributeMapping nodeAttributeMapping;
     private AttributeMapping edgeAttributeMapping;
     private MatchingAttribute matchingAttribute;
-    private AttributeBasedIDMappingModel idMapping;
+    private AttributeBasedIDMappingData idMapping;
             
     private boolean cancelled = true;
     private Frame frame;

@@ -41,6 +41,7 @@ import csplugins.network.merge.model.MatchingAttribute;
 import cytoscape.Cytoscape;
 
 import java.util.Vector;
+import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.Arrays;
 
@@ -68,11 +69,13 @@ class MatchNodeTable extends JTable{
     }
     
     protected void setColumnEditorAndCellRenderer() {
-        Vector<String> attrs = new Vector<String>();
+        TreeSet<String> attrset = new TreeSet<String>();
         //TODO remove in Cytoscape3
-        attrs.add("ID");
+        attrset.add("ID");
         //TODO: modify if local attribute implemented
-        attrs.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+        attrset.addAll(Arrays.asList(Cytoscape.getNodeAttributes().getAttributeNames()));
+
+        String[] attrs = attrset.toArray(new String[0]);
 
         int n = getColumnCount();
         for (int i=0; i<n; i++) {

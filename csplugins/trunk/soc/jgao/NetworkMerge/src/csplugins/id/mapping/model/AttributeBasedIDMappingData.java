@@ -1,4 +1,4 @@
-/* File: AttributeBasedIDMappingModel.java
+/* File: AttributeBasedIDMappingData.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -43,7 +43,7 @@ import java.util.Map;
  * To store ID mapping for attributes of nodes/edges
  * 
  */
-public interface AttributeBasedIDMappingModel {
+public interface AttributeBasedIDMappingData {
 
         public boolean isEmpty();
 

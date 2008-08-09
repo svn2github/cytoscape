@@ -13,6 +13,10 @@ import javax.swing.table.TableCellRenderer;
 
 class ComboBoxTableCellRenderer extends JComboBox implements TableCellRenderer {
 
+    public ComboBoxTableCellRenderer(Object[] items) {
+            super(items);
+    }
+
     public ComboBoxTableCellRenderer(Vector items) {
             super(items);
     }

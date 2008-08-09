@@ -46,6 +46,7 @@ import cytoscape.data.Semantics;
 import cytoscape.data.CyAttributes;
 
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -111,8 +112,10 @@ class MergeAttributeTable extends JTable{
     }
 
     protected void setColumnEditor() {
-        final Vector<String> attrs = new Vector();
-        attrs.addAll(Arrays.asList(attributeMapping.getCyAttributes().getAttributeNames()));
+        final TreeSet<String> attrset = new TreeSet();
+        attrset.addAll(Arrays.asList(attributeMapping.getCyAttributes().getAttributeNames()));
+
+        final Vector<String> attrs = new Vector<String>(attrset);
         attrs.add(nullAttr);
 
         final int n = attributeMapping.getSizeNetwork();

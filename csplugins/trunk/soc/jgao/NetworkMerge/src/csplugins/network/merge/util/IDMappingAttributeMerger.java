@@ -40,7 +40,7 @@ import csplugins.network.merge.conflict.AttributeConflictCollector;
 import csplugins.network.merge.conflict.AttributeConflict;
 import csplugins.network.merge.conflict.AttributeConflictImpl;
 
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 import csplugins.id.mapping.util.IDMappingDataUtils;
 
 import cytoscape.data.CyAttributes;
@@ -59,10 +59,10 @@ import java.util.Arrays;
  */
 public class IDMappingAttributeMerger extends DefaultAttributeMerger {
 
-        protected final AttributeBasedIDMappingModel idMapping;
+        protected final AttributeBasedIDMappingData idMapping;
 
         public IDMappingAttributeMerger(final AttributeConflictCollector conflictCollector,
-                final AttributeBasedIDMappingModel idMapping) {
+                final AttributeBasedIDMappingData idMapping) {
                 super(conflictCollector);
                 this.idMapping = idMapping;
         }

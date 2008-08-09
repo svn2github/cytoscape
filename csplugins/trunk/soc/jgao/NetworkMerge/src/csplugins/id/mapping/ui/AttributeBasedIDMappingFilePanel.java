@@ -39,7 +39,7 @@ package csplugins.id.mapping.ui;
 import csplugins.id.mapping.IDMapperFile;
 import csplugins.id.mapping.IDMapperText;
 import csplugins.id.mapping.IDMapperExcel;
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 import csplugins.id.mapping.util.IDMappingDataUtils;
 
 import cytoscape.Cytoscape;
@@ -487,7 +487,7 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
         private IDMapperFile idMapper;
         private Frame frame;
         private AttributeBasedIDMappingDialog parent;
-        private AttributeBasedIDMappingModel idMapping;
+        private AttributeBasedIDMappingData idMapping;
         private boolean isNode;
         private boolean isLocal;
         //private Set<String> addedFiles;

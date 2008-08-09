@@ -1,4 +1,4 @@
-/* File: AttributeBasedIDMappingModelImpl.java
+/* File: AttributeBasedIDMappingDataImpl.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -46,13 +46,13 @@ import java.util.Iterator;
  * To store ID mapping for attributes of nodes/edges
  * 
  */
-public class AttributeBasedIDMappingModelImpl implements AttributeBasedIDMappingModel {
+public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingData {
         private final Map<String, Map<String,String>> mapGOAttrSrcType; // Node/edge id -> attribute name -> souce ID type
         //private final Map<String, Map<String,String>> mapGOAttrSrcID; // Node/edge id -> attribute name -> souce ID
         private final Map<String,Map<String, Map<String, Set<String>>>> mapGoAttrTgtTypeTgtIDs; // Node/edge id -> attribute name -> target ID type -> target IDs
         private final Set<String> idTypes;
 
-        public AttributeBasedIDMappingModelImpl() {
+        public AttributeBasedIDMappingDataImpl() {
                 mapGOAttrSrcType = new HashMap<String, Map<String,String>>();
                 //mapGOAttrSrcID = new HashMap<String, Map<String,String>>();
                 mapGoAttrTgtTypeTgtIDs = new HashMap<String,Map<String, Map<String, Set<String>>>>();

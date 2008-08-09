@@ -60,7 +60,7 @@ import java.net.URL;
  */
 public class IDMappingTableReader implements TextTableReader {
         protected final URL sourceURL;
-        protected IDMappingList idMappings;
+        protected IDMappingData idMappings;
 
         private static final String typeSeparator = "[\t]";
         private static final String idSeparator = "[;,]";
@@ -72,7 +72,7 @@ public class IDMappingTableReader implements TextTableReader {
 
         @Override
         public void readTable() throws IOException {
-                idMappings = new IDMappingListImpl();
+                idMappings = new IDMappingDataImpl();
 
                 InputStream is = URLUtil.getInputStream(sourceURL);
 		final BufferedReader bufRd = new BufferedReader(new InputStreamReader(is));
@@ -150,14 +150,15 @@ public class IDMappingTableReader implements TextTableReader {
                         return "No ID mapping is loaded\n";
                 }
 
-                return idMappings.getIDMappingCount()+" ID mappings are loaded.\n";
+                //return idMappings.getIDMappingCount()+" ID mappings are loaded.\n";
+                return "ID mapping from file loaded successfully";
         }
 
         /**
          *
          * @return ID Mappings
          */
-        public IDMappingList getIDMappingList() {
+        public IDMappingData getIDMappingList() {
                 return idMappings;
         }
 }

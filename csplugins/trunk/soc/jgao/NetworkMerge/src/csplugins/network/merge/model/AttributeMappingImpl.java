@@ -422,6 +422,8 @@ public class AttributeMappingImpl implements AttributeMapping {
         }
         
         final String[] attributeNames = cyAttributes.getAttributeNames();
+        Arrays.sort(attributeNames);
+
         final int nAttr = attributeNames.length;
         if (attributeMapping.isEmpty()) { // for the first network added
             

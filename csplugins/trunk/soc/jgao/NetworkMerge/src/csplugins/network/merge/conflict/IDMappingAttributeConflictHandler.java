@@ -36,7 +36,7 @@
 
 package csplugins.network.merge.conflict;
 
-import csplugins.id.mapping.model.AttributeBasedIDMappingModel;
+import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 import csplugins.id.mapping.util.IDMappingDataUtils;
 
 import cytoscape.data.CyAttributes;
@@ -51,9 +51,9 @@ import java.util.Set;
  * 
  */
 public class IDMappingAttributeConflictHandler implements AttributeConflictHandler {
-        AttributeBasedIDMappingModel idMapping;
+        AttributeBasedIDMappingData idMapping;
 
-        public IDMappingAttributeConflictHandler(AttributeBasedIDMappingModel idMapping) {
+        public IDMappingAttributeConflictHandler(AttributeBasedIDMappingData idMapping) {
                 this.idMapping = idMapping;
         }
 
