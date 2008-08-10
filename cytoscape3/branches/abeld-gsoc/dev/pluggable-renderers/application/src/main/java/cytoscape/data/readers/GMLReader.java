@@ -57,7 +57,6 @@ import cytoscape.util.FileUtil;
 
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.CalculatorCatalog;
-import org.cytoscape.vizmap.GlobalAppearanceCalculator;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.LineStyle;

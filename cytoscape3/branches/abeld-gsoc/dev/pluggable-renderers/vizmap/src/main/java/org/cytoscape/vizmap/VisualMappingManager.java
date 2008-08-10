@@ -87,9 +87,6 @@ public class VisualMappingManager extends SubjectBase {
 	private GraphView networkView; // the object displaying the network
 	private VisualStyle activeVS; // the currently active visual style
 
-	// reusable appearance objects
-	private GlobalAppearance myGlobalApp = new GlobalAppearance();
-
 	private static final String DEF_STYLE_NAME = "default";
 
 	/**
@@ -210,47 +207,4 @@ public class VisualMappingManager extends SubjectBase {
 		else
 			return activeVS;
 	}
-
-	/**
-	 * Recalculates and reapplies the global visual attributes. The
-	 * recalculation is done by delegating to the GlobalAppearanceCalculator
-	 * member of the current visual style.
-	 */
-	public void applyGlobalAppearances() {
-		applyGlobalAppearances(getNetwork(), getNetworkView());
-	}
-
-	/**
-	 * Recalculates and reapplies the global visual attributes. The
-	 * recalculation is done by delegating to the GlobalAppearanceCalculator
-	 * member of the current visual style.
-	 *
-	 * @param network
-	 *            the network to apply to
-	 * @param network_view
-	 *            the view to apply to
-	 */
-	public void applyGlobalAppearances(GraphPerspective network, GraphView network_view) {
-		GlobalAppearanceCalculator globalAppearanceCalculator = activeVS.getGlobalAppearanceCalculator();
-		globalAppearanceCalculator.calculateGlobalAppearance(myGlobalApp, network);
-
-		// setup proper background colors
-		network_view.setBackgroundPaint(myGlobalApp.getBackgroundColor());
-
-		// will ignore sloppy & reverse selection color for now
-
-		// Set selection colors
-		Iterator nodeIt = network.nodesIterator();
-
-		while (nodeIt.hasNext())
-			network_view.getNodeView((Node) nodeIt.next())
-			            .setSelectedPaint(myGlobalApp.getNodeSelectionColor());
-
-		Iterator edgeIt = network.edgesIterator();
-
-		while (edgeIt.hasNext())
-			network_view.getEdgeView((Edge) edgeIt.next())
-			            .setSelectedPaint(myGlobalApp.getEdgeSelectionColor());
-	}
-
 }

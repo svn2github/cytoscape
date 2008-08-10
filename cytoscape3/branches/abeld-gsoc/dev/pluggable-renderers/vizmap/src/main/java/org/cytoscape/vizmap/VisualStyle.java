@@ -42,6 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,6 +50,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualProperty;
@@ -70,7 +74,7 @@ public class VisualStyle implements Cloneable {
 	
 	// Calculators associated with this VS.
 	private HashMap<VisualProperty, Calculator> calculators;
-	private GlobalAppearanceCalculator globalAC;
+	private HashMap<String, Object> globalVisualProperties;
 	
 	/**
 	 * Keep track of number of times this style has been cloned.
@@ -123,8 +127,8 @@ public class VisualStyle implements Cloneable {
 		copy.name = dupeFreeName;
 		copy.dupeCount++;
 		copy.calculators = (HashMap <VisualProperty, Calculator>) this.calculators.clone();
+		copy.globalVisualProperties = (HashMap<String, Object>) this.globalVisualProperties.clone();  
 		
-		copy.globalAC = (GlobalAppearanceCalculator) this.globalAC.clone();
 
 		return copy;
 	}
@@ -135,17 +139,16 @@ public class VisualStyle implements Cloneable {
 	public VisualStyle(String name) {
 		setName(name);
 		calculators = new HashMap<VisualProperty, Calculator>();
-		setGlobalAppearanceCalculator(new GlobalAppearanceCalculator());
+		globalVisualProperties = new HashMap<String, Object>();
 	}
 
 	/**
 	 * Full constructor.
 	 */
-	public VisualStyle(String name, HashMap<VisualProperty, Calculator> calculators, 
-	                   GlobalAppearanceCalculator gac) {
+	public VisualStyle(String name, HashMap<VisualProperty, Calculator> calculators, HashMap<String, Object> globalVisualProperties) {
 		setName(name);
 		this.calculators = calculators;
-		setGlobalAppearanceCalculator(gac);
+		this.globalVisualProperties = globalVisualProperties;
 	}
 
 	/**
@@ -174,12 +177,7 @@ public class VisualStyle implements Cloneable {
 
         setName(newName);
         this.calculators = (HashMap<VisualProperty, Calculator>) toCopy.calculators.clone();
-
-        try {
-            setGlobalAppearanceCalculator((GlobalAppearanceCalculator)toCopy.getGlobalAppearanceCalculator().clone());
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+        this.globalVisualProperties = (HashMap<String, Object>) toCopy.globalVisualProperties.clone();
     }
 
 	/**
@@ -214,6 +212,23 @@ public class VisualStyle implements Cloneable {
 	public void apply(GraphView network_view){
 		for (Calculator c: calculators.values()){
 			c.apply(network_view);
+		}
+		// FIXME: rethink this:
+		// setup proper background colors
+		network_view.setBackgroundPaint((Color) globalVisualProperties.get("backgroundColor"));
+
+		// will ignore sloppy & reverse selection color for now // FIXME
+		GraphPerspective network = network_view.getNetwork();
+		
+		// Set selection colors
+		Color nodeSelectionColor = (Color) globalVisualProperties.get("nodeSelectionColor");
+		for (Node n: network.nodesList()){ // FIXME: GraphView should have an .nodeViewsList() method but apparently doesn't have one now.
+			network_view.getNodeView(n).setSelectedPaint(nodeSelectionColor );
+		}
+
+		Color edgeSelectionColor = (Color) globalVisualProperties.get("edgeSelectionColor");
+		for (EdgeView ev: network_view.getEdgeViewsList()){
+			ev.setSelectedPaint(edgeSelectionColor );
 		}
 	}
 	
@@ -254,26 +269,14 @@ public class VisualStyle implements Cloneable {
 		return result;
 	}
 
-	
-	/**
-	 * Get the GlobalAppearanceCalculator for this visual style.
-	 */
-	public GlobalAppearanceCalculator getGlobalAppearanceCalculator() {
-		return globalAC;
+	/** Sets the default value for a given VisualProperty */
+	public void setGlobalProperty(String key, Object value){
+		globalVisualProperties.put(key, value);
 	}
-
-	/**
-	 * Set the GlobalAppearanceCalculator for this visual style. A default
-	 * GlobalAppearanceCalculator will be created and used if the argument
-	 * is null.
-	 *
-	 * @param nac  the new GlobalAppearanceCalculator
-	 * @return  the old GlobalAppearanceCalculator
-	 */
-	public GlobalAppearanceCalculator setGlobalAppearanceCalculator(GlobalAppearanceCalculator gac) {
-		GlobalAppearanceCalculator tmp = globalAC;
-		globalAC = (gac == null) ? new GlobalAppearanceCalculator() : gac;
-
-		return tmp;
+	public Object getGlobalProperty(String key){
+		return globalVisualProperties.get(key);
+	}
+	public HashMap<String, Object> copyGlobalVisualProperties(){
+		return (HashMap<String, Object>) globalVisualProperties.clone();
 	}
 }

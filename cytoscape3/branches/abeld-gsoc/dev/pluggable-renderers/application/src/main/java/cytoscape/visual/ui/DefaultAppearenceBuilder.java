@@ -37,7 +37,6 @@ package cytoscape.visual.ui;
 import cytoscape.Cytoscape;
 
 import cytoscape.util.CyColorChooser;
-import org.cytoscape.vizmap.GlobalAppearanceCalculator;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
 
@@ -158,9 +157,8 @@ public class DefaultAppearenceBuilder extends JDialog {
 		if(dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
 		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                            .getGlobalAppearanceCalculator()
-		                                            .getDefaultBackgroundColor());
+		dab.mainView.updateBackgroungColor((Color) Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalProperty("backgroundColor"));
+		                                            
 		dab.mainView.updateView();
 
 		return dab.getPanel();
@@ -378,9 +376,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 			final String selected = (String) globalList.getSelectedValue();
 			Color newColor = CyColorChooser.showDialog(this, "Choose new color.", Color.white);
 
+			//FIXME: here the string 'selected' will contin the global property to set!!
+			System.out.println("FIXME: not setting global property:"+selected);
 			try {
-				Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalAppearanceCalculator()
-				         .setDefaultColor(selected, newColor);
+				Cytoscape.getVisualMappingManager().getVisualStyle().setGlobalProperty("defaultColor", newColor);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -389,7 +388,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 
 			if (selected.equals("Background Color")) {
-				Cytoscape.getVisualMappingManager().applyGlobalAppearances();
+				//FIXME: Cytoscape.getVisualMappingManager().getVisualStyle().apply(mainView);
 				mainView.updateBackgroungColor(newColor);
 			}
 
@@ -453,11 +452,11 @@ public class DefaultAppearenceBuilder extends JDialog {
 			}
 		}
 
-		GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                          .getGlobalAppearanceCalculator();
+		//GlobalAppearanceCalculator gac = Cytoscape.getVisualMappingManager().getVisualStyle()
+		//                                          .getGlobalAppearanceCalculator();
 		DefaultListModel gModel = new DefaultListModel();
 		globalList.setModel(gModel);
-
+		/* FIXME FIXME FIXME 
 		for (String name : gac.getGlobalAppearanceNames()) {
 			try {
 				globalIcons.add(new GlobalIcon(name, gac.getDefaultColor(name)));
@@ -467,7 +466,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			gModel.addElement(name);
 		}
-
+		 */
 		nodeList.setCellRenderer(new VisualPropCellRenderer(nodeIcons));
 		edgeList.setCellRenderer(new VisualPropCellRenderer(edgeIcons));
 		globalList.setCellRenderer(new VisualPropCellRenderer(globalIcons));

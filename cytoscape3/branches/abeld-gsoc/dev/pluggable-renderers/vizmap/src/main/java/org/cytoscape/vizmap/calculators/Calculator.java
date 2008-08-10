@@ -43,7 +43,6 @@
 package org.cytoscape.vizmap.calculators;
 
 
-import org.cytoscape.vizmap.Appearance;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualProperty;
 

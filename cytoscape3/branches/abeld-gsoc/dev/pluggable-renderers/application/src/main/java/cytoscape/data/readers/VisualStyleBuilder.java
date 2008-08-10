@@ -40,7 +40,6 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.*;
-import org.cytoscape.vizmap.ValueParserCatalog;
 import org.cytoscape.vizmap.calculators.*;
 import org.cytoscape.vizmap.mappings.*;
 
@@ -91,14 +90,13 @@ public class VisualStyleBuilder {
 	 * Actually build the style using the provided properties
 	 */
 	public void buildStyle() {
+		
+		// FIXME FIXME: how much is this the same as copying a visualstyle (currentStyle)?
+		// if similar enough, should use something like that! 
+		
 		// First, get our current style information. 
 		VisualMappingManager vm = Cytoscape.getVisualMappingManager();
 		VisualStyle currentStyle = vm.getVisualStyle();
-		/*
-		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(currentStyle.getNodeAppearanceCalculator());
-		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(currentStyle.getEdgeAppearanceCalculator());
-		*/
-		GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
 
 		//FIXME nac.setNodeSizeLocked(nodeSizeLocked); 
 
@@ -146,7 +144,7 @@ public class VisualStyleBuilder {
 
 		String styleName = name + " style";
 
-		VisualStyle graphStyle = new VisualStyle(styleName, calculators, gac);
+		VisualStyle graphStyle = new VisualStyle(styleName, calculators, currentStyle.copyGlobalVisualProperties());
 
 		// Remove this in case we've already loaded this network once
 		catalog.removeVisualStyle(styleName);

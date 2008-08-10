@@ -236,10 +236,9 @@ public class CalculatorIO {
 				                    .getProperties(nodeAppearanceBaseKey + "." + name));
 				styleProps.putAll(vs.getEdgeAppearanceCalculator()
 				                    .getProperties(edgeAppearanceBaseKey + "." + name));
-				                    */
 				styleProps.putAll(vs.getGlobalAppearanceCalculator()
 				                    .getProperties(globalAppearanceBaseKey + "." + name));
-
+				 */
 				// now that we've constructed all the properties for this visual
 				// style without Exceptions, store in the global properties
 				// object
@@ -381,11 +380,12 @@ public class CalculatorIO {
 				vs = new VisualStyle(name);
 				visualStyles.put(name, vs);
 			}
-
+			/* FIXME: do IO later
 			vs.setGlobalAppearanceCalculator(new GlobalAppearanceCalculator(name,
 			                                                                gacNames.get(name),
 			                                                                globalAppearanceBaseKey
 			                                                                + "." + name, catalog));
+			                                                                */
 		}
 
 		// now store the visual styles in the catalog

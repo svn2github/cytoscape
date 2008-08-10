@@ -104,8 +104,7 @@ public class DefaultViewPanel extends JPanel {
 		
 		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
 
-		background = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                      .getGlobalAppearanceCalculator().getDefaultBackgroundColor();
+		background = (Color) Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalProperty("backgroundColor");
 		this.setBackground(background);
 	}
 
