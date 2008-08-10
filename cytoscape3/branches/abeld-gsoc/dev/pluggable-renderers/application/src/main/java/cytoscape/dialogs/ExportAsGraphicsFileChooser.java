@@ -89,13 +89,16 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 	private boolean useTransparency(){
 
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
-		
+		// FIXME FIXME FIXME
+		return true;
+		/*
 		// Check opacity in default setting
 		Properties node_default_props = vs.getNodeAppearanceCalculator().getDefaultAppearance().getDefaultProperties("");
 		Properties edge_default_props = vs.getEdgeAppearanceCalculator().getDefaultAppearance().getDefaultProperties("");
 
 		Enumeration nodePropNames = node_default_props.propertyNames();
 		Enumeration edgePropNames = edge_default_props.propertyNames();
+		
 		
 		while (nodePropNames.hasMoreElements()) {
 			String tmp = (String) nodePropNames.nextElement();
@@ -114,8 +117,8 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 				}
 			}
 		}
-
-		List<Calculator> edge_calculators = vs.getEdgeAppearanceCalculator().getCalculators();
+		
+		List<Calculator> edge_calculators = vs.getEdgeCalculators();
 		for (Calculator cal: edge_calculators) {
 			if (cal.getVisualProperty().getName().equals("EDGE_OPACITY")||
 					cal.getVisualProperty().getName().equals("EDGE_LABEL_OPACITY") ||
@@ -127,6 +130,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 		}
 		
 		return false;
+		*/
 	}
 
 	public CyFileFilter getSelectedFormat()

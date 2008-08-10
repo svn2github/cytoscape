@@ -405,14 +405,11 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	private void initRangeValues() {
 		final CyAttributes attr;
 
+		calculator = Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type);
 		if (type.isNodeProp()) {
 			attr = Cytoscape.getNodeAttributes();
-			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
-			                      .getNodeAppearanceCalculator().getCalculator(type);
 		} else {
 			attr = Cytoscape.getEdgeAttributes();
-			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
-			                      .getEdgeAppearanceCalculator().getCalculator(type);
 		}
 
 		if (calculator == null)

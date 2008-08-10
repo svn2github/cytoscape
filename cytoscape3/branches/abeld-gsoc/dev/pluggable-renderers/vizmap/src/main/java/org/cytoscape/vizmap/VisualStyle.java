@@ -42,8 +42,17 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 import org.cytoscape.vizmap.calculators.Calculator;
 
 
@@ -60,10 +69,9 @@ public class VisualStyle implements Cloneable {
 	private String name = "default";
 	
 	// Calculators associated with this VS.
-	private NodeAppearanceCalculator nodeAC;
-	private EdgeAppearanceCalculator edgeAC;
+	private HashMap<VisualProperty, Calculator> calculators;
 	private GlobalAppearanceCalculator globalAC;
-
+	
 	/**
 	 * Keep track of number of times this style has been cloned.
 	 */
@@ -83,18 +91,13 @@ public class VisualStyle implements Cloneable {
 	 * @return    vector with: name of conflicting visual style (index 0),
 	 *        name of conflicting attributes. If size == 1, then no conflicts
 	 */
-	public Vector checkConflictingCalculator(Calculator c) {
+	public Vector checkConflictingCalculator(Calculator calc) {
 		Vector<String> conflicts = new Vector<String>();
 		conflicts.add(name);
 
-		for (Calculator nodeCalcs : nodeAC.getCalculators()) {
-			if (nodeCalcs == c)
-				conflicts.add(nodeCalcs.getVisualProperty().getName());
-		}
-
-		for (Calculator edgeCalcs : edgeAC.getCalculators()) {
-			if (edgeCalcs == c)
-				conflicts.add(edgeCalcs.getVisualProperty().getName());
+		for (Calculator c : calculators.values()) {
+			if (calc == c)
+				conflicts.add(c.getVisualProperty().getName());
 		}
 
 		return conflicts;
@@ -119,8 +122,8 @@ public class VisualStyle implements Cloneable {
 
 		copy.name = dupeFreeName;
 		copy.dupeCount++;
-		copy.nodeAC = (NodeAppearanceCalculator) this.nodeAC.clone();
-		copy.edgeAC = (EdgeAppearanceCalculator) this.edgeAC.clone();
+		copy.calculators = (HashMap <VisualProperty, Calculator>) this.calculators.clone();
+		
 		copy.globalAC = (GlobalAppearanceCalculator) this.globalAC.clone();
 
 		return copy;
@@ -131,19 +134,17 @@ public class VisualStyle implements Cloneable {
 	 */
 	public VisualStyle(String name) {
 		setName(name);
-		setNodeAppearanceCalculator(new NodeAppearanceCalculator());
-		setEdgeAppearanceCalculator(new EdgeAppearanceCalculator());
+		calculators = new HashMap<VisualProperty, Calculator>();
 		setGlobalAppearanceCalculator(new GlobalAppearanceCalculator());
 	}
 
 	/**
 	 * Full constructor.
 	 */
-	public VisualStyle(String name, NodeAppearanceCalculator nac, EdgeAppearanceCalculator eac,
+	public VisualStyle(String name, HashMap<VisualProperty, Calculator> calculators, 
 	                   GlobalAppearanceCalculator gac) {
 		setName(name);
-		setNodeAppearanceCalculator(nac);
-		setEdgeAppearanceCalculator(eac);
+		this.calculators = calculators;
 		setGlobalAppearanceCalculator(gac);
 	}
 
@@ -172,8 +173,7 @@ public class VisualStyle implements Cloneable {
             throw new NullPointerException("Unexpected null name in VisualStyle constructor");
 
         setName(newName);
-        setNodeAppearanceCalculator((NodeAppearanceCalculator)toCopy.getNodeAppearanceCalculator().clone());
-        setEdgeAppearanceCalculator((EdgeAppearanceCalculator)toCopy.getEdgeAppearanceCalculator().clone());
+        this.calculators = (HashMap<VisualProperty, Calculator>) toCopy.calculators.clone();
 
         try {
             setGlobalAppearanceCalculator((GlobalAppearanceCalculator)toCopy.getGlobalAppearanceCalculator().clone());
@@ -210,49 +210,51 @@ public class VisualStyle implements Cloneable {
 		return tmp;
 	}
 
-	/**
-	 * Get the NodeAppearanceCalculator for this visual style.
-	 */
-	public NodeAppearanceCalculator getNodeAppearanceCalculator() {
-		return nodeAC;
+	/** Apply this VisualStyle to the view */
+	public void apply(GraphView network_view){
+		for (Calculator c: calculators.values()){
+			c.apply(network_view);
+		}
+	}
+	
+	/** Adds given Calculator*/
+	public void setCalculator(Calculator c){
+		calculators.put(c.getVisualProperty(), c);
+	
+	}
+	public Calculator getCalculator(VisualProperty vp){
+		return calculators.get(vp);
+	}
+	public void removeCalculator(VisualProperty vp){
+		calculators.remove(vp);
+	}
+	/** need a way to iterate over the calculators */
+	public HashMap<VisualProperty, Calculator> getCalculators(){
+		return calculators;
 	}
 
-	/**
-	 * Set the NodeAppearanceCalculator for this visual style. A default
-	 * NodeAppearanceCalculator will be created and used if the argument
-	 * is null.
-	 *
-	 * @param nac  the new NodeAppearanceCalculator
-	 * @return  the old NodeAppearanceCalculator
-	 */
-	public NodeAppearanceCalculator setNodeAppearanceCalculator(NodeAppearanceCalculator nac) {
-		NodeAppearanceCalculator tmp = nodeAC;
-		nodeAC = (nac == null) ? new NodeAppearanceCalculator() : nac;
-		return tmp;
+	/** need a way to iterate over the calculators */
+	public List<Calculator> getNodeCalculators(){
+		List<Calculator> result = new ArrayList<Calculator>();
+		for (Calculator calc: calculators.values()){
+			if (calc.getVisualProperty().isNodeProp()){
+				result.add(calc);
+			}
+		}
+		return result;
 	}
 
-	/**
-	 * Get the EdgeAppearanceCalculator for this visual style.
-	 */
-	public EdgeAppearanceCalculator getEdgeAppearanceCalculator() {
-		return edgeAC;
+	public List<Calculator> getEdgeCalculators(){
+		List<Calculator> result = new ArrayList<Calculator>();
+		for (Calculator calc: calculators.values()){
+			if (!calc.getVisualProperty().isNodeProp()){
+				result.add(calc);
+			}
+		}
+		return result;
 	}
 
-	/**
-	 * Set the EdgeAppearanceCalculator for this visual style. A default
-	 * EdgeAppearanceCalculator will be created and used if the argument
-	 * is null.
-	 *
-	 * @param nac  the new EdgeAppearanceCalculator
-	 * @return  the old EdgeAppearanceCalculator
-	 */
-	public EdgeAppearanceCalculator setEdgeAppearanceCalculator(EdgeAppearanceCalculator eac) {
-		EdgeAppearanceCalculator tmp = edgeAC;
-		edgeAC = (eac == null) ? new EdgeAppearanceCalculator() : eac;
-
-		return tmp;
-	}
-
+	
 	/**
 	 * Get the GlobalAppearanceCalculator for this visual style.
 	 */

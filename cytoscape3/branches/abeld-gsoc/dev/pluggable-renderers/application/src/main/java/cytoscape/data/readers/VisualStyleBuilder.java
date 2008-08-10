@@ -94,14 +94,16 @@ public class VisualStyleBuilder {
 		// First, get our current style information. 
 		VisualMappingManager vm = Cytoscape.getVisualMappingManager();
 		VisualStyle currentStyle = vm.getVisualStyle();
+		/*
 		NodeAppearanceCalculator nac = new NodeAppearanceCalculator(currentStyle.getNodeAppearanceCalculator());
 		EdgeAppearanceCalculator eac = new EdgeAppearanceCalculator(currentStyle.getEdgeAppearanceCalculator());
+		*/
 		GlobalAppearanceCalculator gac = new GlobalAppearanceCalculator(currentStyle.getGlobalAppearanceCalculator());
 
-		nac.setNodeSizeLocked(nodeSizeLocked);
+		//FIXME nac.setNodeSizeLocked(nodeSizeLocked); 
 
 		processCounts();
-
+		HashMap <VisualProperty, Calculator>calculators = new HashMap<VisualProperty, Calculator>();
 		for ( VisualProperty type : valueMaps.keySet() ) {
 
 			Map<Object,Object> valMap = valueMaps.get(type);
@@ -120,14 +122,12 @@ public class VisualStyleBuilder {
 
 				Calculator calc = new BasicCalculator("VisualStyleBuilder-" + getAttrName(type), dm, type);
 
-				if ( type.isNodeProp() )
-					nac.setCalculator( calc );
-				else
-					eac.setCalculator( calc );
+				calculators.put(type,calc);
 
 				// Otherwise, set the default appearance value for the visual style
 				// and then remove the attribute that was created.
 			} else {
+				/* FIXME: -- refactor per-vs default setting
 				if ( type.isNodeProp() ) {
 					for ( Object key : valMap.keySet() ) 
 						nac.getDefaultAppearance().set( type, valMap.get(key) );
@@ -137,6 +137,7 @@ public class VisualStyleBuilder {
 						eac.getDefaultAppearance().set( type, valMap.get(key) );
 					Cytoscape.getEdgeAttributes().deleteAttribute(getAttrName(type));
 				}
+				*/
 			}
 		}
 
@@ -145,7 +146,7 @@ public class VisualStyleBuilder {
 
 		String styleName = name + " style";
 
-		VisualStyle graphStyle = new VisualStyle(styleName, nac, eac, gac);
+		VisualStyle graphStyle = new VisualStyle(styleName, calculators, gac);
 
 		// Remove this in case we've already loaded this network once
 		catalog.removeVisualStyle(styleName);

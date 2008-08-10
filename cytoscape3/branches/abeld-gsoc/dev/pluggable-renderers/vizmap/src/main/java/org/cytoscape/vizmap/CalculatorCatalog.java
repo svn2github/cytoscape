@@ -422,10 +422,6 @@ public class CalculatorCatalog {
 		}
 
 		visualStyles.put(name, vs);
-
-		// store the individual attribute calculators via helper methods
-		addNodeAppearanceCalculator(vs.getNodeAppearanceCalculator());
-		addEdgeAppearanceCalculator(vs.getEdgeAppearanceCalculator());
 	}
 
 	/**
@@ -462,24 +458,6 @@ public class CalculatorCatalog {
 	 */
 	public String checkVisualStyleName(String name) {
 		return checkName(name, visualStyles);
-	}
-
-	private void addNodeAppearanceCalculator(NodeAppearanceCalculator c) {
-		for (Calculator cc : c.getCalculators()) {
-			Map<String, Calculator> m = getCalculatorMap(cc.getVisualProperty());
-
-			if (!m.values().contains(cc))
-				m.put(cc.toString(), cc);
-		}
-	}
-
-	private void addEdgeAppearanceCalculator(EdgeAppearanceCalculator c) {
-		for (Calculator cc : c.getCalculators()) {
-			Map<String, Calculator> m = getCalculatorMap(cc.getVisualProperty());
-
-			if (!m.values().contains(cc))
-				m.put(cc.toString(), cc);
-		}
 	}
 
 	protected void addCalculator(Calculator c, Map<String, Calculator> m) throws DuplicateCalculatorNameException {
@@ -592,14 +570,6 @@ public class CalculatorCatalog {
 	public void createDefaultVisualStyle() {
 		final VisualStyle defaultVS = new VisualStyle("default");
 
-		Calculator nlc = getCalculator(VisualPropertyCatalog.getVisualProperty("NODE_LABEL"), label);
-
-		if (nlc == null) {
-			PassThroughMapping m = new PassThroughMapping("", AbstractCalculator.ID);
-			nlc = new BasicCalculator(label, m, VisualPropertyCatalog.getVisualProperty("NODE_LABEL"));
-		}
-
-		defaultVS.getNodeAppearanceCalculator().setCalculator(nlc);
 		addVisualStyle(defaultVS);
 	}
 /*

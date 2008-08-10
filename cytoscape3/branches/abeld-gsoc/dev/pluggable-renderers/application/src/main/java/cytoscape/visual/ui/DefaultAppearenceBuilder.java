@@ -38,7 +38,6 @@ import cytoscape.Cytoscape;
 
 import cytoscape.util.CyColorChooser;
 import org.cytoscape.vizmap.GlobalAppearanceCalculator;
-import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
 
@@ -102,8 +101,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 	private static final Set<VisualProperty> EDGE_PROPS;
 	private static final Set<VisualProperty> NODE_PROPS;
 	private static DefaultAppearenceBuilder dab = null;
-	private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
-	                                                      .getNodeAppearanceCalculator();
+	
+	//private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
+	//                                                      .getNodeAppearanceCalculator();
 
 	static {
 		EDGE_PROPS = new TreeSet<VisualProperty>(VisualPropertyCatalog.getEdgeVisualPropertyList());
@@ -141,7 +141,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(900, 400);
 		dab.lockSize();
-		dab.lockNodeSizeCheckBox.setSelected(dab.nac.getNodeSizeLocked());
+		dab.lockNodeSizeCheckBox.setSelected(false); // FIXME: dab.nac.getNodeSizeLocked());
 		dab.mainView.updateView();
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
@@ -260,7 +260,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		lockNodeSizeCheckBox.setText("Lock Node Width/Height");
 		lockNodeSizeCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		lockNodeSizeCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
-		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+		lockNodeSizeCheckBox.setSelected(false);//FIXME: nac.getNodeSizeLocked());
 		lockNodeSizeCheckBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					lockSize();
@@ -481,12 +481,12 @@ public class DefaultAppearenceBuilder extends JDialog {
 			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH"));
 			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT"));
 			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_SIZE"));
-			nac.setNodeSizeLocked(true);
+			//FIXME nac.setNodeSizeLocked(true);
 		} else {
 			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH"));
 			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT"));
 			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_SIZE"));
-			nac.setNodeSizeLocked(false);
+			//FIXME nac.setNodeSizeLocked(false);
 		}
 
 		buildList();

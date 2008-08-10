@@ -121,12 +121,10 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		this.type = type;
 
 		if (type.isNodeProp())
-			title = Cytoscape.getVisualMappingManager().getVisualStyle()
-			                 .getNodeAppearanceCalculator().getCalculator(type).getMapping(0)
+			title = Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type).getMapping(0)
 			                 .getControllingAttributeName();
 		else
-			title = Cytoscape.getVisualMappingManager().getVisualStyle()
-			                 .getEdgeAppearanceCalculator().getCalculator(type).getMapping(0)
+			title = Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type).getMapping(0)
 			                 .getControllingAttributeName();
 
 		this.setBackground(Color.white);

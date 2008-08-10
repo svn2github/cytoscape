@@ -157,18 +157,7 @@ public class BelowAndAbovePanel extends JPanel {
 
                 final ContinuousMapping cMapping;
 
-                if (type.isNodeProp())
-                    cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager()
-                                                            .getVisualStyle()
-                                                            .getNodeAppearanceCalculator()
-                                                            .getCalculator(type)
-                                                            .getMapping(0);
-                else
-                    cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager()
-                                                            .getVisualStyle()
-                                                            .getEdgeAppearanceCalculator()
-                                                            .getCalculator(type)
-                                                            .getMapping(0);
+                cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type).getMapping(0);
 
                 BoundaryRangeValues brv;
                 BoundaryRangeValues original;

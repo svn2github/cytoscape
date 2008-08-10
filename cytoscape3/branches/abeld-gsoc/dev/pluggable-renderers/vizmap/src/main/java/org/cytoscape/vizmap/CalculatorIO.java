@@ -231,10 +231,12 @@ public class CalculatorIO {
 			styleProps = new Properties();
 
 			try {
+				/*FIXME: do IO later
 				styleProps.putAll(vs.getNodeAppearanceCalculator()
 				                    .getProperties(nodeAppearanceBaseKey + "." + name));
 				styleProps.putAll(vs.getEdgeAppearanceCalculator()
 				                    .getProperties(edgeAppearanceBaseKey + "." + name));
+				                    */
 				styleProps.putAll(vs.getGlobalAppearanceCalculator()
 				                    .getProperties(globalAppearanceBaseKey + "." + name));
 
@@ -344,9 +346,11 @@ public class CalculatorIO {
 				visualStyles.put(name, vs);
 			}
 
+			/* FIXME: do IO later
 			vs.setNodeAppearanceCalculator(new NodeAppearanceCalculator(name, nacNames.get(name),
 			                                                            nodeAppearanceBaseKey + "."
 			                                                            + name, catalog));
+			                                                            */
 		}
 
 		Map<String, Properties> eacNames = calcNames.get(edgeAppearanceBaseKey);
@@ -360,9 +364,11 @@ public class CalculatorIO {
 				visualStyles.put(name, vs);
 			}
 
+			/* FIXME: do IO later
 			vs.setEdgeAppearanceCalculator(new EdgeAppearanceCalculator(name, eacNames.get(name),
 			                                                            edgeAppearanceBaseKey + "."
 			                                                            + name, catalog));
+			                                                            */
 		}
 
 		Map<String, Properties> gacNames = calcNames.get(globalAppearanceBaseKey);

@@ -65,10 +65,8 @@ import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.CalculatorCatalog;
-import org.cytoscape.vizmap.EdgeAppearanceCalculator;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
 
@@ -432,6 +430,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		lockSize.setSelected(true);
 		lockSize.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					/* FIXME
 					if (lockSize.isSelected()) {
 						vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(true);
 						switchNodeSizeLock(true);
@@ -439,7 +438,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
 						switchNodeSizeLock(false);
 					}
-
+					 */
 					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 				}
 			});
@@ -873,8 +872,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		setDefaultPanel(defImg);
 
 		// Sync. lock state
-		final boolean lockState = vmm.getVisualStyle().getNodeAppearanceCalculator()
-		                             .getNodeSizeLocked();
+		final boolean lockState = false; //FIXME: vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked();
 		lockSize.setSelected(lockState);
 		switchNodeSizeLock(lockState);
 		
@@ -1179,12 +1177,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				if (type instanceof VisualProperty) {
 					ObjectMapping mapping;
 					VisualProperty vp = (VisualProperty) type;
-					if (vp.isNodeProp())
-						mapping = vmm.getVisualStyle().getNodeAppearanceCalculator()
-						             .getCalculator(vp).getMapping(0);
-					else
-						mapping = vmm.getVisualStyle().getEdgeAppearanceCalculator()
-						             .getCalculator(vp).getMapping(0);
+
+					mapping = vmm.getVisualStyle().getCalculator(vp).getMapping(0);
 
 					if (mapping instanceof ContinuousMapping) {
 						table.setRowHeight(i, 80);
@@ -1355,11 +1349,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final ObjectMapping selectedMapping;
 				Calculator calc = null;
 
-				if (type.isNodeProp()) {
-					calc = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type);
-				} else {
-					calc = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type);
-				}
+				calc = vmm.getVisualStyle().getCalculator(type);
 
 				if (calc == null) {
 					return;
@@ -1402,14 +1392,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		for (Property item : visualPropertySheetPanel.getProperties())
 			visualPropertySheetPanel.removeProperty(item);
 
+		/*
 		final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                              .getNodeAppearanceCalculator();
 
 		final EdgeAppearanceCalculator eac = Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                              .getEdgeAppearanceCalculator();
-
-		final List<Calculator> nacList = nac.getCalculators();
-		final List<Calculator> eacList = eac.getCalculators();
+		 */
+		final List<Calculator> ncList = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeCalculators();
+		final List<Calculator> ecList = Cytoscape.getVisualMappingManager().getVisualStyle().getEdgeCalculators();
 
 		editorReg.registerDefaults();
 
@@ -1418,8 +1409,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		List<Property> propRecord = new ArrayList<Property>();
 
-		setPropertyFromCalculator(nacList, NODE_VISUAL_MAPPING, propRecord);
-		setPropertyFromCalculator(eacList, EDGE_VISUAL_MAPPING, propRecord);
+		setPropertyFromCalculator(ncList, NODE_VISUAL_MAPPING, propRecord);
+		setPropertyFromCalculator(ecList, EDGE_VISUAL_MAPPING, propRecord);
 
 		// Save it for later use.
 		propertyMap.put(vmm.getVisualStyle().getName(), propRecord);
@@ -2063,11 +2054,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		ObjectMapping mapping;
 		final Calculator curCalc;
 
-		if (type.isNodeProp()) {
-			curCalc = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type);
-		} else {
-			curCalc = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type);
-		}
+		curCalc = vmm.getVisualStyle().getCalculator(type);
 
 		if (curCalc == null) {
 			return;
@@ -2136,11 +2123,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final VizMapperProperty newRootProp = new VizMapperProperty();
 
 			if (type.isNodeProp())
-				buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type),
-				              newRootProp, NODE_VISUAL_MAPPING);
+				buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
 			else
-				buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type),
-				              newRootProp, EDGE_VISUAL_MAPPING);
+				buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
 			removeProperty(typeRootProp);
 
@@ -2271,10 +2256,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Calculator newCalc = vmm.getCalculatorCatalog().getCalculator(type, newCalcName);
 		Calculator oldCalc = null;
 
-		if (type.isNodeProp())
-			oldCalc = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type);
-		else
-			oldCalc = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type);
+		oldCalc = vmm.getVisualStyle().getCalculator(type);
+
 		/*
 		 * If not exist, create new one.
 		 */
@@ -2285,10 +2268,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 		newCalc.getMapping(0).setControllingAttributeName((String) attrName, null, true);
 
-		if (type.isNodeProp()) {
-			vmm.getVisualStyle().getNodeAppearanceCalculator().setCalculator(newCalc);
-		} else
-			vmm.getVisualStyle().getEdgeAppearanceCalculator().setCalculator(newCalc);
+		vmm.getVisualStyle().setCalculator(newCalc);
 		/*
 		 * If old calc is not standard name, rename it.
 		 */
@@ -2317,11 +2297,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final VizMapperProperty newRootProp = new VizMapperProperty();
 
 		if (type.isNodeProp())
-			buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type),
-			              newRootProp, NODE_VISUAL_MAPPING);
+			buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
 		else
-			buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type),
-			              newRootProp, EDGE_VISUAL_MAPPING);
+			buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
 		expandLastSelectedItem(type.getName());
 
@@ -2422,26 +2400,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		noMapping = new ArrayList<VisualProperty>();
 
 		final VisualStyle vs = vmm.getVisualStyle();
-		final NodeAppearanceCalculator nac = vs.getNodeAppearanceCalculator();
-		final EdgeAppearanceCalculator eac = vs.getEdgeAppearanceCalculator();
 
-		ObjectMapping mapping = null;
-
-		for (VisualProperty type : VisualPropertyCatalog.collectionOfVisualProperties()) {
-			Calculator calc = nac.getCalculator(type);
-
-			if (calc == null) {
-				calc = eac.getCalculator(type);
-
-				if (calc != null)
-					mapping = calc.getMapping(0);
-			} else
-				mapping = calc.getMapping(0);
-
-			if (mapping == null)
-				noMapping.add(type);
-
-			mapping = null;
+		for (Calculator calc: vs.getCalculators().values()){
+			if (calc.getMapping(0) == null)
+				noMapping.add(calc.getVisualProperty());
 		}
 	}
 
@@ -2487,7 +2449,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final List<Calculator> calcs = new ArrayList<Calculator>(vmm.getCalculatorCatalog()
 			                                                            .getCalculators());
 			final Calculator dummy = calcs.get(0);
-			newStyle.getNodeAppearanceCalculator().setCalculator(dummy);
+			newStyle.setCalculator(dummy);
 
 			// add it to the catalog
 			vmm.getCalculatorCatalog().addVisualStyle(newStyle);
@@ -2719,11 +2681,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						editorWindowManager.remove(type);
 					}
 
-					if (type.isNodeProp()) {
-						vmm.getVisualStyle().getNodeAppearanceCalculator().removeCalculator(type);
-					} else {
-						vmm.getVisualStyle().getEdgeAppearanceCalculator().removeCalculator(type);
-					}
+					vmm.getVisualStyle().removeCalculator(type);
 
 					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
@@ -2751,11 +2709,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private void removeMapping(final VisualProperty type) {
-		if (type.isNodeProp()) {
-			vmm.getVisualStyle().getNodeAppearanceCalculator().removeCalculator(type);
-		} else {
-			vmm.getVisualStyle().getEdgeAppearanceCalculator().removeCalculator(type);
-		}
+		vmm.getVisualStyle().removeCalculator(type);
 
 		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
@@ -2830,13 +2784,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final ObjectMapping mapping;
 		final CyAttributes attr;
 
+		mapping = vmm.getVisualStyle().getCalculator(type).getMapping(0);
 		if (type.isNodeProp()) {
-			mapping = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-			             .getMapping(0);
 			attr = Cytoscape.getNodeAttributes();
 		} else {
-			mapping = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-			             .getMapping(0);
 			attr = Cytoscape.getEdgeAttributes();
 		}
 
@@ -2950,15 +2901,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final CyAttributes attr;
 				final int nOre;
 
+				oMap = vmm.getVisualStyle().getCalculator(type).getMapping(0);
 				if (type.isNodeProp()) {
 					attr = Cytoscape.getNodeAttributes();
-					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-					          .getMapping(0);
 					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
 					attr = Cytoscape.getEdgeAttributes();
-					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-					          .getMapping(0);
 					nOre = ObjectMapping.EDGE_MAPPING;
 				}
 
@@ -3038,11 +2986,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final VizMapperProperty newRootProp = new VizMapperProperty();
 
 				if (type.isNodeProp())
-					buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                 .getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
+					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
 				else
-					buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
-					                 .getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
+					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
 				removeProperty(prop);
 				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
@@ -3084,15 +3030,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final CyAttributes attr;
 				final int nOre;
 
+				oMap = vmm.getVisualStyle().getCalculator(type).getMapping(0);
 				if (type.isNodeProp()) {
 					attr = Cytoscape.getNodeAttributes();
-					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-					          .getMapping(0);
 					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
 					attr = Cytoscape.getEdgeAttributes();
-					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-					          .getMapping(0);
 					nOre = ObjectMapping.EDGE_MAPPING;
 				}
 
@@ -3145,11 +3088,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final VizMapperProperty newRootProp = new VizMapperProperty();
 
 				if (type.isNodeProp())
-					buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                 .getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
+					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
 				else
-					buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
-					                 .getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
+					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
 				removeProperty(prop);
 				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
@@ -3190,14 +3131,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final ObjectMapping oMap;
 				final CyAttributes attr;
 
+				oMap = vmm.getVisualStyle().getCalculator(type).getMapping(0);
 				if (type.isNodeProp()) {
 					attr = Cytoscape.getNodeAttributes();
-					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-					          .getMapping(0);
 				} else {
 					attr = Cytoscape.getEdgeAttributes();
-					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-					          .getMapping(0);
 				}
 
 				if ((oMap instanceof DiscreteMapping) == false)
@@ -3205,8 +3143,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm = (DiscreteMapping) oMap;
 
-				final Calculator nodeLabelCalc = vmm.getVisualStyle().getNodeAppearanceCalculator()
-				                                    .getCalculator(VisualPropertyCatalog.getVisualProperty("NODE_LABEL"));
+				final Calculator nodeLabelCalc = vmm.getVisualStyle().getCalculator(VisualPropertyCatalog.getVisualProperty("NODE_LABEL"));
 
 				if (nodeLabelCalc == null) {
 					return;
@@ -3217,15 +3154,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				// final Set<Object> attrSet =
 				// loadKeys(oMap.getControllingAttributeName(), attr, oMap);
+				/* FIXME
 				if (vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked()) {
 					return;
 				}
-
+				*/
 				DiscreteMapping wm = null;
 
 				if ((type.getName().equals("NODE_WIDTH"))) {
-					wm = (DiscreteMapping) vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                          .getCalculator(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH")).getMapping(0);
+					wm = (DiscreteMapping) vmm.getVisualStyle().getCalculator(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH")).getMapping(0);
 
 					wm.setControllingAttributeName(ctrAttrName, Cytoscape.getCurrentNetwork(), false);
 
@@ -3241,14 +3178,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
 						                    ObjectMapping.NODE_MAPPING);
 					}
-
-					Integer height = ((Number) (vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                               .getDefaultAppearance().get(VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE")))) .intValue();
-					vmm.getVisualStyle().getNodeAppearanceCalculator().getDefaultAppearance()
-					   .set(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT"), height * 2.5);
-
-					Integer fontSize = ((Number) vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                                .getDefaultAppearance().get(VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE"))) .intValue();
+//					 FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
+					Integer height = ((Number) VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE").getDefaultAppearanceObject()) .intValue();
+//					 FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
+					Integer fontSize = ((Number) VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE").getDefaultAppearanceObject()) .intValue();
 					int strLen;
 
 					String labelString = null;
@@ -3320,8 +3253,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						}
 					}
 				} else if ((type.getName().equals("NODE_HEIGHT"))) {
-					wm = (DiscreteMapping) vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                          .getCalculator(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT")).getMapping(0);
+					wm = (DiscreteMapping) vmm.getVisualStyle().getCalculator(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT")).getMapping(0);
 
 					wm.setControllingAttributeName(ctrAttrName, Cytoscape.getCurrentNetwork(), false);
 
@@ -3337,9 +3269,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
 						                    ObjectMapping.NODE_MAPPING);
 					}
-
-					Integer fontSize = ((Number) vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                                .getDefaultAppearance().get(VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE"))) .intValue();
+					// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
+					Integer fontSize = ((Number) VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE").getDefaultAppearanceObject()) .intValue();
 					int strLen;
 
 					String labelString = null;
@@ -3397,11 +3328,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final VizMapperProperty newRootProp = new VizMapperProperty();
 
 				if (type.isNodeProp())
-					buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                 .getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
+					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
 				else
-					buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
-					                 .getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
+					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
 				removeProperty(prop);
 				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
@@ -3452,15 +3381,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final CyAttributes attr;
 				final int nOre;
 
+				oMap = vmm.getVisualStyle().getCalculator(type).getMapping(0);
 				if (type.isNodeProp()) {
 					attr = Cytoscape.getNodeAttributes();
-					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
-					          .getMapping(0);
 					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
 					attr = Cytoscape.getEdgeAttributes();
-					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
-					          .getMapping(0);
 					nOre = ObjectMapping.EDGE_MAPPING;
 				}
 
@@ -3507,11 +3433,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final VizMapperProperty newRootProp = new VizMapperProperty();
 
 				if (type.isNodeProp())
-					buildProperty(vmm.getVisualStyle().getNodeAppearanceCalculator()
-					                 .getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
+					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
 				else
-					buildProperty(vmm.getVisualStyle().getEdgeAppearanceCalculator()
-					                 .getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
+					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
 				removeProperty(prop);
 				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);

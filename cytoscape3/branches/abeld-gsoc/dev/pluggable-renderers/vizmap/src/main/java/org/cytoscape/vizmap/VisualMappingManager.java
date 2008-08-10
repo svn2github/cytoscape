@@ -88,8 +88,6 @@ public class VisualMappingManager extends SubjectBase {
 	private VisualStyle activeVS; // the currently active visual style
 
 	// reusable appearance objects
-	private NodeAppearance myNodeApp = new NodeAppearance();
-	private EdgeAppearance myEdgeApp = new EdgeAppearance();
 	private GlobalAppearance myGlobalApp = new GlobalAppearance();
 
 	private static final String DEF_STYLE_NAME = "default";
@@ -214,65 +212,6 @@ public class VisualMappingManager extends SubjectBase {
 	}
 
 	/**
-	 * Recalculates and reapplies all of the node appearances. The visual
-	 * attributes are calculated by delegating to the NodeAppearanceCalculator
-	 * member of the current visual style.
-	 */
-	public void applyNodeAppearances() {
-		applyNodeAppearances(getNetwork(), getNetworkView());
-	}
-
-	/**
-	 * Recalculates and reapplies all of the node appearances. The visual
-	 * attributes are calculated by delegating to the NodeAppearanceCalculator
-	 * member of the current visual style.
-	 */
-	public void applyNodeAppearances(final GraphPerspective network, final GraphView network_view) {
-		final NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
-
-		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
-			NodeView nodeView = (NodeView) i.next();
-			Node node = nodeView.getNode();
-
-			nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network);
-			myNodeApp.applyAppearance(nodeView);
-		}
-	}
-
-	/**
-	 * Recalculates and reapplies all of the edge appearances. The visual
-	 * attributes are calculated by delegating to the EdgeAppearanceCalculator
-	 * member of the current visual style.
-	 */
-	public void applyEdgeAppearances() {
-		applyEdgeAppearances(getNetwork(), getNetworkView());
-	}
-
-	/**
-	 * Recalculates and reapplies all of the edge appearances. The visual
-	 * attributes are calculated by delegating to the EdgeAppearanceCalculator
-	 * member of the current visual style.
-	 */
-	public void applyEdgeAppearances(final GraphPerspective network, final GraphView network_view) {
-		final EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
-
-		EdgeView edgeView;
-
-		for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
-			edgeView = (EdgeView) i.next();
-
-			if (edgeView == null)
-
-				// WARNING: This is a hack, edgeView should not be null, but
-				// for now do this! (iliana)
-				continue;
-
-			edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edgeView.getEdge(), network);
-			myEdgeApp.applyAppearance(edgeView);
-		}
-	}
-
-	/**
 	 * Recalculates and reapplies the global visual attributes. The
 	 * recalculation is done by delegating to the GlobalAppearanceCalculator
 	 * member of the current visual style.
@@ -314,43 +253,4 @@ public class VisualMappingManager extends SubjectBase {
 			            .setSelectedPaint(myGlobalApp.getEdgeSelectionColor());
 	}
 
-	/**
-	 * Recalculates and reapplies all of the node, edge, and global visual
-	 * attributes. This method delegates to, in order, applyNodeAppearances,
-	 * applyEdgeAppearances, and applyGlobalAppearances.
-	 */
-	public void applyAppearances() {
-		/** first apply the node appearance to all nodes */
-		applyNodeAppearances();
-		/** then apply the edge appearance to all edges */
-		applyEdgeAppearances();
-		/** now apply global appearances */
-		applyGlobalAppearances();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param nodeView DOCUMENT ME!
-	 * @param network_view DOCUMENT ME!
-	 */
-	public void vizmapNode(NodeView nodeView, GraphView network_view) {
-		Node node = (Node) nodeView.getNode();
-		NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
-		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network_view.getGraphPerspective());
-		myNodeApp.applyAppearance(nodeView);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param edgeView DOCUMENT ME!
-	 * @param network_view DOCUMENT ME!
-	 */
-	public void vizmapEdge(EdgeView edgeView, GraphView network_view) {
-		Edge edge = (Edge) edgeView.getEdge();
-		EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
-		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getGraphPerspective());
-		myEdgeApp.applyAppearance(edgeView);
-	}
 }

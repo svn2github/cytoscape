@@ -44,8 +44,11 @@ package org.cytoscape.vizmap.calculators;
 
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
+import org.cytoscape.attributes.CyAttributesFactory;
 
-import org.cytoscape.vizmap.Appearance;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.mappings.MappingFactory;
@@ -53,11 +56,7 @@ import org.cytoscape.vizmap.mappings.ObjectMapping;
 
 //------------------------------------------------------------------------------
 
-import java.awt.GridBagConstraints;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -66,10 +65,8 @@ import java.util.Vector;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.cytoscape.Edge;
 import org.cytoscape.GraphObject;
 import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 
 
 //------------------------------------------------------------------------------
@@ -378,41 +375,49 @@ public abstract class AbstractCalculator implements Calculator {
 		return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param appr DOCUMENT ME!
-	 * @param e DOCUMENT ME!
-	 * @param net DOCUMENT ME!
-	 */
-	public void apply(Appearance appr, Edge e, GraphPerspective net) {
-		//System.out.println("AbstractCalculator.apply(edge) " + type.toString());
-		Object o = getRangeValue(e,appr.getCyAttributes());
+    public void apply(GraphView network_view){
+    	VisualProperty vp = getVisualProperty();
+    	
+    	if (vp.isNodeProp()){
+    		// edge VisualProperty:
+        	NodeView nodeView;
 
-		// default has already been set - no need to do anything
-		if (o == null)
-			return;
+        	CyAttributes attrs = CyAttributesFactory.getCyAttributes("node");
+    		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
+    			nodeView = (NodeView) i.next();
 
-		appr.set(type, o);
-	}
+    			if (nodeView == null) // FIXME:
+    				// WARNING: This is a hack, nodeView should not be null, but
+    				// for now do this! (iliana)
+    				continue;
+    			
+    			// FIXME FIXME FIXME FIXME FIXME FIXME
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param appr DOCUMENT ME!
-	 * @param n DOCUMENT ME!
-	 * @param net DOCUMENT ME!
-	 */
-	public void apply(Appearance appr, Node n, GraphPerspective net) {
-		//System.out.println("AbstractCalculator.apply(node) " + type.toString());
-		Object o = getRangeValue(n,appr.getCyAttributes());
+    			Object o = type.getDefaultAppearanceObject();
+    			o = getRangeValue(nodeView.getNode(), attrs); 
+    			vp.applyToNodeView(nodeView, o);
+    		}
+    	} else {
+    		// edge VisualProperty:
+        	EdgeView edgeView;
 
-		// default has already been set - no need to do anything
-		if (o == null)
-			return;
+        	CyAttributes attrs = CyAttributesFactory.getCyAttributes("edge");
+    		for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
+    			edgeView = (EdgeView) i.next();
 
-		appr.set(type, o);
-	}
+    			if (edgeView == null)
+    				// WARNING: This is a hack, edgeView should not be null, but
+    				// for now do this! (iliana)
+    				continue;
+    			
+    			// FIXME FIXME FIXME FIXME FIXME FIXME
+    			
+    			Object o = type.getDefaultAppearanceObject();
+    			o = getRangeValue(edgeView.getEdge(), attrs); 
+    			vp.applyToEdgeView(edgeView, o);
+    		}
+    	}
+    }
 
 	@SuppressWarnings("unchecked") // TODO again, this should be fixed as part of CyAttributes
 	                               // this one is also related to bug 247!!!

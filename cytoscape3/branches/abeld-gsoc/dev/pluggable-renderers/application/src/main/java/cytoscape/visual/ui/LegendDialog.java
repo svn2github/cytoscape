@@ -3,8 +3,6 @@
  */
 package cytoscape.visual.ui;
 
-import org.cytoscape.vizmap.EdgeAppearanceCalculator;
-import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
@@ -22,6 +20,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -83,11 +82,12 @@ public class LegendDialog extends JDialog {
 	public static JPanel generateLegendPanel(VisualStyle visualStyle) {
 		final JPanel legend = new JPanel();
 
+		/*
 		final NodeAppearanceCalculator nac = visualStyle.getNodeAppearanceCalculator();
 		final List<Calculator> nodeCalcs = nac.getCalculators();
 		final EdgeAppearanceCalculator eac = visualStyle.getEdgeAppearanceCalculator();
 		final List<Calculator> edgeCalcs = eac.getCalculators();
-
+		 */
 		ObjectMapping om;
 
 		/*
@@ -100,9 +100,12 @@ public class LegendDialog extends JDialog {
 		                                  "Visual Legend for " + visualStyle.getName(),
 		                                  TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER,
 		                                  new Font("SansSerif", Font.BOLD, 16), Color.DARK_GRAY));
-
-		for (Calculator calc : nodeCalcs) {
+		ArrayList<Calculator> nodeCalculators = new ArrayList<Calculator>();
+		ArrayList<Calculator> edgeCalculators = new ArrayList<Calculator>();
+		
+		for (Calculator calc : visualStyle.getNodeCalculators()) {
 			// AAARGH
+			/* FIXME
 			if (nac.getNodeSizeLocked()) {
 				if (calc.getVisualProperty().getName().equals("NODE_WIDTH"))
 					continue;
@@ -112,7 +115,7 @@ public class LegendDialog extends JDialog {
 				if (calc.getVisualProperty().getName().equals("NODE_SIZE"))
 					continue;
 			}
-
+			 */
 			om = calc.getMapping(0);
 
 			JPanel mleg = om.getLegend(calc.getVisualProperty());
@@ -130,7 +133,7 @@ public class LegendDialog extends JDialog {
 
 		int top = legend.getComponentCount();
 
-		for (Calculator calc : edgeCalcs) {
+		for (Calculator calc : visualStyle.getEdgeCalculators()) {
 			om = calc.getMapping(0);
 
 			JPanel mleg = om.getLegend(calc.getVisualProperty());

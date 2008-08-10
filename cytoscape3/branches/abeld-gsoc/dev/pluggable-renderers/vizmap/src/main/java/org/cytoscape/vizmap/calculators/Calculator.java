@@ -44,6 +44,7 @@ package org.cytoscape.vizmap.calculators;
 
 
 import org.cytoscape.vizmap.Appearance;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.mappings.ObjectMapping;
@@ -132,24 +133,9 @@ public interface Calculator extends Cloneable {
      */
     public VisualProperty getVisualProperty();
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param e DOCUMENT ME!
-     * @param net DOCUMENT ME!
-     */
-    public void apply(Appearance appr, Edge e, GraphPerspective net);
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param appr DOCUMENT ME!
-     * @param n DOCUMENT ME!
-     * @param net DOCUMENT ME!
-     */
-    public void apply(Appearance appr, Node n, GraphPerspective net);
-
+    /** for new-style simplified API: */
+    public void apply(GraphView network_view);
+    
     /**
      * DOCUMENT ME!
      *

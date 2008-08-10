@@ -670,6 +670,6 @@ public class XGMMLReader extends AbstractGraphReader {
 		if (center != null)
 			view.setCenter(center.getX(), center.getY());
 
-		Cytoscape.getVisualMappingManager().applyAppearances();
+		Cytoscape.getVisualMappingManager().getVisualStyle().apply(view);
 	}
 }

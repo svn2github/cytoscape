@@ -134,13 +134,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		this.type = type;
 
 		if (type.isNodeProp())
-			cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyle()
-			                                        .getNodeAppearanceCalculator()
-			                                        .getCalculator(type).getMapping(0);
+			cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type).getMapping(0);
 		else
-			cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyle()
-			                                        .getEdgeAppearanceCalculator()
-			                                        .getCalculator(type).getMapping(0);
+			cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type).getMapping(0);
 
 		title = cMapping.getControllingAttributeName();
 

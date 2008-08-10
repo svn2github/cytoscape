@@ -1946,7 +1946,7 @@ public abstract class Cytoscape {
 	 */
 	public static void redrawGraph(GraphView view) {
 		VMMFactory.getVisualMappingManager().setNetworkView(view);
-		VMMFactory.getVisualMappingManager().applyAppearances();
+		VMMFactory.getVisualMappingManager().getVisualStyle().apply(view);
 		view.updateView();
 	}
 
