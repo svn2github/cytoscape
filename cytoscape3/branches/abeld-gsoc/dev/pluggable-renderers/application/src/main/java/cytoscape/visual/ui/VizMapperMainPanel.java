@@ -518,7 +518,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	public static void apply(Object newValue, VisualProperty type) {
 		if (newValue != null){
-			// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
+			Cytoscape.getVisualMappingManager().getVisualStyle().setDefaultValue(type, newValue);
 		}
 	}
 
@@ -2368,7 +2368,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		else
 			mapType = ObjectMapping.EDGE_MAPPING;
 
-		final Object defaultObj = type.getDefaultAppearanceObject(); // FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
+		final Object defaultObj = vmm.getVisualStyle().getDefaultValue(type);
 
 		System.out.println("defobj = " + defaultObj.getClass() + ", Type = " + type.getName());
 
@@ -3178,10 +3178,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
 						                    ObjectMapping.NODE_MAPPING);
 					}
-//					 FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
-					Integer height = ((Number) VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE").getDefaultAppearanceObject()) .intValue();
-//					 FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
-					Integer fontSize = ((Number) VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE").getDefaultAppearanceObject()) .intValue();
+
+					Integer height = ((Number) vmm.getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE")) ).intValue();
+					Integer fontSize = ((Number) vmm.getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE"))) .intValue();
 					int strLen;
 
 					String labelString = null;
@@ -3269,8 +3268,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
 						                    ObjectMapping.NODE_MAPPING);
 					}
-					// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
-					Integer fontSize = ((Number) VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE").getDefaultAppearanceObject()) .intValue();
+
+					Integer fontSize = ((Number) vmm.getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_FONT_SIZE"))).intValue();
 					int strLen;
 
 					String labelString = null;

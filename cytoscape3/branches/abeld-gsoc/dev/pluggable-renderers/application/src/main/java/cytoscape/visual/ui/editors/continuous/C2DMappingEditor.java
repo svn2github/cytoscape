@@ -147,8 +147,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	protected void addButtonActionPerformed(ActionEvent evt) {
 		BoundaryRangeValues newRange;
 		
-        // FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
-		Object defValue = type.getDefaultAppearanceObject();
+		Object defValue = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue(type);
 		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 
 		if (mapping.getPointCount() == 0) {
@@ -322,8 +321,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			below = allPoints.get(0).getRange().lesserValue;
 			above = allPoints.get(allPoints.size() - 1).getRange().greaterValue;
 		} else {
-			// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
-			Object defaultVal = type.getDefaultAppearanceObject();
+			Object defaultVal = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue(type);
 			below = defaultVal;
 			above = defaultVal;
 		}

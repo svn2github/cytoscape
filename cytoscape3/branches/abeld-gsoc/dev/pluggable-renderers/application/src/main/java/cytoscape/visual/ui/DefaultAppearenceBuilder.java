@@ -525,7 +525,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			if (value instanceof VisualProperty
 			    && (((VisualProperty) value).getDataType() == String.class)) {
-				final Object defVal = ((VisualProperty) value).getDefaultAppearanceObject();// FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
+				final Object defVal = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue((VisualProperty)value); 
 
 				if (defVal != null) {
 					this.setToolTipText((String) defVal);

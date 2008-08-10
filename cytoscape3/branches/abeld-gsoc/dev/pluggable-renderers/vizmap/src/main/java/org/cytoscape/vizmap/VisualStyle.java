@@ -74,6 +74,7 @@ public class VisualStyle implements Cloneable {
 	
 	// Calculators associated with this VS.
 	private HashMap<VisualProperty, Calculator> calculators;
+	private HashMap<VisualProperty, Object> defaultValues;
 	private HashMap<String, Object> globalVisualProperties;
 	
 	/**
@@ -127,6 +128,7 @@ public class VisualStyle implements Cloneable {
 		copy.name = dupeFreeName;
 		copy.dupeCount++;
 		copy.calculators = (HashMap <VisualProperty, Calculator>) this.calculators.clone();
+		copy.defaultValues= (HashMap <VisualProperty, Object>) this.defaultValues.clone();
 		copy.globalVisualProperties = (HashMap<String, Object>) this.globalVisualProperties.clone();  
 		
 
@@ -139,6 +141,7 @@ public class VisualStyle implements Cloneable {
 	public VisualStyle(String name) {
 		setName(name);
 		calculators = new HashMap<VisualProperty, Calculator>();
+		defaultValues = new HashMap <VisualProperty, Object>();
 		globalVisualProperties = new HashMap<String, Object>();
 	}
 
@@ -148,6 +151,7 @@ public class VisualStyle implements Cloneable {
 	public VisualStyle(String name, HashMap<VisualProperty, Calculator> calculators, HashMap<String, Object> globalVisualProperties) {
 		setName(name);
 		this.calculators = calculators;
+		this.defaultValues = new HashMap <VisualProperty, Object>();
 		this.globalVisualProperties = globalVisualProperties;
 	}
 
@@ -177,6 +181,7 @@ public class VisualStyle implements Cloneable {
 
         setName(newName);
         this.calculators = (HashMap<VisualProperty, Calculator>) toCopy.calculators.clone();
+        this.defaultValues = (HashMap <VisualProperty, Object>) toCopy.defaultValues.clone();
         this.globalVisualProperties = (HashMap<String, Object>) toCopy.globalVisualProperties.clone();
     }
 
@@ -278,5 +283,17 @@ public class VisualStyle implements Cloneable {
 	}
 	public HashMap<String, Object> copyGlobalVisualProperties(){
 		return (HashMap<String, Object>) globalVisualProperties.clone();
+	}
+
+	/** Sets the default value for a given VisualProperty */
+	public void setDefaultValue(VisualProperty vp, Object value){
+		defaultValues.put(vp, value);
+	}
+	public Object getDefaultValue(VisualProperty vp){
+		Object o = defaultValues.get(vp);
+		if (o == null){
+			o = vp.getDefaultAppearanceObject();
+		}
+		return o;
 	}
 }

@@ -99,9 +99,8 @@ public class ValueSelectDialog extends JDialog {
 
 		setList();
 		
-		// get original value and sete the selected item.
-		//FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
-		originalValue = type.getDefaultAppearanceObject();
+		// get original value and set the selected item.
+		originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue(type); 
 	}
 
 	/**

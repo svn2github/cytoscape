@@ -70,7 +70,8 @@ public class ArrowIcon extends VisualPropertyIcon {
 	 * Creates a new ArrowIcon object.
 	 */
 	public ArrowIcon(Shape shape) {
-		this(shape, DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE, "default ArrowIcon name", DEFAULT_ICON_COLOR); // FIXME: original code used per-VisualStyle default here, and this code uses global default. Should fix
+		// FIXME: when name was set from Arrowhead-shape
+		this(shape, DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE, "default ArrowIcon name", DEFAULT_ICON_COLOR); 
 	}
 
 	/**
