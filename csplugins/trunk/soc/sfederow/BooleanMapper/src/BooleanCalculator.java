@@ -3,6 +3,8 @@ package src;
 import giny.view.NodeView;
 import giny.model.*;
 
+import java.awt.Color;
+
 //import jboolexpr.*;
 import java.lang.*;
 import java.util.ArrayList;
@@ -193,7 +195,7 @@ public class BooleanCalculator {
 	}
 	
 	
-	public boolean evaluate(){
+	public boolean evaluate(Color color){
 		//System.out.println("evaluate");
 		//for(int j=0; j<masterList.size();j++){
 
@@ -260,7 +262,7 @@ public class BooleanCalculator {
 
 				}
 				//System.out.println(type);
-				evaluateOnce(nodeValueMap, attributes, operations, gnode, attributeType, numberValueCount);
+				evaluateOnce(nodeValueMap, attributes, operations, gnode, attributeType, numberValueCount, color);
 				//validAttributes.clear();
 				//operations.clear();
 				nodeValueMap.clear();
@@ -272,7 +274,7 @@ public class BooleanCalculator {
 
 		
 	
-	public void evaluateOnce(HashMap nodeValues, ArrayList<String> attributes, ArrayList<String> operations, Node node, int attributeType, int numberCount){
+	public void evaluateOnce(HashMap nodeValues, ArrayList<String> attributes, ArrayList<String> operations, Node node, int attributeType, int numberCount, Color color){
 		
 	
 		Stack<Boolean> finalValue = new Stack<Boolean>();

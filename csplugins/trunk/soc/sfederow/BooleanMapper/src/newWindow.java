@@ -26,6 +26,7 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	String[] attributeArray;
 	String[] typeArray = {"node", "edge", "network"};
 	String[] opArray = { "", "=", "<", ">", ">=", "<=", "AND", "OR", "NOT" };
+	String[] criteriaArray = { "set1", "set2", "set3" };
 	//String[] colors = {"red","green","yellow","blue"};
 	
 	String attribute, operation, criteria, value, criteriaString = "";
@@ -77,22 +78,25 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		 * Tuning values w/extension
 		 */
 		
-
+		/*
 		booleanProperties.add(new Tunable("criteriaSetGroup","Criteria Set Name", Tunable.GROUP,
 				new Integer(1)));
 
-		Tunable criteriaName = new Tunable("criteriaSetName", "", Tunable.STRING,
-				new String());
+		Tunable criteriaName = new Tunable("criteriaSetName", "", Tunable.LIST,
+				new Integer(0), (Object)criteriaArray, (Object) null, 0);
 		criteriaName.addTunableValueListener(this);
 		booleanProperties.add(criteriaName);
-
+		*/
+		
 		booleanProperties.add(new Tunable("attributeOperationsGroup",
-				"Choose Criteria", Tunable.GROUP, new Integer(3)));
+				"Choose Criteria", Tunable.GROUP, new Integer(2)));
 
+		/*
 		Tunable typeChooser = new Tunable("attributeTypeChooser" ,"",Tunable.LIST,
 				new Integer(0), (Object) typeArray, (Object) null, 0);
 		typeChooser.addTunableValueListener(this);
 		booleanProperties.add(typeChooser);
+		*/
 		
 		//String[] attributeArray = getAllAttributes();
 		Tunable attList = new Tunable("attributeList", "Attributes",

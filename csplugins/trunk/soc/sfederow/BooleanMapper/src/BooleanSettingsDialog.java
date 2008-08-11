@@ -4,6 +4,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.visual.*;
 import cytoscape.task.util.TaskManager;
+import cytoscape.data.CyAttributes;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -23,6 +24,7 @@ import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.swing.colorchooser.*;
@@ -44,6 +46,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.*;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.AbstractCellEditor;
 
@@ -64,6 +68,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private Color currentColor = Color.GRAY;
 	private String value, criteria = "";
 	String[] parsedCriteria;
+	String[] setNames;
 	String test = "test";
 	
 	private JButton colorButton;
@@ -200,12 +205,17 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	      JScrollPane scrollpane = new JScrollPane(table2);
 	     */
 	     
+		
+		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 
 		// Create our main panel
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
+		JPanel setNamePanel = getCriteriaSetPanel(); //new CriteriaSetPanel();
+		mainPanel.add(setNamePanel);
+		
 		// Create a panel for algorithm's content
 		this.algorithmPanel = currentAlgorithm.getSettingsPanel();
 
@@ -277,43 +287,19 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		tableButtons.add(deleteButton);
 		
 		
-				
 		
+		tablePanel = criteriaTable.getTablePanel();
 		
-		JColorChooser chooser = new JColorChooser();
-		AbstractColorChooserPanel cpane = null;
-		
-		Object a = "a";
-		byte b = 0;
-		JDialog dialog = new JDialog();
-		CyNetwork work = Cytoscape.getCurrentNetwork();
-		cytoscape.visual.mappings.ContinuousMapping mapping = new cytoscape.visual.mappings.ContinuousMapping(a,b);
-		//mainPanel.add(mapping.getUI(dialog, work));
-		//cytoscape.visual.mappings.
-		//lorChooserComponentFactory factory = null;
-		//faultColorSelectionModel mod = new DefaultColorSelectionModel();
-		
-		 // JComponent newContentPane = new CriteriaTablePanel();
-	       // newContentPane.setOpaque(true); //content panes must be opaque
-	        //setContentPane(newContentPane);
-
-
-		
-		
-		tablePanel = criteriaTable.returnTablePanel();
 		tablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
 		
-		//mainPanel.add();
+		
 		mainPanel.add(colorPanel);
 		mainPanel.add(buttonBox);
-		//mainPanel.add(tablePanel);
-		
 		mainPanel.add(tablePanel);
-	//mainPanel.add(tableButtons);
-		//mainPanel.add(chooser);
+	
 		setContentPane(mainPanel);
-		//System.out.println("made window");
+		
 		mainPanel.setLocation(Cytoscape.getDesktop().getWidth(), Cytoscape.getDesktop().getHeight());
 		setLocation(2,Cytoscape.getDesktop().getHeight()-557);
 	}
@@ -330,17 +316,63 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		currentAlgorithm.revertSettings();
 	}
 	
+	public JPanel getCriteriaSetPanel(){
+		//JPanel setPanel = new JPanel(new BorderLayout(0, 2));
+		
+		JPanel setPanel = new JPanel();
+		BoxLayout box = new BoxLayout(setPanel, BoxLayout.Y_AXIS);
+		setPanel.setLayout(box);
+		
+		Border refBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		TitledBorder titleBorder = BorderFactory.createTitledBorder(refBorder, "Criteria Set");
+		titleBorder.setTitlePosition(TitledBorder.LEFT);
+		titleBorder.setTitlePosition(TitledBorder.TOP);
+		setPanel.setBorder(titleBorder);
+		
+		String labelLocation = BorderLayout.LINE_START;
+		String fieldLocation = BorderLayout.LINE_END;
+		
+		JPanel namePanel = new JPanel(new BorderLayout(0, 2));
+		JLabel setLabel = new JLabel("Name"); 
+		JComboBox nameBox = new JComboBox(getCriteriaSetNames());
+		nameBox.setEditable(true);
+		nameBox.setPreferredSize(new Dimension(200,20));
+		nameBox.setActionCommand("listChanged");
+		nameBox.addActionListener(this);
+		namePanel.add(setLabel, labelLocation);
+		namePanel.add(nameBox, fieldLocation);
+		
+		JPanel mapPanel = new JPanel(new BorderLayout(0, 2));
+		JLabel mapLabel = new JLabel("Map To");
+		JComboBox mapToBox = new JComboBox(new String[] {"Node Color", "Node Border Color", "None" });
+		mapPanel.add(mapLabel, labelLocation);
+		mapPanel.add(mapToBox, fieldLocation);
+		
+		setPanel.add(namePanel);
+		setPanel.add(mapPanel);
+		
+		return setPanel;
+	}
 	
-	
-	/*public String appendValue(String criteria){
-		String cleanCriteria = "";
-		String[] temp = calculator.parseCriteria(criteria);
-		for(int i=0;i<temp.length;i++){
-			//System.out.println("PARSER: "+parsedCriteria[i]);
-			cleanCriteria = cleanCriteria + " "+temp[i];
+	public String[] getCriteriaSetNames(){
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		if(networkAttributes.hasAttribute(Cytoscape.getCurrentNetwork().toString(), "Criteria")){
+			List temp = networkAttributes.getListAttribute(Cytoscape.getCurrentNetwork().toString(), "Criteria");
+			return (String[])temp.toArray();
 		}
-		return cleanCriteria;
-	}*/
+		return new String[] {"              "};
+	}
+	
+	public void makeCriteriaSet(String[] names){
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		//if(!networkAttributes.hasAttribute(Cytoscape.getCurrentNetwork().toString(), "Criteria")){
+		ArrayList<String> temp = new ArrayList<String>();
+		for(int i=0; i<names.length; i++){
+			temp.add(names[i]);
+		}
+		networkAttributes.setListAttribute(Cytoscape.getCurrentNetwork().toString(), "Criteria", temp);
+		//}
+	}
 	
 	public void applyCriteria(){
 		//for(int i=1;i<data.length;i++){
