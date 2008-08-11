@@ -151,7 +151,6 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 
 	public void layoutPartion(LayoutPartition part) {
 		
-		Dimension initialLocation = null;
 		LabelPosition lp = null; // VMUI
 		
 		// Calculate our edge weights
@@ -280,15 +279,17 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		long timestep = 1000L;
 		
 		// VMUI -->
-		Multiples mult = new Multiples(multiple, numIterations);
-		ArrayList<Integer> multList = mult.getAllMultiples();
+		Multiples mult = new Multiples(multiple);
 		
 		for ( int i = 0; i < numIterations && !canceled; i++ ) {
 			timestep *= (1.0 - i/(double)numIterations);
 			long step = timestep+50;
 			
-			if (multiple != 0.0 && multList.contains(Integer.valueOf(i))) {
+			// Apply the algorithm on network nodes if i is a multiple of
+			// variable multiple
+			if (multiple != 0.0 && i == mult.getCurrent()) {
 				node_sim.runSimulator(step);
+				mult.next();
 			}
 			
 			label_sim.runSimulator(step);
@@ -337,7 +338,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     	// VMUI [removed code]
     	
 		clear();
-
+		
 		// <--- VMUI
 	}
 	
@@ -507,7 +508,8 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 				integrator = new EulerIntegrator();
 			else
 				return;
-//			m_fsim.setIntegrator(integrator);
+			
+			// VMUI
 			label_sim.setIntegrator(integrator);
 			node_sim.setIntegrator(integrator);
 		}
@@ -520,60 +522,47 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	}
 
 	public JPanel getSettingsPanel() {
-		// JPanel panel = new JPanel(new GridLayout(0, 1));
-		// panel.add(layoutProperties.getTunablePanel());
-		// return panel;
 		return layoutProperties.getTunablePanel();
 
 	}
 	
+	
+	/**
+	 * Generates and returns ceiling integers of multiples of the double
+	 * specified in the constructor.
+	 * @author VMUI
+	 *
+	 */
 	public class Multiples {
 		
+		// The number in which this class is to generate multiples of
 		final private double multipleOf;
 		
-		private int max;
-		
-		private int counter = -1;
-		
-		/**
-		 * Creates a new instance of Multiples.
-		 * @param multipleOf the number to generate multiples for
-		 * @param max the maximum number of multiples that should be generated
-		 * for multipleOf
+		// The current multiple of multipleOf
+		double current = 0;
+	
+		/** 
+		 * Creates an instance of Multiple.
+		 * @param multipleOf the number this class is to generate ceiling
+		 * multiples of
 		 */
-		public Multiples(double multipleOf, int max) {
+		public Multiples(double multipleOf) {
 			this.multipleOf = multipleOf;
-			this.max = max;
 		}
 		
 		/**
-		 * Returns the floor of the next multiple of multipleOf if the maximum
-		 * number of iterations has still not been met.  Returns -1 otherwise.
-		 * @return the next multiple of multipleOf if the maximum number of
-		 * iterations has not yet been met; returns -1 otherwise
+		 * Returns the current ceiling multiple of multipleOf.
+		 * @return the current ceiling multiple of multipleOf
 		 */
-		public int getNext() {
-			if (counter < max - 1) {
-				counter += 1;
-				return (int) Math.floor(counter * multipleOf);
-			}
-			return -1;
+		public int getCurrent(){
+			return (int) Math.ceil(current);
 		}
 		
 		/**
-		 * Returns an ArrayList containing the floor of all multiples of 
-		 * multipleOf up until (max - 1) * multipleOf.
-		 * @return an ArrayList containing the floor of all multiples of
-		 * multipleOf up until (max - 1) * multipleOf
+		 * Updates current so that it is now the next multiple of multipleOf.
 		 */
-		public ArrayList<Integer> getAllMultiples() {
-			ArrayList<Integer> list = new ArrayList<Integer>();
-			int next = getNext();
-			while(multipleOf != 0.0 && next >= 0 && next < max) {
-				list.add(next);
-				next = getNext();
-			}
-			return list;
+		public void next(){
+			current += multipleOf;
 		}
 		
 	}
