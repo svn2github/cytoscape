@@ -105,24 +105,6 @@ public class LegacyVisualProperty implements VisualProperty {
 				ev.setStroke(newLine);
 				//System.out.println("Changed w = " + ev.getStrokeWidth());
 			}
-		} else if (name.equals("EDGE_LINE_STYLE")){
-			if (((LineStyle) o).getDashDef() != (((BasicStroke) ev.getStroke()).getDashArray())) {
-				ev.setStroke(((LineStyle) o).getStroke(ev.getStrokeWidth()));
-			}
-		} else if (name.equals("EDGE_SRCARROW_SHAPE")){
-			final int newSourceEnd;
-			
-			newSourceEnd = ((ArrowShape) o).getGinyArrow();
-
-			if (newSourceEnd != ev.getSourceEdgeEnd())
-				ev.setSourceEdgeEnd(newSourceEnd);
-		} else if (name.equals("EDGE_TGTARROW_SHAPE")){
-
-			final int newTargetEnd = ((ArrowShape) o).getGinyArrow();
-
-			if (newTargetEnd != ev.getTargetEdgeEnd()) {
-				ev.setTargetEdgeEnd(newTargetEnd);
-			}
 		} else if (name.equals("EDGE_SRCARROW_COLOR")){
 			final Paint newSourceArrowColor = ((Color) o);
 
@@ -203,11 +185,6 @@ public class LegacyVisualProperty implements VisualProperty {
 
 			if (nv.getRenderer() != newRenderer)
 				nv.setRenderer(newRenderer);
-		} else if (name.equals("NODE_SHAPE")){
-			final int newShape = ((NodeShape) o).getGinyShape();
-
-			if (nv.getShape() != newShape)
-				nv.setShape(newShape);
 		} else if (name.equals("NODE_SIZE")){
 			double size = ((Number) o).doubleValue();
 			double difference = size - nv.getHeight();
@@ -322,8 +299,6 @@ public class LegacyVisualProperty implements VisualProperty {
 			return Integer.valueOf(255);
 		} else if (name.equals("NODE_RENDERER")){
 			return NodeRenderers.SIMPLE_SHAPE;
-		} else if (name.equals("NODE_SHAPE")){
-			return NodeShape.RECT;
 		} else if (name.equals("NODE_SIZE")){
 			return new Double(35.0);
 		} else if (name.equals("NODE_WIDTH")){
@@ -358,12 +333,6 @@ public class LegacyVisualProperty implements VisualProperty {
 			return ""; 
 		} else if (name.equals("EDGE_LINE_WIDTH")){
 			return new Float(1.0f);
-		} else if (name.equals("EDGE_LINE_STYLE")){
-			return LineStyle.SOLID;
-		} else if (name.equals("EDGE_SRCARROW_SHAPE")){
-			return ArrowShape.NONE;
-		} else if (name.equals("EDGE_TGTARROW_SHAPE")){
-			return ArrowShape.NONE;
 		} else if (name.equals("EDGE_SRCARROW_COLOR")){
 			return Color.black;
 		} else if (name.equals("EDGE_TGTARROW_COLOR")){
@@ -428,11 +397,6 @@ public class LegacyVisualProperty implements VisualProperty {
 					return icon;
 		} else if (name.equals("NODE_RENDERER")){
 			  return new NodeIcon();
-		} else if (name.equals("NODE_SHAPE")){
-			final NodeIcon icon = new NodeIcon((NodeShape)value);
-			icon.setBottomPadding(-2);
-
-			return icon;
 		} else if (name.equals("NODE_SIZE")){
 			final NodeIcon icon = new NodeIcon() {
 				private final static long serialVersionUID = 1202339876414681L;
@@ -652,23 +616,6 @@ public class LegacyVisualProperty implements VisualProperty {
 			icon.setBottomPadding(-7);
 
 			return icon;
-		} else if (name.equals("EDGE_LINE_STYLE")){
-			final LineTypeIcon icon = new LineTypeIcon((LineStyle)value);
-			icon.setBottomPadding(-6);
-
-			return icon;
-		} else if (name.equals("EDGE_SRCARROW_SHAPE")){
-			final ArrowIcon icon = new ArrowIcon(((ArrowShape) value).getShape());
-			icon.setLeftPadding(20);
-			icon.setBottomPadding(-6);
-
-			return icon;
-		} else if (name.equals("EDGE_TGTARROW_SHAPE")){
-			final ArrowIcon icon = new ArrowIcon(((ArrowShape) value).getShape());
-			icon.setLeftPadding(20);
-			icon.setBottomPadding(-6);
-
-			return icon;
 		} else if (name.equals("EDGE_SRCARROW_COLOR")){
 			final ArrowShape arrow = (ArrowShape) VisualPropertyCatalog.getVisualProperty("EDGE_SRCARROW_SHAPE").getDefaultAppearanceObject();
 			final ArrowIcon icon = new ArrowIcon(arrow.getShape());
@@ -764,14 +711,8 @@ public class LegacyVisualProperty implements VisualProperty {
 	}
 
 	public Map<Object, Icon> getIconSet() {
-		if (name.equals("EDGE_LINE_STYLE")){
-			return LineStyle.getIconSet();
-		} else if (name.equals("EDGE_TGTARROW_SHAPE") || name.equals("EDGE_SRCARROW_SHAPE")){
-			return ArrowShape.getIconSet();
-		} else if (name.equals("NODE_RENDERER") ){
+		if (name.equals("NODE_RENDERER") ){
 			return NodeRenderers.getIconSet();
-		} else if (name.equals("NODE_SHAPE")){
-			return NodeShape.getIconSet();
 		}
 		return null; // default value
 	}
