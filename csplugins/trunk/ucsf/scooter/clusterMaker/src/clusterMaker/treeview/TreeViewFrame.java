@@ -56,6 +56,7 @@ public class TreeViewFrame extends ViewFrame {
 
 	public TreeViewFrame(TreeViewApp treeview, String appName) {
 		super(appName);
+		this.appName = appName;
 		treeView = treeview;
 		loaded = false;
 		setWindowActive(true);

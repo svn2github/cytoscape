@@ -55,6 +55,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import java.util.Properties;
+
+import javax.imageio.ImageIO;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -80,6 +84,10 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.DefaultFontMapper;
 
+import org.freehep.graphicsio.ps.PSGraphics2D;
+import org.freehep.graphicsio.svg.SVGGraphics2D;
+import org.freehep.graphics2d.VectorGraphics;
+
 /**
 * This class is a superclass which implements a GUI for selection of options relating to output. 
 * It makes most of the relevant variables accessible to subclasses through protected methods.
@@ -87,10 +95,11 @@ import com.lowagie.text.pdf.DefaultFontMapper;
 public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 	private ConfigNode root;
 
-	private String[] formats = {"png","jpg","pdf"};
+	private String[] formats = {"png","jpg","bmp","pdf","svg","eps"};
 	
 	// external links
 	private DendroView view;
+	private DataModel model;
 	private CyLogger logger;
 
 	private HeaderInfo arrayHeaderInfo; // allows access to array headers.
@@ -124,7 +133,7 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 		logger = CyLogger.getLogger(GraphicsExportPanel.class);
 
 		// Get all of the necessary information from our view
-		DataModel model = view.getDataModel();
+		model = view.getDataModel();
 		arrayHeaderInfo = model.getArrayHeaderInfo();
 		geneHeaderInfo = model.getGeneHeaderInfo();
 
@@ -167,10 +176,14 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 
 	public void synchronizeTo() {
 		String format = (String) formatPullDown.getSelectedItem();
-		if (format.equals("png") || format.equals("jpg"))
+		if (format.equals("png") || format.equals("jpg") || format.equals("bmp"))
 			bitmapSave(format);
 		else if (format.equals("pdf"))
 			pdfSave(format);
+		else if (format.equals("eps"))
+			epsSave(format);
+		else if (format.equals("svg"))
+			svgSave(format);
 	}
 
 	public void synchronizeFrom() {}
@@ -373,12 +386,13 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 		return ".png";
 	}
 	protected String getInitialFilePath() {
-		String defaultPath = null;
-		defaultPath = System.getProperty("user.home");
+		String defaultPath = System.getProperty("user.home");
+		String fileSep = System.getProperty("file.separator");
+		String file = model.getSource();
 		if (root == null) {
-			return defaultPath;
+			return defaultPath+fileSep+file;
 		} else {
-			return root.getAttribute("file", defaultPath);
+			return root.getAttribute("file", defaultPath)+fileSep+file;
 		}
 	}
 	
@@ -883,14 +897,14 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 			g.translate(extraHeight/2, extraWidth/2);
 			drawAll(g, 1.0);
 
-			boolean success = BitmapWriter.writeBitmap(i, format, output, this);
+			ImageIO.write(i,format,output);
 			// ignore success, could keep window open on failure if save could indicate success.
 			output.close();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this,
-				new JTextArea("Dendrogram export had problem " +  e ));
+				new JTextArea("Graphics export had problem " +  e ));
 			logger.error("Exception " + e);
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
@@ -915,10 +929,67 @@ public class GraphicsExportPanel extends JPanel implements SettingsPanel {
 			JOptionPane.showMessageDialog(this,
 				new JTextArea("Dendrogram export had problem " +  e ));
 			logger.error("Exception " + e);
-			e.printStackTrace();
+			// e.printStackTrace();
     }
   
     document.close();
+	}
+
+	private void epsSave(String format) {
+		com.lowagie.text.Rectangle pageSize = PageSize.LETTER;
+		Properties p = new Properties();
+		p.setProperty(PSGraphics2D.PAGE_SIZE,"Letter");
+		p.setProperty("org.freehep.graphicsio.AbstractVectorGraphicsIO.TEXT_AS_SHAPES",
+                  Boolean.toString(false));
+
+		try {
+			OutputStream output = new BufferedOutputStream(new FileOutputStream(getFile()));
+			PSGraphics2D g = new PSGraphics2D(output, view);
+      double imageScale = Math.min(pageSize.getWidth()  / ((double) estimateWidth()+getBorderPixels()),
+                                   pageSize.getHeight() / ((double) estimateHeight()+getBorderPixels()));
+			g.setMultiPage(false);
+			g.setProperties(p);
+			g.startExport();
+      g.scale(imageScale, imageScale);
+			drawAll(g, 1.0);
+			g.endExport();
+			output.close();
+    }
+    catch (Exception e)
+    {
+			JOptionPane.showMessageDialog(this,
+				new JTextArea("Dendrogram export had problem " +  e ));
+			logger.error("Exception " + e);
+			// e.printStackTrace();
+    }
+	}
+
+	private void svgSave (String format) {
+		com.lowagie.text.Rectangle pageSize = PageSize.LETTER;
+		Properties p = new Properties();
+		p.setProperty(PSGraphics2D.PAGE_SIZE,"Letter");
+		p.setProperty("org.freehep.graphicsio.AbstractVectorGraphicsIO.TEXT_AS_SHAPES",
+                  Boolean.toString(false));
+
+		try {
+			OutputStream output = new BufferedOutputStream(new FileOutputStream(getFile()));
+			SVGGraphics2D g = new SVGGraphics2D(output, view);
+      double imageScale = Math.min(pageSize.getWidth()  / ((double) estimateWidth()+getBorderPixels()),
+                                   pageSize.getHeight() / ((double) estimateHeight()+getBorderPixels()));
+			g.setProperties(p);
+			g.startExport();
+      g.scale(imageScale, imageScale);
+			drawAll(g, 1.0);
+			g.endExport();
+			output.close();
+    }
+    catch (Exception e)
+    {
+			JOptionPane.showMessageDialog(this,
+				new JTextArea("Dendrogram export had problem " +  e ));
+			logger.error("Exception " + e);
+			// e.printStackTrace();
+    }
 	}
 	
 	class InclusionPanel extends JPanel {

@@ -168,7 +168,7 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		dataModel.setDocumentConfig(documentConfig);
 
 		// Create our view frame
-		TreeViewFrame frame = new TreeViewFrame(this);
+		TreeViewFrame frame = new TreeViewFrame(this, appName);
 
 		// Set the data model
 		frame.setDataModel(dataModel);

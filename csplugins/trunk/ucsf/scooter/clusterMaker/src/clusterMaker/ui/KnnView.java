@@ -136,7 +136,7 @@ public class KnnView extends TreeView {
 		dataModel.setDocumentConfig(documentConfig);
 
 		// Create our view frame
-		KnnViewFrame frame = new KnnViewFrame(this);
+		KnnViewFrame frame = new KnnViewFrame(this, appName);
 
 		// Set the data model
 		frame.setDataModel(dataModel);

@@ -115,7 +115,7 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		// setExitOnWindowsClosed(false);
 		selectedNodes = new ArrayList();
 		selectedArrays = new ArrayList();
-		myLogger = CyLogger.getLogger(TreeView.class);
+		myLogger = CyLogger.getLogger(HeatMapView.class);
 		clusterProperties = new ClusterProperties(getShortName());
 		pcs = new PropertyChangeSupport(new Object());
 		initializeProperties();
@@ -202,16 +202,16 @@ public class HeatMapView extends TreeViewApp implements Observer, GraphViewChang
 		dataModel.setDocumentConfig(documentConfig);
 
 		// Create our view frame
-		TreeViewFrame frame = new TreeViewFrame(this);
+		viewFrame = new TreeViewFrame(this, appName);
 
 		// Set the data model
-		frame.setDataModel(dataModel);
-		frame.setLoaded(true);
-		frame.addWindowListener(this);
-		frame.setVisible(true);
-		geneSelection = frame.getGeneSelection();
+		viewFrame.setDataModel(dataModel);
+		viewFrame.setLoaded(true);
+		viewFrame.addWindowListener(this);
+		viewFrame.setVisible(true);
+		geneSelection = viewFrame.getGeneSelection();
 		geneSelection.addObserver(this);
-		arraySelection = frame.getArraySelection();
+		arraySelection = viewFrame.getArraySelection();
 		arraySelection.addObserver(this);
 
 		// Now set up to receive selection events

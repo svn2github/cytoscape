@@ -84,12 +84,7 @@ public class ClusterMaker extends CytoscapePlugin implements PropertyChangeListe
 		addClusterAlgorithm(menu, new KMeansCluster());
 		addClusterAlgorithm(menu, new FORCECluster());
 		addClusterAlgorithm(menu, new MCLCluster());
-		// At some point, we need to convert these over to be clusterAlgorithms.  In the meantime...
-		// menu.add(new MCLMenu());
-		// menu.add(new CytoscapeFORCEmenu());
-		// addClusterAlgorithm(new MCLCLuster());
-		// addClusterAlgorithm(menu, new FORCECLuster());
-		// addClusterAlgorithm(new SOMCluster());
+		// addClusterAlgorithm(new HOPACHCluster());
 		menu.addSeparator();
 
 		// Add the visualization menu items
