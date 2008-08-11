@@ -47,6 +47,8 @@ import cytoscape.visual.*;
 import giny.view.*;
 import cytoscape.graph.dynamic.*;
 import cytoscape.graph.dynamic.util.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -58,11 +60,11 @@ import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
 
 
-/*
+/**
  * RandomizeExistingPanel is used for selecting which randomizing 
  * network model to use.
  */
-public class RandomizeExistingPanel extends JPanel {
+public class RandomizeExistingPanel extends JPanel implements PropertyChangeListener {
 
 	private int mode;
 	private int visualRounds = 1;
@@ -79,8 +81,13 @@ public class RandomizeExistingPanel extends JPanel {
 	private javax.swing.ButtonGroup group;
 
 
-	private javax.swing.JTextField numCreate;
-	private javax.swing.JLabel numCreateExplain;
+	private javax.swing.JTextField numCreateTextField;
+	private javax.swing.JLabel numCreateLabel;
+
+
+	private javax.swing.JTextField numIterTextField;
+	private javax.swing.JLabel numIterLabel;
+
 
 	//Treat this network as directed
 	private javax.swing.JCheckBox directedCheckBox;
@@ -99,9 +106,11 @@ public class RandomizeExistingPanel extends JPanel {
 		super( ); 
 		mode = pMode;
 		initComponents();
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		Cytoscape.getDesktop().getNetworkViewManager().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
-	/*
+	/**
 	 * Initialize the components
 	 */
 	private void initComponents() {
@@ -116,7 +125,8 @@ public class RandomizeExistingPanel extends JPanel {
 		//Set the erdos-renyi text
 		degreePreservingExplain
 				.setText("<html><font size=2 face=Verdana>Shuffle edges while keeping <br>in/out degree of each node.</font></html>");
-
+		degreePreservingExplain.setPreferredSize(new Dimension(200,50));
+		degreePreservingExplain.setMinimumSize(new Dimension(200,50));
 		
 		
 		directedCheckBox = new javax.swing.JCheckBox();
@@ -138,16 +148,35 @@ public class RandomizeExistingPanel extends JPanel {
 		//Set up the title
 		titleLabel = new javax.swing.JLabel();
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Randomize Network");
+		titleLabel.setText("Degree Preserving Random Shuffle");
 
-		numCreate = new javax.swing.JTextField();
-		numCreate.setText("1");
+
+
+		CyNetwork net = Cytoscape.getCurrentNetwork();
+		if(net == Cytoscape.getNullNetwork())
+		{
+			runButton.setEnabled(false);
+
+		}
+
+
+		numCreateTextField = new javax.swing.JTextField();
+		numCreateTextField.setText("1");
+		numCreateTextField.setPreferredSize(new Dimension(30,25)); 	
+		numCreateTextField.setHorizontalAlignment(JTextField.RIGHT);
+		numCreateLabel = new javax.swing.JLabel();
+		numCreateLabel.setText("Number of networks to create:");
+
+		int E = net.getEdgeCount();
+		numIterTextField = new javax.swing.JTextField();
+		numIterTextField.setText("" + E);
+		numIterTextField.setPreferredSize(new Dimension(30,25)); 	
+		numIterTextField.setHorizontalAlignment(JTextField.RIGHT);
+		numIterLabel = new javax.swing.JLabel();
+		numIterLabel.setText("Num Shuffles:");
 		
-		numCreateExplain = new javax.swing.JLabel();
-		numCreateExplain.setText("Number of networks to create:");
-
-			
-
+		
+	
 	
 		//Set up the run button
 		runButton.setText("Next");
@@ -169,7 +198,11 @@ public class RandomizeExistingPanel extends JPanel {
 		{
 			backButton.setVisible(false);
 		}
-
+		else
+		{
+			numCreateLabel.setVisible(false);
+			numCreateTextField.setVisible(false);
+		}
 		//Set up the cancel button
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -182,31 +215,39 @@ public class RandomizeExistingPanel extends JPanel {
 		setLayout(new GridBagLayout());
 		
 		
+		
+		//
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-		c.gridwidth = 5;
+		c.gridwidth = 6;
+		c.insets = new Insets(10,5,5,5);	
 		c.anchor =  GridBagConstraints.FIRST_LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(titleLabel,c);
 
-
+		//
 		c = null;
 		c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 1;
 		c.insets = new Insets(5,5,5,5);	
 		c.anchor =  GridBagConstraints.LINE_START;
-		//c.insets = new Insets(10,10,50,10);
+		//c.weightx = 1;
+		c.weighty = 1;
 		add(degreePreserving, c);
 		
+		//
 		c = null;
 		c = new GridBagConstraints();
 		c.gridx = 1;
 		c.gridy = 1;
-		c.gridwidth = 5;
-		c.insets = new Insets(15,5,15,5);	
+		c.gridwidth = 2;
+		c.insets = new Insets(5,5,5,5);	
 		c.anchor =  GridBagConstraints.LINE_START;
-		//c.insets = new Insets(10,10,10,10);
+		//c.weightx = 1;
+		c.weighty = 1;
 		add(degreePreservingExplain, c);
 		
 		
@@ -215,41 +256,71 @@ public class RandomizeExistingPanel extends JPanel {
 		c.gridx = 0;
 		c.gridy = 2;
 		c.insets = new Insets(15,5,15,5);	
-		c.gridwidth = 4;
+		c.gridwidth = 2;
 		c.anchor =  GridBagConstraints.LINE_START;
-		//c.insets = new Insets(10,10,10,10);
-		add(numCreateExplain, c);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(numCreateLabel, c);
 		
 		c = null;
 		c = new GridBagConstraints();
-		c.gridx = 4;
+		c.gridx = 2;
 		c.gridy = 2;
 		c.gridwidth = 1;
 		c.insets = new Insets(15,5,15,5);	
 		c.anchor =  GridBagConstraints.LINE_START;
-		c.fill =  GridBagConstraints.HORIZONTAL;
+		//c.fill =  GridBagConstraints.HORIZONTAL;
 		c.ipadx = 20;
-		//c.insets = new Insets(10,10,10,10);
-		add(numCreate, c);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(numCreateTextField, c);
 		
+		
+			c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 3;
+		c.insets = new Insets(15,5,15,5);	
+		c.gridwidth = 2;
+		c.anchor =  GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(numIterLabel, c);
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 2;
+		c.gridy = 3;
+		c.gridwidth = 1;
+		c.insets = new Insets(15,5,15,5);	
+		c.anchor =  GridBagConstraints.LINE_START;
+		//c.fill =  GridBagConstraints.HORIZONTAL;
+		c.ipadx = 20;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(numIterTextField, c);
+		
+
 		
 		c = null;
 		c = new GridBagConstraints();
 		c.gridx = 0;
-		c.gridy = 3;	
-		//c.insets = new Insets(5,5,5,5);		
+		c.gridy = 4;	
 		c.gridwidth = 4;
 		c.anchor =  GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(directedCheckBox, c);
 		
 		
 		
 		c = null;
 		c = new GridBagConstraints();
-		c.gridx = 6;
-		c.gridy = 4;
-		///c.insets = new Insets(5,5,5,5);			
-		c.anchor = GridBagConstraints.CENTER;
+		c.gridx = 3;
+		c.gridy = 5;	
+		c.anchor = GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(cancelButton, c);
 
 
@@ -257,113 +328,23 @@ public class RandomizeExistingPanel extends JPanel {
 		c = null;
 		c = new GridBagConstraints();
 		c.gridx = 0;
-		c.gridy = 4;		
+		c.gridy = 5;		
 		c.anchor = GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(backButton, c);
 		
 		
 		c = null;
 		c = new GridBagConstraints();
-		c.gridx = 5;
-		c.gridy = 4;
-		//c.insets = new Insets(5,5,5,5);			
+		c.gridx = 2;
+		c.gridy = 5;
 		c.anchor = GridBagConstraints.LINE_END;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(runButton, c);
 
-		
-		/*
-
-		//Set up the layout
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-		setLayout(layout);
-
-		layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																titleLabel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																350,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				degreePreserving,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				170)
-																		.addPreferredGap(1)
-																		
-																		.add(degreePreservingExplain,
-																			 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			 10,
-																			 Short.MAX_VALUE))
-																	.add(directedCheckBox)
-													
-														.add(
-																org.jdesktop.layout.GroupLayout.TRAILING,
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				backButton)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				runButton)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				cancelButton)))
-										.addContainerGap()));
-
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(titleLabel)
-										.add(8, 8, 8)
-
-										.add(7, 7, 7)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-									
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-
-														.add(degreePreserving).add(
-																degreePreservingExplain))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(directedCheckBox)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(cancelButton).add(
-																runButton).add(backButton))
-										.addContainerGap()));
-										
-										
-					*/
-	}
+}
 
 
 
@@ -431,17 +412,17 @@ public class RandomizeExistingPanel extends JPanel {
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 
 		LinkedList network = CytoscapeConversion.CyNetworkToDynamicGraph(net,!directed);
-		
+		String iterString = numIterTextField.getText();
+		int numIter;
+		try
+		{
+			numIter = Integer.parseInt(iterString);
+			
+		}catch(Exception e){numIterLabel.setForeground(java.awt.Color.RED); return;}
 
-		//DynamicGraph graph = (DynamicGraph)network.get(0);
-
-		//int E = graph.edges().numRemaining();
-		//System.out.println("Edges Found:" + E);
-		
-
-		//String ids[] = (String[])network.get(1);
-		
-		DegreePreservingNetworkRandomizer dpnr = new DegreePreservingNetworkRandomizer(net,!directed);
+		numIterLabel.setForeground(java.awt.Color.BLACK);
+		System.out.println("User Iterations: " + numIter);		
+		DegreePreservingNetworkRandomizer dpnr = new DegreePreservingNetworkRandomizer(net,!directed,numIter);
 		String ids[] = dpnr.getNodeIds();
 
 
@@ -449,7 +430,7 @@ public class RandomizeExistingPanel extends JPanel {
 
 		if(mode == 1)
 		{
-			AnalyzePanel analzyePanel = new AnalyzePanel(dpnr, !directed,1);
+			AnalyzePanel analzyePanel = new AnalyzePanel(dpnr, !directed,0);
 			
 			//Get the TabbedPanel
 			JTabbedPane parent = (JTabbedPane)getParent();
@@ -482,14 +463,13 @@ public class RandomizeExistingPanel extends JPanel {
 
 		try
 		{	
-			String value = numCreate.getText().trim();
+			String value = numCreateTextField.getText().trim();
 			value  = value.trim();
 			visualRounds = Integer.parseInt(value);
-			
-		}catch(Exception e){e.printStackTrace(); numCreateExplain.setForeground(java.awt.Color.RED); return;}
-
-		numCreateExplain.setForeground(java.awt.Color.BLACK);
+		}catch(Exception e){numCreateLabel.setForeground(java.awt.Color.RED); return;}
+		numCreateLabel.setForeground(java.awt.Color.BLACK);
 		
+		System.out.println("Visual Rounds:" + visualRounds);
 		
 
 		CyNetworkView netView = Cytoscape.getCurrentNetworkView();
@@ -501,11 +481,13 @@ public class RandomizeExistingPanel extends JPanel {
 		
 		//Get the random network vistualStyle
 		vmm.setVisualStyle(newStyle);
-		System.out.println(visName);
+		//System.out.println(visName);
 		
 		
 		CyAttributes attr = Cytoscape.getNetworkAttributes();
-		CyLayoutAlgorithm alg = (CyLayoutAlgorithm)attr.getAttribute( Cytoscape.getCurrentNetwork().getTitle(), "__layoutAlgorithm");
+		CyLayoutAlgorithm alg = (CyLayoutAlgorithm)null;
+		String layoutString = (String)attr.getAttribute(Cytoscape.getCurrentNetwork().getTitle(), "__layoutAlgorithm");
+		//System.out.println(layoutString);
 		if(alg == null)
 		{
 			alg = new GridNodeLayout();
@@ -514,29 +496,24 @@ public class RandomizeExistingPanel extends JPanel {
 		{
 
 			DynamicGraph randGraph = dpnr.generate();
-		
+			
 			CyNetwork randNetwork = CytoscapeConversion.DynamicGraphToCyNetwork(randGraph,ids);
 
 			//Set this as the current visualStyle
+			//Consider moving below code into CytoscapeConversion!
 			vmm.setVisualStyle(newStyle);
-			
-			//Cytoscape.getNetworkView(randNetwork.getTitle()).setVisualStyle(visName);
-			//CyNetwork.getVisualStyle().setVisualStyle(visName);
-			CyNetworkView view = Cytoscape.getCurrentNetworkView();
-			view.applyLayout(alg); 
+			//CyNetworkView view = Cytoscape.getCurrentNetworkView();
+			//view.applyLayout(alg); 
 	
+			CytoscapeConversion.useOriginalLayout( net, randNetwork);
 		}
 		
 		
 		//Set the network pane as active
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
-				.setSelectedIndex(0);
+		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).setSelectedIndex(0);
 		
 		
 
-		
-
-		//GridNodeLayout alg = new GridNodeLayout();
 	
 
 		
@@ -548,7 +525,32 @@ public class RandomizeExistingPanel extends JPanel {
 		p = p.getParent();
 		JFrame frame = (JFrame)p;
 		frame.dispose();
-
-		
 	}
-}
+	
+	 /**
+	  *
+	  */
+	  public void propertyChange(PropertyChangeEvent event) 
+	  {
+			if(event.getPropertyName() == Cytoscape.NETWORK_CREATED) 
+			{
+				runButton.setEnabled(true);
+			}
+
+
+			CyNetwork net = Cytoscape.getCurrentNetwork();
+			if(net == Cytoscape.getNullNetwork())
+			{
+				runButton.setEnabled(false);
+
+			}
+
+			int E = net.getEdgeCount();
+			numIterTextField.setText("" + E);
+			
+	  }
+
+
+} 
+	
+	

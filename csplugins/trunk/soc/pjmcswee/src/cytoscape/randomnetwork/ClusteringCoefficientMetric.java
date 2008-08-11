@@ -64,6 +64,15 @@ public class ClusteringCoefficientMetric implements NetworkMetric {
 		return new String("Clustering Coefficient");
 	}
 	
+		
+	/**
+	 * @return A new ClusteringCoefficientMetric instace.
+	 */
+	public NetworkMetric copy()
+	{
+		return new ClusteringCoefficientMetric();
+	}
+
 	
 	
 	/**

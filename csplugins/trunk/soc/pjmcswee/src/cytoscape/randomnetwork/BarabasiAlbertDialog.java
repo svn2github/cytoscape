@@ -35,6 +35,7 @@
 
 package cytoscape.randomnetwork;
 
+
 import cytoscape.layout.algorithms.*;
 import cytoscape.plugin.*;
 import cytoscape.*;
@@ -44,19 +45,32 @@ import cytoscape.visual.*;
 import giny.view.*;
 import cytoscape.graph.dynamic.*;
 
-
 import java.awt.*;
+
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.*;
+
+import java.util.*;
 import javax.swing.*;
 
-/*
+
+/**
  * This class is responsible for handling the user interface
  * to generate a random model according to barabasi-albert.
  * 
  */
 public class BarabasiAlbertDialog extends JPanel {
 
+	/**
+	 * Specifies a context for this gui.
+	 */
 	private int mode;
+	
+	private static final int defaultNodeValue = 100;
+	private static final int defaultEdgeValue = 3;
+	private static final int defaultInitValue = 2;
+
 
 	// TextFields
 	private javax.swing.JTextField nodeTextField;
@@ -90,18 +104,23 @@ public class BarabasiAlbertDialog extends JPanel {
 	 */
 	private void initComponents() {
 	
-	
-		final int textFieldStart = 10;
-		final int textFieldLength = 50;
-		final int labelStart = 20;
-		final int labelLength = 170;
- 
-	
+
 	
 		// TextField creation
 		nodeTextField = new javax.swing.JTextField();
 		initTextField = new javax.swing.JTextField();
 		edgeTextField = new javax.swing.JTextField();
+		nodeTextField.setPreferredSize(new Dimension(30,25)); 
+		edgeTextField.setPreferredSize(new Dimension(30,25)); 
+		initTextField.setPreferredSize(new Dimension(30,25)); 
+		nodeTextField.setText("" + defaultNodeValue);
+		edgeTextField.setText("" + defaultEdgeValue);
+		initTextField.setText("" + defaultInitValue);
+		edgeTextField.setHorizontalAlignment(JTextField.RIGHT);
+		initTextField.setHorizontalAlignment(JTextField.RIGHT);
+		nodeTextField.setHorizontalAlignment(JTextField.RIGHT);
+		
+
 
 		// Button creation
 		directedCheckBox = new javax.swing.JCheckBox();
@@ -119,11 +138,14 @@ public class BarabasiAlbertDialog extends JPanel {
 		//Add the explanation label
 		explainLabel
 				.setText("<html><font size=2 face=Verdana>" +
-				"The Barabasi-Albert model begins with a connected seed network of s nodes.<br>" +
-				"Every other node (n - s) is added one at a time,<br>" +
-				"and initially connected to m existing nodes.<br>" +
+				"The Barabasi-Albert model begins with a connected seed network of s nodes " +
+				"Every other node (n - s) is added one at a time, " +
+				"and initially connected to m existing nodes. " +
 				"Each existing node u has probability  degree(u)/(2*E), E is the number of edges </font></html>");
 
+		explainLabel.setPreferredSize(new Dimension(380, 80));
+		explainLabel.setMinimumSize(new Dimension(380, 80));
+		
 		//Set the text for the labels
 		directedCheckBox.setText("Undirected");
 		nodeLabel.setText("Number of Nodes (n):");
@@ -159,105 +181,157 @@ public class BarabasiAlbertDialog extends JPanel {
 		});
 
 
+		setLayout(new GridBagLayout());
 
-		//Create the layout for the dialog (really a panel)
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-		//Make the laout active.
-		setLayout(layout);
-		
-		//Set the Horizontal Layout
-		layout.setHorizontalGroup(layout
-			.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(layout.createSequentialGroup()
-					.addContainerGap()
-						.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-							.add(titleLabel,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-								350,
-								org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		//Setup the titel
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.insets = new Insets(0,10,0,0);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(titleLabel,c);
 
-							//Add the dscription
-							.add(explainLabel)
-							
-							//Add the node label & textField
-							.add(layout.createSequentialGroup()
-								.add(nodeLabel,
-									org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-									labelStart,
-									labelLength)
-								.add(nodeTextField,
-									org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-									textFieldStart,
-									textFieldLength))
-							//Add the initial graph size: s
-							.add(layout.createSequentialGroup()
-								.add(initLabel,
-									 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-									 labelStart,
-									 labelLength)
-								.add(initTextField,
-									 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-									 textFieldStart,
-									 textFieldLength))
-							//Add the number of edges to add edges: m
-							.add(layout.createSequentialGroup()
-								.add(edgeLabel,
-									 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-									 labelStart,
-									 labelLength)
-								.add(edgeTextField,
-									org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-									textFieldStart,
-									textFieldLength))
-							//Add the directed button
-							//.add(layout.createSequentialGroup()
-							.add(directedCheckBox) //)
-							//Add the Run/Cancel buttons
-							.add(org.jdesktop.layout.GroupLayout.TRAILING,
-								layout.createSequentialGroup()
-									.add(backButton)
-									.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-									.add(runButton)
-									.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-									.add(cancelButton)))
-					.addContainerGap()));
+	
+		c.gridx = 0;
+		c.gridy = 1;
+		c.insets = new Insets(5,10,10,0);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 6;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(explainLabel,c);
+
 		
-		//Set the vertical Layout
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-			.add(layout.createSequentialGroup()
-				.addContainerGap()
-				.add(titleLabel) //Add title
-				.add(8, 8, 8)
-				.add(explainLabel)  //Add the description
-				.add(7, 7, 7)
-				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-				//Add the node label textfield pair: n
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(nodeLabel)
-					.add(nodeTextField))
-				//add the initial number of nodes: s
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(initLabel)
-					.add(initTextField))
-				//add the number of edges to add at each time step: m
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(edgeLabel)
-					.add(edgeTextField))
-				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-								  3, Short.MAX_VALUE)
-				//Add the directed checkbox
-				//.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-				.add(directedCheckBox)//)
-				//Add the Run/Cancel buttons
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(cancelButton)
-					.add(runButton)
-					.add(backButton))
-			.addContainerGap()));
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 4;
+		c.gridwidth = 2;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridheight = 1;
+		add(nodeLabel,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 4;
+		c.gridwidth = 3;
+		c.ipadx = 20;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridheight = 1;
+		add(nodeTextField,c);
+
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 5;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(edgeLabel,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 5;
+		c.gridwidth = 3;
+		c.ipadx = 20;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(edgeTextField,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 6;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(initLabel,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 6;
+		c.gridwidth = 3;
+		c.gridheight = 1;
+		c.ipadx = 20;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(initTextField,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 7;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.ipadx = 20;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(directedCheckBox,c);
+
+
+		//Setup the 
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 5;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(cancelButton,c);
+		
+		
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(0,0,0,0);
+		add(backButton,c);
+
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 4;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(runButton,c);
 
 	}
 
-	/*
+	/**
 	 *  Callback for the cancel button
 	 */
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -272,8 +346,8 @@ public class BarabasiAlbertDialog extends JPanel {
 		frame.dispose();
 	}
 	
-		/**
-	 *  Call back for the cancel button
+	/**
+	 *  Call back for the back button
 	 */
 	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
 	
@@ -310,7 +384,7 @@ public class BarabasiAlbertDialog extends JPanel {
 
 	
 	
-	/*
+	/**
 	 *  Callback for the generate button
 	 */
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {

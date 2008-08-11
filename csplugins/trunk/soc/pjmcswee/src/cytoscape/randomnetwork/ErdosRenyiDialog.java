@@ -44,6 +44,8 @@ import cytoscape.visual.*;
 import giny.view.*;
 import cytoscape.graph.dynamic.*;
 
+import java.awt.*;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.*;
@@ -51,13 +53,24 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
-/*
-
-*/
+/**
+ * 
+ *
+ */
 public class ErdosRenyiDialog extends JPanel implements ActionListener {
 
-	private int mode;
 
+	/**
+	 * 
+	 */
+	private int mode;
+	
+	/**
+	 * Default values for the variables
+	 */
+	private static final int defaultNodeValue = 100;
+	private static final int defaultEdgeValue = 300;
+	private static final double defaultProbValue = .1;
 	
 	//TextFields
 	private javax.swing.JTextField nodeTextField;
@@ -81,28 +94,43 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 	private javax.swing.JLabel edgeLabel;
 	private javax.swing.JLabel gnpExplain;
 	private javax.swing.JLabel gnmExplain;
-
+	private javax.swing.JSeparator line;
 
 	/**
-	* Default Contructor
-	*/
+	 * Default Contructor
+	 *
+	 * @param pMode Gives the dialog context.  If mode == 0, then the dialog creates a 
+	 */
 	public ErdosRenyiDialog(int pMode){
 		super( );
 		mode = pMode;
-
 		initComponents();
 	}
 
-	/*
+	/**
 	 * Initialize the components
 	 */
 	private void initComponents() {
+
+
 
 		//Create TextFields
 		nodeTextField = new javax.swing.JTextField();
 		probabilityTextField = new javax.swing.JTextField();
 		edgeTextField = new javax.swing.JTextField();
 	
+		//Set up the default values for the textfields
+		nodeTextField.setText("" + defaultNodeValue);
+		nodeTextField.setHorizontalAlignment(JTextField.RIGHT);
+		probabilityTextField.setText("" + defaultProbValue);
+		probabilityTextField.setHorizontalAlignment(JTextField.RIGHT);
+		edgeTextField.setText("" + defaultEdgeValue);			
+		edgeTextField.setHorizontalAlignment(JTextField.RIGHT);
+		edgeTextField.setPreferredSize(new Dimension(30,25)); 
+		probabilityTextField.setPreferredSize(new Dimension(30,25)); 
+		nodeTextField.setPreferredSize(new Dimension(30,25)); 				
+		
+		
 		//Buttons
 		directedCheckBox = new javax.swing.JCheckBox();
 		selfEdgeCheckBox = new javax.swing.JCheckBox();
@@ -130,7 +158,9 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		group.add(gnm);
 		group.add(gnp);
 
-
+		JSeparator hLine =  new JSeparator(SwingConstants.HORIZONTAL);
+		line = new JSeparator(SwingConstants.VERTICAL);
+		
 		//Set the text for the labels
 		directedCheckBox.setText("Undirected");
 		selfEdgeCheckBox.setText("Allow Reflexive Edges (u,u)");
@@ -141,14 +171,16 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		probabilityLabel.setText("Edge Probability (p):   ");
 		
 		//Add the descriptions for each mode
-		gnmExplain
-				.setText("<html><font size=2 face=Verdana>Uniformly generate a random <br>" +
+		gnmExplain.setText("<html><font size=2 face=Verdana>Uniformly generate a random" +
 				         "graph with n nodes and m edges.</font></html>");
-		gnpExplain
-				.setText("<html><font size=2 face=Verdana>Generate a random graph with n <br>" +
+		gnpExplain.setText("<html><font size=2 face=Verdana>Generate a random graph with n" +
 				         "nodes and each edge has probability p to be included.</font></html>");
-
-
+		gnmExplain.setPreferredSize(new Dimension(200,40));
+		gnpExplain.setPreferredSize(new Dimension(200,40));
+		gnmExplain.setMinimumSize(new Dimension(200,40));
+		gnpExplain.setMinimumSize(new Dimension(200,40));
+		
+		
 		//Initially turn off this textfield
 		edgeTextField.setEnabled(false);
 		edgeTextField.setBackground(Color.LIGHT_GRAY);
@@ -183,146 +215,229 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 				backButtonActionPerformed(evt);
 			}
 		});
+		
+		setLayout(new GridBagLayout());
+
+		//Setup the titel
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.insets = new Insets(0,10,0,0);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(titleLabel,c);
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+
+		add(gnm,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 1;
+		c.gridy = 1;
+		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(gnmExplain,c);
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 2;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(gnp,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 1;
+		c.gridy = 2;
+		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(gnpExplain,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 3;
+		c.gridwidth = 20;
+		c.gridheight = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(hLine,c);
+
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 4;
+		c.gridwidth = 2;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridheight = 1;
+		add(nodeLabel,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 4;
+		c.gridwidth = 1;
+		c.ipadx = 20;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridheight = 1;
+		add(nodeTextField,c);
+
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 5;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(edgeLabel,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 5;
+		c.gridwidth = 1;
+		c.ipadx = 20;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(edgeTextField,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 6;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(probabilityLabel,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 6;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.ipadx = 20;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(probabilityTextField,c);
+
+		//add the line
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 3;
+		c.gridy = 4;
+		c.gridheight = 5;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.VERTICAL;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(line, c);
 
 
 
-		//Create the layout
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-		setLayout(layout);
 
+		//Set up the directed checkbox
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 4;
+		c.gridy = 4;
+		c.gridwidth = 5;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(directedCheckBox,c);
 
-		layout.setHorizontalGroup(
-			layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(layout.createSequentialGroup()
-					.addContainerGap()
-					.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-					.add(titleLabel,
-						 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-						 350,
-						 org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		//Set up the allow self edge checkbox
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 4;
+		c.gridy = 5;
+		c.gridwidth = 5;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(selfEdgeCheckBox,c);
 
-					//Add the G(n,m) group						 
-					.add(layout.createSequentialGroup()
-						.add(gnm,1,1,80)
-						.add(gnmExplain,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							10,
-							Short.MAX_VALUE))
-							
-					//Add the G(n,p) group
-					.add(layout.createSequentialGroup()
-						.add(gnp,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							10,
-							70)
-						.add(gnpExplain,
-							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							 10,
-							 Short.MAX_VALUE))
+		//Setup the 
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 6;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(0, 0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(cancelButton,c);
+		
+		
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(0,0,0,0);
+		add(backButton,c);
 
-					//Add the node group
-					.add(layout	.createSequentialGroup()
-						.add(nodeLabel,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							20,
-							150)
-						.add(nodeTextField,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							10,
-							70))
-					//Add the probability group
-					.add(layout.createSequentialGroup()
-						.add(probabilityLabel,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							20,
-							150)
-						.add(probabilityTextField,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							10,
-							70))
-							
-					//Add the edge group
-					.add(layout.createSequentialGroup()
-						.add(edgeLabel,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							20,
-							150)
-						.add(edgeTextField,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							10,
-							70))
-					//Add the directed checkbox
-					//.add(layout.createSequentialGroup()
-					.add(directedCheckBox,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						10,
-						Short.MAX_VALUE)//)
-					//.add(layout.createSequentialGroup()
-					//Add the reflexive edge checkbox
-					.add(selfEdgeCheckBox,
-						org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-						10,
-						Short.MAX_VALUE)//) 
-					//Add the Run/Cancel button	
-					.add(org.jdesktop.layout.GroupLayout.TRAILING,
-						layout.createSequentialGroup()
-							.add(backButton)
-							.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-							.add(runButton)
-							.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-							.add(cancelButton)))
-				.addContainerGap()));
-
-		//Set the vertical layout
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-			.add(layout.createSequentialGroup()
-				.addContainerGap()
-				.add(titleLabel) //Add the title
-				.add(8, 8, 8)
-				.add(7, 7, 7)
-				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-				//Add the G(n,m) group
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(gnm)
-					.add(gnmExplain))
-					
-				//Add the G(n,p) group
-				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-								 3, Short.MAX_VALUE)
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(gnp)
-					.add(gnpExplain))
-				
-				//Add the node group
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(nodeLabel)
-					.add(nodeTextField))
-					
-				//Add the probability group
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(probabilityLabel)
-					.add(probabilityTextField))
-
-				//Add the edge group
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(edgeLabel)
-					.add(edgeTextField))
-
-				//.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-				.add(directedCheckBox)//)
-
-				//.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-				.add(selfEdgeCheckBox)//)
-
-				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-								 3, Short.MAX_VALUE)
-								 
-				//Add the Run/Cancel group
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(cancelButton)
-					.add(runButton)
-					.add(backButton))
-			.addContainerGap()));
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 5;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(runButton,c);
 
 	}
 
@@ -343,7 +458,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 
 
 	/**
-	 *  Call back for the cancel button
+	 *  Call back for the back button
 	 */
 	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
 	
@@ -358,8 +473,16 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		
 		//Replace it with the panel
 		parent.add(generateRandomPanel, index);
-		//Set the title for this panel
-		parent.setTitleAt(index,"Generate Random Networks");
+
+		if(mode == 0)
+		{
+			//Set the title for this panel
+			parent.setTitleAt(index,"Generate Random Networks");
+		}
+		else
+		{
+			parent.setTitleAt(index,"Analyze network statistics");
+		}
 		//Display this panel
 		parent.setSelectedIndex(index);
 		//Enforce this Panel
@@ -474,9 +597,6 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 			erm = new ErdosRenyiModel(numNodes, allowSelfEdge,
 					!directed, probability);
 		}
-		
-		
-		
 		
 		
 		

@@ -41,15 +41,20 @@ import java.awt.*;
 import javax.swing.*;
 
 
-/*
+/**
  * GenerateRandomPanel is used for selecting which random 
  * network model to use.
  */
 public class GenerateRandomPanel extends JPanel {
-
+   
+    /**
+	 * Provides state information for the panel
+	 */
 	private int mode;
 
-	//Next Button
+	/**
+ 	 * Next Button
+	 */
 	private javax.swing.JButton runButton;
 	//Cancel Button
 	private javax.swing.JButton cancelButton;
@@ -75,7 +80,7 @@ public class GenerateRandomPanel extends JPanel {
 	private javax.swing.JLabel bamExplain;
 	
 
-	/*
+	/**
 	 *  Default constructor
 	 */
 	public GenerateRandomPanel(int pMode ){
@@ -83,10 +88,9 @@ public class GenerateRandomPanel extends JPanel {
 		super( ); 
 		mode = pMode;
 		initComponents();
-
 	}
 
-	/*
+	/**
 	 * Initialize the components
 	 */
 	private void initComponents() {
@@ -115,9 +119,16 @@ public class GenerateRandomPanel extends JPanel {
 				.setText("<html><font size=2 face=Verdana>Generate a random network with <br>high clustering coefficient.</font></html>");
 
 		//Set the barabasi-albert text
-		bamExplain
-				.setText("<html><font size=2 face=Verdana>Generate a scale-free random network.</font></html>");
+		bamExplain.setText("<html><font size=2 face=Verdana>Generate a scale-free random network.</font></html>");
 
+
+		ermExplain.setPreferredSize(new Dimension(200,40));
+		wsmExplain.setPreferredSize(new Dimension(200,40));
+		bamExplain.setPreferredSize(new Dimension(200,40));
+		ermExplain.setMinimumSize(new Dimension(200,40));
+		wsmExplain.setMinimumSize(new Dimension(200,40));
+		bamExplain.setMinimumSize(new Dimension(200,40));
+		
 
 		//set the labels to opaque
 		ermExplain.setOpaque(true);
@@ -128,9 +139,6 @@ public class GenerateRandomPanel extends JPanel {
 		erm.setText("Erdos-Renyi Model");
 		wsm.setText("Watts-Strogatz Model");
 		bam.setText("Barabasi-Albert Model");
-		//erm.setText("ERM");
-		//wsm.setText("WAM");
-		//bam.setText("BAM");
 
 
 
@@ -146,6 +154,7 @@ public class GenerateRandomPanel extends JPanel {
 		runButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 		backButton = new javax.swing.JButton();
+		
 		//Set up the title
 		titleLabel = new javax.swing.JLabel();
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
@@ -190,12 +199,15 @@ public class GenerateRandomPanel extends JPanel {
 		
 		setLayout(new GridBagLayout());
 		
-		
+		//Setup the titel
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-		c.anchor = GridBagConstraints.CENTER;
+		c.insets = new Insets(0,10,0,0);		
+		c.anchor = GridBagConstraints.LINE_START;
 		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(titleLabel,c);
 		
 		
@@ -207,6 +219,8 @@ public class GenerateRandomPanel extends JPanel {
 		c.insets = new Insets(5,5,5,5);		
 		c.gridx = 0;
 		c.gridy = 1;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(erm,c);
 
 		//
@@ -217,6 +231,8 @@ public class GenerateRandomPanel extends JPanel {
 		c.gridx = 1;
 		c.gridy = 1;
 		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(ermExplain,c);
 
 		//
@@ -226,6 +242,8 @@ public class GenerateRandomPanel extends JPanel {
 		c.insets = new Insets(5,5,5,5);				
 		c.gridx = 0;
 		c.gridy = 2;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(wsm,c);
 
 		//
@@ -236,6 +254,8 @@ public class GenerateRandomPanel extends JPanel {
 		c.gridx = 1;
 		c.gridy = 2;
 		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(wsmExplain,c);
 
 		//
@@ -245,6 +265,8 @@ public class GenerateRandomPanel extends JPanel {
 		c.insets = new Insets(5,5,5,5);				
 		c.gridx = 0;
 		c.gridy = 3;
+		c.weightx = 1;
+		c.weighty = 1;
 		add(bam,c);
 
 		//
@@ -254,16 +276,20 @@ public class GenerateRandomPanel extends JPanel {
 		c.insets = new Insets(15,5,15,5);				
 		c.gridx = 1;
 		c.gridy = 3;
+		c.weightx = 1;
+		c.weighty = 1;
 		c.gridwidth = 5;
 		add(bamExplain,c);
 
 		//
 		c = null;
 		c = new GridBagConstraints();
-		c.gridx = 6;
+		c.gridx = 5;
 		c.gridy = 4;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(0, 0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
 		add(cancelButton,c);
 		
 		
@@ -274,163 +300,23 @@ public class GenerateRandomPanel extends JPanel {
 		c.gridy = 4;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
 		add(backButton,c);
 
 		//
 		c = null;
 		c = new GridBagConstraints();
-		c.gridx = 5;
+		c.gridx = 4;
 		c.gridy = 4;
 		c.anchor = GridBagConstraints.LINE_END;
-		c.insets = new Insets(0,0,0,0);
+		c.insets = new Insets(0,100,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
 		add(runButton,c);
 
 		
-		/*
-
-		//Set up the layout
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-		setLayout(layout);
-
-		layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																titleLabel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																350,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				erm,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				170)
-																		.addPreferredGap(1)
-																		
-																		.add(ermExplain,
-																			 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			 10,
-																			 Short.MAX_VALUE))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				wsm,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																			170)
-																		.addPreferredGap(
-																				1)
-																		.add(
-																				wsmExplain,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				Short.MAX_VALUE))
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				bam,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				170)
-																		.addPreferredGap(
-																				1)
-																		.add(
-																				bamExplain,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				Short.MAX_VALUE))
-																											
-													
-														.add(
-																org.jdesktop.layout.GroupLayout.TRAILING,
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				backButton)
-
-																		
-																		.add(
-																				runButton)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				cancelButton)))
-										.addContainerGap()));
-
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(titleLabel)
-										.add(8, 8, 8)
-
-										.add(7, 7, 7)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-									
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-
-														.add(erm).add(
-																ermExplain))
-
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(wsm).add(
-																wsmExplain))
-										
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(bam).add(
-																bamExplain))
-									
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(backButton)
-														.add(cancelButton)
-														.add(
-																runButton))
-										.addContainerGap()));
-										
-										
-										
-									*/
+	
 	}
 
 
@@ -472,7 +358,7 @@ public class GenerateRandomPanel extends JPanel {
 	}
 
 
-	/*
+	/**
 	 * cancelButtonActionPerformed call back when the cancel button is pushed
 	 */
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -487,7 +373,7 @@ public class GenerateRandomPanel extends JPanel {
 		frame.dispose();
 	}
 	
-	/*
+	/**
 	 *  Callback for when the "Next" button is pushed
 	 */
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {

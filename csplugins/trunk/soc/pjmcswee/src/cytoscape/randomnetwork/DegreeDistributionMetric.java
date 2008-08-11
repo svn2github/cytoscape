@@ -54,6 +54,10 @@ public  class DegreeDistributionMetric implements NetworkMetric {
 		return new String("Degree Distribution");
 	}
 
+	public NetworkMetric copy()
+	{
+		return new DegreeDistributionMetric();
+	}
 	
 	public double analyze(DynamicGraph network, boolean directed)
 	{

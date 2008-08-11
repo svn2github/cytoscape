@@ -44,18 +44,28 @@ import cytoscape.visual.*;
 import giny.view.*;
 import cytoscape.graph.dynamic.*;
 
+import java.awt.*;
+
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.*;
+
+import java.util.*;
 import javax.swing.*;
 
 
 
-
-/*
+/**
  * This class is responsible for handling the user interface
  * to generate a random model according to watts-strogatz model
  * 
  */
 public class WattsStrogatzDialog extends JPanel {
+	
+	
+	private static final int defaultNodeValue = 100;
+	private static final double defaultBetaValue = .3;
+	private static final int defaultDegreeValue =  2;
 	
 	int mode;
 
@@ -76,7 +86,7 @@ public class WattsStrogatzDialog extends JPanel {
 	private javax.swing.JLabel nodeLabel;
 	private javax.swing.JLabel betaLabel;
 	private javax.swing.JLabel degreeLabel;
-
+	private javax.swing.JLabel explainLabel;
 
 	/*
 	 * Default constructor
@@ -97,6 +107,16 @@ public class WattsStrogatzDialog extends JPanel {
 		nodeTextField = new javax.swing.JTextField();
 		betaTextField = new javax.swing.JTextField();
 		degreeTextField = new javax.swing.JTextField();
+		nodeTextField.setPreferredSize(new Dimension(30,25)); 
+		betaTextField.setPreferredSize(new Dimension(30,25)); 
+		degreeTextField.setPreferredSize(new Dimension(30,25)); 
+		nodeTextField.setText("" + defaultNodeValue);
+		betaTextField.setText("" + defaultBetaValue);
+		degreeTextField.setText("" + defaultDegreeValue);
+		nodeTextField.setHorizontalAlignment(JTextField.RIGHT);
+		betaTextField.setHorizontalAlignment(JTextField.RIGHT);
+		degreeTextField.setHorizontalAlignment(JTextField.RIGHT);
+		
 
 		//Create the buttons
 		directedCheckBox = new javax.swing.JCheckBox();
@@ -110,17 +130,25 @@ public class WattsStrogatzDialog extends JPanel {
 		nodeLabel = new javax.swing.JLabel();
 		degreeLabel = new javax.swing.JLabel();
 		betaLabel = new javax.swing.JLabel();
-
+		explainLabel = new javax.swing.JLabel();
+		
 		//Set the text on the labels
 		nodeLabel.setText("Number of Nodes:");
-		betaLabel.setText("<html> &#x3B2; :</html>");
+		betaLabel.setText("<html> &#x3B2; (Linear Interpolation):</html>");
 		degreeLabel.setText("Node Degree:");
 		selfEdgeCheckBox.setText("Allow reflexive Edges (u,u)");
 		directedCheckBox.setText("Undirected");
+		explainLabel.setText("<html><font size=2 face=Verdana>" +
+							"The Watts-Strogtatz model linearly interpolates between a complete lattice and "+
+							"an erdos-renyi network using the  &#x3B2; value.  As  &#x3B2; increases the clustering coefficent" +
+							"will decrease but the small world property will increase." +
+							"</font></html>");
 
+		explainLabel.setPreferredSize(new Dimension(350,50));
+		explainLabel.setMinimumSize(new Dimension(350,50));
 		//Set up the title for the panel
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Generate Barabasi-Albert Model");
+		titleLabel.setText("Generate Watts-Strogatz Model");
 
 		//Set up the Generat button
 		runButton.setText("Generate");
@@ -147,95 +175,168 @@ public class WattsStrogatzDialog extends JPanel {
 		});
 
 
-		//Create the layout
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-		setLayout(layout);
-		
-		layout.setHorizontalGroup(layout
-			.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-				.add(layout.createSequentialGroup()
-					.addContainerGap()
-					.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-					.add(titleLabel,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-						350,
-						org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-						
-					//Add the node group
-					.add(layout.createSequentialGroup()
-						.add(nodeLabel,
-							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							 20,
-							 170)
-						.add(nodeTextField,
-							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							10,
-							50))
-							
-					//Add the beta group 
-					.add(layout.createSequentialGroup()
-						.add(betaLabel,
-							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							 20,
-							 170)
-						.add(betaTextField,
-							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							 10,
-							 50))
-					//Add the group latout for degree
-					.add(layout.createSequentialGroup()
-						.add(degreeLabel,
-							 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							 20,
-							 170)
-						.add(degreeTextField,
-							org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-							10,
-							50))
-					//.add(layout.createSequentialGroup()
-					.add(directedCheckBox)//)
-					
-					//Add the Run/Cancel buttons
-					.add(org.jdesktop.layout.GroupLayout.TRAILING,
-						 layout.createSequentialGroup()
- 						 .add(backButton)
-						 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-						 .add(runButton)
-						 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-						 .add(cancelButton)))
-				.addContainerGap()));
+		setLayout(new GridBagLayout());
+
+		//Setup the titel
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.insets = new Insets(0,10,0,0);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(titleLabel,c);
 
 	
-		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-			.add(layout.createSequentialGroup()
-				.addContainerGap()
-				.add(titleLabel)
-				.add(8, 8, 8)
-				.add(7, 7, 7)
-				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(nodeLabel)
-					.add(nodeTextField))
+		c.gridx = 0;
+		c.gridy = 1;
+		c.insets = new Insets(5,10,10,0);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 6;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(explainLabel,c);
 
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(betaLabel)
-					.add(betaTextField))
-				
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(degreeLabel)
-					.add(degreeTextField))
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(5,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 4;
+		c.gridwidth = 2;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridheight = 1;
+		add(nodeLabel,c);
 
-				.addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-								 3, Short.MAX_VALUE)
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 4;
+		c.gridwidth = 3;
+		//c.ipadx = 20;
+		//c.weightx = 1;
+		c.weighty = 1;
+		c.gridheight = 1;
+		add(nodeTextField,c);
 
-				//.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-				.add(directedCheckBox)//)
-				
-				.add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-					.add(cancelButton)
-					.add(runButton)
-					.add(backButton))
-			.addContainerGap()));
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 5;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(betaLabel,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 5;
+		c.gridwidth = 3;
+		//c.ipadx = 20;
+		c.gridheight = 1;
+		//c.weightx = 1;
+		c.weighty = 1;
+		add(betaTextField,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 6;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(degreeLabel,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 2;
+		c.gridy = 6;
+		c.gridwidth = 3;
+		c.gridheight = 1;
+		//c.ipadx = 20;
+		//c.weightx = 1;
+		c.weighty = 1;
+		add(degreeTextField,c);
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 7;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		//c.ipadx = 20;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(directedCheckBox,c);
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,5,5);		
+		c.gridx = 0;
+		c.gridy = 8;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		//c.ipadx = 20;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(selfEdgeCheckBox,c);
+
+
+
+		//Setup the 
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 5;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(cancelButton,c);
+		
+		
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(0,0,0,0);
+		add(backButton,c);
+
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 4;
+		c.gridy = 10;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(runButton,c);
+
 
 	}
 
@@ -257,7 +358,7 @@ public class WattsStrogatzDialog extends JPanel {
 	}
 	
 	
-		/**
+	/**
 	 *  Call back for the cancel button
 	 */
 	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -273,8 +374,19 @@ public class WattsStrogatzDialog extends JPanel {
 		
 		//Replace it with the panel
 		parent.add(generateRandomPanel, index);
-		//Set the title for this panel
-		parent.setTitleAt(index,"Analyze network statistics");
+
+
+		System.out.println("Mode: " + mode);
+		if(mode == 1)
+		{
+			//Set the title for this panel
+			parent.setTitleAt(index,"Analyze network statistics");
+		}
+		else
+		{
+			//Set the title for this panel
+			parent.setTitleAt(index,"Generate Random Networks");
+		}
 		//Display this panel
 		parent.setSelectedIndex(index);
 		//Enforce this Panel

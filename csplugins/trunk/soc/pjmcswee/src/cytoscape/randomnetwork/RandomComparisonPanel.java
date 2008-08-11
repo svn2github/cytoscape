@@ -54,17 +54,36 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
+import java.util.*;
+import cytoscape.plugin.*;
+import cytoscape.layout.*;
+import cytoscape.layout.algorithms.*;
+import cytoscape.*;
+import cytoscape.data.*;
+import cytoscape.view.*;
+import java.awt.*;
+import cytoscape.visual.*;
+import giny.view.*;
+import cytoscape.graph.dynamic.*;
+import cytoscape.graph.dynamic.util.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.*;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.SwingConstants;
 
 
-/*
+/**
  * RandomizeExistingPanel is used for selecting which randomizing 
  * network model to use.
  */
 public class RandomComparisonPanel extends JPanel {
-
-
-
-	
 
 	//Next Button
 	private javax.swing.JButton runButton;
@@ -89,7 +108,7 @@ public class RandomComparisonPanel extends JPanel {
 	//Explain what this checkbox means	
 	private javax.swing.JLabel randomizeExistingExplain;
 
-	/*
+	/**
 	 *  Default constructor
 	 */
 	public RandomComparisonPanel( ){
@@ -98,7 +117,7 @@ public class RandomComparisonPanel extends JPanel {
 		initComponents();
 	}
 
-	/*
+	/**
 	 * Initialize the components
 	 */
 	private void initComponents() {
@@ -120,13 +139,14 @@ public class RandomComparisonPanel extends JPanel {
 		randomizeExistingExplain = new javax.swing.JLabel();
 
 		//Set the randomize existing text
-		randomizeExistingExplain
-				.setText("<html><font size=2 face=Verdana>Compare against a randomized existing network.</font></html>");
-
+		randomizeExistingExplain.setText("<html><font size=2 face=Verdana>Compare against a randomized existing network.</font></html>");
 
 		//Set the randomize existing text
-		generateRandomExplain
-				.setText("<html><font size=2 face=Verdana>Compare against a new random network.</font></html>");
+		generateRandomExplain.setText("<html><font size=2 face=Verdana>Compare against a new random network.</font></html>");
+		randomizeExistingExplain.setPreferredSize(new Dimension(200,40));
+		generateRandomExplain.setPreferredSize(new Dimension(200,40));
+		randomizeExistingExplain.setMinimumSize(new Dimension(200,40));
+		generateRandomExplain.setMinimumSize(new Dimension(200,40));
 
 		
 		//Add these buttons to the group
@@ -174,111 +194,63 @@ public class RandomComparisonPanel extends JPanel {
 			}
 		});
 
+		setLayout(new GridBagLayout());
+		
+		//
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 6;
+		c.insets = new Insets(10,5,5,5);	
+		c.anchor =  GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(titleLabel,c);
 
-		//Set up the layout
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-		setLayout(layout);
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 1;
+		c.insets = new Insets(10,5,5,5);	
+		c.anchor =  GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(randomizeExistingNetwork,c);
 
-		layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																titleLabel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																350,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		c.insets = new Insets(10,5,5,5);	
+		c.anchor =  GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(generateRandomNetwork,c);
 
-														.add(
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				randomizeExistingNetwork,
-																				org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																				10,
-																				170)
-																		.addPreferredGap(1)
-																		
-																		.add(randomizeExistingExplain,
-																			 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			 10,
-																			 Short.MAX_VALUE))
-															.add(
-															layout
-																	.createSequentialGroup()
-																	.add(
-																			generateRandomNetwork,
-																			org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																			10,
-																			170)
-																	.addPreferredGap(1)
-																	
-																	.add(generateRandomExplain,
-																		 org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-																		 10,
-																		 Short.MAX_VALUE))
-																										
-													
-														.add(
-																org.jdesktop.layout.GroupLayout.TRAILING,
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				runButton)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				cancelButton)))
-										.addContainerGap()));
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 3;
+		c.gridy = 5;	
+		c.anchor = GridBagConstraints.LINE_START;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(cancelButton, c);
+		
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 2;
+		c.gridy = 5;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(runButton, c);
 
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(titleLabel)
-										.add(8, 8, 8)
 
-										.add(7, 7, 7)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-									
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-
-														.add(randomizeExistingNetwork).add(
-																randomizeExistingExplain))
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-
-														.add(generateRandomNetwork).add(
-																generateRandomExplain))
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED,
-												3, Short.MAX_VALUE)
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(cancelButton).add(
-																runButton))
-										.addContainerGap()));
-	}
+		}
 
 
 	/*

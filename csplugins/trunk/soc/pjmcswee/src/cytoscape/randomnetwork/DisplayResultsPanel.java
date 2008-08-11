@@ -39,6 +39,7 @@ import java.util.*;
 import cytoscape.plugin.*;
 import cytoscape.layout.algorithms.*;
 import cytoscape.*;
+import java.awt.*;
 import cytoscape.data.*;
 import cytoscape.view.*;
 import cytoscape.visual.*;
@@ -76,52 +77,61 @@ public class DisplayResultsPanel extends JPanel {
 	private javax.swing.JLabel titleLabel;
 	
 
+
+	private javax.swing.JLabel nodeLabel;
+	private javax.swing.JLabel numNodeLabel;
+
+	private javax.swing.JLabel edgeLabel;
+	private javax.swing.JLabel numEdgeLabel;
+	
+	private javax.swing.JLabel timeLabel;
+	private javax.swing.JLabel timeInfoLabel;
+	
+	private javax.swing.JLabel networkLabel;
+	private javax.swing.JLabel roundLabel;
+	
 	//Treat this network as directed
 	private javax.swing.JCheckBox directedCheckBox;
 	
 	//
 	private javax.swing.JScrollPane scrollPane;
 	
-	
-	//The names of the metrics
-	private String[] metricNames;
-	
-	//The results from the random networks
-	private double[][][] randomResults;
-	
-	//The results from the actual network
-	private double[] networkResults;
 	//1 == randomized existing network
 	//0 == generated new random network
 	private int mode;
 	//The Generator that created the networks
-	private RandomNetworkGenerator gen;
+	//private RandomNetworkGenerator gen;
+	
 	//true means the network is directed
 	//false means the network is undirected
-	private boolean directed;
+//	private boolean directed;
+	
+//	private Object data[][];
 
+	private RandomNetworkAnalyzer rna;
 
-	/*
+	/**
 	 *  Default constructor
 	 */
-	public DisplayResultsPanel(RandomNetworkGenerator pGen, boolean pDirected,
-					String pMetricNames[], double pRandomResults[][][], double pNetworkResults[],int pMode){
-		
+	public DisplayResultsPanel(int pMode, RandomNetworkAnalyzer pRNA)
+	{
 		
 		super( ); 
-		metricNames = pMetricNames;
-		randomResults = pRandomResults;
-		networkResults = pNetworkResults;
-		gen = pGen;
-		directed = pDirected;
+		//gen = pGen;
+		//directed = pDirected;
+	
+		//data = pData;
+		rna = pRNA;
 		mode = pMode;
 		initComponents();
 	}
 
-	/*
+	/**
 	 * Initialize the components
 	 */
 	private void initComponents() {
+
+		CyNetwork net = rna.getNetwork();
 
 		//Create the butons
 		runButton = new javax.swing.JButton();
@@ -131,9 +141,26 @@ public class DisplayResultsPanel extends JPanel {
 		//Set up the title
 		titleLabel = new javax.swing.JLabel();
 		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Results");
+		titleLabel.setText("Results for " + net.getTitle());
 
+
+
+		nodeLabel = new javax.swing.JLabel();
+		numNodeLabel = new javax.swing.JLabel();
+
+		edgeLabel = new javax.swing.JLabel();
+		numEdgeLabel = new javax.swing.JLabel();
 	
+		timeLabel = new javax.swing.JLabel();
+		timeInfoLabel = new javax.swing.JLabel();
+
+
+		nodeLabel.setText("Number of nodes: ");
+		edgeLabel.setText("Number of edges: ");
+		timeLabel.setText("Time elapsed: ");
+		numNodeLabel.setText("" + net.getNodeCount());
+		numEdgeLabel.setText("" + net.getEdgeCount());
+
 
 		runButton.setVisible(false);
 
@@ -142,75 +169,34 @@ public class DisplayResultsPanel extends JPanel {
 		String[] columnNames = 
 		 {"Metric","Existing Network","Average","Standard Deviation"};
 
-		//Information to display in the table
-		Object[][] data = new Object[metricNames.length][5];
+		//Set up the Table for displaying 
+		DefaultTableModel model = new DefaultTableModel(rna.getData(),columnNames);
+		JTable table = new JTable(model) {
 
-		//Used to make information readable
-		DecimalFormat df = new DecimalFormat("0.0000000");
 
-		//Check how many threads were run
-		int threads = randomResults.length;
-		
-		//Check how many runs where executed
-		int rounds =  randomResults[0].length;
-
-		//For each metric
-		for(int i = 0; i < metricNames.length; i++)
-		{
-			//Compute the avearge for this metric
-			//accross all of the rounds
-			double average = 0;
-			for(int  t = 0; t < threads; t++)
-			{
-				for(int j = 0; j <rounds; j++)
-				{
-					average += randomResults[t][j][i];
-				}
-			}
-			
-			average /= (double)(threads * rounds);
-			
-			//Compute the standard deviation
-			double std = 0;
-			//System.out.println("Rounds:" + rounds);
-			
-			for(int t = 0; t< threads; t++)
-			{
-				for(int j = 0; j < rounds; j++)
-				{
-					std += Math.pow(randomResults[t][j][i] - average, 2.0d);
-					//System.out.println(randomResults[j][i] + "\t" + average );
-				}
-			}
-			
-			std = Math.sqrt(std / (double)(rounds * threads));
-			
-			//System.out.println(std);
-			//Update the table data
-			data[i][0] = metricNames[i];
-			data[i][1] = new Double(df.format(networkResults[i]));
-			data[i][2] = new Double(df.format(average));
-			data[i][3] = new Double(df.format(std));
-			//data[i][4] = new Double(df.format());	
+		public boolean isCellEditable(int rowIndex, int colIndex) {
+			return false;   //Disallow the editing of any cell
 		}
 
-		//Set up the Table for displaying 
-		DefaultTableModel model = new DefaultTableModel(data,columnNames);
-		JTable table = new JTable(model) {
         // Override this method so that it returns the preferred
         // size of the JTable instead of the default fixed size
         public Dimension getPreferredScrollableViewportSize() {
             return getPreferredSize();
-        }
-    };
+        }};
 
+
+
+		table.getTableHeader().setReorderingAllowed( false );
 		table.setGridColor(java.awt.Color.black);
 		scrollPane = new JScrollPane(table);
-
-		int height  = table.getRowHeight() * rounds/2 +1;
-
-		table.setPreferredScrollableViewportSize(new Dimension(300, 16)) ;
 		
+
+		//int height  = table.getRowHeight() * data[0].length/2 +1;
+
+		table.setPreferredScrollableViewportSize(new Dimension(500, 100)) ;
+		scrollPane.setPreferredSize(new Dimension(500,100));
+		scrollPane.setMinimumSize(new Dimension(500,100));
+		//scrollPane.
 	
 		//Set up the run button
 		runButton.setText("Next");
@@ -239,72 +225,117 @@ public class DisplayResultsPanel extends JPanel {
 		});
 
 
-		//Set up the layout
-		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-		setLayout(layout);
 
-		layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.LEADING)
-														.add(
-																titleLabel,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-																350,
-																org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+		setLayout(new GridBagLayout());
 
-													
-														.add(scrollPane)
-																											
-													
-														.add(
-																org.jdesktop.layout.GroupLayout.TRAILING,
-																layout
-																		.createSequentialGroup()
-																		.add(
-																				backButton)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(runButton)
-																		.addPreferredGap(
-																				org.jdesktop.layout.LayoutStyle.RELATED)
-																		.add(
-																				cancelButton)))
-										.addContainerGap()));
+		//Setup the titel
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.gridx = 0;
+		c.gridy = 0;
+		c.insets = new Insets(0,10,0,0);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 5;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(titleLabel,c);
 
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								org.jdesktop.layout.GroupLayout.LEADING)
-						.add(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.add(titleLabel)
-										.add(8, 8, 8)
+	
+		//Setup the 
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,0,0,0);
+		//c.weightx = 1;
+		//c.weighty = 1;
+		add(nodeLabel,c);
+	
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 1;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,0,0,0);
+		//c.weightx =	1;
+		//c.weighty = 1;
+		add(numNodeLabel,c);
 
-										.add(7, 7, 7)
-										.addPreferredGap(
-												org.jdesktop.layout.LayoutStyle.RELATED)
-										
-										.add(scrollPane)
-									
-										.add(
-												layout
-														.createParallelGroup(
-																org.jdesktop.layout.GroupLayout.BASELINE)
-														.add(cancelButton).add(
-																runButton).add(backButton))
-										.addContainerGap()));
-	}
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 2;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,0,0,0);
+		//c.weightx = 1;
+		//c.weighty = 1;
+		add(edgeLabel,c);
+	
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 1;
+		c.gridy = 2;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,0,0,0);
+		//c.weightx =	1;
+		//c.weighty = 1;
+		add(numEdgeLabel,c);
+
+
+
+		
+		//Setup the 
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 3;
+		c.gridwidth = 10;
+		c.anchor = GridBagConstraints.CENTER;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(scrollPane,c);
+		
+
+
+
+
+		
+
+		//Setup the 
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 9;
+		c.gridy = 4;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(cancelButton,c);
+		
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 4;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,0,0,0);
+		add(backButton,c);
+
+		/*
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 4;
+		c.gridy = 8;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1;
+		c.weighty = 1;
+		add(runButton,c);
+		*/
+		
+}
 
 
 
@@ -315,7 +346,7 @@ public class DisplayResultsPanel extends JPanel {
 	 */
 	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
 	
-		AnalyzePanel analyzePanel = new AnalyzePanel(gen,directed,mode);
+		AnalyzePanel analyzePanel = new AnalyzePanel(rna.getGenerator(),rna.getDirected(),mode);
 
 		//Get the TabbedPanel
 		JTabbedPane parent = (JTabbedPane)getParent();
@@ -347,7 +378,8 @@ public class DisplayResultsPanel extends JPanel {
 	}
 
 	/**
-	*/
+	 *
+	 */
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
 	
 		JTabbedPane parent = (JTabbedPane)getParent();
@@ -365,7 +397,7 @@ public class DisplayResultsPanel extends JPanel {
 	
 	}
 
-	/*
+	/**
 	 * cancelButtonActionPerformed call back when the cancel button is pushed
 	 */
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {

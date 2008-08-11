@@ -211,7 +211,6 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 
 			
 			boolean check =   existingEdges.contains(source*numNodes + target); 
-			//adjacency[source][target];
 
 						
 			//We can enumerate all pairs of nodes by the formula
@@ -285,12 +284,10 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 
 			}
 			
-			//adjacency[source][target] = true;
 			existingEdges.add(new Integer(source *numNodes + target));
 			if(!directed)
 			{
 				existingEdges.add(new Integer(target * numNodes + source));
-				//	adjacency[target][source] = true;
 			}
 
 		

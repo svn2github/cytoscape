@@ -62,6 +62,16 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 		return new String("Mean Shortest Path");
 	}
 	
+	/**
+	 *
+	 *@return A new MeanShortestPathMetric instance.
+	 */
+	 public NetworkMetric copy()
+	 {
+		return new MeanShortestPathMetric();
+	}
+	
+	
 	
 	/**
  	 * Computes the average distance between all pairs of nodes in the network.  This 

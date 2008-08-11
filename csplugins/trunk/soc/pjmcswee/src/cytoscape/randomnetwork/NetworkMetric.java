@@ -47,6 +47,8 @@ import cytoscape.graph.dynamic.*;
  */
 public interface  NetworkMetric {
 	
+
+	
 	/**
 	 *  This function actually calculates the metric.  Currently it is necessary to again specify 
 	 *  whether or not pNet is directed.
@@ -57,6 +59,13 @@ public interface  NetworkMetric {
 	 */
 	public abstract double analyze(DynamicGraph pNet, boolean pDirected);
 	
+	
+	/**
+	 *  Each NetworkMetric needs to implement the copy constructor to allow
+	 *  the RandomNetworkAnalyzer to give each thread its own copy of the metric.
+	 *  @return A copy of this NetworkMetric.
+	 */
+	public NetworkMetric copy();
 	
 	/**
 	 * Returns the name of this metric, used for display purposes.

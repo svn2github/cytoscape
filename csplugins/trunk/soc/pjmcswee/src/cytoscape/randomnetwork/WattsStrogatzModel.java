@@ -36,6 +36,7 @@ package cytoscape.randomnetwork;
 
 import cytoscape.graph.dynamic.util.*;
 import cytoscape.graph.dynamic.*;
+import cytoscape.util.intr.IntEnumerator;
 import java.util.*;
 
 /**
@@ -60,7 +61,7 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 	/**
 	 * The number of edges to add 
 	 */
-	private double degree;
+	private int degree;
 
 	/**
 	 * Creates a model for constructing random graphs according to the
@@ -72,7 +73,7 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 	 * 
 	 */
 	public WattsStrogatzModel(int pNumNodes, boolean pAllowSelfEdge,
-			boolean pDirected, double pBeta, double pDegree) {
+			boolean pDirected, double pBeta, int pDegree) {
 		super(pNumNodes, UNSPECIFIED, pAllowSelfEdge, pDirected);
 		degree = pDegree;
 		beta = pBeta;
@@ -119,82 +120,137 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 		//Create a linked list to store edges
 		//as we create edges and then change them 
 		//with probability beta
-		LinkedList edges = new LinkedList();
+		
+		//Make sure that the degree chosen is feasbile
+		if(allowSelfEdge && (2*degree > numNodes))
+		{
+			degree = numNodes/2;
+		}	
+		else if( degree > (numNodes - 1)/2)
+		{
+			degree = (numNodes - 1)/2;
+		}
+		
+		System.out.println();
 		
 		//for all pairs of nodes
 		for (int i = 0; i < numNodes; i++) 
 		{
-			
-			int start = 0;
-			if(!directed)
+		
+			int start = i - degree;
+			if(start < 0)
 			{
-				start = i + 1;
+				start = numNodes + start;
 			}
 			
-			//For every other node
-			for (int j = 0; j < numNodes; j++) 
+			int count = 0;
+			while(count < 2*degree)
 			{
 				
-				//get the lattice difference
-				int value = Math.abs(i - j);
-				
-				//If we are within range with wrapping
-				if((i < degree) && (j > numNodes - degree))
+				if((i != start)||(allowSelfEdge))
 				{
-					value = 0;
-				}
-				
-				//no relfexive edges here
-				if ((i != j) && (value <= degree)) 
-				{
-					//Create a single number which represents this edge
-					int index = i * numNodes + j;
-
-					//store this edge
-					edges.add(new Integer(index));
-
-					//increment our count of edges
+					random_network.edgeCreate(nodes[i], nodes[start], directed);
+					count++;	
 					numEdges++;
 				}
+				start = (start+1) % numNodes;
 			}
+			
+			
 		}
-
-		//Iterate through all of our edges
-		while (edges.size() != 0) 
+		
+		
+		//Save a local copy of the edge indicies
+		LinkedList edgeList = new LinkedList();
+		IntEnumerator iter = random_network.edges();
+		while(iter.numRemaining() > 0 )
 		{
-			//Get the edge index
-			int e = ((Integer) edges.remove()).intValue();
+			edgeList.addLast(new Integer(iter.nextInt()));
+		}
+		
+		
 
-			//Extract the source and target from the edge
-			int source = e / numNodes;
-			int target = e % numNodes;
-
+		//For each edge
+		while(edgeList.size() > 0)
+		{
+			//Get the next edge
+			int nextEdge = ((Integer)edgeList.removeFirst()).intValue();
+			int source = random_network.edgeSource(nextEdge);
+			int target = random_network.edgeTarget(nextEdge);
+			
+			
 			//Throw a random dart
 			double percent = random.nextDouble();
-
-			//If the dart lands in beta, then shuffle this edge
-			if (percent <= beta) 
+		
+			//If this should be shuffled
+			if(percent <= beta)
 			{
-				//Choose a new node 
-				int k = Math.abs(random.nextInt() % numNodes);
 
-				//Do not choose the same node
-				while (source == k) 
+				//Choose a new node 
+				int k = 0;
+				boolean candidate = false;
+				
+				//Keep looping until we have a suitable candidate
+				while(!candidate)
 				{
+					//choose a new edge
 					k = Math.abs(random.nextInt() % numNodes);
+					//reset variable for this pass
+					candidate = true;
+					
+					//Make sure we are not create a self loop
+					candidate = candidate && (k != source) || (allowSelfEdge);
+					candidate = candidate && (k != target);
+					
+					//Check to see if this edge already exists
+					int edgeCount = 0;
+					IntEnumerator edgeIter = random_network.edgesAdjacent(source,directed,false,!directed);
+					while(edgeIter.numRemaining() >  0)
+					{
+						int edgeIndex = edgeIter.nextInt();
+						int neighbor = random_network.edgeTarget(edgeIndex);
+						if(neighbor == target)
+						{
+							neighbor = random_network.edgeSource(edgeIndex); 
+						}
+						
+						//If this edge already exists
+						candidate = candidate && (neighbor != k);
+						edgeCount++;
+					}
+					
+
+					//If edgeCount indicates that this node is connected to all other nodes than we should stop trying
+					//there is no way to switch it (no node that we are not connected to).
+					if((edgeCount == numNodes) && (allowSelfEdge))
+					{
+						candidate = false;
+						break;
+					}
+					else if((edgeCount == (numNodes - 1))&&(!allowSelfEdge))
+					{
+						candidate = false;
+						break;
+					}
+					
 				}
 				
-				//save the target k
-				target = k;
+				//If this is still a candidate, then swap the edges
+				if(candidate)
+				{	
+					//Switch in the new Edge
+					random_network.edgeRemove(nextEdge);
+					random_network.edgeCreate(source, k, directed);
+				
+				}
 			}
-			//DANGER WILL ROBINSON:  This may stomp out existing edges... we should check to see if it already exists
-			//create this edge
-			random_network.edgeCreate(nodes[source],nodes[target],directed);
 		}
-
-				 
-		 return random_network;
+		
+		//return the result
+		return random_network;
 	}
-
-
 }
+		
+		
+		
+			

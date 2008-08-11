@@ -36,20 +36,10 @@
 
 package cytoscape.randomnetwork;
 
-import javax.swing.JOptionPane;
-import java.util.*;
-import giny.model.*;
-import giny.view.*;
 import java.awt.Toolkit;
-
 import cytoscape.plugin.*;
 import cytoscape.*;
-import javax.swing.plaf.metal.*;
-import cytoscape.view.*;
-import cytoscape.data.*;
 import cytoscape.util.*;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.*;
 import javax.swing.*;
 import cytoscape.visual.*;
@@ -58,13 +48,16 @@ import java.awt.event.ActionEvent;
 
 
 
-/*
-	RandomNetworkPlugin is the topmost class
-*/
+/**
+ *  This class defines the Random Network Plugin.
+ *  Which enables users to create random networks either from
+ *  scratch or by randomizing existing.  It also allows comparisons
+ *  to be made between a round of random networks and an existing network
+ */
 public class RandomNetworkPlugin extends CytoscapePlugin {
 
-	/*	
-		RandomNetworkPlugin Constructor
+	/**	
+	*  RandomNetworkPlugin Constructor
 	*/
 	public RandomNetworkPlugin() {
 	
@@ -99,7 +92,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 	}
 				
 	
-	/*
+	/**
 	 *	This class creates the main window for our plugin
 	 */
 	class RandomNetworkFrame extends JFrame implements ActionListener
@@ -109,13 +102,13 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 
 		//The panel used for generating random networks
 		GenerateRandomPanel generateRandomPanel;
-		javax.swing.JPanel verifyRandomPanel;
+		GenerateRandomPanel verifyRandomPanel;
 
-		javax.swing.JPanel randomizePane;
-		javax.swing.JPanel compareRandomPane;
+		RandomizeExistingPanel randomizePane;
+		RandomComparisonPanel compareRandomPane;
 	
 	
-		/*
+		/**
 		 *  The default constructor for this class	
 		 */
 		public RandomNetworkFrame(  ) { 
@@ -123,8 +116,8 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 			initComponents();
 		}
 
-		/*
-		 * Initialize the swing components
+		/**
+		 *  Initialize the swing components
 		 */
 		private void initComponents() {
 			
@@ -148,17 +141,19 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 			//add the main pane to our tabbed panel
 			add(mainPane);
 			
+			//Set the location of the fame
 			setLocationRelativeTo(Cytoscape.getDesktop());
+			
+			//Add the icon to its title bar
 			final String SMALL_ICON = "images/c16.png";
-
 			setIconImage(Toolkit.getDefaultToolkit().getImage(Cytoscape.getDesktop().getClass().getResource(SMALL_ICON)));
 
-			
+			//make it visible
 			pack();
 			setVisible(true);
 		}
 		
-		/*
+		/**
 		 * On ActionEvent
 		 */
 		public void actionPerformed(ActionEvent e) {
@@ -167,20 +162,20 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 	}
 
 
-	/*
+	/**
 	 *  The action which brings up our dialog
 	 */
 	class GenerateRandomAction extends CytoscapeAction {
 
-		/*
+		/**
 		 * Default constructor
 		 */
 		public GenerateRandomAction() {
 			super("Random Network Plugin");
 		}
 
-		/*
-	 	 *  When our item is selected run this function
+		/**
+	 	 *  When our item is create a new frame
 		 */
 		public void actionPerformed(ActionEvent ae) {
 		
