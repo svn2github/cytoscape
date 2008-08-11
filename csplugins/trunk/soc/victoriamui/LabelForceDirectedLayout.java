@@ -70,7 +70,6 @@ import prefuse.util.force.*;
  */
 public class LabelForceDirectedLayout extends AbstractGraphPartition
 {
-	private ForceSimulator m_fsim;
 	private ForceSimulator label_sim;
 	private ForceSimulator node_sim;
 
@@ -120,17 +119,14 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();
-
-//		m_fsim = new ForceSimulator();
-//		m_fsim.addForce(new NBodyForce());
-//		m_fsim.addForce(new SpringForce());
-//		m_fsim.addForce(new DragForce());
 		
+		// VMUI
 		node_sim = new ForceSimulator();
 		node_sim.addForce(new NBodyForce());
 		node_sim.addForce(new SpringForce());
 		node_sim.addForce(new DragForce());
 		
+		// VMUI
 		label_sim = new ForceSimulator();
 		label_sim.addForce(new NBodyForce());
 		label_sim.addForce(new SpringForce());
@@ -161,7 +157,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
 
-//		m_fsim.clear();
+		// VMUI
 		node_sim.clear();
 		label_sim.clear();
 		
@@ -207,7 +203,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 					ln.unLock();
 				}
 			} else if (network.getSelectedNodes().contains(ln.getNode())) { // ln selected
-					labelNode.unLock();
+				labelNode.unLock();
 				if (moveNodes) {
 					ln.unLock();
 				}
@@ -225,10 +221,9 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			ForceItem fitem = forceItems.get(ln);
 			fitem.mass = getMassValue(ln);
 			fitem.location[0] = 0f; 
-			fitem.location[1] = 0f;	
+			fitem.location[1] = 0f;
 			
-//			m_fsim.addItem(fitem);
-			
+			// VMUI
 			if (labelToParent.containsKey(ln)) {
 				label_sim.addItem(fitem);
 			} else {
@@ -247,9 +242,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			if ( f1 == null || f2 == null )
 				continue;
 			
-//			m_fsim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e));
-			
-			// Case: n1 or n2 are label nodes; e is label edge
+			// VMUI - Case: n1 or n2 are label nodes; e is label edge
 			if (labelToParent.containsKey(n1) || labelToParent.containsKey(n2)) {
 				label_sim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e));
 			} else {
@@ -267,22 +260,35 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		
 		// VMUI [removed code]
 		
-		// perform layout
-		long timestep = 1000L;
-		int multiple = 0;
+		// --- Prepare for layout execution ---
+		double multiple = 0; // VMUI
 		
-		if (defaultPercentage != 0.0 && numIterations != 0) { // VMUI
-			multiple = (int) (numIterations / (defaultPercentage / 100.0 * numIterations));
-			System.out.println("multiple = " + multiple);
+		// Handle if defaultPercentage is not a valid percentage
+		if (defaultPercentage > 100.0) {
+			defaultPercentage = 100.0;
+		} else if (defaultPercentage < 0.0) {
+			defaultPercentage = 0.0;
 		}
+		
+		// Calculate multiple if network nodes are to move
+		if (moveNodes && defaultPercentage != 0.0 && numIterations != 0) { // VMUI
+			multiple = numIterations / (defaultPercentage / 100.0 * numIterations);
+		}
+		
+		
+		// --- Perform layout ---
+		long timestep = 1000L;
+		
+		// VMUI -->
+		Multiples mult = new Multiples(multiple, numIterations);
+		ArrayList<Integer> multList = mult.getAllMultiples();
 		
 		for ( int i = 0; i < numIterations && !canceled; i++ ) {
 			timestep *= (1.0 - i/(double)numIterations);
 			long step = timestep+50;
 			
-			if (multiple != 0 && (i % multiple) == 0) { // VMUI
+			if (multiple != 0.0 && multList.contains(Integer.valueOf(i))) {
 				node_sim.runSimulator(step);
-				System.out.println("i = " + i);
 			}
 			
 			label_sim.runSimulator(step);
@@ -290,10 +296,10 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			setTaskStatus((int)(((double)i/(double)numIterations)*90.+5));
 		}
 		
-		// VMUI --->
+
+		// --- Update positions ---
 		lp = new LabelPosition();
 		
-		// update positions
 		for (LayoutNode ln: allLayoutNodes) {
 			
 			// ln is unlocked and selected
@@ -331,9 +337,6 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     	// VMUI [removed code]
     	
 		clear();
-		
-		System.out.println("Default Percentage: " + defaultPercentage);
-		System.out.println("Allow nodes to move: " + moveNodes);
 
 		// <--- VMUI
 	}
@@ -522,5 +525,56 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		// return panel;
 		return layoutProperties.getTunablePanel();
 
+	}
+	
+	public class Multiples {
+		
+		final private double multipleOf;
+		
+		private int max;
+		
+		private int counter = -1;
+		
+		/**
+		 * Creates a new instance of Multiples.
+		 * @param multipleOf the number to generate multiples for
+		 * @param max the maximum number of multiples that should be generated
+		 * for multipleOf
+		 */
+		public Multiples(double multipleOf, int max) {
+			this.multipleOf = multipleOf;
+			this.max = max;
+		}
+		
+		/**
+		 * Returns the floor of the next multiple of multipleOf if the maximum
+		 * number of iterations has still not been met.  Returns -1 otherwise.
+		 * @return the next multiple of multipleOf if the maximum number of
+		 * iterations has not yet been met; returns -1 otherwise
+		 */
+		public int getNext() {
+			if (counter < max - 1) {
+				counter += 1;
+				return (int) Math.floor(counter * multipleOf);
+			}
+			return -1;
+		}
+		
+		/**
+		 * Returns an ArrayList containing the floor of all multiples of 
+		 * multipleOf up until (max - 1) * multipleOf.
+		 * @return an ArrayList containing the floor of all multiples of
+		 * multipleOf up until (max - 1) * multipleOf
+		 */
+		public ArrayList<Integer> getAllMultiples() {
+			ArrayList<Integer> list = new ArrayList<Integer>();
+			int next = getNext();
+			while(multipleOf != 0.0 && next >= 0 && next < max) {
+				list.add(next);
+				next = getNext();
+			}
+			return list;
+		}
+		
 	}
 }
