@@ -15,9 +15,13 @@ import java.awt.image.BufferedImage;
 
 import org.cytoscape.vizmap.NodeRenderers;
 import org.cytoscape.vizmap.LabelPosition;
+import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.icon.LineTypeIcon;
 import org.cytoscape.vizmap.icon.NodeIcon;
 import org.cytoscape.vizmap.icon.ArrowIcon;
+import org.cytoscape.vizmap.parsers.ColorParser;
+import org.cytoscape.vizmap.parsers.DoubleParser;
+import org.cytoscape.vizmap.parsers.FontParser;
 import org.cytoscape.vizmap.LabelPlacerGraphic;
 
 import org.cytoscape.view.renderers.NodeRenderer;
@@ -720,7 +724,23 @@ public class LegacyVisualProperty implements VisualProperty {
 		// FIXME FIXME -- do IO later
 		return null;
 	}
-
+	public Object parseStringValue(String string){
+		System.out.println("parsing string value: "+string);
+		ValueParser parser=null;
+		if (dataType.isAssignableFrom(String.class)){
+			return string;
+		} else if (dataType.isAssignableFrom(Number.class)){
+			parser = new DoubleParser(); 
+		} else if  (dataType.isAssignableFrom(Color.class)){
+			parser = new ColorParser(); 
+		} else if (dataType.isAssignableFrom(Font.class)){
+			parser = new FontParser(); 
+		}
+		Object o = parser.parseStringValue(string);
+		System.out.println("parsed value: "+o);
+		return o;
+	}
+	
 	public String getName() {
 		return name;
 	}

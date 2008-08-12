@@ -220,8 +220,7 @@ public class VisualStyle implements Cloneable {
 		if (value == null){
 			return null;
 		} else {
-			System.out.println("returning non-null bypass value");
-			return new Integer(1);
+			return vp.parseStringValue(value);
 		}
 	}
 
@@ -261,6 +260,7 @@ public class VisualStyle implements Cloneable {
 						o = c.getRangeValue(nodeView.getNode(), attrs);
 					}
 				}
+				if (o == null) { o = defaultValues.get(vp); }
 				if (o == null) { o = vp.getDefaultAppearanceObject(); }
 				vp.applyToNodeView(nodeView, o);
 			}
@@ -286,6 +286,7 @@ public class VisualStyle implements Cloneable {
 						o = c.getRangeValue(edgeView.getEdge(), attrs);
 					}
 				}
+				if (o == null) { o = defaultValues.get(vp); }
 				if (o == null) { o = vp.getDefaultAppearanceObject(); }
 				vp.applyToEdgeView(edgeView, o);
 			}

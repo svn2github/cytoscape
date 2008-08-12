@@ -82,5 +82,6 @@ public interface VisualProperty {
 	public void applyToNodeView(NodeView nv, Object o);
 	public void applyToEdgeView(EdgeView nv, Object o);
 	public Object parseProperty(Properties props, String baseKey);
+	public Object parseStringValue(String string);
 	public Object getDefaultAppearanceObject();
 }

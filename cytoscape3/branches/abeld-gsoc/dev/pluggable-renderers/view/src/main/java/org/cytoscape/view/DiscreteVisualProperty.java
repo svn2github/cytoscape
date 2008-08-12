@@ -100,5 +100,7 @@ public class DiscreteVisualProperty implements VisualProperty {
 		// FIXME FIXME: do IO later 
 		return null;
 	}
-
+	public Object parseStringValue(String string){
+		return null; // FIXME FIXME FIXME
+	}
 }
