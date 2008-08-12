@@ -1,43 +1,5 @@
-
-/*
- Copyright (c) 2007, The Cytoscape Consortium (www.cytoscape.org)
-
- The Cytoscape Consortium is:
- - Institute for Systems Biology
- - University of California San Diego
- - Memorial Sloan-Kettering Cancer Center
- - Institut Pasteur
- - Agilent Technologies
-
- This library is free software; you can redistribute it and/or modify it
- under the terms of the GNU Lesser General Public License as published
- by the Free Software Foundation; either version 2.1 of the License, or
- any later version.
-
- This library is distributed in the hope that it will be useful, but
- WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
- MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
- documentation provided hereunder is on an "as is" basis, and the
- Institute for Systems Biology and the Whitehead Institute
- have no obligations to provide maintenance, support,
- updates, enhancements or modifications.  In no event shall the
- Institute for Systems Biology and the Whitehead Institute
- be liable to any party for direct, indirect, special,
- incidental or consequential damages, including lost profits, arising
- out of the use of this software and its documentation, even if the
- Institute for Systems Biology and the Whitehead Institute
- have been advised of the possibility of such damage.  See
- the GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this library; if not, write to the Free Software Foundation,
- Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-
 package csplugins.layout.algorithms.force;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 
 import cytoscape.layout.Tunable;
@@ -48,25 +10,20 @@ import csplugins.layout.LayoutNode;
 import csplugins.layout.EdgeWeighter;
 import csplugins.layout.algorithms.graphPartition.*;
 
-import cytoscape.view.CyNetworkView;
 import cytoscape.visual.LabelPosition;
+
 import cytoscape.data.CyAttributes;
-import cytoscape.data.Semantics;
-import ding.view.DGraphView;
-
-import java.awt.GridLayout;
-import java.awt.Dimension;
-
-import java.util.*;
-
-import javax.swing.JPanel;
 
 import giny.view.NodeView;
 
 import prefuse.util.force.*;
 
+import java.util.*;
+import javax.swing.JPanel;
+
 /**
- * Force-Directed layouts for repositioning network labels.
+ * - Copied Force-Directed Layout and made necessary modifications
+ * - vmui notation
  */
 public class LabelForceDirectedLayout extends AbstractGraphPartition
 {
@@ -74,16 +31,24 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	private ForceSimulator node_sim;
 
 	private int numIterations = 100;
-	double defaultSpringCoefficient = 1e-4f;
-	double defaultSpringLength = 50;
 	double defaultNodeMass = 3.0;
 	
-	// The percentage of numIterations in which network nodes will also be moved
-	double defaultPercentage = 0.0; // VMUI
+	// Spring coefficient and length of network edges
+	double defaultSpringCoefficient = 1e-4f;
+	double defaultSpringLength = 50;
 	
+	// Spring coefficient and length of label edges (those connecting a label
+	// LayoutNode with a network LayoutNode) 
+	double defaultLabelSpringCoefficient = 0.5;
+	double defaultLabelSpringLength = 5.0;
+	
+	// The percentage of numIterations in which network nodes will also be moved
+	double defaultPercentage = 0.0; // vmui
+	
+	// Whether network nodes will be moved or not
 	boolean moveNodes = false;
 
-	private CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); // VMUI
+	private CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); // vmui
 	
 	/**
 	 * Value to set for doing unweighted layouts
@@ -101,7 +66,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 
 	private Integrator integrator = null;
 	
-	// VMUI --->
+	// vmui --->
 	// Maps a label LayoutNode with its parent node's LayoutNode
 	private Map<LayoutNode, LayoutNode> labelToParent = 
 		new HashMap<LayoutNode, LayoutNode>();
@@ -112,7 +77,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	// List of all LayoutEdges; including network and label edges
 	ArrayList<LayoutEdge> allLayoutEdges = new ArrayList<LayoutEdge>();
 
-	// <--- VMUI
+	// <--- vmui
 	
 	public LabelForceDirectedLayout() {
 		super();
@@ -120,13 +85,13 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();
 		
-		// VMUI
+		// vmui
 		node_sim = new ForceSimulator();
 		node_sim.addForce(new NBodyForce());
 		node_sim.addForce(new SpringForce());
 		node_sim.addForce(new DragForce());
 		
-		// VMUI
+		// vmui
 		label_sim = new ForceSimulator();
 		label_sim.addForce(new NBodyForce());
 		label_sim.addForce(new SpringForce());
@@ -138,11 +103,11 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	}
 	
 	public String getName() {
-		return "label-force-directed"; // VMUI
+		return "label-force-directed"; // vmui
 	}
 
 	public String toString() {
-		return "Label Force-Directed Layout"; // VMUI
+		return "Label Force-Directed Layout"; // vmui
 	}
 
 	protected void initialize_local() {
@@ -151,23 +116,22 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 
 	public void layoutPartion(LayoutPartition part) {
 		
-		LabelPosition lp = null; // VMUI
+		LabelPosition lp = null; // vmui
 		
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
 
-		// VMUI
+		// vmui
 		node_sim.clear();
 		label_sim.clear();
 		
-		// VMUI --->
+		// vmui --->
 		// Add all existing network nodes to allLayoutNodes
 		allLayoutNodes.addAll(part.getNodeList());
 		
-		// Create LayoutNodes and LayoutEdges for each node label
+		// --- Create LayoutNodes and LayoutEdges for each node label ---
 		for (LayoutNode ln : allLayoutNodes) {
 				
-			// Create a new LayoutNode object for the current label.
 			LayoutNode labelNode = new LayoutNode(ln.getNodeView(), ln.getIndex());
 			
 			// Set labelNode's location to parent node's label position
@@ -222,8 +186,9 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			fitem.location[0] = 0f; 
 			fitem.location[1] = 0f;
 			
-			// VMUI
-			if (labelToParent.containsKey(ln)) {
+			// Depending on whether ln is a label or a node, add them to 
+			// label_sim or node_sim accordingly.
+			if (labelToParent.containsKey(ln)) { // vmui
 				label_sim.addItem(fitem);
 			} else {
 				node_sim.addItem(fitem);
@@ -241,26 +206,27 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			if ( f1 == null || f2 == null )
 				continue;
 			
-			// VMUI - Case: n1 or n2 are label nodes; e is label edge
+			// vmui - Case: n1 or n2 are label nodes; e is label edge
+			// Add spring with corresponding spring length and coefficient
 			if (labelToParent.containsKey(n1) || labelToParent.containsKey(n2)) {
-				label_sim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e));
+				label_sim.addSpring(f1, f2, getLabelSpringCoefficient(e), getLabelSpringLength(e));
 			} else {
 				node_sim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e));
 			}
 			
 		}
 		
-		// <--- VMUI
+		// <--- vmui
 
 		// setTaskStatus(5); // This is a rough approximation, but probably good enough
 		if (taskMonitor != null) {
 			taskMonitor.setStatus("Initializing partition "+part.getPartitionNumber());
 		}
 		
-		// VMUI [removed code]
+		// vmui [removed code]
 		
 		// --- Prepare for layout execution ---
-		double multiple = 0; // VMUI
+		double multiple = 0; // vmui
 		
 		// Handle if defaultPercentage is not a valid percentage
 		if (defaultPercentage > 100.0) {
@@ -270,7 +236,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		}
 		
 		// Calculate multiple if network nodes are to move
-		if (moveNodes && defaultPercentage != 0.0 && numIterations != 0) { // VMUI
+		if (moveNodes && defaultPercentage != 0.0 && numIterations != 0) { // vmui
 			multiple = numIterations / (defaultPercentage / 100.0 * numIterations);
 		}
 		
@@ -278,16 +244,22 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		// --- Perform layout ---
 		long timestep = 1000L;
 		
-		// VMUI -->
+		// vmui -->
 		Multiples mult = new Multiples(multiple);
 		
 		for ( int i = 0; i < numIterations && !canceled; i++ ) {
 			timestep *= (1.0 - i/(double)numIterations);
 			long step = timestep+50;
 			
-			// Apply the algorithm on network nodes if i is a multiple of
-			// variable multiple
-			if (multiple != 0.0 && i == mult.getCurrent()) {
+			/* Apply the algorithm on network nodes if i is a multiple of 
+			 * the variable multiple.
+			 * 
+			 * Since i is an int, it needs to be compared with an int.  
+			 * However, the value of getCurrent() isn't necessarily always an 
+			 * int, so the ceiling of this value will be used instead.  Notice 
+			 * that some rounding errors may occur.
+			 */
+			if (multiple != 0.0 && i == Math.ceil(mult.getCurrent())) {
 				node_sim.runSimulator(step);
 				mult.next();
 			}
@@ -335,18 +307,17 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
     	networkView.updateView();
     	networkView.redrawGraph(true, true);
 		
-    	// VMUI [removed code]
+    	// vmui [removed code]
     	
 		clear();
-		
-		// <--- VMUI
+		// <--- vmui
 	}
 	
 	/**
 	 * Clears all LayoutNodes and LayoutEdges created in order to successfully
 	 * perform this label layout algorithm.
 	 */
-	private void clear() { // VMUI
+	private void clear() { // vmui
 		allLayoutNodes.clear();
 		labelToParent.clear();
 		allLayoutEdges.clear();
@@ -374,6 +345,14 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		double weight = e.getWeight();
 		return (float)(defaultSpringLength/weight);
 	}
+	
+	/**
+	 * Gets the spring length of the given label edge.
+	 */
+	protected float getLabelSpringLength(LayoutEdge e) { // vmui
+		double weight = e.getWeight();
+		return (float)(defaultLabelSpringLength/weight);
+	}
 
 	/**
 	 * Get the spring coefficient for the given edge, which controls the
@@ -385,6 +364,13 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	 */
 	protected float getSpringCoefficient(LayoutEdge e) {
 		return (float)defaultSpringCoefficient;
+	}
+	
+	/**
+	 * Gets the spring coefficient for the given label edge.
+	 */
+	protected float getLabelSpringCoefficient(LayoutEdge e) { // vmui
+		return (float)defaultLabelSpringCoefficient;
 	}
 
 	/**
@@ -402,53 +388,66 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		return attrs;
 	}
 
-	public List getInitialAttributeList() {
-		ArrayList list = new ArrayList();
-		list.add(UNWEIGHTEDATTRIBUTE);
-
-		return list;
-	}
-
+	// vmui [removed code]
 	
 	protected void initialize_properties() {
 
-		layoutProperties.add(new Tunable("standard", "Standard settings",
-		                                 Tunable.GROUP, new Integer(3))); // VMUI
+		layoutProperties.add(new Tunable("standard", 
+				"Standard settings",
+				Tunable.GROUP, new Integer(3))); // vmui
 
-		layoutProperties.add(new Tunable("partition", "Partition graph before layout",
-		                                 Tunable.BOOLEAN, new Boolean(true)));
+		layoutProperties.add(new Tunable("partition", 
+				"Partition graph before layout",
+				Tunable.BOOLEAN, new Boolean(true)));
 
-		layoutProperties.add(new Tunable("selected_only", "Only layout selected nodes",
-		                                 Tunable.BOOLEAN, new Boolean(false)));
+		layoutProperties.add(new Tunable("selected_only", 
+				"Only layout selected nodes",
+				Tunable.BOOLEAN, new Boolean(false)));
 		
-		// VMUI
-		layoutProperties.add(new Tunable("moveNodes", "Allow nodes to move",
+		// vmui
+		layoutProperties.add(new Tunable("moveNodes", 
+				"Allow nodes to move",
                 Tunable.BOOLEAN, new Boolean(false)));
 
-		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
+		layoutProperties.add(new Tunable("force_alg_settings", 
+				"Algorithm settings",
+				Tunable.GROUP, new Integer(7)));
 
-		layoutProperties.add(new Tunable("force_alg_settings", "Algorithm settings",
-		                                 Tunable.GROUP, new Integer(5)));
+		layoutProperties.add(new Tunable("defaultSpringCoefficient", 
+				"Default Spring Coefficient",
+				Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
 
-		layoutProperties.add(new Tunable("defaultSpringCoefficient", "Default Spring Coefficient",
-		                                 Tunable.DOUBLE, new Double(defaultSpringCoefficient)));
-
-		layoutProperties.add(new Tunable("defaultSpringLength", "Default Spring Length",
-		                                 Tunable.DOUBLE, new Double(defaultSpringLength)));
+		layoutProperties.add(new Tunable("defaultSpringLength", 
+				"Default Spring Length",
+				Tunable.DOUBLE, new Double(defaultSpringLength)));
 		
-		// VMUI
-		layoutProperties.add(new Tunable("defaultPercentage", "Default Percentage (%)",
+		// vmui
+		layoutProperties.add(new Tunable("defaultPercentage", 
+				"Default Percentage (%)",
 				Tunable.DOUBLE, new Double(defaultPercentage)));
+		
+		// vmui
+		layoutProperties.add(new Tunable("defaultLabelSpringCoefficient", 
+				"Default Label Spring Coefficient",
+                Tunable.DOUBLE, new Double(defaultLabelSpringCoefficient)));
+		
+		// vmui
+		layoutProperties.add(new Tunable("defaultLabelSpringLength", 
+				"Default Label Spring Length",
+                Tunable.DOUBLE, new Double(defaultLabelSpringLength)));
 
-		layoutProperties.add(new Tunable("defaultNodeMass", "Default Node Mass",
-		                                 Tunable.DOUBLE, new Double(defaultNodeMass)));
+		layoutProperties.add(new Tunable("defaultNodeMass", 
+				"Default Node Mass",
+				Tunable.DOUBLE, new Double(defaultNodeMass)));
 
-		layoutProperties.add(new Tunable("numIterations", "Number of Iterations",
-		                                 Tunable.INTEGER, new Integer(numIterations)));
+		layoutProperties.add(new Tunable("numIterations", 
+				"Number of Iterations",
+				Tunable.INTEGER, new Integer(numIterations)));
 
-		layoutProperties.add(new Tunable("integrator", "Integration algorithm to use",
-		                                 Tunable.LIST, new Integer(0), 
-		                                 (Object) integratorArray, (Object) null, 0));
+		layoutProperties.add(new Tunable("integrator", 
+				"Integration algorithm to use",
+				Tunable.LIST, new Integer(0),
+				(Object) integratorArray, (Object) null, 0));
 
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
@@ -470,7 +469,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		if ((t != null) && (t.valueChanged() || force))
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
 		
-		// VMUI
+		// vmui
 		t = layoutProperties.get("moveNodes");
 		if ((t != null) && (t.valueChanged() || force))
 			moveNodes = ((Boolean) t.getValue()).booleanValue();
@@ -487,7 +486,17 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		if ((t != null) && (t.valueChanged() || force))
 			defaultSpringLength = ((Double) t.getValue()).doubleValue();
 		
-		// VMUI
+		// vmui
+		t = layoutProperties.get("defaultLabelSpringCoefficient");
+		if ((t != null) && (t.valueChanged() || force))
+			defaultLabelSpringCoefficient = ((Double) t.getValue()).doubleValue();
+
+		// vmui
+		t = layoutProperties.get("defaultLabelSpringLength");
+		if ((t != null) && (t.valueChanged() || force))
+			defaultLabelSpringLength = ((Double) t.getValue()).doubleValue();
+		
+		// vmui
 		t = layoutProperties.get("defaultPercentage");
 		if ((t != null) && (t.valueChanged() || force))
 			defaultPercentage = ((Double) t.getValue()).doubleValue();
@@ -509,7 +518,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			else
 				return;
 			
-			// VMUI
+			// vmui
 			label_sim.setIntegrator(integrator);
 			node_sim.setIntegrator(integrator);
 		}
@@ -530,7 +539,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	/**
 	 * Generates and returns ceiling integers of multiples of the double
 	 * specified in the constructor.
-	 * @author VMUI
+	 * @author vmui & jbalogh
 	 *
 	 */
 	public class Multiples {
@@ -551,17 +560,16 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		}
 		
 		/**
-		 * Returns the current ceiling multiple of multipleOf.
 		 * @return the current ceiling multiple of multipleOf
 		 */
-		public int getCurrent(){
-			return (int) Math.ceil(current);
+		public double getCurrent() {
+			return current;
 		}
 		
 		/**
 		 * Updates current so that it is now the next multiple of multipleOf.
 		 */
-		public void next(){
+		public void next() {
 			current += multipleOf;
 		}
 		
