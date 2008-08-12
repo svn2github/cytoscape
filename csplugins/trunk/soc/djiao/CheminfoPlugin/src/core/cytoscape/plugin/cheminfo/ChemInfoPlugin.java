@@ -51,7 +51,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -75,17 +74,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
-import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.exception.InvalidSmilesException;
-import org.openscience.cdk.fingerprint.Fingerprinter;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.similarity.Tanimoto;
-import org.openscience.cdk.smiles.SmilesParser;
-
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.CyAttributes;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.cheminfo.similarity.CDKTanimotoScore;
@@ -144,6 +137,9 @@ public class ChemInfoPlugin extends CytoscapePlugin implements
 		this.menu = buildMenu();
 		
 		this.attrMap = new HashMap<String, Object[]>();
+		
+		Properties cytoProps = CytoscapeInit.getProperties();
+		cytoProps.put("nodelinkouturl.Entrez.PubChem(InChI)", "http://www.ncbi.nlm.nih.gov/sites/entrez?term=\"%ID%\"[InChI]&cmd=search&db=pccompound");
 	}
 
 	public void addNodeContextMenuItems(NodeView nodeView, JPopupMenu pmenu) {
