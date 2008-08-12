@@ -128,65 +128,6 @@ in the 2.5.0 release.</div>
 </ul>
 </div>
 </div>
-<div class="item">
-<h2><a href="retreat2007/index.php">Cytoscape Retreat 2007!</a></h2>
-<a href="retreat2007/venue.php"> <img
-	src="retreat2007/images/magere-brug-small.jpg" alt="Amsterdam by night" />
-</a>
-<div id="paragraph">Now in Europe! November 6<sup>th</sup> - 9<sup>th</sup><br>
-Including a public symposium on November 8<sup>th</sup>, with a
-formidable list of confirmed speakers among them
-<ul id="paragraph">
-	<li>Leroy Hood
-	<li>Peter Sorger
-	<li>Ewan Birney
-</ul>
-Hosted by the <a href="http://www.humangenetics-amc.nl" target="_blank">Human
-Genetics Department of the Academic Medical Center</a> in the vibrant
-historic city of <a href="/retreat2007/venue.php">Amsterdam</a>.</div>
-</div>
-<div class="item">
-<h2>Cytoscape 2.4.1</h2>
-<div id="paragraph">No new features, but several bugs have been
-fixed.</div>
-</div>
-<div class="item">
-<h2>Cytoscape 2.4.0</h2>
-<a href="screenshots/2_4_ss1.png"><img
-	src="screenshots/2_4_ss1_thumb.png" alt="Cytoscape 2.4.0 Screenshot"
-	align="left" border="0"> </a>
-<div id="paragraph">(Updated 1/16/2007) <br>
-New features include: <br>
-<ul id="paragraph">
-	<li>Publication quality image generation.
-	<ul>
-		<li>Node label position adjustment.
-		<li>Automatic Visual Legend generator.
-		<li>Node position fine-tuning by arrow keys.
-		<li>The ability to override selected VizMap settings.
-	</ul>
-	<li>Quick Find plugin.
-	<li>New icons for a cleaner user interface.
-	<li>Consolidated network import capabilities.
-	<ul>
-		<li>Import network from remote data sources (through http or
-		ftp).
-		<li>Default support for the following file formats: SBML, BioPAX,
-		PSI-MI, Delimited text, Excel.
-	</ul>
-	<li>New Ontology Server.
-	<ul>
-		<li>Native support for OBO format ontology files.
-		<li>Ability to visualize the ontology tree as a network (DAG).
-		<li>Full support for Gene Association files.
-	</ul>
-	<li>Support for Java SE 5
-	<li>Many, many bug fixes!
-</ul>
-
-See the <a href="cyto_2_4_features.php">Release Notes</a> for more
-detail.</div>
-</div>
 
 <div class="item">
 <h2>Publications about Cytoscape</h2>
