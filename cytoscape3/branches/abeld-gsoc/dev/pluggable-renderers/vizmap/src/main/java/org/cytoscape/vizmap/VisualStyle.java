@@ -220,6 +220,15 @@ public class VisualStyle implements Cloneable {
 		}
 		// FIXME: rethink this:
 		// setup proper background colors
+		Color backgroundColor = (Color) globalVisualProperties.get("backgroundColor");
+		if (backgroundColor== null){ // FIXME FIXME: temporary hack, shouldn't be needed!!
+			System.out.println("error: having to force default backgroundColor");
+			backgroundColor= Color.lightGray;
+		}
+		for (EdgeView ev: network_view.getEdgeViewsList()){
+			ev.setSelectedPaint(backgroundColor);
+		}
+
 		network_view.setBackgroundPaint((Color) globalVisualProperties.get("backgroundColor"));
 
 		// will ignore sloppy & reverse selection color for now // FIXME
@@ -232,6 +241,10 @@ public class VisualStyle implements Cloneable {
 		}
 
 		Color edgeSelectionColor = (Color) globalVisualProperties.get("edgeSelectionColor");
+		if (edgeSelectionColor == null){ // FIXME FIXME: temporary hack, shouldn't be needed!!
+			System.out.println("error: having to force default edgeSelectionColor");
+			edgeSelectionColor = Color.black;
+		}
 		for (EdgeView ev: network_view.getEdgeViewsList()){
 			ev.setSelectedPaint(edgeSelectionColor );
 		}

@@ -599,7 +599,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				m_backgroundCanvas.setBackground((Color) paint);
 				m_contentChanged = true;
 			} else {
-				System.out.println("DGraphView.setBackgroundPaint(), Color not found!");
+				System.out.println("DGraphView.setBackgroundPaint(), Color not found!: "+paint);
 			}
 		}
 	}

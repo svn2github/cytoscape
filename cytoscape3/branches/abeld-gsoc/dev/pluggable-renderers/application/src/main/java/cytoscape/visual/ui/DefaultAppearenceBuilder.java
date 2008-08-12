@@ -97,17 +97,10 @@ import javax.swing.SwingConstants;
  */
 public class DefaultAppearenceBuilder extends JDialog {
 	private final static long serialVersionUID = 1202339876675416L;
-	private static final Set<VisualProperty> EDGE_PROPS;
-	private static final Set<VisualProperty> NODE_PROPS;
 	private static DefaultAppearenceBuilder dab = null;
 	
 	//private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
 	//                                                      .getNodeAppearanceCalculator();
-
-	static {
-		EDGE_PROPS = new TreeSet<VisualProperty>(VisualPropertyCatalog.getEdgeVisualPropertyList());
-		NODE_PROPS = new TreeSet<VisualProperty>(VisualPropertyCatalog.getNodeVisualPropertyList());
-	}
 
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
@@ -432,17 +425,22 @@ public class DefaultAppearenceBuilder extends JDialog {
 		DefaultListModel model = new DefaultListModel();
 		nodeList.setModel(model);
 
-		for (VisualProperty type : NODE_PROPS) {
+		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList()) {
 			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
-			nodeIcon.setLeftPadding(15);
-			model.addElement(type);
-			nodeIcons.add(nodeIcon);
+			if (nodeIcon != null){
+				nodeIcon.setLeftPadding(15);
+				model.addElement(type);
+				nodeIcons.add(nodeIcon);
+			} else {
+				System.out.println("warning: default Icon for VisualProperty is null: "+type);
+				System.out.println("VisualProperty name: "+type.getName());
+			}
 		}
 
 		DefaultListModel eModel = new DefaultListModel();
 		edgeList.setModel(eModel);
 
-		for (VisualProperty type : EDGE_PROPS) {
+		for (VisualProperty type : VisualPropertyCatalog.getEdgeVisualPropertyList()) {
 			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
 
 			if (edgeIcon != null) {
@@ -476,6 +474,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 	private void lockSize() {
+		/* FIXME: punted
 		if (lockNodeSizeCheckBox.isSelected()) {
 			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH"));
 			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT"));
@@ -487,7 +486,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_SIZE"));
 			//FIXME nac.setNodeSizeLocked(false);
 		}
-
+		 */
 		buildList();
 		mainView.updateView();
 		repaint();

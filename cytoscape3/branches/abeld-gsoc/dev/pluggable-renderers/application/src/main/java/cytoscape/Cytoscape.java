@@ -2043,12 +2043,12 @@ public abstract class Cytoscape {
 		range = new Object[]{new BasicStroke(1.0f/*FIXME: width -- is this just a placeholder value? */),
 				new BasicStroke(1.0f /*see above */, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f, 4.0f}, 0.0f)  };
 		iconSet = getLineStyleIconSet(range);
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_LINE_STYLE", Stroke.class, true, range, iconSet));
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_LINE_STYLE", Stroke.class, false, range, iconSet));
 		
 		range = range(-1, -5, -1); 
 		iconSet = getArrowIconSet(range, GraphGraphics.getArrowShapes()); 
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_SRCARROW_SHAPE", Integer.class, true, range, iconSet));
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_TGTARROW_SHAPE", Integer.class, true, range, iconSet));
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_SRCARROW_SHAPE", Integer.class, false, range, iconSet));
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_TGTARROW_SHAPE", Integer.class, false, range, iconSet));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_COLOR", Color.class, false));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_COLOR", Color.class, false));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_OPACITY", Number.class, false));

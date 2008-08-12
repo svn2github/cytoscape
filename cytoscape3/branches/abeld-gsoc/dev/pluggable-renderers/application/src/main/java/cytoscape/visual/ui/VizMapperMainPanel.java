@@ -910,9 +910,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			// Deceptively, getDefaultView actually actually calls VisualMappingManager.setVisualStyle()
 			// so each time we add a combobox item, the visual style is changing.
 			// Make sure to set the lastVSName as we change the visual style:
+			view = null;
+			try{
+			System.out.println("visual style name: "+name);
 			defPanel = DefaultAppearenceBuilder.getDefaultView(name);
 			view = (GraphView) ((DefaultViewPanel) defPanel).getView();
-
+			} catch(Exception e){
+				e.printStackTrace();
+			} catch(Error e){
+				e.printStackTrace();
+			}
 			if (view != null) {
 				System.out.println("Creating Default Image for " + name);
 				updateDefaultImage(name, view, panelSize);
