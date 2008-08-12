@@ -32,6 +32,9 @@
     <fileset dir="${cytoscape.dir}">
       <include name="cytoscape.jar" />
     </fileset>
+    <fileset dir="${lib.dir}">
+      <include name="*.jar"/>
+    </fileset>
   </path>
 
   <!-- classpath for junit -->
@@ -97,6 +100,12 @@
   =====================================================================
   -->
   <target name="jar" depends="compile" description="makes a jar for Cytoscape under development">
+    <mkdir dir="${build.dir}/classes/lib"/>
+    <unzip dest="${build.dir}/classes/lib/">
+      <fileset dir="${lib.dir}">
+        <include name="*.jar"/>
+      </fileset>
+    </unzip>
     <copy todir="build/classes/core/cytoscape/plugin/cheminfo">
       <fileset file="${src.dir}/core/cytoscape/plugin/cheminfo/*.props" />
     </copy>
@@ -105,6 +114,7 @@
         <attribute name="Cytoscape-Plugin" value="cytoscape.plugin.cheminfo.ChemInfoPlugin" />
       </manifest>
       <fileset dir="${build.dir}/classes/core" />
+      <fileset dir="${build.dir}/classes/lib"/>
     </jar>
   </target>
 

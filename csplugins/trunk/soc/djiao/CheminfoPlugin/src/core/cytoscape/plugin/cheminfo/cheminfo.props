@@ -11,7 +11,28 @@
 cheminfo.system.error=An error occurred with the ChemInfoPlugin.
 
 ##
+# Labels
+##
+cheminfo.menu=Cheminformatics Tools
+cheminfo.menu.2ddepiction=Depict 2D Structure
+cheminfo.menu.similarity=Calculate Similarity
+cheminfo.menu.similarity.tanimoto=Tanimoto Coefficients
+
+##
 # 2D Structure Depictor Messages
 ##
 cheminfo.depictor.noSmilesError=No smiles/InChI found in the current node. 
+
+##
+# Similarity Calculation Messages
+##
+cheminfo.similarity.complete=Similarity calculation is completed. Please use the "Data Panel" for similarity score.
+
+# Options for the set of nodes to calculate similarity score with
+cheminfo.similarity.nodeset=Scope of Similarity Calculation. Please choose the set of nodes that you want to calculate similarity:
+cheminfo.similarity.nodeset.0=All nodes. This will add an "similarity" attribute to all edges.
+#cheminfo.similarity.nodeset.1=All nodes. This will insert edge automatically between any two nodes that are not connected.
+#cheminfo.similarity.nodeset.2=All selected nodes. This will insert edge automatically between any two selected nodes that are not connected.
+#cheminfo.similarity.nodeset.3=Only selected nodes that are connected. 
+cheminfo.similarity.nodeset.1=Create new network with all nodes and add an edge between each pair of nodes. 
 
