@@ -55,11 +55,8 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
 import cytoscape.util.FileUtil;
 
-import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.CalculatorCatalog;
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.calculators.BasicCalculator;
@@ -199,9 +196,6 @@ public class GMLReader extends AbstractGraphReader {
 
 	// Hashes for node & edge attributes
 	Map<String,Double> nodeH;
-
-	// Hashes for node & edge attributes
-	Map<String,NodeShape> nodeShape;
 
 	// Hashes for node & edge attributes
 	Map<String,String> nodeCol;

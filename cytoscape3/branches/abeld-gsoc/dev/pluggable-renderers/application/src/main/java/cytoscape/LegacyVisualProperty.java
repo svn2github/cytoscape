@@ -13,9 +13,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.NodeRenderers;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.icon.LineTypeIcon;
@@ -30,6 +27,8 @@ import org.cytoscape.view.NodeView;
 import org.cytoscape.view.Label;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
+
+import cytoscape.render.immed.GraphGraphics;
 
 import javax.swing.Icon;
 
@@ -617,16 +616,16 @@ public class LegacyVisualProperty implements VisualProperty {
 
 			return icon;
 		} else if (name.equals("EDGE_SRCARROW_COLOR")){
-			final ArrowShape arrow = (ArrowShape) VisualPropertyCatalog.getVisualProperty("EDGE_SRCARROW_SHAPE").getDefaultAppearanceObject();
-			final ArrowIcon icon = new ArrowIcon(arrow.getShape());
+			final Integer arrow = (Integer) VisualPropertyCatalog.getVisualProperty("EDGE_SRCARROW_SHAPE").getDefaultAppearanceObject();
+			final ArrowIcon icon = new ArrowIcon(GraphGraphics.getArrowShapes().get(new Byte(arrow.byteValue())));
 			icon.setColor((Color) value);
 			icon.setLeftPadding(20);
 			icon.setBottomPadding(-6);
 			
 			return icon;
 		} else if (name.equals("EDGE_TGTARROW_COLOR")){
-			final ArrowShape arrowShape = (ArrowShape) VisualPropertyCatalog.getVisualProperty("EDGE_TGTARROW_SHAPE").getDefaultAppearanceObject();
-			final ArrowIcon icon = new ArrowIcon(arrowShape.getShape());
+			final Integer arrowShape = (Integer) VisualPropertyCatalog.getVisualProperty("EDGE_TGTARROW_SHAPE").getDefaultAppearanceObject();
+			final ArrowIcon icon = new ArrowIcon(GraphGraphics.getArrowShapes().get(new Byte(arrowShape.byteValue())));
 			icon.setColor((Color) value);
 			icon.setLeftPadding(20);
 			icon.setBottomPadding(-6);

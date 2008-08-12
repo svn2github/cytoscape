@@ -53,8 +53,6 @@ import org.cytoscape.attributes.MultiHashMapDefinition;
 
 import org.cytoscape.view.GraphView;
 
-import org.cytoscape.vizmap.LineStyle;
-
 import org.cytoscape.view.Bend;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
@@ -716,7 +714,8 @@ public class XGMMLWriter {
 			writeAttributePair("cy:targetArrowColor", paint2string(edgeView.getTargetEdgeEndPaint()));
 
 			writeAttributePair("cy:edgeLabelFont", encodeFont(edgeView.getLabel().getFont()));
-			writeAttributePair("cy:edgeLineType", LineStyle.extractLineStyle(edgeView.getStroke()).toString());
+			// FIXME: write IO later
+			//writeAttributePair("cy:edgeLineType", LineStyle.extractLineStyle(edgeView.getStroke()).toString());
 			// Set curved or not
 			if (edgeView.getLineType() == EdgeView.CURVED_LINES) {
 				writeAttributePair("cy:curved", "CURVED_LINES");

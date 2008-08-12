@@ -48,12 +48,10 @@ import javax.swing.JOptionPane;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
 
+import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
-import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.NodeRenderers;
 
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
@@ -87,16 +85,16 @@ public enum EditorDisplayer {
 	                String.class), 
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
 	               new Class[] { VisualProperty.class, JDialog.class },
-	               new Object[] { VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"), null }, NodeShape.class), 
+	               new Object[] { VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"), null }, DiscreteValue.class), 
 	DISCRETE_RENDERER(ValueSelectDialog.class, "showDialog",
 	 	            new Class[] { VisualProperty.class, JDialog.class },
 	 	            new Object[] { VisualPropertyCatalog.getVisualProperty("NODE_RENDERER"), null }, NodeRenderers.class), 
     DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
 	                     new Class[] { VisualProperty.class, JDialog.class },
-	                     new Object[] { VisualPropertyCatalog.getVisualProperty("EDGE_SRCARROW_SHAPE"), null }, ArrowShape.class), 
+	                     new Object[] { VisualPropertyCatalog.getVisualProperty("EDGE_SRCARROW_SHAPE"), null }, DiscreteValue.class), 
 	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
 	                   new Class[] { VisualProperty.class, JDialog.class },
-	                   new Object[] { VisualPropertyCatalog.getVisualProperty("EDGE_LINE_STYLE"), null }, LineStyle.class), 
+	                   new Object[] { VisualPropertyCatalog.getVisualProperty("EDGE_LINE_STYLE"), null }, DiscreteValue.class), 
 	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
 	                        new Class[] { Frame.class, LabelPosition.class },
 	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 

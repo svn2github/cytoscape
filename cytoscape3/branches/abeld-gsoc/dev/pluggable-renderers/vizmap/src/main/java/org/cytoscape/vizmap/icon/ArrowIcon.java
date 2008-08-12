@@ -36,8 +36,6 @@ package org.cytoscape.vizmap.icon;
 
 import org.cytoscape.vizmap.VMMFactory;
 
-import org.cytoscape.vizmap.ArrowShape;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;

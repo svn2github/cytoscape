@@ -87,8 +87,6 @@ import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualProperty;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.VisualMappingManager;
 
 import java.lang.management.ManagementFactory;

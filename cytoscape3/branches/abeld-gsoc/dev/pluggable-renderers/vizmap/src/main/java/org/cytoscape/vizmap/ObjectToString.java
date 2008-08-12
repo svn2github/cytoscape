@@ -62,8 +62,6 @@ public class ObjectToString {
 			return "";
         else if (o instanceof Color)
             return ColorParser.getRGBText((Color) o);
-        else if (o instanceof NodeShape)
-            return NodeShape.getNodeShapeText((NodeShape) o);
         else if (o instanceof Font)
             return getFontStringValue((Font) o);
         else if (o instanceof Number)

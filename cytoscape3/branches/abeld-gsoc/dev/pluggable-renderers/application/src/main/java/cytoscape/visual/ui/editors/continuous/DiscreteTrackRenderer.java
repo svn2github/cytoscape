@@ -57,16 +57,15 @@ import org.jdesktop.swingx.multislider.Thumb;
 
 import cytoscape.Cytoscape;
 
-import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 //import cytoscape.visual.ui.LabelPlacerGraphic;
 
+import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 /**
  * DOCUMENT ME!
@@ -540,7 +539,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 	private static List buildIconArray(int size) {
 		List<ImageIcon> icons = new ArrayList<ImageIcon>();
 
-		Map iconMap = NodeShape.getIconSet();
+		Map iconMap = VisualPropertyCatalog.getVisualProperty("NODE_SHAPE").getIconSet();
 
 		Object[] keys = iconMap.keySet().toArray();
 
@@ -576,22 +575,15 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.setStroke(STROKE2);
 
 		Class dataTypeClass = type.getDataType();
-		if (dataTypeClass.isAssignableFrom(NodeShape.class)){
-			final VisualPropertyIcon icon = (VisualPropertyIcon) type.getIconSet().get(key);
-			icon.setIconHeight(size);
-			icon.setIconWidth(size);
-			g.fill(icon.getShape());
-
-		} else if (dataTypeClass.isAssignableFrom(ArrowShape.class)){
-			final VisualPropertyIcon arrowIcon = ((VisualPropertyIcon) type.getIconSet().get(key));
-			if(arrowIcon != null) {
-				final int newSize = size;
-				arrowIcon.setIconHeight(newSize);
-				arrowIcon.setIconWidth(((Number)(newSize*2.5)).intValue());
+		if (dataTypeClass.isAssignableFrom(DiscreteValue.class)){
+			final VisualPropertyIcon icon = ((VisualPropertyIcon) type.getIconSet().get(key));
+			if(icon != null) {
+				icon.setIconHeight(size);
+				icon.setIconWidth(size);
 				
-				g.translate(-newSize, 0);
-				arrowIcon.paintIcon(this, g, x, y);
-				g.translate(newSize, 0);
+				//g.translate(-newSize, 0);
+				icon.paintIcon(this, g, x, y);
+				//g.translate(newSize, 0);
 			}
 		} else if (dataTypeClass.isAssignableFrom(Font.class)){
 			final Font font = (Font) key;
@@ -604,16 +596,6 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 
 			int stringWidth = SwingUtilities.computeStringWidth(g.getFontMetrics(), fontName);
 			g.drawString(fontName, (size / 2) - (stringWidth / 2), size + smallFontSize + 2);
-		} else if (dataTypeClass.isAssignableFrom(LineStyle.class)){
-			final Stroke stroke = ((LineStyle) key).getStroke(2.0f);
-			final int newSize2 = (int) (size * 1.5);
-			g.translate(0, -size * 0.25);
-			g.setColor(Color.DARK_GRAY);
-			g.drawRect(0, 0, size, newSize2);
-			g.setStroke(stroke);
-			g.setColor(ICON_COLOR);
-			g.drawLine(size - 1, 1, 1, newSize2 - 1);
-			g.translate(0, size * 0.25);
 		} else if (dataTypeClass.isAssignableFrom(LabelPosition.class)){
 			// TODO: this was commented out as "TODO" in original (pre-pluggable-renderers refactor) code
 		} else if (dataTypeClass.isAssignableFrom(String.class)){

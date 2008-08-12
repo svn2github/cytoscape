@@ -53,8 +53,8 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 
 import org.cytoscape.GraphPerspective;
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.SubjectBase;
+import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteLegend;
 import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingReader;
@@ -190,7 +190,10 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	public Class[] getAcceptedDataClasses() {
 		Class[] ret = {
 		                  String.class, Number.class, Integer.class, Double.class, Float.class,
-		                  Long.class, Short.class, NodeShape.class, List.class
+		                  Long.class, Short.class,
+		                  DiscreteValue.class
+		                  /*FIXME: this was originaly NodeShape.class, ie. ArrowShape etc. was missing from this list. Was that deliberate?*/,
+		                  List.class
 		              };
 
 		return ret;

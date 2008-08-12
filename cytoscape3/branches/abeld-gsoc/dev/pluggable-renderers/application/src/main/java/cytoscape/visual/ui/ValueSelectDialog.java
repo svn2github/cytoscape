@@ -56,7 +56,6 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import org.cytoscape.view.VisualProperty;
@@ -243,11 +242,12 @@ public class ValueSelectDialog extends JDialog {
 			if(type.getName().equals("EDGE_SRCARROW_SHAPE") || type.getName().equals("EDGE_TGTARROW_SHAPE")) {
 				icon.setIconWidth(icon.getIconWidth()*3);
 			}
+			/* FIXME: handle this later
 			if(type.getName().equals("NODE_SHAPE") && ((NodeShape)key).isSupported() == false) {
 				// Filter shapes not supported by current rendering engine.
 				// Maybe supported in future versions...
 				continue;
-			}
+			}*/
 			icons.add(icon);
 			orderedKeyList.add(key);
 			model.addElement(icon.getName());

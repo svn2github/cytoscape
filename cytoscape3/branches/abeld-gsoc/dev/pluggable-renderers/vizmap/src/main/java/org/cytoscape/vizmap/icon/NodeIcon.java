@@ -34,9 +34,10 @@
 */
 package org.cytoscape.vizmap.icon;
 
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VMMFactory;
 import org.cytoscape.view.VisualPropertyCatalog;
+
+import cytoscape.render.immed.GraphGraphics;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -47,6 +48,7 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 
 /**
@@ -66,14 +68,14 @@ public class NodeIcon extends VisualPropertyIcon {
 	 * Creates a new NodeIcon object.
 	 */
 	public NodeIcon() {
-		this(((NodeShape) VMMFactory.getVisualMappingManager().getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"))).getShape(),
+		this(((Integer) VMMFactory.getVisualMappingManager().getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"))),
 		     DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE,
-			 ((NodeShape)VMMFactory.getVisualMappingManager().getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"))).getShapeName(),
+			 "some default name" /*FIXME*/,
 		     DEFAULT_ICON_COLOR);
 	}
 	
-	public NodeIcon(NodeShape ns) {
-		this(ns.getShape(), DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE, ns.getShapeName(), DEFAULT_ICON_COLOR);
+	public NodeIcon(Shape s) {
+		this(s, DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE, "some shape"/*FIXME: names!! */, DEFAULT_ICON_COLOR);
 	}
 
 	/**
@@ -99,6 +101,12 @@ public class NodeIcon extends VisualPropertyIcon {
 	 */
 	public NodeIcon(Shape shape, int width, int height, String name, Color color) {
 		super(shape, width, height, name, color);
+
+		adjustShape();
+	}
+
+	public NodeIcon(Integer shape_code, int width, int height, String name, Color color) {
+		super(GraphGraphics.getNodeShapes().get(new Byte(shape_code.byteValue())), width, height, name, color);
 
 		adjustShape();
 	}

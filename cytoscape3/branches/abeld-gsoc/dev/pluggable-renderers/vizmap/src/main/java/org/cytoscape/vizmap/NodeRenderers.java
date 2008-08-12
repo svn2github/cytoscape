@@ -99,21 +99,6 @@ public enum NodeRenderers {
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param shape
-	 *            DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public static String getNodeShapeText(NodeShape shape) {
-		String nstext = shape.name();
-		nstext = nstext.replaceAll("_", "");
-
-		return nstext.toLowerCase();
-	}
-
-	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!

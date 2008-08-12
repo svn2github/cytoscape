@@ -56,6 +56,7 @@ import cytoscape.util.SwingWorker;
 
 import cytoscape.util.swing.DropDownMenuButton;
 
+import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualPropertyCatalog;
 
@@ -63,11 +64,8 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 import org.cytoscape.view.VisualProperty;
 
-import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.CalculatorCatalog;
 import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
 
 import org.cytoscape.vizmap.VisualStyle;
@@ -296,10 +294,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		colorCellEditor.addPropertyChangeListener(this);
 		fontCellEditor.addPropertyChangeListener(this);
 		numberCellEditor.addPropertyChangeListener(this);
-		shapeCellEditor.addPropertyChangeListener(this);
 		stringCellEditor.addPropertyChangeListener(this);
-		lineCellEditor.addPropertyChangeListener(this);
-		arrowCellEditor.addPropertyChangeListener(this);
 		nodeRendererCellEditor.addPropertyChangeListener(this);
 
 		labelPositionEditor.addPropertyChangeListener(this);
@@ -731,11 +726,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// For colors
 	private CyColorCellRenderer collorCellRenderer = new CyColorCellRenderer();
 	private CyColorPropertyEditor colorCellEditor = new CyColorPropertyEditor();
-
+	
+	
 	// For shapes
 	private ShapeCellRenderer shapeCellRenderer = new ShapeCellRenderer(VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"));
 	private CyComboBoxPropertyEditor shapeCellEditor = new CyComboBoxPropertyEditor();
-
+	
 	private NodeRendererCellRenderer nodeRendererCellRenderer = new NodeRendererCellRenderer(VisualPropertyCatalog.getVisualProperty("NODE_RENDERER"));
 	private CyComboBoxPropertyEditor nodeRendererCellEditor = new CyComboBoxPropertyEditor();
 
@@ -774,9 +770,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	// For mapping types.
 	private CyComboBoxPropertyEditor mappingTypeEditor = new CyComboBoxPropertyEditor();
-	private static final Map<Object, Icon> nodeShapeIcons = NodeShape.getIconSet();
-	private static final Map<Object, Icon> arrowShapeIcons = ArrowShape.getIconSet();
-	private static final Map<Object, Icon> lineTypeIcons = LineStyle.getIconSet();
 	private PropertyRendererRegistry rendReg = new PropertyRendererRegistry();
 	private PropertyEditorRegistry editorReg = new PropertyEditorRegistry();
 
@@ -1075,34 +1068,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		mappingTypeEditor.setAvailableValues(mappingTypes.toArray());
 
-		VisualPropertyIcon newIcon;
-
-		List<Icon> iconList = new ArrayList<Icon>();
-		final List<NodeShape> nodeShapes = new ArrayList<NodeShape>();
-
-		for (Object key : nodeShapeIcons.keySet()) {
-			NodeShape shape = (NodeShape) key;
-
-			if (shape.isSupported()) {
-				iconList.add(nodeShapeIcons.get(key));
-				nodeShapes.add(shape);
-			}
-		}
-
-		Icon[] iconArray = new Icon[iconList.size()];
-		String[] shapeNames = new String[iconList.size()];
-
-		for (int i = 0; i < iconArray.length; i++) {
-			newIcon = ((NodeIcon) iconList.get(i)).clone();
-			newIcon.setIconHeight(16);
-			newIcon.setIconWidth(16);
-			iconArray[i] = newIcon;
-			shapeNames[i] = nodeShapes.get(i).getShapeName();
-		}
-
-		shapeCellEditor.setAvailableValues(nodeShapes.toArray());
-		shapeCellEditor.setAvailableIcons(iconArray);
-
 		/* cell renderers */
 		final Map<Object, Icon> nodeRendererIconSet = NodeRenderers.getIconSet();
 		final ArrayList <NodeRenderers>nodeRendererValues = new ArrayList<NodeRenderers>();
@@ -1114,43 +1079,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		nodeRendererCellEditor.setAvailableValues(nodeRendererValues.toArray());
 		nodeRendererCellEditor.setAvailableIcons(nodeRendererIcons.toArray(new Icon[0]));
-		/**/
-		iconList.clear();
-		iconList.addAll(arrowShapeIcons.values());
-		iconArray = new Icon[iconList.size()];
-
-		String[] arrowNames = new String[iconList.size()];
-		Set arrowShapes = arrowShapeIcons.keySet();
-
-		for (int i = 0; i < iconArray.length; i++) {
-			newIcon = ((ArrowIcon) iconList.get(i));
-			newIcon.setIconHeight(16);
-			newIcon.setIconWidth(40);
-			newIcon.setBottomPadding(-9);
-			iconArray[i] = newIcon;
-			arrowNames[i] = newIcon.getName();
-		}
-
-		arrowCellEditor.setAvailableValues(arrowShapes.toArray());
-		arrowCellEditor.setAvailableIcons(iconArray);
-
-		iconList = new ArrayList();
-		iconList.addAll(lineTypeIcons.values());
-		iconArray = new Icon[iconList.size()];
-		shapeNames = new String[iconList.size()];
-
-		Set lineTypes = lineTypeIcons.keySet();
-
-		for (int i = 0; i < iconArray.length; i++) {
-			newIcon = (VisualPropertyIcon) (iconList.get(i));
-			newIcon.setIconHeight(16);
-			newIcon.setIconWidth(16);
-			iconArray[i] = newIcon;
-			shapeNames[i] = newIcon.getName();
-		}
-
-		lineCellEditor.setAvailableValues(lineTypes.toArray());
-		lineCellEditor.setAvailableIcons(iconArray);
 	}
 
 	private void updateTableView() {
@@ -1573,14 +1501,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final Set<Object> attrSet = loadKeys(attrName, attr, firstMap, nodeOrEdge);
 				Class dataTypeClass = type.getDataType();
 
-				if (dataTypeClass.isAssignableFrom(LineStyle.class)){ // FIXME: these should be Enum-like instead!! (or Discrete or something)
-					setDiscreteProps(type, discMapping, attrSet, lineCellEditor, lineCellRenderer, calculatorTypeProp);
-				} else if (dataTypeClass.isAssignableFrom(NodeShape.class)){
-					setDiscreteProps(type, discMapping, attrSet, shapeCellEditor, shapeCellRenderer, calculatorTypeProp);
+				if (dataTypeClass.isAssignableFrom(DiscreteValue.class)){ // FIXME: these should be Enum-like instead!! (or Discrete or something)
+					setDiscreteProps(type, discMapping, attrSet, buildCellEditor(type), new ShapeCellRenderer(type), calculatorTypeProp);
 				} else if (dataTypeClass.isAssignableFrom(NodeRenderers.class)){
 					setDiscreteProps(type, discMapping, attrSet, nodeRendererCellEditor, nodeRendererCellRenderer, calculatorTypeProp);
-				} else if (dataTypeClass.isAssignableFrom(ArrowShape.class)){
-					setDiscreteProps(type, discMapping, attrSet, arrowCellEditor, arrowShapeCellRenderer, calculatorTypeProp);
 				} else if (dataTypeClass.isAssignableFrom(LabelPosition.class)){
 					setDiscreteProps(type, discMapping, attrSet, labelPositionEditor, labelPositionRenderer, calculatorTypeProp);
 				} else if (dataTypeClass.isAssignableFrom(Number.class)){
@@ -1666,7 +1590,20 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		visualPropertySheetPanel.setRendererFactory(rendReg);
 		visualPropertySheetPanel.setEditorFactory(editorReg);
 	}
-
+	private CyComboBoxPropertyEditor buildCellEditor(VisualProperty vp){
+		final List<Icon> iconList = new ArrayList<Icon>();
+		final List<Object> values = new ArrayList<Object>();
+		final Map<Object, Icon> iconSet = vp.getIconSet();
+		
+		for (Object val: iconSet.values()){
+			iconList.add(iconSet.get(val));
+			values.add(val);
+		}
+		CyComboBoxPropertyEditor editor = new CyComboBoxPropertyEditor();
+		editor.setAvailableValues(values.toArray());
+		editor.setAvailableIcons(iconList.toArray(new Icon[0]));
+		return editor;
+	}
 	private void setPropertyFromCalculator(List<Calculator> calcList, String rootCategory,
 	                                       List<Property> propRecord) {
 		VisualProperty type = null;

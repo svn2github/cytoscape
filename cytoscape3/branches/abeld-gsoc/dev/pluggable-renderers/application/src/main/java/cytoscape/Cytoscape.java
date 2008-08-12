@@ -64,6 +64,7 @@ import cytoscape.init.CyInitParams;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 
+import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.FileUtil;
 
 import org.cytoscape.view.GraphView;
@@ -72,14 +73,15 @@ import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.view.VisualPropertyCatalog;
 import cytoscape.LegacyVisualProperty;
 
-import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.NodeRenderers;
-import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.VMMFactory;
+import org.cytoscape.vizmap.icon.ArrowIcon;
+import org.cytoscape.vizmap.icon.LineTypeIcon;
+import org.cytoscape.vizmap.icon.NodeIcon;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
@@ -94,6 +96,7 @@ import org.cytoscape.view.ShapeFactory;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
@@ -112,6 +115,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.LinkedList;
 
+import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 
@@ -1966,6 +1970,45 @@ public abstract class Cytoscape {
 		}
 		return result.toArray();
 	}
+
+	public static Map<Object, Icon> getNodeIconSet(Object [] values, Map<Byte, Shape>shapes) {
+		Map<Object, Icon> nodeShapeIcons = new HashMap<Object, Icon>();
+		for (int i = 0; i < values.length; i++) {
+			Integer value = (Integer) values[i];
+			Shape shape = shapes.get(new Byte(value.byteValue()));
+			
+			nodeShapeIcons.put(shape, new NodeIcon(shape));
+			
+		}
+		return nodeShapeIcons;
+	}
+
+	public static Map<Object, Icon> getArrowIconSet(Object [] values, Map<Byte, Shape>shapes) {
+		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
+
+		for (int i = 0; i < values.length; i++) {
+			Integer value = (Integer) values[i];
+			Shape shape = shapes.get(new Byte(value.byteValue()));
+			ArrowIcon icon = new ArrowIcon(shape, 
+			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
+			                               VisualPropertyIcon.DEFAULT_ICON_SIZE,
+			                               "someShape" /* FIXME: user-friendly string! */);
+			arrowShapeIcons.put(shape, icon);
+		}
+
+		return arrowShapeIcons;
+	}
+
+	public static Map<Object, Icon> getLineStyleIconSet(Object [] values) {
+		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
+
+		for (int i = 0; i < values.length; i++) {
+			Stroke value = (Stroke) values[i];
+			arrowShapeIcons.put(value, new LineTypeIcon(value));
+		}
+
+		return arrowShapeIcons;
+	}
 	/** For the duration of pluggable VisualProperties refactor: add legacy VisualProperties */
 	public static void defineHardcodedVisualProperties(){
 		VisualPropertyCatalog.addVisualProperty(new LegacyVisualProperty("NODE_FILL_COLOR", Color.class, true));
@@ -1974,8 +2017,10 @@ public abstract class Cytoscape {
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_BORDER_OPACITY", Number.class, true));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL_OPACITY", Number.class, true));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_RENDERER", NodeRenderers.class, true));
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("NODE_SHAPE", Integer.class, true,
-												range(0, 8, 1), NodeShape.getIconSet()));
+
+		Object []range = range(0, 8, 1); 
+		Map<Object, Icon> iconSet = getNodeIconSet(range, GraphGraphics.getNodeShapes()); 
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("NODE_SHAPE", Integer.class, true, range, iconSet));
 		
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_SIZE", Number.class, true));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_WIDTH", Number.class, true));
@@ -1994,14 +2039,16 @@ public abstract class Cytoscape {
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_COLOR", Color.class, false));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TOOLTIP", String.class, false));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LINE_WIDTH", Number.class, false));
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_LINE_STYLE", Stroke.class, true,
-					new Object[]{new BasicStroke(1.0f/*FIXME: width -- is this just a placeholder value? */),
-								new BasicStroke(1.0f /*see above */, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f, 4.0f}, 0.0f)  },
-								NodeShape.getIconSet()));
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_SRCARROW_SHAPE", Integer.class, true,
-				range(-1, -5, -1), ArrowShape.getIconSet()));
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_TGTARROW_SHAPE", Integer.class, true,
-				range(-1, -5, -1), ArrowShape.getIconSet()));
+
+		range = new Object[]{new BasicStroke(1.0f/*FIXME: width -- is this just a placeholder value? */),
+				new BasicStroke(1.0f /*see above */, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f, 4.0f}, 0.0f)  };
+		iconSet = getLineStyleIconSet(range);
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_LINE_STYLE", Stroke.class, true, range, iconSet));
+		
+		range = range(-1, -5, -1); 
+		iconSet = getArrowIconSet(range, GraphGraphics.getArrowShapes()); 
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_SRCARROW_SHAPE", Integer.class, true, range, iconSet));
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_TGTARROW_SHAPE", Integer.class, true, range, iconSet));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_COLOR", Color.class, false));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_COLOR", Color.class, false));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_OPACITY", Number.class, false));
