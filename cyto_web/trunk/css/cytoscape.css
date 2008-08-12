@@ -646,6 +646,10 @@ a {
 
 }
 
+#rightbox .navigation a img{
+	border-style:none;
+}
+
 #rightbox .navigation li {
 	text-decoration: none;
 	margin: 7px;
