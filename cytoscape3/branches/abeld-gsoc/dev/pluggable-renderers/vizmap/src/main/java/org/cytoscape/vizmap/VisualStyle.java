@@ -225,11 +225,7 @@ public class VisualStyle implements Cloneable {
 			System.out.println("error: having to force default backgroundColor");
 			backgroundColor= Color.lightGray;
 		}
-		for (EdgeView ev: network_view.getEdgeViewsList()){
-			ev.setSelectedPaint(backgroundColor);
-		}
-
-		network_view.setBackgroundPaint((Color) globalVisualProperties.get("backgroundColor"));
+		network_view.setBackgroundPaint(backgroundColor);
 
 		// will ignore sloppy & reverse selection color for now // FIXME
 		GraphPerspective network = network_view.getNetwork();
