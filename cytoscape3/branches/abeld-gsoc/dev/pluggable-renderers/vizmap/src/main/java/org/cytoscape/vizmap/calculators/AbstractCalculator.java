@@ -44,11 +44,7 @@ package org.cytoscape.vizmap.calculators;
 
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
-import org.cytoscape.attributes.CyAttributesFactory;
 
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
 import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.mappings.MappingFactory;
@@ -56,7 +52,6 @@ import org.cytoscape.vizmap.mappings.ObjectMapping;
 
 //------------------------------------------------------------------------------
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -67,6 +62,7 @@ import javax.swing.event.ChangeListener;
 
 import org.cytoscape.GraphObject;
 import org.cytoscape.GraphPerspective;
+import org.cytoscape.Node;
 
 
 //------------------------------------------------------------------------------
@@ -375,53 +371,9 @@ public abstract class AbstractCalculator implements Calculator {
 		return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
 	}
 
-    public void apply(GraphView network_view){
-    	VisualProperty vp = getVisualProperty();
-    	
-    	if (vp.isNodeProp()){
-    		// edge VisualProperty:
-        	NodeView nodeView;
-
-        	CyAttributes attrs = CyAttributesFactory.getCyAttributes("node");
-    		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
-    			nodeView = (NodeView) i.next();
-
-    			if (nodeView == null) // FIXME:
-    				// WARNING: This is a hack, nodeView should not be null, but
-    				// for now do this! (iliana)
-    				continue;
-    			
-    			// FIXME FIXME FIXME FIXME FIXME FIXME
-
-    			Object o = type.getDefaultAppearanceObject();
-    			o = getRangeValue(nodeView.getNode(), attrs); 
-    			vp.applyToNodeView(nodeView, o);
-    		}
-    	} else {
-    		// edge VisualProperty:
-        	EdgeView edgeView;
-
-        	CyAttributes attrs = CyAttributesFactory.getCyAttributes("edge");
-    		for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
-    			edgeView = (EdgeView) i.next();
-
-    			if (edgeView == null)
-    				// WARNING: This is a hack, edgeView should not be null, but
-    				// for now do this! (iliana)
-    				continue;
-    			
-    			// FIXME FIXME FIXME FIXME FIXME FIXME
-    			
-    			Object o = type.getDefaultAppearanceObject();
-    			o = getRangeValue(edgeView.getEdge(), attrs); 
-    			vp.applyToEdgeView(edgeView, o);
-    		}
-    	}
-    }
-
 	@SuppressWarnings("unchecked") // TODO again, this should be fixed as part of CyAttributes
 	                               // this one is also related to bug 247!!!
-	protected Object getRangeValue(GraphObject obj,CyAttributes attrs) {
+	public Object getRangeValue(GraphObject obj,CyAttributes attrs) {
 		if (obj == null)
 			return null;
 

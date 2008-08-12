@@ -50,11 +50,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.cytoscape.Edge;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CyAttributesFactory;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
 import org.cytoscape.vizmap.calculators.Calculator;
@@ -213,11 +215,20 @@ public class VisualStyle implements Cloneable {
 		return tmp;
 	}
 
+	private Object getByPass(VisualProperty vp, String graphObjectIdentifier, CyAttributes attr){
+		String value = attr.getStringAttribute(graphObjectIdentifier, vp.getName());
+		if (value == null){
+			return null;
+		} else {
+			System.out.println("returning non-null bypass value");
+			return new Integer(1);
+		}
+	}
+
 	/** Apply this VisualStyle to the view */
 	public void apply(GraphView network_view){
-		for (Calculator c: calculators.values()){
-			c.apply(network_view);
-		}
+		System.out.println("APPLYING VISUAL STYLE");
+		
 		// FIXME: rethink this:
 		// setup proper background colors
 		Color backgroundColor = (Color) globalVisualProperties.get("backgroundColor");
@@ -230,12 +241,62 @@ public class VisualStyle implements Cloneable {
 		// will ignore sloppy & reverse selection color for now // FIXME
 		GraphPerspective network = network_view.getNetwork();
 		
+		// apply visual style to Nodes:
+    	NodeView nodeView;
+
+    	CyAttributes attrs = CyAttributesFactory.getCyAttributes("node");
+		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
+			nodeView = (NodeView) i.next();
+
+			if (nodeView == null) // FIXME:
+				// WARNING: This is a hack, nodeView should not be null, but
+				// for now do this! (iliana)
+				continue;
+
+			for (VisualProperty vp:VisualPropertyCatalog.getNodeVisualPropertyList()){
+				Object o = getByPass(vp, nodeView.getNode().getIdentifier(), attrs);
+				if (o == null) {
+					Calculator c = calculators.get(vp);
+					if (c!= null){
+						o = c.getRangeValue(nodeView.getNode(), attrs);
+					}
+				}
+				if (o == null) { o = vp.getDefaultAppearanceObject(); }
+				vp.applyToNodeView(nodeView, o);
+			}
+		}
+
+    	EdgeView edgeView;
+
+    	attrs = CyAttributesFactory.getCyAttributes("edge");
+    	
+		for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
+			edgeView = (EdgeView) i.next();
+
+			if (edgeView == null)
+				// WARNING: This is a hack, edgeView should not be null, but
+				// for now do this! (iliana)
+				continue;
+
+			for (VisualProperty vp:VisualPropertyCatalog.getNodeVisualPropertyList()){
+				Object o = getByPass(vp, edgeView.getEdge().getIdentifier(), attrs);
+				if (o == null) {
+					Calculator c = calculators.get(vp);
+					if (c!= null){
+						o = c.getRangeValue(edgeView.getEdge(), attrs);
+					}
+				}
+				if (o == null) { o = vp.getDefaultAppearanceObject(); }
+				vp.applyToEdgeView(edgeView, o);
+			}
+		}
+		
 		// Set selection colors
 		Color nodeSelectionColor = (Color) globalVisualProperties.get("nodeSelectionColor");
 		for (Node n: network.nodesList()){ // FIXME: GraphView should have an .nodeViewsList() method but apparently doesn't have one now.
 			network_view.getNodeView(n).setSelectedPaint(nodeSelectionColor );
 		}
-
+		
 		Color edgeSelectionColor = (Color) globalVisualProperties.get("edgeSelectionColor");
 		if (edgeSelectionColor == null){ // FIXME FIXME: temporary hack, shouldn't be needed!!
 			System.out.println("error: having to force default edgeSelectionColor");

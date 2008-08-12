@@ -43,6 +43,7 @@
 package org.cytoscape.vizmap.calculators;
 
 
+import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualProperty;
 
@@ -56,6 +57,7 @@ import java.util.Vector;
 import javax.swing.event.ChangeListener;
 
 import org.cytoscape.Edge;
+import org.cytoscape.GraphObject;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
 
@@ -132,9 +134,10 @@ public interface Calculator extends Cloneable {
      */
     public VisualProperty getVisualProperty();
 
-    /** for new-style simplified API: */
-    public void apply(GraphView network_view);
-    
+	@SuppressWarnings("unchecked") 	// TODO again, this should be fixed as part of CyAttributes
+									// this one is also related to bug 247!!!
+	public Object getRangeValue(GraphObject obj,CyAttributes attrs);
+
     /**
      * DOCUMENT ME!
      *
