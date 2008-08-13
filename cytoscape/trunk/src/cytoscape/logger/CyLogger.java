@@ -42,34 +42,132 @@
  * to alert/inform users about various events that occur during the processing
  * within Cytoscape or within a Cytoscape plugin.  Currently, this class provides
  * it's own logging buffers -- in the 3.0 time frame, this will probably be replaced
- * by a more general mechanism such as log4j or java's own logging.
+ * by a more general mechanism such as log4j or java's own logging.  Of note to
+ * developers is the <i>cytoscape.debug</i> property, which when set to <b>true</b>
+ * will enable the LOG_DEBUG level of logging.  Otherwise, no debug level logging
+ * will be done.
  */
 
 package cytoscape.logger;
 
+import cytoscape.CytoscapeInit;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Properties;
 
 public class CyLogger {
 	private static HashMap<String,CyLogger> logMap = new HashMap();
 	private static HashMap<LogLevel,List<CyLogHandler>> globalHandlerMap = new HashMap();
 	private HashMap<LogLevel, List<CyLogHandler>> handlerMap = new HashMap();
 	private String loggerName = null;
+	private boolean debugging = true;
 
+	/**
+ 	 * Get a logger with the specified name
+ 	 *
+ 	 * @param name the name of the logger
+ 	 * @return the logger to use
+ 	 */
+	public static CyLogger getLogger(String name) {
+		CyLogger logger = null;
+		if (logMap.containsKey(name)) {
+			logger = logMap.get(name);
+		} else {
+			logger = new CyLogger(name);
+		}
+		return logger;
+	}
+
+	/**
+ 	 * Get a logger for the specified class
+ 	 *
+ 	 * @param logClass the class this logger logs for
+ 	 * @return the logger to use
+ 	 */
+  public static CyLogger getLogger(Class logClass) {
+    return CyLogger.getLogger(logClass.getName());
+  }
+
+	/**
+ 	 * Get the default ("cytoscape") logger
+ 	 *
+ 	 * @return the logger to use
+ 	 */
+  public static CyLogger getLogger() {
+		return getLogger("cytoscape");
+	}
+
+	/**
+	 * The constructor to create a CyLogger.  This should
+	 * not be used, use getLogger instead.
+	 */
 	protected CyLogger(String name) {
 		loggerName = name;
 		logMap.put(name,this);
+		Properties properties = CytoscapeInit.getProperties();
+		if (properties != null) {
+			debugging = false;
+			String debug = properties.getProperty("cytoscape.debug");
+			debugging = Boolean.parseBoolean(debug);
+		}
 	}
 
-
+	/**
+	 * Log a debug message.
+	 *
+	 * @param message the message to be logged
+	 */
 	public void debug(String message) { log(message,LogLevel.LOG_DEBUG); }
+
+	/**
+	 * Log an informational message.
+	 *
+	 * @param message the message to be logged
+	 */
 	public void info(String message) { log(message,LogLevel.LOG_INFO); }
+
+	/**
+	 * Log a warning message.
+	 *
+	 * @param message the message to be logged
+	 */
 	public void warn(String message) { log(message,LogLevel.LOG_WARN); }
+
+	/**
+	 * Log a warning message.
+	 *
+	 * @param message the message to be logged
+	 */
+	public void warning(String message) { log(message,LogLevel.LOG_WARN); }
+
+	/**
+	 * Log an error message.
+	 *
+	 * @param message the message to be logged
+	 */
 	public void error(String message) { log(message,LogLevel.LOG_ERROR); }
+
+	/**
+	 * Log a fatal error message.
+	 *
+	 * @param message the message to be logged
+	 */
 	public void fatal(String message) { log(message,LogLevel.LOG_FATAL); }
 
+	/**
+	 * Log a message at the specified log level.
+	 *
+	 * @param message the message to be logged
+	 * @param level the LogLevel to log the message at
+	 */
 	public void log(String message, LogLevel level) {
+		// Is this a DEBUG message?
+		if (level == LogLevel.LOG_DEBUG) {
+			// Are we debugging?
+			// No, just return
+		}
 		// Format the message
 		String formattedMessage = loggerName+"["+level+"]: "+message;
 		// See if there are any handlers at all
@@ -88,6 +186,13 @@ public class CyLogger {
 		}
 	}
 
+	/**
+	 * Add a new log handler for specific messages
+	 *
+	 * @param handler the CyLogHandler that will handle the messages
+	 * @param loggerName a String that indicates which messages this handler handles
+	 * @param level the minimum LogLevel this handler is interested in
+	 */
 	public void addLogHandler(CyLogHandler handler, String loggerName, LogLevel level) {
 		List<CyLogHandler>list = null;
 		HashMap<LogLevel,List<CyLogHandler>> map = null;
@@ -108,10 +213,24 @@ public class CyLogger {
 		map.put(level, list);
 	}
 
+	/**
+	 * Add a new general log handler for all messages
+	 *
+	 * @param handler the CyLogHandler that will handle the messages
+	 * @param level the minimum LogLevel this handler is interested in
+	 */
 	public void addLogHandler(CyLogHandler handler, LogLevel level) {
 		addLogHandler(handler, null, level);
 	}
 
+	/**
+	 * Returns the current list of log handlers for the specified logger at
+	 * the suggested minimum level.
+	 *
+	 * @param loggerName a String that indicates which messages the handlers handle
+	 * @param level the minimum LogLevel the handlers are interested in
+	 * @return a List of CyLogHandlers the meet the criteria
+	 */
 	public List<CyLogHandler> getLogHandlers(String loggerName, LogLevel level) {
 		HashMap<LogLevel,List<CyLogHandler>> map = null;
 
@@ -128,10 +247,24 @@ public class CyLogger {
 		return null;
 	}
 
+	/**
+	 * Returns the current list of log handlers for the specified 
+	 * minimum level.
+	 *
+	 * @param level the minimum LogLevel the handlers are interested in
+	 * @return a List of CyLogHandlers the meet the criteria
+	 */
 	public List<CyLogHandler> getLogHandlers(LogLevel level) {
 		return getLogHandlers(null, level);
 	}
 
+	/**
+	 * Remove a log handler for specific messages
+	 *
+	 * @param handler the CyLogHandler to remove
+	 * @param loggerName a String that indicates which messages this handler handles
+	 * @param level the minimum LogLevel this handler is interested in
+	 */
 	public CyLogHandler removeLogHandler(CyLogHandler handler, String loggerName, LogLevel level) {
 		HashMap<LogLevel,List<CyLogHandler>> map = null;
 
@@ -156,6 +289,12 @@ public class CyLogger {
 		return null;
 	}
 
+	/**
+	 * Remove a general log handler
+	 *
+	 * @param handler the CyLogHandler to remove
+	 * @param level the minimum LogLevel this handler is interested in
+	 */
 	public CyLogHandler removeLogHandler(CyLogHandler handler, LogLevel level) {
 		return removeLogHandler(handler, null, level);
 	}
@@ -168,23 +307,5 @@ public class CyLogger {
 				list.addAll(map.get(level));
 		}
 		return list;
-	}
-
-	public static CyLogger getLogger(String name) {
-		CyLogger logger = null;
-		if (logMap.containsKey(name)) {
-			logger = logMap.get(name);
-		} else {
-			logger = new CyLogger(name);
-		}
-		return logger;
-	}
-
-  public static CyLogger getLogger(Class logClass) {
-    return CyLogger.getLogger(logClass.getName());
-  }
-
-  public static CyLogger getLogger() {
-		return getLogger("cytoscape");
 	}
 }

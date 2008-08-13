@@ -38,6 +38,10 @@
 
 package cytoscape.logger;
 
+/**
+ * The ConsoleLogger is the default log handler for Cytoscape and does nothing
+ * much more than issue messages to System.out or System.err, as appropriate.
+ */
 public class ConsoleLogger implements CyLogHandler {
 	private static ConsoleLogger logger = null;
 

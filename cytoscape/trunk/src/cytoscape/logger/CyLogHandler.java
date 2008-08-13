@@ -38,6 +38,18 @@
 
 package cytoscape.logger;
 
+/**
+ * The CyLogHandler interface must be implemented by log handlers for plugins
+ * that wish to handle their own logging.
+ */
 public interface CyLogHandler {
+	/**
+	 * The only method required is handleLog, which is called whenever the
+	 * logging mechanism detects that a message appropriate for this handler
+	 * has been logged.
+	 *
+	 * @param level the level of the message
+	 * @param logMessage the message itself
+	 */
 	public void handleLog(LogLevel level, String logMessage);
 }
