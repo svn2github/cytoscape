@@ -167,12 +167,12 @@ public class LegacyVisualProperty implements VisualProperty {
 			return;
 		
 		if (name.equals("NODE_FILL_COLOR")){
-			// already moved to NodeRenderer-style
+			nv.setUnselectedPaint((Paint)o);
 		} else if (name.equals("NODE_BORDER_COLOR")){
+			nv.setBorderPaint((Paint)o);
+		} else if (name.equals("NODE_OPACITY")){ // FIXME
 			// already moved to NodeRenderer-style
-		} else if (name.equals("NODE_OPACITY")){
-			// already moved to NodeRenderer-style
-		} else if (name.equals("NODE_BORDER_OPACITY")){
+		} else if (name.equals("NODE_BORDER_OPACITY")){ // FIXME
 			// already moved to NodeRenderer-style
 		} else if (name.equals("NODE_LABEL_OPACITY")){
 			Integer tp = ((Color) nv.getLabel().getTextPaint()).getAlpha();
@@ -291,13 +291,13 @@ public class LegacyVisualProperty implements VisualProperty {
 	public Object getDefaultAppearanceObject() {
 		// FIXME FIXME: refactor
 		if (name.equals("NODE_FILL_COLOR")){
-			// already moved to NodeRenderer-style
+			return Color.orange;
 		} else if (name.equals("NODE_BORDER_COLOR")){
-			// already moved to NodeRenderer-style
+			return Color.black;
 		} else if (name.equals("NODE_OPACITY")){
-			// already moved to NodeRenderer-style
+			return Integer.valueOf(255);
 		} else if (name.equals("NODE_BORDER_OPACITY")){
-			// already moved to NodeRenderer-style
+			return Integer.valueOf(255);
 		} else if (name.equals("NODE_LABEL_OPACITY")){
 			return Integer.valueOf(255);
 		} else if (name.equals("NODE_RENDERER")){
@@ -312,8 +312,6 @@ public class LegacyVisualProperty implements VisualProperty {
 			return "";
 		} else if (name.equals("NODE_FONT_FACE")){
 			return new Font(null, Font.PLAIN, 12);
-		} else if (name.equals("NODE_BORDER_COLOR")){
-			// already moved to NodeRenderer-style
 		} else if (name.equals("NODE_FONT_SIZE")){
 			return new Float(12.0f);
 		} else if (name.equals("NODE_LABEL_COLOR")){
@@ -354,7 +352,6 @@ public class LegacyVisualProperty implements VisualProperty {
 			System.out.println("unhandled VisualProperty!!: "+name);
 			return null;
 		}
-		return null; // some don't return...
 	}
 
 	public Icon getDefaultIcon() {
