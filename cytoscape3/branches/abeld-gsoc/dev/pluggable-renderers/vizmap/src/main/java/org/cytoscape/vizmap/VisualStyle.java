@@ -278,7 +278,7 @@ public class VisualStyle implements Cloneable {
 				// for now do this! (iliana)
 				continue;
 
-			for (VisualProperty vp:VisualPropertyCatalog.getNodeVisualPropertyList()){
+			for (VisualProperty vp:VisualPropertyCatalog.getEdgeVisualPropertyList()){
 				Object o = getByPass(vp, edgeView.getEdge().getIdentifier(), attrs);
 				if (o == null) {
 					Calculator c = calculators.get(vp);

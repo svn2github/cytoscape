@@ -158,7 +158,7 @@ public class LegacyVisualProperty implements VisualProperty {
 		} else if (name.equals("EDGE_LABEL_POSITION")){
 			/* this was commented out in EdgeLabelPositionProp.java (??) */
 		} else {
-			System.out.println("unhandled VisualProperty!!: "+name);
+			System.out.println("unhandled VisualProperty! (apply to EdgeView): "+name);
 		}
 	}
 
@@ -283,7 +283,7 @@ public class LegacyVisualProperty implements VisualProperty {
 			if (nv.getLabelOffsetY() != newOffsetY)
 				nv.setLabelOffsetY(newOffsetY);
 		} else {
-			System.out.println("unhandled VisualProperty!!: "+name);
+			System.out.println("unhandled VisualProperty! (apply to NodeView): "+name);
 		}
 
 	}
@@ -349,7 +349,7 @@ public class LegacyVisualProperty implements VisualProperty {
 		} else if (name.equals("EDGE_LABEL_POSITION")){
 			return new LabelPosition();
 		} else {
-			System.out.println("unhandled VisualProperty!!: "+name);
+			System.out.println("unhandled VisualProperty! ((getDefaultAppearanceObject)): "+name);
 			return null;
 		}
 	}
@@ -704,7 +704,7 @@ public class LegacyVisualProperty implements VisualProperty {
 		} else if (name.equals("EDGE_LABEL_POSITION")){
 			return null;
 		} else {
-			System.out.println("unhandled VisualProperty!!: "+name);
+			System.out.println("unhandled VisualProperty! (getIcon): "+name);
 			return null;
 		}
 		return null;
