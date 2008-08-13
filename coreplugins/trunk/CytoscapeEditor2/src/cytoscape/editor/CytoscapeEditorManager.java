@@ -63,6 +63,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
+import cytoscape.logger.CyLogger;
 import cytoscape.util.undo.CyUndo;
 import cytoscape.view.CyNetworkView;
 import cytoscape.visual.CalculatorCatalog;
@@ -242,6 +243,8 @@ public abstract class CytoscapeEditorManager {
 	// AJK: 12/06/06: flag for "logging" diagnostic output
 	private static boolean loggingEnabled = false;
 
+	private static CyLogger logger = null;
+
 	/**
 	 * initial setup of controls, menu items, undo/redo actions, and keyboard
 	 * accelerators
@@ -253,6 +256,7 @@ public abstract class CytoscapeEditorManager {
 	    manager = new CytoscapeEditorManagerSupport();
 	    ShapePalette shapePalette = new ShapePalette();
 	    Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).add("Editor", shapePalette);
+	    logger = CyLogger.getLogger(CytoscapeEditor.class);
 	}
 
 
@@ -274,10 +278,10 @@ public abstract class CytoscapeEditorManager {
 			// setup a new editor
 
 			// AJK: 12/09/06
-			System.out.println("initializing Cytoscape editor: " + editorName);
+			logger.debug("initializing Cytoscape editor: " + editorName);
 
 			CytoscapeEditor cyEditor = CytoscapeEditorFactory.INSTANCE.getEditor(editorName);
-			System.out.println("got CytoscapeEditor: " + cyEditor);
+			logger.debug("got CytoscapeEditor: " + cyEditor);
 
 			NetworkEditEventAdapter event = initializeEditEventAdapter(cyEditor,
 			                                                           networkEditAdapterName);
@@ -452,7 +456,7 @@ public abstract class CytoscapeEditorManager {
 	                            String controllingNodeAttribute, String controllingEdgeAttribute,
 	                            String visualStyleName) {
 	    // ASSUME: We have been initialized() before register() is ever called.
-	    System.out.println ("BEGIN CEM.register()");
+	    logger.debug ("BEGIN CEM.register()");
 	        CytoscapeEditorManager.log("Putting " + visualStyleName + " --> " + editorName);
 		visualStyleNameToEditorNameMap.put(visualStyleName, editorName);
 
@@ -1005,7 +1009,7 @@ public abstract class CytoscapeEditorManager {
 	 */
 	public static void log(String msg) {
 		if (isLoggingEnabled()) {
-			System.out.println(msg);
+			logger.debug(msg);
 		}
 	}
 
