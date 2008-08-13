@@ -194,8 +194,16 @@ public enum EditorDisplayer {
 			    && (((editor == EditorType.CONTINUOUS)
 			        && command.toString().startsWith(EditorType.CONTINUOUS.name()))
 			       || ((editor == EditorType.DISCRETE)
-			          && command.toString().startsWith(EditorType.DISCRETE.name()))))
+			          && command.toString().startsWith(EditorType.DISCRETE.name())))){
+				if (dataType == DiscreteValue.class){
+					// FIXME: could this be done better?
+					// hack: have to set the parameter correctly:
+					command.parameters[0]=type;
+				}
 				return command;
+				
+			}
+				
 		}
 
 		
