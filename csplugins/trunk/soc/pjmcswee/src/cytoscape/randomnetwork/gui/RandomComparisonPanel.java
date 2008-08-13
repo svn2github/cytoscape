@@ -33,18 +33,10 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.randomnetwork;
+package cytoscape.randomnetwork.gui;
 
-import java.util.*;
-import cytoscape.plugin.*;
-import cytoscape.layout.algorithms.*;
-import cytoscape.*;
-import cytoscape.data.*;
-import cytoscape.view.*;
-import cytoscape.visual.*;
-import giny.view.*;
-import cytoscape.graph.dynamic.*;
-import cytoscape.graph.dynamic.util.*;
+import cytoscape.randomnetwork.*;
+
 
 import java.awt.Color;
 import java.awt.Font;
@@ -55,42 +47,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.SwingConstants;
 import java.util.*;
-import cytoscape.plugin.*;
-import cytoscape.layout.*;
-import cytoscape.layout.algorithms.*;
-import cytoscape.*;
-import cytoscape.data.*;
-import cytoscape.view.*;
 import java.awt.*;
-import cytoscape.visual.*;
-import giny.view.*;
-import cytoscape.graph.dynamic.*;
-import cytoscape.graph.dynamic.util.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.*;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.SwingConstants;
 
 
 /**
  * RandomizeExistingPanel is used for selecting which randomizing 
  * network model to use.
  */
-public class RandomComparisonPanel extends JPanel {
+public class RandomComparisonPanel extends RandomNetworkPanel {
 
-	//Next Button
-	private javax.swing.JButton runButton;
-	//Cancel Button
-	private javax.swing.JButton cancelButton;
-	//Title Label
-	private javax.swing.JLabel titleLabel;
 	//Group together the different options
 	private javax.swing.ButtonGroup group;
 
@@ -111,11 +78,28 @@ public class RandomComparisonPanel extends JPanel {
 	/**
 	 *  Default constructor
 	 */
-	public RandomComparisonPanel( ){
+	public RandomComparisonPanel(){
 		
-		super( ); 
+		super(null); 
 		initComponents();
 	}
+
+	/**
+	*
+	*/
+	public String getTitle()
+	{
+		return new String("Compare to Random Network");
+	}
+
+	/**
+	*
+	*/
+	public String getDescription()
+	{
+		return new String("Which type of random network would you like to compare the existing network against.");
+	}
+
 
 	/**
 	 * Initialize the components
@@ -166,56 +150,17 @@ public class RandomComparisonPanel extends JPanel {
 		
 		//Make randomize existing network
 		randomizeExistingNetwork.setSelected(true);
-		
-		//Create the butons
-		runButton = new javax.swing.JButton();
-		cancelButton = new javax.swing.JButton();
-
-		//Set up the title
-		titleLabel = new javax.swing.JLabel();
-		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Compare to Random Network");
-
-
 	
-		//Set up the run button
-		runButton.setText("Next");
-		runButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				runButtonActionPerformed(evt);
-			}
-		});
-
-		//Set up the cancel button
-		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
-			}
-		});
-
 		setLayout(new GridBagLayout());
 		
 		//
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
-		c.gridy = 0;
-		c.gridwidth = 6;
-		c.insets = new Insets(10,5,5,5);	
-		c.anchor =  GridBagConstraints.LINE_START;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(titleLabel,c);
-
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 1;
-		c.insets = new Insets(10,5,5,5);	
+		c.insets = new Insets(0,5,0,5);	
 		c.anchor =  GridBagConstraints.LINE_START;
 		c.weightx = 1;
-		c.weighty = 1;
 		add(randomizeExistingNetwork,c);
 
 		c = null;
@@ -223,95 +168,33 @@ public class RandomComparisonPanel extends JPanel {
 		c.gridx = 0;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		c.insets = new Insets(10,5,5,5);	
+		c.insets = new Insets(0,5,0,5);	
 		c.anchor =  GridBagConstraints.LINE_START;
 		c.weightx = 1;
-		c.weighty = 1;
 		add(generateRandomNetwork,c);
 
-		
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 3;
-		c.gridy = 5;	
-		c.anchor = GridBagConstraints.LINE_START;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(cancelButton, c);
-		
-		
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 2;
-		c.gridy = 5;
-		c.anchor = GridBagConstraints.LINE_END;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(runButton, c);
-
-
-		}
-
-
-	/*
-	 * cancelButtonActionPerformed call back when the cancel button is pushed
-	 */
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		
-		//Go up through the parents to the main window
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.dispose();
 	}
+
+
 	
-	/*
+	/**
 	 *  Callback for when the "Next" button is pushed
 	 */
-	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	public RandomNetworkPanel next()
+	{
 		
-	
-		JPanel displayPanel = null;
-		//Title for this Panel
-		String title = null;
+		RandomNetworkPanel displayPanel = null;
 		
 		//See which checkbox is selected and then display the appropriate panel
-		if (randomizeExistingNetwork.isSelected()) {
-			displayPanel = new RandomizeExistingPanel(1);
-			title = new String("Randomize Existing");
-		} else if(generateRandomNetwork.isSelected()){
-			displayPanel = new GenerateRandomPanel(1);
-			title = new String("WattsStrogatz Random Network");
+		if (randomizeExistingNetwork.isSelected()) 
+		{
+			displayPanel = new RandomizeExistingPanel(1,this);			
+		} 
+		else if(generateRandomNetwork.isSelected())
+		{
+			displayPanel = new GenerateRandomPanel(1,this);			
 		}
 		
-		
-		//Get the TabbedPanel
-		JTabbedPane parent = (JTabbedPane)getParent();
-		int index = parent.getSelectedIndex();
-		//Remove this Panel
-		parent.remove(index);
-		//Replace it with the panel
-		parent.add(displayPanel,index);
-		//Set the title for this panel
-		parent.setTitleAt(index,title);
-		//Display this panel
-		parent.setSelectedIndex(index);
-		//Enforce this Panel
-		parent.validate();
-		
-		
-		//Re-pack the window based on this new panel
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.pack();
-
-	
-			
+		return displayPanel;
 	}
 }

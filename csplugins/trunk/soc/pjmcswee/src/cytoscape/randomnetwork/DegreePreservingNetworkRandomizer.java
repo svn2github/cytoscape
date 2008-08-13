@@ -164,6 +164,20 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 				///See what their degrees are
 				int aDegree = aenum.numRemaining();
 				int bDegree = benum.numRemaining();
+				
+				/*if(allowSelfEdge && (aDegree == N))
+				{				
+					System.out.println("Breaking 1");
+					break;
+				}
+				else*/ 
+				if(aDegree >= (N - 1))
+				{				
+					System.out.println("Breaking 2");
+					break;
+				}
+				
+				
 
 				//Make sure they do not match
 				if(( sourceAIndex == sourceBIndex) || (aDegree <= 0 ) || (bDegree <= 0 ))
@@ -275,13 +289,16 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 			
 			}
 			
-			//Remove these two edges
-			newGraph.edgeRemove(edge1Index);
-			newGraph.edgeRemove(edge2Index);
+			if(done)
+			{
+				//Remove these two edges
+				newGraph.edgeRemove(edge1Index);
+				newGraph.edgeRemove(edge2Index);
 			
-			//Create the two new edges
-			int newEdge1Index = newGraph.edgeCreate(sourceAIndex,targetBIndex,directed);
-			int newEdge2Index = newGraph.edgeCreate(sourceBIndex,targetAIndex,directed);
+				//Create the two new edges
+				int newEdge1Index = newGraph.edgeCreate(sourceAIndex,targetBIndex,directed);
+				int newEdge2Index = newGraph.edgeCreate(sourceBIndex,targetAIndex,directed);
+			}
 			
 		}
 		return newGraph;

@@ -1,4 +1,4 @@
-/* File: AnalyzePanel.java
+ /* File: AnalyzePanel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -33,9 +33,11 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.randomnetwork;
+package cytoscape.randomnetwork.gui;
+import cytoscape.randomnetwork.*;
 
 import cytoscape.graph.dynamic.*;
+
 
 import cytoscape.*;
 import cytoscape.data.*;
@@ -68,7 +70,8 @@ import cytoscape.task.util.TaskManager;
  * AnalyzePanel is used for selecting which random 
  * network model to use.
  */
-public class AnalyzePanel extends JPanel{
+public class AnalyzePanel extends RandomNetworkPanel
+{
 
 
 	//The generator of our random networks
@@ -82,12 +85,6 @@ public class AnalyzePanel extends JPanel{
 
 	int mode;
 
-	//Next Button
-	private javax.swing.JButton runButton;
-	//Cancel Button
-	private javax.swing.JButton cancelButton;
-	//Cancel Button
-	private javax.swing.JButton backButton;
 
 	
 	private javax.swing.JLabel titleLabel;
@@ -102,6 +99,9 @@ public class AnalyzePanel extends JPanel{
 	private javax.swing.JTextField threadTextField;
 	
 	
+	private javax.swing.JLabel threadExplain;
+	private javax.swing.JLabel roundsExplain;
+	
 	//For the Progress Meter
     private TaskMonitor taskMonitor = null;
 	private boolean interrupted = false;
@@ -115,11 +115,37 @@ public class AnalyzePanel extends JPanel{
 	 */
 	public AnalyzePanel(RandomNetworkGenerator pNetwork, boolean pDirected, int mode){
 	
-		super( ); 
+		super(null ); 
 		directed = pDirected;
 		networkModel = pNetwork;
 		initComponents();
 	}
+	/*
+	 *  Default constructor
+	 */
+	public AnalyzePanel(RandomNetworkPanel pPrevious, RandomNetworkGenerator pNetwork, boolean pDirected, int mode){
+	
+		super(pPrevious ); 
+		directed = pDirected;
+		networkModel = pNetwork;
+		initComponents();
+	}
+	
+	
+	public String getTitle()
+	{
+		return new String("Analyze Network");
+	}
+	public String getDescription()
+	{
+		return new String("");
+	}
+	
+	public String getNextText()
+	{
+		return new String("Run");
+	}	
+
 
 	/*
 	 * Initialize the components
@@ -141,15 +167,20 @@ public class AnalyzePanel extends JPanel{
 		averageShortPathCheckBox.setSelected(true);
 		
 		
-		//Create the butons
-		runButton = new javax.swing.JButton();
-		cancelButton = new javax.swing.JButton();
-		backButton = new javax.swing.JButton();
-
-		//Set up the title
-		titleLabel = new javax.swing.JLabel();
-		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Analyze Random Networks");
+		
+		threadExplain = new javax.swing.JLabel();
+		roundsExplain = new javax.swing.JLabel();
+		
+		threadExplain.setText("<html><font size=2 face=Verdana> Number of parallelizable threads." +
+		" Setting this value higher than the number of available processors yields no return.</font></html>");	
+		
+		roundsExplain.setText("<html><font size=2 face=Verdana> Number of randomizations to perform.  As this number increases" +
+				" the accuracy of the statistics should increase.</font></html>");	
+						 
+		threadExplain.setPreferredSize(new Dimension(200,70));
+		threadExplain.setMinimumSize(new Dimension(200,70));
+		roundsExplain.setPreferredSize(new Dimension(200,70));
+		roundsExplain.setMinimumSize(new Dimension(200,70));
 
 
 		roundsTextField = new javax.swing.JTextField();
@@ -171,62 +202,12 @@ public class AnalyzePanel extends JPanel{
 		
 		
 
-		//Set up the run button
-		runButton.setText("Next");
-		runButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				runButtonActionPerformed(evt);
-			}
-		});
-
-		//Set up the cancel button
-		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
-			}
-		});
-
-		//Set up the cancel button
-		backButton.setText("Back");
-		backButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				backButtonActionPerformed(evt);
-			}
-		});
-
-
 
 		setLayout(new GridBagLayout());
 
 		//Setup the titel
 		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.insets = new Insets(0,10,0,0);		
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 5;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(titleLabel,c);
-
-
-		/*
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 1;
-		c.insets = new Insets(5,10,10,0);		
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 6;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(explainLabel,c);
-		*/
-
-		//
-		c = null;
-		c = new GridBagConstraints();
+		
 		c.gridx = 0;
 		c.gridy = 2;
 		c.insets = new Insets(5,5,5,5);		
@@ -278,7 +259,7 @@ public class AnalyzePanel extends JPanel{
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
+		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 0;
 		c.gridy = 6;
 		c.gridwidth = 1;
@@ -290,7 +271,7 @@ public class AnalyzePanel extends JPanel{
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
+		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 1;
 		c.gridy = 6;
 		c.gridwidth = 1;
@@ -302,7 +283,22 @@ public class AnalyzePanel extends JPanel{
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
+		c.insets = new Insets(0,5,0,5);		
+		c.gridx = 2;
+		c.gridy = 6;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		add(threadExplain,c);
+
+
+
+
+		c = null;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 0;
 		c.gridy = 7;
 		c.gridwidth = 1;
@@ -314,7 +310,7 @@ public class AnalyzePanel extends JPanel{
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
+		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 1;
 		c.gridy = 7;
 		c.gridwidth = 3;
@@ -323,114 +319,27 @@ public class AnalyzePanel extends JPanel{
 		c.weighty = 1;
 		add(roundsTextField,c);
 
-
-
-
-		//Setup the 
 		c = null;
 		c = new GridBagConstraints();
-		c.gridx = 5;
-		c.gridy = 8;
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,0,0,0);
+		c.insets = new Insets(0,5,0,5);		
+		c.gridx = 2;
+		c.gridy = 7;
+		c.gridwidth = 2;
+		c.gridheight = 1;
 		c.weightx = 1;
 		c.weighty = 1;
-		add(cancelButton,c);
-		
-		
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 8;
-		c.anchor = GridBagConstraints.LINE_START;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.insets = new Insets(0,0,0,0);
-		add(backButton,c);
-
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 4;
-		c.gridy = 8;
-		c.anchor = GridBagConstraints.LINE_END;
-		c.insets = new Insets(0,0,0,0);
-		c.weightx = 1;
-		c.weighty = 1;
-		add(runButton,c);
-		
-	}
-
-
-
-	/**
-	 *  Call back for the cancel button
-	 */
-	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-	
-		JPanel next = null;
-		
-		if(mode == 1)
-		{
-			next  = new GenerateRandomPanel(1);
-		}
-		else
-		{
-			next  = new RandomizeExistingPanel(1);			
-		}
-
-
-		//Get the TabbedPanel
-		JTabbedPane parent = (JTabbedPane)getParent();
-		int index = parent.getSelectedIndex();
-			
-		//Remove this Panel
-		parent.remove(index);
-		
-		//Replace it with the panel
-		parent.add(next, index);
-		//Set the title for this panel
-		parent.setTitleAt(index,"Analyze network statistics");
-		//Display this panel
-		parent.setSelectedIndex(index);
-		//Enforce this Panel
-		parent.validate();
-		
-		
-		//Re-pack the window based on this new panel
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.pack();
-
-		return;
+		add(roundsExplain,c);
 
 	}
 
 
-
-	/*
-	 * cancelButtonActionPerformed call back when the cancel button is pushed
-	 */
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		
-		//Go up through the parents to the main window
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.dispose();
-	}
 	
 	/*
 	 *  Callback for when the "Next" button is pushed
 	 */
-	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	public RandomNetworkPanel next()
+	{
 		
 		JTaskConfig config = new JTaskConfig();
 
@@ -502,35 +411,11 @@ public class AnalyzePanel extends JPanel{
 		boolean success = TaskManager.executeTask(rna, config);
 		if(success)
 		{
-			DisplayResultsPanel dpr = new DisplayResultsPanel(mode,rna);
-					//Get the TabbedPanel
-			JTabbedPane parent = (JTabbedPane)getParent();
-			int index = parent.getSelectedIndex();
+			DisplayResultsPanel dpr = new DisplayResultsPanel(mode,this,rna);
 			
-			//Remove this Panel
-			parent.remove(index);
-		
-			//Replace it with the panel
-			parent.add(dpr, index);
-			//Set the title for this panel
-			parent.setTitleAt(index,"Compare to Random Network");
-			//Display this panel
-			parent.setSelectedIndex(index);
-			//Enforce this Panel
-			parent.validate();
-		
-		
-			//Re-pack the window based on this new panel
-			java.awt.Container p = parent.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			JFrame dframe = (JFrame)p;
-			dframe.toFront();
-			
-			dframe.pack();
+			return dpr;
 		}
 	
-		return;
+		return null;
 	}
 }

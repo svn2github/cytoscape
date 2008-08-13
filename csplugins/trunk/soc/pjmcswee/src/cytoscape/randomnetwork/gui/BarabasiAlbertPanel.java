@@ -1,4 +1,4 @@
-/*  File: BarabasiAlbertDialog
+/*  File: BarabasiAlbertPanel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -33,8 +33,8 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.randomnetwork;
-
+package cytoscape.randomnetwork.gui;
+import cytoscape.randomnetwork.*;
 
 import cytoscape.layout.algorithms.*;
 import cytoscape.plugin.*;
@@ -60,7 +60,7 @@ import javax.swing.*;
  * to generate a random model according to barabasi-albert.
  * 
  */
-public class BarabasiAlbertDialog extends JPanel {
+public class BarabasiAlbertPanel extends RandomNetworkPanel {
 
 	/**
 	 * Specifies a context for this gui.
@@ -78,13 +78,9 @@ public class BarabasiAlbertDialog extends JPanel {
 	private javax.swing.JTextField edgeTextField;
 
 	// Buttons
-	private javax.swing.JButton runButton;
-	private javax.swing.JButton cancelButton;
 	private javax.swing.JCheckBox directedCheckBox;
-	private javax.swing.JButton backButton;
 	
 	// Labels
-	private javax.swing.JLabel titleLabel;
 	private javax.swing.JLabel nodeLabel;
 	private javax.swing.JLabel initLabel;
 	private javax.swing.JLabel edgeLabel;
@@ -93,10 +89,32 @@ public class BarabasiAlbertDialog extends JPanel {
 	/*
 	 * Default Constructor 
 	 */
-	public BarabasiAlbertDialog(int pMode ){
-		super();
+	public BarabasiAlbertPanel(int pMode ){
+		super(null);
 		mode = pMode;
 		initComponents();
+	}
+	
+	/*
+	 * Default Constructor 
+	 */
+	public BarabasiAlbertPanel(int pMode, RandomNetworkPanel pPrevious ){
+		super(pPrevious);
+		mode = pMode;
+		initComponents();
+	}
+	
+	public String getTitle()
+	{
+		return new String("Barabasi-Albert Model");
+	}
+	
+	public String getDescription()
+	{
+		return new String("The Barabasi-Albert model begins with a connected seed network of s nodes " +
+						"Every other node (n - s) is added one at a time, " +
+						"and initially connected to m existing nodes. " +
+						"Each existing node u has probability  degree(u)/(2*E), E is the number of edges.");
 	}
 
 	/**
@@ -124,15 +142,13 @@ public class BarabasiAlbertDialog extends JPanel {
 
 		// Button creation
 		directedCheckBox = new javax.swing.JCheckBox();
-		runButton = new javax.swing.JButton();
-		cancelButton = new javax.swing.JButton();
-		backButton = new javax.swing.JButton();
-
+	
 		// Label creation
-		titleLabel = new javax.swing.JLabel();
 		nodeLabel = new javax.swing.JLabel();
 		initLabel = new javax.swing.JLabel();
 		edgeLabel = new javax.swing.JLabel();
+		
+		/*
 		explainLabel = new javax.swing.JLabel();
 
 		//Add the explanation label
@@ -145,68 +161,19 @@ public class BarabasiAlbertDialog extends JPanel {
 
 		explainLabel.setPreferredSize(new Dimension(380, 80));
 		explainLabel.setMinimumSize(new Dimension(380, 80));
-		
+		*/
 		//Set the text for the labels
 		directedCheckBox.setText("Undirected");
 		nodeLabel.setText("Number of Nodes (n):");
 		initLabel.setText("Initial Number of Nodes (s):");
 		edgeLabel.setText("Minimum Edges per node (m):");
 		
-		//Set the title for the panel
-		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Generate Barabasi-Albert Model");
-
-		//Set up the generate button
-		runButton.setText("Generate");
-		runButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				runButtonActionPerformed(evt);
-			}
-		});
-
-		//Set up the cancel button
-		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
-			}
-		});
-		
-		//Set up the Cancel Button
-		backButton.setText("Back");
-		backButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				backButtonActionPerformed(evt);
-			}
-		});
 
 
 		setLayout(new GridBagLayout());
 
 		//Setup the titel
 		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.insets = new Insets(0,10,0,0);		
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 5;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(titleLabel,c);
-
-	
-		c.gridx = 0;
-		c.gridy = 1;
-		c.insets = new Insets(5,10,10,0);		
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 6;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(explainLabel,c);
-
-		
-		c = null;
-		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(5,5,5,5);		
 		c.gridx = 0;
@@ -294,101 +261,14 @@ public class BarabasiAlbertDialog extends JPanel {
 		c.weighty = 1;
 		add(directedCheckBox,c);
 
-
-		//Setup the 
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 5;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,0,0,0);
-		c.weightx = 1;
-		c.weighty = 1;
-		add(cancelButton,c);
-		
-		
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_START;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.insets = new Insets(0,0,0,0);
-		add(backButton,c);
-
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 4;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_END;
-		c.insets = new Insets(0,0,0,0);
-		c.weightx = 1;
-		c.weighty = 1;
-		add(runButton,c);
-
 	}
-
-	/**
-	 *  Callback for the cancel button
-	 */
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-		//Go up through the parents and close the window
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.dispose();
-	}
-	
-	/**
-	 *  Call back for the back button
-	 */
-	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-	
-		GenerateRandomPanel generateRandomPanel = new GenerateRandomPanel(mode);
-
-		//Get the TabbedPanel
-		JTabbedPane parent = (JTabbedPane)getParent();
-		int index = parent.getSelectedIndex();
-			
-		//Remove this Panel
-		parent.remove(index);
-		
-		//Replace it with the panel
-		parent.add(generateRandomPanel, index);
-		//Set the title for this panel
-		parent.setTitleAt(index,"Generate Random Network");
-		//Display this panel
-		parent.setSelectedIndex(index);
-		//Enforce this Panel
-		parent.validate();
-		
-		
-		//Re-pack the window based on this new panel
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.pack();
-
-		return;
-
-	}
-
 	
 	
 	/**
 	 *  Callback for the generate button
 	 */
-	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
+	public RandomNetworkPanel next()
+	{
 		// The number of initial nodes
 		int initNumNodes; 
 		//number of nodes in the network
@@ -414,7 +294,7 @@ public class BarabasiAlbertDialog extends JPanel {
 			nodeLabel.setForeground(java.awt.Color.RED);
 			initLabel.setForeground(java.awt.Color.BLACK);
 			edgeLabel.setForeground(java.awt.Color.BLACK);
-			return;
+			return this;
 		}
 
 		//Try to read this string into a number
@@ -425,7 +305,7 @@ public class BarabasiAlbertDialog extends JPanel {
 			nodeLabel.setForeground(java.awt.Color.BLACK);
 			initLabel.setForeground(java.awt.Color.RED);
 			edgeLabel.setForeground(java.awt.Color.BLACK);
-			return;
+			return this;
 		}
 
 		//Try read this string into a number
@@ -436,7 +316,7 @@ public class BarabasiAlbertDialog extends JPanel {
 			nodeLabel.setForeground(java.awt.Color.BLACK);
 			initLabel.setForeground(java.awt.Color.BLACK);
 			edgeLabel.setForeground(java.awt.Color.RED);
-			return;
+			return this;
 		}
 
 		//Set the boolean based on the checkbox
@@ -457,33 +337,10 @@ public class BarabasiAlbertDialog extends JPanel {
 		{
 			
 			bam.setCreateView(false);
-			AnalyzePanel analyzePanel = new AnalyzePanel(bam, bam.getDirected(),0);
+			AnalyzePanel analyzePanel = new AnalyzePanel(this,bam, bam.getDirected(),0);
 		
-			//Get the TabbedPanel
-			JTabbedPane parent = (JTabbedPane)getParent();
-			int index = parent.getSelectedIndex();
 			
-			//Remove this Panel
-			parent.remove(index);
-			//Replace it with the panel
-			parent.add(analyzePanel, index);
-			//Set the title for this panel
-			parent.setTitleAt(index,"Analyze Network Statistics");
-			//Display this panel
-			parent.setSelectedIndex(index);
-			//Enforce this Panel
-			parent.validate();
-		
-		
-			//Re-pack the window based on this new panel
-			java.awt.Container p = parent.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			JFrame frame = (JFrame)p;
-			frame.pack();
-
-			return;
+			return analyzePanel;
 		}
 
 		
@@ -493,35 +350,8 @@ public class BarabasiAlbertDialog extends JPanel {
 		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork(graph,null);
 		graph = null;
 		
-		//Switch to the Network view
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
-				.setSelectedIndex(0);
-
-		//returns CytoscapeWindow's VisualMappingManager object
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-    
-		//gets the global catalog of visual styles and calculators
-		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 		
-		//get the random network visual style
-		VisualStyle newStyle = catalog.getVisualStyle("random network");
-		
-		//Set this as the current visual style
-		vmm.setVisualStyle(newStyle);
-
-
-		GridNodeLayout alg = new GridNodeLayout();
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		view.applyLayout(alg); 
-
-		//Traverse to the JFrame parent and close this window
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.dispose();
+		return this;
 
 	}
 

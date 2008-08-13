@@ -36,6 +36,7 @@
 
 package cytoscape.randomnetwork;
 
+import cytoscape.randomnetwork.gui.*;
 import java.awt.Toolkit;
 import cytoscape.plugin.*;
 import cytoscape.*;
@@ -45,6 +46,8 @@ import javax.swing.*;
 import cytoscape.visual.*;
 import cytoscape.visual.calculators.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 
@@ -54,92 +57,93 @@ import java.awt.event.ActionEvent;
  *  scratch or by randomizing existing.  It also allows comparisons
  *  to be made between a round of random networks and an existing network
  */
-public class RandomNetworkPlugin extends CytoscapePlugin {
+public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyChangeListener 
+{
 
+	GenerateRandomAction grAction;
+	RandomizeExistingAction reAction;
+	CompareRandomAction crAction;
+		
 	/**	
 	*  RandomNetworkPlugin Constructor
 	*/
-	public RandomNetworkPlugin() {
+	public RandomNetworkPlugin()	
+	{
 	
 		//Add an item to the plugin menu
-		GenerateRandomAction action = new GenerateRandomAction();
-		action.setPreferredMenu("Plugins");
-		Cytoscape.getDesktop().getCyMenus().addAction(action);
-		
-		//Get the VisualMappingManager
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
+		grAction = new GenerateRandomAction();
+		reAction = new RandomizeExistingAction();
+		crAction = new CompareRandomAction();
+		grAction.setPreferredMenu("Plugins.Random Network Plugin");
+		reAction.setPreferredMenu("Plugins.Random Network Plugin");
+		crAction.setPreferredMenu("Plugins.Random Network Plugin");
 
-		//Get the listing of visualStyles
-		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
 
-		//Get the default visualStyle
-		VisualStyle defaultStyle = catalog.getVisualStyle("default");
+		Cytoscape.getDesktop().getCyMenus().addAction(grAction);
+		Cytoscape.getDesktop().getCyMenus().addAction(reAction);
+		Cytoscape.getDesktop().getCyMenus().addAction(crAction);		
+		
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 
-		//Create a new visualStyle, from the default style
-		VisualStyle newStyle = new VisualStyle(defaultStyle);
-		
-		//Set the name for this visualStyle
-		newStyle.setName("random network");
-		
-		//Get the NodeAppearenceCalculator for this style
-		NodeAppearanceCalculator nodeAC = newStyle.getNodeAppearanceCalculator();
-		
-		//Remove the node Label mapping
-		nodeAC.removeCalculator(cytoscape.visual.VisualPropertyType.NODE_LABEL);
 
-		//Add this visual Style to the list of options
-		catalog.addVisualStyle(newStyle);
+		CyNetwork net = Cytoscape.getCurrentNetwork();
+		
+		if(net == Cytoscape.getNullNetwork())
+		{
+			reAction.setEnabled(false);
+			crAction.setEnabled(false);
+		}
 	}
 				
-	
+	  public void propertyChange(PropertyChangeEvent event) 
+	  {
+	  
+		if(event.getPropertyName() == Cytoscape.NETWORK_CREATED) 
+		{
+			reAction.setEnabled(true);
+			crAction.setEnabled(true);
+		}
+
+
+		CyNetwork net = Cytoscape.getCurrentNetwork();
+			
+		if(net == Cytoscape.getNullNetwork())
+		{
+			reAction.setEnabled(false);
+			crAction.setEnabled(false);
+		}
+	}
+
+				
 	/**
 	 *	This class creates the main window for our plugin
 	 */
-	class RandomNetworkFrame extends JFrame implements ActionListener
+	class RandomNetworkFrame extends JFrame// implements ActionListener
 	{
-		//Main Tabbed Pane for our Dialog
-		javax.swing.JTabbedPane mainPane;
-
-		//The panel used for generating random networks
-		GenerateRandomPanel generateRandomPanel;
-		GenerateRandomPanel verifyRandomPanel;
-
-		RandomizeExistingPanel randomizePane;
-		RandomComparisonPanel compareRandomPane;
 	
 	
 		/**
 		 *  The default constructor for this class	
 		 */
-		public RandomNetworkFrame(  ) { 
+		public RandomNetworkFrame(RandomNetworkPanel pPanel ) { 
 			super("Random Network Plugin");
-			initComponents();
+			initComponents(pPanel);
 		}
 
 		/**
 		 *  Initialize the swing components
 		 */
-		private void initComponents() {
+		private void initComponents(RandomNetworkPanel pPanel) {
 			
-			//Initialize the tabbed panel
-			mainPane = new JTabbedPane();
-			//Create the Panel
-			generateRandomPanel = new GenerateRandomPanel(0);
-			//verifyRandomPanel = new GenerateRandomPanel(1);
-			randomizePane = new RandomizeExistingPanel(0);
-			compareRandomPane = new RandomComparisonPanel();
-			
+		
+			MainPanel panel = new MainPanel(pPanel);
+		
 			//Default is to dispose on close
 			setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-			
-			//Add the three tabs for our application
-			mainPane.addTab("Generate Random Network", generateRandomPanel);
-			//mainPane.addTab("Verify Random Network", verifyRandomPanel);
-			mainPane.addTab("Randomize Existing Network", randomizePane);
-			mainPane.addTab("Compare to Random Network", compareRandomPane);
-
+		
+		
 			//add the main pane to our tabbed panel
-			add(mainPane);
+			add(panel);
 			
 			//Set the location of the fame
 			setLocationRelativeTo(Cytoscape.getDesktop());
@@ -151,13 +155,6 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 			//make it visible
 			pack();
 			setVisible(true);
-		}
-		
-		/**
-		 * On ActionEvent
-		 */
-		public void actionPerformed(ActionEvent e) {
-			//for now do nothing, we may be able to remove this
 		}
 	}
 
@@ -171,7 +168,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 		 * Default constructor
 		 */
 		public GenerateRandomAction() {
-			super("Random Network Plugin");
+			super("Generate Random Network");
 		}
 
 		/**
@@ -179,8 +176,51 @@ public class RandomNetworkPlugin extends CytoscapePlugin {
 		 */
 		public void actionPerformed(ActionEvent ae) {
 		
-			RandomNetworkFrame frame = new RandomNetworkFrame(); 		
+			RandomNetworkFrame frame = new RandomNetworkFrame(new GenerateRandomPanel(0)); 		
 		}
 	}
+	
+	/**
+	 *  The action which brings up our dialog
+	 */
+		class RandomizeExistingAction extends CytoscapeAction {
+
+		/**
+		 * Default constructor
+		 */
+		public RandomizeExistingAction() {
+			super("Randomize Existing Network");
+		}
+
+		/**
+	 	 *  When our item is create a new frame
+		 */
+		public void actionPerformed(ActionEvent ae) {
+		
+			RandomNetworkFrame frame = new RandomNetworkFrame(new RandomizeExistingPanel(0)); 		
+		}
+	}
+
+/**
+	 *  The action which brings up our dialog
+	 */
+	class CompareRandomAction extends CytoscapeAction {
+
+		/**
+		 * Default constructor
+		 */
+		public CompareRandomAction() {
+			super("Compare to Random Network");
+		}
+
+		/**
+	 	 *  When our item is create a new frame
+		 */
+		public void actionPerformed(ActionEvent ae) {
+		
+			RandomNetworkFrame frame = new RandomNetworkFrame(new RandomComparisonPanel()); 		
+		}
+	}
+
 
 }

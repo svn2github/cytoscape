@@ -122,43 +122,76 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 		//with probability beta
 		
 		//Make sure that the degree chosen is feasbile
-		if(allowSelfEdge && (2*degree > numNodes))
+		if(directed && allowSelfEdge && (2*degree > numNodes))
 		{
 			degree = numNodes/2;
 		}	
-		else if( degree > (numNodes - 1)/2)
+		else if(directed &&( 2 * degree > (numNodes - 1)/2))
 		{
 			degree = (numNodes - 1)/2;
 		}
+
+		//Make sure that the degree chosen is feasbile
+		if(!directed && allowSelfEdge && (2*degree > numNodes))
+		{
+			degree = numNodes/2;
+		}	
+		else if(!directed &&( 2 * degree > (numNodes - 1)/2))
+		{
+			degree = (numNodes - 1)/2;
+		}
+
 		
-		System.out.println();
+
 		
 		//for all pairs of nodes
 		for (int i = 0; i < numNodes; i++) 
 		{
 		
 			int start = i - degree;
+
+/*
+			if(!directed)
+			{
+				start = i - degree/2;
+			}
+*/
 			if(start < 0)
 			{
 				start = numNodes + start;
 			}
 			
 			int count = 0;
-			while(count < 2*degree)
+			int stop = 2*degree;
+/*
+			if(!directed)
 			{
-				
+				stop = degree;
+			}
+	*/		
+			
+
+			while(count < stop)
+			{
+					
+				//System.out.println(i +"\t Count: " + count +"\t Stop: " + stop +"\t Start: " + start);
 				if((i != start)||(allowSelfEdge))
 				{
-					random_network.edgeCreate(nodes[i], nodes[start], directed);
+					if(((!directed)&&(nodes[i] < nodes[start]))||(directed))
+					{
+						random_network.edgeCreate(nodes[i], nodes[start], directed);
+						//System.out.println("Creating Edge");
+						numEdges++;
+
+					}
 					count++;	
-					numEdges++;
 				}
 				start = (start+1) % numNodes;
 			}
 			
-			
 		}
 		
+		//System.out.println(numEdges);
 		
 		//Save a local copy of the edge indicies
 		LinkedList edgeList = new LinkedList();
@@ -209,7 +242,7 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 					{
 						int edgeIndex = edgeIter.nextInt();
 						int neighbor = random_network.edgeTarget(edgeIndex);
-						if(neighbor == target)
+						if(neighbor == source)
 						{
 							neighbor = random_network.edgeSource(edgeIndex); 
 						}

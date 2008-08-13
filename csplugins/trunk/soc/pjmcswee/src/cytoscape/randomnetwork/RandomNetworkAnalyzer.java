@@ -90,7 +90,8 @@ public class RandomNetworkAnalyzer implements Task {
 		 *
 		 *	Constructor
 		 */
-		public AnalyzeWorkerThread(int pID, int pIterations, RandomNetworkGenerator pMyNetworkModel, LinkedList pMyMetrics, double pResults[][], int pCompleted[])
+		public AnalyzeWorkerThread(int pID, int pIterations, RandomNetworkGenerator pMyNetworkModel, 
+		LinkedList pMyMetrics, double pResults[][], int pCompleted[])
 		{
 			id = pID;
 			numIterations = pIterations;
@@ -126,7 +127,7 @@ public class RandomNetworkAnalyzer implements Task {
 					results[i][j] = t;
 					
 					totalCompleted++;
-					//completed[0]++;
+					//System.out.println(metric.getDisplayName() + "\t" + t);
 					int percentComplete = (int) (((double) totalCompleted / totalToAnalyze) * 100);
 					if (taskMonitor != null) 
 					{
@@ -194,7 +195,6 @@ public class RandomNetworkAnalyzer implements Task {
 	public void run() {
 
 		//Initialize these for passing information to the Display Panel
-		//random_results = new double[rounds][netMetrics.size()];
 		network_results = new double[metrics.size()]; 
 		metric_names = new String[metrics.size()];
 		
@@ -204,6 +204,8 @@ public class RandomNetworkAnalyzer implements Task {
 		
 		//Compute the metrics on the current network
 		DynamicGraph graph = (DynamicGraph)(CytoscapeConversion.CyNetworkToDynamicGraph(original , directed )).get(0);
+		//System.out.println("N:" + graph.nodes().numRemaining());
+		//System.out.println("E: " + graph.edges().numRemaining());
 		for(int j = 0; ((j < metrics.size())&&(!interrupted)); j++)
 		{
 				//Get the next metric
@@ -213,7 +215,8 @@ public class RandomNetworkAnalyzer implements Task {
 				double t = metric.analyze(graph,  directed);
 				network_results[j] = t;
 				metric_names[j] = metric.getDisplayName();
-		
+				//System.out.println("Existing: " + metric_names[j] + "\t" + t);
+				
 				//Compute how much we have completed
 				int percentComplete = (int) (((double) j / totalToAnalyze) * 100);
 			
@@ -314,6 +317,18 @@ public class RandomNetworkAnalyzer implements Task {
 				
 	}
 
+
+	/**
+	 *
+	 */
+	public double[][][] getResults()
+	{
+	
+		return random_results;
+	}
+
+
+	
 
 	/**
 	*

@@ -1,4 +1,4 @@
-/*  File: WattsStrogatzDialog.java
+/*  File: WattsStrogatzPanel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -33,8 +33,9 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.randomnetwork;
+package cytoscape.randomnetwork.gui;
 
+import cytoscape.randomnetwork.*;
 import cytoscape.layout.algorithms.*;
 import cytoscape.plugin.*;
 import cytoscape.*;
@@ -60,7 +61,7 @@ import javax.swing.*;
  * to generate a random model according to watts-strogatz model
  * 
  */
-public class WattsStrogatzDialog extends JPanel {
+public class WattsStrogatzPanel extends RandomNetworkPanel {
 	
 	
 	private static final int defaultNodeValue = 100;
@@ -75,28 +76,51 @@ public class WattsStrogatzDialog extends JPanel {
 	private javax.swing.JTextField degreeTextField;
 
 	//Buttons
-	private javax.swing.JButton runButton;
-	private javax.swing.JButton cancelButton;
-	private javax.swing.JButton backButton;
 	private javax.swing.JCheckBox directedCheckBox;
 	private javax.swing.JCheckBox selfEdgeCheckBox;
 
 	//Labels
-	private javax.swing.JLabel titleLabel;
 	private javax.swing.JLabel nodeLabel;
 	private javax.swing.JLabel betaLabel;
 	private javax.swing.JLabel degreeLabel;
-	private javax.swing.JLabel explainLabel;
 
 	/*
 	 * Default constructor
 	 */
-	public WattsStrogatzDialog(int pMode ){
-		super( );
+	public WattsStrogatzPanel(int pMode ){
+		super(null);
 		mode = pMode;
 		initComponents();
 	}
 	
+	
+	/*
+	 * Default constructor
+	 */
+	public WattsStrogatzPanel(int pMode, RandomNetworkPanel pPrevious ){
+		super(pPrevious);
+		mode = pMode;
+		initComponents();
+	}
+
+	/**
+ 	 *
+	 */	
+	public String getTitle()
+	{
+		return new String("Watts-Strogatz Model");
+	}
+	
+	
+	/**
+ 	 *
+	 */
+	public String getDescription()
+	{
+		return new String("The Watts-Strogtatz model linearly interpolates between a complete lattice and "+
+							"an erdos-renyi network using the  &#x3B2; value.  As  &#x3B2; increases the clustering coefficent" +
+							"will decrease but the small world property will increase.");
+	}
 	
 	/*
 	 * Initialize the components
@@ -107,9 +131,9 @@ public class WattsStrogatzDialog extends JPanel {
 		nodeTextField = new javax.swing.JTextField();
 		betaTextField = new javax.swing.JTextField();
 		degreeTextField = new javax.swing.JTextField();
-		nodeTextField.setPreferredSize(new Dimension(30,25)); 
-		betaTextField.setPreferredSize(new Dimension(30,25)); 
-		degreeTextField.setPreferredSize(new Dimension(30,25)); 
+		nodeTextField.setPreferredSize(new Dimension(50,25)); 
+		betaTextField.setPreferredSize(new Dimension(50,25)); 
+		degreeTextField.setPreferredSize(new Dimension(50,25)); 
 		nodeTextField.setText("" + defaultNodeValue);
 		betaTextField.setText("" + defaultBetaValue);
 		degreeTextField.setText("" + defaultDegreeValue);
@@ -121,16 +145,12 @@ public class WattsStrogatzDialog extends JPanel {
 		//Create the buttons
 		directedCheckBox = new javax.swing.JCheckBox();
 		selfEdgeCheckBox = new javax.swing.JCheckBox();
-		runButton = new javax.swing.JButton();
-		cancelButton = new javax.swing.JButton();
-		backButton = new javax.swing.JButton();
 
 		//Create the Labels
-		titleLabel = new javax.swing.JLabel();
 		nodeLabel = new javax.swing.JLabel();
 		degreeLabel = new javax.swing.JLabel();
 		betaLabel = new javax.swing.JLabel();
-		explainLabel = new javax.swing.JLabel();
+
 		
 		//Set the text on the labels
 		nodeLabel.setText("Number of Nodes:");
@@ -138,279 +158,117 @@ public class WattsStrogatzDialog extends JPanel {
 		degreeLabel.setText("Node Degree:");
 		selfEdgeCheckBox.setText("Allow reflexive Edges (u,u)");
 		directedCheckBox.setText("Undirected");
-		explainLabel.setText("<html><font size=2 face=Verdana>" +
-							"The Watts-Strogtatz model linearly interpolates between a complete lattice and "+
-							"an erdos-renyi network using the  &#x3B2; value.  As  &#x3B2; increases the clustering coefficent" +
-							"will decrease but the small world property will increase." +
-							"</font></html>");
-
-		explainLabel.setPreferredSize(new Dimension(350,50));
-		explainLabel.setMinimumSize(new Dimension(350,50));
-		//Set up the title for the panel
-		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Generate Watts-Strogatz Model");
-
-		//Set up the Generat button
-		runButton.setText("Generate");
-		runButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				runButtonActionPerformed(evt);
-			}
-		});
-
-		//Set up the Cancel Button
-		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
-			}
-		});
-		
-		//Set up the Cancel Button
-		backButton.setText("Back");
-		backButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				backButtonActionPerformed(evt);
-			}
-		});
-
+	
 
 		setLayout(new GridBagLayout());
 
 		//Setup the titel
 		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new Insets(0,10,0,0);		
 		c.gridx = 0;
 		c.gridy = 0;
-		c.insets = new Insets(0,10,0,0);		
+//		c.weightx = 1;
+//		c.weighty = 1;
 		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 5;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(titleLabel,c);
-
-	
-		c.gridx = 0;
-		c.gridy = 1;
-		c.insets = new Insets(5,10,10,0);		
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 6;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(explainLabel,c);
-
-		
-		c = null;
-		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
-		c.gridx = 0;
-		c.gridy = 4;
-		c.gridwidth = 2;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.gridheight = 1;
 		add(nodeLabel,c);
 
 		c = null;
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 2;
-		c.gridy = 4;
-		c.gridwidth = 3;
-		//c.ipadx = 20;
-		//c.weightx = 1;
-		c.weighty = 1;
-		c.gridheight = 1;
+		c.gridx = 1;
+		c.gridy = 0;
+//		c.weightx = 1;
+//		c.weighty = 1;
+//		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.anchor = GridBagConstraints.LINE_START;		
 		add(nodeTextField,c);
 
 
 		c = null;
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
+		c.insets = new Insets(0,10,0,0);		
 		c.gridx = 0;
-		c.gridy = 5;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
+		c.gridy = 1;
+//		c.weightx = 1;
+//		c.weighty = 1;
+		c.anchor = GridBagConstraints.LINE_START;		
 		add(betaLabel,c);
 
 		c = null;
 		c = new GridBagConstraints();
+//		c.weightx = 1;
+//		c.weighty = 1;
+		c.gridx = 1;
+		c.gridy = 1;
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 2;
-		c.gridy = 5;
-		c.gridwidth = 3;
-		//c.ipadx = 20;
-		c.gridheight = 1;
-		//c.weightx = 1;
-		c.weighty = 1;
 		add(betaTextField,c);
 
 		c = null;
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
+//		c.weightx = 1;
+//		c.weighty = 1;
+		c.insets = new Insets(0,10,0,0);	
 		c.gridx = 0;
-		c.gridy = 6;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
+		c.gridy = 2;
+		c.anchor = GridBagConstraints.LINE_START;
 		add(degreeLabel,c);
 
 		c = null;
-		c = new GridBagConstraints();
+		c = new GridBagConstraints();	
+		c.gridx = 1;
+		c.gridy = 2;
+		c.weightx = 1;
+		c.weighty = 1;		
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 2;
-		c.gridy = 6;
-		c.gridwidth = 3;
-		c.gridheight = 1;
-		//c.ipadx = 20;
-		//c.weightx = 1;
-		c.weighty = 1;
 		add(degreeTextField,c);
+
+
+		//add the line
+		c = null;
+		c = new GridBagConstraints();
+		c.insets = new Insets(0,10,0,10);		
+		//c.anchor = GridBagConstraints.CENTER;
+		c.gridx = 2;
+		c.gridheight = 5;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.VERTICAL;
+		//c.weightx = 1;
+		//c.weighty = 1;
+		add(new JSeparator(SwingConstants.VERTICAL), c);
+
 
 		c = null;
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 0;
-		c.gridy = 7;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		//c.ipadx = 20;
+		c.insets = new Insets(0,10,0,0);		
+		c.gridx = 3;
+		c.gridy = 0;
 		c.weightx = 1;
 		c.weighty = 1;
+		c.anchor = GridBagConstraints.LINE_START;
 		add(directedCheckBox,c);
 		
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 0;
-		c.gridy = 8;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		//c.ipadx = 20;
+		c.insets = new Insets(0,10,0,0);		
+		c.gridx = 3;
+		c.gridy = 1;
 		c.weightx = 1;
 		c.weighty = 1;
 		add(selfEdgeCheckBox,c);
 
 
 
-		//Setup the 
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 5;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,0,0,0);
-		c.weightx = 1;
-		c.weighty = 1;
-		add(cancelButton,c);
-		
-		
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_START;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.insets = new Insets(0,0,0,0);
-		add(backButton,c);
-
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 4;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_END;
-		c.insets = new Insets(0,0,0,0);
-		c.weightx = 1;
-		c.weighty = 1;
-		add(runButton,c);
-
 
 	}
 
 
 
-	/*
-	 *  Callback for the cancel button
-	 */
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-		//Go to the Dialog and dispose this window
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.dispose();
-	}
-	
-	
-	/**
-	 *  Call back for the cancel button
-	 */
-	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-	
-		GenerateRandomPanel generateRandomPanel = new GenerateRandomPanel(mode);
-
-		//Get the TabbedPanel
-		JTabbedPane parent = (JTabbedPane)getParent();
-		int index = parent.getSelectedIndex();
-			
-		//Remove this Panel
-		parent.remove(index);
 		
-		//Replace it with the panel
-		parent.add(generateRandomPanel, index);
-
-
-		System.out.println("Mode: " + mode);
-		if(mode == 1)
-		{
-			//Set the title for this panel
-			parent.setTitleAt(index,"Analyze network statistics");
-		}
-		else
-		{
-			//Set the title for this panel
-			parent.setTitleAt(index,"Generate Random Networks");
-		}
-		//Display this panel
-		parent.setSelectedIndex(index);
-		//Enforce this Panel
-		parent.validate();
-		
-		
-		//Re-pack the window based on this new panel
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.pack();
-
-		return;
-
-	}
-
-	
 
 	/*
 	 *  Callback for the generate button
 	 */
-	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) 
+	public RandomNetworkPanel next()
 	{
 		//The degree of each node
 		int degree;
@@ -443,7 +301,7 @@ public class WattsStrogatzDialog extends JPanel {
 			degreeLabel.setForeground(java.awt.Color.BLACK);
 			nodeLabel.setForeground(java.awt.Color.RED);
 			betaLabel.setForeground(java.awt.Color.BLACK);
-			return;
+			return this;
 		}
 
 		//Try to read string into an double
@@ -458,7 +316,7 @@ public class WattsStrogatzDialog extends JPanel {
 			degreeLabel.setForeground(java.awt.Color.BLACK);
 			nodeLabel.setForeground(java.awt.Color.BLACK);
 			betaLabel.setForeground(java.awt.Color.RED);
-			return;
+			return this;
 		}
 
 		//Try to read this string into an integer
@@ -469,7 +327,7 @@ public class WattsStrogatzDialog extends JPanel {
 			degreeLabel.setForeground(java.awt.Color.RED);
 			nodeLabel.setForeground(java.awt.Color.BLACK);
 			betaLabel.setForeground(java.awt.Color.BLACK);
-			return;
+			return this;
 		}
 		
 		//Get the directed/undirected from the checkbox
@@ -495,33 +353,8 @@ public class WattsStrogatzDialog extends JPanel {
 		{
 			
 			wsm.setCreateView(false);
-			AnalyzePanel analyzePanel = new AnalyzePanel(wsm, wsm.getDirected(),0);
-		
-			//Get the TabbedPanel
-			JTabbedPane parent = (JTabbedPane)getParent();
-			int index = parent.getSelectedIndex();
-			
-			//Remove this Panel
-			parent.remove(index);
-			//Replace it with the panel
-			parent.add(analyzePanel, index);
-			//Set the title for this panel
-			parent.setTitleAt(index,"Analyze Network Statistics");
-			//Display this panel
-			parent.setSelectedIndex(index);
-			//Enforce this Panel
-			parent.validate();
-		
-		
-			//Re-pack the window based on this new panel
-			java.awt.Container p = parent.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			JFrame frame = (JFrame)p;
-			frame.pack();
-
-			return;
+			AnalyzePanel analyzePanel = new AnalyzePanel(this,wsm, wsm.getDirected(),0);
+			return analyzePanel;
 		}
 
 		
@@ -530,6 +363,7 @@ public class WattsStrogatzDialog extends JPanel {
 		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork(graph,null);
 		graph = null;
 
+		/*
 		//Change to the Network view
 		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
 				.setSelectedIndex(0);
@@ -547,16 +381,11 @@ public class WattsStrogatzDialog extends JPanel {
 		GridNodeLayout alg = new GridNodeLayout();
 		CyNetworkView view = Cytoscape.getCurrentNetworkView();
 		view.applyLayout(alg); 
-
+*/
 
 		//Go up to the Dialog and close this window
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.dispose();
+	
+		return this;
 
 	}
 

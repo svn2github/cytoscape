@@ -33,7 +33,9 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package cytoscape.randomnetwork;
+package cytoscape.randomnetwork.gui;
+
+import cytoscape.randomnetwork.*;
 
 import cytoscape.layout.algorithms.*;
 import cytoscape.plugin.*;
@@ -57,7 +59,7 @@ import javax.swing.*;
  * 
  *
  */
-public class ErdosRenyiDialog extends JPanel implements ActionListener {
+public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListener {
 
 
 	/**
@@ -70,7 +72,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 	 */
 	private static final int defaultNodeValue = 100;
 	private static final int defaultEdgeValue = 300;
-	private static final double defaultProbValue = .1;
+	private static final double defaultProbValue = .05;
 	
 	//TextFields
 	private javax.swing.JTextField nodeTextField;
@@ -83,12 +85,8 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 	private javax.swing.ButtonGroup group;
 	private javax.swing.JCheckBox gnp;
 	private javax.swing.JCheckBox gnm;
-	private javax.swing.JButton runButton;
-	private javax.swing.JButton cancelButton;
-	private javax.swing.JButton backButton;
 
 	//Labels
-	private javax.swing.JLabel titleLabel;
 	private javax.swing.JLabel nodeLabel;
 	private javax.swing.JLabel probabilityLabel;
 	private javax.swing.JLabel edgeLabel;
@@ -101,11 +99,42 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 	 *
 	 * @param pMode Gives the dialog context.  If mode == 0, then the dialog creates a 
 	 */
-	public ErdosRenyiDialog(int pMode){
-		super( );
+	public ErdosRenyiPanel(int pMode){
+		super(null);
 		mode = pMode;
 		initComponents();
 	}
+
+	/**
+	 * Default Contructor
+	 *
+	 * @param pMode Gives the dialog context.  If mode == 0, then the dialog creates a 
+	 */
+	public ErdosRenyiPanel(int pMode, RandomNetworkPanel pPrevious){
+		super(pPrevious);
+		mode = pMode;
+		
+		initComponents();
+	}
+
+
+	/**
+	 *
+	 */
+	public String getTitle()
+	{
+		return new String("Erdos Renyi Model");
+	}
+
+	/**
+	*
+	*/
+	public String getDescription()
+	{
+		return new String("Generate an Erdos-Renyi network");
+	}
+
+
 
 	/**
 	 * Initialize the components
@@ -126,9 +155,9 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		probabilityTextField.setHorizontalAlignment(JTextField.RIGHT);
 		edgeTextField.setText("" + defaultEdgeValue);			
 		edgeTextField.setHorizontalAlignment(JTextField.RIGHT);
-		edgeTextField.setPreferredSize(new Dimension(30,25)); 
-		probabilityTextField.setPreferredSize(new Dimension(30,25)); 
-		nodeTextField.setPreferredSize(new Dimension(30,25)); 				
+		edgeTextField.setPreferredSize(new Dimension(50,25)); 
+		probabilityTextField.setPreferredSize(new Dimension(50,25)); 
+		nodeTextField.setPreferredSize(new Dimension(50,25)); 				
 		
 		
 		//Buttons
@@ -137,14 +166,10 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		group = new javax.swing.ButtonGroup();
 		gnm = new javax.swing.JCheckBox();
 		gnp = new javax.swing.JCheckBox();
-		runButton = new javax.swing.JButton();
-		cancelButton = new javax.swing.JButton();
-		backButton = new javax.swing.JButton();
 		
 		//Labels
 		gnpExplain = new javax.swing.JLabel();
 		gnmExplain = new javax.swing.JLabel();
-		titleLabel = new javax.swing.JLabel();
 		probabilityLabel = new javax.swing.JLabel();
 		nodeLabel = new javax.swing.JLabel();
 		edgeLabel = new javax.swing.JLabel();
@@ -175,109 +200,67 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 				         "graph with n nodes and m edges.</font></html>");
 		gnpExplain.setText("<html><font size=2 face=Verdana>Generate a random graph with n" +
 				         "nodes and each edge has probability p to be included.</font></html>");
-		gnmExplain.setPreferredSize(new Dimension(200,40));
-		gnpExplain.setPreferredSize(new Dimension(200,40));
-		gnmExplain.setMinimumSize(new Dimension(200,40));
-		gnpExplain.setMinimumSize(new Dimension(200,40));
+		gnmExplain.setPreferredSize(new Dimension(350,40));
+		gnpExplain.setPreferredSize(new Dimension(350,40));
+		gnmExplain.setMinimumSize(new Dimension(350,40));
+		gnpExplain.setMinimumSize(new Dimension(350,40));
 		
 		
 		//Initially turn off this textfield
 		edgeTextField.setEnabled(false);
 		edgeTextField.setBackground(Color.LIGHT_GRAY);
 		
+	
+		
+		
 
-		//setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		titleLabel.setFont(new java.awt.Font("Sans-Serif", Font.BOLD, 14));
-		titleLabel.setText("Generate Erdos-Renyi Model");
-
-
-		//Setup the generate button
-		runButton.setText("Generate");
-		runButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				runButtonActionPerformed(evt);
-			}
-		});
-
-		//Setup the cancel button
-		cancelButton.setText("Cancel");
-		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cancelButtonActionPerformed(evt);
-			}
-		});
-
-
-		//Set up the Cancel Button
-		backButton.setText("Back");
-		backButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				backButtonActionPerformed(evt);
-			}
-		});
 		
 		setLayout(new GridBagLayout());
-
-		//Setup the titel
+		
 		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 0;
 		c.gridy = 0;
-		c.insets = new Insets(0,10,0,0);		
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 5;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(titleLabel,c);
-		
-		c = null;
-		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weightx = 1;
-		c.weighty = 1;
-
 		add(gnm,c);
 
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
+		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 1;
-		c.gridy = 1;
+		c.gridy = 0;
 		c.gridwidth = 5;
 		c.weightx = 1;
 		c.weighty = 1;
+
 		add(gnmExplain,c);
 		
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
+		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 0;
-		c.gridy = 2;
-		c.weightx = 1;
-		c.weighty = 1;
+		c.gridy = 1;
 		add(gnp,c);
 
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
+		c.insets = new Insets(15,5,0,5);		
 		c.gridx = 1;
-		c.gridy = 2;
+		c.gridy = 1;
 		c.gridwidth = 5;
 		c.weightx = 1;
 		c.weighty = 1;
+
 		add(gnpExplain,c);
 
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 2;
 		c.gridwidth = 20;
 		c.gridheight = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -289,91 +272,66 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
+		c.insets = new Insets(0,10,0,0);		
 		c.gridx = 0;
-		c.gridy = 4;
-		c.gridwidth = 2;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.gridheight = 1;
+		c.gridy = 3;
+		c.gridwidth = 3;
 		add(nodeLabel,c);
 
 		c = null;
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 2;
-		c.gridy = 4;
-		c.gridwidth = 1;
-		c.ipadx = 20;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.gridheight = 1;
+		c.insets = new Insets(0,10,0,0);		
+		c.anchor = GridBagConstraints.LINE_START;	
+		c.gridx = 3;
+		c.gridy = 3;
 		add(nodeTextField,c);
 
 
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
+		c.insets = new Insets(0,10,0,0);		
 		c.gridx = 0;
-		c.gridy = 5;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
+		c.gridy = 4;
+		c.gridwidth = 3;
 		add(edgeLabel,c);
 
 		c = null;
 		c = new GridBagConstraints();
+		c.insets = new Insets(0,10,0,10);		
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 2;
-		c.gridy = 5;
-		c.gridwidth = 1;
-		c.ipadx = 20;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
+		c.gridx = 3;
+		c.gridy = 4;
 		add(edgeTextField,c);
 
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
+		c.insets = new Insets(0,10,0,10);		
 		c.gridx = 0;
-		c.gridy = 6;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
+		c.gridy = 5;
+		c.gridwidth = 3;
 		add(probabilityLabel,c);
 
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 2;
-		c.gridy = 6;
+		c.insets = new Insets(0,10,5,10);		
+		c.gridx = 3;
+		c.gridy = 5;
 		c.gridwidth = 1;
 		c.gridheight = 1;
-		c.ipadx = 20;
-		c.weightx = 1;
-		c.weighty = 1;
 		add(probabilityTextField,c);
 
 		//add the line
 		c = null;
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(0,5,5,5);		
-		c.gridx = 3;
-		c.gridy = 4;
+		c.insets = new Insets(5,0,0,0);		
+		c.gridx = 4;
 		c.gridheight = 5;
-		c.gridwidth = 1;
+		c.gridy = 2;
 		c.fill = GridBagConstraints.VERTICAL;
-		c.weightx = 1;
-		c.weighty = 1;
+
 		add(line, c);
 
 
@@ -383,11 +341,9 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
-		c.gridx = 4;
-		c.gridy = 4;
-		c.gridwidth = 5;
-		c.gridheight = 1;
+		c.insets = new Insets(0,10,0,0);		
+		c.gridx = 5;
+		c.gridy = 3;
 		c.weightx = 1;
 		c.weighty = 1;
 		add(directedCheckBox,c);
@@ -396,108 +352,13 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(5,5,5,5);		
-		c.gridx = 4;
-		c.gridy = 5;
-		c.gridwidth = 5;
-		c.gridheight = 1;
+		c.insets = new Insets(0,10,0,0);		
+		c.gridx = 5;
+		c.gridy = 4;
+
 		c.weightx = 1;
 		c.weighty = 1;
 		add(selfEdgeCheckBox,c);
-
-		//Setup the 
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 6;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_END;
-		c.insets = new Insets(0, 0,0,0);
-		c.weightx = 1;
-		c.weighty = 1;
-		add(cancelButton,c);
-		
-		
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_START;
-		c.weightx = 1;
-		c.weighty = 1;
-		c.insets = new Insets(0,0,0,0);
-		add(backButton,c);
-
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 5;
-		c.gridy = 10;
-		c.anchor = GridBagConstraints.LINE_END;
-		c.insets = new Insets(0,0,0,0);
-		c.weightx = 1;
-		c.weighty = 1;
-		add(runButton,c);
-
-	}
-
-	/**
-	 *  Call back for the cancel button
-	 */
-	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-		//Go up to the JFrame parent and close this window
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.dispose();
-	}
-
-
-	/**
-	 *  Call back for the back button
-	 */
-	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-	
-		GenerateRandomPanel generateRandomPanel = new GenerateRandomPanel(mode);
-
-		//Get the TabbedPanel
-		JTabbedPane parent = (JTabbedPane)getParent();
-		int index = parent.getSelectedIndex();
-			
-		//Remove this Panel
-		parent.remove(index);
-		
-		//Replace it with the panel
-		parent.add(generateRandomPanel, index);
-
-		if(mode == 0)
-		{
-			//Set the title for this panel
-			parent.setTitleAt(index,"Generate Random Networks");
-		}
-		else
-		{
-			parent.setTitleAt(index,"Analyze network statistics");
-		}
-		//Display this panel
-		parent.setSelectedIndex(index);
-		//Enforce this Panel
-		parent.validate();
-		
-		
-		//Re-pack the window based on this new panel
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.pack();
-
-		return;
 
 	}
 
@@ -507,7 +368,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 	/**
 	 * Call back for the generate button
 	 */
-	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) 
+	public RandomNetworkPanel next()
 	{
 		
 		// number of nodes
@@ -535,7 +396,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 			numNodes = Integer.parseInt(numNodeString);
 		} catch (Exception e) {
 			nodeLabel.setForeground(java.awt.Color.RED);
-			return;
+			return this;
 		}
 		
 		//If we passed this set the label to black
@@ -570,7 +431,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 			} catch (Exception e) {
 				probabilityLabel.setForeground(java.awt.Color.BLACK);
 				edgeLabel.setForeground(java.awt.Color.RED);
-				return;
+				return this;
 			}
 			
 			//Create the model using the number of edges 
@@ -590,7 +451,7 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 			} catch (Exception e) {
 				probabilityLabel.setForeground(java.awt.Color.RED);
 				edgeLabel.setForeground(java.awt.Color.BLACK);
-				return;
+				return this;
 			}
 		
 			//Create the model
@@ -605,33 +466,9 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		{
 			
 			erm.setCreateView(false);
-			AnalyzePanel analyzePanel = new AnalyzePanel(erm, erm.getDirected(), 01);
-		
-			//Get the TabbedPanel
-			JTabbedPane parent = (JTabbedPane)getParent();
-			int index = parent.getSelectedIndex();
-			System.out.println(index);
-			//Remove this Panel
-			parent.remove(index);
-			//Replace it with the panel
-			parent.add(analyzePanel, index);
-			//Set the title for this panel
-			parent.setTitleAt(index,"Analyze Network Statistics");
-			//Display this panel
-			parent.setSelectedIndex(index);
-			//Enforce this Panel
-			parent.validate();
-		
-		
-			//Re-pack the window based on this new panel
-			java.awt.Container p = parent.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			p = p.getParent();
-			JFrame frame = (JFrame)p;
-			frame.pack();
+			AnalyzePanel analyzePanel = new AnalyzePanel(this,erm, erm.getDirected(), 01);
 
-			return;
+			return analyzePanel;
 		}
 		
 		
@@ -639,36 +476,11 @@ public class ErdosRenyiDialog extends JPanel implements ActionListener {
 		DynamicGraph graph = erm.generate();
 		CyNetwork network = CytoscapeConversion.DynamicGraphToCyNetwork(graph,null);
 		graph = null;
+		
 				
-		//Set the network pane as active
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
-				.setSelectedIndex(0);
+			
 		
-		
-		//returns CytoscapeWindow's VisualMappingManager object
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-		//gets the global catalog of visual styles and calculators
-		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-		//Get the random network vistualStyle
-		VisualStyle newStyle = catalog.getVisualStyle("random network");
-		//Set this as the current visualStyle
-		vmm.setVisualStyle(newStyle);
-		
-
-		GridNodeLayout alg = new GridNodeLayout();
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		view.applyLayout(alg); 
-		
-
-		//Go up to the parent window and close it		
-		JTabbedPane parent = (JTabbedPane)getParent();
-		java.awt.Container p = parent.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		p = p.getParent();
-		JFrame frame = (JFrame)p;
-		frame.dispose();
-
+		return this;
 	}
 
 	/*

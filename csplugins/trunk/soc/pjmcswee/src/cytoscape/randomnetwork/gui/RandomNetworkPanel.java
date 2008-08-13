@@ -1,4 +1,4 @@
-/* File: NetworkMetric.java
+/*  File: RandomNetworkPanel.java
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
@@ -32,54 +32,73 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
+ 
+ 
+ package cytoscape.randomnetwork.gui;
+ import javax.swing.*;
+ import java.awt.*;
+ /**
+  * Ideally, this might work better as an interface, but as we really
+  * want to be able to add it to UI components, it should be a class.
+  */
+ public abstract class RandomNetworkPanel extends JPanel
+ {
+ 
+ 
+		/**
+		 * The previous RandomNetworkPanel
+		 */
+		private RandomNetworkPanel mPrevious;
+ 
+		private static final int PANEL_WIDTH = 470;
+		private static final int PANEL_HEIGHT = 200;
+ 
+		/**
+		 * Constructor
+		 * @param pPrevious The previous RandomNetworkPanel in the succesion.
+		 */
+		RandomNetworkPanel(RandomNetworkPanel pPrevious)
+		{
+			mPrevious = pPrevious;
+			setBorder(BorderFactory.createLineBorder(Color.gray));
+			Dimension dim = new Dimension(PANEL_WIDTH,PANEL_HEIGHT);
+			setPreferredSize(dim);
+			setMinimumSize(dim);
+		}
+ 
+ 
+		/**
+		 *
+		 * @return The preivous RandomNetworkPanel in this succession.
+		 */
+		public RandomNetworkPanel getPrevious()
+		{
+			return mPrevious;
+		}
+ 
+		/**
+		 * @return Get the next RandomNetworkPanel in this succession. 
+		 */
+		public abstract RandomNetworkPanel next();
 
-package cytoscape.randomnetwork;
-import cytoscape.graph.dynamic.*;
-
-
-
-
-/**
- *  Interface for network metrics.  Metrics compute some attribute or property of networks.
- *  New metrics can and should be added by implementing this interface.  Currenlty only 
- *  metrics which return a double are allowed for statistical processing.
- *
- *
- * @author Patrick J. McSweeney
- * @version 1.0
- */
-public interface  NetworkMetric {
-	
-	 
-	
-	/**
-	 *  This function actually calculates the metric.  Currently it is necessary to again specify 
-	 *  whether or not pNet is directed.
-	 *
-	 * @param pNet The network to analyze.
-	 * @param pDirected Specifices to treat pNet as directed (true) or undirected (false).
-	 * @return The result of this metric on pNet.
-	 */
-	public abstract double analyze(DynamicGraph pNet, boolean pDirected);
-	
-	
-	/**
-	 *  Each NetworkMetric needs to implement the copy constructor to allow
-	 *  the RandomNetworkAnalyzer to give each thread its own copy of the metric.
-	 *  @return A copy of this NetworkMetric.
-	 */
-	public NetworkMetric copy();
-	
-	/**
-	 * Returns the name of this metric, used for display purposes.
-	 *
-	 * @return The string conical name of this metric. 
-	 */
-	public abstract String getDisplayName();
-	
-}
-
-
-
-
-
+		
+		/**
+		 * @param What should we call the Next Button Now
+		 */	
+		public String getNextText()
+		{
+			return new String("Next");
+		}
+		
+		
+		/**
+		 *
+		 */
+		public abstract String getTitle();
+		
+		public abstract String getDescription();
+		
+		
+		
+		
+ }
