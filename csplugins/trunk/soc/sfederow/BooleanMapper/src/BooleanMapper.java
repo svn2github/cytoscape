@@ -57,7 +57,7 @@ public class BooleanMapper extends CytoscapePlugin {
 		public void actionPerformed(ActionEvent e) {
 			if (alg != null) {
 				// Create the dialog
-				BooleanSettingsDialog settingsDialog = new BooleanSettingsDialog(alg);
+				BooleanSettingsDialog2  settingsDialog = new BooleanSettingsDialog2(alg);
 				// Pop it up
 				settingsDialog.actionPerformed(e);
 			} 

@@ -73,7 +73,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	
 	private JButton colorButton;
 	private JColorChooser colorChooser;
+	private JComboBox nameBox;
 	private JDialog dialog;
+	private JTextField colorField;
 	private JPanel mainPanel; // The main content pane
 	private JPanel buttonBox; // Our action buttons (Save Settings, Cancel, Execute, Done)
 	private JPanel tableButtons;
@@ -82,7 +84,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private JPanel colorPanel;
 	private JTable table;
 	
-	
+	AttributeManager attributeManager;
+	//ColorMapper cmapper = new ColorMapper();
 	CriteriaTablePanel criteriaTable;
 		
 	
@@ -160,7 +163,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			updateAllSettings(true);
 			//criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
 			
-			
+			ColorMapper mapper = new ColorMapper("test", "continuous");
 			applyCriteria();
 			//String 
 			//calculator.evaluate(parsedCriteria);
@@ -171,8 +174,13 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			
 			
 		} else if (command.equals("save")) {
-			updateAllSettings();
-			//currentAlgorithm.getSettings().get("criteriaField").
+			System.out.println(nameBox.getSelectedItem());
+			String[] names = new String[nameBox.getItemCount()];
+			for(int i=0; i<nameBox.getItemCount(); i++){
+				names[i] = (String)nameBox.getItemAt(i);
+			}
+			
+			
 		} else if (command.equals("cancel")) {
 			// Call revertSettings for each
 			
@@ -181,7 +189,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			setVisible(false);
 		} else {
 			// OK, initialize and display
-			initialize();
+			//initialize();
 			pack();
 			setVisible(true);
 		}
@@ -194,19 +202,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	
 	
 	private void initialize() {
-		
-		 
-	     /*able2 = new JTable(dataModel);
-	     table2.setPreferredScrollableViewportSize(new Dimension(110, 80));
-	     table2.setFillsViewportHeight(true);
-	     //table2.setDefaultRenderer(Color.class, new ColorRenderer(true));
-	     table2.getColumn("Color").setCellRenderer(new ColorRenderer(true));
-	     
-	      JScrollPane scrollpane = new JScrollPane(table2);
-	     */
-	     
-		
-		
+				
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 
 		// Create our main panel
@@ -223,19 +219,28 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		mainPanel.addFocusListener(this);
 		
 		//Panel for color Button
-		this.colorPanel = new JPanel();
+		this.colorPanel = new JPanel(new BorderLayout(0,2));
 		
-		colorButton = new JButton("Choose Color");
-		colorButton.setBackground(currentColor);
-		colorButton.setActionCommand("chooseColor");
-		colorButton.addActionListener(this);
 		
-		colorPanel.add(colorButton);
+		JLabel colorLabel = new JLabel();
+		colorField = new JTextField();
+		colorField.setPreferredSize(new Dimension(200, 20));
+		colorField.setBackground(currentColor);
+		colorField.setActionCommand("chooseColor");
+		colorField.addActionListener(this);
+		//colorButton = new JButton("Choose Color");
+		//colorButton.setBackground(currentColor);
+		//colorButton.setActionCommand("chooseColor");
+		//colorButton.addActionListener(this);
+		
+		colorPanel.add(colorLabel, BorderLayout.LINE_START);
+		colorPanel.add(colorField, BorderLayout.LINE_END);
 		colorPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
 		//Create a panel for our button box
 		this.buttonBox = new JPanel();
 		
+		//Create buttons
 		JButton addButton = new JButton("Add");
 		addButton.setActionCommand("add");
 		addButton.addActionListener(this);
@@ -261,12 +266,10 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		buttonBox.add(saveButton);
 		buttonBox.add(exitButton);
 		buttonBox.add(applyButton);
-		
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-		
-		
-		
 		buttonBox.addFocusListener(this);
+		
+		
 		
 		this.tableButtons = new JPanel();
 		
@@ -304,6 +307,42 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		setLocation(2,Cytoscape.getDesktop().getHeight()-557);
 	}
 	
+	public JPanel getCriteriaPanel(){
+		JPanel criteriaPanel = new JPanel();
+		/* 
+		BoxLayout box = new BoxLayout(criteriaPanel, BoxLayout.Y_AXIS);
+		criteriaPanel.setLayout(box);
+		
+		Border refBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		TitledBorder titleBorder = BorderFactory.createTitledBorder(refBorder, "Criteria");
+		titleBorder.setTitlePosition(TitledBorder.LEFT);
+		titleBorder.setTitlePosition(TitledBorder.TOP);
+		criteriaPanel.setBorder(titleBorder);
+		
+		String labelLocation = BorderLayout.LINE_START;
+		String fieldLocation = BorderLayout.LINE_END;
+		
+		JPanel fieldPanel = new JPanel(new BorderLayout(0, 2));
+		JLabel fieldLabel = new JLabel("Name"); 
+		//JTextField
+		nameBox.setEditable(true);
+		nameBox.setPreferredSize(new Dimension(200,20));
+		nameBox.setActionCommand("listChanged");
+		nameBox.addActionListener(this);
+		fieldPanel.add(setLabel, labelLocation);
+		namePanel.add(nameBox, fieldLocation);
+		
+		JPanel mapPanel = new JPanel(new BorderLayout(0, 2));
+		JLabel mapLabel = new JLabel("Map To");
+		JComboBox mapToBox = new JComboBox(new String[] {"Node Color", "Node Border Color", "None" });
+		mapPanel.add(mapLabel, labelLocation);
+		mapPanel.add(mapToBox, fieldLocation);
+		
+		setPanel.add(namePanel);
+		setPanel.add(mapPanel);
+		*/
+		return criteriaPanel;
+	}
 	
 	private void updateAllSettings() {
 		currentAlgorithm.updateSettings();
@@ -334,7 +373,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		JPanel namePanel = new JPanel(new BorderLayout(0, 2));
 		JLabel setLabel = new JLabel("Name"); 
-		JComboBox nameBox = new JComboBox(getCriteriaSetNames());
+		nameBox = new JComboBox(new String[] {"amitabha buddha", "avalokiteshvara"});//getCriteriaSetNames());
 		nameBox.setEditable(true);
 		nameBox.setPreferredSize(new Dimension(200,20));
 		nameBox.setActionCommand("listChanged");
@@ -364,14 +403,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	}
 	
 	public void makeCriteriaSet(String[] names){
-		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-		//if(!networkAttributes.hasAttribute(Cytoscape.getCurrentNetwork().toString(), "Criteria")){
-		ArrayList<String> temp = new ArrayList<String>();
-		for(int i=0; i<names.length; i++){
-			temp.add(names[i]);
-		}
-		networkAttributes.setListAttribute(Cytoscape.getCurrentNetwork().toString(), "Criteria", temp);
-		//}
+		
 	}
 	
 	public void applyCriteria(){
@@ -381,7 +413,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		    //for(int i = 0; i<rowIndexes.length;i++){
 		    	//System.out.println("row index: "+rowIndexes[i]);
 		    //}
-			String current = (String)criteriaTable.returnCellValue(0,0); 
+			String current = (String)criteriaTable.getCell(0,0); 
 			//System.out.println("current: "+ current);
 			/*try{
 			scan.parse(current);
@@ -391,7 +423,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			*/
 			calculator.parse2(current);
 			calculator.clearList();
-			calculator.evaluate();
+			calculator.evaluate(currentColor, "label");
 		//}
 		//parsedCriteria = calculator.parseCriteria(criteria);
 		

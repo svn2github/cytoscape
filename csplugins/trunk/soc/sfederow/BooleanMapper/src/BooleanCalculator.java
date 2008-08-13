@@ -35,7 +35,7 @@ public class BooleanCalculator {
 	CyNetwork network = Cytoscape.getCurrentNetwork();
 	List<Node> nodeList = network.nodesList();
 	
-	
+	AttributeManager attManager = new AttributeManager();
 	//String currentOperator = "";
 	//String criteria;
 	
@@ -195,7 +195,7 @@ public class BooleanCalculator {
 	}
 	
 	
-	public boolean evaluate(Color color){
+	public boolean evaluate(Color color, String label){
 		//System.out.println("evaluate");
 		//for(int j=0; j<masterList.size();j++){
 
@@ -262,7 +262,7 @@ public class BooleanCalculator {
 
 				}
 				//System.out.println(type);
-				evaluateOnce(nodeValueMap, attributes, operations, gnode, attributeType, numberValueCount, color);
+				evaluateOnce(nodeValueMap, attributes, operations, gnode, attributeType, numberValueCount, color, label);
 				//validAttributes.clear();
 				//operations.clear();
 				nodeValueMap.clear();
@@ -274,7 +274,7 @@ public class BooleanCalculator {
 
 		
 	
-	public void evaluateOnce(HashMap nodeValues, ArrayList<String> attributes, ArrayList<String> operations, Node node, int attributeType, int numberCount, Color color){
+	public void evaluateOnce(HashMap nodeValues, ArrayList<String> attributes, ArrayList<String> operations, Node node, int attributeType, int numberCount, Color color, String label){
 		
 	
 		Stack<Boolean> finalValue = new Stack<Boolean>();
@@ -344,6 +344,8 @@ public class BooleanCalculator {
 		if(!finalValue.isEmpty()){
 			if(finalValue.pop()){
 				System.out.println("true");
+				//createAttribute()
+				attManager.setColorAttribute(label, color.toString(), node.getIdentifier());
 				network.setSelectedNodeState(node, true);
 			}else{
 				System.out.println("false");

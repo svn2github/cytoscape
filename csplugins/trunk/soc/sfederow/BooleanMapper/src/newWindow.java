@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -17,7 +19,7 @@ import cytoscape.layout.Tunable;
 import cytoscape.layout.TunableListener;
 import cytoscape.logger.CyLogger;
 
-public class newWindow implements BooleanAlgorithm, ActionListener, TunableListener {
+public class newWindow implements BooleanAlgorithm, ActionListener, TunableListener, FocusListener {
 	protected BooleanProperties booleanProperties = null;
 	protected PropertyChangeSupport pcs;
 	CyLogger logger = null;
@@ -120,8 +122,10 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 		booleanProperties.add(new Tunable("criteriaGroup", "Edit Criteria", Tunable.GROUP,
 				new Integer(3)));
 
-		booleanProperties.add(new Tunable("legendField", "Label", Tunable.STRING,
-				new String()));
+		Tunable legField = new Tunable("legendField", "Label", Tunable.STRING,
+				new String(),this,null,0);
+		legField.addTunableValueListener(this);		
+		booleanProperties.add(legField);
 		
 		Tunable critField = new Tunable("criteriaField", "Criteria", Tunable.STRING, new String(),this,null,0);
 		critField.addTunableValueListener(this);
@@ -246,6 +250,8 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 	public void actionPerformed(ActionEvent e){
 		if(e.getActionCommand().equals("clearButton")){
 			booleanProperties.get("criteriaField").setValue((Object)"");
+			booleanProperties.get("legendField").setValue((Object)"");
+			
 			criteriaString = "";
 		}
 	}
@@ -308,12 +314,18 @@ public class newWindow implements BooleanAlgorithm, ActionListener, TunableListe
 
 		getAttributesList(attributeList, Cytoscape.getNodeAttributes(), "");
 		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(), "");
-		String[] str = (String[]) attributeList.toArray(new String[attributeList.size()]);
+		String[] str = (String[])attributeList.toArray(new String[attributeList.size()]);
 		attributeList.clear();
 		return str;
 
 	}
 
+	public void focusLost(FocusEvent e){
+		
+	}
+	public void focusGained(FocusEvent e){
+		
+	}
 	public void getAttributesList(ArrayList attributeList,
 			CyAttributes attributes, String prefix) {
 		String[] names = attributes.getAttributeNames();
