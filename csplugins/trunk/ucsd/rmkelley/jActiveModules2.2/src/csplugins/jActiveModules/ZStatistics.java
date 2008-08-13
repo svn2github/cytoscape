@@ -109,10 +109,13 @@ public class ZStatistics implements Serializable{
 
     public double get_adj_z(int numConds, double zScore){
 	int f_index = (int)rAZIndex(zScore);
-	if(f_index < 0 || f_index > onesMaxInd){
-	    throw new RuntimeException("Unable to look up z value in z value table\n"+
-				       "This is either a bug in jActiveModules, or\n"+
-				       "indicates very large or erroneous zvalues");
+	if(f_index < 0 )
+	    throw new RuntimeException("z-score ("+zScore+") produced an f_index (" + f_index + 
+	                               ") less than zero.");
+	if(f_index > onesMaxInd) {
+	    System.err.println("The extremely large z-score (" + zScore + ") generated an f_index ("+
+	                       f_index+") that is too large, so using onesMaxInd instead: " + onesMaxInd );
+	    f_index = onesMaxInd;
 	}
 	return zs[numConds-1][f_index];
     }
