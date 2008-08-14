@@ -64,24 +64,14 @@ import cytoscape.init.CyInitParams;
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 
-import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.FileUtil;
 
 import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 
-import org.cytoscape.view.VisualPropertyCatalog;
-import cytoscape.LegacyVisualProperty;
-
-import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.NodeRenderers;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.VMMFactory;
-import org.cytoscape.vizmap.icon.ArrowIcon;
-import org.cytoscape.vizmap.icon.LineTypeIcon;
-import org.cytoscape.vizmap.icon.NodeIcon;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
@@ -89,16 +79,7 @@ import org.cytoscape.GraphPerspective;
 import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphFactory;
 
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.DiscreteVisualProperty;
-import org.cytoscape.view.ShapeFactory;
-import org.cytoscape.view.renderers.NodeRenderer;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Shape;
-import java.awt.Stroke;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
@@ -116,7 +97,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.LinkedList;
 
-import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 
@@ -1962,64 +1942,7 @@ public abstract class Cytoscape {
 	public static VisualMappingManager getVisualMappingManager() {
 		return VMMFactory.getVisualMappingManager();
 	}
-	
-	/** return array of Integer-s containing first,...last with step size increment */
-	private static Object[] range(int first, int last, int increment){
-		ArrayList result = new ArrayList();
-		for (int i = first; i<=last; i+=increment){
-			result.add(Integer.valueOf(i));
-		}
-		return result.toArray();
-	}
 
-	public static Map<Object, Icon> getNodeIconSet(Object [] values, Map<Byte, Shape>shapes) {
-		Map<Object, Icon> nodeShapeIcons = new HashMap<Object, Icon>();
-		for (int i = 0; i < values.length; i++) {
-			Integer value = (Integer) values[i];
-			Shape shape = shapes.get(new Byte(value.byteValue()));
-			
-			nodeShapeIcons.put(shape, new NodeIcon(shape));
-			
-		}
-		return nodeShapeIcons;
-	}
-	
-	public static Map<Object, Icon> getRendererIconSet(Object [] values) {
-		Map<Object, Icon> rendererIcons = new HashMap<Object, Icon>();
-		for (int i = 0; i < values.length; i++) {
-			NodeRenderer value = (NodeRenderer) values[i];
-			
-			rendererIcons.put(value, new NodeIcon()); // FIXME FIXME: do property icons!
-		}
-		return rendererIcons;
-	}
-
-	public static Map<Object, Icon> getArrowIconSet(Object [] values, Map<Byte, Shape>shapes) {
-		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
-
-		for (int i = 0; i < values.length; i++) {
-			Integer value = (Integer) values[i];
-			Shape shape = shapes.get(new Byte(value.byteValue()));
-			ArrowIcon icon = new ArrowIcon(shape, 
-			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
-			                               VisualPropertyIcon.DEFAULT_ICON_SIZE,
-			                               "someShape" /* FIXME: user-friendly string! */);
-			arrowShapeIcons.put(shape, icon);
-		}
-
-		return arrowShapeIcons;
-	}
-
-	public static Map<Object, Icon> getLineStyleIconSet(Object [] values) {
-		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
-
-		for (int i = 0; i < values.length; i++) {
-			Stroke value = (Stroke) values[i];
-			arrowShapeIcons.put(value, new LineTypeIcon(value));
-		}
-
-		return arrowShapeIcons;
-	}
 	/** For the duration of pluggable VisualProperties refactor: add legacy VisualProperties */
 	public static void defineHardcodedVisualProperties(){
 		// FIXME: somehow get Renderers defined / activated !!
