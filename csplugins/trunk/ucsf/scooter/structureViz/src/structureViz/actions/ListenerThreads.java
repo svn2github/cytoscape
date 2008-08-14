@@ -118,6 +118,8 @@ class ListenerThreads extends Thread
 			} else if (line.startsWith("SelectionChanged: ")) {
 				// Start up the updater on a separate thread
 				(new SelectionUpdater()).start();
+			} else if (line.length() == 0) {
+				continue;
 			} else if (!line.startsWith("CMD")) {
 				reply.add(line);
 			}

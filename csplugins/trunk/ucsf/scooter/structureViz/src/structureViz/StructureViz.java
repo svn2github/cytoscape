@@ -358,7 +358,7 @@ public class StructureViz extends CytoscapePlugin
 				mnDialog.setVisible(true);
 			}
 
-			List structures = (List)userData;
+			List<Structure> structures = (List<Structure>)userData;
 
 			// Bring up the dialog
 			alDialog = 

@@ -152,6 +152,18 @@ public class ChimeraResidue implements ChimeraStructuralObject {
 	 *
 	 * @return the string representation
 	 */
+	public String displayName () {
+		return toString();
+	}
+
+	/**
+	 * Return the string representation of this residue as follows:
+	 * 	"<i>residue_name</i> <i>index</i>" 
+	 * where <i>residue_name</i> could be either the single letter,
+	 * three letter, or full name representation of the amino acid.
+	 *
+	 * @return the string representation
+	 */
 	public String toString () {
 		if (displayType == FULL_NAME) {
 			return (toFullName(type)+" "+index);

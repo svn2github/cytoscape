@@ -205,7 +205,17 @@ public class Chimera {
   		// See if we already have a chimera instance running
   		if (chimera == null) {
   			// No, get one started
-  			List <String> args = new ArrayList<String>();
+
+				// Figure out our fallback
+				String osPath = "";
+				String os = System.getProperty("os.name");
+				if (os.startsWith("Linux")) {
+					osPath = "/usr/local/chimera/bin/";
+				} else if (os.startsWith("Windows")) {
+					osPath = "\\Program Files\\Chimera\\bin\\";
+				} else if (os.startsWith("Mac")) {
+					osPath = "/Applications/Chimera.app/Contents/MacOS/";
+				}
 
 				// Get the path
 				String path = CyChimera.getProperty("chimeraPath");
@@ -216,14 +226,21 @@ public class Chimera {
 				}
 				CyLogger.getLogger(Chimera.class).info("Path: "+path);
 
-				// Oops -- very platform specific, here!!
-				// XXX FIXME XXX
-  			args.add(path);
-  			args.add("--start");
-  			args.add("ReadStdin");
-
-  			ProcessBuilder pb = new ProcessBuilder(args);
-  			chimera = pb.start();
+				try {
+  				List <String> args = new ArrayList<String>();
+  				args.add(path);
+  				args.add("--start");
+  				args.add("ReadStdin");
+  				ProcessBuilder pb = new ProcessBuilder(args);
+  				chimera = pb.start();
+				} catch (Exception e) {
+  				List <String> args = new ArrayList<String>();
+  				args.add(osPath+"chimera");
+  				args.add("--start");
+  				args.add("ReadStdin");
+  				ProcessBuilder pb = new ProcessBuilder(args);
+  				chimera = pb.start();
+				}
   		} 
 			// Start up a listener
 			listener = new ListenerThreads(chimera, replyLog, this);
@@ -241,10 +258,13 @@ public class Chimera {
    * @param structure the Structure to open
    */
   public void open(Structure structure) {
+		structure.setModelNumber(Structure.getNextModel());
 		if (structure.getType() == Structure.StructureType.MODBASE_MODEL)
-			this.command("listen stop models; listen stop selection; open modbase:"+structure.name());
+			this.command("listen stop models; listen stop selection; open "+structure.modelNumber()+" modbase:"+structure.name());
+		else if (structure.getType() == Structure.StructureType.SMILES)
+			this.command("listen stop models; listen stop selection; open "+structure.modelNumber()+" smiles:"+structure.name());
 		else
-			this.command("listen stop models; listen stop selection; open "+structure.name());
+			this.command("listen stop models; listen stop selection; open "+structure.modelNumber()+" "+structure.name());
 
 		// Now, figure out exactly what model # we got
 		List<ChimeraModel> modelList = getModelInfoList(structure);
@@ -258,8 +278,10 @@ public class Chimera {
 			// Make the molecule look decent
 			this.command("repr stick #"+newModel.getModelNumber());
 
-			// Create the information we need for the navigator
-			getResidueInfo(newModel);
+			if (structure.getType() != Structure.StructureType.SMILES) {
+				// Create the information we need for the navigator
+				getResidueInfo(newModel);
+			}
 
 			// Add it to our list of models
 			models.add(newModel);
@@ -333,7 +355,7 @@ public class Chimera {
 			}
 
 			try {
-				//System.out.print("Waiting on replyLog for: "+text);
+				// System.out.print("Waiting on replyLog for: "+text);
 				replyLog.wait();
 			} catch (InterruptedException e) {}
 		}
@@ -377,15 +399,23 @@ public class Chimera {
 			// which tells us about the associated CyNode
 			if (modelHash.containsKey(modelNumber)) {
 				ChimeraModel oldModel = (ChimeraModel)modelHash.get(modelNumber);
-				model.setStructure(oldModel.getStructure());
+				Structure s = oldModel.getStructure();
+				if (s.getType() == Structure.StructureType.SMILES)
+					model.setModelName(s.name());
+				model.setStructure(s);
 			} else {
-				model.setStructure(CyChimera.findStructureForModel(networkView, model.getModelName()));
+				// This will return a new Structure if we don't know about it
+				Structure s = CyChimera.findStructureForModel(networkView, model.getModelName());
+				s.setModelNumber(modelNumber);
+				model.setStructure(s);
 			}
 
 			newHash.put(modelNumber,model);
 
-			// Get the residue information
-			getResidueInfo(model);
+			if (model.getStructure() != null && model.getStructure().getType() != Structure.StructureType.SMILES) {
+				// Get the residue information
+				getResidueInfo(model);
+			}
 		}
 
 		// Replace the old model list
@@ -449,7 +479,8 @@ public class Chimera {
 			// Get the corresponding "real" model
 			if (containsModel(modelNumber)) {
 				ChimeraModel dataModel = getModel(modelNumber);
-				if (dataModel.getResidueCount() == selectedModel.getResidueCount()) {
+				if (dataModel.getResidueCount() == selectedModel.getResidueCount() ||
+				    dataModel.getStructure().getType() == Structure.StructureType.SMILES) {
 					// Select the entire model
 					selectionList.add(dataModel);
 				} else {
@@ -520,14 +551,15 @@ public class Chimera {
 	 */
 	private List<ChimeraModel> getModelInfoList(Structure structure) {
 		String name = structure.name();
+		int modelNumber = structure.modelNumber();
 		List<ChimeraModel>infoList = new ArrayList();
 
-		// System.out.println("Getting model info for "+name);
-		Iterator modelIter = this.commandReply ("listm type molecule");
+		Iterator modelIter = this.commandReply ("listm type molecule spec #"+modelNumber);
 		while (modelIter.hasNext()) {
 			String modelLine = (String)modelIter.next();
-			// System.out.println(modelLine);
-			if (modelLine.contains(name)) {
+			// System.out.println("ModelList: "+modelLine);
+			if (modelLine.contains("id #"+modelNumber)) {
+				// System.out.println("Found: "+name);
 				// got the right model, now get the model number
 				ChimeraModel chimeraModel = new ChimeraModel(structure, modelLine);
 				structure.setModelNumber(chimeraModel.getModelNumber());

@@ -85,8 +85,9 @@ public class ModelNavigatorDialog
 	private static final int EXIT = 11;
 	private static final int REFRESH = 12;
 	private static final int CLEAR = 13;
-	private static final int ALIGN = 14;
-	private static final int FINDCLASH = 15;
+	private static final int ALIGNBYMODEL = 14;
+	private static final int ALIGNBYCHAIN = 15;
+	private static final int FINDCLASH = 16;
 	private boolean ignoreSelection = false;
 	private int residueDisplay = ChimeraResidue.THREE_LETTER;
 	private boolean isCollapsing = false;
@@ -98,7 +99,7 @@ public class ModelNavigatorDialog
 	private JLabel titleLabel;
 	private JTree navigationTree;
 	private ChimeraTreeModel treeModel;
-	private JMenuItem alignMenu;
+	private JMenu alignMenu;
 
 	/**
 	 * Create a new ModelNavigatorDialog.
@@ -371,11 +372,24 @@ public class ModelNavigatorDialog
 
 		// Chimera menu
 		JMenu chimeraMenu = new JMenu("Chimera");
-		alignMenu = addMenuItem(chimeraMenu, "Align", ALIGN, null);
-		if (modelCount > 1)
+		alignMenu = new JMenu("Align Structures");
+		{
+			addMenuItem(alignMenu, "by model", ALIGNBYMODEL, null);
+			addMenuItem(alignMenu, "by chain", ALIGNBYCHAIN, null);
+		}
+
+		int totalModels = modelCount;
+		for (ChimeraModel model: chimeraObject.getChimeraModels()) {
+			Structure s = model.getStructure();
+			if (s != null && s.getType() == Structure.StructureType.SMILES) totalModels--;
+		}
+
+		if (totalModels > 1)
 			alignMenu.setEnabled(true);
 		else
 			alignMenu.setEnabled(false);
+		chimeraMenu.add(alignMenu);
+
 		JMenu clashMenu = new JMenu("Clash Detection");
 		addMenuItem(clashMenu, "Find Clashes", FINDCLASH, "findclash sel");
 		addMenuItem(clashMenu, "Clear Clash", COMMAND, "~findclash");
@@ -533,8 +547,10 @@ public class ModelNavigatorDialog
 				return;
 			} else if (type == REFRESH) {
 				chimeraObject.refresh();
-			} else if (type == ALIGN) {
-				launchAlignDialog();
+			} else if (type == ALIGNBYMODEL) {
+				launchAlignDialog(false);
+			} else if (type == ALIGNBYCHAIN) {
+				launchAlignDialog(true);
 			} else if (type == FINDCLASH) {
 				if (selectedObjects.size() > 0) {
 					chimeraObject.select(command);
@@ -552,7 +568,7 @@ public class ModelNavigatorDialog
 		/**
 		 * Create and instantiate the align dialog
 		 */
-		private void launchAlignDialog()
+		private void launchAlignDialog(boolean useChains)
 		{
 			AlignStructuresDialog alDialog;
 			if (chimeraObject.getAlignDialog() != null) {
@@ -560,13 +576,21 @@ public class ModelNavigatorDialog
 				alDialog.setVisible(false);
 				alDialog.dispose();
 			}
-			List<Structure> structureList = new ArrayList();
-			for (ChimeraModel model: chimeraObject.getChimeraModels()) {
-				structureList.add(model.getStructure());
-			}	
+			List objectList = new ArrayList();
+			if (!useChains) {
+				for (ChimeraModel model: chimeraObject.getChimeraModels()) {
+					objectList.add(model.getStructure());
+				}		
+			} else {
+				for (ChimeraModel model: chimeraObject.getChimeraModels()) {
+					for (ChimeraChain chain: model.getChildren()) {
+						objectList.add(chain);
+					}
+				}
+			}
 			// Bring up the dialog
 			alDialog = new AlignStructuresDialog(chimeraObject.getDialog(), 
-																						chimeraObject, structureList);
+																					 chimeraObject, objectList);
 			alDialog.pack();
 			alDialog.setVisible(true);
 			chimeraObject.setAlignDialog(alDialog);
@@ -616,7 +640,7 @@ public class ModelNavigatorDialog
 			}
 
 			// Call the DefaultTreeCellRender's method to do most of the work
-			super.getTreeCellRendererComponent(tree, value, selectIt,
+			super.getTreeCellRendererComponent(tree, value.toString(), selectIt,
                             						 expanded, leaf, row,
                             						 hasFocus);
 

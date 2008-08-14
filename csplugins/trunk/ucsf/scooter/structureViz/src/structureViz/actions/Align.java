@@ -54,6 +54,7 @@ import cytoscape.util.CytoscapeAction;
 import structureViz.actions.Chimera;
 import structureViz.model.Structure;
 import structureViz.model.ChimeraModel;
+import structureViz.model.ChimeraStructuralObject;
 
 
 /**
@@ -142,12 +143,12 @@ public class Align {
 	 */
 	public void alignAll(ChimeraModel reference) {
 		List<ChimeraModel> modelList = chimeraObject.getChimeraModels();
-		ArrayList<ChimeraModel>matchList = new ArrayList();
+		ArrayList<ChimeraStructuralObject>matchList = new ArrayList();
 		for (ChimeraModel match: modelList) {
 			if (match != reference)
-				matchList.add(match);
+				matchList.add((ChimeraStructuralObject)match);
 		}
-		align(reference, matchList);
+		align((ChimeraStructuralObject)reference, matchList);
 		chimeraObject.command("focus");
 		if (createEdges)
 			setAllAttributes(reference, matchList);
@@ -160,12 +161,13 @@ public class Align {
 	 * @param reference the reference model
 	 * @param models a List of ChimeraModels to align to the reference
 	 */
-	public void align(ChimeraModel reference, List<ChimeraModel>models) {
+	public void align(ChimeraStructuralObject reference, List<ChimeraStructuralObject>models) {
 		results = new HashMap();
 
-		for (ChimeraModel match: models) {
+		for (ChimeraStructuralObject match: models) {
 			Iterator matchResult = singleAlign(reference, match);
-			results.put(match.getModelName(), parseResults(matchResult));
+			ChimeraModel model = match.getChimeraModel();
+			results.put(model.getModelName(), parseResults(matchResult));
 		}
 		chimeraObject.command("focus");
 		if (createEdges)
@@ -183,13 +185,14 @@ public class Align {
 	 */
 	public void align(Structure refStruct, List<Structure> structures) {
 		results = new HashMap();
-		ArrayList<ChimeraModel> modelList = new ArrayList();
-		ChimeraModel reference = chimeraObject.getModel(refStruct.name());
+		ArrayList<ChimeraStructuralObject> modelList = new ArrayList();
+		ChimeraStructuralObject reference = chimeraObject.getModel(refStruct.name());
 		for (Structure matchStruct: structures) {
-			ChimeraModel match = chimeraObject.getModel(matchStruct.name());
+			ChimeraStructuralObject match = chimeraObject.getModel(matchStruct.name());
 			modelList.add(match);
+			ChimeraModel model = match.getChimeraModel();
 			Iterator matchResult = singleAlign(reference, match);
-			results.put(match.getModelName(), parseResults(matchResult));
+			results.put(model.getModelName(), parseResults(matchResult));
 		}
 		chimeraObject.command("focus");
 		if (createEdges)
@@ -203,7 +206,7 @@ public class Align {
 	 * @param match the ChimeraModel to align to the reference
 	 * @return an Iterator over the results
 	 */
-	private Iterator singleAlign(ChimeraModel reference, ChimeraModel match) {
+	private Iterator singleAlign(ChimeraStructuralObject reference, ChimeraStructuralObject match) {
 		String command = "matchmaker "+reference.toSpec()+" "+match.toSpec();
 		if (showSequence) {
 			command = command + " show true";
@@ -245,10 +248,12 @@ public class Align {
 	 * (the reference structure)
 	 * @param targetList the list of targets (aligned structures)
 	 */
-	private void setAllAttributes(ChimeraModel source, List<ChimeraModel> targetList) {
-		for (ChimeraModel target: targetList) {
-			float[] results = getResults(target.getModelName());
-			setEdgeAttributes(results, source, target);
+	private void setAllAttributes(ChimeraStructuralObject source, List<ChimeraStructuralObject> targetList) {
+		ChimeraModel sourceModel = source.getChimeraModel();
+		for (ChimeraStructuralObject target: targetList) {
+			ChimeraModel targetModel = target.getChimeraModel();
+			float[] results = getResults(targetModel.getModelName());
+			setEdgeAttributes(results, sourceModel, targetModel);
 		}
 	}
 

@@ -61,6 +61,13 @@ public interface ChimeraStructuralObject {
 	public String toString();
 
 	/**
+	 * Return a String representation for this object
+	 *
+	 * @return a String representing the object name
+	 */
+	public String displayName();
+
+	/**
 	 * Return the userData for this object
 	 *
 	 * @return an Object representing the userData (usually TreePath)

@@ -306,17 +306,26 @@ public class ChimeraModel implements ChimeraStructuralObject {
 		chain.addResidue(residue);
 	}
 
+	public String displayName() {
+		return toString();
+	}
+
 	/**
 	 * Return a string representation for the model
 	 */
 	public String toString() { 
 		String nodeName = "{none}";
-		if (structure != null)
+		if (structure != null && structure.getIdentifier() != null)
 			nodeName = structure.getIdentifier();
+		String displayName = name;
+		if (name.length() > 14)
+			displayName = name.substring(0,13)+"...";
 		if (getChainCount() > 0) {
-			return ("Node "+nodeName+" [Model #"+identifier+" "+name+" ("+getChainCount()+" chains, "+getResidueCount()+" residues)]"); 
+			return ("Node "+nodeName+" [Model #"+identifier+" "+displayName+" ("+getChainCount()+" chains, "+getResidueCount()+" residues)]"); 
+		} else if (getResidueCount() > 0) {
+			return ("Node "+nodeName+" [Model #"+identifier+" "+displayName+" ("+getResidueCount()+" residues)]"); 
 		} else {
-			return ("Node "+nodeName+" [Model #"+identifier+" "+name+" ("+getResidueCount()+" residues)]"); 
+			return ("Node "+nodeName+" [Model #"+identifier+" "+displayName+"]"); 
 		}
 	}
 

@@ -162,18 +162,39 @@ public class ChimeraChain implements ChimeraStructuralObject {
 	 * @return the model number
 	 */
 	public float getModelNumber() { return model; }
-		
+
 	/**
 	 * Return a string representation of this chain as follows:
 	 * 	Chain <i>chainId</i> (<i>residue_count</i> residues)
 	 *
 	 * @return String representation of chain
 	 */
-	public String toString() { 
+	public String displayName() { 
 		if (chainId.equals("_")) {
 			return("Chain (no ID) ("+getResidueCount()+" residues)");
 		} else {
 			return("Chain "+chainId+" ("+getResidueCount()+" residues)");
+		}
+	}
+		
+	/**
+	 * Return a string representation of this chain as follows:
+	 * 	Node xxx [Model yyyy Chain <i>chainId</i>]
+	 *
+	 * @return String representation of chain
+	 */
+	public String toString() { 
+		String nodeName = "{none}";
+		Structure structure = chimeraModel.getStructure();
+		if (structure != null && structure.getIdentifier() != null)
+			nodeName = structure.getIdentifier();
+		String displayName = chimeraModel.getModelName();
+		if (displayName.length() > 14)
+			displayName = displayName.substring(0,13)+"...";
+		if (chainId.equals("_")) {
+			return ("Node "+nodeName+"; model "+displayName+" Chain (no ID) ("+getResidueCount()+" residues)"); 
+		} else {
+			return ("Node "+nodeName+"; model "+displayName+" Chain "+chainId+" ("+getResidueCount()+" residues)]"); 
 		}
 	}
 

@@ -66,13 +66,27 @@ import structureViz.model.ChimeraModel;
  */
 public class CyChimera {
 	public static final String[] structureKeys = {"Structure","pdb","pdbFileName","PDB ID",null};
+	public static final String[] chemStructKeys = {"Smiles","smiles","SMILES",null};
 	public static final String[] residueKeys = {"FunctionalResidues","ResidueList",null};
 	public static final String[] sequenceKeys = {"sequence",null};
 	private static CyAttributes cyAttributes;
 
 	static List selectedList = null;
 
-  public CyChimera() { }
+  public CyChimera() { 
+		String structureAttribute = getProperty("structureAttribute");
+		if (structureAttribute != null) {
+			structureKeys[structureKeys.length-1] = structureAttribute;
+		}
+		String chemStructAttribute = getProperty("chemStructAttribute");
+		if (chemStructAttribute != null) {
+			chemStructKeys[chemStructKeys.length-1] = chemStructAttribute;
+		}
+		String residueAttribute = getProperty("residueAttribute");
+		if (residueAttribute != null) {
+			residueKeys[residueKeys.length-1] = residueAttribute;
+		}
+	}
 
 	/**
 	 * Get the list of structures associated with this node
@@ -81,15 +95,7 @@ public class CyChimera {
 	 * @param overNodeOnly only look for structures in the node we're over
 	 * @return a list of Structures associated with this node
 	 */
-	public static List getSelectedStructures(NodeView nodeView, boolean overNodeOnly) {
-		String structureAttribute = getProperty("structureAttribute");
-		if (structureAttribute != null) {
-			structureKeys[4] = structureAttribute;
-		}
-		String residueAttribute = getProperty("residueAttribute");
-		if (residueAttribute != null) {
-			residueKeys[2] = residueAttribute;
-		}
+	public static List<Structure>getSelectedStructures(NodeView nodeView, boolean overNodeOnly) {
 		List<Structure>structureList = new ArrayList<Structure>();
     //get the network object; this contains the graph
     CyNetwork network = Cytoscape.getCurrentNetwork();
@@ -115,6 +121,14 @@ public class CyChimera {
 		for (NodeView nView: selectedNodes) {
       //first get the corresponding node in the network
       CyNode node = (CyNode)nView.getNode();
+			// Start by handling any chemical (2D) structures
+			String chemStruct = getChemStruct(node);
+			if (chemStruct != null && chemStruct.length() > 0) {
+					Structure s = new Structure(chemStruct.trim() ,node , Structure.StructureType.SMILES);
+					structureList.add(s);
+			}
+
+			// Now handle the PDB structures
 			String structure = getStructureName(node);
 			String residues = getResidueList(node);
 			if (structure == null || structure.length() == 0) {
@@ -172,6 +186,36 @@ public class CyChimera {
 	}
 
 	/**
+	 * Return the list of 2D identifiers associated with a
+	 * Cytoscape node as a String.  
+	 *
+	 * @param node CyNode to use to look for 2D structures attributes
+	 * @return a comma-separated String of 2D structures
+	 */
+	public static String getChemStruct(CyNode node) {
+    String nodeID = node.getIdentifier();
+		for (int key = 0; key < chemStructKeys.length; key++) {
+			if (chemStructKeys[key] == null) continue;
+     	if (cyAttributes.hasAttribute(nodeID, chemStructKeys[key])) {
+       	// Add it to our list
+				if (cyAttributes.getType(chemStructKeys[key]) == CyAttributes.TYPE_STRING) {
+       		return cyAttributes.getStringAttribute(nodeID, chemStructKeys[key]);
+				} else if (cyAttributes.getType(chemStructKeys[key]) == CyAttributes.TYPE_SIMPLE_LIST) {
+					List<String>structList = cyAttributes.getListAttribute(nodeID, chemStructKeys[key]);
+					String structures = "";
+					for (String s: structList) {
+						structures += s+",";
+					}
+					// Make sure to remove the training ","
+					return structures.substring(0,structures.length()-1);
+				}
+			}
+    }
+		return null;
+	}
+
+
+	/**
 	 * Return the list of functional residues associated with a
 	 * Cytoscape node as a String.  
 	 *
@@ -214,19 +258,12 @@ public class CyChimera {
 		Iterator nodeIter = networkView.getNetwork().nodesIterator();
 		while(nodeIter.hasNext()) {
 			CyNode node = (CyNode)nodeIter.next();
-			for (int key = 0; key < structureKeys.length; key++) {
-				if (structureKeys[key] == null) continue;
-				if (cyAttributes.hasAttribute(node.getIdentifier(),structureKeys[key])) {
-					// Get the list of pdb entries
-        	String[] pdblist = cyAttributes.getStringAttribute(node.getIdentifier(), structureKeys[key]).split(",");
-					for (int i = 0; i < pdblist.length; i++) {
-						if (pdblist[i].equals(name))
-							return new Structure(name, node, Structure.StructureType.PDB_MODEL);
-					}
-				}
-			}
+			Structure s = matchStructure(structureKeys, node, name, Structure.StructureType.PDB_MODEL);
+			if (s != null) return s;
+			s = matchStructure(chemStructKeys, node, name, Structure.StructureType.SMILES);
+			if (s != null) return s;
 		}
-		return null;
+		return new Structure(name, null, Structure.StructureType.PDB_MODEL);
 	}
 
 	/**
@@ -311,6 +348,7 @@ public class CyChimera {
 		for (ChimeraModel model: chimeraModels) {
 			if (model == null) continue;
 			CyNode node = model.getStructure().node();
+			if (node == null) continue;
 			NodeView nodeView = networkView.getNodeView(node);
 
 			if (modelsToSelect.containsKey(model)) {
@@ -376,5 +414,29 @@ public class CyChimera {
 			structure = structure.concat(struct);
 		}
 		return structure;
+	}
+
+	private static Structure matchStructure(String[] keyArray, CyNode node, String name, Structure.StructureType type) {
+		for (int key = 0; key < keyArray.length; key++) {
+			if (keyArray[key] == null) continue;
+			if (cyAttributes.hasAttribute(node.getIdentifier(),keyArray[key])) {
+				// Get the list of entries
+				byte attType = cyAttributes.getType(keyArray[key]);
+				if (attType == CyAttributes.TYPE_STRING) {
+       		String[] structlist = cyAttributes.getStringAttribute(node.getIdentifier(), keyArray[key]).split(",");
+					for (int i = 0; i < structlist.length; i++) {
+						if (structlist[i].equals(name))
+							return new Structure(name, node, type);
+					}
+				} else if (attType == CyAttributes.TYPE_SIMPLE_LIST) {
+					List structList = cyAttributes.getListAttribute(node.getIdentifier(), keyArray[key]);
+					for (Object struct: structList) {
+						if (name.equals(struct))
+							return new Structure(name, node, type);
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

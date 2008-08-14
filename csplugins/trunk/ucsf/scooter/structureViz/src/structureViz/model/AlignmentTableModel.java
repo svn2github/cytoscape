@@ -81,7 +81,7 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 	private String referenceStructure = null;
 	private List matchStructures = null;
 	private Chimera chimeraObject = null;
-	private List<Structure> allStructures = null;
+	private List allStructures = null;
 	private List selectedStructures = null;
 	private HashMap resultsMap;
 	private int state = NOREFERENCE;
@@ -132,7 +132,12 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 	public Object getValueAt(int row, int col) {
 		if (referenceStructure == null) return null;
 
-		String matchStruct = ((Structure)matchStructures.get(row)).name();
+		Object match = matchStructures.get(row);
+		String matchStruct;
+		if (match instanceof Structure)
+			matchStruct = ((Structure)match).name();
+		else
+			matchStruct = ((ChimeraStructuralObject)match).displayName();
 		if (col == 0) {
 			return matchStruct;
 		} else {
@@ -196,8 +201,8 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 		} else {
 			this.matchStructures = new ArrayList();
 			this.resultsMap = new HashMap();
-			for (Structure structure: allStructures) {
-				if (structure.name().equals(refStruct)) continue;
+			for (Object structure: allStructures) {
+				if (structure.toString().equals(refStruct)) continue;
 				matchStructures.add(structure);
 			}
 		}

@@ -43,13 +43,21 @@ import cytoscape.*;
  */
 public class Structure {
 	static int nStructures = 0;
+	static int nextModel = 0;
 	String structureName;
 	List<String> residueList;
 	CyNode cytoscapeNode;
 	int modelNumber;
 	StructureType type;
 
-	public enum StructureType {PDB_MODEL, MODBASE_MODEL};
+	public enum StructureType {PDB_MODEL, MODBASE_MODEL, SMILES};
+
+	/**
+	 * Get the next available model number
+	 *
+	 * @return the next model number
+	 */
+	public static int getNextModel() {return nextModel++;}
 
 	/**
  	 * Create a new Structure
@@ -60,7 +68,7 @@ public class Structure {
 	public Structure (String name, CyNode node, StructureType type) {
 		this.structureName = name;
 		this.cytoscapeNode = node;
-		this.modelNumber = nStructures++;
+		this.modelNumber = nextModel;
 		this.residueList = null;
 		this.type = type;
 	}
@@ -94,6 +102,7 @@ public class Structure {
 	public void setModelNumber (float number) {
 		Float floatNumber = new Float(number);
 		this.modelNumber = floatNumber.intValue();
+		if (this.modelNumber >= nextModel) nextModel = this.modelNumber+1;
 	}
 
 	/**
@@ -103,6 +112,8 @@ public class Structure {
 	 * @return identifier of the CyNode as a String
 	 */
 	public String getIdentifier() {
+		if (cytoscapeNode == null)
+			return null;
 		return cytoscapeNode.getIdentifier();
 	}
 
