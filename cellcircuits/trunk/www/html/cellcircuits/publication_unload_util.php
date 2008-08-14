@@ -48,6 +48,7 @@ function unload_derivedData($publicationRecord, $connection) {
 	//			network_file_info
 	//			network_file
 	//			network_image_files
+	//			network_thum_image_files
 	//			supplement_material_files
 	//			legends
 	//			publications
@@ -177,8 +178,26 @@ function deleteExtractedData($publicationRecord, $connection) {
 		// Check Error message	
 		if (mysql_error($connection) != "") $success = false;
 	}
-		
-	// 3.3 Delete network_file_info
+
+	// 3.3 Delete thum image files for this publication
+	$ids = "";	
+	if (count($fileIDs['thum_image_files']) >0) {
+		$ids .= $fileIDs['thum_image_files'][0];
+	}
+	
+	for ($i=1; $i<count($fileIDs['thum_image_files']); $i++) {
+		$ids .=','.$fileIDs['thum_image_files'][$i];
+	}
+	if ($ids != "") {
+		$dbQuery = "delete from network_thum_image_files where id in ($ids)";
+		// Run the query
+		if (!@ mysql_query($dbQuery, $connection))
+			showerror();
+		// Check Error message	
+		if (mysql_error($connection) != "") $success = false;
+	}
+
+	// 3.4 Delete network_file_info
 	if ($publicationRecord['publication_auto_id'] != -1) {
 		$dbQuery = "delete from network_file_info where publication_id=".$publicationRecord['publication_auto_id'];
 		// Run the query
