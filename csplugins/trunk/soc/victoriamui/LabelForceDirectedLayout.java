@@ -19,6 +19,7 @@ import giny.view.NodeView;
 import prefuse.util.force.*;
 
 import java.util.*;
+
 import javax.swing.JPanel;
 
 /**
@@ -59,6 +60,11 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	boolean moveNodes = false;
 
 	private CyAttributes nodeAtts = Cytoscape.getNodeAttributes(); // vmui
+	
+	/**
+	 * Value to set for doing unweighted layouts
+	 */
+	public static final String UNWEIGHTEDATTRIBUTE = "(unweighted)";
 
 	/**
 	 * Integrators
@@ -127,6 +133,8 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		node_sim.clear();
 		label_sim.clear();
 		
+		part.calculateEdgeWeights();
+		
 		// vmui --->
 		allLayoutNodes.addAll(part.getNodeList());
 		
@@ -172,7 +180,8 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			 * Lock labelNode and/or ln otherwise. */
 			labelNode.lock();
 			ln.lock();
-			if (!selectedOnly || network.getSelectedNodes().contains(ln.getNode())) {
+			if (!selectedOnly 
+					|| network.getSelectedNodes().contains(ln.getNode())) {
 				labelNode.unLock();
 				if (moveNodes) {
 					ln.unLock();
@@ -394,6 +403,13 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		return attrs;
 	}
 	
+	public List getInitialAttributeList() {
+		ArrayList list = new ArrayList();
+		list.add(UNWEIGHTEDATTRIBUTE);
+
+		return list;
+	}
+	
 	protected void initialize_properties() {
 
 		layoutProperties.add(new Tunable("standard", 
@@ -482,6 +498,8 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		if ((t != null) && (t.valueChanged() || force))
 			setPartition(t.getValue().toString());
 
+//		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
+		
 		t = layoutProperties.get("defaultSpringCoefficient");
 		if ((t != null) && (t.valueChanged() || force))
 			defaultSpringCoefficient = ((Double) t.getValue()).doubleValue();
@@ -527,7 +545,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			node_sim.setIntegrator(integrator);
 		}
 
-		edgeWeighter.updateSettings(layoutProperties, force);
+//		edgeWeighter.updateSettings(layoutProperties, force);
 	}
 
 	public LayoutProperties getSettings() {
@@ -556,15 +574,14 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	
 		/** 
 		 * Creates an instance of Multiple.
-		 * @param multipleOf the number this class is to generate ceiling
-		 * multiples of
+		 * @param multipleOf the number this class is to generate multiples of
 		 */
 		public Multiples(double multipleOf) {
 			this.multipleOf = multipleOf;
 		}
 		
 		/**
-		 * @return the current ceiling multiple of multipleOf
+		 * @return the current multiple of multipleOf
 		 */
 		public double getCurrent() {
 			return current;
