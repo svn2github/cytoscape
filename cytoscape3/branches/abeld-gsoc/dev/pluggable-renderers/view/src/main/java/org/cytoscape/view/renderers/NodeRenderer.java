@@ -1,10 +1,14 @@
 package org.cytoscape.view.renderers;
 
 import java.awt.Graphics2D;
+import java.util.Collection;
+
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.VisualProperty;
+
 import cytoscape.render.stateful.NodeDetails;
 
-public interface NodeRenderer {
+public interface NodeRenderer extends Renderer{
 	/**
 	 * 
 	 */
@@ -18,5 +22,5 @@ public interface NodeRenderer {
 	/**
 	 * Return a list of visual attributes this renderer can use
 	 */
-	public void supportedVisualAttributes();
+	public Collection<VisualProperty> supportedVisualAttributes();
 }

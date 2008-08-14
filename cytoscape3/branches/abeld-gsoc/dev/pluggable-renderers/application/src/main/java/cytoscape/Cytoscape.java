@@ -2022,57 +2022,6 @@ public abstract class Cytoscape {
 	}
 	/** For the duration of pluggable VisualProperties refactor: add legacy VisualProperties */
 	public static void defineHardcodedVisualProperties(){
-		VisualPropertyCatalog.addVisualProperty(new LegacyVisualProperty("NODE_FILL_COLOR", Color.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_BORDER_COLOR", Color.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_OPACITY", Number.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_BORDER_OPACITY", Number.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL_OPACITY", Number.class, true));
-
-		Object [] range = new Object[]{new TrivialRenderer("trivialrenderer"), new ShapeRenderer("shaperenderer")};
-		Map<Object, Icon> iconSet = getRendererIconSet(range);
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("NODE_RENDERER", NodeRenderer.class, true, range, iconSet));
-
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_RENDERER", NodeRenderers.class, true));
-
-		range = range(0, 8, 1); 
-		iconSet = getNodeIconSet(range, GraphGraphics.getNodeShapes()); 
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("NODE_SHAPE", Integer.class, true, range, iconSet));
-		
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_SIZE", Number.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_WIDTH", Number.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_HEIGHT", Number.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL", String.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_FONT_FACE", Font.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_FONT_SIZE", Number.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL_COLOR", Color.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_TOOLTIP", String.class, true));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL_POSITION", LabelPosition.class, true));
-
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_COLOR", Color.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL", String.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_FONT_FACE", Font.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_FONT_SIZE", Number.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_COLOR", Color.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TOOLTIP", String.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LINE_WIDTH", Number.class, false));
-
-		range = new Object[]{new BasicStroke(1.0f/*FIXME: width -- is this just a placeholder value? */),
-				new BasicStroke(1.0f /*see above */, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f, 4.0f}, 0.0f)  };
-		iconSet = getLineStyleIconSet(range);
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_LINE_STYLE", Stroke.class, false, range, iconSet));
-		
-		range = range(-1, -5, -1); 
-		iconSet = getArrowIconSet(range, GraphGraphics.getArrowShapes()); 
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_SRCARROW_SHAPE", Integer.class, false, range, iconSet));
-		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_TGTARROW_SHAPE", Integer.class, false, range, iconSet));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_COLOR", Color.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_COLOR", Color.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_OPACITY", Number.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_OPACITY", Number.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_OPACITY", Number.class, false));
-		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_OPACITY", Number.class, false));
-		
-		//VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_POSITION", Number.class, false));
-
+		// FIXME: somehow get Renderers defined / activated !!
 	}
 }

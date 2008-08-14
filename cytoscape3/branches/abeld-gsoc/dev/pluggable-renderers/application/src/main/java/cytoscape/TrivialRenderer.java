@@ -3,7 +3,11 @@ package cytoscape;
 //import cytoscape.render.immed.GraphGraphics;
 import java.awt.*;
 import java.awt.geom.*;
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.renderers.NodeRenderer;
 
 import cytoscape.render.stateful.NodeDetails;
@@ -25,8 +29,8 @@ public class TrivialRenderer implements NodeRenderer {
 	/**
 	 * Return a list of visual attributes this renderer can use
 	 */
-	public void supportedVisualAttributes(){
-		// TODO
+	public Collection<VisualProperty>  supportedVisualAttributes(){
+		return new HashSet<VisualProperty>(); // no VisualPropeties defined by this Renderer
 	}
 
 	public void render(Graphics2D m_g2d, NodeDetails nodeDetails, float[] floatBuff1, int node, NodeView nodeView) {
