@@ -374,6 +374,7 @@ public class ModelNavigatorDialog
 		JMenu chimeraMenu = new JMenu("Chimera");
 		alignMenu = new JMenu("Align Structures");
 		{
+			// Should this be "model vs. model", "chain vs. chain", and "chain vs. model"?
 			addMenuItem(alignMenu, "by model", ALIGNBYMODEL, null);
 			addMenuItem(alignMenu, "by chain", ALIGNBYCHAIN, null);
 		}
