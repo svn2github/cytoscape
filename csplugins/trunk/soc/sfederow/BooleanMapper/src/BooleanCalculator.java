@@ -195,7 +195,7 @@ public class BooleanCalculator {
 	}
 	
 	
-	public boolean evaluate(Color color, String label){
+	public boolean evaluate(String label){
 		//System.out.println("evaluate");
 		//for(int j=0; j<masterList.size();j++){
 
@@ -262,7 +262,7 @@ public class BooleanCalculator {
 
 				}
 				//System.out.println(type);
-				evaluateOnce(nodeValueMap, attributes, operations, gnode, attributeType, numberValueCount, color, label);
+				evaluateOnce(nodeValueMap, attributes, operations, gnode, attributeType, numberValueCount, label);
 				//validAttributes.clear();
 				//operations.clear();
 				nodeValueMap.clear();
@@ -274,7 +274,7 @@ public class BooleanCalculator {
 
 		
 	
-	public void evaluateOnce(HashMap nodeValues, ArrayList<String> attributes, ArrayList<String> operations, Node node, int attributeType, int numberCount, Color color, String label){
+	public void evaluateOnce(HashMap nodeValues, ArrayList<String> attributes, ArrayList<String> operations, Node node, int attributeType, int numberCount, String label){
 		
 	
 		Stack<Boolean> finalValue = new Stack<Boolean>();
@@ -342,11 +342,12 @@ public class BooleanCalculator {
 		//System.out.println(node.getIdentifier() + logicalString );
 		//network.setSelectedNodeState(node, false);
 		if(!finalValue.isEmpty()){
-			if(finalValue.pop()){
+			boolean outcome = finalValue.pop();
+			if(outcome){
 				System.out.println("true");
 				//createAttribute()
-				attManager.setColorAttribute(label, color.toString(), node.getIdentifier());
-				network.setSelectedNodeState(node, true);
+				attManager.setColorAttribute(label, node.getIdentifier(), outcome);
+				network.setSelectedNodeState(node,true);
 			}else{
 				System.out.println("false");
 			}

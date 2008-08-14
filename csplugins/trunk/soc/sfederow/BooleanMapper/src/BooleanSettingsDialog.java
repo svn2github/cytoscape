@@ -163,7 +163,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			updateAllSettings(true);
 			//criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
 			
-			ColorMapper mapper = new ColorMapper("test", "continuous");
+			//ColorMapper mapper = new ColorMapper("test", "continuous");
 			applyCriteria();
 			//String 
 			//calculator.evaluate(parsedCriteria);
@@ -423,7 +423,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			*/
 			calculator.parse2(current);
 			calculator.clearList();
-			calculator.evaluate(currentColor, "label");
+			calculator.evaluate("label");
 		//}
 		//parsedCriteria = calculator.parseCriteria(criteria);
 		
