@@ -53,6 +53,7 @@ import cytoscape.util.CytoscapeAction;
 // structureViz imports
 import structureViz.actions.Chimera;
 import structureViz.model.Structure;
+import structureViz.model.ChimeraChain;
 import structureViz.model.ChimeraModel;
 import structureViz.model.ChimeraStructuralObject;
 
@@ -166,8 +167,7 @@ public class Align {
 
 		for (ChimeraStructuralObject match: models) {
 			Iterator matchResult = singleAlign(reference, match);
-			ChimeraModel model = match.getChimeraModel();
-			results.put(model.getModelName(), parseResults(matchResult));
+			results.put(match.toString(), parseResults(matchResult));
 		}
 		chimeraObject.command("focus");
 		if (createEdges)
@@ -208,6 +208,8 @@ public class Align {
 	 */
 	private Iterator singleAlign(ChimeraStructuralObject reference, ChimeraStructuralObject match) {
 		String command = "matchmaker "+reference.toSpec()+" "+match.toSpec();
+		if (reference instanceof ChimeraChain || match instanceof ChimeraChain)
+			command = command + " pair ss";
 		if (showSequence) {
 			command = command + " show true";
 		}
@@ -252,7 +254,7 @@ public class Align {
 		ChimeraModel sourceModel = source.getChimeraModel();
 		for (ChimeraStructuralObject target: targetList) {
 			ChimeraModel targetModel = target.getChimeraModel();
-			float[] results = getResults(targetModel.getModelName());
+			float[] results = getResults(target.toString());
 			setEdgeAttributes(results, sourceModel, targetModel);
 		}
 	}

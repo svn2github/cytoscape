@@ -192,9 +192,9 @@ public class ChimeraChain implements ChimeraStructuralObject {
 		if (displayName.length() > 14)
 			displayName = displayName.substring(0,13)+"...";
 		if (chainId.equals("_")) {
-			return ("Node "+nodeName+"; model "+displayName+" Chain (no ID) ("+getResidueCount()+" residues)"); 
+			return (nodeName+"; "+displayName+" Chain (no ID) ("+getResidueCount()+" residues)"); 
 		} else {
-			return ("Node "+nodeName+"; model "+displayName+" Chain "+chainId+" ("+getResidueCount()+" residues)]"); 
+			return (nodeName+"; "+displayName+" Chain "+chainId+" ("+getResidueCount()+" residues)"); 
 		}
 	}
 

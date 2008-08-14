@@ -137,7 +137,7 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 		if (match instanceof Structure)
 			matchStruct = ((Structure)match).name();
 		else
-			matchStruct = ((ChimeraStructuralObject)match).displayName();
+			matchStruct = ((ChimeraStructuralObject)match).toString();
 		if (col == 0) {
 			return matchStruct;
 		} else {
