@@ -7,7 +7,7 @@ include_once 'ZipFileParser.php';
 // get rawdata_id
 $debug = false;
 if ($debug) {
-	$rawdata_id = 3;
+	$rawdata_id = 12;
 }
 else {
 	if (isset($_GET['rawdata_id'])) {
@@ -27,12 +27,16 @@ $rawdata = getRawData($rawdata_id, $connection);
 
 $success_step1 = db_load_step1($rawdata, $connection);
 if (!$success_step1) {
-	?>Failed to load step1<br><?php
+	?>
+<p>Failed to load step1<br>
+  <?php
 }
 
 $success_step2 = db_load_step2($rawdata_id, $connection);
 if (!$success_step2) {
-	?>Failed to load step2 <br><?php
+	?>
+  Failed to load step2 <br>
+  <?php
 }
 
 // Update the status value for this data set
@@ -44,17 +48,23 @@ else {
 }
 $success_updateStatus = updateStatus($rawdata_id, $connection, $newStatus);
 if (!$success_updateStatus) {
-	?> Failed to update status<br><?php
+	?> 
+  Failed to update status<br>
+  <?php
 }
 
 if ($success_step1 && $success_step2 && $success_updateStatus) {
 	?>
-	<br><br>Load success, Go back to the page --<a href="cc_admin.php"> publication management</a>
+	<br>
+	<br>
+	Load success, Go back to the page --<a href="cc_admin.php"> publication management</a>
 	<?php
 }
 else {
 	?>
-	<br><br>Load failed! Please unload it and Correct the errors in Zip file and reload!
+	<br>
+	<br>
+	Load failed! Please unload it and Correct the errors in Zip file and reload!
 	<?php
 }
 
@@ -117,6 +127,7 @@ function db_load_step1($rawdata, $connection) {
 	$organismArray = $zipFileParser->getOrganismArray();
 	$sifFileArray = $zipFileParser->getSifFileArray();
 	$imgFileArray = $zipFileParser->getImgFileArray();
+	$thmImgFileArray = $zipFileParser->getThumImgFileArray();
 	
 	for ($i=0; $i<count($sifFileArray); $i++) {
 		// Load the table -- network_files
@@ -130,8 +141,11 @@ function db_load_step1($rawdata, $connection) {
 		$imgFile = $imgFileArray[$i];
 		$img_file_id = loadFile2DB('network_image_files', $imgFile, $connection);
 
-		// Reduce the scale of network image, and save it in network_thm_images table
-		//loadThmImage2DB($imgFile, $img_file_id, $connection);
+		// Load the table -- network_thum_image_files
+		$thmImgFile = $thmImgFileArray[$i];
+		$thmImg_file_id = loadFile2DB('network_thum_image_files', $thmImgFile, $connection);
+		
+		
 		
 		// Check Error message	
 		if (mysql_error($connection) != "") $success = false;
@@ -159,7 +173,7 @@ function db_load_step1($rawdata, $connection) {
 		$species = strtolower($species);
 		// Load the table -- network_file_info
 		$dbQuery  = "INSERT INTO network_file_info ";
-		$dbQuery .= "VALUES (0, '$publication_auto_id', '$species','sif','$sif_file_id', '$img_file_id')";
+		$dbQuery .= "VALUES (0, '$publication_auto_id', '$species','sif','$sif_file_id', '$img_file_id','$thmImg_file_id')";
 	
 		// Run the query
 		if (!(@ mysql_query($dbQuery, $connection)))
@@ -317,6 +331,27 @@ function db_load_step2($rawdata_id, $connection) {
 		$success = false;
 	}
 	
+	// load table model_similarity
+	$cmd = "perl ./load_model_similarity_table.pl $pub_id";	
+	passthru($cmd);
+	
+	
+	if ($success){
+		?>
+</p>
+<p>The publication_id is <?php echo $pub_id; ?> <br>
+</p>
+<p>Please run the following commands to load the enrichment table<br>
+</p>
+<p>$perl load_enrichment_table_step1_create_gwt_file.pl <?php echo $pub_id; ?> &nbsp;&nbsp;&nbsp;(Note: this will takes 0.5~2 hours) </p>
+<p>$perl load_enrichment_table_step2_compute_enrichment.pl <?php echo $pub_id; ?></p>
+<p>$perl load_enrichment_table_step3_insert_SQL.pl <?php echo $pub_id; ?></p>
+<p>&nbsp;</p>
+<p>
+  <?php
+	}
+	
+	
 	return $success;
 }
 
@@ -428,3 +463,4 @@ function populateModelTable($pub_id, $connection) {
 
 
 ?>
+</p>
