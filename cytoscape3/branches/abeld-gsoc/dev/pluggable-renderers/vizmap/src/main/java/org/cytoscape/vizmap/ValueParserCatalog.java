@@ -9,7 +9,6 @@ import org.cytoscape.vizmap.parsers.ColorParser;
 import org.cytoscape.vizmap.parsers.DoubleParser;
 import org.cytoscape.vizmap.parsers.FontParser;
 import org.cytoscape.vizmap.parsers.LabelPositionParser;
-import org.cytoscape.vizmap.parsers.NodeRendererParser;
 import org.cytoscape.vizmap.parsers.StringParser;
 
 public abstract class ValueParserCatalog {
@@ -23,8 +22,6 @@ public abstract class ValueParserCatalog {
 			return new FontParser();
 		} else if (c.isAssignableFrom(LabelPosition.class)){
 			return new LabelPositionParser();
-		} else if (c.isAssignableFrom(NodeRenderer.class)){
-			return new NodeRendererParser();
 		} else if (c.isAssignableFrom(String.class)){
 			return new StringParser();
 		} else {
