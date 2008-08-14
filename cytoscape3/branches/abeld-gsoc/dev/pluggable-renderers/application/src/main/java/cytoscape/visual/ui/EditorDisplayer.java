@@ -41,7 +41,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
 
-import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -50,9 +49,7 @@ import cytoscape.util.CyColorChooser;
 
 import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.VisualProperty;
-import org.cytoscape.view.VisualPropertyCatalog;
 import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.NodeRenderers;
 
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
@@ -85,16 +82,7 @@ public enum EditorDisplayer {
 	                String.class), 
 	DISCRETE_SHAPE(ValueSelectDialog.class, "showDialog",
 	               new Class[] { VisualProperty.class, JDialog.class },
-	               new Object[] { VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"), null }, DiscreteValue.class), 
-	DISCRETE_RENDERER(ValueSelectDialog.class, "showDialog",
-	 	            new Class[] { VisualProperty.class, JDialog.class },
-	 	            new Object[] { VisualPropertyCatalog.getVisualProperty("NODE_RENDERER"), null }, NodeRenderers.class), 
-    DISCRETE_ARROW_SHAPE(ValueSelectDialog.class, "showDialog",
-	                     new Class[] { VisualProperty.class, JDialog.class },
-	                     new Object[] { VisualPropertyCatalog.getVisualProperty("EDGE_SRCARROW_SHAPE"), null }, DiscreteValue.class), 
-	DISCRETE_LINE_STYLE(ValueSelectDialog.class, "showDialog",
-	                   new Class[] { VisualProperty.class, JDialog.class },
-	                   new Object[] { VisualPropertyCatalog.getVisualProperty("EDGE_LINE_STYLE"), null }, DiscreteValue.class), 
+	               new Object[] { null, null }, DiscreteValue.class), 
 	DISCRETE_LABEL_POSITION(PopupLabelPositionChooser.class, "showDialog",
 	                        new Class[] { Frame.class, LabelPosition.class },
 	                        new Object[] { Cytoscape.getDesktop(), null }, LabelPosition.class), 
