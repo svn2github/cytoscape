@@ -1,9 +1,11 @@
-package org.cytoscape.view.renderers;
+package cytoscape;
 
 //import cytoscape.render.immed.GraphGraphics;
 import java.awt.*;
 import java.awt.geom.*;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.renderers.NodeRenderer;
+
 import java.util.HashMap;
 import cytoscape.render.stateful.NodeDetails;
 

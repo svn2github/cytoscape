@@ -47,7 +47,6 @@ import cytoscape.render.immed.GraphGraphics;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.renderers.NodeRenderer;
-import org.cytoscape.view.renderers.ShapeRenderer;
 
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
@@ -668,10 +667,12 @@ public final class GraphRenderer {
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3])) {
 						NodeView nodeView = (NodeView) graphView.getNodeView(~node); // need to ~ because nodeHits stores node indices that way
 						NodeRenderer nodeRenderer = nodeView.getRenderer();
-						if (nodeRenderer == null){ // FIXME: temporary bugfix; remove!! (nodeView shouldn't have null NodeRenderer !)
-							nodeRenderer = new ShapeRenderer("hacked-in renderer");
+						if (nodeRenderer != null){
+							nodeRenderer.render(canvas, nodeDetails, floatBuff1, node, nodeView);							
+						} else {
+							System.out.println("unable to render: nodeRenderer is null!");
 						}
-						nodeRenderer.render(canvas, nodeDetails, floatBuff1, node, nodeView);
+						
 					}
 
 					// Take care of label rendering.

@@ -69,8 +69,6 @@ import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.VisualMappingManager;
 
 import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.NodeRenderers;
-import org.cytoscape.view.renderers.NodeRenderer;
 
 import org.cytoscape.vizmap.calculators.BasicCalculator;
 import org.cytoscape.vizmap.calculators.Calculator;
@@ -91,10 +89,7 @@ import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
 import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
-import cytoscape.visual.ui.editors.discrete.NodeRendererCellRenderer;
-import org.cytoscape.vizmap.icon.ArrowIcon;
-import org.cytoscape.vizmap.icon.NodeIcon;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
+
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -295,8 +290,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		fontCellEditor.addPropertyChangeListener(this);
 		numberCellEditor.addPropertyChangeListener(this);
 		stringCellEditor.addPropertyChangeListener(this);
-		nodeRendererCellEditor.addPropertyChangeListener(this);
-
 		labelPositionEditor.addPropertyChangeListener(this);
 	}
 
@@ -727,22 +720,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private CyColorCellRenderer collorCellRenderer = new CyColorCellRenderer();
 	private CyColorPropertyEditor colorCellEditor = new CyColorPropertyEditor();
 	
-	
-	// For shapes
-	private ShapeCellRenderer shapeCellRenderer = new ShapeCellRenderer(VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"));
-	private CyComboBoxPropertyEditor shapeCellEditor = new CyComboBoxPropertyEditor();
-	
-	private NodeRendererCellRenderer nodeRendererCellRenderer = new NodeRendererCellRenderer(VisualPropertyCatalog.getVisualProperty("NODE_RENDERER"));
-	private CyComboBoxPropertyEditor nodeRendererCellEditor = new CyComboBoxPropertyEditor();
-
-	// For Lines
-	private ShapeCellRenderer lineCellRenderer = new ShapeCellRenderer(VisualPropertyCatalog.getVisualProperty("EDGE_LINE_STYLE"));
-	private CyComboBoxPropertyEditor lineCellEditor = new CyComboBoxPropertyEditor();
-
-	// For Arrow shapes
-	private CyComboBoxPropertyEditor arrowCellEditor = new CyComboBoxPropertyEditor();
-	private ShapeCellRenderer arrowShapeCellRenderer = new ShapeCellRenderer(VisualPropertyCatalog.getVisualProperty("EDGE_TGTARROW_SHAPE"));
-
 	// For sizes
 	private CyDoublePropertyEditor numberCellEditor = new CyDoublePropertyEditor();
 
@@ -1074,18 +1051,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		                                  .getMappingNames();
 
 		mappingTypeEditor.setAvailableValues(mappingTypes.toArray());
-
-		/* cell renderers */
-		final Map<Object, Icon> nodeRendererIconSet = NodeRenderers.getIconSet();
-		final ArrayList <NodeRenderers>nodeRendererValues = new ArrayList<NodeRenderers>();
-		final ArrayList <Icon> nodeRendererIcons = new ArrayList<Icon>();
-		for (Object o:nodeRendererIconSet.keySet()){
-			nodeRendererValues.add((NodeRenderers)o);
-			nodeRendererIcons.add(nodeRendererIconSet.get(o));
-		}
-		
-		nodeRendererCellEditor.setAvailableValues(nodeRendererValues.toArray());
-		nodeRendererCellEditor.setAvailableIcons(nodeRendererIcons.toArray(new Icon[0]));
 	}
 
 	private void updateTableView() {
@@ -1510,8 +1475,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				if (dataTypeClass.isAssignableFrom(DiscreteValue.class)){ // FIXME: these should be Enum-like instead!! (or Discrete or something)
 					setDiscreteProps(type, discMapping, attrSet, buildCellEditor(type), new ShapeCellRenderer(type), calculatorTypeProp);
-				} else if (dataTypeClass.isAssignableFrom(NodeRenderers.class)){
-					setDiscreteProps(type, discMapping, attrSet, nodeRendererCellEditor, nodeRendererCellRenderer, calculatorTypeProp);
 				} else if (dataTypeClass.isAssignableFrom(LabelPosition.class)){
 					setDiscreteProps(type, discMapping, attrSet, labelPositionEditor, labelPositionRenderer, calculatorTypeProp);
 				} else if (dataTypeClass.isAssignableFrom(Number.class)){

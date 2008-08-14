@@ -92,6 +92,7 @@ import org.cytoscape.RootGraphFactory;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.DiscreteVisualProperty;
 import org.cytoscape.view.ShapeFactory;
+import org.cytoscape.view.renderers.NodeRenderer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -1982,6 +1983,16 @@ public abstract class Cytoscape {
 		}
 		return nodeShapeIcons;
 	}
+	
+	public static Map<Object, Icon> getRendererIconSet(Object [] values) {
+		Map<Object, Icon> rendererIcons = new HashMap<Object, Icon>();
+		for (int i = 0; i < values.length; i++) {
+			NodeRenderer value = (NodeRenderer) values[i];
+			
+			rendererIcons.put(value, new NodeIcon()); // FIXME FIXME: do property icons!
+		}
+		return rendererIcons;
+	}
 
 	public static Map<Object, Icon> getArrowIconSet(Object [] values, Map<Byte, Shape>shapes) {
 		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
@@ -2016,10 +2027,15 @@ public abstract class Cytoscape {
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_OPACITY", Number.class, true));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_BORDER_OPACITY", Number.class, true));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_LABEL_OPACITY", Number.class, true));
+
+		Object [] range = new Object[]{new TrivialRenderer("trivialrenderer"), new ShapeRenderer("shaperenderer")};
+		Map<Object, Icon> iconSet = getRendererIconSet(range);
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("NODE_RENDERER", NodeRenderer.class, true, range, iconSet));
+
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_RENDERER", NodeRenderers.class, true));
 
-		Object []range = range(0, 8, 1); 
-		Map<Object, Icon> iconSet = getNodeIconSet(range, GraphGraphics.getNodeShapes()); 
+		range = range(0, 8, 1); 
+		iconSet = getNodeIconSet(range, GraphGraphics.getNodeShapes()); 
 		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("NODE_SHAPE", Integer.class, true, range, iconSet));
 		
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("NODE_SIZE", Number.class, true));

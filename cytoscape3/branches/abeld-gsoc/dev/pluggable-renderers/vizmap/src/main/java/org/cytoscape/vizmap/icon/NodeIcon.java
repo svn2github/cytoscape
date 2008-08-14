@@ -68,7 +68,7 @@ public class NodeIcon extends VisualPropertyIcon {
 	 * Creates a new NodeIcon object.
 	 */
 	public NodeIcon() {
-		this(((Integer) VMMFactory.getVisualMappingManager().getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_SHAPE"))),
+		this(Integer.valueOf(0), //FIXME: use first shape as default value note:this was pre-visual style default previously, but we want to use it for NodeRenderer's icons
 		     DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE,
 			 "some default name" /*FIXME*/,
 		     DEFAULT_ICON_COLOR);
