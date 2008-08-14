@@ -7,6 +7,7 @@ class ZipFileParser
 	var $organismArray = NULL;	
 	var $sifFileArray = NULL;
 	var $imgFileArray = NULL;
+	var $thumImgFileArray = NULL;
 	var $legendFileArray = NULL;
 	var $publication_url = '';
 	var $supplement_material_file = NULL;
@@ -61,6 +62,14 @@ class ZipFileParser
 						$imgFile['fileType'] = NULL;
 						$imgFile['content'] = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
 						$this->imgFileArray[] = $imgFile;
+					}
+					else if ($this->isThumImage_file($cur_file_name,$basename)) {
+						//echo "\n\tFound image file: filename = ".$basename."\n";
+						$imgFile = NULL;
+						$imgFile['fileName'] = $basename;
+						$imgFile['fileType'] = NULL;
+						$imgFile['content'] = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
+						$this->thumImgFileArray[] = $imgFile;
 					}
 					else if ($this->isLegend_file($cur_file_name,$basename)) {
 						//echo "\n\tFound legend file: filename = ".$basename."\n";
@@ -225,6 +234,16 @@ class ZipFileParser
 		}
 		return true;
 	}
+
+	function isThumImage_file($filename,$basename) {
+		$pos1 = strpos($filename, '/thm_img/');		
+		if ($pos1 === false) {
+			// this file is not in img directory
+			return false;
+		}
+		return true;
+	}
+
 	
 	function isLegend_file($filename,$basename) {
 		$pos1 = strpos($filename, '/legend/');
@@ -253,6 +272,10 @@ class ZipFileParser
 
 	function getImgFileArray() {
 		return $this->imgFileArray;
+	}
+
+	function getThumImgFileArray() {
+		return $this->thumImgFileArray;
 	}
 
 	function getLegendFileArray() {
