@@ -606,8 +606,8 @@ private void addRemoveAttributeMapping(CyNetwork network, boolean isAdd) {
 }
 
 private void updataIdMappingButtonEnable() {
-    if (selectedNetworkData.getSize()<2) {
-        importIDMappingButton.setToolTipText("Select at least two networks to merge");
+    if (selectedNetworkData.getSize()<1) {
+        importIDMappingButton.setToolTipText("Select at least one networks to merge");
         importIDMappingButton.setEnabled(false);
         return;
     }
@@ -617,8 +617,8 @@ private void updataIdMappingButtonEnable() {
 }
 
 private void updateOKButtonEnable() {
-    if (selectedNetworkData.getSize()<2) {
-        okButton.setToolTipText("Select at least two networks to merge");
+    if (selectedNetworkData.getSize()<1) {
+        okButton.setToolTipText("Select at least one networks to merge");
         okButton.setEnabled(false);
         return;
     }
