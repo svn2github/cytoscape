@@ -7,10 +7,8 @@ import java.awt.geom.*;
 import org.cytoscape.view.DiscreteVisualProperty;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.VisualProperty;
-import org.cytoscape.view.VisualPropertyCatalog;
 import org.cytoscape.view.renderers.NodeRenderer;
 import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.NodeRenderers;
 import org.cytoscape.vizmap.icon.ArrowIcon;
 import org.cytoscape.vizmap.icon.LineTypeIcon;
 import org.cytoscape.vizmap.icon.NodeIcon;
@@ -142,8 +140,6 @@ public class ShapeRenderer implements NodeRenderer {
 		Object [] range = new Object[]{new TrivialRenderer("trivialrenderer"), new ShapeRenderer("shaperenderer")};
 		Map<Object, Icon> iconSet = getRendererIconSet(range);
 		visualProperties.add( new DiscreteVisualProperty("NODE_RENDERER", NodeRenderer.class, true, range, iconSet));
-
-		visualProperties.add( new LegacyVisualProperty("NODE_RENDERER", NodeRenderers.class, true));
 
 		range = range(0, 8, 1); 
 		iconSet = getNodeIconSet(range, GraphGraphics.getNodeShapes()); 

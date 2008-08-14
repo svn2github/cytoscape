@@ -13,7 +13,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import org.cytoscape.vizmap.NodeRenderers;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.icon.LineTypeIcon;
@@ -23,8 +22,6 @@ import org.cytoscape.vizmap.parsers.ColorParser;
 import org.cytoscape.vizmap.parsers.DoubleParser;
 import org.cytoscape.vizmap.parsers.FontParser;
 import org.cytoscape.vizmap.LabelPlacerGraphic;
-
-import org.cytoscape.view.renderers.NodeRenderer;
 
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
@@ -183,11 +180,6 @@ public class LegacyVisualProperty implements VisualProperty {
 				nv.getLabel().setTextPaint(new Color(oldPaint.getRed(), oldPaint.getGreen(),
 				                                oldPaint.getBlue(), newTp));
 			}
-		} else if (name.equals("NODE_RENDERER")){
-			NodeRenderer newRenderer = (((NodeRenderers) o).getRenderer());
-
-			if (nv.getRenderer() != newRenderer)
-				nv.setRenderer(newRenderer);
 		} else if (name.equals("NODE_SIZE")){
 			double size = ((Number) o).doubleValue();
 			double difference = size - nv.getHeight();
@@ -300,8 +292,6 @@ public class LegacyVisualProperty implements VisualProperty {
 			return Integer.valueOf(255);
 		} else if (name.equals("NODE_LABEL_OPACITY")){
 			return Integer.valueOf(255);
-		} else if (name.equals("NODE_RENDERER")){
-			return NodeRenderers.SIMPLE_SHAPE;
 		} else if (name.equals("NODE_SIZE")){
 			return new Double(35.0);
 		} else if (name.equals("NODE_WIDTH")){
@@ -711,9 +701,8 @@ public class LegacyVisualProperty implements VisualProperty {
 	}
 
 	public Map<Object, Icon> getIconSet() {
-		if (name.equals("NODE_RENDERER") ){
-			return NodeRenderers.getIconSet();
-		}
+		// this method is not applicable to any VisualProperty handled in this class
+		// (it is only used for DiscreteVisualProperty)
 		return null; // default value
 	}
 

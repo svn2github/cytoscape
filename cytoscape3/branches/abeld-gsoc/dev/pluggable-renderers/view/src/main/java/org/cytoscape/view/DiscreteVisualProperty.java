@@ -7,6 +7,8 @@ import java.util.Properties;
 
 import javax.swing.Icon;
 
+import org.cytoscape.view.renderers.NodeRenderer;
+
 /** A Visual Property that has a finite site of discrete values.
  * The set of values is dynamically extendible via OSGi 
  */
@@ -58,7 +60,11 @@ public class DiscreteVisualProperty implements VisualProperty {
 			
 			if (nv.getShape() != newShape)
 				nv.setShape(newShape);
-		}
+		} else if (name.equals("NODE_RENDERER")){
+			NodeRenderer newRenderer = (NodeRenderer) o;
+			if (nv.getRenderer() != newRenderer)
+				nv.setRenderer(newRenderer);
+		} 
 	}
 
 	public Class getDataType() {
@@ -84,7 +90,7 @@ public class DiscreteVisualProperty implements VisualProperty {
 	}
 
 	public Map<Object, Icon> getIconSet() {
-		//return icons;//FIXME: shouldn't this work?
+		//return icons; //FIXME: shouldn't this work?
 		return new HashMap<Object, Icon>(icons);
 	}
 
