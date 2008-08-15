@@ -100,7 +100,7 @@ function getModelId($pub, $name, $connection) {
 
 // Get file IDs from network_file_info table for the given publication_id
 function getFileIDs($publication_id, $connection) {
-	$dbQuery= "select network_file_id, image_file_id from network_file_info where publication_id=".$publication_id;
+	$dbQuery= "select network_file_id, image_file_id, thum_image_file_id from network_file_info where publication_id=".$publication_id;
 
 	//echo "dbQuery=\n".$dbQuery."\n";
 	// Run the query
@@ -112,14 +112,19 @@ function getFileIDs($publication_id, $connection) {
 	//$fileIDs = NULL;
 	$network_files = null;
 	$image_files = null;
+	$thum_image_files = null;
 	while ($_row = @ mysql_fetch_array($dataRecords)) {
 		//print_r(array_keys($_row));
 		$network_files[] = $_row["network_file_id"];
 		$image_files[] = $_row["image_file_id"];		
+		$thum_image_files[] = $_row["thum_image_file_id"];	
+		#echo "image_file_id = ", $_row["image_file_id"],"<br>";	
+		#echo "thum_image_file_id = ", $_row["thum_image_file_id"],"<br>";	
 	}
 
 	$fileIDs['network_files'] = $network_files;
 	$fileIDs['image_files'] = $image_files;
+	$fileIDs['thum_image_files'] = $thum_image_files;
 
 	return $fileIDs;
 }
@@ -195,38 +200,4 @@ function getFileFromTable($table_name, $file_id, $connection) {
 	return $record;	
 }
 
-/* already moved to go_utiles.php
-function getSpeciesID($species_genus, $species_species, $connection) {
-	$dbQuery =  "SELECT id FROM species ";
-	$dbQuery .= "WHERE species.genus = '$species_genus' AND species.species = '$species_species'";
-
-	// Run the query
-	if (!($result = @ mysql_query($dbQuery, $connection)))
-		showerror();
-
-	$species_id = @ mysql_result($result, 0, "id");
-
-	return $species_id;
-}
-*/
-
-/*
-$url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=11877539&retmode=xml&rettype=xml";
-
-$page = file_get_contents($url);
-
-//echo $page;
-
-$path_xml = "tmp1.xml";
-$path_style = "pubmedref_to_html.xsl";
-$xslt_parse = xslt_create();
-if (!$output_html = xslt_process($xslt_parse, $path_xml, $path_style)) {
-	echo "Error using " . $path_style . " on " . $path_xml . "!\n";
-	exit;
-}
-
-xslt_free($xslt_parse);
-
-echo $output_html;
-*/
 ?>
