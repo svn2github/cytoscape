@@ -78,10 +78,10 @@ public  class DegreeDistributionMetric implements NetworkMetric {
 		while(nodeIterator.numRemaining() > 0)
 		{
 			int nodeIndex = nodeIterator.nextInt();
-			IntEnumerator edgeIterator = network.edgesAdjacent(nodeIndex,true,false,true);
+			IntEnumerator edgeIterator = network.edgesAdjacent(nodeIndex,directed,directed,!directed);
 			int nodeDegree = edgeIterator.numRemaining();
 			degree[nodeDegree]++;
-			//System.out.println(nodeIndex + "\t" + nodeDegree);
+			System.out.println(nodeIndex + "\t" + nodeDegree);
 		}
 		
 		int count = 0;
@@ -94,6 +94,8 @@ public  class DegreeDistributionMetric implements NetworkMetric {
 				power += Math.log(((double)degree[i])/N)/Math.log(i); 
 				//increment the count
 				count++;
+				
+				System.out.println(Math.log(((double)degree[i])/N)/Math.log(i));
 			}
 		}
 		

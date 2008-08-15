@@ -121,6 +121,15 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 	/**
 	 *
 	 */
+	public String getNextText()
+	{
+		return new String("Generate");
+	}
+
+
+	/**
+	 *
+	 */
 	public String getTitle()
 	{
 		return new String("Erdos Renyi Model");
@@ -131,7 +140,7 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 	*/
 	public String getDescription()
 	{
-		return new String("Generate an Erdos-Renyi network");
+		return new String("Generate an Erdos-Renyi network.  Erdos-Renyi networks have flat degree distributions and are therefore not scale-free.");
 	}
 
 
@@ -196,9 +205,9 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 		probabilityLabel.setText("Edge Probability (p):   ");
 		
 		//Add the descriptions for each mode
-		gnmExplain.setText("<html><font size=2 face=Verdana>Uniformly generate a random" +
+		gnmExplain.setText("<html><font size=2 face=Verdana>Uniformly generate a random " +
 				         "graph with n nodes and m edges.</font></html>");
-		gnpExplain.setText("<html><font size=2 face=Verdana>Generate a random graph with n" +
+		gnpExplain.setText("<html><font size=2 face=Verdana>Generate a random graph with n " +
 				         "nodes and each edge has probability p to be included.</font></html>");
 		gnmExplain.setPreferredSize(new Dimension(350,40));
 		gnpExplain.setPreferredSize(new Dimension(350,40));
@@ -394,6 +403,10 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 		//If there is an error color the label and exit
 		try {
 			numNodes = Integer.parseInt(numNodeString);
+			if(numNodes < 0)
+			{
+				throw new Exception("There must be at least one node in the network.");
+			}			
 		} catch (Exception e) {
 			nodeLabel.setForeground(java.awt.Color.RED);
 			return this;
@@ -428,6 +441,12 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 			//If there is an error color the label and exit
 			try {
 				numEdges = Integer.parseInt(edgeString);
+				if(numEdges < 0)
+				{
+					throw new Exception("No such thing as negative edges.");
+				}
+
+				
 			} catch (Exception e) {
 				probabilityLabel.setForeground(java.awt.Color.BLACK);
 				edgeLabel.setForeground(java.awt.Color.RED);
@@ -448,6 +467,11 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 			//If there is an error color the label and exit
 			try {
 				probability = Double.parseDouble(probabilityString);
+				if((probability < 0) || (probability > 1))
+				{
+					throw new Exception("Must be a probability");
+				}
+
 			} catch (Exception e) {
 				probabilityLabel.setForeground(java.awt.Color.RED);
 				edgeLabel.setForeground(java.awt.Color.BLACK);

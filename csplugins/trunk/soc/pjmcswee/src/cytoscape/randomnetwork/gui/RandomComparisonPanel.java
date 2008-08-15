@@ -78,8 +78,7 @@ public class RandomComparisonPanel extends RandomNetworkPanel {
 	/**
 	 *  Default constructor
 	 */
-	public RandomComparisonPanel(){
-		
+	public RandomComparisonPanel(){		
 		super(null); 
 		initComponents();
 	}
@@ -139,8 +138,8 @@ public class RandomComparisonPanel extends RandomNetworkPanel {
 		
 		
 		
-		randomizeExistingNetwork.setText("Randomize Existing Network");
-		generateRandomNetwork.setText("Generate a Random Network");
+		randomizeExistingNetwork.setText("Compare against randomized versions of an existing network");
+		generateRandomNetwork.setText("Compare against generated random networks");
 
 
 		//set the labels to opaque
@@ -158,9 +157,10 @@ public class RandomComparisonPanel extends RandomNetworkPanel {
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 1;
-		c.insets = new Insets(0,5,0,5);	
+		c.insets = new Insets(0,5,0,0);	
 		c.anchor =  GridBagConstraints.LINE_START;
 		c.weightx = 1;
+///		c.weighty = .5;
 		add(randomizeExistingNetwork,c);
 
 		c = null;
@@ -168,9 +168,10 @@ public class RandomComparisonPanel extends RandomNetworkPanel {
 		c.gridx = 0;
 		c.gridy = 2;
 		c.gridwidth = 1;
-		c.insets = new Insets(0,5,0,5);	
+		c.insets = new Insets(0,0,0,30);	
 		c.anchor =  GridBagConstraints.LINE_START;
 		c.weightx = 1;
+		c.weighty = 1;
 		add(generateRandomNetwork,c);
 
 	}

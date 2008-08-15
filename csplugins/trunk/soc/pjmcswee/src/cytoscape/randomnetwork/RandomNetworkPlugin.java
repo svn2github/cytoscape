@@ -56,6 +56,9 @@ import java.beans.PropertyChangeListener;
  *  Which enables users to create random networks either from
  *  scratch or by randomizing existing.  It also allows comparisons
  *  to be made between a round of random networks and an existing network
+ *
+ * @author Patrick J. McSweeney
+ * @version 1.0
  */
 public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyChangeListener 
 {
@@ -118,43 +121,53 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 	/**
 	 *	This class creates the main window for our plugin
 	 */
-	class RandomNetworkFrame extends JFrame// implements ActionListener
+	class RandomNetworkFrame extends JDialog// implements ActionListener
 	{
-	
+		
+		
 	
 		/**
 		 *  The default constructor for this class	
 		 */
-		public RandomNetworkFrame(RandomNetworkPanel pPanel ) { 
-			super("Random Network Plugin");
-			initComponents(pPanel);
+		public RandomNetworkFrame() { 
+			super(Cytoscape.getDesktop(), "     Random Network Plugin");
+			initComponents();
 		}
 
 		/**
 		 *  Initialize the swing components
 		 */
-		private void initComponents(RandomNetworkPanel pPanel) {
+		private void initComponents() {
 			
-		
-			MainPanel panel = new MainPanel(pPanel);
 		
 			//Default is to dispose on close
 			setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		
 		
-			//add the main pane to our tabbed panel
-			add(panel);
 			
 			//Set the location of the fame
-			setLocationRelativeTo(Cytoscape.getDesktop());
+			//setLocationRelativeTo(Cytoscape.getDesktop());
 			
 			//Add the icon to its title bar
-			final String SMALL_ICON = "images/c16.png";
-			setIconImage(Toolkit.getDefaultToolkit().getImage(Cytoscape.getDesktop().getClass().getResource(SMALL_ICON)));
+			//final String SMALL_ICON = "images/c16.png";
+			//setIconImage(Toolkit.getDefaultToolkit().getImage(Cytoscape.getDesktop().getClass().getResource(SMALL_ICON)));
 
+		}
+		
+		
+		private void start(RandomNetworkPanel pPanel)
+		{
+
+			MainPanel panel = new MainPanel(pPanel, this);
+			
+			//add the main pane to our tabbed panel
+			getContentPane().add(panel);
+		
 			//make it visible
 			pack();
 			setVisible(true);
+		
+
 		}
 	}
 
@@ -176,7 +189,8 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 		 */
 		public void actionPerformed(ActionEvent ae) {
 		
-			RandomNetworkFrame frame = new RandomNetworkFrame(new GenerateRandomPanel(0)); 		
+			RandomNetworkFrame frame = new RandomNetworkFrame();
+			frame.start(new GenerateRandomPanel(0)); 		
 		}
 	}
 	
@@ -197,7 +211,8 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 		 */
 		public void actionPerformed(ActionEvent ae) {
 		
-			RandomNetworkFrame frame = new RandomNetworkFrame(new RandomizeExistingPanel(0)); 		
+			RandomNetworkFrame frame = new RandomNetworkFrame();
+			frame.start(new RandomizeExistingPanel(0)); 		
 		}
 	}
 
@@ -218,7 +233,8 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 		 */
 		public void actionPerformed(ActionEvent ae) {
 		
-			RandomNetworkFrame frame = new RandomNetworkFrame(new RandomComparisonPanel()); 		
+			RandomNetworkFrame frame = new RandomNetworkFrame();
+			frame.start(new RandomComparisonPanel()); 		
 		}
 	}
 

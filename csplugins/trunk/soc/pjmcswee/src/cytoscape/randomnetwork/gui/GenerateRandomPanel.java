@@ -244,7 +244,7 @@ public class GenerateRandomPanel extends RandomNetworkPanel {
 	 */
 	public String getDescription()
 	{
-		return new String("Generates a random network according to the erdos-renyi model");
+		return new String("Generate a random network according to the one of the models below.");
 	}
 	
 	

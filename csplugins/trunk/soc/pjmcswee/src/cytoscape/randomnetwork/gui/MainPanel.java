@@ -44,6 +44,8 @@
   */
  public class MainPanel extends JPanel
  {
+ 
+	private JDialog mFrame;
 	private RandomNetworkPanel mAlgorithmPanel;
 	private JButton mNextButton;
 	private JButton mBackButton;
@@ -58,9 +60,10 @@
 	/**
 	 * Main Constructor
 	 */
-	public MainPanel(RandomNetworkPanel pPanel)
+	public MainPanel(RandomNetworkPanel pPanel, JDialog pDialog)//JFrame pFrame)
 	{
 		super();
+		mFrame = pDialog; //must be done first
 		mAlgorithmPanel = pPanel;
 		initComponents();
 		algorithmPanelChange();
@@ -81,7 +84,7 @@
 		mDescription.setPreferredSize(new Dimension(380,80));
 		mDescription.setMinimumSize(new Dimension(380,80));
 	
-	//	mDescription.setBorder(BorderFactory.createLineBorder(Color.gray));
+
 	
 		//Set up the run button
 		mNextButton = new JButton();
@@ -116,7 +119,7 @@
 		
 		//Set the preferred and minimum size of each button
 		//Do not let button sizes change!
-		Dimension dim = new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT);
+	/*	Dimension dim = new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT);
 		mNextButton.setPreferredSize(dim);
 		mCancelButton.setPreferredSize(dim);
 		mBackButton.setPreferredSize(dim);
@@ -129,7 +132,7 @@
 		mNextButton.setSize(dim);
 		mCancelButton.setSize(dim);
 		mBackButton.setSize(dim);			
-		
+		*/
 		makeLayout();
 		
 	}
@@ -147,8 +150,9 @@
 	 *  Call back when the cancel button is pushed
 	 */
 	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		JFrame frame = (JFrame)getTopLevelAncestor();
-		frame.dispose();
+		///JFrame frame = (JFrame)getTopLevelAncestor();
+		//frame.dispose();
+		mFrame.dispose();
 	}
 	
 	/**
@@ -180,6 +184,12 @@
 		mDescription.setText("<html><font size=2 face=Verdana>" +mAlgorithmPanel.getDescription() + "</font></html>");
 		removeAll();
 		makeLayout();
+
+	
+		repaint();
+	
+		mFrame.toFront();
+	
 	}
 
 	/**
@@ -193,7 +203,7 @@
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-		c.insets = new Insets(0,10,0,0);		
+		c.insets = new Insets(20,10,0,0);		
 		c.anchor = GridBagConstraints.NORTHWEST;
 		add(mTitle,c);
 		
@@ -217,6 +227,7 @@
 
 		c = null;
 		c = new GridBagConstraints();
+		c.insets = new Insets(10,10,10,10);
 		c.gridx = 0;
 		c.gridy = 3;
 		c.gridwidth  = 1;
@@ -228,6 +239,7 @@
 		
 		c = null;
 		c = new GridBagConstraints();
+		c.insets = new Insets(10,10,10,10);
 		c.gridx = 1;
 		c.gridy = 3;
 		c.anchor = GridBagConstraints.SOUTH;
@@ -235,6 +247,7 @@
 		
 		c = null;
 		c = new GridBagConstraints();
+		c.insets = new Insets(10,10,10,10);
 		c.gridx = 2;
 		c.gridy = 3;
 		c.anchor =	GridBagConstraints.SOUTHEAST;

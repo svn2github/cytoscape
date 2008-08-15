@@ -68,8 +68,8 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 	private int mode;
 	
 	private static final int defaultNodeValue = 100;
-	private static final int defaultEdgeValue = 3;
-	private static final int defaultInitValue = 2;
+	private static final int defaultEdgeValue = 2;
+	private static final int defaultInitValue = 3;
 
 
 	// TextFields
@@ -104,6 +104,11 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		initComponents();
 	}
 	
+	public String getNextText()
+	{
+		return new String("Generate");
+	}
+	
 	public String getTitle()
 	{
 		return new String("Barabasi-Albert Model");
@@ -111,11 +116,13 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 	
 	public String getDescription()
 	{
-		return new String("The Barabasi-Albert model begins with a connected seed network of s nodes " +
+		return new String("The Barabasi-Albert model begins with a connected seed network of s nodes. " +
 						"Every other node (n - s) is added one at a time, " +
 						"and initially connected to m existing nodes. " +
-						"Each existing node u has probability  degree(u)/(2*E), E is the number of edges.");
+						"Each existing node u has probability  degree(u)/(2*E), E is the number of edges. "+
+						"The resulting network has a power-law degree distribution (scale-free).");
 	}
+
 
 	/**
 	 * Initialize all of the swing components
@@ -289,6 +296,10 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		//Try to read the number of nodes from the textfield
 		try {
 			numNodes = Integer.parseInt(numNodeString);
+			if(numNodes <= 0)
+			{
+				throw new Exception("Can not have 0 or fewer nodes.");
+			}
 		} catch (Exception e) {
 			//If there is an error change the colors
 			nodeLabel.setForeground(java.awt.Color.RED);
@@ -300,6 +311,11 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		//Try to read this string into a number
 		try {
 			initNumNodes = Integer.parseInt(initString);
+			if(initNumNodes < 2)
+			{
+				throw new Exception("There must be at least 2 nodes in the initial nework.");
+			}	
+
 		} catch (Exception e) {
 			//If there is an error change the colors to red	
 			nodeLabel.setForeground(java.awt.Color.BLACK);
@@ -311,6 +327,10 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		//Try read this string into a number
 		try {
 			edgesToAdd = Integer.parseInt(edgeString);
+			if(edgesToAdd < 1)
+			{
+				throw new Exception("Must add at least one edge per round.");
+			}	
 		} catch (Exception e) {
 			//If there is an error change the colors to red	
 			nodeLabel.setForeground(java.awt.Color.BLACK);

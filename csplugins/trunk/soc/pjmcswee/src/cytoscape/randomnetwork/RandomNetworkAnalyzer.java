@@ -127,7 +127,7 @@ public class RandomNetworkAnalyzer implements Task {
 					results[i][j] = t;
 					
 					totalCompleted++;
-					//System.out.println(metric.getDisplayName() + "\t" + t);
+					System.out.println(metric.getDisplayName() + "\t" + t);
 					int percentComplete = (int) (((double) totalCompleted / totalToAnalyze) * 100);
 					if (taskMonitor != null) 
 					{
@@ -204,8 +204,6 @@ public class RandomNetworkAnalyzer implements Task {
 		
 		//Compute the metrics on the current network
 		DynamicGraph graph = (DynamicGraph)(CytoscapeConversion.CyNetworkToDynamicGraph(original , directed )).get(0);
-		//System.out.println("N:" + graph.nodes().numRemaining());
-		//System.out.println("E: " + graph.edges().numRemaining());
 		for(int j = 0; ((j < metrics.size())&&(!interrupted)); j++)
 		{
 				//Get the next metric
@@ -215,10 +213,12 @@ public class RandomNetworkAnalyzer implements Task {
 				double t = metric.analyze(graph,  directed);
 				network_results[j] = t;
 				metric_names[j] = metric.getDisplayName();
-				//System.out.println("Existing: " + metric_names[j] + "\t" + t);
 				
 				//Compute how much we have completed
 				int percentComplete = (int) (((double) j / totalToAnalyze) * 100);
+			
+			
+				System.out.println(metric.getDisplayName() + "\t" + t);
 			
 				//Update the taskMonitor to show our progress
 				if (taskMonitor != null) {
@@ -229,7 +229,7 @@ public class RandomNetworkAnalyzer implements Task {
 		
 		//Calculate how many rounds are needed per thread
 		int roundsPerThread = numRounds / numThreads;
-		
+		int remainder = numRounds - roundsPerThread * numThreads;
 		//Create an array to store the matrix results for each thread
 		random_results = new double[numThreads][roundsPerThread][metrics.size()];
 		
@@ -252,7 +252,11 @@ public class RandomNetworkAnalyzer implements Task {
 			}
 			
 			//Create the new thread
-			AnalyzeWorkerThread thread = new AnalyzeWorkerThread(i, roundsPerThread, networkModel.copy(), threadMetrics, random_results[i], completed[i]);
+			int threadRounds = roundsPerThread;
+			
+			if(i < remainder)
+				threadRounds++;
+			AnalyzeWorkerThread thread = new AnalyzeWorkerThread(i, threadRounds, networkModel.copy(), threadMetrics, random_results[i], completed[i]);
 			
 			//start the thread running
 			threads[i] = new Thread(thread);

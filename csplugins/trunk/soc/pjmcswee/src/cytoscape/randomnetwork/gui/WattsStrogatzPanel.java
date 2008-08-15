@@ -102,7 +102,15 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 		mode = pMode;
 		initComponents();
 	}
-
+	
+	/**
+	 *
+	 */
+	public String getNextText()
+	{
+		return new String("Generate");
+	}
+	
 	/**
  	 *
 	 */	
@@ -118,7 +126,7 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 	public String getDescription()
 	{
 		return new String("The Watts-Strogtatz model linearly interpolates between a complete lattice and "+
-							"an erdos-renyi network using the  &#x3B2; value.  As  &#x3B2; increases the clustering coefficent" +
+							"an erdos-renyi network using the  &#x3B2; value.  As  &#x3B2; increases the clustering coefficent " +
 							"will decrease but the small world property will increase.");
 	}
 	
@@ -296,6 +304,11 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 		//Try to read the string into an integer
 		try {
 			numNodes = Integer.parseInt(numNodeString);
+			if(numNodes < 0)
+			{
+				throw new Exception("Nodes must be positive");
+			}
+
 		} catch (Exception e) {
 			//If an error occurs than change the colors
 			degreeLabel.setForeground(java.awt.Color.BLACK);
@@ -310,7 +323,9 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 
 			//Check to make sure beta is a probability
 			if((beta < 0) || (beta > 1))
-				throw (new Exception());
+			{
+				throw (new Exception("Beta must be a probability"));
+			}
 		} catch (Exception e) {
 			//If an error occurs than change the colors
 			degreeLabel.setForeground(java.awt.Color.BLACK);
@@ -322,6 +337,11 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 		//Try to read this string into an integer
 		try {
 			degree = Integer.parseInt(degreeString);
+			if(degree < 0)
+			{
+				throw new Exception("Degree must be positive.");
+			}
+
 		} catch (Exception e) {
 			//If an error occurs than change the colors		
 			degreeLabel.setForeground(java.awt.Color.RED);

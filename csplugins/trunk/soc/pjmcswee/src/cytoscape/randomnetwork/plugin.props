@@ -10,7 +10,7 @@ pluginName=RandomNetworkPlugin
 
 # Description used to give users information about the plugin such as what it does.
 # Html tags are encouraged for formatting purposes.
-pluginDescription=Information about the plugin that will be displayed to users.<br>Please use html tags for all formatting and do not add newlines.<p>
+pluginDescription = Information about the plugin that will be displayed to users.<br>Please use html tags for all formatting and do not add newlines.<p>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
 pluginVersion=1.0
@@ -19,7 +19,7 @@ pluginVersion=1.0
 cytoscapeVersion=2.6
 
 # Category, use one of the categories listed on the http://cytoscape.org/plugins2.php site
-pluginCategory=Scripting/Communication
+pluginCategory=Analysis
 
 # -- The following properties are OPTIONAL -- #
 

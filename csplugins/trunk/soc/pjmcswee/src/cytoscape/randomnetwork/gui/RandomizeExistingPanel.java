@@ -122,7 +122,7 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 	 */
 	public String getTitle()
 	{
-		return new String("Randomize Existing Network");
+		return new String("Degree Preserving Random Shuffle");
 	}
 	
 	/**
@@ -130,7 +130,10 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 	 */
 	public String getDescription()
 	{
-		return new String("");
+		return new String("Randomly selects two edges: (u,v) and (s,t). " +  
+		"Where u &#x2260; v &#x2260; s &#x2260; t and (u,t),(s,v) are not currently edges. "
+		+"(u,v),(s,t) are deleted and (u,t),(s,v) are inserted to the network. ");
+		 
 	}
 
 
@@ -187,10 +190,11 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 		numIterLabel = new javax.swing.JLabel();
 		numIterLabel.setText("Num Shuffles:");
 		numIterExplain = new javax.swing.JLabel();
-		numIterExplain.setText("<html><font size=2 face=Verdana> Every edge is not gaurenteed to be shuffled"+
-				         "as the number of shuffles increases, the resulting randomized network becomes more random."+
+		numIterExplain.setText("<html><font size=2 face=Verdana>Every edge is not guaranteed to be shuffled. "+
+					"As the number of shuffles increases, the resulting randomized network becomes more random. "+
 						 "By default the number of edges from the currently selected network is automatically entered.</font></html>");	
-	
+
+
 		numIterExplain.setPreferredSize(new Dimension(250,100));
 		numIterExplain.setMinimumSize(new Dimension(250,100));
 		
@@ -327,6 +331,10 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 		try
 		{
 			numIter = Integer.parseInt(iterString);
+			if(numIter < 1)
+			{
+				throw new Exception("The number of iterations must be greater than 0.");
+			}
 			
 		}catch(Exception e){numIterLabel.setForeground(java.awt.Color.RED); return this;}
 
@@ -352,6 +360,10 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 			String value = numCreateTextField.getText().trim();
 			value  = value.trim();
 			visualRounds = Integer.parseInt(value);
+			if(visualRounds < 1)
+			{
+				throw new Exception("Visual rounds must be grater than 1.");
+			}
 		}catch(Exception e){numCreateLabel.setForeground(java.awt.Color.RED); return this;}
 		numCreateLabel.setForeground(java.awt.Color.BLACK);
 		

@@ -86,8 +86,8 @@ public class AnalyzePanel extends RandomNetworkPanel
 	int mode;
 
 
-	
-	private javax.swing.JLabel titleLabel;
+	private javax.swing.JPanel metricPanel;
+	private javax.swing.JLabel metricLabel;
 	private javax.swing.JCheckBox clusterCheckBox;
 	private javax.swing.JCheckBox averageDegreeCheckBox;	
 	private javax.swing.JCheckBox degreeDistCheckBox;		
@@ -138,7 +138,7 @@ public class AnalyzePanel extends RandomNetworkPanel
 	}
 	public String getDescription()
 	{
-		return new String("");
+		return new String("Select which metrics to run on the current network and compare against random networks. ");
 	}
 	
 	public String getNextText()
@@ -150,7 +150,8 @@ public class AnalyzePanel extends RandomNetworkPanel
 	/*
 	 * Initialize the components
 	 */
-	private void initComponents() {
+	private void initComponents() 
+	{
 
 		clusterCheckBox = new javax.swing.JCheckBox();
 		averageDegreeCheckBox = new javax.swing.JCheckBox();
@@ -167,6 +168,10 @@ public class AnalyzePanel extends RandomNetworkPanel
 		averageShortPathCheckBox.setSelected(true);
 		
 		
+		metricLabel = new JLabel();
+		metricLabel.setText("Metrics: ");
+		
+		metricPanel  = new JPanel();
 		
 		threadExplain = new javax.swing.JLabel();
 		roundsExplain = new javax.swing.JLabel();
@@ -188,11 +193,14 @@ public class AnalyzePanel extends RandomNetworkPanel
 		threadTextField = new javax.swing.JTextField();
 		threadLabel = new javax.swing.JLabel();
 
-		roundsLabel.setText("How many rounds to run:");		
-		threadLabel.setText("How many Threads to run:");
+		roundsLabel.setText("Rounds to run:");		
+		threadLabel.setText("Threads to run:");
 		
 		roundsTextField.setPreferredSize(new Dimension(50,25));
 		threadTextField.setPreferredSize(new Dimension(50,25));
+		roundsTextField.setMinimumSize(new Dimension(50,25));
+		threadTextField.setMinimumSize(new Dimension(50,25));
+
 		roundsTextField.setHorizontalAlignment(JTextField.RIGHT);
 		threadTextField.setHorizontalAlignment(JTextField.RIGHT);		
 		
@@ -201,71 +209,96 @@ public class AnalyzePanel extends RandomNetworkPanel
 		roundsTextField.setText("" + defaltRoundValue);
 		
 		
+		metricPanel.setLayout(new GridBagLayout());
+
+
+		GridBagConstraints c = new GridBagConstraints();		
+		c.gridx = 0;
+		c.gridy = 0;
+		c.insets = new Insets(5,10,5,5);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 1;
+		c.weightx = 1;
+		c.weighty = 1;
+		metricPanel.add(metricLabel, c);
+		
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 1;
+		c.gridy = 0;
+		c.insets = new Insets(15,5,5,5);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 2;
+		c.weightx = 1;
+		c.weighty = 1;
+		metricPanel.add(clusterCheckBox, c);
+		
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 4;
+		c.gridy = 0;
+		c.insets = new Insets(5,5,5,5);		
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 1;
+//		c.weightx = 1;
+//		c.weighty = 1;
+		metricPanel.add(averageDegreeCheckBox, c);
+
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 2;
+		c.gridy = 1;
+		c.insets = new Insets(5,5,5,5);			
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 2;
+//		c.weightx = 1;
+//		c.weighty = 1;
+		metricPanel.add(degreeDistCheckBox,c);
+
+		//
+		c = null;
+		c = new GridBagConstraints();
+		c.gridx = 4;
+		c.gridy = 1;
+		c.insets = new Insets(5,5,5,5);			
+		c.anchor = GridBagConstraints.LINE_START;
+		c.gridwidth = 1;
+//		c.weightx = 1;
+//		c.weighty = 1;
+		metricPanel.add(averageShortPathCheckBox,c);
+
+
+		
+
+
+
+
 
 
 		setLayout(new GridBagLayout());
 
 		//Setup the titel
-		GridBagConstraints c = new GridBagConstraints();
-		
-		c.gridx = 0;
-		c.gridy = 2;
-		c.insets = new Insets(5,5,5,5);		
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 1;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(clusterCheckBox, c);
-		
-		//
 		c = null;
-		c = new GridBagConstraints();
+		c = new GridBagConstraints();		
 		c.gridx = 0;
-		c.gridy = 3;
-		c.insets = new Insets(5,5,5,5);		
+		c.gridy = 0;
+		c.insets = new Insets(0,10,0,0);		
 		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 1;
+		c.gridwidth = 5;
 		c.weightx = 1;
 		c.weighty = 1;
-		add(averageDegreeCheckBox, c);
-
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 4;
-		c.insets = new Insets(5,5,5,5);			
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 1;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(degreeDistCheckBox,c);
-
-		//
-		c = null;
-		c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 5;
-		c.insets = new Insets(5,5,5,5);			
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridwidth = 1;
-		c.weightx = 1;
-		c.weighty = 1;
-		add(averageShortPathCheckBox,c);
-
-
+		add(metricPanel, c);
 		
-
+	
 		c = null;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 1;
 		c.gridwidth = 1;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
 		add(threadLabel,c);
 
 		c = null;
@@ -273,11 +306,11 @@ public class AnalyzePanel extends RandomNetworkPanel
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 1;
-		c.gridy = 6;
+		c.gridy = 1;
 		c.gridwidth = 1;
 		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
+//		c.weightx = 1;
+//		c.weighty = 1;
 		add(threadTextField,c);
 
 		c = null;
@@ -285,8 +318,8 @@ public class AnalyzePanel extends RandomNetworkPanel
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 2;
-		c.gridy = 6;
-		c.gridwidth = 2;
+		c.gridy = 1;
+		c.gridwidth = 1;
 		c.gridheight = 1;
 		c.weightx = 1;
 		c.weighty = 1;
@@ -300,11 +333,8 @@ public class AnalyzePanel extends RandomNetworkPanel
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = 2;
 		c.gridwidth = 1;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
 		add(roundsLabel,c);
 
 		c = null;
@@ -312,11 +342,7 @@ public class AnalyzePanel extends RandomNetworkPanel
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 1;
-		c.gridy = 7;
-		c.gridwidth = 3;
-		c.gridheight = 1;
-		c.weightx = 1;
-		c.weighty = 1;
+		c.gridy = 2;	
 		add(roundsTextField,c);
 
 		c = null;
@@ -324,11 +350,10 @@ public class AnalyzePanel extends RandomNetworkPanel
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,5,0,5);		
 		c.gridx = 2;
-		c.gridy = 7;
-		c.gridwidth = 2;
-		c.gridheight = 1;
+		c.gridy = 2;
 		c.weightx = 1;
 		c.weighty = 1;
+
 		add(roundsExplain,c);
 
 	}

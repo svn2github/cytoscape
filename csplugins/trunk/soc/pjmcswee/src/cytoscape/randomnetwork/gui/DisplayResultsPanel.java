@@ -149,7 +149,7 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 	 */
 	public String getDescription()
 	{
-		return new String("");
+		return new String("Simuation results");
 	}
 	
 	public String getNextTitle()
