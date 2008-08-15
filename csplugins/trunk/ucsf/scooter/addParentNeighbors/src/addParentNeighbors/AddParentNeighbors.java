@@ -132,7 +132,7 @@ public class AddParentNeighbors extends CytoscapePlugin
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			// If this network has a parent, enable our menu
 			CyNetwork network = Cytoscape.getNetwork(e.getNewValue().toString());
-			if (parentMap.containsKey(network)) 
+			if (parentMap.containsKey(network))
 				pluginMenu.setEnabled(true);
 			else
 				pluginMenu.setEnabled(false);
@@ -209,6 +209,9 @@ public class AddParentNeighbors extends CytoscapePlugin
 		removeNetwork(newId);
 		CyNetwork newNetwork = Cytoscape.getNetwork(newId);
 		CyNetwork oldNetwork = Cytoscape.getNetwork(oldId);
+
+		if (oldNetwork == Cytoscape.getNullNetwork())
+			return;
 		
 		List<CyNetwork>childList = null;
 		if (!childMap.containsKey(oldNetwork))
