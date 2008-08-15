@@ -79,8 +79,6 @@ public class StackPanel extends JPanel {
 		add(createJButton(hab, "Horizontal Bottom"));
 
 		setBorder(new TitledBorder("Stack"));
-
-		System.out.println("StackPanel()");
 	}
 
 	protected JButton createJButton(Action a, String tt) {
