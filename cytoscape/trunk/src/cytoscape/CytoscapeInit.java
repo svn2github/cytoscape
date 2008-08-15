@@ -110,10 +110,10 @@ public class CytoscapeInit {
 	private static final String SPLASH_SCREEN_LOCATION = "/cytoscape/images/CytoscapeSplashScreen.png";
 	private static Properties properties;
 	private static Properties visualProperties;
-	private static CyLogger logger;
+	private static CyLogger logger = null;
 
 	static {
-		logger = CyLogger.getLogger();
+		logger = CyLogger.getLogger(CytoscapeInit.class);
 		logger.info("CytoscapeInit static initialization");
 		initProperties();
 	}
@@ -142,13 +142,18 @@ public class CytoscapeInit {
 	 */
 	public boolean init(CyInitParams params) {
 		long begintime = System.currentTimeMillis();
-		logger = CyLogger.getLogger();
+		if (logger == null)
+			logger = CyLogger.getLogger(CytoscapeInit.class);
 
 		try {
 			initParams = params;
 
 			// setup properties
 			initProperties();
+
+			// Reinitialize so we can pick up the debug flag
+			logger = CyLogger.getLogger(CytoscapeInit.class);
+
 			properties.putAll(initParams.getProps());
 			visualProperties.putAll(initParams.getVizProps());
 
@@ -299,7 +304,7 @@ public class CytoscapeInit {
 		}
 
 		long endtime = System.currentTimeMillis() - begintime;
-		logger.info("\nCytoscape initialized successfully in: " + endtime + " ms");
+		logger.info("Cytoscape initialized successfully in: " + endtime + " ms");
 		Cytoscape.firePropertyChange(Cytoscape.CYTOSCAPE_INITIALIZED, null, null);
 
 		return true;

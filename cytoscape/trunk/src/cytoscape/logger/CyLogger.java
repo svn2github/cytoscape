@@ -62,7 +62,7 @@ public class CyLogger {
 	private static HashMap<LogLevel,List<CyLogHandler>> globalHandlerMap = new HashMap();
 	private HashMap<LogLevel, List<CyLogHandler>> handlerMap = new HashMap();
 	private String loggerName = null;
-	private boolean debugging = true;
+	private boolean debugging = false;
 
 	/**
  	 * Get a logger with the specified name
@@ -157,6 +157,16 @@ public class CyLogger {
 	public void fatal(String message) { log(message,LogLevel.LOG_FATAL); }
 
 	/**
+	 * Set the debug status.  This will override the default debug setting
+	 * from cytoscape.debug for this logger only.
+	 *
+	 * @param debug boolean setting for debugging state.
+	 */
+	public void setDebug(boolean debug) {
+		this.debugging = debug;
+	}
+
+	/**
 	 * Log a message at the specified log level.
 	 *
 	 * @param message the message to be logged
@@ -164,9 +174,8 @@ public class CyLogger {
 	 */
 	public void log(String message, LogLevel level) {
 		// Is this a DEBUG message?
-		if (level == LogLevel.LOG_DEBUG) {
-			// Are we debugging?
-			// No, just return
+		if (level == LogLevel.LOG_DEBUG && !debugging) {
+			return;
 		}
 		// Format the message
 		String formattedMessage = loggerName+"["+level+"]: "+message;
