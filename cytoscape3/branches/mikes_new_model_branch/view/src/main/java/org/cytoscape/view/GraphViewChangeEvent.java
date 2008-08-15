@@ -1,7 +1,9 @@
 package org.cytoscape.view;
 
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
+
 import java.util.EventObject;
-import org.cytoscape.*;
 
 /**
  * The event source must be the GraphPerspective that changed.
@@ -32,14 +34,14 @@ public abstract class GraphViewChangeEvent
   public abstract boolean isEdgesSelectedType ();
   public abstract boolean isEdgesUnselectedType ();
 
-  public abstract Node[] getRestoredNodes ();
-  public abstract Edge[] getRestoredEdges ();
-  public abstract Node[] getHiddenNodes ();
-  public abstract Edge[] getHiddenEdges ();
-  public abstract Node[] getSelectedNodes ();
-  public abstract Node[] getUnselectedNodes ();
-  public abstract Edge[] getSelectedEdges ();
-  public abstract Edge[] getUnselectedEdges ();
+  public abstract CyNode[] getRestoredNodes ();
+  public abstract CyEdge[] getRestoredEdges ();
+  public abstract CyNode[] getHiddenNodes ();
+  public abstract CyEdge[] getHiddenEdges ();
+  public abstract CyNode[] getSelectedNodes ();
+  public abstract CyNode[] getUnselectedNodes ();
+  public abstract CyEdge[] getSelectedEdges ();
+  public abstract CyEdge[] getUnselectedEdges ();
 
   public abstract int[] getRestoredNodeIndices ();
   public abstract int[] getRestoredEdgeIndices ();

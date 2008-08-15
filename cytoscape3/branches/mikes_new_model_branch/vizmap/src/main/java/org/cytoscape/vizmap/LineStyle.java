@@ -36,14 +36,15 @@
 
 package org.cytoscape.vizmap;
 
-import java.awt.BasicStroke;
-import java.awt.Stroke;
-import javax.swing.Icon;
-import java.util.Map;
+import org.cytoscape.vizmap.icon.LineTypeIcon;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
-import java.util.regex.Pattern;
+import java.util.Map;
 import java.util.regex.Matcher;
-import org.cytoscape.vizmap.icon.*;
+import java.util.regex.Pattern;
 
 /**
  *

@@ -1,17 +1,15 @@
 package org.cytoscape.coreplugin.cpath2.web_service;
 
+import cytoscape.task.TaskMonitor;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.*;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.StringReader;
-
-import cytoscape.task.TaskMonitor;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.JAXBElement;
 
 /**
  * Class for accessing the cPath Web API.

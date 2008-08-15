@@ -44,21 +44,16 @@
 //--------------------------------------------------------------------
 package cytoscape.data;
 
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
+import cytoscape.task.TaskMonitor;
+import cytoscape.util.FileUtil;
+import org.cytoscape.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 
-//--------------------------------------------------------------------
-import cytoscape.data.readers.TextFileReader;
-import cytoscape.data.readers.TextJarReader;
-
-import cytoscape.task.TaskMonitor;
-
-import cytoscape.util.FileUtil;
-
-import java.io.*;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -535,10 +530,10 @@ public class ExpressionData implements Serializable {
 
 	private Hashtable<String,List<String>> getAttributeToIdList(String keyAttributeName) {
 		Hashtable<String,List<String>> attributeToIdList = new Hashtable<String,List<String>>();
-		List<Node> allNodes = Cytoscape.getCyNodesList();
+		List<CyNode> allNodes = Cytoscape.getCyNodesList();
 		byte attributeType = Cytoscape.getNodeAttributes().getType(keyAttributeName);
 
-		for (Node node : allNodes) {
+		for (CyNode node : allNodes) {
 			String nodeName = node.getIdentifier();
 			Object attrValue = getAttributeValue(attributeType, nodeName, keyAttributeName);
 

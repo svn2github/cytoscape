@@ -34,28 +34,24 @@
 */
 package cytoscape;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-
 import cytoscape.data.ImportHandler;
 import cytoscape.data.Semantics;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
 import junit.framework.TestCase;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 
 import java.io.IOException;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
  *
  */
 public class CytoscapeTest extends TestCase {
-	GraphPerspective cytoNetwork;
+	CyNetwork cytoNetwork;
 	String title;
 	int nodeCount;
 	int edgeCount;
@@ -143,7 +139,7 @@ public class CytoscapeTest extends TestCase {
 		Iterator it = cytoNetwork.nodesIterator();
 
 		while (it.hasNext()) {
-			Node n = (Node) it.next();
+			CyNode n = (CyNode) it.next();
 			assertTrue("checking node " + n.getIdentifier(), nodes.contains(n.getIdentifier()));
 		}
 
@@ -166,7 +162,7 @@ public class CytoscapeTest extends TestCase {
 		it = cytoNetwork.edgesIterator();
 
 		while (it.hasNext()) {
-			Edge e = (Edge) it.next();
+			CyEdge e = (CyEdge) it.next();
 			assertTrue("checking edge " + e.getIdentifier(), edges.contains(e.getIdentifier()));
 		}
 	}
@@ -185,20 +181,20 @@ public class CytoscapeTest extends TestCase {
 		String en1 = Cytoscape.createEdgeIdentifier("a", "pp", "b");
 
 		// edge should exist in network already
-		Edge ce1 = Cytoscape.getCyEdge("a", en1, "b", "pp");
+		CyEdge ce1 = Cytoscape.getCyEdge("a", en1, "b", "pp");
 		assertNotNull(ce1);
 
-		Edge ce1_again = Cytoscape.getCyEdge("a", en1, "b", "pp");
+		CyEdge ce1_again = Cytoscape.getCyEdge("a", en1, "b", "pp");
 		assertTrue(ce1 == ce1_again);
 
 		// edge should be created
 		String en2 = Cytoscape.createEdgeIdentifier("a", "xx", "b");
-		Edge ce2 = Cytoscape.getCyEdge("a", en2, "b", "pp");
+		CyEdge ce2 = Cytoscape.getCyEdge("a", en2, "b", "pp");
 		assertNotNull(ce2);
 
 		// should create a different edge because of directedness
 		String en3 = Cytoscape.createEdgeIdentifier("b", "pp", "a");
-		Edge ce3 = Cytoscape.getCyEdge("b", en3, "a", "pp");
+		CyEdge ce3 = Cytoscape.getCyEdge("b", en3, "a", "pp");
 		assertTrue(ce1 != ce3);
 	}
 
@@ -210,9 +206,9 @@ public class CytoscapeTest extends TestCase {
 	public void testgetCyEdgeWithNodes() throws IOException {
 		cytoNetwork = Cytoscape.createNetworkFromFile("src/test/resources/testData/directedGraph.sif");
 
-		Node a = Cytoscape.getCyNode("a");
-		Node b = Cytoscape.getCyNode("b");
-		Node c = Cytoscape.getCyNode("c", true);
+		CyNode a = Cytoscape.getCyNode("a");
+		CyNode b = Cytoscape.getCyNode("b");
+		CyNode c = Cytoscape.getCyNode("c", true);
 		String attr = Semantics.INTERACTION;
 
 		// test directed edges
@@ -244,8 +240,8 @@ public class CytoscapeTest extends TestCase {
 	 */
 	public void testEdgeDirectionality() {
 		// create nodes
-		Node a = Cytoscape.getCyNode("from_directionality", true);
-		Node b = Cytoscape.getCyNode("to_directionality", true);
+		CyNode a = Cytoscape.getCyNode("from_directionality", true);
+		CyNode b = Cytoscape.getCyNode("to_directionality", true);
 
 		String attr = Semantics.INTERACTION;
 
@@ -260,13 +256,13 @@ public class CytoscapeTest extends TestCase {
 		// check that it is visible in reverse direction
 		assertNotNull(Cytoscape.getCyEdge(b, a, attr, "u", false, false) );
 
-		Edge e = Cytoscape.getCyEdge(a, b, attr, "u", false, false);
+		CyEdge e = Cytoscape.getCyEdge(a, b, attr, "u", false, false);
 		assertFalse("edge created is of correct directionality", e.isDirected());
 		e = Cytoscape.getCyEdge(b, a, attr, "u", false, false);
 		assertFalse("edge created is of correct directionality", e.isDirected());
 
 		// check that for undirected edges, edge in reverse direction is the same
-		Edge e2 = Cytoscape.getCyEdge(b, a, attr, "u", false, false);
+		CyEdge e2 = Cytoscape.getCyEdge(b, a, attr, "u", false, false);
 		assertFalse(e2.isDirected());
 		assertTrue(e == e2);
 		assertTrue(e.getIdentifier() == e2.getIdentifier());
@@ -285,14 +281,14 @@ public class CytoscapeTest extends TestCase {
 	 */
 	public void testGetCyEdgeStrictness() {
 		// create nodes
-		Node a = Cytoscape.getCyNode("from_strictness", true);
-		Node b = Cytoscape.getCyNode("to_strictness", true);
+		CyNode a = Cytoscape.getCyNode("from_strictness", true);
+		CyNode b = Cytoscape.getCyNode("to_strictness", true);
 
 		String attr = Semantics.INTERACTION;
 		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, false));
 		
 		// the tests: no directed edge exsists:
-		Edge test_edge = Cytoscape.getCyEdge(a, b, attr, "u", false, true);
+		CyEdge test_edge = Cytoscape.getCyEdge(a, b, attr, "u", false, true);
 		assertNull("didn't get an edge", test_edge);
 		
 		test_edge = Cytoscape.getCyEdge(b, a, attr, "u", false, true);
@@ -310,8 +306,8 @@ public class CytoscapeTest extends TestCase {
 	 */
 	public void testParallelEdgesWithDifferentDirectionality() {
 		// create nodes
-		Node a = Cytoscape.getCyNode("one", true);
-		Node b = Cytoscape.getCyNode("two", true);
+		CyNode a = Cytoscape.getCyNode("one", true);
+		CyNode b = Cytoscape.getCyNode("two", true);
 
 		String attr = Semantics.INTERACTION;
 
@@ -326,10 +322,10 @@ public class CytoscapeTest extends TestCase {
 		// create directed edge over it: (same source, target, and interaction)
 		assertNotNull(Cytoscape.getCyEdge(a, b, attr, "u", true, true) );
 		// test directionality:
-		Edge e1 = Cytoscape.getCyEdge(a, b, attr, "u", false, false);
+		CyEdge e1 = Cytoscape.getCyEdge(a, b, attr, "u", false, false);
 		assertFalse("edge is created with correct directionality", e1.isDirected());
 
-		Edge e2 = Cytoscape.getCyEdge(a, b, attr, "u", false, true);
+		CyEdge e2 = Cytoscape.getCyEdge(a, b, attr, "u", false, true);
 		assertTrue("edge is created with correct directionality", e2.isDirected());
 
 		assertTrue("the two edges are different", e1 != e2);

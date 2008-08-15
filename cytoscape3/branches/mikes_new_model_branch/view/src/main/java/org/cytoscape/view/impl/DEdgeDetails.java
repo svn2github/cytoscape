@@ -37,18 +37,13 @@
 package org.cytoscape.view.impl;
 
 import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.render.immed.EdgeAnchors;
-
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.MinIntHeap;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-
+import java.awt.*;
 import java.util.HashMap;
 
 

@@ -4,10 +4,8 @@
 package cytoscape.data.ontology;
 
 import org.biojava.bio.Annotation;
-
 import org.biojava.ontology.Ontology;
 import org.biojava.ontology.Term;
-
 import org.biojava.utils.AbstractChangeable;
 
 import java.util.Collections;

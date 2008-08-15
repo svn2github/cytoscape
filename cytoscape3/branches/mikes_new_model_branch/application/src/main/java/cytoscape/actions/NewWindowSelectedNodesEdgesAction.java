@@ -37,25 +37,20 @@
 
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
-
-import org.cytoscape.view.GraphView;
-
 import cytoscape.Cytoscape;
+import cytoscape.util.CyNetworkNaming;
+import cytoscape.util.CytoscapeAction;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
-import cytoscape.util.CyNetworkNaming;
-import cytoscape.util.CytoscapeAction;
-
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.swing.event.MenuEvent;
 
 
 /**
@@ -80,16 +75,16 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// keep ref to current state
-        GraphPerspective current_network = Cytoscape.getCurrentNetwork();
+        CyNetwork current_network = Cytoscape.getCurrentNetwork();
         GraphView current_network_view = Cytoscape.getCurrentNetworkView();
 
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
 			return;
 
-		Set<Node> nodes = current_network.getSelectedNodes();
-		Set<Edge> edges = current_network.getSelectedEdges();
+		Set<CyNode> nodes = current_network.getSelectedNodes();
+		Set<CyEdge> edges = current_network.getSelectedEdges();
 
-		GraphPerspective new_network = Cytoscape.createNetwork(nodes, edges,
+		CyNetwork new_network = Cytoscape.createNetwork(nodes, edges,
 		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 		                                                current_network);
 
@@ -104,7 +99,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
             Iterator i = new_network.nodesIterator();
 
             while (i.hasNext()) {
-                Node node = (Node) i.next();
+                CyNode node = (CyNode) i.next();
                 new_network_view.getNodeView(node)
                         .setOffset(current_network_view.getNodeView(node).getXPosition(),
                                    current_network_view.getNodeView(node).getYPosition());
@@ -123,7 +118,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
 	}
 
 	public void menuSelected(MenuEvent e) {
-        GraphPerspective n = Cytoscape.getCurrentNetwork();
+        CyNetwork n = Cytoscape.getCurrentNetwork();
         if ( n == null || n == Cytoscape.getNullNetwork() ) {
            	setEnabled(false); 
 			return;

@@ -36,19 +36,17 @@
 */
 package org.cytoscape.data;
 
-import org.cytoscape.data.SelectEvent;
-import org.cytoscape.data.SelectEventListener;
-import org.cytoscape.data.SelectFilter;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.RootGraph;
 import org.cytoscape.data.impl.SelectFilterImpl;
-
-import org.cytoscape.*;
 import org.cytoscape.impl.FRootGraph;
 
-import junit.framework.*;
-
-import java.io.*;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -56,13 +54,13 @@ import java.util.*;
  */
 public class SelectFilterTest extends TestCase {
 	SelectFilter filter;
-	Node node1;
-	Node node2;
-	Node otherNode;
-	Edge edge1;
-	Edge edge2;
-	Edge otherEdge;
-	GraphPerspective gp;
+	CyNode node1;
+	CyNode node2;
+	CyNode otherNode;
+	CyEdge edge1;
+	CyEdge edge2;
+	CyEdge otherEdge;
+	CyNetwork gp;
 	TestListener listener;
 	SelectEvent savedEvent;
 
@@ -87,10 +85,10 @@ public class SelectFilterTest extends TestCase {
 		edge1 = rootGraph.getEdge(rootGraph.createEdge(node1, node2));
 		edge2 = rootGraph.getEdge(rootGraph.createEdge(node2, node1));
 
-		Node[] nodeArray = { node1, node2 };
-		Edge[] edgeArray = { edge1, edge2 };
+		CyNode[] nodeArray = { node1, node2 };
+		CyEdge[] edgeArray = { edge1, edge2 };
 		gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
-		//some objects not in this GraphPerspective
+		//some objects not in this CyNetwork
 		otherNode = rootGraph.getNode(rootGraph.createNode());
 		otherEdge = rootGraph.getEdge(rootGraph.createEdge(node1, otherNode));
 		filter = new SelectFilterImpl(gp);
@@ -229,7 +227,7 @@ public class SelectFilterTest extends TestCase {
 		assertTrue(listener.getEvent() == savedEvent); //no event should have been fired
 
 		//test objects not in this perspective
-		/* these tests embargoed due to a bug in GraphPerspective.containsNode
+		/* these tests embargoed due to a bug in CyNetwork.containsNode
 		filter.setSelected(otherNode, true); //should do nothing
 		checkState(false, false, false, false);
 		assertTrue( listener.getEvent() == savedEvent ); //no event should have been fired
@@ -252,7 +250,7 @@ public class SelectFilterTest extends TestCase {
 		Set testSet = null; //return value from filter methods
 		checkState(false, false, false, false);
 
-		Set<Node> nodeSet1 = new HashSet<Node>();
+		Set<CyNode> nodeSet1 = new HashSet<CyNode>();
 		nodeSet1.add(node1);
 		testSet = filter.setSelectedNodes(nodeSet1, true);
 		checkState(true, false, false, false);
@@ -260,7 +258,7 @@ public class SelectFilterTest extends TestCase {
 		assertTrue(testSet.size() == 1);
 		assertTrue(testSet.contains(node1));
 
-		Set<Edge> edgeSet1 = new HashSet<Edge>();
+		Set<CyEdge> edgeSet1 = new HashSet<CyEdge>();
 		edgeSet1.add(edge2);
 		testSet = filter.setSelectedEdges(edgeSet1, true);
 		checkState(true, false, false, true);
@@ -268,7 +266,7 @@ public class SelectFilterTest extends TestCase {
 		assertTrue(testSet.size() == 1);
 		assertTrue(testSet.contains(edge2));
 
-		Set<Node> nodeSet2 = new HashSet<Node>();
+		Set<CyNode> nodeSet2 = new HashSet<CyNode>();
 		nodeSet2.add(node1);
 		nodeSet2.add(node2);
 		testSet = filter.setSelectedNodes(nodeSet2, true);
@@ -277,7 +275,7 @@ public class SelectFilterTest extends TestCase {
 		assertTrue(testSet.size() == 1);
 		assertTrue(testSet.contains(node2));
 
-		Set<Edge> edgeSet2 = new HashSet<Edge>();
+		Set<CyEdge> edgeSet2 = new HashSet<CyEdge>();
 		edgeSet2.add(edge1);
 		edgeSet2.add(edge2);
 		testSet = filter.setSelectedEdges(edgeSet2, true);

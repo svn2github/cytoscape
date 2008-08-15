@@ -3,13 +3,13 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.plugin.PluginStatus;
+import junit.framework.TestCase;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
 
 import java.io.*;
-import org.jdom.*;
-import org.jdom.input.*;
-import java.util.*;
-import junit.framework.TestCase;
+import java.util.List;
 
 /**
  * @author skillcoy

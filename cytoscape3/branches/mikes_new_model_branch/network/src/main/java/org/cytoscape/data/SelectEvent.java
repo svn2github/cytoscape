@@ -37,11 +37,6 @@
 
 package org.cytoscape.data;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import java.util.Set;
-
 
 /**
  * Events that are fired when the selected state of a Node or Edge, or a group

@@ -34,12 +34,12 @@
  */
 package org.cytoscape.vizmap;
 
-import java.util.Map;
-
-import javax.swing.Icon;
-import java.util.Properties;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
+
+import javax.swing.*;
+import java.util.Map;
+import java.util.Properties;
 
 
 /**

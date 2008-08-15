@@ -37,31 +37,23 @@
 package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
-
+import org.cytoscape.CyNetwork;
+import org.cytoscape.RootGraphFactory;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
+import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
-import org.cytoscape.view.ViewChangeEdit;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.ViewChangeEdit;
 
-import org.cytoscape.RootGraph;
-import org.cytoscape.RootGraphFactory;
-
-import java.awt.Dimension;
-import java.awt.geom.Point2D;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.JPanel;
-
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.tunable.ModuleProperties;
 
 /**
  * The AbstractLayout provides nice starting point for Layouts
@@ -71,7 +63,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	// Graph Objects and Views
 	protected Set<NodeView> staticNodes;
 	protected GraphView networkView;
-	protected GraphPerspective network;
+	protected CyNetwork network;
 
 	//
 	protected boolean selectedOnly = false;

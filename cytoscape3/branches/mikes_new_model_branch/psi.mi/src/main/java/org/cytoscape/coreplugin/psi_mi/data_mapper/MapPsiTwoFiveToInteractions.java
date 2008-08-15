@@ -49,18 +49,15 @@ import org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractionElementType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.NamesType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.XrefType;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
-
 import org.jdom.Text;
-
-import java.io.StringReader;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**

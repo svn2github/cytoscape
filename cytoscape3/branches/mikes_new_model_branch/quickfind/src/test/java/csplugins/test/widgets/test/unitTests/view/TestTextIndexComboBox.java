@@ -37,24 +37,20 @@
 package csplugins.test.widgets.test.unitTests.view;
 
 import csplugins.quickfind.util.QuickFind;
-
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.IndexFactory;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.view.AutoCompleteDocument;
 import csplugins.widgets.autocomplete.view.ComboBoxFactory;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
-
 import junit.framework.TestCase;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.ArrayList;
 
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.SimpleAttributeSet;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 
 /**

@@ -34,33 +34,20 @@
 */
 package cytoscape.visual.ui;
 
+import cytoscape.Cytoscape;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualPropertyType;
 import static org.cytoscape.vizmap.VisualPropertyType.*;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
+import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-
-import org.jdesktop.swingx.border.DropShadowBorder;
-import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 
 /**

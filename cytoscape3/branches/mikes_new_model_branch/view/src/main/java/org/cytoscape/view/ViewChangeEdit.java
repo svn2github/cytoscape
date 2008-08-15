@@ -36,23 +36,10 @@
 
 package org.cytoscape.view;
 
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
-
 import org.cytoscape.view.impl.ViewState;
-
-import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
-
-import java.util.*;
-
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.UndoableEdit;
-import javax.swing.undo.UndoableEditSupport;
-
 import undo.Undo;
+
+import javax.swing.undo.AbstractUndoableEdit;
 
 
 /**

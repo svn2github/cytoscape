@@ -36,16 +36,10 @@
 */
 package org.cytoscape.vizmap.mappings;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
-
-import org.cytoscape.vizmap.mappings.MappingUtil;
-
-import junit.framework.*;
-
-import java.awt.Color;
-
-import java.io.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

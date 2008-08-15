@@ -8,9 +8,8 @@ package org.jgraph.graph;
 
 import org.jgraph.JGraph;
 
-import java.awt.Component;
-
-import javax.swing.CellEditor;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

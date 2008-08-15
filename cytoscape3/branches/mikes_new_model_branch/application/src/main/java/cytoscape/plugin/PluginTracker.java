@@ -37,19 +37,15 @@
 package cytoscape.plugin;
 
 import cytoscape.plugin.PluginInfo.AuthorInfo;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-
 import org.jdom.input.SAXBuilder;
-
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import java.io.File;
 import java.io.FileWriter;
-
 import java.util.*;
 
 

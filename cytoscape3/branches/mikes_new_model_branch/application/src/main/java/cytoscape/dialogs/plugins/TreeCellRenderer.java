@@ -3,9 +3,9 @@
  */
 package cytoscape.dialogs.plugins;
 
-import javax.swing.tree.DefaultTreeCellRenderer;
-
 import cytoscape.plugin.DownloadableInfo;
+
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
  * @author skillcoy

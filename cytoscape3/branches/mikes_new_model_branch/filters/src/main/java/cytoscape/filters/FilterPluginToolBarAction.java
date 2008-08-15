@@ -36,22 +36,13 @@
 
 package cytoscape.filters;
 
-import org.cytoscape.*;
 import cytoscape.Cytoscape;
-
-import cytoscape.data.*;
-
-import cytoscape.util.*;
-
-import cytoscape.view.*;
+import cytoscape.util.CytoscapeAction;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
 
-import java.awt.event.*;
-
 import javax.swing.*;
-
-import cytoscape.filters.FilterPlugin;
+import java.awt.event.ActionEvent;
 
 
 /**

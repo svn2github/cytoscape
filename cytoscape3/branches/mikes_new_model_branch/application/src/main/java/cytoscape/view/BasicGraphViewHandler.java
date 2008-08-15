@@ -43,16 +43,15 @@
 package cytoscape.view;
 
 
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.GraphPerspectiveChangeEvent;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
 import java.util.*;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.GraphPerspectiveChangeEvent;
-import org.cytoscape.Node;
 
 
 /**
@@ -118,8 +117,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 	// TESTED: Gets an exception because the edges array has references to null.
 	// USE INSTEAD: removeGraphViewEdges(GraphView, int [])
-	static public Edge[] removeGraphViewEdges(GraphView graph_view, Edge[] edges) {
-		Set<Edge> removedEdges = new HashSet<Edge>();
+	static public CyEdge[] removeGraphViewEdges(GraphView graph_view, CyEdge[] edges) {
+		Set<CyEdge> removedEdges = new HashSet<CyEdge>();
 
 		for (int i = 0; i < edges.length; i++) {
 			EdgeView edgeView = graph_view.removeEdgeView(edges[i]);
@@ -129,7 +128,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} 
 
-		return (Edge[]) removedEdges.toArray(new Edge[removedEdges.size()]);
+		return (CyEdge[]) removedEdges.toArray(new CyEdge[removedEdges.size()]);
 	} 
 
 	/**
@@ -167,8 +166,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 */
 
 	// TESTED
-	static public Edge[] restoreGraphViewEdges(GraphView graph_view, Edge[] edges) {
-		Set<Edge> restoredEdges = new HashSet<Edge>();
+	static public CyEdge[] restoreGraphViewEdges(GraphView graph_view, CyEdge[] edges) {
+		Set<CyEdge> restoredEdges = new HashSet<CyEdge>();
 
 		for (int i = 0; i < edges.length; i++) {
 			EdgeView edgeView = graph_view.getEdgeView(edges[i]);
@@ -193,7 +192,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} 
 
-		return (Edge[]) restoredEdges.toArray(new Edge[restoredEdges.size()]);
+		return (CyEdge[]) restoredEdges.toArray(new CyEdge[restoredEdges.size()]);
 	} //restoreGraphViewEdges
 
 	/**
@@ -211,7 +210,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		List<Integer> restoredEdgeIndices = new ArrayList<Integer>(edge_indices.length);
 
 		for (int i = 0; i < edge_indices.length; i++) {
-			// The given index can be either RootGraph index or GraphPerspective index
+			// The given index can be either RootGraph index or CyNetwork index
 			EdgeView edgeView = graph_view.getEdgeView(edge_indices[i]);
 			boolean restored = false;
 
@@ -244,8 +243,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * @param edges the edges in <code>graph_view</code> that will be selected
 	 * @return the edges that were selected
 	 */
-	static public Edge[] selectGraphViewEdges(GraphView graph_view, Edge[] edges) {
-		Set<Edge> selectedEdges = new HashSet<Edge>();
+	static public CyEdge[] selectGraphViewEdges(GraphView graph_view, CyEdge[] edges) {
+		Set<CyEdge> selectedEdges = new HashSet<CyEdge>();
 
 		for (int i = 0; i < edges.length; i++) {
 			EdgeView edgeView = graph_view.getEdgeView(edges[i]);
@@ -256,7 +255,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		}
 
-		return (Edge[]) selectedEdges.toArray(new Edge[selectedEdges.size()]);
+		return (CyEdge[]) selectedEdges.toArray(new CyEdge[selectedEdges.size()]);
 	}
 
 	/**
@@ -266,8 +265,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * @param edges the edges that will be unselected in <code>graph_view</code>
 	 * @return an array of edges that were unselected
 	 */
-	static public Edge[] unselectGraphViewEdges(GraphView graph_view, Edge[] edges) {
-		Set<Edge> unselectedEdges = new HashSet<Edge>();
+	static public CyEdge[] unselectGraphViewEdges(GraphView graph_view, CyEdge[] edges) {
+		Set<CyEdge> unselectedEdges = new HashSet<CyEdge>();
 
 		for (int i = 0; i < edges.length; i++) {
 			EdgeView edgeView = graph_view.getEdgeView(edges[i]);
@@ -278,7 +277,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		}
 
-		return (Edge[]) unselectedEdges.toArray(new Edge[unselectedEdges.size()]);
+		return (CyEdge[]) unselectedEdges.toArray(new CyEdge[unselectedEdges.size()]);
 	} //unselectGraphViewEdges
 
 	/**
@@ -291,12 +290,12 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * @return an array of nodes that were removed
 	 */
 
-	// NOTE: GINY automatically hides the edges connected to the nodes in the GraphPerspective
+	// NOTE: GINY automatically hides the edges connected to the nodes in the CyNetwork
 	// and this hiding fires a hideEdgesEvent, so removeGraphViewEdges will get called on those
 	// edges and we don't need to hide them in this method
 	// TESTED
-	static public Node[] removeGraphViewNodes(GraphView graph_view, Node[] nodes) {
-		Set<Node> removedNodes = new HashSet<Node>();
+	static public CyNode[] removeGraphViewNodes(GraphView graph_view, CyNode[] nodes) {
+		Set<CyNode> removedNodes = new HashSet<CyNode>();
 
 		for (int i = 0; i < nodes.length; i++) {
 			NodeView nodeView = graph_view.removeNodeView(nodes[i]);
@@ -306,7 +305,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} 
 		
-		return (Node[]) removedNodes.toArray(new Node[removedNodes.size()]);
+		return (CyNode[]) removedNodes.toArray(new CyNode[removedNodes.size()]);
 	} 
 
 	/**
@@ -319,7 +318,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	* @return an array of indices of nodes that were removed
 	*/
 
-	// NOTE: GINY automatically hides the edges connected to the nodes in the GraphPerspective
+	// NOTE: GINY automatically hides the edges connected to the nodes in the CyNetwork
 	// and this hiding fires a hideEdgesEvent, so removeGraphViewEdges will get called on those
 	// edges and we don't need to remove them in this method
 	static public int[] removeGraphViewNodes(GraphView graph_view, int[] node_indices) {
@@ -347,9 +346,9 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * @return an array of nodes that were restored
 	 */
 
-	static public Node[] restoreGraphViewNodes(GraphView graph_view, Node[] nodes,
+	static public CyNode[] restoreGraphViewNodes(GraphView graph_view, CyNode[] nodes,
 	                                           boolean restore_connected_edges) {
-		Set<Node> restoredNodes = new HashSet<Node>();
+		Set<CyNode> restoredNodes = new HashSet<CyNode>();
 
 		for (int i = 0; i < nodes.length; i++) {
 			NodeView nodeView = graph_view.getNodeView(nodes[i]);
@@ -376,7 +375,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		} 
 		 
 
-		return (Node[]) restoredNodes.toArray(new Node[restoredNodes.size()]);
+		return (CyNode[]) restoredNodes.toArray(new CyNode[restoredNodes.size()]);
 	} //restoreGraphViewNodes
 
 	/**
@@ -430,8 +429,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * @param nodes the nodes in <code>graph_view</code> that will be selected
 	 * @return the nodes that were selected
 	 */
-	static public Node[] selectGraphViewNodes(GraphView graph_view, Node[] nodes) {
-		Set<Node> selectedNodes = new HashSet<Node>();
+	static public CyNode[] selectGraphViewNodes(GraphView graph_view, CyNode[] nodes) {
+		Set<CyNode> selectedNodes = new HashSet<CyNode>();
 
 		for (int i = 0; i < nodes.length; i++) {
 			NodeView nodeView = graph_view.getNodeView(nodes[i]);
@@ -442,7 +441,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} 
 
-		return (Node[]) selectedNodes.toArray(new Node[selectedNodes.size()]);
+		return (CyNode[]) selectedNodes.toArray(new CyNode[selectedNodes.size()]);
 	} //selectGraphViewNodes
 
 	/**
@@ -452,8 +451,8 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * @param nodes the nodes that will be unselected in <code>graph_view</code>
 	 * @return an array of nodes that were unselected
 	 */
-	static public Node[] unselectGraphViewNodes(GraphView graph_view, Node[] nodes) {
-		Set<Node> unselectedNodes = new HashSet<Node>();
+	static public CyNode[] unselectGraphViewNodes(GraphView graph_view, CyNode[] nodes) {
+		Set<CyNode> unselectedNodes = new HashSet<CyNode>();
 
 		for (int i = 0; i < nodes.length; i++) {
 			NodeView nodeView = graph_view.getNodeView(nodes[i]);
@@ -464,7 +463,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			}
 		} 
 		
-		return (Node[]) unselectedNodes.toArray(new Node[unselectedNodes.size()]);
+		return (CyNode[]) unselectedNodes.toArray(new CyNode[unselectedNodes.size()]);
 	} //unselectGraphViewNodes
 
 	/**
@@ -486,14 +485,14 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 	 * @see GraphViewController#resumeListening(GraphView)
 	 */
 	public void updateGraphView(GraphView graph_view) {
-		GraphPerspective graphPerspective = graph_view.getGraphPerspective();
+		CyNetwork cyNetwork = graph_view.getGraphPerspective();
 
-		int[] nia = graphPerspective.getNodeIndicesArray();
+		int[] nia = cyNetwork.getNodeIndicesArray();
 		List<Integer> gpNodeIndices = new ArrayList<Integer>(nia.length);
 		for ( int i : nia)
 			gpNodeIndices.add(i);
 
-		int[] eia = graphPerspective.getEdgeIndicesArray();
+		int[] eia = cyNetwork.getEdgeIndicesArray();
 		List<Integer> gpEdgeIndices = new ArrayList<Integer>(eia.length);
 		for ( int i : eia)
 			gpEdgeIndices.add(i);
@@ -507,7 +506,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 		while (it.hasNext()) {
 			NodeView nodeView = (NodeView) it.next();
-			Node gvNode = nodeView.getNode();
+			CyNode gvNode = nodeView.getNode();
 
 			if (gvNode == null) {
 				System.err.println("Node for nodeView is null (nodeView  = " + nodeView + ")");
@@ -525,7 +524,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 
 		while (it.hasNext()) {
 			EdgeView edgeView = (EdgeView) it.next();
-			Edge gvEdge = edgeView.getEdge();
+			CyEdge gvEdge = edgeView.getEdge();
 
 			if (gvEdge == null) {
 				System.err.println("Edge for edgeView is null (edgeView  = " + edgeView + ")");
@@ -538,7 +537,7 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 		} // while there are more graph view edges
 
 		// Make sure that graph_view represents all nodes that are
-		// currently in graphPerspective
+		// currently in cyNetwork
 		for (int i = 0; i < gpNodeIndices.size(); i++) {
 			int nodeIndex = gpNodeIndices.get(i);
 			NodeView nodeView = graph_view.getNodeView(nodeIndex);
@@ -548,10 +547,10 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			} else {
 				graph_view.showGraphObject(nodeView);
 			}
-		} // for each graphPerspective node
+		} // for each cyNetwork node
 
 		// Make sure that graph_view represents all edges that are
-		// currently in graphPerspective
+		// currently in cyNetwork
 		for (int i = 0; i < gpEdgeIndices.size(); i++) {
 			int edgeIndex = gpEdgeIndices.get(i);
 			EdgeView edgeView = graph_view.getEdgeView(edgeIndex);
@@ -561,21 +560,21 @@ public class BasicGraphViewHandler implements GraphViewHandler {
 			} else {
 				graph_view.showGraphObject(edgeView);
 			}
-		} // for each GraphPerspective edge
+		} // for each CyNetwork edge
 
-		// Remove from graph_view all edge representations that are not in graphPerspective
+		// Remove from graph_view all edge representations that are not in cyNetwork
 		gvEdgeIndices.removeAll(gpEdgeIndices);
 
 		for (int i = 0; i < gvEdgeIndices.size(); i++) {
 			graph_view.removeEdgeView(gvEdgeIndices.get(i));
-		} // for each edge that is in graph_view but that is not in graphPerspective
+		} // for each edge that is in graph_view but that is not in cyNetwork
 
-		// Remove from graph_view all node representations that are not in graphPerspective
+		// Remove from graph_view all node representations that are not in cyNetwork
 		gvNodeIndices.removeAll(gpNodeIndices);
 
 		for (int i = 0; i < gvNodeIndices.size(); i++) {
 			graph_view.removeNodeView(gvNodeIndices.get(i));
-		} // for each node that is in graph_view but that is not in graphPerspective
+		} // for each node that is in graph_view but that is not in cyNetwork
 	} //updateGraphview
 
 	private static int[] getArray(List<Integer> l) {

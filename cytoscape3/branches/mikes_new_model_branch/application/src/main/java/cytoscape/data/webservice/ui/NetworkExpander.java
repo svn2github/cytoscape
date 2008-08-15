@@ -1,8 +1,20 @@
 package cytoscape.data.webservice.ui;
 
-import org.cytoscape.Node;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.data.webservice.*;
+import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
+import cytoscape.data.webservice.WebServiceClientManager.ClientType;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
+import org.cytoscape.CyNode;
+import org.cytoscape.layout.CyLayouts;
+import org.cytoscape.view.NodeContextMenuListener;
 import org.cytoscape.view.NodeView;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -10,28 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.AbstractAction;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
-import cytoscape.data.webservice.WebServiceClientManager.ClientType;
-import org.cytoscape.layout.CyLayouts;
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
-import org.cytoscape.view.NodeContextMenuListener;
 
 public class NetworkExpander implements PropertyChangeListener, NodeContextMenuListener {
 	
@@ -96,8 +86,8 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 	
 	private String buildQuery() {
 		StringBuilder builder = new StringBuilder();
-		Set<Node> selectedNodes =  Cytoscape.getCurrentNetwork().getSelectedNodes();
-		for(Node node: selectedNodes) {
+		Set<CyNode> selectedNodes =  Cytoscape.getCurrentNetwork().getSelectedNodes();
+		for(CyNode node: selectedNodes) {
 			builder.append(node.getIdentifier() + " ");
 		}
 		

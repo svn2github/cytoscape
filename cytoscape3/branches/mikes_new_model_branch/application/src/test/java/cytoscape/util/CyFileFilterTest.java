@@ -34,10 +34,7 @@
 */
 package cytoscape.util;
 
-import cytoscape.util.CyFileFilter;
-
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import java.util.Set;
 

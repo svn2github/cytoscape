@@ -43,16 +43,10 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
 
-import org.cytoscape.view.GraphView;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
-import javax.swing.event.MenuEvent;
 
 
 //------------------------------------------------------------------------------

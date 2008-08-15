@@ -35,18 +35,12 @@
 package cytoscape.data.synonyms;
 
 import cytoscape.Cytoscape;
-
-import cytoscape.data.synonyms.AliasType;
-import cytoscape.data.synonyms.Aliases;
-
-
 import junit.framework.TestCase;
+import org.cytoscape.CyNode;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.cytoscape.Node;
 
 
 /**
@@ -79,7 +73,7 @@ public class AliasesTest extends TestCase {
 		Iterator it = Cytoscape.getRootGraph().nodesIterator();
 
 		while (it.hasNext()) {
-			Node node = (Node) it.next();
+			CyNode node = (CyNode) it.next();
 			String name = node.getIdentifier();
 			al.add(name, sampleData);
 			al.add(name, "testAlias");
@@ -96,7 +90,7 @@ public class AliasesTest extends TestCase {
 		Iterator it = Cytoscape.getRootGraph().nodesIterator();
 
 		while (it.hasNext()) {
-			Node node = (Node) it.next();
+			CyNode node = (CyNode) it.next();
 			String name = node.getIdentifier();
 			al.add(name, sampleData);
 			assertEquals(3, al.getAliases(name).size());

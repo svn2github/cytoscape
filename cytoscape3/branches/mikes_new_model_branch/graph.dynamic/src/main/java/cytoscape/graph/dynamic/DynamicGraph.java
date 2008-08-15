@@ -37,7 +37,6 @@
 package cytoscape.graph.dynamic;
 
 import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 

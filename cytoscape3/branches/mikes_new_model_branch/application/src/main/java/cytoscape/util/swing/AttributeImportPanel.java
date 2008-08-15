@@ -35,17 +35,13 @@
 package cytoscape.util.swing;
 
 import cytoscape.Cytoscape;
-
 import org.cytoscape.attributes.CyAttributes;
 
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.JPanel;
 
 
 /**

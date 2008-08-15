@@ -37,16 +37,10 @@ package cytoscape.util;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
-
 import cytoscape.data.readers.BookmarkReader;
-
-import cytoscape.util.BookmarksUtil;
-
 import junit.framework.TestCase;
 
 import java.util.List;
-
-import java.net.URL;
 
 /**
  *

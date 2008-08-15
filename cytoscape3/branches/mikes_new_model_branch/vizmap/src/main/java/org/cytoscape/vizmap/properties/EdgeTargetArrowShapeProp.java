@@ -34,19 +34,15 @@
  */
 package org.cytoscape.vizmap.properties;
 
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.VisualPropertyType;
-
+import org.cytoscape.vizmap.icon.ArrowIcon;
 import org.cytoscape.vizmap.parsers.ArrowShapeParser;
 
-import org.cytoscape.vizmap.icon.ArrowIcon;
-
-import org.cytoscape.view.EdgeView;
-
+import javax.swing.*;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.Icon;
 
 
 /**

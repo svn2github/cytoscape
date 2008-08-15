@@ -35,13 +35,11 @@
 package cytoscape.data.writers;
 
 import org.cytoscape.attributes.CyAttributes;
-
 import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
 
 import java.io.IOException;
 import java.io.Writer;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;

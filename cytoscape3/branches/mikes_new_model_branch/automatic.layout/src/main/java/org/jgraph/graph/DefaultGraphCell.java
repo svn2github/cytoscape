@@ -6,14 +6,12 @@
  */
 package org.jgraph.graph;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 import java.awt.geom.Point2D;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
 
 
 /**

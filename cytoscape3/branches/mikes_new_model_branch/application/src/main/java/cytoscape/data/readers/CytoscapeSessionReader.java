@@ -36,55 +36,36 @@
  */
 package cytoscape.data.readers;
 
-import java.awt.Component;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.bookmarks.Bookmarks;
+import cytoscape.data.Semantics;
+import cytoscape.generated.*;
+import cytoscape.task.TaskMonitor;
+import cytoscape.util.PercentUtil;
+import cytoscape.util.URLUtil;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.vizmap.DuplicateCalculatorNameException;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualStyle;
+
+import javax.swing.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.awt.*;
+import java.io.*;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import javax.swing.JInternalFrame;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.DuplicateCalculatorNameException;
-import cytoscape.bookmarks.Bookmarks;
-import cytoscape.data.Semantics;
-import cytoscape.generated.Child;
-import cytoscape.generated.Cysession;
-import cytoscape.generated.HiddenEdges;
-import cytoscape.generated.HiddenNodes;
-import cytoscape.generated.Network;
-import cytoscape.generated.NetworkFrame;
-import cytoscape.generated.Ontology;
-import cytoscape.generated.SelectedEdges;
-import cytoscape.generated.SelectedNodes;
-import cytoscape.task.TaskMonitor;
-import cytoscape.util.PercentUtil;
-import cytoscape.util.URLUtil;
-import org.cytoscape.view.GraphView;
 
 
 /**
@@ -609,7 +590,7 @@ public class CytoscapeSessionReader {
 	 * @throws JAXBException
 	 * @throws IOException
 	 */
-	private void walkTree(final Network currentNetwork, final GraphPerspective parent,
+	private void walkTree(final Network currentNetwork, final CyNetwork parent,
 	                      final Object sessionSource) throws JAXBException, IOException {
 		// Get the list of children under this root
 		final List<Child> children = currentNetwork.getChild();
@@ -621,7 +602,7 @@ public class CytoscapeSessionReader {
 		URL targetNetworkURL;
 		JarURLConnection jarConnection;
 		InputStream networkStream;
-		GraphPerspective new_network = null;
+		CyNetwork new_network = null;
 		GraphView curNetView;
 
 		for (int i = 0; i < numChildren; i++) {
@@ -721,12 +702,12 @@ public class CytoscapeSessionReader {
 		}
 	}
 
-	private void setSelectedNodes(final GraphPerspective network, final SelectedNodes selected) {
+	private void setSelectedNodes(final CyNetwork network, final SelectedNodes selected) {
 		if (selected == null) {
 			return;
 		}
 
-		final List<org.cytoscape.Node> selectedNodeList = new ArrayList<org.cytoscape.Node>();
+		final List<CyNode> selectedNodeList = new ArrayList<CyNode>();
 		final Iterator it = selected.getNode().iterator();
 
 		while (it.hasNext()) {
@@ -746,7 +727,7 @@ public class CytoscapeSessionReader {
 
 		while (it.hasNext()) {
 			final cytoscape.generated.Node hiddenNodeObject = (cytoscape.generated.Node) it.next();
-			final org.cytoscape.Node hiddenNode = Cytoscape.getCyNode(hiddenNodeObject.getId(), false);
+			final CyNode hiddenNode = Cytoscape.getCyNode(hiddenNodeObject.getId(), false);
 			view.hideGraphObject(view.getNodeView(hiddenNode));
 		}
 	}
@@ -760,7 +741,7 @@ public class CytoscapeSessionReader {
 
 		while (it.hasNext()) {
 			final cytoscape.generated.Edge hiddenEdgeObject = (cytoscape.generated.Edge) it.next();
-			final org.cytoscape.Edge hiddenEdge = getCyEdge(hiddenEdgeObject);
+			final CyEdge hiddenEdge = getCyEdge(hiddenEdgeObject);
 
 			if (hiddenEdge != null) {
 				view.hideGraphObject(view.getEdgeView(hiddenEdge));
@@ -768,13 +749,13 @@ public class CytoscapeSessionReader {
 		}
 	}
 
-	private void setSelectedEdges(final GraphPerspective network, final SelectedEdges selected) {
+	private void setSelectedEdges(final CyNetwork network, final SelectedEdges selected) {
 		if (selected == null) {
 			return;
 		}
 
-		org.cytoscape.Edge targetEdge = null;
-		final List<org.cytoscape.Edge> selectedEdgeList = new ArrayList<org.cytoscape.Edge>();
+		CyEdge targetEdge = null;
+		final List<CyEdge> selectedEdgeList = new ArrayList<CyEdge>();
 		final Iterator it = selected.getEdge().iterator();
 
 		while (it.hasNext()) {
@@ -789,13 +770,13 @@ public class CytoscapeSessionReader {
 		network.setSelectedEdgeState(selectedEdgeList, true);
 	}
 
-	private org.cytoscape.Edge getCyEdge(final cytoscape.generated.Edge edge) {
-		org.cytoscape.Edge targetEdge = null;
+	private CyEdge getCyEdge(final cytoscape.generated.Edge edge) {
+		CyEdge targetEdge = null;
 
 		final String sourceString = edge.getSource();
 		final String targetString = edge.getTarget();
-		org.cytoscape.Node source = null;
-		org.cytoscape.Node target = null;
+		CyNode source = null;
+		CyNode target = null;
 		String interaction = edge.getInteraction();
 
 		// Try to get CyEdge by the source & target IDs
@@ -870,9 +851,9 @@ public class CytoscapeSessionReader {
 	}
 
 	private String getNetworkIdFromTitle(String title) {
-		Set<GraphPerspective> networks = Cytoscape.getNetworkSet();
+		Set<CyNetwork> networks = Cytoscape.getNetworkSet();
 
-		for (GraphPerspective net : networks) {
+		for (CyNetwork net : networks) {
 			if (net.getTitle().equals(title)) {
 				return net.getIdentifier();
 			}

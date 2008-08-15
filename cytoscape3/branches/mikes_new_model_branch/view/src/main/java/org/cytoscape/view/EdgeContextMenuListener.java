@@ -36,7 +36,7 @@
 
 package org.cytoscape.view;
 
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import java.util.EventListener;
 
 /**

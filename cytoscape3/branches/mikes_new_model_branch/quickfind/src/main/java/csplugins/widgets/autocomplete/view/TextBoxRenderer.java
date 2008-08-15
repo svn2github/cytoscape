@@ -38,10 +38,9 @@ package csplugins.widgets.autocomplete.view;
 
 import csplugins.widgets.autocomplete.index.Hit;
 
-import java.awt.*;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 
 /**

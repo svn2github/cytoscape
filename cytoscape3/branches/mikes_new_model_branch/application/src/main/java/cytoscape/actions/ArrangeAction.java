@@ -42,14 +42,10 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-
 import cytoscape.view.CyDesktopManager;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 /**
  *
  */

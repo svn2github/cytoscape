@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Node;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 
 
@@ -52,7 +52,7 @@ public interface FingNodeDepot {
 	 * This either instantiates a new node or gets one from the recyclery,
 	 * initializing it with the parameters specified.
 	 **/
-	public Node getNode(RootGraph root, int index, String id);
+	public CyNode getNode(RootGraph root, int index, String id);
 
 	/**
 	 * Recycles a node.  Implementations may choose to do nothing in this
@@ -60,5 +60,5 @@ public interface FingNodeDepot {
 	 * is simply a hook for Fing to tell the depository "I'm done using this node
 	 * object -- it's no longer part of a RootGraph".
 	 **/
-	public void recycleNode(Node node);
+	public void recycleNode(CyNode node);
 }

@@ -35,11 +35,9 @@
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.data.ImportHandler;
-
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 
 /**

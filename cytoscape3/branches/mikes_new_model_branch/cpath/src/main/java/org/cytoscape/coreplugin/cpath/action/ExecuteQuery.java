@@ -35,23 +35,19 @@
 package org.cytoscape.coreplugin.cpath.action;
 
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
 import org.cytoscape.coreplugin.cpath.model.OrganismOption;
 import org.cytoscape.coreplugin.cpath.model.SearchBundleList;
 import org.cytoscape.coreplugin.cpath.model.SearchRequest;
 import org.cytoscape.coreplugin.cpath.task.QueryCPathTask;
 import org.cytoscape.coreplugin.cpath.ui.Console;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 import java.util.HashMap;
-
-import javax.swing.*;
 
 
 /**

@@ -36,14 +36,14 @@
 */
 package cytoscape.data.readers;
 
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.MultiHashMapDefinition;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.MultiHashMapDefinition;
 
 
 // I hate writing parsing code.  Grumble grumble grumble.

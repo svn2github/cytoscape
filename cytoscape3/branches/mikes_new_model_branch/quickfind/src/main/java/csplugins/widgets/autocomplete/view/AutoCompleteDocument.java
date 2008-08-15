@@ -38,13 +38,12 @@ package csplugins.widgets.autocomplete.view;
 
 import csplugins.widgets.autocomplete.index.Hit;
 
-import java.awt.*;
-
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
+import java.awt.*;
 
 
 /**

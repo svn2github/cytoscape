@@ -36,23 +36,17 @@
 */
 package cytoscape.layout.ui;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
+import org.cytoscape.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
-
 import org.cytoscape.view.GraphView;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.List;
-
-import javax.swing.JMenu;
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -128,7 +122,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 		this.removeAll();
 
 		// Figure out if we have anything selected
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 		Set selectedNodes = network.getSelectedNodes();
 		boolean enableMenuItem = checkEnabled(); 
 
@@ -149,7 +143,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 	}
 
 	private boolean checkEnabled() {
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 		if ( network == null || network == Cytoscape.getNullNetwork() )
 			return false;
 

@@ -34,24 +34,18 @@
 */
 package cytoscape.visual.ui;
 
+import cytoscape.Cytoscape;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JPanel;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-import org.cytoscape.view.GraphViewFactory;
-import cytoscape.Cytoscape;
-import org.cytoscape.RootGraph;
-import org.cytoscape.view.GraphView;
 
 
 /**
@@ -66,15 +60,15 @@ public class DefaultViewPanel extends JPanel {
 	private static final int PADDING = 20;
 	private GraphView view;
 	private GraphView oldView;
-	private static GraphPerspective dummyNet;
+	private static CyNetwork dummyNet;
 	private Color background;
 
 	/*
 	 * Dummy graph component
 	 */
-	private final Node source;
-	private final Node target;
-	private final Edge edge;
+	private final CyNode source;
+	private final CyNode target;
+	private final CyEdge edge;
 	private Component canvas = null;
 
 
@@ -87,8 +81,8 @@ public class DefaultViewPanel extends JPanel {
 		target = Cytoscape.getCyNode("Target",true);
 		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(), "interaction");
 
-		List<Node> nodes = new ArrayList<Node>();
-		List<Edge> edges = new ArrayList<Edge>();
+		List<CyNode> nodes = new ArrayList<CyNode>();
+		List<CyEdge> edges = new ArrayList<CyEdge>();
 		nodes.add(source);
 		nodes.add(target);
 		edges.add(edge);

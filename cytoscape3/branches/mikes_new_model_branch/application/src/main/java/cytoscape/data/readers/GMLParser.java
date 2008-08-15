@@ -38,21 +38,11 @@ package cytoscape.data.readers;
 
 import cytoscape.util.FileUtil;
 
-import java.io.FileReader;
-import java.io.FilterReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StreamTokenizer;
-import java.io.Writer;
-
+import java.io.*;
 import java.text.ParseException;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 

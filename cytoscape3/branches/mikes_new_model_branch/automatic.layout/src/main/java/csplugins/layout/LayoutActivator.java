@@ -36,27 +36,23 @@
 
 package csplugins.layout;
 
-import csplugins.layout.JGraphLayoutWrapper;
 import csplugins.layout.algorithms.GroupAttributesLayout;
 import csplugins.layout.algorithms.bioLayout.BioLayoutFRAlgorithm;
 import csplugins.layout.algorithms.bioLayout.BioLayoutKKAlgorithm;
+import csplugins.layout.algorithms.circularLayout.CircularLayoutAlgorithm;
+import csplugins.layout.algorithms.force.ForceDirectedLayout;
 import csplugins.layout.algorithms.graphPartition.AttributeCircleLayout;
 import csplugins.layout.algorithms.graphPartition.DegreeSortedCircleLayout;
 import csplugins.layout.algorithms.graphPartition.ISOMLayout;
 import csplugins.layout.algorithms.hierarchicalLayout.HierarchicalLayoutAlgorithm;
-import csplugins.layout.algorithms.circularLayout.CircularLayoutAlgorithm;
-import csplugins.layout.algorithms.force.ForceDirectedLayout;
-
 import org.cytoscape.layout.CyLayoutAlgorithm;
-
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
-import java.util.HashSet;
 
 public class LayoutActivator implements BundleActivator {
 

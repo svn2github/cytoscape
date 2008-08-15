@@ -1,13 +1,13 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
-import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
-import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
-import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
 import org.cytoscape.coreplugin.cpath2.schemas.search_response.SearchResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
+import org.cytoscape.coreplugin.cpath2.view.model.InteractionBundleModel;
+import org.cytoscape.coreplugin.cpath2.view.model.PathwayTableModel;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebService;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceImpl;
+import org.cytoscape.coreplugin.cpath2.web_service.CPathWebServiceListener;
 
 import javax.swing.*;
 import java.awt.*;

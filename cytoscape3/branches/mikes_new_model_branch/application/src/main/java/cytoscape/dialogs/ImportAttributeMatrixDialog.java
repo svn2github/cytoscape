@@ -6,20 +6,13 @@
 package cytoscape.dialogs;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
+import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import java.io.File;
-
-import java.util.Iterator;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 
 
 /**

@@ -3,25 +3,17 @@
  */
 package cytoscape.actions;
 
-import java.awt.event.ActionEvent;
-
 import cytoscape.Cytoscape;
-
-import cytoscape.task.ui.JTaskConfig;
+import cytoscape.dialogs.plugins.PluginUpdateDialog;
+import cytoscape.plugin.DownloadableInfo;
+import cytoscape.plugin.PluginManager;
+import cytoscape.plugin.PluginStatus;
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.dialogs.plugins.PluginUpdateDialog;
-
-import cytoscape.plugin.DownloadableInfo;
-import cytoscape.plugin.PluginInfo;
-import cytoscape.plugin.PluginManager;
-import cytoscape.plugin.ManagerException;
-import cytoscape.plugin.PluginStatus;
-
-import java.util.List;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
+import java.util.List;
 
 public class PluginUpdateAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870238849L;

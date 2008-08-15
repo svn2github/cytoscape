@@ -36,35 +36,24 @@
 
 package csplugins.layout.algorithms.circularLayout;
 
-import csplugins.layout.*;
-
-import csplugins.layout.algorithms.graphPartition.*;
-
-//import org.cytoscape.coreplugin.cpath.model.MaxHitsOption;
+import csplugins.layout.LayoutEdge;
+import csplugins.layout.LayoutNode;
+import csplugins.layout.LayoutPartition;
+import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 import csplugins.layout.algorithms.hierarchicalLayout.Edge;
 import csplugins.layout.algorithms.hierarchicalLayout.Graph;
-
-//import cytoscape.editor.AddEdgeEdit;
-//import org.cytoscape.layout.AbstractLayout;
+import cytoscape.CytoscapeInit;
+import cytoscape.task.TaskMonitor;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
-
-//import cytoscape.render.stateful.NodeDetails;
-import cytoscape.task.TaskMonitor;
-import cytoscape.CytoscapeInit;
-
-//import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
-import java.awt.GridLayout;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-
-//import java.util.List;
-import javax.swing.JPanel;
 
 
 /**

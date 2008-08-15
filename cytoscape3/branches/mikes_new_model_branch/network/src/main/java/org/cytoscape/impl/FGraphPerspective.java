@@ -38,40 +38,34 @@ package org.cytoscape.impl;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.DynamicGraphFactory;
-
 import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntIntHash;
 import cytoscape.util.intr.IntIterator;
-import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.MinIntHeap;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.GraphPerspectiveChangeListener;
-import org.cytoscape.Node;
 import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphChangeEvent;
 import org.cytoscape.RootGraphChangeListener;
-import org.cytoscape.data.impl.SelectFilterImpl;
-import org.cytoscape.data.SelectFilter;
 import org.cytoscape.data.SelectEventListener;
+import org.cytoscape.data.SelectFilter;
+import org.cytoscape.data.impl.SelectFilterImpl;
 
-import java.util.List;
-import java.util.Set;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 
 // Package visible class.
-class FGraphPerspective implements GraphPerspective, FixedGraph {
+class FGraphPerspective implements CyNetwork, FixedGraph {
 
 	/**
 	 * DOCUMENT ME!
@@ -346,10 +340,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Iterator<Node> nodesIterator() {
+	public Iterator<CyNode> nodesIterator() {
 		final IntEnumerator nodes = m_graph.nodes();
 
-		return new Iterator<Node>() {
+		return new Iterator<CyNode>() {
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -358,7 +352,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 					return nodes.numRemaining() > 0;
 				}
 
-				public Node next() {
+				public CyNode next() {
 					if (!hasNext()) {
 						throw new NoSuchElementException();
 					}
@@ -373,10 +367,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Node> nodesList() {
+	public List<CyNode> nodesList() {
 		final int nodeCount = getNodeCount();
-		final ArrayList<Node> returnThis = new ArrayList<Node>(nodeCount);
-		Iterator<Node> iter = nodesIterator();
+		final ArrayList<CyNode> returnThis = new ArrayList<CyNode>(nodeCount);
+		Iterator<CyNode> iter = nodesIterator();
 
 		for (int i = 0; i < nodeCount; i++)
 			returnThis.add(iter.next());
@@ -404,10 +398,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Iterator<Edge> edgesIterator() {
+	public Iterator<CyEdge> edgesIterator() {
 		final IntEnumerator edges = m_graph.edges();
 
-		return new Iterator<Edge>() {
+		return new Iterator<CyEdge>() {
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -416,7 +410,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 					return edges.numRemaining() > 0;
 				}
 
-				public Edge next() {
+				public CyEdge next() {
 					if (!hasNext()) {
 						throw new NoSuchElementException();
 					}
@@ -431,10 +425,10 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Edge> edgesList() {
+	public List<CyEdge> edgesList() {
 		final int edgeCount = getEdgeCount();
-		final ArrayList<Edge> returnThis = new ArrayList<Edge>(edgeCount);
-		Iterator<Edge> iter = edgesIterator();
+		final ArrayList<CyEdge> returnThis = new ArrayList<CyEdge>(edgeCount);
+		Iterator<CyEdge> iter = edgesIterator();
 
 		for (int i = 0; i < edgeCount; i++)
 			returnThis.add(iter.next());
@@ -503,7 +497,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Node hideNode(Node node) {
+	public CyNode hideNode(CyNode node) {
 		if ((node.getRootGraph() == m_root) && (hideNode(node.getRootGraphIndex()) != 0)) {
 			return node;
 		} else {
@@ -529,11 +523,11 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Node> hideNodes(List<Node> nodes) {
-		final ArrayList<Node> returnThis = new ArrayList<Node>();
+	public List<CyNode> hideNodes(List<CyNode> nodes) {
+		final ArrayList<CyNode> returnThis = new ArrayList<CyNode>();
 
 		for (int i = 0; i < nodes.size(); i++)
-			if (hideNode((Node) nodes.get(i)) != null) {
+			if (hideNode((CyNode) nodes.get(i)) != null) {
 				returnThis.add(nodes.get(i));
 			}
 
@@ -558,7 +552,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Node restoreNode(Node node) {
+	public CyNode restoreNode(CyNode node) {
 		if ((node.getRootGraph() == m_root) && (restoreNode(node.getRootGraphIndex()) != 0)) {
 			return node;
 		} else {
@@ -624,11 +618,11 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Node> restoreNodes(List<Node> nodes) {
-		final ArrayList<Node> returnThis = new ArrayList<Node>();
+	public List<CyNode> restoreNodes(List<CyNode> nodes) {
+		final ArrayList<CyNode> returnThis = new ArrayList<CyNode>();
 
 		for (int i = 0; i < nodes.size(); i++)
-			if (restoreNode((Node) nodes.get(i)) != null) {
+			if (restoreNode((CyNode) nodes.get(i)) != null) {
 				returnThis.add(nodes.get(i));
 			}
 
@@ -643,12 +637,12 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Node> restoreNodes(List<Node> nodes, boolean restoreIncidentEdges) {
-		final List<Node> returnThis = restoreNodes(nodes);
+	public List<CyNode> restoreNodes(List<CyNode> nodes, boolean restoreIncidentEdges) {
+		final List<CyNode> returnThis = restoreNodes(nodes);
 		final int[] restoredNodeInx = new int[returnThis.size()];
 
 		for (int i = 0; i < restoredNodeInx.length; i++)
-			restoredNodeInx[i] = ((Node) returnThis.get(i)).getRootGraphIndex();
+			restoredNodeInx[i] = ((CyNode) returnThis.get(i)).getRootGraphIndex();
 
 		final int[] connectingEdgeInx = m_root.getConnectingEdgeIndicesArray(restoredNodeInx);
 		restoreEdges(connectingEdgeInx);
@@ -712,7 +706,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Edge hideEdge(Edge edge) {
+	public CyEdge hideEdge(CyEdge edge) {
 		if ((edge.getRootGraph() == m_root) && (hideEdge(edge.getRootGraphIndex()) != 0)) {
 			return edge;
 		} else {
@@ -738,11 +732,11 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Edge> hideEdges(List<Edge> edges) {
-		final ArrayList<Edge> returnThis = new ArrayList<Edge>();
+	public List<CyEdge> hideEdges(List<CyEdge> edges) {
+		final ArrayList<CyEdge> returnThis = new ArrayList<CyEdge>();
 
 		for (int i = 0; i < edges.size(); i++)
-			if (hideEdge((Edge) edges.get(i)) != null) {
+			if (hideEdge((CyEdge) edges.get(i)) != null) {
 				returnThis.add(edges.get(i));
 			}
 
@@ -767,7 +761,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Edge restoreEdge(Edge edge) {
+	public CyEdge restoreEdge(CyEdge edge) {
 		if ((edge.getRootGraph() == m_root) && (restoreEdge(edge.getRootGraphIndex()) != 0)) {
 			return edge;
 		} else {
@@ -864,11 +858,11 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Edge> restoreEdges(List<Edge> edges) {
-		final ArrayList<Edge> returnThis = new ArrayList<Edge>();
+	public List<CyEdge> restoreEdges(List<CyEdge> edges) {
+		final ArrayList<CyEdge> returnThis = new ArrayList<CyEdge>();
 
 		for (int i = 0; i < edges.size(); i++)
-			if (restoreEdge((Edge) edges.get(i)) != null) {
+			if (restoreEdge((CyEdge) edges.get(i)) != null) {
 				returnThis.add(edges.get(i));
 			}
 
@@ -917,7 +911,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean containsNode(Node node) {
+	public boolean containsNode(CyNode node) {
 		int nativeInx;
 
 		return (node!=null) 
@@ -934,7 +928,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean containsNode(Node node, boolean recurse) {
+	public boolean containsNode(CyNode node, boolean recurse) {
 		if (node == null || node.getRootGraph() != m_root) {
 			return false;
 		}
@@ -955,7 +949,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean containsEdge(Edge edge) {
+	public boolean containsEdge(CyEdge edge) {
 		int nativeInx;
 
 		return (edge.getRootGraph() == m_root)
@@ -971,7 +965,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean containsEdge(Edge edge, boolean recurse) {
+	public boolean containsEdge(CyEdge edge, boolean recurse) {
 		if (edge.getRootGraph() != m_root) {
 			return false;
 		}
@@ -991,7 +985,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public GraphPerspective join(GraphPerspective persp) {
+	public CyNetwork join(CyNetwork persp) {
 		final FGraphPerspective thisPersp = this;
 
 		if (!(persp instanceof FGraphPerspective)) {
@@ -1050,7 +1044,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges) {
+	public CyNetwork createGraphPerspective(CyNode[] nodes, CyEdge[] edges) {
 		for (int i = 0; i < nodes.length; i++)
 			if (!containsNode(nodes[i])) {
 				return null;
@@ -1064,9 +1058,9 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		return m_root.createGraphPerspective(nodes, edges);
 	}
 
-	public GraphPerspective createGraphPerspective(Collection<Node> nodes, Collection<Edge> edges) {
-		return createGraphPerspective( nodes.toArray(new Node[nodes.size()]), 
-		                               edges.toArray(new Edge[edges.size()]));
+	public CyNetwork createGraphPerspective(Collection<CyNode> nodes, Collection<CyEdge> edges) {
+		return createGraphPerspective( nodes.toArray(new CyNode[nodes.size()]),
+		                               edges.toArray(new CyEdge[edges.size()]));
 	}
 
 	/**
@@ -1077,7 +1071,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public GraphPerspective createGraphPerspective(int[] rootGraphNodeInx, int[] rootGraphEdgeInx) {
+	public CyNetwork createGraphPerspective(int[] rootGraphNodeInx, int[] rootGraphEdgeInx) {
 		for (int i = 0; i < rootGraphNodeInx.length; i++) {
 			final int rootGraphNodeIndex = rootGraphNodeInx[i];
 
@@ -1158,7 +1152,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Node> neighborsList(Node node) {
+	public List<CyNode> neighborsList(CyNode node) {
 		if (node.getRootGraph() == m_root) {
 			final int[] neighInx = neighborsArray(node.getRootGraphIndex());
 
@@ -1166,7 +1160,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 				return null;
 			}
 
-			final ArrayList<Node> returnThis = new ArrayList<Node>(neighInx.length);
+			final ArrayList<CyNode> returnThis = new ArrayList<CyNode>(neighInx.length);
 
 			for (int i = 0; i < neighInx.length; i++)
 				returnThis.add(getNode(neighInx[i]));
@@ -1219,7 +1213,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean isNeighbor(Node a, Node b) {
+	public boolean isNeighbor(CyNode a, CyNode b) {
 		if ((a.getRootGraph() == m_root) && (b.getRootGraph() == m_root)) {
 			return isNeighbor(a.getRootGraphIndex(), b.getRootGraphIndex());
 		} else {
@@ -1260,7 +1254,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public boolean edgeExists(Node from, Node to) {
+	public boolean edgeExists(CyNode from, CyNode to) {
 		if ((from.getRootGraph() == m_root) && (to.getRootGraph() == m_root)) {
 			return edgeExists(from.getRootGraphIndex(), to.getRootGraphIndex());
 		} else {
@@ -1303,7 +1297,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges) {
+	public int getEdgeCount(CyNode from, CyNode to, boolean countUndirectedEdges) {
 		if ((from.getRootGraph() == m_root) && (to.getRootGraph() == m_root)) {
 			return getEdgeCount(from.getRootGraphIndex(), to.getRootGraphIndex(),
 			                    countUndirectedEdges);
@@ -1340,7 +1334,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Edge> edgesList(Node from, Node to) {
+	public List<CyEdge> edgesList(CyNode from, CyNode to) {
 		if ((from.getRootGraph() == m_root) && (to.getRootGraph() == m_root)) {
 			return edgesList(from.getRootGraphIndex(), to.getRootGraphIndex(), true);
 		} else {
@@ -1357,14 +1351,14 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Edge> edgesList(int fromNodeInx, int toNodeInx, boolean includeUndirectedEdges) {
+	public List<CyEdge> edgesList(int fromNodeInx, int toNodeInx, boolean includeUndirectedEdges) {
 		final int[] edgeInx = getEdgeIndicesArray(fromNodeInx, toNodeInx, includeUndirectedEdges);
 
 		if (edgeInx == null) {
 			return null;
 		}
 
-		ArrayList<Edge> returnList = new ArrayList<Edge>(edgeInx.length);
+		ArrayList<CyEdge> returnList = new ArrayList<CyEdge>(edgeInx.length);
 
 		for (int i = 0; i < edgeInx.length; i++)
 			returnList.add(getEdge(edgeInx[i]));
@@ -1392,7 +1386,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getInDegree(Node node) {
+	public int getInDegree(CyNode node) {
 		if (node.getRootGraph() == m_root) {
 			return getInDegree(node.getRootGraphIndex());
 		} else {
@@ -1419,7 +1413,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getInDegree(Node node, boolean countUndirectedEdges) {
+	public int getInDegree(CyNode node, boolean countUndirectedEdges) {
 		if (node.getRootGraph() == m_root) {
 			return getInDegree(node.getRootGraphIndex(), countUndirectedEdges);
 		} else {
@@ -1458,7 +1452,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getOutDegree(Node node) {
+	public int getOutDegree(CyNode node) {
 		if (node.getRootGraph() == m_root) {
 			return getOutDegree(node.getRootGraphIndex());
 		} else {
@@ -1485,7 +1479,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getOutDegree(Node node, boolean countUndirectedEdges) {
+	public int getOutDegree(CyNode node, boolean countUndirectedEdges) {
 		if (node.getRootGraph() == m_root) {
 			return getOutDegree(node.getRootGraphIndex(), countUndirectedEdges);
 		} else {
@@ -1524,7 +1518,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getDegree(Node node) {
+	public int getDegree(CyNode node) {
 		if (node.getRootGraph() == m_root) {
 			return getDegree(node.getRootGraphIndex());
 		} else {
@@ -1561,7 +1555,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getIndex(Node node) {
+	public int getIndex(CyNode node) {
 		if ((node.getRootGraph() == m_root)
 		    && (getRootGraphNodeIndex(node.getRootGraphIndex()) == node.getRootGraphIndex())) {
 			return node.getRootGraphIndex();
@@ -1598,7 +1592,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Node getNode(int rootGraphNodeInx) {
+	public CyNode getNode(int rootGraphNodeInx) {
 		return m_root.getNode(getRootGraphNodeIndex(rootGraphNodeInx));
 	}
 
@@ -1620,7 +1614,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public int getIndex(Edge edge) {
+	public int getIndex(CyEdge edge) {
 		if ((edge.getRootGraph() == m_root)
 		    && (getRootGraphEdgeIndex(edge.getRootGraphIndex()) == edge.getRootGraphIndex())) {
 			return edge.getRootGraphIndex();
@@ -1657,7 +1651,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Edge getEdge(int rootGraphEdgeInx) {
+	public CyEdge getEdge(int rootGraphEdgeInx) {
 		return m_root.getEdge(getRootGraphEdgeIndex(rootGraphEdgeInx));
 	}
 
@@ -1742,7 +1736,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Edge> getAdjacentEdgesList(Node node, boolean undirected, boolean incoming,
+	public List<CyEdge> getAdjacentEdgesList(CyNode node, boolean undirected, boolean incoming,
 	                                           boolean outgoing) {
 		if (node.getRootGraph() != m_root) {
 			return null;
@@ -1755,7 +1749,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 			return null;
 		}
 
-		final ArrayList<Edge> returnThis = new ArrayList<Edge>(adjEdgeInx.length);
+		final ArrayList<CyEdge> returnThis = new ArrayList<CyEdge>(adjEdgeInx.length);
 
 		for (int i = 0; i < adjEdgeInx.length; i++)
 			returnThis.add(getEdge(adjEdgeInx[i]));
@@ -1802,13 +1796,13 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public List<Edge> getConnectingEdges(List<Node> nodes) {
+	public List<CyEdge> getConnectingEdges(List<CyNode> nodes) {
 		m_heap.empty();
 
 		final MinIntHeap nodeInxBucket = m_heap;
 
 		for (int i = 0; i < nodes.size(); i++) {
-			Node node = (Node) (nodes.get(i));
+			CyNode node = (CyNode) (nodes.get(i));
 
 			if (node.getRootGraph() == m_root) {
 				nodeInxBucket.toss(node.getRootGraphIndex());
@@ -1826,7 +1820,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 			return null;
 		}
 
-		final ArrayList<Edge> returnThis = new ArrayList<Edge>(connEdgeInxArr.length);
+		final ArrayList<CyEdge> returnThis = new ArrayList<CyEdge>(connEdgeInxArr.length);
 
 		for (int i = 0; i < connEdgeInxArr.length; i++)
 			returnThis.add(getEdge(connEdgeInxArr[i]));
@@ -1896,7 +1890,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public GraphPerspective createGraphPerspective(int[] nodeInx) {
+	public CyNetwork createGraphPerspective(int[] nodeInx) {
 		return createGraphPerspective(nodeInx, getConnectingEdgeIndicesArray(nodeInx));
 	}
 
@@ -2024,7 +2018,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 	// Cannot have any recursize reference to a FGraphPerspective in this
 	// object instance - we want to allow garbage collection of unused
-	// GraphPerspective objects.
+	// CyNetwork objects.
 	private final static class RootGraphChangeSniffer implements RootGraphChangeListener {
 		private final GraphWeeder m_weeder;
 
@@ -2045,9 +2039,9 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 	// An instance of this class cannot have any recursive reference to a
 	// FGraphPerspective object.  The idea behind this class is to allow
-	// garbage collection of unused GraphPerspective objects.  This class
+	// garbage collection of unused CyNetwork objects.  This class
 	// is used by the RootGraphChangeSniffer to remove nodes/edges from
-	// a GraphPerspective; this class is also used by this GraphPerspective
+	// a CyNetwork; this class is also used by this CyNetwork
 	// implementation itself.
 	private final static class GraphWeeder {
 		private final RootGraph m_root;
@@ -2058,7 +2052,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		private final IntIntHash m_rootToNativeEdgeInxMap;
 
 		// This is an array of length 1 - we need an array as an extra reference
-		// to a reference because the surrounding GraphPerspective will be
+		// to a reference because the surrounding CyNetwork will be
 		// modifying the entry at index 0 in this array.
 		private final GraphPerspectiveChangeListener[] m_lis;
 
@@ -2082,7 +2076,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 		// RootGraphChangeSniffer is not to call this method.  We rely on
 		// the specified node still existing in the RootGraph in this method.
-		private final int hideNode(GraphPerspective source, int rootGraphNodeInx) {
+		private final int hideNode(CyNetwork source, int rootGraphNodeInx) {
 			// first see if we can hide the node
 			final int returnThis = canHideNode(rootGraphNodeInx);
 
@@ -2091,9 +2085,9 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 				final GraphPerspectiveChangeListener listener = m_lis[0];
 
 				if (listener != null) {
-					final Node removedNode = m_root.getNode(rootGraphNodeInx);
+					final CyNode removedNode = m_root.getNode(rootGraphNodeInx);
 					listener.graphPerspectiveChanged(new GraphPerspectiveNodesHiddenEvent(source,
-					                                                                      new Node[] {
+					                                                                      new CyNode[] {
 					                                                                          removedNode
 					                                                                      }));
 				}
@@ -2141,7 +2135,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 			                                                              true, true);
 
 			if (nativeEdgeInxEnum.numRemaining() > 0) {
-				final Edge[] edgeRemoveArr = new Edge[nativeEdgeInxEnum.numRemaining()];
+				final CyEdge[] edgeRemoveArr = new CyEdge[nativeEdgeInxEnum.numRemaining()];
 
 				for (int i = 0; i < edgeRemoveArr.length; i++) {
 					final int rootGraphEdgeInx = m_nativeToRootEdgeInxMap.getIntAtIndex(nativeEdgeInxEnum
@@ -2168,12 +2162,12 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		}
 
 		// This heap is to be used directly only by
-		// hideNodes(GraphPerspective, int[]) and by hideNodes(Object, Node[]).
+		// hideNodes(CyNetwork, int[]) and by hideNodes(Object, Node[]).
 		private final MinIntHeap m_heap_hideNodes = new MinIntHeap();
 
 		// RootGraphChangeSniffer is not to call this method.  We rely on
 		// the specified nodes still existing in the RootGraph in this method.
-		private final int[] hideNodes(GraphPerspective source, int[] rootNodeInx) {
+		private final int[] hideNodes(CyNetwork source, int[] rootNodeInx) {
 			// We can't use m_heap here because it's potentially used by every
 			// actuallHideNode() during hiding of edges.
 			m_heap_hideNodes.empty();
@@ -2195,7 +2189,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 				final GraphPerspectiveChangeListener listener = m_lis[0];
 
 				if (listener != null) {
-					final Node[] successArr = new Node[successes.size()];
+					final CyNode[] successArr = new CyNode[successes.size()];
 					final IntEnumerator enumx = successes.elements();
 					int index = -1;
 
@@ -2220,7 +2214,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 		// This method is to be called by RootGraphChangeSniffer.  It may also
 		// be called by others - therefore don't assume that the nodes to be
 		// hidden here don't have any adjacent edges.
-		private final void hideNodes(Object source, Node[] nodes) {
+		private final void hideNodes(Object source, CyNode[] nodes) {
 			// We can't use m_heap here because it's potentially used by every
 			// actuallyHideNode() during hiding of edges.
 			m_heap_hideNodes.empty();
@@ -2239,7 +2233,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 				final GraphPerspectiveChangeListener listener = m_lis[0];
 
 				if (listener != null) {
-					final Node[] successArr = new Node[successes.size()];
+					final CyNode[] successArr = new CyNode[successes.size()];
 					final IntEnumerator enumx = successes.elements();
 					int index = -1;
 
@@ -2260,7 +2254,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 		// RootGraphChangeSniffer is not to call this method.  We rely on
 		// the specified edge still existing in the RootGraph in this method.
-		private final int hideEdge(GraphPerspective source, int rootGraphEdgeInx) {
+		private final int hideEdge(CyNetwork source, int rootGraphEdgeInx) {
 			// see if we can hide the edge
 			final int returnThis = canHideEdge(rootGraphEdgeInx);
 
@@ -2269,9 +2263,9 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 				// notify listeners of edge about to be hidden
 				if (listener != null) {
-					final Edge removedEdge = m_root.getEdge(rootGraphEdgeInx);
+					final CyEdge removedEdge = m_root.getEdge(rootGraphEdgeInx);
 					listener.graphPerspectiveChanged(new GraphPerspectiveEdgesHiddenEvent(source,
-					                                                                      new Edge[] {
+					                                                                      new CyEdge[] {
 					                                                                          removedEdge
 					                                                                      }));
 				}
@@ -2320,7 +2314,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 		// RootGraphChangeSniffer is not to call this method.  We rely on
 		// the specified edges still existing in the RootGraph in this method.
-		private final int[] hideEdges(GraphPerspective source, int[] rootEdgeInx) {
+		private final int[] hideEdges(CyNetwork source, int[] rootEdgeInx) {
 			m_heap.empty();
 
 			final MinIntHeap successes = m_heap;
@@ -2340,7 +2334,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 				// notify listeners of the edges about to be hidden
 				if (listener != null) {
-					final Edge[] successArr = new Edge[successes.size()];
+					final CyEdge[] successArr = new CyEdge[successes.size()];
 					final IntEnumerator enumx = successes.elements();
 					int index = -1;
 
@@ -2363,7 +2357,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 		// Entries in the edges array may not be null.
 		// This method is to be called by RootGraphChangeSniffer.
-		private final void hideEdges(Object source, Edge[] edges) {
+		private final void hideEdges(Object source, CyEdge[] edges) {
 			m_heap.empty();
 
 			final MinIntHeap successes = m_heap;
@@ -2382,7 +2376,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 
 				// notify listeners 
 				if (listener != null) {
-					final Edge[] successArr = new Edge[successes.size()];
+					final CyEdge[] successArr = new CyEdge[successes.size()];
 					final IntEnumerator enumx = successes.elements();
 					int index = -1;
 
@@ -2468,7 +2462,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * Appends all of the nodes and edges in teh given Network to
 	 * this Network
 	 */
-	public void appendNetwork(GraphPerspective network) {
+	public void appendNetwork(CyNetwork network) {
 		int[] nodes = network.getNodeIndicesArray();
 		int[] edges = network.getEdgeIndicesArray();
 		restoreNodes(nodes);
@@ -2509,7 +2503,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * @param nodes a Collection of Nodes
 	 * @param selected_state the desired selection state for the nodes
 	 */
-	public void setSelectedNodeState(Collection<Node> nodes, boolean selected_state) {
+	public void setSelectedNodeState(Collection<CyNode> nodes, boolean selected_state) {
 		this.selectFilter.setSelectedNodes(nodes, selected_state);
 	}
 
@@ -2519,7 +2513,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * @param nodes a Node
 	 * @param selected_state the desired selection state for the node
 	 */
-	public void setSelectedNodeState(Node node, boolean selected_state) {
+	public void setSelectedNodeState(CyNode node, boolean selected_state) {
 		this.selectFilter.setSelected(node, selected_state);
 	}
 
@@ -2529,7 +2523,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * @param edges a Collection of Edges
 	 * @param selected_state the desired selection state for the edges
 	 */
-	public void setSelectedEdgeState(Collection<Edge> edges, boolean selected_state) {
+	public void setSelectedEdgeState(Collection<CyEdge> edges, boolean selected_state) {
 		this.selectFilter.setSelectedEdges(edges, selected_state);
 	}
 
@@ -2539,7 +2533,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * @param edges an Edge
 	 * @param selected_state the desired selection state for the edge
 	 */
-	public void setSelectedEdgeState(Edge edge, boolean selected_state) {
+	public void setSelectedEdgeState(CyEdge edge, boolean selected_state) {
 		this.selectFilter.setSelected(edge, selected_state);
 	}
 
@@ -2549,7 +2543,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * @param node the node
 	 * @return true if selected, false otherwise
 	 */
-	public boolean isSelected(Node node) {
+	public boolean isSelected(CyNode node) {
 		return this.selectFilter.isSelected(node);
 	}
 
@@ -2559,7 +2553,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * @param edge the edge
 	 * @return true if selected, false otherwise
 	 */
-	public boolean isSelected(Edge edge) {
+	public boolean isSelected(CyEdge edge) {
 		return this.selectFilter.isSelected(edge);
 	}
 
@@ -2568,7 +2562,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return a Set of selected nodes
 	 */
-	public Set<Node> getSelectedNodes() {
+	public Set<CyNode> getSelectedNodes() {
 		return this.selectFilter.getSelectedNodes();
 	}
 
@@ -2577,7 +2571,7 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 *
 	 * @return a Set of selected edges
 	 */
-	public Set<Edge> getSelectedEdges() {
+	public Set<CyEdge> getSelectedEdges() {
 		return this.selectFilter.getSelectedEdges();
 	}
 
@@ -2643,8 +2637,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * Cytoscape
 	 * @return the Network Index of this node
 	 */
-	public Node addNode(Node cytoscape_node) {
-		return (Node) restoreNode(cytoscape_node);
+	public CyNode addNode(CyNode cytoscape_node) {
+		return (CyNode) restoreNode(cytoscape_node);
 	}
 
 	/**
@@ -2698,8 +2692,8 @@ class FGraphPerspective implements GraphPerspective, FixedGraph {
 	 * Cytoscape
 	 * @return the Network Index of this edge
 	 */
-	public Edge addEdge(Edge cytoscape_edge) {
-		return (Edge) restoreEdge(cytoscape_edge);
+	public CyEdge addEdge(CyEdge cytoscape_edge) {
+		return (CyEdge) restoreEdge(cytoscape_edge);
 	}
 
 	/**

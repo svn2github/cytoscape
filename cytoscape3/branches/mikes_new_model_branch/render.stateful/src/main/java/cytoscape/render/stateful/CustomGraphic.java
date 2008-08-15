@@ -42,8 +42,7 @@
 
 package cytoscape.render.stateful;
 
-import java.awt.Paint;
-import java.awt.Shape;
+import java.awt.*;
 
 /**
  * Represents all the information needed to define a custom graphic

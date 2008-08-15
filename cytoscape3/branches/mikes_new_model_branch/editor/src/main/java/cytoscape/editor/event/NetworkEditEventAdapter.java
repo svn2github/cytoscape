@@ -5,9 +5,7 @@
 package cytoscape.editor.event;
 
 import cytoscape.editor.CytoscapeEditor;
-
 import org.cytoscape.view.GraphView;
-
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
 

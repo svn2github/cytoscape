@@ -37,9 +37,9 @@
 */
 package cytoscape.groups;
 
-import org.cytoscape.Node;
-import org.cytoscape.view.GraphView;
+import org.cytoscape.CyNode;
 import org.cytoscape.groups.CyGroup;
+import org.cytoscape.view.GraphView;
 
 /**
  * The CyGroupViewer interface provides a mechanism for group view implementations
@@ -95,5 +95,5 @@ public interface CyGroupViewer {
 	 * @param Node the node that triggered the change
 	 * @param change the change that was made (see CyGroup defines)
 	 */
-	public void groupChanged(CyGroup group, Node changedNode, ChangeType change);
+	public void groupChanged(CyGroup group, CyNode changedNode, ChangeType change);
 }

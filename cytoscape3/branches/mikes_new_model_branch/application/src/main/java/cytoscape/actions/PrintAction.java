@@ -42,22 +42,14 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import cytoscape.*;
-
-import cytoscape.util.*;
-
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.util.CytoscapeAction;
 import org.cytoscape.view.GraphView;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.PrintJob;
-import java.awt.Toolkit;
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.awt.print.PrinterJob;
-
-import javax.swing.AbstractAction;
-
-import javax.swing.event.MenuEvent;
 
 
 /**

@@ -43,8 +43,8 @@ package cytoscape.editor;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 
 

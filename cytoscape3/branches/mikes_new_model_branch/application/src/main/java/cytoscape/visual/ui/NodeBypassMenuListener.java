@@ -37,15 +37,11 @@
 package cytoscape.visual.ui;
 
 import org.cytoscape.view.NodeContextMenuListener;
-
 import org.cytoscape.view.NodeView;
 
-import java.awt.Color;
-import java.awt.Font;
-
-import javax.swing.JLabel;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 
 /**

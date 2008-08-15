@@ -36,23 +36,23 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
+import org.cytoscape.CyEdge;
 
 
 // Valid indices: [0, Integer.MAX_VALUE - 1].
 class EdgeArray {
 	private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
-	private Edge[] m_edgeArr;
+	private CyEdge[] m_edgeArr;
 
 	EdgeArray() {
-		m_edgeArr = new Edge[INITIAL_CAPACITY];
+		m_edgeArr = new CyEdge[INITIAL_CAPACITY];
 	}
 
 	// Understand that this method will not increase the size of the underlying
 	// array, no matter what.
 	// Throws ArrayIndexOutOfBoundsException if index is negative or
 	// Integer.MAX_VALUE.
-	Edge getEdgeAtIndex(int index) {
+	CyEdge getEdgeAtIndex(int index) {
 		// Do pre-checking because try/catch with thrown exception causes huge
 		// performance hit.
 		if ((index >= m_edgeArr.length) && (index != Integer.MAX_VALUE))
@@ -67,7 +67,7 @@ class EdgeArray {
 	//   2. index is greater than or equal to the length of the array.
 	// Throws ArrayIndexOutOfBoundsException if index is negative or
 	// Integer.MAX_VALUE.
-	void setEdgeAtIndex(Edge edge, int index) {
+	void setEdgeAtIndex(CyEdge edge, int index) {
 		// Do pre-checking because try/catch with thrown exception causes huge
 		// performance hit.
 		if ((index >= m_edgeArr.length) && (edge == null) && (index != Integer.MAX_VALUE))
@@ -84,7 +84,7 @@ class EdgeArray {
 			                                      Math.max((((long) m_edgeArr.length) * 2L) + 1L,
 			                                               ((long) index) + 1L
 			                                               + (long) INITIAL_CAPACITY));
-			Edge[] newArr = new Edge[newArrSize];
+			CyEdge[] newArr = new CyEdge[newArrSize];
 			System.arraycopy(m_edgeArr, 0, newArr, 0, m_edgeArr.length);
 			m_edgeArr = newArr;
 			m_edgeArr[index] = edge;

@@ -32,18 +32,14 @@
 package org.mskcc.biopax_plugin.util.cytoscape;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.view.CytoscapeDesktop;
-
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelState;
-
 import org.mskcc.biopax_plugin.view.BioPaxContainer;
 import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
 
-import java.net.URL;
-
 import javax.swing.*;
+import java.net.URL;
 
 
 /**

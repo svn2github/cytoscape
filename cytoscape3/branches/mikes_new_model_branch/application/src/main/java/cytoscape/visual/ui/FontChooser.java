@@ -44,14 +44,11 @@ package cytoscape.visual.ui;
 
 
 //--------------------------------------------------------------------------
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
 
 
 //--------------------------------------------------------------------------

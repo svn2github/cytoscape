@@ -36,17 +36,11 @@
 */
 package cytoscape.dialogs.preferences;
 
-import org.cytoscape.*;
-import cytoscape.*;
-
-import java.io.*;
-
-import java.net.URL;
-
-import java.util.*;
+import cytoscape.CytoscapeInit;
 
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
+import java.util.*;
 
 
 /**

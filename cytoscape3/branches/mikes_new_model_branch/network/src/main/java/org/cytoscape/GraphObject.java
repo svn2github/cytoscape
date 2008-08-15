@@ -1,7 +1,5 @@
 package org.cytoscape;
 
-import java.util.*;
-
 public interface GraphObject {
 
   /**

@@ -36,27 +36,19 @@
  */
 package cytoscape.data.readers;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.Semantics;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.geom.Point2D;
-
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 
 
 /**
@@ -92,18 +84,18 @@ public class GMLWriter {
 	 * create all relevant key-value pairs as well then.
 	 */
 	@SuppressWarnings("unchecked")  // for the casts of KeyValue.value
-	public void writeGML(final GraphPerspective network, final GraphView view, final List<KeyValue> oldList) {
+	public void writeGML(final CyNetwork network, final GraphView view, final List<KeyValue> oldList) {
 		/*
 		 * Initially all the nodes and edges have not been seen
 		 */
 		newNodes = new HashSet<Integer>(network.getNodeCount());
 		newEdges = new HashSet<Integer>(network.getEdgeCount());
 
-		for (Iterator<Node> it = network.nodesIterator(); it.hasNext();) {
+		for (Iterator<CyNode> it = network.nodesIterator(); it.hasNext();) {
 			newNodes.add(Integer.valueOf((it.next()).getRootGraphIndex()));
 		}
 
-		for (Iterator<Edge> it = network.edgesIterator(); it.hasNext();) {
+		for (Iterator<CyEdge> it = network.edgesIterator(); it.hasNext();) {
 			newEdges.add(Integer.valueOf((it.next()).getRootGraphIndex()));
 		}
 
@@ -189,7 +181,7 @@ public class GMLWriter {
 	 * Update the list associated with a graph key
 	 */
 	 @SuppressWarnings("unchecked") // for the casts of KeyValue.value
-	private void writeGraph(final GraphPerspective network, final GraphView view, final List<KeyValue> oldList) {
+	private void writeGraph(final CyNetwork network, final GraphView view, final List<KeyValue> oldList) {
 
 		 
 		 // To enhance compatibility with non-cytoscape GML-conformant
@@ -223,7 +215,7 @@ public class GMLWriter {
 	 * Update the list associated with a node key
 	 */
 	@SuppressWarnings("unchecked") // for the cast of KeyValue.value
-	private boolean writeGraphNode(final GraphPerspective network, final GraphView view,
+	private boolean writeGraphNode(final CyNetwork network, final GraphView view,
 	                               final List<KeyValue> oldList) {
 		/*
 		 * We expect a list associated with node key to potentially have a
@@ -255,7 +247,7 @@ public class GMLWriter {
 			return false;
 		}
 
-		Node node = network.getNode(root_index.intValue());
+		CyNode node = network.getNode(root_index.intValue());
 
 		if (node == null || !network.containsNode(node)) {
 			return false;
@@ -308,7 +300,7 @@ public class GMLWriter {
 	 * Update the list associated with an edge key
 	 */
 	@SuppressWarnings("unchecked") // for the cast of KeyValue.value
-	private boolean writeGraphEdge(final GraphPerspective network, final GraphView view,
+	private boolean writeGraphEdge(final CyNetwork network, final GraphView view,
 	                               final List<KeyValue> oldList) {
 		/*
 		 * An edge key will definitely have a root_index, labelPair (we enforce
@@ -346,7 +338,7 @@ public class GMLWriter {
 			return false;
 		}
 
-		Edge edge = network.getEdge(root_index.intValue());
+		CyEdge edge = network.getEdge(root_index.intValue());
 
 		if (edge == null || !network.containsEdge(edge)) {
 			return false;
@@ -402,7 +394,7 @@ public class GMLWriter {
 	 * This writes all the graphical information for a particular node into an
 	 * object tree
 	 */
-	private void writeGraphNodeGraphics(final GraphPerspective network, final NodeView nodeView,
+	private void writeGraphNodeGraphics(final CyNetwork network, final NodeView nodeView,
 	                                    final List<KeyValue> oldList) {
 		KeyValue x = null;
 		KeyValue y = null;
@@ -523,7 +515,7 @@ public class GMLWriter {
 		}
 	}
 
-	private void writeGraphEdgeGraphics(final GraphPerspective network, final EdgeView edgeView,
+	private void writeGraphEdgeGraphics(final CyNetwork network, final EdgeView edgeView,
 	                                    final List<KeyValue> oldList) {
 		KeyValue width = null;
 		KeyValue fill = null;

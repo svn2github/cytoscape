@@ -36,13 +36,13 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Node;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 
 
 final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
 	private final static long serialVersionUID = 1202347362824948L;
-	private final Node[] m_removedNodes;
+	private final CyNode[] m_removedNodes;
 
 	// Note that no copy of the array removedNodes is made - the exact
 	// array reference is kept.  Methods on this class return this same
@@ -50,8 +50,8 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
 	// must contain valid RootGraph indices at the time this constructor is
 	// called; further behavior of the Node objects is not too important
 	// becuase the getRemovedNodes() method has been deprecated in both
-	// GraphPerspective and RootGraph listener systems.
-	RootGraphNodesRemovedEvent(RootGraph rootGraph, Node[] removedNodes) {
+	// CyNetwork and RootGraph listener systems.
+	RootGraphNodesRemovedEvent(RootGraph rootGraph, CyNode[] removedNodes) {
 		super(rootGraph);
 		m_removedNodes = removedNodes;
 	}
@@ -71,7 +71,7 @@ final class RootGraphNodesRemovedEvent extends RootGraphChangeEventAdapter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final Node[] getRemovedNodes() {
+	public final CyNode[] getRemovedNodes() {
 		return m_removedNodes;
 	}
 

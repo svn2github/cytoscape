@@ -32,14 +32,11 @@
 package org.mskcc.biopax_plugin.action;
 
 import cytoscape.util.OpenBrowser;
-
 import org.mskcc.biopax_plugin.util.cytoscape.CytoscapeWrapper;
-import org.mskcc.biopax_plugin.view.BioPaxDetailsPanel;
-
-import java.net.URL;
 
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import java.net.URL;
 
 
 /**

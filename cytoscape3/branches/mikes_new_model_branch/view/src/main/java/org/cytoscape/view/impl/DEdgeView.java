@@ -37,27 +37,17 @@
 package org.cytoscape.view.impl;
 
 import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
-
-import cytoscape.util.intr.IntBTree;
-
-import org.cytoscape.Edge;
-
+import org.cytoscape.CyEdge;
 import org.cytoscape.view.Bend;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewChangeListener;
 import org.cytoscape.view.Label;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.Point2D;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,7 +117,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Edge getEdge() {
+	public CyEdge getEdge() {
 		return m_view.getGraphPerspective().getEdge(~m_inx);
 	}
 

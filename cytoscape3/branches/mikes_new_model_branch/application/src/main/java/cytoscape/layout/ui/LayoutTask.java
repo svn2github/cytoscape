@@ -37,13 +37,11 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.GraphView;
 
 /**
  * A wrapper for applying a layout in a task. Use it something like

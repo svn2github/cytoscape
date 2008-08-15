@@ -32,16 +32,13 @@
 package org.mskcc.biopax_plugin.view;
 
 import cytoscape.CytoscapeInit;
-
-import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
 import org.mskcc.biopax_plugin.action.LaunchExternalBrowser;
-
-import java.awt.*;
-
-import java.util.Properties;
+import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.util.Properties;
 
 
 /**

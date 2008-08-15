@@ -1,15 +1,11 @@
 
 package cytoscape.actions;
 
-import org.cytoscape.view.NodeView;
-import org.cytoscape.GraphPerspective;
-
 import cytoscape.Cytoscape;
-import cytoscape.actions.DeleteAction;
 import cytoscape.util.undo.CyAbstractEdit;
-
-
+import org.cytoscape.CyNetwork;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
 
 /**
@@ -22,11 +18,11 @@ class DeleteEdit extends CyAbstractEdit {
 	int[] edges;
 	double[] xPos;
 	double[] yPos;
-	GraphPerspective net;
+	CyNetwork net;
 	// AJK: 03082008 DeleteAction to be reenabled upon undo
 	DeleteAction deleteAction;
 	
-	DeleteEdit(GraphPerspective net, int[] nodeInd, int[] edgeInd) {
+	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd) {
 		super("Delete");
 		if ( net == null )
 			throw new IllegalArgumentException("network is null");
@@ -54,7 +50,7 @@ class DeleteEdit extends CyAbstractEdit {
 	}
 
 	// AJK: 03082008 DeleteAction to be reenabled upon undo
-	DeleteEdit(GraphPerspective net, int[] nodeInd, int[] edgeInd,	DeleteAction deleteAction) {
+	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd,	DeleteAction deleteAction) {
 		this (net, nodeInd, edgeInd);
 		this.deleteAction = deleteAction;
 	}

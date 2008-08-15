@@ -36,30 +36,22 @@
 
 package cytoscape.data.webservice.util;
 
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Set;
-
-import javax.swing.AbstractAction;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-
-import org.cytoscape.Node;
-import org.cytoscape.layout.CyLayouts;
-
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.data.webservice.CyWebServiceEvent;
-import cytoscape.data.webservice.DatabaseSearchResult;
-import cytoscape.data.webservice.NetworkImportWebServiceClient;
-import cytoscape.data.webservice.WebServiceClient;
-import cytoscape.data.webservice.WebServiceClientManager;
+import cytoscape.data.webservice.*;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+import org.cytoscape.CyNode;
+import org.cytoscape.layout.CyLayouts;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Set;
 
 
 /**
@@ -132,9 +124,9 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 	private String buildStringQuery() {
 		final StringBuilder builder = new StringBuilder();
-		final Set<Node> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+		final Set<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
 
-		for (Node node : selectedNodes) {
+		for (CyNode node : selectedNodes) {
 			builder.append(node.getIdentifier() + " ");
 		}
 

@@ -37,24 +37,11 @@
 package cytoscape.layout.manual.control.actions.stack;
 
 import cytoscape.layout.manual.control.actions.AbstractControlAction;
-
-import org.cytoscape.*;
-
-import cytoscape.data.*;
-
-import cytoscape.util.*;
-
-import cytoscape.view.*;
-
-import org.cytoscape.*;
-
-import org.cytoscape.view.*;
-
-import java.awt.event.*;
-
-import java.util.*;
+import org.cytoscape.view.NodeView;
 
 import javax.swing.*;
+import java.util.Collections;
+import java.util.List;
 
 
 /**

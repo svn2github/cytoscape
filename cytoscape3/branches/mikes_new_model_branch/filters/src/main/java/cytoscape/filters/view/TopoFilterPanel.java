@@ -3,37 +3,22 @@
  */
 package cytoscape.filters.view;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import cytoscape.filters.CompositeFilter;
+import cytoscape.filters.FilterPlugin;
+import cytoscape.filters.TopologyFilter;
+import cytoscape.filters.util.FilterUtil;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.util.Vector;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.JTextField;
-import cytoscape.Cytoscape;
-import cytoscape.filters.AdvancedSetting;
-import cytoscape.filters.CompositeFilter;
-import cytoscape.filters.TopologyFilter;
-import cytoscape.filters.util.FilterUtil;
-import cytoscape.filters.view.FilterMainPanel.FilterRenderer;
-import cytoscape.filters.view.FilterMainPanel.MyCytoPanelListener;
-import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.filters.FilterPlugin;
 
 
 /**

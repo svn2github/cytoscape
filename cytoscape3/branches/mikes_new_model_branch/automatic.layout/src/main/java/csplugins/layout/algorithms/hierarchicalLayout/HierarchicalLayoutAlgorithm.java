@@ -39,28 +39,23 @@
  **/
 package csplugins.layout.algorithms.hierarchicalLayout;
 
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
+import cytoscape.task.TaskMonitor;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
-
-import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.view.GraphView;
-
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.Point2D;
-
-import java.util.*;
-
-import javax.swing.JPanel;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 
 class HierarchyFlowLayoutOrderNode implements Comparable {

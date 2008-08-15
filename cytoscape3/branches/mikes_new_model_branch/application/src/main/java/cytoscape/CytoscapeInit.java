@@ -36,39 +36,24 @@
  */
 package cytoscape;
 
-import org.cytoscape.GraphPerspective;
-
 import cytoscape.data.readers.CytoscapeSessionReader;
-
 import cytoscape.init.CyInitParams;
-
-//import cytoscape.plugin.PluginManager;
-//import cytoscape.plugin.PluginUtil;
-
 import cytoscape.util.FileUtil;
-
 import cytoscape.util.shadegrown.WindowUtilities;
+import org.cytoscape.CyNetwork;
 
-import java.awt.Cursor;
-
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
-//import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
-//import java.util.Set;
-import javax.swing.ImageIcon;
 
 
 /**
@@ -496,7 +481,7 @@ public class CytoscapeInit {
 			String net = (String) i.next();
 			System.out.println("Load: " + net);
 
-			GraphPerspective network = null;
+			CyNetwork network = null;
 
 			boolean createView = false;
 

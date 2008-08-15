@@ -36,13 +36,13 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
+import org.cytoscape.CyEdge;
 import org.cytoscape.RootGraph;
 
 
 final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter {
 	private final static long serialVersionUID = 1202347362785130L;
-	private final Edge[] m_removedEdges;
+	private final CyEdge[] m_removedEdges;
 
 	// Note that no copy of the array removedEdges is made - the exact
 	// array reference is kept.  Methods on this class return this same
@@ -50,8 +50,8 @@ final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter {
 	// must contain valid RootGraph indices at the time this constructor is
 	// called; further behavior of the Edge objects is not too important
 	// because the getRemovedEdges() method has been deprecated in both
-	// GraphPerspective and RootGraph listener systems.
-	RootGraphEdgesRemovedEvent(RootGraph rootGraph, Edge[] removedEdges) {
+	// CyNetwork and RootGraph listener systems.
+	RootGraphEdgesRemovedEvent(RootGraph rootGraph, CyEdge[] removedEdges) {
 		super(rootGraph);
 		m_removedEdges = removedEdges;
 	}
@@ -71,7 +71,7 @@ final class RootGraphEdgesRemovedEvent extends RootGraphChangeEventAdapter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final Edge[] getRemovedEdges() {
+	public final CyEdge[] getRemovedEdges() {
 		return m_removedEdges;
 	}
 

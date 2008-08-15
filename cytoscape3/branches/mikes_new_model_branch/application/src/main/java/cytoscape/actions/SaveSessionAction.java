@@ -37,23 +37,17 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.data.writers.CytoscapeSessionWriter;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
 import java.io.File;
 
 

@@ -35,29 +35,14 @@
 package cytoscape.data;
 
 import cytoscape.data.readers.GraphReader;
-
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTask;
+import cytoscape.util.*;
 
-import cytoscape.util.CyFileFilter;
-import cytoscape.util.GMLFileFilter;
-import cytoscape.util.ProxyHandler;
-import cytoscape.util.SIFFileFilter;
-import cytoscape.util.XGMMLFileFilter;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

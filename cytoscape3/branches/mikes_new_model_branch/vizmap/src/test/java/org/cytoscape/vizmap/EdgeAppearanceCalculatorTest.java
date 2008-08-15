@@ -43,36 +43,33 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.FileInputStream;
-import java.util.Properties;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphFactory;
-
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
+
+import java.awt.*;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 /**
  * 
  */
 public class EdgeAppearanceCalculatorTest extends TestCase {
-	GraphPerspective cyNet;
-	Node a;
-	Node b;
-	Node c;
-	Node d;
-	Edge ab;
-	Edge bc;
-	Edge cd;
-	Edge bd;
+	CyNetwork cyNet;
+	CyNode a;
+	CyNode b;
+	CyNode c;
+	CyNode d;
+	CyEdge ab;
+	CyEdge bc;
+	CyEdge cd;
+	CyEdge bd;
 	CalculatorCatalog catalog;
 	Properties props;
 	CyAttributes edgeAttrs;
@@ -102,7 +99,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 		c.setIdentifier("c");
 		d = rg.getNode(rg.createNode());
 		d.setIdentifier("d");
-		Node[] nodes = new Node[] {a,b,c,d};
+		CyNode[] nodes = new CyNode[] {a,b,c,d};
 
 		ab = rg.getEdge(rg.createEdge(a, b));
 		ab.setIdentifier("a (pp) b");
@@ -112,7 +109,7 @@ public class EdgeAppearanceCalculatorTest extends TestCase {
 		cd.setIdentifier("c (pp) d");
 		bd = rg.getEdge(rg.createEdge(b, d));
 		bd.setIdentifier("b (pp) d");
-		Edge[] edges = new Edge[] {ab,bc,cd,bd};
+		CyEdge[] edges = new CyEdge[] {ab,bc,cd,bd};
 
 		cyNet = rg.createGraphPerspective(nodes,edges);
 

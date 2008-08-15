@@ -35,7 +35,6 @@
 package org.cytoscape.coreplugin.psi_mi.test.bio;
 
 import junit.framework.TestCase;
-
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.GoVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;

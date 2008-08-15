@@ -42,13 +42,8 @@
 // our package
 package cytoscape.view.cytopanels;
 
-import java.awt.Dimension;
-
-// imports
-import java.awt.Point;
-import java.awt.Rectangle;
-
-import javax.swing.SwingConstants;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

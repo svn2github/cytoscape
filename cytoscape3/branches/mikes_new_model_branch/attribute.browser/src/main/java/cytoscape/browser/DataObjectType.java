@@ -37,7 +37,6 @@
 package cytoscape.browser;
 
 import cytoscape.Cytoscape;
-
 import org.cytoscape.attributes.CyAttributes;
 public enum DataObjectType {
 	NODES("Node"),

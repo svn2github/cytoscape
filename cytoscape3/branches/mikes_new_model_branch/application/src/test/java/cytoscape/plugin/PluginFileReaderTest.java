@@ -3,19 +3,11 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.CytoscapeVersion;
-
 import junit.framework.TestCase;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.FileInputStream;
-import java.util.Calendar;
 import java.util.List;
-
-import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
 
 
 /**

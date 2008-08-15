@@ -36,7 +36,7 @@
 
 package prefuse.util.ui;
 
-import javax.swing.BoundedRangeModel;
+import javax.swing.*;
 
 
 /**

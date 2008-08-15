@@ -23,16 +23,6 @@
 */
 package cytoscape.editor.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
-import javax.swing.event.ChangeListener;
-
 import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.ShapePaletteInfo;
 import cytoscape.editor.ShapePaletteInfoFilter;
@@ -43,6 +33,15 @@ import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
+
+import javax.swing.event.ChangeListener;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 
 /**

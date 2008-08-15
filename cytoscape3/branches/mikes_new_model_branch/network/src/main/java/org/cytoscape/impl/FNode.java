@@ -36,16 +36,16 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.groups.CyGroup;
-import org.cytoscape.Node;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
+import org.cytoscape.groups.CyGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 
-class FNode implements Node {
+class FNode implements CyNode {
 
 	// Variables specific to public get/set methods.
 	RootGraph m_rootGraph = null;

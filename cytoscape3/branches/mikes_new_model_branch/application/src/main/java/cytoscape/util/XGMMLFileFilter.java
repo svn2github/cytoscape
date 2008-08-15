@@ -35,14 +35,11 @@
 package cytoscape.util;
 
 import cytoscape.data.ImportHandler;
-
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.XGMMLReader;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-
 import java.net.URL;
 import java.net.URLConnection;
 

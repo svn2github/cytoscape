@@ -39,14 +39,8 @@
 package cytoscape.data.readers;
 
 import cytoscape.AllTests;
-
-import cytoscape.data.readers.TextFileReader;
-
-import junit.framework.*;
-
-import java.io.*;
-
-import java.util.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 
 /**

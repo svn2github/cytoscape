@@ -36,26 +36,18 @@
 
 package cytoscape.filter.cytoscape;
 
-import org.cytoscape.*;
-import org.cytoscape.GraphPerspective;
-
-import cytoscape.data.*;
-
-import cytoscape.filter.model.*;
-
-import cytoscape.filter.view.*;
-
-import java.awt.*;
-import java.awt.event.*;
-
-import java.beans.*;
-
-import java.util.*;
+import cytoscape.filter.model.Filter;
+import cytoscape.filter.view.FilterEditor;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-import javax.swing.event.SwingPropertyChangeSupport;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 
 /**

@@ -44,29 +44,17 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
 import cytoscape.bookmarks.Bookmarks;
-import cytoscape.bookmarks.Category;
 import cytoscape.bookmarks.DataSource;
-
 import cytoscape.dialogs.plugins.PluginManageDialog;
 import cytoscape.dialogs.plugins.PluginManageDialog.PluginInstallStatus;
-
-import cytoscape.plugin.DownloadableInfo;
-import cytoscape.plugin.PluginInfo;
-import cytoscape.plugin.PluginManager;
-import cytoscape.plugin.PluginInquireAction;
-import cytoscape.plugin.ManagerUtil;
-import cytoscape.plugin.PluginStatus;
-
+import cytoscape.plugin.*;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
 import cytoscape.util.CytoscapeAction;
 
 import java.awt.event.ActionEvent;
-
 import java.util.List;
 import java.util.Map;
 

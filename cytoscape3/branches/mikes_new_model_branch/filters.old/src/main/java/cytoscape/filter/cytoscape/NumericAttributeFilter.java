@@ -36,28 +36,14 @@
 
 package cytoscape.filter.cytoscape;
 
- 
 
-import org.cytoscape.*;
-import org.cytoscape.GraphPerspective;
-
+import cytoscape.Cytoscape;
+import cytoscape.filter.model.Filter;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
+import org.cytoscape.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
 
-import cytoscape.filter.model.*;
-
-import org.cytoscape.*;
-import cytoscape.Cytoscape;
-
-import java.awt.*;
-import java.awt.event.*;
-
-import java.beans.*;
-
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.event.SwingPropertyChangeSupport;
 
 
@@ -171,8 +157,8 @@ public class NumericAttributeFilter implements Filter {
 	 */
 	public NumericAttributeFilter(String desc) {
 		try {
-			NODE_CLASS = Node.class;
-			EDGE_CLASS = Edge.class;
+			NODE_CLASS = CyNode.class;
+			EDGE_CLASS = CyEdge.class;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

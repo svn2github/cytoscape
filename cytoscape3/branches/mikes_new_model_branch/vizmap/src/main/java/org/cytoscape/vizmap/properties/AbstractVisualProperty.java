@@ -34,17 +34,15 @@
  */
 package org.cytoscape.vizmap.properties;
 
-import org.cytoscape.vizmap.VisualProperty;
-import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VMMFactory;
-
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.vizmap.VMMFactory;
+import org.cytoscape.vizmap.VisualProperty;
+import org.cytoscape.vizmap.VisualPropertyType;
 
+import javax.swing.*;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.Icon;
 
 
 /**

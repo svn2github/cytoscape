@@ -37,7 +37,6 @@ package cytoscape.data.ontology;
 import cytoscape.data.ontology.readers.DBCrossReferenceReader;
 
 import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

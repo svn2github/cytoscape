@@ -37,18 +37,14 @@
 */
 package cytoscape.groups;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-import org.cytoscape.groups.CyGroup;
 import cytoscape.Cytoscape;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.groups.CyGroup;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.attributes.CyAttributes;;
+
+import java.util.*;
 
 /**
  * The CyGroup class provides the implementation for a group model that
@@ -65,7 +61,7 @@ public class CyGroupManager {
 	 * The list of groups, indexed by the CyNode that represents the group.  The values
 	 * are the CyGroup itself.
 	 */
-	private static HashMap<Node, CyGroup> groupMap = new HashMap<Node, CyGroup>();
+	private static HashMap<CyNode, CyGroup> groupMap = new HashMap<CyNode, CyGroup>();
 
 	/**
 	 * The list of group viewers currently registered.
@@ -90,7 +86,7 @@ public class CyGroupManager {
 	 * @param groupNode the CyNode that represents this group
 	 * @return the associated CyGroup structure
 	 */
-	public static CyGroup getCyGroup(Node groupNode) {
+	public static CyGroup getCyGroup(CyNode groupNode) {
 		if ((groupMap == null) || !groupMap.containsKey(groupNode))
 			return null;
 
@@ -104,7 +100,7 @@ public class CyGroupManager {
 	 * @param memberNode a CyNode whose group membership we're looking for
 	 * @return a list of CyGroups this node is a member of
 	 */
-	public static List<CyGroup> getGroup(Node memberNode) {
+	public static List<CyGroup> getGroup(CyNode memberNode) {
 		List<CyGroup> groupList = new ArrayList<CyGroup>();
 		Iterator groupIter = groupMap.values().iterator();
 
@@ -220,7 +216,7 @@ public class CyGroupManager {
 	 * @param nodeList the initial set of nodes for this group
 	 * @param viewer the name of the viewer to manage this group
 	 */
-	public static CyGroup createGroup(Node groupNode, List nodeList, String viewer) {
+	public static CyGroup createGroup(CyNode groupNode, List nodeList, String viewer) {
 		// Do we already have a group by this name?
 		if (findGroup(groupNode.getIdentifier()) != null) return null;
 		// Create the group
@@ -252,7 +248,7 @@ public class CyGroupManager {
 	 * @param group the group to remove
 	 */
 	public static void removeGroup(CyGroup group) {
-		Node groupNode = group.getGroupNode();
+		CyNode groupNode = group.getGroupNode();
 		removeGroup(groupNode);
 	}
 
@@ -261,7 +257,7 @@ public class CyGroupManager {
 	 *
 	 * @param groupNode the group node of the group to remove
 	 */
-	public static void removeGroup(Node groupNode) {
+	public static void removeGroup(CyNode groupNode) {
 		if (groupMap.containsKey(groupNode)) {
 			notifyRemoveGroup((CyGroup) groupMap.get(groupNode));
 
@@ -279,14 +275,14 @@ public class CyGroupManager {
 			groupMap.remove(groupNode);
 
 			// Remove this group from all the nodes
-			List<Node> nodeList = group.getNodes();
-			Iterator <Node> nIter = nodeList.iterator();
+			List<CyNode> nodeList = group.getNodes();
+			Iterator <CyNode> nIter = nodeList.iterator();
 			while (nIter.hasNext()) {
-				Node node = nIter.next();
+				CyNode node = nIter.next();
 				node.removeFromGroup(group);
 			}
 
-			GraphPerspective network = Cytoscape.getCurrentNetwork();
+			CyNetwork network = Cytoscape.getCurrentNetwork();
 			network.removeNode(groupNode.getRootGraphIndex(), false);
 
 			notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_DELETED);
@@ -299,7 +295,7 @@ public class CyGroupManager {
 	 * @param groupNode the node we want to test
 	 * @return 'true' if groupNode is a group
 	 */
-	public static boolean isaGroup(Node groupNode) {
+	public static boolean isaGroup(CyNode groupNode) {
 		return groupMap.containsKey(groupNode);
 	}
 

@@ -39,12 +39,8 @@
 package cytoscape.data;
 
 import cytoscape.AllTests;
-
-import cytoscape.data.mRNAMeasurement;
-
-import junit.framework.*;
-
-import java.io.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 
 /**

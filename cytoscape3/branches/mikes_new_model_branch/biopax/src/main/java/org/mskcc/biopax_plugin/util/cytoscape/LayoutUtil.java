@@ -34,17 +34,18 @@
 package org.mskcc.biopax_plugin.util.cytoscape;
 
 // imports
-import org.cytoscape.view.NodeView;
-import java.util.Iterator;
+
 import cytoscape.Cytoscape;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.view.GraphView;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
-import java.util.List;
+import javax.swing.*;
 import java.util.ArrayList;
-import javax.swing.JPanel;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class implements CyLayoutAlgorithim.  Used to layout BioPAX graphs.

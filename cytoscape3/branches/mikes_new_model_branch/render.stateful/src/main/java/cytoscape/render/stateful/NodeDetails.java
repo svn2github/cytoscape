@@ -37,12 +37,8 @@
 package cytoscape.render.stateful;
 
 import cytoscape.render.immed.GraphGraphics;
-import cytoscape.render.stateful.CustomGraphic;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Shape;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 

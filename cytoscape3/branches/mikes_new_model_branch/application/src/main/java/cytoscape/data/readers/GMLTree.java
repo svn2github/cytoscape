@@ -37,29 +37,19 @@
 package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.geom.Point2D;
-
 import java.text.DecimalFormat;
-
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 
 /**
@@ -162,7 +152,7 @@ public class GMLTree {
 		// 
 		while (viewIt.hasNext()) {
 			NodeView currentView = (NodeView) viewIt.next();
-			Node currentNode = currentView.getNode();
+			CyNode currentNode = currentView.getNode();
 
 			// create a new GMLNode to hold information about currentNode
 			GMLNode currentGML = new GMLNode();
@@ -222,7 +212,7 @@ public class GMLTree {
 
 		while (viewIt.hasNext()) {
 			EdgeView currentView = (EdgeView) viewIt.next();
-			Edge currentEdge = currentView.getEdge();
+			CyEdge currentEdge = currentView.getEdge();
 
 			// crate a new GMLNode to hold information about currentEdge
 			GMLNode currentGML = new GMLNode();

@@ -44,11 +44,12 @@ package org.cytoscape.data.impl;
 
 
 //---------------------------------------------------------------------------
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
+
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.GraphPerspectiveChangeEvent;
 import org.cytoscape.GraphPerspectiveChangeListener;
-import org.cytoscape.Node;
 import org.cytoscape.data.SelectEvent;
 import org.cytoscape.data.SelectEventListener;
 import org.cytoscape.data.SelectFilter;
@@ -56,7 +57,6 @@ import org.cytoscape.data.SelectFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -97,9 +97,9 @@ import java.util.Set;
  * <P>
  */
 public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeListener {
-	private GraphPerspective graph;
-	private final Set<Node> selectedNodes = new HashSet<Node>();
-	private final Set<Edge> selectedEdges = new HashSet<Edge>();
+	private CyNetwork graph;
+	private final Set<CyNode> selectedNodes = new HashSet<CyNode>();
+	private final Set<CyEdge> selectedEdges = new HashSet<CyEdge>();
 	
 	private List<SelectEventListener> listeners = new ArrayList<SelectEventListener>();
 
@@ -110,7 +110,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 * @throws NullPointerException
 	 *             if the argument is null.
 	 */
-	public SelectFilterImpl(final GraphPerspective graph) {
+	public SelectFilterImpl(final CyNetwork graph) {
 		this.graph = graph;
 
 		// this throws a NullPointerException if the graph is null
@@ -124,7 +124,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 * WARNING: the returned set is the actual data object, not a copy. Don't
 	 * directly modify this set.
 	 */
-	public Set<Node> getSelectedNodes() {
+	public Set<CyNode> getSelectedNodes() {
 		return selectedNodes;
 	}
 
@@ -135,7 +135,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 * WARNING: the returned set is the actual data object, not a copy. Don't
 	 * directly modify this set.
 	 */
-	public Set<Edge> getSelectedEdges() {
+	public Set<CyEdge> getSelectedEdges() {
 		return selectedEdges;
 	}
 
@@ -143,7 +143,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 * Returns true if the argument is a selected Node in the referenced
 	 * GraphPerspective, false otherwise.
 	 */
-	public boolean isSelected(Node node) {
+	public boolean isSelected(CyNode node) {
 		return selectedNodes.contains(node);
 	}
 
@@ -151,7 +151,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 * Returns true if the argument is a selected Edge in the referenced
 	 * GraphPerspective, false otherwise.
 	 */
-	public boolean isSelected(Edge edge) {
+	public boolean isSelected(CyEdge edge) {
 		return selectedEdges.contains(edge);
 	}
 
@@ -175,7 +175,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 *
 	 * @return true if an actual change was made, false otherwise
 	 */
-	public boolean setSelected(final Node node, final boolean newState) {
+	public boolean setSelected(final CyNode node, final boolean newState) {
 		boolean setChanged;
 
 		if (newState == true) { // set flag to on
@@ -209,7 +209,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 *
 	 * @return true if an actual change was made, false otherwise
 	 */
-	public boolean setSelected(final Edge edge, final boolean newState) {
+	public boolean setSelected(final CyEdge edge, final boolean newState) {
 		boolean setChanged;
 
 		if (newState == true) { // set flag to on
@@ -248,15 +248,15 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 *             if the first argument contains objects other than
 	 *             cytoscape.Node objects
 	 */
-	public Set<Node> setSelectedNodes(final Collection<Node> nodesToSet, final boolean newState) {
-		final Set<Node> returnSet = new HashSet<Node>();
+	public Set<CyNode> setSelectedNodes(final Collection<CyNode> nodesToSet, final boolean newState) {
+		final Set<CyNode> returnSet = new HashSet<CyNode>();
 		if (nodesToSet == null || nodesToSet.size() == 0) {
 			return returnSet;
 		}
 		
 		
 		if (newState == true) {
-			for (Node node : nodesToSet) {
+			for (CyNode node : nodesToSet) {
 				if (!graph.containsNode(node)) {
 					continue;
 				}
@@ -270,7 +270,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 				fireEvent(returnSet, true);
 			}
 		} else {
-			for (Node node : nodesToSet) {
+			for (CyNode node : nodesToSet) {
 				if (selectedNodes.remove(node)) {
 					returnSet.add(node);
 				}
@@ -295,16 +295,16 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	 *             if the first argument contains objects other than
 	 *             cytoscape.Edge objects
 	 */
-	public Set<Edge> setSelectedEdges(final Collection<Edge> edgesToSet, final boolean newState) {
+	public Set<CyEdge> setSelectedEdges(final Collection<CyEdge> edgesToSet, final boolean newState) {
 		
-		final Set<Edge> edgeReturnSet = new HashSet<Edge>();
+		final Set<CyEdge> edgeReturnSet = new HashSet<CyEdge>();
 		
 		if (edgesToSet == null || edgesToSet.size() == 0) {
 			return edgeReturnSet;
 		}
 
 		if (newState == true) {
-			for (Edge edge : edgesToSet) {
+			for (CyEdge edge : edgesToSet) {
 				if (!graph.containsEdge(edge)) {
 					continue;
 				}
@@ -318,7 +318,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 				fireEvent(edgeReturnSet, true);
 			}
 		} else {
-			for (Edge edge : edgesToSet) {
+			for (CyEdge edge : edgesToSet) {
 				if (selectedEdges.remove(edge)) {
 					edgeReturnSet.add(edge);
 				}
@@ -368,13 +368,13 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 	public void graphPerspectiveChanged(GraphPerspectiveChangeEvent event) {
 		// careful: this event can represent both hidden nodes and hidden edges
 		// if a hide node operation implicitly hid its incident edges
-		Set<Node> nodeChanges = null; // only create the set if we need it
+		Set<CyNode> nodeChanges = null; // only create the set if we need it
 
 		if (event.isNodesHiddenType()) { // at least one node was hidden
 
 			int[] hiddenNodes = event.getHiddenNodeIndices();
 			final int hNodesCount = hiddenNodes.length;
-			Node node;
+			CyNode node;
 			boolean setChanged;
 			for (int index = 0; index <hNodesCount; index++) {
 				node = graph.getNode(hiddenNodes[index]);
@@ -383,7 +383,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 				if (setChanged) { // the hidden node was actually selected
 
 					if (nodeChanges == null) {
-						nodeChanges = new HashSet<Node>();
+						nodeChanges = new HashSet<CyNode>();
 					}
 
 					nodeChanges.add(node); // save change for the event we'll
@@ -396,7 +396,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 			fireEvent(nodeChanges, false);
 		}
 
-		Set<Edge> edgeChanges = null; // only create the set if we need it
+		Set<CyEdge> edgeChanges = null; // only create the set if we need it
 
 		if (event.isEdgesHiddenType()) { // at least one edge was hidden
 			                             // GINY bug: sometimes we get an event that has valid edge indices
@@ -411,12 +411,12 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 //			if (eventSource instanceof RootGraph)
 //				root = (RootGraph) eventSource;
 //			else
-//				root = ((GraphPerspective) eventSource).getRootGraph();
+//				root = ((CyNetwork) eventSource).getRootGraph();
 //				
 
 			int[] indices = event.getHiddenEdgeIndices();
 			final int eLength = indices.length;
-			Edge edge;
+			CyEdge edge;
 			boolean setChanged;
 			for (int index = 0; index < eLength; index++) {
 				//edge = root.getEdge(indices[index]);
@@ -426,7 +426,7 @@ public class SelectFilterImpl implements SelectFilter, GraphPerspectiveChangeLis
 				if (setChanged) { // the hidden edge was actually selected
 
 					if (edgeChanges == null) {
-						edgeChanges = new HashSet<Edge>();
+						edgeChanges = new HashSet<CyEdge>();
 					}
 
 					edgeChanges.add(edge); // save change for the event we'll

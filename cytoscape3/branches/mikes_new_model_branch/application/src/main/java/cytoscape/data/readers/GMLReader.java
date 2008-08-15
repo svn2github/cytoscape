@@ -36,66 +36,33 @@
  */
 package cytoscape.data.readers;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.view.GraphView;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
-import org.cytoscape.layout.LayoutAdapter;
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
 import cytoscape.init.CyInitParams;
-
 import cytoscape.task.TaskMonitor;
-
-import cytoscape.util.PercentUtil;
 import cytoscape.util.FileUtil;
-
-import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.CalculatorCatalog;
-import org.cytoscape.vizmap.EdgeAppearanceCalculator;
-import org.cytoscape.vizmap.GlobalAppearanceCalculator;
-import org.cytoscape.vizmap.NodeAppearanceCalculator;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.VisualPropertyType;
-
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.calculators.BasicCalculator;
-
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
-import org.cytoscape.vizmap.mappings.PassThroughMapping;
-
-// -----------------------------------------------------------------------------------------
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
+import cytoscape.util.PercentUtil;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.LayoutAdapter;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualPropertyType;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.geom.Point2D;
-
-import java.io.StringWriter;
 import java.io.InputStream;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.io.StringWriter;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.Vector;
 
 
 /**
@@ -478,7 +445,7 @@ public class GMLReader extends AbstractGraphReader {
 			String label = (String) node_labels.get(idx);
 
 			if (nodeNameSet.add(label)) {
-				Node node = (Node) Cytoscape.getCyNode(label, true);
+				CyNode node = (CyNode) Cytoscape.getCyNode(label, true);
 				giny_nodes.add(node.getRootGraphIndex());
 				nodeIDMap.put(nodes.get(idx), node.getRootGraphIndex());
 				gml_id2order.put(nodes.get(idx), idx);
@@ -523,9 +490,9 @@ public class GMLReader extends AbstractGraphReader {
 				// String tempstr = "E name is :" + idx + "==" + edgeName;
 				edge_names.add(idx, edgeName);
 
-				Node node_1 = Cytoscape.getCyNode(sourceName);
-				Node node_2 = Cytoscape.getCyNode(targetName);
-				Edge edge = Cytoscape.getCyEdge(node_1, node_2, Semantics.INTERACTION, label, true, isDirected.booleanValue());
+				CyNode node_1 = Cytoscape.getCyNode(sourceName);
+				CyNode node_2 = Cytoscape.getCyNode(targetName);
+				CyEdge edge = Cytoscape.getCyEdge(node_1, node_2, Semantics.INTERACTION, label, true, isDirected.booleanValue());
 
 				// Set correct ID, canonical name and interaction name
 				edge.setIdentifier(edgeName);
@@ -1232,7 +1199,7 @@ public class GMLReader extends AbstractGraphReader {
 	 *
 	 * @param net DOCUMENT ME!
 	 */
-	public void doPostProcessing(GraphPerspective net) {
+	public void doPostProcessing(CyNetwork net) {
 		 
 		// 
 		CyInitParams init = CytoscapeInit.getCyInitParams();

@@ -36,20 +36,12 @@
 */
 package cytoscape.util;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import cytoscape.plugin.CytoscapePlugin;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualStyle;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.Label;
-import org.cytoscape.view.NodeView;
 
 import java.util.*;
 
@@ -82,7 +74,7 @@ public class GraphSetUtils {
 	 *            The title of the new network
 	 * @return A cyNetwork which is the union of the input graphs
 	 */
-	public static GraphPerspective createUnionGraph(List networkList, boolean copyView, String title) {
+	public static CyNetwork createUnionGraph(List networkList, boolean copyView, String title) {
 		return performNetworkOperation(networkList, UNION, copyView, title);
 	}
 
@@ -100,7 +92,7 @@ public class GraphSetUtils {
 	 *            The title of the new network
 	 * @return A cyNetwork which is the intersection of the input graphs
 	 */
-	public static GraphPerspective createIntersectionGraph(List networkList, boolean copyView, String title) {
+	public static CyNetwork createIntersectionGraph(List networkList, boolean copyView, String title) {
 		return performNetworkOperation(networkList, INTERSECTION, copyView, title);
 	}
 
@@ -122,7 +114,7 @@ public class GraphSetUtils {
 	 *            The title of the new network
 	 * @return A cyNetwork which is the difference of the input graphs
 	 */
-	public static GraphPerspective createDifferenceGraph(List networkList, boolean copyView, String title) {
+	public static CyNetwork createDifferenceGraph(List networkList, boolean copyView, String title) {
 		return performNetworkOperation(networkList, DIFFERENCE, copyView, title);
 	}
 
@@ -133,7 +125,7 @@ public class GraphSetUtils {
 	 *
 	 * @return cyNetwork created from applying this set operation
 	 */
-	protected static GraphPerspective performNetworkOperation(List networkList, int operation,
+	protected static CyNetwork performNetworkOperation(List networkList, int operation,
 	                                                   boolean copyView, String title) {
 		/*
 		 * We require at least one network for this operation This should be
@@ -176,11 +168,11 @@ public class GraphSetUtils {
 		}
 
 		// create the new network
-		GraphPerspective newNetwork = Cytoscape.createNetwork(new_nodes, new_edges, title);
+		CyNetwork newNetwork = Cytoscape.createNetwork(new_nodes, new_edges, title);
 
 		// get the visual style for the first network in the list and try to apply
 		// it to the new network.
-		GraphPerspective firstNetwork = (GraphPerspective)networkList.get(0);
+		CyNetwork firstNetwork = (CyNetwork)networkList.get(0);
 		GraphView firstView =  Cytoscape.getNetworkView( firstNetwork.getIdentifier() );
 		if ( firstView != null && firstView != Cytoscape.getNullNetworkView() ) {
 			VisualStyle firstVS = Cytoscape.getVisualMappingManager().getVisualStyleForView(firstView);
@@ -202,20 +194,20 @@ public class GraphSetUtils {
 	 * @return an integer array containing the set of edges in the difference
 	 */
 	protected static int[] differenceEdges(List networkList) {
-		List<Edge> edges = new Vector<Edge>();
+		List<CyEdge> edges = new Vector<CyEdge>();
 
 		/*
 		 * For each node in the first network, chech to make sure that it is not
 		 * present in all the other networks, add it to the list if this is the
 		 * case
 		 */
-		GraphPerspective firstNetwork = (GraphPerspective) networkList.get(0);
+		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
 EDGE_LOOP: 
 		for (Iterator edgeIt = firstNetwork.edgesIterator(); edgeIt.hasNext();) {
-			Edge currentEdge = (Edge) edgeIt.next();
+			CyEdge currentEdge = (CyEdge) edgeIt.next();
 
 			for (int idx = 1; idx < networkList.size(); idx++) {
-				GraphPerspective currentNetwork = (GraphPerspective) networkList.get(idx);
+				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
 
 				if (currentNetwork.containsEdge(currentEdge)) {
 					continue EDGE_LOOP;
@@ -229,7 +221,7 @@ EDGE_LOOP:
 		int idx = 0;
 
 		for (Iterator edgeIt = edges.iterator(); edgeIt.hasNext(); idx++) {
-			Edge currentEdge = (Edge) edgeIt.next();
+			CyEdge currentEdge = (CyEdge) edgeIt.next();
 			result[idx] = currentEdge.getRootGraphIndex();
 		}
 
@@ -246,19 +238,19 @@ EDGE_LOOP:
 	 * @return an integer array containing the set of edges in the difference
 	 */
 	protected static int[] differenceNodes(List networkList, int[] edges) {
-		HashSet<Node> nodes = new HashSet<Node>();
+		HashSet<CyNode> nodes = new HashSet<CyNode>();
 
 		/*
 		 * For each node in the first network, check to see if it is not present
 		 * in any of the other networks, add it to the list if this is the case
 		 */
-		GraphPerspective firstNetwork = (GraphPerspective) networkList.get(0);
+		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
 NODE_LOOP: 
 		for (Iterator nodeIt = firstNetwork.nodesIterator(); nodeIt.hasNext();) {
-			Node currentNode = (Node) nodeIt.next();
+			CyNode currentNode = (CyNode) nodeIt.next();
 
 			for (int idx = 1; idx < networkList.size(); idx++) {
-				GraphPerspective currentNetwork = (GraphPerspective) networkList.get(idx);
+				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
 
 				if (currentNetwork.containsNode(currentNode)) {
 					continue NODE_LOOP;
@@ -281,7 +273,7 @@ NODE_LOOP:
 		int idx = 0;
 
 		for (Iterator nodeIt = nodes.iterator(); nodeIt.hasNext(); idx++) {
-			Node currentNode = (Node) nodeIt.next();
+			CyNode currentNode = (CyNode) nodeIt.next();
 			result[idx] = currentNode.getRootGraphIndex();
 		}
 
@@ -294,19 +286,19 @@ NODE_LOOP:
 	 * @return an integer array which contains the indices of nodes in the intersection
 	 */
 	protected static int[] intersectNodes(List networkList) {
-		List<Node> nodes = new Vector<Node>();
+		List<CyNode> nodes = new Vector<CyNode>();
 
 		/*
 		 * For each node in the first network, check to see if it is present in
 		 * all of the other networks, add it to the list if this is the case
 		 */
-		GraphPerspective firstNetwork = (GraphPerspective) networkList.get(0);
+		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
 NODE_LOOP: 
 		for (Iterator nodeIt = firstNetwork.nodesIterator(); nodeIt.hasNext();) {
-			Node currentNode = (Node) nodeIt.next();
+			CyNode currentNode = (CyNode) nodeIt.next();
 
 			for (int idx = 1; idx < networkList.size(); idx++) {
-				GraphPerspective currentNetwork = (GraphPerspective) networkList.get(idx);
+				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
 
 				if (!currentNetwork.containsNode(currentNode)) {
 					continue NODE_LOOP;
@@ -320,7 +312,7 @@ NODE_LOOP:
 		int idx = 0;
 
 		for (Iterator nodeIt = nodes.iterator(); nodeIt.hasNext(); idx++) {
-			Node currentNode = (Node) nodeIt.next();
+			CyNode currentNode = (CyNode) nodeIt.next();
 			result[idx] = currentNode.getRootGraphIndex();
 		}
 
@@ -333,19 +325,19 @@ NODE_LOOP:
 	 * @return an integer array which contains the indices of edges in the intersection
 	 */
 	protected static int[] intersectEdges(List networkList) {
-		List<Edge> edges = new Vector<Edge>();
+		List<CyEdge> edges = new Vector<CyEdge>();
 
 		/*
 		 * For each node in the first network, check to see if it is present in
 		 * all of the other networks, add it to the list if this is the case
 		 */
-		GraphPerspective firstNetwork = (GraphPerspective) networkList.get(0);
+		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
 EDGE_LOOP: 
 		for (Iterator edgeIt = firstNetwork.edgesIterator(); edgeIt.hasNext();) {
-			Edge currentEdge = (Edge) edgeIt.next();
+			CyEdge currentEdge = (CyEdge) edgeIt.next();
 
 			for (int idx = 1; idx < networkList.size(); idx++) {
-				GraphPerspective currentNetwork = (GraphPerspective) networkList.get(idx);
+				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
 
 				if (!currentNetwork.containsEdge(currentEdge)) {
 					continue EDGE_LOOP;
@@ -359,7 +351,7 @@ EDGE_LOOP:
 		int idx = 0;
 
 		for (Iterator edgeIt = edges.iterator(); edgeIt.hasNext(); idx++) {
-			Edge currentEdge = (Edge) edgeIt.next();
+			CyEdge currentEdge = (CyEdge) edgeIt.next();
 			result[idx] = currentEdge.getRootGraphIndex();
 		}
 
@@ -378,10 +370,10 @@ EDGE_LOOP:
 		Set<Integer> nodes = new HashSet<Integer>();
 
 		for (Iterator it = networkList.iterator(); it.hasNext();) {
-			GraphPerspective currentNetwork = (GraphPerspective) it.next();
+			CyNetwork currentNetwork = (CyNetwork) it.next();
 
 			for (Iterator nodeIt = currentNetwork.nodesIterator(); nodeIt.hasNext();) {
-				nodes.add(Integer.valueOf(((Node) nodeIt.next()).getRootGraphIndex()));
+				nodes.add(Integer.valueOf(((CyNode) nodeIt.next()).getRootGraphIndex()));
 			}
 		}
 
@@ -407,10 +399,10 @@ EDGE_LOOP:
 		Set<Integer> edges = new HashSet<Integer>();
 
 		for (Iterator it = networkList.iterator(); it.hasNext();) {
-			GraphPerspective currentNetwork = (GraphPerspective) it.next();
+			CyNetwork currentNetwork = (CyNetwork) it.next();
 
 			for (Iterator edgeIt = currentNetwork.edgesIterator(); edgeIt.hasNext();) {
-				edges.add(Integer.valueOf(((Edge) edgeIt.next()).getRootGraphIndex()));
+				edges.add(Integer.valueOf(((CyEdge) edgeIt.next()).getRootGraphIndex()));
 			}
 		}
 

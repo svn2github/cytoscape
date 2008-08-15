@@ -34,24 +34,17 @@
  */
 package org.cytoscape.vizmap.properties;
 
-import org.cytoscape.vizmap.*;
-
-import org.cytoscape.vizmap.parsers.*;
-
-import org.cytoscape.vizmap.icon.*;
-
 import org.cytoscape.view.NodeView;
+import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.vizmap.VMMFactory;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.icon.NodeIcon;
+import org.cytoscape.vizmap.parsers.LineStyleParser;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.Icon;
 
 
 /**

@@ -36,22 +36,18 @@
 */
 package org.cytoscape.data;
 
-import org.cytoscape.data.SelectEvent;
-import org.cytoscape.data.SelectFilter;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.RootGraph;
 import org.cytoscape.data.impl.SelectEventImpl;
 import org.cytoscape.data.impl.SelectFilterImpl;
-
 import org.cytoscape.impl.FRootGraph;
-import org.cytoscape.RootGraph;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
 
-import junit.framework.*;
-
-import java.io.*;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -103,19 +99,19 @@ public class SelectEventTest extends TestCase {
 	 */
 	public void testCtor() throws Exception {
 		RootGraph rootGraph = new FRootGraph(); 
-		Node node1 = rootGraph.getNode(rootGraph.createNode());
-		Node node2 = rootGraph.getNode(rootGraph.createNode());
-		Edge edge1 = rootGraph.getEdge(rootGraph.createEdge(node1, node2));
-		Edge edge2 = rootGraph.getEdge(rootGraph.createEdge(node2, node1));
-		Node[] nodeArray = { node1, node2 };
-		Edge[] edgeArray = { edge1, edge2 };
-		GraphPerspective gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
+		CyNode node1 = rootGraph.getNode(rootGraph.createNode());
+		CyNode node2 = rootGraph.getNode(rootGraph.createNode());
+		CyEdge edge1 = rootGraph.getEdge(rootGraph.createEdge(node1, node2));
+		CyEdge edge2 = rootGraph.getEdge(rootGraph.createEdge(node2, node1));
+		CyNode[] nodeArray = { node1, node2 };
+		CyEdge[] edgeArray = { edge1, edge2 };
+		CyNetwork gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
 		SelectFilter source = new SelectFilterImpl(gp);
-		Set<Node> nodeSet = new HashSet<Node>();
+		Set<CyNode> nodeSet = new HashSet<CyNode>();
 		nodeSet.add(node1);
 		nodeSet.add(node2);
 
-		Set<Edge> edgeSet = new HashSet<Edge>();
+		Set<CyEdge> edgeSet = new HashSet<CyEdge>();
 		edgeSet.add(edge1);
 		edgeSet.add(edge2);
 

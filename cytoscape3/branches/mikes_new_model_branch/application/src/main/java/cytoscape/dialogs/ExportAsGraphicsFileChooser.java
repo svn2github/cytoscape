@@ -1,20 +1,21 @@
 package cytoscape.dialogs;
 
-import javax.swing.*;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+import cytoscape.util.CyFileFilter;
+import cytoscape.util.FileUtil;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.calculators.Calculator;
 
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-
-import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-import cytoscape.util.FileUtil;
-import cytoscape.util.CyFileFilter;
-import org.cytoscape.vizmap.VisualStyle;
-import org.cytoscape.vizmap.calculators.Calculator;
 
 /**
  * Dialog that chooses file to export to.

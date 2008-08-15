@@ -37,31 +37,22 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.data.readers.XGMMLException;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-
 import cytoscape.view.CyMenus;
 
+import javax.swing.*;
+import javax.xml.bind.JAXBException;
 import java.awt.event.ActionEvent;
-
 import java.io.File;
 import java.io.IOException;
-
-import javax.swing.JOptionPane;
-
-import javax.xml.bind.JAXBException;
 
 
 /**

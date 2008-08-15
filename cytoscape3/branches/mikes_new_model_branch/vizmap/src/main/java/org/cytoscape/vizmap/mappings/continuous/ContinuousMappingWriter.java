@@ -42,14 +42,13 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings.continuous;
 
+import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.Interpolator;
 import org.cytoscape.vizmap.mappings.InterpolatorFactory;
 
-import org.cytoscape.vizmap.ObjectToString;
-
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 

@@ -34,12 +34,13 @@ package org.cytoscape.coreplugin.cpath2.plugin;
 // imports
 
 import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.plugin.CytoscapePlugin;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
 import org.cytoscape.coreplugin.cpath2.mapping.MapCPathToCytoscape;
 import org.cytoscape.coreplugin.cpath2.util.NetworkListener;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.coreplugin.cpath2.web_service.CytoscapeCPathWebService;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -47,10 +48,6 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleActivator;
 
 /**
  * The cPath plugin class.  It gets called by Cytoscape's plugin manager

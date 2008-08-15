@@ -36,32 +36,23 @@
 
 package csplugins.quickfind.view;
 
-import csplugins.quickfind.plugin.QuickFindPlugIn;
-
 import csplugins.quickfind.util.QuickFind;
-
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.IndexFactory;
 import csplugins.widgets.autocomplete.index.NumberIndex;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.view.ComboBoxFactory;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
-
 import csplugins.widgets.slider.JRangeSliderExtended;
-
 import prefuse.data.query.NumberRangeModel;
-
 import prefuse.util.ui.JRangeSlider;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 /**

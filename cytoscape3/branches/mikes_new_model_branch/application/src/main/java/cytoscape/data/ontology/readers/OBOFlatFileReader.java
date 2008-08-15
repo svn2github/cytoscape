@@ -34,46 +34,19 @@
 */
 package cytoscape.data.ontology.readers;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
 import cytoscape.data.ontology.Ontology;
+import static cytoscape.data.ontology.readers.OBOTags.*;
 import cytoscape.util.URLUtil;
-import static cytoscape.data.ontology.readers.OBOTags.BROAD_SYNONYM;
-import static cytoscape.data.ontology.readers.OBOTags.DEF;
-import static cytoscape.data.ontology.readers.OBOTags.EXACT_SYNONYM;
-import static cytoscape.data.ontology.readers.OBOTags.ID;
-import static cytoscape.data.ontology.readers.OBOTags.IS_A;
-import static cytoscape.data.ontology.readers.OBOTags.IS_OBSOLETE;
-import static cytoscape.data.ontology.readers.OBOTags.NARROW_SYNONYM;
-import static cytoscape.data.ontology.readers.OBOTags.RELATED_SYNONYM;
-import static cytoscape.data.ontology.readers.OBOTags.RELATIONSHIP;
-import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
-import static cytoscape.data.ontology.readers.OBOTags.XREF;
-import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import java.io.*;
 import java.net.URL;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 
 /**
@@ -111,7 +84,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	protected static final String TERM_TAG = "[Term]";
 	private static final String DEF_ONTOLOGY_NAME = "Ontology DAG";
 	private ArrayList<String[]> interactionList;
-	private GraphPerspective ontologyDAG;
+	private CyNetwork ontologyDAG;
 
 	/*
 	 * This is for attributes of nodes.
@@ -179,9 +152,9 @@ public class OBOFlatFileReader implements OntologyReader {
 		String rootID = Cytoscape.getOntologyRootID();
 
 		if (rootID == null) {
-			Set<GraphPerspective> networkSet = Cytoscape.getNetworkSet();
+			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
 
-			for (GraphPerspective net : networkSet) {
+			for (CyNetwork net : networkSet) {
 				if (net.getTitle().equals(ONTOLOGY_DAG_ROOT)) {
 					rootID = net.getIdentifier();
 				}
@@ -264,7 +237,7 @@ public class OBOFlatFileReader implements OntologyReader {
 			colonInx = line.indexOf(':');
 			key = line.substring(0, colonInx).trim();
 			val = line.substring(colonInx + 1).trim();
-			Node source = null;
+			CyNode source = null;
 
 			if (key.equals(ID.toString())) {
 				// There's only one id.
@@ -319,7 +292,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				 * means current node is the source, and target is the one
 				 * written here.
 				 */
-				final Node target;
+				final CyNode target;
 
 				if (source == null) {
 					source = Cytoscape.getCyNode(id, true);
@@ -381,7 +354,7 @@ public class OBOFlatFileReader implements OntologyReader {
 		while (it.hasNext()) {
 			String[] interaction = it.next();
 
-			Edge isA = Cytoscape.getCyEdge(Cytoscape.getCyNode(interaction[0], true),
+			CyEdge isA = Cytoscape.getCyEdge(Cytoscape.getCyNode(interaction[0], true),
 			                               Cytoscape.getCyNode(interaction[1], true),
 			                               Semantics.INTERACTION, interaction[2], true, true);
 			ontologyDAG.addEdge(isA);
@@ -402,7 +375,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public GraphPerspective getDag() {
+	public CyNetwork getDag() {
 		return ontologyDAG;
 	}
 

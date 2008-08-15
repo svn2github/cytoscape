@@ -1,18 +1,25 @@
 package org.cytoscape.coreplugin.cpath2.cytoscape;
 
-import org.cytoscape.vizmap.*;
-import org.cytoscape.vizmap.calculators.Calculator;
+import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.GlobalAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 import org.cytoscape.vizmap.mappings.PassThroughMapping;
-import cytoscape.Cytoscape;
-import cytoscape.data.Semantics;
-import java.awt.*;
-
-import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
-import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
+import org.mskcc.biopax_plugin.style.BioPaxVisualStyleUtil;
+
+import java.awt.*;
 
 /**
  * Binary SIF Visual Style.

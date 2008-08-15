@@ -37,25 +37,24 @@
 
 package org.cytoscape.view;
 
-import org.cytoscape.view.*;
-import org.cytoscape.*;
-
-import junit.framework.*;
-
-import java.io.*;
-
-import java.util.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.RootGraph;
+import org.cytoscape.RootGraphFactory;
 
 
 /**
  *
  */
 public class CytoscapeViewTest extends TestCase {
-	GraphPerspective network;
-	Node node1;
-	Node node2;
-	Edge edge1;
-	Edge edge2;
+	CyNetwork network;
+	CyNode node1;
+	CyNode node2;
+	CyEdge edge1;
+	CyEdge edge2;
 	GraphView view;
 	NodeView nodeView1;
 	NodeView nodeView2;

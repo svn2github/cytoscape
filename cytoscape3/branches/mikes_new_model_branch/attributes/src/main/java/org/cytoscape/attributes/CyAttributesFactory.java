@@ -37,9 +37,10 @@
 */
 package org.cytoscape.attributes;
 
-import java.util.Map;
+import org.cytoscape.attributes.impl.CyAttributesImpl;
+
 import java.util.HashMap;
-import org.cytoscape.attributes.impl.CyAttributesImpl; 
+import java.util.Map;
 
 public class CyAttributesFactory {
 

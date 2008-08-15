@@ -44,27 +44,18 @@ package org.cytoscape.vizmap;
 
 
 //----------------------------------------------------------------------------
-import static org.cytoscape.vizmap.VisualPropertyType.EDGE_LINE_STYLE;
-import static org.cytoscape.vizmap.VisualPropertyType.EDGE_LINE_WIDTH;
-import static org.cytoscape.vizmap.VisualPropertyType.EDGE_SRCARROW_COLOR;
-import static org.cytoscape.vizmap.VisualPropertyType.EDGE_SRCARROW_SHAPE;
-import static org.cytoscape.vizmap.VisualPropertyType.EDGE_TGTARROW_COLOR;
-import static org.cytoscape.vizmap.VisualPropertyType.EDGE_TGTARROW_SHAPE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_BORDER_COLOR;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_FILL_COLOR;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_LINE_STYLE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_LINE_WIDTH;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_SIZE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
+
+import static org.cytoscape.vizmap.VisualPropertyType.*;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.calculators.CalculatorFactory;
 
 import java.io.BufferedReader;
-import java.io.Writer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -73,9 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
-import org.cytoscape.vizmap.calculators.Calculator;
-import org.cytoscape.vizmap.calculators.CalculatorFactory;
 
 
 //----------------------------------------------------------------------------

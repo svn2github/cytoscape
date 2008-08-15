@@ -36,33 +36,14 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import cytoscape.util.CyNetworkNaming;
-
-import org.cytoscape.view.GraphView;
-
 import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.layout.CyLayouts;
+import cytoscape.util.CyNetworkNaming;
+import org.cytoscape.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
-
-
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
+import org.cytoscape.layout.CyLayouts;
 
 import java.io.File;
 import java.io.IOException;
-
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.JPanel;
-
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.RootGraph;
 
 
 /**
@@ -124,7 +105,7 @@ public abstract class AbstractGraphReader implements GraphReader {
 	/**
 	 * Executes post-processing:  no-op.
 	*/
-	public void doPostProcessing(GraphPerspective network) {
+	public void doPostProcessing(CyNetwork network) {
 	}
 
 	/**

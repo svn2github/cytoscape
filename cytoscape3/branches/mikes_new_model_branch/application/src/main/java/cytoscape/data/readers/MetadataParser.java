@@ -36,21 +36,16 @@
  */
 package cytoscape.data.readers;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
+import org.cytoscape.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.net.URISyntaxException;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Manipulates network metadata for loading and saving.<br>
@@ -75,7 +70,7 @@ public class MetadataParser {
 	private static final String DEF_TYPE = "Protein-Protein Interaction";
 	private static final String DEF_FORMAT = "Cytoscape-XGMML";
 	private String metadataLabel;
-	private GraphPerspective network;
+	private CyNetwork network;
 	private CyAttributes networkAttributes;
 	private Map rdfAsMap;
 
@@ -85,7 +80,7 @@ public class MetadataParser {
 	 * @param network
 	 *            Target network for editing metadata.
 	 */
-	public MetadataParser(GraphPerspective network) {
+	public MetadataParser(CyNetwork network) {
 		this(network, DEFAULT_NETWORK_METADATA_LABEL);
 	}
 
@@ -97,7 +92,7 @@ public class MetadataParser {
 	 * @param metadataLabel
 	 *            Label used as a tag for this attribute.
 	 */
-	public MetadataParser(GraphPerspective network, String metadataLabel) {
+	public MetadataParser(CyNetwork network, String metadataLabel) {
 		this.metadataLabel = metadataLabel;
 		this.network = network;
 		networkAttributes = Cytoscape.getNetworkAttributes();

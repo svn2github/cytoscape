@@ -35,13 +35,9 @@
 package cytoscape.data.ontology;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.data.ontology.readers.OBOTags;
-
 import org.biojava.bio.Annotation;
-
 import org.biojava.ontology.Ontology;
-
 import org.biojava.utils.AbstractChangeable;
 
 import java.util.HashMap;

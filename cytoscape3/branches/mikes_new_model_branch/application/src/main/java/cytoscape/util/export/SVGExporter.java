@@ -1,14 +1,10 @@
 package cytoscape.util.export;
 
+import org.cytoscape.view.GraphView;
+import org.freehep.graphicsio.svg.SVGGraphics2D;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.view.GraphView;
-
-import org.freehep.graphicsio.svg.SVGGraphics2D;
-import org.freehep.graphics2d.VectorGraphics;
 
 /**
  * SVG exporter by the batik library.

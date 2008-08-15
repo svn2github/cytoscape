@@ -5,8 +5,6 @@ package cytoscape.plugin;
 
 import java.util.List;
 
-import cytoscape.util.IndeterminateProgressBar;
-
 /**
  * Object should be implmeneted by anyone using the {@link PluginManager#inquireThread(String, PluginInquireAction)}
  * method to get plugins from a given site.

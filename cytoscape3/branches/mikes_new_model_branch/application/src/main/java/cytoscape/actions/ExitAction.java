@@ -41,7 +41,6 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
 
 import java.awt.event.ActionEvent;

@@ -35,18 +35,11 @@
 package cytoscape.data.synonyms;
 
 import cytoscape.Cytoscape;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import java.util.*;
 
 
 /**
@@ -209,8 +202,8 @@ public class Aliases {
 
 		switch (objectType) {
 			case NODE:
-				List<Node> nodes = Cytoscape.getCyNodesList();
-				for ( Node n : nodes ) {
+				List<CyNode> nodes = Cytoscape.getCyNodesList();
+				for ( CyNode n : nodes ) {
 					id = n.getIdentifier();
 
 					final List aliases = attributes.getListAttribute(id, ALIAS);
@@ -223,8 +216,8 @@ public class Aliases {
 				break;
 
 			case EDGE:
-				List<Edge> edges = Cytoscape.getCyEdgesList();
-				for ( Edge e : edges ) {
+				List<CyEdge> edges = Cytoscape.getCyEdgesList();
+				for ( CyEdge e : edges ) {
 					id = e.getIdentifier();
 
 					final List aliases = attributes.getListAttribute(id, ALIAS);
@@ -240,7 +233,7 @@ public class Aliases {
 				it = Cytoscape.getNetworkSet().iterator();
 
 				while (it.hasNext()) {
-					id = ((Node) it.next()).getIdentifier();
+					id = ((CyNode) it.next()).getIdentifier();
 
 					final List aliases = attributes.getListAttribute(id, ALIAS);
 

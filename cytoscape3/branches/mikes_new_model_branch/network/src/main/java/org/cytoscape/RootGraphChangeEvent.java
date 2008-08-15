@@ -23,20 +23,20 @@ public abstract class RootGraphChangeEvent
   public abstract boolean isNodesRemovedType ();
   public abstract boolean isEdgesRemovedType ();
 
-  public abstract Node[] getCreatedNodes  ();
-  public abstract Edge[] getCreatedEdges  ();
+  public abstract CyNode[] getCreatedNodes  ();
+  public abstract CyEdge[] getCreatedEdges  ();
 
   /**
    *   this method may have undefined state.
    * @see #getRemovedNodeIndices()
    */
-  public abstract Node[] getRemovedNodes  ();
+  public abstract CyNode[] getRemovedNodes  ();
 
   /**
    *   this method may have undefined state.
    * @see #getRemovedEdgeIndices()
    */
-  public abstract Edge[] getRemovedEdges  ();
+  public abstract CyEdge[] getRemovedEdges  ();
 
   public abstract int[] getCreatedNodeIndices  ();
   public abstract int[] getCreatedEdgeIndices  ();

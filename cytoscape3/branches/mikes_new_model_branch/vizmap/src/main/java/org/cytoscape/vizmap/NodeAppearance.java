@@ -42,14 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_SIZE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
-import org.cytoscape.view.NodeView;
 import org.cytoscape.attributes.CyAttributesFactory;
-
-import java.awt.Color;
-import java.awt.Font;
 
 
 /**

@@ -36,28 +36,15 @@
  */
 package cytoscape.util;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTask;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.Task;
-import cytoscape.task.ui.JTask;
 
 /**
  * Compression-related methods mainly for Session Writer.<br>

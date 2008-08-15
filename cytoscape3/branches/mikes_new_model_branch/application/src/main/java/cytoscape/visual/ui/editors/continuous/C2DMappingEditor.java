@@ -36,24 +36,18 @@ package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
 import cytoscape.visual.ui.EditorFactory;
-
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
-
 import org.jdesktop.swingx.multislider.Thumb;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
-
 import java.util.List;
-
-import javax.swing.ImageIcon;
 
 
 /**

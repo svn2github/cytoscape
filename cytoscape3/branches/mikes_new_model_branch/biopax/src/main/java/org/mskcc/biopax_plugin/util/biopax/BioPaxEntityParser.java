@@ -33,7 +33,6 @@ package org.mskcc.biopax_plugin.util.biopax;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
-
 import org.mskcc.biopax_plugin.util.links.ExternalLink;
 import org.mskcc.biopax_plugin.util.rdf.RdfQuery;
 

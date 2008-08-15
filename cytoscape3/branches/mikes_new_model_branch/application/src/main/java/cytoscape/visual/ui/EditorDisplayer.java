@@ -36,25 +36,15 @@
 
 package cytoscape.visual.ui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Frame;
-
-import javax.swing.JColorChooser;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
 import cytoscape.Cytoscape;
 import cytoscape.util.CyColorChooser;
-import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualPropertyType;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel;
+import org.cytoscape.vizmap.*;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Managing value editors in for each data types.<br>

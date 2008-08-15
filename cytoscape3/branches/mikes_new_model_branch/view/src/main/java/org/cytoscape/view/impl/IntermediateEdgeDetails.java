@@ -38,9 +38,7 @@ package org.cytoscape.view.impl;
 
 import cytoscape.render.stateful.EdgeDetails;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
+import java.awt.*;
 
 
 class IntermediateEdgeDetails extends EdgeDetails {

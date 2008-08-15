@@ -36,8 +36,7 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Node;
-
+import org.cytoscape.CyNode;
 import org.cytoscape.view.GraphView;
 
 
@@ -66,8 +65,8 @@ final class GraphViewNodesHiddenEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Node[] getHiddenNodes() {
-		final Node[] returnThis = new Node[m_hiddenNodeInx.length];
+	public final CyNode[] getHiddenNodes() {
+		final CyNode[] returnThis = new CyNode[m_hiddenNodeInx.length];
 
 		for (int i = 0; i < returnThis.length; i++)
 			returnThis[i] = m_view.getRootGraph().getNode(m_hiddenNodeInx[i]);

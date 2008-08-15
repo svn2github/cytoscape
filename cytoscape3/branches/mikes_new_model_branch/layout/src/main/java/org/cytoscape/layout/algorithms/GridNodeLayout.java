@@ -36,19 +36,14 @@
 */
 package org.cytoscape.layout.algorithms;
 
-import org.cytoscape.*;
-
-import org.cytoscape.Edge;
+import org.cytoscape.CyEdge;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
-import java.awt.Dimension;
-
+import javax.swing.*;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.JPanel;
 
 
 /**
@@ -164,12 +159,12 @@ public class GridNodeLayout extends AbstractLayout {
 		Iterator<NodeView> nodeViews = networkView.getNodeViewsIterator();
 		int count = 0;
 
-		List<Edge> edgeList;
+		List<CyEdge> edgeList;
 		EdgeView ev;
 		while (nodeViews.hasNext()) {
 			nView = (NodeView) nodeViews.next();
 			edgeList = network.getAdjacentEdgesList(nView.getNode(),true,true,true);
-			for (Edge edge: edgeList) { 
+			for (CyEdge edge: edgeList) {
 				ev = networkView.getEdgeView(edge);
 				ev.clearBends(); 
 			}

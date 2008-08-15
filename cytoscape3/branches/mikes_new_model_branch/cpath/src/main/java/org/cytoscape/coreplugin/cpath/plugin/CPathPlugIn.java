@@ -35,20 +35,15 @@
 package org.cytoscape.coreplugin.cpath.plugin;
 
 import cytoscape.Cytoscape;
-
-
 import cytoscape.view.CyMenus;
 import cytoscape.view.CytoscapeDesktop;
-
 import org.cytoscape.coreplugin.cpath.ui.CPathDesktop;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 import javax.swing.*;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleActivator;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * PlugIn For exchanging Data with CPath.

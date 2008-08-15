@@ -40,35 +40,22 @@
 // $Author: mes $
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.Semantics;
-
 import cytoscape.data.writers.InteractionWriter;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
+import org.cytoscape.CyNetwork;
 
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.event.MenuEvent;
 
 
 /**
@@ -166,7 +153,7 @@ class SaveAsSifTask implements Task {
 			}
 
 			FileWriter f = new FileWriter(fileName);
-			GraphPerspective netToSave = Cytoscape.getCurrentNetwork();
+			CyNetwork netToSave = Cytoscape.getCurrentNetwork();
 			InteractionWriter.writeInteractions(netToSave, f, taskMonitor);
 			f.close();
 

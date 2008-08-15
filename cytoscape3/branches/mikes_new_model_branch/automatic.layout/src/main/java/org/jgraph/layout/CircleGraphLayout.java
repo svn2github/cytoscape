@@ -21,12 +21,10 @@
 package org.jgraph.layout;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.VertexView;
 
 import java.awt.geom.Rectangle2D;
-
 import java.util.ArrayList;
 import java.util.List;
 

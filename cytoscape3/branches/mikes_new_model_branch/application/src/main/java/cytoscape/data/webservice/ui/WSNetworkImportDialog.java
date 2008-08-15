@@ -35,7 +35,6 @@
 package cytoscape.data.webservice.ui;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
@@ -43,8 +42,6 @@ import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JDialog;
 
 
 /**

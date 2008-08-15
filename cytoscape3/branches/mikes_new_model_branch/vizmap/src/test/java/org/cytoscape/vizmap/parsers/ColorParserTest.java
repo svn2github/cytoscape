@@ -38,13 +38,10 @@
 package org.cytoscape.vizmap.parsers;
 
 
-import junit.framework.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import java.awt.Color;
-
-import java.io.*;
-
-import java.util.*;
+import java.awt.*;
 
 
 /**

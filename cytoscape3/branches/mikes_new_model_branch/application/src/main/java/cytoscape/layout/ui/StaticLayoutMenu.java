@@ -37,15 +37,12 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
-
+import cytoscape.task.util.TaskManager;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 
-import cytoscape.task.util.TaskManager;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JMenuItem;
 
 
 /**

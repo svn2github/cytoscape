@@ -36,18 +36,13 @@ package cytoscape.visual.ui.editors.discrete;
 
 import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
-
 import cytoscape.Cytoscape;
-
+import cytoscape.visual.ui.PopupLabelPositionChooser;
 import org.cytoscape.vizmap.LabelPosition;
 
-import cytoscape.visual.ui.PopupLabelPositionChooser;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
 
 
 /**

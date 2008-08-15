@@ -37,93 +37,45 @@
 package cytoscape.data.writers;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.bookmarks.Bookmarks;
-
 import cytoscape.data.Semantics;
-
-import cytoscape.generated.Child;
-import cytoscape.generated.Cysession;
-import cytoscape.generated.Cytopanel;
-import cytoscape.generated.Cytopanels;
+import cytoscape.generated.*;
 import cytoscape.generated.Desktop;
-import cytoscape.generated.DesktopSize;
-import cytoscape.generated.HiddenEdges;
-import cytoscape.generated.HiddenNodes;
-import cytoscape.generated.Network;
-import cytoscape.generated.NetworkFrame;
-import cytoscape.generated.NetworkFrames;
-import cytoscape.generated.NetworkTree;
-import cytoscape.generated.ObjectFactory;
-import cytoscape.generated.Ontology;
-import cytoscape.generated.OntologyServer;
 import cytoscape.generated.Panel;
-import cytoscape.generated.Panels;
-import cytoscape.generated.Parent;
-import cytoscape.generated.Plugins;
-import cytoscape.generated.SelectedEdges;
-import cytoscape.generated.SelectedNodes;
-import cytoscape.generated.Server;
-import cytoscape.generated.SessionState;
-
 import cytoscape.util.BookmarksUtil;
-
 import cytoscape.util.swing.JTreeTable;
-
-import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.vizmap.CalculatorCatalog;
 import org.cytoscape.vizmap.CalculatorIO;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.NodeView;
-
-import java.awt.Component;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.io.IOException;
-
-import java.math.BigInteger;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.swing.JInternalFrame;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
+import java.awt.*;
+import java.io.*;
+import java.math.BigInteger;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 /**
@@ -193,7 +145,7 @@ public class CytoscapeSessionWriter {
 	private String sessionFileName = null;
 	private String[] targetFileNames;
 	private Bookmarks bookmarks;
-	private Set<GraphPerspective> networks;
+	private Set<CyNetwork> networks;
 	private Map<String,String> networkMap;
 	private String sessionNote = "You can add note for this session here.";
 
@@ -241,7 +193,7 @@ public class CytoscapeSessionWriter {
 		
 		zos = new ZipOutputStream(new FileOutputStream(sessionFileName)); 
 
-		for (GraphPerspective network : networks)
+		for (CyNetwork network : networks)
 			zipNetwork(network);
 		zipCySession();
 		zipVizmapProps();
@@ -371,7 +323,7 @@ public class CytoscapeSessionWriter {
 	 * @throws JAXBException
 	 * @throws XMLStreamException
 	 */
-	private void zipNetwork(final GraphPerspective network)
+	private void zipNetwork(final CyNetwork network)
 	    throws IOException, JAXBException, URISyntaxException {
 
 		String xgmmlFile = getValidFileName( network.getTitle() + XGMML_EXT );
@@ -488,7 +440,7 @@ public class CytoscapeSessionWriter {
 
 		// Visit each node in the tree
 		while (itr.hasNext()) {
-			GraphPerspective network = (GraphPerspective) itr.next();
+			CyNetwork network = (CyNetwork) itr.next();
 			String networkID = network.getIdentifier();
 			String networkName = network.getTitle();
 
@@ -519,7 +471,7 @@ public class CytoscapeSessionWriter {
 		curNode.setFilename(getValidFileName(fileName));
 		curNode.setId(node.getUserObject().toString());
 
-		GraphPerspective curNet = Cytoscape.getNetwork((String) networkMap.get(node.getUserObject()
+		CyNetwork curNet = Cytoscape.getNetwork((String) networkMap.get(node.getUserObject()
 		                                                                    .toString()));
 		GraphView curView = viewMap.get(curNet.getIdentifier());
 
@@ -607,7 +559,7 @@ public class CytoscapeSessionWriter {
 				tempParent.setId(curNode.getId());
 				leaf.setParent(tempParent);
 
-				GraphPerspective targetNetwork = Cytoscape.getNetwork(targetID);
+				CyNetwork targetNetwork = Cytoscape.getNetwork(targetID);
 				GraphView curNetworkView = Cytoscape.getNetworkView(targetID);
 
 				if (curNetworkView == Cytoscape.getNullNetworkView()) {
@@ -663,7 +615,7 @@ public class CytoscapeSessionWriter {
 		// Add hidden/selected nodes and edges
 		//
 		String targetID = (String) networkMap.get(node.getUserObject().toString());
-		GraphPerspective targetNetwork = Cytoscape.getNetwork(targetID);
+		CyNetwork targetNetwork = Cytoscape.getNetwork(targetID);
 
 		/*
 		 * This is for metanode. will be used in the future.
@@ -723,7 +675,7 @@ public class CytoscapeSessionWriter {
 			HiddenNodes hn = factory.createHiddenNodes();
 			List<cytoscape.generated.Node> hNodeList = hn.getNode();
 
-			org.cytoscape.Node targetNode = null;
+			CyNode targetNode = null;
 			String curNodeName = null;
 
 			for (Iterator i = view.getNodeViewsIterator(); i.hasNext();) {
@@ -732,7 +684,7 @@ public class CytoscapeSessionWriter {
 				// Check if the node is hidden or not.
 				// If it's hidden, store in the session file.
 				if (view.showGraphObject(nview)) {
-					targetNode = (org.cytoscape.Node) nview.getNode();
+					targetNode = (CyNode) nview.getNode();
 					curNodeName = targetNode.getIdentifier();
 
 					cytoscape.generated.Node tempNode = factory.createNode();
@@ -754,7 +706,7 @@ public class CytoscapeSessionWriter {
 			HiddenEdges he = factory.createHiddenEdges();
 			List<cytoscape.generated.Edge> hEdgeList = he.getEdge();
 
-			org.cytoscape.Edge targetEdge = null;
+			CyEdge targetEdge = null;
 			String curEdgeName = null;
 
 			for (Iterator i = view.getEdgeViewsIterator(); i.hasNext();) {
@@ -763,7 +715,7 @@ public class CytoscapeSessionWriter {
 				// Check if the edge is hidden or not.
 				// If it's hidden, store in the session file.
 				if (view.showGraphObject(eview)) {
-					targetEdge = (org.cytoscape.Edge) eview.getEdge();
+					targetEdge = (CyEdge) eview.getEdge();
 					curEdgeName = targetEdge.getIdentifier();
 
 					cytoscape.generated.Edge tempEdge = factory.createEdge();
@@ -799,19 +751,19 @@ public class CytoscapeSessionWriter {
 	 * @return
 	 * @throws JAXBException
 	 */
-	private Object getSelectedObjects(int type, GraphPerspective curNet) throws JAXBException {
+	private Object getSelectedObjects(int type, CyNetwork curNet) throws JAXBException {
 		if (type == NODE) {
 			SelectedNodes sn = factory.createSelectedNodes();
 			List<cytoscape.generated.Node> sNodeList = sn.getNode();
 
-			Set<org.cytoscape.Node> selectedNodes = curNet.getSelectedNodes();
+			Set<CyNode> selectedNodes = curNet.getSelectedNodes();
 
 			if (selectedNodes.size() != 0) {
 				Iterator iterator = selectedNodes.iterator();
-				org.cytoscape.Node targetNode = null;
+				CyNode targetNode = null;
 
 				while (iterator.hasNext()) {
-					targetNode = (org.cytoscape.Node) iterator.next();
+					targetNode = (CyNode) iterator.next();
 
 					String curNodeName = targetNode.getIdentifier();
 					cytoscape.generated.Node tempNode = factory.createNode();
@@ -828,14 +780,14 @@ public class CytoscapeSessionWriter {
 			SelectedEdges se = factory.createSelectedEdges();
 			List<cytoscape.generated.Edge> sEdgeList = se.getEdge();
 
-			Set<org.cytoscape.Edge> selectedEdges = curNet.getSelectedEdges();
+			Set<CyEdge> selectedEdges = curNet.getSelectedEdges();
 
 			if (selectedEdges.size() != 0) {
 				Iterator iterator = selectedEdges.iterator();
-				org.cytoscape.Edge targetEdge = null;
+				CyEdge targetEdge = null;
 
 				while (iterator.hasNext()) {
-					targetEdge = (org.cytoscape.Edge) iterator.next();
+					targetEdge = (CyEdge) iterator.next();
 
 					String curEdgeName = targetEdge.getIdentifier();
 					cytoscape.generated.Edge tempEdge = factory.createEdge();

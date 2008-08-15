@@ -36,16 +36,11 @@
 */
 package org.cytoscape.vizmap.mappings.continuous;
 
-import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingReader;
-import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingWriter;
-
-import org.cytoscape.vizmap.parsers.ColorParser;
-import org.cytoscape.vizmap.ValueParser;
-
 import junit.framework.TestCase;
+import org.cytoscape.vizmap.ValueParser;
+import org.cytoscape.vizmap.parsers.ColorParser;
 
 import java.io.InputStream;
-
 import java.util.List;
 import java.util.Properties;
 

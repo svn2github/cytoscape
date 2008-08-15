@@ -36,21 +36,20 @@
  */
 package cytoscape.data;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
+import cytoscape.Cytoscape;
+import cytoscape.data.readers.GMLParser;
+import cytoscape.data.readers.GMLReader;
+import cytoscape.data.readers.GMLWriter;
+import junit.framework.TestCase;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 import org.cytoscape.view.GraphView;
 
-import cytoscape.Cytoscape;
-import cytoscape.data.readers.GMLReader;
-import cytoscape.data.readers.GMLWriter;
-import cytoscape.data.readers.GMLParser;
-import junit.framework.TestCase;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Vector;
 
@@ -60,18 +59,18 @@ public class GMLTest extends TestCase {
 	 * exporting to XGMML and then importing from it must preserve edge directionality
 	 */
 	public void testRoundtrip() throws Exception {
-		GraphPerspective network = Cytoscape.createNetwork("directed test network"); 
+		CyNetwork network = Cytoscape.createNetwork("directed test network");
 		GraphView view = Cytoscape.createNetworkView(network);
 
 		// create nodes
-		Node a = Cytoscape.getCyNode("from", true);
-		Node b = Cytoscape.getCyNode("to", true);
+		CyNode a = Cytoscape.getCyNode("from", true);
+		CyNode b = Cytoscape.getCyNode("to", true);
 
 		String attr = Semantics.INTERACTION;
 
 		// create two edges:
-		Edge undirected = Cytoscape.getCyEdge(a, b, attr, "u", true, false);
-		Edge directed = Cytoscape.getCyEdge(a, b, attr, "d", true, true);
+		CyEdge undirected = Cytoscape.getCyEdge(a, b, attr, "u", true, false);
+		CyEdge directed = Cytoscape.getCyEdge(a, b, attr, "d", true, true);
 		assertNotNull(undirected);
 		assertNotNull(directed);
 

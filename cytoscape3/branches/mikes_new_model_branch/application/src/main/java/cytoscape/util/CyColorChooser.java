@@ -36,14 +36,10 @@
 */
 package cytoscape.util;
 
-import java.awt.Color;
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JColorChooser;
-import javax.swing.JDialog;
-import javax.swing.JDialog;
 
 
 /**

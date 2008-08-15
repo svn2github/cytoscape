@@ -38,16 +38,14 @@ package cytoscape.io.table.ui;
 
 import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.*;
 import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.*;
-import static cytoscape.io.table.ui.theme.ImportDialogIconSets.*;
+import static cytoscape.io.table.ui.theme.ImportDialogIconSets.CAUTION_ICON;
+import static cytoscape.io.table.ui.theme.ImportDialogIconSets.INTERACTION_ICON;
 
+import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 /**
  * GUI Component for specify options for network table import.<br>

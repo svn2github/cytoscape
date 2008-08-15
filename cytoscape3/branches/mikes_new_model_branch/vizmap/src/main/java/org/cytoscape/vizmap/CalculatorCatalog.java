@@ -44,15 +44,18 @@ package org.cytoscape.vizmap;
 
 
 //----------------------------------------------------------------------------
+
 import static org.cytoscape.vizmap.VisualPropertyType.NODE_LABEL;
-
-import org.cytoscape.vizmap.calculators.*;
-
+import org.cytoscape.vizmap.calculators.AbstractCalculator;
+import org.cytoscape.vizmap.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.mappings.ContinuousMapping;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 import org.cytoscape.vizmap.mappings.PassThroughMapping;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -61,9 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 
 //----------------------------------------------------------------------------

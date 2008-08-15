@@ -38,18 +38,13 @@
 package cytoscape.groups;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.groups.CyGroup;
 
-import org.cytoscape.attributes.CyAttributes;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -66,28 +61,28 @@ public class CyGroupImpl implements CyGroup {
 	/**
 	 * The members of this group, indexed by the Node.
 	 */
-	private HashMap<Node, Node> nodeMap;
+	private HashMap<CyNode, CyNode> nodeMap;
 
 	/**
 	 * The edges in this group that only involve members of this group
 	 */
-	private HashMap<Edge, Edge> innerEdgeMap;
+	private HashMap<CyEdge, CyEdge> innerEdgeMap;
 
 	/**
 	 * The edges in this group that involve members outside of this group
 	 */
-	private HashMap<Edge, Edge> outerEdgeMap;
+	private HashMap<CyEdge, CyEdge> outerEdgeMap;
 
 	/**
 	 * A map storing the list of edges for a node at the time it was
 	 * added to the group
 	 */
-	private HashMap<Node,List<Edge>> nodeToEdgeMap;
+	private HashMap<CyNode,List<CyEdge>> nodeToEdgeMap;
 
 	/**
 	 * The node that represents this group
 	 */
-	private Node groupNode = null;
+	private CyNode groupNode = null;
 
 	/**
 	 * The group name
@@ -117,10 +112,10 @@ public class CyGroupImpl implements CyGroup {
 	 * Empty constructor
 	 */
 	protected CyGroupImpl() {
-		this.nodeMap = new HashMap<Node,Node>();
-		this.nodeToEdgeMap = new HashMap<Node,List<Edge>>();
-		this.innerEdgeMap = new HashMap<Edge,Edge>();
-		this.outerEdgeMap = new HashMap<Edge,Edge>();
+		this.nodeMap = new HashMap<CyNode, CyNode>();
+		this.nodeToEdgeMap = new HashMap<CyNode,List<CyEdge>>();
+		this.innerEdgeMap = new HashMap<CyEdge, CyEdge>();
+		this.outerEdgeMap = new HashMap<CyEdge, CyEdge>();
 	}
 
 	/**
@@ -139,7 +134,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param groupNode the CyNode to use for this group
 	 */
-	protected CyGroupImpl(Node groupNode) {
+	protected CyGroupImpl(CyNode groupNode) {
 		this();
 		this.groupNode = groupNode;
 		this.groupName = this.groupNode.getIdentifier();
@@ -152,13 +147,13 @@ public class CyGroupImpl implements CyGroup {
 	 * @param groupNode the group node to use for this group
 	 * @param nodeList the initial set of nodes for this group
 	 */
-	protected CyGroupImpl(Node groupNode, List nodeList) {
+	protected CyGroupImpl(CyNode groupNode, List nodeList) {
 		this(groupNode); // Create all of the necessary structures
 
 		Iterator iter = nodeList.iterator();
 
 		while (iter.hasNext()) {
-			this.addNodeToGroup ( (Node)iter.next() );
+			this.addNodeToGroup ( (CyNode)iter.next() );
 		}
 	}
 
@@ -174,7 +169,7 @@ public class CyGroupImpl implements CyGroup {
 		Iterator iter = nodeList.iterator();
 
 		while (iter.hasNext()) {
-			this.addNodeToGroup ( (Node)iter.next() );
+			this.addNodeToGroup ( (CyNode)iter.next() );
 		}
 	}
 
@@ -197,10 +192,10 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return list of nodes in the group
 	 */
-	public List<Node> getNodes() {
-		Collection<Node> v = nodeMap.values();
+	public List<CyNode> getNodes() {
+		Collection<CyNode> v = nodeMap.values();
 
-		return new ArrayList<Node>(v);
+		return new ArrayList<CyNode>(v);
 	}
 
 	/**
@@ -208,7 +203,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return CyNode representing the group
 	 */
-	public Node getGroupNode() {
+	public CyNode getGroupNode() {
 		return this.groupNode;
 	}
 
@@ -217,8 +212,8 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return node iterator
 	 */
-	public Iterator<Node> getNodeIterator() {
-		Collection<Node> v = nodeMap.values();
+	public Iterator<CyNode> getNodeIterator() {
+		Collection<CyNode> v = nodeMap.values();
 
 		return v.iterator();
 	}
@@ -228,10 +223,10 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return list of edges in the group
 	 */
-	public List<Edge> getInnerEdges() {
-		Collection<Edge> v = innerEdgeMap.values();
+	public List<CyEdge> getInnerEdges() {
+		Collection<CyEdge> v = innerEdgeMap.values();
 
-		return new ArrayList<Edge>(v);
+		return new ArrayList<CyEdge>(v);
 	}
 
 	/**
@@ -239,10 +234,10 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @return list of edges in the group
 	 */
-	public List<Edge> getOuterEdges() {
-		Collection<Edge> v = outerEdgeMap.values();
+	public List<CyEdge> getOuterEdges() {
+		Collection<CyEdge> v = outerEdgeMap.values();
 
-		return new ArrayList<Edge>(v);
+		return new ArrayList<CyEdge>(v);
 	}
 
 	/**
@@ -251,7 +246,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param edge the CyEdge to add to the outer edge map
 	 */
-	public void addOuterEdge(Edge edge) {
+	public void addOuterEdge(CyEdge edge) {
 		outerEdgeMap.put(edge, edge);
 	}
 
@@ -261,7 +256,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param edge the CyEdge to add to the innter edge map
 	 */
-	public void addInnerEdge(Edge edge) {
+	public void addInnerEdge(CyEdge edge) {
 		innerEdgeMap.put(edge, edge);
 	}
 
@@ -271,7 +266,7 @@ public class CyGroupImpl implements CyGroup {
 	 * @param node the CyNode to test
 	 * @return true if node is a member of the group
 	 */
-	public boolean contains(Node node) {
+	public boolean contains(CyNode node) {
 		if (nodeMap.containsKey(node))
 			return true;
 
@@ -364,23 +359,23 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param node the node to add
 	 */
-	public void addNode ( Node node ) {
+	public void addNode ( CyNode node ) {
 		// We need to go throught our outerEdgeMap first to see if this
 		// node has outer edges and proactively move them to inner edges.
 		// this needs to be done here because some viewers might have
 		// hidden edges on us, so the the call to getAdjacentEdgeIndices in
 		// addNodeToGroup won't return all of the edges.
-		List <Edge> eMove = new ArrayList<Edge>();
-		Iterator <Edge>edgeIter = outerEdgeMap.keySet().iterator();
+		List <CyEdge> eMove = new ArrayList<CyEdge>();
+		Iterator <CyEdge>edgeIter = outerEdgeMap.keySet().iterator();
 		while (edgeIter.hasNext()) {
-			Edge edge = edgeIter.next();
+			CyEdge edge = edgeIter.next();
 			if (edge.getTarget() == node || edge.getSource() == node) {
 				eMove.add(edge);
 			}
 		}
 		edgeIter = eMove.iterator();
 		while (edgeIter.hasNext()) {
-			Edge edge = edgeIter.next();
+			CyEdge edge = edgeIter.next();
 			outerEdgeMap.remove(edge);
 			innerEdgeMap.put(edge,edge);
 		}
@@ -405,7 +400,7 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param node the node to remove
 	 */
-	public void removeNode ( Node node ) {
+	public void removeNode ( CyNode node ) {
 		removeNodeFromGroup(node);
 		// Get our viewer
 		CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
@@ -420,16 +415,16 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param node the node to add
 	 */
-	private void addNodeToGroup ( Node node ) {
+	private void addNodeToGroup ( CyNode node ) {
 		// Put this node in our map
 		nodeMap.put(node, node);
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
-		List <Edge>edgeList = null;
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		List <CyEdge>edgeList = null;
 
 		if (nodeToEdgeMap.containsKey(node)) {
 			edgeList = nodeToEdgeMap.get(node);
 		} else {
-			edgeList = new ArrayList<Edge>();
+			edgeList = new ArrayList<CyEdge>();
 		}
 
 		// Add all of the edges
@@ -437,14 +432,14 @@ public class CyGroupImpl implements CyGroup {
 		if (edgeArray == null)
 			edgeArray = new int[]{};
 		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
-			Edge edge = (Edge)network.getEdge(edgeArray[edgeIndex]);
+			CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
 			// Not sure if this is faster or slower than going through the entire loop
 			if (edgeList.contains(edge))
 				continue;
 
 			edgeList.add(edge);
-			Node target = (Node)edge.getTarget();
-			Node source = (Node)edge.getSource();
+			CyNode target = (CyNode)edge.getTarget();
+			CyNode source = (CyNode)edge.getSource();
 
 			// Check to see if this edge is one of our own metaEdges
 			if (source == groupNode || target == groupNode) {
@@ -473,14 +468,14 @@ public class CyGroupImpl implements CyGroup {
 	 *
 	 * @param node the node to remove
 	 */
-	private void removeNodeFromGroup ( Node node ) {
+	private void removeNodeFromGroup ( CyNode node ) {
 		// Remove the node from our map
 		nodeMap.remove(node);
 
 		// Get the list of edges
-		List <Edge>edgeArray = nodeToEdgeMap.get(node);
-		for (Iterator <Edge>iter = edgeArray.iterator(); iter.hasNext(); ) {
-			Edge edge = iter.next();
+		List <CyEdge>edgeArray = nodeToEdgeMap.get(node);
+		for (Iterator <CyEdge>iter = edgeArray.iterator(); iter.hasNext(); ) {
+			CyEdge edge = iter.next();
 			if (innerEdgeMap.containsKey(edge)) {
 				innerEdgeMap.remove(edge);
 				outerEdgeMap.put(edge,edge);

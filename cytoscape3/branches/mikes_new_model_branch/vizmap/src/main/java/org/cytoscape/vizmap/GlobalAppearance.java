@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import java.awt.Color;
+import java.awt.*;
 
 
 /**

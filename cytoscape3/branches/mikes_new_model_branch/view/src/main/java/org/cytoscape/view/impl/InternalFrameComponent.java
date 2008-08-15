@@ -38,19 +38,12 @@ package org.cytoscape.view.impl;
 
 
 // imports
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Component;
-import java.awt.Rectangle;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JLabel;
-import javax.swing.JComponent;
-import javax.swing.JLayeredPane;
-import javax.swing.ImageIcon;
 
 
 /**

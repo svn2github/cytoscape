@@ -34,26 +34,14 @@
 */
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.data.readers.AbstractGraphReader;
-
-import org.cytoscape.RootGraph;
-
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
-
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiOneToInteractions;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapPsiTwoFiveToInteractions;
 import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 /**

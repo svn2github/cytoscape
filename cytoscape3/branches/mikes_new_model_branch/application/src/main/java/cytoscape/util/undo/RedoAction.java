@@ -36,14 +36,13 @@
 */
 package cytoscape.util.undo;
 
-import java.awt.*;
-import java.awt.event.*;
+import cytoscape.util.CytoscapeAction;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.undo.*;
-
-import cytoscape.util.CytoscapeAction;
+import javax.swing.event.MenuEvent;
+import javax.swing.undo.CannotUndoException;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * An action that calls redo for the most recent edit in the

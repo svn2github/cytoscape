@@ -51,20 +51,16 @@ import org.cytoscape.coreplugin.psi_mi.schema.mi1.ObjectFactory;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.XrefType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.*;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
-
 import org.jdom.Text;
-
-import java.io.StringReader;
-
-import java.math.BigInteger;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**

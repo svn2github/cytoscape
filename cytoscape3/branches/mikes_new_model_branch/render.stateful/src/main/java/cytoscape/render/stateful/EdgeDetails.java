@@ -39,9 +39,7 @@ package cytoscape.render.stateful;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
+import java.awt.*;
 
 
 /**

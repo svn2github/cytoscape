@@ -1,21 +1,14 @@
 package org.cytoscape;
 
+import org.cytoscape.data.SelectEventListener;
+import org.cytoscape.data.SelectFilter;
+
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collection;
-import java.util.NoSuchElementException;
-import java.util.ArrayList;
 import java.util.Set;
 
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.event.EventListenerList;
-
-import org.cytoscape.data.SelectFilter;
-import org.cytoscape.data.SelectEventListener;
-
-public interface GraphPerspective {
+public interface CyNetwork {
 
  
   public void addGraphPerspectiveChangeListener ( GraphPerspectiveChangeListener listener );
@@ -51,41 +44,41 @@ public interface GraphPerspective {
    * @return an Iterator over the Nodes in this graph; each Object in the
    *   returned Iterator is of type cytoscape.Node.
    */
-   public Iterator<Node> nodesIterator () ;
+   public Iterator<CyNode> nodesIterator () ;
    
  
   /**
    * Returns a list of Node objects.
    * @see #nodesIterator()
    */
-   public List<Node> nodesList () ;
+   public List<CyNode> nodesList () ;
  
   /**
    * Returns an array of length getNodeCount(); the array contains
    * RootGraph indices of Node objects in this GraphPerspective, in some
    * undefined order.
    * @see #nodesIterator()
-   * @see Node#getRootGraphIndex()
+   * @see CyNode#getRootGraphIndex()
    */
   public int[] getNodeIndicesArray();
  
   /**
    * @return an Iterator over the Edges in this graph.
    */
-   public Iterator<Edge> edgesIterator () ;
+   public Iterator<CyEdge> edgesIterator () ;
    
   /**
    * Returns a list of Edge objects.
    * @see #edgesIterator()
    */
-   public List<Edge> edgesList () ;
+   public List<CyEdge> edgesList () ;
  
   /**
    * Returns an array of length getEdgeCount(); the array contains
    * RootGraph indices of Edge objects in this GraphPerspective, in some
    * undefined order.
    * @see #edgesIterator()
-   * @see Edge#getRootGraphIndex()
+   * @see CyEdge#getRootGraphIndex()
    */
   public int[] getEdgeIndicesArray();
  
@@ -107,7 +100,7 @@ public interface GraphPerspective {
    * @return The given node, unless it was already hidden, in which case
    * null.
    */
-   public Node hideNode ( Node node ) ;
+   public CyNode hideNode ( CyNode node ) ;
  
   /**
    * If this GraphPerspective does not hide the Node with the given index in
@@ -120,10 +113,10 @@ public interface GraphPerspective {
    public int hideNode ( int node_index ) ;
  
   /**
-   * @see #hideNode(Node)
+   * @see #hideNode(CyNode)
    * @see #hideNodes(int[])
    */
-   public List<Node> hideNodes ( List<Node> nodes ) ;
+   public List<CyNode> hideNodes ( List<CyNode> nodes ) ;
  
   /**
    * If this GraphPerspective does not hide any of the Nodes corresponding to
@@ -148,7 +141,7 @@ public interface GraphPerspective {
    * @return The given node, unless it was not hidden or it doesn't exist
    *   in the RootGraph, in which case null.
    */
-   public Node restoreNode ( Node node ) ;
+   public CyNode restoreNode ( CyNode node ) ;
  
   /**
    * If this GraphPerspective hides the Node with the given index in the
@@ -161,17 +154,17 @@ public interface GraphPerspective {
    public int restoreNode ( int node_index ) ;
  
   /**
-   * @see #restoreNode(Node)
+   * @see #restoreNode(CyNode)
    * @see #restoreNodes(int[])
    */
-  public List<Node> restoreNodes ( List<Node> nodes ) ;
+  public List<CyNode> restoreNodes ( List<CyNode> nodes ) ;
   
   /**
    * @see #restoreNodes(int[])
    * @see #restoreEdges(int[])
    * @see RootGraph#getConnectingEdgeIndicesArray(int[])
    */
-  public List<Node> restoreNodes (List<Node> nodes, boolean restore_incident_edges);
+  public List<CyNode> restoreNodes (List<CyNode> nodes, boolean restore_incident_edges);
   
   /**
    * If this GraphPerspective hides any of the Nodes with the given RootGraph
@@ -214,7 +207,7 @@ public interface GraphPerspective {
    * @return The given edge, unless it was already hidden, in which case
    * null.
    */
-   public Edge hideEdge ( Edge edge ) ;
+   public CyEdge hideEdge ( CyEdge edge ) ;
  
   /**
    * If this GraphPerspective does not hide the Edge with the given index in
@@ -227,10 +220,10 @@ public interface GraphPerspective {
    public int hideEdge ( int edge_index ) ;
  
   /**
-   * @see #hideEdge(Edge)
+   * @see #hideEdge(CyEdge)
    * @see #hideEdges(int[])
    */
-   public List<Edge> hideEdges ( List<Edge> edges ) ;
+   public List<CyEdge> hideEdges ( List<CyEdge> edges ) ;
  
   /**
    * If this GraphPerspective does not hide any of the Edges corresponding to
@@ -255,7 +248,7 @@ public interface GraphPerspective {
    * @return The given edge, unless it was not hidden or does not exist
    *   in the underlying RootGraph, in which case null.
    */
-   public Edge restoreEdge ( Edge edge ) ;
+   public CyEdge restoreEdge ( CyEdge edge ) ;
  
   /**
    * If this GraphPerspective hides the Edge with the given index in the
@@ -271,7 +264,7 @@ public interface GraphPerspective {
   /**
    * @see #restoreEdges(int[])
    */
-   public List<Edge> restoreEdges ( List<Edge> edges ) ;
+   public List<CyEdge> restoreEdges ( List<CyEdge> edges ) ;
  
   /**
    * If this GraphPerspective hides any of the Edges corresponding to the
@@ -296,9 +289,9 @@ public interface GraphPerspective {
    * This method is equivalent to calling containsNode(Node, boolean)
    * with a true boolean argument.
    * @return true iff the given Node is in this GraphPerspective.
-   * @see #containsNode(Node, boolean)
+   * @see #containsNode(CyNode , boolean)
    */
-   public boolean containsNode ( Node node ) ;
+   public boolean containsNode ( CyNode node ) ;
  
   /**
    * Return true if the given Node is in this GraphPerspective.  False
@@ -310,18 +303,18 @@ public interface GraphPerspective {
    * given Node is hidden in this GraphPerspective.
    * @return true iff the given Node is in this GraphPerspective.
    */
-  public boolean containsNode ( Node node, boolean recurse ) ;
+  public boolean containsNode ( CyNode node, boolean recurse ) ;
  
   /**
    * Return true if the given Edge is in this GraphPerspective.  False
    * otherwise.  This method is recursive, so even if this GraphPerspective
    * does hide the Edge, this method will return true if the given Edge is
    * contained within any non-hidden Node (via the MetaParent->MetaChild
-   * relationship) at any depth.  This method calls {@link #containsEdge( Edge,
+   * relationship) at any depth.  This method calls {@link #containsEdge( CyEdge ,
    * boolean ) } with a true <tt>recurse</tt> boolean argument.
    * @return true iff the given Edge is in this GraphPerspective.
    */
-   public boolean containsEdge ( Edge edge ) ;
+   public boolean containsEdge ( CyEdge edge ) ;
  
   /**
    * Return true if the given Edge is in this GraphPerspective.  False
@@ -332,7 +325,7 @@ public interface GraphPerspective {
    * <tt>recurse</tt> is false then this method will return false iff the
    * given Edge is hidden in this GraphPerspective.
    */
-  public boolean containsEdge ( Edge edge, boolean recurse ) ;
+  public boolean containsEdge ( CyEdge edge, boolean recurse ) ;
  
   /**
    * Creates a union GraphPerspective.  The given GraphPerspective must have
@@ -341,7 +334,7 @@ public interface GraphPerspective {
    * from this GraphPerspective and the given GraphPerspective, or null if
    * the input GraphPerspective does not have the same RootGraph as this one.
    */
-   public GraphPerspective join ( GraphPerspective peer ) ;
+   public CyNetwork join ( CyNetwork peer ) ;
  
   /**
    * Create a new GraphPerspective with just the given Nodes and Edges (and all
@@ -356,9 +349,9 @@ public interface GraphPerspective {
    *   or Edges are not in this GraphPerspective.
    * @see RootGraph#createGraphPerspective(int[], int[])
    */
-   public GraphPerspective createGraphPerspective ( Node[] nodes, Edge[] edges);
+   public CyNetwork createGraphPerspective ( CyNode[] nodes, CyEdge[] edges);
  
-   public GraphPerspective createGraphPerspective ( Collection<Node> nodes, Collection<Edge> edges);
+   public CyNetwork createGraphPerspective ( Collection<CyNode> nodes, Collection<CyEdge> edges);
   /**
    * Create a new GraphPerspective with just the Nodes with the given
    * <tt>node_indices</tt> and just the Edges with the given
@@ -373,14 +366,14 @@ public interface GraphPerspective {
    *   to Nodes or Edges existing in this GraphPerspective.
    * @see RootGraph#createGraphPerspective(int[], int[])
    */
-  public GraphPerspective createGraphPerspective (int[] node_indices,
+  public CyNetwork createGraphPerspective (int[] node_indices,
                                                   int[] edge_indices
                                                   );
  
   /**
    * @see #neighborsArray(int)
    */
-   public List<Node> neighborsList ( Node node ) ;
+   public List<CyNode> neighborsList ( CyNode node ) ;
 
   /**
    *   Please note that the definition
@@ -405,7 +398,7 @@ public interface GraphPerspective {
    * @param a_node Source node.
    * @param another_node Possible target node.
    */
-  public boolean isNeighbor ( Node a_node, Node another_node ) ;
+  public boolean isNeighbor ( CyNode a_node, CyNode another_node ) ;
   
   /**
    *   Please note that the definition
@@ -428,7 +421,7 @@ public interface GraphPerspective {
    * @param from Source node.
    * @param to Possible target node.
    */
-  public boolean edgeExists ( Node from, Node to ) ;
+  public boolean edgeExists ( CyNode from, CyNode to ) ;
  
   /**
    *   This method returns true if and only if
@@ -455,8 +448,8 @@ public interface GraphPerspective {
    * <tt>to</tt> Node; returns -1 if either the <tt>from</tt> or the
    * <tt>to</tt> Node is not in this GraphPerspective.
    */
-  public int getEdgeCount (Node from,
-                           Node to,
+  public int getEdgeCount (CyNode from,
+                           CyNode to,
                            boolean count_undirected_edges
                            );
  
@@ -492,7 +485,7 @@ public interface GraphPerspective {
    * <tt>to</tt> Node, or the empty List if none exist; null is returned if either
    * of the specified nodes is not in this GraphPerspective.
    */
-   public List<Edge> edgesList ( Node from, Node to ) ;
+   public List<CyEdge> edgesList ( CyNode from, CyNode to ) ;
  
   /**
    * Return an array of the indices in this GraphPerspective of all Edges from
@@ -510,7 +503,7 @@ public interface GraphPerspective {
    * if either of the specified nodes does not exist in this GraphPerspective.
    * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
-  public List<Edge> edgesList (int from_node_index,
+  public List<CyEdge> edgesList (int from_node_index,
                          int to_node_index,
                          boolean include_undirected_edges
                          );
@@ -548,7 +541,7 @@ public interface GraphPerspective {
    * @return the in-degree of the given Node, or -1 if the specified Node is not
    *   in this GraphPerspective.
    */
-   public int getInDegree ( Node node ) ;
+   public int getInDegree ( CyNode node ) ;
  
   /**
    * Return the number of Edges <tt><i>e</i></tt> in this GraphPerspective such
@@ -575,7 +568,7 @@ public interface GraphPerspective {
    * @return the in-degree of the given Node or -1 if specified Node is not
    *   in this GraphPerspective.
    */
-   public int getInDegree ( Node node, boolean count_undirected_edges ) ;
+   public int getInDegree ( CyNode node, boolean count_undirected_edges ) ;
  
   /**
    * Return the number of Edges <tt><i>e</i></tt> in this GraphPerspective
@@ -602,7 +595,7 @@ public interface GraphPerspective {
    * @return the out-degree of the given Node, or -1 if specified Node is not
    *   in this GraphPerspective.
    */
-   public int getOutDegree ( Node node ) ;
+   public int getOutDegree ( CyNode node ) ;
  
   /**
    * Return the number of Edges <tt><i>e</i></tt> in this GraphPerspective such
@@ -629,7 +622,7 @@ public interface GraphPerspective {
    * @return the out-degree of the given Node or -1 if specified Node is not
    *   in this GraphPerspective.
    */
-   public int getOutDegree ( Node node, boolean count_undirected_edges ) ;
+   public int getOutDegree ( CyNode node, boolean count_undirected_edges ) ;
  
   /**
    * Return the number of Edges <tt><i>e</i></tt> in this GraphPerspective
@@ -654,7 +647,7 @@ public interface GraphPerspective {
    * @return the degree, in this GraphPerspective, of the given Node, or -1 if
    *   specified Node is not in this GraphPerspective.
    */
-   public int getDegree ( Node node ) ;
+   public int getDegree ( CyNode node ) ;
  
   /**
    * Return the number of distinct Edges in this GraphPerspective incident on
@@ -674,7 +667,7 @@ public interface GraphPerspective {
    *   (node.getRootGraphIndex()), or 0 if it is hidden or does not exist
    *   in the underlying RootGraph.
    */
-   public int getIndex ( Node node ) ;
+   public int getIndex ( CyNode node ) ;
  
  
   /**
@@ -692,7 +685,7 @@ public interface GraphPerspective {
    * @return the Node in this GraphPerspective, or null if
    *   no such Node exists in this GraphPerspective.
    */
-   public Node getNode ( int index ) ;
+   public CyNode getNode ( int index ) ;
  
   /**
    * Return the index of the given Edge in the underlying RootGraph.
@@ -702,7 +695,7 @@ public interface GraphPerspective {
    *   (edge.getRootGraphIndex()), or 0 if it is hidden or does not exist
    *   in the underlying RootGraph.
    */
-   public int getIndex ( Edge edge ) ;
+   public int getIndex ( CyEdge edge ) ;
  
  
   /**
@@ -719,7 +712,7 @@ public interface GraphPerspective {
    * @return the Edge in this GraphPerspective, or null if
    *   no such Edge exists in this GraphPerspective.
    */
-   public Edge getEdge ( int index ) ;
+   public CyEdge getEdge ( int index ) ;
  
   /**
    * Retrieve the index of the Node that is the source of the Edge in this
@@ -762,7 +755,7 @@ public interface GraphPerspective {
    *   exist in this GraphPerspective.
    * @see #getAdjacentEdgeIndicesArray(int, boolean, boolean, boolean)
    */
-  public List<Edge> getAdjacentEdgesList ( Node node, boolean include_undirected_edges, boolean incoming_edges, boolean outgoing_edges );
+  public List<CyEdge> getAdjacentEdgesList ( CyNode node, boolean include_undirected_edges, boolean incoming_edges, boolean outgoing_edges );
 
   /**
    * Returns [RootGraph] indices of all Edges in this GraphPerspective
@@ -805,7 +798,7 @@ public interface GraphPerspective {
   /**
    * This will return a List of cytoscape.Edge objects that are the Edges between Nodes.
    */
-  public List<Edge> getConnectingEdges ( List<Node> nodes );
+  public List<CyEdge> getConnectingEdges ( List<CyNode> nodes );
 
   /**
    * This will return an array of Edge indices that are the Edges between Nodes.
@@ -817,7 +810,7 @@ public interface GraphPerspective {
    * will automatically find all the interconnected Edges.
    * Returns null if any of the specified Nodes are not in this GraphPerspective.
    */
-  public GraphPerspective createGraphPerspective( int[] node_indices );
+  public CyNetwork createGraphPerspective( int[] node_indices );
 
 
 /*
@@ -847,7 +840,7 @@ public interface GraphPerspective {
 	/**
 	 * Appends all of the nodes and edges in the given Network to this Network
 	 */
-	public void appendNetwork(GraphPerspective network);
+	public void appendNetwork(CyNetwork network);
 
 	/**
 	 * Sets the selected state of all nodes in this CyNetwork to true
@@ -875,7 +868,7 @@ public interface GraphPerspective {
 	 * @param nodes a Collection of Nodes
 	 * @param selected_state the desired selection state for the nodes
 	 */
-	public void setSelectedNodeState(Collection<Node> nodes, boolean selected_state);
+	public void setSelectedNodeState(Collection<CyNode> nodes, boolean selected_state);
 
 	/**
 	 * Sets the selected state of a single node.
@@ -883,7 +876,7 @@ public interface GraphPerspective {
 	 * @param node a single Node
 	 * @param selected_state the desired selection state for the nodes
 	 */
-	public void setSelectedNodeState(Node node, boolean selected_state);
+	public void setSelectedNodeState(CyNode node, boolean selected_state);
 
 	/**
 	 * Sets the selected state of a collection of edges.
@@ -891,7 +884,7 @@ public interface GraphPerspective {
 	 * @param edges a Collection of Edges
 	 * @param selected_state the desired selection state for the edges
 	 */
-	public void setSelectedEdgeState(Collection<Edge> edges, boolean selected_state);
+	public void setSelectedEdgeState(Collection<CyEdge> edges, boolean selected_state);
 
 	/**
 	 * Sets the selected state of a single edge.
@@ -899,7 +892,7 @@ public interface GraphPerspective {
 	 * @param edge a single Edge
 	 * @param selected_state the desired selection state for the edges
 	 */
-	public void setSelectedEdgeState(Edge edge, boolean selected_state);
+	public void setSelectedEdgeState(CyEdge edge, boolean selected_state);
 
 	/**
 	 * Returns the selected state of the given node.
@@ -907,7 +900,7 @@ public interface GraphPerspective {
 	 * @param node the node
 	 * @return true if selected, false otherwise
 	 */
-	public boolean isSelected(Node node);
+	public boolean isSelected(CyNode node);
 
 	/**
 	 * Returns the selected state of the given edge.
@@ -915,21 +908,21 @@ public interface GraphPerspective {
 	 * @param edge the edge
 	 * @return true if selected, false otherwise
 	 */
-	public boolean isSelected(Edge edge);
+	public boolean isSelected(CyEdge edge);
 
 	/**
 	 * Returns the set of selected nodes in this CyNetwork
 	 *
 	 * @return a Set of selected nodes
 	 */
-	public Set<Node> getSelectedNodes();
+	public Set<CyNode> getSelectedNodes();
 
 	/**
 	 * Returns the set of selected edges in this CyNetwork
 	 *
 	 * @return a Set of selected edges
 	 */
-	public Set<Edge> getSelectedEdges();
+	public Set<CyEdge> getSelectedEdges();
 
 	/**
 	 * Adds a listener for SelectEvents to this CyNetwork
@@ -962,7 +955,7 @@ public interface GraphPerspective {
 	 *
 	 * @return the Network Index of this node
 	 */
-	public Node addNode(Node cytoscape_node);
+	public CyNode addNode(CyNode cytoscape_node);
 
 	/**
 	 * This will remove this node from the Network. However, unless forced, it
@@ -992,7 +985,7 @@ public interface GraphPerspective {
 	 *
 	 * @return the Network Index of this edge
 	 */
-	public Edge addEdge(Edge cytoscape_edge);
+	public CyEdge addEdge(CyEdge cytoscape_edge);
 
 	/**
 	 * This will remove this edge from the Network. However, unless forced, it

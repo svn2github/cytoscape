@@ -38,27 +38,19 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
-import cytoscape.actions.CreateNetworkViewTask;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.CyNetwork;
 import org.cytoscape.view.GraphView;
 
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
-import javax.swing.JOptionPane;
-
-import javax.swing.event.MenuEvent;
-
-import org.cytoscape.GraphPerspective;
 
 
 /**
@@ -90,7 +82,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
+		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 		createViewFromCurrentNetwork(cyNetwork);
 	}
 
@@ -99,7 +91,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 *
 	 * @param cyNetwork DOCUMENT ME!
 	 */
-	public static void createViewFromCurrentNetwork(GraphPerspective cyNetwork) {
+	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 
 		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit.getProperties()
@@ -144,7 +136,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 * Sets the state of the action before rendering the menu. 
 	 */
 	public void menuSelected(MenuEvent e) {
-		GraphPerspective currNet = Cytoscape.getCurrentNetwork();
+		CyNetwork currNet = Cytoscape.getCurrentNetwork();
 		if ( currNet == null || currNet == Cytoscape.getNullNetwork() ) {
 			setEnabled(false);
 			return;
@@ -160,10 +152,10 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 
 
 class CreateNetworkViewTask implements Task {
-	private GraphPerspective network;
+	private CyNetwork network;
 	private TaskMonitor taskMonitor;
 
-	CreateNetworkViewTask(GraphPerspective network) {
+	CreateNetworkViewTask(CyNetwork network) {
 		this.network = network;
 	}
 

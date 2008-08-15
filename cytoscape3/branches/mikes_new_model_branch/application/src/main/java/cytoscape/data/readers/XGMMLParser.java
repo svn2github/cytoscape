@@ -38,31 +38,23 @@
 package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
-import cytoscape.groups.CyGroupManager;
-import org.cytoscape.groups.CyGroup;
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
-import cytoscape.util.intr.IntObjHash;
-import cytoscape.util.intr.IntEnumerator;
-
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import java.util.Stack;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.awt.Color;
+import org.xml.sax.helpers.AttributesImpl;
+import org.xml.sax.helpers.DefaultHandler;
+
+import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.*;
+import java.util.List;
 
 interface Handler {
 	public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException;
@@ -140,27 +132,27 @@ class XGMMLParser extends DefaultHandler {
 	private String RDFFormat = null;
 
 	/* Internal lists of the created nodes and edges */
-	private List<Node> nodeList = null;
-	private List<Edge> edgeList = null;
+	private List<CyNode> nodeList = null;
+	private List<CyEdge> edgeList = null;
 	/* Map of Groups to lists of node references that haven't been processed */
-	private HashMap<Node,List<String>> nodeLinks = null;
+	private HashMap<CyNode,List<String>> nodeLinks = null;
 	/* Map of XML ID's to nodes */
-	private HashMap<String,Node> idMap = null;
+	private HashMap<String, CyNode> idMap = null;
 	/* Map of group nodes to children */
-	private HashMap<Node,List<Node>> groupMap = null;
+	private HashMap<CyNode,List<CyNode>> groupMap = null;
 
 	// Groups might actually recurse on us, so we need to
 	// maintain a stack
-	private Stack<Node> groupStack = null;
+	private Stack<CyNode> groupStack = null;
 
 	/* Map of nodes to graphics information */
-	private HashMap<Node, Attributes> nodeGraphicsMap = null;
+	private HashMap<CyNode, Attributes> nodeGraphicsMap = null;
 	/* Map of edges to graphics information */
-	private HashMap<Edge, Attributes> edgeGraphicsMap = null;
+	private HashMap<CyEdge, Attributes> edgeGraphicsMap = null;
 
-	private	Node currentNode = null;
-	private	Edge currentEdge = null;
-	private	Node currentGroupNode = null;
+	private CyNode currentNode = null;
+	private CyEdge currentEdge = null;
+	private CyNode currentGroupNode = null;
 	
 	/*
 	 * The graph-global directedness, which will be used as default directedness
@@ -481,13 +473,13 @@ class XGMMLParser extends DefaultHandler {
 	 */
 	XGMMLParser() {
 		stateStack = new Stack<ParseState>();
-		groupStack = new Stack<Node>();
-		nodeList = new ArrayList<Node>();
-		edgeList = new ArrayList<Edge>();
-		nodeLinks = new HashMap<Node,List<String>>();
-		nodeGraphicsMap = new HashMap<Node,Attributes>();
-		edgeGraphicsMap = new HashMap<Edge,Attributes>();
-		idMap = new HashMap<String,Node>();
+		groupStack = new Stack<CyNode>();
+		nodeList = new ArrayList<CyNode>();
+		edgeList = new ArrayList<CyEdge>();
+		nodeLinks = new HashMap<CyNode,List<String>>();
+		nodeGraphicsMap = new HashMap<CyNode,Attributes>();
+		edgeGraphicsMap = new HashMap<CyEdge,Attributes>();
+		idMap = new HashMap<String, CyNode>();
 	}
 
 	/********************************************************************
@@ -513,11 +505,11 @@ class XGMMLParser extends DefaultHandler {
 		return networkName;
 	}
 
-	HashMap<Node, Attributes> getNodeGraphics() {
+	HashMap<CyNode, Attributes> getNodeGraphics() {
 		return nodeGraphicsMap;
 	}
 
-	HashMap<Edge, Attributes> getEdgeGraphics() {
+	HashMap<CyEdge, Attributes> getEdgeGraphics() {
 		return edgeGraphicsMap;
 	}
 
@@ -537,11 +529,11 @@ class XGMMLParser extends DefaultHandler {
 		return new Point2D.Double(graphCenterX, graphCenterY);
 	}
 
-	HashMap<Node, List<Node>> getGroupMap() {
+	HashMap<CyNode, List<CyNode>> getGroupMap() {
 		return groupMap;
 	}
 
-	void setMetaData(GraphPerspective network) {
+	void setMetaData(CyNetwork network) {
 		MetadataParser mdp = new MetadataParser(network);
 		if (RDFType != null)
 			mdp.setMetadata(MetadataEntries.TYPE, RDFType);
@@ -710,11 +702,11 @@ class XGMMLParser extends DefaultHandler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			// Resolve any unresolve node references
 			if (nodeLinks != null) {
-				for (Node groupNode : nodeLinks.keySet()) {
+				for (CyNode groupNode : nodeLinks.keySet()) {
 					if (!groupMap.containsKey(groupNode)) {
-						groupMap.put(groupNode, new ArrayList<Node>());
+						groupMap.put(groupNode, new ArrayList<CyNode>());
 					}
-					List<Node>groupList = groupMap.get(groupNode);
+					List<CyNode>groupList = groupMap.get(groupNode);
 					for (String ref: nodeLinks.get(groupNode)) {
 						if (idMap.containsKey(ref)) {
 							groupList.add(idMap.get(ref));
@@ -879,8 +871,8 @@ class XGMMLParser extends DefaultHandler {
 				} 
 			}
 			if (idMap.containsKey(source) && idMap.containsKey(target)) {
-				Node sourceNode = idMap.get(source);
-				Node targetNode = idMap.get(target);
+				CyNode sourceNode = idMap.get(source);
+				CyNode targetNode = idMap.get(target);
 				currentEdge = createEdge(sourceNode, targetNode, interaction, label, directed);
 			} else if (sourceAlias != null && targetAlias != null) {
 				currentEdge = createEdge(sourceAlias, targetAlias, interaction, label, directed);
@@ -947,10 +939,10 @@ class XGMMLParser extends DefaultHandler {
 
 	class handleGroup implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			if (groupMap == null) groupMap = new HashMap<Node, List<Node>>();
+			if (groupMap == null) groupMap = new HashMap<CyNode, List<CyNode>>();
 			if (currentGroupNode != null) groupStack.push(currentGroupNode);
 			currentGroupNode = currentNode;
-			groupMap.put(currentGroupNode, new ArrayList<Node>());
+			groupMap.put(currentGroupNode, new ArrayList<CyNode>());
 			// System.out.println("Found group: "+currentNode);
 			return current;
 		}
@@ -981,8 +973,8 @@ class XGMMLParser extends DefaultHandler {
 				throw new SAXException("No group to add node reference to");
 
 			if (idMap.containsKey(id)) {
-				Node node = idMap.get(id);
-				List<Node>nodeList = groupMap.get(currentGroupNode);
+				CyNode node = idMap.get(id);
+				List<CyNode>nodeList = groupMap.get(currentGroupNode);
 				nodeList.add(node);
 			} else {
 				// Remember it for later -- we'll fix this up in handleGraphDone
@@ -1461,14 +1453,14 @@ class XGMMLParser extends DefaultHandler {
 
 
 
-	private Node createUniqueNode (String label, String id) throws SAXException {
+	private CyNode createUniqueNode (String label, String id) throws SAXException {
 		if (label != null) {
 			if (id == null)
 				id = label;
 				// System.out.print(" label=\""+label+"\"");
 		}
 		// OK, now actually create it
-		Node node = Cytoscape.getCyNode(label, true);
+		CyNode node = Cytoscape.getCyNode(label, true);
 		// System.out.println("Created new node("+label+") id="+node.getRootGraphIndex());
 
 		// Add it our indices
@@ -1478,15 +1470,15 @@ class XGMMLParser extends DefaultHandler {
 		return node;
 	}
 
-	private Edge createEdge (Node source, Node target, 
+	private CyEdge createEdge (CyNode source, CyNode target,
                              String interaction, String label, boolean directed) throws SAXException {
 		// OK create it
-		Edge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, directed);
+		CyEdge edge = Cytoscape.getCyEdge(source, target, Semantics.INTERACTION, interaction, true, directed);
 		edgeList.add(edge);
 		return edge;
 	}
 
-	private Edge createEdge (String source, String target, String interaction, String label, boolean directed) {
+	private CyEdge createEdge (String source, String target, String interaction, String label, boolean directed) {
 		// Make sure the target and destination nodes exist
 		if (Cytoscape.getCyNode(source, false) == null) {
 			System.out.println("Warning: skipping edge "+label);
@@ -1498,7 +1490,7 @@ class XGMMLParser extends DefaultHandler {
 			System.out.println("         node "+target+" doesn't exist");
 			return null;
 		}
-		Edge edge =  Cytoscape.getCyEdge(source, label, target, interaction, directed);
+		CyEdge edge =  Cytoscape.getCyEdge(source, label, target, interaction, directed);
 		edgeList.add(edge);
 		return edge;
 	}

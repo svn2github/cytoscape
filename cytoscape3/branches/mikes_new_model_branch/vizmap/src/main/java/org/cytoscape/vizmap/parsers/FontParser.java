@@ -37,8 +37,9 @@
 
 package org.cytoscape.vizmap.parsers;
 
-import java.awt.Font;
 import org.cytoscape.vizmap.ValueParser;
+
+import java.awt.*;
 
 /**
  * Parses a String into a Font object.

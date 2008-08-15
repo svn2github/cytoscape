@@ -35,17 +35,14 @@
 package cytoscape.util.swing;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.OpenBrowser;
-
-import java.io.IOException;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 /**

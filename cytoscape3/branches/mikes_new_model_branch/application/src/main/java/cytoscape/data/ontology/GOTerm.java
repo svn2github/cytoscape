@@ -35,7 +35,6 @@
 package cytoscape.data.ontology;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.data.ontology.readers.OBOTags;
 
 import java.util.Map;

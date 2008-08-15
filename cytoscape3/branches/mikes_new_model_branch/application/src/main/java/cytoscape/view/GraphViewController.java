@@ -42,13 +42,14 @@
  */
 package cytoscape.view;
 
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.CyNetwork;
 import org.cytoscape.GraphPerspectiveChangeEvent;
 import org.cytoscape.GraphPerspectiveChangeListener;
-
 import org.cytoscape.view.GraphView;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -56,7 +57,7 @@ import java.util.*;
  */
 public class GraphViewController implements GraphPerspectiveChangeListener {
 	protected Map<GraphView,GraphViewHandler> graphViewToHandler; // a map of GraphViews to GraphViewHandlers
-	protected Map<GraphPerspective,GraphView> gpToGv; // a map of GraphPerspectives to GraphViews
+	protected Map<CyNetwork,GraphView> gpToGv; // a map of GraphPerspectives to GraphViews
 
 	/**
 	 *
@@ -68,7 +69,7 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	 */
 	public GraphViewController() {
 		this.graphViewToHandler = new HashMap<GraphView,GraphViewHandler>();
-		this.gpToGv = new HashMap<GraphPerspective,GraphView>();
+		this.gpToGv = new HashMap<CyNetwork,GraphView>();
 	} //GraphViewController
 
 	/**
@@ -82,7 +83,7 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	 */
 	public GraphViewController(GraphView[] graph_views) {
 		this.graphViewToHandler = new HashMap<GraphView,GraphViewHandler>();
-		this.gpToGv = new HashMap<GraphPerspective,GraphView>();
+		this.gpToGv = new HashMap<CyNetwork,GraphView>();
 		setGraphViews(graph_views);
 	} //GraphViewController
 
@@ -102,7 +103,7 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	 */
 	public GraphViewController(GraphView[] graph_views, Map gv_to_handler) {
 		this.graphViewToHandler = new HashMap<GraphView,GraphViewHandler>();
-		this.gpToGv = new HashMap<GraphPerspective,GraphView>();
+		this.gpToGv = new HashMap<CyNetwork,GraphView>();
 		setGraphViews(graph_views, gv_to_handler);
 	} //GraphViewController
 
@@ -120,9 +121,9 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 		removeAllGraphViews();
 
 		for (int i = 0; i < graph_views.length; i++) {
-			GraphPerspective graphPerspective = graph_views[i].getGraphPerspective();
-			graphPerspective.addGraphPerspectiveChangeListener(this);
-			this.gpToGv.put(graphPerspective, graph_views[i]);
+			CyNetwork cyNetwork = graph_views[i].getGraphPerspective();
+			cyNetwork.addGraphPerspectiveChangeListener(this);
+			this.gpToGv.put(cyNetwork, graph_views[i]);
 			this.graphViewToHandler.put(graph_views[i], DEFAULT_GRAPH_VIEW_HANDLER);
 		} //for i
 	} //setGraphViews
@@ -146,9 +147,9 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 		removeAllGraphViews();
 
 		for (int i = 0; i < graph_views.length; i++) {
-			GraphPerspective graphPerspective = graph_views[i].getGraphPerspective();
-			graphPerspective.addGraphPerspectiveChangeListener(this);
-			this.gpToGv.put(graphPerspective, graph_views[i]);
+			CyNetwork cyNetwork = graph_views[i].getGraphPerspective();
+			cyNetwork.addGraphPerspectiveChangeListener(this);
+			this.gpToGv.put(cyNetwork, graph_views[i]);
 
 			GraphViewHandler handler = (GraphViewHandler) gv_to_handler.get(graph_views[i]);
 
@@ -211,9 +212,9 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	 */
 	public GraphViewHandler removeGraphView(GraphView graph_view) {
 		if (this.graphViewToHandler.containsKey(graph_view)) {
-			GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-			graphPerspective.removeGraphPerspectiveChangeListener(this);
-			this.gpToGv.remove(graphPerspective);
+			CyNetwork cyNetwork = graph_view.getGraphPerspective();
+			cyNetwork.removeGraphPerspectiveChangeListener(this);
+			this.gpToGv.remove(cyNetwork);
 
 			GraphViewHandler gvHandler = (GraphViewHandler) this.graphViewToHandler.remove(graph_view);
 
@@ -239,9 +240,9 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 			return false;
 		}
 
-		GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-		graphPerspective.addGraphPerspectiveChangeListener(this);
-		this.gpToGv.put(graphPerspective, graph_view);
+		CyNetwork cyNetwork = graph_view.getGraphPerspective();
+		cyNetwork.addGraphPerspectiveChangeListener(this);
+		this.gpToGv.put(cyNetwork, graph_view);
 		this.graphViewToHandler.put(graph_view, DEFAULT_GRAPH_VIEW_HANDLER);
 
 		return true;
@@ -266,9 +267,9 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 			return false;
 		}
 
-		GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-		graphPerspective.addGraphPerspectiveChangeListener(this);
-		this.gpToGv.put(graphPerspective, graph_view);
+		CyNetwork cyNetwork = graph_view.getGraphPerspective();
+		cyNetwork.addGraphPerspectiveChangeListener(this);
+		this.gpToGv.put(cyNetwork, graph_view);
 		this.graphViewToHandler.put(graph_view, gv_handler);
 
 		return true;
@@ -308,8 +309,8 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 		GraphView[] gViews = getGraphViews();
 
 		for (int i = 0; i < gViews.length; i++) {
-			GraphPerspective graphPerspective = gViews[i].getGraphPerspective();
-			graphPerspective.removeGraphPerspectiveChangeListener(this);
+			CyNetwork cyNetwork = gViews[i].getGraphPerspective();
+			cyNetwork.removeGraphPerspectiveChangeListener(this);
 		} //for i
 
 		this.gpToGv.clear();
@@ -340,8 +341,8 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 		GraphView[] graphViews = getGraphViews();
 
 		for (int i = 0; i < graphViews.length; i++) {
-			GraphPerspective graphPerspective = graphViews[i].getGraphPerspective();
-			graphPerspective.removeGraphPerspectiveChangeListener(this);
+			CyNetwork cyNetwork = graphViews[i].getGraphPerspective();
+			cyNetwork.removeGraphPerspectiveChangeListener(this);
 		} //for i
 	} //stopListening
 
@@ -356,8 +357,8 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 	// TODO: Catch all change events even of stopListening has been called, and when
 	// listening is resumed, update the graph view
 	public void stopListening(GraphView graph_view) {
-		GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-		graphPerspective.removeGraphPerspectiveChangeListener(this);
+		CyNetwork cyNetwork = graph_view.getGraphPerspective();
+		cyNetwork.removeGraphPerspectiveChangeListener(this);
 	} //stopListening
 
 	/**
@@ -373,10 +374,10 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 		GraphView[] graphViews = getGraphViews();
 
 		for (int i = 0; i < graphViews.length; i++) {
-			GraphPerspective graphPerspective = graphViews[i].getGraphPerspective();
+			CyNetwork cyNetwork = graphViews[i].getGraphPerspective();
 			GraphViewHandler handler = (GraphViewHandler) this.graphViewToHandler.get(graphViews[i]);
 			handler.updateGraphView(graphViews[i]);
-			graphPerspective.addGraphPerspectiveChangeListener(this);
+			cyNetwork.addGraphPerspectiveChangeListener(this);
 		} //for i
 	} //resumeListening
 
@@ -393,8 +394,8 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 		GraphViewHandler handler = (GraphViewHandler) this.graphViewToHandler.get(graph_view);
 		handler.updateGraphView(graph_view);
 
-		GraphPerspective graphPerspective = graph_view.getGraphPerspective();
-		graphPerspective.addGraphPerspectiveChangeListener(this);
+		CyNetwork cyNetwork = graph_view.getGraphPerspective();
+		cyNetwork.addGraphPerspectiveChangeListener(this);
 	} //resumeListening
 
 	/**
@@ -410,19 +411,19 @@ public class GraphViewController implements GraphPerspectiveChangeListener {
 		//System.out.println("In GraphViewController.graphPerspectiveChanged()");
 		Object source = event.getSource();
 
-		if (!(source instanceof GraphPerspective)) {
+		if (!(source instanceof CyNetwork)) {
 			// TODO: What to do? There was a change in the RootGraph, do we propagate it
 			// to all the GraphPerspectives????
 			return;
 		}
 
-		GraphPerspective changedGraphPers = (GraphPerspective) source;
+		CyNetwork changedGraphPers = (CyNetwork) source;
 		GraphView graphView = (GraphView) this.gpToGv.get(changedGraphPers);
 
 		if (graphView == null) {
-			// Somehow, we are listening to events of a GraphPerspective that
+			// Somehow, we are listening to events of a CyNetwork that
 			// no GraphView in our data structures views
-			System.err.println("Oops! the GraphPerspective " + changedGraphPers
+			System.err.println("Oops! the CyNetwork " + changedGraphPers
 			                   + " does not have a corresponding GraphView in the GraphViewController!!!");
 
 			return;

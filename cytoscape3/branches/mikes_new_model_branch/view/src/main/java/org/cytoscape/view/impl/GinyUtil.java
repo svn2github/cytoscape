@@ -1,32 +1,8 @@
 package org.cytoscape.view.impl;
 
-import static cytoscape.render.immed.GraphGraphics.ARROW_DELTA;
-import static cytoscape.render.immed.GraphGraphics.ARROW_DIAMOND;
-import static cytoscape.render.immed.GraphGraphics.ARROW_DISC;
-import static cytoscape.render.immed.GraphGraphics.ARROW_NONE;
-import static cytoscape.render.immed.GraphGraphics.ARROW_TEE;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_DIAMOND;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_ELLIPSE;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_HEXAGON;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_OCTAGON;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_PARALLELOGRAM;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_RECTANGLE;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_ROUNDED_RECTANGLE;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_TRIANGLE;
-import static cytoscape.render.immed.GraphGraphics.SHAPE_VEE;
-import static org.cytoscape.view.EdgeView.EDGE_COLOR_CIRCLE;
-import static org.cytoscape.view.EdgeView.EDGE_COLOR_DELTA;
-import static org.cytoscape.view.EdgeView.EDGE_COLOR_DIAMOND;
-import static org.cytoscape.view.EdgeView.EDGE_COLOR_T;
-import static org.cytoscape.view.EdgeView.NO_END;
-import static org.cytoscape.view.NodeView.DIAMOND;
-import static org.cytoscape.view.NodeView.ELLIPSE;
-import static org.cytoscape.view.NodeView.HEXAGON;
-import static org.cytoscape.view.NodeView.OCTAGON;
-import static org.cytoscape.view.NodeView.PARALELLOGRAM;
-import static org.cytoscape.view.NodeView.RECTANGLE;
-import static org.cytoscape.view.NodeView.ROUNDED_RECTANGLE;
-import static org.cytoscape.view.NodeView.TRIANGLE;
+import static cytoscape.render.immed.GraphGraphics.*;
+import static org.cytoscape.view.EdgeView.*;
+import static org.cytoscape.view.NodeView.*;
 
 /**
  *

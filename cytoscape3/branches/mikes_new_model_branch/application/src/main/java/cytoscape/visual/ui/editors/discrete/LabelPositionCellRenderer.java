@@ -36,17 +36,13 @@
 
 package cytoscape.visual.ui.editors.discrete;
 
-import com.l2fprod.common.swing.renderer.DefaultCellRenderer; 
-
-import org.cytoscape.vizmap.LabelPosition; 
-import org.cytoscape.vizmap.VisualPropertyType;
+import com.l2fprod.common.swing.renderer.DefaultCellRenderer;
+import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.VisualProperty;
+import org.cytoscape.vizmap.VisualPropertyType;
 
-import java.awt.Component;
-
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

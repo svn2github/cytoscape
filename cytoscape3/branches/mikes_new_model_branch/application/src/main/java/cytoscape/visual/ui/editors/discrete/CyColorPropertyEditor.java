@@ -17,23 +17,19 @@ package cytoscape.visual.ui.editors.discrete;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import com.l2fprod.common.beans.editor.AbstractPropertyEditor;
 import com.l2fprod.common.beans.editor.ColorPropertyEditor;
 import com.l2fprod.common.beans.editor.FilePropertyEditor;
 import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 import com.l2fprod.common.util.ResourceManager;
-
 import cytoscape.util.CyColorChooser;
 
-
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JPanel;
 
 
 /**

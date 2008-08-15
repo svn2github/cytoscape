@@ -1,8 +1,9 @@
 package cytoscape.util.export;
 
+import org.cytoscape.view.GraphView;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
-import org.cytoscape.view.GraphView;
 
 /**
  * Interface for exporting a network view to a graphics file.

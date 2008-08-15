@@ -36,18 +36,16 @@
  */
 package cytoscape.util;
 
-import java.awt.event.ActionEvent;
+import cytoscape.Cytoscape;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.view.GraphView;
 
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.event.MenuListener;
-import javax.swing.event.MenuEvent;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.view.GraphView;
 
 /**
  *
@@ -355,7 +353,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	 * Enable the action if the current network exists and is not null.
 	 */
 	protected void enableForNetwork() {
-		GraphPerspective n = Cytoscape.getCurrentNetwork();
+		CyNetwork n = Cytoscape.getCurrentNetwork();
 		if ( n == null || n == Cytoscape.getNullNetwork() ) 
 			setEnabled(false);
 		else
@@ -366,7 +364,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	 * Enable the action if the current network and view exist and are not null.
 	 */
 	protected void enableForNetworkAndView() {
-		GraphPerspective n = Cytoscape.getCurrentNetwork();
+		CyNetwork n = Cytoscape.getCurrentNetwork();
 		if ( n == null || n == Cytoscape.getNullNetwork() ) {
 			setEnabled(false);
 			return;

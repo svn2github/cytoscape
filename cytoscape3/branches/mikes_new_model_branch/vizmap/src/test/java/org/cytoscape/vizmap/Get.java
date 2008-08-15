@@ -1,8 +1,7 @@
 
 package org.cytoscape.vizmap;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 class Get {
 	static int integer(Object o) {

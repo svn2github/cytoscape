@@ -1,25 +1,22 @@
 package cytoscape.dialogs.plugins;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.tree.TreeSelectionModel;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-
 import cytoscape.Cytoscape;
 import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.PluginInfo;
-import cytoscape.plugin.ThemeInfo;
 import cytoscape.plugin.PluginManager;
-
+import cytoscape.plugin.ThemeInfo;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeSelectionModel;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 // TODO clean out the tree for each updated plugin
 

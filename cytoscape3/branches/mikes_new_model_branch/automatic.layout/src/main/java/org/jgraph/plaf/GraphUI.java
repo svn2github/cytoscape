@@ -7,17 +7,14 @@
 package org.jgraph.plaf;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.graph.CellHandle;
 import org.jgraph.graph.CellView;
 
-import java.awt.Graphics;
-import java.awt.Point;
+import javax.swing.plaf.ComponentUI;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-
-import javax.swing.plaf.ComponentUI;
 
 
 /**

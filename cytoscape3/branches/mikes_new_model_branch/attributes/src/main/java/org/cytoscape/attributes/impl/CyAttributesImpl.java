@@ -34,14 +34,20 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.attributes.impl; 
+package org.cytoscape.attributes.impl;
 
-import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CountedIterator;
+import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**

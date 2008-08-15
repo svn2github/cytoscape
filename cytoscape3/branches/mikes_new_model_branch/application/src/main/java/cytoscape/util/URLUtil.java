@@ -24,18 +24,15 @@
 package cytoscape.util;
 
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.jar.JarInputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;

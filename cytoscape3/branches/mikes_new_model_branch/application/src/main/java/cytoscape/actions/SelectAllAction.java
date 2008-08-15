@@ -43,15 +43,10 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.view.CytoscapeDesktop;
-
-//-------------------------------------------------------------------------
-import java.awt.event.ActionEvent;
-
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
 
 //-------------------------------------------------------------------------
 /**

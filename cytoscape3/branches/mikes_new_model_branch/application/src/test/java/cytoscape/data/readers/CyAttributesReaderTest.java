@@ -36,19 +36,11 @@
 */
 package cytoscape.data.readers;
 
+import junit.framework.TestCase;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
-import org.cytoscape.attributes.AttributeValueVisitor;
-import org.cytoscape.attributes.AttributeFilter;
 
-import cytoscape.data.readers.CyAttributesReader;
-
-import junit.framework.TestCase;
-
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-
 import java.util.List;
 
 

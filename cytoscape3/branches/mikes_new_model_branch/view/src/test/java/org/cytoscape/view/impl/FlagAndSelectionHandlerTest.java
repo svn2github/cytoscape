@@ -42,18 +42,18 @@
 //--------------------------------------------------------------------------------------
 package org.cytoscape.view.impl;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.RootGraph;
+import org.cytoscape.RootGraphFactory;
 import org.cytoscape.data.SelectFilter;
-
-import org.cytoscape.*;
-import org.cytoscape.view.*;
-
-
-//--------------------------------------------------------------------------------------
-import junit.framework.*;
-
-import java.io.*;
-
-import java.util.*;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.NodeView;
 
 
 //------------------------------------------------------------------------------
@@ -62,11 +62,11 @@ import java.util.*;
  */
 public class FlagAndSelectionHandlerTest extends TestCase {
 	SelectFilter filter;
-	Node node1;
-	Node node2;
-	Edge edge1;
-	Edge edge2;
-	GraphPerspective gp;
+	CyNode node1;
+	CyNode node2;
+	CyEdge edge1;
+	CyEdge edge2;
+	CyNetwork gp;
 	GraphView view;
 	NodeView nodeView1;
 	NodeView nodeView2;
@@ -97,8 +97,8 @@ public class FlagAndSelectionHandlerTest extends TestCase {
 		edge1 = rootGraph.getEdge(rootGraph.createEdge(node1, node2));
 		edge2 = rootGraph.getEdge(rootGraph.createEdge(node2, node1));
 
-		Node[] nodeArray = { node1, node2 };
-		Edge[] edgeArray = { edge1, edge2 };
+		CyNode[] nodeArray = { node1, node2 };
+		CyEdge[] edgeArray = { edge1, edge2 };
 		gp = rootGraph.createGraphPerspective(nodeArray, edgeArray);
 		filter = gp.getSelectFilter();
 		view = GraphViewFactory.createGraphView(gp);

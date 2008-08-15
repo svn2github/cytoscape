@@ -36,33 +36,24 @@
 */
 package cytoscape.layout.ui;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
-import org.cytoscape.view.GraphView;
-
 import cytoscape.task.util.TaskManager;
-
-import org.cytoscape.Node;
-
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 
 /**
@@ -76,7 +67,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 	private final static long serialVersionUID = 1202339874245069L;
 	private CyLayoutAlgorithm layout;
 	private static final String NOATTRIBUTE = "(none)";
-	private Set<Node> selectedNodes;
+	private Set<CyNode> selectedNodes;
 
 	/**
 	 * Creates a new DynamicLayoutMenu object.
@@ -87,7 +78,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		super(layout.toString());
 		addMenuListener(this);
 		this.layout = layout;
-		selectedNodes = new HashSet<Node>();
+		selectedNodes = new HashSet<CyNode>();
 		setEnabled(enabled);
 	}
 
@@ -117,7 +108,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 		this.removeAll();
 
 		// Base the menu structure only on the current network. 
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 
 		// First, do we support selectedOnly?
 		selectedNodes = network.getSelectedNodes();
@@ -230,7 +221,7 @@ public class DynamicLayoutMenu extends JMenu implements MenuListener {
 
 						while (nodeViews.hasNext()) {
 							NodeView nv = (NodeView) nodeViews.next();
-							Node node = nv.getNode();
+							CyNode node = nv.getNode();
 	
 							if (!selectedNodes.contains(node))
 								layout.lockNode(nv);

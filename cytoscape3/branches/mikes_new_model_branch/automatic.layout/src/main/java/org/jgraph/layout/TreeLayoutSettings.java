@@ -20,14 +20,8 @@
  */
 package org.jgraph.layout;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

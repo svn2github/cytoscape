@@ -34,12 +34,10 @@ package org.mskcc.biopax_plugin.util.biopax;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-
 import org.jdom.input.SAXBuilder;
 
 import java.io.IOException;
 import java.io.Reader;
-
 import java.util.List;
 
 

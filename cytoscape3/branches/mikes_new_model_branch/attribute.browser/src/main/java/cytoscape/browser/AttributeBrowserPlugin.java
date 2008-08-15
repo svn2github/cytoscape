@@ -34,29 +34,20 @@
 */
 package cytoscape.browser;
 
-import static cytoscape.browser.DataObjectType.EDGES;
-import static cytoscape.browser.DataObjectType.NETWORK;
-import static cytoscape.browser.DataObjectType.NODES;
+import static cytoscape.browser.DataObjectType.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeSupport;
-
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-
-import javax.swing.event.SwingPropertyChangeSupport;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleActivator;
 
 /**
  * Attribute browser's main class.<br>

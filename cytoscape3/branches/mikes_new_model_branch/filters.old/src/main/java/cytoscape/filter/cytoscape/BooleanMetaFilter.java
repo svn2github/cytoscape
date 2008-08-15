@@ -36,28 +36,12 @@
 
 package cytoscape.filter.cytoscape;
 
- 
 
-import org.cytoscape.*;
-import org.cytoscape.GraphPerspective;
+import cytoscape.filter.model.Filter;
+import cytoscape.filter.model.FilterManager;
 
-import cytoscape.data.*;
-
-import cytoscape.filter.model.*;
-
-import org.cytoscape.*;
-
-import java.awt.*;
-import java.awt.event.*;
-
-import java.beans.*;
-
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.util.Vector;
 
 
 /**

@@ -1,13 +1,12 @@
 
 package org.cytoscape.view;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.view.impl.DGraphView;
+import org.cytoscape.CyNetwork;
 import org.cytoscape.RootGraphFactory;
-import org.cytoscape.RootGraph;
+import org.cytoscape.view.impl.DGraphView;
 
 public class GraphViewFactory {
-	public static GraphView createGraphView(GraphPerspective gp) {
+	public static GraphView createGraphView(CyNetwork gp) {
 		return new DGraphView(gp);
 	}
 

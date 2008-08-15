@@ -36,19 +36,12 @@ package cytoscape.data.readers;
 
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
-
-import cytoscape.data.readers.BookmarkReader;
-
 import junit.framework.TestCase;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
-
-import java.net.URL;
 
 
 /**

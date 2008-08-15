@@ -2,9 +2,6 @@
 package cytoscape;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-//import cytoscape.util.GraphFileFilter; 
-import cytoscape.util.CyFileFilter; 
 
 public class ServiceHandler {
 

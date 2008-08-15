@@ -36,7 +36,7 @@
 */
 package cytoscape.util;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 
 /**

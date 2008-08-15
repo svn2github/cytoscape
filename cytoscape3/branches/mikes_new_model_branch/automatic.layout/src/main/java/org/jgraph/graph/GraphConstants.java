@@ -6,22 +6,14 @@
  */
 package org.jgraph.graph;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Stroke;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
 
 
 /**

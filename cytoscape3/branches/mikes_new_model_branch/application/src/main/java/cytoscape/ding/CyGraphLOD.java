@@ -36,16 +36,12 @@ package cytoscape.ding;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.render.stateful.GraphLOD;
+import org.cytoscape.view.GraphView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.cytoscape.view.GraphView;
 
 
 /**

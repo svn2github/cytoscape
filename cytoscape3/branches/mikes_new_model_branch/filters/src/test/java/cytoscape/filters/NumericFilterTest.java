@@ -1,11 +1,12 @@
 package cytoscape.filters;
 
 
-import java.util.BitSet;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.quickfind.util.QuickFindFactory;
 import csplugins.quickfind.util.TaskMonitorBase;
 import csplugins.widgets.autocomplete.index.NumberIndex;
+
+import java.util.BitSet;
 //import java.util.List;
 
 public class NumericFilterTest extends FilterTest {

@@ -34,34 +34,22 @@
 */
 package cytoscape.data.servers;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import cytoscape.bookmarks.Bookmarks;
-
 import cytoscape.data.ontology.DBCrossReferences;
 import cytoscape.data.ontology.Ontology;
 import cytoscape.data.ontology.OntologyFactory;
-
-import cytoscape.data.readers.BookmarkReader;
-
 import cytoscape.data.synonyms.AliasType;
 import cytoscape.data.synonyms.Aliases;
 
+import javax.xml.bind.JAXBException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-
 import java.io.IOException;
-
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.bind.JAXBException;
 
 
 /**

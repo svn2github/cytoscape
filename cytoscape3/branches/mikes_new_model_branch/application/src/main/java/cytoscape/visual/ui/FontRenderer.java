@@ -44,12 +44,9 @@ package cytoscape.visual.ui;
 
 
 //--------------------------------------------------------------------------
-import java.awt.Component;
-import java.awt.Font;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
-import javax.swing.UIManager;
+import javax.swing.*;
+import java.awt.*;
 
 
 //--------------------------------------------------------------------------

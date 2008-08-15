@@ -42,10 +42,9 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import org.cytoscape.vizmap.parsers.*;
+import org.cytoscape.vizmap.parsers.ColorParser;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 
 //----------------------------------------------------------------------------

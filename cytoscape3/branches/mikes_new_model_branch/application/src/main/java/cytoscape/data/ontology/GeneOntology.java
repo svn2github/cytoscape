@@ -34,22 +34,16 @@
 */
 package cytoscape.data.ontology;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
-
 import cytoscape.data.ontology.readers.OBOTags;
-import static cytoscape.data.ontology.readers.OBOTags.DEF;
-import static cytoscape.data.ontology.readers.OBOTags.NAME;
-import static cytoscape.data.ontology.readers.OBOTags.NAMESPACE;
+import static cytoscape.data.ontology.readers.OBOTags.*;
 import static cytoscape.data.readers.MetadataEntries.SOURCE;
-
 import org.biojava.ontology.Term;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.attributes.CyAttributes;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-
 import java.util.List;
 
 
@@ -78,7 +72,7 @@ public class GeneOntology extends Ontology {
 			return aspect;
 		}
 	}
-	public GeneOntology(String name, String curator, String description, GraphPerspective dag)
+	public GeneOntology(String name, String curator, String description, CyNetwork dag)
 	    throws URISyntaxException, MalformedURLException {
 		super(name, curator, description, dag);
 

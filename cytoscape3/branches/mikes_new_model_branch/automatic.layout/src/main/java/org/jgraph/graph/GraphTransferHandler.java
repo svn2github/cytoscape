@@ -8,20 +8,17 @@ package org.jgraph.graph;
 
 import org.jgraph.JGraph;
 
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.swing.JComponent;
-import javax.swing.TransferHandler;
 
 
 /**

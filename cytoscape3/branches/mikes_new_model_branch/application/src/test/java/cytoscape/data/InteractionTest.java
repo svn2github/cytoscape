@@ -39,18 +39,8 @@
 package cytoscape.data;
 
 import cytoscape.AllTests;
-
-import cytoscape.data.Interaction;
-
-import junit.framework.*;
-
-import java.io.*;
-
-import java.rmi.*;
-
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 
 /**

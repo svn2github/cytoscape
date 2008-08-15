@@ -1,19 +1,17 @@
 package cytoscape.util.export;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.awt.Graphics2D;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.view.GraphView;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.DefaultFontMapper;
+import org.cytoscape.view.GraphView;
+
+import java.awt.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * PDF exporter by the iText library.

@@ -35,17 +35,15 @@
 package org.cytoscape.vizmap.properties;
 
 import org.cytoscape.view.EdgeView;
-
-import java.awt.BasicStroke;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.swing.Icon;
-
 import org.cytoscape.vizmap.LineStyle;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.parsers.LineStyleParser;
 import org.cytoscape.vizmap.icon.LineTypeIcon;
+import org.cytoscape.vizmap.parsers.LineStyleParser;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Map;
+import java.util.Properties;
 
 
 /**

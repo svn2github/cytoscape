@@ -39,12 +39,14 @@ package cytoscape.data.readers;
 import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.vizmap.*;
-import org.cytoscape.vizmap.calculators.*;
-import org.cytoscape.vizmap.mappings.*;
+import org.cytoscape.vizmap.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
+import org.cytoscape.vizmap.mappings.DiscreteMapping;
+import org.cytoscape.vizmap.mappings.ObjectMapping;
 
-import java.util.*;
-import java.lang.Math;
-import java.awt.Color;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Based on the graph/node/edge view information, build new Visual Style.

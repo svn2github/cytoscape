@@ -1,15 +1,8 @@
 package org.cytoscape;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collection;
-import java.util.NoSuchElementException;
-
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.EventListenerList;
 
 /**
  * <h2>GINY Architecture</h2>
@@ -56,11 +49,11 @@ public interface RootGraph {
    * omitted from the given Nodes array; returns null if any of the specified Nodes
    * or Edges are not in this RootGraph.
    */
-  public GraphPerspective createGraphPerspective ( Node[] nodes, Edge[] edges);
+  public CyNetwork createGraphPerspective ( CyNode[] nodes, CyEdge[] edges);
 
-  public GraphPerspective createGraphPerspective ( Collection<Node> nodes, Collection<Edge> edges);
+  public CyNetwork createGraphPerspective ( Collection<CyNode> nodes, Collection<CyEdge> edges);
 
-  public GraphPerspective getNullGraphPerspective();
+  public CyNetwork getNullGraphPerspective();
 
   /**
    * Create a new GraphPerspective with just the given Nodes and Edges (and all
@@ -74,7 +67,7 @@ public interface RootGraph {
    * returns null if any of the specified Node or Edge indices do not correspond
    * to Nodes or Edges existing in this RootGraph.
    */
-  public GraphPerspective createGraphPerspective (
+  public CyNetwork createGraphPerspective (
     int[] node_indices,
     int[] edge_indices
     );
@@ -103,18 +96,18 @@ public interface RootGraph {
    * @return an Iterator over the Nodes in this graph; each Object in the
    *   returned Iterator is of type cytoscape.Node.
    */
-  public Iterator<Node> nodesIterator ();
+  public Iterator<CyNode> nodesIterator ();
 
   /**
    * Returns a list of Node objects.
    * @see #nodesIterator()
    */
-  public List<Node> nodesList ();
+  public List<CyNode> nodesList ();
 
   /**
    * Returns an array of node indices.
    * @see #nodesIterator()
-   * @see Node#getRootGraphIndex()
+   * @see CyNode#getRootGraphIndex()
    */
   public int[] getNodeIndicesArray ();
 
@@ -126,18 +119,18 @@ public interface RootGraph {
    * @return an Iterator over the Edges in this graph; each Object in the
    *   returned Iterator is of type cytoscape.Edge.
    */
-  public Iterator<Edge> edgesIterator ();
+  public Iterator<CyEdge> edgesIterator ();
 
   /**
    * Returns a list of Edge objects.
    * @see #edgesIterator()
    */
-  public List<Edge> edgesList ();
+  public List<CyEdge> edgesList ();
 
   /**
    * Returns an array of edge indices.
    * @see #edgesIterator()
-   * @see Edge#getRootGraphIndex()
+   * @see CyEdge#getRootGraphIndex()
    */
   public int[] getEdgeIndicesArray ();
 
@@ -160,7 +153,7 @@ public interface RootGraph {
    * @return A non-null Node marking a successful removal,
    *   or null if specified Node does not belong to this RootGraph.
    */
-  public Node removeNode ( Node node );
+  public CyNode removeNode ( CyNode node );
 
   /**
    * Remove the Node with the given index (and all of that Node's incident
@@ -172,10 +165,10 @@ public interface RootGraph {
   public int removeNode(int node_index);
 
   /**
-   * @see #removeNode(Node)
+   * @see #removeNode(CyNode)
    * @see #removeNodes(int[])
    */
-  public List<Node> removeNodes ( List<Node> nodes );
+  public List<CyNode> removeNodes ( List<CyNode> nodes );
 
   /**
    * Remove the Nodes with the given indices (and all of those Nodes' incident
@@ -211,7 +204,7 @@ public interface RootGraph {
    * @return the index of the newly created Node, or 0 if any of the given
    *   Nodes or Edges are not in this RootGraph.
    */
-  public int createNode ( Node[] nodes, Edge[] edges );
+  public int createNode ( CyNode[] nodes, CyEdge[] edges );
 
   /**
    * Create a new Node in this RootGraph, and return its index.<p>
@@ -226,7 +219,7 @@ public interface RootGraph {
    * @return the index of the newly created Node, or 0 if the given
    *   GraphPerspective is not a perspective on this RootGraph.
    */
-  public int createNode ( GraphPerspective perspective );
+  public int createNode ( CyNetwork perspective );
 
   /**
    * Create a new Node in this RootGraph, and return its index.  The new Node
@@ -261,7 +254,7 @@ public interface RootGraph {
    * @return A non-null Edge marking a successful removal,
    *   or null if the specified Edge does not belong to this RootGraph.
    */
-  public Edge removeEdge ( Edge edge );
+  public CyEdge removeEdge ( CyEdge edge );
 
   /**
    * Remove the Edge with the given index from this RootGraph and all of its
@@ -273,10 +266,10 @@ public interface RootGraph {
   public int removeEdge(int edge_index);
 
   /**
-   * @see #removeEdge(Edge)
+   * @see #removeEdge(CyEdge)
    * @see #removeEdges(int[])
    */
-  public List<Edge> removeEdges ( List<Edge> edges );
+  public List<CyEdge> removeEdges ( List<CyEdge> edges );
 
   /**
    * Remove the Edges with the given indices from this RootGraph and all of its
@@ -305,7 +298,7 @@ public interface RootGraph {
    * @return the index of the newly created Edge, or 0 if either the
    *   source or target Node is not in this RootGraph.
    */
-  public int createEdge ( Node source, Node target );
+  public int createEdge ( CyNode source, CyNode target );
 
   /**
    * Create an Edge from the given <tt>source</tt> Node to the given
@@ -321,7 +314,7 @@ public interface RootGraph {
    * @return the index of the newly created Edge, or 0 if either the source
    *   or target Node is not in this RootGraph.
    */
-  public int createEdge ( Node source, Node target, boolean directed );
+  public int createEdge ( CyNode source, CyNode target, boolean directed );
 
   /**
    * Create a directed Edge from the Node with the given <tt>source_index</tt>
@@ -364,7 +357,7 @@ public interface RootGraph {
    * If this is not the case, results of calling this method are undefined.
    * @return true iff the given Node is in this RootGraph.
    */
-  public boolean containsNode ( Node node );
+  public boolean containsNode ( CyNode node );
 
   /**
    * Return true if the given Edge is in this RootGraph.  False
@@ -375,15 +368,15 @@ public interface RootGraph {
    * If this is not the case, results of calling this method are undefined.
    * @return true iff the given Edge is in this RootGraph.
    */
-  public boolean containsEdge ( Edge edge );
+  public boolean containsEdge ( CyEdge edge );
 
   /**
    */
-  public List<Node> neighborsList ( Node node );
+  public List<CyNode> neighborsList ( CyNode node );
 
   /**
    */
-  public boolean isNeighbor ( Node a_node, Node another_node );
+  public boolean isNeighbor ( CyNode a_node, CyNode another_node );
 
   /**
    */
@@ -391,7 +384,7 @@ public interface RootGraph {
 
   /**
    */
-  public boolean edgeExists ( Node from, Node to );
+  public boolean edgeExists ( CyNode from, CyNode to );
 
   /**
    */
@@ -409,8 +402,8 @@ public interface RootGraph {
    * <tt>to</tt> Node; returns -1 if either the <tt>from</tt> or the
    *   <tt>to</tt> Node is not in this RootGraph.
    */
-  public int getEdgeCount ( Node from,
-                            Node to,
+  public int getEdgeCount ( CyNode from,
+                            CyNode to,
                             boolean count_undirected_edges
                             );
 
@@ -497,7 +490,7 @@ public interface RootGraph {
    * <tt>to</tt> Node, or the empty List if none exist; null is returned if either
    * of the specified nodes is not in this RootGraph.
    */
-  public List<Edge> edgesList ( Node from, Node to );
+  public List<CyEdge> edgesList ( CyNode from, CyNode to );
 
   /**
    * Return an array of the indices of all Edges from the Node with the first
@@ -511,7 +504,7 @@ public interface RootGraph {
    * <tt>to_node_index</tt>, or the empty List if none exist; null is returned
    * if either of the specified nodes does not exist in this RootGraph.
    */
-  public List<Edge> edgesList (int from_node_index,
+  public List<CyEdge> edgesList (int from_node_index,
                          int to_node_index,
                          boolean include_undirected_edges
                          );
@@ -542,7 +535,7 @@ public interface RootGraph {
    * @return the in-degree of the given Node, or -1 if the specified Node is not
    *   in this RootGraph.
    */
-  public int getInDegree ( Node node );
+  public int getInDegree ( CyNode node );
 
   /**
    * Return the number of Edges <tt><i>e</i></tt> such that
@@ -569,7 +562,7 @@ public interface RootGraph {
    * @return the in-degree of the given Node or -1 if specified Node is not
    *   in this RootGraph.
    */
-  public int getInDegree ( Node node, boolean count_undirected_edges );
+  public int getInDegree ( CyNode node, boolean count_undirected_edges );
 
   /**
    * Return the number of Edges <tt><i>e</i></tt> such that
@@ -596,7 +589,7 @@ public interface RootGraph {
    * @return the out-degree of the given Node, or -1 if specified Node is not
    *   in this RootGraph.
    */
-  public int getOutDegree ( Node node );
+  public int getOutDegree ( CyNode node );
 
   /**
    * Return the number of Edges <tt><i>e</i></tt>such that
@@ -623,7 +616,7 @@ public interface RootGraph {
    * @return the out-degree of the given Node or -1 if specified Node is not
    *   in this RootGraph.
    */
-  public int getOutDegree ( Node node, boolean count_undirected_edges );
+  public int getOutDegree ( CyNode node, boolean count_undirected_edges );
 
   /**
    * Return the number of Edges <tt><i>e</i></tt> such that
@@ -648,7 +641,7 @@ public interface RootGraph {
    * @return the degree of the given Node or -1 if specified Node is not in
    *   this RootGraph.
    */
-  public int getDegree ( Node node );
+  public int getDegree ( CyNode node );
 
   /**
    * Return the number of distinct Edges incident on the Node with the given
@@ -673,7 +666,7 @@ public interface RootGraph {
    * @return the index of the given Node in this RootGraph or 0 if it is not in
    * this RootGraph.
    */
-  public int getIndex ( Node node );
+  public int getIndex ( CyNode node );
 
   /**
    * Return the Node with the given index in this RootGraph.  All indices are
@@ -685,7 +678,7 @@ public interface RootGraph {
    * @return the Node with the given index in this RootGraph, or null if there
    *   is no Node with the given index.
    */
-  public Node getNode ( int node_index );
+  public CyNode getNode ( int node_index );
 
   /**
    * Return the index of the given Edge.  Each Edge has a unique index which is
@@ -701,7 +694,7 @@ public interface RootGraph {
    * @return the index of the given Edge in this RootGraph or 0 if it is not in
    * this RootGraph.
    */
-  public int getIndex ( Edge edge );
+  public int getIndex ( CyEdge edge );
 
   /**
    * Return the Edge with the given index in this RootGraph.  All indices are
@@ -713,7 +706,7 @@ public interface RootGraph {
    * @return the Edge with the given index in this RootGraph, or null if there
    *   if there is no Edge with the given index.
    */
-  public Edge getEdge ( int edge_index );
+  public CyEdge getEdge ( int edge_index );
 
   /**
    * Retrieve the index of the Node that is the source of the Edge with the
@@ -751,9 +744,9 @@ public interface RootGraph {
   File: CytoscapeRootGraph.java
 */
 
-	public Node getNode(String identifier);
+	public CyNode getNode(String identifier);
 
-	public Edge getEdge(String identifier);
+	public CyEdge getEdge(String identifier);
 
 	public void setNodeIdentifier(String identifier, int index);
 

@@ -34,29 +34,20 @@
 */
 package cytoscape.util;
 
-import cytoscape.AllTests;
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import cytoscape.CytoscapeInit;
-
-import org.cytoscape.attributes.CyAttributes;
-
-import cytoscape.util.GraphSetUtils;
-
+import junit.framework.TestCase;
+import org.cytoscape.CyNetwork;
 import org.cytoscape.RootGraph;
 
-import junit.framework.*;
-
-import java.lang.Object;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  *
  */
 public class GraphSetUtilsTest extends TestCase {
-	protected List<GraphPerspective> networklist;
+	protected List<CyNetwork> networklist;
 	protected int a;
 	protected int b;
 	protected int c;
@@ -68,8 +59,8 @@ public class GraphSetUtilsTest extends TestCase {
 	protected int bd;
 	protected int be;
 	protected int cd;
-	protected GraphPerspective net1;
-	protected GraphPerspective net2;
+	protected CyNetwork net1;
+	protected CyNetwork net2;
 
 	/**
 	 *  DOCUMENT ME!
@@ -77,7 +68,7 @@ public class GraphSetUtilsTest extends TestCase {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public void setUp() throws Exception {
-		networklist = new ArrayList<GraphPerspective>();
+		networklist = new ArrayList<CyNetwork>();
 
 		RootGraph root = Cytoscape.getRootGraph();
 		a = root.createNode();
@@ -142,7 +133,7 @@ public class GraphSetUtilsTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testIntersection() {
-		GraphPerspective n = GraphSetUtils.createIntersectionGraph(networklist, true, "intersect");
+		CyNetwork n = GraphSetUtils.createIntersectionGraph(networklist, true, "intersect");
 
 		assertTrue(n.containsEdge(n.getEdge(bc)));
 		assertTrue(n.containsEdge(n.getEdge(bd)));
@@ -160,7 +151,7 @@ public class GraphSetUtilsTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testDifference() {
-		GraphPerspective x = GraphSetUtils.createDifferenceGraph(networklist, true, "difference");
+		CyNetwork x = GraphSetUtils.createDifferenceGraph(networklist, true, "difference");
 
 		assertTrue(x.containsNode(x.getNode(a)));
 		assertTrue(x.containsNode(x.getNode(b)));
@@ -179,7 +170,7 @@ public class GraphSetUtilsTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testUnion() {
-		GraphPerspective y = GraphSetUtils.createUnionGraph(networklist, true, "union");
+		CyNetwork y = GraphSetUtils.createUnionGraph(networklist, true, "union");
 
 		assertTrue(y.containsEdge(y.getEdge(ab)));
 		assertTrue(y.containsEdge(y.getEdge(bc)));

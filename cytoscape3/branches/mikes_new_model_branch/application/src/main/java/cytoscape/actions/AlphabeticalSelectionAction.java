@@ -43,21 +43,14 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.data.CyNetworkUtilities;
-
 import cytoscape.util.CytoscapeAction;
 
-import org.cytoscape.view.GraphView;
-
-import java.awt.*;
-
-//-------------------------------------------------------------------------
-import java.awt.event.*;
-
 import javax.swing.*;
-
 import javax.swing.event.MenuEvent;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  *

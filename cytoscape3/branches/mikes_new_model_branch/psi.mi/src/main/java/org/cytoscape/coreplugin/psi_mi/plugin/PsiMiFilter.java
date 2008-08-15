@@ -35,9 +35,7 @@
 package org.cytoscape.coreplugin.psi_mi.plugin;
 
 import cytoscape.data.ImportHandler;
-
 import cytoscape.data.readers.GraphReader;
-
 import cytoscape.util.CyFileFilter;
 
 import java.io.File;

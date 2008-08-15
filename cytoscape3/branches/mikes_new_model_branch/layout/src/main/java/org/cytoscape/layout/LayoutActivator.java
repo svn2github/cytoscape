@@ -1,11 +1,9 @@
 package org.cytoscape.layout;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-
-import java.util.Hashtable;
 
 public class LayoutActivator implements BundleActivator {
 

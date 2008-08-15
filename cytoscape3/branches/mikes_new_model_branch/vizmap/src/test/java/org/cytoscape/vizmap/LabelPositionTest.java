@@ -36,27 +36,11 @@
 */
 package org.cytoscape.vizmap;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-
-import org.cytoscape.vizmap.*;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-import org.cytoscape.RootGraph;
-
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import org.cytoscape.view.Label;
 
-import junit.framework.*;
-
-import java.awt.Color;
-import java.awt.Font;
-
-import java.io.*;
-
-import java.util.Map;
-import java.util.Properties;
+import java.awt.*;
 
 
 /**

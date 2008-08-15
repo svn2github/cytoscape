@@ -48,25 +48,24 @@
 package cytoscape.editor;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.SwingConstants;
-import javax.swing.undo.UndoableEdit;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.util.undo.CyUndo;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.CalculatorCatalog;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
+
+import javax.swing.*;
+import javax.swing.undo.UndoableEdit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -174,13 +173,13 @@ public abstract class CytoscapeEditorManager {
 	/**
 	 * associates a network with all nodes hidden from it
 	 */
-	private static Map<GraphPerspective, List<Integer>> networkHiddenNodesMap = new HashMap<GraphPerspective, List<Integer>>();
+	private static Map<CyNetwork, List<Integer>> networkHiddenNodesMap = new HashMap<CyNetwork, List<Integer>>();
 
 
 	/**
 	 * associates a network with all edges hidden from it
 	 */
-	private static Map<GraphPerspective, List<Integer>> networkHiddenEdgesMap = new HashMap<GraphPerspective, List<Integer>>();
+	private static Map<CyNetwork, List<Integer>> networkHiddenEdgesMap = new HashMap<CyNetwork, List<Integer>>();
 
 
 	/**
@@ -623,7 +622,7 @@ public abstract class CytoscapeEditorManager {
 	 * @param net The network to look for hidden nodes in.
 	 * @return An array of hidden node indices.
 	 */
-	public static int[] getHiddenNodesForNetwork(GraphPerspective net) {
+	public static int[] getHiddenNodesForNetwork(CyNetwork net) {
 		List hiddenNodesList = (List) networkHiddenNodesMap.get(net);
 
 		if (hiddenNodesList == null) {
@@ -645,7 +644,7 @@ public abstract class CytoscapeEditorManager {
 	 * @param net The network we're looking for hidden edges in.
 	 * @return An array of hidden edge indices in the network.
 	 */
-	public static int[] getHiddenEdgesForNetwork(GraphPerspective net) {
+	public static int[] getHiddenEdgesForNetwork(CyNetwork net) {
 		List hiddenEdgesList = (List) networkHiddenEdgesMap.get(net);
 
 		if (hiddenEdgesList == null) {
@@ -667,7 +666,7 @@ public abstract class CytoscapeEditorManager {
 	 * @param net The network to add the node to.
 	 * @param nodeIdx index of the node to be added
 	 */
-	public static void addHiddenNodeForNetwork(GraphPerspective net, int nodeIdx) {
+	public static void addHiddenNodeForNetwork(CyNetwork net, int nodeIdx) {
 		List<Integer> hiddenNodesList = networkHiddenNodesMap.get(net);
 
 		if (hiddenNodesList == null) {
@@ -686,7 +685,7 @@ public abstract class CytoscapeEditorManager {
 	 * @param net The network to add the node to.
 	 * @param edgeIdx index of the edge to be added
 	 */
-	public static void addHiddenEdgeForNetwork(GraphPerspective net, int edgeIdx) {
+	public static void addHiddenEdgeForNetwork(CyNetwork net, int edgeIdx) {
 		List<Integer> hiddenEdgesList = networkHiddenEdgesMap.get(net);
 
 		if (hiddenEdgesList == null) {
@@ -904,7 +903,7 @@ public abstract class CytoscapeEditorManager {
 		java.util.Set<String> networkTitleSet = new java.util.TreeSet<String>();
 
 		for (Object cn : theNetworkSet) {
-			networkTitleSet.add(((GraphPerspective) cn).getTitle());
+			networkTitleSet.add(((CyNetwork) cn).getTitle());
 		}
 
 		while (iteration_limit > 0) {

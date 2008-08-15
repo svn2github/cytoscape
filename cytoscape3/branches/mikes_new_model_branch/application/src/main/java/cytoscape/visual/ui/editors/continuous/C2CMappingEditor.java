@@ -35,20 +35,15 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
-
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
-
 import org.jdesktop.swingx.multislider.TrackRenderer;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
-
-import javax.swing.ImageIcon;
 
 
 /**

@@ -17,15 +17,12 @@
 */
 package cytoscape;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
-
-import cytoscape.Cytoscape;
-
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 
 
 /**
@@ -59,9 +56,9 @@ public class BugGetCyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBug() {
-		Node S = Cytoscape.getCyNode("S", true);
+		CyNode S = Cytoscape.getCyNode("S", true);
 		String sid = S.getIdentifier();
-		GraphPerspective net1 = Cytoscape.createNetwork("net1");
+		CyNetwork net1 = Cytoscape.createNetwork("net1");
 		net1.restoreNode(S);
 		Cytoscape.getRootGraph().removeNode(S);
 		// The following gets a NullPointerException:

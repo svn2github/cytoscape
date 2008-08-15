@@ -36,12 +36,9 @@
 */
 package cytoscape.util;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JToolBar;
 
 
 /**

@@ -36,16 +36,12 @@
 */
 package cytoscape;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import cytoscape.Cytoscape;
-
-
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 
 
 /**
@@ -76,27 +72,27 @@ public class BugTest1 extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testBug() {
-		Node n1 = Cytoscape.getCyNode("S", true);
-		Node n2 = Cytoscape.getCyNode("M", true);
-		Node n3 = Cytoscape.getCyNode("A", true);
-		Node n4 = Cytoscape.getCyNode("Z", true);
+		CyNode n1 = Cytoscape.getCyNode("S", true);
+		CyNode n2 = Cytoscape.getCyNode("M", true);
+		CyNode n3 = Cytoscape.getCyNode("A", true);
+		CyNode n4 = Cytoscape.getCyNode("Z", true);
 
 		Cytoscape.getRootGraph().createEdge(n1, n2, false); // S-M
 
 		int edge_idx = Cytoscape.getRootGraph().createEdge(n1, n3, false); // S-A
-		Edge del1 = Cytoscape.getRootGraph().getEdge(edge_idx);
+		CyEdge del1 = Cytoscape.getRootGraph().getEdge(edge_idx);
 		edge_idx = Cytoscape.getRootGraph().createEdge(n2, n3, false); // M-A
 
-		Edge del2 = Cytoscape.getRootGraph().getEdge(edge_idx);
+		CyEdge del2 = Cytoscape.getRootGraph().getEdge(edge_idx);
 		// Now delete S-A & M-A:
 		Cytoscape.getRootGraph().removeEdge(del1);
 		Cytoscape.getRootGraph().removeEdge(del2);
 		edge_idx = Cytoscape.getRootGraph().createEdge(n1, n4, false);
 
 		// ****** THIS SUBEDGE RETURNED HAS A NULL SOURCE AND TARGET!!: *****
-		Edge subedge = Cytoscape.getRootGraph().getEdge(edge_idx);
-		Node src = subedge.getSource();
-		Node target = subedge.getTarget();
+		CyEdge subedge = Cytoscape.getRootGraph().getEdge(edge_idx);
+		CyNode src = subedge.getSource();
+		CyNode target = subedge.getTarget();
 		Assert.assertNotNull(src); // null!
 		Assert.assertNotNull(target); // null!
 	}

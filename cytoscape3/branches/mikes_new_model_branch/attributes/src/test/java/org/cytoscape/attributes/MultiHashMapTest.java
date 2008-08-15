@@ -36,17 +36,8 @@
 */
 package org.cytoscape.attributes;
 
-import org.cytoscape.attributes.CountedIterator;
-import org.cytoscape.attributes.MultiHashMap;
-import org.cytoscape.attributes.MultiHashMapDefinition;
-import org.cytoscape.attributes.impl.MultiHashMapFactory;
-import org.cytoscape.attributes.impl.MultiHashMapHelpers;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import junit.framework.TestCase;
+import org.cytoscape.attributes.impl.MultiHashMapFactory;
 
 /**
  *

@@ -37,23 +37,7 @@
 
 package org.cytoscape.vizmap;
 
-import org.cytoscape.vizmap.parsers.ColorParser;
-import org.cytoscape.vizmap.parsers.FloatParser;
-import org.cytoscape.vizmap.parsers.FontParser;
-import org.cytoscape.vizmap.ObjectToString;
-
-import org.cytoscape.Edge;
 import org.cytoscape.attributes.CyAttributesFactory;
-
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.Label;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Stroke;
-
-import java.util.Properties;
 
 
 /**

@@ -36,8 +36,7 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Edge;
-
+import org.cytoscape.CyEdge;
 import org.cytoscape.view.GraphView;
 
 
@@ -66,8 +65,8 @@ final class GraphViewEdgesUnselectedEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Edge[] getUnselectedEdges() {
-		final Edge[] returnThis = new Edge[m_unselectedEdgeInx.length];
+	public final CyEdge[] getUnselectedEdges() {
+		final CyEdge[] returnThis = new CyEdge[m_unselectedEdgeInx.length];
 
 		for (int i = 0; i < returnThis.length; i++)
 			returnThis[i] = m_view.getRootGraph().getEdge(m_unselectedEdgeInx[i]);

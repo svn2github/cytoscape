@@ -39,7 +39,7 @@
 
 package cytoscape.view.cytopanels;
 
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 /** 
  * An enum that maps names to compass directions.

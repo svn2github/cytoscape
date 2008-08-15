@@ -1,10 +1,8 @@
 package cytoscape.visual.ui.editors.continuous;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-
 import org.jdesktop.swingx.multislider.TrackRenderer;
+
+import java.awt.*;
 
 
 /**

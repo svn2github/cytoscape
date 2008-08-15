@@ -29,16 +29,11 @@
 */
 package cytoscape.editor.impl;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-
-import javax.swing.Icon;
-
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.NodeShape;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

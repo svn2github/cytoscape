@@ -36,35 +36,24 @@
 
 package cytoscape.filter.cytoscape;
 
-import org.cytoscape.*;
-
-import cytoscape.data.*;
-
-import cytoscape.plugin.*;
-
-import cytoscape.util.*;
-
-import cytoscape.view.*;
-
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
-import cytoscape.filter.model.*;
-
-import cytoscape.filter.view.*;
-
-import java.awt.event.*;
-
-import java.beans.*;
-
-import java.io.*;
-
-import java.util.*;
+import cytoscape.filter.model.Filter;
+import cytoscape.filter.model.FilterEditorManager;
+import cytoscape.filter.model.FilterManager;
+import cytoscape.util.CytoscapeAction;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 import javax.swing.*;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleActivator;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.Iterator;
 
 
 

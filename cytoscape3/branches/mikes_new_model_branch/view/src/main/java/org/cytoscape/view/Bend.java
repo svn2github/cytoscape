@@ -1,9 +1,6 @@
 package org.cytoscape.view;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.util.*;
+import java.awt.geom.Point2D;
 
 /**
  * A class that encapsulates the representation of the bend used for a 

@@ -38,8 +38,8 @@
 package org.cytoscape.data;
 
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 
 import java.util.Collection;
 import java.util.List;
@@ -89,7 +89,7 @@ public interface SelectFilter {
 	 * WARNING: the returned set is the actual data object, not a copy. Don't
 	 * directly modify this set.
 	 */
-	public Set<Node> getSelectedNodes(); 
+	public Set<CyNode> getSelectedNodes();
 
 	/**
 	 * Returns the set of all selected edges in the referenced GraphPespective.
@@ -98,19 +98,19 @@ public interface SelectFilter {
 	 * WARNING: the returned set is the actual data object, not a copy. Don't
 	 * directly modify this set.
 	 */
-	public Set<Edge> getSelectedEdges(); 
+	public Set<CyEdge> getSelectedEdges();
 
 	/**
 	 * Returns true if the argument is a selected Node in the referenced
 	 * GraphPerspective, false otherwise.
 	 */
-	public boolean isSelected(Node node);
+	public boolean isSelected(CyNode node);
 
 	/**
 	 * Returns true if the argument is a selected Edge in the referenced
 	 * GraphPerspective, false otherwise.
 	 */
-	public boolean isSelected(Edge edge);
+	public boolean isSelected(CyEdge edge);
 
 	/**
 	 * Implementation of the Filter interface. Returns true if the argument is a
@@ -126,7 +126,7 @@ public interface SelectFilter {
 	 *
 	 * @return true if an actual change was made, false otherwise
 	 */
-	public boolean setSelected(final Node node, final boolean newState);
+	public boolean setSelected(final CyNode node, final boolean newState);
 
 
 	/**
@@ -136,7 +136,7 @@ public interface SelectFilter {
 	 *
 	 * @return true if an actual change was made, false otherwise
 	 */
-	public boolean setSelected(final Edge edge, final boolean newState); 
+	public boolean setSelected(final CyEdge edge, final boolean newState);
 
 	/**
 	 * Sets the selected state defined by the second argument for all Nodes
@@ -150,7 +150,7 @@ public interface SelectFilter {
 	 *             if the first argument contains objects other than
 	 *             cytoscape.Node objects
 	 */
-	public Set<Node> setSelectedNodes(final Collection<Node> nodesToSet, final boolean newState); 
+	public Set<CyNode> setSelectedNodes(final Collection<CyNode> nodesToSet, final boolean newState);
 
 	/**
 	 * Sets the selected state defined by the second argument for all Edges
@@ -164,7 +164,7 @@ public interface SelectFilter {
 	 *             if the first argument contains objects other than
 	 *             cytoscape.Edge objects
 	 */
-	public Set<Edge> setSelectedEdges(final Collection<Edge> edgesToSet, final boolean newState);
+	public Set<CyEdge> setSelectedEdges(final Collection<CyEdge> edgesToSet, final boolean newState);
 
 	/**
 	 * Sets the selected state to true for all Nodes in the GraphPerspective.

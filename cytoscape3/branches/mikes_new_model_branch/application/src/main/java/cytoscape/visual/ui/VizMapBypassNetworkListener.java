@@ -37,7 +37,6 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.view.CytoscapeDesktop;
 
 import java.beans.PropertyChangeEvent;

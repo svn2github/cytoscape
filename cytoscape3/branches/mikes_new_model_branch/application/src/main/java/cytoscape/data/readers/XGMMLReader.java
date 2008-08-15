@@ -36,64 +36,46 @@
  */
 package cytoscape.data.readers;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.GraphView;
-import org.cytoscape.view.NodeView;
-
-import java.awt.Color;
-import java.awt.geom.Point2D;
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.ParserAdapter;
-import org.xml.sax.InputSource;
-import org.xml.sax.Attributes;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.attributes.CyAttributes;
-import cytoscape.data.Semantics;
-import org.cytoscape.attributes.MultiHashMap;
-import org.cytoscape.attributes.MultiHashMapDefinition;
-import cytoscape.data.writers.XGMMLWriter;
-import org.cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
-import org.cytoscape.layout.LayoutAdapter;
-import org.cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.groups.CyGroup;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.LayoutAdapter;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.vizmap.LineStyle;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.VisualMappingManager;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.ParserAdapter;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.awt.geom.Point2D;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -402,9 +384,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		String label = null;
 		int tempid = 0;
 		NodeView view = null;
-		HashMap<Node, Attributes> nodeGraphicsMap = parser.getNodeGraphics();
+		HashMap<CyNode, Attributes> nodeGraphicsMap = parser.getNodeGraphics();
 
-		for (Node node: nodeGraphicsMap.keySet()) {
+		for (CyNode node: nodeGraphicsMap.keySet()) {
 			view = myView.getNodeView(node.getRootGraphIndex());
 
 			if ((label != null) && (view != null)) {
@@ -540,9 +522,9 @@ public class XGMMLReader extends AbstractGraphReader {
 		String label = null;
 		int tempid = 0;
 		EdgeView view = null;
-		HashMap<Edge, Attributes> edgeGraphicsMap = parser.getEdgeGraphics();
+		HashMap<CyEdge, Attributes> edgeGraphicsMap = parser.getEdgeGraphics();
 
-		for (Edge edge: edgeGraphicsMap.keySet()) {
+		for (CyEdge edge: edgeGraphicsMap.keySet()) {
 			view = myView.getEdgeView(edge.getRootGraphIndex());
 
 			if ((edgeGraphicsMap != null) && (view != null)) {
@@ -647,7 +629,7 @@ public class XGMMLReader extends AbstractGraphReader {
 	 *
 	 * @param network DOCUMENT ME!
 	 */
-	public void doPostProcessing(GraphPerspective network) {
+	public void doPostProcessing(CyNetwork network) {
 		parser.setMetaData(network);
 
 		// Get the view.  Note that for large networks this might be the null view
@@ -658,13 +640,13 @@ public class XGMMLReader extends AbstractGraphReader {
 		// only called when we create a view.  For large networks,
 		// we don't create views by default, but groups should still
 		// exist even when we don't create the view
-		Map<Node,List<Node>>groupMap = parser.getGroupMap();
+		Map<CyNode,List<CyNode>>groupMap = parser.getGroupMap();
 		if (groupMap != null) {
 			CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 
-			for (Node groupNode: groupMap.keySet()) {
+			for (CyNode groupNode: groupMap.keySet()) {
 				CyGroup newGroup = null;
-				List<Node> childList = groupMap.get(groupNode);
+				List<CyNode> childList = groupMap.get(groupNode);
 				String viewer = nodeAttributes.getStringAttribute(groupNode.getIdentifier(),
 				                                                  CyGroup.GROUP_VIEWER_ATTR);
 

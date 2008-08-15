@@ -38,30 +38,23 @@ package org.cytoscape.impl;
 
 import cytoscape.graph.dynamic.DynamicGraph;
 import cytoscape.graph.dynamic.DynamicGraphFactory;
-
 import cytoscape.util.intr.ArrayIntIterator;
-import cytoscape.util.intr.IntArray;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
-import cytoscape.util.intr.IntIntHash;
-import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntStack;
 import cytoscape.util.intr.MinIntHeap;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphChangeEvent;
 import org.cytoscape.RootGraphChangeListener;
-import org.cytoscape.data.SelectEventListener;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 // This implementation of cytoscape is safe to use with a single thread only.
@@ -208,7 +201,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	// END: Implements DynamicGraph //
 	//////////////////////////////////
 
-	// Not specified by cytoscape.RootGraph.  GraphPerspective implementation
+	// Not specified by cytoscape.RootGraph.  CyNetwork implementation
 	// in this package relies on this method.
 	// ATTENTION!  Before making this method public you need to change the
 	// event implementations to return copied arrays in their methods instead
@@ -219,7 +212,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 		m_lis = RootGraphChangeListenerChain.add(m_lis, listener);
 	}
 
-	// Not specified by cytoscape.RootGraph.  GraphPerspective implementation
+	// Not specified by cytoscape.RootGraph.  CyNetwork implementation
 	// in this package relies on this method.
 	// ATTENTION!  Before making this method public you need to change the
 	// event implementations to return copied arrays in their methods instead
@@ -307,14 +300,14 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public GraphPerspective createGraphPerspective(Collection<Node> nodes, Collection<Edge> edges) {
-		return createGraphPerspective(nodes.toArray(new Node[nodes.size()]), 
-		                              edges.toArray(new Edge[edges.size()]));
+	public CyNetwork createGraphPerspective(Collection<CyNode> nodes, Collection<CyEdge> edges) {
+		return createGraphPerspective(nodes.toArray(new CyNode[nodes.size()]),
+		                              edges.toArray(new CyEdge[edges.size()]));
 	}
 
-	public GraphPerspective createGraphPerspective(Node[] nodes, Edge[] edges) {
-		final Node[] nodeArr = ((nodes != null) ? nodes : new Node[0]);
-		final Edge[] edgeArr = ((edges != null) ? edges : new Edge[0]);
+	public CyNetwork createGraphPerspective(CyNode[] nodes, CyEdge[] edges) {
+		final CyNode[] nodeArr = ((nodes != null) ? nodes : new CyNode[0]);
+		final CyEdge[] edgeArr = ((edges != null) ? edges : new CyEdge[0]);
 		final RootGraph root = this;
 
 		try {
@@ -360,7 +353,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public GraphPerspective createGraphPerspective(int[] nodeInx, int[] edgeInx) {
+	public CyNetwork createGraphPerspective(int[] nodeInx, int[] edgeInx) {
 		if (nodeInx == null)
 			nodeInx = new int[0];
 
@@ -398,11 +391,11 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Iterator<Node> nodesIterator() {
+	public Iterator<CyNode> nodesIterator() {
 		final IntEnumerator nodes = m_graph.nodes();
 		final FRootGraph rootGraph = this;
 
-		return new Iterator<Node>() {
+		return new Iterator<CyNode>() {
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -411,7 +404,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 					return nodes.numRemaining() > 0;
 				}
 
-				public Node next() {
+				public CyNode next() {
 					if (!hasNext())
 						throw new NoSuchElementException();
 
@@ -425,10 +418,10 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List<Node> nodesList() {
+	public java.util.List<CyNode> nodesList() {
 		final int nodeCount = getNodeCount();
-		final java.util.ArrayList<Node> returnThis = new java.util.ArrayList<Node>(nodeCount);
-		Iterator<Node> iter = nodesIterator();
+		final java.util.ArrayList<CyNode> returnThis = new java.util.ArrayList<CyNode>(nodeCount);
+		Iterator<CyNode> iter = nodesIterator();
 
 		for (int i = 0; i < nodeCount; i++)
 			returnThis.add(iter.next());
@@ -456,11 +449,11 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Iterator<Edge> edgesIterator() {
+	public Iterator<CyEdge> edgesIterator() {
 		final IntEnumerator edges = m_graph.edges();
 		final FRootGraph rootGraph = this;
 
-		return new Iterator<Edge>() {
+		return new Iterator<CyEdge>() {
 				public void remove() {
 					throw new UnsupportedOperationException();
 				}
@@ -469,7 +462,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 					return edges.numRemaining() > 0;
 				}
 
-				public Edge next() {
+				public CyEdge next() {
 					if (!hasNext())
 						throw new NoSuchElementException();
 
@@ -483,10 +476,10 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List<Edge> edgesList() {
+	public java.util.List<CyEdge> edgesList() {
 		final int edgeCount = getEdgeCount();
-		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>(edgeCount);
-		Iterator<Edge> iter = edgesIterator();
+		final java.util.ArrayList<CyEdge> returnThis = new java.util.ArrayList<CyEdge>(edgeCount);
+		Iterator<CyEdge> iter = edgesIterator();
 
 		for (int i = 0; i < edgeCount; i++)
 			returnThis.add(iter.next());
@@ -516,7 +509,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node removeNode(Node node) {
+	public CyNode removeNode(CyNode node) {
 		if ((node.getRootGraph() == this) && (removeNode(node.getRootGraphIndex()) != 0))
 			return node;
 		else
@@ -538,7 +531,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 			return 0;
 
 		final IntEnumerator nativeEdgeEnum = m_graph.edgesAdjacent(nativeNodeInx, true, true, true);
-		final Edge[] removedEdgeArr = new Edge[nativeEdgeEnum.numRemaining()];
+		final CyEdge[] removedEdgeArr = new CyEdge[nativeEdgeEnum.numRemaining()];
 
 		for (int i = 0; i < removedEdgeArr.length; i++)
 			removedEdgeArr[i] = m_edges.getEdgeAtIndex(nativeEdgeEnum.nextInt());
@@ -547,12 +540,12 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 			final int nativeEdgeInx = ~(removedEdgeArr[i].getRootGraphIndex());
 			m_graph.edgeRemove(nativeEdgeInx);
 
-			final Edge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
+			final CyEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
 			m_edges.setEdgeAtIndex(null, nativeEdgeInx);
 			m_edgeDepot.recycleEdge(removedEdge);
 		}
 
-		final Node removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
+		final CyNode removedNode = m_nodes.getNodeAtIndex(nativeNodeInx);
 		m_graph.nodeRemove(nativeNodeInx);
 		m_nodes.setNodeAtIndex(null, nativeNodeInx);
 		m_nodeDepot.recycleNode(removedNode);
@@ -560,7 +553,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 		if (removedEdgeArr.length > 0)
 			m_lis.rootGraphChanged(new RootGraphEdgesRemovedEvent(this, removedEdgeArr));
 
-		m_lis.rootGraphChanged(new RootGraphNodesRemovedEvent(this, new Node[] { removedNode }));
+		m_lis.rootGraphChanged(new RootGraphNodesRemovedEvent(this, new CyNode[] { removedNode }));
 
 		return nodeInx;
 	}
@@ -572,11 +565,11 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List<Node> removeNodes(java.util.List<Node> nodes) {
-		final java.util.ArrayList<Node> returnThis = new java.util.ArrayList<Node>();
+	public java.util.List<CyNode> removeNodes(java.util.List<CyNode> nodes) {
+		final java.util.ArrayList<CyNode> returnThis = new java.util.ArrayList<CyNode>();
 
 		for (int i = 0; i < nodes.size(); i++)
-			if (removeNode((Node) nodes.get(i)) != null)
+			if (removeNode((CyNode) nodes.get(i)) != null)
 				returnThis.add(nodes.get(i));
 
 		return returnThis;
@@ -606,7 +599,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	public int createNode() {
 		final int nativeNodeInx = m_graph.nodeCreate();
 		final int returnThis = ~nativeNodeInx;
-		Node newNode = m_nodeDepot.getNode(this, returnThis, null);
+		CyNode newNode = m_nodeDepot.getNode(this, returnThis, null);
 		m_nodes.setNodeAtIndex(newNode, nativeNodeInx);
 
 		return returnThis;
@@ -620,8 +613,8 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int createNode(Node[] nodes, Edge[] edges) {
-		final GraphPerspective persp = createGraphPerspective(nodes, edges);
+	public int createNode(CyNode[] nodes, CyEdge[] edges) {
+		final CyNetwork persp = createGraphPerspective(nodes, edges);
 
 		if (persp == null)
 			return 0;
@@ -636,7 +629,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int createNode(GraphPerspective perspective) {
+	public int createNode(CyNetwork perspective) {
 		// Casting to check that we aren't going to get garbage nodes and edges.
 		if (((FGraphPerspective) perspective).getRootGraph() != this)
 			return 0;
@@ -661,7 +654,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 * @return  DOCUMENT ME!
 	 */
 	public int createNode(int[] nodeIndices, int[] edgeIndices) {
-		final GraphPerspective persp = createGraphPerspective(nodeIndices, edgeIndices);
+		final CyNetwork persp = createGraphPerspective(nodeIndices, edgeIndices);
 
 		if (persp == null)
 			return 0;
@@ -676,7 +669,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Edge removeEdge(Edge edge) {
+	public CyEdge removeEdge(CyEdge edge) {
 		if ((edge.getRootGraph() == this) && (removeEdge(edge.getRootGraphIndex()) != 0))
 			return edge;
 		else
@@ -698,10 +691,10 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 			return 0;
 		m_graph.edgeRemove(nativeEdgeInx);
 
-		final Edge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
+		final CyEdge removedEdge = m_edges.getEdgeAtIndex(nativeEdgeInx);
 		m_edges.setEdgeAtIndex(null, nativeEdgeInx);
 		m_edgeDepot.recycleEdge(removedEdge);
-		m_lis.rootGraphChanged(new RootGraphEdgesRemovedEvent(this, new Edge[] { removedEdge }));
+		m_lis.rootGraphChanged(new RootGraphEdgesRemovedEvent(this, new CyEdge[] { removedEdge }));
 
 		return edgeInx;
 	}
@@ -713,11 +706,11 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List<Edge> removeEdges(java.util.List<Edge> edges) {
-		final java.util.ArrayList<Edge> returnThis = new java.util.ArrayList<Edge>();
+	public java.util.List<CyEdge> removeEdges(java.util.List<CyEdge> edges) {
+		final java.util.ArrayList<CyEdge> returnThis = new java.util.ArrayList<CyEdge>();
 
 		for (int i = 0; i < edges.size(); i++)
-			if (removeEdge((Edge) edges.get(i)) != null)
+			if (removeEdge((CyEdge) edges.get(i)) != null)
 				returnThis.add(edges.get(i));
 
 		return returnThis;
@@ -747,7 +740,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int createEdge(Node source, Node target) {
+	public int createEdge(CyNode source, CyNode target) {
 		return createEdge(source, target, source.getRootGraphIndex() != target.getRootGraphIndex());
 	}
 
@@ -760,7 +753,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int createEdge(Node source, Node target, boolean directed) {
+	public int createEdge(CyNode source, CyNode target, boolean directed) {
 		if ((source != null) && (target != null) &&
 		    (source.getRootGraph() == this) && (target.getRootGraph() == this))
 			return createEdge(source.getRootGraphIndex(), target.getRootGraphIndex(), directed);
@@ -797,7 +790,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 			return 0;
 
 		final int returnThis = ~nativeEdgeInx;
-		Edge newEdge = m_edgeDepot.getEdge(this, returnThis, null);
+		CyEdge newEdge = m_edgeDepot.getEdge(this, returnThis, null);
 		m_edges.setEdgeAtIndex(newEdge, nativeEdgeInx);
 
 		return returnThis;
@@ -810,7 +803,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean containsNode(Node node) {
+	public boolean containsNode(CyNode node) {
 		return (node.getRootGraph() == this) && (getNode(node.getRootGraphIndex()) != null);
 	}
 
@@ -821,7 +814,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean containsEdge(Edge edge) {
+	public boolean containsEdge(CyEdge edge) {
 		return (edge.getRootGraph() == this) && (getEdge(edge.getRootGraphIndex()) != null);
 	}
 
@@ -832,7 +825,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List<Node> neighborsList(Node node) {
+	public java.util.List<CyNode> neighborsList(CyNode node) {
 		if (node.getRootGraph() == this) {
 			final int nodeIndex = node.getRootGraphIndex();
 			int[] adjacentEdgeIndices = getAdjacentEdgeIndicesArray(nodeIndex, true, true, true);
@@ -851,7 +844,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 			}
 
 			IntEnumerator enumx = neighbors.elements();
-			java.util.ArrayList<Node> list = new java.util.ArrayList<Node>(enumx.numRemaining());
+			java.util.ArrayList<CyNode> list = new java.util.ArrayList<CyNode>(enumx.numRemaining());
 
 			while (enumx.numRemaining() > 0)
 				list.add(getNode(~(enumx.nextInt())));
@@ -870,7 +863,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean isNeighbor(Node a, Node b) {
+	public boolean isNeighbor(CyNode a, CyNode b) {
 		if ((a.getRootGraph() == this) && (b.getRootGraph() == this))
 			return isNeighbor(a.getRootGraphIndex(), b.getRootGraphIndex());
 		else
@@ -904,7 +897,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean edgeExists(Node from, Node to) {
+	public boolean edgeExists(CyNode from, CyNode to) {
 		if ((from.getRootGraph() == this) && (to.getRootGraph() == this))
 			return edgeExists(from.getRootGraphIndex(), to.getRootGraphIndex());
 		else
@@ -939,7 +932,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getEdgeCount(Node from, Node to, boolean countUndirectedEdges) {
+	public int getEdgeCount(CyNode from, CyNode to, boolean countUndirectedEdges) {
 		if ((from.getRootGraph() == this) && (to.getRootGraph() == this))
 			return getEdgeCount(from.getRootGraphIndex(), to.getRootGraphIndex(),
 			                    countUndirectedEdges);
@@ -1084,7 +1077,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List<Edge> edgesList(Node from, Node to) {
+	public java.util.List<CyEdge> edgesList(CyNode from, CyNode to) {
 		if ((from.getRootGraph() == this) && (to.getRootGraph() == this))
 			return edgesList(from.getRootGraphIndex(), to.getRootGraphIndex(), true);
 		else
@@ -1101,13 +1094,13 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public java.util.List<Edge> edgesList(int fromNodeInx, int toNodeInx, boolean includeUndirectedEdges) {
+	public java.util.List<CyEdge> edgesList(int fromNodeInx, int toNodeInx, boolean includeUndirectedEdges) {
 		final int[] edgeInx = getEdgeIndicesArray(fromNodeInx, toNodeInx, includeUndirectedEdges);
 
 		if (edgeInx == null)
 			return null;
 
-		java.util.ArrayList<Edge> returnList = new java.util.ArrayList<Edge>(edgeInx.length);
+		java.util.ArrayList<CyEdge> returnList = new java.util.ArrayList<CyEdge>(edgeInx.length);
 
 		for (int i = 0; i < edgeInx.length; i++)
 			returnList.add(getEdge(edgeInx[i]));
@@ -1135,7 +1128,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getInDegree(Node node) {
+	public int getInDegree(CyNode node) {
 		if (node.getRootGraph() == this)
 			return getInDegree(node.getRootGraphIndex());
 		else
@@ -1162,7 +1155,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getInDegree(Node node, boolean countUndirectedEdges) {
+	public int getInDegree(CyNode node, boolean countUndirectedEdges) {
 		if (node.getRootGraph() == this)
 			return getInDegree(node.getRootGraphIndex(), countUndirectedEdges);
 		else
@@ -1194,7 +1187,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getOutDegree(Node node) {
+	public int getOutDegree(CyNode node) {
 		if (node.getRootGraph() == this)
 			return getOutDegree(node.getRootGraphIndex());
 		else
@@ -1221,7 +1214,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getOutDegree(Node node, boolean countUndirectedEdges) {
+	public int getOutDegree(CyNode node, boolean countUndirectedEdges) {
 		if (node.getRootGraph() == this)
 			return getOutDegree(node.getRootGraphIndex(), countUndirectedEdges);
 		else
@@ -1253,7 +1246,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getDegree(Node node) {
+	public int getDegree(CyNode node) {
 		if (node.getRootGraph() == this)
 			return getDegree(node.getRootGraphIndex());
 		else
@@ -1284,7 +1277,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getIndex(Node node) {
+	public int getIndex(CyNode node) {
 		if (node.getRootGraph() == this)
 			return node.getRootGraphIndex();
 		else
@@ -1299,7 +1292,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node getNode(int nodeInx) {
+	public CyNode getNode(int nodeInx) {
 		if ((nodeInx < 0) && (nodeInx != 0x80000000))
 			return m_nodes.getNodeAtIndex(~nodeInx);
 		else
@@ -1314,7 +1307,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public int getIndex(Edge edge) {
+	public int getIndex(CyEdge edge) {
 		if (edge.getRootGraph() == this)
 			return edge.getRootGraphIndex();
 		else
@@ -1329,7 +1322,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Edge getEdge(int edgeInx) {
+	public CyEdge getEdge(int edgeInx) {
 		if ((edgeInx < 0) && (edgeInx != 0x80000000))
 			return m_edges.getEdgeAtIndex(~edgeInx);
 		else
@@ -1447,7 +1440,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node getNode(String identifier) {
+	public CyNode getNode(String identifier) {
 		if (node_name_index_map.containsKey(identifier))
 			return getNode(node_name_index_map.get(identifier));
 		else
@@ -1461,7 +1454,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Edge getEdge(String identifier) {
+	public CyEdge getEdge(String identifier) {
 		if (edge_name_index_map.containsKey(identifier))
 			return getEdge(edge_name_index_map.get(identifier));
 		else
@@ -1496,7 +1489,7 @@ public class FRootGraph implements RootGraph, DynamicGraph {
 		}
 	}
 
-	public GraphPerspective getNullGraphPerspective() {
+	public CyNetwork getNullGraphPerspective() {
 		return createGraphPerspective( new int[] {}, new int[] {} );
 	}
 }

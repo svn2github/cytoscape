@@ -38,17 +38,18 @@ package legacy.layout.impl;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import legacy.GraphTopology;
 import legacy.IndexIterator;
-
 import legacy.layout.algorithm.MutableGraphLayout;
-
 import legacy.util.GraphCompiler;
 
 import java.awt.geom.Point2D;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**

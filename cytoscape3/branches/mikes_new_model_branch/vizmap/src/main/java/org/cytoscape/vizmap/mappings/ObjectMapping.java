@@ -42,19 +42,14 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.GraphPerspective;
-
+import org.cytoscape.CyNetwork;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
 
-
-//----------------------------------------------------------------------------
+import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeListener;
 
 
 //----------------------------------------------------------------------------
@@ -105,7 +100,7 @@ public interface ObjectMapping extends Cloneable {
      * provided so that the current values for the given attribute name can
      * be loaded for UI purposes. Null values for the network argument are allowed.
      */
-    void setControllingAttributeName(String attrName, GraphPerspective network,
+    void setControllingAttributeName(String attrName, CyNetwork network,
         boolean preserveMapping);
 
     /**

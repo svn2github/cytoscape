@@ -44,7 +44,7 @@ import org.cytoscape.GraphPerspectiveChangeListener;
 // Analagous to java.awt.AWTEventMulticaster for chaining together
 // cytoscape.GraphPerspectiveChangeListener objects.  Example usage:
 //
-// public class Foo implements GraphPerspective
+// public class Foo implements CyNetwork
 // {
 //   private GraphPerspectiveChangeListener lis = null;
 //   public void addGraphPerspectiveChangeListener(

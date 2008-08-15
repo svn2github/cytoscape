@@ -32,30 +32,18 @@
  */
 package csplugins.layout.algorithms.bioLayout;
 
-import csplugins.layout.LayoutNode;
 import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutPartition;
-import csplugins.layout.Profile;
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
-
 import org.cytoscape.attributes.CyAttributes;
-
-import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
 
-import cytoscape.Cytoscape;
-
-import java.awt.GridLayout;
-
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
-
-import javax.swing.JPanel;
 
 /**
  * Superclass for the two bioLayout algorithms (KK and FR).

@@ -36,19 +36,19 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
 
 
 final class GraphPerspectiveEdgesRestoredEvent extends GraphPerspectiveChangeEventAdapter {
 	private final static long serialVersionUID = 1202347362661870L;
-	private final GraphPerspective m_persp;
+	private final CyNetwork m_persp;
 	private final int[] m_restoredEdgeInx;
 
 	// Note that no copy of the array restoredEdgeInx is made - the exact
 	// array reference is kept.  However, copies are made in the return values
 	// of methods of this class.
-	GraphPerspectiveEdgesRestoredEvent(GraphPerspective persp, int[] restoredEdgeInx) {
+	GraphPerspectiveEdgesRestoredEvent(CyNetwork persp, int[] restoredEdgeInx) {
 		super(persp);
 		m_persp = persp;
 		m_restoredEdgeInx = restoredEdgeInx;
@@ -68,8 +68,8 @@ final class GraphPerspectiveEdgesRestoredEvent extends GraphPerspectiveChangeEve
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final Edge[] getRestoredEdges() {
-		final Edge[] returnThis = new Edge[m_restoredEdgeInx.length];
+	public final CyEdge[] getRestoredEdges() {
+		final CyEdge[] returnThis = new CyEdge[m_restoredEdgeInx.length];
 
 		for (int i = 0; i < returnThis.length; i++)
 			returnThis[i] = m_persp.getRootGraph().getEdge(m_restoredEdgeInx[i]);

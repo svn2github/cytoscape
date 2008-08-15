@@ -36,16 +36,13 @@
  */
 package org.cytoscape.vizmap;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
-
-import org.cytoscape.view.Label;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CyAttributesFactory;
+import org.cytoscape.view.Label;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 /**
  * While this used to test a ByPassHelper class, that functionality

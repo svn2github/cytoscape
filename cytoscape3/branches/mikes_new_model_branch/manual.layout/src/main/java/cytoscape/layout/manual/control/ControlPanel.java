@@ -40,11 +40,7 @@ import cytoscape.layout.manual.control.view.AlignPanel;
 import cytoscape.layout.manual.control.view.DistPanel;
 import cytoscape.layout.manual.control.view.StackPanel;
 
-import cytoscape.Cytoscape;
-
-import java.awt.*;
-
-import javax.swing.JPanel;
+import javax.swing.*;
 
 
 /**

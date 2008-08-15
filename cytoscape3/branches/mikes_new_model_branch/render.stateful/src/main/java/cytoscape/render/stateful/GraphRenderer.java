@@ -38,19 +38,13 @@ package cytoscape.render.stateful;
 
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.geom.spacial.SpacialIndex2D;
-
 import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
-
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.Iterator;

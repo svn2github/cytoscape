@@ -37,10 +37,10 @@
 
 package org.cytoscape.vizmap.parsers;
 
-import java.awt.Color;
-
-import java.util.StringTokenizer;
 import org.cytoscape.vizmap.ValueParser;
+
+import java.awt.*;
+import java.util.StringTokenizer;
 
 
 

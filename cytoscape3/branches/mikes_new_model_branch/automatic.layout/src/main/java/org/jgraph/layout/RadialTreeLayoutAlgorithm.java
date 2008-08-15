@@ -30,15 +30,13 @@
 package org.jgraph.layout;
 
 import org.jgraph.JGraph;
-
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.GraphConstants;
 import org.jgraph.graph.GraphModel;
 import org.jgraph.graph.VertexView;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;

@@ -41,8 +41,10 @@ import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import java.util.*;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.TreeSet;
 
 
 /**

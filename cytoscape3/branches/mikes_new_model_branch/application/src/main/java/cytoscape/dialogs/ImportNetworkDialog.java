@@ -5,35 +5,6 @@
  */
 package cytoscape.dialogs;
 
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.FocusListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.ActionEvent; 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.lang.reflect.Method;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.ToolTipManager;
-import javax.xml.bind.JAXBException;
-
 import cytoscape.Cytoscape;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.Category;
@@ -46,6 +17,21 @@ import cytoscape.task.util.TaskManager;
 import cytoscape.util.BookmarksUtil;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
+
+import javax.swing.*;
+import javax.xml.bind.JAXBException;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 
 /**

@@ -35,16 +35,13 @@
 package cytoscape.data.ontology;
 
 import cytoscape.data.ontology.readers.OBOFlatFileReader;
-import static cytoscape.data.ontology.readers.OBOHeaderTags.*;
-
+import static cytoscape.data.ontology.readers.OBOHeaderTags.DATE;
 import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
 
 import java.io.IOException;
-
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.util.Map;
 
 

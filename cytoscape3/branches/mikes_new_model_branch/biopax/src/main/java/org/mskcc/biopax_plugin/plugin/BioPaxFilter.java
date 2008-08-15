@@ -32,9 +32,7 @@
 package org.mskcc.biopax_plugin.plugin;
 
 import cytoscape.data.ImportHandler;
-
 import cytoscape.data.readers.GraphReader;
-
 import cytoscape.util.CyFileFilter;
 
 import java.io.File;

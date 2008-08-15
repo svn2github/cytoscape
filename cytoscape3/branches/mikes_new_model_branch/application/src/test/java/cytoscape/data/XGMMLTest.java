@@ -36,22 +36,19 @@
  */
 package cytoscape.data;
 
+import cytoscape.Cytoscape;
+import cytoscape.data.readers.XGMMLReader;
+import cytoscape.data.writers.XGMMLWriter;
 import junit.framework.TestCase;
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.RootGraph;
 import org.cytoscape.view.GraphView;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
-import cytoscape.Cytoscape;
-import cytoscape.data.writers.XGMMLWriter;
-import cytoscape.data.readers.XGMMLReader;
-import cytoscape.data.Semantics;
-import org.cytoscape.RootGraph;
-
-import java.io.StringWriter;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.StringWriter;
 
 /**
  * Tests round-tripping edge directionality:
@@ -59,18 +56,18 @@ import java.io.InputStream;
  */
 public class XGMMLTest extends TestCase {
 	public void testRoundtrip() throws Exception {
-		GraphPerspective network = Cytoscape.createNetwork("directed test network"); 
+		CyNetwork network = Cytoscape.createNetwork("directed test network");
 		GraphView view = Cytoscape.createNetworkView(network);
 
 		// create nodes
-		Node a = Cytoscape.getCyNode("from", true);
-		Node b = Cytoscape.getCyNode("to", true);
+		CyNode a = Cytoscape.getCyNode("from", true);
+		CyNode b = Cytoscape.getCyNode("to", true);
 
 		String attr = Semantics.INTERACTION;
 
 		// create two edges:
-		Edge undirected = Cytoscape.getCyEdge(a, b, attr, "u", true, false);
-		Edge directed = Cytoscape.getCyEdge(a, b, attr, "d", true, true);
+		CyEdge undirected = Cytoscape.getCyEdge(a, b, attr, "u", true, false);
+		CyEdge directed = Cytoscape.getCyEdge(a, b, attr, "d", true, true);
 		assertNotNull(undirected);
 		assertNotNull(directed);
 

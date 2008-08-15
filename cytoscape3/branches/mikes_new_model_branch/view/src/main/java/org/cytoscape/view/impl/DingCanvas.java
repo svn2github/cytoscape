@@ -36,13 +36,8 @@
 */
 package org.cytoscape.view.impl;
 
-import java.awt.Color;
-
-// imports
-import java.awt.Image;
-import java.awt.Graphics;
-
-import javax.swing.JComponent;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

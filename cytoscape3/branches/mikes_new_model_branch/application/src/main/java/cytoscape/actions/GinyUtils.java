@@ -44,11 +44,16 @@ package cytoscape.actions;
 
 
 //-------------------------------------------------------------------------
-import org.cytoscape.*;
 
-import org.cytoscape.view.*;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -140,7 +145,7 @@ public class GinyUtils {
 
 		for (Iterator i = view.getNodeViewsIterator(); i.hasNext();) {
 			NodeView nview = (NodeView) i.next();
-			Node n = nview.getNode();
+			CyNode n = nview.getNode();
 
 			view.showGraphObject(nview);
 
@@ -244,15 +249,15 @@ public class GinyUtils {
 			return;
 		}
 
-		GraphPerspective graphPerspective = view.getGraphPerspective();
+		CyNetwork cyNetwork = view.getGraphPerspective();
 		Set<NodeView> nodeViewsToSelect = new HashSet<NodeView>();
 
 		for (Iterator i = view.getSelectedNodes().iterator(); i.hasNext();) {
 			NodeView nview = (NodeView) i.next();
-			Node n = nview.getNode();
+			CyNode n = nview.getNode();
 
-			for (Iterator ni = graphPerspective.neighborsList(n).iterator(); ni.hasNext();) {
-				Node neib = (Node) ni.next();
+			for (Iterator ni = cyNetwork.neighborsList(n).iterator(); ni.hasNext();) {
+				CyNode neib = (CyNode) ni.next();
 				NodeView neibview = view.getNodeView(neib);
 				nodeViewsToSelect.add(neibview);
 			}

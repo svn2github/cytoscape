@@ -41,12 +41,10 @@
  */
 package cytoscape;
 
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
+import org.cytoscape.CyNetwork;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,7 +71,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 *
 	 */
 	public static final String CLEAN = "Clean";
-	private static Map<GraphPerspective,String> networkStateMap = new HashMap<GraphPerspective,String>();
+	private static Map<CyNetwork,String> networkStateMap = new HashMap<CyNetwork,String>();
 
 	/**
 	 *
@@ -98,18 +96,18 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 		//		System.out.println ("Old value = " + e.getOldValue());
 		//		System.out.println ("New value = " + e.getNewValue());
 		if (e.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)) {
-			GraphPerspective net = (GraphPerspective) e.getNewValue();
+			CyNetwork net = (CyNetwork) e.getNewValue();
 
-			if (net instanceof GraphPerspective) {
+			if (net instanceof CyNetwork) {
 				setModified(net, MODIFIED);
 			}
 		} else if (e.getPropertyName().equals(Cytoscape.NETWORK_SAVED)) {
 			// MLC 09/19/05 BEGIN:
 			// CyNetwork net = (CyNetwork) e.getNewValue();
-			GraphPerspective net = (GraphPerspective) (((Object[]) e.getNewValue())[0]);
+			CyNetwork net = (CyNetwork) (((Object[]) e.getNewValue())[0]);
 
 			// MLC 09/19/05 END.
-			if (net instanceof GraphPerspective) {
+			if (net instanceof CyNetwork) {
 				setModified(net, CLEAN);
 			}
 		}
@@ -120,7 +118,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 * @param net
 	 * @return
 	 */
-	public static boolean isModified(GraphPerspective net) {
+	public static boolean isModified(CyNetwork net) {
 		String modObj = networkStateMap.get(net);
 
 		if (modObj == null) // no network in table, so it can't be modified
@@ -138,7 +136,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 * @param net
 	 * @param state values supported in this version: CLEAN, MODIFIED
 	 */
-	public static void setModified(GraphPerspective net, String state) {
+	public static void setModified(CyNetwork net, String state) {
 		networkStateMap.put(net, state);
 	}
 }

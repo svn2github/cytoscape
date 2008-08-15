@@ -3,17 +3,16 @@
  */
 package cytoscape.plugin;
 
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.util.TaskManager;
+import org.jdom.JDOMException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.jdom.JDOMException;
-
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.util.TaskManager;
 
 /**
  * @author skillcoy

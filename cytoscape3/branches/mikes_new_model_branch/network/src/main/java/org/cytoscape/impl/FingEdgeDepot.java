@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
+import org.cytoscape.CyEdge;
 import org.cytoscape.RootGraph;
 
 
@@ -52,7 +52,7 @@ public interface FingEdgeDepot {
 	 * This either instantiates a new edge or gets one from the recyclery,
 	 * initializing it with the parameters specified.
 	 **/
-	public Edge getEdge(RootGraph root, int index, String id);
+	public CyEdge getEdge(RootGraph root, int index, String id);
 
 	/**
 	 * Recycles an edge.  Implementations may choose to do nothing in this
@@ -60,5 +60,5 @@ public interface FingEdgeDepot {
 	 * is simply a hook for Fing to tell the depository "I'm done using this edge
 	 * object -- it's no longer part of a RootGraph".
 	 **/
-	public void recycleEdge(Edge node);
+	public void recycleEdge(CyEdge node);
 }

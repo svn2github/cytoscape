@@ -35,61 +35,45 @@
 package org.cytoscape.view.impl;
 
 import cytoscape.geom.rtree.RTree;
-
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
-
 import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.render.immed.GraphGraphics;
-
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
-
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
-
+import org.cytoscape.view.EdgeContextMenuListener;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewChangeListener;
-import org.cytoscape.view.NodeView;
 import org.cytoscape.view.GraphViewObject;
 import org.cytoscape.view.NodeContextMenuListener;
-import org.cytoscape.view.EdgeContextMenuListener;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.view.PrintLOD;
+import phoebe.PhoebeCanvasDropListener;
+import phoebe.PhoebeCanvasDroppable;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Paint;
-import java.awt.Shape;
-import java.awt.Dimension;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.image.BufferedImage;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.KeyListener;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import javax.swing.JComponent;
-import javax.swing.JLayeredPane;
-import phoebe.*;
 /**
  * DING implementation of the GINY view.
  *
@@ -162,18 +146,18 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	/**
 	 * The graph model that will be viewed.
 	 */
-	GraphPerspective m_perspective;
+	CyNetwork m_perspective;
 
 	/**
 	 * Holds the NodeView data for the nodes that are visible.
 	 * This will change as nodes are hidden from the view.
 	 */
-	GraphPerspective m_drawPersp;
+	CyNetwork m_drawPersp;
 
 	/**
 	 * Holds all of the NodeViews, regardless of whether they're visualized.
 	 */
-	GraphPerspective m_structPersp;
+	CyNetwork m_structPersp;
 
 	/**
 	 * RTree used for querying node positions.
@@ -324,7 +308,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @param perspective The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(GraphPerspective perspective) {
+	public DGraphView(CyNetwork perspective) {
 		m_perspective = perspective;
 
 		// creating empty graphs
@@ -376,11 +360,11 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return The GraphPerspective that the view was created for.
 	 */
-	public GraphPerspective getGraphPerspective() {
+	public CyNetwork getGraphPerspective() {
 		return m_perspective;
 	}
 	
-	public GraphPerspective getNetwork() {
+	public CyNetwork getNetwork() {
 		return m_perspective;
 	}
 	
@@ -516,12 +500,12 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return A list of selected node objects.
 	 */
-	public List<Node> getSelectedNodes() {
+	public List<CyNode> getSelectedNodes() {
 		synchronized (m_lock) {
 			// all nodes from the btree
 			final IntEnumerator elms = m_selectedNodes.searchRange(Integer.MIN_VALUE,
 			                                                       Integer.MAX_VALUE, false);
-			final ArrayList<Node> returnThis = new ArrayList<Node>();
+			final ArrayList<CyNode> returnThis = new ArrayList<CyNode>();
 
 			while (elms.numRemaining() > 0)
 				// GINY requires all node indices to be negative (why?), 
@@ -555,11 +539,11 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return A list of selected edge objects.
 	 */
-	public List<Edge> getSelectedEdges() {
+	public List<CyEdge> getSelectedEdges() {
 		synchronized (m_lock) {
 			final IntEnumerator elms = m_selectedEdges.searchRange(Integer.MIN_VALUE,
 			                                                       Integer.MAX_VALUE, false);
-			final ArrayList<Edge> returnThis = new ArrayList<Edge>();
+			final ArrayList<CyEdge> returnThis = new ArrayList<CyEdge>();
 
 			while (elms.numRemaining() > 0)
 				returnThis.add(m_edgeViewMap.get(Integer.valueOf(~elms.nextInt())).getEdge());
@@ -704,7 +688,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				return oldView;
 			}
 
-			final Edge edge = m_drawPersp.getRootGraph().getEdge(edgeInx);
+			final CyEdge edge = m_drawPersp.getRootGraph().getEdge(edgeInx);
 
 			if (edge == null) {
 				throw new IllegalArgumentException("edge index specified does not exist in underlying RootGraph");
@@ -814,7 +798,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return The NodeView object that was removed.
 	 */
-	public NodeView removeNodeView(Node node) {
+	public NodeView removeNodeView(CyNode node) {
 		return removeNodeView(node.getRootGraphIndex());
 	}
 
@@ -893,7 +877,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return The EdgeView that was removed.
 	 */
-	public EdgeView removeEdgeView(Edge edge) {
+	public EdgeView removeEdgeView(CyEdge edge) {
 		return removeEdgeView(edge.getRootGraphIndex());
 	}
 
@@ -1090,7 +1074,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public NodeView getNodeView(Node node) {
+	public NodeView getNodeView(CyNode node) {
 		return getNodeView(node.getRootGraphIndex());
 	}
 
@@ -1133,7 +1117,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 * Returns all edge views (including the hidden ones) that are either 1.
 	 * directed, having oneNode as source and otherNode as target or 2.
 	 * undirected, having oneNode and otherNode as endpoints. Note that this
-	 * behaviour is similar to that of GraphPerspective.edgesList(Node, Node).
+	 * behaviour is similar to that of CyNetwork.edgesList(Node, Node).
 	 */
 	/**
 	 *  DOCUMENT ME!
@@ -1143,9 +1127,9 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public List<EdgeView> getEdgeViewsList(Node oneNode, Node otherNode) {
+	public List<EdgeView> getEdgeViewsList(CyNode oneNode, CyNode otherNode) {
 		synchronized (m_lock) {
-			List<Edge> edges = m_structPersp.edgesList(oneNode.getRootGraphIndex(),
+			List<CyEdge> edges = m_structPersp.edgesList(oneNode.getRootGraphIndex(),
 			                                     otherNode.getRootGraphIndex(), true);
 
 			if (edges == null) {
@@ -1153,10 +1137,10 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			}
 
 			final ArrayList<EdgeView> returnThis = new ArrayList<EdgeView>();
-			Iterator<Edge> it = edges.iterator();
+			Iterator<CyEdge> it = edges.iterator();
 
 			while (it.hasNext()) {
-				Edge e = (Edge) it.next();
+				CyEdge e = (CyEdge) it.next();
 				returnThis.add(getEdgeView(e));
 			}
 
@@ -1179,17 +1163,17 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 */
 	public List<EdgeView> getEdgeViewsList(int oneNodeInx, int otherNodeInx, boolean includeUndirected) {
 		synchronized (m_lock) {
-			List<Edge> edges = m_structPersp.edgesList(oneNodeInx, otherNodeInx, includeUndirected);
+			List<CyEdge> edges = m_structPersp.edgesList(oneNodeInx, otherNodeInx, includeUndirected);
 
 			if (edges == null) {
 				return null;
 			}
 
 			final ArrayList<EdgeView> returnThis = new ArrayList<EdgeView>();
-			Iterator<Edge> it = edges.iterator();
+			Iterator<CyEdge> it = edges.iterator();
 
 			while (it.hasNext()) {
-				Edge e = (Edge) it.next();
+				CyEdge e = (CyEdge) it.next();
 				returnThis.add(getEdgeView(e));
 			}
 
@@ -1237,7 +1221,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public EdgeView getEdgeView(Edge edge) {
+	public EdgeView getEdgeView(CyEdge edge) {
 		return getEdgeView(edge.getRootGraphIndex());
 	}
 
@@ -1401,7 +1385,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			int newEdge = 0;
 
 			synchronized (m_lock) {
-				final Edge edge = m_structPersp.getEdge(((DEdgeView) obj).getRootGraphIndex());
+				final CyEdge edge = m_structPersp.getEdge(((DEdgeView) obj).getRootGraphIndex());
 
 				if (edge == null) {
 					return false;
@@ -1984,13 +1968,13 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
             while (selectedEdges.numRemaining() > 0) {
                  final int edge = ~selectedEdges.nextInt();
-                 Edge currEdge = getEdgeView(edge).getEdge();
+                 CyEdge currEdge = getEdgeView(edge).getEdge();
 
-                 Node source = currEdge.getSource();
+                 CyNode source = currEdge.getSource();
                  int sourceId = ~source.getRootGraphIndex();
                  nodeIds.put(sourceId);
 
-                 Node target = currEdge.getTarget();
+                 CyNode target = currEdge.getTarget();
                  int targetId = ~target.getRootGraphIndex();
                  nodeIds.put(targetId);
             }
@@ -2598,11 +2582,11 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setSelected(Node[] nodes) {
+	public boolean setSelected(CyNode[] nodes) {
 		return setSelected(convertToViews(nodes));
 	}
 
-	private NodeView[] convertToViews(Node[] nodes) {
+	private NodeView[] convertToViews(CyNode[] nodes) {
 		NodeView[] views = new NodeView[nodes.length];
 
 		for (int i = 0; i < nodes.length; i++) {
@@ -2634,11 +2618,11 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public boolean setSelected(Edge[] edges) {
+	public boolean setSelected(CyEdge[] edges) {
 		return setSelected(convertToViews(edges));
 	}
 
-	private EdgeView[] convertToViews(Edge[] edges) {
+	private EdgeView[] convertToViews(CyEdge[] edges) {
 		EdgeView[] views = new EdgeView[edges.length];
 
 		for (int i = 0; i < edges.length; i++) {

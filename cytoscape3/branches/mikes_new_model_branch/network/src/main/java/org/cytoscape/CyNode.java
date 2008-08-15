@@ -1,9 +1,10 @@
 package org.cytoscape;
 
-import java.util.*;
-import org.cytoscape.groups.*;
+import org.cytoscape.groups.CyGroup;
 
-public interface Node extends GraphObject {
+import java.util.List;
+
+public interface CyNode extends GraphObject {
 	public void addToGroup(CyGroup group); 
 	public void removeFromGroup(CyGroup group); 
 	public List<CyGroup> getGroups(); 

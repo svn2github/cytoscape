@@ -34,30 +34,20 @@
 */
 package cytoscape.data.ontology;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
 import cytoscape.data.ontology.readers.OBOTags;
 import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
-
-import org.cytoscape.Node;
-
-import org.biojava.ontology.AlreadyExistsException;
-import org.biojava.ontology.OntologyOps;
-import org.biojava.ontology.Term;
+import org.biojava.ontology.*;
 import org.biojava.ontology.Triple;
-import org.biojava.ontology.Variable;
-
 import org.biojava.utils.AbstractChangeable;
 import org.biojava.utils.ChangeVetoException;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
 
 import java.net.URISyntaxException;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -109,7 +99,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	/*
 	 * Actual DAG of the Ontology
 	 */
-	private GraphPerspective ontologyGraph;
+	private CyNetwork ontologyGraph;
 	private CyAttributes ontologyAttr;
 	private CyAttributes termAttr;
 
@@ -143,7 +133,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 * @throws URISyntaxException
 	 */
 	public Ontology(final String name, final String curator, final String description,
-	                final GraphPerspective dag) {
+	                final CyNetwork dag) {
 		ontologyAttr = Cytoscape.getNetworkAttributes();
 		termAttr = Cytoscape.getNodeAttributes();
 
@@ -207,7 +197,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 * @param newTerm
 	 */
 	public void add(OntologyTerm newTerm) {
-		Node newOntologyTerm = Cytoscape.getCyNode(newTerm.getName(), true);
+		CyNode newOntologyTerm = Cytoscape.getCyNode(newTerm.getName(), true);
 		ontologyGraph.addNode(newOntologyTerm);
 		termAttr.setAttribute(newOntologyTerm.getIdentifier(), OBOTags.DEF.toString(),
 		                      newTerm.getDescription());
@@ -232,7 +222,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 		Iterator nodeIt = ontologyGraph.nodesIterator();
 
 		while (nodeIt.hasNext()) {
-			final Node node = (Node) nodeIt.next();
+			final CyNode node = (CyNode) nodeIt.next();
 			final String id = node.getIdentifier();
 			final Term term = new OntologyTerm(node.getIdentifier(), this.name,
 			                                   termAttr.getStringAttribute(id,
@@ -247,7 +237,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 * @return true if the term is in the DAG.
 	 */
 	public boolean containsTerm(String id) {
-		Node testNode = Cytoscape.getCyNode(id, false);
+		CyNode testNode = Cytoscape.getCyNode(id, false);
 
 		if (testNode == null) {
 			return false;
@@ -289,8 +279,8 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 *
 	 */
 	public boolean containsTriple(Term subject, Term object, Term predicate) {
-		Node source = Cytoscape.getCyNode(subject.getName());
-		Node target = Cytoscape.getCyNode(object.getName());
+		CyNode source = Cytoscape.getCyNode(subject.getName());
+		CyNode target = Cytoscape.getCyNode(object.getName());
 
 		String interaction = predicate.getName();
 
@@ -310,7 +300,7 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	 */
 	public Term createTerm(String name, String description)
 	    throws AlreadyExistsException, ChangeVetoException, IllegalArgumentException {
-		Node newNode = Cytoscape.getCyNode(name, true);
+		CyNode newNode = Cytoscape.getCyNode(name, true);
 		ontologyGraph.addNode(newNode);
 		termAttr.setAttribute(name, MetadataEntries.DESCRIPTION.toString(), description);
 

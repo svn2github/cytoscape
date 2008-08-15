@@ -36,24 +36,13 @@
 
 package org.cytoscape.vizmap;
 
+import org.cytoscape.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
-
-import org.cytoscape.vizmap.ValueParser;
-import org.cytoscape.vizmap.ObjectToString;
-
-
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
+import java.awt.*;
 import java.util.Properties;
-import java.util.Map;
-import java.util.HashMap;
-
-import java.awt.Color;
-
-import org.cytoscape.Edge;
-import org.cytoscape.GraphObject;
-import org.cytoscape.Node;
 
 
 /**
@@ -265,7 +254,7 @@ public class Appearance {
 	 * Applies the visual bypass values specified in the node (edge) attributes
 	 * for the specified node (edge) to the node (edge). 
 	 *
-	 * @param n The {@link Node} or {@link Edge} object that the visual bypass 
+	 * @param n The {@link org.cytoscape.CyNode} or {@link org.cytoscape.CyEdge} object that the visual bypass
 	 *          should be applied to.
 	 */
 	public void applyBypass(final GraphObject n) {

@@ -42,21 +42,13 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings.discrete;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
-
-import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingReader;
-import org.cytoscape.vizmap.mappings.discrete.DiscreteMappingWriter;
-
-import org.cytoscape.vizmap.parsers.ColorParser;
-import org.cytoscape.vizmap.ValueParser;
-
 import junit.framework.TestCase;
+import org.cytoscape.attributes.CyAttributesFactory;
+import org.cytoscape.vizmap.ValueParser;
+import org.cytoscape.vizmap.parsers.ColorParser;
 
 import java.io.InputStream;
-
 import java.util.Properties;
-import java.util.TreeMap;
 import java.util.SortedMap;
 
 

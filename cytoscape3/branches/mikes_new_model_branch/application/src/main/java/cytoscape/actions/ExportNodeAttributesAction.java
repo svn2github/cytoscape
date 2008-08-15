@@ -37,10 +37,8 @@
 package cytoscape.actions;
 
 import cytoscape.data.AttributeSaverDialog;
-
 import cytoscape.util.CytoscapeAction;
 
-// -------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
 
 

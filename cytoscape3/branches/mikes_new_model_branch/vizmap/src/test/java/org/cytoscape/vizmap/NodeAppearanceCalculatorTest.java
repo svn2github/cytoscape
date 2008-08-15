@@ -43,39 +43,35 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
-import org.cytoscape.RootGraph;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.RootGraphFactory;
-
-import org.cytoscape.view.NodeView;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.io.FileInputStream;
-import java.util.Properties;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.RootGraph;
+import org.cytoscape.RootGraphFactory;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
+import org.cytoscape.view.NodeView;
+
+import java.awt.*;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 
 /**
  * 
  */
 public class NodeAppearanceCalculatorTest extends TestCase {
-	GraphPerspective cyNet;
-	Node a;
-	Node b;
-	Node c;
-	Node d;
-	Edge ab;
-	Edge bc;
-	Edge cd;
-	Edge bd;
+	CyNetwork cyNet;
+	CyNode a;
+	CyNode b;
+	CyNode c;
+	CyNode d;
+	CyEdge ab;
+	CyEdge bc;
+	CyEdge cd;
+	CyEdge bd;
 	CalculatorCatalog catalog;
 	Properties props;
 	CyAttributes nodeAttrs;
@@ -105,7 +101,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		c.setIdentifier("c");
 		d = rg.getNode(rg.createNode());
 		d.setIdentifier("d");
-		Node[] nodes = new Node[] {a,b,c,d};
+		CyNode[] nodes = new CyNode[] {a,b,c,d};
 
 		ab = rg.getEdge(rg.createEdge(a, b));
 		ab.setIdentifier("a (pp) b");
@@ -115,7 +111,7 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 		cd.setIdentifier("c (pp) d");
 		bd = rg.getEdge(rg.createEdge(b, d));
 		bd.setIdentifier("b (pp) d");
-		Edge[] edges = new Edge[] {ab,bc,cd,bd};
+		CyEdge[] edges = new CyEdge[] {ab,bc,cd,bd};
 
 		cyNet = rg.createGraphPerspective(nodes,edges);
 		props = new Properties();
@@ -403,11 +399,11 @@ public class NodeAppearanceCalculatorTest extends TestCase {
 
 		RootGraph graph = RootGraphFactory.getRootGraph();
 		int index1 = graph.createNode();
-		Node first = graph.getNode(index1);
+		CyNode first = graph.getNode(index1);
 		int index2 = graph.createNode();
-		Node second = graph.getNode(index2);
+		CyNode second = graph.getNode(index2);
 
-		GraphPerspective network2 = graph.createGraphPerspective(graph.getNodeIndicesArray(), 
+		CyNetwork network2 = graph.createGraphPerspective(graph.getNodeIndicesArray(),
 		                                                         graph.getEdgeIndicesArray());
 
 		CyAttributes secondNodeAttr = CyAttributesFactory.getCyAttributes("node");

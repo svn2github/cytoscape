@@ -6,7 +6,7 @@
  */
 package org.jgraph.graph;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 
 

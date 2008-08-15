@@ -34,21 +34,9 @@
 */
 package cytoscape.data.readers;
 
-import cytoscape.AllTests;
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import cytoscape.data.readers.GraphReader;
-
-import cytoscape.dialogs.*;
-
-import cytoscape.view.NetworkPanel;
-
-//--------------------------------------------------------------------------------------
-import cytoscape.view.NetworkViewManager;
-
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.cytoscape.CyNetwork;
 
 
 //-----------------------------------------------------------------------------------------
@@ -60,7 +48,7 @@ public class FileImporterTest extends TestCase {
 	String title;
 	int nodeCount;
 	int edgeCount;
-	GraphPerspective network;
+	CyNetwork network;
 
 	//	VisualStyleBuilderDialog vsd;
 	/**

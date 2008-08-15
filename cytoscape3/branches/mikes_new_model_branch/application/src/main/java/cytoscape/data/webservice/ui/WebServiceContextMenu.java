@@ -36,19 +36,14 @@ package cytoscape.data.webservice.ui;
 
 import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientManager;
+import org.cytoscape.view.EdgeContextMenuListener;
+import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.NodeContextMenuListener;
+import org.cytoscape.view.NodeView;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-
-import org.cytoscape.view.NodeContextMenuListener;
-import org.cytoscape.view.EdgeContextMenuListener;
-
-import org.cytoscape.view.NodeView;
-import org.cytoscape.view.EdgeView;
 
 
 /**

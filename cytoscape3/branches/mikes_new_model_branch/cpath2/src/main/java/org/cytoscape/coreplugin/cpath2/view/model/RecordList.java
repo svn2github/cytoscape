@@ -1,8 +1,8 @@
 package org.cytoscape.coreplugin.cpath2.view.model;
 
-import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.BasicRecordType;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.DataSourceType;
+import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.coreplugin.cpath2.util.BioPaxEntityTypeMap;
 
 import java.util.List;

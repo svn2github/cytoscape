@@ -36,23 +36,23 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Node;
+import org.cytoscape.CyNode;
 
 
 // Valid indices: [0, Integer.MAX_VALUE - 1].
 class NodeArray {
 	private final static int INITIAL_CAPACITY = 0; // Must be non-negative.
-	private Node[] m_nodeArr;
+	private CyNode[] m_nodeArr;
 
 	NodeArray() {
-		m_nodeArr = new Node[INITIAL_CAPACITY];
+		m_nodeArr = new CyNode[INITIAL_CAPACITY];
 	}
 
 	// Understand that this method will not increase the size of the underlying
 	// array, no matter what.
 	// Throws ArrayIndexOutOfBoundsException if index is negative or
 	// Integer.MAX_VALUE.
-	Node getNodeAtIndex(int index) {
+	CyNode getNodeAtIndex(int index) {
 		// Do pre-checking because try/catch with thrown exception causes huge
 		// performance hit.
 		if ((index >= m_nodeArr.length) && (index != Integer.MAX_VALUE))
@@ -67,7 +67,7 @@ class NodeArray {
 	//   2. index is greater than or equal to the length of the array.
 	// Throws ArrayIndexOutOfBoundsException if index is negative or
 	// Integer.MAX_VALUE.
-	void setNodeAtIndex(Node node, int index) {
+	void setNodeAtIndex(CyNode node, int index) {
 		// Do pre-checking because try/catch with thrown exception causes huge
 		// performance hit.
 		if ((index >= m_nodeArr.length) && (node == null) && (index != Integer.MAX_VALUE))
@@ -84,7 +84,7 @@ class NodeArray {
 			                                      Math.max((((long) m_nodeArr.length) * 2L) + 1L,
 			                                               ((long) index) + 1L
 			                                               + (long) INITIAL_CAPACITY));
-			Node[] newArr = new Node[newArrSize];
+			CyNode[] newArr = new CyNode[newArrSize];
 			System.arraycopy(m_nodeArr, 0, newArr, 0, m_nodeArr.length);
 			m_nodeArr = newArr;
 			m_nodeArr[index] = node;

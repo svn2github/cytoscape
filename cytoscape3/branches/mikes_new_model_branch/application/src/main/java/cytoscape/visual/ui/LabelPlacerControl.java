@@ -36,20 +36,15 @@
  */
 package cytoscape.visual.ui;
 
+import org.cytoscape.view.Label;
 import org.cytoscape.vizmap.LabelPosition;
 
-import org.cytoscape.view.Label;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-
-import java.beans.*;
-
-import java.util.*;
-
 import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 /**

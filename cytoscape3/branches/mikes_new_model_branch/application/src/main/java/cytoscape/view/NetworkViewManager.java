@@ -36,34 +36,21 @@
  */
 package cytoscape.view;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
+import org.cytoscape.CyNetwork;
 import org.cytoscape.view.GraphView;
 
-import java.awt.Component;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyVetoException;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -147,7 +134,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 	 * @param network
 	 *            DOCUMENT ME!
 	 */
-	public void updateNetworkTitle(GraphPerspective network) {
+	public void updateNetworkTitle(CyNetwork network) {
 		JInternalFrame frame = networkViewMap.get(network.getIdentifier());
 
 		frame.setTitle(network.getTitle());

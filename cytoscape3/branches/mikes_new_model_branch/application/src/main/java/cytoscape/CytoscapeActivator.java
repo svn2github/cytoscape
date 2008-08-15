@@ -40,7 +40,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import javax.swing.UIManager;
+import javax.swing.*;
 
 public class CytoscapeActivator implements BundleActivator {
 

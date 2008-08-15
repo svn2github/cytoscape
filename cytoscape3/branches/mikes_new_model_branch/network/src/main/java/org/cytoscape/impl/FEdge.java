@@ -36,12 +36,12 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 
 // Package visible class.
-public class FEdge implements Edge {
+public class FEdge implements CyEdge {
 
 	// Variables specific to public get/set methods.
 	RootGraph m_rootGraph = null;
@@ -69,7 +69,7 @@ public class FEdge implements Edge {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node getSource() {
+	public CyNode getSource() {
 		return m_rootGraph.getNode(m_rootGraph.getEdgeSourceIndex(m_rootGraphIndex));
 	}
 
@@ -78,7 +78,7 @@ public class FEdge implements Edge {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node getTarget() {
+	public CyNode getTarget() {
 		return m_rootGraph.getNode(m_rootGraph.getEdgeTargetIndex(m_rootGraphIndex));
 	}
 

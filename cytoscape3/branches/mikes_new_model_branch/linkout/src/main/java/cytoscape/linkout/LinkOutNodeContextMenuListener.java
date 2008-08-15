@@ -2,11 +2,9 @@
 package cytoscape.linkout;
 
 import org.cytoscape.view.NodeContextMenuListener;
-
 import org.cytoscape.view.NodeView;
 
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
+import javax.swing.*;
 
 
 /**

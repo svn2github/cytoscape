@@ -1,9 +1,9 @@
 package cytoscape.actions;
 
-import java.awt.event.ActionEvent;
-
 import cytoscape.data.webservice.ui.UnifiedNetworkImportDialog;
 import cytoscape.util.CytoscapeAction;
+
+import java.awt.event.ActionEvent;
 
 public class WebServiceNetworkImportAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870958212L;

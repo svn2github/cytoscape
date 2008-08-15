@@ -36,8 +36,8 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphChangeEvent;
 
@@ -96,7 +96,7 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node[] getCreatedNodes() {
+	public CyNode[] getCreatedNodes() {
 		return null;
 	}
 
@@ -105,7 +105,7 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Edge[] getCreatedEdges() {
+	public CyEdge[] getCreatedEdges() {
 		return null;
 	}
 
@@ -114,7 +114,7 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node[] getRemovedNodes() {
+	public CyNode[] getRemovedNodes() {
 		return null;
 	}
 
@@ -123,7 +123,7 @@ abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Edge[] getRemovedEdges() {
+	public CyEdge[] getRemovedEdges() {
 		return null;
 	}
 

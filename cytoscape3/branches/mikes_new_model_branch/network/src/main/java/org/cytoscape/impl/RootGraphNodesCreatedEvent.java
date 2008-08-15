@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Node;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 
 
@@ -68,7 +68,7 @@ final class RootGraphNodesCreatedEvent extends RootGraphChangeEventAdapter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final Node[] getCreatedNodes() {
+	public final CyNode[] getCreatedNodes() {
 		throw new UnsupportedOperationException("don't call this method!");
 	}
 

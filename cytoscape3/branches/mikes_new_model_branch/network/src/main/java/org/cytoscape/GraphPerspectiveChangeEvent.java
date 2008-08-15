@@ -43,8 +43,8 @@ public abstract class GraphPerspectiveChangeEvent
   public abstract boolean isEdgesHiddenType ();
 
 
-  public abstract Node[] getRestoredNodes ();
-  public abstract Edge[] getRestoredEdges ();
+  public abstract CyNode[] getRestoredNodes ();
+  public abstract CyEdge[] getRestoredEdges ();
 
 
   /** The integer values in the returned array are RootGraph indices. */

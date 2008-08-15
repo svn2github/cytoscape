@@ -34,17 +34,10 @@
 */
 package cytoscape.data.ontology;
 
-import cytoscape.Cytoscape;
-
-import cytoscape.data.ontology.Ontology;
-import cytoscape.data.ontology.OntologyTerm;
-
 import junit.framework.TestCase;
-
 import org.biojava.ontology.AlreadyExistsException;
 import org.biojava.ontology.Term;
 import org.biojava.ontology.Triple;
-
 import org.biojava.utils.ChangeVetoException;
 
 import java.util.ArrayList;

@@ -36,47 +36,14 @@
 
 package cytoscape.layout.manual.common;
 
-import cytoscape.layout.manual.rotate.RotatePanel;
-import cytoscape.layout.manual.rotate.RotationLayouter;
-
-import cytoscape.layout.manual.scale.ScaleLayouter;
-import cytoscape.layout.manual.scale.ScalePanel;
-
 import cytoscape.Cytoscape;
-
-import org.cytoscape.data.SelectEvent;
-import org.cytoscape.data.SelectEventListener;
-
-import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
-
-import cytoscape.util.CytoscapeAction;
-
 import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.view.GraphView;
 
-import cytoscape.view.cytopanels.BiModalJSplitPane;
-import cytoscape.view.cytopanels.CytoPanelImp;
-import cytoscape.view.cytopanels.CytoPanelListener;
-import cytoscape.view.cytopanels.CytoPanelState;
-
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JCheckBox;
-import javax.swing.JSlider;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 
 /**

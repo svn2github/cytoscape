@@ -34,10 +34,11 @@
 */
 package cytoscape.browser;
 
-import static cytoscape.browser.DataObjectType.*;
 import cytoscape.Cytoscape;
+import static cytoscape.browser.DataObjectType.NETWORK;
 import org.cytoscape.attributes.CyAttributes;
-import javax.swing.JOptionPane;
+
+import javax.swing.*;
 import javax.swing.undo.AbstractUndoableEdit;
 
 /**

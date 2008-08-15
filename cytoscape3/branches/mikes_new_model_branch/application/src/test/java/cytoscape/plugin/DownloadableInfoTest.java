@@ -3,7 +3,6 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.plugin.DownloadableInfo;
 import junit.framework.TestCase;
 
 /**

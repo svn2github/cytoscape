@@ -36,9 +36,6 @@ package cytoscape.util;
 
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.XGMMLReader;
-
-import cytoscape.util.XGMMLFileFilter;
-
 import junit.framework.TestCase;
 
 import java.io.File;

@@ -7,33 +7,19 @@ import org.cytoscape.vizmap.EdgeAppearanceCalculator;
 import org.cytoscape.vizmap.NodeAppearanceCalculator;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.VisualStyle;
-
 import org.cytoscape.vizmap.calculators.Calculator;
-
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 import org.cytoscape.vizmap.mappings.PassThroughMapping;
-
 import org.freehep.util.export.ExportDialog;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 
 /**

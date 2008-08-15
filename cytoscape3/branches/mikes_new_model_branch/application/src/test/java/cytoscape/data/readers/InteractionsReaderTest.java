@@ -38,22 +38,9 @@
 // InteractionsReaderTest.java
 package cytoscape.data.readers;
 
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-
 import cytoscape.data.Interaction;
-
-import cytoscape.data.readers.InteractionsReader;
-
-import org.cytoscape.RootGraph;
-
-import junit.framework.*;
-
-import java.io.*;
-
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Vector;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 
 /**

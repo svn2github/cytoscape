@@ -36,13 +36,6 @@
 */
 package org.cytoscape.attributes;
 
-import org.cytoscape.attributes.CountedIterator;
-import org.cytoscape.attributes.MultiHashMap;
-import org.cytoscape.attributes.MultiHashMapDefinition;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.AttributeValueVisitor;
-import org.cytoscape.attributes.AttributeFilter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

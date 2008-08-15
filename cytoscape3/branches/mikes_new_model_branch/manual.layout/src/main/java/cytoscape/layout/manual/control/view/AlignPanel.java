@@ -36,14 +36,16 @@
 
 package cytoscape.layout.manual.control.view;
 
-import cytoscape.layout.manual.control.actions.align.*;
-
-import cytoscape.view.*;
-
-import java.awt.*;
+import cytoscape.layout.manual.control.actions.align.HAlignCenter;
+import cytoscape.layout.manual.control.actions.align.HAlignLeft;
+import cytoscape.layout.manual.control.actions.align.HAlignRight;
+import cytoscape.layout.manual.control.actions.align.VAlignBottom;
+import cytoscape.layout.manual.control.actions.align.VAlignCenter;
+import cytoscape.layout.manual.control.actions.align.VAlignTop;
 
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 
 
 /**

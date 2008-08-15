@@ -38,25 +38,16 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
-
-//-------------------------------------------------------------------------
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.KeyStroke;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
 
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 //-------------------------------------------------------------------------
 /**
@@ -79,10 +70,10 @@ public class SelectConnectedNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final GraphPerspective currentNetwork = Cytoscape.getCurrentNetwork();
-		final List<Edge> selectedEdges = new ArrayList<Edge>(currentNetwork.getSelectedEdges());
+		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+		final List<CyEdge> selectedEdges = new ArrayList<CyEdge>(currentNetwork.getSelectedEdges());
 
-		for (Edge edge: selectedEdges) {
+		for (CyEdge edge: selectedEdges) {
 			currentNetwork.setSelectedNodeState(edge.getSource(), true);
 			currentNetwork.setSelectedNodeState(edge.getTarget(), true);
 		}

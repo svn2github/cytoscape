@@ -35,20 +35,13 @@
 package cytoscape.data.ontology.readers;
 
 import cytoscape.data.ontology.DBReference;
+import static cytoscape.data.ontology.readers.DBXrefKeywords.*;
 import cytoscape.util.URLUtil;
-import static cytoscape.data.ontology.readers.DBXrefKeywords.ABBREVIATION;
-import static cytoscape.data.ontology.readers.DBXrefKeywords.DATABASE;
-import static cytoscape.data.ontology.readers.DBXrefKeywords.GENERIC_URL;
-import static cytoscape.data.ontology.readers.DBXrefKeywords.OBJECT;
-import static cytoscape.data.ontology.readers.DBXrefKeywords.SYNONYM;
-import static cytoscape.data.ontology.readers.DBXrefKeywords.URL_SYNTAX;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

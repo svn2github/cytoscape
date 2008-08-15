@@ -44,9 +44,6 @@ package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.vizmap.ValueParser;
 
-import java.lang.reflect.Constructor;
-
-//----------------------------------------------------------------------------
 import java.util.Properties;
 
 

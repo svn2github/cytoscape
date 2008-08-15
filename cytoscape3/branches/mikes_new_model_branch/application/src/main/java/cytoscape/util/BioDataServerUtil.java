@@ -38,15 +38,9 @@ package cytoscape.util;
 
 import cytoscape.CytoscapeInit;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.HashMap;
 import java.util.StringTokenizer;
 

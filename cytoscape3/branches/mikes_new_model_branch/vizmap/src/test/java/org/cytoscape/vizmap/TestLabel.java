@@ -36,9 +36,7 @@ package org.cytoscape.vizmap;
 
 import org.cytoscape.view.Label;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
+import java.awt.*;
 
 
 /**

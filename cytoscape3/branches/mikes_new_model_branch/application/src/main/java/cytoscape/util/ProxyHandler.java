@@ -37,8 +37,8 @@ package cytoscape.util;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
-import java.beans.*;
-
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 

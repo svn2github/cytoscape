@@ -43,17 +43,10 @@
 package org.cytoscape.vizmap.calculators;
 
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.mappings.MappingFactory;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 
-import org.cytoscape.vizmap.ValueParser;
-
-import java.util.Map;
 import java.util.Properties;
-
-import org.cytoscape.GraphPerspective;
-
 
 
 /**

@@ -36,10 +36,9 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 import org.cytoscape.GraphPerspectiveChangeEvent;
-import org.cytoscape.Node;
 
 
 abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChangeEvent {
@@ -97,7 +96,7 @@ abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChange
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node[] getRestoredNodes() {
+	public CyNode[] getRestoredNodes() {
 		return null;
 	}
 
@@ -106,7 +105,7 @@ abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChange
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Edge[] getRestoredEdges() {
+	public CyEdge[] getRestoredEdges() {
 		return null;
 	}
 

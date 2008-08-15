@@ -37,16 +37,12 @@
 package cytoscape.io.table.actions;
 
 import cytoscape.Cytoscape;
-
+import cytoscape.io.table.ui.ImportTextTableDialog;
 import cytoscape.util.CytoscapeAction;
 
-import cytoscape.io.table.ui.ImportTextTableDialog;
-
-import java.awt.event.ActionEvent;
-
-import java.io.IOException;
-
 import javax.xml.bind.JAXBException;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 
 /**

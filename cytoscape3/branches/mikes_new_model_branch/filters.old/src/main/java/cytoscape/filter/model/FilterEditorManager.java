@@ -36,12 +36,12 @@
 
 package cytoscape.filter.model;
 
-import cytoscape.filter.view.*;
+import cytoscape.filter.view.FilterEditor;
 
-import java.util.*;
-
-import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
 
 
 /**

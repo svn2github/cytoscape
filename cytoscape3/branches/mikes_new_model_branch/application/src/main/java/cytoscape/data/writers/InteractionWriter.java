@@ -36,20 +36,16 @@
 */
 package cytoscape.data.writers;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
-
-import org.cytoscape.attributes.CyAttributes;
 import cytoscape.data.Semantics;
-
 import cytoscape.task.TaskMonitor;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
+import org.cytoscape.attributes.CyAttributes;
 
 import java.io.IOException;
 import java.io.Writer;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,7 +60,7 @@ public class InteractionWriter {
 	 * @param writer The writer the network should be written to.
 	 * @param taskMonitor An optional task monitor.
 	 */
-	public static void writeInteractions(GraphPerspective network, Writer writer, TaskMonitor taskMonitor)
+	public static void writeInteractions(CyNetwork network, Writer writer, TaskMonitor taskMonitor)
 	    throws IOException {
 		String sif = getInteractionString(network, taskMonitor);
 		writer.write(sif);
@@ -75,7 +71,7 @@ public class InteractionWriter {
 	 * @param network The network to be written.
 	 * @param writer The writer the network should be written to.
 	 */
-	public static void writeInteractions(GraphPerspective network, Writer writer)
+	public static void writeInteractions(CyNetwork network, Writer writer)
 	    throws IOException {
 		writeInteractions(network, writer, null);
 	}
@@ -85,7 +81,7 @@ public class InteractionWriter {
 	 * @param network The network to be formatted as a SIF string.
 	 * @return A string of a CyNetwork in SIF format.
 	 */
-	public static String getInteractionString(GraphPerspective network) {
+	public static String getInteractionString(CyNetwork network) {
 		return getInteractionString(network, null);
 	}
 
@@ -96,7 +92,7 @@ public class InteractionWriter {
 	 * use one. Use null otherwise.
 	 * @return A string of a CyNetwork in SIF format.
 	 */
-	public static String getInteractionString(GraphPerspective network, TaskMonitor taskMonitor) {
+	public static String getInteractionString(CyNetwork network, TaskMonitor taskMonitor) {
 		if (network == null) {
 			return "";
 		}
@@ -104,10 +100,10 @@ public class InteractionWriter {
 		final StringBuilder sb = new StringBuilder();
 
 		final String lineSep = System.getProperty("line.separator");
-		final List<Node> nodeList = network.nodesList();
+		final List<CyNode> nodeList = network.nodesList();
 
 		final CyAttributes edgeAtts = Cytoscape.getEdgeAttributes();
-		final Node[] nodes = (Node[]) nodeList.toArray(new Node[0]);
+		final CyNode[] nodes = (CyNode[]) nodeList.toArray(new CyNode[0]);
 		
 		final int nodeCount = nodes.length;
 		
@@ -118,7 +114,7 @@ public class InteractionWriter {
 				taskMonitor.setPercentCompleted((int) percent);
 			}
 
-			Node node = nodes[i];
+			CyNode node = nodes[i];
 			String canonicalName = node.getIdentifier();
 			List edges = network.getAdjacentEdgesList(node, true, true, true);
 
@@ -128,11 +124,11 @@ public class InteractionWriter {
 				Iterator it = edges.iterator();
 
 				while (it.hasNext()) {
-					Edge edge = (Edge) it.next();
+					CyEdge edge = (CyEdge) it.next();
 
 					if (node == edge.getSource()) { //do only for outgoing edges
 
-						Node target = edge.getTarget();
+						CyNode target = edge.getTarget();
 
 						String canonicalTargetName = target.getIdentifier();
 

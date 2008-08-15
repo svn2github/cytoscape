@@ -32,20 +32,16 @@
 package org.mskcc.biopax_plugin.util.biopax;
 
 import cytoscape.task.TaskMonitor;
-
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-
 import org.jdom.input.SAXBuilder;
-
 import org.mskcc.biopax_plugin.util.rdf.RdfConstants;
 import org.mskcc.biopax_plugin.util.rdf.RdfUtil;
 
 import java.io.IOException;
 import java.io.Reader;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

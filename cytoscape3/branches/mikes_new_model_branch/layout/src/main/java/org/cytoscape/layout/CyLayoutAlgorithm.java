@@ -37,15 +37,12 @@
 package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
-
+import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
+import javax.swing.*;
 import java.util.List;
-
-import javax.swing.JPanel;
-
-import org.cytoscape.tunable.ModuleProperties;
 
 /**
  *

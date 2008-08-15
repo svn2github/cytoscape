@@ -1,16 +1,16 @@
 package org.cytoscape;
 
-public interface Edge extends GraphObject {
+public interface CyEdge extends GraphObject {
 
   /**
    * @return the GraphNode corresponding to the source of this GraphEdge.
    */
-  public Node getSource ();
+  public CyNode getSource ();
 
   /**
    * @return the GraphNode corresponding to the target of this GraphEdge.
    */
-  public Node getTarget ();
+  public CyNode getTarget ();
 
   /**
    * @return true if this Edge is a directed edge; false otherwise.

@@ -42,24 +42,17 @@
 //-------------------------------------------------------------------------
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 
-//-------------------------------------------------------------------------
-import org.cytoscape.Node;
-
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.KeyStroke;
-
-import javax.swing.event.MenuEvent;
 
 //-------------------------------------------------------------------------
 /**
@@ -83,11 +76,11 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		final GraphPerspective currentNetwork = Cytoscape.getCurrentNetwork();
-		final List<Node> selectedNodes = new ArrayList<Node>(currentNetwork.getSelectedNodes());
+		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
+		final List<CyNode> selectedNodes = new ArrayList<CyNode>(currentNetwork.getSelectedNodes());
 
 		for (final Iterator it = selectedNodes.iterator(); it.hasNext();) {
-			currentNetwork.setSelectedNodeState(currentNetwork.neighborsList((Node) it.next()), true);
+			currentNetwork.setSelectedNodeState(currentNetwork.neighborsList((CyNode) it.next()), true);
 		}
 
 		Cytoscape.getCurrentNetworkView().updateView();

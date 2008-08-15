@@ -36,8 +36,7 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Edge;
-
+import org.cytoscape.CyEdge;
 import org.cytoscape.view.GraphView;
 
 
@@ -66,8 +65,8 @@ final class GraphViewEdgesHiddenEvent extends GraphViewChangeEventAdapter {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final Edge[] getHiddenEdges() {
-		final Edge[] returnThis = new Edge[m_hiddenEdgeInx.length];
+	public final CyEdge[] getHiddenEdges() {
+		final CyEdge[] returnThis = new CyEdge[m_hiddenEdgeInx.length];
 
 		for (int i = 0; i < returnThis.length; i++)
 			returnThis[i] = m_view.getRootGraph().getEdge(m_hiddenEdgeInx[i]);

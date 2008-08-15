@@ -36,13 +36,10 @@
 */
 package cytoscape.view;
 
-import javax.swing.DefaultDesktopManager;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
-
 import cytoscape.Cytoscape;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *

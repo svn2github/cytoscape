@@ -39,7 +39,6 @@ package cytoscape.util.intr.test;
 import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntStack;
-import cytoscape.util.intr.MinIntHeap;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,26 +1,18 @@
 package cytoscape.filters.view;
 
-import java.awt.Component;
+import cytoscape.filters.CompositeFilter;
+import cytoscape.filters.EdgeInteractionFilter;
+import cytoscape.filters.FilterPlugin;
+import cytoscape.filters.InteractionFilter;
+import cytoscape.filters.util.FilterUtil;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Vector;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-
-import cytoscape.filters.CompositeFilter;
-import cytoscape.filters.FilterPlugin;
-import cytoscape.filters.InteractionFilter;
-//import cytoscape.filters.NodeInteractionFilter;
-import cytoscape.filters.EdgeInteractionFilter;
-import cytoscape.filters.util.FilterUtil;
 
 public class InteractionFilterPanel extends JPanel implements ItemListener{
 

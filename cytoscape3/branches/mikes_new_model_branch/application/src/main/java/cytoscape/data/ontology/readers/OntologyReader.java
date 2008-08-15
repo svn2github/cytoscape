@@ -34,10 +34,9 @@
 */
 package cytoscape.data.ontology.readers;
 
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.CyNetwork;
 
 import java.io.IOException;
-
 import java.util.Map;
 
 
@@ -64,7 +63,7 @@ public interface OntologyReader {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public GraphPerspective getDag();
+	public CyNetwork getDag();
 
 	/**
 	 *  DOCUMENT ME!

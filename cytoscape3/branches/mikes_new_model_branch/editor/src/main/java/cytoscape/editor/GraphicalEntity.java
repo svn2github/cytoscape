@@ -4,10 +4,9 @@
  */
 package cytoscape.editor;
 
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.dnd.DragSource;
-
-import javax.swing.Icon;
 
 
 /**

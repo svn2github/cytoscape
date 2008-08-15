@@ -37,25 +37,20 @@
 package csplugins.test.widgets.test.uiTests.view;
 
 import csplugins.quickfind.view.QuickFindPanel;
-
 import csplugins.test.widgets.test.unitTests.text.TestNumberIndex;
 import csplugins.test.widgets.test.unitTests.view.TestTextIndexComboBox;
-
 import csplugins.widgets.autocomplete.index.NumberIndex;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import csplugins.widgets.autocomplete.view.TextIndexComboBox;
-
 import prefuse.data.query.NumberRangeModel;
-
 import prefuse.util.ui.JRangeSlider;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 /**

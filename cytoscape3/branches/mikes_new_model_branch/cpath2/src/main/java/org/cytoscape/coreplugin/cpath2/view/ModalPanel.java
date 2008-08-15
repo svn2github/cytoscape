@@ -32,16 +32,12 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
 // imports
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.AlphaComposite;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
-import javax.swing.JComponent;
 
 /**
  * Modal Panel provides modal support for popup panel.

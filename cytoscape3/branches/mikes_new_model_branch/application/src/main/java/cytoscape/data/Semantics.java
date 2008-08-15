@@ -36,25 +36,16 @@
  */
 package cytoscape.data;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 import org.cytoscape.attributes.CountedIterator;
-import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.MultiHashMap;
 
-import org.cytoscape.Edge;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 
 /**
@@ -155,7 +146,7 @@ public class Semantics {
 	 *
 	 * This method does nothing at all if either argument is null.
 	 */
-	public static void assignSpecies(final GraphPerspective network) {
+	public static void assignSpecies(final CyNetwork network) {
 		if (network == null) {
 			return;
 		}
@@ -171,7 +162,7 @@ public class Semantics {
 		final Iterator nodeIt = network.nodesIterator();
 
 		while (nodeIt.hasNext()) {
-			final String nodeLabel = ((Node) nodeIt.next()).getIdentifier();
+			final String nodeLabel = ((CyNode) nodeIt.next()).getIdentifier();
 			final String species = nodeAttributes.getStringAttribute(nodeLabel, SPECIES);
 
 			if (species == null) { // only do something if no value exists
@@ -185,7 +176,7 @@ public class Semantics {
 	 * the species attribute in the node attributes of the supplied network and
 	 * returns a Set containing every unique value found.
 	 */
-	public static Set<String> getSpeciesInNetwork(final GraphPerspective network) {
+	public static Set<String> getSpeciesInNetwork(final CyNetwork network) {
 		final Set<String> returnSet = new HashSet<String>();
 
 		if (network == null) {
@@ -214,7 +205,7 @@ public class Semantics {
 	 * If the argument is null, returns an array of length 0.
 	 */
 	@SuppressWarnings("unchecked")  // again the result of stupid attributes being untyped
-	public static String[] getInteractionTypes(final GraphPerspective network) {
+	public static String[] getInteractionTypes(final CyNetwork network) {
 		if (network == null) {
 			return new String[0];
 		}
@@ -248,7 +239,7 @@ public class Semantics {
 	 *
 	 * If either argument is null, returns null.
 	 */
-	public static String getInteractionType(final GraphPerspective network, final Edge edge) {
+	public static String getInteractionType(final CyNetwork network, final CyEdge edge) {
 		if ((network == null) || (edge == null)) {
 			return null;
 		}
@@ -275,7 +266,7 @@ public class Semantics {
 	 * the tests that can be done to find synonyms.
 	 */
 	public static boolean areSynonyms(final String firstName, final String secondName,
-	                                  final GraphPerspective network) {
+	                                  final CyNetwork network) {
 		if ((firstName == null) || (secondName == null)) {
 			return ((firstName == null) && (secondName == null));
 		}
@@ -315,7 +306,7 @@ public class Semantics {
 	 * be determined, then use the BioDataServer to add all the synonyms that
 	 * are registered for the name argument.
 	 */
-	public static List<String> getAllSynonyms(final String name, final GraphPerspective network) {
+	public static List<String> getAllSynonyms(final String name, final CyNetwork network) {
 		final List<String> returnList = new ArrayList<String>();
 
 		if (name == null) {

@@ -38,25 +38,13 @@ package cytoscape.util;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.task.TaskMonitor;
 
-import java.awt.Component;
-import java.awt.FileDialog;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
 import java.net.URL;
-
 import java.util.Iterator;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
 
 /**

@@ -34,28 +34,19 @@ package csplugins.layout.algorithms.graphPartition;
 
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-
-import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
-
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import org.cytoscape.attributes.CyAttributes;
-
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
 
-import org.cytoscape.view.*;
-
-import java.awt.GridLayout;
-
-import java.util.*;
-
-import javax.swing.JPanel;
-
-import org.cytoscape.*;
-import org.cytoscape.data.*;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
 /**

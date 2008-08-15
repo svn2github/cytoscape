@@ -34,14 +34,14 @@ package org.cytoscape.coreplugin.cpath2.mapping;
 // imports
 
 import cytoscape.util.ProxyHandler;
-import org.cytoscape.view.NodeContextMenuListener;
 import org.cytoscape.coreplugin.cpath2.http.HTTPConnectionHandler;
 import org.cytoscape.coreplugin.cpath2.http.HTTPEvent;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
-import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
 import org.cytoscape.coreplugin.cpath2.util.NetworkMergeUtil;
+import org.cytoscape.coreplugin.cpath2.util.NetworkUtil;
 import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
+import org.cytoscape.view.NodeContextMenuListener;
 
 import java.net.Proxy;
 

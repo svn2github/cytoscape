@@ -34,10 +34,8 @@
 */
 package org.cytoscape.vizmap.icon;
 
-import java.awt.Color;
-import java.awt.Shape;
-
-import javax.swing.ImageIcon;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

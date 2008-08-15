@@ -17,21 +17,12 @@
 */
 package cytoscape;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.GraphPerspectiveChangeEvent;
-import org.cytoscape.GraphPerspectiveChangeListener;
-import org.cytoscape.Node;
-
-import cytoscape.Cytoscape;
-
 import cytoscape.data.Semantics;
-
-
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.cytoscape.*;
 
 
 /**
@@ -68,11 +59,11 @@ public class BugHideNodeEventFiringTest extends TestCase implements GraphPerspec
 	 *  DOCUMENT ME!
 	 */
 	public void testBug() {
-		// setup CN1-->S in GraphPerspective net:
-		Node CN1 = Cytoscape.getCyNode("CN1", true);
-		Node S = Cytoscape.getCyNode("S", true);
-		Edge e1 = Cytoscape.getCyEdge(CN1, S, Semantics.INTERACTION, "testInteraction", true, true);
-		GraphPerspective net = Cytoscape.createNetwork("net", false);
+		// setup CN1-->S in CyNetwork net:
+		CyNode CN1 = Cytoscape.getCyNode("CN1", true);
+		CyNode S = Cytoscape.getCyNode("S", true);
+		CyEdge e1 = Cytoscape.getCyEdge(CN1, S, Semantics.INTERACTION, "testInteraction", true, true);
+		CyNetwork net = Cytoscape.createNetwork("net", false);
 		net.restoreNode(CN1);
 		net.restoreNode(S);
 		net.restoreEdge(e1);

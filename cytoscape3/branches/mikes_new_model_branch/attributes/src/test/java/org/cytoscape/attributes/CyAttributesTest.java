@@ -36,10 +36,9 @@
  */
 package cytoscape.data;
 
+import junit.framework.TestCase;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.impl.CyAttributesImpl;
-
-import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;

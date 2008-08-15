@@ -36,16 +36,18 @@
 
 package cytoscape.browser.util;
 
-import cytoscape.browser.ui.CyAttributeBrowserTable;
 import cytoscape.Cytoscape;
-
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-
-import java.util.*;
+import cytoscape.browser.ui.CyAttributeBrowserTable;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.StringTokenizer;
 
 
 /**

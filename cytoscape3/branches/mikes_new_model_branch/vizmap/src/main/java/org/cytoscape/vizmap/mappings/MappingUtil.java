@@ -39,8 +39,6 @@ package org.cytoscape.vizmap.mappings;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
 
-import java.lang.*;
-
 
 /**
  * Provides simple utility methods for the Mapping classes.

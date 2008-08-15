@@ -2,12 +2,8 @@ package cytoscape.dialogs.plugins;
 
 import cytoscape.plugin.DownloadableInfo;
 
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
+import java.awt.*;
 
 public class LicenseDialog extends javax.swing.JDialog {
 	private final static long serialVersionUID = 1202339873145611L;

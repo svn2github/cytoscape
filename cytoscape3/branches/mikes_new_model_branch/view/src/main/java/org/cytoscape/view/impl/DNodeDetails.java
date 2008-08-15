@@ -36,19 +36,12 @@
 
 package org.cytoscape.view.impl;
 
-import cytoscape.render.stateful.NodeDetails;
 import cytoscape.render.stateful.CustomGraphic;
-
-
+import cytoscape.render.stateful.NodeDetails;
 import cytoscape.util.intr.IntObjHash;
-
 import org.cytoscape.view.Label;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Shape;
-
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 

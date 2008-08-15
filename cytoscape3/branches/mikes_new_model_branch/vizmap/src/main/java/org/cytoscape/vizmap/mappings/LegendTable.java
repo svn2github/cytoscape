@@ -37,24 +37,13 @@
 package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 
 
 /**

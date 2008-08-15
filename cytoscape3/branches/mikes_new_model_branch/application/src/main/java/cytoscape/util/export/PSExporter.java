@@ -1,12 +1,10 @@
 package cytoscape.util.export;
 
+import org.cytoscape.view.GraphView;
+import org.freehep.graphicsio.ps.PSGraphics2D;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.view.GraphView;
-
-import org.freehep.graphicsio.ps.PSGraphics2D;
 import java.util.Properties;
 
 public class PSExporter implements Exporter

@@ -36,57 +36,30 @@
  */
 package cytoscape.view;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.view.GraphView;
-
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
-
-import cytoscape.data.webservice.ui.NetworkExpanderListener;
 import cytoscape.data.webservice.ui.WebServiceContextMenuListener;
-import cytoscape.util.undo.CyUndo;
-
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
-
+import cytoscape.visual.ui.VizMapBypassNetworkListener;
+import cytoscape.visual.ui.VizMapperMainPanel;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
-import cytoscape.visual.ui.VizMapperMainPanel;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import java.util.HashMap;
-import java.util.List;
-
-import javax.help.HelpBroker;
-import javax.help.HelpSet;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.SwingPropertyChangeSupport;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -384,7 +357,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *
 	 * @param newNetwork DOCUMENT ME!
 	 */
-	public void setNewNetwork(GraphPerspective newNetwork) {
+	public void setNewNetwork(CyNetwork newNetwork) {
 	}
 
 

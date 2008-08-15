@@ -32,15 +32,19 @@
 package org.mskcc.biopax_plugin.style;
 
 import cytoscape.Cytoscape;
-
-import org.cytoscape.vizmap.*;
-
-import org.cytoscape.vizmap.calculators.*;
-
+import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.vizmap.CalculatorCatalog;
+import org.cytoscape.vizmap.EdgeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeAppearanceCalculator;
+import org.cytoscape.vizmap.NodeShape;
+import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.vizmap.VisualStyle;
+import org.cytoscape.vizmap.calculators.BasicCalculator;
+import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 import org.cytoscape.vizmap.mappings.PassThroughMapping;
-
 import org.mskcc.biopax_plugin.mapping.MapBioPaxToCytoscape;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;
 import org.mskcc.biopax_plugin.plugin.BioPaxPlugIn;
@@ -49,7 +53,6 @@ import org.mskcc.biopax_plugin.util.biopax.BioPaxPlainEnglish;
 import org.mskcc.biopax_plugin.util.biopax.ControlTypeConstants;
 
 import java.awt.*;
-
 import java.util.Iterator;
 import java.util.Set;
 

@@ -37,9 +37,7 @@
 package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
-
 import org.biojava.ontology.Ontology;
 
 import java.util.List;

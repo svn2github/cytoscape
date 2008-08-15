@@ -36,13 +36,12 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.GraphPerspective;
-import org.cytoscape.Node;
+import org.cytoscape.CyNode;
 
 
 final class GraphPerspectiveNodesHiddenEvent extends GraphPerspectiveChangeEventAdapter {
 	private final static long serialVersionUID = 1202347362681230L;
-	private final Node[] m_hiddenNodes;
+	private final CyNode[] m_hiddenNodes;
 	private final int[] m_hiddenNodeInx;
 
 	// Note that no copy of the array hiddenNodes is made - the exact
@@ -51,7 +50,7 @@ final class GraphPerspectiveNodesHiddenEvent extends GraphPerspectiveChangeEvent
 	// must contain valid RootGraph indices at the time this constructor is
 	// called; further behavior of the Node objects is not too important
 	// because the getHiddenNodes() method has been deprecated.
-	GraphPerspectiveNodesHiddenEvent(Object source, Node[] hiddenNodes) {
+	GraphPerspectiveNodesHiddenEvent(Object source, CyNode[] hiddenNodes) {
 		super(source);
 		m_hiddenNodes = hiddenNodes;
 		m_hiddenNodeInx = new int[m_hiddenNodes.length];

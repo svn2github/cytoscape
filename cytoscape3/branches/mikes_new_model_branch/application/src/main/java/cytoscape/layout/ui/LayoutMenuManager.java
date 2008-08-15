@@ -36,22 +36,13 @@
 */
 package cytoscape.layout.ui;
 
-import cytoscape.Cytoscape;
-
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collection;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
-
-import javax.swing.JMenu;
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.util.*;
 
 
 public class LayoutMenuManager implements MenuListener {

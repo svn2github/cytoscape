@@ -36,13 +36,12 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
+import org.cytoscape.CyEdge;
 
 
 final class GraphPerspectiveEdgesHiddenEvent extends GraphPerspectiveChangeEventAdapter {
 	private final static long serialVersionUID = 1202347362644474L;
-	private final Edge[] m_hiddenEdges;
+	private final CyEdge[] m_hiddenEdges;
 	private final int[] m_hiddenEdgeInx;
 
 	// Note that no copy of the array hiddenEdges is made - the exact
@@ -51,7 +50,7 @@ final class GraphPerspectiveEdgesHiddenEvent extends GraphPerspectiveChangeEvent
 	// must contain valid RootGraph indices at the time this constructor is
 	// called; further behavior of the Edge objects is not too important
 	// because the getHiddenEdges() method has been deprecated.
-	GraphPerspectiveEdgesHiddenEvent(Object source, Edge[] hiddenEdges) {
+	GraphPerspectiveEdgesHiddenEvent(Object source, CyEdge[] hiddenEdges) {
 		super(source);
 		m_hiddenEdges = hiddenEdges;
 		m_hiddenEdgeInx = new int[m_hiddenEdges.length];

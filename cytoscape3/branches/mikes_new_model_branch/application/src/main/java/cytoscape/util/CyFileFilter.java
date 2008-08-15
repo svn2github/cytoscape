@@ -38,16 +38,13 @@ package cytoscape.util;
 
 import cytoscape.data.readers.GraphReader;
 
+import javax.swing.filechooser.FileFilter;
 import java.io.*;
-
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
-
-import java.net.URL;
-import java.net.URLConnection;
-
-import javax.swing.filechooser.FileFilter;
 
 
 /**

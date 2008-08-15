@@ -36,21 +36,10 @@
 */
 package cytoscape.util.undo;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.undo.*;
-
-import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import cytoscape.view.CytoscapeDesktop;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import undo.Undo;
+
+import javax.swing.undo.UndoManager;
 
 /**
  * A tiny class for supporting undo in the Cytoscape context.  If you

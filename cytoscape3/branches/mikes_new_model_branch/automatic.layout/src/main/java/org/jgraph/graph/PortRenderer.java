@@ -8,16 +8,9 @@ package org.jgraph.graph;
 
 import org.jgraph.JGraph;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-
+import javax.swing.*;
+import java.awt.*;
 import java.io.Serializable;
-
-import javax.swing.JComponent;
-import javax.swing.UIManager;
 
 
 /**

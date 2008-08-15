@@ -7,13 +7,11 @@ package cytoscape.io.table.ui;
 
 import cytoscape.util.OpenBrowser;
 
+import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
 import java.io.IOException;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.swing.ImageIcon;
-import javax.swing.event.HyperlinkEvent;
 
 
 /**

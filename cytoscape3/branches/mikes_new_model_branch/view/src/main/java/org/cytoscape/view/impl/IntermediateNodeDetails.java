@@ -38,8 +38,7 @@ package org.cytoscape.view.impl;
 
 import cytoscape.render.stateful.NodeDetails;
 
-import java.awt.Font;
-import java.awt.Paint;
+import java.awt.*;
 
 
 class IntermediateNodeDetails extends NodeDetails {

@@ -36,43 +36,30 @@
 */
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.writers.XGMMLWriter;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-
+import org.cytoscape.CyNetwork;
 import org.cytoscape.view.GraphView;
 
-import java.awt.event.ActionEvent;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.IOException;
-
-import java.net.URISyntaxException;
-
-import java.util.Set;
-
-import javax.swing.JOptionPane;
-
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
-
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.URISyntaxException;
+import java.util.Set;
 
 
 /**
@@ -151,7 +138,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 			name = name + ".xgmml";
 
 		// Get Current Network and View
-		final GraphPerspective network = Cytoscape.getCurrentNetwork();
+		final CyNetwork network = Cytoscape.getCurrentNetwork();
 		final GraphView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		// Create Task
@@ -179,7 +166,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
  */
 class ExportAsXGMMLTask implements Task {
 	private String fileName;
-	private GraphPerspective network;
+	private CyNetwork network;
 	private GraphView view;
 	private TaskMonitor taskMonitor;
 
@@ -191,7 +178,7 @@ class ExportAsXGMMLTask implements Task {
 	 * @param view
 	 *            Network View Object.
 	 */
-	public ExportAsXGMMLTask(String fileName, GraphPerspective network, GraphView view) {
+	public ExportAsXGMMLTask(String fileName, CyNetwork network, GraphView view) {
 		this.fileName = fileName;
 		this.network = network;
 		this.view = view;

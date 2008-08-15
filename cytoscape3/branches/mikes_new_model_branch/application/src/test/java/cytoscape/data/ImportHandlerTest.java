@@ -34,21 +34,16 @@
 */
 package cytoscape.data;
 
-import cytoscape.data.ImportHandler;
-
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
-
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.SIFFileFilter;
-
 import junit.framework.TestCase;
 
-import java.io.*;
-
-import java.lang.String;
-
-import java.util.*;
+import java.io.File;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**

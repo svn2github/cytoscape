@@ -42,12 +42,11 @@
 //---------------------------------------------------------------------------
 package org.cytoscape.data.impl;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 import org.cytoscape.data.SelectEvent;
 import org.cytoscape.data.SelectFilter;
 
-//---------------------------------------------------------------------------
 import java.util.Set;
 
 
@@ -85,9 +84,9 @@ public class SelectEventImpl implements SelectEvent {
 
 		if (target == null) {
 			throw new IllegalArgumentException("Unexpected null target");
-		} else if (target instanceof Node) {
+		} else if (target instanceof CyNode) {
 			this.targetType = this.SINGLE_NODE;
-		} else if (target instanceof Edge) {
+		} else if (target instanceof CyEdge) {
 			this.targetType = this.SINGLE_EDGE;
 		} else if (target instanceof Set) {
 			Set targetSet = (Set) target;
@@ -98,9 +97,9 @@ public class SelectEventImpl implements SelectEvent {
 
 			Object first = targetSet.iterator().next();
 
-			if (first instanceof Node) {
+			if (first instanceof CyNode) {
 				this.targetType = this.NODE_SET;
-			} else if (first instanceof Edge) {
+			} else if (first instanceof CyEdge) {
 				this.targetType = this.EDGE_SET;
 			} else { //unknown object type
 				throw new IllegalArgumentException("Unknown object type in target set");

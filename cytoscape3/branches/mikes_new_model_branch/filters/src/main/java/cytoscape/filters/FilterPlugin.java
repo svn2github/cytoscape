@@ -37,17 +37,15 @@ package cytoscape.filters;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.filters.view.FilterMainPanel;
-import cytoscape.plugin.CytoscapePlugin;
-import cytoscape.util.*;
+import cytoscape.util.CytoscapeAction;
 import cytoscape.view.cytopanels.CytoPanelImp;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import javax.swing.*;
 import java.io.File;
 import java.util.List;
 import java.util.Vector;
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleActivator;
 
 /**
  * 

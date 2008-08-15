@@ -43,19 +43,12 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 
-import org.cytoscape.*;
-
-import org.cytoscape.view.*;
-
-//-------------------------------------------------------------------------
 import java.awt.event.ActionEvent;
-
-import java.util.*;
-
-import javax.swing.AbstractAction;
+import java.util.Set;
 
 
 //-------------------------------------------------------------------------
@@ -88,8 +81,8 @@ public class HideSelectedAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// Get the selected nodes:
-		Set<Node> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
-		Set<Edge> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
+		Set<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+		Set<CyEdge> selectedEdges = Cytoscape.getCurrentNetwork().getSelectedEdges();
 		GinyUtils.hideSelectedNodes(Cytoscape.getCurrentNetworkView());
 		GinyUtils.hideSelectedEdges(Cytoscape.getCurrentNetworkView());
 

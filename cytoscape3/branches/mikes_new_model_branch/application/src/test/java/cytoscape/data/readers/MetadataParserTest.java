@@ -34,15 +34,9 @@
 */
 package cytoscape.data.readers;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
-import cytoscape.data.readers.MetadataEntries;
-import cytoscape.data.readers.MetadataParser;
-
 import junit.framework.TestCase;
-
-import java.net.URISyntaxException;
+import org.cytoscape.CyNetwork;
 
 import java.util.Map;
 
@@ -55,7 +49,7 @@ import java.util.Map;
  */
 public class MetadataParserTest extends TestCase {
 	MetadataParser mdp;
-	GraphPerspective network;
+	CyNetwork network;
 
 	protected void setUp() throws Exception {
 		super.setUp();

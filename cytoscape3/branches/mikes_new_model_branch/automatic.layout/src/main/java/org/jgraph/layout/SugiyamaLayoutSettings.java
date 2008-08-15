@@ -30,12 +30,8 @@
  */
 package org.jgraph.layout;
 
-import java.awt.GridLayout;
-
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 
 
 /**

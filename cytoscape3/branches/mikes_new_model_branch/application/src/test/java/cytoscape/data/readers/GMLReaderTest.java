@@ -46,12 +46,6 @@ package cytoscape.data.readers;
 
 import cytoscape.AllTests;
 import cytoscape.Cytoscape;
-
-import cytoscape.data.readers.GMLReader;
-
-//--------------------------------------------------------------------------------------
-import org.cytoscape.RootGraph;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 

@@ -37,21 +37,13 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.view.cytopanels.CytoPanelName;
-import cytoscape.view.cytopanels.CytoPanel;
+import cytoscape.view.cytopanels.CytoPanelState;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
-import javax.swing.Action;
-import javax.swing.SwingConstants;
-import javax.swing.JCheckBoxMenuItem;
-
+import javax.swing.*;
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
 
 /**
  *

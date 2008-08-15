@@ -38,13 +38,8 @@ package org.cytoscape.layout;
 
 import org.cytoscape.layout.algorithms.GridNodeLayout;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 
 /**

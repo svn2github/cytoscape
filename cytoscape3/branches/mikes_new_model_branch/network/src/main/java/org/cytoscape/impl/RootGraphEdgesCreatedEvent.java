@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
+import org.cytoscape.CyEdge;
 import org.cytoscape.RootGraph;
 
 
@@ -68,7 +68,7 @@ final class RootGraphEdgesCreatedEvent extends RootGraphChangeEventAdapter {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public final Edge[] getCreatedEdges() {
+	public final CyEdge[] getCreatedEdges() {
 		throw new UnsupportedOperationException("don't call this method!");
 	}
 

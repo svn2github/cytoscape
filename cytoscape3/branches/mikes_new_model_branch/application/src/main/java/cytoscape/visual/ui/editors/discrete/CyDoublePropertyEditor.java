@@ -34,15 +34,13 @@
 */
 package cytoscape.visual.ui.editors.discrete;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
-import javax.swing.JTextField;
-
 import com.l2fprod.common.beans.editor.DoublePropertyEditor;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
 import cytoscape.Cytoscape;
+
+import javax.swing.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 
 /**

@@ -40,45 +40,27 @@
 // $Author: pwang $
 package cytoscape.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
-import javax.swing.JOptionPane;
-
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-
 import cytoscape.data.readers.GraphReader;
 import cytoscape.init.CyInitParams;
-
-import org.cytoscape.layout.CyLayoutAlgorithm;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
-import org.cytoscape.view.GraphView;
 import cytoscape.view.CytoscapeDesktop;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.view.GraphView;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-
 import java.net.URI;
 import java.net.URL;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
-import javax.swing.JOptionPane;
 
 
 /**
@@ -248,7 +230,7 @@ public class LoadNetworkTask implements Task {
 
 			taskMonitor.setStatus("Creating Cytoscape Network...");
 
-			GraphPerspective cyNetwork = Cytoscape.createNetwork(reader, true, null);
+			CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
 			// Are we supposed to lay this out?
 			GraphView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
@@ -308,7 +290,7 @@ public class LoadNetworkTask implements Task {
 	// For the new GML format import function, added some messages
 	// for the users.
 	//
-	private void informUserOfGraphStats(GraphPerspective newNetwork) {
+	private void informUserOfGraphStats(CyNetwork newNetwork) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 		StringBuffer sb = new StringBuffer();
 

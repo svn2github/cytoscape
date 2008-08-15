@@ -38,14 +38,10 @@
 // TextJarReaderTest.java
 package cytoscape.data.readers;
 
-import cytoscape.AllTests;
-
-import cytoscape.data.readers.TextJarReader;
-
-import junit.framework.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import java.io.IOException;
-
 import java.net.URL;
 
 

@@ -34,132 +34,49 @@
  */
 package cytoscape.visual.ui;
 
-import com.l2fprod.common.propertysheet.DefaultProperty;
-import com.l2fprod.common.propertysheet.Property;
-import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
-import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import com.l2fprod.common.propertysheet.PropertySheetTable;
+import com.l2fprod.common.propertysheet.*;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
-
 import cytoscape.Cytoscape;
+import cytoscape.util.SwingWorker;
+import cytoscape.util.swing.DropDownMenuButton;
+import cytoscape.view.CytoscapeDesktop;
+import cytoscape.view.NetworkPanel;
+import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
+import cytoscape.visual.ui.editors.discrete.*;
+import org.cytoscape.CyNode;
 import org.cytoscape.GraphObject;
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
-
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
 import org.cytoscape.attributes.MultiHashMapListener;
-
-import cytoscape.util.SwingWorker;
-
-import cytoscape.util.swing.DropDownMenuButton;
-
 import org.cytoscape.view.GraphView;
-import cytoscape.view.CytoscapeDesktop;
-import cytoscape.view.NetworkPanel;
-
-import org.cytoscape.vizmap.ArrowShape;
-import org.cytoscape.vizmap.CalculatorCatalog;
-import org.cytoscape.vizmap.EdgeAppearanceCalculator;
-import org.cytoscape.vizmap.LineStyle;
-import org.cytoscape.vizmap.NodeAppearanceCalculator;
-import org.cytoscape.vizmap.NodeShape;
-import org.cytoscape.vizmap.VisualMappingManager;
-import org.cytoscape.vizmap.VisualPropertyType;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_FONT_SIZE;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_HEIGHT;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_LABEL_POSITION;
-import static org.cytoscape.vizmap.VisualPropertyType.NODE_WIDTH;
-
-import org.cytoscape.vizmap.VisualStyle;
-
+import org.cytoscape.vizmap.*;
+import static org.cytoscape.vizmap.VisualPropertyType.*;
 import org.cytoscape.vizmap.calculators.BasicCalculator;
 import org.cytoscape.vizmap.calculators.Calculator;
-
+import org.cytoscape.vizmap.icon.ArrowIcon;
+import org.cytoscape.vizmap.icon.NodeIcon;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.DiscreteMapping;
 import org.cytoscape.vizmap.mappings.ObjectMapping;
 import org.cytoscape.vizmap.mappings.PassThroughMapping;
 
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
-import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
-import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
-import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
-import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
-import org.cytoscape.vizmap.icon.ArrowIcon;
-import org.cytoscape.vizmap.icon.NodeIcon;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
-
 import java.lang.reflect.Constructor;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import javax.swing.AbstractAction;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
 
 /**
@@ -3279,7 +3196,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = new TreeSet<Object>();
 
 						for (Object node : Cytoscape.getCurrentNetwork().nodesList()) {
-							attrSet1.add(((Node) node).getIdentifier());
+							attrSet1.add(((CyNode) node).getIdentifier());
 						}
 					} else {
 						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
@@ -3305,14 +3222,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = new TreeSet<Object>();
 
 						for (Object node : Cytoscape.getCurrentNetwork().nodesList()) {
-							attrSet1.add(((Node) node).getIdentifier());
+							attrSet1.add(((CyNode) node).getIdentifier());
 						}
 
 						GraphView net = Cytoscape.getCurrentNetworkView();
 						String text;
 
 						for (Object node : net.getGraphPerspective().nodesList()) {
-							text = net.getNodeView((Node) node).getLabel().getText();
+							text = net.getNodeView((CyNode) node).getLabel().getText();
 							strLen = text.length();
 
 							if (strLen != 0) {
@@ -3328,10 +3245,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 								strLen = longest;
 
 								if (strLen > 25) {
-									valueMap.put(((Node) node).getIdentifier(),
+									valueMap.put(((CyNode) node).getIdentifier(),
 									             strLen * fontSize * 0.6);
 								} else {
-									valueMap.put(((Node) node).getIdentifier(),
+									valueMap.put(((CyNode) node).getIdentifier(),
 									             strLen * fontSize * 0.8);
 								}
 							}
@@ -3375,7 +3292,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = new TreeSet<Object>();
 
 						for (Object node : Cytoscape.getCurrentNetwork().nodesList()) {
-							attrSet1.add(((Node) node).getIdentifier());
+							attrSet1.add(((CyNode) node).getIdentifier());
 						}
 					} else {
 						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
@@ -3395,19 +3312,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = new TreeSet<Object>();
 
 						for (Object node : Cytoscape.getCurrentNetwork().nodesList()) {
-							attrSet1.add(((Node) node).getIdentifier());
+							attrSet1.add(((CyNode) node).getIdentifier());
 						}
 
 						GraphView net = Cytoscape.getCurrentNetworkView();
 						String text;
 
 						for (Object node : net.getGraphPerspective().nodesList()) {
-							text = net.getNodeView((Node) node).getLabel().getText();
+							text = net.getNodeView((CyNode) node).getLabel().getText();
 							strLen = text.length();
 
 							if (strLen != 0) {
 								listObj = text.split("\\n");
-								valueMap.put(((Node) node).getIdentifier(),
+								valueMap.put(((CyNode) node).getIdentifier(),
 								             listObj.length * fontSize * 1.6);
 							}
 						}

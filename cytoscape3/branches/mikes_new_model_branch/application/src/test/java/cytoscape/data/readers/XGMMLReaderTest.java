@@ -36,15 +36,9 @@ package cytoscape.data.readers;
 
 import cytoscape.AllTests;
 import cytoscape.Cytoscape;
-
-import cytoscape.data.readers.XGMMLReader;
-
-import org.cytoscape.RootGraph;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import java.io.File;
+import org.cytoscape.RootGraph;
 
 /**
  * 

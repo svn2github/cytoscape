@@ -44,25 +44,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import org.cytoscape.vizmap.calculators.*;
-import org.cytoscape.vizmap.mappings.*;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-import org.cytoscape.RootGraph;
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.view.NodeView;
-
-import junit.framework.*;
-
-import java.awt.Color;
-import java.awt.Font;
-
-import java.io.*;
-
-import java.util.Map;
-import java.util.Properties;
+import junit.framework.TestCase;
 
 
 /**

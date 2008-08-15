@@ -1,19 +1,17 @@
 package cytoscape.filters;
 
+import cytoscape.filters.util.FilterUtil;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.List;
-import java.util.Vector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-
-import cytoscape.CytoscapeInit;
-import cytoscape.filters.util.FilterUtil;
-import cytoscape.filters.FilterPlugin;
+import java.util.List;
+import java.util.Vector;
 
 
 public class FilterIO {

@@ -36,22 +36,17 @@
  */
 package cytoscape.visual.ui;
 
-import org.cytoscape.GraphObject;
-
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
 import cytoscape.Cytoscape;
+import org.cytoscape.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.ObjectToString;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 
 /**

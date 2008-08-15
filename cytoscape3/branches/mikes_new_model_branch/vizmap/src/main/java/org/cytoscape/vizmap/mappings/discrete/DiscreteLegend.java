@@ -36,25 +36,15 @@
 */
 package org.cytoscape.vizmap.mappings.discrete;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
-
-import org.jdesktop.swingx.border.DropShadowBorder;
-
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.LegendTable;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
+import java.awt.*;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**

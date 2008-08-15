@@ -44,15 +44,9 @@ package cytoscape.util;
 
 
 //-----------------------------------------------------------------
-import java.awt.Dialog;
-import java.awt.Frame;
 
-import javax.swing.BoxLayout;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.border.*;
+import javax.swing.*;
+import java.awt.*;
 
 
 //-----------------------------------------------------------------

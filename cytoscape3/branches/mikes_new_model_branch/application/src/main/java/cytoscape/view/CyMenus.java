@@ -37,48 +37,24 @@
 
 package cytoscape.view;
 
-import org.cytoscape.GraphPerspective;
-import cytoscape.Cytoscape;
-
-import cytoscape.actions.*; // * because we need access to all actions!
-
-import cytoscape.layout.ui.SettingsAction;
+import cytoscape.actions.*;
 import cytoscape.layout.ui.LayoutMenuManager;
-
-import cytoscape.util.undo.UndoAction;
-import cytoscape.util.undo.RedoAction;
-
+import cytoscape.layout.ui.SettingsAction;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
-
+import cytoscape.util.undo.RedoAction;
+import cytoscape.util.undo.UndoAction;
 import cytoscape.view.cytopanels.CytoPanelName;
-
 import org.cytoscape.view.GraphViewChangeEvent;
 import org.cytoscape.view.GraphViewChangeListener;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import javax.help.CSH;
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-
-import javax.help.CSH;
-import javax.help.HelpBroker;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
-import javax.swing.KeyStroke;
-import javax.swing.MenuElement;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 
 /**

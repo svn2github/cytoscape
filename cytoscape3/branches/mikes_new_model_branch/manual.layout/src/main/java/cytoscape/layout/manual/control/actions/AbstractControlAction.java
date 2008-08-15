@@ -37,25 +37,16 @@
 package cytoscape.layout.manual.control.actions;
 
 import cytoscape.Cytoscape;
-
-
-import cytoscape.util.*;
-
-import cytoscape.view.*;
-
-import org.cytoscape.view.*;
-
+import cytoscape.util.CytoscapeAction;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.NodeView;
 import org.cytoscape.view.ViewChangeEdit;
 
-import java.awt.event.*;
-
-import java.util.*;
-
 import javax.swing.*;
-
-import org.cytoscape.*;
-import org.cytoscape.data.*;
+import java.awt.event.ActionEvent;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**

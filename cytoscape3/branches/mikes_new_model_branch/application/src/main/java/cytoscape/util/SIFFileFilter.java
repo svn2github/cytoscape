@@ -35,7 +35,6 @@
 package cytoscape.util;
 
 import cytoscape.data.ImportHandler;
-
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 

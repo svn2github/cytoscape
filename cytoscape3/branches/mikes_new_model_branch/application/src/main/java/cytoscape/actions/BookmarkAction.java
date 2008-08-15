@@ -43,18 +43,13 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.dialogs.preferences.BookmarkDialog;
-
 import cytoscape.util.CytoscapeAction;
 
-import java.awt.event.ActionEvent;
-
-import java.io.IOException;
-
-import javax.swing.JFrame;
-
+import javax.swing.*;
 import javax.xml.bind.JAXBException;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 
 /**

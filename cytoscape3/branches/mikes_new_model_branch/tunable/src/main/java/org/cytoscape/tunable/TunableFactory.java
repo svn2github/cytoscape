@@ -1,9 +1,9 @@
 
 package org.cytoscape.tunable;
 
-import org.cytoscape.tunable.impl.TunableImpl;
-import org.cytoscape.tunable.impl.ModulePropertiesImpl;
 import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.tunable.impl.ModulePropertiesImpl;
+import org.cytoscape.tunable.impl.TunableImpl;
 
 
 public class TunableFactory {

@@ -43,18 +43,11 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
-import cytoscape.dialogs.preferences.*;
 import cytoscape.dialogs.preferences.ProxyServerDialog;
-
 import cytoscape.util.CytoscapeAction;
 
-import org.cytoscape.view.GraphView;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
 
 
 /**

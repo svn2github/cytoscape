@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Node;
+import org.cytoscape.CyNode;
 import org.cytoscape.RootGraph;
 
 
@@ -100,7 +100,7 @@ final class NodeDepository implements FingNodeDepot {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Node getNode(RootGraph root, int index, String id) {
+	public CyNode getNode(RootGraph root, int index, String id) {
 		final FNode returnThis = new FNode(root, index);
 
 		//     returnThis.setIdentifier(id);
@@ -112,7 +112,7 @@ final class NodeDepository implements FingNodeDepot {
 	 *
 	 * @param node DOCUMENT ME!
 	 */
-	public void recycleNode(Node node) {
+	public void recycleNode(CyNode node) {
 		node.setIdentifier(null);
 	}
 }

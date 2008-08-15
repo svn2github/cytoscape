@@ -5,8 +5,6 @@
  */
 package phoebe;
 
-import java.awt.event.*;
-import java.util.*;
 import java.awt.*;
 import java.awt.datatransfer.Transferable;
 

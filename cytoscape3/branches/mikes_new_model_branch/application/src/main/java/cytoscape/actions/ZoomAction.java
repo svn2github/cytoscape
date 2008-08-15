@@ -43,14 +43,9 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
 
-import org.cytoscape.view.GraphView;
-
 import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
 
 
 /**

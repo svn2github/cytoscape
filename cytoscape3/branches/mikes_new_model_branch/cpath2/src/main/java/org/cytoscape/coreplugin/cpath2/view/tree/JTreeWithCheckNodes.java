@@ -3,10 +3,6 @@ package org.cytoscape.coreplugin.cpath2.view.tree;
 import javax.swing.*;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.DefaultTreeModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * JTree with selectable leaves.

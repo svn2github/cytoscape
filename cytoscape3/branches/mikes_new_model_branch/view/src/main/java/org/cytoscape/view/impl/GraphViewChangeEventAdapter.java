@@ -36,9 +36,8 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
-
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNode;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewChangeEvent;
 
@@ -132,7 +131,7 @@ abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Node[] getRestoredNodes() {
+	public CyNode[] getRestoredNodes() {
 		return null;
 	}
 
@@ -141,7 +140,7 @@ abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Edge[] getRestoredEdges() {
+	public CyEdge[] getRestoredEdges() {
 		return null;
 	}
 
@@ -150,7 +149,7 @@ abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Node[] getHiddenNodes() {
+	public CyNode[] getHiddenNodes() {
 		return null;
 	}
 
@@ -159,7 +158,7 @@ abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Edge[] getHiddenEdges() {
+	public CyEdge[] getHiddenEdges() {
 		return null;
 	}
 
@@ -168,7 +167,7 @@ abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Node[] getSelectedNodes() {
+	public CyNode[] getSelectedNodes() {
 		return null;
 	}
 
@@ -177,7 +176,7 @@ abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Node[] getUnselectedNodes() {
+	public CyNode[] getUnselectedNodes() {
 		return null;
 	}
 
@@ -186,7 +185,7 @@ abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Edge[] getSelectedEdges() {
+	public CyEdge[] getSelectedEdges() {
 		return null;
 	}
 
@@ -195,7 +194,7 @@ abstract class GraphViewChangeEventAdapter extends GraphViewChangeEvent {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Edge[] getUnselectedEdges() {
+	public CyEdge[] getUnselectedEdges() {
 		return null;
 	}
 

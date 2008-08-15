@@ -37,7 +37,6 @@
 package org.cytoscape.attributes;
 
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;

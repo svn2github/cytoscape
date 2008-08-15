@@ -34,26 +34,14 @@
  */
 package org.cytoscape.vizmap.properties;
 
-import org.cytoscape.vizmap.ArrowShape;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.vizmap.VisualPropertyType;
-
+import org.cytoscape.vizmap.icon.LineTypeIcon;
 import org.cytoscape.vizmap.parsers.FloatParser;
 
-import org.cytoscape.vizmap.icon.LineTypeIcon;
-
-import org.cytoscape.view.EdgeView;
-
-import java.awt.Color;
-import java.awt.Paint;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Properties;
-
-
-import java.util.Properties;
-
-import javax.swing.Icon;
 
 
 /**

@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.Edge;
+import org.cytoscape.CyEdge;
 import org.cytoscape.RootGraph;
 
 
@@ -100,8 +100,8 @@ final class EdgeDepository implements FingEdgeDepot {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Edge getEdge(RootGraph root, int index, String id) {
-		final Edge returnThis = new FEdge(root, index);
+	public CyEdge getEdge(RootGraph root, int index, String id) {
+		final CyEdge returnThis = new FEdge(root, index);
 
 		//     returnThis.setIdentifier(id);
 		return returnThis;
@@ -112,7 +112,7 @@ final class EdgeDepository implements FingEdgeDepot {
 	 *
 	 * @param edge DOCUMENT ME!
 	 */
-	public void recycleEdge(Edge edge) {
+	public void recycleEdge(CyEdge edge) {
 		edge.setIdentifier(null);
 	}
 }

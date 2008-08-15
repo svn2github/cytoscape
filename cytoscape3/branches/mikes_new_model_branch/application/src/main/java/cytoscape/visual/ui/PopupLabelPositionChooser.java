@@ -37,28 +37,19 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-
+import org.cytoscape.GraphObject;
+import org.cytoscape.view.Label;
+import org.cytoscape.vizmap.LabelPlacerGraphic;
+import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.vizmap.LabelPosition;
-import org.cytoscape.vizmap.LabelPlacerGraphic;
 
-import org.cytoscape.view.Label;
-import org.cytoscape.GraphObject;
-
-
-import java.awt.Dialog;
-import java.awt.Frame;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
 
 
 /**

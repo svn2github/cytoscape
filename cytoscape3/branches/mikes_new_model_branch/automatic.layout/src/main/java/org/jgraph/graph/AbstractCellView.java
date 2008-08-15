@@ -9,19 +9,16 @@ package org.jgraph.graph;
 
 import org.jgraph.JGraph;
 
-import java.awt.Component;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Stack;
-
-import javax.swing.tree.DefaultMutableTreeNode;
 
 
 /**

@@ -37,21 +37,15 @@
 package cytoscape.layout.manual.common;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.graph.fixed.FixedGraph;
-
 import cytoscape.graph.layout.algorithm.MutablePolyEdgeGraphLayout;
-
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
-
-import org.cytoscape.view.GraphView;
-
 import org.cytoscape.view.EdgeView;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
 import java.awt.geom.Point2D;
-
 import java.util.Iterator;
 import java.util.List;
 

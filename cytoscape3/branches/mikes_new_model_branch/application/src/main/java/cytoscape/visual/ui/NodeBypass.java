@@ -36,21 +36,17 @@
  */
 package cytoscape.visual.ui;
 
-import org.cytoscape.Node;
+import cytoscape.Cytoscape;
+import org.cytoscape.CyNode;
+import org.cytoscape.vizmap.VisualPropertyType;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
-import cytoscape.Cytoscape;
-import org.cytoscape.vizmap.VisualPropertyType;
-
 
 class NodeBypass extends VizMapBypass {
-	JMenuItem addMenu(Node n) {
+	JMenuItem addMenu(CyNode n) {
 		graphObj = n;
 		attrs = Cytoscape.getNodeAttributes();
 

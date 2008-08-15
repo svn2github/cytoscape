@@ -36,19 +36,12 @@
  */
 package cytoscape.data.writers;
 
+import cytoscape.data.readers.CyAttributesReader;
+import junit.framework.TestCase;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
 
-import cytoscape.data.readers.CyAttributesReader;
-
-import junit.framework.TestCase;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

@@ -34,7 +34,6 @@ package org.mskcc.test.util;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.mskcc.biopax_plugin.util.biopax.BioPaxConstants;
 import org.mskcc.biopax_plugin.util.links.ExternalLink;
 import org.mskcc.biopax_plugin.util.links.ExternalLinkUtil;

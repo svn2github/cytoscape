@@ -43,29 +43,23 @@
 package org.cytoscape.vizmap.mappings;
 
 
+import org.cytoscape.CyNetwork;
 import org.cytoscape.vizmap.SubjectBase;
+import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
-
 import org.cytoscape.vizmap.mappings.continuous.ContinuousLegend;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingReader;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingWriter;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousRangeCalculator;
 
-import org.cytoscape.vizmap.ValueParser;
-
-import java.awt.Color;
-
+import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.List;
-
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.event.ChangeListener;
-
-import org.cytoscape.GraphPerspective;
 
 
 /**
@@ -242,7 +236,7 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 * @param network CytoscapeNetwork Object.
 	 * @param preserveMapping Flag to preserve mapping.
 	 */
-	public void setControllingAttributeName(String attrName, GraphPerspective network,
+	public void setControllingAttributeName(String attrName, CyNetwork network,
 	                                        boolean preserveMapping) {
 		this.attrName = attrName;
 	}

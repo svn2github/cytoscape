@@ -36,20 +36,14 @@
 */
 package org.cytoscape.layout;
 
-import java.lang.String;
-import java.util.List;
-import java.util.ArrayList;
-
-import org.cytoscape.view.GraphView;
-
 import cytoscape.task.TaskMonitor;
-
-import org.cytoscape.view.EdgeView;
+import org.cytoscape.tunable.ModuleProperties;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 
-import javax.swing.JPanel;
-
-import org.cytoscape.tunable.ModuleProperties;
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LayoutAdapter provides a *very* minimal interface to implement a layout

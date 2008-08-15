@@ -37,21 +37,18 @@
 package csplugins.widgets.slider;
 
 import prefuse.data.query.NumberRangeModel;
-
 import prefuse.util.ui.JRangeSlider;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-
-import java.text.DecimalFormat;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 
 
 /**

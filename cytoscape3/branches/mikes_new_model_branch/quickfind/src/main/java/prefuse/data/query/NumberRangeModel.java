@@ -37,10 +37,9 @@
 package prefuse.data.query;
 
 import prefuse.util.TypeLib;
-
 import prefuse.util.ui.ValuedRangeModel;
 
-import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.*;
 
 
 /**

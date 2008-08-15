@@ -44,36 +44,26 @@
 // $Author: mes $
 package cytoscape.actions;
 
-import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.readers.GMLParser;
 import cytoscape.data.readers.GMLWriter;
-import cytoscape.data.readers.KeyValue;
-
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.task.ui.JTaskConfig;
-
 import cytoscape.task.util.TaskManager;
-
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-
+import org.cytoscape.CyNetwork;
 import org.cytoscape.view.GraphView;
 
+import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Vector;
-
-import javax.swing.event.MenuEvent;
 
 /**
  *
@@ -127,7 +117,7 @@ public class ExportAsGMLAction extends CytoscapeAction {
 			name = name + ".gml";
 
 		// Get Current Network and View
-		GraphPerspective network = Cytoscape.getCurrentNetwork();
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 		GraphView view = Cytoscape.getCurrentNetworkView();
 
 		// Create Task
@@ -156,7 +146,7 @@ public class ExportAsGMLAction extends CytoscapeAction {
  */
 class ExportAsGMLTask implements Task {
 	private String fileName;
-	private GraphPerspective network;
+	private CyNetwork network;
 	private GraphView view;
 	private TaskMonitor taskMonitor;
 
@@ -168,7 +158,7 @@ class ExportAsGMLTask implements Task {
 	 * @param view
 	 *            Network View Object.
 	 */
-	ExportAsGMLTask(String fileName, GraphPerspective network, GraphView view) {
+	ExportAsGMLTask(String fileName, CyNetwork network, GraphView view) {
 		this.fileName = fileName;
 		this.network = network;
 		this.view = view;

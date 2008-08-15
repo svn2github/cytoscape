@@ -44,31 +44,18 @@
 package cytoscape.data.readers;
 
 
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-
 import cytoscape.Cytoscape;
 import cytoscape.data.Interaction;
-
 import cytoscape.task.TaskMonitor;
-
 import cytoscape.util.FileUtil;
 import cytoscape.util.PercentUtil;
-
-import org.cytoscape.view.GraphView;
-
-import org.cytoscape.Edge;
-import org.cytoscape.Node;
+import org.cytoscape.CyEdge;
+import org.cytoscape.CyNetwork;
+import org.cytoscape.CyNode;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -260,7 +247,7 @@ public class InteractionsReader extends AbstractGraphReader {
 		// now create all of the nodes, storing a hash from name to node
 		// Map nodes = new HashMap();
 		int counter = 0;
-		Node node;
+		CyNode node;
 
 		for (String nodeName : nodeNameSet) {
 			if (taskMonitor != null) {
@@ -289,7 +276,7 @@ public class InteractionsReader extends AbstractGraphReader {
 		String nodeName;
 		String interactionType;
 		String edgeName;
-		Edge edge;
+		CyEdge edge;
 
 		for (int i = 0; i < interactions.length; i++) {
 			if (taskMonitor != null) {
@@ -342,7 +329,7 @@ public class InteractionsReader extends AbstractGraphReader {
 		return ret;
 	}
 
-	public void doPostProcessing(GraphPerspective net) {
+	public void doPostProcessing(CyNetwork net) {
 		// Cleanup unnecessary references.
 		edges.clear();
 		node_indices.clear();

@@ -37,17 +37,13 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphPerspective;
-
+import org.cytoscape.CyNetwork;
 import org.cytoscape.view.GraphView;
-
-import org.cytoscape.view.GraphView;
-
-import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -133,7 +129,7 @@ public class SelectionModeAction extends JMenu implements MenuListener {
     public void menuDeselected(MenuEvent e) {}
 
     public void menuSelected(MenuEvent e) {
-       	GraphPerspective n = Cytoscape.getCurrentNetwork();
+       	CyNetwork n = Cytoscape.getCurrentNetwork();
 		if ( n == null || n == Cytoscape.getNullNetwork() ) {
 			nodes.setEnabled(false);	
 			edges.setEnabled(false);	

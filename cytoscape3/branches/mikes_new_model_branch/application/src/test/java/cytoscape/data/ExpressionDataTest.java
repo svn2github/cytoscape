@@ -44,17 +44,11 @@
 //--------------------------------------------------------------------------------------
 package cytoscape.data;
 
-import cytoscape.AllTests;
 import cytoscape.Cytoscape;
-
-import cytoscape.data.ExpressionData;
-import cytoscape.data.mRNAMeasurement;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import java.io.File;
-
 import java.util.Vector;
 
 

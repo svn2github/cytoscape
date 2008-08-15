@@ -8,11 +8,10 @@ package org.jgraph.graph;
 
 import org.jgraph.event.GraphModelListener;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.UndoableEdit;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**

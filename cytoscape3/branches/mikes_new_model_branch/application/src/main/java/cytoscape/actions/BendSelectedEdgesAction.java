@@ -43,19 +43,12 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-
 import cytoscape.util.CytoscapeAction;
-
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 
-import org.cytoscape.view.EdgeView;
-
-//-------------------------------------------------------------------------
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
 import javax.swing.event.MenuEvent;
+import java.awt.event.ActionEvent;
 
 //-------------------------------------------------------------------------
 /**
