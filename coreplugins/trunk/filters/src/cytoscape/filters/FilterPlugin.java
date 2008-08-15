@@ -37,6 +37,7 @@ package cytoscape.filters;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.filters.view.FilterMainPanel;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.util.*;
 import cytoscape.view.cytopanels.CytoPanelImp;
@@ -53,6 +54,7 @@ public class FilterPlugin extends CytoscapePlugin {
 
 	private static Vector<CompositeFilter> allFilterVect = null;
 	private FilterIO filterIO = new FilterIO();
+	private CyLogger logger = null;
 	
 	public static final String DYNAMIC_FILTER_THRESHOLD = "dynamicFilterThreshold";
 	public static final int DEFAULT_DYNAMIC_FILTER_THRESHOLD = 1000;
@@ -95,6 +97,8 @@ public class FilterPlugin extends CytoscapePlugin {
 		if (allFilterVect == null) {
 			allFilterVect = new Vector<CompositeFilter>();
 		}
+
+		logger = CyLogger.getLogger(FilterPlugin.class);
 		
 		restoreInitState();
 
@@ -119,7 +123,7 @@ public class FilterPlugin extends CytoscapePlugin {
 
 		int[] loadCount = filterIO.getFilterVectFromPropFile(global_filter_file);
 		
-		System.out.println("FilterPlugin: load " + loadCount[1] + " of " + loadCount[0] + " filters from filters.prop");		
+		logger.debug("FilterPlugin: load " + loadCount[1] + " of " + loadCount[0] + " filters from filters.prop");		
 	}
 
 	// override the following two methods to save state.
