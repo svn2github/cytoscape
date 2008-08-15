@@ -1,0 +1,7 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+
+Export-Package: org.cytoscape,org.cytoscape.data,org.cytoscape.groups
+Private-Package: org.cytoscape.impl,org.cytoscape.data.impl

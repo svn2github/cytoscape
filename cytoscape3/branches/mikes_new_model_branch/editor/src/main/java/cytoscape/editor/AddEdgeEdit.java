@@ -1,0 +1,41 @@
+
+package cytoscape.editor;
+
+import org.cytoscape.Edge;
+import org.cytoscape.GraphPerspective;
+
+import cytoscape.Cytoscape;
+import cytoscape.util.undo.CyAbstractEdit;
+
+/**
+ * An edit used by the Editor when adding new edges to a network.
+ */
+public class AddEdgeEdit extends CyAbstractEdit {
+
+	// MLC 05/09/07:
+	private static final long serialVersionUID = 2403924055921657412L;
+	protected GraphPerspective net;
+	protected Edge edge; 
+
+	public AddEdgeEdit(GraphPerspective net, Edge edge) {
+		super("Add Edge");
+		if ( net == null || edge == null )
+			throw new IllegalArgumentException("network or edge is null");
+		this.net = net;
+		this.edge = edge;
+	}
+
+	public void undo() {
+		super.undo();
+		net.hideEdge( edge );
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
+                                     CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
+	}
+
+	public void redo() {
+		super.redo();
+		net.restoreEdge( edge );
+        Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED,
+                                     CytoscapeEditorManager.CYTOSCAPE_EDITOR, net);
+	}
+}
