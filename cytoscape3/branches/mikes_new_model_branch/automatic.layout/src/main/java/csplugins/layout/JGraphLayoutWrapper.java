@@ -36,9 +36,9 @@
 
 package csplugins.layout;
 
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.view.NodeView;
 import org.jgraph.JGraph;

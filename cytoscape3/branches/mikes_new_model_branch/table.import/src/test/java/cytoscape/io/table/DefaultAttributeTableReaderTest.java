@@ -44,7 +44,7 @@ import static cytoscape.io.table.reader.TextFileDelimiters.COMMA;
 import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
 import cytoscape.io.table.reader.TextTableReader;
 import junit.framework.TestCase;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.io.File;

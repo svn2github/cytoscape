@@ -38,8 +38,8 @@ package cytoscape.data.writers;
 
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.RootGraph;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.RootGraph;
 
 import java.io.IOException;
 import java.io.StringWriter;

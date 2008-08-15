@@ -43,8 +43,8 @@
 package org.cytoscape.view.impl;
 
 
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.data.SelectEvent;
 import org.cytoscape.data.SelectEventListener;
 import org.cytoscape.data.SelectFilter;

@@ -1,6 +1,6 @@
 package org.cytoscape.coreplugin.cpath2.view.model;
 
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 public class NetworkWrapper {
     private CyNetwork network;

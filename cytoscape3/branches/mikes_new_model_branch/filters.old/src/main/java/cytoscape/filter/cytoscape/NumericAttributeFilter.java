@@ -39,9 +39,9 @@ package cytoscape.filter.cytoscape;
 
 import cytoscape.Cytoscape;
 import cytoscape.filter.model.Filter;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNode;
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
 
 import javax.swing.event.SwingPropertyChangeSupport;

@@ -53,7 +53,7 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
 import cytoscape.editor.impl.CytoscapeEditorManagerSupport;
 import cytoscape.editor.impl.ShapePalette;
 import cytoscape.util.undo.CyUndo;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.CalculatorCatalog;

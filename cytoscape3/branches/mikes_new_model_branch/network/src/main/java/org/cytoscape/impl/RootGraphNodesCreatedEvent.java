@@ -36,8 +36,8 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.CyNode;
-import org.cytoscape.RootGraph;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.RootGraph;
 
 
 // This class is currently not being used.  Thus its constructor is private.

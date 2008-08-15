@@ -36,7 +36,7 @@ package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 
 //-----------------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CytoscapeDesktop;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.coreplugin.cpath2.task.LoadNetworkFromUrlTask;
 import org.cytoscape.coreplugin.cpath2.task.MergeNetworkTask;

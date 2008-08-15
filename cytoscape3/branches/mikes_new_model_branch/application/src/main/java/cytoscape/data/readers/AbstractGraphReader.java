@@ -38,7 +38,7 @@ package cytoscape.data.readers;
 
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.CyNetworkNaming;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 

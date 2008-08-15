@@ -37,7 +37,7 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.vizmap.VisualPropertyType;
 
 import javax.swing.*;

@@ -36,7 +36,7 @@
 */
 package org.cytoscape.layout.algorithms;
 
-import org.cytoscape.CyEdge;
+import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;

@@ -40,7 +40,7 @@ import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
 import cytoscape.util.shadegrown.WindowUtilities;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 import javax.swing.*;
 import java.awt.*;

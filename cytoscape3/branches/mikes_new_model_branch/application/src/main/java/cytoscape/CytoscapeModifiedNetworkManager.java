@@ -41,7 +41,7 @@
  */
 package cytoscape;
 
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

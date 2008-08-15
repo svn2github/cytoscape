@@ -38,7 +38,7 @@ package org.cytoscape.view.impl;
 
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.CustomGraphic;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewChangeListener;

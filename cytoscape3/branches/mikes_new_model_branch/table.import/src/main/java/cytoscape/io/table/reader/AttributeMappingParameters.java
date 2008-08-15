@@ -41,9 +41,9 @@ import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
 import static cytoscape.io.table.reader.TextFileDelimiters.TAB;
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
 import static cytoscape.io.table.reader.TextTableReader.ObjectType.NETWORK;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
 

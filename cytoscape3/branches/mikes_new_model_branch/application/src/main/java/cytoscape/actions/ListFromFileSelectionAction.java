@@ -44,8 +44,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;

@@ -36,8 +36,8 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.RootGraphChangeEvent;
-import org.cytoscape.RootGraphChangeListener;
+import org.cytoscape.model.network.RootGraphChangeEvent;
+import org.cytoscape.model.network.RootGraphChangeListener;
 
 
 // Package visible.

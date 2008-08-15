@@ -42,10 +42,10 @@
 //------------------------------------------------------------------------------
 package org.cytoscape.vizmap.calculators;
 
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
 import org.cytoscape.vizmap.Appearance;

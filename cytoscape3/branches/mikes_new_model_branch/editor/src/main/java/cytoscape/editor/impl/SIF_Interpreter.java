@@ -4,8 +4,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.view.NodeView;
 
 import javax.swing.*;

@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 
 
 // Valid indices: [0, Integer.MAX_VALUE - 1].

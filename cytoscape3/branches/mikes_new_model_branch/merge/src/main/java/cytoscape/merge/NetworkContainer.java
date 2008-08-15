@@ -36,7 +36,7 @@
 */
 package cytoscape.merge;
 
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 /**
  * This class exists to allow the networks to display properly in the JList

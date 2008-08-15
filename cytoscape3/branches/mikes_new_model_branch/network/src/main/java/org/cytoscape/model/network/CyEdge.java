@@ -1,4 +1,4 @@
-package org.cytoscape;
+package org.cytoscape.model.network;
 
 public interface CyEdge extends GraphObject {
 

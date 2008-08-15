@@ -38,8 +38,8 @@ package cytoscape.filter.cytoscape;
 
 
 import cytoscape.filter.model.Filter;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNode;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 

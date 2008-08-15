@@ -37,8 +37,8 @@
 package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.RootGraphFactory;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.RootGraphFactory;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
 import org.cytoscape.tunable.ModuleProperties;

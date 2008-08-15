@@ -39,7 +39,7 @@ import cytoscape.browser.ui.AttributeBrowserToolBar;
 import cytoscape.browser.ui.CyAttributeBrowserTable;
 import cytoscape.view.cytopanels.CytoPanelListener;
 import cytoscape.view.cytopanels.CytoPanelState;
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
 

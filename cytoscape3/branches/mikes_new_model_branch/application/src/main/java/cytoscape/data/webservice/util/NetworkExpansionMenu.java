@@ -44,7 +44,7 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.layout.CyLayouts;
 
 import javax.swing.*;

@@ -43,9 +43,9 @@
 package org.cytoscape.vizmap.calculators;
 
 
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.vizmap.Appearance;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.ObjectMapping;

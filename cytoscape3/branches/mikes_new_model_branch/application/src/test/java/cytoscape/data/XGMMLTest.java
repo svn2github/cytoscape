@@ -40,10 +40,10 @@ import cytoscape.Cytoscape;
 import cytoscape.data.readers.XGMMLReader;
 import cytoscape.data.writers.XGMMLWriter;
 import junit.framework.TestCase;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
-import org.cytoscape.RootGraph;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.RootGraph;
 import org.cytoscape.view.GraphView;
 
 import java.io.ByteArrayInputStream;

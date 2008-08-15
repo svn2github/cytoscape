@@ -7,7 +7,7 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 import java.awt.event.ActionEvent;
 

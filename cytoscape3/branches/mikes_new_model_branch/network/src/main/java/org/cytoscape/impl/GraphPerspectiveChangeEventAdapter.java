@@ -36,9 +36,9 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNode;
-import org.cytoscape.GraphPerspectiveChangeEvent;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.GraphPerspectiveChangeEvent;
 
 
 abstract class GraphPerspectiveChangeEventAdapter extends GraphPerspectiveChangeEvent {

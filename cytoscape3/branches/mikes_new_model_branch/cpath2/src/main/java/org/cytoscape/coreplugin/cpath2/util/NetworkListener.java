@@ -34,8 +34,8 @@ package org.cytoscape.coreplugin.cpath2.util;
 // imports 
 
 import cytoscape.Cytoscape;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeContextMenuListener;

@@ -32,7 +32,7 @@
 package org.mskcc.biopax_plugin.view;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 import org.mskcc.biopax_plugin.action.LaunchExternalBrowser;
 import org.mskcc.biopax_plugin.mapping.MapNodeAttributes;

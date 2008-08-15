@@ -37,7 +37,7 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;

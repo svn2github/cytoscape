@@ -36,10 +36,10 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNode;
-import org.cytoscape.RootGraph;
-import org.cytoscape.RootGraphChangeEvent;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.RootGraph;
+import org.cytoscape.model.network.RootGraphChangeEvent;
 
 
 abstract class RootGraphChangeEventAdapter extends RootGraphChangeEvent {

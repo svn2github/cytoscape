@@ -9,9 +9,9 @@ import cytoscape.CytoscapeInit;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.FilterPlugin;
 import cytoscape.init.CyInitParams;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.awt.*;

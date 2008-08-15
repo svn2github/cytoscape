@@ -9,7 +9,7 @@ import cytoscape.data.webservice.WebServiceClient;
 import cytoscape.data.webservice.WebServiceClientImpl;
 import cytoscape.data.webservice.WebServiceClientManager;
 import cytoscape.data.webservice.ui.WebServiceClientGUI;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.coreplugin.cpath2.plugin.CPathPlugIn2;

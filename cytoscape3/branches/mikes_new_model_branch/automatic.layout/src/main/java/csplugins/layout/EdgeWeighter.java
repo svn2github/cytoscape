@@ -32,7 +32,7 @@
  */
 package csplugins.layout;
 
-import org.cytoscape.CyEdge;
+import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesFactory;
 import org.cytoscape.tunable.ModuleProperties;

@@ -41,7 +41,7 @@ import cytoscape.io.table.reader.NetworkTableMappingParameters;
 import cytoscape.io.table.reader.NetworkTableReader;
 import cytoscape.io.table.reader.TextFileDelimiters;
 import junit.framework.TestCase;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.io.File;

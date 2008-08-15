@@ -39,9 +39,9 @@ import cytoscape.data.Semantics;
 import cytoscape.data.ontology.Ontology;
 import static cytoscape.data.ontology.readers.OBOTags.*;
 import cytoscape.util.URLUtil;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.io.*;

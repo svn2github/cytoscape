@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.cytoscape;
+package org.cytoscape.model.network;
 
 import junit.framework.TestCase;
 import org.cytoscape.impl.FRootGraph;

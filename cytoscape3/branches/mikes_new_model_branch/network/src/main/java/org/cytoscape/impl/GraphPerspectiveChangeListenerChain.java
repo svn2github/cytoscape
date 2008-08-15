@@ -36,8 +36,8 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.GraphPerspectiveChangeEvent;
-import org.cytoscape.GraphPerspectiveChangeListener;
+import org.cytoscape.model.network.GraphPerspectiveChangeEvent;
+import org.cytoscape.model.network.GraphPerspectiveChangeListener;
 
 
 // Package visible.

@@ -43,8 +43,8 @@ import org.biojava.ontology.*;
 import org.biojava.ontology.Triple;
 import org.biojava.utils.AbstractChangeable;
 import org.biojava.utils.ChangeVetoException;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.net.URISyntaxException;

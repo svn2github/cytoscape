@@ -34,7 +34,7 @@
 */
 package org.cytoscape.vizmap;
 
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.Label;

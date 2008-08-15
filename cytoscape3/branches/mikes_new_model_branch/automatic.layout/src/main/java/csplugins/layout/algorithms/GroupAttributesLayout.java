@@ -38,7 +38,7 @@ package csplugins.layout.algorithms;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;

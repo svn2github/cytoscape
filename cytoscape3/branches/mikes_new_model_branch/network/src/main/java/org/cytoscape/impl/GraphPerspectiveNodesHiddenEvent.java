@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 
 
 final class GraphPerspectiveNodesHiddenEvent extends GraphPerspectiveChangeEventAdapter {

@@ -38,9 +38,9 @@
 package cytoscape.groups;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.groups.CyGroup;
 

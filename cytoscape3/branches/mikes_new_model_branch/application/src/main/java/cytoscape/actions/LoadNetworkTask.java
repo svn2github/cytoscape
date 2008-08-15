@@ -50,7 +50,7 @@ import cytoscape.task.ui.JTask;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.view.CytoscapeDesktop;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.GraphView;
 

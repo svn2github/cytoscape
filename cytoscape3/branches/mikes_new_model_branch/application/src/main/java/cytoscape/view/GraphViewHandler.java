@@ -42,7 +42,7 @@
  */
 package cytoscape.view;
 
-import org.cytoscape.GraphPerspectiveChangeEvent;
+import org.cytoscape.model.network.GraphPerspectiveChangeEvent;
 import org.cytoscape.view.GraphView;
 
 

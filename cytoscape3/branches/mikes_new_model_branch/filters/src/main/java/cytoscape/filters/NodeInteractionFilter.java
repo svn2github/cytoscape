@@ -37,7 +37,7 @@
 package cytoscape.filters;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 
 import java.util.BitSet;
 import java.util.List;

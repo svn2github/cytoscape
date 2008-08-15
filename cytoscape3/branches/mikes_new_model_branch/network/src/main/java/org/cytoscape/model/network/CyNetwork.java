@@ -1,4 +1,4 @@
-package org.cytoscape;
+package org.cytoscape.model.network;
 
 import org.cytoscape.data.SelectEventListener;
 import org.cytoscape.data.SelectFilter;

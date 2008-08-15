@@ -36,8 +36,8 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.CyEdge;
-import org.cytoscape.RootGraph;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.RootGraph;
 
 
 final class EdgeDepository implements FingEdgeDepot {

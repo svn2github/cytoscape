@@ -1,6 +1,6 @@
 package org.cytoscape.view;
 
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 
 import java.awt.*;
 import java.awt.geom.Point2D;

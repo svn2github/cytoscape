@@ -34,7 +34,7 @@
 */
 package cytoscape.data.ontology.readers;
 
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 import java.io.IOException;
 import java.util.Map;

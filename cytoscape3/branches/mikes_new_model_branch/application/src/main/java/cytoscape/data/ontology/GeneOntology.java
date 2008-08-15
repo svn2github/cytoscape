@@ -39,7 +39,7 @@ import cytoscape.data.ontology.readers.OBOTags;
 import static cytoscape.data.ontology.readers.OBOTags.*;
 import static cytoscape.data.readers.MetadataEntries.SOURCE;
 import org.biojava.ontology.Term;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.net.MalformedURLException;

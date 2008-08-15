@@ -3,7 +3,7 @@ package org.cytoscape.coreplugin.cpath2.task;
 import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.coreplugin.cpath2.schemas.summary_response.SummaryResponseType;
 import org.cytoscape.coreplugin.cpath2.view.InteractionBundlePanel;

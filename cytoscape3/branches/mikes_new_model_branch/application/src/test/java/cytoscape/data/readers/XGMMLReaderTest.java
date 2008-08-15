@@ -38,7 +38,7 @@ import cytoscape.AllTests;
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.cytoscape.RootGraph;
+import org.cytoscape.model.network.RootGraph;
 
 /**
  * 

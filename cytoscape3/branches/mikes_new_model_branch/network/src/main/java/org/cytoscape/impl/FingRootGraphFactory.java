@@ -36,7 +36,7 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.RootGraph;
+import org.cytoscape.model.network.RootGraph;
 
 
 /**

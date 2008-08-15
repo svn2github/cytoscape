@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.cpath.model;
 
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 import java.util.ArrayList;
 import java.util.Observable;

@@ -37,7 +37,7 @@
 */
 package cytoscape.groups;
 
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.groups.CyGroup;
 import org.cytoscape.view.GraphView;
 

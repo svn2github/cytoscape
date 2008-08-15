@@ -20,7 +20,7 @@ import cytoscape.filters.Relation;
 import cytoscape.filters.StringFilter;
 import cytoscape.filters.TopologyFilter;
 import cytoscape.filters.util.FilterUtil;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.view.GraphView;
 import prefuse.data.query.NumberRangeModel;

@@ -1,4 +1,4 @@
-package org.cytoscape;
+package org.cytoscape.model.network;
 
 import java.util.EventListener;
 

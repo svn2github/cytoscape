@@ -36,7 +36,7 @@
 
 package csplugins.quickfind.util;
 
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.util.HashSet;

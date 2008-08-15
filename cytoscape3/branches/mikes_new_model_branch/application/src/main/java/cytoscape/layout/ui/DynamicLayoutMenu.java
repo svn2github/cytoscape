@@ -38,8 +38,8 @@ package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
 import cytoscape.task.util.TaskManager;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.GraphView;

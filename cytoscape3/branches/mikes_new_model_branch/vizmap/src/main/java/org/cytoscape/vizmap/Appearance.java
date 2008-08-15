@@ -36,7 +36,7 @@
 
 package org.cytoscape.vizmap;
 
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;

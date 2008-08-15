@@ -1,7 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.util;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.coreplugin.cpath2.cytoscape.BinarySifVisualStyleUtil;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;

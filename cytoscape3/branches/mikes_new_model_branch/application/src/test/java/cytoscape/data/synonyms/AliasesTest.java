@@ -36,7 +36,7 @@ package cytoscape.data.synonyms;
 
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 
 import java.util.ArrayList;
 import java.util.Iterator;

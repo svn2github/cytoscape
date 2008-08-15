@@ -1,6 +1,6 @@
 package org.cytoscape.view;
 
-import org.cytoscape.CyEdge;
+import org.cytoscape.model.network.CyEdge;
 
 import java.awt.*;
 

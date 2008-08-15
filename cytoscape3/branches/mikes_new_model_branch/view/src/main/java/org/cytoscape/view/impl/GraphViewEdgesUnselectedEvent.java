@@ -36,7 +36,7 @@
 
 package org.cytoscape.view.impl;
 
-import org.cytoscape.CyEdge;
+import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.view.GraphView;
 
 

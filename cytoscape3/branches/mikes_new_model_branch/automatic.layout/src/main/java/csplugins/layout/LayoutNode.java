@@ -32,7 +32,7 @@
  */
 package csplugins.layout;
 
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.view.NodeView;
 
 import java.util.ArrayList;

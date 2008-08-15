@@ -22,7 +22,11 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.cytoscape.*;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.GraphPerspectiveChangeListener;
+import org.cytoscape.model.network.GraphPerspectiveChangeEvent;
 
 
 /**

@@ -37,7 +37,7 @@
 package cytoscape.util;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.view.GraphView;
 
 import javax.swing.*;

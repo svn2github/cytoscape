@@ -3,8 +3,8 @@ package cytoscape.editor;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
 

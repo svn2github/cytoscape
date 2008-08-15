@@ -39,7 +39,7 @@ package cytoscape.editor.impl;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

@@ -38,9 +38,9 @@ package cytoscape.data;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CountedIterator;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.MultiHashMap;

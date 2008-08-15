@@ -42,9 +42,9 @@
  */
 package cytoscape.view;
 
-import org.cytoscape.CyNetwork;
-import org.cytoscape.GraphPerspectiveChangeEvent;
-import org.cytoscape.GraphPerspectiveChangeListener;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.GraphPerspectiveChangeEvent;
+import org.cytoscape.model.network.GraphPerspectiveChangeListener;
 import org.cytoscape.view.GraphView;
 
 import java.util.HashMap;

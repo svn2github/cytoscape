@@ -31,10 +31,10 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.undo.CyUndo;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.view.GraphView;
 
 import javax.swing.event.MenuEvent;

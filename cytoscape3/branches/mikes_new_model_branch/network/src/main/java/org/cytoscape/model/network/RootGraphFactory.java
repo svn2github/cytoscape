@@ -1,5 +1,5 @@
 
-package org.cytoscape;
+package org.cytoscape.model.network;
 
 import org.cytoscape.impl.FRootGraph;
 

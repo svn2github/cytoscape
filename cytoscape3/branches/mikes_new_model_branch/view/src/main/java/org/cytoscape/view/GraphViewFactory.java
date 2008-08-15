@@ -1,8 +1,8 @@
 
 package org.cytoscape.view;
 
-import org.cytoscape.CyNetwork;
-import org.cytoscape.RootGraphFactory;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.RootGraphFactory;
 import org.cytoscape.view.impl.DGraphView;
 
 public class GraphViewFactory {

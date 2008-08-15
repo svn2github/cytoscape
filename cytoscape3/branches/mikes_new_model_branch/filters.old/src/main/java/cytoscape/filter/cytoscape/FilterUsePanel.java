@@ -43,9 +43,9 @@ import cytoscape.filter.model.FilterManager;
 import cytoscape.filter.view.CreateFilterDialog;
 import cytoscape.filter.view.FilterEditorPanel;
 import cytoscape.filter.view.FilterListPanel;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

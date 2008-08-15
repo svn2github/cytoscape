@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.SubjectBase;
 import org.cytoscape.vizmap.ValueParser;

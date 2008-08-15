@@ -37,7 +37,7 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphObject;
+import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.view.Label;
 import org.cytoscape.vizmap.LabelPlacerGraphic;
 import org.cytoscape.vizmap.LabelPosition;

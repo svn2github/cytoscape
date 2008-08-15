@@ -36,8 +36,8 @@
 
 package org.cytoscape.impl;
 
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNetwork;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNetwork;
 
 
 final class GraphPerspectiveEdgesRestoredEvent extends GraphPerspectiveChangeEventAdapter {

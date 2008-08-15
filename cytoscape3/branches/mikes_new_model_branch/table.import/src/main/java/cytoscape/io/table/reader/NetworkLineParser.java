@@ -38,8 +38,8 @@ package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
-import org.cytoscape.CyEdge;
-import org.cytoscape.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
 
 import java.util.ArrayList;
