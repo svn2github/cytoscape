@@ -149,11 +149,11 @@ for ($i=0; $i<count($publications)/2; $i++) {
 		$publication = $publications[$j];
 	?>
 	
-      <td class="advanced-search-cover">
+      <td class="advanced-search-cover" width="1">
         <input type="checkbox" name="publication" value="<?php echo $publication['publication_auto_id']; ?>" checked="checked" />&nbsp;	  
 	  </td>
       
-	  <td class="advanced-search-cover">
+	  <td class="advanced-search-cover" width="1">
         <a href="<?php echo $publication['pub_url']; ?>">
 	    <img src="<?php echo "getImage.php?image_type=cover_image&image_file_id=".$publication['coverimage_id']; ?>" border="0" />	</a>	  
 	  </td>
@@ -162,19 +162,16 @@ for ($i=0; $i<count($publications)/2; $i++) {
 	  
 	  if ($j%2 == 0) {
 		  ?>
-		  <td class="advanced-search-citation">
-		
+		  <td class="advanced-search-citation" width="40%">
 		  <?php	
 	  }
 	  else {
 		  ?>
-		  <td class="advanced-search-citation-right">
+		  <td class="advanced-search-citation-right" width="40%">
 		  <?php
 	  }
 	  ?>
-	  <?php echo convert_xml2html($publication['pubmed_xml_record'], 'pubmedref_to_html_advanced_search_full.xsl');?><BR><P align=right>     
-         
-		 		 
+	  <?php echo convert_xml2html($publication['pubmed_xml_record'], 'pubmedref_to_html_advanced_search_full.xsl');?><BR><P align=right>     		 
 		<?php
 		if ($publication['pdf_file_id'] != -1) {
 			?> <a class="white-bg-link" href="<?php echo "file_download.php?file_type=pdf&file_id=".$publication['pdf_file_id']; ?>">[PDF]</a> <?php
@@ -185,10 +182,7 @@ for ($i=0; $i<count($publications)/2; $i++) {
 		if (trim($publication['supplement_url']) != "") {
 			?> <a class="white-bg-link" href="<?php echo $publication['supplement_url']; ?>">[Supplemental Website]</a> <?php
 		}
-
 		?>
-		
-		
 		<a class="white-bg-link" href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=<?php echo $publication['pmid']; ?>&query_hl=24"> [PubMed]</a>
 		</p>
 	  </td>
@@ -199,12 +193,6 @@ for ($i=0; $i<count($publications)/2; $i++) {
 				<tr><td colspan="8"><hr></td></tr>
 			<?php 
 	  }	  
-
-}
-if (count($publications)%2 == 1) {
-	  		?>     
-				<tr><td colspan="8"><hr></td></tr>
-			<?php 
 }
 ?>
 
