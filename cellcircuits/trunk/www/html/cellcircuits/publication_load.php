@@ -335,18 +335,21 @@ function db_load_step2($rawdata_id, $connection) {
 	$cmd = "perl ./load_model_similarity_table.pl $pub_id";	
 	passthru($cmd);
 	
+	// load table enrichment
+	$cmd = "./load_enrichment_table.sh $pub_id > ./load_enrichment_table_output.txt &";
+	
+	//echo "Before cmd = $cmd<br>";
+	system($cmd); 
+	//echo "After cmd = $cmd<br>";
 	
 	if ($success){
+//	if (0){
 		?>
 </p>
-<p>The publication_id is <?php echo $pub_id; ?> <br>
+All the tables except "enrichment" were loaded!
 </p>
-<p>Please run the following commands to load the enrichment table<br>
+<p>The job to load enrichment table has been submitted, it will be done in 0.5~2 hours. You will get e-mail notification!
 </p>
-<p>$perl load_enrichment_table_step1_create_gwt_file.pl <?php echo $pub_id; ?> &nbsp;&nbsp;&nbsp;(Note: this will takes 0.5~2 hours) </p>
-<p>$perl load_enrichment_table_step2_compute_enrichment.pl <?php echo $pub_id; ?></p>
-<p>$perl load_enrichment_table_step3_insert_SQL.pl <?php echo $pub_id; ?></p>
-<p>&nbsp;</p>
 <p>
   <?php
 	}
