@@ -1702,13 +1702,13 @@ public class GEMLayoutAlgorithm extends JGraphLayoutAlgorithm implements GraphMo
 		int maxClusters = (int) ((double) (cellList.size() - applyCellList.size()) / clusteringFactor);
 
 		if (maxClusters == 0) {
-			System.out.println("maxClusters = 0");
+			// System.out.println("maxClusters = 0");
 
 			return;
 		}
 
 		if (cellList.size() <= 1) {
-			System.out.println("cellList.size() <= 1");
+			// System.out.println("cellList.size() <= 1");
 
 			return;
 		}

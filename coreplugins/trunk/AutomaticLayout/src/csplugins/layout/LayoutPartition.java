@@ -32,6 +32,8 @@
  */
 package csplugins.layout;
 
+import cytoscape.logger.CyLogger;
+
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.Profile;
@@ -96,6 +98,8 @@ public class LayoutPartition {
 	// this partition
 	private int lockedNodes = 0;
 
+	private CyLogger logger = null;
+
 	// private constants
 	private static final int m_NODE_HAS_NOT_BEEN_SEEN = 0;
 	private static final int m_NODE_HAS_BEEN_SEEN = 1;
@@ -107,6 +111,7 @@ public class LayoutPartition {
 	 * @param edgeCount    The number of edges in the new partition.
 	 */
 	public LayoutPartition(int nodeCount, int edgeCount) {
+		logger = CyLogger.getLogger(LayoutPartition.class);
 		nodeList = new ArrayList<LayoutNode>(nodeCount);
 		edgeList = new ArrayList<LayoutEdge>(edgeCount);
 		partitionNumber = 1;
@@ -150,6 +155,8 @@ public class LayoutPartition {
 
 	protected void initialize(CyNetwork network, CyNetworkView networkView, Collection<CyNode>nodeSet,
 	                          EdgeWeighter edgeWeighter) {
+
+		logger = CyLogger.getLogger(LayoutPartition.class);
 
 		this.edgeWeighter = edgeWeighter;
 
@@ -307,7 +314,7 @@ public class LayoutPartition {
 			} else if (edgeWeighter != null && edgeWeighter.normalizeWeight(edge) == false)
 				iter.remove();
 
-			// System.out.println("Edge "+edge.getEdge().getIdentifier()+" now has weight "+edge.getWeight());
+			// logger.debug("Edge "+edge.getEdge().getIdentifier()+" now has weight "+edge.getWeight());
 		}
 	}
 
@@ -583,7 +590,7 @@ public class LayoutPartition {
 			edgeWeighter.setWeight(newEdge);
 		}
 
-		// System.out.println("Updating "+newEdge);
+		// logger.debug("Updating "+newEdge);
 	}
 
 	// Static routines

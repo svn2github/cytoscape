@@ -42,6 +42,7 @@ import cytoscape.CyEdge;
 
 import cytoscape.layout.Tunable;
 import cytoscape.layout.LayoutProperties;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.data.CyAttributes;
 
@@ -81,6 +82,8 @@ public class EdgeWeighter {
 	double logWeightCeiling = 1028;
 	boolean logOverflow = false;
 
+	private CyLogger logger = null;
+
 	// These are just here for efficiency reasons
 	double normalFactor = Double.MAX_VALUE;
 
@@ -92,6 +95,10 @@ public class EdgeWeighter {
 	                                      WeightTypes.WEIGHT};
 
 	Tunable[] weightList = null;
+
+	public EdgeWeighter() {
+		logger = CyLogger.getLogger(EdgeWeighter.class);
+	}
 	
 	public void getWeightTunables(LayoutProperties props, List initialAttributes) {
 		props.add(new Tunable("edge_weight_group","Edge Weight Settings",
@@ -164,7 +171,7 @@ public class EdgeWeighter {
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		double eValue = 0.5;
 
-		// System.out.println("Setting weight for "+layoutEdge+" using "+weightAttribute);
+		// logger.debug("Setting weight for "+layoutEdge+" using "+weightAttribute);
 
 		if ((weightAttribute != null)
 		    && edgeAttributes.hasAttribute(edge.getIdentifier(), weightAttribute)) {
@@ -216,34 +223,34 @@ public class EdgeWeighter {
 
 		switch (this.type) {
 		case GUESS:
-			// System.out.print("Heuristic: ");
+			// logger.debug("Heuristic: ");
 			if (Math.abs(maxLogWeight-minLogWeight) > 3) {
 				weight = edge.getLogWeight();
-				// System.out.print("Log weight = "+weight);
+				// logger.debug("Log weight = "+weight);
 				if (weight == logWeightCeiling)
 					weight = maxLogWeight;
 				weight = logNormalize(weight);
-				// System.out.println(" normalized weight = "+weight);
+				// logger.debug(" normalized weight = "+weight);
 			} else {
 				weight = normalize(edge.getWeight());
 			}
 			break;
 	  case LOG:
-			// System.out.print("Log: ");
+			// logger.debug("Log: ");
 			weight = edge.getLogWeight();
-			// System.out.print("Log weight = "+weight);
+			// logger.debug("Log weight = "+weight);
 			if (weight == logWeightCeiling)
 				weight = maxLogWeight;
 			weight = logNormalize(weight);
-			// System.out.println(" normalized weight = "+weight);
+			// logger.debug(" normalized weight = "+weight);
 			break;
 	  case DISTANCE:
-			// System.out.println("Distance");
+			// logger.debug("Distance");
 			weight = edge.getWeight();
 			weight = (lowerBounds + upperBounds) - normalize(weight);
 			break;
 	  case WEIGHT:
-			// System.out.println("Weight");
+			// logger.debug("Weight");
 			weight = normalize(edge.getWeight());
 			break;
 		}

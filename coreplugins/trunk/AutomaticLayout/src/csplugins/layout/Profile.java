@@ -32,6 +32,7 @@
  */
 package csplugins.layout;
 
+import cytoscape.logger.CyLogger;
 
 /**
  * This class is used to provide some simple profiling
@@ -76,7 +77,7 @@ public class Profile {
 		// Get our runtime
 		checkpoint();
 
-		System.out.println(message + this.totalTime + "ms");
+		CyLogger.getLogger().debug(message + this.totalTime + "ms");
 		this.totalTime = 0;
 	}
 

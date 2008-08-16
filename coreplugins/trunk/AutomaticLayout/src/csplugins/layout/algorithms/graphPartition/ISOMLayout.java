@@ -20,6 +20,7 @@ import cytoscape.CyNetwork;
 
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+import cytoscape.logger.CyLogger;
 
 import giny.model.*;
 
@@ -50,6 +51,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 	private boolean done;
 	private LayoutProperties layoutProperties;
 	private LayoutPartition partition;
+	private CyLogger logger;
 
 	//Queue, First In First Out, use add() and get(0)/remove(0)
 	private IntArrayList q;
@@ -65,6 +67,8 @@ public class ISOMLayout extends AbstractGraphPartition {
 	 */
 	public ISOMLayout() {
 		super();
+
+		logger = CyLogger.getLogger(ISOMLayout.class);
 
 		q = new IntArrayList();
 		trace = false;
@@ -210,7 +214,7 @@ public class ISOMLayout extends AbstractGraphPartition {
 
 		adaption = initialAdaptation;
 
-		System.out.println("Epoch: " + epoch + " maxEpoch: " + maxEpoch);
+		logger.debug("Epoch: " + epoch + " maxEpoch: " + maxEpoch);
 
 		while (epoch < maxEpoch) {
 			partition.resetNodes();

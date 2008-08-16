@@ -1554,7 +1554,7 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
 			} else if (viewList[i] instanceof EdgeView && (viewList[i] != null)) {
 				if (!edgeList.contains(viewList[i])) {
 					edgeList.add(viewList[i]);
-					System.out.println("edge added");
+					// System.out.println("edge added");
 				}
 			}
 		}
@@ -1859,7 +1859,7 @@ public class AnnealingLayoutAlgorithm extends JGraphLayoutAlgorithm implements G
 		                           2);
 
 		if (cellList.size() <= 1) {
-			System.out.println("cellList.size() <= 1");
+			// System.out.println("cellList.size() <= 1");
 
 			return;
 		}

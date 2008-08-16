@@ -39,6 +39,7 @@ import csplugins.layout.Profile;
 
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+import cytoscape.logger.CyLogger;
 
 import java.awt.Dimension;
 
@@ -140,6 +141,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	private double width = 0;
 	private double height = 0;
 
+	private CyLogger logger = null;
+
 	/**
 	 * Profile data -- not used, for now
 	Profile initProfile;
@@ -154,6 +157,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public BioLayoutFRAlgorithm(boolean supportEdgeWeights) {
 		super();
+		logger = CyLogger.getLogger(BioLayoutFRAlgorithm.class);
 
 		supportWeights = supportEdgeWeights;
 
@@ -510,8 +514,8 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		// nodes * 2
 		calculateSize();
 
-		System.out.println("BioLayoutFR Algorithm.  Laying out " + partition.nodeCount()
-		                   + " nodes and " + partition.edgeCount() + " edges: ");
+		logger.info("Laying out " + partition.nodeCount()
+		            + " nodes and " + partition.edgeCount() + " edges: ");
 
 		// Initialize our temperature
 		double temp;
@@ -555,7 +559,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 					for (LayoutNode v: partition.getNodeList()) {
 						// if this is locked, the move just resets X and Y
 						v.moveToLocation();
-						// System.out.println("Node "+v.getIdentifier()+" moved to "+v.getX()+","+v.getY());
+						// logger.debug("Node "+v.getIdentifier()+" moved to "+v.getX()+","+v.getY());
 					}
 					networkView.updateView();
 				}
@@ -573,9 +577,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		}
 
 		// iterProfile.done("Iterations complete in ");
-		// System.out.println("Attraction calculation portion of iterations took "+attractProfile.getTotalTime()+"ms");
-		// System.out.println("Repulsion calculation portion of iterations took "+repulseProfile.getTotalTime()+"ms");
-		// System.out.println("Update portion of iterations took "+updateProfile.getTotalTime()+"ms");
+		// logger.debug("Attraction calculation portion of iterations took "+attractProfile.getTotalTime()+"ms");
+		// logger.debug("Repulsion calculation portion of iterations took "+repulseProfile.getTotalTime()+"ms");
+		// logger.debug("Update portion of iterations took "+updateProfile.getTotalTime()+"ms");
 		taskMonitor.setStatus("Updating display");
 
 		// Actually move the pieces around
@@ -604,7 +608,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			}
 		}
 
-		System.out.println("Layout complete after " + iteration + " iterations");
+		logger.info("Layout complete after " + iteration + " iterations");
 	}
 
 	/**
@@ -714,7 +718,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			averageValue += (((Double) dispArray[i]).doubleValue() / dispArray.length);
 		}
 
-		// System.out.println("Total displacement = "+disp.doubleValue()+" Average slope = "+averageSlope);
+		// logger.debug("Total displacement = "+disp.doubleValue()+" Average slope = "+averageSlope);
 		// 5% a reasonable criteria?
 		// if (Math.abs(averageSlope) < Math.abs(averageValue)*.001) return true;
 		if (Math.abs(averageSlope) < .001)
@@ -764,7 +768,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 
 			// If its too close, increase the force by a constant
 			if (deltaDistance < (radius + (u.getWidth() / 2))) {
-				// System.out.println("Applying conflict_avoidance force: "+conflict_avoidance);
+				// logger.debug("Applying conflict_avoidance force: "+conflict_avoidance);
 				fr += conflict_avoidance;
 			}
 
@@ -773,10 +777,10 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			}
 
 			/*
-			            System.out.println("Repulsive force between "+v.getIdentifier()
+			            logger.debug("Repulsive force between "+v.getIdentifier()
 			                             +" and "+u.getIdentifier()+" is "+force);
-			            System.out.println("   distance = "+deltaDistance);
-			            System.out.println("   incrementing "+v.getIdentifier()+" by ("+
+			            logger.debug("   distance = "+deltaDistance);
+			            logger.debug("   incrementing "+v.getIdentifier()+" by ("+
 			                                   force+", "+force+")");
 			*/
 
@@ -865,7 +869,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		}// shouldn't happen
 		
 		else {
-			// System.out.println("Gravity adjustment = "+xVector+", "+yVector);
+			// logger.debug("Gravity adjustment = "+xVector+", "+yVector);
 			v.decrementDisp( xVector, yVector);
 		}
 	}
@@ -940,7 +944,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 			this.width = Math.sqrt(node_area) * spreadFactor;
 			this.height = Math.sqrt(node_area) * spreadFactor;
 
-			// System.out.println("spreadFactor = "+spreadFactor);
+			// logger.debug("spreadFactor = "+spreadFactor);
 		}
 
 		this.maxVelocity = Math.max(Math.max(averageWidth * 2, averageHeight * 2),
@@ -948,9 +952,9 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		this.maxDistance = Math.max(Math.max(averageWidth * 10, averageHeight * 10),
 		                            Math.min(width, height) * max_distance_factor / 100);
 
-		        System.out.println("Size: "+width+" x "+height);
-		        System.out.println("maxDistance = "+maxDistance);
-		        System.out.println("maxVelocity = "+maxVelocity);
+		// logger.debug("Size: "+width+" x "+height);
+		// logger.debug("maxDistance = "+maxDistance);
+		// logger.debug("maxVelocity = "+maxVelocity);
 		/*
 		*/
 	}
@@ -965,7 +969,7 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		gravity_constant = gravity_multiplier;
 
 /*
-		        System.out.println("attraction_constant = "+attraction_constant
+		        logger.debug("attraction_constant = "+attraction_constant
 		                        +", repulsion_constant = "+repulsion_constant
 						                +", gravity_constant = "+gravity_constant);
 */

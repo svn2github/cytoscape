@@ -43,6 +43,7 @@ import cytoscape.data.*;
 
 import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.Tunable;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.util.*;
 
@@ -144,6 +145,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	Profile calculationProfile;
 	Profile distanceProfile;
 
+	private CyLogger logger = null;
+
 	/**
 	 * This is the constructor for the bioLayout algorithm.
 	 * @param supportEdgeWeights a boolean to indicate whether we should
@@ -151,6 +154,8 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 	 */
 	public BioLayoutKKAlgorithm(boolean supportEdgeWeights) {
 		super();
+
+		logger = CyLogger.getLogger(BioLayoutKKAlgorithm.class);
 
 		supportWeights = supportEdgeWeights;
 
@@ -437,15 +442,15 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		for (int i = 1; i < m_numLayoutPasses; i++)
 			m_anticollisionSpringScalars[i] = 1.0;
 
-		System.out.println("BioLayoutKK Algorithm.  Laying out " + m_nodeCount + " nodes and "
-		                   + partition.edgeCount() + " edges: ");
+		logger.info("Laying out " + m_nodeCount + " nodes and "
+		            + partition.edgeCount() + " edges: ");
 
 		/*
 		        for (Iterator diter = partition.nodeIterator(); diter.hasNext(); ) {
-		            System.out.println("\t"+(LayoutNode)diter.next());
+		            logger.debug("\t"+(LayoutNode)diter.next());
 		        }
 		        for (Iterator diter = partition.edgeIterator(); diter.hasNext(); ) {
-		            System.out.println("\t"+(LayoutEdge)diter.next());
+		            logger.debug("\t"+(LayoutEdge)diter.next());
 		        }
 		*/
 
@@ -547,7 +552,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 
 				partials = new PartialDerivatives(v);
 				calculatePartials(partials, null, potentialEnergy, false);
-				// System.out.println(partials.printPartial()+" potentialEnergy = "+potentialEnergy[0]);
+				// logger.debug(partials.printPartial()+" potentialEnergy = "+potentialEnergy[0]);
 				partialsList.add(partials);
 
 				if ((furthestNodePartials == null)
@@ -573,7 +578,7 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 				taskMonitor.setPercentCompleted((int) currentProgress);
 
 				furthestNodePartials = moveNode(furthestNodePartials, partialsList, potentialEnergy);
-				//    		System.out.println(furthestNodePartials.printPartial()+" (furthest) potentialEnergy = "+potentialEnergy[0]);
+				//    		logger.debug(furthestNodePartials.printPartial()+" (furthest) potentialEnergy = "+potentialEnergy[0]);
 				currentProgress += percentProgressPerIter;
 			}
 
@@ -719,17 +724,17 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			int node_j = edge.getTarget().getIndex();
 			double weight = edge.getWeight();
 
-			// System.out.println(edge);
+			// logger.debug(edge);
 			if (nodeDistances[node_i][node_j] != Integer.MAX_VALUE) {
 				// Compute spring rest lengths.
 				m_nodeDistanceSpringRestLengths[node_i][node_j] = (m_nodeDistanceRestLengthConstant * nodeDistances[node_i][node_j]) / (weight);
 				m_nodeDistanceSpringRestLengths[node_j][node_i] = m_nodeDistanceSpringRestLengths[node_i][node_j];
-				// System.out.println("Setting spring ("+node_i+","+node_j+") ["+weight+"] length to "+m_nodeDistanceSpringRestLengths[node_j][node_i]);
+				// logger.debug("Setting spring ("+node_i+","+node_j+") ["+weight+"] length to "+m_nodeDistanceSpringRestLengths[node_j][node_i]);
 				// Compute spring strengths.
 				m_nodeDistanceSpringStrengths[node_i][node_j] = m_nodeDistanceStrengthConstant / (nodeDistances[node_i][node_j] * nodeDistances[node_i][node_j]);
 				m_nodeDistanceSpringStrengths[node_j][node_i] = m_nodeDistanceSpringStrengths[node_i][node_j];
 
-				// System.out.println("Setting spring ("+node_i+","+node_j+") strength to "+m_nodeDistanceSpringStrengths[node_j][node_i]);
+				// logger.debug("Setting spring ("+node_i+","+node_j+") strength to "+m_nodeDistanceSpringStrengths[node_j][node_i]);
 			}
 		}
 	}
@@ -869,10 +874,10 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			}
 
 			/*
-			            System.out.println("nodeX = "+nodeX);
-			      System.out.println("nodeY = "+nodeY);
-			      System.out.println("otherNodeX = "+otherNode.getX());
-			      System.out.println("otherNodeY = "+otherNode.getY());
+			            logger.debug("nodeX = "+nodeX);
+			      logger.debug("nodeY = "+nodeY);
+			      logger.debug("otherNodeX = "+otherNode.getX());
+			      logger.debug("otherNodeY = "+otherNode.getY());
 			*/
 			int otherNodeIndex = otherNode.getIndex();
 			double radius = nodeRadius + otherNodeRadius;
@@ -1031,11 +1036,11 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		PartialDerivatives startingPartials = new PartialDerivatives(partials);
 		calculatePartials(partials, partialsList, potentialEnergy, true);
 
-		// System.out.println(partials.printPartial()+" potentialEnergy = "+potentialEnergy[0]);
+		// logger.debug(partials.printPartial()+" potentialEnergy = "+potentialEnergy[0]);
 		try {
 			simpleMoveNode(startingPartials);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e.getMessage());
 		}
 
 		return calculatePartials(partials, partialsList, potentialEnergy, false);
@@ -1056,10 +1061,10 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 			// throw new RuntimeException("denominator too close to 0 for node "+node);
 		}
 
-		// System.out.println(partials.printPartial());
+		// logger.debug(partials.printPartial());
 		double deltaX = (((-partials.x * partials.yy) - (-partials.y * partials.xy)) / denominator);
 		double deltaY = (((-partials.y * partials.xx) - (-partials.x * partials.xy)) / denominator);
-		/* System.out.println("Moving node "+node.getIdentifier()+" from "+node.getX()+", "+node.getY()+
+		/* logger.debug("Moving node "+node.getIdentifier()+" from "+node.getX()+", "+node.getY()+
 		                    " to "+(node.getX()+deltaX)+", "+(node.getY()+deltaY)); */
 		node.setLocation(node.getX() + deltaX, node.getY() + deltaY);
 	}

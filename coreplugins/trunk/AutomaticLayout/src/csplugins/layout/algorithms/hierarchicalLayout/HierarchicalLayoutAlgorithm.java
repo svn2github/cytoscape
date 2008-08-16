@@ -379,17 +379,17 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		/*
 		int edgeIndex;
 		for (edgeIndex = 0; edgeIndex<edge.length; edgeIndex++) {
-		     System.out.println("Edge: " + edge[edgeIndex].getFrom() + " - " + edge[edgeIndex].getTo());
+		     logger.debug("Edge: " + edge[edgeIndex].getFrom() + " - " + edge[edgeIndex].getTo());
 		}
 		*/
 		int[] cI = graph.componentIndex();
 		int x;
 		/*
-		System.out.println("Node index:\n");
+		logger.debug("Node index:\n");
 		for (x=0; x<graph.getNodecount(); x++) {
-		    System.out.println(cI[x]);
+		    logger.debug(cI[x]);
 		}
-		System.out.println("Partitioning into components:\n");
+		logger.debug("Partitioning into components:\n");
 		*/
 		taskMonitor.setPercentCompleted(10);
 		taskMonitor.setStatus("Finding connected components");
@@ -410,18 +410,18 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 		for (x = 0; x < component.length; x++) {
 			/*
-			System.out.println("plain component:\n");
-			System.out.println(component[x]);
-			System.out.println("filtered component:\n");
-			System.out.println(component[x].getGraphWithoutOneOrTwoCycles());
-			System.out.println("nonmulti component:\n");
-			System.out.println(component[x].getGraphWithoutMultipleEdges());
+			logger.debug("plain component:\n");
+			logger.debug(component[x]);
+			logger.debug("filtered component:\n");
+			logger.debug(component[x].getGraphWithoutOneOrTwoCycles());
+			logger.debug("nonmulti component:\n");
+			logger.debug(component[x].getGraphWithoutMultipleEdges());
 			int cycleEliminationPriority[] = component[x].getCycleEliminationVertexPriority();
-			System.out.println("acyclic component:\n");
-			System.out.println(component[x].getGraphWithoutCycles(cycleEliminationPriority));
-			System.out.println("reduced component:\n");
-			System.out.println(component[x].getReducedGraph());
-			System.out.println("layer assignment:\n");
+			logger.debug("acyclic component:\n");
+			logger.debug(component[x].getGraphWithoutCycles(cycleEliminationPriority));
+			logger.debug("reduced component:\n");
+			logger.debug(component[x].getReducedGraph());
+			logger.debug("layer assignment:\n");
 			*/
 			taskMonitor.setPercentCompleted(20 + ((40 * (x * 3)) / numComponents / 3));
 			taskMonitor.setStatus("making acyclic transitive reduction");
@@ -448,9 +448,9 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			/*
 			int y;
 			for (y=0;y<layer[x].length;y++) {
-			    System.out.println("" + y + " : " + layer[x][y]);
+			    logger.debug("" + y + " : " + layer[x][y]);
 			}
-			System.out.println("horizontal position:\n");
+			logger.debug("horizontal position:\n");
 			*/
 
 			/* Insertion of the dummy nodes in the graph */
@@ -460,7 +460,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 			dummyStartForComp[x] = dummyStart;
 			dummy2Edge[x] = new HashMap<Integer, Edge>();
 
-			//System.out.println(allEdges.length);
+			//logger.debug(allEdges.length);
 
 			for (int i = 0; i < allEdges.length; i++) {
 				int from = allEdges[i].getFrom();
@@ -516,7 +516,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 
 			/*
 			for (y=0;y<horizontalPosition[x].length;y++) {
-			    System.out.println("" + y + " : " + horizontalPosition[x][y]);
+			    logger.debug("" + y + " : " + horizontalPosition[x][y]);
 			}
 			*/
 		}
@@ -1045,7 +1045,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 					boolean q = false;
 
 					for (int i = x + 1; (i <= endInd) && !q; i++) {
-						//	System.out.print(nodesBak[i].xPos + " " + nodesBak[i+1].xPos + " " + x + " " + i + " ");
+						//	logger.debug(nodesBak[i].xPos + " " + nodesBak[i+1].xPos + " " + x + " " + i + " ");
 						if ((nodesBak[i].layer == nodesBak[x].layer)
 						    && (nodesBak[i].xPos < (nodesBak[i - 1].xPos + nodeHorizontalSpacing))) {
 							nodesBak[i].xPos = nodesBak[i - 1].xPos + nodeHorizontalSpacing;
@@ -1081,7 +1081,7 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 					boolean q = false;
 
 					for (int i = x - 1; (i >= 0) && !q; i--) {
-						//System.out.print(nodesBak[i].xPos + " " + nodesBak[i+1].xPos + " " + x + " " + i + " ");
+						//logger.debug(nodesBak[i].xPos + " " + nodesBak[i+1].xPos + " " + x + " " + i + " ");
 						if ((nodesBak[i].layer == nodesBak[x].layer)
 						    && (nodesBak[i].xPos > (nodesBak[i + 1].xPos - nodeHorizontalSpacing))) {
 							nodesBak[i].xPos = nodesBak[i + 1].xPos - nodeHorizontalSpacing;

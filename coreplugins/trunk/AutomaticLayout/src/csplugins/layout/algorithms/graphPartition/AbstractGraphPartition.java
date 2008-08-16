@@ -170,7 +170,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 			if (canceled) break;
 			// get the partition
 			current_size = (double)partition.size();
-			// System.out.println("Partition #"+partition.getPartitionNumber()+" has "+current_size+" nodes");
+			// logger.debug("Partition #"+partition.getPartitionNumber()+" has "+current_size+" nodes");
 			setTaskStatus(1);
 
 			// Partitions Requiring Layout
@@ -183,7 +183,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 				}
 
 				if (!selectedOnly && !singlePartition) {
-					// System.out.println("Offsetting partition #"+partition.getPartitionNumber()+" to "+next_x_start+", "+next_y_start);
+					// logger.debug("Offsetting partition #"+partition.getPartitionNumber()+" to "+next_x_start+", "+next_y_start);
 					// OFFSET
 					partition.offset(next_x_start, next_y_start);
 				}

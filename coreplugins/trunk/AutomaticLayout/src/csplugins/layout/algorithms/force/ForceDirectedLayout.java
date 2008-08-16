@@ -41,6 +41,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.layout.Tunable;
 import cytoscape.layout.LayoutProperties;
+import cytoscape.logger.CyLogger;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.LayoutEdge;
 import csplugins.layout.LayoutNode;
@@ -72,6 +73,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	double defaultSpringCoefficient = 1e-4f;
 	double defaultSpringLength = 50;
 	double defaultNodeMass = 3.0;
+	private CyLogger logger = null;
 
 	/**
 	 * Value to set for doing unweighted layouts
@@ -91,6 +93,8 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	
 	public ForceDirectedLayout() {
 		super();
+
+		logger = CyLogger.getLogger(ForceDirectedLayout.class);
 
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();
@@ -119,10 +123,10 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 
 	public void layoutPartion(LayoutPartition part) {
 		Dimension initialLocation = null;
-		// System.out.println("layoutPartion: "+part.getEdgeList().size()+" edges");
+		// logger.debug("layoutPartion: "+part.getEdgeList().size()+" edges");
 		// Calculate our edge weights
 		part.calculateEdgeWeights();
-		// System.out.println("layoutPartion: "+part.getEdgeList().size()+" edges after calculateEdgeWeights");
+		// logger.debug("layoutPartion: "+part.getEdgeList().size()+" edges after calculateEdgeWeights");
 
 		m_fsim.clear();
 
@@ -145,7 +149,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 			ForceItem f2 = forceItems.get(n2); 
 			if ( f1 == null || f2 == null )
 				continue;
-			// System.out.println("Adding edge "+e+" with spring coeffficient = "+getSpringCoefficient(e)+" and length "+getSpringLength(e));
+			// logger.debug("Adding edge "+e+" with spring coeffficient = "+getSpringCoefficient(e)+" and length "+getSpringLength(e));
 			m_fsim.addSpring(f1, f2, getSpringCoefficient(e), getSpringLength(e)); 
 		}
 
