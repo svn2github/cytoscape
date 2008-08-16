@@ -84,4 +84,5 @@ public interface VisualProperty {
 	public Object parseProperty(Properties props, String baseKey);
 	public Object parseStringValue(String string);
 	public Object getDefaultAppearanceObject();
+	public DependentVisualPropertyCallback dependentVisualPropertyCallback();
 }

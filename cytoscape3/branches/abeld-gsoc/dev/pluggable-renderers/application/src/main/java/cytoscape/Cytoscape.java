@@ -57,21 +57,35 @@ import cytoscape.data.servers.OntologyServer;
 
 import cytoscape.ding.CyGraphLOD;
 
+import org.cytoscape.view.DependentVisualPropertyCallback;
+import org.cytoscape.view.DiscreteVisualProperty;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.NodeView;
+import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import cytoscape.init.CyInitParams;
 
 import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 
+import cytoscape.render.immed.GraphGraphics;
 import cytoscape.util.FileUtil;
 
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.renderers.NodeRenderer;
+import org.cytoscape.view.renderers.Renderer;
+
 import cytoscape.view.CytoscapeDesktop;
 
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.VMMFactory;
+import org.cytoscape.vizmap.icon.ArrowIcon;
+import org.cytoscape.vizmap.icon.LineTypeIcon;
+import org.cytoscape.vizmap.icon.NodeIcon;
+import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
@@ -80,6 +94,11 @@ import org.cytoscape.RootGraph;
 import org.cytoscape.RootGraphFactory;
 
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
@@ -91,12 +110,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.LinkedList;
 
+import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.event.SwingPropertyChangeSupport;
 
@@ -1943,8 +1964,108 @@ public abstract class Cytoscape {
 		return VMMFactory.getVisualMappingManager();
 	}
 
+
+	/** return array of Integer-s containing first,...last with step size increment */
+	private static Object[] range(int first, int last, int increment){
+		ArrayList result = new ArrayList();
+		for (int i = first; i<=last; i+=increment){
+			result.add(Integer.valueOf(i));
+		}
+		return result.toArray();
+	}
+
+	public static Map<Object, Icon> getArrowIconSet(Object [] values, Map<Byte, Shape>shapes) {
+		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
+
+		for (int i = 0; i < values.length; i++) {
+			Integer value = (Integer) values[i];
+			Shape shape = shapes.get(new Byte(value.byteValue()));
+			ArrowIcon icon = new ArrowIcon(shape, 
+			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
+			                               VisualPropertyIcon.DEFAULT_ICON_SIZE,
+			                               "someShape" /* FIXME: user-friendly string! */);
+			arrowShapeIcons.put(shape, icon);
+		}
+
+		return arrowShapeIcons;
+	}
+
+	public static Map<Object, Icon> getLineStyleIconSet(Object [] values) {
+		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
+
+		for (int i = 0; i < values.length; i++) {
+			Stroke value = (Stroke) values[i];
+			arrowShapeIcons.put(value, new LineTypeIcon(value));
+		}
+
+		return arrowShapeIcons;
+	}
+
+	
+	public static Map<Object, Icon> getRendererIconSet(Object [] values) {
+		Map<Object, Icon> rendererIcons = new HashMap<Object, Icon>();
+		for (int i = 0; i < values.length; i++) {
+			NodeRenderer value = (NodeRenderer) values[i];
+			
+			rendererIcons.put(value, new NodeIcon()); // FIXME FIXME: do property icons!
+		}
+		return rendererIcons;
+	}
+
+
 	/** For the duration of pluggable VisualProperties refactor: add legacy VisualProperties */
 	public static void defineHardcodedVisualProperties(){
-		// FIXME: somehow get Renderers defined / activated !!
+		Object [] range = new Object[]{new TrivialRenderer("trivialrenderer"), new ShapeRenderer("shaperenderer")};
+		Map<Object, Icon> iconSet = getRendererIconSet(range);
+		
+		VisualPropertyCatalog.addVisualProperty(new DiscreteVisualProperty("NODE_RENDERER", NodeRenderer.class, true, range, iconSet,
+			new DependentVisualPropertyCallback(){
+				public Set<VisualProperty> changed(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews, Collection<VisualProperty> current_vps){
+					Set <NodeRenderer> renderers = new HashSet();
+					for (NodeView nv: nodeviews){
+						renderers.add(nv.getRenderer());
+					}
+					Set <VisualProperty> visualProperties = new HashSet();
+					for (Renderer renderer: renderers){
+						visualProperties.addAll(renderer.supportedVisualAttributes());
+					}
+					Set <VisualProperty> toRemove = new HashSet();
+					for (VisualProperty vp: current_vps){
+						if (vp.getName().startsWith("NODE_")){
+							toRemove.add(vp);
+						}
+					}
+					
+					toRemove.removeAll(visualProperties);
+					return toRemove;
+				}
+		}));
+		
+		
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_COLOR", Color.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL", String.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_FONT_FACE", Font.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_FONT_SIZE", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_COLOR", Color.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TOOLTIP", String.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LINE_WIDTH", Number.class, false));
+
+		range = new Object[]{new BasicStroke(1.0f/*FIXME: width -- is this just a placeholder value? */),
+				new BasicStroke(1.0f /*see above */, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f, 4.0f}, 0.0f)  };
+		iconSet = getLineStyleIconSet(range);
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_LINE_STYLE", Stroke.class, false, range, iconSet));
+		
+		range = range(-1, -5, -1); 
+		iconSet = getArrowIconSet(range, GraphGraphics.getArrowShapes()); 
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_SRCARROW_SHAPE", Integer.class, false, range, iconSet));
+		VisualPropertyCatalog.addVisualProperty( new DiscreteVisualProperty("EDGE_TGTARROW_SHAPE", Integer.class, false, range, iconSet));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_COLOR", Color.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_COLOR", Color.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_OPACITY", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_OPACITY", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_SRCARROW_OPACITY", Number.class, false));
+		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_TGTARROW_OPACITY", Number.class, false));
+		
+		//VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL_POSITION", Number.class, false));
 	}
 }

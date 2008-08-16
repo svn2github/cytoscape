@@ -23,6 +23,7 @@ import org.cytoscape.vizmap.parsers.DoubleParser;
 import org.cytoscape.vizmap.parsers.FontParser;
 import org.cytoscape.vizmap.LabelPlacerGraphic;
 
+import org.cytoscape.view.DependentVisualPropertyCallback;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.Label;
@@ -745,5 +746,8 @@ public class LegacyVisualProperty implements VisualProperty {
 	 */
 	public boolean isNodeProp() {
 		return isNodeProp;
+	}
+	public DependentVisualPropertyCallback dependentVisualPropertyCallback(){
+		return null;
 	}
 }

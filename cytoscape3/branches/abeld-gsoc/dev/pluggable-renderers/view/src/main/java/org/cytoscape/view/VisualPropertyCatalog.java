@@ -17,82 +17,80 @@ public abstract class VisualPropertyCatalog {
 	/* Mapping from UID to VisualProperty */
 	private static HashMap <String, VisualProperty> visualProperties = new HashMap<String, VisualProperty>();
 	
-	/*
-	 * When adding/removing Renderers, we will have to add/remove the
-	 * VisualProperties they define. Because multiple Renderers can define the
-	 * same VisualProperty, we will have to be carefull to only remove a
-	 * VisualProperty if no Renderer in use defines it. To keep track of this,
-	 * the following map will store a mapping from the UID of the Visual
-	 * Properties to the Renderers that define the given VisualProperty.
-	 */
-	private static HashMap <String, Set<Renderer> > vpToRenderersMap = new HashMap <String, Set<Renderer> >();
+	private static HashMap <String, DependentVisualPropertyCallback>callbacks = new HashMap<String, DependentVisualPropertyCallback>(); 
 	
 	public static void addVisualPropertiesOfRenderer(Renderer renderer){
 		for(VisualProperty vp: renderer.supportedVisualAttributes()){
-			addVisualProperty(vp, renderer);
-		}
-	}
-	public static void removeVisualPropertiesOfRenderer(Renderer renderer){
-		for(VisualProperty vp: renderer.supportedVisualAttributes()){
-			removeVisualProperty(vp, renderer);
-		}
-	}
-	
-	private static void addVisualProperty(VisualProperty vp, Renderer renderer){
-		String name = vp.getName();
-		if (visualProperties.containsKey(name)){
-			// check that they are the same -- but how?
-			// FIXME FIXME FIXME
-			System.out.println("FIXME FIXME FIXME FIXME");
-			// assuming that they are the same, for now:
-			Set<Renderer> renderers = vpToRenderersMap.get(name);
-			if (renderers == null){
-				System.out.println("can't happen! -- this is an exsisting VisualProperty thus it has to be in vpToRenderersMap!");
-			} else {
-				renderers.add(renderer);
-			}
-		} else { // New VisualProperty, store it:
-			visualProperties.put(name, vp);
-			Set<Renderer> renderers = vpToRenderersMap.get(name);
-			if (renderers == null){
-				renderers = new HashSet<Renderer>();
-				renderers.add(renderer);
-				vpToRenderersMap.put(name, renderers);
-			} else {
-				System.out.println("can't happen! -- this is a new VisualProperty thus it can't be in vpToRenderersMap!");
-			}
+			addVisualProperty(vp);
 		}
 	}
 
-	private static void removeVisualProperty(VisualProperty vp, Renderer renderer){
+	/** Add a top-level VisualProperty. Note: this is most likely _not_ what you want to use */
+	public static void addVisualProperty(VisualProperty vp){
 		String name = vp.getName();
 		if (visualProperties.containsKey(name)){
-			Set<Renderer> renderers = vpToRenderersMap.get(name);
-			if (renderers == null){
-				System.out.println("can't happen! -- this is an exsisting VisualProperty thus it has to be in vpToRenderersMap!");
-			} else {
-				renderers.remove(renderer);
-				if (renderers.isEmpty()){
-					// this was the last renderer that defined this VisualProperty, thus we have to remove the VisualProperty altogether:
-					vpToRenderersMap.remove(name);
-					visualProperties.remove(name);
-				}
-			}
+			System.out.println("Error: VisualProperty already exsists!");
 		} else {
-			System.out.println("can't happen! -- can't remove non-exsisting VisualProperty!");
+			DependentVisualPropertyCallback callback = vp.dependentVisualPropertyCallback();
+			if (callback != null)
+				callbacks.put(vp.getName(), callback);
+
+			visualProperties.put(name, vp);
 		}
 	}
-	
+
 	public static VisualProperty getVisualProperty(String name){
 		return visualProperties.get(name);
 	}
 	
+	/**
+	 * Returns the collection of all defined VisualProperties. Note that not all
+	 * of these will be actually in use. For showing in a UI, use of ... is
+	 * recommended ... FIXME
+	 * 
+	 * @return the Collection of all defined VisualProperties
+	 */
 	public static Collection<VisualProperty> collectionOfVisualProperties(){
-		return visualProperties.values();
+		return collectionOfVisualProperties(null, null);
 	}
+
+	/**
+	 * Returns the collection of all those VisualProperties that are in use for
+	 * the given GraphObjects. I.e. these are the VisualProperties, for which
+	 * setting a value will actually change the displayed graph.
+	 * 
+	 * Note: returns the same as collectionOfVisualProperties() if both args are null.
+	 */
+	public static Collection<VisualProperty> collectionOfVisualProperties(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews){
+		Collection<VisualProperty> allVisualProperties = visualProperties.values();
+		if (nodeviews == null && edgeviews == null)
+			return allVisualProperties;
+
+		Set <VisualProperty> toRemove = new HashSet<VisualProperty>();
+		for (DependentVisualPropertyCallback callback: callbacks.values()){
+			toRemove.addAll(callback.changed(nodeviews, edgeviews, allVisualProperties));
+		}
+		Set <VisualProperty> result = new HashSet<VisualProperty>(allVisualProperties);
+		result.removeAll(toRemove);
+		return result;
+	}
+
+	/**
+	 * Returns the collection of all defined edge VisualProperties.
+	 */
 	public static List<VisualProperty> getEdgeVisualPropertyList(){
+		return getEdgeVisualPropertyList(null, null);
+	}
+	
+	/**
+	 * Returns the collection of all edge VisualProperties that are in use for
+	 * the given GraphObjects.
+	 * 
+	 * Note: returns all defined edge VisualProperties if both args are null.
+	 */
+	public static List<VisualProperty> getEdgeVisualPropertyList(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews){
 		ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
-		for (VisualProperty vp: collectionOfVisualProperties()){
+		for (VisualProperty vp: collectionOfVisualProperties(nodeviews, edgeviews)){
 			if (vp.isNodeProp()){
 				continue;
 			} else {
@@ -102,9 +100,22 @@ public abstract class VisualPropertyCatalog {
 		return result;
 	}
 
+	/**
+	 * Returns the collection of all defined node VisualProperties.
+	 */
 	public static List<VisualProperty> getNodeVisualPropertyList(){
+		return getNodeVisualPropertyList(null, null);
+	}
+	
+	/**
+	 * Returns the collection of all node VisualProperties that are in use for
+	 * the given GraphObjects.
+	 * 
+	 * Note: returns all defined node VisualProperties if both args are null.
+	 */
+	public static List<VisualProperty> getNodeVisualPropertyList(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews){
 		ArrayList<VisualProperty> result = new ArrayList<VisualProperty>();
-		for (VisualProperty vp: collectionOfVisualProperties()){
+		for (VisualProperty vp: collectionOfVisualProperties(nodeviews, edgeviews)){
 			if (vp.isNodeProp()){
 				result.add(vp);
 			}

@@ -19,14 +19,20 @@ public class DiscreteVisualProperty implements VisualProperty {
 	private boolean isNodeProp; // indicates whether or not property is for a node or edge
 	private Object [] values;
 	private Map<Object, Icon> icons;
+	private DependentVisualPropertyCallback callback;
 	
 	// note: default value is the first one; number of values and icons must match
 	public DiscreteVisualProperty(final String name, final Class dataType, final boolean isNodeProp, Object [] values, Map<Object, Icon>icons) {
+		this(name, dataType, isNodeProp, values, icons, null);
+	}
+	public DiscreteVisualProperty(final String name, final Class dataType, final boolean isNodeProp, Object [] values, Map<Object, Icon>icons,
+			DependentVisualPropertyCallback callback) {
 		this.underlyingDataType = dataType;
 		this.isNodeProp = isNodeProp;
 		this.name = name;
 		this.values = values;
 		this.icons = icons;
+		this.callback = callback;
 	}
 
 	public void applyToEdgeView(EdgeView ev, Object o) {
@@ -108,5 +114,8 @@ public class DiscreteVisualProperty implements VisualProperty {
 	}
 	public Object parseStringValue(String string){
 		return null; // FIXME FIXME FIXME
+	}
+	public DependentVisualPropertyCallback dependentVisualPropertyCallback(){
+		return callback;
 	}
 }
