@@ -79,6 +79,8 @@ import javax.swing.text.Position;
 public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private CyLayoutAlgorithm currentLayout = null;
 
+	private static Object defaultLayout = null;
+
 	// Dialog components
 	private JLabel titleLabel; // Our title
 	private JPanel mainPanel; // The main content pane
@@ -136,7 +138,6 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		// Create a panel for the list of algorithms
 		JPanel algorithmSelectorPanel = new JPanel();
 		algorithmSelector = new JComboBox();
-		algorithmSelector.addItemListener(new AlgorithmItemListener());
 		algorithmSelectorPanel.add(algorithmSelector);
 
 		Border selBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
@@ -200,6 +201,13 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 				}
 			}
 		}
+
+		algorithmSelector.addItemListener(new AlgorithmItemListener());
+
+		// Do we already have a defaultLayout?
+		if (LayoutSettingsDialog.defaultLayout != null) {
+			algorithmSelector.setSelectedItem(defaultLayout);
+		}
 	}
 
 	private void updateAllSettings() {
@@ -224,9 +232,11 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 
 				if (e.getItem().getClass() == String.class) {
 					currentLayout = null;
+					LayoutSettingsDialog.defaultLayout = null;
 					algorithmPanel.setBorder(null);
 				} else {
 					CyLayoutAlgorithm newLayout = (CyLayoutAlgorithm) e.getItem();
+					LayoutSettingsDialog.defaultLayout = newLayout;
 
 					// Replace the previous settings panel with a new one
 					JPanel panel = newLayout.getSettingsPanel();
