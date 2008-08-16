@@ -233,7 +233,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private final Map<String, Map<Object, Object>> discMapBuffer = new HashMap<String, Map<Object, Object>>();
 	private String lastVSName = null;
 	private JScrollPane noMapListScrollPane;
-	private List<VisualProperty> noMapping;
 	private JPanel buttonPanel;
 	private JButton addButton;
 	private JPanel bottomPanel;
@@ -768,13 +767,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private void switchVS(String vsName, boolean redraw) {
+		System.out.println("switching to:"+vsName);
 		if (ignore)
 			return;
 
 		// If new VS name is the same, ignore.
 		if (lastVSName == vsName)
 			return;
-
+		System.out.println("  switching to:"+vsName);
 		closeEditorWindow();
 
 		System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
@@ -785,6 +785,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		vmm.setVisualStyle(vsName);
 
 		if (propertyMap.containsKey(vsName)) {
+			System.out.println("  vs in propertyMap");
 			final List<Property> props = propertyMap.get(vsName);
 			final Map<String, Property> unused = new TreeMap<String, Property>();
 
@@ -815,8 +816,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			for (Object key : keys) {
 				visualPropertySheetPanel.addProperty(unused.get(key));
 			}
-		} else
+		} else{
+			System.out.println("  vs not in propertyMap");
 			setPropertyTable();
+		}
 
 		// MLC 03/31/08:
 		//lastVSName = vsName;
@@ -832,7 +835,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Image defImg = defaultImageManager.get(vsName);
 
 		if(defImg == null) {
-			// Default image is not available in the buffer.  Create a new one.
+			System.out.println("  Default image is not available in the buffer.  Create a new one.");
 			updateDefaultImage(vsName,
 									(GraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(vsName)).getView(),
 									defaultAppearencePanel.getSize());
@@ -851,6 +854,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// Cleanup desktop.
 		Cytoscape.getDesktop().repaint();
 		vsNameComboBox.setSelectedItem(vsName);
+		System.out.println("  vs switching done");
 	}
 
 	private static final String CATEGORY_UNUSED = "Unused Properties";
@@ -1312,31 +1316,29 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		setPropertyFromCalculator(ncList, NODE_VISUAL_MAPPING, propRecord);
 		setPropertyFromCalculator(ecList, EDGE_VISUAL_MAPPING, propRecord);
 
+		/* Finally, build unused list */
+		setUnused(propRecord);
+
 		// Save it for later use.
 		propertyMap.put(vmm.getVisualStyle().getName(), propRecord);
-
-		/*
-		 * Finally, build unused list
-		 */
-		setUnused(propRecord);
 	}
 
 	/*
-	 * Add unused visual properties to the property sheet
+	 * Add unused visual properties (as VizMapperProperties) to propList
 	 *
 	 */
 	private void setUnused(List<Property> propList) {
-		buildList();
-
-		for (VisualProperty type : byNameSortedVisualProperties(noMapping)) {
-			VizMapperProperty prop = new VizMapperProperty();
-			prop.setCategory(CATEGORY_UNUSED);
-			prop.setDisplayName(type.getName());
-			prop.setHiddenObject(type);
-			prop.setValue("Double-Click to create...");
-			// prop.setEditable(false);
-			visualPropertySheetPanel.addProperty(prop);
-			propList.add(prop);
+		VisualStyle vs = vmm.getVisualStyle();
+		for (VisualProperty vp : byNameSortedVisualProperties(VisualPropertyCatalog.collectionOfVisualProperties())) {
+			if (vs.getCalculator(vp) == null) {
+				VizMapperProperty prop = new VizMapperProperty();
+				prop.setCategory(CATEGORY_UNUSED);
+				prop.setDisplayName(vp.getName());
+				prop.setHiddenObject(vp);
+				prop.setValue("Double-Click to create...");
+				visualPropertySheetPanel.addProperty(prop);
+				propList.add(prop);
+			}
 		}
 	}
 	
@@ -2303,17 +2305,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		vsNameComboBox.setSelectedItem(vsName);
 	}
 
-	private void buildList() {
-		noMapping = new ArrayList<VisualProperty>();
-
-		final VisualStyle vs = vmm.getVisualStyle();
-
-		for (Calculator calc: vs.getCalculators().values()){
-			if (calc.getMapping(0) == null)
-				noMapping.add(calc.getVisualProperty());
-		}
-	}
-
 	/*
 	 * Actions for option menu
 	 */
@@ -2355,16 +2346,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			final VisualStyle newStyle = new VisualStyle(name);
 			final List<Calculator> calcs = new ArrayList<Calculator>(vmm.getCalculatorCatalog()
 			                                                            .getCalculators());
-			final Calculator dummy = calcs.get(0);
-			newStyle.setCalculator(dummy);
-
 			// add it to the catalog
 			vmm.getCalculatorCatalog().addVisualStyle(newStyle);
 			// Apply the new style
 			vmm.setVisualStyle(newStyle);
 			vmm.setVisualStyleForView(Cytoscape.getCurrentNetworkView(), newStyle);
-
-			removeMapping(dummy.getVisualProperty());
 
 			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(name);
 			final GraphView view = (GraphView) ((DefaultViewPanel) defPanel).getView();
@@ -2595,8 +2581,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					/*
 					 * Finally, move the visual property to "unused list"
 					 */
-					noMapping.add(type);
-
 					VizMapperProperty prop = new VizMapperProperty();
 					prop.setCategory(CATEGORY_UNUSED);
 					prop.setDisplayName(type.getName());
@@ -2613,45 +2597,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 			}
 		}
-	}
-
-	private void removeMapping(final VisualProperty type) {
-		vmm.getVisualStyle().removeCalculator(type);
-
-		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-
-		final Property[] props = visualPropertySheetPanel.getProperties();
-		Property toBeRemoved = null;
-
-		for (Property p : props) {
-			if (p.getDisplayName().equals(type.getName())) {
-				toBeRemoved = p;
-
-				break;
-			}
-		}
-
-		visualPropertySheetPanel.removeProperty(toBeRemoved);
-
-		removeProperty(toBeRemoved);
-
-		/*
-		 * Finally, move the visual property to "unused list"
-		 */
-		noMapping.add(type);
-
-		VizMapperProperty prop = new VizMapperProperty();
-		prop.setCategory(CATEGORY_UNUSED);
-		prop.setDisplayName(type.getName());
-		prop.setHiddenObject(type);
-		prop.setValue("Double-Click to create...");
-		visualPropertySheetPanel.addProperty(prop);
-
-		if (propertyMap.get(vmm.getVisualStyle().getName()) != null) {
-			propertyMap.get(vmm.getVisualStyle().getName()).add(prop);
-		}
-
-		visualPropertySheetPanel.repaint();
 	}
 
 	/**
