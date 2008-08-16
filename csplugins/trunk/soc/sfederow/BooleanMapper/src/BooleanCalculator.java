@@ -246,7 +246,7 @@ public class BooleanCalculator {
 						}
 
 					}else{*/
-
+						//Pretty sure we only need to get booleans as we get numbers in doNumerical
 						if(nodeAttributes.hasAttribute(nodeID, attribute)){
 							Object temp = nodeAttributes.getAttribute(nodeID, attribute);
 							String stemp = temp + "";
@@ -346,9 +346,12 @@ public class BooleanCalculator {
 			if(outcome){
 				System.out.println("true");
 				//createAttribute()
+				System.out.println("label: "+label);
+				
 				attManager.setColorAttribute(label, node.getIdentifier(), outcome);
 				network.setSelectedNodeState(node,true);
 			}else{
+				System.out.println("label: "+label);
 				System.out.println("false");
 			}
 		}
