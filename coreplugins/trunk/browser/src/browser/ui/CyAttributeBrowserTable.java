@@ -92,6 +92,7 @@ import cytoscape.data.SelectEvent;
 import cytoscape.data.SelectEventListener;
 import cytoscape.data.Semantics;
 import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.logger.CyLogger;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.util.OpenBrowser;
@@ -157,6 +158,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	private DataTableModel tableModel;
 	private DataObjectType objectType;
 	private Map<String, Map<String, String>> linkoutProps;
+	private CyLogger logger = null;
 	private static final Font BORDER_FONT = new Font("Sans-serif", Font.BOLD, 12);
 	
 	// For turning off listener during session loading
@@ -204,6 +206,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	 */
 	public CyAttributeBrowserTable(DataTableModel model, DataObjectType objectType) {
 		super(model);
+		logger = CyLogger.getLogger(CyAttributeBrowserTable.class);
 		initSortHeader();
 
 		this.tableModel = model;
@@ -424,7 +427,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			// Window");
 			copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
-						System.out.println("Cells copied to clipboard.");
+						logger.debug("Cells copied to clipboard.");
 						copyToClipBoard();
 					}
 				});
@@ -502,10 +505,10 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						if (Cytoscape.getCurrentNetworkView() != Cytoscape.getNullNetworkView()) {
 							if (coloringMenuItem.isSelected() == true) {
-								System.out.println("color ON");
+								logger.debug("color ON");
 								setNewRenderer(true);
 							} else {
-								System.out.println("color OFF");
+								logger.debug("color OFF");
 								setNewRenderer(false);
 							}
 						}
@@ -566,7 +569,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						writer.close();
 						export = null;
 					} catch (Exception ex) {
-						System.out.println("Table Export Write error");
+						logger.error("Table Export Write error");
 						ex.printStackTrace();
 					}
 				}
@@ -804,7 +807,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 	public void actionPerformed(ActionEvent event) {
 		// TODO Auto-generated method stub
 		if (event.getActionCommand().compareTo("Copy") == 0) {
-			System.out.println("Cells copied to clipboard.");
+			logger.debug("Cells copied to clipboard.");
 			copyToClipBoard();
 		}
 	}
@@ -910,7 +913,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 
 			openURL.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
-						System.out.println(item.toString());
+						logger.debug(item.toString());
 						OpenBrowser.openURL(item.toString());
 					}
 				});

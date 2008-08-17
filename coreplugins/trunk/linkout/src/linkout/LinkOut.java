@@ -5,6 +5,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.util.OpenBrowser;
 
@@ -59,12 +60,15 @@ public class LinkOut {
 	private static String externalLinksAttribute = "Linkout.ExternalLinks";
 	private Properties props;
 	private static final Font TITLE_FONT = new Font("sans-serif", Font.BOLD, 14);
+	private static CyLogger logger = null;
 
 	//null constractor
 	/**
 	 * Creates a new LinkOut object.
 	 */
 	public LinkOut() {
+		if (LinkOut.logger == null)
+			LinkOut.logger = CyLogger.getLogger(LinkOut.class);
 	}
 
 	/**
@@ -136,7 +140,7 @@ public class LinkOut {
 			String url = "<html><small><i>empty- no links<br> See documentation</i></small></html>"
 			             + "http://www.cytoscape.org/";
 			top_menu.add(new JMenuItem(url));
-			System.err.println("NullPointerException: " + e.getMessage());
+			logger.error("NullPointerException: " + e.getMessage());
 		}
 
 		return top_menu;
@@ -298,7 +302,7 @@ public class LinkOut {
 			String url = "<html><small><i>empty- no links<br> See documentation</i></small></html>"
 			             + "http://www.cytoscape.org/";
 			top_menu.add(new JMenuItem(url));
-			System.err.println("NullPointerException: " + e.getMessage());
+			logger.error("NullPointerException: " + e.getMessage());
 		}
 
 		return top_menu;
@@ -336,7 +340,7 @@ public class LinkOut {
 			//if its a JMenuItem and this is the last key then there
 			//is a duplicate of keys in the file. i.e two url with the exact same manu path
 		} else if (jmi instanceof JMenuItem && (keys.size() == 1)) {
-			System.out.println("Duplicate URL specified for " + (String) keys.get(0));
+			logger.error("Duplicate URL specified for " + (String) keys.get(0));
 
 			return;
 
@@ -399,11 +403,11 @@ public class LinkOut {
 
 		for (int i = 0; i < count; i++) {
 			if (jm.getItem(i).getClass().getName().equals("javax.swing.JMenuItem")) {
-				System.out.println(jm.getItem(i).getText());
+				logger.debug(jm.getItem(i).getText());
 
 				continue;
 			} else {
-				System.out.println(jm.getItem(i).getText() + "--");
+				logger.debug(jm.getItem(i).getText() + "--");
 				printMenu((JMenu) jm.getItem(i));
 			}
 		}
@@ -454,7 +458,7 @@ public class LinkOut {
 		// If we don't have any linkout properties, load the defaults.
 		if (!linkoutFound) {
 			try {
-				System.out.println("loading defaults");
+				logger.info("loading defaults");
 
 				ClassLoader cl = LinkOut.class.getClassLoader();
 				props.load(cl.getResource("linkout.props").openStream());
@@ -463,7 +467,7 @@ public class LinkOut {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("Couldn't load default linkout props");
+				logger.error("Couldn't load default linkout props");
 			}
 		}
 	}

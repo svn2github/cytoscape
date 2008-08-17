@@ -349,15 +349,15 @@ public class AttributeBrowser implements TableColumnModelListener {
 
 		final int columnCount = attributeTable.getColumnCount();
 
-		System.out.print("Ordered: " + e.getFromIndex() + " to " + e.getToIndex());
+		//System.out.print("Ordered: " + e.getFromIndex() + " to " + e.getToIndex());
 		orderedColumn.clear();
 
 		for (int i = 0; i < columnCount; i++) {
-			System.out.print("[" + attributeTable.getColumnName(i) + "] ");
+			//System.out.print("[" + attributeTable.getColumnName(i) + "] ");
 			orderedColumn.add(attributeTable.getColumnName(i));
 		}
 
-		System.out.println("");
+		//System.out.println("");
 	}
 
 	/**

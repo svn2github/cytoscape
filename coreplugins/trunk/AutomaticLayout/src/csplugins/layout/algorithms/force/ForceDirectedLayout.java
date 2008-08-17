@@ -95,6 +95,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		super();
 
 		logger = CyLogger.getLogger(ForceDirectedLayout.class);
+		// logger.setDebug(true);
 
 		if (edgeWeighter == null)
 			edgeWeighter = new EdgeWeighter();

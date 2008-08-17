@@ -43,6 +43,7 @@ import java.util.*;
 
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 
@@ -146,7 +147,7 @@ public class TopologyFilter extends CompositeFilter {
 			}			
 		}
 		else {
-			System.out.println("TopologyFilter: objectType is undefined.");
+			CyLogger.getLogger(TopologyFilter.class).error("objectType is undefined.");
 			return;
 		}
 

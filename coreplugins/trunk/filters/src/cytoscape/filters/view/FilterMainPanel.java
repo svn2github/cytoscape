@@ -296,7 +296,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 	}
 
 	public void initCMBSelectFilter(){
-		System.out.println("FilterMainPanel.initCMBSelectFilter() ...");
+		// System.out.println("FilterMainPanel.initCMBSelectFilter() ...");
 		//if (allFilterVect == null) {
 		//	allFilterVect = new Vector<CompositeFilter>();
 		//}
@@ -320,7 +320,7 @@ public class FilterMainPanel extends JPanel implements ActionListener,
 		public void onComponentSelected(int componentIndex){
 
 			if (componentIndex == cytoPanelWest.indexOfComponent("Filters")) {
-				System.out.println("Filter Panel is selected");
+				// System.out.println("Filter Panel is selected");
 
 				//if (cmbSelectFilter.getModel().getSize() == 0 && allFilterVect.size()>0) {
 				if (cmbSelectFilter.getModel().getSize() == 0) {

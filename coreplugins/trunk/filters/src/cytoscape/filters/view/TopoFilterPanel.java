@@ -108,7 +108,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 	public void actionPerformed(ActionEvent e) {
 		Object _actionObject = e.getSource();
 		
-		System.out.println("Entering TopoFIlterPanel.actionPerformed() ...");
+		// System.out.println("Entering TopoFIlterPanel.actionPerformed() ...");
 		
 		// handle Button events
 		if (_actionObject instanceof JTextField) {
@@ -122,7 +122,7 @@ public class TopoFilterPanel extends JPanel implements ActionListener, ItemListe
 				theFilter.setDistance(_distance);				
 			}
 		}
-		System.out.println(theFilter.getName());
+		// System.out.println(theFilter.getName());
 		
 	}
 	

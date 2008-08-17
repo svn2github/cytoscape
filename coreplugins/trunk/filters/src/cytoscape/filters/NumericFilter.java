@@ -45,6 +45,7 @@ import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.filters.util.FilterUtil;
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.NumberIndex;
@@ -109,7 +110,7 @@ public class NumericFilter<T extends Number> extends AtomicFilter {
 			edge_bits = new BitSet(objectCount); // all the bits are false initially
 		}
 		else {
-			System.out.println("StringFilter: Index_type is undefined.");
+			CyLogger.getLogger(NumericFilter.class).error("StringFilter: Index_type is undefined.");
 			return;
 		}
 

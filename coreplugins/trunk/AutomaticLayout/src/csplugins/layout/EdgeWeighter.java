@@ -203,8 +203,12 @@ public class EdgeWeighter {
 	}
 
 	public boolean normalizeWeight(LayoutEdge edge) {
-		if (minWeight == maxWeight)
+		// If all of our weights are the same we should
+		// normalize everything to 0.5
+		if (minWeight == maxWeight) {
+			edge.setWeight(0.5);
 			return true;
+		}
 
 		// We need to handle the special case of a weight of 0.0 when
 		// we're doing logs.  When we set the value, we set it to

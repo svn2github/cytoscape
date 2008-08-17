@@ -43,6 +43,7 @@ import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import csplugins.quickfind.util.QuickFind;
 import cytoscape.filters.util.FilterUtil;
 
@@ -111,7 +112,7 @@ public class StringFilter extends AtomicFilter {
 			edge_bits = new BitSet(objectCount); // all the bits are false at very beginning			
 		}
 		else {
-			System.out.println("StringFilter: Index_type is undefined.");
+			CyLogger.getLogger(StringFilter.class).error("StringFilter: Index_type is undefined.");
 			return;
 		}
 		

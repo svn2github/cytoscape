@@ -12,11 +12,17 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 import cytoscape.filters.util.FilterUtil;
 import cytoscape.filters.FilterPlugin;
 
 
 public class FilterIO {
+	private CyLogger logger = null;
+
+	public FilterIO () {
+		logger = CyLogger.getLogger(FilterIO.class);
+	}
 
 	// Read the filter property file and construct the filter objects
 	// based on the string representation of each filter
@@ -82,7 +88,8 @@ public class FilterIO {
 
 			in.close();
 		} catch (Exception ex) {
-			System.out.println("Filter Read error");
+			
+			logger.error("Filter Read error");
 			ex.printStackTrace();
 		}
 		
@@ -324,7 +331,7 @@ public class FilterIO {
 	
 	
 	private void getTopologyFilterFromStrVect(TopologyFilter pFilter, Vector<String> pFilterStrVect){
-		//System.out.println("\nFilterIO.getTopologyFilterFromStrVect() ...\n");
+		//logger.debug("\nFilterIO.getTopologyFilterFromStrVect() ...\n");
 
 		String line = null;
 		for (int i=0; i<pFilterStrVect.size(); i++ ) {
@@ -367,8 +374,8 @@ public class FilterIO {
 				}
 			}			
 		}	
-		//System.out.println("\n\nLeaving FilterIO.getTopologyFilterFromStrVect() ...\n");
-		//System.out.println("\nRecovered topo filter is :" + pFilter.toString()+ "\n\n");
+		//logger.debug("\n\nLeaving FilterIO.getTopologyFilterFromStrVect() ...\n");
+		//logger.debug("\nRecovered topo filter is :" + pFilter.toString()+ "\n\n");
 	}
 	
 	
@@ -435,7 +442,7 @@ public class FilterIO {
 			}
 			writer.close();
 		} catch (Exception ex) {
-			System.out.println("Global filter Write error");
+			logger.error("Global filter Write error");
 			ex.printStackTrace();
 		}
 	}
@@ -477,7 +484,7 @@ public class FilterIO {
 		
 		// Create an empty file on system temp directory
 		String tmpDir = System.getProperty("java.io.tmpdir");
-		System.out.println("java.io.tmpdir: [" + tmpDir + "]");
+		// logger.debug("java.io.tmpdir: [" + tmpDir + "]");
 
 		File session_filter_file = new File(tmpDir, "session_filters.props");
 
@@ -494,7 +501,7 @@ public class FilterIO {
 			}
 			writer.close();
 		} catch (Exception ex) {
-			System.out.println("Session filter Write error");
+			logger.error("Session filter Write error");
 			ex.printStackTrace();
 		}
 
@@ -504,7 +511,7 @@ public class FilterIO {
 	
 	public void restoreSessionState(List<File> pStateFileList) {
 		if ((pStateFileList == null) || (pStateFileList.size() == 0)) {
-			System.out.println("\tNo previous filter state to restore.");
+			logger.warn("\tNo previous filter state to restore.");
 			return;
 		}
 		
@@ -512,10 +519,10 @@ public class FilterIO {
 			File session_filter_file = pStateFileList.get(0);
 
 			int[] loadCounts = getFilterVectFromPropFile(session_filter_file);
-			System.out.println("\tLoad " + loadCounts[1] + " session filters");
-			System.out.println("\t\t" + (loadCounts[0]-loadCounts[1]) + " duplicated filters are not loaded");
+			logger.info("\tLoad " + loadCounts[1] + " session filters");
+			logger.info("\t\t" + (loadCounts[0]-loadCounts[1]) + " duplicated filters are not loaded");
 		} catch (Throwable ee) {
-			System.out.println("Failed to restore Filters from session!");
+			logger.error("Failed to restore Filters from session!");
 		}
 	}
 

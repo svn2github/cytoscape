@@ -98,13 +98,13 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 						             + f.getClass() + "\t" + f.output());
 						writer.newLine();
 					} catch (Exception ex) {
-						System.out.println("Error with Filter output");
+						cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Error with Filter output");
 					}
 				}
 
 				writer.close();
 			} catch (Exception ex) {
-				System.out.println("Filter Write error");
+				cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Write error");
 				ex.printStackTrace();
 			}
 		}
@@ -133,7 +133,7 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 
 			in.close();
 		} catch (Exception ex) {
-			System.out.println("Filter Read error");
+			cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Read error");
 			ex.printStackTrace();
 		}
 

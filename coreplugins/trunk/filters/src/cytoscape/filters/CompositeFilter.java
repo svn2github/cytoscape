@@ -42,6 +42,7 @@ import giny.model.Node;
 import java.util.List;
 import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -63,16 +64,19 @@ public class CompositeFilter implements CyFilter {
 	protected AdvancedSetting advancedSetting = null;
 	//private int indexType = -1; //QuickFind.INDEX_NODES //QuickFind.INDEX_EDGES 
 	protected CyNetwork network;
+	private CyLogger logger = null;
 
 	protected Hashtable compositeNotTab = new Hashtable<CompositeFilter, Boolean>();
 	
 	public CompositeFilter() {
+		logger = CyLogger.getLogger(FilterPlugin.class);
 		advancedSetting = new AdvancedSetting();
 		children = new LinkedList<CyFilter>();
 	}
 
 	public CompositeFilter(String pName) {
 		name = pName;
+		logger = CyLogger.getLogger(FilterPlugin.class);
 		advancedSetting = new AdvancedSetting();
 		children = new LinkedList<CyFilter>();
 	}
@@ -175,7 +179,7 @@ public class CompositeFilter implements CyFilter {
 				}
 			}
 			else { //advancedSetting.getRelation() == Relation.XOR|NOR 
-				System.out.println("CompositeFilter: Relation.XOR|NOR: not implemented yet");
+				logger.warn("CompositeFilter: Relation.XOR|NOR: not implemented yet");
 			} 
 		}
 
@@ -231,7 +235,7 @@ public class CompositeFilter implements CyFilter {
 				}
 			}
 			else { //advancedSetting.getRelation() == Relation.XOR|NOR 
-				System.out.println("CompositeFilter: Relation.XOR|NOR: not implemented yet");
+				logger.warn("CompositeFilter: Relation.XOR|NOR: not implemented yet");
 			} 
 		}
 
@@ -456,7 +460,7 @@ public class CompositeFilter implements CyFilter {
 	 * CompositeFilter may be cloned.
 	 */
 	public Object clone() {
-		System.out.println("CompositeFilter.clone() not implemented yet");
+		logger.warn("CompositeFilter.clone() not implemented yet");
 		
 		return null;
 	}	

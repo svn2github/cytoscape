@@ -137,7 +137,7 @@ public class HyperLinkOut extends JMenu {
 	}
 
 	private void openBrowser(String url) {
-		System.out.println("URL ==== " + url);
+		// System.out.println("URL ==== " + url);
 		OpenBrowser.openURL(url);
 	}
 }

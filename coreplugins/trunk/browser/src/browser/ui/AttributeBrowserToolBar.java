@@ -75,6 +75,7 @@ import cytoscape.actions.ImportNodeAttributesAction;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
 import cytoscape.dialogs.NetworkMetaDataDialog;
+import cytoscape.logger.CyLogger;
 import cytoscape.util.swing.CheckBoxJList;
 
 
@@ -92,6 +93,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 	private final DataObjectType objectType;
 	private AttributeModel attrModel;
 	private String attributeType = null;
+	private CyLogger logger = null;
 
 	//	private Object[] selectedAttrNames = null;
 	private List<String> orderedCol;
@@ -135,6 +137,8 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 		this.objectType = graphObjectType;
 		this.attrModel = a_model;
 		this.orderedCol = orderedCol;
+
+		logger = CyLogger.getLogger(AttributeBrowserToolBar.class);
 
 		initialize();
 	}
@@ -563,7 +567,7 @@ public class AttributeBrowserToolBar extends JPanel implements PopupMenuListener
 			ImportEdgeAttributesAction edgeAction = new ImportEdgeAttributesAction();
 			edgeAction.actionPerformed(null);
 		} else { // case for Network
-			System.out.println("Network Attribute import not implemented yet");
+			logger.warn("Network Attribute import not implemented yet");
 		}
 	}
 

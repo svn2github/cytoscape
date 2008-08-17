@@ -39,6 +39,7 @@ import static browser.DataObjectType.NETWORK;
 import static browser.DataObjectType.NODES;
 
 import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.logger.CyLogger;
 
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
@@ -81,10 +82,13 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 	private static final AttributeBrowser edgeAttributeBrowser;
 	private static final AttributeBrowser networkAttributeBrowser;
 
+	private static CyLogger logger;
+
 	static {
 		nodeAttributeBrowser = AttributeBrowser.getBrowser(NODES);
 		edgeAttributeBrowser = AttributeBrowser.getBrowser(EDGES);
 		networkAttributeBrowser = AttributeBrowser.getBrowser(NETWORK);
+		logger = CyLogger.getLogger(AttributeBrowserPlugin.class);
 	}
 
 	// Global properties for this plugin.
@@ -139,7 +143,7 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 	 */
 	public void restoreSessionState(List<File> pStateFileList) {
 		if ((pStateFileList == null) || (pStateFileList.size() == 0)) {
-			System.out.println("Could not find Browser property file.  Use defaults.");
+			logger.error("Could not find Browser property file.  Use defaults.");
 
 			return;
 		}
@@ -236,12 +240,12 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 			for (Entry<Object, Object> set : prop.entrySet()) {
 				key = set.getKey().toString();
 				val = set.getValue().toString();
-				System.out.println("KEY and VAL = " + key + ", " + val);
+				// logger.debug("KEY and VAL = " + key + ", " + val);
 			}
 
 			prop.store(new FileOutputStream(browserPropfile), PROP_HEADER);
 		} catch (IOException e) {
-			System.err.println("Could not save attribute browser property file.");
+			logger.error("Could not save attribute browser property file.");
 			e.printStackTrace();
 		}
 

@@ -96,7 +96,7 @@ public class LinkOutPlugin extends CytoscapePlugin {
 			            }
 			*/
 		} catch (ClassCastException e) {
-			System.out.println(e.getMessage());
+			cytoscape.logger.CyLogger.getLogger(LinkOutPlugin.class).error(e.getMessage());
 
 			return;
 		}

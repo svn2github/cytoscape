@@ -118,7 +118,7 @@ public class DefaultSortTableModel extends DefaultTableModel implements SortTabl
 	 * @param columnIndex DOCUMENT ME!
 	 */
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		System.out.println("SetValueAt: " + aValue + " " + rowIndex + " " + columnIndex);
+		// System.out.println("SetValueAt: " + aValue + " " + rowIndex + " " + columnIndex);
 		super.setValueAt(aValue, rowIndex, columnIndex);
 	}
 }

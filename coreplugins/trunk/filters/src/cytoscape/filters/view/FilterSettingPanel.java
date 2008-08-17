@@ -53,6 +53,7 @@ import csplugins.widgets.slider.JRangeSliderExtended;
 import prefuse.data.query.NumberRangeModel;
 import prefuse.util.ui.JRangeSlider;
 import csplugins.test.quickfind.test.TaskMonitorBase;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -77,8 +78,10 @@ public class FilterSettingPanel extends JPanel {
 	private CyNetwork currentNetwork = null;
 	private TopoFilterPanel topoPanel = null;
 	private InteractionFilterPanel interactionPanel = null;
+	private CyLogger logger = null;
 	
 	public FilterSettingPanel(FilterMainPanel pParent, Object pFilterObj) {
+		logger = CyLogger.getLogger(FilterSettingPanel.class);
 		theFilter = (CompositeFilter) pFilterObj;
 		parentPanel = pParent;
 		initComponents();
@@ -212,7 +215,7 @@ public class FilterSettingPanel extends JPanel {
 			ActionListener listener = new UserSelectionListener(comboBox);
 			comboBox.addFinalSelectionListener(listener);
 		} catch (Exception e) {
-			System.out.println("Exception in FilterSettingpanel.getTextIndexComboBox()");
+			logger.error("Exception in FilterSettingpanel.getTextIndexComboBox()");
 		}
 
 		return comboBox;
@@ -479,7 +482,7 @@ public class FilterSettingPanel extends JPanel {
 				retFilter.setIndex(quickFind.getIndex(Cytoscape.getCurrentNetwork()));
 		}
 		else {
-				System.out.println("AttributeType is not numeric/string/list!");
+				logger.error("AttributeType is not numeric/string/list!");
 		}
 
 		return retFilter;
@@ -850,7 +853,7 @@ public class FilterSettingPanel extends JPanel {
 			}
 			catch (Exception ex) {
 				//NullPointerException caught -- the slider is not initialized yet								
-				System.out.println("FilterSettingPanel.stateChanged():NullPointerException caught -- the slider is not initialized yet");								
+				logger.error("FilterSettingPanel.stateChanged():NullPointerException caught -- the slider is not initialized yet");								
 			}	
 
 			theFilter.childChanged();
