@@ -52,7 +52,6 @@
   
   <path id="paxtoolsplugin.module.classpath">
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/cytoscape.jar"/>
-    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtools/paxtools.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/biopax.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/giny.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/cytoscape-task.jar"/>
@@ -72,7 +71,7 @@
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/mysql-connector-java-5.0.7-bin.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/xml-apis.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/jta.jar"/>
-    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/paxtools-svn20080721.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/paxtools-svn20080817.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/collections-generic-4.01.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/hibernate-entitymanager.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/concurrent.jar"/>
@@ -95,7 +94,6 @@
     <pathelement location="${paxtoolsplugin.output.dir}"/>
     <pathelement location="${paxtoolsplugin.testoutput.dir}"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/cytoscape.jar"/>
-    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtools/paxtools.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/biopax.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/giny.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/cytoscape-task.jar"/>
@@ -115,7 +113,7 @@
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/mysql-connector-java-5.0.7-bin.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/xml-apis.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/jta.jar"/>
-    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/paxtools-svn20080721.jar"/>
+    <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/paxtools-svn20080817.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/collections-generic-4.01.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/hibernate-entitymanager.jar"/>
     <pathelement location="${module.paxtoolsplugin.basedir}/lib/paxtoolslib/concurrent.jar"/>
@@ -189,7 +187,7 @@
   <target name="jar" description="create plugin jar file" depends="all.but.jar">
       <mkdir dir="${paxtoolsplugin.jaroutput.dir}"/>
 
-      <copy file="${basedir}/resources/plugin.props" todir="${paxtoolsplugin.output.dir}/org/biyoenformatik/cytoscape/" />
+      <copy file="${module.paxtoolsplugin.basedir}/resources/plugin.props" todir="${paxtoolsplugin.output.dir}/org/biyoenformatik/cytoscape/" />
       <unjar dest="${paxtoolsplugin.output.dir}">
       	<fileset dir="${module.paxtoolsplugin.basedir}" includes="lib/paxtoolslib/*.jar"/>
       	<fileset dir="${module.paxtoolsplugin.basedir}" includes="lib/biopax.jar"/>

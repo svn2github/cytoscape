@@ -2,6 +2,7 @@ package org.biyoenformatik.cytoscape.ui;
 
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
+import cytoscape.util.CyNetworkNaming;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.task.Task;
@@ -230,7 +231,7 @@ class MergeBioPAXTask implements Task {
 
         PaxtoolsReader paxtoolsReader = new PaxtoolsReader(base);
         CyNetwork newNetwork = Cytoscape.createNetwork(paxtoolsReader, true, null);
-        newNetwork.setTitle("(Merged) " + newNetwork.getTitle());
+        newNetwork.setTitle(CyNetworkNaming.getSuggestedNetworkTitle("(Merged) " + newNetwork.getTitle()));
 
         taskMonitor.setPercentCompleted(100);
 	    taskMonitor.setStatus("Networks successfully merged.");

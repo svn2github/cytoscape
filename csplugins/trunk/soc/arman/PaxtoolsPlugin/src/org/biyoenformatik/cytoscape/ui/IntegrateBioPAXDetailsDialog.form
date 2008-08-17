@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.biyoenformatik.cytoscape.ui.IntegrateBioPAXDetailsDialog">
   <grid id="cbd77" binding="contentPane" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="48" y="54" width="283" height="205"/>
+      <xy x="48" y="54" width="297" height="205"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -50,11 +50,11 @@
               <gridbag weightx="1.0" weighty="1.0"/>
             </constraints>
             <properties/>
-            <border type="none" title="Matched Entities"/>
+            <border type="none" title="Matched Components"/>
             <children>
               <scrollpane id="41b0f">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="1.0" weighty="1.0"/>
                 </constraints>
                 <properties/>
@@ -64,11 +64,21 @@
                     <constraints/>
                     <properties>
                       <fillsViewportHeight value="true"/>
-                      <preferredScrollableViewportSize width="200" height="200"/>
+                      <preferredScrollableViewportSize width="500" height="200"/>
                     </properties>
                   </component>
                 </children>
               </scrollpane>
+              <component id="9e3c3" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <font size="11"/>
+                  <text value="Below is the list of matched reaction components"/>
+                </properties>
+              </component>
             </children>
           </grid>
         </children>
@@ -88,7 +98,7 @@
             </constraints>
             <properties>
               <font style="1"/>
-              <text value="Second Conversion:"/>
+              <text value="Second Reaction:"/>
             </properties>
           </component>
           <component id="722b4" class="javax.swing.JLabel">
@@ -108,7 +118,7 @@
             </constraints>
             <properties>
               <font style="1"/>
-              <text value="First Conversion:"/>
+              <text value="First Reaction:"/>
             </properties>
           </component>
           <component id="7bde" class="javax.swing.JLabel" binding="convName2">

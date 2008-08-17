@@ -51,7 +51,7 @@ public class IntegrateBioPAXDetailsDialog extends JDialog {
         convName2.setText(BioPAXUtil.getNameSmart(convScore.getConversion2()));
         cScore.setText("" + convScore.getScore());
 
-        String[] tableHeader = {"First Conversion", "Second Conversion"};
+        String[] tableHeader = {"First Reaction Component", "->", "Second Reaction Component"};
         String[][] tableData = new String[convScore.getMatchedPEPs().size()][];
 
         int count = 0;
@@ -64,7 +64,7 @@ public class IntegrateBioPAXDetailsDialog extends JDialog {
                     nodeAttributes.getStringAttribute(node1, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL),
                     name2 =
                             nodeAttributes.getStringAttribute(node2, BioPaxVisualStyleUtil.BIOPAX_NODE_LABEL);
-            String[] tableRow = {name1, name2};
+            String[] tableRow = {name1, "->", name2};
             tableData[count++] = tableRow;
         }
 
@@ -73,6 +73,8 @@ public class IntegrateBioPAXDetailsDialog extends JDialog {
                 return false;
             }
         });
+
+        matchTable.getColumnModel().getColumn(1).setWidth(5);
 
     }
 
@@ -147,19 +149,27 @@ public class IntegrateBioPAXDetailsDialog extends JDialog {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         panel3.add(panel4, gbc);
-        panel4.setBorder(BorderFactory.createTitledBorder("Matched Entities"));
+        panel4.setBorder(BorderFactory.createTitledBorder("Matched Components"));
         final JScrollPane scrollPane1 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         panel4.add(scrollPane1, gbc);
         matchTable = new JTable();
         matchTable.setFillsViewportHeight(true);
-        matchTable.setPreferredScrollableViewportSize(new Dimension(200, 200));
+        matchTable.setPreferredScrollableViewportSize(new Dimension(500, 200));
         scrollPane1.setViewportView(matchTable);
+        final JLabel label1 = new JLabel();
+        label1.setFont(new Font(label1.getFont().getName(), label1.getFont().getStyle(), 11));
+        label1.setText("Below is the list of matched reaction components");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel4.add(label1, gbc);
         final JPanel panel5 = new JPanel();
         panel5.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -170,30 +180,30 @@ public class IntegrateBioPAXDetailsDialog extends JDialog {
         gbc.fill = GridBagConstraints.VERTICAL;
         contentPane.add(panel5, gbc);
         panel5.setBorder(BorderFactory.createTitledBorder("Details"));
-        final JLabel label1 = new JLabel();
-        label1.setFont(new Font(label1.getFont().getName(), Font.BOLD, label1.getFont().getSize()));
-        label1.setText("Second Conversion:");
+        final JLabel label2 = new JLabel();
+        label2.setFont(new Font(label2.getFont().getName(), Font.BOLD, label2.getFont().getSize()));
+        label2.setText("Second Reaction:");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        panel5.add(label1, gbc);
-        final JLabel label2 = new JLabel();
-        label2.setFont(new Font(label2.getFont().getName(), Font.BOLD, label2.getFont().getSize()));
-        label2.setText("Score:");
+        panel5.add(label2, gbc);
+        final JLabel label3 = new JLabel();
+        label3.setFont(new Font(label3.getFont().getName(), Font.BOLD, label3.getFont().getSize()));
+        label3.setText("Score:");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.EAST;
-        panel5.add(label2, gbc);
-        final JLabel label3 = new JLabel();
-        label3.setFont(new Font(label3.getFont().getName(), Font.BOLD, label3.getFont().getSize()));
-        label3.setText("First Conversion:");
+        panel5.add(label3, gbc);
+        final JLabel label4 = new JLabel();
+        label4.setFont(new Font(label4.getFont().getName(), Font.BOLD, label4.getFont().getSize()));
+        label4.setText("First Reaction:");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        panel5.add(label3, gbc);
+        panel5.add(label4, gbc);
         convName2 = new JLabel();
         convName2.setText("Name2");
         gbc = new GridBagConstraints();

@@ -188,9 +188,6 @@ public class PaxtoolsReader implements GraphReader {
                 networkName = backupName;
         }
 
-        return CyNetworkNaming.
-                getSuggestedNetworkTitle( (networkName == null
-                                            ? backupName
-                                            : networkName ));
+        return (networkName == null ? backupName : networkName);
     }
 }

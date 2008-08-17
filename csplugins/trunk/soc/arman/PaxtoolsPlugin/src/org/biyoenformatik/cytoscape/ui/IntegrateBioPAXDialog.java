@@ -49,6 +49,8 @@ public class IntegrateBioPAXDialog extends JDialog {
     private JPanel thresholdPanel;
     private JPanel colorizeMain;
     private JPanel colorsPanel;
+    private JCheckBox mergeSimilarReactionsCheckBox;
+    private JPanel previewPanel;
 
     private ArrayList<CyNetwork> bpNetworks = new ArrayList<CyNetwork>();
     private Integrator integrator = null;
@@ -59,9 +61,15 @@ public class IntegrateBioPAXDialog extends JDialog {
             mergedColor = new Color(255, 255, 0);
 
     private boolean isColorPanelEnabled = false;
+    private boolean isScoringEnabled = true;
+
+    private final int checkBoxColumn = 3;
+
 
     // Keep track to reduce CPU work
     private Model oldModel1 = null, oldModel2 = null;
+    private Double oldThreshold;
+
 
     private int MAX_SCORE = 100;
 
@@ -79,6 +87,10 @@ public class IntegrateBioPAXDialog extends JDialog {
 
         colorsPanel.setVisible(isColorPanelEnabled);
         colorizeNodesAccordingToCheckBox.setSelected(isColorPanelEnabled);
+        mergeSimilarReactionsCheckBox.setSelected(isScoringEnabled);
+        thresholdPanel.setVisible(isScoringEnabled);
+        previewPanel.setVisible(isScoringEnabled);
+
         firstColorButton.setBackground(firstColor);
         secondColorButton.setBackground(secondColor);
         mergedColorButton.setBackground(mergedColor);
@@ -167,6 +179,13 @@ public class IntegrateBioPAXDialog extends JDialog {
             }
         });
 
+        mergeSimilarReactionsCheckBox.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                thresholdPanel.setVisible(mergeSimilarReactionsCheckBox.isSelected());
+                previewPanel.setVisible(mergeSimilarReactionsCheckBox.isSelected());
+            }
+        });
+
         firstColorButton.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 Color tempColor = JColorChooser.showDialog(IntegrateBioPAXDialog.this,
@@ -224,13 +243,16 @@ public class IntegrateBioPAXDialog extends JDialog {
             return;
         }
 
-        Double threshold = (Double) spinner1.getValue();
+        Double threshold = (mergeSimilarReactionsCheckBox.isSelected())
+                ? (Double) spinner1.getValue()
+                : MAX_SCORE;
 
         if (!(oldModel1 == model1 && oldModel2 == model2)) {
             integrator = new Integrator(model1, model2);
             integrator.setOnlyMapping(true);
             integrator.setScoresOver(MAX_SCORE);
         }
+
         integrator.setThreshold(threshold);
         scores = integrator.integrate();
 
@@ -252,40 +274,69 @@ public class IntegrateBioPAXDialog extends JDialog {
         }
 
         scoresTable.setEnabled(true);
-        String[][] tableData = new String[scores.size()][];
+        Object[][] tableData = new Object[scores.size()][];
 
         DecimalFormat df = new DecimalFormat("###.00");
 
         int cnt = 0;
         for (ConversionScore aScore : scores) {
-            String[] cols = {"" + df.format(aScore.getScore()),
+            Object[] cols = {
+                    "" + df.format(aScore.getScore()),
                     BioPAXUtil.getShortNameSmart(aScore.getConversion1()),
-                    BioPAXUtil.getShortNameSmart(aScore.getConversion2())};
+                    BioPAXUtil.getShortNameSmart(aScore.getConversion2()),
+                    true
+            };
             tableData[cnt++] = cols;
         }
 
-        String[] tableHeader = {"Score", "Name 1", "Name 2"};
+        String[] tableHeader = {
+                "Score (over " + df.format(integrator.getScoresOver()) + ")",
+                "Reaction Name 1",
+                "Reaction Name 2",
+                "Merge?"
+        };
+
         scoresTable.setModel(new DefaultTableModel(tableData, tableHeader) {
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return (column == checkBoxColumn);
+            }
+
+            public Class getColumnClass(int column) {
+                return getValueAt(0, column).getClass();
             }
         });
+        scoresTable.getColumnModel().getColumn(0).setWidth(5);
+        scoresTable.getColumnModel().getColumn(checkBoxColumn).setWidth(5);
 
         oldModel1 = model1;
         oldModel2 = model2;
+        oldThreshold = threshold;
     }
 
     private void onOK() {
         CyNetwork network1 = bpNetworks.get(firstNetworkComboBox.getSelectedIndex()),
                 network2 = bpNetworks.get(secondNetworkComboBox.getSelectedIndex());
 
-        onPreview();
+        if (BioPAXUtil.getNetworkModel(network1) != oldModel1
+                || BioPAXUtil.getNetworkModel(network2) != oldModel2
+                || !integrator.getThreshold().equals(oldThreshold))
+            onPreview();
+
         integrator.setOnlyMapping(false);
+
+        List<ConversionScore> alternativeScores = new ArrayList<ConversionScore>();
+        for (int rowCnt = 0; rowCnt < scoresTable.getRowCount(); rowCnt++) {
+            Boolean isMerge = (Boolean) scoresTable.getValueAt(rowCnt, checkBoxColumn);
+            if (isMerge) {
+                alternativeScores.add(scores.get(rowCnt));
+            }
+        }
 
         boolean isColorize = colorizeNodesAccordingToCheckBox.isSelected();
 
         IntegrateBioPAXTask task = new IntegrateBioPAXTask(integrator,
                 network1, network2,
+                alternativeScores,
                 isColorize,
                 firstColor, secondColor, mergedColor);
 
@@ -325,7 +376,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         contentPane.add(panel1, gbc);
@@ -427,72 +478,6 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.fill = GridBagConstraints.BOTH;
         panel3.add(panel5, gbc);
         panel5.setBorder(BorderFactory.createTitledBorder("Options"));
-        thresholdPanel = new JPanel();
-        thresholdPanel.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.gridheight = 3;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel5.add(thresholdPanel, gbc);
-        thresholdPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null));
-        final JLabel label3 = new JLabel();
-        label3.setText("Score threshold");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.anchor = GridBagConstraints.WEST;
-        thresholdPanel.add(label3, gbc);
-        slider1 = new JSlider();
-        slider1.setMajorTickSpacing(100);
-        slider1.setMinimum(0);
-        slider1.setMinorTickSpacing(5);
-        slider1.setPaintLabels(true);
-        slider1.setPaintTicks(true);
-        slider1.setPaintTrack(true);
-        slider1.setSnapToTicks(false);
-        slider1.setValue(100);
-        slider1.putClientProperty("Slider.paintThumbArrowShape", Boolean.FALSE);
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(0, 0, 0, 10);
-        thresholdPanel.add(slider1, gbc);
-        spinner1 = new JSpinner();
-        spinner1.setEnabled(true);
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        thresholdPanel.add(spinner1, gbc);
-        previewButton = new JButton();
-        previewButton.setText("Preview");
-        previewButton.setMnemonic('P');
-        previewButton.setDisplayedMnemonicIndex(0);
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        thresholdPanel.add(previewButton, gbc);
-        final JLabel label4 = new JLabel();
-        label4.setFont(new Font(label4.getFont().getName(), label4.getFont().getStyle(), 11));
-        label4.setText("Raise the threshold to eliminate non-specific mathces");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        thresholdPanel.add(label4, gbc);
         colorizeMain = new JPanel();
         colorizeMain.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -544,41 +529,124 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(0, 5, 0, 5);
         colorsPanel.add(mergedColorButton, gbc);
-        final JLabel label5 = new JLabel();
-        label5.setFont(new Font(label5.getFont().getName(), Font.BOLD, label5.getFont().getSize()));
-        label5.setText("  First network  ");
+        final JLabel label3 = new JLabel();
+        label3.setFont(new Font(label3.getFont().getName(), Font.BOLD, label3.getFont().getSize()));
+        label3.setText("  First network  ");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
-        colorsPanel.add(label5, gbc);
-        final JLabel label6 = new JLabel();
-        label6.setFont(new Font(label6.getFont().getName(), Font.BOLD, label6.getFont().getSize()));
-        label6.setText("Second Network");
+        colorsPanel.add(label3, gbc);
+        final JLabel label4 = new JLabel();
+        label4.setFont(new Font(label4.getFont().getName(), Font.BOLD, label4.getFont().getSize()));
+        label4.setText("Second Network");
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 0;
-        colorsPanel.add(label6, gbc);
-        final JLabel label7 = new JLabel();
-        label7.setFont(new Font(label7.getFont().getName(), Font.BOLD, label7.getFont().getSize()));
-        label7.setHorizontalAlignment(10);
-        label7.setHorizontalTextPosition(10);
-        label7.setText("      Merged      ");
+        colorsPanel.add(label4, gbc);
+        final JLabel label5 = new JLabel();
+        label5.setFont(new Font(label5.getFont().getName(), Font.BOLD, label5.getFont().getSize()));
+        label5.setHorizontalAlignment(10);
+        label5.setHorizontalTextPosition(10);
+        label5.setText("      Merged      ");
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        colorsPanel.add(label7, gbc);
+        colorsPanel.add(label5, gbc);
         final JPanel panel6 = new JPanel();
         panel6.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 3;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel5.add(panel6, gbc);
+        panel6.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null));
+        thresholdPanel = new JPanel();
+        thresholdPanel.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel6.add(thresholdPanel, gbc);
+        final JLabel label6 = new JLabel();
+        label6.setText("Score threshold");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        thresholdPanel.add(label6, gbc);
+        slider1 = new JSlider();
+        slider1.setMajorTickSpacing(100);
+        slider1.setMinimum(0);
+        slider1.setMinorTickSpacing(5);
+        slider1.setPaintLabels(true);
+        slider1.setPaintTicks(true);
+        slider1.setPaintTrack(true);
+        slider1.setSnapToTicks(false);
+        slider1.setValue(100);
+        slider1.putClientProperty("Slider.paintThumbArrowShape", Boolean.FALSE);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 0, 10);
+        thresholdPanel.add(slider1, gbc);
+        spinner1 = new JSpinner();
+        spinner1.setEnabled(true);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        thresholdPanel.add(spinner1, gbc);
+        previewButton = new JButton();
+        previewButton.setText("Preview");
+        previewButton.setMnemonic('P');
+        previewButton.setDisplayedMnemonicIndex(0);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        thresholdPanel.add(previewButton, gbc);
+        final JLabel label7 = new JLabel();
+        label7.setFont(new Font(label7.getFont().getName(), label7.getFont().getStyle(), 11));
+        label7.setText("Raise the threshold to eliminate non-specific mathces");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        thresholdPanel.add(label7, gbc);
+        mergeSimilarReactionsCheckBox = new JCheckBox();
+        mergeSimilarReactionsCheckBox.setText("Merge similar reactions");
+        mergeSimilarReactionsCheckBox.setMnemonic('M');
+        mergeSimilarReactionsCheckBox.setDisplayedMnemonicIndex(0);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel6.add(mergeSimilarReactionsCheckBox, gbc);
+        previewPanel = new JPanel();
+        previewPanel.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel3.add(panel6, gbc);
-        panel6.setBorder(BorderFactory.createTitledBorder("Preview"));
+        panel3.add(previewPanel, gbc);
+        previewPanel.setBorder(BorderFactory.createTitledBorder("Preview of Similar Reactions"));
         final JScrollPane scrollPane1 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -586,12 +654,13 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel6.add(scrollPane1, gbc);
+        previewPanel.add(scrollPane1, gbc);
         scoresTable = new JTable();
         scoresTable.setAutoCreateRowSorter(false);
         scoresTable.setAutoResizeMode(2);
         scoresTable.setFillsViewportHeight(true);
-        scoresTable.setPreferredScrollableViewportSize(new Dimension(450, 200));
+        scoresTable.setPreferredScrollableViewportSize(new Dimension(600, 200));
+        scoresTable.setPreferredSize(new Dimension(600, 32));
         scrollPane1.setViewportView(scoresTable);
         final JLabel label8 = new JLabel();
         label8.setFont(new Font(label8.getFont().getName(), label8.getFont().getStyle(), 11));
@@ -600,7 +669,7 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        panel6.add(label8, gbc);
+        previewPanel.add(label8, gbc);
         final JLabel label9 = new JLabel();
         label9.setText("Please select networks to be integrated.");
         gbc = new GridBagConstraints();
@@ -609,6 +678,12 @@ public class IntegrateBioPAXDialog extends JDialog {
         gbc.weightx = 1.0;
         gbc.anchor = GridBagConstraints.WEST;
         contentPane.add(label9, gbc);
+        final JPanel spacer1 = new JPanel();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        contentPane.add(spacer1, gbc);
         label1.setLabelFor(firstNetworkComboBox);
         label2.setLabelFor(secondNetworkComboBox);
     }
@@ -621,80 +696,6 @@ public class IntegrateBioPAXDialog extends JDialog {
     }
 }
 
-class IntegrateUpdateBioPAXTask implements Task {
-    private TaskMonitor taskMonitor;
-    private Integrator integrator;
-    private JTable scoresTable;
-
-    public IntegrateUpdateBioPAXTask(JTable scoresTable, Integrator integrator) {
-        this.integrator = integrator;
-        this.scoresTable = scoresTable;
-    }
-
-    public void run() {
-        taskMonitor.setPercentCompleted(0);
-        taskMonitor.setStatus("Matching and scoring reactions...");
-        List<ConversionScore> scores = integrator.integrate();
-        taskMonitor.setStatus("Updating scores table...");
-
-        Set<ConversionScore> toBeRemoved = new HashSet<ConversionScore>();
-        for(ConversionScore aScore: scores)
-            if( aScore.getScore() < integrator.getThreshold() )
-                toBeRemoved.add(aScore);
-        for(ConversionScore aScore: toBeRemoved)
-            scores.remove(aScore);
-
-        if (scores.isEmpty()) {
-            String[][] tableData = { {"No results"} };
-            String[] tableHeader = { "" };
-
-            scoresTable.setModel(new DefaultTableModel(tableData, tableHeader));
-            scoresTable.setEnabled(false);
-
-            taskMonitor.setPercentCompleted(100);
-	        taskMonitor.setStatus("Scoring successful, but no results.\n" +
-                                    "Have you tried to lower the threshold value?");
-            return;
-        }
-
-        scoresTable.setEnabled(true);
-        String[][] tableData = new String[scores.size()][];
-
-        DecimalFormat df = new DecimalFormat("###.##");
-
-        int cnt = 0;
-        for(ConversionScore aScore: scores) {
-            String[] cols = { "" + df.format(aScore.getScore()),
-                    BioPAXUtil.getShortNameSmart(aScore.getConversion1()),
-                    BioPAXUtil.getShortNameSmart(aScore.getConversion2()) };
-            tableData[cnt++] = cols;
-        }
-
-        String[] tableHeader = {"Score", "Name 1", "Name 2"};
-        scoresTable.setModel(new DefaultTableModel(tableData, tableHeader) {
-            public boolean isCellEditable (int row, int column) {
-                return false;
-            }
-        });
-
-        taskMonitor.setPercentCompleted(100);
-	    taskMonitor.setStatus("Scoring successful.");
-    }
-
-    public void halt() {
-        // No halt support
-    }
-
-    public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
-        this.taskMonitor = taskMonitor;
-    }
-
-    public String getTitle() {
-        return "Match and score";
-    }
-
-}
-
 class IntegrateBioPAXTask implements Task {
     private TaskMonitor taskMonitor;
     private Integrator integrator;
@@ -702,8 +703,10 @@ class IntegrateBioPAXTask implements Task {
 
     private boolean isColorize;
     private Color firstColor, secondColor, mergedColor;
+    private List<ConversionScore> alternativeScores;
 
     public IntegrateBioPAXTask(Integrator integrator, CyNetwork network1, CyNetwork network2,
+                               List<ConversionScore> alternativeScores,
                                boolean isColorize,
                                Color firstColor, Color secondColor, Color mergedColor) {
         this.integrator = integrator;
@@ -714,16 +717,17 @@ class IntegrateBioPAXTask implements Task {
         this.firstColor= firstColor;
         this.secondColor = secondColor;
         this.mergedColor = mergedColor;
+        this.alternativeScores = alternativeScores;
     }
 
     public void run() {
         taskMonitor.setStatus("Integrating BioPAX networks...");
-        List<ConversionScore> convScores = integrator.integrate();
+        List<ConversionScore> convScores = integrator.integrate(alternativeScores);
 
         taskMonitor.setStatus("Creating network from integration...");
         Model integratedModel = BioPAXUtil.getNetworkModel(network1);
         CyNetwork cyNetwork = Cytoscape.createNetwork(new PaxtoolsReader(integratedModel), true, null);
-        cyNetwork.setTitle(CyNetworkNaming.getSuggestedNetworkTitle("Integrated"));
+        cyNetwork.setTitle(CyNetworkNaming.getSuggestedNetworkTitle("(Integrated) " + cyNetwork.getTitle()));
 
         taskMonitor.setStatus("Recovering integrated models...");
         BioPAXUtil.resetNetworkModel(network1);
