@@ -22,7 +22,6 @@
 */
 package clusterMaker.treeview.dendroview;
 
-import clusterMaker.treeview.BitmapWriter;
 import clusterMaker.treeview.ConfigNode;
 import clusterMaker.treeview.DataModel;
 import clusterMaker.treeview.HeaderInfo;
