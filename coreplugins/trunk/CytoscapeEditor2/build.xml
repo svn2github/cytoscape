@@ -50,8 +50,10 @@
 		<mkdir dir="${doc.dir}"/>
 		<javadoc destdir="${doc.dir}" 
 		         classpathref="plugin.classpath"
-		         Private="yes"> 
-			<fileset dir="${src.dir}" defaultexcludes="no"/> 
+			 Private="yes"> 
+			  <fileset dir="${src.dir}" defaultexcludes="yes"> 
+				<include name="**/*.java" />
+			  </fileset>
 		</javadoc> 
 	</target>
 
