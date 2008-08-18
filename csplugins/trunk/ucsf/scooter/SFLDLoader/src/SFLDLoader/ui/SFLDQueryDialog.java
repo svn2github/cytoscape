@@ -75,6 +75,7 @@ import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.Tunable;
 import cytoscape.layout.LayoutProperties;
+import cytoscape.logger.CyLogger;
 import cytoscape.Cytoscape;
 
 // SFLDLoader imports
@@ -119,14 +120,16 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 	private String URLBase = null;
 	private String backgroundColor = null;
 	private boolean automaticLayout = true;
+	private CyLogger logger;
 
 	static final int MAX_CUTOFF = 2;
 	static final int MIN_CUTOFF = -150;
 
-	public SFLDQueryDialog(List<Superfamily> superfamilies, String URLBase) {
+	public SFLDQueryDialog(List<Superfamily> superfamilies, String URLBase, CyLogger logger) {
 		super();	// Create the dialog
 		this.superfamilies = superfamilies;
 		this.URLBase = URLBase;
+		this.logger = logger;
 
 		setTitle("SFLD Browse Interface");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -273,14 +276,15 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 			loadURL = loadURL+"&cutoff=1e"+slider.getValue();
 			// Load it
 			try {
-				// System.out.println("Loading "+loadURL);
+				logger.info("Loading "+loadURL);
 				if (!automaticLayout) {
 					LoadNetworkTask.loadURL(new URL(loadURL), false);
 				} else {
 					LoadNetworkTask.loadURL(new URL(loadURL), false, configureLayout());
 				}
 			} catch (Exception ex) {
-				System.err.println(ex.getMessage());
+				logger.error(ex.getMessage());
+				logger.exception(ex);
 			}
 		}
 	}
@@ -317,7 +321,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 			else
 				description = new JEditorPane(URI);
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		JScrollPane scrollPane = new JScrollPane(description);
 		scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
@@ -359,14 +363,14 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
     	if (propertyList == null)
      		return CyLayouts.getDefaultLayout();
 			{
-			Tunable tunable = propertyList.get("edge_attribute");
+				Tunable tunable = propertyList.get("edge_attribute");
 				tunable.setValue("BlastProbability");
 				layoutAlgorithm.updateSettings();
 			}
 			{
 				Tunable tunable = propertyList.get("defaultSpringCoefficient");
 				tunable.setValue("5");
-			layoutAlgorithm.updateSettings();
+				layoutAlgorithm.updateSettings();
 			}
 			{
 				Tunable tunable = propertyList.get("defaultSpringLength");

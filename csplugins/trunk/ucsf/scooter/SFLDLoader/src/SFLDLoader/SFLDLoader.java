@@ -77,6 +77,7 @@ public class SFLDLoader extends CytoscapePlugin {
 	public final String URLBase = "http://sfld.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
 	// public final String URLBase = "http://sfldtest.rbvi.ucsf.edu/cgi-bin/SFLDvm.py";
 	static JMenuItem loadMenu = null;
+	private CyLogger logger = null;
 
   /**
    * Create our action and add it to the plugins menu
@@ -87,6 +88,8 @@ public class SFLDLoader extends CytoscapePlugin {
 		loadMenu.addActionListener(new SFLDLoaderMenuListener());
 		loadMenu.setEnabled(false);
 		menu.add(loadMenu);
+
+		logger = CyLogger.getLogger(SFLDLoader.class);
 
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar()
 																.getMenu("Plugins");
@@ -124,7 +127,7 @@ public class SFLDLoader extends CytoscapePlugin {
 				return;
 			}
 			// No, create it
-			sfldQueryDialog = new SFLDQueryDialog(superFamilies, URLBase);
+			sfldQueryDialog = new SFLDQueryDialog(superFamilies, URLBase, logger);
 			sfldQueryDialog.pack();
 			sfldQueryDialog.setLocationRelativeTo(Cytoscape.getDesktop());
 			sfldQueryDialog.setVisible(true);
@@ -145,17 +148,17 @@ public class SFLDLoader extends CytoscapePlugin {
 		}
 
 		public void run() {
-			CyLogger.getLogger(SFLDLoader.class).info("Initializing SFLD enumeration");
+			logger.info("Initializing SFLD enumeration");
 
 			DocumentBuilder builder = null;
 			Document enumeration = null;
 			InputStream input = null;
 			try {
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				factory = null;
 				builder = factory.newDocumentBuilder();
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
-				e.printStackTrace();
+				logger.exception(e);
 				return;
 			}
 			try {
@@ -163,8 +166,7 @@ public class SFLDLoader extends CytoscapePlugin {
 				enumeration = builder.parse(input);
 				// enumeration = builder.parse("file:///Users/scooter/Desktop/SFLDvm.py.xml");
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
-				e.printStackTrace();
+				logger.exception(e);
 				return;
 			}
 			NodeList superNodes = enumeration.getElementsByTagName("superfamily");
