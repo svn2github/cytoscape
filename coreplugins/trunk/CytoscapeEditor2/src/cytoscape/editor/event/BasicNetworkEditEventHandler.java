@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Fri Jul 31 05:36:07 2005
-* Modified:     Thu May 10 10:03:07 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Jul 10 08:43:53 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental
@@ -17,6 +17,10 @@
 *
 * Revisions:
 *
+* Wed Jul 09 09:33:32 2008 (Michael L. Creech) creech@w235krbza760
+*  Added checks that Editor component is active to mouse and key event processing
+*  to avoid handling events when the editor tab isn't the current tab. Fixed
+*  "ESC" key to correctly stop drop of an edge.
 * Thu May 10 10:02:48 2007 (Michael L. Creech) creech@w235krbza760
 *  Commented out various unused variables and removed unused imports.
 * Fri Dec 08 05:37:12 2006 (Michael L. Creech) creech@w235krbza760
@@ -283,6 +287,16 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * @see BasicCytoscapeEditor
 	 */
 	public void mousePressed(MouseEvent e) {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove all mouse and key
+	    //       listeners when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
+	    CytoscapeEditorManager.log("CE: mousePressed!");
+	    // MLC 07/09/08 END.
+
 		nextPoint = e.getPoint();
 
 		NodeView nv = view.getPickedNodeView(nextPoint);
@@ -344,12 +358,23 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	/**
 	 * processed keyTypedEvents, in particular use of ESC key to interupt edge drawing
 	 */
-	public void keyTyped(KeyEvent e) // TODO: keyPressed does not seem to be working
+     // MLC 07/09/08:
+     // Actually, keyTyped only returns a char via e.getKeyChar(), keyPressed() is correct for the given code.
+	// public void keyTyped(KeyEvent e) // TODO: keyPressed does not seem to be working
+     // MLC 07/09/08:
+	public void keyPressed(KeyEvent e)
 	 {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove all mouse and key
+	    //       listeners when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
+	    // MLC 07/09/08 END.
 		int keyVal = e.getKeyCode();
 		CytoscapeEditorManager.log("Key code for typed key = " + keyVal);
 		CytoscapeEditorManager.log("VK_ESCAPE = " + KeyEvent.VK_ESCAPE);
-
 		if (keyVal == KeyEvent.VK_ESCAPE) {
 			if (edgeStarted) // turn off rubberbanding if clicked
 			                 // on empty area of canvas
@@ -360,6 +385,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 				saveY1 = Double.MIN_VALUE;
 				saveY2 = Double.MIN_VALUE;
 				this.setHandlingEdgeDrop(false);
+				// MLC 07/09/08 BEGIN:
+				// repaint so that the rubberband line is removed:
+				this.getCanvas().repaint();
+				// MLC 07/09/08 END.
 			}
 		}
 	}
@@ -496,6 +525,15 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * updates rendering of edge if an edge is under construction
 	 */
 	public void mouseMoved(MouseEvent e) {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove all mouse and key
+	    //       listeners when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
+	    // CytoscapeEditorManager.log("CE: mouseMoved!");
+	    // MLC 07/09/08 END.
 		nextPoint = e.getPoint();
 
 		if (edgeStarted) {
@@ -560,6 +598,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * begin or continue drawing an edge as mouse is dragged
 	 */
 	public void mouseDragged(MouseEvent e) {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove all mouse and key
+	    //       listeners when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
+	    // MLC 07/09/08 END.
 		nextPoint = e.getPoint();
 
 		boolean onNode = false;
@@ -890,11 +936,11 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			// AJK: 04/15/06 for Cytoscape 2.3 renderer
 			// canvas.removeInputEventListener(this);
 			//			CytoscapeEditorManager.log("stopped event listener: " + this);
-			canvas.removeMouseListener(this);
-			canvas.removeMouseMotionListener(this);
-			canvas.removeKeyListener(this);
-			this.view = null;
-			this.canvas = null;
+		    canvas.removeMouseListener(this);
+		    canvas.removeMouseMotionListener(this);
+		    canvas.removeKeyListener(this);
+		    this.view = null;
+		    this.canvas = null;
 		}
 	}
 
