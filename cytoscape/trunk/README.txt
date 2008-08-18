@@ -55,7 +55,7 @@ Installation instructions are available at:  http://ant.apache.org/manual/instal
 
 2.  To compile cytoscape, type:
 
-	ant release
+	ant all
 
 3.  To run cytoscape, type:
 
@@ -63,7 +63,7 @@ Installation instructions are available at:  http://ant.apache.org/manual/instal
 
 If cytoscape appears, everything is set up correctly!
 
-For questions, email Ethan Cerami:  cerami@cbio.mskcc.org.
+For questions, email Mike Smoot:  msmoot@ucsd.edu 
 
 
 IV.  Doing a Full Cytoscape Release
@@ -72,33 +72,94 @@ IV.  Doing a Full Cytoscape Release
 This section contains notes / tasks for doing a full Cytoscape release.  Doing a full release
 of Cytoscape is rather involved.  Some of the tasks are automated and some are manual.
 
-	A.  Core Release Tasks
-	----------------------------
+	Core Release Tasks
+	-------------------
+	Setup.
+		Depending on whether you're creating a release from the trunk or from
+		a release branch you should do fresh checkouts of cytoscape, corelibs,
+		and core plugins
+
+		mkdir release
+		cd release
+		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape trunk cytoscape
+		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs trunk corelibs
+		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/coreplugins trunk coreplugins
+
+	Compile the core libraries and copy jars to the cytoscape dir.
+
+		cd corelibs
+		ant all
+		cp build/*.jar ../cytoscape/lib/.
+
+	Compile Cytoscape with new libraries.  This creates the cytoscape.jar file
+	needed by coreplugins to compile.
+
+		cd ../cytoscape
+		ant all
+
+	Compile core plugins with new cytoscape.jar and copy jars to cytoscape
+	dir.
+
+		cd ../coreplugins
+		ant all
+		cp build/*.jar ../cytoscape/plugins/core/.
+
 	Modify the Cytoscape Version Number in build.xml
 		The ant build.xml file contains a property that looks like this:
 
-		<property name="version" value="2.0ALPHA4"/>
+		<property name="version.num" value="2.6.0"/>
 
-		The value of this property is very important as it is used to create
-		the final release files.  For example, the final release file for 2.0ALPHA4 will
-		be cytoscape-v2.0ALPHA4.tar.gz.
+		Note that the version.num property can't contain any alphabetic
+		characters.  If you want to create a beta release, append text to
+		the "version" property like so:
 
-		Update this value to the current version number.
+		<property name="version" value="${version.num}-beta1"/>
 
-	Tag the Complete Release
-		The tag convention we have adopted looks like this:  "cyto-2_0-alpha4".
-		Please follow this convention.
+	Ensure that the Cytoscape Manual is up-to-date.  See the
+	DOC_GENERATION_README.txt file in the "docs" subdir for details.  
+	The manual really only needs to be updated for major releases and is more than a
+	little bit of a hassle.
 
-		To tag a release:
+	Recompile cytoscape.
+
+		ant all
+
+	Once cytoscape compiles cleanly with the new corelibs, coreplugins, and
+	possibly updated documentation, TEST the thing!!!  At a minimum start
+	cytoscape and load a session file and play around with a network. 
+
+	Ok, so now you've got cytoscape compiling and running with the latest
+	coreplugins and corelibs, so commit the new plugins and libs:
+
+		cd cytoscape
+		svn commit -m "commiting new libs and plugins for release 2.x"
+
+	Now tag the cytoscape, coreplugins, and corelibs releases. It is important
+	that coreplugins and corelibs get tagged at the same time as cytoscape so
+	that these releases can be recreated in the future.  The tag convention we 
+	have adopted looks like this:  "Cyto-2.5.2". Please follow this convention.
+
+		To tag the release:
 
 		svn copy \
-		  file:///cellar/common/svn/cytoscape/branches/cy-release-branch-x \
-		  file:///cellar/common/svn/cytoscape/tags/cyto_version
+		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape/branches/cy-release-branch-x \
+		  file://grenache.ucsd.edu/cellar/common/svn/cytoscape/tags/cyto_version
+
+		svn copy \
+		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/coreplugins/branches/cy-release-branch-x \
+		  file://grenache.ucsd.edu/cellar/common/svn/coreplugins/tags/cyto_version
+
+		svn copy \
+		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs/branches/cy-release-branch-x \
+		  file://grenache.ucsd.edu/cellar/common/svn/corelibs/tags/cyto_version
 
 	Create the final release files
-		To do so, run:  ant dist
+		To do so, run:  
 
-		The final release files are all placed in cytoscape/build/dist.
+			ant dist
+
+		The final release files are all placed in cytoscape/build/dist,
+		including the Javadoc API files.
 
 		NOTE: The installation bundles are created using install4j.  You
 		will need install4j installed on your machine and you must
@@ -108,11 +169,18 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 	Deploy the new release files.
 		Copy all files to their release directory on the distribution
 		server.  Currently this is chianti.ucsd.edu and each release
-		lives in a subdirectory of /var/www/html.
+		lives in a subdirectory of /var/www/html.  
+
+		The subdirectory *MUST* be named correctly for PHP on the website to
+		work, like:
+
+			Cyto-2_5_2
+			 or
+			Cyto-2_6-beta
 
 
-	D.  Update Cytocape.org Web Site
-	-------------------------------------------------
+	Update Cytocape.org Web Site
+	----------------------------
 
 		svn co file:///cellar/common/svn/cyto_web/trunk cyto_web
 
@@ -127,29 +195,21 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 	Update cyto_web/config.php
 
 		This file contains global configurations for cytoscape.org
-		You will probably need to add variable links for the newly released 
+		You will need to add variable links for the newly released 
 		version of Cytoscape.
 
+	Update cyto_web/index.php with an announcement for the new release.  See
+	what we've done for past releases.  Major release should list the major
+	new features and minor releases should have smaller announcements.
+
 	Deploy Everything to cytoscape.org
-		To do so, update cyto_web/cyto.properties with a valid user/password.
-		If you don't have one, email Trey or Ethan.
-
-		Then, type:  ant deploy.
-
-	Copy over the latest Javadocs.
-		Latest Javadocs are currently hosted on cbio.mkscc.org, and are not part
-		of cytoscape.org.  That's mainly because cytoscape.org FTP connection is so slow.
-
-		First, copy over the source code from the task framework.  We want the API for
-		this framework to be included in the global 2.1 Javadoc, and this is the easiest
-		way to do it.  The code is currently located in
-		csplugins/common/task/src/cytoscape/task.  In the future, we should probably
-		come up with an automated way of doing this.
+		To do so, update cyto_web/cyto.properties with a valid user/password (If you don't 
+		have one, email Mike) Then, type:  
 		
-		Second, run:  ant doc.
-
-		Then, tar/gzip everything in the API directory.
-
-		scp the gzip file to /var/www/cytoscape/javadoc and unpack.
+			ant deploy
 
 
+	Tell the world!
+	----------------------------
+	Send an email announcement to the cytoscape-discuss and cytoscape-announce
+	mailing lists.  Include a link to the new release downloads.
