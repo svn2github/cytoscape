@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Fri Jul 31 05:14:41 2005
-* Modified:     Fri May 11 17:04:45 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Jul 09 10:22:30 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Wed Jul 09 09:54:56 2008 (Michael L. Creech) creech@w235krbza760
+*  Added check that Editor component is active to itemDropped()
+*  to avoid handling events when the editor tab isn't the current tab.
 * Fri May 11 17:04:38 2007 (Michael L. Creech) creech@w235krbza760
 *  Removed uneeded imports.
 * Fri Dec 08 05:15:16 2006 (Michael L. Creech) creech@w235krbza760
@@ -147,6 +150,13 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 	// MLC 12/07/06 BEGIN:
 	// implements PhoebeCanvasDropListener interface:
 	public void itemDropped(PhoebeCanvasDropEvent e) {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove the PhoebeCanvasDropListener
+	    //       when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
 		Point location = e.getLocation();
 		CytoscapeEditorManager.log("Item dropped at: " + e.getLocation());
 		CytoscapeEditorManager.log("on object: " + e.getSource());
