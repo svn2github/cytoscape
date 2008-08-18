@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="similaritybasedmerge" default="all">
+  
+  
+  <property file="similaritybasedmerge.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.sbas/**"/>
+    <exclude name="**/.IJI.*/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+  </patternset>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module SimilarityBasedMerge -->
+  
+  <dirname property="module.similaritybasedmerge.basedir" file="${ant.file}"/>
+  
+  
+  <property name="compiler.args.similaritybasedmerge" value="${compiler.args}"/>
+  
+  <property name="similaritybasedmerge.output.dir" value="${module.similaritybasedmerge.basedir}/out/production/SimilarityBasedMerge"/>
+  <property name="similaritybasedmerge.jaroutput.dir" value="${module.similaritybasedmerge.basedir}/out/jar/SimilarityBasedMerge"/>
+  <property name="similaritybasedmerge.testoutput.dir" value="${module.similaritybasedmerge.basedir}/out/test/SimilarityBasedMerge"/>
+  
+  <path id="similaritybasedmerge.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="similaritybasedmerge.module.classpath">
+    <pathelement location="${module.similaritybasedmerge.basedir}/lib/cytoscape-task.jar"/>
+    <pathelement location="${module.similaritybasedmerge.basedir}/lib/giny.jar"/>
+    <pathelement location="${module.similaritybasedmerge.basedir}/lib/cytoscape.jar"/>
+  </path>
+  
+  <path id="similaritybasedmerge.runtime.module.classpath">
+    <pathelement location="${similaritybasedmerge.output.dir}"/>
+    <pathelement location="${similaritybasedmerge.testoutput.dir}"/>
+    <pathelement location="${module.similaritybasedmerge.basedir}/lib/cytoscape-task.jar"/>
+    <pathelement location="${module.similaritybasedmerge.basedir}/lib/giny.jar"/>
+    <pathelement location="${module.similaritybasedmerge.basedir}/lib/cytoscape.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.similaritybasedmerge">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.similaritybasedmerge">
+    <patternset refid="excluded.from.module.similaritybasedmerge"/>
+  </patternset>
+  
+  <path id="similaritybasedmerge.module.sourcepath">
+    <dirset dir="${module.similaritybasedmerge.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.similaritybasedmerge" depends="compile.module.similaritybasedmerge.production,compile.module.similaritybasedmerge.tests" description="Compile module SimilarityBasedMerge"/>
+  
+  <target name="compile.module.similaritybasedmerge.production" description="Compile module SimilarityBasedMerge; production classes">
+    <mkdir dir="${similaritybasedmerge.output.dir}"/>
+    <javac destdir="${similaritybasedmerge.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" fork="true">
+      <compilerarg line="${compiler.args.similaritybasedmerge}"/>
+      <bootclasspath refid="similaritybasedmerge.module.bootclasspath"/>
+      <classpath refid="similaritybasedmerge.module.classpath"/>
+      <src refid="similaritybasedmerge.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.similaritybasedmerge"/>
+    </javac>
+    
+    <copy todir="${similaritybasedmerge.output.dir}">
+      <fileset dir="${module.similaritybasedmerge.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.similaritybasedmerge.tests" depends="compile.module.similaritybasedmerge.production" description="compile module SimilarityBasedMerge; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.similaritybasedmerge" description="cleanup module">
+    <delete dir="${similaritybasedmerge.output.dir}"/>
+    <delete dir="${similaritybasedmerge.testoutput.dir}"/>
+    <delete dir="${similaritybasedmerge.jaroutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.similaritybasedmerge" description="cleanup all"/>
+  
+  <target name="all.but.jar" depends="init, clean, compile.module.similaritybasedmerge" description="build all but jar file"/>
+
+  <!-- Jar -->
+  <target name="jar" description="create plugin jar file" depends="all.but.jar">
+      <mkdir dir="${similaritybasedmerge.jaroutput.dir}"/>
+
+      <copy file="${module.similaritybasedmerge.basedir}/resources/plugin.props" todir="${similaritybasedmerge.output.dir}/org/biyoenformatik/cytoscape/" />
+      <jar destfile="${similaritybasedmerge.jaroutput.dir}/SimilarityBasedMergePlugin.jar">
+           <manifest>
+           	<attribute name="Cytoscape-Plugin" value="org.biyoenformatik.cytoscape_merge.SimilarityBasedMergePlugin" />
+           </manifest>
+           <fileset dir="${similaritybasedmerge.output.dir}" />
+      </jar>
+  </target>
+
+  <target name="all" depends="jar" description="all in all">
+  	<echo>That was all, may the force be with you!</echo>
+  </target>
+
+</project>

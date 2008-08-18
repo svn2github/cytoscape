@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.biyoenformatik.cytoscape_merge.ui.SimilarityBasedMergeDialog">
+  <grid id="cbd77" binding="contentPane" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="48" y="54" width="696" height="571"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="94766" layout-manager="GridBagLayout">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="9538f" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="1.0"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="e7465" class="javax.swing.JButton" binding="buttonOK">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties>
+                  <text value="&amp;Finish"/>
+                </properties>
+              </component>
+              <component id="5723f" class="javax.swing.JButton" binding="buttonCancel">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties>
+                  <text value="&amp;Cancel"/>
+                </properties>
+              </component>
+              <component id="22d08" class="javax.swing.JButton" binding="previewButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties>
+                  <text value="&amp;Preview"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <grid id="e3588" layout-manager="GridBagLayout">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <visible value="true"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="1eb6e" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <alignmentX value="0.5"/>
+              <alignmentY value="0.5"/>
+            </properties>
+            <border type="none" title="Networks to merge"/>
+            <children>
+              <grid id="6dd41" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.5" weighty="0.0"/>
+                </constraints>
+                <properties/>
+                <border type="none" title="First network"/>
+                <children>
+                  <component id="55cd6" class="javax.swing.JComboBox" binding="networkCombo1">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                </children>
+              </grid>
+              <grid id="3e802" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.5" weighty="0.0"/>
+                </constraints>
+                <properties/>
+                <border type="none" title="Second network"/>
+                <children>
+                  <component id="4df16" class="javax.swing.JComboBox" binding="networkCombo2">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="50f12" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="0.2"/>
+            </constraints>
+            <properties/>
+            <border type="none" title="Similarity Criterias"/>
+            <children>
+              <grid id="8665" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+                <border type="none" title="Add a new criteria"/>
+                <children>
+                  <component id="1c3f7" class="javax.swing.JComboBox" binding="componentTypeComboBox">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="5" bottom="3" right="5" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <model/>
+                    </properties>
+                  </component>
+                  <vspacer id="a1703">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                  </vspacer>
+                  <component id="9e406" class="javax.swing.JComboBox" binding="attrComboBox1">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="5" bottom="3" right="5" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="51728" class="javax.swing.JComboBox" binding="attrComboBox2">
+                    <constraints>
+                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="5" bottom="3" right="5" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="3ec56" class="javax.swing.JSlider" binding="criteriaImportance">
+                    <constraints>
+                      <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="5" bottom="3" right="5" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <majorTickSpacing value="50"/>
+                      <maximum value="100"/>
+                      <minimumSize width="200" height="21"/>
+                      <minorTickSpacing value="10"/>
+                      <paintLabels value="true"/>
+                      <paintTicks value="true"/>
+                      <paintTrack value="true"/>
+                      <snapToTicks value="false"/>
+                    </properties>
+                  </component>
+                  <component id="75e54" class="javax.swing.JLabel" binding="importanceAsANumber">
+                    <constraints>
+                      <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Label"/>
+                    </properties>
+                  </component>
+                  <component id="a2e98" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="5" bottom="3" right="5" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="1c3f7"/>
+                      <text value="&amp;Edge or Node"/>
+                    </properties>
+                  </component>
+                  <component id="70f1e" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="5" bottom="3" right="5" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="9e406"/>
+                      <text value="&amp;First Network Attribute"/>
+                    </properties>
+                  </component>
+                  <component id="4fa87" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="5" bottom="3" right="5" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="51728"/>
+                      <text value="&amp;Second Network Attribute"/>
+                    </properties>
+                  </component>
+                  <component id="2f08" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="5" bottom="3" right="5" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Importance of match"/>
+                    </properties>
+                  </component>
+                  <component id="db915" class="javax.swing.JButton" binding="addCriteriaButton" default-binding="true">
+                    <constraints>
+                      <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <maximumSize width="120" height="25"/>
+                      <minimumSize width="120" height="25"/>
+                      <opaque value="false"/>
+                      <preferredSize width="120" height="25"/>
+                      <text value="&amp;Add Criteria"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="5147b" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.3"/>
+                </constraints>
+                <properties/>
+                <border type="none" title="Criterias"/>
+                <children>
+                  <component id="6cd13" class="javax.swing.JButton" binding="deleteCriteriaButton">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="5" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="&amp;Delete Criteria"/>
+                    </properties>
+                  </component>
+                  <scrollpane id="3b70b">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="1.0" weighty="1.0"/>
+                    </constraints>
+                    <properties>
+                      <preferredSize width="454" height="20"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="b9762" class="javax.swing.JTable" binding="criteriasTable">
+                        <constraints/>
+                        <properties/>
+                      </component>
+                    </children>
+                  </scrollpane>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <grid id="32f42" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="0.8"/>
+            </constraints>
+            <properties>
+              <visible value="true"/>
+            </properties>
+            <border type="none" title="Preview of Matches"/>
+            <children>
+              <scrollpane id="f5aa9">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="84cd5" class="javax.swing.JTable" binding="matchesTable">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
+              <grid id="109f" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="572dc" class="javax.swing.JSpinner" binding="thresholdSpinner">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <minimumSize width="50" height="24"/>
+                      <preferredSize width="50" height="24"/>
+                    </properties>
+                  </component>
+                  <component id="62b6d" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="3" left="0" bottom="0" right="5" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <labelFor value="572dc"/>
+                      <text value="Score &amp;Threshold:"/>
+                    </properties>
+                  </component>
+                  <component id="7a6d4" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <focusable value="true"/>
+                      <font size="10"/>
+                      <text value="Double click on a match to see the details."/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+  <inspectionSuppressions>
+    <suppress inspection="NoLabelFor"/>
+  </inspectionSuppressions>
+</form>
