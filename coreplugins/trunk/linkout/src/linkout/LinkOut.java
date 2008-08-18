@@ -466,8 +466,8 @@ public class LinkOut {
 					externalLinksAttribute = props.getProperty(linkMarker);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
 				logger.error("Couldn't load default linkout props");
+				logger.exception(e);
 			}
 		}
 	}
