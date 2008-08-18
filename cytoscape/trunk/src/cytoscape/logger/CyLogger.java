@@ -150,6 +150,24 @@ public class CyLogger {
 	public void error(String message) { log(message,LogLevel.LOG_ERROR); }
 
 	/**
+	 * Log an exception message.
+	 *
+	 * @param exception the exception to be logged
+	 */
+	public void exception(Exception e) { 
+		String message = null;
+		if (e.getMessage() != null)
+			message = e.getMessage() + "\n    "+e.toString();
+		else
+			message = e.toString();
+		StackTraceElement[] stackArray = e.getStackTrace();
+		for (int i = 0; stackArray != null && i < stackArray.length; i++) {
+			message += "\n      at "+stackArray[i].toString();
+		}
+		log(message,LogLevel.LOG_ERROR); 
+	}
+
+	/**
 	 * Log a fatal error message.
 	 *
 	 * @param message the message to be logged

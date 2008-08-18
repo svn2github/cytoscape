@@ -594,7 +594,9 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 				break;
 		}
 
-		inputField.validate();
+		if (inputField != null)
+			inputField.validate();
+
 		valueChanged = true;
 	}
 

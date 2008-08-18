@@ -139,48 +139,54 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
     // get or create list of messages
     List<String> Messages = (this.messageMap.get(level) != null) ?
         this.messageMap.get(level) : new ArrayList<String>();
+
+		// Do whatever formatting we need
+		msg = msg.replace("\n","<br/>");
+		msg = msg.replace(" ","&nbsp;");
+
     Messages.add(msg);
     // Make sure it gets added back in
     this.messageMap.put(level, Messages);
 
 		messageAdded = true;
 
-		if (isVisible()) {
+		if (isVisible()) 
+			{
     	JEditorPane MessagePane = addTab(level);
     	StringBuffer sb = createMessages(level);
 
-    	MessagePane.setContentType("text/html");
+    	MessagePane.setText("");
     	MessagePane.setText(sb.toString());
 			messageAdded = false;
-		}
+			} 
+		else if (level.equals(LogLevel.LOG_ERROR))
+		 	{ setVisible(true); }
 
-		// We want to pop the dialog up if we get an error or warning
-    /*
-       Don't think this is a good idea.  I think instead after
-       the xgmml loader is done or the plugin manager is done (or errors out) we can pop it up
-       otherwise a user can access it via the Help->Error Console menu.  Less intrusive that way.
-    */
-/*
-    if (level.equals(LogLevel.LOG_ERROR) || level.equals(LogLevel.LOG_WARN))
-			{ setVisible(true); }
-*/
+
+		if (level == LogLevel.LOG_ERROR || level == LogLevel.LOG_WARN) 
+			{
+		 	logTabs.setSelectedComponent(logTabMap.get(level));
+			}
     }
 
   private JEditorPane addTab(LogLevel level)
     {
-    JScrollPane ScrollPane = new JScrollPane();
+		JEditorPane MessagesPane = null;
     if (this.logTabMap.get(level) != null)
-      { ScrollPane = this.logTabMap.get(level); }
+      { 
+			JScrollPane ScrollPane = this.logTabMap.get(level); 
+			MessagesPane = (JEditorPane)ScrollPane.getViewport().getView();
+			}
     else
       {
+    	JScrollPane ScrollPane = new JScrollPane();
       this.logTabMap.put(level, ScrollPane);
       logTabs.addTab(level.getPrettyName(), ScrollPane);
+    	MessagesPane = new JEditorPane();
+    	ScrollPane.setViewportView(MessagesPane);
+    	MessagesPane.setEditable(false);
+    	MessagesPane.setContentType("text/html");
       }
-
-    JEditorPane MessagesPane = (ScrollPane.getViewport().getView() != null) ?
-        (JEditorPane) ScrollPane.getViewport().getView() : new JEditorPane();
-    ScrollPane.setViewportView(MessagesPane);
-    MessagesPane.setEditable(false);
 
     return MessagesPane;
     }
@@ -205,10 +211,10 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
       sb.append("<tr><td width='5%'>" + line + "</td><td width='95%'>");
       sb.append(messageMap.get(level).get(i));
       sb.append("</td></tr>");
-      if (i > 0) { sb.append("<tr><td colspan='2'><hr></td></tr>"); }
+      sb.append("<tr><td colspan='2'><hr/></td></tr>");
       line++;
 		}
-    sb.append("</table></body></html");
+    sb.append("</table></body></html>");
 		return sb;
 	}
 
