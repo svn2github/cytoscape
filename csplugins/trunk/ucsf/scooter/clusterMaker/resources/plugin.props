@@ -28,7 +28,7 @@ projectURL=http://www.rbvi.ucsf.edu/Research/cytoscape/
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Jan Baumbach,Tobian Wittkop:Technical University of Bielefeld;Leonard Apeltsin,John "Scooter" Morris:UCSF
+pluginAuthorsIntsitutions=Jan Baumbach:Technical University of Bielefeld;Tobian Wittkop:Technical University of Bielefeld;Leonard Apeltsin:UCSF;John "Scooter" Morris:UCSF
 
 # Date this plugin/plugin version was released
 releaseDate=May 1, 2008
