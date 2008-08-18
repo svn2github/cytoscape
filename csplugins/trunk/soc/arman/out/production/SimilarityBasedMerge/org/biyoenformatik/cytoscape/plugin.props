@@ -1,7 +1,0 @@
-#plugin.props
-
-pluginName=SimilarityBasedMergePlugin
-pluginDescription=This plug-in enables users to merge nodes and edges contained in seperate networks using a similarity score based approach.
-pluginVersion=0.1
-cytoscapeVersion=2.6
-pluginCategory=Functional Enrichment
