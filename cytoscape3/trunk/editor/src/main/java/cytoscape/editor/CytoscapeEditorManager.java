@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Tue Jul 05 11:44:41 2005
-* Modified:     Thu Oct 25 05:41:47 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Aug 19 12:02:31 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Tue Jul 29 14:54:22 2008 (Michael L. Creech) creech@w235krbza760
+*  Added isEditorInOperation().
 * Thu Oct 25 05:40:57 2007 (Michael L. Creech) creech@w235krbza760
 * Changed call to buildVisualStyle() in
 * CytoscapeEditorManager.initializeEditor() to occur before
@@ -236,7 +238,7 @@ public abstract class CytoscapeEditorManager {
 
 
 	// AJK: 12/06/06: flag for "logging" diagnostic output
-	private static boolean loggingEnabled = false;
+    private static boolean loggingEnabled = true;
 
 	/**
 	 * initial setup of controls, menu items, undo/redo actions, and keyboard
@@ -856,6 +858,19 @@ public abstract class CytoscapeEditorManager {
 	public static void setEditingEnabled(boolean editingEnabled) {
 		CytoscapeEditorManager.editingEnabled = editingEnabled;
 	}
+
+    // MLC 07/09/08 BEGIN:
+    public static boolean isEditorInOperation (int tabIdx) {
+	int idx = Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).indexOfComponent("Editor");
+	return (idx == tabIdx);
+    }
+    /**
+     * Does the Editor possibly have focus because the Editor tab is selected?
+     */
+    public static boolean isEditorInOperation () {
+	return isEditorInOperation (Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST).getSelectedIndex());
+    }
+    // MLC 07/09/08 END.
 
 	/**
 	 * @return Returns the currentShapePalette.
