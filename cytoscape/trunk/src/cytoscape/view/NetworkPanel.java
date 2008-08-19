@@ -95,6 +95,7 @@ import javax.swing.tree.TreePath;
 public class NetworkPanel extends JPanel implements PropertyChangeListener, TreeSelectionListener,
                                                     SelectEventListener {
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
+	protected static CyLogger logger = CyLogger.getLogger(NetworkPanel.class);
 	private final JTreeTable treeTable;
 	private final NetworkTreeNode root;
 	private JPanel navigatorPanel;
@@ -292,7 +293,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	public void addNetwork(String network_id, String parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
-			//CyLogger.getLogger().info("NetworkPanel: addNetwork " + network_id);
+			//logger.info("NetworkPanel: addNetwork " + network_id);
 			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(network_id).getTitle(),
 			                                           network_id);
 			Cytoscape.getNetwork(network_id).addSelectEventListener(this);
@@ -323,7 +324,7 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param network_id DOCUMENT ME!
 	 */
 	public void focusNetworkNode(String network_id) {
-		//CyLogger.getLogger().info("NetworkPanel: focus network node");
+		//logger.info("NetworkPanel: focus network node");
 		DefaultMutableTreeNode node = getNetworkNode(network_id);
 
 		if (node != null) {
@@ -368,17 +369,17 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		// CyLogger.getLogger().info("NetworkPanel: valueChanged - " + e.getSource().getClass().getName());
+		// logger.info("NetworkPanel: valueChanged - " + e.getSource().getClass().getName());
 		JTree mtree = treeTable.getTree();
 
 		// sets the "current" network based on last node in the tree selected
 		NetworkTreeNode node = (NetworkTreeNode) mtree.getLastSelectedPathComponent();
 		if ( node == null || node.getUserObject() == null ) {
-			// CyLogger.getLogger().info("NetworkPanel: null node - returning");
+			// logger.info("NetworkPanel: null node - returning");
 			return;
 		}
 
-		// CyLogger.getLogger().info("NetworkPanel: firing NETWORK_VIEW_FOCUS");
+		// logger.info("NetworkPanel: firing NETWORK_VIEW_FOCUS");
 		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
 	                                                   null, (String) node.getNetworkID()));
 
@@ -391,11 +392,12 @@ public class NetworkPanel extends JPanel implements PropertyChangeListener, Tree
 					networkList.add( n.getNetworkID() );
 			}
 		} catch (Exception ex) { 
-			ex.printStackTrace();
+			logger.warn("Exception handling network panel change: "+ex.getMessage());
+			// ex.printStackTrace();
 		}
 
 		if ( networkList.size() > 0 ) {
-			// CyLogger.getLogger().info("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
+			// logger.info("NetworkPanel: firing NETWORK_VIEWS_SELECTED");
 			pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEWS_SELECTED,
 		                                                   null, networkList));
 		} 
@@ -674,7 +676,7 @@ class PopupActionListener implements ActionListener {
 		} // end of if ()
 		else {
 			// throw an exception here?
-			CyLogger.getLogger().warn("Unexpected network panel popup option");
+			NetworkPanel.logger.warn("Unexpected network panel popup option");
 		} // end of else
 	}
 

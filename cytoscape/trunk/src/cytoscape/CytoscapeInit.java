@@ -206,8 +206,7 @@ public class CytoscapeInit {
 				logger.info("Updating plugins...");
 				mgr.delete();
 			} catch (cytoscape.plugin.ManagerException me) {
-				logger.error(me.getMessage());
-				me.printStackTrace();
+				logger.error("Error updating plugins: "+me.getMessage());
 			}
 
 			mgr.install();
@@ -259,8 +258,7 @@ public class CytoscapeInit {
 			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
 
 			for (Throwable t : pluginLoadingErrors) {
-				logger.error(t.getMessage());
-				t.printStackTrace();
+				logger.error("", t);
 			}
 
 			mgr.clearErrorList();
@@ -472,9 +470,8 @@ public class CytoscapeInit {
 			else
 				logger.error("couldn't read " + defaultName + " from " + tryName);
 		} catch (IOException ioe) {
-			logger.error("couldn't open " + tryName + " " + defaultName
-			             + " file - creating a hardcoded default");
-			ioe.printStackTrace();
+			logger.error("couldn't open '" + tryName + " " + defaultName
+			             + "' file: "+ioe.getMessage()+" - creating a hardcoded default");
 		}
 	}
 
@@ -490,7 +487,7 @@ public class CytoscapeInit {
 					try {
 						Cytoscape.loadExpressionData(expDataFilename, true);
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("Couldn't open expression file: '"+expDataFilename+"': "+e.getMessage());
 					}
 				}
 			}
@@ -528,8 +525,7 @@ public class CytoscapeInit {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("couldn't create session from file: '" + sessionFile + "'");
+			logger.error("couldn't create session from file '" + sessionFile + "': "+e.getMessage());
 		} finally {
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
 			System.gc();
@@ -591,8 +587,7 @@ public class CytoscapeInit {
 				try {
 					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
 				} catch (MalformedURLException mue) {
-					mue.printStackTrace();
-					logger.error("Couldn't load network.  Bad URL!");
+					logger.error("Couldn't load network: " + mue.getMessage());
 				}
 			} else {
 				network = Cytoscape.createNetworkFromFile(net, createView);
@@ -616,8 +611,7 @@ public class CytoscapeInit {
 			                         (String[]) initParams.getEdgeAttributeFiles()
 			                                              .toArray(new String[] {  }));
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			logger.error("failure loading specified attributes");
+			logger.error("failure loading specified attributes: "+ex.getMessage());
 		}
 	}
 

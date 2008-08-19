@@ -65,6 +65,8 @@ import java.awt.Component;
  * instead of the Swing FileChooser.
  */
 public abstract class FileUtil {
+	protected static CyLogger logger = CyLogger.getLogger(FileUtil.class);
+
 	/**
 	 *
 	 */
@@ -244,7 +246,7 @@ public abstract class FileUtil {
 
 		String osName = System.getProperty("os.name");
 
-		//CyLogger.getLogger().info( "Os name: "+osName );
+		//logger.info( "Os name: "+osName );
 		if (osName.startsWith("Mac")) {
 			// this is a Macintosh, use the AWT style file dialog
 			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(),title, load_save_custom);
@@ -376,7 +378,8 @@ public abstract class FileUtil {
 			} else
 				in = new FileInputStream(name);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			logger.error("Unable to open file '"+name+"': "+ioe.getMessage());
+			// logger.error("Unable to open file '"+name+"': "+ioe.getMessage(), ioe);
 
 			if (monitor != null)
 				monitor.setException(ioe, ioe.getMessage());
@@ -397,10 +400,9 @@ public abstract class FileUtil {
 			InputStream stream = getInputStream(filename);
 			return getInputString(stream);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			logger.warn("Couldn't create string from '"+filename+"': "+ioe.getMessage());
+			// logger.error("Unable to open file '"+filename+"': "+ioe.getMessage(), ioe);
 		}
-
-		CyLogger.getLogger().warn("couldn't create string from '" + filename + "'");
 
 		return null;
 	}

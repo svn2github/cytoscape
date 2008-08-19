@@ -39,6 +39,8 @@ import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GMLReader;
 import cytoscape.data.readers.GraphReader;
 
+import cytoscape.logger.CyLogger;
+
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -96,7 +98,7 @@ public class GMLFileFilter extends CyFileFilter {
 			// Get the input stream
 			reader = new GMLReader(conn.getInputStream(), url.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			CyLogger.getLogger(GMLFileFilter.class).error("Unable to get GML reader: "+e.getMessage());
 			reader = null;
 		}
 		return reader;

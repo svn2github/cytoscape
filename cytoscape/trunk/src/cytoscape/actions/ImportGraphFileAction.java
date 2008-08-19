@@ -104,6 +104,7 @@ import javax.xml.bind.JAXBException;
  */
 public class ImportGraphFileAction extends CytoscapeAction {
 	protected CyMenus windowMenu;
+	protected static CyLogger logger = CyLogger.getLogger(ImportGraphFileAction.class);
 
 	/**
 	 * Constructor.
@@ -157,10 +158,10 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			fd = new ImportNetworkDialog(Cytoscape.getDesktop(), true);
 		} catch (JAXBException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error(null, e1);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.error(null, e1);
 		}
 
 		fd.pack();
@@ -173,7 +174,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 
 		if (fd.isRemote()) {
 			String URLstr = fd.getURLStr();
-			CyLogger.getLogger().info("URL: "+URLstr);
+			logger.info("URL: "+URLstr);
 			try {
 				LoadNetworkTask.loadURL(new URL(URLstr), false);
 			} catch (MalformedURLException e3) {
@@ -202,7 +203,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	
 					LoadNetworkTask.loadFile(files[i], skipMessage);
 				}
-	
+
 				if (files.length != 1) {
 					JOptionPane messagePane = new JOptionPane();
 					messagePane.setLocation(Cytoscape.getDesktop().getLocationOnScreen());

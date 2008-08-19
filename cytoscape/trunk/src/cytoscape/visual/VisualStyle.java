@@ -46,6 +46,8 @@ import java.util.Vector;
 
 import cytoscape.visual.calculators.Calculator;
 
+import cytoscape.logger.CyLogger;
+
 
 //----------------------------------------------------------------------------
 /**
@@ -178,7 +180,8 @@ public class VisualStyle implements Cloneable {
 		try {
 			setGlobalAppearanceCalculator((GlobalAppearanceCalculator)toCopy.getGlobalAppearanceCalculator().clone());
 		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
+			CyLogger.getLogger(VisualStyle.class).error("Unable to clone global appearance calculator!");
+			// e.printStackTrace();
 		}
 
 	}

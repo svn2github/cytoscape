@@ -36,6 +36,7 @@ package cytoscape.ding;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.render.stateful.GraphLOD;
 
@@ -60,6 +61,8 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 	protected int nodeLabelThreshold;
 	protected int edgeArrowThreshold;
 	protected int edgeLabelThreshold;
+
+	protected static CyLogger logger = CyLogger.getLogger(CyGraphLOD.class);
 
 	/**
 	 * Creates a new CyGraphLOD object.
@@ -117,7 +120,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 		try {
 			ret = Integer.parseInt(val);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Property value for "+key+" must be an integer");
 		}
 
 		return ret;
@@ -137,7 +140,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 			else
 				ret = false;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Property value for "+key+" must be a boolean");
 		}
 
 		return ret;

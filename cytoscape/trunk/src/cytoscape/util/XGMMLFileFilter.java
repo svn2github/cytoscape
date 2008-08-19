@@ -39,6 +39,8 @@ import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.XGMMLReader;
 
+import cytoscape.logger.CyLogger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -104,7 +106,7 @@ public class XGMMLFileFilter extends CyFileFilter {
 			// Get the input stream
 			reader = new XGMMLReader(conn.getInputStream(), url.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			CyLogger.getLogger(XGMMLFileFilter.class).error("Unable to get XGMML reader: "+e.getMessage());
 			reader = null;
 		}
 		return reader;

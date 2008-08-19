@@ -288,7 +288,8 @@ public class PluginFileReader {
 			// people know it's a bad
 			// version? This will just skip
 			// past bad version numbers
-			ie.printStackTrace();
+			// ie.printStackTrace();
+			logger.warn("Version number format error: "+Version);
 			return null;
 		}
 	}
@@ -311,7 +312,7 @@ public class PluginFileReader {
 							.getChildTextTrim(urlTag)));
 					obj.setLicense(LicenseText, RequireAlways);
 				} catch (Exception E) {
-					E.printStackTrace();
+					logger.error("", E);
 				}
 			}
 		}

@@ -77,6 +77,9 @@ import java.util.Set;
  * if one does not already exist.
  */
 public abstract class CalculatorCatalogFactory {
+
+		protected static CyLogger logger = CyLogger.getLogger(CalculatorCatalogFactory.class);
+ 
     private enum MapperNames {DISCRETE("Discrete Mapper"), 
         CONTINUOUS("Continuous Mapper"), PASSTHROUGH("Passthrough Mapper");
         private String name;
@@ -161,13 +164,14 @@ public abstract class CalculatorCatalogFactory {
                 if (propertiesFile != null) {
                     Set test = calculatorCatalog.getVisualStyleNames();
                     Iterator it = test.iterator();
-                    CyLogger.getLogger().info("Saving the following Visual Styles: ");
+										String styles = "Saving the following Visual Styles: ";
 
                     while (it.hasNext())
-                        CyLogger.getLogger().info("    - " + it.next().toString());
+                        styles += "\n    - " + it.next().toString();
 
+                    logger.info(styles);
                     CalculatorIO.storeCatalog(calculatorCatalog, propertiesFile);
-                    CyLogger.getLogger().info("Vizmap saved to: " + propertiesFile);
+                    logger.info("Vizmap saved to: " + propertiesFile);
                 }
             } else if ((e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) ||
                     (e.getPropertyName() == Cytoscape.VIZMAP_LOADED)) {
@@ -182,7 +186,7 @@ public abstract class CalculatorCatalogFactory {
 
                 // get the new vizmap.props and apply it the existing properties
                 Object vizmapSource = e.getNewValue();
-                CyLogger.getLogger().info("vizmapSource: '" + vizmapSource.toString() +
+                logger.info("vizmapSource: '" + vizmapSource.toString() +
                     "'");
 
                 try {
@@ -211,9 +215,11 @@ public abstract class CalculatorCatalogFactory {
                         is.close();
                     }
                 } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
+										logger.error("Unable to open visual mapper file: "+e1.getMessage());
+                    // e1.printStackTrace();
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+										logger.error("Unable to read visual mapper file: "+e1.getMessage());
+                    // e1.printStackTrace();
                 }
 
                 initCatalog();
@@ -223,7 +229,7 @@ public abstract class CalculatorCatalogFactory {
                  * something like
                  * Cytoscape.getDesktop.getVisualMappingManger.apply(VS_NAME);
                  */
-                CyLogger.getLogger().info("Applying visual styles from: " +
+                logger.info("Applying visual styles from: " +
                     vizmapSource.toString());
                 // Always re-create the vizmapper, otherwise things won't
                 // initialize correctly... or figure out how to reinitialize

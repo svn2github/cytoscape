@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class PluginUpdateAction extends CytoscapeAction {
+	protected static CyLogger logger = CyLogger.getLogger(PluginUpdateAction.class);
+
 	public PluginUpdateAction() {
 		super("Update Plugins");
 		setPreferredMenu("Plugins");
@@ -63,17 +65,16 @@ public class PluginUpdateAction extends CytoscapeAction {
 						updateFound = true;
 					}
 				} catch (org.jdom.JDOMException jde) {
-//					CyLogger.getLogger().warn("Failed to retrieve updates for "
+//					logger.warn("Failed to retrieve updates for "
 //							+ Current.getName() + ", XML incorrect at "
 //							+ Current.getDownloadableURL());
-					CyLogger.getLogger().warn(jde.getMessage());
+					logger.warn(jde.getMessage());
 					XmlIncorrect.add(Current.toString());
 					// jde.printStackTrace();
 				} catch (java.io.IOException ioe) {
-					CyLogger.getLogger().warn("Failed to read XML file for "
+					logger.warn("Failed to read XML file for "
 							+ Current.getName() + " at "
-							+ Current.getDownloadableURL());
-					ioe.printStackTrace();
+							+ Current.getDownloadableURL(), ioe);
 					BadXml.add(Current.toString());
 				}
 

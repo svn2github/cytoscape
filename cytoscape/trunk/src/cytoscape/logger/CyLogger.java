@@ -122,11 +122,27 @@ public class CyLogger {
 	public void debug(String message) { log(message,LogLevel.LOG_DEBUG); }
 
 	/**
+	 * Log a debug message.
+	 *
+	 * @param message the message to be logged
+	 * @param exception the exception to be logged
+	 */
+	public void debug(String message, Throwable exception) { log(message,LogLevel.LOG_DEBUG,exception); }
+
+	/**
 	 * Log an informational message.
 	 *
 	 * @param message the message to be logged
 	 */
 	public void info(String message) { log(message,LogLevel.LOG_INFO); }
+
+	/**
+	 * Log an informational message.
+	 *
+	 * @param message the message to be logged
+	 * @param exception the exception to be logged
+	 */
+	public void info(String message, Throwable exception) { log(message,LogLevel.LOG_INFO,exception); }
 
 	/**
 	 * Log a warning message.
@@ -139,8 +155,24 @@ public class CyLogger {
 	 * Log a warning message.
 	 *
 	 * @param message the message to be logged
+	 * @param exception the exception to be logged
+	 */
+	public void warn(String message, Throwable exception) { log(message,LogLevel.LOG_WARN,exception); }
+
+	/**
+	 * Log a warning message.
+	 *
+	 * @param message the message to be logged
 	 */
 	public void warning(String message) { log(message,LogLevel.LOG_WARN); }
+
+	/**
+	 * Log a warning message.
+	 *
+	 * @param message the message to be logged
+	 * @param exception the exception to be logged
+	 */
+	public void warning(String message, Throwable exception) { log(message,LogLevel.LOG_WARN,exception); }
 
 	/**
 	 * Log an error message.
@@ -150,22 +182,12 @@ public class CyLogger {
 	public void error(String message) { log(message,LogLevel.LOG_ERROR); }
 
 	/**
-	 * Log an exception message.
+	 * Log an error exception message.
 	 *
+	 * @param message the message to be printed
 	 * @param exception the exception to be logged
 	 */
-	public void exception(Exception e) { 
-		String message = null;
-		if (e.getMessage() != null)
-			message = e.getMessage() + "\n    "+e.toString();
-		else
-			message = e.toString();
-		StackTraceElement[] stackArray = e.getStackTrace();
-		for (int i = 0; stackArray != null && i < stackArray.length; i++) {
-			message += "\n      at "+stackArray[i].toString();
-		}
-		log(message,LogLevel.LOG_ERROR); 
-	}
+	public void error(String message, Throwable exception) { log(message, LogLevel.LOG_ERROR, exception); }
 
 	/**
 	 * Log a fatal error message.
@@ -175,6 +197,14 @@ public class CyLogger {
 	public void fatal(String message) { log(message,LogLevel.LOG_FATAL); }
 
 	/**
+	 * Log a fatal exception message.
+	 *
+	 * @param message the message to be printed
+	 * @param exception the exception to be logged
+	 */
+	public void fatal(String message, Throwable exception) { log(message,LogLevel.LOG_FATAL, exception); }
+
+	/**
 	 * Set the debug status.  This will override the default debug setting
 	 * from cytoscape.debug for this logger only.
 	 *
@@ -182,6 +212,22 @@ public class CyLogger {
 	 */
 	public void setDebug(boolean debug) {
 		this.debugging = debug;
+	}
+
+	/**
+	 * Log a message at the specified log level.
+	 *
+	 * @param message the message to be logged
+	 * @param level the LogLevel to log the message at
+	 * @param t a throwable to use to get a stack trace
+	 */
+	public void log(String message, LogLevel level, Throwable t) {
+		if (message != null && message.length() > 0)
+			message += "\n";
+		if (t != null) {
+			message += getStack(t);
+		}
+		log(message,level); 
 	}
 
 	/**
@@ -334,5 +380,18 @@ public class CyLogger {
 				list.addAll(map.get(level));
 		}
 		return list;
+	}
+
+	private String getStack(Throwable t) {
+		String message = null;
+		if (t.getMessage() != null)
+			message = t.getMessage() + "\n    "+t.toString();
+		else
+			message = t.toString();
+		StackTraceElement[] stackArray = t.getStackTrace();
+		for (int i = 0; stackArray != null && i < stackArray.length; i++) {
+			message += "\n      at "+stackArray[i].toString();
+		}
+		return message;
 	}
 }

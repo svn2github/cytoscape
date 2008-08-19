@@ -31,6 +31,8 @@ import cytoscape.util.export.PSExporter;
 import cytoscape.dialogs.ExportBitmapOptionsDialog;
 import cytoscape.dialogs.ExportAsGraphicsFileChooser;
 
+import cytoscape.logger.CyLogger;
+
 import cytoscape.visual.VisualStyle;
 import cytoscape.visual.calculators.Calculator;
 
@@ -48,6 +50,7 @@ public class ExportAsGraphicsAction extends CytoscapeAction
 	private static ExportFilter SVG_FILTER = new SVGExportFilter();
 	private static ExportFilter EPS_FILTER = new PSExportFilter("eps", "EPS");
 	private static ExportFilter[] FILTERS = { PDF_FILTER, SVG_FILTER, EPS_FILTER, JPG_FILTER, PNG_FILTER, BMP_FILTER };
+	protected static CyLogger logger = CyLogger.getLogger(ExportAsGraphicsAction.class);
 
 	private static String TITLE = "Network View as Graphics";
 
@@ -141,7 +144,7 @@ class ExportTask
 					stream.close();					
 				}
 				catch (IOException ioe) {
-					ioe.printStackTrace();
+					ExportAsGraphicsAction.logger.error("Unable to close the stream", ioe);
 				}
 			}
 		};

@@ -129,7 +129,7 @@ public class PluginProperties extends Properties {
 			pi.setObjectVersion( Double.valueOf(getProperty(PluginProperty.VERSION.getPropertyKey())) );
 		} catch (java.lang.NumberFormatException ne) { // skip it or set it to a default value??
 			CyLogger.getLogger().error(pi.getName() + " version is incorrectly formatted, format is: \\d+.\\d+. Version set to 0.1 to allow plugin to load");
-			ne.printStackTrace();
+			// ne.printStackTrace();
 			pi.setObjectVersion(0.1);
 		}
 		

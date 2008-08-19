@@ -282,17 +282,17 @@ public class PluginManager {
 				pluginTracker = new PluginTracker(tempDir.getParentFile(),
 						trackerFileName);
 			} catch (IOException ioe) {
-				ioe.printStackTrace();
+				// ioe.printStackTrace();
 				loadingErrors.add(ioe);
 			} catch (TrackerException te) {
-				te.printStackTrace();
+				// te.printStackTrace();
 				loadingErrors.add(te);
 			} finally { // document should be cleaned out by now
 				try {
 					pluginTracker = new PluginTracker(tempDir.getParentFile(),
 							trackerFileName);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error("",e);
 					// this could go on forever, surely there's a better way!
 				}
 			}
@@ -362,8 +362,7 @@ public class PluginManager {
 			logger.error(Plugin.getClass().getName()
 							+ " loaded but not registered, this will not affect the operation of the plugin");
 		} catch (Exception e) {
-			logger.error("ERROR registering plugin: ");
-			e.printStackTrace();
+			logger.error("ERROR registering plugin: ", e);
 		} finally {
 			if (PluginObj == null) { // still null, create a default one
 				PluginObj = new PluginInfo();
@@ -483,7 +482,7 @@ public class PluginManager {
 				deleteError = true;
 				ErrorMsg += infoObj.getName() + " v"
 						+ infoObj.getObjectVersion() + "\n";
-				me.printStackTrace();
+				// me.printStackTrace();
 			}
 
 			if (deleteError) {
@@ -686,7 +685,7 @@ public class PluginManager {
 				try {
 					ToLoad.add(jarURL(FileName));
 				} catch (MalformedURLException mue) {
-					mue.printStackTrace();
+					// mue.printStackTrace();
 					loadingErrors.add(mue);
 				}
 			}
@@ -790,7 +789,7 @@ public class PluginManager {
 					}
 				}
 			} catch (MalformedURLException mue) {
-				mue.printStackTrace();
+				// mue.printStackTrace();
 				loadingErrors.add(mue);
 			}
 		}
@@ -908,13 +907,13 @@ public class PluginManager {
 					logger.info("No plugin found in specified jar - assuming it's a library.");
 				}
 			} catch (IOException ioe) {
-				ioe.printStackTrace();
+				// ioe.printStackTrace();
 				loadingErrors.add(ioe);
 			} catch (ClassNotFoundException cne) {
-				cne.printStackTrace();
+				// cne.printStackTrace();
 				loadingErrors.add(cne);
 			} catch (PluginException pe) {
-				pe.printStackTrace();
+				// pe.printStackTrace();
 				loadingErrors.add(pe);
 			}
 		}
@@ -932,10 +931,10 @@ public class PluginManager {
 				Class rclass = Class.forName(resource);
 				loadPlugin(rclass, null, true);
 			} catch (ClassNotFoundException cne) {
-				cne.printStackTrace();
+				// cne.printStackTrace();
 				loadingErrors.add(cne);
 			} catch (PluginException pe) {
-				pe.printStackTrace();
+				// pe.printStackTrace();
 				loadingErrors.add(pe);
 			}
 		}

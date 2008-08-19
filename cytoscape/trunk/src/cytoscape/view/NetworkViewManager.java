@@ -73,6 +73,7 @@ import javax.swing.event.SwingPropertyChangeSupport;
  */
 public class NetworkViewManager implements PropertyChangeListener, InternalFrameListener,
                                            WindowFocusListener, ChangeListener {
+	private static CyLogger logger = CyLogger.getLogger(NetworkViewManager.class);
 	private JDesktopPane desktopPane;
 	private Map<String, JInternalFrame> networkViewMap;
 	private Map<JInternalFrame, String> componentMap;
@@ -220,7 +221,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			return;
 		}
 
-		//CyLogger.getLogger().info("NetworkViewManager: firing NETWORK_VIEW_FOCUSED (intenalFrameActivate)");
+		//logger.info("NetworkViewManager: firing NETWORK_VIEW_FOCUSED (intenalFrameActivate)");
 		firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null, network_id);
 	}
 
@@ -299,7 +300,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 	public void propertyChange(PropertyChangeEvent e) {
 		// handle focus event
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUS) {
-			//CyLogger.getLogger().info("NetworkViewManager got NETWORK_VIEW_FOCUS " + e.getSource().getClass().getName());
+			//logger.info("NetworkViewManager got NETWORK_VIEW_FOCUS " + e.getSource().getClass().getName());
 			String network_id = (String) e.getNewValue();
 			e = null;
 			unsetFocus(); // in case the newly focused network doesn't have a
@@ -317,11 +318,11 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 		// handle putting a newly created CyNetworkView into a Container
 		else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			CyNetworkView new_view = (CyNetworkView) e.getNewValue();
-			//CyLogger.getLogger().info("NetworkViewManager got NETWORK_VIEW_CREATED " + e.getSource().getClass().getName() + ", view = " + new_view);
+			//logger.info("NetworkViewManager got NETWORK_VIEW_CREATED " + e.getSource().getClass().getName() + ", view = " + new_view);
 			createContainer(new_view);
 			e = null;
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_DESTROYED) {
-			//CyLogger.getLogger().info("NetworkViewManager got NETWORK_VIEW_DEST");
+			//logger.info("NetworkViewManager got NETWORK_VIEW_DEST");
 			CyNetworkView view = (CyNetworkView) e.getNewValue();
 			removeView(view);
 			e = null;
@@ -344,7 +345,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			try {
 				f.setSelected(false);
 			} catch (PropertyVetoException pve) {
-				CyLogger.getLogger().info("NetworkViewManager: Couldn't unset focus for internal frame.");
+				logger.info("NetworkViewManager: Couldn't unset focus for internal frame.");
 			}
 		}
 	}
@@ -361,7 +362,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 				// fires internalFrameActivated
 				networkViewMap.get(network_id).setSelected(true);
 			} catch (Exception e) {
-				CyLogger.getLogger().warn("Network View unable to be focused");
+				logger.warn("Network View unable to be focused");
 			}
 		}
 	}
@@ -378,8 +379,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 				target = null;
 			}
 		} catch (Exception e) {
-			CyLogger.getLogger().warn("Network View unable to be killed: " + view.getIdentifier());
-			e.printStackTrace();
+			logger.warn("Network View unable to be killed: " + view.getIdentifier(), e);
 		}
 
 		view = null;
@@ -410,7 +410,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			iframe.setContentPane(internalFrameComp);
 			internalFrameComponentMap.put(view.getNetwork().getIdentifier(), internalFrameComp);
 		} else {
-			CyLogger.getLogger().info("NetworkViewManager.createContainer() - DGraphView not found!");
+			logger.info("NetworkViewManager.createContainer() - DGraphView not found!");
 			iframe.getContentPane().add(view.getComponent());
 		}
 
@@ -460,7 +460,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 			if ((max != null) && Boolean.parseBoolean(max))
 				iframe.setMaximum(true);
 		} catch (PropertyVetoException pve) {
-			pve.printStackTrace();
+			logger.warn("Unable to maximize internal frame: "+pve.getMessage());
 		}
 
 		iframe.setVisible(true);

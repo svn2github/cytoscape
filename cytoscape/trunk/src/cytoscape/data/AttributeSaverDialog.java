@@ -38,6 +38,7 @@ package cytoscape.data;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 import cytoscape.data.writers.CyAttributesWriter;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -131,6 +132,7 @@ public class AttributeSaverDialog extends JDialog {
 	}
 
 	protected JButton saveButton = new JButton("Choose Directory and Save");
+	protected static CyLogger logger = CyLogger.getLogger(AttributeSaverDialog.class);
 	
 	/**
 	 * Create a dialog box of the specified type. Instead of constructor, use
@@ -189,12 +191,15 @@ public class AttributeSaverDialog extends JDialog {
 
 						try {
 							count = state.writeState();
+							JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+						 	                             "Successfully saved " + count + " files");
 						} catch (IOException e) {
-							e.printStackTrace();
+							logger.warn("Unable to save attributes", e);
+							JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+						 	                              "Error saving attributes: "+e.getMessage(), 
+							                              "Attribute Save Error", JOptionPane.WARNING_MESSAGE);
 						}
 
-						JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-						                              "Successfully saved " + count + " files");
 						AttributeSaverDialog.this.dispose();
 					}
 				}

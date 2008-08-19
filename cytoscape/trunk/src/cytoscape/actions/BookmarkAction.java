@@ -68,7 +68,7 @@ public class BookmarkAction extends CytoscapeAction {
 	public BookmarkAction() {
 		super("Bookmarks...");
 
-		CyLogger.getLogger().info("BookmarkAction()...");
+		CyLogger.getLogger(BookmarkAction.class).info("BookmarkAction()...");
 		setPreferredMenu("Edit.Preferences");
 	}
 
@@ -85,10 +85,10 @@ public class BookmarkAction extends CytoscapeAction {
 			bookmarkDialog.setVisible(true);
 		} catch (JAXBException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			CyLogger.getLogger(BookmarkAction.class).error(null, e1);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			CyLogger.getLogger(BookmarkAction.class).error(null, e1);
 		}
 
 		// bookmarkDialog.refresh();

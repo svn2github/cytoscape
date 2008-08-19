@@ -397,7 +397,7 @@ public class PluginTracker {
 			out.output(trackerDoc, Writer);
 			Writer.close();
 		} catch (java.io.IOException E) {
-			E.printStackTrace();
+			logger.error("Error writing plugin status file", E);
 		}
 	}
 

@@ -39,6 +39,8 @@ import cytoscape.data.ImportHandler;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.data.readers.InteractionsReader;
 
+import cytoscape.logger.CyLogger;
+
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -96,7 +98,7 @@ public class SIFFileFilter extends CyFileFilter {
 			// Get the input stream
 			reader = new InteractionsReader(conn.getInputStream(), url.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			CyLogger.getLogger(SIFFileFilter.class).error("Unable to get SIF reader: "+e.getMessage());
 			reader = null;
 		}
 		return reader;

@@ -93,6 +93,7 @@ import java.util.Set;
  */
 public class CalculatorIO {
 	private static final List<String> OLD_CALC_KEYS;
+	private static CyLogger logger = CyLogger.getLogger(CalculatorIO.class);
 
 	static {
 		OLD_CALC_KEYS = new ArrayList<String>();
@@ -251,8 +252,8 @@ public class CalculatorIO {
 				// object
 				newProps.putAll(styleProps);
 			} catch (Exception e) {
-				CyLogger.getLogger().info("Exception while saving visual style " + name);
-				e.printStackTrace();
+				logger.info("Exception while saving visual style '" + name + "': "+e.getMessage());
+				// e.printStackTrace();
 			}
 		}
 
@@ -581,7 +582,7 @@ public class CalculatorIO {
 		final String calcTypeKey = extractCalcType(key);
 
 		if (calcTypeKey == null) {
-			CyLogger.getLogger().warn("couldn't parse calcTypeKey from '" + key + "'");
+			logger.warn("couldn't parse calcTypeKey from '" + key + "'");
 
 			return;
 		}

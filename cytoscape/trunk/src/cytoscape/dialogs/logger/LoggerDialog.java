@@ -141,7 +141,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
         this.messageMap.get(level) : new ArrayList<String>();
 
 		// Do whatever formatting we need
-		msg = msg.replace("\n","<br/>");
+		msg = msg.replace("\n","<br>");
 		msg = msg.replace(" ","&nbsp;");
 
     Messages.add(msg);
@@ -197,10 +197,16 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
 
 	private StringBuffer createMessages(LogLevel level) {
     StringBuffer sb = new StringBuffer();
+		String color = "#333333";
+		if (level.equals(LogLevel.LOG_ERROR))
+			color = "red";
+		else if (level.equals(LogLevel.LOG_WARN))
+			color = "orange";
+			
     sb.append("<html><style type='text/css'>");
     sb.append("body,th,td,div,p,h1,h2,li,dt,dd ");
     sb.append("{ font-family: Tahoma, \"Gill Sans\", Arial, sans-serif; }");
-    sb.append("body { margin: 0px; color: #333333; background-color: #ffffff; }");
+    sb.append("body { margin: 0px; color: "+color+"; background-color: #ffffff; }");
     sb.append("#indent { padding-left: 30px; }");
     sb.append("ul {list-style-type: none}");
     sb.append("</style><body>");
@@ -211,7 +217,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
       sb.append("<tr><td width='5%'>" + line + "</td><td width='95%'>");
       sb.append(messageMap.get(level).get(i));
       sb.append("</td></tr>");
-      sb.append("<tr><td colspan='2'><hr/></td></tr>");
+      sb.append("<tr><td colspan='2'><hr></td></tr>");
       line++;
 		}
     sb.append("</table></body></html>");

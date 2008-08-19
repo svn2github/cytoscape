@@ -50,6 +50,8 @@ import cytoscape.ding.DingNetworkView;
 
 import cytoscape.giny.*;
 
+import cytoscape.logger.CyLogger;
+
 import cytoscape.util.*;
 import cytoscape.util.CytoscapeAction;
 
@@ -112,7 +114,7 @@ public class PrintAction extends CytoscapeAction {
 			try {
 				printJob.print();
 			} catch (Exception exc) {
-				exc.printStackTrace();
+				CyLogger.getLogger(PrintAction.class).error("Print job failed", exc);
 			}
 		}
 	} // actionPerformed

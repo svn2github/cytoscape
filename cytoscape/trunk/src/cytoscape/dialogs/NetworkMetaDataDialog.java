@@ -10,6 +10,8 @@ import cytoscape.CyNetwork;
 import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
 
+import cytoscape.logger.CyLogger;
+
 import java.awt.Color;
 import java.awt.Font;
 
@@ -41,6 +43,7 @@ public class NetworkMetaDataDialog extends JDialog implements TableModelListener
 	private MetadataParser mdp;
 	private CyNetwork network;
 	private String description;
+	private CyLogger logger = CyLogger.getLogger(NetworkMetaDataDialog.class);
 
 	/**
 	 * Creates new form MetadataDialog
@@ -57,7 +60,7 @@ public class NetworkMetaDataDialog extends JDialog implements TableModelListener
 			metaTM.setTable();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("Unable to parse some of the network meta-data");
 		}
 
 		description = metaTM.getDescription();
@@ -186,8 +189,7 @@ public class NetworkMetaDataDialog extends JDialog implements TableModelListener
 		try {
 			update();
 		} catch (JAXBException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.warn("Unable to update network metadata");
 		}
 
 		// Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null,

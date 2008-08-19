@@ -65,6 +65,7 @@ public class Exec {
 	boolean runInBackground = false;
 	String stdout;
 	String stderr;
+	static CyLogger logger = CyLogger.getLogger(Exec.class);
 
 	/**
 	 * Creates a new Exec object.
@@ -146,7 +147,7 @@ public class Exec {
 		try {
 			Runtime runtime = Runtime.getRuntime();
 
-			// CyLogger.getLogger().info (" --> just before exec: \n\t" + getCmd ());
+			// logger.info (" --> just before exec: \n\t" + getCmd ());
 			//Process process = runtime.exec (cmd);
 			Process process = runtime.exec(cmdSB.toString());
 			BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process
@@ -173,7 +174,7 @@ public class Exec {
 			try {
 				execExitValue = process.waitFor();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.warn("Interrupted waiting for child process: "+e.getMessage());
 			}
 
 			String stdoutResult;
@@ -189,7 +190,7 @@ public class Exec {
 			}
 		} // try
 		catch (IOException e) {
-			e.printStackTrace();
+			logger.error("I/O error while communicating with child process: "+e.getMessage());
 		}
 
 		return execExitValue;
@@ -232,8 +233,7 @@ public class Exec {
 					} // while
 				} // trey
 				catch (Exception exc0) {
-					CyLogger.getLogger().error("--- error: " + exc0.getMessage());
-					exc0.printStackTrace();
+					logger.error("--- error: ", exc0);
 				} // catch
 			}
 			; // run
@@ -249,8 +249,7 @@ public class Exec {
 					} // while
 				} // try
 				catch (Exception exc1) {
-					CyLogger.getLogger().info("--- error: " + exc1.getMessage());
-					exc1.printStackTrace();
+					logger.info("--- error: ", exc1);
 				} // catch
 			}
 			; // run

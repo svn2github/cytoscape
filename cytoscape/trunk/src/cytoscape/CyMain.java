@@ -381,12 +381,11 @@ public class CyMain implements CyInitParams {
 					if (in != null)
 						props.load(in);
 					else
-						CyLogger.getLogger().info("Couldn't load property: "
+						CyLogger.getLogger(CyMain.class).info("Couldn't load property: "
 								+ potentialProps[i]);
 				} catch (IOException e) {
-					CyLogger.getLogger().info("Couldn't load property: "
-							+ potentialProps[i]);
-					e.printStackTrace();
+					CyLogger logger = CyLogger.getLogger(CyMain.class);
+					logger.error("Couldn't load property: "+ potentialProps[i], e);
 				}
 			}
 		}

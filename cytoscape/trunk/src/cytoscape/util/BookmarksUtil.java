@@ -64,6 +64,7 @@ import javax.xml.bind.Marshaller;
  *
  */
 public abstract class BookmarksUtil {
+	protected static CyLogger logger = CyLogger.getLogger(BookmarksUtil.class);
 	/**
 	 * Traverse bookmark tree and get a list of data sources from the specified category.
 	 *
@@ -262,7 +263,7 @@ public abstract class BookmarksUtil {
 			try {
 				tmpFile.createNewFile();
 			} catch (Exception ex) {
-				CyLogger.getLogger().info("Bookmark file may not exist, failed to create new one.");
+				logger.info("Bookmark file may not exist, failed to create new one.");
 			}
 		}
 
@@ -271,12 +272,10 @@ public abstract class BookmarksUtil {
 			saveBookmark(theBookmarks, pCategoryName, pDataSource, fos);
 			fos.close();
 		} catch (JAXBException e) {
-			e.printStackTrace();
-
+			logger.error("Error converting bookmark: "+e.getMessage()); 
 			return false;
 		} catch (Exception e) {
-			e.printStackTrace();
-
+			logger.error("Unable to save bookmark: "+e.getMessage()); 
 			return false;
 		}
 
@@ -299,14 +298,14 @@ public abstract class BookmarksUtil {
 			saveBookmark(pBookmarks,fos);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to save bookmark: "+e.getMessage()); 
 			return false;
 		} finally {
 			if (fos != null) {
 				try {
 					fos.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.warn("Unable to close bookmark file: "+e.getMessage()); 
 				}
 			}
 		}
@@ -329,7 +328,7 @@ public abstract class BookmarksUtil {
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			m.marshal(pBookmarks, os);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unable to save bookmark: "+e.getMessage()); 
 			return false;
 		} 
 		return true;
@@ -405,7 +404,7 @@ public abstract class BookmarksUtil {
 
 						m.marshal(pBookmarks, new FileOutputStream(filename));
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("Unable to update bookmark file after delete: "+e.getMessage());
 					}
 
 					return true;

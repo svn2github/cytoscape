@@ -1522,7 +1522,7 @@ public abstract class Cytoscape {
 					CyAttributesReader.loadAttributes(nodeAttributes, reader);
 					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
-					e.printStackTrace();
+					// e.printStackTrace();
 					throw new IllegalArgumentException("Failure loading node attribute data: "
 					                                   + nodeAttrLocations[i] + "  because of:"
 					                                   + e.getMessage());
@@ -1538,7 +1538,7 @@ public abstract class Cytoscape {
 					CyAttributesReader.loadAttributes(edgeAttributes, reader);
 					firePropertyChange(ATTRIBUTES_CHANGED, null, null);
 				} catch (Exception e) {
-					e.printStackTrace();
+					// e.printStackTrace();
 					throw new IllegalArgumentException("Failure loading edge attribute data: "
 					                                   + edgeAttrLocations[j] + "  because of:"
 					                                   + e.getMessage());
@@ -1579,7 +1579,7 @@ public abstract class Cytoscape {
 			ontologyServer = new OntologyServer();
 		} catch (Exception e) {
 			CyLogger.getLogger().warn("Could not build OntologyServer.");
-			e.printStackTrace();
+			// e.printStackTrace();
 
 			return null;
 		}

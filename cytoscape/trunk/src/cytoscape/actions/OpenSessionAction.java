@@ -76,6 +76,7 @@ import javax.xml.bind.JAXBException;
  */
 public class OpenSessionAction extends CytoscapeAction {
 	protected CyMenus windowMenu;
+	protected static CyLogger logger = CyLogger.getLogger(OpenSessionAction.class);
 
 	// Extension for the new cytoscape session file
 	/**
@@ -102,6 +103,7 @@ public class OpenSessionAction extends CytoscapeAction {
 	 */
 	public OpenSessionAction(CyMenus windowMenu, boolean label) {
 		super();
+		logger = CyLogger.getLogger(OpenSessionAction.class);
 		this.windowMenu = windowMenu;
 	}
 
@@ -134,7 +136,7 @@ public class OpenSessionAction extends CytoscapeAction {
 			Cytoscape.createNewSession();
 			Cytoscape.setSessionState(Cytoscape.SESSION_NEW);
 
-			CyLogger.getLogger().info("Opening session file: " + name);
+			logger.info("Opening session file: " + name);
 
 			// Create Task
 			final OpenSessionTask task = new OpenSessionTask(name);
@@ -209,17 +211,17 @@ class OpenSessionTask implements Task {
 			sr = new CytoscapeSessionReader(fileName, taskMonitor);
 			sr.read();
 		} catch (IOException e) {
-			e.printStackTrace();
 			taskMonitor.setException(e, "Cannot open the session file: " + e.getMessage());
+			OpenSessionAction.logger.error("Cannot open the session file", e);
 		} catch (JAXBException e) {
-			e.printStackTrace();
 			taskMonitor.setException(e, "Cannot unmarshall document: " + e.getMessage());
+			OpenSessionAction.logger.error("Cannot unmarshall document", e);
         } catch (XGMMLException e) {
-            e.printStackTrace();
+            OpenSessionAction.logger.error("", e);
             taskMonitor.setException(e, e.getMessage());
         } catch (Exception e) { // catch any exception: the user should know something went wrong
-            e.printStackTrace();
             taskMonitor.setException(e, "Error while loading session " + e.getMessage());
+            OpenSessionAction.logger.error("Error while loading session", e);
 		} finally {
 			sr = null;
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
@@ -242,7 +244,7 @@ class OpenSessionTask implements Task {
 	public void halt() {
 		// Task can not currently be halted.
 		
-		CyLogger.getLogger().info("HALT called!!!");
+		OpenSessionAction.logger.info("HALT called!!!");
 		taskMonitor.setPercentCompleted(100);
 		taskMonitor.setStatus("Failed!!!");
 	}

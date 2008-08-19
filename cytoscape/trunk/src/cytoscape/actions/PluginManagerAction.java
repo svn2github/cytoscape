@@ -73,10 +73,12 @@ import java.util.Map;
 
 public class PluginManagerAction extends CytoscapeAction {
 	private String bookmarkCategory = "plugins";
+	private CyLogger logger = null;
 
 	public PluginManagerAction() {
 		super("Manage Plugins");
 		setPreferredMenu("Plugins");
+		logger = CyLogger.getLogger(PluginManagerAction.class);
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class PluginManagerAction extends CytoscapeAction {
 				}
 			}
 		} catch (Exception E) {
-			CyLogger.getLogger().warn("There was an error while reading the bookmarks file.");
+			logger.warn("There was an error while reading the bookmarks file.");
 		}
 
 		List<DownloadableInfo> Current = Mgr.getDownloadables(PluginStatus.CURRENT);
@@ -163,12 +165,12 @@ public class PluginManagerAction extends CytoscapeAction {
 			PluginManager Mgr = PluginManager.getPluginManager();
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
-					getIOException().printStackTrace();
+					logger.error("", getIOException());
 					// failed to read the given url
 					dialog.setError(PluginManageDialog.CommonError.NOXML.toString());
 				} else if (getJDOMException() != null) {
 					// failed to parse the xml file at the url
-					getJDOMException().printStackTrace();
+					logger.error("", getJDOMException());
 					dialog.setError(PluginManageDialog.CommonError.BADXML.toString());
 				} else {
 					dialog.setError(getException().getMessage());

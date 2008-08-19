@@ -570,7 +570,7 @@ public abstract class DownloadableInfo {
 				try {
 					text = URLUtil.download(url);
 				} catch (java.io.IOException E) {
-					E.printStackTrace();
+					DownloadableInfo.logger.error("Unable to get license", E);
 				}
 			}
 			return text;
