@@ -642,8 +642,7 @@ public class VizMapAttrTab extends VizMapTab {
 		try {
 			clone = (Calculator) c.clone();
 		} catch (CloneNotSupportedException exc) { // this will never happen
-			CyLogger.getLogger().error("Fatal error - Calculator didn't support Cloneable");
-			exc.printStackTrace();
+			CyLogger.getLogger().error("Fatal error - Calculator didn't support Cloneable", exc);
 
 			return null;
 		}

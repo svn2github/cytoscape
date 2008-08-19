@@ -491,7 +491,7 @@ public class CytoscapeSessionReader {
 					out.close();
 				} catch (IOException e) {
 					theFile = null;
-					logger.error("\nError: read from zip: " + URLstr);
+					logger.error("Error: reading from zip: " + URLstr);
 				}
 
 				if (theFile == null)

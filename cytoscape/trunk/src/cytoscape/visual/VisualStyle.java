@@ -180,7 +180,7 @@ public class VisualStyle implements Cloneable {
 		try {
 			setGlobalAppearanceCalculator((GlobalAppearanceCalculator)toCopy.getGlobalAppearanceCalculator().clone());
 		} catch (CloneNotSupportedException e) {
-			CyLogger.getLogger(VisualStyle.class).error("Unable to clone global appearance calculator!");
+			CyLogger.getLogger(VisualStyle.class).warn("Internal error - Unable to clone global appearance calculator!");
 			// e.printStackTrace();
 		}
 

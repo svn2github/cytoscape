@@ -632,7 +632,7 @@ class XGMMLParser extends DefaultHandler {
  	 * @param e the exception that generated the error
  	 */
 	public void error(SAXParseException e) {
-		CyLogger.getLogger(XGMMLParser.class).error("Parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'.  Attempting to recover");
+		CyLogger.getLogger(XGMMLParser.class).warn("Parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'.  Attempting to recover");
 	}
    
 	/********************************************************************
