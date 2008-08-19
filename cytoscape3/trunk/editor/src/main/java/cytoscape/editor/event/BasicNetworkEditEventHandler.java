@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Fri Jul 31 05:36:07 2005
-* Modified:     Thu May 10 10:03:07 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Tue Aug 19 11:04:19 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental
@@ -17,6 +17,10 @@
 *
 * Revisions:
 *
+* Wed Jul 09 09:33:32 2008 (Michael L. Creech) creech@w235krbza760
+*  Added checks that Editor component is active to mouse and key event processing
+*  to avoid handling events when the editor tab isn't the current tab. Fixed
+*  "ESC" key to correctly stop drop of an edge.
 * Thu May 10 10:02:48 2007 (Michael L. Creech) creech@w235krbza760
 *  Commented out various unused variables and removed unused imports.
 * Fri Dec 08 05:37:12 2006 (Michael L. Creech) creech@w235krbza760
@@ -103,36 +107,26 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * the node that will be dropped
 	 */
 
-	// MLC 12/07/06 BEGIN:
 	// FIX: Should really change the name--this can easily be shadowed by other
 	//      local variables:
 	// protected NodeView node;
 	private NodeView node;
 
-	// MLC 12/07/06 END.
-
 	/**
 	 * the edge that will be dropped
 	 */
 
-	// MLC 12/07/06 END.
 
 	/**
 	 * flag that indicates whether there is an edge under construction
 	 */
 
-	// MLC 12/07/06:
-	// protected boolean edgeStarted;
-	// MLC 12/07/06:
 	private boolean edgeStarted;
 
 	/**
 	 * the mouse press location for the drop point
 	 */
 
-	// MLC 12/07/06:
-	// protected Point2D startPoint;
-	// MLC 12/07/06:
 	private Point2D startPoint;
 
 	/**
@@ -191,14 +185,6 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * node or edge which has been highlighted for drop or edge connection
 	 * during mouseDrag
 	 */
-	// MLC 05/10/07:
-	// private NodeView _highlightedNodeView = null;
-	// MLC 05/10/07:
-	// private EdgeView _highlightedEdgeView = null;
-
-	// private float _savedStrokeWidth = Float.NaN;
-	// MLC 05/10/07:
-	// private Cursor _savedCursor = null;
 
 	/**
 	 * Creates a new BasicNetworkEditEventHandler object.
@@ -248,6 +234,16 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * @see BasicCytoscapeEditor
 	 */
 	public void mousePressed(MouseEvent e) {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove all mouse and key
+	    //       listeners when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
+	    CytoscapeEditorManager.log("CE: mousePressed!");
+	    // MLC 07/09/08 END.
+
 		nextPoint = e.getPoint();
 
 		NodeView nv = view.getPickedNodeView(nextPoint);
@@ -309,8 +305,20 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	/**
 	 * processed keyTypedEvents, in particular use of ESC key to interupt edge drawing
 	 */
-	public void keyTyped(KeyEvent e) // TODO: keyPressed does not seem to be working
+     // MLC 07/09/08:
+     // Actually, keyTyped only returns a char via e.getKeyChar(), keyPressed() is correct for the given code.
+	// public void keyTyped(KeyEvent e) // TODO: keyPressed does not seem to be working
+     // MLC 07/09/08:
+	public void keyPressed(KeyEvent e)
 	 {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove all mouse and key
+	    //       listeners when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
+	    // MLC 07/09/08 END.
 		int keyVal = e.getKeyCode();
 		CytoscapeEditorManager.log("Key code for typed key = " + keyVal);
 		CytoscapeEditorManager.log("VK_ESCAPE = " + KeyEvent.VK_ESCAPE);
@@ -325,6 +333,10 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 				saveY1 = Double.MIN_VALUE;
 				saveY2 = Double.MIN_VALUE;
 				this.setHandlingEdgeDrop(false);
+				// MLC 08/19/08 BEGIN:
+				// repaint so that the rubberband line is removed:
+				view.getComponent().repaint();
+				// MLC 08/19/08 END.
 			}
 		}
 	}
@@ -417,6 +429,15 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * updates rendering of edge if an edge is under construction
 	 */
 	public void mouseMoved(MouseEvent e) {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove all mouse and key
+	    //       listeners when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
+	    // CytoscapeEditorManager.log("CE: mouseMoved!");
+	    // MLC 07/09/08 END.
 		nextPoint = e.getPoint();
 
 		if (edgeStarted) {
@@ -457,6 +478,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 	 * begin or continue drawing an edge as mouse is dragged
 	 */
 	public void mouseDragged(MouseEvent e) {
+	    // MLC 07/09/08 BEGIN:
+	    // TODO: This check should really be avoided by having the editor remove all mouse and key
+	    //       listeners when the editor looses focus (another tab is clicked on).
+	    //       Since this is somewhat involved and so is left for when the editor is refactored.
+	    if (!CytoscapeEditorManager.isEditorInOperation()) {
+		return;
+	    }
+	    // MLC 07/09/08 END.
 		nextPoint = e.getPoint();
 
 		boolean onNode = false;
