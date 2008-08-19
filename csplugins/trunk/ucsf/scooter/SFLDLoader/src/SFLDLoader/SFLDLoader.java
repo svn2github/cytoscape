@@ -158,7 +158,7 @@ public class SFLDLoader extends CytoscapePlugin {
 				factory = null;
 				builder = factory.newDocumentBuilder();
 			} catch (Exception e) {
-				logger.exception(e);
+				logger.error("Unable to create a new document: "+e.getMessage());
 				return;
 			}
 			try {
@@ -166,7 +166,7 @@ public class SFLDLoader extends CytoscapePlugin {
 				enumeration = builder.parse(input);
 				// enumeration = builder.parse("file:///Users/scooter/Desktop/SFLDvm.py.xml");
 			} catch (Exception e) {
-				logger.exception(e);
+				logger.error("Unable to enumerate SFLD database: "+e.getMessage());
 				return;
 			}
 			NodeList superNodes = enumeration.getElementsByTagName("superfamily");
@@ -178,7 +178,7 @@ public class SFLDLoader extends CytoscapePlugin {
 			Object[] sortable = superFamilies.toArray();
 			Arrays.sort(sortable);
 			superFamilies = Arrays.asList(sortable);
-			CyLogger.getLogger(SFLDLoader.class).info("SFLD enumeration complete");
+			logger.info("SFLD enumeration complete");
 			loadMenu.setText("Browse SFLD...");
 			loadMenu.setEnabled(true);
 		}

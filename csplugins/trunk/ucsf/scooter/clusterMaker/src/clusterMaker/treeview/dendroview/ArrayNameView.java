@@ -35,7 +35,6 @@ import clusterMaker.treeview.DataModel;
 import clusterMaker.treeview.HeaderInfo;
 import clusterMaker.treeview.HeaderSummary;
 import clusterMaker.treeview.ModelView;
-import clusterMaker.treeview.RotateImageFilter;
 import clusterMaker.treeview.TreeSelectionI;
 
 /**
