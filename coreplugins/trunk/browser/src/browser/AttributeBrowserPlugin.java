@@ -194,8 +194,7 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 			edgeAttributeBrowser.setSelectedAttributes(edgeAttrSelected);
 			networkAttributeBrowser.setSelectedAttributes(networkAttrSelected);
 		} catch (IOException e) {
-			logger.error("Could not restore browser state.  Use defaults...");
-			logger.exception(e);
+			logger.error("Could not restore browser state.  Use defaults...", e);
 		}
 	}
 
@@ -245,8 +244,7 @@ public class AttributeBrowserPlugin extends CytoscapePlugin {
 
 			prop.store(new FileOutputStream(browserPropfile), PROP_HEADER);
 		} catch (IOException e) {
-			logger.error("Could not save attribute browser property file.");
-			logger.exception(e);
+			logger.error("Could not save attribute browser property file.", e);
 		}
 
 		fileList.add(browserPropfile);
