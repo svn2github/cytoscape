@@ -146,7 +146,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
 			
 			System.out.println("ADD CRITERIA: "+criteria);
-			if(calculator.parse2(criteria)){ 
+			if(calculator.parse2(criteria) != null){ 
 				
 				value = criteria;
 					//calculator.cleanCritera();
@@ -421,9 +421,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 				System.out.println(e.getMessage());
 			}
 			*/
-			calculator.parse2(current);
+			ArrayList<String>[] temp = calculator.parse2(current);
 			calculator.clearList();
-			calculator.evaluate("label");
+			calculator.evaluate("label", temp[0], temp[1]);
 		//}
 		//parsedCriteria = calculator.parseCriteria(criteria);
 		

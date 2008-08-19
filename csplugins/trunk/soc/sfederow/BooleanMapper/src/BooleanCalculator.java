@@ -32,8 +32,6 @@ public class BooleanCalculator {
 	//ArrayList<String> letters = new ArrayList<String>();
 	ArrayList<String> values = new ArrayList<String>();
 	
-	CyNetwork network = Cytoscape.getCurrentNetwork();
-	List<Node> nodeList = network.nodesList();
 	
 	AttributeManager attManager = new AttributeManager();
 	//String currentOperator = "";
@@ -63,7 +61,7 @@ public class BooleanCalculator {
 	
 
 	
-	public boolean parse2(String criteria){
+	public ArrayList[] parse2(String criteria){
 		ArrayList<String> valueChars = new ArrayList<String>();
 		ArrayList<String> validAttributes = new ArrayList<String>();
 		ArrayList<String> operations = new ArrayList<String>();
@@ -112,8 +110,14 @@ public class BooleanCalculator {
 		
 		boolean outcome = checkCriteria(validAttributes, operations);
 		
-		//System.out.println(checkCriteria());
-		return outcome;
+		ArrayList<String>[] test = new ArrayList[2];
+		if(outcome){
+			test[0] = validAttributes;
+			test[1] = operations;
+			return test;
+		}
+			//System.out.println(checkCriteria());
+		return null;
 	}
 	
 	
@@ -125,6 +129,11 @@ public class BooleanCalculator {
 		int a = 0;
 		int b = 0;
 		int size = validAttributes.size();
+		
+		nodeAttributes = Cytoscape.getNodeAttributes();
+		edgeAttributes = Cytoscape.getEdgeAttributes();
+		createAttributeTypeHash();
+		
 		//System.out.println("size: "+size);
 		if (size == 1 && !validAttributes.get(0).equals("")){ return true; }
 		for(int i=0; i<size; i++){
@@ -195,16 +204,20 @@ public class BooleanCalculator {
 	}
 	
 	
-	public boolean evaluate(String label){
+	public boolean evaluate(String label, ArrayList<String> attributes, ArrayList<String> operations){
 		//System.out.println("evaluate");
 		//for(int j=0; j<masterList.size();j++){
 
-		for(int j=0; j<2;j++){	
+		//for(int j=0; j<2;j++){	
+			
+		
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		List<Node> nodeList = network.nodesList();
+		
 
-
-			ArrayList<String> attributes = masterList.get(j);
-			j++;
-			ArrayList<String> operations = masterList.get(j);
+			//ArrayList<String> attributes = masterList.get(j);
+			//j++;
+			//ArrayList<String> operations = masterList.get(j);
 
 			int size = attributes.size();
 			//System.out.println("size: "+size);
@@ -266,7 +279,7 @@ public class BooleanCalculator {
 				//validAttributes.clear();
 				//operations.clear();
 				nodeValueMap.clear();
-			}
+			
 		}
 		Cytoscape.getCurrentNetworkView().updateView();
 		return true;
@@ -276,6 +289,7 @@ public class BooleanCalculator {
 	
 	public void evaluateOnce(HashMap nodeValues, ArrayList<String> attributes, ArrayList<String> operations, Node node, int attributeType, int numberCount, String label){
 		
+		CyNetwork network = Cytoscape.getCurrentNetwork();
 	
 		Stack<Boolean> finalValue = new Stack<Boolean>();
 		boolean nFlag = false;
@@ -292,11 +306,11 @@ public class BooleanCalculator {
 	
 				boolean comparisonOutcome = false;
 				
-				if(!(attributes.get(i).equals("") || attributes.get(i+2).equals(""))){
+				//if(!(attributes.get(i).equals("") || attributes.get(i+2).equals(""))){
 					
 					comparisonOutcome = doNumericalOperation(i, attributes.get(i), attributes.get(i+2), nodeValues, operations, node);
 					//System.out.println("made it"+comparisonOutcome);
-				}
+				//}
 				
 				logicalString = logicalString + comparisonOutcome;
 				finalValue.push(comparisonOutcome);
@@ -343,17 +357,18 @@ public class BooleanCalculator {
 		//network.setSelectedNodeState(node, false);
 		if(!finalValue.isEmpty()){
 			boolean outcome = finalValue.pop();
-			if(outcome){
+			
 				System.out.println("true");
 				//createAttribute()
 				System.out.println("label: "+label);
 				
 				attManager.setColorAttribute(label, node.getIdentifier(), outcome);
-				network.setSelectedNodeState(node,true);
-			}else{
+				if(outcome){
+					network.setSelectedNodeState(node,true);
+				}
 				System.out.println("label: "+label);
-				System.out.println("false");
-			}
+				System.out.println(outcome);
+			
 		}
 
 
@@ -551,55 +566,42 @@ public class BooleanCalculator {
 			
 
 			if(operations.get(position+1).matches("<")){
-
-				if(dvalue1 < dvalue2){
+				System.out.println("matched <");
+				return (dvalue1 < dvalue2); //{
 					//System.out.println("dd");
-					return true;
+					//return true;
 
-				}else{
+				//}else{
 					//System.out.println("dd");
-					return false;
+					//return false;
 
-				}
+				
 
-			}else{
-				if(operations.get(position+1).matches(">")){
+			}
+			if(operations.get(position+1).matches(">")){
+					System.out.println("matched >");
+					//return true;
+					return (dvalue1 > dvalue2);
+					
+			}
+				
+			if(operations.get(position+1).matches("<=")){
 
-					if(dvalue1 > dvalue2){
-						return true;
-					}else{
-						return false;
-					}
+				return (dvalue1 <= dvalue2);
+			}	
+			if(operations.get(position+1).matches(">=")){
+				return (dvalue1 >= dvalue2);
+					
+			}
 
-				}else{
-					if(operations.get(position+1).matches("<=")){
-
-						if(dvalue1 <= dvalue2){
-							return true;
-						}else{
-							return false;
-						}
-
-					}else{
-						if(operations.get(position+1).matches(">=")){
-							if(dvalue1 >= dvalue2){
-								return true;
-							}else{
-								return false;
-							}
-
-						}else{
-							if(operations.get(position+1).matches("=")){
-								if(dvalue1 == dvalue2){
-									return true;
-								}else{
-									return false;
-								}
-							}
-						}
-					}
-				}
-			
+						
+			if(operations.get(position+1).matches("=")){
+				return (dvalue1 == dvalue2);
+							
+			}
+					
+				
+		return false;	
 		}
 
 
@@ -607,9 +609,7 @@ public class BooleanCalculator {
 
 			//System.out.println("comparisonOutcome: "+comparisonOutcome);
 		
-		return comparisonOutcome;
-
-	}
+		
 
 
 	
@@ -617,7 +617,8 @@ public class BooleanCalculator {
 		CyAttributes atts = null;
 		String[] names = getAllAttributes();
 		
-		
+		CyNetwork network = Cytoscape.getCurrentNetwork();
+		List<Node> nodeList = network.nodesList();
 		
 		for(int i=0;i<names.length;i++){
 			for(int j=0; j<nodeList.size(); j++){
