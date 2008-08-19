@@ -283,7 +283,7 @@ public class SFLDQueryDialog extends JDialog implements ActionListener, ChangeLi
 					LoadNetworkTask.loadURL(new URL(loadURL), false, configureLayout());
 				}
 			} catch (Exception ex) {
-				logger.error("Unable to load URL '"+loadURL+"': ", ex.getMessage());
+				logger.error("Unable to load URL '"+loadURL+"': "+ex.getMessage());
 			}
 		}
 	}
