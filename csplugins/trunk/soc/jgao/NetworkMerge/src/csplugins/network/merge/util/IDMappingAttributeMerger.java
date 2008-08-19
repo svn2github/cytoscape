@@ -49,6 +49,7 @@ import cytoscape.data.CyAttributesUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -121,15 +122,33 @@ public class IDMappingAttributeMerger extends DefaultAttributeMerger {
                         if (ids==null) {
                                 ids = mapTypeIDs.values().iterator().next(); //pick one
                         }
-                        
-                        String value = ids.iterator().next(); //pick one
 
+                        // if the common ids contains the same value as the current toNode
                         String value_ori = attrs.getStringAttribute(toID, toAttrName);
-                        if (value_ori!=null && value_ori.compareTo(value)==0) {
+                        if (value_ori!=null && ids.contains(value_ori)) {
                                 return; // no need to change
                         }
 
-                        attrs.setAttribute(toID, toAttrName, value);
+                        // if the common ids contains the same value(s) as the merged node
+                        Set<String> values_curr = new HashSet<String>();
+                        for (Map.Entry<String,String> entryGOAttr : mapGOAttr.entrySet() ) {
+                                String go = entryGOAttr.getKey();
+                                String attr = entryGOAttr.getValue();
+                                if (attrs.getType(attr)==CyAttributes.TYPE_STRING) {
+                                        values_curr.add(attrs.getStringAttribute(go, attr));
+                                } else if (attrs.getType(attr)==CyAttributes.TYPE_SIMPLE_LIST) {
+                                        values_curr.addAll(attrs.getListAttribute(go, attr));
+                                } else {
+                                        values_curr.add(attrs.getAttribute(go, attr).toString());
+                                }
+                        }
+
+                        values_curr.retainAll(ids);
+                        if (!values_curr.isEmpty()) { // if the common ids contains the same value(s) as the merged node
+                                attrs.setAttribute(toID, toAttrName, values_curr.iterator().next());
+                        } else {
+                                attrs.setAttribute(toID, toAttrName, ids.iterator().next());
+                        }
                 } else if (type2==CyAttributes.TYPE_SIMPLE_LIST) {
                         //TODO how to select?
                         String srcType = idMapping.getSrcIDType(toID, toAttrName);

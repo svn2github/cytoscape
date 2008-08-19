@@ -1,4 +1,4 @@
-/* File: NetworkMergeDialog.java
+/* File: NetworkMergeFrame.java
 
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -34,26 +34,41 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-
 package csplugins.network.merge.ui;
-
 import csplugins.network.merge.NetworkMerge;
-import csplugins.network.merge.NetworkMerge.Operation;
 import csplugins.network.merge.AttributeBasedNetworkMerge;
-import csplugins.network.merge.model.AttributeMapping;
 import csplugins.network.merge.model.AttributeMappingImpl;
-import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.model.MatchingAttributeImpl;
-
+import csplugins.network.merge.model.AttributeMapping;
+import csplugins.network.merge.model.MatchingAttribute;
+import csplugins.network.merge.NetworkMerge.Operation;
+import csplugins.network.merge.conflict.AttributeConflictHandler;
+//import csplugins.network.merge.conflict.IDMappingAttributeConflictHandler;
+import csplugins.network.merge.conflict.DefaultAttributeConflictHandler;
+import csplugins.network.merge.conflict.AttributeConflictManager;
+import csplugins.network.merge.conflict.AttributeConflictCollector;
+import csplugins.network.merge.conflict.AttributeConflictCollectorImpl;
+import csplugins.network.merge.util.AttributeValueMatcher;
+import csplugins.network.merge.util.DefaultAttributeValueMatcher;
+import csplugins.network.merge.util.IDMappingAttributeValueMatcher;
+import csplugins.network.merge.util.AttributeMerger;
+import csplugins.network.merge.util.DefaultAttributeMerger;
+import csplugins.network.merge.util.IDMappingAttributeMerger;
 import csplugins.id.mapping.ui.IDMappingPreviewDialog;
-
-import csplugins.id.mapping.ui.AttributeBasedIDMappingDialog;
 import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
+import cytoscape.data.Semantics;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.GraphSetUtils;
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.CyNetworkNaming;
+
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 
 import java.util.List;
 import java.util.Vector;
@@ -75,6 +90,7 @@ import java.awt.Insets;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 
+import javax.swing.JFrame;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.DefaultListCellRenderer;
@@ -98,30 +114,25 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
-
 /**
- * Main dialog for advance network merge
- * 
- * 
+ *
+ * Main frame for advance network merge
  */
-public class NetworkMergeDialog extends JDialog {
+public class NetworkMergeFrame extends javax.swing.JFrame {
 
-    /** Creates new form NetworkMergeDialog */
-    public NetworkMergeDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        frame = parent;
+    /** Creates new form NetworkMergeFrame */
+    public NetworkMergeFrame() {
+        frame = this;
         idMapping = null;
         matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
-        nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());        
+        nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());
         edgeAttributeMapping = new AttributeMappingImpl(Cytoscape.getEdgeAttributes());
 
         collapsiblePanel = new CollapsiblePanel("Advance Options");
-        
+
         collapsiblePanel.addCollapeListener(new ResizeCollapeListener(this));
 
         initComponents();
-
-        //this.setSize(collapedDim);
     }
 
     /** This method is called from within the constructor to
@@ -170,10 +181,8 @@ public class NetworkMergeDialog extends JDialog {
                 cancelButton = new javax.swing.JButton();
                 okButton = new javax.swing.JButton();
 
-                setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-                setTitle("Merge Networks");
-                setMinimumSize(new java.awt.Dimension(400, 300));
-                setName("MergeDialog"); // NOI18N
+                setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+                setAlwaysOnTop(true);
                 getContentPane().setLayout(new java.awt.GridBagLayout());
 
                 operationPanel.setMinimumSize(new java.awt.Dimension(211, 20));
@@ -443,6 +452,10 @@ public class NetworkMergeDialog extends JDialog {
                                         attrs.add(attr);
                                         selectedNetworkAttribute.put(netID,attrs);
                                 }
+
+                                boolean isFrameAlwaysOnTop = frame.isAlwaysOnTop();
+                                frame.setAlwaysOnTop(false);
+
                                 final boolean isNode = true;
                                 csplugins.id.mapping.ui.AttributeBasedIDMappingDialog dialog = new csplugins.id.mapping.ui.AttributeBasedIDMappingDialog(frame,true,selectedNetworkAttribute,isNode);
                                 dialog.setLocationRelativeTo(frame);
@@ -457,6 +470,7 @@ public class NetworkMergeDialog extends JDialog {
                                                 }
                                         }
                                 }
+                                frame.setAlwaysOnTop(isFrameAlwaysOnTop);
                         }
                 });
                 idMappingPanel.add(importIDMappingButton);
@@ -559,9 +573,7 @@ public class NetworkMergeDialog extends JDialog {
                 okButton.setEnabled(false);
                 okButton.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                cancelled = false;
-                                setVisible(false);
-                                dispose();
+                                okButtonActionPerformed(evt);
                         }
                 });
                 okPanel.add(okButton);
@@ -579,13 +591,68 @@ public class NetworkMergeDialog extends JDialog {
 
     private void viewIDMappingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewIDMappingButtonActionPerformed
             IDMappingPreviewDialog dialog = new IDMappingPreviewDialog(frame,true,idMapping);
-            dialog.setLocationRelativeTo(this);
+            dialog.setLocationRelativeTo(frame);
             dialog.setVisible(true);
             if (idMapping.isEmpty()) {
                     idMapping = null;
                     viewIDMappingButton.setEnabled(false);
             }
-}//GEN-LAST:event_viewIDMappingButtonActionPerformed
+    }//GEN-LAST:event_viewIDMappingButtonActionPerformed
+
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+            this.setAlwaysOnTop(false);
+            if (this.collapsiblePanel.isCollapsed()) {
+                        if (getOperation() == Operation.UNION) {
+                                GraphSetUtils.createUnionGraph(this.selectedNetworkData.getNetworkList(), true,
+                                                CyNetworkNaming.getSuggestedNetworkTitle("Union"));
+                        } else if (getOperation() == Operation.INTERSECTION) {
+                                GraphSetUtils.createIntersectionGraph(this.selectedNetworkData.getNetworkList(), true,
+                                                            CyNetworkNaming.getSuggestedNetworkTitle("Intersection"));
+                        } else if (getOperation() == Operation.DIFFERENCE) {
+                                GraphSetUtils.createDifferenceGraph(this.selectedNetworkData.getNetworkList(), true,
+                                                CyNetworkNaming.getSuggestedNetworkTitle("Difference"));
+                        }
+
+                } else {
+
+
+                        //AttributeBasedIDMappingData idMapping = getIDMapping();
+
+                        AttributeConflictCollector conflictCollector = new AttributeConflictCollectorImpl();
+
+                        // network merge task
+                        Task task = new NetworkMergeSessionTask(
+                                            this.matchingAttribute,
+                                            this.nodeAttributeMapping,
+                                            this.edgeAttributeMapping,
+                                            this.selectedNetworkData.getNetworkList(),
+                                            getOperation(),
+                                            mergeNodeAttributeTable.getMergedNetworkName(),
+                                            conflictCollector,
+                                            idMapping);
+
+                        // Configure JTask Dialog Pop-Up Box
+                        final JTaskConfig jTaskConfig = new JTaskConfig();
+                        jTaskConfig.setOwner(Cytoscape.getDesktop());
+                        jTaskConfig.displayCloseButton(true);
+                        jTaskConfig.displayCancelButton(false);
+                        jTaskConfig.displayStatus(true);
+                        jTaskConfig.setAutoDispose(false);
+
+                        // Execute Task in New Thread; pop open JTask Dialog Box.
+                        TaskManager.executeTask(task, jTaskConfig);
+
+                        // conflict handling task
+                        if (!conflictCollector.isEmpty()) {
+                                task = new HandleConflictsTask(conflictCollector, idMapping);
+                                TaskManager.executeTask(task, jTaskConfig);
+                        }
+
+                }
+
+            setVisible(false);
+            dispose();
+    }//GEN-LAST:event_okButtonActionPerformed
 
 /*
  * Call when adding or removing a network to/from selected network list
@@ -658,68 +725,12 @@ private void updateMergeAttributeTable() {
     mergeEdgeAttributeTable.fireTableStructureChanged();
 }
 
-public boolean isSimpleMergeMode() {
-        return collapsiblePanel.isCollapsed();
-}
-
-/*
- * Get network title for the resulting network
- * 
- */
-public String getMergedNetworkName() {
-        return mergeNodeAttributeTable.getMergedNetworkName();
-}
-
 /*
  * Get currently selected operation
  * 
  */
-public Operation getOperation() {
+private Operation getOperation() {
     return (Operation) operationComboBox.getSelectedItem();
-}
-
-/*
- * return whether the dialog has been cancelled
- * 
- */
-public boolean isCancelled() {
-    return cancelled;
-}
-
-public AttributeBasedIDMappingData getIDMapping() {
-        return idMapping;
-}
-
-/*
- * return node attribute for matching
- * 
- */
-public MatchingAttribute getMatchingAttribute() {
-    return matchingAttribute;
-}
-
-/*
- * return node attribute mapping
- * 
- */
-public AttributeMapping getNodeAttributeMapping() {
-    return nodeAttributeMapping;
-}
-
-/*
- * return node attribute mapping
- * 
- */
-public AttributeMapping getEdgeAttributeMapping() {
-    return edgeAttributeMapping;
-}
-
-/*
- * return selected network list
- * 
- */
-public List<CyNetwork> getSelectedNetworkList() {
-    return selectedNetworkData.getNetworkList();
 }
 
     private MergeAttributeTable mergeNodeAttributeTable;
@@ -729,10 +740,9 @@ public List<CyNetwork> getSelectedNetworkList() {
     private AttributeMapping edgeAttributeMapping;
     private MatchingAttribute matchingAttribute;
     private AttributeBasedIDMappingData idMapping;
-            
-    private boolean cancelled = true;
+
     private Frame frame;
-    
+
     private final ImageIcon UNION_ICON = new ImageIcon(getClass().getResource("/images/union.png"));
     private final ImageIcon INTERSECTION_ICON = new ImageIcon(getClass().getResource("/images/intersection.png"));
     private final ImageIcon DIFFERENCE_ICON = new ImageIcon(getClass().getResource("/images/difference.png"));
@@ -759,38 +769,51 @@ public List<CyNetwork> getSelectedNetworkList() {
         private javax.swing.JButton viewIDMappingButton;
         // End of variables declaration//GEN-END:variables
 
+        class ResizeCollapeListener implements CollapsiblePanel.CollapeListener {
+                private final JFrame frame;
+                //private final Dimension collapedDim, expandedDim;
 
-class ResizeCollapeListener implements CollapsiblePanel.CollapeListener {
-        private final JDialog dialog;
-        //private final Dimension collapedDim, expandedDim;
-
-        public ResizeCollapeListener(JDialog dialog) {
-                this.dialog = dialog;
-                //this.collapedDim = collapedDim;
-                //this.expandedDim = expandedDim;
-        }
-
-        public void collaped() {
-                Dimension dim;
-                if (getOperation()!=Operation.DIFFERENCE) {
-                        dim = new Dimension(500,300);
-                } else {
-                        dim = new Dimension(500,400);
+                public ResizeCollapeListener(JFrame frame) {
+                        this.frame = frame;
+                        //this.collapedDim = collapedDim;
+                        //this.expandedDim = expandedDim;
                 }
-                dialog.setSize(dim);
-        }
 
-        public void expanded() {
-                Dimension dim;
-                if (getOperation()!=Operation.DIFFERENCE) {
-                        dim = new Dimension(700,700);
-                } else {
-                        dim = new Dimension(700,800);
+                public void collaped() {Dimension dim;
+                        if (getOperation()!=Operation.DIFFERENCE) {
+                                dim = new Dimension(500,300);
+                        } else {
+                                dim = new Dimension(500,400);
+                        }
+
+                        frame.setSize(dim);
                 }
-                dialog.setSize(dim);
-        }
-}
 
+                public void expanded() {
+                        if (frame.getExtendedState()==Frame.MAXIMIZED_BOTH) {
+                                return;
+                        }
+
+                        Dimension dim_curr = frame.getSize(); // current dim
+                        int width_curr = dim_curr.width;
+                        int height_curr = dim_curr.height;
+
+                        int width = 700;
+                        int height = getOperation()==Operation.DIFFERENCE?800:700;
+
+                        if (width < width_curr) {
+                                width = width_curr;
+                        }
+
+                        if (height < height_curr) {
+                                height = height_curr;
+                        }
+
+                        Dimension dim = new Dimension(width,height);
+
+                        frame.setSize(dim);
+                }
+        }
 }
 
 class NetworkListModel extends AbstractListModel {
@@ -830,3 +853,237 @@ class NetworkListModel extends AbstractListModel {
         }
 }
 
+class NetworkMergeSessionTask implements Task {
+    private MatchingAttribute matchingAttribute;
+    private AttributeMapping nodeAttributeMapping;
+    private AttributeMapping edgeAttributeMapping;
+    private List<CyNetwork> selectedNetworkList;
+    private Operation operation;
+    private String mergedNetworkName;
+    AttributeConflictCollector conflictCollector;
+    AttributeBasedIDMappingData idMapping;
+
+    private TaskMonitor taskMonitor;
+
+    /**
+     * Constructor.<br>
+     *
+     */
+    NetworkMergeSessionTask( final MatchingAttribute matchingAttribute,
+                             final AttributeMapping nodeAttributeMapping,
+                             final AttributeMapping edgeAttributeMapping,
+                             final List<CyNetwork> selectedNetworkList,
+                             final Operation operation,
+                             final String mergedNetworkName,
+                             final AttributeConflictCollector conflictCollector,
+                             final AttributeBasedIDMappingData idMapping) {
+        this.matchingAttribute = matchingAttribute;
+        this.nodeAttributeMapping = nodeAttributeMapping;
+        this.edgeAttributeMapping = edgeAttributeMapping;
+        this.selectedNetworkList = selectedNetworkList;
+        this.operation = operation;
+        this.mergedNetworkName = mergedNetworkName;
+        this.conflictCollector = conflictCollector;
+        this.idMapping = idMapping;
+    }
+
+    /**
+     * Executes Task
+     *
+     * @throws
+     * @throws Exception
+     */
+    @Override
+    public void run() {
+        taskMonitor.setStatus("Merging networks.\n\nIt may take a while.\nPlease wait...");
+        taskMonitor.setPercentCompleted(0);
+
+
+
+        try {
+            final AttributeValueMatcher attributeValueMatcher;
+            final AttributeMerger attributeMerger;
+            if (idMapping==null) {
+                    attributeValueMatcher = new DefaultAttributeValueMatcher();
+                    attributeMerger = new DefaultAttributeMerger(conflictCollector);
+            } else {
+                    attributeValueMatcher = new IDMappingAttributeValueMatcher(idMapping);
+                    attributeMerger = new IDMappingAttributeMerger(conflictCollector,idMapping);
+            }
+
+            final NetworkMerge networkMerge = new AttributeBasedNetworkMerge(
+                                matchingAttribute,
+                                nodeAttributeMapping,
+                                edgeAttributeMapping,
+                                attributeMerger,
+                                attributeValueMatcher);
+
+            CyNetwork mergedNetwork = networkMerge.mergeNetwork(
+                                selectedNetworkList,
+                                operation,
+                                mergedNetworkName);
+
+
+/*
+            cytoscape.view.CyNetworkView networkView = Cytoscape.getNetworkView(mergedNetworkName);
+
+            // get the VisualMappingManager and CalculatorCatalog
+            cytoscape.visual.VisualMappingManager manager = Cytoscape.getVisualMappingManager();
+            cytoscape.visual.CalculatorCatalog catalog = manager.getCalculatorCatalog();
+
+            cytoscape.visual.VisualStyle vs = catalog.getVisualStyle(mergedNetworkName+" Visual Style");
+            if (vs == null) {
+                    // if not, create it and add it to the catalog
+                    //vs = createVisualStyle(networkMerge);
+                    cytoscape.visual.NodeAppearanceCalculator nodeAppCalc = new cytoscape.visual.NodeAppearanceCalculator();
+                    cytoscape.visual.mappings.PassThroughMapping pm = new cytoscape.visual.mappings.PassThroughMapping(new String(), cytoscape.data.Semantics.CANONICAL_NAME);
+
+                    cytoscape.visual.calculators.Calculator nlc = new cytoscape.visual.calculators.BasicCalculator(null,
+                                                     pm, cytoscape.visual.VisualPropertyType.NODE_LABEL);
+                    nodeAppCalc.setCalculator(nlc);
+
+                    vs.setNodeAppearanceCalculator(nodeAppCalc);
+
+                    catalog.addVisualStyle(vs);
+            }
+            // actually apply the visual style
+            manager.setVisualStyle(vs);
+            networkView.redrawGraph(true,true);
+*/
+
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("The selected networks were successfully merged into network '"
+                                  + mergedNetwork.getTitle()
+                                  + "' with "
+                                  + conflictCollector.getConfilctCount()
+                                  + " attribute conflicts.");
+
+        } catch(Exception e) {
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Network Merge Failed!");
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Halts the Task: Not Currently Implemented.
+     */
+    @Override
+    public void halt() {
+            // Task can not currently be halted.
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Failed!!!");
+    }
+
+    /**
+     * Sets the Task Monitor.
+     *
+     * @param taskMonitor
+     *            TaskMonitor Object.
+     */
+    @Override
+    public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+            this.taskMonitor = taskMonitor;
+    }
+
+    /**
+     * Gets the Task Title.
+     *
+     * @return Task Title.
+     */
+    @Override
+    public String getTitle() {
+            return "Merging networks";
+    }
+}
+
+class HandleConflictsTask implements Task {
+    private AttributeConflictCollector conflictCollector;
+    private AttributeBasedIDMappingData idMapping;
+
+    private TaskMonitor taskMonitor;
+
+    /**
+     * Constructor.<br>
+     *
+     */
+    HandleConflictsTask(final AttributeConflictCollector conflictCollector,
+                        final AttributeBasedIDMappingData idMapping) {
+        this.conflictCollector = conflictCollector;
+        this.idMapping = idMapping;
+    }
+
+    /**
+     * Executes Task
+     *
+     * @throws
+     * @throws Exception
+     */
+    @Override
+    public void run() {
+        taskMonitor.setStatus("Handle conflicts.\n\nIt may take a while.\nPlease wait...");
+        taskMonitor.setPercentCompleted(0);
+
+        try {
+             int nBefore = conflictCollector.getConfilctCount();
+
+             List<AttributeConflictHandler> conflictHandlers = new Vector<AttributeConflictHandler>();
+
+             AttributeConflictHandler conflictHandler;
+
+//             if (idMapping!=null) {
+//                conflictHandler = new IDMappingAttributeConflictHandler(idMapping);
+//                conflictHandlers.add(conflictHandler);
+//             }
+
+             conflictHandler = new DefaultAttributeConflictHandler();
+             conflictHandlers.add(conflictHandler);
+
+             AttributeConflictManager conflictManager = new AttributeConflictManager(conflictCollector,conflictHandlers);
+             conflictManager.handleConflicts();
+
+             int nAfter = conflictCollector.getConfilctCount();
+
+             taskMonitor.setPercentCompleted(100);
+             taskMonitor.setStatus("Successfully handled " + (nBefore-nAfter) + " attribute conflicts. "
+                                        + nAfter+" conflicts remains.");
+        } catch(Exception e) {
+                taskMonitor.setPercentCompleted(100);
+                taskMonitor.setStatus("Conflict handle Failed!");
+                e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Halts the Task: Not Currently Implemented.
+     */
+    @Override
+    public void halt() {
+            // Task can not currently be halted.
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Failed!!!");
+    }
+
+    /**
+     * Sets the Task Monitor.
+     *
+     * @param taskMonitor
+     *            TaskMonitor Object.
+     */
+    @Override
+    public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
+            this.taskMonitor = taskMonitor;
+    }
+
+    /**
+     * Gets the Task Title.
+     *
+     * @return Task Title.
+     */
+    @Override
+    public String getTitle() {
+            return "Merging networks";
+    }
+}
