@@ -27,7 +27,8 @@ import javax.swing.JPanel;
  * and labels of a network in order to improve the network's readability.
  * The degree to which nodes and labels are moved is controlled by the values
  * that users enter for the fields that control the algorithm, found in 
- * Layout --> Settings --> Label Force-Directed Layout.
+ * Layout --> Settings --> Label Force-Directed Layout.  All node and label
+ * movement is based on the Force-Directed Layout algorithm.
  * 
  * NOTE: This class is based on the Force-Directed Layout class 
  * (csplugins.layout.algorithms.force).  Modifications were made to the
@@ -38,6 +39,9 @@ import javax.swing.JPanel;
 public class LabelForceDirectedLayout extends AbstractGraphPartition
 {
 	// vmui
+	private boolean resetPosition = false;
+	
+	// vmui
 	private ForceSimulator label_sim;
 	private ForceSimulator node_sim;
 
@@ -45,7 +49,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	double defaultNodeMass = 3.0;
 	
 	// Spring coefficient and length of network edges
-	double defaultSpringCoefficient = 1e-4f;
+	double defaultSpringCoefficient = 0.000005;
 	double defaultSpringLength = 50;
 	
 	// Spring coefficient and length of label edges (those connecting a label
@@ -54,7 +58,7 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	double defaultLabelSpringLength = 5.0;
 	
 	// The percentage of numIterations in which network nodes will also be moved
-	double defaultPercentage = 0.0; // vmui
+	double defaultPercentage = 80.0; // vmui
 	
 	// Whether network nodes will be moved or not - vmui
 	boolean moveNodes = false;
@@ -126,6 +130,12 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 
 
 	public void layoutPartion(LayoutPartition part) {
+		
+		// Reset the label position of all nodes - vmui
+		if (resetPosition) {
+			resetNodeLabelPosition(nodeAtts, part.getNodeList());
+			return; // Finishes the execution of this layout algorithm
+		}
 		
 		LabelPosition lp = null; // vmui
 
@@ -288,36 +298,35 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		// --- Update positions ---
 		lp = new LabelPosition(); // vmui
 		
-		for (LayoutNode ln: allLayoutNodes) {
-			
-			// ln is unlocked and selected
-			if (!ln.isLocked()) {
-				
-				ForceItem fitem = forceItems.get(ln);
-				
-				// Case where ln is a label node - vmui
-				if (labelToParent.containsKey(ln)) {
-					
-					NodeView lnNodeView = ln.getNodeView();
-					nodeAtts = Cytoscape.getNodeAttributes();
-					ForceItem fitemParent = forceItems.get(labelToParent.get(ln));
-					
-		    		lp.setOffsetX(fitem.location[0] - fitemParent.location[0]);
-		    		lp.setOffsetY(fitem.location[1] - fitemParent.location[1]);
-		    		
-		    		nodeAtts.setAttribute(lnNodeView.getNode().getIdentifier(), 
-		    				"node.labelPosition", lp.shortString());
-				} else {
-					// Case where ln is a network node (unlocked) - vmui
-					if (!moveNodes || defaultPercentage == 0.0) {
-						continue;
-					}
-					ln.setX(fitem.location[0]);
-					ln.setY(fitem.location[1]);
-					part.moveNodeToLocation(ln);
-				}
-			}
-		}
+        for (LayoutNode ln: allLayoutNodes) { // vmui
+            
+            if (!ln.isLocked()) {
+                
+                ForceItem fitem = forceItems.get(ln);
+                
+                if (labelToParent.containsKey(ln)) {
+                	
+                    // ln is a label LayoutNode
+                    NodeView lnNodeView = ln.getNodeView();
+                    nodeAtts = Cytoscape.getNodeAttributes();
+                    ForceItem fitemParent = forceItems.get(labelToParent.get(ln));
+                    
+                    // Reposition
+                    lp.setOffsetX(fitem.location[0] - fitemParent.location[0]);
+                    lp.setOffsetY(fitem.location[1] - fitemParent.location[1]);
+                    nodeAtts.setAttribute(lnNodeView.getNode().getIdentifier(),
+                            "node.labelPosition", lp.shortString());
+                    
+                } else { // ln is a network LayoutNode
+                	
+                	if (moveNodes && defaultPercentage != 0.0) { // unlocked
+                        ln.setX(fitem.location[0]);
+                        ln.setY(fitem.location[1]);
+                        part.moveNodeToLocation(ln);
+                	}
+                }
+            }
+        }
 		
 		// vmui -->
     	networkView.updateView();
@@ -468,6 +477,11 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 				"Integration algorithm to use",
 				Tunable.LIST, new Integer(0),
 				(Object) integratorArray, (Object) null, 0));
+		
+		// vmui
+		layoutProperties.add(new Tunable("resetPosition", 
+				"Reset the label position of all nodes",
+                Tunable.BOOLEAN, new Boolean(false)));
 
 		// We've now set all of our tunables, so we can read the property 
 		// file now and adjust as appropriate
@@ -497,8 +511,6 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 		t = layoutProperties.get("partition");
 		if ((t != null) && (t.valueChanged() || force))
 			setPartition(t.getValue().toString());
-
-//		edgeWeighter.getWeightTunables(layoutProperties, getInitialAttributeList());
 		
 		t = layoutProperties.get("defaultSpringCoefficient");
 		if ((t != null) && (t.valueChanged() || force))
@@ -544,8 +556,12 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 			label_sim.setIntegrator(integrator);
 			node_sim.setIntegrator(integrator);
 		}
+		
+		// vmui
+		t = layoutProperties.get("resetPosition");
+		if ((t != null) && (t.valueChanged() || force))
+			resetPosition = ((Boolean) t.getValue()).booleanValue();
 
-//		edgeWeighter.updateSettings(layoutProperties, force);
 	}
 
 	public LayoutProperties getSettings() {
@@ -555,6 +571,16 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	public JPanel getSettingsPanel() {
 		return layoutProperties.getTunablePanel();
 
+	}
+	
+	public void resetNodeLabelPosition(CyAttributes nodeAtts, List<LayoutNode> nodeList) {
+		for(LayoutNode n : nodeList) {
+			if (nodeAtts.hasAttribute(n.getIdentifier(), "node.labelPosition")) {
+				nodeAtts.deleteAttribute(n.getIdentifier(), "node.labelPosition");
+			}
+		}
+    	networkView.updateView();
+    	networkView.redrawGraph(true, true);
 	}
 	
 	
