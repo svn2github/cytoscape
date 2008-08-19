@@ -6,7 +6,7 @@
 * Description:
 * Author:       Allan Kuchinsky
 * Created:      Mon Aug 01 08:42:41 2005
-* Modified:     Tue Oct 30 11:22:37 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Mon Aug 18 14:27:54 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,8 @@
 *
 * Revisions:
 *
+* Wed Jul 09 10:21:03 2008 (Michael L. Creech) creech@w235krbza760
+*  Updated to version 2.60.
 * Tue Oct 30 11:22:23 2007 (Michael L. Creech) creech@w235krbza760
 *  Updated to version 2.53.
 * Thu Oct 25 13:30:25 2007 (Michael L. Creech) creech@w235krbza760
@@ -56,7 +58,8 @@ import org.osgi.framework.BundleActivator;
  *
  */
 public class CytoscapeEditorPlugin implements BundleActivator {
-    private static final double VERSION = 2.53;
+    // MLC 07/20/07:
+    private static final double VERSION = 2.60;
 
 	/**
 	 * Creates a new CytoscapeEditorPlugin object.
