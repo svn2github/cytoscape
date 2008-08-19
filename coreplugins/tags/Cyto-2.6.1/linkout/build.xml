@@ -1,0 +1,220 @@
+<!-- Ant file for Linkout project-->
+<project name="linkout" default="all" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initialization target                                               -->
+  <!-- =================================================================== -->
+  <target name="init-linkout">
+    <tstamp/>
+    <property name="linkout.name" value="linkout"/>
+    <property name="linkout.version" value="0.1"/>
+    <property name="linkout.year" value="2006"/>
+
+    <echo message="Building ${linkout.name} version ${linkout.version}."/>
+
+    <!-- Inheritable properties -->
+    <property name="debug" value="on"/>
+    <property name="optimize" value="off"/>
+    <property name="deprecation" value="on"/>
+    <property name="nowarn" value="false"/>
+    <property name="fork" value="false"/>
+    <property name="linkout.root.dir" value="."/>
+    <property name="linkout.lib.dir" value="${linkout.root.dir}/lib"/>
+    <property name="linkout.resources.dir" value="${linkout.root.dir}/resources"/>
+    <property name="cytoscape.lib.dir" value="${linkout.root.dir}/../../cytoscape/lib"/>
+    <!--property name="cytoscape.plugin.dir" value="${linkout.root.dir}/../../../../cytoscape/plugins"/-->
+    <path id="project.class.path">
+      <pathelement path="${java.class.path}/"/>
+    </path>
+
+    <!-- Define the directories -->
+    <property name="linkout.root.dir" value="./"/>
+    <property name="linkout.src.dir" value="${linkout.root.dir}/src"/>
+    <property name="linkout.classes.dir" value="${linkout.root.dir}/classes"/>
+    <property name="linkout.javadoc.dir" value="${linkout.root.dir}/api"/>
+    <property name="linkout.resources.dir" value="${linkout.root.dir}/resources"/>
+    <property name="linkout.manifest.dir" value="${linkout.root.dir}/manifest"/>
+    <property name="linkout.packages" value="*"/>
+    <!-- Subdirectory for test reports -->
+    <property name="linkout.tests.reports.dir" value="${linkout.root.dir}/test" />
+    <property name="cytoscape.lib" value="../../cytoscape" />
+
+    <!-- Define the condition for compilation -->
+    <property name="cytoscape.jar" value="${cytoscape.lib}/cytoscape.jar"/>
+    <property name="colt.jar" value="${cytoscape.lib.dir}/colt.jar"/>
+    
+
+    <condition property="cytoscape.present">
+      <and> 
+	  		<available file="${cytoscape.jar}"/> 
+			<available file="${colt.jar}"/> 
+		  </and>
+    </condition>
+
+    <!-- Define excludes for linkout compile and javadoc -->
+    <property name="linkout.excludes" value="**/notyet/*"/>
+    <property name="linkout.tests.excludes" value="**/notyet/*"/>
+    <property name="linkout.packages.excludes" value="**.test.*,**.notyet.*"/>
+
+    <path id="linkout.project.class.path">
+      <pathelement location="${linkout.classes.dir}"/>
+      <pathelement location="${cytoscape.lib.dir}/colt.jar"/>
+      <pathelement location="${cytoscape.lib}/cytoscape.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/cytoscape-data-attr.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/giny.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/phoebe.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/coltginy.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/piccolo.jar"/>
+      <pathelement location="${cytoscape.lib.dir}/ding.jar"/>
+      <pathelement path="${project.class.path}/"/>
+    </path>
+
+ 
+
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the linkout project                                           -->
+  <!-- =================================================================== -->
+  <target name="compile-linkout" depends="init-linkout"  >
+
+   <echo message=" COMPILE linkout "/>
+
+    <mkdir dir="${linkout.classes.dir}"/>
+    <javac srcdir="${linkout.src.dir}"
+           excludes="${linkout.excludes}"
+           classpathref="linkout.project.class.path"
+           destdir="${linkout.classes.dir}"
+           debug="${debug}"
+           nowarn="${nowarn}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the linkout.jar file                                           -->
+  <!-- =================================================================== -->
+  <target name="linkout" depends="compile-linkout"  >
+    
+    <echo message="Running linkout"/>
+    <copy todir="${linkout.classes.dir}" file="${linkout.resources.dir}/linkout.props"/>
+		<copy todir="${linkout.classes.dir}/linkout" file="${linkout.resources.dir}/plugin.props"/>
+  	<jar destfile="linkout.jar"> 
+      <fileset dir="${linkout.classes.dir}" includes="**"/>
+      <manifest>
+       <attribute name="Cytoscape-Plugin" value="linkout.LinkOutPlugin"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compile linkouts the linkout tests                                             -->
+  <!-- =================================================================== -->
+  <target name="compile-tests" depends="linkout"  >
+    <echo message="Running compile-tests"/>
+	<echo message="Including ${linkout.root.dir}/test/" />
+	<mkdir dir="${linkout.classes.dir}"/>
+    <javac srcdir="${linkout.src.dir};${linkout.root.dir}/test/"			
+           includes="${linkout.root.dir}/test/"
+           excludes="${linkout.tests.excludes}"
+           classpathref="linkout.project.class.path"
+           destdir="${linkout.classes.dir}"
+           debug="${debug}"
+           deprecation="${deprecation}" 
+           optimize="${optimize}"
+           fork="${fork}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the linkout-tests.jar file                                     -->
+  <!-- =================================================================== -->
+  <target name="tests" depends="compile-tests"  >
+  
+	<echo message="Running tests"/>
+	
+    <jar jarfile="linkout-tests.jar"
+         basedir="${linkout.classes.dir}"
+         includes="./test/*"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build all jars                                                      -->
+  <!-- =================================================================== -->
+  <target name="all" depends="linkout,docs"/>
+
+   <!-- =================================================================== -->
+  <!-- Run the Plugin                                                      -->
+  <!-- =================================================================== -->
+  <target name="run" depends="linkout" >
+	<echo message="running run"/>	
+     <java classname="cytoscape.CyMain" 
+           classpathref="linkout.project.class.path"
+           fork="true"/>
+           <arg line = "-p"/>
+           <arg line = "${linkout.lib.dir}/linkout.jar"/>
+           
+
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- Runs the tests in linkout-tests.jar                                    -->
+  <!-- =================================================================== -->
+  <target name="runtests" depends="tests"  >
+	<echo message="running runtests"/>
+    <mkdir dir="${linkout.tests.reports.dir}"/>
+    <junit
+       printsummary="yes"
+       haltonfailure="no"
+       dir="${linkout.classes.dir}"
+       maxmemory="1G"
+    >
+      <formatter type="plain" usefile="true" />
+      <classpath refid="linkout.project.class.path"/>
+      <!-- The junit task doesn't support 'if' so we test for JUnit here -->
+      <batchtest fork="yes" todir="${linkout.tests.reports.dir}" if="junit.present">
+        <fileset
+           dir="${linkout.classes.dir}"
+           includes="**/test/*"
+           excludes="${linkout.tests.excludes}"
+        />
+      </batchtest>
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== 
+  -->
+  <target name="docs" depends="init-linkout" >
+    <mkdir dir="${linkout.javadoc.dir}"/>
+    <javadoc packagenames="${linkout.packages}"
+             excludepackagenames="${linkout.packages.excludes}"
+             sourcepath="${linkout.src.dir}"
+             destdir="${linkout.javadoc.dir}"
+             classpathref="linkout.project.class.path"
+             author="true"
+             version="true"
+             use="true"
+             splitindex="true"
+             noindex="false"
+             windowtitle="${linkout.name} API"
+             doctitle="${linkout.name}"
+    />
+  </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Clean up, get back to original state                                -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init-linkout">
+    <delete dir="${linkout.classes.dir}"/>
+    <delete dir="${linkout.javadoc.dir}"/>
+    <delete file="linkout.jar"/>
+    <delete file="linkout-tests.jar"/>
+  </target>
+
+</project>
+
+<!-- End of file -->
