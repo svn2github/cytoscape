@@ -163,7 +163,8 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
 		 	{ setVisible(true); }
 
 
-		if (level == LogLevel.LOG_ERROR || level == LogLevel.LOG_WARN) 
+		if ((level == LogLevel.LOG_ERROR || level == LogLevel.LOG_WARN) 
+		    && isVisible())
 			{
 		 	logTabs.setSelectedComponent(logTabMap.get(level));
 			}
