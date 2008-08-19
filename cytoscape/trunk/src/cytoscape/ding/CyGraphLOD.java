@@ -120,7 +120,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 		try {
 			ret = Integer.parseInt(val);
 		} catch (Exception e) {
-			logger.error("Property value for "+key+" must be an integer");
+			logger.warn("Property value for "+key+" must be an integer");
 		}
 
 		return ret;
@@ -140,7 +140,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 			else
 				ret = false;
 		} catch (Exception e) {
-			logger.error("Property value for "+key+" must be a boolean");
+			logger.warn("Property value for "+key+" must be a boolean");
 		}
 
 		return ret;

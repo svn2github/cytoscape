@@ -165,12 +165,10 @@ public class PluginManagerAction extends CytoscapeAction {
 			PluginManager Mgr = PluginManager.getPluginManager();
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
-					logger.error("", getIOException());
 					// failed to read the given url
 					dialog.setError(PluginManageDialog.CommonError.NOXML.toString());
 				} else if (getJDOMException() != null) {
 					// failed to parse the xml file at the url
-					logger.error("", getJDOMException());
 					dialog.setError(PluginManageDialog.CommonError.BADXML.toString());
 				} else {
 					dialog.setError(getException().getMessage());

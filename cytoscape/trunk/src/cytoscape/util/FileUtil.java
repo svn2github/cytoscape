@@ -379,7 +379,6 @@ public abstract class FileUtil {
 				in = new FileInputStream(name);
 		} catch (IOException ioe) {
 			logger.error("Unable to open file '"+name+"': "+ioe.getMessage());
-			// logger.error("Unable to open file '"+name+"': "+ioe.getMessage(), ioe);
 
 			if (monitor != null)
 				monitor.setException(ioe, ioe.getMessage());
@@ -401,7 +400,6 @@ public abstract class FileUtil {
 			return getInputString(stream);
 		} catch (IOException ioe) {
 			logger.warn("Couldn't create string from '"+filename+"': "+ioe.getMessage());
-			// logger.error("Unable to open file '"+filename+"': "+ioe.getMessage(), ioe);
 		}
 
 		return null;

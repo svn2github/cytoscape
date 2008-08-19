@@ -212,16 +212,16 @@ class OpenSessionTask implements Task {
 			sr.read();
 		} catch (IOException e) {
 			taskMonitor.setException(e, "Cannot open the session file: " + e.getMessage());
-			OpenSessionAction.logger.error("Cannot open the session file", e);
+			OpenSessionAction.logger.error("Cannot open the session file: "+ e.getMessage());
 		} catch (JAXBException e) {
 			taskMonitor.setException(e, "Cannot unmarshall document: " + e.getMessage());
-			OpenSessionAction.logger.error("Cannot unmarshall document", e);
+			OpenSessionAction.logger.error("Cannot unmarshall document: "+ e.getMessage());
         } catch (XGMMLException e) {
-            OpenSessionAction.logger.error("", e);
+            OpenSessionAction.logger.error("XGMML format error in network "+ e.getMessage());
             taskMonitor.setException(e, e.getMessage());
         } catch (Exception e) { // catch any exception: the user should know something went wrong
             taskMonitor.setException(e, "Error while loading session " + e.getMessage());
-            OpenSessionAction.logger.error("Error while loading session", e);
+            OpenSessionAction.logger.error("Error while loading session: "+ e.getMessage());
 		} finally {
 			sr = null;
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();

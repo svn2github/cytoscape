@@ -190,7 +190,7 @@ public class Exec {
 			}
 		} // try
 		catch (IOException e) {
-			logger.error("I/O error while communicating with child process: "+e.getMessage());
+			logger.warn("I/O error while communicating with child process: "+e.getMessage());
 		}
 
 		return execExitValue;
@@ -233,7 +233,7 @@ public class Exec {
 					} // while
 				} // trey
 				catch (Exception exc0) {
-					logger.error("--- error: ", exc0);
+					logger.warn("error reading output from command '"+getCmd()+"': "+ exc0.toString());
 				} // catch
 			}
 			; // run
@@ -249,7 +249,7 @@ public class Exec {
 					} // while
 				} // try
 				catch (Exception exc1) {
-					logger.info("--- error: ", exc1);
+					logger.warn("error reading errors from command '"+getCmd()+"': "+ exc1.toString());
 				} // catch
 			}
 			; // run

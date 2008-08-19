@@ -144,7 +144,7 @@ class ExportTask
 					stream.close();					
 				}
 				catch (IOException ioe) {
-					ExportAsGraphicsAction.logger.error("Unable to close the stream", ioe);
+					ExportAsGraphicsAction.logger.warn("Unable to close the stream: "+ioe.toString());
 				}
 			}
 		};
