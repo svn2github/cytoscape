@@ -122,7 +122,7 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 
 	Recompile cytoscape.
 
-		ant all
+		ant clean all
 
 	Once cytoscape compiles cleanly with the new corelibs, coreplugins, and
 	possibly updated documentation, TEST the thing!!!  At a minimum start
@@ -143,15 +143,15 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 
 		svn copy \
 		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape/branches/cy-release-branch-x \
-		  file://grenache.ucsd.edu/cellar/common/svn/cytoscape/tags/cyto_version
+		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape/tags/cyto_version
 
 		svn copy \
 		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/coreplugins/branches/cy-release-branch-x \
-		  file://grenache.ucsd.edu/cellar/common/svn/coreplugins/tags/cyto_version
+		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/coreplugins/tags/cyto_version
 
 		svn copy \
 		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs/branches/cy-release-branch-x \
-		  file://grenache.ucsd.edu/cellar/common/svn/corelibs/tags/cyto_version
+		  svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs/tags/cyto_version
 
 	Create the final release files
 		To do so, run:  

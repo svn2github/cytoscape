@@ -167,8 +167,6 @@ public class CytoscapeInit {
 			// see if we are in headless mode
 			// show splash screen, if appropriate
 
-			String consoleLogger = properties.getProperty("logger.console");
-
 			/*
 			 * Initialize as GUI mode
 			 */
@@ -177,6 +175,14 @@ public class CytoscapeInit {
 				final ImageIcon image = new ImageIcon(this.getClass()
 				                                          .getResource(SPLASH_SCREEN_LOCATION));
 				WindowUtilities.showSplash(image, 8000);
+
+				// Register the console logger, if we're not told not to
+				String consoleLogger = properties.getProperty("logger.console");
+				if (consoleLogger == null || Boolean.getBoolean(consoleLogger)) {
+					logger.addLogHandler(ConsoleLogger.getLogger(), LogLevel.LOG_DEBUG);
+				} else {
+					logger.info("Log information can now be found in the Help->Error Console menu");
+				}
 
 				// Register the logger dialog as a log handler
 				logger.addLogHandler(LoggerDialog.getLoggerDialog(), LogLevel.LOG_DEBUG);
@@ -191,12 +197,9 @@ public class CytoscapeInit {
 
 				setUpAttributesChangedListener();
 			} else {
-				consoleLogger = null;  // Force logging to the console
-			}
-
-			// Register the console logger, if we're not told not to
-			if (consoleLogger == null || Boolean.getBoolean(consoleLogger))
+				// Force logging to the console
 				logger.addLogHandler(ConsoleLogger.getLogger(), LogLevel.LOG_DEBUG);
+			}
 
 			logger.info("init mode: " + initParams.getMode());
 
@@ -206,7 +209,7 @@ public class CytoscapeInit {
 				logger.info("Updating plugins...");
 				mgr.delete();
 			} catch (cytoscape.plugin.ManagerException me) {
-				logger.error("Error updating plugins: "+me.getMessage());
+				logger.warn("Error updating plugins: "+me.getMessage());
 			}
 
 			mgr.install();
@@ -258,7 +261,7 @@ public class CytoscapeInit {
 			List<Throwable> pluginLoadingErrors = mgr.getLoadingErrors();
 
 			for (Throwable t : pluginLoadingErrors) {
-				logger.error("", t);
+				logger.warn("Plugin loading error: "+t.toString());
 			}
 
 			mgr.clearErrorList();
@@ -384,11 +387,11 @@ public class CytoscapeInit {
 			File parent_dir = new File(dirName, ".cytoscape");
 
 			if (parent_dir.mkdir())
-				logger.error("Parent_Dir: " + parent_dir + " created.");
+				logger.info("Parent_Dir: " + parent_dir + " created.");
 
 			return parent_dir;
 		} catch (Exception e) {
-			logger.error("error getting config directory");
+			logger.warn("error getting config directory");
 		}
 
 		return null;
@@ -408,11 +411,11 @@ public class CytoscapeInit {
 			File file = new File(parent_dir, file_name);
 
 			if (file.createNewFile())
-				logger.error("Config file: " + file + " created.");
+				logger.info("Config file: " + file + " created.");
 
 			return file;
 		} catch (Exception e) {
-			logger.error("error getting config file:" + file_name);
+			logger.warn("error getting config file:" + file_name);
 		}
 
 		return null;
@@ -448,7 +451,7 @@ public class CytoscapeInit {
 			if (cl != null)
 				vmu = cl.getResource(defaultName);
 			else
-				logger.error("ClassLoader for reading cytoscape.jar is null");
+				logger.warn("ClassLoader for reading cytoscape.jar is null");
 
 			if (vmu != null)
 				// We'd like to use URLUtil.getBasicInputStream() to get
@@ -458,7 +461,7 @@ public class CytoscapeInit {
 				// it directly:
 				props.load(vmu.openStream());
 			else
-				logger.error("couldn't read " + defaultName + " from " + tryName);
+				logger.warn("couldn't read " + defaultName + " from " + tryName);
 
 			// load the props file from $HOME/.cytoscape
 			tryName = "$HOME/.cytoscape";
@@ -468,9 +471,9 @@ public class CytoscapeInit {
 			if (vmp != null)
 				props.load(new FileInputStream(vmp));
 			else
-				logger.error("couldn't read " + defaultName + " from " + tryName);
+				logger.warn("couldn't read " + defaultName + " from " + tryName);
 		} catch (IOException ioe) {
-			logger.error("couldn't open '" + tryName + " " + defaultName
+			logger.warn("couldn't open '" + tryName + " " + defaultName
 			             + "' file: "+ioe.getMessage()+" - creating a hardcoded default");
 		}
 	}
@@ -586,11 +589,15 @@ public class CytoscapeInit {
 			if (net.matches(FileUtil.urlPattern)) {
 				try {
 					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
-				} catch (MalformedURLException mue) {
-					logger.error("Couldn't load network: " + mue.getMessage());
+				} catch (Exception mue) {
+					logger.error("Couldn't load network from URL '"+net+"': " + mue.getMessage());
 				}
 			} else {
-				network = Cytoscape.createNetworkFromFile(net, createView);
+				try {
+					network = Cytoscape.createNetworkFromFile(net, createView);
+				} catch (Exception mue) {
+					logger.error("Couldn't load network from file '"+net+"': " + mue.getMessage());
+				}
 			}
 
 			// This is for browser and other plugins.

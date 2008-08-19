@@ -128,7 +128,7 @@ public class PluginProperties extends Properties {
 		try {
 			pi.setObjectVersion( Double.valueOf(getProperty(PluginProperty.VERSION.getPropertyKey())) );
 		} catch (java.lang.NumberFormatException ne) { // skip it or set it to a default value??
-			CyLogger.getLogger().error(pi.getName() + " version is incorrectly formatted, format is: \\d+.\\d+. Version set to 0.1 to allow plugin to load");
+			CyLogger.getLogger().warn(pi.getName() + " version is incorrectly formatted, format is: \\d+.\\d+. Version set to 0.1 to allow plugin to load");
 			// ne.printStackTrace();
 			pi.setObjectVersion(0.1);
 		}
@@ -154,7 +154,7 @@ public class PluginProperties extends Properties {
 			for (String ai: AuthInst) {
 				String[] CurrentAI = ai.split(":");
 				if (CurrentAI.length != 2) {
-					CyLogger.getLogger().error("Author line '" + ai + "' incorrectly formatted. Please enter authors as 'Name1, Name2 and Name3: Institution");
+					CyLogger.getLogger().warn("Author line '" + ai + "' incorrectly formatted. Please enter authors as 'Name1, Name2 and Name3: Institution");
 					continue;
 				}
 				pi.addAuthor(CurrentAI[0], CurrentAI[1]);

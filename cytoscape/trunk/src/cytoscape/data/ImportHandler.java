@@ -192,7 +192,7 @@ public class ImportHandler {
 			else
 				conn = url.openConnection(pProxyServer);
 		} catch (IOException ioe) {
-			CyLogger.getLogger().info("Unable to open "+url);
+			CyLogger.getLogger().error("Unable to open "+url);
 			return null;
 		}
 		// Ensure we are reading the real content from url,
@@ -236,7 +236,7 @@ public class ImportHandler {
 			try {
 				tmpFile = downloadFromURL(url, null);
 			} catch (Exception e) {
-				CyLogger.getLogger().info("Failed to download from URL: "+url);
+				CyLogger.getLogger().error("Failed to download from URL: "+url);
 			}
 
 			if (tmpFile != null) {

@@ -367,7 +367,7 @@ public class PluginTracker {
 					String key = this.infoMapKey(el, ps); 
 					infoObjMap.put(key, el);
 				} else {
-					logger.error("er....??");
+					logger.warn("Unknown tag in plugin tracker file: "+el.getName());
 				}
 			}
 		}
@@ -397,7 +397,7 @@ public class PluginTracker {
 			out.output(trackerDoc, Writer);
 			Writer.close();
 		} catch (java.io.IOException E) {
-			logger.error("Error writing plugin status file", E);
+			logger.warn("Error writing plugin status file "+E.toString());
 		}
 	}
 

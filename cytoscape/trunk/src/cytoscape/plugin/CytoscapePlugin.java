@@ -149,7 +149,7 @@ public abstract class CytoscapePlugin implements PropertyChangeListener {
 			// cytoscape app to crash, which a plugin should not do.
 		} catch (Throwable e) {
 			object = null;
-			logger.error("Instantiation has failed for");
+			// logger.error("Instantiation has failed for");
 			// Here's a bit of Java strangeness: newInstance() throws
 			// two exceptions (above) -- however, it also propagates any
 			// exception that occurs during the creation of that new instance.

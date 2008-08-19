@@ -94,6 +94,8 @@ public class CyMain implements CyInitParams {
 
 	protected org.apache.commons.cli.Options options;
 
+	protected CyLogger logger = null;
+
 	/**
 	 * DOCUMENT ME!
 	 * 
@@ -141,9 +143,10 @@ public class CyMain implements CyInitParams {
 		this.args = args;
 		mode = CyInitParams.ERROR;
 		options = new org.apache.commons.cli.Options();
+		logger = CyLogger.getLogger(CyMain.class);
 
 		// for (String asdf: args)
-		// CyLogger.getLogger().info("arg: '" + asdf + "'");
+		// logger.info("arg: '" + asdf + "'");
 		parseCommandLine(args);
 
 		// Register CyStartupListener to intercept arguments passed by file
@@ -242,7 +245,7 @@ public class CyMain implements CyInitParams {
 
 		if (line.hasOption("v")) {
 			CytoscapeVersion version = new CytoscapeVersion();
-			CyLogger.getLogger().info(version.getVersion());
+			logger.info(version.getVersion());
 			System.exit(0);
 		}
 
@@ -328,7 +331,7 @@ public class CyMain implements CyInitParams {
 				UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
 			}
 		} catch (Exception e) {
-			CyLogger.getLogger().warn("Can't set look & feel:" + e);
+			logger.warn("Can't set look & feel:" + e);
 		}
 	}
 
@@ -358,7 +361,7 @@ public class CyMain implements CyInitParams {
 
 	private Properties createProperties(String[] potentialProps) {
 		// for ( String asdf: potentialProps)
-		// CyLogger.getLogger().info("prop: '" + asdf + "'");
+		// logger.info("prop: '" + asdf + "'");
 		Properties props = new Properties();
 		Properties argProps = new Properties();
 
@@ -381,11 +384,10 @@ public class CyMain implements CyInitParams {
 					if (in != null)
 						props.load(in);
 					else
-						CyLogger.getLogger(CyMain.class).info("Couldn't load property: "
+						logger.info("Couldn't load property: "
 								+ potentialProps[i]);
 				} catch (IOException e) {
-					CyLogger logger = CyLogger.getLogger(CyMain.class);
-					logger.error("Couldn't load property: "+ potentialProps[i], e);
+					logger.warn("Couldn't load property '"+ potentialProps[i] + "' from file: "+e.toString());
 				}
 			}
 		}

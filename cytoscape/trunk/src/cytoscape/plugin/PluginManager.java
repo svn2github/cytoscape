@@ -159,7 +159,7 @@ public class PluginManager {
 	 */
 	protected boolean removeWebstartInstalls() {
 		if (tempDir == null) {
-			logger.error("Directory not yet set up, can't delete");
+			logger.warn("Directory not yet set up, can't delete");
 			return false;
 		}
 		return recursiveDeleteFiles(tempDir.getParentFile());
@@ -292,7 +292,7 @@ public class PluginManager {
 					pluginTracker = new PluginTracker(tempDir.getParentFile(),
 							trackerFileName);
 				} catch (Exception e) {
-					logger.error("",e);
+					logger.warn("Unable to read plugin tracking file: "+e.toString());
 					// this could go on forever, surely there's a better way!
 				}
 			}
@@ -358,11 +358,11 @@ public class PluginManager {
 			PluginObj = pp.fillPluginInfoObject(PluginObj);
 
 		} catch (IOException ioe) {
-			logger.error("ERROR registering plugin: " + ioe.getMessage());
-			logger.error(Plugin.getClass().getName()
+			logger.warn("ERROR registering plugin: " + ioe.getMessage());
+			logger.warn(Plugin.getClass().getName()
 							+ " loaded but not registered, this will not affect the operation of the plugin");
 		} catch (Exception e) {
-			logger.error("ERROR registering plugin: ", e);
+			logger.warn("ERROR registering plugin: ", e);
 		} finally {
 			if (PluginObj == null) { // still null, create a default one
 				PluginObj = new PluginInfo();
@@ -773,7 +773,7 @@ public class PluginManager {
 							} else {
 								// TODO this should have a better error
 								// perhaps, throw an exception??
-								logger.error("Plugin location specified in "
+								logger.warn("Plugin location specified in "
 												+ currentPlugin
 												+ " is not a valid url: "
 												+ pluginLoc
@@ -806,7 +806,7 @@ public class PluginManager {
 		String Msg = "The following plugins were not loaded due to duplicate class definitions:\n";
 		for (String dup : duplicateClasses)
 			Msg += "\t" + dup + "\n";
-		logger.error(Msg);
+		logger.warn(Msg);
 		loadingErrors.add(new DuplicatePluginClassException(Msg));
 	}
 
@@ -874,7 +874,7 @@ public class PluginManager {
 					loadingErrors.add(new PluginException("Jar file "
 							+ jar.getName()
 							+ " has no entries, skipped loading."));
-					logger.error("Jar file "
+					logger.warn("Jar file "
 							+ jar.getName()
 							+ " has no entries, skipped loading.");
 					continue;
