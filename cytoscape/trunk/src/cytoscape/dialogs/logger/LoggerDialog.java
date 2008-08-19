@@ -142,7 +142,7 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
 
 		// Do whatever formatting we need
 		msg = msg.replace("\n","<br>");
-		msg = msg.replace(" ","&nbsp;");
+		msg = msg.replace("\t","&nbsp;&nbsp;&nbsp;&nbsp;");
 
     Messages.add(msg);
     // Make sure it gets added back in
@@ -200,9 +200,9 @@ public class LoggerDialog extends javax.swing.JDialog implements CyLogHandler
     StringBuffer sb = new StringBuffer();
 		String color = "#333333";
 		if (level.equals(LogLevel.LOG_ERROR))
-			color = "red";
+			color = "#ff0000";
 		else if (level.equals(LogLevel.LOG_WARN))
-			color = "orange";
+			color = "#ff4500";
 			
     sb.append("<html><style type='text/css'>");
     sb.append("body,th,td,div,p,h1,h2,li,dt,dd ");
