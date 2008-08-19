@@ -81,9 +81,9 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 
 		mkdir release
 		cd release
-		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape trunk cytoscape
-		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs trunk corelibs
-		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/coreplugins trunk coreplugins
+		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/cytoscape/trunk cytoscape
+		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/corelibs/trunk corelibs
+		svn co svn+ssh://grenache.ucsd.edu/cellar/common/svn/coreplugins/trunk coreplugins
 
 	Compile the core libraries and copy jars to the cytoscape dir.
 
