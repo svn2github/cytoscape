@@ -1000,7 +1000,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					// TODO Auto-generated method stub
 				}
 			});
-
+		visualPropertySheetPanel.setRendererFactory(rendReg);
+		visualPropertySheetPanel.setEditorFactory(editorReg);
 		/*
 		 * By default, show category.
 		 */
