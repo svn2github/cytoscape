@@ -34,13 +34,13 @@
 */
 package org.cytoscape.coreplugin.psi_mi.cyto_mapper;
 
-import cytoscape.CyEdge;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.Semantics;
-
 import giny.model.Node;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.cytoscape.coreplugin.psi_mi.data_mapper.Mapper;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapperException;
@@ -52,7 +52,10 @@ import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.util.AttributeUtil;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
 
-import java.util.*;
+import cytoscape.CyEdge;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
 
 
 /**
@@ -94,22 +97,22 @@ public class MapToCytoscape implements Mapper {
 	/**
 	 * Node List
 	 */
-	private ArrayList nodeList = new ArrayList();
+	private List<CyNode> nodeList = new ArrayList<CyNode>();
 
 	/**
 	 * Edge List
 	 */
-	private ArrayList edgeList = new ArrayList();
+	private List<CyEdge> edgeList = new ArrayList<CyEdge>();
 
 	/**
 	 * CyMap Object.
 	 */
-	private HashMap cyMap;
+	private Map<String, Object> cyMap;
 
 	/**
 	 * ArrayList of Interaction Objects.
 	 */
-	private ArrayList interactions;
+	private List interactions;
 
 	/**
 	 * Graph Type, e.g. SPOKE_VIEW or MATRIX_VIEW.
@@ -174,12 +177,12 @@ public class MapToCytoscape implements Mapper {
 	 * @param interactionList interactionList ArrayList of Interaction objects.
 	 * @param graphType       graphType (SPOKE_VIEW or MATRIX_VIEW).
 	 */
-	public MapToCytoscape(ArrayList interactionList, int graphType) {
+	public MapToCytoscape(List interactionList, int graphType) {
 		if ((graphType < SPOKE_VIEW) || (graphType > MATRIX_VIEW)) {
 			throw new IllegalArgumentException("Illegal GraphType Parameter.");
 		}
 
-		this.cyMap = new HashMap();
+		this.cyMap = new HashMap<String, Object>();
 		this.interactions = interactionList;
 		this.graphType = graphType;
 	}
@@ -189,7 +192,7 @@ public class MapToCytoscape implements Mapper {
 	 *
 	 * @return HashMap Object.
 	 */
-	public HashMap getCyMap() {
+	public Map<String, Object> getCyMap() {
 		return this.cyMap;
 	}
 
@@ -199,8 +202,8 @@ public class MapToCytoscape implements Mapper {
 	 * @throws MapperException Indicates Error in mapping.
 	 */
 	public final void doMapping() throws MapperException {
-		HashMap nodeMap = new HashMap();
-		HashMap edgeMap = new HashMap();
+		final Map nodeMap = new HashMap();
+		final Map edgeMap = new HashMap();
 		intMap = new HashMap();
 		//  Validate Interaction Data
 		validateInteractions();
@@ -265,7 +268,7 @@ public class MapToCytoscape implements Mapper {
 		if (graphType == SPOKE_VIEW) {
 			for (int i = 0; i < interactions.size(); i++) {
 				Interaction interaction = (Interaction) interactions.get(i);
-				ArrayList interactors = interaction.getInteractors();
+				List interactors = interaction.getInteractors();
 
 				if (interactors.size() > 2) {
 					HashMap baitMap = (HashMap) interaction.getAttribute(InteractionVocab.BAIT_MAP);
@@ -289,10 +292,10 @@ public class MapToCytoscape implements Mapper {
 	 *
 	 * @param nodeMap HashMap of current nodes.
 	 */
-	private void addNewNodes(HashMap nodeMap) {
+	private void addNewNodes(Map nodeMap) {
 		for (int i = 0; i < interactions.size(); i++) {
 			Interaction interaction = (Interaction) interactions.get(i);
-			ArrayList interactors = interaction.getInteractors();
+			List interactors = interaction.getInteractors();
 
 			for (int j = 0; j < interactors.size(); j++) {
 				Interactor interactor = (Interactor) interactors.get(j);
@@ -307,10 +310,10 @@ public class MapToCytoscape implements Mapper {
 	 * @param nodeMap Current Nodes.
 	 * @param edgeMap Current Edges.
 	 */
-	private void addNewEdges(HashMap nodeMap, HashMap edgeMap) {
+	private void addNewEdges(Map nodeMap, Map edgeMap) {
 		for (int i = 0; i < interactions.size(); i++) {
 			Interaction interaction = (Interaction) interactions.get(i);
-			ArrayList interactors = interaction.getInteractors();
+			List interactors = interaction.getInteractors();
 
 			if (graphType == MATRIX_VIEW) {
 				doMatrixView(interactors, nodeMap, interaction, edgeMap);
@@ -323,8 +326,8 @@ public class MapToCytoscape implements Mapper {
 	/**
 	 * Map to MATRIX_VIEW Graph Type
 	 */
-	private void doMatrixView(ArrayList interactors, HashMap nodeMap, Interaction interaction,
-	                          HashMap edgeMap) {
+	private void doMatrixView(List interactors, Map nodeMap, Interaction interaction,
+	                          Map edgeMap) {
 		if (interactors.size() <= MATRIX_CUT_OFF) {
 			for (int j = 0; j < interactors.size(); j++) {
 				for (int k = j + 1; k < interactors.size(); k++) {
@@ -362,9 +365,9 @@ public class MapToCytoscape implements Mapper {
 	/**
 	 * Map to SPOKE_VIEW Graph Type
 	 */
-	private void doSpokeView(ArrayList interactors, HashMap nodeMap, Interaction interaction,
-	                         HashMap edgeMap) {
-		HashMap baitMap = (HashMap) interaction.getAttribute(InteractionVocab.BAIT_MAP);
+	private void doSpokeView(List interactors, Map nodeMap, Interaction interaction,
+	                         Map edgeMap) {
+		Map baitMap = (Map) interaction.getAttribute(InteractionVocab.BAIT_MAP);
 
 		if (interactors.size() > 2) {
 			//  Determine bait interactor
@@ -408,7 +411,7 @@ public class MapToCytoscape implements Mapper {
 	/*
 	* Determines a bait
 	*/
-	private Interactor determineBait(ArrayList interactors, HashMap baitMap) {
+	private Interactor determineBait(List interactors, Map baitMap) {
 		Interactor bait = null;
 
 		for (int i = 0; i < interactors.size(); i++) {
@@ -440,7 +443,7 @@ public class MapToCytoscape implements Mapper {
 	 * interactor name sorted alphanumerically and then the first in the
 	 * list is selected as bait.
 	 */
-	private Interactor determineBaitByName(ArrayList interactors) {
+	private Interactor determineBaitByName(List interactors) {
 		for (int i = 0; i < interactors.size(); i++) {
 			Interactor temp;
 
@@ -463,7 +466,7 @@ public class MapToCytoscape implements Mapper {
 	 * Creates Edge Between Node1 and Node2.
 	 */
 	private void createEdge(Interactor interactor1, Interactor interactor2,
-	                        Interaction interaction, HashMap nodeMap, HashMap edgeMap) {
+	                        Interaction interaction, Map nodeMap, Map edgeMap) {
 		//  Get Matching Nodes
 		CyNode node1 = (CyNode) nodeMap.get(interactor1.getName());
 		CyNode node2 = (CyNode) nodeMap.get(interactor2.getName());
@@ -505,7 +508,7 @@ public class MapToCytoscape implements Mapper {
 	/**
 	 * Determines if an edge already exists between the two nodes.
 	 */
-	private boolean edgeExists(CyNode node1, CyNode node2, Interaction interaction, HashMap edgeMap) {
+	private boolean edgeExists(CyNode node1, CyNode node2, Interaction interaction, Map edgeMap) {
 		//  Create node1 --> node2 edge key
 		String key1 = this.createEdgeKey(node1, node2, interaction);
 
@@ -526,14 +529,14 @@ public class MapToCytoscape implements Mapper {
 	 * @param interactor Interactor object.
 	 * @param map        HashMap of current nodes.
 	 */
-	private void addNode(Interactor interactor, HashMap map) {
+	private void addNode(Interactor interactor, Map map) {
 		String name = interactor.getName();
 		boolean inGraph = map.containsKey(name);
 
 		//HashMap nodemap;
 		if (!inGraph) {
 			//  Create New Node via getCyNode Method.
-			CyNode node = Cytoscape.getCyNode(name, true);
+			final CyNode node = Cytoscape.getCyNode(name, true);
 			//  Add New Node to Network
 			nodeList.add(node);
 
@@ -560,15 +563,17 @@ public class MapToCytoscape implements Mapper {
 	 */
 	protected void mapNodeAttributes(Interactor interactor, CyNode cyNode) {
 		//  Map All Interactor Attributes
-		HashMap attributeMap = interactor.getAllAttributes();
-		Iterator iterator = attributeMap.keySet().iterator();
+		Map<String, Object> attributeMap = interactor.getAllAttributes();
 
-		while (iterator.hasNext()) {
-			String key = (String) iterator.next();
-			String value = (String) attributeMap.get(key);
+		Object value = null;
+		for(String key : attributeMap.keySet()) {
+			value = attributeMap.get(key);
 
-			if (value != null) {
-				Cytoscape.getNodeAttributes().setAttribute(cyNode.getIdentifier(), key, value);
+			if (value != null && value instanceof String) {
+				Cytoscape.getNodeAttributes().setAttribute(cyNode.getIdentifier(), key, (String)value);
+			} else if(value != null && value instanceof List) {
+				Cytoscape.getNodeAttributes()
+		         .setListAttribute(cyNode.getIdentifier(), key, (List)value);
 			}
 		}
 
@@ -605,20 +610,20 @@ public class MapToCytoscape implements Mapper {
 	 * @param cyEdge      CyEdge object.
 	 */
 	protected void mapEdgeAttributes(Interaction interaction, CyEdge cyEdge) {
-		HashMap attributeMap = interaction.getAllAttributes();
-		Iterator iterator = attributeMap.keySet().iterator();
-
-		while (iterator.hasNext()) {
-			String key = (String) iterator.next();
-			Object attrObject = attributeMap.get(key);
+		final Map<String, Object> attributeMap = interaction.getAllAttributes();
+		
+		Object attrObject = null;
+		for (String key: attributeMap.keySet()) {
+			
+			attrObject = attributeMap.get(key);
 
 			if (attrObject instanceof String) {
-				String str = (String) attrObject;
+				final String str = (String) attrObject;
 				Object object = Cytoscape.getEdgeAttributes()
 				                         .getStringAttribute(key, cyEdge.getIdentifier());
 
 				if (object != null) {
-					String[] values = AttributeUtil.appendString(object, str);
+					final String[] values = AttributeUtil.appendString(object, str);
 
 					if ((values != null) && (values.toString().length() != 0)) {
 						Cytoscape.getEdgeAttributes()
@@ -629,6 +634,9 @@ public class MapToCytoscape implements Mapper {
 						Cytoscape.getEdgeAttributes().setAttribute(cyEdge.getIdentifier(), key, str);
 					}
 				}
+			} else if (attrObject instanceof Number) {
+				final Number numeric = (Number) attrObject;
+				Cytoscape.getEdgeAttributes().setAttribute(cyEdge.getIdentifier(), key, numeric.doubleValue());
 			}
 		}
 

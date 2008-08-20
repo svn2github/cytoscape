@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -287,7 +288,7 @@ public class MapInteractionsToPsiOne implements Mapper {
 
 		for (int i = 0; i < interactions.size(); i++) {
 			Interaction interaction = (Interaction) interactions.get(i);
-			ArrayList interactors = interaction.getInteractors();
+			List interactors = interaction.getInteractors();
 
 			for (int j = 0; j < interactors.size(); j++) {
 				Interactor interactor = (Interactor) interactors.get(j);
@@ -515,7 +516,7 @@ public class MapInteractionsToPsiOne implements Mapper {
 	private InteractionElementType.ParticipantList getParticipantList(Interaction interaction) {
 		InteractionElementType.ParticipantList participantList = new InteractionElementType.ParticipantList();
 
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 
 		for (int i = 0; i < interactors.size(); i++) {
 			Interactor interactor = (Interactor) interactors.get(i);

@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -292,7 +293,7 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
 		for (int i = 0; i < interactions.size(); i++) {
 			org.cytoscape.coreplugin.psi_mi.model.Interaction interaction = (org.cytoscape.coreplugin.psi_mi.model.Interaction) interactions
 			                                                                                                                .get(i);
-			ArrayList interactors = interaction.getInteractors();
+			List interactors = interaction.getInteractors();
 
 			for (int j = 0; j < interactors.size(); j++) {
 				Interactor interactor = (Interactor) interactors.get(j);
@@ -523,7 +524,7 @@ public class MapInteractionsToPsiTwoFive implements Mapper {
 	private InteractionElementType.ParticipantList getParticipantList(org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
 		InteractionElementType.ParticipantList participantList = new InteractionElementType.ParticipantList();
 
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 
 		for (int i = 0; i < interactors.size(); i++) {
 			Interactor interactor = (Interactor) interactors.get(i);

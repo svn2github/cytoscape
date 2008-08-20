@@ -127,7 +127,7 @@ public class TestMapPsiTwoFiveToInteractions extends TestCase {
 		             interaction.getAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB));
 
 		//  Validate interactors
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 		Interactor interactor0 = (Interactor) interactors.get(0);
 		Interactor interactor1 = (Interactor) interactors.get(1);
 

@@ -35,18 +35,26 @@
 package org.cytoscape.coreplugin.psi_mi.data_mapper;
 
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
+import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
-import org.cytoscape.coreplugin.psi_mi.schema.mi25.*;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.BibrefType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.ConfidenceListType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.ConfidenceListType.Confidence;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.CvType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.DbReferenceType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet.Entry;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet.Entry.ExperimentList;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet.Entry.InteractionList;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet.Entry.InteractorList;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.ExperimentType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractionElementType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractorElementType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.NamesType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.OpenCvType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.ParticipantType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.XrefType;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
 
@@ -57,40 +65,42 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+
 /**
  * Maps PSI-MI Level 2.5 to Interaction Objects.
- * 
+ *
  * @author Ethan Cerami
  * @author Nisha Vinod
  */
 public class MapPsiTwoFiveToInteractions implements Mapper {
-	private HashMap interactorMap;
-	private HashMap experimentMap;
-	private ArrayList interactions;
+	private Map<String, InteractorElementType> interactorMap;
+	private Map<String, ExperimentType> experimentMap;
+	private List<Interaction> interactions;
 	private String xml;
 	private static final boolean DEBUG = false;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param xml
 	 *            XML Document.
 	 * @param interactions
 	 *            ArrayList of Interaction objects.
 	 */
-	public MapPsiTwoFiveToInteractions(String xml, ArrayList interactions) {
+	public MapPsiTwoFiveToInteractions(String xml, List<Interaction> interactions) {
 		this.xml = xml;
 		this.interactions = interactions;
 	}
 
 	/**
 	 * Perform Mapping.
-	 * 
+	 *
 	 * @throws MapperException
 	 *             Problem Performing mapping.
 	 */
@@ -103,8 +113,8 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	 */
 	private void parseXml(String content) throws MapperException {
 		try {
-			interactorMap = new HashMap();
-			experimentMap = new HashMap();
+			interactorMap = new HashMap<String, InteractorElementType>();
+			experimentMap = new HashMap<String, ExperimentType>();
 
 			StringReader reader = new StringReader(content);
 
@@ -119,42 +129,35 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			// The alternative is to use the syntax below. I don't know why this
 			// works,
 			// but the tip is described online here:
-			//http://forums.java.net/jive/thread.jspa?forumID=46&threadID=20124&
-			// messageID=174472
-			Class[] classes = new Class[2];
+			// http://forums.java.net/jive/thread.jspa?forumID=46&threadID=20124&messageID=174472
+			Class<?>[] classes = new Class[2];
 			classes[0] = org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet.class;
 			classes[1] = org.cytoscape.coreplugin.psi_mi.schema.mi25.ObjectFactory.class;
 
 			JAXBContext jc = JAXBContext.newInstance(classes);
 			Unmarshaller u = jc.createUnmarshaller();
 
-			EntrySet entrySet = (EntrySet) u.unmarshal(reader);
-			int entryCount = entrySet.getEntry().size();
+			final EntrySet entrySet = (EntrySet) u.unmarshal(reader);
+			final List<Entry> entryList = entrySet.getEntry();
 
-			for (int i = 0; i < entryCount; i++) {
-				EntrySet.Entry entry = entrySet.getEntry().get(i);
+			for (Entry entry : entryList)
 				extractEntry(entry);
-			}
 		} catch (JAXBException e) {
-			throw new MapperException(e, "PSI-MI XML File is invalid:  "
-					+ e.getMessage());
+			throw new MapperException(e, "PSI-MI XML File is invalid:  " + e.getMessage());
 		}
 	}
 
 	/**
 	 * Extracts PSI Entry Root Element.
 	 */
-	private void extractEntry(EntrySet.Entry entry) throws MapperException {
-		EntrySet.Entry.ExperimentList expList = entry.getExperimentList();
+	private void extractEntry(Entry entry) throws MapperException {
+		final ExperimentList expList = entry.getExperimentList();
 		extractExperimentList(expList);
 
-		EntrySet.Entry.InteractorList interactorList = entry
-				.getInteractorList();
-
+		final InteractorList interactorList = entry.getInteractorList();
 		extractInteractorList(interactorList);
 
-		EntrySet.Entry.InteractionList interactionList = entry
-				.getInteractionList();
+		final InteractionList interactionList = entry.getInteractionList();
 		extractInteractionList(interactionList);
 	}
 
@@ -168,8 +171,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			int count = expList.getExperimentDescription().size();
 
 			for (int i = 0; i < count; i++) {
-				ExperimentType expType = expList.getExperimentDescription()
-						.get(i);
+				ExperimentType expType = expList.getExperimentDescription().get(i);
 				String id = "" + expType.getId();
 				experimentMap.put(id, expType);
 			}
@@ -181,20 +183,19 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts PSI InteractorList, and places into HashMap.
 	 */
-	private void extractInteractorList(
-			EntrySet.Entry.InteractorList interactorList) {
+	private void extractInteractorList(EntrySet.Entry.InteractorList interactorList) {
 		log("Extracting Interactor List: Start");
 
 		if (interactorList != null) {
 			int count = interactorList.getInteractor().size();
 			ListUtil.setInteractorCount(count);
 
-			List list = interactorList.getInteractor();
+			List<InteractorElementType> list = interactorList.getInteractor();
 
-			for (int i = 0; i < count; i++) {
-				InteractorElementType cProtein = (InteractorElementType) list
-						.get(i);
-				String id = "" + cProtein.getId();
+			String id;
+
+			for (InteractorElementType cProtein : list) {
+				id = "" + cProtein.getId();
 				log("Extracting:  " + id + " --> " + cProtein);
 				interactorMap.put(id, cProtein);
 			}
@@ -206,26 +207,19 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts PSI Interaction List
 	 */
-	private void extractInteractionList(
-			EntrySet.Entry.InteractionList interactionList)
-			throws MapperException {
+	private void extractInteractionList(InteractionList interactionList) throws MapperException {
 		log("Extracting Interaction List: Start");
 
-		int count = interactionList.getInteraction().size();
+		List<org.cytoscape.coreplugin.psi_mi.schema.mi25.EntrySet.Entry.InteractionList.Interaction> list = interactionList
+		                                                                                                    .getInteraction();
 
-		List list = interactionList.getInteraction();
+		for (InteractionList.Interaction cInteraction : list) {
+			Interaction interaction = new org.cytoscape.coreplugin.psi_mi.model.Interaction();
 
-		for (int i = 0; i < count; i++) {
-			org.cytoscape.coreplugin.psi_mi.model.Interaction interaction = new org.cytoscape.coreplugin.psi_mi.model.Interaction();
-			EntrySet.Entry.InteractionList.Interaction cInteraction = (EntrySet.Entry.InteractionList.Interaction) list
-					.get(i);
-			List<CvType> interactionTypes = cInteraction.getInteractionType();
-
-			InteractionElementType.ParticipantList pList = cInteraction
-					.getParticipantList();
+			InteractionElementType.ParticipantList pList = cInteraction.getParticipantList();
 			int pCount = pList.getParticipant().size();
-			ArrayList<Interactor> interactorList = new ArrayList<Interactor>();
-			HashMap interactorRoles = new HashMap();
+			final List<Interactor> interactorList = new ArrayList<Interactor>();
+			Map interactorRoles = new HashMap();
 
 			for (int j = 0; j < pCount; j++) {
 				Interactor interactor = extractInteractorRefOrElement(pList, j);
@@ -233,16 +227,14 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 				interactorList.add(interactor);
 
 				ParticipantType participant = pList.getParticipant().get(j);
-				ParticipantType.ExperimentalRoleList role = participant
-						.getExperimentalRoleList();
+				ParticipantType.ExperimentalRoleList role = participant.getExperimentalRoleList();
 
 				if (role != null) {
 					for (ParticipantType.ExperimentalRoleList.ExperimentalRole expRole : role
-							.getExperimentalRole()) {
+					                                                                                                                                                                                                                      .getExperimentalRole()) {
 						NamesType namesType = expRole.getNames();
 						String roleName = namesType.getShortLabel();
-						log("Storing role for:  " + interactor.getName()
-								+ " --> " + roleName);
+						log("Storing role for:  " + interactor.getName() + " --> " + roleName);
 						interactorRoles.put(interactor.getName(), roleName);
 					}
 				}
@@ -251,17 +243,16 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			interaction.setInteractors(interactorList);
 			interaction.setInteractionId(cInteraction.getId());
 
-			ArrayList expDatalist = extractExperimentalData(cInteraction,
-					interaction);
+			List expDatalist = extractExperimentalData(cInteraction, interaction);
 
 			// Add BAIT MAP / Names To all Interactions.
 			for (int j = 0; j < expDatalist.size(); j++) {
-				interaction = (org.cytoscape.coreplugin.psi_mi.model.Interaction) expDatalist
-						.get(j);
-				interaction.addAttribute(InteractionVocab.BAIT_MAP,
-						interactorRoles);
+				interaction = (org.cytoscape.coreplugin.psi_mi.model.Interaction) expDatalist.get(j);
+				interaction.addAttribute(InteractionVocab.BAIT_MAP, interactorRoles);
 				extractInteractionNamesXrefs(cInteraction, interaction);
-				addInteractorType(interactionTypes, interaction);
+
+				// Extract Confidence Values
+				extractConfidence(cInteraction, interaction);
 			}
 
 			log("Adding num interactions:  " + expDatalist.size());
@@ -271,20 +262,36 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 		log("Extracting Interaction List: End");
 	}
 
-	private void addInteractorType(List<CvType> interactionTypes,
-			org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
-		if (interactionTypes != null) {
-			if (interactionTypes.size() == 1) {
-				CvType interactionType = interactionTypes.get(0);
-				NamesType namesType = interactionType.getNames();
-				if (namesType != null) {
-					String shortName = namesType.getShortLabel();
-					if (shortName != null) {
-						interaction.addAttribute(
-								InteractionVocab.INTERACTION_TYPE_NAME,
-								shortName);
-					}
-				}
+	private void extractConfidence(InteractionElementType cInteraction,
+	                               org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
+		final ConfidenceListType conf = cInteraction.getConfidenceList();
+
+		if (conf == null)
+			return;
+
+		List<Confidence> confList = conf.getConfidence();
+
+		// Pick first one only (for now)
+		if (confList != null) {
+			Confidence c = confList.get(0);
+
+			try {
+				interaction.addAttribute(InteractionVocab.CONFIDENCE_VALUE,
+				                         Double.valueOf(c.getValue()));
+			} catch (NumberFormatException e) {
+				return;
+			}
+
+			final OpenCvType unit = c.getUnit();
+
+			if ((unit != null) && (unit.getNames() != null)) {
+				if (c.getUnit().getNames().getShortLabel() != null)
+					interaction.addAttribute(InteractionVocab.CONFIDENCE_UNIT_SHORT_NAME,
+					                         c.getUnit().getNames().getShortLabel());
+
+				if (c.getUnit().getNames().getFullName() != null)
+					interaction.addAttribute(InteractionVocab.CONFIDENCE_UNIT_FULL_NAME,
+					                         c.getUnit().getNames().getFullName());
 			}
 		}
 	}
@@ -292,9 +299,8 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts Interaction Names.
 	 */
-	private void extractInteractionNamesXrefs(
-			InteractionElementType cInteraction,
-			org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
+	private void extractInteractionNamesXrefs(InteractionElementType cInteraction,
+	                                          org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
 		NamesType names = cInteraction.getNames();
 
 		if (names != null) {
@@ -302,13 +308,11 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			String fullName = names.getFullName();
 
 			if (shortLabel != null) {
-				interaction.addAttribute(
-						InteractionVocab.INTERACTION_SHORT_NAME, shortLabel);
+				interaction.addAttribute(InteractionVocab.INTERACTION_SHORT_NAME, shortLabel);
 			}
 
 			if (fullName != null) {
-				interaction.addAttribute(
-						InteractionVocab.INTERACTION_FULL_NAME, fullName);
+				interaction.addAttribute(InteractionVocab.INTERACTION_FULL_NAME, fullName);
 			}
 		}
 
@@ -324,9 +328,8 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts Interactor From Reference or Element.
 	 */
-	private Interactor extractInteractorRefOrElement(
-			InteractionElementType.ParticipantList pList, int j)
-			throws MapperException {
+	private Interactor extractInteractorRefOrElement(InteractionElementType.ParticipantList pList,
+	                                                 int j) throws MapperException {
 		Interactor interactor;
 		org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractorElementType cInteractor = null;
 		ParticipantType participant = pList.getParticipant().get(j);
@@ -334,7 +337,8 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 
 		if (ref != null) {
 			cInteractor = (org.cytoscape.coreplugin.psi_mi.schema.mi25.InteractorElementType) interactorMap
-					.get("" + ref);
+			                                                                              .get(""
+			                                                                                   + ref);
 		} else {
 			cInteractor = participant.getInteractor();
 		}
@@ -347,13 +351,12 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts Interactor Name
 	 */
-	private void extractInteractorName(InteractorElementType cProtein,
-			Interactor interactor) throws MapperException {
+	private void extractInteractorName(InteractorElementType cProtein, Interactor interactor)
+	    throws MapperException {
 		NamesType names = cProtein.getNames();
 
 		if (names != null) {
-			String name = MapperUtil.extractName(cProtein, interactor
-					.getExternalRefs());
+			String name = MapperUtil.extractName(cProtein, interactor.getExternalRefs());
 
 			// Remove all surrounding and internal white space.
 			Text jdomText = new Text(name);
@@ -370,21 +373,15 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	 * Extracts All Interactor External References.
 	 */
 	private ExternalReference[] extractExternalRefs(XrefType xref) {
-		ArrayList refList = new ArrayList();
+		final List<ExternalReference> refList = new ArrayList<ExternalReference>();
 
 		if (xref != null) {
-			final DbReferenceType primaryRef = xref.getPrimaryRef();
-			if (primaryRef != null)
-				createExternalReference(primaryRef.getDb(), primaryRef.getId(),
-						refList);
+			DbReferenceType primaryRef = xref.getPrimaryRef();
+			createExternalReference(primaryRef.getDb(), primaryRef.getId(), refList);
 
-			final List<DbReferenceType> secondaryRefList = xref
-					.getSecondaryRef();
-			if (secondaryRefList != null)
-				for (DbReferenceType secondaryRef : secondaryRefList) {
-					createExternalReference(secondaryRef.getDb(), secondaryRef
-							.getId(), refList);
-				}
+			for (DbReferenceType secondaryRef : xref.getSecondaryRef()) {
+				createExternalReference(secondaryRef.getDb(), secondaryRef.getId(), refList);
+			}
 
 			ExternalReference[] refs = new ExternalReference[refList.size()];
 			refs = (ExternalReference[]) refList.toArray(refs);
@@ -398,7 +395,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Creates ExternalReference.
 	 */
-	private void createExternalReference(String db, String id, ArrayList refList) {
+	private void createExternalReference(String db, String id, List<ExternalReference> refList) {
 		ExternalReference ref = new ExternalReference(db, id);
 		refList.add(ref);
 	}
@@ -410,22 +407,18 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	 * <p/> In other words, a Data Services Interaction object contains data for
 	 * one interaction, determined under exactly one experimental condition.
 	 */
-	private ArrayList extractExperimentalData(
-			InteractionElementType cInteraction,
-			org.cytoscape.coreplugin.psi_mi.model.Interaction interactionTemplate)
-			throws MapperException {
-		InteractionElementType.ExperimentList expList = cInteraction
-				.getExperimentList();
-		ArrayList list = new ArrayList();
+	private List<org.cytoscape.coreplugin.psi_mi.model.Interaction> extractExperimentalData(InteractionElementType cInteraction,
+	                                                                                        org.cytoscape.coreplugin.psi_mi.model.Interaction interactionTemplate)
+	    throws MapperException {
+		InteractionElementType.ExperimentList expList = cInteraction.getExperimentList();
+		List<org.cytoscape.coreplugin.psi_mi.model.Interaction> list = new ArrayList<org.cytoscape.coreplugin.psi_mi.model.Interaction>();
 
 		if (expList != null) {
-			int expCount = expList.getExperimentRefOrExperimentDescription()
-					.size();
+			int expCount = expList.getExperimentRefOrExperimentDescription().size();
 
 			for (int i = 0; i < expCount; i++) {
 				org.cytoscape.coreplugin.psi_mi.model.Interaction interaction = cloneInteractionTemplate(interactionTemplate);
-				Object expItem = expList
-						.getExperimentRefOrExperimentDescription().get(i);
+				Object expItem = expList.getExperimentRefOrExperimentDescription().get(i);
 				ExperimentType expType = extractExperimentReferenceOrElement(expItem);
 				String id = getPubMedId(expType);
 
@@ -438,7 +431,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			}
 		} else {
 			throw new MapperException("Could not determine experimental "
-					+ "data for one of the PSI-MI interactions");
+			                          + "data for one of the PSI-MI interactions");
 		}
 
 		return list;
@@ -448,10 +441,9 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	 * Clones the InteractionTemplate. Only clones the Interactors contained
 	 * within the interaction, and none of the Interaction attributes.
 	 */
-	private org.cytoscape.coreplugin.psi_mi.model.Interaction cloneInteractionTemplate(
-			org.cytoscape.coreplugin.psi_mi.model.Interaction interactionTemplate) {
+	private org.cytoscape.coreplugin.psi_mi.model.Interaction cloneInteractionTemplate(org.cytoscape.coreplugin.psi_mi.model.Interaction interactionTemplate) {
 		org.cytoscape.coreplugin.psi_mi.model.Interaction interaction = new org.cytoscape.coreplugin.psi_mi.model.Interaction();
-		ArrayList interactors = interactionTemplate.getInteractors();
+		List interactors = interactionTemplate.getInteractors();
 		interaction.setInteractors(interactors);
 
 		return interaction;
@@ -474,7 +466,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	 * Gets Interaction Detection.
 	 */
 	private void extractInteractionDetection(ExperimentType expDesc,
-			org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
+	                                         org.cytoscape.coreplugin.psi_mi.model.Interaction interaction) {
 		String expSystem;
 
 		if (expDesc != null) {
@@ -483,8 +475,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			expSystem = names.getShortLabel();
 
 			if (expSystem != null) {
-				interaction.addAttribute(
-						InteractionVocab.EXPERIMENTAL_SYSTEM_NAME, expSystem);
+				interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_NAME, expSystem);
 			}
 
 			XrefType xref = detection.getXref();
@@ -493,12 +484,10 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 				DbReferenceType primaryRef = xref.getPrimaryRef();
 
 				if (primaryRef != null) {
-					interaction.addAttribute(
-							InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB,
-							primaryRef.getDb());
-					interaction.addAttribute(
-							InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID,
-							primaryRef.getId());
+					interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_DB,
+					                         primaryRef.getDb());
+					interaction.addAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID,
+					                         primaryRef.getId());
 				}
 			}
 		}
@@ -532,11 +521,11 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts Single PSI Interactor.
 	 */
-	private Interactor createInteractor(InteractorElementType cProtein)
-			throws MapperException {
+	private Interactor createInteractor(InteractorElementType cProtein) throws MapperException {
 		Interactor interactor = new Interactor();
 		extractOrganismInfo(cProtein, interactor);
 		extractSequenceData(cProtein, interactor);
+		extractIndividualXrefs(cProtein, interactor);
 
 		ExternalReference[] refs = extractExternalRefs(cProtein.getXref());
 
@@ -556,8 +545,47 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 		return interactor;
 	}
 
-	private void extractCvType(InteractorElementType cProtein,
-			Interactor interactor) {
+	private void extractIndividualXrefs(InteractorElementType cProtein, Interactor interactor) {
+		final XrefType xrefs = cProtein.getXref();
+
+		if (xrefs != null) {
+			final DbReferenceType pRef = xrefs.getPrimaryRef();
+
+			List<String> newList = null;
+
+			if (pRef != null) {
+				Object value = interactor.getAttribute(pRef.getDb());
+
+				if (value == null) {
+					newList = new ArrayList<String>();
+				} else if ((value != null) && value instanceof List) {
+					newList = (List<String>) value;
+				}
+
+				newList.add(pRef.getId());
+				interactor.addAttribute(pRef.getDb(), newList);
+			}
+
+			final List<DbReferenceType> sRef = xrefs.getSecondaryRef();
+
+			if (sRef != null) {
+				for (DbReferenceType ref : sRef) {
+					Object value = interactor.getAttribute(ref.getDb());
+
+					if (value == null) {
+						newList = new ArrayList<String>();
+					} else if ((value != null) && value instanceof List) {
+						newList = (List<String>) value;
+					}
+
+					newList.add(ref.getId());
+					interactor.addAttribute(ref.getDb(), newList);
+				}
+			}
+		}
+	}
+
+	private void extractCvType(InteractorElementType cProtein, Interactor interactor) {
 		CvType cvType = cProtein.getInteractorType();
 
 		if (cvType != null) {
@@ -568,8 +596,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts Sequence Data.
 	 */
-	private void extractSequenceData(InteractorElementType cProtein,
-			Interactor interactor) {
+	private void extractSequenceData(InteractorElementType cProtein, Interactor interactor) {
 		String sequence = cProtein.getSequence();
 
 		if (sequence != null) {
@@ -580,8 +607,7 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	/**
 	 * Extracts Organism Information.
 	 */
-	private void extractOrganismInfo(InteractorElementType cProtein,
-			Interactor interactor) {
+	private void extractOrganismInfo(InteractorElementType cProtein, Interactor interactor) {
 		InteractorElementType.Organism organism = cProtein.getOrganism();
 
 		if (organism != null) {
@@ -589,19 +615,10 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 			String commonName = names.getShortLabel();
 			String fullName = names.getFullName();
 			int ncbiTaxID = organism.getNcbiTaxId();
-			if (commonName != null && commonName.length() > 0) {
-				interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME,
-						commonName);
-			}
-			if (fullName != null && fullName.length() > 0) {
-				interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME,
-						fullName);
-			}
-			if (ncbiTaxID > 0) {
-				interactor.addAttribute(
-						InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID, Integer
-								.toString(ncbiTaxID));
-			}
+			interactor.addAttribute(InteractorVocab.ORGANISM_COMMON_NAME, commonName);
+			interactor.addAttribute(InteractorVocab.ORGANISM_SPECIES_NAME, fullName);
+			interactor.addAttribute(InteractorVocab.ORGANISM_NCBI_TAXONOMY_ID,
+			                        Integer.toString(ncbiTaxID));
 		}
 	}
 

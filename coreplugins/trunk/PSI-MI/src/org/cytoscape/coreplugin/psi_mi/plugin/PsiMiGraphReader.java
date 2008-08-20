@@ -54,6 +54,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -89,7 +90,7 @@ public class PsiMiGraphReader extends AbstractGraphReader {
 			String xml = reader.retrieveContent(fileName);
 
 			//  Map BioPAX Data to Cytoscape Nodes/Edges
-			ArrayList interactions = new ArrayList();
+			List interactions = new ArrayList();
 
 			//  Pick one of two mappers
 			int level2 = xml.indexOf("level=\"2\"");

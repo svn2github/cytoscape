@@ -37,6 +37,7 @@ package org.cytoscape.coreplugin.psi_mi.model;
 import org.cytoscape.coreplugin.psi_mi.schema.mi25.CvType;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -45,7 +46,7 @@ import java.util.HashMap;
  * @author Ethan Cerami
  */
 public class AttributeBag {
-	private HashMap attributes = new HashMap();
+	private Map<String, Object> attributes = new HashMap<String, Object>();
 	private ExternalReference[] externalRefs;
 	private CvType cvType;
 	private int interactionId;
@@ -97,7 +98,7 @@ public class AttributeBag {
 	 *
 	 * @return HashMap of all attributes.
 	 */
-	public HashMap getAllAttributes() {
+	public Map<String, Object> getAllAttributes() {
 		return attributes;
 	}
 

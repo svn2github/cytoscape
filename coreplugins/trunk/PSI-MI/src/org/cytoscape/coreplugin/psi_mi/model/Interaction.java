@@ -34,7 +34,7 @@
 */
 package org.cytoscape.coreplugin.psi_mi.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -43,14 +43,14 @@ import java.util.ArrayList;
  * @author Ethan Cerami
  */
 public class Interaction extends AttributeBag {
-	private ArrayList interactors;
+	private List interactors;
 
 	/**
 	 * Gets All Interactors
 	 *
 	 * @return ArrayList of Interactors.
 	 */
-	public ArrayList getInteractors() {
+	public List getInteractors() {
 		return interactors;
 	}
 
@@ -59,7 +59,7 @@ public class Interaction extends AttributeBag {
 	 *
 	 * @param interactors ArrayList of Interactors.
 	 */
-	public void setInteractors(ArrayList interactors) {
+	public void setInteractors(List interactors) {
 		this.interactors = interactors;
 	}
 

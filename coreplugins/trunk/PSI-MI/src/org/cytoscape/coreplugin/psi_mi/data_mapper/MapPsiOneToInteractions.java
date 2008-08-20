@@ -34,12 +34,22 @@
 */
 package org.cytoscape.coreplugin.psi_mi.data_mapper;
 
+import java.io.StringReader;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;
 import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
-import org.cytoscape.coreplugin.psi_mi.schema.mi1.*;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.BibrefType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.CvType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.DbReferenceType;
@@ -48,23 +58,12 @@ import org.cytoscape.coreplugin.psi_mi.schema.mi1.ExperimentType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.InteractionElementType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.NamesType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.ObjectFactory;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.ProteinInteractorType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.ProteinParticipantType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi1.RefType;
 import org.cytoscape.coreplugin.psi_mi.schema.mi1.XrefType;
-import org.cytoscape.coreplugin.psi_mi.schema.mi25.*;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
-
 import org.jdom.Text;
-
-import java.io.StringReader;
-
-import java.math.BigInteger;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 
 /**
@@ -74,9 +73,9 @@ import javax.xml.bind.Unmarshaller;
  * @author Nisha Vinod
  */
 public class MapPsiOneToInteractions implements Mapper {
-	private HashMap interactorMap;
-	private HashMap experimentMap;
-	private ArrayList interactions;
+	private Map interactorMap;
+	private Map experimentMap;
+	private List interactions;
 	private String xml;
 
 	/**
@@ -85,7 +84,7 @@ public class MapPsiOneToInteractions implements Mapper {
 	 * @param xml          XML Document.
 	 * @param interactions ArrayList of Interaction objects.
 	 */
-	public MapPsiOneToInteractions(String xml, ArrayList interactions) {
+	public MapPsiOneToInteractions(String xml, List interactions) {
 		this.xml = xml;
 		this.interactions = interactions;
 	}
@@ -196,9 +195,8 @@ public class MapPsiOneToInteractions implements Mapper {
 			Interaction interaction = new Interaction();
 			InteractionElementType cInteraction = interactionList.getInteraction().get(i);
 			interaction.setInteractionId(cInteraction.getInteractionType().size());
-            List<CvType> interactionTypes = cInteraction.getInteractionType();
 
-            InteractionElementType.ParticipantList pList = cInteraction.getParticipantList();
+			InteractionElementType.ParticipantList pList = cInteraction.getParticipantList();
 			int pCount = pList.getProteinParticipant().size();
 			ArrayList interactorList = new ArrayList();
 			HashMap interactorRoles = new HashMap();
@@ -224,30 +222,13 @@ public class MapPsiOneToInteractions implements Mapper {
 				interaction = (Interaction) list.get(j);
 				interaction.addAttribute(InteractionVocab.BAIT_MAP, interactorRoles);
 				extractInteractionNamesXrefs(cInteraction, interaction);
-                addInteractorType(interactionTypes, interaction);
-            }
+			}
 
 			interactions.addAll(list);
 		}
 	}
 
-    private void addInteractorType(List<CvType> interactionTypes, Interaction interaction) {
-        if (interactionTypes != null) {
-            if (interactionTypes.size() ==1) {
-                CvType interactionType = interactionTypes.get(0);
-                NamesType namesType = interactionType.getNames();
-                if (namesType != null) {
-                    String shortName = namesType.getShortLabel();
-                    if (shortName != null) {
-                        interaction.addAttribute(InteractionVocab.INTERACTION_TYPE_NAME,
-                            shortName);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
+	/**
 	 * Extracts Interaction Names.
 	 */
 	private void extractInteractionNamesXrefs(InteractionElementType cInteraction,
@@ -409,7 +390,7 @@ public class MapPsiOneToInteractions implements Mapper {
 	 */
 	private Interaction cloneInteractionTemplate(Interaction interactionTemplate) {
 		Interaction interaction = new Interaction();
-		ArrayList interactors = interactionTemplate.getInteractors();
+		List interactors = interactionTemplate.getInteractors();
 		interaction.setInteractors(interactors);
 
 		return interaction;

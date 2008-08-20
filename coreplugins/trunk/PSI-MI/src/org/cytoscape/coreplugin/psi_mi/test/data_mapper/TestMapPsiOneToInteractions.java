@@ -47,6 +47,7 @@ import org.cytoscape.coreplugin.psi_mi.util.ContentReader;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -124,7 +125,7 @@ public class TestMapPsiOneToInteractions extends TestCase {
 		mapper.doMapping();
 
 		Interaction interaction = (Interaction) interactions.get(0);
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 
 		//  The first interactor does not have a short label.
 		//  In the absence of a short label, the SwissProt.
@@ -197,7 +198,7 @@ public class TestMapPsiOneToInteractions extends TestCase {
 		assertEquals("MI:0018",
 		             interaction.getAttribute(InteractionVocab.EXPERIMENTAL_SYSTEM_XREF_ID));
 
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 		assertEquals(4, interactors.size());
 
 		Interactor interactor0 = (Interactor) interactors.get(0);
@@ -232,7 +233,7 @@ public class TestMapPsiOneToInteractions extends TestCase {
 		assertEquals(expectedDbName, dbName);
 		assertEquals(expectedDbId, dbId);
 
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 		assertEquals(2, interactors.size());
 
 		Interactor interactor = (Interactor) interactors.get(0);
@@ -245,7 +246,7 @@ public class TestMapPsiOneToInteractions extends TestCase {
 	 * Validates Specific Interaction.
 	 */
 	private void validateSample2(Interaction interaction) {
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 		Interactor interactor0 = (Interactor) interactors.get(0);
 		assertEquals("MAK10", interactor0.getName());
 
@@ -257,7 +258,7 @@ public class TestMapPsiOneToInteractions extends TestCase {
 	 * Validates Specific Interaction.
 	 */
 	private void validateSample3(Interaction interaction) {
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 		Interactor interactor0 = (Interactor) interactors.get(0);
 		assertEquals("MAK10", interactor0.getName());
 
@@ -276,7 +277,7 @@ public class TestMapPsiOneToInteractions extends TestCase {
 		System.out.println(".. PubMedID:  " + pubMedID);
 		System.out.println(".. Experimental System:  " + expSystem);
 
-		ArrayList interactors = interaction.getInteractors();
+		List interactors = interaction.getInteractors();
 
 		for (int i = 0; i < interactors.size(); i++) {
 			Interactor interactor = (Interactor) interactors.get(i);

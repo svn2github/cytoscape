@@ -95,4 +95,21 @@ public class InteractionVocab extends CommonVocab {
 	 * Interaction Type
 	 */
 	public static final String INTERACTION_TYPE = "interaction";
+
+	/**
+	 * Confidence Unit Short Name.
+	 */
+	public static final String CONFIDENCE_UNIT_SHORT_NAME = "CONFIDENCE_UNIT_SHORT_NAME";
+
+	/**
+	 * Confidence Unit Full Name.
+	 */
+	public static final String CONFIDENCE_UNIT_FULL_NAME = "CONFIDENCE_UNIT_FULL_NAME";
+	
+	/**
+	 * Confidence Value.
+	 */
+	public static final String CONFIDENCE_VALUE = "CONFIDENCE_VALUE";
+	
+	
 }
