@@ -1,6 +1,6 @@
 package src;
 
-import giny.view.NodeView;
+
 import giny.model.*;
 
 import java.awt.Color;
@@ -40,6 +40,7 @@ public class BooleanCalculator {
 	//CyAttributes atts = null;
 	HashMap<String, Integer> attributeTypeMap = new HashMap<String, Integer>();
 	HashMap<String, String> nodeValueMap = null;
+	HashMap<String, Boolean> nodeColorMap = new HashMap<String, Boolean>();
 	//Iterator t = null;
 	//int p = 0;
 	
@@ -365,6 +366,7 @@ public class BooleanCalculator {
 				attManager.setColorAttribute(label, node.getIdentifier(), outcome);
 				if(outcome){
 					network.setSelectedNodeState(node,true);
+					
 				}
 				System.out.println("label: "+label);
 				System.out.println(outcome);
