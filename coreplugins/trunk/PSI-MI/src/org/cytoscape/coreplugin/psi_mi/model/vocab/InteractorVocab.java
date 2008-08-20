@@ -95,4 +95,9 @@ public class InteractorVocab extends CommonVocab {
 	 * XML Document is Result Set Format.
 	 */
 	public static final String XML_RESULT_SET = "XML_RESULT_SET";
+	
+	public static final String INTERACTOR_TYPE = "INTERACTOR_TYPE";
+	public static final String INTERACTOR_TYPE_DEF = "INTERACTOR_TYPE_DEF";
+	
+	
 }
