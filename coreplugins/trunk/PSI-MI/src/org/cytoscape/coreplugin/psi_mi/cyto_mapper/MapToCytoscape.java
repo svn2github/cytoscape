@@ -38,7 +38,6 @@ import giny.model.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +48,11 @@ import org.cytoscape.coreplugin.psi_mi.model.Interaction;
 import org.cytoscape.coreplugin.psi_mi.model.Interactor;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.CommonVocab;
 import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractionVocab;
+import org.cytoscape.coreplugin.psi_mi.model.vocab.InteractorVocab;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.CvType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.DbReferenceType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.NamesType;
+import org.cytoscape.coreplugin.psi_mi.schema.mi25.XrefType;
 import org.cytoscape.coreplugin.psi_mi.util.AttributeUtil;
 import org.cytoscape.coreplugin.psi_mi.util.ListUtil;
 
@@ -576,7 +580,11 @@ public class MapToCytoscape implements Mapper {
 		         .setListAttribute(cyNode.getIdentifier(), key, (List)value);
 			}
 		}
-
+		
+		// Map interactor type
+		final CvType type = interactor.getCvType();
+		if(type != null) mapCvType(type, interactor, cyNode);
+		
 		//  Map All External References
 		ExternalReference[] refs = interactor.getExternalRefs();
 
@@ -600,6 +608,32 @@ public class MapToCytoscape implements Mapper {
 				         .setListAttribute(cyNode.getIdentifier(), CommonVocab.XREF_DB_ID, idsList);
 			}
 		}
+	}
+	
+	private void mapCvType(CvType type, Interactor interactor, CyNode node) {
+		final NamesType names = type.getNames();
+		if(names != null) {
+			final String fullName = names.getFullName();
+			if(fullName != null)
+				Cytoscape.getNodeAttributes()
+		         .setAttribute(node.getIdentifier(), InteractorVocab.INTERACTOR_TYPE, fullName);
+			else if (names.getShortLabel() != null) {
+				Cytoscape.getNodeAttributes()
+		         .setAttribute(node.getIdentifier(), InteractorVocab.INTERACTOR_TYPE, names.getShortLabel());
+			}
+		}
+		
+		// Currently, use primary reference only.
+		final XrefType xref = type.getXref();
+		if(xref != null) {
+			final DbReferenceType pRef = xref.getPrimaryRef();
+			if(pRef != null) {
+				Cytoscape.getNodeAttributes()
+		         .setAttribute(node.getIdentifier(), InteractorVocab.INTERACTOR_TYPE_DEF, pRef.getId());
+			}	
+		}
+		
+		
 	}
 
 	/**

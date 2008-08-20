@@ -525,8 +525,10 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 		Interactor interactor = new Interactor();
 		extractOrganismInfo(cProtein, interactor);
 		extractSequenceData(cProtein, interactor);
+		
+		// Create ID sets
 		extractIndividualXrefs(cProtein, interactor);
-
+		
 		ExternalReference[] refs = extractExternalRefs(cProtein.getXref());
 
 		if ((refs != null) && (refs.length > 0)) {
@@ -543,6 +545,12 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 		extractCvType(cProtein, interactor);
 
 		return interactor;
+	}
+	
+	private void extractInteractorType(InteractorElementType cProtein, Interactor interactor) {
+		final CvType type = cProtein.getInteractorType();
+		
+		if(type == null) return;
 	}
 
 	private void extractIndividualXrefs(InteractorElementType cProtein, Interactor interactor) {
@@ -586,11 +594,10 @@ public class MapPsiTwoFiveToInteractions implements Mapper {
 	}
 
 	private void extractCvType(InteractorElementType cProtein, Interactor interactor) {
-		CvType cvType = cProtein.getInteractorType();
+		final CvType cvType = cProtein.getInteractorType();
 
-		if (cvType != null) {
+		if (cvType != null)
 			interactor.setCvType(cvType);
-		}
 	}
 
 	/**
