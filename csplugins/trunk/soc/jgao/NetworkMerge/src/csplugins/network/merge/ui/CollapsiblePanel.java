@@ -170,6 +170,7 @@ public class CollapsiblePanel extends JPanel {
      * @param collapse When set to true, the panel is collapsed, else it is expanded
      */
     public void setCollapsed(boolean collapse) {
+        collapsed = collapse;
         if (collapse) {
             //collapse the panel, remove content and set border to empty border
             remove(panel);
@@ -192,7 +193,6 @@ public class CollapsiblePanel extends JPanel {
 
         }
         setBorder(border);
-        collapsed = collapse;
         updateUI();
     }
 

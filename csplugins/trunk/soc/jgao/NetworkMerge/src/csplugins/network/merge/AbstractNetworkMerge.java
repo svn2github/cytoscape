@@ -58,9 +58,10 @@ import giny.model.Edge;
  * 
  */
 public abstract class AbstractNetworkMerge implements NetworkMerge {
+     private final NetworkMergeParameter parameter;
 
-     public AbstractNetworkMerge() {
-
+     public AbstractNetworkMerge(final NetworkMergeParameter parameter) {
+                this.parameter = parameter;
      }
 
      /**
@@ -267,6 +268,8 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
                     while (itNet.hasNext()) {
                         final CyNetwork net2 = itNet.next();
                         //if (net1==net2) continue; // assume the same network don't have nodes match to each other
+                        if (!parameter.inNetworkMergeEnabled() && net1==net2) continue;
+
                         final Set<GraphObject> gos2 = matchedGO.get(net2);
                         if (gos2!=null) {
                             GraphObject go2 = gos2.iterator().next();

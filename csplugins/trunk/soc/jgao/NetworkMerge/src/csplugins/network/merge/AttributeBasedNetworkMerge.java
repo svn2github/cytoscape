@@ -78,11 +78,14 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
      * @param nodeAttributeMapping
      * @param edgeAttributeMapping
      */
-    public AttributeBasedNetworkMerge(final MatchingAttribute matchingAttribute,
+    public AttributeBasedNetworkMerge(
+                               final NetworkMergeParameter parameter,
+                               final MatchingAttribute matchingAttribute,
                                final AttributeMapping nodeAttributeMapping,
                                final AttributeMapping edgeAttributeMapping,
                                final AttributeMerger attributeMerger) {
-            this(matchingAttribute,
+            this(parameter,
+                    matchingAttribute,
                     nodeAttributeMapping,
                     edgeAttributeMapping,
                     attributeMerger,
@@ -97,11 +100,14 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
      * @param attributeValueMatcher
      *          compare whether two attributes of nodes
      */
-    public AttributeBasedNetworkMerge(final MatchingAttribute matchingAttribute,
+    public AttributeBasedNetworkMerge(
+                               final NetworkMergeParameter parameter,
+                               final MatchingAttribute matchingAttribute,
                                final AttributeMapping nodeAttributeMapping,
                                final AttributeMapping edgeAttributeMapping,
                                final AttributeMerger attributeMerger,
                                AttributeValueMatcher attributeValueMatcher) {
+        super(parameter);
         if (matchingAttribute==null
                 || nodeAttributeMapping==null
                 || edgeAttributeMapping==null
