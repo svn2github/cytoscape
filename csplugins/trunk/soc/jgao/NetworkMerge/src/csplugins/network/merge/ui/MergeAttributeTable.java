@@ -89,7 +89,7 @@ class MergeAttributeTable extends JTable{
         super();
         isNode = true;
         indexMatchingAttr = -1;
-        this.mergedNetworkName = CyNetworkNaming.getSuggestedNetworkTitle("Network.Merged");
+        this.mergedNetworkName = CyNetworkNaming.getSuggestedNetworkTitle("Merged.Network");
         this.attributeMapping = attributeMapping;
         this.matchingAttribute = matchingAttribute;
         model = new MergeAttributeTableModel();
@@ -99,7 +99,7 @@ class MergeAttributeTable extends JTable{
     
     public MergeAttributeTable(final AttributeMapping attributeMapping) {
         super();        
-        this.mergedNetworkName = "Network.Merged";
+        this.mergedNetworkName = "Merged.Network";
         this.attributeMapping = attributeMapping;
         model = new MergeAttributeTableModel();
         isNode = false;

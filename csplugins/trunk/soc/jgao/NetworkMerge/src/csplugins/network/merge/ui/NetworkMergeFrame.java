@@ -113,6 +113,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -123,6 +124,8 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
     /** Creates new form NetworkMergeFrame */
     public NetworkMergeFrame() {
         frame = this;
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
         idMapping = null;
         matchingAttribute = new MatchingAttributeImpl(Cytoscape.getNodeAttributes());
         nodeAttributeMapping = new AttributeMappingImpl(Cytoscape.getNodeAttributes());
@@ -181,7 +184,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                 cancelButton = new javax.swing.JButton();
                 okButton = new javax.swing.JButton();
 
-                setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+                setTitle("Network Merge");
                 setAlwaysOnTop(true);
                 getContentPane().setLayout(new java.awt.GridBagLayout());
 
