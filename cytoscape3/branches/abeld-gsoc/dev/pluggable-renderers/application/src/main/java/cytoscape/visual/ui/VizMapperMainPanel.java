@@ -40,6 +40,7 @@ import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
 import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
 import com.l2fprod.common.propertysheet.PropertySheetTable;
+import com.l2fprod.common.propertysheet.PropertySheetTableModel;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
@@ -153,6 +154,7 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 
 /**
@@ -224,10 +226,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	private VisualMappingManager vmm;
 
-	/*
-	 * Keeps Properties in the browser.
-	 */
-	private Map<String, List<Property>> propertyMap;
+	/** store the Table state for each VisualStyle in this map, by storing the TableModel*/
+	private Map<String, TableModel> vsToModelMap;
 
 	// Keeps current discrete mappings.  NOT PERMANENT
 	private final Map<String, Map<Object, Object>> discMapBuffer = new HashMap<String, Map<Object, Object>>();
@@ -252,7 +252,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		vmm = Cytoscape.getVisualMappingManager();
 		vmm.addChangeListener(this);
 
-		propertyMap = new HashMap<String, List<Property>>();
+		vsToModelMap = new HashMap<String, TableModel>();
 		setMenu();
 
 		// Need to register listener here, instead of CytoscapeDesktop.
@@ -526,8 +526,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		defaultAppearencePanel = new javax.swing.JPanel();
 		visualPropertySheetPanel = new PropertySheetPanel();
-		visualPropertySheetPanel.setTable(new PropertySheetTable());
-
+		//System.out.println("putting in initComponents:"+vmm.getVisualStyle().getName()+" -> "+visualPropertySheetPanel.getTable().getModel());
+		vsToModelMap.put(vmm.getVisualStyle().getName(), visualPropertySheetPanel.getTable().getModel());
+		
 		vsSelectPanel = new javax.swing.JPanel();
 		vsNameComboBox = new javax.swing.JComboBox();
 
@@ -766,8 +767,22 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		switchVS(vsName, true);
 	}
 
+	/** set given TableModel as model for PropertySheetPanel widget;
+	 * workaround bug in PropertySheetPanel.
+	 * model _must_ be a PropertySheetTableModel since it is cast to one somwhere.
+	 */
+	private void setModel(TableModel model){
+		visualPropertySheetPanel.getTable().setModel(model);
+		
+		// workaround the fact that PropertySheetPanel caches the TableModel and thus would ignore the model change.
+		visualPropertySheetPanel.setTable(visualPropertySheetPanel.getTable());
+		// set other stuff that PropertySheetPanel proxies to the model:
+		visualPropertySheetPanel.setSorting(true);
+		visualPropertySheetPanel.setMode(PropertySheetPanel.VIEW_AS_CATEGORIES);
+	}
 	private void switchVS(String vsName, boolean redraw) {
 		System.out.println("switching to:"+vsName);
+		System.out.println("	from:"+vmm.getVisualStyle().getName());
 		if (ignore)
 			return;
 
@@ -780,47 +795,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		
-		// MLC 03/31/08:
-		// NOTE: Will cause stateChanged() to be called:
+		//System.out.println("in map: "+vsToModelMap.get(vmm.getVisualStyle().getName()));
 		vmm.setVisualStyle(vsName);
-
-		if (propertyMap.containsKey(vsName)) {
-			System.out.println("  vs in propertyMap");
-			final List<Property> props = propertyMap.get(vsName);
-			final Map<String, Property> unused = new TreeMap<String, Property>();
-
-			/*
-			 * Remove currently shown property
-			 */
-			for (Property item : visualPropertySheetPanel.getProperties())
-				visualPropertySheetPanel.removeProperty(item);
-
-			/*
-			 * Add properties to current property sheet.
-			 */
-			for (Property prop : props) {
-				if (prop.getCategory().startsWith(CATEGORY_UNUSED) == false) {
-					if (prop.getCategory().equals(NODE_VISUAL_MAPPING)) {
-						visualPropertySheetPanel.addProperty(0, prop);
-					} else {
-						visualPropertySheetPanel.addProperty(prop);
-					}
-				} else {
-					unused.put(prop.getDisplayName(), prop);
-				}
-			}
-
-			final List<String> keys = new ArrayList<String>(unused.keySet());
-			Collections.sort(keys);
-
-			for (Object key : keys) {
-				visualPropertySheetPanel.addProperty(unused.get(key));
-			}
-		} else{
-			System.out.println("  vs not in propertyMap");
+		if (vsToModelMap.containsKey(vsName)){
+			//System.out.println("swapping in exsisting TableModel:");
+			setModel(vsToModelMap.get(vsName));
+		} else {
+			//System.out.println("no TableModel yet for this VisualStyle, have to create it:");
+			PropertySheetTableModel model = new PropertySheetTableModel();
+			setModel(model);
+			
+			vsToModelMap.put(vsName, model);
 			setPropertyTable();
 		}
-
 		// MLC 03/31/08:
 		//lastVSName = vsName;
 
@@ -848,8 +835,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		final boolean lockState = false; //FIXME: vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked();
 		lockSize.setSelected(lockState);
 		switchNodeSizeLock(lockState);
-		
-		visualPropertySheetPanel.setSorting(true);
 		
 		// Cleanup desktop.
 		Cytoscape.getDesktop().repaint();
@@ -943,7 +928,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Set Tooltiptext for the table.
 		 */
-		visualPropertySheetPanel.setTable(new PropertySheetTable() {
+		
+		// Pay special attention to preserving the TableModel: otherwise
+		// constructing a new PropertySheetTable would replace the TableModel as
+		// well, which we don't want to preserve vsToModelMap mapping
+		visualPropertySheetPanel.setTable(new PropertySheetTable((PropertySheetTableModel) visualPropertySheetPanel.getTable().getModel()) {
 	private final static long serialVersionUID = 1213748836812161L;
 				public String getToolTipText(MouseEvent me) {
 					final Point pt = me.getPoint();
@@ -1288,6 +1277,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * TODO: need to find missing editor problem!
 	 */
 	private void setPropertyTable() {
+		//System.out.println("setPropertyTable on model:"+visualPropertySheetPanel.getTable().getModel());
 		setPropertySheetAppearence();
 
 		/*
@@ -1295,39 +1285,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 */
 		for (Property item : visualPropertySheetPanel.getProperties())
 			visualPropertySheetPanel.removeProperty(item);
-
-		/*
-		final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                              .getNodeAppearanceCalculator();
-
-		final EdgeAppearanceCalculator eac = Cytoscape.getVisualMappingManager().getVisualStyle()
-		                                              .getEdgeAppearanceCalculator();
-		 */
+		//System.out.println("cleared PropertyTable, num properties:"+(visualPropertySheetPanel.getProperties()).length);
 		final List<Calculator> ncList = Cytoscape.getVisualMappingManager().getVisualStyle().getNodeCalculators();
 		final List<Calculator> ecList = Cytoscape.getVisualMappingManager().getVisualStyle().getEdgeCalculators();
 
 		editorReg.registerDefaults();
 
-		/*
-		 * Add properties to the browser.
-		 */
-		List<Property> propRecord = new ArrayList<Property>();
+		/* Add properties to the property sheet. */
+		setPropertyFromCalculator(ncList, NODE_VISUAL_MAPPING, true);
+		setPropertyFromCalculator(ecList, EDGE_VISUAL_MAPPING, false);
 
-		setPropertyFromCalculator(ncList, NODE_VISUAL_MAPPING, propRecord);
-		setPropertyFromCalculator(ecList, EDGE_VISUAL_MAPPING, propRecord);
-
-		/* Finally, build unused list */
-		setUnused(propRecord);
-
-		// Save it for later use.
-		propertyMap.put(vmm.getVisualStyle().getName(), propRecord);
-	}
-
-	/*
-	 * Add unused visual properties (as VizMapperProperties) to propList
-	 *
-	 */
-	private void setUnused(List<Property> propList) {
+		/* Finally, add unused visual properties (as VizMapperProperties) to propList */
 		VisualStyle vs = vmm.getVisualStyle();
 		for (VisualProperty vp : byNameSortedVisualProperties(VisualPropertyCatalog.collectionOfVisualProperties())) {
 			if (vs.getCalculator(vp) == null) {
@@ -1337,11 +1305,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				prop.setHiddenObject(vp);
 				prop.setValue("Double-Click to create...");
 				visualPropertySheetPanel.addProperty(prop);
-				propList.add(prop);
 			}
 		}
+		//System.out.println("setPropertyTable done, num properties:"+(visualPropertySheetPanel.getProperties()).length);
 	}
-	
+
 	/* Returns a sorted list of the visual properties
 	 * Needed because VisualProperties themselves are not Comparable,
 	 * (forcing them to be comparable would bloat the API and) 
@@ -1576,8 +1544,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		editor.setAvailableIcons(iconList.toArray(new Icon[0]));
 		return editor;
 	}
-	private void setPropertyFromCalculator(List<Calculator> calcList, String rootCategory,
-	                                       List<Property> propRecord) {
+	private void setPropertyFromCalculator(List<Calculator> calcList, String rootCategory, boolean atBeginning) {
 		VisualProperty type = null;
 
 		for (Calculator calc : calcList) {
@@ -1596,8 +1563,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					editorReg.registerEditor(calculatorTypeProp, edgeAttrEditor);
 				}
 			}
-
-			propRecord.add(calculatorTypeProp);
+			//System.out.println("adding used VP: "+calc.getVisualProperty().getName());
+			if (atBeginning){
+				visualPropertySheetPanel.addProperty(0, calculatorTypeProp);
+			} else {
+				visualPropertySheetPanel.addProperty(calculatorTypeProp);
+			}
 		}
 	}
 
@@ -1707,7 +1678,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * DOCUMENT ME!
 	 */
 	public void initializeTableState() {
-		propertyMap = new HashMap<String, List<Property>>();
+		//System.out.println("clearing in initializeTableState");
+		//vsToModelMap = new HashMap<String, TableModel>(); // propertyMap was re-written here in previous versions, so this might be needed, but maybe not.
 		editorWindowManager = new HashMap<VisualProperty, JDialog>();
 		defaultImageManager = new HashMap<String, Image>();
 	}
@@ -2036,13 +2008,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			else
 				buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
-			removeProperty(typeRootProp);
-
-			if (propertyMap.get(vmm.getVisualStyle().getName()) != null)
-				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
-
-			typeRootProp = null;
-
 			expandLastSelectedItem(type.getName());
 			updateTableView();
 
@@ -2212,12 +2177,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		expandLastSelectedItem(type.getName());
 
-		removeProperty(parent);
-
-		if (propertyMap.get(vmm.getVisualStyle().getName()) != null) {
-			propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
-		}
-
 		// vmm.getNetworkView().redrawGraph(false, true);
 		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 		parent = null;
@@ -2363,6 +2322,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
+			vsNameComboBox.addItem(name);
 			switchVS(name);
 		}
 	}
@@ -2449,9 +2409,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			vsNameComboBox.setSelectedItem(name);
 			vsNameComboBox.removeItem(oldName);
 
-			final List<Property> props = propertyMap.get(oldName);
-			propertyMap.put(name, props);
-			propertyMap.remove(oldName);
+			final TableModel model = vsToModelMap.get(oldName);
+			vsToModelMap.put(name, model);
+			vsToModelMap.remove(oldName);
 		}
 	}
 
@@ -2491,7 +2451,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				vsNameComboBox.setSelectedItem(currentStyle.getName());
 				switchVS(currentStyle.getName());
 				defaultImageManager.remove(styleName);
-				propertyMap.remove(styleName);
+				vsToModelMap.remove(styleName);
 
 				vmm.setVisualStyle(currentStyle);
 				vmm.setVisualStyleForView( vmm.getNetworkView(), currentStyle );
@@ -2536,6 +2496,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
+			vsNameComboBox.addItem(newName);
 			switchVS(newName);
 		}
 	}
@@ -2590,9 +2551,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 					visualPropertySheetPanel.removeProperty(curProp);
 
-					removeProperty(curProp);
-
-					propertyMap.get(vmm.getVisualStyle().getName()).add(prop);
 					visualPropertySheetPanel.repaint();
 				}
 			}
@@ -2690,28 +2648,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		table.repaint();
 		vmm.setNetworkView(Cytoscape.getCurrentNetworkView());
 		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-	}
-
-	/*
-	 * Remove an entry in the browser.
-	 */
-	private void removeProperty(final Property prop) {
-		List<Property> targets = new ArrayList<Property>();
-
-		if (propertyMap.get(vmm.getVisualStyle().getName()) == null) {
-			return;
-		}
-
-		for (Property p : propertyMap.get(vmm.getVisualStyle().getName())) {
-			if (p.getDisplayName().equals(prop.getDisplayName())) {
-				targets.add(p);
-			}
-		}
-
-		for (Property p : targets) {
-			System.out.println("Removed: " + p.getDisplayName());
-			propertyMap.get(vmm.getVisualStyle().getName()).remove(p);
-		}
 	}
 
 	private class GenerateValueListener extends AbstractAction {
@@ -2842,9 +2778,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				else
 					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
-				removeProperty(prop);
-				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
-
 				expandLastSelectedItem(type.getName());
 			} else {
 				System.out.println("Invalid.");
@@ -2944,8 +2877,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				else
 					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
-				removeProperty(prop);
-				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
 
 				expandLastSelectedItem(type.getName());
 			} else {
@@ -3183,9 +3114,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				else
 					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
 
-				removeProperty(prop);
-				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
-
 				expandLastSelectedItem(type.getName());
 			} else {
 				System.out.println("Invalid.");
@@ -3287,9 +3215,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, NODE_VISUAL_MAPPING);
 				else
 					buildProperty(vmm.getVisualStyle().getCalculator(type), newRootProp, EDGE_VISUAL_MAPPING);
-
-				removeProperty(prop);
-				propertyMap.get(vmm.getVisualStyle().getName()).add(newRootProp);
 
 				expandLastSelectedItem(type.getName());
 			} else {
@@ -3477,9 +3402,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
 				// No longer exists in the VMM.  Remove.
+				//System.out.println("No longer exists in the VMM.  Removing in syncStyleBox()");
 				vsNameComboBox.removeItem(styleName);
 				defaultImageManager.remove(styleName);
-				propertyMap.remove(styleName);
+				vsToModelMap.remove(styleName);
 			}
 		}
 
