@@ -155,7 +155,6 @@ public class SFLDLoader extends CytoscapePlugin {
 			InputStream input = null;
 			try {
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				factory = null;
 				builder = factory.newDocumentBuilder();
 			} catch (Exception e) {
 				logger.error("Unable to create a new document: "+e.getMessage());
