@@ -193,16 +193,36 @@ public class AlignmentTableModel extends AbstractTableModel implements ListSelec
 	 *
 	 * @param refStruct the name of the structure
 	 */
-	public void setReferenceStruct (String refStruct) {
-		this.referenceStructure = refStruct;
+	public void setReferenceStruct (Object refStruct) {
 		if (refStruct == null) {
 			this.matchStructures = null;
 			this.resultsMap = null;
+			this.referenceStructure = null;
 		} else {
+			String refName = null;
+			String matchName = null;
+			if (refStruct instanceof Structure)
+				refName = ((Structure)refStruct).name();
+			else if (refStruct instanceof ChimeraChain) {
+				refName = refStruct.toString();
+				matchName = ((ChimeraChain)refStruct).getChimeraModel().getModelName();
+			}
+
+			this.referenceStructure = refName;
+
 			this.matchStructures = new ArrayList();
 			this.resultsMap = new HashMap();
 			for (Object structure: allStructures) {
-				if (structure.toString().equals(refStruct)) continue;
+				if (structure instanceof Structure 
+				    && ((Structure)structure).name().equals(refName))
+					continue;
+				else if (structure instanceof ChimeraChain) {
+					if (structure.toString().equals(refName))
+						continue;
+					if (matchName.equals(((ChimeraChain)structure).getChimeraModel().getModelName()))
+						continue;
+				}
+
 				matchStructures.add(structure);
 			}
 		}

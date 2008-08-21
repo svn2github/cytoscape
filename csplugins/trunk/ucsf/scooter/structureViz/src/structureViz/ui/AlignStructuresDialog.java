@@ -78,7 +78,7 @@ import structureViz.actions.Align;
 public class AlignStructuresDialog extends JDialog implements ActionListener {
 	// Instance variables
 	Chimera chimeraObject;
-	List<Structure> structures;
+	List structures;
 	boolean status;
 	boolean useChains;
 	Object referenceStruct;
@@ -121,11 +121,14 @@ public class AlignStructuresDialog extends JDialog implements ActionListener {
 	public void setReferenceStruct(Object ref) {
 		this.referenceStruct = ref;
 		// update the table model
+		tableModel.setReferenceStruct(ref);
+/*
 		if (ref instanceof Structure)
 			tableModel.setReferenceStruct(((Structure)ref).name());
 		else if (ref instanceof ChimeraChain) {
 			tableModel.setReferenceStruct(referenceStruct.toString());
 		}
+*/
 	}
 
 	/**

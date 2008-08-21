@@ -189,9 +189,11 @@ public class Align {
 		ChimeraStructuralObject reference = chimeraObject.getModel(refStruct.name());
 		for (Structure matchStruct: structures) {
 			ChimeraStructuralObject match = chimeraObject.getModel(matchStruct.name());
-			modelList.add(match);
+			// System.out.println(match);
 			ChimeraModel model = match.getChimeraModel();
+			modelList.add(model);
 			Iterator matchResult = singleAlign(reference, match);
+			// System.out.println("Saving results for: "+model.getModelName());
 			results.put(model.getModelName(), parseResults(matchResult));
 		}
 		chimeraObject.command("focus");
@@ -228,6 +230,7 @@ public class Align {
 		int index = -1;
 		while (lineIter.hasNext()) {
 			String line = (String)lineIter.next();
+			// System.out.println(line);
 			if ((index = line.indexOf("score = ")) > 0) {
 				Float score = new Float(line.substring(index+8));
 				results[SCORE] = score.floatValue();
@@ -239,6 +242,7 @@ public class Align {
 				results[RMSD] = rmsd.floatValue();
 			}
 		}
+		// System.out.println("RMSD = "+results[RMSD]+", score = "+results[SCORE]);
 		return results;
 	}
 
@@ -253,8 +257,15 @@ public class Align {
 	private void setAllAttributes(ChimeraStructuralObject source, List<ChimeraStructuralObject> targetList) {
 		ChimeraModel sourceModel = source.getChimeraModel();
 		for (ChimeraStructuralObject target: targetList) {
+			// If our target is a ChimeraModel, we want the model name, otherwise
+			// we want the toString
+			String modelKey = null;
+			if (target instanceof ChimeraModel)
+				modelKey = ((ChimeraModel)target).getModelName();
+			else
+				modelKey = ((ChimeraStructuralObject)target).toString();
 			ChimeraModel targetModel = target.getChimeraModel();
-			float[] results = getResults(target.toString());
+			float[] results = getResults(modelKey);
 			setEdgeAttributes(results, sourceModel, targetModel);
 		}
 	}
@@ -266,6 +277,7 @@ public class Align {
 	 * @param to the ChimeraModel that represents the CyNode to use as the destination of the edge
 	 */
 	private void setEdgeAttributes(float[] results, ChimeraModel from, ChimeraModel to) {
+		// System.out.println("From: "+from+" To: "+to+" results: "+results);
 		CyNetwork network = chimeraObject.getNetworkView().getNetwork();
 		CyNode source = from.getStructure().node();
 		CyNode target = to.getStructure().node();
