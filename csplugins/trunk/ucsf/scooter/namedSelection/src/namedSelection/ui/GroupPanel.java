@@ -226,6 +226,7 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 
 		for (int i = cPaths.length-1; i >= 0; i--) {
 			// System.out.println(cPaths[i]);
+			if (cPaths[i] == null) continue;
 			DefaultMutableTreeNode treeNode = 
 			     (DefaultMutableTreeNode) cPaths[i].getLastPathComponent();
 			    
