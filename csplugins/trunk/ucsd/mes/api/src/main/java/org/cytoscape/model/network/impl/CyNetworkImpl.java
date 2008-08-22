@@ -90,7 +90,7 @@ public class CyNetworkImpl implements CyNetwork {
 
 	public synchronized boolean removeNode(final CyNode node) {
 
-		if ( !contains(node) ) 
+		if ( !containsNode(node) ) 
 			return false;
 
 		List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,EdgeType.ANY_EDGE);
@@ -111,7 +111,7 @@ public class CyNetworkImpl implements CyNetwork {
 	}
 
 	public synchronized CyEdge addEdge(final CyNode source, final CyNode target, final boolean isDirected) {
-		if ( !contains(source) || !contains(target) ) 
+		if ( !containsNode(source) || !containsNode(target) ) 
 			throw new IllegalArgumentException("invalid input nodes");
 
 		int newEdgeInd = dg.edgeCreate(source.getIndex(),target.getIndex(),isDirected);
@@ -130,7 +130,7 @@ public class CyNetworkImpl implements CyNetwork {
 
 
 	public synchronized boolean removeEdge(final CyEdge edge) {
-		if ( !contains(edge) ) 
+		if ( !containsEdge(edge) ) 
 			return false;
 
 		int remInd = edge.getIndex();
@@ -179,14 +179,14 @@ public class CyNetworkImpl implements CyNetwork {
 		return el;
 	}
 
-	public boolean contains( final CyNode node ) {
+	public boolean containsNode( final CyNode node ) {
 		if ( node == null )
 			return false;
 
 		return dg.nodeExists( node.getIndex() );
 	}
 
-	public boolean contains( final CyEdge edge ) {
+	public boolean containsEdge( final CyEdge edge ) {
 		if ( edge == null )
 			return false;
 
@@ -196,8 +196,8 @@ public class CyNetworkImpl implements CyNetwork {
 			return true;
 	}
 
-	public boolean contains( final CyNode from, final CyNode to ) {
-		if ( !contains(from) || !contains(to) )
+	public boolean containsEdge( final CyNode from, final CyNode to ) {
+		if ( !containsNode(from) || !containsNode(to) )
 			return false;
 	
 		final IntIterator it = dg.edgesConnecting(from.getIndex(),to.getIndex(),true,true,true);
@@ -215,7 +215,7 @@ public class CyNetworkImpl implements CyNetwork {
 		final IntEnumerator it; 
 		ArrayList<CyNode> nodes = new ArrayList<CyNode>();
 
-		if ( !contains(node) )
+		if ( !containsNode(node) )
 			throw new IllegalArgumentException("bad node");
 		
 		it = dg.edgesAdjacent(node.getIndex(),et[OUT],et[IN],et[UN]);
@@ -241,7 +241,7 @@ public class CyNetworkImpl implements CyNetwork {
 		ArrayList<CyEdge> edges = new ArrayList<CyEdge>();
 		final IntEnumerator it; 
 
-		if ( !contains(node) )
+		if ( !containsNode(node) )
 			throw new IllegalArgumentException("bad nodes");
 
 		it = dg.edgesAdjacent(node.getIndex(),et[OUT],et[IN],et[UN]);
@@ -264,7 +264,7 @@ public class CyNetworkImpl implements CyNetwork {
 		ArrayList<CyEdge> edges = new ArrayList<CyEdge>();
 		final IntIterator it;
 
-		if ( !contains(source) || !contains(target) )
+		if ( !containsNode(source) || !containsNode(target) )
 			throw new IllegalArgumentException("bad nodes");
 
 		it = dg.edgesConnecting(source.getIndex(),target.getIndex(),et[OUT],et[IN],et[UN]);

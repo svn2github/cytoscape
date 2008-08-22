@@ -19,9 +19,9 @@ public interface CyNetwork extends Identifiable {
 	public List<CyNode> getNodeList();
 	public List<CyEdge> getEdgeList();
 
-	public boolean contains( CyNode node );
-	public boolean contains( CyEdge edge );
-	public boolean contains( CyNode from, CyNode to );
+	public boolean containsNode( CyNode node );
+	public boolean containsEdge( CyEdge edge );
+	public boolean containsEdge( CyNode from, CyNode to );
 
 	public CyNode getNode(int index);
 	public CyEdge getEdge(int index);

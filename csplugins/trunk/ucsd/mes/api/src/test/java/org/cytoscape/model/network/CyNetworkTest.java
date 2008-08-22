@@ -359,8 +359,8 @@ public class CyNetworkTest extends TestCase {
 	public void testIsNode() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = new DummyCyNode(20);
-		assertTrue("node 1 is good", net.contains(n1));
-		assertFalse("node 2 is not", net.contains(n2));
+		assertTrue("node 1 is good", net.containsNode(n1));
+		assertFalse("node 2 is not", net.containsNode(n2));
 	}
 
 	public void testIsEdgeFromEdge() {
@@ -370,8 +370,8 @@ public class CyNetworkTest extends TestCase {
 		CyEdge e1 = net.addEdge(n1,n2,true);
 		CyEdge e2 = new DummyCyEdge(n1,n2,true,10);
 
-		assertTrue("edge 1 is good",net.contains(e1));
-		assertFalse("edge 2 is not",net.contains(e2));
+		assertTrue("edge 1 is good",net.containsEdge(e1));
+		assertFalse("edge 2 is not",net.containsEdge(e2));
 	}
 
 	public void testIsEdgeFromNodes() {
@@ -382,12 +382,12 @@ public class CyNetworkTest extends TestCase {
 
 		CyEdge e1 = net.addEdge(n1,n2,true);
 
-		assertTrue("edge 1 is good",net.contains(n1,n2));
-		assertFalse("not an edge",net.contains(n3,n2));
-		assertFalse("not an edge",net.contains(n1,n1));
-		assertFalse("not an edge",net.contains(n2,n3));
-		assertFalse("bad target node",net.contains(n2,n4));
-		assertFalse("bad source node",net.contains(n4,n1));
+		assertTrue("edge 1 is good",net.containsEdge(n1,n2));
+		assertFalse("not an edge",net.containsEdge(n3,n2));
+		assertFalse("not an edge",net.containsEdge(n1,n1));
+		assertFalse("not an edge",net.containsEdge(n2,n3));
+		assertFalse("bad target node",net.containsEdge(n2,n4));
+		assertFalse("bad source node",net.containsEdge(n4,n1));
 	}
 
 	public void testBasicGetNeighborList() {
