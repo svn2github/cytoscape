@@ -178,7 +178,7 @@ public class CytoscapeInit {
 
 				// Register the console logger, if we're not told not to
 				String consoleLogger = properties.getProperty("logger.console");
-				if (consoleLogger == null || Boolean.getBoolean(consoleLogger)) {
+				if (consoleLogger == null || Boolean.parseBoolean(consoleLogger)) {
 					logger.addLogHandler(ConsoleLogger.getLogger(), LogLevel.LOG_DEBUG);
 				} else {
 					logger.info("Log information can now be found in the Help->Error Console menu");
