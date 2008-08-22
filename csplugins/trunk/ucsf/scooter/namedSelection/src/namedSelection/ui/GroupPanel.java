@@ -730,6 +730,8 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 					continue;
 				}
 
+				groupList = sortList(groupList);
+
 				deleteButton.setEnabled(true);
 
 				for (CyGroup group: groupList) {
@@ -785,8 +787,10 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 				treeSelectionModel.addSelectionPath(path);
 			}
 
+			List<CyNode> nodeList = sortList(group.getNodes());
+
 			// Now, add all of our children
-			for (CyNode node: group.getNodes()) {
+			for (CyNode node: nodeList) {
 				if (CyGroupManager.isaGroup(node)) {
 					// Get the group
 					CyGroup childGroup = CyGroupManager.getCyGroup(node);
@@ -845,6 +849,18 @@ public class GroupPanel extends JPanel implements TreeSelectionListener,
 			return true;
 		}
 
+		private List sortList(List listToSort) {
+			Object[] array = listToSort.toArray();
+			Arrays.sort(array, new ToStringComparator());
+			return Arrays.asList(array);
+		}
+
+	}
+
+	private class ToStringComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			return o1.toString().compareToIgnoreCase(o2.toString());
+		}
 	}
 
 	/**
