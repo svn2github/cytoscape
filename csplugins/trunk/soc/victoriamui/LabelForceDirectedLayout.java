@@ -401,15 +401,11 @@ public class LabelForceDirectedLayout extends AbstractGraphPartition
 	 * Return information about our algorithm
 	 */
 	public boolean supportsSelectedOnly() {
-		return true;
+		return true; // vmui
 	}
 
 	public byte[] supportsEdgeAttributes() {
-		if (!supportWeights)
-			return null;
-		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
-
-		return attrs;
+		return null;
 	}
 	
 	public List getInitialAttributeList() {
