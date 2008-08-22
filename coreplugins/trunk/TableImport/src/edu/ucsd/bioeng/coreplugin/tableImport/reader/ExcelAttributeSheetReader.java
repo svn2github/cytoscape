@@ -35,6 +35,7 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -66,6 +67,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 	private final int startLineNumber;
 	private int globalCounter = 0;
 	private boolean importAll = false;
+	private CyLogger logger = CyLogger.getLogger(ExcelAttributeSheetReader.class);
 
 	/**
 	 * Constructor.<br>
@@ -126,8 +128,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 				else 
 					parser.parseEntry(cellsInOneRow);
 			} catch (Exception ex) {
-				System.out.println("Couldn't parse row: " + rowCount);
-				ex.printStackTrace();
+				logger.warn("Couldn't parse row: " + rowCount, ex);
 			}
 			
 			rowCount++;
@@ -166,7 +167,7 @@ public class ExcelAttributeSheetReader implements TextTableReader {
 				cells[i] = null;
 			} else if (cell.getCellType() == HSSFCell.CELL_TYPE_ERROR) {
 				cells[i] = null;
-				System.out.println("Error found when reading a cell!");
+				logger.warn("Error found when reading a cell!");
 			}
 		}
 

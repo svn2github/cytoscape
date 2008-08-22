@@ -37,6 +37,7 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
 import cytoscape.data.readers.AbstractGraphReader;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.util.URLUtil;
 
@@ -71,6 +72,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 	protected final List<Integer> edgeList;
 	protected final int startLineNumber;
 	protected final String commentChar;
+	private CyLogger logger = CyLogger.getLogger(NetworkTableReader.class);
 
 	/**
 	 * Creates a new NetworkTableReader object.
@@ -138,7 +140,7 @@ public class NetworkTableReader extends AbstractGraphReader implements TextTable
 				try {
 					parser.parseEntry(parts);
 				} catch (Exception ex) {
-					System.out.println("Couldn't parse row: " + lineCount);
+					logger.warn("Couldn't parse row: " + lineCount, ex);
 				}
 			}
 

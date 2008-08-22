@@ -77,8 +77,11 @@ public class ImportNetworkTask implements Task {
 		taskMonitor.setStatus("Loading network and edge attributes...");
 		taskMonitor.setPercentCompleted(-1);
 
-		Cytoscape.createNetwork(reader, true, null);
-		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, source);
+		CyNetwork network = Cytoscape.createNetwork(reader, true, null);
+		Object[] ret_val = new Object[2];
+		ret_val[0] = network;
+		ret_val[1] = source.toString();
+		Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 
 		taskMonitor.setPercentCompleted(100);
 

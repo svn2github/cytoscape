@@ -36,6 +36,7 @@
 
 package edu.ucsd.bioeng.coreplugin.tableImport.reader;
 
+import cytoscape.logger.CyLogger;
 import cytoscape.util.URLUtil;
 
 import java.io.BufferedReader;
@@ -57,6 +58,7 @@ public class OntologyAnnotationReader implements TextTableReader {
 	private final String commentChar;
 	private final int startLineNumber;
 	private final OntologyAndAnnotationLineParser parser;
+	private CyLogger logger = CyLogger.getLogger(OntologyAnnotationReader.class);
 
 	/**
 	 * Creates a new OntologyAnnotationReader object.
@@ -111,7 +113,7 @@ public class OntologyAnnotationReader implements TextTableReader {
 				try {
 					parser.parseEntry(parts);
 				} catch (Exception ex) {
-					System.out.println("Couldn't parse line: " + lineCount);
+					logger.warn("Couldn't parse line: " + lineCount, ex);
 				}
 			}
 

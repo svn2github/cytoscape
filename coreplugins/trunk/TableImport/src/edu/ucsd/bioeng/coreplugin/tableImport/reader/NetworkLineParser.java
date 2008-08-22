@@ -148,6 +148,10 @@ public class NetworkLineParser {
 	private void mapAttribute(final String key, final String entry, final int index) {
 		Byte type = nmp.getAttributeTypes()[index];
 
+		if (entry == null || entry.length() == 0) {
+			return;
+		}
+
 		switch (type) {
 			case CyAttributes.TYPE_BOOLEAN:
 				nmp.getAttributes()
