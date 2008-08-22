@@ -1442,7 +1442,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if ((firstMap.getClass() == DiscreteMapping.class) && (attrName != null)) {
 				final Map discMapping = ((DiscreteMapping) firstMap).getAll();
 				final Set<Object> attrSet = loadKeys(attrName, attr, firstMap, nodeOrEdge);
-				Class dataTypeClass = type.getDataType();
+				Class<?> dataTypeClass = type.getDataType();
 
 				if (dataTypeClass.isAssignableFrom(DiscreteValue.class)){ // FIXME: these should be Enum-like instead!! (or Discrete or something)
 					setDiscreteProps(type, discMapping, attrSet, buildCellEditor(type), new ShapeCellRenderer(type), calculatorTypeProp);

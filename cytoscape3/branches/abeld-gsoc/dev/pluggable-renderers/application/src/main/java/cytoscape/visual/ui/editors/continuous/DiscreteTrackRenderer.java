@@ -574,7 +574,7 @@ public class DiscreteTrackRenderer extends JComponent implements VizMapperTrackR
 		g.setColor(ICON_COLOR);
 		g.setStroke(STROKE2);
 
-		Class dataTypeClass = type.getDataType();
+		Class<?> dataTypeClass = type.getDataType();
 		if (dataTypeClass.isAssignableFrom(DiscreteValue.class)){
 			final VisualPropertyIcon icon = ((VisualPropertyIcon) type.getIconSet().get(key));
 			if(icon != null) {

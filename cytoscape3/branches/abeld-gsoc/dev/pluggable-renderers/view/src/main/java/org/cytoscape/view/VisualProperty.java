@@ -55,7 +55,7 @@ public interface VisualProperty {
 	 * Returns the data type of this VisualProperty.
 	 * @return 
 	 */
-	public Class getDataType();
+	public Class<?> getDataType();
 	
 	/**
 	 * Check this visual property is for node or not.

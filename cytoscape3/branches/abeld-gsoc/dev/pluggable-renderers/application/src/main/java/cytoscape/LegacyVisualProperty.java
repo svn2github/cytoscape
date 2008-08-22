@@ -39,7 +39,7 @@ import javax.swing.Icon;
  */
 public class LegacyVisualProperty implements VisualProperty {
 	private String name;
-	private Class dataType; // Data type
+	private Class<?> dataType; // Data type
 	private boolean isNodeProp; // indicates whether or not property is for a node or edge
 	
 	public LegacyVisualProperty(final String name, final Class dataType, final boolean isNodeProp) {
