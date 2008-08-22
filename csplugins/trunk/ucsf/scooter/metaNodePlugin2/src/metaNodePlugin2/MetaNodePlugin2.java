@@ -173,11 +173,14 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * @param group the CyGroup that was just created
 	 */
 	public void groupCreated(CyGroup group) { 
+		// logger.info("groupCreated("+group+")");
 		if (MetaNode.getMetaNode(group) == null) {
 			MetaNode newNode = new MetaNode(group);
 		}
 		// Update the attributes of the group node
+		// logger.info("registering");
 		registerWithGroupPanel();
+		// logger.info("done");
 	}
 
 	/**
@@ -190,6 +193,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * @param view the CyNetworkView that is being created
 	 */
 	public void groupCreated(CyGroup group, CyNetworkView myview) { 
+		// logger.info("groupCreated("+group+", view)");
 		if (MetaNode.getMetaNode(group) == null) {
 			MetaNode newNode = new MetaNode(group);
 
@@ -204,7 +208,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				network.hideNode(group.getGroupNode());
 			}
 		}
+		// logger.info("registering");
 		registerWithGroupPanel();
+		// logger.info("done");
 	}
 
 	/**
@@ -720,6 +726,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	}
 
 	protected List sortList(List listToSort) {
+		if (listToSort == null || listToSort.size() <= 1)
+			return listToSort;
 		Object[] array = listToSort.toArray();
 		Arrays.sort(array, new ToStringComparator());
 		return Arrays.asList(array);

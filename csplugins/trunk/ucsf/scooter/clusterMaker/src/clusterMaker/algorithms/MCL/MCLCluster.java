@@ -55,10 +55,10 @@ import clusterMaker.ui.ClusterViz;
 public class MCLCluster extends AbstractClusterAlgorithm {
 	
 	double inflation_parameter = 2.5;
-        int rNumber = 8;
-        double clusteringThresh = 1e-15;
-        boolean takeNegLOG = false;
-      
+	int rNumber = 8;
+	double clusteringThresh = 1e-15;
+	boolean takeNegLOG = false;
+
 	String dataAttribute = null;
 	TaskMonitor monitor = null;
 	CyLogger logger = null;
@@ -161,7 +161,8 @@ public class MCLCluster extends AbstractClusterAlgorithm {
 			logger.debug("Performing MCL clustering with attributes: "+dataAttribute);
 
 		//Cluster the nodes
-		RunMCL runMCL = new RunMCL("cluster",dataAttribute,inflation_parameter,rNumber,clusteringThresh,takeNegLOG);
+		RunMCL runMCL = new RunMCL("cluster", dataAttribute, inflation_parameter, 
+		                           rNumber, clusteringThresh, takeNegLOG, logger);
 		runMCL.run();
 	       
 		// Tell any listeners that we're done

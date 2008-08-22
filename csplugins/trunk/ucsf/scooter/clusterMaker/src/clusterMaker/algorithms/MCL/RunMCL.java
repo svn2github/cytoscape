@@ -13,6 +13,7 @@ import cytoscape.CyNode;
 import cytoscape.data.CyAttributes;
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
+import cytoscape.logger.CyLogger;
 
 public class RunMCL {
 
@@ -20,13 +21,16 @@ public class RunMCL {
 	private int number_iterations; /*number of inflation/expansion cycles*/
 	private double clusteringThresh; /*Threshold used to remove weak edges between distinct clusters*/
 	private List<CyNode> nodes;
-        private List<CyEdge> edges;
+	private List<CyEdge> edges;
 	private String nodeClusterAttributeName;
-        private String edgeAttributeName;
-        private boolean takeNegLOG;
+	private String edgeAttributeName;
+	private boolean takeNegLOG;
+	private CyLogger logger;
 	final static String GROUP_ATTRIBUTE = "__MCLGroups";
 	
-	public RunMCL(String nodeClusterAttributeName,String edgeAttributeName, double inflationParameter, int num_iterations, double clusteringThresh, boolean takeNegLOG )
+	public RunMCL(String nodeClusterAttributeName, String edgeAttributeName, 
+	              double inflationParameter, int num_iterations, 
+	              double clusteringThresh, boolean takeNegLOG, CyLogger logger )
 	{
 		
 		this.nodeClusterAttributeName = nodeClusterAttributeName;
@@ -35,13 +39,16 @@ public class RunMCL {
 		this.number_iterations = num_iterations;
 		this.clusteringThresh = clusteringThresh;
 		this.takeNegLOG = takeNegLOG;
-		
+		this.logger = logger;
+		// logger.info("InflationParameter = "+inflationParameter);
+		// logger.info("Iterations = "+num_iterations);
+		// logger.info("Clustering Threshold = "+clusteringThresh);
 	}
 	
 	public void run()
 	{
-		edges = Cytoscape.getCyEdgesList();
-		nodes = Cytoscape.getCyNodesList();
+		edges = Cytoscape.getCurrentNetwork().edgesList();
+		nodes = Cytoscape.getCurrentNetwork().nodesList();;
 		double[][] graph = new double[this.nodes.size()][this.nodes.size()];
 		CyAttributes edgeAttributes = Cytoscape.getEdgeAttributes();
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
@@ -57,6 +64,7 @@ public class RunMCL {
 			for(int j = 0; j < graph.length; j++)
 				graph[i][j] = 0;
 
+		// logger.info("Getting edge weights from network");
 		//Get Edge Weights From Network
 		for(CyEdge edge: edges) {
 			String id = edge.getIdentifier();
@@ -96,12 +104,17 @@ public class RunMCL {
 				for(int j = 0; j < graph.length; j++)
 			    graph[i][j] += -1*minEdgeWeight;
 
+		// logger.info("Calculating clusters");
+
 		//Create Matrix and cluster nodes
 		matrix = new Matrix(graph,inflationParameter,number_iterations,clusteringThresh);
 		clusters = matrix.cluster();
 		numClusters = matrix.numClusters;
+		// logger.info("Found "+numClusters+" clusters");
 
 		HashMap<Integer,List<CyNode>>clusterMap = new HashMap();
+
+		// logger.info("Updating node attributes");
 		
 		//Update node attributes in network to include clusters. Create cygroups from clustered nodes
 		for (int i=0; i<clusters.length; i++)
@@ -117,6 +130,8 @@ public class RunMCL {
 			}
 		}
 
+		// logger.info("Removing groups");
+
 		// See if we already have groups defined (from a previous run?)
 		CyAttributes netAttributes = Cytoscape.getNetworkAttributes();
 		String networkID = Cytoscape.getCurrentNetwork().getIdentifier();
@@ -128,20 +143,27 @@ public class RunMCL {
 					CyGroupManager.removeGroup(group);
 			}
 		}
+
+		// logger.info("Creating groups");
 		
 		// Now, create the groups
 		List<String>groupList = new ArrayList(); // keep track of the groups we create
 		for (Integer clusterNumber: clusterMap.keySet()) {
 			String groupName = nodeClusterAttributeName+"_"+clusterNumber.toString();
 			List<CyNode>nodeList = clusterMap.get(clusterNumber);
+			// logger.info("Group: "+clusterNumber+": "+groupName);
 			// Create the group
 			CyGroup newgroup = CyGroupManager.createGroup(groupName, nodeList, null);
 			if (newgroup != null) {
 				// Now tell the metanode viewer about it
-				CyGroupManager.setGroupViewer(newgroup, "metaNode", Cytoscape.getCurrentNetworkView(), true);
+				CyGroupManager.setGroupViewer(newgroup, "metaNode", Cytoscape.getCurrentNetworkView(), false);
 				groupList.add(groupName);
 			}
 		}
+
+		// Now notify the metanode viewer
+		CyGroup group = CyGroupManager.findGroup(groupList.get(0));
+		CyGroupManager.setGroupViewer(group, "metaNode", Cytoscape.getCurrentNetworkView(), true);
 
 		// Save the network attribute so we remember which groups are ours
 		netAttributes.setListAttribute(networkID, GROUP_ATTRIBUTE, groupList);

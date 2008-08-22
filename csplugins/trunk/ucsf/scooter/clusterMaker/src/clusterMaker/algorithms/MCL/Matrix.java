@@ -135,7 +135,7 @@ public class Matrix {
 	{
 		Clustering clustering = new Clustering(size,clusteringThresh);
 		iterateMCL();	
-		System.out.println("Clustering Matrix");
+		// System.out.println("Clustering Matrix");
 		double[] clusterMatrix = clustering.clusterMatrix(toArray());
 		numClusters = clustering.numClusters;
 		return clusterMatrix;
