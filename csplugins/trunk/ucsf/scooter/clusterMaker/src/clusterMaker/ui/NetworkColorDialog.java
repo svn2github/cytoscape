@@ -42,6 +42,10 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
+import cytoscape.task.Task;
+import cytoscape.task.TaskMonitor;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.task.util.TaskManager;
 import cytoscape.visual.CalculatorCatalog;
 import cytoscape.visual.EdgeAppearanceCalculator;
 import cytoscape.visual.NodeAppearanceCalculator;
@@ -123,13 +127,17 @@ public class NetworkColorDialog extends JDialog
 			CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			String attribute = networkAttributes.getStringAttribute(network.getIdentifier(), EisenCluster.CLUSTER_EDGE_ATTRIBUTE);
-			VisualStyle style = createNewStyle(attribute.substring(5), "-heatMap", true, true);
+			MapTask task = new MapTask(attribute.substring(5), "-heatMap", true);
+			TaskManager.executeTask( task, task.getDefaultTaskConfig() );
+			// createNewStyle(attribute.substring(5), "-heatMap", true, true);
 			return;
 		}
 		// How many attributes are there?
 		if (attributeList.size() == 1) {
 			// Only one, so just do it (no dialog)
-			VisualStyle style = createNewStyle(attributeList.get(0), "-heatMap", true, false);
+			MapTask task = new MapTask(attributeList.get(0), "-heatMap", false);
+			TaskManager.executeTask( task, task.getDefaultTaskConfig() );
+			// createNewStyle(attributeList.get(0), "-heatMap", true, false);
 		} else {
 			initializeOnce(); // Initialize the components we only do once
 			pack();
@@ -156,7 +164,9 @@ public class NetworkColorDialog extends JDialog
 		} else if (command.equals("vizmap")) {
 			String attribute = (String)attributeSelector.getSelectedValue();
 
-			VisualStyle style = createNewStyle(attribute, "-heatMap", true, false);
+			MapTask task = new MapTask(attribute, "-heatMap", false);
+			TaskManager.executeTask( task, task.getDefaultTaskConfig() );
+			// VisualStyle style = createNewStyle(attribute, "-heatMap", true, false);
 		} else if (command.equals("animate")) {
 			if (animating) {
 				animating = false;
@@ -249,23 +259,9 @@ public class NetworkColorDialog extends JDialog
 			colorMapping.addPoint (maxStep*i,
 				new BoundaryRangeValues(color, color, color));
 		}
-/*
-		colorMapping.addPoint (minValue,
-       new BoundaryRangeValues (downColor, downColor, downColor));
-		colorMapping.addPoint (minValue/100.0,
-       new BoundaryRangeValues (downDeltaColor, downDeltaColor, downDeltaColor));
-   	colorMapping.addPoint(0,
-       new BoundaryRangeValues (zeroColor, zeroColor, zeroColor));
-   	colorMapping.addPoint(maxValue/100.0,
-       new BoundaryRangeValues (upDeltaColor, upDeltaColor, upDeltaColor));
-   	colorMapping.addPoint(maxValue,
-       new BoundaryRangeValues (upColor, upColor, upColor));
-*/
-
 
    	Calculator colorCalculator = new BasicCalculator("TreeView Color Calculator", 
 		                                                 colorMapping, vizType);
-
 
 		// Apply it
 	
@@ -419,6 +415,49 @@ public class NetworkColorDialog extends JDialog
 				}
 			}
 		}
+	}
+
+	private class MapTask implements Task {
+		TaskMonitor monitor;
+		String attribute;
+		String suffix;
+		boolean edge;
+
+		public MapTask(String attribute, String suffix, boolean edge) {
+			this.attribute = attribute;
+			this.suffix = suffix;
+			this.edge = edge;
+		}
+
+		public void setTaskMonitor(TaskMonitor monitor) {
+			this.monitor = monitor;
+		}
+
+		public void run() {
+			createNewStyle(attribute, suffix, true, edge);
+		}
+
+		public void halt() {
+		}
+
+		public String getTitle() {
+			return "Mapping colors onto network";
+		}
+
+		public JTaskConfig getDefaultTaskConfig() {
+			JTaskConfig result = new JTaskConfig();
+	
+			result.displayCancelButton(false);
+			result.displayCloseButton(false);
+			result.displayStatus(true);
+			result.displayTimeElapsed(false);
+			result.setAutoDispose(true);
+			result.setModal(false);
+			result.setOwner(Cytoscape.getDesktop());
+	
+			return result;
+		}
+
 	}
 
 }

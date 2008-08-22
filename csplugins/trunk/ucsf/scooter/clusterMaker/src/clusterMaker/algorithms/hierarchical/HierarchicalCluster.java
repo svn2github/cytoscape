@@ -175,6 +175,12 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		// Sanity check all of our settings
 		if (debug)
 			logger.debug("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
+		if (dataAttributes == null || dataAttributes.length() == 0) {
+			logger.error("Must have an attribute list to use for cluster weighting");
+			if (monitor != null)
+				monitor.setException(null, "Error: no attribute list selected");
+			return;
+		}
 		// Get our attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
 		// To make debugging easier, sort the attribute array
