@@ -83,7 +83,8 @@ CREATE TABLE network_file_info (
 	species				varchar(100) default 'unknown', -- 'Saccharomyces cerevisiae, Homo sapients'
 	network_type		varchar(10) default 'sif',
 	network_file_id		int,
-	image_file_id		int
+	image_file_id		int,
+	thum_image_file_id		int
 );
 
 CREATE TABLE network_files (
