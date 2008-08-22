@@ -34,9 +34,11 @@ package metaNodePlugin2;
 
 // System imports
 import javax.swing.JOptionPane;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.awt.*;
 import java.io.*;
@@ -374,6 +376,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			}
 
 			{
+				groupList = sortList(groupList);
 				addMenuItem(m, Command.EXPAND, groupList, contextNode, "Expand metanode");
 				addMenuItem(m, Command.COLLAPSE, groupList, contextNode, "Collapse metanode");
 				addMenuItem(m, Command.EXPANDNEW, groupList, contextNode, "Expand metanode");
@@ -713,6 +716,18 @@ public class MetaNodePlugin2 extends CytoscapePlugin
  		 */
 		private void collapseAll() {
 			MetaNode.collapseAll();
+		}
+	}
+
+	protected List sortList(List listToSort) {
+		Object[] array = listToSort.toArray();
+		Arrays.sort(array, new ToStringComparator());
+		return Arrays.asList(array);
+	}
+
+	private class ToStringComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			return o1.toString().compareToIgnoreCase(o2.toString());
 		}
 	}
 }
