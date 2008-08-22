@@ -37,8 +37,6 @@
 package csplugins.network.merge.util;
 
 import csplugins.network.merge.conflict.AttributeConflictCollector;
-import csplugins.network.merge.conflict.AttributeConflict;
-import csplugins.network.merge.conflict.AttributeConflictImpl;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.CyAttributesUtils;
@@ -115,30 +113,9 @@ public class DefaultAttributeMerger implements AttributeMerger {
                             } else if (o1.equals(o2)) {
                                 //continue;// the same, do nothing
                             } else { // attribute conflict
-                                //handle the conflicts
-
-                                // first check whether some entry in conflict collecter have the same from-value
-                                // if yes, skip this one
-                                boolean exist=false;
-                                List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
-                                if (conflicts!=null) {
-                                        for (AttributeConflict ac:conflicts) {
-                                                if (!attrs.equals(ac.getCyAttributes())) {
-                                                        throw new java.lang.IllegalStateException("different CyAttribute");
-                                                }
-                                                Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
-                                                if (o.equals(o1)) {
-                                                        exist = true;
-                                                        break;
-                                                }
-                                        }
-                                }
-
-                                // add to conflict
-                                if (!exist) {
-                                        AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
-                                        conflictCollector.addConflict(conflict);
-                                }
+                                
+                                // add to conflict collector
+                                conflictCollector.addConflict(fromID, fromAttrName, toID, toAttrName,attrs);
                                 //continue;
                             }
                         } else if (type2<0&&type2!=CyAttributes.TYPE_SIMPLE_LIST) { // only support matching between simple types
@@ -153,29 +130,9 @@ public class DefaultAttributeMerger implements AttributeMerger {
                             } else if (o1.equals(o2)) {
                                 //continue; // the same, do nothing
                             } else { // attribute conflict
-                                //handle the conflicts
 
-                                // first check whether some entry in conflict collecter have the same from value
-                                // if yes, skip this one
-                                boolean exist=false;
-                                List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
-                                if (conflicts!=null) {
-                                        for (AttributeConflict ac:conflicts) {
-                                                if (!attrs.equals(ac.getCyAttributes())) {
-                                                        throw new java.lang.IllegalStateException("different CyAttribute");
-                                                }
-                                                Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
-                                                if (o.equals(o1)) {
-                                                        exist = true;
-                                                        break;
-                                                }
-                                        }
-                                }
-                                // add to conflict
-                                if (!exist) {
-                                        AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
-                                        conflictCollector.addConflict(conflict);
-                                }
+                                // add to conflict collector
+                                conflictCollector.addConflict(fromID, fromAttrName, toID, toAttrName,attrs);
                                 //continue;
                             }
                         } else if (type2>0) { // simple type (type1>0) (Integer, Double, Boolean)
@@ -192,29 +149,9 @@ public class DefaultAttributeMerger implements AttributeMerger {
                             } else if (o1.equals(o2)) {
                                 //continue; // the same, do nothing
                             } else { // attribute conflict
-                                //handle the conflicts
 
-                                // first check whether some entry in conflict collecter have the same from value
-                                // if yes, skip this one
-                                boolean exist=false;
-                                List<AttributeConflict> conflicts = conflictCollector.getConflicts(toID, toAttrName);
-                                if (conflicts!=null) {
-                                        for (AttributeConflict ac:conflicts) {
-                                                if (!attrs.equals(ac.getCyAttributes())) {
-                                                        throw new java.lang.IllegalStateException("different CyAttribute");
-                                                }
-                                                Object o = attrs.getAttribute(ac.getFromID(), ac.getFromAttr());
-                                                if (o.equals(o1)) {
-                                                        exist = true;
-                                                        break;
-                                                }
-                                        }
-                                }
-                                // add to conflict
-                                if (!exist) {
-                                        AttributeConflict conflict = new AttributeConflictImpl(fromID, fromAttrName, toID, toAttrName, attrs);
-                                        conflictCollector.addConflict(conflict);
-                                }
+                                // add to conflict collector
+                                conflictCollector.addConflict(fromID, fromAttrName, toID, toAttrName,attrs);
                                 //continue;
                             }
                         } else { // toattr is list type

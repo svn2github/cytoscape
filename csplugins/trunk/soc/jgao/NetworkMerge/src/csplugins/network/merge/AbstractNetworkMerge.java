@@ -61,7 +61,11 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      private final NetworkMergeParameter parameter;
 
      public AbstractNetworkMerge(final NetworkMergeParameter parameter) {
-                this.parameter = parameter;
+             if (parameter==null) {
+                     throw new NullPointerException();
+             }
+
+             this.parameter = parameter;
      }
 
      /**

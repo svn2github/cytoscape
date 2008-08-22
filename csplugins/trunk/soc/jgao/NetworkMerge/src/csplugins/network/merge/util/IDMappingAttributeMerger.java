@@ -37,8 +37,6 @@
 package csplugins.network.merge.util;
 
 import csplugins.network.merge.conflict.AttributeConflictCollector;
-import csplugins.network.merge.conflict.AttributeConflict;
-import csplugins.network.merge.conflict.AttributeConflictImpl;
 
 import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 import csplugins.id.mapping.util.IDMappingDataUtils;

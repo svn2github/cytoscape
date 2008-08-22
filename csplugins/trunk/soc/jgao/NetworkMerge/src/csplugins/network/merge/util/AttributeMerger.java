@@ -36,8 +36,6 @@
 
 package csplugins.network.merge.util;
 
-import csplugins.network.merge.conflict.AttributeConflictCollector;
-
 import cytoscape.data.CyAttributes;
 
 import java.util.Map;
@@ -49,13 +47,11 @@ import java.util.Map;
 public interface AttributeMerger {
 
         /**
-         * Merge one attribute into another
-         * @param fromIDs
-         * @param fromAttrName
+         *
+         * @param mapGOAttr
          * @param toID
          * @param toAttrName
          * @param attrs
-         * @param conflictCollector
          */
         public void mergeAttribute(Map<String,String> mapGOAttr,
                                      String toID,

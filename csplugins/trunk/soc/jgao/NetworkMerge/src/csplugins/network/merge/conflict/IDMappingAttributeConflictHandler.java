@@ -66,23 +66,22 @@ public class IDMappingAttributeConflictHandler implements AttributeConflictHandl
          *      true if successful, false if failed
          */
         @Override
-        public boolean handleIt(final AttributeConflict conflict) {
-                //idMapping.getMapTgtTypeIDs(toID, toAttrName)
-                final CyAttributes attrs = conflict.getCyAttributes();
-                final String fromID = conflict.getFromID();
-                final String fromAttr = conflict.getFromAttr();
-                final String toID = conflict.getToID();
-                final String toAttr = conflict.getToAttr();
+        public boolean handleIt(final String toID,
+                                final String toAttr,
+                                final Map<String,String> mapFromIDFromAttr,
+                                final CyAttributes attrs) {
+                if (toID==null || toAttr==null || mapFromIDFromAttr==null || attrs==null) {
+                        throw new java.lang.NullPointerException();
+                }
 
-                //final Object fromValue = attrs.getAttribute(fromID, fromAttr);
-                final Object toValue = attrs.getAttribute(toID, toAttr);
-
-                if (!(toValue instanceof String)) { //TODO: deal with other types
+                byte type = attrs.getType(toAttr);
+                if (type != CyAttributes.TYPE_STRING) { //TODO: deal with other types
                         return false;
                 }
 
                 Map<String,String> mapGOAttr = new HashMap<String,String>();
-                mapGOAttr.put(fromID, fromAttr);
+
+                mapGOAttr.putAll(mapFromIDFromAttr);
                 mapGOAttr.put(toID, toAttr);
                 Map<String,Set<String>> overlappedMapTypeIDs = IDMappingDataUtils.getOverlappingIDMapping(idMapping, mapGOAttr);
 

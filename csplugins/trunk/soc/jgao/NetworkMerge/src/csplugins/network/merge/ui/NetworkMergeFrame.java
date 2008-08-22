@@ -986,7 +986,7 @@ class NetworkMergeSessionTask implements Task {
             taskMonitor.setStatus("The selected networks were successfully merged into network '"
                                   + mergedNetwork.getTitle()
                                   + "' with "
-                                  + conflictCollector.getConfilctCount()
+                                  + conflictCollector.getMapToIDAttr().size()
                                   + " attribute conflicts.");
 
         } catch(Exception e) {
@@ -1057,7 +1057,7 @@ class HandleConflictsTask implements Task {
         taskMonitor.setPercentCompleted(0);
 
         try {
-             int nBefore = conflictCollector.getConfilctCount();
+             int nBefore = conflictCollector.getMapToIDAttr().size();
 
              List<AttributeConflictHandler> conflictHandlers = new Vector<AttributeConflictHandler>();
 
@@ -1074,7 +1074,7 @@ class HandleConflictsTask implements Task {
              AttributeConflictManager conflictManager = new AttributeConflictManager(conflictCollector,conflictHandlers);
              conflictManager.handleConflicts();
 
-             int nAfter = conflictCollector.getConfilctCount();
+             int nAfter = conflictCollector.getMapToIDAttr().size();
 
              taskMonitor.setPercentCompleted(100);
              taskMonitor.setStatus("Successfully handled " + (nBefore-nAfter) + " attribute conflicts. "

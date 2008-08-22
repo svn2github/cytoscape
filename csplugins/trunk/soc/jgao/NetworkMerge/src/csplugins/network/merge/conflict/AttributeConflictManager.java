@@ -36,7 +36,10 @@
 
 package csplugins.network.merge.conflict;
 
+import cytoscape.data.CyAttributes;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -60,15 +63,16 @@ public class AttributeConflictManager {
         }
 
         public void handleConflicts() {
-                int nHandlers = conflictHandlers.size();
-                int nConflicts = conflictCollector.getConfilctCount();
-                for (int i=nConflicts-1; i>=0; i--) {
-                        AttributeConflict conflict = conflictCollector.getConflict(i);
-                        for (int j=0; j<nHandlers; j++) {
-                                AttributeConflictHandler handler = conflictHandlers.get(j);
-                                if (handler.handleIt(conflict)) {
-                                        // successful
-                                        conflictCollector.removeConflict(i); // remove the conflict
+
+                Map<String,String> mapToIDToAttr = conflictCollector.getMapToIDAttr();
+                for (Map.Entry<String,String> entryToIDToAttr : mapToIDToAttr.entrySet()) {
+                        String toID = entryToIDToAttr.getKey();
+                        String toAttr = entryToIDToAttr.getValue();
+                        Map<String,String> mapFromIDFromAttr = conflictCollector.getConflicts(toID, toAttr);
+                        CyAttributes attrs = conflictCollector.getCyAttributes(toID, toAttr);
+                        for (AttributeConflictHandler handler : conflictHandlers) {
+                                if (handler.handleIt(toID,toAttr,mapFromIDFromAttr,attrs)) {
+                                        conflictCollector.removeConflicts(toID, toAttr);
                                         break;
                                 }
                         }

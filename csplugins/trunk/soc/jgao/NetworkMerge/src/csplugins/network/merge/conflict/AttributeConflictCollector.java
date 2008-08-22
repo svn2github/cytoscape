@@ -37,7 +37,10 @@
 
 package csplugins.network.merge.conflict;
 
-import java.util.List;
+import cytoscape.data.CyAttributes;
+
+import java.util.Set;
+import java.util.Map;
 
 /**
  * Collect attribute conflicts
@@ -47,55 +50,56 @@ public interface AttributeConflictCollector {
 
         /**
          *
-         * @return attribute conflict list
-         */
-        public List<AttributeConflict> getConflictList();
-
-        /**
-         *
-         * @return number of attribute conflicts
-         */
-        public int getConfilctCount();
-
-        /**
-         *
          * @return true if no conflict, false otherwise
          */
         public boolean isEmpty();
 
         /**
-         * Get the indexth conflict
-         * @param index
-         * @return the indexth conflict, null if not exist
+         *
+         * @return all map of to node id to attribute
          */
-        public AttributeConflict getConflict(int index);
+        public Map<String,String> getMapToIDAttr();
 
         /**
-         * Get conflict list for a specific toID and toAttribute
+         * Get conflicts for a specific toID and toAttribute
          * @param toID
          * @param toAttr
-         * @return conflict list if exist, null otherwise
+         * @return conflict map from id to attrs if exist, null otherwise
          */
-        public List<AttributeConflict> getConflicts(String toID, String toAttr);
+        public Map<String,String> getConflicts(String toID, String toAttr);
 
         /**
          *
-         * @param conflict
-         */
-        public void addConflict(AttributeConflict conflict);
-
-        /**
-         *
-         * @param conflict
+         * @param toID
+         * @param toAttr
          * @return
          */
-        public boolean removeConflict(AttributeConflict conflict);
+        public CyAttributes getCyAttributes(String toID, String toAttr);
 
         /**
          *
-         * @param index
+         * @param fromID
+         * @param fromAttr
+         * @param toID
+         * @param toAttr
+         */
+        public void addConflict(String fromID, String fromAttr, String toID, String toAttr, CyAttributes cyAttributes);
+
+        /**
+         *
+         * @param toID
+         * @param toAttr
          * @return
          */
-        public AttributeConflict removeConflict(int index);
+        public boolean removeConflicts(String toID, String toAttr);
 
+        /**
+         *
+         * @param fromID
+         * @param fromAttr
+         * @param toID
+         * @param toAttr
+         * @return
+         */
+        public boolean removeConflict(String fromID, String fromAttr, String toID, String toAttr);
 }

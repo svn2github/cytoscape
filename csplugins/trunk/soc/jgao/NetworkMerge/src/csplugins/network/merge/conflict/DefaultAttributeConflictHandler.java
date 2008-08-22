@@ -38,6 +38,10 @@ package csplugins.network.merge.conflict;
 
 import cytoscape.data.CyAttributes;
 
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Map;
+
 /**
  *
  * 
@@ -53,24 +57,40 @@ public class DefaultAttributeConflictHandler implements AttributeConflictHandler
          *      true if successful, false if failed
          */
         @Override
-        public boolean handleIt(final AttributeConflict conflict) {
+        public boolean handleIt(final String toID,
+                                final String toAttr,
+                                final Map<String,String> mapFromIDFromAttr,
+                                final CyAttributes attrs) {
                 //TODO: write a reasonable default one
-                if (conflict==null) {
+                if (toID==null || toAttr==null || mapFromIDFromAttr==null || attrs==null) {
                         throw new java.lang.NullPointerException();
                 }
 
-                final CyAttributes attrs = conflict.getCyAttributes();
-                final String fromID = conflict.getFromID();
-                final String fromAttr = conflict.getFromAttr();
-                final String toID = conflict.getToID();
-                final String toAttr = conflict.getToAttr();
+                byte type = attrs.getType(toAttr);
+                
+                if (type == CyAttributes.TYPE_STRING) {
+                        final String toValue = attrs.getStringAttribute(toID, toAttr);
+                        Set<String> values = new TreeSet<String>();
+                        values.add(toValue);
 
-                final Object fromValue = attrs.getAttribute(fromID, fromAttr);
-                final Object toValue = attrs.getAttribute(toID, toAttr);
+                        for (Map.Entry<String,String> entry : mapFromIDFromAttr.entrySet()) {
+                                String fromID = entry.getKey();
+                                String fromAttr = entry.getValue();
+                                Object fromValue = attrs.getAttribute(fromID, fromAttr);
+                                if (fromValue!=null) {
+                                        values.add(fromValue.toString());
+                                }
+                        }
+                        
+                        StringBuilder str = new StringBuilder();
+                        for (String v : values) {
+                                str.append(v+";");
+                        }
+                        
+                        str.deleteCharAt(str.length()-1);
+                        
+                        attrs.setAttribute(toID, toAttr, str.toString());
 
-                if (toValue instanceof String) {
-                        String mergedValue = toValue+";"+fromValue.toString();
-                        attrs.setAttribute(toID, toAttr, mergedValue);
                         return true;
                 }
 
