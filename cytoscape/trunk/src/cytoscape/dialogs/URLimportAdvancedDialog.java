@@ -348,11 +348,11 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 		try {
 			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURL());
 		} catch (IOException e) {
-			CyLogger.getLogger().warn("IOException -- bookmarkSource");
+			CyLogger.getLogger(URLimportAdvancedDialog.class).warn("IOException -- bookmarkSource", e);
 		} catch (JAXBException e) {
-			CyLogger.getLogger().warn("JAXBException -- bookmarkSource");
+			CyLogger.getLogger(URLimportAdvancedDialog.class).warn("JAXBException -- bookmarkSource", e);
 		} catch (Exception e) {
-			CyLogger.getLogger().warn("Can not read the bookmark file, the bookmark file may not exist!");
+			CyLogger.getLogger(URLimportAdvancedDialog.class).warn("Can not read the bookmark file, the bookmark file may not exist!", e);
 		}
 
 		return tmpBookmarks;

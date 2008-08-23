@@ -60,7 +60,7 @@ public class NetworkMetaDataDialog extends JDialog implements TableModelListener
 			metaTM.setTable();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
-			logger.warn("Unable to parse some of the network meta-data");
+			logger.warn("Unable to parse some of the network meta-data", e);
 		}
 
 		description = metaTM.getDescription();
@@ -189,7 +189,7 @@ public class NetworkMetaDataDialog extends JDialog implements TableModelListener
 		try {
 			update();
 		} catch (JAXBException e1) {
-			logger.warn("Unable to update network metadata");
+			logger.warn("Unable to update network metadata", e1);
 		}
 
 		// Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null,

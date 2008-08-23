@@ -169,7 +169,7 @@ public class IntegerEntryField extends JPanel {
 							field.setText(fieldStr);
 						}
 					} catch (NumberFormatException nfe) {
-						CyLogger.getLogger().info("Not an integer: " + fieldStr);
+						CyLogger.getLogger().info("Not an integer: " + fieldStr, nfe);
 						field.setText(defaultString);
 					}
 				}
