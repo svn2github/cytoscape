@@ -162,23 +162,19 @@ public class SpeciesPanel extends JPanel {
 	private void setTaxonomyTable() {
 		BufferedReader spListReader = null;
 
+		URL taxURL = null;
 		try {
-			URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
+			taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
 			// spListReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
             // Even though taxURL is probably a local URL, error on the
 			// side of caution and use URLUtil to get the input stream (which
 			// handles proxy servers and cached pages):
 			spListReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 			CyLogger.getLogger().info("Taxonomy table found in jar file...");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-		try {
 			setSpList(spListReader);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			CyLogger.getLogger().warn("Unable to read taxonomy table from jar file: "+ taxURL.toString(),e);
 		}
 	}
 

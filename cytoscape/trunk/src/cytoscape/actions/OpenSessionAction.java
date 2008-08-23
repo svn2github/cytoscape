@@ -103,7 +103,6 @@ public class OpenSessionAction extends CytoscapeAction {
 	 */
 	public OpenSessionAction(CyMenus windowMenu, boolean label) {
 		super();
-		logger = CyLogger.getLogger(OpenSessionAction.class);
 		this.windowMenu = windowMenu;
 	}
 
@@ -212,16 +211,16 @@ class OpenSessionTask implements Task {
 			sr.read();
 		} catch (IOException e) {
 			taskMonitor.setException(e, "Cannot open the session file: " + e.getMessage());
-			OpenSessionAction.logger.error("Cannot open the session file: "+ e.getMessage());
+			OpenSessionAction.logger.error("Cannot open the session file: "+ e.getMessage(), e);
 		} catch (JAXBException e) {
 			taskMonitor.setException(e, "Cannot unmarshall document: " + e.getMessage());
-			OpenSessionAction.logger.error("Cannot unmarshall document: "+ e.getMessage());
+			OpenSessionAction.logger.error("Cannot unmarshall document: "+ e.getMessage(), e);
         } catch (XGMMLException e) {
-            OpenSessionAction.logger.error("XGMML format error in network "+ e.getMessage());
-            taskMonitor.setException(e, e.getMessage());
+            taskMonitor.setException(e, "XGMML format error in network: "+e.getMessage());
+            OpenSessionAction.logger.error("XGMML format error in network "+ e.getMessage(), e);
         } catch (Exception e) { // catch any exception: the user should know something went wrong
             taskMonitor.setException(e, "Error while loading session " + e.getMessage());
-            OpenSessionAction.logger.error("Error while loading session: "+ e.getMessage());
+            OpenSessionAction.logger.error("Error while loading session: "+ e.getMessage(), e);
 		} finally {
 			sr = null;
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();

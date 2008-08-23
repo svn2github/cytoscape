@@ -79,6 +79,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 	private HashMap synoMap;
 	private boolean isSpecies;
 	private HashMap originalSpecies;
+	private CyLogger logger = CyLogger.getLogger(AnotationPanel.class);
 
 	/** Creates new form GeneOntologyPanel2 */
 	public AnotationPanel() {
@@ -357,7 +358,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 				showPreview(gaFile.getName());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.warn("I/O error trying to show preview for: "+gaFile.getName(), e);
 			}
 		}
 
@@ -394,7 +395,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 
 	private void speciesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		if (speciesCheckBox.isSelected() == true) {
-			//CyLogger.getLogger().info("Sync!");
+			//logger.info("Sync!");
 			syncSpecies(true);
 		} else {
 			syncSpecies(false);
@@ -407,10 +408,10 @@ public class AnotationPanel extends javax.swing.JPanel {
 			showPreview(gaList.getSelectedValue().toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("The file "+gaList.getSelectedValue().toString()+" does not exist");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("I/O error trying to show preview of "+gaList.getSelectedValue().toString(), e);
 		}
 	}
 
@@ -570,9 +571,9 @@ public class AnotationPanel extends javax.swing.JPanel {
 			// handles proxy servers and cached pages):
 			spListReader = new BufferedReader(new InputStreamReader(URLUtil.getBasicInputStream(taxURL)));
 
-			CyLogger.getLogger().info("Taxonomy table found in jar file...");
+			logger.info("Taxonomy table found in jar file...");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("Failed to load taxonomy table!", e);
 		}
 
 		HashMap taxonMap = bdsu.getTaxonMap(spListReader);
@@ -606,7 +607,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 				} else if ((i == 10) && (rowString[i] != null)) {
 					row.add(rowString[i]);
 
-					// CyLogger.getLogger().info("!!!!!!! Making SynoMap = " +
+					// logger.info("!!!!!!! Making SynoMap = " +
 					// row.get(0)
 					// + " = " + rowString[i]);
 					// This is the Synonym field.
@@ -620,7 +621,7 @@ public class AnotationPanel extends javax.swing.JPanel {
 					// We need to convert this into species name
 					taxonID = rowString[i].split(":");
 
-					// CyLogger.getLogger().info("!!!!!!! taxon ID = " + taxonID[0] +
+					// logger.info("!!!!!!! taxon ID = " + taxonID[0] +
 					// ", " + taxonID[1]);
 					if (taxonID.length != 2) {
 						row.add("ERROR!: Invalid Taxon ID " + rowString[i]);

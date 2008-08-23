@@ -81,7 +81,7 @@ public class getCanonicalName {
 
 		String serverName = "rmi://" + hostname + "/" + serviceName;
 		BioDataServer server = new BioDataServer(serverName);
-		CyLogger.getLogger().info(canonicalName + " -> " + server.getCanonicalName(species, canonicalName));
+		CyLogger.getLogger().warn(canonicalName + " -> " + server.getCanonicalName(species, canonicalName));
 	} // main
 	  //------------------------------------------------------------------------------
 } // getCanonicalName

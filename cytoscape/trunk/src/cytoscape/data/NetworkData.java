@@ -663,7 +663,7 @@ public abstract class NetworkData {
 			                                                      .get(att_id);
 
 			if (n2v == null) {
-				CyLogger.getLogger().info("n2v is null");
+				CyLogger.getLogger().info("Internal error: Unable to get node attribute id map");
 
 				return Double.NaN;
 			}
@@ -743,7 +743,7 @@ public abstract class NetworkData {
 			                                                      .get(att_id);
 
 			if (n2v == null) {
-				CyLogger.getLogger().info("n2v is null");
+				CyLogger.getLogger().info("Internal error: Unable to get node attribute id map");
 
 				return Double.NaN;
 			}

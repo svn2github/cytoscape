@@ -157,10 +157,10 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		try {
 			fd = new ImportNetworkDialog(Cytoscape.getDesktop(), true);
 		} catch (JAXBException e1) {
-			logger.error("Unable to parse the network: "+ e1.toString());
+			logger.error("Unable to parse the network: "+ e1.getMessage(), e1);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			logger.error("Unable to read the network: "+e1.toString());
+			logger.error("Unable to read the network: "+e1.getMessage(), e1);
 		}
 
 		fd.pack();

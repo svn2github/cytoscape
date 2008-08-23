@@ -331,7 +331,7 @@ public class CyMain implements CyInitParams {
 				UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
 			}
 		} catch (Exception e) {
-			logger.warn("Can't set look & feel:" + e);
+			logger.warn("Can't set look & feel:" + e.getMessage(), e);
 		}
 	}
 
@@ -387,7 +387,7 @@ public class CyMain implements CyInitParams {
 						logger.info("Couldn't load property: "
 								+ potentialProps[i]);
 				} catch (IOException e) {
-					logger.warn("Couldn't load property '"+ potentialProps[i] + "' from file: "+e.toString());
+					logger.warn("Couldn't load property '"+ potentialProps[i] + "' from file: "+e.getMessage(), e);
 				}
 			}
 		}

@@ -1394,11 +1394,11 @@ public abstract class Cytoscape {
 		final int[] edges = reader.getEdgeIndicesArray();
 
 		if (nodes == null) {
-			logger.warn("reader returned null nodes");
+			logger.warn("Network reader didn't return any nodes");
 		}
 
 		if (edges == null) {
-			logger.warn("reader returned null edges");
+			logger.warn("Network reader didn't return any edges");
 		}
 
 		// Create the network

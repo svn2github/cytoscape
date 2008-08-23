@@ -177,8 +177,7 @@ public class OboPanel extends javax.swing.JPanel {
 				BufferedReader br = new BufferedReader(new FileReader(oboFile));
 				headerEditorPane.setText(getHeader(br));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				CyLogger.getLogger().warn("I/O Error reading: "+oboFile.toString(), e);
 			}
 		} else if ((originalFile == null) || (originalFile.canRead() == false)) {
 			if (oboFile != null) {

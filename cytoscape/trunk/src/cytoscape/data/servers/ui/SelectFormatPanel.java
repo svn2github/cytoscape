@@ -25,6 +25,7 @@ import javax.swing.event.HyperlinkEvent;
 public class SelectFormatPanel extends javax.swing.JPanel {
 	// HTML document for the message box.
 	private static final String HTML_RESOURCE_FILE = "/cytoscape/resources/Gene_Ontology_Wizard.html";
+	private CyLogger logger = CyLogger.getLogger(SelectFormatPanel.class);
 
 	/** Creates new form NewBioDataServerPanel */
 	public SelectFormatPanel() {
@@ -50,16 +51,15 @@ public class SelectFormatPanel extends javax.swing.JPanel {
 		titleLabel.setFont(new java.awt.Font("Dialog", 1, 14));
 		titleLabel.setText("Welcome to Gene Ontology Wizard");
 
+		URL descriptionDoc = null;
 		try {
-			URL descriptionDoc = getClass().getResource(HTML_RESOURCE_FILE);
+			descriptionDoc = getClass().getResource(HTML_RESOURCE_FILE);
 
 			descriptionEditorPane = new javax.swing.JEditorPane(descriptionDoc);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("Illegal URL: "+descriptionDoc.toString(), e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("I/O Error while reading from: "+descriptionDoc.toString(), e);
 		}
 
 		descriptionEditorPane.setEditable(false);
@@ -178,7 +178,7 @@ public class SelectFormatPanel extends javax.swing.JPanel {
 				Class c = Class.forName("cytoscape.util.swing.BioDataServerWizard");
 				url = c.getResource(name);
 			} catch (ClassNotFoundException cnfe) {
-				CyLogger.getLogger().warn("Unable to find Parent class");
+				logger.warn("Unable to find Parent class", cnfe);
 			}
 
 			return url;

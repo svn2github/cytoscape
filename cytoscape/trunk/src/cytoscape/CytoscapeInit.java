@@ -209,7 +209,7 @@ public class CytoscapeInit {
 				logger.info("Updating plugins...");
 				mgr.delete();
 			} catch (cytoscape.plugin.ManagerException me) {
-				logger.warn("Error updating plugins: "+me.getMessage());
+				logger.warn("Error updating plugins: "+me.getMessage(), me);
 			}
 
 			mgr.install();
@@ -391,7 +391,7 @@ public class CytoscapeInit {
 
 			return parent_dir;
 		} catch (Exception e) {
-			logger.warn("error getting config directory");
+			logger.warn("error getting config directory", e);
 		}
 
 		return null;
@@ -415,7 +415,7 @@ public class CytoscapeInit {
 
 			return file;
 		} catch (Exception e) {
-			logger.warn("error getting config file:" + file_name);
+			logger.warn("error getting config file:" + file_name, e);
 		}
 
 		return null;
@@ -474,7 +474,7 @@ public class CytoscapeInit {
 				logger.warn("couldn't read " + defaultName + " from " + tryName);
 		} catch (IOException ioe) {
 			logger.warn("couldn't open '" + tryName + " " + defaultName
-			             + "' file: "+ioe.getMessage()+" - creating a hardcoded default");
+			             + "' file: "+ioe.getMessage()+" - creating a hardcoded default", ioe);
 		}
 	}
 
@@ -490,7 +490,7 @@ public class CytoscapeInit {
 					try {
 						Cytoscape.loadExpressionData(expDataFilename, true);
 					} catch (Exception e) {
-						logger.error("Couldn't open expression file: '"+expDataFilename+"': "+e.getMessage());
+						logger.error("Couldn't open expression file: '"+expDataFilename+"': "+e.getMessage(), e);
 					}
 				}
 			}
@@ -528,7 +528,7 @@ public class CytoscapeInit {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("couldn't create session from file '" + sessionFile + "': "+e.getMessage());
+			logger.error("couldn't create session from file '" + sessionFile + "': "+e.getMessage(), e);
 		} finally {
 			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
 			System.gc();
@@ -590,13 +590,13 @@ public class CytoscapeInit {
 				try {
 					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
 				} catch (Exception mue) {
-					logger.error("Couldn't load network from URL '"+net+"': " + mue.getMessage());
+					logger.error("Couldn't load network from URL '"+net+"': " + mue.getMessage(), mue);
 				}
 			} else {
 				try {
 					network = Cytoscape.createNetworkFromFile(net, createView);
 				} catch (Exception mue) {
-					logger.error("Couldn't load network from file '"+net+"': " + mue.getMessage());
+					logger.error("Couldn't load network from file '"+net+"': " + mue.getMessage(), mue);
 				}
 			}
 
@@ -618,7 +618,7 @@ public class CytoscapeInit {
 			                         (String[]) initParams.getEdgeAttributeFiles()
 			                                              .toArray(new String[] {  }));
 		} catch (Exception ex) {
-			logger.error("failure loading specified attributes: "+ex.getMessage());
+			logger.error("failure loading specified attributes: "+ex.getMessage(), ex);
 		}
 	}
 

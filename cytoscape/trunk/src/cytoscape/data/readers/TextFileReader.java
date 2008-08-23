@@ -119,7 +119,7 @@ public class TextFileReader {
 
 		TextFileReader reader = new TextFileReader(fileToRead);
 		int size = reader.read();
-		CyLogger.getLogger().info("size of text block: " + size);
-		CyLogger.getLogger().info(reader.getText());
+		System.out.println("size of text block: " + size);
+		System.out.println(reader.getText());
 	} // main
 }

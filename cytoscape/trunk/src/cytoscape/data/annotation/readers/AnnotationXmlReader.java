@@ -71,8 +71,7 @@ public class AnnotationXmlReader {
 	 */
 	public AnnotationXmlReader(File xmlFile) throws Exception {
 		if (!xmlFile.canRead()) {
-			CyLogger.getLogger().info("---- data.annotation.readers.AnnotationXmlReader error, cannot read");
-			CyLogger.getLogger().info("        " + xmlFile);
+			CyLogger.getLogger().info("---- data.annotation.readers.AnnotationXmlReader error, cannot read\n         " + xmlFile);
 			throw new Exception("cannot read input: " + xmlFile);
 		}
 
@@ -93,11 +92,12 @@ public class AnnotationXmlReader {
 		File ontologyXmlFileAbsolutePath = new File(directoryAbsolute, ontologyXmlFileName);
 
 		if (!ontologyXmlFileAbsolutePath.canRead()) {
-			CyLogger.getLogger().warn("annotation xml file must name its associated ontology xml file");
-			CyLogger.getLogger().warn("by giving its path relative to the actual location of the");
-			CyLogger.getLogger().warn("annotation xml file.\n");
-			CyLogger.getLogger().warn("could not find:");
-			CyLogger.getLogger().warn("  " + ontologyXmlFileAbsolutePath);
+			String warn = "annotation xml file must name its associated ontology xml file ";
+			warn += "by giving its path relative to the actual location of the ";
+			warn += "annotation xml file.\n";
+			warn += "could not find:";
+			warn += "  " + ontologyXmlFileAbsolutePath;
+			CyLogger.getLogger().warn(warn);
 			throw new FileNotFoundException(ontologyXmlFileAbsolutePath.getPath());
 		}
 

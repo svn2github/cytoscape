@@ -95,8 +95,7 @@ public class ThesaurusFlatFileReader {
 				fullText = reader.getText();
 			}
 		} catch (Exception e0) {
-			CyLogger.getLogger().warn("-- Exception while reading ontology flat file " + filename);
-			CyLogger.getLogger().warn(e0.getMessage());
+			CyLogger.getLogger().warn("-- Exception while reading ontology flat file " + filename, e0);
 
 			return;
 		}

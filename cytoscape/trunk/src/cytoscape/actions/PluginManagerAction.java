@@ -73,12 +73,11 @@ import java.util.Map;
 
 public class PluginManagerAction extends CytoscapeAction {
 	private String bookmarkCategory = "plugins";
-	private CyLogger logger = null;
+	private CyLogger logger = CyLogger.getLogger(PluginManagerAction.class);
 
 	public PluginManagerAction() {
 		super("Manage Plugins");
 		setPreferredMenu("Plugins");
-		logger = CyLogger.getLogger(PluginManagerAction.class);
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class PluginManagerAction extends CytoscapeAction {
 				}
 			}
 		} catch (Exception E) {
-			logger.warn("There was an error while reading the bookmarks file.");
+			logger.warn("There was an error while reading the bookmarks file.", E);
 		}
 
 		List<DownloadableInfo> Current = Mgr.getDownloadables(PluginStatus.CURRENT);

@@ -277,7 +277,7 @@ public class CytoscapeSessionReader {
 			} else if (entryName.endsWith(BOOKMARKS_FILE)) {
 				bookmarksFileURL = new URL("jar:" + sourceURL.toString() + "!/" + entryName);
 			} else {
-				logger.warn("Unknown entry found in session zip file!\n" + entryName);
+				logger.warn("Unknown entry found in session zip file: " + entryName);
 			}
 		} // while loop
 
@@ -330,7 +330,7 @@ public class CytoscapeSessionReader {
 		try {
 			unzipSessionFromURL();
 		} catch (cytoscape.visual.DuplicateCalculatorNameException dcne) {
-			logger.warn("Duplicate VS name found.  It will be ignored...");
+			logger.warn("Duplicate VS name found.  It will be ignored...", dcne);
 		}
 
 		//logger.debug("unzipSessionFromURL: " + (System.currentTimeMillis() - start) + " msec.");
@@ -491,7 +491,7 @@ public class CytoscapeSessionReader {
 					out.close();
 				} catch (IOException e) {
 					theFile = null;
-					logger.error("Error: reading from zip: " + URLstr);
+					logger.error("Error: reading from zip: " + URLstr, e);
 				}
 
 				if (theFile == null)
@@ -656,7 +656,7 @@ public class CytoscapeSessionReader {
 				new_network = Cytoscape.createNetwork(reader, false, parent);
 			} catch (Exception e) {
 				String message = "Unable to read XGMML file: "+childNet.getFilename()+".  "+e.getMessage();
-				logger.error(message);
+				logger.error(message, e);
 				Cytoscape.destroyNetwork(new_network);
 				if (taskMonitor != null)
 					taskMonitor.setException(e, message);
@@ -933,15 +933,13 @@ public class CytoscapeSessionReader {
 			return tempFile.toURL();
 		} catch (FileNotFoundException e) {
 			// This could happen if the OS' temp directory doesn't exist
-			logger.error("Can't create a temporary file.");
-			e.printStackTrace();
+			logger.error("Can't create a temporary file.", e);
 		} catch (MalformedURLException e) {
 			// If the provided URL is bad, this will happen
-			logger.error("Bad URL provided: " + remoteURL.toString());
-			e.printStackTrace();
+			logger.error("Bad URL provided: " + remoteURL.toString(), e);
 		} catch (IOException e) {
 			// Any problem read or writing from either the remoteURL or the tempFile
-			e.printStackTrace();
+			logger.error("I/O error while cacheing URL data",e);
 		}
 
 		return remoteURL; // if we can't make a local copy for some reason, work with the remote.

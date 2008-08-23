@@ -103,6 +103,8 @@ public class GeneOntologyWizard {
 	private final String AUTO_MANIFEST = "auto_generated_manifest";
 	String manifestFullPath = null;
 
+	private CyLogger logger = CyLogger.getLogger(GeneOntologyWizard.class);
+
 	/**
 	 * Creates a new GeneOntologyWizard object.
 	 */
@@ -155,7 +157,7 @@ public class GeneOntologyWizard {
 			// First, create manifest if necessary.
 			if (oldManifest == null) {
 				flip = ((AnotationPanelDescriptor) annotationDescriptor).isFlip();
-				CyLogger.getLogger().info("Flip = " + flip);
+				logger.info("Flip = " + flip);
 				generateManifest();
 				task = new LoadGeneOntologyTask(manifestFullPath);
 			} else {
@@ -202,7 +204,7 @@ public class GeneOntologyWizard {
 			pw.println("species=" + species);
 			pw.close();
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			logger.warn("Unable to append species to: "+autoManifest,e);
 		}
 	}
 
@@ -258,10 +260,9 @@ public class GeneOntologyWizard {
 				wt.close();
 			}
 
-			CyLogger.getLogger().info("Manifest Created.");
+			logger.info("Manifest Created.");
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			logger.warn("I/O error while generating ontology",e1);
 		}
 	}
 }

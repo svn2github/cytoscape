@@ -293,8 +293,7 @@ public class BioDataServer {
 				rawText = reader.getText();
 			} // else: regular filesystem file
 		} catch (Exception e0) {
-			CyLogger.getLogger().warn("-- Exception while reading annotation server load file " + filename);
-			CyLogger.getLogger().warn(e0.getMessage());
+			CyLogger.getLogger().warn("-- Exception while reading annotation server load file " + filename, e0);
 
 			return new String[0];
 		}
@@ -605,8 +604,7 @@ public class BioDataServer {
 		try {
 			server.clear();
 		} catch (Exception e) {
-			CyLogger.getLogger().warn("Error!  failed to clear");
-			e.printStackTrace();
+			CyLogger.getLogger().warn("Error!  failed to clear", e);
 		}
 	}
 
@@ -620,8 +618,7 @@ public class BioDataServer {
 		try {
 			server.addAnnotation(annotation);
 		} catch (Exception e) {
-			CyLogger.getLogger().warn("Error!  failed to add annotation " + annotation);
-			e.printStackTrace();
+			CyLogger.getLogger().warn("Error!  failed to add annotation " + annotation, e);
 		}
 	}
 

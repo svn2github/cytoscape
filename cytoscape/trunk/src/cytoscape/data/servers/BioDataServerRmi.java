@@ -348,7 +348,7 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 	 */
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			CyLogger.getLogger().warn("usage:  BioDataServerRmi <server name>");
+			System.out.println("usage:  BioDataServerRmi <server name>");
 			System.exit(1);
 		}
 
@@ -357,9 +357,9 @@ public class BioDataServerRmi extends UnicastRemoteObject implements BioDataServ
 		try {
 			BioDataServerRmi rmiServer = new BioDataServerRmi();
 			Naming.rebind(name, rmiServer);
-			CyLogger.getLogger().info("BioDataServer bound as '" + name + "'");
+			System.out.println("BioDataServer bound as '" + name + "'");
 		} catch (Exception e) {
-			CyLogger.getLogger().warn("BioDataServer exception: " + e.getMessage());
+			System.out.println("BioDataServer exception: " + e.getMessage());
 			e.printStackTrace();
 		}
 	} // main
