@@ -312,7 +312,7 @@ public class PluginFileReader {
 							.getChildTextTrim(urlTag)));
 					obj.setLicense(LicenseText, RequireAlways);
 				} catch (Exception E) {
-					logger.warn("Unable to add license: "+E.toString());
+					logger.warn("Unable to add license: "+E.toString(), E);
 				}
 			}
 		}

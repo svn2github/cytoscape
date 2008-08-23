@@ -247,7 +247,6 @@ public class PluginManager {
 		// XXX is this needed anymore?
 		loadingErrors = new HashSet<Throwable>();
 
-		logger = logger;
 		setWebstart();
 		String trackerFileName = "track_plugins.xml";
 
@@ -292,7 +291,7 @@ public class PluginManager {
 					pluginTracker = new PluginTracker(tempDir.getParentFile(),
 							trackerFileName);
 				} catch (Exception e) {
-					logger.warn("Unable to read plugin tracking file: "+e.toString());
+					logger.warn("Unable to read plugin tracking file", e);
 					// this could go on forever, surely there's a better way!
 				}
 			}
@@ -358,7 +357,7 @@ public class PluginManager {
 			PluginObj = pp.fillPluginInfoObject(PluginObj);
 
 		} catch (IOException ioe) {
-			logger.warn("ERROR registering plugin: " + ioe.getMessage());
+			logger.warn("ERROR registering plugin: " + ioe.getMessage(), ioe);
 			logger.warn(Plugin.getClass().getName()
 							+ " loaded but not registered, this will not affect the operation of the plugin");
 		} catch (Exception e) {
