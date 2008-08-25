@@ -132,11 +132,11 @@ if (!($tried && $validated)) {
 		
 		<form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" name="form1" id="form1">
 		<p>&nbsp;</p>
-		<table width="752" border="0">
+		<table width="790" border="0">
 		  <tr>
 			<th width="105" scope="col">&nbsp;</th>
-			<td width="615" scope="col"><label></label></td>
-			<th width="18" scope="col">&nbsp;</th>
+			<td width="644" scope="col"><label></label></td>
+			<th width="27" scope="col">&nbsp;</th>
 		  </tr>
 		  <?php if ($mode == 'edit') {
 			?>		  
@@ -206,7 +206,7 @@ if (!($tried && $validated)) {
 		  ?>
 			<th scope="row">Data file<span class="style1">*</span></th>
 			<td><input name="dataFile" type="file" id="dataFile" size="60" />
-		    <a href="sampleDataPage.php">See a sample data file</a> </td>
+			<a href="zipFormatDefinition.html">Data format</a></td>
 			<td>&nbsp;</td>
 		  </tr>
 		  <tr>
@@ -496,8 +496,42 @@ function updateData2DB($db_data, $data, $connection) {
 	if (mysql_error()) {
 		return false;	
 	}
-	return true;
 
+	// If pmid is updated, also update the table publications
+	if ($db_data['pmid'] != trim($data['pmid'])) {
+	
+		$pub_record = getPublicationRecord($data['rawdata_id'], $connection);
+		
+		if ($pub_record != -1) { // -1 means "not found", do nothing
+			// update the publication record
+			$pubmed_xml_record = getpubmed_xml_record($data['pmid']);
+			
+			if ($pubmed_xml_record != "") {
+				$pubmed_html_full =  addslashes(convert_xml2html($pubmed_xml_record, './pubmedref_to_html_full.xsl'));
+				$pubmed_html_medium = addslashes(convert_xml2html($pubmed_xml_record, './pubmedref_to_html_medium.xsl'));
+				$pubmed_html_short = addslashes(convert_xml2html($pubmed_xml_record, './pubmedref_to_html_short.xsl'));	
+			}
+			else {
+				$pubmed_html_full =  "Not available";
+				$pubmed_html_medium = "Not available";
+				$pubmed_html_short = "Not available";		
+			}
+			
+			$pmid =trim($data['pmid']);
+			$pubmed_xml_record = addslashes($pubmed_xml_record);
+			$dbQuery =  "update publications set pmid = $pmid, pubmed_xml_record  = '$pubmed_xml_record', ";
+			$dbQuery .= "pubmed_html_full = '$pubmed_html_full', pubmed_html_medium = '$pubmed_html_medium', pubmed_html_short = '$pubmed_html_short' ";
+			$dbQuery .= "where rawdata_id =".$data['rawdata_id'];
+								
+			// Run the query
+			if (!($result = @ mysql_query($dbQuery, $connection))) {
+				showerror();
+				return false;
+			}
+		}
+	}
+		
+	return true;
 }//
 
 
@@ -511,6 +545,10 @@ function insertData2DB($data, $connection) {
 
 			$data_fileHandle = fopen($data['dataFile']['tmp_name'], 'r');
 			$dataContent = fread($data_fileHandle, $data['dataFile']['size']);
+			
+			//$fileSize = $data['dataFile']['size'];
+			//echo "dataContent size = $fileSize<br>";
+
 			$dataContent =  addslashes($dataContent);
 
 			$dbQuery = "INSERT INTO raw_files VALUES ";
