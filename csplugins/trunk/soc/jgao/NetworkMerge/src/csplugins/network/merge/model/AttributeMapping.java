@@ -48,142 +48,193 @@ import java.util.Map;
  * 
  */
 public interface AttributeMapping {
-    
+
+    /**
+     *
+     * @return CyAttributes
+     */
     public CyAttributes getCyAttributes();
-    
-    /*
-     * Get attributes' names in the merged network
-     * 
+
+    /**
+     *
+     * @return attributes' names in the merged network
      */
     public String[] getMergedAttributes();
-        
-    /*
-     * Get number of the attribute in the merged network
-     * 
+
+    /**
+     *
+     * @return number of the attribute in the merged network
      */
     public int getSizeMergedAttributes();
-    
-    /*
-     * Get the ith attribute name in the merged network
-     * 
+
+    /**
+     *
+     * @param index
+     * @return the ith attribute name in the merged network
      */
     public String getMergedAttribute(int index);
-     
-    /*
+
+    /**
      * Set the ith attribute name in the merged network
-     * 
+     * @param index
+     * @param attributeName
+     * @return the original one
      */
     public String setMergedAttribute(int index, String attributeName);
-    
-    /*
-     * Check if an attribute exists in the merged attributes
-     * 
+
+    /**
+     *
+     * @param index
+     * @return the ith merged attribute type
      */
-    public boolean containsMergedAttributes(String attributeName);
-    
-    /*
-     * get all network titles
-     * 
+    public byte getMergedAttributeType(int index);
+
+    /**
+     *
+     * @param mergedAttributeName
+     * @return type for attribute mergedAttributeName
+     */
+    public byte getMergedAttributeType(String mergedAttributeName);
+
+    /**
+     * Set the ith merged attribute type
+     * @param index
+     * @param type
+     * @return true if successful; false otherwise
+     */
+    public boolean setMergedAttributeType(int index, byte type);
+
+    /**
+     * Set type for mergedAttributeName
+     * @param mergedAttributeName
+     * @param type
+     * @return true if successful; false otherwise
+     */
+    public boolean setMergedAttributeType(String mergedAttributeName, byte type);
+
+    /**
+     *
+     * @param attributeName
+     * @return true if an attribute exists in the merged attributes; false otherwise
+     */
+    public boolean containsMergedAttribute(String attributeName);
+
+    /**
+     *
+     * @return all network titles
      */
     public Set<String> getNetworkSet();
-    
-    /*
-     * get number of networks
-     * 
+
+    /**
+     *
+     * @return number of networks
      */
     public int getSizeNetwork();
-    
-    /*
+
+    /**
      * Get the original attribute name in the network before merged, corresponding to the merged attribute
-     * 
+     * @param netID
+     * @param mergedAttributeName
      * @return the original attribute if exist, null otherwise
      */
     public String getOriginalAttribute(String netID, String mergedAttributeName);
-    
-    /*
+
+    /**
      * Get the original attribute name before merged, corresponding to the ith merged attribute
-     * 
+     * @param netID
+     * @param index
      * @return the original attribute if exist, null otherwise
      */
     public String getOriginalAttribute(String netID, int index);
-    
-    /*
+
+    /**
      * Get the original attribute name in the network before merged, corresponding to the merged attribute
-     * 
+     * @param mergedAttributeName
      * @return the original attribute if exist, null otherwise
      */
     public Map<String,String> getOriginalAttributeMap(String mergedAttributeName);
-    
-    /*
+
+    /**
      * Get the original attribute name before merged, corresponding to the ith merged attribute
-     * 
+     * @param index
      * @return the original attribute if exist, null otherwise
      */
     public Map<String,String> getOriginalAttributeMap(int index);   
-    
-    /*
+
+    /**
      * Set attribute mapping
-     * 
+     * @param netID
+     * @param attributeName
+     * @param mergedAttributeName
+     * @return the original attribute
      */
     public String setOriginalAttribute(String netID, String attributeName, String mergedAttributeName);
-    
-    /*
+
+    /**
      * Set attribute mapping
-     * 
+     * @param netID
+     * @param attributeName
+     * @param index
+     * @return the original attribute
      */
     public String setOriginalAttribute(String netID, String attributeName, int index);
-    
-    /*
-     * remove original attribute 
-     * 
+
+    /**
+     * Remove original attribute
+     * @param netID
+     * @param mergedAttributeName
+     * @return the removed attribute if successful; null otherwise
      */
     public String removeOriginalAttribute(String netID, String mergedAttributeName);
     
-    /*
-     * remove original attribute 
-     * 
+    /**
+     * Remove original attribute
+     * @param netID
+     * @param index
+     * @return the removed attribute if successful; null otherwise
      */
     public String removeOriginalAttribute(String netID, int index);
-    
-    /*
-     * remove merged attribute, along with the corresponding origianl attribute
-     * 
+
+    /**
+     * Remove merged attribute, along with the corresponding origianl attribute
+     * @param mergedAttributeName
+     * @return the removed attribute if successful; null otherwise
      */
     public String removeMergedAttribute(String mergedAttributeName);
-    
-    /*
-     * remove merged attribute, along with the corresponding origianl attribute
-     * 
+
+    /**
+     * Remove merged attribute, along with the corresponding origianl attribute
+     * @param index
+     * @return the removed attribute if successful; null otherwise
      */
     public String removeMergedAttribute(int index);
-    
-    /*
+
+    /**
      * Add new attribute in the end for the current network
-     * 
+     * @param mapNetIDAttributeName
+     * @param mergedAttrName
+     * @return the added attribute name; it could be different from mergedAttrName
      */
     public String addAttributes(Map<String,String> mapNetIDAttributeName, String mergedAttrName);
-        
-    /*
-     * Add new attribute in the end for the current network
-     * 
+
+    /**
+     * Add new attribute at the ith for the current network
+     * @param mapNetIDAttributeName
+     * @param mergedAttrName
+     * @param index
+     * @return the added attribute name; it could be different from mergedAttrName
      */
     public String addAttributes(Map<String,String> mapNetIDAttributeName, String mergedAttrName, int index);
 
-    /*
-     * Get the default attribute name for a new merged one 
-     * 
-     
-    public String getDefaultMergedAttrName(String attr);
-    
-    /*
-     * 
-     * 
+    /**
+     *
+     * @param netID
      */
     public void addNetwork(String netID);
 
-    /*
-     * 
-     * 
+    /**
+     *
+     * @param netID
      */
     public void removeNetwork(String netID);
        

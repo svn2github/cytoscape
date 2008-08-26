@@ -57,15 +57,17 @@ import java.util.Arrays;
  * 
  */
 public class AttributeMappingImpl implements AttributeMapping {
-    private Map<String,List<String>> attributeMapping; //attribute mapping
-    private List<String> attributeMerged;
+    private Map<String,List<String>> attributeMapping; //attribute mapping, network to list of attributes
+    private List<String> mergedAttributes;
+    private List<Byte> mergedAttributeTypes;
     private CyAttributes cyAttributes;
     private final String nullAttr = ""; // to hold a position in vector standing that it's not a attribute
 
     public AttributeMappingImpl(final CyAttributes cyAttributes) {
         this.cyAttributes = cyAttributes;
         attributeMapping = new HashMap<String,List<String>>();
-        attributeMerged = new Vector<String>();
+        mergedAttributes = new Vector<String>();
+        mergedAttributeTypes = new Vector<Byte>();
     }
 
     @Override
@@ -79,7 +81,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      */
     @Override
     public String[] getMergedAttributes() {
-        return (String[])attributeMerged.toArray(new String[0]);
+        return (String[])mergedAttributes.toArray(new String[0]);
     }
    
     /*
@@ -88,7 +90,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      */
     @Override
     public int getSizeMergedAttributes() {
-        return attributeMerged.size();
+        return mergedAttributes.size();
     }
             
     /*
@@ -101,8 +103,8 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.IndexOutOfBoundsException("Index out of boundary.");
         }
         
-        //if (index>=attributeMerged.size()) return null;
-        return attributeMerged.get(index);
+        //if (index>=mergedAttributes.size()) return null;
+        return mergedAttributes.get(index);
     }
      
     /*
@@ -120,21 +122,96 @@ public class AttributeMappingImpl implements AttributeMapping {
         if (attributeExistsInOriginalNetwork(attributeName)) {
             final Set<String> attrNames = new HashSet(getOriginalAttributeMap(index).values());
             final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
-            if (attr_mc==null) { // inconvertible
+            if (attr_mc==null) { // incompatible
                 if (cyAttributes.getType(attributeName)!=CyAttributes.TYPE_STRING) {
                     attr = this.getDefaultMergedAttrName(attr, true);
-                    //return null;
+                    this.setMergedAttributeType(index, CyAttributes.TYPE_STRING);
                 }
-            } else { // convertible
+            } else { // compatible
                 if (!AttributeValueCastUtils.isAttributeTypeConvertable(attr_mc, attributeName, cyAttributes)) {
                     attr = this.getDefaultMergedAttrName(attr, true);
-                    //return null;
+                    this.setMergedAttributeType(index, cyAttributes.getType(attr_mc));
                 }
             }
         }
         
-        return attributeMerged.set(index, attr);
-        
+        String ret = mergedAttributes.set(index, attr);
+        this.resetMergedAttributeType(index,false);
+
+        return ret;
+    }
+
+    /**
+     *
+     * @param index
+     * @return the ith merged attribute type
+     */
+    public byte getMergedAttributeType(final int index) {
+        if (index>=this.getSizeMergedAttributes()||index<0)  {
+            throw new java.lang.IndexOutOfBoundsException();
+        }
+
+        return mergedAttributeTypes.get(index);
+    }
+
+    /**
+     *
+     * @param mergedAttributeName
+     * @return type for attribute mergedAttributeName
+     */
+    public byte getMergedAttributeType(final String mergedAttributeName) {
+        if (mergedAttributeName==null) {
+            throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
+        }
+
+        final int index = mergedAttributes.indexOf(mergedAttributeName);
+        if (index==-1) {
+            throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
+        }
+
+        return getMergedAttributeType(index);
+    }
+
+    /**
+     * Set the ith merged attribute type
+     * @param index
+     * @param type
+     * @return true if successful; false otherwise
+     */
+    public boolean setMergedAttributeType(int index, byte type) {
+        if (index>=this.getSizeMergedAttributes()||index<0) {
+                throw new java.lang.IndexOutOfBoundsException();
+        }
+
+        final Set<String> attrNames = new HashSet(getOriginalAttributeMap(index).values());
+        final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
+        final byte fromType = attr_mc==null?CyAttributes.TYPE_STRING:cyAttributes.getType(attr_mc);
+
+        if (!AttributeValueCastUtils.isAttributeTypeConvertable(fromType, type)) {
+                return false;
+        }
+
+        this.mergedAttributeTypes.set(index, type);
+        return true;
+    }
+
+    /**
+     * Set type for mergedAttributeName
+     * @param mergedAttributeName
+     * @param type
+     * @return true if successful; false otherwise
+     */
+    public boolean setMergedAttributeType(String mergedAttributeName, byte type) {
+        if (mergedAttributeName==null) {
+            throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
+        }
+
+        final int index = mergedAttributes.indexOf(mergedAttributeName);
+        if (index==-1) {
+            throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
+        }
+
+        return setMergedAttributeType(index,type);
     }
             
     /*
@@ -142,11 +219,11 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      */
     @Override
-    public boolean containsMergedAttributes(final String attributeName) {
+    public boolean containsMergedAttribute(final String attributeName) {
         if (attributeName==null) {
             throw new java.lang.NullPointerException("Attribute name is null.");
         }
-        return attributeMerged.contains(attributeName);
+        return mergedAttributes.contains(attributeName);
     }
     
     /*
@@ -158,7 +235,7 @@ public class AttributeMappingImpl implements AttributeMapping {
         if (netID==null||mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
         }
-        final int index = attributeMerged.indexOf(mergedAttributeName);
+        final int index = mergedAttributes.indexOf(mergedAttributeName);
         if (index==-1) {
             throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
         }
@@ -193,7 +270,7 @@ public class AttributeMappingImpl implements AttributeMapping {
         if (mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
         }
-        final int index = attributeMerged.indexOf(mergedAttributeName);
+        final int index = mergedAttributes.indexOf(mergedAttributeName);
         if (index==-1) {
             throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
         }
@@ -236,7 +313,7 @@ public class AttributeMappingImpl implements AttributeMapping {
         if (netID==null||mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
         }
-        final int index = attributeMerged.indexOf(mergedAttributeName);
+        final int index = mergedAttributes.indexOf(mergedAttributeName);
         if (index==-1) {
             throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
         }
@@ -274,6 +351,8 @@ public class AttributeMappingImpl implements AttributeMapping {
                                                                       cyAttributes)) {
                     setMergedAttribute(index,getDefaultMergedAttrName(mergedAttr,true));
             }
+
+            this.resetMergedAttributeType(index,false);
         }
 
         return old;
@@ -289,7 +368,7 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
         }
         
-        final int index = attributeMerged.indexOf(mergedAttributeName);
+        final int index = mergedAttributes.indexOf(mergedAttributeName);
         if (index==-1) {
             throw new java.lang.IllegalArgumentException("No "+mergedAttributeName+" is contained in merged attributes");
         }
@@ -314,7 +393,9 @@ public class AttributeMappingImpl implements AttributeMapping {
         final List<String> attrs = attributeMapping.get(netID);
         
         String old = attrs.set(index, nullAttr);
-        pack(index);
+        if (!pack(index)) {
+                this.resetMergedAttributeType(index,false);
+        }
         
         return old;
     }
@@ -329,7 +410,7 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.NullPointerException("Null mergedAttributeName");
         }
         
-        final int index = attributeMerged.indexOf(mergedAttributeName);
+        final int index = mergedAttributes.indexOf(mergedAttributeName);
         if (index ==-1 ) {
             return null;
         }
@@ -347,13 +428,17 @@ public class AttributeMappingImpl implements AttributeMapping {
             throw new java.lang.IndexOutOfBoundsException("Index out of bounds");
         }
         
-        String old = attributeMerged.remove(index);
-        int n = attributeMapping.size();
-        for (int i=0; i<n; i++) {
-            attributeMapping.get(i).remove(index);
+        //int n = attributeMapping.size();
+        //for (int i=0; i<n; i++) {
+        //    attributeMapping.get(i).remove(index);
+        //}
+        for (List<String> attrs : attributeMapping.values()) {
+                attrs.remove(index);
         }
+
+        this.mergedAttributeTypes.remove(index);
         
-        return old;
+        return mergedAttributes.remove(index);
     }
     
     /*
@@ -366,7 +451,7 @@ public class AttributeMappingImpl implements AttributeMapping {
     }
     
     /*
-     * Add new attribute in the end of the current network
+     * Add new attribute in the ith of the current network
      * 
      */
     @Override
@@ -407,7 +492,9 @@ public class AttributeMappingImpl implements AttributeMapping {
         }
         
         String defaultName = getDefaultMergedAttrName(mergedAttrName,false);
-        attributeMerged.add(index,defaultName);// add in merged attr  
+        mergedAttributes.add(index,defaultName);// add in merged attr
+
+        this.resetMergedAttributeType(index, true);
         return defaultName;
     }
 
@@ -452,7 +539,7 @@ public class AttributeMappingImpl implements AttributeMapping {
                 return;
             }
 
-            final int nr = attributeMerged.size(); // # of rows, the same as the # of attributes in merged network
+            final int nr = mergedAttributes.size(); // # of rows, the same as the # of attributes in merged network
 
             attrs = new Vector<String>(nr); // new map
             for (int i=0; i<nr; i++) {
@@ -472,9 +559,10 @@ public class AttributeMappingImpl implements AttributeMapping {
                 boolean found = false;             
                 for (int ir=0; ir<nr; ir++) {
                     if (attrs.get(ir).compareTo(nullAttr)!=0) continue; // if the row is occupied
-                    if (attributeMerged.get(ir).compareTo(at)==0) { // same name as the merged attribute
+                    if (mergedAttributes.get(ir).compareTo(at)==0) { // same name as the merged attribute
                         found = true;
-                        attrs.set(ir, at);// add the attribute on the ir row
+                        this.setOriginalAttribute(netID, at, ir);
+                        //attrs.set(ir, at);// add the attribute on the ir row
                         break; 
                     }
 
@@ -486,7 +574,8 @@ public class AttributeMappingImpl implements AttributeMapping {
                             //if (AttributeValueCastUtils.isAttributeTypeSame(attr_curr,at,attributes)) // not neccessay in Cytoscape2.6
                                                                                                        // since attributes are global
                             found = true;
-                            attrs.set(ir, at); // add the attribute on the ir row
+                            //attrs.set(ir, at); // add the attribute on the ir row
+                            this.setOriginalAttribute(netID, at, ir);
                             break; 
                         }
                     }
@@ -532,18 +621,20 @@ public class AttributeMappingImpl implements AttributeMapping {
         final int n = removed.size();
         for (int i=n-1; i>=0; i--) {
             if (removed.get(i).compareTo(nullAttr)!=0) { // if the attribute is not empty
-                pack(i);
+                if (!pack(i)) { // if not removed
+                        this.resetMergedAttributeType(i, false);
+                }
             }
         }
     }
     
-    /* 
+    /**
      * Remove empty rows from the current attribute mapping
      * 
      * @param attributeMapping the current attribute mapping
-     * 
+     * @return true if removed
      */
-    protected void pack(final int index) {
+    protected boolean pack(final int index) {
         if (index<0 || index>=getSizeMergedAttributes()) {
             throw new java.lang.IndexOutOfBoundsException("Index out of boundary.");
         }
@@ -551,19 +642,22 @@ public class AttributeMappingImpl implements AttributeMapping {
         Iterator<List<String>> it = attributeMapping.values().iterator();
         while (it.hasNext()) {
             if (it.next().get(index).compareTo(nullAttr)!=0) {
-                return;
+                return false;
             }
         }
 
-        attributeMerged.remove(index);
+        this.removeMergedAttribute(index);
+        return true;
 
-        it = attributeMapping.values().iterator();
-        while ( it.hasNext() ) {
-            it.next().remove(index);
-        }
+//        mergedAttributes.remove(index);
+//
+//        it = attributeMapping.values().iterator();
+//        while ( it.hasNext() ) {
+//            it.next().remove(index);
+//        }
 
 //        if (attributeMapping.isEmpty()) {
-//            attributeMerged.clear();
+//            mergedAttributes.clear();
 //        }
 
     }
@@ -585,14 +679,13 @@ public class AttributeMappingImpl implements AttributeMapping {
 
         while (true) {
             String attr_ret = attr+appendix;
-            if (attributeMerged.contains(attr_ret)||(excludeOriginalAttribute&&attributeExistsInOriginalNetwork(attr_ret))){
+            if (mergedAttributes.contains(attr_ret)||(excludeOriginalAttribute&&attributeExistsInOriginalNetwork(attr_ret))){
                 appendix = "." + ++i;
             } else {
                 return attr+appendix;
             } 
         }
     }
-    
         
     protected void addNewAttribute(final String netID, final String attributeName) {
         if (netID==null || attributeName==null) {
@@ -612,7 +705,27 @@ public class AttributeMappingImpl implements AttributeMapping {
             attrMerged = netID+"."+Semantics.CANONICAL_NAME;
         }//TODO remove in Cytosape3
         
-        attributeMerged.add(getDefaultMergedAttrName(attrMerged,false)); // add in merged attr  
+        mergedAttributes.add(getDefaultMergedAttrName(attrMerged,false)); // add in merged attr
+        this.resetMergedAttributeType(mergedAttributeTypes.size(),true);
     }
 
+    protected void resetMergedAttributeType(final int index, boolean add) {
+        if (this.getSizeMergedAttributes()>this.mergedAttributeTypes.size()+(add?1:0)) {
+                throw new java.lang.IllegalStateException("attribute type not complete");
+        }
+
+        if (index>=this.getSizeMergedAttributes()||index<0) {
+                throw new java.lang.IndexOutOfBoundsException();
+        }
+
+        final Set<String> attrNames = new HashSet(getOriginalAttributeMap(index).values());
+        final String attr_mc = AttributeValueCastUtils.getMostCompatibleAttribute(attrNames, cyAttributes);
+        final byte type = attr_mc==null?CyAttributes.TYPE_STRING:cyAttributes.getType(attr_mc);
+
+        if (add) { //new
+                mergedAttributeTypes.add(index,type);
+        } else {
+                this.mergedAttributeTypes.set(index, type);
+        }
+    }
 }

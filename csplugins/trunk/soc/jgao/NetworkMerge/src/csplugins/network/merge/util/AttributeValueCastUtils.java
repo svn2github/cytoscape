@@ -50,12 +50,12 @@ import java.util.HashSet;
  * 
  */
 public class AttributeValueCastUtils {
-    
-    /*
+    /**
      * Check if the types are convertable for two attributes
-     * 
-     * 
-     * 
+     * @param fromAttrName
+     * @param toAttrName
+     * @param attrs
+     * @return
      */
     public static boolean isAttributeTypeConvertable(final String fromAttrName, 
                                               final String toAttrName, 
@@ -72,7 +72,8 @@ public class AttributeValueCastUtils {
         if (!attrNames.contains(toAttrName)) {
             return true; // always convertable to a non-existing attribute
         }
-        
+
+        // first check the basic type is convertible
         final MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
         final byte valType1 = mmapDef.getAttributeValueType(fromAttrName);
         final byte valType2 = mmapDef.getAttributeValueType(toAttrName);
@@ -107,7 +108,8 @@ public class AttributeValueCastUtils {
                     return false;
             }
         }
-        
+
+        // check list, map ...
         final byte[] dimTypes1 = mmapDef.getAttributeKeyspaceDimensionTypes(fromAttrName);
         final byte[] dimTypes2 = mmapDef.getAttributeKeyspaceDimensionTypes(toAttrName);
 
@@ -123,7 +125,7 @@ public class AttributeValueCastUtils {
         }
         
         if (n1==0 && n2==1) {
-            return dimTypes2[0] == MultiHashMapDefinition.TYPE_INTEGER; // converting from simple type to simpl list
+            return dimTypes2[0] == MultiHashMapDefinition.TYPE_INTEGER; // converting from simple type to simple list
         }
         
         if (n1!=n2) {
@@ -137,6 +139,38 @@ public class AttributeValueCastUtils {
         }
         
         return valType1==valType2; // for complex case, type must be the same
+    }
+
+    public static boolean isAttributeTypeConvertable(final byte fromType, final byte toType) {
+            switch (fromType) {
+                case CyAttributes.TYPE_BOOLEAN:
+                    return toType==CyAttributes.TYPE_BOOLEAN
+                            || toType==CyAttributes.TYPE_STRING
+                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
+                case CyAttributes.TYPE_FLOATING:
+                    return toType==CyAttributes.TYPE_FLOATING
+                            || toType==CyAttributes.TYPE_STRING
+                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
+                case CyAttributes.TYPE_INTEGER:
+                    return toType==CyAttributes.TYPE_INTEGER
+                            || toType==CyAttributes.TYPE_FLOATING
+                            || toType==CyAttributes.TYPE_STRING
+                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
+                case CyAttributes.TYPE_STRING:
+                    return toType==CyAttributes.TYPE_STRING
+                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
+                case CyAttributes.TYPE_SIMPLE_LIST:
+                    return toType==CyAttributes.TYPE_STRING
+                            || toType==CyAttributes.TYPE_SIMPLE_LIST;
+                case CyAttributes.TYPE_SIMPLE_MAP:
+                    return toType==CyAttributes.TYPE_STRING
+                            || toType==CyAttributes.TYPE_SIMPLE_MAP;
+                case CyAttributes.TYPE_COMPLEX:
+                    return toType==CyAttributes.TYPE_STRING
+                            || toType==CyAttributes.TYPE_SIMPLE_MAP;
+                default:
+                    return false;
+            }
     }
     
     /*

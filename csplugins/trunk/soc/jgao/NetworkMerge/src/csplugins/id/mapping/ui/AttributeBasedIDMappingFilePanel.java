@@ -46,8 +46,8 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.util.FileUtil;
+import cytoscape.util.CyFileFilter;
 
-import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 
@@ -321,7 +321,8 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
                     URL url;
                     String strURL;
                     if (isLocal) {
-                            File source = FileUtil.getFile("Select a ID mapping file", FileUtil.LOAD);
+                            File source = FileUtil.getFile("Select a ID mapping file", FileUtil.LOAD,
+		                                             new CyFileFilter[] {  });
                             if (source==null) {
                                     return;
                             }
@@ -355,7 +356,7 @@ public class AttributeBasedIDMappingFilePanel extends javax.swing.JPanel {
             ReadIDMappingFileTask task = new ReadIDMappingFileTask(idMapper);
             // Configure JTask Dialog Pop-Up Box
             final JTaskConfig jTaskConfig = new JTaskConfig();
-            jTaskConfig.setOwner(Cytoscape.getDesktop());
+            jTaskConfig.setOwner(frame);
             jTaskConfig.displayCloseButton(true);
             jTaskConfig.displayCancelButton(false);
             jTaskConfig.displayStatus(true);

@@ -643,7 +643,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_viewIDMappingButtonActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-            this.setAlwaysOnTop(false);
+            //this.setAlwaysOnTop(false);
             if (this.advancedNetworkMergeCollapsiblePanel.isCollapsed()) {
                         if (getOperation() == Operation.UNION) {
                                 GraphSetUtils.createUnionGraph(this.selectedNetworkData.getNetworkList(), true,
@@ -677,7 +677,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
 
                         // Configure JTask Dialog Pop-Up Box
                         final JTaskConfig jTaskConfig = new JTaskConfig();
-                        jTaskConfig.setOwner(Cytoscape.getDesktop());
+                        jTaskConfig.setOwner(this);
                         jTaskConfig.displayCloseButton(true);
                         jTaskConfig.displayCancelButton(false);
                         jTaskConfig.displayStatus(true);
@@ -774,7 +774,7 @@ private void updateSize() {
                         int height_curr = dim_curr.height;
 
                         int width = 700;
-                        int height = getOperation()==Operation.DIFFERENCE?800:700;
+                        int height = getOperation()==Operation.DIFFERENCE?800:720;
 
                         if (width < width_curr) {
                                 width = width_curr;

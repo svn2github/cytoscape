@@ -54,7 +54,6 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JCheckBox;

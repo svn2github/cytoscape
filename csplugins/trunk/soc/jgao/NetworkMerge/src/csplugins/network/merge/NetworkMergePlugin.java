@@ -36,46 +36,21 @@
 
 package csplugins.network.merge;
 
-import csplugins.network.merge.model.AttributeMapping;
-import csplugins.network.merge.model.MatchingAttribute;
 import csplugins.network.merge.ui.NetworkMergeFrame;
-import csplugins.network.merge.NetworkMerge.Operation;
-import csplugins.network.merge.conflict.AttributeConflictHandler;
-//import csplugins.network.merge.conflict.IDMappingAttributeConflictHandler;
-import csplugins.network.merge.conflict.DefaultAttributeConflictHandler;
-import csplugins.network.merge.conflict.AttributeConflictManager;
-import csplugins.network.merge.conflict.AttributeConflictCollector;
-import csplugins.network.merge.conflict.AttributeConflictCollectorImpl;
-import csplugins.network.merge.util.AttributeValueMatcher;
-import csplugins.network.merge.util.DefaultAttributeValueMatcher;
-import csplugins.network.merge.util.IDMappingAttributeValueMatcher;
-import csplugins.network.merge.util.AttributeMerger;
-import csplugins.network.merge.util.DefaultAttributeMerger;
-import csplugins.network.merge.util.IDMappingAttributeMerger;
-import csplugins.id.mapping.model.AttributeBasedIDMappingData;
 
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.Cytoscape;
-import cytoscape.CyNetwork;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.util.GraphSetUtils;
-import cytoscape.util.CyNetworkNaming;
 
 import giny.model.Node;
-
-import cytoscape.task.Task;
-import cytoscape.task.TaskMonitor;
-import cytoscape.task.ui.JTaskConfig;
-import cytoscape.task.util.TaskManager;
 
 
 import java.awt.event.ActionEvent;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.Vector;
 
 /**
  * Plugin to merge networks
@@ -119,7 +94,17 @@ public class NetworkMergePlugin extends CytoscapePlugin {
                     String nodeID = nodeList.get(i).getIdentifier();
                     cyAttributes.setAttribute(nodeID, Semantics.CANONICAL_NAME, nodeID);
                 }
-            }            
+            }
+
+            cyAttributes = Cytoscape.getEdgeAttributes();
+            if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(Semantics.CANONICAL_NAME)) {
+                List<Node> edgeList = Cytoscape.getCyEdgesList();
+                int n = edgeList.size();
+                for (int i=0; i<n; i++) {
+                    String edgeID = edgeList.get(i).getIdentifier();
+                    cyAttributes.setAttribute(edgeID, Semantics.CANONICAL_NAME, edgeID);
+                }
+            }
         }//TODO: remove in Cytoscape3
     }
 }

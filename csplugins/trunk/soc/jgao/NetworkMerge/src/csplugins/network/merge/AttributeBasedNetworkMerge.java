@@ -291,19 +291,48 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
                 
                 // if attr_merged is a new attribute, define it first
                 if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(attr_merged)) {
+                    final byte type_to = attributeMapping.getMergedAttributeType(i);
                     final MultiHashMapDefinition mmapDef = cyAttributes.getMultiHashMapDefinition();
+
+                    byte type;
+                    byte[] keyTypes;
+                    if (type_to==CyAttributes.TYPE_STRING) {
+                            type = CyAttributes.TYPE_STRING;
+                            keyTypes = null;
+                    } else if (type_to==CyAttributes.TYPE_SIMPLE_LIST ) {
+                            type = cyAttributes.getType(attr_mc);
+                            if (type<0 && type!=CyAttributes.TYPE_SIMPLE_LIST) { //TODO: improve
+                                    type = MultiHashMapDefinition.TYPE_STRING;
+                            }
+                            keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
+                    } else {
+                            type = mmapDef.getAttributeValueType(attr_mc);
+                            keyTypes = mmapDef.getAttributeKeyspaceDimensionTypes(attr_mc);
+                    }
+
                     mmapDef.defineAttribute(attr_merged,
-                                            mmapDef.getAttributeValueType(attr_mc),
-                                            mmapDef.getAttributeKeyspaceDimensionTypes(attr_mc));
+                                            type,
+                                            keyTypes);
                     //TODO: collecte new attribute here
                     // if exception occur or user choose to cancel, undefine
                 }
             } else { // if incompatible type                
                 if (!Arrays.asList(cyAttributes.getAttributeNames()).contains(attr_merged)) {
+                    final byte type = attributeMapping.getMergedAttributeType(i);
                     final MultiHashMapDefinition mmapDef = cyAttributes.getMultiHashMapDefinition();
+
+                    final byte[] keyTypes;
+                    if (type==CyAttributes.TYPE_STRING) {
+                            keyTypes = null;
+                    } else if (type==CyAttributes.TYPE_SIMPLE_LIST ) {
+                            keyTypes = new byte[] { MultiHashMapDefinition.TYPE_INTEGER };
+                    } else {
+                            keyTypes = null;
+                    }
+
                     mmapDef.defineAttribute(attr_merged,
                                             MultiHashMapDefinition.TYPE_STRING,
-                                            null);
+                                            keyTypes);
                     //TODO: collecte new attribute here
                     // if exception occur or user choose to cancel, undefine
                 } else {
@@ -330,29 +359,6 @@ public class AttributeBasedNetworkMerge extends AbstractNetworkMerge{
             }
 
             attributeMerger.mergeAttribute(mapGOAttr, id, attr_merged, cyAttributes);
-                
-//            // for each attribute to be merged
-//            while (itEntryNetGOs.hasNext()) {
-//                final Map.Entry<CyNetwork,Set<GraphObject>> entryNetGOs = itEntryNetGOs.next();
-//                final String idNet = entryNetGOs.getKey().getIdentifier();
-//                final String attrName = attributeMapping.getOriginalAttribute(idNet, i);
-//                if (attrName!=null) {
-//                    Set<String> idsFrom = new HashSet<String>();
-//                    final Iterator<GraphObject> itGO = entryNetGOs.getValue().iterator();
-//                    while (itGO.hasNext()) {
-//                        final String idGO = itGO.next().getIdentifier();
-//                        idsFrom.add(idGO);
-////                        AttributeValueCastUtils.copyAttribute(idGO,
-////                                                             attrName,
-////                                                             id,
-////                                                             attr_merged,
-////                                                             cyAttributes,
-////                                                             conflictCollector);
-//                    }
-//
-//                    attributeMerger.mergeAttribute(idsFrom, attrName, id, attr_merged, cyAttributes);
-//                }
-//            }
         }
     }
         
