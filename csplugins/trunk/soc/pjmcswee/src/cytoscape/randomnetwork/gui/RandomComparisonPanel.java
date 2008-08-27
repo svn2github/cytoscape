@@ -67,6 +67,8 @@ public class RandomComparisonPanel extends RandomNetworkPanel {
 	//Checkbox for randomizing an existing network
 	private javax.swing.JCheckBox randomizeExistingNetwork;
 
+
+	private int nextState;
 	
 	
 	//Explain what this checkbox means
@@ -81,6 +83,7 @@ public class RandomComparisonPanel extends RandomNetworkPanel {
 	public RandomComparisonPanel(){		
 		super(null); 
 		initComponents();
+		nextState = -1;
 	}
 
 	/**
@@ -125,7 +128,7 @@ public class RandomComparisonPanel extends RandomNetworkPanel {
 		randomizeExistingExplain.setText("<html><font size=2 face=Verdana>Compare against a randomized existing network.</font></html>");
 
 		//Set the randomize existing text
-		generateRandomExplain.setText("<html><font size=2 face=Verdana>Compare against a new random network.</font></html>");
+		generateRandomExplain.setText("<html><font size=2 face=Verdana>Compare against a random network models.</font></html>");
 		randomizeExistingExplain.setPreferredSize(new Dimension(200,40));
 		generateRandomExplain.setPreferredSize(new Dimension(200,40));
 		randomizeExistingExplain.setMinimumSize(new Dimension(200,40));
@@ -184,18 +187,27 @@ public class RandomComparisonPanel extends RandomNetworkPanel {
 	public RandomNetworkPanel next()
 	{
 		
-		RandomNetworkPanel displayPanel = null;
 		
 		//See which checkbox is selected and then display the appropriate panel
 		if (randomizeExistingNetwork.isSelected()) 
 		{
-			displayPanel = new RandomizeExistingPanel(1,this);			
+			if((mNext == null)||(nextState != 0))
+			{
+				mNext = null;
+				mNext= new RandomizeExistingPanel(1,this);			
+			}
+			nextState = 0;
 		} 
 		else if(generateRandomNetwork.isSelected())
 		{
-			displayPanel = new GenerateRandomPanel(1,this);			
+			if((mNext == null)||(nextState != 1))
+			{
+				mNext = null;
+				mNext = new GenerateRandomPanel(1,this);			
+			}
+			nextState = 1;
 		}
 		
-		return displayPanel;
+		return mNext;
 	}
 }

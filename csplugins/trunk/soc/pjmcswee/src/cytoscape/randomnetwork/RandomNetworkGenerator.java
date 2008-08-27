@@ -61,4 +61,12 @@ public interface RandomNetworkGenerator  {
 	 *  @return An exact copy of this randomNetworkGenerator <RandomNetworkGenerator>.
 	 */
 	RandomNetworkGenerator copy();
+	
+	
+	/**
+	 *
+	 * @return The name representation of this generator.
+	 */
+	public abstract String getName();
+
 }

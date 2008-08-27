@@ -89,6 +89,16 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 	{
 		return new WattsStrogatzModel( numNodes, allowSelfEdge, directed, beta, degree);
 	}
+	
+	
+	/**
+	 * @return Gets the display name for this generator.
+	 */
+	public String getName()
+	{
+		return new String("Watts-Strogatz Model");
+	}
+
 
 	/**
 	 *  Generates random networks according to the Watts-Strogatz Model. 
@@ -150,12 +160,6 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 		
 			int start = i - degree;
 
-/*
-			if(!directed)
-			{
-				start = i - degree/2;
-			}
-*/
 			if(start < 0)
 			{
 				start = numNodes + start;
@@ -163,35 +167,29 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 			
 			int count = 0;
 			int stop = 2*degree;
-/*
-			if(!directed)
-			{
-				stop = degree;
-			}
-	*/		
+	
 			
 
 			while(count < stop)
 			{
 					
-				//System.out.println(i +"\t Count: " + count +"\t Stop: " + stop +"\t Start: " + start);
 				if((i != start)||(allowSelfEdge))
 				{
-					if(((!directed)&&(nodes[i] < nodes[start]))||(directed))
+					if(((!directed)&&(nodes[i] <= nodes[start]))||(directed))
 					{
 						random_network.edgeCreate(nodes[i], nodes[start], directed);
-						//System.out.println("Creating Edge");
 						numEdges++;
-
 					}
-					count++;	
+					if(i != start)
+					{
+						count++;	
+					}
 				}
 				start = (start+1) % numNodes;
 			}
 			
 		}
 		
-		//System.out.println(numEdges);
 		
 		//Save a local copy of the edge indicies
 		LinkedList edgeList = new LinkedList();

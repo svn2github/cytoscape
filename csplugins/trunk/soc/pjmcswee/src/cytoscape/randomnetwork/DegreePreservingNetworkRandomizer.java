@@ -87,6 +87,15 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 		return new DegreePreservingNetworkRandomizer(cytoNetwork,  directed, iterations); 
 	}
 	
+	
+	/**
+	 * @return Gets the display name for this generator.
+	 */
+	public String getName()
+	{
+		return new String("Degree Preserving Edge Shuffle Model");
+	}
+
 
 	/**
 	 * This function generates a randomized instance of the original network.

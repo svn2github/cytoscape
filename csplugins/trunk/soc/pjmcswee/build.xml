@@ -41,8 +41,8 @@
   </target>
   
   <target name="jar" description="Create RandomNetworkPlugin jar file" depends="compile">
-    <copy file="${basedir}/src/cytoscape/randomnetwork/plugin.props" todir="${build}/cytoscape/randomnetwork" />
-    <jar destfile="${build}/RandomNetworkPlugin.jar">
+    <copy file="${basedir}/plugin.props" todir="build/cytoscape/randomnetwork" />
+    <jar destfile="RandomNetworkPlugin.jar">
          <manifest>
          <attribute name="Cytoscape-Plugin"
                     value="cytoscape.randomnetwork.RandomNetworkPlugin" />

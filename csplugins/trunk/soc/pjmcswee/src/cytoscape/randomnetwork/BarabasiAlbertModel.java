@@ -75,7 +75,14 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 	public BarabasiAlbertModel(int pNumNodes, boolean pAllowSelfEdge,
 			boolean pDirected, int pInit, int pEdgesToAdd) {
 		super(pNumNodes, UNSPECIFIED, pAllowSelfEdge, pDirected);
+		
+		
 		init_num_nodes = pInit;
+		
+		if(init_num_nodes > pNumNodes)
+		{
+			init_num_nodes = pNumNodes;
+		}
 		edgesToAdd = pEdgesToAdd;
 	}
 
@@ -87,6 +94,15 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 	public BarabasiAlbertModel copy()
 	{
 		return new BarabasiAlbertModel(numNodes, allowSelfEdge, directed, init_num_nodes, edgesToAdd);
+	}
+	
+	
+	/**
+	 * @return Gets the display name for this generator.
+	 */
+	public String getName()
+	{
+		return new String("Barabasi-Albert Model");
 	}
 
 
@@ -148,6 +164,9 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 		//Add each node one at a time
 		for (int i = init_num_nodes; i < numNodes; i++) 
 		{
+		
+			int added = 0;
+			double degreeIgnore = 0;
 			//Add the appropriate number of edges
 			for (int m = 0; m < edgesToAdd; m++) 
 			{
@@ -156,12 +175,23 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 				//Choose a random number
 				double randNum = random.nextDouble();
 				
+				
+				
 				//Try to add this node to every existing node
 				for (int j = 0; j < i; j++) 
 				{
-					//Increment the talley by the jth node's probability
-					prob += (double) ((double) degrees[j])
-							/ ((double) (2.0d * (double) numEdges));
+					 //Check for an existing connection between these two nodes
+					 cytoscape.util.intr.IntIterator iter = random_network.edgesConnecting(nodes[i],nodes[j],directed,false,!directed);
+				
+					if(!iter.hasNext())
+					{
+						//Increment the talley by the jth node's probability
+						prob += (double) ((double) degrees[j])
+							/ ((double) (2.0d * numEdges) - degreeIgnore);
+					}
+					
+					//System.out.println(m + "\t"  + j +"\t" + prob + " < " + randNum  + "-" + degreeIgnore );
+
 
 					//If this pushes us past the the probability
 					if (randNum <= prob) 
@@ -169,18 +199,22 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 						// Create and edge between node i and node j
 						random_network.edgeCreate(nodes[i],nodes[j],directed);
 
+						degreeIgnore += degrees[j];
+
 						//increment the number of edges
-						numEdges++;
-						
+						added++;
 						//increment the degrees of each node
 						degrees[i]++;
 						degrees[j]++;
+						
+
 						
 						//Stop iterating for this probability, once we have found a single edge
 						break;
 					}
 				}
 			}
+			numEdges += added;
 		}
 		
 		//return the resulting network

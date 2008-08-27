@@ -106,7 +106,13 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 	
 	public String getNextText()
 	{
-		return new String("Generate");
+		if(mode == 0)
+		{
+			return new String("Generate");
+		}
+		else
+			return new String("Next");
+			
 	}
 	
 	public String getTitle()
@@ -120,7 +126,7 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 						"Every other node (n - s) is added one at a time, " +
 						"and initially connected to m existing nodes. " +
 						"Each existing node u has probability  degree(u)/(2*E), E is the number of edges. "+
-						"The resulting network has a power-law degree distribution (scale-free).");
+						"The resulting network has a power-law degree distribution (scale-free). Constraints: 1 < n, 2 &#8804; s &#8804; n, 1 &#8804; m  ");
 	}
 
 
@@ -144,10 +150,7 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		edgeTextField.setHorizontalAlignment(JTextField.RIGHT);
 		initTextField.setHorizontalAlignment(JTextField.RIGHT);
 		nodeTextField.setHorizontalAlignment(JTextField.RIGHT);
-		
-
-
-		// Button creation
+				// Button creation
 		directedCheckBox = new javax.swing.JCheckBox();
 	
 		// Label creation
@@ -155,20 +158,6 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		initLabel = new javax.swing.JLabel();
 		edgeLabel = new javax.swing.JLabel();
 		
-		/*
-		explainLabel = new javax.swing.JLabel();
-
-		//Add the explanation label
-		explainLabel
-				.setText("<html><font size=2 face=Verdana>" +
-				"The Barabasi-Albert model begins with a connected seed network of s nodes " +
-				"Every other node (n - s) is added one at a time, " +
-				"and initially connected to m existing nodes. " +
-				"Each existing node u has probability  degree(u)/(2*E), E is the number of edges </font></html>");
-
-		explainLabel.setPreferredSize(new Dimension(380, 80));
-		explainLabel.setMinimumSize(new Dimension(380, 80));
-		*/
 		//Set the text for the labels
 		directedCheckBox.setText("Undirected");
 		nodeLabel.setText("Number of Nodes (n):");
@@ -296,9 +285,9 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		//Try to read the number of nodes from the textfield
 		try {
 			numNodes = Integer.parseInt(numNodeString);
-			if(numNodes <= 0)
+			if(numNodes < 2)
 			{
-				throw new Exception("Can not have 0 or fewer nodes.");
+				throw new Exception("Need at least 2 nodes.");
 			}
 		} catch (Exception e) {
 			//If there is an error change the colors
@@ -352,22 +341,35 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		BarabasiAlbertModel bam = new BarabasiAlbertModel(numNodes, allowSelfEdge, !directed, initNumNodes, edgesToAdd);
 		
 		
+		
+		//If we got this far reset all error codeings
+		nodeLabel.setForeground(java.awt.Color.BLACK);
+		initLabel.setForeground(java.awt.Color.BLACK);
+		edgeLabel.setForeground(java.awt.Color.BLACK);
 			
 		if(mode == 1)
 		{
 			
 			bam.setCreateView(false);
-			AnalyzePanel analyzePanel = new AnalyzePanel(this,bam, bam.getDirected(),0);
-		
+
+			if(mNext == null)
+			{
+				mNext = new AnalyzePanel(this,bam, bam.getDirected());
+			}
+			else
+			{
+				((AnalyzePanel)mNext).setDirected(bam.getDirected());
+				((AnalyzePanel)mNext).setGenerator(bam);				
+			}
 			
-			return analyzePanel;
+			return mNext;			
 		}
 
 		
 		
 		//Create the network
 		DynamicGraph graph = bam.generate();
-		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork(graph,null);
+		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork("Barabasi-Albert", graph,null);
 		graph = null;
 		
 		

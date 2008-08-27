@@ -51,6 +51,11 @@ public class GenerateRandomPanel extends RandomNetworkPanel {
 	 * Provides state information for the panel
 	 */
 	private int mode;
+	
+	/**
+	 *
+	 */
+	private int nextState;
 
 	//Title Label
 	//Group together the different options
@@ -79,6 +84,7 @@ public class GenerateRandomPanel extends RandomNetworkPanel {
 		super(pPrevious); 
 		mode = pMode;
 		initComponents();
+		nextState = -1;
 	}
 
 
@@ -90,6 +96,7 @@ public class GenerateRandomPanel extends RandomNetworkPanel {
 		super(null); 
 		mode = pMode;
 		initComponents();
+		nextState = -1;
 	}
 
 
@@ -147,7 +154,7 @@ public class GenerateRandomPanel extends RandomNetworkPanel {
 
 
 		//Make barabasi-albert the default
-		bam.setSelected(true);
+		erm.setSelected(true);
 		
 		//Add each checkbox to the group
 		group.add(bam);
@@ -254,21 +261,35 @@ public class GenerateRandomPanel extends RandomNetworkPanel {
 	public RandomNetworkPanel next()
 	{
 		
-		//Panel to display	
-		RandomNetworkPanel displayPanel = null;
-		
 		//See which checkbox is selected and then display the appropriate panel
 		if (erm.isSelected()) {
-			displayPanel = new ErdosRenyiPanel(mode, this);
+		
+			if((mNext == null) ||(nextState != 0))
+			{
+				mNext = null;
+				mNext = new ErdosRenyiPanel(mode, this);
+			}
+			nextState = 0;
 			
 		} else if(wsm.isSelected()){
-			displayPanel = new WattsStrogatzPanel(mode, this);
 			
+			if((mNext == null) ||(nextState != 1))
+			{
+				mNext = null;
+				mNext = new WattsStrogatzPanel(mode, this);
+			}
+			nextState = 1;
 		}else{
-			displayPanel = new BarabasiAlbertPanel(mode, this);
+		
+			if((mNext == null) ||(nextState != 2))
+			{
+				mNext = null;
+				mNext = new BarabasiAlbertPanel(mode, this);
+			}	
+			nextState = 2;
 			
 		}
 		
-		return displayPanel;
+		return mNext;
 	}
 }

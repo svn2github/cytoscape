@@ -127,7 +127,7 @@ public class RandomNetworkAnalyzer implements Task {
 					results[i][j] = t;
 					
 					totalCompleted++;
-					System.out.println(metric.getDisplayName() + "\t" + t);
+
 					int percentComplete = (int) (((double) totalCompleted / totalToAnalyze) * 100);
 					if (taskMonitor != null) 
 					{
@@ -194,6 +194,12 @@ public class RandomNetworkAnalyzer implements Task {
 	 */
 	public void run() {
 
+
+		if(numRounds < numThreads)
+		{
+			numThreads = numRounds;
+		}
+
 		//Initialize these for passing information to the Display Panel
 		network_results = new double[metrics.size()]; 
 		metric_names = new String[metrics.size()];
@@ -218,7 +224,7 @@ public class RandomNetworkAnalyzer implements Task {
 				int percentComplete = (int) (((double) j / totalToAnalyze) * 100);
 			
 			
-				System.out.println(metric.getDisplayName() + "\t" + t);
+				
 			
 				//Update the taskMonitor to show our progress
 				if (taskMonitor != null) {
@@ -273,7 +279,7 @@ public class RandomNetworkAnalyzer implements Task {
 		}catch(Exception e){e.printStackTrace();}
 		
 		data = new Object[metrics.size()][4];
-		DecimalFormat df = new DecimalFormat("0.0000000");
+		
 		
 		
 		//For each metric
@@ -307,11 +313,27 @@ public class RandomNetworkAnalyzer implements Task {
 			
 			std = Math.sqrt(std / (double)(roundsPerThread * numThreads));
 			data[i][0] = metric_names[i];
-			data[i][1] = new Double(df.format(network_results[i]));
-			data[i][2] = new Double(df.format(average));
-			data[i][3] = new Double(df.format(std));
-	
-	
+			data[i][1] = new Double(network_results[i]);
+			data[i][2] = new Double(average);
+			data[i][3] = new Double(std);
+
+
+			DecimalFormat df = new DecimalFormat("0.0000000");
+
+			if((network_results[i] > Double.NEGATIVE_INFINITY) && (network_results[i] < Double.POSITIVE_INFINITY))
+			{
+				data[i][1] = new Double(df.format(network_results[i]));
+			}
+			
+			if((average > Double.NEGATIVE_INFINITY) && (average < Double.POSITIVE_INFINITY))
+			{
+				data[i][2] = new Double(df.format(average));
+			}
+
+			if((std > Double.NEGATIVE_INFINITY) && (std < Double.POSITIVE_INFINITY))
+			{
+				data[i][3] = new Double(df.format(std));
+			}
 
 		}
 		

@@ -83,7 +83,7 @@ public class AnalyzePanel extends RandomNetworkPanel
 	//Whether we are working with directed or undirected networks
 	private boolean directed;
 
-	int mode;
+
 
 
 	private javax.swing.JPanel metricPanel;
@@ -110,26 +110,35 @@ public class AnalyzePanel extends RandomNetworkPanel
 	private double[] network_results;
 	private String[] metric_names;
 	private int rounds;
-	/**
-	 *  Default constructor
-	 */
-	public AnalyzePanel(RandomNetworkGenerator pNetwork, boolean pDirected, int mode){
-	
-		super(null ); 
-		directed = pDirected;
-		networkModel = pNetwork;
-		initComponents();
-	}
+
+
 	/*
 	 *  Default constructor
 	 */
-	public AnalyzePanel(RandomNetworkPanel pPrevious, RandomNetworkGenerator pNetwork, boolean pDirected, int mode){
+	public AnalyzePanel(RandomNetworkPanel pPrevious, RandomNetworkGenerator pNetwork, boolean pDirected){
 	
 		super(pPrevious ); 
 		directed = pDirected;
 		networkModel = pNetwork;
 		initComponents();
 	}
+	
+	/**
+	 *
+	 */
+	public void setDirected(boolean pDirected)
+	{
+		directed = pDirected;
+	}
+	
+	/**
+	 *
+	 */
+	public void setGenerator(RandomNetworkGenerator pModel)
+	{
+		networkModel = pModel;
+	}
+	
 	
 	
 	public String getTitle()
@@ -147,7 +156,7 @@ public class AnalyzePanel extends RandomNetworkPanel
 	}	
 
 
-	/*
+	/**
 	 * Initialize the components
 	 */
 	private void initComponents() 
@@ -177,7 +186,7 @@ public class AnalyzePanel extends RandomNetworkPanel
 		roundsExplain = new javax.swing.JLabel();
 		
 		threadExplain.setText("<html><font size=2 face=Verdana> Number of parallelizable threads." +
-		" Setting this value higher than the number of available processors yields no return.</font></html>");	
+		" It is recommended to set this value to the number of available processors.</font></html>");	
 		
 		roundsExplain.setText("<html><font size=2 face=Verdana> Number of randomizations to perform.  As this number increases" +
 				" the accuracy of the statistics should increase.</font></html>");	
@@ -360,7 +369,7 @@ public class AnalyzePanel extends RandomNetworkPanel
 
 
 	
-	/*
+	/**
 	 *  Callback for when the "Next" button is pushed
 	 */
 	public RandomNetworkPanel next()
@@ -379,15 +388,15 @@ public class AnalyzePanel extends RandomNetworkPanel
 		config.setAutoDispose(true);
 		
 		
-			rounds = 0;
-		
+		rounds = 0;
 		String roundString = roundsTextField.getText();
 		try{
 			rounds = Integer.parseInt(roundString);
-		}catch(Exception e)
-		{
-			roundsLabel.setForeground(java.awt.Color.RED);
-		}
+			if(rounds < 0)
+			{
+				throw new Exception("Rounds Must be greater than 0!");
+			}
+		}catch(Exception e) {  roundsLabel.setForeground(java.awt.Color.RED);}
 		
 		roundsLabel.setForeground(java.awt.Color.BLACK);
 		
@@ -395,6 +404,10 @@ public class AnalyzePanel extends RandomNetworkPanel
 		String threadString = threadTextField.getText();
 		try{
 			numThreads = Integer.parseInt(threadString);
+			if(numThreads < 1)
+			{
+				throw new Exception("Threads must be greater than 0!");
+			}
 		}catch(Exception e)
 		{
 			threadLabel.setForeground(java.awt.Color.RED);
@@ -436,11 +449,11 @@ public class AnalyzePanel extends RandomNetworkPanel
 		boolean success = TaskManager.executeTask(rna, config);
 		if(success)
 		{
-			DisplayResultsPanel dpr = new DisplayResultsPanel(mode,this,rna);
+			DisplayResultsPanel dpr = new DisplayResultsPanel(this,rna);
 			
 			return dpr;
 		}
 	
-		return null;
+		return this;
 	}
 }

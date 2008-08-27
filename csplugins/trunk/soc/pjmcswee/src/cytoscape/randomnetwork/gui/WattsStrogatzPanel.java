@@ -106,10 +106,17 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 	/**
 	 *
 	 */
-	public String getNextText()
+		public String getNextText()
 	{
-		return new String("Generate");
+		if(mode == 0)
+		{
+			return new String("Generate");
+		}
+		else
+			return new String("Next");
+			
 	}
+	
 	
 	/**
  	 *
@@ -127,7 +134,7 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 	{
 		return new String("The Watts-Strogtatz model linearly interpolates between a complete lattice and "+
 							"an erdos-renyi network using the  &#x3B2; value.  As  &#x3B2; increases the clustering coefficent " +
-							"will decrease but the small world property will increase.");
+							"will decrease but the small world property will increase. Constraints: N > 2, 0 &#8804; &#x3B2; &#8804; 1, degree > 1. ");
 	}
 	
 	/*
@@ -304,9 +311,9 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 		//Try to read the string into an integer
 		try {
 			numNodes = Integer.parseInt(numNodeString);
-			if(numNodes < 0)
+			if(numNodes < 3)
 			{
-				throw new Exception("Nodes must be positive");
+				throw new Exception("Nodes must be > 2");
 			}
 
 		} catch (Exception e) {
@@ -337,7 +344,7 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 		//Try to read this string into an integer
 		try {
 			degree = Integer.parseInt(degreeString);
-			if(degree < 0)
+			if(degree < 1)
 			{
 				throw new Exception("Degree must be positive.");
 			}
@@ -349,6 +356,13 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 			betaLabel.setForeground(java.awt.Color.BLACK);
 			return this;
 		}
+		
+		
+		//If we got this far reset all to black
+		degreeLabel.setForeground(java.awt.Color.BLACK);
+		nodeLabel.setForeground(java.awt.Color.BLACK);
+		betaLabel.setForeground(java.awt.Color.BLACK);
+		
 		
 		//Get the directed/undirected from the checkbox
 		directed = false;
@@ -373,35 +387,25 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 		{
 			
 			wsm.setCreateView(false);
-			AnalyzePanel analyzePanel = new AnalyzePanel(this,wsm, wsm.getDirected(),0);
-			return analyzePanel;
+			
+			if(mNext == null)
+			{
+				mNext = new AnalyzePanel(this,wsm, wsm.getDirected());
+			}
+			else
+			{
+				((AnalyzePanel)mNext).setDirected(wsm.getDirected());
+				((AnalyzePanel)mNext).setGenerator(wsm);				
+			}
+			
+			return mNext;
 		}
 
 		
 		//Generate the random network
 		DynamicGraph graph = wsm.generate();
-		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork(graph,null);
+		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork("Watts-Strogatz",graph,null);
 		graph = null;
-
-		/*
-		//Change to the Network view
-		Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)
-				.setSelectedIndex(0);
-
-
-		//returns CytoscapeWindow's VisualMappingManager object
-		VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-		//gets the global catalog of visual styles and calculators
-		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-		//Get the visualStyle for random networks
-		VisualStyle newStyle = catalog.getVisualStyle("random network");
-		//set this as the current visualStyle
-		vmm.setVisualStyle(newStyle);
-
-		GridNodeLayout alg = new GridNodeLayout();
-		CyNetworkView view = Cytoscape.getCurrentNetworkView();
-		view.applyLayout(alg); 
-*/
 
 		//Go up to the Dialog and close this window
 	

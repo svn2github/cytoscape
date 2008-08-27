@@ -136,7 +136,17 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 		 
 	}
 
-
+	public String getNextText()
+	{
+		if(mode == 0)
+		{
+			return "Randomize";
+		}
+		else
+		{
+			return "Next";
+		}
+	}
 
 	/**
 	 * Initialize the components
@@ -156,7 +166,8 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 		degreePreservingExplain.setPreferredSize(new Dimension(150,50));
 		degreePreservingExplain.setMinimumSize(new Dimension(150,50));
 		
-		
+		degreePreserving.setVisible(false);
+		degreePreservingExplain.setVisible(false);
 		directedCheckBox = new javax.swing.JCheckBox();
 		directedCheckBox.setText("Treat as undirected?");
 		//set the labels to opaque
@@ -184,8 +195,8 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 
 		int E = net.getEdgeCount();
 		numIterTextField = new javax.swing.JTextField();
-		numIterTextField.setText("" + E);
-		numIterTextField.setPreferredSize(new Dimension(40,25)); 	
+		numIterTextField.setText("" + 4*E);
+		numIterTextField.setPreferredSize(new Dimension(80,25)); 	
 		numIterTextField.setHorizontalAlignment(JTextField.RIGHT);
 		numIterLabel = new javax.swing.JLabel();
 		numIterLabel.setText("Num Shuffles:");
@@ -347,10 +358,18 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 
 		if(mode == 1)
 		{
-			AnalyzePanel analyzePanel = new AnalyzePanel(this, dpnr, !directed,0);
+		
+			if(mNext == null)
+			{
+				mNext = new AnalyzePanel(this, dpnr, !directed);
+			}
+			else
+			{
+				((AnalyzePanel)mNext).setDirected(!directed);
+				((AnalyzePanel)mNext).setGenerator(dpnr);
+			}
 			
-			
-			return analyzePanel;
+			return mNext;
 
 		
 		}
@@ -374,7 +393,7 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 
 			DynamicGraph randGraph = dpnr.generate();
 			
-			CyNetwork randNetwork = CytoscapeConversion.DynamicGraphToCyNetwork(randGraph,net,ids);
+			CyNetwork randNetwork = CytoscapeConversion.DynamicGraphToCyNetwork(net.getTitle() + "'",randGraph,net,ids);
 
 			
 		}
@@ -394,7 +413,7 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 			CyNetwork net = Cytoscape.getCurrentNetwork();
 	
 			int E = net.getEdgeCount();
-			numIterTextField.setText("" + E);
+			numIterTextField.setText("" + (4*E));
 			
 	  }
 

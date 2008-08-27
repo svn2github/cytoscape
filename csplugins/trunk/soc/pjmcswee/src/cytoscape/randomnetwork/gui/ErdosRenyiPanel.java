@@ -121,10 +121,17 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 	/**
 	 *
 	 */
-	public String getNextText()
+		public String getNextText()
 	{
-		return new String("Generate");
+		if(mode == 0)
+		{
+			return new String("Generate");
+		}
+		else
+			return new String("Next");
+			
 	}
+	
 
 
 	/**
@@ -188,7 +195,7 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 		gnpExplain.setOpaque(true);
 		gnm.addActionListener(this);
 		gnp.addActionListener(this);
-		gnp.setSelected(true);
+		gnm.setSelected(true);
 		group.add(gnm);
 		group.add(gnp);
 
@@ -216,8 +223,8 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 		
 		
 		//Initially turn off this textfield
-		edgeTextField.setEnabled(false);
-		edgeTextField.setBackground(Color.LIGHT_GRAY);
+		probabilityTextField.setEnabled(false);
+		probabilityTextField.setBackground(Color.LIGHT_GRAY);
 		
 	
 		
@@ -452,6 +459,7 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 				edgeLabel.setForeground(java.awt.Color.RED);
 				return this;
 			}
+			edgeLabel.setForeground(java.awt.Color.BLACK);
 			
 			//Create the model using the number of edges 
 			erm = new ErdosRenyiModel(numNodes, numEdges,
@@ -477,10 +485,12 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 				edgeLabel.setForeground(java.awt.Color.BLACK);
 				return this;
 			}
-		
+			
+			probabilityLabel.setForeground(java.awt.Color.BLACK);
+			
 			//Create the model
-			erm = new ErdosRenyiModel(numNodes, allowSelfEdge,
-					!directed, probability);
+			erm = new ErdosRenyiModel(numNodes, probability, allowSelfEdge,
+					!directed);
 		}
 		
 		
@@ -490,15 +500,25 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 		{
 			
 			erm.setCreateView(false);
-			AnalyzePanel analyzePanel = new AnalyzePanel(this,erm, erm.getDirected(), 01);
+			
+			if(mNext == null)
+			{
+				mNext = new AnalyzePanel(this,erm, erm.getDirected());
+			}
+			else
+			{
+				((AnalyzePanel)mNext).setDirected(erm.getDirected());
+				((AnalyzePanel)mNext).setGenerator(erm);		
+			
+			}
 
-			return analyzePanel;
+			return mNext;
 		}
 		
 		
 		//Generate the network
 		DynamicGraph graph = erm.generate();
-		CyNetwork network = CytoscapeConversion.DynamicGraphToCyNetwork(graph,null);
+		CyNetwork network = CytoscapeConversion.DynamicGraphToCyNetwork("Erdos-Renyi", graph,null);
 		graph = null;
 		
 				

@@ -94,34 +94,18 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 	
 	private String[] columnNames =  {"Metric","Existing Network","Average","Standard Deviation"};;
 	
-	//1 == randomized existing network
-	//0 == generated new random network
-	private int mode;
 	
 	private RandomNetworkAnalyzer rna;
 
+	
 	/**
 	 *  Default constructor
 	 */
-	public DisplayResultsPanel(int pMode, RandomNetworkAnalyzer pRNA)
-	{
-		
-		super(null ); 
-		rna = pRNA;
-		mode = pMode;
-		initComponents();
-	}
-
-
-	/**
-	 *  Default constructor
-	 */
-	public DisplayResultsPanel(int pMode, RandomNetworkPanel pPrevious, RandomNetworkAnalyzer pRNA)
+	public DisplayResultsPanel(RandomNetworkPanel pPrevious, RandomNetworkAnalyzer pRNA)
 	{
 		
 		super(pPrevious ); 
 		rna = pRNA;
-		mode = pMode;
 		initComponents();
 	}
 
@@ -189,6 +173,8 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 	   
 		//Create the column headings
 
+		
+
 
 		//Set up the Table for displaying 
 		DefaultTableModel model = new DefaultTableModel(rna.getData(),columnNames);
@@ -214,12 +200,7 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 		DefaultTableCellRenderer  tcrColumn  =  new DefaultTableCellRenderer();
 		tcrColumn.setHorizontalAlignment(JTextField.RIGHT);
 		
-		//System.out.println((rna.getData()[0][0]).getClass());
-		//System.out.println((rna.getData()[3][3]).getClass());
-		table.setDefaultRenderer((rna.getData()[0][0]).getClass(),tcrColumn);
-		table.setDefaultRenderer((rna.getData()[3][3]).getClass(),tcrColumn);
-
-
+	
 
 		table.getTableHeader().setReorderingAllowed( false );
 		table.setGridColor(java.awt.Color.black);
@@ -231,7 +212,7 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 		table.setPreferredScrollableViewportSize(new Dimension(500, 100)) ;
 		scrollPane.setPreferredSize(new Dimension(500,100));
 		scrollPane.setMinimumSize(new Dimension(500,100));
-		//scrollPane.
+
 	
 	
 
@@ -265,8 +246,6 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 		c.gridy = 2;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,0,0,0);
-		//c.weightx = 1;
-		//c.weighty = 1;
 		add(edgeLabel,c);
 	
 		c = null;
@@ -275,8 +254,6 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 		c.gridy = 2;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(0,0,0,0);
-		//c.weightx =	1;
-		//c.weighty = 1;
 		add(numEdgeLabel,c);
 
 
@@ -304,10 +281,10 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 	public RandomNetworkPanel next()
 	{
 		
-		JFrame frame = (JFrame)getTopLevelAncestor();
+		JDialog dialog = (JDialog)getTopLevelAncestor();
 
 		JFileChooser saveFile = new JFileChooser();
-		saveFile.showSaveDialog(frame);
+		saveFile.showSaveDialog(dialog);
 
 		
 		File file = saveFile.getSelectedFile();

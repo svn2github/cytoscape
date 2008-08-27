@@ -49,7 +49,8 @@
 		 * The previous RandomNetworkPanel
 		 */
 		private RandomNetworkPanel mPrevious;
- 
+		protected RandomNetworkPanel mNext;
+		
 		private static final int PANEL_WIDTH = 470;
 		private static final int PANEL_HEIGHT = 200;
  
@@ -60,6 +61,7 @@
 		RandomNetworkPanel(RandomNetworkPanel pPrevious)
 		{
 			mPrevious = pPrevious;
+			mNext = null;
 			setBorder(BorderFactory.createLineBorder(Color.gray));
 			Dimension dim = new Dimension(PANEL_WIDTH,PANEL_HEIGHT);
 			setPreferredSize(dim);
@@ -80,7 +82,13 @@
 		 * @return Get the next RandomNetworkPanel in this succession. 
 		 */
 		public abstract RandomNetworkPanel next();
-
+	
+			
+		/**
+		*
+		*/
+		//public abstract RandomNetworkPanel next();
+		
 		
 		/**
 		 * @param What should we call the Next Button Now

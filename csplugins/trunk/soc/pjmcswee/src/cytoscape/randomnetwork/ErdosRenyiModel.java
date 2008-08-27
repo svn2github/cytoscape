@@ -85,8 +85,8 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	 * @param pProbability The probability of a single edge edge.  Probability should be a valid probability in the range [0: 1].
 	 * 
 	 */
-	public ErdosRenyiModel(int pNumNodes, boolean pAllowSelfEdge,
-			boolean pDirected, double pProbability) {
+	public ErdosRenyiModel(int pNumNodes,double pProbability,
+	 boolean pAllowSelfEdge, boolean pDirected ) {
 		super(pNumNodes, UNSPECIFIED, pAllowSelfEdge, pDirected);
 
 		// TODO: Is it common practice to throw exceptions in these cases?
@@ -116,8 +116,17 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 		}
 		else
 		{
-			return new ErdosRenyiModel( numNodes, allowSelfEdge, directed, probability);		
+			return new ErdosRenyiModel( numNodes,probability, allowSelfEdge, directed);		
 		}
+	}
+
+
+	/**
+	 * @return Gets the display name for this generator.
+	 */
+	public String getName()
+	{
+		return new String("Erdos-Renyi Model");
 	}
 
 	

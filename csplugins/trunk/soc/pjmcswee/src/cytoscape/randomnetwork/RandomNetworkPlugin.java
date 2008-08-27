@@ -96,8 +96,23 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 			reAction.setEnabled(false);
 			crAction.setEnabled(false);
 		}
+		
+		/*
+		try
+		{
+		RandomNetworkTests rnt = new RandomNetworkTests();
+		rnt.test();
+		}catch(Exception e){
+		
+		System.out.println("test Failed");
+		e.printStackTrace();}
+		*/
 	}
-				
+		
+		
+	/**
+	*
+	*/
 	  public void propertyChange(PropertyChangeEvent event) 
 	  {
 	  
@@ -143,15 +158,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 			//Default is to dispose on close
 			setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		
-		
-			
-			//Set the location of the fame
-			//setLocationRelativeTo(Cytoscape.getDesktop());
-			
-			//Add the icon to its title bar
-			//final String SMALL_ICON = "images/c16.png";
-			//setIconImage(Toolkit.getDefaultToolkit().getImage(Cytoscape.getDesktop().getClass().getResource(SMALL_ICON)));
-
+	
 		}
 		
 		
