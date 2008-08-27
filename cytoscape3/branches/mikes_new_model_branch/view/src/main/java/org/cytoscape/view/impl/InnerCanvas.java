@@ -229,7 +229,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp,
+				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_perspective,
 				                                               m_view.m_spacial, m_lod[0],
 				                                               m_view.m_nodeDetails,
 				                                               m_view.m_edgeDetails, m_hash,
@@ -296,7 +296,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
+			GraphRenderer.renderGraph((FixedGraph) m_view.m_perspective, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -317,7 +317,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_drawPersp, m_view.m_spacial,
+			GraphRenderer.renderGraph((FixedGraph) m_view.m_perspective, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -549,36 +549,28 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (listener != null) {
 				if ((unselectedNodes != null) && (unselectedNodes.length > 0))
 					listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-					                                                            unselectedNodes));
+				                                                            DGraphView.makeNodeList(unselectedNodes,m_view)));
 
 				if ((unselectedEdges != null) && (unselectedEdges.length > 0))
 					listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-					                                                            unselectedEdges));
+				                                                            DGraphView.makeEdgeList(unselectedEdges,m_view)));
 
 				if (chosenNode != 0) {
 					if (chosenNodeSelected > 0)
 						listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-						                                                          new int[] {
-						                                                              chosenNode
-						                                                          }));
+							DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
 					else if (chosenNodeSelected < 0)
 						listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-						                                                            new int[] {
-						                                                                chosenNode
-						                                                            }));
+							DGraphView.makeList(m_view.getNodeView(chosenNode).getNode())));
 				}
 
 				if (chosenEdge != 0) {
 					if (chosenEdgeSelected > 0)
 						listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
-						                                                          new int[] {
-						                                                              chosenEdge
-						                                                          }));
+							DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
 					else if (chosenEdgeSelected < 0)
 						listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-						                                                            new int[] {
-						                                                                chosenEdge
-						                                                            }));
+							DGraphView.makeList(m_view.getEdgeView(chosenEdge).getEdge())));
 				}
 			}
 
@@ -739,11 +731,11 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 					if (listener != null) {
 						if ((selectedNodes != null) && (selectedNodes.length > 0))
 							listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-							                                                          selectedNodes));
+					                                                          DGraphView.makeNodeList(selectedNodes,m_view)));
 
 						if ((selectedEdges != null) && (selectedEdges.length > 0))
 							listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
-							                                                          selectedEdges));
+					                                                          DGraphView.makeEdgeList(selectedEdges,m_view)));
 					}
 
 					// Repaint after listener events are fired because listeners may
@@ -1023,7 +1015,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		edgeNodesEnum = m_stack.elements();
 		stack.empty();
 
-		final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+		final FixedGraph graph = (FixedGraph) m_view.m_perspective;
 
 		if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0) {
 			// We won't need to look up arrows and their sizes.
@@ -1336,7 +1328,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		NodeView nv = m_view.getPickedNodeView(event.getPoint());
 
 		if (nv != null) {
-			String nodeLabel = nv.getNode().getIdentifier();
+			String nodeLabel = nv.getNode().getCyAttributes("USER").get("name",String.class);
 			JPopupMenu menu = new JPopupMenu(nodeLabel);
 			menu.setLabel(nodeLabel);
 
@@ -1353,7 +1345,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		EdgeView ev = m_view.getPickedEdgeView(event.getPoint());
 
 		if (ev != null) {
-			String edgeLabel = ev.getEdge().getIdentifier();
+			String edgeLabel = ev.getEdge().getCyAttributes("USER").get("name",String.class);
 			JPopupMenu menu = new JPopupMenu(edgeLabel);
 			menu.setLabel(edgeLabel);
 
@@ -1442,5 +1434,4 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	public boolean isNodeMovementDisabled(){
 		return !(this.NodeMovement);
 	}
-	
 }

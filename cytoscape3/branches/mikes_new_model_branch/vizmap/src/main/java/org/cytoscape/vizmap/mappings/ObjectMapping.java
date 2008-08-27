@@ -45,6 +45,7 @@ package org.cytoscape.vizmap.mappings;
 import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
+import org.cytoscape.attributes.CyAttributes;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -130,7 +131,7 @@ public interface ObjectMapping extends Cloneable {
      */
     public void removeChangeListener(ChangeListener l);
 
-    Object calculateRangeValue(Map attrBundle);
+    Object calculateRangeValue(CyAttributes attrBundle);
 
     JPanel getLegend(VisualPropertyType type);
 

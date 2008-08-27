@@ -38,14 +38,14 @@ package org.cytoscape.view.impl;
 
 import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.view.GraphView;
-
+import java.util.List;
 
 final class GraphViewEdgesSelectedEvent extends GraphViewChangeEventAdapter {
 	private final static long serialVersionUID = 120241651286784L;
 	private final GraphView m_view;
-	private final int[] m_selectedEdgeInx;
+	private final List<CyEdge> m_selectedEdgeInx;
 
-	GraphViewEdgesSelectedEvent(GraphView view, int[] selectedEdgeInx) {
+	GraphViewEdgesSelectedEvent(GraphView view, List<CyEdge> selectedEdgeInx) {
 		super(view);
 		m_view = view;
 		m_selectedEdgeInx = selectedEdgeInx;
@@ -66,24 +66,10 @@ final class GraphViewEdgesSelectedEvent extends GraphViewChangeEventAdapter {
 	 * @return DOCUMENT ME!
 	 */
 	public final CyEdge[] getSelectedEdges() {
-		final CyEdge[] returnThis = new CyEdge[m_selectedEdgeInx.length];
+		final CyEdge[] returnThis = new CyEdge[m_selectedEdgeInx.size()];
 
 		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_view.getRootGraph().getEdge(m_selectedEdgeInx[i]);
-
-		return returnThis;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public final int[] getSelectedEdgeIndices() {
-		final int[] returnThis = new int[m_selectedEdgeInx.length];
-
-		for (int i = 0; i < returnThis.length; i++)
-			returnThis[i] = m_selectedEdgeInx[i];
+			returnThis[i] = m_selectedEdgeInx.get(i);
 
 		return returnThis;
 	}

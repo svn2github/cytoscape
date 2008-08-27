@@ -39,6 +39,7 @@ package org.cytoscape.view.impl;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.CustomGraphic;
 import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.EdgeType;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewChangeListener;
@@ -134,7 +135,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public CyNode getNode() {
 		synchronized (m_view.m_lock) {
-			return m_view.m_structPersp.getNode(~m_inx);
+			return m_view.m_perspective.getNode(~m_inx);
 		}
 	}
 
@@ -501,7 +502,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public int getDegree() {
 		// This method is totally ridiculous.
-		return m_view.getGraphPerspective().getDegree(~m_inx);
+		return m_view.getNetwork().getAdjacentEdgeList(getNode(),EdgeType.ANY_EDGE).size();
 	}
 
 	/**
@@ -676,8 +677,7 @@ public class DNodeView implements NodeView, Label {
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view,
-				                                                          new int[] { ~m_inx }));
+				listener.graphViewChanged(new GraphViewNodesSelectedEvent(m_view, DGraphView.makeList(getNode())));
 		}
 	}
 
@@ -714,8 +714,7 @@ public class DNodeView implements NodeView, Label {
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view,
-				                                                            new int[] { ~m_inx }));
+				listener.graphViewChanged(new GraphViewNodesUnselectedEvent(m_view, DGraphView.makeList( getNode())));
 		}
 	}
 

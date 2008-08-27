@@ -43,13 +43,4 @@ public abstract class GraphViewChangeEvent
   public abstract CyEdge[] getSelectedEdges ();
   public abstract CyEdge[] getUnselectedEdges ();
 
-  public abstract int[] getRestoredNodeIndices ();
-  public abstract int[] getRestoredEdgeIndices ();
-  public abstract int[] getHiddenNodeIndices ();
-  public abstract int[] getHiddenEdgeIndices ();
-  public abstract int[] getSelectedNodeIndices ();
-  public abstract int[] getUnselectedNodeIndices ();
-  public abstract int[] getSelectedEdgeIndices ();
-  public abstract int[] getUnselectedEdgeIndices ();
-
 } // abstract class GraphPerspectiveChangeEvent

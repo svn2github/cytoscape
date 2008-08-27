@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
+import org.cytoscape.attributes.CyAttributes;
+
 
 /**
  * Range Calculator for the Discrete Mapper.
@@ -70,12 +72,12 @@ public class DiscreteRangeCalculator {
      * @param attrBundle Attribute Bundle.
      * @return Object.
      */
-    public Object calculateRangeValue(Map attrBundle) {
+    public Object calculateRangeValue(CyAttributes attrBundle) {
         if ((attrBundle == null) || (attrName == null))
             return null;
 
         //extract the data value for our controlling attribute name
-        Object attrValue = attrBundle.get(attrName);
+        Object attrValue = attrBundle.getRaw(attrName);
 
         if (attrValue == null)
             return null;

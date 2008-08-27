@@ -42,8 +42,6 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import org.cytoscape.attributes.CyAttributesFactory;
-
 
 /**
  * Objects of this class hold data describing the appearance of a Node.
@@ -54,7 +52,7 @@ public class NodeAppearance extends Appearance {
 	 * Constructor.
 	 */
 	public NodeAppearance() {
-		super(CyAttributesFactory.getCyAttributes("node"));
+		super();
 	}
 
 	/**

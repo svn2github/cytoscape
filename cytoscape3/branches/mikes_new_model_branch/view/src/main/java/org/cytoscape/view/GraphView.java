@@ -6,7 +6,6 @@ import cytoscape.render.stateful.GraphLOD;
 import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.RootGraph;
 import phoebe.PhoebeCanvasDropListener;
 
 import javax.swing.*;
@@ -243,11 +242,6 @@ public static int NODE_X_POSITION = 0;
    */
   public void updateView();
         
-  /**
-   * @return the root graph of the GraphPerspective that we are actually a view on
-   */
-  public RootGraph getRootGraph();
-  
   /**
    * nodeViewsIterator only returns the NodeViews that are explicitly
    * associated with this GraphView

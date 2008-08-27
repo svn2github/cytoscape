@@ -1,28 +1,8 @@
+
 package org.cytoscape.model.network;
 
-public interface GraphObject {
+import org.cytoscape.attributes.CyAttributes;
 
-  /**
-   * @return The Unique Identifier of this node
-   */
-  public String getIdentifier ();
-
-  /**
-   * <B>There is no check to make sure that this is a unique id</B>
-   * @param new_id The new Identifier for this node
-   */
-  public boolean setIdentifier ( String new_id );
-
-   /**
-   * @return the index in the RootGraph of this Edge
-   */
-  public int getRootGraphIndex ();
-
-  
-  /**
-   * @return the RootGraph that this Node is in
-   */
-  public RootGraph getRootGraph ();
-
-
+public interface GraphObject extends Identifiable { 
+	public CyAttributes getCyAttributes(String namespace);
 }

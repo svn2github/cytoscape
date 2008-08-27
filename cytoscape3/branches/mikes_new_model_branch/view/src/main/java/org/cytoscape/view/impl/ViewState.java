@@ -83,7 +83,7 @@ public class ViewState {
 		// is created and when it is used.
 		if (whatToSave == ViewChangeEdit.SavedObjs.ALL || whatToSave == ViewChangeEdit.SavedObjs.NODES) {
 			points = new HashMap<CyNode, Point2D.Double>();
-			for (CyNode n: (List<CyNode>)view.getGraphPerspective().nodesList()) {
+			for (CyNode n: view.getGraphPerspective().getNodeList()) {
 				NodeView nv = view.getNodeView(n);
 				points.put(n, new Point2D.Double(nv.getXPosition(), nv.getYPosition()));
 			}
@@ -92,7 +92,7 @@ public class ViewState {
 		if (whatToSave == ViewChangeEdit.SavedObjs.ALL || whatToSave == ViewChangeEdit.SavedObjs.EDGES) {
 			anchors = new HashMap<CyEdge, List>();
 			linetype = new HashMap<CyEdge, Integer>();
-			for (CyEdge e: (List<CyEdge>)view.getGraphPerspective().edgesList()) {
+			for (CyEdge e: view.getGraphPerspective().getEdgeList()) {
 				EdgeView ev = view.getEdgeView(e);
 				anchors.put(e, ev.getBend().getHandles());
 				linetype.put(e, ev.getLineType());

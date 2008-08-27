@@ -38,9 +38,7 @@ package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
 import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.RootGraphFactory;
 import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
@@ -244,12 +242,12 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		networkView = nview;
 
 		// do some sanity checking
-		if ((networkView == null) || (networkView == GraphViewFactory.getNullGraphView()))
+		if ( networkView == null )
 			return;
 
 		this.network = networkView.getGraphPerspective();
 
-		if ((network == null) || (network == RootGraphFactory.getRootGraph().getNullGraphPerspective()))
+		if (network == null) 
 			return;
 
 		if (network.getNodeCount() <= 0)
@@ -276,9 +274,8 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		undoableEdit.post();
 
 		// update the __layoutAlgorithm attribute
-		CyAttributes networkAttributes = CyAttributesFactory.getCyAttributes("network");
-		networkAttributes.setAttribute(network.getIdentifier(), "__layoutAlgorithm", getName());
-		networkAttributes.setUserVisible("__layoutAlgorithm", false);
+		CyAttributes networkAttributes = network.getCyAttributes("hidden");
+		networkAttributes.set("layoutAlgorithm", getName());
 
 		this.network = null;
 		this.networkView = null;

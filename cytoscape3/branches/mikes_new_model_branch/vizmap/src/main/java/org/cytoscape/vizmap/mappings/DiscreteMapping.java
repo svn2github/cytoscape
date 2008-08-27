@@ -43,6 +43,7 @@
 package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.vizmap.NodeShape;
 import org.cytoscape.vizmap.SubjectBase;
 import org.cytoscape.vizmap.ValueParser;
@@ -260,7 +261,7 @@ public class DiscreteMapping extends SubjectBase implements ObjectMapping {
 	 * @param attrBundle A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
-	public Object calculateRangeValue(Map attrBundle) {
+	public Object calculateRangeValue(CyAttributes attrBundle) {
 		final DiscreteRangeCalculator calculator = new DiscreteRangeCalculator(treeMap, attrName);
 
 		return calculator.calculateRangeValue(attrBundle);

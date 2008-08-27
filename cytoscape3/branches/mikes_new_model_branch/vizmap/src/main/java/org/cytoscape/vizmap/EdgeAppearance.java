@@ -37,8 +37,6 @@
 
 package org.cytoscape.vizmap;
 
-import org.cytoscape.attributes.CyAttributesFactory;
-
 
 /**
  * Objects of this class hold data describing the appearance of an Edge.
@@ -49,7 +47,7 @@ public class EdgeAppearance extends Appearance {
 	 * Creates a new EdgeAppearance object.
 	 */
 	public EdgeAppearance() {
-		super(CyAttributesFactory.getCyAttributes("edge"));
+		super();
 	}
 
 	/**

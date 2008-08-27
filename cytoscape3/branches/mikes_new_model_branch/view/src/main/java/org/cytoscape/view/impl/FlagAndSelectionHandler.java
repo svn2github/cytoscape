@@ -45,9 +45,20 @@ package org.cytoscape.view.impl;
 
 import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.model.network.CyNode;
-import org.cytoscape.data.SelectEvent;
-import org.cytoscape.data.SelectEventListener;
-import org.cytoscape.data.SelectFilter;
+
+//import org.cytoscape.data.SelectEvent;
+//import org.cytoscape.data.SelectEventListener;
+//import org.cytoscape.data.SelectFilter;
+
+import org.cytoscape.model.network.events.SelectedNodesEvent;
+import org.cytoscape.model.network.events.SelectedEdgesEvent;
+import org.cytoscape.model.network.events.UnselectedNodesEvent;
+import org.cytoscape.model.network.events.UnselectedEdgesEvent;
+import org.cytoscape.model.network.events.SelectedNodesListener;
+import org.cytoscape.model.network.events.SelectedEdgesListener;
+import org.cytoscape.model.network.events.UnselectedNodesListener;
+import org.cytoscape.model.network.events.UnselectedEdgesListener;
+
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewChangeEvent;
@@ -58,9 +69,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 
-//---------------------------------------------------------------------------
 /**
  * This class synchronizes the flagged status of nodes and edges as held by a
  * SelectFilter object of a network with the selection status of the corresponding
@@ -68,8 +79,9 @@ import java.util.Set;
  * iff the matching object is flagged in the SelectFilter. This class is only used
  * by PhoebeNetworkView, which no longer used anywhere.
  */
-public class FlagAndSelectionHandler implements SelectEventListener, GraphViewChangeListener {
-	private SelectFilter selectFilter;
+public class FlagAndSelectionHandler 
+	implements SelectedNodesListener, UnselectedNodesListener, SelectedEdgesListener, 
+	           UnselectedEdgesListener, GraphViewChangeListener {
 	private GraphView view;
 
 	/**
@@ -78,12 +90,28 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 	 * and view by turning on flags or selections that are currently on in one
 	 * of the two objects.
 	 */
-	public FlagAndSelectionHandler(SelectFilter selectFilter, GraphView view) {
-		this.selectFilter = selectFilter;
+	public FlagAndSelectionHandler(GraphView view) {
 		this.view = view;
 		syncFilterAndView();
-		selectFilter.addSelectEventListener(this);
 		view.addGraphViewChangeListener(this);
+	}
+
+	private Set<CyNode> getSelectedNodes() {
+		Set<CyNode> sel = new HashSet<CyNode>();
+		for ( CyNode n : view.getNetwork().getNodeList() )
+			if ( n.getCyAttributes("USER").get("selected", Boolean.class).booleanValue() )
+				sel.add(n);
+
+		return sel;
+	}
+
+	private Set<CyEdge> getSelectedEdges() {
+		Set<CyEdge> sel = new HashSet<CyEdge>();
+		for ( CyEdge n : view.getNetwork().getEdgeList() )
+			if ( n.getCyAttributes("USER").get("selected", Boolean.class).booleanValue() )
+				sel.add(n);
+
+		return sel;
 	}
 
 	/**
@@ -91,8 +119,8 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 	 * that is currently flagged and vice versa.
 	 */
 	private void syncFilterAndView() {
-		final Set<CyNode> flaggedNodes = selectFilter.getSelectedNodes();
-		final Set<CyEdge> flaggedEdges = selectFilter.getSelectedEdges();
+		final Set<CyNode> flaggedNodes = getSelectedNodes();
+		final Set<CyEdge> flaggedEdges = getSelectedEdges();
 
 		final List<CyNode> selectedNodes = view.getSelectedNodes();
 		final List<CyEdge> selectedEdges = view.getSelectedEdges();
@@ -123,12 +151,12 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 
 		// flag all nodes that are selected but not currently flagged
 		for (CyNode node : selectedNodes) {
-			selectFilter.setSelected(node, true); // does nothing if already flagged
+			node.getCyAttributes("USER").set("selected",true);
 		}
 
 		// flag all edges that are selected but not currently flagged
 		for (CyEdge edge : selectedEdges) {
-			selectFilter.setSelected(edge, true); // does nothing if already flagged
+			edge.getCyAttributes("USER").set("selected",true);
 		}
 	}
 
@@ -142,56 +170,41 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 		// by converting indices to graph objects ourselves
 		final GraphView source = (GraphView) event.getSource();
 
-		int[] objIndecies;
 
 		if (event.isNodesSelectedType()) {
-			objIndecies = event.getSelectedNodeIndices();
+			CyNode[] objIndecies = event.getSelectedNodes();
 
-			final List<CyNode> selList = new ArrayList<CyNode>();
+			for ( CyNode n : objIndecies )
+				n.getCyAttributes("USER").set("selected",true);
 
-			for (int index = 0; index < objIndecies.length; index++) {
-				selList.add(source.getGraphPerspective().getNode(objIndecies[index]));
-			}
-
-			selectFilter.setSelectedNodes(selList, true);
 		} else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
+			CyNode[] objIndecies;
 			if (event.isNodesUnselectedType()) {
-				objIndecies = event.getUnselectedNodeIndices();
+				objIndecies = event.getUnselectedNodes();
 			} else {
-				objIndecies = event.getHiddenNodeIndices();
+				objIndecies = event.getHiddenNodes();
 			}
 
-			final List<CyNode> unselList = new ArrayList<CyNode>();
-
-			for (int index = 0; index < objIndecies.length; index++) {
-				unselList.add(source.getGraphPerspective().getNode(objIndecies[index]));
+			for ( CyNode n : objIndecies ) { 
+				n.getCyAttributes("USER").set("selected",false);
 			}
-
-			selectFilter.setSelectedNodes(unselList, false);
 		} else if (event.isEdgesSelectedType()) {
-			objIndecies = event.getSelectedEdgeIndices();
+			CyEdge[] objIndecies = event.getSelectedEdges();
 
-			final List<CyEdge> selList = new ArrayList<CyEdge>();
-
-			for (int index = 0; index < objIndecies.length; index++) {
-				selList.add(source.getGraphPerspective().getEdge(objIndecies[index]));
+			for ( CyEdge n : objIndecies ) { 
+				n.getCyAttributes("USER").set("selected",true);
 			}
-
-			selectFilter.setSelectedEdges(selList, true);
 		} else if (event.isEdgesUnselectedType() || event.isEdgesHiddenType()) {
+			CyEdge[] objIndecies; 
 			if (event.isEdgesUnselectedType()) {
-				objIndecies = event.getUnselectedEdgeIndices();
+				objIndecies = event.getUnselectedEdges();
 			} else {
-				objIndecies = event.getHiddenEdgeIndices();
+				objIndecies = event.getHiddenEdges();
 			}
 
-			final List<CyEdge> unselList = new ArrayList<CyEdge>();
-
-			for (int index = 0; index < objIndecies.length; index++) {
-				unselList.add(source.getGraphPerspective().getEdge(objIndecies[index]));
+			for ( CyEdge n : objIndecies ) { 
+				n.getCyAttributes("USER").set("selected",false);
 			}
-
-			selectFilter.setSelectedEdges(unselList, false);
 		}
 	}
 
@@ -200,33 +213,40 @@ public class FlagAndSelectionHandler implements SelectEventListener, GraphViewCh
 	 * more nodes or edges. Sets the corresponding selection state for views of
 	 * those objects in the graph view.
 	 */
-	public void onSelectEvent(SelectEvent event) {
-		if (event.getTargetType() == SelectEvent.SINGLE_NODE) { // single node
-			setNodeSelected((CyNode) event.getTarget(), event.getEventType());
-		} else if (event.getTargetType() == SelectEvent.SINGLE_EDGE) { // single
-			                                                         // edge
-			setEdgeSelected((CyEdge) event.getTarget(), event.getEventType());
-		} else if (event.getTargetType() == SelectEvent.NODE_SET) { // multiple
-			                                                      // nodes
 
-			Set nodeSet = (Set) event.getTarget();
-
-			for (Iterator iter = nodeSet.iterator(); iter.hasNext();) {
-				CyNode node = (CyNode) iter.next();
-				setNodeSelected(node, event.getEventType());
-			}
-		} else if (event.getTargetType() == SelectEvent.EDGE_SET) { // multiple
-			                                                      // edges
-
-			Set edgeSet = (Set) event.getTarget();
-
-			for (Iterator iter = edgeSet.iterator(); iter.hasNext();) {
-				CyEdge edge = (CyEdge) iter.next();
-				setEdgeSelected(edge, event.getEventType());
-			}
-		} else { // unexpected target type
-
+	public void handleEvent(SelectedNodesEvent event) {
+		if ( event.getSource() != view.getNetwork() )
 			return;
+
+		for ( CyNode n : event.getNodeList() ) {
+			setNodeSelected( n, true );
+		}
+	}
+
+	public void handleEvent(SelectedEdgesEvent event) {
+		if ( event.getSource() != view.getNetwork() )
+			return;
+
+		for ( CyEdge n : event.getEdgeList() ) {
+			setEdgeSelected( n, true );
+		}
+	}
+
+	public void handleEvent(UnselectedNodesEvent event) {
+		if ( event.getSource() != view.getNetwork() )
+			return;
+
+		for ( CyNode n : event.getNodeList() ) {
+			setNodeSelected( n, false );
+		}
+	}
+
+	public void handleEvent(UnselectedEdgesEvent event) {
+		if ( event.getSource() != view.getNetwork() )
+			return;
+
+		for ( CyEdge n : event.getEdgeList() ) {
+			setEdgeSelected( n, false );
 		}
 	}
 

@@ -1,7 +1,7 @@
 
 package org.cytoscape.tunable;
 
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.attributes.CyAttributesManager;
 import org.cytoscape.tunable.impl.ModulePropertiesImpl;
 import org.cytoscape.tunable.impl.TunableImpl;
 
@@ -30,7 +30,7 @@ public class TunableFactory {
 
 	public static Tunable getTunable(String name, String desc, int type, Object value, 
 	                                 Object lowerBound, Object upperBound, int flag, 
-									 boolean immutable, CyAttributes attr) {
+									 boolean immutable, CyAttributesManager attr) {
 		return new TunableImpl(name, desc, type, value, lowerBound, upperBound, flag, immutable, attr);
 	}
 

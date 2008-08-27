@@ -56,21 +56,15 @@ public class Appearance {
 	private static final String NODE_SIZE_LOCKED = ".nodeSizeLocked";
 	protected Object[] vizProps;
 	protected boolean nodeSizeLocked = true;
-	protected CyAttributes attrs;
 
 	/**
 	 * Creates a new Appearance object.
 	 */
-	public Appearance(CyAttributes attrs) {
-		this.attrs = attrs;
+	public Appearance() {
 		vizProps = new Object[VisualPropertyType.values().length];
 
 		for (VisualPropertyType type : VisualPropertyType.values())
 					vizProps[type.ordinal()] = type.getVisualProperty().getDefaultAppearanceObject();
-	}
-
-	public CyAttributes getCyAttributes() {
-		return attrs;
 	}
 
 	/**
@@ -244,7 +238,7 @@ public class Appearance {
 	 * @return A clone of this Appearance. 
 	 */
 	public Object clone() {
-		Appearance ga = new Appearance(attrs);
+		Appearance ga = new Appearance();
 		ga.copy(this);
 
 		return ga;
@@ -261,10 +255,8 @@ public class Appearance {
 		if (n == null)
 			return;
 
-		final String id = n.getIdentifier();
-
 		for (VisualPropertyType type : VisualPropertyType.values()) {
-			Object bypass = getBypass(attrs, id, type);
+			Object bypass = getBypass(n,type); 
 
 			if (bypass != null)
 				vizProps[type.ordinal()] = bypass;
@@ -279,10 +271,10 @@ public class Appearance {
 	 *
 	 * You really shouldn't have any reason to use this method!
 	 */
-    static Object getBypass( CyAttributes xattrs, String id, VisualPropertyType type ) {
+    static Object getBypass( GraphObject n, VisualPropertyType type ) {
 		String attrName = type.getBypassAttrName();
 
-        final String value = xattrs.getStringAttribute(id, attrName);
+        final String value = n.getCyAttributes("USER").get(attrName, String.class);
 
         if (value == null)
             return null;
@@ -301,7 +293,7 @@ public class Appearance {
 
         // now check to see that the attribute actually specifies black,
         // and isn't returning black by default
-        final String v = xattrs.getStringAttribute(id, attrName);
+        final String v = n.getCyAttributes("USER").get(attrName, String.class); 
 
         if (v == null)
             return null;

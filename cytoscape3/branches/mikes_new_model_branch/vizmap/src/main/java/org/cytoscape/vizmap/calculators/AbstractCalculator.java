@@ -47,7 +47,6 @@ import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.model.network.CyNode;
 import org.cytoscape.model.network.GraphObject;
 import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
 import org.cytoscape.vizmap.Appearance;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.MappingFactory;
@@ -110,7 +109,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param c DOCUMENT ME!
 	 * @param type DOCUMENT ME!
 	 */
-	 @SuppressWarnings("unchecked") // TODO figure this one out
+//	 @SuppressWarnings("unchecked") // TODO figure this one out
 	public AbstractCalculator(String name, ObjectMapping m, VisualPropertyType type) {
 		if (type == null)
 			throw new NullPointerException("Type parameter for Calculator is null");
@@ -357,17 +356,6 @@ public abstract class AbstractCalculator implements Calculator {
 	}
 
 	/**
-	 * Returns a map of attribute names to single values.
-	 *
-	 * @param canonicalName
-	 *            The attribute name returned from the CyNode or CyEdge.
-	 * @return Map of the attribute names to values.
-	 */
-	protected Map getAttrBundle(String canonicalName, CyAttributes cyAttrs) {
-		return CyAttributesUtils.getAttributes(canonicalName, cyAttrs);
-	}
-
-	/**
 	 * DOCUMENT ME!
 	 *
 	 * @param appr DOCUMENT ME!
@@ -375,8 +363,8 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param net DOCUMENT ME!
 	 */
 	public void apply(Appearance appr, CyEdge e, CyNetwork net) {
-		//System.out.println("AbstractCalculator.apply(edge) " + type.toString());
-		Object o = getRangeValue(e,appr.getCyAttributes());
+
+		Object o = getMapping(0).calculateRangeValue(e.getCyAttributes("USER"));
 
 		// default has already been set - no need to do anything
 		if (o == null)
@@ -393,27 +381,14 @@ public abstract class AbstractCalculator implements Calculator {
 	 * @param net DOCUMENT ME!
 	 */
 	public void apply(Appearance appr, CyNode n, CyNetwork net) {
-		//System.out.println("AbstractCalculator.apply(node) " + type.toString());
-		Object o = getRangeValue(n,appr.getCyAttributes());
+		
+		Object o = getMapping(0).calculateRangeValue(n.getCyAttributes("USER"));
 
 		// default has already been set - no need to do anything
 		if (o == null)
 			return;
 
 		appr.set(type, o);
-	}
-
-	@SuppressWarnings("unchecked") // TODO again, this should be fixed as part of CyAttributes
-	                               // this one is also related to bug 247!!!
-	protected Object getRangeValue(GraphObject obj,CyAttributes attrs) {
-		if (obj == null)
-			return null;
-
-		final String nodeID = obj.getIdentifier();
-		final Map attrBundle = getAttrBundle(nodeID,attrs);
-		attrBundle.put(AbstractCalculator.ID, obj.getIdentifier());
-
-		return getMapping(0).calculateRangeValue(attrBundle);
 	}
 
 	/**

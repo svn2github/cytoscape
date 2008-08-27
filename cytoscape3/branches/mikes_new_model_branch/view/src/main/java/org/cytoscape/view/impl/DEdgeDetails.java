@@ -238,7 +238,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		if (returnThis.numAnchors() > 0)
 			return returnThis;
 
-		final FixedGraph graph = (FixedGraph) m_view.m_drawPersp;
+		final FixedGraph graph = (FixedGraph) m_view.m_perspective;
 
 		if (graph.edgeSource(edge) == graph.edgeTarget(edge)) { // Self-edge.
 

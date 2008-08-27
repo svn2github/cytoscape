@@ -43,6 +43,7 @@
 package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -205,12 +206,12 @@ public class PassThroughMapping implements ObjectMapping {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object calculateRangeValue(Map attrBundle) {
+	public Object calculateRangeValue(CyAttributes attrBundle) {
 		if (attrBundle == null || attrName == null)
 			return null;
 
 		//extract the data value for our controlling attribute
-		final Object attrValue = attrBundle.get(attrName);
+		final Object attrValue = attrBundle.getRaw(attrName);
 
 		if (attrValue == null)
 			return null;

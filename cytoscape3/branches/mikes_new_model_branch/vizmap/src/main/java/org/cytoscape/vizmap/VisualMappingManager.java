@@ -299,18 +299,11 @@ public class VisualMappingManager extends SubjectBase {
 
 		// will ignore sloppy & reverse selection color for now
 
-		// Set selection colors
-		Iterator nodeIt = network.nodesIterator();
+		for ( CyNode node : network.getNodeList() )
+			network_view.getNodeView(node).setSelectedPaint(myGlobalApp.getNodeSelectionColor());
 
-		while (nodeIt.hasNext())
-			network_view.getNodeView((CyNode) nodeIt.next())
-			            .setSelectedPaint(myGlobalApp.getNodeSelectionColor());
-
-		Iterator edgeIt = network.edgesIterator();
-
-		while (edgeIt.hasNext())
-			network_view.getEdgeView((CyEdge) edgeIt.next())
-			            .setSelectedPaint(myGlobalApp.getEdgeSelectionColor());
+		for ( CyEdge edge : network.getEdgeList() )
+			network_view.getEdgeView(edge).setSelectedPaint(myGlobalApp.getEdgeSelectionColor());
 	}
 
 	/**
@@ -334,7 +327,7 @@ public class VisualMappingManager extends SubjectBase {
 	 * @param network_view DOCUMENT ME!
 	 */
 	public void vizmapNode(NodeView nodeView, GraphView network_view) {
-		CyNode node = (CyNode) nodeView.getNode();
+		CyNode node = nodeView.getNode();
 		NodeAppearanceCalculator nodeAppearanceCalculator = activeVS.getNodeAppearanceCalculator();
 		nodeAppearanceCalculator.calculateNodeAppearance(myNodeApp, node, network_view.getGraphPerspective());
 		myNodeApp.applyAppearance(nodeView);
@@ -347,7 +340,7 @@ public class VisualMappingManager extends SubjectBase {
 	 * @param network_view DOCUMENT ME!
 	 */
 	public void vizmapEdge(EdgeView edgeView, GraphView network_view) {
-		CyEdge edge = (CyEdge) edgeView.getEdge();
+		CyEdge edge = edgeView.getEdge();
 		EdgeAppearanceCalculator edgeAppearanceCalculator = activeVS.getEdgeAppearanceCalculator();
 		edgeAppearanceCalculator.calculateEdgeAppearance(myEdgeApp, edge, network_view.getGraphPerspective());
 		myEdgeApp.applyAppearance(edgeView);

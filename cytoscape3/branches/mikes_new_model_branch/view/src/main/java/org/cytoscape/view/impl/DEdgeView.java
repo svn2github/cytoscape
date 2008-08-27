@@ -435,8 +435,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view,
-				                                                          new int[] { ~m_inx }));
+				listener.graphViewChanged(new GraphViewEdgesSelectedEvent(m_view, DGraphView.makeList( getEdge())));
 		}
 	}
 
@@ -491,8 +490,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 			final GraphViewChangeListener listener = m_view.m_lis[0];
 
 			if (listener != null)
-				listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view,
-				                                                            new int[] { ~m_inx }));
+				listener.graphViewChanged(new GraphViewEdgesUnselectedEvent(m_view, DGraphView.makeList( getEdge())));
 		}
 	}
 
@@ -1095,12 +1093,10 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 				return 0;
 			}
 
-			final Point2D sourcePt = m_view.getNodeView(~((FixedGraph) m_view.m_structPersp)
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         .edgeSource(m_inx))
-			                               .getOffset();
-			final Point2D targetPt = m_view.getNodeView(~((FixedGraph) m_view.m_structPersp)
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            .edgeTarget(m_inx))
-			                               .getOffset();
+			final Point2D sourcePt = m_view.getNodeView(~((FixedGraph) m_view.m_perspective)
+					.edgeSource(m_inx)).getOffset();
+			final Point2D targetPt = m_view.getNodeView(~((FixedGraph) m_view.m_perspective)
+					.edgeTarget(m_inx)).getOffset();
 			double bestDist = (pt.distance(sourcePt) + pt.distance((Point2D) m_anchors.get(0)))
 			                  - sourcePt.distance((Point2D) m_anchors.get(0));
 			int bestInx = 0;

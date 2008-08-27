@@ -37,6 +37,7 @@
 package org.cytoscape.layout.algorithms;
 
 import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.EdgeType;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
@@ -163,7 +164,7 @@ public class GridNodeLayout extends AbstractLayout {
 		EdgeView ev;
 		while (nodeViews.hasNext()) {
 			nView = (NodeView) nodeViews.next();
-			edgeList = network.getAdjacentEdgesList(nView.getNode(),true,true,true);
+			edgeList = network.getAdjacentEdgeList(nView.getNode(),EdgeType.ANY_EDGE);
 			for (CyEdge edge: edgeList) {
 				ev = networkView.getEdgeView(edge);
 				ev.clearBends(); 
