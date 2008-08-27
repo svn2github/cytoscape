@@ -3,10 +3,10 @@ package src;
 
 import giny.model.*;
 
-import java.awt.Color;
 
-//import jboolexpr.*;
-import java.lang.*;
+
+
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -359,17 +359,17 @@ public class BooleanCalculator {
 		if(!finalValue.isEmpty()){
 			boolean outcome = finalValue.pop();
 			
-				System.out.println("true");
+				//System.out.println("true");
 				//createAttribute()
-				System.out.println("label: "+label);
+				//System.out.println("label: "+label);
 				
 				attManager.setColorAttribute(label, node.getIdentifier(), outcome);
 				if(outcome){
 					network.setSelectedNodeState(node,true);
 					
 				}
-				System.out.println("label: "+label);
-				System.out.println(outcome);
+				//System.out.println("label: "+label);
+				//System.out.println(outcome);
 			
 		}
 
@@ -433,7 +433,7 @@ public class BooleanCalculator {
 				dvalue1 = Double.parseDouble(firstValue);
 				
 			}
-			System.out.println("digit1: "+dvalue1);
+			//System.out.println("digit1: "+dvalue1);
 
 		}else{
 			if(firstValue.equals("true") || firstValue.equals("false")){
@@ -448,13 +448,13 @@ public class BooleanCalculator {
 						dvalue1 = nodeAttributes.getDoubleAttribute(nodeID, firstValue);
 						//String stemp = temp + "";
 						//nodeValueMap.put(attribute, stemp);
-						System.out.println("dvalue1: "+dvalue1);
+						//System.out.println("dvalue1: "+dvalue1);
 					}else{
 						if(edgeAttributes.hasAttribute(nodeID, firstValue)){
 							dvalue1 = edgeAttributes.getDoubleAttribute(nodeID, firstValue);
 							//String stemp = temp + "";
 							//nodeValueMap.put(attribute, stemp);
-							System.out.println("dvalue1: "+dvalue1);
+							//System.out.println("dvalue1: "+dvalue1);
 						}
 					}
 
@@ -465,7 +465,7 @@ public class BooleanCalculator {
 							ivalue1 = nodeAttributes.getIntegerAttribute(nodeID, firstValue);
 							//String stemp = temp + "";
 							//nodeValueMap.put(attribute, stemp);
-							System.out.println("ivalue1: "+ivalue1);
+							//System.out.println("ivalue1: "+ivalue1);
 						}else{
 							if(edgeAttributes.hasAttribute(nodeID, firstValue)){
 								ivalue1 = edgeAttributes.getIntegerAttribute(nodeID, firstValue);
@@ -496,12 +496,12 @@ public class BooleanCalculator {
 		if(secondValue.matches("^[0-9\\.\\-]+")){
 			if(secondValue.matches("^[0-9]+")){
 				ivalue2 = Integer.parseInt(secondValue);
-				System.out.println("ivalue2: "+ivalue2);
+				//System.out.println("ivalue2: "+ivalue2);
 				
 				dvalue2 = ivalue2;
 			}else{
 				dvalue2 = Double.parseDouble(secondValue);
-				System.out.println("dvalue2: "+dvalue2);
+				//System.out.println("dvalue2: "+dvalue2);
 				
 			}
 
@@ -520,7 +520,7 @@ public class BooleanCalculator {
 					if(nodeAttributes.hasAttribute(nodeID, secondValue)){
 						dvalue2 = nodeAttributes.getDoubleAttribute(nodeID, secondValue);
 						//String stemp = temp + "";
-						System.out.println("dvalue2: "+dvalue2);
+						//System.out.println("dvalue2: "+dvalue2);
 						//nodeValueMap.put(attribute, stemp);
 					}else{
 						if(edgeAttributes.hasAttribute(nodeID, secondValue)){
@@ -535,7 +535,7 @@ public class BooleanCalculator {
 						
 						if(nodeAttributes.hasAttribute(nodeID, secondValue)){
 							ivalue2 = nodeAttributes.getIntegerAttribute(nodeID, secondValue);
-							System.out.println("dvalue2: "+dvalue2);
+							//System.out.println("dvalue2: "+dvalue2);
 							//String stemp = temp + "";
 							//nodeValueMap.put(attribute, stemp);
 						}else{
@@ -568,7 +568,7 @@ public class BooleanCalculator {
 			
 
 			if(operations.get(position+1).matches("<")){
-				System.out.println("matched <");
+				//System.out.println("matched <");
 				return (dvalue1 < dvalue2); //{
 					//System.out.println("dd");
 					//return true;
@@ -581,7 +581,7 @@ public class BooleanCalculator {
 
 			}
 			if(operations.get(position+1).matches(">")){
-					System.out.println("matched >");
+					//System.out.println("matched >");
 					//return true;
 					return (dvalue1 > dvalue2);
 					
