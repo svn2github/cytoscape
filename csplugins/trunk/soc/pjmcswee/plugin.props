@@ -6,7 +6,7 @@
 # -- The following properties are REQUIRED -- #
 
 # The plugin name that will be displayed to users, white space within name is not allowed
-pluginName=RandomNetworkPlugin
+pluginName=RandomNetworks
 
 # Description used to give users information about the plugin such as what it does.
 # Html tags are encouraged for formatting purposes.
@@ -31,7 +31,7 @@ pluginAuthorsIntsitutions=Patrick J. McSweeney:Syracuse University
 releaseDate=August 18, 2008
 
 # URL to a website that gives more information about your plugin, Ex. http://my-lab-site.org
-projectURL=http://web.syr.edu/~pjmcswee/RandomNetworkPlugin.jar
+projectURL=http://sites.google.com/sites/randomnetworkplugin
 
 
 

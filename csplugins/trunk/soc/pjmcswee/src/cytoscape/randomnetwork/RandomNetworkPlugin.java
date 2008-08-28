@@ -77,9 +77,9 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 		grAction = new GenerateRandomAction();
 		reAction = new RandomizeExistingAction();
 		crAction = new CompareRandomAction();
-		grAction.setPreferredMenu("Plugins.Random Network Plugin");
-		reAction.setPreferredMenu("Plugins.Random Network Plugin");
-		crAction.setPreferredMenu("Plugins.Random Network Plugin");
+		grAction.setPreferredMenu("Plugins.Random Networks");
+		reAction.setPreferredMenu("Plugins.Random Networks");
+		crAction.setPreferredMenu("Plugins.Random Networks");
 
 
 		Cytoscape.getDesktop().getCyMenus().addAction(grAction);
@@ -145,7 +145,7 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 		 *  The default constructor for this class	
 		 */
 		public RandomNetworkFrame() { 
-			super(Cytoscape.getDesktop(), "     Random Network Plugin");
+			super(Cytoscape.getDesktop(), "     Random Networks");
 			initComponents();
 		}
 
