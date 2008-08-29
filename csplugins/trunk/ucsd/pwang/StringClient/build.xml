@@ -19,6 +19,7 @@
     <!-- Define the plugin directories -->
   	<property name="root.dir" value="."/>
     <property name="src.dir" value="${root.dir}/src"/>
+    <property name="test.src.dir" value="${root.dir}/tests"/>
   	<property name="build.dir" value="${root.dir}/build"/>
     <property name="images.dir" value="${root.dir}/images"/>
     <property name="manifest.dir" value="${root.dir}/manifest"/>
@@ -45,7 +46,20 @@
     <path id="project.class.path">
       <pathelement location="${cytoscape.dir}/cytoscape.jar"/>
       <pathelement path="${java.class.path}/"/>
+    	
+		<pathelement path="${build.dir}"/>
+    	<fileset dir="${build.dir}">
+       		 	<include name="**/*.class"/>
+		</fileset>
+
+    	<fileset dir="${cytoscape.lib.dir}">
+       		<include name="giny.jar"/>
+    		<include name="junit.jar"/>
+    	</fileset>
     </path>
+
+	<!-- The unit test reports directory -->
+    <property name="junit.report.dir"    value="${build.dir}/junit-reports"/>
 
   </target>
 
@@ -80,6 +94,55 @@
 
   </target>
 
+ <!-- ==================== Compile-tests Target ==============================-->
+    <target name="compile-tests" depends="jar"
+        description="Compiles all Java test source files">
+
+        <javac srcdir="${test.src.dir}"
+		    source="1.5"
+            destdir="${build.dir}"
+            debug="${compile.debug}"
+            deprecation="${compile.deprecation}"
+            optimize="${compile.optimize}">
+        <classpath refid="project.class.path"/>
+        </javac>
+ </target>
+
+    <!-- ==================== JUnit Test Target =========================== -->
+    <target name="test" description="Runs all JUnit tests" depends="compile-tests">
+    	<echo>
+            **********************************
+            Running all unit tests individally
+            ***********************************
+    	</echo>
+
+    	<mkdir dir="${junit.report.dir}" />
+    	
+        <junit printsummary="yes" fork="yes" haltonfailure="no">
+        	<classpath refid="project.class.path"/>
+        	<formatter type="plain" usefile="true"/>
+			<formatter type="xml" usefile="true" />
+			<batchtest fork="yes" 
+			           todir="${junit.report.dir}" 
+				   failureProperty="junit.test.failure">
+				<fileset dir="${build.dir}" 
+				         includes="**/*Test.class" 
+					 excludes="**/AllTests.class" />
+			</batchtest>	        	
+        </junit>
+    	
+		<junitreport todir="${junit.report.dir}">
+			<fileset dir="${junit.report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.report.dir}" />
+		</junitreport>
+
+		<fail message="JUnit Tests failed! Check ${junit.report.dir}/index.html for details." 
+		      if="junit.test.failure" />	    	
+
+    </target>
+	
   <!-- If plugin.prop exist, copy it to build directory  -->	
   <target name="copy_plugin_prop" if="plugin.prop.present">
 		<copy todir="${build.dir}/org/cytoscape/StringClient" file="${root.dir}/plugin.props"/>	
