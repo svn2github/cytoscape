@@ -37,7 +37,6 @@ package org.cytoscape.view.impl;
 import cytoscape.geom.rtree.RTree;
 import cytoscape.geom.spacial.MutableSpacialIndex2D;
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
-import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.GraphLOD;
 import cytoscape.render.stateful.GraphRenderer;
@@ -2074,7 +2073,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	public void drawSnapshot(Image img, GraphLOD lod, Paint bgPaint, double xCenter,
 	                         double yCenter, double scaleFactor) {
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_perspective, m_spacial, lod, m_nodeDetails,
+			GraphRenderer.renderGraph( m_perspective, m_spacial, lod, m_nodeDetails,
 			                          m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          bgPaint, xCenter, yCenter, scaleFactor);
 		}

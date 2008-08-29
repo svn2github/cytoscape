@@ -36,7 +36,6 @@
 
 package org.cytoscape.view.impl;
 
-import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.export.ImageImposter;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
@@ -45,6 +44,10 @@ import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
+import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.EdgeType;
 import org.cytoscape.view.EdgeContextMenuListener;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphViewChangeListener;
@@ -229,7 +232,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 		synchronized (m_lock) {
 			if (m_view.m_contentChanged || m_view.m_viewportChanged) {
-				m_lastRenderDetail = GraphRenderer.renderGraph((FixedGraph) m_view.m_perspective,
+				m_lastRenderDetail = GraphRenderer.renderGraph(m_view.m_perspective,
 				                                               m_view.m_spacial, m_lod[0],
 				                                               m_view.m_nodeDetails,
 				                                               m_view.m_edgeDetails, m_hash,
@@ -296,7 +299,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_perspective, m_view.m_spacial,
+			GraphRenderer.renderGraph(m_view.m_perspective, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -317,7 +320,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 										  m_backgroundColor.getBlue(), alpha);
 
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph((FixedGraph) m_view.m_perspective, m_view.m_spacial,
+			GraphRenderer.renderGraph(m_view.m_perspective, m_view.m_spacial,
 			                          m_view.m_printLOD, m_view.m_nodeDetails,
 			                          m_view.m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          backgroundColor, m_xCenter, m_yCenter, m_scaleFactor);
@@ -1015,24 +1018,26 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		edgeNodesEnum = m_stack.elements();
 		stack.empty();
 
-		final FixedGraph graph = (FixedGraph) m_view.m_perspective;
+		//final FixedGraph graph = (FixedGraph) m_view.m_perspective;
+		final CyNetwork graph = m_view.m_perspective;
 
 		if ((m_lastRenderDetail & GraphRenderer.LOD_HIGH_DETAIL) == 0) {
 			// We won't need to look up arrows and their sizes.
 			for (int i = 0; i < edgeNodesCount; i++) {
 				final int node = edgeNodesEnum.nextInt(); // Positive.
+				final CyNode nodeObj = graph.getNode(node);
 
 				if (!m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0))
 					continue; /* Will happen if e.g. node was removed. */
 
 				final float nodeX = (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) / 2;
 				final float nodeY = (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) / 2;
-				final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
+				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, EdgeType.ANY_EDGE);
 
-				while (touchingEdges.numRemaining() > 0) {
-					final int edge = touchingEdges.nextInt(); // Positive.
+				for ( CyEdge e : touchingEdges ) {	
+					final int edge = e.getIndex(); // Positive.
 					final int otherNode =  // Positive.
-					                      node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+					                      node ^ e.getSource().getIndex() ^ e.getTarget().getIndex(); 
 
 					if (m_hash.get(otherNode) < 0) {
 						m_view.m_spacial.exists(otherNode, m_view.m_extentsBuff, 0);
@@ -1052,17 +1057,18 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 			for (int i = 0; i < edgeNodesCount; i++) {
 				final int node = edgeNodesEnum.nextInt(); // Positive.
+				final CyNode nodeObj = graph.getNode(node);
 
 				if (!m_view.m_spacial.exists(node, m_view.m_extentsBuff, 0))
 					continue; /* Will happen if e.g. node was removed. */
 
 				final byte nodeShape = m_view.m_nodeDetails.shape(node);
-				final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
+				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, EdgeType.ANY_EDGE);
 
-				while (touchingEdges.numRemaining() > 0) {
-					final int edge = touchingEdges.nextInt(); // Positive.
+				for ( CyEdge e : touchingEdges ) {	
+					final int edge = e.getIndex(); // Positive.
 					final double segThicknessDiv2 = m_view.m_edgeDetails.segmentThickness(edge) / 2.0d;
-					final int otherNode = node ^ graph.edgeSource(edge) ^ graph.edgeTarget(edge);
+					final int otherNode = node ^ e.getSource().getIndex() ^ e.getTarget().getIndex();
 
 					if (m_hash.get(otherNode) < 0) {
 						m_view.m_spacial.exists(otherNode, m_extentsBuff2, 0);
@@ -1073,7 +1079,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						final float[] srcExtents;
 						final float[] trgExtents;
 
-						if (node == graph.edgeSource(edge)) {
+						if (node == e.getSource().getIndex()) {
 							srcShape = nodeShape;
 							trgShape = otherNodeShape;
 							srcExtents = m_view.m_extentsBuff;

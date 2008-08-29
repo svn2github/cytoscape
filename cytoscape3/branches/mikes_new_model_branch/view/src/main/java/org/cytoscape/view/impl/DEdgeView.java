@@ -36,7 +36,6 @@
 
 package org.cytoscape.view.impl;
 
-import cytoscape.graph.fixed.FixedGraph;
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
 import org.cytoscape.model.network.CyEdge;
@@ -1093,10 +1092,8 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 				return 0;
 			}
 
-			final Point2D sourcePt = m_view.getNodeView(~((FixedGraph) m_view.m_perspective)
-					.edgeSource(m_inx)).getOffset();
-			final Point2D targetPt = m_view.getNodeView(~((FixedGraph) m_view.m_perspective)
-					.edgeTarget(m_inx)).getOffset();
+			final Point2D sourcePt = m_view.getNodeView(getEdge().getSource()).getOffset();
+			final Point2D targetPt = m_view.getNodeView(getEdge().getTarget()).getOffset();
 			double bestDist = (pt.distance(sourcePt) + pt.distance((Point2D) m_anchors.get(0)))
 			                  - sourcePt.distance((Point2D) m_anchors.get(0));
 			int bestInx = 0;
