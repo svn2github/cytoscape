@@ -70,6 +70,9 @@ import org.cytoscape.StringClient.StringStub;
 /**
  * String web service client.
  *
+ * Note: String web service API is still in beta testing, unstable (May 2008)
+ * subject to change.
+ *
  * @author pwang
  * @version 0.1
  * @since Cytoscape 2.6
@@ -123,9 +126,9 @@ public class StringClient extends WebServiceClientImplWithGUI<StringStub, JPanel
 	 */
 	private void setProperty() {
 		props = new ModulePropertiesImpl(clientID, "wsc");
-
+		
 		props.add(new Tunable("additional_network_nodes", "Additional network nodes", Tunable.INTEGER,
-		                      new Integer(0)));
+               new Integer(0)));
 		props.add(new Tunable("limit", "limit", Tunable.INTEGER, new Integer(10)));		
 		props.add(new Tunable("network_depth", "Network depth", Tunable.INTEGER, new Integer(1)));
 		props.add(new Tunable("required_score", "Required score", Tunable.INTEGER, new Integer(400)));
@@ -145,10 +148,11 @@ public class StringClient extends WebServiceClientImplWithGUI<StringStub, JPanel
 			String queryStr = e.getParameter().toString();
 			clientStub.setQueryParam(props, queryStr);
 
+			//System.out.println("clientStub.getURLstr()="+clientStub.getURLstr()+ "\n");
+
 			// We have to run Network URL loading in a different thread to avoid dead-lock. Otherwise, 
 			// The UIs of Task Managers (web service and network loading) would wait for each other
 			LoadNetworkThread url_load_thread = new LoadNetworkThread(clientStub.getURLstr(), "URLLoadNetwork_thread");
-			url_load_thread.start();
 		}
 	}
 
@@ -278,10 +282,9 @@ public class StringClient extends WebServiceClientImplWithGUI<StringStub, JPanel
 		public LoadNetworkThread(String URLStr, String thread_name){
 			this.URLstr = URLStr;
 			runner = new Thread(this, thread_name);
-		}
-		public void start(){
 			runner.start();
 		}
+
 		public void run() {
 			try {
 				LoadNetworkTask.loadURL(new URL(URLstr), true);
