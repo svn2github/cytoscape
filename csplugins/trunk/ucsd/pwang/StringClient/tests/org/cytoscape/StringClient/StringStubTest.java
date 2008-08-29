@@ -21,12 +21,13 @@ public class StringStubTest extends TestCase {
 
 		StringStub anInstance = new StringStub();
 
-		anInstance.setQueryParam(props, "Protein1");
+		anInstance.setQueryParam(props, "PGH1_HUMAN");
 		
 		String URLstr = anInstance.getURLstr();
-		System.out.println("URLstr = " + URLstr + "\n");
+		//System.out.println("URLstr = " + URLstr + "\n");
 
-		String expectedURLstr = "http://string.embl.de/api/psi-mi/interactions?identifier=PGH1_HUMAN&species=auto_detect";
+		//String expectedURLstr = "http://string.embl.de/api/psi-mi/interactions?identifier=PGH1_HUMAN&species=auto_detect";
+		String expectedURLstr = "http://string.embl.de/api/psi-mi/interactions?identifier=PGH1_HUMAN&additional_network_nodes=0&limit=10&network_depth=1&required_score=400&species=auto_detect";
 		assertEquals(expectedURLstr, anInstance.getURLstr());		
 
 	}
