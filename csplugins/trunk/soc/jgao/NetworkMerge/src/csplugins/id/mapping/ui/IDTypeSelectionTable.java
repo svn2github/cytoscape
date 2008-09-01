@@ -56,6 +56,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JLabel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JList;
@@ -98,7 +99,7 @@ public class IDTypeSelectionTable extends JTable{
         setModel(model);
         setRowHeight(20);
 
-        //addMouseClickListener();
+        setColumnEditorAndCellRenderer();
 
     }
 
@@ -123,10 +124,30 @@ public class IDTypeSelectionTable extends JTable{
                 rowEditor.setEditorAt(ir, new  DefaultCellEditor(cc));
         }
         column.setCellEditor(rowEditor);
-        //column.setCellEditor(new ComboBoxTableCellEditor(this));
 
         // set up renderer
-        column.setCellRenderer(new ComboBoxTableCellRenderer(combos));
+        if (supportedSrcIDType.isEmpty()) {
+                column.setCellRenderer(new TableCellRenderer() {
+                        private DefaultTableCellRenderer  defaultRenderer = new DefaultTableCellRenderer();
+
+                        @Override
+                        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+                                       JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                                       if (isSelected) {
+                                               label.setBackground(table.getSelectionBackground());
+                                               label.setForeground(table.getSelectionForeground());
+                                       } else {
+                                               label.setBackground(table.getBackground());
+                                               label.setForeground(table.getForeground());
+                                       }
+                                       label.setToolTipText("Please select a non-empty ID mapping file first.");
+                                       return label;
+                        }
+                });
+        } else {
+                column.setCellRenderer(new ComboBoxTableCellRenderer(combos));
+        }
     }
 
         private void initNetworks() {
@@ -207,7 +228,7 @@ public class IDTypeSelectionTable extends JTable{
 
         @Override
         public boolean isCellEditable(int row, int col) {
-            return col==this.getColumnCount()-1;
+            return col==this.getColumnCount()-1 && !supportedSrcIDType.isEmpty();
         }
 
     }
@@ -226,7 +247,8 @@ public class IDTypeSelectionTable extends JTable{
                         if (column==table.getColumnCount()-1) {
                                 return combos.get(row);
                         } else {
-                                return new DefaultTableCellRenderer();
+                                DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
+                                return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                         }
                 }
         }
@@ -324,7 +346,6 @@ public class IDTypeSelectionTable extends JTable{
                 @Override
                 public void setPopupVisible(boolean flag)
                 {
-                        int i=1;
                         //TODO this not work, fix it
                         // Not code here prevents the populist from closing
                 }

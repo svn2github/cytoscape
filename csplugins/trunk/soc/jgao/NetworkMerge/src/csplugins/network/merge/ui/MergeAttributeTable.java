@@ -357,7 +357,7 @@ class MergeAttributeTable extends JTable{
         boolean update = false;
         if (indexMatchingAttr==-1) {
             indexMatchingAttr = 0;
-            String attr_merged = "Matching_Attribute";
+            String attr_merged = "Matching.Attribute";
             
             //TODO: remove in Cytoscape3
             Map netAttrMap = new HashMap(matchingAttribute.getNetAttrMap());
