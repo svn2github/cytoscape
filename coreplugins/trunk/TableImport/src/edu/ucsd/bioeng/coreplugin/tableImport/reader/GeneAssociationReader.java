@@ -186,7 +186,7 @@ public class GeneAssociationReader implements TextTableReader {
 		this.keyAttributeName = keyAttributeName;
 		key = mappingKey;
 		
-		System.out.println("Primary Key column is " + key);
+		// System.out.println("Primary Key column is " + key);
 
 		// GA file is only for nodes!
 		this.nodeAliases = Cytoscape.getOntologyServer().getNodeAliases();

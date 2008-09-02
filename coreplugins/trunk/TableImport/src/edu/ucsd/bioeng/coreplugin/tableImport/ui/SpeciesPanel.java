@@ -6,6 +6,7 @@
 package edu.ucsd.bioeng.coreplugin.tableImport.ui;
 
 import cytoscape.CytoscapeInit;
+import cytoscape.logger.CyLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class SpeciesPanel extends JPanel {
 	// Resource Location
 	private static final String TAXON_RESOURCE_FILE = "/cytoscape/resources/tax_report.txt";
 	private String currentSpeciesName;
+	private CyLogger logger = CyLogger.getLogger(SpeciesPanel.class);
 
 	/** Creates new form SpeciesPanel */
 	public SpeciesPanel() {
@@ -164,16 +166,16 @@ public class SpeciesPanel extends JPanel {
 			URL taxURL = getClass().getResource(TAXON_RESOURCE_FILE);
 			spListReader = new BufferedReader(new InputStreamReader(taxURL.openStream()));
 
-			System.out.println("Taxonomy table found in jar file...");
+			logger.debug("Taxonomy table found in jar file...");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("I/O error while creating taxonomy table reader", e);
 		}
 
 		try {
 			setSpList(spListReader);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("I/O error while reading taxonomy table", e);
 		}
 	}
 

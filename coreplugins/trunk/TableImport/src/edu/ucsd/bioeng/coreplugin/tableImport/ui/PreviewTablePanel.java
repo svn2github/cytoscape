@@ -38,6 +38,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.data.CyAttributes;
 
+import cytoscape.logger.CyLogger;
 import cytoscape.util.URLUtil;
 
 import cytoscape.util.swing.ColumnResizer;
@@ -182,6 +183,8 @@ public class PreviewTablePanel extends JPanel {
 	private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 	private int panelType;
 	private String listDelimiter;
+
+	private CyLogger logger = CyLogger.getLogger(PreviewTablePanel.class);
 
 	/**
 	 * Creates a new PreviewTablePanel object.
@@ -666,13 +669,13 @@ public class PreviewTablePanel extends JPanel {
 			/*
 			 * Load each sheet in the workbook.
 			 */
-			System.out.println("# of Sheets = " + wb.getNumberOfSheets());
+			logger.debug("# of Sheets = " + wb.getNumberOfSheets());
 
 			HSSFSheet sheet = wb.getSheetAt(0);
-			System.out.println("Sheet name = " + wb.getSheetName(0) + ", ROW = "
-			                   + sheet.rowIterator().hasNext());
+			logger.debug("Sheet name = " + wb.getSheetName(0) + ", ROW = "
+			             + sheet.rowIterator().hasNext());
 
-			System.out.println("TS = " + sheet.toString());
+			logger.debug("TS = " + sheet.toString());
 
 			newModel = parseExcel(sourceURL, size, curRenderer, sheet, startLine);
 

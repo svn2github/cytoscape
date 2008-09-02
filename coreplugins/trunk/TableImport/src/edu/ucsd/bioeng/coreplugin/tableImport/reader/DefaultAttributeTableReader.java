@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import cytoscape.util.URLUtil;
+import cytoscape.logger.CyLogger;
 
 
 /**
@@ -66,6 +67,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 	private final URL source;
 	private AttributeMappingParameters mapping;
 	private final AttributeLineParser parser;
+	private static CyLogger logger = CyLogger.getLogger(DefaultAttributeTableReader.class);
 
 	// Number of mapped attributes.
 	private int globalCounter = 0;
@@ -209,7 +211,7 @@ public class DefaultAttributeTableReader implements TextTableReader {
 					} else
 						parser.parseEntry(parts);
 					} catch (Exception ex) {
-						System.out.println("Couldn't parse row: " + lineCount);
+						logger.warn("Couldn't parse row: "+ lineCount);
 					}
 					globalCounter++;
 				}
