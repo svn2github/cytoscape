@@ -27,14 +27,10 @@
   <!-- Project directories and files -->
   <property name="project.src.dir"		location="${root.dir}/src"/>
   <property name="project.jar"			location="${root.dir}/PinnacleZPlugin.jar"/>
-  <property name="project.jar.manifest"		location="${build.dir}/project.manifest"/>
 
   <!-- Cytoscape directories and files needed for compiling -->
-  <property name="cytoscape.root.dir"		location="../../cytoscape-2.5"/>
+  <property name="cytoscape.root.dir"		location="../../../../cytoscape"/>
   <property name="cytoscape.lib.dir"		location="${cytoscape.root.dir}/lib"/>
-  <!-- Cytoscape directories and files needed for installing -->
-  <property name="cytoscape.distro.dir"		location="${cytoscape.root.dir}/build/cytoscape-v2.5.1"/>
-  <property name="cytoscape.distro.plugins.dir"	location="${cytoscape.distro.dir}/plugins"/>
 
   <!-- Project jar properties -->
   <property name="project.jar.main.class"	value="PinnacleZPlugin.PinnacleZPlugin"/>
@@ -66,25 +62,16 @@
   <target	name="jar"
   		depends="compile"
 		description="package all class files into a jar">
-    <manifest file="${project.jar.manifest}">
-      <attribute name="Cytoscape-Plugin" value="${project.jar.main.class}"/>
-    </manifest>
     <unjar src="${lib.dir}/pinnaclez.jar" dest="${build.dir}"/>
-    <jar	jarfile="${project.jar}"
-    		basedir="${build.dir}"
-    		manifest="${project.jar.manifest}"/>
+	<copy todir="${build.dir}/PinnacleZPlugin" file="${resources.dir}/plugin.props"/>
+    <jar jarfile="${project.jar}"
+    	 basedir="${build.dir}">
+    	<manifest>
+	      <attribute name="Cytoscape-Plugin" value="${project.jar.main.class}"/>
+   	 	</manifest>
+	</jar>
   </target>
   
-  <!-- ===================================================================	-->
-  <!-- install 									-->
-  <!-- ===================================================================	-->
-
-  <target	name="install"
-  		depends="jar"
-		description="install plugin into Cytoscape's plugin directory">
-    <copy file="${project.jar}" todir="${cytoscape.distro.plugins.dir}"/>
-  </target>
-
   <!-- ===================================================================	-->
   <!-- all				                                      	-->
   <!-- ===================================================================	-->
