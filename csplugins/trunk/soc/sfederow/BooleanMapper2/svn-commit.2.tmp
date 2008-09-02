@@ -1,0 +1,10 @@
+
+--This line, and those below, will be ignored--
+
+M    build/BooleanMapper.jar
+M    build/classes/BooleanSettingsDialog.class
+M    build/classes/BooleanCalculator.class
+M    src/BooleanSettingsDialog.java
+M    src/BooleanSettingsDialog.class
+M    src/BooleanCalculator.java
+M    src/BooleanCalculator.class
