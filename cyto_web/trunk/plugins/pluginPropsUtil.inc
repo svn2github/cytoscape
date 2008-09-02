@@ -352,6 +352,7 @@ function getPluginProps($zipFileName) {
 // Then check if any line start with "Cytoscape-Plugin"
 function validateManifestFile($zipFileName) {
 	$retValue = false;
+	$javaVersion_tooHigh = false;
 	$zip = zip_open($zipFileName);
 	if ($zip) {
 		while ($zip_entry = zip_read($zip)) {
@@ -369,7 +370,15 @@ function validateManifestFile($zipFileName) {
 						if ((!empty($cur_line))&& stristr($cur_line,'Cytoscape-Plugin') == $cur_line) {
 							//echo "MANIFEST.MF: Found attribute Cytoscape-Plugin<br>";
 							$retValue = true;
-							break;
+							//break;
+						}	
+						if ((!empty($cur_line))&& stristr($cur_line,'Created-By') == $cur_line) {
+							//echo "MANIFEST.MF: Found attribute Created-By<br>";
+							// check Java Version
+							$javaVersion = substr($cur_line, 12,3); //example: Created-By: 1.5.0_12-b04 (Sun Microsystems Inc.)
+							if (trim($javaVersion >1.5)) {
+								$javaVersion_tooHigh = true;
+							}
 						}	
 					}
 				}
@@ -382,14 +391,23 @@ function validateManifestFile($zipFileName) {
 		//failed to open the zip file
 	}
 
-	if ($retValue == false) {
+	if ($retValue == false && $javaVersion_tooHigh == false) {
 	?>
 	<br><b>Error</b>: MANIFEST.MF is either missing or the attribute Cytoscape-Plugin is not defined.	
                 <br>Please check the definition of Cytoscape plugin MANIFEST.MF at <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Cytoscape_Plugin_Tutorial">Cytoscape wiki</a> for detail. </p>
                 <br><br>
-
 	<?php
 	}
+
+	if ($javaVersion_tooHigh == true) {
+		?>
+	<br><b>Error</b>: Plugin should be compiled with Java 1.5 or less.	
+                <br><br>			
+		<?php
+		$retValue = false;
+	}
+
+
 
 	return $retValue;
 } // end of validateManifestFile()
