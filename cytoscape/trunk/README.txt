@@ -156,7 +156,7 @@ of Cytoscape is rather involved.  Some of the tasks are automated and some are m
 	Create the final release files
 		To do so, run:  
 
-			ant dist
+			ant clean dist
 
 		The final release files are all placed in cytoscape/build/dist,
 		including the Javadoc API files.
