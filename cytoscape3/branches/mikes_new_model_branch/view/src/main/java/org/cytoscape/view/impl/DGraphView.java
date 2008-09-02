@@ -360,6 +360,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			addEdgeView( ee.getIndex() );
 
 		new FlagAndSelectionHandler(this);
+		new AddDeleteHandler(this);
 	}
 
 	/**
