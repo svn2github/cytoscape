@@ -49,6 +49,8 @@ import cytoscape.editor.CytoscapeEditorFactory;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.InvalidEditorException;
 
+import cytoscape.logger.CyLogger;
+
 import cytoscape.view.CyNetworkView;
 import cytoscape.view.CytoscapeDesktop;
 
@@ -81,6 +83,7 @@ import javax.swing.event.ChangeListener;
 public class CytoscapeEditorManagerSupport implements PropertyChangeListener, ChangeListener,
                                                       GraphPerspectiveChangeListener,
                                                       CytoPanelListener {
+	private CyLogger logger = CyLogger.getLogger(CytoscapeEditorManagerSupport.class);
 	/**
 	 * register interest in NETWORK_VIEW_FOCUSED and NETWORK_VIEW_CREATED events
 	 *
@@ -242,9 +245,7 @@ public class CytoscapeEditorManagerSupport implements PropertyChangeListener, Ch
 			try {
 				editorForStyle = CytoscapeEditorFactory.INSTANCE.getEditor(editorType);
 			} catch (InvalidEditorException exe) {
-				CytoscapeEditorManager.log("Error building editor for editor type = " + editorType
-				                           + ", error = " + ex);
-				exe.printStackTrace();
+				logger.warn("Error building editor for editor type = " + editorType, exe);
 			}
 		}
 

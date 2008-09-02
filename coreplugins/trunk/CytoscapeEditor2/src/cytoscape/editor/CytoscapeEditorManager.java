@@ -317,7 +317,7 @@ public abstract class CytoscapeEditorManager {
 			return cyEditor;
 		} catch (InvalidEditorException ex) {
 			CytoscapeEditorManager.setSettingUpEditor(false);
-			ex.printStackTrace();
+			logger.warn("Unable to set up Cytoscape editor", ex);
 
 			return null;
 		}
@@ -343,11 +343,11 @@ public abstract class CytoscapeEditorManager {
 			// AJK: 12/05/05 set caller for event class
 			event.set_caller(editor);
 		} catch (ClassNotFoundException ex) {
-			ex.printStackTrace();
+			logger.warn("Can't find class for "+adapterName, ex);
 		} catch (InstantiationException ex) {
-			ex.printStackTrace();
+			logger.warn("Can't instantiate "+adapterName, ex);
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			logger.warn("Can't access "+adapterName, ex);
 		}
 
 		return event;

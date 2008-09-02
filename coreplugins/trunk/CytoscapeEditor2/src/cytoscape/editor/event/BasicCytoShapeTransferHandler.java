@@ -14,6 +14,7 @@ import javax.swing.TransferHandler;
 
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
+import cytoscape.logger.CyLogger;
 
 
 /**
@@ -59,7 +60,7 @@ public class BasicCytoShapeTransferHandler extends TransferHandler {
 		try {
 			basicCytoShapeFlavor = new DataFlavor(BasicCytoShapeEntity.class, "BasicCytoShapeEntity");
 		} catch (Exception e) {
-			e.printStackTrace();
+			CyLogger.getLogger(BasicCytoShapeTransferHandler.class).warn("Unable to create data flavor for BasicCytoShapeEntity",e);
 		}
 	}
 
@@ -73,7 +74,7 @@ public class BasicCytoShapeTransferHandler extends TransferHandler {
 		try {
 			basicCytoShapeFlavor = new DataFlavor(BasicCytoShapeEntity.class, "BasicCytoShapeEntity");
 		} catch (Exception e) {
-			e.printStackTrace();
+			CyLogger.getLogger(BasicCytoShapeTransferHandler.class).warn("Unable to create data flavor for BasicCytoShapeEntity",e);
 		}
 
 		_cytoShape = cytoShape;

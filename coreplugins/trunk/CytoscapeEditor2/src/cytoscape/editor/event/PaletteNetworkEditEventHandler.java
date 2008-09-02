@@ -44,6 +44,7 @@ import cytoscape.editor.CytoscapeEditor;
 import cytoscape.editor.CytoscapeEditorManager;
 import cytoscape.editor.impl.BasicCytoShapeEntity;
 import cytoscape.editor.impl.ShapePalette;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import ding.view.DGraphView;
 import ding.view.InnerCanvas;
@@ -61,6 +62,7 @@ import ding.view.InnerCanvas;
  *
  */
 public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler {
+	CyLogger logger = CyLogger.getLogger(PaletteNetworkEditEventHandler.class);
 
 	/**
 	 *
@@ -93,8 +95,7 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 		try {
 			shapeClass = Class.forName("cytoscape.editor.impl.BasicCytoShapeEntity");
 		} catch (Exception except) {
-			except.printStackTrace();
-
+			logger.warn("Can't get class for BasicCytoShapeEntity", except);
 			return null;
 		}
 
@@ -114,11 +115,10 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 				try {
 					shape = t.getTransferData(d);
 				} catch (UnsupportedFlavorException exc) {
-					exc.printStackTrace();
-
+					logger.warn("Unsupported shape flavor", exc);
 					return null;
 				} catch (IOException exc) {
-					exc.printStackTrace();
+					logger.warn("I/O exception getting shape", exc);
 
 					return null;
 				}
@@ -253,11 +253,11 @@ public class PaletteNetworkEditEventHandler extends BasicNetworkEditEventHandler
 				Cytoscape.getCurrentNetwork().restoreNode(cn);
 			}
 		} catch (UnsupportedFlavorException exc) {
-			exc.printStackTrace();
+			logger.warn("Unsupported shape flavor", exc);
 
 			return;
 		} catch (IOException exc) {
-			exc.printStackTrace();
+			logger.warn("I/O exception getting shape", exc);
 
 			return;
 		}

@@ -43,6 +43,7 @@ import cytoscape.editor.InvalidEditorException;
 import cytoscape.editor.ShapePaletteInfo;
 import cytoscape.editor.ShapePaletteInfoGenerator;
 import cytoscape.editor.event.NetworkEditEventAdapter;
+import cytoscape.logger.CyLogger;
 
 
 /**
@@ -58,6 +59,7 @@ import cytoscape.editor.event.NetworkEditEventAdapter;
  */
 public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 	private Collection<String> editorTypes = new ArrayList<String>();
+	private CyLogger logger = CyLogger.getLogger(CytoscapeEditorFactoryImpl.class);
 
 	/**
 	 * mapping of editor types to editors
@@ -132,16 +134,16 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 				// ex.printStackTrace();
 				throw ex;
 			} catch (InstantiationException ex) {
-				ex.printStackTrace();
+				logger.warn("Unable to instantiate editor!", ex);
 			} catch (IllegalAccessException ex) {
-				ex.printStackTrace();
+				logger.warn("Unable to access editor!", ex);
 			}
 
 			// AJK: 12/10/06 END
 		} catch (InstantiationException ex) {
-			ex.printStackTrace();
+			logger.warn("Unable to instantiate editor!", ex);
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			logger.warn("Unable to access editor!", ex);
 		}
 
 		CytoscapeEditorManager.setCurrentEditor(cyEditor);
