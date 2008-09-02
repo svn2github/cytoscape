@@ -418,15 +418,11 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	int getIntegerAttribute(Attributes atts, String key) throws SAXParseException {
+	static int getIntegerAttribute(Attributes atts, String key) {
 		String attribute = atts.getValue(key);
 		if (attribute == null)
 			return 0;
-		try {
-			return (new Integer(attribute)).intValue();
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+attribute+"' to an INTEGER", locator);
-		}
+		return (new Integer(attribute)).intValue();
 	}
 
 	/**
@@ -438,15 +434,11 @@ class XGMMLParser extends DefaultHandler {
 	 * @param ns the namespace for the attribute we're interested in
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	int getIntegerAttributeNS(Attributes atts, String key, String ns) throws SAXParseException {
+	static int getIntegerAttributeNS(Attributes atts, String key, String ns) {
 		String attribute = atts.getValue(ns, key);
 		if (attribute == null)
 			return 0;
-		try {
-			return (new Integer(attribute)).intValue();
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+attribute+"' to an INTEGER", locator);
-		}
+		return (new Integer(attribute)).intValue();
 	}
 
 	/**
@@ -457,15 +449,11 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	double getDoubleAttribute(Attributes atts, String key) throws SAXParseException {
+	static double getDoubleAttribute(Attributes atts, String key) {
 		String attribute = atts.getValue(key);
 		if (attribute == null)
 			return 0.0;
-		try {
-			return (new Double(attribute)).doubleValue();
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+attribute+"' to a DOUBLE", locator);
-		}
+		return (new Double(attribute)).doubleValue();
 	}
 
 	/**
@@ -477,15 +465,11 @@ class XGMMLParser extends DefaultHandler {
 	 * @param ns the namespace for the attribute we're interested in
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	double getDoubleAttributeNS(Attributes atts, String key, String ns) throws SAXParseException {
+	static double getDoubleAttributeNS(Attributes atts, String key, String ns) {
 		String attribute = atts.getValue(ns, key);
 		if (attribute == null)
 			return 0;
-		try {
-			return (new Double(attribute)).doubleValue();
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+attribute+"' to a DOUBLE", locator);
-		}
+		return (new Double(attribute)).doubleValue();
 	}
 
 	/**
@@ -496,15 +480,11 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	Color getColorAttribute(Attributes atts, String key) throws SAXParseException {
+	static Color getColorAttribute(Attributes atts, String key) {
 		String attribute = atts.getValue(key);
 		if (attribute == null)
 			return null;
-		try {
-			return new Color(Integer.parseInt(attribute.substring(1), 16));
-		} catch (Exception e) {
-			throw new SAXParseException("Unable to convert '"+attribute+"' to a color", locator);
-		}
+		return new Color(Integer.parseInt(attribute.substring(1), 16));
 	}
 
 
