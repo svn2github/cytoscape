@@ -175,12 +175,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 			// Partitions Requiring Layout
 			if (partition.nodeCount() > 1) {
-				try {
-					layoutPartion(partition);
-				} catch (Throwable _e) {
-					_e.printStackTrace();
-					return;
-				}
+				layoutPartion(partition); // Note: this might throw -- we catch this in cytoscape.layout
 
 				if (!selectedOnly && !singlePartition) {
 					// logger.debug("Offsetting partition #"+partition.getPartitionNumber()+" to "+next_x_start+", "+next_y_start);
