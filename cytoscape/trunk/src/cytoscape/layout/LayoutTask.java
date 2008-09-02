@@ -37,8 +37,9 @@
 package cytoscape.layout;
 
 import cytoscape.Cytoscape;
-import cytoscape.view.CyNetworkView;
 import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.logger.CyLogger;
+import cytoscape.view.CyNetworkView;
 
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
@@ -56,6 +57,7 @@ public class LayoutTask implements Task {
 	CyLayoutAlgorithm layout;
 	CyNetworkView view;
 	TaskMonitor monitor;
+	CyLogger logger = CyLogger.getLogger(LayoutTask.class);
 
 	/**
 	 * Creates the task.
@@ -79,7 +81,18 @@ public class LayoutTask implements Task {
 	 * Run the algorithm.  
 	 */
 	public void run() {
-		layout.doLayout(view,monitor);
+		try {
+			layout.doLayout(view,monitor);
+		} catch (Exception e) {
+			String message = "Execution of "+layout.getName()+" did not complete!  Error: "+e.getMessage();
+			// Update our monitor, if we have one
+			if (monitor != null) {
+				monitor.setException(e, message);
+				logger.warn(message, e);
+			} else {
+				logger.error(message, e); // Send to error so the user is sure to see it
+			}
+		}
 	}
 
 	/**
