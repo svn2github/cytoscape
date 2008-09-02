@@ -144,11 +144,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	protected SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this);
 
 	/**
-	 * The GraphViewController for all NetworkViews that we know about
-	 */
-	protected GraphViewController graphViewController;
-
-	/**
 	 * Provides Operations for Mapping Data Attributes of CyNetworks to
 	 * GraphViews
 	 */
@@ -429,17 +424,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	}
 
 	/**
-	 * TO keep things clearer there is one GraphView Controller per
-	 * CytoscapeDesktop
-	 */
-	public GraphViewController getGraphViewController() {
-		if (graphViewController == null)
-			graphViewController = new GraphViewController();
-
-		return graphViewController;
-	}
-
-	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
@@ -456,11 +440,12 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == NETWORK_VIEW_CREATED) {
-			// add the new view to the GraphViewController
-			getGraphViewController().addGraphView((GraphView) e.getNewValue());
+			// Used to be here for the GraphViewController, but now that listening
+			// is handled by the GraphView itself.
+
 			// pass on the event
 			pcs.firePropertyChange(e);
-		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
+		} else  if (e.getPropertyName() == NETWORK_VIEW_FOCUSED) {
 			// get focus event from NetworkViewManager
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
@@ -491,8 +476,9 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 					Cytoscape.createNewSession();
 			}
 		} else if (e.getPropertyName() == NETWORK_VIEW_DESTROYED) {
-			// remove the view from the GraphViewController
-			getGraphViewController().removeGraphView((GraphView) e.getNewValue());
+			// Used to be here for the GraphViewController, but now that listening
+			// is handled by the GraphView itself.
+
 			// pass on the event
 			pcs.firePropertyChange(e);
 		}
