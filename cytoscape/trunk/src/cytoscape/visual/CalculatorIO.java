@@ -120,14 +120,10 @@ public class CalculatorIO {
 	 * store method of Properties, so that the properties descriptions of the
 	 * calculators are reasonably human-readable.
 	 */
-	public static void storeCatalog(CalculatorCatalog catalog, File outFile) {
-		try {
-			final Writer writer = new FileWriter(outFile);
-			storeCatalog(catalog, writer);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public static void storeCatalog(CalculatorCatalog catalog, File outFile) throws IOException {
+		final Writer writer = new FileWriter(outFile);
+		storeCatalog(catalog, writer);
+		writer.close();
 	}
 
 	/**
@@ -136,7 +132,7 @@ public class CalculatorIO {
 	 * store method of Properties, so that the properties descriptions of the
 	 * calculators are reasonably human-readable.
 	 */
-	public static void storeCatalog(CalculatorCatalog catalog, Writer writer) {
+	public static void storeCatalog(CalculatorCatalog catalog, Writer writer) throws IOException {
 		// construct the header comment for the file
 		final String lineSep = System.getProperty("line.separator");
 		final StringBuffer header = new StringBuffer();
@@ -152,66 +148,62 @@ public class CalculatorIO {
 		final BufferedReader reader;
 		final ByteArrayOutputStream buffer;
 
-		try {
-			// get a Properties description of the catalog
-			final Properties props = getProperties(catalog);
+		// get a Properties description of the catalog
+		final Properties props = getProperties(catalog);
 
-			// and dump it to a buffer of bytes
-			buffer = new ByteArrayOutputStream();
-			props.store(buffer, header.toString());
+		// and dump it to a buffer of bytes
+		buffer = new ByteArrayOutputStream();
+		props.store(buffer, header.toString());
 
-			// convert the bytes to a String we can read from
-			reader = new BufferedReader(new StringReader(buffer.toString()));
+		// convert the bytes to a String we can read from
+		reader = new BufferedReader(new StringReader(buffer.toString()));
 
-			// read all the lines and store them in a container object
-			// store the header lines separately so they don't get sorted
-			final List<String> headerLines = new ArrayList<String>();
-			final List<String> lines = new ArrayList<String>();
+		// read all the lines and store them in a container object
+		// store the header lines separately so they don't get sorted
+		final List<String> headerLines = new ArrayList<String>();
+		final List<String> lines = new ArrayList<String>();
 
-			String oneLine = reader.readLine();
+		String oneLine = reader.readLine();
 
-			while (oneLine != null) {
-				if (oneLine.startsWith("#"))
-					headerLines.add(oneLine);
-				else {
-					boolean test = true;
-					for (String key : OLD_CALC_KEYS) {
-						if (oneLine.toUpperCase().contains(key) == false)
-							continue;
-						else {
-							test = false;
-							break;
-						}
+		while (oneLine != null) {
+			if (oneLine.startsWith("#"))
+				headerLines.add(oneLine);
+			else {
+				boolean test = true;
+				for (String key : OLD_CALC_KEYS) {
+					if (oneLine.toUpperCase().contains(key) == false)
+						continue;
+					else {
+						test = false;
+						break;
 					}
-
-					if (test)
-						lines.add(oneLine);
 				}
 
-				oneLine = reader.readLine();
+				if (test)
+					lines.add(oneLine);
 			}
 
-			buffer.close();
-			reader.close();
-
-			// now sort all the non-header lines
-			Collections.sort(lines);
-
-			// and write to file
-			for (String theLine : headerLines) {
-				writer.write(theLine, 0, theLine.length());
-				writer.write(lineSep);
-			}
-
-			for (String theLine : lines) {
-				writer.write(theLine, 0, theLine.length());
-				writer.write(lineSep);
-			}
-
-			writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
+			oneLine = reader.readLine();
 		}
+
+		buffer.close();
+		reader.close();
+
+		// now sort all the non-header lines
+		Collections.sort(lines);
+
+		// and write to file
+		for (String theLine : headerLines) {
+			writer.write(theLine, 0, theLine.length());
+			writer.write(lineSep);
+		}
+
+		for (String theLine : lines) {
+			writer.write(theLine, 0, theLine.length());
+			writer.write(lineSep);
+		}
+
+		writer.flush();
 	}
 
 	/**

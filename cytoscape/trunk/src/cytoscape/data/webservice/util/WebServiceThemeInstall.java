@@ -2,6 +2,7 @@ package cytoscape.data.webservice.util;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.webservice.ui.UnifiedNetworkImportDialog;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.PluginManager;
 import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.ManagerUtil;
@@ -17,6 +18,7 @@ import java.util.*;
 public class WebServiceThemeInstall {
 
 	public final static String WEBSERVICE_THEME = "WebServiceClientPack";
+	private static CyLogger logger = CyLogger.getLogger(WebServiceThemeInstall.class);
 	
 	private PluginManager mgr;
     private UnifiedNetworkImportDialog unifiedNetworkImportDialog;
@@ -116,22 +118,24 @@ public class WebServiceThemeInstall {
 								+ infoObj.getName() + " from "
 								+ infoObj.getObjectUrl());
 				infoObj = null;
-				ioe.printStackTrace();
+				logger.warn("Failed to download "
+								    + infoObj.getName() + " from "
+								    + infoObj.getObjectUrl(), ioe);
 			} catch (cytoscape.plugin.ManagerException me) {
 				this.setErrorMessage("Failed to install " + infoObj.toString());
 				taskMonitor.setException(me, me.getMessage());
 				infoObj = null;
-				me.printStackTrace();
+				logger.warn("Failed to install " + infoObj.toString(), me);
 			} catch (cytoscape.plugin.PluginException pe) {
 				this.setErrorMessage("Failed to install " + infoObj.toString());
 				infoObj = null;
 				taskMonitor.setException(pe, pe.getMessage());
-				pe.printStackTrace();
+				logger.warn("Failed to install " + infoObj.toString(), pe);
 			} catch (ClassNotFoundException cne) {
 				taskMonitor.setException(cne, cne.getMessage());
 				this.setErrorMessage("Failed to install " + infoObj.toString());
 				infoObj = null;
-				cne.printStackTrace();
+				logger.warn("Failed to install " + infoObj.toString(), cne);
 			} finally {
 				taskMonitor.setPercentCompleted(100);
 			}

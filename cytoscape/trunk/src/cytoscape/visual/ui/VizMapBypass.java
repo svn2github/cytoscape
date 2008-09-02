@@ -49,6 +49,7 @@ import javax.swing.JMenuItem;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
+import cytoscape.logger.CyLogger;
 import cytoscape.visual.VisualMappingManager;
 import cytoscape.visual.VisualPropertyType;
 import cytoscape.visual.parsers.ObjectToString;
@@ -63,6 +64,7 @@ abstract class VizMapBypass {
 	protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 	protected CyAttributes attrs = null;
 	protected GraphObject graphObj = null;
+	protected CyLogger logger = CyLogger.getLogger(VizMapBypass.class);
 
 	abstract protected List<String> getBypassNames();
 
@@ -106,7 +108,7 @@ abstract class VizMapBypass {
 					try {
 						obj = type.showDiscreteEditor();
 					} catch (Exception ex) {
-						ex.printStackTrace();
+						logger.warn("Unable to show descrete editor", ex);
 						obj = null;
 					}
 

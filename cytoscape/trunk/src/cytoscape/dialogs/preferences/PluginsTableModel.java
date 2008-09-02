@@ -61,6 +61,7 @@ public class PluginsTableModel extends AbstractTableModel {
 	TreeSet pluginsSet = new TreeSet();
 	static String[] columnHeader = new String[] { "Plugin Location" };
 	boolean pluginsFromCommandLineLoadedAndSaved;
+	private static CyLogger logger = CyLogger.getLogger(PluginsTableModel.class);
 
 	/**
 	 * Creates a new PluginsTableModel object.
@@ -255,7 +256,7 @@ public class PluginsTableModel extends AbstractTableModel {
 
 				addPlugin(url);
 			} catch (Exception ue) {
-				CyLogger.getLogger().warn("Error: cannot construct URL from: " + plugin[i]);
+				logger.warn("Error: cannot construct URL from: " + plugin[i]);
 			}
 		}
 	}
@@ -411,7 +412,7 @@ public class PluginsTableModel extends AbstractTableModel {
 				}
 			}
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			logger.warn("Failed to validate new plugins: "+ioe.getMessage(), ioe);
 		}
 
 		return ((listOfDuplicates.size() > 0) ? true : false);

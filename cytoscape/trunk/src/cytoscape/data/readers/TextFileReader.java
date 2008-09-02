@@ -50,6 +50,7 @@ public class TextFileReader {
 	String filename;
 	BufferedReader bufferedReader;
 	StringBuffer strbuf;
+	CyLogger logger = CyLogger.getLogger(TextFileReader.class);
 
 	/**
 	 * Creates a new TextFileReader object.
@@ -64,7 +65,7 @@ public class TextFileReader {
 			//bufferedReader = new BufferedReader (reader);
 			bufferedReader = new BufferedReader(new FileReader(filename));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("Unable to open text file '"+filename+"': "+e.getMessage(), e);
 
 			return;
 		}
@@ -85,7 +86,7 @@ public class TextFileReader {
 				strbuf.append(newLineOfText + "\n");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("IO error reading from text file: "+e.getMessage(), e);
 
 			return -1;
 		}

@@ -95,6 +95,7 @@ public class BioDataServer {
 	private static String GENE_ASSOCIATION_FILE = "gene_association";
 	private static String OBO_FILE = "obo";
 	protected BioDataServerInterface server;
+	private static CyLogger logger = CyLogger.getLogger(BioDataServer.class);
 
 	// Flip the file content (names) or not.
 	private boolean flip;
@@ -173,7 +174,7 @@ public class BioDataServer {
 
 					if (flags[0].endsWith("true")) {
 						flip = true;
-						CyLogger.getLogger().info("Cannonical and common names will be fliped...");
+						logger.info("Cannonical and common names will be fliped...");
 					} else {
 						flip = false;
 					}
@@ -187,7 +188,7 @@ public class BioDataServer {
 					try {
 						loadObo(geneAssociationFile, oboFile);
 					} catch (Exception e) {
-						e.printStackTrace(System.err);
+						logger.warn("Unable to load OBO file: "+e.getMessage(), e);
 						throw e;
 					}
 				} else {
@@ -208,7 +209,7 @@ public class BioDataServer {
 				}
 			} // if a plausible candidate load file
 			else {
-				CyLogger.getLogger().warn("Could not read BioDataServer load file '" + serverName + "'");
+				logger.warn("Could not read BioDataServer load file '" + serverName + "'");
 			}
 		} // else: look for a readable file
 	} // ctor
@@ -293,7 +294,7 @@ public class BioDataServer {
 				rawText = reader.getText();
 			} // else: regular filesystem file
 		} catch (Exception e0) {
-			CyLogger.getLogger().warn("-- Exception while reading annotation server load file " + filename, e0);
+			logger.warn("-- Exception while reading annotation server load file " + filename, e0);
 
 			return new String[0];
 		}
@@ -380,7 +381,7 @@ public class BioDataServer {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public Ontology[] readOntologyFlatFiles2(String[] ontologyFilenames) throws Exception {
-		// CyLogger.getLogger().info("Reading Ontology flat file...");
+		// logger.info("Reading Ontology flat file...");
 		Vector list = new Vector();
 
 		for (int i = 0; i < ontologyFilenames.length; i++) {
@@ -401,7 +402,7 @@ public class BioDataServer {
 				parts = line.split("=");
 
 				if (parts.length == 2) {
-					//CyLogger.getLogger().info("ID = " + parts[0] + ", " + parts[1]);
+					//logger.info("ID = " + parts[0] + ", " + parts[1]);
 					if (parts[1].equals("biological_process")) {
 						ontologyTypeMap.put(parts[0], "P");
 					} else if (parts[1].equals("molecular_function")) {
@@ -438,7 +439,7 @@ public class BioDataServer {
 	 */
 	public void loadObo(String[] annotationFilenames, String[] ontologyFilenames)
 	    throws Exception {
-		// CyLogger.getLogger().info("Loading OBO file...");
+		// logger.info("Loading OBO file...");
 		BufferedReader[] oboReaders = new BufferedReader[ontologyFilenames.length];
 
 		for (int i = 0; i < ontologyFilenames.length; i++) {
@@ -480,8 +481,7 @@ public class BioDataServer {
 			taxonName = bdsu.checkSpecies(gaFileReader, taxonFileReader);
 			loadThesaurusFiles2(thFileName);
 
-			CyLogger.getLogger().info("Loading: " + annotationFilenames[i] + " (Species = " + taxonName
-			                   + ")");
+			logger.info("Loading: " + annotationFilenames[i] + " (Species = " + taxonName + ")");
 
 			// Reader for the "gene_association" file
 			BufferedReader bpRd = new BufferedReader(new BiologicalProcessAnnotationReader(taxonName,
@@ -604,7 +604,7 @@ public class BioDataServer {
 		try {
 			server.clear();
 		} catch (Exception e) {
-			CyLogger.getLogger().warn("Error!  failed to clear", e);
+			logger.warn("Error!  failed to clear", e);
 		}
 	}
 
@@ -618,7 +618,7 @@ public class BioDataServer {
 		try {
 			server.addAnnotation(annotation);
 		} catch (Exception e) {
-			CyLogger.getLogger().warn("Error!  failed to add annotation " + annotation, e);
+			logger.warn("Error!  failed to add annotation " + annotation, e);
 		}
 	}
 

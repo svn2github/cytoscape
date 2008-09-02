@@ -11,6 +11,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import cytoscape.Cytoscape;
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.DownloadableInfo;
 import cytoscape.plugin.PluginInfo;
 import cytoscape.plugin.ThemeInfo;
@@ -26,6 +27,7 @@ import cytoscape.task.util.TaskManager;
 public class PluginUpdateDialog extends JDialog implements
 		TreeSelectionListener {
 	private static String title = "Update Plugins";
+	private static CyLogger logger = CyLogger.getLogger(PluginUpdateDialog.class);
 
 	public PluginUpdateDialog(javax.swing.JDialog owner) {
 		super(owner, title);
@@ -407,7 +409,7 @@ public class PluginUpdateDialog extends JDialog implements
 					JOptionPane.showMessageDialog(PluginUpdateDialog.this, me
 							.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				} catch (cytoscape.plugin.WebstartException we) {
-					we.printStackTrace();
+					logger.warn("Unable to update '"+UpdatePair[1].getName()+"': "+we.getMessage(), we);
 				}
 			}
 			taskMonitor.setPercentCompleted(100);

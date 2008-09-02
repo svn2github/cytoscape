@@ -41,6 +41,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 
 import giny.model.Edge;
@@ -106,6 +107,8 @@ public class GMLTree {
 	 * When getting a vector, used to specify the type for the contained objects
 	 */
 	public static int GMLTREE = 3;
+
+	private static CyLogger logger = CyLogger.getLogger(GMLTree.class);
 
 	/**
 	 * Create an empty GMLTree
@@ -298,7 +301,7 @@ public class GMLTree {
 				reader.read();
 				quotes = new StringTokenizer(reader.getText(), "\"", true);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.warn("Error reading GML network from '"+filename+"': "+e.getMessage(),e);
 
 				return;
 			}
@@ -497,7 +500,7 @@ public class GMLTree {
 		if (mapped != null) {
 			Iterator it = mapped.iterator();
 
-			// CyLogger.getLogger().info("Level " + index + " " +
+			// logger.info("Level " + index + " " +
 			// (String)keys.get(index) + " has " + mapped.size());
 			if (index >= (keys.size() - 1)) {
 				while (it.hasNext()) {
@@ -511,7 +514,7 @@ public class GMLTree {
 					} else if (type == DOUBLE) {
 						result.add(current.doubleValue());
 					} else if (type == GMLTREE) {
-						// CyLogger.getLogger().info(current.toString());
+						// logger.info(current.toString());
 						result.add(new GMLTree(current));
 					} else {
 						throw new IllegalArgumentException("bad type");
@@ -530,7 +533,7 @@ public class GMLTree {
 			}
 		} // may need to handle missing/empty values
 		  // else {
-		  // CyLogger.getLogger().info("ADDING NULL AT LEVEL " + index + " " +
+		  // logger.info("ADDING NULL AT LEVEL " + index + " " +
 		  // (String)keys.get(index));
 		  // result.add(null);
 		  // }

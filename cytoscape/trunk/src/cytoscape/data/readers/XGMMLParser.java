@@ -54,6 +54,7 @@ import cytoscape.logger.CyLogger;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import java.util.Stack;
@@ -119,6 +120,9 @@ class XGMMLParser extends DefaultHandler {
 	final static String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	final static String DUBLINCORE = "http://purl.org/dc/elements/1.1/";
 
+	private static CyLogger logger = CyLogger.getLogger(XGMMLParser.class);
+
+	private Locator locator = null;
 	private ParseState parseState = ParseState.NONE;
 	private Stack<ParseState>stateStack = null;
 	private String networkName = null;
@@ -286,11 +290,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	static double getDoubleAttributeValue(Attributes atts, String key) {
+	double getDoubleAttributeValue(Attributes atts, String key) throws SAXParseException {
 		String attribute = getAttributeValue(atts, key);
 		if (attribute == null)
 			return 0.0;
-		return (new Double(attribute)).doubleValue();
+		try {
+			return (new Double(attribute)).doubleValue();
+		} catch (Exception e) {
+			throw new SAXParseException("Unable to convert '"+attribute+"' to a DOUBLE", locator);
+		}
 	}
 
 	/**
@@ -303,11 +311,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	static Color getColorAttributeValue(Attributes atts, String key) {
+	Color getColorAttributeValue(Attributes atts, String key) throws SAXParseException{
 		String attribute = getAttributeValue(atts, key);
 		if (attribute == null)
 			return null;
-		return new Color(Integer.parseInt(attribute.substring(1), 16));
+		try {
+			return new Color(Integer.parseInt(attribute.substring(1), 16));
+		} catch (Exception e) {
+			throw new SAXParseException("Unable to convert '"+attribute+"' to a color", locator);
+		}
 	}
 
 	/**
@@ -320,9 +332,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param atts the attributes
 	 * @return the value of the attribute in the appropriate type
 	 */
-	static Object getTypedAttributeValue(ObjectType type, Attributes atts) {
+	Object getTypedAttributeValue(ObjectType type, Attributes atts) throws SAXParseException {
 		String value = atts.getValue("value");
-		return getTypedValue(type, value);
+		Object obj = null;
+		try {
+			return getTypedValue(type, value);
+		} catch (Exception e) {
+			throw new SAXParseException("Unable to convert '"+value+"' to type "+type.toString(),
+			                            locator);
+		}
 	}
 
 	/**
@@ -400,11 +418,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	static int getIntegerAttribute(Attributes atts, String key) {
+	int getIntegerAttribute(Attributes atts, String key) throws SAXParseException {
 		String attribute = atts.getValue(key);
 		if (attribute == null)
 			return 0;
-		return (new Integer(attribute)).intValue();
+		try {
+			return (new Integer(attribute)).intValue();
+		} catch (Exception e) {
+			throw new SAXParseException("Unable to convert '"+attribute+"' to an INTEGER", locator);
+		}
 	}
 
 	/**
@@ -416,11 +438,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param ns the namespace for the attribute we're interested in
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	static int getIntegerAttributeNS(Attributes atts, String key, String ns) {
+	int getIntegerAttributeNS(Attributes atts, String key, String ns) throws SAXParseException {
 		String attribute = atts.getValue(ns, key);
 		if (attribute == null)
 			return 0;
-		return (new Integer(attribute)).intValue();
+		try {
+			return (new Integer(attribute)).intValue();
+		} catch (Exception e) {
+			throw new SAXParseException("Unable to convert '"+attribute+"' to an INTEGER", locator);
+		}
 	}
 
 	/**
@@ -431,11 +457,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	static double getDoubleAttribute(Attributes atts, String key) {
+	double getDoubleAttribute(Attributes atts, String key) throws SAXParseException {
 		String attribute = atts.getValue(key);
 		if (attribute == null)
 			return 0.0;
-		return (new Double(attribute)).doubleValue();
+		try {
+			return (new Double(attribute)).doubleValue();
+		} catch (Exception e) {
+			throw new SAXParseException("Unable to convert '"+attribute+"' to a DOUBLE", locator);
+		}
 	}
 
 	/**
@@ -447,11 +477,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param ns the namespace for the attribute we're interested in
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	static double getDoubleAttributeNS(Attributes atts, String key, String ns) {
+	double getDoubleAttributeNS(Attributes atts, String key, String ns) throws SAXParseException {
 		String attribute = atts.getValue(ns, key);
 		if (attribute == null)
 			return 0;
-		return (new Double(attribute)).doubleValue();
+		try {
+			return (new Double(attribute)).doubleValue();
+		} catch (Exception e) {
+			throw new SAXParseException("Unable to convert '"+attribute+"' to a DOUBLE", locator);
+		}
 	}
 
 	/**
@@ -462,11 +496,15 @@ class XGMMLParser extends DefaultHandler {
 	 * @param key the specific attribute to get
 	 * @return the value for "key" or null if no such attribute exists
 	 */
-	static Color getColorAttribute(Attributes atts, String key) {
+	Color getColorAttribute(Attributes atts, String key) throws SAXParseException {
 		String attribute = atts.getValue(key);
 		if (attribute == null)
 			return null;
-		return new Color(Integer.parseInt(attribute.substring(1), 16));
+		try {
+			return new Color(Integer.parseInt(attribute.substring(1), 16));
+		} catch (Exception e) {
+			throw new SAXParseException("Unable to convert '"+attribute+"' to a color", locator);
+		}
 	}
 
 
@@ -575,15 +613,15 @@ class XGMMLParser extends DefaultHandler {
                            Attributes atts) throws SAXException {
 
 			/*
-			CyLogger.getLogger(XGMMLParser.class).debug("startElement("+namespace+", "+localName+", "+qName+", ");
+			logger.debug("startElement("+namespace+", "+localName+", "+qName+", ");
 			for (int i = 0; i < atts.getLength(); i++) {
-				CyLogger.getLogger(XGMMLParser.class).debug(atts.getQName(i)+"="+atts.getValue(i)+" ");
+				logger.debug(atts.getQName(i)+"="+atts.getValue(i)+" ");
 			}
-			CyLogger.getLogger(XGMMLParser.class).debug(") State: "+printState(parseState));
+			logger.debug(") State: "+printState(parseState));
 			*/
 
 			ParseState nextState = handleState(startParseTable, parseState, localName, atts);
-		  // CyLogger.getLogger(XGMMLParser.class).debug("Next state: "+printState(nextState));
+		  // logger.debug("Next state: "+printState(nextState));
 
 			stateStack.push(parseState);
 			parseState = nextState;
@@ -598,7 +636,7 @@ class XGMMLParser extends DefaultHandler {
 	 * @param qName the tag with the namespace prefix
 	 */
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-			// CyLogger.getLogger(XGMMLParser.class).debug("endElement("+uri+", "+localName+", "+qName+") State: "+printState(parseState));
+			// logger.debug("endElement("+uri+", "+localName+", "+qName+") State: "+printState(parseState));
 
 			handleState(endParseTable, parseState, localName, null);
 
@@ -632,9 +670,18 @@ class XGMMLParser extends DefaultHandler {
  	 * @param e the exception that generated the error
  	 */
 	public void error(SAXParseException e) {
-		CyLogger.getLogger(XGMMLParser.class).warn("Parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'.  Attempting to recover");
+		logger.warn("Parsing error on line "+e.getLineNumber()+" -- '"+e.getMessage()+"'.  Attempting to recover");
 	}
    
+	/**
+ 	 * Set the document locator to help us construct our own exceptions
+ 	 *
+ 	 * @param locator the document locator to set
+ 	 */
+	public void setDocumentLocator(Locator locator) {
+		this.locator = locator;
+	}
+
 	/********************************************************************
 	 * Private parser routines.  The following routines are used to 
 	 * manage the state data.
@@ -727,7 +774,7 @@ class XGMMLParser extends DefaultHandler {
 				nextState = handleAttribute(atts, currentAttributes, networkName);
 			}
 
-			// CyLogger.getLogger(XGMMLParser.class).debug("Network attribute: "+printAttribute(atts));
+			// logger.debug("Network attribute: "+printAttribute(atts));
 			if (nextState != ParseState.NONE)
 				return nextState;
 			
@@ -744,7 +791,7 @@ class XGMMLParser extends DefaultHandler {
 			String href = atts.getValue(XLINK, "href");
 
 			if (href != null) {
-				// CyLogger.getLogger(XGMMLParser.class).debug(" href=\""+href+"\"");
+				// logger.debug(" href=\""+href+"\"");
 				throw new SAXException("Can't have a node reference outside of a group");
 			}
 			// Create the node
@@ -760,7 +807,7 @@ class XGMMLParser extends DefaultHandler {
 				return current;
 
 			attState = current;
-			// CyLogger.getLogger(XGMMLParser.class).debug("Node attribute: "+printAttribute(atts));
+			// logger.debug("Node attribute: "+printAttribute(atts));
 			// Is this a graphics override?
 			String name = atts.getValue("name");
 
@@ -835,7 +882,7 @@ class XGMMLParser extends DefaultHandler {
 				sourceAlias = parts[0];
 				interaction = parts[1];
 				targetAlias = parts[2];
-				// CyLogger.getLogger(XGMMLParser.class).debug("Edge label parse: interaction = "+interaction);
+				// logger.debug("Edge label parse: interaction = "+interaction);
 			}
 
 			if (idMap.containsKey(source) && idMap.containsKey(target)) {
@@ -854,7 +901,7 @@ class XGMMLParser extends DefaultHandler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 
 			attState = current;
-			// CyLogger.getLogger(XGMMLParser.class).debug("Edge attribute: "+printAttribute(atts));
+			// logger.debug("Edge attribute: "+printAttribute(atts));
 			/*
 			if (atts.getValue("name").startsWith("edge.")) {
 				// Yes, add it to our nodeGraphicsMap
@@ -881,7 +928,7 @@ class XGMMLParser extends DefaultHandler {
 
 	class handleEdgeGraphics implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
-			// CyLogger.getLogger(XGMMLParser.class).debug("Atts for "+currentEdge.getIdentifier()+": "+printAttributes(atts));
+			// logger.debug("Atts for "+currentEdge.getIdentifier()+": "+printAttributes(atts));
 			if (tag.equals("graphics")) {
 				if (edgeGraphicsMap.containsKey(currentEdge)) {
 					addAttributes(edgeGraphicsMap.get(currentEdge),atts);
@@ -911,7 +958,7 @@ class XGMMLParser extends DefaultHandler {
 			if (currentGroupNode != null) groupStack.push(currentGroupNode);
 			currentGroupNode = currentNode;
 			groupMap.put(currentGroupNode, new ArrayList<CyNode>());
-			// CyLogger.getLogger(XGMMLParser.class).debug("Found group: "+currentNode);
+			// logger.debug("Found group: "+currentNode);
 			return current;
 		}
 	}
@@ -923,7 +970,7 @@ class XGMMLParser extends DefaultHandler {
 			String href = atts.getValue(XLINK, "href");
 
 
-			// CyLogger.getLogger(XGMMLParser.class).debug("<node");
+			// logger.debug("<node");
 			if (href == null) {
 				// Create the node
 				currentNode = createUniqueNode(label,id);
@@ -935,7 +982,7 @@ class XGMMLParser extends DefaultHandler {
 			// even if we know about it now, so that we can get the edges associated
 			// with the group when we add it.
 
-			// CyLogger.getLogger(XGMMLParser.class).debug(" href=\""+href+"\"");
+			// logger.debug(" href=\""+href+"\"");
 			// Add it to the list of nodes to be resolved for this group
 			if (currentGroupNode == null)
 				throw new SAXException("No group to add node reference to");
@@ -953,7 +1000,7 @@ class XGMMLParser extends DefaultHandler {
 				List<String> links = nodeLinks.get(currentGroupNode);
 				links.add(id);
 			}
-			// CyLogger.getLogger(XGMMLParser.class).debug(">");
+			// logger.debug(">");
 			return current;
 		}
 	}
@@ -1007,7 +1054,7 @@ class XGMMLParser extends DefaultHandler {
 				if (getAttribute(atts, "y") != null) {
 					edgeBendY = getAttribute(atts, "y");
 				}
-				// CyLogger.getLogger(XGMMLParser.class).debug("x="+edgeBendX+" y="+edgeBendY);
+				// logger.debug("x="+edgeBendX+" y="+edgeBendY);
 				if (edgeBendX != null && edgeBendY != null) {
 					if (handleList == null) handleList = new ArrayList();
 					handleList.add(edgeBendX+","+edgeBendY);
@@ -1041,7 +1088,7 @@ class XGMMLParser extends DefaultHandler {
 						list += handleList.get(i);
 					}
 				}
-				// CyLogger.getLogger(XGMMLParser.class).debug("Setting edgeHandleList to: "+list);
+				// logger.debug("Setting edgeHandleList to: "+list);
 				// Add this as a graphics attribute to the end of our list
 				((AttributesImpl)edgeGraphicsMap.get(currentEdge)).
 						addAttribute("", "", "edgeHandleList", "string", list);
@@ -1053,7 +1100,7 @@ class XGMMLParser extends DefaultHandler {
 	class handleGroupDone implements Handler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			currentNode = currentGroupNode;
-			// CyLogger.getLogger(XGMMLParser.class).debug("Group "+currentNode+" done.");
+			// logger.debug("Group "+currentNode+" done.");
 			if (!groupStack.empty())
 				currentGroupNode = groupStack.pop();
 			else
@@ -1159,7 +1206,7 @@ class XGMMLParser extends DefaultHandler {
 			// Get our attributes
 			ObjectType type = getType(atts.getValue("type"));
 			String value = atts.getValue("value");
-			// CyLogger.getLogger(XGMMLParser.class).debug("Complex attribute: "+currentAttributeID+" level "+level+" value="+atts.getValue("value"));
+			// logger.debug("Complex attribute: "+currentAttributeID+" level "+level+" value="+atts.getValue("value"));
 
 			if (level == numKeys) {
 				complexMap[level-1].put(complexKey[level-1], getTypedValue(type, value));
@@ -1196,7 +1243,7 @@ class XGMMLParser extends DefaultHandler {
 		public ParseState handle(String tag, Attributes atts, ParseState current) throws SAXException {
 			if (level == 0) {
 				// We are done, and have read in all of our attributes
-				// CyLogger.getLogger(XGMMLParser.class).debug("Complex attribute "+currentAttributeID+" ComplexMap["+level+"] = "+complexMap[level]);
+				// logger.debug("Complex attribute "+currentAttributeID+" ComplexMap["+level+"] = "+complexMap[level]);
 			} else if (level < numKeys) {
 				complexMap[level] = null;
 				complexKey[level] = null;
@@ -1292,7 +1339,7 @@ class XGMMLParser extends DefaultHandler {
 
 	private ParseState handleAttribute(Attributes atts, 
 	                                   CyAttributes cyAtts,
-		                                 String id) {
+		                                 String id) throws SAXException {
 		String name = atts.getValue("name");
 		ObjectType objType = getType(atts.getValue("type"));
 		Object obj = getTypedAttributeValue(objType, atts);
@@ -1440,15 +1487,15 @@ class XGMMLParser extends DefaultHandler {
 		if (label != null) {
 			if (id == null)
 				id = label;
-				// CyLogger.getLogger(XGMMLParser.class).debug(" label=\""+label+"\"");
+				// logger.debug(" label=\""+label+"\"");
 		}
 		// OK, now actually create it
 		CyNode node = Cytoscape.getCyNode(label, true);
-		// CyLogger.getLogger(XGMMLParser.class).debug("Created new node("+label+") id="+node.getRootGraphIndex());
+		// logger.debug("Created new node("+label+") id="+node.getRootGraphIndex());
 
 		// Add it our indices
 		nodeList.add(node);
-		// CyLogger.getLogger(XGMMLParser.class).debug("Adding node "+node.getIdentifier()+"("+id+") to map");
+		// logger.debug("Adding node "+node.getIdentifier()+"("+id+") to map");
 		idMap.put(id, node);
 		return node;
 	}
@@ -1466,13 +1513,13 @@ class XGMMLParser extends DefaultHandler {
 		if (Cytoscape.getCyNode(source, false) == null) {
 			String warn = "Warning: skipping edge "+label+"\n";
 			warn += "         node "+source+" doesn't exist";
-			CyLogger.getLogger(XGMMLParser.class).warn(warn);
+			logger.warn(warn);
 			return null;
 		}
 		if (Cytoscape.getCyNode(target, false) == null) {
 			String warn = "Warning: skipping edge "+label+"\n";
 			warn += "         node "+target+" doesn't exist";
-			CyLogger.getLogger(XGMMLParser.class).warn(warn);
+			logger.warn(warn);
 			return null;
 		}
 		CyEdge edge =  Cytoscape.getCyEdge(source, label, target, interaction);

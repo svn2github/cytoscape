@@ -36,6 +36,8 @@
 
 package cytoscape.visual.ui.editors.discrete;
 
+import cytoscape.logger.CyLogger;
+
 import com.l2fprod.common.beans.editor.StringPropertyEditor;
 import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.LookAndFeelTweaks;
@@ -57,6 +59,7 @@ import javax.swing.JTextField;
 public class CyStringPropertyEditor extends StringPropertyEditor {
 	private Object currentValue;
 	private Object selected;
+	private CyLogger logger = CyLogger.getLogger(CyStringPropertyEditor.class);
 
 	/**
 	 * Creates a new CyStringPropertyEditor object.
@@ -73,35 +76,24 @@ public class CyStringPropertyEditor extends StringPropertyEditor {
 					try {
 						getM = e.getOppositeComponent().getClass().getMethod("getSelectedRow", new Class[] {});
 					} catch (SecurityException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						logger.warn("Can't get 'getSelectedRow' method from text field!", e1);
 					} catch (NoSuchMethodException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						logger.warn("Can't find 'getSelectedRow' method in text field!", e1);
 					}
 
 					try {
 						val = getM.invoke(e.getOppositeComponent(), new Object[] {});
-					} catch (IllegalArgumentException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IllegalAccessException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (InvocationTargetException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					} catch (Exception e1) {
+						logger.warn("Can't invoke 'getSelectedRow' method of text field: "+e1.getMessage(), e1);
 					}
 
 					try {
 						getM = e.getOppositeComponent().getClass()
 						        .getMethod("getValueAt", new Class[] { int.class, int.class });
 					} catch (SecurityException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						logger.warn("Can't get 'getValueAt' method from text field!", e1);
 					} catch (NoSuchMethodException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						logger.warn("Can't find 'getValueAt' method in text field!", e1);
 					}
 
 					Object val2 = null;
@@ -109,15 +101,8 @@ public class CyStringPropertyEditor extends StringPropertyEditor {
 					try {
 						val2 = getM.invoke(e.getOppositeComponent(),
 						                   new Object[] { (Integer) val, new Integer(0) });
-					} catch (IllegalArgumentException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IllegalAccessException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (InvocationTargetException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					} catch (Exception e1) {
+						logger.warn("Can't invoke 'getValueAt' method of text field: "+e1.getMessage(), e1);
 					}
 
 					selected = ((Item) val2).getProperty().getDisplayName();

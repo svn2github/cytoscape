@@ -529,11 +529,11 @@ public class CytoscapeSessionReader {
 				is.close();
 			}
 		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
+			logger.warn("Can not find bookmark file in "+pBookmarksFileURL.toString(), e1);
 		} catch (IOException e2) {
-			e2.printStackTrace();
+			logger.warn("Can not read bookmark file from "+pBookmarksFileURL.toString(), e2);
 		} catch (JAXBException e3) {
-			e3.printStackTrace();
+			logger.warn("XML parse err in bookmark file in "+pBookmarksFileURL.toString(), e3);
 		}
 
 		return theBookmark;

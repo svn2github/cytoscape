@@ -36,6 +36,7 @@ package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.logger.CyLogger;
 import cytoscape.util.CyColorChooser;
 
 import cytoscape.visual.GlobalAppearanceCalculator;
@@ -102,6 +103,7 @@ import javax.swing.SwingConstants;
 public class DefaultAppearenceBuilder extends JDialog {
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
+	private static CyLogger logger;
 
 	// This editor should be a singleton.
 	private static DefaultAppearenceBuilder dab = null;
@@ -109,6 +111,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	static {
 		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
 		NODE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getNodeVisualPropertyList());
+		logger = CyLogger.getLogger(DefaultAppearenceBuilder.class);
 	}
 
 	/**
@@ -358,19 +361,18 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 			final JList list;
 
-			try {
-				if (e.getSource() == nodeList) {
-					list = nodeList;
-				} else {
-					list = edgeList;
-				}
+			if (e.getSource() == nodeList) {
+				list = nodeList;
+			} else {
+				list = edgeList;
+			}
 
-				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list
-				                                                                                                                                                                                                                                                                                                                                                               .getSelectedValue(),
+			try {
+				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list.getSelectedValue(),
 				                                                    this);
 				VizMapperMainPanel.apply(newValue, (VisualPropertyType) list.getSelectedValue());
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				logger.warn("Unable to show VizMapper value select dialog!", e1);
 			}
 
 			buildList();
@@ -389,7 +391,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 				Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalAppearanceCalculator()
 				         .setDefaultColor(selected, newColor);
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				logger.warn("Unable to set default color!", e1);
 			}
 
 			buildList();
@@ -471,7 +473,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			try {
 				globalIcons.add(new GlobalIcon(name, gac.getDefaultColor(name)));
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.warn("Unable to add default color icon!", e);
 			}
 
 			gModel.addElement(name);

@@ -251,6 +251,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private Map<VisualPropertyType, JDialog> editorWindowManager = new HashMap<VisualPropertyType, JDialog>();
 	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
 	private boolean ignore = false;
+	private CyLogger logger = CyLogger.getLogger(VizMapperMainPanel.class);
+
 
 	// For node size lock
 	VizMapperProperty nodeSize;
@@ -1364,7 +1366,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						try {
 							((JDialog) type.showContinuousEditor()).addPropertyChangeListener(this);
 						} catch (Exception e1) {
-							e1.printStackTrace();
+							logger.warn("Unable to add listener to the contiuous editor", e1);
 						}
 					}
 				}
@@ -2894,7 +2896,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		try {
 			newValue = type.showDiscreteEditor();
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			logger.warn("Unable to show the descrete editor",e1);
 		}
 
 		if (newValue == null)
@@ -3164,7 +3166,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					inc = Float.valueOf(increment);
 					st = Float.valueOf(start);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					JOptionPane.showMessageDialog(visualPropertySheetPanel,
+					                              "Start value and increment must be numeric values!",
+					                              "Non-numeric input error", JOptionPane.ERROR_MESSAGE);
 					inc = null;
 					st = null;
 				}

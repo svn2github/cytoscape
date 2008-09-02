@@ -172,6 +172,8 @@ public class GMLReader extends AbstractGraphReader {
 	private String vsbSwitch = CytoscapeInit.getProperties().getProperty("visualStyleBuilder");
 	private VisualStyleBuilder graphStyle = null;
 
+	protected static CyLogger logger = CyLogger.getLogger(GMLReader.class);
+
 	// Entries in the file
 	List keyVals;
 
@@ -286,7 +288,7 @@ public class GMLReader extends AbstractGraphReader {
 
 		// File fileTest = new File(fileName);
 		// target = fileTest.getName();
-		//CyLogger.getLogger().info("Target GML file is " + fileName);
+		// logger.info("Target GML file is " + fileName);
 		mapSuffix = " for " + fileName;
 
 		return getNetworkName(); //fileName.concat("_GML_style");
@@ -384,7 +386,7 @@ public class GMLReader extends AbstractGraphReader {
 		try {
 			keyVals = (new GMLParser(inputStream)).parseList();
 		} catch (Exception io) {
-			io.printStackTrace();
+			logger.warn("Error reading GML file: "+io.getMessage(), io);
 
 			if (taskMonitor != null)
 				taskMonitor.setException(io, io.getMessage());
@@ -781,7 +783,7 @@ public class GMLReader extends AbstractGraphReader {
 		if (graphics_list != null) {
 			if (label == null) {
 				label = "node" + tempid;
-				CyLogger.getLogger().info("Warning: node label is missing for node ID: " + tempid);
+				logger.info("Warning: node label is missing for node ID: " + tempid);
 			}
 
 			extractNodeAttributes(graphics_list, label);
@@ -862,8 +864,8 @@ public class GMLReader extends AbstractGraphReader {
 			}
 		}
 
-		// CyLogger.getLogger().info( "In layout, Root index is: " + root_index );
-		// CyLogger.getLogger().info( " Checking label: " + label );
+		// logger.info( "In layout, Root index is: " + root_index );
+		// logger.info( " Checking label: " + label );
 		view = myView.getNodeView(root_index.intValue());
 
 		if (label != null) {
@@ -1073,7 +1075,7 @@ public class GMLReader extends AbstractGraphReader {
 			temp = temp + edgeWidth.get(e) + ", ";
 			temp = temp + edgeArrow.get(e) + ", ";
 			temp = temp + edgeShape.get(e) + ", ";
-			CyLogger.getLogger().info(temp);
+			logger.info(temp);
 			temp = null;
 		}
 	}

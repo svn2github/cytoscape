@@ -465,6 +465,7 @@ public class NetworkViewManager implements PropertyChangeListener, InternalFrame
 
 		iframe.setVisible(true);
 		iframe.addInternalFrameListener(this);
+		iframe.setResizable(true);
 
 		networkViewMap.put(view.getNetwork().getIdentifier(), iframe);
 		componentMap.put(iframe, view.getNetwork().getIdentifier());

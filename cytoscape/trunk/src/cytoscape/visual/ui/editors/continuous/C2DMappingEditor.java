@@ -36,6 +36,7 @@ package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
 
+import cytoscape.logger.CyLogger;
 import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.visual.mappings.BoundaryRangeValues;
@@ -271,7 +272,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 							setAlwaysOnTop(false);
 							newValue = type.showDiscreteEditor();
 						} catch (Exception e1) {
-							e1.printStackTrace();
+							CyLogger.getLogger(C2DMappingEditor.class).warn("Unable to show discrete editor!", e1);
 						} finally {
 							setAlwaysOnTop(true);
 						}

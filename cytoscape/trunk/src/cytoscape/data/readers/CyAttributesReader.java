@@ -44,6 +44,7 @@ import java.util.StringTokenizer;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMapDefinition;
+import cytoscape.logger.CyLogger;
 
 
 // I hate writing parsing code.  Grumble grumble grumble.
@@ -324,11 +325,10 @@ public class CyAttributesReader {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-
 			String message = "failed parsing attributes file at line: " + lineNum
-			                 + " with exception: ";
-			throw new IOException(message + e.getMessage());
+			                 + " with exception: " + e.getMessage();
+			CyLogger.getLogger(CyAttributesReader.class).warn(message, e);
+			throw new IOException(message);
 		}
 	}
 }

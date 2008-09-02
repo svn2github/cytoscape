@@ -11,6 +11,7 @@ import cytoscape.bookmarks.DataSource;
 
 import cytoscape.dialogs.preferences.BookmarkDialog;
 
+import cytoscape.logger.CyLogger;
 import cytoscape.plugin.DownloadableInfo;
 //import cytoscape.plugin.DownloadableType;
 //import cytoscape.plugin.ManagerException;
@@ -56,6 +57,8 @@ public class PluginUrlDialog extends JDialog {
 
 	private PluginManageDialog parentDialog;
 
+	private static CyLogger logger = CyLogger.getLogger(PluginUrlDialog.class);
+
 	/**
 	 * Creates a new PluginUrlDialog object.
 	 */
@@ -87,7 +90,7 @@ public class PluginUrlDialog extends JDialog {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 					"Failed to retrieve bookmarks for plugin download sites.",
 					"Error", JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
+			logger.warn("Failed to retrieve bookmarks for plugin download sites.", E);
 
 			return;
 		}
@@ -170,7 +173,7 @@ public class PluginUrlDialog extends JDialog {
 							Cytoscape.getDesktop(),
 							"Failed to get bookmarks.  Go to Edit->Preferences->Bookmarks to edit your plugin download sites.",
 							"Error", JOptionPane.ERROR_MESSAGE);
-			E.printStackTrace();
+			logger.warn("Failed to get bookmarks from plugin download sites: "+E.getMessage(), E);
 		}
 	}
 
@@ -361,11 +364,11 @@ public class PluginUrlDialog extends JDialog {
 			if (isExceptionThrown()) {
 				if (getIOException() != null) {
 					// failed to read the given url
-					getIOException().printStackTrace();
+					logger.warn(PluginManageDialog.CommonError.NOXML + url, getIOException());
 					dialog.setError(PluginManageDialog.CommonError.NOXML + url);
 				} else if (getJDOMException() != null) {
 					// failed to parse the xml file at the url
-					getJDOMException().printStackTrace();
+					logger.warn(PluginManageDialog.CommonError.BADXML + url, getJDOMException());
 					dialog.setError(PluginManageDialog.CommonError.BADXML + url);
 				}
 			} else {

@@ -51,6 +51,7 @@ import cytoscape.logger.CyLogger;
  * undoable edit stack.
  */
 public class UndoAction extends CytoscapeAction {
+	private static CyLogger logger = CyLogger.getLogger(UndoAction.class);
 
 	/**
 	 * Constructs the action.
@@ -71,8 +72,7 @@ public class UndoAction extends CytoscapeAction {
 			if ( CyUndo.undoManager.canUndo() )
 				CyUndo.undoManager.undo();
 		} catch (CannotUndoException ex) {
-			CyLogger.getLogger().warn("Unable to undo: " + ex);
-			ex.printStackTrace();
+			logger.warn("Unable to undo: " + ex.getMessage(), ex);
 		}
 	}
 

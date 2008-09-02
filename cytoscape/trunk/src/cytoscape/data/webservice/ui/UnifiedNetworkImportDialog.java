@@ -108,6 +108,8 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	//Default icon for about dialog
 	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_internet-32.png"));
 
+	private static CyLogger logger = null;
+
     private int numDataSources = 0;
     private int numClients = 0;
     
@@ -115,6 +117,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
     static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
+		logger = CyLogger.getLogger(UnifiedNetworkImportDialog.class);
 	}
 
 	/**
@@ -426,10 +429,10 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
             			displayError = true;
             	} catch (java.io.IOException ioe) {
             		displayError = true;
-            		ioe.printStackTrace();
+								logger.warn("I/O error reading theme: ", ioe);
             	} catch (org.jdom.JDOMException jde) {
             		displayError = true;
-            		jde.printStackTrace();
+								logger.warn("JDOM error parsing theme: ", jde);
             	} finally {
             		if (displayError)
             			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
@@ -445,7 +448,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		selectedClientID = clientNames.get(datasourceComboBox.getSelectedItem());
 
 		final CyWebServiceEvent<String> event = buildEvent();
-		CyLogger.getLogger().info("Start importing network: " + evt.getActionCommand());
+		logger.info("Start importing network: " + evt.getActionCommand());
 
 		task = new WSNetworkImportTask(datasourceComboBox.getSelectedItem().toString(), event);
 
@@ -460,7 +463,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		// Execute Task in New Thread; pops open JTask Dialog Box.
 		TaskManager.executeTask(task, jTaskConfig);
 
-		CyLogger.getLogger().info("Network Import from WS Success!");
+		logger.info("Network Import from WS Success!");
 		dispose();
 	}
 
@@ -508,7 +511,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				buttonPanel.setVisible(false);
 		} else {
 				// Otherwise, use the default panel.
-				CyLogger.getLogger().info("No custom GUI.  Use default panel.");
+				logger.info("No custom GUI.  Use default panel.");
 				dataQueryPanel.add(mainTabbedPane, BorderLayout.CENTER);
 				buttonPanel.setVisible(true);
 		}
@@ -675,9 +678,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 			DatabaseSearchResult result = (DatabaseSearchResult) resultObject;
 
 			if (result.getNextMove().equals(WSEventType.IMPORT_NETWORK)) {
-				CyLogger.getLogger().info("Got search result from: " + evt.getSource() + ", Num result = "
-				                   + result.getResultSize() + ", Source name = "
-				                   + evt.getOldValue());
+				logger.info("Got search result from: " + evt.getSource() + ", Num result = "
+				            + result.getResultSize() + ", Source name = "
+				            + evt.getOldValue());
 
 				String[] message = {
 				                       result.getResultSize() + " records found in "

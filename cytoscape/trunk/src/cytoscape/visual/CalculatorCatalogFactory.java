@@ -170,8 +170,12 @@ public abstract class CalculatorCatalogFactory {
                         styles += "\n    - " + it.next().toString();
 
                     logger.info(styles);
-                    CalculatorIO.storeCatalog(calculatorCatalog, propertiesFile);
-                    logger.info("Vizmap saved to: " + propertiesFile);
+										try {
+                    	CalculatorIO.storeCatalog(calculatorCatalog, propertiesFile);
+                    	logger.info("Vizmap saved to: " + propertiesFile);
+										} catch (IOException e1) {
+                    	logger.error("Unable to save vizmap to: " + propertiesFile, e1);
+										}
                 }
             } else if ((e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) ||
                     (e.getPropertyName() == Cytoscape.VIZMAP_LOADED)) {

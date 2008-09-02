@@ -33,9 +33,12 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 	private static final String DEF_LAYOUT = "force-directed";
 	
 	private static NetworkExpansionMenu expander;
+
+	private static CyLogger logger;
 	
 	static {
 		expander = new NetworkExpansionMenu();
+		logger = CyLogger.getLogger(NetworkExpansionMenu.class);
 	}
 	
 	public static JMenuItem getExpander(WebServiceClient client) {
@@ -60,7 +63,7 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 	private JMenuItem getMenuItem(final WebServiceClient client) {
 		final JMenuItem expandMenu = new JMenuItem(new AbstractAction("Get neighbours by ID(s)") {
 				public void actionPerformed(ActionEvent e) {
-					CyLogger.getLogger().info("Start expanding network: " + e.getActionCommand());
+					logger.info("Start expanding network: " + e.getActionCommand());
 
 					final CyWebServiceEvent evt = new CyWebServiceEvent(client.getClientID(),
 					                                                    WSEventType.SEARCH_DATABASE,
@@ -105,8 +108,8 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 		if (evt.getPropertyName().equals(CyWebServiceEvent.WSResponseType.SEARCH_FINISHED.toString())
 		    && ((DatabaseSearchResult) resultObj).getNextMove().equals(WSEventType.EXPAND_NETWORK)) {
-			CyLogger.getLogger().info("Search result from " + evt.getSource() + ", Number of result = "
-			                   + evt.getNewValue() + ", Source name = " + evt.getOldValue());
+			logger.info("Search result from " + evt.getSource() + ", Number of result = "
+			            + evt.getNewValue() + ", Source name = " + evt.getOldValue());
 
 			String[] message = {
 			                       ((DatabaseSearchResult) resultObj).getResultSize()
@@ -127,7 +130,7 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 				try {
 					WebServiceClientManager.getCyWebServiceEventSupport().fireCyWebServiceEvent(evt2);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.warn("Exception handling web service event '"+evt2.toString()+"': ",e);
 				}
 			}
 		} else if (evt.getPropertyName().equals(Cytoscape.NETWORK_MODIFIED)

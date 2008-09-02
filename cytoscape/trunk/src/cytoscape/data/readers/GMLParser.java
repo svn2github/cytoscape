@@ -137,28 +137,6 @@ public class GMLParser {
 	}
 
 	/**
-	 * A short test of the regeular expressio patterns
-	 */
-	public static void main(String[] args) {
-		//test pattersn
-		if (!integerPattern.matcher("9").matches())
-			CyLogger.getLogger().info("integer failed");
-
-		if (!integerPattern.matcher("+11").matches())
-			CyLogger.getLogger().info("integer failed");
-
-		if (!realPattern.matcher("11.9e-07").matches())
-			CyLogger.getLogger().info("real failed");
-
-		try {
-			GMLParser parser = new GMLParser("test.gml");
-			List list = parser.parseList();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Public method to print out a given object tree(list)
 	 * using the supplied filewriter
 	 */

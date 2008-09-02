@@ -137,8 +137,7 @@ public class PassThroughMapping implements ObjectMapping {
 		try {
 			copy = (PassThroughMapping) super.clone();
 		} catch (CloneNotSupportedException e) {
-			CyLogger.getLogger().warn("Critical error in PassThroughMapping - was not cloneable");
-			e.printStackTrace();
+			CyLogger.getLogger().warn("Critical error in PassThroughMapping - was not cloneable", e);
 
 			return null;
 		}

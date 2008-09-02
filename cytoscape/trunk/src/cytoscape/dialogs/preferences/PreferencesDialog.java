@@ -90,6 +90,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	private static final int[] columnWidth = new int[] { 200, 350 };
 	
 	private static final Color SELECTED_CELL_COLOR = new Color(0, 100, 255, 40);
+	private static CyLogger logger = CyLogger.getLogger(PreferencesDialog.class);
 	
 	int[] selection = null;
 	JScrollPane propsTablePane = new JScrollPane();
@@ -124,9 +125,10 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().equals(Cytoscape.PREFERENCE_MODIFIED)) {
-			CyLogger.getLogger().info("Cytoscape Prop. has changed: ");
-			CyLogger.getLogger().info(" - Old value is " + e.getOldValue());
-			CyLogger.getLogger().info(" - New value is " + e.getNewValue());
+			String info = "Cytoscape Prop. has changed: \n";
+			info += " - Old value is " + e.getOldValue()+"\n";
+			info += " - New value is " + e.getNewValue();
+			logger.info(info);
 
 			String propName = null;
 
@@ -145,9 +147,8 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 				CytoscapeInit.getProperties().setProperty(propName, (String) e.getNewValue());
 				prefsTM.setProperty(propName, (String) e.getNewValue());
 				// refresh();
-				CyLogger.getLogger()
-				        .info(propName + " updated to "
-				              + CytoscapeInit.getProperties().getProperty(propName));
+				logger.info(propName + " updated to "
+				            + CytoscapeInit.getProperties().getProperty(propName));
 			}
 		}
 	}
@@ -273,7 +274,7 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 		try {
 			prefPopupInit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn("Unable to initialize preferences popup: "+e.getMessage(), e);
 		}
 
 		this.setTitle("Cytoscape Preferences Editor");
@@ -467,11 +468,9 @@ public class PreferencesDialog extends JDialog implements PropertyChangeListener
 					File file = CytoscapeInit.getConfigFile("cytoscape.props");
 					FileOutputStream output = new FileOutputStream(file);
 					CytoscapeInit.getProperties().store(output, "Cytoscape Property File");
-					CyLogger.getLogger()
-					        .info("wrote Cytoscape properties file to: " + file.getAbsolutePath());
+					logger.info("wrote Cytoscape properties file to: " + file.getAbsolutePath());
 				} catch (Exception ex) {
-					ex.printStackTrace();
-					CyLogger.getLogger().info("Could not write cytoscape.props file!");
+					logger.error("Could not write cytoscape.props file!", ex);
 				}
 
 				saveCyPropsAsDefault = false;

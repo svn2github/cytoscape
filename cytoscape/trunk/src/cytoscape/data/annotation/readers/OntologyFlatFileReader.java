@@ -103,7 +103,6 @@ public class OntologyFlatFileReader {
 		try {
 			System.arraycopy(entireFile, 0, lines, 0, lines.length);
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
 			throw e;
 		}
 
