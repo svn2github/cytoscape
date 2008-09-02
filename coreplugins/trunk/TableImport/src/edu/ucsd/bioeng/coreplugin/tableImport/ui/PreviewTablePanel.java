@@ -600,7 +600,7 @@ public class PreviewTablePanel extends JPanel {
 		try {
 			image = ImageIO.read(url);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			logger.warn("could't create image from: " + url.toString(), ioe);
 
 			return new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		}

@@ -569,8 +569,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 						writer.close();
 						export = null;
 					} catch (Exception ex) {
-						logger.error("Table Export Write error");
-						ex.printStackTrace();
+						logger.error("Table Export Write error",ex);
 					}
 				}
 			});
@@ -1104,8 +1103,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			try {
 				linkout = Class.forName("linkout.LinkOut");
 			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				logger.error("Could't create LinkOut class",e1);
 
 				return;
 			}
@@ -1115,8 +1113,7 @@ public class CyAttributeBrowserTable extends JTable implements MouseListener, Ac
 			try {
 				props.load(cl.getResource("linkout.props").openStream());
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				logger.warn("Could't read linkout.props",e1);
 			}
 
 			linkoutProps = new HashMap<String, Map<String, String>>();

@@ -89,8 +89,7 @@ public class FilterIO {
 			in.close();
 		} catch (Exception ex) {
 			
-			logger.error("Filter Read error");
-			ex.printStackTrace();
+			logger.error("Filter Read error", ex);
 		}
 		
 		retValue[0] = totalCount;
@@ -442,8 +441,7 @@ public class FilterIO {
 			}
 			writer.close();
 		} catch (Exception ex) {
-			logger.error("Global filter Write error");
-			ex.printStackTrace();
+			logger.error("Global filter Write error",ex);
 		}
 	}
 	
@@ -501,8 +499,7 @@ public class FilterIO {
 			}
 			writer.close();
 		} catch (Exception ex) {
-			logger.error("Session filter Write error");
-			ex.printStackTrace();
+			logger.error("Session filter Write error",ex);
 		}
 
 		pFileList.add(session_filter_file);

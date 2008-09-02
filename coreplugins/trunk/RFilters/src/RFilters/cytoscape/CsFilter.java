@@ -104,8 +104,7 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 
 				writer.close();
 			} catch (Exception ex) {
-				cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Write error");
-				ex.printStackTrace();
+				cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Write error",ex);
 			}
 		}
 	}
@@ -133,8 +132,7 @@ public class CsFilter extends CytoscapePlugin implements PropertyChangeListener 
 
 			in.close();
 		} catch (Exception ex) {
-			cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Read error");
-			ex.printStackTrace();
+			cytoscape.logger.CyLogger.getLogger(CsFilter.class).error("Filter Read error",ex);
 		}
 
 		// create icons

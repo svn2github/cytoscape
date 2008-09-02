@@ -128,10 +128,8 @@ public class CytoscapeEditorFactoryImpl implements CytoscapeEditorFactory {
 				cyEditor.setEditorName(editorType);
 			} catch (ClassNotFoundException e1) {
 				String msg = "Cannot create editor of type: " + editorType;
-				InvalidEditorException ex = new InvalidEditorException(msg,
-				                                                       new Throwable("type not found"));
+				InvalidEditorException ex = new InvalidEditorException(msg, new Throwable("type not found"));
 
-				// ex.printStackTrace();
 				throw ex;
 			} catch (InstantiationException ex) {
 				logger.warn("Unable to instantiate editor!", ex);
