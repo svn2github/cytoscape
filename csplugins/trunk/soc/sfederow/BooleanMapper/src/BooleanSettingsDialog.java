@@ -38,6 +38,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.*;
@@ -61,182 +62,95 @@ import javax.swing.text.Position;
 
 
 
-public class BooleanSettingsDialog extends JDialog implements ActionListener, FocusListener, TableModelListener {
+public class BooleanSettingsDialog extends JDialog implements ActionListener, FocusListener, ListSelectionListener {
 
 	private BooleanAlgorithm currentAlgorithm = null;
 	private BooleanCalculator calculator = null;
-	private Color currentColor = Color.GRAY;
-	private String value, criteria = "";
-	String[] parsedCriteria;
-	String[] setNames;
-	String test = "test";
+	private BooleanScanner scan = null;
+	private Color currentColor = Color.BLUE;
+	private String label = "";
+	private String criteria = "";
 	
 	private JButton colorButton;
 	private JColorChooser colorChooser;
 	private JComboBox nameBox;
 	private JDialog dialog;
-	private JTextField colorField;
+	private JList attList;
+	private JList opList;
+	private JPanel criteriaChooserPanel;
 	private JPanel mainPanel; // The main content pane
 	private JPanel buttonBox; // Our action buttons (Save Settings, Cancel, Execute, Done)
-	private JPanel tableButtons;
+	private JPanel setNamePanel;
 	private JPanel algorithmPanel; // The panel this algorithm uses
 	private JPanel tablePanel;
 	private JPanel colorPanel;
 	private JTable table;
+	private JTextField criteriaField;
+	private JTextField labelField;
+	private JTextField colorField;
 	
 	AttributeManager attributeManager;
-	//ColorMapper cmapper = new ColorMapper();
+	ColorMapper colorMapper;
 	CriteriaTablePanel criteriaTable;
-		
+	ArrayList<String> attributeList = new ArrayList<String>();
+	String[] opArray = {"=", "<", ">", ">=", "<=", "AND", "OR", "NOT"};
+	String[] attributesArray;
+	String[] nameBoxArray;
+	
 	
 	public BooleanSettingsDialog(BooleanAlgorithm algorithm) {
 		super(Cytoscape.getDesktop(), algorithm.getName(), false);
 		
 		currentAlgorithm = algorithm;
+		colorMapper = new ColorMapper();
+		attributeManager = new AttributeManager();
 		calculator = new BooleanCalculator();
 		criteriaTable = new CriteriaTablePanel();
-		
+		scan = new BooleanScanner();
 		initialize(); 
-		
-		
-		
-		
-		
-	}
 	
-	public void actionPerformed(ActionEvent e) {
-		// Are we the source of the event?
-		//System.out.println("action");
-		
-		
-		String command = e.getActionCommand();
-		
-		if(command.equals("chooseColor")){
-			colorChooser = new JColorChooser();
-			 JButton button = new JButton();
-		        button.setActionCommand("edit");
-		        button.addActionListener(this);
-		        button.setBorderPainted(false);
-
-			
-			dialog = JColorChooser.createDialog(button,
-                    "Pick a Color",
-                    true,  //modal
-                    colorChooser,
-                    this,  //OK button handler
-                    null); //no CANCEL button handler
-			dialog.add(button);
-			dialog.setVisible(true);
-
-		}
-		if(command.equals("OK")){
-			
-			System.out.println(colorChooser.getColor());
-			currentColor = colorChooser.getColor();
-			//colorButton.setBackground(colorChooser.getColor());
-		}
-		
-		if(command.equals("edit")){
-			System.out.println("found it");
-		}
-		
-		if (command.equals("add")){
-			
-			//System.out.println(currentAlgorithm.getSettings().get("criteriaField").getValue().toString());
-			criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
-			
-			System.out.println("ADD CRITERIA: "+criteria);
-			if(calculator.parse2(criteria) != null){ 
-				
-				value = criteria;
-					//calculator.cleanCritera();
-				//System.out.println("somewhwere"+value);
-				criteriaTable.populateList(criteria, value, currentColor);
-				initialize();
-				
-			}
-			//calculator.clearList();
-		}
-		if (command.equals("exit")) {
-			setVisible(false);
-		} else if (command.equals("apply")) {
-			updateAllSettings(true);
-			//criteria = currentAlgorithm.getSettings().get("criteriaField").getValue().toString();
-			
-			//ColorMapper mapper = new ColorMapper("test", "continuous");
-			applyCriteria();
-			//String 
-			//calculator.evaluate(parsedCriteria);
-			//System.out.println(currentAlgorithm.getSettings().get("operationsList").valueChanged());
-			
-			
-			//System.out.println(attributes[Integer.parseInt(currentAlgorithm.getSettings().getValue("attributeList"))]);
-			
-			
-		} else if (command.equals("save")) {
-			System.out.println(nameBox.getSelectedItem());
-			String[] names = new String[nameBox.getItemCount()];
-			for(int i=0; i<nameBox.getItemCount(); i++){
-				names[i] = (String)nameBox.getItemAt(i);
-			}
-			
-			
-		} else if (command.equals("cancel")) {
-			// Call revertSettings for each
-			
-			
-			revertAllSettings();
-			setVisible(false);
-		} else {
-			// OK, initialize and display
-			//initialize();
-			pack();
-			setVisible(true);
-		}
 	}
-	
-	public void tableChanged(TableModelEvent e){
-		int row = e.getFirstRow();
-		System.out.println(row + e.getLastRow());
-	}
-	
 	
 	private void initialize() {
-				
+		
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 
 		// Create our main panel
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-		JPanel setNamePanel = getCriteriaSetPanel(); //new CriteriaSetPanel();
+		setNamePanel = getCriteriaSetPanel(); //new CriteriaSetPanel();
 		mainPanel.add(setNamePanel);
 		
 		// Create a panel for algorithm's content
 		this.algorithmPanel = currentAlgorithm.getSettingsPanel();
 
-		mainPanel.add(algorithmPanel);
+		//mainPanel.add(algorithmPanel);
 		mainPanel.addFocusListener(this);
 		
+		mainPanel.add(getListPanel2());
+		
+		mainPanel.add(getCriteriaChooserPanel2());
 		//Panel for color Button
-		this.colorPanel = new JPanel(new BorderLayout(0,2));
-		
-		
-		JLabel colorLabel = new JLabel();
-		colorField = new JTextField();
-		colorField.setPreferredSize(new Dimension(200, 20));
-		colorField.setBackground(currentColor);
-		colorField.setActionCommand("chooseColor");
-		colorField.addActionListener(this);
-		//colorButton = new JButton("Choose Color");
-		//colorButton.setBackground(currentColor);
-		//colorButton.setActionCommand("chooseColor");
-		//colorButton.addActionListener(this);
-		
+		//this.colorPanel = new JPanel(new BorderLayout(10,0));	
+	
+		JLabel colorLabel = new JLabel("Color");
+		colorLabel.setPreferredSize(new Dimension(50,20));
+		/*
+		colorButton = new JButton("");
+		colorButton.setBackground(currentColor);
+
+		colorButton.setPreferredSize(new Dimension(180, 20));
+		colorButton.setActionCommand("chooseColor");
+		colorButton.addActionListener(this);
+		colorButton.setBorder(null);
+        colorButton.setBorderPainted(false);
+        colorButton.setBackground(currentColor);
+       
 		colorPanel.add(colorLabel, BorderLayout.LINE_START);
-		colorPanel.add(colorField, BorderLayout.LINE_END);
+		colorPanel.add(colorButton, BorderLayout.LINE_END);
 		colorPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-		
+		*/
 		//Create a panel for our button box
 		this.buttonBox = new JPanel();
 		
@@ -262,7 +176,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		cancelButton.addActionListener(this);
 		
 		
-		buttonBox.add(addButton);		
+		//buttonBox.add(addButton);		
 		buttonBox.add(saveButton);
 		buttonBox.add(exitButton);
 		buttonBox.add(applyButton);
@@ -270,34 +184,11 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		buttonBox.addFocusListener(this);
 		
 		
-		
-		this.tableButtons = new JPanel();
-		
-		JButton moveUpButton = new JButton("Move Up");
-		moveUpButton.setActionCommand("moveUp");
-		moveUpButton.addActionListener(this);
-		
-		JButton moveDownButton = new JButton("Move Down");
-		moveDownButton.setActionCommand("moveDown");
-		moveDownButton.addActionListener(this);
-		
-		JButton deleteButton = new JButton("Delete");
-		deleteButton.setActionCommand("delete");
-		deleteButton.addActionListener(this);
-		
-		tableButtons.add(moveUpButton);
-		tableButtons.add(moveDownButton);
-		tableButtons.add(deleteButton);
-		
-		
-		
 		tablePanel = criteriaTable.getTablePanel();
-		
 		tablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+	
 		
-		
-		
-		mainPanel.add(colorPanel);
+		//mainPanel.add(colorPanel);
 		mainPanel.add(buttonBox);
 		mainPanel.add(tablePanel);
 	
@@ -307,46 +198,348 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		setLocation(2,Cytoscape.getDesktop().getHeight()-557);
 	}
 	
-	public JPanel getCriteriaPanel(){
-		JPanel criteriaPanel = new JPanel();
-		/* 
-		BoxLayout box = new BoxLayout(criteriaPanel, BoxLayout.Y_AXIS);
-		criteriaPanel.setLayout(box);
+	
+	public void actionPerformed(ActionEvent e) {
+		// Are we the source of the event?
+		//System.out.println("action");
 		
-		Border refBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-		TitledBorder titleBorder = BorderFactory.createTitledBorder(refBorder, "Criteria");
-		titleBorder.setTitlePosition(TitledBorder.LEFT);
-		titleBorder.setTitlePosition(TitledBorder.TOP);
-		criteriaPanel.setBorder(titleBorder);
+		String command = e.getActionCommand();
 		
-		String labelLocation = BorderLayout.LINE_START;
-		String fieldLocation = BorderLayout.LINE_END;
+		if(command.equals("chooseColor")){
+			colorChooser = new JColorChooser();
+			 JButton button = new JButton();
+		     button.setActionCommand("edit");
+		     button.addActionListener(this);
+		     button.setBorderPainted(true);
+			dialog = JColorChooser.createDialog(button,
+                    "Pick a Color",
+                    true,  //modal
+                    colorChooser,
+                    this,  //OK button handler
+                    null); //no CANCEL button handler
+			dialog.add(button);
+			dialog.setLocation(2,Cytoscape.getDesktop().getHeight()-385);
+			dialog.setVisible(true);
+			currentColor = colorChooser.getColor();
+		}
 		
-		JPanel fieldPanel = new JPanel(new BorderLayout(0, 2));
-		JLabel fieldLabel = new JLabel("Name"); 
-		//JTextField
-		nameBox.setEditable(true);
-		nameBox.setPreferredSize(new Dimension(200,20));
-		nameBox.setActionCommand("listChanged");
-		nameBox.addActionListener(this);
-		fieldPanel.add(setLabel, labelLocation);
-		namePanel.add(nameBox, fieldLocation);
+		if(command.equals("OK")){
+			
+			System.out.println(colorChooser.getColor());
+			currentColor = colorChooser.getColor();
+			colorButton.setBackground(colorChooser.getColor());
+		}
 		
-		JPanel mapPanel = new JPanel(new BorderLayout(0, 2));
-		JLabel mapLabel = new JLabel("Map To");
-		JComboBox mapToBox = new JComboBox(new String[] {"Node Color", "Node Border Color", "None" });
-		mapPanel.add(mapLabel, labelLocation);
-		mapPanel.add(mapToBox, fieldLocation);
+		if(command.equals("edit")){
+			System.out.println("found it");
+		}
 		
-		setPanel.add(namePanel);
-		setPanel.add(mapPanel);
-		*/
-		return criteriaPanel;
+		if (command.equals("add")){
+			
+			criteria = criteriaField.getText();
+			if(criteria.equals("")){
+				JOptionPane.showMessageDialog(new JPanel(), "Must include Criteria");
+				criteriaField.requestFocus();
+				return;
+			}
+			label = labelField.getText();
+			if(label.equals("")){
+				JOptionPane.showMessageDialog(new JPanel(), "Must include Label");	
+				criteriaField.requestFocus();
+				return;
+			}
+			
+			
+			if(calculator.parse2(criteria) != null){ 
+				
+				
+				
+				
+				try{
+					scan.parse(criteria);
+				}catch (Exception p) {
+					System.out.println(p.getMessage());
+				}
+				
+				
+				System.out.println(criteria);
+				criteriaTable.populateList(criteria, label, currentColor);
+				//initialize();
+				
+			}else{
+				JOptionPane.showMessageDialog(new JPanel(), "Invalid Criteria");
+			}
+			
+		}
+		
+		if(command.equals("listChanged")){
+			String value = (String)nameBox.getSelectedItem();
+			if(value.equals("")){
+				JOptionPane.showMessageDialog(new JPanel(), "Criteria Set must be named");
+				return;
+			}
+			System.out.println(value);
+			if(value.equals("New...")){
+				nameBox.setSelectedIndex(0);
+				nameBox.setEditable(true);
+				criteriaTable.clearTable();
+			}else{
+				loadSettings(value);
+			}
+		}
+		if(command.equals("clear")){
+			criteriaField.setText("");
+			labelField.setText("");
+			criteriaBuild = "";
+			criteriaField.requestFocus();
+		}
+		
+		if (command.equals("apply")) {
+	
+			applyCriteria();
+			
+		}
+		
+		if (command.equals("save")) {
+			System.out.println("save: "+nameBox.getSelectedItem());
+			String value = nameBox.getSelectedItem()+"";
+			if(value.equals("")){
+				JOptionPane.showMessageDialog(new JPanel(), "Criteria Set must be named");
+				return;
+			}
+			
+			saveSettings();
+			
+			initialize();	
+		}
+		
+		if (command.equals("exit")) {
+			// Call revertSettings for each
+			//revertAllSettings();
+			setVisible(false);
+		} else {
+			// OK, initialize and display
+			//initialize();
+			pack();
+			setVisible(true);
+		}
+	}
+	
+	
+	String criteriaBuild = "";
+	int last = -1;
+	public void valueChanged(ListSelectionEvent e){
+		//System.out.println("Chosen \n"+e.getFirstIndex());
+		//System.out.println(e.getLastIndex());
+			
+		 ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+	     
+		 //System.out.println(e.toString());
+	       
+	        
+	        int firstIndex = e.getFirstIndex();
+	        int lastIndex = e.getLastIndex();
+	        boolean isAdjusting = e.getValueIsAdjusting(); 
+	        //e.getSource().getClass().
+	        
+	        if (lsm.isSelectionEmpty()) {
+	            System.out.println(" <none>");
+	        } else {
+	            // Find out which indexes are selected.
+	            int minIndex = lsm.getMinSelectionIndex();
+	            int maxIndex = lsm.getMaxSelectionIndex();
+	            
+	            
+	            for (int i = minIndex; i <= maxIndex; i++) {
+	            	
+	                if (lsm.isSelectedIndex(i) && last != i) {
+	                	criteriaBuild = criteriaField.getText();
+	                	criteriaBuild = criteriaBuild +" "+ attributesArray[i]+" ";
+	                	criteriaField.setText(criteriaBuild);
+	                	System.out.println("Selected Index: "+i);
+	                	
+	                }
+	                last = i;
+	            }
+	        }
+	        criteriaField.requestFocus();
+	        criteriaField.setHorizontalAlignment(JTextField.RIGHT);
+	        
+	}
+	
+
+	
+
+	public void saveSettings(){
+		
+		//System.out.println(nameBox.getSelectedItem());
+		String newName = (String)nameBox.getSelectedItem();
+		if(newName.equals("New...")){ return; }
+		
+		attributeManager.addNamesAttribute(Cytoscape.getCurrentNetwork(), newName);
+	
+		String[] criteriaLabels = new String[criteriaTable.getDataLength()];	
+		for(int k=0; k<criteriaLabels.length; k++){
+			String temp = criteriaTable.getCell(k, 0)+":"+criteriaTable.getCell(k, 1)+":"+criteriaTable.getCell(k, 2);
+			
+			if(!temp.equals(null)){
+				criteriaLabels[k] = temp;
+			}
+			//attributeManager.setColorAttribute(label, color, nodeID)
+			System.out.println(criteriaLabels.length+"AAA"+temp);
+		}
+		attributeManager.setValuesAttribute(newName, criteriaLabels);
+		
+	}
+	
+	public void loadSettings(String setName){
+		String[] criteria = attributeManager.getValuesAttribute(Cytoscape.getCurrentNetwork(), setName);
+		criteriaTable.clearTable();
+		
+		for(int i=0; i<criteria.length;i++){
+			String[] temp = criteria[i].split(":");
+			criteriaTable.populateList(temp[0], temp[1], criteriaTable.stringToColor(temp[2]));
+			/*
+			criteriaTable.setCell(i,0,temp[0]);
+			criteriaTable.setCell(i,1,temp[1]);
+			criteriaTable.setCell(i,2,temp[2]);
+			*/
+		}
+	}
+	
+	public void applyCriteria(){
+		//for(int i=1;i<data.length;i++){
+			
+		    //int[] rowIndexes = table.getSelectedRows();
+		    //for(int i = 0; i<rowIndexes.length;i++){
+		    	//System.out.println("row index: "+rowIndexes[i]);
+		    //}
+			ArrayList<String> labels = new ArrayList<String>();
+			ArrayList<Color> colors = new ArrayList<Color>();
+			String compositeLabel = "";
+			String[] nameLabels = new String[criteriaTable.getDataLength()];
+			for(int i=0; i<criteriaTable.getDataLength(); i++){
+				String current = (String)criteriaTable.getCell(i,0); 
+				if(current != null && !current.equals("")){
+					
+					try{
+						
+						scan.parseT(current);
+					}catch (Exception p) {
+						System.out.println(p.getMessage());
+					}
+					ArrayList<String>[] attsAndOps = calculator.parse2(current);
+					//calculator.clearList();
+					if(attsAndOps != null){
+						String label = (String)criteriaTable.getCell(i, 1);
+						if(i == 0){ compositeLabel = label; 
+						}else{
+							if(!label.equals("") && label != null){
+								compositeLabel = compositeLabel + ":" + label;
+							}
+						}
+						calculator.evaluate(label, attsAndOps[0], attsAndOps[1]);
+						labels.add(label);
+					}
+					
+					
+	                Color c = criteriaTable.stringToColor(criteriaTable.getCell(i,2)+"");
+	                colors.add(c);
+	                
+				}
+			}
+			
+			String[] labelsA = new String[labels.size()];
+			for(int h=0; h<labels.size(); h++){
+				labelsA[h] = labels.get(h);
+			}
+			
+			try{
+            	attributeManager.setCompositeAttribute(labelsA);
+            }catch (Exception e){
+            	System.out.println(e.getMessage());
+            }
+            Color[] colorsA = new Color[labels.size()];
+            for(int g=0; g<labels.size(); g++){
+            	colorsA[g] = colors.get(g);
+            }
+            System.out.println("compositeLabel: "+compositeLabel);
+            if(labels.size() == 1){
+            	
+            	colorMapper.createDiscreteMapping(labelsA[0]+"_discrete", labelsA[0], colorsA[0]);
+            }else{
+            	colorMapper.createCompositeMapping(compositeLabel+"_discrete", compositeLabel, colorsA);
+            }
+            	//System.out.println("current: "+ current);
+			/*try{
+			scan.parse(current);
+			}catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
+			*/
+			
+		//}
+		//parsedCriteria = calculator.parseCriteria(criteria);
+		//calculator.evaluateCriteria(parsedCriteria);
+	}
+	
+	
+	
+	public String[] getAllAttributes() {
+		// Create the list by combining node and edge attributes into a single
+		// list
+
+		getAttributesList(attributeList, Cytoscape.getNodeAttributes(), "");
+		getAttributesList(attributeList, Cytoscape.getEdgeAttributes(), "");
+		
+		String[] str = (String[])attributeList.toArray(new String[attributeList.size()]);
+		attributeList.clear();
+		return str;
+
+	}
+
+	
+	public void getAttributesList(ArrayList<String> attributeList,
+			CyAttributes attributes, String prefix) {
+		String[] names = attributes.getAttributeNames();
+		ArrayList<String> internalAttributes = new ArrayList<String>();
+		for (int i = 0; i < names.length; i++) {
+			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING
+					 || attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER || attributes.getType(names[i]) == CyAttributes.TYPE_BOOLEAN) {
+				if(names[i].contains(" ")){
+					names[i].replace(" " ,"-");
+					/*for(int j = 0; j < names[i].length(); j++){
+						String temp = names[i].charAt(j) + "";
+						if(temp.matches(" ")){
+							names[i] = names[i].substring(0,j) + "-" + names[i].substring(j+2, names[i].length());
+						}
+					}*/
+				}
+				if(names[i].contains(":")){
+					internalAttributes.add(names[i]);
+				}else{
+					attributeList.add(prefix + names[i]);
+				}
+			}
+		}
+		for(int i=0; i<internalAttributes.size(); i++){
+			attributeList.add(internalAttributes.get(i));
+		}
+	}
+
+
+	public void focusGained(FocusEvent e){
+		System.out.println(e.toString());
+	}
+	
+	public void focusLost(FocusEvent e){
+		System.out.println(e.toString());
 	}
 	
 	private void updateAllSettings() {
 		currentAlgorithm.updateSettings();
 	}
+	
 	private void updateAllSettings(boolean force) {
 		currentAlgorithm.updateSettings(force);
 	}
@@ -355,8 +548,11 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		currentAlgorithm.revertSettings();
 	}
 	
+	
 	public JPanel getCriteriaSetPanel(){
 		//JPanel setPanel = new JPanel(new BorderLayout(0, 2));
+		
+		nameBoxArray = attributeManager.getNamesAttribute(Cytoscape.getCurrentNetwork());
 		
 		JPanel setPanel = new JPanel();
 		BoxLayout box = new BoxLayout(setPanel, BoxLayout.Y_AXIS);
@@ -373,8 +569,9 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 		JPanel namePanel = new JPanel(new BorderLayout(0, 2));
 		JLabel setLabel = new JLabel("Name"); 
-		nameBox = new JComboBox(new String[] {"amitabha buddha", "avalokiteshvara"});//getCriteriaSetNames());
-		nameBox.setEditable(true);
+		System.out.println(Cytoscape.getCurrentNetwork().getIdentifier());
+		nameBox = new JComboBox(nameBoxArray);
+		nameBox.setEditable(false);
 		nameBox.setPreferredSize(new Dimension(200,20));
 		nameBox.setActionCommand("listChanged");
 		nameBox.addActionListener(this);
@@ -393,59 +590,205 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		return setPanel;
 	}
 	
-	public String[] getCriteriaSetNames(){
-		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
-		if(networkAttributes.hasAttribute(Cytoscape.getCurrentNetwork().toString(), "Criteria")){
-			List temp = networkAttributes.getListAttribute(Cytoscape.getCurrentNetwork().toString(), "Criteria");
-			return (String[])temp.toArray();
+	
+	
+	
+	private JPanel getCriteriaChooserPanel2(){
+		JPanel fieldPanel = new JPanel();
+		
+		BoxLayout box = new BoxLayout(fieldPanel, BoxLayout.Y_AXIS);
+		fieldPanel.setLayout(box);
+		
+		Border refBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		TitledBorder titleBorder = BorderFactory.createTitledBorder(refBorder, "");
+		titleBorder.setTitlePosition(TitledBorder.LEFT);
+		titleBorder.setTitlePosition(TitledBorder.TOP);
+		fieldPanel.setBorder(titleBorder);
+		
+		
+		String labelLocation = BorderLayout.LINE_START;
+		String fieldLocation = BorderLayout.LINE_END;
+		
+		JPanel labelPanel = new JPanel(new BorderLayout(0, 2));
+		JLabel label = new JLabel("Label"); 
+		labelField = new JTextField();
+		labelField.setPreferredSize(new Dimension(200, 20));
+		labelPanel.add(label, labelLocation);
+		labelPanel.add(labelField, fieldLocation);
+		labelField.setHorizontalAlignment(JTextField.RIGHT);
+		
+		JPanel criteriaPanel = new JPanel(new BorderLayout(0, 2));
+		JLabel criteriaLabel = new JLabel("Criteria");
+		criteriaField = new JTextField();
+		
+		criteriaField.setPreferredSize(new Dimension(200, 20));
+		criteriaPanel.add(criteriaLabel, labelLocation);
+		criteriaPanel.add(criteriaField, fieldLocation);
+		criteriaField.setHorizontalAlignment(JTextField.RIGHT);
+		
+		
+		//Make JPanel for colorPanel and button box panel
+		JPanel colorAndButtonPanel = new JPanel();
+		BoxLayout Xbox = new BoxLayout(colorAndButtonPanel, BoxLayout.X_AXIS);
+		colorAndButtonPanel.setLayout(Xbox);
+		
+		//Make colorPanel for Color Label and color chooser button
+		JPanel colorPanel = new JPanel(new BorderLayout(0, 2));
+		//colorPanel.setPreferredSize(new Dimension(180,10));
+		JLabel colorLabel = new JLabel("Color");
+		colorButton = new JButton("");
+		colorButton.setBackground(currentColor);
+		colorButton.setPreferredSize(new Dimension(90, 10));
+		colorButton.setActionCommand("chooseColor");
+		colorButton.addActionListener(this);
+		colorButton.setBorder(null);
+        colorButton.setBorderPainted(false);
+        colorButton.setBackground(currentColor);
+        
+		colorPanel.add(colorLabel, labelLocation);
+		colorPanel.add(colorButton, fieldLocation);
+		
+		//Make button box JPanel for Add and Clear Buttons
+		JPanel buttonBox = new JPanel();//new BorderLayout(0,2));
+		JButton addButton = new JButton("Add");
+		addButton.setActionCommand("add");
+		addButton.addActionListener(this);
+		JButton clearButton = new JButton("Clear");
+		clearButton.setActionCommand("clear");
+		clearButton.addActionListener(this);
+		
+		buttonBox.add(addButton);//, labelLocation);
+		buttonBox.add(clearButton);//, fieldLocation);
+		
+		colorAndButtonPanel.add(colorPanel);
+		colorAndButtonPanel.add(buttonBox);
+		
+		
+		fieldPanel.add(labelPanel);
+		fieldPanel.add(criteriaPanel);
+		fieldPanel.add(colorAndButtonPanel);
+		
+		
+		return fieldPanel;
+	}
+	
+	private JPanel getListPanel2(){
+		JPanel bigPanel = new JPanel();
+		
+		BoxLayout bigBox = new BoxLayout(bigPanel, BoxLayout.Y_AXIS);
+		bigPanel.setLayout(bigBox);
+		
+		
+		Border refBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		TitledBorder titleBorder = BorderFactory.createTitledBorder(refBorder, "Build Criteria");
+		titleBorder.setTitlePosition(TitledBorder.LEFT);
+		titleBorder.setTitlePosition(TitledBorder.TOP);
+		bigPanel.setBorder(titleBorder);
+		
+		//make label panel
+		JPanel labelPanel = new JPanel();
+		BoxLayout labelBox = new BoxLayout(labelPanel, BoxLayout.X_AXIS);
+		labelPanel.setLayout(labelBox);
+		
+		
+		JPanel attPanel = new JPanel(new BorderLayout(0,2));
+		JLabel attLabel = new JLabel("    Attributes");
+		attPanel.add(attLabel, BorderLayout.LINE_START);
+		JPanel opPanel = new JPanel(new BorderLayout(0,2));
+		JLabel opLabel = new JLabel("Operations       ");
+		
+		//opPanel.add(spaceLabel, BorderLayout.LINE_START);
+		opPanel.add(opLabel, BorderLayout.LINE_END);
+		
+		labelPanel.add(attPanel);
+		labelPanel.add(opPanel);
+		
+		JPanel listPanel = new JPanel();
+		BoxLayout listBox = new BoxLayout(listPanel, BoxLayout.X_AXIS);
+		listPanel.setLayout(listBox);
+		
+		JPanel attListPanel = new JPanel(new BorderLayout(0,2));
+		attributesArray = getAllAttributes(); 
+		attList = new JList();
+		attList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = attributesArray;
+            public String getName() { return "attList"; }
+            public int getSize() { 
+            	if(strings.length == 8){ return 9; }
+            	else{ return strings.length; }
+            }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+		ListSelectionModel listSelectModel = attList.getSelectionModel();        
+        listSelectModel.addListSelectionListener(this);
+        
+    	attList.setSelectionModel(listSelectModel);
+    	
+		JScrollPane pane = new JScrollPane();
+		pane.setViewportView(attList);
+		pane.setPreferredSize(new Dimension(150,150));
+		attListPanel.add(pane, BorderLayout.LINE_START);
+		
+		JPanel opListPanel = new JPanel(new BorderLayout(0,2));
+		opList = new JList(opArray);
+		ListSelectionModel listSelectionModel = opList.getSelectionModel(); 
+		getOperationSelection opSelection = new getOperationSelection();
+        listSelectionModel.addListSelectionListener(opSelection);
+    	opList.setSelectionModel(listSelectionModel);
+    	
+		opListPanel.add(opList, BorderLayout.LINE_START);
+		
+		listPanel.add(attListPanel);
+		listPanel.add(opListPanel);
+		
+		bigPanel.add(labelPanel);
+		bigPanel.add(listPanel);
+			
+		return bigPanel;
+	}
+	
+	class getOperationSelection implements ListSelectionListener{
+		
+		public getOperationSelection(){
+			
 		}
-		return new String[] {"              "};
+		public void valueChanged(ListSelectionEvent e){
+			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+		     
+			 //System.out.println("maddeeee it");
+		       
+		        
+		        int firstIndex = e.getFirstIndex();
+		        int lastIndex = e.getLastIndex();
+		        boolean isAdjusting = e.getValueIsAdjusting(); 
+		        //e.getSource().getClass().
+		        
+		        if (lsm.isSelectionEmpty()) {
+		            System.out.println(" <none>");
+		        } else {
+		            // Find out which indexes are selected.
+		            int minIndex = lsm.getMinSelectionIndex();
+		            int maxIndex = lsm.getMaxSelectionIndex();
+		            
+		            
+		            for (int i = minIndex; i <= maxIndex; i++) {
+		            	
+		                if (lsm.isSelectedIndex(i) && last != i) {
+		                	criteriaBuild = criteriaField.getText();
+		                	criteriaBuild = criteriaBuild +" "+ opArray[i]+" ";
+		                	criteriaField.setText(criteriaBuild);
+		                	System.out.println("Selected Index: "+i);
+		                	
+		                }
+		                last = i;
+		            }
+		        }
+		        criteriaField.requestFocus();
+		        criteriaField.setHorizontalAlignment(JTextField.RIGHT);
+		        
+		}
 	}
 	
-	public void makeCriteriaSet(String[] names){
-		
-	}
-	
-	public void applyCriteria(){
-		//for(int i=1;i<data.length;i++){
-			BooleanScanner scan = new BooleanScanner();
-		    //int[] rowIndexes = table.getSelectedRows();
-		    //for(int i = 0; i<rowIndexes.length;i++){
-		    	//System.out.println("row index: "+rowIndexes[i]);
-		    //}
-			String current = (String)criteriaTable.getCell(0,0); 
-			//System.out.println("current: "+ current);
-			/*try{
-			scan.parse(current);
-			}catch (IOException e) {
-				System.out.println(e.getMessage());
-			}
-			*/
-			ArrayList<String>[] temp = calculator.parse2(current);
-			calculator.clearList();
-			calculator.evaluate("label", temp[0], temp[1]);
-		//}
-		//parsedCriteria = calculator.parseCriteria(criteria);
-		
-		
-		
-		//calculator.evaluateCriteria(parsedCriteria);
-	}
-	
-	public void focusGained(FocusEvent e){
-		System.out.println(e.toString());
-	}
-	
-	public void focusLost(FocusEvent e){
-		System.out.println(e.toString());
-	}
-
-
 
 }
-
-	
-	
-	
-
 
