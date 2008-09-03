@@ -11,7 +11,7 @@
 <div id="topbar">
         <div class="title">Cytoscape Plugin Administration</div>
 </div>
-
+<div id="container">
 <?php include "../nav.php"; ?>
 <br>
 <span class="style2">
