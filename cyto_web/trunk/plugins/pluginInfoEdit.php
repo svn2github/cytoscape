@@ -8,6 +8,7 @@ $versionID = NULL; // used for edit mode only
 
 if (isset ($_GET['versionid'])) {
 	$versionID = $_GET['versionid'];
+	$pageTitle = "Edit plugin Info";
 }
 if (isset ($_POST['versionID'])) { // hidden field
 	$versionID = $_POST['versionID'];
@@ -33,7 +34,7 @@ if (isset ($_POST['versionID'])) { // hidden field
 <div id="topbar">
 	<div class="title">Edit plugin info</div>
 </div>
-
+<div id="container">
 <?php include "../nav.php"; ?>
   
 <?php
