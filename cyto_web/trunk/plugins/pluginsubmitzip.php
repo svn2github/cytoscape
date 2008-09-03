@@ -17,7 +17,7 @@
 <div id="topbar">
 	<div class="title">Submit a Zip file to Cytoscape</div>
 </div>
-
+<div id="container">
 <?php include "../nav.php"; ?>
 <?php
 include "getPluginUniqueID.inc";
