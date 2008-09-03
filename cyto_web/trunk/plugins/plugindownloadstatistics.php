@@ -18,7 +18,7 @@
 <div id="topbar">
 	<div class="title">Plugin download statistics</div>
 </div>
-
+<div id="container">
 <?php include "../nav.php"; ?>
 
 <?php
@@ -44,7 +44,6 @@ $tmpCountArray[] = $tmp_row["userCount"];
 $distinctUsers =$tmpCountArray[0]; 
 
 ?>
-<p>&nbsp;</p>
 <p align="left">Since the release of Cytoscape 2.5 (July 2007), there are  <?php echo $distinctUsers; ?> users (distinct IP addresses) downloaded plugins from this site.</p>
 <?php
 
