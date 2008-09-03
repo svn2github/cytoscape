@@ -52,9 +52,9 @@ if ($mode == 'new') {
 <div id="topbar">
 	<div class="title"><?php echo $pageTitle; ?></div>
 </div>
-
+<div id="container">
 <?php include "../nav.php"; ?>
-  
+
 <?php
 
 $tried = NULL;
