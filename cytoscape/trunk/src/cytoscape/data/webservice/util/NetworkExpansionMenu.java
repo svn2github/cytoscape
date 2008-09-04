@@ -34,11 +34,10 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 	
 	private static NetworkExpansionMenu expander;
 
-	private static CyLogger logger;
+	private static CyLogger logger = CyLogger.getLogger(NetworkExpansionMenu.class);
 	
 	static {
 		expander = new NetworkExpansionMenu();
-		logger = CyLogger.getLogger(NetworkExpansionMenu.class);
 	}
 	
 	public static JMenuItem getExpander(WebServiceClient client) {

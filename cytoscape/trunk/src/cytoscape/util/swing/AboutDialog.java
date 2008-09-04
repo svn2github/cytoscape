@@ -58,11 +58,10 @@ import javax.swing.event.HyperlinkListener;
 public class AboutDialog extends javax.swing.JDialog implements HyperlinkListener {
 	// Singleton.
 	private static final AboutDialog about;
-	private static CyLogger logger;
+	private static CyLogger logger = CyLogger.getLogger(AboutDialog.class);
 
 	static {
 		about = new AboutDialog(Cytoscape.getDesktop(), true);
-		logger = CyLogger.getLogger(AboutDialog.class);
 	}
 
 	// Show method with full parameter set.

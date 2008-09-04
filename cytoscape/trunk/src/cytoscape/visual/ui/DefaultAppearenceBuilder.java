@@ -103,7 +103,7 @@ import javax.swing.SwingConstants;
 public class DefaultAppearenceBuilder extends JDialog {
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
-	private static CyLogger logger;
+	private static CyLogger logger = CyLogger.getLogger(DefaultAppearenceBuilder.class);
 
 	// This editor should be a singleton.
 	private static DefaultAppearenceBuilder dab = null;
@@ -111,7 +111,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 	static {
 		EDGE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getEdgeVisualPropertyList());
 		NODE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getNodeVisualPropertyList());
-		logger = CyLogger.getLogger(DefaultAppearenceBuilder.class);
 	}
 
 	/**

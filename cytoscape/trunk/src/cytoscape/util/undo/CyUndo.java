@@ -60,13 +60,12 @@ import undo.Undo;
 public class CyUndo extends Undo {
 
 	protected static UndoManager undoManager; 
-	protected static CyLogger logger; 
+	protected static CyLogger logger = CyLogger.getLogger(CyUndo.class);
 
 	static {
 		undoManager = getUndoManager();
 		undoManager.setLimit(getLimit());
 		new UndoMonitor();
-		logger = CyLogger.getLogger(CyUndo.class);
 	}
 
 	private static int getLimit() {

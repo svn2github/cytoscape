@@ -108,7 +108,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 	//Default icon for about dialog
 	private static final Icon DEF_ICON = new javax.swing.ImageIcon(Cytoscape.class.getResource("images/ximian/stock_internet-32.png"));
 
-	private static CyLogger logger = null;
+	private static CyLogger logger = CyLogger.getLogger(UnifiedNetworkImportDialog.class);
 
     private int numDataSources = 0;
     private int numClients = 0;
@@ -117,7 +117,6 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
     static {
 		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
-		logger = CyLogger.getLogger(UnifiedNetworkImportDialog.class);
 	}
 
 	/**
