@@ -235,42 +235,15 @@ public class JErrorPanel extends JPanel {
 	private JScrollPane createCenterPanel() {
 		detailsPane = new JScrollPane();
 
-		if ((t != null) && (t.getStackTrace() != null)) {
-			//  Get Stack Trace
-			StackTraceElement[] ste = t.getStackTrace();
-			Throwable cause = t.getCause();
-			StringBuffer rootBuffer = null;
-
-			if (cause != null) {
-				rootBuffer = new StringBuffer("Root Cause:  " + cause.getClass().getName());
-
-				if (cause.getMessage() != null) {
-					rootBuffer.append(":  " + cause.getMessage());
-				}
-			} else {
-				rootBuffer = new StringBuffer(t.getClass().getName());
-
-				if (t.getMessage() != null) {
-					rootBuffer.append(":  " + t.getMessage());
-				}
-			}
-
-			DefaultMutableTreeNode top = new DefaultMutableTreeNode(rootBuffer.toString());
-
-			//  Create Individual Nodes in JTree
-			DefaultMutableTreeNode current = top;
-
-			for (int i = 0; i < ste.length; i++) {
-				DefaultMutableTreeNode node = new DefaultMutableTreeNode(ste[i]);
-				current.add(node);
-				current = node;
-			}
+		if ( t != null ) {
+			DefaultMutableTreeNode top = new DefaultMutableTreeNode("Root Error");
+			processThrowable(t,top);
 
 			//  Create a JTree Object
 			JTree tree = new JTree(top);
 
 			//  Open all Nodes
-			tree.scrollPathToVisible(new TreePath(current.getPath()));
+			tree.scrollPathToVisible(new TreePath(top.getPath()));
 			tree.setBorder(new EmptyBorder(4, 10, 10, 10));
 			detailsPane.setViewportView(tree);
 			detailsPane.setPreferredSize(new Dimension(10, 150));
@@ -280,6 +253,46 @@ public class JErrorPanel extends JPanel {
 		detailsPane.setVisible(false);
 
 		return detailsPane;
+	}
+
+	/**
+	 * Recursively adds each Throwable cause to the TreeNode so that we
+	 * can see the whole exception.
+	 */
+	private void processThrowable(Throwable t, DefaultMutableTreeNode top) {
+
+		if ( t == null )
+			return;
+
+		StackTraceElement[] ste = t.getStackTrace();
+		StringBuffer rootBuffer = new StringBuffer("Caused by: ");
+		
+		rootBuffer.append(t.getClass().getName());
+		rootBuffer.append(":  ");
+
+		if (t.getMessage() != null) 
+			rootBuffer.append(t.getMessage());
+
+		//  Create Individual Nodes in JTree
+		DefaultMutableTreeNode current = top;
+
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode(rootBuffer.toString());
+		current.add(node);
+		current = node;
+
+		if ( ste != null ) {
+			for (int i = 0; i < ste.length; i++) {
+				DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(ste[i]);
+				current.add(node2);
+				// Don't set the last trace to current, so that we'll see the
+				// last trace as a leaf and any subsequent causes will be seen
+				// next to the leaf as new sub-trees.
+				if ( i < ste.length-1 )
+					current = node2;
+			}
+		}
+
+		processThrowable( t.getCause(), current );
 	}
 
 	/**
