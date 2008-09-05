@@ -408,7 +408,7 @@ public class NetworkColorDialog extends JDialog
 		public void run() {
 			while (animating) {
 				// Cycle through the vizmaps we created
-				for (int i = 0; i < styles.length; i++) {
+				for (int i = 0; i < styles.length && animating; i++) {
 					Cytoscape.getCurrentNetworkView().applyVizmapper(styles[i]);
 					// Do we need to sleep a little????
 					// Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
