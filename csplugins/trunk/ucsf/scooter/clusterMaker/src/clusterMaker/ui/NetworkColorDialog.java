@@ -101,15 +101,18 @@ public class NetworkColorDialog extends JDialog
 	private List<String>attributeList = null;
 	private double maxValue;
 	private double minValue;
+	protected String currentAttribute = null;
+	protected VisualStyle[] styles = null;
 
 	// Dialog components
 	private JLabel titleLabel; // Our title
 	private JPanel mainPanel; // The main content pane
 	private JPanel buttonBox; // Our action buttons (Save Settings, Cancel, Execute, Done)
-	private JList attributeSelector; // Which algorithm we're using
+	protected JList attributeSelector; // Attribute list
 	private JButton animateButton;
 
 	private boolean animating = false;
+	private boolean listening = true;
 
 	/**
 	 * Creates a new NetworkColorDialog object.
@@ -178,19 +181,24 @@ public class NetworkColorDialog extends JDialog
 			Object[] attributeArray = attributeSelector.getSelectedValues();
 			if (attributeArray.length < 2) {
 				// Really nothing to animate if we only have one map
+				MapTask task = new MapTask((String)attributeArray[0], "-heatMap", false);
+				TaskManager.executeTask( task, task.getDefaultTaskConfig() );
+				return;
 			}
 
-			// Build the necessary vizmap entries
-			VisualStyle[] styles = new VisualStyle[attributeArray.length];
-			for (int i = 0; i < attributeArray.length; i++) {
-				styles[i] = createNewStyle((String)attributeArray[i], "-"+(String)attributeArray[i], false, false);
+			if (currentAttribute == null) {
+				// Build the necessary vizmap entries
+				styles = new VisualStyle[attributeArray.length];
+				for (int i = 0; i < attributeArray.length; i++) {
+					styles[i] = createNewStyle((String)attributeArray[i], "-"+(String)attributeArray[i], false, false);
+				}
 			}
 
 			// Change the animate button
 			animateButton.setText("Stop animation");
 			animating = true;
 			// Set up the animation task
-			Animate a = new Animate(styles);
+			Animate a = new Animate(styles, attributeArray);
 			a.start();
 		}
 	}
@@ -364,6 +372,12 @@ public class NetworkColorDialog extends JDialog
 		// Get the selected items
 		int[] selIndices = attributeSelector.getSelectedIndices();
 
+		if (!listening)
+			return;
+
+		// Clear our memory
+		currentAttribute = null;
+
 		// If there are more then one, enable the animate button
 		if (selIndices.length > 1)
 			animateButton.setEnabled(true);
@@ -397,23 +411,60 @@ public class NetworkColorDialog extends JDialog
 		// OK, now update the list
 		attributeSelector.setListData(attributeList.toArray());
 		attributeSelector.setSelectedIndices(selIndices);
+
+		// And reset our animator
+		currentAttribute = null;
 	}
 
 	private class Animate extends Thread {
 		VisualStyle[] styles;
+		Object[] attributes;
+		String current;
 
-		public Animate(VisualStyle[] styles) {
+		public Animate(VisualStyle[] styles, Object[] attributes) {
 			this.styles = styles;
+			this.attributes = attributes;
 		}
 		public void run() {
-			while (animating) {
-				// Cycle through the vizmaps we created
-				for (int i = 0; i < styles.length && animating; i++) {
-					Cytoscape.getCurrentNetworkView().applyVizmapper(styles[i]);
-					// Do we need to sleep a little????
-					// Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+			int firstIndex = 0;
+
+			listening = false;
+
+			// Wrap everything in a try in case
+			// our dialog goes away before we do
+			try {
+				attributeSelector.clearSelection();
+				// See if we have a "current" attribute
+				if (currentAttribute != null) {
+					for (int i = 0; i < attributes.length; i++) {
+						if (currentAttribute.equals((String)attributes[i])) {
+							firstIndex =  i;
+							break;
+						}
+					}
 				}
+				while (animating) {
+					// Cycle through the vizmaps we created
+					for (int i = firstIndex; i < styles.length && animating; i++) {
+						Cytoscape.getCurrentNetworkView().applyVizmapper(styles[i]);
+						attributeSelector.setSelectedValue(attributes[i], true);
+						currentAttribute = (String)attributes[i];
+						// Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+					}
+					firstIndex = 0;
+				}
+				// Reset our selected attributes
+				int [] selectedIndices = new int[attributes.length];
+				int selIndex = 0;
+				for (int index = 0; index < attributes.length; index++) {
+					selectedIndices[selIndex++] = attributeList.indexOf(attributes[index]);
+				}
+				attributeSelector.setSelectedIndices(selectedIndices);
+			} catch (Exception e) {
+				// This is almost certainly a clast cast because the dialog
+				// went away before we completed.  Just ignore it
 			}
+			listening = true;
 		}
 	}
 
