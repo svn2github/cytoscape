@@ -128,12 +128,20 @@ public class TreeViewModel extends TVModel {
 			for (int cell = 0; cell < nGene*nExpr; cell++)
 				exprData[cell] = DataModel.NODATA;
 
+			byte attributeType = edgeAttributes.getType(attribute);
 			Iterator edgeIterator = network.edgesIterator();
 			while (edgeIterator.hasNext()) {
 				CyEdge edge = (CyEdge)edgeIterator.next();
 				CyNode source = (CyNode)edge.getSource();
 				CyNode target = (CyNode)edge.getTarget();
-				Double val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), attribute);
+				Double val = null;
+				if (attributeType == CyAttributes.TYPE_FLOATING) {
+					val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), attribute);
+				} else if (attributeType == CyAttributes.TYPE_INTEGER) {
+					Integer v = edgeAttributes.getIntegerAttribute(edge.getIdentifier(), attribute);
+					if (v != null)
+						val = Double.valueOf(v.toString());
+				}
 				int gene = geneList.indexOf(source.getIdentifier());
 				int expr = geneList.indexOf(target.getIdentifier());
 				// System.out.println("Edge "+source.getIdentifier()+"("+gene+") "+
@@ -151,7 +159,18 @@ public class TreeViewModel extends TVModel {
 			for (String nodeName: geneList) {
 				int expr = 0;
 				for (String attribute: arrayList) {
-					Double val = nodeAttributes.getDoubleAttribute(nodeName, attribute);
+					byte attributeType = nodeAttributes.getType(attribute);
+					Double val = null;
+					if (attributeType == CyAttributes.TYPE_FLOATING) {
+						val = nodeAttributes.getDoubleAttribute(nodeName, attribute);
+					} else if (attributeType == CyAttributes.TYPE_INTEGER) {
+						Integer v = nodeAttributes.getIntegerAttribute(nodeName, attribute);
+						if (v != null)
+							val = Double.valueOf(v.toString());
+						else
+							val = null;
+					}
+
 					if (val == null) {
 						exprData[gene*nExpr + expr] = DataModel.NODATA;
 					} else {

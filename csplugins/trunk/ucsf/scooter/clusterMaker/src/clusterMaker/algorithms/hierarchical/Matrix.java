@@ -366,14 +366,22 @@ public class Matrix {
 		// For each edge, get the attribute and update the matrix and mask values
 		int index = 0;
 		int column;
+		byte attributeType = edgeAttributes.getType(weight);
 		for (CyNode node: nodeList) {
 			this.rowLabels[index] = node.getIdentifier();
 			this.rowNodes[index] = node;
 			this.columnLabels[index] = node.getIdentifier();
 			// Get the list of adjacent edges
-				List<CyEdge> edgeList = network.getAdjacentEdgesList(node, true, true, true);
+			List<CyEdge> edgeList = network.getAdjacentEdgesList(node, true, true, true);
 			for (CyEdge edge: edgeList) {
-				Double val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), weight);
+				Double val = null;
+				if (attributeType == CyAttributes.TYPE_FLOATING) {
+					val = edgeAttributes.getDoubleAttribute(edge.getIdentifier(), weight);
+				} else {
+					Integer v = edgeAttributes.getIntegerAttribute(edge.getIdentifier(), weight);
+					if (v != null)
+						val = Double.valueOf(v.toString());
+				}
 				if (edge.getSource() == node) {
 					column = nodeList.indexOf(edge.getTarget());
 					matrix[index][column] = val;
