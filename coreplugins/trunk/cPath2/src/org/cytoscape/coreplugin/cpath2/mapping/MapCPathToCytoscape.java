@@ -97,7 +97,7 @@ public class MapCPathToCytoscape implements HTTPServerListener {
                 }
             }
         }
-        System.out.println("CPATH REQUEST:  " + cpathRequest.toString());
+        // System.out.println("CPATH REQUEST:  " + cpathRequest.toString());
         loadMergeDialog(cpathRequest);
     }
 

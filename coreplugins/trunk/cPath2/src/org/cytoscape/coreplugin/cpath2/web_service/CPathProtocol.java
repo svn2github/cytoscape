@@ -10,6 +10,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.Element;
+import cytoscape.logger.CyLogger;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.ProxyHandler;
 
@@ -156,6 +157,7 @@ public class CPathProtocol {
     private volatile HttpMethodBase method;
     private boolean cancelledByUser = false;
     private static boolean debug = false;
+		private CyLogger logger = CyLogger.getLogger(CPathProtocol.class);
 
     /**
      * Constructor.
@@ -251,12 +253,12 @@ public class CPathProtocol {
                 nvps =  createNameValuePairs(true);
                 method = new PostMethod(baseUrl);
                 ((PostMethod)(method)).addParameters(nvps);
-                System.out.println("Connect:  " + method.getURI() + " (via POST)");
+                logger.info("Connect:  " + method.getURI() + " (via POST)");
             } else {
                 nvps = createNameValuePairs(false);
                 String liveUrl = createURI(baseUrl, nvps);
                 method = new GetMethod(liveUrl);
-                System.out.println("Connect:  " + liveUrl);
+                logger.info("Connect:  " + liveUrl);
             }
 
             int statusCode = client.executeMethod(method);
@@ -330,7 +332,7 @@ public class CPathProtocol {
         //  proxy.server.type=HTTP
         if (proxyServer != null) {
             String proxyAddress = proxyServer.toString();
-            System.out.println("full proxy string:  " + proxyAddress);
+            if (debug) logger.debug("full proxy string:  " + proxyAddress);
             String[] addressComponents = proxyAddress.split("@");
             if (addressComponents.length == 2) {
                 String parts[] = addressComponents[1].split(":");
@@ -340,8 +342,8 @@ public class CPathProtocol {
                     if (hostParts.length > 0) {
                         String host = hostParts[0].trim();
                         String port = parts[1].trim();
-                        System.out.println ("proxy host: " + host);
-                        System.out.println("proxy port:  " + port);
+                        if (debug) logger.debug("proxy host: " + host);
+                        if (debug) logger.debug("proxy port:  " + port);
                         client.getHostConfiguration().setProxy(host, Integer.parseInt(port));
                     }
                 }

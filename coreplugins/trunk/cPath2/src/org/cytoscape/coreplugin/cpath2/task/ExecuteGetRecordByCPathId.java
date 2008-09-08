@@ -6,6 +6,7 @@ import cytoscape.ding.DingNetworkView;
 import cytoscape.ding.CyGraphLOD;
 import cytoscape.layout.CyLayoutAlgorithm;
 import cytoscape.layout.CyLayouts;
+import cytoscape.logger.CyLogger;
 import cytoscape.view.CyNetworkView;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.readers.GraphReader;
@@ -53,6 +54,7 @@ public class ExecuteGetRecordByCPathId implements Task {
     private CPathResponseFormat format;
     private final static String CPATH_SERVER_NAME_ATTRIBUTE = "CPATH_SERVER_NAME";
     private final static String CPATH_SERVER_DETAILS_URL = "CPATH_SERVER_DETAILS_URL";
+		private CyLogger logger = CyLogger.getLogger(ExecuteGetRecordByCPathId.class);
 
     /**
      * Constructor.
@@ -410,14 +412,14 @@ public class ExecuteGetRecordByCPathId implements Task {
         }
         ArrayList batchList = createBatchArray(cyNetwork);
         if (batchList.size()==0) {
-            System.out.println ("Skipping node details.  Already have all the details new need.");
+						logger.info ("Skipping node details.  Already have all the details new need.");
         }
         for (int i=0; i<batchList.size(); i++) {
             if (haltFlag == true) {
                 break;
             }
             ArrayList currentList = (ArrayList) batchList.get(i);
-            System.out.println ("Getting node details, batch:  " + i);
+            logger.debug ("Getting node details, batch:  " + i);
             long ids[] = new long [currentList.size()];
             for (int j=0; j<currentList.size(); j++) {
                 CyNode node = (CyNode) currentList.get(j);

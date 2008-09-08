@@ -32,6 +32,7 @@
 package org.cytoscape.coreplugin.cpath2.driver;
 
 // imports
+import cytoscape.logger.CyLogger;
 
 import org.cytoscape.coreplugin.cpath2.http.HTTPEvent;
 import org.cytoscape.coreplugin.cpath2.http.HTTPServer;
@@ -43,6 +44,7 @@ import org.cytoscape.coreplugin.cpath2.http.HTTPServerListener;
  * @author Benjamin Gross
  */
 public class Driver implements HTTPServerListener {
+		CyLogger logger = CyLogger.getLogger(HTTPServerListener.class);
 
     /**
      * Our implementation of HTTPServerListener.
@@ -51,7 +53,7 @@ public class Driver implements HTTPServerListener {
      */
     public void httpEvent(HTTPEvent event) {
 
-        System.out.println("request received: " + event.getRequest());
+        logger.debug("request received: " + event.getRequest());
     }
 
     public static void main(String[] args) {
