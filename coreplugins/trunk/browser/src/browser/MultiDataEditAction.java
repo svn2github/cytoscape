@@ -273,7 +273,9 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 	 * attributeTo the values that were copied will be saved to "new_values"
 	 */
 	private void copyAtt() {
-		if (attrData.getType(attributeFrom) != attrData.getType(attributeTo)) {
+		byte fromType = attrData.getType(attributeFrom);
+		byte toType= attrData.getType(attributeTo);
+		if (toType != CyAttributes.TYPE_UNDEFINED && fromType != toType) {
 			showErrorWindow("Copy Failed: Incompatible data types.");
 
 			return;
@@ -287,7 +289,13 @@ public class MultiDataEditAction extends AbstractUndoableEdit {
 		for (Iterator i = objects.iterator(); i.hasNext();) {
 			GraphObject go = (GraphObject) i.next();
 
-			Object value = attrData.getAttribute(go.getIdentifier(), attributeFrom);
+			Object value = null;
+			if (fromType == CyAttributes.TYPE_SIMPLE_LIST)
+				value = attrData.getListAttribute(go.getIdentifier(), attributeFrom);
+			else if (fromType == CyAttributes.TYPE_SIMPLE_MAP)
+				value = attrData.getMapAttribute(go.getIdentifier(), attributeFrom);
+			else
+				value = attrData.getAttribute(go.getIdentifier(), attributeFrom);
 			new_values.add(value);
 			setAttributeValue(go.getIdentifier(), attributeTo, value);
 			old_values.add(null);
