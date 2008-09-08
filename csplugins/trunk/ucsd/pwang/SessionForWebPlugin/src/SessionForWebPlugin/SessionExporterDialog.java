@@ -30,8 +30,12 @@ public class SessionExporterDialog extends JDialog
 {
 	private JTabbedPane tabbedPane;
 	private NetworksTable networksTable;
+	private NetworkSpeciesPanel speciesPanel;
+	
 	private JRadioButton filesToDirButton;
 	private JRadioButton filesToZipButton;
+	private JRadioButton filesToZipButton_4CellCircuits;
+	
 	private JSpinner numNetworksPerRowSpinner;
 	private JCheckBox separateIntoPagesCheckBox;
 	private JLabel numNetworksPerPageLabel;
@@ -71,15 +75,25 @@ public class SessionExporterDialog extends JDialog
 			tabbedPane.add("Networks", networksScrollPane);
 		}
 
+		// Species panel
+		{
+			speciesPanel = new NetworkSpeciesPanel();
+			JScrollPane networksScrollPane = new JScrollPane(speciesPanel);
+			tabbedPane.add("Species", speciesPanel);
+		}
+
 		// Files panel
 		{
 			JLabel filesLabel = new JLabel("Save files:");
 			filesToDirButton = new JRadioButton("To a directory");
 			filesToDirButton.setSelected(true);
 			filesToZipButton = new JRadioButton("As a zip archive");
+			filesToZipButton_4CellCircuits = new JRadioButton("As a zip archive for Cell Circuits web site");
+
 			ButtonGroup filesGroup = new ButtonGroup();
 			filesGroup.add(filesToDirButton);
 			filesGroup.add(filesToZipButton);
+			filesGroup.add(filesToZipButton_4CellCircuits);
 
 			JPanel filesButtonsPanel = new JPanel(new GridBagLayout());
 			filesButtonsPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
@@ -97,6 +111,12 @@ public class SessionExporterDialog extends JDialog
 			c.weightx = 1.0;	c.weighty = 0.0;
 			filesButtonsPanel.add(filesToZipButton, c);
 
+			c.gridx = 0;		c.gridy = 2;
+			c.gridwidth = 1;	c.gridheight = 1;
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.weightx = 1.0;	c.weighty = 0.0;
+			filesButtonsPanel.add(filesToZipButton_4CellCircuits, c);
+			
 			JPanel filesPanel = new JPanel(new GridBagLayout());
 
 			c.insets = new Insets(5,5,5,5);
@@ -474,7 +494,7 @@ public class SessionExporterDialog extends JDialog
 	 * Adds the network to the networks table; this should only be called
 	 * by the updateNetworksTableActionListener.
 	 */
-	public void addNetwork(String networkID, String networkName, int imageWidth, int imageHeight, boolean hasView)
+	public void addNetwork(String networkID, String networkName, String species, int imageWidth, int imageHeight, boolean hasView)
 	{
 		boolean hasMem = true;
 		long memoryUse = ((long) imageWidth) * ((long) imageHeight) * 4L;
@@ -490,7 +510,7 @@ public class SessionExporterDialog extends JDialog
 		else
 			status = NetworksTableItem.STATUS_OK;
 
-		NetworksTableItem item = new NetworksTableItem(networkName, imageWidth, imageHeight, status);
+		NetworksTableItem item = new NetworksTableItem(networkName, species, imageWidth, imageHeight, status);
 		networksTable.addNetwork(networkID, item);
 	}
 
@@ -501,8 +521,11 @@ public class SessionExporterDialog extends JDialog
 		settings.networks = networksTable.getAllNetworksToExport();
 		if (filesToDirButton.isSelected())
 			settings.destination = SessionExporterSettings.DESTINATION_DIRECTORY;
-		else
+		else if (filesToZipButton.isSelected())
 			settings.destination = SessionExporterSettings.DESTINATION_ZIP_ARCHIVE;
+		else if (filesToZipButton_4CellCircuits.isSelected()) {
+			settings.destination = SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS;			
+		}
 
 		settings.numNetworksPerRow = ((Number) numNetworksPerRowSpinner.getValue()).intValue();
 		settings.doSeparateIntoPages = separateIntoPagesCheckBox.isSelected();
@@ -613,8 +636,8 @@ class AboutDialog extends JDialog
  */
 class NetworksTable extends JTable
 {
-	private static final String[] columnNames   = {"Export?",     "Network",    "Image Size", "Status"}; 
-	private static final Class[]  columnClasses = { Boolean.class, String.class, String.class, String.class };
+	private static final String[] columnNames   = {"Export?", "Network", "Species","Image Size", "Status"}; 
+	private static final Class[]  columnClasses = { Boolean.class, String.class,String.class, String.class, String.class };
 
 	private ActionListener updateListener;
 	private LinkedList<NetworksTableItem> tableItems = new LinkedList<NetworksTableItem>();
@@ -623,7 +646,7 @@ class NetworksTable extends JTable
 	public NetworksTable()
 	{
 		setModel(new NetworksTableModel());
-		getColumnModel().getColumn(3).setCellRenderer(new StatusCellRenderer());
+		getColumnModel().getColumn(4).setCellRenderer(new StatusCellRenderer());
 		getColumnModel().getColumn(0).setMaxWidth(60);
 		addMouseListener(new NetworksTableMouseListener());
 		addMouseMotionListener(new NetworksTableMouseMotionListener());
@@ -699,6 +722,8 @@ class NetworksTable extends JTable
 			else if (col == 1)
 				return item.getNetworkName();
 			else if (col == 2)
+				return item.getSpecies();
+			else if (col == 3)
 				return item.getImageSize();
 			else
 				return null;
@@ -794,13 +819,15 @@ class NetworksTableItem
 	private boolean enabled;
 	private boolean export;
 	private String networkName;
+	private String species;
 	private int imageWidth;
 	private int imageHeight;
 	private byte status;
 
-	public NetworksTableItem(String networkName, int imageWidth, int imageHeight, byte status)
+	public NetworksTableItem(String networkName, String species, int imageWidth, int imageHeight, byte status)
 	{
 		this.networkName = networkName;
+		this.species = species;		
 		this.imageWidth = imageWidth;
 		this.imageHeight = imageHeight;
 		this.status = status;
@@ -838,6 +865,11 @@ class NetworksTableItem
 	public String getNetworkName()
 	{
 		return networkName;
+	}
+
+	public String getSpecies()
+	{
+		return species;
 	}
 
 	public String getImageSize()
@@ -992,3 +1024,4 @@ class StatusDialog extends JDialog
 		setVisible(true);
 	}
 }
+
