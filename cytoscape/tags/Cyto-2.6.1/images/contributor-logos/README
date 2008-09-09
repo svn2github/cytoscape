@@ -1,0 +1,14 @@
+
+Members of the Cytoscape Consortium should include an SVG version 
+of their logo in this directory.  We need a vector version of
+the logo because the logos will be used in different places like
+splash screens, websites, credit screens, etc., so we need to be
+able to scale the image appropriated.  Since many of these graphics
+are generated dynamically, SVG is the easiest for us to use.  
+Programs like Adobe Illustrator can easily save PDF, PS, or EPS
+graphics as SVG.  Please do NOT include SVG images with embedded 
+bitmap (jpg, png, gif) graphics as these images do NOT scale well.  
+
+We promise not to modify the graphics (aside from scale) or otherwise
+compromise the integrity of the logo.
+
