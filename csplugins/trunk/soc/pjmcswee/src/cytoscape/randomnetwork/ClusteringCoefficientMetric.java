@@ -90,7 +90,7 @@ public class ClusteringCoefficientMetric implements NetworkMetric {
 	 * @param pDirected Specifices how to treat the network. This matters for this metric.
 	 * @return The clustering coeffcient for this network.
 	 */
-	public double analyze(DynamicGraph pNetwork, boolean pDirected)
+	public double analyze(RandomNetwork pNetwork, boolean pDirected)
 	{
 		//used to accumulate the clustering coefficient of each node
 		double averageClusteringCoefficient = 0;

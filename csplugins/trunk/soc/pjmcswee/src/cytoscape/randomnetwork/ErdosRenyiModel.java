@@ -107,7 +107,7 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	 *
 	 * @return The copy of the calling ErdosRenyiModel
 	 */
-	public ErdosRenyiModel copy()
+	public RandomNetworkGenerator copy()
 	{
 		//If no probability
 		if(probability == UNSPECIFIED)
@@ -138,10 +138,10 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	 *
 	 * @return The generated network, whose properties are specified by member variables.
 	 */
-	public DynamicGraph generate() {
+	public RandomNetwork generate() {
 		
 		//Call the appropriate generator
-		DynamicGraph random_network = null;
+		RandomNetwork random_network = null;
 		if(probability == UNSPECIFIED)
 		{
 			random_network = gnmModel();
@@ -163,11 +163,13 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	 *
 	 * @return The generated network according to the G(n,m) model.
 	 */
-	private DynamicGraph gnmModel()
+	private RandomNetwork gnmModel()
 	{
 		//Create the graph object
-		DynamicGraph random_network =  DynamicGraphFactory.instantiateDynamicGraph();
+		RandomNetwork random_network =  new RandomNetwork(directed);
 
+		random_network.setTitle(getName());
+		
 		// Create N nodes
 		int[] nodes = new int[numNodes];
 
@@ -321,10 +323,12 @@ public class ErdosRenyiModel extends RandomNetworkModel {
 	*
 	* @return The network generated using the G(n,p) model.
 	*/
-	public DynamicGraph gnpModel()
+	public RandomNetwork gnpModel()
 	{
 		//Create a network
-		DynamicGraph random_network =  DynamicGraphFactory.instantiateDynamicGraph();
+		RandomNetwork random_network =  new RandomNetwork(directed);
+		random_network.setTitle(getName());
+		
 		int[] nodes = new int[numNodes];
 		
 		

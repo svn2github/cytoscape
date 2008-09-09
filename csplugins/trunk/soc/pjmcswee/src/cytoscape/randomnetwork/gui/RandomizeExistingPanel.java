@@ -336,7 +336,7 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 		boolean directed = directedCheckBox.isSelected();
 		CyNetwork net = Cytoscape.getCurrentNetwork();
 
-		LinkedList network = CytoscapeConversion.CyNetworkToDynamicGraph(net,!directed);
+		
 		String iterString = numIterTextField.getText();
 		int numIter;
 		try
@@ -350,8 +350,10 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 		}catch(Exception e){numIterLabel.setForeground(java.awt.Color.RED); return this;}
 
 		numIterLabel.setForeground(java.awt.Color.BLACK);
-		DegreePreservingNetworkRandomizer dpnr = new DegreePreservingNetworkRandomizer(net,!directed,numIter);
-		String ids[] = dpnr.getNodeIds();
+		RandomNetwork random_network = new RandomNetwork(net,!directed);
+		
+		DegreePreservingNetworkRandomizer dpnr = new DegreePreservingNetworkRandomizer(random_network,!directed,numIter);
+
 
 
 
@@ -391,9 +393,9 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 		for(int i = 0; i < visualRounds; i++)
 		{
 
-			DynamicGraph randGraph = dpnr.generate();
+			RandomNetwork randGraph = dpnr.generate();
 			
-			CyNetwork randNetwork = CytoscapeConversion.DynamicGraphToCyNetwork(net.getTitle() + "'",randGraph,net,ids);
+			CyNetwork randNetwork = randGraph.toCyNetwork();
 
 			
 		}

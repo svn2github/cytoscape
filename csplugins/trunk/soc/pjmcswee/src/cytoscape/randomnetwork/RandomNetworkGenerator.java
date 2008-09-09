@@ -33,9 +33,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-
 package cytoscape.randomnetwork;
-import cytoscape.graph.dynamic.*;
 
 /** 
  * This is the interface for generating random networks.
@@ -45,7 +43,7 @@ import cytoscape.graph.dynamic.*;
  * @author Patrick J. McSweeney
  * @version 1.0
  */
-public interface RandomNetworkGenerator  {
+public interface RandomNetworkGenerator  extends Cloneable{
 	
 	/**
 	 * Used to generate random networks 
@@ -53,14 +51,7 @@ public interface RandomNetworkGenerator  {
 	 *
 	 *	@return The resulting random network <DynamicGraph>.
 	 */
-	DynamicGraph generate();
-	
-	/**
-	 *  Required to give each thread their own copy of this generator.
-	 *
-	 *  @return An exact copy of this randomNetworkGenerator <RandomNetworkGenerator>.
-	 */
-	RandomNetworkGenerator copy();
+	RandomNetwork generate();
 	
 	
 	/**
@@ -68,5 +59,7 @@ public interface RandomNetworkGenerator  {
 	 * @return The name representation of this generator.
 	 */
 	public abstract String getName();
+	
 
+	public RandomNetworkGenerator copy();
 }

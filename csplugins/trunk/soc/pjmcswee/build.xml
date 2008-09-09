@@ -56,6 +56,24 @@
         <delete file="${basedir}/RandomNetworks.jar"/>
     </target>
 
+
+
+ <!-- ==================== Compile Target ============================= -->
+    <target name="checkcompile" depends="prepare"
+        description="Compiles all Java source files">
+        <mkdir dir="${build}/classes"/>
+        <javac srcdir="${src}"
+		    source="1.5"
+            destdir="build/classes"
+            debug="${compile.debug}"
+            deprecation="${compile.deprecation}"
+            optimize="${compile.optimize}">
+        <classpath refid="compile.classpath"/>
+		<compilerarg value="-Xlint"/> 
+        </javac>
+    </target>
+
+
     <!-- ==================== Compile Target ============================= -->
     <target name="compile" depends="prepare"
         description="Compiles all Java source files">
@@ -86,6 +104,10 @@
         </copy>
     </target>
 
+
+
+
+
     <!-- ==================== Run Target ================================= -->
     <target depends="jar"
 		description="Runs Latest Version of Cytoscape with RandmoNetworks Plugin"
@@ -96,9 +118,13 @@
         </java>
     </target>
 
+	<!-- ==================== Build jar and run ========================== -->
+    <target name="cjar" depends="clean, jar"/>
+
+
 
 	<!-- ==================== Build jar and run ========================== -->
-    <target name="all" depends="jar"/>
+    <target name="all" depends="clean, jar, run"/>
 
 
 	<!-- ==================== Prepare Target ============================= -->

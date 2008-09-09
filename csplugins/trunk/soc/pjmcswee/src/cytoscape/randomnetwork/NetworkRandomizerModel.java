@@ -34,8 +34,8 @@
  */
 
 package cytoscape.randomnetwork;
+
 import cytoscape.*;
-import cytoscape.graph.dynamic.*;
 import java.util.Random;
 import java.util.LinkedList;
 
@@ -50,109 +50,83 @@ import java.util.LinkedList;
 public abstract class NetworkRandomizerModel implements RandomNetworkGenerator{
 
 	/**
-	 * A pointer to the orignal CyNetwork.
-	 */
-	protected CyNetwork cytoNetwork;
-
-	/**
 	 * Experimental seed.
 	 */
-	protected long seed;
+	protected long mSeed;
 
 	/**
 	 * Random number generated
 	 */
-	protected Random random;
+	protected Random mRandom;
 
 	/**
 	 * Specifies if edges are directed.
 	 */
-	protected boolean directed;
+	protected boolean mDirected;
 
 	/**
 	 * The graph to randomize.
 	 */
-	protected DynamicGraph original;
+	protected RandomNetwork mOriginal;
 
-	/**
-	 * A mapping from DyanmicGraph structure to CyNetwork structure.
-	 */
-	protected String nodeIds[];
 	
-	/**
+	/**-----------------------------------------------------------------------
 	 *  Constructs a RandomNetworkGenerator which operates by randomizing some 
 	 *  aspect of an existing network.
 	 *
 	 * @param network The CyNetwork that is to be randomized
 	 * @param pDirected Whether or not to treat the network as directed or not.
 	 *
-	 */
-	NetworkRandomizerModel(CyNetwork network, 
-			boolean pDirected) {
-			
-		cytoNetwork = network;
-		directed = pDirected;
-
-		LinkedList result = (CytoscapeConversion.CyNetworkToDynamicGraph(network, directed));
-		original = (DynamicGraph)result.get(0);
-
-		nodeIds =(String[]) result.get(1);
-		
-		seed = System.currentTimeMillis(); 
-		random = new Random(seed);
-		
-		
+	 *-----------------------------------------------------------------------*/
+	NetworkRandomizerModel(RandomNetwork pRandomNetwork, boolean pDirected) 
+	{		
+		mDirected = pDirected;
+		mOriginal = pRandomNetwork;
+		mSeed = System.currentTimeMillis(); 
+		mRandom = new Random(mSeed);
 	}
+	
+	
 
-	/**
+	/**-----------------------------------------------------------------------
 	 * Sets the seed for this NetworkRandomizerModel.
 	 * @param pSeed the seed to set for the random # generator.
-	 */
-	public void setSeed(long pSeed) {
-		seed = pSeed;
-		random = new Random(seed);
+	 *-----------------------------------------------------------------------*/
+	public void setSeed(long pSeed) 
+	{
+		mSeed = pSeed;
+		mRandom = new Random(mSeed);
 	}
 
-	/**
+	/**-----------------------------------------------------------------------
 	 * Returns the seed for this NetworkRandomizerMode.
 	 *
 	 * @return The seed used by the random network generator.
-	 */
-	public long getSeed() {
-		return seed;
+	 *-----------------------------------------------------------------------*/
+	public long getSeed() 
+	{
+		return mSeed;
 	}
 
-	/**
+	/**-----------------------------------------------------------------------
 	 *  This tells us how to treat the CyNetwork originally passed in.
 	 *  All subsequant random networks generated will have the same directedness.
 	 *
 	 *  @return true if this is directed or not
-	 */
-	public boolean getDirected() {
-		return directed;
-	}
-	
-	/**
-	 *  Returns the set of node labels from CyNodes in the original CyNetwork.
-	 *  To convert back from the DyanmicGraph data structure, and get the correct CyNodes back
-	 *  we must apply the node labels.
-	 *
-	 *
-	 *  @return The node labels which uniquely identify CyNodes.
-	 */
-	public String[] getNodeIds()
+	 *-----------------------------------------------------------------------*/
+	public boolean getDirected() 
 	{
-		return nodeIds;
+		return mDirected;
 	}
-	
-	/**
+
+	/**-----------------------------------------------------------------------
 	 *  Returns the DynamicGraph used in this NetworkRandomizerModel. 
 	 * 
 	 *  @return The original network in a DynamicGraph structure.
-	 */
-	public DynamicGraph getOriginal()
+	 *-----------------------------------------------------------------------*/
+	public RandomNetwork getOriginal()
 	{
-		return original;
+		return mOriginal;
 	}
 
 }

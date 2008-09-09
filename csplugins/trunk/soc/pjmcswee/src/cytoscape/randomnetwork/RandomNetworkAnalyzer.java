@@ -113,7 +113,7 @@ public class RandomNetworkAnalyzer implements Task {
 			{
 		
 				//Generate the next random graph
-				DynamicGraph net = myNetworkModel.generate();
+				RandomNetwork net = myNetworkModel.generate();
 
 				//Perform all metrics unless we have been interrupted
 				for(int j = 0; ((j < myMetrics.size())&&(!interrupted)); j++)
@@ -165,17 +165,16 @@ public class RandomNetworkAnalyzer implements Task {
 	private int numRounds;
 	private int numThreads;
 	private LinkedList<NetworkMetric> metrics;
-	private CyNetwork original;
 	private int totalCompleted;
 	private int totalToAnalyze;
 	private Object data[][];
 	private int elapsedTime;
-
+	private RandomNetwork graph;
 
 	/**
 	 *  Default constructor
 	 */
-	public RandomNetworkAnalyzer(LinkedList<NetworkMetric> pMetrics, CyNetwork pOriginal, 
+	public RandomNetworkAnalyzer(LinkedList<NetworkMetric> pMetrics, RandomNetwork pOriginal, 
 								RandomNetworkGenerator pNetwork, boolean pDirected,
 								int pNumThreads, int pNumRounds)
 	{
@@ -184,14 +183,15 @@ public class RandomNetworkAnalyzer implements Task {
 		numRounds = pNumRounds;
 		numThreads = pNumThreads;
 		metrics = pMetrics;
-		original = pOriginal;
 		totalCompleted = 0;
 		totalToAnalyze = 0;
+		graph = pOriginal;
 	}
-
-	/**
+	
+	
+	/**-----------------------------------------------------------------------------
 	 * Run our task
-	 */
+	 *-----------------------------------------------------------------------------*/
 	public void run() {
 
 
@@ -207,9 +207,7 @@ public class RandomNetworkAnalyzer implements Task {
 		//Used for the progress meter to show progress
 		totalToAnalyze = metrics.size() * (numRounds + 1);
 		
-		
-		//Compute the metrics on the current network
-		DynamicGraph graph = (DynamicGraph)(CytoscapeConversion.CyNetworkToDynamicGraph(original , directed )).get(0);
+					
 		for(int j = 0; ((j < metrics.size())&&(!interrupted)); j++)
 		{
 				//Get the next metric
@@ -254,7 +252,7 @@ public class RandomNetworkAnalyzer implements Task {
 			while(iter.hasNext())
 			{
 				NetworkMetric nextMetric = iter.next();
-				threadMetrics.addLast(nextMetric.copy());
+				threadMetrics.addLast((NetworkMetric)nextMetric.copy());
 			}
 			
 			//Create the new thread
@@ -382,9 +380,9 @@ public class RandomNetworkAnalyzer implements Task {
 	/**
 	*
 	*/
-	public CyNetwork getNetwork()
+	public RandomNetwork getNetwork()
 	{
-		return original;
+		return graph;
 	}
 	
 	

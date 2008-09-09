@@ -85,7 +85,7 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 	 *
 	 * @return Returns a copy of this generator
 	 */
-	public WattsStrogatzModel copy()
+	public RandomNetworkGenerator copy() 
 	{
 		return new WattsStrogatzModel( numNodes, allowSelfEdge, directed, beta, degree);
 	}
@@ -109,11 +109,13 @@ public class WattsStrogatzModel extends RandomNetworkModel {
 	 * 
 	 * @return The generated random network
 	 */
-	public DynamicGraph generate() 
+	public RandomNetwork generate() 
 	{
 
 		//Create the random graph
-		DynamicGraph random_network =  DynamicGraphFactory.instantiateDynamicGraph();
+		RandomNetwork random_network =  new RandomNetwork(directed);
+
+		random_network.setTitle(getName());
 
 		//Keep track of the number 
 		numEdges = 0;

@@ -97,16 +97,6 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 			crAction.setEnabled(false);
 		}
 		
-		/*
-		try
-		{
-		RandomNetworkTests rnt = new RandomNetworkTests();
-		rnt.test();
-		}catch(Exception e){
-		
-		System.out.println("test Failed");
-		e.printStackTrace();}
-		*/
 	}
 		
 		
@@ -172,6 +162,9 @@ public class RandomNetworkPlugin extends CytoscapePlugin  implements PropertyCha
 		
 			//make it visible
 			pack();
+			setLocationRelativeTo(null); //should center on screen
+			//show();
+
 			setVisible(true);
 		
 

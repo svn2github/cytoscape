@@ -34,9 +34,6 @@
  */
 
 package cytoscape.randomnetwork;
-import cytoscape.graph.dynamic.*;
-
-
 
 
 /**
@@ -60,15 +57,8 @@ public interface  NetworkMetric {
 	 * @param pDirected Specifices to treat pNet as directed (true) or undirected (false).
 	 * @return The result of this metric on pNet.
 	 */
-	public abstract double analyze(DynamicGraph pNet, boolean pDirected);
+	public abstract double analyze(RandomNetwork pNetwork, boolean pDirected);
 	
-	
-	/**
-	 *  Each NetworkMetric needs to implement the copy constructor to allow
-	 *  the RandomNetworkAnalyzer to give each thread its own copy of the metric.
-	 *  @return A copy of this NetworkMetric.
-	 */
-	public NetworkMetric copy();
 	
 	/**
 	 * Returns the name of this metric, used for display purposes.
@@ -76,6 +66,9 @@ public interface  NetworkMetric {
 	 * @return The string conical name of this metric. 
 	 */
 	public abstract String getDisplayName();
+	
+	
+	public abstract NetworkMetric copy();
 	
 }
 

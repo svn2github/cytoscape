@@ -291,6 +291,7 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 			}
 		} catch (Exception e) {
 			//If there is an error change the colors
+			nodeTextField.grabFocus();
 			nodeLabel.setForeground(java.awt.Color.RED);
 			initLabel.setForeground(java.awt.Color.BLACK);
 			edgeLabel.setForeground(java.awt.Color.BLACK);
@@ -306,7 +307,8 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 			}	
 
 		} catch (Exception e) {
-			//If there is an error change the colors to red	
+			//If there is an error change the colors to red
+			initTextField.grabFocus();	
 			nodeLabel.setForeground(java.awt.Color.BLACK);
 			initLabel.setForeground(java.awt.Color.RED);
 			edgeLabel.setForeground(java.awt.Color.BLACK);
@@ -321,7 +323,8 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 				throw new Exception("Must add at least one edge per round.");
 			}	
 		} catch (Exception e) {
-			//If there is an error change the colors to red	
+			//If there is an error change the colors to red
+			edgeTextField.grabFocus();	
 			nodeLabel.setForeground(java.awt.Color.BLACK);
 			initLabel.setForeground(java.awt.Color.BLACK);
 			edgeLabel.setForeground(java.awt.Color.RED);
@@ -368,8 +371,8 @@ public class BarabasiAlbertPanel extends RandomNetworkPanel {
 		
 		
 		//Create the network
-		DynamicGraph graph = bam.generate();
-		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork("Barabasi-Albert", graph,null);
+		RandomNetwork graph = bam.generate();
+		CyNetwork randomNet = graph.toCyNetwork();
 		graph = null;
 		
 		

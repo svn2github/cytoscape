@@ -92,7 +92,7 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 	
 	
 	
-	private String[] columnNames =  {"Metric","Existing Network","Average","Standard Deviation"};;
+	private String[] columnNames =  {"Metric","Existing Network","Random Networks Average","Random Networks Standard Deviation"};
 	
 	
 	private RandomNetworkAnalyzer rna;
@@ -124,7 +124,7 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 	 */
 	public String getTitle()
 	{
-		CyNetwork net = rna.getNetwork();
+		RandomNetwork net = rna.getNetwork();
 		return new String("Results for " + net.getTitle());
 	}
 	
@@ -147,9 +147,9 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 	 */
 	private void initComponents() {
 
-		CyNetwork net = rna.getNetwork();
+	//	CyNetwork net = rna.getNetwork();
 
-
+		RandomNetwork random_network = rna.getNetwork();
 
 
 		nodeLabel = new javax.swing.JLabel();
@@ -165,8 +165,8 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 		nodeLabel.setText("Number of nodes: ");
 		edgeLabel.setText("Number of edges: ");
 		timeLabel.setText("Time elapsed: ");
-		numNodeLabel.setText("" + net.getNodeCount());
-		numEdgeLabel.setText("" + net.getEdgeCount());
+		numNodeLabel.setText("" + random_network.getNumNodes());
+		numEdgeLabel.setText("" + random_network.getNumEdges());
 
 
 		
@@ -284,9 +284,19 @@ public class DisplayResultsPanel extends RandomNetworkPanel {
 		JDialog dialog = (JDialog)getTopLevelAncestor();
 
 		JFileChooser saveFile = new JFileChooser();
-		saveFile.showSaveDialog(dialog);
-
 		
+		String title = rna.getNetwork().getTitle();
+		
+		//rip off the extension
+		StringTokenizer strTok  = new StringTokenizer(title,".");
+		
+		if(strTok.countTokens() > 1)
+		{
+			title = strTok.nextToken();
+		}
+		
+		saveFile.setSelectedFile(new File( title + ".rn"));
+		saveFile.showSaveDialog(dialog);		
 		File file = saveFile.getSelectedFile();
 		JCheckBox saveAll = new javax.swing.JCheckBox();
 

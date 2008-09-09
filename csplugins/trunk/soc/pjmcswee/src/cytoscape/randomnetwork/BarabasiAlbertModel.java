@@ -120,9 +120,11 @@ public class BarabasiAlbertModel extends RandomNetworkModel {
 	 *
 	 * @return The generated random network. 
 	 */
-	public DynamicGraph generate() {
+	public RandomNetwork generate() {
 
-		DynamicGraph random_network = DynamicGraphFactory.instantiateDynamicGraph();
+		RandomNetwork random_network = new RandomNetwork(directed);
+
+		random_network.setTitle(getName());
 
 		//Get the current time
 		long time = System.currentTimeMillis();

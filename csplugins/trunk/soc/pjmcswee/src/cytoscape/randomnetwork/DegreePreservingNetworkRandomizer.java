@@ -32,16 +32,9 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-
-
-
-
-
 package cytoscape.randomnetwork;
 
 import cytoscape.*;
-import cytoscape.graph.dynamic.util.*;
-import cytoscape.graph.dynamic.*;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import java.util.*;
@@ -61,21 +54,21 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 	/**
 	 * The number of iterations to shuffle the edges for.
 	 */
-	 private int iterations;
-
+	 private int mIterations;
+	
+	
 	/**
 	*  Constructor 
 	*
-	*  @param  pNetwork The network to randomize.
+	*  @param  pGraph The DynamicGraph to randomize.
 	*  @param pDirected Specifices how to treat the network directed(true) undirected (false).
 	*/
-	public DegreePreservingNetworkRandomizer(CyNetwork pNetwork, 
+	public DegreePreservingNetworkRandomizer(RandomNetwork pGraph,
 			boolean pDirected, int pShuffles) 
 	{
-		super(pNetwork,  pDirected);
-		iterations = pShuffles;
+		super(pGraph,  pDirected);
+		mIterations = pShuffles;
 	}
-	
 	
 	/**
 	* Creates a copy of this NetworkRandomizer
@@ -84,7 +77,8 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 	*/
 	public RandomNetworkGenerator copy()
 	{
-		return new DegreePreservingNetworkRandomizer(cytoNetwork,  directed, iterations); 
+		
+		return new DegreePreservingNetworkRandomizer(mOriginal,  mDirected, mIterations); 
 	}
 	
 	
@@ -108,39 +102,26 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 	 *
 	 * @return Returns a DynamicGraph which has had its edges shuffled.
 	 */
-	public DynamicGraph generate()
+	public RandomNetwork generate()
 	{
 		
 		//
-		DynamicGraph newGraph = DynamicGraphFactory.instantiateDynamicGraph();
+		RandomNetwork newGraph = new RandomNetwork(mOriginal, mDirected);
 		
+		//Get an iterator for the nodes
+		int N =  mOriginal.nodes().numRemaining();
+
 		//Create a linkedList to hold the node Indicies
 		LinkedList<Integer> nodeList = new LinkedList<Integer>();
 		
-		//Get an iterator for the nodes
-		int N =  original.nodes().numRemaining();
-		
-		//Iterate through all of the nodes		
-		for(int i = 0; i < N; i++)
+		IntEnumerator iter = newGraph.nodes();
+		while(iter.numRemaining() > 0)
 		{
-			//Get the node indicies
-			int nodeIndex = newGraph.nodeCreate();
-			
-			//Save the node indicies in this list
-			nodeList.add(nodeIndex);
+			nodeList.add(new Integer(iter.nextInt()));
 		}
 		
-		//Iterate through all of the edges
-		IntEnumerator edgeEnum = original.edges();
-		while(edgeEnum.numRemaining() > 0)
-		{
-			int edgeIndex = edgeEnum.nextInt();
-			int source = original.edgeSource(edgeIndex);
-			int target = original.edgeTarget(edgeIndex);
-			newGraph.edgeCreate(source, target, directed);
-		}
-		
-		for(int e = 0; e < iterations; e++) 
+	
+		for(int e = 0; e < mIterations; e++) 
 		{
 		
 			
@@ -163,12 +144,12 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 			while (!done) {
 			
 				//Choose two random nodes
-				sourceAIndex = nodeList.get(random.nextInt(nodeList.size()));
-				sourceBIndex = nodeList.get(random.nextInt(nodeList.size()));
+				sourceAIndex = nodeList.get(mRandom.nextInt(nodeList.size()));
+				sourceBIndex = nodeList.get(mRandom.nextInt(nodeList.size()));
 		
 				//Get their connection information
-				IntEnumerator aenum = newGraph.edgesAdjacent(sourceAIndex,directed, false, !directed);
-				IntEnumerator benum = newGraph.edgesAdjacent(sourceBIndex,directed, false, !directed);				
+				IntEnumerator aenum = newGraph.edgesAdjacent(sourceAIndex,mDirected, false, !mDirected);
+				IntEnumerator benum = newGraph.edgesAdjacent(sourceBIndex,mDirected, false, !mDirected);				
 				
 				///See what their degrees are
 				int aDegree = aenum.numRemaining();
@@ -195,8 +176,8 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 				}
 				
 				//Choose two neighbors from these nodes
-				int aNeighIndex = random.nextInt(aDegree);
-				int bNeighIndex = random.nextInt(bDegree);				
+				int aNeighIndex = mRandom.nextInt(aDegree);
+				int bNeighIndex = mRandom.nextInt(bDegree);				
 				
 				
 				//Iterate over their edges to choose a random neighbor
@@ -235,7 +216,7 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 				boolean shouldBreak  = false;
 				
 				//Iterate through the existing edges from source A
-				aenum = newGraph.edgesAdjacent(sourceAIndex,directed,false,!directed);
+				aenum = newGraph.edgesAdjacent(sourceAIndex,mDirected,false,!mDirected);
 				while((aenum.numRemaining() > 0)&&(!shouldBreak))
 				{
 					//get the next edge
@@ -248,7 +229,7 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 					}
 					
 					//If it is undirected check the source of teh edge as well
-					if(!directed)
+					if(!mDirected)
 					{
 						//If we have a match then we should break
 						if(newGraph.edgeSource(nextEdge) == targetBIndex)
@@ -264,7 +245,7 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 				}
 				
 				//Iterate throught the existing edges on the other nedge
-				benum = newGraph.edgesAdjacent(sourceBIndex,directed,false,!directed);
+				benum = newGraph.edgesAdjacent(sourceBIndex,mDirected,false,!mDirected);
 				while((benum.numRemaining() > 0)&&(!shouldBreak))
 				{
 					//Get the next edge
@@ -277,7 +258,7 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 					}
 					
 					//If it is undirected edge, then look in both directions
-					if(!directed)
+					if(!mDirected)
 					{
 						//If we found a match, then we should break
 						if(newGraph.edgeSource(nextEdge) == targetAIndex)
@@ -305,8 +286,8 @@ public class DegreePreservingNetworkRandomizer extends NetworkRandomizerModel{
 				newGraph.edgeRemove(edge2Index);
 			
 				//Create the two new edges
-				int newEdge1Index = newGraph.edgeCreate(sourceAIndex,targetBIndex,directed);
-				int newEdge2Index = newGraph.edgeCreate(sourceBIndex,targetAIndex,directed);
+				int newEdge1Index = newGraph.edgeCreate(sourceAIndex,targetBIndex,mDirected);
+				int newEdge2Index = newGraph.edgeCreate(sourceBIndex,targetAIndex,mDirected);
 			}
 			
 		}

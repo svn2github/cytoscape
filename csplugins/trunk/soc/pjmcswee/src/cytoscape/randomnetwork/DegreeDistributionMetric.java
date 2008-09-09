@@ -36,7 +36,6 @@
 package cytoscape.randomnetwork;
 
 import java.util.*;
-import cytoscape.graph.dynamic.*;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
@@ -74,7 +73,7 @@ public  class DegreeDistributionMetric implements NetworkMetric {
 	/**
 	 *
 	 */
-	public double analyze(DynamicGraph network, boolean directed)
+	public double analyze(RandomNetwork network, boolean directed)
 	{
 	
 		//The value to store alpha in

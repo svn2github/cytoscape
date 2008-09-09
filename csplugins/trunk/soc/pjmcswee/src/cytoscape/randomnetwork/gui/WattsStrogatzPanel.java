@@ -311,6 +311,7 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 		//Try to read the string into an integer
 		try {
 			numNodes = Integer.parseInt(numNodeString);
+
 			if(numNodes < 3)
 			{
 				throw new Exception("Nodes must be > 2");
@@ -318,6 +319,7 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 
 		} catch (Exception e) {
 			//If an error occurs than change the colors
+			nodeTextField.grabFocus();
 			degreeLabel.setForeground(java.awt.Color.BLACK);
 			nodeLabel.setForeground(java.awt.Color.RED);
 			betaLabel.setForeground(java.awt.Color.BLACK);
@@ -335,6 +337,7 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 			}
 		} catch (Exception e) {
 			//If an error occurs than change the colors
+			betaTextField.grabFocus();
 			degreeLabel.setForeground(java.awt.Color.BLACK);
 			nodeLabel.setForeground(java.awt.Color.BLACK);
 			betaLabel.setForeground(java.awt.Color.RED);
@@ -350,7 +353,8 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 			}
 
 		} catch (Exception e) {
-			//If an error occurs than change the colors		
+			//If an error occurs than change the colors	
+			degreeTextField.grabFocus();	
 			degreeLabel.setForeground(java.awt.Color.RED);
 			nodeLabel.setForeground(java.awt.Color.BLACK);
 			betaLabel.setForeground(java.awt.Color.BLACK);
@@ -403,9 +407,9 @@ public class WattsStrogatzPanel extends RandomNetworkPanel {
 
 		
 		//Generate the random network
-		DynamicGraph graph = wsm.generate();
-		CyNetwork randomNet = CytoscapeConversion.DynamicGraphToCyNetwork("Watts-Strogatz",graph,null);
-		graph = null;
+		RandomNetwork network = wsm.generate();
+		CyNetwork randomNet = network.toCyNetwork();
+
 
 		//Go up to the Dialog and close this window
 	

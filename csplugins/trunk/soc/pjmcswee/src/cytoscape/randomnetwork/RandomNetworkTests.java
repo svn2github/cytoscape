@@ -36,8 +36,6 @@
 package cytoscape.randomnetwork;
 
 import junit.framework.TestCase;
-import cytoscape.graph.dynamic.*;
-import cytoscape.graph.dynamic.util.*;
 import giny.model.*;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
@@ -85,9 +83,9 @@ public class RandomNetworkTests extends TestCase
 	 *  @param pGraph The DynamicGraph object to check
 	 *  @param pNumEdges The number of expected nodes in the graph.
 	 *------------------------------------------------------------*/
-	public void checkNumNodes(DynamicGraph pGraph, int pNumNodes) throws Exception
+	public void checkNumNodes(RandomNetwork pRandomNetwork, int pNumNodes) throws Exception
 	{
-		IntEnumerator nodeIterator = pGraph.nodes();
+		IntEnumerator nodeIterator = pRandomNetwork.nodes();
 		assertEquals(NODE_NUMBER_ERROR, pNumNodes, nodeIterator.numRemaining());
 	}
 	
@@ -96,9 +94,9 @@ public class RandomNetworkTests extends TestCase
 	 *  @param pGraph The DynamicGraph object to check
 	 *  @param pNumEdges The number of expected edges in the graph.
 	 *------------------------------------------------------------*/
-	public void checkNumEdges(DynamicGraph pGraph, int pNumEdges) throws Exception
+	public void checkNumEdges(RandomNetwork pRandomNetwork, int pNumEdges) throws Exception
 	{
-		IntEnumerator edgeIterator = pGraph.edges();
+		IntEnumerator edgeIterator = pRandomNetwork.edges();
 		assertEquals(EDGE_NUMBER_ERROR, pNumEdges, edgeIterator.numRemaining());
 	}
 	
@@ -113,10 +111,10 @@ public class RandomNetworkTests extends TestCase
 	 *   @param pCheckDuplicate Ensure there are no duplicate edges
 	 *   @param pGraoh The graph to check.
 	 *------------------------------------------------------------*/
-	public void checkEdges(DynamicGraph pGraph, boolean pCheckSelfEdge, boolean pDirected, boolean pCheckDuplicate) throws Exception
+	public void checkEdges(RandomNetwork pRandomNetwork, boolean pCheckSelfEdge, boolean pDirected, boolean pCheckDuplicate) throws Exception
 	{
 		//Iterate over all of the edges
-		IntEnumerator edgeIterator = pGraph.edges();
+		IntEnumerator edgeIterator = pRandomNetwork.edges();
 		while(edgeIterator.numRemaining() > 0)
 		{
 			//Get the edges
@@ -126,17 +124,17 @@ public class RandomNetworkTests extends TestCase
 			if(pDirected)
 			{
 				//Assert the direction is directed
-				assertEquals(EDGE_DIRECTION_ERROR, DynamicGraph.DIRECTED_EDGE,  pGraph.edgeType(adjEdge));
+				assertEquals(EDGE_DIRECTION_ERROR, pRandomNetwork.DIRECTED_EDGE,  pRandomNetwork.edgeType(adjEdge));
 			}
 			else
 			{
 				//Assert the direction is undirected
-				assertEquals(EDGE_DIRECTION_ERROR, DynamicGraph.UNDIRECTED_EDGE, pGraph.edgeType(adjEdge));
+				assertEquals(EDGE_DIRECTION_ERROR, pRandomNetwork.UNDIRECTED_EDGE, pRandomNetwork.edgeType(adjEdge));
 			}
 			
 			//Get the source  and target of this edge
-			int source = pGraph.edgeSource(adjEdge);
-			int target = pGraph.edgeTarget(adjEdge);
+			int source = pRandomNetwork.edgeSource(adjEdge);
+			int target = pRandomNetwork.edgeTarget(adjEdge);
 			
 			//Make sure that there are no reflexive edges, if they are not allowed
 			if(pCheckSelfEdge)
@@ -149,7 +147,7 @@ public class RandomNetworkTests extends TestCase
 			if(pCheckDuplicate)
 			{
 				//Iterate over the rest of the edges
-				IntEnumerator duplicateIterator = pGraph.edges();
+				IntEnumerator duplicateIterator = pRandomNetwork.edges();
 				while(duplicateIterator.numRemaining() > 0)
 				{
 					//Get the next edge
@@ -159,8 +157,8 @@ public class RandomNetworkTests extends TestCase
 					if(edge != adjEdge)
 					{
 						//Get the source and target
-						int dupSource = pGraph.edgeSource(edge);
-						int dupTarget = pGraph.edgeTarget(edge);
+						int dupSource = pRandomNetwork.edgeSource(edge);
+						int dupTarget = pRandomNetwork.edgeTarget(edge);
 						
 						//Assert that both the sources and targets of the two edges do not match
 						assertTrue(DUPLICATE_EDGE_ERROR, !((source == dupSource)&& (target == dupTarget)));
@@ -176,9 +174,9 @@ public class RandomNetworkTests extends TestCase
 	 *  Probably not necssary as a function, but keeps checking done in sub-functions.
 	 * @param pGraph the graph to check if null
 	 *------------------------------------------------------------*/
-	public void checkNetwork(DynamicGraph pGraph)
+	public void checkNetwork(RandomNetwork pRandomNetwork)
 	{
-		assertNotNull(NULL_NETWORK, pGraph);
+		assertNotNull(NULL_NETWORK, pRandomNetwork);
 	}
 	
 	
@@ -205,6 +203,28 @@ public class RandomNetworkTests extends TestCase
 		}
 	}
 	
+	/**------------------------------------------------------------
+	 * Checks a table of objects and its contents to make sure there
+	 * is no null pointer.
+	 * @param pData The table to check for null entries.
+	 *------------------------------------------------------------*/	
+	public void checkConverts(CyNetwork pNetwork, RandomNetwork pRandomNetwork, boolean pDirected)
+	{	
+		//Make sure the network is not null
+		assertNotNull(NULL_OBJECT, pNetwork);
+		assertNotNull(NULL_OBJECT, pRandomNetwork);		
+		
+		//Make sure the number of nodes is the same
+		assertEquals(NODE_NUMBER_ERROR, pNetwork.getNodeCount() ,pRandomNetwork.getNumNodes());
+		
+		//Make sure the number of edges is the same, only if the DynamicGraph is directed
+		//As edges may be compressed if undirected
+		if(pDirected)
+		{
+			assertEquals(EDGE_NUMBER_ERROR, pNetwork.getEdgeCount() , pRandomNetwork.getNumEdges());
+		}
+	}
+		
 		
 	
 	/**------------------------------------------------------------
@@ -220,7 +240,7 @@ public class RandomNetworkTests extends TestCase
 		double probability = .3;
 		
 		WattsStrogatzModel wsm = new WattsStrogatzModel(nodes, allowReflexive, directed, beta, degree);
-		DynamicGraph graph = wsm.generate();
+		RandomNetwork random_network = wsm.generate();
 	
 		int edges = 2 * degree * nodes;
 		
@@ -228,10 +248,10 @@ public class RandomNetworkTests extends TestCase
 		{
 			edges /= 2.0;
 		}	
-		checkNetwork(graph);
-		checkNumEdges(graph, edges);
-		checkNumNodes(graph, nodes);
-		checkEdges(graph, !allowReflexive, directed, true);		
+		checkNetwork(random_network);
+		checkNumEdges(random_network, edges);
+		checkNumNodes(random_network, nodes);
+		checkEdges(random_network, !allowReflexive, directed, true);		
 
 	}
 	
@@ -256,13 +276,13 @@ public class RandomNetworkTests extends TestCase
 		BarabasiAlbertModel bam = new BarabasiAlbertModel(nodes, allowReflexive, directed,  init, degree);
 		
 		//generate the graph
-		DynamicGraph graph = bam.generate();
+		RandomNetwork random_network = bam.generate();
 	
 		//Run all checks
-		checkNetwork(graph);
-		checkNumEdges(graph, edges);
-		checkNumNodes(graph, nodes);
-		checkEdges(graph, !allowReflexive, directed, true);		
+		checkNetwork(random_network);
+		checkNumEdges(random_network, edges);
+		checkNumNodes(random_network, nodes);
+		checkEdges(random_network, !allowReflexive, directed, true);		
 
 	}
 	
@@ -283,12 +303,12 @@ public class RandomNetworkTests extends TestCase
 		ErdosRenyiModel erm = new ErdosRenyiModel(nodes, probability, allowReflexive, directed);
 		
 		//generate the graph
-		DynamicGraph graph = erm.generate();
+		RandomNetwork random_network = erm.generate();
 		
 		//run the checks
-		checkNetwork(graph);
-		checkNumNodes(graph, nodes);
-		checkEdges(graph, !allowReflexive, directed, true);		
+		checkNetwork(random_network);
+		checkNumNodes(random_network, nodes);
+		checkEdges(random_network, !allowReflexive, directed, true);		
 	}
 	
 	
@@ -307,13 +327,13 @@ public class RandomNetworkTests extends TestCase
 		ErdosRenyiModel erm = new ErdosRenyiModel(nodes, edges, allowReflexive, directed);
 		
 		//Generate the graph
-		DynamicGraph graph = erm.generate();
+		RandomNetwork random_network = erm.generate();
 
 		//Run the checks
-		checkNetwork(graph);
-		checkNumEdges(graph,edges);
-		checkNumNodes(graph, nodes);
-		checkEdges(graph, !allowReflexive, directed, true);		
+		checkNetwork(random_network);
+		checkNumEdges(random_network,edges);
+		checkNumNodes(random_network, nodes);
+		checkEdges(random_network, !allowReflexive, directed, true);		
 	}
 	
 
@@ -337,24 +357,22 @@ public class RandomNetworkTests extends TestCase
 		BarabasiAlbertModel bam = new BarabasiAlbertModel(nodes, allowReflexive, directed,  init, degree);
 		
 		//generate the graph
-		DynamicGraph graph = bam.generate();
-
-
-		//Convert into a cytoscape network
-		CyNetwork cyNetwork = CytoscapeConversion.DynamicGraphToCyNetwork("Testing Network", graph, null);
+		RandomNetwork random_network = bam.generate();
 		
 		//Creat the randomizer model
-		DegreePreservingNetworkRandomizer drps = new DegreePreservingNetworkRandomizer(cyNetwork, directed, shuffles);
+		DegreePreservingNetworkRandomizer drps = new DegreePreservingNetworkRandomizer(random_network, directed, shuffles);
+		
+		//System.out.println("TESTING");
 	
 		//randomize the graph
-		DynamicGraph randGraph = drps.generate();
+		RandomNetwork shuffled_network = drps.generate();
 
 
 		//run all checks
-		checkNetwork(randGraph);
-		checkNumNodes(randGraph, nodes);
-		checkNumEdges(randGraph, edges);
-		checkEdges(randGraph, !allowReflexive, directed, true);
+		checkNetwork(shuffled_network);
+		checkNumNodes(shuffled_network, nodes);
+		checkNumEdges(shuffled_network, edges);
+		checkEdges(shuffled_network, !allowReflexive, directed, true);
 	}
 	
 	/**-------------------------------------------------------------------------
@@ -362,6 +380,7 @@ public class RandomNetworkTests extends TestCase
 	 *-------------------------------------------------------------------------*/
 	public void testComparison() throws Exception
 	{
+	
 		//model specific variables
 		int nodes = 100;
 		int degree = 1;
@@ -378,14 +397,10 @@ public class RandomNetworkTests extends TestCase
 		BarabasiAlbertModel bam = new BarabasiAlbertModel(nodes, allowReflexive, directed,  init, degree);
 		
 		//generate the graph
-		DynamicGraph graph = bam.generate();
+		RandomNetwork random_network = bam.generate();
 
-		//convert the graph into a cytoscape graph
-		CyNetwork cyNetwork = CytoscapeConversion.DynamicGraphToCyNetwork("Testing Network", graph, null);
-		
-		//Create the randomizer
-		DegreePreservingNetworkRandomizer drps = new DegreePreservingNetworkRandomizer(cyNetwork, directed, shuffles);
-
+		//Creat the randomizer model
+		DegreePreservingNetworkRandomizer drps = new DegreePreservingNetworkRandomizer(random_network, directed, shuffles);
 
 		//Create the metrics and add them to a list
 		ClusteringCoefficientMetric coef = new ClusteringCoefficientMetric();
@@ -400,7 +415,7 @@ public class RandomNetworkTests extends TestCase
 		
 		
 		//Create teh analyzer
-		RandomNetworkAnalyzer rna = new RandomNetworkAnalyzer(list,cyNetwork, drps, directed, threads,rounds);
+		RandomNetworkAnalyzer rna = new RandomNetworkAnalyzer(list, random_network, drps, directed, threads,rounds);
 		
 		//Run the analyzer
 		rna.run();
@@ -411,6 +426,43 @@ public class RandomNetworkTests extends TestCase
 		//Check the talbe for null
 		checkTable(data);
 		
+	}
+	
+	/**------------------------------------------------------------------------------
+	 * Check the conversion methods
+	 *------------------------------------------------------------------------------*/	
+	public void testCytoscapeConversions() throws Exception
+	{
+		//model specific variables
+		int nodes = 100;
+		int degree = 1;
+		boolean allowReflexive = false;
+		boolean directed = true;
+		int init = 3;
+		int edges = ((init)*(init-1)/2 + (degree * (nodes - init)));
+		
+		
+		//Create the model
+		BarabasiAlbertModel bam = new BarabasiAlbertModel(nodes, allowReflexive, directed,  init, degree);
+		
+		//generate the graph
+		RandomNetwork random_network = bam.generate();
+		
+		CyNetwork cynetwork = random_network.toCyNetwork();
+		
+		checkConverts(cynetwork, random_network, directed);
+		
+		RandomNetwork randGraph = new RandomNetwork(cynetwork,directed);
+		
+		
+		
+		checkConverts(cynetwork,randGraph, directed);
+		
+		//Run all checks
+		checkNetwork(randGraph);
+		checkNumEdges(randGraph, edges);
+		checkNumNodes(randGraph, nodes);
+		checkEdges(randGraph, !allowReflexive, directed, true);		
 	}
 }
 		

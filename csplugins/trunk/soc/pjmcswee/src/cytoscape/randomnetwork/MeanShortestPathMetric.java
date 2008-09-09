@@ -35,7 +35,7 @@
 
 package cytoscape.randomnetwork;
 import java.util.*;
-import cytoscape.graph.dynamic.*;
+
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 
@@ -50,7 +50,7 @@ import cytoscape.util.intr.IntIterator;
 * @author Patrick J. McSweeney
 * @version 1.0
 */
-public  class MeanShortestPathMetric implements NetworkMetric {
+public  class MeanShortestPathMetric implements NetworkMetric  {
 	
 	/**
 	 * Gets the name of this metric. For display purposes.
@@ -84,7 +84,7 @@ public  class MeanShortestPathMetric implements NetworkMetric {
 	 * @return The average all-pairs graph distance of nodes in the network.
 	 *
 	 */
-	public double analyze(DynamicGraph pNetwork, boolean pDirected)
+	public double analyze(RandomNetwork pNetwork, boolean pDirected)
 	{
 		//Accumlate the distances between all nodes
 		double averageShortestPath = 0;

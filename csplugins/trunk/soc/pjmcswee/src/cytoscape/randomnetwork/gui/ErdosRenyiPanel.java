@@ -147,7 +147,9 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 	*/
 	public String getDescription()
 	{
-		return new String("Generate an Erdos-Renyi network.  Erdos-Renyi networks have flat degree distributions and are therefore not scale-free.");
+		return new String("Generate an Erdos-Renyi network." + 
+		"  Erdos-Renyi networks have flat degree distributions and are therefore not scale-free."+
+		"  Constraints:  0 &#8804; probability &#8804; 1, 0 < Nodes,  0 < Edges.");
 	}
 
 
@@ -509,7 +511,6 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 			{
 				((AnalyzePanel)mNext).setDirected(erm.getDirected());
 				((AnalyzePanel)mNext).setGenerator(erm);		
-			
 			}
 
 			return mNext;
@@ -517,8 +518,8 @@ public class ErdosRenyiPanel extends RandomNetworkPanel implements ActionListene
 		
 		
 		//Generate the network
-		DynamicGraph graph = erm.generate();
-		CyNetwork network = CytoscapeConversion.DynamicGraphToCyNetwork("Erdos-Renyi", graph,null);
+		RandomNetwork graph = erm.generate();
+		CyNetwork network = graph.toCyNetwork();
 		graph = null;
 		
 				

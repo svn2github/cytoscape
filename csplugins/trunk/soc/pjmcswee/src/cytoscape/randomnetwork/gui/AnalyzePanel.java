@@ -442,7 +442,7 @@ public class AnalyzePanel extends RandomNetworkPanel
 			
 
 		//Create the randomNetworkAnalyzer to do all of the statistical work
-		RandomNetworkAnalyzer rna = new RandomNetworkAnalyzer(netMetrics,Cytoscape.getCurrentNetwork(),
+		RandomNetworkAnalyzer rna = new RandomNetworkAnalyzer(netMetrics,new RandomNetwork(Cytoscape.getCurrentNetwork(), directed),
 									networkModel,directed, numThreads ,rounds);
 		
 		//Run our task
