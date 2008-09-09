@@ -69,9 +69,14 @@ public class HTMLSessionExporter
 				{
 					List<String> networkIDs = networkIDs();
 					//crap(networkIDs);
-					writeSession();
-					generateNetworkFiles(networkIDs);
-					generateIndexHTML(networkIDs);
+					if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+						generateNetworkFiles(networkIDs);						
+					}
+					else {
+						writeSession();
+						generateNetworkFiles(networkIDs);
+						generateIndexHTML(networkIDs);	
+					}
 					bundle.close();
 				}
 				catch (Exception e)
@@ -316,9 +321,17 @@ public class HTMLSessionExporter
 					// export the sif file
 					setStatus("Exporting SIF for: " + networkTitle);
 					setPercentCompleted(10 + 80 * currentNetwork / networkCount);
-					bundle.openEntry(Bundle.sifFile(networkTitle));
-					CyNetwork network = Cytoscape.getNetwork(networkID);
-					InteractionWriter.writeInteractions(network, bundle.entryWriter(), null);
+					if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+						ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
+						zipBundle2.openEntry("sif", Bundle.sifFile(networkTitle));
+						CyNetwork network = Cytoscape.getNetwork(networkID);
+						InteractionWriter.writeInteractions(network, zipBundle2.entryWriter(), null);						
+					}
+					else {
+						bundle.openEntry(Bundle.sifFile(networkTitle));
+						CyNetwork network = Cytoscape.getNetwork(networkID);
+						InteractionWriter.writeInteractions(network, bundle.entryWriter(), null);
+					}
 					bundle.closeEntry();
 
 					if (needToHalt)
@@ -331,10 +344,16 @@ public class HTMLSessionExporter
 					BufferedImage image = GraphViewToImage.convert(view, settings);
 					if (image != null)
 					{
-						bundle.openEntry(Bundle.imageFile(networkTitle, settings.imageFormat));
-						ImageIO.write(image, settings.imageFormat, bundle.entryOutputStream());
+						if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+							ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
+							zipBundle2.openEntry("img", Bundle.imageFile(networkTitle, settings.imageFormat));
+							ImageIO.write(image, settings.imageFormat, bundle.entryOutputStream());
+						}
+						else {
+							bundle.openEntry(Bundle.imageFile(networkTitle, settings.imageFormat));
+							ImageIO.write(image, settings.imageFormat, bundle.entryOutputStream());
+						}
 						bundle.closeEntry();
-
 					}
 
 					if (needToHalt)
@@ -343,14 +362,26 @@ public class HTMLSessionExporter
 					// generate thumbnail
 					setStatus("Generating thumbnail for: " + networkTitle);
 					setPercentCompleted(10 + 80 * currentNetwork / networkCount + 40 / networkCount);
-					bundle.openEntry(Bundle.thumbnailFile(networkTitle, settings.imageFormat));
-					BufferedImage thumbnail = Thumbnails.createThumbnail(image, settings);
-					ImageIO.write(thumbnail, settings.imageFormat, bundle.entryOutputStream());
+					if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+						ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
+						zipBundle2.openEntry("thm_img", ZipBundle2.thumbnailFile(networkTitle, settings.imageFormat));
+						BufferedImage thumbnail = Thumbnails.createThumbnail(image, settings);
+						ImageIO.write(thumbnail, settings.imageFormat, zipBundle2.entryOutputStream());	
+					}
+					else {
+						bundle.openEntry(Bundle.thumbnailFile(networkTitle, settings.imageFormat));
+						BufferedImage thumbnail = Thumbnails.createThumbnail(image, settings);
+						ImageIO.write(thumbnail, settings.imageFormat, bundle.entryOutputStream());	
+					}
 					bundle.closeEntry();
 					
 					if (needToHalt)
 						return;
 
+					if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+						continue;
+					}
+					
 					// render legend
 					setPercentCompleted(10 + 80 * currentNetwork / networkCount + 60 / networkCount);
 					VisualStyle visualStyle = Cytoscape.getNetworkView(networkID).getVisualStyle();
