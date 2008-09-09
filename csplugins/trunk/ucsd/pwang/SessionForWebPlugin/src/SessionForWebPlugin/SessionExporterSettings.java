@@ -7,6 +7,7 @@ public class SessionExporterSettings
 {
 	public static final byte DESTINATION_DIRECTORY       = 0;
 	public static final byte DESTINATION_ZIP_ARCHIVE     = 1;
+	public static final byte DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS = 2;
 	public static final byte SORT_IMAGES_ALPHABETICALLY  = 0;
 	public static final byte SORT_IMAGES_BY_VISUAL_STYLE = 1;
 	public static final byte SORT_IMAGES_AS_IS           = 2;
