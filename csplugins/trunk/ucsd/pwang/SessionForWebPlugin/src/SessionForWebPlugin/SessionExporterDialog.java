@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import java.text.*;
+import SessionForWebPlugin.ImagePanel;
 
 /**
  * Displays a dialog with various options for
@@ -37,23 +38,18 @@ public class SessionExporterDialog extends JDialog
 	private JLabel numNetworksPerPageLabel;
 	private JSpinner numNetworksPerPageSpinner;
 	private JComboBox sortImagesComboBox;
-	private JSpinner zoomSpinner;
-	private JCheckBox setMaxImageSizeCheckBox;
-	private JLabel maxImageWidthLabel;
-	private JSpinner maxImageWidthSpinner;
-	private JLabel maxImageHeightLabel;
-	private JSpinner maxImageHeightSpinner;
-	private JComboBox formatComboBox;
-	private JSpinner maxThumbnailWidthSpinner;
-	private JSpinner maxThumbnailHeightSpinner;
+	
 	private JButton exportButton;
 
 	private ActionListener updateNetworksTableListener;
 
+	private ImagePanel imagePanel = new ImagePanel(new GridBagLayout());
+	private ThumbnailPanel thumbnailPanel = new ThumbnailPanel();
+	
 	public SessionExporterDialog(Frame owner)
 	{
 		super(owner, "Session for Web");
-
+		
 		// Did I handwrite this dialog?
 		// You better goddamn believe it.
 
@@ -177,147 +173,12 @@ public class SessionExporterDialog extends JDialog
 		}
 
 		// Image panel
-		{
-			JLabel zoomLabel = new JLabel("Zoom:");
-			zoomSpinner = newDoubleSpinner(1.0);
-			JPanel zoomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			zoomPanel.add(zoomLabel);
-			zoomPanel.add(zoomSpinner);
+		
+		tabbedPane.add("Image", imagePanel);
 
-			setMaxImageSizeCheckBox = new JCheckBox("Set maximum image size:");
-			setMaxImageSizeCheckBox.addActionListener(new SetMaxImageSizeAction());
-			maxImageWidthLabel = new JLabel("Width: ");
-			maxImageWidthLabel.setEnabled(false);
-			maxImageWidthSpinner = newIntSpinner(1000);
-			maxImageWidthSpinner.setEnabled(false);
-			maxImageHeightLabel = new JLabel("Height:");
-			maxImageHeightLabel.setEnabled(false);
-			maxImageHeightSpinner = newIntSpinner(1000);
-			maxImageHeightSpinner.setEnabled(false);
-
-			JPanel maxImageSizePanel = new JPanel(new GridBagLayout());
-			{
-				JPanel maxImageWidthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-				{
-					maxImageWidthPanel.add(maxImageWidthLabel);
-					maxImageWidthPanel.add(maxImageWidthSpinner);
-				}
-
-				JPanel maxImageHeightPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-				{
-					maxImageHeightPanel.add(maxImageHeightLabel);
-					maxImageHeightPanel.add(maxImageHeightSpinner);
-				}
-
-				GridBagConstraints c = new GridBagConstraints();
-
-				c.gridx = 0;		c.gridy = 0;
-				c.gridwidth = 1;	c.gridheight = 1;
-				c.fill = GridBagConstraints.HORIZONTAL;
-				c.weightx = 1.0;	c.weighty = 0.0;
-				maxImageSizePanel.add(maxImageWidthPanel, c);
-				
-				c.gridx = 0;		c.gridy = 1;
-				c.gridwidth = 1;	c.gridheight = 1;
-				c.fill = GridBagConstraints.HORIZONTAL;
-				c.weightx = 1.0;	c.weighty = 0.0;
-				maxImageSizePanel.add(maxImageHeightPanel, c);
-			}
-			maxImageSizePanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
-
-			JLabel formatLabel = new JLabel("Format:");
-			String[] formatChoices = { "png", "jpg" };
-			formatComboBox = new JComboBox(formatChoices);
-			JPanel formatPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			formatPanel.add(formatLabel);
-			formatPanel.add(formatComboBox);
-
-			JPanel imagePanel = new JPanel(new GridBagLayout());
-			GridBagConstraints c = new GridBagConstraints();
-
-			c.gridx = 0;		c.gridy = 0;
-			c.gridwidth = 1;	c.gridheight = 1;
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.weightx = 1.0;	c.weighty = 0.0;
-			imagePanel.add(zoomPanel, c);
-
-			c.gridx = 0;		c.gridy = 1;
-			c.gridwidth = 1;	c.gridheight = 1;
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.weightx = 1.0;	c.weighty = 0.0;
-			imagePanel.add(setMaxImageSizeCheckBox , c);
-
-			c.gridx = 0;		c.gridy = 2;
-			c.gridwidth = 1;	c.gridheight = 1;
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.weightx = 1.0;	c.weighty = 0.0;
-			imagePanel.add(maxImageSizePanel, c);
-			
-			c.gridx = 0;		c.gridy = 3;
-			c.gridwidth = 1;	c.gridheight = 1;
-			c.fill = GridBagConstraints.NONE;
-			c.anchor = GridBagConstraints.FIRST_LINE_START;
-			c.weightx = 1.0;	c.weighty = 1.0;
-			imagePanel.add(formatPanel, c);
-
-			tabbedPane.add("Image", imagePanel);
-		}
-
-		// Thumbnail panel
-		{
-			JLabel maxThumbnailSizeLabel = new JLabel("Maximum size:");
-			JLabel maxThumbnailWidthLabel = new JLabel("Width: ");
-			maxThumbnailWidthSpinner = newIntSpinner(300);
-			JLabel maxThumbnailHeightLabel = new JLabel("Height:");
-			maxThumbnailHeightSpinner = newIntSpinner(300);
-			JPanel maxThumbnailSizePanel = new JPanel(new GridBagLayout());
-			{
-				JPanel maxThumbnailWidthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-				{
-					maxThumbnailWidthPanel.add(maxThumbnailWidthLabel);
-					maxThumbnailWidthPanel.add(maxThumbnailWidthSpinner);
-				}
-
-				JPanel maxThumbnailHeightPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-				{
-					maxThumbnailHeightPanel.add(maxThumbnailHeightLabel);
-					maxThumbnailHeightPanel.add(maxThumbnailHeightSpinner);
-				}
-
-				GridBagConstraints c = new GridBagConstraints();
-
-				c.gridx = 0;		c.gridy = 0;
-				c.gridwidth = 1;	c.gridheight = 1;
-				c.fill = GridBagConstraints.HORIZONTAL;
-				c.weightx = 1.0;	c.weighty = 0.0;
-				maxThumbnailSizePanel.add(maxThumbnailWidthPanel, c);
-				
-				c.gridx = 0;		c.gridy = 1;
-				c.gridwidth = 1;	c.gridheight = 1;
-				c.fill = GridBagConstraints.BOTH;
-				c.weightx = 1.0;	c.weighty = 1.0;
-				maxThumbnailSizePanel.add(maxThumbnailHeightPanel, c);
-			}
-			maxThumbnailSizePanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
-
-			JPanel thumbnailPanel = new JPanel(new GridBagLayout());
-			GridBagConstraints c = new GridBagConstraints();
-			c.insets = new Insets(5,5,5,5);
-
-			c.gridx = 0;		c.gridy = 0;
-			c.gridwidth = 1;	c.gridheight = 1;
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.weightx = 1.0;	c.weighty = 0.0;
-			thumbnailPanel.add(maxThumbnailSizeLabel, c);
-
-			c.gridx = 0;		c.gridy = 1;
-			c.gridwidth = 1;	c.gridheight = 1;
-			c.fill = GridBagConstraints.BOTH;
-			c.weightx = 1.0;	c.weighty = 1.0;
-			thumbnailPanel.add(maxThumbnailSizePanel, c);
-			
-			tabbedPane.add("Thumbnail", thumbnailPanel);
-		}
+		
+		// Thumbnail panel			
+		tabbedPane.add("Thumbnail", thumbnailPanel);
 		
 		// Buttons panel
 		exportButton = new JButton("Export");
@@ -409,17 +270,6 @@ public class SessionExporterDialog extends JDialog
 		}
 	}
 
-	class SetMaxImageSizeAction implements ActionListener
-	{
-		public void actionPerformed(ActionEvent e)
-		{
-			boolean value = setMaxImageSizeCheckBox.isSelected();
-			maxImageWidthLabel.setEnabled(value);
-			maxImageWidthSpinner.setEnabled(value);
-			maxImageHeightLabel.setEnabled(value);
-			maxImageHeightSpinner.setEnabled(value);
-		}
-	}
 
 	class CancelAction implements ActionListener
 	{
@@ -515,18 +365,18 @@ public class SessionExporterDialog extends JDialog
 		else
 			settings.sortImages = SessionExporterSettings.SORT_IMAGES_AS_IS;
 
-		settings.imageZoom = ((Number) zoomSpinner.getValue()).doubleValue();
-		settings.doSetMaxImageSize = setMaxImageSizeCheckBox.isSelected();
-		settings.maxImageWidth = ((Number) maxImageWidthSpinner.getValue()).intValue();
-		settings.maxImageHeight = ((Number) maxImageHeightSpinner.getValue()).intValue();
-
-		if (formatComboBox.getSelectedItem().equals("png"))
+		settings.imageZoom = ((Number) imagePanel.zoomSpinner.getValue()).doubleValue();
+		settings.doSetMaxImageSize = imagePanel.setMaxImageSizeCheckBox.isSelected();
+		settings.maxImageWidth = ((Number) imagePanel.maxImageWidthSpinner.getValue()).intValue();
+		settings.maxImageHeight = ((Number) imagePanel.maxImageHeightSpinner.getValue()).intValue();
+		
+		if (imagePanel.formatComboBox.getSelectedItem().equals("png"))
 			settings.imageFormat = SessionExporterSettings.FORMAT_PNG;
 		else
 			settings.imageFormat = SessionExporterSettings.FORMAT_JPG;
 
-		settings.maxThumbnailWidth = ((Number) maxThumbnailWidthSpinner.getValue()).intValue();
-		settings.maxThumbnailHeight = ((Number) maxThumbnailHeightSpinner.getValue()).intValue();
+		settings.maxThumbnailWidth = ((Number) thumbnailPanel.maxThumbnailWidthSpinner.getValue()).intValue();
+		settings.maxThumbnailHeight = ((Number) thumbnailPanel.maxThumbnailHeightSpinner.getValue()).intValue();
 
 		return settings;
 	}
