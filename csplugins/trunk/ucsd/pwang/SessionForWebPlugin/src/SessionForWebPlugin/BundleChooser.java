@@ -51,7 +51,8 @@ public class BundleChooser
 			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fileChooser.setAcceptAllFileFilterUsed(false);
 		}
-		else if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE)
+		else if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE 
+				|| settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS)
 		{
 			fileChooser.setDialogTitle("Save Session To Zip Archive");
 			fileChooser.setSelectedFile(new File("bundle.zip"));
@@ -111,6 +112,8 @@ public class BundleChooser
 				bundle = new DirectoryBundle(selectedFile);
 			else if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE)
 				bundle = new ZipBundle(selectedFile);
+			else if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS)
+				bundle = new ZipBundle2(selectedFile);
 		}
 		catch (Exception e)
 		{
