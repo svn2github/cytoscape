@@ -586,4 +586,12 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 			view.setCenter(center.getX(), center.getY());
 
 	}
+
+	public String[] getExtensions() {
+		return new String[]{"xgmml","xml"};
+	}
+
+	public String getExtensionDescription() {
+		return "XGMML files";
+	}
 }

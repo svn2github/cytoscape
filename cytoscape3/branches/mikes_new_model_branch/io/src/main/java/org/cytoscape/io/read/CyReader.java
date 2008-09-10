@@ -1,6 +1,7 @@
 
 package org.cytoscape.io.read;
 
+import org.cytoscape.io.FileDefinition;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -11,7 +12,7 @@ import java.io.IOException;
  * CyReader interfaces to support reading files that contain multiple types
  * of data (like networks that contain both attribute and view model information).
  */
-public interface CyReader {
+public interface CyReader extends FileDefinition {
 
 	/**
 	 * Calling this method will initiate reading of the input specified in the
@@ -30,4 +31,5 @@ public interface CyReader {
 	 * @param is The {@link InputStream} to be read.
 	 */
 	public void setInput(InputStream is);
+
 }
