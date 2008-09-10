@@ -5,7 +5,7 @@ import java.util.Map;
 import org.cytoscape.model.attrs.CyAttributes;
 import org.cytoscape.model.attrs.CyAttributesManager;
 
-public interface CyNetwork extends Identifiable {
+public interface CyNetwork extends Identifiable, GraphObject {
 
 	public CyNode addNode();
 	public boolean removeNode(CyNode node);
