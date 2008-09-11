@@ -99,8 +99,8 @@ public class ZipBundle2 extends Bundle
 	public static String thumbnailFile(String network, String format)
 	{
 		//return network + "_thumbnail." + format;
-		int lastIndex = network.lastIndexOf(".sif");
-		network = network.substring(0, lastIndex);
+		//int lastIndex = network.lastIndexOf(".sif");
+		//network = network.substring(0, lastIndex);
 		return network + "."+format;
 
 	}
