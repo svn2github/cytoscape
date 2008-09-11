@@ -371,7 +371,7 @@ public class HTMLSessionExporter
 					{
 						if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
 							ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
-							zipBundle2.openEntry("img", Bundle.imageFile(networkTitle, settings.imageFormat));
+							zipBundle2.openEntry("img", zipBundle2.imageFile(networkTitle, settings.imageFormat));
 							ImageIO.write(image, settings.imageFormat, bundle.entryOutputStream());
 						}
 						else {
