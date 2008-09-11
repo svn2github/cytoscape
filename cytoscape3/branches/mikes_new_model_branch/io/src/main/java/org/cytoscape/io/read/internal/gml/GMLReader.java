@@ -90,56 +90,57 @@ public class GMLReader implements CyNetworkReader, CyNetworkViewReader {
 	 */
 
 	// Graph Tags
-	protected static String GRAPH = "graph";
-	protected static String NODE = "node";
-	protected static String EDGE = "edge";
-	protected static String GRAPHICS = "graphics";
-	protected static String LABEL = "label";
-	protected static String SOURCE = "source";
-	protected static String TARGET = "target";
-	protected static String IS_DIRECTED = "directed";
+	public static String GRAPH = "graph";
+	public static String NODE = "node";
+	public static String EDGE = "edge";
+	public static String GRAPHICS = "graphics";
+	public static String LABEL = "label";
+	public static String SOURCE = "source";
+	public static String TARGET = "target";
+	public static String IS_DIRECTED = "directed";
 	
 	// The following elements are in "graphics" section of GML
-	protected static String X = "x";
-	protected static String Y = "y";
-	protected static String H = "h";
-	protected static String W = "w";
-	protected static String TYPE = "type";
-	protected static String ID = "id";
-	protected static String ROOT_INDEX = "root_index";
+	public static String X = "x";
+	public static String Y = "y";
+	public static String H = "h";
+	public static String W = "w";
+	public static String TYPE = "type";
+	public static String ID = "id";
+	public static String ROOT_INDEX = "root_index";
 
 	// Shapes used in Cytoscape (not GML standard)
 	// In GML, they are called "type"
-	protected static String RECTANGLE = "rectangle";
-	protected static String ELLIPSE = "ellipse";
-	protected static String LINE = "Line"; // This is the Polyline object.
+	public static String RECTANGLE = "rectangle";
+	public static String ELLIPSE = "ellipse";
+	public static String LINE = "Line"; // This is the Polyline object.
 	                                       // no support for now...
-	protected static String POINT = "point";
-	protected static String DIAMOND = "diamond";
-	protected static String HEXAGON = "hexagon";
-	protected static String OCTAGON = "octagon";
-	protected static String PARALELLOGRAM = "parallelogram";
-	protected static String TRIANGLE = "triangle";
+	public static String POINT = "point";
+	public static String DIAMOND = "diamond";
+	public static String HEXAGON = "hexagon";
+	public static String OCTAGON = "octagon";
+	public static String PARALELLOGRAM = "parallelogram";
+	public static String TRIANGLE = "triangle";
 
 	// Other GML "graphics" attributes
-	protected static String FILL = "fill";
-	protected static String WIDTH = "width";
-	protected static String STRAIGHT_LINES = "line";
-	protected static String CURVED_LINES = "curved";
-	protected static String SOURCE_ARROW = "source_arrow";
-	protected static String TARGET_ARROW = "target_arrow";
+	public static String FILL = "fill";
+	public static String WIDTH = "width";
+	public static String STRAIGHT_LINES = "line";
+	public static String CURVED_LINES = "curved";
+	public static String SOURCE_ARROW = "source_arrow";
+	public static String TARGET_ARROW = "target_arrow";
 
 	// States of the ends of arrows
-	protected static String ARROW = "arrow";
-	protected static String ARROW_NONE = "none";
-	protected static String ARROW_FIRST = "first";
-	protected static String ARROW_LAST = "last";
-	protected static String ARROW_BOTH = "both";
-	protected static String OUTLINE = "outline";
-	protected static String OUTLINE_WIDTH = "outline_width";
-	protected static String DEFAULT_EDGE_INTERACTION = "pp";
-	protected static String VERSION = "Version";
-	protected static String CREATOR = "Creator";
+	public static String ARROW = "arrow";
+	public static String ARROW_NONE = "none";
+	public static String ARROW_FIRST = "first";
+	public static String ARROW_LAST = "last";
+	public static String ARROW_BOTH = "both";
+	public static String OUTLINE = "outline";
+	public static String OUTLINE_WIDTH = "outline_width";
+	public static String DEFAULT_EDGE_INTERACTION = "pp";
+	public static String VERSION = "Version";
+	public static String CREATOR = "Creator";
+
 	private Color DEF_COLOR = new Color(153, 153, 255);
 
 	private VisualStyleBuilder graphStyle = null;
