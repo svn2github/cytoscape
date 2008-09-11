@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.Iterator;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.util.Arrays;
 
 //import SessionForWebPlugin.NetworksTable.NetworksTableMouseListener;
 //import SessionForWebPlugin.NetworksTable.NetworksTableMouseMotionListener;
@@ -136,11 +137,11 @@ public class SpeciesPanel extends JPanel implements ListSelectionListener
     
      	Map<String,String> theMap = SessionForWebPlugin.networkTitleToSpeciesMap();
     	
-    	Set<String> keySet = theMap.keySet();
-    	Iterator<String> it = keySet.iterator();
+     	Object[] keyArray = theMap.keySet().toArray();
+    	Arrays.sort(keyArray);
     	
-    	while (it.hasNext()) {
-    		String networkTitle = (String) it.next();
+    	for (int i=0; i< keyArray.length; i++) {
+    		String networkTitle = (String) keyArray[i];
     		String species = theMap.get(networkTitle);
     		if (species == null || species.trim().equals("")) {
     			species = "unknown";
@@ -149,6 +150,7 @@ public class SpeciesPanel extends JPanel implements ListSelectionListener
     		oneRow.add(networkTitle);
     		oneRow.add(species);
     		data.add(oneRow);
+    		
     	}
     	return data;
     }
