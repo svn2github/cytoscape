@@ -42,7 +42,7 @@ public class SpeciesPanel extends JPanel implements ListSelectionListener
         btnAssign.addActionListener(l);
         
         columnNames = new Vector<String>();
-        columnNames.add("Network Title");
+        columnNames.add("Network"); // Network Title
         columnNames.add("Species");
         
         Vector<Vector<String>> data = getTableData();
