@@ -106,20 +106,6 @@ public class SessionExporterDialog2 extends JDialog
 
 	//
 	// ----------------------------------------------
-	// Methods for creating spinners
-	// ----------------------------------------------
-	//
-	private JSpinner newNumberSpinner(SpinnerNumberModel numberModel)
-	{
-		JSpinner spinner = new JSpinner();
-		spinner.setModel(numberModel);
-		new JSpinner.NumberEditor(spinner);
-		((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setColumns(4);
-		return spinner;
-	}
-
-	//
-	// ----------------------------------------------
 	// Classes for listening to dialog actions & events
 	// ----------------------------------------------
 	//
