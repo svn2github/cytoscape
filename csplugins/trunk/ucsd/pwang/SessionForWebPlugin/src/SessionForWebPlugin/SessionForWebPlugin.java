@@ -247,7 +247,8 @@ public class SessionForWebPlugin extends CytoscapePlugin
 			String networkTitle = network.getTitle();
 			String species = cyNetworkAttrs.getStringAttribute(networkID, "species");
 			if (species == null) {
-				species = "Saccharomyces cerevisiae";
+				//species = "Saccharomyces cerevisiae";
+				species = "unknown";
 			}
 			map.put(networkTitle, species);
 		}
