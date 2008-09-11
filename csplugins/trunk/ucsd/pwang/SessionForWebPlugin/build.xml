@@ -81,7 +81,7 @@
   <target	name="jar"
   		depends="compile,manifest"
 		description="package all class files into a jar">
-    <copy file="${resources.dir}/plugin.props" todir="${build.dir}"/>
+    <copy file="${resources.dir}/plugin.props" todir="${build.dir}/SessionForWebPlugin"/>
     <copy file="${resources.dir}/SessionForWeb.png" todir="${build.dir}/SessionForWebPlugin"/>
     <copy file="${resources.dir}/StatusMsgs.properties" todir="${build.dir}"/>
     <jar	jarfile="${project.jar}"
