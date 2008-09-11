@@ -67,10 +67,12 @@ public class SpeciesAssignmentDialog extends javax.swing.JDialog implements Acti
     			if (selectOther) {
     				String inputValue = JOptionPane.showInputDialog(this,"Please input new species \n(use coma seperator if more than one species)", "Input New Species", JOptionPane.PLAIN_MESSAGE);
 
-					if (selectedSpecies != "") {
-						selectedSpecies +=",";    						
-					}
-					selectedSpecies += inputValue;
+    				if (inputValue != null) { // OK is clicked
+	    				if (selectedSpecies != "") {
+							selectedSpecies +=",";    						
+						}
+						selectedSpecies += inputValue;
+    				}
     			}
 
     			this.dispose();
