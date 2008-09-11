@@ -41,7 +41,7 @@ public class SessionExporterDialog2 extends JDialog
 	{
 		super(owner, "Session for CellCircuits Web Site");
 		this.setLocationRelativeTo(owner);
-		JLabel titleLabel = new JLabel("<html><h3>Session for Web</h3></html>");
+		JLabel titleLabel = new JLabel("<html><h3>Session for CellCircuits Web Site</h3></html>");
 		titleLabel.addMouseListener(new AboutAction());
 		titleLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -113,8 +113,7 @@ public class SessionExporterDialog2 extends JDialog
 	{
 		public void mouseClicked(MouseEvent e)
 		{
-			AboutDialog dialog = new AboutDialog(null);
-			dialog.setVisible(true);
+			cytoscape.util.OpenBrowser.openURL("http://www.cellcircuits.org");
 		}
 	}
 
