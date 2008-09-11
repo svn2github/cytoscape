@@ -34,7 +34,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package org.cytoscape.io.read.internal; 
+package org.cytoscape.io.read.internal.xgmml; 
 
 import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.attributes.CyAttributes;
