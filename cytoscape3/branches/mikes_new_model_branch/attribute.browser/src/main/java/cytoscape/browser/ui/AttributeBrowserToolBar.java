@@ -43,7 +43,6 @@ import cytoscape.browser.AttributeModel;
 import cytoscape.browser.DataObjectType;
 import static cytoscape.browser.DataObjectType.*;
 import cytoscape.browser.DataTableModel;
-import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.util.swing.CheckBoxJList;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;

@@ -32,7 +32,6 @@ import cytoscape.browser.DataTableModel;
 import cytoscape.browser.SortTableModel;
 import cytoscape.browser.util.HyperLinkOut;
 import cytoscape.data.Semantics;
-import cytoscape.dialogs.NetworkMetaDataDialog;
 import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 import cytoscape.util.OpenBrowser;
