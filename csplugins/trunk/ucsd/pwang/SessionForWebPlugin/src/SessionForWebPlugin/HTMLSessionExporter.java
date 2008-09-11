@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.io.File;
@@ -14,7 +13,6 @@ import java.io.FileInputStream;
 import java.awt.image.BufferedImage;
 import javax.swing.tree.TreeModel;
 import javax.imageio.ImageIO;
-
 import cytoscape.Cytoscape;
 import cytoscape.CyNetwork;
 import cytoscape.view.CyNetworkView;
@@ -24,6 +22,7 @@ import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.util.TaskManager;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.writers.InteractionWriter;
 import cytoscape.data.writers.CytoscapeSessionWriter;
 
@@ -69,7 +68,7 @@ public class HTMLSessionExporter
 				{
 					List<String> networkIDs = networkIDs();
 					//crap(networkIDs);
-					if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+					if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
 						generateNetworkFiles(networkIDs);						
 					}
 					else {
@@ -305,6 +304,26 @@ public class HTMLSessionExporter
 				tempStream.close();
 			} // end writeSession()
 
+			private String getSpeciesSubDirectory(String speciesStr){
+				// Turn the string "Saccharomyces cerevisia,Homo sapiens" into "Saccharomyces_cerevisia_Homo_sapiens"
+				if (speciesStr == null || speciesStr.trim().equals("")) {
+					return "unknown_species";
+				}
+				String retValue = "";
+				String[] items = speciesStr.split(",");
+				for (int i=0; i< items.length; i++){
+					String oneSpecies = items[i];
+					String[] components = oneSpecies.split(" ");
+					for (int j=0; j<components.length; j++ ) {
+						if (!retValue.equals("")) {
+							retValue += "_";
+						}
+						retValue += components[j];
+					}
+				}
+				return retValue;
+			}
+			
 			private void generateNetworkFiles(List<String> networkIDs) throws Exception
 			{
 				Map viewMap = Cytoscape.getNetworkViewMap();
@@ -321,9 +340,15 @@ public class HTMLSessionExporter
 					// export the sif file
 					setStatus("Exporting SIF for: " + networkTitle);
 					setPercentCompleted(10 + 80 * currentNetwork / networkCount);
-					if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+					if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
 						ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
-						zipBundle2.openEntry("sif", Bundle.sifFile(networkTitle));
+						
+						CyAttributes cyAttrs = Cytoscape.getNetworkAttributes();					  	
+						String species = cyAttrs.getStringAttribute(networkID, "species");
+						String speciesSubDir = getSpeciesSubDirectory(species);
+						
+						zipBundle2.openEntry("sif/"+speciesSubDir, Bundle.sifFile(networkTitle));
+						
 						CyNetwork network = Cytoscape.getNetwork(networkID);
 						InteractionWriter.writeInteractions(network, zipBundle2.entryWriter(), null);						
 					}
@@ -344,7 +369,7 @@ public class HTMLSessionExporter
 					BufferedImage image = GraphViewToImage.convert(view, settings);
 					if (image != null)
 					{
-						if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+						if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
 							ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
 							zipBundle2.openEntry("img", Bundle.imageFile(networkTitle, settings.imageFormat));
 							ImageIO.write(image, settings.imageFormat, bundle.entryOutputStream());
@@ -362,7 +387,7 @@ public class HTMLSessionExporter
 					// generate thumbnail
 					setStatus("Generating thumbnail for: " + networkTitle);
 					setPercentCompleted(10 + 80 * currentNetwork / networkCount + 40 / networkCount);
-					if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+					if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
 						ZipBundle2 zipBundle2 = (ZipBundle2) bundle;
 						zipBundle2.openEntry("thm_img", ZipBundle2.thumbnailFile(networkTitle, settings.imageFormat));
 						BufferedImage thumbnail = Thumbnails.createThumbnail(image, settings);
@@ -378,7 +403,7 @@ public class HTMLSessionExporter
 					if (needToHalt)
 						return;
 
-					if (settings.destination == settings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
+					if (settings.destination == SessionExporterSettings.DESTINATION_ZIP_ARCHIVE_4CELLCIRCUITS) {
 						continue;
 					}
 					
