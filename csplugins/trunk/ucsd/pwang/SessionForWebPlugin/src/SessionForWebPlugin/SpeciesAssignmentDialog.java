@@ -3,12 +3,10 @@ package SessionForWebPlugin;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Map;
-
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import cytoscape.data.CyAttributes;
 import cytoscape.Cytoscape;
-import java.util.Set;
 
 
 public class SpeciesAssignmentDialog extends javax.swing.JDialog implements ActionListener{
@@ -19,6 +17,7 @@ public class SpeciesAssignmentDialog extends javax.swing.JDialog implements Acti
 	/** Creates new form SpeciesAssignmentDialog */
     public SpeciesAssignmentDialog(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
+        this.setLocationRelativeTo(parent);
         this.setTitle("Assign species for all netwoks");
         initComponents();
         btnCancel.addActionListener(this);
@@ -27,6 +26,7 @@ public class SpeciesAssignmentDialog extends javax.swing.JDialog implements Acti
     
     public SpeciesAssignmentDialog(javax.swing.JDialog parent, boolean modal, String[] networkIDs) {
         super(parent, modal);
+        this.setLocationRelativeTo(parent);
         this.setTitle("Assign species for selected netwoks");
         initComponents();
         btnCancel.addActionListener(this);
@@ -53,14 +53,12 @@ public class SpeciesAssignmentDialog extends javax.swing.JDialog implements Acti
     			
     			String selectedSpecies = "";
     			for (int i=0; i< selectedItems.length; i++) {
-    				System.out.println(selectedItems[i]);
     				if (selectedItems[i].toString() != "Other") {
     					if (selectedSpecies != "") {
     						selectedSpecies +=",";    						
     					}
     					selectedSpecies += selectedItems[i].toString();
     				}
-    				
     				if (selectedItems[i].toString() == "Other") {
     					selectOther = true;
     				}
@@ -86,21 +84,19 @@ public class SpeciesAssignmentDialog extends javax.swing.JDialog implements Acti
     			else {
     				setSpeciesForSelectedNetworks(selectedSpecies);
     			}
+    			this.dispose();
     		}
     	}
     }
     
     
     private void setSpeciesForAllNetworks(String pSpecies){
-		System.out.println("SelectedSpecies = " + pSpecies);  
-		
 		Map<String,String> theMap = SessionForWebPlugin.networkTitleToIDMap();
 		CyAttributes cyAttrs = Cytoscape.getNetworkAttributes();
 		
 		Object[] keys = theMap.keySet().toArray();
 		for (int i=0; i<keys.length; i++) {
 			String id = theMap.get(keys[i]);
-			System.out.println("key, id = "+ keys[i]+ ","+id);
 			cyAttrs.setAttribute(id, "species", pSpecies);
 
 		}
@@ -177,15 +173,4 @@ public class SpeciesAssignmentDialog extends javax.swing.JDialog implements Acti
     private javax.swing.JList lstSpecies;
     private javax.swing.JPanel pnlButton;
     // End of variables declaration                   
-
-    /**
-     * @param args the command line arguments
-     */   
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SpeciesAssignmentDialog(new javax.swing.JDialog(), true).setVisible(true);
-            }
-        });
-    }
 }
