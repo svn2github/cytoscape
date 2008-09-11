@@ -35,12 +35,12 @@ public class SessionExporterDialog2 extends JDialog
 
 	private ImagePanel imagePanel = new ImagePanel(new GridBagLayout());
 	private ThumbnailPanel thumbnailPanel = new ThumbnailPanel();
-	private NetworkSpeciesPanel speciesPanel = new NetworkSpeciesPanel(this);
+	private SpeciesPanel speciesPanel = new SpeciesPanel(this);
 	
 	public SessionExporterDialog2(Frame owner)
 	{
 		super(owner, "Session for CellCircuits Web Site");
-		
+		this.setLocationRelativeTo(owner);
 		JLabel titleLabel = new JLabel("<html><h3>Session for Web</h3></html>");
 		titleLabel.addMouseListener(new AboutAction());
 		titleLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
