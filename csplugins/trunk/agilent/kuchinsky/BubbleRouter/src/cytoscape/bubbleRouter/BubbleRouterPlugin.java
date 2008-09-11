@@ -335,7 +335,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		CyGroupManager.registerGroupViewer(this);
 
 		// Load .na file(s) from jar
-		// preloadCellularComponents();
+		// preloadCellularComponents(); 
 	}
 
 	/**
@@ -443,6 +443,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
 	 */
 	public void mouseDragged(MouseEvent e) {
+		
+		if (!e.isShiftDown()) { return; }
 
 		onEdge = calculateOnEdge(e.getPoint(), pickedRegion);
 
@@ -497,6 +499,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 			edgeBeingStretched = onEdge;
 
 			// Don't draw rectangle or make selection during stretch
+			
 			((DGraphView) Cytoscape.getCurrentNetworkView()).getCanvas()
 					.setSelecting(false);
 			((DGraphView) Cytoscape.getCurrentNetworkView())
@@ -516,6 +519,9 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent e) {
+		
+		if (!e.isShiftDown()) { return; }
+		
 		if (dragging) {
 			dragging = false;
 			drawRectRegion();
@@ -1068,7 +1074,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 
 	/**
 	 * This is called when a group we care about is about to be deleted. If we
-	 * weren't building our menu each time, this would be used to update the
+	 * weren't building our menu each time, this would be used  to update the
 	 * list of groups we present to the user.
 	 * 
 	 * @param group
@@ -1115,7 +1121,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				+ "_"
 				+ LayoutRegionManager.getIdForView(Cytoscape
 						.getCurrentNetworkView())));
-		group.setState(SELECTED);
+		if (group != null) 
+		{
+			group.setState(SELECTED);
+		}
 	}
 
 	/**
@@ -1127,7 +1136,10 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 				+ "_"
 				+ LayoutRegionManager.getIdForView(Cytoscape
 						.getCurrentNetworkView())));
-		group.setState(UNSELECTED);
+		if (group != null)
+		{
+			group.setState(UNSELECTED);
+		}
 	}
 
 	/**
