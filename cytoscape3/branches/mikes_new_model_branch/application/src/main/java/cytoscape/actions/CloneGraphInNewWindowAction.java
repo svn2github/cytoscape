@@ -80,9 +80,9 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 		GraphView origView = Cytoscape.getCurrentNetworkView();
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
 
-		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
-		                                                origNet.getEdgeIndicesArray(),
-		                                                origNet.getTitle() + " copy", 
+		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeList(),
+		                                                origNet.getEdgeList(),
+		                                                origNet.getCyAttributes("USER").get("title",String.class) + " copy", 
 														null,
 														true);
 
@@ -90,13 +90,11 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 		if ( origView == null || origView == Cytoscape.getNullNetworkView() )
 			return;
 
-		GraphView newView = Cytoscape.getNetworkView(new_network.getIdentifier());
+		GraphView newView = Cytoscape.getNetworkView(new_network.getSUID());
 		if ( newView != null || newView != Cytoscape.getNullNetworkView() ) {
 
         	// Use nodes as keys because they are less volatile than views...
-	        Iterator ni = origView.getGraphPerspective().nodesIterator();
-			while (ni.hasNext()) {
-				CyNode n = (CyNode) ni.next();
+			for ( CyNode n : origView.getGraphPerspective().getNodeList() ) {
 
 				NodeView onv = origView.getNodeView(n);
 				NodeView nnv = newView.getNodeView(n);
@@ -110,10 +108,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 			newView.setCenter(origCenter.getX(), origCenter.getY());
 
 			// set edge anchors and bends
-	        Iterator ei = origView.getGraphPerspective().edgesIterator();
-			while (ei.hasNext()) {
-				CyEdge ee = (CyEdge) ei.next();
-
+			for ( CyEdge ee : origView.getGraphPerspective().getEdgeList() ) {
 				EdgeView oev = origView.getEdgeView(ee);
 				EdgeView nev = newView.getEdgeView(ee);
 

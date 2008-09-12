@@ -57,7 +57,6 @@ public class CytoscapeActivator implements BundleActivator {
 			CyMain.main(args);
 
 
-			//ServiceHandler sh = new ServiceHandler(m_context);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

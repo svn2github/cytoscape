@@ -39,6 +39,7 @@ package cytoscape.groups;
 
 import cytoscape.Cytoscape;
 import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.EdgeType;
 import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.model.network.CyNode;
 import org.cytoscape.attributes.CyAttributes;
@@ -282,7 +283,8 @@ public class CyGroupImpl implements CyGroup {
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 		this.groupState = state;
 		attributes.setAttribute(this.groupName, GROUP_STATE_ATTR, this.groupState);
-		attributes.setUserVisible(GROUP_STATE_ATTR, false);
+		// TODO attributes are implicitly visible/invisible based on attr namespace
+		//attributes.setUserVisible(GROUP_STATE_ATTR, false);
     // Get our viewer
     CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
     if (v != null) {
@@ -341,7 +343,8 @@ public class CyGroupImpl implements CyGroup {
 
 		if (this.viewer != null) {
 			attributes.setAttribute(this.groupName, GROUP_VIEWER_ATTR, this.viewer);
-			attributes.setUserVisible(GROUP_VIEWER_ATTR, false);
+		// TODO attributes are implicitly visible/invisible based on attr namespace
+		//	attributes.setUserVisible(GROUP_VIEWER_ATTR, false);
 		}
 	}
 
@@ -419,7 +422,7 @@ public class CyGroupImpl implements CyGroup {
 		// Put this node in our map
 		nodeMap.put(node, node);
 		CyNetwork network = Cytoscape.getCurrentNetwork();
-		List <CyEdge>edgeList = null;
+		List<CyEdge> edgeList = null;
 
 		if (nodeToEdgeMap.containsKey(node)) {
 			edgeList = nodeToEdgeMap.get(node);
@@ -428,18 +431,15 @@ public class CyGroupImpl implements CyGroup {
 		}
 
 		// Add all of the edges
-		int [] edgeArray = network.getAdjacentEdgeIndicesArray(node.getRootGraphIndex(),true,true,true);
-		if (edgeArray == null)
-			edgeArray = new int[]{};
-		for (int edgeIndex = 0; edgeIndex < edgeArray.length; edgeIndex++) {
-			CyEdge edge = (CyEdge)network.getEdge(edgeArray[edgeIndex]);
+		List<CyEdge> adjEdges = network.getAdjacentEdgeList(node,EdgeType.ANY_EDGE);
+		for ( CyEdge edge : adjEdges ) {
 			// Not sure if this is faster or slower than going through the entire loop
 			if (edgeList.contains(edge))
 				continue;
 
 			edgeList.add(edge);
-			CyNode target = (CyNode)edge.getTarget();
-			CyNode source = (CyNode)edge.getSource();
+			CyNode target = edge.getTarget();
+			CyNode source = edge.getSource();
 
 			// Check to see if this edge is one of our own metaEdges
 			if (source == groupNode || target == groupNode) {
@@ -459,8 +459,11 @@ public class CyGroupImpl implements CyGroup {
 		nodeToEdgeMap.put(node, edgeList);
 
 		// Tell the node about it (if necessary)
-		if (!node.inGroup(this))
-			node.addToGroup(this);
+//		if (!node.inGroup(this))
+//			node.addToGroup(this);
+		// TODO Don't think this is right either
+		if ( !contains(node) )
+			addNode(node);
 	}
 
 	/**
@@ -486,7 +489,10 @@ public class CyGroupImpl implements CyGroup {
 		nodeToEdgeMap.remove(node);
 
 		// Tell the node about it (if necessary)
-		if (node.inGroup(this))
-			node.removeFromGroup(this);
+//		if (node.inGroup(this))
+			//node.removeFromGroup(this);
+			// TODO don't think this is right
+		if ( contains(node) )
+			this.removeNode( node );
 	}
 }

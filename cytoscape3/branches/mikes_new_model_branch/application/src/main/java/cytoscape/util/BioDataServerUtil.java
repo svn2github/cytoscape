@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import org.cytoscape.io.read.URLUtil;
 
 
 // Provides some utility methods for the BDS classes.

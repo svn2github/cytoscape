@@ -139,7 +139,7 @@ public class ExportAsXGMMLAction extends CytoscapeAction {
 
 		// Get Current Network and View
 		final CyNetwork network = Cytoscape.getCurrentNetwork();
-		final GraphView view = Cytoscape.getNetworkView(network.getIdentifier());
+		final GraphView view = Cytoscape.getNetworkView(network.getSUID());
 
 		// Create Task
 		final ExportAsXGMMLTask task = new ExportAsXGMMLTask(name, network, view);

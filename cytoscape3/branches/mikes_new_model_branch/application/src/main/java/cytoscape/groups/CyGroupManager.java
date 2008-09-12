@@ -150,12 +150,13 @@ public class CyGroupManager {
 	 */
 	public static CyGroup findGroup(String groupName) {
 		for (CyGroup group: getGroupList()) {
+			String nodeName = group.getGroupNode().getCyAttributes("USER").get("name",String.class);
 			if (group.getGroupName().equals(groupName)) {
 				return group;
-			} else if (group.getGroupNode().getIdentifier().equals(groupName)) {
+			} else if (nodeName.equals(groupName)) {
 				// This means that someone changed the name of our groupNode, but
 				// not the name of the group.  Update our name and return
-				((CyGroupImpl)group).setGroupName(group.getGroupNode().getIdentifier());
+				((CyGroupImpl)group).setGroupName(nodeName);
 				return group;
 			}
 		}
@@ -218,7 +219,7 @@ public class CyGroupManager {
 	 */
 	public static CyGroup createGroup(CyNode groupNode, List nodeList, String viewer) {
 		// Do we already have a group by this name?
-		if (findGroup(groupNode.getIdentifier()) != null) return null;
+		if (findGroup(groupNode.getCyAttributes("USER").get("name",String.class)) != null) return null;
 		// Create the group
 		CyGroup group = null;
 		if (nodeList != null)
@@ -231,7 +232,7 @@ public class CyGroupManager {
 		// See if this groupNode has a state attribute
 		CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		try {
-			int state = nodeAttributes.getIntegerAttribute(groupNode.getIdentifier(), CyGroup.GROUP_STATE_ATTR);
+			int state = groupNode.getCyAttributes("USER").get(CyGroup.GROUP_STATE_ATTR,Integer.class);
 			group.setState(state);
 		} catch (Exception e) {}
 
@@ -279,11 +280,11 @@ public class CyGroupManager {
 			Iterator <CyNode> nIter = nodeList.iterator();
 			while (nIter.hasNext()) {
 				CyNode node = nIter.next();
-				node.removeFromGroup(group);
+				group.removeNode(node);
 			}
 
 			CyNetwork network = Cytoscape.getCurrentNetwork();
-			network.removeNode(groupNode.getRootGraphIndex(), false);
+			network.removeNode(groupNode);
 
 			notifyListeners(group, CyGroupChangeListener.ChangeType.GROUP_DELETED);
 		}

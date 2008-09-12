@@ -41,9 +41,9 @@ import cytoscape.CytoscapeInit;
 import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CountedIterator;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.MultiHashMap;
+//import org.cytoscape.attributes.CountedIterator;
+//import org.cytoscape.attributes.CyAttributes;
+//import org.cytoscape.attributes.MultiHashMap;
 
 import java.util.*;
 
@@ -68,14 +68,12 @@ public class Semantics {
 	public static final String CANONICAL_NAME = "canonicalName";
 
 	
-	// KONO:04/19/2006 From v2.3, the following two terms will be used only by
-	// Gene Ontology Server.
-	//  - The basic meaning is same as above, but canonical name will be
-	// replaced by the node id. - Aliases are no longer String object. It's a
-	// list now.
-
 	/**
-	 *
+	 * From v2.3, the following two terms will be used only by
+	 * Gene Ontology Server.
+	 *  - The basic meaning is same as above, but canonical name will be
+	 * replaced by the node id. - Aliases are no longer String object. It's a
+	 * list now.
 	 */
 	public static final String GO_COMMON_NAME = "GO Common Name";
 
@@ -134,162 +132,7 @@ public class Semantics {
 	public static final String CELLULAR_COMPONENT = "cellular_component";
 
 
-	/**
-	 * This method attempts to set a species attribute for every canonical name
-	 * defined in the node attributes member of the supplied network. The value
-	 * returned by getDefaultSpecies is used; if this return value is null, then
-	 * this method exits without doing anything, as there is no species to set.
-	 *
-	 * If a canonical name already has an entry for the SPECIES attribute, then
-	 * this method does not change that value. Otherwise, this method sets the
-	 * value of that attribute to that returned by getDefaultSpecies.
-	 *
-	 * This method does nothing at all if either argument is null.
-	 */
-	public static void assignSpecies(final CyNetwork network) {
-		if (network == null) {
-			return;
-		}
 
-		final String defaultSpecies = CytoscapeInit.getProperties().getProperty("defaultSpeciesName");
-
-		if (defaultSpecies == null) {
-			return;
-		} // we have no value to set
-
-		final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-
-		final Iterator nodeIt = network.nodesIterator();
-
-		while (nodeIt.hasNext()) {
-			final String nodeLabel = ((CyNode) nodeIt.next()).getIdentifier();
-			final String species = nodeAttributes.getStringAttribute(nodeLabel, SPECIES);
-
-			if (species == null) { // only do something if no value exists
-				nodeAttributes.setAttribute(nodeLabel, SPECIES, defaultSpecies);
-			}
-		}
-	}
-
-	/**
-	 * Returns every unique species defined in the supplied network. Searches
-	 * the species attribute in the node attributes of the supplied network and
-	 * returns a Set containing every unique value found.
-	 */
-	public static Set<String> getSpeciesInNetwork(final CyNetwork network) {
-		final Set<String> returnSet = new HashSet<String>();
-
-		if (network == null) {
-			return returnSet;
-		}
-
-		final CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
-
-		// in the following map, keys are objects names and values are the
-		// species
-		final CountedIterator keys = nodeAttributes.getMultiHashMap().getObjectKeys(SPECIES);
-
-		while (keys.hasNext()) {
-			returnSet.add(nodeAttributes.getStringAttribute((String) keys.next(), SPECIES));
-		}
-
-		return returnSet;
-	}
-
-
-	/**
-	 * Returns an array containing all of the unique interaction types present
-	 * in the network. Formally, gets from the edge attributes all of the unique
-	 * values for the "interaction" attribute.
-	 *
-	 * If the argument is null, returns an array of length 0.
-	 */
-	@SuppressWarnings("unchecked")  // again the result of stupid attributes being untyped
-	public static String[] getInteractionTypes(final CyNetwork network) {
-		if (network == null) {
-			return new String[0];
-		}
-
-		final HashMap<Object,Object> dupsFilter = new HashMap<Object,Object>();
-		final CyAttributes attrs = Cytoscape.getEdgeAttributes();
-		final MultiHashMap mmap = attrs.getMultiHashMap();
-		final CountedIterator objs = mmap.getObjectKeys(Semantics.INTERACTION);
-
-		while (objs.hasNext()) {
-			final String obj = (String) objs.next();
-			final Object val = mmap.getAttributeValue(obj, Semantics.INTERACTION, null);
-			dupsFilter.put(val, val);
-		}
-
-		final String[] returnThis = new String[dupsFilter.size()];
-		final Iterator uniqueIter = dupsFilter.keySet().iterator();
-		int inx = 0;
-
-		while (uniqueIter.hasNext()) {
-			returnThis[inx++] = (String) uniqueIter.next();
-		}
-
-		return returnThis;
-	}
-
-	// -------------------------------------------------------------------------
-	/**
-	 * Returns the interaction type of the given edge. Formally, gets from the
-	 * edge attributes the value for the "interaction" attribute".
-	 *
-	 * If either argument is null, returns null.
-	 */
-	public static String getInteractionType(final CyNetwork network, final CyEdge edge) {
-		if ((network == null) || (edge == null)) {
-			return null;
-		}
-
-		return Cytoscape.getEdgeAttributes()
-		                .getStringAttribute(edge.getIdentifier(), Semantics.INTERACTION);
-	}
-
-	// -------------------------------------------------------------------------
-	/**
-	 * This method is used to determine if two, potentially different names
-	 * really refer to the same thing; that is, the two names are synonyms. The
-	 * rules applied are as follows:
-	 *
-	 * 1) If either name is null, this method returns true if both are null,
-	 * false otherwise. 2) If the names themselves match, this method returns
-	 * true 3) The getAllSynonyms method is called for both names, to get all
-	 * known synonyms. each possible pair of synonyms is compared, and this
-	 * method returns true if any match is found, false otherwise.
-	 *
-	 * In all cases, comparisons are done with name1.equalsIgnoreCase(name2).
-	 *
-	 * The network and cytoscapeObj arguments may be null, which simply limits
-	 * the tests that can be done to find synonyms.
-	 */
-	public static boolean areSynonyms(final String firstName, final String secondName,
-	                                  final CyNetwork network) {
-		if ((firstName == null) || (secondName == null)) {
-			return ((firstName == null) && (secondName == null));
-		}
-
-		if (firstName.equalsIgnoreCase(secondName)) {
-			return true;
-		}
-
-		final List firstSynonyms = getAllSynonyms(firstName, network);
-		final List secondSynonyms = getAllSynonyms(secondName, network);
-
-		for (Iterator firstI = firstSynonyms.iterator(); firstI.hasNext();) {
-			for (Iterator secondI = secondSynonyms.iterator(); secondI.hasNext();) {
-				if (((String) firstI.next()).equalsIgnoreCase((String) secondI.next())) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	// -------------------------------------------------------------------------
 	/**
 	 * This method returns a list of all names that are synonyms of the given
 	 * name. The returned list will include the name argument itself, and thus

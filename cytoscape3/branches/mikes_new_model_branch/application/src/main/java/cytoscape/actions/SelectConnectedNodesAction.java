@@ -74,8 +74,8 @@ public class SelectConnectedNodesAction extends CytoscapeAction {
 		final List<CyEdge> selectedEdges = new ArrayList<CyEdge>(currentNetwork.getSelectedEdges());
 
 		for (CyEdge edge: selectedEdges) {
-			currentNetwork.setSelectedNodeState(edge.getSource(), true);
-			currentNetwork.setSelectedNodeState(edge.getTarget(), true);
+			edge.getSource().getCyAttributes("USER").set("selected",true);
+			edge.getTarget().getCyAttributes("USER").set("selected",true);
 		}
 
 		Cytoscape.getCurrentNetworkView().updateView();

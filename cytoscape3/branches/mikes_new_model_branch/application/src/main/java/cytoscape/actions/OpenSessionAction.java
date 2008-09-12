@@ -38,7 +38,6 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.readers.CytoscapeSessionReader;
-import cytoscape.data.readers.XGMMLException;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
@@ -209,9 +208,6 @@ class OpenSessionTask implements Task {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 			taskMonitor.setException(e, "Cannot unmarshall document: " + e.getMessage());
-        } catch (XGMMLException e) {
-            e.printStackTrace();
-            taskMonitor.setException(e, e.getMessage());
         } catch (Exception e) { // catch any exception: the user should know something went wrong
             e.printStackTrace();
             taskMonitor.setException(e, "Error while loading session " + e.getMessage());

@@ -35,11 +35,6 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-//-------------------------------------------------------------------------
-// $Revision: 12968 $
-// $Date: 2008-02-06 15:34:25 -0800 (Wed, 06 Feb 2008) $
-// $Author: mes $
-//-------------------------------------------------------------------------
 package cytoscape.actions;
 
 import cytoscape.util.CytoscapeAction;
@@ -47,7 +42,6 @@ import cytoscape.util.CytoscapeAction;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 
-//-------------------------------------------------------------------------
 /**
  *
  */
@@ -69,9 +63,8 @@ public class UnHideSelectedEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		//GinyUtils.unHideSelectedEdges( Cytoscape.getCurrentNetworkView() );
 		GinyUtils.unHideAll(cytoscape.Cytoscape.getCurrentNetworkView());
-	} //action performed
+	} 
 
     public void menuSelected(MenuEvent e) {
         enableForNetworkAndView();

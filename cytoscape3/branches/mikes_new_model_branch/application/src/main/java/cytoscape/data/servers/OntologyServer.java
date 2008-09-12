@@ -203,7 +203,7 @@ public class OntologyServer implements PropertyChangeListener {
 			/*
 			 * Remove network name from ontology server.
 			 */
-			ontologies.remove(Cytoscape.getNetwork((String) e.getNewValue()).getTitle());
+			ontologies.remove(Cytoscape.getNetwork((String) e.getNewValue()).getCyAttributes("USER").get("title",String.class));
 		}
 	}
 }

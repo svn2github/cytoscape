@@ -334,9 +334,10 @@ public abstract class AttributeImportPanel extends JPanel implements PropertyCha
 		attributeComboBox.addItem("ID");
 
 		for (String name : names) {
-			if (nodeAttr.getUserVisible(name)) {
+			// TODO attrs are implicitly visible based on namespace
+			//if (nodeAttr.getUserVisible(name)) {
 				attributeComboBox.addItem(name);
-			}
+			//}
 		}
 	}
 	

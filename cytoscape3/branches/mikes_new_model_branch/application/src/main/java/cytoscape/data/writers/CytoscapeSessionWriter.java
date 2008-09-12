@@ -326,7 +326,7 @@ public class CytoscapeSessionWriter {
 	private void zipNetwork(final CyNetwork network)
 	    throws IOException, JAXBException, URISyntaxException {
 
-		String xgmmlFile = getValidFileName( network.getTitle() + XGMML_EXT );
+		String xgmmlFile = getValidFileName( network.getCyAttributes("USER").get("title",String.class) + XGMML_EXT );
 		GraphView view = Cytoscape.getNetworkView(network.getIdentifier());
 
 		zos.putNextEntry(new ZipEntry(sessionDir + xgmmlFile) );
@@ -442,7 +442,7 @@ public class CytoscapeSessionWriter {
 		while (itr.hasNext()) {
 			CyNetwork network = (CyNetwork) itr.next();
 			String networkID = network.getIdentifier();
-			String networkName = network.getTitle();
+			String networkName = network.getCyAttributes("USER").get("title",String.class);
 
 			networkMap.put(networkName, networkID);
 		}
@@ -571,7 +571,6 @@ public class CytoscapeSessionWriter {
 				/*
 				 * This is for Metanode. Will be used in the future...
 				 *
-				 * Iterator it = targetNetwork.nodesIterator(); ViewableNodes vn =
 				 * factory.createViewableNodes(); while (it.hasNext()) { String
 				 * viewableID = ((CyNode) it.next()) .getIdentifier(); Node
 				 * viewableNode = factory.createNode();
@@ -621,7 +620,6 @@ public class CytoscapeSessionWriter {
 		 * This is for metanode. will be used in the future.
 		 *
 		 * if (curNode.getId() != "Network Root") { Iterator it =
-		 * targetNetwork.nodesIterator(); ViewableNodes vn =
 		 * factory.createViewableNodes(); while (it.hasNext()) {
 		 *
 		 * String viewableID = ((CyNode) it.next()).getIdentifier(); Node

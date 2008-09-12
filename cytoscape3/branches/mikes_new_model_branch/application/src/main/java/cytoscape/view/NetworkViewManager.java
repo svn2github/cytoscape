@@ -137,7 +137,7 @@ public class NetworkViewManager implements PropertyChangeListener,
 	public void updateNetworkTitle(CyNetwork network) {
 		JInternalFrame frame = networkViewMap.get(network.getIdentifier());
 
-		frame.setTitle(network.getTitle());
+		frame.setTitle(network.getCyAttributes("USER").get("title",String.class));
 		frame.repaint();
 	}
 

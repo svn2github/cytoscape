@@ -128,11 +128,7 @@ public class CyNetworkUtilities {
 			File file = new File(filename);
 			FileWriter fout = new FileWriter(file);
 
-			for (Iterator i = network.nodesIterator(); i.hasNext();) {
-				CyNode node = (CyNode) i.next();
-				// String canonicalName = nodeAttributes.getCanonicalName(node);
-				//String canonicalName = nodeAttributes.getStringAttribute(node
-				//		.getIdentifier(), "canonicalName");
+			for ( CyNode node : network.getNodeList() ) {
 				fout.write(node.getIdentifier() + lineSep);
 			} // for i
 
@@ -175,8 +171,7 @@ public class CyNetworkUtilities {
 		int nodeFound = 0;
 		Vector<CyNode> matchedNodes = new Vector<CyNode>();
 
-		for (Iterator i = network.nodesIterator(); i.hasNext();) {
-			CyNode node = (CyNode) i.next();
+		for ( CyNode node : network.getNodeList() ) {
 			String nodeUID = node.getIdentifier();
 
 			boolean matched = false;
@@ -212,7 +207,8 @@ public class CyNetworkUtilities {
 		}
 
 		if (nodeFound > 0) {
-			network.setSelectedNodeState(matchedNodes, true);
+			for ( CyNode n : matchedNodes )
+				n.getCyAttributes("USER").set("selected",true);
 		}
 
 		//System.out.println("node found = " + nodeFound);

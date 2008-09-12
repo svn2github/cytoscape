@@ -88,11 +88,13 @@ public class HideSelectedAction extends CytoscapeAction {
 
 		// unselect the nodes and edges
 		if (selectedNodes != null) {
-			Cytoscape.getCurrentNetwork().setSelectedNodeState(selectedNodes, false);
+			for ( CyNode n : selectedNodes )
+				n.getCyAttributes("USER").set("selected",false);
 		}
 
 		if (selectedEdges != null) {
-			Cytoscape.getCurrentNetwork().setSelectedEdgeState(selectedEdges, false);
+			for ( CyEdge n : selectedEdges )
+				n.getCyAttributes("USER").set("selected",false);
 		}
 	} //action performed
 }

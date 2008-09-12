@@ -35,9 +35,8 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CountedIterator;
 import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.MultiHashMap;
+import org.cytoscape.attributes.CyAttributesManager;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
@@ -405,28 +404,16 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 			final String controllingAttrName = mapping.getControllingAttributeName();
 
-			final MultiHashMap mhm = attr.getMultiHashMap();
-
-			List<String> attrNames = new ArrayList<String>();
-			Collections.addAll(attrNames, attr.getAttributeNames());
-
-			if (attrNames.contains(controllingAttrName) == false)
+			if ( !attr.contains(controllingAttrName, Double.class) )
 				return;
 
 			// Set range values
 			if (EditorValueRangeTracer.getTracer().getRange(type) == 0) {
-				final CountedIterator it = mhm.getObjectKeys(controllingAttrName);
-				Object key;
+
 				Double maxValue = Double.NEGATIVE_INFINITY;
 				Double minValue = Double.POSITIVE_INFINITY;
 
-				while (it.hasNext()) {
-					key = it.next();
-
-					Double val = Double.parseDouble(mhm.getAttributeValue((String) key,
-					                                                      controllingAttrName, null)
-					                                   .toString());
-
+				for ( Double val : attr.getAttrMgr().getAll( controllingAttrName, Double.class ) ) {
 					if (val > maxValue)
 						maxValue = val;
 

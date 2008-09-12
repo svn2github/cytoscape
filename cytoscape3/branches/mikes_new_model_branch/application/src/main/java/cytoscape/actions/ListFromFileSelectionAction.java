@@ -111,7 +111,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 
 			// loop through all the node of the graph
 			// selecting those in the file
-			List<CyNode> nodeList = network.nodesList();
+			List<CyNode> nodeList = network.getNodeList();
 			CyNode[] nodes = (CyNode[]) nodeList.toArray(new CyNode[0]);
 
 			for (int i = 0; i < nodes.length; i++) {
@@ -132,7 +132,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 					//GraphView view = Cytoscape.getCurrentNetworkView();
 					//NodeView nv = view.getNodeView(node.getRootGraphIndex());
 					//nv.setSelected(true);
-					network.setSelectedNodeState(node, true);
+					node.getCyAttributes("USER").set("selected",true);
 				}
 			}
 		} catch (Exception e) {

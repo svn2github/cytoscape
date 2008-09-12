@@ -36,8 +36,7 @@ package cytoscape.data.ontology.readers;
 
 import cytoscape.data.ontology.DBReference;
 import static cytoscape.data.ontology.readers.DBXrefKeywords.*;
-import cytoscape.util.URLUtil;
-
+import org.cytoscape.io.read.URLUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

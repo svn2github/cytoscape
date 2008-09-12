@@ -46,6 +46,8 @@ import java.io.*;
 import java.net.URL;
 import java.util.Iterator;
 
+import org.cytoscape.io.read.URLUtil;
+
 
 /**
  * Provides a platform-dependent way to open files. Mainly

@@ -233,7 +233,7 @@ public class LoadNetworkTask implements Task {
 			CyNetwork cyNetwork = Cytoscape.createNetwork(reader, true, null);
 
 			// Are we supposed to lay this out?
-			GraphView view = Cytoscape.getNetworkView(cyNetwork.getIdentifier());
+			GraphView view = Cytoscape.getNetworkView(cyNetwork.getSUID());
 
 			if ((layoutAlgorithm != null) && (view != null)) {
 				// Yes, do it
@@ -255,7 +255,7 @@ public class LoadNetworkTask implements Task {
 				Cytoscape.getDesktop().getNetworkViewManager()
 				         .firePropertyChange(CytoscapeDesktop.NETWORK_VIEW_FOCUSED, null,
 				                             Cytoscape.getCurrentNetworkView().getNetwork()
-				                                      .getIdentifier());
+				                                      .getSUID());
 			}
 
 			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);

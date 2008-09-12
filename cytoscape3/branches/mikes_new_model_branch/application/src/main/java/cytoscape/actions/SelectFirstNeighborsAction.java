@@ -79,8 +79,10 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
 		final List<CyNode> selectedNodes = new ArrayList<CyNode>(currentNetwork.getSelectedNodes());
 
-		for (final Iterator it = selectedNodes.iterator(); it.hasNext();) {
-			currentNetwork.setSelectedNodeState(currentNetwork.neighborsList((CyNode) it.next()), true);
+		for ( CyNode currentNode : selectedNodes ) {
+			for ( CyNode n : currentNetwork.getNeighborList(currentNode) ) {
+				n.getCyAttributes("USER").set("selected",true);
+			}
 		}
 
 		Cytoscape.getCurrentNetworkView().updateView();

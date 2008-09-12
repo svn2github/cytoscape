@@ -48,7 +48,6 @@ import cytoscape.util.CytoscapeAction;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 
-//-------------------------------------------------------------------------
 /**
  *
  */
@@ -69,13 +68,13 @@ public class SelectAllEdgesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// GinyUtils.selectAllEdges( Cytoscape.getCurrentNetworkView() );
-		Cytoscape.getCurrentNetwork().selectAllEdges();
+		for ( CyEdge e : Cytoscape.getCurrentNetwork().getEdgeList() )
+			e.getCyAttributes("USER").set("selected",true);
 
 		if (Cytoscape.getCurrentNetworkView() != null) {
 			Cytoscape.getCurrentNetworkView().updateView();
 		}
-	} // action performed
+	} 
 
     public void menuSelected(MenuEvent e) {
         enableForNetwork();

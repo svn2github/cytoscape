@@ -35,15 +35,12 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-//-------------------------------------------------------------------------
-// $Revision: 12968 $
-// $Date: 2008-02-06 15:34:25 -0800 (Wed, 06 Feb 2008) $
-// $Author: mes $
-//-------------------------------------------------------------------------
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.CyEdge;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -70,10 +67,10 @@ public class SelectAllAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// GinyUtils.selectAllNodes( Cytoscape.getCurrentNetworkView() );
-		// GinyUtils.selectAllEdges( Cytoscape.getCurrentNetworkView() );
-		Cytoscape.getCurrentNetwork().selectAllNodes();
-		Cytoscape.getCurrentNetwork().selectAllEdges();
+		for ( CyNode n : Cytoscape.getCurrentNetwork().getNodeList() )
+			n.getCyAttributes("USER").set("selected",true);
+		for ( CyEdge e : Cytoscape.getCurrentNetwork().getEdgeList() )
+			e.getCyAttributes("USER").set("selected",true);
 
 		if (Cytoscape.getCurrentNetworkView() != null) {
 			Cytoscape.getCurrentNetworkView().updateView();

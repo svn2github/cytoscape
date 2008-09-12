@@ -38,7 +38,6 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.data.ontology.Ontology;
 import static cytoscape.data.ontology.readers.OBOTags.*;
-import cytoscape.util.URLUtil;
 import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.model.network.CyNode;
@@ -47,6 +46,8 @@ import org.cytoscape.attributes.CyAttributes;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+
+import org.cytoscape.io.read.URLUtil;
 
 
 /**
@@ -146,8 +147,10 @@ public class OBOFlatFileReader implements OntologyReader {
 		 * Ontology DAGs will be distinguished by this attribute.
 		 */
 		networkAttributes.setAttribute(name, Ontology.IS_ONTOLOGY, true);
-		networkAttributes.setUserVisible(Ontology.IS_ONTOLOGY, false);
-		networkAttributes.setUserEditable(Ontology.IS_ONTOLOGY, false);
+		// TODO attributes are implicitly visible/invisible based on attr namespace
+		//networkAttributes.setUserVisible(Ontology.IS_ONTOLOGY, false);
+		// TODO attributes are implicitly visible/invisible based on attr namespace
+		//networkAttributes.setUserEditable(Ontology.IS_ONTOLOGY, false);
 
 		String rootID = Cytoscape.getOntologyRootID();
 
@@ -155,7 +158,7 @@ public class OBOFlatFileReader implements OntologyReader {
 			Set<CyNetwork> networkSet = Cytoscape.getNetworkSet();
 
 			for (CyNetwork net : networkSet) {
-				if (net.getTitle().equals(ONTOLOGY_DAG_ROOT)) {
+				if (net.getCyAttributes("USER").get("title",String.class).equals(ONTOLOGY_DAG_ROOT)) {
 					rootID = net.getIdentifier();
 				}
 			}

@@ -3,11 +3,12 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.util.URLUtil;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+
+import org.cytoscape.io.read.URLUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

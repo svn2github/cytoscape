@@ -72,11 +72,13 @@ public class InvertSelectedEdgesAction extends CytoscapeAction {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent ae) {
 		final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-		final List<CyEdge> selectedEdges = new ArrayList<CyEdge>(cyNetwork.getSelectedEdges());
-		cyNetwork.selectAllEdges();
-		cyNetwork.setSelectedEdgeState(selectedEdges, false);
+		for ( CyEdge e : cyNetwork.getEdgeList() )
+			if ( e.getCyAttributes("USER").get("selected",Boolean.class) == true )
+				e.getCyAttributes("USER").set("selected",false);
+			else 
+				e.getCyAttributes("USER").set("selected",true);
 		Cytoscape.getCurrentNetworkView().updateView();
 	}
 

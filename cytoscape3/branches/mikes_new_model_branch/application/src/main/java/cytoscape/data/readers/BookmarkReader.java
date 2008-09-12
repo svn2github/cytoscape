@@ -36,7 +36,7 @@ package cytoscape.data.readers;
 
 import cytoscape.Cytoscape;
 import cytoscape.bookmarks.Bookmarks;
-import cytoscape.util.URLUtil;
+import org.cytoscape.io.read.URLUtil;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

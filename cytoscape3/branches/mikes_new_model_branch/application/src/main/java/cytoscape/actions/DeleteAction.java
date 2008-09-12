@@ -120,9 +120,9 @@ public class DeleteAction extends CytoscapeAction {
 			nodeIndices.add(cyNode.getRootGraphIndex());
 
 			// add adjacent edge indices for each node 
-			int[] edgesList = cyNet.getAdjacentEdgeIndicesArray(cyNode.getRootGraphIndex(),true,true,true);
-			for ( int x = 0; x < edgesList.length; x++ )
-				edgeIndices.add(edgesList[x]);
+			List<CyEdge> adjEdges = cyNet.getAdjacentEdgeList(cyNode,EdgeType.ANY_EDGE);
+			for ( CyEdge ed : adjEdges )
+				edgeIndices.add( ed.getIndex() );
 		}
 
 		// add all selected edge indices

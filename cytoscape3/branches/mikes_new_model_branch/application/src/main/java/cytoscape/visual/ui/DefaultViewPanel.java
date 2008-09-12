@@ -88,7 +88,7 @@ public class DefaultViewPanel extends JPanel {
 		edges.add(edge);
 
 		dummyNet = Cytoscape.getRootGraph().createGraphPerspective(nodes, edges);
-		dummyNet.setTitle("Default Appearance");
+		dummyNet.getCyAttributes("USER").set("title","Default Appearance");
 
 		view = GraphViewFactory.createGraphView(dummyNet);
 		view.setIdentifier(dummyNet.getIdentifier());

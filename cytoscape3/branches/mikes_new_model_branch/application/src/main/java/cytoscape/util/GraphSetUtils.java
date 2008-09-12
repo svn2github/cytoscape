@@ -47,10 +47,7 @@ import java.util.*;
 
 
 /**
- * Class contains various static methods to perform set-like operations on
- * graph.
- *
- * @author Ryan Kelley
+ * TODO:  This class is completely broken for 3.0.
  *
  */
 public class GraphSetUtils {
@@ -173,11 +170,11 @@ public class GraphSetUtils {
 		// get the visual style for the first network in the list and try to apply
 		// it to the new network.
 		CyNetwork firstNetwork = (CyNetwork)networkList.get(0);
-		GraphView firstView =  Cytoscape.getNetworkView( firstNetwork.getIdentifier() );
+		GraphView firstView =  Cytoscape.getNetworkView( firstNetwork.getSUID() );
 		if ( firstView != null && firstView != Cytoscape.getNullNetworkView() ) {
 			VisualStyle firstVS = Cytoscape.getVisualMappingManager().getVisualStyleForView(firstView);
 
-			GraphView newView = Cytoscape.getNetworkView( newNetwork.getIdentifier() );
+			GraphView newView = Cytoscape.getNetworkView( newNetwork.getSUID() );
 			if ( newView != null && newView != Cytoscape.getNullNetworkView() && firstVS != null ) {
 				Cytoscape.getVisualMappingManager().setVisualStyleForView(newView, firstVS);
 				Cytoscape.redrawGraph(newView);
@@ -203,9 +200,7 @@ public class GraphSetUtils {
 		 */
 		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
 EDGE_LOOP: 
-		for (Iterator edgeIt = firstNetwork.edgesIterator(); edgeIt.hasNext();) {
-			CyEdge currentEdge = (CyEdge) edgeIt.next();
-
+		for ( CyEdge currentEdge : firstNetwork.getEdgeList() ) {
 			for (int idx = 1; idx < networkList.size(); idx++) {
 				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
 
@@ -246,8 +241,7 @@ EDGE_LOOP:
 		 */
 		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
 NODE_LOOP: 
-		for (Iterator nodeIt = firstNetwork.nodesIterator(); nodeIt.hasNext();) {
-			CyNode currentNode = (CyNode) nodeIt.next();
+		for ( CyNode currentNode : firstNetwork.getNodeList() ) {
 
 			for (int idx = 1; idx < networkList.size(); idx++) {
 				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
@@ -265,8 +259,10 @@ NODE_LOOP:
 		 * included (if these nodes connect an edge in the difference set)
 		 */
 		for (int idx = 0; idx < edges.length; idx++) {
-			nodes.add(firstNetwork.getNode(firstNetwork.getEdgeSourceIndex(edges[idx])));
-			nodes.add(firstNetwork.getNode(firstNetwork.getEdgeTargetIndex(edges[idx])));
+			//nodes.add(firstNetwork.getNode(firstNetwork.getEdgeSourceIndex(edges[idx])));
+			//nodes.add(firstNetwork.getNode(firstNetwork.getEdgeTargetIndex(edges[idx])));
+			nodes.add(firstNetwork.getEdge(edges[idx]).getSource());
+			nodes.add(firstNetwork.getEdge(edges[idx]).getTarget());
 		}
 
 		int[] result = new int[nodes.size()];
@@ -294,8 +290,7 @@ NODE_LOOP:
 		 */
 		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
 NODE_LOOP: 
-		for (Iterator nodeIt = firstNetwork.nodesIterator(); nodeIt.hasNext();) {
-			CyNode currentNode = (CyNode) nodeIt.next();
+		for ( CyNode currentNode : firstNetwork.getNodeList() ) {
 
 			for (int idx = 1; idx < networkList.size(); idx++) {
 				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
@@ -333,9 +328,7 @@ NODE_LOOP:
 		 */
 		CyNetwork firstNetwork = (CyNetwork) networkList.get(0);
 EDGE_LOOP: 
-		for (Iterator edgeIt = firstNetwork.edgesIterator(); edgeIt.hasNext();) {
-			CyEdge currentEdge = (CyEdge) edgeIt.next();
-
+		for ( CyEdge currentEdge : firstNetwork.getEdgeList() ) {
 			for (int idx = 1; idx < networkList.size(); idx++) {
 				CyNetwork currentNetwork = (CyNetwork) networkList.get(idx);
 
@@ -372,8 +365,8 @@ EDGE_LOOP:
 		for (Iterator it = networkList.iterator(); it.hasNext();) {
 			CyNetwork currentNetwork = (CyNetwork) it.next();
 
-			for (Iterator nodeIt = currentNetwork.nodesIterator(); nodeIt.hasNext();) {
-				nodes.add(Integer.valueOf(((CyNode) nodeIt.next()).getRootGraphIndex()));
+			for ( CyNode currentNode : currentNetwork.getNodeList() ) {
+				nodes.add(Integer.valueOf(currentNode.getIndex()));
 			}
 		}
 
@@ -400,9 +393,9 @@ EDGE_LOOP:
 
 		for (Iterator it = networkList.iterator(); it.hasNext();) {
 			CyNetwork currentNetwork = (CyNetwork) it.next();
-
-			for (Iterator edgeIt = currentNetwork.edgesIterator(); edgeIt.hasNext();) {
-				edges.add(Integer.valueOf(((CyEdge) edgeIt.next()).getRootGraphIndex()));
+	
+			for ( CyEdge edge : currentNetwork.getEdgeList() ) {
+				edges.add(Integer.valueOf(edge.getIndex()));
 			}
 		}
 

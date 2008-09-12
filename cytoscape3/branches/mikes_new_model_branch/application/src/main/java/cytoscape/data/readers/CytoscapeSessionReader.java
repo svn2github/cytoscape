@@ -43,7 +43,7 @@ import cytoscape.data.Semantics;
 import cytoscape.generated.*;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.PercentUtil;
-import cytoscape.util.URLUtil;
+import org.cytoscape.io.read.URLUtil;
 import org.cytoscape.model.network.CyEdge;
 import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.model.network.CyNode;
@@ -123,7 +123,7 @@ public class CytoscapeSessionReader {
 	private Map<String, Network> netMap;
 	private String sessionID;
 	private Cysession session;
-	private List<String> networkList;
+	private List<Long> networkList;
 	private Bookmarks bookmarks = null;
 	private Map<String, List<File>> pluginFileListMap;
 	private Map<String, List<String>> theURLstrMap = new HashMap<String, List<String>>();
@@ -153,7 +153,7 @@ public class CytoscapeSessionReader {
 		else
 			this.sourceURL = temporaryLocalFileURL(sourceName);
 
-		networkList = new ArrayList<String>();
+		networkList = new ArrayList<Long>();
 		bookmarks = new Bookmarks();
 		pluginFileListMap = new HashMap<String, List<File>>();
 
@@ -643,7 +643,7 @@ public class CytoscapeSessionReader {
 					walkTree(childNet, new_network, sessionSource);
 				continue;
 			}
-			System.out.println("XGMMLReader " + new_network.getIdentifier() + ": "
+			System.out.println("XGMMLReader " + new_network.getSUID() + ": "
 			                   + (System.currentTimeMillis() - start) + " msec.");
 
 			// Restore the original state of the vsbSwitch
@@ -665,7 +665,7 @@ public class CytoscapeSessionReader {
 				}
 			}
 
-			networkList.add(new_network.getIdentifier());
+			networkList.add(new_network.getSUID());
 
 			// Execute if view is available.
 			if (childNet.isViewAvailable()) {
@@ -677,7 +677,7 @@ public class CytoscapeSessionReader {
 
 				lastVSName = vsName;
 
-				curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
+				curNetView = Cytoscape.createNetworkView(new_network, new_network.getCyAttributes("USER").get("title",String.class),
 				                                         reader.getLayoutAlgorithm());
 
 				Cytoscape.getVisualMappingManager().setVisualStyleForView(curNetView, 
@@ -715,7 +715,8 @@ public class CytoscapeSessionReader {
 			selectedNodeList.add(Cytoscape.getCyNode(selectedNode.getId(), false));
 		}
 
-		network.setSelectedNodeState(selectedNodeList, true);
+		for ( CyNode n : selectedNodeList )
+			n.getCyAttributes("USER").set("selected",true);
 	}
 
 	private void setHiddenNodes(final GraphView view, final HiddenNodes hidden) {
@@ -767,7 +768,8 @@ public class CytoscapeSessionReader {
 			}
 		}
 
-		network.setSelectedEdgeState(selectedEdgeList, true);
+		for ( CyEdge e : selectedEdgeList )
+			e.getCyAttributes("USER").set("selected",true);
 	}
 
 	private CyEdge getCyEdge(final cytoscape.generated.Edge edge) {
@@ -830,7 +832,7 @@ public class CytoscapeSessionReader {
 
 		List<Ontology> servers = session.getSessionState().getServer().getOntologyServer()
 		                                .getOntology();
-		String targetCyNetworkID = null;
+		Long targetCyNetworkID = null;
 		String curator = null;
 		String description = null;
 
@@ -838,24 +840,22 @@ public class CytoscapeSessionReader {
 			newMap.put(server.getName(), new URL(server.getHref()));
 			targetCyNetworkID = getNetworkIdFromTitle(server.getName());
 
-			cytoscape.data.ontology.Ontology onto = new cytoscape.data.ontology.Ontology(server
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              .getName(),
+			cytoscape.data.ontology.Ontology onto = new cytoscape.data.ontology.Ontology(server .getName(),
 			                                                                             curator,
 			                                                                             description,
-			                                                                             Cytoscape
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .getNetwork(targetCyNetworkID));
+			                                                                             Cytoscape .getNetwork(targetCyNetworkID));
 			Cytoscape.getOntologyServer().addOntology(onto);
 		}
 
 		Cytoscape.getOntologyServer().setOntologySources(newMap);
 	}
 
-	private String getNetworkIdFromTitle(String title) {
+	private Long getNetworkIdFromTitle(String title) {
 		Set<CyNetwork> networks = Cytoscape.getNetworkSet();
 
 		for (CyNetwork net : networks) {
-			if (net.getTitle().equals(title)) {
-				return net.getIdentifier();
+			if (net.getCyAttributes("USER").get("title",String.class).equals(title)) {
+				return net.getSUID();
 			}
 		}
 

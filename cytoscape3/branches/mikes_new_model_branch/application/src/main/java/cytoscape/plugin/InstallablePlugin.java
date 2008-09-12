@@ -4,7 +4,7 @@
 package cytoscape.plugin;
 
 import cytoscape.task.util.TaskManager;
-import cytoscape.util.URLUtil;
+import org.cytoscape.io.read.URLUtil;
 import cytoscape.util.ZipUtil;
 
 import java.io.File;

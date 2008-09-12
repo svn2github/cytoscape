@@ -1128,7 +1128,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		names.add("ID");
 
 		for (String name : nameArray) {
-			if (attr.getUserVisible(name) && (attr.getType(name) != CyAttributes.TYPE_UNDEFINED)
+				// TODO user visible should be implicit based on the attribute namespace used
+			if (/*attr.getUserVisible(name) &&*/ (attr.getType(name) != CyAttributes.TYPE_UNDEFINED)
 			    && (attr.getType(name) != CyAttributes.TYPE_COMPLEX)) {
 				names.add(name);
 			}
@@ -1157,7 +1158,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		names.add("ID");
 
 		for (String name : nameArray) {
-			if (attr.getUserVisible(name) && (attr.getType(name) != CyAttributes.TYPE_UNDEFINED)
+				// TODO user visible should be implicit based on the attribute namespace used
+			if (/*attr.getUserVisible(name) && */(attr.getType(name) != CyAttributes.TYPE_UNDEFINED)
 			    && (attr.getType(name) != CyAttributes.TYPE_COMPLEX)) {
 				names.add(name);
 			}
@@ -1448,12 +1450,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (calc.getVisualPropertyType().isNodeProp()) {
 				attr = Cytoscape.getNodeAttributes();
-				it = Cytoscape.getCurrentNetwork().nodesIterator();
+				it = Cytoscape.getCurrentNetwork().getNodeList().iterator();
 				editorReg.registerEditor(calculatorTypeProp, nodeAttrEditor);
 				nodeOrEdge = ObjectMapping.NODE_MAPPING;
 			} else {
 				attr = Cytoscape.getEdgeAttributes();
-				it = Cytoscape.getCurrentNetwork().edgesIterator();
+				it = Cytoscape.getCurrentNetwork().getNodeList().iterator();
 				editorReg.registerEditor(calculatorTypeProp, edgeAttrEditor);
 				nodeOrEdge = ObjectMapping.EDGE_MAPPING;
 			}
@@ -1602,9 +1604,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				 */
 				if (attr.getType(attrName) == CyAttributes.TYPE_STRING) {
 					while (it.hasNext()) {
-						id = ((GraphObject) it.next()).getIdentifier();
+						id = ((GraphObject) it.next()).getCyAttributes("USER").get("name",String.class);
 
-						value = attr.getStringAttribute(id, attrName);
+						value = id.getCyAttributes("USER").get(attrName,String.class);
 						oneProperty = new VizMapperProperty();
 
 						if (attrName.equals("ID"))
@@ -3195,8 +3197,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					if (ctrAttrName.equals("ID")) {
 						attrSet1 = new TreeSet<Object>();
 
-						for (Object node : Cytoscape.getCurrentNetwork().nodesList()) {
-							attrSet1.add(((CyNode) node).getIdentifier());
+						for (CyNode node : Cytoscape.getCurrentNetwork().getNodeList()) {
+							attrSet1.add(node.getIdentifier());
 						}
 					} else {
 						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
@@ -3221,15 +3223,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 						attrSet1 = new TreeSet<Object>();
 
-						for (Object node : Cytoscape.getCurrentNetwork().nodesList()) {
-							attrSet1.add(((CyNode) node).getIdentifier());
+						for (CyNode node : Cytoscape.getCurrentNetwork().getNodeList()) {
+							attrSet1.add(node.getIdentifier());
 						}
 
 						GraphView net = Cytoscape.getCurrentNetworkView();
 						String text;
 
-						for (Object node : net.getGraphPerspective().nodesList()) {
-							text = net.getNodeView((CyNode) node).getLabel().getText();
+						for (CyNode node : net.getGraphPerspective().getNodeList()) {
+							text = net.getNodeView(node).getLabel().getText();
 							strLen = text.length();
 
 							if (strLen != 0) {
@@ -3291,8 +3293,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					if (ctrAttrName.equals("ID")) {
 						attrSet1 = new TreeSet<Object>();
 
-						for (Object node : Cytoscape.getCurrentNetwork().nodesList()) {
-							attrSet1.add(((CyNode) node).getIdentifier());
+						for (CyNode node : Cytoscape.getCurrentNetwork().getNodeList()) {
+							attrSet1.add(node.getIdentifier());
 						}
 					} else {
 						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
@@ -3311,15 +3313,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 						attrSet1 = new TreeSet<Object>();
 
-						for (Object node : Cytoscape.getCurrentNetwork().nodesList()) {
-							attrSet1.add(((CyNode) node).getIdentifier());
+						for (CyNode node : Cytoscape.getCurrentNetwork().getNodeList()) {
+							attrSet1.add(node.getIdentifier());
 						}
 
 						GraphView net = Cytoscape.getCurrentNetworkView();
 						String text;
 
-						for (Object node : net.getGraphPerspective().nodesList()) {
-							text = net.getNodeView((CyNode) node).getLabel().getText();
+						for (CyNode node : net.getGraphPerspective().getNodeList()) {
+							text = net.getNodeView(node).getLabel().getText();
 							strLen = text.length();
 
 							if (strLen != 0) {
@@ -3594,9 +3596,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		List<? extends GraphObject> obj;
 
 		if (nOre == ObjectMapping.NODE_MAPPING) {
-			obj = Cytoscape.getCurrentNetworkView().getGraphPerspective().nodesList();
+			obj = Cytoscape.getCurrentNetworkView().getGraphPerspective().getNodeList();
 		} else {
-			obj = Cytoscape.getCurrentNetworkView().getGraphPerspective().edgesList();
+			obj = Cytoscape.getCurrentNetworkView().getGraphPerspective().getEdgeList();
 		}
 
 		for (GraphObject o : obj) {
@@ -3766,7 +3768,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			// if attribute is not in attrEditorNames, add it if we support its type
 			if (!attrEditorNames.contains(attributeName)) {
 				byte type = attr.getType(attributeName);
-				if (attr.getUserVisible(attributeName) && (type != CyAttributes.TYPE_UNDEFINED) && (type != CyAttributes.TYPE_COMPLEX)) {
+				// TODO user visible should be implicit based on the attribute namespace used
+				if (/*attr.getUserVisible(attributeName) &&*/ (type != CyAttributes.TYPE_UNDEFINED) && (type != CyAttributes.TYPE_COMPLEX)) {
 					attrEditorNames.add(attributeName);
 					Collections.sort(attrEditorNames);
 					attrEditor.setAvailableValues(attrEditorNames.toArray());
@@ -3853,7 +3856,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			Class dataClass;
 			for (String name : nameArray) {
 				type = attr.getType(name);
-				if (attr.getUserVisible(name) && (type != CyAttributes.TYPE_UNDEFINED) && (type != CyAttributes.TYPE_COMPLEX)) {
+				// TODO user visible should be implicit based on the attribute namespace used
+				if (/*attr.getUserVisible(name) && */(type != CyAttributes.TYPE_UNDEFINED) && (type != CyAttributes.TYPE_COMPLEX)) {
 					attrEditorNames.add(name);
 				}
 				dataClass = CyAttributesUtils.getClass(name, attr);

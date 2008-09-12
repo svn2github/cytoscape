@@ -141,7 +141,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			setEnabled(false);
 			return;
 		}
-		GraphView currView = Cytoscape.getNetworkView(currNet.getIdentifier());
+		GraphView currView = Cytoscape.getNetworkView(currNet.getSUID());
 		if ( currView == null || currView == Cytoscape.getNullNetworkView() )
 			setEnabled(true);
 		else
@@ -166,11 +166,11 @@ class CreateNetworkViewTask implements Task {
 		try {
 			Cytoscape.createNetworkView(network);
 		} catch (Exception e) {
-			taskMonitor.setException(e, "Could not create network view for network: " + network.getTitle());
+			taskMonitor.setException(e, "Could not create network view for network: " + network.getCyAttributes("USER").get("title",String.class));
 		}
 
 		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("Network view successfully create for:  " + network.getTitle());
+		taskMonitor.setStatus("Network view successfully create for:  " + network.getCyAttributes("USER").get("title",String.class));
 	}
 
 	public void halt() { }

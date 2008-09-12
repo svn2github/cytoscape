@@ -39,7 +39,7 @@ class DeleteEdit extends CyAbstractEdit {
 		// save the positions of the nodes
 		xPos = new double[nodes.length]; 
 		yPos = new double[nodes.length]; 
-		GraphView netView = Cytoscape.getNetworkView(net.getIdentifier());
+		GraphView netView = Cytoscape.getNetworkView(net.getSUID());
 		if ( netView != null && netView != Cytoscape.getNullNetworkView() ) {
 			for ( int i = 0; i < nodes.length; i++ ) {
 				NodeView nv = netView.getNodeView(nodes[i]);
@@ -60,7 +60,7 @@ class DeleteEdit extends CyAbstractEdit {
 
 		net.hideEdges(edges);
 		net.hideNodes(nodes);
-		GraphView netView = Cytoscape.getNetworkView(net.getIdentifier());	
+		GraphView netView = Cytoscape.getNetworkView(net.getSUID());	
 		Cytoscape.redrawGraph(netView);
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
         // AJK: 03082008 disable DeleteAction 
@@ -73,7 +73,7 @@ class DeleteEdit extends CyAbstractEdit {
 		net.restoreNodes(nodes);
 		net.restoreEdges(edges);
 
-		GraphView netView = Cytoscape.getNetworkView(net.getIdentifier());
+		GraphView netView = Cytoscape.getNetworkView(net.getSUID());
 		if ( netView != null && netView != Cytoscape.getNullNetworkView() ) {
 			for ( int i = 0; i < nodes.length; i++ ) {
 				NodeView nv = netView.getNodeView(nodes[i]);

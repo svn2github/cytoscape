@@ -150,7 +150,7 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 			                       ((DatabaseSearchResult) resultObj).getResultSize()
 			                       + " interactions found.",
 			                       
-			"Do you want to add new nodes and edges to " + Cytoscape.getCurrentNetwork().getTitle()
+			"Do you want to add new nodes and edges to " + Cytoscape.getCurrentNetwork().getCyAttributes("USER").get("title",String.class)
 			                       + "?"
 			                   };
 			int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,

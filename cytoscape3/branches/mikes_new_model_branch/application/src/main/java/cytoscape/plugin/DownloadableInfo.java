@@ -35,7 +35,7 @@
  */
 package cytoscape.plugin;
 
-import cytoscape.util.URLUtil;
+import org.cytoscape.io.read.URLUtil;
 
 import java.net.URL;
 import java.util.HashSet;

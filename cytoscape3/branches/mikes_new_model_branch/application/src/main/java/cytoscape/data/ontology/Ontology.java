@@ -154,8 +154,9 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 		}
 
 		ontologyAttr.setAttribute(ontologyGraph.getIdentifier(), IS_ONTOLOGY, true);
-		ontologyAttr.setUserEditable(IS_ONTOLOGY, false);
-		ontologyAttr.setUserVisible(IS_ONTOLOGY, false);
+		// TODO attributes are implicitly visible/editable based on their namespace
+		//ontologyAttr.setUserEditable(IS_ONTOLOGY, false);
+		//ontologyAttr.setUserVisible(IS_ONTOLOGY, false);
 
 		/*
 		 * Setup metadata & graph (network) attributes
@@ -219,14 +220,9 @@ public class Ontology extends AbstractChangeable implements org.biojava.ontology
 	public Set<Term> getTerms() {
 		Set<Term> terms = new HashSet<Term>();
 
-		Iterator nodeIt = ontologyGraph.nodesIterator();
-
-		while (nodeIt.hasNext()) {
-			final CyNode node = (CyNode) nodeIt.next();
-			final String id = node.getIdentifier();
-			final Term term = new OntologyTerm(node.getIdentifier(), this.name,
-			                                   termAttr.getStringAttribute(id,
-			                                                               OBOTags.DEF.toString()));
+		for ( CyNode node : ontologyGraph.getNodeList() ) {
+			final String id = node.getCyAttributes("USER").get("name",String.class);
+			final Term term = new OntologyTerm(id, this.name, node.getCyAttributes("USER").get(OBOTags.DEF.toString(), String.class));
 			terms.add(term);
 		}
 

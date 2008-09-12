@@ -45,7 +45,7 @@ package cytoscape.visual.ui;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.util.FileUtil;
-import cytoscape.util.URLUtil;
+import org.cytoscape.io.read.URLUtil;
 import cytoscape.util.ZipUtil;
 import org.cytoscape.vizmap.CalculatorCatalogFactory;
 import org.cytoscape.vizmap.CalculatorIO;

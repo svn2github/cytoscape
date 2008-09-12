@@ -96,10 +96,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
         // keep the node positions
         VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
         if (current_network_view != Cytoscape.getNullNetworkView()) {
-            Iterator i = new_network.nodesIterator();
-
-            while (i.hasNext()) {
-                CyNode node = (CyNode) i.next();
+			for ( CyNode node : new_network.getNodeList() ) {
                 new_network_view.getNodeView(node)
                         .setOffset(current_network_view.getNodeView(node).getXPosition(),
                                    current_network_view.getNodeView(node).getYPosition());

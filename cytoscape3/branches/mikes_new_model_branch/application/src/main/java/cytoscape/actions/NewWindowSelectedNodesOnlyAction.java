@@ -47,6 +47,8 @@ import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.network.EdgeType;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
@@ -54,8 +56,8 @@ import org.cytoscape.vizmap.VisualStyle;
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
+import java.util.HashSet;
 
 /**
  *
@@ -85,18 +87,24 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		GraphView current_network_view = null;
 
-		if (Cytoscape.viewExists(current_network.getIdentifier())) {
-			current_network_view = Cytoscape.getNetworkView(current_network.getIdentifier());
+		if (Cytoscape.viewExists(current_network.getSUID())) {
+			current_network_view = Cytoscape.getNetworkView(current_network.getSUID());
 		} // end of if ()
 
 		Set<CyNode> nodes = current_network.getSelectedNodes();
 
-		CyNetwork new_network = Cytoscape.createNetwork(nodes,
-		                                                current_network.getConnectingEdges(new ArrayList<CyNode>(nodes)),
+		Set<CyEdge> edges = new HashSet<CyEdge>();
+		for ( CyNode n1 : nodes ) {
+			for ( CyNode n2 : nodes ) {
+				edges.addAll( current_network.getConnectingEdgeList(n1,n2,EdgeType.ANY_EDGE) );
+			}
+		}
+
+		CyNetwork new_network = Cytoscape.createNetwork(nodes, edges, 
 		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
 		                                                current_network);
 
-		GraphView new_view = Cytoscape.getNetworkView(new_network.getIdentifier());
+		GraphView new_view = Cytoscape.getNetworkView(new_network.getSUID());
 
 		if (new_view == Cytoscape.getNullNetworkView()) {
 			return;
@@ -107,10 +115,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	   	VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
         // keep the node positions
 		if (current_network_view != Cytoscape.getNullNetworkView()) {
-			Iterator i = new_network.nodesIterator();
-
-			while (i.hasNext()) {
-				CyNode node = (CyNode) i.next();
+			for ( CyNode node : new_network.getNodeList() ) {
 				new_view.getNodeView(node)
 				        .setOffset(current_network_view.getNodeView(node).getXPosition(),
 				                   current_network_view.getNodeView(node).getYPosition());
