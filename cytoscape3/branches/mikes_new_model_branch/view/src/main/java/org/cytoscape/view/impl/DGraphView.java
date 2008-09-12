@@ -200,7 +200,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	/**
 	 *
 	 */
-	String m_identifier;
+	Long m_identifier;
 
 	/**
 	 *
@@ -924,7 +924,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public String getIdentifier() {
+	public Long getIdentifier() {
 		return m_identifier;
 	}
 
@@ -933,7 +933,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @param id DOCUMENT ME!
 	 */
-	public void setIdentifier(String id) {
+	public void setIdentifier(Long id) {
 		m_identifier = id;
 	}
 

@@ -215,12 +215,12 @@ public static int NODE_X_POSITION = 0;
   /**
    * @return The Unique Identifier of this GraphView
    */
-  public String getIdentifier();
+  public Long getIdentifier();
     
   /**
    * @param new_identifier The New Identifier for this GraphView
    */
-  public void setIdentifier(String new_identifier);
+  public void setIdentifier(Long new_identifier);
    
   /**
    * @return The Current Zoom Level
