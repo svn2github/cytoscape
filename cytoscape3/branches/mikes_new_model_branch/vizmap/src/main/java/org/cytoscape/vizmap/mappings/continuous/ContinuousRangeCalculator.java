@@ -85,9 +85,9 @@ public class ContinuousRangeCalculator {
 
         Object attrValue = null;
 
-		if ( attrBundle.contains(attrName, Integer.class) )
+		if ( Integer.class == attrBundle.contains(attrName) )
 			attrValue = attrBundle.get(attrName, Integer.class);
-		else if ( attrBundle.contains(attrName, Double.class) )
+		else if ( Double.class == attrBundle.contains(attrName) )
 			attrValue = attrBundle.get(attrName, Double.class);
 
         if ( attrValue == null )
