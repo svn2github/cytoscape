@@ -1167,7 +1167,7 @@ class XGMMLParser extends DefaultHandler {
 				complexMap[level-1].put(complexKey[level-1], getTypedValue(type, value));
 				valueType = getMultHashMapType(type);
 				// See if we've defined the attribute already
-				if (!currentAttributes.contains(currentAttributeID,Map.class)) {
+				if (Map.class == currentAttributes.contains(currentAttributeID)) {
 					currentAttributes.getAttrMgr().createAttribute(currentAttributeID, Map.class);
 				}
 				// Now define set the attribute
@@ -1323,17 +1323,17 @@ class XGMMLParser extends DefaultHandler {
 		// must make sure to clear out any existing values before we parse.
 		case LIST:
 			currentAttributeID = name;
-			if (cyAtts.contains(name,List.class))
+			if (List.class == cyAtts.contains(name))
 				cyAtts.remove(name);
 			return ParseState.LISTATT;
 		case MAP:
 			currentAttributeID = name;
-			if (cyAtts.contains(name,Map.class))
+			if (Map.class == cyAtts.contains(name))
 				cyAtts.remove(name);
 			return ParseState.MAPATT;
 		case COMPLEX:
 			currentAttributeID = name;
-			if (cyAtts.contains(name,Map.class)) // assuming complex will become Map
+			if (Map.class == cyAtts.contains(name)) // assuming complex will become Map
 				cyAtts.remove(name);
 			// If this is a complex attribute, we know that the value attribute
 			// is an integer
