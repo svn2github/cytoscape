@@ -3,6 +3,7 @@ package org.cytoscape.attributes;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class provides a basic implementation of a {@link CyAttributesManager}
@@ -51,6 +52,10 @@ public class InitialCyAttributesManager implements CyAttributesManager {
 	}
 
 	public CyAttributes getCyAttributes(final long suid) {
+		throw new UnsupportedOperationException("Not currently implemented");
+	}
+
+	public <T> List<T> getAll(String attributeName, Class<? extends T> type) {
 		throw new UnsupportedOperationException("Not currently implemented");
 	}
 }

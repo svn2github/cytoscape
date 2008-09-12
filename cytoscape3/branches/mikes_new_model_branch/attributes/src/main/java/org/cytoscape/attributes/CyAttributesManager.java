@@ -1,6 +1,7 @@
 package org.cytoscape.attributes;
 
 import java.util.Map;
+import java.util.List;
 
 /** 
  * This interface controls the creation of attributes for a given CyAttributes
@@ -36,4 +37,14 @@ public interface CyAttributesManager {
 	 * @return A CyAttributes object identified by the SUID or null if 
 	 */
 	public CyAttributes getCyAttributes(final long suid);
+
+	/**
+	 * Returns a {@link List} of all attribute values for a given attribute
+	 * identifier.
+	 * @param attributeName The name identifying the attribute.
+	 * @param type The type associated with the attribute. 
+	 * @return A {@link List} of all attribute values for the specified attribute 
+	 * name and type.
+	 */
+	public <T> List<T> getAll(String attributeName, Class<? extends T> type);
 }

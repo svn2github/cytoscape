@@ -8,7 +8,6 @@ package org.cytoscape.attributes;
  */
 public interface CyAttributes {
 
-
 	/**
 	 * Set an attribute value of type T.
 	 * Will only allow {@link Object} to be {@link Integer}, {@link String}, 
@@ -43,7 +42,7 @@ public interface CyAttributes {
 	 * an attribute with a particular name can only have one type, then 
 	 * this type parameter doesn't need to be here.
 	 */
-	public <T> boolean contains(String attributeName, Class<? extends T> c);
+	public Class<?> contains(String attributeName);
 
 	/**
 	 * Deletes this value of the attribute, but not the attribute itself. 
@@ -56,4 +55,10 @@ public interface CyAttributes {
 	 * the VizMapper.  It will go away once the VizMapper is refactored.
 	 */
 	public Object getRaw(String attributeName);
+
+	/**
+	 * Returns the CyAttributesManager that manages this CyAttributes object. 
+	 * @return The CyAttributesManager that manages this CyAttributes object. 
+	 */
+	public CyAttributesManager getAttrMgr();
 }
