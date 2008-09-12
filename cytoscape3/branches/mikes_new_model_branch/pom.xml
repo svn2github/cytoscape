@@ -186,11 +186,9 @@
           <target>1.5</target>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
-          <!--
-						compilerArguments> <Xlint:all></Xlint:all>
-						<Xlint:-path></Xlint:-path> <Xmaxwarns>10000</Xmaxwarns>
-						<Xmaxerrs>10000</Xmaxerrs> </compilerArguments
-					-->
+						<compilerArguments> <!-- <Xlint:all></Xlint:all> 
+						<Xlint:-path></Xlint:-path> --> <Xmaxwarns>10000</Xmaxwarns>
+						<Xmaxerrs>10000</Xmaxerrs> </compilerArguments>
         </configuration>
       </plugin>
     </plugins>
@@ -269,6 +267,7 @@
   <modules>
     <module>poms</module>
     <module>provision</module>
+    <module>event</module>
     <module>util.intr</module>
     <module>graph.fixed</module>
     <module>graph.dynamic</module>
@@ -284,12 +283,13 @@
     <module>view</module>
     <module>undo</module>
     <module>phoebe.dnd</module>
-    <module>automatic.layout</module>
     <module>layout</module>
     <module>wrappers</module>
     <module>vizmap</module>
     <module>commons.cli</module>
     <module>application</module>
+    <!--
+    <module>automatic.layout</module>
     <module>cpath</module>
     <module>merge</module>
     <module>math.xform</module>
@@ -305,9 +305,7 @@
     <module>manual.layout</module>
     <module>quickfind</module>
     <module>table.import</module>
-    <!--
 	-->
-    <module>event</module>
   </modules>
 
 </project>
