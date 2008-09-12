@@ -105,21 +105,21 @@ public class CyAttributesManagerImpl implements CyAttributesManager {
 		return type.cast(vl);
 	}
 
-	private <T> boolean containsX(long suid, String attrName, Class<? extends T> type) {
-		Map<Long,Object> vls = attributes.get(attrName);
+	private Class<?> containsX(long suid, String attrName) {
+		if ( !types.containsKey(attrName) )
+			return null;
 		
+		Map<Long,Object> vls = attributes.get(attrName);
+
 		if (vls == null) 
-			return false;
+			return null;
 
 		Object vl = vls.get(suid);
 
 		if (vl == null) 
-			return false;
-
-		if ( types.get(attrName).isAssignableFrom(type) ) 
-			return true;
-		else 
-			return false;
+			return null;
+		else
+			return types.get(attrName);
 	}
 
 	private Class<?> getClass(Class<?> c) {
@@ -169,14 +169,31 @@ public class CyAttributesManagerImpl implements CyAttributesManager {
 	}
 
 	public CyAttributes getCyAttributes(final long suid) { 
-		return new Access(suid);
+		return new Access(this,suid);
+	}
+
+	public <T> List<T> getAll(String attrName, Class<? extends T> type) {
+		Map<Long,Object> vls = attributes.get(attrName);
+
+		// TODO probably shouldn't return null here
+		// Either return empty list or throw an exception
+		if (vls == null) 
+			return null;
+		
+		List<T> ret = new ArrayList<T>( vls.size() );
+		for ( Object o : vls.values() ) 
+			ret.add( type.cast(o) );
+
+		return ret; 
 	}
 
 	private class Access implements CyAttributes {
 	
 		private final long suid;
+		private final CyAttributesManager mgr;
 
-		Access(long suid) {
+		Access(CyAttributesManager mgr, long suid) {
+			this.mgr = mgr;
 			this.suid = suid;
 		}
 
@@ -188,8 +205,8 @@ public class CyAttributesManagerImpl implements CyAttributesManager {
 			return getX(suid,attributeName,c);
 		}
 
-		public <T> boolean contains(String attributeName, Class<? extends T> c) {
-			return containsX(suid,attributeName,c);
+		public Class<?> contains(String attributeName) {
+			return containsX(suid,attributeName);
 		}
 
 		public void remove(String attributeName) {
@@ -198,6 +215,10 @@ public class CyAttributesManagerImpl implements CyAttributesManager {
 
 		public Object getRaw(String attributeName) {
 			return getXRaw(suid,attributeName);
+		}
+		
+		public CyAttributesManager getAttrMgr() {
+			return mgr;
 		}
 	} 
 }

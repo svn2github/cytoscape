@@ -39,9 +39,9 @@ public class CyAttributesTest extends TestCase {
 		attrs.set("someString","apple");	
 		attrs.set("someStringElse","orange");	
 
-		assertTrue( attrs.contains("someString",String.class) );
-		assertTrue( attrs.contains("someStringElse",String.class) );
-		assertFalse( attrs.contains("yetAnotherString",String.class) );
+		assertTrue( String.class == attrs.contains("someString") );
+		assertTrue( String.class == attrs.contains("someStringElse") );
+		assertTrue( null == attrs.contains("yetAnotherString") );
 
 		assertEquals( "apple", attrs.get("someString",String.class) );
 		assertEquals( "orange", attrs.get("someStringElse",String.class) );
@@ -54,9 +54,9 @@ public class CyAttributesTest extends TestCase {
 		attrs.set("someInt",50);	
 		attrs.set("someOtherInt",100);	
 
-		assertTrue( attrs.contains("someInt",Integer.class) );
-		assertTrue( attrs.contains("someOtherInt",Integer.class) );
-		assertFalse( attrs.contains("yetAnotherInteger",Integer.class) );
+		assertTrue( Integer.class == attrs.contains("someInt") );
+		assertTrue( Integer.class == attrs.contains("someOtherInt") );
+		assertTrue( null == attrs.contains("yetAnotherInteger") );
 
 		assertEquals( 50, attrs.get("someInt",Integer.class).intValue() );
 		assertEquals( 100, attrs.get("someOtherInt",Integer.class).intValue() );
@@ -69,9 +69,9 @@ public class CyAttributesTest extends TestCase {
 		attrs.set("someDouble",3.14);	
 		attrs.set("someOtherDouble",2.76);	
 
-		assertTrue( attrs.contains("someDouble",Double.class) );
-		assertTrue( attrs.contains("someOtherDouble",Double.class) );
-		assertFalse( attrs.contains("yetAnotherDouble",Double.class) );
+		assertTrue( Double.class == attrs.contains("someDouble") );
+		assertTrue( Double.class == attrs.contains("someOtherDouble") );
+		assertTrue( null == attrs.contains("yetAnotherDouble") );
 
 		assertEquals( 3.14, attrs.get("someDouble", Double.class).doubleValue() ); 
 		assertEquals( 2.76, attrs.get("someOtherDouble", Double.class).doubleValue() ); 
@@ -84,9 +84,9 @@ public class CyAttributesTest extends TestCase {
 		attrs.set("someBoolean",true);	
 		attrs.set("someOtherBoolean",false);	
 
-		assertTrue( attrs.contains("someBoolean",Boolean.class) );
-		assertTrue( attrs.contains("someOtherBoolean",Boolean.class) );
-		assertFalse( attrs.contains("yetAnotherBoolean",Boolean.class) );
+		assertTrue( Boolean.class == attrs.contains("someBoolean") );
+		assertTrue( Boolean.class == attrs.contains("someOtherBoolean") );
+		assertTrue( null == attrs.contains("yetAnotherBoolean") );
 
 		assertTrue( attrs.get("someBoolean",Boolean.class) );
 		assertFalse( attrs.get("someOtherBoolean",Boolean.class) );
@@ -101,7 +101,7 @@ public class CyAttributesTest extends TestCase {
 
 		attrs.set("someList",l);	
 
-		assertTrue( attrs.contains("someList",List.class) );
+		assertTrue( List.class == attrs.contains("someList") );
 
 		assertEquals( 2, attrs.get("someList",List.class).size() );
 	}
@@ -115,7 +115,7 @@ public class CyAttributesTest extends TestCase {
 
 		attrs.set("someMap",m);	
 
-		assertTrue( attrs.contains("someMap",Map.class) );
+		assertTrue( Map.class == attrs.contains("someMap") );
 
 		assertEquals( 2, attrs.get("someMap",Map.class).size() );
 	}
