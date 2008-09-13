@@ -2,7 +2,11 @@
 package org.cytoscape.model.network;
 
 import java.util.List;
-
+/*
+public interface CyMetaNode extends CyNode { 
+	public CyNetwork getChildNetwork();
+}
+*/
 public interface CyNode extends GraphObject { 
 	public int getIndex();
 

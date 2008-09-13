@@ -4,7 +4,20 @@ import java.util.List;
 import java.util.Map;
 import org.cytoscape.model.attrs.CyAttributes;
 import org.cytoscape.model.attrs.CyAttributesManager;
+/*
+public interface CyRootNetwork extends CyNetwork {
+	public List<CyNode> getAllNodes();
+	public List<CyEdge> getAllEdges();
+	public CyNode createMetaNode( List<CyNode> nodes );
+	public List<CySubNetwork> getAllSubNetworks();
+}
 
+public interface CySubNetwork extends CyNetwork {
+	public CyNode getParentNode();
+	public void copyToNetwork( CyNode node );
+	public void removeFromNetwork( CyNode node );
+}
+*/
 public interface CyNetwork extends Identifiable, GraphObject {
 
 	public CyNode addNode();
@@ -34,19 +47,24 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	 * Access to network specific attributes.
 	 */
 	public CyAttributes getCyAttributes(String namespace);
+//	public CyRow getCyRow(String namespace);
+//	public CyRow attrs(); // same as getCyRow("USERS")
 
 	/**
 	 * Defines the attributes available for the CyNetwork.
 	 */
+	//public Map<String,? extends CyDataTable> getNetworkCyDataTables();
 	public Map<String,? extends CyAttributesManager> getNetworkCyAttributesManagers();
 
 	/**
 	 * Defines the attributes available for all of the CyNode objects in the CyNetwork. 
 	 */
+//	public Map<String,? extends CyDataTable> getNodeCyDataTables();
 	public Map<String,? extends CyAttributesManager> getNodeCyAttributesManagers();
 
 	/**
 	 * Defines the attributes available for all of the CyEdge objects in the CyNetwork. 
 	 */
+//	public Map<String,? extends CyDataTable> getEdgeCyDataTables();
 	public Map<String,? extends CyAttributesManager> getEdgeCyAttributesManagers();
 }
