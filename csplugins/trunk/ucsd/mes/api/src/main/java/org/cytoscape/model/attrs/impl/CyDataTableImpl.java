@@ -23,10 +23,13 @@ public class CyDataTableImpl implements CyDataTable {
 		this.name = name;
 		this.pub = pub;
 		attributes = new HashMap<String,Map<Long,Object>>();
-		if ( typeMap == null )
+		if ( typeMap == null ) {
 			types = new HashMap<String,Class<?>>();
-		else {
+			unique = new HashMap<String,Boolean>();
+		} else {
 			types = new HashMap<String,Class<?>>(typeMap);
+			// TODO!
+			unique = new HashMap<String,Boolean>();
 			for ( String key : typeMap.keySet() )
 				attributes.put( key, new HashMap<Long,Object>() );
 		}
