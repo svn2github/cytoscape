@@ -8,12 +8,13 @@ import org.cytoscape.model.attrs.CyAttributesManager;
 public interface CyRootNetwork extends CyNetwork {
 	public List<CyNode> getAllNodes();
 	public List<CyEdge> getAllEdges();
-	public CyNode createMetaNode( List<CyNode> nodes );
+	public CyMetaNode createMetaNode( List<CyNode> nodes );
+	public void removeMetaNode( CyMetaNode node ); // Removes the metanode and the CySubNetwork, not the contined nodes in the subnetwork
 	public List<CySubNetwork> getAllSubNetworks();
 }
 
 public interface CySubNetwork extends CyNetwork {
-	public CyNode getParentNode();
+	public CyMetaNode getParentNode();
 	public void copyToNetwork( CyNode node );
 	public void removeFromNetwork( CyNode node );
 }
