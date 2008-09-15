@@ -41,7 +41,7 @@ import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 
 import cytoscape.data.ontology.Ontology;
-import cytoscape.util.URLUtil;
+import static cytoscape.data.ontology.readers.OBOTags.*;
 import static cytoscape.data.ontology.readers.OBOTags.BROAD_SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.DEF;
 import static cytoscape.data.ontology.readers.OBOTags.EXACT_SYNONYM;
@@ -54,6 +54,8 @@ import static cytoscape.data.ontology.readers.OBOTags.RELATIONSHIP;
 import static cytoscape.data.ontology.readers.OBOTags.SYNONYM;
 import static cytoscape.data.ontology.readers.OBOTags.XREF;
 import static cytoscape.data.ontology.readers.OBOTags.XREF_ANALOG;
+
+import cytoscape.util.URLUtil;
 
 import giny.model.Edge;
 import giny.model.Node;
@@ -142,7 +144,7 @@ public class OBOFlatFileReader implements OntologyReader {
 	 */
 	public OBOFlatFileReader(URL dataSource, String name) throws IOException {
 		// this(dataSource.openStream(), name);
-        // Use URLUtil to get the InputStream since we might be using a proxy server
+		// Use URLUtil to get the InputStream since we might be using a proxy server
 		// and because pages may be cached:
 		this(URLUtil.getBasicInputStream(dataSource), name);
 	}
@@ -192,7 +194,7 @@ public class OBOFlatFileReader implements OntologyReader {
 				Cytoscape.setOntologyRootID(rootID);
 			}
 		}
-		
+
 		ontologyDAG = Cytoscape.createNetwork(name, Cytoscape.getNetwork(rootID), false);
 	}
 
@@ -206,6 +208,7 @@ public class OBOFlatFileReader implements OntologyReader {
 		String key;
 		String val;
 		int colonInx;
+
 		while ((line = bufRd.readLine()) != null) {
 			// Read header
 			if (line.startsWith(TERM_TAG)) {
@@ -214,7 +217,10 @@ public class OBOFlatFileReader implements OntologyReader {
 				break;
 			} else if (line.length() != 0) {
 				colonInx = line.indexOf(':');
-				if(colonInx == -1) continue;
+
+				if (colonInx == -1)
+					continue;
+
 				key = line.substring(0, colonInx).trim();
 				val = line.substring(colonInx + 1).trim();
 				header.put(key, val);
@@ -250,10 +256,19 @@ public class OBOFlatFileReader implements OntologyReader {
 	private void readEntry(final BufferedReader rd) throws IOException {
 		String id = "";
 		String line = null;
-		
+
 		String key;
 		String val;
+
 		int colonInx;
+
+		String[] definitionParts;
+		String[] synonymParts;
+		String[] entry;
+		String targetId;
+		List<String> listAttr;
+		Map<String, String> synoMap;
+
 		while (true) {
 			line = rd.readLine().trim();
 
@@ -263,6 +278,7 @@ public class OBOFlatFileReader implements OntologyReader {
 			colonInx = line.indexOf(':');
 			key = line.substring(0, colonInx).trim();
 			val = line.substring(colonInx + 1).trim();
+
 			Node source = null;
 
 			if (key.equals(ID.toString())) {
@@ -270,44 +286,40 @@ public class OBOFlatFileReader implements OntologyReader {
 				id = val;
 			} else if (key.equals(DEF.toString())) {
 				// CyLogger.getLogger().info("DEF: " + id + " = " + val);
-				String[] definitionParts = val.split("\"");
+				definitionParts = val.split("\"");
 				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, definitionParts[1]);
 
 				List<String> originList = getReferences(val.substring(definitionParts[1].length()
 				                                                      + 2));
 
-				if (originList != null) {
+				if (originList != null)
 					termAttributes.setListAttribute(id, OBO_PREFIX + "." + DEF_ORIGIN, originList);
-				}
 			} else if (key.equals(EXACT_SYNONYM.toString())
 			           || key.equals(RELATED_SYNONYM.toString())
 			           || key.equals(BROAD_SYNONYM.toString())
 			           || key.equals(NARROW_SYNONYM.toString()) || key.equals(SYNONYM.toString())) {
-				String[] synonymParts = val.split("\"");
-				Map<String, String> synoMap = termAttributes.getMapAttribute(id,
-				                                                             OBO_PREFIX + "."
-				                                                             + OBOTags.SYNONYM
-				                                                                                                                                                                                                                                                                       .toString());
+				synonymParts = val.split("\"");
 
-				if (synoMap == null) {
+				synoMap = termAttributes.getMapAttribute(id,
+				                                         OBO_PREFIX + "."
+				                                         + OBOTags.SYNONYM.toString());
+
+				if (synoMap == null)
 					synoMap = new HashMap<String, String>();
-				}
 
 				if (key.equals(SYNONYM.toString())) {
 					synoMap.put(synonymParts[1], synonymParts[2].trim());
-				} else {
+				} else
 					synoMap.put(synonymParts[1], key);
-				}
 
-				termAttributes.setMapAttribute(id, OBO_PREFIX + "." + OBOTags.SYNONYM.toString(),
-				                               synoMap);
+				termAttributes.setMapAttribute(id, OBO_PREFIX + "." + SYNONYM.toString(), synoMap);
 			} else if (key.equals(RELATIONSHIP.toString())) {
 				if (source == null) {
 					source = Cytoscape.getCyNode(id, true);
 					ontologyDAG.addNode(source);
 				}
 
-				String[] entry = val.split(" ");
+				entry = val.split(" ");
 
 				final String[] itr = new String[3];
 				itr[0] = id;
@@ -328,14 +340,11 @@ public class OBOFlatFileReader implements OntologyReader {
 				}
 
 				int colonidx = val.indexOf('!');
-				final String targetId;
 
-				if (colonidx == -1) {
-					// GO Slim.
+				if (colonidx == -1)
 					targetId = val.trim();
-				} else {
+				else
 					targetId = val.substring(0, colonidx).trim();
-				}
 
 				target = Cytoscape.getCyNode(targetId, true);
 				ontologyDAG.addNode(target);
@@ -347,23 +356,24 @@ public class OBOFlatFileReader implements OntologyReader {
 				interactionList.add(itr);
 			} else if (key.equals(IS_OBSOLETE.toString())) {
 				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, Boolean.parseBoolean(val));
-			} else if (key.equals(XREF.toString()) || key.equals(XREF_ANALOG.toString())) {
-				List xrefAnalog = termAttributes.getListAttribute(id,
-				                                                  OBO_PREFIX + "."
-				                                                  + XREF.toString());
+			} else if (key.equals(XREF.toString()) || key.equals(XREF_ANALOG.toString())
+			           || key.equals(ALT_ID.toString()) || key.equals(SUBSET.toString())
+			           || key.equals(DISJOINT_FROM.toString())) {
+				listAttr = termAttributes.getListAttribute(id, OBO_PREFIX + "." + key);
 
-				if (xrefAnalog == null) {
-					xrefAnalog = new ArrayList<String>();
-				}
+				if (listAttr == null)
+					listAttr = new ArrayList<String>();
 
 				if (val != null) {
-					xrefAnalog.add(val.toString());
+					if (key.equals(DISJOINT_FROM.toString())) {
+						listAttr.add(val.split("!")[0].trim());
+					} else
+						listAttr.add(val);
 				}
 
-				termAttributes.setListAttribute(id, OBO_PREFIX + "." + XREF.toString(), xrefAnalog);
-			} else {
+				termAttributes.setListAttribute(id, OBO_PREFIX + "." + key, listAttr);
+			} else
 				termAttributes.setAttribute(id, OBO_PREFIX + "." + key, val);
-			}
 		}
 	}
 

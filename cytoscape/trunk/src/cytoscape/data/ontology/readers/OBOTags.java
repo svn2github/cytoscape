@@ -105,6 +105,9 @@ public enum OBOTags {
 	IS_SYMMETRIC("This tag indicates that the relationship is marked as symmetric (meaning that if the relationship holds from "
 	             + "the child to parent, it also holds from parent to child). This information is very useful to reasoners and other "
 	             + "automatic traversals of the graph."), 
+	DISJOINT_FROM("This tag indicates that a term is disjoint from another, meaning that the two terms have no instances or " +
+			"subclasses in common. The value is the id of the term from which the current term is disjoint. This tag may not be " +
+			"applied to relationship types."),
 
 	/*
 	 * This is a local tag defined by Kei.  This is a reference extracted from "DEF" tag.
