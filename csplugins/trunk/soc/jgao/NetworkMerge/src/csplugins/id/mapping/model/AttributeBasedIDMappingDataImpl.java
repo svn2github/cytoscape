@@ -59,7 +59,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
                 idTypes = new HashSet<String>();
         }
 
-        @Override
+        //@Override
         public boolean isEmpty() {
                 return mapGOAttrSrcType.isEmpty();
         }
@@ -68,7 +68,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
          *
          * @return id type set of all data
          */
-        @Override
+        //@Override
         public Set<String> getIDTypes() {
                 return idTypes;
         }
@@ -76,7 +76,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
         /**
          * remove all data
          */
-        @Override
+        //@Override
         public void clear() {
                 mapGOAttrSrcType.clear();
                 //mapGOAttrSrcID.clear();
@@ -88,7 +88,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
          *
          * @return map of nodes/edges to attributes
          */
-        @Override
+        //@Override
         public Map<String,Set<String>> getMapGOAttrs() {
                 Map<String,Set<String>> mapGOAttrs = new HashMap<String,Set<String>>();
 
@@ -114,7 +114,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
          *
          * @throws NullPointerException if id or attrName is null
          */
-        @Override
+        //@Override
         public String getSrcIDType(final String id, final String attrName) {
                 if (id==null || attrName==null) {
                         throw new java.lang.NullPointerException();
@@ -142,7 +142,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
          *
          * @throws NullPointerException if id or attrName is null
          */
-        @Override
+        //@Override
         public Set<String> getSrcIDs(final String id, final String attrName) {
                 if (id==null || attrName==null) {
                         throw new java.lang.NullPointerException();
@@ -176,7 +176,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
          *
          * @throws NullPointerException if id or attrName or tgtType is null
          */
-        @Override
+        //@Override
         public Set<String> getTgtIDs(final String id, String attrName, final String tgtType) {
                 if (id==null || attrName==null || tgtType==null) {
                         throw new java.lang.NullPointerException();
@@ -209,7 +209,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
          *
          * @throws NullPointerException if id or attrName or tgtType is null
          */
-        @Override
+        //@Override
         public Map<String,Set<String>> getMapTgtTypeIDs(String id, String attrName) {
                 if (id==null || attrName==null) {
                         throw new java.lang.NullPointerException();
@@ -236,7 +236,7 @@ public class AttributeBasedIDMappingDataImpl implements AttributeBasedIDMappingD
          * @param tgtIDs
          *      Set of target IDs
          */
-        @Override
+        //@Override
         public void addIDMapping(final String idGO,
                                  final String attrName,
                                  final String srcIDType,

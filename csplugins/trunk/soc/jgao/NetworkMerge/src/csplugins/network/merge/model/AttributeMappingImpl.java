@@ -70,7 +70,7 @@ public class AttributeMappingImpl implements AttributeMapping {
         mergedAttributeTypes = new Vector<Byte>();
     }
 
-    @Override
+    //@Override
     public CyAttributes getCyAttributes() {
         return cyAttributes;
     }
@@ -79,7 +79,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Get attributes' names in the merged network
      * 
      */
-    @Override
+    //@Override
     public String[] getMergedAttributes() {
         return (String[])mergedAttributes.toArray(new String[0]);
     }
@@ -88,7 +88,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Get number of the attribute in the merged network
      * 
      */
-    @Override
+    //@Override
     public int getSizeMergedAttributes() {
         return mergedAttributes.size();
     }
@@ -97,7 +97,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Get the ith attribute name in the merged network
      * 
      */
-    @Override
+    //@Override
     public String getMergedAttribute(final int index) {
         if (index<0 || index>=getSizeMergedAttributes()) {
             throw new java.lang.IndexOutOfBoundsException("Index out of boundary.");
@@ -111,7 +111,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Set the ith attribute name in the merged network
      * 
      */
-    @Override
+    //@Override
     public String setMergedAttribute(final int index, final String attributeName) {
         if (attributeName==null) {
             throw new java.lang.NullPointerException("Attribute name is null.");
@@ -218,7 +218,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Check if an attribute exists in the merged attributes
      * 
      */
-    @Override
+    //@Override
     public boolean containsMergedAttribute(final String attributeName) {
         if (attributeName==null) {
             throw new java.lang.NullPointerException("Attribute name is null.");
@@ -230,7 +230,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Get the original attribute name in the network before merged
      * 
      */
-    @Override
+    //@Override
     public String getOriginalAttribute(final String netID, final String mergedAttributeName) {
         if (netID==null||mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
@@ -246,7 +246,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Get the original attribute name before merged, corresponding to the ith merged attribute
      * 
      */
-    @Override
+    //@Override
     public String getOriginalAttribute(final String netID, final int index) {
         final List<String> attrs = attributeMapping.get(netID);
         if (attrs==null) {
@@ -265,7 +265,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      * @return the original attribute if exist, null otherwise
      */
-    @Override
+    //@Override
     public Map<String,String> getOriginalAttributeMap(String mergedAttributeName) {
         if (mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
@@ -282,7 +282,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      * @return the original attribute if exist, null otherwise
      */
-    @Override
+    //@Override
     public Map<String,String> getOriginalAttributeMap(int index) {
         if (index>=this.getSizeMergedAttributes()||index<0) {
             throw new java.lang.IndexOutOfBoundsException();
@@ -308,7 +308,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Set attribute mapping
      * 
      */
-    @Override
+    //@Override
     public String setOriginalAttribute(final String netID, final String attributeName, final String mergedAttributeName) {
         if (netID==null||mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
@@ -324,7 +324,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Set attribute mapping
      * 
      */
-    @Override
+    //@Override
     public String setOriginalAttribute(final String netID, final String attributeName, final int index){
         if (netID==null||attributeName==null||attributeName==null) {
             throw new java.lang.NullPointerException("Null netID or attributeName or mergedAttributeName");
@@ -362,7 +362,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * remove original attribute 
      * 
      */
-    @Override
+    //@Override
     public String removeOriginalAttribute(final String netID, final String mergedAttributeName) {
         if (netID==null||mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null netID or mergedAttributeName");
@@ -380,7 +380,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * remove original attribute 
      * 
      */
-    @Override
+    //@Override
     public String removeOriginalAttribute(final String netID, final int index) {
         if (netID==null) {
             throw new java.lang.NullPointerException("Null netID");
@@ -404,7 +404,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * remove merged attribute, along with the corresponding origianl attribute
      * 
      */
-    @Override
+    //@Override
     public String removeMergedAttribute(final String mergedAttributeName) {
         if (mergedAttributeName==null) {
             throw new java.lang.NullPointerException("Null mergedAttributeName");
@@ -422,7 +422,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * remove merged attribute, along with the corresponding origianl attribute
      * 
      */
-    @Override
+    //@Override
     public String removeMergedAttribute(final int index) {
         if (index<0 || index>=getSizeMergedAttributes()) {
             throw new java.lang.IndexOutOfBoundsException("Index out of bounds");
@@ -445,7 +445,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Add new attribute in the end of the current network
      * 
      */
-    @Override
+    //@Override
     public String addAttributes(final Map<String,String> mapNetIDAttributeName, final String mergedAttrName) {
         return addAttributes(mapNetIDAttributeName,mergedAttrName,getSizeMergedAttributes());
     }
@@ -454,7 +454,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * Add new attribute in the ith of the current network
      * 
      */
-    @Override
+    //@Override
     public String addAttributes(final Map<String,String> mapNetIDAttributeName, final String mergedAttrName, final int index) {
         if (mapNetIDAttributeName==null || mergedAttrName==null) {
             throw new java.lang.NullPointerException();
@@ -502,7 +502,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      * 
      */
-    @Override
+    //@Override
     public void addNetwork(final String netID) {
         if (netID==null) {
             throw new java.lang.NullPointerException();
@@ -594,7 +594,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * get all network titles
      * 
      */
-    @Override
+    //@Override
     public Set<String> getNetworkSet() {
         return attributeMapping.keySet();
     }
@@ -603,7 +603,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * get number of networks
      * 
      */
-    @Override
+    //@Override
     public int getSizeNetwork() {
         return attributeMapping.size();
     }   
@@ -612,7 +612,7 @@ public class AttributeMappingImpl implements AttributeMapping {
      * 
      * 
      */
-    @Override
+    //@Override
     public void removeNetwork(final String netID) {
         if (netID==null) {
             throw new java.lang.NullPointerException();

@@ -70,7 +70,7 @@ public class IDMappingTableReader implements TextTableReader {
                 idMappings = null;
         }
 
-        @Override
+        //@Override
         public void readTable() throws IOException {
                 idMappings = new IDMappingDataImpl();
 
@@ -131,7 +131,7 @@ public class IDMappingTableReader implements TextTableReader {
                 idMappings.addIDMapping(idMapping);
         }
 
-        @Override
+        //@Override
 	public List getColumnNames() {
                 if (idMappings==null) {
                         return null;
@@ -144,7 +144,7 @@ public class IDMappingTableReader implements TextTableReader {
 	 * Report the result of import as a string.
 	 * @return Description of
 	 */
-        @Override
+        //@Override
 	public String getReport() {
                 if (idMappings == null) {
                         return "No ID mapping is loaded\n";

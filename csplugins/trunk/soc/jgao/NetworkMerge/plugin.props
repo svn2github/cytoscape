@@ -31,7 +31,7 @@ projectURL=http://www.cytoscape.org/cgi-bin/moin.cgi/Advanced_Network_Merge_and_
 pluginAuthorsIntsitutions=Jianjiong Gao : U. Missouri ; Keiichiro Ono : UCSD
 
 # Date this plugin/plugin version was released
-releaseDate=Sep 15, 2008
+releaseDate=September 15, 2008
 
 # If this plugin is never meant to be downloaded except as part of a plugin (not common) add this property.  Default is "no"
 themeOnly=no

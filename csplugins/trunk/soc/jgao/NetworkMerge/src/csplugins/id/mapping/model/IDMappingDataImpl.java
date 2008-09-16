@@ -70,7 +70,7 @@ public class IDMappingDataImpl implements IDMappingData {
          * @return
          *      the set of supported ID types
          */
-        @Override
+        //@Override
         public Set<String> getIDTypes() {
                 return mapTypeIDMapTypeIDs.keySet();
         }
@@ -86,7 +86,7 @@ public class IDMappingDataImpl implements IDMappingData {
          *
          * @throws NullPointerException if type is null
          */
-        @Override
+        //@Override
         public boolean isIDTypeContained(final String type) {
                 if (type==null) {
                         throw new java.lang.NullPointerException();
@@ -107,7 +107,7 @@ public class IDMappingDataImpl implements IDMappingData {
          *
          * @throws NullPointerException if type is null
          */
-        @Override
+        //@Override
         public boolean addIDType(final String type) {
                 if (type==null) {
                         throw new java.lang.NullPointerException();
@@ -129,7 +129,7 @@ public class IDMappingDataImpl implements IDMappingData {
          *
          * @throws NullPointerException if types is null
          */
-        @Override
+        //@Override
         public void addIDTypes(Set<String> types) {
                 if (types==null) {
                         throw new java.lang.NullPointerException();
@@ -182,7 +182,7 @@ public class IDMappingDataImpl implements IDMappingData {
          * @throws NullPointerException if idMapping is null
          * @throws IllegalArgumentException if one of more types are not found
          */
-        @Override
+        //@Override
         public void addIDMapping(final Map<String,Set<String>> idMapping) {
                 if (idMapping==null) {
                         throw new java.lang.NullPointerException();
@@ -245,7 +245,7 @@ public class IDMappingDataImpl implements IDMappingData {
          * @throws NullPointerException if type1 or ids1 or type2 or ids2 is null
          * @throws IllegalArgumentException if type1 or type2 is not found
          */
-        @Override
+        //@Override
         public void addIDMapping(final String type1, final Set<String> ids1,
                                  final String type2, final Set<String> ids2) {
                 if (type1==null || ids1==null || type2==null || ids2==null) {
@@ -278,7 +278,7 @@ public class IDMappingDataImpl implements IDMappingData {
          *
          * @throws NullPointerException if ids or srcType or tgtType is null
          */
-        @Override
+        //@Override
         public Map<String, Set<String>> mapID(final Set<String> ids, final String srcType, final String tgtType) {
                 if (ids==null || ids.isEmpty()) {
                         throw new java.lang.IllegalArgumentException("Null of empty ids");

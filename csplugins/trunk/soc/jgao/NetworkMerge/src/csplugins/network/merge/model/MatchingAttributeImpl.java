@@ -58,7 +58,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
         attributeForMatching = new HashMap<String,String>();
     }
 
-    @Override
+    //@Override
     public Map<String,String> getNetAttrMap() {
         return attributeForMatching;
     }
@@ -67,7 +67,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * Get the attribute of network for matching node
      * 
      */
-    @Override
+    //@Override
     public String getAttributeForMatching(final String netID) {
         if (netID == null) {
             throw new java.lang.NullPointerException();
@@ -80,7 +80,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * Set the attribute of network for matching node
      * 
      */
-    @Override
+    //@Override
     public void putAttributeForMatching(final String netID, final String attributeName) {
         if (netID==null || attributeName==null) {
             throw new java.lang.NullPointerException();
@@ -93,7 +93,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * add/select the attribute of network for matching node
      * 
      */
-    @Override
+    //@Override
     public void addNetwork(final String netID) {
         if (netID == null) {
             throw new java.lang.NullPointerException();
@@ -118,7 +118,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * Remove the network, return the attribute
      * 
      */
-    @Override
+    //@Override
     public String removeNetwork(final String netID) {
         if (netID == null) {
             throw new java.lang.NullPointerException();
@@ -131,7 +131,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * 
      * 
      */
-    @Override
+    //@Override
     public int getSizeNetwork() {
         return attributeForMatching.size();
     }
@@ -140,7 +140,7 @@ public class MatchingAttributeImpl implements MatchingAttribute {
      * 
      * 
      */
-    @Override
+    //@Override
     public Set<String> getNetworkSet() {
         return attributeForMatching.keySet();
     }

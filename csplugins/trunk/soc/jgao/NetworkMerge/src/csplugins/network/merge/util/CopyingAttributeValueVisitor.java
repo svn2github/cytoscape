@@ -61,7 +61,7 @@ import java.util.Arrays;
             this.toAttrName = toAttrName;
         }
 
-        @Override
+        //@Override
         public void visitingAttributeValue(String fromID, String attrName,
                                            CyAttributes attrs, Object[] keySpace,
                                            Object visitedValue) {

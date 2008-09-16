@@ -851,12 +851,12 @@ class NetworkListModel extends AbstractListModel {
             model = new TreeMap<String,CyNetwork>();
         }
 
-        @Override
+        //@Override
         public int getSize() {
             return model.size();
         }
 
-        @Override
+        //@Override
         public CyNetwork getElementAt(int index) {
             return (CyNetwork) model.values().toArray()[index];
         }
@@ -923,7 +923,7 @@ class NetworkMergeSessionTask implements Task {
      * @throws
      * @throws Exception
      */
-    @Override
+    //@Override
     public void run() {
         taskMonitor.setStatus("Merging networks.\n\nIt may take a while.\nPlease wait...");
         taskMonitor.setPercentCompleted(0);
@@ -1000,7 +1000,7 @@ class NetworkMergeSessionTask implements Task {
     /**
      * Halts the Task: Not Currently Implemented.
      */
-    @Override
+    //@Override
     public void halt() {
             // Task can not currently be halted.
             taskMonitor.setPercentCompleted(100);
@@ -1013,7 +1013,7 @@ class NetworkMergeSessionTask implements Task {
      * @param taskMonitor
      *            TaskMonitor Object.
      */
-    @Override
+    //@Override
     public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
             this.taskMonitor = taskMonitor;
     }
@@ -1023,7 +1023,7 @@ class NetworkMergeSessionTask implements Task {
      *
      * @return Task Title.
      */
-    @Override
+    //@Override
     public String getTitle() {
             return "Merging networks";
     }
@@ -1051,7 +1051,7 @@ class HandleConflictsTask implements Task {
      * @throws
      * @throws Exception
      */
-    @Override
+    //@Override
     public void run() {
         taskMonitor.setStatus("Handle conflicts.\n\nIt may take a while.\nPlease wait...");
         taskMonitor.setPercentCompleted(0);
@@ -1090,7 +1090,7 @@ class HandleConflictsTask implements Task {
     /**
      * Halts the Task: Not Currently Implemented.
      */
-    @Override
+    //@Override
     public void halt() {
             // Task can not currently be halted.
             taskMonitor.setPercentCompleted(100);
@@ -1103,7 +1103,7 @@ class HandleConflictsTask implements Task {
      * @param taskMonitor
      *            TaskMonitor Object.
      */
-    @Override
+    //@Override
     public void setTaskMonitor(TaskMonitor taskMonitor) throws IllegalThreadStateException {
             this.taskMonitor = taskMonitor;
     }
@@ -1113,7 +1113,7 @@ class HandleConflictsTask implements Task {
      *
      * @return Task Title.
      */
-    @Override
+    //@Override
     public String getTitle() {
             return "Merging networks";
     }

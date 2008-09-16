@@ -21,7 +21,7 @@ class ComboBoxTableCellRenderer extends JComboBox implements TableCellRenderer {
             super(items);
     }
 
-    @Override
+    //@Override
     public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
             this.setSelectedItem(value);

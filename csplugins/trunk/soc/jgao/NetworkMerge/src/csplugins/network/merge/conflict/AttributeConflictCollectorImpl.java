@@ -82,12 +82,12 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                 this.mapToIDToAttrConflicts = new HashMap<String,Map<String,Conflicts>>();
         }
 
-        @Override
+        //@Override
         public boolean isEmpty() {
                 return mapToIDToAttrConflicts.isEmpty();
         }
 
-        @Override
+        //@Override
         public Map<String,String> getMapToIDAttr() {
                 Map<String,String> mapToIDAttr = new HashMap<String,String>();
                 for (Map.Entry<String,Map<String,Conflicts>> entry : mapToIDToAttrConflicts.entrySet()) {
@@ -100,7 +100,7 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                 return mapToIDAttr;
         }
 
-        @Override
+        //@Override
         public Map<String,String> getConflicts(final String toID, final String toAttr){
                 if (toID==null || toAttr==null) {
                         throw new java.lang.NullPointerException();
@@ -114,7 +114,7 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                 return mapToAttrConflicts.get(toAttr).mapFromIDFromAttr;
         }
 
-        @Override
+        //@Override
         public CyAttributes getCyAttributes(final String toID, final String toAttr) {
                 if (toID==null || toAttr==null) {
                         throw new java.lang.NullPointerException();
@@ -128,7 +128,7 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                 return mapToAttrConflicts.get(toAttr).cyAttributes;
         }
 
-        @Override
+        //@Override
         public void addConflict(final String fromID,
                                         final String fromAttr,
                                         final String toID,
@@ -157,7 +157,7 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                 conflicts.addConflict(fromID, fromAttr);
         }
 
-        @Override
+        //@Override
         public boolean removeConflicts(String toID, String toAttr) {
                 if (toID==null || toAttr==null) {
                         throw new java.lang.NullPointerException();
@@ -176,7 +176,7 @@ public class AttributeConflictCollectorImpl implements AttributeConflictCollecto
                 return true;
         }
 
-        @Override
+        //@Override
         public boolean removeConflict(final String fromID, final String fromAttr, final String toID, final String toAttr) {
                 if (fromID==null || fromAttr==null || toID==null || toAttr==null) {
                         throw new java.lang.NullPointerException();

@@ -67,7 +67,7 @@ public class DefaultAttributeMerger implements AttributeMerger {
          * @param attrs
          * @param conflictCollector
          */
-        @Override
+        //@Override
         public void mergeAttribute(final Map<String,String> mapGOAttr,
                                      final String toID,
                                      final String toAttrName,

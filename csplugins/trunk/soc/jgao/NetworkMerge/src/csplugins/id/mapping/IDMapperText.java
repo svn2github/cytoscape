@@ -65,7 +65,7 @@ public class IDMapperText implements IDMapperFile {
          * Read ID Mapping from file
          *
          */
-        @Override
+        //@Override
         public void readIDMapping() throws IOException {
                 IDMappingTableReader reader = new IDMappingTableReader(url);
                 reader.readTable();
@@ -87,7 +87,7 @@ public class IDMapperText implements IDMapperFile {
          *
          * @throws NullPointerException if ids or srcType or tgtType is null
          */
-        @Override
+        //@Override
         public Map<String, Set<String>> mapID(final Set<String> ids,
                                               final String srcType,
                                               final String tgtType) {
@@ -110,7 +110,7 @@ public class IDMapperText implements IDMapperFile {
          * @return
          *      true if exists, false otherwise
          */
-        @Override
+        //@Override
         public boolean idExistsInSrcIDType(final String srcID, final String srcType) {
                 return idMappingList.getIDMapping(srcType, srcID)!=null;
         }
@@ -119,7 +119,7 @@ public class IDMapperText implements IDMapperFile {
         * @return supported source ID types
         *
         */
-        @Override
+        //@Override
         public Set<String> getSupportedSrcIDTypes() {
                 if (idMappingList==null) {
                         // TODO return null or empty Set?
@@ -133,7 +133,7 @@ public class IDMapperText implements IDMapperFile {
         * @return supported target ID types
         *
         */
-        @Override
+        //@Override
         public Set<String> getSupportedTgtIDTypes() {
                 if (idMappingList==null) {
                         // TODO return null or empty Set?

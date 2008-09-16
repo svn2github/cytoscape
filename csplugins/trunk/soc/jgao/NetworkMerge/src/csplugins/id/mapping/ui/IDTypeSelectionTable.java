@@ -130,7 +130,7 @@ public class IDTypeSelectionTable extends JTable{
                 column.setCellRenderer(new TableCellRenderer() {
                         private DefaultTableCellRenderer  defaultRenderer = new DefaultTableCellRenderer();
 
-                        @Override
+                        //@Override
                         public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
                             boolean isSelected, boolean hasFocus, int row, int column) {
                                        JLabel label = (JLabel) defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -188,12 +188,12 @@ public class IDTypeSelectionTable extends JTable{
     private class IDTypeSelectionTableModel extends AbstractTableModel {
         private final String[] columnNames = {"Network","Attribute","ID Type(s)"};
 
-        @Override
+        //@Override
         public int getColumnCount() {
             return getRowCount()==0?0:3; // network; attribute; id types
         }
 
-        @Override
+        //@Override
         public int getRowCount() {
             return listNetIDTitleAttr.size();
         }
@@ -203,7 +203,7 @@ public class IDTypeSelectionTable extends JTable{
             return columnNames[col];
         }
 
-        @Override
+        //@Override
         public String getValueAt(int row, int col) {
             String[] strs = listNetIDTitleAttr.get(row);
             String netID = strs[0];
@@ -241,7 +241,7 @@ public class IDTypeSelectionTable extends JTable{
                         this.combos = combos;
                 }
 
-                @Override
+                //@Override
                 public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
                         if (column==table.getColumnCount()-1) {
@@ -365,7 +365,7 @@ public class IDTypeSelectionTable extends JTable{
                         this.attr = attr;
                 }
 
-                @Override
+                //@Override
                 public Component getListCellRendererComponent(
                         JList list,
                         Object value,

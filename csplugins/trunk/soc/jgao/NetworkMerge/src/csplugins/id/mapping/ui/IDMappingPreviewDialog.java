@@ -208,12 +208,12 @@ public class IDMappingPreviewDialog extends javax.swing.JDialog {
                 }
 
 
-                @Override
+                //@Override
                 public int getColumnCount() {
                     return columnNames.size();
                 }
 
-                @Override
+                //@Override
                 public int getRowCount() {
                     return data.size();
                 }
@@ -223,7 +223,7 @@ public class IDMappingPreviewDialog extends javax.swing.JDialog {
                     return columnNames.get(col);
                 }
 
-                @Override
+                //@Override
                 public String getValueAt(int row, int col) {
                     return data.get(row)[col];
                 }

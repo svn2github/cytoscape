@@ -103,12 +103,12 @@ class MatchNodeTable extends JTable{
             resetNetworks();
         }
 
-        @Override
+        //@Override
         public int getColumnCount() {
             return matchingAttribute.getSizeNetwork();
         }
 
-        @Override
+        //@Override
         public int getRowCount() {
             int n = matchingAttribute.getSizeNetwork();
             return n==0?0:1;
@@ -119,7 +119,7 @@ class MatchNodeTable extends JTable{
             return netNames.get(col);
         }
 
-        @Override
+        //@Override
         public Object getValueAt(int row, int col) {
             return matchingAttribute.getAttributeForMatching(netIDs.get(col));
         }

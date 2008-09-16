@@ -138,7 +138,7 @@ class MergeAttributeTable extends JTable{
                     private DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
                     private ComboBoxTableCellRenderer comboBoxRenderer = new ComboBoxTableCellRenderer(attrs);
 
-                    @Override
+                    //@Override
                     public Component getTableCellRendererComponent(
                                     JTable table, Object value,
                                     boolean isSelected, boolean hasFocus,
@@ -171,7 +171,7 @@ class MergeAttributeTable extends JTable{
                 column.setCellRenderer(new TableCellRenderer() {
                     private DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
                     
-                    @Override
+                    //@Override
                     public Component getTableCellRendererComponent(
                                     JTable table, Object value,
                                     boolean isSelected, boolean hasFocus,
@@ -263,7 +263,7 @@ class MergeAttributeTable extends JTable{
                     private DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
                     //private ComboBoxTableCellRenderer comboBoxRenderer = new ComboBoxTableCellRenderer(attrs);
 
-                    @Override
+                    //@Override
                     public Component getTableCellRendererComponent(
                                     JTable table, Object value,
                                     boolean isSelected, boolean hasFocus,
@@ -422,13 +422,13 @@ class MergeAttributeTable extends JTable{
             resetNetworks();
         }
 
-        @Override
+        //@Override
         public int getColumnCount() {
             final int n = attributeMapping.getSizeNetwork();
             return n==0?0:n+2;
         }
 
-        @Override
+        //@Override
         public int getRowCount() {
             int n = attributeMapping.getSizeMergedAttributes();
             //n = n+1; // +1: add an empty row in the end (TODO: use this one in Cytoscape3.0)
@@ -453,7 +453,7 @@ class MergeAttributeTable extends JTable{
             return null;
         }
 
-        @Override
+        //@Override
         public String getValueAt(final int row, final int col) {
             //final int iAttr = row; //TODO used in Cytoscape3
             
