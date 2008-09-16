@@ -444,7 +444,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	public void mouseDragged(MouseEvent e) {
 		
-		if (!e.isShiftDown()) { return; }
+		//if (!e.isShiftDown()) { return; }
 
 		onEdge = calculateOnEdge(e.getPoint(), pickedRegion);
 
@@ -483,7 +483,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 						.getY1(), pickedRegion.getW1(), pickedRegion.getH1());
 				NodeViewsTransformer.transform(boundedNodeViews, pickedRegion
 						.getBounds());
-				Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
+				//not needed and significantly slows move performance
+				//Cytoscape.getCurrentNetworkView().redrawGraph(true, true);
 				pickedRegion.repaint();
 			}
 
@@ -520,7 +521,7 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 */
 	public void mouseReleased(MouseEvent e) {
 		
-		if (!e.isShiftDown()) { return; }
+		//if (!e.isShiftDown()) { return; }
 		
 		if (dragging) {
 			dragging = false;
