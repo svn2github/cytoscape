@@ -1,7 +1,8 @@
 package org.cytoscape.io.read.impl;
 
 
-import java.net.URI;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.List;
 
 import org.cytoscape.model.CyNetwork;
@@ -12,10 +13,10 @@ import org.cytoscape.io.read.CyDataTableReader;
 
 public class XGMMLReader implements CyNetworkReader, CyDataTableReader {
 
-	public void setInput(URI u) {
+	public void setInput(InputStream is) {
 	}
 
-	public void read() {
+	public void read() throws IOException {
 	}
 
 	public List<CyNetwork> getReadNetworks() {

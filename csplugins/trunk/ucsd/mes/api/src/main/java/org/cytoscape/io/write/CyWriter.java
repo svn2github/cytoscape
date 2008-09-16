@@ -2,6 +2,7 @@
 package org.cytoscape.io.write;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * An interface that should be extended to write any type of 
@@ -18,5 +19,5 @@ public interface CyWriter {
 	 * provided by its extending interfaces to the specified {@link File}.
 	 * @param f The {@link File} that will be written to by this writer.
 	 */
-	public void write(File f);
+	public void write(File f) throws IOException;
 }

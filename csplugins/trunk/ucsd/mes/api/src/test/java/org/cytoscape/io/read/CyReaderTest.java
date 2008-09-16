@@ -10,17 +10,13 @@ import java.lang.RuntimeException;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.net.URI;
+import java.io.InputStream;
+import java.io.IOException;
 
 import org.cytoscape.model.*;
 
 
 public class CyReaderTest extends TestCase {
-
-
-	public static Test suite() {
-		return new TestSuite(CyReaderTest.class);
-	}
 
 	public void setUp() {
 	}
@@ -37,8 +33,8 @@ public class CyReaderTest extends TestCase {
 		ReadTest() {}
 		public List<CyDataTable> getReadDataTables() {return null;}
 		public List<CyNetwork> getReadNetworks() {return null;}
-		public void read(){}
-		public void setInput(URI u){}
+		public void read() throws IOException {}
+		public void setInput(InputStream is){}
 	}
 }
 

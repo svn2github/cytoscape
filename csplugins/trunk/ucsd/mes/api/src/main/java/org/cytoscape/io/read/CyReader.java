@@ -1,7 +1,8 @@
 
 package org.cytoscape.io.read;
 
-import java.net.URI;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * The basic input interface that specifies what is to be read and when it is
@@ -16,20 +17,17 @@ public interface CyReader {
 	 * Calling this method will initiate reading of the input specified in the
 	 * {@link CyReader#setInput(URI u)}. This method will return once the data
 	 * has been read and will(?) throw an exception otherwise.
-	 * <p>
-	 * This should probably throw an {@link java.io.IOException}
+	 * 
+	 * @throws IOException Will throw an IOException when any problem arises
+	 * while performing the read operation.
 	 */
-	public void read();
+	public void read() throws IOException;
 
 
 	/**
 	 * This method sets the input that is to be read and must be called prior 
 	 * to the  {@link CyReader#read()} method. 
-	 * <p>
-	 * This should probably throw a exceptions if the URI is invalid.
-	 * <p>
-	 * Is URI sufficient or are there other input types we should handle?
-	 * @param u A URI specifying a file or data source to be read.
+	 * @param is An InputStream to be read.
 	 */
-	public void setInput(URI u);
+	public void setInput(InputStream is);
 }
