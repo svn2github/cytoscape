@@ -1,8 +1,8 @@
-package org.cytoscape.model.attrs.impl;
+package org.cytoscape.model.internal;
 
 import java.util.*;
-import org.cytoscape.model.attrs.CyRow;
-import org.cytoscape.model.attrs.CyDataTable;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 
 public class CyDataTableImpl implements CyDataTable {
 
@@ -11,17 +11,25 @@ public class CyDataTableImpl implements CyDataTable {
 	private Map<String, Boolean> unique;
 	private String name;
 	private boolean pub;
+	private final long suid;
 
+	public long getSUID() {
+		return suid;
+	}
 	public boolean isPublic() {
 		return pub;
 	}
-	public String getName() {
+	public String getTitle() {
 		return name;
+	}
+	public void setTitle(String title) {
+		name = title;
 	}
 
 	public CyDataTableImpl(Map<String,Class<?>> typeMap, String name, boolean pub) {
 		this.name = name;
 		this.pub = pub;
+		this.suid = IdFactory.getNextSUID();
 		attributes = new HashMap<String,Map<Long,Object>>();
 		if ( typeMap == null ) {
 			types = new HashMap<String,Class<?>>();

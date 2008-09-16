@@ -1,5 +1,5 @@
 
-package org.cytoscape.model.network.impl;
+package org.cytoscape.model.internal;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -13,14 +13,13 @@ import cytoscape.graph.dynamic.DynamicGraphFactory;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntEnumerator;
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.EdgeType;
 
-import org.cytoscape.model.attrs.CyAttributes;
-import org.cytoscape.model.attrs.CyAttributesManager;
-import org.cytoscape.model.attrs.impl.CyAttributesManagerImpl;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 
 public class CyNetworkImpl implements CyNetwork {
 
@@ -35,13 +34,12 @@ public class CyNetworkImpl implements CyNetwork {
 	final static private int IN = 1;
 	final static private int UN = 2;
 
-	final private Map<String,CyAttributesManagerImpl> netAttrMgr;
-	final private Map<String,CyAttributesManagerImpl> nodeAttrMgr;
-	final private Map<String,CyAttributesManagerImpl> edgeAttrMgr;
+	final private Map<String,CyDataTable> nodeAttrMgr;
+	final private Map<String,CyDataTable> edgeAttrMgr;
+	final private Map<String,CyDataTable> netAttrMgr;
 
-	public CyNetworkImpl( final Map<String,CyAttributesManager> netm, 
-	                      final Map<String,CyAttributesManager> nodem, 
-						  final Map<String,CyAttributesManager> edgem ) {
+
+	public CyNetworkImpl() {
 		suid = IdFactory.getNextSUID();
 		dg = DynamicGraphFactory.instantiateDynamicGraph();
 		nodeList = new ArrayList<CyNode>();
@@ -49,25 +47,11 @@ public class CyNetworkImpl implements CyNetwork {
 		nodeCount = new AtomicInteger(0);
 		edgeCount = new AtomicInteger(0);
 
-		netAttrMgr = new HashMap<String,CyAttributesManagerImpl>();
-		nodeAttrMgr = new HashMap<String,CyAttributesManagerImpl>();
-		edgeAttrMgr = new HashMap<String,CyAttributesManagerImpl>();
-		
-		loadMgrs(netm,netAttrMgr);
-		loadMgrs(nodem,nodeAttrMgr);
-		loadMgrs(edgem,edgeAttrMgr);
+		nodeAttrMgr = new HashMap<String,CyDataTable>();
+		edgeAttrMgr = new HashMap<String,CyDataTable>();
+		netAttrMgr = new HashMap<String,CyDataTable>();
 	}
 
-	private void loadMgrs(final Map<String,CyAttributesManager> in, 
-	                      Map<String,CyAttributesManagerImpl> local) {
-		for ( String key : in.keySet() ) {
-			CyAttributesManager mgr = in.get(key);
-			// this is bad because it means we now depend on this particular impl
-			local.put( key, new CyAttributesManagerImpl( mgr.getTypeMap() ) );
-		}
-	}
-
-		
 	public long getSUID() {
 		return suid;
 	}
@@ -308,27 +292,30 @@ public class CyNetworkImpl implements CyNetwork {
 			return new boolean[] { true, true, true }; 
 	}
 
-	public CyAttributes getCyAttributes(String namespace) {
-		if ( namespace == null )
-			throw new NullPointerException("namespace is null");
+	public CyRow getCyRow(String namespace) {
+        if ( namespace == null )
+            throw new NullPointerException("namespace is null");
 
-		// argh!
-		CyAttributesManagerImpl mgr = netAttrMgr.get(namespace);
-		if ( mgr == null )
-			throw new NullPointerException("attribute manager is null for namespace: " + namespace);
+        CyDataTable table = netAttrMgr.get(namespace);
+        if ( table == null )
+            throw new NullPointerException("CyDataTable is null for namespace: " + namespace);
 
-		return mgr.getAccess(suid);
+        return table.getRow(suid);
 	}
 
-	public Map<String,? extends CyAttributesManager> getNetworkCyAttributesManagers() {
-		return netAttrMgr;	
+	public CyRow attrs() {
+		return getCyRow("USER");
 	}
 
-	public Map<String,? extends CyAttributesManager> getNodeCyAttributesManagers() {
+	public Map<String,? extends CyDataTable> getNetworkCyDataTables() {
+		return netAttrMgr;	 
+	}
+
+	public Map<String,? extends CyDataTable> getNodeCyDataTables() {
 		return nodeAttrMgr;
 	}
 
-	public Map<String,? extends CyAttributesManager> getEdgeCyAttributesManagers() {
+	public Map<String,? extends CyDataTable> getEdgeCyDataTables() {
 		return edgeAttrMgr;
 	}
 }

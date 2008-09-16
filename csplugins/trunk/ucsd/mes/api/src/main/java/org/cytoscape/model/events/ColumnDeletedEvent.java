@@ -1,8 +1,8 @@
 
-package org.cytoscape.model.attrs.events;
+package org.cytoscape.model.events;
 
 import org.cytoscape.event.CyEvent;
-import org.cytoscape.model.attrs.CyAttributes;
+import org.cytoscape.model.CyDataTable;
 
 /**
  * This event signals that an Attribute has been deleted.
@@ -10,12 +10,12 @@ import org.cytoscape.model.attrs.CyAttributes;
  * We might want to change the name of this guy to AttributeToBeDeleted so
  * that it is clear when it should be fired.
  */
-public interface AttributeDeletedEvent extends CyEvent<CyAttributes> {
+public interface ColumnDeletedEvent extends CyEvent<CyDataTable> {
 
 	/**
 	 * @return The name of the attribute that has been deleted.
 	 */
-    public String getAttributeName();
+    public String getColumnName();
 
 }
 

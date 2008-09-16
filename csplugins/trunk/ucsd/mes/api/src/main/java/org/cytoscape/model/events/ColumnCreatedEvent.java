@@ -1,20 +1,20 @@
 
-package org.cytoscape.model.attrs.events;
+package org.cytoscape.model.events;
 
 import org.cytoscape.event.CyEvent;
-import org.cytoscape.model.attrs.CyAttributesManager;
+import org.cytoscape.model.CyDataTable;
 
 /**
  * This event signals that an Attribute has been created.
  *<p>
  * This should probably return the type parameter as well. 
  */
-public interface AttributeCreatedEvent extends CyEvent<CyAttributesManager> {
+public interface ColumnCreatedEvent extends CyEvent<CyDataTable> {
 
 	/**
 	 * @return The name of the attribute that has been deleted.
 	 */
-    public String getAttributeName();
+    public String getColumnName();
 
 }
 

@@ -1,41 +1,41 @@
 
-package org.cytoscape.model.attrs.events.impl;
+package org.cytoscape.model.events;
 
-import org.cytoscape.model.attrs.events.AttributeSetEvent;
-import org.cytoscape.model.attrs.events.AttributeDeletedEvent;
+import org.cytoscape.model.events.ColumnDeletedEvent;
+import org.cytoscape.model.events.ColumnCreatedEvent;
 
-import org.cytoscape.model.attrs.CyAttributes;
+import org.cytoscape.model.CyDataTable;
 
 public class AttrEvent 
-	implements AttributeSetEvent, 
-	           AttributeDeletedEvent {
+	implements ColumnCreatedEvent, 
+			   ColumnDeletedEvent {
 
-	public static AttributeDeletedEvent getAttributeDeletedEvent(CyAttributes source, String attributeName) {
-		return new AttrEvent(source,attributeName,null,null);
+	public static ColumnDeletedEvent getAttributeDeletedEvent(CyDataTable source, String columnName) {
+		return new AttrEvent(source,columnName,null,null);
 	}
 
-	public static AttributeSetEvent getAttributeSetEvent(CyAttributes source, String attributeName, Object oldValue, Object newValue) {
-		return new AttrEvent(source,attributeName,oldValue,newValue);
+	public static ColumnCreatedEvent getAttributeCreatedEvent(CyDataTable source, String columnName) {
+		return new AttrEvent(source,columnName,null,null);
 	}
 
 	final Object oldValue;
 	final Object newValue;
-	final CyAttributes source;
-	final String attributeName; 
+	final CyDataTable source;
+	final String columnName; 
 
-	private AttrEvent(CyAttributes source, String attributeName, Object oldValue, Object newValue) {
+	private AttrEvent(CyDataTable source, String columnName, Object oldValue, Object newValue) {
 		this.source = source;
-		this.attributeName = attributeName;
+		this.columnName = columnName;
 		this.oldValue = oldValue;
 		this.newValue = newValue;
 	}
 
-	public CyAttributes getSource() {
+	public CyDataTable getSource() {
 		return source;
 	}
 
-	public String getAttributeName() {
-		return attributeName;
+	public String getColumnName() {
+		return columnName;
 	}
 
 	public Object getOldValue() {

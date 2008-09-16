@@ -3,7 +3,7 @@ package org.cytoscape.view.model;
 import java.awt.Shape;
 import java.awt.Paint;
 
-import org.cytoscape.model.network.Identifiable;
+import org.cytoscape.model.Identifiable;
 
 /**
  * The base interface that defines the methods used to set visual properties

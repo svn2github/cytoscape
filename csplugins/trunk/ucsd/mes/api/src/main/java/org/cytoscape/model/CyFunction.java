@@ -1,4 +1,4 @@
-package org.cytoscape.model.attrs;
+package org.cytoscape.model;
 
 /**
  * A {@link CyRow} in a {@link CyDataTable} may contain either

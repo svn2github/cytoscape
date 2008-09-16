@@ -1,7 +1,7 @@
 
-package org.cytoscape.model.network.events.impl;
+package org.cytoscape.model.events;
 
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 /**
  * A basic network event that can extended to support nodes and edges.

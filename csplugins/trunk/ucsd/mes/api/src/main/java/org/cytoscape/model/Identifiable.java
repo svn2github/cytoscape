@@ -1,5 +1,5 @@
 
-package org.cytoscape.model.network;
+package org.cytoscape.model;
 
 
 /**

@@ -1,4 +1,4 @@
-package org.cytoscape.model.attrs;
+package org.cytoscape.model;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package org.cytoscape.view.model2;
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.GraphObject;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import java.util.List; 
 
 /**

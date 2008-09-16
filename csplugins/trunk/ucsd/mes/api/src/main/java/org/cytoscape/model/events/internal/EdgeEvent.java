@@ -1,11 +1,11 @@
 
 
-package org.cytoscape.model.network.events.impl;
+package org.cytoscape.model.events;
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.events.AboutToRemoveEdgeEvent;
-import org.cytoscape.model.network.events.AddedEdgeEvent;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
+import org.cytoscape.model.events.AddedEdgeEvent;
 
 /**
  * 

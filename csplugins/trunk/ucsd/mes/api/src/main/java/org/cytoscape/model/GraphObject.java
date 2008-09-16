@@ -1,8 +1,7 @@
 
-package org.cytoscape.model.network;
-
-import org.cytoscape.model.attrs.CyAttributes;
+package org.cytoscape.model;
 
 public interface GraphObject extends Identifiable { 
-	public CyAttributes getCyAttributes(String namespace);
+	public CyRow getCyRow(String namespace);
+	public CyRow attrs();
 }

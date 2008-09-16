@@ -1,6 +1,6 @@
 package org.cytoscape.view.model;
 
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNode;
 
 /**
  * Contains the visual representation of a node.
