@@ -11,7 +11,7 @@ public interface CyEventHelper {
 	 * Calls each listener found in the Service Registry identified by
 	 * the listenerClass and filter with the supplied event.
 	 */
-	public <E extends CyEvent, L extends CyEventListener<E>> void fireSynchronousEvent( final E event, final Class<L> listener ); 
+	public <E extends CyEvent, L extends CyEventListener> void fireSynchronousEvent( final E event, final Class<L> listener ); 
 
 	/**
 	 * Calls each listener found in the Service Registry identified by
@@ -20,5 +20,5 @@ public interface CyEventHelper {
 	 * <p>
 	 * This method should <b>ONLY</b> ever be called with a thread safe event object!
 	 */
-	public <E extends CyEvent, L extends CyEventListener<E>> void fireAsynchronousEvent( final E event, final Class<L> listener ); 
+	public <E extends CyEvent, L extends CyEventListener> void fireAsynchronousEvent( final E event, final Class<L> listener ); 
 }

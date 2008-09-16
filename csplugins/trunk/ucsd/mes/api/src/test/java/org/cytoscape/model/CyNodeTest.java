@@ -1,12 +1,10 @@
-package org.cytoscape.model.network;
+package org.cytoscape.model;
 
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.impl.CyNetworkImpl;
-import org.cytoscape.model.attrs.CyAttributesManager;
-import org.cytoscape.model.attrs.InitialCyAttributesManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.internal.CyNetworkImpl;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -18,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.cytoscape.model.attrs.CyAttributes;
-
 public class CyNodeTest extends TestCase {
 
 	private CyNetwork net;
@@ -29,16 +25,7 @@ public class CyNodeTest extends TestCase {
 	}
 
 	public void setUp() {
-		Map<String,CyAttributesManager> netm = new HashMap<String,CyAttributesManager>();
-		netm.put("USER",InitialCyAttributesManager.getInstance());
-
-		Map<String,CyAttributesManager> nodem = new HashMap<String,CyAttributesManager>();
-		nodem.put("USER",InitialCyAttributesManager.getInstance());
-
-		Map<String,CyAttributesManager> edgem = new HashMap<String,CyAttributesManager>();
-		edgem.put("USER",InitialCyAttributesManager.getInstance());
-
-		net = new CyNetworkImpl(netm,nodem,edgem);
+		net = new CyNetworkImpl( new DummyCyEventHelper() );	
 	}
 
 	public void tearDown() {

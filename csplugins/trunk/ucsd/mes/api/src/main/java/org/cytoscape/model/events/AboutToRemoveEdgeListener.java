@@ -6,6 +6,6 @@ import org.cytoscape.event.CyEventListener;
 /**
  * Listener for AboutToRemoveEdgeEvents.
  */
-public interface AboutToRemoveEdgeListener extends CyEventListener<AboutToRemoveEdgeEvent> {
+public interface AboutToRemoveEdgeListener extends CyEventListener {
 	public void handleEvent(AboutToRemoveEdgeEvent e);
 }

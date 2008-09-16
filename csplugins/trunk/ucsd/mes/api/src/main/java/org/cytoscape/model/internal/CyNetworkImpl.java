@@ -13,13 +13,30 @@ import cytoscape.graph.dynamic.DynamicGraphFactory;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntEnumerator;
 
+import org.cytoscape.event.CyEventHelper;
+
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.EdgeType;
-
-import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyRow;
+
+import org.cytoscape.model.events.AboutToRemoveEdgeEvent;     
+import org.cytoscape.model.events.AboutToRemoveEdgeListener;  
+import org.cytoscape.model.events.AddedEdgeEvent;     
+import org.cytoscape.model.events.AddedEdgeListener;  
+import org.cytoscape.model.events.AboutToRemoveNodeEvent;     
+import org.cytoscape.model.events.AboutToRemoveNodeListener;  
+import org.cytoscape.model.events.AddedNodeEvent;     
+import org.cytoscape.model.events.AddedNodeListener;  
+import org.cytoscape.model.events.RemovedNodeListener;
+import org.cytoscape.model.events.RemovedNodeEvent;
+import org.cytoscape.model.events.RemovedEdgeEvent;     
+import org.cytoscape.model.events.RemovedEdgeListener;
+
+import org.cytoscape.model.events.internal.NodeEvent;
+import org.cytoscape.model.events.internal.EdgeEvent;
 
 public class CyNetworkImpl implements CyNetwork {
 
@@ -34,12 +51,13 @@ public class CyNetworkImpl implements CyNetwork {
 	final static private int IN = 1;
 	final static private int UN = 2;
 
+	final private Map<String,CyDataTable> netAttrMgr;
 	final private Map<String,CyDataTable> nodeAttrMgr;
 	final private Map<String,CyDataTable> edgeAttrMgr;
-	final private Map<String,CyDataTable> netAttrMgr;
 
+	final private CyEventHelper eventHelper;
 
-	public CyNetworkImpl() {
+	public CyNetworkImpl(CyEventHelper eh) {
 		suid = IdFactory.getNextSUID();
 		dg = DynamicGraphFactory.instantiateDynamicGraph();
 		nodeList = new ArrayList<CyNode>();
@@ -47,82 +65,124 @@ public class CyNetworkImpl implements CyNetwork {
 		nodeCount = new AtomicInteger(0);
 		edgeCount = new AtomicInteger(0);
 
-		nodeAttrMgr = new HashMap<String,CyDataTable>();
-		edgeAttrMgr = new HashMap<String,CyDataTable>();
 		netAttrMgr = new HashMap<String,CyDataTable>();
+        netAttrMgr.put("USER",new CyDataTableImpl(null,suid + " network",true));
+
+		nodeAttrMgr = new HashMap<String,CyDataTable>();
+        nodeAttrMgr.put("USER",new CyDataTableImpl(null,suid + " node",true));
+
+		edgeAttrMgr = new HashMap<String,CyDataTable>();
+        edgeAttrMgr.put("USER",new CyDataTableImpl(null,suid + " edge",true));
+
+		eventHelper = eh;
 	}
 
 	public long getSUID() {
 		return suid;
 	}
 
-	public synchronized CyNode addNode() {
+	public CyNode addNode() {
 
-		int newNodeInd = dg.nodeCreate();	
-		CyNode newNode = new CyNodeImpl(this,newNodeInd,nodeAttrMgr);
-		if ( newNodeInd == nodeList.size() )
-			nodeList.add( newNode );
-		else if ( newNodeInd < nodeList.size() && newNodeInd >= 0 )
-			nodeList.set( newNodeInd, newNode );
-		else
-			throw new IllegalStateException("bad new int index: " + newNodeInd + " max size: " + nodeList.size());
+		CyNode newNode;
 
-		nodeCount.incrementAndGet();
+		synchronized (this) {
+			int newNodeInd = dg.nodeCreate();	
+			newNode = new CyNodeImpl(this,newNodeInd,nodeAttrMgr);
+			if ( newNodeInd == nodeList.size() )
+				nodeList.add( newNode );
+			else if ( newNodeInd < nodeList.size() && newNodeInd >= 0 )
+				nodeList.set( newNodeInd, newNode );
+			else
+				throw new IllegalStateException("bad new int index: " + newNodeInd + " max size: " + nodeList.size());
+			nodeCount.incrementAndGet();
+		}
+
+		eventHelper.fireSynchronousEvent( (AddedNodeEvent) new NodeEvent(newNode, this), 
+		                                  AddedNodeListener.class );
 
 		return newNode;
 	}
 
-	public synchronized boolean removeNode(final CyNode node) {
+	public boolean removeNode(final CyNode node) {
 
-		if ( !containsNode(node) ) 
-			return false;
+		eventHelper.fireSynchronousEvent( (AboutToRemoveNodeEvent) new NodeEvent(node, this), 
+		                                  AboutToRemoveNodeListener.class );
 
-		List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,EdgeType.ANY_EDGE);
-		for ( CyEdge etr : edgesToRemove ) {
-			boolean removeSuccess = removeEdge(etr);
-			if ( !removeSuccess )
-				throw new IllegalStateException("couldn't remove edge in preparation for node removal: " + etr);	
+		boolean rem = false;
+
+		synchronized (this) {
+			if ( !containsNode(node) ) 
+				return false;
+
+			List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,EdgeType.ANY_EDGE);
+			for ( CyEdge etr : edgesToRemove ) {
+				boolean removeSuccess = removeEdge(etr);
+				if ( !removeSuccess )
+					throw new IllegalStateException("couldn't remove edge in preparation for node removal: " + etr);	
+			}
+
+			int remInd = node.getIndex();
+			rem = dg.nodeRemove(remInd);
+			if ( rem ) {
+				nodeList.set(remInd, null);
+				nodeCount.decrementAndGet();
+			}
 		}
 
-		int remInd = node.getIndex();
-		boolean rem = dg.nodeRemove(remInd);
-		if ( rem ) {
-			nodeList.set(remInd, null);
-			nodeCount.decrementAndGet();
-		}
+		eventHelper.fireSynchronousEvent( (RemovedNodeEvent)new NodeEvent(null, this), 
+		                                  RemovedNodeListener.class );
 
 		return rem;
 	}
 
-	public synchronized CyEdge addEdge(final CyNode source, final CyNode target, final boolean isDirected) {
-		if ( !containsNode(source) || !containsNode(target) ) 
-			throw new IllegalArgumentException("invalid input nodes");
+	public CyEdge addEdge(final CyNode source, final CyNode target, final boolean isDirected) {
 
-		int newEdgeInd = dg.edgeCreate(source.getIndex(),target.getIndex(),isDirected);
+		CyEdge newEdge;
 
-		CyEdge newEdge = new CyEdgeImpl(source,target,isDirected,newEdgeInd,edgeAttrMgr);
-		if ( newEdgeInd == edgeList.size() )
-			edgeList.add( newEdge );
-		else if ( newEdgeInd < edgeList.size() && newEdgeInd > 0 )
-			edgeList.set( newEdgeInd, newEdge );
-		else
-			throw new IllegalStateException("bad new int index: " + newEdgeInd + " max size: " + edgeList.size());
+		synchronized (this) {
+			if ( !containsNode(source) || !containsNode(target) ) 
+				throw new IllegalArgumentException("invalid input nodes");
 
-		edgeCount.incrementAndGet();
+			int newEdgeInd = dg.edgeCreate(source.getIndex(),target.getIndex(),isDirected);
+
+			newEdge = new CyEdgeImpl(source,target,isDirected,newEdgeInd,edgeAttrMgr);
+			if ( newEdgeInd == edgeList.size() )
+				edgeList.add( newEdge );
+			else if ( newEdgeInd < edgeList.size() && newEdgeInd > 0 )
+				edgeList.set( newEdgeInd, newEdge );
+			else
+				throw new IllegalStateException("bad new int index: " + newEdgeInd + " max size: " + edgeList.size());
+
+			edgeCount.incrementAndGet();
+		}
+
+		eventHelper.fireSynchronousEvent( (AddedEdgeEvent) new EdgeEvent(newEdge, this), 
+		                                  AddedEdgeListener.class );
+
 		return newEdge;
 	}
 
 
-	public synchronized boolean removeEdge(final CyEdge edge) {
-		if ( !containsEdge(edge) ) 
-			return false;
+	public boolean removeEdge(final CyEdge edge) {
+		eventHelper.fireSynchronousEvent( (AboutToRemoveEdgeEvent) new EdgeEvent(edge, this), 
+		                                  AboutToRemoveEdgeListener.class );
 
-		int remInd = edge.getIndex();
-		boolean rem = dg.edgeRemove(remInd);
-		if ( rem ) {
-			edgeList.set(remInd, null);
-			edgeCount.decrementAndGet();
+		boolean rem = false;
+
+		synchronized (this) {
+			if ( !containsEdge(edge) ) 
+				return false;
+
+			int remInd = edge.getIndex();
+			rem = dg.edgeRemove(remInd);
+			if ( rem ) {
+				edgeList.set(remInd, null);
+				edgeCount.decrementAndGet();
+			}
 		}
+
+		eventHelper.fireSynchronousEvent( (RemovedEdgeEvent) new EdgeEvent(null, this), 
+		                                  RemovedEdgeListener.class );
 		
 		return rem;
 	}
@@ -293,29 +353,29 @@ public class CyNetworkImpl implements CyNetwork {
 	}
 
 	public CyRow getCyRow(String namespace) {
-        if ( namespace == null )
-            throw new NullPointerException("namespace is null");
+		if ( namespace == null )
+			throw new NullPointerException("namespace is null");
 
-        CyDataTable table = netAttrMgr.get(namespace);
-        if ( table == null )
-            throw new NullPointerException("CyDataTable is null for namespace: " + namespace);
+		CyDataTable mgr = netAttrMgr.get(namespace);
+		if ( mgr == null )
+			throw new NullPointerException("attribute manager is null for namespace: " + namespace);
 
-        return table.getRow(suid);
+		return mgr.getRow(suid);
 	}
 
 	public CyRow attrs() {
 		return getCyRow("USER");
 	}
 
-	public Map<String,? extends CyDataTable> getNetworkCyDataTables() {
-		return netAttrMgr;	 
+	public Map<String,CyDataTable> getNetworkCyDataTables() {
+		return netAttrMgr;	
 	}
 
-	public Map<String,? extends CyDataTable> getNodeCyDataTables() {
+	public Map<String,CyDataTable> getNodeCyDataTables() {
 		return nodeAttrMgr;
 	}
 
-	public Map<String,? extends CyDataTable> getEdgeCyDataTables() {
+	public Map<String,CyDataTable> getEdgeCyDataTables() {
 		return edgeAttrMgr;
 	}
 }

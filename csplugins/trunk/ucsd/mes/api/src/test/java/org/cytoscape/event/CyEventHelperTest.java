@@ -12,7 +12,7 @@ import java.util.List;
 import org.springframework.osgi.mock.*;
 import org.osgi.framework.*;
 
-import org.cytoscape.event.impl.*;
+import org.cytoscape.event.internal.*;
 
 public class CyEventHelperTest extends TestCase {
 

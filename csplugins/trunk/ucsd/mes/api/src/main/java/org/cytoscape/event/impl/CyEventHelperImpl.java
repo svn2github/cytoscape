@@ -1,12 +1,15 @@
 
 
-package org.cytoscape.event.impl;
+package org.cytoscape.event.internal;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import java.util.List;
 import java.util.LinkedList;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -31,10 +34,24 @@ public class CyEventHelperImpl implements CyEventHelper {
 	 * Calls each listener found in the Service Registry identified by
 	 * the listenerClass and filter with the supplied event.
 	 */
-	public <E extends CyEvent, L extends CyEventListener<E>> void fireSynchronousEvent( final E event, final Class<L> listenerClass ) {
+	public <E extends CyEvent, L extends CyEventListener> void fireSynchronousEvent( final E event, final Class<L> listenerClass ) {
 		List<L> listeners = getListeners(listenerClass);
-		for ( L listener : listeners )
-			listener.handleEvent(event);
+		try {
+
+			Method method = listenerClass.getMethod("handleEvent", event.getClass().getInterfaces()[0]);
+			for ( L listener : listeners )
+				method.invoke(listener,event);
+
+		} catch (NoSuchMethodException e) {
+			System.err.println("Listener doesn't implement \"handleEvent\" method: "+listenerClass.getName());
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			System.err.println("Listener can't invoke \"handleEvent\" method: "+listenerClass.getName());
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			System.err.println("Listener can't exectue \"handleEvent\" method: "+listenerClass.getName());
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -44,15 +61,29 @@ public class CyEventHelperImpl implements CyEventHelper {
 	 * <p>
 	 * This method should <b>ONLY</b> ever be called with a thread safe event object!
 	 */
-	public <E extends CyEvent, L extends CyEventListener<E>> void fireAsynchronousEvent( final E event, final Class<L> listenerClass ) {
+	public <E extends CyEvent, L extends CyEventListener> void fireAsynchronousEvent( final E event, final Class<L> listenerClass ) {
 		final List<L> listeners = getListeners(listenerClass);
+		try {
+		final Method method = listenerClass.getMethod("handleEvent", event.getClass().getInterfaces()[0]);
 		for ( final L listener : listeners ) {
 			Runnable task = new Runnable() {
 				public void run() {
-					listener.handleEvent(event);
+					try {
+						method.invoke(listener,event);
+					} catch (IllegalAccessException e) {
+						System.err.println("Listener can't exectue \"handleEvent\" method: "+listenerClass.getName());
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						System.err.println("Listener can't invoke \"handleEvent\" method: "+listenerClass.getName());
+						e.printStackTrace();
+					}
 				}
 			};
 			exec.execute(task);
+		}
+		} catch (NoSuchMethodException e) {
+			System.err.println("Listener doesn't implement \"handleEvent\" method: "+listenerClass.getName());
+			e.printStackTrace();
 		}
 	}
 	

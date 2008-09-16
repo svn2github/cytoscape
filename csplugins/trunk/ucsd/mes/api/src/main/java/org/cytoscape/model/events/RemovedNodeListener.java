@@ -6,6 +6,6 @@ import org.cytoscape.event.CyEventListener;
 /**
  * Listener for RemovedNodeEvents.
  */
-public interface RemovedNodeListener extends CyEventListener<RemovedNodeEvent> {
+public interface RemovedNodeListener extends CyEventListener {
 	public void handleEvent(RemovedNodeEvent e);
 }

@@ -1,12 +1,16 @@
-package org.cytoscape.model.network;
+package org.cytoscape.model;
 
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.impl.CyNetworkImpl;
-import org.cytoscape.model.attrs.CyAttributesManager;
-import org.cytoscape.model.attrs.InitialCyAttributesManager;
+import org.cytoscape.model.internal.CyNetworkImpl;
+
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.CyEventListener;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -18,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.cytoscape.model.attrs.CyAttributes;
 
 public class CyNetworkTest extends TestCase {
 
@@ -29,16 +32,7 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	public void setUp() {
-		Map<String,CyAttributesManager> netm = new HashMap<String,CyAttributesManager>();
-		netm.put("USER",InitialCyAttributesManager.getInstance());
-
-		Map<String,CyAttributesManager> nodem = new HashMap<String,CyAttributesManager>();
-		nodem.put("USER",InitialCyAttributesManager.getInstance());
-
-		Map<String,CyAttributesManager> edgem = new HashMap<String,CyAttributesManager>();
-		edgem.put("USER",InitialCyAttributesManager.getInstance());
-
-		net = new CyNetworkImpl(netm,nodem,edgem);
+		net = new CyNetworkImpl( new DummyCyEventHelper() );	
 	}
 
 	public void tearDown() {
@@ -798,39 +792,39 @@ public class CyNetworkTest extends TestCase {
 	}
 
 	
-	public void testGetCyAttributes() {
-		// As long as the object is not null and is an instance of CyAttributes, we
-		// should be satisfied.  Don't test any other properties of CyAttributes.  
-		// Leave that to the CyAttributes unit tests.
+	public void testGetCyRow() {
+		// As long as the object is not null and is an instance of CyRow, we
+		// should be satisfied.  Don't test any other properties of CyRow.  
+		// Leave that to the CyRow unit tests.
 
-		assertNotNull("cyattrs exists",net.getCyAttributes("USER")); 
-		assertTrue("cyattrs is CyAttributes",net.getCyAttributes("USER") instanceof CyAttributes);
+		assertNotNull("cyattrs exists",net.getCyRow("USER")); 
+		assertTrue("cyattrs is CyRow",net.getCyRow("USER") instanceof CyRow);
 	}
 
-    public void testGetCyAttributesNullNamespace() {
+    public void testGetCyRowNullNamespace() {
         try {
-            net.getCyAttributes(null);
+            net.getCyRow(null);
             fail("didn't throw a NullPointerException for null namespace");
         } catch ( NullPointerException npe ) { return; }
         fail("didn't catch what was thrown" );
     }
 
-    public void testCyAttributesBadNamespace() {
+    public void testCyRowBadNamespace() {
         try {
-            net.getCyAttributes("homeradfasdf");
+            net.getCyRow("homeradfasdf");
             fail("didn't throw a NullPointerException for null namespace");
         } catch ( NullPointerException npe ) { return; }
         fail("didn't catch what was thrown");
     }
 
-	public void testGetCyAttributesManagers() {
-		assertNotNull( net.getNetworkCyAttributesManagers() );
-		assertNotNull( net.getNodeCyAttributesManagers() );
-		assertNotNull( net.getEdgeCyAttributesManagers() );
+	public void testGetCyDataTables() {
+		assertNotNull( net.getNetworkCyDataTables() );
+		assertNotNull( net.getNodeCyDataTables() );
+		assertNotNull( net.getEdgeCyDataTables() );
 
-		assertTrue( net.getNetworkCyAttributesManagers() instanceof Map );
-		assertTrue( net.getNodeCyAttributesManagers() instanceof Map );
-		assertTrue( net.getEdgeCyAttributesManagers() instanceof Map );
+		assertTrue( net.getNetworkCyDataTables() instanceof Map );
+		assertTrue( net.getNodeCyDataTables() instanceof Map );
+		assertTrue( net.getEdgeCyDataTables() instanceof Map );
 	}
 
 	// 
@@ -847,7 +841,11 @@ public class CyNetworkTest extends TestCase {
 		public long getSUID() {
 			return suid;
 		}
-		public CyAttributes getCyAttributes(String ns) {
+		public CyRow getCyRow(String ns) {
+			return null;
+		}
+
+		public CyRow attrs() {
 			return null;
 		}
 	}

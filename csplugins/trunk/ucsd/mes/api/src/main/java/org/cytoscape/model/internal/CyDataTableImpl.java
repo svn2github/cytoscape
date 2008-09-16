@@ -38,9 +38,17 @@ public class CyDataTableImpl implements CyDataTable {
 			types = new HashMap<String,Class<?>>(typeMap);
 			// TODO!
 			unique = new HashMap<String,Boolean>();
-			for ( String key : typeMap.keySet() )
-				attributes.put( key, new HashMap<Long,Object>() );
 		}
+
+		// setup defaults
+		types.put("name",String.class);
+		unique.put("name",false);
+
+		types.put("selected",Boolean.class);
+		unique.put("selected",false);
+		
+		for ( String key : types.keySet() )
+			attributes.put( key, new HashMap<Long,Object>() );
 	}
 
 	public Map<String,Class<?>> getColumnTypeMap() {

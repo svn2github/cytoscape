@@ -4,7 +4,6 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.model.Identifiable;
-
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
 
@@ -24,19 +23,18 @@ class GraphObjImpl implements GraphObject, Identifiable {
 		return suid;
 	}
 
-	public CyRow attrs() {
-		return getCyRow("USER");
-	}
-
 	public CyRow getCyRow(String namespace) {
         if ( namespace == null )
             throw new NullPointerException("namespace is null");
 
-        // argh!
-        CyDataTable table = attrMgr.get(namespace);
-        if ( table == null )
+        CyDataTable mgr = attrMgr.get(namespace);
+        if ( mgr == null )
             throw new NullPointerException("attribute manager is null for namespace: " + namespace);
 
-        return table.getRow(suid);
+        return mgr.getRow(suid);
+	}
+
+	public CyRow attrs() {
+		return getCyRow("USER");
 	}
 }

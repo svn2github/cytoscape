@@ -12,8 +12,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.net.URI;
 
-import org.cytoscape.model.attrs.*;
-import org.cytoscape.model.network.*;
+import org.cytoscape.model.*;
 
 
 public class CyReaderTest extends TestCase {
@@ -34,9 +33,9 @@ public class CyReaderTest extends TestCase {
 		assertTrue( true );
 	}
 
-	private class ReadTest implements CyAttributesReader, CyNetworkReader {
+	private class ReadTest implements CyDataTableReader, CyNetworkReader {
 		ReadTest() {}
-		public List<CyAttributes> getReadAttributes() {return null;}
+		public List<CyDataTable> getReadDataTables() {return null;}
 		public List<CyNetwork> getReadNetworks() {return null;}
 		public void read(){}
 		public void setInput(URI u){}

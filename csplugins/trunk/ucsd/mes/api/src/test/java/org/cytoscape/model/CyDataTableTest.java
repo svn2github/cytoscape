@@ -1,8 +1,8 @@
 
-package org.cytoscape.model.attrs;
+package org.cytoscape.model;
 
-import org.cytoscape.model.attrs.CyDataTable;
-import org.cytoscape.model.attrs.impl.CyDataTableImpl;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.internal.CyDataTableImpl;
 
 import junit.framework.Assert;
 import junit.framework.Test;

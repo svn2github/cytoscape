@@ -1,5 +1,5 @@
 
-package org.cytoscape.event.impl;
+package org.cytoscape.event.internal;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleActivator;

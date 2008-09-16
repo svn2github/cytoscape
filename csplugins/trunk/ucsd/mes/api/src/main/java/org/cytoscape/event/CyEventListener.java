@@ -17,12 +17,6 @@ package org.cytoscape.event;
  * means users are either must register as different listeners
  * or handle different event types in the handleEvent method. 
  */
-public interface CyEventListener<T extends CyEvent> {
+public interface CyEventListener {
 
-	/**
-	 * This is the basic method that will need to be implemented by classes
-	 * to be able to listen for {@link CyEvent}s.
-	 * @param e The event that was 'heard' by this listener.
-	 */
-	public void handleEvent(T e); 
 }
