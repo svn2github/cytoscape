@@ -2,16 +2,12 @@
 package org.cytoscape.model;
 
 import java.util.List;
-/*
-public interface CyMetaNode extends CyNode { 
-	public CySubNetwork getChildNetwork();
-}
-*/
+
 public interface CyNode extends GraphObject { 
 	public int getIndex();
 
 	// I still don't think these should be here.
-	public List<CyNode> getNeighborList( EdgeType edgeType );
-	public List<CyEdge> getAdjacentEdgeList( EdgeType edgeType );
-	public List<CyEdge> getConnectingEdgeList( CyNode target, EdgeType edgeType );
+	public List<CyNode> getNeighborList( CyEdge.Type edgeType );
+	public List<CyEdge> getAdjacentEdgeList( CyEdge.Type edgeType );
+	public List<CyEdge> getConnectingEdgeList( CyNode target, CyEdge.Type edgeType );
 }

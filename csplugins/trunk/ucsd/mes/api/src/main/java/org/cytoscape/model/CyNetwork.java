@@ -4,21 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
-/*
-public interface CyRootNetwork extends CyNetwork {
-	public List<CyNode> getAllNodes();
-	public List<CyEdge> getAllEdges();
-	public CyMetaNode createMetaNode( List<CyNode> nodes );
-	public void removeMetaNode( CyMetaNode node ); // Removes the metanode and the CySubNetwork, not the contined nodes in the subnetwork
-	public List<CySubNetwork> getAllSubNetworks();
-}
 
-public interface CySubNetwork extends CyNetwork {
-	public CyMetaNode getParentNode();
-	public void copyToNetwork( CyNode node );
-	public void removeFromNetwork( CyNode node );
-}
-*/
 public interface CyNetwork extends Identifiable, GraphObject {
 
 	public CyNode addNode();
@@ -40,9 +26,9 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	public CyNode getNode(int index);
 	public CyEdge getEdge(int index);
 
-	public List<CyNode> getNeighborList( CyNode node, EdgeType edgeType );
-	public List<CyEdge> getAdjacentEdgeList( CyNode node, EdgeType edgeType );
-	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, EdgeType edgeType );
+	public List<CyNode> getNeighborList( CyNode node, CyEdge.Type edgeType );
+	public List<CyEdge> getAdjacentEdgeList( CyNode node, CyEdge.Type edgeType );
+	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, CyEdge.Type edgeType );
 
 	/**
 	 * Defines the attributes available for the CyNetwork.

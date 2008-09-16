@@ -18,7 +18,6 @@ import org.cytoscape.event.CyEventHelper;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.EdgeType;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
 
@@ -114,7 +113,7 @@ public class CyNetworkImpl implements CyNetwork {
 			if ( !containsNode(node) ) 
 				return false;
 
-			List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,EdgeType.ANY_EDGE);
+			List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,CyEdge.Type.ANY);
 			for ( CyEdge etr : edgesToRemove ) {
 				boolean removeSuccess = removeEdge(etr);
 				if ( !removeSuccess )
@@ -252,7 +251,7 @@ public class CyNetworkImpl implements CyNetwork {
 		return it.hasNext();
 	}
 
-	public List<CyNode> getNeighborList( final CyNode node, final EdgeType edgeType ) {
+	public List<CyNode> getNeighborList( final CyNode node, final CyEdge.Type edgeType ) {
 
 		boolean[] et = convertEdgeType(edgeType);
 
@@ -279,7 +278,7 @@ public class CyNetworkImpl implements CyNetwork {
 		return nodes;
 	}
 
-	public List<CyEdge> getAdjacentEdgeList( final CyNode node, final EdgeType edgeType ) {
+	public List<CyEdge> getAdjacentEdgeList( final CyNode node, final CyEdge.Type edgeType ) {
 		boolean[] et = convertEdgeType(edgeType);
 
 		ArrayList<CyEdge> edges = new ArrayList<CyEdge>();
@@ -302,7 +301,7 @@ public class CyNetworkImpl implements CyNetwork {
 	}
 
 	public List<CyEdge> getConnectingEdgeList( final CyNode source, final CyNode target, 
-	                                           final EdgeType edgeType ) {
+	                                           final CyEdge.Type edgeType ) {
 		boolean[] et = convertEdgeType(edgeType);
 
 		ArrayList<CyEdge> edges = new ArrayList<CyEdge>();
@@ -338,17 +337,17 @@ public class CyNetworkImpl implements CyNetwork {
 			return edgeList.get(index);
 	}
 
-	private boolean[] convertEdgeType(final EdgeType e) {
+	private boolean[] convertEdgeType(final CyEdge.Type e) {
 
-		if ( e == EdgeType.UNDIRECTED_EDGE )
+		if ( e == CyEdge.Type.UNDIRECTED )
 			return new boolean[] { false, false, true }; 
-		else if ( e == EdgeType.DIRECTED_EDGE )
+		else if ( e == CyEdge.Type.DIRECTED )
 			return new boolean[] { true, true, false }; 
-		else if ( e == EdgeType.INCOMING_EDGE )
+		else if ( e == CyEdge.Type.INCOMING )
 			return new boolean[] { false, true, false }; 
-		else if ( e == EdgeType.OUTGOING_EDGE )
+		else if ( e == CyEdge.Type.OUTGOING )
 			return new boolean[] { true, false, false }; 
-		else // ANY_EDGE
+		else // ANY
 			return new boolean[] { true, true, true }; 
 	}
 
