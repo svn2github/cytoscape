@@ -29,14 +29,13 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 	public final void intercept(Object command) {
 		List<T> handlerList = new LinkedList<T>();
 
-		// Find each field in the class.
-		for (Field field : command.getClass().getDeclaredFields()) {
+		// Find each public field in the class.
+		for (Field field : command.getClass().getFields()) {
 
 			// See if the field is annotated as a Tunable.
    			if (field.isAnnotationPresent(Tunable.class)) {
 				try {
 					Tunable tunable = field.getAnnotation(Tunable.class);
-					field.setAccessible(true);
 					
 					// Get a handler for this particular field type and
 					// add it to the list.

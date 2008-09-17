@@ -15,7 +15,7 @@ public interface CyReader {
 
 	/**
 	 * Calling this method will initiate reading of the input specified in the
-	 * {@link CyReader#setInput(URI u)}. This method will return once the data
+	 * {@link CyReader#setInput(InputStream is)}. This method will return once the data
 	 * has been read and will(?) throw an exception otherwise.
 	 * 
 	 * @throws IOException Will throw an IOException when any problem arises
