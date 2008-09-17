@@ -2,9 +2,6 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <? include "config.php"; ?>
 
-<! Updated by kono for 2.6 4_2_2008 >
-<! Updated by apico with "latest release" variables for future updates (see config.php). 12_21_2006 >
-
 <html>
 
 	<head>
@@ -35,9 +32,17 @@ Release Notes &raquo; </a></div>
 
 
 <div id="main">
+<div class="item">
+
+<h2><i>New!</i>Cytoscape 2.6.1</h2>
+<div id="paragraph">
+Scooter, your text here.
+</div>
+</div>
+
 
 <div class="item">
-<h2><i>New!</i> Cytoscape 2.6.0</h2>
+<h2>Cytoscape 2.6.0</h2>
 <a href="screenshots/2_6_ss1.png"> <img
 	src="screenshots/2_6_ss1_thumb.png" alt="Cytoscape 2.6 Screenshot" />
 </a>
