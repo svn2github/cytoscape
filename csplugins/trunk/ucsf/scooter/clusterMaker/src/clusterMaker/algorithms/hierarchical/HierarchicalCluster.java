@@ -176,15 +176,28 @@ public class HierarchicalCluster extends AbstractClusterAlgorithm {
 		if (debug)
 			logger.debug("Performing hierarchical cluster with method: "+clusterMethod+" using "+distanceMetric+" and attributes: "+dataAttributes);
 		if (dataAttributes == null || dataAttributes.length() == 0) {
-			logger.error("Must have an attribute list to use for cluster weighting");
-			if (monitor != null)
+			if (monitor != null) {
+				logger.warning("Must have an attribute list to use for cluster weighting");
 				monitor.setException(null, "Error: no attribute list selected");
+			} else
+				logger.error("Must have an attribute list to use for cluster weighting");
 			return;
 		}
+
 		// Get our attributes we're going to use for the cluster
 		String attributeArray[] = getAttributeArray(dataAttributes);
 		// To make debugging easier, sort the attribute array
 		Arrays.sort(attributeArray);
+
+		// If we've got node attributes, there must be at least two
+		if (attributeArray.length == 1 && attributeArray[0].startsWith("node.")) {
+			if (monitor != null) {
+				logger.warning("Must have at least two node attributes for cluster weighting");
+				monitor.setException(null, "Error: not enough attributes selected");
+			} else
+				logger.error("Must have at least two node attributes for cluster weighting");
+			return;
+		}
 
 		// Start by cleaning up and resetting
 		EisenCluster.resetAttributes();

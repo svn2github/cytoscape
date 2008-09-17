@@ -185,9 +185,11 @@ public class KMeansCluster extends AbstractClusterAlgorithm {
 			logger.debug("Performing k-means cluster with k="+kNumber+" using "+distanceMetric+" and attributes: "+dataAttributes);
 
 		if (dataAttributes == null || dataAttributes.length() == 0) {
-			logger.error("Must have an attribute list to use for cluster weighting");
-			if (monitor != null)
+			if (monitor != null) {
 				monitor.setException(null, "Error: no attribute list selected");
+				logger.warning("Must have an attribute list to use for cluster weighting");
+			} else
+				logger.error("Must have an attribute list to use for cluster weighting");
 			return;
 		}
 
