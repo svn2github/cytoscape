@@ -28,14 +28,13 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 	public final void intercept(Command command) {
 		List<T> handlerList = new LinkedList<T>();
 
-		// Find each field in the class.
-		for (Field field : command.getClass().getDeclaredFields()) {
+		// Find each public field in the class.
+		for (Field field : command.getClass().getFields()) {
 
 			// See if the field is annotated as a Tunable.
    			if (field.isAnnotationPresent(Tunable.class)) {
 				try {
 					Tunable tunable = field.getAnnotation(Tunable.class);
-					field.setAccessible(true);
 					
 					// Get a handler for this particular field type and
 					// add it to the list.
@@ -43,11 +42,31 @@ public abstract class AbstractTunableInterceptor<T extends Handler>
 
 					if ( handler != null )
 					 	handlerList.add( handler ); 
-					else
-						System.out.println("No handler for type: " + field.getType().getName());
 
 				} catch (Throwable ex) {
 					System.out.println("tunable intercept failed: " + field.toString() );
+					ex.printStackTrace();
+				}
+			}
+		}
+
+		// Find each public method in the class.
+		for (Method method : command.getClass().getMethods()) {
+
+			// See if the method is annotated as a Tunable.
+   			if (method.isAnnotationPresent(Tunable.class)) {
+				try {
+					Tunable tunable = method.getAnnotation(Tunable.class);
+					
+					// Get a handler for this particular field type and
+					// add it to the list.
+					T handler = factory.getHandler(method,command,tunable);
+
+					if ( handler != null )
+					 	handlerList.add( handler ); 
+
+				} catch (Throwable ex) {
+					System.out.println("tunable intercept failed: " + method.toString() );
 					ex.printStackTrace();
 				}
 			}

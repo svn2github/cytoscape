@@ -5,6 +5,10 @@ import java.lang.reflect.*;
 import org.example.tunable.*;
 
 public class GuiHandlerFactory implements HandlerFactory<GuiHandler> {
+	public GuiHandler getHandler(Method m, Object o, Tunable t) {
+		return null;
+	}
+
 	public GuiHandler getHandler(Field f, Object o, Tunable t) {
 		Class type = f.getType();
 		if ( type == int.class || type == Integer.class )

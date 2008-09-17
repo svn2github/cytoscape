@@ -11,6 +11,7 @@ public class StringCLHandler implements CLHandler {
 	Field f;
 	Object o;
 	Tunable t;
+	Method m;
 
 	public StringCLHandler(Field f, Object o, Tunable t) {
 		this.f = f;
@@ -18,19 +19,38 @@ public class StringCLHandler implements CLHandler {
 		this.t = t;
 	}
 
+	public StringCLHandler(Method m, Object o, Tunable t) {
+		this.m = m;
+		this.o = o;
+		this.t = t;
+	}
+
+	private String getName() {
+		if ( f != null )
+			return f.getName();
+		else if ( m != null )
+			return m.getName();
+		else
+			return "";
+	}
 	
 	public Option getOption() {
-		String n = f.getName();
+		String n = getName();
 
 		return new Option(n.substring(0,1), n, true, t.description());
 	}
 
 	public void handleLine( CommandLine line ) {
-		String n = f.getName();
+		String n = getName();
 		String fc = n.substring(0,1);
 		try {
 		if ( line.hasOption( fc ) ) {
-			f.set(o,line.getOptionValue(fc) );
+			if ( f != null )
+				f.set(o,line.getOptionValue(fc) );
+			else if ( m != null )
+				m.invoke(o,Integer.parseInt(line.getOptionValue(fc)) );
+			else 
+				throw new Exception("no Field or Method to set!");
 		}
 		} catch(Exception e) {e.printStackTrace();}
 	}
