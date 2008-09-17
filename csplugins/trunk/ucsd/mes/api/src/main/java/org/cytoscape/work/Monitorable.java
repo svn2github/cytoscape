@@ -8,7 +8,13 @@ package org.cytoscape.work;
  */
 public interface Monitorable {
 
+	/**
+	 * @param t The {@link TaskMonitor} the implementing class should use.
+	 */
 	public void setTaskMonitor( TaskMonitor t );
 
+	/**
+	 * @return The {@link TaskMonitor} the implementing class is using. 
+	 */
 	public TaskMonitor getTaskMonitor();
 }

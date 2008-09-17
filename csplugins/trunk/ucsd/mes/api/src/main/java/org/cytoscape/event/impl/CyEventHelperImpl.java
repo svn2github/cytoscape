@@ -64,26 +64,42 @@ public class CyEventHelperImpl implements CyEventHelper {
 	public <E extends CyEvent, L extends CyEventListener> void fireAsynchronousEvent( final E event, final Class<L> listenerClass ) {
 		final List<L> listeners = getListeners(listenerClass);
 		try {
-		final Method method = listenerClass.getMethod("handleEvent", event.getClass().getInterfaces()[0]);
-		for ( final L listener : listeners ) {
-			Runnable task = new Runnable() {
-				public void run() {
-					try {
-						method.invoke(listener,event);
-					} catch (IllegalAccessException e) {
-						System.err.println("Listener can't exectue \"handleEvent\" method: "+listenerClass.getName());
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						System.err.println("Listener can't invoke \"handleEvent\" method: "+listenerClass.getName());
-						e.printStackTrace();
-					}
-				}
-			};
-			exec.execute(task);
-		}
+			final Method method = listenerClass.getMethod("handleEvent", event.getClass().getInterfaces()[0]);
+			for ( final L listener : listeners ) 
+				exec.execute(new Runner<E,L>(method,listener,event,listenerClass.getName()));
 		} catch (NoSuchMethodException e) {
+			// TODO should probably rethrow
 			System.err.println("Listener doesn't implement \"handleEvent\" method: "+listenerClass.getName());
 			e.printStackTrace();
+		}
+	}
+
+	private static class Runner<E extends CyEvent, L extends CyEventListener> implements Runnable {
+
+		private final Method method;
+		private final L listener;
+		private final E event;
+		private final String name;
+
+		public Runner(final Method method, final L listener, final E event, String name) {
+			this.method = method;
+			this.listener = listener;
+			this.event = event;
+			this.name = name;
+		}
+
+		public void run() {
+			try {
+				method.invoke(listener,event);
+			} catch (IllegalAccessException e) {
+				// TODO should rethrow as something
+				System.err.println("Listener can't execute \"handleEvent\" method: "+name);
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO should rethrow as something
+				System.err.println("Listener can't invoke \"handleEvent\" method: "+name);
+				e.printStackTrace();
+			}
 		}
 	}
 	

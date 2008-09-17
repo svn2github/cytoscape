@@ -21,6 +21,7 @@ public class StringHandler implements GuiHandler, ActionListener {
 		this.f = f;
 		this.o = o;
 		this.t = t;
+		this.tf = null;
 	}
 
 	
@@ -31,7 +32,7 @@ public class StringHandler implements GuiHandler, ActionListener {
 		tf = new JTextField( (String)f.get(o), 20);
 		tf.addActionListener( this );
 		ret.add( tf );
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (IllegalAccessException e) { e.printStackTrace(); }
 			
 		return ret;
 	}
@@ -41,6 +42,8 @@ public class StringHandler implements GuiHandler, ActionListener {
 	}
 
 	public void handle() {
+		if ( tf == null )
+			return;
 		String s = tf.getText();
 		try {
 		if ( s != null )

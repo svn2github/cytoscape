@@ -1,8 +1,5 @@
 package org.cytoscape.view.model2;
 
-import java.awt.Shape;
-import java.awt.Paint;
-
 import org.cytoscape.model.Identifiable;
 
 /**

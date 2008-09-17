@@ -54,7 +54,7 @@ public interface Undoable {
 	 * <p>
 	 * to the user.
 	 * @return A presentation name suitable for inclusion in user interfaces
-	 * prefixed with the words <b>UNDO:</b> and <b>REDO:</b>.
+	 * that will be prefixed with the words <b>UNDO:</b> and <b>REDO:</b>.
 	 */
 	public String getPresentationName();	
 }

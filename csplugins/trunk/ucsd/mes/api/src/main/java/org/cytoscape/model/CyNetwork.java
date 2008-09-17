@@ -2,8 +2,6 @@ package org.cytoscape.model;
 
 import java.util.List;
 import java.util.Map;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.CyDataTable;
 
 public interface CyNetwork extends Identifiable, GraphObject {
 

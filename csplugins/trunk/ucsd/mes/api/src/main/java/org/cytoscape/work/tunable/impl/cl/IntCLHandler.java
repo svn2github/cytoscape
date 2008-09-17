@@ -20,6 +20,6 @@ public class IntCLHandler extends AbstractCLHandler {
 		if ( line.hasOption( fc ) ) {
 			f.set(o,Integer.parseInt(line.getOptionValue(fc)) );
 		}
-		} catch(Exception e) {e.printStackTrace();}
+		} catch(IllegalAccessException e) {e.printStackTrace();}
 	}
 }

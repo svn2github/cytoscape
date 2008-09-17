@@ -21,6 +21,7 @@ public class IntHandler implements GuiHandler, ActionListener {
 		this.f = f;
 		this.o = o;
 		this.t = t;
+		this.tf = null;
 	}
 
 	
@@ -31,7 +32,7 @@ public class IntHandler implements GuiHandler, ActionListener {
 		tf = new JTextField( Integer.toString(f.getInt(o)), 10);
 		tf.addActionListener( this );
 		ret.add( tf );
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (IllegalAccessException e) { e.printStackTrace(); }
 			
 		return ret;
 	}
@@ -41,6 +42,8 @@ public class IntHandler implements GuiHandler, ActionListener {
 	}
 
 	public void handle() {
+		if (tf == null)
+			return;
 		String s = tf.getText();
 		try {
 		int n = Integer.parseInt(s);

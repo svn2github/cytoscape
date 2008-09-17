@@ -82,7 +82,7 @@ public enum VisualProperty {
 		classType = ct;
 	}
 
-	private Class<?> getClassType() {
+	public Class<?> getClassType() {
 		return classType;
 	}
 }
