@@ -195,7 +195,7 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 
 		int E = net.getEdgeCount();
 		numIterTextField = new javax.swing.JTextField();
-		numIterTextField.setText("" + 4*E);
+		numIterTextField.setText("" + 10*E);
 		numIterTextField.setPreferredSize(new Dimension(80,25)); 	
 		numIterTextField.setHorizontalAlignment(JTextField.RIGHT);
 		numIterLabel = new javax.swing.JLabel();
@@ -415,7 +415,7 @@ public class RandomizeExistingPanel extends RandomNetworkPanel implements Proper
 			CyNetwork net = Cytoscape.getCurrentNetwork();
 	
 			int E = net.getEdgeCount();
-			numIterTextField.setText("" + (4*E));
+			numIterTextField.setText("" + (10*E));
 			
 	  }
 
