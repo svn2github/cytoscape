@@ -107,7 +107,7 @@ public class CyDataTableImpl implements CyDataTable {
 	}
 
 	public CyRow getRow(final long suid) { 
-		return new Access(suid);
+		return new InternalRow(suid);
 	}
 
 	public CyRow addRow() {
@@ -136,6 +136,7 @@ public class CyDataTableImpl implements CyDataTable {
 		Map<Long,Object> vls = attributes.get(attrName);
 
 		if ( types.get( attrName ).isAssignableFrom( value.getClass() ) )
+			// TODO this is an implicit addRow - not sure if we want to refactor this or not
 			vls.put(suid,value);
 		else
 			throw new IllegalArgumentException("value is not of type: " + types.get(attrName));
@@ -233,11 +234,11 @@ public class CyDataTableImpl implements CyDataTable {
 	}
 
 
-	private class Access implements CyRow {
+	private class InternalRow implements CyRow {
 	
 		private final long suid;
 
-		Access(long suid) {
+		InternalRow(long suid) {
 			this.suid = suid;
 		}
 
@@ -266,6 +267,21 @@ public class CyDataTableImpl implements CyDataTable {
 			for ( String attr : attributes.keySet() ) 
 				m.put( attr, attributes.get(attr).get(suid) );
 			return m;
+		}
+
+		public @Override boolean equals(Object o) {
+			if ( !(o instanceof InternalRow) )
+				return false;
+
+			InternalRow ir = (InternalRow)o;
+			if ( ir.suid == this.suid )
+				return true;
+			else
+				return false;
+		}
+
+		public @Override int hashCode() {
+			return (int) (suid ^ (suid >>> 32));
 		}
 	} 
 }
