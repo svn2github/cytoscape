@@ -45,7 +45,7 @@ CREATE TABLE publications (
 	pubmed_html_full		text, -- converted HTML text from XML
 	pubmed_html_medium		text, -- converted HTML text from XML
 	pubmed_html_short		text, -- converted HTML text from XML
-	pubmed_html_advsearch   text after -- for advanced search page;
+	pubmed_html_advsearch   text, -- for advanced search page
 	pub_url				varchar(200  ) default '',	
 	supplement_file_id	int default -1,
 	supplement_url	varchar(150) default 'none',
