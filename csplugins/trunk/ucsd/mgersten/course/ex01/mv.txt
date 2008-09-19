@@ -1,0 +1,2 @@
+mv just renames the file
+svn mv keeps track of the changes as well
