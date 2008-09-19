@@ -36,7 +36,19 @@ Release Notes &raquo; </a></div>
 
 <h2><i>New!</i>Cytoscape 2.6.1</h2>
 <div id="paragraph">
-Scooter, your text here.
+This is a minor bug-fix release that should work with all 2.6.0 plugins.
+<p>
+There are no API changes, however we have added a new centralized logging facility. 
+See <b>Help-&gt;Error Console</b> to see Cytoscape's startup messages and any warnings or errors 
+that occur during operation.  
+<p>
+Some Bugs that have been fixed include:
+<ul>
+	<li>Topology filter performance</li>
+	<li>XGMML loading consistency</li>
+	<li>Mac usability issues</li>
+</ul>
+
 </div>
 </div>
 
