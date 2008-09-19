@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS network_files;
 DROP TABLE IF EXISTS network_image_files;
 DROP TABLE IF EXISTS network_thum_image_files;
 DROP TABLE IF EXISTS legend_files;
+DROP TABLE IF EXISTS usagelog;
 DROP TABLE IF EXISTS model;
 DROP TABLE IF EXISTS gene_model;
 DROP TABLE IF EXISTS model_similarity;
@@ -44,6 +45,7 @@ CREATE TABLE publications (
 	pubmed_html_full		text, -- converted HTML text from XML
 	pubmed_html_medium		text, -- converted HTML text from XML
 	pubmed_html_short		text, -- converted HTML text from XML
+	pubmed_html_advsearch   text after -- for advanced search page;
 	pub_url				varchar(200  ) default '',	
 	supplement_file_id	int default -1,
 	supplement_url	varchar(150) default 'none',
@@ -116,6 +118,16 @@ CREATE TABLE legend_files (
 	file_type		varchar(100) default 'unknown',
 	data			longblob
 );
+
+CREATE TABLE usagelog (
+  id int not null PRIMARY KEY auto_increment,
+  remote_host varchar(60) default NULL,
+  ip_address varchar(20) default NULL,
+  query_str varchar(120),
+  refer_page varchar(99),
+  sysdat date default NULL
+);
+
 
 -- Original four tables 
 
