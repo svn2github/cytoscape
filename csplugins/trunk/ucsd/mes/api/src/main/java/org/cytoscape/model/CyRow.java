@@ -25,7 +25,7 @@ public interface CyRow {
 
 	/**
 	 * @param columnName The name of the column to check.
-	 * @return The Class<?> object that is defined for this column. Will
+	 * @return The Class object that is defined for this column. Will
 	 * return null if the column has not been defined. Will always return
 	 * a base type. If the value is actually a {@link CyFunction} the
 	 * function will be evaluated and the function must evaluate to the
