@@ -2,7 +2,7 @@
 include_once 'db.php';
 include_once 'cc_utils.php';
 
-// get the publication list -- id, cover_image, xml, pdf
+// get the publication list -- id, cover_image, xml, html, pdf
 $publications = getAllPublications($connection);
 
 	//echo "Number of publications = ".count($publications)."\n";
@@ -47,14 +47,14 @@ $distinct_species = getSpeciesFromDB($connection);
   <table align='center' border='0' cellspacing=0 cellpadding=0 summary='search interface'>
     <tr>
       <td align='right' rowspan=2>
-	<a href='/cellcircuits/index.html'><img src='CC-logo-small.jpg' border='0' alt="Cell Circuits" title="Click to go to the Cell Circuits Home Page"/></a>
+	<a href='index.html'><img src='CC-logo-small.jpg' border='0' alt="Cell Circuits" title="Click to go to the Cell Circuits Home Page"/></a>
       </td>
       <td align="center" valign="bottom">
         <input type="text" size="55" name="search_query" value='' title='For information on valid queries, click "About CellCircuits" link to the right'/>
       </td>
       <td align='left' valign='center' rowspan=2>
-         &nbsp;<a class='white-bg-link' href='/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
-	 &nbsp;<a class='white-bg-link' href='/about_cell_circuits.html'>About&nbsp;CellCircuits</a><br/>
+         &nbsp;<a class='white-bg-link' href='index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
+	 &nbsp;<a class='white-bg-link' href='about_cell_circuits.html'>About&nbsp;CellCircuits</a><br/>
 	 &nbsp;<a class="white-bg-link" href="Tutorial-advanced-search.html">Help</a>
       </td>
     </tr>
@@ -171,7 +171,7 @@ for ($i=0; $i<count($publications)/2; $i++) {
 		  <?php
 	  }
 	  ?>
-	  <?php echo convert_xml2html($publication['pubmed_xml_record'], 'pubmedref_to_html_advanced_search_full.xsl');?><BR><P align=right>     		 
+	  <?php echo stripslashes($publication['pubmed_html_advsearch']);  ?><BR><P align=right>    
 		<?php
 		if ($publication['pdf_file_id'] != -1) {
 			?> <a class="white-bg-link" href="<?php echo "file_download.php?file_type=pdf&file_id=".$publication['pdf_file_id']; ?>">[PDF]</a> <?php
@@ -237,6 +237,10 @@ function getAllPublications($connection){
 		$publication['publication_auto_id'] = $_row["publication_auto_id"];
 		$publication['pmid'] = $_row["pmid"];
 		$publication['pubmed_xml_record'] = $_row["pubmed_xml_record"];
+		$publication['pubmed_html_advsearch'] = $_row["pubmed_html_advsearch"];
+		if ($publication['pubmed_html_advsearch'] == NULL) {
+			$publication['pubmed_html_advsearch'] = "unavailable";
+		}
 		$publication['pub_url'] = $_row["pub_url"];
 		$publication['supplement_file_id'] = $_row["supplement_file_id"];		
 		$publication['supplement_url'] = $_row["supplement_url"];
