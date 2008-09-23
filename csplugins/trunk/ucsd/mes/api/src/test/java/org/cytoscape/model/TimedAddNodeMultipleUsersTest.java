@@ -36,6 +36,7 @@
 
 package org.cytoscape.model;
 
+import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
 import junit.framework.Test;
@@ -46,61 +47,43 @@ import org.cytoscape.model.internal.CyNetworkImpl;
 
 
 /**
- * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this
+ * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 4:07:31 PM To change this
  * template use File | Settings | File Templates.
 */
-public class TimedAddNodeTest extends TestCase {
+public class TimedAddNodeMultipleUsersTest extends TestCase {
 	private CyNetwork net;
 	private int totalNodes = 100000;
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
 	public static Test suite() {
-		long maxTimeInMillis = 250;
-		Test test = new TimedAddNodeTest("testLoadNetwork");
-		Test timedTest = new TimedTest(test, maxTimeInMillis, false);
+		long maxTimeInMillis = 1000;
+		int concurrentUsers = 3;
+		Test test = new TimedAddNodeMultipleUsersTest("testLoadNetwork");
+		Test loadTest = new LoadTest(new TimedTest(test, maxTimeInMillis), concurrentUsers);
 
-		return timedTest;
+		return loadTest;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
-	 */
 	public static void main(String[] args) throws Exception {
-		TestResult result = junit.textui.TestRunner.run(suite());
-		System.out.println("Failures: " + result.failureCount());
+		junit.textui.TestRunner.run(suite());
 	}
 
-	/**
-	 * Creates a new TimedAddNodeTest object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 */
-	public TimedAddNodeTest(String name) {
+	public TimedAddNodeMultipleUsersTest(String name) {
 		super(name);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void setUp() {
 		net = new CyNetworkImpl(new DummyCyEventHelper());
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void testLoadNetwork() {
-		for (int i = 0; i < totalNodes; i++)
-			net.addNode();
+	public void setUp() {
+	}
 
-		assertEquals(net.getNodeCount(), totalNodes);
+	public void tearDown() {
+	}
+
+	public void testLoadNetwork() {
+		int localCount = 0;
+		for (int i = 0; i < totalNodes; i++)
+			if ( net.addNode() != null )
+				localCount++;
+
+		assertEquals(localCount, totalNodes);
 	}
 }
