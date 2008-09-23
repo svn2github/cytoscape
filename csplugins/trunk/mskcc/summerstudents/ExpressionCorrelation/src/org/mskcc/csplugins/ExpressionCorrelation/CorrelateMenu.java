@@ -69,8 +69,8 @@ public class CorrelateMenu extends CytoscapePlugin {
         item.addActionListener(new CorrelateMenuListener());
         subsubmenu.add(item);
         //About box
-        item = new JMenuItem("About");
-        item.addActionListener(new ExpressionCorrelationAboutAction());
+        item = new JMenuItem("Help");
+        item.addActionListener(new ExpressionCorrelationHelpAction());
         submenu.add(item);
         menu.add(submenu);
     }
