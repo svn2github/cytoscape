@@ -47,6 +47,8 @@ import cytoscape.util.CyFileFilter;
 import cytoscape.util.FileUtil;
 
 import edu.ucsd.bioeng.idekerlab.scriptenginemanager.ScriptEngineManager;
+import edu.ucsd.bioeng.idekerlab.scriptenginemanager.ScriptEngineManagerPlugin;
+import edu.ucsd.bioeng.idekerlab.scriptenginemanager.engine.ScriptingEngine;
 
 import java.io.File;
 
@@ -60,27 +62,33 @@ import javax.swing.JDialog;
  *
  */
 public class SelectScriptDialog extends JDialog {
-	private static final String DEF_ENGINE_NAME = "ruby";
 	private static SelectScriptDialog dialog = new SelectScriptDialog(null, true);
+	private static String currentEngineID;
+	
 	private String scriptName = null;
 	private Map<String, String> arguments = new HashMap<String, String>();
 
 	// Variables declaration - do not modify
 	private javax.swing.JButton cancelButton;
-	private javax.swing.JTextField fileNameTextField;
-	private javax.swing.JPanel parameterPanel;
-	private javax.swing.JTextField parameterTextField;
 	private javax.swing.JButton runButton;
-	private javax.swing.JPanel scriptFilePanel;
-	private javax.swing.JButton selectButton;
 	private javax.swing.JLabel titleLabel;
+	private javax.swing.JButton fileButton;
+	private javax.swing.JPanel filePanel;
+	private javax.swing.JTextField fileTextField;
 
 	// End of variables declaration
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public static void showDialog() {
+	public static void showDialog(String engineID) {
+		final ScriptingEngine engine = ScriptEngineManagerPlugin.getManager().getEngine(engineID);
+		if(engine == null)
+			return;
+		
+		currentEngineID = engineID;
+		dialog.titleLabel.setIcon(engine.getIcon());
 		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
+		dialog.pack();
 		dialog.setVisible(true);
 	}
 
@@ -93,146 +101,106 @@ public class SelectScriptDialog extends JDialog {
 	public SelectScriptDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
-		parameterPanel.setVisible(false);
 		pack();
 		repaint();
 	}
 
 	private void initComponents() {
 		titleLabel = new javax.swing.JLabel();
-		scriptFilePanel = new javax.swing.JPanel();
-		fileNameTextField = new javax.swing.JTextField();
-		selectButton = new javax.swing.JButton();
+		filePanel = new javax.swing.JPanel();
+		fileTextField = new javax.swing.JTextField();
+		fileButton = new javax.swing.JButton();
 		cancelButton = new javax.swing.JButton();
 		runButton = new javax.swing.JButton();
-		parameterPanel = new javax.swing.JPanel();
-		parameterTextField = new javax.swing.JTextField();
 
-		setTitle("Run Script");
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setTitle("Execute Script");
+		setResizable(false);
 
 		titleLabel.setFont(new java.awt.Font("SansSerif", 1, 14));
-		titleLabel.setText("<html><body> Run Script</body></html>");
-		//titleLabel.setBorder(new MatteBorder(0, 5, 1, 0, new Color(200, 0, 20, 150)));
-		scriptFilePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Script File",
-		                                                                       javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		                                                                       javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                       new java.awt.Font("SansSerif",
-		                                                                                         0,
-		                                                                                         13)));
+		titleLabel.setText("Run Script");
 
-		selectButton.setText("Select");
-		selectButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					selectButtonActionPerformed(evt);
-				}
-			});
+		filePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Script File",
+		                                                                 javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+		                                                                 javax.swing.border.TitledBorder.DEFAULT_POSITION,
+		                                                                 new java.awt.Font("SansSerif",
+		                                                                                   0, 12)));
 
-		org.jdesktop.layout.GroupLayout scriptFilePanelLayout = new org.jdesktop.layout.GroupLayout(scriptFilePanel);
-		scriptFilePanel.setLayout(scriptFilePanelLayout);
-		scriptFilePanelLayout.setHorizontalGroup(scriptFilePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                              .add(org.jdesktop.layout.GroupLayout.TRAILING,
-		                                                                   scriptFilePanelLayout.createSequentialGroup()
-		                                                                                        .addContainerGap()
-		                                                                                        .add(fileNameTextField,
+		fileButton.setText("Select");
+		fileButton.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	                fileButtonActionPerformed(evt);
+	            }
+	        });
+
+		org.jdesktop.layout.GroupLayout filePanelLayout = new org.jdesktop.layout.GroupLayout(filePanel);
+		filePanel.setLayout(filePanelLayout);
+		filePanelLayout.setHorizontalGroup(filePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                  .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                       filePanelLayout.createSequentialGroup()
+		                                                                      .addContainerGap()
+		                                                                      .add(fileTextField,
+		                                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                           438,
+		                                                                           Short.MAX_VALUE)
+		                                                                      .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                      .add(fileButton)
+		                                                                      .addContainerGap()));
+		filePanelLayout.setVerticalGroup(filePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                .add(filePanelLayout.createSequentialGroup()
+		                                                                    .add(filePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+		                                                                                        .add(fileButton)
+		                                                                                        .add(fileTextField,
+		                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                                                                             org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                             373,
-		                                                                                             Short.MAX_VALUE)
-		                                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                                                                        .add(selectButton)));
-		scriptFilePanelLayout.setVerticalGroup(scriptFilePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                            .add(scriptFilePanelLayout.createSequentialGroup()
-		                                                                                      .add(scriptFilePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-		                                                                                                                .add(selectButton)
-		                                                                                                                .add(fileNameTextField,
-		                                                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                                     org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-		                                                                                      .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                       Short.MAX_VALUE)));
+		                                                                                             org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+		                                                                    .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                                                     Short.MAX_VALUE)));
 
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					cancelButtonActionPerformed(evt);
-				}
-			});
-
-		runButton.setText("Run!");
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+		
+		runButton.setText("Execute");
 		runButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					runButtonActionPerformed(evt);
-				}
-			});
-
-		parameterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-		                                                                      "Command Line Arguments",
-		                                                                      javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		                                                                      javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                      new java.awt.Font("SansSerif",
-		                                                                                        0,
-		                                                                                        13)));
-
-		org.jdesktop.layout.GroupLayout parameterPanelLayout = new org.jdesktop.layout.GroupLayout(parameterPanel);
-		parameterPanel.setLayout(parameterPanelLayout);
-		parameterPanelLayout.setHorizontalGroup(parameterPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                            .add(parameterPanelLayout.createSequentialGroup()
-		                                                                                     .addContainerGap()
-		                                                                                     .add(parameterTextField,
-		                                                                                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                          437,
-		                                                                                          Short.MAX_VALUE)
-		                                                                                     .addContainerGap()));
-		parameterPanelLayout.setVerticalGroup(parameterPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                          .add(parameterPanelLayout.createSequentialGroup()
-		                                                                                   .add(parameterTextField,
-		                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                                        org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                        org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                                   .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                                                    Short.MAX_VALUE)));
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runButtonActionPerformed(evt);
+            }
+        });
 
 		org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-		this.setLayout(layout);
+		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                .add(layout.createSequentialGroup()
-		                                           .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-		                                                      .add(layout.createSequentialGroup()
-		                                                                 .addContainerGap()
-		                                                                 .add(titleLabel)
-		                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
-		                                                                                  279,
-		                                                                                  Short.MAX_VALUE))
-		                                                      .add(layout.createSequentialGroup()
-		                                                                 .addContainerGap()
+		                                .add(layout.createSequentialGroup().addContainerGap()
+		                                           .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+		                                                      .add(filePanel,
+		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                           Short.MAX_VALUE).add(titleLabel)
+		                                                      .add(org.jdesktop.layout.GroupLayout.TRAILING,
+		                                                           layout.createSequentialGroup()
 		                                                                 .add(runButton)
-		                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
-		                                           .add(cancelButton))
-		                                .add(scriptFilePanel,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     Short.MAX_VALUE)
-		                                .add(parameterPanel,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                     Short.MAX_VALUE));
+		                                                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                                                 .add(cancelButton)))
+		                                           .addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
 		                              .add(layout.createSequentialGroup().addContainerGap()
 		                                         .add(titleLabel)
 		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                         .add(scriptFilePanel,
+		                                         .add(filePanel,
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
 		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
 		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-		                                         .add(parameterPanel,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                              org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+		                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED,
+		                                                          org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
+		                                                          Short.MAX_VALUE)
 		                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
 		                                                    .add(cancelButton).add(runButton))
-		                                         .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                          Short.MAX_VALUE)));
+		                                         .addContainerGap()));
+
 		pack();
 	} // </editor-fold>
 
@@ -241,41 +209,20 @@ public class SelectScriptDialog extends JDialog {
 	}
 
 	private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		scriptName = fileNameTextField.getText();
-
-		String paramStr = parameterTextField.getText();
-		paramStr = paramStr.replace(" ", "");
-
-		String[] params = null;
-
-		if (paramStr.length() != 0) {
-			params = paramStr.split(",");
-
-			if (params.length != 0) {
-				String[] parts;
-
-				for (int i = 0; i < params.length; i++) {
-					parts = params[i].split("=");
-
-					if (parts.length == 2) {
-						arguments.put(parts[0], parts[1]);
-					}
-				}
-			}
-		}
+		scriptName = fileTextField.getText();
 
 		setVisible(false);
 		runScript();
 		dispose();
 	}
 
-	private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
-		CyFileFilter tempCFF = new CyFileFilter();
-
+	private void fileButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		final File file = FileUtil.getFile("Select Script File", FileUtil.LOAD);
+		
+		if(file == null) return;
 
-		fileNameTextField.setText(file.getAbsolutePath());
+		fileTextField.setText(file.getAbsolutePath());
+		fileTextField.setToolTipText("Target Script File: " + file.getAbsolutePath());
 		runButton.setEnabled(true);
 	}
 
@@ -307,7 +254,7 @@ public class SelectScriptDialog extends JDialog {
 
 			if (scriptName != null) {
 				try {
-					ScriptEngineManager.execute(DEF_ENGINE_NAME, scriptName, arguments);
+					ScriptEngineManager.execute(currentEngineID, scriptName, arguments);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -316,7 +263,7 @@ public class SelectScriptDialog extends JDialog {
 			}
 
 			taskMonitor.setPercentCompleted(100);
-			taskMonitor.setStatus("Script run successfully!");
+			taskMonitor.setStatus("Finished!");
 		}
 
 		public void halt() {

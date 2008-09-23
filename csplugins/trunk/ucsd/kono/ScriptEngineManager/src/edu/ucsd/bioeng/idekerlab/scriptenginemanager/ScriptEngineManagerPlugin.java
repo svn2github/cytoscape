@@ -36,23 +36,16 @@
 
 package edu.ucsd.bioeng.idekerlab.scriptenginemanager;
 
-import cytoscape.Cytoscape;
-
 import cytoscape.plugin.CytoscapePlugin;
-
-import edu.ucsd.bioeng.idekerlab.scriptenginemanager.ui.SelectScriptDialog;
-
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 
 
 /**
  *
  */
 public class ScriptEngineManagerPlugin extends CytoscapePlugin {
+	
+	private static final ScriptEngineManager manager = new ScriptEngineManager();
+	
 	/**
 	 * Constructor
 	 *
@@ -66,14 +59,9 @@ public class ScriptEngineManagerPlugin extends CytoscapePlugin {
 	 *
 	 */
 	public ScriptEngineManagerPlugin() {
-		final JMenu menu = new JMenu("Run Scripts...");
-
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins").add(menu);
-
-		menu.add(new JMenuItem(new AbstractAction("Ruby") {
-				public void actionPerformed(ActionEvent e) {
-					SelectScriptDialog.showDialog();
-				}
-			}));
+	}
+	
+	public static ScriptEngineManager getManager() {
+		return manager;
 	}
 }
