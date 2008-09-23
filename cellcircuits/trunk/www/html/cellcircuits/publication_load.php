@@ -7,7 +7,7 @@ include_once 'ZipFileParser.php';
 // get rawdata_id
 $debug = false;
 if ($debug) {
-	$rawdata_id = 12;
+	$rawdata_id = 1;
 }
 else {
 	if (isset($_GET['rawdata_id'])) {
@@ -243,19 +243,21 @@ function loadPublications($rawdata,$cover_image_file_id,$pdf_file_id, $publicati
 	if ($pubmed_xml_record != "") {
 		$pubmed_html_full =  addslashes(convert_xml2html($rawdata['pubmed_xml_record'], './pubmedref_to_html_full.xsl'));
 		$pubmed_html_medium = addslashes(convert_xml2html($rawdata['pubmed_xml_record'], './pubmedref_to_html_medium.xsl'));
-		$pubmed_html_short = addslashes(convert_xml2html($rawdata['pubmed_xml_record'], './pubmedref_to_html_short.xsl'));	
+		$pubmed_html_short = addslashes(convert_xml2html($rawdata['pubmed_xml_record'], './pubmedref_to_html_short.xsl'));
+		$pubmed_html_advsearch = addslashes(convert_xml2html($rawdata['pubmed_xml_record'], './pubmedref_to_html_advanced_search_full.xsl'));	
 	}
 	else {
 		$pubmed_html_full =  "Not available";
 		$pubmed_html_medium = "Not available";
-		$pubmed_html_short = "Not available";		
+		$pubmed_html_short = "Not available";
+		$pubmed_html_advsearch  = "Not available";		
 	}
 	
 	//echo "<br>--<br>".$pubmed_html_full."<br>--<br>";
 	
 	$dbQuery  = "INSERT INTO publications (publication_auto_id, rawdata_id, pmid, pubmed_xml_record, pubmed_html_full, 
-	pubmed_html_medium, pubmed_html_short, pub_url,supplement_file_id, supplement_url,cover_image_id, pdf_file_id) ";
-	$dbQuery .= "VALUES (0, '$rawdata_id','$pmid', '$pubmed_xml_record', '$pubmed_html_full','$pubmed_html_medium','$pubmed_html_short','$publication_url','$supplement_material_file_id', '$supplement_url','$cover_image_file_id', '$pdf_file_id')";
+	pubmed_html_medium, pubmed_html_short,pubmed_html_advsearch, pub_url,supplement_file_id, supplement_url,cover_image_id, pdf_file_id) ";
+	$dbQuery .= "VALUES (0, '$rawdata_id','$pmid', '$pubmed_xml_record', '$pubmed_html_full','$pubmed_html_medium','$pubmed_html_short','$pubmed_html_advsearch','$publication_url','$supplement_material_file_id', '$supplement_url','$cover_image_file_id', '$pdf_file_id')";
 	
 	// Run the query
 	if (!(@ mysql_query($dbQuery, $connection)))
@@ -308,11 +310,9 @@ function getRawData($rawdata_id, $connection) {
 }
 
 ////////////////////////////////////////////////////
-// This function db_load_step2() will populate the Model table and gene_model table 
+// This function db_load_step2() will populate four tables -- model, gene_model, model_similarity and enrichment
 // based on the data in tables populated at previous step.
-// Ideally other two tables (model_similarity and enrichment) should also be populated here.
-// But for now, we have to load them manually.
-////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
 
 function db_load_step2($rawdata_id, $connection) {
 	//echo "Entering db_load_step2()...\n";
@@ -338,9 +338,7 @@ function db_load_step2($rawdata_id, $connection) {
 	// load table enrichment
 	$cmd = "./load_enrichment_table.sh $pub_id > ./load_enrichment_table_output.txt &";
 	
-	//echo "Before cmd = $cmd<br>";
 	system($cmd); 
-	//echo "After cmd = $cmd<br>";
 	
 	if ($success){
 //	if (0){
@@ -358,50 +356,76 @@ All the tables except "enrichment" were loaded!
 	return $success;
 }
 
+function getRefinedGeneSet($geneArray) {
+
+	for ($i =0; $i < count($geneArray);$i++) {
+		//echo "geneArray[$i] = $geneArray[$i]\n";
+		$gene_symbols = split('\|',$geneArray[$i]);
+		for ($j=0; $j<count($gene_symbols); $j++) {
+				$refined_gene_set[$gene_symbols[$j]] = "";
+		}
+	}
+	
+	$refined_set = array_keys($refined_gene_set);
+	
+	//for ($i=0; $i<count($refined_set); $i++) {
+	//	echo "refined_set[$i] = $refined_set[$i]\n";
+	//}
+	
+	return $refined_set;
+}
+
 
 function populateGeneModelTable($pub_id, $connection) {
 	//echo "Entering populateGeneModelTable() ...\n";
 	
 	$success = true;
 
-	// get the list of sif file names ((without extesion .sif)) for this publication
+	// get the list of sif file names (without extesion .sif) for this publication
 	$network_file_basenames = getSifList($pub_id, $connection);
-	//echo "Number of network_file_basenames = ".count($network_file_basenames)."\n";
 
 	// for each model (sif file), do the following
 	for ($i=0; $i<count($network_file_basenames); $i++) {
 
 		//The name here actually is the model name
 		$name = $network_file_basenames[$i];
-		//echo "network_file_base_name =$name\n";
+		//echo "populateGeneModelTable(): model name = $name<br>";
 
 		// 1. Get the list of genes for this sif file	
 		$geneSet_from_one_sif_file = getGenesFromSif($pub_id, $name, $connection);
 				
+		// remove duplicated genes, caused by gene symbol such as "gene_symbol1|gene_symbol2"
+		$geneArray = getRefinedGeneSet(array_keys($geneSet_from_one_sif_file));
+				
+		//foreach ($geneArray as $a_gene) {
+		//	echo "geneArray: gene= $a_gene<br>";
+		//}
+		
 		// 2. Get the species related to this sif file
 		$speciesStr = getModelSpecies($pub_id, $name,$connection);
-		//echo "\tspeciesStr = $speciesStr\n";
+		//echo "speciesStr = $speciesStr\n";
 		
 		// 3. Determine the gene list, which are missing from GO Database
 		//echo "Determine the gene list, which are missing from GO Database\n";
-		$tmpArray = split(",",$speciesStr);
+		$speciesArray = split(",",$speciesStr);
 				
 		// A gene may be from more than one species, check, if each gene exists in GO DB, if not add it to GO
-		for ($k=0; $k<count($tmpArray);$k++) {
-			$theSpecies = trim($tmpArray[$k]);
+		for ($k=0; $k<count($speciesArray);$k++) {
+			$theSpecies = trim($speciesArray[$k]);
 			//echo "theSpecies = ".$theSpecies."\n";
 			
 			$tmpArray2 = split(" ", $theSpecies);
 			$species_genus = $tmpArray2[0];
 			$species_species = $tmpArray2[1];
 			
-			$missingGenes = getMissingGenes($geneSet_from_one_sif_file,$theSpecies, $connection);
-			
+			$missingGenes = getMissingGenes($geneArray,$theSpecies, $connection);
+		
 			// Add missing genes to GO database
 			if (count($missingGenes) >0) {
 				echo "<br>Model $name: Number of missing genes = ".count($missingGenes)."<br>\n";
 				echo "Add missing genes to GO<br>\n";			
 			}
+			
 			for ($m=0; $m<count($missingGenes); $m++) {
 				addMissingGene2GO($species_genus, $species_species, $missingGenes[$m], $connection);			
 			}
@@ -409,10 +433,10 @@ function populateGeneModelTable($pub_id, $connection) {
 			// There should be no missing genes now for this model (i.e. this sif file) and this species
 			// Get gene_product_id of GO for all genes for this model (i.e. from this sif file)
 			$gene_product_ids = NULL; 
-			$genes = array_keys($geneSet_from_one_sif_file);
-			for ($n=0; $n<count($genes); $n++) {
-				$gene_product_ids[] = getGeneProductID($genes[$n], $species_species, $species_genus, $connection);
-				//echo "genes[$n] =".$genes[$n]." ----".$gene_product_ids[$n]."\n";
+						
+			for ($n=0; $n<count($geneArray); $n++) {
+				$gene_product_ids[] = getGeneProductID($geneArray[$n], $species_species, $species_genus, $connection);
+				//echo "geneArray[$n] =".$geneArray[$n]." ----".$gene_product_ids[$n]."\n";
 			}
 			
 			//echo "Now begin to populate the gene_model table for $theSpecies<br>\n";			
@@ -427,6 +451,8 @@ function populateGeneModelTable($pub_id, $connection) {
 				}
 				$dbQuery =  "INSERT INTO gene_model (model_id, gene_product_id) ";
 				$dbQuery .= "VALUES ($model_id, $gene_product_id) ";
+			
+				//echo "dbQuery = $dbQuery\n";
 			
 				// Run the query
 				if (!($result = @ mysql_query($dbQuery, $connection)))
