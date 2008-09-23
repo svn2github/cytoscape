@@ -11,6 +11,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
+import cytoscape.task.Task;
+import cytoscape.task.util.TaskManager;
+import cytoscape.task.ui.JTaskConfig;
+import cytoscape.Cytoscape;
+import cytoscape.CytoscapeInit;
+
 /* * Copyright (c) 2004 Memorial Sloan-Kettering Cancer Center
  * *
  * * Code written by: Elena Potylitsine
@@ -55,7 +61,6 @@ import java.text.DecimalFormat;
 public class CorrelateHistogramWindow extends JDialog {
 
     private CorrelateSimilarityNetwork network;	//Instance of the Similarity network function
-    CorrelateProgressBar bar = new CorrelateProgressBar();	//Instance of the timed progress bar
     JFormattedTextField lowCutoffValue; 	//Formated field for input of the low cutoff value
     JFormattedTextField highCutoffValue;	//Formated field for input of the high cutoff value
     JFormattedTextField interactionsValue;	//Formated field to hold the number or percent of interactions
@@ -71,7 +76,6 @@ public class CorrelateHistogramWindow extends JDialog {
     Number valueInteractions;			//Holds either the percent or the number of interactions value
     String selectedString = "Number of Interactions";  //represents the choice from the combo box
 
-
     /**
      * One histogram window is generated for either the column or row similarity matrix calculation
      *
@@ -79,7 +83,8 @@ public class CorrelateHistogramWindow extends JDialog {
      * @param row         - boolean variable is true if the matrix being worked on is the row matrix
      * @param newNetwork  - instance of the SimilarityMatrix
      */
-    public CorrelateHistogramWindow(Frame parentFrame, boolean row, CorrelateSimilarityNetwork newNetwork, CorrelateProgressBarDialog progressBarDialog) {
+    public CorrelateHistogramWindow(Frame parentFrame, boolean row, CorrelateSimilarityNetwork newNetwork) {
+
         super(parentFrame, "Matrix Parameters", false);
         setResizable(false);
         isRow = row;
@@ -92,7 +97,8 @@ public class CorrelateHistogramWindow extends JDialog {
             network.loadColCutoffs();	//Loads previously saved user column cutoffs from the singleton class
             network.colHistogram(); 	// get image and values
         }
-        if(progressBarDialog.isCancelled()) {
+        if (network.cancelled())
+        {
             return;
         }
         DecimalFormat decFormat = new DecimalFormat();
@@ -111,6 +117,7 @@ public class CorrelateHistogramWindow extends JDialog {
                 return new JMultiLineToolTip();
             }
         };
+
         lowCutoffValue.setColumns(4); // 3 + space for the neative sign
         lowCutoffValue.addPropertyChangeListener("value", new CorrelateHistogramWindow.formattedTextFieldAction());
         String tipLow = "Look at the Histogram and set the low cutoff for the network that you want displayed.\n" +
@@ -147,6 +154,7 @@ public class CorrelateHistogramWindow extends JDialog {
                 return new JMultiLineToolTip();
             }
         };
+
         highCutoffValue.setColumns(3);
         highCutoffValue.addPropertyChangeListener("value", new CorrelateHistogramWindow.formattedTextFieldAction());
         String tipHigh = "Look at the Histogram and set the high cutoff for the network that you want displayed.\n" +
@@ -186,6 +194,7 @@ public class CorrelateHistogramWindow extends JDialog {
                 return new JMultiLineToolTip();
             }
         };
+
         interactionsValue.setColumns(6);
         interactionsValue.addPropertyChangeListener("value", new CorrelateHistogramWindow.formattedTextFieldAction());
         String tipSize = "Select either the number of interactions you want displayed.\n" +
@@ -204,7 +213,6 @@ public class CorrelateHistogramWindow extends JDialog {
         labelFieldPanelsize.add(size);
         labelFieldPanelsize.add(interactionsValue);
         Interactions.add(labelFieldPanelsize, BorderLayout.WEST);
-
 
         String tipInteractions = "Check this box to create a Network with the Number of Interactions \n"
                 + "you want displayed and to set the appropriate cutoffs";
@@ -225,9 +233,6 @@ public class CorrelateHistogramWindow extends JDialog {
         Interactions.add(labelFieldPanelPercentNumber, BorderLayout.EAST);
         Interactions.setBorder(BorderFactory.createEtchedBorder());
 
-
-
-
         //Ok and Cancel Options
         JPanel bottomPanel = new JPanel(new FlowLayout());
 
@@ -247,8 +252,6 @@ public class CorrelateHistogramWindow extends JDialog {
         panel.add(histoPlot, BorderLayout.CENTER);
         panel.add(bottomPanel, BorderLayout.SOUTH);
         setContentPane(panel);
-
-
     }
 
     /**
@@ -488,21 +491,44 @@ public class CorrelateHistogramWindow extends JDialog {
 
         public void actionPerformed(ActionEvent e) {
             dialog.dispose();
+            int viewThreshold = 1000;
+            int event = 2;
+            try
+            {
+                viewThreshold = Integer.parseInt(CytoscapeInit.getProperties().getProperty("viewThreshold"));
+                System.out.println("viewThreshold is " + viewThreshold);
+            } catch (NumberFormatException nfe)
+            {
+                viewThreshold = 0;
+            }
             if (isRow) {
                 interactionsGetSet();
-                if (network.getNumberOfInteractions(isRow, network.getCutoffs(isRow)) < 1000) //if fewer then 1000
-                    network.setAutoView(true); //allows to view the network
                 network.saveRowCutoffs();//Saves the row cutoffs in singleton
-                bar.CorrelateProgressBar(4, network); // 4 indicates to do the row netowrk timed event to CorrelateProgressBar
+                event = 4;
             } else {
                 interactionsGetSet();
-                if (network.getNumberOfInteractions(isRow, network.getCutoffs(isRow)) < 1000)
-                    network.setAutoView(true);
                 network.saveColCutoffs(); //Saves the column cutoffs in singleton
-                bar.CorrelateProgressBar(2, network); //2 indicates to do the column network timed event to CorrelateProgressBar
             }
+
             cutoffs = network.getCutoffs(isRow);
-            // System.out.println("The cutoffs selected are: "+cutoffs[0]+" | "+cutoffs[1]);
+            
+            //  Create a Correlate Task
+            Task task = new CorrelateTask(event, network);
+
+            //  Configure JTask
+            JTaskConfig config = new JTaskConfig();
+            config.setOwner(Cytoscape.getDesktop());
+            config.displayCloseButton(true);
+            config.displayCancelButton(true);
+            config.displayStatus(true);
+
+            //  Execute Task via TaskManager
+            //  This automatically pops-open a JTask Dialog Box.
+            //  This method will block until the JTask Dialog Box is disposed.
+            boolean success = TaskManager.executeTask(task, config);
+            
+            cutoffs = network.getCutoffs(isRow);
+            //System.out.println("The cutoffs selected are: "+cutoffs[0]+" | "+cutoffs[1]);
         }
     }
 
@@ -524,4 +550,5 @@ public class CorrelateHistogramWindow extends JDialog {
             dialog.dispose();
         }
     }
+
 }

@@ -52,7 +52,7 @@ public class ExpressionCorrelationAboutDialog extends JDialog {
         JEditorPane editorPane = new JEditorPane();
         editorPane.setEditable(false);
         editorPane.setEditorKit(new HTMLEditorKit());
-        editorPane.setText("<html><body><P align=center>Expression Correlation Network Plugin v1.0 (January 2005)<BR>" +
+        editorPane.setText("<html><body><P align=center>Expression Correlation Network Plugin v1.1 (May 2007)<BR>" +
                 "written by Elena Potylitsine and Weston Whitaker<BR>" +
                 "during the Cornell/MSKCC summer student program 2004<BR>" +
                 "Chris Sander Group<BR>" +

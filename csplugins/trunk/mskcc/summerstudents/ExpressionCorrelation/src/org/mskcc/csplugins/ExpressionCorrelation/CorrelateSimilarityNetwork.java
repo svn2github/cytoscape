@@ -9,8 +9,11 @@ import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
+import cytoscape.data.CyAttributes;
+import cytoscape.CytoscapeInit;
 import cytoscape.data.ExpressionData;
 import cytoscape.data.mRNAMeasurement;
+import cytoscape.task.TaskMonitor;
 
 import javax.swing.*;
 import java.util.Vector;
@@ -93,8 +96,8 @@ public class CorrelateSimilarityNetwork {
     private boolean cancel = false;             //This will cancel the current loop in calc() or histogram(). To use call cancel().
     //      The cancel value will automatically be reset to false
     private int maxDigits = 5;                  //Max number of digits being displayed. Does NOT affect histogram accuracy.
-    private boolean autoView = false;           //Automatically creates view while network is being calculated (should be false for large networks)
-
+    private TaskMonitor taskMonitor = null;
+    //private SpearmanRank sr = null;
     /**
      * One instance of CorrelateSimilarityNetwork should be used for one gene network and/or one condition network.
      */
@@ -132,7 +135,7 @@ public class CorrelateSimilarityNetwork {
      * This gives the network the name of the expression data file.
      */
     public void nameNetwork() {
-        ExpressionData data = Cytoscape.getCurrentNetwork().getExpressionData();
+        ExpressionData data = Cytoscape.getExpressionData();
         String fullName = data.getFileName();
         //System.out.println("File Name: "+fullName);
         //fullName = fullName.substring(0,fullName.length()-2);
@@ -140,14 +143,6 @@ public class CorrelateSimilarityNetwork {
         String name = fullName.substring(start + 1);
         rowNetName = name + " (genes)";
         colNetName = name + " (conditions)";
-    }
-
-    public void setAutoView(boolean createView) {
-        autoView = createView;
-    }
-
-    public boolean getAutoView() {
-        return autoView;
     }
 
     public int getMaxDigits() {
@@ -239,7 +234,7 @@ public class CorrelateSimilarityNetwork {
      */
     public CyNetwork calcRows(String networkName, double lowCutoff, double highCutoff) {
         rowDone = false;
-        ExpressionData data = Cytoscape.getCurrentNetwork().getExpressionData();
+        ExpressionData data = Cytoscape.getExpressionData();
         return calcRows(networkName, data, lowCutoff, highCutoff);
     }
 
@@ -266,6 +261,8 @@ public class CorrelateSimilarityNetwork {
         rowDone = false;
         String[] geneNames = data.getGeneNames();
         DoubleMatrix2D inputMatrix = getExpressionMatrix(data);
+        //if (sr ==null)
+        //    sr = new SpearmanRank(inputMatrix);
         return calcRows(networkName, inputMatrix, lowCutoff, highCutoff, geneNames);
     }
 
@@ -312,7 +309,7 @@ public class CorrelateSimilarityNetwork {
      */
     public CyNetwork calcRows(int geneNumber) {
         rowDone = false;
-        ExpressionData data = Cytoscape.getCurrentNetwork().getExpressionData();
+        ExpressionData data = Cytoscape.getExpressionData();
         String[] geneNames = data.getGeneNames();
         DoubleMatrix2D inputMatrix = getExpressionMatrix(data);
         return calc(true, inputMatrix, rowNegCutoff, rowPosCutoff, geneNames, geneNumber);
@@ -413,7 +410,7 @@ public class CorrelateSimilarityNetwork {
      */
     public CyNetwork calcCols(String networkName, double lowCutoff, double highCutoff) {
         colDone = false;
-        ExpressionData data = Cytoscape.getCurrentNetwork().getExpressionData();
+        ExpressionData data = Cytoscape.getExpressionData();
         return calcCols(networkName, data, lowCutoff, highCutoff);
     }
 
@@ -440,6 +437,8 @@ public class CorrelateSimilarityNetwork {
         colDone = false;
         String[] condNames = data.getConditionNames();
         DoubleMatrix2D inputMatrix = getExpressionMatrix(data);
+        //if (sr ==null)
+        //    sr = new SpearmanRank(inputMatrix);
         return calc(false, networkName, inputMatrix, lowCutoff, highCutoff, condNames);
     }
 
@@ -487,7 +486,7 @@ public class CorrelateSimilarityNetwork {
      */
     public CyNetwork calcCols(int condNumber) {
         rowDone = false;
-        ExpressionData data = Cytoscape.getCurrentNetwork().getExpressionData();
+        ExpressionData data = Cytoscape.getExpressionData();
         String[] condNames = data.getConditionNames();
         DoubleMatrix2D inputMatrix = getExpressionMatrix(data);
         return calc(false, inputMatrix, colNegCutoff, colPosCutoff, condNames, condNumber);
@@ -527,9 +526,9 @@ public class CorrelateSimilarityNetwork {
      * @return
      */
     public CyNetwork calc(boolean isRowNetwork, String networkName, DoubleMatrix2D inputMatrix, double lowCutoff, double highCutoff, String[] names) {
-        setView();
-        //The network is automatically created, but must be manually viewed if more than 1000 edges (using the "Create View" button in the "Edit" menu)
-        CyNetwork newNetwork = Cytoscape.createNetwork(networkName);
+
+        // When creating the network, don't automatically create the network view
+        CyNetwork newNetwork = Cytoscape.createNetwork(new int[] {}, new int[] {}, networkName, null, false);
 
         //Does some initial calculations and stores all the calculation data
         initiationData data = new initiationData(isRowNetwork, inputMatrix, true);
@@ -554,6 +553,17 @@ public class CorrelateSimilarityNetwork {
         //This loop is set up to calculate the column correlations, so for the row
         //  network the matrix has been transposed
 
+        if (taskMonitor != null)
+        {
+            String type = "condition";
+            if (isRowNetwork)
+            {
+                type = "gene";
+            }
+            taskMonitor.setPercentCompleted(-1);
+            taskMonitor.setStatus("Constructing " + type + " correlation network...");
+        }
+
         //Goes through each column
         for (int i = 0; i < data.columns; i++) {
             //Calculates the correlations for a single column
@@ -563,15 +573,32 @@ public class CorrelateSimilarityNetwork {
             }
 
             if ((i * 10) % (data.columns - mod) == 0) {
-                System.out.print("*");
+                //System.out.print("*");
+                if (taskMonitor != null)
+                {
+                    taskMonitor.setPercentCompleted((int)((double) (i * 100) / data.columns));
+                }
             }
         }
+
+        if (taskMonitor != null)
+        {
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Finished constructing network");
+        }
+
         if (isRowNetwork) {
             rowDone = true;
         } else {
             colDone = true;
         }
         cancel = false;
+
+        // Create network view if number of nodes is below threshold
+        if (newNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit
+				.getProperties().getProperty("viewThreshold")))
+			Cytoscape.createNetworkView(newNetwork);
+
         return newNetwork;
     }
 
@@ -588,9 +615,11 @@ public class CorrelateSimilarityNetwork {
      */
     public CyNetwork calc(boolean isRowNetwork, DoubleMatrix2D inputMatrix,
                           double lowCutoff, double highCutoff, String[] names, int number) {
-        setView();
-        //The network is automatically created, but must be manually viewed if more than 1000 edges (using the "Create View" button in the "Edit" menu)
-        CyNetwork newNetwork = Cytoscape.createNetwork(names[number]);
+
+        // When creating the network, don't automatically create the network view
+        CyNetwork newNetwork = Cytoscape.createNetwork(new int[] {}, new int[] {}, names[number], null, false);
+
+        //Does some initial calculations and stores all the calculation data
         initiationData data = new initiationData(isRowNetwork, inputMatrix, false);
 
         double[] cutoffs = cutoffCheck(isRowNetwork, lowCutoff, highCutoff);
@@ -606,6 +635,12 @@ public class CorrelateSimilarityNetwork {
             colDone = true;
         }
         cancel = false;
+
+        // Create network view if number of nodes is below threshold
+        if (newNetwork.getNodeCount() < Integer.parseInt(CytoscapeInit
+				.getProperties().getProperty("viewThreshold")))
+			Cytoscape.createNetworkView(newNetwork);
+
         return newNetwork;
     }
 
@@ -640,7 +675,9 @@ public class CorrelateSimilarityNetwork {
             newEdge = Cytoscape.getCyEdge(names[i], names[i] + "_interaction_" + names[j], names[j], "neg_interaction");
         }
         Double value = new Double(corr);
-        newNetwork.setEdgeAttributeValue(newEdge, "Strength", value);
+
+        CyAttributes attributes = Cytoscape.getEdgeAttributes();    
+        attributes.setAttribute(newEdge.getIdentifier(),"Strength",value);
         newNetwork.addEdge(newEdge);
     }
 
@@ -662,6 +699,7 @@ public class CorrelateSimilarityNetwork {
         public boolean usePos = true;        //true if positive cutoffs are to be considered
         public boolean useNeg = true;        //true if positive cutoffs are to be considered
         boolean fullNetwork;               //true if the full network is being calculated, false if only for one gene or condition
+        TaskMonitor taskMonitor = null;
 
         /**
          * Creating an instance of initiationData will automatically do all the initial calculations
@@ -754,7 +792,6 @@ public class CorrelateSimilarityNetwork {
             if (isRowNetwork) {
                 lowCutoff = rowNegCutoff;
                 highCutoff = rowPosCutoff;
-                ;
             } else {
                 lowCutoff = colNegCutoff;
                 highCutoff = colPosCutoff;
@@ -788,6 +825,10 @@ public class CorrelateSimilarityNetwork {
         if (fullColumn) {
             stop = data.columns;
         }
+
+        //if (sr == null)
+        //    sr = new SpearmanRank(data.inputMatrix);
+
         for (int j = 0; j < stop; j++) {
             if (data.isRowNetwork) {
                 rowCurrentStep++;
@@ -795,10 +836,11 @@ public class CorrelateSimilarityNetwork {
                 colCurrentStep++;
             }
 
-            //This is the correlation calculation
-            double sumOfProducts = data.cols[i].zDotProduct(data.cols[j]);
-            double cov = (sumOfProducts - data.sums[i] * data.sums[j] / data.rows) / data.rows;
-            double corr = cov / (data.stdDev.get(i) * data.stdDev.get(j));
+            double corr = calcPearsonCorr(data,i,j);
+            //double corr = sr.corr(i,j);
+
+            if (corr < -1.0)
+                continue;
 
             //Creates nodes and edges if its above the positive cutoff
             if (corr > highCutoff && i != j && data.usePos) {
@@ -812,19 +854,6 @@ public class CorrelateSimilarityNetwork {
             if (cancel) {
                 return;
             }
-        }
-    }
-
-    /**
-     * This sets up cytoscape to either automatically display the network or not display the network
-     * If autoView is true, the network will be displayed as it is being created
-     * It should only be true for small networks
-     */
-    public void setView() {
-        if (!autoView) {
-            Cytoscape.getCytoscapeObj().setViewThreshold(0);
-        } else {
-            Cytoscape.getCytoscapeObj().setViewThreshold(500);
         }
     }
 
@@ -952,6 +981,27 @@ public class CorrelateSimilarityNetwork {
     }
 
 
+    /**
+     * Calculates the Pearson Correlation
+     * r = Sxx/SQRT(Sxx x Syy)
+     *
+     * @param data - The gene expression data
+     * @param i, j - Calculate the correlation between data vectors data.cols[i] and data.cols[j]
+     * @return The Pearson correlation value between -1 and 1.  If the correlation calculation contains an error
+     * (i.e. divide by zero), return -2.0
+     */
+    private double calcPearsonCorr(initiationData data,int i, int j)
+    {
+        double sumOfProducts = data.cols[i].zDotProduct(data.cols[j]);
+        double cov = (sumOfProducts - data.sums[i] * data.sums[j] / data.rows) / data.rows;
+        double corr = cov / (data.stdDev.get(i) * data.stdDev.get(j));
+
+        if (data.stdDev.get(i) == 0 || data.stdDev.get(j) == 0 )
+            return -2.0;
+        else
+            return corr;
+    }
+    
     //TODO histogram()
     /**
      * This calculates either the row or column histogram (a class double array) which is used by other
@@ -963,6 +1013,7 @@ public class CorrelateSimilarityNetwork {
      */
     public void histogram(boolean isRowNetwork, DoubleMatrix2D inputMatrix) {
 
+        //sr = new SpearmanRank(inputMatrix);
         initiationData data = new initiationData(isRowNetwork, inputMatrix, true);
 
         int bins = 2000;      //Adjust this number to change the histogram accuracy
@@ -975,7 +1026,17 @@ public class CorrelateSimilarityNetwork {
             mod = 0;
         }
 
-        int binNumber;
+        if (taskMonitor != null)
+        {
+            String type = "condition";
+            if (isRowNetwork)
+            {
+                type = "gene";
+            }
+            taskMonitor.setPercentCompleted(-1);
+            taskMonitor.setStatus("Constructing  " + type + " correlation histogram...");
+        }
+
         for (int i = 0; i < data.columns; i++) {
             for (int j = 0; j < i; j++) {
                 if (isRowNetwork) {
@@ -983,11 +1044,15 @@ public class CorrelateSimilarityNetwork {
                 } else {
                     colCurrentStep++;
                 }
-                double sumOfProducts = data.cols[i].zDotProduct(data.cols[j]);
-                double cov = (sumOfProducts - data.sums[i] * data.sums[j] / data.rows) / data.rows;
-                double corr = cov / (data.stdDev.get(i) * data.stdDev.get(j));
+
+                double corr = calcPearsonCorr(data,i,j);
+                //double corr = sr.corr(i,j);
+
+                if (corr < -1.0)
+                    continue;
+
                 if (i != j) {
-                    binNumber = (int) ((corr + 1) * (((double) bins - 1) / 2));
+                    int binNumber = (int) ((corr + 1) * (((double) bins - 1) / 2));
                     //System.out.println("corr="+corr+" bin="+binNumber);
                     histo[binNumber]++;
                 }
@@ -997,9 +1062,18 @@ public class CorrelateSimilarityNetwork {
             }
             if ((i * 10) % (data.columns - mod) == 0) {
                 System.out.print("*");
+                if (taskMonitor != null)
+                {
+                    taskMonitor.setPercentCompleted((int)((double) (i * 100) / data.columns));
+                }
             }
         }
 
+        if (taskMonitor != null)
+        {
+            taskMonitor.setPercentCompleted(100);
+            taskMonitor.setStatus("Finished constructing histogram");
+        }
         String[] labels = new String[bins];
 
         for (int i = 0; i < bins; i++) {
@@ -1399,7 +1473,6 @@ public class CorrelateSimilarityNetwork {
             return 0;
         }
         int[] histogram;
-        int i, j;
         int count = 0;
         if (isRowNetwork) {
             histogram = rowHistogram;
@@ -1408,12 +1481,12 @@ public class CorrelateSimilarityNetwork {
         }
         boolean[] uses = getUses(isRowNetwork);
         if (uses[0]) {
-            for (i = 0; (-1.0 + ((double) i * 2) / histogram.length) < cutoffs[0]; i++) {
+            for (int i = 0; (-1.0 + ((double) i * 2) / histogram.length) < cutoffs[0]; i++) {
                 count += histogram[i];
             }
         }
         if (uses[1]) {
-            for (j = 0; (1.0 - ((double) j * 2) / histogram.length) >= cutoffs[1]; j++) {
+            for (int j = 0; (1.0 - ((double) j * 2) / histogram.length) >= cutoffs[1]; j++) {
                 count += histogram[histogram.length - j - 1];
             }
         }
@@ -1452,7 +1525,7 @@ public class CorrelateSimilarityNetwork {
      * @return
      */
     public DoubleMatrix2D getExpressionMatrix() {
-        ExpressionData data = Cytoscape.getCurrentNetwork().getExpressionData();
+        ExpressionData data = Cytoscape.getExpressionData();
         return getExpressionMatrix(data);
     }
 
@@ -1483,7 +1556,7 @@ public class CorrelateSimilarityNetwork {
 
     public int getNumberOfRows() {
         if (numberOfRows < 1) {
-            ExpressionData data = Cytoscape.getCurrentNetwork().getExpressionData();
+            ExpressionData data = Cytoscape.getExpressionData();
             numberOfRows = data.getNumberOfGenes();
         }
         return numberOfRows;
@@ -1491,7 +1564,7 @@ public class CorrelateSimilarityNetwork {
 
     public int getNumberOfCols() {
         if (numberOfCols < 1) {
-            ExpressionData data = Cytoscape.getCurrentNetwork().getExpressionData();
+            ExpressionData data = Cytoscape.getExpressionData();
             numberOfCols = data.getNumberOfConditions();
         }
         return numberOfCols;
@@ -1566,9 +1639,38 @@ public class CorrelateSimilarityNetwork {
      */
     public void cancel() {
         cancel = true;
-        //System.out.println("Cancel called");
+    }
+
+    /**
+     * Indicates whether or not the task was cancelled
+     * @return true if cancel is true, otherwise false
+     */
+    public boolean cancelled() {
+        return cancel;
+    }
+
+    /**
+     * Sets the task monitor object
+     * @param taskMonitor This object is used to keep track of the progress of the correlation network and histogram
+     *                    calculation tasks
+     */
+    public void setTaskMonitor(TaskMonitor taskMonitor)
+    {
+        this.taskMonitor = taskMonitor;
+
+    }
+
+    /**
+     * Returns the task monitor object used to keep track of the progress of the task
+     * @return TaskMonitor This object is used to keep track of the progress of the correlation network and histogram
+     *                     calculation tasks
+     */
+    public TaskMonitor getTaskMonitor()
+    {
+        return this.taskMonitor;
     }
 }
+
 
 
 

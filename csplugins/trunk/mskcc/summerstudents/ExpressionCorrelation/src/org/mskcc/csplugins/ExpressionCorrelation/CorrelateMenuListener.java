@@ -1,6 +1,9 @@
 package org.mskcc.csplugins.ExpressionCorrelation;
 
 import cytoscape.Cytoscape;
+import cytoscape.task.Task;
+import cytoscape.task.util.TaskManager;
+import cytoscape.task.ui.JTaskConfig;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -58,8 +61,7 @@ public class CorrelateMenuListener implements ActionListener {
         JMenuItem source = (JMenuItem) (event.getSource());
         selection = source.getText();
 
-
-        if (Cytoscape.getCurrentNetwork().getExpressionData() == null) {
+        if (Cytoscape.getExpressionData() == null) {
             JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "You must load an Expression Matrix File to run this plugin.", "ALERT!!!", JOptionPane.ERROR_MESSAGE);
         } else {
             int colNumber = network.getNumberOfCols(); //number of conditions in the condition network
@@ -102,14 +104,27 @@ public class CorrelateMenuListener implements ActionListener {
                 performEvent = setEvent(selection);
             }
             System.out.println("the selection was: " + selection);
-            CorrelateProgressBar bar = new CorrelateProgressBar();
-            bar.CorrelateProgressBar(performEvent, network);
+            //  Create a Correlate Task
+            Task task = new CorrelateTask(performEvent, network);
+
+            //  Configure JTask
+            JTaskConfig config = new JTaskConfig();
+            config.setOwner(Cytoscape.getDesktop());
+            config.displayCloseButton(true);
+            config.displayCancelButton(true);
+            config.displayStatus(true);
+
+            //  Execute Task via TaskManager
+            //  This automatically pops-open a JTask Dialog Box.
+            //  This method will block until the JTask Dialog Box is disposed.
+            boolean success = TaskManager.executeTask(task, config);
+            
         }
     }
 
     public int setEvent(String selection) {
         int newEvent = 0;
-        if (selection.equals("Construct Similarity Network")) {
+        if (selection.equals("Construct Correlation Network")) {
             newEvent = 1; //construct both row and column
         }
         if (selection.equals("Condition Network: Preview Histogram")) {

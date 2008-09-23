@@ -8,15 +8,17 @@ public class FrameView
 	public FrameView(JPanel panel) {
 		setContentPane(panel);
 		pack();
-		show();
+        //show();
+        setVisible(true);
 	}
 
 	public FrameView(String title, JPanel panel) {
 		super(title);
 		setContentPane(panel);
 		pack();
-		show();
-	}
+		//show();
+        setVisible(true);
+    }
 
 	public FrameView(JPanel[] panels) {
 		JPanel panel = new JPanel();
@@ -25,7 +27,8 @@ public class FrameView
 		}
 		setContentPane(panel);
 		pack();
-		show();
-	}
+		//show();
+        setVisible(true);
+    }
 
 }
