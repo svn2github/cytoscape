@@ -184,12 +184,12 @@ public class CyNetworkTest extends TestCase {
 		assertEquals("edge count",6,net.getEdgeCount());
 
 		// add duplicate edges
-		CyEdge e3_2 = net.addEdge(n1,n2,true);
-		assertNotNull("edge is not null",e3_2);
+		CyEdge e3two = net.addEdge(n1,n2,true);
+		assertNotNull("edge is not null",e3two);
 		assertEquals("edge count",7,net.getEdgeCount());
 
-		CyEdge e4_2 = net.addEdge(n1,n2,false);
-		assertNotNull("edge is not null",e4_2);
+		CyEdge e4two = net.addEdge(n1,n2,false);
+		assertNotNull("edge is not null",e4two);
 		assertEquals("edge count",8,net.getEdgeCount());
 	}
 

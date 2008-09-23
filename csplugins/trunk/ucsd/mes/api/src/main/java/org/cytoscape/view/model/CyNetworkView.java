@@ -15,8 +15,8 @@ public interface CyNetworkView extends View {
 	public  CyNodeView addNodeView(CyNodeView nodeView);
 	public  CyEdgeView addEdgeView(CyEdgeView edgeView);
 
-	public CyNodeView removeNodeView (CyNodeView node_view);
-	public CyEdgeView removeEdgeView (CyEdgeView edge_view);
+	public CyNodeView removeNodeView (CyNodeView nodeView);
+	public CyEdgeView removeEdgeView (CyEdgeView edgeView);
 
 	/**
 	 * I wonder if this should be here. Shouldn't updating be

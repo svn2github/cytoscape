@@ -23,7 +23,7 @@ import org.cytoscape.event.CyEventListener;
  */
 public class CyEventHelperImpl implements CyEventHelper {
 
-	private static final Executor exec = Executors.newCachedThreadPool();
+	private static final Executor EXEC = Executors.newCachedThreadPool();
 	private final BundleContext bc;
 
 	public CyEventHelperImpl( BundleContext bc ) {
@@ -66,7 +66,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 		try {
 			final Method method = listenerClass.getMethod("handleEvent", event.getClass().getInterfaces()[0]);
 			for ( final L listener : listeners ) 
-				exec.execute(new Runner<E,L>(method,listener,event,listenerClass.getName()));
+				EXEC.execute(new Runner<E,L>(method,listener,event,listenerClass.getName()));
 		} catch (NoSuchMethodException e) {
 			// TODO should probably rethrow
 			System.err.println("Listener doesn't implement \"handleEvent\" method: "+listenerClass.getName());
