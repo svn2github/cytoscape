@@ -207,6 +207,12 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	private static final String REGION_NETWORK_ATT = "__Region_network";
 
 	private int viewID = 0;
+	
+	/**
+	 * String used to compare against os.name System property -
+	 * to determine if we are running on Windows platform.
+	 */
+	static final String MAC_OS_ID = "mac";
 
 	/**
 	 * Constructor
@@ -598,7 +604,8 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	public void mousePressed(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON3) {
+		if ((e.getButton() == MouseEvent.BUTTON3) ||
+				(e.isControlDown() && (isMacPlatform()))) {
 			setRegionSelection(e);
 			processRegionContextMenu(e);
 		} else {
@@ -906,6 +913,17 @@ public class BubbleRouterPlugin extends CytoscapePlugin implements
 		// reset mouse point for continuing drag
 		startx = mousex;
 		starty = mousey;
+	}
+
+	/**
+	 * Routine which determines if we are running on mac platform
+	 *
+	 * @return boolean
+	 */
+	private boolean isMacPlatform() {
+		String os = System.getProperty("os.name");
+
+		return os.regionMatches(true, 0, MAC_OS_ID, 0, MAC_OS_ID.length());
 	}
 
 	/**
