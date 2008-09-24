@@ -10,7 +10,10 @@
   	<!-- The directory containing source code -->
   	<property name="src.dir" value="src"/>
 
-	<!--  The directory containing library jar files -->
+    <!-- The directory containing the resource files -->
+    <property name="resources.dir" value="resources"/>
+
+    <!--  The directory containing library jar files -->
 	<property name="lib.dir" value="../../../../cytoscape/lib"/>
 
   	<!-- Temporary build directories -->
@@ -51,8 +54,13 @@
 
 	<!--  Create PlugIn Jar File -->
    	<target name="jar" depends="compile" description="Creates PlugIn Jar File.">
-	   <jar destfile="${build.dir}/${plugin.name}.jar">
-			<fileset dir="${build.classes}"/>
+       <copy file="${resources.dir}/plugin.props" todir="${build.classes}/org/mskcc/csplugins/ExpressionCorrelation"/>
+       <jar destfile="${build.dir}/${plugin.name}.jar">
+            <manifest>
+                <attribute name="Cytoscape-Plugin" value="org.mskcc.csplugins.ExpressionCorrelation.CorrelateMenu" />
+            </manifest>
+
+            <fileset dir="${build.classes}"/>
 		</jar>
 		<echo message="${plugin.name}.jar is now complete.  It is located in build/ directory"/>
 	</target>
