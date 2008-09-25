@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!-- Cytoscape Coding Conventions -->
+
+<module name="Checker">
+
+    <!-- Checks whether files end with a new line.                        -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+    <module name="NewlineAtEndOfFile"/>
+
+
+    <module name="TreeWalker">
+
+        <!-- Checks for Javadoc comments.                     -->
+        <!-- See http://checkstyle.sf.net/config_javadoc.html -->
+        <module name="JavadocMethod">
+		  <property name="scope" value="protected"/>
+		</module>
+        <module name="JavadocType">
+		  <property name="scope" value="public"/>
+		</module>
+        <module name="JavadocVariable">
+		  <property name="scope" value="protected"/>
+		</module>
+        <module name="JavadocStyle">
+		  <property name="scope" value="protected"/>
+		</module>
+
+
+        <!-- Checks for Naming Conventions.                  -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+
+
+        <!-- Checks for Headers                                -->
+        <!-- See http://checkstyle.sf.net/config_header.html   -->
+        <!-- Following interprets the header file as regular expressions.  -->
+        <module name="RegexpHeader">
+		    <property name="headerFile" value="config/java.header"/>
+		</module>  
+
+
+        <!-- Checks for imports                              -->
+        <!-- See http://checkstyle.sf.net/config_import.html -->
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport"/> 
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="FileLength"/>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>
+
+
+        <!-- Modifier Checks                                    -->
+        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+
+        <!-- Checks for blocks. You know, those {}'s         -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock"/>
+        <module name="LeftCurly"/>
+        <module name="RightCurly"/>
+
+
+        <!-- Checks for common coding problems               -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+		<module name="CovariantEquals"/>
+		<module name="DeclarationOrder"/>
+		<module name="DefaultComesLast"/>
+        <module name="DoubleCheckedLocking"/> 
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+		<module name="ExplicitInitialization"/>
+		<module name="FinalLocalVariable"/>
+        <module name="IllegalInstantiation">
+		    <property name="classes" value="java.lang.Boolean,java.lang.Integer,java.lang.Long"/>
+		</module>
+		<module name="IllegalThrows"/>
+        <module name="InnerAssignment"/>
+        <module name="MagicNumber"/>
+		<module name="MissingCtor"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="ModifiedControlVariable"/>
+		<module name="MultipleStringLiterals"/>
+		<module name="MultipleVariableDeclarations"/>
+		<module name="PackageDeclaration"/>
+        <module name="RedundantThrows"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+		<module name="StringLiteralEquality"/>
+		<module name="SuperClone"/>
+		<module name="SuperFinalize"/>
+
+
+        <!-- Checks for class design                         -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+
+
+        <!-- Miscellaneous other checks.                   -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <module name="ArrayTypeStyle"/>
+        <module name="FinalParameters"/> 
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+
+    </module>
+
+</module>
