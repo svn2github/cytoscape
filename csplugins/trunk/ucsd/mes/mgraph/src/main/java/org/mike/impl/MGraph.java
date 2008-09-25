@@ -1,77 +1,152 @@
 
-package org.mike.impl; 
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
-import org.mike.CyNetwork; 
-import org.mike.CyNode; 
-import org.mike.CyEdge; 
-import org.mike.EdgeType; 
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
 
-import java.util.List;
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+package org.mike.impl;
+
+import org.mike.CyEdge;
+import org.mike.CyNetwork;
+import org.mike.CyNode;
+import org.mike.EdgeType;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Stack;
+import java.util.List;
 
-public final class MGraph implements CyNetwork {
 
-	private int m_nodeCount;
-	private int m_edgeCount;
+/**
+ * DOCUMENT ME!
+  */
+public class MGraph implements CyNetwork {
+	private int nodeCount;
+	private int edgeCount;
+	private NodePointer firstNode;
+	private final List<NodePointer> nodePointers;
+	private final List<EdgePointer> edgePointers;
 
-	private NodePointer m_firstNode;
-
-	private final List<NodePointer> m_nodes;
-	private final List<EdgePointer> m_edges;
-
+	/**
+	 * Creates a new MGraph object.
+	 */
 	public MGraph() {
-		m_nodeCount = 0;
-		m_edgeCount = 0;
-		m_firstNode = null;
-		m_nodes = new ArrayList<NodePointer>();
-		m_edges = new ArrayList<EdgePointer>();
+		nodeCount = 0;
+		edgeCount = 0;
+		firstNode = null;
+		nodePointers = new ArrayList<NodePointer>();
+		edgePointers = new ArrayList<EdgePointer>();
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public int getNodeCount() {
-		return m_nodeCount;
+		return nodeCount;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public int getEdgeCount() {
-		return m_edgeCount;
+		return edgeCount;
 	}
 
-	public CyEdge getEdge(int e) {
-		if ( e >= 0 && e < m_edges.size() )
-			return m_edges.get(e).cyEdge;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param e DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public CyEdge getEdge(final int e) {
+		if ((e >= 0) && (e < edgePointers.size()))
+			return edgePointers.get(e).cyEdge;
 		else
+
 			return null;
 	}
 
-	public CyNode getNode(int n) {
-		if ( n >= 0 && n < m_nodes.size() )
-			return m_nodes.get(n).cyNode;
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param n DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public CyNode getNode(final int n) {
+		if ((n >= 0) && (n < nodePointers.size()))
+			return nodePointers.get(n).cyNode;
 		else
+
 			return null;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public List<CyNode> getNodeList() {
-		List<CyNode> ret = new ArrayList<CyNode>(m_nodeCount);
-		int numRemaining = m_nodeCount;
-		NodePointer node = m_firstNode;
+		final List<CyNode> ret = new ArrayList<CyNode>(nodeCount);
+		int numRemaining = nodeCount;
+		NodePointer node = firstNode;
 
-		while ( numRemaining > 0 ) {
+		while (numRemaining > 0) {
 			final CyNode toAdd = node.cyNode;
 			node = node.nextNode;
 			ret.add(toAdd);
 			numRemaining--;
 		}
+
 		return ret;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public List<CyEdge> getEdgeList() {
-		List<CyEdge> ret = new ArrayList<CyEdge>(m_edgeCount);
-		int numRemaining = m_edgeCount;
-		NodePointer node = m_firstNode;
-		EdgePointer edge = null; 
+		final List<CyEdge> ret = new ArrayList<CyEdge>(edgeCount);
+		int numRemaining = edgeCount;
+		NodePointer node = firstNode;
+		EdgePointer edge = null;
 
-		while ( numRemaining > 0 ) {
+		while (numRemaining > 0) {
 			final CyEdge retEdge;
 
 			if (edge != null) {
@@ -87,75 +162,105 @@ public final class MGraph implements CyNetwork {
 
 			edge = edge.nextOutEdge;
 			numRemaining--;
-		
-			ret.add( retEdge );
+
+			ret.add(retEdge);
 		}
+
 		return ret;
 	}
 
-	public List<CyNode> getNeighborList(CyNode n, EdgeType e) {
-
-		if ( !containsNode(n) )
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param n DOCUMENT ME!
+	 * @param e DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public List<CyNode> getNeighborList(final CyNode n, final EdgeType e) {
+		if (!containsNode(n))
 			throw new IllegalArgumentException("this node is not contained in the network");
 
-		NodePointer np = getNodePointer(n);
-		List<CyNode> ret = new ArrayList<CyNode>( countEdges(np,e) );
-		Iterator<EdgePointer> it = edgesAdjacent(np,e);
-		while ( it.hasNext() ) {
+		final NodePointer np = getNodePointer(n);
+		final List<CyNode> ret = new ArrayList<CyNode>(countEdges(np, e));
+		final Iterator<EdgePointer> it = edgesAdjacent(np, e);
+
+		while (it.hasNext()) {
 			final EdgePointer edge = it.next();
-			final int neighborIndex = np.index ^ edge.source.index ^ edge.target.index; 
-			ret.add( getNode( neighborIndex ) );
+			final int neighborIndex = np.index ^ edge.source.index ^ edge.target.index;
+			ret.add(getNode(neighborIndex));
 		}
+
 		return ret;
 	}
 
-	public List<CyEdge> getAdjacentEdgeList(CyNode n, EdgeType e) {
-
-		if ( !containsNode(n) )
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param n DOCUMENT ME!
+	 * @param e DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public List<CyEdge> getAdjacentEdgeList(final CyNode n, final EdgeType e) {
+		if (!containsNode(n))
 			throw new IllegalArgumentException("this node is not contained in the network");
 
-		NodePointer np = getNodePointer(n);
-		List<CyEdge> ret = new ArrayList<CyEdge>( countEdges(np,e) );
-		Iterator<EdgePointer> it = edgesAdjacent(np,e);
-		while ( it.hasNext() )
-			ret.add( it.next().cyEdge );	
+		final NodePointer np = getNodePointer(n);
+		final List<CyEdge> ret = new ArrayList<CyEdge>(countEdges(np, e));
+		final Iterator<EdgePointer> it = edgesAdjacent(np, e);
+
+		while (it.hasNext())
+			ret.add(it.next().cyEdge);
+
 		return ret;
 	}
 
-	public List<CyEdge> getConnectingEdgeList(CyNode src, CyNode trg, EdgeType e) {
-
-		if ( !containsNode(src) )
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param src DOCUMENT ME!
+	 * @param trg DOCUMENT ME!
+	 * @param e DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final EdgeType e) {
+		if (!containsNode(src))
 			throw new IllegalArgumentException("source node is not contained in the network");
-		if ( !containsNode(trg) )
+
+		if (!containsNode(trg))
 			throw new IllegalArgumentException("target node is not contained in the network");
 
-		NodePointer srcP = getNodePointer(src);
-		NodePointer trgP = getNodePointer(trg);
+		final NodePointer srcP = getNodePointer(src);
+		final NodePointer trgP = getNodePointer(trg);
 
-		List<CyEdge> ret = new ArrayList<CyEdge>( Math.min(countEdges(srcP,e),countEdges(trgP,e)) );
-		Iterator<EdgePointer> it = edgesConnecting(srcP,trgP,e);
-		while ( it.hasNext() )
-			ret.add( it.next().cyEdge );	
+		final List<CyEdge> ret = new ArrayList<CyEdge>(Math.min(countEdges(srcP, e), countEdges(trgP, e)));
+		final Iterator<EdgePointer> it = edgesConnecting(srcP, trgP, e);
+
+		while (it.hasNext())
+			ret.add(it.next().cyEdge);
+
 		return ret;
 	}
-
 
 	/**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final CyNode addNode() {
-
-		final NodePointer n; 
+	public CyNode addNode() {
+		final NodePointer n;
 
 		synchronized (this) {
-			n = new NodePointer(m_nodes.size(),this,m_firstNode); 
-			m_nodes.add(n);
-			m_nodeCount++;
-			if (m_firstNode != null) 
-				m_firstNode.prevNode = n;
-			m_firstNode = n;
+			n = new NodePointer(nodePointers.size(), this, firstNode);
+			nodePointers.add(n);
+			nodeCount++;
+
+			if (firstNode != null)
+				firstNode.prevNode = n;
+
+			firstNode = n;
 		}
 
 		return n.cyNode;
@@ -164,39 +269,37 @@ public final class MGraph implements CyNetwork {
 	/**
 	 * DOCUMENT ME!
 	 *
-	 * @param node DOCUMENT ME!
+	 * @param n DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final boolean removeNode(final CyNode n) {
-
-		if ( !containsNode(n) )
+	public boolean removeNode(final CyNode n) {
+		if (!containsNode(n))
 			return false;
 
 		// remove adjacent edges
 		final List<CyEdge> edges = getAdjacentEdgeList(n, EdgeType.ANY_EDGE);
-		for ( final CyEdge e : edges )
+
+		for (final CyEdge e : edges)
 			removeEdge(e);
 
-		NodePointer node = getNodePointer(n);
+		final NodePointer node = getNodePointer(n);
 
 		// now clean up node
-		if (node.prevNode != null) 
+		if (node.prevNode != null)
 			node.prevNode.nextNode = node.nextNode;
-		else 
-			m_firstNode = node.nextNode;
+		else
+			firstNode = node.nextNode;
 
-
-		if (node.nextNode != null) 
+		if (node.nextNode != null)
 			node.nextNode.prevNode = node.prevNode;
 
-		m_nodes.set(node.index, null);
+		nodePointers.set(node.index, null);
 
 		node.prevNode = null;
 		node.firstOutEdge = null;
 		node.firstInEdge = null;
-		node = null;
-		m_nodeCount--;
+		nodeCount--;
 
 		return true;
 	}
@@ -204,32 +307,32 @@ public final class MGraph implements CyNetwork {
 	/**
 	 * DOCUMENT ME!
 	 *
-	 * @param sourceNode DOCUMENT ME!
-	 * @param targetNode DOCUMENT ME!
+	 * @param s DOCUMENT ME!
+	 * @param t DOCUMENT ME!
 	 * @param directed DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
 	public CyEdge addEdge(final CyNode s, final CyNode t, final boolean directed) {
-
 		final EdgePointer e;
 
 		synchronized (this) {
-			if ( !containsNode( s ) )
+			if (!containsNode(s))
 				throw new IllegalArgumentException("source node is not a member of this network");
-			if ( !containsNode( t ) )
+
+			if (!containsNode(t))
 				throw new IllegalArgumentException("target node is not a member of this network");
 
-			NodePointer source = getNodePointer(s);
-			NodePointer target = getNodePointer(t);
+			final NodePointer source = getNodePointer(s);
+			final NodePointer target = getNodePointer(t);
 
-			e = new EdgePointer(source,target,directed,m_edges.size()); 
-	
-			m_edges.add(e);
+			e = new EdgePointer(source, target, directed, edgePointers.size());
 
-			m_edgeCount++;
+			edgePointers.add(e);
 
-	        e.nextOutEdge = source.firstOutEdge;
+			edgeCount++;
+
+			e.nextOutEdge = source.firstOutEdge;
 
 			if (source.firstOutEdge != null) {
 				source.firstOutEdge.prevOutEdge = e;
@@ -256,14 +359,14 @@ public final class MGraph implements CyNetwork {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public final boolean removeEdge(final CyEdge edge) {
-		if ( !containsEdge(edge) )
+	public boolean removeEdge(final CyEdge edge) {
+		if (!containsEdge(edge))
 			return false;
 
-		EdgePointer e = getEdgePointer(edge);
+		final EdgePointer e = getEdgePointer(edge);
 
-		final NodePointer source = m_nodes.get(e.source.index);
-		final NodePointer target = m_nodes.get(e.target.index);
+		final NodePointer source = nodePointers.get(e.source.index);
+		final NodePointer target = nodePointers.get(e.target.index);
 
 		if (e.prevOutEdge != null) {
 			e.prevOutEdge.nextOutEdge = e.nextOutEdge;
@@ -302,181 +405,199 @@ public final class MGraph implements CyNetwork {
 			}
 		}
 
-		m_edges.set(e.index,null);
+		edgePointers.set(e.index, null);
 		e.prevOutEdge = null;
 		e.nextInEdge = null;
 		e.prevInEdge = null;
-		e = null;
-		m_edgeCount--;
+		edgeCount--;
 
 		return true;
 	}
 
-	public final boolean containsNode(final CyNode node) {
-		if ( node == null )
-			return false;	
-			//throw new NullPointerException("node is null");
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param node DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean containsNode(final CyNode node) {
+		if (node == null)
+			return false;
 
+		//throw new NullPointerException("node is null");
 		final int ind = node.getIndex();
 
-		if ( ind < 0 )
-			return false;	
-			//throw new IllegalArgumentException("node index less than zero");
-
-		if ( ind >= m_nodes.size() )
+		if (ind < 0)
 			return false;
 
-		final NodePointer thisNode = m_nodes.get( ind );
+		//throw new IllegalArgumentException("node index less than zero");
+		if (ind >= nodePointers.size())
+			return false;
 
-		return ( thisNode != null && thisNode.cyNode.equals( node ) ); 
+		final NodePointer thisNode = nodePointers.get(ind);
+
+		return ((thisNode != null) && thisNode.cyNode.equals(node));
 	}
 
-	public final boolean containsEdge(final CyEdge edge) {
-		if ( edge == null )
-			return false;	
-			//throw new NullPointerException("edge is null");
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param edge DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean containsEdge(final CyEdge edge) {
+		if (edge == null)
+			return false;
 
+		//throw new NullPointerException("edge is null");
 		final int ind = edge.getIndex();
 
-		if ( ind < 0 )
-			return false;	
-			//throw new IllegalArgumentException("edge index less than zero");
-
-		if ( ind >= m_edges.size() )
+		if (ind < 0)
 			return false;
 
-		final EdgePointer thisEdge = m_edges.get( ind );
+		//throw new IllegalArgumentException("edge index less than zero");
+		if (ind >= edgePointers.size())
+			return false;
 
-		return ( thisEdge != null && thisEdge.cyEdge.equals( edge ) ); 
+		final EdgePointer thisEdge = edgePointers.get(ind);
+
+		return ((thisEdge != null) && thisEdge.cyEdge.equals(edge));
 	}
 
-	public final boolean containsEdge(final CyNode n1, final CyNode n2) {
-		if ( !containsNode( n1 ) )
-			return false;
-		if ( !containsNode( n2 ) )
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param n1 DOCUMENT ME!
+	 * @param n2 DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public boolean containsEdge(final CyNode n1, final CyNode n2) {
+		if (!containsNode(n1))
 			return false;
 
-		Iterator<EdgePointer> it = edgesConnecting(getNodePointer(n1),getNodePointer(n2),EdgeType.ANY_EDGE);
+		if (!containsNode(n2))
+			return false;
+
+		final Iterator<EdgePointer> it = edgesConnecting(getNodePointer(n1), getNodePointer(n2), 
+		                                                 EdgeType.ANY_EDGE);
 
 		return it.hasNext();
 	}
 
+	private Iterator<EdgePointer> edgesAdjacent(final NodePointer n, final EdgeType edgeType) {
+		if (n == null)
+			throw new NullPointerException("node is null");
 
-	private Iterator<EdgePointer> edgesAdjacent(final NodePointer n, final EdgeType edgeType) { 
-        if (n == null)
-            throw new NullPointerException("node is null");
+		final EdgePointer[] edgeLists;
 
-        final EdgePointer[] edgeLists;
+		boolean inc = false;
+		boolean out = false;
+		boolean und = false;
 
-        boolean inc = false;
-        boolean out = false;
-        boolean und = false;
+		if ((edgeType == EdgeType.UNDIRECTED_EDGE) || (edgeType == EdgeType.ANY_EDGE))
+			und = true;
 
-        if ( edgeType == EdgeType.UNDIRECTED_EDGE ||
-             edgeType == EdgeType.ANY_EDGE )
-            und = true;
+		if ((edgeType == EdgeType.DIRECTED_EDGE) || (edgeType == EdgeType.ANY_EDGE)
+		    || (edgeType == EdgeType.INCOMING_EDGE))
+			inc = true;
 
-        if ( edgeType == EdgeType.DIRECTED_EDGE ||
-             edgeType == EdgeType.ANY_EDGE ||
-             edgeType == EdgeType.INCOMING_EDGE )
-            inc = true;
+		if ((edgeType == EdgeType.DIRECTED_EDGE) || (edgeType == EdgeType.ANY_EDGE)
+		    || (edgeType == EdgeType.OUTGOING_EDGE))
+			out = true;
 
-        if ( edgeType == EdgeType.DIRECTED_EDGE ||
-             edgeType == EdgeType.ANY_EDGE ||
-             edgeType == EdgeType.OUTGOING_EDGE )
-            out = true;
+		final boolean incoming = inc;
+		final boolean outgoing = out;
+		final boolean undirected = und;
 
+		if (undirected || (outgoing && incoming)) {
+			edgeLists = new EdgePointer[] { n.firstOutEdge, n.firstInEdge };
+		} else if (outgoing) { // Cannot also be incoming.
+			edgeLists = new EdgePointer[] { n.firstOutEdge, null };
+		} else if (incoming) { // Cannot also be outgoing.
+			edgeLists = new EdgePointer[] { null, n.firstInEdge };
+		} else { // All boolean input parameters are false.
+			edgeLists = new EdgePointer[] { null, null };
+		}
 
-        final boolean incoming = inc;
-        final boolean outgoing = out;
-        final boolean undirected = und;
+		final int edgeCount = countEdges(n, edgeType);
 
-        if (undirected || (outgoing && incoming)) {
-            edgeLists = new EdgePointer[] { n.firstOutEdge, n.firstInEdge };
-        } else if (outgoing) { // Cannot also be incoming.
-            edgeLists = new EdgePointer[] { n.firstOutEdge, null };
-        } else if (incoming) { // Cannot also be outgoing.
-            edgeLists = new EdgePointer[] { null, n.firstInEdge };
-        } else { // All boolean input parameters are false.
-            edgeLists = new EdgePointer[] { null, null };
-        }
+		return new Iterator<EdgePointer>() {
+				private int numRemaining = edgeCount;
+				private int edgeListIndex = -1;
+				private EdgePointer edge;
 
-        final int edgeCount = countEdges(n,edgeType);
+				public boolean hasNext() {
+					return numRemaining > 0;
+				}
 
-        return new Iterator<EdgePointer>() {
-                private int numRemaining = edgeCount;
-                private int edgeListIndex = -1;
-                private EdgePointer edge = null;
+				public void remove() {
+					throw new UnsupportedOperationException();
+				}
 
-                public boolean hasNext() {
-                    return numRemaining > 0;
-                }
+				public EdgePointer next() {
+					while (edge == null)
+						edge = edgeLists[++edgeListIndex];
 
-                public void remove() {
-                    throw new UnsupportedOperationException();
-                }
+					int returnIndex = -1;
 
-                public EdgePointer next() {
-                    while (edge == null)
-                        edge = edgeLists[++edgeListIndex];
+					if (edgeListIndex == 0) {
+						while ((edge != null)
+						       && !((outgoing && edge.directed) || (undirected && !edge.directed))) {
+							edge = edge.nextOutEdge;
 
-                    int returnIndex = -1;
+							if (edge == null) {
+								edge = edgeLists[++edgeListIndex];
 
+								break;
+							}
+						}
 
-                    if (edgeListIndex == 0) {
-                        while ((edge != null)
-                               && !((outgoing && edge.directed) || (undirected && !edge.directed))) {
-                            edge = edge.nextOutEdge;
+						if ((edge != null) && (edgeListIndex == 0)) {
+							returnIndex = edge.index;
+							edge = edge.nextOutEdge;
+						}
+					}
 
-                            if (edge == null) {
-                                edge = edgeLists[++edgeListIndex];
+					if (edgeListIndex == 1) {
+						while (((edge.source.index == edge.target.index)
+						       && ((outgoing && edge.directed) || (undirected && !edge.directed)))
+						       || !((incoming && edge.directed) || (undirected && !edge.directed))) {
+							edge = edge.nextInEdge;
+						}
 
-                                break;
-                            }
-                        }
+						returnIndex = edge.index;
+						edge = edge.nextInEdge;
+					}
 
-                        if ((edge != null) && (edgeListIndex == 0)) {
-                            returnIndex = edge.index;
-                            edge = edge.nextOutEdge;
-                        }
-                    }
+					numRemaining--;
 
-                    if (edgeListIndex == 1) {
-                        while (((edge.source.index == edge.target.index)
-                               && ((outgoing && edge.directed) || (undirected && !edge.directed)))
-                               || !((incoming && edge.directed) || (undirected && !edge.directed))) {
-                            edge = edge.nextInEdge;
-                        }
-
-                        returnIndex = edge.index;
-                        edge = edge.nextInEdge;
-                    }
-
-                    numRemaining--;
-
-                    return m_edges.get(returnIndex);
-                }
-            };
+					return edgePointers.get(returnIndex);
+				}
+			};
 	}
 
-	private Iterator<EdgePointer> edgesConnecting(final NodePointer node0, final NodePointer node1, final EdgeType et) {
-
-		if ( node0 == null )
+	private Iterator<EdgePointer> edgesConnecting(final NodePointer node0, final NodePointer node1,
+	                                              final EdgeType et) {
+		if (node0 == null)
 			throw new NullPointerException("node0 is null");
-		if ( node1 == null )
+
+		if (node1 == null)
 			throw new NullPointerException("node1 is null");
-		
+
 		final Iterator<EdgePointer> theAdj;
 		final int nodeZero;
 		final int nodeOne;
 
 		// choose the smaller iterator
-		if ( countEdges(node0,et) <= countEdges(node1,et) ) {
-			theAdj = edgesAdjacent(node0, et); 
+		if (countEdges(node0, et) <= countEdges(node1, et)) {
+			theAdj = edgesAdjacent(node0, et);
 			nodeZero = node0.index;
 			nodeOne = node1.index;
 		} else {
-			theAdj = edgesAdjacent(node1, et); 
+			theAdj = edgesAdjacent(node1, et);
 			nodeZero = node1.index;
 			nodeOne = node0.index;
 		}
@@ -493,8 +614,9 @@ public final class MGraph implements CyNetwork {
 						final EdgePointer e = theAdj.next();
 						final int edge = e.index;
 
-						if (nodeOne == (nodeZero ^ e.source.index ^ e.target.index) ) {
+						if (nodeOne == (nodeZero ^ e.source.index ^ e.target.index)) {
 							nextEdge = edge;
+
 							return;
 						}
 					}
@@ -503,12 +625,13 @@ public final class MGraph implements CyNetwork {
 				}
 
 				public void remove() {
-					throw new UnsupportedOperationException();	
+					throw new UnsupportedOperationException();
 				}
 
 				public boolean hasNext() {
 					ensureComputeNext();
-					return ( nextEdge >= 0 );
+
+					return (nextEdge >= 0);
 				}
 
 				public EdgePointer next() {
@@ -517,29 +640,25 @@ public final class MGraph implements CyNetwork {
 					final int returnIndex = nextEdge;
 					nextEdge = -1;
 
-					return m_edges.get(returnIndex);
+					return edgePointers.get(returnIndex);
 				}
 			};
 	}
 
 	private int countEdges(final NodePointer n, final EdgeType edgeType) {
-
 		boolean undirected = false;
 		boolean incoming = false;
 		boolean outgoing = false;
 
-		if ( edgeType == EdgeType.UNDIRECTED_EDGE || 
-		     edgeType == EdgeType.ANY_EDGE )
+		if ((edgeType == EdgeType.UNDIRECTED_EDGE) || (edgeType == EdgeType.ANY_EDGE))
 			undirected = true;
-	
-		if ( edgeType == EdgeType.DIRECTED_EDGE || 
-		     edgeType == EdgeType.ANY_EDGE || 
-		     edgeType == EdgeType.INCOMING_EDGE )
+
+		if ((edgeType == EdgeType.DIRECTED_EDGE) || (edgeType == EdgeType.ANY_EDGE)
+		    || (edgeType == EdgeType.INCOMING_EDGE))
 			incoming = true;
 
-		if ( edgeType == EdgeType.DIRECTED_EDGE || 
-		     edgeType == EdgeType.ANY_EDGE || 
-		     edgeType == EdgeType.OUTGOING_EDGE )
+		if ((edgeType == EdgeType.DIRECTED_EDGE) || (edgeType == EdgeType.ANY_EDGE)
+		    || (edgeType == EdgeType.OUTGOING_EDGE))
 			outgoing = true;
 
 		int tentativeEdgeCount = 0;
@@ -563,21 +682,27 @@ public final class MGraph implements CyNetwork {
 		return tentativeEdgeCount;
 	}
 
-	private EdgePointer getEdgePointer(CyEdge edge) {
-		assert(edge!=null);
+	private EdgePointer getEdgePointer(final CyEdge edge) {
+		assert (edge != null);
+
 		final int e = edge.getIndex();
-		if ( e >= 0 && e < m_edges.size() )
-			return m_edges.get(e);
+
+		if ((e >= 0) && (e < edgePointers.size()))
+			return edgePointers.get(e);
 		else
+
 			return null;
 	}
 
-	private NodePointer getNodePointer(CyNode node) {
-		assert(node!=null);
+	private NodePointer getNodePointer(final CyNode node) {
+		assert (node != null);
+
 		final int n = node.getIndex();
-		if ( n >= 0 && n < m_nodes.size() )
-			return m_nodes.get(n);
+
+		if ((n >= 0) && (n < nodePointers.size()))
+			return nodePointers.get(n);
 		else
+
 			return null;
 	}
 }

@@ -39,16 +39,14 @@ package org.mike.impl;
 import org.mike.CyEdge;
 import org.mike.CyNode;
 
-import java.util.Map;
-
 
 class CyEdgeImpl implements CyEdge {
-	final private CyNode source;
-	final private CyNode target;
-	final private int index;
-	final private boolean directed;
+	private final CyNode source;
+	private final CyNode target;
+	private final int index;
+	private final boolean directed;
 
-	CyEdgeImpl(CyNode src, CyNode tgt, boolean dir, int ind) {
+	CyEdgeImpl(final CyNode src, final CyNode tgt, final boolean dir, final int ind) {
 		source = src;
 		target = tgt;
 		directed = dir;
@@ -56,48 +54,48 @@ class CyEdgeImpl implements CyEdge {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public int getIndex() {
 		return index;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public CyNode getSource() {
 		return source;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public CyNode getTarget() {
 		return target;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public boolean isDirected() {
 		return directed;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		final StringBuffer sb = new StringBuffer();
 		sb.append("source: ");
 		sb.append(source.toString());
 		sb.append("  target: ");

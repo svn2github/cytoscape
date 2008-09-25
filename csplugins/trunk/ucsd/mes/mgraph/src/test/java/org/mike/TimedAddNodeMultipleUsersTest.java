@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.mike;
 
 import com.clarkware.junitperf.LoadTest;
@@ -55,9 +53,9 @@ public class TimedAddNodeMultipleUsersTest extends TestCase {
 	private int totalNodes = 100000;
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public static Test suite() {
 		long maxTimeInMillis = 1000;
@@ -69,7 +67,7 @@ public class TimedAddNodeMultipleUsersTest extends TestCase {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
 	 * @param args DOCUMENT ME!
 	 *
@@ -79,30 +77,30 @@ public class TimedAddNodeMultipleUsersTest extends TestCase {
 		junit.textui.TestRunner.run(suite());
 	}
 
-	/**
-	 * Creates a new TimedAddNodeMultipleUsersTest object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 */
+/**
+     * Creates a new TimedAddNodeMultipleUsersTest object.
+     *
+     * @param name  DOCUMENT ME!
+     */
 	public TimedAddNodeMultipleUsersTest(String name) {
 		super(name);
 		net = new MGraph();
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 */
 	public void setUp() {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 */
 	public void tearDown() {
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 */
 	public void testLoadNetwork() {
 		int localCount = 0;

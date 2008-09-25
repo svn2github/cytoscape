@@ -37,72 +37,71 @@
 package org.mike.impl;
 
 import org.mike.CyEdge;
-import org.mike.EdgeType;
 import org.mike.CyNetwork;
 import org.mike.CyNode;
+import org.mike.EdgeType;
 
 import java.util.List;
-import java.util.Map;
 
 
 class CyNodeImpl implements CyNode {
-	final private int index;
-	final private CyNetwork net;
+	private final int index;
+	private final CyNetwork net;
 
-	CyNodeImpl(CyNetwork n, int ind) {
+	CyNodeImpl(final CyNetwork n, final int ind) {
 		net = n;
 		index = ind;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public int getIndex() {
 		return index;
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
 	public String toString() {
 		return Integer.toString(index);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
 	 * @param edgeType DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
-	public List<CyNode> getNeighborList(EdgeType edgeType) {
+	public List<CyNode> getNeighborList(final EdgeType edgeType) {
 		return net.getNeighborList(this, edgeType);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
 	 * @param edgeType DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
-	public List<CyEdge> getAdjacentEdgeList(EdgeType edgeType) {
+	public List<CyEdge> getAdjacentEdgeList(final EdgeType edgeType) {
 		return net.getAdjacentEdgeList(this, edgeType);
 	}
 
 	/**
-	 *  DOCUMENT ME!
+	 * DOCUMENT ME!
 	 *
 	 * @param target DOCUMENT ME!
 	 * @param edgeType DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return DOCUMENT ME!
 	 */
-	public List<CyEdge> getConnectingEdgeList(CyNode target, EdgeType edgeType) {
+	public List<CyEdge> getConnectingEdgeList(final CyNode target, final EdgeType edgeType) {
 		return net.getConnectingEdgeList(this, target, edgeType);
 	}
 }
