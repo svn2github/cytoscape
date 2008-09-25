@@ -1,34 +1,86 @@
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package org.cytoscape.work.tunable.impl.gui;
 
-import java.lang.reflect.*;
-import java.lang.annotation.*;
-import java.util.*;
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
 import org.cytoscape.work.tunable.*;
 
+import java.awt.*;
+import java.awt.event.*;
+
+import java.lang.annotation.*;
+import java.lang.reflect.*;
+
+import java.util.*;
+
+import javax.swing.*;
+
+
 /**
- * This would presumably be service. 
+ * This would presumably be service.
  */
 public class GuiTunableInterceptor extends AbstractTunableInterceptor<GuiHandler> {
-
 	private Component parent;
 
+	/**
+	 * Creates a new GuiTunableInterceptor object.
+	 *
+	 * @param parent  DOCUMENT ME!
+	 */
 	public GuiTunableInterceptor(Component parent) {
-		super( new GuiHandlerFactory() );
+		super(new GuiHandlerFactory());
 		this.parent = parent;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param lh DOCUMENT ME!
+	 */
 	protected void process(java.util.List<GuiHandler> lh) {
-			JPanel mainPanel = new JPanel();
-			for (GuiHandler gh : lh) {
-				mainPanel.add(gh.getJPanel());
-			}
-			
-		 JOptionPane.showConfirmDialog(parent, mainPanel, "Set Parameters", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE ); 
+		JPanel mainPanel = new JPanel();
 
-		 for ( GuiHandler h : lh )
-		 	h.handle();
+		for (GuiHandler gh : lh) {
+			mainPanel.add(gh.getJPanel());
+		}
+
+		JOptionPane.showConfirmDialog(parent, mainPanel, "Set Parameters",
+		                              JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+		for (GuiHandler h : lh)
+			h.handle();
 	}
 }

@@ -76,6 +76,25 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <enableRulesSummary>true</enableRulesSummary>
+          <configLocation>config/checkstyle-build.xml</configLocation>
+		  <includeTestSourceDirectory>true</includeTestSourceDirectory>
+		  <failOnViolation>true</failOnViolation>
+        </configuration>
+		   <executions>
+		        <execution>
+				       <phase>package</phase>
+			          <goals>
+			          <goal>check</goal>
+			          </goals>
+			   </execution>
+		   </executions>
+
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <source>1.5</source>
@@ -93,6 +112,28 @@
   </build>
   <reporting>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <tags>
+            <tag>TODO</tag>
+            <tag>FIXME</tag>
+            <tag>@todo</tag>
+            <tag>@deprecated</tag>
+            <tag>DOCUMENT ME</tag>
+          </tags>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <enableRulesSummary>true</enableRulesSummary>
+          <configLocation>config/checkstyle-warn.xml</configLocation>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>

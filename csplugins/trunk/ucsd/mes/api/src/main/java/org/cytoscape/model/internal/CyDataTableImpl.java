@@ -1,11 +1,51 @@
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package org.cytoscape.model.internal;
 
-import java.util.*;
-import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyRow;
 
+import java.util.*;
+
+
+/**
+ * DOCUMENT ME!
+  */
 public class CyDataTableImpl implements CyDataTable {
-
 	private Map<String, Map<Long, Object>> attributes;
 	private Map<String, Class<?>> types;
 	private Map<String, Boolean> unique;
@@ -13,229 +53,311 @@ public class CyDataTableImpl implements CyDataTable {
 	private boolean pub;
 	private final long suid;
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public long getSUID() {
 		return suid;
 	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public boolean isPublic() {
 		return pub;
 	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public String getTitle() {
 		return name;
 	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param title DOCUMENT ME!
+	 */
 	public void setTitle(String title) {
 		name = title;
 	}
 
-	public CyDataTableImpl(Map<String,Class<?>> typeMap, String name, boolean pub) {
+	/**
+	 * Creates a new CyDataTableImpl object.
+	 *
+	 * @param typeMap  DOCUMENT ME!
+	 * @param name  DOCUMENT ME!
+	 * @param pub  DOCUMENT ME!
+	 */
+	public CyDataTableImpl(Map<String, Class<?>> typeMap, String name, boolean pub) {
 		this.name = name;
 		this.pub = pub;
 		this.suid = IdFactory.getNextSUID();
-		attributes = new HashMap<String,Map<Long,Object>>();
-		if ( typeMap == null ) {
-			types = new HashMap<String,Class<?>>();
-			unique = new HashMap<String,Boolean>();
+		attributes = new HashMap<String, Map<Long, Object>>();
+
+		if (typeMap == null) {
+			types = new HashMap<String, Class<?>>();
+			unique = new HashMap<String, Boolean>();
 		} else {
-			types = new HashMap<String,Class<?>>(typeMap);
+			types = new HashMap<String, Class<?>>(typeMap);
 			// TODO!
-			unique = new HashMap<String,Boolean>();
+			unique = new HashMap<String, Boolean>();
 		}
 
 		// setup defaults
-		types.put("name",String.class);
-		unique.put("name",false);
+		types.put("name", String.class);
+		unique.put("name", false);
 
-		types.put("selected",Boolean.class);
-		unique.put("selected",false);
-		
-		for ( String key : types.keySet() )
-			attributes.put( key, new HashMap<Long,Object>() );
+		types.put("selected", Boolean.class);
+		unique.put("selected", false);
+
+		for (String key : types.keySet())
+			attributes.put(key, new HashMap<Long, Object>());
 	}
 
-	public Map<String,Class<?>> getColumnTypeMap() {
-		return new HashMap<String,Class<?>>(types);
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public Map<String, Class<?>> getColumnTypeMap() {
+		return new HashMap<String, Class<?>>(types);
 	}
 
-
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param attributeName DOCUMENT ME!
+	 */
 	public void deleteColumn(String attributeName) {
-		if ( attributes.containsKey(attributeName) ) {
-			attributes.remove( attributeName );
-			types.remove( attributeName );
+		if (attributes.containsKey(attributeName)) {
+			attributes.remove(attributeName);
+			types.remove(attributeName);
 		}
 	}
 
-	public <T> void createColumn(String attributeName, Class<? extends T> type, boolean u) {
-		if ( attributeName == null ) 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <T> DOCUMENT ME!
+	 * @param attributeName DOCUMENT ME!
+	 * @param type DOCUMENT ME!
+	 * @param u DOCUMENT ME!
+	 */
+	public <T> void createColumn(String attributeName, Class<?extends T> type, boolean u) {
+		if (attributeName == null)
 			throw new NullPointerException("attribute name is null");
-		if ( type == null )
+
+		if (type == null)
 			throw new NullPointerException("type is null");
-		
+
 		Class cls = getClass(type);
 
-		Class curr = types.get( attributeName );
-		if ( curr == null ) {
-			types.put( attributeName, cls );
-			attributes.put( attributeName, new HashMap<Long,Object>() );
+		Class curr = types.get(attributeName);
+
+		if (curr == null) {
+			types.put(attributeName, cls);
+			attributes.put(attributeName, new HashMap<Long, Object>());
 			unique.put(attributeName, u);
 		} else {
-			if ( !curr.equals( cls ) )
-				throw new IllegalArgumentException("attribute already exists for name: " + 
-				                                   attributeName + " with type: " + cls.getName());
-		}	
+			if (!curr.equals(cls))
+				throw new IllegalArgumentException("attribute already exists for name: "
+				                                   + attributeName + " with type: " + cls.getName());
+		}
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public List<String> getUniqueColumns() {
 		List<String> l = new ArrayList<String>();
-		for ( String s : unique.keySet() ) {
-			if ( unique.get(s) )
+
+		for (String s : unique.keySet()) {
+			if (unique.get(s))
 				l.add(s);
 		}
+
 		return l;
 	}
 
-	public <T> List<? extends T> getColumnValues(String columnName, Class<? extends T> type) {
-		if ( columnName == null ) 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <T> DOCUMENT ME!
+	 * @param columnName DOCUMENT ME!
+	 * @param type DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public <T> List<?extends T> getColumnValues(String columnName, Class<?extends T> type) {
+		if (columnName == null)
 			throw new NullPointerException("column name is null");
-		Map<Long,Object> vals = attributes.get(columnName);
-		if ( vals == null )
+
+		Map<Long, Object> vals = attributes.get(columnName);
+
+		if (vals == null)
 			throw new NullPointerException("attribute does not exist");
 
-		List<T> l =  new ArrayList<T>( vals.size() );
-		for ( Object o : vals.values() )
-			l.add( type.cast(o) );
+		List<T> l = new ArrayList<T>(vals.size());
+
+		for (Object o : vals.values())
+			l.add(type.cast(o));
 
 		return l;
 	}
 
-	public CyRow getRow(final long suid) { 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param suid DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public CyRow getRow(final long suid) {
 		return new InternalRow(suid);
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CyRow addRow() {
-		return null;	
+		return null;
 	}
 
 	// internal methods
-
 	private void removeX(long suid, String attributeName) {
-		if ( attributes.containsKey(attributeName) ) {
-			Map<Long,Object> map = attributes.get(attributeName);
-			if ( map.containsKey( suid ) )
-				map.remove( suid );
+		if (attributes.containsKey(attributeName)) {
+			Map<Long, Object> map = attributes.get(attributeName);
+
+			if (map.containsKey(suid))
+				map.remove(suid);
 		}
 	}
 
 	private void setX(long suid, String attrName, Object value) {
-		if ( value == null )
+		if (value == null)
 			throw new NullPointerException("value is null");
 
-		if ( !types.containsKey(attrName) || !attributes.containsKey(attrName) ) 
+		if (!types.containsKey(attrName) || !attributes.containsKey(attrName))
 			throw new IllegalArgumentException("attribute does not yet exist!");
 
 		checkType(value);
 
-		Map<Long,Object> vls = attributes.get(attrName);
+		Map<Long, Object> vls = attributes.get(attrName);
 
-		if ( types.get( attrName ).isAssignableFrom( value.getClass() ) )
+		if (types.get(attrName).isAssignableFrom(value.getClass()))
 			// TODO this is an implicit addRow - not sure if we want to refactor this or not
-			vls.put(suid,value);
+			vls.put(suid, value);
 		else
 			throw new IllegalArgumentException("value is not of type: " + types.get(attrName));
 	}
 
-	private <T> T getX(long suid, String attrName, Class<? extends T> type) {
-		Map<Long,Object> vls = attributes.get(attrName);
+	private <T> T getX(long suid, String attrName, Class<?extends T> type) {
+		Map<Long, Object> vls = attributes.get(attrName);
 
-		if (vls == null) 
+		if (vls == null)
 			return null;
 
 		Object vl = vls.get(suid);
 
-		if (vl == null) 
+		if (vl == null)
 			return null;
 
 		return type.cast(vl);
 	}
 
-	private <T> boolean containsX(long suid, String attrName, Class<? extends T> type) {
-		Map<Long,Object> vls = attributes.get(attrName);
-		
-		if (vls == null) 
+	private <T> boolean containsX(long suid, String attrName, Class<?extends T> type) {
+		Map<Long, Object> vls = attributes.get(attrName);
+
+		if (vls == null)
 			return false;
 
 		Object vl = vls.get(suid);
 
-		if (vl == null) 
+		if (vl == null)
 			return false;
 
-		if ( types.get(attrName).isAssignableFrom(type) ) 
+		if (types.get(attrName).isAssignableFrom(type))
 			return true;
-		else 
+		else
+
 			return false;
 	}
 
 	private Class<?> containsX(long suid, String attrName) {
-		Map<Long,Object> vls = attributes.get(attrName);
-		
-		if (vls == null) 
+		Map<Long, Object> vls = attributes.get(attrName);
+
+		if (vls == null)
 			return null;
 
 		Object vl = vls.get(suid);
 
-		if (vl == null) 
+		if (vl == null)
 			return null;
 		else
+
 			return types.get(attrName);
 	}
 
 	private Class<?> getClass(Class<?> c) {
-		if ( Integer.class.isAssignableFrom( c ) )
+		if (Integer.class.isAssignableFrom(c))
 			return Integer.class;
-		else if ( Double.class.isAssignableFrom( c ) )
+		else if (Double.class.isAssignableFrom(c))
 			return Double.class;
-		else if ( Boolean.class.isAssignableFrom( c ) )
+		else if (Boolean.class.isAssignableFrom(c))
 			return Boolean.class;
-		else if ( String.class.isAssignableFrom( c ) )
+		else if (String.class.isAssignableFrom(c))
 			return String.class;
-		else if ( List.class.isAssignableFrom( c ) )
+		else if (List.class.isAssignableFrom(c))
 			return List.class;
-		else if ( Map.class.isAssignableFrom( c ) )
+		else if (Map.class.isAssignableFrom(c))
 			return Map.class;
 		else
 			throw new IllegalArgumentException("invalid class: " + c.getName());
 	}
-		
 
 	private void checkType(Object o) {
-		if ( o instanceof String )
+		if (o instanceof String)
 			return;
-		else if ( o instanceof Integer )
+		else if (o instanceof Integer)
 			return;
-		else if ( o instanceof Boolean )
+		else if (o instanceof Boolean)
 			return;
-		else if ( o instanceof Double )
+		else if (o instanceof Double)
 			return;
-		else if ( o instanceof List ) {
-			List l = (List)o;
-			if ( l.size() <= 0 )
+		else if (o instanceof List) {
+			List l = (List) o;
+
+			if (l.size() <= 0)
 				throw new RuntimeException("empty list");
 			else
 				checkType(l.get(0));
-		} else if ( o instanceof Map ) {
-			Map m = (Map)o;
+		} else if (o instanceof Map) {
+			Map m = (Map) o;
 			Object[] keys = m.keySet().toArray();
-			if ( keys.length <= 0 ) {
+
+			if (keys.length <= 0) {
 				throw new RuntimeException("empty map");
 			} else {
 				checkType(m.get(keys[0]));
 				checkType(keys[0]);
 			}
 		} else
-			throw new RuntimeException("invalid type: " + o.getClass().toString() );	
+			throw new RuntimeException("invalid type: " + o.getClass().toString());
 	}
 
-
 	private class InternalRow implements CyRow {
-	
 		private final long suid;
 
 		InternalRow(long suid) {
@@ -243,45 +365,51 @@ public class CyDataTableImpl implements CyDataTable {
 		}
 
 		public void set(String attributeName, Object value) {
-			setX(suid,attributeName,value);
+			setX(suid, attributeName, value);
 		}
 
-		public <T> T get(String attributeName, Class<? extends T> c) {
-			return getX(suid,attributeName,c);
+		public <T> T get(String attributeName, Class<?extends T> c) {
+			return getX(suid, attributeName, c);
 		}
 
-		public <T> boolean contains(String attributeName, Class<? extends T> c) {
-			return containsX(suid,attributeName,c);
+		public <T> boolean contains(String attributeName, Class<?extends T> c) {
+			return containsX(suid, attributeName, c);
 		}
 
 		public Class<?> contains(String attributeName) {
-			return containsX(suid,attributeName);
+			return containsX(suid, attributeName);
 		}
 
 		public void remove(String attributeName) {
-			removeX(suid,attributeName);
+			removeX(suid, attributeName);
 		}
 
-		public Map<String,Object> getAllValues() {
-			Map<String,Object> m = new HashMap<String,Object>( attributes.size() );	
-			for ( String attr : attributes.keySet() ) 
-				m.put( attr, attributes.get(attr).get(suid) );
+		public Map<String, Object> getAllValues() {
+			Map<String, Object> m = new HashMap<String, Object>(attributes.size());
+
+			for (String attr : attributes.keySet())
+				m.put(attr, attributes.get(attr).get(suid));
+
 			return m;
 		}
 
-		public @Override boolean equals(Object o) {
-			if ( !(o instanceof InternalRow) )
+		public @Override
+		boolean equals(Object o) {
+			if (!(o instanceof InternalRow))
 				return false;
 
-			InternalRow ir = (InternalRow)o;
-			if ( ir.suid == this.suid )
+			InternalRow ir = (InternalRow) o;
+
+			if (ir.suid == this.suid)
 				return true;
 			else
+
 				return false;
 		}
 
-		public @Override int hashCode() {
+		public @Override
+		int hashCode() {
 			return (int) (suid ^ (suid >>> 32));
 		}
-	} 
+	}
 }

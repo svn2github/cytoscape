@@ -1,45 +1,95 @@
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package org.cytoscape.model;
 
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * DOCUMENT ME!
+  */
 public interface CyNetwork extends Identifiable, GraphObject {
+	String DEFAULT_ATTRS = "USER";
 
-	public CyNode addNode();
-	public boolean removeNode(CyNode node);
+	CyNode addNode();
 
-	public CyEdge addEdge(CyNode source, CyNode target, boolean isDirected);
-	public boolean removeEdge(CyEdge edge);
+	boolean removeNode(CyNode node);
 
-	public int getNodeCount();
-	public int getEdgeCount();
+	CyEdge addEdge(CyNode source, CyNode target, boolean isDirected);
 
-	public List<CyNode> getNodeList();
-	public List<CyEdge> getEdgeList();
+	boolean removeEdge(CyEdge edge);
 
-	public boolean containsNode( CyNode node );
-	public boolean containsEdge( CyEdge edge );
-	public boolean containsEdge( CyNode from, CyNode to );
+	int getNodeCount();
 
-	public CyNode getNode(int index);
-	public CyEdge getEdge(int index);
+	int getEdgeCount();
 
-	public List<CyNode> getNeighborList( CyNode node, CyEdge.Type edgeType );
-	public List<CyEdge> getAdjacentEdgeList( CyNode node, CyEdge.Type edgeType );
-	public List<CyEdge> getConnectingEdgeList( CyNode source, CyNode target, CyEdge.Type edgeType );
+	List<CyNode> getNodeList();
 
-	/**
-	 * Defines the attributes available for the CyNetwork.
-	 */
-	public Map<String,? extends CyDataTable> getNetworkCyDataTables();
+	List<CyEdge> getEdgeList();
 
-	/**
-	 * Defines the attributes available for all of the CyNode objects in the CyNetwork. 
-	 */
-	public Map<String,? extends CyDataTable> getNodeCyDataTables();
+	boolean containsNode(CyNode node);
 
-	/**
-	 * Defines the attributes available for all of the CyEdge objects in the CyNetwork. 
-	 */
-	public Map<String,? extends CyDataTable> getEdgeCyDataTables();
+	boolean containsEdge(CyEdge edge);
+
+	boolean containsEdge(CyNode from, CyNode to);
+
+	CyNode getNode(int index);
+
+	CyEdge getEdge(int index);
+
+	List<CyNode> getNeighborList(CyNode node, CyEdge.Type edgeType);
+
+	List<CyEdge> getAdjacentEdgeList(CyNode node, CyEdge.Type edgeType);
+
+	List<CyEdge> getConnectingEdgeList(CyNode source, CyNode target, CyEdge.Type edgeType);
+
+/**
+     * Defines the attributes available for the CyNetwork.
+     */
+	Map<String, ?extends CyDataTable> getNetworkCyDataTables();
+
+/**
+     * Defines the attributes available for all of the CyNode objects in the CyNetwork. 
+     */
+	Map<String, ?extends CyDataTable> getNodeCyDataTables();
+
+/**
+     * Defines the attributes available for all of the CyEdge objects in the CyNetwork. 
+     */
+	Map<String, ?extends CyDataTable> getEdgeCyDataTables();
 }

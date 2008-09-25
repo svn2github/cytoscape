@@ -1,3 +1,39 @@
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
 package org.cytoscape.view.model;
 
 import java.awt.Font;
@@ -11,77 +47,67 @@ import java.awt.Paint;
  * properties.
  */
 public enum VisualProperty {
-
 	// Position of node
-	NODE_X_POSITION(Double.class), NODE_Y_POSITION(Double.class), NODE_Z_POSITION(Double.class),
+	NODE_X_POSITION(Double.class),NODE_Y_POSITION(Double.class), NODE_Z_POSITION(Double.class),
 
 	// For time series data
 	NODE_T_POSITION(Double.class),
-
 	// Use java.awt.Paint to support both Color and custom graphics
-	NODE_PAINT(Paint.class), NODE_PAINT_OPACITY(Integer.class),
-
+	NODE_PAINT(Paint.class), NODE_PAINT_OPACITY(Integer.class), 
 	// Shape of node
-	NODE_SHAPE(NodeShape.class), 
-	
+	NODE_SHAPE(NodeShape.class),
 	// Size
-	NODE_WIDTH(Integer.class), NODE_HEIGHT(Integer.class), NODE_DEPTH(Integer.class), 
-	
+	NODE_WIDTH(Integer.class), NODE_HEIGHT(Integer.class), NODE_DEPTH(Integer.class),
+
 	// Label/tooltip strings
-	NODE_LABEL(String.class), NODE_TOOLTIP(String.class),
-	
+	NODE_LABEL(String.class),NODE_TOOLTIP(String.class), 
 	// Max. width of label on a line
-	NODE_LABEL_WIDTH(Integer.class), 
-	
+	NODE_LABEL_WIDTH(Integer.class),
 	// Color and Font data of node label
-	NODE_LABEL_COLOR(Paint.class), 
-	NODE_LABEL_OPACITY(Integer.class), NODE_LABEL_POSITION(LabelPosition.class), 
-	NODE_LABEL_FONT_FACE(Font.class), NODE_LABEL_FONT_SIZE(Integer.class), 
-	
+	NODE_LABEL_COLOR(Paint.class), NODE_LABEL_OPACITY(Integer.class), 
+	NODE_LABEL_POSITION(LabelPosition.class),NODE_LABEL_FONT_FACE(Font.class), 
+	NODE_LABEL_FONT_SIZE(Integer.class),
 	// Node border line.  Maybe ignored in 3D
 	NODE_BORDER_WIDTH(Integer.class), NODE_BORDER_STYLE(LineStyle.class), 
-	NODE_BORDER_COLOR(Paint.class), NODE_BORDER_OPACITY(Integer.class),
-
+	NODE_BORDER_COLOR(Paint.class),NODE_BORDER_OPACITY(Integer.class), 
 	// Edge color
-	EDGE_COLOR(Paint.class), EDGE_OPACITY(Integer.class),
-	
+	EDGE_COLOR(Paint.class),EDGE_OPACITY(Integer.class), 
 	// Edge label/tooltip strings
-	EDGE_LABEL(String.class), EDGE_TOOLTIP(String.class),
-	
+	EDGE_LABEL(String.class),EDGE_TOOLTIP(String.class), 
 	// Edge label appearances
-	EDGE_LABEL_WIDTH(Integer.class), EDGE_LABEL_COLOR(Paint.class), 
-	EDGE_LABEL_OPACITY(Integer.class), 
-	EDGE_LABEL_POSITION(LabelPosition.class), EDGE_LABEL_FONT_FACE(Font.class), 
-	EDGE_LABEL_FONT_SIZE(Integer.class),
-	
+	EDGE_LABEL_WIDTH(Integer.class),EDGE_LABEL_COLOR(Paint.class), 
+	EDGE_LABEL_OPACITY(Integer.class),EDGE_LABEL_POSITION(LabelPosition.class), 
+	EDGE_LABEL_FONT_FACE(Font.class),EDGE_LABEL_FONT_SIZE(Integer.class), 
+
 	// Edge styles
-	EDGE_LINE_WIDTH(Integer.class), EDGE_LINE_STYLE(LineStyle.class), 
+	EDGE_LINE_WIDTH(Integer.class),EDGE_LINE_STYLE(LineStyle.class), 
 	EDGE_CURVE_STYLE(EdgeStyle.class),
-	
 	// Arrow appearances
 	EDGE_SRC_ARROW_SHAPE(ArrowShape.class), EDGE_TGT_ARROW_SHAPE(ArrowShape.class), 
-	EDGE_SRC_ARROW_PAINT(Paint.class), EDGE_TGT_ARROW_PAINT(Paint.class), 
-	EDGE_SRC_ARROW_OPACITY(Double.class), EDGE_TGT_ARROW_OPACITY(Double.class),
-	
-	// Background Paint.  Images can be used here.
-	NETWORK_BACKGROUND_PAINT(Paint.class), 
+	EDGE_SRC_ARROW_PAINT(Paint.class),EDGE_TGT_ARROW_PAINT(Paint.class), 
+	EDGE_SRC_ARROW_OPACITY(Double.class),EDGE_TGT_ARROW_OPACITY(Double.class), 
 
+	// Background Paint.  Images can be used here.
+	NETWORK_BACKGROUND_PAINT(Paint.class),
 	// Zoom level
 	NETWORK_ZOOM_FACTOR(Double.class), 
-	
 	// Colors for selection.  Should also be Paint...?
 	NETWORK_NODE_SELECTION_COLOR(Paint.class), NETWORK_NODE_REVERSE_SELECTION_COLOR(Paint.class), 
-	NETWORK_EDGE_SELECTION_COLOR(Paint.class), NETWORK_EDGE_REVERSE_SELECTION_COLOR(Paint.class),
+	NETWORK_EDGE_SELECTION_COLOR(Paint.class),NETWORK_EDGE_REVERSE_SELECTION_COLOR(Paint.class), 
 
 	// Background for Groups
 	GROUP_BACKGROUND_PAINT(Paint.class);
-
 	private Class<?> classType;
 
 	private VisualProperty(Class<?> ct) {
 		classType = ct;
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public Class<?> getClassType() {
 		return classType;
 	}
