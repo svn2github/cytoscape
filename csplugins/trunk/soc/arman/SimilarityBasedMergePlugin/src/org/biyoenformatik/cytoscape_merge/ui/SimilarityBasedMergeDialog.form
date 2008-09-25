@@ -259,12 +259,15 @@
                     </constraints>
                     <properties>
                       <preferredSize width="454" height="20"/>
+                      <verticalScrollBarPolicy value="22"/>
                     </properties>
                     <border type="none"/>
                     <children>
                       <component id="b9762" class="javax.swing.JTable" binding="criteriasTable">
                         <constraints/>
-                        <properties/>
+                        <properties>
+                          <fillsViewportHeight value="true"/>
+                        </properties>
                       </component>
                     </children>
                   </scrollpane>

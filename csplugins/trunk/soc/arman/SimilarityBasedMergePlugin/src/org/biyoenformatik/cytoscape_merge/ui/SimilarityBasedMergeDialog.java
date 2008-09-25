@@ -154,7 +154,7 @@ public class SimilarityBasedMergeDialog extends JDialog {
                 updateMatchesTable();
             }
         });
-
+        updateMatchesTable();
 
         for (ComponentType ct : ComponentType.values())
             componentTypes.add(ct.toString());
@@ -191,6 +191,7 @@ public class SimilarityBasedMergeDialog extends JDialog {
                 updateCriteriasTable();
             }
         });
+        updateCriteriasTable();
 
         matchesTable.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -220,13 +221,18 @@ public class SimilarityBasedMergeDialog extends JDialog {
         String[][] tableData = new String[criteriaList.size()][];
         DecimalFormat df = new DecimalFormat("###");
 
-        int count = 0;
-        for (Criteria criteria : criteriaList) {
-            String[] aRow = {criteria.type.toString(),
-                    criteria.attribute1,
-                    criteria.attribute2,
-                    df.format(criteria.importance * MAX_SCORE) + "/" + MAX_SCORE};
-            tableData[count++] = aRow;
+        if (criteriaList.isEmpty()) {
+            tableHeaders = new String[]{""};
+            tableData = new String[][]{{"No criterieas."}};
+        } else {
+            int count = 0;
+            for (Criteria criteria : criteriaList) {
+                String[] aRow = {criteria.type.toString(),
+                        criteria.attribute1,
+                        criteria.attribute2,
+                        df.format(criteria.importance * MAX_SCORE) + "/" + MAX_SCORE};
+                tableData[criteriaList.size() - ++count] = aRow;
+            }
         }
 
         criteriasTable.setModel(new DefaultTableModel(tableData, tableHeaders) {
@@ -334,9 +340,8 @@ public class SimilarityBasedMergeDialog extends JDialog {
         jTaskConfig.displayStatus(true);
         jTaskConfig.setAutoDispose(false);
 
-        TaskManager.executeTask(task, jTaskConfig);
-
         dispose();
+        TaskManager.executeTask(task, jTaskConfig);
     }
 
     private void onCancel() {
@@ -604,6 +609,7 @@ public class SimilarityBasedMergeDialog extends JDialog {
         panel9.add(deleteCriteriaButton, gbc);
         final JScrollPane scrollPane1 = new JScrollPane();
         scrollPane1.setPreferredSize(new Dimension(454, 20));
+        scrollPane1.setVerticalScrollBarPolicy(22);
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -612,6 +618,7 @@ public class SimilarityBasedMergeDialog extends JDialog {
         gbc.fill = GridBagConstraints.BOTH;
         panel9.add(scrollPane1, gbc);
         criteriasTable = new JTable();
+        criteriasTable.setFillsViewportHeight(true);
         scrollPane1.setViewportView(criteriasTable);
         final JPanel panel10 = new JPanel();
         panel10.setLayout(new GridBagLayout());

@@ -34,9 +34,12 @@ import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import java.awt.event.*;
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.ArrayList;
 
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
@@ -81,11 +84,25 @@ public class SimilarityDetailsDialog extends JDialog {
                 df.format(matchScore.score * SimilarityBasedMergeDialog.MAX_SCORE)
                         + " / " + SimilarityBasedMergeDialog.MAX_SCORE);
 
-        tree1.setModel(new DefaultTreeModel(createTreeFromComponent(matchScore.type, matchScore.id1)));
-        tree2.setModel(new DefaultTreeModel(createTreeFromComponent(matchScore.type, matchScore.id2)));
+        ArrayList<TreePath> selectedPaths = new ArrayList<TreePath>();
+        TreeNode rootNode = createTreeFromComponent(matchScore.type,
+                matchScore.id1,
+                matchScore.matchedAttributesMap.keySet(),
+                selectedPaths);
+        tree1.setModel(new DefaultTreeModel(rootNode));
+        tree1.setSelectionPaths(selectedPaths.toArray(new TreePath[selectedPaths.size()]));
+        selectedPaths.clear();
+
+        rootNode = createTreeFromComponent(matchScore.type,
+                matchScore.id2,
+                matchScore.matchedAttributesMap.values(),
+                selectedPaths);
+        tree2.setModel(new DefaultTreeModel(rootNode));
+        tree2.setSelectionPaths(selectedPaths.toArray(new TreePath[selectedPaths.size()]));
     }
 
-    private TreeNode createTreeFromComponent(ComponentType type, String id) {
+    private TreeNode createTreeFromComponent(ComponentType type, String id, Collection<String> toBeHighlighted,
+                                             ArrayList<TreePath> selectedPaths) {
         CyAttributes attrs = type.getAttributes();
         String cName = attrs.getStringAttribute(id, Semantics.CANONICAL_NAME);
 
@@ -94,8 +111,12 @@ public class SimilarityDetailsDialog extends JDialog {
             if (!attrs.hasAttribute(id, attrName))
                 continue;
 
+
             DefaultMutableTreeNode subRootNode = new DefaultMutableTreeNode(attrName);
             rootNode.add(subRootNode);
+
+            if (toBeHighlighted.contains(attrName))
+                selectedPaths.add(new TreePath(subRootNode.getPath()));
 
             Object value = attrs.getAttribute(id, attrName);
             if (value instanceof List) {

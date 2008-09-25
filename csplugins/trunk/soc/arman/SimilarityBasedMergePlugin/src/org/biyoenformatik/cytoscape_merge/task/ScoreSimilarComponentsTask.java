@@ -105,6 +105,7 @@ public class ScoreSimilarComponentsTask implements Task {
         CyAttributes attrs = type.getAttributes();
         double cumulativeScore = 1;
 
+        Map<String, String> matchedAttributes = new HashMap<String, String>();
         for(Criteria criteria: criteriaList) {
             boolean isMatch = false;
 
@@ -130,15 +131,18 @@ public class ScoreSimilarComponentsTask implements Task {
                 if( ((List) value2).contains(value1) )
                     isMatch = true;
             } else {
-                if( value1.toString().equalsIgnoreCase(value2.toString()) )
+                if( (value1.toString().length() > 0 && value2.toString().length() > 0) &&
+                        value1.toString().equalsIgnoreCase(value2.toString()) )
                     isMatch = true;
             }
 
-            if(isMatch)
+            if(isMatch) {
                 cumulativeScore *= (1.0 - criteria.importance);
+                matchedAttributes.put(criteria.attribute1, criteria.attribute2);
+            }
         }
 
-        return new MatchScore(type, 1.0 - cumulativeScore, id1, id2);
+        return new MatchScore(type, 1.0 - cumulativeScore, id1, id2, matchedAttributes);
     }
 
     public void halt() {
