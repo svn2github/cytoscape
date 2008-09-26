@@ -51,6 +51,7 @@ import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.internal.CyNetworkImpl;
+import org.cytoscape.model.internal.MGraph;
 
 import java.lang.RuntimeException;
 
@@ -78,7 +79,8 @@ public class CyNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = new CyNetworkImpl(new DummyCyEventHelper());
+		//net = new CyNetworkImpl(new DummyCyEventHelper());
+		net = new MGraph(new DummyCyEventHelper());
 	}
 
 	/**
@@ -286,9 +288,18 @@ public class CyNetworkTest extends TestCase {
 		assertFalse("remove null edge failure", remn);
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
 
-		// add another edge
+		// add undirected self edge
 		CyEdge e5 = net.addEdge(n1, n1, false);
-		assertEquals("num nodes == 3", 3, net.getNodeCount());
+		assertEquals("num edges == 3", 3, net.getEdgeCount());
+
+		// add directed self edge
+		CyEdge e6 = net.addEdge(n1, n1, true);
+		assertEquals("num edges == 4", 4, net.getEdgeCount());
+
+		// remove self edge 
+		boolean rem6 = net.removeEdge(e6);
+		assertTrue("remove edge 6 success", rem6);
+		assertEquals("num edges == 3", 3, net.getEdgeCount());
 
 		// remove the rest
 		boolean rem5 = net.removeEdge(e5);
