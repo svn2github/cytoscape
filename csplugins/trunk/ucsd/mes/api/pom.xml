@@ -131,7 +131,7 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <enableRulesSummary>true</enableRulesSummary>
-          <configLocation>config/checkstyle-warn.xml</configLocation>
+          <configLocation>config/checkstyle-site.xml</configLocation>
         </configuration>
       </plugin>
       <plugin>
