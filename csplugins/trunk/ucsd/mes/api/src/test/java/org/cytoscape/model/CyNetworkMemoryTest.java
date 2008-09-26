@@ -41,8 +41,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 
-import org.cytoscape.model.internal.CyNetworkImpl;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -68,7 +66,7 @@ public class CyNetworkMemoryTest extends TestCase {
 	 * DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = new CyNetworkImpl(new DummyCyEventHelper());
+		net = CyNetworkFactory.getInstance(); 
 	}
 	public void tearDown() {
 		net = null;
@@ -100,6 +98,8 @@ public class CyNetworkMemoryTest extends TestCase {
 		long heapRes = (heapEnd - heapStart);
 		long nonHeapRes = (nonHeapEnd - nonHeapStart); 
 
+		//System.out.println("node heap consumption: " + heapRes);
+		//System.out.println("node non-heap consumption: " + nonHeapRes);
 		assertTrue("node heap consumption: " + heapRes, heapRes < 11000000); // in bytes
 		assertTrue("node non-heap consumption: " + nonHeapRes, nonHeapRes < 15000); // in bytes
 	}
@@ -142,6 +142,8 @@ public class CyNetworkMemoryTest extends TestCase {
 		long heapRes = (heapEnd - heapStart);
 		long nonHeapRes = (nonHeapEnd - nonHeapStart); 
 
+		//System.out.println("node and edge heap consumption: " + heapRes);
+		//System.out.println("node and edge non-heap consumption: " + nonHeapRes);
 		assertTrue("node and edge heap consumption: " + heapRes, heapRes < 25000000); // in bytes
 		assertTrue("node and edge non-heap consumption: " + nonHeapRes, nonHeapRes < 40000); // in bytes
 	}

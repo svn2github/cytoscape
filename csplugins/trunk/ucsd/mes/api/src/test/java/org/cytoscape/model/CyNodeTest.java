@@ -44,7 +44,6 @@ import junit.framework.TestSuite;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
-import org.cytoscape.model.internal.CyNetworkImpl;
 
 import java.lang.RuntimeException;
 
@@ -72,7 +71,7 @@ public class CyNodeTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = new CyNetworkImpl(new DummyCyEventHelper());
+		net = CyNetworkFactory.getInstance(); 
 	}
 
 	/**

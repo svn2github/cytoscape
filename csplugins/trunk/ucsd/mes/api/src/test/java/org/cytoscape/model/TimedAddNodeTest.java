@@ -42,8 +42,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 
-import org.cytoscape.model.internal.CyNetworkImpl;
-
 
 /**
  * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this
@@ -78,7 +76,7 @@ public class TimedAddNodeTest extends TestCase {
 		System.out.println("Failures: " + result.failureCount());
 	}
 
-/**
+    /**
      * Creates a new TimedAddNodeTest object.
      *
      * @param name  DOCUMENT ME!
@@ -91,7 +89,7 @@ public class TimedAddNodeTest extends TestCase {
 	 * DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = new CyNetworkImpl(new DummyCyEventHelper());
+		net = CyNetworkFactory.getInstance(); 
 	}
 
 	/**

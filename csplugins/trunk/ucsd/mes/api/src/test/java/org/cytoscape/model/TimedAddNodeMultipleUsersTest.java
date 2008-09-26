@@ -43,8 +43,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 
-import org.cytoscape.model.internal.CyNetworkImpl;
-
 
 /**
  * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 4:07:31 PM To change this
@@ -86,7 +84,7 @@ public class TimedAddNodeMultipleUsersTest extends TestCase {
 	 */
 	public TimedAddNodeMultipleUsersTest(String name) {
 		super(name);
-		net = new CyNetworkImpl(new DummyCyEventHelper());
+		net = CyNetworkFactory.getInstance(); 
 	}
 
 	/**

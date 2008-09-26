@@ -36,67 +36,17 @@
 
 package org.cytoscape.model;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
+import org.cytoscape.model.internal.CyNetworkImpl;
+import org.cytoscape.model.internal.MGraph;
 
-import java.lang.RuntimeException;
+public class CyNetworkFactory {
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+	private CyNetworkFactory() {};
 
-
-/**
- * DOCUMENT ME!
-  */
-public class IdentifiableTest extends TestCase {
-	private CyNetwork net;
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static Test suite() {
-		return new TestSuite(IdentifiableTest.class);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void setUp() {
-		net = CyNetworkFactory.getInstance(); 
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void tearDown() {
-		net = null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void testGetSUID() {
-		CyNode n1 = net.addNode();
-		assertTrue("suid >= 0", n1.getSUID() >= 0);
-
-		CyNode n2 = net.addNode();
-		assertTrue("suid >= 0", n2.getSUID() >= 0);
-
-		CyEdge e1 = net.addEdge(n1, n2, true);
-		assertTrue("suid >= 0", e1.getSUID() >= 0);
-
-		CyEdge e2 = net.addEdge(n1, n2, false);
-		assertTrue("suid >= 0", e2.getSUID() >= 0);
-
-		assertTrue("suid >= 0", net.getSUID() >= 0);
+	public static CyNetwork getInstance() {
+		//return new CyNetworkImpl(new DummyCyEventHelper());
+		return new MGraph(new DummyCyEventHelper());
 	}
 }
+
