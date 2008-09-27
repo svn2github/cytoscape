@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/cytoscape-2.6.x/cytoscape.jar"/>
 	<classpathentry kind="lib" path="/cytoscape-2.6.x/lib/activation.jar"/>
 	<classpathentry kind="lib" path="/cytoscape-2.6.x/lib/biojava-1.4.jar"/>
 	<classpathentry kind="lib" path="/cytoscape-2.6.x/lib/colt.jar"/>
@@ -67,5 +66,6 @@
 	<classpathentry kind="lib" path="/cytoscape-2.6.x/lib/undo.support.jar"/>
 	<classpathentry kind="lib" path="/cytoscape-2.6.x/lib/violinstrings-1.0.2.jar"/>
 	<classpathentry kind="lib" path="/cytoscape-2.6.x/lib/wizard.jar"/>
+	<classpathentry kind="lib" path="/Users/allankuchinsky/Documents/test_cytoscape3_eclipse/cytoscape-2.6.x/cytoscape.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

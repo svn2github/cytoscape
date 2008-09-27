@@ -84,6 +84,43 @@ public class PropertySheetView extends LayoutProperties implements TunableListen
 		initializing = false;
 		
 	}
+	
+	/**
+	 * blank out the property field values for all fields.  
+	 * This should be done when there is not a unique node selected
+	 */
+	public void setPropertiesBlank ()
+	{
+		initializing = true;
+		List<Tunable> tunables = this.getTunables();
+		Iterator<Tunable> it = tunables.iterator();
+		Tunable tunable = null;
+		String name = null;
+		int type;
+		while (it.hasNext())
+		{
+			tunable = it.next();
+			name = tunable.getName();
+			if (tunable.getType() == Tunable.BOOLEAN)
+			{
+				tunable.setValue(new Boolean(true));
+		
+			}
+			else if (tunable.getType() == Tunable.STRING)
+			{
+				tunable.setValue(new String(" "));
+			}
+			else if (tunable.getType() == Tunable.DOUBLE)
+			{
+				tunable.setValue(new Double(0.0d));
+			}
+			else if (tunable.getType() == Tunable.INTEGER)
+			{
+				tunable.setValue(new Integer(0));
+			}
+		}
+		initializing = false;		
+	}
 
 	public void initializePropertiesFromSelectedNode(CyNode selectedNode)
 	{
@@ -155,6 +192,7 @@ public class PropertySheetView extends LayoutProperties implements TunableListen
 			if (tunable.getType() == Tunable.BOOLEAN)
 			{
 				tunable.setValue(attributes.getBooleanAttribute(identifier, name));
+		
 			}
 			else if (tunable.getType() == Tunable.STRING)
 			{

@@ -127,14 +127,14 @@ implements PropertyChangeListener, SelectEventListener, MultiHashMapListener
 	
 	public void updateInfoForSelectedNode() {
 
-		if (pView != null) {
-			if (cytoPanelComponent != null) {
-				cytoPanel.remove(cytoPanelComponent);
-				cytoPanelComponent = null;
-				Cytoscape.getNodeAttributes().getMultiHashMap().removeDataListener(this);
-			}
-			pView = null;
-		}
+//		if (pView != null) {
+//			if (cytoPanelComponent != null) {
+//				cytoPanel.remove(cytoPanelComponent);
+//				cytoPanelComponent = null;
+//				Cytoscape.getNodeAttributes().getMultiHashMap().removeDataListener(this);
+//			}
+//			pView = null;
+//		}
 
 		if (pView == null) {
 			pView = new PropertySheetView("PropertySheet");
@@ -153,8 +153,9 @@ implements PropertyChangeListener, SelectEventListener, MultiHashMapListener
 			cytoPanel.setState(CytoPanelState.DOCK);
 			// pView.initializePropertiesFromSelectedNode(_selectedNode);
 			Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(this);
-			pView.fillValuesFromSelectedNode(_selectedNode);
 		}
+		pView.fillValuesFromSelectedNode(_selectedNode);
+		
 	}
 	
 	/**
