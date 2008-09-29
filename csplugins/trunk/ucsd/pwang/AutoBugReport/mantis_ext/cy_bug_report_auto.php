@@ -11,6 +11,7 @@ require_once( $t_core_path.'string_api.php' );
 require_once( $t_core_path.'file_api.php' );
 require_once( $t_core_path.'bug_api.php' );
 require_once( $t_core_path.'custom_field_api.php' );
+require_once( $t_core_path.'bugnote_api.php' );
 
 //echo "Received a bug report<b>";
 
@@ -33,7 +34,15 @@ $bug_id = getBugID($t_bug_data);
 if ( $bug_id == -1) {
 	# This is a new bug, create the bug
 	echo "This is a new bug";
-	//$t_bug_id = bug_create( $t_bug_data );
+	$t_bug_id = bug_create( $t_bug_data );
+	
+	$f_file					= gpc_get_file( 'file', null ); #@@@ (thraxisp) Note that this always returns a structure
+	# Handle the file upload
+	if ( !is_blank( $f_file['tmp_name'] ) && ( 0 < $f_file['size'] ) ) {
+    	$f_file_error =  ( isset( $f_file['error'] ) ) ? $f_file['error'] : 0;
+		file_add( $t_bug_id, $f_file['tmp_name'], $f_file['name'], $f_file['type'], 'bug', $f_file_error );
+	}
+
 }
 else {
 	// this is a duplicated bug, add a new note
@@ -49,9 +58,26 @@ echo "success";
 // ==============================================================================
 
 function updateBug($bug_id, $bug_data) {
-	echo "update the bug -- bug_id = $bug_id";
+	echo "update the bug -- bug_id = $bug_id by adding a test note";
+	addBugNote($bug_id, $bug_data);
+}
 
+function addBugNote($bug_id, $bug_data){
+	$f_time_tracking	= gpc_get_string( 'time_tracking', '0:00' );
+	$f_bugnote_text	= "test bug note1";
+	
+	$t_bug = bug_get( $bug_id, true );
+	$c_time_tracking = db_prepare_time( $f_time_tracking );
 
+	$f_private		= gpc_get_bool( 'private' );
+
+	# check for blank bugnote
+	# @@@ VB: Do we want to ban adding a time without an associated note?
+	# @@@ VB: Do we want to differentiate email notifications for normal notes from time tracking entries?
+	if ( !is_blank( $f_bugnote_text ) || ( $c_time_tracking > 0 ) ) {
+		$t_note_type = ( $c_time_tracking > 0 ) ? TIME_TRACKING : BUGNOTE;
+		bugnote_add( $bug_id, $f_bugnote_text, $f_time_tracking, $f_private, $t_note_type );
+	}
 }
 
 
@@ -116,7 +142,7 @@ function createBugData() {
 	$t_bug_data->steps_to_reproduce	= gpc_get_string( 'steps_to_reproduce', config_get( 'default_bug_steps_to_reproduce' ) );
 	$t_bug_data->additional_information	= gpc_get_string( 'additional_info', config_get ( 'default_bug_additional_info' ) );
 
-	$f_file					= gpc_get_file( 'file', null ); #@@@ (thraxisp) Note that this always returns a structure
+	//$f_file					= gpc_get_file( 'file', null ); #@@@ (thraxisp) Note that this always returns a structure
 															# size = 0, if no file
 	$f_report_stay			= gpc_get_bool( 'report_stay', false );
 	
