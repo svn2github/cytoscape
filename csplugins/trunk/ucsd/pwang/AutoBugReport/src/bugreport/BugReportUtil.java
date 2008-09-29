@@ -10,17 +10,15 @@ public class BugReportUtil {
 	
 	/**
 	 * Submit bug report to Cytoscape's Mantis bug tracker
+	 * @param URLStr URL string to Cytoscape bug tracker. 
 	 * @param BugReport An instance of BugReport. 
 	 * @return String returned from Mantis bug tracker to indicate whether the submission success or fail.
 	 */
-	public static String submitBugReport(BugReport pBugReport) throws IOException{
-		String BUG_REPORT_URL = "http://tocai.ucsd.edu/mantis/cy_bug_report_auto.php";
+	public static String submitBugReport(String URLStr, BugReport pBugReport) throws IOException{
 	
-		ClientHttpRequest httpReq = new ClientHttpRequest(BUG_REPORT_URL);
+		ClientHttpRequest httpReq = new ClientHttpRequest(URLStr);
 		
 		httpReq.setParameter("user", pBugReport.getBugReporter());
-		//testReq.setParameter("category", "asdf"); 
-		//httpReq.setParameter("severity", MINOR);
 		httpReq.setParameter("summary", pBugReport.getSummary());
 		httpReq.setParameter("description", pBugReport.getDescription());
 		httpReq.setParameter("cytoscape_version", pBugReport.getCytoscapeVersion());
@@ -55,9 +53,6 @@ public class BugReportUtil {
 		if (pBugReport == null){
 			return false;
 		}
-		//if (!pBugReport.getBugReporter().trim().equals("guest")) {
-		//	return false;
-		//}
 		if (pBugReport.getCytoscapeVersion().equals("")){
 			return false;
 		}
