@@ -1,6 +1,7 @@
-1. Mercury
-2. Venus
-3. Earth
-4. Mars
-5. Jupiter
-6. Saturn
+1. Mercury 0
+2. Venus 0
+3. Earth 1
+4. Mars 2
+5. Jupiter 16
+6. Saturn 14
+
