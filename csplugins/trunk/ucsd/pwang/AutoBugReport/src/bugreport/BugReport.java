@@ -12,7 +12,9 @@ class BugReport {
 	private String os_version = "";
 	private String additionalInfo = "";
 	private String stepsToReproduce = "";
-		
+	private String java_version = "";
+	private String system_info = "";
+	
 	public void setBugReporter(String pReporter){
 		bugReporter = pReporter;
 	}
@@ -47,6 +49,14 @@ class BugReport {
 
 	public void setAttachedFile(File pAttachedFile){
 		attachedFile = pAttachedFile;
+	}
+
+	public void setJavaVersion(String pVersion){
+		java_version = pVersion;
+	}
+
+	public void setSystemInfo(String pSystem_info){
+		system_info = pSystem_info;
 	}
 		
 	/**
@@ -107,5 +117,13 @@ class BugReport {
 	 */
 	public File getAttachedFile(){ // max size: 5M (Mantis 1.1.1)
 		return attachedFile;
-	}				
+	}	
+	
+	public String getJavaVersion(){
+		return java_version;
+	}
+
+	public String getSystemInfo(){
+		return system_info;
+	}
 }
