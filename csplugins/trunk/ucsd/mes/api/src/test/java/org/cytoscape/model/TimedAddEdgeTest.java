@@ -9,16 +9,19 @@ import junit.framework.TestResult;
  * Created by IntelliJ IDEA. User: skillcoy Date: Sep 29, 2008 Time: 1:40:43 PM To change this template use File |
  * Settings | File Templates.
  */
+/*
 public class TimedAddEdgeTest extends TestCase
   {
   private CyNetwork net;
   private static final int totalEdges = 100000;
   private static final long maxTimeInMillis = 350;
-  /**
+  */
+/**
    * DOCUMENT ME!
    *
    * @return DOCUMENT ME!
    */
+/*
   public static Test suite()
     {
     Test test = new TimedAddEdgeTest("testLoadNetwork");
@@ -26,12 +29,14 @@ public class TimedAddEdgeTest extends TestCase
     return timedTest;
     }
 
-  /**
+  */
+/**
    * DOCUMENT ME!
    *
    * @param args DOCUMENT ME!
    * @throws Exception DOCUMENT ME!
    */
+/*
   public static void main(String[] args) throws Exception
     {
     TestResult result = junit.textui.TestRunner.run(suite());
@@ -42,13 +47,17 @@ public class TimedAddEdgeTest extends TestCase
     super(name);
     }
 
-  /** DOCUMENT ME! */
+  */
+/** DOCUMENT ME! */
+/*
   public void setUp()
     {
     net = CyNetworkFactory.getInstance();
     }
 
-  /** DOCUMENT ME! */
+  */
+/** DOCUMENT ME! */
+/*
   public void testLoadNetwork()
     {
     int lastNodeIndex = -1; // ??? Can node indicies be negative?  If so we need a better test
@@ -71,3 +80,4 @@ public class TimedAddEdgeTest extends TestCase
 
 
   }
+*/

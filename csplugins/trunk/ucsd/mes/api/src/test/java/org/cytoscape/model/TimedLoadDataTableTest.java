@@ -48,6 +48,7 @@ import java.util.Random;
  * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this template use File |
  * Settings | File Templates.
  */
+/*
 public class TimedLoadDataTableTest extends TestCase
   {
   private CyDataTable dataTable;
@@ -55,11 +56,13 @@ public class TimedLoadDataTableTest extends TestCase
   private static final long maxTimeInMillis = 20;
 
   private static final String[] colNames = new String[]{"A", "B", "C", "D", "E", "F", "G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
-  /**
+  */
+/**
    * DOCUMENT ME!
    *
    * @return DOCUMENT ME!
    */
+/*
   public static Test suite()
     {
     Test test = new TimedLoadDataTableTest("testLoadTable");
@@ -67,28 +70,34 @@ public class TimedLoadDataTableTest extends TestCase
     return timedTest;
     }
 
-  /**
+  */
+/**
    * DOCUMENT ME!
    *
    * @param args DOCUMENT ME!
    * @throws Exception DOCUMENT ME!
    */
+/*
   public static void main(String[] args) throws Exception
     {
     TestResult result = junit.textui.TestRunner.run(suite());
     }
 
-  /**
+  */
+/**
    * Creates a new TimedAddNodeTest object.
    *
    * @param name DOCUMENT ME!
    */
+/*
   public TimedLoadDataTableTest(String name)
     {
     super(name);
     }
 
-  /** DOCUMENT ME! */
+  */
+/** DOCUMENT ME! */
+/*
   public void setUp()
     {
     dataTable = new CyDataTableImpl(null, "foobar", true);
@@ -99,7 +108,9 @@ public class TimedLoadDataTableTest extends TestCase
       dataTable = null;
       }
 
-  /** DOCUMENT ME! */
+  */
+/** DOCUMENT ME! */
+/*
   public void testLoadTable()
     {
     Class colClass = String.class;
@@ -119,4 +130,4 @@ public class TimedLoadDataTableTest extends TestCase
     // TODO might be useful to be able to ask of a table how many rows & columns it has
     }
 
-  }
+  }*/

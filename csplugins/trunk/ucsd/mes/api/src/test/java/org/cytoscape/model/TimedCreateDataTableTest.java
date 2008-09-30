@@ -48,6 +48,7 @@ import java.util.Random;
  * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this template use File |
  * Settings | File Templates.
  */
+/*
 public class TimedCreateDataTableTest extends TestCase
   {
   private CyDataTable dataTable;
@@ -55,11 +56,13 @@ public class TimedCreateDataTableTest extends TestCase
   private static final int totalRows = 100000;
   private static final long maxTimeInMillis = 1000;
 
-  /**
+  */
+/**
    * DOCUMENT ME!
    *
    * @return DOCUMENT ME!
    */
+/*
   public static Test suite()
     {
     Test test = new TimedCreateDataTableTest("testCreateTable");
@@ -67,28 +70,34 @@ public class TimedCreateDataTableTest extends TestCase
     return timedTest;
     }
 
-  /**
+  */
+/**
    * DOCUMENT ME!
    *
    * @param args DOCUMENT ME!
    * @throws Exception DOCUMENT ME!
    */
+/*
   public static void main(String[] args) throws Exception
     {
     TestResult result = junit.textui.TestRunner.run(suite());
     }
 
-  /**
+  */
+/**
    * Creates a new TimedAddNodeTest object.
    *
    * @param name DOCUMENT ME!
    */
+/*
   public TimedCreateDataTableTest(String name)
     {
     super(name);
     }
 
-  /** DOCUMENT ME! */
+  */
+/** DOCUMENT ME! */
+/*
   public void setUp()
     {
     dataTable = new CyDataTableImpl(null, "foobar", true);
@@ -99,7 +108,9 @@ public class TimedCreateDataTableTest extends TestCase
       dataTable = null;
       }
 
-  /** DOCUMENT ME! */
+  */
+/** DOCUMENT ME! */
+/*
   public void testCreateTable()
     {
     RandomColumnName randomCol = new RandomColumnName();
@@ -151,4 +162,4 @@ public class TimedCreateDataTableTest extends TestCase
 
 
 
-  }
+  }*/
