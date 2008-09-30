@@ -31,11 +31,28 @@ $distinct_species = getSpeciesFromDB($connection);
 
   <script type="text/javascript" src="./javascript/advanced_search.js"></script>
   <script src="./javascript/scriptaculous.js" type="text/javascript"></script>
-
+<script lanugage="JavaScript">
+function pvaluewin(){
+		if (window.screenX) { // FireFox and others
+			var windowX=window.screenX + 200;
+			var windowY=window.screenY + 200;
+ 			window.open("pvalue.html", "pValueWin", "width=400,height=350,status=no,resizable=yes,left="+windowX+",top="+windowY); 
+		}
+		else { //IE and Others
+			window.open("pvalue.html", "pValueWin", "width=400,height=350,status=no,resizable=yes,left=200,top=200"); 	
+		}
+		void 0;
+}
+</script>
   <link type="text/css" rel="stylesheet" href="master.css">
 
   <title>Cell Circuits Advanced Search</title>
 
+  <style type="text/css">
+<!--
+.style1 {color: #3366FF}
+-->
+  </style>
 </head>
 
 
@@ -107,7 +124,7 @@ $distinct_species = getSpeciesFromDB($connection);
 	  <option value="optionA_by_number_of_query_terms_matching_model" selected>By Number of Query Terms Matching Model</option>
 	</select>
 	<br />
-	<b>P-value cutoff:</b><br />
+	<b><a href ='javascript:pvaluewin()' class="style1">P-value cutoff:</a></b><br />
         <input type="text" size="12" name="pval_thresh" value="0.0001" title="Standard decimal or exponential notations are valid. e.g. 0.005 OR 5e-3" />
       </td>
       <td align="center" valign="top" colspan="1">
