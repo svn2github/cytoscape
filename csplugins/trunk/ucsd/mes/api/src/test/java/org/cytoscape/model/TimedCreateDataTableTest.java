@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,134 +33,122 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
 import com.clarkware.junitperf.TimedTest;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
+
 import org.cytoscape.model.internal.CyDataTableImpl;
 
 import java.util.Random;
 
 
 /**
- * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this template use File |
- * Settings | File Templates.
+ * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this
+ * template use File | Settings | File Templates.
  */
-/*
-public class TimedCreateDataTableTest extends TestCase
-  {
-  private CyDataTable dataTable;
-  private static final int totalCols = 50;
-  private static final int totalRows = 100000;
-  private static final long maxTimeInMillis = 1000;
+public class TimedCreateDataTableTest extends TestCase {
+	private CyDataTable dataTable;
+	private static final int TOTAL_COLS = 50;
+	private static final int TOTAL_ROWS = 100000;
+	private static final long MAX_TIME_MILLIS = 1000;
 
-  */
-/**
-   * DOCUMENT ME!
-   *
-   * @return DOCUMENT ME!
-   */
-/*
-  public static Test suite()
-    {
-    Test test = new TimedCreateDataTableTest("testCreateTable");
-    Test timedTest = new TimedTest(test, maxTimeInMillis, false);
-    return timedTest;
-    }
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public static Test suite() {
+		Test test = new TimedCreateDataTableTest("testCreateTable");
+		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS, false);
 
-  */
-/**
-   * DOCUMENT ME!
-   *
-   * @param args DOCUMENT ME!
-   * @throws Exception DOCUMENT ME!
-   */
-/*
-  public static void main(String[] args) throws Exception
-    {
-    TestResult result = junit.textui.TestRunner.run(suite());
-    }
+		return timedTest;
+	}
 
-  */
-/**
-   * Creates a new TimedAddNodeTest object.
-   *
-   * @param name DOCUMENT ME!
-   */
-/*
-  public TimedCreateDataTableTest(String name)
-    {
-    super(name);
-    }
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param args DOCUMENT ME!
+	 *
+	 * @throws Exception DOCUMENT ME!
+	 */
+	public static void main(String[] args) throws Exception {
+		TestResult result = junit.textui.TestRunner.run(suite());
+	}
 
-  */
-/** DOCUMENT ME! */
-/*
-  public void setUp()
-    {
-    dataTable = new CyDataTableImpl(null, "foobar", true);
-    }
+	/**
+	 * Creates a new TimedAddNodeTest object.
+	 *
+	 * @param name DOCUMENT ME!
+	 */
+	public TimedCreateDataTableTest(String name) {
+		super(name);
+	}
 
-  public void tearDown()
-      {
-      dataTable = null;
-      }
+	/**
+	 * DOCUMENT ME!
+	 */
+	public void setUp() {
+		dataTable = new CyDataTableImpl(null, "foobar", true);
+	}
 
-  */
-/** DOCUMENT ME! */
-/*
-  public void testCreateTable()
-    {
-    RandomColumnName randomCol = new RandomColumnName();
-    Class colClass = String.class;
-    for (int i = 0; i < totalCols; i++)
-      {
-      if (i % 3 == 0)
-        colClass = Integer.class;
-      else if (i % 5 == 0)
-        colClass = Double.class;        
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void tearDown() {
+		dataTable = null;
+	}
 
-      dataTable.createColumn(randomCol.getRandomName(), colClass, false);
-      }
+	/**
+	 * DOCUMENT ME!
+	 */
+	public void testCreateTable() {
+		RandomColumnName randomCol = new RandomColumnName();
+		Class<?> colClass = String.class;
 
-    for (int i = 0; i < totalRows; i++)
-      dataTable.addRow();
+		for (int i = 0; i < TOTAL_COLS; i++) {
+			if ((i % 3) == 0)
+				colClass = Integer.class;
+			else if ((i % 5) == 0)
+				colClass = Double.class;
 
-    // TODO might be useful to be able to ask of a table how many rows & columns it has
-    }
+			dataTable.createColumn(randomCol.getRandomName(), colClass, false);
+		}
 
+		for (int i = 0; i < TOTAL_ROWS; i++)
+			dataTable.addRow();
 
-  private class RandomColumnName
-    {
-    private Random rn = new Random();
+		// TODO might be useful to be able to ask of a table how many rows & columns it has
+	}
 
-    private int rand(int lo, int hi)
-      {
-      int n = hi - lo + 1;
-      int i = rn.nextInt() % n;
-      if (i < 0)
-        i = -i;
-      return lo + i;
-      }
+	private class RandomColumnName {
+		private Random rn = new Random(5);
 
-    private String randomstring(int lo, int hi)
-      {
-      int n = rand(lo, hi);
-      byte b[] = new byte[n];
-      for (int i = 0; i < n; i++)
-        b[i] = (byte) rand('a', 'z');
-      return new String(b);
-      }
+		private int rand(int lo, int hi) {
+			int n = hi - lo + 1;
+			int i = rn.nextInt() % n;
 
-    public String getRandomName()
-      {
-      return randomstring(5, 35);
-      }
-    }
+			if (i < 0)
+				i = -i;
 
+			return lo + i;
+		}
 
+		private String randomstring(int lo, int hi) {
+			int n = rand(lo, hi);
+			byte[] b = new byte[n];
 
-  }*/
+			for (int i = 0; i < n; i++)
+				b[i] = (byte) rand('a', 'z');
+
+			return new String(b);
+		}
+
+		public String getRandomName() {
+			return randomstring(5, 35);
+		}
+	}
+}
