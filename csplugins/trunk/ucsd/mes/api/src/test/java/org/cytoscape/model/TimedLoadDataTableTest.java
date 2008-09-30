@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,102 +33,95 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.model;
 
 import com.clarkware.junitperf.TimedTest;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
+
 import org.cytoscape.model.internal.CyDataTableImpl;
 
-import java.util.Random;
-
 
 /**
- * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this template use File |
- * Settings | File Templates.
+ * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this
+ * template use File | Settings | File Templates.
  */
-/*
-public class TimedLoadDataTableTest extends TestCase
-  {
-  private CyDataTable dataTable;
-  private static final int totalRows = 100000;
-  private static final long maxTimeInMillis = 20;
+public class TimedLoadDataTableTest extends TestCase {
+	private CyDataTable dataTable;
+	private static final int TOTAL_ROWS = 20000;
+	private static final long MAX_TIME_MILLIS = 700;
+	private static final String[] COL_NAMES = new String[] {
+	                                             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+	                                             "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+	                                             "U", "V", "W", "X", "Y", "Z"
+	                                         };
 
-  private static final String[] colNames = new String[]{"A", "B", "C", "D", "E", "F", "G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
-  */
-/**
-   * DOCUMENT ME!
-   *
-   * @return DOCUMENT ME!
-   */
-/*
-  public static Test suite()
-    {
-    Test test = new TimedLoadDataTableTest("testLoadTable");
-    Test timedTest = new TimedTest(test, maxTimeInMillis, false);
-    return timedTest;
-    }
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	public static Test suite() {
+		Test test = new TimedLoadDataTableTest("testLoadTable");
+		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS);
 
-  */
-/**
-   * DOCUMENT ME!
-   *
-   * @param args DOCUMENT ME!
-   * @throws Exception DOCUMENT ME!
-   */
-/*
-  public static void main(String[] args) throws Exception
-    {
-    TestResult result = junit.textui.TestRunner.run(suite());
-    }
+		return timedTest;
+	}
 
-  */
-/**
-   * Creates a new TimedAddNodeTest object.
-   *
-   * @param name DOCUMENT ME!
-   */
-/*
-  public TimedLoadDataTableTest(String name)
-    {
-    super(name);
-    }
+	/**
+	 * DOCUMENT ME!
+	 *
+	 * @param args DOCUMENT ME!
+	 *
+	 * @throws Exception DOCUMENT ME!
+	 */
+	public static void main(String[] args) throws Exception {
+		TestResult result = junit.textui.TestRunner.run(suite());
+	}
 
-  */
-/** DOCUMENT ME! */
-/*
-  public void setUp()
-    {
-    dataTable = new CyDataTableImpl(null, "foobar", true);
-    }
+	/**
+	 * Creates a new TimedAddNodeTest object.
+	 *
+	 * @param name DOCUMENT ME!
+	 */
+	public TimedLoadDataTableTest(String name) {
+		super(name);
+	}
 
-  public void tearDown()
-      {
-      dataTable = null;
-      }
+	/**
+	 * DOCUMENT ME!
+	 */
+	public void setUp() {
+		dataTable = new CyDataTableImpl(null, "foobar", true);
+	}
 
-  */
-/** DOCUMENT ME! */
-/*
-  public void testLoadTable()
-    {
-    Class colClass = String.class;
-    for (int i = 0; i < colNames.length; i++)
-      dataTable.createColumn(colNames[i], colClass, false);
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void tearDown() {
+		dataTable = null;
+	}
 
-    for (int i = 0; i < totalRows; i++)
-      {
-      CyRow row = dataTable.addRow();
-      assertNotNull(row);
-      for (String colName: colNames)
-        {
-        row.set(colName, "foo bar");
-        }
-      }
+	/**
+	 * DOCUMENT ME!
+	 */
+	public void testLoadTable() {
+		Class<?> colClass = String.class;
 
-    // TODO might be useful to be able to ask of a table how many rows & columns it has
-    }
+		for (int i = 0; i < COL_NAMES.length; i++)
+			dataTable.createColumn(COL_NAMES[i], colClass, false);
 
-  }*/
+		for (int i = 0; i < TOTAL_ROWS; i++) {
+			CyRow row = dataTable.addRow();
+			//assertNotNull(row);
+
+			for (String colName : COL_NAMES) {
+				row.set(colName, "foo bar");
+			}
+		}
+
+		// TODO might be useful to be able to ask of a table how many rows & columns it has
+	}
+}
