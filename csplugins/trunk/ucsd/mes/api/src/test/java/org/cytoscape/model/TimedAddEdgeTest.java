@@ -50,7 +50,7 @@ import junit.framework.TestResult;
 public class TimedAddEdgeTest extends TestCase {
 	private CyNetwork net;
 	private static final int TOTAL_EDGES = 100000;
-	private static final long MAX_TIME_MILLIS = 470;
+	private static final long MAX_TIME_MILLIS = 500;
 
 	/**
 	 * DOCUMENT ME!
