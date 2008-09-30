@@ -232,7 +232,9 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @return  DOCUMENT ME!
 	 */
 	public CyRow addRow() {
-    return new InternalRow(IdFactory.getNextSUID());
+		// TODO This is wrong since no other object can have this SUID. 
+		// I'm still not sure how rows should exist independent of binding to an object.
+		return new InternalRow(IdFactory.getNextSUID());
 	}
 
 	// internal methods
