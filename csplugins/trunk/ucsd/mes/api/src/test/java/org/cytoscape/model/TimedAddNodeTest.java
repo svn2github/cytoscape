@@ -49,18 +49,17 @@ import junit.framework.TestResult;
  */
 public class TimedAddNodeTest extends TestCase {
 	private CyNetwork net;
-	private int totalNodes = 100000;
+	private static final int totalNodes = 100000;
+  private static final long maxTimeInMillis = 250;
 
-	/**
+  /**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
 	public static Test suite() {
-		long maxTimeInMillis = 250;
 		Test test = new TimedAddNodeTest("testLoadNetwork");
 		Test timedTest = new TimedTest(test, maxTimeInMillis, false);
-
 		return timedTest;
 	}
 
@@ -73,7 +72,6 @@ public class TimedAddNodeTest extends TestCase {
 	 */
 	public static void main(String[] args) throws Exception {
 		TestResult result = junit.textui.TestRunner.run(suite());
-		System.out.println("Failures: " + result.failureCount());
 	}
 
     /**
@@ -99,6 +97,6 @@ public class TimedAddNodeTest extends TestCase {
 		for (int i = 0; i < totalNodes; i++)
 			net.addNode();
 
-		assertEquals(net.getNodeCount(), totalNodes);
+    assertEquals(net.getNodeCount(), totalNodes);
 	}
 }

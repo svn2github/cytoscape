@@ -168,8 +168,8 @@ public class CyDataTableImpl implements CyDataTable {
 			unique.put(attributeName, u);
 		} else {
 			if (!curr.equals(cls))
-				throw new IllegalArgumentException("attribute already exists for name: "
-				                                   + attributeName + " with type: " + cls.getName());
+				throw new IllegalArgumentException("attribute already exists for name: '"
+				                                   + attributeName + "' with type: " + cls.getName());
 		}
 	}
 
@@ -232,7 +232,7 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @return  DOCUMENT ME!
 	 */
 	public CyRow addRow() {
-		return null;
+    return new InternalRow(IdFactory.getNextSUID());
 	}
 
 	// internal methods

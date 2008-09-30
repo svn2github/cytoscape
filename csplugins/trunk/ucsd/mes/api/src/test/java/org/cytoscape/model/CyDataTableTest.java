@@ -72,7 +72,14 @@ public class CyDataTableTest extends TestCase {
 	public void tearDown() {
 	}
 
-	/**
+
+  // addRow was implemented to return null (rather than a row). This is just to insure it continues to work.
+  public void testAddRow() {
+    CyRow row = mgr.addRow();
+    assertNotNull(row);
+  }
+
+  /**
 	 *  DOCUMENT ME!
 	 */
 	public void testAddStringAttr() {
