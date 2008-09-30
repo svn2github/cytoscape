@@ -63,7 +63,7 @@ public class TimedCreateDataTableTest extends TestCase {
 	 */
 	public static Test suite() {
 		Test test = new TimedCreateDataTableTest("testCreateTable");
-		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS, false);
+		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS);
 
 		return timedTest;
 	}

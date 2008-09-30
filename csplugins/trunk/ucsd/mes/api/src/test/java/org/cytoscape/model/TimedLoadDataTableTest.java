@@ -51,7 +51,7 @@ import org.cytoscape.model.internal.CyDataTableImpl;
 public class TimedLoadDataTableTest extends TestCase {
 	private CyDataTable dataTable;
 	private static final int TOTAL_ROWS = 20000;
-	private static final long MAX_TIME_MILLIS = 700;
+	private static final long MAX_TIME_MILLIS = 1000;
 	private static final String[] COL_NAMES = new String[] {
 	                                             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
 	                                             "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",

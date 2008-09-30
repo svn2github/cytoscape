@@ -59,7 +59,7 @@ public class TimedAddEdgeTest extends TestCase {
 	 */
 	public static Test suite() {
 		Test test = new TimedAddEdgeTest("testLoadNetwork");
-		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS, false);
+		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS);
 
 		return timedTest;
 	}

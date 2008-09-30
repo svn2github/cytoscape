@@ -59,7 +59,7 @@ public class TimedAddNodeTest extends TestCase {
 	 */
 	public static Test suite() {
 		Test test = new TimedAddNodeTest("testLoadNetwork");
-		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS, false);
+		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS);
 		return timedTest;
 	}
 
