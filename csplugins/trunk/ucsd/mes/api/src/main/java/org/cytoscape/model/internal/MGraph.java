@@ -314,17 +314,15 @@ public class MGraph implements CyNetwork {
 
 			e.nextOutEdge = source.firstOutEdge;
 
-			if (source.firstOutEdge != null) {
+			if (source.firstOutEdge != null) 
 				source.firstOutEdge.prevOutEdge = e;
-			}
 
 			source.firstOutEdge = e;
 
 			e.nextInEdge = target.firstInEdge;
 
-			if (target.firstInEdge != null) {
+			if (target.firstInEdge != null) 
 				target.firstInEdge.prevInEdge = e;
-			}
 
 			target.firstInEdge = e;
 		}
