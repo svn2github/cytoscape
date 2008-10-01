@@ -33,7 +33,7 @@ sub new
     $self->score(0);         # The model score.
     $self->isQueryModel(0);  # Set to 1 if this model is the 
                              # query in a MODELS_LIKE or MODEL_ID query.
-
+    $self->size(0);          # enrichment.n_genes_in_model
     return $self;
 }
 
@@ -51,6 +51,7 @@ my @fields = qw(
 		term2org
 		score
 		isQueryModel
+		size
 		);
 
 # p 338 of "Programming Perl" - Generating Accessors with Closures
@@ -87,6 +88,7 @@ sub populate_model
 
     my $mpub = $Ref->{mpub};
     my $mname = $Ref->{mname};
+    my $msize = $Ref->{e_k};
 
     $mo->id    ($Ref->{mid});
     $mo->pub   ($mpub);
@@ -101,7 +103,8 @@ sub populate_model
     $mo->thm_img($thm);
     $mo->lrg_img($lrg);
     $mo->legend ($leg);
-
+	
+    $mo->size ($msize);
     return $mo;
 }
 
