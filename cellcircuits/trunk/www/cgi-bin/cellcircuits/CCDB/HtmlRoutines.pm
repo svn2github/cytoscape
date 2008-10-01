@@ -464,11 +464,26 @@ sub print_results
     }
 
     my $sorted_mids = ();
-    @{ $sorted_mids } = sort { $hash->{$b}{'model'}->score() <=> $hash->{$a}{'model'}->score() 
+	
+	# Sorting
+	if ($sort_method eq "optionB_by_size_of_model") {
+	    @{ $sorted_mids } = sort {  
+			       $hash->{$b}{"model"}->size() <=> $hash->{$a}{"model"}->size()			       
+				|| $hash->{$b}{'model'}->score() <=> $hash->{$a}{'model'}->score()
+			    } keys %{ $hash };
+	}
+	else { # default -- optionA_by_number_of_query_terms_matching_model
+	    @{ $sorted_mids } = sort { $hash->{$b}{'model'}->score() <=> $hash->{$a}{'model'}->score() 
 			       || min_pval( $hash->{$a}{"enrichment"} ) <=> min_pval( $hash->{$b}{"enrichment"} )
 			       || $hash->{$a}{"model"}->pub() cmp $hash->{$b}{"model"}->pub()	
 			       } keys %{ $hash };
-    
+	}
+	
+	#print "sort_method = ",$sort_method,"<br>";
+	#for my $mid (@{ $sorted_mids }) {
+	#	print $hash->{$mid}{"model"}->size(),"<br>";
+	#}
+	
     my $n_matched_models = scalar(@{ $sorted_mids });
     my ($total_pages, $upper_lim,$lower_lim) = pageCalc($n_matched_models, $page);
     my $n_models_on_page = $upper_lim - $lower_lim + 1;
@@ -523,7 +538,7 @@ sub print_results
      <th class="result-header">Model</th>
      <th class="result-header">Matches</th>
      <th class="result-header" colspan="1" valign='bottom'>
-     Model annotation [<a class="color-bg-link" href="/Tutorial-results-2.html#row4_explanation" title="Go to tutorial">read more</a>]&nbsp;&nbsp;
+     Model annotation [<a class="color-bg-link" href="/cellcircuits/search/tutorial/Tutorial-results-2.html#row4_explanation" title="Go to tutorial">read more</a>]&nbsp;&nbsp;
      </th>
    </tr>
 TBL_HDR
