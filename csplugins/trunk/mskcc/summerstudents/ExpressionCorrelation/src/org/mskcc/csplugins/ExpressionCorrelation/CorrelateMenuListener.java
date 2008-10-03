@@ -84,7 +84,7 @@ public class CorrelateMenuListener implements ActionListener {
 
             //must only come up in case when < 4 genes and try to do condition matrix
             //the vectors for condition matrix will be of length < 4 not enough
-            if (rowNumber < 4 && (selection.equals("Construct Similarity Network") ||
+            if (rowNumber < 4 && (selection.equals("Construct Correlation Network") ||
                     selection.equals("Condition Network: Preview Histogram") ||
                     selection.equals("Condition Network: Using Defaults"))) {
 
@@ -94,7 +94,7 @@ public class CorrelateMenuListener implements ActionListener {
             }
             //must only come up in case when < 4 conditions and try to do gene matrix
             //the vectors for condition matrix will be of length < 4 not enough
-            else if (colNumber < 4 && (selection.equals("Construct Similarity Network") ||
+            else if (colNumber < 4 && (selection.equals("Construct Correlation Network") ||
                     selection.equals("Gene Network: Preview Histogram") ||
                     selection.equals("Gene Network: Using Defaults"))) {
                 Object[] options = {warning, };
