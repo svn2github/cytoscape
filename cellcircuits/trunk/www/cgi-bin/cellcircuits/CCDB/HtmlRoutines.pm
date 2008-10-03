@@ -472,16 +472,28 @@ sub print_results
 				|| $hash->{$b}{'model'}->score() <=> $hash->{$a}{'model'}->score()
 			    } keys %{ $hash };
 	}
+	elsif ($sort_method eq "optionC_by_publication") {
+	    @{ $sorted_mids } = sort {  
+			       $hash->{$b}{"model"}->pub() <=> $hash->{$a}{"model"}->pub()			       
+				|| $hash->{$b}{'model'}->score() <=> $hash->{$a}{'model'}->score()
+			    } keys %{ $hash };
+	}
+	elsif ($sort_method eq "optionD_by_most_enriched_for_a_GO_term") {
+	    @{ $sorted_mids } = sort {  
+			       $hash->{$a}{"model"}->pvalue() <=> $hash->{$b}{"model"}->pvalue()			       
+				|| $hash->{$b}{'model'}->score() <=> $hash->{$a}{'model'}->score()
+			    } keys %{ $hash };
+	}		
 	else { # default -- optionA_by_number_of_query_terms_matching_model
 	    @{ $sorted_mids } = sort { $hash->{$b}{'model'}->score() <=> $hash->{$a}{'model'}->score() 
 			       || min_pval( $hash->{$a}{"enrichment"} ) <=> min_pval( $hash->{$b}{"enrichment"} )
-			       || $hash->{$a}{"model"}->pub() cmp $hash->{$b}{"model"}->pub()	
+			       || $hash->{$a}{"model"}->pub() <=> $hash->{$b}{"model"}->pub()	
 			       } keys %{ $hash };
 	}
 	
 	#print "sort_method = ",$sort_method,"<br>";
 	#for my $mid (@{ $sorted_mids }) {
-	#	print $hash->{$mid}{"model"}->size(),"<br>";
+	#	print $hash->{$mid}{"model"}->score(),"<br>";
 	#}
 	
     my $n_matched_models = scalar(@{ $sorted_mids });
