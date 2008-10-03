@@ -114,21 +114,20 @@ function pvaluewin(){
 		}
 		
 		?>
-	</select>
-	
-      </td>
+	</select>      </td>
       <td align="center" valign="top" colspan="1">
 	<b>Sort results:</b>
 	<br />
 	<select name="sort_method" size=1>
-	  <option value="optionA_by_number_of_query_terms_matching_model" selected>By Number of Query Terms Matching Model</option>
-	</select>
+      <option value="optionA_by_number_of_query_terms_matching_model" selected>By Number of Query Terms Matching Model</option>
+      <option value="optionB_by_size_of_model" >By Size of Model</option>
+	  <option value="optionC_by_publication" >By publication</option>
+      <option value="optionD_by_most_enriched_for_a_GO_term" >By most enriched for a GO term</option>
+    </select>
 	<br />
 	<b><a href ='javascript:pvaluewin()' class="style1">P-value cutoff:</a></b><br />
-        <input type="text" size="12" name="pval_thresh" value="0.0001" title="Standard decimal or exponential notations are valid. e.g. 0.005 OR 5e-3" />
-      </td>
-      <td align="center" valign="top" colspan="1">
-      </td>
+        <input type="text" size="12" name="pval_thresh" value="0.0001" title="Standard decimal or exponential notations are valid. e.g. 0.005 OR 5e-3" />      </td>
+      <td align="center" valign="top" colspan="1">      </td>
     </tr>
   </table>
 
