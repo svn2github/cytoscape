@@ -28,7 +28,7 @@ projectURL=http://www.baderlab.org/Software/ExpressionCorrelation
 
 # List of authors.  Note each author and institution pair are separated by a : (colon)
 # each additional author institution pair must be separated from other pairs bye a ; (semicolon)
-pluginAuthorsIntsitutions=Elena Potylitsine, Weston Whitaker and Gary Bader:MSKCC; Shirley Hui and Laetitia Morrison:University of Toronto
+pluginAuthorsIntsitutions=Elena Potylitsine, Weston Whitaker and Gary Bader:Memorial Sloan-Kettering Cancer Center; Chris Sander:Memorial Sloan-Kettering Cancer Center; Shirley Hui and Laetitia Morrison:University of Toronto
  
 # If this plugin is never meant to be downloaded except as part of a plugin (not common) add this property.  Default is "no"
 themeOnly=no
