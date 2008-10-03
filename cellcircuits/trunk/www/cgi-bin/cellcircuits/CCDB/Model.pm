@@ -34,6 +34,7 @@ sub new
     $self->isQueryModel(0);  # Set to 1 if this model is the 
                              # query in a MODELS_LIKE or MODEL_ID query.
     $self->size(0);          # enrichment.n_genes_in_model
+	$self->pvalue(0); 		 # enrichment.pval as e_pval
     return $self;
 }
 
@@ -52,6 +53,7 @@ my @fields = qw(
 		score
 		isQueryModel
 		size
+		pvalue
 		);
 
 # p 338 of "Programming Perl" - Generating Accessors with Closures
@@ -89,6 +91,7 @@ sub populate_model
     my $mpub = $Ref->{mpub};
     my $mname = $Ref->{mname};
     my $msize = $Ref->{e_k};
+    my $mpvalue = $Ref->{e_pval};
 
     $mo->id    ($Ref->{mid});
     $mo->pub   ($mpub);
@@ -105,6 +108,7 @@ sub populate_model
     $mo->legend ($leg);
 	
     $mo->size ($msize);
+	$mo->pvalue($mpvalue);
     return $mo;
 }
 
