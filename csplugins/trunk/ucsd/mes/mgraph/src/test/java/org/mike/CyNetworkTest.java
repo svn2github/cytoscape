@@ -277,11 +277,19 @@ public class CyNetworkTest extends TestCase {
 		assertFalse("remove null edge failure", remn);
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
 
-		// add another edge
+		// add undirected self edge
 		CyEdge e5 = net.addEdge(n1, n1, false);
-		assertEquals("num nodes == 3", 3, net.getNodeCount());
+		assertEquals("num edges == 3", 3, net.getEdgeCount());
+
+		// add directed self edge
+		CyEdge e6 = net.addEdge(n1, n1, true);
+		assertEquals("num edges == 4", 4, net.getEdgeCount());
 
 		// remove the rest
+		boolean rem6 = net.removeEdge(e6);
+		assertTrue("remove edge 6 success", rem6);
+		assertEquals("num edges == 3", 3, net.getEdgeCount());
+
 		boolean rem5 = net.removeEdge(e5);
 		assertTrue("remove edge 5 success", rem5);
 		assertEquals("num edges == 2", 2, net.getEdgeCount());
@@ -424,8 +432,10 @@ public class CyNetworkTest extends TestCase {
 	public void testIsNode() {
 		CyNode n1 = net.addNode();
 		CyNode n2 = new DummyCyNode(20);
+		CyNode n3 = new DummyCyNode(-20);
 		assertTrue("node 1 is good", net.containsNode(n1));
 		assertFalse("node 2 is not", net.containsNode(n2));
+		assertFalse("node 3 is not", net.containsNode(n3));
 	}
 
 	/**
@@ -437,9 +447,11 @@ public class CyNetworkTest extends TestCase {
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 		CyEdge e2 = new DummyCyEdge(n1, n2, true, 10);
+		CyEdge e3 = new DummyCyEdge(n1, n2, true, -10);
 
 		assertTrue("edge 1 is good", net.containsEdge(e1));
 		assertFalse("edge 2 is not", net.containsEdge(e2));
+		assertFalse("edge 3 is not", net.containsEdge(e3));
 	}
 
 	/**
@@ -450,6 +462,7 @@ public class CyNetworkTest extends TestCase {
 		CyNode n2 = net.addNode();
 		CyNode n3 = net.addNode();
 		CyNode n4 = new DummyCyNode(699);
+		CyNode n5 = new DummyCyNode(-699);
 
 		CyEdge e1 = net.addEdge(n1, n2, true);
 
@@ -459,6 +472,7 @@ public class CyNetworkTest extends TestCase {
 		assertFalse("not an edge", net.containsEdge(n2, n3));
 		assertFalse("bad target node", net.containsEdge(n2, n4));
 		assertFalse("bad source node", net.containsEdge(n4, n1));
+		assertFalse("bad source node", net.containsEdge(n5, n1));
 	}
 
 	/**
@@ -754,6 +768,12 @@ public class CyNetworkTest extends TestCase {
 		l = net.getAdjacentEdgeList(n2, EdgeType.OUTGOING_EDGE);
 		assertEquals("node 2 adjacent edges outgoing", 1, l.size());
 		assertTrue("contains edge 2", l.contains(e2));
+
+		l = net.getAdjacentEdgeList(n3, EdgeType.INCOMING_EDGE);
+		assertEquals("node 3 adjacent edges incoming", 1, l.size());
+
+		l = net.getAdjacentEdgeList(n3, EdgeType.OUTGOING_EDGE);
+		assertEquals("node 3 adjacent edges incoming", 0, l.size());
 	}
 
 	/**

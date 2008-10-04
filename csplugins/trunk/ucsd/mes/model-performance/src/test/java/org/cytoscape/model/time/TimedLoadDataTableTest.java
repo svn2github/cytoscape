@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +33,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.mike;
+package org.cytoscape.model.time;
 
 import com.clarkware.junitperf.TimedTest;
 
@@ -40,20 +41,24 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 
-import org.mike.impl.MGraph;
+import org.cytoscape.model.internal.CyDataTableImpl;
+import org.cytoscape.model.*;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
 
 
 /**
  * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this
  * template use File | Settings | File Templates.
  */
-public class TimedAddNodeTest extends TestCase {
-	private CyNetwork net;
-	private int totalNodes = 100000;
+public class TimedLoadDataTableTest extends TestCase {
+	private CyDataTable dataTable;
+	private static final int TOTAL_ROWS = 20000;
+	private static final long MAX_TIME_MILLIS = 1000;
+	private static final String[] COL_NAMES = new String[] {
+	                                             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+	                                             "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+	                                             "U", "V", "W", "X", "Y", "Z"
+	                                         };
 
 	/**
 	 * DOCUMENT ME!
@@ -61,9 +66,8 @@ public class TimedAddNodeTest extends TestCase {
 	 * @return DOCUMENT ME!
 	 */
 	public static Test suite() {
-		long maxTimeInMillis = 250;
-		Test test = new TimedAddNodeTest("testLoadNetwork");
-		Test timedTest = new TimedTest(test, maxTimeInMillis, false);
+		Test test = new TimedLoadDataTableTest("testLoadTable");
+		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS);
 
 		return timedTest;
 	}
@@ -77,15 +81,14 @@ public class TimedAddNodeTest extends TestCase {
 	 */
 	public static void main(String[] args) throws Exception {
 		TestResult result = junit.textui.TestRunner.run(suite());
-		System.out.println("Failures: " + result.failureCount());
 	}
 
-/**
-     * Creates a new TimedAddNodeTest object.
-     *
-     * @param name  DOCUMENT ME!
-     */
-	public TimedAddNodeTest(String name) {
+	/**
+	 * Creates a new TimedAddNodeTest object.
+	 *
+	 * @param name DOCUMENT ME!
+	 */
+	public TimedLoadDataTableTest(String name) {
 		super(name);
 	}
 
@@ -93,33 +96,34 @@ public class TimedAddNodeTest extends TestCase {
 	 * DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = new MGraph();
+		dataTable = new CyDataTableImpl(null, "foobar", true);
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 */
+	public void tearDown() {
+		dataTable = null;
 	}
 
 	/**
 	 * DOCUMENT ME!
 	 */
-	public void testLoadNetwork() {
+	public void testLoadTable() {
+		Class<?> colClass = String.class;
 
-		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
-		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
-		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
+		for (int i = 0; i < COL_NAMES.length; i++)
+			dataTable.createColumn(COL_NAMES[i], colClass, false);
 
-		long heapStart = heapUsage.getUsed();
-		long nonHeapStart = nonHeapUsage.getUsed();
+		for (int i = 0; i < TOTAL_ROWS; i++) {
+			CyRow row = dataTable.addRow();
+			//assertNotNull(row);
 
-		for (int i = 0; i < totalNodes; i++)
-			net.addNode();
+			for (String colName : COL_NAMES) {
+				row.set(colName, "foo bar");
+			}
+		}
 
-		heapUsage = mbean.getHeapMemoryUsage();
-		nonHeapUsage = mbean.getNonHeapMemoryUsage();
-
-		long heapEnd = heapUsage.getUsed();
-		long nonHeapEnd = nonHeapUsage.getUsed();
-
-		System.out.println("Heap memory used = " + (heapEnd - heapStart)/1000 + "KB");
-		System.out.println("Non-heap memory used = " + (nonHeapEnd - nonHeapStart)/1000 + "KB");
-
-		assertEquals(net.getNodeCount(), totalNodes);
+		// TODO might be useful to be able to ask of a table how many rows & columns it has
 	}
 }

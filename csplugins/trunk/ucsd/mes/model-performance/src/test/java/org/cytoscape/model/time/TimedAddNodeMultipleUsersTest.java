@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,94 +33,83 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.mike;
 
+package org.cytoscape.model.time;
+
+import com.clarkware.junitperf.LoadTest;
 import com.clarkware.junitperf.TimedTest;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
-
-import org.mike.impl.MGraph;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
+import org.cytoscape.model.*;
 
 
 /**
- * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 3:04:03 PM To change this
+ * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 4:07:31 PM To change this
  * template use File | Settings | File Templates.
  */
-public class TimedAddNodeTest extends TestCase {
+public class TimedAddNodeMultipleUsersTest extends TestCase {
 	private CyNetwork net;
 	private int totalNodes = 100000;
 
 	/**
-	 * DOCUMENT ME!
+	 *  DOCUMENT ME!
 	 *
-	 * @return DOCUMENT ME!
+	 * @return  DOCUMENT ME!
 	 */
 	public static Test suite() {
-		long maxTimeInMillis = 250;
-		Test test = new TimedAddNodeTest("testLoadNetwork");
-		Test timedTest = new TimedTest(test, maxTimeInMillis, false);
+		long maxTimeInMillis = 1000;
+		int concurrentUsers = 3;
+		Test test = new TimedAddNodeMultipleUsersTest("testLoadNetwork");
+		Test loadTest = new LoadTest(new TimedTest(test, maxTimeInMillis), concurrentUsers);
 
-		return timedTest;
+		return loadTest;
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 *  DOCUMENT ME!
 	 *
 	 * @param args DOCUMENT ME!
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public static void main(String[] args) throws Exception {
-		TestResult result = junit.textui.TestRunner.run(suite());
-		System.out.println("Failures: " + result.failureCount());
-	}
-
-/**
-     * Creates a new TimedAddNodeTest object.
-     *
-     * @param name  DOCUMENT ME!
-     */
-	public TimedAddNodeTest(String name) {
-		super(name);
+		junit.textui.TestRunner.run(suite());
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Creates a new TimedAddNodeMultipleUsersTest object.
+	 *
+	 * @param name  DOCUMENT ME!
+	 */
+	public TimedAddNodeMultipleUsersTest(String name) {
+		super(name);
+		net = DupCyNetworkFactory.getInstance(); 
+	}
+
+	/**
+	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = new MGraph();
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 *  DOCUMENT ME!
+	 */
+	public void tearDown() {
+	}
+
+	/**
+	 *  DOCUMENT ME!
 	 */
 	public void testLoadNetwork() {
-
-		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
-		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
-		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
-
-		long heapStart = heapUsage.getUsed();
-		long nonHeapStart = nonHeapUsage.getUsed();
+		int localCount = 0;
 
 		for (int i = 0; i < totalNodes; i++)
-			net.addNode();
+			if (net.addNode() != null)
+				localCount++;
 
-		heapUsage = mbean.getHeapMemoryUsage();
-		nonHeapUsage = mbean.getNonHeapMemoryUsage();
-
-		long heapEnd = heapUsage.getUsed();
-		long nonHeapEnd = nonHeapUsage.getUsed();
-
-		System.out.println("Heap memory used = " + (heapEnd - heapStart)/1000 + "KB");
-		System.out.println("Non-heap memory used = " + (nonHeapEnd - nonHeapStart)/1000 + "KB");
-
-		assertEquals(net.getNodeCount(), totalNodes);
+		assertEquals(localCount, totalNodes);
 	}
 }

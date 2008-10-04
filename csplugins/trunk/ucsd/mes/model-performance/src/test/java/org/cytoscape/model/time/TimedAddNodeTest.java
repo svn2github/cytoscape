@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,7 +33,8 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.mike;
+
+package org.cytoscape.model.time;
 
 import com.clarkware.junitperf.TimedTest;
 
@@ -40,11 +42,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 
-import org.mike.impl.MGraph;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
+import org.cytoscape.model.*;
 
 
 /**
@@ -53,18 +51,17 @@ import java.lang.management.MemoryUsage;
  */
 public class TimedAddNodeTest extends TestCase {
 	private CyNetwork net;
-	private int totalNodes = 100000;
+	private static final int TOTAL_NODES = 100000;
+  private static final long MAX_TIME_MILLIS = 250;
 
-	/**
+  /**
 	 * DOCUMENT ME!
 	 *
 	 * @return DOCUMENT ME!
 	 */
 	public static Test suite() {
-		long maxTimeInMillis = 250;
 		Test test = new TimedAddNodeTest("testLoadNetwork");
-		Test timedTest = new TimedTest(test, maxTimeInMillis, false);
-
+		Test timedTest = new TimedTest(test, MAX_TIME_MILLIS);
 		return timedTest;
 	}
 
@@ -77,10 +74,9 @@ public class TimedAddNodeTest extends TestCase {
 	 */
 	public static void main(String[] args) throws Exception {
 		TestResult result = junit.textui.TestRunner.run(suite());
-		System.out.println("Failures: " + result.failureCount());
 	}
 
-/**
+    /**
      * Creates a new TimedAddNodeTest object.
      *
      * @param name  DOCUMENT ME!
@@ -93,33 +89,16 @@ public class TimedAddNodeTest extends TestCase {
 	 * DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = new MGraph();
+		net = DupCyNetworkFactory.getInstance(); 
 	}
 
 	/**
 	 * DOCUMENT ME!
 	 */
 	public void testLoadNetwork() {
-
-		final MemoryMXBean mbean = ManagementFactory.getMemoryMXBean();
-		MemoryUsage heapUsage = mbean.getHeapMemoryUsage();
-		MemoryUsage nonHeapUsage = mbean.getNonHeapMemoryUsage();
-
-		long heapStart = heapUsage.getUsed();
-		long nonHeapStart = nonHeapUsage.getUsed();
-
-		for (int i = 0; i < totalNodes; i++)
+		for (int i = 0; i < TOTAL_NODES; i++)
 			net.addNode();
 
-		heapUsage = mbean.getHeapMemoryUsage();
-		nonHeapUsage = mbean.getNonHeapMemoryUsage();
-
-		long heapEnd = heapUsage.getUsed();
-		long nonHeapEnd = nonHeapUsage.getUsed();
-
-		System.out.println("Heap memory used = " + (heapEnd - heapStart)/1000 + "KB");
-		System.out.println("Non-heap memory used = " + (nonHeapEnd - nonHeapStart)/1000 + "KB");
-
-		assertEquals(net.getNodeCount(), totalNodes);
+    assertEquals(net.getNodeCount(), TOTAL_NODES);
 	}
 }
