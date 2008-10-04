@@ -49,7 +49,7 @@ public interface CySubNetwork extends CyNetwork {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	CyMetaNode getParentNode();
+//	CyMetaNode getParentNode();
 
 	/**
 	 * 

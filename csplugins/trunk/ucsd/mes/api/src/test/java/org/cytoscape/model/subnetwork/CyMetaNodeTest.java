@@ -34,23 +34,35 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model;
+package org.cytoscape.model.subnetwork;
 
-import com.clarkware.junitperf.LoadTest;
-import com.clarkware.junitperf.TimedTest;
-
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestResult;
+import junit.framework.TestSuite;
+
+import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.event.CyEventListener;
+
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNode;
+
+import java.lang.RuntimeException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
- * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 4:07:31 PM To change this
- * template use File | Settings | File Templates.
- */
-public class TimedAddNodeMultipleUsersTest extends TestCase {
-	private CyNetwork net;
-	private int totalNodes = 100000;
+ * DOCUMENT ME!
+  */
+public class CyMetaNodeTest extends TestCase {
+	private CyRootNetwork root;
 
 	/**
 	 *  DOCUMENT ME!
@@ -58,57 +70,54 @@ public class TimedAddNodeMultipleUsersTest extends TestCase {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Test suite() {
-		long maxTimeInMillis = 1000;
-		int concurrentUsers = 3;
-		Test test = new TimedAddNodeMultipleUsersTest("testLoadNetwork");
-		Test loadTest = new LoadTest(new TimedTest(test, maxTimeInMillis), concurrentUsers);
-
-		return loadTest;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
-	 */
-	public static void main(String[] args) throws Exception {
-		junit.textui.TestRunner.run(suite());
-	}
-
-	/**
-	 * Creates a new TimedAddNodeMultipleUsersTest object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 */
-	public TimedAddNodeMultipleUsersTest(String name) {
-		super(name);
-		net = CyNetworkFactory.getInstance(); 
+		return new TestSuite(CyMetaNodeTest.class);
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
+		root = CyNetworkFactory.getRootInstance(); 
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void tearDown() {
+		root = null;
 	}
 
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void testLoadNetwork() {
-		int localCount = 0;
+    /**
+     *  DOCUMENT ME!
+     */
+    public void testCreateMetaNode() {
+        CyNode n1 = root.addNode();
+        CyNode n2 = root.addNode();
+        CyNode n3 = root.addNode();
 
-		for (int i = 0; i < totalNodes; i++)
-			if (net.addNode() != null)
-				localCount++;
+		CyEdge e1 = root.addEdge(n1,n2,true);
+		CyEdge e2 = root.addEdge(n3,n2,true);
+		CyEdge e3 = root.addEdge(n1,n3,false);
 
-		assertEquals(localCount, totalNodes);
-	}
+        List<CyNode> nl = new ArrayList<CyNode>(2);
+        nl.add(n1);
+        nl.add(n2);
+
+        CyMetaNode m1 = root.createMetaNode(nl);
+
+        assertNotNull("metanode is not null",m1);
+	
+		CySubNetwork sub = m1.getChildNetwork();	
+		assertNotNull("subnetwork is not null",sub);
+		assertEquals("num nodes",2,sub.getNodeCount());
+		assertEquals("num edges",1,sub.getEdgeCount());
+		assertTrue("contains node1",sub.containsNode(n1));
+		assertTrue("contains node2",sub.containsNode(n2));
+		assertTrue("contains edge1",sub.containsEdge(e1));
+		assertTrue("contains edge1",sub.containsEdge(n1,n2));
+
+		List<CyNode> mnls = sub.getNodeList();
+		assertEquals("node list size",2,sub.getNodeList().size());
+		assertEquals("edge list size",1,sub.getEdgeList().size());
+    }
 }

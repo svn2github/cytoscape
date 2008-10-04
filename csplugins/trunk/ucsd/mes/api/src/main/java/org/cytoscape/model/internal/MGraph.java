@@ -67,6 +67,7 @@ public class MGraph implements CyNetwork {
 
 	/**
 	 * Creates a new MGraph object.
+	 * @param eh The CyEventHelper used for firing events.
 	 */
 	public MGraph(final CyEventHelper eh) {
 		nodeCount = 0;
@@ -89,6 +90,9 @@ public class MGraph implements CyNetwork {
         eventHelper = eh;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public long getSUID() {
 		return suid;
 	}

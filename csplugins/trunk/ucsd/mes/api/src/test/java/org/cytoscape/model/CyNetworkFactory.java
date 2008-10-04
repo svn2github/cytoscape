@@ -39,6 +39,9 @@ package org.cytoscape.model;
 
 import org.cytoscape.model.internal.CyNetworkImpl;
 import org.cytoscape.model.internal.MGraph;
+import org.cytoscape.model.internal.ArrayGraph;
+
+import org.cytoscape.model.subnetwork.CyRootNetwork;
 
 public class CyNetworkFactory {
 
@@ -46,7 +49,12 @@ public class CyNetworkFactory {
 
 	public static CyNetwork getInstance() {
 		//return new CyNetworkImpl(new DummyCyEventHelper());
-		return new MGraph(new DummyCyEventHelper());
+		//return new MGraph(new DummyCyEventHelper());
+		return new ArrayGraph(new DummyCyEventHelper());
+	}
+
+	public static CyRootNetwork getRootInstance() {
+		return new ArrayGraph(new DummyCyEventHelper());
 	}
 }
 

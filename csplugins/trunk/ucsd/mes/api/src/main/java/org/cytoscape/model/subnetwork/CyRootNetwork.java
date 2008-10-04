@@ -47,12 +47,12 @@ import java.util.List;
  *
  */
 public interface CyRootNetwork extends CyNetwork {
-/**
+	/**
      *
      */
 	List<CyNode> getAllNodes();
 
-/**
+	/**
      *
      */
 	List<CyEdge> getAllEdges();
@@ -74,7 +74,7 @@ public interface CyRootNetwork extends CyNetwork {
 	 */
 	void removeMetaNode(CyMetaNode node);
 
-/**
+	/**
      *
      */
 	List<CySubNetwork> getAllSubNetworks();
