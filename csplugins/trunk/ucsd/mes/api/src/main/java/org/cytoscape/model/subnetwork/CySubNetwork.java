@@ -41,27 +41,32 @@ import org.cytoscape.model.CyNode;
 
 
 /**
- *
+ * A CySubNetwork is a {@link CyNetwork} that is contained within a parent
+ * {@link CyNewtork}.  See the description in {@link CyRootNetwork} for
+ * a more complete description of Cytoscape's meta-network model.
  */
 public interface CySubNetwork extends CyNetwork {
 	/**
-	 * 
+	 * Return the {@link CyMetaNode} that represents this CySubNetwork in the
+	 * parent network.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @return  the node that represents this CySubNetowrk.
 	 */
 //	CyMetaNode getParentNode();
 
 	/**
-	 * 
+	 * Adds a node to this {@link CySubNetwork}.  Note that the added node
+	 * is not a new node, rather a projected node from the {@link CyRootNetwork}
 	 *
-	 * @param node  DOCUMENT ME!
+	 * @param node  CyNode to add to this network
 	 */
-	void copyToNetwork(CyNode node);
+	void addToNetwork(CyNode node);
 
 	/**
-	 * 
+	 * Removes a node from this {@link CySubNetwork}.  The node is removed from
+	 * the CySubNetwork, but <i>not</i> deleted.
 	 *
-	 * @param node  DOCUMENT ME!
+	 * @param node  Node to remove from this subnetwork
 	 */
 	void removeFromNetwork(CyNode node);
 }

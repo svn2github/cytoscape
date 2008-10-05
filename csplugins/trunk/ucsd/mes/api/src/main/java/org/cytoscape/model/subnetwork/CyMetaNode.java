@@ -40,8 +40,16 @@ import org.cytoscape.model.CyNode;
 
 
 /**
- * DOCUMENT ME!
-  */
+ * A CyMetaNode is a CyNode that is used to represent a {@link CySubNetwork}
+ * in its parent network.  See the description in {@link CyRootNetwork} for
+ * a more complete description of Cytoscape's meta-network model.
+ */
 public interface CyMetaNode extends CyNode {
+
+	/**
+	 * Get the {@link CySubNetwork} that this CyMetaNode represents.
+	 *
+	 * @return the {@link CySubNetwork} that is represented by this CyMetaNode.
+	 */
 	CySubNetwork getChildNetwork();
 }
