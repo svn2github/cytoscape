@@ -60,7 +60,8 @@ public interface CySubNetwork extends CyNetwork {
 	 *
 	 * @param node  CyNode to add to this network
 	 */
-	void addToNetwork(CyNode node);
+//	void addToNetwork(CyNode node);
+	void copyToNetwork(CyNode node);
 
 	/**
 	 * Removes a node from this {@link CySubNetwork}.  The node is removed from
