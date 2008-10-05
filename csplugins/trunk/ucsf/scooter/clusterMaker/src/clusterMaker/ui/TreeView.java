@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
+import java.util.Set;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -183,7 +184,7 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		// Now set up to receive selection events
 		myView = Cytoscape.getCurrentNetworkView();
 		myNetwork = Cytoscape.getCurrentNetwork();
-		// myView.addGraphViewChangeListener(this);
+		myView.addGraphViewChangeListener(this);
 	}
 
 	public void update(Observable o, Object arg) {
@@ -197,14 +198,15 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 				CyNode node = Cytoscape.getCyNode(nodeName, false);
 				if (node != null) selectedNodes.add(node);
 			}
-			// myView.removeGraphViewChangeListener(this);
-			// System.out.println("Selecting "+nodes.size()+" nodes");
+			// System.out.println("Selecting "+selectedNodes.size()+" nodes");
 			if (!dataModel.isSymmetrical() || selectedArrays.size() == 0) {
+				myView.removeGraphViewChangeListener(this);
 				myNetwork.unselectAllNodes();
 				myNetwork.setSelectedNodeState(selectedNodes, true);
+				myView.redrawGraph(false,false);
+				myView.addGraphViewChangeListener(this);
 				return;
 			}
-			// myView.addGraphViewChangeListener(this);
 		} else if (o == arraySelection) {
 			// We only care about array selection for symmetrical models
 			if (!dataModel.isSymmetrical())
@@ -238,33 +240,28 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 			}
 		}
 		myNetwork.setSelectedEdgeState(edgesToSelect, true);
+		myView.redrawGraph(false,false);
 	}
 
 	public void graphViewChanged(GraphViewChangeEvent event) {
 		// System.out.println("graphViewChanged");
-		if (event.isNodesSelectedType()) {
-			Node[] nodeArray = event.getSelectedNodes();
-			// setSelection(nodeArray, true);
-		} else if (event.isNodesUnselectedType()) {
-			Node[] nodeArray = event.getUnselectedNodes();
-			// setSelection(nodeArray, false);
-		}
+		Set<CyNode> nodes = myNetwork.getSelectedNodes();
+		setSelection(nodes, true);
 	}
 
-	private void setSelection(Node[] nodeArray, boolean select) {
+	// private void setSelection(Node[] nodeArray, boolean select) {
+	private void setSelection(Set<CyNode> nodeArray, boolean select) {
 		HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
 		geneSelection.deleteObserver(this);
 		geneSelection.setSelectedNode(null);
-		for (int index = 0; index < nodeArray.length; index++) {
-			CyNode cyNode = (CyNode) nodeArray[index];
-			// System.out.println("setting "+cyNode.getIdentifier()+" to "+select);
-			int geneIndex = geneInfo.getIndex(cyNode.getIdentifier());
+		geneSelection.deselectAllIndexes();
+		for (CyNode cyNode: nodeArray) {
+			int geneIndex = geneInfo.getHeaderIndex(cyNode.getIdentifier());
+			// System.out.println("setting "+cyNode.getIdentifier()+"("+geneIndex+") to "+select);
 			geneSelection.setIndex(geneIndex, select);
 		}
+		geneSelection.deleteObserver(this);
 		geneSelection.notifyObservers();
 		geneSelection.addObserver(this);
-		arraySelection.setSelectedNode(null);
-		arraySelection.selectAllIndexes();
-		arraySelection.notifyObservers();
 	}
 }

@@ -67,6 +67,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
@@ -80,11 +81,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants.*;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -94,7 +98,7 @@ import javax.swing.event.ListSelectionListener;
  * the HeatMap to the network.
  */
 public class NetworkColorDialog extends JDialog 
-                                implements ActionListener, ListSelectionListener {
+                                implements ActionListener, ListSelectionListener, ChangeListener {
 
 	private ColorExtractor colorExtractor = null;
 	private String attribute = null;
@@ -107,8 +111,8 @@ public class NetworkColorDialog extends JDialog
 	// Dialog components
 	private JLabel titleLabel; // Our title
 	private JPanel mainPanel; // The main content pane
-	private JPanel buttonBox; // Our action buttons (Save Settings, Cancel, Execute, Done)
 	protected JList attributeSelector; // Attribute list
+	protected JSlider animationSlider;
 	private JButton animateButton;
 
 	private boolean animating = false;
@@ -212,17 +216,9 @@ public class NetworkColorDialog extends JDialog
 
 		// Get the current style
 		VisualStyle style = Cytoscape.getCurrentNetworkView().getVisualStyle();
+
 		// Get our colors
 		Color missingColor = colorExtractor.getMissing();
-		// Color zeroColor = colorExtractor.getColor(0.0f);
-		// Color upColor = colorExtractor.getColor(maxValue);
-		// Color downColor = colorExtractor.getColor(minValue);
-
-		// Adjust for contrast.  Since we really don't have contrast control,
-		// we try to provide the same basic idea by adding extra points
-		// in the continuous mapper
-		// Color downDeltaColor = colorExtractor.getColor(minValue/100.0);
-		// Color upDeltaColor = colorExtractor.getColor(maxValue/100.0);
 
 		if (!style.getName().endsWith(suffix)) {
 			// Create a new vizmap
@@ -344,8 +340,27 @@ public class NetworkColorDialog extends JDialog
 		listPanel.add(sortPanel);
 		mainPanel.add(listPanel);
 
+		// Create a panel for our animation speed slider
+		JPanel sliderBox = new JPanel();
+		Border sliderBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		TitledBorder tSliderBorder = BorderFactory.createTitledBorder(sliderBorder, "Animation Speed");
+		tSliderBorder.setTitlePosition(TitledBorder.LEFT);
+		tSliderBorder.setTitlePosition(TitledBorder.TOP);
+		sliderBox.setBorder(tSliderBorder);
+		this.animationSlider = new JSlider(0,100);
+		animationSlider.addChangeListener(this);
+
+		// Create the labels
+		Hashtable<Integer,JLabel> labels = new Hashtable();
+		labels.put(new Integer(1), new JLabel("Slower"));
+		labels.put(new Integer(100), new JLabel("Faster"));
+		animationSlider.setLabelTable(labels);
+		animationSlider.setPaintLabels(true);
+		animationSlider.setEnabled(false);
+		sliderBox.add(animationSlider);
+
 		// Create a panel for our button box
-		this.buttonBox = new JPanel();
+		JPanel buttonBox = new JPanel();
 
 		JButton doneButton = new JButton("Done");
 		doneButton.setActionCommand("done");
@@ -364,8 +379,22 @@ public class NetworkColorDialog extends JDialog
 		buttonBox.add(vizmapButton);
 		buttonBox.add(doneButton);
 		buttonBox.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+
+		// TODO: Fix up our heights and widths
+		Dimension buttonDim = buttonBox.getPreferredSize();
+		buttonBox.setMinimumSize(buttonDim);
+		buttonBox.setMaximumSize(new Dimension(Integer.MAX_VALUE,buttonDim.height));
+		animationSlider.setPreferredSize(buttonDim);
+		sliderBox.setMaximumSize(new Dimension(Integer.MAX_VALUE,buttonDim.height));
+	
+		mainPanel.add(sliderBox);
 		mainPanel.add(buttonBox);
+
+		// TODO: Set up the minimum size of our dialog
 		setContentPane(mainPanel);
+	}
+
+	public void stateChanged(ChangeEvent e) {
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
@@ -379,10 +408,13 @@ public class NetworkColorDialog extends JDialog
 		currentAttribute = null;
 
 		// If there are more then one, enable the animate button
-		if (selIndices.length > 1)
+		if (selIndices.length > 1) {
 			animateButton.setEnabled(true);
-		else
+			animationSlider.setEnabled(true);
+		} else {
 			animateButton.setEnabled(false);
+			animationSlider.setEnabled(false);
+		}
 	}
 
 	public void shiftList(int amount) {
@@ -419,6 +451,7 @@ public class NetworkColorDialog extends JDialog
 	private class Animate extends Thread {
 		VisualStyle[] styles;
 		Object[] attributes;
+		// JSlider animationSlider;
 		String current;
 
 		public Animate(VisualStyle[] styles, Object[] attributes) {
@@ -450,6 +483,8 @@ public class NetworkColorDialog extends JDialog
 						attributeSelector.setSelectedValue(attributes[i], true);
 						currentAttribute = (String)attributes[i];
 						// Cytoscape.getCurrentNetworkView().redrawGraph(false, true);
+						int wait = animationSlider.getValue();
+						this.sleep((100-wait)*20);
 					}
 					firstIndex = 0;
 				}
@@ -461,7 +496,7 @@ public class NetworkColorDialog extends JDialog
 				}
 				attributeSelector.setSelectedIndices(selectedIndices);
 			} catch (Exception e) {
-				// This is almost certainly a clast cast because the dialog
+				// This is almost certainly a class cast because the dialog
 				// went away before we completed.  Just ignore it
 			}
 			listening = true;
