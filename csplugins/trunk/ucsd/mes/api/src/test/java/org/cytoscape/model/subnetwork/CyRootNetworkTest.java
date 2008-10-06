@@ -278,14 +278,72 @@ public class CyRootNetworkTest extends TestCase {
 		assertTrue("contains metanode 1 child net", snl.contains(sn1));
 		assertTrue("contains metanode 2 child net", snl.contains(sn2));
 
-/*
 		root.removeMetaNode(m1);
 
 		List<CySubNetwork> snl2 = root.getAllSubNetworks();
 		assertNotNull("subnetwork list not null",snl2);
 		assertEquals("subnetwork list size",1,snl2.size());
-		assertFalse("contains metanode 1", snl2.contains(m1));
-		assertTrue("contains metanode 2", snl2.contains(m2));
-		*/
+		assertFalse("contains metanode 1", snl2.contains(sn1));
+		assertTrue("contains metanode 2", snl2.contains(sn2));
+	}
+
+	public void testAddNode() {
+		System.out.println("---> testAddNode");
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyNode n3 = root.addNode();
+		CyNode n4 = root.addNode();
+
+		CyEdge e1 = root.addEdge(n1,n2,true);
+		CyEdge e2 = root.addEdge(n2,n3,false);
+		CyEdge e3 = root.addEdge(n2,n4,false);
+
+		assertEquals("node list size",4,root.getNodeList().size());
+
+		List<CyNode> nl = new ArrayList<CyNode>(2);
+		nl.add(n1);
+		nl.add(n2);
+
+		//System.out.println("###### 4 nodes");
+
+		CyMetaNode m1 = root.createMetaNode(nl);
+
+		//System.out.println("###### 4 nodes, 1 metanode");
+
+		assertEquals("node list size",4,root.getNodeList().size());
+		assertEquals("all node list size",5,root.getAllNodes().size());
+
+		CyNode n5 = root.addNode();
+
+		//System.out.println("###### 5 nodes, 1 metanode");
+
+		assertEquals("node list size",5,root.getNodeList().size());
+		assertEquals("all node list size",6,root.getAllNodes().size());
+
+		CyNode n6 = root.addNode();
+
+		//System.out.println("###### 6 nodes, 1 metanode");
+
+		assertEquals("node list size",6,root.getNodeList().size());
+		assertEquals("all node list size",7,root.getAllNodes().size());
+		assertTrue("root does contain node5",root.containsNode(n5));
+
+		boolean ret = root.removeNode(n5);
+
+		//System.out.println("###### 5 nodes, 1 metanode");
+		assertTrue("removed node5", ret);
+		assertFalse("root doesn't contain node5",root.containsNode(n5));
+
+		//for ( CyNode nn : root.getNodeList() )
+			//System.out.println("~~~ " + nn.getIndex());
+		assertEquals("node list size",5,root.getNodeList().size());
+		assertEquals("all node list size",6,root.getAllNodes().size());
+
+		ret = root.removeNode(n6);
+		assertTrue("removed node6", ret);
+
+		//System.out.println("###### 4 nodes, 1 metanode");
+		assertEquals("node list size",4,root.getNodeList().size());
+		assertEquals("all node list size",5,root.getAllNodes().size());
 	}
 }

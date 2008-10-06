@@ -75,18 +75,33 @@ import java.util.List;
  * except {@link CyMetaNode}s and their associated {@link CyEdge}s.
 
  * <b>QUESTIONS:</b>
- * <ul><li>How do we get the flattened network?  I'm assuming
+ * <ul>
+ * <li><i>In general, I think the root/cy/sub network relationship is
+ * a bit confusing right now and the current implementation leaves
+ * something to be desired.</i></li>
+ * <li>How do we get the flattened network?  I'm assuming
  * that the flattened network is what the CyRootNetwork returns
  * when you call getNodeList() and getEdgeList().  That way, the simplest
  * implementation would always be looking at the flattened network,
  * which is what I think we want.</li>
+ * <li><i>The flattened network will be from getAllNodes() and getAllEdges().
+ * At the moment, getNodeList() and getEdgeList() only ever return 
+ * the network as created before any metanodes were added.  I'm seeing
+ * a bug where a normal node added *after* a metanode was created might
+ * not be captured correctly.</i></li>
  * <li>If that is the case, how do we extract the top group of
  * CySubNetworks?  Do we need to add a getRootSubNetwork() method?
  * I'm going to assume we do, recognizing that this may be something
  * we might need to re-evaluate</li>
+ * <li><i>No explicit support for this right now, other than the fact that
+ * you have a reference to the original CyRootNetwork that you created
+ * the metanode on. When calling getNodeList and getEdgeList, you'll see
+ * the original network. </i></li>
  * <li>How do I add a CyMetaNode to a particular sub-network?  CyNetwork
  * does not have an addNode(CyNode) method.  Should this be part of the
  * CyRootNetwork interface?</li>
+ * <li><i>Add the metanode using {@link CySubNetwork#copyToNetwork(CyNode)}
+ * since CyMetaNode extends CyNode, this should work.</i></li>
  * </ul>
  */
 public interface CyRootNetwork extends CyNetwork {

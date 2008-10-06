@@ -69,5 +69,5 @@ public interface CySubNetwork extends CyNetwork {
 	 *
 	 * @param node  Node to remove from this subnetwork
 	 */
-	void removeFromNetwork(CyNode node);
+//	void removeFromNetwork(CyNode node);
 }

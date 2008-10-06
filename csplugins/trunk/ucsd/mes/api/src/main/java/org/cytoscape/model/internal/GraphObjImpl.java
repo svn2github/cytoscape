@@ -89,4 +89,23 @@ class GraphObjImpl implements GraphObject, Identifiable {
 	public CyRow attrs() {
 		return getCyRow("USER");
 	}
+
+    public @Override
+    boolean equals(Object o) {
+        if (!(o instanceof GraphObjImpl))
+            return false;
+
+        GraphObjImpl ir = (GraphObjImpl) o;
+
+        if (ir.suid == this.suid)
+            return true;
+        else
+
+            return false;
+    }
+
+    public @Override
+    int hashCode() {
+        return (int) (suid ^ (suid >>> 32));
+    }
 }

@@ -206,7 +206,7 @@ public class CySubNetworkTest extends TestCase {
 		assertTrue("contains edge1",sub.containsEdge(e1));
 		assertTrue("contains edge1",sub.containsEdge(n1,n2));
 
-		sub.removeFromNetwork(n4);
+		sub.removeNode(n4);
 
 		assertEquals("num nodes",2,sub.getNodeCount());
 		assertEquals("num edges",1,sub.getEdgeCount());
@@ -216,7 +216,7 @@ public class CySubNetworkTest extends TestCase {
 		assertTrue("contains edge1",sub.containsEdge(e1));
 		assertTrue("contains edge1",sub.containsEdge(n1,n2));
 
-		sub.removeFromNetwork(n1);
+		sub.removeNode(n1);
 
 		assertEquals("num nodes",1,sub.getNodeCount());
 		assertEquals("num edges",0,sub.getEdgeCount());
