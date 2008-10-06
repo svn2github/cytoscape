@@ -117,6 +117,7 @@ public class ArrayGraph implements CyRootNetwork {
         eventHelper = eh;
 
 		subNets = new ArrayList<CySubNetwork>();
+
 	}
 
 	/**
@@ -350,15 +351,14 @@ public class ArrayGraph implements CyRootNetwork {
 		if (!containsNode(n))
 			return false;
 
-		// remove adjacent edges
-		final List<CyEdge> edges = getAdjacentEdgeList(n, CyEdge.Type.ANY);
+		// remove adjacent edges from ROOT network
+		final List<CyEdge> edges = getAdjacentEdgeList(n, CyEdge.Type.ANY, ROOT);
 
 		for (final CyEdge e : edges)
 			removeEdge(e);
 
-		final NodePointer node = getNodePointer(n);
+		NodePointer node = getNodePointer(n);
 
-		// now clean up node
 		if (node.prevNode[ROOT] != null)
 			node.prevNode[ROOT].nextNode[ROOT] = node.nextNode[ROOT];
 		else
@@ -367,11 +367,12 @@ public class ArrayGraph implements CyRootNetwork {
 		if (node.nextNode[ROOT] != null)
 			node.nextNode[ROOT].prevNode[ROOT] = node.prevNode[ROOT];
 
-		nodePointers.set(node.index, null);
-
 		node.prevNode[ROOT] = null;
 		node.firstOutEdge[ROOT] = null;
 		node.firstInEdge[ROOT] = null;
+
+		nodePointers.set(n.getIndex(), null);
+
 		nodeCount--;
 
 		return true;
@@ -777,31 +778,31 @@ public class ArrayGraph implements CyRootNetwork {
 		final boolean incoming = assessIncoming(edgeType);
 		final boolean outgoing = assessOutgoing(edgeType);
 
-		System.out.println("countEdges un: " + undirected + " in: " + incoming + " out: " + outgoing);
+		//System.out.println("countEdges un: " + undirected + " in: " + incoming + " out: " + outgoing);
 
 		int tentativeEdgeCount = 0;
 
 		if (outgoing) { 
-			System.out.println("  countEdges outgoing: " + n.outDegree[inId]);
+			//System.out.println("  countEdges outgoing: " + n.outDegree[inId]);
 			tentativeEdgeCount += n.outDegree[inId];
 		}
 
 		if (incoming) { 
-			System.out.println("  countEdges incoming: " + n.inDegree[inId]);
+			//System.out.println("  countEdges incoming: " + n.inDegree[inId]);
 			tentativeEdgeCount += n.inDegree[inId];
 		}
 
 		if (undirected) {
-			System.out.println("  countEdges undirected: " + n.undDegree[inId]);
+			//System.out.println("  countEdges undirected: " + n.undDegree[inId]);
 			tentativeEdgeCount += n.undDegree[inId];
 		}
 
 		if (outgoing && incoming) {
-			System.out.println("  countEdges out+in MINUS: " + n.selfEdges[inId]);
+			//System.out.println("  countEdges out+in MINUS: " + n.selfEdges[inId]);
 			tentativeEdgeCount -= n.selfEdges[inId];
 		}
 
-		System.out.println("  countEdges final: " + tentativeEdgeCount);
+		//System.out.println("  countEdges final: " + tentativeEdgeCount);
 		return tentativeEdgeCount;
 	}
 
@@ -972,19 +973,33 @@ public class ArrayGraph implements CyRootNetwork {
 			base = new InternalNetwork(this,getNodeList(),originalId);
 		}
 
-		final int newId;
-		synchronized (this) {
-			newId = ++numSubNetworks;
-		}
-
-		CySubNetwork sub = new InternalNetwork(this,nodes,newId);
+		final int newId = ++numSubNetworks;
+		InternalNetwork sub = new InternalNetwork(this,nodes,newId);
 		subNets.add(sub);
+		
+		CyMetaNode newNode = addNode( sub );
 
-		return addNode( sub );
+		// TODO do we need to preserve directedness?
+		for ( CyNode exNode : sub.getExternalNodes() )
+			addEdge(newNode, exNode, false); 
+
+		return newNode; 
 	}
 
-	public void removeMetaNode(CyMetaNode mn) {
-		// TODO
+	public void removeMetaNode(CyMetaNode n) {
+		if (!containsNode(n))
+			return;
+
+		// first clean up the node pointer information for the nodes
+		// in the subnetwork
+		CySubNetwork sub = n.getChildNetwork();
+		List<CyNode> subNodes = sub.getNodeList();
+		for ( CyNode node : subNodes )
+			sub.removeFromNetwork(node);
+
+		subNets.remove( sub );
+
+		removeNode(n);
 	}
 
 	public List<CySubNetwork> getAllSubNetworks() {
@@ -1001,6 +1016,7 @@ public class ArrayGraph implements CyRootNetwork {
 		private NodePointer inFirstNode;
 		private Set<CyNode> nodeSet; 
 		private Set<CyEdge> edgeSet; 
+		private Set<CyNode> externalNodeSet; 
 
 		InternalNetwork(final ArrayGraph par, final List<CyNode> nodes, final int inId) {
 			internalId = inId; 
@@ -1019,7 +1035,7 @@ public class ArrayGraph implements CyRootNetwork {
 			nodeSet = new HashSet<CyNode>(nodes);
 		
 			internalNodeCount = nodeSet.size();
-			System.out.println("node size: " + internalNodeCount);
+//			System.out.println("node size: " + internalNodeCount);
 
 			// add this network's internal id to each NodePointer 
 			inFirstNode = null; 
@@ -1035,17 +1051,25 @@ public class ArrayGraph implements CyRootNetwork {
 			// target node is in the subnetwork, and if so, add it 
 			// to the edge set
 			edgeSet = new HashSet<CyEdge>();
+
+			// find all nodes that connect nodes in the subnetwork but aren't
+			// in the subnetwork themselves
+			externalNodeSet = new HashSet<CyNode>();
 			for ( CyNode n : nodeSet ) {
-				System.out.println(" checking edges for NODE: " + n.getIndex());
-				// note that we're getting the adj edges from the ROOT network
-				List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n,CyEdge.Type.ANY,ROOT);
+//				System.out.println(" checking edges for NODE: " + n.getIndex());
+				// note that we're getting the adj edges from the *parent* network
+				List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n,CyEdge.Type.ANY);
 				for ( CyEdge edge : adjEdges ) {
-				System.out.println("  evaluating: " + edge.getIndex());
+				//System.out.println("  evaluating: " + edge.getIndex());
 
 					// check the nodeSet because containsNode won't yet be updated
 					if ( nodeSet.contains( edge.getSource() ) && nodeSet.contains( edge.getTarget() ) ) {
-						System.out.println("    adding edge: " + edge.getIndex());
+				//		System.out.println("    adding edge: " + edge.getIndex());
 						edgeSet.add( edge );	
+					} else if ( nodeSet.contains( edge.getSource() ) && !nodeSet.contains( edge.getTarget() ) ) {
+						externalNodeSet.add( edge.getTarget() );
+					} else if ( !nodeSet.contains( edge.getSource() ) && nodeSet.contains( edge.getTarget() ) ) {
+						externalNodeSet.add( edge.getSource() );
 					}
 				}		
 			}		
@@ -1056,12 +1080,17 @@ public class ArrayGraph implements CyRootNetwork {
 			for ( CyEdge edge : edgeSet ) 
 				updateEdge(edge);
 
-			if ( inFirstNode == null )
-				System.out.println("infirstnode == null  " + internalId);
-			else
-				System.out.println("infirstnode looks good  " + internalId);
+			
+//			if ( inFirstNode == null )
+//				System.out.println("infirstnode == null  " + internalId);
+//			else
+//				System.out.println("infirstnode looks good  " + internalId);
+//
+//			System.out.println("internalEdgeCount  " + internalEdgeCount);
+		}
 
-			System.out.println("internalEdgeCount  " + internalEdgeCount);
+		Set<CyNode> getExternalNodes() {
+			return externalNodeSet;
 		}
 
 		private void updateNode(CyNode n) {
@@ -1224,10 +1253,10 @@ public class ArrayGraph implements CyRootNetwork {
 			List<CyEdge> adjEdges = parent.getAdjacentEdgeList(node,CyEdge.Type.ANY,ROOT);
 			Set<CyEdge> tmpSet = new HashSet<CyEdge>();
 			for ( CyEdge edge : adjEdges ) {
-				System.out.println(" copy adjEdge: " + edge.getIndex());
+//				System.out.println(" copy adjEdge: " + edge.getIndex());
 				// check the nodeSet because containsNode won't yet be updated
 				if ( nodeSet.contains( edge.getSource() ) && nodeSet.contains( edge.getTarget() ) ) {
-					System.out.println(" copy ADDING adjEdge: " + edge.getIndex());
+//					System.out.println(" copy ADDING adjEdge: " + edge.getIndex());
 					edgeSet.add(edge);
 					tmpSet.add(edge);
 				}
@@ -1255,7 +1284,7 @@ public class ArrayGraph implements CyRootNetwork {
 			if (node.prevNode[internalId] != null)
 				node.prevNode[internalId].nextNode[internalId] = node.nextNode[internalId];
 			else
-				firstNode = node.nextNode[internalId];
+				inFirstNode = node.nextNode[internalId];
 
 			if (node.nextNode[internalId] != null)
 				node.nextNode[internalId].prevNode[internalId] = node.prevNode[internalId];
