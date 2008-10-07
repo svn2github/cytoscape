@@ -113,7 +113,7 @@ public class CyRootNetworkTest extends TestCase {
 		assertEquals("num edges", 3, root.getEdgeList().size());
 		assertEquals("all edges", 3, root.getAllEdges().size());
 
-		CyMetaNode m1 = root.createMetaNode(nl);
+		CyMetaNode m1 = root.addMetaNode(nl);
 
 		assertNotNull("metanode is not null",m1);
 		assertEquals("num nodes", 4, root.getNodeList().size());
@@ -136,7 +136,7 @@ public class CyRootNetworkTest extends TestCase {
 		nl.add(n1);
 		nl.add(n2);
 
-		CyMetaNode m1 = root.createMetaNode(nl);
+		CyMetaNode m1 = root.addMetaNode(nl);
 
 		assertNotNull("metanode is not null",m1);
 		assertEquals("node list size",3,root.getNodeList().size());
@@ -150,7 +150,7 @@ public class CyRootNetworkTest extends TestCase {
 		nl2.add(n3);
 		nl2.add(n2);
 
-		CyMetaNode m2 = root.createMetaNode(nl2);
+		CyMetaNode m2 = root.addMetaNode(nl2);
 
 		assertNotNull("metanode is not null",m2);
 		assertEquals("node list size",3,root.getNodeList().size());
@@ -202,7 +202,7 @@ public class CyRootNetworkTest extends TestCase {
 		nl.add(n1);
 		nl.add(n2);
 
-		CyMetaNode m1 = root.createMetaNode(nl);
+		CyMetaNode m1 = root.addMetaNode(nl);
 
 		assertNotNull("metanode is not null",m1);
 		assertEquals("node list size",3,root.getNodeList().size());
@@ -214,7 +214,7 @@ public class CyRootNetworkTest extends TestCase {
 		nl2.add(n3);
 		nl2.add(n2);
 
-		CyMetaNode m2 = root.createMetaNode(nl2);
+		CyMetaNode m2 = root.addMetaNode(nl2);
 
 		assertNotNull("metanode is not null",m2);
 		assertEquals("node list size",3,root.getNodeList().size());
@@ -241,7 +241,7 @@ public class CyRootNetworkTest extends TestCase {
 		nl.add(n1);
 		nl.add(n2);
 
-		CyMetaNode m1 = root.createMetaNode(nl);
+		CyMetaNode m1 = root.addMetaNode(nl);
 
 		assertNotNull("metanode is not null",m1);
 		assertEquals("edge list size",3,root.getEdgeList().size());
@@ -261,16 +261,16 @@ public class CyRootNetworkTest extends TestCase {
 		nl.add(n1);
 		nl.add(n2);
 
-		CyMetaNode m1 = root.createMetaNode(nl);
+		CyMetaNode m1 = root.addMetaNode(nl);
 
 		List<CyNode> nl2 = new ArrayList<CyNode>(2);
 		nl2.add(n3);
 		nl2.add(n2);
 
-		CyMetaNode m2 = root.createMetaNode(nl2);
+		CyMetaNode m2 = root.addMetaNode(nl2);
 
-		CySubNetwork sn1 = m1.getChildNetwork();
-		CySubNetwork sn2 = m2.getChildNetwork();
+		CySubNetwork sn1 = m1.getSubNetwork();
+		CySubNetwork sn2 = m2.getSubNetwork();
 
 		List<CySubNetwork> snl = root.getAllSubNetworks();
 		assertNotNull("subnetwork list not null",snl);
@@ -306,7 +306,7 @@ public class CyRootNetworkTest extends TestCase {
 
 		//System.out.println("###### 4 nodes");
 
-		CyMetaNode m1 = root.createMetaNode(nl);
+		CyMetaNode m1 = root.addMetaNode(nl);
 
 		//System.out.println("###### 4 nodes, 1 metanode");
 

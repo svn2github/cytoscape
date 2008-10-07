@@ -115,7 +115,7 @@ class CyNodeImpl extends GraphObjImpl implements CyNode, CyMetaNode {
 		return net.getConnectingEdgeList(this, target, edgeType);
 	}
 
-	public CySubNetwork getChildNetwork() {
+	public CySubNetwork getSubNetwork() {
 		return subNet;
 	}
 }

@@ -135,8 +135,8 @@ public interface CyRootNetwork extends CyNetwork {
 	 *
 	 * @return  The created {@link CyMetaNode}.
 	 */
-	CyMetaNode createMetaNode(List<CyNode> nodes);
-//	CyMetaNode createMetaNode(CyNetwork network, List<CyNode> nodes);
+	CyMetaNode addMetaNode(List<CyNode> nodes);
+//	CyMetaNode addMetaNode(CyNetwork network, List<CyNode> nodes);
 
 	/**
 	 * Create a {@link CyMetaNode} and its associated {@link CySubNetwork}.
@@ -152,7 +152,7 @@ public interface CyRootNetwork extends CyNetwork {
 	 *
 	 * @return  The created {@link CyMetaNode}.
 	 */
-//	CyMetaNode createMetaNode(CyNetwork network, List<CyNode> nodes, List<CyEdge> edges);
+//	CyMetaNode addMetaNode(CyNetwork network, List<CyNode> nodes, List<CyEdge> edges);
 
 	/**
 	 * Removes the metanode and the CySubNetwork, not the nodes and edges contained in the

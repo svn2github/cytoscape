@@ -109,7 +109,7 @@ public class CySubNetworkTest extends TestCase {
         nl.add(n1);
         nl.add(n2);
 
-        m1 = root.createMetaNode(nl);
+        m1 = root.addMetaNode(nl);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class CySubNetworkTest extends TestCase {
 	 */
 	public void testCopyToNetwork() {
 
-		CySubNetwork sub = m1.getChildNetwork();	
+		CySubNetwork sub = m1.getSubNetwork();	
 
 		assertNotNull("subnetwork is not null",sub);
 		assertEquals("num nodes",2,sub.getNodeCount());
@@ -135,7 +135,7 @@ public class CySubNetworkTest extends TestCase {
 		assertTrue("contains edge1",sub.containsEdge(e1));
 		assertTrue("contains edge1",sub.containsEdge(n1,n2));
 
-		sub.copyToNetwork(n4);
+		sub.addNode(n4);
 
 		assertEquals("num nodes",3,sub.getNodeCount());
 		assertEquals("num edges",1,sub.getEdgeCount());
@@ -147,7 +147,7 @@ public class CySubNetworkTest extends TestCase {
 
 		// TODO assuming this will also copy any edges connecting to existing 
 		// nodes in the subnetwork
-		sub.copyToNetwork(n3);
+		sub.addNode(n3);
 
 		assertEquals("num nodes",4,sub.getNodeCount());
 		assertEquals("num edges",3,sub.getEdgeCount());
@@ -163,7 +163,7 @@ public class CySubNetworkTest extends TestCase {
 
 	public void testInvalidCopyToNetwork() {
 
-		CySubNetwork sub = m1.getChildNetwork();	
+		CySubNetwork sub = m1.getSubNetwork();	
 
 		checkAdd(sub,nx1);
 		checkAdd(sub,null);
@@ -171,7 +171,7 @@ public class CySubNetworkTest extends TestCase {
 
 	private void checkAdd(CySubNetwork sub, CyNode n) {
 		try {
-			sub.copyToNetwork(n);
+			sub.addNode(n);
 		} catch (Exception e) {
 			assertNotNull("subnetwork is not null",sub);
 			assertEquals("num nodes",2,sub.getNodeCount());
@@ -192,11 +192,11 @@ public class CySubNetworkTest extends TestCase {
 
 		nl.add(n4);
 
-        CyMetaNode m2 = root.createMetaNode(nl);
+        CyMetaNode m2 = root.addMetaNode(nl);
 
         assertNotNull("metanode is not null",m2);
 	
-		CySubNetwork sub = m2.getChildNetwork();	
+		CySubNetwork sub = m2.getSubNetwork();	
 
 		assertEquals("num nodes",3,sub.getNodeCount());
 		assertEquals("num edges",1,sub.getEdgeCount());
@@ -228,7 +228,7 @@ public class CySubNetworkTest extends TestCase {
 
 	public void testInvalidRemoveFromNetwork() {
 
-		CySubNetwork sub = m1.getChildNetwork();	
+		CySubNetwork sub = m1.getSubNetwork();	
 
 		checkRemove(sub,nx1);
 		checkRemove(sub,null);
@@ -236,7 +236,7 @@ public class CySubNetworkTest extends TestCase {
 
 	private void checkRemove(CySubNetwork sub, CyNode n) {
 		try {
-			sub.copyToNetwork(n);
+			sub.addNode(n);
 		} catch (Exception e) {
 			assertNotNull("subnetwork is not null",sub);
 			assertEquals("num nodes",2,sub.getNodeCount());

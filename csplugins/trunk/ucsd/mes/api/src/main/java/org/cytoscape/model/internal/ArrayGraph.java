@@ -996,7 +996,7 @@ public class ArrayGraph implements CyRootNetwork {
 		return getEdgeList(firstNode,ROOT,edgeCount);
 	}
 
-	public CyMetaNode createMetaNode(List<CyNode> nodes) {
+	public CyMetaNode addMetaNode(List<CyNode> nodes) {
 		
 
 		// only hit this once for a given instance 
@@ -1027,7 +1027,7 @@ public class ArrayGraph implements CyRootNetwork {
 
 		// first clean up the node pointer information for the nodes
 		// in the subnetwork
-		CySubNetwork sub = n.getChildNetwork();
+		CySubNetwork sub = n.getSubNetwork();
 		List<CyNode> subNodes = sub.getNodeList();
 		for ( CyNode node : subNodes )
 			sub.removeNode(node);
@@ -1261,7 +1261,7 @@ public class ArrayGraph implements CyRootNetwork {
 		public CyRow attrs() {
 			return parent.attrs();
 		}
-		public void copyToNetwork(CyNode node) {
+		public void addNode(CyNode node) {
 			if ( node == null )
 				throw new NullPointerException("node is null");	
 			if ( containsNode(node) )

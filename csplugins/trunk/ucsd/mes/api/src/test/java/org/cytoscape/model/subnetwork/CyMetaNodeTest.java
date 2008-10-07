@@ -103,11 +103,11 @@ public class CyMetaNodeTest extends TestCase {
         nl.add(n1);
         nl.add(n2);
 
-        CyMetaNode m1 = root.createMetaNode(nl);
+        CyMetaNode m1 = root.addMetaNode(nl);
 
         assertNotNull("metanode is not null",m1);
 	
-		CySubNetwork sub = m1.getChildNetwork();	
+		CySubNetwork sub = m1.getSubNetwork();	
 		assertNotNull("subnetwork is not null",sub);
 		assertEquals("num nodes",2,sub.getNodeCount());
 		assertEquals("num edges",1,sub.getEdgeCount());

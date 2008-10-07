@@ -51,5 +51,5 @@ public interface CyMetaNode extends CyNode {
 	 *
 	 * @return the {@link CySubNetwork} that is represented by this CyMetaNode.
 	 */
-	CySubNetwork getChildNetwork();
+	CySubNetwork getSubNetwork();
 }

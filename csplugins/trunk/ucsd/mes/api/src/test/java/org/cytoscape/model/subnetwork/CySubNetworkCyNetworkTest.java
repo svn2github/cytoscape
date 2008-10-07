@@ -83,9 +83,9 @@ public class CySubNetworkCyNetworkTest extends AbstractCyNetworkCheck {
 		CyNode n1 = root.addNode();
 		List<CyNode> list = new ArrayList<CyNode>(1);
 		list.add(n1);
-		CyMetaNode m1 = root.createMetaNode(list);
+		CyMetaNode m1 = root.addMetaNode(list);
 		
-		net = m1.getChildNetwork(); 
+		net = m1.getSubNetwork(); 
 		net.removeNode(n1);
 	}
 

@@ -53,21 +53,32 @@ public interface CySubNetwork extends CyNetwork {
 	 * @return  the node that represents this CySubNetowrk.
 	 */
 //	CyMetaNode getParentNode();
+//	CyRootNetwork getRootNetwork(); //??
 
 	/**
 	 * Adds a node to this {@link CySubNetwork}.  Note that the added node
-	 * is not a new node, rather a projected node from the {@link CyRootNetwork}
+	 * is not a new node, and must already exist in the {@link CyRootNetwork}.
+	 * This method also allows {@link CyMetaNode} to be added to subnetworks.
 	 *
-	 * @param node  CyNode to add to this network
+	 * @param node  CyNode to add to this subnetwork
 	 */
-//	void addToNetwork(CyNode node);
-	void copyToNetwork(CyNode node);
+	void addNode(CyNode node);
 
 	/**
-	 * Removes a node from this {@link CySubNetwork}.  The node is removed from
-	 * the CySubNetwork, but <i>not</i> deleted.
+	 * A shortcut method that Creates a new {@link CyNode} in both this subnetwork 
+	 * <b>AND</b> in the {@link CyRootNetwork}.
+	 *
+	 * @return A new CyNode that exists in both this subnetwork and the associated
+	 * {@link CyRootNetwork}.
+	 */
+	CyNode addNode();
+
+	/**
+	 * Removes a node from this {@link CySubNetwork} but not from the {@link CyRootNetwork}.  
+	 * The node is removed from the CySubNetwork, but <i>not</i> deleted
+	 * from the {@link CyRootNetwork}.
 	 *
 	 * @param node  Node to remove from this subnetwork
 	 */
-//	void removeFromNetwork(CyNode node);
+	boolean removeNode(CyNode node);
 }
