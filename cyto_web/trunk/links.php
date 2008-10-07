@@ -63,6 +63,7 @@ and provides a powerful framework for user interaction and data display.
 	<li><a href="http://amdec-bioinfo.cu-genome.org/html/caWorkBench.htm">caWorkBench2.0 - A Platform for Integrated Genomics</a>
 	<li><a href="http://www.nalapro.com/products/genpac.html">GENPAC - NLP (Natural Language Processing) based information extraction system for life science domain.</a>
 	<li><a href="http://www.ncibi.org">National Center for Integrative Biomedical Informatics (NCIBI)</a>
+	<li><a href="http://www.genego.com">GeneGo</a>
 	<BR>
 </ul>
 
