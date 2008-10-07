@@ -34,7 +34,7 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model;
+package org.cytoscape.model.subnetwork;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -48,20 +48,23 @@ import org.cytoscape.event.CyEventListener;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.AbstractCyNetworkCheck;
 
 import java.lang.RuntimeException;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 
 /**
  * DOCUMENT ME!
   */
-public class CyNetworkTest extends AbstractCyNetworkCheck {
+public class CySubNetworkCyNetworkTest extends AbstractCyNetworkCheck {
 
 	/**
 	 *  DOCUMENT ME!
@@ -69,14 +72,21 @@ public class CyNetworkTest extends AbstractCyNetworkCheck {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Test suite() {
-		return new TestSuite(CyNetworkTest.class);
+		return new TestSuite(CySubNetworkCyNetworkTest.class);
 	}
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		net = CyNetworkFactory.getInstance(); 
+		CyRootNetwork root = CyNetworkFactory.getRootInstance(); 
+		CyNode n1 = root.addNode();
+		List<CyNode> list = new ArrayList<CyNode>(1);
+		list.add(n1);
+		CyMetaNode m1 = root.createMetaNode(list);
+		
+		net = m1.getChildNetwork(); 
+		net.removeNode(n1);
 	}
 
 	/**
