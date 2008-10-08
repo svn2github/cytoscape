@@ -38,6 +38,8 @@
 *
 * Revisions:
 *
+* Wed Oct 08 05:07:14 2008 (Michael L. Creech) creech@w235krbza760
+*  Changed ref to createInstance()->getInstance().
 * Tue Nov 07 09:07:59 2006 (Michael L. Creech) creech@w235krbza760
 *  Changed Edge-->CyEdge.
 * Mon Nov 06 09:08:20 2006 (Michael L. Creech) creech@w235krbza760
@@ -94,7 +96,7 @@ public interface HyperEdgeFactory {
     /**
      * A reference to the current factory being used.
      */
-    HyperEdgeFactory INSTANCE = HyperEdgeFactoryImpl.createInstance();
+    HyperEdgeFactory INSTANCE = HyperEdgeFactoryImpl.getInstance();
 
     /**
      * @return the singleton HyperEdgeManager.
