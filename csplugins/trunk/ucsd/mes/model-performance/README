@@ -1,0 +1,21 @@
+
+This project exists to run basic performance tests on Cytoscape's
+implementations of the core model API.  There are two parts to
+this.  
+
+First are the unit tests which are intended to run in an continuous 
+build system (i.e. cruisecontrol) such that they are triggered 
+after any changes to the model project.  The hope is to catch 
+performance problems relatively early.
+
+Second is a simple Main class that loads a bunch of nodes and edges
+for a CyNetwork and exits.  The intent for this class is to be used 
+with JProfiler so that the CyNetwork implementation can be more
+closely analyzed.  
+
+To run in JProfiler, simply configure JProfiler to execute the following:
+
+  java -jar target/model-performance-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+No class path is necessary since all of the dependencies for the bundle
+are included in the jar.
