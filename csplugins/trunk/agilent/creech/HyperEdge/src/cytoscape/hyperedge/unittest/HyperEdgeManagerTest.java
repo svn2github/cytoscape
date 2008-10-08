@@ -207,7 +207,7 @@ public class HyperEdgeManagerTest extends TestBase {
         junit.textui.TestRunner.run(suite());
     }
 
-    private void setup(final InMemoryAndRestoredTestType test) {
+    private void testSetup(final InMemoryAndRestoredTestType test) {
         // he1  --> S(su)M(ame)P(pr)
         // hd1  --> S(su)M(ime)S(su)
         // he2  --> A(su)B(pr)
@@ -432,7 +432,7 @@ public class HyperEdgeManagerTest extends TestBase {
     }
 
     private void runTest(final InMemoryAndRestoredTestType test) {
-        setup(test);
+        testSetup(test);
         test.runIt();
         tearDown1(false);
 
@@ -935,7 +935,7 @@ public class HyperEdgeManagerTest extends TestBase {
             // check no errors occur when already empty:
             manager.reset(false);
             manager.reset(true);
-            setup(this);
+            testSetup(this);
             manager.reset(true);
             Assert.assertTrue(0 == manager.getNumEdges(null));
             Assert.assertTrue(0 == manager.getNumNodes(null));
