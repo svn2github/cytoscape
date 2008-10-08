@@ -1,18 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         EdgeTypeMap.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/EdgeTypeMap.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Thu Sep 29 05:50:54 2005
-* Modified:     Fri Aug 18 07:14:15 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/* 
 ********************************************************************************
 *
 * Revisions:
@@ -65,7 +87,7 @@ public interface EdgeTypeMap {
      * HyperEdgeFactory.createHyperEdge() using this interaction type
      * will end up as the source of any Edges created.
      */
-    public static final String SUBSTRATE = "hyperedge.substrate";
+    String SUBSTRATE = "hyperedge.substrate";
 
     /**
      * A default edge interaction type that maps to EdgeRole.SOURCE.
@@ -73,13 +95,13 @@ public interface EdgeTypeMap {
      * HyperEdgeFactory.createHyperEdge() using this interaction type
      * will end up as the source of any Edges created.
      */
-    public static final String ACTIVATING_MEDIATOR = "hyperedge.mediator.activating";
+    String ACTIVATING_MEDIATOR = "hyperedge.mediator.activating";
 
     /**
      * @deprecated Replaced with ACTIVATING_MEDIATOR.
      * @see EdgeTypeMap#ACTIVATING_MEDIATOR
      */
-    public static final String MEDIATOR = ACTIVATING_MEDIATOR;
+    String MEDIATOR = ACTIVATING_MEDIATOR;
 
     /**
      * A default edge interaction type that maps to EdgeRole.SOURCE.
@@ -87,7 +109,7 @@ public interface EdgeTypeMap {
      * HyperEdgeFactory.createHyperEdge() using this interaction type
      * will end up as the source of any Edges created.
      */
-    public static final String INHIBITING_MEDIATOR = "hyperedge.mediator.inhibiting";
+    String INHIBITING_MEDIATOR = "hyperedge.mediator.inhibiting";
 
     /**
      * A default edge interaction type that maps to EdgeRole.TARGET.
@@ -95,20 +117,20 @@ public interface EdgeTypeMap {
      * HyperEdgeFactory.createHyperEdge() using this interaction type
      * will end up as the target of any Edges created.
      */
-    public static final String PRODUCT = "hyperedge.product";
+    String PRODUCT = "hyperedge.product";
 
     /**
      * Add or replace a group of existing mappings based on a given
      * Map of edge interaction types and EdgeRoles.
      * FUTURE: Add change event notification.
-     * @param edge_type_to_edge_role_map a Map consisting of
+     * @param edgeTypeToEdgeRoleMap a Map consisting of
      * String edge interaction types keys with EdgeRole values.
      * For each such Map entry, a put operation is performed to add or
      * replace the mapping within this EdgeTypeMap.
      * @return true if any mappings were changed based on the values
      * within edge_type_to_edge_role_map. Return false otherwise.
      */
-    boolean addAll(Map edge_type_to_edge_role_map);
+    boolean addAll(Map<String,EdgeRole> edgeTypeToEdgeRoleMap);
 
     /**
      * Add or replace the mapping of a given edge interaction
@@ -119,6 +141,8 @@ public interface EdgeTypeMap {
      *
      * @param edgeIType the edge interaction type to map to a,
      *                    possibly new, EdgeRole.
+     * @param pos the EdgeRole the edge interaction type maps to 
+     *        (e.g., source or target of the Edge).
      * @return the EdgeRole of the last value of any mapping for
      *         edgeIType, or null if there was no previous mapping.
      */
@@ -156,12 +180,12 @@ public interface EdgeTypeMap {
     void reset();
 
     /**
-     * Return true iff this map has no entries.
+     * @return true iff this map has no entries.
      */
     boolean isEmpty();
 
     /**
-     * Return the number of entries in this map.
+     * @return the number of entries in this map.
      */
     int size();
 
@@ -172,10 +196,10 @@ public interface EdgeTypeMap {
      * where the key is the String Edge interaction type and the value is the
      * EdgeRole.
      */
-    Iterator iterator();
+    Iterator<Map.Entry<String,EdgeRole>> iterator();
 
     /**
-     * Return a human readable string representing the content of this object.
+     * @return a human readable string representing the content of this object.
      *
      */
     String toString();
@@ -206,33 +230,58 @@ public interface EdgeTypeMap {
     /**
      * Defines the role within an Edge--either the Source or Target of an Edge.
      */
-    public static class EdgeRole {
-        public static final EdgeRole SOURCE = new EdgeRole("Source");
-        public static final EdgeRole TARGET = new EdgeRole("Target");
-        private final String _name;
-
-        private EdgeRole(String name) {
-            _name = name;
+    public static final class EdgeRole {
+	    
+        private static final String SOURCE_NAME = "Source";
+	private static final String TARGET_NAME = "Target";  
+	
+	/**
+	 * The EdgeRole representing the source of an edge.
+	 */
+        public static final EdgeRole SOURCE = new EdgeRole(SOURCE_NAME);
+	/**
+	 * The EdgeRole representing the target of an edge.
+	 */
+        public static final EdgeRole TARGET = new EdgeRole(TARGET_NAME);
+        
+	private final String erName;
+	
+        private EdgeRole(final String name) {
+            erName = name;
         }
+
+	/**
+	 * @return the name of this EdgeRole.
+	 */
 
         public String getName() {
-            return _name;
+            return erName;
         }
 
-        static public EdgeRole getEdgeRoleByName(String name) {
-            if ("Source".equals(name)) {
+	/**
+	 * Return an EdgeRole based on its name.
+	 * @param name the name of the EdgeRole.
+	 * @return the EdgeRole associated with the given name, or null if
+	 *         no EdgeRole has the given name.
+	 */
+        public static EdgeRole getEdgeRoleByName(final String name) {
+            if (SOURCE_NAME.equals(name)) {
                 return SOURCE;
             }
 
-            if ("Target".equals(name)) {
+            if (TARGET_NAME.equals(name)) {
                 return TARGET;
             }
 
             return null;
         }
 
+	/**
+	 * @return a human readable string representing the content of this object.
+	 *
+	 */
         public String toString() {
-            return ("EdgeRole " + _name);
+            return ("EdgeRole " + erName);
         }
     }
 }

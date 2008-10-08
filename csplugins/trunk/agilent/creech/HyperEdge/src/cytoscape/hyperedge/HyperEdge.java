@@ -1,19 +1,41 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         HyperEdge.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/HyperEdge.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Fri Apr 01 04:01:27 2005
-* Modified:     Wed Nov 29 05:39:07 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+
+/*
 *
 * Revisions:
 *
@@ -129,7 +151,7 @@ public interface HyperEdge extends Identifiable, Matchable {
      *                  contain the CyNodes and CyEdges contained in
      *                  this HyperEdge.
      * @return true if this HyperEdge was newly added to net. false if
-     * net is null, if this HyperEdge is aleady a member of net,
+     * net is null, if this HyperEdge is already a member of net,
      * or if this HyperEdge shares any edges with another HyperEdge (via
      * connectHyperEdge()).
      *
@@ -189,7 +211,7 @@ public interface HyperEdge extends Identifiable, Matchable {
     boolean inNetwork(CyNetwork net);
 
     /**
-     * Return a read-only Iterator (doesn't allow modification) of the
+     * @return a read-only Iterator (doesn't allow modification) of the
      * distinct String interaction types of the CyEdges contained by
      * this HyperEdge.
      * @throws IllegalStateException if this HyperEdge has been deleted.
@@ -207,12 +229,13 @@ public interface HyperEdge extends Identifiable, Matchable {
     CyNode getNode(CyEdge edge);
 
     /**
-     * The minimum number of edges that a HyperEdge can have.
+     * @return the minimum number of edges that a HyperEdge can have.
      */
     int getMinimumNumberEdges();
 
     /**
-     * Return the number of distinct CyNodes contained in this HyperEdge.
+     * Obtain the number of CyNodes in this HyperEdge.
+     * @return the number of distinct CyNodes contained in this HyperEdge.
      * For homodimer-like structures, the number of CyNodes may not
      * equal the number of CyEdges.
      * @throws IllegalStateException if this HyperEdge has been deleted.
@@ -220,7 +243,7 @@ public interface HyperEdge extends Identifiable, Matchable {
     int getNumNodes();
 
     /**
-     * Return the number of CyEdges contained in this HyperEdge.
+     * @return the number of CyEdges contained in this HyperEdge.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      */
     int getNumEdges();
@@ -277,6 +300,7 @@ public interface HyperEdge extends Identifiable, Matchable {
      * Returns an arbitrary CyEdge associated with a given CyNode.
      * This is a convenience method since the
      * majority of CyNodes will only have one CyEdge associated with them.
+     * @param node the Node for which to return an Edge that is part of this HyperEdge.
      * @return an arbitrary CyEdge associated with node. Will return null if
      * node is null or is not associated with any CyEdge in this HyperEdge.
      * @throws IllegalStateException if this HyperEdge has been deleted.
@@ -285,13 +309,14 @@ public interface HyperEdge extends Identifiable, Matchable {
 
     /**
      * Does a given node have more than one CyEdge in this HyperEdge?
+     * @param node the Node to check for multiple Edges.
      * @return true iff node has two or more CyEdges associated with it.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      */
     boolean hasMultipleEdges(CyNode node);
 
     /**
-     * Return the HyperEdge CyNode associated with this HyperEdge.
+     * @return the HyperEdge CyNode associated with this HyperEdge.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      */
     CyNode getConnectorNode();
@@ -301,6 +326,7 @@ public interface HyperEdge extends Identifiable, Matchable {
      * @param node the CyNode to check for containment within this HyperEdge.
      *             Note that this doesn't include this
      *             HyperEdge's ConnectorNode, which is treated specially.
+     * @return true iff this HyperEdge contains node.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      * @see HyperEdge#hasConnectorNode
      */
@@ -309,6 +335,7 @@ public interface HyperEdge extends Identifiable, Matchable {
     /**
      * Is the ConnectorNode of this HyperEdge the given CyNode?
      * @param node the CyNode to check for containment within this HyperEdge.
+     * @return true iff the ConnectorNode of this HyperEdge is node.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      */
     boolean hasConnectorNode(CyNode node);
@@ -316,6 +343,7 @@ public interface HyperEdge extends Identifiable, Matchable {
     /**
      * Does this HyperEdge contain a given CyEdge?
      * @param edge the CyEdge to check for containment within this HyperEdge.
+     * @return true iff this HyperEdge contains edge.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      */
     boolean hasEdge(CyEdge edge);
@@ -456,6 +484,7 @@ public interface HyperEdge extends Identifiable, Matchable {
      *        HyperEdge.
      * @param edgeIType the interaction type of the CyEdge within
      *                    this HyperEdge and targetHE.
+     * @return the shared CyEdge.
      * @throws IllegalArgumentException if targetHE is
      *         this HyperEdge, if this HyperEdge or targetHE belong to
      *         more than one CyNetwork, if this HyperEdge and targetHE
@@ -503,6 +532,8 @@ public interface HyperEdge extends Identifiable, Matchable {
 
     /**
      * Are the given CyNodes members of this HyperEdge?
+     * @param node1 the first CyNode to consider as a member.
+     * @param node2 the second CyNode to consider as a member.
      * @return true iff both node1 and node2 belong to this HyperEdge.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      */
@@ -562,18 +593,19 @@ public interface HyperEdge extends Identifiable, Matchable {
     void destroy();
 
     /**
-     * The state of this object as defined by LifeState (e.g., LifeState.NORMAL).
+     * @return the state of this object as defined by LifeState (e.g., LifeState.NORMAL).
      */
     LifeState getState();
 
     /**
      * Is this object in a given LifeState?
+     * @param ls the LifeState that must match the state of this HyperEdge.
      * @return true iff this object is in state ls.
     */
     boolean isState(LifeState ls);
 
     /**
-     * Return a human readable string representing the content of this object.
+     * @return a human readable string representing the content of this object.
      *
      */
     String toString();
@@ -581,6 +613,7 @@ public interface HyperEdge extends Identifiable, Matchable {
     /**
      * A convenience method for obtaining the HyperEdgeManager.
      * Equivalent to HyperEdgeFactory.INSTANCE.getHyperEdgeManager().
+     * @return the HyperEdgeManager
      */
     HyperEdgeManager getHyperEdgeManager();
 
@@ -602,11 +635,11 @@ public interface HyperEdge extends Identifiable, Matchable {
      * invoking their <CODE>objectChanged()</CODE> method with an
      * EventNote of type NAME, sub-type=CHANGED and a
      * supporting information object the previous name.
-     * @param new_name the new String name of this object.
+     * @param newName the new String name of this object.
      * @return the previous name of the object.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      */
-    String setName(String new_name);
+    String setName(String newName);
 
     /**
      * Is this HyperEdge considered to be a directed edge?
@@ -627,8 +660,9 @@ public interface HyperEdge extends Identifiable, Matchable {
      * EventNote of type DIRECTED, sub-type=CHANGED and a
      * supporting information object=null.
      * @return the last value of directedness.
+     * @param newState the directedness this HyperEdge is to have.
      * @throws IllegalStateException if this HyperEdge has been deleted.
      */
-    boolean setDirected(boolean new_state);
+    boolean setDirected(boolean newState);
 
 }

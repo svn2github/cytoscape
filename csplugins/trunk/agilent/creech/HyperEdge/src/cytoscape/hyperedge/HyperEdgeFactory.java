@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         HyperEdgeFactory.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/HyperEdgeFactory.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Wed Sep 14 09:06:41 2005
-* Modified:     Tue Nov 07 09:08:14 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/*
 *
 * Revisions:
 *
@@ -70,19 +91,21 @@ import java.util.Map;
  * @version 1.1
  */
 public interface HyperEdgeFactory {
+    /**
+     * A reference to the current factory being used.
+     */
     HyperEdgeFactory INSTANCE = HyperEdgeFactoryImpl.createInstance();
 
     /**
-     * Return the singleton HyperEdgeManager.
+     * @return the singleton HyperEdgeManager.
      */
     HyperEdgeManager getHyperEdgeManager();
 
     /**
-     * Return the singleton EdgeTypeMap. Thie EdgeTypeMap is used for
+     * @return the singleton EdgeTypeMap. This EdgeTypeMap is used for
      * deciding how CyNodes added to HyperEdges or CyNodes in the
      * construction of a new HyperEdge, will be treated with respect to
      * their role (source or target) within the Edges created.
-    
      */
     EdgeTypeMap getEdgeTypeMap();
 
@@ -103,6 +126,7 @@ public interface HyperEdgeFactory {
      * edgeIType2 also determines the Role played by node2 within
      * the newly created CyEdge.  For details, see the discussion in this
      * class description and the example in EdgeTypeMap.
+     * @param net the CyNetwork to which this HyperEdge will belong.
      * @return the newly created HyperEdge.
      * After the HyperEdge is created, all HyperEdgeManager
      * NewObjectListeners are notified by invoking their {@link
@@ -139,6 +163,7 @@ public interface HyperEdgeFactory {
      * edgeIType3 also determines the Role played by node3 within
      * the newly created CyEdge.  For details, see the discussion in this
      * class description and the example in EdgeTypeMap.
+     * @param net the CyNetwork to which this HyperEdge will belong.
      * @return the newly created HyperEdge.
      * After the HyperEdge is created, all HyperEdgeManager
      * NewObjectListeners are notified by invoking their {@link
@@ -166,6 +191,7 @@ public interface HyperEdgeFactory {
      * of the CyEdges created and the role played by each node in each
      * created CyEdge.  For details, see the discussion in this class
      * description and the example in EdgeTypeMap.
+     * @param net the CyNetwork to which this HyperEdge will belong.
      * @return the newly created HyperEdge.
      * After the HyperEdge is created, all HyperEdgeManager
      * NewObjectListeners are notified by invoking their {@link
@@ -192,6 +218,7 @@ public interface HyperEdgeFactory {
      * attribute of the CyEdges created and the role played by each node
      * in each create CyEdge.  For details, see the discussion in this
      * class description and the example in EdgeTypeMap.
+     * @param net the CyNetwork to which this HyperEdge will belong.
      * @return the newly created HyperEdge.
      * After the HyperEdge is created, all HyperEdgeManager
      * NewObjectListeners are notified by invoking their {@link
@@ -220,6 +247,8 @@ public interface HyperEdgeFactory {
      * edge interaction type value determines the corresponding node's
      * role within each new CyEdge, see the discussion in this class
      * description and the example in EdgeTypeMap.
+     * @param nodeEdgeITypeMap the Map to use in constructing a HyperEdge.
+     * @param net the CyNetwork to which this HyperEdge will belong.
      * @return the newly created HyperEdge.
      * After the HyperEdge is created, all HyperEdgeManager
      * NewObjectListeners are notified by invoking their {@link
