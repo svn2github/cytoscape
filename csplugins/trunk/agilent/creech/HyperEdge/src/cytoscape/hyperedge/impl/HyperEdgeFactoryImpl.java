@@ -38,6 +38,8 @@
 *
 * Revisions:
 *
+* Wed Oct 08 05:07:14 2008 (Michael L. Creech) creech@w235krbza760
+*  Changed createInstance()->getInstance() and corrected javadocs.
 * Tue Nov 07 09:09:22 2006 (Michael L. Creech) creech@w235krbza760
 *  Changed Edge-->CyEdge.
 * Mon Nov 06 09:09:15 2006 (Michael L. Creech) creech@w235krbza760
@@ -81,9 +83,9 @@ public final class HyperEdgeFactoryImpl implements HyperEdgeFactory {
     private HyperEdgeFactoryImpl() {
     }
     /**
-     * {@inheritDoc}
+     * Obtain the singleton instance of the factory.
      */
-    public static HyperEdgeFactoryImpl createInstance() {
+    public static HyperEdgeFactoryImpl getInstance() {
         return singletonFactory;
     }
     /**
