@@ -38,6 +38,8 @@
 *
 * Revisions:
 *
+* Wed Oct 08 05:07:14 2008 (Michael L. Creech) creech@w235krbza760
+* Massive update for Checkstyle. Removed some non-utf characters from comments.
 * Thu Jun 21 05:07:14 2007 (Michael L. Creech) creech@w235krbza760
 *  Added deleteAttribute() and its use.
 * Tue Dec 12 08:20:52 2006 (Michael L. Creech) creech@w235krbza760
@@ -594,7 +596,7 @@ public final class HEUtils {
      *
      *<P>This Collections.unmodifiableCollection() method provide a read-only
      * "view" onto the internal data structure--acting as a wrapper.
-     * For example, here’s the Java API description of unmodifiableSet():
+     * For example, here's the Java API description of unmodifiableSet():
      *<BLOCKQUOTE>
      *   "Returns an unmodifiable view of the specified collection. This method
      *    allows modules to provide users with "read-only" access to internal
@@ -613,7 +615,7 @@ public final class HEUtils {
      *
      * <PRE>
      *    Iterator&lt;CyEdge&gt; edgeIt = he.getEdges (null);
-     *    he.addEdge (“A”, EdgeTypeMap.PRODUCT);
+     *    he.addEdge ("A", EdgeTypeMap.PRODUCT);
      *    while (edgeIt.hasNext()) {
      *       CyEdge edge = edgeIt.next(); // throws ConcurrentModificationException
      *    }
