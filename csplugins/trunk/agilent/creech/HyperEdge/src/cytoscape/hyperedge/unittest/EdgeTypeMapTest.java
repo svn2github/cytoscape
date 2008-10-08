@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         EdgeTypeMapTest.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/unittest/EdgeTypeMapTest.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Tue Oct 04 06:03:24 2005
-* Modified:     Fri Aug 11 20:55:43 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/* 
 *
 * Revisions:
 *
@@ -41,20 +62,33 @@ import java.util.Map;
  * @version 1.0
  */
 public class EdgeTypeMapTest extends TestBase {
+    private static final String BIOPAX_IN = "biopax.in";
+    private static final String BIOPAX_OUT = "biopax.out";
     //    private final String TEST_LOC = "hyperedge-etm-test1.xml";
     //    private final String TEST_LOC2 = "hyperedge-etm-test2.xml";
-    protected EdgeTypeMap etm = factory.getEdgeTypeMap();
+    private EdgeTypeMap etm = factory.getEdgeTypeMap();
 
+    /**
+     * JUnit method for running tests for this class.
+     * @return the Test to peform.
+     */
     public static Test suite() {
         // Will dynamically add all methods as tests that begin with 'test'
         // and have no arguments:
         return new TestSuite(EdgeTypeMapTest.class);
     }
 
-    public static void main(String[] args) {
+    /**
+     * Main for test.
+     * @param args standard args to main program
+     */
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(suite());
     }
-
+    
+    /**
+     * Overall Edge Type Map tester.
+     */
     public void testEdgeTypeMap() {
         //        saveMapTestHelper(TEST_LOC);
         performETMTests();
@@ -81,35 +115,36 @@ public class EdgeTypeMapTest extends TestBase {
         }
 
         try {
-            etm.put("biopax.in", null);
+            etm.put(BIOPAX_IN, null);
             fail("Didn't get expected IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
         }
 
-        Assert.assertNull(etm.put("biopax.in", EdgeRole.SOURCE));
-        Assert.assertTrue(etm.get("biopax.in") == EdgeRole.SOURCE);
+        Assert.assertNull(etm.put(BIOPAX_IN, EdgeRole.SOURCE));
+        Assert.assertTrue(etm.get(BIOPAX_IN) == EdgeRole.SOURCE);
         Assert.assertTrue(etm.size() == 5);
-        Assert.assertNull(etm.put("biopax.out", EdgeRole.TARGET));
-        Assert.assertTrue(etm.get("biopax.out") == EdgeRole.TARGET);
-        Assert.assertTrue(etm.size() == 6);
+        Assert.assertNull(etm.put(BIOPAX_OUT, EdgeRole.TARGET));
+        Assert.assertTrue(etm.get(BIOPAX_OUT) == EdgeRole.TARGET);
+        final int sizeSix = 6;
+	Assert.assertTrue(etm.size() == sizeSix);
         // test replacing existing entries:
         Assert.assertTrue(EdgeRole.SOURCE == etm.put(EdgeTypeMap.SUBSTRATE,
                                                      EdgeRole.TARGET));
         Assert.assertTrue(etm.get(EdgeTypeMap.SUBSTRATE) == EdgeRole.TARGET);
-        Assert.assertTrue(etm.size() == 6);
+        Assert.assertTrue(etm.size() == sizeSix);
     }
 
     private void performRemoveTests() {
         // reset the map:
         resetMap();
-        Assert.assertNull(etm.put("biopax.in", EdgeRole.SOURCE));
-        Assert.assertNull(etm.put("biopax.out", EdgeRole.TARGET));
+        Assert.assertNull(etm.put(BIOPAX_IN, EdgeRole.SOURCE));
+        Assert.assertNull(etm.put(BIOPAX_OUT, EdgeRole.TARGET));
         Assert.assertTrue(etm.size() == 6);
         Assert.assertTrue(etm.remove(null) == null);
         Assert.assertTrue(etm.remove("no mapping") == null);
-        Assert.assertTrue(etm.remove("biopax.in") == EdgeRole.SOURCE);
+        Assert.assertTrue(etm.remove(BIOPAX_IN) == EdgeRole.SOURCE);
         Assert.assertTrue(etm.size() == 5);
-        Assert.assertTrue(etm.remove("biopax.out") == EdgeRole.TARGET);
+        Assert.assertTrue(etm.remove(BIOPAX_OUT) == EdgeRole.TARGET);
         Assert.assertTrue(etm.size() == 4);
         // remove everything and check empty:
         Assert.assertTrue(etm.remove(EdgeTypeMap.SUBSTRATE) == EdgeRole.SOURCE);
@@ -139,30 +174,30 @@ public class EdgeTypeMapTest extends TestBase {
     private void performAddAllTest() {
         resetMap(); // should now have 3 elements
 
-        Map<String, EdgeRole> new_map = new HashMap<String, EdgeRole>();
+        final Map<String, EdgeRole> newMap = new HashMap<String, EdgeRole>();
 
         // add nothing:
         Assert.assertFalse(etm.addAll(null));
         // add nothing:
-        Assert.assertFalse(etm.addAll(new_map));
+        Assert.assertFalse(etm.addAll(newMap));
         Assert.assertTrue(etm.size() == 4);
 
-        new_map.put(EdgeTypeMap.SUBSTRATE, EdgeRole.TARGET);
-        new_map.put(EdgeTypeMap.ACTIVATING_MEDIATOR, EdgeRole.TARGET);
-        new_map.put(EdgeTypeMap.INHIBITING_MEDIATOR, EdgeRole.TARGET);
-        new_map.put(EdgeTypeMap.PRODUCT, EdgeRole.SOURCE);
-        new_map.put("biopax.in", EdgeRole.SOURCE);
-        new_map.put("biopax.out", EdgeRole.TARGET);
+        newMap.put(EdgeTypeMap.SUBSTRATE, EdgeRole.TARGET);
+        newMap.put(EdgeTypeMap.ACTIVATING_MEDIATOR, EdgeRole.TARGET);
+        newMap.put(EdgeTypeMap.INHIBITING_MEDIATOR, EdgeRole.TARGET);
+        newMap.put(EdgeTypeMap.PRODUCT, EdgeRole.SOURCE);
+        newMap.put(BIOPAX_IN, EdgeRole.SOURCE);
+        newMap.put(BIOPAX_OUT, EdgeRole.TARGET);
         // now add 2 new entries and change 4 existing entries:
-        Assert.assertTrue(etm.addAll(new_map));
+        Assert.assertTrue(etm.addAll(newMap));
         Assert.assertTrue(etm.get(EdgeTypeMap.SUBSTRATE) == EdgeRole.TARGET);
         Assert.assertTrue(
             etm.get(EdgeTypeMap.ACTIVATING_MEDIATOR) == EdgeRole.TARGET);
         Assert.assertTrue(
             etm.get(EdgeTypeMap.INHIBITING_MEDIATOR) == EdgeRole.TARGET);
         Assert.assertTrue(etm.get(EdgeTypeMap.PRODUCT) == EdgeRole.SOURCE);
-        Assert.assertTrue(etm.get("biopax.in") == EdgeRole.SOURCE);
-        Assert.assertTrue(etm.get("biopax.out") == EdgeRole.TARGET);
+        Assert.assertTrue(etm.get(BIOPAX_IN) == EdgeRole.SOURCE);
+        Assert.assertTrue(etm.get(BIOPAX_OUT) == EdgeRole.TARGET);
         Assert.assertTrue(etm.size() == 6);
 
         //        saveMapTestHelper(TEST_LOC2);
@@ -213,13 +248,13 @@ public class EdgeTypeMapTest extends TestBase {
         // reset the map:
         etm.clear();
 
-        Iterator it = etm.iterator();
+        Iterator<Map.Entry<String, EdgeRole>> it = etm.iterator();
         Assert.assertFalse(it.hasNext());
         // now add entries:
         resetMap();
         // loadMapTestHelper(TEST_LOC);
-        Assert.assertNull(etm.put("biopax.in", EdgeRole.SOURCE));
-        Assert.assertNull(etm.put("biopax.out", EdgeRole.TARGET));
+        Assert.assertNull(etm.put(BIOPAX_IN, EdgeRole.SOURCE));
+        Assert.assertNull(etm.put(BIOPAX_OUT, EdgeRole.TARGET));
         it = etm.iterator();
 
         int count = 0;

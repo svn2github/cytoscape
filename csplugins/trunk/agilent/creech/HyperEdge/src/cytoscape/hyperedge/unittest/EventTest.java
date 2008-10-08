@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         EventTest.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/unittest/EventTest.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Wed Sep 21 09:15:53 2005
-* Modified:     Tue Nov 07 06:58:28 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/*
 *
 * Revisions:
 *
@@ -43,27 +64,38 @@ import junit.framework.TestSuite;
  * @version 1.0
  */
 public class EventTest extends TestBase {
-    private int          _num_hes;
-    private DeleteTester _dt = new DeleteTester();
+    private int          numHes;
+    private DeleteTester dT = new DeleteTester();
 
+    /**
+     * JUnit method for running tests for this class.
+     * @return the Test to peform.
+     */
     public static Test suite() {
         // Will dynamically add all methods as tests that begin with 'test'
         // and have no arguments:
         return new TestSuite(EventTest.class);
     }
 
-    public static void main(String[] args) {
+    /**
+     * Main for test.
+     * @param args standard args to main program
+     */
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(suite());
     }
 
+    /**
+     * Main event tester.
+     */
     public void testHyperEdgeEvents() {
-        NewObjTester not = new NewObjTester();
+        final NewObjTester not = new NewObjTester();
         manager.addNewObjectListener(not);
         setUp1(true);
-        Assert.assertTrue(_num_hes == 2);
+        Assert.assertTrue(numHes == 2);
         manager.removeNewObjectListener(not);
         manager.reset(true);
-        Assert.assertTrue(_num_hes == 0);
+        Assert.assertTrue(numHes == 0);
         setUp1(true);
 
         // TEST changing the name:
@@ -93,7 +125,7 @@ public class EventTest extends TestBase {
                               true);
         manager.addChangeListener(ct);
 
-        CyEdge edge = he1.addEdge(A, EXTRA);
+        final CyEdge edge = he1.addEdge(aNode, EXTRA_LABEL);
         Assert.assertNotNull(edge);
 
         CyEdge supportInfo = (CyEdge) ct.getLastEventNote().getSupportingInfo();
@@ -111,7 +143,7 @@ public class EventTest extends TestBase {
         Assert.assertTrue(supportInfo == edge);
         manager.removeChangeListener(ct);
 
-        // TODO: Add addToGraphPerspective() and
+        // TODO Add addToGraphPerspective() and
         // removeFromGraphPerspective().
     }
 
@@ -168,16 +200,16 @@ public class EventTest extends TestBase {
     //        Assert.assertTrue (manager.isAnyDirty ());
     //        AnyDirtyTester adt = new AnyDirtyTester(true);
     //        manager.addAnyDirtyListener (adt);
-    //	// TODO: start testing here:
+    //	// TODO start testing here:
     //        manager.removeAnyDirtyListener (adt);
     //        // Assert.assertTrue (adt.getNumCalls () == 1);
     //    }
     private class NewObjTester implements NewObjectListener {
-        public void objectCreated(HyperEdge obj) {
-            manager.addDeleteListener(_dt);
+        public void objectCreated(final HyperEdge obj) {
+            manager.addDeleteListener(dT);
 
             if (obj instanceof HyperEdge) {
-                _num_hes++;
+                numHes++;
             } else {
                 Assert.fail(
                     "found New object created that wasn't a HyperEdge or Role!");
@@ -186,9 +218,9 @@ public class EventTest extends TestBase {
     }
 
     private class DeleteTester implements DeleteListener {
-        public void objectDestroyed(HyperEdge obj) {
+        public void objectDestroyed(final HyperEdge obj) {
             if (obj instanceof HyperEdge) {
-                _num_hes--;
+                numHes--;
             } else {
                 Assert.fail(
                     "found New object created that wasn't a HyperEdge or Role!");

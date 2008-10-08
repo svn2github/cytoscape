@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         PersistenceHelper.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/unittest/PersistenceHelper.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Fri Aug 18 09:15:19 2006
-* Modified:     Mon Jul 30 14:48:40 2007 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2006, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/*
 *
 * Revisions:
 *
@@ -47,56 +68,58 @@ import java.io.FileWriter;
  * Help with saving and restoring HyperEdges for testing.
  */
 public class PersistenceHelper {
-    protected String load_save_loc; // location to load and save hyperedges
+    private String loadSaveLoc; // location to load and save hyperedges
 
+    /**
+     * setup location and ensure all directories exist where tests will be
+     * placed.
+     */
     public PersistenceHelper() {
-        // setup location and ensure all directories exist where tests will be
-        // placed:
-        // MLC 07/30/07 BEGIN:
-        HyperEdgeManager heMan = HyperEdgeFactory.INSTANCE.getHyperEdgeManager();
-        load_save_loc = PluginManager.getPluginManager()
+        final HyperEdgeManager heMan = HyperEdgeFactory.INSTANCE.getHyperEdgeManager();
+        loadSaveLoc = PluginManager.getPluginManager()
                                      .getPluginManageDirectory() +
                         File.separator + HyperEdgePlugin.MY_NAME + '-' +
                         heMan.getHyperEdgeVersionNumber() + File.separator +
                         "test-results" + File.separatorChar;
+        final File loadSaveLocFile = new File(loadSaveLoc);
 
-        //        load_save_loc = System.getProperty("user.home") + File.separatorChar +
-        //            ".hyperedge" + File.separatorChar + "test-results" +
-        //            File.separatorChar;
-        // MLC 07/30/07 END.
-        File load_save_loc_file = new File(load_save_loc);
-
-        if (!load_save_loc_file.exists()) {
-            if (!load_save_loc_file.mkdirs()) {
+        if (!loadSaveLocFile.exists()) {
+            if (!loadSaveLocFile.mkdirs()) {
                 HEUtils.log("TestBase(): couldn't make directories for '" +
-                            load_save_loc + "'");
+                            loadSaveLoc + "'");
             }
         }
     }
 
-    // Tests are saved under user's home directory in '.hyperedge/test-results/'.
-    protected void saveTestHelper(String file_name, CyNetwork net) {
-        String full_loc = load_save_loc + file_name;
+    /**
+     * Simulate what Cytoscape does in saving HyperEdge information.
+     * Tests are saved under user's home directory in '.hyperedge/test-results/'.
+     * @param fileName the file to save HyperEdge info to.
+     * @param net the CyNetwork we are saving.
+     * NOTE: Cytoscape implementation dependent!
+     */
+    void saveTestHelper(final String fileName, final CyNetwork net) {
+        final String fullLoc = loadSaveLoc + fileName;
 
         // File full_loc_as_file = new File(full_loc);
         // CytoscapeSessionWriter sw = new CytoscapeSessionWriter(full_loc);
         try {
             // sw.writeSessionToDisk();
-            FileWriter  fileWriter = new FileWriter(full_loc);
-            XGMMLWriter writer = new XGMMLWriter(net,
+            final FileWriter  fileWriter = new FileWriter(fullLoc);
+            final XGMMLWriter writer = new XGMMLWriter(net,
                                                  Cytoscape.getNetworkView(net.getIdentifier()));
             writer.write(fileWriter);
             fileWriter.close();
 
             // SIMULATE what Cytoscape does--implementation dependent:
-            Object[] ret_val = new Object[3];
-            ret_val[0] = net;
-            ret_val[1] = new File(full_loc).toURI();
-            ret_val[2] = new Integer(Cytoscape.FILE_XGMML);
-            Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, ret_val);
+            final Object[] retVal = new Object[3];
+            retVal[0] = net;
+            retVal[1] = new File(fullLoc).toURI();
+            retVal[2] = Cytoscape.FILE_XGMML;
+            Cytoscape.firePropertyChange(Cytoscape.NETWORK_SAVED, null, retVal);
         } catch (Exception e) {
             // Assert.fail("Could not write session to the file: " + full_loc +
-            Assert.fail("Could not write xgmml to the file: " + full_loc + " " +
+            Assert.fail("Could not write xgmml to the file: " + fullLoc + ' ' +
                         e.getMessage());
         }
 
@@ -104,40 +127,29 @@ public class PersistenceHelper {
         //			    HyperEdgeManager.Format.XML);
     }
 
-    // Tests are loaded under user's home directory in '.hyperedge/test-results/'.
-    protected void restoreTestHelper(String file_name) {
-        String full_loc = load_save_loc + file_name;
+    /**
+     * Simulate what Cytoscape does in restoring HyperEdge information.
+     * Tests are loaded under user's home directory in '.hyperedge/test-results/'.
+     * NOTE: Cytoscape implementation dependent!
+     * @param fileName the file to load HyperEdge info from.
+     */
+    void restoreTestHelper(final String fileName) {
+        final String fullLoc = loadSaveLoc + fileName;
 
         try {
-            CyNetwork net     = Cytoscape.createNetworkFromFile(full_loc);
-            Object[]  ret_val = new Object[2];
+            final CyNetwork net     = Cytoscape.createNetworkFromFile(fullLoc);
+            final Object[]  retVal = new Object[2];
             // SIMULATE what Cytoscape does--implementation dependent:
-            ret_val[0] = net;
-            ret_val[1] = new File(full_loc).toURI();
-            Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+            retVal[0] = net;
+            retVal[1] = new File(fullLoc).toURI();
+            Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, retVal);
 
             // CytoscapeSessionReader sr = new CytoscapeSessionReader(full_loc);
             // sr.read();
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail("Could not open the XGMML file:" + full_loc + " " +
+            Assert.fail("Could not open the XGMML file:" + fullLoc + " " +
                         e.getMessage());
         }
-
-        //	catch (IOException e) {
-        //            e.printStackTrace();
-        //            Assert.fail("Cannot open the session file:" + full_loc + " " +
-        //                e.getMessage());
-        //        } catch (JAXBException e) {
-        //            e.printStackTrace();
-        //            Assert.fail("Cannot unmarshall document." + full_loc + " " +
-        //                e.getMessage());
-        //        } catch (XGMMLException e) {
-        //            e.printStackTrace();
-        //            Assert.fail(e.getMessage());
-        //        }
-
-        // return manager.load(full_loc_as_file.toURI().toString(), gp,
-        //		    HyperEdgeManager.Format.XML);
     }
 }

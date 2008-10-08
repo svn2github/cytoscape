@@ -1,28 +1,46 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         AttributeTest.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/unittest/AttributeTest.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:  
-* Author:       Michael L. Creech
-* Created:      Wed Sep 21 09:15:03 2005
-* Modified:     Thu Sep 22 05:42:16 2005 (Michael L. Creech) creech@Dill
-* Language:     Java
-* Package:      
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 
 
 package cytoscape.hyperedge.unittest;
 
-import cytoscape.hyperedge.impl.utils.HEUtils;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import cytoscape.hyperedge.impl.utils.HEUtils;
 
 
 /**
@@ -31,30 +49,39 @@ import junit.framework.TestSuite;
  * @author Michael L. Creech
  * @version 1.0
  */
-public class AttributeTest extends TestBase
-{
+public final class AttributeTest extends TestBase {
+    // forced CheckStyle:
+    /** 
+     * Bonehead Checkstyle requires contructor and javadoc.
+     */
+    public AttributeTest () { super();}
     //~ Methods ////////////////////////////////////////////////////////////////
-
-    public static Test suite ()
-    {
+    /**
+     * JUnit method for running tests for this class.
+     * @return the Test to peform.
+     */
+    public static Test suite () {
         // Will dynamically add all methods as tests that begin with 'test'
         // and have no arguments:
         return new TestSuite(AttributeTest.class);
     }
-
-    public static void main (String[] args)
-    {
+    /**
+     * Main for test.
+     * @param args standard args to main program
+     */
+    public static void main (final String[] args) {
         junit.textui.TestRunner.run (suite ());
     }
-
-    public void testHyperEdgeAttributes ()
-    {
+    /**
+     * Test HypeEdge attributes. Not currently used, since HyperEdges don't have their own attributes any more.
+     */
+    public void testHyperEdgeAttributes () {
         setUp1 (true);
         HEUtils.log ("THIS TEST IS NOT CURRENTLY ACTIVE.");
-        //        CytoscapeData hed = manager.getHyperEdgeData ();
-        //        Assert.assertNull (hed.setAttributeValue (he1.getIdentifier (),
+        //        CyAttributes cAtt = Cytoscape.getNodeAttributes ();
+        //       Assert.assertNull (cAtt.setAttributeValue (he1.getIdentifier (),
         //                                                  "attribute1", new Integer(3)));
-        //        Assert.assertTrue (hed.getAttributeValue (he1.getIdentifier (),
+        //        Assert.assertTrue (cAtt.getAttributeValue (he1.getIdentifier (),
         //                                                  "attribute1").equals (new Integer(3)));
         // Assert.assertTrue (0 == rd.addAttributeListValue (he1.getIdentifier (),
         //                                                          "attribute2",
@@ -84,7 +111,7 @@ public class AttributeTest extends TestBase
         //        {
         //            HEUtils.log ("key = " + it.next ());
         //        }
-        // TODO: Add test of deletion of HyperEdge leading to removal
+        // TODO Add test of deletion of HyperEdge leading to removal
         // of corresponding attributes:
     }
 }

@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         HyperEdgeTest.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/unittest/HyperEdgeTest.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Wed Sep 21 09:14:34 2005
-* Modified:     Thu Apr 03 11:01:50 2008 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/* 
 *
 * Revisions:
 *
@@ -38,11 +59,21 @@
 package cytoscape.hyperedge.unittest;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import junit.framework.Assert;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.CyAttributes;
 import cytoscape.data.attr.MultiHashMap;
 import cytoscape.data.attr.MultiHashMapDefinition;
@@ -53,18 +84,7 @@ import cytoscape.hyperedge.LifeState;
 import cytoscape.hyperedge.EdgeTypeMap.EdgeRole;
 import cytoscape.hyperedge.impl.utils.EdgeFilters;
 import cytoscape.hyperedge.impl.utils.HEUtils;
-
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import cytoscape.logger.CyLogger;
 
 
 /**
@@ -73,57 +93,80 @@ import java.util.Set;
  * @version 1.0
  */
 public class HyperEdgeTest extends TestBase {
-    private final String        NET1_LOC              = "hyperedge-test-net1.xgmml";
-    private final String        SHARED_EDGE_NET1_LOC  = "hyperedge-test-shared-edge-net1.xgmml";
-    private final String        SHARED_EDGE_NET2_LOC  = "hyperedge-test-shared-edge-net2.xgmml";
-    private final String        FUNNY_NAME            = "&\"'<funny>'\"&";
-    private final String        FUNNY_NODE1           = "&funny1<name>&";
-    private final String        FUNNY_NODE2           = "\"'funny2'\"";
-    private final String        SHARED1_NAME          = "shared1";
-    private final String        SHARED2_NAME          = "shared2";
-    private final String        SHARED3_NAME          = "shared3";
-    private final String        UNSHARED1_NAME        = "unshared1";
-    private final String        SHARED_EDGE_NET1_NAME = "SharedEdgeTest1";
-    private final String        SHARED_EDGE_NET2_NAME = "SharedEdgeTest2";
-    protected HyperEdge         funny_he;
-    protected HyperEdge         shared1;
-    protected HyperEdge         shared2;
-    protected HyperEdge         shared3;
-    protected HyperEdge         unshared1;
-    protected String            funny_sub_uuid;
-    protected String            funny_prod_uuid;
-    protected CyEdge            funny_sub;
-    protected CyEdge            funny_prod;
-    protected CyNetwork         sharedEdgeNet1;
-    protected CyNetwork         sharedEdgeNet2;
-    protected PersistenceHelper _pHelper              = new PersistenceHelper();
+    private static final String        NET1_LOC              = "hyperedge-test-net1.xgmml";
+    private static final String        SHARED_EDGE_NET1_LOC  = "hyperedge-test-shared-edge-net1.xgmml";
+    private static final String        SHARED_EDGE_NET2_LOC  = "hyperedge-test-shared-edge-net2.xgmml";
+    private static final String        FUNNY_NAME            = "&\"'<funny>'\"&";
+    private static final String        FUNNY_NODE1           = "&funny1<name>&";
+    private static final String        FUNNY_NODE2           = "\"'funny2'\"";
+    private static final String        SHARED1_NAME          = "shared1";
+    private static final String        SHARED2_NAME          = "shared2";
+    private static final String        SHARED3_NAME          = "shared3";
+    private static final String        UNSHARED1_NAME        = "unshared1";
+    private static final String        SHARED_EDGE_NET1_NAME = "SharedEdgeTest1";
+    private static final String        SHARED_EDGE_NET2_NAME = "SharedEdgeTest2";
+    private static final String        JOJO                  = "Jojo";
+    private static final String        HARRY                 = "Harry";
 
+    private static final int THREE = 3;
+    private static final int FOUR  = 4;
+    private static final int SIX   = 6;
+    private static final int TEN   = 10;
+    private HyperEdge         funnyHe;
+    private HyperEdge         shared1;
+    private HyperEdge         shared2;
+    private HyperEdge         shared3;
+    private HyperEdge         unshared1;
+    private String            funnySubUuid;
+    private String            funnyProdUuid;
+    private CyEdge            funnySub;
+    private CyEdge            funnyProd;
+    private CyNetwork         sharedEdgeNet1;
+    private CyNetwork         sharedEdgeNet2;
+    private PersistenceHelper pHelper              = new PersistenceHelper();
+
+    /** 
+     * Bonehead Checkstyle requires constructor and javadoc.
+     */
+    public HyperEdgeTest () { super();}
+
+    /**
+     * JUnit method for running tests for this class.
+     * @return the Test to peform.
+     */
     public static Test suite() {
         // Will dynamically add all methods as tests that begin with 'test'
         // and have no arguments:
         return new TestSuite(HyperEdgeTest.class);
     }
 
-    public static void main(String[] args) {
+    /**
+     * Main for test.
+     * @param args standard args to main program
+     */
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(suite());
     }
 
-    protected void setUp1(boolean reset_uuids) {
-        super.setUp1(reset_uuids);
+    /**
+     * {@inheritDoc}
+     */
+    protected void setUp1(final boolean resetUuids) {
+        super.setUp1(resetUuids);
 
         // test persistent names with special characters in them:
-        CyNode funny1   = Cytoscape.getCyNode(FUNNY_NODE1, true);
-        CyNode funny2 = Cytoscape.getCyNode(FUNNY_NODE2, true);
-        funny_he        = factory.createHyperEdge(funny1,
+        final CyNode funny1   = Cytoscape.getCyNode(FUNNY_NODE1, true);
+        final CyNode funny2 = Cytoscape.getCyNode(FUNNY_NODE2, true);
+        funnyHe        = factory.createHyperEdge(funny1,
                                                   EdgeTypeMap.SUBSTRATE,
                                                   funny2,
                                                   EdgeTypeMap.PRODUCT,
                                                   net1);
-        funny_sub       = funny_he.getAnEdge(funny1);
-        funny_prod      = funny_he.getAnEdge(funny2);
-        funny_sub_uuid  = funny_sub.getIdentifier();
-        funny_prod_uuid = funny_prod.getIdentifier();
-        funny_he.setName(FUNNY_NAME);
+        funnySub       = funnyHe.getAnEdge(funny1);
+        funnyProd      = funnyHe.getAnEdge(funny2);
+        funnySubUuid  = funnySub.getIdentifier();
+        funnyProdUuid = funnyProd.getIdentifier();
+        funnyHe.setName(FUNNY_NAME);
 
         sharedEdgeNet1 = Cytoscape.createNetwork(SHARED_EDGE_NET1_NAME);
         sharedEdgeNet2 = Cytoscape.createNetwork(SHARED_EDGE_NET2_NAME);
@@ -131,21 +174,21 @@ public class HyperEdgeTest extends TestBase {
         // sharedEdgeNet1-->shared1,shared2,shared3,unshared1
         // sharedEdgeNet2-->unshared1
         // Shared edge connections: shared1-->shared2-->shared3-->shared1
-        shared1 = factory.createHyperEdge(S,
+        shared1 = factory.createHyperEdge(sNode,
                                           EdgeTypeMap.SUBSTRATE,
-                                          M,
+                                          mNode,
                                           EdgeTypeMap.ACTIVATING_MEDIATOR,
                                           sharedEdgeNet1);
         shared1.setName(SHARED1_NAME);
-        shared2 = factory.createHyperEdge(M,
+        shared2 = factory.createHyperEdge(mNode,
                                           EdgeTypeMap.ACTIVATING_MEDIATOR,
-                                          P,
+                                          pNode,
                                           EdgeTypeMap.PRODUCT,
                                           sharedEdgeNet1);
         shared2.setName(SHARED2_NAME);
-        shared3 = factory.createHyperEdge(A,
+        shared3 = factory.createHyperEdge(aNode,
                                           EdgeTypeMap.SUBSTRATE,
-                                          P,
+                                          pNode,
                                           EdgeTypeMap.PRODUCT,
                                           sharedEdgeNet1);
         shared3.setName(SHARED3_NAME);
@@ -161,9 +204,9 @@ public class HyperEdgeTest extends TestBase {
         shared3.connectHyperEdges(shared1,
                                   EdgeTypeMap.SUBSTRATE
                                   );
-        unshared1 = factory.createHyperEdge(M,
+        unshared1 = factory.createHyperEdge(mNode,
                                             EdgeTypeMap.ACTIVATING_MEDIATOR,
-                                            P,
+                                            pNode,
                                             EdgeTypeMap.PRODUCT,
                                             sharedEdgeNet1);
         unshared1.setName(UNSHARED1_NAME);
@@ -172,61 +215,64 @@ public class HyperEdgeTest extends TestBase {
 
     // When we reload and reset the sample objects, reconnect the
     // instance variables to the newly read objects.
+    /**
+     * {@inheritDoc}
+     */
     protected void reconnectInstanceVariables() {
         super.reconnectInstanceVariables();
-        funny_he   = null;
-        funny_sub  = null;
-        funny_prod = null;
+        funnyHe   = null;
+        funnySub  = null;
+        funnyProd = null;
         shared1    = null;
         shared2    = null;
         shared3    = null;
         unshared1  = null;
 
         CyEdge           edge;
-        String           e_uuid;
-        Iterator<CyEdge> edge_it = manager.getEdgesByNetwork(null);
+        String           eUuid;
+        final Iterator<CyEdge> edgeIt = manager.getEdgesByNetwork(null);
 
-        while (edge_it.hasNext()) {
-            edge   = edge_it.next();
-            e_uuid = edge.getIdentifier();
+        while (edgeIt.hasNext()) {
+            edge   = edgeIt.next();
+            eUuid = edge.getIdentifier();
 
-            if (funny_sub_uuid.equals(e_uuid)) {
-                funny_sub = edge;
+            if (funnySubUuid.equals(eUuid)) {
+                funnySub = edge;
             }
 
-            if (funny_prod_uuid.equals(e_uuid)) {
-                funny_prod = edge;
+            if (funnyProdUuid.equals(eUuid)) {
+                funnyProd = edge;
             }
         }
 
-        String              h_name;
+        String              hName;
         HyperEdge           he;
-        Iterator<HyperEdge> he_it = manager.getHyperEdgesByNetwork(null);
+        final Iterator<HyperEdge> heIt = manager.getHyperEdgesByNetwork(null);
 
-        while (he_it.hasNext()) {
-            he     = he_it.next();
-            h_name = he.getName();
+        while (heIt.hasNext()) {
+            he     = heIt.next();
+            hName = he.getName();
 
-            if (FUNNY_NAME.equals(h_name)) {
+            if (FUNNY_NAME.equals(hName)) {
                 HEUtils.log("reconnect HE with name = " + FUNNY_NAME);
-                funny_he = he;
-            } else if (SHARED1_NAME.equals(h_name)) {
+                funnyHe = he;
+            } else if (SHARED1_NAME.equals(hName)) {
                 HEUtils.log("reconnect HE with name = " + SHARED1_NAME);
                 shared1 = he;
-            } else if (SHARED2_NAME.equals(h_name)) {
+            } else if (SHARED2_NAME.equals(hName)) {
                 HEUtils.log("reconnect HE with name = " + SHARED2_NAME);
                 shared2 = he;
-            } else if (SHARED3_NAME.equals(h_name)) {
+            } else if (SHARED3_NAME.equals(hName)) {
                 HEUtils.log("reconnect HE with name = " + SHARED3_NAME);
                 shared3 = he;
-            } else if (UNSHARED1_NAME.equals(h_name)) {
+            } else if (UNSHARED1_NAME.equals(hName)) {
                 HEUtils.log("reconnect HE with name = " + UNSHARED1_NAME);
                 unshared1 = he;
             }
         }
 
         // Now connect up networks:
-        Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
+        final Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
         HEUtils.log("nets size = " + nets.size());
 
         for (CyNetwork net : nets) {
@@ -243,32 +289,34 @@ public class HyperEdgeTest extends TestBase {
             }
         }
     }
-
+    /**
+     * OVerall HyperEdge tester.
+     */
     public void testHyperEdges() {
         setUp1(true);
-        _pHelper.saveTestHelper(NET1_LOC, net1);
-        _pHelper.saveTestHelper(SHARED_EDGE_NET1_LOC, sharedEdgeNet1);
-        _pHelper.saveTestHelper(SHARED_EDGE_NET2_LOC, sharedEdgeNet2);
+        pHelper.saveTestHelper(NET1_LOC, net1);
+        pHelper.saveTestHelper(SHARED_EDGE_NET1_LOC, sharedEdgeNet1);
+        pHelper.saveTestHelper(SHARED_EDGE_NET2_LOC, sharedEdgeNet2);
         performHyperEdgeTests(true);
         removeCyNetworks();
         tearDown1(false);
         tearDown1(true);
-        _pHelper.restoreTestHelper(NET1_LOC);
-        _pHelper.restoreTestHelper(SHARED_EDGE_NET1_LOC);
-        _pHelper.restoreTestHelper(SHARED_EDGE_NET2_LOC);
+        pHelper.restoreTestHelper(NET1_LOC);
+        pHelper.restoreTestHelper(SHARED_EDGE_NET1_LOC);
+        pHelper.restoreTestHelper(SHARED_EDGE_NET2_LOC);
         reconnectInstanceVariables();
         performHyperEdgeTests(true);
     }
 
     private void removeCyNetworks() {
-        Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
+        final Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
 
         for (CyNetwork net : nets) {
             Cytoscape.destroyNetwork(net);
         }
     }
 
-    private void performHyperEdgeTests(boolean cleared) {
+    private void performHyperEdgeTests(final boolean cleared) {
         performHasNodeTests();
         performHasEdgeTests();
         performHasEdgeOfTypeTests();
@@ -290,23 +338,23 @@ public class HyperEdgeTest extends TestBase {
         // TEST hasNode()
         Assert.assertFalse(he1.hasNode(null));
         Assert.assertTrue(
-            he1.hasNode(S) && he1.hasNode(M) && he1.hasNode(P) &&
-            (!he1.hasNode(A)));
+            he1.hasNode(sNode) && he1.hasNode(mNode) && he1.hasNode(pNode) &&
+            (!he1.hasNode(aNode)));
     }
 
     private void performHasEdgeTests() {
         // TEST hasEdge()
         Assert.assertFalse(he1.hasEdge(null));
         Assert.assertTrue(
-            he1.hasEdge(he1_sub) && he1.hasEdge(he1_med) &&
-            he1.hasEdge(he1_prod) && (!he1.hasEdge(extra)));
+            he1.hasEdge(he1Sub) && he1.hasEdge(he1Med) &&
+            he1.hasEdge(he1Prod) && (!he1.hasEdge(extra)));
     }
 
     private void performHasEdgeOfTypeTests() {
         // TEST hasEdgeOfType():
         Assert.assertFalse(he1.hasEdgeOfType(null));
         Assert.assertFalse(he1.hasEdgeOfType("substrate1"));
-        Assert.assertFalse(he1.hasEdgeOfType(EXTRA));
+        Assert.assertFalse(he1.hasEdgeOfType(EXTRA_LABEL));
         Assert.assertTrue(he1.hasEdgeOfType(EdgeTypeMap.SUBSTRATE));
         Assert.assertTrue(he1.hasEdgeOfType(EdgeTypeMap.PRODUCT));
         Assert.assertTrue(he1.hasEdgeOfType(EdgeTypeMap.ACTIVATING_MEDIATOR));
@@ -316,23 +364,23 @@ public class HyperEdgeTest extends TestBase {
         // TEST getName():
         Assert.assertTrue("he1".equals(he1.getName()));
         Assert.assertTrue("hd1".equals(hd1.getName()));
-        // check names with problemmatic characters for persistence:
-        Assert.assertTrue(FUNNY_NAME.equals(funny_he.getName()));
+        // check names with problematic characters for persistence:
+        Assert.assertTrue(FUNNY_NAME.equals(funnyHe.getName()));
         Assert.assertTrue(
-            FUNNY_NODE1.equals(((CyNode) funny_sub.getSource()).getIdentifier()));
+            FUNNY_NODE1.equals(((CyNode) funnySub.getSource()).getIdentifier()));
         Assert.assertTrue(
-            FUNNY_NODE2.equals(((CyNode) funny_prod.getTarget()).getIdentifier()));
+            FUNNY_NODE2.equals(((CyNode) funnyProd.getTarget()).getIdentifier()));
     }
 
     private void performGetNumEdgesTests() {
         // TEST getNumEdges():
-        Assert.assertTrue(he1.getNumEdges() == 3);
-	Assert.assertTrue(hd1.getNumEdges() == 3);
+        Assert.assertTrue(he1.getNumEdges() == THREE);
+	Assert.assertTrue(hd1.getNumEdges() == THREE);
     }
 
     private void performGetNumNodesTests() {
         // TEST getNumNodes():
-        Assert.assertTrue(he1.getNumNodes() == 3);
+        Assert.assertTrue(he1.getNumNodes() == THREE);
         Assert.assertTrue(hd1.getNumNodes() == 2);
     }
 
@@ -341,12 +389,12 @@ public class HyperEdgeTest extends TestBase {
         //    null node:
         Assert.assertTrue(he1.getAnEdge(null) == null);
         //    node not in HE:
-        Assert.assertTrue(hd1.getAnEdge(A) == null);
-        Assert.assertTrue(he1.getAnEdge(S) == he1_sub);
-        Assert.assertTrue(he1.getAnEdge(P) == he1_prod);
+        Assert.assertTrue(hd1.getAnEdge(aNode) == null);
+        Assert.assertTrue(he1.getAnEdge(sNode) == he1Sub);
+        Assert.assertTrue(he1.getAnEdge(pNode) == he1Prod);
         Assert.assertTrue(
-            (hd1.getAnEdge(S) == hd1_sub) || (hd1.getAnEdge(S) == hd1_imed));
-        Assert.assertTrue(hd1.getAnEdge(M) == hd1_med);
+            (hd1.getAnEdge(sNode) == hd1Sub) || (hd1.getAnEdge(sNode) == hd1Imed));
+        Assert.assertTrue(hd1.getAnEdge(mNode) == hd1Med);
     }
 
     private void performHasMultipleEdgesTests() {
@@ -354,109 +402,109 @@ public class HyperEdgeTest extends TestBase {
         //    null node:
         Assert.assertFalse(he1.hasMultipleEdges(null));
         //    node not in HE:
-        Assert.assertFalse(hd1.hasMultipleEdges(A));
+        Assert.assertFalse(hd1.hasMultipleEdges(aNode));
         Assert.assertFalse(
-            he1.hasMultipleEdges(S) || he1.hasMultipleEdges(M) ||
-            he1.hasMultipleEdges(P));
-        Assert.assertTrue(hd1.hasMultipleEdges(S));
-        Assert.assertFalse(hd1.hasMultipleEdges(M));
+            he1.hasMultipleEdges(sNode) || he1.hasMultipleEdges(mNode) ||
+            he1.hasMultipleEdges(pNode));
+        Assert.assertTrue(hd1.hasMultipleEdges(sNode));
+        Assert.assertFalse(hd1.hasMultipleEdges(mNode));
     }
 
     private void performGetNodesTests() {
         // TEST getNodes(null);
-        List test_list = testIterator(he1.getNodes(null), 3);
+        List<CyNode> testList = testIterator(he1.getNodes(null), THREE);
         Assert.assertTrue(
-            test_list.contains(S) && test_list.contains(M) &&
-            test_list.contains(P));
-        test_list = testIterator(hd1.getNodes(null), 2);
-        Assert.assertTrue(test_list.contains(S) && test_list.contains(M));
+            testList.contains(sNode) && testList.contains(mNode) &&
+            testList.contains(pNode));
+        testList = testIterator(hd1.getNodes(null), 2);
+        Assert.assertTrue(testList.contains(sNode) && testList.contains(mNode));
 
         // TEST getNodes():
-        test_list = testIterator(he1.getNodes("substrate1"), 0);
-        test_list = testIterator(he1.getNodes(null), 3);
-        test_list = testIterator(he1.getNodes(EdgeTypeMap.SUBSTRATE), 1);
-        Assert.assertTrue(test_list.contains(S));
-        test_list = testIterator(he1.getNodes(EdgeTypeMap.ACTIVATING_MEDIATOR),
+        testList = testIterator(he1.getNodes("substrate1"), 0);
+        testList = testIterator(he1.getNodes(null), THREE);
+        testList = testIterator(he1.getNodes(EdgeTypeMap.SUBSTRATE), 1);
+        Assert.assertTrue(testList.contains(sNode));
+        testList = testIterator(he1.getNodes(EdgeTypeMap.ACTIVATING_MEDIATOR),
                                  1);
-        Assert.assertTrue(test_list.contains(M));
-        test_list = testIterator(he1.getNodes(EdgeTypeMap.PRODUCT), 1);
-        Assert.assertTrue(test_list.contains(P));
-        test_list = testIterator(hd1.getNodes(EdgeTypeMap.SUBSTRATE), 1);
-        Assert.assertTrue(test_list.contains(S));
+        Assert.assertTrue(testList.contains(mNode));
+        testList = testIterator(he1.getNodes(EdgeTypeMap.PRODUCT), 1);
+        Assert.assertTrue(testList.contains(pNode));
+        testList = testIterator(hd1.getNodes(EdgeTypeMap.SUBSTRATE), 1);
+        Assert.assertTrue(testList.contains(sNode));
     }
 
     private void performGetNodesByEdgeTypesTests() {
         // TEST getNodesByEdgeTypes(null);
-        List test_list = testIterator(he1.getNodesByEdgeTypes(null), 3);
+        List<CyNode> testList = testIterator(he1.getNodesByEdgeTypes(null), THREE);
         Assert.assertTrue(
-            test_list.contains(S) && test_list.contains(M) &&
-            test_list.contains(P));
-        test_list = testIterator(hd1.getNodesByEdgeTypes(null), 2);
-        Assert.assertTrue(test_list.contains(S) && test_list.contains(M));
+            testList.contains(sNode) && testList.contains(mNode) &&
+            testList.contains(pNode));
+        testList = testIterator(hd1.getNodesByEdgeTypes(null), 2);
+        Assert.assertTrue(testList.contains(sNode) && testList.contains(mNode));
 
         // TEST getNodesByEdgeTypes():
-        Collection<String> acceptableTypes = new ArrayList<String>();
+        final Collection<String> acceptableTypes = new ArrayList<String>();
         acceptableTypes.add("substrate1");
-        test_list = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 0);
-        test_list = testIterator(he1.getNodesByEdgeTypes(null), 3);
+        testList = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 0);
+        testList = testIterator(he1.getNodesByEdgeTypes(null), THREE);
         acceptableTypes.clear();
         acceptableTypes.add(EdgeTypeMap.SUBSTRATE);
-        test_list = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 1);
-        Assert.assertTrue(test_list.contains(S));
+        testList = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 1);
+        Assert.assertTrue(testList.contains(sNode));
         acceptableTypes.clear();
         acceptableTypes.add(EdgeTypeMap.ACTIVATING_MEDIATOR);
-        test_list = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 1);
-        Assert.assertTrue(test_list.contains(M));
+        testList = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 1);
+        Assert.assertTrue(testList.contains(mNode));
         acceptableTypes.clear();
         acceptableTypes.add(EdgeTypeMap.PRODUCT);
-        test_list = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 1);
-        Assert.assertTrue(test_list.contains(P));
+        testList = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 1);
+        Assert.assertTrue(testList.contains(pNode));
         acceptableTypes.clear();
         acceptableTypes.add(EdgeTypeMap.SUBSTRATE);
-        test_list = testIterator(hd1.getNodesByEdgeTypes(acceptableTypes), 1);
-        Assert.assertTrue(test_list.contains(S));
+        testList = testIterator(hd1.getNodesByEdgeTypes(acceptableTypes), 1);
+        Assert.assertTrue(testList.contains(sNode));
         acceptableTypes.add(EdgeTypeMap.PRODUCT);
-        test_list = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 2);
-        Assert.assertTrue(test_list.contains(S) && test_list.contains(P));
+        testList = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 2);
+        Assert.assertTrue(testList.contains(sNode) && testList.contains(pNode));
 
         // Add an INHIBITING_MEDIATOR to he1 and test both mediators:
         // NOTE: This will not test persistence with useage of getNodesByEdgeTypes:
-        CyNode m2 = Cytoscape.getCyNode("M2", true);
+        final CyNode m2 = Cytoscape.getCyNode("M2", true);
         he1.addEdge(m2, EdgeTypeMap.INHIBITING_MEDIATOR);
         acceptableTypes.clear();
         acceptableTypes.add(EdgeTypeMap.ACTIVATING_MEDIATOR);
         acceptableTypes.add(EdgeTypeMap.INHIBITING_MEDIATOR);
-        test_list = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 2);
-        Assert.assertTrue(test_list.contains(M) && test_list.contains(m2));
+        testList = testIterator(he1.getNodesByEdgeTypes(acceptableTypes), 2);
+        Assert.assertTrue(testList.contains(mNode) && testList.contains(m2));
         he1.removeNode(m2);
     }
 
     private void performGetEdgesTests() {
         // TEST getEdges(null):
-        List test_list = testIterator(he1.getEdges(null), 3);
+        List<CyEdge> testList = testIterator(he1.getEdges(null), THREE);
         Assert.assertTrue(
-            test_list.contains(he1_sub) && test_list.contains(he1_med) &&
-            test_list.contains(he1_prod));
-        test_list = testIterator(hd1.getEdges(null), 3);
-        Assert.assertTrue(test_list.contains(hd1_sub) &&
-			  test_list.contains(hd1_med) && test_list.contains(hd1_imed));
+            testList.contains(he1Sub) && testList.contains(he1Med) &&
+            testList.contains(he1Prod));
+        testList = testIterator(hd1.getEdges(null), THREE);
+        Assert.assertTrue(testList.contains(hd1Sub) &&
+			  testList.contains(hd1Med) && testList.contains(hd1Imed));
 
         // TEST getEdges():
-        test_list = testIterator(he1.getEdges(null), 3);
+        testList = testIterator(he1.getEdges(null), THREE);
         // A is not in he1:
-        test_list = testIterator(he1.getEdges(A), 0);
-        test_list = testIterator(he1.getEdges(S), 1);
-        Assert.assertTrue(test_list.contains(he1_sub));
-        // test_list = net.getEdge(adjacentEdges[j]);
+        testList = testIterator(he1.getEdges(aNode), 0);
+        testList = testIterator(he1.getEdges(sNode), 1);
+        Assert.assertTrue(testList.contains(he1Sub));
+        // testList = net.getEdge(adjacentEdges[j]);
         // MLC 04/02/08:
-        test_list = testIterator(he1.getEdges(M), 1);
-        Assert.assertTrue(test_list.contains(he1_med));
-        test_list = testIterator(he1.getEdges(P), 1);
-        Assert.assertTrue(test_list.contains(he1_prod));
+        testList = testIterator(he1.getEdges(mNode), 1);
+        Assert.assertTrue(testList.contains(he1Med));
+        testList = testIterator(he1.getEdges(pNode), 1);
+        Assert.assertTrue(testList.contains(he1Prod));
 
-	test_list = testIterator(hd1.getEdges(S), 2);
-	Assert.assertTrue(test_list.contains(hd1_sub));
-	Assert.assertTrue(test_list.contains(hd1_imed));
+	testList = testIterator(hd1.getEdges(sNode), 2);
+	Assert.assertTrue(testList.contains(hd1Sub));
+	Assert.assertTrue(testList.contains(hd1Imed));
     }
 
     private void performAddAndRemoveEdgeTests() {
@@ -472,7 +520,7 @@ public class HyperEdgeTest extends TestBase {
 
         // test null edgeIType:
         try {
-            he1.addEdge(A, null);
+            he1.addEdge(aNode, null);
             Assert.fail("should have thrown IllegalStateException!");
         } catch (IllegalArgumentException e) {
             // ok
@@ -489,79 +537,79 @@ public class HyperEdgeTest extends TestBase {
 
         // test existing edge:
         try {
-            he1.addEdge(S, EdgeTypeMap.SUBSTRATE);
+            he1.addEdge(sNode, EdgeTypeMap.SUBSTRATE);
             Assert.fail("should have thrown IllegalArgumentException!");
         } catch (IllegalArgumentException e) {
             HEUtils.log("OK. Expected Exception: " + e.getMessage());
         }
 
         //    actually add (EXTRA is unregistered in EdgeTypeMap):
-        extra = he1.addEdge(A, EXTRA);
+        extra = he1.addEdge(aNode, EXTRA_LABEL);
         Assert.assertNotNull(extra);
-        Assert.assertTrue(extra.getSource() == A);
-        Assert.assertTrue(he1.getNumEdges() == 4);
-        Assert.assertTrue(he1.getNumNodes() == 4);
+        Assert.assertTrue(extra.getSource() == aNode);
+        Assert.assertTrue(he1.getNumEdges() == FOUR);
+        Assert.assertTrue(he1.getNumNodes() == FOUR);
         Assert.assertTrue(he1.removeEdge(extra));
         //    now add with EXTRA registered as EdgeRole.TARGET:
-        factory.getEdgeTypeMap().put(EXTRA, EdgeRole.TARGET);
+        factory.getEdgeTypeMap().put(EXTRA_LABEL, EdgeRole.TARGET);
 
-        CyEdge extra1 = he1.addEdge(A, EXTRA);
+        final CyEdge extra1 = he1.addEdge(aNode, EXTRA_LABEL);
         Assert.assertNotNull(extra1);
-        Assert.assertTrue(extra1.getTarget() == A);
-        Assert.assertTrue(he1.getNumEdges() == 4);
-        Assert.assertTrue(he1.getNumNodes() == 4);
+        Assert.assertTrue(extra1.getTarget() == aNode);
+        Assert.assertTrue(he1.getNumEdges() == FOUR);
+        Assert.assertTrue(he1.getNumNodes() == FOUR);
 
         //    now add 2 Edges using standard EdgeTypeMap entries:
-        CyEdge added_mediator = he1.addEdge(A, EdgeTypeMap.INHIBITING_MEDIATOR);
-        CyEdge added_product = he1.addEdge(A, EdgeTypeMap.PRODUCT);
-        Assert.assertNotNull(added_mediator);
-        Assert.assertNotNull(added_product);
-        Assert.assertTrue(added_mediator.getSource() == A);
-        Assert.assertTrue(added_product.getTarget() == A);
-        Assert.assertTrue(he1.getNumEdges() == 6);
-        Assert.assertTrue(he1.getNumNodes() == 4);
-        factory.getEdgeTypeMap().remove(EXTRA);
+        final CyEdge addedMediator = he1.addEdge(aNode, EdgeTypeMap.INHIBITING_MEDIATOR);
+        final CyEdge addedProduct = he1.addEdge(aNode, EdgeTypeMap.PRODUCT);
+        Assert.assertNotNull(addedMediator);
+        Assert.assertNotNull(addedProduct);
+        Assert.assertTrue(addedMediator.getSource() == aNode);
+        Assert.assertTrue(addedProduct.getTarget() == aNode);
+        Assert.assertTrue(he1.getNumEdges() == SIX);
+        Assert.assertTrue(he1.getNumNodes() == FOUR);
+        factory.getEdgeTypeMap().remove(EXTRA_LABEL);
 
         // test removeEdge():
         Assert.assertTrue(!he1.removeEdge(null));
         //    actually remove:
         // Assert.assertTrue(he1.removeEdge(extra));
         Assert.assertTrue(he1.removeEdge(extra1));
-        Assert.assertTrue(he1.removeEdge(added_mediator));
-        Assert.assertTrue(he1.removeEdge(added_product));
+        Assert.assertTrue(he1.removeEdge(addedMediator));
+        Assert.assertTrue(he1.removeEdge(addedProduct));
         // extra should be gone:
         Assert.assertFalse(net1.containsEdge(extra));
         // Assert.assertFalse(Cytoscape.getRootGraph().containsEdge(extra));
-        Assert.assertTrue(he1.getNumEdges() == 3);
-        Assert.assertTrue(he1.getNumNodes() == 3);
+        Assert.assertTrue(he1.getNumEdges() == THREE);
+        Assert.assertTrue(he1.getNumNodes() == THREE);
     }
 
     private void performRemoveNodeTests() {
         // test removeNode():
         Assert.assertFalse(he1.removeNode(null));
         // A isn't there:
-        Assert.assertFalse(he1.removeNode(A));
+        Assert.assertFalse(he1.removeNode(aNode));
 
         // Now add 3 edges to A:
-        CyEdge extra          = he1.addEdge(A, EXTRA);
-        CyEdge added_mediator = he1.addEdge(A, EdgeTypeMap.INHIBITING_MEDIATOR);
-        CyEdge added_product  = he1.addEdge(A, EdgeTypeMap.PRODUCT);
-        Assert.assertTrue(he1.getNumEdges() == 6);
-        Assert.assertTrue(he1.getNumNodes() == 4);
+        final CyEdge extra          = he1.addEdge(aNode, EXTRA_LABEL);
+        final CyEdge addedMediator = he1.addEdge(aNode, EdgeTypeMap.INHIBITING_MEDIATOR);
+        final CyEdge addedProduct  = he1.addEdge(aNode, EdgeTypeMap.PRODUCT);
+        Assert.assertTrue(he1.getNumEdges() == SIX);
+        Assert.assertTrue(he1.getNumNodes() == FOUR);
         //  now remove A:
-        Assert.assertTrue(he1.removeNode(A));
+        Assert.assertTrue(he1.removeNode(aNode));
         //   show that all the CyEdges and node are gone:
-        Assert.assertTrue(he1.getNumEdges() == 3);
-        Assert.assertTrue(he1.getNumNodes() == 3);
+        Assert.assertTrue(he1.getNumEdges() == THREE);
+        Assert.assertTrue(he1.getNumNodes() == THREE);
         Assert.assertFalse(net1.containsEdge(extra));
-        Assert.assertFalse(net1.containsEdge(added_mediator));
-        Assert.assertFalse(net1.containsEdge(added_product));
+        Assert.assertFalse(net1.containsEdge(addedMediator));
+        Assert.assertFalse(net1.containsEdge(addedProduct));
         // Assert.assertFalse(Cytoscape.getRootGraph().containsEdge(extra));
         // Assert.assertFalse(Cytoscape.getRootGraph().containsEdge(added_mediator));
         // Assert.assertFalse(Cytoscape.getRootGraph().containsEdge(added_product));
     }
 
-    private void performIsAndSetDirectedTests(boolean cleared) {
+    private void performIsAndSetDirectedTests(final boolean cleared) {
         // TEST isDirected()/setDirected():
         if (cleared) {
             Assert.assertFalse(he1.isDirected());
@@ -617,9 +665,9 @@ public class HyperEdgeTest extends TestBase {
         // reset state:
         unshared1.addToNetwork(sharedEdgeNet1);
 
-        CyEdge sharedE1 = shared1.getAnEdge(shared2.getConnectorNode());
-        CyEdge sharedE2 = shared2.getAnEdge(shared3.getConnectorNode());
-        CyEdge sharedE3 = shared3.getAnEdge(shared1.getConnectorNode());
+        final CyEdge sharedE1 = shared1.getAnEdge(shared2.getConnectorNode());
+        final CyEdge sharedE2 = shared2.getAnEdge(shared3.getConnectorNode());
+        final CyEdge sharedE3 = shared3.getAnEdge(shared1.getConnectorNode());
         Assert.assertTrue(
             sharedE1 == shared2.getAnEdge(shared1.getConnectorNode()));
         Assert.assertTrue(
@@ -628,7 +676,7 @@ public class HyperEdgeTest extends TestBase {
             sharedE3 == shared1.getAnEdge(shared3.getConnectorNode()));
 
         // test that recreating the connection just returns shared:
-        CyEdge anotherSharedE1 = shared1.connectHyperEdges(shared2,
+        final CyEdge anotherSharedE1 = shared1.connectHyperEdges(shared2,
                                                            EdgeTypeMap.SUBSTRATE
                                                            );
         Assert.assertTrue(sharedE1 == anotherSharedE1);
@@ -639,11 +687,11 @@ public class HyperEdgeTest extends TestBase {
         //                                                  EdgeTypeMap.PRODUCT);
         //        Assert.assertTrue(shared1.hasEdge(shared));
         Assert.assertTrue(
-            (shared1.getNumEdges() == 4) && (shared1.getNumNodes() == 4));
+            (shared1.getNumEdges() == FOUR) && (shared1.getNumNodes() == FOUR));
         Assert.assertTrue(shared1.hasEdge(sharedE1));
 
         Assert.assertTrue(
-            (shared2.getNumEdges() == 4) && (shared2.getNumNodes() == 4));
+            (shared2.getNumEdges() == FOUR) && (shared2.getNumNodes() == FOUR));
         // addToCyNetwork should fail:
         Assert.assertFalse(shared1.addToNetwork(sharedEdgeNet2));
         // Now remove the shared edge and test that shared1 and shared2
@@ -651,12 +699,15 @@ public class HyperEdgeTest extends TestBase {
         shared1.removeEdge(sharedE1);
         Assert.assertFalse(shared1.hasEdge(sharedE1));
         Assert.assertTrue(
-            (shared1.getNumEdges() == 3) && (shared1.getNumNodes() == 3));
+            (shared1.getNumEdges() == THREE) && (shared1.getNumNodes() == THREE));
         Assert.assertFalse(shared2.hasEdge(sharedE1));
         Assert.assertTrue(
-            (shared2.getNumEdges() == 3) && (shared2.getNumNodes() == 3));
+            (shared2.getNumEdges() == THREE) && (shared2.getNumNodes() == THREE));
     }
 
+    /**
+     * Test copying HyperEdge structures.
+     */
     public void testCopy() {
         manager.reset(false);
         setUp1(true);
@@ -683,7 +734,7 @@ public class HyperEdgeTest extends TestBase {
         try {
             shared1.copy(sharedEdgeNet1,
                          new EdgeFilter() {
-                    public boolean includeEdge(HyperEdge he, CyEdge edge) {
+                    public boolean includeEdge(final HyperEdge he, final CyEdge edge) {
                         return false;
                     }
                 });
@@ -694,11 +745,11 @@ public class HyperEdgeTest extends TestBase {
         }
 
         // simple test:
-        int                       num_hes = manager.getNumHyperEdges(net1);
+        int                       numHes = manager.getNumHyperEdges(net1);
         Map<HyperEdge, HyperEdge> result  = he1.copy(net1,
                                                      EdgeFilters.ALL_EDGES_FILTER);
         HyperEdge                 he1Copy = result.get(he1);
-        Assert.assertTrue(manager.getNumHyperEdges(net1) == (num_hes + 1));
+        Assert.assertTrue(manager.getNumHyperEdges(net1) == (numHes + 1));
         Assert.assertTrue(he1Copy.getNumEdges() == he1.getNumEdges());
         Assert.assertTrue(he1Copy.getNumNodes() == he1.getNumNodes());
 
@@ -706,8 +757,8 @@ public class HyperEdgeTest extends TestBase {
         addExtraUserAttributes(he1Copy.getConnectorNode());
         result = he1Copy.copy(net1, EdgeFilters.ALL_EDGES_FILTER);
 
-        HyperEdge he1CopyCopy = result.get(he1Copy);
-        Assert.assertTrue(manager.getNumHyperEdges(net1) == (num_hes + 2));
+        final HyperEdge he1CopyCopy = result.get(he1Copy);
+        Assert.assertTrue(manager.getNumHyperEdges(net1) == (numHes + 2));
         Assert.assertTrue(he1CopyCopy.getNumEdges() == he1.getNumEdges());
         Assert.assertTrue(he1CopyCopy.getNumNodes() == he1.getNumNodes());
         // Test that added attributes are the same:
@@ -715,46 +766,46 @@ public class HyperEdgeTest extends TestBase {
         he1CopyCopy.destroy();
 
         // Now copy a shared HyperEdge without following shared edges:
-        num_hes = manager.getNumHyperEdges(sharedEdgeNet1);
+        numHes = manager.getNumHyperEdges(sharedEdgeNet1);
         result  = shared1.copy(sharedEdgeNet1, EdgeFilters.UNSHARED_EDGES_FILTER);
 
         HyperEdge shared1Copy = result.get(shared1);
         Assert.assertTrue(
-            manager.getNumHyperEdges(sharedEdgeNet1) == (num_hes + 1));
+            manager.getNumHyperEdges(sharedEdgeNet1) == (numHes + 1));
         // add checks here:
 
         // Now copy a shared HyperEdge following shared edges:
-        num_hes     = manager.getNumHyperEdges(sharedEdgeNet1);
+        numHes     = manager.getNumHyperEdges(sharedEdgeNet1);
         result      = shared1.copy(sharedEdgeNet1, EdgeFilters.ALL_EDGES_FILTER);
         shared1Copy = result.get(shared1);
 
-        HyperEdge shared2Copy = result.get(shared2);
-        HyperEdge shared3Copy = result.get(shared3);
+        final HyperEdge shared2Copy = result.get(shared2);
+        final HyperEdge shared3Copy = result.get(shared3);
 
         Assert.assertTrue(
-            manager.getNumHyperEdges(sharedEdgeNet1) == (num_hes + 3));
+            manager.getNumHyperEdges(sharedEdgeNet1) == (numHes + THREE));
 
         // &&&& add checks here:
 
         // Now test EdgeFilters.EdgeListFilter:
-        List<CyEdge> edgeList = new ArrayList<CyEdge>();
-        edgeList.add(he1.getAnEdge(S));
-        edgeList.add(he1.getAnEdge(M));
+        final List<CyEdge> edgeList = new ArrayList<CyEdge>();
+        edgeList.add(he1.getAnEdge(sNode));
+        edgeList.add(he1.getAnEdge(mNode));
         result  = he1.copy(net1, new EdgeFilters.EdgeListFilter(edgeList));
         he1Copy = result.get(he1);
         Assert.assertTrue(
-            (he1Copy.getNumNodes() == 2) && he1Copy.hasNode(S) &&
-            he1Copy.hasNode(M));
+            (he1Copy.getNumNodes() == 2) && he1Copy.hasNode(sNode) &&
+            he1Copy.hasNode(mNode));
 
         // Now test EdgeFilters.NodeListFilter:
-        List<CyNode> nodeList = new ArrayList<CyNode>();
-        nodeList.add(M);
-        nodeList.add(P);
+        final List<CyNode> nodeList = new ArrayList<CyNode>();
+        nodeList.add(mNode);
+        nodeList.add(pNode);
         result  = he1.copy(net1, new EdgeFilters.NodeListFilter(nodeList));
         he1Copy = result.get(he1);
         Assert.assertTrue(
-            (he1Copy.getNumNodes() == 2) && he1Copy.hasNode(M) &&
-            he1Copy.hasNode(P));
+            (he1Copy.getNumNodes() == 2) && he1Copy.hasNode(mNode) &&
+            he1Copy.hasNode(pNode));
         shared1Copy.destroy();
         shared2Copy.destroy();
         shared3Copy.destroy();
@@ -762,9 +813,9 @@ public class HyperEdgeTest extends TestBase {
         // test copy of user additional attributes:
     }
 
-    private void testExtraUserAttributes(CyNode node) {
-        String       nodeID = node.getIdentifier();
-        CyAttributes attrs = Cytoscape.getNodeAttributes();
+    private void testExtraUserAttributes(final CyNode node) {
+        final String       nodeID = node.getIdentifier();
+        final CyAttributes attrs = Cytoscape.getNodeAttributes();
         Assert.assertTrue(Boolean.TRUE.equals(attrs.getBooleanAttribute(
                                                                         nodeID,
                                                                         "BooleanTest")));
@@ -772,19 +823,20 @@ public class HyperEdgeTest extends TestBase {
             "string test value".equals(attrs.getStringAttribute(
                                                                 nodeID,
                                                                 "StringTest")));
-        Assert.assertTrue(new Integer(6).equals(attrs.getIntegerAttribute(
+        final Integer sixInt = SIX;
+        Assert.assertTrue(sixInt.equals(attrs.getIntegerAttribute(
                                                                           nodeID,
                                                                           "IntegerTest")));
         Assert.assertTrue(new Double(5.0).equals(attrs.getDoubleAttribute(
                                                                           nodeID,
                                                                           "DoubleTest")));
 
-        List<String> listVal = attrs.getListAttribute(nodeID, "ListTest");
+        final List<String> listVal = attrs.getListAttribute(nodeID, "ListTest");
         Assert.assertTrue(
             (listVal.size() == 2) && listVal.contains("list test value1") &&
             listVal.contains("list test value2"));
 
-        Map<String, String> mapVal = attrs.getMapAttribute(nodeID, "MapTest");
+        final Map<String, String> mapVal = attrs.getMapAttribute(nodeID, "MapTest");
         Assert.assertTrue(
             (mapVal.size() == 2) &&
             "map key1 value".equals(mapVal.get("map key1")) &&
@@ -792,20 +844,20 @@ public class HyperEdgeTest extends TestBase {
         testExtraComplexAttributes(node);
     }
 
-    private void addExtraUserAttributes(CyNode node) {
-        String       nodeID = node.getIdentifier();
-        CyAttributes attrs = Cytoscape.getNodeAttributes();
-        attrs.setAttribute(nodeID, "BooleanTest", new Boolean(true));
+    private void addExtraUserAttributes(final CyNode node) {
+        final String       nodeID = node.getIdentifier();
+        final CyAttributes attrs = Cytoscape.getNodeAttributes();
+        attrs.setAttribute(nodeID, "BooleanTest", true);
         attrs.setAttribute(nodeID, "StringTest", "string test value");
-        attrs.setAttribute(nodeID, "IntegerTest", new Integer(6));
+        attrs.setAttribute(nodeID, "IntegerTest", SIX);
         attrs.setAttribute(nodeID, "DoubleTest", new Double(5.0));
 
-        List<String> listTestValue = new ArrayList<String>();
+        final List<String> listTestValue = new ArrayList<String>();
         listTestValue.add("list test value1");
         listTestValue.add("list test value2");
         attrs.setListAttribute(nodeID, "ListTest", listTestValue);
 
-        Map<String, String> mapTestValue = new HashMap<String, String>();
+        final Map<String, String> mapTestValue = new HashMap<String, String>();
         mapTestValue.put("map key1", "map key1 value");
         mapTestValue.put("map key2", "map key2 value");
         attrs.setMapAttribute(nodeID, "MapTest", mapTestValue);
@@ -814,11 +866,11 @@ public class HyperEdgeTest extends TestBase {
         addExtraComplexUserAttributes(node);
     }
 
-    private void addExtraComplexUserAttributes(CyNode node) {
-        String                 nodeID  = node.getIdentifier();
-        CyAttributes           attrs   = Cytoscape.getNodeAttributes();
-        MultiHashMap           mmap    = attrs.getMultiHashMap();
-        MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
+    private void addExtraComplexUserAttributes(final CyNode node) {
+        final String                 nodeID  = node.getIdentifier();
+        final CyAttributes           attrs   = Cytoscape.getNodeAttributes();
+        final MultiHashMap           mmap    = attrs.getMultiHashMap();
+        final MultiHashMapDefinition mmapDef = attrs.getMultiHashMapDefinition();
 
         if (mmapDef.getAttributeValueType("p-valuesTest") < 0) {
             mmapDef.defineAttribute(
@@ -843,109 +895,103 @@ public class HyperEdgeTest extends TestBase {
                 });
         }
 
-        mmap.setAttributeValue(nodeID,
+	mmap.setAttributeValue(nodeID,
                                "p-valuesTest",
                                new Double(0.5),
-                               new Object[] { "Jojo", new Integer(0) });
+                               new Object[] { JOJO, 0 });
         mmap.setAttributeValue(nodeID,
                                "p-valuesTest",
                                new Double(0.6),
-                               new Object[] { "Jojo", new Integer(1) });
+                               new Object[] { JOJO, 1 });
         mmap.setAttributeValue(nodeID,
                                "p-valuesTest",
                                new Double(0.6),
-                               new Object[] { "Jojo", new Integer(2) });
+                               new Object[] { JOJO, 2 });
         mmap.setAttributeValue(nodeID,
                                "p-valuesTest",
                                new Double(0.7),
-                               new Object[] { "Harry", new Integer(0) });
+                               new Object[] { HARRY, 0 });
         mmap.setAttributeValue(nodeID,
                                "p-valuesTest",
                                new Double(0.6),
-                               new Object[] { "Harry", new Integer(1) });
+                               new Object[] { HARRY, 1 });
 
         mmap.setAttributeValue(nodeID,
                                "TextSourceInfo",
                                "url1: sentence1",
                                new Object[] {
-                                   "url1", new Integer(0), new Integer(0)
+                                   "url1", 0, 0
                                });
         mmap.setAttributeValue(nodeID,
                                "TextSourceInfo",
                                "url1: sentence2",
                                new Object[] {
-                                   "url1", new Integer(0), new Integer(1)
+                                   "url1", 0, 1
                                });
         mmap.setAttributeValue(nodeID,
                                "TextSourceInfo",
                                "url1: sentence3",
                                new Object[] {
-                                   "url1", new Integer(0), new Integer(10)
+                                   "url1", 0, TEN
                                });
         mmap.setAttributeValue(nodeID,
                                "TextSourceInfo",
                                "url1: publication 1",
                                new Object[] {
-                                   "url1", new Integer(1), new Integer(0)
+                                   "url1", 1, 0
                                });
         mmap.setAttributeValue(nodeID,
                                "TextSourceInfo",
                                "url2: sentence1",
                                new Object[] {
-                                   "url2", new Integer(0), new Integer(6)
+                                   "url2", 0, SIX
                                });
         mmap.setAttributeValue(nodeID,
                                "TextSourceInfo",
                                "url2: publication 1",
                                new Object[] {
-                                   "url2", new Integer(1), new Integer(0)
-                               });
+                                   "url2", 1, 0});
 
     }
 
-    private void testExtraComplexAttributes(CyNode node) {
-        String       nodeID = node.getIdentifier();
-        CyAttributes attrs = Cytoscape.getNodeAttributes();
-        MultiHashMap mmap  = attrs.getMultiHashMap();
+    private void testExtraComplexAttributes(final CyNode node) {
+        final String       nodeID = node.getIdentifier();
+        final CyAttributes attrs = Cytoscape.getNodeAttributes();
+        final MultiHashMap mmap  = attrs.getMultiHashMap();
         Assert.assertTrue(new Double(0.5).equals(mmap.getAttributeValue(
                                                                         nodeID,
                                                                         "p-valuesTest",
                                                                         new Object[] {
-                                                                            "Jojo",
-                                                                            new Integer(
-            0)
+                                                                            JOJO,
+                                                                            0
                                                                         })));
         Assert.assertTrue(new Double(0.6).equals(mmap.getAttributeValue(
                                                                         nodeID,
                                                                         "p-valuesTest",
                                                                         new Object[] {
-                                                                            "Jojo",
-                                                                            new Integer(
-            1)
+                                                                            JOJO,
+                                                                            1
                                                                         })));
         Assert.assertTrue(new Double(0.6).equals(mmap.getAttributeValue(
                                                                         nodeID,
                                                                         "p-valuesTest",
                                                                         new Object[] {
-                                                                            "Jojo",
-                                                                            new Integer(
-            2)
+                                                                            JOJO,
+                                                                            2
                                                                         })));
         Assert.assertTrue(new Double(0.7).equals(mmap.getAttributeValue(
                                                                         nodeID,
                                                                         "p-valuesTest",
                                                                         new Object[] {
-                                                                            "Harry",
-                                                                            new Integer(
-            0)
+                                                                            HARRY,
+                                                                            0
                                                                         })));
         Assert.assertTrue(new Double(0.6).equals(mmap.getAttributeValue(
                                                                         nodeID,
                                                                         "p-valuesTest",
                                                                         new Object[] {
-                                                                            "Harry",
-                                                                            new Integer(
-            1)
+                                                                            HARRY,
+                                                                            1
                                                                         })));
 
         Assert.assertTrue("url1: sentence1".equals(mmap.getAttributeValue(
@@ -953,24 +999,21 @@ public class HyperEdgeTest extends TestBase {
                                                                           "TextSourceInfo",
                                                                           new Object[] {
                                                                               "url1",
-                                                                              new Integer(
-            0), new Integer(0)
+                                                                              0,0
                                                                           })));
         Assert.assertTrue("url1: sentence2".equals(mmap.getAttributeValue(
                                                                           nodeID,
                                                                           "TextSourceInfo",
                                                                           new Object[] {
                                                                               "url1",
-                                                                              new Integer(
-            0), new Integer(1)
+                                                                              0,1
                                                                           })));
         Assert.assertTrue("url1: sentence3".equals(mmap.getAttributeValue(
                                                                           nodeID,
                                                                           "TextSourceInfo",
                                                                           new Object[] {
                                                                               "url1",
-                                                                              new Integer(
-            0), new Integer(10)
+                                                                              0,TEN
                                                                           })));
 
         Assert.assertTrue(
@@ -979,8 +1022,7 @@ public class HyperEdgeTest extends TestBase {
                                                                 "TextSourceInfo",
                                                                 new Object[] {
                                                                     "url1",
-                                                                    new Integer(1),
-                                                                    new Integer(0)
+                                                                    1,0
                                                                 })));
 
         Assert.assertTrue("url2: sentence1".equals(mmap.getAttributeValue(
@@ -988,8 +1030,7 @@ public class HyperEdgeTest extends TestBase {
                                                                           "TextSourceInfo",
                                                                           new Object[] {
                                                                               "url2",
-                                                                              new Integer(
-            0), new Integer(6)
+                                                                              0,SIX
                                                                           })));
         Assert.assertTrue(
             "url2: publication 1".equals(mmap.getAttributeValue(
@@ -997,28 +1038,30 @@ public class HyperEdgeTest extends TestBase {
                                                                 "TextSourceInfo",
                                                                 new Object[] {
                                                                     "url2",
-                                                                    new Integer(1),
-                                                                    new Integer(0)
+                                                                    1,0
                                                                 })));
     }
 
+    /**
+     * Test destroying hyperedges.
+     */
     public void testDestroy() {
         manager.reset(false);
         setUp1(true);
 
         // test destroy():
-        int    num_hes      = manager.getNumHyperEdges(null);
-        int    num_edges    = manager.getNumEdges(null);
-        int    num_nodes    = manager.getNumNodes(null);
-        CyNode he1_cn       = he1.getConnectorNode();
-        CyNode hd1_cn       = hd1.getConnectorNode();
-        CyNode shared1_cn   = shared1.getConnectorNode();
-        CyNode shared2_cn   = shared2.getConnectorNode();
-        CyNode unshared1_cn = unshared1.getConnectorNode();
+        final int    numHes      = manager.getNumHyperEdges(null);
+        final int    numEdges    = manager.getNumEdges(null);
+        final int    numNodes    = manager.getNumNodes(null);
+        final CyNode he1Cn       = he1.getConnectorNode();
+        final CyNode hd1Cn       = hd1.getConnectorNode();
+        final CyNode shared1Cn   = shared1.getConnectorNode();
+        final CyNode shared2Cn   = shared2.getConnectorNode();
+        final CyNode unshared1Cn = unshared1.getConnectorNode();
 
         // Add a regular CyEdge to unshared1_cn:
-        CyEdge regularEdge = HEUtils.createHEEdge(unshared1_cn,
-                                                A,
+        final CyEdge regularEdge = HEUtils.createHEEdge(unshared1Cn,
+                                                aNode,
                                                 HEUtils.generateUUID(null));
         sharedEdgeNet1.restoreEdge(regularEdge);
         he1.destroy();
@@ -1030,7 +1073,7 @@ public class HyperEdgeTest extends TestBase {
         // test access to deleted HyperEdges throws exception:
         Assert.assertTrue(he1.getState() == LifeState.DELETED);
         Assert.assertTrue(hd1.isState(LifeState.DELETED));
-        System.out.println("LIFESTATE = " + he1.getState());
+        CyLogger.getLogger().debug("LIFESTATE = " + he1.getState());
 
         try {
             // all regular operations should fail:
@@ -1041,42 +1084,45 @@ public class HyperEdgeTest extends TestBase {
         }
 
         // Now check that stuff is deleted:
-        Assert.assertTrue(manager.getNumHyperEdges(null) == (num_hes - 6));
-        Assert.assertTrue(manager.getNumEdges(null) == (num_edges - 17));
+        Assert.assertTrue(manager.getNumHyperEdges(null) == (numHes - SIX));
+        Assert.assertTrue(manager.getNumEdges(null) == (numEdges - 17));
         // S,M,P, shared1 and shared2 connector nodes gone:
-        Assert.assertTrue(manager.getNumNodes(null) == (num_nodes - 7));
+        Assert.assertTrue(manager.getNumNodes(null) == (numNodes - 7));
 
         // all edges should be gone:
-        Assert.assertFalse(net1.containsEdge(he1_sub));
-        Assert.assertFalse(net1.containsEdge(he1_med));
-        Assert.assertFalse(net1.containsEdge(he1_prod));
-        Assert.assertFalse(net1.containsEdge(hd1_med));
-        Assert.assertFalse(net1.containsEdge(hd1_sub));
-        // TODO: FIX: Uncomment when Cytoscape session reader fixed:
-         Assert.assertFalse(net1.containsEdge(hd1_imed));
+        Assert.assertFalse(net1.containsEdge(he1Sub));
+        Assert.assertFalse(net1.containsEdge(he1Med));
+        Assert.assertFalse(net1.containsEdge(he1Prod));
+        Assert.assertFalse(net1.containsEdge(hd1Med));
+        Assert.assertFalse(net1.containsEdge(hd1Sub));
+        // TODO FIX: Uncomment when Cytoscape session reader fixed:
+         Assert.assertFalse(net1.containsEdge(hd1Imed));
 
         // leave normal nodes and Connector nodes with regular edges
         // alone:
-        Assert.assertTrue(net1.containsNode(S));
-        Assert.assertTrue(net1.containsNode(M));
-        Assert.assertTrue(net1.containsNode(P));
-        Assert.assertFalse(net1.containsNode(he1_cn));
-        Assert.assertFalse(net1.containsNode(hd1_cn));
-        Assert.assertFalse(sharedEdgeNet1.containsNode(shared1_cn));
-        Assert.assertFalse(sharedEdgeNet1.containsNode(shared2_cn));
-        Assert.assertTrue(sharedEdgeNet1.containsNode(unshared1_cn));
-        Assert.assertFalse(sharedEdgeNet2.containsNode(unshared1_cn));
+        Assert.assertTrue(net1.containsNode(sNode));
+        Assert.assertTrue(net1.containsNode(mNode));
+        Assert.assertTrue(net1.containsNode(pNode));
+        Assert.assertFalse(net1.containsNode(he1Cn));
+        Assert.assertFalse(net1.containsNode(hd1Cn));
+        Assert.assertFalse(sharedEdgeNet1.containsNode(shared1Cn));
+        Assert.assertFalse(sharedEdgeNet1.containsNode(shared2Cn));
+        Assert.assertTrue(sharedEdgeNet1.containsNode(unshared1Cn));
+        Assert.assertFalse(sharedEdgeNet2.containsNode(unshared1Cn));
     }
 
+    /**
+     * Test the HyperEdge constructors.
+     */
     public void testConstructors() {
-        // TODO: ADD MORE TESTS:
+        // TODO ADD MORE TESTS:
         // TEST constructors:
         manager.reset(false);
         setUp1(true);
 
         // try null CyNetwork:
         try {
-            factory.createHyperEdge(S, EXTRA, M, EdgeTypeMap.PRODUCT, null);
+            factory.createHyperEdge(sNode, EXTRA_LABEL, mNode, EdgeTypeMap.PRODUCT, null);
             Assert.fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // ok
@@ -1084,49 +1130,49 @@ public class HyperEdgeTest extends TestBase {
 
         // create with an unregistered edgeIType in EdgeTypeMap and default
         // type:
-        CyNetwork cnet1  = Cytoscape.createNetwork("cnet1");
-        HyperEdge new1   = factory.createHyperEdge(S,
-                                                   EXTRA,
-                                                   M,
+        final CyNetwork cnet1  = Cytoscape.createNetwork("cnet1");
+        final HyperEdge new1   = factory.createHyperEdge(sNode,
+                                                   EXTRA_LABEL,
+                                                   mNode,
                                                    EdgeTypeMap.PRODUCT,
                                                    cnet1);
-        CyEdge    S_edge = new1.getAnEdge(S);
-        CyEdge    M_edge = new1.getAnEdge(M);
-        Assert.assertTrue(S_edge.getSource() == S);
-        Assert.assertTrue(M_edge.getTarget() == M);
-        Assert.assertTrue(new1.getAnEdge(S).getSource() == S);
-        Assert.assertTrue(new1.getAnEdge(M).getTarget() == M);
+        final CyEdge    sEdge = new1.getAnEdge(sNode);
+        CyEdge    mEdge = new1.getAnEdge(mNode);
+        Assert.assertTrue(sEdge.getSource() == sNode);
+        Assert.assertTrue(mEdge.getTarget() == mNode);
+        Assert.assertTrue(new1.getAnEdge(sNode).getSource() == sNode);
+        Assert.assertTrue(new1.getAnEdge(mNode).getTarget() == mNode);
 
         // create with a registered edgeIType in EdgeTypeMap and default
         // type:
-        CyNode[] nodes = new CyNode[3];
-        String[] types = new String[3];
-        nodes[0] = M;
-        nodes[1] = P;
-        nodes[2] = A;
+        final CyNode[] nodes = new CyNode[THREE];
+        final String[] types = new String[THREE];
+        nodes[0] = mNode;
+        nodes[1] = pNode;
+        nodes[2] = aNode;
         types[0] = EdgeTypeMap.SUBSTRATE;
         types[1] = EdgeTypeMap.ACTIVATING_MEDIATOR;
-        types[2] = EXTRA;
-        factory.getEdgeTypeMap().put(EXTRA, EdgeRole.TARGET);
+        types[2] = EXTRA_LABEL;
+        factory.getEdgeTypeMap().put(EXTRA_LABEL, EdgeRole.TARGET);
 
-        HyperEdge new2 = factory.createHyperEdge(nodes, types, cnet1);
-        M_edge = new2.getAnEdge(M);
+        final HyperEdge new2 = factory.createHyperEdge(nodes, types, cnet1);
+        mEdge = new2.getAnEdge(mNode);
 
-        CyEdge P_edge = new2.getAnEdge(P);
-        CyEdge A_edge = new2.getAnEdge(A);
-        Assert.assertTrue(M_edge.getSource() == M);
-        Assert.assertTrue(P_edge.getSource() == P);
-        Assert.assertTrue(new2.getAnEdge(P).getSource() == P);
-        Assert.assertTrue(A_edge.getTarget() == A);
-        Assert.assertTrue(new2.getAnEdge(A).getTarget() == A);
+        final CyEdge pEdge = new2.getAnEdge(pNode);
+        final CyEdge aEdge = new2.getAnEdge(aNode);
+        Assert.assertTrue(mEdge.getSource() == mNode);
+        Assert.assertTrue(pEdge.getSource() == pNode);
+        Assert.assertTrue(new2.getAnEdge(pNode).getSource() == pNode);
+        Assert.assertTrue(aEdge.getTarget() == aNode);
+        Assert.assertTrue(new2.getAnEdge(aNode).getTarget() == aNode);
 
         // try using connector node in constructor:
-        CyNode cn = he1.getConnectorNode();
+        final CyNode cn = he1.getConnectorNode();
 
         try {
             factory.createHyperEdge(cn,
                                     EdgeTypeMap.SUBSTRATE,
-                                    M,
+                                    mNode,
                                     EdgeTypeMap.PRODUCT,
                                     null);
             Assert.fail("Expected IllegalArgumentException");
@@ -1142,21 +1188,21 @@ public class HyperEdgeTest extends TestBase {
         }
 
         try {
-            factory.createHyperEdge(S, null, null, null, null);
+            factory.createHyperEdge(sNode, null, null, null, null);
             Assert.fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // ok
         }
 
         try {
-            factory.createHyperEdge(S, EdgeTypeMap.SUBSTRATE, null, null, null);
+            factory.createHyperEdge(sNode, EdgeTypeMap.SUBSTRATE, null, null, null);
             Assert.fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // ok
         }
 
         try {
-            factory.createHyperEdge(S, EdgeTypeMap.SUBSTRATE, M, null, null);
+            factory.createHyperEdge(sNode, EdgeTypeMap.SUBSTRATE, mNode, null, null);
             Assert.fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // ok

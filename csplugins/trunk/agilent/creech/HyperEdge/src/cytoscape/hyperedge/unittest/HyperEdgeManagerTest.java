@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         HyperEdgeManagerTest.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/unittest/HyperEdgeManagerTest.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Tue Sep 20 06:09:08 2005
-* Modified:     Thu Apr 03 11:00:38 2008 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/* 
 *
 * Revisions:
 *
@@ -49,6 +70,7 @@ import cytoscape.hyperedge.HyperEdge;
 import cytoscape.hyperedge.event.EventNote;
 import cytoscape.hyperedge.impl.utils.HEUtils;
 
+import giny.model.GraphObject;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -66,44 +88,126 @@ import java.util.Set;
  * @version 1.1
  */
 public class HyperEdgeManagerTest extends TestBase {
-    private final String TEST1_LOC = "hyperedge-manager-test1.xml";
-    private final String TEST2_LOC = "hyperedge-manager-test2.xml";
-    private final String NET6_NAME = "net6";
-    private final String NET7_NAME = "net7";
-    private PersistenceHelper _pHelper              = new PersistenceHelper();
-    protected CyNode    B;
-    protected CyNode    C;
-    protected CyNode    D;
-    protected CyNode    E;
-    protected CyEdge    he2_sub;
-    protected CyEdge    he2_prod;
-    protected CyEdge    he3_sub;
-    protected CyEdge    he3_prod;
-    protected CyEdge    he3_med1;
-    protected CyEdge    he3_med2;
-    protected String    he2_sub_uuid;
-    protected String    he2_prod_uuid;
-    protected String    he3_sub_uuid;
-    protected String    he3_prod_uuid;
-    protected String    he3_med1_uuid;
-    protected String    he3_med2_uuid;
-    protected HyperEdge he2;
-    protected HyperEdge he3;
-    protected CyNetwork net6;
-    protected CyNetwork net7;
-    private boolean     _saved = false;
+    private static final String IN_HYPER_EDGE = " in HyperEdge ";
+    private static final String HE3_NAME = "he3";
+    private static final String HE2_NAME = "he2";
+    private static final String TEST1_LOC = "hyperedge-manager-test1.xml";
+    private static final String TEST2_LOC = "hyperedge-manager-test2.xml";
+    private static final String NET3_NAME = "net3";
+    private static final String NET4_NAME = "net4";
+    private static final String NET6_NAME = "net6";
+    private static final String NET7_NAME = "net7";
+    private static final String M2_NAME = "M2";	
+    private static final String B_NAME = "B";
+    private static final String C_NAME = "C";
+    private static final String D_NAME = "D";
+    private static final String E_NAME = "E";
 
+    private static final int THREE = 3;
+    private static final int FOUR = 4;
+    private static final int FIVE = 5;
+    private static final int SIX  = 6;
+    private static final int SEVEN = 7;	
+    private static final int EIGHT = 8;
+    private static final int NINE = 9;
+    private static final int TWELVE = 12;
+    private static final int THIRTEEN = 13;
+    
+    /**
+     * HyperEdge 2's edge to substrate.
+     */
+    private CyEdge    he2Sub;
+    /**
+     * HyperEdge 2's edge to product.
+     */
+    private CyEdge    he2Prod;
+    /**
+     * HyperEdge 3's edge to substrate.
+     */
+    private CyEdge    he3Sub;
+    /**
+     * HyperEdge 3's to to product.
+     */
+    private CyEdge    he3Prod;
+    /**
+     * HyperEdge 3's edge to mediator 1.
+     */
+    private CyEdge    he3Med1;
+    /**
+     * HyperEdge 3's edge to mediator 2.
+     */
+    private CyEdge    he3Med2;
+    /**
+     * HyperEdge 2's UUID of the edge to the substrate.
+     */
+    private String    he2SubUuid;
+    /**
+     * HyperEdge 2's UUID of the edge to the product.
+     */
+    private String    he2ProdUuid;
+    /**
+     * HyperEdge 3's UUID of the edge to the substrate.
+     */
+    private String    he3SubUuid;
+    /**
+     * HyperEdge 3's UUID of the edge to the product.
+     */
+    private String    he3ProdUuid;
+    /**
+     * HyperEdge 3's UUID of the edge to the mediator 1.
+     */
+    private String    he3Med1Uuid;
+    /**
+     * HyperEdge 3's UUID of the edge to the mediator 2.
+     */
+    private String    he3Med2Uuid;
+    /**
+     * HyperEdge 2.
+     */
+    private HyperEdge he2;
+    /**
+     * HyperEdge 3.
+     */
+    private HyperEdge he3;
+    /**
+     * Network 6.
+     */
+    private CyNetwork net6;
+    /**
+     * Network 7.
+     */
+    private CyNetwork net7;
+    private CyNode    bNode;
+    private CyNode    cNode;
+    private CyNode    dNode;
+    private CyNode    eNode;
+    private PersistenceHelper pHelper              = new PersistenceHelper();
+    private boolean     saved;
+
+    /** 
+     * Bonehead Checkstyle requires constructor and javadoc.
+     */
+    public HyperEdgeManagerTest () { super();}
+    
+    /**
+     * JUnit method for running tests for this class.
+     * @return the Test to peform.
+     */
     public static Test suite() {
         // Will dynamically add all methods as tests that begin with 'test'
         // and have no arguments:
         return new TestSuite(HyperEdgeManagerTest.class);
     }
-
-    public static void main(String[] args) {
+    
+    /**
+     * Main for test.
+     * @param args standard args to main program
+     */
+    public static void main(final String[] args) {
         junit.textui.TestRunner.run(suite());
     }
 
-    private void setup(InMemoryAndRestoredTestType test) {
+    private void setup(final InMemoryAndRestoredTestType test) {
         // he1  --> S(su)M(ame)P(pr)
         // hd1  --> S(su)M(ime)S(su)
         // he2  --> A(su)B(pr)
@@ -114,55 +218,55 @@ public class HyperEdgeManagerTest extends TestBase {
         // net7 --> he1, he3
         // 
         manager.reset(false);
-        setUp1(!_saved);
-        B    = Cytoscape.getCyNode("B", true);
-        C    = Cytoscape.getCyNode("C", true);
-        D    = Cytoscape.getCyNode("D", true);
-        E    = Cytoscape.getCyNode("E", true);
+        setUp1(!saved);
+        bNode    = Cytoscape.getCyNode(B_NAME, true);
+        cNode    = Cytoscape.getCyNode(C_NAME, true);
+        dNode    = Cytoscape.getCyNode(D_NAME, true);
+        eNode    = Cytoscape.getCyNode(E_NAME, true);
         net6 = Cytoscape.createNetwork(NET6_NAME);
         net7 = Cytoscape.createNetwork(NET7_NAME);
-        he2  = factory.createHyperEdge(A,
+        he2  = factory.createHyperEdge(aNode,
                                        EdgeTypeMap.SUBSTRATE,
-                                       B,
+                                       bNode,
                                        EdgeTypeMap.PRODUCT,
                                        net6);
-        he2.setName("he2");
-        he2_sub  = he2.getAnEdge(A);
-        he2_prod = he2.getAnEdge(B);
+        he2.setName(HE2_NAME);
+        he2Sub  = he2.getAnEdge(aNode);
+        he2Prod = he2.getAnEdge(bNode);
 
         // only reset the uuids when generating what will be in the loaded files.
-        if (!_saved) {
-            he2_sub_uuid  = he2_sub.getIdentifier();
-            he2_prod_uuid = he2_prod.getIdentifier();
+        if (!saved) {
+            he2SubUuid  = he2Sub.getIdentifier();
+            he2ProdUuid = he2Prod.getIdentifier();
         }
 
-        List<String> edges = new ArrayList<String>();
+        final List<String> edges = new ArrayList<String>();
         edges.add(EdgeTypeMap.SUBSTRATE);
         edges.add(EdgeTypeMap.PRODUCT);
         edges.add(EdgeTypeMap.ACTIVATING_MEDIATOR);
         edges.add(EdgeTypeMap.INHIBITING_MEDIATOR);
 
-        List<CyNode> nodes = new ArrayList<CyNode>();
-        nodes.add(A);
-        nodes.add(B);
-        nodes.add(C);
-        nodes.add(D);
+        final List<CyNode> nodes = new ArrayList<CyNode>();
+        nodes.add(aNode);
+        nodes.add(bNode);
+        nodes.add(cNode);
+        nodes.add(dNode);
         he3 = factory.createHyperEdge(nodes, edges, net7);
-        he3.setName("he3");
-        he3_sub  = he3.getAnEdge(A);
-        he3_prod = he3.getAnEdge(B);
-        he3_med1 = he3.getAnEdge(C);
-        he3_med2 = he3.getAnEdge(D);
+        he3.setName(HE3_NAME);
+        he3Sub  = he3.getAnEdge(aNode);
+        he3Prod = he3.getAnEdge(bNode);
+        he3Med1 = he3.getAnEdge(cNode);
+        he3Med2 = he3.getAnEdge(dNode);
 
         // only reset the uuids when generating what will be in the loaded files.
-        if (!_saved) {
-            he3_sub_uuid  = he3_sub.getIdentifier();
-            he3_prod_uuid = he3_prod.getIdentifier();
-            he3_med1_uuid = he3_med1.getIdentifier();
-            he3_med2_uuid = he3_med2.getIdentifier();
+        if (!saved) {
+            he3SubUuid  = he3Sub.getIdentifier();
+            he3ProdUuid = he3Prod.getIdentifier();
+            he3Med1Uuid = he3Med1.getIdentifier();
+            he3Med2Uuid = he3Med2.getIdentifier();
         }
 
-        // TODO: Move to eventTest
+        // TODO Move to eventTest
         new ChangeTester(he1, EventNote.Type.HYPEREDGE,
                          EventNote.SubType.ADDED, true, net6);
         he1.addToNetwork(net6);
@@ -171,7 +275,7 @@ public class HyperEdgeManagerTest extends TestBase {
         he1.removeFromNetwork(net1);
         Assert.assertTrue(containsHEParts(net6, he1));
 
-        // TODO: Move to eventTest
+        // TODO Move to eventTest
         new ChangeTester(hd1, EventNote.Type.HYPEREDGE,
                          EventNote.SubType.ADDED, true, net6);
         // he2.addToCyNetwork(net6);
@@ -183,20 +287,22 @@ public class HyperEdgeManagerTest extends TestBase {
         // Any final, specific things to setup:
         test.extraSetup();
 
-        if (!_saved) {
+        if (!saved) {
             // MLC 08/15/06 FIX!!:
-             _pHelper.saveTestHelper(TEST1_LOC, net6);
-             _pHelper.saveTestHelper(TEST2_LOC, net7);
+             pHelper.saveTestHelper(TEST1_LOC, net6);
+             pHelper.saveTestHelper(TEST2_LOC, net7);
             // MLC 08/15/06 END PATCH
-            _saved = true;
+            saved = true;
         }
     }
-
-    protected void tearDown1(boolean fire_events) {
-        super.tearDown1(fire_events);
+    /**
+     * {@inheritDoc}
+     */
+    protected void tearDown1(final boolean fireEvents) {
+        super.tearDown1(fireEvents);
         // remove Cytoscape networks:
 	// MLC 04/03/08 BEGIN:
-        Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
+        final Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
 
         for (CyNetwork net : nets) {
             Cytoscape.destroyNetwork(net);
@@ -207,124 +313,131 @@ public class HyperEdgeManagerTest extends TestBase {
 
     // When we reload and reset the sample objects, reconnect the
     // instance variables to the newly read objects.
+    /**
+     * {@inheritDoc}
+     */
     protected void reconnectInstanceVariables() {
         super.reconnectInstanceVariables();
         he2      = null;
         he3      = null;
-        he2_sub  = null;
-        he2_prod = null;
-        he3_sub  = null;
-        he3_prod = null;
-        he3_med1 = null;
-        he3_med2 = null;
+        he2Sub  = null;
+        he2Prod = null;
+        he3Sub  = null;
+        he3Prod = null;
+        he3Med1 = null;
+        he3Med2 = null;
 
         CyEdge           edge;
-        String           e_uuid;
-        Iterator<CyEdge> edge_it = manager.getEdgesByNetwork(null);
+        String           eUuid;
+        final Iterator<CyEdge> edgeIt = manager.getEdgesByNetwork(null);
 
-        while (edge_it.hasNext()) {
-            edge   = edge_it.next();
-            e_uuid = edge.getIdentifier();
+        while (edgeIt.hasNext()) {
+            edge   = edgeIt.next();
+            eUuid = edge.getIdentifier();
 
-            if (he2_sub_uuid.equals(e_uuid)) {
-                he2_sub = edge;
-            } else if (he2_prod_uuid.equals(e_uuid)) {
-                he2_prod = edge;
-            } else if (he3_sub_uuid.equals(e_uuid)) {
-                he3_sub = edge;
-            } else if (he3_prod_uuid.equals(e_uuid)) {
-                he3_prod = edge;
-            } else if (he3_med1_uuid.equals(e_uuid)) {
-                he3_med1 = edge;
-            } else if (he3_med2_uuid.equals(e_uuid)) {
-                he3_med2 = edge;
+            if (he2SubUuid.equals(eUuid)) {
+                he2Sub = edge;
+            } else if (he2ProdUuid.equals(eUuid)) {
+                he2Prod = edge;
+            } else if (he3SubUuid.equals(eUuid)) {
+                he3Sub = edge;
+            } else if (he3ProdUuid.equals(eUuid)) {
+                he3Prod = edge;
+            } else if (he3Med1Uuid.equals(eUuid)) {
+                he3Med1 = edge;
+            } else if (he3Med2Uuid.equals(eUuid)) {
+                he3Med2 = edge;
             }
         }
 
-        String              h_name;
+        String              hName;
         HyperEdge           he;
-        Iterator<HyperEdge> he_it = manager.getHyperEdgesByNetwork(null);
+        final Iterator<HyperEdge> heIt = manager.getHyperEdgesByNetwork(null);
 
-        while (he_it.hasNext()) {
-            he     = he_it.next();
-            h_name = he.getName();
+        while (heIt.hasNext()) {
+            he     = heIt.next();
+            hName = he.getName();
 
-            if ("he2".equals(h_name)) {
+            if (HE2_NAME.equals(hName)) {
                 he2 = he;
-            } else if ("he3".equals(h_name)) {
+            } else if (HE3_NAME.equals(hName)) {
                 he3 = he;
             }
         }
 
-        B = Cytoscape.getCyNode("B", false);
-        C = Cytoscape.getCyNode("C", false);
-        D = Cytoscape.getCyNode("D", false);
-        E = Cytoscape.getCyNode("E", false);
+        bNode = Cytoscape.getCyNode(B_NAME, false);
+        cNode = Cytoscape.getCyNode(C_NAME, false);
+        dNode = Cytoscape.getCyNode(D_NAME, false);
+        eNode = Cytoscape.getCyNode(E_NAME, false);
 
         Assert.assertNotNull(he2);
         Assert.assertNotNull(he3);
-        Assert.assertNotNull(he2_sub);
-        Assert.assertNotNull(he2_prod);
-        Assert.assertNotNull(he3_sub);
-        Assert.assertNotNull(he3_prod);
-        Assert.assertNotNull(he3_med1);
-        Assert.assertNotNull(B);
-        Assert.assertNotNull(C);
-        Assert.assertNotNull(D);
-        Assert.assertNotNull(E);
+        Assert.assertNotNull(he2Sub);
+        Assert.assertNotNull(he2Prod);
+        Assert.assertNotNull(he3Sub);
+        Assert.assertNotNull(he3Prod);
+        Assert.assertNotNull(he3Med1);
+        Assert.assertNotNull(bNode);
+        Assert.assertNotNull(cNode);
+        Assert.assertNotNull(dNode);
+        Assert.assertNotNull(eNode);
 
 	// MLC 04/03/08 BEGIN:
         // Now connect up networks:
-        Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
+        final Set<CyNetwork> nets = (Set<CyNetwork>) Cytoscape.getNetworkSet();
         HEUtils.log("nets size = " + nets.size());
 
         for (CyNetwork net : nets) {
             HEUtils.log("NET = " + net.getTitle());
 
-            if (NET6_NAME.equals(net.getTitle())) {
+            final String reconnectMsg = "reconnect Network with name = ";
+	    if (NET6_NAME.equals(net.getTitle())) {
                 HEUtils.log(
-                    "reconnect Network with name = " + NET6_NAME);
+                    reconnectMsg + NET6_NAME);
                 net6 = net;
             } else if (NET7_NAME.equals(net.getTitle())) {
                 HEUtils.log(
-                    "reconnect Network with name = " + NET7_NAME);
+                    reconnectMsg + NET7_NAME);
                 net7 = net;
             }
         }
 	// MLC 04/03/08 END.
     }
 
+    /**
+     * Overall HyperEdgeManager tester.
+     */
     public void testHyperEdgeManager() {
-        runTest(new testAddAndRemoveFromCyNetwork());
-        runTest(new testgetEdgesByCyNetwork());
-        runTest(new testGetEdgesByNode());
-        runTest(new testGetCyNetwork());
-        runTest(new testGetHyperEdgeForConnectorNode());
-        runTest(new testGetHyperEdgesByEdgeTypes());
-        runTest(new testGetHyperEdgesByCyNetwork());
-        runTest(new testGetHyperEdgesByNode());
-        runTest(new testGetHyperEdgesByNodes());
-        runTest(new testGetHyperEdgeVersion());
-        runTest(new testGetHyperEdgeVersionNumber());
-        runTest(new testGetNodesByEdgeTypes());
-        runTest(new testGetNumEdges());
-        runTest(new testGetNumHyperEdges());
-        runTest(new testGetNumNodes());
-        runTest(new testInHyperEdge());
-        runTest(new testIsConnectorNode());
+        runTest(new TestAddAndRemoveFromCyNetwork());
+        runTest(new TestGetEdgesByCyNetwork());
+        runTest(new TestGetEdgesByNode());
+        runTest(new TestGetCyNetwork());
+        runTest(new TestGetHyperEdgeForConnectorNode());
+        runTest(new TestGetHyperEdgesByEdgeTypes());
+        runTest(new TestGetHyperEdgesByCyNetwork());
+        runTest(new TestGetHyperEdgesByNode());
+        runTest(new TestGetHyperEdgesByNodes());
+        runTest(new TestGetHyperEdgeVersion());
+        runTest(new TestGetHyperEdgeVersionNumber());
+        runTest(new TestGetNodesByEdgeTypes());
+        runTest(new TestGetNumEdges());
+        runTest(new TestGetNumHyperEdges());
+        runTest(new TestGetNumNodes());
+        runTest(new TestInHyperEdge());
+        runTest(new TestIsConnectorNode());
         // load tested elsewhere
-        runTest(new testReset());
+        runTest(new TestReset());
 
         // save tested elsewhere
     }
 
-    protected void runTest(InMemoryAndRestoredTestType test) {
+    private void runTest(final InMemoryAndRestoredTestType test) {
         setup(test);
         test.runIt();
         tearDown1(false);
 
 	// MLC 04/03/08 BEGIN:
-	// TODO: Restoring the networks and running the tests isn't working.
+	// TODO Restoring the networks and running the tests isn't working.
 	//       This may be because of a bug in HyperEdge or a bug in the
 	//       testing. Need to fix in the future:
 	//        manager.reset(false);
@@ -340,37 +453,27 @@ public class HyperEdgeManagerTest extends TestBase {
     }
 
     // ensure all of he's contents are in GP:
-    private boolean containsHEParts(CyNetwork gp, HyperEdge he) {
+    private boolean containsHEParts(final CyNetwork gp, final HyperEdge he) {
         CyNode           node;
         CyEdge           edge;
-        Iterator<CyEdge> edge_it = he.getEdges(null);
+        final Iterator<CyEdge> edgeIt = he.getEdges(null);
 
-        while (edge_it.hasNext()) {
-            edge = edge_it.next();
+        while (edgeIt.hasNext()) {
+            edge = edgeIt.next();
 
             if (!gp.containsEdge(edge)) {
-                HEUtils.log(
-                    "Didn't find edge " + edge.getIdentifier() +
-                    " in HyperEdge " + he.getName() +
-                    " that should belong to the CyNetwork " +
-                    ((CyNetwork) gp).getTitle());
-
+		logDidNotFindGo ("edge", edge, he, (CyNetwork)gp);
                 return false;
             }
         }
 
-        Iterator<CyNode> node_it = he.getNodes(null);
+        final Iterator<CyNode> nodeIt = he.getNodes(null);
 
-        while (node_it.hasNext()) {
-            node = node_it.next();
+        while (nodeIt.hasNext()) {
+            node = nodeIt.next();
 
             if (!gp.containsNode(node)) {
-                HEUtils.log(
-                    "Didn't find node " + node.getIdentifier() +
-                    " in HyperEdge " + he.getName() +
-                    " that should belong to the CyNetwork " +
-                    ((CyNetwork) gp).getTitle());
-
+		logDidNotFindGo ("node", node, he, (CyNetwork)gp);
                 return false;
             }
         }
@@ -378,9 +481,17 @@ public class HyperEdgeManagerTest extends TestBase {
         return true;
     }
 
+    private void logDidNotFindGo (final String nodeOrEdge, final GraphObject go, final HyperEdge he, final CyNetwork net) {
+	HEUtils.log(
+		"Didn't find " + nodeOrEdge + " " + go.getIdentifier() +
+		IN_HYPER_EDGE + he.getName() +
+		" that should belong to the CyNetwork " +
+		net.getTitle());
+    }
+
     // ensure none of he's contents are in GP:
-    private boolean containsNoHEParts(CyNetwork gp, Iterator<CyEdge> edgeIt,
-                                      String heName) {
+    private boolean containsNoHEParts(final CyNetwork gp, final Iterator<CyEdge> edgeIt,
+                                      final String heName) {
         CyEdge edge;
 
         while (edgeIt.hasNext()) {
@@ -388,7 +499,7 @@ public class HyperEdgeManagerTest extends TestBase {
 
             if (gp.containsEdge(edge)) {
                 HEUtils.log(
-                    "Found edge " + edge.getIdentifier() + " in HyperEdge " +
+                    "Found edge " + edge.getIdentifier() + IN_HYPER_EDGE +
                     heName + " that shouldn't belong to the CyNetwork " +
                     ((CyNetwork) gp).getTitle());
 
@@ -401,14 +512,15 @@ public class HyperEdgeManagerTest extends TestBase {
     }
 
     private interface InMemoryAndRestoredTestType {
-        public void runIt();
+        void runIt();
 
-        public void extraSetup();
+        void extraSetup();
     }
 
-    private class testGetCyNetwork implements InMemoryAndRestoredTestType {
+    private final class TestGetCyNetwork implements InMemoryAndRestoredTestType {
+	private TestGetCyNetwork () {}
         public void runIt() {
-            // TODO: Move to HyperEdgeTest:
+            // TODO Move to HyperEdgeTest:
             testIterator(he1.getNetworks(), 2);
             testIterator(he3.getNetworks(), 1);
             testIterator(he2.getNetworks(), 1);
@@ -419,37 +531,38 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testGetHyperEdgeForConnectorNode
+    private final class TestGetHyperEdgeForConnectorNode
         implements InMemoryAndRestoredTestType {
+	private TestGetHyperEdgeForConnectorNode () {}
         public void runIt() {
-            CyNode he1_con = he1.getConnectorNode();
-            CyNode he2_con = he2.getConnectorNode();
+            final CyNode he1Con = he1.getConnectorNode();
+            final CyNode he2Con = he2.getConnectorNode();
             Assert.assertNull(manager.getHyperEdgeForConnectorNode(null));
-            Assert.assertNull(manager.getHyperEdgeForConnectorNode(S));
+            Assert.assertNull(manager.getHyperEdgeForConnectorNode(sNode));
 
-            HyperEdge he = manager.getHyperEdgeForConnectorNode(he1_con);
+            HyperEdge he = manager.getHyperEdgeForConnectorNode(he1Con);
             Assert.assertTrue(he == he1);
-            // Assert.assertTrue (manager.getHyperEdgeForConnectorNode (he1_con) == he1);
-            he = manager.getHyperEdgeForConnectorNode(he2_con);
+            // Assert.assertTrue (manager.getHyperEdgeForConnectorNode (he1Con) == he1);
+            he = manager.getHyperEdgeForConnectorNode(he2Con);
             Assert.assertTrue(he == he2);
 
-            // Assert.assertTrue (manager.getHyperEdgeForConnectorNode (he2_con) == he2);
+            // Assert.assertTrue (manager.getHyperEdgeForConnectorNode (he2Con) == he2);
         }
 
         public void extraSetup() {
         }
     }
 
-    private class testGetHyperEdgesByCyNetwork
+    private final class TestGetHyperEdgesByCyNetwork
         implements InMemoryAndRestoredTestType {
-        public void runIt() {
+	private TestGetHyperEdgesByCyNetwork () {}
+	public void runIt() {
             // returns all hes:
-            testIterator(manager.getHyperEdgesByNetwork(null), 4);
-
+            testIterator(manager.getHyperEdgesByNetwork(null), FOUR);
             // test no hes:
-            CyNetwork net3 = Cytoscape.createNetwork("net3");
+            final CyNetwork net3 = Cytoscape.createNetwork(NET3_NAME);
             testIterator(manager.getHyperEdgesByNetwork(net3), 0);
-            testIterator(manager.getHyperEdgesByNetwork(net6), 3);
+            testIterator(manager.getHyperEdgesByNetwork(net6), THREE);
             testIterator(manager.getHyperEdgesByNetwork(net7), 2);
         }
 
@@ -457,69 +570,71 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testGetHyperEdgesByNode implements InMemoryAndRestoredTestType {
+    private final class TestGetHyperEdgesByNode implements InMemoryAndRestoredTestType {
+	private TestGetHyperEdgesByNode () {}
         public void runIt() {
             // should return all hes:
-            testIterator(manager.getHyperEdgesByNode(null, null), 4);
+            testIterator(manager.getHyperEdgesByNode(null, null), FOUR);
             // all hes in net6:
-            testIterator(manager.getHyperEdgesByNode(null, net6), 3);
+            testIterator(manager.getHyperEdgesByNode(null, net6), THREE);
             // all hes in net7:
             testIterator(manager.getHyperEdgesByNode(null, net7), 2);
             // node S over all gps:
-            testIterator(manager.getHyperEdgesByNode(S, null), 2);
+            testIterator(manager.getHyperEdgesByNode(sNode, null), 2);
             // node A over all gps:
-            testIterator(manager.getHyperEdgesByNode(A, null), 2);
+            testIterator(manager.getHyperEdgesByNode(aNode, null), 2);
             // node S over net6
-            testIterator(manager.getHyperEdgesByNode(S, net6), 2);
+            testIterator(manager.getHyperEdgesByNode(sNode, net6), 2);
             // node A over net6:
-            testIterator(manager.getHyperEdgesByNode(A, net6), 1);
+            testIterator(manager.getHyperEdgesByNode(aNode, net6), 1);
             // test node not in gp:
-            testIterator(manager.getHyperEdgesByNode(D, net6), 0);
+            testIterator(manager.getHyperEdgesByNode(dNode, net6), 0);
         }
 
         public void extraSetup() {
         }
     }
 
-    private class testGetHyperEdgesByNodes
+    private final class TestGetHyperEdgesByNodes
         implements InMemoryAndRestoredTestType {
+	private TestGetHyperEdgesByNodes () {}
         public void runIt() {
             // return all HyperEdges:
-            testIterator(manager.getHyperEdgesByNodes(null, null), 4);
+            testIterator(manager.getHyperEdgesByNodes(null, null), FOUR);
             // return all HyperEdges in net6:
-            testIterator(manager.getHyperEdgesByNodes(null, net6), 3);
+            testIterator(manager.getHyperEdgesByNodes(null, net6), THREE);
             // return all HyperEdges in net7:
             testIterator(manager.getHyperEdgesByNodes(null, net7), 2);
 
             // try empty collection:
-            Collection<CyNode> col = new ArrayList<CyNode>();
+            final Collection<CyNode> col = new ArrayList<CyNode>();
             testIterator(manager.getHyperEdgesByNodes(col, null), 0);
-            col.add(S);
+            col.add(sNode);
             // node S over all gps:
             testIterator(manager.getHyperEdgesByNodes(col, null), 2);
             // node S over net6
             testIterator(manager.getHyperEdgesByNodes(col, net6), 2);
-            col.add(P);
+            col.add(pNode);
             // node S & P over all gps:
             testIterator(manager.getHyperEdgesByNodes(col, null), 1);
             // node S & P over net6:
             testIterator(manager.getHyperEdgesByNodes(col, net6), 1);
             col.clear();
-            col.add(A);
-            col.add(B);
+            col.add(aNode);
+            col.add(bNode);
             // node A & B over all gps:
             testIterator(manager.getHyperEdgesByNodes(col, null), 2);
             // node A & B over net6:
             testIterator(manager.getHyperEdgesByNodes(col, net6), 1);
             // node A & B over net7:
             testIterator(manager.getHyperEdgesByNodes(col, net7), 1);
-            col.add(C);
+            col.add(cNode);
             // node A & B & C over net6:
             testIterator(manager.getHyperEdgesByNodes(col, net6), 0);
             // node A & B & C over net6:
             testIterator(manager.getHyperEdgesByNodes(col, net7), 1);
             // no match:
-            col.add(S);
+            col.add(sNode);
             testIterator(manager.getHyperEdgesByNodes(col, null), 0);
         }
 
@@ -527,9 +642,10 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testGetHyperEdgeVersion implements InMemoryAndRestoredTestType {
+    private final class TestGetHyperEdgeVersion implements InMemoryAndRestoredTestType {
+	private TestGetHyperEdgeVersion () {}
         public void runIt() {
-            String version = manager.getHyperEdgeVersion();
+            final String version = manager.getHyperEdgeVersion();
             Assert.assertTrue((version != null) && (version.length() > 0));
         }
 
@@ -537,40 +653,42 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testGetHyperEdgeVersionNumber
+    private final class TestGetHyperEdgeVersionNumber
         implements InMemoryAndRestoredTestType {
+	private TestGetHyperEdgeVersionNumber () {}
         public void runIt() {
-            Double version_num = manager.getHyperEdgeVersionNumber();
-            Assert.assertTrue((version_num != null));
+            final Double versionNum = manager.getHyperEdgeVersionNumber();
+            Assert.assertTrue((versionNum != null));
         }
 
         public void extraSetup() {
         }
     }
 
-    private class testGetHyperEdgesByEdgeTypes
+    private final class TestGetHyperEdgesByEdgeTypes
         implements InMemoryAndRestoredTestType {
+	private TestGetHyperEdgesByEdgeTypes () {}
         public void runIt() {
             // return all HyperEdges:
-            testIterator(manager.getHyperEdgesByEdgeTypes(null, null), 4);
+            testIterator(manager.getHyperEdgesByEdgeTypes(null, null), FOUR);
             // return all HyperEdges in net6:
-            testIterator(manager.getHyperEdgesByEdgeTypes(null, net6), 3);
+            testIterator(manager.getHyperEdgesByEdgeTypes(null, net6), THREE);
             // return all HyperEdges in net7:
             testIterator(manager.getHyperEdgesByEdgeTypes(null, net7), 2);
 
             // try empty collection:
-            Collection<String> col = new ArrayList<String>();
+            final Collection<String> col = new ArrayList<String>();
             testIterator(manager.getHyperEdgesByEdgeTypes(col, null), 0);
             col.add(EdgeTypeMap.SUBSTRATE);
             // any "substrate" roles:
-            testIterator(manager.getHyperEdgesByEdgeTypes(col, null), 4);
+            testIterator(manager.getHyperEdgesByEdgeTypes(col, null), FOUR);
             // any "substrate" roles in net6:
-            testIterator(manager.getHyperEdgesByEdgeTypes(col, net6), 3);
+            testIterator(manager.getHyperEdgesByEdgeTypes(col, net6), THREE);
             // any "substrate" roles in net7:
             testIterator(manager.getHyperEdgesByEdgeTypes(col, net7), 2);
             col.add(EdgeTypeMap.PRODUCT);
             // any "substrate" & "product" roles:
-            testIterator(manager.getHyperEdgesByEdgeTypes(col, null), 3);
+            testIterator(manager.getHyperEdgesByEdgeTypes(col, null), THREE);
             // any "substrate" & "product" roles in net6:
             testIterator(manager.getHyperEdgesByEdgeTypes(col, net6), 2);
             // any "substrate" & "product" roles in net7:
@@ -591,17 +709,18 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testGetNodesByEdgeTypes implements InMemoryAndRestoredTestType {
-        public void runIt() {
+    private final class TestGetNodesByEdgeTypes implements InMemoryAndRestoredTestType {
+	private TestGetNodesByEdgeTypes () {}
+	public void runIt() {
             // return all CyNodes:
-            testIterator(manager.getNodesByEdgeTypes(null, null), 7);
+            testIterator(manager.getNodesByEdgeTypes(null, null), SEVEN);
             // return all CyNodes in net6:
-            testIterator(manager.getNodesByEdgeTypes(null, net6), 5);
+            testIterator(manager.getNodesByEdgeTypes(null, net6), FIVE);
             // return all CyNodes in net7:
-            testIterator(manager.getNodesByEdgeTypes(null, net7), 7);
+            testIterator(manager.getNodesByEdgeTypes(null, net7), SEVEN);
 
             // try empty collection:
-            Collection<String> col = new ArrayList<String>();
+            final Collection<String> col = new ArrayList<String>();
             testIterator(manager.getNodesByEdgeTypes(col, null), 0);
             col.add(EdgeTypeMap.SUBSTRATE);
             // any "substrate" nodes (A & S):
@@ -612,14 +731,14 @@ public class HyperEdgeManagerTest extends TestBase {
             testIterator(manager.getNodesByEdgeTypes(col, net7), 2);
             col.add(EdgeTypeMap.INHIBITING_MEDIATOR);
             // all nodes containing "SUBSTRATE" or "INHIBITING_MEDIATOR" (A & S & M & D):
-            testIterator(manager.getNodesByEdgeTypes(col, null), 4);
+            testIterator(manager.getNodesByEdgeTypes(col, null), FOUR);
             col.remove(EdgeTypeMap.INHIBITING_MEDIATOR);
 
             col.add(EdgeTypeMap.ACTIVATING_MEDIATOR);
             // all nodes in net7 containing "SUBSTRATE" or
             // "ACTIVATING_MEDIATOR" (S & M & A & C):
-            testIterator(manager.getNodesByEdgeTypes(col, net7), 4);
-            testIterator(manager.getNodesByEdgeTypes(col, net6), 3);
+            testIterator(manager.getNodesByEdgeTypes(col, net7), FOUR);
+            testIterator(manager.getNodesByEdgeTypes(col, net6), THREE);
 
             col.clear();
             col.add("jojo");
@@ -630,7 +749,8 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testGetEdgesByNode implements InMemoryAndRestoredTestType {
+    private final class TestGetEdgesByNode implements InMemoryAndRestoredTestType {
+	private TestGetEdgesByNode () {}
         public void runIt() {
             // should return all edges:
             testIterator(manager.getEdgesByNode(null, null),
@@ -642,28 +762,29 @@ public class HyperEdgeManagerTest extends TestBase {
             testIterator(manager.getEdgesByNode(null, net7),
                          manager.getNumEdges(net7));
             // node S over all gps:
-            testIterator(manager.getEdgesByNode(S, null), 3);
+            testIterator(manager.getEdgesByNode(sNode, null), THREE);
             // node A over all gps:
-            testIterator(manager.getEdgesByNode(A, null), 2);
+            testIterator(manager.getEdgesByNode(aNode, null), 2);
             // node S over net7
-            testIterator(manager.getEdgesByNode(S, net7), 1);
+            testIterator(manager.getEdgesByNode(sNode, net7), 1);
             // node A over net6:
-            testIterator(manager.getEdgesByNode(A, net6), 1);
+            testIterator(manager.getEdgesByNode(aNode, net6), 1);
             // test node not in gp:
-            testIterator(manager.getEdgesByNode(D, net6), 0);
+            testIterator(manager.getEdgesByNode(dNode, net6), 0);
         }
 
         public void extraSetup() {
         }
     }
 
-    private class testGetNumHyperEdges implements InMemoryAndRestoredTestType {
+    private final class TestGetNumHyperEdges implements InMemoryAndRestoredTestType {
+	private TestGetNumHyperEdges () {}
         public void runIt() {
-            Assert.assertTrue(manager.getNumHyperEdges(null) == 4);
-            Assert.assertTrue(manager.getNumHyperEdges(net6) == 3);
+            Assert.assertTrue(manager.getNumHyperEdges(null) == FOUR);
+            Assert.assertTrue(manager.getNumHyperEdges(net6) == THREE);
             Assert.assertTrue(manager.getNumHyperEdges(net7) == 2);
 
-            CyNetwork net4 = Cytoscape.createNetwork("net4");
+            final CyNetwork net4 = Cytoscape.createNetwork(NET4_NAME);
             Assert.assertTrue(manager.getNumHyperEdges(net4) == 0);
         }
 
@@ -671,16 +792,18 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testGetNumNodes implements InMemoryAndRestoredTestType {
+    private final class TestGetNumNodes implements InMemoryAndRestoredTestType {
+
+	private TestGetNumNodes () {}
         public void runIt() {
             // Would be 7, but we added m2 to he1, making it 8:
-            Assert.assertTrue(manager.getNumNodes(null) == 8);
+            Assert.assertTrue(manager.getNumNodes(null) == EIGHT);
             // Would be 5, but we added m2 to he1, making it 6:
-            Assert.assertTrue(manager.getNumNodes(net6) == 6);
+            Assert.assertTrue(manager.getNumNodes(net6) == SIX);
             // Would be 7, but we added m2 to he1, making it 8:
-            Assert.assertTrue(manager.getNumNodes(net7) == 8);
+            Assert.assertTrue(manager.getNumNodes(net7) == EIGHT);
 
-            CyNetwork net4 = Cytoscape.createNetwork("net4");
+            final CyNetwork net4 = Cytoscape.createNetwork(NET4_NAME);
             Assert.assertTrue(manager.getNumNodes(net4) == 0);
         }
 
@@ -688,18 +811,20 @@ public class HyperEdgeManagerTest extends TestBase {
             // test that addEdge() does right behavior so
             // CyNetwork's that he1 belongs to are updated with
             // the new node:
-            CyNode m2 = Cytoscape.getCyNode("M2", true);
+            final CyNode m2 = Cytoscape.getCyNode(M2_NAME, true);
             he1.addEdge(m2, EdgeTypeMap.INHIBITING_MEDIATOR);
         }
     }
 
-    private class testGetNumEdges implements InMemoryAndRestoredTestType {
-        public void runIt() {
-            Assert.assertTrue(manager.getNumEdges(null) == 12);
-            Assert.assertTrue(manager.getNumEdges(net6) == 8);
-            Assert.assertTrue(manager.getNumEdges(net7) == 7);
+    private final class TestGetNumEdges implements InMemoryAndRestoredTestType {
+	private TestGetNumEdges () {}
 
-            CyNetwork net4 = Cytoscape.createNetwork("net4");
+	public void runIt() {
+            Assert.assertTrue(manager.getNumEdges(null) == TWELVE);
+            Assert.assertTrue(manager.getNumEdges(net6) == EIGHT);
+            Assert.assertTrue(manager.getNumEdges(net7) == SEVEN);
+
+            final CyNetwork net4 = Cytoscape.createNetwork(NET4_NAME);
             Assert.assertTrue(manager.getNumEdges(net4) == 0);
         }
 
@@ -707,99 +832,104 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testgetEdgesByCyNetwork implements InMemoryAndRestoredTestType {
-        public void runIt() {
+    private final class TestGetEdgesByCyNetwork implements InMemoryAndRestoredTestType {
+	private TestGetEdgesByCyNetwork () {}
+
+	public void runIt() {
             // returns all roles:
             // Would be 12, but we added INHIBITING_MEDIATOR to he1,
             // making it 13:
-            testIterator(manager.getEdgesByNetwork(null), 13);
+            testIterator(manager.getEdgesByNetwork(null), THIRTEEN);
 
             // test no roles:
-            CyNetwork net3 = Cytoscape.createNetwork("net3");
+            final CyNetwork net3 = Cytoscape.createNetwork(NET3_NAME);
             testIterator(manager.getEdgesByNetwork(net3), 0);
             // Would be 8, but we added INHIBITING_MEDIATOR to he1,
             // making it 9:
-            testIterator(manager.getEdgesByNetwork(net6), 9);
+            testIterator(manager.getEdgesByNetwork(net6), NINE);
             // Would be 7, but we added INHIBITING_MEDIATOR to he1,
             // making it 8:
-            testIterator(manager.getEdgesByNetwork(net7), 8);
+            testIterator(manager.getEdgesByNetwork(net7), EIGHT);
         }
 
         public void extraSetup() {
             // test that addEdge() does right behavior so
             // CyNetwork's that he1 belongs to are updated with
             // the new edge:
-            CyNode m2 = Cytoscape.getCyNode("M2", true);
+            final CyNode m2 = Cytoscape.getCyNode(M2_NAME, true);
             he1.addEdge(m2, EdgeTypeMap.INHIBITING_MEDIATOR);
         }
     }
 
-    private class testInHyperEdge implements InMemoryAndRestoredTestType {
+    private final class TestInHyperEdge implements InMemoryAndRestoredTestType {
+	private TestInHyperEdge () {}
         public void runIt() {
             Assert.assertFalse(manager.inHyperEdge(null, null));
             Assert.assertFalse(manager.inHyperEdge(null, net6));
             // not in any hyperedge:
-            Assert.assertFalse(manager.inHyperEdge(E, null));
-            Assert.assertTrue(manager.inHyperEdge(S, null));
-            Assert.assertTrue(manager.inHyperEdge(S, net6));
-            Assert.assertTrue(manager.inHyperEdge(S, net7));
-            Assert.assertFalse(manager.inHyperEdge(D, net6));
-            Assert.assertTrue(manager.inHyperEdge(D, net7));
+            Assert.assertFalse(manager.inHyperEdge(eNode, null));
+            Assert.assertTrue(manager.inHyperEdge(sNode, null));
+            Assert.assertTrue(manager.inHyperEdge(sNode, net6));
+            Assert.assertTrue(manager.inHyperEdge(sNode, net7));
+            Assert.assertFalse(manager.inHyperEdge(dNode, net6));
+            Assert.assertTrue(manager.inHyperEdge(dNode, net7));
         }
 
         public void extraSetup() {
         }
     }
 
-    private class testIsConnectorNode implements InMemoryAndRestoredTestType {
+    private final class TestIsConnectorNode implements InMemoryAndRestoredTestType {
+	private TestIsConnectorNode () {}
         public void runIt() {
             // in net6 & net7:
-            CyNode he1_con = he1.getConnectorNode();
+            final CyNode he1Con = he1.getConnectorNode();
 
             // in net6:
-            CyNode hd1_con = hd1.getConnectorNode();
+            final CyNode hd1Con = hd1.getConnectorNode();
 
             // in net7:
-            CyNode he3_con = he3.getConnectorNode();
+            final CyNode he3Con = he3.getConnectorNode();
             Assert.assertFalse(manager.isConnectorNode(null, null));
             // node not a connector:
-            Assert.assertFalse(manager.isConnectorNode(S, null));
-            Assert.assertFalse(manager.isConnectorNode(B, net6));
+            Assert.assertFalse(manager.isConnectorNode(sNode, null));
+            Assert.assertFalse(manager.isConnectorNode(bNode, net6));
             // wrong network:
-            Assert.assertFalse(manager.isConnectorNode(he3_con, net6));
-            Assert.assertFalse(manager.isConnectorNode(hd1_con, net7));
+            Assert.assertFalse(manager.isConnectorNode(he3Con, net6));
+            Assert.assertFalse(manager.isConnectorNode(hd1Con, net7));
             // matches:
-            Assert.assertTrue(manager.isConnectorNode(he1_con, net6));
-            Assert.assertTrue(manager.isConnectorNode(he1_con, net7));
-            Assert.assertTrue(manager.isConnectorNode(he1_con, null));
-            Assert.assertTrue(manager.isConnectorNode(hd1_con, null));
-            Assert.assertTrue(manager.isConnectorNode(he3_con, null));
+            Assert.assertTrue(manager.isConnectorNode(he1Con, net6));
+            Assert.assertTrue(manager.isConnectorNode(he1Con, net7));
+            Assert.assertTrue(manager.isConnectorNode(he1Con, null));
+            Assert.assertTrue(manager.isConnectorNode(hd1Con, null));
+            Assert.assertTrue(manager.isConnectorNode(he3Con, null));
         }
 
         public void extraSetup() {
         }
     }
 
-    private class testReset implements InMemoryAndRestoredTestType {
+    private final class TestReset implements InMemoryAndRestoredTestType {
+	private TestReset () {}
         public void runIt() {
-            CyNode hd1_con = hd1.getConnectorNode();
-            CyNode he3_con = he3.getConnectorNode();
+            final CyNode hd1Con = hd1.getConnectorNode();
+            final CyNode he3Con = he3.getConnectorNode();
             manager.reset(false);
             Assert.assertTrue(0 == manager.getNumEdges(null));
             Assert.assertTrue(0 == manager.getNumNodes(null));
             Assert.assertTrue(0 == manager.getNumHyperEdges(null));
             // check that connectors are no longer in RootGraph:
-            //            // TODO: Replace with Cytoscape.getCyNode () calls when
+            //            // TODO Replace with Cytoscape.getCyNode () calls when
             //            //       it is fixed:
-            // Assert.assertNull(HEUtils.slowGetNode(hd1_con.getIdentifier()));
-            // Assert.assertNull(HEUtils.slowGetNode(he3_con.getIdentifier()));
+            // Assert.assertNull(HEUtils.slowGetNode(hd1Con.getIdentifier()));
+            // Assert.assertNull(HEUtils.slowGetNode(he3Con.getIdentifier()));
             //            Assert.assertNotNull(Cytoscape.getRootGraph()
-            //                                          .getNode(hd1_con.getIdentifier()));
+            //                                          .getNode(hd1Con.getIdentifier()));
             //            Assert.assertNotNull(Cytoscape.getRootGraph()
-            //                                          .getNode(he3_con.getIdentifier()));
-            Assert.assertNotNull(Cytoscape.getCyNode(hd1_con.getIdentifier(),
+            //                                          .getNode(he3Con.getIdentifier()));
+            Assert.assertNotNull(Cytoscape.getCyNode(hd1Con.getIdentifier(),
                                                      false));
-            Assert.assertNotNull(Cytoscape.getCyNode(he3_con.getIdentifier(),
+            Assert.assertNotNull(Cytoscape.getCyNode(he3Con.getIdentifier(),
                                                      false));
 
             // check no errors occur when already empty:
@@ -819,8 +949,9 @@ public class HyperEdgeManagerTest extends TestBase {
         }
     }
 
-    private class testAddAndRemoveFromCyNetwork
+    private final class TestAddAndRemoveFromCyNetwork
         implements InMemoryAndRestoredTestType {
+	private TestAddAndRemoveFromCyNetwork () {}
         public void runIt() {
             Assert.assertTrue(containsHEParts(net6, he2));
             Assert.assertTrue(containsHEParts(net6, hd1));
@@ -828,19 +959,19 @@ public class HyperEdgeManagerTest extends TestBase {
             Assert.assertTrue(containsHEParts(net7, he3));
 
             // TEST removeFromCyNetwork:
-            testIterator(manager.getHyperEdgesByNetwork(null), 4);
+            testIterator(manager.getHyperEdgesByNetwork(null), FOUR);
 
             // Assert.assertFalse(manager.removeFromCyNetwork(null, null));
-            CyNetwork emptyNet = Cytoscape.createNetwork("emptyNet");
+            final CyNetwork emptyNet = Cytoscape.createNetwork("emptyNet");
             Assert.assertFalse(he1.removeFromNetwork(emptyNet));
 
             // Assert.assertFalse(manager.removeFromCyNetwork(net6, null));
-            // TODO: Move to eventTest:
+            // TODO Move to eventTest:
             new ChangeTester(he1, EventNote.Type.HYPEREDGE,
                              EventNote.SubType.REMOVED, true, net6);
 
             // Iterator<CyEdge> edgesIt = he1.getEdges(null, net6);
-            Iterator<CyEdge> edgesIt = he1.getEdges(null);
+            final Iterator<CyEdge> edgesIt = he1.getEdges(null);
             String           heName = he1.getName();
             Assert.assertTrue(he1.removeFromNetwork(net6));
             Assert.assertTrue(containsNoHEParts(net6, edgesIt, heName));
@@ -849,9 +980,9 @@ public class HyperEdgeManagerTest extends TestBase {
             // he1 is still in net7:
             testIterator(manager.getHyperEdgesByNetwork(net6), 2);
             testIterator(manager.getHyperEdgesByNetwork(net7), 2);
-            testIterator(manager.getHyperEdgesByNetwork(null), 4);
+            testIterator(manager.getHyperEdgesByNetwork(null), FOUR);
 
-            // TODO: Move to eventTest:
+            // TODO Move to eventTest:
             new ChangeTester(he1, EventNote.Type.HYPEREDGE,
                              EventNote.SubType.REMOVED, true, net7);
 
@@ -868,7 +999,7 @@ public class HyperEdgeManagerTest extends TestBase {
             testIterator(manager.getHyperEdgesByNetwork(net7), 1);
             // // will still be 4--not affected by CyNetwork removal:
             // testIterator(manager.getHyperEdgesByCyNetwork(null), 4);
-            testIterator(manager.getHyperEdgesByNetwork(null), 3);
+            testIterator(manager.getHyperEdgesByNetwork(null), THREE);
 
             // edgesIt = he3.getEdges(null, net7);
             // Avoid ConcurrentModificationException with using edges Iterator
@@ -902,7 +1033,7 @@ public class HyperEdgeManagerTest extends TestBase {
             // testIterator(manager.getHyperEdgesByCyNetwork(null), 4);
 
             // TEST addToCyNetwork:
-            // TODO: FIX: Add tests
+            // TODO FIX: Add tests
             // Assert.assertFalse(manager.addToCyNetwork(null, null));
             // Assert.assertFalse(manager.addToCyNetwork(net6, null));
             // Assert.assertFalse(he1.addToCyNetwork(null));

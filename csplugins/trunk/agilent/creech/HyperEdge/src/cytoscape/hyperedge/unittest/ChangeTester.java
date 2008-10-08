@@ -1,20 +1,39 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         ChangeTester.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/unittest/ChangeTester.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Wed Sep 21 09:15:21 2005
-* Modified:     Fri Aug 18 07:38:03 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package cytoscape.hyperedge.unittest;
 
 import cytoscape.hyperedge.event.ChangeListener;
@@ -26,58 +45,79 @@ import junit.framework.Assert;
 /**
  * Support for testing Change Events.
  * @author Michael L. Creech
- * @version 1.5
  */
 public class ChangeTester implements ChangeListener {
-    private Object _required_affected;
-    private EventNote.Type _required_type;
-    private EventNote.SubType _required_sub_type;
-    private boolean _required_has_supporting_info;
-    private Object _required_supporting_info;
-    private boolean _check_supporting_info = true;
-    private EventNote _last_event_note;
-
-    public ChangeTester(Object required_affected, EventNote.Type required_type,
-        EventNote.SubType required_sub_type,
-        boolean required_has_supporting_info) {
-        _required_affected = required_affected;
-        _required_type = required_type;
-        _required_sub_type = required_sub_type;
-        _required_has_supporting_info = required_has_supporting_info;
-        _check_supporting_info = false;
+    private Object requiredAffected;
+    private EventNote.Type requiredType;
+    private EventNote.SubType requiredSubType;
+    private boolean requiredHasSupportingInfo;
+    private Object requiredSupportingInfo;
+    private boolean checkSupportingInfo = true;
+    private EventNote lastEventNote;
+    /**
+     * Create a ChangeTester with the given event information.
+     * @param requiredAffected the object affected by the event.
+     * @param requiredType the primary type of the change event.
+     * @param requiredSubType the supporting secondary type of the change event.
+     * @param requiredHasSupportingInfo the supporting info for this event.
+     */
+    public ChangeTester(final Object requiredAffected, final EventNote.Type requiredType,
+        final EventNote.SubType requiredSubType,
+        final boolean requiredHasSupportingInfo) {
+        this.requiredAffected = requiredAffected;
+        this.requiredType = requiredType;
+        this.requiredSubType = requiredSubType;
+        this.requiredHasSupportingInfo = requiredHasSupportingInfo;
+        this.checkSupportingInfo = false;
+    }
+    /**
+     * Create a ChangeTester with the given event information.
+     * @param requiredAffected the object affected by the event.
+     * @param requiredType the primary type of the change event.
+     * @param requiredSubType the supporting secondary type of the change event.
+     * @param requiredHasSupportingInfo true iff this event requires supporting info to be available.
+     * @param requiredSupportingInfo the supporting info for this event.
+     */
+    public ChangeTester(final Object requiredAffected, final EventNote.Type requiredType,
+        final EventNote.SubType requiredSubType,
+        final boolean requiredHasSupportingInfo, final Object requiredSupportingInfo) {
+	this.requiredAffected = requiredAffected;
+	this.requiredType = requiredType;
+	this.requiredSubType = requiredSubType;
+	this.requiredHasSupportingInfo = requiredHasSupportingInfo;
+	this.requiredSupportingInfo = requiredSupportingInfo;
     }
 
-    public ChangeTester(Object required_affected, EventNote.Type required_type,
-        EventNote.SubType required_sub_type,
-        boolean required_has_supporting_info, Object required_supporting_info) {
-        _required_affected = required_affected;
-        _required_type = required_type;
-        _required_sub_type = required_sub_type;
-        _required_has_supporting_info = required_has_supporting_info;
-        _required_supporting_info = required_supporting_info;
+    /**
+     * Set the supoorting information of this ChangeTester.
+     * @param obj the supporting information.
+     */
+    public void setSupportingInfo(final Object obj) {
+        requiredSupportingInfo = obj;
     }
 
-    public void setSupportingInfo(Object obj) {
-        _required_supporting_info = obj;
-    }
-
+    /**
+     * @return the last EventNote set.
+     */
     public EventNote getLastEventNote() {
-        return _last_event_note;
+        return lastEventNote;
     }
+    /**
+     * {@inheritDoc}
+     */
+    public void objectChanged(final EventNote en) {
+        lastEventNote = en;
+        Assert.assertTrue(en.getAffected() == requiredAffected);
+        Assert.assertTrue(en.isEventType(requiredType));
+        Assert.assertTrue(en.isEventSubType(requiredSubType));
+        Assert.assertTrue(en.hasSupportingInfo() == requiredHasSupportingInfo);
 
-    public void objectChanged(EventNote en) {
-        _last_event_note = en;
-        Assert.assertTrue(en.getAffected() == _required_affected);
-        Assert.assertTrue(en.isEventType(_required_type));
-        Assert.assertTrue(en.isEventSubType(_required_sub_type));
-        Assert.assertTrue(en.hasSupportingInfo() == _required_has_supporting_info);
-
-        if (_check_supporting_info) {
-            if (_required_supporting_info != null) {
-                Assert.assertTrue(_required_supporting_info.equals(
+        if (checkSupportingInfo) {
+            if (requiredSupportingInfo != null) {
+                Assert.assertTrue(requiredSupportingInfo.equals(
                         en.getSupportingInfo()));
             } else {
-                Assert.assertTrue(_required_supporting_info == en.getSupportingInfo());
+                Assert.assertTrue(requiredSupportingInfo == en.getSupportingInfo());
             }
         }
     }
