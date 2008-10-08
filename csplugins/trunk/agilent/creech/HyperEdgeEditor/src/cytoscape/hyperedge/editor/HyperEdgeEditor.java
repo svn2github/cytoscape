@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jul 21 10:41:18 2006
-* Modified:     Wed Dec 19 14:26:54 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Sep 25 09:58:42 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -57,7 +57,6 @@
 */
 package cytoscape.hyperedge.editor;
 
-import com.agilent.labs.lsiutils.MiscUtils;
 import com.agilent.labs.lsiutils.gui.MiscGUI;
 
 import cytoscape.CyEdge;
@@ -204,7 +203,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //        VisualStyle vizStyle = catalog.getVisualStyle(
         //            BioChemicalReactionVisualStyle.BIOCHEMICAL_REACTION_VISUAL_STYLE);
         //
-        //        //		MiscUtils.log ("Got visual Style from catalog: " + catalog 
+        //        //		CyLogger.getLogger().debug ("Got visual Style from catalog: " + catalog 
         //        //				+ " = " + vizStyle);
         //        if (_bcrVisualStyle == null) {
         //            _bcrVisualStyle = new BioChemicalReactionVisualStyle();
@@ -213,7 +212,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //        if (vizStyle == null) {
         //            vizStyle = _bcrVisualStyle.createVizMapper();
         //        } else {
-        //            //			MiscUtils.log("Calling defineVisualStyle for: " + vizStyle);
+        //            //			CyLogger.getLogger().debug("Calling defineVisualStyle for: " + vizStyle);
         //            _bcrVisualStyle.defineVisualStyle(vizStyle, manager, catalog);
         //        }
     }
@@ -234,10 +233,10 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             return;
         }
 
-        // System.out.println("HEE: Got edgeAppearanceCalculator: " + eac);		
+        // CyLogger.getLogger().debug("HEE: Got edgeAppearanceCalculator: " + eac);		
         ShapePaletteInfoGenerator palGen = CytoscapeEditorFactory.INSTANCE.createShapePaletteInfoGenerator();
 
-        // System.out.println("HEE: Got edge target arrow calculator: " + edgeCalc);
+        // CyLogger.getLogger().debug("HEE: Got edge target arrow calculator: " + edgeCalc);
         // MLC 05/10/07 BEGIN:
         //        Iterator<ShapePaletteInfo> spEntries = palGen.buildShapePaletteInfo(eac,
         //                                                                            new byte[] {
@@ -269,7 +268,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         } else {
             while (spEntries.hasNext()) {
                 ShapePaletteInfo spi = spEntries.next();
-                // System.out.println("   edge palette info = " + spi);
+                // CyLogger.getLogger().debug("   edge palette info = " + spi);
                 getShapePalette().addShape(spi.getControllingAttributeName(),
                                            spi.getKey(),
                                            // MLC 05/10/07:
@@ -350,7 +349,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             while (spEntries.hasNext()) {
                 ShapePaletteInfo spi = spEntries.next();
 
-                // System.out.println("   node palette entry = " + spi);
+                // CyLogger.getLogger().debug("   node palette entry = " + spi);
                 // MLC 05/10/07 BEGIN:
                 //                Color nodeColor = (Color) spi.getValue(VizMapUI.NODE_COLOR);
                 //                byte  nodeShape = (Byte) spi.getValue(VizMapUI.NODE_SHAPE);
@@ -536,7 +535,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         alreadyInitializing = true;
         // MLC 05/11/07 END.
         // MLC 01/15/07:
-        // MiscUtils.log("HEE: BEGIN INITIALIZECONTROLS");
+        // CyLogger.getLogger().debug("HEE: BEGIN INITIALIZECONTROLS");
         BioChemicalReactionVisualStyle.getVisualStyle()
                                       .setupVisualStyle(false, false);
         super.initializeControls(args);
@@ -567,7 +566,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //                                          JOptionPane.PLAIN_MESSAGE);
         //            return;
         //	}
-        //		MiscUtils.log ("Got visual Style from catalog: " + catalog 
+        //		CyLogger.getLogger().debug ("Got visual Style from catalog: " + catalog 
         //				+ " = " + vizStyle);
         //        if (vizStyle == null) {
         //            if (bcrVisualStyle == null) {
@@ -576,7 +575,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //
         //            vizStyle = bcrVisualStyle.createVizMapper();
         //        } else {
-        //            MiscUtils.log("Calling defineVisualStyle for: " + vizStyle);
+        //            CyLogger.getLogger().debug("Calling defineVisualStyle for: " + vizStyle);
         //            bcrVisualStyle.defineVisualStyle(vizStyle, manager, catalog);
         //        }
         //
@@ -611,7 +610,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         /*
         NodeAppearanceCalculator nac = bcrVisualStyle.getNodeAppearanceCalculator();
         
-        //                MiscUtils.log("NodeAppearanceCalculator for visual style: "
+        //                CyLogger.getLogger().debug("NodeAppearanceCalculator for visual style: "
         //                                + vizStyle + " is " + nac);
         if (nac == null) {
             String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Node Color to CytoscapeEditorManager.NODE_TYPE attribute.";
@@ -626,7 +625,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         
         //        GenericNodeColorCalculator nfill = (GenericNodeColorCalculator) nac.getNodeFillColorCalculator();
         Calculator nfill = nac.getCalculator(VisualPropertyType.NODE_FILL_COLOR);
-        MiscUtils.log("NodeColorCalculator for visual style: " +
+        CyLogger.getLogger().debug("NodeColorCalculator for visual style: " +
                       bcrVisualStyle + " is " + nfill);
         
         if (nfill == null) {
@@ -654,7 +653,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             }
         }
         
-        MiscUtils.log("DiscreteMapping for visual style: " + bcrVisualStyle +
+        CyLogger.getLogger().debug("DiscreteMapping for visual style: " + bcrVisualStyle +
                       " is " + dfill);
         
         if (dfill == null) {
@@ -711,7 +710,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
 
         // MLC 11/27/06 END.
         //	EdgeAppearanceCalculator eac = vizStyle.getEdgeAppearanceCalculator();
-        //	MiscUtils.log("Got edgeAppearanceCalculator: " + eac);
+        //	CyLogger.getLogger().debug("Got edgeAppearanceCalculator: " + eac);
         //        
         //	if (eac == null) {
         //	    String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Edge Target Arrow to an attribute.";
@@ -723,7 +722,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //	}
         //        
         //	GenericEdgeArrowCalculator edgeCalc = (GenericEdgeArrowCalculator) eac.getEdgeTargetArrowCalculator();
-        //	MiscUtils.log("Got edge target arrow calculator: " + edgeCalc);
+        //	CyLogger.getLogger().debug("Got edge target arrow calculator: " + edgeCalc);
         //        
         //	if (edgeCalc == null) {
         //	    String expDescript = "Cannot build palette.  You need to set up a Visual Style that maps Edge Target Arrow to an attribute.";
@@ -742,12 +741,12 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //	    DiscreteMapping dArrowCandidate = (DiscreteMapping) edgeMappings.get(i);
         //	    String attr = dArrowCandidate.getControllingAttributeName();
         //	    
-        //	    //			MiscUtils.log("checking attribute: " + attr
+        //	    //			CyLogger.getLogger().debug("checking attribute: " + attr
         //	    //					+ " against controlling attribute: "
         //	    //					+ controllingEdgeAttribute);
         //	    if (attr.equals(controllingEdgeAttribute)) {
         //		dArrow = dArrowCandidate;
-        //		MiscUtils.log("Got edge mapping: " + dArrow);
+        //		CyLogger.getLogger().debug("Got edge mapping: " + dArrow);
         //		
         //		break;
         //	    }
@@ -762,12 +761,12 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //	    return;
         //	}
         //        
-        //	//		MiscUtils.log("adding edge arrows to palette");
+        //	//		CyLogger.getLogger().debug("adding edge arrows to palette");
         //	Arrow edgeTargetArrow;
         //	String[] EdgeTypes = new String[] { ACTIVATION, INHIBITION, CATALYSIS };
         //        
         //	for (int i = 0; i < EdgeTypes.length; i++) {
-        //	    //			MiscUtils.log("getting map value for edge type: "
+        //	    //			CyLogger.getLogger().debug("getting map value for edge type: "
         //	    //					+ EdgeTypes[i]);
         //	    if (dArrow.getMapValue(EdgeTypes[i]) != null) {
         //		edgeTargetArrow = (Arrow) dArrow.getMapValue(EdgeTypes[i]);
@@ -775,7 +774,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         //		edgeTargetArrow = eac.getDefaultEdgeTargetArrow();
         //	    }
         //	    
-        //	    //			MiscUtils.log("Addng shape for EdgeType " + EdgeTypes[i]
+        //	    //			CyLogger.getLogger().debug("Addng shape for EdgeType " + EdgeTypes[i]
         //	    //					+ " = " + edgeTargetArrow);
         //	    shapePalette.addShape(EDGE_TYPE, EdgeTypes[i],
         //				  new CytoShapeIcon(edgeTargetArrow), EdgeTypes[i]);
@@ -823,7 +822,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
      */
     public CyNode ensureUniqueNode(String id) {
         if (id == null) {
-            MiscUtils.throwIllegalArgumentException("HyperEdgeEditor.ensureUniqueNode(): id was null!");
+            HEUtils.throwIllegalArgumentException("HyperEdgeEditor.ensureUniqueNode(): id was null!");
         }
 
         CyNode node            = Cytoscape.getCyNode(id, false);
@@ -852,7 +851,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
                                               expDescript,
                                               title,
                                               JOptionPane.PLAIN_MESSAGE);
-                MiscUtils.throwIllegalStateException("HyperEdgeEditor.ensureUniqueNode(): Couldn't find a unique varient!");
+                HEUtils.throwIllegalStateException("HyperEdgeEditor.ensureUniqueNode(): Couldn't find a unique varient!");
             }
         }
 
@@ -942,7 +941,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
 
     private void addReaction(DGraphView netView, Point2D location) {
         // MLC 01/15/07:
-        // MiscUtils.log("Adding reaction at position " + location);
+        // CyLogger.getLogger().debug("Adding reaction at position " + location);
 
         // Now create the HyperEdges:
         CyNode s1 = ensureUniqueNode("S");
@@ -998,7 +997,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
 
         // everything is set, do the op:
         // MLC 01/15/07:
-        // MiscUtils.log("addMediator: adding a real mediator");
+        // CyLogger.getLogger().debug("addMediator: adding a real mediator");
         HyperEdge he = _manager.getHyperEdgeForConnectorNode((CyNode) cNodeView.getNode());
         //        CyNode m1 = ensureUniqueNode("M");
         //        addAttribute(m1, CytoscapeEditorManager.NODE_TYPE, mediator_type);
@@ -1032,7 +1031,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
 
         // everything is set, do the op:
         // MLC 01/15/07:
-        // MiscUtils.log("addProduct: adding a real product");
+        // CyLogger.getLogger().debug("addProduct: adding a real product");
         HyperEdge he = _manager.getHyperEdgeForConnectorNode((CyNode) cNodeView.getNode());
         //        CyNode p1 = ensureUniqueNode("P");
         //        addAttribute(p1, CytoscapeEditorManager.NODE_TYPE, EdgeTypeMap.PRODUCT);
@@ -1064,7 +1063,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
 
         // everything is set, do the op:
         // MLC 01/15/07:
-        // MiscUtils.log("addSubstrate: adding a real substrate");
+        // CyLogger.getLogger().debug("addSubstrate: adding a real substrate");
         HyperEdge he = _manager.getHyperEdgeForConnectorNode((CyNode) cNodeView.getNode());
 
         // CyNode s1 = ensureUniqueNode("S");
@@ -1596,11 +1595,11 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             nv   = netView.getNodeView(node);
 
             // MLC 01/15/07:
-            // MiscUtils.log("node " + node.getIdentifier() + " offset x = " +
+            // CyLogger.getLogger().debug("node " + node.getIdentifier() + " offset x = " +
             //               nv.getXPosition() + " y = " + nv.getYPosition());
-            // MiscUtils.log("node " + node.getIdentifier() + " width = " +
+            // CyLogger.getLogger().debug("node " + node.getIdentifier() + " width = " +
             //               nv.getWidth());
-            // MiscUtils.log("node " + node.getIdentifier() + " border width = " +
+            // CyLogger.getLogger().debug("node " + node.getIdentifier() + " border width = " +
             //               nv.getBorderWidth());
             if (layoutHorizontally) {
                 nodeViewAlongDim = nv.getXPosition() + (.5 * nv.getWidth());
@@ -1616,7 +1615,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         } while (nodeIt.hasNext());
 
         // MLC 01/15/07:
-        // MiscUtils.log("max node = " + maxNodeView.getOffset());
+        // CyLogger.getLogger().debug("max node = " + maxNodeView.getOffset());
         return maxNodeView;
     }
 
@@ -1673,7 +1672,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             positionProducts(he, connectorNodeView, netView);
             positionMediators(he, connectorNodeView, netView);
 
-            // MiscUtils.log("Num nodes = " + he.getNumNodes());
+            // CyLogger.getLogger().debug("Num nodes = " + he.getNumNodes());
 
             // ((DGraphView) Cytoscape.getCurrentNetworkView()).fitSelected();
         }
@@ -1750,7 +1749,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             nodeHeight = nView.getHeight();
 
             // MLC 01/15/07:
-            // MiscUtils.log("node " + node.getIdentifier() + "with view " +
+            // CyLogger.getLogger().debug("node " + node.getIdentifier() + "with view " +
             //              nView + " width = " + nodeWidth + " height = " +
             //              nodeHeight);
             if (right) {
@@ -1761,7 +1760,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
 
             nodeY += (.5 * nodeHeight);
             // MLC 01/15/07:
-            // MiscUtils.log("final position of node " + node.getIdentifier() +
+            // CyLogger.getLogger().debug("final position of node " + node.getIdentifier() +
             //               " = " + nodeX + " " + nodeY);
             nView.setOffset(nodeX, nodeY);
             nodeY += ((.5 * nodeHeight) + NODE_VERTICAL_SEP);
@@ -1812,7 +1811,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             nodeHeight = nView.getHeight();
 
             // MLC 01/15/07:
-            // MiscUtils.log("node " + node.getIdentifier() + "with view " +
+            // CyLogger.getLogger().debug("node " + node.getIdentifier() + "with view " +
             //              nView + " width = " + nodeWidth + " height = " +
             //              nodeHeight);
             if (below) {
@@ -1823,13 +1822,13 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
 
             nodeX += (.5 * nodeWidth);
             // MLC 01/15/07:
-            // MiscUtils.log("final position of node " + node.getIdentifier() +
+            // CyLogger.getLogger().debug("final position of node " + node.getIdentifier() +
             //               " = " + nodeX + " " + nodeY);
             nView.setOffset(nodeX, nodeY);
             // MLC 01/15/07:
-            // MiscUtils.log("node after setOffset() " + node.getIdentifier() +
+            // CyLogger.getLogger().debug("node after setOffset() " + node.getIdentifier() +
             //               " width = " + nodeWidth);
-            // MiscUtils.log("node after setOffset()" + node.getIdentifier() +
+            // CyLogger.getLogger().debug("node after setOffset()" + node.getIdentifier() +
             //               " height = " + nodeHeight);
             // get to the left edge of the next node position:
             nodeX += ((.5 * nodeWidth) + NODE_HORIZONTAL_SEP);
@@ -1854,7 +1853,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             node       = nodeIt.next();
             nodeHeight = netView.getNodeView(node).getHeight();
             // MLC 01/15/07:
-            // MiscUtils.log("node " + node.getIdentifier() + " height = " +
+            // CyLogger.getLogger().debug("node " + node.getIdentifier() + " height = " +
             //               nodeHeight);
             totalHeight += nodeHeight;
 
@@ -1880,7 +1879,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
             node      = nodeIt.next();
             nodeWidth = netView.getNodeView(node).getWidth();
             // MLC 01/15/07:
-            // MiscUtils.log("node " + node.getIdentifier() + " width = " +
+            // CyLogger.getLogger().debug("node " + node.getIdentifier() + " width = " +
             //              nodeWidth);
             totalWidth += nodeWidth;
 
@@ -1890,7 +1889,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         } while (nodeIt.hasNext());
 
         // MLC 01/15/07:
-        // MiscUtils.log("computeTotalNodeWidth=" + totalWidth);
+        // CyLogger.getLogger().debug("computeTotalNodeWidth=" + totalWidth);
         return totalWidth;
     }
 
@@ -1905,7 +1904,7 @@ public class HyperEdgeEditor extends DefaultCytoscapeEditor {
         nv.setOffset(nextLocn[0], nextLocn[1]);
 
         // MLC 01/15/07:
-        // MiscUtils.log("location of connector node " + node + " = " +
+        // CyLogger.getLogger().debug("location of connector node " + node + " = " +
         //              nv.getOffset());
         return nv;
     }

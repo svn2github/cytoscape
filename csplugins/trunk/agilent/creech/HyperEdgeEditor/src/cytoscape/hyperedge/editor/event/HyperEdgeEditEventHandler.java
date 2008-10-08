@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Fri Jul 21 11:28:16 2006
-* Modified:     Wed Oct 24 13:34:47 2007 (Michael L. Creech) creech@w235krbza760
+* Modified:     Wed Oct 08 07:06:47 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,9 @@
 *
 * Revisions:
 *
+* Wed Jul 09 09:56:39 2008 (Michael L. Creech) creech@w235krbza760
+*  Added check that Editor component is active to itemDropped()
+*  to avoid handling events when the editor tab isn't the current tab.
 * Wed Oct 24 13:34:37 2007 (Michael L. Creech) creech@w235krbza760
 *  Removed some debugging output.
 * Tue Jan 16 09:20:14 2007 (Michael L. Creech) creech@w235krbza760
@@ -28,6 +31,7 @@ package cytoscape.hyperedge.editor.event;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.editor.CytoscapeEditor;
+import cytoscape.editor.CytoscapeEditorManager;
 
 import cytoscape.editor.event.PaletteNetworkEditEventHandler;
 
@@ -73,6 +77,13 @@ public class HyperEdgeEditEventHandler extends PaletteNetworkEditEventHandler {
      *
      */
     public void itemDropped(PhoebeCanvasDropEvent e) {
+	// MLC 07/09/08 BEGIN:
+	// TODO: This check should really be avoided by having the editor remove the PhoebeCanvasDropListener
+	//       when the editor looses focus (another tab is clicked on).
+	//       Since this is somewhat involved and so is left for when the editor is refactored.
+	if (!CytoscapeEditorManager.isEditorInOperation()) {
+	    return;
+	}
         Point                location = e.getLocation();
         BasicCytoShapeEntity myShape = getShapeEntityForLocation(location,
                                                                  e.getTransferable());
@@ -134,8 +145,15 @@ public class HyperEdgeEditEventHandler extends PaletteNetworkEditEventHandler {
 
     // override mousePressed() in BasicNetworkEditEventHandler:
     public void mousePressed(MouseEvent e) {
-	// MLC 01/15/07:
-        // CytoscapeEditorManager.log("In HyperEdgeEditEventHandler.mousePressed");
+	// MLC: 07/09/08 BEGIN:
+	// TODO: This check should really be avoided by having the editor remove all mouse and key
+	//       listeners when the editor looses focus (another tab is clicked on).
+	//       This is somewhat involved and so is left for when the editor is refactored.
+	if (!CytoscapeEditorManager.isEditorInOperation()) {
+	    return;
+	}
+	// CytoscapeEditorManager.log("HEE: mousePressed!");
+	// MLC: 07/09/08 END.
         nextPoint = e.getPoint();
 
         EdgeView ev     = getView().getPickedEdgeView(nextPoint);

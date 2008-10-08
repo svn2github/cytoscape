@@ -6,7 +6,7 @@
 * Description:
 * Author:       Michael L. Creech
 * Created:      Mon Jul 24 06:36:19 2006
-* Modified:     Thu Apr 03 06:21:27 2008 (Michael L. Creech) creech@w235krbza760
+* Modified:     Thu Sep 25 09:52:25 2008 (Michael L. Creech) creech@w235krbza760
 * Language:     Java
 * Package:
 * Status:       Experimental (Do Not Distribute)
@@ -17,6 +17,10 @@
 *
 * Revisions:
 *
+* Thu Sep 25 09:52:17 2008 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.64.
+* Wed Jul 09 10:41:20 2008 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.63.
 * Thu Apr 03 06:21:12 2008 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.62.
 * Fri Mar 28 07:24:04 2008 (Michael L. Creech) creech@w235krbza760
@@ -68,52 +72,39 @@
 */
 package cytoscape.hyperedge.editor;
 
-import com.agilent.labs.lsiutils.gui.MiscGUI;
-
-import cytoscape.CyNetwork;
-import cytoscape.CyNode;
-import cytoscape.Cytoscape;
-
-import cytoscape.data.Semantics;
-
-import cytoscape.editor.CytoscapeEditorManager;
-
-import cytoscape.hyperedge.HyperEdge;
-import cytoscape.hyperedge.HyperEdgeFactory;
-import cytoscape.hyperedge.HyperEdgeManager;
-
-import cytoscape.hyperedge.editor.actions.DeleteHyperEdgeAction;
-// MLC 12/18/07:
-// import cytoscape.hyperedge.editor.actions.HyperEdgeDeleteAction;
-import cytoscape.hyperedge.editor.actions.SelectHyperEdgeAction;
-
-import cytoscape.hyperedge.impl.HyperEdgeImpl;
-
-import cytoscape.layout.CyLayoutAlgorithm;
-import cytoscape.layout.CyLayouts;
-
-import cytoscape.plugin.CytoscapePlugin;
-
-import cytoscape.util.CytoscapeAction;
-
-import cytoscape.view.CyMenus;
-import cytoscape.view.CyNetworkView;
-import cytoscape.view.CytoscapeDesktop;
-
-import ding.view.NodeContextMenuListener;
-
 import giny.view.NodeView;
 
 import java.awt.event.ActionEvent;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import com.agilent.labs.lsiutils.gui.MiscGUI;
+
+import cytoscape.CyNetwork;
+import cytoscape.CyNode;
+import cytoscape.Cytoscape;
+import cytoscape.data.Semantics;
+import cytoscape.editor.CytoscapeEditorManager;
+import cytoscape.hyperedge.HyperEdge;
+import cytoscape.hyperedge.HyperEdgeFactory;
+import cytoscape.hyperedge.HyperEdgeManager;
+import cytoscape.hyperedge.editor.actions.DeleteHyperEdgeAction;
+import cytoscape.hyperedge.editor.actions.SelectHyperEdgeAction;
+import cytoscape.hyperedge.impl.HyperEdgeImpl;
+import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.CyLayouts;
+import cytoscape.logger.CyLogger;
+import cytoscape.plugin.CytoscapePlugin;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CyMenus;
+import cytoscape.view.CyNetworkView;
+import cytoscape.view.CytoscapeDesktop;
+import ding.view.NodeContextMenuListener;
 
 
 /**
@@ -123,7 +114,7 @@ import javax.swing.JPopupMenu;
  *
  */
 public class HyperEdgeEditorPlugin extends CytoscapePlugin {
-    private static final Double VERSION = 2.62;
+    private static final Double VERSION = 2.64;
 
     public HyperEdgeEditorPlugin() {
         initializeHyperEdgeEditor();
@@ -151,7 +142,7 @@ public class HyperEdgeEditorPlugin extends CytoscapePlugin {
 
     private void initializeHyperEdgeEditor() {
         // ASSUME: CytoscapeEditor is always loaded before HyperEdgeEditor.
-        System.out.println("BEGIN initializeHyperEdgeEditor");
+        CyLogger.getLogger().info("BEGIN initializeHyperEdgeEditor");
         CytoscapeEditorManager.register("cytoscape.hyperedge.editor.HyperEdgeEditor",
                                         "cytoscape.hyperedge.editor.event.HyperEdgeEditEventHandler",
                                         HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME,

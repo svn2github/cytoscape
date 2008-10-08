@@ -68,7 +68,9 @@
 			 Windowtitle="${plugin.name} API Docs"
 		         header="${plugin.name}"
 		         Private="yes"> 
- 		        <fileset dir="${src.dir}" defaultexcludes="no"/> 
+ 		        <fileset dir="${src.dir}" defaultexcludes="yes"> 
+				<include name="**/*.java" />
+			</fileset>
 			<doctitle>${plugin.name} API Docs</doctitle>
 		</javadoc> 
 	</target>
