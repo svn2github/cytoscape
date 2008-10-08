@@ -46,6 +46,7 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 
 import org.cytoscape.model.*;
+import org.cytoscape.*;
 
 import java.util.Random;
 
@@ -106,8 +107,8 @@ public class CyNetworkMemoryTest extends TestCase {
 		long nonHeapAlloc = 15000; // in bytes
 		String heapString = getPerAlloc(heapRes,heapAlloc);
 		String nonHeapString = getPerAlloc(nonHeapRes,nonHeapAlloc);
-		System.out.println("node and edge heap consumption: " + heapString);
-		System.out.println("node and edge non-heap consumption: " + nonHeapString);
+		System.out.println("node heap consumption: " + heapString);
+		System.out.println("node non-heap consumption: " + nonHeapString);
 		
 		assertTrue("node heap consumption: " + heapString, heapRes < heapAlloc); 
 		assertTrue("node non-heap consumption: " + heapString, nonHeapRes < nonHeapAlloc); 

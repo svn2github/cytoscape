@@ -34,40 +34,23 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model;
-
-import org.cytoscape.event.CyEvent;
-import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyEventListener;
+package org.cytoscape;
 
 
-/**
- * DOCUMENT ME!
-  */
-public class DupDummyCyEventHelper implements CyEventHelper {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param <E> DOCUMENT ME!
-	 * @param <L> DOCUMENT ME!
-	 * @param event DOCUMENT ME!
-	 * @param listener DOCUMENT ME!
-	 */
-	public <E extends CyEvent, L extends CyEventListener> void fireSynchronousEvent(final E event,
-	                                                                                final Class<L> listener) {
+import org.cytoscape.model.CyNetwork;
+
+import org.cytoscape.model.internal.CyNetworkImpl;
+import org.cytoscape.model.internal.MGraph;
+import org.cytoscape.model.internal.ArrayGraph;
+
+public class DupCyNetworkFactory {
+
+	private DupCyNetworkFactory() {};
+
+	public static CyNetwork getInstance() {
+		//return new CyNetworkImpl(new DupDummyCyEventHelper());
+		//return new MGraph(new DupDummyCyEventHelper());
+		return new ArrayGraph(new DupDummyCyEventHelper());
 	}
-	;
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param <E> DOCUMENT ME!
-	 * @param <L> DOCUMENT ME!
-	 * @param event DOCUMENT ME!
-	 * @param listener DOCUMENT ME!
-	 */
-	public <E extends CyEvent, L extends CyEventListener> void fireAsynchronousEvent(final E event,
-	                                                                                 final Class<L> listener) {
-	}
-	;
 }
+

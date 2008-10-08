@@ -43,6 +43,7 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 
 import org.cytoscape.model.*;
+import org.cytoscape.*;
 
 
 /**

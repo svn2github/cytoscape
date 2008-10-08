@@ -36,6 +36,7 @@
 
 package org.cytoscape.model.time;
 
+
 import com.clarkware.junitperf.TimedTest;
 
 import junit.framework.Test;
@@ -43,6 +44,7 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 
 import org.cytoscape.model.*;
+import org.cytoscape.*;
 
 /**
  * Created by IntelliJ IDEA. User: skillcoy Date: Sep 29, 2008 Time: 1:40:43 PM To change this

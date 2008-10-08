@@ -34,21 +34,40 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model;
+package org.cytoscape;
+
+import org.cytoscape.model.*;
+import java.util.*; 
 
 
-import org.cytoscape.model.internal.CyNetworkImpl;
-import org.cytoscape.model.internal.MGraph;
-import org.cytoscape.model.internal.ArrayGraph;
+/**
+ * DOCUMENT ME!
+  */
+public class Main {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param args DOCUMENT ME!
+	 */
+	public static void main(String[] args) {
+		int totalNodes = 100000;
+		int totalEdges = 200000;
+		CyNetwork net = DupCyNetworkFactory.getInstance(); 
 
-public class DupCyNetworkFactory {
+		for (int i = 0; i < totalNodes; i++) {
+			net.addNode();
+		}
 
-	private DupCyNetworkFactory() {};
+		Random rand = new Random(totalNodes);
+        for (int i = 0; i < totalEdges; i++) {
+            int n1x = Math.abs(rand.nextInt() % (totalNodes-1));
+            CyNode n1 = net.getNode( n1x );
+            int n2x = Math.abs(rand.nextInt() % (totalNodes-1));
+            CyNode n2 = net.getNode( n2x );
+            net.addEdge( n1, n2, true );
+        }
 
-	public static CyNetwork getInstance() {
-		//return new CyNetworkImpl(new DummyCyEventHelper());
-		//return new MGraph(new DupDummyCyEventHelper());
-		return new ArrayGraph(new DupDummyCyEventHelper());
+		System.out.println("num nodes: " + net.getNodeCount());
+		System.out.println("num edges: " + net.getEdgeCount());
 	}
 }
-

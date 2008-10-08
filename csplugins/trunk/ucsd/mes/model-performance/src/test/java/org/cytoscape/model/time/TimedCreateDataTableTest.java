@@ -43,6 +43,7 @@ import junit.framework.TestResult;
 
 import org.cytoscape.model.internal.CyDataTableImpl;
 import org.cytoscape.model.*;
+import org.cytoscape.*;
 
 
 import java.util.Random;

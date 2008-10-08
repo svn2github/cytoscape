@@ -34,83 +34,40 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.time;
+package org.cytoscape;
 
-import com.clarkware.junitperf.LoadTest;
-import com.clarkware.junitperf.TimedTest;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestResult;
-import org.cytoscape.model.*;
-import org.cytoscape.*;
+import org.cytoscape.event.CyEvent;
+import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.event.CyEventListener;
 
 
 /**
- * Created by IntelliJ IDEA. User: skillcoy Date: Sep 19, 2008 Time: 4:07:31 PM To change this
- * template use File | Settings | File Templates.
- */
-public class TimedAddNodeMultipleUsersTest extends TestCase {
-	private CyNetwork net;
-	private int totalNodes = 100000;
+ * DOCUMENT ME!
+  */
+public class DupDummyCyEventHelper implements CyEventHelper {
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param <E> DOCUMENT ME!
+	 * @param <L> DOCUMENT ME!
+	 * @param event DOCUMENT ME!
+	 * @param listener DOCUMENT ME!
+	 */
+	public <E extends CyEvent, L extends CyEventListener> void fireSynchronousEvent(final E event,
+	                                                                                final Class<L> listener) {
+	}
+	;
 
 	/**
 	 *  DOCUMENT ME!
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param <E> DOCUMENT ME!
+	 * @param <L> DOCUMENT ME!
+	 * @param event DOCUMENT ME!
+	 * @param listener DOCUMENT ME!
 	 */
-	public static Test suite() {
-		long maxTimeInMillis = 1000;
-		int concurrentUsers = 3;
-		Test test = new TimedAddNodeMultipleUsersTest("testLoadNetwork");
-		Test loadTest = new LoadTest(new TimedTest(test, maxTimeInMillis), concurrentUsers);
-
-		return loadTest;
+	public <E extends CyEvent, L extends CyEventListener> void fireAsynchronousEvent(final E event,
+	                                                                                 final Class<L> listener) {
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param args DOCUMENT ME!
-	 *
-	 * @throws Exception DOCUMENT ME!
-	 */
-	public static void main(String[] args) throws Exception {
-		junit.textui.TestRunner.run(suite());
-	}
-
-	/**
-	 * Creates a new TimedAddNodeMultipleUsersTest object.
-	 *
-	 * @param name  DOCUMENT ME!
-	 */
-	public TimedAddNodeMultipleUsersTest(String name) {
-		super(name);
-		net = DupCyNetworkFactory.getInstance(); 
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void setUp() {
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void tearDown() {
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public void testLoadNetwork() {
-		int localCount = 0;
-
-		for (int i = 0; i < totalNodes; i++)
-			if (net.addNode() != null)
-				localCount++;
-
-		assertEquals(localCount, totalNodes);
-	}
+	;
 }
