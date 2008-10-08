@@ -1,10 +1,20 @@
 <HTML>
 <HEAD>
-<TITLE>HyperEdge Release Notes (version 2.60)</TITLE>
+<TITLE>HyperEdge Release Notes (version 2.61)</TITLE>
 </HEAD>
 <BODY>
 
-<H1>HyperEdge Release Notes (version 2.60)</H1>
+<H1>HyperEdge Release Notes (version 2.61)</H1>
+<OL>
+<LI>Massive low-level code changes to get HyperEdge to pass Checkstyle with
+the checkstyle-warn.xml ruleset.</LI>
+<LI>Changed to use CyLogger in HEUtils and remove use of System.out.println.</LI>
+<P><LI>Updated to use LSIUtils 0.12.</LI></P>
+</OL>
+
+<H1>Prior Notes</H1>
+
+<H2>HyperEdge Release Notes (version 2.60)</H2>
 <OL>
 
 <LI>Fixed Mantis bug 1837--reading a session or saved network
@@ -13,10 +23,9 @@
 <P> This would lead to HyperEdges not being correctly removed and then
   errors (e.g., HEStructuralIntegrityException) occurring when
   reloading the same HyperEdges from a session or saved network file.
-<P><LI>Updated some test cases to better test save/restore of HyperEdges.
+</LI>
+<P><LI>Updated some test cases to better test save/restore of HyperEdges.</LI></P>
 </OL>
-
-<H1>Prior Notes</H1>
 
 <H2>HyperEdge Release Notes (version 2.59)</H2>
 Implementation changes only:
@@ -443,7 +452,7 @@ HyperEdges along with your Cytoscape structures.
 <P>To compile, point at your cytoscape 2.2 libraries in your Eclipse project.
 
 <HR>
-<SMALL><EM>This page was last updated: 04/02/08</EM></SMALL>
+<SMALL><EM>This page was last updated: 10/08/08</EM></SMALL>
 
 </BODY>
 </HTML>

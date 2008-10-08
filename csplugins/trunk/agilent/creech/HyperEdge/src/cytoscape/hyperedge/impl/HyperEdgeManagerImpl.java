@@ -1,24 +1,47 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         HyperEdgeManagerImpl.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/impl/HyperEdgeManagerImpl.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Fri Sep 16 17:13:31 2005
-* Modified:     Wed Apr 02 19:44:41 2008 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/*
 *
 * Revisions:
 *
+* Tue Sep 23 11:35:26 2008 (Michael L. Creech) creech@w235krbza760
+*  Changed to version 2.61.
 * Wed Apr 02 19:34:54 2008 (Michael L. Creech) creech@w235krbza760
-
+*  Changed to version 2.60.
 * Fri Mar 28 07:24:53 2008 (Michael L. Creech) creech@w235krbza760
 *  Changed to version 2.59
 * Fri Mar 14 15:15:52 2008 (Michael L. Creech) creech@w235krbza760
@@ -100,7 +123,6 @@
 *  Changed to version 1.0 alfa 6.
 * Mon May 08 19:23:38 2005 (Michael L. Creech) creech@Dill
 *  Changed to version 1.0 alfa 5.
-********************************************************************************
 */
 package cytoscape.hyperedge.impl;
 
@@ -160,18 +182,18 @@ import com.agilent.labs.lsiutils.impl.ListenerStoreImpl;
  * @author Michael L. Creech
  * @version 2.0
  */
-public class HyperEdgeManagerImpl implements HyperEdgeManager {
+public final class HyperEdgeManagerImpl implements HyperEdgeManager {
     // used for fine-grained synchronization:
-    private final static Boolean          INTERSECTION_LOCK   = new Boolean(true);
+    private static final Boolean          INTERSECTION_LOCK   = new Boolean(true);
     private static final HyperEdgeManager INSTANCE            = new HyperEdgeManagerImpl();
-    private static final Double           VERSION_NUMBER      = 2.60;
+    private static final Double           VERSION_NUMBER      = 2.61;
     private static final String           VERSION             = "HyperEdge Version " +
                                                                 VERSION_NUMBER +
-                                                                ", 02-Apr-08";
-    private static transient ListenerStore<NewObjectListener> _new_listener_store = new ListenerStoreImpl<NewObjectListener>();
+                                                                ", 07-Oct-08";
+    private static transient ListenerStore<NewObjectListener> newListenerStore = new ListenerStoreImpl<NewObjectListener>();
 
     // Used for setting and reading _internalRemoval:
-    private final static Boolean LOCAL_REMOVAL_LOCK = new Boolean(true);
+    private static final Boolean LOCAL_REMOVAL_LOCK = new Boolean (true);
 
     // handles edges removed from CyNetworks:
     private transient GraphObjsHiddenUpdater gosUpdater = new GraphObjsHiddenUpdater();
@@ -179,17 +201,17 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // private transient HyperEdgeFactory _factory = HyperEdgeFactory.INSTANCE;
 
     // maps a String UUID to a HyperEdge:
-    private Map<String, HyperEdge> _uuid_to_he_map = new HashMap<String, HyperEdge>();
+    private Map<String, HyperEdge> uuidToHeMap = new HashMap<String, HyperEdge>();
 
     // This is updated when a HyperEdge is created/destroyed:
-    private Set<HyperEdge> _all_hyper_edges = new HashSet<HyperEdge>();
+    private Set<HyperEdge> allHyperEdges = new HashSet<HyperEdge>();
 
     // This is updated when a CyEdge is added/removed from a HyperEdge:
-    private Set<CyEdge> _all_edges = new HashSet<CyEdge>();
+    private Set<CyEdge> allEdges = new HashSet<CyEdge>();
 
     // This is updated when a CyNode is added/removed from a HyperEdge:
     // Does not contain ConnectorNodes.
-    private Set<CyNode> _all_nodes = new HashSet<CyNode>();
+    private Set<CyNode> allNodes = new HashSet<CyNode>();
 
     //    // maps a HyperEdge to a List of all CyNetworks it belongs to:
     //    // should always be in sync with _net_to_hes_map:
@@ -197,26 +219,26 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // maps a CyNetwork to a List of all HyperEdges within it:
     // should always be in sync with _he_to_net_map:
-    private Map<CyNetwork, List<HyperEdge>> _net_to_hes_map = new HashMap<CyNetwork, List<HyperEdge>>();
+    private Map<CyNetwork, List<HyperEdge>> netToHesMap = new HashMap<CyNetwork, List<HyperEdge>>();
 
     // maps a CyNode to a List of HyperEdges:
     // Does not contain ConnectorNodes.
-    private Map<CyNode, List<HyperEdge>> _node_to_hes_map = new HashMap<CyNode, List<HyperEdge>>();
+    private Map<CyNode, List<HyperEdge>> nodeToHesMap = new HashMap<CyNode, List<HyperEdge>>();
 
     // maps a CyNode to a List of CyEdges (within the HyperEdge world, not Cytstoscape):
     // Does not contain ConnectorNodes.
-    private Map<CyNode, List<CyEdge>> _node_to_edges_map = new HashMap<CyNode, List<CyEdge>>();
+    private Map<CyNode, List<CyEdge>> nodeToEdgesMap = new HashMap<CyNode, List<CyEdge>>();
 
     //    // maps an edge interaction type to a List of HyperEdges:
     // MLC 08/11/06:
     //    private Map _eit_to_hes_map = new HashMap();
 
     // maps ConnectorNodes to the HyperEdge that contains them:
-    private Map<CyNode, HyperEdge> _cn_to_he_map = new HashMap<CyNode, HyperEdge>();
+    private Map<CyNode, HyperEdge> cnToHeMap = new HashMap<CyNode, HyperEdge>();
 
     // maps a CyNetwork to a Set of CyEdges:
-    private Map<CyNetwork, Set<CyEdge>> _net_to_edges_map = new HashMap<CyNetwork, Set<CyEdge>>();
-    private Map<CyNetwork, Set<CyNode>> _delayedHidingMap = new HashMap<CyNetwork, Set<CyNode>>();
+    private Map<CyNetwork, Set<CyEdge>> netToEdgesMap = new HashMap<CyNetwork, Set<CyEdge>>();
+    private Map<CyNetwork, Set<CyNode>> delayedHidingMap = new HashMap<CyNetwork, Set<CyNode>>();
 
     //    // Maps a CyNetwork to the set of CyNodes that it contains
     //    // via HyperEdges.  Specifically, it maps a CyNetwork to a
@@ -232,8 +254,8 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // Used for if any persistent objs are dirty--useful for
     // operations like save:
     // private transient ListenerList _any_dirty_listener_store = new ListenerList();
-    private transient ListenerStore<ChangeListener> _change_listener_store;
-    private transient ListenerStore<DeleteListener> _delete_listener_store;
+    private transient ListenerStore<ChangeListener> changeListenerStore;
+    private transient ListenerStore<DeleteListener> deleteListenerStore;
 
     // Used to specify if we are in the middle of an internal removal of edges or nodes
     // so that we can ignore event handling. For example, if we perform a HyperEdge.removeEdge()
@@ -242,10 +264,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // In this case, _internalRemoval would be true. On the other hand, if something external
     // caused an edge to be removed (e.g,. user of Cytoscape deleting selected edges), then
     // we want GraphObjsHiddenUpdater to run normally.
-    private transient boolean _internalRemoval = false;
+    private transient boolean internalRemoval;
 
     // private CytoscapeData _hedge_attr_data = new CytoscapeDataImpl(CytoscapeDataImpl.OTHER);
-    protected HyperEdgeManagerImpl() {
+    private HyperEdgeManagerImpl() {
         super();
         Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(Cytoscape.SESSION_LOADED,
                                                                             new HESessionLoadedUpdater());
@@ -263,15 +285,18 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     }
 
     // implements HyperEdgeManager interface:
-    public void reset(boolean fireEvents) {
+    /**
+     * {@inheritDoc}
+     */
+    public void reset(final boolean fireEvents) {
         //        if (fireEvents) {
         // delete all HyperEdges, this should clear all other
         // data structures:
         // Don't use iterator because _all_hyper_edges will be
         // modified as we destroy hyper edges:
-        HyperEdge[] hes = new HyperEdge[_all_hyper_edges.size()];
+        final HyperEdge[] hes = new HyperEdge[allHyperEdges.size()];
         // Object[]  hes = _all_hyper_edges.toArray();
-        _all_hyper_edges.toArray(hes);
+        allHyperEdges.toArray(hes);
 
         for (HyperEdge he : hes) {
             ((HyperEdgeImpl) he).primDestroy(fireEvents, null);
@@ -312,11 +337,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         //            _node_to_edges_map.clear();
         //            // MLC 08/11/06:
         //            // _eit_to_hes_map.clear();
-        //            _cn_to_he_map.clear();
+        //            cnToHeMap.clear();
         //            _net_to_edges_map.clear();
         //            _net_to_nodes_map.clear();
         //
-        //            // TODO: Clean out event handlers?
+        //            // TODO Clean out event handlers?
         //            //	    _delete_listener_store = null;
         //            //	    _change_listener_store = null;
         //            //	    _new_listener_store.clear();
@@ -332,28 +357,30 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     //        }
     //    }
 
-    // implements HyperEdgeManager interface:
-    public Iterator<HyperEdge> getHyperEdgesByNode(CyNode node, CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<HyperEdge> getHyperEdgesByNode(final CyNode node, final CyNetwork net) {
         if (node == null) {
             if (net == null) {
-                return HEUtils.buildUnmodifiableCollectionIterator(_all_hyper_edges);
+                return HEUtils.buildUnmodifiableCollectionIterator(allHyperEdges);
             } else {
-                List<HyperEdge> hes_in_net = _net_to_hes_map.get(net);
+                final List<HyperEdge> hesInNet = netToHesMap.get(net);
 
-                if (hes_in_net == null) {
+                if (hesInNet == null) {
                     // return Collections.EMPTY_LIST.iterator();
                     return (HEUtils.buildUnmodifiableCollectionIterator(new ArrayList<HyperEdge>(0)));
                 } else {
-                    return HEUtils.buildUnmodifiableCollectionIterator(hes_in_net);
+                    return HEUtils.buildUnmodifiableCollectionIterator(hesInNet);
                 }
             }
         }
 
         // node is not null:
         // all HyperEdges that contain a given CyNode:
-        List<HyperEdge> hes_for_node = _node_to_hes_map.get(node);
+        final List<HyperEdge> hesForNode = nodeToHesMap.get(node);
 
-        if (hes_for_node == null) {
+        if (hesForNode == null) {
             // no HyperEdges for the given node:
             // return Collections.EMPTY_LIST.iterator();
             return (HEUtils.buildUnmodifiableCollectionIterator(new ArrayList<HyperEdge>(0)));
@@ -361,14 +388,14 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
         if (net == null) {
             // return all HyperEdges:
-            return HEUtils.buildUnmodifiableCollectionIterator(hes_for_node);
+            return HEUtils.buildUnmodifiableCollectionIterator(hesForNode);
         }
 
         // find intersection of CyNetwork HEs and CyNode HEs:
         // HyperEdges contained within a CyNetwork:
-        List<HyperEdge> hes_in_net = _net_to_hes_map.get(net);
+        final List<HyperEdge> hesInNet = netToHesMap.get(net);
 
-        if (hes_in_net == null) {
+        if (hesInNet == null) {
             // no HEs in this CyNetwork:
             // return Collections.EMPTY_LIST.iterator();
             return (HEUtils.buildUnmodifiableCollectionIterator(new ArrayList<HyperEdge>(0)));
@@ -378,29 +405,31 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         // with the given CyNode:
         // first mark all HEs with a given CyNode, then check if marks are found
         // in each HE in the CyNetwork:
-        return HEUtils.buildUnmodifiableCollectionIterator(intersection(hes_for_node,
-                                                                        hes_in_net));
+        return HEUtils.buildUnmodifiableCollectionIterator(intersection(hesForNode,
+                                                                        hesInNet));
     }
 
-    // implements HyperEdgeManager interface:
-    public Iterator<HyperEdge> getHyperEdgesByNodes(Collection<CyNode> nodes,
-                                                    CyNetwork net) {
-        Collection<HyperEdge> start_col_of_hes;
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<HyperEdge> getHyperEdgesByNodes(final Collection<CyNode> nodes,
+                                                    final CyNetwork net) {
+        Collection<HyperEdge> startColOfHes;
 
         if (net == null) {
-            start_col_of_hes = _all_hyper_edges;
+            startColOfHes = allHyperEdges;
         } else {
-            start_col_of_hes = _net_to_hes_map.get(net);
+            startColOfHes = netToHesMap.get(net);
         }
 
-        if (start_col_of_hes == null) {
+        if (startColOfHes == null) {
             // no matches, return empty Iterator:
             // return Collections.EMPTY_LIST.iterator();
             return (HEUtils.buildUnmodifiableCollectionIterator(new ArrayList<HyperEdge>(0)));
         }
 
         if (nodes == null) {
-            return HEUtils.buildUnmodifiableCollectionIterator(start_col_of_hes);
+            return HEUtils.buildUnmodifiableCollectionIterator(startColOfHes);
         }
 
         if (nodes.isEmpty()) {
@@ -410,26 +439,26 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
 
         // Now iterate over all the HEs looking for ones that match nodes:
-        Iterator<HyperEdge>       all_hes_it = start_col_of_hes.iterator();
-        Iterator<?extends CyNode> node_it;
+        final Iterator<HyperEdge>       allHesIt = startColOfHes.iterator();
+        Iterator<?extends CyNode> nodeIt;
         HyperEdge                 he;
-        boolean                   does_match;
-        List<HyperEdge>           matches = new ArrayList<HyperEdge>();
+        boolean                   doesMatch;
+        final List<HyperEdge>           matches = new ArrayList<HyperEdge>();
 
-        while (all_hes_it.hasNext()) {
-            he         = all_hes_it.next();
-            node_it    = nodes.iterator();
-            does_match = true;
+        while (allHesIt.hasNext()) {
+            he         = allHesIt.next();
+            nodeIt    = nodes.iterator();
+            doesMatch = true;
 
-            while (node_it.hasNext()) {
-                if (!he.hasNode((CyNode) node_it.next())) {
-                    does_match = false;
+            while (nodeIt.hasNext()) {
+                if (!he.hasNode((CyNode) nodeIt.next())) {
+                    doesMatch = false;
 
                     break;
                 }
             }
 
-            if (does_match) {
+            if (doesMatch) {
                 matches.add(he);
             }
         }
@@ -437,28 +466,30 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         return HEUtils.buildUnmodifiableCollectionIterator(matches);
     }
 
-    // implements HyperEdgeManager interface:
-    public Iterator<CyEdge> getEdgesByNode(CyNode node, CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<CyEdge> getEdgesByNode(final CyNode node, final CyNetwork net) {
         if (node == null) {
             if (net == null) {
-                return HEUtils.buildUnmodifiableCollectionIterator(_all_edges);
+                return HEUtils.buildUnmodifiableCollectionIterator(allEdges);
             } else {
-                Set<CyEdge> edges_in_net = _net_to_edges_map.get(net);
+                final Set<CyEdge> edgesInNet = netToEdgesMap.get(net);
 
-                if (edges_in_net == null) {
+                if (edgesInNet == null) {
                     // return Collections.EMPTY_LIST.iterator();
                     return (HEUtils.buildUnmodifiableCollectionIterator(new ArrayList<CyEdge>(0)));
                 } else {
-                    return HEUtils.buildUnmodifiableCollectionIterator(edges_in_net);
+                    return HEUtils.buildUnmodifiableCollectionIterator(edgesInNet);
                 }
             }
         }
 
         // node is not null:
         // all CyEdges that contain a given CyNode:
-        List<CyEdge> edges_for_node = _node_to_edges_map.get(node);
+        final List<CyEdge> edgesForNode = nodeToEdgesMap.get(node);
 
-        if (edges_for_node == null) {
+        if (edgesForNode == null) {
             // no CyEdges for the given node:
             // return Collections.EMPTY_LIST.iterator();
             return (HEUtils.buildUnmodifiableCollectionIterator(new ArrayList<CyEdge>(0)));
@@ -466,53 +497,55 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
         if (net == null) {
             // return all CyEdges:
-            return HEUtils.buildUnmodifiableCollectionIterator(edges_for_node);
+            return HEUtils.buildUnmodifiableCollectionIterator(edgesForNode);
         }
 
         // find intersection of CyNetwork CyEdges and CyNode's CyEdges:
         // HyperEdges contained within a CyNetwork:
-        Set<CyEdge> edges_in_net = (Set<CyEdge>) _net_to_edges_map.get(net);
+        final Set<CyEdge> edgesInNet = (Set<CyEdge>) netToEdgesMap.get(net);
 
-        if (edges_in_net == null) {
+        if (edgesInNet == null) {
             // no CyEdges in this CyNetwork:
             // return Collections.EMPTY_LIST.iterator();
             return (HEUtils.buildUnmodifiableCollectionIterator(new ArrayList<CyEdge>(0)));
         }
 
-        List<CyEdge>     matches           = new ArrayList<CyEdge>();
-        Iterator<CyEdge> edges_for_node_it = edges_for_node.iterator();
-        CyEdge           to_match;
+        final List<CyEdge>     matches           = new ArrayList<CyEdge>();
+        final Iterator<CyEdge> edgesForNodeIt = edgesForNode.iterator();
+        CyEdge           toMatch;
 
-        while (edges_for_node_it.hasNext()) {
-            to_match = edges_for_node_it.next();
+        while (edgesForNodeIt.hasNext()) {
+            toMatch = edgesForNodeIt.next();
 
-            if (edges_in_net.contains(to_match)) {
-                matches.add(to_match);
+            if (edgesInNet.contains(toMatch)) {
+                matches.add(toMatch);
             }
         }
 
         return HEUtils.buildUnmodifiableCollectionIterator(matches);
     }
 
-    // implements HyperEdgeManager interface:
-    public Iterator<HyperEdge> getHyperEdgesByEdgeTypes(Collection<String> edgeITypes,
-                                                        CyNetwork          net) {
-        Collection<HyperEdge> start_col_of_hes;
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<HyperEdge> getHyperEdgesByEdgeTypes(final Collection<String> edgeITypes,
+                                                        final CyNetwork          net) {
+        Collection<HyperEdge> startColOfHes;
 
         if (net == null) {
-            start_col_of_hes = _all_hyper_edges;
+            startColOfHes = allHyperEdges;
         } else {
-            start_col_of_hes = _net_to_hes_map.get(net);
+            startColOfHes = netToHesMap.get(net);
         }
 
-        if (start_col_of_hes == null) {
+        if (startColOfHes == null) {
             // no matches, return empty Iterator:
             // return Collections.EMPTY_LIST.iterator();
             return (HEUtils.buildUnmodifiableCollectionIterator(new ArrayList<HyperEdge>(0)));
         }
 
         if (edgeITypes == null) {
-            return HEUtils.buildUnmodifiableCollectionIterator(start_col_of_hes);
+            return HEUtils.buildUnmodifiableCollectionIterator(startColOfHes);
         }
 
         if (edgeITypes.isEmpty()) {
@@ -522,26 +555,26 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
 
         // Now iterate over all the HEs looking for ones that match edge types:
-        Iterator<HyperEdge> hes_it        = start_col_of_hes.iterator();
-        Iterator<String>    edge_types_it;
+        final Iterator<HyperEdge> hesIt        = startColOfHes.iterator();
+        Iterator<String>    edgeTypesIt;
         HyperEdge       he;
-        boolean         does_match;
-        List<HyperEdge> matches = new ArrayList<HyperEdge>();
+        boolean         doesMatch;
+        final List<HyperEdge> matches = new ArrayList<HyperEdge>();
 
-        while (hes_it.hasNext()) {
-            he            = hes_it.next();
-            edge_types_it = edgeITypes.iterator();
-            does_match    = true;
+        while (hesIt.hasNext()) {
+            he            = hesIt.next();
+            edgeTypesIt = edgeITypes.iterator();
+            doesMatch    = true;
 
-            while (edge_types_it.hasNext()) {
-                if (!he.hasEdgeOfType(edge_types_it.next())) {
-                    does_match = false;
+            while (edgeTypesIt.hasNext()) {
+                if (!he.hasEdgeOfType(edgeTypesIt.next())) {
+                    doesMatch = false;
 
                     break;
                 }
             }
 
-            if (does_match) {
+            if (doesMatch) {
                 matches.add(he);
             }
         }
@@ -549,27 +582,29 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         return HEUtils.buildUnmodifiableCollectionIterator(matches);
     }
 
-    // implements HyperEdgeManager interface:
-    public Iterator<CyNode> getNodesByEdgeTypes(Collection<String> edgeITypes,
-                                                CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<CyNode> getNodesByEdgeTypes(final Collection<String> edgeITypes,
+                                                final CyNetwork net) {
         return HEUtils.buildUnmodifiableCollectionIterator(primGetNodesByEdgeTypes(edgeITypes,
                                                                                    net));
     }
 
-    private Collection<CyNode> primGetNodesByEdgeTypes(Collection<String> edgeITypes,
-                                                       CyNetwork          net) {
+    private Collection<CyNode> primGetNodesByEdgeTypes(final Collection<String> edgeITypes,
+                                                       final CyNetwork          net) {
         Collection<HyperEdge> startCollectionOfHEs = null;
 
         if (net == null) {
             // deal with all HyperEdges:
             if (edgeITypes == null) {
                 // no filtering:
-                return _all_nodes;
+                return allNodes;
             }
 
-            startCollectionOfHEs = _all_hyper_edges;
+            startCollectionOfHEs = allHyperEdges;
         } else {
-            startCollectionOfHEs = _net_to_hes_map.get(net);
+            startCollectionOfHEs = netToHesMap.get(net);
         }
 
         if (startCollectionOfHEs == null) {
@@ -578,7 +613,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
 
         // Now go thru each HyperEdge and gather CyNodes that match criteria:
-        Set<CyNode> matchNodes = new HashSet<CyNode>();
+        final Set<CyNode> matchNodes = new HashSet<CyNode>();
 
         for (HyperEdge he : startCollectionOfHEs) {
             for (CyNode node : ((HyperEdgeImpl) he).primGetNodesByEdgeTypes(edgeITypes)) {
@@ -679,12 +714,14 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     //        return HEUtils.buildUnmodifiableCollectionIterator(matches);
     //    }
 
-    // implements HyperEdgeManager interface:
-    public Iterator<HyperEdge> getHyperEdgesByNetwork(CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<HyperEdge> getHyperEdgesByNetwork(final CyNetwork net) {
         if (net == null) {
-            return HEUtils.buildUnmodifiableCollectionIterator(_all_hyper_edges);
+            return HEUtils.buildUnmodifiableCollectionIterator(allHyperEdges);
         } else {
-            List<HyperEdge> hes = _net_to_hes_map.get(net);
+            final List<HyperEdge> hes = netToHesMap.get(net);
 
             if (hes == null) {
                 // no matches:
@@ -696,12 +733,14 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
     }
 
-    // implements HyperEdgeManager interface:
-    public Iterator<CyEdge> getEdgesByNetwork(CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<CyEdge> getEdgesByNetwork(final CyNetwork net) {
         if (net == null) {
-            return HEUtils.buildUnmodifiableCollectionIterator(_all_edges);
+            return HEUtils.buildUnmodifiableCollectionIterator(allEdges);
         } else {
-            Set<CyEdge> edges = _net_to_edges_map.get(net);
+            final Set<CyEdge> edges = netToEdgesMap.get(net);
 
             if (edges == null) {
                 // no matches:
@@ -713,12 +752,14 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
     }
 
-    // implements HyperEdgeManager interface:
-    public int getNumHyperEdges(CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumHyperEdges(final CyNetwork net) {
         if (net == null) {
-            return _all_hyper_edges.size();
+            return allHyperEdges.size();
         } else {
-            List<HyperEdge> hes = _net_to_hes_map.get(net);
+            final List<HyperEdge> hes = netToHesMap.get(net);
 
             if (hes != null) {
                 return hes.size();
@@ -728,22 +769,26 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
     }
 
-    // implements HyperEdgeManager interface:
-    public int getNumNodes(CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumNodes(final CyNetwork net) {
         if (net == null) {
-            return _all_nodes.size();
+            return allNodes.size();
         } else {
             // get the HyperEdges and the CyNodes in each HyperEdge and count:
             return primGetNodesByEdgeTypes(null, net).size();
         }
     }
 
-    // implements HyperEdgeManager interface:
-    public int getNumEdges(CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumEdges(final CyNetwork net) {
         if (net == null) {
-            return _all_edges.size();
+            return allEdges.size();
         } else {
-            Set<CyEdge> edges = _net_to_edges_map.get(net);
+            final Set<CyEdge> edges = netToEdgesMap.get(net);
 
             if (edges != null) {
                 return edges.size();
@@ -753,16 +798,18 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean inHyperEdge(CyNode node, CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean inHyperEdge(final CyNode node, final CyNetwork net) {
         if (node == null) {
             return false;
         }
 
         // All HyperEdges containing a given node:
-        List<HyperEdge> hes_for_node = _node_to_hes_map.get(node);
+        final List<HyperEdge> hesForNode = nodeToHesMap.get(node);
 
-        if (hes_for_node == null) {
+        if (hesForNode == null) {
             return false;
         }
 
@@ -771,7 +818,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             return true;
         }
 
-        for (HyperEdge he : hes_for_node) {
+        for (HyperEdge he : hesForNode) {
             if (he.inNetwork(net)) {
                 return true;
             }
@@ -780,39 +827,43 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         return false;
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean isConnectorNode(CyNode node, CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isConnectorNode(final CyNode node, final CyNetwork net) {
         if (node == null) {
             return false;
         }
 
         // All HyperEdges containing a given node:
-        HyperEdge he_with_cn = _cn_to_he_map.get(node);
+        final HyperEdge heWithCn = cnToHeMap.get(node);
 
-        if (he_with_cn == null) {
+        if (heWithCn == null) {
             return false;
         }
 
         if (net == null) {
             return true;
         } else {
-            return (he_with_cn.inNetwork(net));
+            return (heWithCn.inNetwork(net));
         }
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean isHyperEdgeEdge(CyEdge edge, CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isHyperEdgeEdge(final CyEdge edge, final CyNetwork net) {
         if (edge == null) {
             return false;
         }
 
-        String id = edge.getIdentifier();
+        final String id = edge.getIdentifier();
 
         if (id == null) {
             return false;
         }
 
-        String edgeAttVal = Cytoscape.getEdgeAttributes()
+        final String edgeAttVal = Cytoscape.getEdgeAttributes()
                                      .getStringAttribute(id,
                                                          HyperEdgeImpl.HYPEREDGE_EDGE_TAG_NAME);
 
@@ -829,9 +880,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
                (isConnectorNode((CyNode) edge.getTarget(), net)));
     }
 
-    // implements HyperEdgeManager interface:
-    public HyperEdge getHyperEdgeForConnectorNode(CyNode connectorNode) {
-        return _cn_to_he_map.get(connectorNode);
+    /**
+     * {@inheritDoc}
+     */
+    public HyperEdge getHyperEdgeForConnectorNode(final CyNode connectorNode) {
+        return cnToHeMap.get(connectorNode);
     }
 
     //    // implements HyperEdgeManager interface:
@@ -851,67 +904,83 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     //        }
     //    }
 
-    // implements HyperEdgeManager interface:
+    /**
+     * {@inheritDoc}
+     */
     public String getHyperEdgeVersion() {
         return VERSION;
     }
 
-    // implements HyperEdgeManager interface:
+    /**
+     * {@inheritDoc}
+     */
     public Double getHyperEdgeVersionNumber() {
         return VERSION_NUMBER;
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean addChangeListener(ChangeListener l) {
-	if (_change_listener_store == null) {
-	    _change_listener_store = new ListenerStoreImpl<ChangeListener>();
+    /**
+     * {@inheritDoc}
+     */
+    public boolean addChangeListener(final ChangeListener l) {
+	if (changeListenerStore == null) {
+	    changeListenerStore = new ListenerStoreImpl<ChangeListener>();
 	}
-        return _change_listener_store.addListener(l);
+        return changeListenerStore.addListener(l);
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean removeChangeListener(ChangeListener l) {
-        if (_change_listener_store != null) {
-            return _change_listener_store.removeListener(l);
+    /**
+     * {@inheritDoc}
+     */
+    public boolean removeChangeListener(final ChangeListener l) {
+        if (changeListenerStore != null) {
+            return changeListenerStore.removeListener(l);
         }
 
         return false;
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean addNewObjectListener(NewObjectListener l) {
-        return _new_listener_store.addListener(l);
+    /**
+     * {@inheritDoc}
+     */
+    public boolean addNewObjectListener(final NewObjectListener l) {
+        return newListenerStore.addListener(l);
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean removeNewObjectListener(NewObjectListener l) {
-        return _new_listener_store.removeListener(l);
+    /**
+     * {@inheritDoc}
+     */
+    public boolean removeNewObjectListener(final NewObjectListener l) {
+        return newListenerStore.removeListener(l);
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean addDeleteListener(DeleteListener l) {
-        if (_delete_listener_store == null) {
-	    _delete_listener_store = new ListenerStoreImpl<DeleteListener>();
+    /**
+     * {@inheritDoc}
+     */
+    public boolean addDeleteListener(final DeleteListener l) {
+        if (deleteListenerStore == null) {
+	    deleteListenerStore = new ListenerStoreImpl<DeleteListener>();
 	}
-        return _delete_listener_store.addListener(l);
+        return deleteListenerStore.addListener(l);
     }
 
-    // implements HyperEdgeManager interface:
-    public boolean removeDeleteListener(DeleteListener l) {
-        if (_delete_listener_store != null) {
-            return _delete_listener_store.removeListener(l);
+    /**
+     * {@inheritDoc}
+     */
+    public boolean removeDeleteListener(final DeleteListener l) {
+        if (deleteListenerStore != null) {
+            return deleteListenerStore.removeListener(l);
         }
 
         return false;
     }
 
-    protected void fireDeleteEvent(HyperEdge he) {
-        if ((_delete_listener_store != null) &&
-            (_delete_listener_store.hasListeners())) {
+    void fireDeleteEvent(final HyperEdge he) {
+        if ((deleteListenerStore != null) &&
+            (deleteListenerStore.hasListeners())) {
             // Now call all the listeners:
-            Iterator<DeleteListener> it = _delete_listener_store.iterator();
+            final Iterator<DeleteListener> it = deleteListenerStore.iterator();
 
-            synchronized (_delete_listener_store) {
+            synchronized (deleteListenerStore) {
                 while (it.hasNext()) {
                     it.next().objectDestroyed(he);
                 }
@@ -927,9 +996,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
      * be removed.
      * See details on this in How Do We Keep HyperEdge Structures Up-To_Date?
      * in http://cytoscape.org/cgi-bin/moin.cgi/HyperEdgeUpdating.
+     * @param net the network in which to hide nodes.
      */
-    public void hideConnectorNodes(CyNetwork net) {
-        Set<CyNode> nodesForNet = _delayedHidingMap.get(net);
+    public void hideConnectorNodes(final CyNetwork net) {
+        final Set<CyNode> nodesForNet = delayedHidingMap.get(net);
 
         if (nodesForNet != null) {
             for (CyNode node : nodesForNet) {
@@ -950,19 +1020,19 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
      * in http://cytoscape.org/cgi-bin/moin.cgi/HyperEdgeUpdating.
      */
     public void hideConnectorNodes() {
-	Set<CyNetwork> nets = _delayedHidingMap.keySet();
+	final Set<CyNetwork> nets = delayedHidingMap.keySet();
 	for (CyNetwork net : nets) {
 	    hideConnectorNodes (net);
 	}
     }
     // MLC 05/11/07 END.
 
-    private void addToDelayedHidingMap(CyNetwork net, CyNode node) {
-        Set<CyNode> nodesForNet = _delayedHidingMap.get(net);
+    private void addToDelayedHidingMap(final CyNetwork net, final CyNode node) {
+        Set<CyNode> nodesForNet = delayedHidingMap.get(net);
 
         if (nodesForNet == null) {
             nodesForNet = new HashSet<CyNode>();
-            _delayedHidingMap.put(net, nodesForNet);
+            delayedHidingMap.put(net, nodesForNet);
         }
 
         nodesForNet.add(node);
@@ -1005,19 +1075,19 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // ASSUME: net and hedge are non-null
     // ASSUME: hedge doesn't belong to net already.
-    protected void addToCyNetwork(CyNetwork net, HyperEdge hedge) {
+    void addToCyNetwork(final CyNetwork net, final HyperEdge hedge) {
         //        List nets = MapUtils.ensureListValueForMap(_he_to_nets_map, hedge);
         //        if (nets.contains(net)) {
         //            return false;
         //        }
         //
         //        nets.add(net);
-        List<HyperEdge> hes = MapUtils.ensureListValueForMap(_net_to_hes_map,
+        final List<HyperEdge> hes = MapUtils.ensureListValueForMap(netToHesMap,
                                                              net);
         hes.add(hedge);
         // Now add the CyNodes and CyEdges:
         // edges returned are not shared:
-        MapUtils.addSetValuesToMap(_net_to_edges_map,
+        MapUtils.addSetValuesToMap(netToEdgesMap,
                                    net,
                                    hedge.getEdges(null));
         //        // nodes returned may be shared, but may duplicate previous
@@ -1030,8 +1100,8 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // ASSUME: net and hedge are non-null
     // ASSUME: hedge belongs to net.
-    protected void removeFromNetwork(CyNetwork net, HyperEdge hedge,
-                                     BookkeepingItem bkItem) {
+    void removeFromNetwork(final CyNetwork net, final HyperEdge hedge,
+                                     final BookkeepingItem bkItem) {
         //        // check that we are really gonna remove stuff before firing the
         //        // event:
         //        List value_list = (List) _he_to_nets_map.get(hedge);
@@ -1054,8 +1124,8 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         //        if (value_list.isEmpty()) {
         //            _he_to_nets_map.remove(hedge);
         //        }
-        MapUtils.removeCollectionValueFromMap(_net_to_hes_map, net, hedge);
-        MapUtils.removeCollectionValuesFromMap(_net_to_edges_map,
+        MapUtils.removeCollectionValueFromMap(netToHesMap, net, hedge);
+        MapUtils.removeCollectionValuesFromMap(netToEdgesMap,
                                                net,
                                                hedge.getEdges(null));
         //        MapUtils.removeValuesFromRefCountMap(_net_to_nodes_map,
@@ -1092,10 +1162,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         removeConnectorNodeFromNet(net, hedge, bkItem);
     }
 
-    private void addNodesAndEdgesToNet(CyNetwork targetNet, HyperEdge he) {
+    private void addNodesAndEdgesToNet(final CyNetwork targetNet, final HyperEdge he) {
         targetNet.restoreNode(he.getConnectorNode());
 
-        Iterator<CyNode> nodeIt = he.getNodes(null);
+        final Iterator<CyNode> nodeIt = he.getNodes(null);
 
         // ASSUME: If node is already in net, it will not be added again:
         while (nodeIt.hasNext()) {
@@ -1104,7 +1174,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             // targetNet.restoreNode(nodeIt.next());
         }
 
-        Iterator<CyEdge> edgeIt = he.getEdges(null);
+        final Iterator<CyEdge> edgeIt = he.getEdges(null);
 
         // ASSUME: If subedge is already in net, it will not be added again:
         while (edgeIt.hasNext()) {
@@ -1113,7 +1183,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
     }
 
-    private void addEdgeToCyNetwork(CyEdge edge, CyNetwork net) {
+    private void addEdgeToCyNetwork(final CyEdge edge, final CyNetwork net) {
         // ASSUME: If edge is already in net, it will not be added again:
 	//                HEUtils.log("really adding edge " + edge.getIdentifier() + " to net " +
 	//                            ((CyNetwork) net).getTitle());
@@ -1121,15 +1191,15 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         // net.restoreEdge(edge);
     }
 
-    private void addNodeToCyNetwork(CyNode node, CyNetwork net) {
+    private void addNodeToCyNetwork(final CyNode node, final CyNetwork net) {
         // ASSUME: If node is already in net, it will not be added again:
         net.addNode(node);
         // net.restoreNode(node);
     }
 
-    private void removeEdgesFromNet(CyNetwork net, HyperEdge he) {
+    private void removeEdgesFromNet(final CyNetwork net, final HyperEdge he) {
         // net.hideNode(he.getConnectorNode());
-        Iterator<CyEdge> edgeIt = he.getEdges(null);
+        final Iterator<CyEdge> edgeIt = he.getEdges(null);
 
         //        // Create a collection of all the HyperEdges since we may be
         //        // deleting the HyperEdges, the Iterator would otherwise get a
@@ -1144,7 +1214,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
     }
 
-    private void removeRegularNodeAttributes(CyNode node) {
+    private void removeRegularNodeAttributes(final CyNode node) {
 	// MLC 06/21/07 BEGIN:
         // Cytoscape.getNodeAttributes().deleteAttribute(node.getIdentifier(),
 	//                                               HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME);
@@ -1154,42 +1224,42 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 	// MLC 06/21/07 END.
     }
 
-    protected void removeUnderlyingNode(CyNode node, CyNetwork net) {
-        int nodeIdx = Cytoscape.getRootGraph().getIndex(node);
+    void removeUnderlyingNode(final CyNode node, final CyNetwork net) {
+        final int nodeIdx = Cytoscape.getRootGraph().getIndex(node);
 
         synchronized (LOCAL_REMOVAL_LOCK) {
-            _internalRemoval = true;
+            internalRemoval = true;
         }
 
-        // TODO: change set_remove=true if removeNode() is made
+        // TODO change set_remove=true if removeNode() is made
         // clear that it works on one network or across networks:
         net.removeNode(nodeIdx, false);
 
         synchronized (LOCAL_REMOVAL_LOCK) {
-            _internalRemoval = false;
+            internalRemoval = false;
         }
     }
 
-    protected void removeUnderlyingEdge(CyEdge edge, CyNetwork net) {
-        int edgeIdx = Cytoscape.getRootGraph().getIndex(edge);
+    void removeUnderlyingEdge(final CyEdge edge, final CyNetwork net) {
+        final int edgeIdx = Cytoscape.getRootGraph().getIndex(edge);
 
         synchronized (LOCAL_REMOVAL_LOCK) {
-            _internalRemoval = true;
+            internalRemoval = true;
         }
 
-        // TODO: change set_remove=true if removeEdge() is made
+        // TODO change set_remove=true if removeEdge() is made
         // clear that it works on one network or across networks:
         // HEUtils.log("REMOVED " + HEUtils.toString(edge));
         net.removeEdge(edgeIdx, false);
 
         synchronized (LOCAL_REMOVAL_LOCK) {
-            _internalRemoval = false;
+            internalRemoval = false;
         }
     }
 
     // ASSUME: Edges will be removed before this is called.
-    private void removeConnectorNodeFromNet(CyNetwork net, HyperEdge he,
-                                            BookkeepingItem bkItem) {
+    private void removeConnectorNodeFromNet(final CyNetwork net, final HyperEdge he,
+                                            final BookkeepingItem bkItem) {
         removeNodeFromNet(he.getConnectorNode(),
                           net,
                           bkItem);
@@ -1206,13 +1276,13 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         //        }
     }
 
-    protected void removeNodeFromNet(CyNode node, CyNetwork net,
-                                     BookkeepingItem bkItem) {
+    void removeNodeFromNet(final CyNode node, final CyNetwork net,
+                                     final BookkeepingItem bkItem) {
         int edgesLeft = net.getDegree(node);
 
         if ((edgesLeft > 0) && (bkItem != null)) {
             // see if edges are a member of bkItem and weren't deleted yet:
-            int[] adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(node),
+            final int[] adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(node),
                                                                   true,
                                                                   true,
                                                                   true);
@@ -1249,23 +1319,23 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
     }
 
-    protected static HyperEdgeManager getHyperEdgeManager() {
+    static HyperEdgeManager getHyperEdgeManager() {
         return INSTANCE;
     }
 
-    protected void registerHyperEdge(HyperEdge he) {
+    void registerHyperEdge(final HyperEdge he) {
         addHyperEdgeUUIDAssoc(he);
-        _all_hyper_edges.add(he);
-        _cn_to_he_map.put(he.getConnectorNode(),
+        allHyperEdges.add(he);
+        cnToHeMap.put(he.getConnectorNode(),
                           he);
     }
 
-    protected void fireNewHObjEvent(HyperEdge he) {
-        if (_new_listener_store.hasListeners()) {
-            List<NewObjectListener> list = _new_listener_store.getListeners();
+    void fireNewHObjEvent(final HyperEdge he) {
+        if (newListenerStore.hasListeners()) {
+            final List<NewObjectListener> list = newListenerStore.getListeners();
 
             // Now call all the listeners:
-            Iterator<NewObjectListener> it = list.iterator();
+            final Iterator<NewObjectListener> it = list.iterator();
 
             while (it.hasNext()) {
                 it.next().objectCreated(he);
@@ -1275,15 +1345,15 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // ASSUME: edge must be fully filled in before calling this method.
     // ASSUME: he may not have been registered yet (using registerHyperEdge).
-    protected void registerEdge(CyEdge edge, HyperEdge he, CyNetwork net) {
-        _all_edges.add(edge);
+    void registerEdge(final CyEdge edge, final HyperEdge he, final CyNetwork net) {
+        allEdges.add(edge);
 
         // CyNode node = edge.getSource ();
-        CyNode node = ((HyperEdgeImpl) he).primGetNode(edge);
-        _all_nodes.add(node); // add node, when needed.
+        final CyNode node = ((HyperEdgeImpl) he).primGetNode(edge);
+        allNodes.add(node); // add node, when needed.
 
-        MapUtils.addListValueToMap(_node_to_hes_map, node, he, true);
-        MapUtils.addListValueToMap(_node_to_edges_map, node, edge, true);
+        MapUtils.addListValueToMap(nodeToHesMap, node, he, true);
+        MapUtils.addListValueToMap(nodeToEdgesMap, node, edge, true);
 
         // MLC 08/11/06:
         if (net == null) {
@@ -1291,7 +1361,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             // and add net to node info:
             for (CyNetwork aNet : ((HyperEdgeImpl) he).primGetNetworks()) {
                 //                MapUtils.addValueToRefCountMap(_net_to_nodes_map, aNet, node);
-                MapUtils.addSetValueToMap(_net_to_edges_map, aNet, edge);
+                MapUtils.addSetValueToMap(netToEdgesMap, aNet, edge);
                 addEdgeToCyNetwork(edge, aNet);
                 addNodeToCyNetwork(node, aNet);
 
@@ -1299,64 +1369,66 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             }
         } else {
             //            MapUtils.addValueToRefCountMap(_net_to_nodes_map, net, node);
-            MapUtils.addSetValueToMap(_net_to_edges_map, net, edge);
+            MapUtils.addSetValueToMap(netToEdgesMap, net, edge);
             addEdgeToCyNetwork(edge, net);
             addNodeToCyNetwork(node, net);
         }
     }
 
-    protected void unregisterHyperEdge(HyperEdge he) {
+    void unregisterHyperEdge(final HyperEdge he) {
         for (CyNetwork net : ((HyperEdgeImpl) he).primGetNetworks()) {
-            MapUtils.removeCollectionValueFromMap(_net_to_hes_map, net, he);
+            MapUtils.removeCollectionValueFromMap(netToHesMap, net, he);
 
             //}
         }
 
-        if (_cn_to_he_map.remove(he.getConnectorNode()) == null) {
+        if (cnToHeMap.remove(he.getConnectorNode()) == null) {
             HEUtils.log("unregisterHyperEdge: ERROR: Connector wasn't found!");
         }
 
         // _he_to_nets_map.remove(he);
-        _all_hyper_edges.remove(he);
+        allHyperEdges.remove(he);
         removeHyperEdgeUUIDAssoc(he);
     }
 
     /**
+     * @param edge the edge to unregister.
+     * @param he the HyperEdge for which to unregister edge.
      * ASSUME: 'he' has not yet been unregistered.
      * ASSUME: The HyperEdge containing this CyEdge has not yet been modified
      *         to remove this CyEdge.
      * only removed info for this edge.
      */
-    protected void unregisterEdge(CyEdge edge, HyperEdge he) {
+    void unregisterEdge(final CyEdge edge, final HyperEdge he) {
         removeNodeInfoWhenNeeded(edge, he);
         // remove from all CyNetworks:
-        _all_edges.remove(edge);
+        allEdges.remove(edge);
 
         // find the CyNetworks that this edge belongs to and
         // remove from them:
         for (CyNetwork net : ((HyperEdgeImpl) he).primGetNetworks()) {
-            MapUtils.removeCollectionValueFromMap(_net_to_edges_map, net, edge);
+            MapUtils.removeCollectionValueFromMap(netToEdgesMap, net, edge);
         }
     }
 
     // update all node-related maps and sets as is appropriate.
-    private void removeNodeInfoWhenNeeded(CyEdge edge, HyperEdge he) {
+    private void removeNodeInfoWhenNeeded(final CyEdge edge, final HyperEdge he) {
         // get CyNode to check for removal:
-        CyNode node = ((HyperEdgeImpl) he).primGetNode(edge);
+        final CyNode node = ((HyperEdgeImpl) he).primGetNode(edge);
 
         if (!he.hasMultipleEdges(node)) {
             // The node only has one edge connected to it.
             // This hyperedge (he) will have node removed from it.
             // remove this node from this HyperEdge:
-            MapUtils.removeCollectionValueFromMap(_node_to_hes_map, node, he);
+            MapUtils.removeCollectionValueFromMap(nodeToHesMap, node, he);
 
             // There's a chance the node is no longer a member of any HyperEdges:
-            List<HyperEdge> hes_containing_node = _node_to_hes_map.get(node);
+            final List<HyperEdge> hesContainingNode = nodeToHesMap.get(node);
 
-            if (hes_containing_node == null) {
+            if (hesContainingNode == null) {
                 // there are no other HyperEdge references to node.
                 // remove completely:
-                _all_nodes.remove(node);
+                allNodes.remove(node);
 
                 // node is no longer a regular node of any HyperEdge. However,
                 // it may be a ConnectorNode of a HyperEdge (edge was a
@@ -1364,9 +1436,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
                 if (!isConnectorNode(node, null)) {
                     removeRegularNodeAttributes(node);
                 }
-            } else {
+            } 
+            // else {
                 // There are other HyperEdges containing node.
-            }
+            // }
 
             //            // removing from all CyNetworks:
             //            // More than one CyNetwork may contain the same
@@ -1374,10 +1447,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             //            for (CyNetwork net : ((HyperEdgeImpl) he).primGetCyNetworks()) {
             //                MapUtils.removeValueFromRefCountMap(_net_to_nodes_map, net, node);
             //            }
-        } else {
+        } 
+        // else {
             // 'he' has another reference to node:
             // Nothing to do but _node_to_edges_map (below).
-        }
+        // }
 
         //        // removing count from all CyNetworks:
         //        // More than one CyNetwork may contain the same
@@ -1385,15 +1459,15 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         //        for (CyNetwork net : ((HyperEdgeImpl) he).primGetCyNetworks()) {
         //            MapUtils.removeValueFromRefCountMap(_net_to_nodes_map, net, node);
         //        }
-        MapUtils.removeCollectionValueFromMap(_node_to_edges_map, node, edge);
+        MapUtils.removeCollectionValueFromMap(nodeToEdgesMap, node, edge);
     }
 
     /**
      * Remove a UUID-HyperEdge association. Returns true if
      * an association was found and removed.
      */
-    private boolean removeHyperEdgeUUIDAssoc(HyperEdge he) {
-        return (_uuid_to_he_map.remove(he.getIdentifier()) != null);
+    private boolean removeHyperEdgeUUIDAssoc(final HyperEdge he) {
+        return (uuidToHeMap.remove(he.getIdentifier()) != null);
     }
 
     /**
@@ -1402,47 +1476,47 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     * non-null.  The UUID of the HyperEdge is used as a key--must be
     * non-null.
     */
-    private void addHyperEdgeUUIDAssoc(HyperEdge he) {
-        String uuid = he.getIdentifier();
+    private void addHyperEdgeUUIDAssoc(final HyperEdge he) {
+        final String uuid = he.getIdentifier();
 
         if (uuid == null) {
             throw new HEStructuralIntegrityException("Found a NULL UUID!");
         }
 
-        Object obj = _uuid_to_he_map.put(uuid, he);
+        final Object obj = uuidToHeMap.put(uuid, he);
 
         if (obj != null) {
-            String                         msg = "attempting to add a HyperEdge with the same UUID key!";
-            HEStructuralIntegrityException e = new HEStructuralIntegrityException(msg);
+            final String                         msg = "attempting to add a HyperEdge with the same UUID key!";
+            final HEStructuralIntegrityException e = new HEStructuralIntegrityException(msg);
             e.printStackTrace();
             throw e;
         }
     }
 
     private void checkAllEmpty() {
-        checkIsEmpty(_uuid_to_he_map, "_uuid_to_he_map");
-        checkIsEmpty(_all_hyper_edges, "_all_hyper_edges");
-        checkIsEmpty(_all_edges, "_all_edges");
-        checkIsEmpty(_all_nodes, "_all_nodes");
+        checkIsEmpty(uuidToHeMap, "uuidToHeMap");
+        checkIsEmpty(allHyperEdges, "allHyperEdges");
+        checkIsEmpty(allEdges, "allEdges");
+        checkIsEmpty(allNodes, "allNodes");
         // checkIsEmpty(_he_to_nets_map, "_he_to_nets_map");
-        checkIsEmpty(_net_to_hes_map, "_net_to_hes_map");
-        checkIsEmpty(_node_to_hes_map, "_node_to_hes_map");
-        checkIsEmpty(_node_to_edges_map, "_node_to_hes_map");
+        checkIsEmpty(netToHesMap, "netToHesMap");
+        checkIsEmpty(nodeToHesMap, "nodeToHesMap");
+        checkIsEmpty(nodeToEdgesMap, "nodeToHesMap");
         // MLC 08/11/06:
         //        checkIsEmpty(_eit_to_hes_map, "_eit_to_hes_map");
-        checkIsEmpty(_cn_to_he_map, "_cn_to_he_map");
-        checkIsEmpty(_net_to_edges_map, "_net_to_edges_map");
+        checkIsEmpty(cnToHeMap, "cnToHeMap");
+        checkIsEmpty(netToEdgesMap, "netToEdgesMap");
         //        checkIsEmpty(_net_to_nodes_map, "_net_to_nodes_map");
     }
 
-    private void checkIsEmpty(Map map, String msg) {
+    private void checkIsEmpty(final Map map, final String msg) {
         if (!map.isEmpty()) {
-            StringBuilder sb    = new StringBuilder();
-            Map.Entry     entry;
-            Iterator      mapIt = map.entrySet().iterator();
+            final StringBuilder sb    = new StringBuilder();
+            Map.Entry<?,?>     entry;
+            final Iterator<Map.Entry<?,?>>      mapIt = map.entrySet().iterator();
 
             while (mapIt.hasNext()) {
-                entry = (Map.Entry) mapIt.next();
+                entry = mapIt.next();
                 sb.append("\nkey: ");
                 sb.append(HEUtils.toString(entry.getKey()));
                 sb.append(" value: ");
@@ -1457,9 +1531,9 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         }
     }
 
-    private void checkIsEmpty(Set set, String msg) {
+    private void checkIsEmpty(final Set<?> set, final String msg) {
         if (!set.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
 
             for (Object ele : set) {
                 sb.append("\nelement: ");
@@ -1483,26 +1557,26 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
      * @return the empty list if a or b is null, or if no intersections are found.
      *         Otherwise, return the list of intersecting HyperEdges.
      */
-    static public List<HyperEdge> intersection(List<HyperEdge> a,
-                                               List<HyperEdge> b) {
+    public static List<HyperEdge> intersection(final List<HyperEdge> a,
+                                               final List<HyperEdge> b) {
         if ((a == null) || (b == null)) {
             return new ArrayList<HyperEdge>(0);
         }
 
-        List<HyperEdge> results = new ArrayList<HyperEdge>();
+        final List<HyperEdge> results = new ArrayList<HyperEdge>();
 
         synchronized (INTERSECTION_LOCK) {
-            Iterator<HyperEdge> a_it = a.iterator();
+            Iterator<HyperEdge> aIt = a.iterator();
 
-            while (a_it.hasNext()) {
-                ((HyperEdgeImpl) a_it.next()).setMarked(true);
+            while (aIt.hasNext()) {
+                ((HyperEdgeImpl) aIt.next()).setMarked(true);
             }
 
             HyperEdgeImpl       ho;
-            Iterator<HyperEdge> b_it = b.iterator();
+            final Iterator<HyperEdge> bIt = b.iterator();
 
-            while (b_it.hasNext()) {
-                ho = ((HyperEdgeImpl) b_it.next());
+            while (bIt.hasNext()) {
+                ho = ((HyperEdgeImpl) bIt.next());
 
                 if (ho.isMarked()) {
                     results.add(ho);
@@ -1510,10 +1584,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             }
 
             // reset marks:
-            a_it = a.iterator();
+            aIt = a.iterator();
 
-            while (a_it.hasNext()) {
-                ((HyperEdgeImpl) a_it.next()).setMarked(false);
+            while (aIt.hasNext()) {
+                ((HyperEdgeImpl) aIt.next()).setMarked(false);
             }
         }
 
@@ -1564,22 +1638,22 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     //    {
     //        return _any_dirty_listener_store.removeListener (l);
     //    }
-    protected void fireChangeEvent(HyperEdge he, EventNote.Type type,
-                                   EventNote.SubType sub_type,
-                                   Object supporting_info) {
-        if ((_change_listener_store == null) ||
+    void fireChangeEvent(final HyperEdge he, final EventNote.Type type,
+                                   final EventNote.SubType subType,
+                                   final Object supportingInfo) {
+        if ((changeListenerStore == null) ||
             (he.getState() != LifeState.NORMAL)) {
             return;
         }
 
         // fire event
-        EventNote en = new EventNote(he, type, sub_type, supporting_info);
+        final EventNote en = new EventNote(he, type, subType, supportingInfo);
 
-        if (_change_listener_store.hasListeners()) {
-            List<ChangeListener> list = _change_listener_store.getListeners();
+        if (changeListenerStore.hasListeners()) {
+            final List<ChangeListener> list = changeListenerStore.getListeners();
 
             // Now call all the listeners:
-            Iterator<ChangeListener> it = list.iterator();
+            final Iterator<ChangeListener> it = list.iterator();
 
             while (it.hasNext()) {
                 it.next().objectChanged(en);
@@ -1599,28 +1673,32 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     //        return ((HyperEdgeFactoryImpl) _factory).createRestoredHyperEdge(uuid);
     //    }
 
-    // Lookup HyperEdge in case it has been seen before
-    public HyperEdge findHyperEdge(String uuid) {
-        return (HyperEdge) _uuid_to_he_map.get(uuid);
+    /**
+     * @param uuid the unique id of the HyperEdge to find.
+     * @return a HyperEdge with a given uuid. Return null if not found.
+     */
+    public HyperEdge findHyperEdge(final String uuid) {
+        return (HyperEdge) uuidToHeMap.get(uuid);
     }
 
     // handle persistence across sessions
-    private class HESessionLoadedUpdater extends HENetworkLoadedUpdater {
+    private final class HESessionLoadedUpdater extends HENetworkLoadedUpdater {
+	private HESessionLoadedUpdater () {}
         // override propertyChange:
-        public void propertyChange(PropertyChangeEvent e) {
+        public void propertyChange(final PropertyChangeEvent e) {
             handleLoadedSession((List<String>) e.getNewValue());
         }
 
-        private void handleLoadedSession(List<String> networks) {
+        private void handleLoadedSession(final List<String> networks) {
             if (networks == null) {
                 return;
             }
 
-            Iterator<String>  netIt = networks.iterator();
+            final Iterator<String>  netIt = networks.iterator();
             CyNetwork net;
 
             while (netIt.hasNext()) {
-                String netID = netIt.next();
+                final String netID = netIt.next();
                 net = (CyNetwork) Cytoscape.getNetwork(netID);
                 handleLoadedNetwork(net);
             }
@@ -1629,8 +1707,9 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // handle persistence across networks (e.g., HGMML).
     private class HENetworkLoadedUpdater implements PropertyChangeListener {
-        public void propertyChange(PropertyChangeEvent e) {
-            Object[] info = (Object[]) e.getNewValue();
+	private HENetworkLoadedUpdater () {}
+        public void propertyChange(final PropertyChangeEvent e) {
+            final Object[] info = (Object[]) e.getNewValue();
 
             // Note that if a network is not saved with attributes,
             // the handleLoadedNetwork will do nothing.
@@ -1639,7 +1718,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             }
         }
 
-        protected void handleLoadedNetwork(CyNetwork net) {
+        protected void handleLoadedNetwork(final CyNetwork net) {
             if (net == null) {
                 return;
             }
@@ -1647,7 +1726,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             handleReloadedSharedHyperEdges(net);
 
             // find all connector nodes:
-            Iterator<CyNode> nodesIt = net.nodesIterator();
+            final Iterator<CyNode> nodesIt = net.nodesIterator();
             CyNode   node;
 
             while (nodesIt.hasNext()) {
@@ -1671,11 +1750,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         // CyNetwork. We can then proceed with normal reconstruction--
         // a brand new HyperEdge will be created based on finding this
         // new (copy) ConnectorNode.
-        private void handleReloadedSharedHyperEdges(CyNetwork net) {
+        private void handleReloadedSharedHyperEdges(final CyNetwork net) {
             // find all connector nodes:
             // since we may be adding new nodes, thereby invalidating the iterator,
             // copy nodes into a list:
-            Collection<CyNode> nodes = HEUtils.createCollection((Iterator<CyNode>) net.nodesIterator());
+            final Collection<CyNode> nodes = HEUtils.createCollection((Iterator<CyNode>) net.nodesIterator());
 
             for (CyNode node : nodes) {
                 replaceUnderlyingSharedConnectorNodes(node, net);
@@ -1688,9 +1767,9 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         // This is used without references to HyperEdges, on the
         // underlying Cytoscape CyNodes and CyEdges during reconstruction
         // of HyperEdges when a Cytoscape Session or CyNetwork is read in.
-        private void replaceUnderlyingSharedConnectorNodes(CyNode cn,
-                                                           CyNetwork net) {
-            HyperEdge he = getHyperEdgeForConnectorNode(cn);
+        private void replaceUnderlyingSharedConnectorNodes(final CyNode cn,
+                                                           final CyNetwork net) {
+            final HyperEdge he = getHyperEdgeForConnectorNode(cn);
 
             if ((he == null) || (!he.hasSharedEdges())) {
                 return;
@@ -1702,7 +1781,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 	    //            HEUtils.log("Found Reloaded Shared HyperEdge with Connector Node " +
 	    //                        HEUtils.toString(cn));
 
-            CyNode cnCopy = HEUtils.createConnectorNode(HyperEdgeImpl.createConnectorNodeUUIDWithoutHE());
+            final CyNode cnCopy = HEUtils.createConnectorNode(HyperEdgeImpl.createConnectorNodeUUIDWithoutHE());
             // we don't need purge=true because copyNode is new:
             CyAttributesUtils.copyAttributes(cn.getIdentifier(),
                                              cnCopy.getIdentifier(),
@@ -1714,14 +1793,14 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             //            HEUtils.toString(cnCopy));
 
             // now copy all the edges and their attributes:
-            int[]        adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(cn),
+            final int[]        adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(cn),
                                                                          true,
                                                                          true,
                                                                          true);
             CyEdge       edge;
             CyNode       source;
             CyNode       target;
-            CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+            final CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
 
             // will copy all Edges including user added edges:
             for (int edgeIdx : adjacentEdges) {
@@ -1729,7 +1808,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
                 // add an equivalent edge to the cnCopy:
                 // ASSUME: All edges use Semantics.INTERACTION for their type:
-                String itype = edgeAttrs.getStringAttribute(edge.getIdentifier(),
+                final String itype = edgeAttrs.getStringAttribute(edge.getIdentifier(),
                                                             Semantics.INTERACTION);
 
                 if (itype != null) {
@@ -1747,7 +1826,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 		    // MLC 01/15/07:
                     // HEUtils.log("Copying edge " + HEUtils.toString(edge));
 
-                    CyEdge newEdge = HEUtils.createEdge(source, target, itype);
+                    final CyEdge newEdge = HEUtils.createEdge(source, target, itype);
                     // we don't need purge=true because copyNode is new:
                     CyAttributesUtils.copyAttributes(edge.getIdentifier(),
                                                      newEdge.getIdentifier(),
@@ -1771,10 +1850,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // Monitor all created Networks so we can update any HyperEdges
     // found in these networks when deletions occur.
-    private class HENetworkCreatedUpdater implements PropertyChangeListener {
-        public void propertyChange(PropertyChangeEvent e) {
-            String    network_name = (String) e.getNewValue();
-            CyNetwork net = (CyNetwork) Cytoscape.getNetwork(network_name);
+    private final class HENetworkCreatedUpdater implements PropertyChangeListener {
+	private HENetworkCreatedUpdater () {}
+        public void propertyChange(final PropertyChangeEvent e) {
+            final String    networkName = (String) e.getNewValue();
+            final CyNetwork net = (CyNetwork) Cytoscape.getNetwork(networkName);
             // HEUtils.log("NETWORK CREATED " + network_name);
             net.addGraphPerspectiveChangeListener(gosUpdater);
         }
@@ -1782,10 +1862,11 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
     // Monitor all destroyed Networks so we can
     // update any HyperEdges that were found in these networks.
-    private class HENetworkDestroyedUpdater implements PropertyChangeListener {
-        public void propertyChange(PropertyChangeEvent e) {
-            String    network_name = (String) e.getNewValue();
-            CyNetwork net = (CyNetwork) Cytoscape.getNetwork(network_name);
+    private final class HENetworkDestroyedUpdater implements PropertyChangeListener {
+	private HENetworkDestroyedUpdater () {}
+        public void propertyChange(final PropertyChangeEvent e) {
+            final String    networkName = (String) e.getNewValue();
+            final CyNetwork net = (CyNetwork) Cytoscape.getNetwork(networkName);
 
 	    // HEUtils.log("NETWORK DESTROYED " + network_name);
 
@@ -1799,13 +1880,13 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             removeHyperEdgesFromNetwork(net);
         }
 
-        private void removeHyperEdgesFromNetwork(CyNetwork net) {
-            Iterator<HyperEdge> heIt = getHyperEdgesByNetwork(net);
+        private void removeHyperEdgesFromNetwork(final CyNetwork net) {
+            final Iterator<HyperEdge> heIt = getHyperEdgesByNetwork(net);
 
             // Create a collection of all the HyperEdges since we may be
             // deleting the HyperEdges, the Iterator would otherwise get a
             // ConcurrentModificationException:
-            Collection<HyperEdge> hes = HEUtils.createCollection(heIt);
+            final Collection<HyperEdge> hes = HEUtils.createCollection(heIt);
 
             for (HyperEdge he : hes) {
                 // HEUtils.log("removed " + HEUtils.toString(he));
@@ -1820,9 +1901,10 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
     // We have no easy way to test if the modification was a deletion,
     // so we just do it for all modifications. This implies
     // hideConnectorNodes() must be an efficient operation.
-    private class HENetworkModifiedUpdater implements PropertyChangeListener {
-        public void propertyChange(PropertyChangeEvent e) {
-            CyNetwork net = (CyNetwork)e.getNewValue(); 
+    private final class HENetworkModifiedUpdater implements PropertyChangeListener {
+	private HENetworkModifiedUpdater () {}
+        public void propertyChange(final PropertyChangeEvent e) {
+            final CyNetwork net = (CyNetwork)e.getNewValue(); 
             // HEUtils.log("NETWORK MODIFIED " + net.getIdentifier());
 	    hideConnectorNodes(net);
         }
@@ -1832,11 +1914,12 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
 
     // Handle removal of CyEdges from CyNetworks:
-    private class GraphObjsHiddenUpdater
+    private final class GraphObjsHiddenUpdater
         implements GraphPerspectiveChangeListener {
+	private GraphObjsHiddenUpdater () {}
         // The source, target or both could be ConnectorNodes ( when
         // edge links two HyperEdges).
-        private CyNode getConnectorNode(CyEdge edge, CyNetwork net) {
+        private CyNode getConnectorNode(final CyEdge edge, final CyNetwork net) {
             if (isConnectorNode((CyNode) edge.getSource(), net)) {
                 return (CyNode) edge.getSource();
             }
@@ -1861,12 +1944,12 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
         // ASSUME: It is ok to "rehide"--possibly call hide on already hidden nodes
         //         or edges. But, it ISN'T ok to recursively hide--delete a
         //         node or edge while we are in the middle of deleting it.
-        public void graphPerspectiveChanged(GraphPerspectiveChangeEvent e) {
-            // TODO: This doesn't handle restoring of hidden nodes!
+        public void graphPerspectiveChanged(final GraphPerspectiveChangeEvent e) {
+            // TODO This doesn't handle restoring of hidden nodes!
             // DON'T respond to internal deletions that are part of
             // HyperEdge workings. 
             synchronized (LOCAL_REMOVAL_LOCK) {
-                if (_internalRemoval) {
+                if (internalRemoval) {
                     return;
                 }
             }
@@ -1878,7 +1961,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
             // build a set of all nodes and edges NOT to delete because
             // they will be deleted by Cytoscape:
-            Set<GraphObject> toIgnoreForDeletion = new HashSet<GraphObject>();
+            final Set<GraphObject> toIgnoreForDeletion = new HashSet<GraphObject>();
 
             if (e.isNodesHiddenType()) {
                 for (int nodeIdx : e.getHiddenNodeIndices()) {
@@ -1901,55 +1984,50 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             handleHiddenEdges(e, toIgnoreForDeletion);
         }
 
-        private void handleHiddenNodes(GraphPerspectiveChangeEvent e,
+        private void handleHiddenNodes(final GraphPerspectiveChangeEvent e,
                                        // DeletedCatcher deletedCatcher,
-        Set<GraphObject> toIgnoreForDeletion) {
+        final Set<GraphObject> toIgnoreForDeletion) {
             if (!e.isNodesHiddenType()) {
                 return;
             }
 
-            int[]     hiddenNodes = e.getHiddenNodeIndices();
-            CyNetwork net = (CyNetwork) e.getSource();
+            final int[]     hiddenNodes = e.getHiddenNodeIndices();
+            final CyNetwork net = (CyNetwork) e.getSource();
 
             if (hiddenNodes == null) {
                 return;
             }
 
             for (int nodeIdx : hiddenNodes) {
-                {
-                    CyNode node = (CyNode) Cytoscape.getRootGraph()
-                                                    .getNode(nodeIdx);
-
-                    // if (deletedCatcher.contains(node)) {
-                    //    continue;
-                    // }
-                    HyperEdge he = getHyperEdgeForConnectorNode(node);
-
-                    if (he == null) {
-                        continue;
-                    }
-
-                    // HEUtils.log("CONNECTOR NODE HIDDEN = " +
-		    //             HEUtils.toString(node));
-                    // // if any other objects are deleted during bookkeeping
-                    // // remember them to avoid them in the future:
-                    // net.addGraphPerspectiveChangeListener(deletedCatcher);
-                    ((HyperEdgeImpl) he).removeFromNetworkBookkeeping(net,
-                                                                      toIgnoreForDeletion);
-                    // net.removeGraphPerspectiveChangeListener(deletedCatcher);
-                }
+                final CyNode node = (CyNode) Cytoscape.getRootGraph()
+		                                .getNode(nodeIdx);
+		// if (deletedCatcher.contains(node)) {
+		//    continue;
+		// }
+		final HyperEdge he = getHyperEdgeForConnectorNode(node);
+		if (he == null) {
+		    continue;
+		}
+		// HEUtils.log("CONNECTOR NODE HIDDEN = " +
+		//             HEUtils.toString(node));
+		// // if any other objects are deleted during bookkeeping
+		// // remember them to avoid them in the future:
+		// net.addGraphPerspectiveChangeListener(deletedCatcher);
+		((HyperEdgeImpl) he).removeFromNetworkBookkeeping(net,
+		                                                  toIgnoreForDeletion);
+		// net.removeGraphPerspectiveChangeListener(deletedCatcher);
             }
         }
 
-        private void handleHiddenEdges(GraphPerspectiveChangeEvent e,
+        private void handleHiddenEdges(final GraphPerspectiveChangeEvent e,
                                        // DeletedCatcher deletedCatcher,
-        Set<GraphObject> toIgnoreForDeletion) {
+        final Set<GraphObject> toIgnoreForDeletion) {
             if (!e.isEdgesHiddenType()) {
                 return;
             }
 
-            int[]     hiddenEdges = e.getHiddenEdgeIndices();
-            CyNetwork net = (CyNetwork) e.getSource();
+            final int[]     hiddenEdges = e.getHiddenEdgeIndices();
+            final CyNetwork net = (CyNetwork) e.getSource();
 
             if (hiddenEdges == null) {
                 return;
@@ -1959,7 +2037,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
             // HEUtils.log("EDGES HIDDEN EVENT");
 
             for (int edgeIdx : hiddenEdges) {
-                CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(edgeIdx);
+                final CyEdge edge = (CyEdge) Cytoscape.getRootGraph().getEdge(edgeIdx);
 
                 // if (deletedCatcher.contains(edge)) {
                 //    continue;
@@ -1970,7 +2048,7 @@ public class HyperEdgeManagerImpl implements HyperEdgeManager {
 
                 // Now get the HyperEdge containing this
                 // CyEdge (if any) and update it:
-                HyperEdge he = getHyperEdgeForConnectorNode(getConnectorNode(edge,
+                final HyperEdge he = getHyperEdgeForConnectorNode(getConnectorNode(edge,
                                                                              net));
 
                 if (he == null) {

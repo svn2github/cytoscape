@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         HEUtils.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/impl/utils/HEUtils.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Sun Apr 24 06:20:47 2005
-* Modified:     Thu Jun 21 05:12:20 2007 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/* 
 *
 * Revisions:
 *
@@ -44,30 +65,28 @@
 package cytoscape.hyperedge.impl.utils;
 
 
+import giny.model.GraphObject;
+
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import cytoscape.CyEdge;
 import cytoscape.CyNetwork;
 import cytoscape.CyNode;
 import cytoscape.Cytoscape;
-
 import cytoscape.data.AttributeFilter;
 import cytoscape.data.CyAttributes;
 import cytoscape.data.Semantics;
 import cytoscape.hyperedge.HyperEdge;
 import cytoscape.hyperedge.LifeState;
 import cytoscape.hyperedge.impl.HyperEdgeImpl;
-
-import giny.model.GraphObject;
-
-import java.io.File;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import cytoscape.logger.CyLogger;
 
 
 /**
@@ -75,40 +94,52 @@ import java.util.List;
  * @author Michael L. Creech
  * @version 1.0
  */
-public class HEUtils {
-    private static boolean _do_logging = true;
+public final class HEUtils {
+    private static final String ATTRIBUTE_TRUE = "true";
+    private static boolean doLogging = true;
+    private static CyLogger logger = CyLogger.getLogger("HyperEdge");
+    static {
+	logger.setDebug (doLogging);
+    }
 
     // used for making generateUUID() thread-safe and reducing the span of
     // what is locked:
-    private static Long   _lock_obj_for_uuid = new Long(0);
-    private static String _local_host_cache = cacheLocalHostInfo();
+    private static Boolean   lockObjForUUID = new Boolean(true);
+    private static String localHostCache = cacheLocalHostInfo();
 
     // The number of calls to the UUID routine:
-    private static long _uuid_call_num = 0;
+    private static long uuidCallNum;
 
+    // Don't want people to manipulate the utility class constructor.
+    private HEUtils() {}
+    
     /**
      * Convenience method for throwing an IllegalArgumentException given
      * a message.
+     * @param msg the String message associated with the exception.
+     * @throws IllegalArgumentException
      */
-    static public void throwIllegalArgumentException(String msg)
-                                              throws IllegalArgumentException {
-        IllegalArgumentException ex = new IllegalArgumentException(msg);
+    public static void throwIllegalArgumentException(final String msg){
+        final IllegalArgumentException ex = new IllegalArgumentException(msg);
         ex.fillInStackTrace();
 
         // ex.printStackTrace();
+	logger.error (msg,ex);
         throw ex;
     }
 
     /**
      * Convenience method for throwing an IllegalStateException given
      * a message.
+     * @param msg the String message associated with the exception.
+     * @throws IllegalStateException
      */
-    static public void throwIllegalStateException(String msg)
-                                           throws IllegalStateException {
-        IllegalStateException ex = new IllegalStateException(msg);
+    public static void throwIllegalStateException(final String msg) {
+        final IllegalStateException ex = new IllegalStateException(msg);
         ex.fillInStackTrace();
 
         // ex.printStackTrace();
+	logger.error (msg,ex);
         throw ex;
     }
 
@@ -117,49 +148,60 @@ public class HEUtils {
     //    }
 
     /**
-     * Output a message to the system council or shell window.
+     * Output a message to a CyLogger for HyperEdges.
      * Commonly used for debugging. Will not log when
      * isLogging returns false.
+     * @param msg the String message to log.
      * @see HEUtils#isLogging
      * @see HEUtils#setLogging
      */
-    public static void log(String msg) {
-        if (_do_logging) {
-            System.out.println(msg);
-        }
-    }
-
-    static public void errorLog(String msg) {
-        System.err.println(msg);
+    public static void log(final String msg) {
+	//        if (doLogging) {
+	//            System.out.println(msg);
+	//        }
+	logger.info(msg);
     }
 
     /**
-     * Are we displaying logged mesages?
+     * Output a message to a CyLogger for HyperEdges.
+     * Used for logging non-fatal errors and warnings.
+     * Will not log when isLogging returns false.
+     * @param msg the String message to log.
+     */
+    public static void errorLog(final String msg) {
+        // System.err.println(msg);
+	logger.warn (msg);
+    }
+
+    /**
+     * @return true iff we are displaying logged messages.
      */
     public static boolean isLogging() {
-        return _do_logging;
+        return doLogging;
     }
 
     /**
-     * Should we display logged mesages?
+     * @param doLog whether to perform logging for this CyLogger.
+     * @return true iff we should display a logged messages?
      */
-    public static boolean setLogging(boolean do_log) {
-        boolean ret_val = _do_logging;
-        _do_logging = do_log;
-
-        return ret_val;
+    public static boolean setLogging(final boolean doLog) {
+        final boolean retVal = doLogging;
+        doLogging = doLog;
+	logger.setDebug (doLogging);
+        return retVal;
     }
 
     /**
      * If you don't know why this method is called "AbbyNormal", you
      * probably haven't seen the movie YoungFrankenstein!
+     * @param obj the HyperEdge whose state will be checked.
      */
-    public static void checkAbbyNormal(HyperEdge obj) {
+    public static void checkAbbyNormal(final HyperEdge obj) {
         //        if ((!obj.isState (LifeState.NORMAL)) &&
         //            (!obj.isState (LifeState.CREATION_IN_PROGRESS)) &&
         //            (!obj.isState (LifeState.DELETION_IN_PROGRESS)))
         if (obj.isState(LifeState.DELETED)) {
-            String                msg = "Attempting operation on object " +
+            final String                msg = "Attempting operation on object " +
                                         obj.getIdentifier() + " in state " +
                                         obj.getState() +
                                         " when we expected the object to be in state " +
@@ -167,10 +209,11 @@ public class HEUtils {
                                         LifeState.CREATION_IN_PROGRESS +
                                         ", or " +
                                         LifeState.DELETION_IN_PROGRESS + ".";
-            IllegalStateException ex = new IllegalStateException(msg);
+            final IllegalStateException ex = new IllegalStateException(msg);
             ex.fillInStackTrace();
 
             // ex.printStackTrace();
+	    logger.error (msg,ex);
             throw ex;
         }
     }
@@ -196,28 +239,30 @@ public class HEUtils {
      * <P>A sample UUID
      * is: <CODE>10:973202057660:64.92.27.47</CODE> if no host machine name is
      * available, the form is <CODE>7:973202057660:mikeC:\WINDOWS</CODE>.
+     * @param prefix an optional prefix to be used in building the UUIDs.
+     * @return the String representing the UUID.
      */
-    public static String generateUUID(String prefix) {
-        long          time = System.currentTimeMillis();
-        StringBuilder sb = new StringBuilder();
+    public static String generateUUID(final String prefix) {
+        final long          time = System.currentTimeMillis();
+        final StringBuilder sb = new StringBuilder();
 
         if (prefix != null) {
             sb.append(prefix);
             sb.append('-');
         }
 
-        // _lock_obj_for_uuid is only used to reduce the scope of what
-        // is locked when we change _uuid_call_num. This is instead of
+        // lockObjForUUID is only used to reduce the scope of what
+        // is locked when we change uuidCallNum. This is instead of
         // doing a 'synchronized (this)' statement:
-        synchronized (_lock_obj_for_uuid) {
-            sb.append(++_uuid_call_num);
+        synchronized (lockObjForUUID) {
+            sb.append(++uuidCallNum);
         }
 
         sb.append(':');
         sb.append(time);
         sb.append(':');
 
-        sb.append(_local_host_cache);
+        sb.append(localHostCache);
 
         return sb.toString();
     }
@@ -246,12 +291,11 @@ public class HEUtils {
      * <PRE>
      *   "Found the object '" + arg + "' to be null."
      * </PRE>
-     * @throws <CODE>IllegalArgumentException</CODE> if <EM>obj</EM> is null.
+     * @throws IllegalArgumentException if <EM>obj</EM> is null.
      */
-    static public void notNull(Object obj, String arg)
-                        throws IllegalArgumentException {
+    public static void notNull(final Object obj, final String arg) {
         if (obj == null) {
-            String error = "Found the object '" + arg + "' to be null.";
+            final String error = "Found the object '" + arg + "' to be null.";
             throw new IllegalArgumentException(error);
         }
     }
@@ -271,35 +315,36 @@ public class HEUtils {
      * @return the String representing the class name, or null if <EM>obj</EM>
      *         is null.
      */
-    public static String getAbrevClassName(Object obj) {
+    public static String getAbrevClassName(final Object obj) {
         if (obj == null) {
             return null;
         }
 
-        String full_name = obj.getClass().getName();
-        int    index = full_name.lastIndexOf('.');
+        String fullName = obj.getClass().getName();
+        final int    index = fullName.lastIndexOf('.');
 
         if (index >= 0) {
-            full_name = full_name.substring(index + 1);
+            fullName = fullName.substring(index + 1);
         }
 
-        return full_name;
+        return fullName;
     }
 
     /**
      * Return a copy of a given List.
      * Currently, an ArrayList-based implementation is used for the copy.
-     * @param to_copy the List to copy.
+     * @param toCopy the List to copy.
+     * @param <Element> the type of the List elements.
      * @return a shallow copy of <EM>to_copy</EM>.
      * If <EM>to_copy</EM> is null, return null.
      */
-    static public List copyList(List<Object> to_copy) {
-        if (to_copy == null) {
+    public static <Element> List<Element> copyList(final List<Element> toCopy) {
+        if (toCopy == null) {
             return null;
         }
 
-        List<Object> copy = new ArrayList<Object>(to_copy.size());
-        copy.addAll(to_copy);
+        final List<Element> copy = new ArrayList<Element>(toCopy.size());
+        copy.addAll(toCopy);
 
         return (copy);
     }
@@ -308,16 +353,16 @@ public class HEUtils {
      * Check if two string fields are equal to each other.
      * @param field1 first string to compare. May be null.
      * @param field2 second string to compare. May be null.
-     * @param case_sensitive true if we are to match in
+     * @param caseSensitive true if we are to match in
      *        a case sensitive manner, false otherwise.
      * @return true if the two fields are null
      * or have the same characters. Return false otherwise.
      */
-    static public boolean stringEqual(String field1, String field2,
-                                      boolean case_sensitive) {
+    public static boolean stringEqual(final String field1, final String field2,
+                                      final boolean caseSensitive) {
         if (field1 != field2) {
             if (field1 != null) {
-                if (case_sensitive) {
+                if (caseSensitive) {
                     return field1.equals(field2);
                 } else {
                     return field1.equalsIgnoreCase(field2);
@@ -336,7 +381,7 @@ public class HEUtils {
      * (i.e., suffix).
      * @param str the String within which to search for a suffix.
      *                     May be null.
-     * @param match_char the character to match for finding a suffix.
+     * @param matchChar the character to match for finding a suffix.
      *                            all characters to the right of the rightmost
      *                            <EM>match_char</EM> make up the suffix.
      * @return null if no match character is found or if the
@@ -344,11 +389,11 @@ public class HEUtils {
      *                           or if <EM>str</EM> is null.
      *                           Otherwise the String suffix is returned.
      */
-    static public String getSuffix(String str, char match_char) {
+    public static String getSuffix(final String str, final char matchChar) {
         String suffix = null;
 
         if (str != null) {
-            int i = str.lastIndexOf(match_char);
+            final int i = str.lastIndexOf(matchChar);
 
             // It must be less than length() - 1 to have any characters to the right
             // of match_char:
@@ -362,16 +407,16 @@ public class HEUtils {
 
     /**
      * Ensures that a specified directory exists.
-     * @param dir_path the path to a given directory.
+     * @param dirPath the path to a given directory.
      * If <EM>dir_path</EM> doesn't exist, it is created.
      * @return true if the directory already exists, or is
      * successfully created.
      * Returns false otherwise.
      *
      */
-    public static boolean ensurePathCreated(String dir_path) {
-        File    f      = new File(dir_path);
-        boolean exists = f.isDirectory();
+    public static boolean ensurePathCreated(final String dirPath) {
+        final File    f      = new File(dirPath);
+        final boolean exists = f.isDirectory();
 
         if (!exists) {
             return f.mkdirs();
@@ -394,28 +439,17 @@ public class HEUtils {
     //	    }
     //	return edge;
     //    }
-    public static CyNode getNode(String uuid) {
+    /**
+     * @param uuid the identifier of the CyNode desired.
+     * @return a CyNode for a given Node name (uuid). 
+     * If no such CyNode exists, a new CyNode is created.
+     */
+    public static CyNode getNode(final String uuid) {
         // return Cytoscape.getCyNode (uuid, true);
         //        log ("getNode: " + uuid + " exists = " +
         //             (_root_graph.getNode (uuid) != null));
         // CyNode node = (CyNode) slowGetNode (uuid);
-        // MLC 08/17/06 BEGIN:
         return Cytoscape.getCyNode(uuid, true);
-
-        //        CyNode node = Cytoscape.getRootGraph().getNode(uuid);
-        //        if (node == null) {
-        //            // BEGIN PATCH:
-        //            // Magic from Cytoscape.java:
-        //            node = (CyNode) Cytoscape.getRootGraph()
-        //                                     .getNode(Cytoscape.getRootGraph()
-        //                                                       .createNode());
-        //            node.setIdentifier(uuid);
-        //            //            Cytoscape.getNodeNetworkData ().addNameMapping (uuid, node);
-        //            Semantics.assignNodeAliases(node, null, null);
-        //
-        //            // END PATH.
-        //        }
-        //        return node;
     }
 
     //    public static void removeNode(CyNode node) {
@@ -428,7 +462,7 @@ public class HEUtils {
     //        _root_graph.removeEdge(edge);
     //    }
 
-    //    // TODO: To be replaced with call to CytoscapeRootGraph.getEdge() when
+    //    // TODO To be replaced with call to CytoscapeRootGraph.getEdge() when
     //    //       bug is fixed.
     //    public static CyEdge slowGetEdge (String uuid)
     //    {
@@ -445,7 +479,7 @@ public class HEUtils {
     //        return null;
     //    }
     //
-    //    // TODO: To be replaced with call to CytoscapeRootGraph.getNode() when
+    //    // TODO To be replaced with call to CytoscapeRootGraph.getNode() when
     //    //       bug is fixed.
     //    public static CyNode slowGetNode (String uuid)
     //    {
@@ -462,42 +496,65 @@ public class HEUtils {
     //	    }
     //	return null;
     //    }
-
-    public static String getEdgeInteractionType(CyEdge edge) {
+    
+    /**
+     * @param edge the CyEdge for which to find the associated interaction type.
+     * @return the interaction type of a given edge.
+     */
+    
+    public static String getEdgeInteractionType(final CyEdge edge) {
         return Cytoscape.getEdgeAttributes().getStringAttribute(edge.getIdentifier(),
                                               Semantics.INTERACTION);
     }
 
-    public static CyEdge createHEEdge(CyNode source, CyNode target,
-                                      String edgeIType) {
-        CyEdge edge = createEdge(source, target, edgeIType);
+    /**
+     * Create a CyEdge that connects two given CyNodes and will be part of a HyperEdge.
+     * @param source the source of the CyEdge.
+     * @param target the target of the CyEdge.
+     * @param edgeIType the interaction type of the CyEdge.
+     * @return the CyEdge created.
+     */
+    public static CyEdge createHEEdge(final CyNode source, final CyNode target,
+                                      final String edgeIType) {
+        final CyEdge edge = createEdge(source, target, edgeIType);
         Cytoscape.getEdgeAttributes().setAttribute(edge.getIdentifier(),
                                                    HyperEdgeImpl.HYPEREDGE_EDGE_TAG_NAME,
-                                                   "true");
+                                                   ATTRIBUTE_TRUE);
 
         return edge;
     }
-
-    public static CyEdge createEdge(CyNode source, CyNode target,
-                                    String edgeIType) {
+    /**
+     * Create a CyEdge that connects two given CyNodes.
+     * @param source the source of the CyEdge.
+     * @param target the target of the CyEdge.
+     * @param edgeIType the interaction type of the CyEdge.
+     * @return the CyEdge created.
+     */
+    public static CyEdge createEdge(final CyNode source, final CyNode target,
+                                    final String edgeIType) {
         return Cytoscape.getCyEdge(source, target, Semantics.INTERACTION,
                                    edgeIType, true, true);
     }
 
-    public static CyNode createConnectorNode(String uuid) {
-        CyNode retNode = getNode(uuid);
+    /**
+     * Create a HyperEdge ConnectorNode.
+     * @param uuid the identifier of this connector node.
+     * @return the CyNode ConnectorNode.
+     */
+    public static CyNode createConnectorNode(final String uuid) {
+        final CyNode retNode = getNode(uuid);
 
-        // TODO: Fix hack for removing canonical name on connectors:
+        // TODO Fix hack for removing canonical name on connectors:
         // &&& HACK getNode() sets the CANONICAL_NAME to the node id,
         //     which we don't  want for connector nodes:
-        CyAttributes nodeAddrs = Cytoscape.getNodeAttributes();
+        final CyAttributes nodeAddrs = Cytoscape.getNodeAttributes();
 	// MLC 06/21/07:
         // nodeAddrs.deleteAttribute(uuid, HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
 	// MLC 06/21/07:
         deleteAttribute (nodeAddrs, uuid, HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
         nodeAddrs.setAttribute(uuid,
                                HyperEdgeImpl.IS_CONNECTOR_NODE_ATTRIBUTE_NAME,
-                               "true");
+                               ATTRIBUTE_TRUE);
         nodeAddrs.setAttribute(uuid, HyperEdgeImpl.ENTITY_TYPE_ATTRIBUTE_NAME,
                                HyperEdgeImpl.ENTITY_TYPE_CONNECTOR_NODE_VALUE);
 
@@ -510,9 +567,14 @@ public class HEUtils {
     // CyAttributes.deleteAttribute() if fixed to not throw an
     // IllegalStateException when the attribute to delete doesn't
     // exist (to be fixed in Cytoscape 2.6).
-
-    public static boolean deleteAttribute (CyAttributes attrs,
-				    String uuid , String attrName) {
+    /**
+     * @param attrs the CyAttributes to delete an attribute from.
+     * @param uuid the identifier of the object in attrs to remove the attribute from.
+     * @param attrName the name of the attribute value to remove.
+     * @return true iff the attribute value was removed.
+     */
+    public static boolean deleteAttribute (final CyAttributes attrs,
+				    final String uuid , final String attrName) {
 	if (!attrs.hasAttribute (uuid, attrName)) {
 	    return false;
 	}
@@ -550,14 +612,17 @@ public class HEUtils {
      * example, given a HyperEdge he:
      *
      * <PRE>
-     *    Iterator<CyEdge> edgeIt = he.getEdges (null);
+     *    Iterator&lt;CyEdge&gt; edgeIt = he.getEdges (null);
      *    he.addEdge (“A”, EdgeTypeMap.PRODUCT);
      *    while (edgeIt.hasNext()) {
      *       CyEdge edge = edgeIt.next(); // throws ConcurrentModificationException
      *    }
      * </PRE>
+     * @param colVal the Collection for which to build an Iterator.
+     * @param <E> the type of the elements of the Collection and resulting Iterator.\
+     * @return the unmodifiable Iterator over the Collection.
      */
-    static public <E> Iterator<E> buildUnmodifiableCollectionIterator(Collection<E> colVal) {
+    public static <E> Iterator<E> buildUnmodifiableCollectionIterator(final Collection<E> colVal) {
         return Collections.unmodifiableCollection(colVal).iterator();
     }
 
@@ -567,9 +632,12 @@ public class HEUtils {
      * of items independent of an unmodifiable collection iterator returned
      * because the underlying collection is modified and the iterator
      * would get a ConcurrentModificationException.
+     * @param colIt the Iterator over elements to add to the Collection.
+     * @param <E> the type of the elements in the Iterator and Collection.
+     * @return the new safely modifiable Collection.
      */
-    static public <E> Collection<E> createCollection(Iterator<E> colIt) {
-        Collection<E> retCol = new ArrayList<E>();
+    public static <E> Collection<E> createCollection(final Iterator<E> colIt) {
+        final Collection<E> retCol = new ArrayList<E>();
 
         while (colIt.hasNext()) {
             retCol.add(colIt.next());
@@ -582,9 +650,11 @@ public class HEUtils {
      * Return a short, meaningful representation of a given object if it
      * is a CyEdge, CyNode, CyNetwork, or HyperEdge. Otherwise, just use
      * the object's toString() method.
+     * @param obj the object to describe.
+     * @return the representation of the object.
      */
-    static public String toString(Object obj) {
-        StringBuilder sb = new StringBuilder();
+    public static String toString(final Object obj) {
+        final StringBuilder sb = new StringBuilder();
 
         if (obj instanceof GraphObject) {
             String id = ((GraphObject) obj).getIdentifier();
@@ -603,7 +673,7 @@ public class HEUtils {
 
             primToString(id, obj, sb);
         } else if (obj instanceof HyperEdge) {
-            HyperEdge he    = (HyperEdge) obj;
+            final HyperEdge he    = (HyperEdge) obj;
             String    label = he.getName();
 
             if (label == null) {
@@ -618,7 +688,7 @@ public class HEUtils {
         return sb.toString();
     }
 
-    private static void primToString(String label, Object obj, StringBuilder sb) {
+    private static void primToString(final String label, final Object obj, final StringBuilder sb) {
         sb.append('[');
         sb.append(obj.getClass().getSimpleName());
         sb.append(" ");
@@ -629,7 +699,7 @@ public class HEUtils {
     /**
      * Ignore attributes found in a given List. For example:
      * <PRE>
-     * List<String> attrsToIgnore = new ArrayList<String>();
+     * List&lt;String&gt; attrsToIgnore = new ArrayList&lt;String&gt;();
      * attrsToIgnore.add ("canonicalName");
      * attrsToIgnore.add ("label");
      * AttributeIgnoreFilter filter = new CyAttributesUtils.AttributeIgnoreFilter (attrsToIgnore);
@@ -639,15 +709,19 @@ public class HEUtils {
      * "label", from edge1 to edge1Copy..
      */
     public static class AttributeIgnoreFilter implements AttributeFilter {
-        private List<String> _attrNames;
-
-        public AttributeIgnoreFilter(List<String> attrNames) {
-            _attrNames = attrNames;
+        private List<String> attrNames;
+        /**
+         * @param attrNames the list of attributes to ignore.
+         */
+        public AttributeIgnoreFilter(final List<String> attrNames) {
+            this.attrNames = attrNames;
         }
-
-        public boolean includeAttribute(CyAttributes attr, String objID,
-                                        String attrName) {
-            return (!_attrNames.contains(attrName));
+        /**
+         * {@inheritDoc}
+         */
+        public boolean includeAttribute(final CyAttributes attr, final String objID,
+                                        final String attrName) {
+            return (!attrNames.contains(attrName));
         }
     }
 }

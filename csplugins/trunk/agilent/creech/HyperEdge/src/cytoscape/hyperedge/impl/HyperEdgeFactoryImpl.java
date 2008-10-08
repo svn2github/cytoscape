@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         HyperEdgeFactoryImpl.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/impl/HyperEdgeFactoryImpl.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Wed Sep 14 09:06:05 2005
-* Modified:     Tue Nov 07 09:09:30 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/* 
 *
 * Revisions:
 *
@@ -54,27 +75,35 @@ import java.util.Map;
  * @author Michael L. Creech
  * @version 2.0
  */
-public class HyperEdgeFactoryImpl implements HyperEdgeFactory {
-    private static HyperEdgeFactoryImpl _singleton_factory = new HyperEdgeFactoryImpl();
+public final class HyperEdgeFactoryImpl implements HyperEdgeFactory {
+    private static HyperEdgeFactoryImpl singletonFactory = new HyperEdgeFactoryImpl();
 
     private HyperEdgeFactoryImpl() {
     }
-
+    /**
+     * {@inheritDoc}
+     */
     public static HyperEdgeFactoryImpl createInstance() {
-        return _singleton_factory;
+        return singletonFactory;
     }
-
+    /**
+     * {@inheritDoc}
+     */
     public HyperEdgeManager getHyperEdgeManager() {
         return HyperEdgeManagerImpl.getHyperEdgeManager();
     }
-
+    /**
+     * {@inheritDoc}
+     */
     public EdgeTypeMap getEdgeTypeMap() {
         return EdgeTypeMapImpl.getEdgeTypeMap();
     }
-
-    public HyperEdge createHyperEdge(CyNode node1, String edgeIType1, CyNode node2,
-                                     String edgeIType2, CyNetwork net) {
-        HyperEdge he = new HyperEdgeImpl(node1,
+    /**
+     * {@inheritDoc}
+     */
+    public HyperEdge createHyperEdge(final CyNode node1, final String edgeIType1, final CyNode node2,
+                                     final String edgeIType2, final CyNetwork net) {
+        final HyperEdge he = new HyperEdgeImpl(node1,
                                          edgeIType1,
                                          node2,
                                          edgeIType2,
@@ -83,11 +112,13 @@ public class HyperEdgeFactoryImpl implements HyperEdgeFactory {
 
         return he;
     }
-
-    public HyperEdge createHyperEdge(CyNode node1, String edgeIType1, CyNode node2,
-                                     String edgeIType2, CyNode node3,
-                                     String edgeIType3, CyNetwork net) {
-        HyperEdge he = new HyperEdgeImpl(node1,
+    /**
+     * {@inheritDoc}
+     */
+    public HyperEdge createHyperEdge(final CyNode node1, final String edgeIType1, final CyNode node2,
+                                     final String edgeIType2, final CyNode node3,
+                                     final String edgeIType3, final CyNetwork net) {
+        final HyperEdge he = new HyperEdgeImpl(node1,
                                          edgeIType1,
                                          node2,
                                          edgeIType2,
@@ -98,25 +129,31 @@ public class HyperEdgeFactoryImpl implements HyperEdgeFactory {
 
         return he;
     }
-
-    public HyperEdge createHyperEdge(CyNode[] nodes, String[] edgeITypes,
-                                     CyNetwork net) {
-        HyperEdge he = new HyperEdgeImpl(nodes, edgeITypes, net, true);
-
-        return he;
-    }
-
-    public HyperEdge createHyperEdge(List<CyNode> nodes,
-                                     List<String> edgeITypes,
-                                     CyNetwork net) {
-        HyperEdge he = new HyperEdgeImpl(nodes, edgeITypes, net, true);
+    /**
+     * {@inheritDoc}
+     */
+    public HyperEdge createHyperEdge(final CyNode[] nodes, final String[] edgeITypes,
+                                     final CyNetwork net) {
+        final HyperEdge he = new HyperEdgeImpl(nodes, edgeITypes, net, true);
 
         return he;
     }
+    /**
+     * {@inheritDoc}
+     */
+    public HyperEdge createHyperEdge(final List<CyNode> nodes,
+                                     final List<String> edgeITypes,
+                                     final CyNetwork net) {
+        final HyperEdge he = new HyperEdgeImpl(nodes, edgeITypes, net, true);
 
-    public HyperEdge createHyperEdge(Map<CyNode, String> node_edgeIType_map,
-                                     CyNetwork net) {
-        HyperEdge he = new HyperEdgeImpl(node_edgeIType_map, net, true);
+        return he;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    public HyperEdge createHyperEdge(final Map<CyNode, String> nodeEdgeITypeMap,
+                                     final CyNetwork net) {
+        final HyperEdge he = new HyperEdgeImpl(nodeEdgeITypeMap, net, true);
 
         return he;
     }
@@ -124,9 +161,12 @@ public class HyperEdgeFactoryImpl implements HyperEdgeFactory {
     /**
      * Used by the restore process for creating objects.
      * Not a user-level operation.
+     * @param connectorNode the ConnectorNode of the HyperEdge to restore.
+     * @param net the CyNetwork containing the HyperEdge.
+     * @return a restored HyperEdge
      */
-    public HyperEdge createRestoredHyperEdge(CyNode connectorNode,
-                                             CyNetwork net) {
+    public HyperEdge createRestoredHyperEdge(final CyNode connectorNode,
+                                             final CyNetwork net) {
         return new HyperEdgeImpl(connectorNode, net);
     }
 

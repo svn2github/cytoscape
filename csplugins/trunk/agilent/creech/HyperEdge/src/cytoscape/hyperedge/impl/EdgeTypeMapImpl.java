@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         EdgeTypeMapImpl.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/impl/EdgeTypeMapImpl.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Thu Sep 29 13:09:09 2005
-* Modified:     Fri Aug 18 07:14:49 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/*
 *
 * Revisions:
 *
@@ -47,92 +68,108 @@ import java.util.Map;
  * @author Michael L. Creech
  * @version 1.0
  */
-public class EdgeTypeMapImpl implements EdgeTypeMap {
+public final class EdgeTypeMapImpl implements EdgeTypeMap {
     //    /**
     //     * Potentially used by save() and load() for reading and writing EdgeTypeMap:
     //     */
     //    public static final String       PERSISTENT_MAP_ATTRIBUTE_NAME = "Map";
     private static final EdgeTypeMap INSTANCE = new EdgeTypeMapImpl();
-    private Map<String, EdgeRole>    _map = new HashMap<String, EdgeRole>();
+    private Map<String, EdgeRole>    map = new HashMap<String, EdgeRole>();
 
     //    private String                 _uuid;
     //    private transient ListenerList _dirty_listener_store;
     //    private transient boolean      _dirty;
-    protected EdgeTypeMapImpl() {
+    private EdgeTypeMapImpl() {
         super();
         // this(null);
         setUpInitialMap();
 
         // primSetDirty(false, false);
     }
+    /**
+     * Gets the singleton edge type map.
+     * @return the EdgeTypeMap.
+     */
 
     protected static EdgeTypeMap getEdgeTypeMap() {
         return INSTANCE;
     }
 
     private void setUpInitialMap() {
-        _map.put(ACTIVATING_MEDIATOR, EdgeRole.SOURCE);
-        _map.put(INHIBITING_MEDIATOR, EdgeRole.SOURCE);
-        _map.put(SUBSTRATE, EdgeRole.SOURCE);
-        _map.put(PRODUCT, EdgeRole.TARGET);
+        map.put(ACTIVATING_MEDIATOR, EdgeRole.SOURCE);
+        map.put(INHIBITING_MEDIATOR, EdgeRole.SOURCE);
+        map.put(SUBSTRATE, EdgeRole.SOURCE);
+        map.put(PRODUCT, EdgeRole.TARGET);
     }
 
     // implements EdgeTypeMap interface:
-    public boolean addAll(Map edge_type_to_edge_role_map) {
-        if (edge_type_to_edge_role_map == null) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean addAll(final Map<String,EdgeRole> edgeTypeToEdgeRoleMap) {
+        if (edgeTypeToEdgeRoleMap == null) {
             return false;
         }
 
-        boolean   ret_val = false;
-        Map.Entry entry;
+        boolean   retVal = false;
+        Map.Entry<String,EdgeRole> entry;
         EdgeRole  er;
-        EdgeRole  old_er;
-        Iterator  it = edge_type_to_edge_role_map.entrySet().iterator();
+        EdgeRole  oldEr;
+        final Iterator<Map.Entry<String,EdgeRole>>  it = edgeTypeToEdgeRoleMap.entrySet().iterator();
 
         while (it.hasNext()) {
-            entry  = (Map.Entry) it.next();
-            er     = (EdgeRole) entry.getValue();
-            old_er = (EdgeRole) put((String) entry.getKey(),
-                                    (EdgeRole) entry.getValue());
+            entry  = it.next();
+            er     = entry.getValue();
+            oldEr = (EdgeRole) put(entry.getKey(),
+                                    entry.getValue());
 
-            if (er != old_er) {
-                ret_val = true;
+            if (er != oldEr) {
+                retVal = true;
             }
         }
 
-        return ret_val;
+        return retVal;
     }
 
     // implements EdgeTypeMap interface:
-    public EdgeRole put(String edgeIType, EdgeRole source_or_target) {
-        if ((edgeIType == null) || (source_or_target == null)) {
+    /**
+     * {@inheritDoc}
+     */
+    public EdgeRole put(final String edgeIType, final EdgeRole sourceOrTarget) {
+        if ((edgeIType == null) || (sourceOrTarget == null)) {
             HEUtils.throwIllegalArgumentException(
-                "The 'edgeIType' parameter and 'source_or_target' parameter must be non-null");
+                "The 'edgeIType' parameter and 'sourceOrTarget' parameter must be non-null");
         }
 
-        if (get(edgeIType) == source_or_target) {
-            return source_or_target;
+        if (get(edgeIType) == sourceOrTarget) {
+            return sourceOrTarget;
         }
 
-        return primPut(edgeIType, source_or_target, true);
+        return primPut(edgeIType, sourceOrTarget, true);
     }
 
-    public EdgeRole primPut(String edgeIType, EdgeRole source_or_target,
-                            boolean fire_events) {
-        EdgeRole er = (EdgeRole) _map.put(edgeIType, source_or_target);
+    private EdgeRole primPut(final String edgeIType, final EdgeRole sourceOrTarget,
+                            final boolean fireEvents) {
+        final EdgeRole er = (EdgeRole) map.put(edgeIType, sourceOrTarget);
 
-        // primSetDirty (true, fire_events);
+        // primSetDirty (true, fireEvents);
         return er;
     }
 
     // implements EdgeTypeMap interface:
-    public EdgeRole get(String edgeIType) {
-        return (EdgeRole) _map.get(edgeIType);
+    /**
+     * {@inheritDoc}
+     */
+    public EdgeRole get(final String edgeIType) {
+        return (EdgeRole) map.get(edgeIType);
     }
 
     // implements EdgeTypeMap interface:
-    public EdgeRole remove(String edgeIType) {
-        EdgeRole er = (EdgeRole) _map.remove(edgeIType);
+    /**
+     * {@inheritDoc}
+     */
+    public EdgeRole remove(final String edgeIType) {
+        final EdgeRole er = (EdgeRole) map.remove(edgeIType);
 
         //        if (er != null) {
         //            primSetDirty(true, true);
@@ -141,38 +178,56 @@ public class EdgeTypeMapImpl implements EdgeTypeMap {
     }
 
     // implements EdgeTypeMap interface:
+    /**
+     * {@inheritDoc}
+     */
     public boolean isEmpty() {
-        return _map.isEmpty();
+        return map.isEmpty();
     }
 
     // implements EdgeTypeMap interface:
+    /**
+     * {@inheritDoc}
+     */
     public void clear() {
         primClear(true);
     }
 
     // implements EdgeTypeMap interface:
+    /**
+     * {@inheritDoc}
+     */
     public void reset() {
         primClear(true);
         setUpInitialMap();
     }
 
     // implements EdgeTypeMap interface:
+    /**
+     * {@inheritDoc}
+     */
     public int size() {
-        return _map.size();
+        return map.size();
     }
 
     // implements EdgeTypeMap interface:
-    public Iterator iterator() {
-        return Collections.unmodifiableSet(_map.entrySet()).iterator();
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<Map.Entry<String,EdgeRole>> iterator() {
+        return Collections.unmodifiableSet(map.entrySet()).iterator();
     }
 
     // implements EdgeTypeMap interface:
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
-        StringBuffer result = new StringBuffer();
+        final StringBuffer result = new StringBuffer();
         result.append("[" + HEUtils.getAbrevClassName(this) + '.' + hashCode());
 
         //        result.append (" UUID: '" + getIdentifier () + "'");
-        Iterator it = iterator();
+        final Iterator<Map.Entry<String,EdgeRole>> it = iterator();
 
         if (it.hasNext()) {
             result.append('\n');
@@ -180,10 +235,10 @@ public class EdgeTypeMapImpl implements EdgeTypeMap {
             result.append("Is empty.");
         }
 
-        Map.Entry entry;
+        Map.Entry<String,EdgeRole> entry;
 
         while (it.hasNext()) {
-            entry = (Map.Entry) it.next();
+            entry = it.next();
             result.append("key: '");
             result.append(entry.getKey());
             result.append("' value: ");
@@ -203,11 +258,11 @@ public class EdgeTypeMapImpl implements EdgeTypeMap {
      * Not a user operation. Used by persistence.
      */
 
-    // public void primClear(boolean fire_events) {
-    private void primClear(boolean fire_events) {
-        _map.clear();
+    // public void primClear(boolean fireEvents) {
+    private void primClear(final boolean fireEvents) {
+        map.clear();
 
-        // primSetDirty (true, fire_events);
+        // primSetDirty (true, fireEvents);
     }
 
     //    // implements Identifiable interface:
@@ -270,12 +325,12 @@ public class EdgeTypeMapImpl implements EdgeTypeMap {
     //            {
     //                return -1;
     //            }
-    //            int ret_val = doXMLSaving (pw);
-    //	    if (ret_val >= 0)
+    //            int retVal = doXMLSaving (pw);
+    //	    if (retVal >= 0)
     //		{
     //		    primSetDirty (false, true);
     //		}
-    //            return ret_val;
+    //            return retVal;
     //        }
     //        else
     //        {

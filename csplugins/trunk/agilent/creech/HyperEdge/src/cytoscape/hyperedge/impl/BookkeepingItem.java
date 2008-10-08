@@ -1,20 +1,39 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         BookkeepingItem.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/impl/BookkeepingItem.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Wed Dec 13 05:56:10 2006
-* Modified:     Thu Dec 14 11:26:00 2006 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2006, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+
 package cytoscape.hyperedge.impl;
 
 import cytoscape.CyNetwork;
@@ -31,16 +50,21 @@ import java.util.Set;
  * process of being deleted.
  */
 class BookkeepingItem {
-    private Set<GraphObject> _toIgnore;
-    private CyNetwork        _net;
+    private Set<GraphObject> toIgnore;
+    private CyNetwork        net;
 
-    public BookkeepingItem(Set<GraphObject> toIgnore, CyNetwork net) {
-        _toIgnore = toIgnore;
-        _net      = net;
+    /**
+     * Constructor.
+     * @param toIgnore the Set of Nodes and Edges to ignore deleting.
+     * @param net the CyNetwork where these Nodes and Edges reside.
+     */
+    public BookkeepingItem(final Set<GraphObject> toIgnore, final CyNetwork net) {
+        this.toIgnore = toIgnore;
+        this.net      = net;
     }
 
     public CyNetwork getNetwork() {
-        return _net;
+        return net;
     }
 
     /**
@@ -48,6 +72,6 @@ class BookkeepingItem {
      * doing bookkeeping on them?
      */
     public Set<GraphObject> getItems() {
-        return _toIgnore;
+        return toIgnore;
     }
 }

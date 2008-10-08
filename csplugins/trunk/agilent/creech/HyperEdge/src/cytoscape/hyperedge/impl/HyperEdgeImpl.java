@@ -1,19 +1,40 @@
-/* -*-Java-*-
-********************************************************************************
-*
-* File:         HyperEdgeImpl.java
-* RCS:          $Header: /cvs/cvsroot/lstl-lsi/HyperEdge/src/cytoscape/hyperedge/impl/HyperEdgeImpl.java,v 1.1 2007/07/04 01:11:35 creech Exp $
-* Description:
-* Author:       Michael L. Creech
-* Created:      Wed Sep 14 13:05:17 2005
-* Modified:     Wed Apr 02 19:41:37 2008 (Michael L. Creech) creech@w235krbza760
-* Language:     Java
-* Package:
-* Status:       Experimental (Do Not Distribute)
-*
-* (c) Copyright 2005, Agilent Technologies, all rights reserved.
-*
-********************************************************************************
+
+/*
+ Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
+
+ The Cytoscape Consortium is:
+ - Institute for Systems Biology
+ - University of California San Diego
+ - Memorial Sloan-Kettering Cancer Center
+ - Institut Pasteur
+ - Agilent Technologies
+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 2.1 of the License, or
+ any later version.
+
+ This library is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF
+ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  The software and
+ documentation provided hereunder is on an "as is" basis, and the
+ Institute for Systems Biology and the Whitehead Institute
+ have no obligations to provide maintenance, support,
+ updates, enhancements or modifications.  In no event shall the
+ Institute for Systems Biology and the Whitehead Institute
+ be liable to any party for direct, indirect, special,
+ incidental or consequential damages, including lost profits, arising
+ out of the use of this software and its documentation, even if the
+ Institute for Systems Biology and the Whitehead Institute
+ have been advised of the possibility of such damage.  See
+ the GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation,
+ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+*/
+
+/* 
 *
 * Revisions:
 *
@@ -143,23 +164,46 @@ import java.util.Set;
  * @version 1.1
  */
 public class HyperEdgeImpl implements HyperEdge {
+ 
     /**
      * Attribute name used to tell if a CyNode is a ConnectorNode.
      */
     public static final String IS_CONNECTOR_NODE_ATTRIBUTE_NAME = "HyperEdge.isConnectorNode";
+    /**
+     * Name of the Attribute that defines the type of a CyNode--whether a connector node or
+     * regular node.
+     */
     public static final String ENTITY_TYPE_ATTRIBUTE_NAME       = "HyperEdge.EntityType";
+    /**
+     * The value used for the attribute ENTITY_TYPE_ATTRIBUTE_NAME when we have
+     * a ConnectorNode.
+     */
     public static final String ENTITY_TYPE_CONNECTOR_NODE_VALUE = "ConnectorNode";
 
-    // May be used in future:
+    /**
+     * The value used for the attribute ENTITY_TYPE_ATTRIBUTE_NAME when we have
+     * a regular node.
+     */
     public static final String ENTITY_TYPE_REGULAR_NODE_VALUE = "RegularNode";
+    /**
+     * The name of the attribute used to specify if a HyperEdge is directed or not.
+     */
     public static final String DIRECTED_ATTRIBUTE_NAME    = "HyperEdge.isDirected";
+    /**
+     * The prefix used for creating the unique identifiers for ConnectorNodes.
+     */
     public static final String CONNECTOR_NODE_UUID_PREFIX = "connector-node";
-
-    // public static final String HYPEREDGE_EDGE_UUID_PREFIX = "hyper-edge";
+    /**
+     * Edge Attribute name used to specify if a given edge is a hyperedge edge or not.
+     */
     public static final String HYPEREDGE_EDGE_TAG_NAME = "HyperEdge.isEdge";
 
-    // This is equivalent to cytoscape.data.Semantics.CANONICAL_NAME, but we don't use it 
-    // since it is deprecated:
+    /**
+     * Attribute name used to label Nodes. This is equivalent to
+     * cytoscape.data.Semantics.CANONICAL_NAME, but we don't use it
+     * since it is deprecated:
+     */
+
     public static final String LABEL_ATTRIBUTE_NAME = "canonicalName";
 
     //    // A copy() is performed after basic construction of a HyperEdge which
@@ -174,11 +218,12 @@ public class HyperEdgeImpl implements HyperEdge {
     //        edge_copy_ignore_attributes.add(LABEL_ATTRIBUTE_NAME);
     //        EDGE_COPY_IGNORE_ATTRIBUTES_FILTER = new HEUtils.AttributeIgnoreFilter(edge_copy_ignore_attributes);
     //    }
-    private transient static HyperEdgeManagerImpl _manager = (HyperEdgeManagerImpl) HyperEdgeFactory.INSTANCE.getHyperEdgeManager();
+    private static final String SINGLE_QUOTE = "'";
+    private static transient HyperEdgeManagerImpl manager = (HyperEdgeManagerImpl) HyperEdgeFactory.INSTANCE.getHyperEdgeManager();
 
     //    private transient static RootGraph            _root_graph = Cytoscape.getRootGraph ();
-    private transient static CyAttributes _edge_attrs = Cytoscape.getEdgeAttributes();
-    private transient static CyAttributes _node_attrs = Cytoscape.getNodeAttributes();
+    private static transient CyAttributes edgeAttrs = Cytoscape.getEdgeAttributes();
+    private static transient CyAttributes nodeAttrs = Cytoscape.getNodeAttributes();
 
     //    // Use to reduce String creation when retrieving attributes:
     //    private transient String _edgeInteractionAttributeName;
@@ -189,17 +234,18 @@ public class HyperEdgeImpl implements HyperEdge {
     //    // of the roles:
     //    private List _nodes          = new ArrayList();
     //    private Set  _distinct_nodes = new HashSet(11);
-    private CyNode _connector_node;
+    private CyNode myConnectorNode;
 
     // the List of all CyEdges contained in this HyperEdge. This is a set--
     // it never inludes duplicates. This is used for faster access to the
     // edges then using the map:
-    private Set<CyEdge> _edges = new HashSet<CyEdge>();
+    private Set<CyEdge> myEdges = new HashSet<CyEdge>();
 
     // map nodes to a List of unique CyEdges. For homodimer-like structures,
     // such as nodes (A,B,A) with edges (e1,e2,e3), 'A' would map to 
     // (e1,e3):
-    private transient Map<CyNode, List<CyEdge>> _node_to_edges_map = new HashMap<CyNode, List<CyEdge>>();
+    private transient Map <CyNode, List <CyEdge>> nodeToEdgesMap = 
+	new HashMap <CyNode, List <CyEdge>>();
 
     //    // map GraphPerpective to a List of edges that are the members of this HyperEdge
     //    // that belong to that CyNetwork. The list can be different for
@@ -208,10 +254,10 @@ public class HyperEdgeImpl implements HyperEdge {
     //    private transient Map<CyNetwork, List<CyEdge>> _net_to_edges_map = new HashMap<CyNetwork, List<CyEdge>>();
 
     // The set of CyNetworks to which this HyperEdge belongs:
-    private transient Set<CyNetwork> _nets = new HashSet<CyNetwork>();
+    private transient Set<CyNetwork> nets = new HashSet<CyNetwork>();
 
     //    private transient ListenerList _change_listener_store;
-    private transient LifeState _state;
+    private transient LifeState state;
 
     // private transient boolean _dirty;
 
@@ -219,11 +265,11 @@ public class HyperEdgeImpl implements HyperEdge {
 
     // Used for temporarily marking objects for doing things like very
     // efficient intersection algorithms:
-    private transient boolean _marked;
+    private transient boolean marked;
 
     // private String _name;
     // private boolean _directed;
-    private String _uuid;
+    private String myUuid;
 
     /**
      * Copy constructor. Returns a raw, incomplete HyperEdge.
@@ -238,14 +284,14 @@ public class HyperEdgeImpl implements HyperEdge {
      * from it's underlying CyNode, CyEdge, and attribute representation.
      * This is used when a session or network is read into Cytoscape.
      */
-    protected HyperEdgeImpl(CyNode connectorNode, CyNetwork net) {
+    HyperEdgeImpl(final CyNode connectorNode, final CyNetwork net) {
         // REMEMBER: Don't invoke overridable methods of this object
         //           in this constructor!
         subclassConstructorSupport(createHEUUIDFromConnectorNodeUUID(connectorNode));
         reconstructFromNodesEdgesAndAttributes(connectorNode, net);
         // MLC 08/27/06 BEGIN:
         // constructorSupport(net, false);
-        _manager.registerHyperEdge(this);
+        manager.registerHyperEdge(this);
 	// MLC 04/02/08 BEGIN:
         // startInCyNetwork(net);
 	startInCyNetwork (net);
@@ -254,8 +300,8 @@ public class HyperEdgeImpl implements HyperEdge {
         // MLC 08/27/06 END.
     }
 
-    protected HyperEdgeImpl(CyNode node1, String edgeIType1, CyNode node2,
-                            String edgeIType2, CyNetwork net, boolean fireEvents) {
+    HyperEdgeImpl(final CyNode node1, final String edgeIType1, final CyNode node2,
+                            final String edgeIType2, final CyNetwork net, final boolean fireEvents) {
         // REMEMBER: Don't invoke overridable methods of this object
         //           in this constructor!
         HEUtils.notNull(node1, "node1");
@@ -274,9 +320,9 @@ public class HyperEdgeImpl implements HyperEdge {
         constructorSupport(net, fireEvents);
     }
 
-    protected HyperEdgeImpl(CyNode node1, String edgeIType1, CyNode node2,
-                            String edgeIType2, CyNode node3, String edgeIType3,
-                            CyNetwork net, boolean fireEvents) {
+    HyperEdgeImpl(final CyNode node1, final String edgeIType1, final CyNode node2,
+                            final String edgeIType2, final CyNode node3, final String edgeIType3,
+                            final CyNetwork net, final boolean fireEvents) {
         // REMEMBER: Don't invoke overridable methods of this object
         //           in this constructor!
         HEUtils.notNull(node1, "node1");
@@ -299,8 +345,8 @@ public class HyperEdgeImpl implements HyperEdge {
         constructorSupport(net, fireEvents);
     }
 
-    protected HyperEdgeImpl(CyNode[] nodes, String[] edgeITypes, CyNetwork net,
-                            boolean fireEvents) {
+    HyperEdgeImpl(final CyNode[] nodes, final String[] edgeITypes, final CyNetwork net,
+                            final boolean fireEvents) {
         // REMEMBER: Don't invoke overridable methods of this object
         //           in this constructor!
         HEUtils.notNull(net, "net");
@@ -312,55 +358,55 @@ public class HyperEdgeImpl implements HyperEdge {
         constructorSupport(net, fireEvents);
     }
 
-    protected HyperEdgeImpl(List<CyNode> nodes, List<String> edgeITypes,
-                            CyNetwork net, boolean fireEvents) {
+    HyperEdgeImpl(final List<CyNode> nodes, final List<String> edgeITypes,
+                            final CyNetwork net, final boolean fireEvents) {
         // REMEMBER: Don't invoke overridable methods of this object
         //           in this constructor!
         HEUtils.notNull(net, "net");
 
-        CyNode[] node_array = null;
+        CyNode[] nodeArray = null;
 
         if (nodes != null) {
-            node_array = new CyNode[nodes.size()];
-            node_array = (CyNode[]) nodes.toArray(node_array);
+            nodeArray = new CyNode[nodes.size()];
+            nodeArray = (CyNode[]) nodes.toArray(nodeArray);
         }
 
-        String[] edgeITypes_array = null;
+        String[] edgeITypesArray = null;
 
         if (edgeITypes != null) {
-            edgeITypes_array = new String[edgeITypes.size()];
-            edgeITypes_array = (String[]) edgeITypes.toArray(edgeITypes_array);
+            edgeITypesArray = new String[edgeITypes.size()];
+            edgeITypesArray = (String[]) edgeITypes.toArray(edgeITypesArray);
         }
 
-        ensureCorrectArguments(node_array, edgeITypes_array, "List");
+        ensureCorrectArguments(nodeArray, edgeITypesArray, "List");
         // everything is ok:
         subclassConstructorSupport(null);
         createConnectorNode();
-        addEdges(node_array, edgeITypes_array);
+        addEdges(nodeArray, edgeITypesArray);
         constructorSupport(net, fireEvents);
     }
 
-    protected HyperEdgeImpl(Map<CyNode, String> node_edge_type_map,
-                            CyNetwork net, boolean fireEvents) {
+    HyperEdgeImpl(final Map<CyNode, String> nodeEdgeTypeMap,
+                            final CyNetwork net, final boolean fireEvents) {
         // REMEMBER: Don't invoke overridable methods of this object
         //           in this constructor!
         HEUtils.notNull(net, "net");
 
-        String[] edgeITypes_array = null;
-        CyNode[] node_array = null;
+        String[] edgeITypesArray = null;
+        CyNode[] nodeArray = null;
 
-        if (node_edge_type_map != null) {
-            edgeITypes_array = new String[node_edge_type_map.size()];
-            node_array       = new CyNode[node_edge_type_map.size()];
-            node_array       = (CyNode[]) (node_edge_type_map.keySet()).toArray(node_array);
-            edgeITypes_array = (String[]) (node_edge_type_map.values()).toArray(edgeITypes_array);
+        if (nodeEdgeTypeMap != null) {
+            edgeITypesArray = new String[nodeEdgeTypeMap.size()];
+            nodeArray       = new CyNode[nodeEdgeTypeMap.size()];
+            nodeArray       = (CyNode[]) (nodeEdgeTypeMap.keySet()).toArray(nodeArray);
+            edgeITypesArray = (String[]) (nodeEdgeTypeMap.values()).toArray(edgeITypesArray);
         }
 
-        ensureCorrectArguments(node_array, edgeITypes_array, "Map");
+        ensureCorrectArguments(nodeArray, edgeITypesArray, "Map");
         // everything is ok:
         subclassConstructorSupport(null);
         createConnectorNode();
-        addEdges(node_array, edgeITypes_array);
+        addEdges(nodeArray, edgeITypesArray);
         constructorSupport(net, fireEvents);
     }
 
@@ -374,10 +420,10 @@ public class HyperEdgeImpl implements HyperEdge {
      * connector node, otherwise add to an existing HyperEdge.
     * @return null if connectorNode is not a connector node.
     */
-    static protected HyperEdge reconstructIfConnectorNode(CyNode connectorNode,
-                                                          CyNetwork net) {
+    static HyperEdge reconstructIfConnectorNode(final CyNode connectorNode,
+                                                          final CyNetwork net) {
         // First see if a HyperEdge already exists with this connector node:
-        HyperEdge he = _manager.getHyperEdgeForConnectorNode(connectorNode);
+        HyperEdge he = manager.getHyperEdgeForConnectorNode(connectorNode);
 
         if (he == null) {
             // This HyperEdge doesn't already exist in any form. See if
@@ -399,7 +445,7 @@ public class HyperEdgeImpl implements HyperEdge {
                 // has a different uuid and remove the original ConnectorNode from
                 // this CyNetwork.
 
-                // TODO: FIX: possibly remove all shared Edges from this net.
+                // TODO FIX: possibly remove all shared Edges from this net.
                 HEUtils.throwIllegalStateException("HyperEdgeImpl.reconstructIfConnectorNode(): Attempting to add a HyperEdge with shared edges to more than one CyNetwork!");
             }
 
@@ -413,51 +459,53 @@ public class HyperEdgeImpl implements HyperEdge {
 
     // support ops that need to be done early and may be used by
     // subclasses during construction.
-    protected void subclassConstructorSupport(String uuid) {
+    void subclassConstructorSupport(final String uuid) {
         // REMEMBER: Don't invoke overridable methods of this object
         //           in this constructor!
         primSetState(LifeState.CREATION_IN_PROGRESS);
 
         if (uuid == null) {
-            _uuid = HEUtils.generateUUID(null);
+            myUuid = HEUtils.generateUUID(null);
 
             // primSetDirty(true, false);
         } else {
-            _uuid = uuid;
+            myUuid = uuid;
         }
 
         //        _edgeInteractionAttributeName = cytoscape.data.Semantics.INTERACTION +
         //                                        '-' + _uuid;
     }
 
-    final protected void constructorSupport(CyNetwork net, boolean fireEvents) {
+    final void constructorSupport(final CyNetwork net, final boolean fireEvents) {
         // REMEMBER: Don't invoke overridable methods of this object
         //           in this constructor!
-        _manager.registerHyperEdge(this);
+        manager.registerHyperEdge(this);
         startInCyNetwork(net);
         primSetState(LifeState.NORMAL);
 
         if (fireEvents) {
-            _manager.fireNewHObjEvent(this);
+            manager.fireNewHObjEvent(this);
         }
     }
 
-    private String primSetName(String new_name) {
-        String last_val = getConnectorNodeName();
-        setConnectorNodeName(new_name);
+    private String primSetName(final String newName) {
+        final String lastVal = getConnectorNodeName();
+        setConnectorNodeName(newName);
 
-        return last_val;
+        return lastVal;
     }
 
     // implements Matchable interface:
 
     /**
+     * {@inheritDoc}
+     * Uses default similarity checking.
      * This default implementation simply calls:
      * <PRE>
      *    simMatcher.similarTo (this, he, optArgs);
      * </PRE>
      */
-    public boolean isSimilar(SimMatcher simMatcher, HyperEdge he, Object optArgs) {
+    public boolean isSimilar(final SimMatcher simMatcher, final HyperEdge he, final Object optArgs) {
         if (simMatcher == null) {
             return false;
         }
@@ -465,8 +513,8 @@ public class HyperEdgeImpl implements HyperEdge {
         return simMatcher.similarTo(this, he, optArgs);
     }
 
-    private void ensureCorrectArguments(CyNode[] nodes, String[] edgeITypes,
-                                        String param_type) {
+    private void ensureCorrectArguments(final CyNode[] nodes, final String[] edgeITypes,
+                                        final String paramType) {
         if (nodes == null) {
             HEUtils.throwIllegalArgumentException("The 'nodes' parameter must be non-null");
         }
@@ -486,7 +534,7 @@ public class HyperEdgeImpl implements HyperEdge {
         // check nodes and edgeITypes:
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] == null) {
-                HEUtils.throwIllegalArgumentException("The node " + param_type +
+                HEUtils.throwIllegalArgumentException("The node " + paramType +
                                                       " given contains a null entry");
             }
 
@@ -494,28 +542,31 @@ public class HyperEdgeImpl implements HyperEdge {
 
             if (edgeITypes[i] == null) {
                 HEUtils.throwIllegalArgumentException("The edgeITypes " +
-                                                      param_type +
+                                                      paramType +
                                                       " given contains a null entry");
             }
         }
     }
 
-    private void ensureNotNodeConnector(CyNode node) {
-        if (_manager.isConnectorNode(node, null)) {
-            String msg = "HyperEdgeImpl.ensureNotNodeConnector(): Illegal use of ConnectorNode '" +
+    private void ensureNotNodeConnector(final CyNode node) {
+        if (manager.isConnectorNode(node, null)) {
+            final String msg = "HyperEdgeImpl.ensureNotNodeConnector(): Illegal use of ConnectorNode '" +
                          node.getIdentifier() +
                          "'. Only non-ConnectorNodes may be used here.";
             HEUtils.throwIllegalArgumentException(msg);
         }
     }
 
-    private void addEdges(CyNode[] nodes, String[] edgeITypes) {
+    private void addEdges(final CyNode[] nodes, final String[] edgeITypes) {
         for (int i = 0; i < edgeITypes.length; i++) {
             primAddEdge(nodes[i], edgeITypes[i], false);
         }
     }
-
-    public boolean inNetwork(CyNetwork net) {
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean inNetwork(final CyNetwork net) {
         HEUtils.checkAbbyNormal(this);
         HEUtils.notNull(net, "net");
 
@@ -524,12 +575,15 @@ public class HyperEdgeImpl implements HyperEdge {
 
     // assumes net is not null
     // (also used by HyperEdgeManager)
-    protected boolean primInCyNetwork(CyNetwork net) {
+    boolean primInCyNetwork(final CyNetwork net) {
         // return _net_to_edges_map.keySet().contains(net);
-        return _nets.contains(net);
+        return nets.contains(net);
     }
-
-    public boolean addToNetwork(CyNetwork net) {
+    
+    /**
+     * {@inheritDoc}
+     */
+    public boolean addToNetwork(final CyNetwork net) {
         HEUtils.checkAbbyNormal(this);
         HEUtils.notNull(net, "net");
 
@@ -537,28 +591,31 @@ public class HyperEdgeImpl implements HyperEdge {
             return false;
         }
 
-        _nets.add(net);
+        nets.add(net);
         //        // No need to check for duplicates since
         //        // getEdges() will never contain duplicates (false as last param):
         //        MapUtils.addListValuesToMap(_net_to_edges_map,
         //                                    net,
         //                                    primGetEdges(null, sourceNet).iterator(),
         //                                    false);
-        _manager.addToCyNetwork(net, this);
-        _manager.fireChangeEvent(this, EventNote.Type.HYPEREDGE,
+        manager.addToCyNetwork(net, this);
+        manager.fireChangeEvent(this, EventNote.Type.HYPEREDGE,
                                  EventNote.SubType.ADDED, net);
 
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean hasSharedEdges() {
         HEUtils.checkAbbyNormal(this);
 
         return primHasSharedEdges();
     }
 
-    protected boolean primHasSharedEdges() {
-        for (CyEdge edge : _edges) {
+    boolean primHasSharedEdges() {
+        for (CyEdge edge : myEdges) {
             if (primIsSharedEdge(edge)) {
                 return true;
             }
@@ -567,16 +624,19 @@ public class HyperEdgeImpl implements HyperEdge {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Iterator<CyEdge> getSharedEdges() {
         HEUtils.checkAbbyNormal(this);
 
         return HEUtils.buildUnmodifiableCollectionIterator(primGetSharedEdges());
     }
 
-    protected List<CyEdge> primGetSharedEdges() {
-        List<CyEdge> shared = new ArrayList<CyEdge>(0);
+    List<CyEdge> primGetSharedEdges() {
+        final List<CyEdge> shared = new ArrayList<CyEdge>(0);
 
-        for (CyEdge edge : _edges) {
+        for (CyEdge edge : myEdges) {
             if (primIsSharedEdge(edge)) {
                 shared.add(edge);
             }
@@ -585,27 +645,33 @@ public class HyperEdgeImpl implements HyperEdge {
         return shared;
     }
 
-    public boolean isSharedEdge(CyEdge edge) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSharedEdge(final CyEdge edge) {
         HEUtils.checkAbbyNormal(this);
 
         return primIsSharedEdge(edge);
     }
 
-    private boolean primIsSharedEdge(CyEdge edge) {
-        return (_manager.isConnectorNode(primGetNode(edge),
+    private boolean primIsSharedEdge(final CyEdge edge) {
+        return (manager.isConnectorNode(primGetNode(edge),
                                          null));
     }
 
-    private void startInCyNetwork(CyNetwork net) {
+    private void startInCyNetwork(final CyNetwork net) {
         // No need to check for duplicates since _edges will never
         // contain duplicates (false as last param):
         //        MapUtils.addListValuesToMap(_net_to_edges_map, net, _edges.iterator(),
         //                                    false);
-        _nets.add(net);
-        _manager.addToCyNetwork(net, this);
+        nets.add(net);
+        manager.addToCyNetwork(net, this);
     }
 
-    public boolean removeFromNetwork(CyNetwork net) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean removeFromNetwork(final CyNetwork net) {
         HEUtils.checkAbbyNormal(this);
 
         if ((net != null) && (!primInCyNetwork(net))) {
@@ -628,47 +694,49 @@ public class HyperEdgeImpl implements HyperEdge {
      * in the Cytoscape core. Calls to this method would be replaced
      * with removeFromNetwork().
      */
-    protected void removeFromNetworkBookkeeping(CyNetwork net,
-                                                Set<GraphObject> toIgnoreForDeletion) {
-        toIgnoreForDeletion.add(_connector_node);
-        BookkeepingItem bkItem = new BookkeepingItem(toIgnoreForDeletion, net);
+    void removeFromNetworkBookkeeping(final CyNetwork net,
+                                                final Set<GraphObject> toIgnoreForDeletion) {
+        toIgnoreForDeletion.add(myConnectorNode);
+        final BookkeepingItem bkItem = new BookkeepingItem(toIgnoreForDeletion, net);
         primRemoveFromNetwork(net, bkItem);
     }
 
-    private void primRemoveFromNetwork(CyNetwork net, BookkeepingItem bkItem) {
-        if ((net == null) || (_nets.size() < 2)) {
+    private void primRemoveFromNetwork(final CyNetwork net, final BookkeepingItem bkItem) {
+        if ((net == null) || (nets.size() < 2)) {
             primDestroy(true, bkItem);
 
             return;
         }
 
         // we have a value to remove, fire events:
-        _manager.fireChangeEvent(this, EventNote.Type.HYPEREDGE,
+        manager.fireChangeEvent(this, EventNote.Type.HYPEREDGE,
                                  EventNote.SubType.REMOVED, net);
         // Must be very careful where this call is located.
         // The edge-node information must still be available at time of call:
-        _manager.removeFromNetwork(net, this, bkItem);
-        _nets.remove(net);
+        manager.removeFromNetwork(net, this, bkItem);
+        nets.remove(net);
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public Iterator<String> getAllEdgeTypes() {
         HEUtils.checkAbbyNormal(this);
 
         // in future size to be max number of edge types:
-        List<String> e_types = new ArrayList<String>();
-        String       e_type;
+        final List<String> eTypes = new ArrayList<String>();
+        String       eType;
 
-        for (CyEdge edge : _edges) {
-            e_type = HEUtils.getEdgeInteractionType(edge);
+        for (CyEdge edge : myEdges) {
+            eType = HEUtils.getEdgeInteractionType(edge);
 
-            if (!e_types.contains(e_type)) {
-                e_types.add(e_type);
+            if (!eTypes.contains(eType)) {
+                eTypes.add(eType);
             }
         }
 
-        return HEUtils.buildUnmodifiableCollectionIterator(e_types);
-        // return Collections.unmodifiableList(e_types).iterator();
+        return HEUtils.buildUnmodifiableCollectionIterator(eTypes);
+        // return Collections.unmodifiableList(eTypes).iterator();
     }
 
     //    public int getNumNodes ()
@@ -677,35 +745,41 @@ public class HyperEdgeImpl implements HyperEdge {
     //        return _node_to_edges_map.size ();
     //    }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public int getNumNodes() {
         HEUtils.checkAbbyNormal(this);
 
-        return _node_to_edges_map.size();
+        return nodeToEdgesMap.size();
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public int getNumEdges() {
         HEUtils.checkAbbyNormal(this);
 
-        return _edges.size();
+        return myEdges.size();
     }
 
-    // implements HyperEdge interface:
-    public Iterator<CyNode> getNodes(String edgeIType) {
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<CyNode> getNodes(final String edgeIType) {
         HEUtils.checkAbbyNormal(this);
 
         if (edgeIType == null) {
             // return all nodes:
-            return HEUtils.buildUnmodifiableCollectionIterator(_node_to_edges_map.keySet());
+            return HEUtils.buildUnmodifiableCollectionIterator(nodeToEdgesMap.keySet());
             //            return Collections.unmodifiableSet(_node_to_edges_map.keySet())
             //                              .iterator();
         }
 
-        List<CyNode> matchNodes = new ArrayList<CyNode>(_edges.size());
+        final List<CyNode> matchNodes = new ArrayList<CyNode>(myEdges.size());
         CyNode       cyNode;
 
-        for (CyEdge edge : _edges) {
+        for (CyEdge edge : myEdges) {
             if (edgeIType.equals(HEUtils.getEdgeInteractionType(edge))) {
                 cyNode = primGetNode(edge);
 
@@ -719,23 +793,25 @@ public class HyperEdgeImpl implements HyperEdge {
         // return Collections.unmodifiableList(matchNodes).iterator();
     }
 
-    // implements HyperEdge interface:
-    public Iterator<CyNode> getNodesByEdgeTypes(Collection<String> edgeITypes) {
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<CyNode> getNodesByEdgeTypes(final Collection<String> edgeITypes) {
         HEUtils.checkAbbyNormal(this);
 
         return HEUtils.buildUnmodifiableCollectionIterator(primGetNodesByEdgeTypes(edgeITypes));
     }
 
-    protected Collection<CyNode> primGetNodesByEdgeTypes(Collection<String> edgeITypes) {
+    Collection<CyNode> primGetNodesByEdgeTypes(final Collection<String> edgeITypes) {
         if (edgeITypes == null) {
             // return all nodes:
-            return _node_to_edges_map.keySet();
+            return nodeToEdgesMap.keySet();
         }
 
-        List<CyNode> matchNodes = new ArrayList<CyNode>(_edges.size());
+        final List<CyNode> matchNodes = new ArrayList<CyNode>(myEdges.size());
         CyNode       cyNode;
 
-        for (CyEdge edge : _edges) {
+        for (CyEdge edge : myEdges) {
             if (edgeITypes.contains(HEUtils.getEdgeInteractionType(edge))) {
                 cyNode = primGetNode(edge);
 
@@ -748,13 +824,15 @@ public class HyperEdgeImpl implements HyperEdge {
         return matchNodes;
     }
 
-    // implements HyperEdge interface:
-    public Iterator<CyEdge> getEdges(CyNode node) {
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<CyEdge> getEdges(final CyNode node) {
         HEUtils.checkAbbyNormal(this);
 
         if (node == null) {
             // return Collections.unmodifiableSet(_edges).iterator();
-            return HEUtils.buildUnmodifiableCollectionIterator(_edges);
+            return HEUtils.buildUnmodifiableCollectionIterator(myEdges);
         }
 
         // return Collections.unmodifiableList(primGetEdges(node)).iterator();
@@ -762,8 +840,8 @@ public class HyperEdgeImpl implements HyperEdge {
     }
 
     // ASSUME: node is non-null:
-    protected List<CyEdge> primGetEdges(CyNode node) {
-        List<CyEdge> edges = _node_to_edges_map.get(node);
+    List<CyEdge> primGetEdges(final CyNode node) {
+        final List<CyEdge> edges = nodeToEdgesMap.get(node);
 
         if (edges == null) {
             // no match found
@@ -773,15 +851,17 @@ public class HyperEdgeImpl implements HyperEdge {
         return edges;
     }
 
-    // implements HyperEdge interface:
-    public CyEdge getAnEdge(CyNode node) {
+    /**
+     * {@inheritDoc}
+     */
+    public CyEdge getAnEdge(final CyNode node) {
         HEUtils.checkAbbyNormal(this);
 
         return primGetAnEdge(node);
     }
 
-    private CyEdge primGetAnEdge(CyNode node) {
-        List<CyEdge> edges = _node_to_edges_map.get(node);
+    private CyEdge primGetAnEdge(final CyNode node) {
+        final List<CyEdge> edges = nodeToEdgesMap.get(node);
 
         if (edges != null) {
             return edges.get(0);
@@ -790,11 +870,13 @@ public class HyperEdgeImpl implements HyperEdge {
         return null;
     }
 
-    // implements HyperEdge interface:
-    public boolean hasMultipleEdges(CyNode node) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasMultipleEdges(final CyNode node) {
         HEUtils.checkAbbyNormal(this);
 
-        List<CyEdge> edges = _node_to_edges_map.get(node);
+        final List<CyEdge> edges = nodeToEdgesMap.get(node);
 
         if (edges == null) {
             return false;
@@ -803,47 +885,57 @@ public class HyperEdgeImpl implements HyperEdge {
         return (edges.size() > 1);
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public CyNode getConnectorNode() {
         HEUtils.checkAbbyNormal(this);
 
-        return _connector_node;
+        return myConnectorNode;
     }
 
-    // implements HyperEdge interface:
-    public boolean hasConnectorNode(CyNode node) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasConnectorNode(final CyNode node) {
         HEUtils.checkAbbyNormal(this);
 
-        return (_connector_node == node);
+        return (myConnectorNode == node);
     }
 
-    // implements HyperEdge interface:
-    public boolean hasNode(CyNode node) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasNode(final CyNode node) {
         HEUtils.checkAbbyNormal(this);
 
         return (primGetAnEdge(node) != null);
     }
 
-    // implements HyperEdge interface:
-    public boolean hasEdge(CyEdge edge) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasEdge(final CyEdge edge) {
         HEUtils.checkAbbyNormal(this);
 
         return primHasEdge(edge);
     }
 
-    private boolean primHasEdge(CyEdge edge) {
-        return _edges.contains(edge);
+    private boolean primHasEdge(final CyEdge edge) {
+        return myEdges.contains(edge);
     }
 
-    // implements HyperEdge interface:
-    public boolean hasEdgeOfType(String edgeIType) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasEdgeOfType(final String edgeIType) {
         HEUtils.checkAbbyNormal(this);
 
         if (edgeIType == null) {
             return false;
         }
 
-        for (CyEdge edge : _edges) {
+        for (CyEdge edge : myEdges) {
             if (edgeIType.equals(HEUtils.getEdgeInteractionType(edge))) {
                 return true;
             }
@@ -852,11 +944,13 @@ public class HyperEdgeImpl implements HyperEdge {
         return false;
     }
 
-    // implements HyperEdge interface:
-    public boolean removeNode(CyNode node) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean removeNode(final CyNode node) {
         HEUtils.checkAbbyNormal(this);
 
-        List<CyEdge> edges = _node_to_edges_map.get(node);
+        final List<CyEdge> edges = nodeToEdgesMap.get(node);
 
         if (edges == null) {
             // node is null or not in this HyperEdge:
@@ -868,7 +962,7 @@ public class HyperEdgeImpl implements HyperEdge {
         // when there aren't enough edges left in this HyperEdge
         // after the removal of the edge.  If so, avoid
         // removing some CyEdges first--just have one destroy event:
-        if ((_edges.size() - edges.size()) < getMinimumNumberEdges()) {
+        if ((myEdges.size() - edges.size()) < getMinimumNumberEdges()) {
             primDestroy(true, null);
         } else {
             primRemoveNode(node, true, null);
@@ -877,8 +971,10 @@ public class HyperEdgeImpl implements HyperEdge {
         return true;
     }
 
-    // implements HyperEdge interface:
-    public boolean removeEdge(CyEdge edge) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean removeEdge(final CyEdge edge) {
         HEUtils.checkAbbyNormal(this);
 
         // Find the one CyNode that is associated with this edge and
@@ -905,21 +1001,21 @@ public class HyperEdgeImpl implements HyperEdge {
      * with removeEdge().
      */
 
-    protected void removeEdgeBookkeeping(CyEdge edge, CyNetwork net,
-                                         Set<GraphObject> toIgnoreForDeletion) {
+    void removeEdgeBookkeeping(final CyEdge edge, final CyNetwork net,
+                                         final Set<GraphObject> toIgnoreForDeletion) {
         removeOrDeleteEdge(edge,
                            true,
                            new BookkeepingItem(toIgnoreForDeletion, net));
     }
 
-    protected void removeOrDeleteEdge(CyEdge edge, boolean fireEvents,
-                                      BookkeepingItem bkItem) {
+    void removeOrDeleteEdge(final CyEdge edge, final boolean fireEvents,
+                                      final BookkeepingItem bkItem) {
         // first determine if this whole HyperEdge will really be
         // destroyed vs just removing an edge. This occurs is
         // when there aren't enough edges left in this HyperEdge
         // after the removal of the edge.  If so, avoid
         // removing some CyEdges first--just have one destroy event:
-        if (_edges.size() <= getMinimumNumberEdges()) {
+        if (myEdges.size() <= getMinimumNumberEdges()) {
             primDestroy(true, bkItem);
         } else {
             //        List<CyEdge> edgeList = new ArrayList<CyEdge>(1);
@@ -931,17 +1027,19 @@ public class HyperEdgeImpl implements HyperEdge {
         }
     }
 
-    // implements HyperEdge interface:
-    public CyEdge addEdge(CyNode node, String edgeIType) {
+    /**
+     * {@inheritDoc}
+     */
+    public CyEdge addEdge(final CyNode node, final String edgeIType) {
         HEUtils.checkAbbyNormal(this);
         Validate.notNull(node, "node");
         Validate.notNull(edgeIType, "edgeIType");
 
-        if (_manager.isConnectorNode(node, null)) {
+        if (manager.isConnectorNode(node, null)) {
             HEUtils.throwIllegalArgumentException("HyperEdge.addEdge(): node is ConnectorNode.");
         }
 
-        List<CyEdge> matches = primGetEdges(node);
+        final List<CyEdge> matches = primGetEdges(node);
 
         for (CyEdge match : matches) {
             if (edgeIType.equals(HEUtils.getEdgeInteractionType(match))) {
@@ -955,10 +1053,12 @@ public class HyperEdgeImpl implements HyperEdge {
         return primAddEdge(node, edgeIType, true);
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     //    public CyEdge connectHyperEdges(HyperEdge targetHE, String fromEdgeIType,
     //                                    String toEdgeIType) {
-    public CyEdge connectHyperEdges(HyperEdge targetHE, String edgeIType) {
+    public CyEdge connectHyperEdges(final HyperEdge targetHE, final String edgeIType) {
         HEUtils.checkAbbyNormal(this);
 
         if (targetHE == this) {
@@ -972,7 +1072,7 @@ public class HyperEdgeImpl implements HyperEdge {
 
         // Make sure HyperEdges exist in the one same CyNetwork:
         CyNetwork           net        = null;
-        Iterator<CyNetwork> targetNets = targetHE.getNetworks();
+        final Iterator<CyNetwork> targetNets = targetHE.getNetworks();
 
         if (targetNets.hasNext()) {
             net = targetNets.next();
@@ -983,14 +1083,14 @@ public class HyperEdgeImpl implements HyperEdge {
             }
         }
 
-        if ((_nets.size() != 1) || (net == null) || (!_nets.contains(net))) {
+        if ((nets.size() != 1) || (net == null) || (!nets.contains(net))) {
             HEUtils.throwIllegalArgumentException("HyperEdge.connectHyperEdges(): can't connect" +
                                                   this + " to " + targetHE +
                                                   "because they don't belong to one, and the same, CyNetwork.");
         }
 
         // Check if edge already exists:
-        List<CyEdge> existingEdges = primGetEdges(targetHE.getConnectorNode());
+        final List<CyEdge> existingEdges = primGetEdges(targetHE.getConnectorNode());
 
         for (CyEdge cyEdge : existingEdges) {
             //            if (fromEdgeIType.equals(getEdgeInteractionType(cyEdge)) &&
@@ -1012,24 +1112,26 @@ public class HyperEdgeImpl implements HyperEdge {
         }
 
         // Everything seems OK, create the CyEdge:
-        CyEdge edge = primAddEdge(targetHE.getConnectorNode(),
+        final CyEdge edge = primAddEdge(targetHE.getConnectorNode(),
                                   // fromEdgeIType,
         edgeIType,
                                   true);
-        ((HyperEdgeImpl) targetHE).primAddEdge(_connector_node, edge,
+        ((HyperEdgeImpl) targetHE).primAddEdge(myConnectorNode, edge,
                                                // toEdgeIType,
         edgeIType, true);
 
         return edge;
     }
 
-    // implements HyperEdge interface:
-    public Map<HyperEdge, HyperEdge> copy(CyNetwork net, EdgeFilter filter) {
+    /**
+     * {@inheritDoc}
+     */
+    public Map<HyperEdge, HyperEdge> copy(final CyNetwork net, final EdgeFilter filter) {
         HEUtils.checkAbbyNormal(this);
         HEUtils.notNull(net, "net");
         HEUtils.notNull(filter, "filter");
 
-        String checkMsg = copyOK(filter,
+        final String checkMsg = copyOK(filter,
                                  new HashSet<HyperEdge>());
 
         if (checkMsg != null) {
@@ -1048,7 +1150,7 @@ public class HyperEdgeImpl implements HyperEdge {
         //        }
 
         // everything is ok for copying:
-        Map<HyperEdge, HyperEdge> copyMap = new HashMap<HyperEdge, HyperEdge>();
+        final Map<HyperEdge, HyperEdge> copyMap = new HashMap<HyperEdge, HyperEdge>();
         // will side-effect copyMap:
         primCopy(net,
                  filter,
@@ -1059,11 +1161,11 @@ public class HyperEdgeImpl implements HyperEdge {
         // creation of each new HyperEdge. We need to wait til all the
         // copies of all shared HyperEdges are created so we don't have
         // half completed objects during event callbacks.
-        Iterator<HyperEdge> newHEs = copyMap.values().iterator();
+        final Iterator<HyperEdge> newHEs = copyMap.values().iterator();
 
         while (newHEs.hasNext()) {
-            HyperEdge newHE = newHEs.next();
-            _manager.fireNewHObjEvent(newHE);
+            final HyperEdge newHE = newHEs.next();
+            manager.fireNewHObjEvent(newHE);
         }
 
         return copyMap;
@@ -1080,20 +1182,20 @@ public class HyperEdgeImpl implements HyperEdge {
     //         and the value is the copy of this shared edge.
     //         Will return null if no shared edges or if copySharedHyperEdges
     //         is false.
-    private void primCopy(CyNetwork net, EdgeFilter filter,
+    private void primCopy(final CyNetwork net, final EdgeFilter filter,
                           // boolean copySharedHyperEdges,
-    Map<HyperEdge, HyperEdge> copyMap, Map<CyEdge, CyEdge> sharedEdgesMap) {
-        List<CyEdge>  sharedEdges = primGetSharedEdges();
-        HyperEdgeImpl newHE = new HyperEdgeImpl();
+    final Map<HyperEdge, HyperEdge> copyMap, final Map<CyEdge, CyEdge> sharedEdgesMap) {
+        final List<CyEdge>  sharedEdges = primGetSharedEdges();
+        final HyperEdgeImpl newHE = new HyperEdgeImpl();
         copyMap.put(this, newHE);
 
-        for (CyEdge edge : _edges) {
+        for (CyEdge edge : myEdges) {
             if (!filter.includeEdge(this, edge)) {
                 continue;
             }
 
             if (sharedEdges.contains(edge)) {
-                HyperEdgeImpl otherHE = (HyperEdgeImpl) _manager.getHyperEdgeForConnectorNode(primGetNode(edge));
+                final HyperEdgeImpl otherHE = (HyperEdgeImpl) manager.getHyperEdgeForConnectorNode(primGetNode(edge));
 
                 // This edge connects to another HyperEdge:
                 //                if (copySharedHyperEdges) {
@@ -1112,7 +1214,7 @@ public class HyperEdgeImpl implements HyperEdge {
                 // otherHECopy should contain shared edge
                 // that points at newHE. Now get this edge and
                 // share in newHE:
-                CyEdge edgeToShare = sharedEdgesMap.get(edge);
+                final CyEdge edgeToShare = sharedEdgesMap.get(edge);
 
                 // We want to take this same edge and
                 // connect from newHE to otherHECopy.
@@ -1132,7 +1234,7 @@ public class HyperEdgeImpl implements HyperEdge {
                 //    shared edge already exists--we just want to
                 //    add it to newHE:
                 if (edgeToShare == null) {
-                    CyEdge edgeCopy = copyEdge(newHE,
+                    final CyEdge edgeCopy = copyEdge(newHE,
                                                otherHECopy.getConnectorNode(),
                                                edge);
                     sharedEdgesMap.put(edge, edgeCopy);
@@ -1157,7 +1259,7 @@ public class HyperEdgeImpl implements HyperEdge {
 
         // Now copy any extra "regular" edges and attributes from the original ConnectorNode
         // to the new one:
-        copyExtraAttributesAndEdges(_connector_node,
+        copyExtraAttributesAndEdges(myConnectorNode,
                                     newHE.getConnectorNode(),
                                     net);
         // Don't fire events here because ajoining HyperEdges may not
@@ -1165,7 +1267,7 @@ public class HyperEdgeImpl implements HyperEdge {
         newHE.constructorSupport(net, false);
     }
 
-    private String copyOK(EdgeFilter filter, Set<HyperEdge> visitedHEs) {
+    private String copyOK(final EdgeFilter filter, final Set<HyperEdge> visitedHEs) {
         if (visitedHEs.contains(this)) {
             // we'd done already, skip:
             return null;
@@ -1174,15 +1276,15 @@ public class HyperEdgeImpl implements HyperEdge {
         visitedHEs.add(this);
 
         int          edgeCount   = 0;
-        List<CyEdge> sharedEdges = primGetSharedEdges();
+        final List<CyEdge> sharedEdges = primGetSharedEdges();
 
-        for (CyEdge edge : _edges) {
+        for (CyEdge edge : myEdges) {
             if (filter.includeEdge(this, edge)) {
                 edgeCount++;
 
                 if (sharedEdges.contains(edge)) {
-                    HyperEdgeImpl otherHE    = (HyperEdgeImpl) _manager.getHyperEdgeForConnectorNode(primGetNode(edge));
-                    String        otherHEMsg = otherHE.copyOK(filter, visitedHEs);
+                    final HyperEdgeImpl otherHE    = (HyperEdgeImpl) manager.getHyperEdgeForConnectorNode(primGetNode(edge));
+                    final String        otherHEMsg = otherHE.copyOK(filter, visitedHEs);
 
                     if (otherHEMsg != null) {
                         return otherHEMsg;
@@ -1220,11 +1322,11 @@ public class HyperEdgeImpl implements HyperEdge {
     //                                    _edgeInteractionAttributeName);
     //        return copiedEdge;
     //    }
-    private CyEdge copyEdge(HyperEdgeImpl newHE, CyNode toCopyNode,
-                            CyEdge toCopyEdge) {
+    private CyEdge copyEdge(final HyperEdgeImpl newHE, final CyNode toCopyNode,
+                            final CyEdge toCopyEdge) {
         // the other endpoint from this connectorNode:
         // CyNode toCopyNode = primGetNode(toCopyEdge);
-        CyEdge copiedEdge = newHE.primAddEdge(toCopyNode,
+        final CyEdge copiedEdge = newHE.primAddEdge(toCopyNode,
                                               HEUtils.getEdgeInteractionType(toCopyEdge),
                                               false);
 
@@ -1232,7 +1334,7 @@ public class HyperEdgeImpl implements HyperEdge {
         // we don't need to 'purge' = true because copyNode is new.
         CyAttributesUtils.copyAttributes(toCopyEdge.getIdentifier(),
                                          copiedEdge.getIdentifier(),
-                                         _edge_attrs,
+                                         edgeAttrs,
                                          // EDGE_COPY_IGNORE_ATTRIBUTES_FILTER,
         false);
 
@@ -1246,16 +1348,16 @@ public class HyperEdgeImpl implements HyperEdge {
         return copiedEdge;
     }
 
-    private void copyExtraAttributesAndEdges(CyNode originalNode,
-                                             CyNode copyNode, CyNetwork net) {
+    private void copyExtraAttributesAndEdges(final CyNode originalNode,
+                                             final CyNode copyNode, final CyNetwork net) {
         // copy connectorNode attributes:
         // we don't need purge=true because copyNode is new:
         CyAttributesUtils.copyAttributes(originalNode.getIdentifier(),
                                          copyNode.getIdentifier(),
-                                         _node_attrs,
+                                         nodeAttrs,
                                          false);
 
-        int[]  adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(originalNode),
+        final int[]  adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(originalNode),
                                                                true,
                                                                true,
                                                                true);
@@ -1264,13 +1366,13 @@ public class HyperEdgeImpl implements HyperEdge {
         for (int edgeIdx : adjacentEdges) {
             edge = (CyEdge) net.getEdge(edgeIdx);
 
-            if (!_manager.isHyperEdgeEdge(edge, null)) {
+            if (!manager.isHyperEdgeEdge(edge, null)) {
                 // add an equivalent edge to the copyNode:
-                String itype = _edge_attrs.getStringAttribute(edge.getIdentifier(),
+                final String itype = edgeAttrs.getStringAttribute(edge.getIdentifier(),
                                                               Semantics.INTERACTION);
 
                 if (itype != null) {
-                    CyEdge newEdge = Cytoscape.getCyEdge(edge.getSource(),
+                    final CyEdge newEdge = Cytoscape.getCyEdge(edge.getSource(),
                                                          edge.getTarget(),
                                                          Semantics.INTERACTION,
                                                          itype,
@@ -1279,74 +1381,90 @@ public class HyperEdgeImpl implements HyperEdge {
                     // we don't need purge=true because copyNode is new:
                     CyAttributesUtils.copyAttributes(edge.getIdentifier(),
                                                      newEdge.getIdentifier(),
-                                                     _edge_attrs,
+                                                     edgeAttrs,
                                                      false);
                 }
             }
         }
     }
 
-    // implements HyperEdge interface:
-    public boolean isConnected(CyNode node1, CyNode node2) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isConnected(final CyNode node1, final CyNode node2) {
         HEUtils.checkAbbyNormal(this);
 
         return ((primGetAnEdge(node1) != null) &&
                (primGetAnEdge(node2) != null));
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public void destroy() {
         HEUtils.checkAbbyNormal(this);
         primDestroy(true, null);
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public LifeState getState() {
-        return _state;
+        return state;
     }
 
-    // implements HyperEdge interface:
-    public boolean isState(LifeState ls) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isState(final LifeState ls) {
         return (getState() == ls);
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         result.append("[" + HEUtils.getAbrevClassName(this) + '.' + hashCode());
         //        result.append (" edge: '" + _edge + "'");
         //        result.append (" type: '" + _type + "'");
-        result.append(" nodes: (" + primGetNumNodes() + ")");
-        result.append(" edges: (" + primGetNumEdges() + ")");
-        result.append(" name: '" + getName() + "'");
+        result.append(" nodes: (" + primGetNumNodes() + ')');
+        result.append(" edges: (" + primGetNumEdges() + ')');
+        result.append(" name: '" + getName() + SINGLE_QUOTE);
         result.append(" directed: " + isDirected());
-        result.append(" UUID: '" + getIdentifier() + "'");
+        result.append(" UUID: '" + getIdentifier() + SINGLE_QUOTE);
         result.append(" state: " + getState());
         result.append(']');
 
         return result.toString();
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public HyperEdgeManager getHyperEdgeManager() {
-        return _manager;
+        return manager;
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public String getName() {
         HEUtils.checkAbbyNormal(this);
 
         return getConnectorNodeName();
     }
 
-    // implements HyperEdge interface:
-    public String setName(String new_name) {
+    /**
+     * {@inheritDoc}
+     */
+    public String setName(final String newName) {
         HEUtils.checkAbbyNormal(this);
 
-        String old_name = primSetName(new_name);
+        final String oldName = primSetName(newName);
 
-        if (HEUtils.stringEqual(new_name, old_name, true)) {
-            return old_name;
+        if (HEUtils.stringEqual(newName, oldName, true)) {
+            return oldName;
         }
 
         // // new value is different than old:
@@ -1356,38 +1474,42 @@ public class HyperEdgeImpl implements HyperEdge {
         //          following line in a synchronized block!
         //          Otherwise the listeners could possibly call back
         //          into this class causing a deadlock!
-        _manager.fireChangeEvent(this, EventNote.Type.NAME,
-                                 EventNote.SubType.CHANGED, old_name);
+        manager.fireChangeEvent(this, EventNote.Type.NAME,
+                                 EventNote.SubType.CHANGED, oldName);
 
-        return old_name;
+        return oldName;
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public boolean isDirected() {
         HEUtils.checkAbbyNormal(this);
 
-        Boolean ret_val = _node_attrs.getBooleanAttribute(_connector_node.getIdentifier(),
+        final Boolean retVal = nodeAttrs.getBooleanAttribute(myConnectorNode.getIdentifier(),
                                                           DIRECTED_ATTRIBUTE_NAME);
 
-        return (ret_val != null) && ret_val.booleanValue();
+        return (retVal != null) && retVal.booleanValue();
     }
 
-    // implements HyperEdge interface:
-    public boolean setDirected(boolean new_state) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean setDirected(final boolean netState) {
         HEUtils.checkAbbyNormal(this);
 
-        boolean last_val = isDirected();
+        final boolean lastVal = isDirected();
 
-        if (new_state == last_val) {
+        if (netState == lastVal) {
             // no change:
-            return last_val;
+            return lastVal;
         }
 
         // new value is different than old:
-        if (new_state == false) {
+        if (!netState) {
             removeConnectorNodeDirected();
         } else {
-            _node_attrs.setAttribute(_connector_node.getIdentifier(),
+            nodeAttrs.setAttribute(myConnectorNode.getIdentifier(),
                                      DIRECTED_ATTRIBUTE_NAME,
                                      Boolean.TRUE);
         }
@@ -1398,18 +1520,22 @@ public class HyperEdgeImpl implements HyperEdge {
         //          following line in a synchronized block!
         //          Otherwise the listeners could possibly call back
         //          into this class causing a deadlock!
-        _manager.fireChangeEvent(this, EventNote.Type.DIRECTED,
+        manager.fireChangeEvent(this, EventNote.Type.DIRECTED,
                                  EventNote.SubType.CHANGED, null);
 
-        return last_val;
+        return lastVal;
     }
 
-    // implements HyperEdge interface:    
-    final public int getMinimumNumberEdges() {
+    /**
+     * {@inheritDoc}
+     */
+    public final int getMinimumNumberEdges() {
         return 2;
     }
 
-    // implements HyperEdge interface:
+    /**
+     * {@inheritDoc}
+     */
     public Iterator<CyNetwork> getNetworks() {
         HEUtils.checkAbbyNormal(this);
 
@@ -1418,28 +1544,28 @@ public class HyperEdgeImpl implements HyperEdge {
     }
 
     // used by the HyperEdgeManager:
-    protected Set<CyNetwork> primGetNetworks() {
-        return _nets;
+     Set<CyNetwork> primGetNetworks() {
+        return nets;
     }
 
     /**
      * Used for HyperEdge persistence in restoring a HyperEdge from
      * underlying Cytoscape CyNodes, CyEdges, and attributes.
      */
-    private void reconstructFromNodesEdgesAndAttributes(CyNode connectorNode,
-                                                        CyNetwork net) {
-        _connector_node = connectorNode;
+    private void reconstructFromNodesEdgesAndAttributes(final CyNode connectorNode,
+                                                        final CyNetwork net) {
+        myConnectorNode = connectorNode;
         // &&& HACK Cytoscape.getCyNode(), probably called by the reader
         //     set the CANONICAL_NAME (LABEL_ATTRIBUTE_NAME) to the node id,
         //     which we don't  want for connector nodes:
 	// MLC 06/21/07 BEGIN:
         // _node_attrs.deleteAttribute(connectorNode.getIdentifier(),
         //                             HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
-        HEUtils.deleteAttribute(_node_attrs, connectorNode.getIdentifier(),
+        HEUtils.deleteAttribute(nodeAttrs, connectorNode.getIdentifier(),
                                 HyperEdgeImpl.LABEL_ATTRIBUTE_NAME);
 	// MLC 06/21/07 END.
         // compute edges:
-        int[]  adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(connectorNode),
+        final int[]  adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(connectorNode),
                                                                true,
                                                                true,
                                                                true);
@@ -1449,8 +1575,8 @@ public class HyperEdgeImpl implements HyperEdge {
             edge = (CyEdge) net.getEdge(adjacentEdges[j]);
             // HEUtils.log("considering edge " + edge.getIdentifier());
 
-            if (_manager.isHyperEdgeEdge(edge, null)) {
-                _nets.add(net);
+            if (manager.isHyperEdgeEdge(edge, null)) {
+                nets.add(net);
                 // HEUtils.log("bookkeeping edge " + edge.getIdentifier());
                 performEdgeBookkeeping(primGetNode(edge),
                                        edge,
@@ -1462,8 +1588,8 @@ public class HyperEdgeImpl implements HyperEdge {
 
     // This HyperEdge's connector node may not belong to net, but if it does
     // add all the appropriate info about the edges and nodes for this net:
-    private void addCyNetworkToReconstruction(CyNetwork net) {
-        int[] adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(_connector_node),
+    private void addCyNetworkToReconstruction(final CyNetwork net) {
+        final int[] adjacentEdges = net.getAdjacentEdgeIndicesArray(net.getIndex(myConnectorNode),
                                                               true,
                                                               true,
                                                               true);
@@ -1478,8 +1604,8 @@ public class HyperEdgeImpl implements HyperEdge {
         for (int j = 0; j < adjacentEdges.length; j++) {
             edge = (CyEdge) net.getEdge(adjacentEdges[j]);
 
-            if (_manager.isHyperEdgeEdge(edge, null)) {
-                _nets.add(net);
+            if (manager.isHyperEdgeEdge(edge, null)) {
+                nets.add(net);
                 performEdgeBookkeeping(primGetNode(edge),
                                        edge,
                                        net,
@@ -1488,17 +1614,17 @@ public class HyperEdgeImpl implements HyperEdge {
         }
     }
 
-    static private boolean isConnectorNodeForReconstruction(CyNode node,
-                                                            CyNetwork net) {
-        return ("true".equals(_node_attrs.getStringAttribute(
+    private static boolean isConnectorNodeForReconstruction(final CyNode node,
+                                                            final CyNetwork net) {
+        return ("true".equals(nodeAttrs.getStringAttribute(
                                                              node.getIdentifier(),
                                                              HyperEdgeImpl.IS_CONNECTOR_NODE_ATTRIBUTE_NAME)));
     }
 
     // used during reconstruction of HyperEdges from read in networks:
-    private String createHEUUIDFromConnectorNodeUUID(CyNode connectorNode) {
-        String cnUUID = connectorNode.getIdentifier();
-        String heUUID = cnUUID.substring(CONNECTOR_NODE_UUID_PREFIX.length() +
+    private String createHEUUIDFromConnectorNodeUUID(final CyNode connectorNode) {
+        final String cnUUID = connectorNode.getIdentifier();
+        final String heUUID = cnUUID.substring(CONNECTOR_NODE_UUID_PREFIX.length() +
                                          1);
         // MLC 01/15/07:
         // HEUtils.log("heUUID = '" + heUUID + "'.");
@@ -1511,30 +1637,30 @@ public class HyperEdgeImpl implements HyperEdge {
         // Use the uuid of this HyperEdge as the basis of the ConnectorNode
         // uuid:
         // String uuid = HEUtils.generateUUID(CONNECTOR_NODE_UUID_PREFIX);
-        _connector_node = HEUtils.createConnectorNode(createConnectorNodeUUIDFromHEUUID());
+        myConnectorNode = HEUtils.createConnectorNode(createConnectorNodeUUIDFromHEUUID());
     }
 
     private String createConnectorNodeUUIDFromHEUUID() {
-        HEUtils.notNull(_uuid, "_uuid");
+        HEUtils.notNull(myUuid, "_uuid");
 
-        return CONNECTOR_NODE_UUID_PREFIX + '-' + _uuid;
+        return CONNECTOR_NODE_UUID_PREFIX + '-' + myUuid;
     }
 
     // Used for copying ConnectorNodes when reloading shared
     // hyperedges:
-    protected static String createConnectorNodeUUIDWithoutHE() {
+     static String createConnectorNodeUUIDWithoutHE() {
         return HEUtils.generateUUID(CONNECTOR_NODE_UUID_PREFIX);
     }
 
     // ASSUME: All error checking of params has been done
-    protected CyEdge primAddEdge(CyNode node, String edgeIType,
-                                 boolean fireEvents) {
+     CyEdge primAddEdge(final CyNode node, final String edgeIType,
+                                 final boolean fireEvents) {
         CyEdge edge;
 
         if (treatAsTarget(edgeIType)) {
-            edge = HEUtils.createHEEdge(_connector_node, node, edgeIType);
+            edge = HEUtils.createHEEdge(myConnectorNode, node, edgeIType);
         } else {
-            edge = HEUtils.createHEEdge(node, _connector_node, edgeIType);
+            edge = HEUtils.createHEEdge(node, myConnectorNode, edgeIType);
         }
 
         //        int  edge_idx = _root_graph.createEdge (node, _connector_node);
@@ -1553,14 +1679,14 @@ public class HyperEdgeImpl implements HyperEdge {
      * For edgeITypes not in the EdgeTypeMap, the CyNode will
      * be treated as the source of the edge.
      */
-    protected boolean treatAsTarget(String edgeIType) {
-        EdgeRole er = HyperEdgeFactory.INSTANCE.getEdgeTypeMap().get(edgeIType);
+     boolean treatAsTarget(final String edgeIType) {
+        final EdgeRole er = HyperEdgeFactory.INSTANCE.getEdgeTypeMap().get(edgeIType);
 
         return ((er != null) && (er == EdgeRole.TARGET));
     }
 
-    private void primAddEdge(CyNode node, CyEdge edge, String edgeIType,
-                             boolean fireEvents) {
+    private void primAddEdge(final CyNode node, final CyEdge edge, final String edgeIType,
+                             final boolean fireEvents) {
         // ASSUME: edge may already exist from a previous call.
         //        setEdgeInteractionType(edge, edgeIType);
         setEdgeCanonicalName(edge, edgeIType);
@@ -1568,75 +1694,76 @@ public class HyperEdgeImpl implements HyperEdge {
         performEdgeBookkeeping(node, edge, null, fireEvents);
     }
 
-    private void performEdgeBookkeeping(CyNode node, CyEdge edge,
-                                        CyNetwork net, boolean fireEvents) {
+    private void performEdgeBookkeeping(final CyNode node, final CyEdge edge,
+                                        final CyNetwork net, final boolean fireEvents) {
         // ASSUME: node and edge may already exist in this HE within another
         //         net.
         // ASSUME: No info exists for net yet (net may be new):
-        MapUtils.addListValueToMap(_node_to_edges_map, node, edge, true);
+        MapUtils.addListValueToMap(nodeToEdgesMap, node, edge, true);
 
         // edges doesn't allow duplicates via add:
-        _edges.add(edge);
+        myEdges.add(edge);
 
-        _manager.registerEdge(edge, this, net);
+        manager.registerEdge(edge, this, net);
 
         // primSetDirty(true, fireEvents);
         if (fireEvents) {
-            _manager.fireChangeEvent(this, EventNote.Type.EDGE,
+            manager.fireChangeEvent(this, EventNote.Type.EDGE,
                                      EventNote.SubType.ADDED, edge);
         }
     }
 
     private int primGetNumEdges() {
-        return _edges.size();
+        return myEdges.size();
     }
 
     private int primGetNumNodes() {
-        return _node_to_edges_map.size();
+        return nodeToEdgesMap.size();
     }
 
     // ASSUME: node belongs to this HyperEdge
     // ASSUME: HyperEdge deletion is determined and performed
     //         elsewhere.
-    private void primRemoveNode(CyNode node, boolean fireEvents,
-                                BookkeepingItem bkItem) {
-        List<CyEdge> edges = _node_to_edges_map.get(node);
+    private void primRemoveNode(final CyNode node, final boolean fireEvents,
+                                final BookkeepingItem bkItem) {
+        final List<CyEdge> edges = nodeToEdgesMap.get(node);
 
         // We will really be removing some number of CyEdges:
         // Use a copy of the edges, since the edge data structures
         // will change:
-        List<CyEdge> edges_copy = new ArrayList<CyEdge>(edges.size());
-        edges_copy.addAll(edges);
+        final List<CyEdge> edgesCopy = new ArrayList<CyEdge>(edges.size());
+        edgesCopy.addAll(edges);
 
-        for (CyEdge edge : edges_copy) {
+        for (CyEdge edge : edgesCopy) {
             // we know this hyperedge will not be destroyed:
             primRemoveEdge(node, edge, fireEvents, bkItem);
         }
     }
 
-    private void primRemoveEdge(CyNode node, CyEdge edge, boolean fireEvents,
-                                BookkeepingItem bkItem) {
+    private void primRemoveEdge(final CyNode node, final CyEdge edge, final boolean fireEvents,
+                                final BookkeepingItem bkItem) {
         if (fireEvents) {
-            _manager.fireChangeEvent(this, EventNote.Type.EDGE,
+            manager.fireChangeEvent(this, EventNote.Type.EDGE,
                                      EventNote.SubType.REMOVED, edge);
         }
 
         // Must be very careful where this call is located.
         // The edge-node information must still be available at time of call:
-        _manager.unregisterEdge(edge, this);
-        _edges.remove(edge);
+        manager.unregisterEdge(edge, this);
+        myEdges.remove(edge);
 
         // Remove needed attributes:
         removeGeneratedEdgeAttributes(edge);
         // update the _node_to_edges_map:
-        MapUtils.removeCollectionValueFromMap(_node_to_edges_map, node, edge);
+        MapUtils.removeCollectionValueFromMap(nodeToEdgesMap, node, edge);
         // Now delete the CyEdge from Cytoscape when we aren't already doing it:
         removeUnderlyingEdge(edge, bkItem);
 
         // MapUtils.removeCollectionValueFromMap(_net_to_edges_map, net, edge);
-        HyperEdgeImpl otherHE = (HyperEdgeImpl) _manager.getHyperEdgeForConnectorNode(node);
+        final HyperEdgeImpl otherHE = (HyperEdgeImpl) manager.getHyperEdgeForConnectorNode(node);
 
         if ((otherHE != null) && (otherHE.primHasEdge(edge))) {
+            BookkeepingItem realBkItem = bkItem;
             // The node we removed was a connectorNode of another
             // HyperEdge that contains edge.
             // remove this edge from the other HyperEdge, if there:
@@ -1644,21 +1771,21 @@ public class HyperEdgeImpl implements HyperEdge {
             // it will be definitely be gone for otherHE.
             // Avoid attempting to redelete edge in otherHE
             // by ensuring we always have a BookkeepingItem:
-            if (bkItem == null) {
+            if (realBkItem == null) {
                 // Because this HyperEdge has a shared edge, it can
                 // only be in one Network. The network will 
                 // be the first element of the iterator:
-                Iterator<CyNetwork> netsIt   = _nets.iterator();
-                Set<GraphObject>    toIgnore = new HashSet<GraphObject>();
+                final Iterator<CyNetwork> netsIt   = nets.iterator();
+                final Set<GraphObject>    toIgnore = new HashSet<GraphObject>();
 
-                bkItem = new BookkeepingItem(toIgnore,
+                realBkItem = new BookkeepingItem(toIgnore,
                                              netsIt.next());
             }
 
             // ensure edge is on the list--will not duplicate since it is a Set:
-            bkItem.getItems().add(edge);
+            realBkItem.getItems().add(edge);
 
-            otherHE.removeOrDeleteEdge(edge, fireEvents, bkItem);
+            otherHE.removeOrDeleteEdge(edge, fireEvents, realBkItem);
             //            otherHE.primRemoveEdge(otherHE.primGetNode(edge),
             //                                   edge,
             //                                   fireEvents);
@@ -1667,32 +1794,32 @@ public class HyperEdgeImpl implements HyperEdge {
 
     // Remove the given edge from its underlying representation (e.g.,
     // Cytoscape) in all CyNetworks for which it belongs:
-    private void removeUnderlyingEdge(CyEdge edge, BookkeepingItem bkItem) {
+    private void removeUnderlyingEdge(final CyEdge edge, final BookkeepingItem bkItem) {
         //        int edgeIdx = Cytoscape.getRootGraph().getIndex(edge);
-        for (CyNetwork net : _nets) {
+        for (CyNetwork net : nets) {
             // only disregard deleting the specific item we are doing bookkeeping on.
             // All other items delete:
             if ((bkItem == null) || (bkItem.getNetwork() != net) ||
                 (!bkItem.getItems().contains(edge))) {
-                _manager.removeUnderlyingEdge(edge, net);
+                manager.removeUnderlyingEdge(edge, net);
             }
 
-            //            // TODO: change set_remove to true if removeEdge() is made
+            //            // TODO change set_remove to true if removeEdge() is made
             //            // clear that it works on one network or across networks:
             //            net.removeEdge(edgeIdx, false);
             //            // net.hideEdge(edge);
         }
     }
 
-    private void removeUnderlyingNode(CyNode node, BookkeepingItem bkItem) {
+    private void removeUnderlyingNode(final CyNode node, final BookkeepingItem bkItem) {
         // int nodeIdx = Cytoscape.getRootGraph().getIndex(node);
-        for (CyNetwork net : _nets) {
+        for (CyNetwork net : nets) {
             // For each network, if nothing is left connected to node, then remove it:
-	    _manager.removeNodeFromNet (node, net , bkItem);
+	    manager.removeNodeFromNet (node, net , bkItem);
         }
     }
 
-    protected void primDestroy(boolean fireEvents, BookkeepingItem bkItem) {
+     void primDestroy(final boolean fireEvents, final BookkeepingItem bkItem) {
         // Allow multiple calls to delete via blanket obj deleter:
         if (isState(LifeState.DELETED)) {
             return;
@@ -1701,27 +1828,27 @@ public class HyperEdgeImpl implements HyperEdge {
         primSetState(LifeState.DELETION_IN_PROGRESS);
 
         if (fireEvents) {
-            _manager.fireDeleteEvent(this);
+            manager.fireDeleteEvent(this);
         }
 
         removeNodeAndEdgeContent(bkItem);
 
         // Make sure this follows removal of CyEdges and CyNodes, since CyEdges may use
         // HyperGraphManager maps about this HyperEdge:
-        _manager.unregisterHyperEdge(this);
+        manager.unregisterHyperEdge(this);
 
         removeConnectorNodeAndAttributes(bkItem);
 
         // We leave the connector node alone, like any other node:
         // HEUtils.removeNode(_connector_node);
-        _edges             = null; // help GC
-        _node_to_edges_map = null; // help GC
+        myEdges             = null; // help GC
+        nodeToEdgesMap = null; // help GC
                                    // _net_to_edges_map   = null; // help GC
 
-        _nets              = null; // help GC
+        nets              = null; // help GC
                                    //        _change_listener_store = null; // help GC
 
-        _connector_node    = null; // help GC
+        myConnectorNode    = null; // help GC
         primDeleteSubclass();
     }
 
@@ -1732,29 +1859,29 @@ public class HyperEdgeImpl implements HyperEdge {
     //            removeGeneratedEdgeAttributes(edge);
     //        }
     //    }
-    private void removeGeneratedEdgeAttributes(CyEdge edge) {
+    private void removeGeneratedEdgeAttributes(final CyEdge edge) {
         removeEdgeInteractionType(edge);
         removeEdgeHyperEdgeTag(edge);
         removeEdgeCanonicalName(edge);
     }
 
-    private void removeConnectorNodeAndAttributes(BookkeepingItem bkItem) {
+    private void removeConnectorNodeAndAttributes(final BookkeepingItem bkItem) {
         removeConnectorNodeName();
         removeConnectorNodeDirected();
         removeConnectorNodeEntityType();
-        removeUnderlyingNode(_connector_node, bkItem);
+        removeUnderlyingNode(myConnectorNode, bkItem);
     }
 
     /**
      * Remove all nodes and edges within a HyperEdge.
      * ASSUME: Only called when whole HyperEdge is being deleted.
      */
-    private void removeNodeAndEdgeContent(BookkeepingItem bkItem) {
+    private void removeNodeAndEdgeContent(final BookkeepingItem bkItem) {
         // cleanup all the datastructures for the stuff we
         // contain--nodes and edges:
         // Since the _node_to_edges_map will change via various
         // methods called, copy nodes:
-        for (CyNode node : new ArrayList<CyNode>(_node_to_edges_map.keySet())) {
+        for (CyNode node : new ArrayList<CyNode>(nodeToEdgesMap.keySet())) {
             primRemoveNode(node, false, bkItem);
         }
     }
@@ -1791,32 +1918,32 @@ public class HyperEdgeImpl implements HyperEdge {
     //				 Semantics.INTERACTION,
     //				 type_val);
     //    }
-    private void removeEdgeInteractionType(CyEdge edge) {
+    private void removeEdgeInteractionType(final CyEdge edge) {
         //        _edge_attrs.deleteAttribute(edge.getIdentifier(),
         //                                    _edgeInteractionAttributeName);
 	// MLC 06/21/07 BEGIN:
         // _edge_attrs.deleteAttribute(edge.getIdentifier(),
         //                            Semantics.INTERACTION);
-        HEUtils.deleteAttribute (_edge_attrs, edge.getIdentifier(),
+        HEUtils.deleteAttribute (edgeAttrs, edge.getIdentifier(),
 				 Semantics.INTERACTION);
 	// MLC 06/21/07 END.
     }
 
-    private void removeEdgeHyperEdgeTag(CyEdge edge) {
+    private void removeEdgeHyperEdgeTag(final CyEdge edge) {
 	// MLC 06/21/07 BEGIN:
         // _edge_attrs.deleteAttribute(edge.getIdentifier(),
         //                             HYPEREDGE_EDGE_TAG_NAME);
-        HEUtils.deleteAttribute(_edge_attrs, edge.getIdentifier(),
+        HEUtils.deleteAttribute(edgeAttrs, edge.getIdentifier(),
 				HYPEREDGE_EDGE_TAG_NAME);
 	// MLC 06/21/07 END.
     }
 
     // based on Cytoscape.getCyEdge() internal setting of LABEL:
-    private void setEdgeCanonicalName(CyEdge edge, String edgeIType) {
-        _edge_attrs.setAttribute(edge.getIdentifier(),
+    private void setEdgeCanonicalName(final CyEdge edge, final String edgeIType) {
+        edgeAttrs.setAttribute(edge.getIdentifier(),
                                  AttributeConstants.MONIKER,
                                  edgeIType);
-        _edge_attrs.setAttribute(edge.getIdentifier(),
+        edgeAttrs.setAttribute(edge.getIdentifier(),
                                  LABEL_ATTRIBUTE_NAME,
                                  edgeIType);
     }
@@ -1826,11 +1953,11 @@ public class HyperEdgeImpl implements HyperEdge {
     // Since Node may be used in many HyperEdges, node may already
     // have the attribute. Note that nodes that are shared will work
     // since the node will be connector node first, then be shared.
-    private void addNodeEntityTypeWhenNeeded(CyNode node) {
-        if (_node_attrs.getStringAttribute(node.getIdentifier(),
+    private void addNodeEntityTypeWhenNeeded(final CyNode node) {
+        if (nodeAttrs.getStringAttribute(node.getIdentifier(),
                                            ENTITY_TYPE_ATTRIBUTE_NAME) == null) {
             // no attribute value exists:
-            _node_attrs.setAttribute(node.getIdentifier(),
+            nodeAttrs.setAttribute(node.getIdentifier(),
                                      ENTITY_TYPE_ATTRIBUTE_NAME,
                                      ENTITY_TYPE_REGULAR_NODE_VALUE);
         }
@@ -1842,39 +1969,39 @@ public class HyperEdgeImpl implements HyperEdge {
     //                                                      cytoscape.data.Semantics.LABEL);
     //    }
     private String getConnectorNodeName() {
-        return _node_attrs.getStringAttribute(_connector_node.getIdentifier(),
+        return nodeAttrs.getStringAttribute(myConnectorNode.getIdentifier(),
                                               AttributeConstants.MONIKER);
     }
 
-    private void setConnectorNodeName(String newName) {
+    private void setConnectorNodeName(final String newName) {
         if (newName == null) {
             removeConnectorNodeName();
         } else {
-            _node_attrs.setAttribute(_connector_node.getIdentifier(),
+            nodeAttrs.setAttribute(myConnectorNode.getIdentifier(),
                                      AttributeConstants.MONIKER,
                                      newName);
             // will be replaced when there is an alternative:
-            _node_attrs.setAttribute(_connector_node.getIdentifier(),
+            nodeAttrs.setAttribute(myConnectorNode.getIdentifier(),
                                      LABEL_ATTRIBUTE_NAME,
                                      newName);
         }
     }
 
     private void removeConnectorNodeEntityType() {
-        if (_connector_node != null) {
+        if (myConnectorNode != null) {
 	    // MLC 06/21/07 BEGIN:
             // _node_attrs.deleteAttribute(_connector_node.getIdentifier(),
             //                            ENTITY_TYPE_ATTRIBUTE_NAME);
-            HEUtils.deleteAttribute(_node_attrs,
-				    _connector_node.getIdentifier(),
+            HEUtils.deleteAttribute(nodeAttrs,
+				    myConnectorNode.getIdentifier(),
 				    ENTITY_TYPE_ATTRIBUTE_NAME);
 	    // MLC 06/21/07 END.
         }
     }
 
     private void removeConnectorNodeName() {
-        if (_connector_node != null) {
-            String name = getName();
+        if (myConnectorNode != null) {
+            final String name = getName();
 
             if (name != null) {
 		// MLC 06/21/07 BEGIN:
@@ -1883,12 +2010,12 @@ public class HyperEdgeImpl implements HyperEdge {
 		//                // will be replaced when there is an alternative:
 		//                _node_attrs.deleteAttribute(_connector_node.getIdentifier(),
 		//                                            LABEL_ATTRIBUTE_NAME);
-                HEUtils.deleteAttribute(_node_attrs,
-					_connector_node.getIdentifier(),
+                HEUtils.deleteAttribute(nodeAttrs,
+					myConnectorNode.getIdentifier(),
 					AttributeConstants.MONIKER);
                 // will be replaced when there is an alternative:
-                HEUtils.deleteAttribute(_node_attrs,
-					_connector_node.getIdentifier(),
+                HEUtils.deleteAttribute(nodeAttrs,
+					myConnectorNode.getIdentifier(),
 					LABEL_ATTRIBUTE_NAME);
 	    // MLC 06/21/07 END.
             }
@@ -1896,53 +2023,53 @@ public class HyperEdgeImpl implements HyperEdge {
     }
 
     private void removeConnectorNodeDirected() {
-        if ((_connector_node != null) && (isDirected())) {
+        if ((myConnectorNode != null) && (isDirected())) {
 	    // MLC 06/21/07 BEGIN:
             // _node_attrs.deleteAttribute(_connector_node.getIdentifier(),
             //                             DIRECTED_ATTRIBUTE_NAME);
-            HEUtils.deleteAttribute(_node_attrs,
-				    _connector_node.getIdentifier(),
+            HEUtils.deleteAttribute(nodeAttrs,
+				    myConnectorNode.getIdentifier(),
 				    DIRECTED_ATTRIBUTE_NAME);
 	    // MLC 06/21/07 END.
         }
     }
 
-    private void removeEdgeCanonicalName(CyEdge edge) {
+    private void removeEdgeCanonicalName(final CyEdge edge) {
 	// MLC 06/21/07 BEGIN:
 	//        _edge_attrs.deleteAttribute(edge.getIdentifier(),
 	//                                    AttributeConstants.MONIKER);
 	//        // will be replaced when there is an alternative:
 	//        _edge_attrs.deleteAttribute(edge.getIdentifier(),
 	//                                    LABEL_ATTRIBUTE_NAME);
-        HEUtils.deleteAttribute(_edge_attrs, edge.getIdentifier(),
+        HEUtils.deleteAttribute(edgeAttrs, edge.getIdentifier(),
                                 AttributeConstants.MONIKER);
         // will be replaced when there is an alternative:
-        HEUtils.deleteAttribute(_edge_attrs, edge.getIdentifier(),
+        HEUtils.deleteAttribute(edgeAttrs, edge.getIdentifier(),
 				LABEL_ATTRIBUTE_NAME);
 	// MLC 06/21/07 END.
     }
 
     // Used for temporarily marking objects for doing things like very
     // efficient intersection algorithms:
-    protected boolean isMarked() {
-        return _marked;
+    boolean isMarked() {
+        return marked;
     }
 
     // Used for temporarily marking objects for doing things like very
     // efficient intersection algorithms:
-    protected void setMarked(boolean mark_state) {
-        _marked = mark_state;
+    void setMarked(final boolean markState) {
+        marked = markState;
     }
 
-    protected HyperEdgeManagerImpl getManager() {
-        return _manager;
+    HyperEdgeManagerImpl getManager() {
+        return manager;
     }
 
-    private void primSetState(LifeState new_state) {
-        _state = new_state;
+    private void primSetState(final LifeState newState) {
+        state = newState;
     }
 
-    protected boolean primDeleteSubclass() {
+    boolean primDeleteSubclass() {
         // Note: will probably be in state DELETION_IN_PROGRESS from subclass.
         // Take care not to add the check for DELETION_IN_PROGRESS that is
         // found in many subclasses, otherwise we wouldn't finish
@@ -1958,7 +2085,10 @@ public class HyperEdgeImpl implements HyperEdge {
         return true;
     }
 
-    public CyNode getNode(CyEdge edge) {
+    /**
+     * {@inheritDoc}
+     */
+    public CyNode getNode(final CyEdge edge) {
         HEUtils.checkAbbyNormal(this);
 
         if (!primHasEdge(edge)) {
@@ -1969,19 +2099,21 @@ public class HyperEdgeImpl implements HyperEdge {
     }
 
     // Assumes: edge is a member of this HyperEdge.
-    protected CyNode primGetNode(CyEdge edge) {
-        CyNode source = (CyNode) edge.getSource();
+    CyNode primGetNode(final CyEdge edge) {
+        final CyNode source = (CyNode) edge.getSource();
 
-        if (source == _connector_node) {
+        if (source == myConnectorNode) {
             return (CyNode) edge.getTarget();
         }
 
         return source;
     }
 
-    // implements Identifiable interface:
+    /**
+     * {@inheritDoc}
+     */
     public String getIdentifier() {
-        return _uuid;
+        return myUuid;
     }
 
     //    // ASSUME: net != null
@@ -2305,10 +2437,10 @@ public class HyperEdgeImpl implements HyperEdge {
     //    }
     //
     //    // implements Mutable interface:
-    //    public boolean setDirty(boolean new_state) {
+    //    public boolean setDirty(boolean netState) {
     //        HEUtils.checkAbbyNormal(this);
     //
-    //        return primSetDirty(new_state, true);
+    //        return primSetDirty(netState, true);
     //    }
     //    /**
     //     * Keep package private to avoid allowing overriding:
