@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -123,7 +124,7 @@ public class CySubNetworkTest extends TestCase {
 	/**
 	 *  DOCUMENT ME!
 	 */
-	public void testCopyToNetwork() {
+	public void testAddNode() {
 
 		assertNotNull("subnetwork is not null",sub);
 		assertEquals("num nodes",2,sub.getNodeCount());
@@ -159,13 +160,13 @@ public class CySubNetworkTest extends TestCase {
 
     }
 
-	public void testInvalidCopyToNetwork() {
+	public void testInvalidAddNode() {
 
-		checkAdd(sub,nx1);
-		checkAdd(sub,null);
+		checkInvalidAdd(sub,nx1);
+		checkInvalidAdd(sub,null);
     }
 
-	private void checkAdd(CySubNetwork s, CyNode n) {
+	private void checkInvalidAdd(CySubNetwork s, CyNode n) {
 		try {
 			s.addNode(n);
 		} catch (Exception e) {
@@ -184,7 +185,7 @@ public class CySubNetworkTest extends TestCase {
 	}
 
 
-	public void testRemoveFromNetwork() {
+	public void testRemoveNode() {
 
 		nl.add(n4);
 
@@ -221,11 +222,11 @@ public class CySubNetworkTest extends TestCase {
 
 	public void testInvalidRemoveFromNetwork() {
 
-		checkRemove(sub,nx1);
-		checkRemove(sub,null);
+		checkInvalidRemove(sub,nx1);
+		checkInvalidRemove(sub,null);
     }
 
-	private void checkRemove(CySubNetwork s, CyNode n) {
+	private void checkInvalidRemove(CySubNetwork s, CyNode n) {
 		try {
 			s.addNode(n);
 		} catch (Exception e) {
@@ -241,5 +242,62 @@ public class CySubNetworkTest extends TestCase {
 
 		// if we don't get an exception
 		fail();
+	}
+
+	public void testGetRootNetwork() {
+		CyRootNetwork r2 = sub.getRootNetwork();
+		assertNotNull("root is not null",r2);
+		assertTrue("r2 equals root",r2.equals(root));
+		assertEquals("node list size",r2.getNodeList().size(),root.getNodeList().size());
+		assertEquals("edge list size",r2.getEdgeList().size(),root.getEdgeList().size());
+	}
+
+	public void testGetExternalNeighborSet() {
+
+		Set<CyNode> ex = sub.getExternalNeighborSet();
+
+		assertNotNull(ex);
+		assertEquals("set size",1,ex.size());
+		assertTrue("contains n3",ex.contains(n3));
+
+		// now modify the root network
+		CyEdge e4 = root.addEdge(n1,n4,true);
+		CyEdge e5 = root.addEdge(n5,n2,true);
+		
+		Set<CyNode> ex1 = sub.getExternalNeighborSet();
+	
+		assertNotNull(ex1);
+		assertEquals("set size",3,ex1.size());
+		assertTrue("contains n3",ex1.contains(n3));
+		assertTrue("contains n4",ex1.contains(n4));
+		assertTrue("contains n5",ex1.contains(n5));
+
+		// now modify the sub network
+		sub.addNode(n4);
+
+		Set<CyNode> ex3 = sub.getExternalNeighborSet();
+	
+		assertNotNull(ex3);
+		assertEquals("set size",2,ex3.size());
+		assertTrue("contains n3",ex3.contains(n3));
+		assertTrue("contains n5",ex3.contains(n5));
+
+		// no edges in root 
+		CyRootNetwork root2 = CyNetworkFactory.getRootInstance(); 
+
+        CyNode nn1 = root2.addNode();
+        CyNode nn2 = root2.addNode();
+        CyNode nn3 = root2.addNode();
+
+        List<CyNode> nnl = new ArrayList<CyNode>(2);
+        nnl.add(nn1);
+        nnl.add(nn2);
+
+        CySubNetwork sub2 = root2.addSubNetwork(nnl);
+
+		Set<CyNode> ex2 = sub2.getExternalNeighborSet();
+
+		assertNotNull(ex2);
+		assertEquals("set size",0,ex2.size());
 	}
 }

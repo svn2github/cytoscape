@@ -61,7 +61,6 @@ class ArraySubGraph implements CySubNetwork {
 	private NodePointer inFirstNode;
 	private Set<CyNode> nodeSet;
 	private Set<CyEdge> edgeSet;
-	private Set<CyNode> externalNodeSet;
 
 	ArraySubGraph(final ArrayGraph par, final List<CyNode> nodes, final List<CyEdge> edges, final int inId) {
 		internalId = inId;
@@ -91,14 +90,11 @@ class ArraySubGraph implements CySubNetwork {
 			updateNode(n);
 		}
 
-		// find all nodes that connect nodes in the subnetwork but aren't
-		// in the subnetwork themselves
-		externalNodeSet = new HashSet<CyNode>();
 
 		// find all adjacent edges of the nodes, determine if the 
 		// target node is in the subnetwork, and if so, add it 
 		// to the edge set
-		if ( edges == null || edges.size() == 0 ) {
+		if ( edges == null ) {
 			edgeSet = new HashSet<CyEdge>();
 
 			for (CyNode n : nodeSet) {
@@ -113,29 +109,11 @@ class ArraySubGraph implements CySubNetwork {
 					if (nodeSet.contains(edge.getSource()) && nodeSet.contains(edge.getTarget())) {
 						//System.out.println("    adding edge: " + edge.getIndex());
 						edgeSet.add(edge);
-					} else if (nodeSet.contains(edge.getSource())
-					           && !nodeSet.contains(edge.getTarget())) {
-						externalNodeSet.add(edge.getTarget());
-					} else if (!nodeSet.contains(edge.getSource())
-					           && nodeSet.contains(edge.getTarget())) {
-						externalNodeSet.add(edge.getSource());
-					}
+					} 
 				}
 			}
 		} else {
 			edgeSet = new HashSet<CyEdge>(edges);
-			for (CyNode n : nodeSet) {
-				final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n, CyEdge.Type.ANY);
-				for (CyEdge edge : adjEdges) {
-					if (nodeSet.contains(edge.getSource())
-					           && !nodeSet.contains(edge.getTarget())) {
-						externalNodeSet.add(edge.getTarget());
-					} else if (!nodeSet.contains(edge.getSource())
-					           && nodeSet.contains(edge.getTarget())) {
-						externalNodeSet.add(edge.getSource());
-					} // else ignore
-				}
-			}
 		}
 
 		internalEdgeCount = edgeSet.size();
@@ -149,6 +127,22 @@ class ArraySubGraph implements CySubNetwork {
 	 * {@inheritDoc} 
 	 */
 	public Set<CyNode> getExternalNeighborSet() {
+		// Do this dynamically to account for any edges that get added
+		// after the subnetwork is created.
+		Set<CyNode> externalNodeSet = new HashSet<CyNode>();
+		for (CyNode n : nodeSet) {
+			final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n, CyEdge.Type.ANY);
+			for (CyEdge edge : adjEdges) {
+				if (nodeSet.contains(edge.getSource())
+				           && !nodeSet.contains(edge.getTarget())) {
+					externalNodeSet.add(edge.getTarget());
+				} else if (!nodeSet.contains(edge.getSource())
+				           && nodeSet.contains(edge.getTarget())) {
+					externalNodeSet.add(edge.getSource());
+				} // else ignore
+			}
+		}
+
 		return externalNodeSet;
 	}
 
