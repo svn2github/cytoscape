@@ -12,7 +12,7 @@ pluginDescription=<html><body>Web Service Client for IntAct Database.  <p>Users 
 </body></html>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.57
+pluginVersion=0.60
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6

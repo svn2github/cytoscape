@@ -176,9 +176,9 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 		props = new ModulePropertiesImpl(clientID, "wsc");
 
 		props.add(new Tunable("max_interactions", "Maximum number of records", Tunable.INTEGER,
-		                      new Integer(1000)));
+		                      new Integer(50000)));
 
-		props.add(new Tunable("timeout", "Timeout (sec.)", Tunable.INTEGER, new Integer(600)));
+		props.add(new Tunable("timeout", "Timeout (sec.)", Tunable.INTEGER, new Integer(1200)));
 		//props.add(new Tunable("select_interaction", "Import only selected interactions",
 		//                      Tunable.BOOLEAN, new Boolean(false)));
 	}
@@ -214,11 +214,11 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 
 			if (attr == null) {
 				List<String> newList = new ArrayList<String>();
-				newList.add(prop.getIdentifier());
+				newList.add(prop.getIdentifier().replaceAll("\"", ""));
 				nodeAttr.setListAttribute(id, prop.getDatabase(), newList);
 			} else {
 				if (attr.contains(prop.getIdentifier()) == false) {
-					attr.add(prop.getIdentifier());
+					attr.add(prop.getIdentifier().replaceAll("\"", ""));
 					nodeAttr.setListAttribute(id, prop.getDatabase(), new ArrayList<Object>(attr));
 				}
 			}
@@ -314,18 +314,18 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 
 		for (CrossReference ref : a.getIdentifiers()) {
 			if (ref.getDatabase().equals("uniprotkb"))
-				aID = ref.getIdentifier();
+				aID = ref.getIdentifier().replaceAll("\"", "");
 			else if (ref.getDatabase().equals("intact")) {
 				if (aID != null) {
-					nodeAttr.setAttribute(aID, "intact id", ref.getIdentifier());
+					nodeAttr.setAttribute(aID, "intact id", ref.getIdentifier().replaceAll("\"", ""));
 				} else {
-					nodeAttr.setAttribute(ref.getIdentifier(), "intact id", ref.getIdentifier());
+					nodeAttr.setAttribute(ref.getIdentifier(), "intact id", ref.getIdentifier().replaceAll("\"", ""));
 				}
 			}
 		}
 
 		if (aID == null)
-			aID = a.getIdentifiers().iterator().next().getIdentifier();
+			aID = a.getIdentifiers().iterator().next().getIdentifier().replaceAll("\"", "");
 
 		List<String> aliasA = new ArrayList<String>();
 
@@ -333,8 +333,11 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 			aliasA.add(ref.getIdentifier());
 		}
 
+		if(aliasA.size() != 0)
+			nodeAttr.setAttribute(aID, "official symbol", aliasA.get(0));
+		
 		if (a.getAliases().size() != 0) {
-			nodeAttr.setAttribute(aID, "official symbol", a.getAliases().iterator().next().getName());
+			
 
 			for (Alias ref : a.getAliases()) {
 				aliasA.add(ref.getName());
@@ -375,11 +378,11 @@ public class IntactClient extends WebServiceClientImplWithGUI<BinarySearchServic
 
 			final String edgeID = e.getIdentifier();
 
-			if (bin.hasExperimentalRolesInteractorA() && (roleA.size() > 0))
+			if (bin.hasExperimentalRolesInteractorA() && (roleA.size() > 0) && roleA.size()>i)
 				edgeAttr.setAttribute(e.getIdentifier(), "source experimental role",
 				                      roleA.get(i).getText());
 
-			if (bin.hasExperimentalRolesInteractorB() && (roleB.size() > 0))
+			if (bin.hasExperimentalRolesInteractorB() && (roleB.size() > 0) && roleB.size()>i)
 				edgeAttr.setAttribute(e.getIdentifier(), "target experimental role",
 				                      roleB.get(i).getText());
 
