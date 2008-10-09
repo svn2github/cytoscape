@@ -38,6 +38,7 @@ package org.cytoscape.model.subnetwork;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import java.util.Set; 
 
 
 /**
@@ -47,13 +48,21 @@ import org.cytoscape.model.CyNode;
  */
 public interface CySubNetwork extends CyNetwork {
 	/**
-	 * Return the {@link CyMetaNode} that represents this CySubNetwork in the
-	 * parent network.
+	 * Return the {@link CyRootNetwork} that contains this CySubNetwork. 
 	 *
-	 * @return  the node that represents this CySubNetowrk.
+	 * @return  the {@link CyRootNetwork} that contains this CySubNetowrk.
 	 */
-//	CyMetaNode getParentNode();
-//	CyRootNetwork getRootNetwork(); //??
+	CyRootNetwork getRootNetwork(); 
+
+	/**
+	 * Return a set of nodes that are neighbors of nodes in this {@link CySubNetwork}
+	 * in the {@link CyRootNetwork} but are not themselves part of the {@link CySubNetwork}.
+	 * This is a housekeeping method and shouldn't be used in normal operation.
+	 * 
+	 * @return  a set of nodes that are neighbors of nodes in this {@link CySubNetwork}
+	 * in the {@link CyRootNetwork} but are not themselves part of the {@link CySubNetwork}.
+	 */
+	Set<CyNode> getExternalNeighborSet(); 
 
 	/**
 	 * Adds a node to this {@link CySubNetwork}.  Note that the added node

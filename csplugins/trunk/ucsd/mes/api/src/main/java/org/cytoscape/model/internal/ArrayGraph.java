@@ -89,6 +89,7 @@ public class ArrayGraph implements CyRootNetwork {
     private final Map<String, CyDataTable> edgeAttrMgr;
     private final CyEventHelper eventHelper;
 	private final List<CySubNetwork> subNets;
+	private final List<CyMetaNode> metaNodes;
 	private CySubNetwork base; 
 
 	/**
@@ -97,7 +98,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public ArrayGraph(final CyEventHelper eh) {
 		suid = IdFactory.getNextSUID();
-		System.out.println("new ArrayGraph out " + suid);
+		//System.out.println("new ArrayGraph out " + suid);
 		numSubNetworks = 0;
 		nodeCount = 0;
 		edgeCount = 0;
@@ -117,7 +118,9 @@ public class ArrayGraph implements CyRootNetwork {
         eventHelper = eh;
 
 		subNets = new ArrayList<CySubNetwork>();
+		metaNodes = new ArrayList<CyMetaNode>();
 
+		base = addSubNetwork(new ArrayList<CyNode>());
 	}
 
 	/**
@@ -131,20 +134,14 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public int getNodeCount() {
-		if ( base == null )
-			return nodeCount;
-		else
-			return base.getNodeCount();
+		return nodeCount; 
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public int getEdgeCount() {
-		if ( base == null )
-			return edgeCount;
-		else
-			return base.getEdgeCount();
+		return edgeCount; 
 	}
 
 	/**
@@ -172,17 +169,11 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public List<CyNode> getNodeList() {
-		if ( base == null ) {
-			//System.out.println("public getNodeList root");
-			return getNodeList(firstNode,ROOT,nodeCount);
-		} else {
-			//System.out.println("public getNodeList base");
-			return base.getNodeList();
-		}
+		return getNodeList(firstNode,ROOT,nodeCount);
 	}
 
 	List<CyNode> getNodeList(final NodePointer first, final int inId, final int numNodes) {
-		System.out.println("private getNodeList " + inId);
+		//System.out.println("private getNodeList " + inId);
 		final List<CyNode> ret = new ArrayList<CyNode>(nodeCount);
 		int numRemaining = numNodes;
 		NodePointer node = first;
@@ -203,13 +194,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public List<CyEdge> getEdgeList() {
-		if ( base == null ) {
-			//System.out.println("public getEdgeList root");
-			return getEdgeList(firstNode,ROOT,edgeCount);
-		} else  {
-			//System.out.println("public getEdgeList base");
-			return base.getEdgeList();
-		}
+		return getEdgeList(firstNode,ROOT,edgeCount);
 	}
 
 	List<CyEdge> getEdgeList(final NodePointer first, final int inId, final int numEdges) {
@@ -245,10 +230,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public List<CyNode> getNeighborList(final CyNode n, final CyEdge.Type e) {
-		if ( base == null )
-			return getNeighborList(n,e,ROOT);	
-		else
-			return base.getNeighborList(n,e);	
+		return getNeighborList(n,e,ROOT);	
 	}
 
 	List<CyNode> getNeighborList(final CyNode n, final CyEdge.Type e, final int inId) {
@@ -272,10 +254,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public List<CyEdge> getAdjacentEdgeList(final CyNode n, final CyEdge.Type e) {
-		if ( base == null )
-			return getAdjacentEdgeList(n,e,ROOT);
-		else 
-			return base.getAdjacentEdgeList(n,e);
+		return getAdjacentEdgeList(n,e,ROOT);
 	}
 
 	List<CyEdge> getAdjacentEdgeList(final CyNode n, final CyEdge.Type e, final int inId) {
@@ -296,10 +275,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e) {
-		if ( base == null )
-			return getConnectingEdgeList(src,trg,e,ROOT);
-		else
-			return base.getConnectingEdgeList(src,trg,e);
+		return getConnectingEdgeList(src,trg,e,ROOT);
 	}
 
 	List<CyEdge> getConnectingEdgeList(final CyNode src, final CyNode trg, final CyEdge.Type e, final int inId) {
@@ -326,19 +302,13 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public CyNode addNode() {
-		if ( base == null ) {
-			//System.out.println("addNode root");
-			return addNode(null);
-		} else {
-			//System.out.println("addNode base");
-			return base.addNode();
-		}
+		return base.addNode();
 	}
 
 	CyMetaNode addNode(final CySubNetwork sub) {
 		final NodePointer n;
 
-		System.out.println("addNode");
+		//System.out.println("addNode");
 		synchronized (this) {
 			final int index = nodePointers.size();
 			n = new NodePointer(index, new CyNodeImpl(this, index, nodeAttrMgr, sub));
@@ -360,8 +330,7 @@ public class ArrayGraph implements CyRootNetwork {
 		//System.out.println(" attempting removeNode root");
 
 		// clean up subnetwork pointers
-		if ( base != null )
-			base.removeNode(n);
+		// this will remove the node from base	
 		for ( CySubNetwork sub : subNets )
 			sub.removeNode(n);
 
@@ -385,7 +354,14 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public CyEdge addEdge(final CyNode s, final CyNode t, final boolean directed) {
-		//System.out.println("addEdge root");
+		// by calling base.addEdge() we'll update both the base network AND
+		// the root network.  base.addEdge() calls edgeAdd().
+		return base.addEdge(s,t,directed);
+	}
+
+	// will be called from base.addEdge()!
+	CyEdge edgeAdd(final CyNode s, final CyNode t, final boolean directed) {
+
 		final EdgePointer e;
 
 		synchronized (this) {
@@ -418,6 +394,11 @@ public class ArrayGraph implements CyRootNetwork {
 	public boolean removeEdge(final CyEdge edge) {
 		if (!containsEdge(edge))
 			return false;
+
+		// clean up subnetwork pointers
+		// this will remove the edge from base	
+		for ( CySubNetwork sub : subNets )
+			sub.removeEdge(edge);
 
 		final EdgePointer e = getEdgePointer(edge);
 
@@ -804,42 +785,55 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyNode> getAllNodes() {
-		//System.out.println("public getAllNodes");
-		return getNodeList(firstNode, ROOT, nodeCount);
+	public CySubNetwork addSubNetwork(final List<CyNode> nodes) {
+		return addSubNetwork(nodes, null);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CyEdge> getAllEdges() {
-		return getEdgeList(firstNode,ROOT,edgeCount);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public CyMetaNode addMetaNode(final List<CyNode> nodes) {
-		
-
-		// only hit this once for a given instance 
-		// this will create a subnetwork of the original network 
-		// so that we can continue to see the original
-		if ( base == null ) {
-			final int originalId = ++numSubNetworks;
-			base = new ArraySubGraph(this,getNodeList(),originalId);
-		}
-
+	public CySubNetwork addSubNetwork(final List<CyNode> nodes, final List<CyEdge> edges) {
 		final int newId = ++numSubNetworks;
-		final ArraySubGraph sub = new ArraySubGraph(this,nodes,newId);
+		final ArraySubGraph sub = new ArraySubGraph(this,nodes,edges,newId);
 		subNets.add(sub);
+		return sub;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeSubNetwork(final CySubNetwork sub) {
+		if ( sub == null )
+			throw new NullPointerException("subnetwork is null");
+
+		if ( sub.equals( base ) )
+			throw new IllegalArgumentException("can't remove base subnetwork");
+
+		if ( !subNets.contains( sub ) )
+			throw new IllegalArgumentException("subnetwork not contained in root network");
+
+		final List<CyNode> subNodes = sub.getNodeList();
+		for ( CyNode node : subNodes )
+			sub.removeNode(node);
+
+		subNets.remove( sub );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public CyMetaNode addMetaNode(final CySubNetwork sub) {
 		
 		//System.out.println("meta addNode sub");
 		final CyMetaNode newNode = addNode( sub );
 
 		// TODO do we need to preserve directedness?
-		for ( CyNode exNode : sub.getExternalNodes() )
-			addEdge(newNode, exNode, false); 
+		for ( CyNode exNode : sub.getExternalNeighborSet() )
+			// important to call edgeAdd so as not to add this
+			// metanode edge to the base network
+			edgeAdd(newNode, exNode, false); 
+
+		metaNodes.add(newNode);
 
 		return newNode; 
 	}
@@ -854,11 +848,11 @@ public class ArrayGraph implements CyRootNetwork {
 		// first clean up the node pointer information for the nodes
 		// in the subnetwork
 		final CySubNetwork sub = n.getSubNetwork();
-		final List<CyNode> subNodes = sub.getNodeList();
-		for ( CyNode node : subNodes )
-			sub.removeNode(node);
+		if ( subNets.contains( sub ) )
+			removeSubNetwork( sub );
+		// else assume it's already been done
 
-		subNets.remove( sub );
+		metaNodes.remove(n);
 
 		removeNode(n);
 	}
@@ -866,8 +860,21 @@ public class ArrayGraph implements CyRootNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<CySubNetwork> getAllSubNetworks() {
+	public List<CySubNetwork> getSubNetworkList() {
 		return new ArrayList<CySubNetwork>(subNets);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<CyMetaNode> getMetaNodeList() {
+		return new ArrayList<CyMetaNode>(metaNodes);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public CySubNetwork getBaseNetwork() {
+		return base;
+	}
 }

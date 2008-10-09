@@ -41,6 +41,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.model.subnetwork.CyRootNetwork;
 
 import java.util.HashSet;
 import java.util.List;
@@ -62,10 +63,10 @@ class ArraySubGraph implements CySubNetwork {
 	private Set<CyEdge> edgeSet;
 	private Set<CyNode> externalNodeSet;
 
-	ArraySubGraph(final ArrayGraph par, final List<CyNode> nodes, final int inId) {
+	ArraySubGraph(final ArrayGraph par, final List<CyNode> nodes, final List<CyEdge> edges, final int inId) {
 		internalId = inId;
 		internalSUID = IdFactory.getNextSUID();
-		System.out.println("new ArraySubGraph " + internalSUID + "  " + inId);
+		//System.out.println("new ArraySubGraph " + internalSUID + "  " + inId);
 
 		if (par == null)
 			throw new NullPointerException("parent network is null");
@@ -74,9 +75,6 @@ class ArraySubGraph implements CySubNetwork {
 
 		if (nodes == null)
 			throw new NullPointerException("node list is null");
-
-		if (nodes.size() <= 0)
-			throw new IllegalArgumentException("node list has size zero");
 
 		nodeSet = new HashSet<CyNode>(nodes);
 
@@ -93,33 +91,49 @@ class ArraySubGraph implements CySubNetwork {
 			updateNode(n);
 		}
 
-		// find all adjacent edges of the nodes, determine if the 
-		// target node is in the subnetwork, and if so, add it 
-		// to the edge set
-		edgeSet = new HashSet<CyEdge>();
-
 		// find all nodes that connect nodes in the subnetwork but aren't
 		// in the subnetwork themselves
 		externalNodeSet = new HashSet<CyNode>();
 
-		for (CyNode n : nodeSet) {
-			//System.out.println(" checking edges for NODE: " + n.getIndex());
-			// note that we're getting the adj edges from the *parent* network
-			final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n, CyEdge.Type.ANY);
+		// find all adjacent edges of the nodes, determine if the 
+		// target node is in the subnetwork, and if so, add it 
+		// to the edge set
+		if ( edges == null || edges.size() == 0 ) {
+			edgeSet = new HashSet<CyEdge>();
 
-			for (CyEdge edge : adjEdges) {
-				//System.out.println("  evaluating: " + edge.getIndex());
+			for (CyNode n : nodeSet) {
+				//System.out.println(" checking edges for NODE: " + n.getIndex());
+				// note that we're getting the adj edges from the *parent* network
+				final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n, CyEdge.Type.ANY);
 
-				// check the nodeSet because containsNode won't yet be updated
-				if (nodeSet.contains(edge.getSource()) && nodeSet.contains(edge.getTarget())) {
-					//System.out.println("    adding edge: " + edge.getIndex());
-					edgeSet.add(edge);
-				} else if (nodeSet.contains(edge.getSource())
-				           && !nodeSet.contains(edge.getTarget())) {
-					externalNodeSet.add(edge.getTarget());
-				} else if (!nodeSet.contains(edge.getSource())
-				           && nodeSet.contains(edge.getTarget())) {
-					externalNodeSet.add(edge.getSource());
+				for (CyEdge edge : adjEdges) {
+					//System.out.println("  evaluating: " + edge.getIndex());
+
+					// check the nodeSet because containsNode won't yet be updated
+					if (nodeSet.contains(edge.getSource()) && nodeSet.contains(edge.getTarget())) {
+						//System.out.println("    adding edge: " + edge.getIndex());
+						edgeSet.add(edge);
+					} else if (nodeSet.contains(edge.getSource())
+					           && !nodeSet.contains(edge.getTarget())) {
+						externalNodeSet.add(edge.getTarget());
+					} else if (!nodeSet.contains(edge.getSource())
+					           && nodeSet.contains(edge.getTarget())) {
+						externalNodeSet.add(edge.getSource());
+					}
+				}
+			}
+		} else {
+			edgeSet = new HashSet<CyEdge>(edges);
+			for (CyNode n : nodeSet) {
+				final List<CyEdge> adjEdges = parent.getAdjacentEdgeList(n, CyEdge.Type.ANY);
+				for (CyEdge edge : adjEdges) {
+					if (nodeSet.contains(edge.getSource())
+					           && !nodeSet.contains(edge.getTarget())) {
+						externalNodeSet.add(edge.getTarget());
+					} else if (!nodeSet.contains(edge.getSource())
+					           && nodeSet.contains(edge.getTarget())) {
+						externalNodeSet.add(edge.getSource());
+					} // else ignore
 				}
 			}
 		}
@@ -132,10 +146,9 @@ class ArraySubGraph implements CySubNetwork {
 	}
 
 	/**
-	 * Used by {@link ArrayGraph} to determine what edges to
-	 * connect to the metanode.
+	 * {@inheritDoc} 
 	 */
-	Set<CyNode> getExternalNodes() {
+	public Set<CyNode> getExternalNeighborSet() {
 		return externalNodeSet;
 	}
 
@@ -162,6 +175,13 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
+	public CyRootNetwork getRootNetwork() {
+		return parent;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public long getSUID() {
 		return internalSUID;
 	}
@@ -183,7 +203,8 @@ class ArraySubGraph implements CySubNetwork {
 	 * {@inheritDoc}
 	 */
 	public CyEdge addEdge(final CyNode source, final CyNode target, final boolean isDirected) {
-		final CyEdge ret = parent.addEdge(source, target, isDirected);
+		// important that it's edgeAdd and not addEdge
+		final CyEdge ret = parent.edgeAdd(source, target, isDirected); 
 		updateEdge(ret);
 		internalEdgeCount++;
 		edgeSet.add(ret);

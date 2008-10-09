@@ -49,19 +49,19 @@ import java.util.List;
  * will treat each {@link CyNetwork} created within Cytoscape
  * as an independent network, beginning with Cytoscape 3.0, 
  * Cytoscape has provided a mechanism for implementing a more
- * complex meta-network structure that can used for a variety
+ * complex meta-network structure that can be used for a variety
  * of other use cases, including implementing subnetworks
- * and shared nodes between networks.  Beyond the concepts
+ * and shared nodes between subnetworks.  Beyond the concepts
  * and methods provided by {@link CyNetwork} a meta-network
  * adds three new concepts:
  * <ul><li>A <b>CyRootNetwork</b> is a {@link CyNetwork} that
  * adds methods for maintaining the meta-network.
- * All {@link CyNode}s and {@link CyEdge}s in all {@link CyNetwork}s
- * that are part of this CyRootNetwork, including all {@link CyMetaNoes}.
+ * All {@link CyNode}s and {@link CyEdge}s in all {@link CySubNetwork}s
+ * that are part of this CyRootNetwork, including all {@link CyMetaNodes}.
  * <li>A {@link CySubNetwork} is a group of nodes and edges
- * that are a sub-network of another {@link CyNetwork}.  The
- * {@link CySubNetwork} is represented in a {@link CyNetwork} by
- * a {@link CyMetaNode}.  A {@link CySubNetwork} may be thought
+ * that are a sub-network of a {@link CyRootNetwork}.  The
+ * {@link CySubNetwork} can be represented within another {@link CySubNetwork}
+ * by a {@link CyMetaNode}.  A {@link CySubNetwork} may be thought
  * of as a projection of the graph implemented by the <b>CyRootNetwork</b>.
  * <li>A {@link CyMetaNode} is a {@link CyNode} that represents
  * a {@link CySubNetwork} in a {@link CyNetwork}.
@@ -73,55 +73,8 @@ import java.util.List;
  * a {@link CyNetwork} that is a "flattened" version of the
  * meta-network (essentially all {@link CyNode}s and {@link CyEdge}s
  * except {@link CyMetaNode}s and their associated {@link CyEdge}s.
-
- * <b>QUESTIONS:</b>
- * <ul>
- * <li><i>In general, I think the root/cy/sub network relationship is
- * a bit confusing right now and the current implementation leaves
- * something to be desired.</i></li>
- * <li>How do we get the flattened network?  I'm assuming
- * that the flattened network is what the CyRootNetwork returns
- * when you call getNodeList() and getEdgeList().  That way, the simplest
- * implementation would always be looking at the flattened network,
- * which is what I think we want.</li>
- * <li><i>The flattened network will be from getAllNodes() and getAllEdges().
- * At the moment, getNodeList() and getEdgeList() only ever return 
- * the network as created before any metanodes were added.  I'm seeing
- * a bug where a normal node added *after* a metanode was created might
- * not be captured correctly.</i></li>
- * <li>If that is the case, how do we extract the top group of
- * CySubNetworks?  Do we need to add a getRootSubNetwork() method?
- * I'm going to assume we do, recognizing that this may be something
- * we might need to re-evaluate</li>
- * <li><i>No explicit support for this right now, other than the fact that
- * you have a reference to the original CyRootNetwork that you created
- * the metanode on. When calling getNodeList and getEdgeList, you'll see
- * the original network. </i></li>
- * <li>How do I add a CyMetaNode to a particular sub-network?  CyNetwork
- * does not have an addNode(CyNode) method.  Should this be part of the
- * CyRootNetwork interface?</li>
- * <li><i>Add the metanode using {@link CySubNetwork#copyToNetwork(CyNode)}
- * since CyMetaNode extends CyNode, this should work.</i></li>
- * </ul>
  */
 public interface CyRootNetwork extends CyNetwork {
-
-	/**
-	 * Return <i>all</i> the {@link CyNode}s that are part of
-	 * this meta-network, including all {@link CyMetaNode}s.
-	 *
-	 * @return a list of {@link CyNode}s that are part of this network
-	 */
-	List<CyNode> getAllNodes();
-
-	/**
-	 * Return <i>all</i> the {@link CyEdge}s that are part of
-	 * this meta-network, including all @{link CyEdge}s that
-	 * link {@link CyMetaNode}s.
-	 *
-	 * @return a list of {@link CyEdge}s that are part of this network
-	 */
-	List<CyEdge> getAllEdges();
 
 	/**
 	 * Create a {@link CyMetaNode} and its associated {@link CySubNetwork}.
@@ -130,29 +83,11 @@ public interface CyRootNetwork extends CyNetwork {
 	 * and other nodes not part of the subnetwork duplicate edges will be
 	 * created between the created {@link CyMetaNode} and the external nodes.
 	 *
-	 * @param network  the {@link CyNetwork} this metanode should be added to
-	 * @param nodes  the list of nodes to add to the {@link CySubNetwork} created.
+	 * @param sub  the {@link CySubNetwork} this metanode should be added to
 	 *
 	 * @return  The created {@link CyMetaNode}.
 	 */
-	CyMetaNode addMetaNode(List<CyNode> nodes);
-//	CyMetaNode addMetaNode(CyNetwork network, List<CyNode> nodes);
-
-	/**
-	 * Create a {@link CyMetaNode} and its associated {@link CySubNetwork}.
-	 * The {@link CySubNetwork} contains all of the nodes and the edges provided
-	 * that connect those nodes.  For provided edges that connect those nodes
-	 * to nodes outside of the created {@link CySubNetwork} 
-	 * duplicate edges will be
-	 * created between the created {@link CyMetaNode} and the external nodes.
-	 *
-	 * @param network  the {@link CyNetwork} this metanode should be added to
-	 * @param nodes  the list of nodes to add to the {@link CySubNetwork} created.
-	 * @param edges  the list of edges to add to the {@link CySubNetwork} created.
-	 *
-	 * @return  The created {@link CyMetaNode}.
-	 */
-//	CyMetaNode addMetaNode(CyNetwork network, List<CyNode> nodes, List<CyEdge> edges);
+	CyMetaNode addMetaNode(CySubNetwork sub);
 
 	/**
 	 * Removes the metanode and the CySubNetwork, not the nodes and edges contained in the
@@ -163,20 +98,61 @@ public interface CyRootNetwork extends CyNetwork {
 	void removeMetaNode(CyMetaNode node);
 
 	/**
+	 * Will return A list of all {@link CyMetaNode}s contained in this root network.
+	 * @return A list of all {@link CyMetaNode}s contained in this root network.
+	 */
+	List<CyMetaNode> getMetaNodeList();
+
+
+	/**
+	 * Return the {@link CyNetwork} that represents the base 
+	 * or "flattened" {@link CyNetwork} that contains all nodes and edges 
+	 * <b>exclusive</b> of any {@link CyMetaNode}s  or {@link CyEdge}s 
+	 * connecting metanodes.  In the case of a {@link CyRootNetwork}
+	 * with no {@link CySubNetwork}s, this contains exactly the same nodes and edges
+	 * as if it were a normal {@link CyNetwork}. 
+	 *
+	 * @return the base network
+	 */
+	CySubNetwork getBaseNetwork();
+
+
+	/**
+	 * Create a subnetwork to be used independently or for creation
+	 * of a {@link CyMetaNode}. The network will include all edges
+	 * from the {@link CyRootNetwork} where both the source <b>AND</b>
+	 * target are contained in the specified list.
+	 *
+	 * @param nodes The nodes contained in this {@link CyRootNetwork}
+	 * that represent the nodes to be included in the {@link CySubNetwork}.
+	 * @return A {@link CySubNetwork} created from the specified nodes.
+	 */
+	CySubNetwork addSubNetwork(List<CyNode> nodes);
+
+	/**
+	 * Create a subnetwork to be used independently or for creation
+	 * of a {@link CyMetaNode}. The network will include only the
+	 * edges specified in the list.
+	 *
+	 * @param nodes The nodes contained in this {@link CyRootNetwork}
+	 * that represent the nodes to be included in the {@link CySubNetwork}.
+	 * @param edges The edges contained in this {@link CyRootNetwork}
+	 * <b>AND</b> that connect specified nodes. Any edges that do not
+	 * connect specified nodes will result in an {@link IllegalArgumentException}.
+	 * @return A {@link CySubNetwork} created from the specified nodes and edges.
+	 */
+	CySubNetwork addSubNetwork(List<CyNode> nodes, List<CyEdge> edges);
+
+	/**
+	 * Will remove the specified {@link CySubNetwork} from this root network.
+	 * @param sub The subnetwork to be removed from this root network.
+	 */
+	void removeSubNetwork(CySubNetwork sub);
+
+	/**
 	 * Return all of the subnetworks that are part of this meta-network.
 	 *
 	 * @return the list of {@link CySubNetwork}s.
 	 */
-	List<CySubNetwork> getAllSubNetworks();
-
-	/**
-	 * Return the {@link CyNetwork} that represents the top containing {@link CyNetwork}
-	 * that is <i>not</i> a {@link CyRootNetwork}.  In the case of a {@link CyRootNetwork}
-	 * with no {@link CySubNetwork}s, this contains exactly the same nodes and edges
-	 * as the "flattened" {@link CyNetwork}, otherwise, it contains the top network, including
-	 * any contained {@link CyMetaNode}s that are in the network, but not expanded.
-	 *
-	 * @return the top network
-	 */
-//	CyNetwork getTopNetwork();
+	List<CySubNetwork> getSubNetworkList();
 }

@@ -77,7 +77,7 @@ public class CySubNetworkTest extends TestCase {
 	private CyEdge e2;
 	private CyEdge e3;
 	private List<CyNode> nl; 
-	private CyMetaNode m1;
+	private CySubNetwork sub;
 
 	/**
 	 *  DOCUMENT ME!
@@ -109,7 +109,7 @@ public class CySubNetworkTest extends TestCase {
         nl.add(n1);
         nl.add(n2);
 
-        m1 = root.addMetaNode(nl);
+        sub = root.addSubNetwork(nl);
 	}
 
 	/**
@@ -124,8 +124,6 @@ public class CySubNetworkTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void testCopyToNetwork() {
-
-		CySubNetwork sub = m1.getSubNetwork();	
 
 		assertNotNull("subnetwork is not null",sub);
 		assertEquals("num nodes",2,sub.getNodeCount());
@@ -163,22 +161,20 @@ public class CySubNetworkTest extends TestCase {
 
 	public void testInvalidCopyToNetwork() {
 
-		CySubNetwork sub = m1.getSubNetwork();	
-
 		checkAdd(sub,nx1);
 		checkAdd(sub,null);
     }
 
-	private void checkAdd(CySubNetwork sub, CyNode n) {
+	private void checkAdd(CySubNetwork s, CyNode n) {
 		try {
-			sub.addNode(n);
+			s.addNode(n);
 		} catch (Exception e) {
-			assertNotNull("subnetwork is not null",sub);
-			assertEquals("num nodes",2,sub.getNodeCount());
-			assertEquals("num edges",1,sub.getEdgeCount());
-			assertTrue("contains node1",sub.containsNode(n1));
-			assertTrue("contains node2",sub.containsNode(n2));
-			assertTrue("contains edge1",sub.containsEdge(e1));
+			assertNotNull("subnetwork is not null",s);
+			assertEquals("num nodes",2,s.getNodeCount());
+			assertEquals("num edges",1,s.getEdgeCount());
+			assertTrue("contains node1",s.containsNode(n1));
+			assertTrue("contains node2",s.containsNode(n2));
+			assertTrue("contains edge1",s.containsEdge(e1));
 
 			return;
 		}
@@ -192,58 +188,53 @@ public class CySubNetworkTest extends TestCase {
 
 		nl.add(n4);
 
-        CyMetaNode m2 = root.addMetaNode(nl);
+        CySubNetwork sub2 = root.addSubNetwork(nl);
 
-        assertNotNull("metanode is not null",m2);
-	
-		CySubNetwork sub = m2.getSubNetwork();	
+        assertNotNull("metanode is not null",sub2);
+		assertEquals("num nodes",3,sub2.getNodeCount());
+		assertEquals("num edges",1,sub2.getEdgeCount());
+		assertTrue("contains node1",sub2.containsNode(n1));
+		assertTrue("contains node2",sub2.containsNode(n2));
+		assertTrue("contains node4",sub2.containsNode(n4));
+		assertTrue("contains edge1",sub2.containsEdge(e1));
+		assertTrue("contains edge1",sub2.containsEdge(n1,n2));
 
-		assertEquals("num nodes",3,sub.getNodeCount());
-		assertEquals("num edges",1,sub.getEdgeCount());
-		assertTrue("contains node1",sub.containsNode(n1));
-		assertTrue("contains node2",sub.containsNode(n2));
-		assertTrue("contains node4",sub.containsNode(n4));
-		assertTrue("contains edge1",sub.containsEdge(e1));
-		assertTrue("contains edge1",sub.containsEdge(n1,n2));
+		sub2.removeNode(n4);
 
-		sub.removeNode(n4);
+		assertEquals("num nodes",2,sub2.getNodeCount());
+		assertEquals("num edges",1,sub2.getEdgeCount());
+		assertTrue("contains node1",sub2.containsNode(n1));
+		assertTrue("contains node2",sub2.containsNode(n2));
+		assertFalse("contains node4",sub2.containsNode(n4));
+		assertTrue("contains edge1",sub2.containsEdge(e1));
+		assertTrue("contains edge1",sub2.containsEdge(n1,n2));
 
-		assertEquals("num nodes",2,sub.getNodeCount());
-		assertEquals("num edges",1,sub.getEdgeCount());
-		assertTrue("contains node1",sub.containsNode(n1));
-		assertTrue("contains node2",sub.containsNode(n2));
-		assertFalse("contains node4",sub.containsNode(n4));
-		assertTrue("contains edge1",sub.containsEdge(e1));
-		assertTrue("contains edge1",sub.containsEdge(n1,n2));
+		sub2.removeNode(n1);
 
-		sub.removeNode(n1);
-
-		assertEquals("num nodes",1,sub.getNodeCount());
-		assertEquals("num edges",0,sub.getEdgeCount());
-		assertFalse("contains node1",sub.containsNode(n1));
-		assertTrue("contains node2",sub.containsNode(n2));
-		assertFalse("contains edge1",sub.containsEdge(e1));
-		assertFalse("contains edge1",sub.containsEdge(n1,n2));
+		assertEquals("num nodes",1,sub2.getNodeCount());
+		assertEquals("num edges",0,sub2.getEdgeCount());
+		assertFalse("contains node1",sub2.containsNode(n1));
+		assertTrue("contains node2",sub2.containsNode(n2));
+		assertFalse("contains edge1",sub2.containsEdge(e1));
+		assertFalse("contains edge1",sub2.containsEdge(n1,n2));
     }
 
 	public void testInvalidRemoveFromNetwork() {
-
-		CySubNetwork sub = m1.getSubNetwork();	
 
 		checkRemove(sub,nx1);
 		checkRemove(sub,null);
     }
 
-	private void checkRemove(CySubNetwork sub, CyNode n) {
+	private void checkRemove(CySubNetwork s, CyNode n) {
 		try {
-			sub.addNode(n);
+			s.addNode(n);
 		} catch (Exception e) {
-			assertNotNull("subnetwork is not null",sub);
-			assertEquals("num nodes",2,sub.getNodeCount());
-			assertEquals("num edges",1,sub.getEdgeCount());
-			assertTrue("contains node1",sub.containsNode(n1));
-			assertTrue("contains node2",sub.containsNode(n2));
-			assertTrue("contains edge1",sub.containsEdge(e1));
+			assertNotNull("subnetwork is not null",s);
+			assertEquals("num nodes",2,s.getNodeCount());
+			assertEquals("num edges",1,s.getEdgeCount());
+			assertTrue("contains node1",s.containsNode(n1));
+			assertTrue("contains node2",s.containsNode(n2));
+			assertTrue("contains edge1",s.containsEdge(e1));
 
 			return;
 		}

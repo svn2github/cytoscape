@@ -103,12 +103,15 @@ public class CyMetaNodeTest extends TestCase {
         nl.add(n1);
         nl.add(n2);
 
-        CyMetaNode m1 = root.addMetaNode(nl);
+        CySubNetwork s1 = root.addSubNetwork(nl);
+
+        CyMetaNode m1 = root.addMetaNode(s1);
 
         assertNotNull("metanode is not null",m1);
 	
 		CySubNetwork sub = m1.getSubNetwork();	
 		assertNotNull("subnetwork is not null",sub);
+		assertTrue("sub == s1",sub.equals(s1));
 		assertEquals("num nodes",2,sub.getNodeCount());
 		assertEquals("num edges",1,sub.getEdgeCount());
 		assertTrue("contains node1",sub.containsNode(n1));
@@ -120,4 +123,5 @@ public class CyMetaNodeTest extends TestCase {
 		assertEquals("node list size",2,sub.getNodeList().size());
 		assertEquals("edge list size",1,sub.getEdgeList().size());
     }
+
 }
