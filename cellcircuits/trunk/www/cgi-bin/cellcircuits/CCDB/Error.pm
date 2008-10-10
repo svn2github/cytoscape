@@ -30,24 +30,111 @@ sub formatErrorMessages
     }
     else
     {
-	if(exists $error_msg->{'regex-synonym-notice'})
-	{
-	    #$msg .= regex_syn($error_msg);
-	    $msg .= regex_syn($error_msg->{'regex-synonym-notice'});
-	}
-	if(exists $error_msg->{'exactmatch-synonym-notice'})
-	{
-	    $msg .= exactmatch_syn($error_msg->{'exactmatch-synonym-notice'});
-	}
-	if(exists $error_msg->{'no-match-notice'})
-	{
-	    $msg .= no_match($error_msg->{'no-match-notice'});
-	    #$msg .= print_params( $pval_thresh, $publications);
-	}
+		my $SUMMARY_INFO =<<SUMMARY_INFO;	
+			<div class="Summary_header" id="summary_header">
+		        <a id="summary_link" class="summary-info-header" name="summary_link" href="#" 
+		           title="Toggle visibility of Summary information"
+		           onClick="CategoryVisibility_Toggle('info', 'summary'); return false;">
+		           +&nbsp;&nbsp;Summary</a>&nbsp;
+			</div>
+		<div name="info" class='summary' id='summary' style="display:none">
+		
+SUMMARY_INFO
+		
+		$msg .= $SUMMARY_INFO;
+		if(exists $error_msg->{'regex-synonym-notice'})
+		{
+			##$msg .= regex_syn($error_msg);
+			$msg .= regex_syn($error_msg->{'regex-synonym-notice'});
+		}
+		
+		$msg .= printMatchStatistics($error_msg);
+		
+		# The following is replaced with the above Matching statistics table
+		#if(exists $error_msg->{'exactmatch-synonym-notice'})
+		#{
+		#	#$msg .= exactmatch_syn($error_msg->{'exactmatch-synonym-notice'});
+		#}
+		#if(exists $error_msg->{'no-match-notice'})
+		#{
+		#	#$msg .= no_match($error_msg->{'no-match-notice'});
+		#	##$msg .= print_params( $pval_thresh, $publications);
+		#}
+		
+		$msg .= '</div>';
+		
     }
 
     return $msg;
 }
+
+
+sub printMatchStatistics {
+    my ($error_msg) = @_;
+	
+	my $retStr = "";
+	
+	my $speciesWordsHash = $error_msg->{'matchingStat'};
+	
+	#printHash($speciesWordsHash);
+
+	my @speciesKeys = keys %{$speciesWordsHash};
+
+	my %wordsHash = ();	
+	foreach my $oneSpecies (@speciesKeys) {
+		my $theWordsHash = $speciesWordsHash->{$oneSpecies};
+		foreach my $word (keys %{ $theWordsHash }) {		
+			if (!exists($wordsHash{$word})) {
+				$wordsHash{$word} = 1;
+			}
+		}
+	}
+	#my $firstSpecies = $speciesKeys[0];
+	#my $wordsHash = $speciesWordsHash->{$firstSpecies};
+
+	my @words = keys (%wordsHash);
+	my $wordCount = @words;
+	
+	# Table title
+	$retStr .= '<br>Matching statistics<br>';
+	$retStr .= "<table  border=\"1\">";
+
+	#print table header 
+	$retStr .= "<tr>";
+	$retStr .= "<th>Search word</th>";
+	#foreach my $word (@words) {
+	#		$retStr .= "<th>$word</th>";
+	#}
+	foreach my $species (@speciesKeys) {
+			$retStr .= "<th>$species</th>";
+	}
+
+	$retStr .= "</tr>";
+	
+	#print table rows	
+	@words = sort(@words);
+	foreach my $word (@words) {
+		$retStr .= "<tr>";
+		$retStr .="<td>$word</td>";
+
+		foreach my $species (@speciesKeys) {
+				
+			my $value = 0;
+			if (exists($speciesWordsHash->{$species}->{$word})) {
+				$value = $speciesWordsHash->{$species}->{$word};
+			}
+			$retStr .= "<td><div align=\"center\">";
+			$retStr .= "$value";	
+			$retStr .= "</div></td>";		
+		}
+		$retStr .= "</tr>";
+	}		
+
+	$retStr .= "</table>";
+
+	return "$retStr";
+}
+
 
 sub print_params
 {
@@ -130,11 +217,13 @@ sub regex_syn
 	    #print "syn   : $sym<br><br>";
 	    unless(exists $j->{$query}){
 		$j->{$query}++;
-		$msg .= sprintf("<b style='color:%s;'>[%s] matches:</b><br>", $colors->{error_message}, $query);
+		#$msg .= sprintf("<b style='color:%s;'>[%s] matches:</b><br>", $colors->{error_message}, $query);
+		$msg .= sprintf("<b>[%s] matches:</b><br>", $query);
 	    }
 	    $msg .= $spacer
-		. sprintf("<b style='color:%s;'>[%s], a synonym of %s in <em>%s</em>.  Using %s in results.</b><br>", 
-			  $colors->{error_message}, 
+		#. sprintf("<b style='color:%s;'>[%s], a synonym of %s in <em>%s</em>.  Using %s in results.</b><br>", 
+		. sprintf("<b >[%s], a synonym of %s in <em>%s</em>.  Using %s in results.</b><br>", 
+			  #$colors->{error_message}, 
 			  $syn, $sym, $org, $sym
 			  );
 #	    $msg .= sprintf("<b style='color:%s;'>[%s] matches [%s], a synonym of %s in <em>%s</em>. Only showing %s.</b><br>", 
