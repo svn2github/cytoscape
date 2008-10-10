@@ -35,7 +35,7 @@ sub formatErrorMessages
 		        <a id="summary_link" class="summary-info-header" name="summary_link" href="#" 
 		           title="Toggle visibility of Summary information"
 		           onClick="CategoryVisibility_Toggle('info', 'summary'); return false;">
-		           +&nbsp;&nbsp;Summary</a>&nbsp;
+		           +&nbsp;&nbsp;Search Term Summary</a>&nbsp;
 			</div>
 		<div name="info" class='summary' id='summary' style="display:none">
 		
@@ -123,7 +123,13 @@ sub printMatchStatistics {
 			if (exists($speciesWordsHash->{$species}->{$word})) {
 				$value = $speciesWordsHash->{$species}->{$word};
 			}
-			$retStr .= "<td><div align=\"center\">";
+			if ($value == 0) {
+				$retStr .= "<td><div align=\"center\" class=\"style2\">";			
+			}
+			else {
+				$retStr .= "<td><div align=\"center\" >";
+			}
+			
 			$retStr .= "$value";	
 			$retStr .= "</div></td>";		
 		}
