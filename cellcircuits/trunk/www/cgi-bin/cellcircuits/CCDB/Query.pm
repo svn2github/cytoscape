@@ -25,7 +25,7 @@ our @EXPORT_OK = qw(&get_species_string);
 
 my $MODELS_LIKE_MAGIC_SCORE = 999999;
 
-my $dbh = CCDB::DB::getDB();
+our $dbh = CCDB::DB::getDB();
 
 my $get_gene_product_id_from_em_symbol_sth  = $dbh->prepare($get_gene_product_id_from_em_symbol);
 my $get_gene_product_id_from_re_symbol_sth  = $dbh->prepare($get_gene_product_id_from_re_symbol);
@@ -96,7 +96,12 @@ sub getMatchingModels
 	$enrichment_limit #num
 	) = @_;
 
-    #print "CCDB.Query.getMatchineModels:\n" . $queryInput->print() . "\n"; # if($DEBUG);
+
+	#while ( my ($key, $value) = each(%{$species}) ) {
+	#	print "XXXXX--$key, $value<br>";
+	#}
+
+    #print "CCDB.Query.getMatchineModels:<br>" . $queryInput->print() . "<br><br>"; # if($DEBUG);
 
     my $hash               = {};
     my $e_objects          = {};
@@ -112,6 +117,7 @@ sub getMatchingModels
 
     my $tmp_error = {};
     my $tmp_error_msg = {};
+
     for my $gene_query (keys %{ $queryInput->gene() })
     {
 	my $match = 0;
@@ -157,6 +163,14 @@ sub getMatchingModels
 	if($match == 0)
 	{
 	    $error_msg->{"no-match-notice"}{$gene_query}++;
+		my $strLength = length($gene_query);
+		if ($strLength>6 && substr($gene_query, $strLength-6, 6) eq "_HUMAN") {
+			# do nothing		
+		}
+		else {
+			#print "Add $gene_query to nomatchingQuery()<br>";
+			$queryInput->noMatchingQueryWords()->{$gene_query}++;
+		}
 	}
 
     }
@@ -204,20 +218,27 @@ sub model_like_query
       $e_objects,
       $hash, 
       $error_msg) = @_;
+	
+	my @queryMids = keys %{$queryInput->modelLike()};
+	my $queryMids_count = @queryMids;
+	
 
   my $sth = $get_model_like_sth;
-  foreach my $queryMid (keys %{ $queryInput->modelLike() })
-  {
-      print STDERR "$queryMid: models_like\n" if($DEBUG);
-      print STDERR "$get_model_like\n" if($DEBUG);
+  
+  #foreach my $queryMid (keys %{ $queryInput->modelLike() })
+  for (my $i=0; $i< $queryMids_count; $i++)  
+  {  
+  	  my $queryMid = $queryMids[$i];
+	  
+      #print  "$queryMid: models_like<br>"; # if($DEBUG);
+      #print  "$get_model_like<br>"; # if($DEBUG);
 
       $sth->bind_param(1,$queryMid); # TYPE=SQL_INTEGER
       $sth->bind_param(2,$queryMid); # TYPE=SQL_INTEGER
       $sth->execute();
-      
-      #printf STDERR "$gid: %d rows\n", $sth->rows;
-      #printf STDERR "$gid: SQL\n"; 
-      #printf STDERR "   " . $dbh->{Statement} . "\n";
+      #printf  "$gid: %d rows\n", $sth->rows;
+      #printf  "$gid: SQL\n"; 
+      #print  "   " . $dbh->{Statement} . "<br><br>";
 
       my $count = 0;
       my ($id_a, $id_b);
@@ -226,12 +247,13 @@ sub model_like_query
 	    $id_a = $Ref->{model_id_a};
 	    $id_b = $Ref->{model_id_b};
 	    
-	    #printf STDERR ("MODELS_LIKE: %s %s %d\n", $id_a, $id_b, $Ref->{gene_score});
-	    $queryInput->modelId()->{$id_a} = $Ref->{gene_score} if($id_a != $queryMid);
+	    #print  "MODELS_LIKE: ", $id_a,"  " ,$id_b, "   ",$Ref->{gene_score},"<br>";
+	    
+		$queryInput->modelId()->{$id_a} = $Ref->{gene_score} if($id_a != $queryMid);
 	    $queryInput->modelId()->{$id_b} = $Ref->{gene_score} if($id_b != $queryMid);
 	    $count++;
 	}
-      
+
       #### ERROR HANDLING ####
       if($count == 0)
       {
@@ -262,23 +284,25 @@ sub model_id_query
       $hash, 
       $error_msg) = @_;
 
-  #print STDERR "model_id:\n" . $queryInput->print() . "\n";
-
-  my $sth = $get_from_model_id_sth;
-  foreach my $mid (keys %{ $queryInput->modelId() })
+	my $sth = $get_from_model_id_sth;
+		
+	#my $sth = $dbh->prepare($get_from_model_id);
+  
+  	my @mids = keys %{$queryInput->modelId()};
+	my $mids_count = @mids;
+  
+  #foreach my $mid (keys %{ $queryInput->modelId() })
+  for (my $i=0; $i< $mids_count; $i++)
   {
-      print STDERR "$mid: model_id\n" if($DEBUG);
-      print STDERR "$mid: limit=$enrichment_limit\n" if($DEBUG);
-      
-      $sth->bind_param(1,$mid); # TYPE=SQL_INTEGER
-      $sth->bind_param(2,$enrichment_limit); # TYPE = SQL_INTEGER
+	  my $mid = $mids[$i];
+
+      $sth->bind_param(1,$mid, {TYPE=>4}); # TYPE=SQL_INTEGER
+      $sth->bind_param(2,$enrichment_limit, {TYPE=>4}); # TYPE = SQL_INTEGER
 	  
-	  print $sth->{Statement},"\n";
-	  print "<br><br>mid = $mid<br>";
-	  print "<br><br>enrichment_limit = $enrichment_limit<br>";
+	  #print "\n",$sth->{Statement},"<br>\n\n";
 
       $sth->execute();
-      
+
       my $matched = 0;
       while(my $Ref = $sth->fetchrow_hashref())
 	{
@@ -346,11 +370,11 @@ sub get_gene_ids
 	$gene_query =~ s/\*/.*/g;
     }
 
-    #print "CCDB.Query.get_gene_ids: $gene_query\n"; # if ($DEBUG);
+    #print "<br>CCDB.Query.get_gene_ids: $gene_query\n<br>"; # if ($DEBUG);
 
     $sth->bind_param(1,$gene_query);
 	
-	#print $sth->{Statement},"\n";
+	#print $sth->{Statement},"\n<br>";
 	
     $sth->execute();
 
@@ -360,11 +384,11 @@ sub get_gene_ids
     {
 	my $genus_species_str = get_species_string($Ref->{sid});
 
-	printf STDERR ("### get_gene_ids: sid=%s gid=%s symbol=%s ss=%s\n", 
-		       $Ref->{sid},
-		       $Ref->{gid},
-		       $Ref->{symbol},
-		       $genus_species_str) if ($DEBUG);
+	#printf ("### get_gene_ids: sid=%s gid=%s symbol=%s ss=%s\n<br>", 
+	#	       $Ref->{sid},
+	#	       $Ref->{gid},
+	#	       $Ref->{symbol},
+	#	       $genus_species_str); #if ($DEBUG);
 	
 	### filter by species constraint
 
@@ -567,8 +591,8 @@ sub name_acc_query
 
     foreach my $q (keys %{$queryTermHash})
     {
-	print STDERR "$q: query by term name\n"  if($DEBUG);
-	print STDERR "$q: pval=$pval_thresh\n"  if($DEBUG);
+	#print  "$q: query by term name\n"; #  if($DEBUG);
+	#print  "$q: pval=$pval_thresh\n"; #  if($DEBUG);
 		
 	$queryInput->expandedQuery()->{$q}++;
 	$sth->bind_param(1,$pval_thresh);
@@ -624,7 +648,9 @@ sub name_acc_query
 	{
 	    
 	    $error_msg->{'no-match-notice'}{$q}++;
-	    
+	    #print "Add $gene_query to nomatchingQuery()<br>";
+		$queryInput->noMatchingQueryWords()->{$q}++;
+
 	}
     }
 
