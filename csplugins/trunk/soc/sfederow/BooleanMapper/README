@@ -1,0 +1,41 @@
+To the best of my knowledge the code here is an accurate reflection of 
+the work I had done on August 18th.  However I was not aware of the 
+submission policy that code written after that deadline was not to be 
+included.  Given the fact that I did not realize this until the 26th I 
+kept writing code till then.  In fact I have been writing code up until 
+now and will continue as I work to finish my whole project and keep 
+working with my organization.  Basically I was not keeping track of 
+the exact version and place that I was on August 18th.  Some of the code 
+included was written after that date.  To the best of my ability I have 
+commented out the new code and restored the version that was working 
+on August 18th.  However I have made a significant amount of progress 
+since then as I have continued to work full time on my project.  My main 
+reason for this was that my finals for school did not end until June 
+9th.  I therefore got a two week late start and wanted to make sure I 
+put the full amount of time into the program as expected.  
+
+This is the BooleanMapper plugin for cytoscape that was made for a 
+release of GenMAPP-CS. If you wish to use this software it will require 
+that you also download cytoscape at www.cytoscape.org.  You can then 
+just copy and paste the BooleanMapper.jar file into the 
+cytoscape/plugins/core directory.  The next time you start up cytoscape 
+you should see BooleanMapper under the plugins menu drop down.
+
+If you wish to build this code from source you should know that 
+I have been using ant to build my work and you will notice that an ant 
+build.xml file is included.  If you have ant installed all that it will 
+take to get this plugin up and running is to type 'ant' in your console 
+in this folder.  That will automatically compile and jar all of the java 
+files found in the src directory and copy that jar file over to the 
+plugins/core folder that resides in the cytoscape folder.  If you want 
+you could just compile all of the files in the src directory by hand, 
+jar them and copy that jar file into the cytoscape/plugins/core 
+directory.
+
+This code was written for and with great help from the GenMapp 
+and Cytoscape communities.  It is not likely that this code would have 
+been written had it not been for the gracious and inspiring sponsorship 
+from the Google Summer of Code program.
+
+Steve Federowicz
+9/6/08
