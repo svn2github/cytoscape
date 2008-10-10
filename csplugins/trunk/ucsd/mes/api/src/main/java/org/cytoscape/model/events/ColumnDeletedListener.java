@@ -34,50 +34,14 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model;
+package org.cytoscape.model.events;
 
-import java.util.Map;
+import org.cytoscape.event.CyEventListener;
 
 
 /**
- * This interface represents one row in a CyDataTable.
+ * Listener for ColumnDeletedEvents.
  */
-public interface CyRow {
-	/**
-	 * @param columnName The name identifying the attribute.
-	 * @param type The type of the column.
-	 *
-	 * @return the value found for this row in the specified column
-	 */
-	<T> T get(String columnName, Class<?extends T> type);
-
-	/**
-	 * @param columnName The name identifying the attribute.
-	 * @param value The value to assign the specified column in this row 
-	 */
-	<T> void set(String columnName, T value);
-
-	/**
-     * @param columnName The name of the column to check.
-     * @return The Class object that is defined for this column. Will
-     * return null if the column has not been defined. Will always return
-     * a base type. If the value is actually a {@link CyFunction} the
-     * function will be evaluated and the function must evaluate to the
-     * type of the column.
-     */
-	Class<?> contains(String columnName);
-
-	/**
-	 * @param columnName The name identifying the attribute.
-	 * @param type The type of the column.
-	 * @return true if the value specified in this row at this column
-	 * is not null?
-	 */
-	<T> boolean contains(String columnName, Class<?extends T> type);
-
-	/**
-     * @return A map of column names to Objects that contain the values
-     * contained in this Row.
-     */
-	Map<String, Object> getAllValues();
+public interface ColumnDeletedListener extends CyEventListener {
+	void handleEvent(ColumnDeletedEvent e);
 }
