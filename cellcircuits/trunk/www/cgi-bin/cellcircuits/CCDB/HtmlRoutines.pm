@@ -114,6 +114,10 @@ sub outputResultsPage{
 sub getMatchingStatistics {
 	my ($hash, $species,  $queryInput) = @_;
 	
+	#foreach my $oneSpecies (keys %{$species}) {
+	#	print "oneSpecies = $oneSpecies<br>";
+	#}
+	
 	my %speciesWordsHash	= ();
 	my %speciesIdNameHash	= (); # species Id->Name
 	
@@ -147,10 +151,12 @@ sub getMatchingStatistics {
 	my @expandedQueryWords = (); #getQueryWords($queryInput);
     foreach my $q (keys %{$queryInput->expandedQuery()})
     {
-		#print "expandedQuery =",$q,"<br>" ;
 		push(@expandedQueryWords, $q);
 	}	
-	foreach my $oneSpecies (keys %speciesWordsHash) {
+	
+	#foreach my $oneSpecies (keys %speciesWordsHash) { # species with match
+	foreach my $oneSpecies (keys %{$species}) # all the selected species
+	{
 		foreach my $w (@expandedQueryWords)
 		{
 			if (!exists($speciesWordsHash{$oneSpecies}{$w})) {
@@ -161,7 +167,9 @@ sub getMatchingStatistics {
 	
 	# Fill zeroes for those not matched
 	my @noMatchingQueryWords = keys %{$queryInput->noMatchingQueryWords()};
-	foreach my $oneSpecies (keys %speciesWordsHash) {
+	#foreach my $oneSpecies (keys %speciesWordsHash) 
+	foreach my $oneSpecies (keys %{$species}) # all the selected species
+	{
 		foreach my $w (@noMatchingQueryWords)
 		{
 			if (!exists($speciesWordsHash{$oneSpecies}{$w})) {
@@ -224,6 +232,13 @@ sub format_header
 
   <link type="text/css" rel="stylesheet" href="$search_url/master.css" />
   <title>$title</title>
+
+    <style type="text/css">
+	<!--
+	.style2 {color: #999999}
+	-->
+  </style>
+
 </head>
 <body id='body-element'>
 HEADER
