@@ -166,7 +166,7 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
         }
         
         List<Map<CyNetwork,Set<GraphObject>>> matchedNodeList = getMatchedList(networks,true);
-        matchedNodeList = selectMatchedNodeList(matchedNodeList, op, networks.size());
+        matchedNodeList = selectMatchedNodeList(matchedNodeList, op, networks);
 
         final Map<Node,Node> mapNN = new HashMap<Node,Node>(); // save information on mapping from original nodes to merged nodes
                                                          // to use when merge edges
@@ -321,27 +321,34 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
      * 
      * @return list of matched nodes
      */    
-    protected List<Map<CyNetwork,Set<GraphObject>>> selectMatchedNodeList(final List<Map<CyNetwork,Set<GraphObject>>> matchedNodeList, final Operation op, final int size) {
+    protected List<Map<CyNetwork,Set<GraphObject>>> selectMatchedNodeList(final List<Map<CyNetwork,Set<GraphObject>>> matchedNodeList, 
+                                                                          final Operation op, 
+                                                                          final List<CyNetwork> networks) {
         if (matchedNodeList==null || op==null) {
             throw new java.lang.NullPointerException();
         }
         
-        List<Map<CyNetwork,Set<GraphObject>>> list = new Vector<Map<CyNetwork,Set<GraphObject>>>(matchedNodeList);
+        List<Map<CyNetwork,Set<GraphObject>>> list = new Vector<Map<CyNetwork,Set<GraphObject>>>();
+        
+        int nnet = networks.size();
         
         if (op==Operation.UNION) {
-            
+            list.addAll(matchedNodeList);
         } else if (op==Operation.INTERSECTION) {
-            for (int i=list.size()-1; i>=0; i--) {
-                Map<CyNetwork,Set<GraphObject>> map = list.get(i);
-                if(map.size()!=size) { // if not contained in all the networks, remove
-                    list.remove(i);
+            for (Map<CyNetwork,Set<GraphObject>> map:matchedNodeList) {
+                if (map.size()==nnet) {// if contained in all the networks
+                    list.add(map);
                 }
             }
         } else { //if (op==Operation.DIFFERENCE)
-            for (int i=list.size()-1; i>=0; i--) {
-                Map<CyNetwork,Set<GraphObject>> map = list.get(i);
-                if(map.size()==size) { // if contained in all the networks, remove
-                    list.remove(i);
+            if (nnet<2) return list;
+            
+            CyNetwork net1 = networks.get(0);
+            CyNetwork net2 = networks.get(1);
+            
+            for (Map<CyNetwork,Set<GraphObject>> map:matchedNodeList) {
+                if (map.containsKey(net1)&&!map.containsKey(net2)) {
+                    list.add(map);
                 }
             }
         }

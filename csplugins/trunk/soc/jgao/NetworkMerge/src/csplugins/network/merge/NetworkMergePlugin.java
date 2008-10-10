@@ -65,7 +65,7 @@ public class NetworkMergePlugin extends CytoscapePlugin {
     
     class NetworkMergeAction extends CytoscapeAction {
         public NetworkMergeAction() {
-            super("Advanced Merge networks"); //TODO rename
+            super("Advanced Network Merge"); //TODO rename
 	}
 
         /**

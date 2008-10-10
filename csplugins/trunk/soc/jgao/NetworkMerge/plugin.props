@@ -13,7 +13,7 @@ pluginName=AdvancedNetworkMerge
 pluginDescription=Provides utilities for merging networks by set operations (union, intersection and difference). Networks will be merged based on attribute values of nodes/edges. ID mapping can also be utilized for merging. <a href="http://www.cytoscape.org/cgi-bin/moin.cgi/Advanced_Network_Merge_and_ID_Mapping/MergeExamples">Click for tutorial</a>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=1.01
+pluginVersion=1.02
 
 # Compatible Cytoscape version. If there are more than one version, seperate by ",".
 cytoscapeVersion=2.6

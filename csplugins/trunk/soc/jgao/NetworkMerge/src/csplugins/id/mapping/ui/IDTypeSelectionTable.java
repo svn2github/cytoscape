@@ -117,7 +117,7 @@ public class IDTypeSelectionTable extends JTable{
         int nr = this.getRowCount();
         List<CheckComboBox> combos = new Vector<CheckComboBox>(nr);
         for (int ir=0; ir<nr; ir++) {
-                String net = (String) this.getValueAt(ir, 0);
+                String net = this.getNetIDAt(ir);
                 String attr = (String) this.getValueAt(ir, 1);
                 CheckComboBox cc = new  CheckComboBox(net,attr);
                 combos.add(cc);
@@ -180,6 +180,12 @@ public class IDTypeSelectionTable extends JTable{
                     }
             }
        }
+        
+    private String getNetIDAt(int row) {
+            String[] strs = listNetIDTitleAttr.get(row);
+            String netID = strs[0];
+            return netID;
+    }
 
     void fireTableDataChanged() {
             model.fireTableDataChanged();
