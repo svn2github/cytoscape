@@ -5,6 +5,7 @@ CCDB::QueryInput->_generateAccessors(qw(gene termName termAccession modelId mode
 					expandedQuery
 					geneId2Symbol
 					geneSymbol2Id
+					noMatchingQueryWords
 					));
 
 sub new
@@ -22,6 +23,7 @@ sub new
     $self->expandedQuery({});   # same as original query, except regex's are expanded
     $self->geneId2Symbol({});
     $self->geneSymbol2Id({});
+	$self->noMatchingQueryWords({});
 
     return $self;
 }
@@ -42,6 +44,9 @@ sub print
 
     $s .= sprintf( "  symbol2gid:\t[%s]\n", 
 		   join(", ", map {join "=", $_, $self->geneSymbol2Id()->{$_} } keys %{ $self->geneSymbol2Id() } ));
+
+    $s .= sprintf( "  symbol2gid:\t[%s]\n", 
+		   join(", ", map {join "=", $_, $self->noMatchingQueryWords()->{$_} } keys %{ $self->noMatchingQueryWords() } ));
 
     return $s;
 }
