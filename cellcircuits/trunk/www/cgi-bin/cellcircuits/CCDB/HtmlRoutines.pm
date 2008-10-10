@@ -51,7 +51,7 @@ our $TRAILER =  qq (
     <a class='white-bg-link' href='$search_url/index.html' title='Click to go to the CellCircuits Home Page'>CellCircuits&nbsp;Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a class='white-bg-link' href='$search_url/advanced_search.php'>Advanced Search</a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About CellCircuits</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-    <a class='white-bg-link' href='$search_url/Tutorial-home.html'>Help</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class='white-bg-link' href='$search_url/tutorial/Tutorial-home.html'>Help</a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a class='white-bg-link' href='http://chianti.ucsd.edu/idekerlab/index.html'>Ideker Lab</a>&nbsp;&nbsp;|&nbsp;&nbsp;
     <a class='white-bg-link' href='http://ucsd.edu'>UCSD</a><br />
     <p style='font-size: 0.8em; font-style:italic'>Funding provided by the National Science Foundation (NSF 0425926).</p>
@@ -73,6 +73,18 @@ sub outputResultsPage{
 	$gid_by_gene_symbol
 	) = @_;
 
+	# populate the model->wordsMatched()	 			 
+	foreach my $mid (keys %{ $hash })
+    {
+		my @enrichment_objects = @{ $hash->{$mid}{"enrichment"} };
+		my $model = $hash->{$mid}{'model'};
+		$model->score_model($queryInput, \@enrichment_objects);
+    }
+
+	# set the statistics data in error_msg
+	my $speciesWordsHash = getMatchingStatistics($hash, $species, $queryInput);
+	$error_msg->{'matchingStat'} = $speciesWordsHash;
+
     print format_header(format_query_as_title($queryInput->queryString()));
     print query_form($queryInput->queryString(), 
 		     $publications, 
@@ -80,6 +92,7 @@ sub outputResultsPage{
 		     $sort_method, 
 		     $pval_thresh,
 			 $page);
+	
     print error_html($publications, $pval_thresh, $error_msg);
     
     print_results($queryInput,
@@ -96,6 +109,69 @@ sub outputResultsPage{
     return;
 }
 
+
+# get the statistics from $hash and put it in $error_msg
+sub getMatchingStatistics {
+	my ($hash, $species,  $queryInput) = @_;
+	
+	my %speciesWordsHash	= ();
+	my %speciesIdNameHash	= (); # species Id->Name
+	
+    foreach my $mid (keys %{ $hash })
+    {
+		# determine the species of this model
+		my @enrichment_objects = @{ $hash->{$mid}{"enrichment"} };
+		my %unique_speciesID;
+		foreach my $eo (@enrichment_objects) {
+			if(!exists($unique_speciesID{$eo->sid()}))
+			{
+				$unique_speciesID{$eo->sid()}=1;
+				if (!exists($speciesIdNameHash{$eo->sid()})) {
+					$speciesIdNameHash{$eo->sid()} = get_species_string($eo->sid());
+				}
+			}			
+		}
+		
+		my $model = $hash->{$mid}{"model"};
+		my $words_matched  = $model->wordsMatched();
+		foreach my $w (keys %{ $words_matched }) 
+		{
+			foreach my $sid (keys %unique_speciesID) 
+			{
+				$speciesWordsHash{$speciesIdNameHash{$sid}}{$w}++;				
+			}
+		}
+    }
+	
+	# Fill zeroes for those not matched in expandedQuery
+	my @expandedQueryWords = (); #getQueryWords($queryInput);
+    foreach my $q (keys %{$queryInput->expandedQuery()})
+    {
+		#print "expandedQuery =",$q,"<br>" ;
+		push(@expandedQueryWords, $q);
+	}	
+	foreach my $oneSpecies (keys %speciesWordsHash) {
+		foreach my $w (@expandedQueryWords)
+		{
+			if (!exists($speciesWordsHash{$oneSpecies}{$w})) {
+				$speciesWordsHash{$oneSpecies}{$w} = 0;
+			}
+		}	
+	}
+	
+	# Fill zeroes for those not matched
+	my @noMatchingQueryWords = keys %{$queryInput->noMatchingQueryWords()};
+	foreach my $oneSpecies (keys %speciesWordsHash) {
+		foreach my $w (@noMatchingQueryWords)
+		{
+			if (!exists($speciesWordsHash{$oneSpecies}{$w})) {
+				$speciesWordsHash{$oneSpecies}{$w} = 0;
+			}
+		}	
+	}
+	
+	return \%speciesWordsHash;
+}
 
 
 sub outputErrorPage
@@ -182,12 +258,12 @@ sub query_form
       <td align='left' valign='center' rowspan=2>
          &nbsp;<a class='white-bg-link' href='$search_url/index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
 	 &nbsp;<a class='white-bg-link' href='$search_url/advanced_search.php'>Advanced&nbsp;Search</a><br />
-	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>&nbsp;|&nbsp;<a class='white-bg-link' href='$search_url/Tutorial-results-1.html'>Help</a>
+	 &nbsp;<a class='white-bg-link' href='$search_url/about_cell_circuits.html'>About&nbsp;CellCircuits</a>&nbsp;|&nbsp;<a class='white-bg-link' href='$search_url/tutorial/Tutorial-results-1.html'>Help</a>
       </td>
     </tr>
     <tr>
       <td align='center' valign='top'>
-        <input type="submit" name="search_query_button" value="Search" title='Click to find models matching your query'/><input type="submit" value="Load Example Query" title="requires javaScript" onClick="LoadExampleQuery('rad51 GO:0006950 ercc1_human', 'DNA repair');return false;" />
+        <input type="submit" name="search_query_button" value="Search" title='Click to find models matching your query'/><input type="submit" value="Load Example Query" title="requires javaScript" onClick="LoadExampleQuery('rad51 GO:0006950 ercc1', 'DNA repair');return false;" />
       </td>
     </tr>
   </table>
@@ -210,12 +286,17 @@ sub error_html
     my $error_html = CCDB::Error::formatErrorMessages($error_msg, 
 						      $pval_thresh, 
 						      $publications);
+    #return qq(
+	#      <center>
+	#      <table><tr><td align="left">
+	#      $error_html
+	#      </td></tr></table>
+	#      </center>
+	#      );
     return qq(
-	      <center>
-	      <table><tr><td align="left">
+	      <table><tr><td align="left" bgcolor="#99CCFF">
 	      $error_html
 	      </td></tr></table>
-	      </center>
 	      );
 
 }
@@ -456,12 +537,13 @@ sub print_results
     ## Typically 2: one at the top of the table and one at the bottom.
     my $N_PAGE_JUMP = 1; 
 
-    foreach my $mid (keys %{ $hash })
-    {
-	my @enrichment_objects = @{ $hash->{$mid}{"enrichment"} };
-	my $model = $hash->{$mid}{'model'};
-	$model->score_model($queryInput, \@enrichment_objects);
-    }
+	# move the following to outputResultsPage()
+    #foreach my $mid (keys %{ $hash })
+    #{
+	#my @enrichment_objects = @{ $hash->{$mid}{"enrichment"} };
+	#my $model = $hash->{$mid}{'model'};
+	#$model->score_model($queryInput, \@enrichment_objects);
+    #}
 
     my $sorted_mids = ();
 	
@@ -495,7 +577,6 @@ sub print_results
 	#for my $mid (@{ $sorted_mids }) {
 	#	print $hash->{$mid}{"model"}->score(),"<br>";
 	#}
-	
     my $n_matched_models = scalar(@{ $sorted_mids });
     my ($total_pages, $upper_lim,$lower_lim) = pageCalc($n_matched_models, $page);
     my $n_models_on_page = $upper_lim - $lower_lim + 1;
@@ -520,7 +601,7 @@ sub print_results
 	}
     }
 
-    my $body .= qq(<table id="results_table" name="results_table" align="center" 
+    my $body .= qq(<br><table id="results_table" name="results_table" align="center" 
 		   cellpadding="0" cellspacing="0" 
 		   bgcolor="$colors->{page_background}" 
 		   summary="results" width="100%">
