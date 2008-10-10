@@ -49,7 +49,7 @@ public interface CyEventHelper {
 	 * @param event  DOCUMENT ME!
 	 * @param listener  DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyEventListener> void fireSynchronousEvent(final E event,
+	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
 	                                                                                final Class<L> listener);
 
 	/**
@@ -62,6 +62,6 @@ public interface CyEventHelper {
 	 * @param event  DOCUMENT ME!
 	 * @param listener  DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyEventListener> void fireAsynchronousEvent(final E event,
+	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
 	                                                                                 final Class<L> listener);
 }

@@ -36,12 +36,12 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 
 /**
  * Listener for RowSetEvents.
  */
-public interface RowSetListener extends CyEventListener {
+public interface RowSetListener extends CyListener {
 	void handleEvent(RowSetEvent e);
 }

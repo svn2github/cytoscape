@@ -68,13 +68,13 @@ public class CyEventHelperTest extends TestCase {
 	CyEventHelper helper;
 	ServiceReference reference;
 	BundleContext bc;
-	StubCyEventListenerImpl service;
+	StubCyListenerImpl service;
 
 	/**
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		service = new StubCyEventListenerImpl();
+		service = new StubCyListenerImpl();
 		reference = new MockServiceReference();
 		bc = new MockBundleContext() {
 				public ServiceReference getServiceReference(String clazz) {
@@ -109,7 +109,7 @@ public class CyEventHelperTest extends TestCase {
 	public void testSychronous() {
 		// TODO figure out why I need to cast the StubCyEventImpl
 		helper.fireSynchronousEvent((StubCyEvent) new StubCyEventImpl("homer"),
-		                            StubCyEventListener.class);
+		                            StubCyListener.class);
 		assertEquals(1, service.getNumCalls());
 	}
 
@@ -120,7 +120,7 @@ public class CyEventHelperTest extends TestCase {
 		try {
 			// TODO figure out why I need to cast the StubCyEventImpl
 			helper.fireAsynchronousEvent((StubCyEvent) new StubCyEventImpl("marge"),
-			                             StubCyEventListener.class);
+			                             StubCyListener.class);
 			Thread.sleep(500); // TODO is there a better way to wait?
 			assertEquals(1, service.getNumCalls());
 		} catch (InterruptedException ie) {

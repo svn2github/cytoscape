@@ -36,12 +36,12 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 
 /**
  * Listener for AboutToRemoveNodeEvents. 
  */
-public interface AboutToRemoveNodeListener extends CyEventListener {
+public interface AboutToRemoveNodeListener extends CyListener {
 	void handleEvent(AboutToRemoveNodeEvent e);
 }

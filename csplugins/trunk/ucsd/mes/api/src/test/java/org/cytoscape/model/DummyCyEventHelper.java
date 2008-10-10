@@ -38,7 +38,7 @@ package org.cytoscape.model;
 
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 
 /**
@@ -53,7 +53,7 @@ public class DummyCyEventHelper implements CyEventHelper {
 	 * @param event DOCUMENT ME!
 	 * @param listener DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyEventListener> void fireSynchronousEvent(final E event,
+	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
 	                                                                                final Class<L> listener) {
 	}
 	;
@@ -66,7 +66,7 @@ public class DummyCyEventHelper implements CyEventHelper {
 	 * @param event DOCUMENT ME!
 	 * @param listener DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyEventListener> void fireAsynchronousEvent(final E event,
+	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
 	                                                                                 final Class<L> listener) {
 	}
 	;

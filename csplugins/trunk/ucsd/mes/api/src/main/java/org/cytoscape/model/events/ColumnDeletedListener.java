@@ -36,12 +36,12 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 
 /**
  * Listener for ColumnDeletedEvents.
  */
-public interface ColumnDeletedListener extends CyEventListener {
+public interface ColumnDeletedListener extends CyListener {
 	void handleEvent(ColumnDeletedEvent e);
 }

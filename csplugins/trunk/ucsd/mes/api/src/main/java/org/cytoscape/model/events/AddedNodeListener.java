@@ -36,12 +36,12 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 
 /**
  * Listener for AddedEgeEvents.
  */
-public interface AddedNodeListener extends CyEventListener {
+public interface AddedNodeListener extends CyListener {
 	void handleEvent(AddedNodeEvent e);
 }

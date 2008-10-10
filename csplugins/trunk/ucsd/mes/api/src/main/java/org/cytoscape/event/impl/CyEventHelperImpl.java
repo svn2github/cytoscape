@@ -38,7 +38,7 @@ package org.cytoscape.event.internal;
 
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -77,7 +77,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 	 * @param event  DOCUMENT ME!
 	 * @param listenerClass  DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyEventListener> void fireSynchronousEvent(final E event,
+	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
 	                                                                                final Class<L> listenerClass) {
 		List<L> listeners = getListeners(listenerClass);
 
@@ -112,7 +112,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 	 * @param event  DOCUMENT ME!
 	 * @param listenerClass  DOCUMENT ME!
 	 */
-	public <E extends CyEvent, L extends CyEventListener> void fireAsynchronousEvent(final E event,
+	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
 	                                                                                 final Class<L> listenerClass) {
 		final List<L> listeners = getListeners(listenerClass);
 
@@ -130,7 +130,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 		}
 	}
 
-	private static class Runner<E extends CyEvent, L extends CyEventListener> implements Runnable {
+	private static class Runner<E extends CyEvent, L extends CyListener> implements Runnable {
 		private final Method method;
 		private final L listener;
 		private final E event;
@@ -160,7 +160,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 
 	@SuppressWarnings("unchecked") // needed because of ServiceReference cast.
 
-	private <L extends CyEventListener> List<L> getListeners(Class<L> listenerClass) {
+	private <L extends CyListener> List<L> getListeners(Class<L> listenerClass) {
 		List<L> ret = new LinkedList<L>();
 
 		if (bc == null)

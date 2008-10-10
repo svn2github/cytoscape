@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
 
 import org.cytoscape.event.CyEvent;
 import org.cytoscape.event.CyEventHelper;
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;

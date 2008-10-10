@@ -36,12 +36,12 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 
 /**
  * Listener for AboutToRemoveEdgeEvents.
  */
-public interface AboutToRemoveEdgeListener extends CyEventListener {
+public interface AboutToRemoveEdgeListener extends CyListener {
 	void handleEvent(AboutToRemoveEdgeEvent e);
 }

@@ -36,12 +36,12 @@
 
 package org.cytoscape.model.events;
 
-import org.cytoscape.event.CyEventListener;
+import org.cytoscape.event.CyListener;
 
 
 /**
  * Listener for ColumnCreatedEvents.
  */
-public interface ColumnCreatedListener extends CyEventListener {
+public interface ColumnCreatedListener extends CyListener {
 	void handleEvent(ColumnCreatedEvent e);
 }

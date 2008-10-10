@@ -39,24 +39,11 @@ package org.cytoscape.event;
 /**
  * DOCUMENT ME!
   */
-public class StubCyEventListenerImpl implements StubCyEventListener {
-	int called = 0;
-
+public interface StubCyListener extends CyListener {
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void handleEvent(StubCyEvent e) {
-		called++;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public int getNumCalls() {
-		return called;
-	}
+	public void handleEvent(StubCyEvent e);
 }
