@@ -46,9 +46,9 @@ class EdgePointer {
 
 	final CyEdge cyEdge;
 	final int index;
-	boolean directed;
-	NodePointer source;
-	NodePointer target;
+	final boolean directed;
+	final NodePointer source;
+	final NodePointer target;
 
 	EdgePointer[] nextOutEdge = new EdgePointer[1];
 	EdgePointer[] prevOutEdge = new EdgePointer[1];
