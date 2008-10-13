@@ -5,9 +5,9 @@ package src;
  * Google Summer of Code
  * 
  * This is the main class in the entire program as it serves as the background JDialog window 
- * upon which everything else is added to and displayed.  Thus this class contains all of the
- * code which handles buttons and action events along with the java Swing code necessary to 
- * display all of the components.  The initialize method calls all of the other methods which
+ * upon which everything else is added to and displayed.  This class contains all of the
+ * code which handles buttons and action events.  It also contains all of the java Swing code necessary to 
+ * display the components.  The initialize method calls all of the other methods which
  * create swing components and return a JPanel which are then added to the main dialog window.
  * 
  */
@@ -71,18 +71,19 @@ import javax.swing.border.*;
 import javax.swing.text.Position;
 
 
-
-
-
-public class BooleanSettingsDialog extends JDialog implements ActionListener, FocusListener, ListSelectionListener {
-
+public class BooleanSettingsDialog extends JDialog implements ActionListener, FocusListener, ListSelectionListener,
+                                                               java.beans.PropertyChangeListener{
+	
+	//Declarations of classes used by BooleanMapper
 	private BooleanAlgorithm currentAlgorithm = null;
 	private BooleanCalculator calculator = null;
-	private BooleanScanner scan = null;
-	private Color currentColor = Color.BLUE;
-	private String label = "";
-	private String criteria = "";
+	private BooleanScanner scan = null; //Not currently used
+	private AttributeManager attributeManager;
+	private ColorMapper colorMapper; 
+	private CriteriaTablePanel criteriaTable;
+	private CriteriaCalculator calculate = new CriteriaCalculator(); //Not currently used
 	
+	//All of the Java Swing objects
 	private JButton colorButton;
 	private JColorChooser colorChooser;
 	private JComboBox nameBox;
@@ -93,7 +94,6 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private JPanel mainPanel; // The main content pane
 	private JPanel buttonBox; // Our action buttons (Save Settings, Cancel, Execute, Done)
 	private JPanel setNamePanel;
-	private JPanel algorithmPanel; // The panel this algorithm uses
 	private JPanel tablePanel;
 	private JPanel colorPanel;
 	private JTable table;
@@ -101,19 +101,26 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private JTextField labelField;
 	private JTextField colorField;
 	
-	AttributeManager attributeManager;
-	ColorMapper colorMapper;
-	CriteriaTablePanel criteriaTable;
-	ArrayList<String> attributeList = new ArrayList<String>();
-	String[] opArray = {"=", "<", ">", ">=", "<=", "AND", "OR", "NOT"};
-	String[] attributesArray;
-	String[] nameBoxArray;
-	
-	CriteriaCalculator calculate = new CriteriaCalculator();
+	//All of the other miscellaneous variables
+	private Color currentColor = Color.BLUE; //keeps track of the color displayed by the color button
+	private String label = ""; 
+	private String criteria = "";
+	private ArrayList<String> attributeList = new ArrayList<String>(); //List which holds all of the attributes
+	private String[] opArray = {"=", "<", ">", ">=", "<=", "AND", "OR", "NOT"}; 
+	private String[] attributesArray;
+	private String[] nameBoxArray; //Array holding the names of the Criteria Sets
 	
 	
 	public BooleanSettingsDialog(BooleanAlgorithm algorithm) {
 		super(Cytoscape.getDesktop(), algorithm.getName(), false);
+		
+		Cytoscape.getSwingPropertyChangeSupport().
+		addPropertyChangeListener(this);
+		// add as listener to CytoscapeDesktop
+		Cytoscape.getDesktop().getSwingPropertyChangeSupport().
+		addPropertyChangeListener(this);
+		
+
 		
 		currentAlgorithm = algorithm;
 		colorMapper = new ColorMapper();
@@ -141,34 +148,15 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		mainPanel.add(setNamePanel);
 		
 		// Create a panel for algorithm's content
-		this.algorithmPanel = currentAlgorithm.getSettingsPanel();
+		//this.algorithmPanel = currentAlgorithm.getSettingsPanel();
 
 		//mainPanel.add(algorithmPanel);
 		mainPanel.addFocusListener(this);
 		
-		mainPanel.add(getListPanel2());
+		mainPanel.add(getListPanel());
 		
-		mainPanel.add(getCriteriaChooserPanel2());
-		//Panel for color Button
-		/*this.colorPanel = new JPanel(new BorderLayout(10,0));	
-	 
-		JLabel colorLabel = new JLabel("Color");
-		colorLabel.setPreferredSize(new Dimension(50,20));
-		
-		colorButton = new JButton("");
-		colorButton.setBackground(currentColor);
-
-		colorButton.setPreferredSize(new Dimension(180, 20));
-		colorButton.setActionCommand("chooseColor");
-		colorButton.addActionListener(this);
-		colorButton.setBorder(null);
-        colorButton.setBorderPainted(false);
-        colorButton.setBackground(currentColor);
-       
-		//colorPanel.add(colorLabel, BorderLayout.LINE_START);
-		colorPanel.add(colorButton, BorderLayout.LINE_END);
-		colorPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-	  */		
+		mainPanel.add(getCriteriaChooserPanel());
+				
 		//Create a panel for our button box
 		this.buttonBox = new JPanel();
 		
@@ -343,6 +331,16 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		}
 	}
 	
+	public void propertyChange ( PropertyChangeEvent e ) {
+		if(e.getPropertyName().equals("ATTRIBUTES_CHANGED")){
+			System.out.println("wooooord");
+			initialize();
+			setVisible(true);
+			
+		}
+	}
+	
+	
 	
 	String criteriaBuild = "";
 	int last = -1;
@@ -355,62 +353,54 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	 * selection.
 	 */
 	public void valueChanged(ListSelectionEvent e){
-		//System.out.println("Chosen \n"+e.getFirstIndex());
-		//System.out.println(e.getLastIndex());
-			
-		 ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-	     
-		 //System.out.println(e.toString());
-	       
-	        
-	        int firstIndex = e.getFirstIndex();
-	        int lastIndex = e.getLastIndex();
-	        boolean isAdjusting = e.getValueIsAdjusting(); 
-	        //e.getSource().getClass().
-	        
-	        if (lsm.isSelectionEmpty()) {
-	            System.out.println(" <none>");
-	        } else {
-	            // Find out which indexes are selected.
-	            int minIndex = lsm.getMinSelectionIndex();
-	            int maxIndex = lsm.getMaxSelectionIndex();
-	            
-	            
-	            for (int i = minIndex; i <= maxIndex; i++) {
-	            	
-	                //if (lsm.isSelectedIndex(i) && last != i) {
-	                	criteriaBuild = criteriaField.getText();
-	                	criteriaBuild = criteriaBuild +" "+ attributesArray[i]+" ";
-	                	criteriaField.setText(criteriaBuild);
-	                	System.out.println("Selected Index: "+i);
-	                	
-	                //}
-	                last = i;
-	            }
-	        }
-	        attList.clearSelection();
-	        criteriaField.requestFocus();
-	        criteriaField.setHorizontalAlignment(JTextField.LEFT);
-	        
+
+		ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+
+		int firstIndex = e.getFirstIndex();
+		int lastIndex = e.getLastIndex();
+		boolean isAdjusting = e.getValueIsAdjusting(); 
+		//e.getSource().getClass().
+
+		if (lsm.isSelectionEmpty()) {
+			System.out.println(" <none>");
+		} else {
+			// Find out which indexes are selected.
+			int minIndex = lsm.getMinSelectionIndex();
+			int maxIndex = lsm.getMaxSelectionIndex();
+
+
+			for (int i = minIndex; i <= maxIndex; i++) {
+				//if (lsm.isSelectedIndex(i) && last != i) {
+				criteriaBuild = criteriaField.getText();
+				criteriaBuild = criteriaBuild +" "+ attributesArray[i]+" ";
+				criteriaField.setText(criteriaBuild);
+				System.out.println("Selected Index: "+i);
+				//}
+				last = i;
+			}
+		}
+		attList.clearSelection();
+		criteriaField.requestFocus();
+		criteriaField.setHorizontalAlignment(JTextField.LEFT);
+
 	}
 	
-
 	
 	/*
 	 * Saves all of the settings.
 	 */
 	public void saveSettings(){
-		
+
 		//System.out.println(nameBox.getSelectedItem());
 		String newName = (String)nameBox.getSelectedItem();
 		if(newName.equals("New...")){ return; }
-		
+
 		attributeManager.addNamesAttribute(Cytoscape.getCurrentNetwork(), newName);
-	
+
 		String[] criteriaLabels = new String[criteriaTable.getDataLength()];	
 		for(int k=0; k<criteriaLabels.length; k++){
 			String temp = criteriaTable.getCell(k, 0)+":"+criteriaTable.getCell(k, 1)+":"+criteriaTable.getCell(k, 2);
-			
+
 			if(!temp.equals(null)){
 				criteriaLabels[k] = temp;
 			}
@@ -418,7 +408,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			System.out.println(criteriaLabels.length+"AAA"+temp);
 		}
 		attributeManager.setValuesAttribute(newName, criteriaLabels);
-		
+
 	}
 	
 	public void loadSettings(String setName){
@@ -428,11 +418,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		for(int i=0; i<criteria.length;i++){
 			String[] temp = criteria[i].split(":");
 			criteriaTable.populateList(temp[0], temp[1], criteriaTable.stringToColor(temp[2]));
-			/*
-			criteriaTable.setCell(i,0,temp[0]);
-			criteriaTable.setCell(i,1,temp[1]);
-			criteriaTable.setCell(i,2,temp[2]);
-			*/
+
 		}
 	}
 	
@@ -443,79 +429,77 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	 * to create the color mappings.
 	 */
 	public void applyCriteria(){
-		//for(int i=1;i<data.length;i++){
-			
-		    //int[] rowIndexes = table.getSelectedRows();
-		    //for(int i = 0; i<rowIndexes.length;i++){
-		    	//System.out.println("row index: "+rowIndexes[i]);
-		    //}
-			ArrayList<String> labels = new ArrayList<String>();
-			ArrayList<Color> colors = new ArrayList<Color>();
-			String compositeLabel = "";
-			String[] nameLabels = new String[criteriaTable.getDataLength()];
-			for(int i=0; i<criteriaTable.getDataLength(); i++){
-				String current = (String)criteriaTable.getCell(i,0); 
-				if(current != null && !current.equals("")){
-					
-					try{
-						
-						calculate.parse(current);
-					}catch (Exception p) {
-						System.out.println(p.getMessage());
-					}
-					
-				
-					ArrayList<String>[] attsAndOps = calculator.parse2(current);
-					//calculator.clearList();
-					if(attsAndOps != null){
-						String label = (String)criteriaTable.getCell(i, 1);
-						if(i == 0){ compositeLabel = label; 
-						}else{
-							if(!label.equals("") && label != null){
-								compositeLabel = compositeLabel + ":" + label;
-							}
-						}
-						calculator.evaluate(label, attsAndOps[0], attsAndOps[1]);
-						//calculate.evaluateLeftToRight(label);
-						labels.add(label);
-					}
-					
-					
-	                Color c = criteriaTable.stringToColor(criteriaTable.getCell(i,2)+"");
-	                colors.add(c);
-	                
+
+		ArrayList<String> labels = new ArrayList<String>();
+		ArrayList<Color> colors = new ArrayList<Color>();
+		String compositeLabel = "";
+		String[] nameLabels = new String[criteriaTable.getDataLength()];
+		for(int i=0; i<criteriaTable.getDataLength(); i++){
+			String current = (String)criteriaTable.getCell(i,0); 
+			if(current != null && !current.equals("")){
+
+				try{
+
+					calculate.parse(current);
+				}catch (Exception p) {
+					System.out.println(p.getMessage());
 				}
+
+
+				ArrayList<String>[] attsAndOps = calculator.parse2(current);
+				//calculator.clearList();
+				if(attsAndOps != null){
+					String label = (String)criteriaTable.getCell(i, 1);
+					if(i == 0){ compositeLabel = label; 
+					}else{
+						if(!label.equals("") && label != null){
+							compositeLabel = compositeLabel + ":" + label;
+						}
+					}
+					calculator.evaluate(label, attsAndOps[0], attsAndOps[1]);
+					//calculate.evaluateLeftToRight(label);
+					labels.add(label);
+				}
+
+
+				Color c = criteriaTable.stringToColor(criteriaTable.getCell(i,2)+"");
+				colors.add(c);
+
 			}
-			
-			String[] labelsA = new String[labels.size()];
-			for(int h=0; h<labels.size(); h++){
-				labelsA[h] = labels.get(h);
-			}
-			
-			try{
-            	attributeManager.setCompositeAttribute(labelsA);
-            }catch (Exception e){
-            	System.out.println(e.getMessage());
-            }
-            Color[] colorsA = new Color[labels.size()];
-            for(int g=0; g<labels.size(); g++){
-            	colorsA[g] = colors.get(g);
-            }
-            System.out.println("compositeLabel: "+compositeLabel);
-            if(labels.size() == 1){
-            	
-            	colorMapper.createDiscreteMapping(labelsA[0]+"_discrete", labelsA[0], colorsA[0]);
-            }else{
-            	colorMapper.createCompositeMapping(compositeLabel+"_discrete", compositeLabel, colorsA);
-            }
-            	//System.out.println("current: "+ current);
-			/*try{
+		}
+
+		String[] labelsA = new String[labels.size()];
+		for(int h=0; h<labels.size(); h++){
+			labelsA[h] = labels.get(h);
+		}
+
+		try{
+			attributeManager.setCompositeAttribute(labelsA);
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+		
+		Color[] colorsA = new Color[labels.size()];
+		for(int g=0; g<labels.size(); g++){
+			colorsA[g] = colors.get(g);
+		}
+		
+		System.out.println("compositeLabel: "+compositeLabel);
+		if(labels.size() == 1){
+
+			colorMapper.createDiscreteMapping(labelsA[0]+"_discrete", labelsA[0], colorsA[0]);
+		}else{
+			colorMapper.createCompositeMapping(compositeLabel+"_discrete", compositeLabel, colorsA);
+		}
+		
+		//System.out.println("current: "+ current);
+		/*try{
 			scan.parse(current);
 			}catch (IOException e) {
 				System.out.println(e.getMessage());
 			}
-			*/
-			
+		 */
+
 		//}
 		//parsedCriteria = calculator.parseCriteria(criteria);
 		//calculator.evaluateCriteria(parsedCriteria);
@@ -540,25 +524,35 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	public void getAttributesList(ArrayList<String> attributeList,
 			CyAttributes attributes, String prefix) {
 		String[] names = attributes.getAttributeNames();
+		ArrayList<String> numericAttributes = new ArrayList<String>();
+		//ArrayList<String> stringAttributes = new ArrayList<String>();
+		ArrayList<String> booleanAttributes = new ArrayList<String>();
 		ArrayList<String> internalAttributes = new ArrayList<String>();
 		for (int i = 0; i < names.length; i++) {
-			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING
-					 || attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER || attributes.getType(names[i]) == CyAttributes.TYPE_BOOLEAN) {
-				if(names[i].contains(" ")){
-					names[i].replace(" " ,"-");
-					/*for(int j = 0; j < names[i].length(); j++){
-						String temp = names[i].charAt(j) + "";
-						if(temp.matches(" ")){
-							names[i] = names[i].substring(0,j) + "-" + names[i].substring(j+2, names[i].length());
-						}
-					}*/
-				}
+			if (attributes.getType(names[i]) == CyAttributes.TYPE_FLOATING || attributes.getType(names[i]) == CyAttributes.TYPE_INTEGER){
+				if(names[i].contains(" ")){	names[i].replace(" " ,"-"); }	
 				if(names[i].contains(":")){
 					internalAttributes.add(names[i]);
 				}else{
-					attributeList.add(prefix + names[i]);
+					numericAttributes.add(names[i]);
+				}
+			}	
+			if(attributes.getType(names[i]) == CyAttributes.TYPE_BOOLEAN){
+				if(names[i].contains(" ")){	names[i].replace(" " ,"-"); }	
+				if(names[i].contains(":")){
+					internalAttributes.add(names[i]);
+				}else{
+				   booleanAttributes.add(names[i]);
 				}
 			}
+		}
+		//attributeList.add("--Numeric Attributes--");
+		for(int j=0; j<numericAttributes.size(); j++){
+			attributeList.add(numericAttributes.get(j));
+		}
+		//attributeList.add("--Boolean Attributes--");
+		for(int k=0; k<booleanAttributes.size(); k++){
+			attributeList.add(booleanAttributes.get(k));
 		}
 		for(int i=0; i<internalAttributes.size(); i++){
 			attributeList.add(internalAttributes.get(i));
@@ -638,7 +632,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	 * Creates the criteria and label text fields, along with the color chooser, add, 
 	 * and clear buttons.
 	 */
-	private JPanel getCriteriaChooserPanel2(){
+	private JPanel getCriteriaChooserPanel(){
 		JPanel fieldPanel = new JPanel();
 		
 		BoxLayout box = new BoxLayout(fieldPanel, BoxLayout.Y_AXIS);
@@ -722,7 +716,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	/*
 	 * Creates the attribute list and operation list.
 	 */
-	private JPanel getListPanel2(){
+	private JPanel getListPanel(){
 		JPanel bigPanel = new JPanel();
 		
 		BoxLayout bigBox = new BoxLayout(bigPanel, BoxLayout.Y_AXIS);
@@ -804,48 +798,48 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	 * lists that are registered to the same listener.
 	 */
 	class getOperationSelection implements ListSelectionListener{
-		
+
 		public getOperationSelection(){
-			
+
 		}
 		public void valueChanged(ListSelectionEvent e){
 			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-		     
-			 //System.out.println("maddeeee it");
-		       
-		        
-		        int firstIndex = e.getFirstIndex();
-		        int lastIndex = e.getLastIndex();
-		        boolean isAdjusting = e.getValueIsAdjusting(); 
-		        //e.getSource().getClass().
-		        
-		        if (lsm.isSelectionEmpty()) {
-		            System.out.println(" <none>");
-		        } else {
-		            // Find out which indexes are selected.
-		            int minIndex = lsm.getMinSelectionIndex();
-		            int maxIndex = lsm.getMaxSelectionIndex();
-		            
-		            
-		            for (int i = minIndex; i <= maxIndex; i++) {
-		            	
-		               // if (lsm.isSelectedIndex(i) && last != i) {
-		                	criteriaBuild = criteriaField.getText();
-		                	criteriaBuild = criteriaBuild +" "+ opArray[i]+" ";
-		                	criteriaField.setText(criteriaBuild);
-		                	System.out.println("Selected Index: "+i);
-		                	
-		                //}
-		                last = i;
-		            }
-		        }
-		        opList.clearSelection();
-		        criteriaField.requestFocus();
-		        criteriaField.setHorizontalAlignment(JTextField.LEFT);
-		        
+
+			//System.out.println("maddeeee it");
+
+
+			int firstIndex = e.getFirstIndex();
+			int lastIndex = e.getLastIndex();
+			boolean isAdjusting = e.getValueIsAdjusting(); 
+			//e.getSource().getClass().
+
+			if (lsm.isSelectionEmpty()) {
+				System.out.println(" <none>");
+			} else {
+				// Find out which indexes are selected.
+				int minIndex = lsm.getMinSelectionIndex();
+				int maxIndex = lsm.getMaxSelectionIndex();
+
+
+				for (int i = minIndex; i <= maxIndex; i++) {
+
+					// if (lsm.isSelectedIndex(i) && last != i) {
+					criteriaBuild = criteriaField.getText();
+					criteriaBuild = criteriaBuild +" "+ opArray[i]+" ";
+					criteriaField.setText(criteriaBuild);
+					System.out.println("Selected Index: "+i);
+
+					//}
+					last = i;
+				}
+			}
+			opList.clearSelection();
+			criteriaField.requestFocus();
+			criteriaField.setHorizontalAlignment(JTextField.LEFT);
+
 		}
 	}
-	
+
 
 }
 
