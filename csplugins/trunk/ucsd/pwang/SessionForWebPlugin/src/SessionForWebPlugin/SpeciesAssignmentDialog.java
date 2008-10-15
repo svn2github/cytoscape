@@ -139,7 +139,7 @@ public class SpeciesAssignmentDialog extends javax.swing.JDialog implements Acti
         getContentPane().add(lbTitle, gridBagConstraints);
 
         lstSpecies.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Saccharomyces cerevisia", "Homo sapiens", "Caenorhabditis elegans", "Drosophila melanogaste", "Plasmodium falciparum", "Other" };
+            String[] strings = { "Saccharomyces cerevisiae", "Homo sapiens", "Caenorhabditis elegans", "Drosophila melanogaste", "Plasmodium falciparum", "Other" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
