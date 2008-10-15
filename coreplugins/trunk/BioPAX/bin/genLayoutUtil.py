@@ -78,6 +78,7 @@ import y.geom.YPoint;
 import y.layout.Layouter;
 import y.layout.NodeLayout;
 import y.layout.EdgeLayout;
+import y.layout.organic.OrganicLayouter;
 import java.util.Map;
 import java.util.HashMap;
 import java.awt.geom.Point2D;
@@ -90,8 +91,17 @@ print >> layoutUtilFile, """/**
  * @author Benjamin Gross
  */
 public class LayoutUtil implements CyLayoutAlgorithm {
+"""
 
-    /**
+if HAS_YFILES_LIBRARY == 1:
+    print >> layoutUtilFile, """    /**
+     * Ref to yFiles layout class.
+     */
+    private static Layouter layouter = new OrganicLayouter();
+    static { ((OrganicLayouter)layouter).setActivateDeterministicMode(true); }
+"""
+
+print >> layoutUtilFile, """    /**
      * Our implementation of LayoutAlgorithm.doLayout().
      */
     public void doLayout() {
@@ -141,7 +151,6 @@ if HAS_YFILES_LIBRARY == 1:
 			y_giny_edge_map.put(yfiles, giny);
 		}
 
-		Layouter layouter = new y.layout.organic.OrganicLayouter();
 		layouter.doLayout(graph2d);
 
 		NodeCursor nc = graph2d.nodes();
