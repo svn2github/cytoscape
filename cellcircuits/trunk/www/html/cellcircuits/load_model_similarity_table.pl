@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use lib './ScoreModel';
 #use lib '/cellar/users/pwang/cc_cgi'; # for DB connection
-use lib '../../cgi-bin/cellcircuits'; # for DB connection
+use lib '../../../cgi-bin/cellcircuits'; # for DB connection
 
 use ScoreModel::Publication;
 use ScoreModel::EdgeMapper;
@@ -59,8 +59,9 @@ foreach $p (@pubNames)
     }
 }
 
-#print   "Read " . scalar @allSIFs . " sifs\n";
-#printf   "Orgs: %s\n", join(", ", keys %genes); 
+print   "<br>Executing Load_model_similarity_table.pl $pub_id...<br>\n";
+print   "Read " . scalar @allSIFs . " sif files<br>\n";
+#printf   "Orgs: %s<br>\n", join(", ", keys %genes); 
 my $yeast = "saccharomyces cerevisiae";
 
 #my %modelName2ID = %{readModelTable("/cellar/users/pwang/score_model/model.txt")};
@@ -74,7 +75,7 @@ my %modelName2ID = %{readModelTable($dbh, $pub_id)}; # get data from DB
 if(exists($genes{$yeast}))
 {
     my ($size, $numbers, $names) = members_to_numbers($genes{$yeast});
-		
+	
     my (@sifNames, @vectors);
     my $modelName;
     foreach $sif (@allSIFs)
@@ -82,6 +83,7 @@ if(exists($genes{$yeast}))
 		if(exists($sif->org2genes()->{$yeast}))
 		{
 			$modelName = join(":", $sif->pub(), $sif->name());
+			#print "modelName = $modelName\n";
 			if(exists($modelName2ID{$modelName}))
 			{
 				push @sifNames, $modelName2ID{$modelName};
@@ -90,7 +92,7 @@ if(exists($genes{$yeast}))
 			}
 			else
 			{
-				print STDERR "WARNING: read SIF not in database: $modelName\n";
+				print "ERROR: SIF not in database: $modelName\n";
 			}
 		}
     }
@@ -132,7 +134,6 @@ sub readModelTable
 		my $id = $ref->{'id'}; 
 		my $pub = $ref->{'pub'};
 		my $name = $ref->{'name'};
-
 		$model{join(":", $pub, $name)} = $id;
 	}
 
