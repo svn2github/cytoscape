@@ -1968,7 +1968,7 @@ public abstract class Cytoscape {
 	/** return array of Integer-s containing first,...last with step size increment */
 	private static Object[] range(int first, int last, int increment){
 		ArrayList result = new ArrayList();
-		for (int i = first; i<=last; i+=increment){
+		for (int i = first; i!=last; i+=increment){
 			result.add(Integer.valueOf(i));
 		}
 		return result.toArray();
