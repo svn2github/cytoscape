@@ -347,7 +347,7 @@ public class LegacyVisualProperty implements VisualProperty {
 
 	public Icon getDefaultIcon() {
 		// TODO Auto-generated method stub
-		return null;
+		return getIcon(getDefaultAppearanceObject());
 	}
 
 	public Icon getIcon(final Object value) {
