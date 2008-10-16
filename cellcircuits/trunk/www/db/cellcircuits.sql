@@ -31,7 +31,7 @@ CREATE TABLE submission_data (
 -- All data files (.zip) submitted by end users
 CREATE TABLE raw_files (
 	raw_file_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(100),
+	file_name		varchar(200),
 	file_type		varchar(100),
 	data			longblob
 );
@@ -58,7 +58,7 @@ CREATE TABLE publications (
 -- data extracted from the zip file submitted (from table raw_files)
 CREATE TABLE supplement_material_files (
 	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(99),
+	file_name		varchar(200),
 	file_type		varchar(100),
 	data			longblob
 );
@@ -66,14 +66,14 @@ CREATE TABLE supplement_material_files (
 
 CREATE TABLE cover_image_files (
 	cover_image_file_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(99),
+	file_name		varchar(200),
 	file_type		varchar(100),
 	data			mediumblob
 );
 
 CREATE TABLE pdf_files (
 	pdf_file_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(99),
+	file_name		varchar(200),
 	file_type		varchar(100),
 	data			longblob
 );
@@ -91,21 +91,21 @@ CREATE TABLE network_file_info (
 
 CREATE TABLE network_files (
 	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(99),
+	file_name		varchar(200),
 	file_type		varchar(100),
 	data			longblob
 );
 
 CREATE TABLE network_image_files (
 	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(99),
+	file_name		varchar(200),
 	file_type		varchar(100),
 	data			longblob
 );
 
 CREATE TABLE network_thum_image_files (
 	id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	file_name		varchar(99),
+	file_name		varchar(200),
 	file_type		varchar(100),
 	data			longblob
 );
@@ -114,7 +114,7 @@ CREATE TABLE network_thum_image_files (
 CREATE TABLE legend_files (
 	id				int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	pub_id			int,
-	file_name		varchar(40),
+	file_name		varchar(200),
 	file_type		varchar(100) default 'unknown',
 	data			longblob
 );
