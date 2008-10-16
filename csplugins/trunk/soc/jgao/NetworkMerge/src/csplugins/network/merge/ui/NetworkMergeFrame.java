@@ -153,8 +153,6 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
 
         advancedOptionCollapsiblePanel = new CollapsiblePanel("Advance Option");
 
-        parameter = new NetworkMergeParameterImpl(true);
-
         initComponents();
 
         updateOKButtonEnable();
@@ -673,6 +671,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
         optionPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         inNetworkMergeCheckBox.setSelected(true);
+        parameter = new NetworkMergeParameterImpl(inNetworkMergeCheckBox.isSelected());
         inNetworkMergeCheckBox.setText("Enable merging nodes/edges in the same network");
         inNetworkMergeCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -780,7 +779,7 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                         AttributeConflictCollector conflictCollector = new AttributeConflictCollectorImpl();
 
                         // network merge task
-                        Task task = new NetworkMergeSessionTask(
+                        NetworkMergeSessionTask nmTask = new NetworkMergeSessionTask(
                                             this.parameter,
                                             this.matchingAttribute,
                                             this.nodeAttributeMapping,
@@ -795,17 +794,19 @@ public class NetworkMergeFrame extends javax.swing.JFrame {
                         final JTaskConfig jTaskConfig = new JTaskConfig();
                         jTaskConfig.setOwner(this);
                         jTaskConfig.displayCloseButton(true);
-                        jTaskConfig.displayCancelButton(false);
+                        jTaskConfig.displayCancelButton(true);
                         jTaskConfig.displayStatus(true);
                         jTaskConfig.setAutoDispose(false);
-
+                        jTaskConfig.displayTimeElapsed(true);                        
+                        
                         // Execute Task in New Thread; pop open JTask Dialog Box.
-                        TaskManager.executeTask(task, jTaskConfig);
+                        TaskManager.executeTask(nmTask, jTaskConfig);
+                        if (nmTask.isCancelled()) return;
 
                         // conflict handling task
                         if (!conflictCollector.isEmpty()) {
-                                task = new HandleConflictsTask(conflictCollector, idMapping);
-                                TaskManager.executeTask(task, jTaskConfig);
+                                HandleConflictsTask hcTask = new HandleConflictsTask(conflictCollector, idMapping);
+                                TaskManager.executeTask(hcTask, jTaskConfig);
                         }
 
                 }
@@ -1059,8 +1060,12 @@ class NetworkMergeSessionTask implements Task {
     private String mergedNetworkName;
     AttributeConflictCollector conflictCollector;
     AttributeBasedIDMappingData idMapping;
+    final NetworkMerge networkMerge ;
 
     private TaskMonitor taskMonitor;
+    private StatusThread statusThread;
+    
+    private boolean cancelled;
 
     /**
      * Constructor.<br>
@@ -1084,6 +1089,30 @@ class NetworkMergeSessionTask implements Task {
         this.mergedNetworkName = mergedNetworkName;
         this.conflictCollector = conflictCollector;
         this.idMapping = idMapping;
+        cancelled = false;        
+        
+        final AttributeValueMatcher attributeValueMatcher;
+        final AttributeMerger attributeMerger;
+        if (idMapping==null) {
+                attributeValueMatcher = new DefaultAttributeValueMatcher();
+                attributeMerger = new DefaultAttributeMerger(conflictCollector);
+        } else {
+                attributeValueMatcher = new IDMappingAttributeValueMatcher(idMapping);
+                attributeMerger = new IDMappingAttributeMerger(conflictCollector,idMapping);
+        }
+
+        networkMerge = new AttributeBasedNetworkMerge(
+                            parameter,
+                            matchingAttribute,
+                            nodeAttributeMapping,
+                            edgeAttributeMapping,
+                            attributeMerger,
+                            attributeValueMatcher);
+        
+    }
+    
+    public boolean isCancelled() {
+        return cancelled;
     }
 
     /**
@@ -1094,35 +1123,22 @@ class NetworkMergeSessionTask implements Task {
      */
     //@Override
     public void run() {
-        taskMonitor.setStatus("Merging networks.\n\nIt may take a while.\nPlease wait...");
-        taskMonitor.setPercentCompleted(0);
+        //taskMonitor.setStatus("Merging networks...\n\nIt may take a while.\nPlease wait...");
+        //taskMonitor.setPercentCompleted(0);
 
-
-
-        try {
-            final AttributeValueMatcher attributeValueMatcher;
-            final AttributeMerger attributeMerger;
-            if (idMapping==null) {
-                    attributeValueMatcher = new DefaultAttributeValueMatcher();
-                    attributeMerger = new DefaultAttributeMerger(conflictCollector);
-            } else {
-                    attributeValueMatcher = new IDMappingAttributeValueMatcher(idMapping);
-                    attributeMerger = new IDMappingAttributeMerger(conflictCollector,idMapping);
-            }
-
-            final NetworkMerge networkMerge = new AttributeBasedNetworkMerge(
-                                parameter,
-                                matchingAttribute,
-                                nodeAttributeMapping,
-                                edgeAttributeMapping,
-                                attributeMerger,
-                                attributeValueMatcher);
-
+        try {            
+            statusThread = new StatusThread(networkMerge,taskMonitor);
+            statusThread.start();
+            
             CyNetwork mergedNetwork = networkMerge.mergeNetwork(
                                 selectedNetworkList,
                                 operation,
                                 mergedNetworkName);
-
+            
+            statusThread.setFinished(true); //this will terminate the statusThread
+            
+            String status = networkMerge.getStatus();
+            taskMonitor.setStatus(status);
 
 /*
             cytoscape.view.CyNetworkView networkView = Cytoscape.getNetworkView(mergedNetworkName);
@@ -1151,19 +1167,18 @@ class NetworkMergeSessionTask implements Task {
             networkView.redrawGraph(true,true);
 */
 
-            taskMonitor.setPercentCompleted(100);
-            taskMonitor.setStatus("The selected networks were successfully merged into network '"
-                                  + mergedNetwork.getTitle()
-                                  + "' with "
-                                  + conflictCollector.getMapToIDAttr().size()
-                                  + " attribute conflicts.");
+//            taskMonitor.setPercentCompleted(100);
+//            taskMonitor.setStatus("The selected networks were successfully merged into network '"
+//                                  + mergedNetwork.getTitle()
+//                                  + "' with "
+//                                  + conflictCollector.getMapToIDAttr().size()
+//                                  + " attribute conflicts.");
 
         } catch(Exception e) {
-            taskMonitor.setPercentCompleted(100);
-            taskMonitor.setStatus("Network Merge Failed!");
+            taskMonitor.setException(e, "Network Merge Failed!");
             e.printStackTrace();
         }
-
+        
     }
 
     /**
@@ -1171,9 +1186,8 @@ class NetworkMergeSessionTask implements Task {
      */
     //@Override
     public void halt() {
-            // Task can not currently be halted.
-            taskMonitor.setPercentCompleted(100);
-            taskMonitor.setStatus("Failed!!!");
+            cancelled = true;
+            networkMerge.interrupt();            
     }
 
     /**
@@ -1196,6 +1210,41 @@ class NetworkMergeSessionTask implements Task {
     public String getTitle() {
             return "Merging networks";
     }
+    
+    
+    private class StatusThread extends Thread {
+        private final NetworkMerge networkMerge;
+        private final TaskMonitor taskMonitor;
+        private boolean finished;
+        
+        public StatusThread(final NetworkMerge networkMerge, final TaskMonitor taskMonitor) {
+            this.networkMerge = networkMerge;
+            this.taskMonitor = taskMonitor;
+            finished = false;
+        }
+        
+        public void setFinished(final boolean finished) {
+            this.finished = finished;
+        }
+        
+        public void run() {
+            while (true) {
+                String status = networkMerge.getStatus();
+                taskMonitor.setStatus(status);
+                try {
+                    Thread.sleep(1000);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                    break;
+                }
+                
+                if (finished) {
+                    taskMonitor.setPercentCompleted(100);
+                    break;
+                }
+            }            
+        }
+    };
 }
 
 class HandleConflictsTask implements Task {
@@ -1249,8 +1298,9 @@ class HandleConflictsTask implements Task {
              taskMonitor.setStatus("Successfully handled " + (nBefore-nAfter) + " attribute conflicts. "
                                         + nAfter+" conflicts remains.");
         } catch(Exception e) {
-                taskMonitor.setPercentCompleted(100);
-                taskMonitor.setStatus("Conflict handle Failed!");
+                //taskMonitor.setPercentCompleted(100);
+                //taskMonitor.setStatus("Conflict handle Failed!");
+                taskMonitor.setException(e, "Conflict handle Failed!");
                 e.printStackTrace();
         }
 

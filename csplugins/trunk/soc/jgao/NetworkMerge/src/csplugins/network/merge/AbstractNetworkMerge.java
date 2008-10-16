@@ -58,7 +58,9 @@ import giny.model.Edge;
  * 
  */
 public abstract class AbstractNetworkMerge implements NetworkMerge {
-     private final NetworkMergeParameter parameter;
+     protected final NetworkMergeParameter parameter;
+     protected String status;
+     protected boolean interrupted; // to enable cancel of the network merge operation
 
      public AbstractNetworkMerge(final NetworkMergeParameter parameter) {
              if (parameter==null) {
@@ -66,6 +68,12 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
              }
 
              this.parameter = parameter;
+             status = "Merging networks... 0%";
+             interrupted = false;
+     }
+     
+     public void interrupt() {
+         interrupted = true;
      }
 
      /**
@@ -165,7 +173,10 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
             throw new java.lang.IllegalArgumentException("Empty title");
         }
         
+        // get node matching list
         List<Map<CyNetwork,Set<GraphObject>>> matchedNodeList = getMatchedList(networks,true);
+        if (interrupted) return null;
+        
         matchedNodeList = selectMatchedNodeList(matchedNodeList, op, networks);
 
         final Map<Node,Node> mapNN = new HashMap<Node,Node>(); // save information on mapping from original nodes to merged nodes
@@ -188,13 +199,16 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
                     mapNN.put(node_ori, node);                    
                 }
             }
+            
+            status = "Merging nodes...\n"+(i+1)+"/"+nNode+" ("+((i+1)*100/nNode)+"%)";
+            if (interrupted) return null;
         }
         
         // merge edges
         List<Map<CyNetwork,Set<GraphObject>>> matchedEdgeList = getMatchedList(networks,false);
+        if (interrupted) return null;
         
         final int nEdge = matchedEdgeList.size();
-
         final List<Edge> edges = new Vector<Edge>(nEdge);
         for (int i=0; i<nEdge; i++) {
             final Map<CyNetwork,Set<GraphObject>> mapNetEdge = matchedEdgeList.get(i);
@@ -220,10 +234,16 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
             
             final Edge edge = mergeEdge(mapNetEdge,source,target,interaction,directed);
             edges.add(edge);
+            
+            status = "Merging edges...\n"+(i+1)+"/"+nEdge+" ("+((i+1)*100/nEdge)+"%)";
+            if (interrupted) return null;
         }
         
         // create new network
-       final CyNetwork network = Cytoscape.createNetwork(nodes, edges, title);
+        final CyNetwork network = Cytoscape.createNetwork(nodes, edges, title);
+        
+        status = "Successfully merged the selected "+networks.size()+
+                 " networks into network "+title+" with "+nNode+" nodes and "+nEdge+" edges";
         
         return network;
     }
@@ -247,7 +267,14 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
         
         final List<Map<CyNetwork,Set<GraphObject>>> matchedList = new Vector<Map<CyNetwork,Set<GraphObject>>>();
         
-        final int nNet = networks.size();        
+        final int nNet = networks.size();
+        
+        // Get the total number nodes/edge to calculate the status
+        int totalGO=0, processedGO=0;
+        for (int i=0; i<nNet; i++) {
+            final CyNetwork net = networks.get(i);
+            totalGO += isNode?net.getNodeCount():net.getEdgeCount();
+        }
         
         for (int i=0; i<nNet; i++) {
             final CyNetwork net1 = networks.get(i);
@@ -304,7 +331,13 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
                     matchedGO.put(net1, gos1);
                     matchedList.add(matchedGO);
                 }
+                
+                // recode status
+                processedGO++;
+                status = "Matching "+(isNode?"nodes":"edges")+"...\n"+processedGO+"/"+totalGO+" ("+processedGO*100/totalGO+"%)";
+                if (interrupted) return null;
             }
+            
         }
         
         return matchedList;
@@ -355,5 +388,13 @@ public abstract class AbstractNetworkMerge implements NetworkMerge {
         
         return list;
     }
- 
+    
+     /**
+     * 
+     * @return the status in a Vector with the first element of description (String)
+     *         and the second element of percentage finished (Integer)
+     */
+    public String getStatus() {
+        return status;
+    }
 }
