@@ -44,12 +44,12 @@ public class DiscreteVisualProperty implements VisualProperty {
 			if (((Stroke) o) != ev.getStroke() )
 				ev.setStroke((Stroke) o);
 		} else if (name.equals("EDGE_SRCARROW_SHAPE")){
-			final int newSourceEnd = ((Integer) o).intValue();
+			final int newSourceEnd = -((Integer) o).intValue();
 			if (newSourceEnd != ev.getSourceEdgeEnd() ) {
 				ev.setSourceEdgeEnd(newSourceEnd);
 			}
 		} else if (name.equals("EDGE_TGTARROW_SHAPE")){
-			final int newTargetEnd = ((Integer) o).intValue();
+			final int newTargetEnd = -((Integer) o).intValue();
 			if (newTargetEnd != ev.getTargetEdgeEnd()) {
 				ev.setTargetEdgeEnd(newTargetEnd);
 			}
