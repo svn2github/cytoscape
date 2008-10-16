@@ -1,5 +1,6 @@
 package edu.ucsd.bioeng.idekerlab.biomartclient.tests;
 
+import java.io.BufferedReader;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +24,10 @@ public class QueryBuilderUtilTest extends TestCase {
 
 	
 	public void testGetAllAliases() throws Exception {
-		List<String[]> res = stub.sendQuery(QueryBuilderUtil.getAllAliases(null));
-//		for(String[] r: res) {
-//			for(String c:r) {
-//				System.out.print("===" + c);
-//			}
-//			System.out.println("");
-//		}
+		BufferedReader reader = stub.sendQuery(QueryBuilderUtil.getAllAliases(null));
+		String line;
+		while ((line = reader.readLine()) != null)
+			System.out.println(line);
 		
 		Map<String, String> ds = stub.getAvailableDatasets("ensembl");
 		int count = 1;

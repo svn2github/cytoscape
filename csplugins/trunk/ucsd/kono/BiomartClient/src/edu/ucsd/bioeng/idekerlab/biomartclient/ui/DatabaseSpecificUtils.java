@@ -1,3 +1,4 @@
+
 /*
  Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -32,34 +33,24 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package edu.ucsd.bioeng.idekerlab.biomartclient;
 
-import java.awt.event.ActionEvent;
+package edu.ucsd.bioeng.idekerlab.biomartclient.ui;
 
-import javax.swing.AbstractAction;
-
-import cytoscape.Cytoscape;
-import cytoscape.data.webservice.WebServiceClientManager;
-import cytoscape.plugin.CytoscapePlugin;
-import edu.ucsd.bioeng.idekerlab.biomartclient.ui.BiomartMainDialog;
-
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Biomart web service client plugin.
+ *
  */
-public class BiomartClientPlugin extends CytoscapePlugin {
-	/**
-	 * Creates a new BiomartClientPlugin object.
-	 * @throws Exception
-	 */
-	public BiomartClientPlugin() throws Exception {
-		// Register this client to the manager.
-		WebServiceClientManager.registerClient(BiomartClient.getClient());
+public class DatabaseSpecificUtils {
+	static {
+	}
+	
+	
+	private static final Map<String, Map<String, String>> conversionMap = new HashMap<String, Map<String, String>>();
 
-		Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("File.Import").add(new AbstractAction("Import attributes from Biomart...") {
-				public void actionPerformed(ActionEvent e) {
-					BiomartMainDialog.showUI();
-				}
-			});
+	// Will be used to convert filter name to attribute name.
+	protected static String filter2attribute(String dbName, String filterName) {
+		return null;
 	}
 }

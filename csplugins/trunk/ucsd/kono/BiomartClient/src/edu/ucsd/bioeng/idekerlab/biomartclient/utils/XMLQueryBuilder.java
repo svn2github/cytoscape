@@ -85,7 +85,7 @@ public class XMLQueryBuilder {
 		Element query = doc.createElement("Query");
 		query.setAttribute("virtualSchemaName", "default");
 		query.setAttribute("header", "1");
-		query.setAttribute("uniqueRows", "0");
+		query.setAttribute("uniqueRows", "1");
 		query.setAttribute("count", "");
 		query.setAttribute("datasetConfigVersion", "0.6");
 		query.setAttribute("formatter", "TSV");

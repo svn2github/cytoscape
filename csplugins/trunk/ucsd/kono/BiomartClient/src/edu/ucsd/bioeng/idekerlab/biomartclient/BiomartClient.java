@@ -34,6 +34,7 @@
 */
 package edu.ucsd.bioeng.idekerlab.biomartclient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ import java.util.List;
 import javax.naming.ConfigurationException;
 
 import cytoscape.Cytoscape;
-import cytoscape.data.CyAttributesUtils;
+import cytoscape.data.CyAttributes;
 import cytoscape.data.webservice.AttributeImportQuery;
 import cytoscape.data.webservice.CyWebServiceEvent;
 import cytoscape.data.webservice.CyWebServiceException;
@@ -51,126 +52,172 @@ import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.WebServiceClientManager.ClientType;
 import cytoscape.layout.Tunable;
 import cytoscape.util.ModulePropertiesImpl;
+import giny.model.Node;
+
 
 /**
  * Biomart Web Service Client.
- * 
+ *
  * @author kono
- * @version 0.6
+ * @version 0.8
  * @since Cytoscape 2.6
- * 
+ *
  */
 public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
-
 	// Client name
 	private static final String DISPLAY_NAME = "Biomart Web Service Client";
-	
+
 	// Client ID
 	private static final String CLIENT_ID = "biomart";
-	
+
 	// Actual biomart client.
 	private static WebServiceClient<BiomartStub> client;
-	
+
 	// Biomart base URL
 	private static final String BASE_URL = "http://www.biomart.org/biomart/martservice";
+	
+	private boolean cancelImport = false;
+	
+	private String lastStatus;
 
 	/**
 	 *  DOCUMENT ME!
 	 *
 	 * @return  DOCUMENT ME!
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static WebServiceClient<BiomartStub> getClient() throws Exception {
-		if(client == null) {
+		if (client == null) {
 			client = new BiomartClient();
 		}
+
 		return client;
 	}
+	
+	
 
 	/**
 	 * Creates a new Biomart Client object.
-	 * 
+	 *
 	 * @throws ServiceException
 	 * @throws ConfigurationException
 	 */
 	public BiomartClient() throws Exception {
 		super(CLIENT_ID, DISPLAY_NAME, new ClientType[] { ClientType.ATTRIBUTE });
 		clientStub = new BiomartStub(BASE_URL);
-		
+
 		// Set properties
 		props = new ModulePropertiesImpl(clientID, "wsc");
 
-//		props.add(new Tunable("max_interactions", "Maximum number of records", Tunable.INTEGER,
-//		                      new Integer(1000)));
+		//		props.add(new Tunable("max_interactions", "Maximum number of records", Tunable.INTEGER,
+		//		                      new Integer(1000)));
 
 		//props.add(new Tunable("search_depth", "Search depth", Tunable.INTEGER, new Integer(0)));
-		props.add(new Tunable("import_all", "Import all available entries",
-		                      Tunable.BOOLEAN, new Boolean(false)));
-		
-		props.add(new Tunable("show_all_filter", "Show all available filters",
-                Tunable.BOOLEAN, new Boolean(false)));
-		props.add(new Tunable("base_url", "Biomart Base URL",
-                Tunable.STRING, BASE_URL ));
+		props.add(new Tunable("import_all", "Import all available entries", Tunable.BOOLEAN,
+		                      new Boolean(false)));
+
+		props.add(new Tunable("show_all_filter", "Show all available filters", Tunable.BOOLEAN,
+		                      new Boolean(false)));
+		props.add(new Tunable("base_url", "Biomart Base URL", Tunable.STRING, BASE_URL));
 	}
 
 	/**
 	 * Execute service based on events.
-	 * @throws  
-	 * @throws CyWebServiceException 
+	 * @throws
+	 * @throws CyWebServiceException
 	 */
 	@Override
 	public void executeService(CyWebServiceEvent e) throws CyWebServiceException {
 		if (e.getSource().equals(CLIENT_ID)) {
 			if (e.getEventType().equals(WSEventType.IMPORT_ATTRIBUTE)) {
 				importAttributes((AttributeImportQuery) e.getParameter());
+			} else if(e.getEventType().equals(WSEventType.CANCEL)) {
+				System.out.println("========Cancelling...");
+				cancelImport = true;
 			}
-		}
-	}	
-	
-	
+		} 
+	}
+
 	/**
 	 * Based on the query given, execute the data fetching.
-	 * 
+	 *
 	 * @param query
-	 * @throws CyWebServiceException 
-	 * @throws IOException 
-	 * @throws Exception 
+	 * @throws CyWebServiceException
+	 * @throws IOException
+	 * @throws Exception
 	 */
 	private void importAttributes(AttributeImportQuery query) throws CyWebServiceException {
-		
-			List<String[]> result = null;
-			try {
-				result = clientStub.sendQuery(query.getParameter().toString());
-			} catch (IOException e) {
+		BufferedReader result = null;
+		List<String> report;
+		try {
+			result = clientStub.sendQuery(query.getParameter().toString());
+			if (result.ready() == false)
 				throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
-			}
-			
-			if(((List<String[]>) result).size() == 1) {
-				String[] res = ((List<String[]>) result).get(0);
-				if(res[0].contains("Query ERROR")) {
-					throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
-				}
-			}
-	
-			mapping((List<String[]>) result, query.getKeyCyAttrName(), query.getKeyNameInWebService());
-			Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
+			report = mapping(result, query.getKeyCyAttrName(), query.getKeyNameInWebService());
+		} catch (IOException e) {
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+		}
+		
+		lastStatus = reportBuilder(report);
+		
+		Cytoscape.firePropertyChange(Cytoscape.ATTRIBUTES_CHANGED, null, null);
 	}
 	
-	private void mapping(List<String[]> result, String key, String keyAttrName) {
-		final String[] columnNames = result.get(0);
-		final int rowCount = result.size();
-		final int colSize = columnNames.length;
-		int keyPosition = 0;
+	private String reportBuilder(List<String> report) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Import Finished:\n\n");
+		for(String s: report)
+			builder.append(s+"\n");
+		
+		
+		return builder.toString();
+	}
+	
+	public String getLastStatus() {
+		return lastStatus;
+	}
 
+	
+	
+	private List<String> mapping(BufferedReader reader, String key, String keyAttrName) throws IOException, CyWebServiceException {
+		String line = reader.readLine();
+		System.out.println("Table Header: " + line);
+		final String[] columnNames = line.split("\\t");
+		
+		if (columnNames[0].contains("Query ERROR"))
+			throw new CyWebServiceException(CyWebServiceException.WSErrorCode.REMOTE_EXEC_FAILED);
+		
+
+		// For status report
+		int recordCount = 0;
+		List<String> report = new ArrayList<String>();
 		
 		
+		//final int rowCount = result.size();
+		final int colSize = columnNames.length;
+		int keyIdx = 0;
+
+		// Search column index of the key
 		for (int i = 0; i < colSize; i++) {
-			if (columnNames[i].equals(key)) {
-				keyPosition = i;
-			}
+			if (columnNames[i].equals(key))
+				keyIdx = i;
 		}
 
-		String[] entry;
+		byte attrDataType = Cytoscape.getNodeAttributes().getType(keyAttrName);
+		final List<String> nodeIdList = new ArrayList<String>();
+
+		// Prepare list of node IDs.
+		// This is necessary for reverse-mapping.
+		if (keyAttrName.equals("ID") == false) {
+			final List<Node> nodes = Cytoscape.getRootGraph().nodesList();
+
+			for (Node node : nodes)
+				nodeIdList.add(node.getIdentifier());
+		}
+
+		final CyAttributes attr = Cytoscape.getNodeAttributes();
+
+		String[] row;
 		String val;
 
 		List<List<Object>> listOfValList;
@@ -178,38 +225,53 @@ public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
 
 		List<Object> testList;
 		String keyVal = null;
+		int rowLength = 0;
 
-		for (int i = 1; i < rowCount; i++) {
-			entry = result.get(i);
-
-			if (entry.length <= keyPosition) {
-				continue;
+		
+		int hitCount = 0;
+		
+		long start = System.currentTimeMillis();
+		while ((line = reader.readLine()) != null) {
+			// Cancel the job.
+			if(cancelImport) {
+				cancelImport = false;
+				return null;
 			}
+			
+			row = line.split("\\t");
 
-			keyVal = entry[keyPosition];
+			// Ignore invalid length entry.
+			if ((row.length <= keyIdx) || (row.length == 0))
+				continue;
 
-			for (int j = 0; j < entry.length; j++) {
-				val = entry[j];
+			
+			recordCount++;
+			keyVal = row[keyIdx];
 
-				if ((val != null) && (val.length() != 0) && (j != keyPosition)) {
+			//			System.out.println("Key ====>" + keyVal + "<==");
+			//			for(String s: entry)
+			//				System.out.println("ENT ======>" + s + "<===");
+			rowLength = row.length;
+
+			for (int j = 0; j < rowLength; j++) {
+				val = row[j];
+
+				if ((val != null) && (val.length() != 0) && (j != keyIdx)) {
 					listOfValList = new ArrayList<List<Object>>();
 
 					if (keyAttrName.equals("ID")) {
+						testList = attr.getListAttribute(keyVal, columnNames[j]);
 
-						testList = Cytoscape.getNodeAttributes()
-                        .getListAttribute(keyVal, columnNames[j]);
-						if(testList != null) {
+						if (testList != null)
 							listOfValList.add(testList);
-						}
 					} else {
-						ids = CyAttributesUtils.getIDListFromAttributeValue(CyAttributesUtils.AttributeType.NODE,
-						                                                                 keyAttrName,
-						                                                                 keyVal);
+						ids = getIdFromAttrValue(attrDataType, keyAttrName, keyVal, nodeIdList, attr);
 
-						for (String id : ids) {
-							listOfValList.add(Cytoscape.getNodeAttributes()
-							                           .getListAttribute(id, columnNames[j]));
-						}
+						if (ids.size() == 0)
+							continue;
+
+						for (String id : ids)
+							listOfValList.add(attr.getListAttribute(id, columnNames[j]));
 					}
 
 					if (listOfValList.size() == 0) {
@@ -218,35 +280,78 @@ public class BiomartClient extends WebServiceClientImpl<BiomartStub> {
 					}
 
 					int index = 0;
-					
 					for (List<Object> valList : listOfValList) {
-						if (valList == null) {
+						if (valList == null)
 							valList = new ArrayList<Object>();
-						}
 
-						if (valList.contains(entry[j]) == false) {
-							valList.add(entry[j]);
-						}
+						if (valList.contains(row[j]) == false)
+							valList.add(row[j]);
 
 						if (keyAttrName.equals("ID")) {
-							Cytoscape.getNodeAttributes()
-						         .setListAttribute(keyVal, columnNames[j], valList);
-							Cytoscape.getNodeAttributes()
-					         .setAttribute(keyVal, columnNames[j]+"-TOP", valList.get(0).toString());
+							attr.setListAttribute(keyVal, columnNames[j], valList);
+							attr.setAttribute(keyVal, columnNames[j] + "-TOP",
+							                  valList.get(0).toString());
 						} else {
-							Cytoscape.getNodeAttributes()
-					         .setListAttribute(ids.get(index), columnNames[j], valList);
-							Cytoscape.getNodeAttributes()
-					         .setAttribute(ids.get(index), columnNames[j]+"-TOP", valList.get(0).toString());
+							attr.setListAttribute(ids.get(index), columnNames[j], valList);
+							attr.setAttribute(ids.get(index), columnNames[j] + "-TOP",
+							                  valList.get(0).toString());
+
 						}
+						hitCount++;
 						index++;
 					}
 				}
 			}
 		}
+		
+		System.out.println("Time =====> " + (System.currentTimeMillis()-start));
+		
+		reader.close();
+		reader = null;
+		
+		report.add("Number of Records (Rows) from BioMart = " + recordCount + "\n");
+		report.add("Number of Terms Mapped = " + hitCount + "\n");
+		report.add("The following node attributes are created:" + "\n");
+		for(String s: columnNames) {
+			report.add(s + ", " + s+"-TOP");
+		}
+		report.add("\nAttributes name ends with \'TOP\' contains first entry of the list");
+		return report;
 	}
-	
-	
-	
-	
+
+	private List<String> getIdFromAttrValue(final byte attrDataType, final String attrName,
+	                                        Object attrValue, List<String> nodeIdList,
+	                                        CyAttributes attr) {
+		final List<String> idList = new ArrayList<String>();
+
+		String value;
+
+		List<Object> l = null;
+
+		if (attrDataType == CyAttributes.TYPE_SIMPLE_LIST) {
+			for (String id : nodeIdList) {
+				l = attr.getListAttribute(id, attrName);
+
+				if ((l != null) && (l.size() > 0)) {
+					for (Object obj : l) {
+						if ((obj != null) && obj.equals(attrValue)) {
+							idList.add(id);
+
+							break;
+						}
+					}
+				}
+			}
+		} else if (attrDataType == CyAttributes.TYPE_STRING) {
+			for (String id : nodeIdList) {
+				// Extract attribute value from ID
+				value = attr.getStringAttribute(id, attrName);
+
+				if ((value != null) && value.equals(attrValue))
+					idList.add(id);
+			}
+		}
+
+		return idList;
+	}
 }

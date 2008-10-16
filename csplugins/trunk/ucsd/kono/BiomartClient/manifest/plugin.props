@@ -5,10 +5,10 @@ pluginName=BiomartClient
 
 # Description used to give users information about the plugin such as what it does.  
 # Html tags are encouraged for formatting purposes.
-pluginDescription=<p>Web Service client module for Biomart (<a href="http://www.biomart.org/">http://www.biomart.org/</a>).</p><p><strong><font color="red">To use this function from Cytoscape GUI, <u>Biomart User Interface</u> plugin is required.</font></strong>
+pluginDescription=<p>Web Service client module for Biomart (<a href="http://www.biomart.org/">http://www.biomart.org/</a>).</p><p><strong><font color="red">Now GUI is integrated and you do not have to install UI plugin for this version.</font></strong>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.58
+pluginVersion=0.80
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6

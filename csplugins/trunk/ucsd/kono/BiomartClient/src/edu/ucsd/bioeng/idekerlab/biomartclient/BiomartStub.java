@@ -83,6 +83,9 @@ public class BiomartStub {
 	private Map<String, Map<String, String>> filterConversionMap;
 	private Map<String, String> taxonomyTable;
 
+	
+	private static final int BUFFER_SIZE = 81920;
+	
 	/**
 	 * Creates a new BiomartStub object.
 	 * @throws IOException
@@ -188,7 +191,10 @@ public class BiomartStub {
 		// Get the result as XML document.
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		final DocumentBuilder builder = factory.newDocumentBuilder();
+		
 		InputStream is = URLUtil.getBasicInputStream(targetURL);
+		
+		
 		final Document registry = builder.parse(is);
 
 		// Extract each datasource
@@ -309,14 +315,11 @@ public class BiomartStub {
 			parts = s.split("\\t");
 
 			if ((parts.length > 1)) {
-				if (getAll) {
-					filters.put(parts[1], parts[0]);
-				} else if ((parts[1].contains("ID(s)") || parts[1].contains("Accession(s)")
+				if ((parts[1].contains("ID(s)") || parts[1].contains("Accession(s)")
 				           || parts[1].contains("IDs")) && (parts[0].startsWith("with_") == false)
-				           && (parts[0].endsWith("-2") == false)) {
+				           && (parts[0].endsWith("-2") == false) || parts.length>6 && parts[5].equals("id_list")) {
 					filters.put(parts[1], parts[0]);
-
-					//System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
+//					System.out.println("### Filter Entry = " + parts[1] + " = " + parts[0]);
 				}
 			}
 		}
@@ -397,7 +400,10 @@ public class BiomartStub {
 	 *
 	 * @throws Exception DOCUMENT ME!
 	 */
-	public List<String[]> sendQuery(String xmlQuery) throws IOException {
+	public BufferedReader sendQuery(String xmlQuery) throws IOException {
+		
+		System.out.println("=======Query = " + xmlQuery);
+		
 		URL url = new URL(baseURL);
 		URLConnection uc = URLUtil.getURLConnection(url);
 		uc.setDoOutput(true);
@@ -414,29 +420,28 @@ public class BiomartStub {
 		ps.close();
 		ps = null;
 		os = null;
-		
 
-		final InputStream is = uc.getInputStream();
+		return new BufferedReader(new InputStreamReader(uc.getInputStream()), BUFFER_SIZE);
+//		String line;
+//		line = reader.readLine();
+//		
+//		String[] parts = line.split("\\t");
+//		final List<String[]> result = new ArrayList<String[]>();
+//		result.add(parts);
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String s;
-		s = reader.readLine();
-		System.out.println("Returned Table Header: " + s);
+//		while ((line = reader.readLine()) != null) {
+//			
+//			System.out.println("Result ==> " + line);
+//			
+//			parts = line.split("\\t");
+//			result.add(parts);
+//		}
+//
+//		is.close();
+//		reader.close();
+//		reader = null;
 
-		String[] parts = s.split("\\t");
-		final List<String[]> result = new ArrayList<String[]>();
-		result.add(parts);
-
-		while ((s = reader.readLine()) != null) {
-			parts = s.split("\\t");
-			result.add(parts);
-		}
-
-		is.close();
-		reader.close();
-		reader = null;
-
-		return result;
+//		return result;
 	}
 
 	private String taxID2datasource(String ncbiTaxID) throws IOException {
@@ -504,8 +509,23 @@ public class BiomartStub {
 		
 		String query2 = XMLQueryBuilder.getQueryString(dataset, attrs, filters);
 		
-		res = sendQuery(query2);
+		BufferedReader reader = sendQuery(query2);
 
+		String line;
+		line = reader.readLine();
+		
+		String[] parts = line.split("\\t");
+		
+		res.add(parts);
+
+		while ((line = reader.readLine()) != null) {
+			parts = line.split("\\t");
+			res.add(parts);
+		}
+
+		reader.close();
+		reader = null;
+		
 		return res;
 	}
 	
