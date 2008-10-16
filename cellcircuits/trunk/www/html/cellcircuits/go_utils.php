@@ -1,26 +1,29 @@
 <?php
 function addMissingGene2GO($species_genus, $species_species,$missingGene, $connection) {
 	echo "go_utils.addMissingGene2GO() ... -$species_genus - $species_species - $missingGene ...<br>\n";
-	//return;
+
 	// Note: missing gene already have a _HUMAN if species is 'homo sapiens'
 
 	$species_id = getSpeciesID($species_genus, $species_species, $connection);
 	//echo "species_id = $species_id\n";
 	
 	// Add an entry to the dbxref for the new gene
+	$xref_key = $species_genus."_".$species_species."_".$missingGene;
 	$dbQuery = "INSERT INTO dbxref (xref_dbname, xref_key) ";
-	$dbQuery .= "VALUES ('cellcircuits_ucsd','$missingGene')"; // 'cellcircuits_ucsd' is the pretended DB name
+	$dbQuery .= "VALUES ('cellcircuits_ucsd','$xref_key')"; // 'cellcircuits_ucsd' is the pretended DB name
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
 		showerror();
 	$dbxref_id = mysql_insert_id($connection);
-
 	//$dbxref_id = 3970881;
 	//echo "dbxref_id = $dbxref_id\n";
 	
 	// Add an entry to gene_product table
 	$dbQuery = "INSERT INTO gene_product (symbol,dbxref_id,species_id) ";
 	$dbQuery .= "VALUES ('$missingGene',$dbxref_id,$species_id)";
+		
+	//echo "dbQuery  = \n$dbQuery \n";
+		
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
 		showerror();
@@ -28,7 +31,7 @@ function addMissingGene2GO($species_genus, $species_species,$missingGene, $conne
 	$gene_product_auto_id = mysql_insert_id($connection);
 	//$gene_product_auto_id = 3790639;
 	//echo "gene_product_id = $gene_product_auto_id\n";
-
+	
 	// Get term ids for the terms -- 'biological process unknown','molecular function unknown','cellular component unknown'
 	$termIDs_of_unknown = getTermIDs_unknown($connection);
 
@@ -41,6 +44,7 @@ function addMissingGene2GO($species_genus, $species_species,$missingGene, $conne
 		if (!($result = @ mysql_query($dbQuery, $connection)))
 			showerror();
 	}
+
 }
 
 
@@ -152,7 +156,7 @@ function getGenesFromSif($pub_id, $name, $connection) {
 }
 
 
-function getMissingGenes($geneSet,$theSpecies, $connection) {
+function getMissingGenes($geneArray,$theSpecies, $connection) {
 	//echo "Entering getMissingGenes() ...\n";
 	$missingGenes = NULL;
 	
@@ -165,9 +169,22 @@ function getMissingGenes($geneSet,$theSpecies, $connection) {
 		$isHomoSapiens = true;
 	}
 	
-	$array_of_keys = array_keys($geneSet);
-	for ($j=0; $j< count($array_of_keys); $j++) {
-		$gene_symbol = $array_of_keys[$j];
+	//$array_of_keys = array_keys($geneSet);
+	
+	//$gene_symbols = NULL;
+	//for ($i=0; $i < count($geneArray); $i++) {
+	//	$tmpArray = split("\|", $geneArray[$i]);
+	//	for ($j =0; $j < count($tmpArray); $j++) {
+	//		$gene_symbols[] = $tmpArray[$j];
+	//	}
+	//}
+		
+	//for ($i=0; $i<count($geneArray);$i++) {
+	//	echo "geneArray[$i] = $geneArray[$i]\n";
+	//}
+	
+	for ($j=0; $j< count($geneArray); $j++) {
+		$gene_symbol = $geneArray[$j];
 		if ($isHomoSapiens) {
 			// The _HUMAN suffix is a GO cinvention
 			$gene_symbol .= '_HUMAN';
@@ -180,6 +197,11 @@ function getMissingGenes($geneSet,$theSpecies, $connection) {
 			$missingGenes[] = $gene_symbol;
 		}
 	}
+	//echo "\n";
+	//for ($i=0; $i<count($missingGenes);$i++) {
+	//	echo "missingGenes[$i] = $missingGenes[$i]\n";
+	//}
+
 
 	return $missingGenes;
 }//
@@ -194,17 +216,33 @@ function string_ends_with($string, $ending){
 // Get the gene_product_id from GO DB
 function getGeneProductID($gene_symbol, $species_species, $species_genus, $connection) {
 
+	// gene_symbol might be in the format like "PFL2345C" or "PF14_0294|YPL140"
+	$gene_symbols = split("\|", $gene_symbol);
+
 	if ($species_species == 'sapiens' && $species_genus == 'homo') {
-		if (!string_ends_with($gene_symbol, '_HUMAN')) {
-			$gene_symbol .= '_HUMAN';		
+		for ($i=0; $i < count($gene_symbols); $i++) {
+			if (!string_ends_with($gene_symbols[$i], '_HUMAN')) {
+				$gene_symbols[$i] .= '_HUMAN';		
+			}
 		}
 	}
+
+	$gene_symbols_in = "(";
+	for ($i=0; $i < count($gene_symbols); $i++) {
+		$gene_symbols_in .= "'$gene_symbols[$i]'";
+		if ($i != (count($gene_symbols) -1)) {
+			$gene_symbols_in .= ",";
+		}
+	}
+	$gene_symbols_in .= ")";
+
+	//echo "gene_symbols_in = $gene_symbols_in\n";
 
 	$dbQuery =  "SELECT gene_product.id as gene_product_id ";
 	$dbQuery .= "FROM gene_product, species ";
 	$dbQuery .= "WHERE gene_product.species_id = species.id AND ";
-	$dbQuery .= "species.genus = '$species_genus' AND species.species = '$species_species' AND gene_product.symbol = '$gene_symbol'";
-	//echo "\ndbQuery = \n$dbQuery\n\n";
+	$dbQuery .= "species.genus = '$species_genus' AND species.species = '$species_species' AND gene_product.symbol in $gene_symbols_in";
+	//echo "\n<br>dbQuery = \n$dbQuery<br>\n\n";
 		
 	// Run the query
 	if (!($result = @ mysql_query($dbQuery, $connection)))
@@ -212,6 +250,8 @@ function getGeneProductID($gene_symbol, $species_species, $species_genus, $conne
 		
 	$gene_product_id = @ mysql_result($result, 0, "gene_product_id");
 
+	//echo "gene_product_id = $gene_product_id\n";
+	
 	return $gene_product_id;
 }
 
@@ -285,11 +325,6 @@ function getNetworkFileList($publication_id, $connection) {
 
 }
 
-/*
-function getGeneList($publication_id, $connection) {
 
-
-}
-*/
 ?>
 
