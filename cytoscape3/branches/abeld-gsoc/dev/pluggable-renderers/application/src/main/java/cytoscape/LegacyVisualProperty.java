@@ -502,7 +502,9 @@ public class LegacyVisualProperty implements VisualProperty {
 			icon.setText("Font");
 
 			final Color fontColor = (Color) value;
-			final Font defFont = (Font)  VisualPropertyCatalog.getVisualProperty("NODE_FONT_FACE").getDefaultAppearanceObject();
+			// replaced due to pluggability of VisualProperties
+			//final Font defFont = (Font) VisualPropertyCatalog.getVisualProperty("NODE_FONT_FACE").getDefaultAppearanceObject();
+			final Font defFont = new Font(null, Font.PLAIN, 12);
 			icon.setTextFont(new Font(defFont.getFontName(), defFont.getStyle(), 24));
 			icon.setBottomPadding(-7);
 			icon.setTextColor(fontColor);
@@ -589,8 +591,9 @@ public class LegacyVisualProperty implements VisualProperty {
 							super.paintIcon(c, g, x, y);
 
 							g2d.setColor((Color) value);
-
-							final Font font = (Font) VisualPropertyCatalog.getVisualProperty("NODE_FONT_FACE").getDefaultAppearanceObject(); 
+							// replaced due to pluggability of VisualProperties
+							// final Font font = (Font) VisualPropertyCatalog.getVisualProperty("NODE_FONT_FACE").getDefaultAppearanceObject(); 
+							final Font font = new Font(null, Font.PLAIN, 12);
 							g2d.setFont(new Font(font.getFontName(), font.getStyle(), 28));
 							g2d.drawString("Label", 8, (c.getHeight() / 2) + 10);
 							g2d.setFont(new Font("SansSerif", Font.BOLD, 12));
