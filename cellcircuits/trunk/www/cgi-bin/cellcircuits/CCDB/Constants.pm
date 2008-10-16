@@ -44,7 +44,7 @@ our $DEFAULT_ENRICHMENT_LIMIT = 3;
 our $cgi_version  = "v1.0";
 our $cgi_url      = "/cgi-bin/cellcircuits";
 
-our $search_url   = "http://tocai.ucsd.edu/cellcircuits"; # home of index page
+our $search_url   = "http://chianti.ucsd.edu/cellcircuits/search/"; # home of index page
 
 our $data_url     = "/data";
 
@@ -222,8 +222,9 @@ sub getImageFormat
 
 	if (my $ref = $get_image_filename_sth->fetchrow_hashref()) {
 		my $filename = $ref->{'file_name'};
-		my ($baseName, $ext) = split /\./, $filename;
-		
+		#my ($baseName, $ext) = split /\./, $filename;
+		my $last_dot_pos = rindex($filename, ".");
+		my $ext = substr($filename,$last_dot_pos+1, length($filename)-$last_dot_pos);
 		return $ext;
 	}
 	return "unknown";
