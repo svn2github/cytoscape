@@ -18,8 +18,9 @@ function getSifList($pub_id, $connection) {
 	while ($_row = @ mysql_fetch_array($result)) {
 		$network_file_name = $_row["file_name"];
 		// remove extension .sif
-		$tmpArray = split("\.", $network_file_name);		
-		$network_file_basenames[] = $tmpArray[0];
+		//$tmpArray = split("\.", $network_file_name);		
+		//$network_file_basenames[] = $tmpArray[0];
+		$network_file_basenames[] = substr($network_file_name, 0, -4); 
 	}
 	return $network_file_basenames;
 }
