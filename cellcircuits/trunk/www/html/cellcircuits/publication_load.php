@@ -22,6 +22,14 @@ else {
 // Pull raw data from tables -- submission_data and raw_files
 $rawdata = getRawData($rawdata_id, $connection);
 
+$isDataValid = validateData($rawdata, $connection);
+if (!$isDataValid) {
+	?>
+	Invalid data! Check the above message for detail.<br>
+	<?php
+	exit();
+}
+
 //echo "\n".$rawdata['raw_data_auto_id']."<br>";
 //echo "\npmid=".$rawdata['pmid']."\n";
 
@@ -70,6 +78,76 @@ else {
 
 /////End of load ///////////////////////////
 
+
+
+// validate the species in the content of the zip file
+function  validateData($rawdata, $connection) {
+	$isDataValid = true;
+
+	// 1. Put the zip stream in a tmp file
+	$tmp_filename = "_tmpZipFile.zip";
+	$fp = fopen($tmp_filename, 'w');
+	if (fwrite($fp, $rawdata['data']) === FALSE) {
+		echo "Cannot write to ".$tmp_filename;
+		exit;
+	}
+	fclose($fp);
+	
+	// 2. Get distinct species
+	$zipFileParser = new ZipFileParser($tmp_filename);
+
+	$organismArray = $zipFileParser->getOrganismArray();
+	
+	$speciesStr = "";	
+		
+	for ($i=0; $i<count($organismArray); $i++) {
+		$organism = $organismArray[$i];
+		
+		$species = 'unknown';	
+		// eg. Convert the format 'Saccharomyces_cerevisiae_Homo_sapiens' into 'Saccharomyces cerevisiae,Homo sapiens'
+		if ($organism != NULL) {
+			$tmpArray = split('_',$organism);
+			if (count($tmpArray)%2 == 0) {
+				$species = "";
+				$j=0;
+				while (true) {
+					$species .= $tmpArray[$j].' '.$tmpArray[$j+1];
+					$j += 2;
+					if ($j>= count($tmpArray)) {
+						break;
+					}
+					$species .= ',';	
+				}	
+			}
+		}
+		
+		$speciesStr .= strtolower($species);			
+		if ($i != (count($organismArray) -1)) { // do not add "," for last item
+			$speciesStr .= ",";
+		}
+	}
+
+	$tmpArray = split(',',$speciesStr);
+	for ($i=0; $i<count($tmpArray); $i++) {
+		$distinctSpeciesArray[$tmpArray[$i]] = 0;
+	}
+
+	$distinctSpecies = array_keys($distinctSpeciesArray);
+	
+	// 3. get the species ID for each species,  if not find, print out warnig message
+	for ($i=0; $i<count($distinctSpecies); $i++) {
+		$tmpArray = split(' ',$distinctSpecies[$i]);
+		$species_genus = $tmpArray[0];
+		$species_species = $tmpArray[1];
+		$speciesID = getSpeciesID($species_genus, $species_species, $connection);
+		if ($speciesID == "") {
+			$isDataValid = false;
+			echo "<b>Error:</b> Can not find the species <b>",$distinctSpecies[$i],"</b> in GO Database! Most likely there is typo in the name.\n<br>";
+		}
+	}
+
+	return $isDataValid;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -333,6 +411,9 @@ function db_load_step2($rawdata_id, $connection) {
 	
 	// load table model_similarity
 	$cmd = "perl ./load_model_similarity_table.pl $pub_id";	
+	
+	//echo "$cmd<br>";
+	
 	passthru($cmd);
 	
 	// load table enrichment
@@ -389,14 +470,16 @@ function populateGeneModelTable($pub_id, $connection) {
 
 		//The name here actually is the model name
 		$name = $network_file_basenames[$i];
-		//echo "populateGeneModelTable(): model name = $name<br>";
+		echo "populateGeneModelTable(): <br>model name = $name<br>";
 
 		// 1. Get the list of genes for this sif file	
 		$geneSet_from_one_sif_file = getGenesFromSif($pub_id, $name, $connection);
 				
 		// remove duplicated genes, caused by gene symbol such as "gene_symbol1|gene_symbol2"
 		$geneArray = getRefinedGeneSet(array_keys($geneSet_from_one_sif_file));
-				
+			
+		$geneCount = count($geneArray);
+		echo "There are $geneCount genes in the model\n<br>";	
 		//foreach ($geneArray as $a_gene) {
 		//	echo "geneArray: gene= $a_gene<br>";
 		//}
