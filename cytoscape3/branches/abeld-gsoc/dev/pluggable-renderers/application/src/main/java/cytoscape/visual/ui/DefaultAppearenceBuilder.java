@@ -349,9 +349,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 					list = edgeList;
 				}
 
-				newValue = VizMapperMainPanel.showValueSelectDialog((VisualProperty) list
-				                                                                                                                                                                                                                                                                                                                                                              .getSelectedValue(),
-				                                                    this);
+				newValue = VizMapperMainPanel.showValueSelectDialog((VisualProperty) list.getSelectedValue(), this);
 				VizMapperMainPanel.apply(newValue, (VisualProperty) list.getSelectedValue());
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -508,13 +506,12 @@ public class DefaultAppearenceBuilder extends JDialog {
 		public Component getListCellRendererComponent(JList list, Object value, int index,
 		                                              boolean isSelected, boolean cellHasFocus) {
 			final VisualPropertyIcon icon;
-
+			
 			if (icons.size() > index) {
 				icon = (VisualPropertyIcon) icons.get(index);
 			} else
 				icon = null;
 
-			setText(value.toString());
 			setIcon(icon);
 			setFont(isSelected ? SELECTED_FONT : NORMAL_FONT);
 
@@ -522,13 +519,18 @@ public class DefaultAppearenceBuilder extends JDialog {
 			this.setVerticalAlignment(SwingConstants.CENTER);
 			this.setIconTextGap(55);
 
-			if (value instanceof VisualProperty
-			    && (((VisualProperty) value).getDataType() == String.class)) {
-				final Object defVal = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue((VisualProperty)value); 
+			if (value instanceof VisualProperty) {
+				VisualProperty vp = (VisualProperty) value;
+				setText(vp.getName());
+				if (vp.getDataType() == String.class) {
+					final Object defVal = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue(vp); 
 
-				if (defVal != null) {
-					this.setToolTipText((String) defVal);
+					if (defVal != null) {
+						this.setToolTipText((String) defVal);
+					}
 				}
+			} else {
+				setText(value.toString());
 			}
 
 			setBackground(isSelected ? SELECTED_COLOR : list.getBackground());
