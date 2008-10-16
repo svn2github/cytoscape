@@ -45,6 +45,7 @@ package org.cytoscape.vizmap.calculators;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.attributes.CyAttributesUtils;
 
+import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.VisualProperty;
 
 import org.cytoscape.vizmap.mappings.MappingFactory;
@@ -123,10 +124,21 @@ public abstract class AbstractCalculator implements Calculator {
 		this.name = name;
 		this.addMapping(m);
 		Class c = type.getDataType();
-
-		if (!c.isAssignableFrom(m.getRangeClass()))
+		
+		// special-case handling of DiscreteValue dataTypes since in that case the values of the Visual Property won't be instances of the DataType:
+		
+		// this gives: the following problem during runtime: (maybe due to OSGi?)
+		// Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problem: 
+		// Unhandled exception type ClassNotFoundException
+		//if (!c.isAssignableFrom(Class.forName("org.cytoscape.view.DiscreteValue")) ) {
+		// Following appears to work:
+		if (!c.isAssignableFrom(DiscreteValue.class) ) {
+			// for DiscreteValue properties, the m.getRangeClass() would return the class of the default value object.
+			// thus we don't have to check this there
+			if (!c.isAssignableFrom(m.getRangeClass()))
 			throw new ClassCastException("Invalid Calculator: Expected class " + c.toString()
 			                             + ", got " + m.getRangeClass().toString());
+		}
 	}
 
 	/**
