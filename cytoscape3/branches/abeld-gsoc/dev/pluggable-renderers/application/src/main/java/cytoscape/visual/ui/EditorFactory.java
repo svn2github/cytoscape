@@ -39,6 +39,7 @@ import cytoscape.visual.ui.EditorDisplayer;
 import cytoscape.visual.ui.EditorDisplayer.EditorType;
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 
+import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.VisualProperty;
 
 import java.lang.reflect.*;
@@ -65,7 +66,8 @@ public class EditorFactory {
 			} catch (NumberFormatException e){
 				ret = 1f;
 			}
-		} else if ((ret != null) && (action.getCompatibleClass() != ret.getClass())) {
+		} else if ( (!action.getCompatibleClass().isAssignableFrom(DiscreteValue.class)  ) 
+				&& (ret != null) && (action.getCompatibleClass() != ret.getClass())) {
 			try {
 				ret = Double.parseDouble(ret.toString());
 			} catch (NumberFormatException e){
