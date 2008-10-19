@@ -40,6 +40,16 @@ package org.cytoscape.model;
  * DOCUMENT ME!
   */
 public interface CyEdge extends GraphObject {
+	/**
+	 * The Type enum is used by methods in {@link CyNetwork} to restrict
+	 * the edges that match a query as follows:
+	 * <ul><li>UNDIRECTED: matches only undirected edges</li>
+	 * <li>INCOMING: matches either undirected edges or directed edges that end with this node</li>
+	 * <li>OUTGOING: matches either undirected edges or directed edges that start with this node</li>
+	 * <li>DIRECTED: matches directed edges regardless of whether this node is the source or the target</li>
+	 * <li>ANY: matches any edge</li>
+	 * </ul>
+	 */
 	enum Type {
 		UNDIRECTED,
 		INCOMING,
