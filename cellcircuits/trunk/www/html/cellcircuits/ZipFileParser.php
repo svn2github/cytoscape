@@ -98,6 +98,7 @@ class ZipFileParser
 				}
 			}
 		}
+		zip_close($zip);
 	}
 
 	// private methods
