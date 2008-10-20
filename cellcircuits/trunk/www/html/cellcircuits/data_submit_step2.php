@@ -1,5 +1,10 @@
 <?php
 include_once 'cc_utils.php';
+include_once 'go_utils.php';
+
+// Include the DBMS credentials
+include_once 'db.php';
+include_once 'ZipFileParser.php';
 
 $mode = 'new'; // by default it is 'new'
 
@@ -60,9 +65,6 @@ if (isset ($_POST['tried'])) {
 	$tried = 'yes';
 }
 
-// Include the DBMS credentials
-include_once 'db.php';
-
 // initialize the variables
 $data['dataFile'] = NULL;
 $data['contact'] = NULL;
@@ -99,7 +101,7 @@ if ($mode == 'edit') {
 $validated = true;
 
 if ($mode == 'new' && $tried != NULL && $tried == 'yes') {
-	$validated = isValidUserInput($data);
+	$validated = isValidUserInput($data, $connection);
 }
 
 //////// End of form validation ////////////////////
@@ -349,7 +351,7 @@ function sendConfirmationEmail($data) {
         	$bcc = $bcc . $staff_emails[$i] . " ";
 	}
 	$subject = "Your cell circuits data regarding pmid = " . $data['pmid'];
-	$body = $data['contact'].",\n\nThank you for submitting your cellcircuits data" .
+	$body = $data['contact'].",\n\nThank you for submitting your cellcircuits data. " .
         	"CellCircuits staff will review your data and publish it on the CellCircuits website." .
         	"\n\nCellCircuits team";
 
@@ -591,7 +593,7 @@ function isValidEmail($email){
 }
 
 
-function isValidUserInput($data){
+function isValidUserInput($data, $connection){
 	$msg = "";
 			
 	if ($data['email'] == NULL) {
@@ -604,9 +606,9 @@ function isValidUserInput($data){
 	if ($data['dataFile'] == NULL) {
 		$msg .= "Error: Data file (in .zip format) is a required field!<br>";
 	}
-	else {
+	else if (!isValidZipFile($data['dataFile']['tmp_name'], $connection)){
 		// Make sure it is a zip file, non-empty, with correct contents, sif and image directory inside
-		// ?????
+		$msg .= "Invalid data file!<br>";
 	}
 
 	if ($msg != "") {
@@ -615,9 +617,114 @@ function isValidUserInput($data){
 	}
 	return true;
 } // End of function isValidUserInput()
+
+
+function isValidZipFile($zipTmpFileName, $connection){
+	$isValid = true;
+	
+	//echo "zipTmpFileName = $zipTmpFileName<br>";
+	$zipFileParser = new ZipFileParser($zipTmpFileName);
+
+	//
+	$publication_url = $zipFileParser->getPublication_url();
+	//echo "publication_url =",$publication_url,"<br>";
+
+	if ($publication_url == "") {
+		$isValid = false;
+		echo "Error: publication_url is required<br>";
+
+	}
+	$sifFileArray = $zipFileParser->getSifFileArray();
+	$sifFileCount = count($sifFileArray);
+	if ($sifFileCount == 0) {
+		$isValid = false;
+		echo "Error: No sif file is found<br>";
+	}
+	//echo "Number of sif files = ",$sifFileCount,"<br>";
+	
+	$imgFileArray = $zipFileParser->getImgFileArray();
+	$imgFileCount = count($imgFileArray);
+	if ($imgFileCount == 0) {
+		$isValid = false;
+		echo "Error: No image file is found<br>";
+	}
+	//echo "Number of img files = ",$imgFileCount,"<br>";
+		
+	$thumFileArray = $zipFileParser->getThumImgFileArray();
+	$thumFileCount = count($thumFileArray);
+	if ($thumFileCount == 0) {
+		$isValid = false;
+		echo "Error: No thum file is found<br>";
+	}
+	//echo "Number of thum img files = ",$thumFileCount,"<br>";
+	
+	if ($sifFileCount != $imgFileCount  || $imgFileCount != $thumFileCount) {
+		$isValid = false;
+		echo "Error: Number of sif files must match number of image/thumImage files<br>";
+	}
+	
+	// validate organisim
+	$organismArray = $zipFileParser->getOrganismArray();
+
+	if (count($organismArray) > 0) {
+		$speciesStr = "";	
+		
+		for ($i=0; $i<count($organismArray); $i++) {
+			$organism = $organismArray[$i];
+			
+			$species = 'unknown';	
+			// eg. Convert the format 'Saccharomyces_cerevisiae_Homo_sapiens' into 'Saccharomyces cerevisiae,Homo sapiens'
+			if ($organism != NULL) {
+				$tmpArray = split('_',$organism);
+				if (count($tmpArray)%2 == 0) {
+					$species = "";
+					$j=0;
+					while (true) {
+						$species .= $tmpArray[$j].' '.$tmpArray[$j+1];
+						$j += 2;
+						if ($j>= count($tmpArray)) {
+							break;
+						}
+						$species .= ',';	
+					}	
+				}
+			}
+			
+			$speciesStr .= strtolower($species);			
+			if ($i != (count($organismArray) -1)) { // do not add "," for last item
+				$speciesStr .= ",";
+			}
+		}
+	
+		$tmpArray = split(',',$speciesStr);
+		for ($i=0; $i<count($tmpArray); $i++) {
+			$distinctSpeciesArray[$tmpArray[$i]] = 0;
+		}
+	
+		$distinctSpecies = array_keys($distinctSpeciesArray);
+		
+		//  get the species ID for each species,  if not find, print out warnig message
+		for ($i=0; $i<count($distinctSpecies); $i++) {
+			$tmpArray = split(' ',$distinctSpecies[$i]);
+			$species_genus = $tmpArray[0];
+			$species_species = $tmpArray[1];
+			$speciesID = getSpeciesID($species_genus, $species_species, $connection);
+			if ($speciesID == "") {
+				$isValid = false;
+				echo "<b>Error:</b> Can not find the species <b>",$distinctSpecies[$i],"</b> in GO Database! Most likely there is typo in the name.\n<br>";
+			}
+		}
+	}
+
+	if (!$isValid) {
+		echo "Please look at <a href = \"http://www.cellcircuits.org/search/zipFormatDefinition.html\">this page</a> for data format definition<br>";
+	}
+	//return false;
+	return $isValid;
+}          
+
 ?>
-          
-          
+
 </p>
 </body>
 </html>
