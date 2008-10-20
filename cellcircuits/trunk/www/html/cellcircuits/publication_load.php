@@ -7,7 +7,7 @@ include_once 'ZipFileParser.php';
 // get rawdata_id
 $debug = false;
 if ($debug) {
-	$rawdata_id = 1;
+	$rawdata_id = 3;
 }
 else {
 	if (isset($_GET['rawdata_id'])) {
@@ -17,6 +17,13 @@ else {
 		echo "Unknown data set id";
 		exit();
 	}
+}
+
+if (alreadyLoaded($rawdata_id, $connection)) {
+	?>
+	This publicatin has already been loaded! Please remove it before load it again<br>
+	<?php
+	exit();
 }
 
 // Pull raw data from tables -- submission_data and raw_files
@@ -78,6 +85,21 @@ else {
 
 /////End of load ///////////////////////////
 
+function alreadyLoaded($rawdata_id, $connection) {
+
+	$dbQuery = "select * from publications where rawdata_id =$rawdata_id";
+	
+	// Run the query
+	if (!($result = @ mysql_query($dbQuery, $connection)))
+		showerror();
+
+	if( @ mysql_num_rows($result) > 0) {
+		// found
+		return true;
+	}
+
+	return false;
+}
 
 
 // validate the species in the content of the zip file
