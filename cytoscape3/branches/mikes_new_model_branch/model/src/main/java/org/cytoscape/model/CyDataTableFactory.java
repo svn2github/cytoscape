@@ -46,9 +46,6 @@ import java.util.List;
  */
 public interface CyDataTableFactory {
 	/**
-	 * 
-	DOCUMENT ME!
-	 *
 	 * @param name The name of the CyDataTable.
 	 * @param pub Whether or not the CyDataTable should be public.
 	 *
@@ -57,7 +54,7 @@ public interface CyDataTableFactory {
 	 */
 	CyDataTable createTable(String name, boolean pub);
 
-/**
+	/**
      * @param includePrivate Whether to include private CyDataTables
      * in the list (i.e. all possible CyDataTables) or not.
      * @return A list containing CyDataTable SUIDs either
@@ -68,8 +65,6 @@ public interface CyDataTableFactory {
 
 	/**
 	 * 
-	DOCUMENT ME!
-	 *
 	 * @param suid The SUID identifying the CyDataTable.
 	 *
 	 * @return The CyDataTable identified by the suid. Will return null if a CyDataTable doesn't
