@@ -336,13 +336,13 @@ class ArraySubGraph implements CySubNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addNode(final CyNode node) {
+	public boolean addNode(final CyNode node) {
 		if (node == null)
 			throw new NullPointerException("node is null");
 		
 		synchronized (this) {
 		if (containsNode(node))
-			return;	
+			return false;	
 
 		if (!parent.containsNode(node))
 			throw new IllegalArgumentException("node is not contained in parent network!");
@@ -369,15 +369,17 @@ class ArraySubGraph implements CySubNetwork {
 			addEdge(edge);
 			
 		}
+
+		return true;
 	}
 
-	public void addEdge(final CyEdge edge) {
+	public boolean addEdge(final CyEdge edge) {
 		if (edge == null)
 			throw new NullPointerException("edge is null");
 		
 		synchronized (this) {
 		if (containsEdge(edge))
-			return;
+			return false;
 
 		if (!parent.containsEdge(edge))
 			throw new IllegalArgumentException("edge is not contained in parent network!");
@@ -387,6 +389,8 @@ class ArraySubGraph implements CySubNetwork {
 		edgeSet.add(edge);
 		updateEdge(edge);
 		}
+
+		return true;
 	}
 
 	/**

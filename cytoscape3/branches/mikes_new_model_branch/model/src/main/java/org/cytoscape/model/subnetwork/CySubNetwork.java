@@ -72,7 +72,7 @@ public interface CySubNetwork extends CyNetwork {
 	 *
 	 * @param node  CyNode to add to this subnetwork
 	 */
-	void addNode(CyNode node);
+	boolean addNode(CyNode node);
 
 	/**
 	 * Adds an edge to this {@link CySubNetwork}.  Note that the added edge
@@ -80,7 +80,7 @@ public interface CySubNetwork extends CyNetwork {
 	 *
 	 * @param edge  CyEdge to add to this subnetwork
 	 */
-	void addEdge(CyEdge edge);
+	boolean addEdge(CyEdge edge);
 
 	/**
 	 * A shortcut method that Creates a new {@link CyNode} in both this subnetwork 
@@ -99,4 +99,13 @@ public interface CySubNetwork extends CyNetwork {
 	 * @param node  Node to remove from this subnetwork
 	 */
 	boolean removeNode(CyNode node);
+
+	/**
+	 * Removes a edge from this {@link CySubNetwork} but not from the {@link CyRootNetwork}.  
+	 * The edge is removed from the CySubNetwork, but <i>not</i> deleted
+	 * from the {@link CyRootNetwork}.
+	 *
+	 * @param edge  Edge to remove from this subnetwork
+	 */
+	boolean removeEdge(CyEdge edge);
 }
