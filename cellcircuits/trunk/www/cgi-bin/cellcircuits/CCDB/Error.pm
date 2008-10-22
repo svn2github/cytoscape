@@ -165,7 +165,7 @@ sub print_params
 	$h .= "</ul> </font>";
     }
 
-    $h .= '<p>Try another search OR Adjust search parameters using <a class="color-bg-link" href="/advanced_search.html">Advanced Search</a></p>';
+    $h .= '<p>Try another search OR Adjust search parameters using <a class="color-bg-link" href="/search/advanced_search.php">Advanced Search</a></p>';
 
     return $h;
 }
