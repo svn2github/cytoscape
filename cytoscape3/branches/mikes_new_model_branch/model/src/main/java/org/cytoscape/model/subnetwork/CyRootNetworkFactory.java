@@ -34,12 +34,15 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model;
+package org.cytoscape.model.subnetwork;
 
+import org.cytoscape.model.CyNetwork;
 
+public interface CyRootNetworkFactory {
 
-public interface CyNetworkFactory {
-
-	CyNetwork getInstance();
+	/**
+	 * Converts a CyNetwork to a CyRootNetwork
+	 */
+	CyRootNetwork convert(CyNetwork n);
 
 }

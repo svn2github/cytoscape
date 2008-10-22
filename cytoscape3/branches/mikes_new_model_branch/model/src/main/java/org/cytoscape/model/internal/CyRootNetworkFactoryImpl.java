@@ -36,10 +36,19 @@
 
 package org.cytoscape.model;
 
+import org.cytoscape.model.subnetwork.CyRootNetwork;
+import org.cytoscape.model.subnetwork.CySubNetwork;
 
+public class CyRootNetworkFactoryImpl {
+	
+	public CyRootNetworkFactoryImpl() {}
 
-public interface CyNetworkFactory {
-
-	CyNetwork getInstance();
-
+	public CyRootNetwork convert(final CyNetwork net) {
+		if ( net instanceof CyRootNetwork )
+			return (CyRootNetwork)net;
+		else if ( net instanceof CySubNetwork )
+			return ((CySubNetwork)net).getRootNetwork();
+		else 
+			throw new IllegalArgumentException("Your network isn't of proper type - can't convert");	
+	}
 }

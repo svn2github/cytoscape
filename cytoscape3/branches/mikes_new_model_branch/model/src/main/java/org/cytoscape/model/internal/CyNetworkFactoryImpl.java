@@ -37,9 +37,23 @@
 package org.cytoscape.model;
 
 
+import org.cytoscape.model.internal.MGraph;
+import org.cytoscape.model.internal.ArrayGraph;
+import org.cytoscape.event.internal.CyEventHelperImpl;
+import org.cytoscape.event.CyEventHelper;
 
-public interface CyNetworkFactory {
+public class CyNetworkFactoryImpl {
+	
+	private final CyEventHelper help;  
 
-	CyNetwork getInstance();
+	public CyNetworkFactoryImpl(final CyEventHelper h) {
+		if ( h == null )
+			throw new NullPointerException("CyEventHelper is null");
+		help = h;
+	}
 
+	public CyNetwork getInstance() {
+		//return new MGraph(help);
+		return new ArrayGraph(help);
+	}
 }
