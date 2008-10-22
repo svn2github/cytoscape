@@ -38,9 +38,9 @@ package cytoscape.io.table.reader;
 
 import cytoscape.Cytoscape;
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
 import java.util.List;

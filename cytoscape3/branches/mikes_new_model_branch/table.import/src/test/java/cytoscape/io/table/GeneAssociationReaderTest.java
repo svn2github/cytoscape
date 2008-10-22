@@ -40,8 +40,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.ontology.GeneOntology;
 import cytoscape.data.servers.OntologyServer.OntologyType;
 import junit.framework.TestCase;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 
 import java.io.File;
 import java.io.IOException;

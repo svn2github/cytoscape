@@ -39,7 +39,7 @@ import cytoscape.CytoscapeInit;
 import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.cpath.model.CPathException;
 import org.cytoscape.coreplugin.cpath.model.EmptySetException;
 import org.cytoscape.coreplugin.cpath.model.OrganismOption;

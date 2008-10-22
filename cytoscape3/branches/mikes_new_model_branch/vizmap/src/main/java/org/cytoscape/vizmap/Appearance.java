@@ -36,8 +36,8 @@
 
 package org.cytoscape.vizmap;
 
-import org.cytoscape.model.network.GraphObject;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
@@ -274,7 +274,7 @@ public class Appearance {
     static Object getBypass( GraphObject n, VisualPropertyType type ) {
 		String attrName = type.getBypassAttrName();
 
-        final String value = n.getCyAttributes("USER").get(attrName, String.class);
+        final String value = n.attrs().get(attrName, String.class);
 
         if (value == null)
             return null;
@@ -293,7 +293,7 @@ public class Appearance {
 
         // now check to see that the attribute actually specifies black,
         // and isn't returning black by default
-        final String v = n.getCyAttributes("USER").get(attrName, String.class); 
+        final String v = n.attrs().get(attrName, String.class); 
 
         if (v == null)
             return null;

@@ -37,11 +37,10 @@
 package cytoscape.data.writers;
 
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -109,9 +108,9 @@ public class InteractionWriter {
 				taskMonitor.setPercentCompleted((int) percent);
 			}
 
-			String canonicalName = node.getCyAttributes("USER").get("name",String.class);
+			String canonicalName = node.attrs().get("name",String.class);
 
-			List<CyEdge> edges = network.getAdjacentEdgeList(node, EdgeType.ANY_EDGE);
+			List<CyEdge> edges = network.getAdjacentEdgeList(node, CyEdge.Type.ANY);
 
 			if (edges.size() == 0) {
 				sb.append(canonicalName + lineSep);
@@ -122,9 +121,9 @@ public class InteractionWriter {
 
 						CyNode target = edge.getTarget();
 
-						String canonicalTargetName = target.getCyAttributes("USER").get("name",String.class);
+						String canonicalTargetName = target.attrs().get("name",String.class);
 
-						String interactionName = edge.getCyAttributes("USER").get("interaction",String.class);
+						String interactionName = edge.attrs().get("interaction",String.class);
 
 						if (interactionName == null) {
 							interactionName = "xx";

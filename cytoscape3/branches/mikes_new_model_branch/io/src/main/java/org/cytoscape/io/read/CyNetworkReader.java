@@ -1,7 +1,7 @@
 
 package org.cytoscape.io.read;
 
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import java.util.List;
 
 /**

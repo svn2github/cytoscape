@@ -41,10 +41,9 @@ import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntIterator;
 import cytoscape.util.intr.IntObjHash;
 import cytoscape.util.intr.MinIntHeap;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -256,7 +255,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 			final double y = (((double) m_extentsBuff[1]) + m_extentsBuff[3]) / 2.0d;
 			final double nodeSize = Math.max(w, h);
 			int i = 0;
-			java.util.List<CyEdge> selfEdges = graph.getConnectingEdgeList(nodeObj,nodeObj,EdgeType.ANY_EDGE);
+			java.util.List<CyEdge> selfEdges = graph.getConnectingEdgeList(nodeObj,nodeObj,CyEdge.Type.ANY);
 
 			for ( CyEdge e2obj : selfEdges ) {
 				final int e2 = e2obj.getIndex();
@@ -288,7 +287,7 @@ class DEdgeDetails extends IntermediateEdgeDetails {
 		}
 
 		while (true) {
-			java.util.List<CyEdge> selfEdges = graph.getConnectingEdgeList(edgeObj.getSource(),edgeObj.getTarget(),EdgeType.ANY_EDGE);
+			java.util.List<CyEdge> selfEdges = graph.getConnectingEdgeList(edgeObj.getSource(),edgeObj.getTarget(),CyEdge.Type.ANY);
 
 			m_heap.empty();
 

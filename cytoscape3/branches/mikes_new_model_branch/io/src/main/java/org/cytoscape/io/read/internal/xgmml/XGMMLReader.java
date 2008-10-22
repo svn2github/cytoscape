@@ -42,10 +42,10 @@ import org.cytoscape.io.read.CyNetworkViewReader;
 import org.cytoscape.io.read.internal.VisualStyleBuilder; 
 
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.groups.CyGroup;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.LayoutAdapter;
@@ -325,7 +325,7 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 	                                final boolean buildStyle) {
 
 		// The identifier of this node
-		CyAttributes nodeAttrs = nodeView.getNode().getCyAttributes("USER");
+		CyRow nodeAttrs = nodeView.getNode().attrs();
 
 		// Location and size of the node
 		double x;
@@ -449,7 +449,7 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 	                                final EdgeView edgeView,
 	                                final VisualStyleBuilder graphStyle,
 	                                final boolean buildStyle) {
-		CyAttributes edgeAttrs = edgeView.getEdge().getCyAttributes("USER");
+		CyRow edgeAttrs = edgeView.getEdge().attrs();
 
 		if (buildStyle && XGMMLParser.getAttribute(graphics,"width") != null) {
 			String lineWidth = XGMMLParser.getAttribute(graphics,"width");
@@ -546,7 +546,7 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 				CyGroup newGroup = null;
 				List<CyNode> childList = groupMap.get(groupNode);
 				// TODO  USER namespace here?
-				String viewer = groupNode.getCyAttributes("USER").get(CyGroup.GROUP_VIEWER_ATTR, String.class);
+				String viewer = groupNode.attrs().get(CyGroup.GROUP_VIEWER_ATTR, String.class);
 
 				// Note that we need to leave the group node in the network so that the saved
 				// location information (if there is any) can be utilized by the group viewer.
@@ -591,6 +591,11 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 
 	public String[] getExtensions() {
 		return new String[]{"xgmml","xml"};
+	}
+
+	public String[] getContentTypes() {
+		// TODO are these right?
+		return new String[]{"text/xgmml","text/plain","text/xml"};
 	}
 
 	public String getExtensionDescription() {

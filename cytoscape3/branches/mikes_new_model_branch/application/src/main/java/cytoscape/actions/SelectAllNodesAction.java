@@ -44,6 +44,7 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
+import org.cytoscape.model.CyNode;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -69,7 +70,8 @@ public class SelectAllNodesAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
-		Cytoscape.getCurrentNetwork().selectAllNodes();
+		for ( CyNode n : Cytoscape.getCurrentNetwork().getNodeList() )
+			n.attrs().set("selected",true);
 
 		if (Cytoscape.getCurrentNetworkView() != null) {
 			Cytoscape.getCurrentNetworkView().updateView();

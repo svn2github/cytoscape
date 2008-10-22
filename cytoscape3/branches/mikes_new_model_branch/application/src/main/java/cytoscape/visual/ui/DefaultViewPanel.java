@@ -35,9 +35,10 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
 
@@ -76,22 +77,21 @@ public class DefaultViewPanel extends JPanel {
 	 * Creates a new NodeFullDetailView object.
 	 */
 	public DefaultViewPanel() {
+		
+		dummyNet = CyNetworkFactory.getInstance();
 
-		source = Cytoscape.getCyNode("Source",true);
-		target = Cytoscape.getCyNode("Target",true);
-		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(), "interaction");
+		source = dummyNet.addNode();
+		source.attrs().set("name","Source");
 
-		List<CyNode> nodes = new ArrayList<CyNode>();
-		List<CyEdge> edges = new ArrayList<CyEdge>();
-		nodes.add(source);
-		nodes.add(target);
-		edges.add(edge);
+		target = dummyNet.addNode();
+		target.attrs().set("name","Target");
 
-		dummyNet = Cytoscape.getRootGraph().createGraphPerspective(nodes, edges);
-		dummyNet.getCyAttributes("USER").set("title","Default Appearance");
+		edge = dummyNet.addEdge(source,target,true);
+		edge.attrs().set("name","Source (interaction) Target");
+
+		dummyNet.attrs().set("title","Default Appearance");
 
 		view = GraphViewFactory.createGraphView(dummyNet);
-		view.setIdentifier(dummyNet.getIdentifier());
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
 		Cytoscape.getVisualMappingManager().setNetworkView(view);

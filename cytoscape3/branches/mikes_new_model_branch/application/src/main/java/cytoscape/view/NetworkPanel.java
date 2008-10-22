@@ -44,16 +44,17 @@ import cytoscape.util.swing.AbstractTreeTableModel;
 import cytoscape.util.swing.JTreeTable;
 import cytoscape.util.swing.TreeTableModel;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTableUtil;
 
-import org.cytoscape.model.network.events.SelectedNodesEvent;
-import org.cytoscape.model.network.events.SelectedNodesListener;
-import org.cytoscape.model.network.events.SelectedEdgesEvent;
-import org.cytoscape.model.network.events.SelectedEdgesListener;
-import org.cytoscape.model.network.events.UnselectedNodesEvent;
-import org.cytoscape.model.network.events.UnselectedNodesListener;
-import org.cytoscape.model.network.events.UnselectedEdgesEvent;
-import org.cytoscape.model.network.events.UnselectedEdgesListener;
+import org.cytoscape.model.events.SelectedNodesEvent;
+import org.cytoscape.model.events.SelectedNodesListener;
+import org.cytoscape.model.events.SelectedEdgesEvent;
+import org.cytoscape.model.events.SelectedEdgesListener;
+import org.cytoscape.model.events.UnselectedNodesEvent;
+import org.cytoscape.model.events.UnselectedNodesListener;
+import org.cytoscape.model.events.UnselectedEdgesEvent;
+import org.cytoscape.model.events.UnselectedEdgesListener;
 
 import javax.swing.*;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -110,7 +111,7 @@ public class NetworkPanel extends JPanel
 		super();
 		this.cytoscapeDesktop = desktop;
 
-		root = new NetworkTreeNode("Network Root", "root");
+		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
 		treeTable = new JTreeTable(treeTableModel);
 		initialize();
@@ -224,7 +225,7 @@ public class NetworkPanel extends JPanel
 	 *
 	 * @param network_id
 	 */
-	public void removeNetwork(final String network_id) {
+	public void removeNetwork(final Long network_id) {
 		final NetworkTreeNode node = getNetworkNode(network_id);
 		final Enumeration children = node.children();
 		final List<NetworkTreeNode> removed_children = new ArrayList<NetworkTreeNode>();
@@ -250,11 +251,11 @@ public class NetworkPanel extends JPanel
 	public void updateTitle(final CyNetwork network) {
 		// updates the title in the network panel 
 		if (treeTable.getTree().getSelectionPath() != null) { // user has selected something
-			treeTableModel.setValueAt(network.getCyAttributes("USER").get("title",String.class),
+			treeTableModel.setValueAt(network.attrs().get("title",String.class),
 		                          treeTable.getTree().getSelectionPath().getLastPathComponent(), 0);
 		} else { // no selection, means the title has been changed programmatically
-			NetworkTreeNode node = getNetworkNode(network.getIdentifier());
-			treeTableModel.setValueAt(network.getCyAttributes("USER").get("title",String.class), node, 0);
+			NetworkTreeNode node = getNetworkNode(network.getSUID());
+			treeTableModel.setValueAt(network.attrs().get("title",String.class), node, 0);
 		}
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
@@ -286,11 +287,11 @@ public class NetworkPanel extends JPanel
 	 * @param network_id DOCUMENT ME!
 	 * @param parent_id DOCUMENT ME!
 	 */
-	public void addNetwork(String network_id, String parent_id) {
+	public void addNetwork(Long network_id, Long parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
 			//System.out.println("NetworkPanel: addNetwork " + network_id);
-			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(network_id).getCyAttributes("USER").get("title",String.class),
+			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(network_id).attrs().get("title",String.class),
 			                                           network_id);
 
 			if (parent_id != null && getNetworkNode(parent_id) != null) {
@@ -318,7 +319,7 @@ public class NetworkPanel extends JPanel
 	 *
 	 * @param network_id DOCUMENT ME!
 	 */
-	public void focusNetworkNode(String network_id) {
+	public void focusNetworkNode(Long network_id) {
 		//System.out.println("NetworkPanel: focus network node");
 		DefaultMutableTreeNode node = getNetworkNode(network_id);
 
@@ -336,13 +337,13 @@ public class NetworkPanel extends JPanel
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public NetworkTreeNode getNetworkNode(String network_id) {
+	public NetworkTreeNode getNetworkNode(Long network_id) {
 		Enumeration tree_node_enum = root.breadthFirstEnumeration();
 
 		while (tree_node_enum.hasMoreElements()) {
 			NetworkTreeNode node = (NetworkTreeNode) tree_node_enum.nextElement();
 
-			if ((String) node.getNetworkID() == network_id) {
+			if ( node.getNetworkID().equals(network_id)) {
 				return node;
 			}
 		}
@@ -368,10 +369,10 @@ public class NetworkPanel extends JPanel
 
 		// System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
 		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
-	                                                   null, (String) node.getNetworkID()));
+	                                                   null, node.getNetworkID()));
 
 		// creates a list of all selected networks 
-		List<String> networkList = new LinkedList<String>();
+		List<Long> networkList = new LinkedList<Long>();
 		try {
 			for ( int i = mtree.getMinSelectionRow(); i <= mtree.getMaxSelectionRow(); i++ ) {
 				NetworkTreeNode n = (NetworkTreeNode) mtree.getPathForRow(i).getLastPathComponent();
@@ -395,15 +396,15 @@ public class NetworkPanel extends JPanel
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
-			addNetwork((String) e.getNewValue(), (String) e.getOldValue());
+			addNetwork((Long) e.getNewValue(), (Long) e.getOldValue());
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
-			removeNetwork((String) e.getNewValue());
+			removeNetwork((Long) e.getNewValue());
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			if ( e.getSource() != this )
-				focusNetworkNode((String) e.getNewValue());
+				focusNetworkNode((Long) e.getNewValue());
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_TITLE_MODIFIED) {
 			CyNetworkTitleChange cyNetworkTitleChange = (CyNetworkTitleChange) e.getNewValue();
-			String newID = cyNetworkTitleChange.getNetworkIdentifier();
+			Long newID = cyNetworkTitleChange.getNetworkIdentifier();
 			CyNetwork _network = Cytoscape.getNetwork(newID);
 			if (_network != null) {
 				updateTitle(_network);				
@@ -470,12 +471,12 @@ public class NetworkPanel extends JPanel
 			else if (column == 1) {
 				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
 
-				return "" + cyNetwork.getNodeCount() + "(" + cyNetwork.getSelectedNodes().size()
+				return "" + cyNetwork.getNodeCount() + "(" + CyDataTableUtil.getNodesInState(cyNetwork,"selected",true).size()
 				       + ")";
 			} else if (column == 2) {
 				CyNetwork cyNetwork = Cytoscape.getNetwork(((NetworkTreeNode) node).getNetworkID());
 
-				return "" + cyNetwork.getEdgeCount() + "(" + cyNetwork.getSelectedEdges().size()
+				return "" + cyNetwork.getEdgeCount() + "(" + CyDataTableUtil.getEdgesInState(cyNetwork,"selected",true).size()
 				       + ")";
 			}
 
@@ -493,19 +494,19 @@ public class NetworkPanel extends JPanel
 	}
 
 	public class NetworkTreeNode extends DefaultMutableTreeNode {
-	private final static long serialVersionUID = 1213748836736485L;
-		protected String network_uid;
+		private final static long serialVersionUID = 1213748836736485L;
+		protected Long network_uid;
 
-		public NetworkTreeNode(Object userobj, String id) {
+		public NetworkTreeNode(Object userobj, Long id) {
 			super(userobj.toString());
 			network_uid = id;
 		}
 
-		protected void setNetworkID(String id) {
+		protected void setNetworkID(Long id) {
 			network_uid = id;
 		}
 
-		protected String getNetworkID() {
+		protected Long getNetworkID() {
 			return network_uid;
 		}
 	}
@@ -530,7 +531,7 @@ public class NetworkPanel extends JPanel
 
 		private boolean hasView(Object value) {
 			NetworkTreeNode node = (NetworkTreeNode) value;
-			setToolTipText(Cytoscape.getNetwork(node.getNetworkID()).getCyAttributes("USER").get("title",String.class));
+			setToolTipText(Cytoscape.getNetwork(node.getNetworkID()).attrs().get("title",String.class));
 
 			return Cytoscape.viewExists(node.getNetworkID());
 		}
@@ -572,8 +573,7 @@ public class NetworkPanel extends JPanel
 				if (row != -1) {
 					JTree tree = treeTable.getTree();
 					TreePath treePath = tree.getPathForRow(row);
-					String networkID = (String) ((NetworkTreeNode) treePath.getLastPathComponent())
-					                   .getNetworkID();
+					Long networkID = ((NetworkTreeNode) treePath.getLastPathComponent()).getNetworkID();
 
 					CyNetwork cyNetwork = Cytoscape.getNetwork(networkID);
 

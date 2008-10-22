@@ -7,7 +7,7 @@ package cytoscape.browser.ui;
 
 import cytoscape.Cytoscape;
 import cytoscape.browser.DataTableModel;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 import org.jdesktop.layout.GroupLayout;
 
 import javax.swing.*;

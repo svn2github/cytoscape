@@ -39,8 +39,8 @@ package cytoscape.browser;
 import cytoscape.Cytoscape;
 import cytoscape.browser.ui.ActionName;
 import static cytoscape.browser.ui.ActionName.*;
-import org.cytoscape.model.network.GraphObject;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
 import javax.swing.undo.AbstractUndoableEdit;

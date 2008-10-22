@@ -38,9 +38,9 @@ import cytoscape.data.readers.GraphReader;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.util.undo.CyUndo;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.coreplugin.cpath2.cytoscape.MergeNetworkEdit;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 

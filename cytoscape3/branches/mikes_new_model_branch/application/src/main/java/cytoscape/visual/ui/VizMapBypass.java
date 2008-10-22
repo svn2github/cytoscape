@@ -37,8 +37,8 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.GraphObject;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
@@ -56,7 +56,6 @@ import java.util.List;
 abstract class VizMapBypass {
 	protected Frame parent = Cytoscape.getDesktop();
 	protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-	protected CyAttributes attrs = null;
 	protected GraphObject graphObj = null;
 
 	abstract protected List<String> getBypassNames();
@@ -66,11 +65,10 @@ abstract class VizMapBypass {
 				private final static long serialVersionUID = 1202339876700753L;
 				public void actionPerformed(ActionEvent e) {
 					List<String> names = getBypassNames();
-					String id = graphObj.getIdentifier();
+					CyRow row = graphObj.attrs();
 
 					for (String attrName : names)
-						if (attrs.hasAttribute(id, attrName))
-							attrs.deleteAttribute(id, attrName);
+						row.set("name",""); // TODO should be null instead?
 
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
@@ -83,10 +81,9 @@ abstract class VizMapBypass {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getName() + " ]") {
 				private final static long serialVersionUID = 1202339876709140L;
 				public void actionPerformed(ActionEvent e) {
-					String id = graphObj.getIdentifier();
+					CyRow row = graphObj.attrs();
 
-					if (attrs.hasAttribute(id, type.getBypassAttrName()))
-						attrs.deleteAttribute(id, type.getBypassAttrName());
+					row.set(type.getBypassAttrName(),""); // TODO set to null instead?
 
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
@@ -112,7 +109,7 @@ abstract class VizMapBypass {
 						return;
 
 					String val = ObjectToString.getStringValue(obj);
-					attrs.setAttribute(graphObj.getIdentifier(), type.getBypassAttrName(), val);
+					graphObj.attrs().set(type.getBypassAttrName(), val);
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();
 				}
@@ -131,8 +128,7 @@ abstract class VizMapBypass {
 			}
 		}
 
-		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),
-		                                             type.getBypassAttrName());
+		String attrString = graphObj.attrs().get(type.getBypassAttrName(),String.class);
 
 		if ((attrString == null) || (attrString.length() == 0))
 			jmi.setSelected(false);

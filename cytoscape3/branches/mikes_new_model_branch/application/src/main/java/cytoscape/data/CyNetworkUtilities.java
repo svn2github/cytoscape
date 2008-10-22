@@ -41,8 +41,9 @@
 package cytoscape.data;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.view.GraphView;
 
 import javax.swing.*;
@@ -74,9 +75,9 @@ public class CyNetworkUtilities {
 			return false;
 		}
 
-		Set selectedNodes = network.getSelectedNodes();
+		List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
 
-		if ((selectedNodes == null) || (selectedNodes.size() == 0)) {
+		if (selectedNodes.size() <= 0) {
 			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "No selected nodes.", "Message",
 			                              JOptionPane.INFORMATION_MESSAGE);
 
@@ -89,9 +90,8 @@ public class CyNetworkUtilities {
 			File file = new File(filename);
 			FileWriter fout = new FileWriter(file);
 
-			for (Iterator i = selectedNodes.iterator(); i.hasNext();) {
-				CyNode node = (CyNode) i.next();
-				String nodeUID = node.getIdentifier();
+			for ( CyNode node : selectedNodes ) { 
+				String nodeUID = node.attrs().get("name",String.class);
 				fout.write(nodeUID + lineSep);
 			} // for i
 
@@ -129,7 +129,7 @@ public class CyNetworkUtilities {
 			FileWriter fout = new FileWriter(file);
 
 			for ( CyNode node : network.getNodeList() ) {
-				fout.write(node.getIdentifier() + lineSep);
+				fout.write(node.attrs().get("name",String.class) + lineSep);
 			} // for i
 
 			fout.close();
@@ -172,7 +172,7 @@ public class CyNetworkUtilities {
 		Vector<CyNode> matchedNodes = new Vector<CyNode>();
 
 		for ( CyNode node : network.getNodeList() ) {
-			String nodeUID = node.getIdentifier();
+			String nodeUID = node.attrs().get("name",String.class);
 
 			boolean matched = false;
 
@@ -182,7 +182,7 @@ public class CyNetworkUtilities {
 				matchedNodes.add(node);
 			} else {
 				// this list always includes the canonical name itself
-				List synonyms = Semantics.getAllSynonyms(nodeUID, network);
+				List synonyms = Semantics.getAllSynonyms(node, network);
 
 				for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
 					String synonym = (String) synI.next();
@@ -208,7 +208,7 @@ public class CyNetworkUtilities {
 
 		if (nodeFound > 0) {
 			for ( CyNode n : matchedNodes )
-				n.getCyAttributes("USER").set("selected",true);
+				n.attrs().set("selected",true);
 		}
 
 		//System.out.println("node found = " + nodeFound);

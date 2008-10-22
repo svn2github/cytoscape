@@ -4,8 +4,8 @@ package csplugins.layout.algorithms.graphPartition;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
 import java.util.Collections;

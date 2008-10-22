@@ -45,10 +45,11 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyDataTableUtil;
+
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
@@ -58,6 +59,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  *
@@ -80,6 +82,9 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// save the vizmapper catalog
+		// TODO
+		System.out.println("NOT implemented");
+		/*
 		CyNetwork current_network = Cytoscape.getCurrentNetwork();
 
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
@@ -91,12 +96,12 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			current_network_view = Cytoscape.getNetworkView(current_network.getSUID());
 		} // end of if ()
 
-		Set<CyNode> nodes = current_network.getSelectedNodes();
+		List<CyNode> nodes = CyDataTableUtil.getNodesInState(current_network,"selected",true);
 
 		Set<CyEdge> edges = new HashSet<CyEdge>();
 		for ( CyNode n1 : nodes ) {
 			for ( CyNode n2 : nodes ) {
-				edges.addAll( current_network.getConnectingEdgeList(n1,n2,EdgeType.ANY_EDGE) );
+				edges.addAll( current_network.getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) );
 			}
 		}
 
@@ -133,6 +138,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			}
 		}
         vmm.setVisualStyle(vsName);
+		*/
 	}
 
 	public void menuSelected(MenuEvent e) {
@@ -142,9 +148,9 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			return;
 		}
 
-        java.util.Set nodes = n.getSelectedNodes();
+        List<CyNode> nodes = CyDataTableUtil.getNodesInState(n,"selected",true);
 
-        if ( nodes != null && nodes.size() > 0 )
+        if ( nodes.size() > 0 )
             setEnabled(true);
         else
             setEnabled(false);

@@ -44,9 +44,9 @@ import org.cytoscape.io.read.CyNetworkReader;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.PercentUtil;
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,6 +89,10 @@ public class InteractionsReader implements CyNetworkReader {
 
 	public String[] getExtensions() {
 		return new String[]{"sif"};
+	}
+
+	public String[] getContentTypes() {
+		return new String[]{"text/plain"};
 	}
 
 	public String getExtensionDescription() {
@@ -162,7 +166,7 @@ public class InteractionsReader implements CyNetworkReader {
 			}
 
 			CyNode node = network.addNode();
-			node.getCyAttributes("USER").set("name",nodeName);
+			node.attrs().set("name",nodeName);
 			nodeMap.put( nodeName, node );
 		}
 
@@ -184,8 +188,8 @@ public class InteractionsReader implements CyNetworkReader {
 
 			for ( String tgtName : interaction.getTargets() ) {
 				CyEdge edge = network.addEdge(nodeMap.get(srcName), nodeMap.get(tgtName), true);
-				edge.getCyAttributes("USER").set("name", srcName + " (" + interactionType + ") " + tgtName ); 
-				edge.getCyAttributes("USER").set("interaction", interactionType);
+				edge.attrs().set("name", srcName + " (" + interactionType + ") " + tgtName ); 
+				edge.attrs().set("interaction", interactionType);
 			} 
 		} 
 	} 

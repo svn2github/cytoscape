@@ -33,8 +33,8 @@ package org.mskcc.biopax_plugin.util.cytoscape;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.data.SelectFilter;
 import org.cytoscape.view.GraphView;
 import org.mskcc.biopax_plugin.action.DisplayBioPaxDetails;

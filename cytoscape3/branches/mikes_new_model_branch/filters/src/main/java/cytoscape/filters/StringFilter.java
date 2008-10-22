@@ -40,8 +40,8 @@ import csplugins.quickfind.util.QuickFind;
 import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.TextIndex;
 import cytoscape.filters.util.FilterUtil;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
 import java.util.BitSet;
 import java.util.List;

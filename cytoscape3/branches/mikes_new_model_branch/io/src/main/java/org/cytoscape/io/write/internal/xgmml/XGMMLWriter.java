@@ -36,10 +36,11 @@
  */
 package cytoscape.data.writers;
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 //import org.cytoscape.groups.CyGroup;
 //import cytoscape.groups.CyGroupManager;
 import org.cytoscape.view.Bend;
@@ -286,7 +287,7 @@ public class XGMMLWriter {
 	private void writePreamble() throws IOException {
 		String directed = getDirectionality();
 		writeElement(XML_STRING+"\n");
-		writeElement("<graph label=\""+network.getCyAttributes("USER").get("title",String.class)+"\" directed=\""+directed+"\" "); 
+		writeElement("<graph label=\""+network.attrs().get("title",String.class)+"\" directed=\""+directed+"\" "); 
 		for (int ns = 0; ns < NAMESPACES.length; ns++)
 			writer.write(NAMESPACES[ns]+" ");
 		writer.write(">\n");
@@ -366,7 +367,7 @@ public class XGMMLWriter {
 		java.util.Date now = new java.util.Date();
 		java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		writeElement("<dc:date>"+df.format(now)+"</dc:date>\n");
-		writeElement("<dc:title>"+network.getCyAttributes("USER").get("title",String.class)+"</dc:title>\n");
+		writeElement("<dc:title>"+network.attrs().get("title",String.class)+"</dc:title>\n");
 		writeElement("<dc:source>http://www.cytoscape.org/</dc:source>\n");
 		writeElement("<dc:format>Cytoscape-XGMML</dc:format>\n");
 		depth--;
@@ -397,8 +398,12 @@ public class XGMMLWriter {
 		}
 
 		// Now handle all of the other network attributes
-		for ( String attName : network.getCyAttributes("USER").getAttrMgr().getTypeMap().keySet() ) 
-			writeAttribute(network.getCyAttributes("USER"), attName);
+		// TODO this isn't *serializing* namespaces - I would expect name clashes with this approach
+		for ( CyDataTable table : network.getNetworkCyDataTables().values() ) {
+			CyRow row = table.getRow(network.getSUID());
+			for ( String attName : table.getColumnTypeMap().keySet() ) 
+				writeAttribute(row, attName);
+		}
 	}
 
 	/**
@@ -426,13 +431,14 @@ public class XGMMLWriter {
 		nodeMap.put(node, node);
 
 		// Output the node
-		writeElement("<node label="+quote(node.getCyAttributes("USER").get("name",String.class)));
+		writeElement("<node label="+quote(node.attrs().get("name",String.class)));
 		writer.write(" id="+quote(Integer.toString(node.getIndex()))+">\n");
 		depth++;
 
 		// Output the node attributes
-		for ( String attName : node.getCyAttributes("USER").getAttrMgr().getTypeMap().keySet() )
-			writeAttribute(node.getCyAttributes("USER"), attName);
+		// TODO This isn't handling namespaces
+		for ( String attName : node.attrs().getDataTable().getColumnTypeMap().keySet() )
+			writeAttribute(node.attrs(), attName);
 
 		// TODO deal with groups
 		/*
@@ -640,13 +646,14 @@ public class XGMMLWriter {
 
 		String directedness;
 		if (curEdge.isDirected()){ directedness="\"1\""; } else { directedness="\"0\""; }
-		writeElement("<edge label="+quote(curEdge.getCyAttributes("USER").get("name",String.class))+" source="+source+" target="+target+" cy:directed="+directedness+">\n");
+		writeElement("<edge label="+quote(curEdge.attrs().get("name",String.class))+" source="+source+" target="+target+" cy:directed="+directedness+">\n");
 
 		depth++;
 
 		// Write the edge attributes
-		for ( String attName : curEdge.getCyAttributes("USER").getAttrMgr().getTypeMap().keySet() ) 
-			writeAttribute(curEdge.getCyAttributes("USER"), attName);
+		// TODO This isn't handling namespaces
+		for ( String attName : curEdge.attrs().getDataTable().getColumnTypeMap().keySet() ) 
+			writeAttribute(curEdge.attrs(), attName);
 
 		// Write the edge graphics
 		writeEdgeGraphics(curEdge, (EdgeView)networkView.getEdgeView(curEdge));
@@ -722,14 +729,14 @@ public class XGMMLWriter {
 	 * @param id -
 	 *            id of node, edge or network
 	 * @param attributes -
-	 *            CyAttributes to load
+	 *            CyRow to load
 	 * @param attributeName -
 	 *            attribute name
 	 * @return att - Att to return (gets written into xgmml file - CAN BE NULL)
 	 *
 	 * @throws IOException
 	 */
-	private void writeAttribute(final CyAttributes attributes, final String attributeName) 
+	private void writeAttribute(final CyRow attributes, final String attributeName) 
 		throws IOException {
 		// create an attribute and its type
 		final Class attType = attributes.contains(attributeName);

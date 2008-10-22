@@ -44,9 +44,11 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyDataTableUtil;
+
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -73,18 +75,18 @@ public class SelectAdjacentEdgesAction extends CytoscapeAction {
 	 *
 	 * @param e DOCUMENT ME!
 	 */
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent ev) {
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		Set<CyEdge> edgeSet = new HashSet<CyEdge>();
 
 		// Get the list of selected nodes
-		for (CyNode node: (Set<CyNode>)network.getSelectedNodes()) {
+		for (CyNode node: CyDataTableUtil.getNodesInState(network,"selected",true)) {
 			// Get the list of edges connected to this node
-			edgeSet.addAll( network.getAdjacentEdgeList(node,EdgeType.ANY_EDGE) );
+			edgeSet.addAll( network.getAdjacentEdgeList(node,CyEdge.Type.ANY) );
 		}
 
 		for ( CyEdge e : edgeSet )
-			e.getCyAttributes("USER").set("selected",true);
+			e.attrs().set("selected",true);
 
 		if (Cytoscape.getCurrentNetworkView() != null) {
 			Cytoscape.getCurrentNetworkView().updateView();

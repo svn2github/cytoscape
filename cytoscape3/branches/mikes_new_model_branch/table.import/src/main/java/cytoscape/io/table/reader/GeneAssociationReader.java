@@ -44,8 +44,8 @@ import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
 import static cytoscape.io.table.reader.TextFileDelimiters.TAB;
 import cytoscape.util.BioDataServerUtil;
 import cytoscape.util.URLUtil;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.io.BufferedReader;
 import java.io.IOException;

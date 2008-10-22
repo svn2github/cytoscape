@@ -45,7 +45,7 @@ import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.ui.VizMapBypassNetworkListener;
 import cytoscape.visual.ui.VizMapperMainPanel;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
@@ -385,7 +385,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		return null; // TODO why does this return null, should the method just return void instead?
 	}
 
-	protected void updateFocus(String network_id) {
+	protected void updateFocus(Long network_id) {
 		final VisualStyle old_style = vmm.getVisualStyle();
 		final GraphView old_view = Cytoscape.getCurrentNetworkView();
 
@@ -418,7 +418,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *
 	 * @param network_id DOCUMENT ME!
 	 */
-	public void setFocus(String network_id) {
+	public void setFocus(Long network_id) {
 		pcs.firePropertyChange(new PropertyChangeEvent(this, NETWORK_VIEW_FOCUSED, null, network_id));
 		pcs.firePropertyChange(new PropertyChangeEvent(this, NETWORK_VIEW_FOCUS, null, network_id));
 	}
@@ -450,11 +450,11 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEW_FOCUS) {
 			// get Focus from NetworkPanel
-			updateFocus(e.getNewValue().toString());
+			updateFocus((Long)e.getNewValue());
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == NETWORK_VIEWS_SELECTED) {
-			Cytoscape.setSelectedNetworkViews( (List<String>)(e.getNewValue()) );
-			Cytoscape.setSelectedNetworks( (List<String>)(e.getNewValue()) );
+			Cytoscape.setSelectedNetworkViews( (List<Long>)(e.getNewValue()) );
+			Cytoscape.setSelectedNetworks( (List<Long>)(e.getNewValue()) );
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
 			// fire the event so that the NetworkPanel can catch it

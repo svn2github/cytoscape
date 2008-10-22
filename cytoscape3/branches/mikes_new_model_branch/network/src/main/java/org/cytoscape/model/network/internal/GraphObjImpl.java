@@ -1,12 +1,12 @@
 
 
-package org.cytoscape.model.network.internal;
+package org.cytoscape.model.internal;
 
-import org.cytoscape.model.network.GraphObject;
-import org.cytoscape.model.network.Identifiable;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.Identifiable;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 
 import java.util.Map;
 

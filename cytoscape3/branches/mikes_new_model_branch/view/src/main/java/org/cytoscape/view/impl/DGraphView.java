@@ -44,13 +44,12 @@ import cytoscape.util.intr.IntBTree;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesManager;
-import org.cytoscape.attributes.InitialCyAttributesManager;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.EdgeContextMenuListener;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
@@ -311,16 +310,16 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @param perspective The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetwork perspective) {
+	public DGraphView(CyNetwork perspective, CyDataTableFactory dataFactory) {
 		m_perspective = perspective;
 
-		CyAttributesManager nodeCAM = InitialCyAttributesManager.getInstance();
-		nodeCAM.createAttribute("hidden",Boolean.class);
-		m_perspective.getNodeCyAttributesManagers().put("VIEW", nodeCAM);
+		CyDataTable nodeCAM = dataFactory.createTable("node view",false);
+		nodeCAM.createColumn("hidden",Boolean.class,false);
+		m_perspective.getNodeCyDataTables().put("VIEW", nodeCAM);
 
-		CyAttributesManager edgeCAM = InitialCyAttributesManager.getInstance();
-		edgeCAM.createAttribute("hidden",Boolean.class);
-		m_perspective.getEdgeCyAttributesManagers().put("VIEW", edgeCAM);
+		CyDataTable edgeCAM = dataFactory.createTable("edge view",false);
+		edgeCAM.createColumn("hidden",Boolean.class,false);
+		m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
 
 
 		// creating empty graphs
@@ -351,7 +350,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
 
 		// from DingNetworkView
-		this.title = m_perspective.getCyAttributes("USER").get("title",String.class);
+		this.title = m_perspective.attrs().get("title",String.class);
 
 		for ( CyNode nn : m_perspective.getNodeList() ) 
 			addNodeView( nn.getIndex() );
@@ -802,7 +801,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
 			// We have to query edges in the m_structPersp, not m_drawPersp
 			// because what if the node is hidden?
-			hiddenEdgeInx = m_perspective.getAdjacentEdgeList(nnode, EdgeType.ANY_EDGE);
+			hiddenEdgeInx = m_perspective.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
 
 			// This isn't an error. Only if the nodeInx is invalid will getAdjacentEdgeIndicesArray 
 			// return null. If there are no adjacent edges, then it will return an array of length 0.
@@ -1082,7 +1081,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 */
 	public List<EdgeView> getEdgeViewsList(CyNode oneNode, CyNode otherNode) {
 		synchronized (m_lock) {
-			List<CyEdge> edges = m_perspective.getConnectingEdgeList(oneNode, otherNode, EdgeType.ANY_EDGE);
+			List<CyEdge> edges = m_perspective.getConnectingEdgeList(oneNode, otherNode, CyEdge.Type.ANY);
 
 			if (edges == null) {
 				return null;
@@ -1194,7 +1193,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				edgeInx = ((DEdgeView) obj).getRootGraphIndex();
 				edge = ((DEdgeView) obj).getEdge();
 
-				edge.getCyAttributes("VIEW").set("hidden",true);
+				edge.getCyRow("VIEW").set("hidden",true);
 //				if (m_drawPersp.hideEdge(edgeInx) == 0) {
 //					return false;
 //				}
@@ -1221,7 +1220,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				final DNodeView nView = (DNodeView) obj;
 				nodeInx = nView.getRootGraphIndex();
 				nnode = m_perspective.getNode(nodeInx);
-				edges = m_perspective.getAdjacentEdgeList(nnode, EdgeType.ANY_EDGE);
+				edges = m_perspective.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
 
 				if (edges == null || edges.size() <= 0 ) {
 					return false;
@@ -1237,7 +1236,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				nView.m_hiddenXMax = m_extentsBuff[2];
 				nView.m_hiddenYMax = m_extentsBuff[3];
 				//m_drawPersp.removeNode(nnode);
-				nnode.getCyAttributes("VIEW").set("hidden",true);
+				nnode.getCyRow("VIEW").set("hidden",true);
 				m_spacial.delete(~nodeInx);
 				m_contentChanged = true;
 			}
@@ -1282,7 +1281,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 					return false;
 				}
 
-				nnode.getCyAttributes("VIEW").set("hidden",false);
+				nnode.getCyRow("VIEW").set("hidden",false);
 //				if (m_drawPersp.restoreNode(nodeInx) == 0) {
 //					return false;
 //				}
@@ -1330,7 +1329,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
 				newEdge = edge;
 
-				newEdge.getCyAttributes("VIEW").set("hidden",false);
+				newEdge.getCyRow("VIEW").set("hidden",false);
 //				if (m_drawPersp.restoreEdge(newEdge) == 0) {
 //					return false;
 //				}

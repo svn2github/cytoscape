@@ -3,9 +3,12 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
-import org.cytoscape.model.network.CyNetwork;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import java.util.Set;
 
 
 /**
@@ -14,75 +17,75 @@ import org.cytoscape.view.NodeView;
 class DeleteEdit extends CyAbstractEdit {
 
 	private static final long serialVersionUID = -1164181258019250610L;
-	int[] nodes;
-	int[] edges;
+	Set<CyNode> nodes;
+	Set<CyEdge> edges;
 	double[] xPos;
 	double[] yPos;
-	CyNetwork net;
-	// AJK: 03082008 DeleteAction to be reenabled upon undo
+	CySubNetwork net;
 	DeleteAction deleteAction;
 	
-	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd) {
+	DeleteEdit(CySubNetwork net, Set<CyNode> nodes, Set<CyEdge> edges,	DeleteAction deleteAction) {
 		super("Delete");
+		this.deleteAction = deleteAction;
 		if ( net == null )
 			throw new IllegalArgumentException("network is null");
 		this.net = net;
-		
-		nodes = new int[nodeInd.length]; 
-		for ( int i = 0; i < nodeInd.length; i++ )
-			nodes[i] = nodeInd[i];
 
-		edges = new int[edgeInd.length];
-		for ( int i = 0; i < edgeInd.length; i++ ) 
-			edges[i] = edgeInd[i];
+		if ( nodes == null )
+			throw new IllegalArgumentException("nodes is null");
+		this.nodes = nodes; 
+
+		if ( edges == null )
+			throw new IllegalArgumentException("edges is null");
+		this.edges = edges; 
 
 		// save the positions of the nodes
-		xPos = new double[nodes.length]; 
-		yPos = new double[nodes.length]; 
+		xPos = new double[nodes.size()]; 
+		yPos = new double[nodes.size()]; 
 		GraphView netView = Cytoscape.getNetworkView(net.getSUID());
-		if ( netView != null && netView != Cytoscape.getNullNetworkView() ) {
-			for ( int i = 0; i < nodes.length; i++ ) {
-				NodeView nv = netView.getNodeView(nodes[i]);
-				xPos[i] = nv.getXPosition();
+		if ( netView != null ) {
+			int i = 0;
+			for ( CyNode n : nodes ) {
+				NodeView nv = netView.getNodeView(n);
+				xPos[++i] = nv.getXPosition();
 				yPos[i] = nv.getYPosition();
 			}
 		}
 	}
 
-	// AJK: 03082008 DeleteAction to be reenabled upon undo
-	DeleteEdit(CyNetwork net, int[] nodeInd, int[] edgeInd,	DeleteAction deleteAction) {
-		this (net, nodeInd, edgeInd);
-		this.deleteAction = deleteAction;
-	}
-	
 	public void redo() {
 		super.redo();
 
-		net.hideEdges(edges);
-		net.hideNodes(nodes);
+		for ( CyNode n : nodes )
+			net.removeNode(n);
+		for ( CyEdge e : edges )
+			net.removeEdge(e);
+
 		GraphView netView = Cytoscape.getNetworkView(net.getSUID());	
 		Cytoscape.redrawGraph(netView);
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null , net);
-        // AJK: 03082008 disable DeleteAction 
         deleteAction.setEnabled(false);
 	}
 
 	public void undo() {
 		super.undo();
 
-		net.restoreNodes(nodes);
-		net.restoreEdges(edges);
+		for ( CyNode n : nodes )
+			net.addNode(n);
+		for ( CyEdge e : edges )
+			net.addEdge(e);
 
 		GraphView netView = Cytoscape.getNetworkView(net.getSUID());
 		if ( netView != null && netView != Cytoscape.getNullNetworkView() ) {
-			for ( int i = 0; i < nodes.length; i++ ) {
-				NodeView nv = netView.getNodeView(nodes[i]);
-				nv.setOffset( xPos[i], yPos[i] );
+			int i = 0;
+			for ( CyNode n : nodes ) {
+				NodeView nv = netView.getNodeView(n);
+				nv.setOffset( xPos[++i], yPos[i] );
 			}
 		}
+
 		Cytoscape.redrawGraph(netView);
         Cytoscape.firePropertyChange(Cytoscape.NETWORK_MODIFIED, null, net);
-        // AJK: 03082008 re-enable DeleteAction 
         deleteAction.setEnabled(true);
 	}
 }

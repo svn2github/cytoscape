@@ -1,12 +1,12 @@
 
 
 
-package org.cytoscape.model.network.events.internal;
+package org.cytoscape.model.events.internal;
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.events.SelectedEdgesEvent;
-import org.cytoscape.model.network.events.UnselectedEdgesEvent;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.events.SelectedEdgesEvent;
+import org.cytoscape.model.events.UnselectedEdgesEvent;
 
 import java.util.List;
 

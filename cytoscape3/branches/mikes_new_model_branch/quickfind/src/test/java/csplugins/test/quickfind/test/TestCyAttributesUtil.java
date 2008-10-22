@@ -39,10 +39,10 @@ package csplugins.test.quickfind.test;
 import csplugins.quickfind.util.CyAttributesUtil;
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesFactory;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;

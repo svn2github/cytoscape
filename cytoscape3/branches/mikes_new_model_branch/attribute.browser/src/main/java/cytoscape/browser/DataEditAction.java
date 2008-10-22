@@ -36,7 +36,7 @@ package cytoscape.browser;
 
 import cytoscape.Cytoscape;
 import static cytoscape.browser.DataObjectType.NETWORK;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
 import javax.swing.undo.AbstractUndoableEdit;

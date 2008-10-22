@@ -32,7 +32,7 @@
 package org.mskcc.biopax_plugin.util.cytoscape;
 
 import cytoscape.CytoscapeInit;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

@@ -38,9 +38,9 @@ package org.cytoscape.io.write.internal.gml;
 
 import org.cytoscape.io.read.internal.gml.KeyValue;
 import org.cytoscape.io.read.internal.gml.GMLReader;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
@@ -291,7 +291,7 @@ public class GMLWriter {
 			oldList.add(labelPair);
 		}
 
-		labelPair.value = node.getCyAttributes("USER").get("name",String.class);
+		labelPair.value = node.attrs().get("name",String.class);
 
 		return true;
 	}
@@ -374,7 +374,7 @@ public class GMLWriter {
 			oldList.add(labelPair);
 		}
 
-		labelPair.value = edge.getCyAttributes("USER").get("interaction",String.class); 
+		labelPair.value = edge.attrs().get("interaction",String.class); 
 
 		if (isDirected == null) {
 			isDirected = new KeyValue(GMLReader.IS_DIRECTED, null);

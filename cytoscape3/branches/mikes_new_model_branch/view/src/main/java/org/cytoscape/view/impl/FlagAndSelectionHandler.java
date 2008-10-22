@@ -43,21 +43,21 @@
 package org.cytoscape.view.impl;
 
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
 //import org.cytoscape.data.SelectEvent;
 //import org.cytoscape.data.SelectEventListener;
 //import org.cytoscape.data.SelectFilter;
 
-import org.cytoscape.model.network.events.SelectedNodesEvent;
-import org.cytoscape.model.network.events.SelectedEdgesEvent;
-import org.cytoscape.model.network.events.UnselectedNodesEvent;
-import org.cytoscape.model.network.events.UnselectedEdgesEvent;
-import org.cytoscape.model.network.events.SelectedNodesListener;
-import org.cytoscape.model.network.events.SelectedEdgesListener;
-import org.cytoscape.model.network.events.UnselectedNodesListener;
-import org.cytoscape.model.network.events.UnselectedEdgesListener;
+import org.cytoscape.model.events.SelectedNodesEvent;
+import org.cytoscape.model.events.SelectedEdgesEvent;
+import org.cytoscape.model.events.UnselectedNodesEvent;
+import org.cytoscape.model.events.UnselectedEdgesEvent;
+import org.cytoscape.model.events.SelectedNodesListener;
+import org.cytoscape.model.events.SelectedEdgesListener;
+import org.cytoscape.model.events.UnselectedNodesListener;
+import org.cytoscape.model.events.UnselectedEdgesListener;
 
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
@@ -99,7 +99,7 @@ public class FlagAndSelectionHandler
 	private Set<CyNode> getSelectedNodes() {
 		Set<CyNode> sel = new HashSet<CyNode>();
 		for ( CyNode n : view.getNetwork().getNodeList() )
-			if ( n.getCyAttributes("USER").get("selected", Boolean.class).booleanValue() )
+			if ( n.attrs().get("selected", Boolean.class).booleanValue() )
 				sel.add(n);
 
 		return sel;
@@ -108,7 +108,7 @@ public class FlagAndSelectionHandler
 	private Set<CyEdge> getSelectedEdges() {
 		Set<CyEdge> sel = new HashSet<CyEdge>();
 		for ( CyEdge n : view.getNetwork().getEdgeList() )
-			if ( n.getCyAttributes("USER").get("selected", Boolean.class).booleanValue() )
+			if ( n.attrs().get("selected", Boolean.class).booleanValue() )
 				sel.add(n);
 
 		return sel;
@@ -151,12 +151,12 @@ public class FlagAndSelectionHandler
 
 		// flag all nodes that are selected but not currently flagged
 		for (CyNode node : selectedNodes) {
-			node.getCyAttributes("USER").set("selected",true);
+			node.attrs().set("selected",true);
 		}
 
 		// flag all edges that are selected but not currently flagged
 		for (CyEdge edge : selectedEdges) {
-			edge.getCyAttributes("USER").set("selected",true);
+			edge.attrs().set("selected",true);
 		}
 	}
 
@@ -175,7 +175,7 @@ public class FlagAndSelectionHandler
 			CyNode[] objIndecies = event.getSelectedNodes();
 
 			for ( CyNode n : objIndecies )
-				n.getCyAttributes("USER").set("selected",true);
+				n.attrs().set("selected",true);
 
 		} else if (event.isNodesUnselectedType() || event.isNodesHiddenType()) {
 			CyNode[] objIndecies;
@@ -186,13 +186,13 @@ public class FlagAndSelectionHandler
 			}
 
 			for ( CyNode n : objIndecies ) { 
-				n.getCyAttributes("USER").set("selected",false);
+				n.attrs().set("selected",false);
 			}
 		} else if (event.isEdgesSelectedType()) {
 			CyEdge[] objIndecies = event.getSelectedEdges();
 
 			for ( CyEdge n : objIndecies ) { 
-				n.getCyAttributes("USER").set("selected",true);
+				n.attrs().set("selected",true);
 			}
 		} else if (event.isEdgesUnselectedType() || event.isEdgesHiddenType()) {
 			CyEdge[] objIndecies; 
@@ -203,7 +203,7 @@ public class FlagAndSelectionHandler
 			}
 
 			for ( CyEdge n : objIndecies ) { 
-				n.getCyAttributes("USER").set("selected",false);
+				n.attrs().set("selected",false);
 			}
 		}
 	}

@@ -38,7 +38,7 @@ package org.cytoscape.view.impl;
 
 import cytoscape.render.immed.EdgeAnchors;
 import cytoscape.render.immed.GraphGraphics;
-import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.Bend;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;

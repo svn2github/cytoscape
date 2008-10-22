@@ -1,5 +1,5 @@
 
-package org.cytoscape.model.network.internal;
+package org.cytoscape.model.internal;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -15,29 +15,29 @@ import cytoscape.util.intr.IntEnumerator;
 
 import org.cytoscape.event.CyEventHelper;
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.EdgeType;
 
-import org.cytoscape.model.network.events.AboutToRemoveEdgeEvent;     
-import org.cytoscape.model.network.events.AboutToRemoveEdgeListener;  
-import org.cytoscape.model.network.events.AddedEdgeEvent;     
-import org.cytoscape.model.network.events.AddedEdgeListener;  
-import org.cytoscape.model.network.events.AboutToRemoveNodeEvent;     
-import org.cytoscape.model.network.events.AboutToRemoveNodeListener;  
-import org.cytoscape.model.network.events.AddedNodeEvent;     
-import org.cytoscape.model.network.events.AddedNodeListener;  
-import org.cytoscape.model.network.events.RemovedNodeListener;
-import org.cytoscape.model.network.events.RemovedNodeEvent;
-import org.cytoscape.model.network.events.RemovedEdgeEvent;     
-import org.cytoscape.model.network.events.RemovedEdgeListener;
+import org.cytoscape.model.events.AboutToRemoveEdgeEvent;     
+import org.cytoscape.model.events.AboutToRemoveEdgeListener;  
+import org.cytoscape.model.events.AddedEdgeEvent;     
+import org.cytoscape.model.events.AddedEdgeListener;  
+import org.cytoscape.model.events.AboutToRemoveNodeEvent;     
+import org.cytoscape.model.events.AboutToRemoveNodeListener;  
+import org.cytoscape.model.events.AddedNodeEvent;     
+import org.cytoscape.model.events.AddedNodeListener;  
+import org.cytoscape.model.events.RemovedNodeListener;
+import org.cytoscape.model.events.RemovedNodeEvent;
+import org.cytoscape.model.events.RemovedEdgeEvent;     
+import org.cytoscape.model.events.RemovedEdgeListener;
 
-import org.cytoscape.model.network.events.internal.NodeEvent;
-import org.cytoscape.model.network.events.internal.EdgeEvent;
+import org.cytoscape.model.events.internal.NodeEvent;
+import org.cytoscape.model.events.internal.EdgeEvent;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.attributes.InitialCyAttributesManager;
 
 public class CyNetworkImpl implements CyNetwork {
@@ -116,7 +116,7 @@ public class CyNetworkImpl implements CyNetwork {
 			if ( !containsNode(node) ) 
 				return false;
 
-			List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,EdgeType.ANY_EDGE);
+			List<CyEdge> edgesToRemove = getAdjacentEdgeList(node,CyEdge.Type.ANY);
 			for ( CyEdge etr : edgesToRemove ) {
 				boolean removeSuccess = removeEdge(etr);
 				if ( !removeSuccess )

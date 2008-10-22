@@ -37,7 +37,7 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.vizmap.VisualPropertyType;
 
 import javax.swing.*;
@@ -48,8 +48,6 @@ import java.util.List;
 class NodeBypass extends VizMapBypass {
 	JMenuItem addMenu(CyNode n) {
 		graphObj = n;
-		attrs = Cytoscape.getNodeAttributes();
-
 		JMenu menu = new JMenu("Visual Mapping Bypass");
 		menu.add(new JLabel("Change Node Visualization"));
 		menu.addSeparator();

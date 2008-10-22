@@ -37,10 +37,10 @@
  */
 package org.cytoscape.io.read.internal.xgmml; 
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -160,7 +160,7 @@ class XGMMLParser extends DefaultHandler {
 	/* Attribute values */
 	private ParseState attState = ParseState.NONE;
 	private String currentAttributeID = null;
-	private CyAttributes currentAttributes = null;
+	private CyRow currentAttributes = null;
 	private	String objectTarget = null;
 
 	/* Complex attribute data */
@@ -720,7 +720,7 @@ class XGMMLParser extends DefaultHandler {
 				graphCenterY = getDoubleAttributeValue(atts, "GRAPH_VIEW_CENTER_Y");
 			} else {
 				objectTarget = networkName;
-				currentAttributes = network.getCyAttributes("USER");
+				currentAttributes = network.attrs();
 				nextState = handleAttribute(atts, currentAttributes);
 			}
 
@@ -775,7 +775,7 @@ class XGMMLParser extends DefaultHandler {
 				((AttributesImpl)nodeGraphicsMap.get(currentNode)).addAttribute("", "", name, "string", value);
 			}
 			
-			currentAttributes = currentNode.getCyAttributes("USER");
+			currentAttributes = currentNode.attrs();
 			ParseState nextState = handleAttribute(atts, currentAttributes);
 			if (nextState != ParseState.NONE)
 				return nextState;
@@ -873,7 +873,7 @@ class XGMMLParser extends DefaultHandler {
 			attState = current;
 		
 			// TODO what if currentEdge is null?
-			currentAttributes = currentEdge.getCyAttributes("USER");
+			currentAttributes = currentEdge.attrs();
 			ParseState nextState = handleAttribute(atts, currentAttributes);
 			if (nextState != ParseState.NONE)
 				return nextState;
@@ -1168,7 +1168,7 @@ class XGMMLParser extends DefaultHandler {
 				valueType = getMultHashMapType(type);
 				// See if we've defined the attribute already
 				if (Map.class == currentAttributes.contains(currentAttributeID)) {
-					currentAttributes.getAttrMgr().createAttribute(currentAttributeID, Map.class);
+					currentAttributes.getDataTable().createColumn(currentAttributeID, Map.class,false);
 				}
 				// Now define set the attribute
 				if (objectTarget != null)
@@ -1292,7 +1292,7 @@ class XGMMLParser extends DefaultHandler {
 	}
 
 	private ParseState handleAttribute(Attributes atts, 
-	                                   CyAttributes cyAtts) {
+	                                   CyRow cyAtts) {
 		String name = atts.getValue("name");
 		ObjectType objType = getType(atts.getValue("type"));
 		Object obj = getTypedAttributeValue(objType, atts);
@@ -1324,17 +1324,17 @@ class XGMMLParser extends DefaultHandler {
 		case LIST:
 			currentAttributeID = name;
 			if (List.class == cyAtts.contains(name))
-				cyAtts.remove(name);
+				cyAtts.set(name,null);
 			return ParseState.LISTATT;
 		case MAP:
 			currentAttributeID = name;
 			if (Map.class == cyAtts.contains(name))
-				cyAtts.remove(name);
+				cyAtts.set(name,null);
 			return ParseState.MAPATT;
 		case COMPLEX:
 			currentAttributeID = name;
 			if (Map.class == cyAtts.contains(name)) // assuming complex will become Map
-				cyAtts.remove(name);
+				cyAtts.set(name,null);
 			// If this is a complex attribute, we know that the value attribute
 			// is an integer
 			numKeys = Integer.parseInt(atts.getValue("value"));
@@ -1381,7 +1381,7 @@ class XGMMLParser extends DefaultHandler {
 		}
 		// OK, now actually create it
 		CyNode node = network.addNode();
-		node.getCyAttributes("USER").set("name",label);
+		node.attrs().set("name",label);
 		// System.out.println("Created new node("+label+") id="+node.getRootGraphIndex());
 
 		// Add it our indices
@@ -1395,7 +1395,7 @@ class XGMMLParser extends DefaultHandler {
                                String label, boolean directed) throws SAXException {
 		// OK create it
 		CyEdge edge = network.addEdge(source, target, directed);
-		edge.getCyAttributes("USER").set("name",label);
+		edge.attrs().set("name",label);
 
 		edgeList.add(edge);
 		return edge;

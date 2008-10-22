@@ -128,12 +128,6 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-        <!-- for ontology stuff -->
-		<dependency>
-			<groupId>biojava</groupId>
-			<artifactId>biojava</artifactId>
-			<version>1.4</version>
-		</dependency>
 		<dependency>
 			<groupId>org.freehep</groupId>
 			<artifactId>freehep-graphicsio-pdf</artifactId>
@@ -221,7 +215,7 @@
         <!-- core libs -->
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>network</artifactId>
+			<artifactId>model</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -231,12 +225,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
-			<artifactId>attributes</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>event</artifactId>
+			<artifactId>io</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

@@ -36,8 +36,8 @@
  */
 package org.cytoscape.io.read.internal.xgmml; 
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 
 import java.net.URISyntaxException;
 import java.text.DateFormat;
@@ -70,7 +70,7 @@ public class MetadataParser {
 	private static final String DEF_FORMAT = "Cytoscape-XGMML";
 	private String metadataLabel;
 	private CyNetwork network;
-	private CyAttributes networkAttributes;
+	private CyRow networkAttributes;
 	private Properties props;
 	private Map rdfAsMap;
 
@@ -95,7 +95,7 @@ public class MetadataParser {
 	public MetadataParser(CyNetwork network, String metadataLabel) {
 		this.metadataLabel = metadataLabel;
 		this.network = network;
-		networkAttributes = network.getCyAttributes("USER"); 
+		networkAttributes = network.attrs(); 
 
 		// Extract Network Metadata from CyAttributes
 		rdfAsMap = networkAttributes.get(metadataLabel,Map.class);
@@ -133,7 +133,7 @@ public class MetadataParser {
 					break;
 
 				case TITLE:
-					dataMap.put(entries[i].toString(), network.getCyAttributes("USER").get("title",String.class));
+					dataMap.put(entries[i].toString(), network.attrs().get("title",String.class));
 
 					break;
 

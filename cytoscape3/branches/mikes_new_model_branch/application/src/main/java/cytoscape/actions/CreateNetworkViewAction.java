@@ -43,7 +43,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
 import javax.swing.*;
@@ -166,11 +166,11 @@ class CreateNetworkViewTask implements Task {
 		try {
 			Cytoscape.createNetworkView(network);
 		} catch (Exception e) {
-			taskMonitor.setException(e, "Could not create network view for network: " + network.getCyAttributes("USER").get("title",String.class));
+			taskMonitor.setException(e, "Could not create network view for network: " + network.attrs().get("title",String.class));
 		}
 
 		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("Network view successfully create for:  " + network.getCyAttributes("USER").get("title",String.class));
+		taskMonitor.setStatus("Network view successfully create for:  " + network.attrs().get("title",String.class));
 	}
 
 	public void halt() { }

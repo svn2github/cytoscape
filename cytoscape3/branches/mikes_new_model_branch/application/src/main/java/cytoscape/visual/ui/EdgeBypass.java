@@ -37,7 +37,7 @@
 package cytoscape.visual.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.vizmap.VisualPropertyType;
 
 import javax.swing.*;
@@ -47,8 +47,6 @@ import java.util.List;
 class EdgeBypass extends VizMapBypass {
     JMenuItem addMenu(CyEdge e) {
         graphObj = e;
-        attrs = Cytoscape.getEdgeAttributes();
-
         JMenu menu = new JMenu("Visual Mapping Bypass");
         menu.add(new JLabel("Change Edge Visualization"));
         menu.addSeparator();

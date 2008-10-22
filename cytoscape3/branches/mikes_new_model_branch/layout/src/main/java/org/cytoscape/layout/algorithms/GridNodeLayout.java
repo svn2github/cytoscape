@@ -36,8 +36,7 @@
 */
 package org.cytoscape.layout.algorithms;
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
@@ -87,23 +86,6 @@ public class GridNodeLayout extends AbstractLayout {
 	}
 
 	// We dont support node or edge attribute-based layouts
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public byte[] supportsNodeAttributes() {
-		return null;
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public byte[] supportsEdgeAttributes() {
-		return null;
-	}
 
 	/**
 	 * Returns a JPanel to be used as part of the Settings dialog for this layout
@@ -164,7 +146,7 @@ public class GridNodeLayout extends AbstractLayout {
 		EdgeView ev;
 		while (nodeViews.hasNext()) {
 			nView = (NodeView) nodeViews.next();
-			edgeList = network.getAdjacentEdgeList(nView.getNode(),EdgeType.ANY_EDGE);
+			edgeList = network.getAdjacentEdgeList(nView.getNode(),CyEdge.Type.ANY);
 			for (CyEdge edge: edgeList) {
 				ev = networkView.getEdgeView(edge);
 				ev.clearBends(); 

@@ -36,8 +36,8 @@ package org.cytoscape.coreplugin.psi_mi.cyto_mapper;
 
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.Mapper;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapperException;
 import org.cytoscape.coreplugin.psi_mi.model.ExternalReference;

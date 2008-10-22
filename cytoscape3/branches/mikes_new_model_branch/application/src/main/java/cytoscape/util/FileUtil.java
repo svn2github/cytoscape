@@ -40,6 +40,8 @@ import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.task.TaskMonitor;
 
+import org.cytoscape.io.CyFileFilter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -85,7 +87,7 @@ public abstract class FileUtil {
 	 * @param load_save_custom a flag for the type of file dialog
 	 */
 	public static File getFile(String title, int load_save_custom) {
-		return getFile(title, load_save_custom, new CyFileFilter[] {  }, null, null);
+		return getFile(title, load_save_custom, new CyFileFilter[] { }, null, null);
 	}
 
 	/**
@@ -240,18 +242,10 @@ public abstract class FileUtil {
 
 			// we can only set the one filter; therefore, create a special
 			// version of CyFileFilter that contains all extensions
-			CyFileFilter fileFilter = new CyFileFilter();
+			// TODO fix this so we actually use the filters we're given
+//			CyFileFilter fileFilter = new CyFileFilter(new String[]{},new String[]{},"All network files");
 
-			for (int i = 0; i < filters.length; i++) {
-				Iterator iter;
-
-				for (iter = filters[i].getExtensionSet().iterator(); iter.hasNext();) {
-					fileFilter.addExtension((String) iter.next());
-				}
-			}
-
-			fileFilter.setDescription("All network files");
-			chooser.setFilenameFilter(fileFilter);
+//			chooser.setFilenameFilter(fileFilter);
 
 			chooser.setVisible(true);
 

@@ -38,7 +38,7 @@ package cytoscape.layout.manual.common;
 
 import cytoscape.Cytoscape;
 import cytoscape.view.CytoscapeDesktop;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.data.SelectEvent;
 import org.cytoscape.data.SelectEventListener;
 

@@ -38,11 +38,12 @@ package cytoscape.data;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
 //import org.cytoscape.attributes.CountedIterator;
-//import org.cytoscape.attributes.CyAttributes;
+//import org.cytoscape.model.CyRow;
 //import org.cytoscape.attributes.MultiHashMap;
 
 import java.util.*;
@@ -77,10 +78,6 @@ public class Semantics {
 	 */
 	public static final String GO_COMMON_NAME = "GO Common Name";
 
-	/**
-	 *
-	 */
-	public static final String GO_ALIASES = "GO Aliases";
 
 	/**
 	 *
@@ -149,20 +146,19 @@ public class Semantics {
 	 * be determined, then use the BioDataServer to add all the synonyms that
 	 * are registered for the name argument.
 	 */
-	public static List<String> getAllSynonyms(final String name, final CyNetwork network) {
+	public static List<String> getAllSynonyms(final GraphObject go, final CyNetwork network) {
 		final List<String> returnList = new ArrayList<String>();
 
-		if (name == null) {
+		if (go == null) {
 			return returnList;
 		}
 
-		returnList.add(name);
+		returnList.add(go.attrs().get("name",String.class));
 
 		String species = null;
 
 		if (network != null) {
-			final String commonName = Cytoscape.getNodeAttributes()
-			                                   .getStringAttribute(name, GO_COMMON_NAME);
+			final String commonName = go.attrs().get(GO_COMMON_NAME,String.class);
 
 			if (commonName != null) {
 				returnList.add(commonName);

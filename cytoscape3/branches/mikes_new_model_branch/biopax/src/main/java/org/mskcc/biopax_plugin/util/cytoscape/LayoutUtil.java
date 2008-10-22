@@ -46,6 +46,8 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * This class implements CyLayoutAlgorithim.  Used to layout BioPAX graphs.
@@ -111,15 +113,15 @@ public class LayoutUtil implements CyLayoutAlgorithm {
 	/**
 	 * Our implementation of LayoutAlgorithm.supportsNodeAttributes().
 	 */
-	public byte[] supportsNodeAttributes() {
-	    return null;
+	public Set<Class<?>> supportsNodeAttributes() {
+	    return new HashSet<Class<?>>();
     }
 
 	/**
 	 * Our implementation of LayoutAlgorithm.supportsEdgeAttributes().
 	 */
-	public byte[] supportsEdgeAttributes() {
-	    return null;
+	public Set<Class<?>> supportsEdgeAttributes() {
+	    return new HashSet<Class<?>>();
     }
 
 	/**

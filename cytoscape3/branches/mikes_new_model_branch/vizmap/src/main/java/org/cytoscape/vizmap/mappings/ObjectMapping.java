@@ -42,10 +42,10 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -57,7 +57,7 @@ import java.util.Properties;
 /**
  * Mappings should implement this interface. Mappings are classes that map from
  * a value stored in the edge attributes or node attributes HashMap in
- * {@link cytoscape.CyAttributes}. The range of the mapping depends on the
+ * {@link org.cytoscape.model.CyRow}. The range of the mapping depends on the
  * {@link cytoscape.visual.calculators.AbstractCalculator} that owns
  * the mapping.
  * <p>
@@ -131,7 +131,7 @@ public interface ObjectMapping extends Cloneable {
      */
     public void removeChangeListener(ChangeListener l);
 
-    Object calculateRangeValue(CyAttributes attrBundle);
+    Object calculateRangeValue(CyRow attrBundle);
 
     JPanel getLegend(VisualPropertyType type);
 

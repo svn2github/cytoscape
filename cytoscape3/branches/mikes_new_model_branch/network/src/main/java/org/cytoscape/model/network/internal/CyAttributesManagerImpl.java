@@ -1,8 +1,8 @@
-package org.cytoscape.model.network.internal;
+package org.cytoscape.model.internal;
 
 import java.util.*;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 
 public class CyAttributesManagerImpl implements CyAttributesManager {
 

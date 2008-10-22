@@ -41,11 +41,11 @@ import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
 import static cytoscape.io.table.reader.TextFileDelimiters.TAB;
 import cytoscape.io.table.reader.TextTableReader.ObjectType;
 import static cytoscape.io.table.reader.TextTableReader.ObjectType.NETWORK;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

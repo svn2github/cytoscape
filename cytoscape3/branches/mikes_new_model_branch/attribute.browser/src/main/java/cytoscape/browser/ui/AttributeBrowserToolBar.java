@@ -44,8 +44,8 @@ import cytoscape.browser.DataObjectType;
 import static cytoscape.browser.DataObjectType.*;
 import cytoscape.browser.DataTableModel;
 import cytoscape.util.swing.CheckBoxJList;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowUtils;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 

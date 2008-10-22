@@ -37,7 +37,7 @@
 package cytoscape.util;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,7 +58,7 @@ public class CyNetworkNaming {
 	 */
 	public static String getSuggestedSubnetworkTitle(CyNetwork parentNetwork) {
 		for (int i = 0; true; i++) {
-			String nameCandidate = parentNetwork.getCyAttributes("USER").get("title",String.class) + "--child"
+			String nameCandidate = parentNetwork.attrs().get("title",String.class) + "--child"
 			                       + ((i == 0) ? "" : ("." + i));
 
 			if (!isNetworkTitleTaken(nameCandidate))
@@ -89,7 +89,7 @@ public class CyNetworkNaming {
 		while (iter.hasNext()) {
 			CyNetwork existingNetwork = (CyNetwork) iter.next();
 
-			if (existingNetwork.getCyAttributes("USER").get("title",String.class).equals(titleCandidate))
+			if (existingNetwork.attrs().get("title",String.class).equals(titleCandidate))
 				return true;
 		}
 
@@ -104,7 +104,7 @@ public class CyNetworkNaming {
 	 */
 	public static void editNetworkTitle(CyNetwork network) {
 		Component parent = Cytoscape.getDesktop();
-		String pname = network.getCyAttributes("USER").get("title",String.class);
+		String pname = network.attrs().get("title",String.class);
 		String name = null;
 		String sname = "";
 		Object[] options = { "Try Again", "Cancel", "Use Suggestion" };
@@ -151,6 +151,6 @@ public class CyNetworkNaming {
 				break;
 		}
 
-		network.getCyAttributes("USER").set("title",name);
+		network.attrs().set("title",name);
 	}
 }

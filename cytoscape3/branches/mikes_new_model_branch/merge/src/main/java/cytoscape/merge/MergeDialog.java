@@ -37,7 +37,7 @@
 package cytoscape.merge;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

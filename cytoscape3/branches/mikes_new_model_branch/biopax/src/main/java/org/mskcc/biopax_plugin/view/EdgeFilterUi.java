@@ -3,9 +3,9 @@ package org.mskcc.biopax_plugin.view;
 import cytoscape.Cytoscape;
 import cytoscape.actions.GinyUtils;
 import cytoscape.data.Semantics;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 

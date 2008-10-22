@@ -38,7 +38,7 @@ import cytoscape.browser.AttributeModel;
 import cytoscape.browser.DataObjectType;
 import cytoscape.browser.DataTableModel;
 import cytoscape.browser.MultiDataEditAction;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
 import java.awt.*;

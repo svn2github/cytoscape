@@ -36,7 +36,7 @@ package org.cytoscape.coreplugin.psi_mi.test.data_mapper;
 
 import cytoscape.Cytoscape;
 import junit.framework.TestCase;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapToCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiOne;

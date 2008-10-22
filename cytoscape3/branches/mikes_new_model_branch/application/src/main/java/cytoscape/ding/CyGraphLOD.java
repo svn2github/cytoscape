@@ -76,7 +76,7 @@ public class CyGraphLOD extends GraphLOD implements PropertyChangeListener {
 		if (e.getPropertyName() == Cytoscape.PREFERENCES_UPDATED) {
 			init();
 
-			java.util.Map<String,GraphView> networkViewMap = cytoscape.Cytoscape.getNetworkViewMap();
+			java.util.Map<Long,GraphView> networkViewMap = cytoscape.Cytoscape.getNetworkViewMap();
 			java.util.Iterator<GraphView> foo = networkViewMap.values().iterator();
 
 			while (foo.hasNext()) {

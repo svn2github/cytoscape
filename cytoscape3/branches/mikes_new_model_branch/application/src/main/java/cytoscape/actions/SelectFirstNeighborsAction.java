@@ -44,8 +44,10 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyDataTableUtil;
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -77,11 +79,11 @@ public class SelectFirstNeighborsAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-		final List<CyNode> selectedNodes = new ArrayList<CyNode>(currentNetwork.getSelectedNodes());
+		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(currentNetwork,"selected",true);
 
 		for ( CyNode currentNode : selectedNodes ) {
-			for ( CyNode n : currentNetwork.getNeighborList(currentNode) ) {
-				n.getCyAttributes("USER").set("selected",true);
+			for ( CyNode n : currentNetwork.getNeighborList(currentNode,CyEdge.Type.ANY) ) {
+				n.attrs().set("selected",true);
 			}
 		}
 

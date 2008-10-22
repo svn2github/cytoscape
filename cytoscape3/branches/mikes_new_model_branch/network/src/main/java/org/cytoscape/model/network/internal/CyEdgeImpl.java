@@ -1,9 +1,9 @@
 
-package org.cytoscape.model.network.internal;
+package org.cytoscape.model.internal;
 
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyDataTable;
 import java.util.Map;
 
 class CyEdgeImpl extends GraphObjImpl implements CyEdge {

@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings.continuous;
 
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.Interpolator;
 
@@ -56,7 +56,7 @@ import java.util.Map;
 public class ContinuousRangeCalculator {
     private List<ContinuousMappingPoint> points;
     private Interpolator interpolator;
-    private CyAttributes attrBundle;
+    private CyRow attrBundle;
 
     /**
      * Constructor.
@@ -65,7 +65,7 @@ public class ContinuousRangeCalculator {
      * @param attrBundle Attribute Bundle.
      */
     public ContinuousRangeCalculator(List<ContinuousMappingPoint> points,
-        Interpolator interpolator, CyAttributes attrBundle) {
+        Interpolator interpolator, CyRow attrBundle) {
         this.points = points;
         this.interpolator = interpolator;
         this.attrBundle = attrBundle;

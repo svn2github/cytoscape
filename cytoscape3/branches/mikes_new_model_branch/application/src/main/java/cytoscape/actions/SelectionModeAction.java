@@ -37,7 +37,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 
 import javax.swing.*;
@@ -119,8 +119,10 @@ public class SelectionModeAction extends JMenu implements MenuListener {
 		nodesAndEdges.setSelected(true);
 
 		GraphView view = Cytoscape.getCurrentNetworkView();
-		view.enableNodeSelection();
-		view.enableEdgeSelection();
+		if ( view != null ) { 
+			view.enableNodeSelection();
+			view.enableEdgeSelection();
+		}
 		Cytoscape.setSelectionMode(Cytoscape.SELECT_NODES_AND_EDGES);
 	}
 

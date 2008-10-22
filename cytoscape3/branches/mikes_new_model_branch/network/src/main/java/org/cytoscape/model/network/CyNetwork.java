@@ -2,8 +2,8 @@ package org.cytoscape.model.network;
 
 import java.util.List;
 import java.util.Map;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 
 public interface CyNetwork extends Identifiable {
 

@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 
 /**
@@ -72,7 +72,7 @@ public class DiscreteRangeCalculator {
      * @param attrBundle Attribute Bundle.
      * @return Object.
      */
-    public Object calculateRangeValue(CyAttributes attrBundle) {
+    public Object calculateRangeValue(CyRow attrBundle) {
         if ((attrBundle == null) || (attrName == null))
             return null;
 

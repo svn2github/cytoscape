@@ -1,11 +1,11 @@
 package org.cytoscape.model.network;
 
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.internal.CyNetworkImpl;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.internal.CyNetworkImpl;
+import org.cytoscape.model.CyDataTable;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 public class CyNodeTest extends TestCase {
 
@@ -52,29 +52,29 @@ public class CyNodeTest extends TestCase {
 		CyEdge e2 = net.addEdge(n2,n3,false);
 
 		// one neighbor
-		List<CyNode> l = n1.getNeighborList(EdgeType.ANY_EDGE);
+		List<CyNode> l = n1.getNeighborList(CyEdge.Type.ANY);
 		assertEquals("one neighbor",1,l.size());
 		assertTrue("contains node 2",l.contains(n2));
 
 		// two neighbors
-		l = n2.getNeighborList(EdgeType.ANY_EDGE);
+		l = n2.getNeighborList(CyEdge.Type.ANY);
 		assertEquals("two neighbors",2,l.size());
 		assertTrue("contains node 1",l.contains(n1));
 		assertTrue("contains node 3",l.contains(n3));
 		assertFalse("contains node 4",l.contains(n4));
 
 		// no neighbors
-		l = n4.getNeighborList(EdgeType.ANY_EDGE);
+		l = n4.getNeighborList(CyEdge.Type.ANY);
 		assertEquals("no neighbors",0,l.size());
 
 		// whoa!  what about self edges?
 		// TODO
 		CyEdge e3 = net.addEdge(n4,n4,false);
-		l = n4.getNeighborList(EdgeType.ANY_EDGE);
+		l = n4.getNeighborList(CyEdge.Type.ANY);
 		assertEquals("one neighbor?",1,l.size());
 
 		CyEdge e4 = net.addEdge(n4,n4,true);
-		l = n4.getNeighborList(EdgeType.ANY_EDGE);
+		l = n4.getNeighborList(CyEdge.Type.ANY);
 		assertEquals("two neighbors",2,l.size());
 	}
 
@@ -101,7 +101,7 @@ public class CyNodeTest extends TestCase {
 		assertTrue("contains node 3",l.contains(n3));
 		assertTrue("contains node 4",l.contains(n4));
 
-		l = n2.getNeighborList(EdgeType.ANY_EDGE);
+		l = n2.getNeighborList(CyEdge.Type.ANY);
 		assertEquals("node 2 neighbors",3,l.size());
 		assertTrue("contains node 1",l.contains(n1));
 		assertTrue("contains node 3",l.contains(n3));
@@ -173,24 +173,24 @@ public class CyNodeTest extends TestCase {
 		CyEdge e2 = net.addEdge(n2,n3,false);
 
 		// one edge
-		List<CyEdge> l = n1.getAdjacentEdgeList(EdgeType.ANY_EDGE);
+		List<CyEdge> l = n1.getAdjacentEdgeList(CyEdge.Type.ANY);
 		assertEquals("one adjacent edge",1,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 
 		// two edge
-		l = n2.getAdjacentEdgeList(EdgeType.ANY_EDGE);
+		l = n2.getAdjacentEdgeList(CyEdge.Type.ANY);
 		assertEquals("two adjacent edges",2,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 2",l.contains(e2));
 
 		// no adjacent edges
-		l = n4.getAdjacentEdgeList(EdgeType.ANY_EDGE);
+		l = n4.getAdjacentEdgeList(CyEdge.Type.ANY);
 		assertEquals("no edges",0,l.size());
 
 		// whoa!  what about self edges?
 		// TODO
 		CyEdge e3 = net.addEdge(n4,n4,false);
-		l = n4.getAdjacentEdgeList(EdgeType.ANY_EDGE);
+		l = n4.getAdjacentEdgeList(CyEdge.Type.ANY);
 		assertEquals("one adjacent edge?",1,l.size());
 	}
 
@@ -217,7 +217,7 @@ public class CyNodeTest extends TestCase {
 		assertTrue("contains edge 2",l.contains(e2));
 		assertTrue("contains edge 3",l.contains(e3));
 
-		l = n2.getAdjacentEdgeList(EdgeType.ANY_EDGE);
+		l = n2.getAdjacentEdgeList(CyEdge.Type.ANY);
 		assertEquals("node 2 adjacent edges",3,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 2",l.contains(e2));
@@ -290,20 +290,20 @@ public class CyNodeTest extends TestCase {
 		CyEdge e4 = net.addEdge(n1,n2,false);
 
 		// between node 1 and 2
-		List<CyEdge> l = n1.getConnectingEdgeList(n2,EdgeType.ANY_EDGE);
+		List<CyEdge> l = n1.getConnectingEdgeList(n2,CyEdge.Type.ANY);
 		assertEquals("connecting edges",3,l.size());
 		assertTrue("contains edge 1",l.contains(e1));
 		assertTrue("contains edge 3",l.contains(e1));
 		assertTrue("contains edge 4",l.contains(e4));
 
 		// between node 2 and 3
-		l = n3.getConnectingEdgeList(n2,EdgeType.ANY_EDGE);
+		l = n3.getConnectingEdgeList(n2,CyEdge.Type.ANY);
 		assertEquals("connecting edges",1,l.size());
 		assertTrue("contains edge 2",l.contains(e2));
 
 		// between node 2 and 3 after adding an edge
 		CyEdge e5 = net.addEdge(n3,n2,false);
-		l = n2.getConnectingEdgeList(n3,EdgeType.ANY_EDGE);
+		l = n2.getConnectingEdgeList(n3,CyEdge.Type.ANY);
 		assertEquals("connecting edges",2,l.size());
 		assertTrue("contains edge 2",l.contains(e2));
 		assertTrue("contains edge 5",l.contains(e5));
@@ -311,7 +311,7 @@ public class CyNodeTest extends TestCase {
 		// between node 2 and 3 after deleting an edge
 		boolean rem5 = net.removeEdge(e5);
 		assertTrue("removed successfully",rem5);
-		l = n2.getConnectingEdgeList(n3,EdgeType.ANY_EDGE);
+		l = n2.getConnectingEdgeList(n3,CyEdge.Type.ANY);
 		assertEquals("connecting edges",1,l.size());
 		assertTrue("contains edge 2",l.contains(e2));
 	}

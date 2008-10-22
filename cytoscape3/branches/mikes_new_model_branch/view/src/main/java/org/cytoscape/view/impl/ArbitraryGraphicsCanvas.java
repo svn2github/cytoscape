@@ -41,8 +41,8 @@ package org.cytoscape.view.impl;
 
 // import
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.NodeView;
 
 import java.awt.*;
@@ -114,7 +114,7 @@ public class ArbitraryGraphicsCanvas extends DingCanvas implements ViewportChang
 		if (USE_REPOSITION_CODE) {
 			// create an "anchor node"
 			CyNode node = m_cyNetwork.addNode();
-			node.getCyAttributes("USER").set("name",component.toString());
+			node.attrs().set("name",component.toString());
 			//m_cyNetwork.restoreNode(node);
 
 			// set its node view coordinates

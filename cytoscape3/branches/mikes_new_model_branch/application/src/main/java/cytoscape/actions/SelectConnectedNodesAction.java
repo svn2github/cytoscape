@@ -40,8 +40,10 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTableUtil;
+
 
 import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
@@ -71,11 +73,11 @@ public class SelectConnectedNodesAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		final CyNetwork currentNetwork = Cytoscape.getCurrentNetwork();
-		final List<CyEdge> selectedEdges = new ArrayList<CyEdge>(currentNetwork.getSelectedEdges());
+		final List<CyEdge> selectedEdges = CyDataTableUtil.getEdgesInState(currentNetwork,"selected",true);
 
 		for (CyEdge edge: selectedEdges) {
-			edge.getSource().getCyAttributes("USER").set("selected",true);
-			edge.getTarget().getCyAttributes("USER").set("selected",true);
+			edge.getSource().attrs().set("selected",true);
+			edge.getTarget().attrs().set("selected",true);
 		}
 
 		Cytoscape.getCurrentNetworkView().updateView();

@@ -44,8 +44,8 @@ import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.FileUtil;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -117,8 +117,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 			for (int i = 0; i < nodes.length; i++) {
 				CyNode node = nodes[i];
 				boolean select = false;
-				String canonicalName = node.getIdentifier();
-				List synonyms = Semantics.getAllSynonyms(canonicalName, network);
+				List synonyms = Semantics.getAllSynonyms(node, network);
 
 				for (Iterator synI = synonyms.iterator(); synI.hasNext();) {
 					if (fileNodes.contains((String) synI.next())) {
@@ -132,7 +131,7 @@ public class ListFromFileSelectionAction extends CytoscapeAction {
 					//GraphView view = Cytoscape.getCurrentNetworkView();
 					//NodeView nv = view.getNodeView(node.getRootGraphIndex());
 					//nv.setSelected(true);
-					node.getCyAttributes("USER").set("selected",true);
+					node.attrs().set("selected",true);
 				}
 			}
 		} catch (Exception e) {

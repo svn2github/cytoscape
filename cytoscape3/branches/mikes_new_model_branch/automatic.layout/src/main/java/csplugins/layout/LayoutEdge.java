@@ -32,7 +32,7 @@
  */
 package csplugins.layout;
 
-import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.CyEdge;
 
 /**
  * The LayoutEdge class.  This class is used as a container for information

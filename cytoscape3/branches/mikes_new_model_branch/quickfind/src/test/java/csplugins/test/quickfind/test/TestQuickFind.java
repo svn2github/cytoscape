@@ -45,10 +45,10 @@ import csplugins.widgets.autocomplete.index.TextIndex;
 import cytoscape.Cytoscape;
 import cytoscape.data.Semantics;
 import junit.framework.TestCase;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.util.List;
 

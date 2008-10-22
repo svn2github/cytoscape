@@ -1,9 +1,9 @@
 
 package org.cytoscape.attributes;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesManager;
-import org.cytoscape.model.network.internal.CyAttributesManagerImpl;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.internal.CyAttributesManagerImpl;
 
 import junit.framework.Assert;
 import junit.framework.Test;

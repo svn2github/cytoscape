@@ -1,12 +1,12 @@
 
 
-package org.cytoscape.model.network.events.internal;
+package org.cytoscape.model.events.internal;
 
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.events.AboutToRemoveNodeEvent;
-import org.cytoscape.model.network.events.AddedNodeEvent;
-import org.cytoscape.model.network.events.RemovedNodeEvent;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.events.AboutToRemoveNodeEvent;
+import org.cytoscape.model.events.AddedNodeEvent;
+import org.cytoscape.model.events.RemovedNodeEvent;
 
 /**
  * 

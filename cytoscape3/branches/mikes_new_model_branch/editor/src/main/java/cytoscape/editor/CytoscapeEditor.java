@@ -25,8 +25,8 @@
 package cytoscape.editor;
 
 import cytoscape.editor.event.NetworkEditEventAdapter;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.data.SelectEventListener;
 
 import java.awt.geom.Point2D;

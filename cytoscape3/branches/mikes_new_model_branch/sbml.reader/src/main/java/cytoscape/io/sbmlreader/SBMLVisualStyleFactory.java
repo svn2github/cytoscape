@@ -37,7 +37,7 @@
 package cytoscape.io.sbmlreader;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.vizmap.ArrowShape;
 import org.cytoscape.vizmap.CalculatorCatalog;
 import org.cytoscape.vizmap.EdgeAppearanceCalculator;

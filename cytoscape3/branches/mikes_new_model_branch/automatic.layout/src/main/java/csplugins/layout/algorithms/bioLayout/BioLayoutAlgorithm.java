@@ -35,7 +35,7 @@ package csplugins.layout.algorithms.bioLayout;
 import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
@@ -44,6 +44,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Superclass for the two bioLayout algorithms (KK and FR).
@@ -112,14 +114,6 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	 */
 	public boolean supportsSelectedOnly() { return true; }
 
-	/**
-	 * Tells Cytoscape whether we support node attribute based layouts
-	 *
-	 * @return  null, which indicates that we don't
-	 */
-	public byte[] supportsNodeAttributes() {
-		return null;
-	}
 
 	/**
 	 * Tells Cytoscape whether we support edge attribute based layouts
@@ -127,13 +121,15 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 	 * @return  null if supportWeights is false, otherwise return the attribute
 	 *          types that can be used for weights.
 	 */
-	public byte[] supportsEdgeAttributes() {
+	public Set<Class<?>> supportsEdgeAttributes() {
+		Set<Class<?>> ret = new HashSet<Class<?>>();
 		if (!supportWeights)
-			return null;
+			return ret;
 
-		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
+		ret.add(Integer.class);
+		ret.add(Double.class);
 
-		return attrs;
+		return ret;
 	}
 
 	/**

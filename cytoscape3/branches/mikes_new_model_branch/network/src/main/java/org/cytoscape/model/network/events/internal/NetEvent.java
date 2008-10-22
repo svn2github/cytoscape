@@ -1,7 +1,7 @@
 
-package org.cytoscape.model.network.events.internal;
+package org.cytoscape.model.events.internal;
 
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.event.CyEvent;
 
 /**

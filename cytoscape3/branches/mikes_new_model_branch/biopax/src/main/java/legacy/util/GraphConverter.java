@@ -7,7 +7,7 @@ package legacy.util;
 import cytoscape.Cytoscape;
 import legacy.layout.algorithm.MutablePolyEdgeGraphLayout;
 import legacy.layout.algorithm.util.MutablePolyEdgeGraphLayoutRepresentation;
-import org.cytoscape.model.network.CyEdge;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;

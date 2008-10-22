@@ -3,9 +3,9 @@ package org.cytoscape.view;
 // java
 
 import cytoscape.render.stateful.GraphLOD;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import phoebe.PhoebeCanvasDropListener;
 
 import javax.swing.*;

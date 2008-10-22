@@ -35,7 +35,7 @@
 package cytoscape.browser.ui; 
 
 import cytoscape.data.readers.MetadataParser;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 import javax.swing.table.DefaultTableModel;
 import java.net.URISyntaxException;

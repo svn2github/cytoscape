@@ -36,11 +36,11 @@
  */
 package cytoscape;
 
-import cytoscape.data.readers.CytoscapeSessionReader;
+//import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
 import cytoscape.util.shadegrown.WindowUtilities;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 import javax.swing.*;
 import java.awt.*;
@@ -133,7 +133,7 @@ public class CytoscapeInit {
 			visualProperties.putAll(initParams.getVizProps());
 
 			// Build the OntologyServer.
-			Cytoscape.buildOntologyServer();
+//			Cytoscape.buildOntologyServer();
 
 			// get the manager so it can test for webstart before menus are created (little hacky)
 			//PluginManager.getPluginManager();
@@ -165,20 +165,20 @@ public class CytoscapeInit {
 
 			//PluginUtil.loadPlugins(initParams.getPlugins());
 
-			System.out.println("loading session...");
+//			System.out.println("loading session...");
 
 			boolean sessionLoaded = false;
-			if ((initParams.getMode() == CyInitParams.GUI)
-			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				loadSessionFile();
-				sessionLoaded = true;
-			}
+//			if ((initParams.getMode() == CyInitParams.GUI)
+//			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
+//				loadSessionFile();
+//				sessionLoaded = true;
+//			}
 
 			System.out.println("loading networks...");
 			loadNetworks();
 
-			System.out.println("loading attributes...");
-			loadAttributes();
+//			System.out.println("loading attributes...");
+			//loadAttributes();
 
 			System.out.println("loading expression files...");
 			loadExpressionFiles();
@@ -398,7 +398,7 @@ public class CytoscapeInit {
 			}
 		}
 	}
-
+/*
 	private boolean loadSessionFile() {
 		String sessionFile = initParams.getSessionFile();
 
@@ -439,6 +439,7 @@ public class CytoscapeInit {
 
 		return false;
 	}
+	*/
 
 	private static void initProperties() {
 		if (properties == null) {
@@ -490,27 +491,30 @@ public class CytoscapeInit {
 				createView = true;
 
 			if (net.matches(FileUtil.urlPattern)) {
-				try {
-					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
-				} catch (MalformedURLException mue) {
-					mue.printStackTrace();
-					System.out.println("Couldn't load network.  Bad URL!");
-				}
+//				try {
+//					// TODO 
+//					network = Cytoscape.createNetworkFromURL(new URL(net), createView);
+//				} catch (MalformedURLException mue) {
+//					mue.printStackTrace();
+//					System.out.println("Couldn't load network.  Bad URL!");
+//				}
 			} else {
-				network = Cytoscape.createNetworkFromFile(net, createView);
+				// TODO 
+				//network = Cytoscape.createNetworkFromFile(net, createView);
 			}
 
 			// This is for browser and other plugins.
-			Object[] ret_val = new Object[3];
-			ret_val[0] = network;
-			ret_val[1] = net;
-			ret_val[2] = Integer.valueOf(0);
-
-			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
+//			Object[] ret_val = new Object[3];
+//			ret_val[0] = network;
+//			ret_val[1] = net;
+//			ret_val[2] = Integer.valueOf(0);
+//
+//			Cytoscape.firePropertyChange(Cytoscape.NETWORK_LOADED, null, ret_val);
 		}
 	}
 
 	// load any specified data attribute files
+	/*
 	private void loadAttributes() {
 		try {
 			Cytoscape.loadAttributes((String[]) initParams.getNodeAttributeFiles()
@@ -522,6 +526,7 @@ public class CytoscapeInit {
 			System.out.println("failure loading specified attributes");
 		}
 	}
+	*/
 
 	private void initVizmapper() {
 		Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();

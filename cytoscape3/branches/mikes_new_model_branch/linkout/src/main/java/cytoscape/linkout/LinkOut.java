@@ -4,9 +4,9 @@ package cytoscape.linkout;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.util.OpenBrowser;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 

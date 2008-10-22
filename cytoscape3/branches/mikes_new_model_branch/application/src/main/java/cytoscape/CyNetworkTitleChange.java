@@ -8,15 +8,15 @@ package cytoscape;
  * network title has changed (firing an event)
  */
 public class CyNetworkTitleChange {
-		private String networkId;
+		private Long networkId;
 		private String networkName;
 		
-		public CyNetworkTitleChange(String netId, String title) {
+		public CyNetworkTitleChange(Long netId, String title) {
 			networkId = netId;
 			networkName = title;
 		}
 		
-		public String getNetworkIdentifier() {
+		public Long getNetworkIdentifier() {
 			return networkId;
 		}
 		

@@ -41,10 +41,10 @@ import cytoscape.filters.AtomicFilter;
 import cytoscape.filters.CompositeFilter;
 import cytoscape.filters.NumericFilter;
 import cytoscape.filters.StringFilter;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
 import java.util.List;

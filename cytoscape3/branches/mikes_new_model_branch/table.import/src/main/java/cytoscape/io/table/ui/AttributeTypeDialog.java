@@ -37,7 +37,7 @@
 package cytoscape.io.table.ui;
 
 import static cytoscape.io.table.reader.TextFileDelimiters.*;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
 import java.awt.*;

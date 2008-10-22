@@ -2,7 +2,7 @@
 package cytoscape.linkout;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

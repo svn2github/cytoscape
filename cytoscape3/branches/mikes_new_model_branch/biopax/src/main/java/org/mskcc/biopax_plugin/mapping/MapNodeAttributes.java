@@ -35,10 +35,10 @@ package org.mskcc.biopax_plugin.mapping;
 // imports
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.attributes.CountedIterator;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.attributes.MultiHashMap;
 import org.cytoscape.attributes.MultiHashMapDefinition;
 import org.cytoscape.view.GraphView;

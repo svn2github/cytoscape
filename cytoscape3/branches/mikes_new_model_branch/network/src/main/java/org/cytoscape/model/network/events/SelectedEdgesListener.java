@@ -1,5 +1,5 @@
 
-package org.cytoscape.model.network.events;
+package org.cytoscape.model.events;
 
 import org.cytoscape.event.CyEventListener;
 

@@ -40,7 +40,7 @@ import static cytoscape.io.table.reader.TextFileDelimiters.PIPE;
 import static cytoscape.io.table.ui.theme.ImportDialogColorTheme.*;
 import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.*;
 import static cytoscape.io.table.ui.theme.ImportDialogIconSets.*;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

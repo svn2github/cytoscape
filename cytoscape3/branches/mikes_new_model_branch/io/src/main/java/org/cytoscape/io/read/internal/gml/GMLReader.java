@@ -45,11 +45,11 @@ import org.cytoscape.io.read.CyNetworkViewReader;
 
 import org.cytoscape.io.read.internal.VisualStyleBuilder;
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.LayoutAdapter;
@@ -248,6 +248,10 @@ public class GMLReader implements CyNetworkReader, CyNetworkViewReader {
 		return new String[]{"gml"};
 	}
 
+	public String[] getContentTypes() {
+		return new String[]{"text/plain"};
+	}
+
 	public String getExtensionDescription() {
 		return "GML files";
 	}
@@ -339,7 +343,7 @@ public class GMLReader implements CyNetworkReader, CyNetworkViewReader {
 
 			if (nodeNameSet.add(label)) {
 				CyNode node = network.addNode();
-				node.getCyAttributes("USER").set("name",label);
+				node.attrs().set("name",label);
 
 				nodeIDMap.put(label, node);
 				gml_id2order.put(nodes.get(idx), idx);
@@ -378,8 +382,8 @@ public class GMLReader implements CyNetworkReader, CyNetworkViewReader {
 				CyNode node_1 = nodeIDMap.get( sourceName );
 				CyNode node_2 = nodeIDMap.get( targetName ); 
 				CyEdge edge = network.addEdge(node_1, node_2, isDirected.booleanValue());
-				edge.getCyAttributes("USER").set("name", edgeName);
-				edge.getCyAttributes("USER").set("interaction", label);
+				edge.attrs().set("name", edgeName);
+				edge.attrs().set("interaction", label);
 				edge_names.add(idx, edge);
 
 				edge_root_index_pairs.get(idx).value = Integer.valueOf(edge.getIndex());
@@ -801,7 +805,7 @@ public class GMLReader implements CyNetworkReader, CyNetworkViewReader {
 		// Put all attributes into hashes.
 		// Key is the node name
 		// (Assume we do not have duplicate node name.)
-		CyAttributes attrs = node.getCyAttributes("USER");
+		CyRow attrs = node.attrs();
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();
 
@@ -834,7 +838,7 @@ public class GMLReader implements CyNetworkReader, CyNetworkViewReader {
 		boolean isArrow = false;
 		String edgeFill = DEF_COLOR.toString();
 		String arrowShape = ARROW_NONE;
-		CyAttributes attrs = edge.getCyAttributes("USER");
+		CyRow attrs = edge.attrs();
 		
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			KeyValue keyVal = (KeyValue) it.next();

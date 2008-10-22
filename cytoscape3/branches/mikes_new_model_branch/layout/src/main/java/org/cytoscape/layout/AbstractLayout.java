@@ -37,8 +37,8 @@
 package org.cytoscape.layout;
 
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
@@ -148,8 +148,8 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * @return the list of supported attribute types, or null
 	 * if node attributes are not supported
 	 */
-	public byte[] supportsNodeAttributes() {
-		return null;
+	public Set<Class<?>> supportsNodeAttributes() {
+		return new HashSet<Class<?>>();
 	}
 
 	/**
@@ -160,8 +160,8 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * @return the list of supported attribute types, or null
 	 * if edge attributes are not supported
 	 */
-	public byte[] supportsEdgeAttributes() {
-		return null;
+	public Set<Class<?>> supportsEdgeAttributes() {
+		return new HashSet<Class<?>>();
 	}
 
 	/**
@@ -171,9 +171,9 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 	 * @param attributeName The name of the attribute
 	 */
 	public void setLayoutAttribute(String attributeName) {
-		if (supportsNodeAttributes() != null) {
+		if (supportsNodeAttributes().size() > 0) {
 			nodeAttribute = attributeName;
-		} else if (supportsEdgeAttributes() != null) {
+		} else if (supportsEdgeAttributes().size() > 0) {
 			edgeAttribute = attributeName;
 		}
 	}
@@ -274,7 +274,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		undoableEdit.post();
 
 		// update the __layoutAlgorithm attribute
-		CyAttributes networkAttributes = network.getCyAttributes("hidden");
+		CyRow networkAttributes = network.getCyRow("hidden");
 		networkAttributes.set("layoutAlgorithm", getName());
 
 		this.network = null;

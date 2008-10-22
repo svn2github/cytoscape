@@ -3,7 +3,7 @@ package org.cytoscape.coreplugin.cpath2.task;
 import cytoscape.Cytoscape;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;
 import org.cytoscape.view.NodeContextMenuListener;
 import org.cytoscape.view.NodeView;

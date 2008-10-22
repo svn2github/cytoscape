@@ -65,7 +65,7 @@ class NodeBypassMenuListener implements NodeContextMenuListener {
 		/*
 		 * Add Node ID as label.
 		 */
-		final String nodeID = nodeView.getNode().getIdentifier();
+		final String nodeID = nodeView.getNode().attrs().get("name",String.class);
 		final JLabel nodeLabel = new JLabel(nodeID);
 
 		if (menu == null)

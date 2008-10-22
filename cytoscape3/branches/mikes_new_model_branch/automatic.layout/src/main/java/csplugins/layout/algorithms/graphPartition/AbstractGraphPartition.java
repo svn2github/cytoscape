@@ -4,7 +4,7 @@ package csplugins.layout.algorithms.graphPartition;
 import csplugins.layout.EdgeWeighter;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.layout.AbstractLayout;
 
 import java.util.ArrayList;

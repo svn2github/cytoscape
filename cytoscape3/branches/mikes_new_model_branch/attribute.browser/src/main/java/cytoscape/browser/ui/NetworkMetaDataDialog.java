@@ -7,7 +7,7 @@ package cytoscape.browser.ui;
 
 import cytoscape.data.readers.MetadataEntries;
 import cytoscape.data.readers.MetadataParser;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -94,7 +94,7 @@ public class NetworkMetaDataDialog extends JDialog implements TableModelListener
 				}
 			});
 
-		titleLabel.setText("Network Metadata for " + network.getCyAttributes("USER").get("title",String.class));
+		titleLabel.setText("Network Metadata for " + network.attrs().get("title",String.class));
 		titleLabel.setFont(titleFont);
 		titleLabel.setForeground(Color.BLUE);
 

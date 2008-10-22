@@ -38,8 +38,8 @@ package csplugins.layout.algorithms;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.layout.AbstractLayout;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
@@ -53,6 +53,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.TreeMap;
 
 
@@ -118,13 +120,15 @@ public class GroupAttributesLayout extends AbstractLayout {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public byte[] supportsNodeAttributes() {
-		byte[] attrs = {
-		                   CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_STRING,
-		                   CyAttributes.TYPE_FLOATING, CyAttributes.TYPE_BOOLEAN
-		               };
+	public Set<Class<?>> supportsNodeAttributes() {
+    	Set<Class<?>> ret = new HashSet<Class<?>>();
 
-		return attrs;
+   		ret.add(Integer.class);
+		ret.add(Double.class);
+		ret.add(String.class);
+		ret.add(Boolean.class);
+
+    	return ret;
 	}
 
 	/**

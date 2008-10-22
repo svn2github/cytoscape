@@ -44,11 +44,14 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 import cytoscape.visual.ui.editors.discrete.*;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.GraphObject;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
-import org.cytoscape.attributes.MultiHashMapListener;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.events.RowSetEvent;
+import org.cytoscape.model.events.RowSetListener;
+import org.cytoscape.model.events.ColumnDeletedEvent;
+import org.cytoscape.model.events.ColumnDeletedListener;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.*;
 import static org.cytoscape.vizmap.VisualPropertyType.*;
@@ -190,15 +193,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// By default, force to sort property by prop name.
 		visualPropertySheetPanel.setSorting(true);
 		
-		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
-																										Cytoscape.getNodeAttributes(),
-																										nodeAttrEditor, nodeNumericalAttrEditor));
-		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
-																										Cytoscape.getEdgeAttributes(),
-																										edgeAttrEditor, edgeNumericalAttrEditor));
-		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
-																										   Cytoscape.getNetworkAttributes(),
-																										   null, null));
+		AttrEventListener ael1 = new AttrEventListener(this, Cytoscape.getNodeAttributes(), nodeAttrEditor, nodeNumericalAttrEditor);
+		AttrEventListener ael2 = new AttrEventListener(this, Cytoscape.getEdgeAttributes(), edgeAttrEditor, edgeNumericalAttrEditor);
+		AttrEventListener ael3 = new AttrEventListener(this, Cytoscape.getNetworkAttributes(), null, null);
+
+		// TODO Register these listeners as services
 	}
 
 	/*
@@ -1122,61 +1121,46 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	private void setAttrComboBox() {
 		final List<String> names = new ArrayList<String>();
-		CyAttributes attr = Cytoscape.getNodeAttributes();
-		String[] nameArray = attr.getAttributeNames();
-		Arrays.sort(nameArray);
-		names.add("ID");
+		CyDataTable attr = /*TODO*/Cytoscape.getNodeAttributes();
+		Map<String,Class<?>> cols = attr.getColumnTypeMap();
+		names.addAll( cols.keySet() );
 
-		for (String name : nameArray) {
-				// TODO user visible should be implicit based on the attribute namespace used
-			if (/*attr.getUserVisible(name) &&*/ (attr.getType(name) != CyAttributes.TYPE_UNDEFINED)
-			    && (attr.getType(name) != CyAttributes.TYPE_COMPLEX)) {
-				names.add(name);
-			}
-		}
+		Collections.sort(names);
 
 		nodeAttrEditor.setAvailableValues(names.toArray());
 
 		names.clear();
 
-		Class dataClass;
 
-		for (String name : nameArray) {
-			dataClass = CyAttributesUtils.getClass(name, attr);
+		for (String name : cols.keySet()) {
+			Class<?> dataClass = cols.get(name); 
 
-			if ((dataClass == Integer.class) || (dataClass == Double.class)
-			    || (dataClass == Float.class))
+			if ((dataClass == Integer.class) || (dataClass == Double.class))
 				names.add(name);
 		}
 
+		Collections.sort(names);
 		nodeNumericalAttrEditor.setAvailableValues(names.toArray());
 
 		names.clear();
-		attr = Cytoscape.getEdgeAttributes();
-		nameArray = attr.getAttributeNames();
-		Arrays.sort(nameArray);
-		names.add("ID");
 
-		for (String name : nameArray) {
-				// TODO user visible should be implicit based on the attribute namespace used
-			if (/*attr.getUserVisible(name) && */(attr.getType(name) != CyAttributes.TYPE_UNDEFINED)
-			    && (attr.getType(name) != CyAttributes.TYPE_COMPLEX)) {
-				names.add(name);
-			}
-		}
+		attr = /*TODO*/ Cytoscape.getEdgeAttributes();
+		cols = attr.getColumnTypeMap();
+		names.addAll( cols.keySet() );
+		Collections.sort(names);
 
 		edgeAttrEditor.setAvailableValues(names.toArray());
 
 		names.clear();
 
-		for (String name : nameArray) {
-			dataClass = CyAttributesUtils.getClass(name, attr);
+		for (String name : cols.keySet()) {
+			Class<?> dataClass = cols.get(name); 
 
-			if ((dataClass == Integer.class) || (dataClass == Double.class)
-			    || (dataClass == Float.class))
+			if ((dataClass == Integer.class) || (dataClass == Double.class))
 				names.add(name);
 		}
 
+		Collections.sort(names);
 		edgeNumericalAttrEditor.setAvailableValues(names.toArray());
 
 		repaint();
@@ -1444,17 +1428,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			calculatorTypeProp.addSubProperty(mappingHeader);
 			editorReg.registerEditor(mappingHeader, mappingTypeEditor);
 
-			final CyAttributes attr;
+			final CyDataTable attr;
 			final Iterator it;
 			final int nodeOrEdge;
 
 			if (calc.getVisualPropertyType().isNodeProp()) {
-				attr = Cytoscape.getNodeAttributes();
+				attr = /*TODO*/Cytoscape.getNodeAttributes();
 				it = Cytoscape.getCurrentNetwork().getNodeList().iterator();
 				editorReg.registerEditor(calculatorTypeProp, nodeAttrEditor);
 				nodeOrEdge = ObjectMapping.NODE_MAPPING;
 			} else {
-				attr = Cytoscape.getEdgeAttributes();
+				attr = /*TODO*/Cytoscape.getEdgeAttributes();
 				it = Cytoscape.getCurrentNetwork().getNodeList().iterator();
 				editorReg.registerEditor(calculatorTypeProp, edgeAttrEditor);
 				nodeOrEdge = ObjectMapping.EDGE_MAPPING;
@@ -1465,7 +1449,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			 */
 			if ((firstMap.getClass() == DiscreteMapping.class) && (attrName != null)) {
 				final Map discMapping = ((DiscreteMapping) firstMap).getAll();
-				final Set<Object> attrSet = loadKeys(attrName, attr, firstMap, nodeOrEdge);
+				//final Set<Object> attrSet = loadKeys(attrName, attr, firstMap, nodeOrEdge);
+				final Set<Object> attrSet = new TreeSet<Object> (attr.getColumnValues(firstMap.getControllingAttributeName(),attr.getColumnTypeMap().get(firstMap.getControllingAttributeName())));
 
 				switch (type) {
 					/*
@@ -1602,11 +1587,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				/*
 				 * Accept String only.
 				 */
-				if (attr.getType(attrName) == CyAttributes.TYPE_STRING) {
+				if (attr.getColumnTypeMap().get(attrName) == String.class) {
 					while (it.hasNext()) {
-						id = ((GraphObject) it.next()).getCyAttributes("USER").get("name",String.class);
+						GraphObject go = ((GraphObject) it.next());
+						id = go.attrs().get("name",String.class);
 
-						value = id.getCyAttributes("USER").get(attrName,String.class);
+						value = go.attrs().get(attrName,String.class);
 						oneProperty = new VizMapperProperty();
 
 						if (attrName.equals("ID"))
@@ -1656,8 +1642,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			propRecord.add(calculatorTypeProp);
 		}
 	}
-
-	private Set<Object> loadKeys(final String attrName, final CyAttributes attrs,
+/*
+	private Set<Object> loadKeys(final String attrName, final CyDataTable attrs,
 	                             final ObjectMapping mapping, final int nOre) {
 		if (attrName.equals("ID")) {
 			return loadID(nOre);
@@ -1677,10 +1663,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		return loadKeySet(mapAttrs);
 	}
+	*/
 
 	/**
 	 * Loads the Key Set.
-	 */
 	private Set<Object> loadKeySet(final Map mapAttrs) {
 		final Set<Object> mappedKeys = new TreeSet<Object>();
 
@@ -1708,6 +1694,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		return mappedKeys;
 	}
+	 */
 
 	private void setDefaultPanel(final Image defImage) {
 		if (defImage == null)
@@ -1728,7 +1715,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		public void mouseClicked(MouseEvent e) {
 			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
 				final String targetName = vmm.getVisualStyle().getName();
-				final String focus = vmm.getNetwork().getIdentifier();
+				final Long focus = vmm.getNetwork().getSUID();
 
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop());
 				updateDefaultImage(targetName, (GraphView) panel.getView(), defaultAppearencePanel.getSize());
@@ -1950,8 +1937,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (prop.getParentProperty() == null)
 				return;
 
-			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty())
-			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .getHiddenObject();
+			type = (VisualPropertyType) ((VizMapperProperty) prop.getParentProperty()).getHiddenObject();
 		}
 
 		/*
@@ -1972,19 +1958,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (parentValue != null) {
 				ctrAttrName = parentValue.toString();
 
-				final Class dataClass;
+				CyDataTable attr;	
 
 				if (type.isNodeProp()) {
-					dataClass = CyAttributesUtils.getClass(ctrAttrName,
-					                                       Cytoscape.getNodeAttributes());
+					attr = /*TODO*/Cytoscape.getNodeAttributes();
 				} else {
-					dataClass = CyAttributesUtils.getClass(ctrAttrName,
-					                                       Cytoscape.getEdgeAttributes());
+					attr = /*TODO*/Cytoscape.getEdgeAttributes();
 				}
+				final Class<?> dataClass = attr.getColumnTypeMap().get( ctrAttrName );
 
 				if (e.getNewValue().equals("Continuous Mapper")
-				    && ((dataClass != Integer.class) && (dataClass != Double.class)
-				       && (dataClass != Float.class))) {
+				    && ((dataClass != Integer.class) && (dataClass != Double.class))) {
 					JOptionPane.showMessageDialog(this,
 					                              "Continuous Mapper can be used with Numbers only.",
 					                              "Incompatible Mapping Type!",
@@ -2035,26 +2019,25 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			/*
 			 * Ignore if not compatible.
 			 */
-			final CyAttributes attrForTest;
+			final CyDataTable attrForTest;
 
 			if (type.isNodeProp()) {
-				attrForTest = Cytoscape.getNodeAttributes();
+				attrForTest = /*TODO*/Cytoscape.getNodeAttributes();
 			} else {
-				attrForTest = Cytoscape.getEdgeAttributes();
+				attrForTest = /*TODO*/Cytoscape.getEdgeAttributes();
 			}
 
-			final Byte dataType = attrForTest.getType(ctrAttrName);
+			final Class<?> dataType = attrForTest.getColumnTypeMap().get(ctrAttrName);
 
 			// This part is for Continuous Mapping.
 			if (mapping instanceof ContinuousMapping) {
-				if ((dataType == CyAttributes.TYPE_FLOATING)
-				    || (dataType == CyAttributes.TYPE_INTEGER)) {
+				if ((dataType == Double.class) || (dataType == Integer.class)) {
 					// Do nothing
 				} else {
 					JOptionPane.showMessageDialog(this,
-					                              "Continuous Mapper can be used with Numbers only.\nPlease select numerical attributes.",
-					                              "Incompatible Mapping Type!",
-					                              JOptionPane.INFORMATION_MESSAGE);
+                      "Continuous Mapper can be used with Numbers only.\nPlease select numerical attributes.",
+                      "Incompatible Mapping Type!",
+                      JOptionPane.INFORMATION_MESSAGE);
 
 					return;
 				}
@@ -2134,38 +2117,24 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Need to convert this string to proper data types.
 		 */
-		final CyAttributes attr;
+		final CyDataTable attr;
 		ctrAttrName = mapping.getControllingAttributeName();
 
 		if (type.isNodeProp()) {
-			attr = Cytoscape.getNodeAttributes();
+			attr = /*TODO*/Cytoscape.getNodeAttributes();
 		} else {
-			attr = Cytoscape.getEdgeAttributes();
+			attr = /*TODO*/Cytoscape.getEdgeAttributes();
 		}
 
-		Byte attrType = attr.getType(ctrAttrName);
+		//Byte attrType = attr.getType(ctrAttrName);
+		Class<?> attrType = attr.getColumnTypeMap().get(ctrAttrName);
 
-		if (attrType != CyAttributes.TYPE_STRING) {
-			switch (attrType) {
-				case CyAttributes.TYPE_BOOLEAN:
-					key = Boolean.valueOf((String) key);
-
-					break;
-
-				case CyAttributes.TYPE_INTEGER:
-					key = Integer.valueOf((String) key);
-
-					break;
-
-				case CyAttributes.TYPE_FLOATING:
-					key = Double.valueOf((String) key);
-
-					break;
-
-				default:
-					break;
-			}
-		}
+		if ( attrType == Boolean.class)
+			key = Boolean.valueOf((String) key);
+		else if ( attrType == Integer.class)
+			key = Integer.valueOf((String) key);
+		else if ( attrType == Double.class)
+			key = Double.valueOf((String) key);
 
 		Object newValue = e.getNewValue();
 
@@ -2789,16 +2758,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * Extract calculator
 		 */
 		final ObjectMapping mapping;
-		final CyAttributes attr;
+		final CyDataTable attr;
 
 		if (type.isNodeProp()) {
 			mapping = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 			             .getMapping(0);
-			attr = Cytoscape.getNodeAttributes();
+			attr = /*TODO*/Cytoscape.getNodeAttributes();
 		} else {
 			mapping = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 			             .getMapping(0);
-			attr = Cytoscape.getEdgeAttributes();
+			attr = /*TODO*/Cytoscape.getEdgeAttributes();
 		}
 
 		if (mapping instanceof ContinuousMapping || mapping instanceof PassThroughMapping)
@@ -2816,8 +2785,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 
 		Object key = null;
-		final Class keyClass = CyAttributesUtils.getClass(mapping.getControllingAttributeName(),
-		                                                  attr);
+		final Class<?> keyClass = attr.getColumnTypeMap().get( mapping.getControllingAttributeName()); 
 
 		for (int i = 0; i < selected.length; i++) {
 			/*
@@ -2908,16 +2876,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				final ObjectMapping oMap;
 
-				final CyAttributes attr;
+				final CyDataTable attr;
 				final int nOre;
 
 				if (type.isNodeProp()) {
-					attr = Cytoscape.getNodeAttributes();
+					attr = /*TODO*/ Cytoscape.getNodeAttributes();
 					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
 					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
-					attr = Cytoscape.getEdgeAttributes();
+					attr = /*TODO*/ Cytoscape.getEdgeAttributes();
 					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
 					nOre = ObjectMapping.EDGE_MAPPING;
@@ -2929,8 +2897,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm = (DiscreteMapping) oMap;
 
-				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr,
-				                                     oMap, nOre);
+//				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr,
+//				                                     oMap, nOre);
+				final Set<Object> attrSet = new TreeSet<Object> (attr.getColumnValues(oMap.getControllingAttributeName(),attr.getColumnTypeMap().get(oMap.getControllingAttributeName())));
 
 				// Show error if there is no attribute value.
 				if (attrSet.size() == 0) {
@@ -3044,16 +3013,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				final Map valueMap = new HashMap();
 				final ObjectMapping oMap;
-				final CyAttributes attr;
+				final CyDataTable attr;
 				final int nOre;
 
 				if (type.isNodeProp()) {
-					attr = Cytoscape.getNodeAttributes();
+					attr = /*TODO*/Cytoscape.getNodeAttributes();
 					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
 					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
-					attr = Cytoscape.getEdgeAttributes();
+					attr = /*TODO*/Cytoscape.getEdgeAttributes();
 					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
 					nOre = ObjectMapping.EDGE_MAPPING;
@@ -3064,8 +3033,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm = (DiscreteMapping) oMap;
 
-				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr,
-				                                     oMap, nOre);
+				//final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr,
+				 //                                    oMap, nOre);
+				final Set<Object> attrSet = new TreeSet<Object> (attr.getColumnValues(oMap.getControllingAttributeName(),attr.getColumnTypeMap().get(oMap.getControllingAttributeName())));
+
 				final String start = JOptionPane.showInputDialog(visualPropertySheetPanel,
 				                                                 "Please enter start value (1st number in the series)",
 				                                                 "0");
@@ -3151,14 +3122,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				final Map valueMap = new HashMap();
 				final ObjectMapping oMap;
-				final CyAttributes attr;
+				final CyDataTable attr;
 
 				if (type.isNodeProp()) {
-					attr = Cytoscape.getNodeAttributes();
+					attr = /*TODO*/Cytoscape.getNodeAttributes();
 					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
 				} else {
-					attr = Cytoscape.getEdgeAttributes();
+					attr = /*TODO*/Cytoscape.getEdgeAttributes();
 					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
 				}
@@ -3198,11 +3169,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = new TreeSet<Object>();
 
 						for (CyNode node : Cytoscape.getCurrentNetwork().getNodeList()) {
-							attrSet1.add(node.getIdentifier());
+							attrSet1.add(node.attrs().get("name",String.class));
 						}
 					} else {
-						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
-						                    ObjectMapping.NODE_MAPPING);
+//						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
+//						                    ObjectMapping.NODE_MAPPING);
+						attrSet1 = new TreeSet<Object>(attr.getColumnValues(oMap.getControllingAttributeName(),attr.getColumnTypeMap().get(oMap.getControllingAttributeName())));
 					}
 
 					Integer height = ((Number) (vmm.getVisualStyle().getNodeAppearanceCalculator()
@@ -3218,13 +3190,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					String[] listObj;
 					int longest = 0;
 
-					if (attr.getType(ctrAttrName) == CyAttributes.TYPE_SIMPLE_LIST) {
+					if (attr.getColumnTypeMap().get(ctrAttrName) == List.class) {
 						wm.setControllingAttributeName("ID", Cytoscape.getCurrentNetwork(), false);
 
 						attrSet1 = new TreeSet<Object>();
 
 						for (CyNode node : Cytoscape.getCurrentNetwork().getNodeList()) {
-							attrSet1.add(node.getIdentifier());
+							attrSet1.add(node.attrs().get("name",String.class));
 						}
 
 						GraphView net = Cytoscape.getCurrentNetworkView();
@@ -3247,10 +3219,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 								strLen = longest;
 
 								if (strLen > 25) {
-									valueMap.put(((CyNode) node).getIdentifier(),
+									valueMap.put(((CyNode) node).attrs().get("name",String.class),
 									             strLen * fontSize * 0.6);
 								} else {
-									valueMap.put(((CyNode) node).getIdentifier(),
+									valueMap.put(((CyNode) node).attrs().get("name",String.class),
 									             strLen * fontSize * 0.8);
 								}
 							}
@@ -3294,11 +3266,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						attrSet1 = new TreeSet<Object>();
 
 						for (CyNode node : Cytoscape.getCurrentNetwork().getNodeList()) {
-							attrSet1.add(node.getIdentifier());
+							attrSet1.add(node.attrs().get("name",String.class));
 						}
 					} else {
-						attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
-						                    ObjectMapping.NODE_MAPPING);
+						//attrSet1 = loadKeys(wm.getControllingAttributeName(), attr, wm,
+						 //                   ObjectMapping.NODE_MAPPING);
+						attrSet1 = new TreeSet<Object>(attr.getColumnValues(oMap.getControllingAttributeName(),attr.getColumnTypeMap().get(oMap.getControllingAttributeName())));
 					}
 
 					Integer fontSize = ((Number) vmm.getVisualStyle().getNodeAppearanceCalculator()
@@ -3308,13 +3281,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 					String labelString = null;
 					String[] listObj;
 
-					if (attr.getType(ctrAttrName) == CyAttributes.TYPE_SIMPLE_LIST) {
+					if (attr.getColumnTypeMap().get(ctrAttrName) == List.class) {
 						wm.setControllingAttributeName("ID", Cytoscape.getCurrentNetwork(), false);
 
 						attrSet1 = new TreeSet<Object>();
 
 						for (CyNode node : Cytoscape.getCurrentNetwork().getNodeList()) {
-							attrSet1.add(node.getIdentifier());
+							attrSet1.add(node.attrs().get("name",String.class));
 						}
 
 						GraphView net = Cytoscape.getCurrentNetworkView();
@@ -3326,7 +3299,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 							if (strLen != 0) {
 								listObj = text.split("\\n");
-								valueMap.put(((CyNode) node).getIdentifier(),
+								valueMap.put(((CyNode) node).attrs().get("name",String.class),
 								             listObj.length * fontSize * 1.6);
 							}
 						}
@@ -3412,16 +3385,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				final Map valueMap = new HashMap();
 				final ObjectMapping oMap;
 
-				final CyAttributes attr;
+				final CyDataTable attr;
 				final int nOre;
 
 				if (type.isNodeProp()) {
-					attr = Cytoscape.getNodeAttributes();
+					attr = /*TODO*/Cytoscape.getNodeAttributes();
 					oMap = vmm.getVisualStyle().getNodeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
 					nOre = ObjectMapping.NODE_MAPPING;
 				} else {
-					attr = Cytoscape.getEdgeAttributes();
+					attr = /*TODO*/Cytoscape.getEdgeAttributes();
 					oMap = vmm.getVisualStyle().getEdgeAppearanceCalculator().getCalculator(type)
 					          .getMapping(0);
 					nOre = ObjectMapping.EDGE_MAPPING;
@@ -3433,8 +3406,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				dm = (DiscreteMapping) oMap;
 
-				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr,
-				                                     oMap, nOre);
+//				final Set<Object> attrSet = loadKeys(oMap.getControllingAttributeName(), attr,
+//				                                     oMap, nOre);
+				final Set<Object> attrSet = new TreeSet<Object> (attr.getColumnValues(oMap.getControllingAttributeName(),attr.getColumnTypeMap().get(oMap.getControllingAttributeName())));
 
 				/*
 				 * Create random colors
@@ -3602,7 +3576,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		for (GraphObject o : obj) {
-			ids.add( o.getIdentifier() );
+			ids.add( o.attrs().get("name",String.class) );
 		}
 
 		return ids;
@@ -3713,11 +3687,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	//**************************************************************************
 	// MultiHashMapListenerAdaptor
 
-	private class MultiHashMapListenerAdapter implements MultiHashMapListener {
+	private class AttrEventListener implements ColumnDeletedListener, RowSetListener {
 
 		// ref to members
 		private final JPanel container;
-		private final CyAttributes attr;
+		private final CyDataTable attr;
 		private final CyComboBoxPropertyEditor attrEditor;
 		private final CyComboBoxPropertyEditor numericalAttrEditor;
 		private final List<String> attrEditorNames;
@@ -3726,9 +3700,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/**
 		 * Constructor.
 		 *
-		 * @param cyAttributes CyAttributes
+		 * @param cyAttributes CyDataTable
 		 */
-		MultiHashMapListenerAdapter(JPanel container, CyAttributes cyAttributes, CyComboBoxPropertyEditor attrEditor, CyComboBoxPropertyEditor numericalAttrEditor) {
+		AttrEventListener(JPanel container, CyDataTable cyAttributes, CyComboBoxPropertyEditor attrEditor, CyComboBoxPropertyEditor numericalAttrEditor) {
 			
 			// init some members
 			this.attr = cyAttributes;
@@ -3751,9 +3725,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		 * @param oldAttributeValue Object
 		 * @param newAttributeValue Object
 		 */
-		public void attributeValueAssigned(String objectKey, String attributeName,
-										   Object[] keyIntoValue, Object oldAttributeValue,
-										   Object newAttributeValue) {
+		public void handleEvent(RowSetEvent e) {
+			CyRow row = e.getSource();
+			String attributeName = e.getColumnName();
 
 			// we do not process network attributes
 			if (attr == Cytoscape.getNetworkAttributes()) return;
@@ -3767,20 +3741,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			// if attribute is not in attrEditorNames, add it if we support its type
 			if (!attrEditorNames.contains(attributeName)) {
-				byte type = attr.getType(attributeName);
-				// TODO user visible should be implicit based on the attribute namespace used
-				if (/*attr.getUserVisible(attributeName) &&*/ (type != CyAttributes.TYPE_UNDEFINED) && (type != CyAttributes.TYPE_COMPLEX)) {
 					attrEditorNames.add(attributeName);
 					Collections.sort(attrEditorNames);
 					attrEditor.setAvailableValues(attrEditorNames.toArray());
 					repaint = true;
-				}
 			}
 
 			// if attribute is not contained in numericalAttrEditorNames, add it if we support its class
 			if (!numericalAttrEditorNames.contains(attributeName)) {
-				Class dataClass = CyAttributesUtils.getClass(attributeName, attr);
-				if ((dataClass == Integer.class) || (dataClass == Double.class) || (dataClass == Float.class)) {
+				Class<?> dataClass = attr.getColumnTypeMap().get(attributeName); 
+				if ((dataClass == Integer.class) || (dataClass == Double.class)) {
 					numericalAttrEditorNames.add(attributeName);
 					Collections.sort(numericalAttrEditorNames);
 					numericalAttrEditor.setAvailableValues(numericalAttrEditorNames.toArray());
@@ -3792,25 +3762,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 
 		/**
-		 *  Our implementation of MultiHashMapListener.attributeValueRemoved().
-		 *
-		 * @param objectKey String
-		 * @param attributeName String
-		 * @param keyIntoValue Object[]
-		 * @param attributeValue Object
-		 */
-		public void attributeValueRemoved(String objectKey, String attributeName,
-										  Object[] keyIntoValue, Object attributeValue) {
-			allAttributeValuesRemoved(objectKey, attributeName);
-		}
-
-		/**
 		 *  Our implementation of MultiHashMapListener.allAttributeValuesRemoved()
 		 *
 		 * @param objectKey String
 		 * @param attributeName String
 		 */
-		public void allAttributeValuesRemoved(String objectKey, String attributeName) {
+		public void handleEvent(ColumnDeletedEvent e) {
+			String attributeName = e.getColumnName();
 
 			// we do not process network attributes
 			if (attr == Cytoscape.getNetworkAttributes()) return;
@@ -3847,21 +3805,17 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		private void populateLists() {
 
 			// get attribute names & sort
-			String[] nameArray = attr.getAttributeNames();
-			Arrays.sort(nameArray);
 
 			// populate attrEditorNames & numericalAttrEditorNames
+			List<String> names = new ArrayList<String>( attr.getColumnTypeMap().keySet());
+			Collections.sort(names);
 			attrEditorNames.add("ID");
 			byte type;
-			Class dataClass;
-			for (String name : nameArray) {
-				type = attr.getType(name);
-				// TODO user visible should be implicit based on the attribute namespace used
-				if (/*attr.getUserVisible(name) && */(type != CyAttributes.TYPE_UNDEFINED) && (type != CyAttributes.TYPE_COMPLEX)) {
-					attrEditorNames.add(name);
-				}
-				dataClass = CyAttributesUtils.getClass(name, attr);
-				if ((dataClass == Integer.class) || (dataClass == Double.class) || (dataClass == Float.class)) {
+			Class<?> dataClass;
+			for (String name : names) {
+				attrEditorNames.add(name);
+				dataClass = attr.getColumnTypeMap().get(name);
+				if ((dataClass == Integer.class) || (dataClass == Double.class)) {
 					numericalAttrEditorNames.add(name);
 				}
 			}

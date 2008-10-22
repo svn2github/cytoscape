@@ -36,7 +36,7 @@
 
 package org.cytoscape.io.read.internal; 
 
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.*;
 import org.cytoscape.vizmap.calculators.BasicCalculator;
 import org.cytoscape.vizmap.calculators.Calculator;
@@ -168,7 +168,7 @@ public class VisualStyleBuilder {
 	 * @param type the type of the property
 	 * @param desc the property value
 	 */
-	public void addProperty(CyAttributes attrs, VisualPropertyType type, String desc) {
+	public void addProperty(CyRow attrs, VisualPropertyType type, String desc) {
 		Object value = type.getValueParser().parseStringValue(desc);
 		if (value == null)
 			return;

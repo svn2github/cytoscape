@@ -1,7 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.view;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.cpath2.filters.ChainedFilter;
 import org.cytoscape.coreplugin.cpath2.filters.DataSourceFilter;
 import org.cytoscape.coreplugin.cpath2.filters.EntityTypeFilter;

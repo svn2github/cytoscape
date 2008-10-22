@@ -3,8 +3,8 @@ package cytoscape.editor;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.undo.CyAbstractEdit;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
 
 /**
  * An edit used by the Editor when adding new edges to a network.

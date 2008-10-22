@@ -45,10 +45,9 @@ package cytoscape.actions;
 
 //-------------------------------------------------------------------------
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
@@ -92,13 +91,12 @@ public class GinyUtils {
 			return;
 		}
 
-		for ( NodeView nview : view.getSelectedNodes() ) {
-
+		for ( CyNode n1 : view.getSelectedNodes() ) {
+			NodeView nview = view.getNodeView(n1);
 			view.showGraphObject(nview);
-			CyNode n1 = nview.getNode();
 
-			for ( CyNode n2 : view.getGraphPerspective().getNeighborList(n1,EdgeType.ANY_EDGE) ) {
-				for ( CyEdge e : view.getGraphPerspective().getConnectingEdgeList(n1,n2,EdgeType.ANY_EDGE) ) {
+			for ( CyNode n2 : view.getGraphPerspective().getNeighborList(n1,CyEdge.Type.ANY) ) {
+				for ( CyEdge e : view.getGraphPerspective().getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) ) {
 					view.showGraphObject( view.getEdgeView( e ) );
 				}
 			}
@@ -146,8 +144,8 @@ public class GinyUtils {
 
 			view.showGraphObject(nview);
 
-			for ( CyNode n2 : view.getGraphPerspective().getNeighborList(n1,EdgeType.ANY_EDGE) ) {
-				for ( CyEdge e : view.getGraphPerspective().getConnectingEdgeList(n1,n2,EdgeType.ANY_EDGE) ) {
+			for ( CyNode n2 : view.getGraphPerspective().getNeighborList(n1,CyEdge.Type.ANY) ) {
+				for ( CyEdge e : view.getGraphPerspective().getConnectingEdgeList(n1,n2,CyEdge.Type.ANY) ) {
 					view.showGraphObject( view.getEdgeView( e ) );
 				}
 			}
@@ -245,7 +243,7 @@ public class GinyUtils {
 			NodeView nview = (NodeView) i.next();
 			CyNode n = nview.getNode();
 
-			for ( CyNode neib : cyNetwork.getNeighborList(n,EdgeType.ANY_EDGE) ) {
+			for ( CyNode neib : cyNetwork.getNeighborList(n,CyEdge.Type.ANY) ) {
 				NodeView neibview = view.getNodeView(neib);
 				nodeViewsToSelect.add(neibview);
 			}

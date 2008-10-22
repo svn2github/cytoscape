@@ -36,10 +36,9 @@
 
 package cytoscape.render.stateful;
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 
 import cytoscape.geom.spacial.SpacialEntry2DEnumerator;
 import cytoscape.geom.spacial.SpacialIndex2D;
@@ -242,7 +241,7 @@ public final class GraphRenderer {
 					if ((floatBuff1[0] != floatBuff1[2]) && (floatBuff1[1] != floatBuff1[3]))
 						runningNodeCount++;
 
-					final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),EdgeType.ANY_EDGE);
+					final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
 
 					for ( CyEdge e : touchingEdges ) {
 						final int edge = e.getIndex(); 
@@ -332,7 +331,7 @@ public final class GraphRenderer {
 					final float nodeX = (floatBuff1[0] + floatBuff1[2]) / 2;
 					final float nodeY = (floatBuff1[1] + floatBuff1[3]) / 2;
 
-					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),EdgeType.ANY_EDGE);
+					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
 					for ( CyEdge e : touchingEdges ) {
 						final int edge = e.getIndex();
 						final int otherNode = node ^ e.getSource().getIndex()
@@ -357,7 +356,7 @@ public final class GraphRenderer {
 					final int node = nodeHits.nextExtents(floatBuff1, 0);
 					final byte nodeShape = nodeDetails.shape(node);
 					//final IntEnumerator touchingEdges = graph.edgesAdjacent(node, true, true, true);
-					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),EdgeType.ANY_EDGE);
+					java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(graph.getNode(node),CyEdge.Type.ANY);
 					for ( CyEdge e : touchingEdges ) {
 					//while (touchingEdges.numRemaining() > 0) {
 						final int edge = e.getIndex(); 

@@ -1,7 +1,7 @@
 // vim: set ts=2: */
 package org.cytoscape.tunable.impl;
 
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.tunable.Tunable;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 	
 	private boolean immutable = false;
 
-	private CyAttributesManager attrs = null;
+	private CyDataTable attrs = null;
 
 
 	/**
@@ -74,7 +74,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 	 *	     is a specific type for the attributes.
 	 */
 	public TunableImpl(String name, String desc, int type, Object value, Object lowerBound,
-	    Object upperBound, int flag, boolean immutable, CyAttributesManager attrs) {
+	    Object upperBound, int flag, boolean immutable, CyDataTable attrs) {
 		this.name = name;
 		this.desc = desc;
 		this.type = type;
@@ -373,7 +373,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 	 * @return a JComponent with an entry for each attribute
 	 */
 	 @SuppressWarnings("unchecked")  // TODO REVIEW THIS CODE!
-	private JComponent getAttributePanel(CyAttributesManager attributes) {
+	private JComponent getAttributePanel(CyDataTable attributes) {
 
 		final List<String> list = new ArrayList<String>();
 
@@ -383,7 +383,7 @@ public class TunableImpl implements Tunable, FocusListener, ChangeListener {
 		}
 
 		if (attributes != null) {
-			Map<String,Class<?>> typeMap = attributes.getTypeMap();
+			Map<String,Class<?>> typeMap = attributes.getColumnTypeMap();
 			Set<String> keys = typeMap.keySet();
 
 			for (String key : keys) {

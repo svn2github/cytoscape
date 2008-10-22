@@ -1,7 +1,7 @@
 package org.cytoscape.view;
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
 import java.util.EventObject;
 

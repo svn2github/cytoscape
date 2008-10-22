@@ -1,7 +1,7 @@
 package org.cytoscape.coreplugin.cpath2.util;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.cpath2.view.SearchDetailsPanel;
 import org.cytoscape.coreplugin.cpath2.view.model.NetworkWrapper;
 import org.cytoscape.coreplugin.cpath2.web_service.CPathProperties;

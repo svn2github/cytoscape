@@ -37,7 +37,7 @@
 package csplugins.quickfind.util;
 
 import csplugins.widgets.autocomplete.index.Hit;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 
 /**

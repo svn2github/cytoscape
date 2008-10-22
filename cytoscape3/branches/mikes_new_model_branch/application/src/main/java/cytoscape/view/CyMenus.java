@@ -307,37 +307,37 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new CloneGraphInNewWindowAction());
 		addAction(new NewNetworkAction());
 
-		addAction(new OpenSessionAction(),1);
-		addAction(new SaveSessionAction("Save"),2);
-		addAction(new SaveSessionAsAction("Save As..."),3);
+	//	addAction(new OpenSessionAction(),1);
+	//	addAction(new SaveSessionAction("Save"),2);
+	//	addAction(new SaveSessionAsAction("Save As..."),3);
 
-    fileMenu.add(new JSeparator(), 2);
-    fileMenu.add(new JSeparator(), 5);
+ //   fileMenu.add(new JSeparator(), 2);
+   // fileMenu.add(new JSeparator(), 5);
 
 		// Import submenu
-		addAction(new ImportGraphFileAction(this));
+	//	addAction(new ImportGraphFileAction(this));
 		addAction(new WebServiceNetworkImportAction());
 		
-		loadSubMenu.add(new JSeparator());
+//		loadSubMenu.add(new JSeparator());
 
-		addAction(new ImportNodeAttributesAction());
-		addAction(new ImportEdgeAttributesAction());
-		addAction(new ImportExpressionMatrixAction());
+	//	addAction(new ImportNodeAttributesAction());
+	//	addAction(new ImportEdgeAttributesAction());
+	//	addAction(new ImportExpressionMatrixAction());
 
-		loadSubMenu.add(new JSeparator());
+//		loadSubMenu.add(new JSeparator());
 
-		addAction(new ImportVizmapAction());
+	//	addAction(new ImportVizmapAction());
 
 		
-		loadSubMenu.add(new JSeparator());
+//		loadSubMenu.add(new JSeparator());
 		// Save submenu
-		addAction(new ExportAsXGMMLAction());
-		addAction(new ExportAsGMLAction());
-		addAction(new ExportAsInteractionsAction());
-		addAction(new ExportNodeAttributesAction());
-		addAction(new ExportEdgeAttributesAction());
-		addAction(new ExportVizmapAction());
-		addAction(new ExportAsGraphicsAction());
+	//	addAction(new ExportAsXGMMLAction());
+	//	addAction(new ExportAsGMLAction());
+	//	addAction(new ExportAsInteractionsAction());
+	//	addAction(new ExportNodeAttributesAction());
+	//	addAction(new ExportEdgeAttributesAction());
+	//	addAction(new ExportVizmapAction());
+	//	addAction(new ExportAsGraphicsAction());
 
 		addAction(new PrintAction());
 		fileMenu.add(new JSeparator());
@@ -448,19 +448,19 @@ public class CyMenus implements GraphViewChangeListener {
 	 * Fills the toolbar for easy access to commonly used actions.
 	 */
 	private void fillToolBar() {
-		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
-		openSessionButton.setToolTipText("Open Session File...");
-		openSessionButton.setIcon(new ImageIcon(getClass()
-		                                            .getResource("/images/ximian/stock_open.png")));
-		openSessionButton.setBorderPainted(false);
-		openSessionButton.setRolloverEnabled(true);
+//		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
+//		openSessionButton.setToolTipText("Open Session File...");
+//		openSessionButton.setIcon(new ImageIcon(getClass()
+//		                                            .getResource("/images/ximian/stock_open.png")));
+//		openSessionButton.setBorderPainted(false);
+//		openSessionButton.setRolloverEnabled(true);
 
-		saveButton = toolBar.add(new SaveSessionAction());
-		saveButton.setToolTipText("Save Current Session As...");
-		saveButton.setIcon(new ImageIcon(getClass().getResource("/images/ximian/stock_save.png")));
+//		saveButton = toolBar.add(new SaveSessionAction());
+//		saveButton.setToolTipText("Save Current Session As...");
+//		saveButton.setIcon(new ImageIcon(getClass().getResource("/images/ximian/stock_save.png")));
 
-		saveButton.setBorderPainted(false);
-		saveButton.setRolloverEnabled(true);
+//		saveButton.setBorderPainted(false);
+//		saveButton.setRolloverEnabled(true);
 
 		toolBar.addSeparator();
 

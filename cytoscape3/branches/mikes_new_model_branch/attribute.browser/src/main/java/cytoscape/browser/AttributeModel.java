@@ -34,8 +34,8 @@
 */
 package cytoscape.browser;
 
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyRowUtils;
 import org.cytoscape.attributes.MultiHashMapDefinitionListener;
 
 import javax.swing.*;

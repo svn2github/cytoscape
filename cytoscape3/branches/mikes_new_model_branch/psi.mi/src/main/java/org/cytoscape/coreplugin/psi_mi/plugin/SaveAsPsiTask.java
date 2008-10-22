@@ -37,7 +37,7 @@ package org.cytoscape.coreplugin.psi_mi.plugin;
 import cytoscape.Cytoscape;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.coreplugin.psi_mi.cyto_mapper.MapFromCytoscape;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiOne;
 import org.cytoscape.coreplugin.psi_mi.data_mapper.MapInteractionsToPsiTwoFive;

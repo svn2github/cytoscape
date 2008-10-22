@@ -43,21 +43,21 @@
 package org.cytoscape.view.impl;
 
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 
 
-import org.cytoscape.model.network.events.AddedEdgeEvent;
-import org.cytoscape.model.network.events.AddedNodeEvent;
-import org.cytoscape.model.network.events.AboutToRemoveEdgeEvent;
-import org.cytoscape.model.network.events.AboutToRemoveNodeEvent;
+import org.cytoscape.model.events.AddedEdgeEvent;
+import org.cytoscape.model.events.AddedNodeEvent;
+import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
+import org.cytoscape.model.events.AboutToRemoveNodeEvent;
 
-import org.cytoscape.model.network.events.AddedEdgeListener;
-import org.cytoscape.model.network.events.AddedNodeListener;
-import org.cytoscape.model.network.events.AboutToRemoveEdgeListener;
-import org.cytoscape.model.network.events.AboutToRemoveNodeListener;
+import org.cytoscape.model.events.AddedEdgeListener;
+import org.cytoscape.model.events.AddedNodeListener;
+import org.cytoscape.model.events.AboutToRemoveEdgeListener;
+import org.cytoscape.model.events.AboutToRemoveNodeListener;
 
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 import org.cytoscape.view.GraphView;
 

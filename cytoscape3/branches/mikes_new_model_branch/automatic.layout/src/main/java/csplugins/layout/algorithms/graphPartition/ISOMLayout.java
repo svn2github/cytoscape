@@ -13,7 +13,7 @@ import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;

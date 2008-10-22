@@ -36,7 +36,7 @@
 */
 package cytoscape.data.readers;
 
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 
 import java.io.IOException;

@@ -37,7 +37,7 @@
 package cytoscape.browser;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 public enum DataObjectType {
 	NODES("Node"),
 	EDGES("Edge"),

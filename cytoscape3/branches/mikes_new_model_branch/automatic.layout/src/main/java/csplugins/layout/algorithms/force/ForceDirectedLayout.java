@@ -42,7 +42,7 @@ import csplugins.layout.LayoutNode;
 import csplugins.layout.LayoutPartition;
 import csplugins.layout.algorithms.graphPartition.AbstractGraphPartition;
 import cytoscape.CytoscapeInit;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.tunable.TunableFactory;
@@ -61,6 +61,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * This class wraps the Prefuse force-directed layout algorithm.
@@ -238,12 +240,15 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		return true;
 	}
 
-	public byte[] supportsEdgeAttributes() {
+	public Set<Class<?>> supportsEdgeAttributes() {
+		Set<Class<?>> ret = new HashSet<Class<?>>();
 		if (!supportWeights)
-			return null;
-		byte[] attrs = { CyAttributes.TYPE_INTEGER, CyAttributes.TYPE_FLOATING };
+			return ret;
 
-		return attrs;
+		ret.add( Integer.class );
+		ret.add( Double.class );
+
+		return ret;
 	}
 
 	public List getInitialAttributeList() {

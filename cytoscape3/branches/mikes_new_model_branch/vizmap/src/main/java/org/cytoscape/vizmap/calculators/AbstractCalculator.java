@@ -42,11 +42,11 @@
 //------------------------------------------------------------------------------
 package org.cytoscape.vizmap.calculators;
 
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.GraphObject;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.Appearance;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.MappingFactory;
@@ -364,7 +364,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 */
 	public void apply(Appearance appr, CyEdge e, CyNetwork net) {
 
-		Object o = getMapping(0).calculateRangeValue(e.getCyAttributes("USER"));
+		Object o = getMapping(0).calculateRangeValue(e.attrs());
 
 		// default has already been set - no need to do anything
 		if (o == null)
@@ -382,7 +382,7 @@ public abstract class AbstractCalculator implements Calculator {
 	 */
 	public void apply(Appearance appr, CyNode n, CyNetwork net) {
 		
-		Object o = getMapping(0).calculateRangeValue(n.getCyAttributes("USER"));
+		Object o = getMapping(0).calculateRangeValue(n.attrs());
 
 		// default has already been set - no need to do anything
 		if (o == null)

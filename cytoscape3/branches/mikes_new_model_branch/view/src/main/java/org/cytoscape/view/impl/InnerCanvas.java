@@ -44,10 +44,9 @@ import cytoscape.render.stateful.GraphRenderer;
 import cytoscape.util.intr.IntEnumerator;
 import cytoscape.util.intr.IntHash;
 import cytoscape.util.intr.IntStack;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.EdgeType;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.view.EdgeContextMenuListener;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphViewChangeListener;
@@ -1032,7 +1031,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 
 				final float nodeX = (m_view.m_extentsBuff[0] + m_view.m_extentsBuff[2]) / 2;
 				final float nodeY = (m_view.m_extentsBuff[1] + m_view.m_extentsBuff[3]) / 2;
-				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, EdgeType.ANY_EDGE);
+				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, CyEdge.Type.ANY);
 
 				for ( CyEdge e : touchingEdges ) {	
 					final int edge = e.getIndex(); // Positive.
@@ -1063,7 +1062,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 					continue; /* Will happen if e.g. node was removed. */
 
 				final byte nodeShape = m_view.m_nodeDetails.shape(node);
-				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, EdgeType.ANY_EDGE);
+				final java.util.List<CyEdge> touchingEdges = graph.getAdjacentEdgeList(nodeObj, CyEdge.Type.ANY);
 
 				for ( CyEdge e : touchingEdges ) {	
 					final int edge = e.getIndex(); // Positive.
@@ -1334,7 +1333,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		NodeView nv = m_view.getPickedNodeView(event.getPoint());
 
 		if (nv != null) {
-			String nodeLabel = nv.getNode().getCyAttributes("USER").get("name",String.class);
+			String nodeLabel = nv.getNode().attrs().get("name",String.class);
 			JPopupMenu menu = new JPopupMenu(nodeLabel);
 			menu.setLabel(nodeLabel);
 
@@ -1351,7 +1350,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 		EdgeView ev = m_view.getPickedEdgeView(event.getPoint());
 
 		if (ev != null) {
-			String edgeLabel = ev.getEdge().getCyAttributes("USER").get("name",String.class);
+			String edgeLabel = ev.getEdge().attrs().get("name",String.class);
 			JPopupMenu menu = new JPopupMenu(edgeLabel);
 			menu.setLabel(edgeLabel);
 

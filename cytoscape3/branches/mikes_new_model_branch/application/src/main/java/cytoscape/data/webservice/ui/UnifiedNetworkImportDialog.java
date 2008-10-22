@@ -44,7 +44,7 @@ import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.swing.AboutDialog;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
 import org.cytoscape.vizmap.VisualStyle;
@@ -697,7 +697,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 			
 				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-				Cytoscape.getCurrentNetwork().getCyAttributes("USER").set("title",value);
+				Cytoscape.getCurrentNetwork().attrs().set("title",value);
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
 				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager.getClient(selectedClientID))

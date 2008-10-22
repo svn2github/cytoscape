@@ -87,12 +87,12 @@ public class DefaultCytoscapeEditor extends BasicCytoscapeEditor implements Chan
 	/**
 	 * main data structures for all node and edge attributes
 	 */
-	public static org.cytoscape.attributes.CyAttributes nodeAttribs = Cytoscape.getNodeAttributes();
+	public static org.cytoscape.model.CyRow nodeAttribs = Cytoscape.getNodeAttributes();
 
 	/**
 	 * 
 	 */
-	public static org.cytoscape.attributes.CyAttributes edgeAttribs = Cytoscape.getEdgeAttributes();
+	public static org.cytoscape.model.CyRow edgeAttribs = Cytoscape.getEdgeAttributes();
 	private ShapePalette shapePalette;
 
 	// MLC 12/16/06 BEGIN:

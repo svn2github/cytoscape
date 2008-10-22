@@ -44,7 +44,8 @@ import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.layout.CyLayouts;
 
 import javax.swing.*;
@@ -52,6 +53,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Set;
+import java.util.List;
 
 
 /**
@@ -124,10 +126,10 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 	private String buildStringQuery() {
 		final StringBuilder builder = new StringBuilder();
-		final Set<CyNode> selectedNodes = Cytoscape.getCurrentNetwork().getSelectedNodes();
+		final List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(Cytoscape.getCurrentNetwork(),"selected",true);
 
 		for (CyNode node : selectedNodes) {
-			builder.append(node.getIdentifier() + " ");
+			builder.append(node.attrs().get("name",String.class) + " ");
 		}
 
 		return builder.toString();
@@ -150,7 +152,7 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 			                       ((DatabaseSearchResult) resultObj).getResultSize()
 			                       + " interactions found.",
 			                       
-			"Do you want to add new nodes and edges to " + Cytoscape.getCurrentNetwork().getCyAttributes("USER").get("title",String.class)
+			"Do you want to add new nodes and edges to " + Cytoscape.getCurrentNetwork().attrs().get("title",String.class)
 			                       + "?"
 			                   };
 			int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
@@ -219,9 +221,9 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 			taskMonitor.setPercentCompleted(100);
 
-			Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetwork().getIdentifier());
+			Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetwork().getSUID());
 
-			String curNetID = Cytoscape.getCurrentNetwork().getIdentifier();
+			long curNetID = Cytoscape.getCurrentNetwork().getSUID();
 
 			Cytoscape.getVisualMappingManager()
 			         .setVisualStyleForView(Cytoscape.getNetworkView(curNetID),

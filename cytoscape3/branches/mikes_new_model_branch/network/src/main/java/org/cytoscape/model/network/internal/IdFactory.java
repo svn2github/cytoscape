@@ -1,6 +1,6 @@
 
 
-package org.cytoscape.model.network.internal;
+package org.cytoscape.model.internal;
 
 
 class IdFactory {

@@ -35,8 +35,8 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.calculators.Calculator;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
@@ -383,14 +383,14 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	abstract protected void addButtonActionPerformed(java.awt.event.ActionEvent evt);
 
 	private void initRangeValues() {
-		final CyAttributes attr;
+		final CyDataTable attr;
 
 		if (type.isNodeProp()) {
-			attr = Cytoscape.getNodeAttributes();
+			attr = /*TODO*/Cytoscape.getNodeAttributes();
 			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
 			                      .getNodeAppearanceCalculator().getCalculator(type);
 		} else {
-			attr = Cytoscape.getEdgeAttributes();
+			attr = /*TODO*/Cytoscape.getEdgeAttributes();
 			calculator = Cytoscape.getVisualMappingManager().getVisualStyle()
 			                      .getEdgeAppearanceCalculator().getCalculator(type);
 		}
@@ -404,7 +404,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 			final String controllingAttrName = mapping.getControllingAttributeName();
 
-			if ( !attr.contains(controllingAttrName, Double.class) )
+			if ( attr.getColumnTypeMap().get(controllingAttrName) != Double.class )
 				return;
 
 			// Set range values
@@ -413,7 +413,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				Double maxValue = Double.NEGATIVE_INFINITY;
 				Double minValue = Double.POSITIVE_INFINITY;
 
-				for ( Double val : attr.getAttrMgr().getAll( controllingAttrName, Double.class ) ) {
+				for ( Double val : attr.getColumnValues( controllingAttrName, Double.class ) ) {
 					if (val > maxValue)
 						maxValue = val;
 

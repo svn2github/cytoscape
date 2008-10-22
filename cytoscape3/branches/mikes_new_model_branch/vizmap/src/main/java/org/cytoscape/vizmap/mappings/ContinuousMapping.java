@@ -43,8 +43,8 @@
 package org.cytoscape.vizmap.mappings;
 
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.SubjectBase;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
@@ -273,7 +273,7 @@ public class ContinuousMapping extends SubjectBase implements ObjectMapping {
 	 * @param attrBundle A Bundle of Attributes.
 	 * @return Mapping object.
 	 */
-	public Object calculateRangeValue(CyAttributes attrBundle) {
+	public Object calculateRangeValue(CyRow attrBundle) {
 		ContinuousRangeCalculator calc = new ContinuousRangeCalculator(points, interpolator,
 		                                                               attrBundle);
 		Object object = calc.calculateRangeValue(attrName);

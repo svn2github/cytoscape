@@ -1,11 +1,11 @@
 package org.cytoscape.model.network;
 
-import org.cytoscape.model.network.internal.CyNetworkImpl;
+import org.cytoscape.model.internal.CyNetworkImpl;
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyDataTable;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 public class CyEdgeTest extends TestCase {
 

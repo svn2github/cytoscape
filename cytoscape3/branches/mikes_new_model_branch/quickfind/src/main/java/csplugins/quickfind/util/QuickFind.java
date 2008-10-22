@@ -39,7 +39,7 @@ package csplugins.quickfind.util;
 import csplugins.widgets.autocomplete.index.GenericIndex;
 import csplugins.widgets.autocomplete.index.Hit;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 
 /**

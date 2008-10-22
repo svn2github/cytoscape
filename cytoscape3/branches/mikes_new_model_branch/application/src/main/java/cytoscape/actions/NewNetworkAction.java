@@ -7,7 +7,7 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 
 import java.awt.event.ActionEvent;
 
@@ -34,6 +34,7 @@ public class NewNetworkAction extends CytoscapeAction {
 	 * create the new network and view
 	 */
 	public void actionPerformed(ActionEvent e) {
-		CyNetwork newNet = Cytoscape.createNetwork( CyNetworkNaming.getSuggestedNetworkTitle("Network") );
+		// TODO
+		//CyNetwork newNet = Cytoscape.createNetwork( CyNetworkNaming.getSuggestedNetworkTitle("Network") );
 	}
 }

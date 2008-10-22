@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap;
 
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.vizmap.parsers.ColorParser;
 
 import java.awt.*;

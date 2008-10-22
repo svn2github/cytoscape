@@ -2,11 +2,11 @@
 package org.cytoscape.model.network;
 
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.internal.CyNetworkImpl;
-import org.cytoscape.attributes.CyAttributesManager;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.internal.CyNetworkImpl;
+import org.cytoscape.model.CyDataTable;
 
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 public class GraphObjectTest extends TestCase {
 
@@ -60,20 +60,20 @@ public class GraphObjectTest extends TestCase {
         // Leave that to the CyAttributes unit tests.
 
 		CyNode n1 = net.addNode();
-        assertNotNull("cyattrs exists",n1.getCyAttributes("USER"));
-        assertTrue("cyattrs is CyAttributes",n1.getCyAttributes("USER") instanceof CyAttributes);
+        assertNotNull("cyattrs exists",n1.attrs());
+        assertTrue("cyattrs is CyAttributes",n1.attrs() instanceof CyAttributes);
 
 		CyNode n2 = net.addNode();
-        assertNotNull("cyattrs exists",n2.getCyAttributes("USER"));
-        assertTrue("cyattrs is CyAttributes",n2.getCyAttributes("USER") instanceof CyAttributes);
+        assertNotNull("cyattrs exists",n2.attrs());
+        assertTrue("cyattrs is CyAttributes",n2.attrs() instanceof CyAttributes);
 
 		CyEdge e1 = net.addEdge(n1,n2,true);
-        assertNotNull("cyattrs exists",e1.getCyAttributes("USER"));
-        assertTrue("cyattrs is CyAttributes",e1.getCyAttributes("USER") instanceof CyAttributes);
+        assertNotNull("cyattrs exists",e1.attrs());
+        assertTrue("cyattrs is CyAttributes",e1.attrs() instanceof CyAttributes);
 
 		CyEdge e2 = net.addEdge(n1,n2,false);
-        assertNotNull("cyattrs exists",e2.getCyAttributes("USER"));
-        assertTrue("cyattrs is CyAttributes",e2.getCyAttributes("USER") instanceof CyAttributes);
+        assertNotNull("cyattrs exists",e2.attrs());
+        assertTrue("cyattrs is CyAttributes",e2.attrs() instanceof CyAttributes);
 
     }
 }

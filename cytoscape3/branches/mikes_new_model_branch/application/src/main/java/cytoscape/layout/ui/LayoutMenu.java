@@ -37,7 +37,9 @@
 package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.model.network.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTableUtil;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.GraphView;
 
@@ -123,7 +125,7 @@ public class LayoutMenu extends JMenu implements MenuListener {
 
 		// Figure out if we have anything selected
 		CyNetwork network = Cytoscape.getCurrentNetwork();
-		Set selectedNodes = network.getSelectedNodes();
+		List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
 		boolean enableMenuItem = checkEnabled(); 
 
 		// Now, add each layout, as appropriate
@@ -131,8 +133,8 @@ public class LayoutMenu extends JMenu implements MenuListener {
 			// Make sure we don't have any lingering locked nodes
 			layout.unlockAllNodes();
 
-			if ((layout.supportsNodeAttributes() != null)
-			    || (layout.supportsEdgeAttributes() != null)) {
+			if ((layout.supportsNodeAttributes().size() > 0)
+			    || (layout.supportsEdgeAttributes().size() > 0)) {
 				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
 			} else if (layout.supportsSelectedOnly() && (selectedNodes.size() > 0)) {
 				super.add(new DynamicLayoutMenu(layout,enableMenuItem));

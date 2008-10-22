@@ -42,11 +42,11 @@
 //----------------------------------------------------------------------------
 package org.cytoscape.vizmap.mappings;
 
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.ValueParser;
 import org.cytoscape.vizmap.VisualPropertyType;
-import org.jdesktop.swingx.border.DropShadowBorder;
+//import org.jdesktop.swingx.border.DropShadowBorder;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -206,7 +206,7 @@ public class PassThroughMapping implements ObjectMapping {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Object calculateRangeValue(CyAttributes attrBundle) {
+	public Object calculateRangeValue(CyRow attrBundle) {
 		if (attrBundle == null || attrName == null)
 			return null;
 
@@ -301,7 +301,7 @@ public class PassThroughMapping implements ObjectMapping {
 		title.setHorizontalTextPosition(SwingConstants.CENTER);
 		title.setVerticalTextPosition(SwingConstants.CENTER);
 		title.setPreferredSize(new Dimension(200, 50));
-		title.setBorder(new DropShadowBorder());
+//		title.setBorder(new DropShadowBorder());
 		p.setBackground(Color.white);
 		p.add(title, SwingConstants.CENTER);
 

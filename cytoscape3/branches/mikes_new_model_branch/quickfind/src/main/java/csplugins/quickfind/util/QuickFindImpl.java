@@ -41,10 +41,10 @@ import csplugins.widgets.autocomplete.index.Hit;
 import csplugins.widgets.autocomplete.index.IndexFactory;
 import cytoscape.Cytoscape;
 import cytoscape.task.TaskMonitor;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
-import org.cytoscape.model.network.GraphObject;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyRow;
 
 import java.util.ArrayList;
 import java.util.Date;

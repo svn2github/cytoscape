@@ -44,9 +44,9 @@ package cytoscape.actions;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import org.cytoscape.model.network.CyEdge;
-import org.cytoscape.model.network.CyNetwork;
-import org.cytoscape.model.network.CyNode;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.NodeView;
@@ -76,13 +76,16 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	 * @param e DOCUMENT ME!
 	 */
 	public void actionPerformed(ActionEvent e) {
+	// TODO
+	System.out.println("NOT implemented");
+	/*
 		CyNetwork origNet = Cytoscape.getCurrentNetwork();
 		GraphView origView = Cytoscape.getCurrentNetworkView();
 		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
 
 		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeList(),
 		                                                origNet.getEdgeList(),
-		                                                origNet.getCyAttributes("USER").get("title",String.class) + " copy", 
+		                                                origNet.attrs().get("title",String.class) + " copy", 
 														null,
 														true);
 
@@ -120,6 +123,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 
 			Cytoscape.getVisualMappingManager().setVisualStyle(vs);
 		}
+		*/
 	}
 
 	public void menuSelected(MenuEvent e) {

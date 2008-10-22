@@ -38,7 +38,7 @@ package cytoscape.io.table.ui;
 
 import static cytoscape.io.table.ui.theme.ImportDialogFontTheme.KEY_FONT;
 import static cytoscape.io.table.ui.theme.ImportDialogIconSets.*;
-import org.cytoscape.attributes.CyAttributes;
+import org.cytoscape.model.CyRow;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

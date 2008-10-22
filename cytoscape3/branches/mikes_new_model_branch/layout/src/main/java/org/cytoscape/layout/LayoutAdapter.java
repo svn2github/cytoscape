@@ -44,6 +44,8 @@ import org.cytoscape.view.NodeView;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * LayoutAdapter provides a *very* minimal interface to implement a layout
@@ -100,7 +102,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return byte array of allowable attribute types or "null" if not supported.  If the
 	 *              first type is "-1", all types are supported
 	 */
-	public byte[] supportsNodeAttributes() { return null; }
+	public Set<Class<?>> supportsNodeAttributes() { return new HashSet<Class<?>>(); }
 
 	/**
 	 * Tests to see if this layout supports doing a layout based on edge attributes.
@@ -108,7 +110,7 @@ abstract public class LayoutAdapter implements CyLayoutAlgorithm {
 	 * @return type array of allowable attribute types or "null" if not supported.  If the
 	 *              first type is "-1", all types are supported
 	 */
-	public byte[] supportsEdgeAttributes() { return null; }
+	public Set<Class<?>> supportsEdgeAttributes() { return new HashSet<Class<?>>(); }
 
 	/**
 	 * Sets the attribute to use for node- or edge- based attribute layouts
