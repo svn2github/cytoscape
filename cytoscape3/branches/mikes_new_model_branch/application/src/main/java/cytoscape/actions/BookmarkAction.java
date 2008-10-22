@@ -79,13 +79,11 @@ public class BookmarkAction extends CytoscapeAction {
 			bookmarkDialog = new BookmarkDialog((JFrame) Cytoscape.getDesktop());
 			bookmarkDialog.setVisible(true);
 		} catch (JAXBException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
 		// bookmarkDialog.refresh();
-	} // actionPerformed
+	} 
 }
