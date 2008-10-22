@@ -1060,11 +1060,8 @@ class NetworkMergeSessionTask implements Task {
     private String mergedNetworkName;
     AttributeConflictCollector conflictCollector;
     AttributeBasedIDMappingData idMapping;
-    final NetworkMerge networkMerge ;
-
-    private TaskMonitor taskMonitor;
-    private StatusThread statusThread;
-    
+    final private AttributeBasedNetworkMerge networkMerge ;
+    private TaskMonitor taskMonitor;    
     private boolean cancelled;
 
     /**
@@ -1108,7 +1105,7 @@ class NetworkMergeSessionTask implements Task {
                             edgeAttributeMapping,
                             attributeMerger,
                             attributeValueMatcher);
-        
+                
     }
     
     public boolean isCancelled() {
@@ -1123,22 +1120,13 @@ class NetworkMergeSessionTask implements Task {
      */
     //@Override
     public void run() {
-        //taskMonitor.setStatus("Merging networks...\n\nIt may take a while.\nPlease wait...");
-        //taskMonitor.setPercentCompleted(0);
 
-        try {            
-            statusThread = new StatusThread(networkMerge,taskMonitor);
-            statusThread.start();
-            
+        try {  
+            networkMerge.setTaskMonitor(taskMonitor);
             CyNetwork mergedNetwork = networkMerge.mergeNetwork(
                                 selectedNetworkList,
                                 operation,
-                                mergedNetworkName);
-            
-            statusThread.setFinished(true); //this will terminate the statusThread
-            
-            String status = networkMerge.getStatus();
-            taskMonitor.setStatus(status);
+                                mergedNetworkName);            
 
 /*
             cytoscape.view.CyNetworkView networkView = Cytoscape.getNetworkView(mergedNetworkName);
@@ -1210,41 +1198,6 @@ class NetworkMergeSessionTask implements Task {
     public String getTitle() {
             return "Merging networks";
     }
-    
-    
-    private class StatusThread extends Thread {
-        private final NetworkMerge networkMerge;
-        private final TaskMonitor taskMonitor;
-        private boolean finished;
-        
-        public StatusThread(final NetworkMerge networkMerge, final TaskMonitor taskMonitor) {
-            this.networkMerge = networkMerge;
-            this.taskMonitor = taskMonitor;
-            finished = false;
-        }
-        
-        public void setFinished(final boolean finished) {
-            this.finished = finished;
-        }
-        
-        public void run() {
-            while (true) {
-                String status = networkMerge.getStatus();
-                taskMonitor.setStatus(status);
-                try {
-                    Thread.sleep(1000);
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
-                    break;
-                }
-                
-                if (finished) {
-                    taskMonitor.setPercentCompleted(100);
-                    break;
-                }
-            }            
-        }
-    };
 }
 
 class HandleConflictsTask implements Task {

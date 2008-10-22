@@ -70,16 +70,4 @@ public interface NetworkMerge {
      * @return merged Node
      */
     public CyNetwork mergeNetwork(List<CyNetwork> networks, Operation op, String title);
-    
-    /**
-     * 
-     * @return the status
-     */
-    public String getStatus();
-    
-    /**
-     * 
-     * @return the status
-     */
-    public void interrupt();
 }
