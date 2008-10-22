@@ -138,10 +138,8 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 		try {
 			document = SBMLLevel2Document.readDocument(instream);
 		} catch (IOException ioe) {
-			if (ioe.getMessage().equals("Unable to parse input."))
-				throw new IOException("Unable to parse input: Document must be level 2 SBML");
-			else
-				throw (ioe);
+			ioe.printStackTrace();
+			throw (ioe);
 		}
 
 		Model model = document.getModel();
@@ -220,7 +218,14 @@ public class SBMLGraphReader extends AbstractGraphReader implements GraphReader 
 			}
 
 			KineticLaw law = reaction.getKineticLaw();
-			List<Parameter>parameters = law.getParameter();
+
+			if ( law == null )
+				continue;
+
+			List<Parameter> parameters = law.getParameter();
+
+			if ( parameters == null )
+				continue;
 
 			for (Parameter p: parameters) {
 				String id = p.getName();
