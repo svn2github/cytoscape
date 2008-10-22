@@ -9,6 +9,6 @@ public class GraphViewFactory {
 		if ( gp == null )
 			throw new NullPointerException("CyNetwork is null");
 				// TODO make the null a CyDataTableFactory
-		return new DGraphView(gp,null);
+		return new DGraphView(gp,null,null);
 	}
 }

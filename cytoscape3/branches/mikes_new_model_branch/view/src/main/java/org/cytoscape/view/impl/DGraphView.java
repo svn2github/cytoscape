@@ -50,6 +50,8 @@ import org.cytoscape.model.CyDataTableFactory;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
+import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.view.EdgeContextMenuListener;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
@@ -153,7 +155,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 * Holds the NodeView data for the nodes that are visible.
 	 * This will change as nodes are hidden from the view.
 	 */
-//	CyNetwork m_drawPersp;
+	CySubNetwork m_drawPersp;
 
 	/**
 	 * Holds all of the NodeViews, regardless of whether they're visualized.
@@ -310,7 +312,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @param perspective The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetwork perspective, CyDataTableFactory dataFactory) {
+	public DGraphView(CyNetwork perspective, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot) {
 		m_perspective = perspective;
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view",false);
@@ -322,8 +324,8 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 		m_perspective.getEdgeCyDataTables().put("VIEW", edgeCAM);
 
 
-		// creating empty graphs
-		//m_drawPersp = CyNetworkFactory.getInstance(); 
+		// creating empty subnetworks
+		m_drawPersp = cyRoot.convert( m_perspective ).addSubNetwork(new ArrayList<CyNode>()); 
 		//m_structPersp = CyNetworkFactory.getInstance();
 
 		m_spacial = new RTree();
@@ -353,10 +355,10 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 		this.title = m_perspective.attrs().get("title",String.class);
 
 		for ( CyNode nn : m_perspective.getNodeList() ) 
-			addNodeView( nn.getIndex() );
+			addNodeView( nn );
 
 		for ( CyEdge ee : m_perspective.getEdgeList() ) 
-			addEdgeView( ee.getIndex() );
+			addEdgeView( ee );
 
 		new FlagAndSelectionHandler(this);
 		new AddDeleteHandler(this);
@@ -368,7 +370,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 * @return The GraphPerspective that the view was created for.
 	 */
 	public CyNetwork getGraphPerspective() {
-		return getNetwork();
+		return m_perspective; 
 	}
 	
 	public CyNetwork getNetwork() {
@@ -621,14 +623,14 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return The NodeView object that is added to the GraphView.
 	 */
-	public NodeView addNodeView(int nodeInx) {
+	public NodeView addNodeView(CyNode node) {
 		NodeView newView = null;
 
 		synchronized (m_lock) {
-			newView = addNodeViewInternal(nodeInx);
+			newView = addNodeViewInternal(node);
 
 			if (newView == null) {
-				return (NodeView) m_nodeViewMap.get(Integer.valueOf(nodeInx));
+				return m_nodeViewMap.get(node.getIndex());
 			}
 
 			m_contentChanged = true;
@@ -646,17 +648,20 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	/**
 	 * Should synchronize around m_lock.
 	 */
-	private NodeView addNodeViewInternal(int nodeInx) {
-		final NodeView oldView = (NodeView) m_nodeViewMap.get(Integer.valueOf(nodeInx));
+	private NodeView addNodeViewInternal(CyNode node) {
+		final int nodeInx = node.getIndex();
+		final NodeView oldView = m_nodeViewMap.get(nodeInx);
 
 		if (oldView != null) {
 			return null;
 		}
 
+		m_drawPersp.addNode( node );
+
 		//m_structPersp.restoreNode(nodeInx);
 
 		final NodeView newView = new DNodeView(this, nodeInx);
-		m_nodeViewMap.put(Integer.valueOf(nodeInx), newView);
+		m_nodeViewMap.put(nodeInx, newView);
 		m_spacial.insert(~nodeInx, m_defaultNodeXMin, m_defaultNodeYMin, m_defaultNodeXMax,
 		                 m_defaultNodeYMax);
 
@@ -670,26 +675,25 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @return The EdgeView that was added.
 	 */
-	public EdgeView addEdgeView(int edgeInx) {
+	public EdgeView addEdgeView(final CyEdge edge) {
 		NodeView sourceNode = null;
 		NodeView targetNode = null;
 		EdgeView edgeView = null;
+		if (edge == null) 
+			throw new NullPointerException("edge is null");
 
 		synchronized (m_lock) {
-			final EdgeView oldView = (EdgeView) m_edgeViewMap.get(Integer.valueOf(edgeInx));
+			final int edgeInx = edge.getIndex();
+			final EdgeView oldView = m_edgeViewMap.get(edgeInx);
 
 			if (oldView != null) {
 				return oldView;
 			}
 
-			final CyEdge edge = m_perspective.getEdge(edgeInx);
+			sourceNode = addNodeViewInternal(edge.getSource());
+			targetNode = addNodeViewInternal(edge.getTarget());
 
-			if (edge == null) {
-				throw new IllegalArgumentException("edge index specified does not exist in underlying RootGraph");
-			}
-
-			sourceNode = addNodeViewInternal(edge.getSource().getIndex());
-			targetNode = addNodeViewInternal(edge.getTarget().getIndex());
+			m_drawPersp.addEdge(edge);
 
 			//m_structPersp.restoreEdge(edgeInx);
 			edgeView = new DEdgeView(this, edgeInx);
@@ -726,41 +730,6 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 		return edgeView;
 	}
 
-	/**
-	 * Will thrown an UnsupportedOperationException. Don't use this.
-	 *
-	 * @param className ???
-	 * @param edgeInx ???
-	 *
-	 * @return Nothing, an exception will be thrown.
-	 */
-	public EdgeView addEdgeView(String className, int edgeInx) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	/**
-	 * Will thrown an UnsupportedOperationException. Don't use this.
-	 *
-	 * @param className ???
-	 * @param nodeInx ???
-	 *
-	 * @return Nothing, an exception will be thrown.
-	 */
-	public NodeView addNodeView(String className, int nodeInx) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	/**
-	 * Will thrown an UnsupportedOperationException. Don't use this.
-	 *
-	 * @param nodeInx ??
-	 * @param replacement ??
-	 *
-	 * @return Nothing, an exception will be thrown.
-	 */
-	public NodeView addNodeView(int nodeInx, NodeView replacement) {
-		throw new UnsupportedOperationException("not implemented");
-	}
 
 	/**
 	 * Removes a NodeView based on specified NodeView.
@@ -815,8 +784,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 			returnThis.unselectInternal();
 
 			// If this node was hidden, it won't be in m_drawPersp.
-			// NO LONGER NEC
-			//m_drawPersp.removeNode(nodeInx);
+			m_drawPersp.removeNode(nnode);
 			//m_structPersp.removeNode(nodeInx);
 			m_nodeDetails.unregisterNode(~nodeInx);
 
@@ -907,8 +875,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 		returnThis.unselectInternal();
 
 		// If this edge view was hidden, it won't be in m_drawPersp.
-		// NO LONGER NEC
-		//m_drawPersp.removeEdge(edgeInx);
+		m_drawPersp.removeEdge(eedge);
 		//m_structPersp.hideEdge(edgeInx);
 		m_edgeDetails.unregisterEdge(~edgeInx);
 
@@ -1092,7 +1059,9 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 
 			while (it.hasNext()) {
 				CyEdge e = (CyEdge) it.next();
-				returnThis.add(getEdgeView(e));
+				EdgeView ev = getEdgeView(e);
+				if ( ev != null )
+					returnThis.add(ev);
 			}
 
 			return returnThis;
@@ -1194,9 +1163,8 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				edge = ((DEdgeView) obj).getEdge();
 
 				edge.getCyRow("VIEW").set("hidden",true);
-//				if (m_drawPersp.hideEdge(edgeInx) == 0) {
-//					return false;
-//				}
+				if ( !m_drawPersp.removeEdge( edge ) )
+					return false;
 
 				((DEdgeView) obj).unselectInternal();
 				m_contentChanged = true;
@@ -1220,7 +1188,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				final DNodeView nView = (DNodeView) obj;
 				nodeInx = nView.getRootGraphIndex();
 				nnode = m_perspective.getNode(nodeInx);
-				edges = m_perspective.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
+				edges = m_drawPersp.getAdjacentEdgeList(nnode, CyEdge.Type.ANY);
 
 				if (edges == null || edges.size() <= 0 ) {
 					return false;
@@ -1235,7 +1203,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				nView.m_hiddenYMin = m_extentsBuff[1];
 				nView.m_hiddenXMax = m_extentsBuff[2];
 				nView.m_hiddenYMax = m_extentsBuff[3];
-				//m_drawPersp.removeNode(nnode);
+				m_drawPersp.removeNode(nnode);
 				nnode.getCyRow("VIEW").set("hidden",true);
 				m_spacial.delete(~nodeInx);
 				m_contentChanged = true;
@@ -1282,10 +1250,9 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				}
 
 				nnode.getCyRow("VIEW").set("hidden",false);
-//				if (m_drawPersp.restoreNode(nodeInx) == 0) {
-//					return false;
-//				}
-
+				if (!m_drawPersp.addNode(nnode)) 
+					return false;
+					
 				m_spacial.insert(~nodeInx, nView.m_hiddenXMin, nView.m_hiddenYMin,
 				                 nView.m_hiddenXMax, nView.m_hiddenYMax);
 				m_contentChanged = true;
@@ -1330,9 +1297,8 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 				newEdge = edge;
 
 				newEdge.getCyRow("VIEW").set("hidden",false);
-//				if (m_drawPersp.restoreEdge(newEdge) == 0) {
-//					return false;
-//				}
+				if ( !m_drawPersp.addEdge( newEdge ) )
+					return false;
 
 				m_contentChanged = true;
 			}
@@ -2073,7 +2039,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	public void drawSnapshot(Image img, GraphLOD lod, Paint bgPaint, double xCenter,
 	                         double yCenter, double scaleFactor) {
 		synchronized (m_lock) {
-			GraphRenderer.renderGraph( m_perspective, m_spacial, lod, m_nodeDetails,
+			GraphRenderer.renderGraph( m_drawPersp, m_spacial, lod, m_nodeDetails,
 			                          m_edgeDetails, m_hash, new GraphGraphics(img, false),
 			                          bgPaint, xCenter, yCenter, scaleFactor);
 		}
