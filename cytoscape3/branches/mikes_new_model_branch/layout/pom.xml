@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>org.cytoscape</groupId>
-      <artifactId>network</artifactId>
+      <artifactId>model</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
