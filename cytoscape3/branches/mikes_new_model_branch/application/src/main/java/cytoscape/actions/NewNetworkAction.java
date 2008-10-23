@@ -4,10 +4,9 @@
  */
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
 
 import java.awt.event.ActionEvent;
 
@@ -22,19 +21,22 @@ public class NewNetworkAction extends CytoscapeAction {
 
 	private static final long serialVersionUID = -5729080768973677821L;
 
+	private CyNetworkFactory cnf;
+
 	/**
 	 * Creates a new NewNetworkAction object.
 	 */
-	public NewNetworkAction() {
+	public NewNetworkAction(CyNetworkFactory f) {
 		super("Empty Network");
 		setPreferredMenu("File.New.Network");
+		cnf = f;
 	}
 
 	/**
 	 * create the new network and view
 	 */
 	public void actionPerformed(ActionEvent e) {
-		// TODO
-		//CyNetwork newNet = Cytoscape.createNetwork( CyNetworkNaming.getSuggestedNetworkTitle("Network") );
+		CyNetwork newNet = cnf.getInstance();
+		newNet.attrs().set("title","Network");
 	}
 }

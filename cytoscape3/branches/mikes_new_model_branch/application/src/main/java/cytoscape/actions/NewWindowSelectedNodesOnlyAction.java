@@ -46,11 +46,15 @@ import cytoscape.Cytoscape;
 import cytoscape.util.CyNetworkNaming;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.model.subnetwork.CyRootNetwork;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyDataTableUtil;
 
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 
@@ -66,13 +70,15 @@ import java.util.List;
  */
 public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870134859L;
+	private final CyRootNetworkFactory cyroot;
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */
-	public NewWindowSelectedNodesOnlyAction() {
+	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r) {
 		super("From selected nodes, all edges");
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
+		cyroot = r;
 	}
 
 	/**
@@ -82,9 +88,6 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		// save the vizmapper catalog
-		// TODO
-		System.out.println("NOT implemented");
-		/*
 		CyNetwork current_network = Cytoscape.getCurrentNetwork();
 
 		if ((current_network == null) || (current_network == Cytoscape.getNullNetwork()))
@@ -94,7 +97,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 
 		if (Cytoscape.viewExists(current_network.getSUID())) {
 			current_network_view = Cytoscape.getNetworkView(current_network.getSUID());
-		} // end of if ()
+		} 
 
 		List<CyNode> nodes = CyDataTableUtil.getNodesInState(current_network,"selected",true);
 
@@ -105,13 +108,12 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			}
 		}
 
-		CyNetwork new_network = Cytoscape.createNetwork(nodes, edges, 
-		                                                CyNetworkNaming.getSuggestedSubnetworkTitle(current_network),
-		                                                current_network);
+		CySubNetwork new_network = cyroot.convert(current_network).addSubNetwork( nodes, new ArrayList<CyEdge>(edges) );
+		new_network.attrs().set("name", CyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
-		GraphView new_view = Cytoscape.getNetworkView(new_network.getSUID());
+		GraphView new_view = GraphViewFactory.createGraphView( new_network ); 
 
-		if (new_view == Cytoscape.getNullNetworkView()) {
+		if (new_view == null) {
 			return;
 		}
 
@@ -138,7 +140,6 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			}
 		}
         vmm.setVisualStyle(vsName);
-		*/
 	}
 
 	public void menuSelected(MenuEvent e) {

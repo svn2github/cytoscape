@@ -302,10 +302,12 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// New submenu
 		addAction(new NewSessionAction());
-		addAction(new NewWindowSelectedNodesOnlyAction());
+		// TODO inject CyRootNetworkFactory
+		addAction(new NewWindowSelectedNodesOnlyAction(null));
 		addAction(new NewWindowSelectedNodesEdgesAction());
 		addAction(new CloneGraphInNewWindowAction());
-		addAction(new NewNetworkAction());
+		// TODO inject CyNetworkFactory
+		addAction(new NewNetworkAction(null));
 
 	//	addAction(new OpenSessionAction(),1);
 	//	addAction(new SaveSessionAction("Save"),2);
