@@ -34,7 +34,13 @@
 */
 package cytoscape.visual.ui;
 
-import cytoscape.Cytoscape;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.MouseListener;
+
+import javax.swing.JPanel;
+
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
@@ -42,11 +48,7 @@ import org.cytoscape.model.CyNode;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.List;
+import cytoscape.Cytoscape;
 
 
 /**
@@ -71,6 +73,16 @@ public class DefaultViewPanel extends JPanel {
 	private final CyNode target;
 	private final CyEdge edge;
 	private Component canvas = null;
+	
+	private CyNetworkFactory cyNetworkFactory;
+	
+	public void setCyNetworkFactory(CyNetworkFactory cyNetworkFactory) {
+		this.cyNetworkFactory = cyNetworkFactory;
+	}
+	
+	public CyNetworkFactory getCyNetworkFactory() {
+		return this.cyNetworkFactory;
+	}
 
 
 	/**
@@ -78,7 +90,7 @@ public class DefaultViewPanel extends JPanel {
 	 */
 	public DefaultViewPanel() {
 		
-		dummyNet = CyNetworkFactory.getInstance();
+		dummyNet = cyNetworkFactory.getInstance();
 
 		source = dummyNet.addNode();
 		source.attrs().set("name","Source");
