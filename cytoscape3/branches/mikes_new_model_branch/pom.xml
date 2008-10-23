@@ -164,6 +164,7 @@
           <!--  some example Pax-Runner settings -->
           <provision>
             <param>--platform=felix</param>
+            <param>--version=1.0.4</param>
             <param>--profiles=minimal</param>
             <param>--vmOptions=-Xbootclasspath/a:bundles/com.jgoodies.looks_2.1.2.jar:bundles/cytoscape-sun.jhall_1.0.0.jar</param>
           </provision>
