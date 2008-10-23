@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,22 +32,36 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package org.cytoscape.model.internal;
 
-package org.cytoscape.model;
-
+import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 
-public class CyRootNetworkFactoryImpl {
-	
-	public CyRootNetworkFactoryImpl() {}
 
+/**
+ *
+ */
+public class CyRootNetworkFactoryImpl {
+	/**
+	 * Creates a new CyRootNetworkFactoryImpl object.
+	 */
+	public CyRootNetworkFactoryImpl() {
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param net DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CyRootNetwork convert(final CyNetwork net) {
-		if ( net instanceof CyRootNetwork )
-			return (CyRootNetwork)net;
-		else if ( net instanceof CySubNetwork )
-			return ((CySubNetwork)net).getRootNetwork();
-		else 
-			throw new IllegalArgumentException("Your network isn't of proper type - can't convert");	
+		if (net instanceof CyRootNetwork)
+			return (CyRootNetwork) net;
+		else if (net instanceof CySubNetwork)
+			return ((CySubNetwork) net).getRootNetwork();
+		else
+			throw new IllegalArgumentException("Your network isn't of proper type - can't convert");
 	}
 }

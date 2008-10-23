@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,7 +32,6 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-
 package org.cytoscape.event.internal;
 
 import org.cytoscape.event.CyEvent;
@@ -57,8 +55,16 @@ import java.util.concurrent.Executors;
  */
 public class CyEventHelperImpl implements CyEventHelper {
 	private static final Executor EXEC = Executors.newCachedThreadPool();
-	private final BundleContext bc;
+	
+	private BundleContext bc;
 
+	public void setBc(BundleContext bc) {
+		this.bc = bc;
+	}
+	
+	public CyEventHelperImpl() {
+	}
+	
 	/**
 	 * Creates a new CyEventHelperImpl object.
 	 *
@@ -78,7 +84,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 	 * @param listenerClass  DOCUMENT ME!
 	 */
 	public <E extends CyEvent, L extends CyListener> void fireSynchronousEvent(final E event,
-	                                                                                final Class<L> listenerClass) {
+	                                                                           final Class<L> listenerClass) {
 		List<L> listeners = getListeners(listenerClass);
 
 		try {
@@ -113,7 +119,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 	 * @param listenerClass  DOCUMENT ME!
 	 */
 	public <E extends CyEvent, L extends CyListener> void fireAsynchronousEvent(final E event,
-	                                                                                 final Class<L> listenerClass) {
+	                                                                            final Class<L> listenerClass) {
 		final List<L> listeners = getListeners(listenerClass);
 
 		try {

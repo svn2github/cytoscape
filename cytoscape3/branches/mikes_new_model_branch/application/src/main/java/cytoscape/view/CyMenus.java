@@ -46,6 +46,8 @@ import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.undo.RedoAction;
 import cytoscape.util.undo.UndoAction;
 import cytoscape.view.cytopanels.CytoPanelName;
+
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.GraphViewChangeEvent;
 import org.cytoscape.view.GraphViewChangeListener;
 
@@ -67,6 +69,8 @@ import java.awt.event.MouseWheelListener;
  */
 public class CyMenus implements GraphViewChangeListener {
 
+	private CyNetworkFactory cyNetworkFactory;
+	
 	boolean menusInitialized = false;
 
 	CytoscapeMenuBar menuBar;
@@ -121,6 +125,10 @@ public class CyMenus implements GraphViewChangeListener {
 		helpMenu = menuBar.getMenu("Help");
 	}
 
+	public void setCyNetworkFactory(CyNetworkFactory cyNetworkFactory) {
+		this.cyNetworkFactory = cyNetworkFactory;
+	}
+	
 	/**
 	 * Returns the main menu bar constructed by this object.
 	 */
@@ -307,7 +315,7 @@ public class CyMenus implements GraphViewChangeListener {
 		addAction(new NewWindowSelectedNodesEdgesAction());
 		addAction(new CloneGraphInNewWindowAction());
 		// TODO inject CyNetworkFactory
-		addAction(new NewNetworkAction(null));
+		addAction(new NewNetworkAction(cyNetworkFactory));
 
 	//	addAction(new OpenSessionAction(),1);
 	//	addAction(new SaveSessionAction("Save"),2);

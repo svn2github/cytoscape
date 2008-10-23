@@ -2,6 +2,6 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Bundle-Activator: ${bundle.symbolicName}.internal.ModelActivator
+Spring-Context: META-INF/spring/*.xml
 Private-Package: ${bundle.symbolicName}.internal,org.cytoscape.event.internal,${bundle.symbolicName}.events.internal
 Export-Package: ${bundle.symbolicName},${bundle.symbolicName}.events,${bundle.symbolicName}.subnetwork,org.cytoscape.event

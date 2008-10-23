@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -33,25 +32,62 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
+package org.cytoscape.model.internal;
 
-package org.cytoscape.model;
-
-
-import org.cytoscape.model.internal.MGraph;
-import org.cytoscape.model.internal.ArrayGraph;
-import org.cytoscape.event.internal.CyEventHelperImpl;
 import org.cytoscape.event.CyEventHelper;
 
-public class CyNetworkFactoryImpl {
-	
-	private final CyEventHelper help;  
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
 
-	public CyNetworkFactoryImpl(final CyEventHelper h) {
-		if ( h == null )
-			throw new NullPointerException("CyEventHelper is null");
-		help = h;
+
+/**
+ *
+ */
+public class CyNetworkFactoryImpl implements CyNetworkFactory {
+	
+	private CyEventHelper help;
+
+	/**
+	 * For setter injection
+	 */
+	public CyNetworkFactoryImpl() {
 	}
 
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @param help DOCUMENT ME!
+	 */
+	public void setHelp(CyEventHelper help) {
+		this.help = help;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
+	public CyEventHelper getHelp() {
+		return this.help;
+	}
+
+	/**
+	 * Creates a new CyNetworkFactoryImpl object.
+	 *
+	 * @param h  DOCUMENT ME!
+	 */
+	public CyNetworkFactoryImpl(final CyEventHelper help) {
+		if (help == null)
+			throw new NullPointerException("CyEventHelper is null");
+
+		this.help = help;
+	}
+
+	/**
+	 *  DOCUMENT ME!
+	 *
+	 * @return  DOCUMENT ME!
+	 */
 	public CyNetwork getInstance() {
 		//return new MGraph(help);
 		return new ArrayGraph(help);
