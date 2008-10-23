@@ -28,25 +28,26 @@
  */
 package cytoscape.actions;
 
-import cytoscape.Cytoscape;
-import cytoscape.util.CytoscapeAction;
-import cytoscape.util.undo.CyUndo;
-import org.cytoscape.model.CyEdge;
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNetworkFactory;
-import org.cytoscape.model.subnetwork.CySubNetwork;
-import org.cytoscape.model.subnetwork.CyRootNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.GraphObject;
-import org.cytoscape.model.CyDataTableUtil;
-import org.cytoscape.view.GraphView;
-
-import javax.swing.event.MenuEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.swing.event.MenuEvent;
+
+import org.cytoscape.model.CyDataTableUtil;
+import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNode;
+import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
+import org.cytoscape.model.subnetwork.CySubNetwork;
+import org.cytoscape.view.GraphView;
+
+import cytoscape.Cytoscape;
+import cytoscape.util.CytoscapeAction;
+import cytoscape.util.undo.CyUndo;
 
 
 /**
@@ -60,6 +61,16 @@ import java.util.Set;
 public class DeleteAction extends CytoscapeAction {
 	private static final long serialVersionUID = -5769255815829787466L;
 
+	private CyRootNetworkFactory cyRootNetworkFactory;
+	
+	public void setCyRootNetworkFactory(CyRootNetworkFactory cyRootNetworkFactory) {
+		this.cyRootNetworkFactory = cyRootNetworkFactory;
+	}
+	
+	public CyRootNetworkFactory getCyRootNetworkFactory() {
+		return this.cyRootNetworkFactory;
+	}
+	
 	/**
 	 * 
 	 */
@@ -98,7 +109,7 @@ public class DeleteAction extends CytoscapeAction {
 		GraphView myView = Cytoscape.getCurrentNetworkView();
 
 		// delete from the base CySubNetwork so that our changes can be undone 
-		CySubNetwork cyNet = CyNetworkFactory.convertToRootNetwork( myView.getNetwork() ).getBaseNetwork();
+		CySubNetwork cyNet = cyRootNetworkFactory.convert( myView.getNetwork() ).getBaseNetwork();
 		List<CyEdge> edgeViews = myView.getSelectedEdges();
 		List<CyNode> nodeViews = myView.getSelectedNodes();
 		CyNode cyNode;
