@@ -2,19 +2,31 @@
 package org.cytoscape.view.impl;
 
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.view.impl.DGraphView;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.GraphView;
 
 public class GraphViewFactoryImpl implements GraphViewFactory {
 
+	private CyDataTableFactory dataTableFactory;
+	private CyRootNetworkFactory rootNetworkFactory;
+
+	public void setDataTableFactory( CyDataTableFactory dataTableFactory ) {
+		this.dataTableFactory = dataTableFactory;
+	}
+
+	public void setRootNetworkFactory( CyRootNetworkFactory rootNetworkFactory ) {
+		this.rootNetworkFactory = rootNetworkFactory;
+	}
+
 	public GraphViewFactoryImpl() {
 	}
 
-	public GraphView createGraphView(CyNetwork gp) {
-		if ( gp == null )
+	public GraphView createGraphView(CyNetwork network) {
+		if ( network == null )
 			throw new NullPointerException("CyNetwork is null");
-				// TODO make the null a CyDataTableFactory
-		return new DGraphView(gp,null,null);
+		return new DGraphView(network,dataTableFactory,rootNetworkFactory);
 	}
 }
