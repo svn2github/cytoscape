@@ -43,6 +43,7 @@ import java.util.HashMap;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyDataTableFactory;
+import org.cytoscape.event.CyEventHelper;
 
 /**
  * An interface describing a factory used for creating 
@@ -52,6 +53,12 @@ import org.cytoscape.model.CyDataTableFactory;
 class CyDataTableFactoryImpl implements CyDataTableFactory {
 
 	Map<Long,CyDataTable> tables;
+	CyEventHelper help;
+
+	public void setHelp(CyEventHelper help) {
+		this.help = help;
+	}
+
 	CyDataTableFactoryImpl() {
 		tables = new HashMap<Long,CyDataTable>();
 	}
@@ -64,7 +71,7 @@ class CyDataTableFactoryImpl implements CyDataTableFactory {
 	 *         {@link CyDataTable#isPublic}.
 	 */
 	public CyDataTable createTable(String name, boolean pub) {
-		CyDataTable cdt = new CyDataTableImpl(null,name,pub);
+		CyDataTable cdt = new CyDataTableImpl(null,name,pub,help);
 		tables.put( cdt.getSUID(), cdt );
 		return cdt;
 	}

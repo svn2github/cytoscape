@@ -14,6 +14,13 @@
 		</osgi:service-properties>
 	</osgi:service>
 	
+	<osgi:service id="cyDataTableFactoryService"
+		ref="cyDataTableFactory" interface="org.cytoscape.model.CyDataTableFactory">
+		<osgi:service-properties>
+			<entry key="service.type" value="factory" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	<osgi:service id="cyEventHelperService"
 		ref="cyEventHelper" interface="org.cytoscape.event.CyEventHelper">
 		<osgi:service-properties>

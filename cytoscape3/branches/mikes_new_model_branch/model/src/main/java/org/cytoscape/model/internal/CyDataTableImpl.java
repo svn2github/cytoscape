@@ -38,6 +38,7 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.event.CyEventHelper;
 
 import java.util.*;
 
@@ -52,6 +53,7 @@ public class CyDataTableImpl implements CyDataTable {
 	private String name;
 	private boolean pub;
 	private final long suid;
+	private CyEventHelper help;
 
 	/**
 	 *  DOCUMENT ME!
@@ -96,10 +98,11 @@ public class CyDataTableImpl implements CyDataTable {
 	 * @param name  DOCUMENT ME!
 	 * @param pub  DOCUMENT ME!
 	 */
-	public CyDataTableImpl(Map<String, Class<?>> typeMap, String name, boolean pub) {
+	public CyDataTableImpl(Map<String, Class<?>> typeMap, String name, boolean pub, final CyEventHelper help) {
 		this.name = name;
 		this.pub = pub;
 		this.suid = IdFactory.getNextSUID();
+		this.help = help;
 		attributes = new HashMap<String, Map<Long, Object>>();
 
 		if (typeMap == null) {

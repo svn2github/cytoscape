@@ -18,6 +18,10 @@
 	<bean id="cyNetworkFactory" class="org.cytoscape.model.internal.CyNetworkFactoryImpl">
 		<property name="help" ref="cyEventHelper"></property>
 	</bean>
+
+	<bean id="cyDataTableFactory" class="org.cytoscape.model.internal.CyDataTableFactoryImpl">
+		<property name="help" ref="cyEventHelper"></property>
+	</bean>
 	
 	<bean id="cyEventHelper" class="org.cytoscape.event.internal.CyEventHelperImpl">
 		<property name="bc" ref="bundleContext"></property>

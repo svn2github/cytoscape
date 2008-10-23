@@ -62,7 +62,7 @@ public class CyDataTableTest extends TestCase {
 	 *  DOCUMENT ME!
 	 */
 	public void setUp() {
-		mgr = new CyDataTableImpl(null, "homer", true);
+		mgr = new CyDataTableImpl(null, "homer", true, null);
 		attrs = mgr.getRow(1);
 	}
 

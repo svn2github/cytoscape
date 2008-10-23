@@ -79,13 +79,13 @@ public class MGraph implements CyNetwork {
         suid = IdFactory.getNextSUID();
 
         netAttrMgr = new HashMap<String, CyDataTable>();
-        netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " network", true));
+        netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " network", true, eh));
 
         nodeAttrMgr = new HashMap<String, CyDataTable>();
-        nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " node", true));
+        nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " node", true, eh));
 
         edgeAttrMgr = new HashMap<String, CyDataTable>();
-        edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " edge", true));
+        edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " edge", true, eh));
 
         eventHelper = eh;
 	}
