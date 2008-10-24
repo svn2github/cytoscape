@@ -34,7 +34,7 @@
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
-package cytoscape.data.writers;
+package org.cytoscape.io.write.internal.xgmml;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
