@@ -43,6 +43,7 @@ import org.cytoscape.io.read.internal.VisualStyleBuilder;
 
 import cytoscape.task.TaskMonitor;
 import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyRow;
@@ -50,6 +51,7 @@ import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.LayoutAdapter;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.NodeView;
 
 import org.cytoscape.vizmap.ArrowShape;
@@ -133,7 +135,9 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 	private TaskMonitor taskMonitor;
 
 	private CyNetwork newNet;
+	private CyNetworkFactory cnf;
 	private GraphView view;
+	private GraphViewFactory gvf;
 
 	// TODO set up injection
 	public void setProperties(Properties prop) {
@@ -148,12 +152,19 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 	 *            Input stream of XGMML file,
 	 *
 	 */
-	// TODO network to be injected... or something
-	public XGMMLReader(CyNetwork net) { 
-		newNet = net;
+	public XGMMLReader(GraphViewFactory gvf, CyNetworkFactory cnf) { 
+		if ( cnf == null )
+			throw new NullPointerException("CyNetworkFactory is null");
+
+		if ( gvf == null )
+			throw new NullPointerException("GraphViewFactory is null");
+
+		this.gvf = gvf;
+		this.cnf = cnf;
 	}
 
 	public void setInput(InputStream is) {
+		newNet = cnf.getInstance();
 		networkStream = is;
 	}
 
@@ -526,8 +537,7 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 		parser.setMetaData(network);
 
 		// Get the view.  Note that for large networks this might be the null view
-		//TODO 	
-		view = null;//GraphViewFactory.createGraphView(network);
+		view = gvf.createGraphView(network);
 
 		layout(view);
 
