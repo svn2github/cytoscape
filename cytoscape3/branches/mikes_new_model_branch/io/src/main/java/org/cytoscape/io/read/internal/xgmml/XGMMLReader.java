@@ -50,7 +50,6 @@ import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.LayoutAdapter;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.NodeView;
 
 import org.cytoscape.vizmap.ArrowShape;
@@ -527,7 +526,8 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 		parser.setMetaData(network);
 
 		// Get the view.  Note that for large networks this might be the null view
-		view = GraphViewFactory.createGraphView(network);
+		//TODO 	
+		view = null;//GraphViewFactory.createGraphView(network);
 
 		layout(view);
 

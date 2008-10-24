@@ -103,7 +103,8 @@ public class DefaultViewPanel extends JPanel {
 
 		dummyNet.attrs().set("title","Default Appearance");
 
-		view = GraphViewFactory.createGraphView(dummyNet);
+		// TODONOW	
+		view = null;//GraphViewFactory.createGraphView(dummyNet);
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
 		Cytoscape.getVisualMappingManager().setNetworkView(view);

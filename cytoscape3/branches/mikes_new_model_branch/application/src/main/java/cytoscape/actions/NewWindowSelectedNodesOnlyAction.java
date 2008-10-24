@@ -111,7 +111,9 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		CySubNetwork new_network = cyroot.convert(current_network).addSubNetwork( nodes, new ArrayList<CyEdge>(edges) );
 		new_network.attrs().set("name", CyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
-		GraphView new_view = GraphViewFactory.createGraphView( new_network ); 
+		//TODONOW
+		//GraphView new_view = GraphViewFactory.createGraphView( new_network ); 
+		GraphView new_view =null; 
 
 		if (new_view == null) {
 			return;

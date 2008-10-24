@@ -1605,6 +1605,7 @@ public abstract class Cytoscape {
 			return getNetworkView(network.getSUID());
 		}
 
+		/* TODONOW
 		final GraphView view = GraphViewFactory.createGraphView(network);
 		view.setGraphLOD(new CyGraphLOD());
 		view.setIdentifier(network.getSUID());
@@ -1638,6 +1639,8 @@ public abstract class Cytoscape {
 		redrawGraph(view);
 
 		return view;
+		*/
+		return null;
 	}
 
 
