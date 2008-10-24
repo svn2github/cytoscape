@@ -18,8 +18,8 @@
 
 
 	<bean id="cyGraphViewFactory" class="org.cytoscape.view.impl.GraphViewFactoryImpl">
-		<property name="dataTableFactory" ref="cyDataTableFactoryServiceRef"></property>
-		<property name="rootNetworkFactory" ref="cyRootNetworkFactoryServiceRef"></property>
+		<constructor-arg ref="cyDataTableFactoryServiceRef"/>
+		<constructor-arg ref="cyRootNetworkFactoryServiceRef"/>
 	</bean>
 
 </beans>

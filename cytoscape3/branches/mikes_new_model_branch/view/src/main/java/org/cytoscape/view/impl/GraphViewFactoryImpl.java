@@ -13,15 +13,10 @@ public class GraphViewFactoryImpl implements GraphViewFactory {
 	private CyDataTableFactory dataTableFactory;
 	private CyRootNetworkFactory rootNetworkFactory;
 
-	public void setDataTableFactory( CyDataTableFactory dataTableFactory ) {
+	public GraphViewFactoryImpl(CyDataTableFactory dataTableFactory, 
+	                            CyRootNetworkFactory rootNetworkFactory) {
 		this.dataTableFactory = dataTableFactory;
-	}
-
-	public void setRootNetworkFactory( CyRootNetworkFactory rootNetworkFactory ) {
 		this.rootNetworkFactory = rootNetworkFactory;
-	}
-
-	public GraphViewFactoryImpl() {
 	}
 
 	public GraphView createGraphView(CyNetwork network) {
