@@ -36,13 +36,14 @@ package org.cytoscape.model.internal;
 
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
+import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 
 
 /**
  *
  */
-public class CyRootNetworkFactoryImpl {
+public class CyRootNetworkFactoryImpl implements CyRootNetworkFactory {
 	/**
 	 * Creates a new CyRootNetworkFactoryImpl object.
 	 */

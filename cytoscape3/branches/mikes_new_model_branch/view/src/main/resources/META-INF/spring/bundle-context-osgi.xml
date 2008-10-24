@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.0.xsd"
     default-lazy-init="false">
-<!--
+
 	<osgi:reference id="cyRootNetworkFactoryServiceRef" 
 	                interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
     </osgi:reference>
@@ -12,7 +12,6 @@
     <osgi:reference id="cyDataTableFactoryServiceRef" 
 	                interface="org.cytoscape.model.CyDataTableFactory">
     </osgi:reference>
--->
 	<!-- Individual Service -->
 	<osgi:service id="cyGraphViewFactoryService"
 		ref="cyGraphViewFactory" interface="org.cytoscape.view.GraphViewFactory">

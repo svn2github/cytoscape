@@ -21,6 +21,13 @@
 		</osgi:service-properties>
 	</osgi:service>
 	
+	<osgi:service id="cyRootNetworkFactoryService"
+		ref="cyRootNetworkFactory" interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
+		<osgi:service-properties>
+			<entry key="service.type" value="factory" />
+		</osgi:service-properties>
+	</osgi:service>
+	
 	<osgi:service id="cyEventHelperService"
 		ref="cyEventHelper" interface="org.cytoscape.event.CyEventHelper">
 		<osgi:service-properties>
