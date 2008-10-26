@@ -14,6 +14,7 @@ import cytoscape.Cytoscape;
 import cytoscape.CyNode;
 
 import cytoscape.layout.AbstractLayout;
+import cytoscape.logger.CyLogger;
 
 import cytoscape.task.*;
 
@@ -37,6 +38,7 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 	protected List <LayoutPartition> partitionList = null;
 	protected EdgeWeighter edgeWeighter = null;
 	protected boolean singlePartition = false;
+	protected CyLogger logger = null;
 
 	// Information for taskMonitor
 	double current_start = 0;	// Starting node number
@@ -175,7 +177,12 @@ public abstract class AbstractGraphPartition extends AbstractLayout {
 
 			// Partitions Requiring Layout
 			if (partition.nodeCount() > 1) {
-				layoutPartion(partition); // Note: this might throw -- we catch this in cytoscape.layout
+				try {
+					layoutPartion(partition);
+				} catch (Throwable _e) {
+					logger.error("Layout algorithm failed: ", _e);
+					return;
+				}
 
 				if (!selectedOnly && !singlePartition) {
 					// logger.debug("Offsetting partition #"+partition.getPartitionNumber()+" to "+next_x_start+", "+next_y_start);

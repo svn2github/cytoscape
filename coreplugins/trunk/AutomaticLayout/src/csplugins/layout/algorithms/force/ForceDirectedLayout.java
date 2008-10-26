@@ -73,7 +73,6 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 	double defaultSpringCoefficient = 1e-4f;
 	double defaultSpringLength = 50;
 	double defaultNodeMass = 3.0;
-	private CyLogger logger = null;
 
 	/**
 	 * Value to set for doing unweighted layouts
@@ -174,6 +173,7 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		}
 		
 		// update positions
+		part.resetNodes(); // reset the nodes so we get the new average location
 		for (LayoutNode ln: part.getNodeList()) {
 			if (!ln.isLocked()) {
 				ForceItem fitem = forceItems.get(ln); 
