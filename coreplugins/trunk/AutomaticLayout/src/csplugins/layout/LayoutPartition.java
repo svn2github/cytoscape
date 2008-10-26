@@ -547,7 +547,6 @@ public class LayoutPartition {
 
 			// Make sure we clean up after any previous layouts
 			EdgeView ev = networkView.getEdgeView(edge);
-			ev.clearBends();
 
 			CyNode source = (CyNode) edge.getSource();
 			CyNode target = (CyNode) edge.getTarget();
@@ -562,6 +561,7 @@ public class LayoutPartition {
 			if (v1.isLocked() && v2.isLocked())
 				continue; // no, ignore it
 
+			ev.clearBends();
 			addEdge(edge, v1, v2);
 		}
 	}
@@ -738,8 +738,8 @@ public class LayoutPartition {
 			edgesSeenMap.put(-edgeIndex, m_NODE_HAS_BEEN_SEEN);
 
 			// Make sure we clean up after any previous layouts
-			EdgeView ev = networkView.getEdgeView(incidentEdge);
-			ev.clearBends();
+			// EdgeView ev = networkView.getEdgeView(incidentEdge);
+			// ev.clearBends();
 
 			// Add the edge to the partition
 			partition.addEdge(incidentEdge);
