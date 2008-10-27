@@ -193,11 +193,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// By default, force to sort property by prop name.
 		visualPropertySheetPanel.setSorting(true);
 		
+		// TODO Register these listeners as services
 		AttrEventListener ael1 = new AttrEventListener(this, Cytoscape.getNodeAttributes(), nodeAttrEditor, nodeNumericalAttrEditor);
 		AttrEventListener ael2 = new AttrEventListener(this, Cytoscape.getEdgeAttributes(), edgeAttrEditor, edgeNumericalAttrEditor);
 		AttrEventListener ael3 = new AttrEventListener(this, Cytoscape.getNetworkAttributes(), null, null);
 
-		// TODO Register these listeners as services
 	}
 
 	/*
@@ -3807,6 +3807,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			// get attribute names & sort
 
 			// populate attrEditorNames & numericalAttrEditorNames
+			// TODO - this is bad and is only hear to get things working initially
+			if ( attr == null )
+				return;
+
 			List<String> names = new ArrayList<String>( attr.getColumnTypeMap().keySet());
 			Collections.sort(names);
 			attrEditorNames.add("ID");

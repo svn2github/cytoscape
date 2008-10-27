@@ -22,5 +22,7 @@
 		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef"></property>
 	</bean>
 
+	<bean name="cyMain" class="cytoscape.CyMain">
+	</bean>
 
 </beans>

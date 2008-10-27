@@ -1390,7 +1390,11 @@ public abstract class Cytoscape {
 	 * @return CyDataTable Object.
 	 */
 	public static CyDataTable getNodeAttributes() {
-		return getCurrentNetwork().getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+		CyNetwork n = getCurrentNetwork();
+		if ( n == null )
+			return null;
+		else
+			return n.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 	}
 
 	/**
@@ -1399,7 +1403,11 @@ public abstract class Cytoscape {
 	 * @return CyDataTable Object.
 	 */
 	public static CyDataTable getEdgeAttributes() {
-		return getCurrentNetwork().getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+		CyNetwork n = getCurrentNetwork();
+		if ( n == null )
+			return null;
+		else
+			return n.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 	}
 
 	/**
@@ -1408,7 +1416,11 @@ public abstract class Cytoscape {
 	 * @return CyDataTable Object.
 	 */
 	public static CyDataTable getNetworkAttributes() {
-		return getCurrentNetwork().getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+		CyNetwork n = getCurrentNetwork();
+		if ( n == null )
+			return null;
+		else
+			return n.getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 	}
 
 	/**

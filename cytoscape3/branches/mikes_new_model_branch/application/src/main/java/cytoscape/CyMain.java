@@ -108,6 +108,10 @@ public class CyMain implements CyInitParams {
 	 *
 	 * @throws Exception  DOCUMENT ME!
 	 */
+	public CyMain() throws Exception {
+		this( new String[]{} );
+	}
+
 	public CyMain(String[] args) throws Exception {
 		props = null;
 		graphFiles = null;

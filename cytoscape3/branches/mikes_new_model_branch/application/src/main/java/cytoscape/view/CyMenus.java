@@ -458,6 +458,7 @@ public class CyMenus implements GraphViewChangeListener {
 	 * Fills the toolbar for easy access to commonly used actions.
 	 */
 	private void fillToolBar() {
+		// TODO enable these!
 //		openSessionButton = toolBar.add(new OpenSessionAction(this, false));
 //		openSessionButton.setToolTipText("Open Session File...");
 //		openSessionButton.setIcon(new ImageIcon(getClass()
