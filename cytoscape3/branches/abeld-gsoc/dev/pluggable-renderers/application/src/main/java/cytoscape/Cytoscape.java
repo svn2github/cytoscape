@@ -2007,7 +2007,7 @@ public abstract class Cytoscape {
 		for (int i = 0; i < values.length; i++) {
 			NodeRenderer value = (NodeRenderer) values[i];
 			
-			rendererIcons.put(value, new NodeIcon()); // FIXME FIXME: do property icons!
+			rendererIcons.put(value, new NodeIcon(value.name())); // FIXME FIXME: do property icons!
 		}
 		return rendererIcons;
 	}

@@ -60,6 +60,12 @@ public class ShapeRenderer implements NodeRenderer {
 		m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD);
 		this.name = name;
 	}
+	
+	/** Returns user-friendly name */
+	public String name(){
+		return this.name;
+	}
+
 	/**
 	 * Draw a preview image on canvas at given place (using some default NodeDetails that the renderer can make up)
 	 */

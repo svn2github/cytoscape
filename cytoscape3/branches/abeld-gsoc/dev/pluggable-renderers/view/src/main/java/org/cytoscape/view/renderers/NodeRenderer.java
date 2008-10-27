@@ -23,4 +23,7 @@ public interface NodeRenderer extends Renderer{
 	 * Return a list of visual attributes this renderer can use
 	 */
 	public Collection<VisualProperty> supportedVisualAttributes();
+	
+	/** Returns user-friendly name */
+	public String name();
 }

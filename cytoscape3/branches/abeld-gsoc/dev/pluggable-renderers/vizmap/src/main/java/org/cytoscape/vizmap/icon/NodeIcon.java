@@ -73,6 +73,13 @@ public class NodeIcon extends VisualPropertyIcon {
 			 "some default name" /*FIXME*/,
 		     DEFAULT_ICON_COLOR);
 	}
+
+	public NodeIcon(String name) {
+		this(Integer.valueOf(0), //FIXME: use first shape as default value note:this was pre-visual style default previously, but we want to use it for NodeRenderer's icons
+		     DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE,
+			 name,
+		     DEFAULT_ICON_COLOR);
+	}
 	
 	public NodeIcon(Shape s) {
 		this(s, DEFAULT_ICON_SIZE, DEFAULT_ICON_SIZE, "some shape"/*FIXME: names!! */, DEFAULT_ICON_COLOR);
