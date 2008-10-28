@@ -244,6 +244,7 @@ public class VisualStyle implements Cloneable {
     	NodeView nodeView;
 
     	CyAttributes attrs = CyAttributesFactory.getCyAttributes("node");
+    	List<VisualProperty> nodeVisualProperties = VisualPropertyCatalog.getNodeVisualPropertyList();
 		for (Iterator i = network_view.getNodeViewsIterator(); i.hasNext();) {
 			nodeView = (NodeView) i.next();
 
@@ -252,7 +253,7 @@ public class VisualStyle implements Cloneable {
 				// for now do this! (iliana)
 				continue;
 
-			for (VisualProperty vp:VisualPropertyCatalog.getNodeVisualPropertyList()){
+			for (VisualProperty vp: nodeVisualProperties){
 				Object o = getByPass(vp, nodeView.getNode().getIdentifier(), attrs);
 				if (o == null) {
 					Calculator c = calculators.get(vp);
@@ -269,6 +270,7 @@ public class VisualStyle implements Cloneable {
     	EdgeView edgeView;
 
     	attrs = CyAttributesFactory.getCyAttributes("edge");
+    	List<VisualProperty> edgeVisualProperties = VisualPropertyCatalog.getEdgeVisualPropertyList();
     	
 		for (Iterator i = network_view.getEdgeViewsIterator(); i.hasNext();) {
 			edgeView = (EdgeView) i.next();
@@ -278,7 +280,7 @@ public class VisualStyle implements Cloneable {
 				// for now do this! (iliana)
 				continue;
 
-			for (VisualProperty vp:VisualPropertyCatalog.getEdgeVisualPropertyList()){
+			for (VisualProperty vp: edgeVisualProperties ){
 				Object o = getByPass(vp, edgeView.getEdge().getIdentifier(), attrs);
 				if (o == null) {
 					Calculator c = calculators.get(vp);
