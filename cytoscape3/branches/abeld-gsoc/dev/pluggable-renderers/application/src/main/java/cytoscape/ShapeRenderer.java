@@ -54,11 +54,15 @@ public class ShapeRenderer implements NodeRenderer {
 	private final double[] m_ptsBuff = new double[4];
 	private int m_polyNumPoints; // Used with m_polyCoords.
 
+	private Set<VisualProperty> visualProperties;
 	private String name;
 	
 	public ShapeRenderer(String name){
 		m_path2dPrime.setWindingRule(GeneralPath.WIND_EVEN_ODD);
 		this.name = name;
+		if (visualProperties == null){
+			populateListOfVisualProperties();
+		}
 	}
 	
 	/** Returns user-friendly name */
@@ -93,13 +97,9 @@ public class ShapeRenderer implements NodeRenderer {
 		}
 		return nodeShapeIcons;
 	}
-	/**
-	 * Return a list of visual attributes this renderer can use
-	 */
-	public Collection<VisualProperty> supportedVisualAttributes(){
-		
-		Set<VisualProperty> visualProperties = new HashSet<VisualProperty>();
-		
+	private void populateListOfVisualProperties(){
+		visualProperties = new HashSet<VisualProperty>();
+	
 		visualProperties.add(new LegacyVisualProperty("NODE_FILL_COLOR", Color.class, true));
 		visualProperties.add( new LegacyVisualProperty("NODE_BORDER_COLOR", Color.class, true));
 		visualProperties.add( new LegacyVisualProperty("NODE_OPACITY", Number.class, true));
@@ -109,7 +109,7 @@ public class ShapeRenderer implements NodeRenderer {
 		Object [] range = range(0, 8, 1); 
 		Map<Object, Icon> iconSet = getNodeIconSet(range, GraphGraphics.getNodeShapes()); 
 		visualProperties.add( new DiscreteVisualProperty("NODE_SHAPE", Integer.class, true, range, iconSet));
-		
+	
 		visualProperties.add( new LegacyVisualProperty("NODE_SIZE", Number.class, true));
 		visualProperties.add( new LegacyVisualProperty("NODE_WIDTH", Number.class, true));
 		visualProperties.add( new LegacyVisualProperty("NODE_HEIGHT", Number.class, true));
@@ -119,7 +119,12 @@ public class ShapeRenderer implements NodeRenderer {
 		visualProperties.add( new LegacyVisualProperty("NODE_LABEL_COLOR", Color.class, true));
 		visualProperties.add( new LegacyVisualProperty("NODE_TOOLTIP", String.class, true));
 		visualProperties.add( new LegacyVisualProperty("NODE_LABEL_POSITION", LabelPosition.class, true));
-		return visualProperties;
+	}
+	/**
+	 * Return a list of visual attributes this renderer can use
+	 */
+	public Collection<VisualProperty> supportedVisualAttributes(){
+		return new HashSet<VisualProperty>(visualProperties);
 	}
 
 	/**

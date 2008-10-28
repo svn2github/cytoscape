@@ -41,6 +41,7 @@ import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 
 import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
 
@@ -60,14 +61,15 @@ class EdgeBypass extends VizMapBypass {
     JMenuItem addMenu(Edge e) {
         graphObj = e;
         attrs = Cytoscape.getEdgeAttributes();
-
+        GraphView networkview = Cytoscape.getCurrentNetworkView();
+        
         JMenu menu = new JMenu("Visual Mapping Bypass");
         menu.add(new JLabel("Change Edge Visualization"));
         menu.addSeparator();
 		// horrible, horrible hack
 		BypassHack.setCurrentObject( e );
 
-		for ( VisualProperty type : VisualPropertyCatalog.getEdgeVisualPropertyList() ) 
+		for ( VisualProperty type : VisualPropertyCatalog.getEdgeVisualPropertyList(networkview.getEdgeView(e)) ) 
 			addMenuItem(menu, type);
 
         addResetAllMenuItem(menu);

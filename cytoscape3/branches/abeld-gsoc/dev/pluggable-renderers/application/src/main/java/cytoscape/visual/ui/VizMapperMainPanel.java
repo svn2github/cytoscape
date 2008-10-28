@@ -505,7 +505,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	public static void apply(Object newValue, VisualProperty type) {
 		if (newValue != null){
-			Cytoscape.getVisualMappingManager().getVisualStyle().setDefaultValue(type, newValue);
+			VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
+			vs.setDefaultValue(type, newValue);
+			Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vs, null);
 		}
 	}
 

@@ -257,6 +257,11 @@ public abstract class Cytoscape {
         */
        public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
 
+       /**
+        * Specifies that the given VisualStyle has been modified.
+        */
+       public static final String VISUALSTYLE_MODIFIED = "VISUALSTYLE_MODIFIED";
+
 	/**
 	 * When creating a network, use one of the standard suffixes to have it
 	 * parsed correctly<BR>
@@ -2021,12 +2026,14 @@ public abstract class Cytoscape {
 		VisualPropertyCatalog.addVisualProperty(new DiscreteVisualProperty("NODE_RENDERER", NodeRenderer.class, true, range, iconSet,
 			new DependentVisualPropertyCallback(){
 				public Set<VisualProperty> changed(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews, Collection<VisualProperty> current_vps){
+					System.out.println("DependentVisualPropertyCallback called");
 					Set <NodeRenderer> renderers = new HashSet();
 					for (NodeView nv: nodeviews){
 						renderers.add(nv.getRenderer());
 					}
 					Set <VisualProperty> visualProperties = new HashSet();
 					for (Renderer renderer: renderers){
+						System.out.println("found renderer:"+renderer.name());
 						visualProperties.addAll(renderer.supportedVisualAttributes());
 					}
 					Set <VisualProperty> toRemove = new HashSet();
@@ -2035,12 +2042,17 @@ public abstract class Cytoscape {
 							toRemove.add(vp);
 						}
 					}
-					
+					System.out.println("len of renderer's visualproperties:"+visualProperties.size());
 					toRemove.removeAll(visualProperties);
+					toRemove.remove(VisualPropertyCatalog.getVisualProperty("NODE_RENDERER"));
+					System.out.println("len of return:"+toRemove.size());
 					return toRemove;
 				}
 		}));
-		
+		for (int i = 0; i< range.length; i++){
+			Renderer renderer = (Renderer) range[i];
+			VisualPropertyCatalog.addVisualPropertiesOfRenderer(renderer);
+		}
 		
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_COLOR", Color.class, false));
 		VisualPropertyCatalog.addVisualProperty( new LegacyVisualProperty("EDGE_LABEL", String.class, false));

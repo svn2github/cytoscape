@@ -40,6 +40,7 @@ import cytoscape.util.CyColorChooser;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
 
+import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import org.jdesktop.swingx.JXList;
@@ -61,6 +62,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +98,7 @@ import javax.swing.SwingConstants;
  * @since Cytoscape 2.5
  * @author kono
  */
-public class DefaultAppearenceBuilder extends JDialog {
+public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeListener{
 	private final static long serialVersionUID = 1202339876675416L;
 	private static DefaultAppearenceBuilder dab = null;
 	
@@ -118,6 +121,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 					mainView.updateView();
 				}
 			});
+		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this); // to listen to VISUALSTYLE_MODIFIED events
 	}
 
 	/**
@@ -336,6 +340,21 @@ public class DefaultAppearenceBuilder extends JDialog {
 		pack();
 	} // </editor-fold>
 
+	public void propertyChange(PropertyChangeEvent evt){
+		if (evt.getPropertyName() == Cytoscape.VISUALSTYLE_MODIFIED) {
+			System.out.println("got visual style modified event!");
+			VisualStyle vs = (VisualStyle) evt.getOldValue();
+			// only react to changes in VisualStyle we are editing:
+			if (vs.getName().equals(Cytoscape.getVisualMappingManager().getVisualStyle().getName())){ // can this _not_ match?
+				System.out.println("rebuilding list");
+				buildList();
+				lockSize();
+				mainView.updateView();
+				repaint();
+			}
+		}
+	}
+	
 	private void listActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
 			Object newValue = null;
@@ -354,8 +373,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-
-			buildList();
+			// FIXME: these should be moved to a VISUALSTYLE_MODIFIED callback
 			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 			mainView.updateView();
 			mainView.repaint();
@@ -370,12 +388,15 @@ public class DefaultAppearenceBuilder extends JDialog {
 			//FIXME: here the string 'selected' will contin the global property to set!!
 			System.out.println("FIXME: not setting global property:"+selected);
 			try {
-				Cytoscape.getVisualMappingManager().getVisualStyle().setGlobalProperty("defaultColor", newColor);
+				VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
+				vs.setGlobalProperty("defaultColor", newColor);
+				Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vs, null);
+
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 
-			buildList();
+			// FIXME: these should be moved to a VISUALSTYLE_MODIFIED callback
 			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 
 			if (selected.equals("Background Color")) {
@@ -423,12 +444,13 @@ public class DefaultAppearenceBuilder extends JDialog {
 		DefaultListModel model = new DefaultListModel();
 		nodeList.setModel(model);
 
-		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList()) {
+		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList(Cytoscape.getCurrentNetworkView())) {
 			final VisualPropertyIcon nodeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
 			if (nodeIcon != null){
 				nodeIcon.setLeftPadding(15);
 				model.addElement(type);
 				nodeIcons.add(nodeIcon);
+				System.out.println("adding node visualproperty:"+type.getName());
 			} else {
 				System.out.println("warning: default Icon for VisualProperty is null: "+type);
 				System.out.println("VisualProperty name: "+type.getName());
@@ -438,7 +460,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 		DefaultListModel eModel = new DefaultListModel();
 		edgeList.setModel(eModel);
 
-		for (VisualProperty type : VisualPropertyCatalog.getEdgeVisualPropertyList()) {
+		for (VisualProperty type : VisualPropertyCatalog.getEdgeVisualPropertyList(Cytoscape.getCurrentNetworkView())) {
 			final VisualPropertyIcon edgeIcon = (VisualPropertyIcon) (type.getDefaultIcon());
 
 			if (edgeIcon != null) {
@@ -479,7 +501,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_SIZE"));
 			//FIXME nac.setNodeSizeLocked(true);
 		} else {
-			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH"));
+			NODE_PROPS.add(Visual alog.getVisualProperty("NODE_WIDTH"));
 			NODE_PROPS.add(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT"));
 			NODE_PROPS.remove(VisualPropertyCatalog.getVisualProperty("NODE_SIZE"));
 			//FIXME nac.setNodeSizeLocked(false);

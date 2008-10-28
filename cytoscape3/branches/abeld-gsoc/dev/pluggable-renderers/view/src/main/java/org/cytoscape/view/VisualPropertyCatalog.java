@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -53,7 +54,14 @@ public abstract class VisualPropertyCatalog {
 	public static Collection<VisualProperty> collectionOfVisualProperties(){
 		return collectionOfVisualProperties(null, null);
 	}
-
+	public static Collection<VisualProperty> collectionOfVisualProperties(GraphView networkview){
+		List<NodeView> nodeviews = new ArrayList<NodeView>();
+		for (Iterator it = networkview.getNodeViewsIterator(); it.hasNext();){
+			NodeView nv = (NodeView)it.next();
+			nodeviews.add(nv);
+		}
+		return collectionOfVisualProperties(nodeviews, networkview.getEdgeViewsList());
+	}
 	/**
 	 * Returns the collection of all those VisualProperties that are in use for
 	 * the given GraphObjects. I.e. these are the VisualProperties, for which
@@ -62,6 +70,7 @@ public abstract class VisualPropertyCatalog {
 	 * Note: returns the same as collectionOfVisualProperties() if both args are null.
 	 */
 	public static Collection<VisualProperty> collectionOfVisualProperties(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews){
+		System.out.println("making list of VisualProperties in use:");
 		Collection<VisualProperty> allVisualProperties = visualProperties.values();
 		if (nodeviews == null && edgeviews == null)
 			return allVisualProperties;
@@ -70,8 +79,10 @@ public abstract class VisualPropertyCatalog {
 		for (DependentVisualPropertyCallback callback: callbacks.values()){
 			toRemove.addAll(callback.changed(nodeviews, edgeviews, allVisualProperties));
 		}
+		System.out.println("removing:"+toRemove.size());
 		Set <VisualProperty> result = new HashSet<VisualProperty>(allVisualProperties);
 		result.removeAll(toRemove);
+		System.out.println("len of result:"+result.size());
 		return result;
 	}
 
@@ -81,7 +92,20 @@ public abstract class VisualPropertyCatalog {
 	public static List<VisualProperty> getEdgeVisualPropertyList(){
 		return getEdgeVisualPropertyList(null, null);
 	}
-	
+	public static Collection<VisualProperty> getEdgeVisualPropertyList(GraphView networkview){
+		List<NodeView> nodeviews = new ArrayList<NodeView>();
+		for (Iterator it = networkview.getNodeViewsIterator(); it.hasNext();){
+			NodeView nv = (NodeView)it.next();
+			nodeviews.add(nv);
+		}
+		return getEdgeVisualPropertyList(nodeviews, networkview.getEdgeViewsList());
+	}
+	public static Collection<VisualProperty> getEdgeVisualPropertyList(EdgeView edgeview){
+		List<EdgeView> edgeviews = new ArrayList<EdgeView>();
+		edgeviews.add(edgeview);
+
+		return getEdgeVisualPropertyList(null, edgeviews);
+	}
 	/**
 	 * Returns the collection of all edge VisualProperties that are in use for
 	 * the given GraphObjects.
@@ -106,7 +130,19 @@ public abstract class VisualPropertyCatalog {
 	public static List<VisualProperty> getNodeVisualPropertyList(){
 		return getNodeVisualPropertyList(null, null);
 	}
-	
+	public static Collection<VisualProperty> getNodeVisualPropertyList(GraphView networkview){
+		List<NodeView> nodeviews = new ArrayList<NodeView>();
+		for (Iterator it = networkview.getNodeViewsIterator(); it.hasNext();){
+			NodeView nv = (NodeView)it.next();
+			nodeviews.add(nv);
+		}
+		return getNodeVisualPropertyList(nodeviews, networkview.getEdgeViewsList());
+	}
+	public static Collection<VisualProperty> getNodeVisualPropertyList(NodeView nv){
+		List<NodeView> nodeviews = new ArrayList<NodeView>();
+		nodeviews.add(nv);
+		return getNodeVisualPropertyList(nodeviews, null);
+	}
 	/**
 	 * Returns the collection of all node VisualProperties that are in use for
 	 * the given GraphObjects.

@@ -46,6 +46,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import cytoscape.Cytoscape;
+
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
 
@@ -54,14 +56,15 @@ class NodeBypass extends VizMapBypass {
 	JMenuItem addMenu(Node n) {
 		graphObj = n;
 		attrs = Cytoscape.getNodeAttributes();
-
+		GraphView networkview = Cytoscape.getCurrentNetworkView();
+		
 		JMenu menu = new JMenu("Visual Mapping Bypass");
 		menu.add(new JLabel("Change Node Visualization"));
 		menu.addSeparator();
 		// horrible, horrible hack
 		BypassHack.setCurrentObject(n);
 
-		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList())
+		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList(networkview.getNodeView(n)))
 			addMenuItem(menu, type);
 
 		menu.addSeparator();
@@ -73,7 +76,7 @@ class NodeBypass extends VizMapBypass {
 
 	protected List<String> getBypassNames() {
 		List<String> l = new ArrayList<String>();
-
+		
 		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList())
 			l.add(type.getName());
 
