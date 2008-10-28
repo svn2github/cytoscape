@@ -69,7 +69,7 @@ public interface VisualProperty {
 	 *
 	 * @return  DOCUMENT ME!
 	 */
-	public Map<Object, Icon> getIconSet();
+	public Map<Object, VisualPropertyIcon> getIconSet();
 
 	/**
 	 *  DOCUMENT ME!

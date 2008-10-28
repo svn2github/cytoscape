@@ -100,9 +100,9 @@ public class DiscreteVisualProperty implements VisualProperty {
 		return icons.get(value);
 	}
 
-	public Map<Object, Icon> getIconSet() {
+	public Map<Object, VisualPropertyIcon> getIconSet() {
 		//return icons; //FIXME: shouldn't this work?
-		return new HashMap<Object, Icon>(icons);
+		return new HashMap<Object, VisualPropertyIcon>(icons);
 	}
 
 	public String getName() {

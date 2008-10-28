@@ -29,6 +29,7 @@ import org.cytoscape.view.NodeView;
 import org.cytoscape.view.Label;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
+import org.cytoscape.view.VisualPropertyIcon;
 
 import cytoscape.render.immed.GraphGraphics;
 
@@ -705,7 +706,7 @@ public class LegacyVisualProperty implements VisualProperty {
 		return null;
 	}
 
-	public Map<Object, Icon> getIconSet() {
+	public Map<Object, VisualPropertyIcon> getIconSet() {
 		// this method is not applicable to any VisualProperty handled in this class
 		// (it is only used for DiscreteVisualProperty)
 		return null; // default value
