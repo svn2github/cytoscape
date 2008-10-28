@@ -60,6 +60,7 @@ import cytoscape.util.swing.DropDownMenuButton;
 import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualPropertyCatalog;
+import org.cytoscape.view.VisualPropertyIcon;
 
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
@@ -1536,9 +1537,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private CyComboBoxPropertyEditor buildCellEditor(VisualProperty vp){
 		final List<Icon> iconList = new ArrayList<Icon>();
 		final List<Object> values = new ArrayList<Object>();
-		final Map<Object, Icon> iconSet = vp.getIconSet();
-		
-		for (Object val: iconSet.values()){
+		final Map<Object, VisualPropertyIcon> iconSet = vp.getIconSet();
+		System.out.println("building discrete editor for:"+vp.getName());
+		for (Object val: iconSet.keySet()){
 			iconList.add(iconSet.get(val));
 			values.add(val);
 		}
@@ -2184,6 +2185,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		expandLastSelectedItem(type.getName());
 
 		// vmm.getNetworkView().redrawGraph(false, true);
+		Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vmm.getVisualStyle(), null);
 		Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 		parent = null;
 	}
