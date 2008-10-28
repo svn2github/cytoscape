@@ -186,6 +186,7 @@
           <target>1.5</target>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
+          <failOnError>false</failOnError>
           <!--
 						compilerArguments> <Xlint:all></Xlint:all>
 						<Xlint:-path></Xlint:-path> <Xmaxwarns>10000</Xmaxwarns>
