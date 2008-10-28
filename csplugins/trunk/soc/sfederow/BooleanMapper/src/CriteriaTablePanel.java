@@ -109,10 +109,10 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     		                    null); //no CANCEL button handler
     					dialog.add(button);
     					dialog.setLocation(2,Cytoscape.getDesktop().getHeight()-385);
-    					dialog.setVisible(true);
+    					//dialog.setVisible(true);
     					Color currentColor = colorChooser.getColor();
-    					colorEditor.currentColor = currentColor;
-    					initializeTable();
+    					//colorEditor.currentColor = currentColor;
+    					//initializeTable();
     		         }
     		         }
     		   }

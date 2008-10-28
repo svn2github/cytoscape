@@ -44,15 +44,13 @@ public class AttributeManager {
 	 */
 	public void addNamesAttribute(CyNetwork network, String setName){
 		networkAttributes = Cytoscape.getNetworkAttributes();
-		System.out.println("setname: "+setName);
+		//System.out.println("setname: "+setName);
 		criteriaSetNames = (ArrayList<String>)networkAttributes.getListAttribute(network.getIdentifier(), "__criteria");
 		
 		if(!(criteriaSetNames.contains(setName))){ 
 			criteriaSetNames.add(setName);
 		}
-		for(int i = 0; i<criteriaSetNames.size(); i++){
-			System.out.println("AMITABHA: "+criteriaSetNames.get(i));
-		}
+		
 		
 		networkAttributes.setListAttribute(network.getIdentifier(), "__criteria", criteriaSetNames);
 	}
@@ -114,11 +112,11 @@ public class AttributeManager {
 			if(labels[k].equals("")){ continue; }
 			compositeName = compositeName + ":" + labels[k];
 		}
-		//System.out.println("AttManager: "+compositeName);
+		
 		for(int i=0; i<nodesList.size(); i++){
 			Node node = nodesList.get(i);
 			String nodeID = node.getIdentifier();
-			//System.out.println("ggggg");
+			
 			for(int j=0; j<labels.length; j++){
 				if(labels[j].equals("")){ continue; }
 				if(!(nodeAttributes.hasAttribute(nodeID, labels[j]))){

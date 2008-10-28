@@ -192,24 +192,11 @@ public class BooleanCalculator {
 	
 	
 	public boolean evaluate(String label, ArrayList<String> attributes, ArrayList<String> operations){
-		//System.out.println("evaluate");
-		//for(int j=0; j<masterList.size();j++){
-
-		//for(int j=0; j<2;j++){	
-			
 		
 		CyNetwork network = Cytoscape.getCurrentNetwork();
 		List<Node> nodeList = network.nodesList();
 		
-
-			//ArrayList<String> attributes = masterList.get(j);
-			//j++;
-			//ArrayList<String> operations = masterList.get(j);
-
 			int size = attributes.size();
-			//System.out.println("size: "+size);
-
-
 			nodeValueMap = new HashMap<String, String>();
 
 			boolean isInteger = false;
@@ -231,22 +218,7 @@ public class BooleanCalculator {
 
 					if(!attribute.equals("")){
 
-
-						/*if(attribute.matches("^\\d")){
-						isInteger = true;
-						subbed = "number" + numberValueCount;
-						numberValueCount++;
-						//System.out.println("It worked: "+validAttributes.get(b));
-						if(!attributes.get(b).contains(".")){
-							//attributeType = 3;
-							nodeValueMap.put(subbed, attribute);
-						}else{
-							//type = 2;
-							nodeValueMap.put(subbed, attribute);
-						}
-
-					}else{*/
-						//Pretty sure we only need to get booleans as we get numbers in doNumerical
+						//Only need to get booleans as we get numbers in doNumerical
 						if(nodeAttributes.hasAttribute(nodeID, attribute)){
 							Object temp = nodeAttributes.getAttribute(nodeID, attribute);
 							String stemp = temp + "";
@@ -286,32 +258,21 @@ public class BooleanCalculator {
 		int size = attributes.size();
 		for(int i=0; i< size; i++){
 			
-			
-			
-			//System.out.println(attributes.get(i)+ "evaluateOnce");
 			if((i+2) < size && operations.get(i+1).matches("[<>=]+")){
 	
 				boolean comparisonOutcome = false;
-				
-				//if(!(attributes.get(i).equals("") || attributes.get(i+2).equals(""))){
-					
-					comparisonOutcome = doNumericalOperation(i, attributes.get(i), attributes.get(i+2), nodeValues, operations, node);
-					//System.out.println("made it"+comparisonOutcome);
-				//}
+				comparisonOutcome = doNumericalOperation(i, attributes.get(i), attributes.get(i+2), nodeValues, operations, node);
 				
 				logicalString = logicalString + comparisonOutcome;
 				finalValue.push(comparisonOutcome);
 				i = i +2;
 			}else{
-
 				if((i+2) < size && operations.get(i+1).matches("[ANDORT]+")){
 					logicalString = logicalString + attributes.get(i) + operations.get(i+1);
-					finalValue.push((Boolean)nodeValues.get(attributes.get(i)));
-					
+					finalValue.push((Boolean)nodeValues.get(attributes.get(i)));			
 					i++;
 				}else{
 					if(operations.get(i).matches("[ANDORT]+")){
-
 						if(i+3 < size && operations.get(i+2).matches("[ANDORT]+")){
 							boolean temp = finalValue.pop();
 							boolean temp2 = (Boolean)nodeValues.get(attributes.get(i+1));
@@ -319,7 +280,6 @@ public class BooleanCalculator {
 							finalValue.push(outcome);
 							i++;
 						}else{
-
 							if(i+2 == size){
 								//logicalString = logicalString + attributes.get(i+1);
 								boolean temp = finalValue.pop();
@@ -340,26 +300,14 @@ public class BooleanCalculator {
 				}
 			}
 		}
-		//System.out.println(node.getIdentifier() + logicalString );
-		//network.setSelectedNodeState(node, false);
 		if(!finalValue.isEmpty()){
 			boolean outcome = finalValue.pop();
 			
-				//System.out.println("true");
-				//createAttribute()
-				//System.out.println("label: "+label);
-				
-				attManager.setColorAttribute(label, node.getIdentifier(), outcome);
-				if(outcome){
-					//network.setSelectedNodeState(node,true);
-					
-				}
-				//System.out.println("label: "+label);
-				//System.out.println(outcome);
-			
+			attManager.setColorAttribute(label, node.getIdentifier(), outcome);
+			if(outcome){
+				//network.setSelectedNodeState(node,true);
+			}
 		}
-
-
 	}
 	
 	public boolean doBooleanOperation(String operation, boolean firstValue, boolean secondValue){
@@ -376,8 +324,6 @@ public class BooleanCalculator {
 				}else{
 					return false;
 				}
-
-				
 			}else{
 				if(operation.matches("NOT")){
 					if(firstValue && !secondValue){
@@ -396,9 +342,6 @@ public class BooleanCalculator {
 	public boolean doNumericalOperation(int position, String firstValue, String secondValue, HashMap nodeValues, ArrayList<String> operations, Node node){
 		boolean comparisonOutcome = false;
 
-
-		//float value1 = 0;
-		//float value2 = 0;
 		double dvalue1 = 0;
 		double dvalue2 = 0;
 		int ivalue1 = 0;
@@ -407,17 +350,14 @@ public class BooleanCalculator {
 		CyNode cnode = (CyNode)node;
 		String nodeID = cnode.getIdentifier();
 
-		//System.out.println("second Node Value"+ nodeValues.get(secondValue));
-
 		if(firstValue.matches("^[0-9\\.\\-]+")){
 			if(firstValue.matches("^[0-9]+")){
 				ivalue1 = Integer.parseInt(firstValue);
 				
 				dvalue1 = ivalue1;
 			}else{
-
-				dvalue1 = Double.parseDouble(firstValue);
 				
+				dvalue1 = Double.parseDouble(firstValue);		
 			}
 			//System.out.println("digit1: "+dvalue1);
 		}else{
@@ -452,7 +392,7 @@ public class BooleanCalculator {
 						if(attributeTypeMap.get(firstValue) == 1){
 							if(operations.get(position+1).equals("=")){
 								if(secondValue.equals("true") && nodeValues.get(secondValue).equals("true")){
-									//System.out.println("ayo");
+									
 									return true;
 								}else{
 									if(secondValue.equals("false") && nodeValues.get(secondValue).equals("false")){
@@ -483,14 +423,11 @@ public class BooleanCalculator {
 					//value = getValue(node, firstValue);
 					if(nodeAttributes.hasAttribute(nodeID, secondValue)){
 						dvalue2 = nodeAttributes.getDoubleAttribute(nodeID, secondValue);
-						//String stemp = temp + "";
-						//System.out.println("dvalue2: "+dvalue2);
-						//nodeValueMap.put(attribute, stemp);
+						
 					}else{
 						if(edgeAttributes.hasAttribute(nodeID, secondValue)){
 							dvalue2 = edgeAttributes.getDoubleAttribute(nodeID, secondValue);
-							//String stemp = temp + "";
-							//nodeValueMap.put(attribute, stemp); 
+							
 						}
 					}
 
@@ -523,23 +460,23 @@ public class BooleanCalculator {
 			}
 		}
 		
-			if(operations.get(position+1).matches("<")){
-				return (dvalue1 < dvalue2); 
-			}
-			if(operations.get(position+1).matches(">")){
-				return (dvalue1 > dvalue2);	
-			}	
-			if(operations.get(position+1).matches("<=")){
-				return (dvalue1 <= dvalue2);
-			}	
-			if(operations.get(position+1).matches(">=")){
-				return (dvalue1 >= dvalue2);		
-			}		
-			if(operations.get(position+1).matches("=")){
-				return (dvalue1 == dvalue2);			
-			}	
-		return false;	
+		if(operations.get(position+1).matches("<")){
+			return (dvalue1 < dvalue2); 
 		}
+		if(operations.get(position+1).matches(">")){
+			return (dvalue1 > dvalue2);	
+		}	
+		if(operations.get(position+1).matches("<=")){
+			return (dvalue1 <= dvalue2);
+		}	
+		if(operations.get(position+1).matches(">=")){
+			return (dvalue1 >= dvalue2);		
+		}		
+		if(operations.get(position+1).matches("=")){
+			return (dvalue1 == dvalue2);			
+		}	
+		return false;	
+	}
 
 
 	public void createAttributeTypeHash(){

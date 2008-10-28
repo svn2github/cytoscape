@@ -578,7 +578,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 			attributeList.add(booleanAttributes.get(k));
 		}
 		for(int i=0; i<internalAttributes.size(); i++){
-			attributeList.add(internalAttributes.get(i));
+			//attributeList.add(internalAttributes.get(i));
 		}
 	}
 
