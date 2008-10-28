@@ -70,11 +70,11 @@ public abstract class VisualPropertyCatalog {
 	 * Note: returns the same as collectionOfVisualProperties() if both args are null.
 	 */
 	public static Collection<VisualProperty> collectionOfVisualProperties(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews){
-		System.out.println("making list of VisualProperties in use:");
+
 		Collection<VisualProperty> allVisualProperties = visualProperties.values();
 		if (nodeviews == null && edgeviews == null)
 			return allVisualProperties;
-
+		System.out.println("making list of VisualProperties in use:");
 		Set <VisualProperty> toRemove = new HashSet<VisualProperty>();
 		for (DependentVisualPropertyCallback callback: callbacks.values()){
 			toRemove.addAll(callback.changed(nodeviews, edgeviews, allVisualProperties));

@@ -226,13 +226,13 @@ public class VisualStyle implements Cloneable {
 
 	/** Apply this VisualStyle to the view */
 	public void apply(GraphView network_view){
-		System.out.println("APPLYING VISUAL STYLE");
+		//System.out.println("APPLYING VISUAL STYLE");
 		
 		// FIXME: rethink this:
 		// setup proper background colors
 		Color backgroundColor = (Color) globalVisualProperties.get("backgroundColor");
 		if (backgroundColor== null){ // FIXME FIXME: temporary hack, shouldn't be needed!!
-			System.out.println("error: having to force default backgroundColor");
+			//System.out.println("error: having to force default backgroundColor");
 			backgroundColor= Color.lightGray;
 		}
 		network_view.setBackgroundPaint(backgroundColor);
@@ -302,7 +302,7 @@ public class VisualStyle implements Cloneable {
 		
 		Color edgeSelectionColor = (Color) globalVisualProperties.get("edgeSelectionColor");
 		if (edgeSelectionColor == null){ // FIXME FIXME: temporary hack, shouldn't be needed!!
-			System.out.println("error: having to force default edgeSelectionColor");
+			//System.out.println("error: having to force default edgeSelectionColor");
 			edgeSelectionColor = Color.black;
 		}
 		for (EdgeView ev: network_view.getEdgeViewsList()){

@@ -137,9 +137,9 @@ public class ShapeRenderer implements NodeRenderer {
 						boolean hasFalse = false;
 						for (NodeView nv: nodeviews){
 							HashMap<String, Object> map = nv.getVisualAttributes();
-							System.out.println("visualAttributes:"+map);
+							//System.out.println("visualAttributes:"+map);
 							Boolean b = (Boolean) map.get("NODE_SIZE_LOCKED");
-							if (b == null){
+							if (b == null){ //FIXME: remove this since it shouldn't be needed
 								System.out.println("value for NODE_SIZE_LOCKED not found, forcing default 'true' value:"+b);
 								b = Boolean.TRUE;
 							}
