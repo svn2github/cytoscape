@@ -41,12 +41,15 @@ import org.cytoscape.view.Label;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.EdgeView;
 
+import cytoscape.render.stateful.CustomGraphic;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
+import java.util.Iterator;
 
 
 /**
@@ -528,4 +531,39 @@ public class TestNodeView implements NodeView {
 	}
     public void removeCustomGraphic(int index){}
 	public void addCustomGraphic(Shape s, Paint p, int index){}
+
+	public CustomGraphic addCustomGraphic(Shape s, Paint p, byte anchor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean addCustomGraphic(CustomGraphic cg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean containsCustomGraphic(CustomGraphic cg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Iterator<CustomGraphic> customGraphicIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object customGraphicLock() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int getNumCustomGraphics() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public boolean removeCustomGraphic(CustomGraphic cg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
