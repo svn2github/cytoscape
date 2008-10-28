@@ -1300,7 +1300,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		/* Finally, add unused visual properties (as VizMapperProperties) to propList */
 		VisualStyle vs = vmm.getVisualStyle();
-		for (VisualProperty vp : byNameSortedVisualProperties(VisualPropertyCatalog.collectionOfVisualProperties())) {
+		for (VisualProperty vp : byNameSortedVisualProperties(VisualPropertyCatalog.collectionOfVisualProperties(Cytoscape.getCurrentNetworkView()))) {
 			if (vs.getCalculator(vp) == null) {
 				VizMapperProperty prop = new VizMapperProperty();
 				prop.setCategory(CATEGORY_UNUSED);
@@ -1820,6 +1820,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			return;
+		} else if (e.getPropertyName().equals(Cytoscape.VISUALSTYLE_MODIFIED)){
+			System.out.println("got VISUALSTYLE_MODIFIED!");
+			setPropertyTable();
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 		           || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
 			setAttrComboBox();
@@ -1866,7 +1869,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			//System.out.println("Empty cell selected. no need to change anything.");
 			return;
 		} else {
-			System.out.println("something else");
+			//System.out.println("something else");
 			typeRootProp = (VizMapperProperty) prop.getParentProperty();
 
 			if (prop.getParentProperty() == null)
