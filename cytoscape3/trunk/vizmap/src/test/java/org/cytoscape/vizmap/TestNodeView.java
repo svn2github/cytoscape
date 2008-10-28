@@ -566,4 +566,5 @@ public class TestNodeView implements NodeView {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 }

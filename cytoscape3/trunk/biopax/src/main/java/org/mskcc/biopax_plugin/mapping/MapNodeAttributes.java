@@ -520,12 +520,13 @@ public class MapNodeAttributes {
 		GraphPerspective cyNetwork = networkView.getGraphPerspective();
 		NodeView nodeView = networkView.getNodeView(node);
 
+		// KONO 10/28/2008 these methods has been removed.
 		// remove existing custom nodes
-		int numExistingCustomShapes = nodeView.getCustomGraphicCount();
-
-		for (int lc = 0; lc < numExistingCustomShapes; lc++) {
-			nodeView.removeCustomGraphic(0);
-		}
+//		int numExistingCustomShapes = nodeView.getCustomGraphicCount();
+//
+//		for (int lc = 0; lc < numExistingCustomShapes; lc++) {
+//			nodeView.removeCustomGraphic(0);
+//		}
 
 		for (int lc = 0; lc < modificationCount; lc++) {
 			// set image
@@ -548,7 +549,7 @@ public class MapNodeAttributes {
 			}
 
 			// add the graphic
-			nodeView.addCustomGraphic(rect, paint, lc);
+			//nodeView.addCustomGraphic(rect, paint, lc);
 		}
 	}
 
