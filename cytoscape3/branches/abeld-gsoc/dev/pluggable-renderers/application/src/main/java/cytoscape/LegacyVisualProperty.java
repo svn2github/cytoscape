@@ -369,7 +369,8 @@ public class LegacyVisualProperty implements VisualProperty {
 							super.paintIcon(c, g, x, y);
 							g2d.translate(0, -2);
 
-							final Color color = ((Color) getDefaultAppearanceObject()); 
+							final Color color = new Color(10, 10, 10, 0); //((Color) getDefaultAppearanceObject()); 
+							
 							g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(),
 							                       ((Number) value).intValue()));
 							g2d.setStroke(new BasicStroke(2f));
