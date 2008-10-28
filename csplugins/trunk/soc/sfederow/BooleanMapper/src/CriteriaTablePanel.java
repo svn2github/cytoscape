@@ -118,7 +118,7 @@ public class CriteriaTablePanel implements ActionListener, ListSelectionListener
     		   }
     		});
         table.setPreferredScrollableViewportSize(new Dimension(265, 80));
-        table.setFillsViewportHeight(true);
+        //table.setFillsViewportHeight(true);
 
         //Create the scroll pane and add the table to it.
         

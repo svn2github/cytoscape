@@ -44,7 +44,7 @@ public class BooleanMapper extends CytoscapePlugin {
 		
 		JMenuItem item = new JMenuItem("Boolean Mapper");
 		
-		item.addActionListener(new BooleanMapperCommandListener(new newWindow()));
+		//item.addActionListener(new BooleanMapperCommandListener(new BooleanSettingsDialog()));
 		
 		JMenu pluginMenu = Cytoscape.getDesktop().getCyMenus().getMenuBar().getMenu("Plugins");
 		
@@ -55,19 +55,19 @@ public class BooleanMapper extends CytoscapePlugin {
 	
 	
 	class BooleanMapperCommandListener implements ActionListener {
-		BooleanAlgorithm alg = null;
+		//BooleanAlgorithm alg = null;
 
-		public BooleanMapperCommandListener(BooleanAlgorithm algorithm) {
-			this.alg = algorithm;
-		}
+		//public BooleanMapperCommandListener(BooleanAlgorithm algorithm) {
+			//this.alg = algorithm;
+		//}
 
 		public void actionPerformed(ActionEvent e) {
-			if (alg != null) {
+			//if (alg != null) {
 				// Create the dialog
-				BooleanSettingsDialog  settingsDialog = new BooleanSettingsDialog(alg);
+				BooleanSettingsDialog  settingsDialog = new BooleanSettingsDialog();
 				// Pop it up
 				settingsDialog.actionPerformed(e);
-			} 
+			//} 
 		}
 	}
 }

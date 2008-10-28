@@ -75,7 +75,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
                                                                java.beans.PropertyChangeListener{
 	
 	//Declarations of classes used by BooleanMapper
-	private BooleanAlgorithm currentAlgorithm = null;
+	//private BooleanAlgorithm currentAlgorithm = null;
 	private BooleanCalculator calculator = null;
 	private BooleanScanner scan = null; //Not currently used
 	private AttributeManager attributeManager;
@@ -114,8 +114,8 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	private String[] nameBoxArray; //Array holding the names of the Criteria Sets
 	
 	
-	public BooleanSettingsDialog(BooleanAlgorithm algorithm) {
-		super(Cytoscape.getDesktop(), algorithm.getName(), false);
+	public BooleanSettingsDialog() {
+		//super(Cytoscape.getDesktop(), algorithm.getName(), false);
 		
 		Cytoscape.getSwingPropertyChangeSupport().
 		addPropertyChangeListener(this);
@@ -125,7 +125,7 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 		
 
 		
-		currentAlgorithm = algorithm;
+		//currentAlgorithm = algorithm;
 		colorMapper = new ColorMapper();
 		attributeManager = new AttributeManager();
 		calculator = new BooleanCalculator();
@@ -592,15 +592,15 @@ public class BooleanSettingsDialog extends JDialog implements ActionListener, Fo
 	}
 	
 	private void updateAllSettings() {
-		currentAlgorithm.updateSettings();
+		//currentAlgorithm.updateSettings();
 	}
 	
 	private void updateAllSettings(boolean force) {
-		currentAlgorithm.updateSettings(force);
+		//currentAlgorithm.updateSettings(force);
 	}
 
 	private void revertAllSettings() {
-		currentAlgorithm.revertSettings();
+		//currentAlgorithm.revertSettings();
 	}
 	
 	
