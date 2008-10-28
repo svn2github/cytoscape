@@ -125,18 +125,6 @@ abstract class VizMapBypass {
 
 		menu.add(jmi);
 		
-		// Check node size lock state 
-		/* FIXME FIXME
-		if(type.getName().equals("NODE_SIZE")) {
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == false) {
-				jmi.setEnabled(false);
-			}
-		} else if(type.getName().equals("NODE_WIDTH") || type.getName().equals("NODE_HEIGHT")) {
-			if(Cytoscape.getVisualMappingManager().getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked() == true) {
-				jmi.setEnabled(false);
-			}
-		}
-		 */
 		String attrString = attrs.getStringAttribute(graphObj.getIdentifier(),
 		                                             type.getName());
 

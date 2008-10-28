@@ -202,7 +202,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static JMenu modifyValues;
 	private static JMenuItem brighter;
 	private static JMenuItem darker;
-	private static JCheckBoxMenuItem lockSize;
 
 	/*
 	 * Icons used in this panel.
@@ -306,72 +305,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	/**
-	 * Will be used to show/hide node size props.
-	 *
-	 * @param isLock
-	 */
-	private void switchNodeSizeLock(boolean isLock) {
-		final Property[] props = visualPropertySheetPanel.getProperties();
-
-		if (isLock && (nodeSize != null)) {
-			// Case 1: Locked. Need to remove width/height props.
-			boolean isNodeSizeExist = false;
-
-			for (Property prop : props) {
-				if (prop.getDisplayName().equals("NODE_SIZE"))
-					isNodeSizeExist = true;
-
-				if (prop.getDisplayName().equals("NODE_HEIGHT")) {
-					nodeHeight = (VizMapperProperty) prop;
-					visualPropertySheetPanel.removeProperty(prop);
-				} else if (prop.getDisplayName().equals("NODE_WIDTH")) {
-					nodeWidth = (VizMapperProperty) prop;
-					visualPropertySheetPanel.removeProperty(prop);
-				}
-			}
-
-			if (isNodeSizeExist == false)
-				visualPropertySheetPanel.addProperty(nodeSize);
-		} else {
-			// Case 2: Unlocked. Need to add W/H.
-			boolean isNodeWExist = false;
-			boolean isNodeHExist = false;
-
-			for (Property prop : props) {
-				if (prop.getDisplayName().equals("NODE_SIZE")) {
-					nodeSize = (VizMapperProperty) prop;
-					visualPropertySheetPanel.removeProperty(prop);
-				}
-
-				if (prop.getDisplayName().equals("NODE_WIDTH"))
-					isNodeWExist = true;
-
-				if (prop.getDisplayName().equals("NODE_HEIGHT"))
-					isNodeHExist = true;
-			}
-
-			if (isNodeHExist == false) {
-				if(nodeHeight != null)
-					visualPropertySheetPanel.addProperty(nodeHeight);
-			}
-			
-			if (isNodeWExist == false) {
-				if(nodeHeight != null)
-					visualPropertySheetPanel.addProperty(nodeWidth);
-			}
-		}
-
-		visualPropertySheetPanel.repaint();
-
-		final String targetName = vmm.getVisualStyle().getName();
-
-		updateDefaultImage(targetName,
-		                   (GraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(targetName))
-		                   .getView(), defaultAppearencePanel.getSize());
-		setDefaultPanel(defaultImageManager.get(targetName));
-	}
-
-	/**
 	 * Setup menu items.<br>
 	 *
 	 * This includes both icon menu and right-click menu.
@@ -413,23 +346,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		generateValues = new JMenu("Generate Discrete Values");
 		generateValues.setIcon(rndIcon);
 		modifyValues = new JMenu("Modify Discrete Values");
-
-		lockSize = new JCheckBoxMenuItem("Lock Node Width/Height");
-		lockSize.setSelected(true);
-		lockSize.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					/* FIXME
-					if (lockSize.isSelected()) {
-						vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(true);
-						switchNodeSizeLock(true);
-					} else {
-						vmm.getVisualStyle().getNodeAppearanceCalculator().setNodeSizeLocked(false);
-						switchNodeSizeLock(false);
-					}
-					 */
-					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-				}
-			});
 
 		delete = new JMenuItem("Delete mapping");
 
@@ -498,7 +414,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		menu.add(modifyValues);
 		menu.add(editAll);
 		menu.add(new JSeparator());
-		menu.add(lockSize);
 
 		delete.setEnabled(false);
 		menu.addPopupMenuListener(this);
@@ -834,11 +749,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// Set the default view to the panel.
 		setDefaultPanel(defImg);
 
-		// Sync. lock state
-		final boolean lockState = false; //FIXME: vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked();
-		lockSize.setSelected(lockState);
-		switchNodeSizeLock(lockState);
-		
 		// Cleanup desktop.
 		Cytoscape.getDesktop().repaint();
 		vsNameComboBox.setSelectedItem(vsName);
@@ -900,9 +810,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// Switch back to the original style.
 		switchVS(style.getName());
 		
-		// Sync check box and actual lock state
-		switchNodeSizeLock(lockSize.isSelected());
-
 		// Restore listeners
 		for (int i = 0; i < li.length; i++)
 			vsNameComboBox.addActionListener(li[i]);
@@ -2945,11 +2852,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 				// final Set<Object> attrSet =
 				// loadKeys(oMap.getControllingAttributeName(), attr, oMap);
-				/* FIXME
-				if (vmm.getVisualStyle().getNodeAppearanceCalculator().getNodeSizeLocked()) {
-					return;
-				}
-				*/
 				DiscreteMapping wm = null;
 
 				if ((type.getName().equals("NODE_WIDTH"))) {

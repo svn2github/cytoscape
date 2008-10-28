@@ -104,18 +104,6 @@ public class LegendDialog extends JDialog {
 		ArrayList<Calculator> edgeCalculators = new ArrayList<Calculator>();
 		
 		for (Calculator calc : visualStyle.getNodeCalculators()) {
-			// AAARGH
-			/* FIXME
-			if (nac.getNodeSizeLocked()) {
-				if (calc.getVisualProperty().getName().equals("NODE_WIDTH"))
-					continue;
-				else if (calc.getVisualProperty().getName().equals("NODE_HEIGHT"))
-					continue;
-			} else {
-				if (calc.getVisualProperty().getName().equals("NODE_SIZE"))
-					continue;
-			}
-			 */
 			om = calc.getMapping(0);
 
 			JPanel mleg = om.getLegend(calc.getVisualProperty());
