@@ -36,6 +36,7 @@ package org.cytoscape.vizmap.icon;
 
 import org.cytoscape.vizmap.VMMFactory;
 import org.cytoscape.view.VisualPropertyCatalog;
+import org.cytoscape.view.VisualPropertyIcon;
 
 import cytoscape.render.immed.GraphGraphics;
 

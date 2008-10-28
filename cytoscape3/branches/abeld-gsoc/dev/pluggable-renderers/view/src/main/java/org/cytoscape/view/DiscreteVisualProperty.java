@@ -18,14 +18,14 @@ public class DiscreteVisualProperty implements VisualProperty {
 	private Class underlyingDataType; // Data type of the values
 	private boolean isNodeProp; // indicates whether or not property is for a node or edge
 	private Object [] values;
-	private Map<Object, Icon> icons;
+	private Map<Object, VisualPropertyIcon> icons;
 	private DependentVisualPropertyCallback callback;
 	
 	// note: default value is the first one; number of values and icons must match
-	public DiscreteVisualProperty(final String name, final Class dataType, final boolean isNodeProp, Object [] values, Map<Object, Icon>icons) {
+	public DiscreteVisualProperty(final String name, final Class dataType, final boolean isNodeProp, Object [] values, Map<Object, VisualPropertyIcon>icons) {
 		this(name, dataType, isNodeProp, values, icons, null);
 	}
-	public DiscreteVisualProperty(final String name, final Class dataType, final boolean isNodeProp, Object [] values, Map<Object, Icon>icons,
+	public DiscreteVisualProperty(final String name, final Class dataType, final boolean isNodeProp, Object [] values, Map<Object, VisualPropertyIcon>icons,
 			DependentVisualPropertyCallback callback) {
 		this.underlyingDataType = dataType;
 		this.isNodeProp = isNodeProp;
@@ -53,6 +53,9 @@ public class DiscreteVisualProperty implements VisualProperty {
 			if (newTargetEnd != ev.getTargetEdgeEnd()) {
 				ev.setTargetEdgeEnd(newTargetEnd);
 			}
+	    // FIXME: when reworking viewmodel layer, put this back
+		//} else {
+		//	ev.getVisualAttributes().put(name, o);
 		}	
 	}
 
@@ -70,7 +73,9 @@ public class DiscreteVisualProperty implements VisualProperty {
 			NodeRenderer newRenderer = (NodeRenderer) o;
 			if (nv.getRenderer() != newRenderer)
 				nv.setRenderer(newRenderer);
-		} 
+		} else {
+			nv.getVisualAttributes().put(name, o);
+		}
 	}
 
 	public Class getDataType() {

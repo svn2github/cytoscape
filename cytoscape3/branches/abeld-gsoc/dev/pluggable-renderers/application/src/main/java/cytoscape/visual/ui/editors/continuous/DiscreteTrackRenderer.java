@@ -60,12 +60,12 @@ import cytoscape.Cytoscape;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.mappings.ContinuousMapping;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 //import cytoscape.visual.ui.LabelPlacerGraphic;
 
 import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
+import org.cytoscape.view.VisualPropertyIcon;
 
 /**
  * DOCUMENT ME!

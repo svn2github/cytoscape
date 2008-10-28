@@ -37,8 +37,7 @@
 package org.cytoscape.vizmap.mappings;
 
 import org.cytoscape.view.VisualProperty;
-
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
+import org.cytoscape.view.VisualPropertyIcon;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

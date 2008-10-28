@@ -35,6 +35,7 @@
 package org.cytoscape.vizmap.icon;
 
 import org.cytoscape.view.VisualPropertyCatalog;
+import org.cytoscape.view.VisualPropertyIcon;
 import org.cytoscape.vizmap.VMMFactory;
 
 import java.awt.BasicStroke;

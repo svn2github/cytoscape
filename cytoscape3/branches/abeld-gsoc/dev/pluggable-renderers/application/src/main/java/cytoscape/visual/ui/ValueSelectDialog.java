@@ -56,9 +56,9 @@ import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyIcon;
 
 
 /**

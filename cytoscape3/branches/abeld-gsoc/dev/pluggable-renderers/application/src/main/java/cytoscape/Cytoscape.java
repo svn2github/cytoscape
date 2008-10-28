@@ -64,6 +64,7 @@ import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.view.VisualPropertyCatalog;
+import org.cytoscape.view.VisualPropertyIcon;
 
 import cytoscape.init.CyInitParams;
 
@@ -85,7 +86,6 @@ import org.cytoscape.vizmap.VMMFactory;
 import org.cytoscape.vizmap.icon.ArrowIcon;
 import org.cytoscape.vizmap.icon.LineTypeIcon;
 import org.cytoscape.vizmap.icon.NodeIcon;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import org.cytoscape.Edge;
 import org.cytoscape.Node;
@@ -1979,8 +1979,8 @@ public abstract class Cytoscape {
 		return result.toArray();
 	}
 
-	public static Map<Object, Icon> getArrowIconSet(Object [] values, Map<Byte, Shape>shapes) {
-		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
+	public static Map<Object, VisualPropertyIcon> getArrowIconSet(Object [] values, Map<Byte, Shape>shapes) {
+		Map<Object, VisualPropertyIcon> arrowShapeIcons = new HashMap<Object, VisualPropertyIcon>();
 
 		for (int i = 0; i < values.length; i++) {
 			Integer value = (Integer) values[i];
@@ -1989,30 +1989,30 @@ public abstract class Cytoscape {
 			                               VisualPropertyIcon.DEFAULT_ICON_SIZE, 
 			                               VisualPropertyIcon.DEFAULT_ICON_SIZE,
 			                               "someShape" /* FIXME: user-friendly string! */);
-			arrowShapeIcons.put(shape, icon);
+			arrowShapeIcons.put(shape, (VisualPropertyIcon) icon);
 		}
 
 		return arrowShapeIcons;
 	}
 
-	public static Map<Object, Icon> getLineStyleIconSet(Object [] values) {
-		Map<Object, Icon> arrowShapeIcons = new HashMap<Object, Icon>();
+	public static Map<Object, VisualPropertyIcon> getLineStyleIconSet(Object [] values) {
+		Map<Object, VisualPropertyIcon> arrowShapeIcons = new HashMap<Object, VisualPropertyIcon>();
 
 		for (int i = 0; i < values.length; i++) {
 			Stroke value = (Stroke) values[i];
-			arrowShapeIcons.put(value, new LineTypeIcon(value));
+			arrowShapeIcons.put(value, (VisualPropertyIcon) new LineTypeIcon(value));
 		}
 
 		return arrowShapeIcons;
 	}
 
 	
-	public static Map<Object, Icon> getRendererIconSet(Object [] values) {
-		Map<Object, Icon> rendererIcons = new HashMap<Object, Icon>();
+	public static Map<Object, VisualPropertyIcon> getRendererIconSet(Object [] values) {
+		Map<Object, VisualPropertyIcon> rendererIcons = new HashMap<Object, VisualPropertyIcon>();
 		for (int i = 0; i < values.length; i++) {
 			NodeRenderer value = (NodeRenderer) values[i];
 			
-			rendererIcons.put(value, new NodeIcon(value.name())); // FIXME FIXME: do property icons!
+			rendererIcons.put(value, (VisualPropertyIcon) new NodeIcon(value.name())); // FIXME FIXME: do property icons!
 		}
 		return rendererIcons;
 	}
@@ -2021,7 +2021,7 @@ public abstract class Cytoscape {
 	/** For the duration of pluggable VisualProperties refactor: add legacy VisualProperties */
 	public static void defineHardcodedVisualProperties(){
 		Object [] range = new Object[]{new TrivialRenderer("trivialrenderer"), new ShapeRenderer("shaperenderer")};
-		Map<Object, Icon> iconSet = getRendererIconSet(range);
+		Map<Object, VisualPropertyIcon> iconSet = getRendererIconSet(range);
 		
 		VisualPropertyCatalog.addVisualProperty(new DiscreteVisualProperty("NODE_RENDERER", NodeRenderer.class, true, range, iconSet,
 			new DependentVisualPropertyCallback(){

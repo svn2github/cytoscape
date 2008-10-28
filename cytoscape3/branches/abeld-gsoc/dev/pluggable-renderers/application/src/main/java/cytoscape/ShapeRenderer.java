@@ -4,15 +4,18 @@ package cytoscape;
 import java.awt.*;
 import java.awt.geom.*;
 
+import org.cytoscape.view.DependentVisualPropertyCallback;
 import org.cytoscape.view.DiscreteVisualProperty;
 import org.cytoscape.view.NodeView;
+import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.VisualProperty;
+import org.cytoscape.view.VisualPropertyCatalog;
+import org.cytoscape.view.VisualPropertyIcon;
 import org.cytoscape.view.renderers.NodeRenderer;
 import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.icon.ArrowIcon;
 import org.cytoscape.vizmap.icon.LineTypeIcon;
 import org.cytoscape.vizmap.icon.NodeIcon;
-import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.Icon;
+import javax.swing.UIManager;
 
 import cytoscape.render.immed.GraphGraphics;
 import cytoscape.render.stateful.NodeDetails;
@@ -86,8 +90,8 @@ public class ShapeRenderer implements NodeRenderer {
 		return result.toArray();
 	}
 
-	public static Map<Object, Icon> getNodeIconSet(Object [] values, Map<Byte, Shape>shapes) {
-		Map<Object, Icon> nodeShapeIcons = new HashMap<Object, Icon>();
+	public static Map<Object, VisualPropertyIcon> getNodeIconSet(Object [] values, Map<Byte, Shape>shapes) {
+		Map<Object, VisualPropertyIcon> nodeShapeIcons = new HashMap<Object, VisualPropertyIcon>();
 		for (int i = 0; i < values.length; i++) {
 			Integer value = (Integer) values[i];
 			Shape shape = shapes.get(new Byte(value.byteValue()));
@@ -107,7 +111,7 @@ public class ShapeRenderer implements NodeRenderer {
 		visualProperties.add( new LegacyVisualProperty("NODE_LABEL_OPACITY", Number.class, true));
 
 		Object [] range = range(0, 8, 1); 
-		Map<Object, Icon> iconSet = getNodeIconSet(range, GraphGraphics.getNodeShapes()); 
+		Map<Object, VisualPropertyIcon> iconSet = getNodeIconSet(range, GraphGraphics.getNodeShapes()); 
 		visualProperties.add( new DiscreteVisualProperty("NODE_SHAPE", Integer.class, true, range, iconSet));
 	
 		visualProperties.add( new LegacyVisualProperty("NODE_SIZE", Number.class, true));
@@ -119,6 +123,44 @@ public class ShapeRenderer implements NodeRenderer {
 		visualProperties.add( new LegacyVisualProperty("NODE_LABEL_COLOR", Color.class, true));
 		visualProperties.add( new LegacyVisualProperty("NODE_TOOLTIP", String.class, true));
 		visualProperties.add( new LegacyVisualProperty("NODE_LABEL_POSITION", LabelPosition.class, true));
+		
+		
+		range = new Object[]{Boolean.TRUE, Boolean.FALSE};
+		
+		Map<Object, VisualPropertyIcon> icons = new HashMap<Object, VisualPropertyIcon>();
+		icons.put(Boolean.TRUE, (VisualPropertyIcon) new NodeIcon("true"));
+		icons.put(Boolean.FALSE, (VisualPropertyIcon) new NodeIcon("false"));
+		visualProperties.add( new DiscreteVisualProperty("NODE_SIZE_LOCKED", Boolean.class, true, range, icons,
+				new DependentVisualPropertyCallback(){
+					public Set<VisualProperty> changed(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews, Collection<VisualProperty> current_vps){
+						boolean hasTrue = false;
+						boolean hasFalse = false;
+						for (NodeView nv: nodeviews){
+							HashMap<String, Object> map = nv.getVisualAttributes();
+							System.out.println("visualAttributes:"+map);
+							Boolean b = (Boolean) map.get("NODE_SIZE_LOCKED");
+							if (b == null){
+								System.out.println("value for NODE_SIZE_LOCKED not found, forcing default 'true' value:"+b);
+								b = Boolean.TRUE;
+							}
+							if (b.booleanValue()){
+								hasTrue = true;
+							} else {
+								hasFalse = true;
+							}
+						}
+						Set <VisualProperty> toRemove = new HashSet<VisualProperty>();
+						if (! hasTrue){
+							toRemove.add(VisualPropertyCatalog.getVisualProperty("NODE_SIZE"));
+						}
+						if (! hasFalse){
+							toRemove.add(VisualPropertyCatalog.getVisualProperty("NODE_WIDTH"));
+							toRemove.add(VisualPropertyCatalog.getVisualProperty("NODE_HEIGHT"));
+						}
+						return toRemove;
+					}
+			}));
+		
 	}
 	/**
 	 * Return a list of visual attributes this renderer can use
