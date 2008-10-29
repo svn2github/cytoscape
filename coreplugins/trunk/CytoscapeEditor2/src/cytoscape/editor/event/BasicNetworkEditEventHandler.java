@@ -306,13 +306,15 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 		// if we have control-clicked on an edge, then just return
 		// because the user is adding edge anchors for bending edges in
 		// Cytoscape:
-		if (e.isControlDown() && !(isMacPlatform())) {
+		if (e.isControlDown()){
 			if (view.getPickedEdgeView(nextPoint) != null) {
 				return;
 			}
 		}
 
-		if (onNode && !edgeStarted && (e.isControlDown()) && !(isMacPlatform())) {
+		if ((onNode && !edgeStarted && (e.isControlDown()) && !(isMacPlatform())) ||
+				(onNode && !edgeStarted && (e.isMetaDown()) && isMacPlatform()))
+				{
 			// begin edge creation
 			beginEdge(nextPoint, nv);
 
@@ -330,13 +332,14 @@ public class BasicNetworkEditEventHandler extends NetworkEditEventAdapter implem
 			saveY1 = Double.MIN_VALUE;
 			saveY2 = Double.MIN_VALUE;
 			this.setHandlingEdgeDrop(false);
-		} else if (!onNode && !edgeStarted && (e.isControlDown()) && !(isMacPlatform())) {
+		} else if ((!onNode && !edgeStarted && (e.isControlDown()) && !(isMacPlatform())) ||
+				(!onNode && !edgeStarted && (e.isMetaDown()) && isMacPlatform())){
 			// control-click on a empty place will make a new Node:
 			createNode(nextPoint);
 		}
 		
 		//    invoke SIF interpreter for user to enter nodes/edges via text input
-		else if ((e.getClickCount() == 2) && (!e.isAltDown()))
+		else if ((e.getClickCount() == 2) && (!e.isAltDown()) && !onNode)
 		{
 			SIF_Interpreter.processInput(e.getPoint(), _caller);
 		}
