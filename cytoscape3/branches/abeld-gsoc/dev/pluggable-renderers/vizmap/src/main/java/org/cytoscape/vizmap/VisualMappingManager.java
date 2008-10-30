@@ -73,10 +73,6 @@ import java.util.HashMap;
  */
 public class VisualMappingManager extends SubjectBase {
 
-    public static String VIZMAP_RESTORED = "VIZMAP_RESTORED";
-	public static String SAVE_VIZMAP_PROPS = "SAVE_VIZMAP_PROPS";
-	public static String VIZMAP_LOADED = "VIZMAP_LOADED";
-
 	// for tracking which styles are applied to which views
 	private Map<GraphView,VisualStyle> viewStyleMap = new HashMap<GraphView,VisualStyle>();
 	

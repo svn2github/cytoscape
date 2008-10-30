@@ -74,7 +74,7 @@ public class VizMapListener implements PropertyChangeListener {
 	public static final String VIZMAP_PROPS_FILE_NAME = "vizmap.props";	
 		
 		public void propertyChange(PropertyChangeEvent e) {
-           if (e.getPropertyName() == VisualMappingManager.SAVE_VIZMAP_PROPS) {
+           if (e.getPropertyName() == Cytoscape.SAVE_VIZMAP_PROPS) {
                 // This section is for saving VS in a vizmap.props file.
                 // If signal contains no new value, Cytoscape consider it as a
                 // default file. Otherwise, save it as a user file.
@@ -96,13 +96,13 @@ public class VizMapListener implements PropertyChangeListener {
                     CalculatorIO.storeCatalog(CalculatorCatalogFactory.getCalculatorCatalog(), propertiesFile);
                     System.out.println("Vizmap saved to: " + propertiesFile);
                 }
-            } else if ((e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED) ||
-                       (e.getPropertyName() == VisualMappingManager.VIZMAP_LOADED)) {
+            } else if ((e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) ||
+                       (e.getPropertyName() == Cytoscape.VIZMAP_LOADED)) {
                 // This section is for restoring VS from a file.
 
                 // only clear the existing vizmap.props if we're restoring
                 // from a session file
-                if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED)
+                if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED)
                     CalculatorCatalogFactory.getCalculatorCatalog().clearProps();
 
                 // get the new vizmap.props and apply it the existing properties
@@ -121,7 +121,7 @@ public class VizMapListener implements PropertyChangeListener {
                     else if (vizmapSource.getClass() == String.class) {
                         // if its a RESTORED event the vizmap
                         // file will be in a zip file.
-                        if (e.getPropertyName() == VisualMappingManager.VIZMAP_RESTORED) {
+                        if (e.getPropertyName() == Cytoscape.VIZMAP_RESTORED) {
                             is = ZipUtil.readFile((String) vizmapSource,
                                     ".*vizmap.props");
 
