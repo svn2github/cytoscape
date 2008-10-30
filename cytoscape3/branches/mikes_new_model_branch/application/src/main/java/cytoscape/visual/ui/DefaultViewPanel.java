@@ -75,20 +75,14 @@ public class DefaultViewPanel extends JPanel {
 	private Component canvas = null;
 	
 	private CyNetworkFactory cyNetworkFactory;
+	private GraphViewFactory graphViewFactory;
 	
-	public void setCyNetworkFactory(CyNetworkFactory cyNetworkFactory) {
-		this.cyNetworkFactory = cyNetworkFactory;
-	}
-	
-	public CyNetworkFactory getCyNetworkFactory() {
-		return this.cyNetworkFactory;
-	}
-
-
 	/**
 	 * Creates a new NodeFullDetailView object.
 	 */
-	public DefaultViewPanel() {
+	public DefaultViewPanel(CyNetworkFactory cyNetworkFactory, GraphViewFactory graphViewFactory) {
+		this.cyNetworkFactory = cyNetworkFactory;
+		this.graphViewFactory = graphViewFactory;
 		
 		dummyNet = cyNetworkFactory.getInstance();
 
@@ -101,10 +95,10 @@ public class DefaultViewPanel extends JPanel {
 		edge = dummyNet.addEdge(source,target,true);
 		edge.attrs().set("name","Source (interaction) Target");
 
+		dummyNet.attrs().getDataTable().createColumn("title",String.class,false);
 		dummyNet.attrs().set("title","Default Appearance");
 
-		// TODONOW	
-		view = null;//GraphViewFactory.createGraphView(dummyNet);
+		view = graphViewFactory.createGraphView(dummyNet);
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
 		Cytoscape.getVisualMappingManager().setNetworkView(view);

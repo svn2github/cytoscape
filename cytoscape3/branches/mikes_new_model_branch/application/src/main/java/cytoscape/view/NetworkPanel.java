@@ -100,7 +100,7 @@ public class NetworkPanel extends JPanel
 	private JMenuItem editNetworkTitle;
 	private BiModalJSplitPane split;
 	private final NetworkTreeTableModel treeTableModel;
-	private final CytoscapeDesktop cytoscapeDesktop;
+	private final CytoscapeDesktop desktop;
 
 	/**
 	 * Constructor for the Network Panel.
@@ -109,7 +109,7 @@ public class NetworkPanel extends JPanel
 	 */
 	public NetworkPanel(final CytoscapeDesktop desktop) {
 		super();
-		this.cytoscapeDesktop = desktop;
+		this.desktop = desktop;
 
 		root = new NetworkTreeNode("Network Root", 0L);
 		treeTableModel = new NetworkTreeTableModel(root);
@@ -153,7 +153,7 @@ public class NetworkPanel extends JPanel
 
 		JScrollPane scroll = new JScrollPane(treeTable);
 
-		split = new BiModalJSplitPane(cytoscapeDesktop, JSplitPane.VERTICAL_SPLIT,
+		split = new BiModalJSplitPane(desktop, JSplitPane.VERTICAL_SPLIT,
 		                              BiModalJSplitPane.MODE_SHOW_SPLIT, scroll, navigatorPanel);
 		split.setResizeWeight(1);
 
@@ -172,7 +172,7 @@ public class NetworkPanel extends JPanel
 
 		// action listener which performs the tasks associated with the popup
 		// listener
-		popupActionListener = new PopupActionListener();
+		popupActionListener = new PopupActionListener(desktop);
 		editNetworkTitle.addActionListener(popupActionListener);
 		createViewItem.addActionListener(popupActionListener);
 		destroyViewItem.addActionListener(popupActionListener);
@@ -260,7 +260,7 @@ public class NetworkPanel extends JPanel
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
 		// updates the title in the networkViewMap
-		Cytoscape.getDesktop().getNetworkViewManager().updateNetworkTitle(network);
+		desktop.getNetworkViewManager().updateNetworkTitle(network);
 	}
 
 	public void handleEvent(SelectedNodesEvent event) {
@@ -487,8 +487,7 @@ public class NetworkPanel extends JPanel
 			if (column == 0) {
 				((DefaultMutableTreeNode) node).setUserObject(aValue);
 			} else
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
-				                              "Error: assigning value at in NetworkPanel");
+				JOptionPane.showMessageDialog(desktop, "Error: assigning value at in NetworkPanel");
 			// This function is not used to set node and edge values.
 		}
 	}
@@ -636,6 +635,11 @@ class PopupActionListener implements ActionListener {
 	 * associated with the JTable that originated the popup event
 	 */
 	protected CyNetwork cyNetwork;
+	private CytoscapeDesktop desktop;
+
+	public PopupActionListener(CytoscapeDesktop desktop) {
+		this.desktop = desktop;
+	}
 
 	/**
 	 * Based on the action event, destroy or create a view, or destroy a network
@@ -655,7 +659,7 @@ class PopupActionListener implements ActionListener {
 		} // end of if ()
 		else if (label == EDIT_TITLE) {
 			CyNetworkNaming.editNetworkTitle(cyNetwork);
-			Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
+			desktop.getNetworkPanel().updateTitle(cyNetwork);
 		} // end of if ()
 		else {
 			// throw an exception here?

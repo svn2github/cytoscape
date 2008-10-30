@@ -76,7 +76,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 	private final static long serialVersionUID = 1202339876675416L;
 	private static final Set<VisualPropertyType> EDGE_PROPS;
 	private static final Set<VisualPropertyType> NODE_PROPS;
-	private static DefaultAppearenceBuilder dab = null;
 	private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
 	                                                      .getNodeAppearanceCalculator();
 
@@ -91,8 +90,9 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * @param parent DOCUMENT ME!
 	 * @param modal DOCUMENT ME!
 	 */
-	public DefaultAppearenceBuilder(Frame parent, boolean modal) {
-		super(parent, modal);
+	public DefaultAppearenceBuilder(Frame parent, final DefaultViewPanel mainView) {
+		super(parent, true);
+		this.mainView = mainView; 
 		initComponents();
 		buildList();
 
@@ -110,18 +110,16 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static JPanel showDialog(Frame parent) {
-		if(dab == null)
-			dab = new DefaultAppearenceBuilder(parent, true);
-		dab.setLocationRelativeTo(parent);
-		dab.setSize(900, 400);
-		dab.lockSize();
-		dab.lockNodeSizeCheckBox.setSelected(dab.nac.getNodeSizeLocked());
-		dab.mainView.updateView();
-		dab.setLocationRelativeTo(Cytoscape.getDesktop());
-		dab.setVisible(true);
+	public JPanel showDialog(Frame parent) {
+		setLocationRelativeTo(parent);
+		setSize(900, 400);
+		lockSize();
+		lockNodeSizeCheckBox.setSelected(nac.getNodeSizeLocked());
+		mainView.updateView();
+		setLocationRelativeTo(Cytoscape.getDesktop());
+		setVisible(true);
 
-		return dab.getPanel();
+		return getPanel();
 	}
 
 	/**
@@ -129,16 +127,14 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static JPanel getDefaultView(String vsName) {
-		if(dab == null)
-			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
+	public JPanel getDefaultView(String vsName) {
 		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-		dab.mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
+		mainView.updateBackgroungColor(Cytoscape.getVisualMappingManager().getVisualStyle()
 		                                            .getGlobalAppearanceCalculator()
 		                                            .getDefaultBackgroundColor());
-		dab.mainView.updateView();
+		mainView.updateView();
 
-		return dab.getPanel();
+		return getPanel();
 	}
 
 
@@ -151,7 +147,6 @@ public class DefaultAppearenceBuilder extends JDialog {
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
 		jXPanel1 = new org.jdesktop.swingx.JXPanel();
-		mainView = new DefaultViewPanel();
 		jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
 		defaultObjectTabbedPane = new javax.swing.JTabbedPane();
 		nodeScrollPane = new javax.swing.JScrollPane();
@@ -472,7 +467,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	}
 
 	class VisualPropCellRenderer extends JLabel implements ListCellRenderer {
-	private final static long serialVersionUID = 1202339876646385L;
+		private final static long serialVersionUID = 1202339876646385L;
 		private final Font SELECTED_FONT = new Font("SansSerif", Font.ITALIC, 14);
 		private final Font NORMAL_FONT = new Font("SansSerif", Font.BOLD, 12);
 		private final Color SELECTED_COLOR = new Color(10, 50, 180, 20);
@@ -528,7 +523,7 @@ public class DefaultAppearenceBuilder extends JDialog {
 	 * Draw global color icon
 	 */
 	class GlobalIcon extends VisualPropertyIcon {
-	private final static long serialVersionUID = 1202339876659938L;
+		private final static long serialVersionUID = 1202339876659938L;
 		public GlobalIcon(String name, Color color) {
 			super(name, color);
 		}

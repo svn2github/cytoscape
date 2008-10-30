@@ -1,5 +1,8 @@
+
 /*
- Copyright (c) 2006, 2007, The Cytoscape Consortium (www.cytoscape.org)
+ File: CyAction.java
+
+ Copyright (c) 2006, The Cytoscape Consortium (www.cytoscape.org)
 
  The Cytoscape Consortium is:
  - Institute for Systems Biology
@@ -31,59 +34,40 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this library; if not, write to the Free Software Foundation,
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-*/
-package cytoscape.visual.ui.editors.discrete;
+ */
+package cytoscape.util;
 
-import com.l2fprod.common.beans.editor.DoublePropertyEditor;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-import cytoscape.Cytoscape;
-import cytoscape.visual.ui.VizMapperMainPanel;
-
-import javax.swing.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 /**
- *
+ * This is a temporary interface that captures everything
+ * in CytoscapeAction so that CytoscapeActions can be registered
+ * as Services. 
  */
-public class CyDoublePropertyEditor extends DoublePropertyEditor {
-	private Object currentValue;
-	private Object selected;
-
-	/**
-	 * Creates a new CyStringPropertyEditor object.
-	 */
-	public CyDoublePropertyEditor(final VizMapperMainPanel vmp) {
-		super();
-
-		((JTextField) editor).addFocusListener(new FocusListener() {
-				public void focusGained(FocusEvent e) {
-					final Item item = (Item) vmp.getSelectedItem();
-					selected = item.getProperty().getDisplayName();
-					setCurrentValue();
-				}
-
-				public void focusLost(FocusEvent arg0) {
-					checkChange();
-				}
-			});
-	}
-
-	private void setCurrentValue() {
-		this.currentValue = super.getValue();
-	}
-
-	private void checkChange() {
-		Number newValue = (Number) super.getValue();
-
-		if (newValue.doubleValue() <= 0) {
-			newValue = 0;
-			currentValue = 0;
-			((JTextField) editor).setText("0");
-			editor.repaint();
-		}
-
-		firePropertyChange(selected, newValue);
-	}
-}
+public interface CyAction {
+	 void setName(String name);
+	 String getName();
+	 String actionHelp();
+	 String[] completions();
+	 void takeArgs(String[] argv);
+	 void actionPerformed(ActionEvent e);
+	 Object clone();
+	 boolean isInMenuBar();
+	 boolean isInToolBar();
+	 void setPreferredIndex(int index);
+	 Integer getPrefferedIndex();
+	 void setAcceleratorCombo(int key_code, int key_mods);
+	 boolean isAccelerated();
+	 int getKeyCode();
+	 int getKeyModifiers();
+	 String getPreferredMenu();
+	 void setPreferredMenu(String new_preferred);
+	 String getPreferredButtonGroup();
+	 void setPreferredButtonGroup(String new_preferred);
+     void menuCanceled(MenuEvent e);
+     void menuDeselected(MenuEvent e);
+     void menuSelected(MenuEvent e);
+}	

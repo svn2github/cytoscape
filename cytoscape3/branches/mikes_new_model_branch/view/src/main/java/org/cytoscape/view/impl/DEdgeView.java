@@ -79,7 +79,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 */
 	DEdgeView(DGraphView view, int inx) {
 		m_view = view;
-		m_inx = ~inx;
+		m_inx = inx;
 		m_selected = false;
 		m_unselectedPaint = m_view.m_edgeDetails.segmentPaint(m_inx);
 		m_selectedPaint = Color.red;
@@ -99,7 +99,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 * @return DOCUMENT ME!
 	 */
 	public int getGraphPerspectiveIndex() {
-		return ~m_inx;
+		return m_inx;
 	}
 
 	/**
@@ -108,7 +108,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 * @return DOCUMENT ME!
 	 */
 	public int getRootGraphIndex() {
-		return ~m_inx;
+		return m_inx;
 	}
 
 	/**
@@ -117,7 +117,7 @@ class DEdgeView implements EdgeView, Label, Bend, EdgeAnchors {
 	 * @return DOCUMENT ME!
 	 */
 	public CyEdge getEdge() {
-		return m_view.getGraphPerspective().getEdge(~m_inx);
+		return m_view.getGraphPerspective().getEdge(m_inx);
 	}
 
 	/**

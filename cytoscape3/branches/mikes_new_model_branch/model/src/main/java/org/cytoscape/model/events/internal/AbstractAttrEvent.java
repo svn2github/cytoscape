@@ -37,44 +37,19 @@
 package org.cytoscape.model.events.internal;
 
 import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.events.ColumnCreatedEvent;
-import org.cytoscape.model.events.ColumnDeletedEvent;
 
 
 /**
  * DOCUMENT ME!
   */
-public class AttrEvent implements ColumnCreatedEvent, ColumnDeletedEvent {
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param source DOCUMENT ME!
-	 * @param columnName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static ColumnDeletedEvent getAttributeDeletedEvent(CyDataTable source, String columnName) {
-		return new AttrEvent(source, columnName, null, null);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param source DOCUMENT ME!
-	 * @param columnName DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static ColumnCreatedEvent getAttributeCreatedEvent(CyDataTable source, String columnName) {
-		return new AttrEvent(source, columnName, null, null);
-	}
+abstract class AbstractAttrEvent { 
 
 	final Object oldValue;
 	final Object newValue;
 	final CyDataTable source;
 	final String columnName;
 
-	private AttrEvent(CyDataTable source, String columnName, Object oldValue, Object newValue) {
+	public AbstractAttrEvent(CyDataTable source, String columnName, Object oldValue, Object newValue) {
 		this.source = source;
 		this.columnName = columnName;
 		this.oldValue = oldValue;

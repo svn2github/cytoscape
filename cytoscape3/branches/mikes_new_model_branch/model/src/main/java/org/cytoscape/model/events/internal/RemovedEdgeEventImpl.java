@@ -34,81 +34,25 @@
  Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
-package org.cytoscape.model.internal;
+package org.cytoscape.model.events.internal;
 
-import org.cytoscape.model.CyDataTable;
-import org.cytoscape.model.CyRow;
-import org.cytoscape.model.GraphObject;
+import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.Identifiable;
-
-import java.util.Map;
+import org.cytoscape.model.events.RemovedEdgeEvent;
 
 
-class GraphObjImpl implements GraphObject, Identifiable {
-	private final long suid;
-	private final Map<String, CyDataTable> attrMgr;
-
-	GraphObjImpl(final Map<String, CyDataTable> attrMgr) {
-		suid = IdFactory.getNextSUID();
-		this.attrMgr = attrMgr;
-		attrs().set("name","");
-		attrs().set("selected",Boolean.FALSE);
-	}
-
+/**
+ * 
+ */
+public class RemovedEdgeEventImpl extends AbstractEdgeEvent implements RemovedEdgeEvent { 
+                                                 
 	/**
-	 *  DOCUMENT ME!
+	 * Creates a new EdgeEvent object.
 	 *
-	 * @return  DOCUMENT ME!
+	 * @param e  DOCUMENT ME!
+	 * @param n  DOCUMENT ME!
 	 */
-	public long getSUID() {
-		return suid;
+	public RemovedEdgeEventImpl(CyEdge e, CyNetwork n) {
+		super(e, n);
 	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @param namespace DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyRow getCyRow(String namespace) {
-		if (namespace == null)
-			throw new NullPointerException("namespace is null");
-
-		CyDataTable mgr = attrMgr.get(namespace);
-
-		if (mgr == null)
-			throw new NullPointerException("attribute manager is null for namespace: " + namespace);
-
-		return mgr.getRow(suid);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyRow attrs() {
-		return getCyRow(CyNetwork.DEFAULT_ATTRS);
-	}
-
-    public @Override
-    boolean equals(Object o) {
-        if (!(o instanceof GraphObjImpl))
-            return false;
-
-        GraphObjImpl ir = (GraphObjImpl) o;
-
-        if (ir.suid == this.suid)
-            return true;
-        else
-
-            return false;
-    }
-
-    public @Override
-    int hashCode() {
-        return (int) (suid ^ (suid >>> 32));
-    }
 }

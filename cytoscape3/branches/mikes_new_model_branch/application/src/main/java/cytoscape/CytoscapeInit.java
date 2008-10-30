@@ -39,6 +39,7 @@ package cytoscape;
 //import cytoscape.data.readers.CytoscapeSessionReader;
 import cytoscape.init.CyInitParams;
 import cytoscape.util.FileUtil;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.shadegrown.WindowUtilities;
 import org.cytoscape.model.CyNetwork;
 
@@ -108,10 +109,14 @@ public class CytoscapeInit {
 	// Error message
 	private static String ErrorMsg = "";
 
+	private CytoscapeDesktop desktop;
+
 	/**
 	 * Creates a new CytoscapeInit object.
 	 */
-	public CytoscapeInit() {
+	public CytoscapeInit(CytoscapeDesktop desktop) {
+		Cytoscape.setDesktop( desktop );
+		this.desktop = desktop;
 	}
 
 	/**
@@ -132,78 +137,45 @@ public class CytoscapeInit {
 			properties.putAll(initParams.getProps());
 			visualProperties.putAll(initParams.getVizProps());
 
-			// Build the OntologyServer.
-//			Cytoscape.buildOntologyServer();
-
-			// get the manager so it can test for webstart before menus are created (little hacky)
-			//PluginManager.getPluginManager();
 			
 			// see if we are in headless mode
 			// show splash screen, if appropriate
 			System.out.println("init mode: " + initParams.getMode());
 
-			/*
-			 * Initialize as GUI mode
-			 */
-			if ((initParams.getMode() == CyInitParams.GUI)
-			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				final ImageIcon image = new ImageIcon(this.getClass()
+		
+			// Initialize as GUI mode
+			final ImageIcon image = new ImageIcon(this.getClass()
 				                                          .getResource(SPLASH_SCREEN_LOCATION));
-				WindowUtilities.showSplash(image, 8000);
+			WindowUtilities.showSplash(image, 8000);
 
-				/*
-				 * Create Desktop.  
-				 * This includes Vizmapper GUI initialization.
-				 */
-				Cytoscape.getDesktop();
+			// set the wait cursor
+			desktop.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-				// set the wait cursor
-				Cytoscape.getDesktop().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-				setUpAttributesChangedListener();
-			}
-
-			//PluginUtil.loadPlugins(initParams.getPlugins());
+			setUpAttributesChangedListener();
 
 //			System.out.println("loading session...");
-
-			boolean sessionLoaded = false;
-//			if ((initParams.getMode() == CyInitParams.GUI)
-//			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-//				loadSessionFile();
-//				sessionLoaded = true;
-//			}
+//			loadSessionFile();
 
 			System.out.println("loading networks...");
 			loadNetworks();
 
 //			System.out.println("loading attributes...");
-			//loadAttributes();
+//			loadAttributes();
 
 			System.out.println("loading expression files...");
 			loadExpressionFiles();
 
-			if ((initParams.getMode() == CyInitParams.GUI)
-			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				if(sessionLoaded == false) {
-					System.out.println("Initializing VizMapper...");
-					initVizmapper();
-				}
-			}
 		} catch (Throwable t) {
 			System.out.println("Caught initialization error:");
 			t.printStackTrace();
 		} finally {
 			// Always restore the cursor and hide the splash, even there is
 			// exception
-			if ((initParams.getMode() == CyInitParams.GUI)
-			    || (initParams.getMode() == CyInitParams.EMBEDDED_WINDOW)) {
-				WindowUtilities.hideSplash();
-				Cytoscape.getDesktop().setCursor(Cursor.getDefaultCursor());
+			WindowUtilities.hideSplash();
+			desktop.setCursor(Cursor.getDefaultCursor());
 
-				// to clean up anything that the plugins have messed up
-				Cytoscape.getDesktop().repaint();
-			}
+			// to clean up anything that the plugins have messed up
+			desktop.repaint();
 		}
 
 		long endtime = System.currentTimeMillis() - begintime;
@@ -424,8 +396,7 @@ public class CytoscapeInit {
 
 				if (reader != null) {
 					reader.read();
-					Cytoscape.getDesktop()
-					         .setTitle("Cytoscape Desktop (Session Name: " + sessionName + ")");
+					desktop.setTitle("Cytoscape Desktop (Session Name: " + sessionName + ")");
 					return true;
 				}
 			}
@@ -433,7 +404,7 @@ public class CytoscapeInit {
 			e.printStackTrace();
 			System.out.println("couldn't create session from file: '" + sessionFile + "'");
 		} finally {
-			Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
+			desktop.getVizMapperUI().initVizmapperGUI();
 			System.gc();
 		}
 
@@ -460,8 +431,8 @@ public class CytoscapeInit {
 		 * because CytoPanel menu item listeners need to register for CytoPanel
 		 * events via a CytoPanel reference, and the only way to get a CytoPanel
 		 * reference is via CytoscapeDeskop:
-		 * Cytoscape.getDesktop().getCytoPanel(...)
-		 * Cytoscape.getDesktop().getCyMenus().initCytoPanelMenus(); Add a
+		 * desktop.getCytoPanel(...)
+		 * desktop.getCyMenus().initCytoPanelMenus(); Add a
 		 * listener that will apply vizmaps every time attributes change
 		 */
 		PropertyChangeListener attsChangeListener = new PropertyChangeListener() {
@@ -528,7 +499,4 @@ public class CytoscapeInit {
 	}
 	*/
 
-	private void initVizmapper() {
-		Cytoscape.getDesktop().getVizMapperUI().initVizmapperGUI();
-	}
 }

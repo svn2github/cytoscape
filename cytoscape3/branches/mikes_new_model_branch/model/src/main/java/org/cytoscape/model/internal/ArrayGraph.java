@@ -53,9 +53,13 @@ import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
 import org.cytoscape.model.events.AboutToRemoveEdgeListener;
 import org.cytoscape.model.events.RemovedEdgeEvent;
 import org.cytoscape.model.events.RemovedEdgeListener;
-import org.cytoscape.model.events.internal.NodeEvent;
-import org.cytoscape.model.events.internal.EdgeEvent;
 import org.cytoscape.event.CyEventHelper;
+import org.cytoscape.model.events.internal.AddedNodeEventImpl;
+import org.cytoscape.model.events.internal.AboutToRemoveNodeEventImpl;
+import org.cytoscape.model.events.internal.RemovedNodeEventImpl;
+import org.cytoscape.model.events.internal.AddedEdgeEventImpl;
+import org.cytoscape.model.events.internal.AboutToRemoveEdgeEventImpl;
+import org.cytoscape.model.events.internal.RemovedEdgeEventImpl;
 
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.model.subnetwork.CyRootNetwork;
@@ -332,7 +336,7 @@ public class ArrayGraph implements CyRootNetwork {
 			firstNode = n.insert(firstNode,ROOT);
 		}
 
-		eventHelper.fireSynchronousEvent((AddedNodeEvent) new NodeEvent(n.cyNode, this),
+		eventHelper.fireSynchronousEvent(new AddedNodeEventImpl(n.cyNode, this),
 		                                 AddedNodeListener.class);
 
 		return n.cyNode;
@@ -343,7 +347,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public boolean removeNode(final CyNode n) {
 
-		eventHelper.fireSynchronousEvent((AboutToRemoveNodeEvent) new NodeEvent(n, this),
+		eventHelper.fireSynchronousEvent(new AboutToRemoveNodeEventImpl(n, this),
 		                                 AboutToRemoveNodeListener.class);
 
 		synchronized (this) {
@@ -371,7 +375,7 @@ public class ArrayGraph implements CyRootNetwork {
 		nodeCount--;
 		}
 
-        eventHelper.fireSynchronousEvent((RemovedNodeEvent) new NodeEvent(null, this),
+        eventHelper.fireSynchronousEvent(new RemovedNodeEventImpl(null, this),
                                          RemovedNodeListener.class);
 
 		return true;
@@ -412,7 +416,7 @@ public class ArrayGraph implements CyRootNetwork {
 			edgeCount++;
 		}
 
-        eventHelper.fireSynchronousEvent((AddedEdgeEvent) new EdgeEvent(e.cyEdge, this),
+        eventHelper.fireSynchronousEvent(new AddedEdgeEventImpl(e.cyEdge, this),
                                          AddedEdgeListener.class);
 
 		return e.cyEdge;
@@ -422,7 +426,7 @@ public class ArrayGraph implements CyRootNetwork {
 	 * {@inheritDoc}
 	 */
 	public boolean removeEdge(final CyEdge edge) {
-        eventHelper.fireSynchronousEvent((AboutToRemoveEdgeEvent) new EdgeEvent(edge, this),
+        eventHelper.fireSynchronousEvent(new AboutToRemoveEdgeEventImpl(edge, this),
                                          AboutToRemoveEdgeListener.class);
 
 		synchronized (this) {
@@ -442,7 +446,7 @@ public class ArrayGraph implements CyRootNetwork {
 		edgeCount--;
 		}
 
-        eventHelper.fireSynchronousEvent((RemovedEdgeEvent) new EdgeEvent(null, this),
+        eventHelper.fireSynchronousEvent( new RemovedEdgeEventImpl(null, this),
                                          RemovedEdgeListener.class);
 
 		return true;

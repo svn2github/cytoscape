@@ -16,13 +16,89 @@
 
 	<context:annotation-config />
 
-	<!-- Network Factory Setup -->
 
+	<!-- menu actions -->
+	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
+		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
+	</bean>
+	<bean id="newWindowSelectedNodesOnlyAction" class="cytoscape.actions.NewWindowSelectedNodesOnlyAction">
+		<constructor-arg ref="cyRootNetworkFactoryServiceRef"/>
+		<constructor-arg ref="graphViewFactoryServiceRef"/>
+	</bean>
+	<!--
+	<bean id="newSessionAction" class="cytoscape.actions.NewSessionAction"/>
+	<bean id="newWindowSelectedNodesEdgesAction" class="cytoscape.actions.NewWindowSelectedNodesEdgesAction"/>
+	<bean id="cloneGraphInNewWindowAction" class="cytoscape.actions.CloneGraphInNewWindowAction"/>
+	<bean id="webServiceNetworkImportAction" class="cytoscape.actions.WebServiceNetworkImportAction"/>
+	<bean id="printAction" class="cytoscape.actions.PrintAction"/>
+	<bean id="exitAction" class="cytoscape.actions.ExitAction"/>
+	<bean id="undoAction" class="cytoscape.util.undo.UndoAction"/>
+	<bean id="redoAction" class="cytoscape.util.undo.RedoAction"/>
+	<bean id="createNetworkViewAction" class="cytoscape.actions.CreateNetworkViewAction"/>
+	<bean id="destroyNetworkViewAction" class="cytoscape.actions.DestroyNetworkViewAction"/>
+	<bean id="destroyNetworkAction" class="cytoscape.actions.DestroyNetworkAction"/>
+	<bean id="deleteAction" class="cytoscape.actions.DeleteAction"/>
+	<bean id="preferenceAction" class="cytoscape.actions.PreferenceAction"/>
+	<bean id="bookmarkAction" class="cytoscape.actions.BookmarkAction"/>
+	<bean id="proxyServerAction" class="cytoscape.actions.ProxyServerAction"/>
+	<bean id="invertSelectedNodesAction" class="cytoscape.actions.InvertSelectedNodesAction"/>
+	<bean id="hideSelectedNodesAction" class="cytoscape.actions.HideSelectedNodesAction"/>
+	<bean id="unHideSelectedNodesAction" class="cytoscape.actions.UnHideSelectedNodesAction"/>
+	<bean id="selectAllNodesAction" class="cytoscape.actions.SelectAllNodesAction"/>
+	<bean id="deSelectAllNodesAction" class="cytoscape.actions.DeSelectAllNodesAction"/>
+	<bean id="selectFirstNeighborsAction" class="cytoscape.actions.SelectFirstNeighborsAction"/>
+	<bean id="selectConnectedNodesAction" class="cytoscape.actions.SelectConnectedNodesAction"/>
+	<bean id="alphabeticalSelectionAction" class="cytoscape.actions.AlphabeticalSelectionAction"/>
+	<bean id="listFromFileSelectionAction" class="cytoscape.actions.ListFromFileSelectionAction"/>
+	<bean id="invertSelectedEdgesAction" class="cytoscape.actions.InvertSelectedEdgesAction"/>
+	<bean id="hideSelectedEdgesAction" class="cytoscape.actions.HideSelectedEdgesAction"/>
+	<bean id="unHideSelectedEdgesAction" class="cytoscape.actions.UnHideSelectedEdgesAction"/>
+	<bean id="selectAllEdgesAction" class="cytoscape.actions.SelectAllEdgesAction"/>
+	<bean id="selectAdjacentEdgesAction" class="cytoscape.actions.SelectAdjacentEdgesAction"/>
+	<bean id="deSelectAllEdgesAction" class="cytoscape.actions.DeSelectAllEdgesAction"/>
+	<bean id="bendSelectedEdgesAction" class="cytoscape.actions.BendSelectedEdgesAction"/>
+	<bean id="straightenSelectedEdgesAction" class="cytoscape.actions.StraightenSelectedEdgesAction"/>
+	<bean id="selectAllAction" class="cytoscape.actions.SelectAllAction"/>
+	<bean id="deselectAllAction" class="cytoscape.actions.DeselectAllAction"/>
+	<bean id="showGraphicsDetailsAction" class="cytoscape.actions.ShowGraphicsDetailsAction"/>
+	<bean id="setVisualPropertiesAction" class="cytoscape.actions.SetVisualPropertiesAction"/>
+	<bean id="settingsAction" class="cytoscape.layout.ui.SettingsAction"/>
+	<bean id="pluginManagerAction" class="cytoscape.actions.PluginManagerAction"/>
+	<bean id="pluginUpdateAction" class="cytoscape.actions.PluginUpdateAction"/>
+	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction"/>
+	<bean id="helpContactHelpDeskAction" class="cytoscape.actions.HelpContactHelpDeskAction"/>
+	<bean id="helpAboutAction" class="cytoscape.actions.HelpAboutAction"/>
+-->
+	<!--
+	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.WEST,true));"/>
+	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.SOUTH,true));"/>
+	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.EAST,false));"/>
+	-->
+
+
+	<!-- for initialization -->
 	<bean name="cyMenus" class="cytoscape.view.CyMenus">
-		<property name="cyNetworkFactory" ref="cyNetworkFactoryServiceRef"></property>
+		<property name="bundleContext" ref="bundleContext"></property>
 	</bean>
 
+	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop">
+		<constructor-arg ref="cyMenus"/>
+	</bean>
+
+	<!-- TODO fix vizmapper
+	<bean name="defaultViewPanel" class="cytoscape.visual.ui.DefaultViewPanel">
+		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
+		<constructor-arg ref="graphViewFactoryServiceRef"/>
+	</bean>
+
+	<bean name="vizMapperMainPanel" class="cytoscape.visual.ui.VizMapperMainPanel">
+		<constructor-arg ref="cytoscapeDesktop"/>
+		<constructor-arg ref="defaultViewPanel"/>
+	</bean>
+	-->
+
 	<bean name="cyMain" class="cytoscape.CyMain">
+		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>
 
 </beans>

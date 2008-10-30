@@ -110,7 +110,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	DNodeView(DGraphView view, int inx) {
 		m_view = view;
-		m_inx = ~inx;
+		m_inx = inx;
 		m_selected = false;
 		m_unselectedPaint = m_view.m_nodeDetails.fillPaint(m_inx);
 		m_selectedPaint = Color.yellow;
@@ -135,7 +135,7 @@ public class DNodeView implements NodeView, Label {
 	 */
 	public CyNode getNode() {
 		synchronized (m_view.m_lock) {
-			return m_view.m_perspective.getNode(~m_inx);
+			return m_view.m_perspective.getNode(m_inx);
 		}
 	}
 
@@ -145,7 +145,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public int getGraphPerspectiveIndex() {
-		return ~m_inx;
+		return m_inx;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class DNodeView implements NodeView, Label {
 	 * @return DOCUMENT ME!
 	 */
 	public int getRootGraphIndex() {
-		return ~m_inx;
+		return m_inx;
 	}
 
 	/**

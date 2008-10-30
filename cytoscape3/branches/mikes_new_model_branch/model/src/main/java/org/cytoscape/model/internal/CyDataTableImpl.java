@@ -255,7 +255,7 @@ public class CyDataTableImpl implements CyDataTable {
 			throw new NullPointerException("value is null");
 
 		if (!types.containsKey(attrName) || !attributes.containsKey(attrName))
-			throw new IllegalArgumentException("attribute does not yet exist!");
+			throw new IllegalArgumentException("attribute: '" + attrName + "' does not yet exist!");
 
 		checkType(value);
 

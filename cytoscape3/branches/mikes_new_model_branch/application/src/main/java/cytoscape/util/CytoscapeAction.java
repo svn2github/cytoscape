@@ -50,7 +50,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class CytoscapeAction extends AbstractAction implements MenuListener {
+public abstract class CytoscapeAction extends AbstractAction implements CyAction, MenuListener {
 	protected String preferredMenu = null;
 	protected String preferredButtonGroup = null;
 	protected Integer menuIndex = Integer.valueOf(-1);
@@ -58,7 +58,6 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 	protected int keyModifiers;
 	protected int keyCode;
 	protected String consoleName;
-	private static List<CytoscapeAction> actionList = new LinkedList<CytoscapeAction>();
 	protected boolean useCheckBoxMenuItem = false;
 
 	/**
@@ -78,7 +77,6 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 		super(name);
 		this.consoleName = name;
 		consoleName = consoleName.replaceAll(":. \'", "");
-		actionList.add(this);
 		initialize();
 	}
 
@@ -92,17 +90,7 @@ public abstract class CytoscapeAction extends AbstractAction implements MenuList
 		super(name, icon);
 		this.consoleName = name;
 		consoleName = consoleName.replaceAll(" ", "");
-		actionList.add(this);
 		initialize();
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static List<CytoscapeAction> getActionList() {
-		return actionList;
 	}
 
 	/**

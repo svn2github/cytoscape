@@ -71,14 +71,16 @@ import java.util.List;
 public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870134859L;
 	private final CyRootNetworkFactory cyroot;
+	private final GraphViewFactory gvf;
 	/**
 	 * Creates a new NewWindowSelectedNodesOnlyAction object.
 	 */
-	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r) {
+	public NewWindowSelectedNodesOnlyAction(final CyRootNetworkFactory r, final GraphViewFactory gvf) {
 		super("From selected nodes, all edges");
 		setPreferredMenu("File.New.Network");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_N, ActionEvent.CTRL_MASK);
 		cyroot = r;
+		this.gvf = gvf;
 	}
 
 	/**
@@ -111,9 +113,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 		CySubNetwork new_network = cyroot.convert(current_network).addSubNetwork( nodes, new ArrayList<CyEdge>(edges) );
 		new_network.attrs().set("name", CyNetworkNaming.getSuggestedSubnetworkTitle(current_network));
 
-		//TODONOW
-		//GraphView new_view = GraphViewFactory.createGraphView( new_network ); 
-		GraphView new_view =null; 
+		GraphView new_view = gvf.createGraphView( new_network ); 
 
 		if (new_view == null) {
 			return;

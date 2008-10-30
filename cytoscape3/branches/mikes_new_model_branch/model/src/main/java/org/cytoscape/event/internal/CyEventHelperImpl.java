@@ -108,6 +108,7 @@ public class CyEventHelperImpl implements CyEventHelper {
 		}
 	}
 
+
 	/**
 	 * Calls each listener found in the Service Registry identified by the listenerClass
 	 * and filter with the supplied event in a new thread.<p>This method should <b>ONLY</b>

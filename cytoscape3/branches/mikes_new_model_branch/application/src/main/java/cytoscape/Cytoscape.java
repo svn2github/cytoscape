@@ -865,13 +865,18 @@ public abstract class Cytoscape {
 	}
 
 	/**
+	 * Don't use this!.
+	 * TODO resolve how the desktop is accessed. 
+	 */
+	public static void setDesktop(CytoscapeDesktop desk ) {
+		if ( desk != null )
+			defaultDesktop = desk;
+	}
+	/**
 	 * @return the reference to the One CytoscapeDesktop
 	 */
 	public static CytoscapeDesktop getDesktop() {
-		if (defaultDesktop == null) {
-			defaultDesktop = new CytoscapeDesktop();
-		}
-
+		
 		return defaultDesktop;
 	}
 

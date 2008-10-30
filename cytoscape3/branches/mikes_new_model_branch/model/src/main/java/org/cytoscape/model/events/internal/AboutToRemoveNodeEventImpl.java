@@ -36,34 +36,23 @@
 
 package org.cytoscape.model.events.internal;
 
-import org.cytoscape.model.CyEdge;
+import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.events.AboutToRemoveEdgeEvent;
-import org.cytoscape.model.events.AddedEdgeEvent;
-import org.cytoscape.model.events.RemovedEdgeEvent;
+import org.cytoscape.model.events.AboutToRemoveNodeEvent;
 
 
 /**
  * 
  */
-public class EdgeEvent extends NetEvent<CyEdge> implements AboutToRemoveEdgeEvent, AddedEdgeEvent,
-                                                           RemovedEdgeEvent {
+public class AboutToRemoveNodeEventImpl extends AbstractNodeEvent implements AboutToRemoveNodeEvent { 
+                                                 
 	/**
-	 * Creates a new EdgeEvent object.
+	 * Creates a new NodeEvent object.
 	 *
 	 * @param e  DOCUMENT ME!
 	 * @param n  DOCUMENT ME!
 	 */
-	public EdgeEvent(CyEdge e, CyNetwork n) {
+	public AboutToRemoveNodeEventImpl(CyNode e, CyNetwork n) {
 		super(e, n);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyEdge getEdge() {
-		return get();
 	}
 }

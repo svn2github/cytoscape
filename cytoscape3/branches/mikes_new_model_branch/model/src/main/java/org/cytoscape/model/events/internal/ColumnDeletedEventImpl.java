@@ -36,34 +36,19 @@
 
 package org.cytoscape.model.events.internal;
 
-import org.cytoscape.model.CyNetwork;
-import org.cytoscape.model.CyNode;
-import org.cytoscape.model.events.AboutToRemoveNodeEvent;
-import org.cytoscape.model.events.AddedNodeEvent;
-import org.cytoscape.model.events.RemovedNodeEvent;
+import org.cytoscape.model.CyDataTable;
+import org.cytoscape.model.events.ColumnDeletedEvent;
 
 
 /**
  * 
  */
-public class NodeEvent extends NetEvent<CyNode> implements AboutToRemoveNodeEvent, AddedNodeEvent,
-                                                           RemovedNodeEvent {
+public class ColumnDeletedEventImpl extends AbstractAttrEvent implements ColumnDeletedEvent { 
+                                                 
 	/**
-	 * Creates a new NodeEvent object.
 	 *
-	 * @param e  DOCUMENT ME!
-	 * @param n  DOCUMENT ME!
 	 */
-	public NodeEvent(CyNode e, CyNetwork n) {
-		super(e, n);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public CyNode getNode() {
-		return get();
+	public ColumnDeletedEventImpl(CyDataTable source, String columnName, Object oldValue, Object newValue) {
+		super(source,columnName,oldValue,newValue);
 	}
 }

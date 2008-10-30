@@ -40,6 +40,7 @@ package cytoscape.view;
 import cytoscape.actions.*;
 import cytoscape.layout.ui.LayoutMenuManager;
 import cytoscape.layout.ui.SettingsAction;
+import cytoscape.util.CyAction;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
@@ -47,7 +48,6 @@ import cytoscape.util.undo.RedoAction;
 import cytoscape.util.undo.UndoAction;
 import cytoscape.view.cytopanels.CytoPanelName;
 
-import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.view.GraphViewChangeEvent;
 import org.cytoscape.view.GraphViewChangeListener;
 
@@ -58,6 +58,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
+import org.springframework.osgi.context.BundleContextAware;
+
 
 /**
  * Creates the menu and tool bars for a Cytoscape window object. It
@@ -67,10 +73,8 @@ import java.awt.event.MouseWheelListener;
  * writers can use this function to specify the location of the menu item.
  * </p>
  */
-public class CyMenus implements GraphViewChangeListener {
+public class CyMenus implements GraphViewChangeListener, BundleContextAware {
 
-	private CyNetworkFactory cyNetworkFactory;
-	
 	boolean menusInitialized = false;
 
 	CytoscapeMenuBar menuBar;
@@ -102,6 +106,8 @@ public class CyMenus implements GraphViewChangeListener {
 	JButton helpButton;
 	JButton vizButton;
 
+	ServiceTracker trac; 
+
 	/**
 	 * Creates a new CyMenus object. This will construct the basic bar objects, 
 	 * but won't fill them with menu items and associated action listeners.
@@ -123,12 +129,15 @@ public class CyMenus implements GraphViewChangeListener {
 		layoutMenu = menuBar.getMenu("Layout");
 		opsMenu = menuBar.getMenu("Plugins");
 		helpMenu = menuBar.getMenu("Help");
+
 	}
 
-	public void setCyNetworkFactory(CyNetworkFactory cyNetworkFactory) {
-		this.cyNetworkFactory = cyNetworkFactory;
+	private BundleContext bundleContext;
+
+	public void setBundleContext(BundleContext bundleContext) {
+		this.bundleContext = bundleContext;
 	}
-	
+
 	/**
 	 * Returns the main menu bar constructed by this object.
 	 */
@@ -227,6 +236,13 @@ public class CyMenus implements GraphViewChangeListener {
 	 *
 	 * @param action
 	 */
+	public void addAction(CyAction action) {
+		if ( action instanceof CytoscapeAction )
+			addCytoscapeAction( (CytoscapeAction) action );
+		else
+			throw new IllegalArgumentException("CyAction is not an instance of CytoscapeAction");
+	}
+
 	public void addAction(CytoscapeAction action) {
 		addCytoscapeAction(action);
 	}
@@ -290,10 +306,20 @@ public class CyMenus implements GraphViewChangeListener {
 	 *
 	 * Any calls to this method after the first will do nothing.
 	 */
-	public void initializeMenus() {
+	void initializeMenus() {
 		if (!menusInitialized) {
+
+		trac = new ServiceTracker(bundleContext, CyAction.class.getName(), null) {
+		@Override public Object addingService(ServiceReference r) {
+                    CyAction cla = (CyAction)super.addingService(r);
+					addAction( cla );
+                    return cla;
+                 }
+            };
+		trac.open();
+
 			menusInitialized = true;
-			fillMenuBar();
+	//		fillMenuBar();
 			fillToolBar();
 		}
 	}
@@ -301,7 +327,6 @@ public class CyMenus implements GraphViewChangeListener {
 	/**
 	 * Fills the previously created menu bar with a large number of items with
 	 * attached action listener objects.
-	 */
 	private void fillMenuBar() {
 
 		//
@@ -310,12 +335,10 @@ public class CyMenus implements GraphViewChangeListener {
 
 		// New submenu
 		addAction(new NewSessionAction());
-		// TODO inject CyRootNetworkFactory
 		addAction(new NewWindowSelectedNodesOnlyAction(null));
 		addAction(new NewWindowSelectedNodesEdgesAction());
 		addAction(new CloneGraphInNewWindowAction());
-		// TODO inject CyNetworkFactory
-		addAction(new NewNetworkAction(cyNetworkFactory));
+		addAction(new NewNetworkAction(null));
 
 	//	addAction(new OpenSessionAction(),1);
 	//	addAction(new SaveSessionAction("Save"),2);
@@ -453,6 +476,7 @@ public class CyMenus implements GraphViewChangeListener {
 
 		addAction(new HelpAboutAction());
 	}
+	 */
 
 	/**
 	 * Fills the toolbar for easy access to commonly used actions.

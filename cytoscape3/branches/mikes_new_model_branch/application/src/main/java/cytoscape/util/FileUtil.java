@@ -221,9 +221,8 @@ public abstract class FileUtil {
 	public static File[] getFiles(Component parent, String title, int load_save_custom, CyFileFilter[] filters,
 	                              String start_dir, String custom_approve_text, boolean multiselect) {
 
-		if (parent == null) {
-			parent = Cytoscape.getDesktop();
-		}
+		if (parent == null) 
+		 	throw new NullPointerException("Parent component is null");	
 
 		File start = null;
 
@@ -238,7 +237,7 @@ public abstract class FileUtil {
 		//System.out.println( "Os name: "+osName );
 		if (osName.startsWith("Mac")) {
 			// this is a Macintosh, use the AWT style file dialog
-			FileDialog chooser = new FileDialog(Cytoscape.getDesktop(), title, load_save_custom);
+			FileDialog chooser = new FileDialog((Frame)parent, title, load_save_custom);
 
 			// we can only set the one filter; therefore, create a special
 			// version of CyFileFilter that contains all extensions

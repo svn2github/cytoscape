@@ -44,7 +44,7 @@ import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
 import cytoscape.visual.ui.VizMapBypassNetworkListener;
-import cytoscape.visual.ui.VizMapperMainPanel;
+//import cytoscape.visual.ui.VizMapperMainPanel;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualMappingManager;
@@ -151,8 +151,8 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 	/**
 	 * New VizMapper UI
-	 */
 	protected VizMapperMainPanel vizmapperUI;
+	 */
 
 	/**
 	 * Current network and view.
@@ -193,7 +193,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	/**
 	 * Creates a new CytoscapeDesktop object.
 	 */
-	public CytoscapeDesktop() {
+	public CytoscapeDesktop(CyMenus cyMenus) {
 		super("Cytoscape Desktop (New Session)");
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource(SMALL_ICON)));
@@ -213,7 +213,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		networkPanel = new NetworkPanel(this);
 		networkPanel.setNavigator(bevh.getBirdsEyeView());
 
-		cyMenus = new CyMenus();
+		this.cyMenus = cyMenus; 
 
 /*
 		 Listener Setup
@@ -280,7 +280,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		// Set up the VizMapper
 		//setupVizMapper();
-		getVizMapperUI();
+		//getVizMapperUI();
 
 /*
 		don't automatically close window. Let Cytoscape.exit(returnVal)
@@ -360,7 +360,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 *  Returns new vizmapper GUI.
 	 *
 	 * @return  DOCUMENT ME!
-	 */
 	public VizMapperMainPanel getVizMapperUI() {
 		if (vizmapperUI == null) {
 			this.vmm = Cytoscape.getVisualMappingManager();
@@ -371,6 +370,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 		return vizmapperUI;
 	}
+	 */
 
 	// ----------------------------------------//
 	// Focus Management

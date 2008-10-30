@@ -120,8 +120,6 @@ public class CyNetworkUtilities {
 
 		String callerID = "CyNetworkUtilities.saveVisibleNodeNames";
 
-		//CyNetwork theGraph = network.getGraphPerspective();
-		//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		String lineSep = System.getProperty("line.separator");
 
 		try {
@@ -166,8 +164,6 @@ public class CyNetworkUtilities {
 		boolean found = false;
 		String callerID = "CyNetworkUtilities.selectNodesStartingWith";
 
-		//CyNetwork theGraph = network.getGraphPerspective();
-		//CyAttributes nodeAttributes = Cytoscape.getNodeAttributes();
 		int nodeFound = 0;
 		Vector<CyNode> matchedNodes = new Vector<CyNode>();
 
