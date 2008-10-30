@@ -540,8 +540,10 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 				if (checkFlag(MULTISELECT)) {
 					// Multiselect LIST -- value is a List of Integers, or String values
 					this.value = value;
-					if (inputField != null) {
-						((JList)inputField).setSelectedIndices(decodeIntegerArray((String)value));
+					if (inputField != null && value != null) {
+						int[] intArray = decodeIntegerArray((String)value);
+						if (intArray != null)
+							((JList)inputField).setSelectedIndices(intArray);
 					}
 				} else {
 					if (value.getClass() == String.class)
@@ -976,7 +978,9 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		if (checkFlag(MULTISELECT)) {
 			JList jList =  new JList(list);
 			if (value != null && ((String)value).length() > 0) {
-				jList.setSelectedIndices(decodeIntegerArray((String)value));
+				int[] intArray = decodeIntegerArray((String)value);
+				if (intArray != null)
+					jList.setSelectedIndices(intArray);
 			}
 			jList.addListSelectionListener(this);
 			return jList;
