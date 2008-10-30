@@ -37,6 +37,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
@@ -207,6 +208,7 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 				myView.addGraphViewChangeListener(this);
 				return;
 			}
+			return;
 		} else if (o == arraySelection) {
 			// We only care about array selection for symmetrical models
 			if (!dataModel.isSymmetrical())
@@ -225,9 +227,10 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		}
 
 		// If we've gotten here, we want to select edges
+		myView.removeGraphViewChangeListener(this); // For efficiency reasons, remove our listener for now
 		myNetwork.unselectAllEdges();
-		myNetwork.unselectAllNodes();
-		List<CyEdge>edgesToSelect = new ArrayList();
+		// myNetwork.unselectAllNodes();
+		HashMap<CyEdge,CyEdge>edgesToSelect = new HashMap();
 		for (CyNode node1: selectedNodes) {
 			int [] nodes = new int[2];
 			nodes[0] = node1.getRootGraphIndex();
@@ -235,18 +238,25 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 				nodes[1] = node2.getRootGraphIndex();
 				int edges[] = myNetwork.getConnectingEdgeIndicesArray(nodes);
 				if (edges == null) continue;
-				for (int i = 0; i < edges.length; i++)
-					edgesToSelect.add((CyEdge)myNetwork.getEdge(edges[i]));
+				for (int i = 0; i < edges.length; i++) {
+					CyEdge connectingEdge = (CyEdge)myNetwork.getEdge(edges[i]);
+					edgesToSelect.put(connectingEdge, connectingEdge);
+				}
 			}
 		}
-		myNetwork.setSelectedEdgeState(edgesToSelect, true);
-		myView.redrawGraph(false,false);
+		myNetwork.setSelectedEdgeState(edgesToSelect.keySet(), true);
+		// myView.redrawGraph(false,false);
+		// Add our listener back
+		myView.addGraphViewChangeListener(this);
 	}
 
 	public void graphViewChanged(GraphViewChangeEvent event) {
 		// System.out.println("graphViewChanged");
-		Set<CyNode> nodes = myNetwork.getSelectedNodes();
-		setSelection(nodes, true);
+		if (event.getType() == GraphViewChangeEvent.NODES_UNSELECTED_TYPE || 
+		    event.getType() == GraphViewChangeEvent.NODES_SELECTED_TYPE) {
+			Set<CyNode> nodes = myNetwork.getSelectedNodes();
+			setSelection(nodes, true);
+		}
 	}
 
 	// private void setSelection(Node[] nodeArray, boolean select) {
