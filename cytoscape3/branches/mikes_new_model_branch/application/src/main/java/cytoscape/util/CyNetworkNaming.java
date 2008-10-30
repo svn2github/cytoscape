@@ -58,7 +58,7 @@ public class CyNetworkNaming {
 	 */
 	public static String getSuggestedSubnetworkTitle(CyNetwork parentNetwork) {
 		for (int i = 0; true; i++) {
-			String nameCandidate = parentNetwork.attrs().get("title",String.class) + "--child"
+			String nameCandidate = parentNetwork.attrs().get("name",String.class) + "--child"
 			                       + ((i == 0) ? "" : ("." + i));
 
 			if (!isNetworkTitleTaken(nameCandidate))
@@ -89,7 +89,7 @@ public class CyNetworkNaming {
 		while (iter.hasNext()) {
 			CyNetwork existingNetwork = (CyNetwork) iter.next();
 
-			if (existingNetwork.attrs().get("title",String.class).equals(titleCandidate))
+			if (existingNetwork.attrs().get("name",String.class).equals(titleCandidate))
 				return true;
 		}
 
@@ -104,7 +104,7 @@ public class CyNetworkNaming {
 	 */
 	public static void editNetworkTitle(CyNetwork network) {
 		Component parent = Cytoscape.getDesktop();
-		String pname = network.attrs().get("title",String.class);
+		String pname = network.attrs().get("name",String.class);
 		String name = null;
 		String sname = "";
 		Object[] options = { "Try Again", "Cancel", "Use Suggestion" };
@@ -151,6 +151,6 @@ public class CyNetworkNaming {
 				break;
 		}
 
-		network.attrs().set("title",name);
+		network.attrs().set("name",name);
 	}
 }

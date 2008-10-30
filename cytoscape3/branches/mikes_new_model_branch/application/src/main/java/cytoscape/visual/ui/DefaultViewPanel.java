@@ -95,8 +95,7 @@ public class DefaultViewPanel extends JPanel {
 		edge = dummyNet.addEdge(source,target,true);
 		edge.attrs().set("name","Source (interaction) Target");
 
-		dummyNet.attrs().getDataTable().createColumn("title",String.class,false);
-		dummyNet.attrs().set("title","Default Appearance");
+		dummyNet.attrs().set("name","Default Appearance");
 
 		view = graphViewFactory.createGraphView(dummyNet);
 		view.getNodeView(source).setOffset(0, 0);

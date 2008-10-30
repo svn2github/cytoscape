@@ -697,7 +697,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 			
 				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-				Cytoscape.getCurrentNetwork().attrs().set("title",value);
+				Cytoscape.getCurrentNetwork().attrs().set("name",value);
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
 
 				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager.getClient(selectedClientID))

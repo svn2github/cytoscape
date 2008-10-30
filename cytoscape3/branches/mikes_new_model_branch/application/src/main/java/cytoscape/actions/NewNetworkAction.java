@@ -4,9 +4,12 @@
  */
 package cytoscape.actions;
 
+import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkFactory;
+import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.view.GraphView;
 
 import java.awt.event.ActionEvent;
 
@@ -22,14 +25,16 @@ public class NewNetworkAction extends CytoscapeAction {
 	private static final long serialVersionUID = -5729080768973677821L;
 
 	private CyNetworkFactory cnf;
+	private GraphViewFactory gvf;
 
 	/**
 	 * Creates a new NewNetworkAction object.
 	 */
-	public NewNetworkAction(CyNetworkFactory f) {
+	public NewNetworkAction(CyNetworkFactory f, GraphViewFactory g) {
 		super("Empty Network");
 		setPreferredMenu("File.New.Network");
 		cnf = f;
+		gvf = g;
 	}
 
 	/**
@@ -37,6 +42,10 @@ public class NewNetworkAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetwork newNet = cnf.getInstance();
-		newNet.attrs().set("title","Network");
+		newNet.attrs().set("name","Network");
+		System.out.println("newNet: " + newNet.getSUID());
+		GraphView view = gvf.createGraphView(newNet);
+		// TODO figure this out
+		Cytoscape.addNetwork(newNet, view);
 	}
 }

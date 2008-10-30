@@ -1104,24 +1104,25 @@ public abstract class Cytoscape {
 		destroyNetworkView(getNetworkViewMap().get(network.getSUID()));
 	}
 
-	protected static void addNetwork(CyNetwork network, String title, CyNetwork parent,
-	                                 boolean create_view) {
+	public static void addNetwork(CyNetwork network, GraphView view) {
 		getNetworkMap().put(network.getSUID(), network);
-		network.attrs().set("title",title);
 
-		long parentID = -1;
+		if ( view != null ) {
+			getNetworkViewMap().put(network.getSUID(), view);
 
-		if (parent != null) {
-			parentID = parent.getSUID();
+			setCurrentNetworkView(network.getSUID());
+
+			setSelectionMode(Cytoscape.getSelectionMode(), view);
+
+			CyLayouts.getDefaultLayout().doLayout(view);
+
+			view.fitContent();
+
+			redrawGraph(view);
 		}
 
-		firePropertyChange(NETWORK_CREATED, parentID, network.getSUID());
-
-		if ((network.getNodeCount() < Integer.parseInt(CytoscapeInit.getProperties()
-		                                                            .getProperty("viewThreshold")))
-		    && create_view) {
-			createNetworkView(network);
-		}
+		firePropertyChange(NETWORK_CREATED, null, network.getSUID());
+		firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
 	}
 
 	/**
@@ -1563,7 +1564,7 @@ public abstract class Cytoscape {
 	 *            the network to create a view of
 	 */
 	public static GraphView createNetworkView(CyNetwork network) {
-		return createNetworkView(network, network.attrs().get("title",String.class), null, null);
+		return createNetworkView(network, network.attrs().get("name",String.class), null, null);
 	}
 
 	/**
@@ -1612,6 +1613,33 @@ public abstract class Cytoscape {
 	 * @param vs the VisualStyle in which to render this new network. If null,
 	 *           the default visual style will be used.
 	 */
+	public static void addNetworkView(GraphView view, CyLayoutAlgorithm layout, VisualStyle vs) {
+		long suid = view.getNetwork().getSUID();
+		getNetworkViewMap().put(suid, view);
+
+		setCurrentNetworkView(suid);
+
+		setSelectionMode(Cytoscape.getSelectionMode(), view);
+
+		if (vs != null) {
+			VMMFactory.getVisualMappingManager().setVisualStyleForView(view,vs);
+			VMMFactory.getVisualMappingManager().setVisualStyle(vs);
+			VMMFactory.getVisualMappingManager().setNetworkView(view);
+		}
+
+		if (layout == null) {
+			layout = CyLayouts.getDefaultLayout();
+		}
+
+		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
+
+		layout.doLayout(view);
+
+		view.fitContent();
+
+		redrawGraph(view);
+	}
+
 	public static GraphView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout,
 	                                              VisualStyle vs) {
 		if (network == null) {
@@ -1669,6 +1697,7 @@ public abstract class Cytoscape {
 	 * @param new_value DOCUMENT ME!
 	 */
 	public static void firePropertyChange(String property_type, Object old_value, Object new_value) {
+		System.out.println("firing property change: " + property_type);
 		PropertyChangeEvent e = new PropertyChangeEvent(pcsO, property_type, old_value, new_value);
 		getSwingPropertyChangeSupport().firePropertyChange(e);
 		getPropertyChangeSupport().firePropertyChange(e);

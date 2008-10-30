@@ -85,7 +85,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 
 		CyNetwork new_network = Cytoscape.createNetwork(origNet.getNodeList(),
 		                                                origNet.getEdgeList(),
-		                                                origNet.attrs().get("title",String.class) + " copy", 
+		                                                origNet.attrs().get("name",String.class) + " copy", 
 														null,
 														true);
 

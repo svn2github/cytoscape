@@ -251,11 +251,11 @@ public class NetworkPanel extends JPanel
 	public void updateTitle(final CyNetwork network) {
 		// updates the title in the network panel 
 		if (treeTable.getTree().getSelectionPath() != null) { // user has selected something
-			treeTableModel.setValueAt(network.attrs().get("title",String.class),
+			treeTableModel.setValueAt(network.attrs().get("name",String.class),
 		                          treeTable.getTree().getSelectionPath().getLastPathComponent(), 0);
 		} else { // no selection, means the title has been changed programmatically
 			NetworkTreeNode node = getNetworkNode(network.getSUID());
-			treeTableModel.setValueAt(network.attrs().get("title",String.class), node, 0);
+			treeTableModel.setValueAt(network.attrs().get("name",String.class), node, 0);
 		}
 		treeTable.getTree().updateUI();
 		treeTable.doLayout();
@@ -290,9 +290,8 @@ public class NetworkPanel extends JPanel
 	public void addNetwork(Long network_id, Long parent_id) {
 		// first see if it exists
 		if (getNetworkNode(network_id) == null) {
-			//System.out.println("NetworkPanel: addNetwork " + network_id);
-			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(network_id).attrs().get("title",String.class),
-			                                           network_id);
+			System.out.println("NetworkPanel: addNetwork " + network_id);
+			NetworkTreeNode dmtn = new NetworkTreeNode(Cytoscape.getNetwork(network_id).attrs().get("name",String.class), network_id);
 
 			if (parent_id != null && getNetworkNode(parent_id) != null) {
 				getNetworkNode(parent_id).add(dmtn);
@@ -311,6 +310,8 @@ public class NetworkPanel extends JPanel
 		
 			// this is necessary because valueChanged is not fired above 
 			focusNetworkNode(network_id);
+		} else {
+			System.out.println("addNetwork getNetworkTreeNode returned: " + getNetworkNode(network_id).getNetworkID());
 		}
 	}
 
@@ -320,7 +321,7 @@ public class NetworkPanel extends JPanel
 	 * @param network_id DOCUMENT ME!
 	 */
 	public void focusNetworkNode(Long network_id) {
-		//System.out.println("NetworkPanel: focus network node");
+		System.out.println("NetworkPanel: focus network node");
 		DefaultMutableTreeNode node = getNetworkNode(network_id);
 
 		if (node != null) {
@@ -357,17 +358,17 @@ public class NetworkPanel extends JPanel
 	 * @param e DOCUMENT ME!
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		// System.out.println("NetworkPanel: valueChanged - " + e.getSource().getClass().getName()); 
+		 System.out.println("NetworkPanel: valueChanged - " + e.getSource().getClass().getName()); 
 		JTree mtree = treeTable.getTree();
 
 		// sets the "current" network based on last node in the tree selected
 		NetworkTreeNode node = (NetworkTreeNode) mtree.getLastSelectedPathComponent();
 		if ( node == null || node.getUserObject() == null ) {
-			// System.out.println("NetworkPanel: null node - returning");
+			 System.out.println("NetworkPanel: null node - returning");
 			return;
 		}
 
-		// System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
+		 System.out.println("NetworkPanel: firing NETWORK_VIEW_FOCUS");
 		pcs.firePropertyChange(new PropertyChangeEvent(this, CytoscapeDesktop.NETWORK_VIEW_FOCUS,
 	                                                   null, node.getNetworkID()));
 
@@ -396,6 +397,7 @@ public class NetworkPanel extends JPanel
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+			System.out.println("net panel received Cytoscape.NETWORK_CREATED");
 			addNetwork((Long) e.getNewValue(), (Long) e.getOldValue());
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			removeNetwork((Long) e.getNewValue());
@@ -511,7 +513,7 @@ public class NetworkPanel extends JPanel
 	}
 
 	private class TreeCellRenderer extends DefaultTreeCellRenderer {
-	private final static long serialVersionUID = 1213748836751014L;
+		private final static long serialVersionUID = 1213748836751014L;
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
 		                                              boolean expanded, boolean leaf, int row,
 		                                              boolean hasFocus) {
@@ -530,7 +532,11 @@ public class NetworkPanel extends JPanel
 
 		private boolean hasView(Object value) {
 			NetworkTreeNode node = (NetworkTreeNode) value;
-			setToolTipText(Cytoscape.getNetwork(node.getNetworkID()).attrs().get("title",String.class));
+			CyNetwork n = Cytoscape.getNetwork(node.getNetworkID());
+			if ( n != null )
+				setToolTipText(n.attrs().get("name",String.class));
+			else
+				setToolTipText("Root");
 
 			return Cytoscape.viewExists(node.getNetworkID());
 		}

@@ -104,7 +104,7 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 					+ evt.getSource() + ", Num result = " + evt.getNewValue() + ", Source name = " + evt.getOldValue());
 			String message[] = {
 					((DatabaseSearchResult)resultObj).getResultSize() + " interactions found." ,
-					"Do you want to add these interactions to " + Cytoscape.getCurrentNetwork().attrs().get("title",String.class) + "?"
+					"Do you want to add these interactions to " + Cytoscape.getCurrentNetwork().attrs().get("name",String.class) + "?"
 				};
 				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message, "Expand network", JOptionPane.YES_NO_OPTION
 				);

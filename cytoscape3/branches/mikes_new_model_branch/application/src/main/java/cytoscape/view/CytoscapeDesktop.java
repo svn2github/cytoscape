@@ -281,6 +281,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		// Set up the VizMapper
 		//setupVizMapper();
 		//getVizMapperUI();
+		vmm = Cytoscape.getVisualMappingManager();
 
 /*
 		don't automatically close window. Let Cytoscape.exit(returnVal)
@@ -362,7 +363,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return  DOCUMENT ME!
 	public VizMapperMainPanel getVizMapperUI() {
 		if (vizmapperUI == null) {
-			this.vmm = Cytoscape.getVisualMappingManager();
 			vizmapperUI = VizMapperMainPanel.getVizMapperUI();
 			getCytoPanel(SwingConstants.WEST).add("VizMapper\u2122", vizmapperUI);
 			this.getSwingPropertyChangeSupport().addPropertyChangeListener(vizmapperUI);
@@ -457,6 +457,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 			Cytoscape.setSelectedNetworks( (List<Long>)(e.getNewValue()) );
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_CREATED) {
+			System.out.println("getting and refiring NETWORK_CREATED");
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {

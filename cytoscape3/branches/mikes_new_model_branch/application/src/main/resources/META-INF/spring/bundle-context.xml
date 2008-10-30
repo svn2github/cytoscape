@@ -20,6 +20,7 @@
 	<!-- menu actions -->
 	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
 		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
+		<constructor-arg ref="graphViewFactoryServiceRef"/>
 	</bean>
 	<bean id="newWindowSelectedNodesOnlyAction" class="cytoscape.actions.NewWindowSelectedNodesOnlyAction">
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef"/>

@@ -166,11 +166,11 @@ class CreateNetworkViewTask implements Task {
 		try {
 			Cytoscape.createNetworkView(network);
 		} catch (Exception e) {
-			taskMonitor.setException(e, "Could not create network view for network: " + network.attrs().get("title",String.class));
+			taskMonitor.setException(e, "Could not create network view for network: " + network.attrs().get("name",String.class));
 		}
 
 		taskMonitor.setPercentCompleted(100);
-		taskMonitor.setStatus("Network view successfully create for:  " + network.attrs().get("title",String.class));
+		taskMonitor.setStatus("Network view successfully create for:  " + network.attrs().get("name",String.class));
 	}
 
 	public void halt() { }
