@@ -254,13 +254,57 @@ public class TreeView extends TreeViewApp implements Observer, GraphViewChangeLi
 		// System.out.println("graphViewChanged");
 		if (event.getType() == GraphViewChangeEvent.NODES_UNSELECTED_TYPE || 
 		    event.getType() == GraphViewChangeEvent.NODES_SELECTED_TYPE) {
+			// We got a node selection event, but we're a symmetrical matrix -- not
+			// sure what to do, so for now, just return
+			if (dataModel.isSymmetrical()) return;
 			Set<CyNode> nodes = myNetwork.getSelectedNodes();
-			setSelection(nodes, true);
+			setNodeSelection(nodes, true);
+		} else if ((event.getType() == GraphViewChangeEvent.EDGES_UNSELECTED_TYPE ||
+		            event.getType() == GraphViewChangeEvent.EDGES_SELECTED_TYPE) &&
+		            dataModel.isSymmetrical()) {
+			// Got an edge selection (or unselection) event and we're a symmetrical matrix
+			// We want to locate the bounding box that surrounds the set of edges and select
+			// that range
+			Set<CyEdge> edges = myNetwork.getSelectedEdges();
+			setEdgeSelection(edges, true);
 		}
 	}
 
-	// private void setSelection(Node[] nodeArray, boolean select) {
-	private void setSelection(Set<CyNode> nodeArray, boolean select) {
+	private void setEdgeSelection(Set<CyEdge> edgeArray, boolean select) {
+		HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
+		HeaderInfo arrayInfo = dataModel.getArrayHeaderInfo();
+
+		// Avoid loops -- delete ourselves as observers
+		geneSelection.deleteObserver(this);
+		arraySelection.deleteObserver(this);
+
+		// Clear everything that's currently selected
+		geneSelection.setSelectedNode(null);
+		geneSelection.deselectAllIndexes();
+		arraySelection.setSelectedNode(null);
+		arraySelection.deselectAllIndexes();
+
+		// Do the actual selection
+		for (CyEdge cyEdge: edgeArray) {
+			CyNode source = (CyNode)cyEdge.getSource();
+			CyNode target = (CyNode)cyEdge.getTarget();
+			int geneIndex = geneInfo.getHeaderIndex(source.getIdentifier());
+			int arrayIndex = arrayInfo.getHeaderIndex(target.getIdentifier());
+			geneSelection.setIndex(geneIndex, select);
+			arraySelection.setIndex(arrayIndex, select);
+		}
+
+		// Notify all of the observers
+		geneSelection.notifyObservers();
+		arraySelection.notifyObservers();
+
+		// OK, now we can listen again
+		geneSelection.addObserver(this);
+		arraySelection.addObserver(this);
+	}
+
+	// private void setNodeSelection(Node[] nodeArray, boolean select) {
+	private void setNodeSelection(Set<CyNode> nodeArray, boolean select) {
 		HeaderInfo geneInfo = dataModel.getGeneHeaderInfo();
 		geneSelection.deleteObserver(this);
 		geneSelection.setSelectedNode(null);
