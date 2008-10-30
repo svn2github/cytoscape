@@ -25,7 +25,6 @@
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef"/>
 		<constructor-arg ref="graphViewFactoryServiceRef"/>
 	</bean>
-	<!--
 	<bean id="newSessionAction" class="cytoscape.actions.NewSessionAction"/>
 	<bean id="newWindowSelectedNodesEdgesAction" class="cytoscape.actions.NewWindowSelectedNodesEdgesAction"/>
 	<bean id="cloneGraphInNewWindowAction" class="cytoscape.actions.CloneGraphInNewWindowAction"/>
@@ -68,7 +67,6 @@
 	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction"/>
 	<bean id="helpContactHelpDeskAction" class="cytoscape.actions.HelpContactHelpDeskAction"/>
 	<bean id="helpAboutAction" class="cytoscape.actions.HelpAboutAction"/>
--->
 	<!--
 	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.WEST,true));"/>
 	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.SOUTH,true));"/>

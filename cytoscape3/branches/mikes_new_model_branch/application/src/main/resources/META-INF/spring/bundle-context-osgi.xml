@@ -17,13 +17,7 @@
 	                interface="org.cytoscape.view.GraphViewFactory">
 	</osgi:reference>
 
-    <osgi:service id="newNetworkActionService" 
-	              ref="newNetworkAction" 
-				  interface="cytoscape.util.CyAction">
-    </osgi:service>
-
 	<osgi:service id="newWindowSelectedNodesOnlyActionService" ref="newWindowSelectedNodesOnlyAction" interface="cytoscape.util.CyAction"/>
-<!--
 
 	<osgi:service id="newSessionActionService" ref="newSessionAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="newWindowSelectedNodesEdgesActionService" ref="newWindowSelectedNodesEdgesAction" interface="cytoscape.util.CyAction"/>
@@ -60,9 +54,6 @@
 	<osgi:service id="straightenSelectedEdgesActionService" ref="straightenSelectedEdgesAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="selectAllActionService" ref="selectAllAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="deselectAllActionService" ref="deselectAllAction" interface="cytoscape.util.CyAction"/>
-	<osgi:service id="cytoPanelAction(CytoPanelName.WEST,true));Service" ref="cytoPanelAction(CytoPanelName.WEST,true));" interface="cytoscape.util.CyAction"/>
-	<osgi:service id="cytoPanelAction(CytoPanelName.SOUTH,true));Service" ref="cytoPanelAction(CytoPanelName.SOUTH,true));" interface="cytoscape.util.CyAction"/>
-	<osgi:service id="cytoPanelAction(CytoPanelName.EAST,false));Service" ref="cytoPanelAction(CytoPanelName.EAST,false));" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="showGraphicsDetailsActionService" ref="showGraphicsDetailsAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="setVisualPropertiesActionService" ref="setVisualPropertiesAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="settingsActionService" ref="settingsAction" interface="cytoscape.util.CyAction"/>
@@ -71,5 +62,9 @@
 	<osgi:service id="helpContentsActionService" ref="helpContentsAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="helpContactHelpDeskActionService" ref="helpContactHelpDeskAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="helpAboutActionService" ref="helpAboutAction" interface="cytoscape.util.CyAction"/>
+	<!--
+	<osgi:service id="cytoPanelAction(CytoPanelName.WEST,true));Service" ref="cytoPanelAction(CytoPanelName.WEST,true));" interface="cytoscape.util.CyAction"/>
+	<osgi:service id="cytoPanelAction(CytoPanelName.SOUTH,true));Service" ref="cytoPanelAction(CytoPanelName.SOUTH,true));" interface="cytoscape.util.CyAction"/>
+	<osgi:service id="cytoPanelAction(CytoPanelName.EAST,false));Service" ref="cytoPanelAction(CytoPanelName.EAST,false));" interface="cytoscape.util.CyAction"/>
 	-->
 </beans>
