@@ -232,10 +232,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// Keeps current discrete mappings.  NOT PERMANENT
 	private final Map<String, Map<Object, Object>> discMapBuffer = new HashMap<String, Map<Object, Object>>();
 	private String lastVSName = null;
-	private JScrollPane noMapListScrollPane;
-	private JPanel buttonPanel;
-	private JButton addButton;
-	private JPanel bottomPanel;
 	private Map<VisualProperty, JDialog> editorWindowManager = new HashMap<VisualProperty, JDialog>();
 	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
 
@@ -438,10 +434,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	private void initComponents() {
 		mainSplitPane = new javax.swing.JSplitPane();
-		listSplitPane = new javax.swing.JSplitPane();
-
-		bottomPanel = new javax.swing.JPanel();
-
 		defaultAppearencePanel = new javax.swing.JPanel();
 		visualPropertySheetPanel = new PropertySheetPanel();
 		//System.out.println("putting in initComponents:"+vmm.getVisualStyle().getName()+" -> "+visualPropertySheetPanel.getTable().getModel());
@@ -449,26 +441,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		vsSelectPanel = new javax.swing.JPanel();
 		vsNameComboBox = new javax.swing.JComboBox();
-
-		buttonPanel = new javax.swing.JPanel();
-
-		GridBagLayout gridbag = new GridBagLayout();
-		GridBagConstraints constraints = new GridBagConstraints();
-		buttonPanel.setLayout(gridbag);
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		constraints.gridwidth = 1;
-		constraints.gridheight = GridBagConstraints.REMAINDER;
-
-		addButton = new javax.swing.JButton();
-
-		addButton.setUI(new BlueishButtonUI());
-
-		gridbag.setConstraints(addButton, constraints);
-		buttonPanel.add(addButton);
-
-		constraints.gridx = 2;
-		constraints.gridy = 0;
 
 		defaultAppearencePanel.setMinimumSize(new Dimension(100, 100));
 		defaultAppearencePanel.setPreferredSize(new Dimension(mainSplitPane.getWidth(),
@@ -478,44 +450,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		mainSplitPane.setDividerLocation(120);
 		mainSplitPane.setDividerSize(4);
-		listSplitPane.setDividerLocation(400);
-		listSplitPane.setDividerSize(5);
-		listSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-		noMapListScrollPane = new javax.swing.JScrollPane();
-		noMapListScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-		                                                                           "Unused Visual Properties",
-		                                                                           javax.swing.border.TitledBorder.CENTER,
-		                                                                           javax.swing.border.TitledBorder.DEFAULT_POSITION,
-		                                                                           new java.awt.Font("SansSerif",
-		                                                                                             1,
-		                                                                                             12)));
-		noMapListScrollPane.setToolTipText("To Create New Mapping, Drag & Drop List Item to Browser.");
-
-		org.jdesktop.layout.GroupLayout bottomPanelLayout = new org.jdesktop.layout.GroupLayout(bottomPanel);
-		bottomPanel.setLayout(bottomPanelLayout);
-		bottomPanelLayout.setHorizontalGroup(bottomPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                      .add(noMapListScrollPane,
-		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                           272, Short.MAX_VALUE)
-		                                                      .add(buttonPanel,
-		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                           org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                           Short.MAX_VALUE));
-		bottomPanelLayout.setVerticalGroup(bottomPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-		                                                    .add(bottomPanelLayout.createSequentialGroup()
-		                                                                          .add(buttonPanel,
-		                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE,
-		                                                                               25,
-		                                                                               org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-		                                                                          .add(noMapListScrollPane,
-		                                                                               org.jdesktop.layout.GroupLayout.DEFAULT_SIZE,
-		                                                                               135,
-		                                                                               Short.MAX_VALUE)));
-
-		listSplitPane.setLeftComponent(mainSplitPane);
-		listSplitPane.setRightComponent(bottomPanel);
-
 		mainSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 		defaultAppearencePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
 		                                                                              "Defaults",
@@ -618,7 +552,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// Variables declaration - do not modify
 	private JPanel defaultAppearencePanel;
 	private javax.swing.JSplitPane mainSplitPane;
-	private javax.swing.JSplitPane listSplitPane;
 	private DropDownMenuButton optionButton;
 	private PropertySheetPanel visualPropertySheetPanel;
 	private javax.swing.JComboBox vsNameComboBox;
