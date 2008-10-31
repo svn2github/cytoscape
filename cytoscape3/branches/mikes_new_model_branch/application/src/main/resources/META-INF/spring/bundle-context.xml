@@ -16,7 +16,6 @@
 
 	<context:annotation-config />
 
-
 	<!-- menu actions -->
 	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
 		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
@@ -76,9 +75,7 @@
 
 
 	<!-- for initialization -->
-	<bean name="cyMenus" class="cytoscape.view.CyMenus">
-		<property name="bundleContext" ref="bundleContext"></property>
-	</bean>
+	<bean name="cyMenus" class="cytoscape.view.CyMenus"/>
 
 	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop">
 		<constructor-arg ref="cyMenus"/>

@@ -302,7 +302,7 @@ public abstract class CytoscapeAction extends AbstractAction implements CyAction
 	/**
 	 * Indicates whether a check box menu item should be used instead of a normal one.
 	 */
-	boolean useCheckBoxMenuItem() {
+	public boolean useCheckBoxMenuItem() {
 		return useCheckBoxMenuItem;
 	}
 

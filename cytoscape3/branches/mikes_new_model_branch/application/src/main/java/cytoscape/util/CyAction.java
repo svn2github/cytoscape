@@ -37,6 +37,7 @@
  */
 package cytoscape.util;
 
+import javax.swing.Action;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
@@ -47,7 +48,7 @@ import java.util.List;
  * in CytoscapeAction so that CytoscapeActions can be registered
  * as Services. 
  */
-public interface CyAction {
+public interface CyAction extends Action, MenuListener {
 	 void setName(String name);
 	 String getName();
 	 String actionHelp();
@@ -67,7 +68,5 @@ public interface CyAction {
 	 void setPreferredMenu(String new_preferred);
 	 String getPreferredButtonGroup();
 	 void setPreferredButtonGroup(String new_preferred);
-     void menuCanceled(MenuEvent e);
-     void menuDeselected(MenuEvent e);
-     void menuSelected(MenuEvent e);
+	 boolean useCheckBoxMenuItem();
 }	

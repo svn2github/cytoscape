@@ -41,7 +41,6 @@ import cytoscape.actions.*;
 import cytoscape.layout.ui.LayoutMenuManager;
 import cytoscape.layout.ui.SettingsAction;
 import cytoscape.util.CyAction;
-import cytoscape.util.CytoscapeAction;
 import cytoscape.util.CytoscapeMenuBar;
 import cytoscape.util.CytoscapeToolBar;
 import cytoscape.util.undo.RedoAction;
@@ -58,11 +57,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import org.springframework.osgi.context.BundleContextAware;
+import java.util.Map;
 
 
 /**
@@ -73,7 +68,7 @@ import org.springframework.osgi.context.BundleContextAware;
  * writers can use this function to specify the location of the menu item.
  * </p>
  */
-public class CyMenus implements GraphViewChangeListener, BundleContextAware {
+public class CyMenus implements GraphViewChangeListener {
 
 	boolean menusInitialized = false;
 
@@ -106,8 +101,6 @@ public class CyMenus implements GraphViewChangeListener, BundleContextAware {
 	JButton helpButton;
 	JButton vizButton;
 
-	ServiceTracker trac; 
-
 	/**
 	 * Creates a new CyMenus object. This will construct the basic bar objects, 
 	 * but won't fill them with menu items and associated action listeners.
@@ -130,12 +123,7 @@ public class CyMenus implements GraphViewChangeListener, BundleContextAware {
 		opsMenu = menuBar.getMenu("Plugins");
 		helpMenu = menuBar.getMenu("Help");
 
-	}
-
-	private BundleContext bundleContext;
-
-	public void setBundleContext(BundleContext bundleContext) {
-		this.bundleContext = bundleContext;
+		System.out.println("cyMenus finished construction");
 	}
 
 	/**
@@ -234,41 +222,42 @@ public class CyMenus implements GraphViewChangeListener, BundleContextAware {
 	/**
 	 * Add the menu item. 
 	 *
-	 * @param action
+	 * @param action The action to be added
+	 * @param props A map of properties that will be ignored
 	 */
-	public void addAction(CyAction action) {
-		if ( action instanceof CytoscapeAction )
-			addCytoscapeAction( (CytoscapeAction) action );
-		else
-			throw new IllegalArgumentException("CyAction is not an instance of CytoscapeAction");
-	}
-
-	public void addAction(CytoscapeAction action) {
-		addCytoscapeAction(action);
+	public void addAction(CyAction action, Map props) {
+		addAction( action );
 	}
 
 	/**
-	 * Add the menu item in a specific position
+	 * Remove the menu item. 
 	 *
-	 * @param action
-	 * @param index
+	 * @param action The action to be removed
+	 * @param props A map of properties that will be ignored
 	 */
-	public void addAction(CytoscapeAction action, int index) {
-		addCytoscapeAction(action, index);
-	}
-
-	/**
-	 * Takes a CytoscapeAction and will add it to the MenuBar or the Toolbar as
-	 * is appropriate.
-	 */
-	public void addCytoscapeAction(CytoscapeAction action) {
+	public void removeAction(CyAction action, Map props) {
 		if (action.isInMenuBar()) {
-			getMenuBar().addAction(action);
+			getMenuBar().removeAction(action);
 		}
 
 		if (action.isInToolBar()) {
-			getToolBar().addAction(action);
+			getToolBar().removeAction(action);
 		}
+	}
+
+
+	/**
+	 * Takes a CyAction and will add it to the MenuBar or the Toolbar as
+	 * is appropriate.
+	 */
+	public void addAction(CyAction action) {
+		if (action.isInMenuBar()) {
+			getMenuBar().addAction(action);
+		} 
+
+		if (action.isInToolBar()) {
+			getToolBar().addAction(action);
+		} 
 	}
 
 	/**
@@ -277,7 +266,7 @@ public class CyMenus implements GraphViewChangeListener, BundleContextAware {
 	 * @param action
 	 * @param index
 	 */
-	public void addCytoscapeAction(CytoscapeAction action, int index) {
+	public void addAction(CyAction action, int index) {
 		if (action.isInMenuBar()) {
 			getMenuBar().addAction(action, index);
 		}
@@ -308,7 +297,7 @@ public class CyMenus implements GraphViewChangeListener, BundleContextAware {
 	 */
 	void initializeMenus() {
 		if (!menusInitialized) {
-
+/*
 		trac = new ServiceTracker(bundleContext, CyAction.class.getName(), null) {
 		@Override public Object addingService(ServiceReference r) {
                     CyAction cla = (CyAction)super.addingService(r);
@@ -317,7 +306,7 @@ public class CyMenus implements GraphViewChangeListener, BundleContextAware {
                  }
             };
 		trac.open();
-
+*/
 			menusInitialized = true;
 	//		fillMenuBar();
 			fillToolBar();
