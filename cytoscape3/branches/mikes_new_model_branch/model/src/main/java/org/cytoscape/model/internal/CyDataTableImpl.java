@@ -113,16 +113,6 @@ public class CyDataTableImpl implements CyDataTable {
 			// TODO!
 			unique = new HashMap<String, Boolean>();
 		}
-
-		// setup defaults
-		types.put("name", String.class);
-		unique.put("name", false);
-
-		types.put("selected", Boolean.class);
-		unique.put("selected", false);
-
-		for (String key : types.keySet())
-			attributes.put(key, new HashMap<Long, Object>());
 	}
 
 	/**

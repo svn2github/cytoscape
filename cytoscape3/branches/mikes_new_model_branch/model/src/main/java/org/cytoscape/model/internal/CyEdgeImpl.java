@@ -55,6 +55,7 @@ class CyEdgeImpl extends GraphObjImpl implements CyEdge {
 		target = tgt;
 		directed = dir;
 		index = ind;
+		attrs().set("interaction","");
 	}
 
 	/**

@@ -116,7 +116,6 @@ public class ArrayGraph implements CyRootNetwork {
 	 */
 	public ArrayGraph(final CyEventHelper eh) {
 		suid = IdFactory.getNextSUID();
-		//System.out.println("new ArrayGraph out " + suid);
 		numSubNetworks = 0;
 		nodeCount = 0;
 		edgeCount = 0;
@@ -128,14 +127,22 @@ public class ArrayGraph implements CyRootNetwork {
         netAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " network", true,eh));
         netAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " network", false,eh));
 
+		netAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
+		attrs().set("name","");
+
         nodeAttrMgr = new HashMap<String, CyDataTable>();
         nodeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " node", true,eh));
         nodeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " node", false,eh));
+
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
+		nodeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
 
         edgeAttrMgr = new HashMap<String, CyDataTable>();
         edgeAttrMgr.put(CyNetwork.DEFAULT_ATTRS, new CyDataTableImpl(null, suid + " edge", true,eh));
         edgeAttrMgr.put(CyNetwork.HIDDEN_ATTRS, new CyDataTableImpl(null, suid + " edge", false,eh));
 
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("name",String.class,false);
+		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("selected",Boolean.class,false);
 		edgeAttrMgr.get(CyNetwork.DEFAULT_ATTRS).createColumn("interaction",String.class,false);
 
         eventHelper = eh;

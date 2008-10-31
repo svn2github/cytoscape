@@ -973,6 +973,17 @@ public class AbstractCyNetworkCheck extends TestCase {
 		assertTrue(net.getEdgeCyDataTables() instanceof Map);
 	}
 
+	/**
+	 * Make sure the proper default attributes are created 
+	 */
+	public void testDefaultAttributes() {
+		assertNotNull(net.getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS));
+		assertNotNull(net.getNetworkCyDataTables().get(CyNetwork.HIDDEN_ATTRS));
+		assertTrue(net.getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS).getColumnTypeMap().containsKey("name"));
+		assertTrue(net.getNetworkCyDataTables().get(CyNetwork.DEFAULT_ATTRS).getColumnTypeMap().get("name") == String.class );
+		assertEquals(String.class,net.attrs().contains("name"));
+	}
+
 	// 
 	// Internal objects used for testing... 
 	// 

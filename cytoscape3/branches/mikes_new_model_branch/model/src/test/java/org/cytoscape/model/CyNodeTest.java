@@ -427,4 +427,18 @@ public class CyNodeTest extends TestCase {
 		assertTrue("contains edge 3", l.contains(e3));
 		assertTrue("contains edge 4", l.contains(e4));
 	}
+
+	public void testDefaultAttributes() {
+		CyDataTable def = net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
+		assertNotNull(def);
+		assertNotNull(net.getNodeCyDataTables().get(CyNetwork.HIDDEN_ATTRS));
+		assertTrue(def.getColumnTypeMap().containsKey("name"));
+		assertTrue(def.getColumnTypeMap().get("name") == String.class );
+		assertTrue(def.getColumnTypeMap().containsKey("selected"));
+		assertTrue(def.getColumnTypeMap().get("selected") == Boolean.class );
+
+		CyNode n1 = net.addNode();
+		assertEquals( String.class, n1.attrs().contains("name"));
+		assertEquals( Boolean.class, n1.attrs().contains("selected"));
+	}
 }
