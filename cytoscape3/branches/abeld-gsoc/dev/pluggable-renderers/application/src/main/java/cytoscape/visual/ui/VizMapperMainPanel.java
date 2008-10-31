@@ -415,14 +415,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		menu.addPopupMenuListener(this);
 	}
 
-	public static void apply(Object newValue, VisualProperty type) {
-		if (newValue != null){
-			VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView());
-			vs.setDefaultValue(type, newValue);
-			Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vs, null);
-		}
-	}
-
 	public static Object showValueSelectDialog(VisualProperty type, Component caller)
 	    throws Exception {
 		return EditorFactory.showDiscreteEditor(type);

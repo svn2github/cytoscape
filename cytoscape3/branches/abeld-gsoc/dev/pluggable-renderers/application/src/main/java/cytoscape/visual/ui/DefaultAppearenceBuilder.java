@@ -349,7 +349,13 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 				}
 
 				newValue = VizMapperMainPanel.showValueSelectDialog((VisualProperty) list.getSelectedValue(), this);
-				VizMapperMainPanel.apply(newValue, (VisualProperty) list.getSelectedValue());
+				VisualProperty vp = (VisualProperty) list.getSelectedValue();
+				if (newValue != null){
+					VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView());
+					vs.setDefaultValue(vp, newValue);
+					Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vs, null);
+				}
+
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
