@@ -70,9 +70,9 @@ class EdgeBypass extends VizMapBypass {
 		BypassHack.setCurrentObject( e );
 
 		for ( VisualProperty type : VisualPropertyCatalog.getEdgeVisualPropertyList(networkview.getEdgeView(e)) ) 
-			addMenuItem(menu, type);
+			addMenuItem(menu, type, networkview);
 
-        addResetAllMenuItem(menu);
+        addResetAllMenuItem(menu, networkview);
 
         return menu;
     }

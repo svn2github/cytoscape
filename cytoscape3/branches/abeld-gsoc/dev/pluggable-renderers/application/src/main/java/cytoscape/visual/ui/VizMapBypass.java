@@ -50,6 +50,7 @@ import javax.swing.JMenuItem;
 import cytoscape.Cytoscape;
 import org.cytoscape.attributes.CyAttributes;
 import org.cytoscape.vizmap.VisualMappingManager;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.view.VisualProperty;
 import org.cytoscape.vizmap.ObjectToString;
 
@@ -66,7 +67,8 @@ abstract class VizMapBypass {
 
 	abstract protected List<String> getBypassNames();
 
-	protected void addResetAllMenuItem(JMenu menu) {
+	/** networkView is the view for which this menu is created */
+	protected void addResetAllMenuItem(JMenu menu, final GraphView networkView) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("Reset All") {
 	private final static long serialVersionUID = 1202339876700753L;
 				public void actionPerformed(ActionEvent e) {
@@ -77,14 +79,14 @@ abstract class VizMapBypass {
 						if (attrs.hasAttribute(id, attrName))
 							attrs.deleteAttribute(id, attrName);
 
-					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+					Cytoscape.redrawGraph(networkView); // FIXME: should fire some event instead (?)
 					BypassHack.finished();
 				}
 			});
 		menu.add(jmi);
 	}
 
-	protected void addResetMenuItem(JMenu menu, final VisualProperty type) {
+	protected void addResetMenuItem(JMenu menu, final VisualProperty type, final GraphView networkView) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("[ Reset " + type.getName() + " ]") {
 	private final static long serialVersionUID = 1202339876709140L;
 				public void actionPerformed(ActionEvent e) {
@@ -93,14 +95,14 @@ abstract class VizMapBypass {
 					if (attrs.hasAttribute(id, type.getName()))
 						attrs.deleteAttribute(id, type.getName());
 
-					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+					Cytoscape.redrawGraph(networkView);
 					BypassHack.finished();
 				}
 			});
 		menu.add(jmi);
 	}
 
-	protected void addMenuItem(JMenu menu, final VisualProperty type) {
+	protected void addMenuItem(JMenu menu, final VisualProperty type, final GraphView networkView) {
 		final JMenuItem jmi = new JCheckBoxMenuItem(new AbstractAction(type.getName()) {
 	private final static long serialVersionUID = 1202339876717506L;
 				public void actionPerformed(ActionEvent e) {
@@ -118,7 +120,7 @@ abstract class VizMapBypass {
 
 					String val = ObjectToString.getStringValue(obj);
 					attrs.setAttribute(graphObj.getIdentifier(), type.getName(), val);
-					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+					Cytoscape.redrawGraph(networkView);
 					BypassHack.finished();
 				}
 			});
@@ -132,7 +134,7 @@ abstract class VizMapBypass {
 			jmi.setSelected(false);
 		else {
 			jmi.setSelected(true);
-			addResetMenuItem(menu, type);
+			addResetMenuItem(menu, type, networkView);
 		}
 	}
 }

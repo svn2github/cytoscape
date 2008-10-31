@@ -65,11 +65,11 @@ class NodeBypass extends VizMapBypass {
 		BypassHack.setCurrentObject(n);
 
 		for (VisualProperty type : VisualPropertyCatalog.getNodeVisualPropertyList(networkview.getNodeView(n)))
-			addMenuItem(menu, type);
+			addMenuItem(menu, type, networkview);
 
 		menu.addSeparator();
 
-		addResetAllMenuItem(menu);
+		addResetAllMenuItem(menu, networkview);
 
 		return menu;
 	}

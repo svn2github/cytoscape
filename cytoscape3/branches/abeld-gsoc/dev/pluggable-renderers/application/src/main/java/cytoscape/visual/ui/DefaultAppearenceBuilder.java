@@ -151,8 +151,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	public static JPanel getDefaultView(String vsName) {
 		if(dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
-		Cytoscape.getVisualMappingManager().setVisualStyleForView(Cytoscape.getCurrentNetworkView(), vsName);
-		dab.mainView.updateBackgroungColor((Color) Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getGlobalProperty("backgroundColor"));
+		dab.mainView.updateBackgroungColor((Color) Cytoscape.getVisualMappingManager().getVisualStyle(vsName).getGlobalProperty("backgroundColor"));
 		                                            
 		dab.mainView.updateView();
 
