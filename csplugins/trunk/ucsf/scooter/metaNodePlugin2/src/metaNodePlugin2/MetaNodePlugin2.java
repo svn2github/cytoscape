@@ -173,14 +173,14 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * @param group the CyGroup that was just created
 	 */
 	public void groupCreated(CyGroup group) { 
-		// logger.info("groupCreated("+group+")");
+		// logger.debug("groupCreated("+group+")");
 		if (MetaNode.getMetaNode(group) == null) {
 			MetaNode newNode = new MetaNode(group);
 		}
 		// Update the attributes of the group node
-		// logger.info("registering");
+		// logger.debug("registering");
 		registerWithGroupPanel();
-		// logger.info("done");
+		// logger.debug("done");
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 * @param view the CyNetworkView that is being created
 	 */
 	public void groupCreated(CyGroup group, CyNetworkView myview) { 
-		// logger.info("groupCreated("+group+", view)");
+		// logger.debug("groupCreated("+group+", view)");
 		if (MetaNode.getMetaNode(group) == null) {
 			MetaNode newNode = new MetaNode(group);
 
@@ -208,9 +208,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				network.hideNode(group.getGroupNode());
 			}
 		}
-		// logger.info("registering");
+		// logger.debug("registering");
 		registerWithGroupPanel();
-		// logger.info("done");
+		// logger.debug("done");
 	}
 
 	/**
@@ -223,10 +223,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	 */
 	public void groupWillBeRemoved(CyGroup group) { 
 		MetaNode mn = MetaNode.getMetaNode(group);
-		// Expand the group
-		if (group.getState() == COLLAPSED) {
-			mn.expand(true, null, true);
-		}
+		// Expand the group in any views that it's collapsed
+		mn.expand(true, null, true);
+
 		// Get rid of the MetaNode
 		MetaNode.removeMetaNode(mn);
 	}
@@ -265,6 +264,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	public void propertyChange (PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
+			MetaNode.newView((CyNetworkView)e.getNewValue());
 		}
 	}
 
@@ -406,6 +406,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		private void addMenuItem(JMenu menu, Command command, List<CyGroup>groupList,
 		                            CyNode contextNode, String label) {
 
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
 			if (groupList == null || groupList.size() == 0) {
 				if (contextNode == null) {
 			  	JMenuItem item = new JMenuItem(label);
@@ -435,13 +436,16 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			} else if (contextNode.isaGroup() && command == Command.EXPAND) {
 				// Get the groups this group is a member of
 				CyGroup group = CyGroupManager.findGroup(contextNode.getIdentifier());
-				if (group.getState() == COLLAPSED) {
+				// Get the MetaNode
+				MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
+				if (metaNode.isCollapsed(view)) {
 					addSubMenu(menu, label+" "+group.getGroupName(), 
 					           command, group, contextNode);
 				}
 			} else if (CyGroupManager.isaGroup(contextNode) && command == Command.EXPANDNEW) {
 				CyGroup group = CyGroupManager.findGroup(contextNode.getIdentifier());
-				if (group.getState() == COLLAPSED) {
+				MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
+				if (metaNode.isCollapsed(view)) {
 					addSubMenu(menu, label+" "+group.getGroupName()+" into new network", 
 					           command, group, contextNode);
 				}
@@ -502,6 +506,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			List<CyGroup>nodeGroups = null;
 			boolean foundItem = false;
 			if (groupList == null) return false;
+			CyNetworkView view = Cytoscape.getCurrentNetworkView();
 
 			if (command == Command.ADD && node != null) {
 				nodeGroups = node.getGroups();
@@ -512,15 +517,17 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				List<CyGroup> parents = groupNode.getGroups();
 				if (group.getViewer() != null && group.getViewer().equals(groupViewer.getViewerName())) {
 					// Only present reasonable choices to the user
-					if ((command == Command.COLLAPSE && group.getState() == COLLAPSED) ||
-					    (command == Command.EXPAND && group.getState() == EXPANDED)) 
+					MetaNode metaNode = MetaNode.getMetaNode(group.getGroupNode());
+					if ((command == Command.COLLAPSE && metaNode.isCollapsed(view)) ||
+					    (command == Command.EXPAND && metaNode.isCollapsed(view))) 
 						continue;
 					// If command is expand and we're a child of a group that isn't
 					// yet expanded, don't give this as an option
 					if ((command == Command.EXPAND) && (parents != null) && (parents.size() > 0)) {
 						boolean parentCollapsed = false;
 						for (CyGroup parent: parents) {
-							if (groupList.contains(parent) && (parent.getState() == COLLAPSED)) {
+							MetaNode metaParent = MetaNode.getMetaNode(parent.getGroupNode());
+							if (groupList.contains(parent) && (metaParent.isCollapsed(view))) {
 								parentCollapsed = true;
 								break;
 							}
@@ -529,7 +536,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 					}
 
 					if (command == Command.ADD) {
-						MetaNode metaNode = null;
+						metaNode = null;
 						// Are we already in this group?
 						if ((nodeGroups != null) && (nodeGroups.contains(group)))
 							continue;
@@ -634,7 +641,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			}
 			MetaNode newNode = new MetaNode(group);
 			groupCreated(group);
-			newNode.collapse(recursive, multipleEdges, true, null);
+			newNode.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
 		}
 
 		/**

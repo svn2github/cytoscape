@@ -33,12 +33,13 @@
 package metaNodePlugin2.model;
 
 // System imports
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Collection;
+import java.util.Map;
 import java.awt.Dimension;
 
 // giny imports
@@ -78,7 +79,6 @@ import metaNodePlugin2.MetaNodePlugin2;
 public class MetaNode {
 	// Static variables
 	private static HashMap<CyNode,MetaNode> metaMap = new HashMap();
-	private	static HashMap<CyNode,Boolean> hiddenNodes = new HashMap();
 	private static final boolean DEBUG = false;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
@@ -100,7 +100,7 @@ public class MetaNode {
 	private boolean multipleEdges = false;
 	private boolean recursive = false;
 
-	protected boolean isCollapsed = false;
+	protected Map<CyNetworkView, Boolean> collapsedMap = null;
 
 	private CyAttributes edgeAttributes = null;
 	private CyAttributes nodeAttributes = null;
@@ -169,7 +169,7 @@ public class MetaNode {
 		CyNetworkView nView = Cytoscape.getCurrentNetworkView();
 		Collection<MetaNode> metaNodes = metaMap.values();
 		for (MetaNode mNode: metaNodes) {
-			if (mNode.isCollapsed)
+			if (mNode.isCollapsed(nView))
 				mNode.expand(true, nView, false);
 		}
 		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
@@ -184,12 +184,33 @@ public class MetaNode {
 		CyNetworkView nView = Cytoscape.getCurrentNetworkView();
 		Collection<MetaNode> metaNodes = metaMap.values();
 		for (MetaNode mNode: metaNodes) {
-			if (!mNode.isCollapsed)
+			if (!mNode.isCollapsed(nView))
 				mNode.collapse(true, true, false, nView);
 		}
 		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		// vizmapper.applyAppearances();
 		nView.updateView();
+	}
+
+	/**
+	 * Update the collapse/expand information for all metanodes
+	 * in the provided view
+	 *
+	 * @param view the view to update
+	 */
+	static public void newView(CyNetworkView view) {
+		CyNetwork net = view.getNetwork();
+		for (MetaNode mn: metaMap.values()) {
+			CyNode groupNode = mn.getCyGroup().getGroupNode();
+			// Is this actually collapsed in this view?
+			if (net.containsNode(groupNode)) {
+				// Yes, mark it as so
+				mn.collapsedMap.put(view, Boolean.TRUE);
+			} else {
+				// No, make it so
+				mn.collapsedMap.put(view, Boolean.FALSE);
+			}
+		}
 	}
 
 
@@ -208,6 +229,7 @@ public class MetaNode {
 		groupNode = group.getGroupNode();
 		metaMap.put(groupNode, this);
 		metaEdgeMap = new HashMap();
+		collapsedMap = new HashMap();
 		logger = CyLogger.getLogger(MetaNode.class);
 
 		if (DEBUG) logger.debug("Creating meta-group "+group.getGroupName());
@@ -253,8 +275,7 @@ public class MetaNode {
 			    group.addOuterEdge(edge);
 			}
 		}
-		// Note that this node is hidden
-		hiddenNodes.put(groupNode, Boolean.TRUE);
+		collapsedMap.put(networkView, Boolean.FALSE);
 		updateAttributes();
 		if (DEBUG) logger.debug("... done\n\n");
 	}
@@ -335,7 +356,7 @@ public class MetaNode {
 
 		// Finally, if we're collapsed, hide this node (possibly recursively) and
 		// update the display
-		if (!isCollapsed)
+		if (!isCollapsed(networkView))
 			return;
 
 		// Get the X and Y coordinates of the metaNode
@@ -377,7 +398,7 @@ public class MetaNode {
 	public void nodeRemoved(CyNode node) {
 		update(null);
 		// If we're collapsed, unhide the node
-		if (isCollapsed) {
+		if (isCollapsed(networkView)) {
 			restoreNode(node, null);
 		}
 
@@ -396,7 +417,7 @@ public class MetaNode {
 				if (edge.getTarget() == node || edge.getSource() == node) {
 					// Remove it from this metaEdge
 					edgeIter.remove();
-					if (isCollapsed) {
+					if (isCollapsed(networkView)) {
 						restoreEdge(edge);
 					}
 				}
@@ -422,7 +443,7 @@ public class MetaNode {
 				// Rats, looks like we need to create metaEdges for this node
 				CyEdge metaEdge = createMetaEdge(edge, null, false);
 				// If we're expanded, hide it
-				if (!isCollapsed) {
+				if (!isCollapsed(networkView)) {
 					hideEdge(metaEdge);
 				}
 			}
@@ -449,7 +470,7 @@ public class MetaNode {
 		if (newEdgeMap == null)
 			createMetaEdges();
 
-		isCollapsed = true;
+		collapsedMap.put(view, Boolean.TRUE);
 		expand(recursive, view, true);
 		collapse(recursive, multipleEdges, false, view);
 	}
@@ -465,15 +486,16 @@ public class MetaNode {
 	 */
 	public void collapse(boolean recursive, boolean multipleEdges, boolean updateNetwork,
 	                     CyNetworkView view) {
-		if (isCollapsed) 
+		// Initialize
+		update(view);
+
+		if (isCollapsed(networkView)) 
 			return;
 
 		if (DEBUG) logger.debug("collapsing "+groupNode);
 		// Profile prf = new Profile();
 		// prf.start();
 
-		// Initialize
-		update(view);
 		// prf.done("collapse: Update=");
 
 		this.multipleEdges = multipleEdges;
@@ -487,7 +509,7 @@ public class MetaNode {
 		createMetaEdges();
 		// prf.done("collapse: createMetaEdges=");
 
-		isCollapsed = true;
+		collapsedMap.put(view, Boolean.TRUE);
 
 		// Set our state
 		metaGroup.setState(MetaNodePlugin2.COLLAPSED);
@@ -506,13 +528,22 @@ public class MetaNode {
 	 * @param update update the display?
 	 */
 	public void expand(boolean recursive, CyNetworkView view, boolean update) {
-		if (!isCollapsed) 
+		if (view == null) {
+			// Special case.  We're probably going away, so we need to expand ourselves
+			// in *every* view
+			for (CyNetworkView nView: collapsedMap.keySet()) {
+				expand(recursive, nView, update);
+			}
 			return;
-
-		if (DEBUG) logger.debug("Expanding "+groupNode);
+		}
 
 		// Initialize
 		update(view);
+
+		if (!isCollapsed(networkView)) 
+			return;
+
+		if (DEBUG) logger.debug("Expanding "+groupNode);
 
 		// First, find all of our edges.  This will include any metaEdges as well
 		// as any edges that were created by external applications
@@ -546,7 +577,7 @@ public class MetaNode {
 			updateDisplay();
 		}
 
-		isCollapsed = false;
+		collapsedMap.put(view, Boolean.FALSE);
 		metaGroup.setState(MetaNodePlugin2.EXPANDED);
 
 		// Now, for any of our nodes that are metaNodes and were expanded when we
@@ -603,7 +634,7 @@ public class MetaNode {
 				return null;
 			}
 
-			if (!multipleEdges && metaEdgeMap.containsKey(parent.groupNode) && parent.isCollapsed) {
+			if (!multipleEdges && metaEdgeMap.containsKey(parent.groupNode) && parent.isCollapsed(networkView)) {
 				// Already seen this?
 				if (DEBUG) logger.debug("... returning cached edge "+metaEdgeMap.get(parent.groupNode).getIdentifier());
 				return metaEdgeMap.get(parent.groupNode);
@@ -622,7 +653,7 @@ public class MetaNode {
 			// one edge per partner
 			
 			// First make sure our partner is not an expanded metanode
-			if (MetaNode.getMetaNode(partner) != null && !MetaNode.getMetaNode(partner).isCollapsed) {
+			if (MetaNode.getMetaNode(partner) != null && !MetaNode.getMetaNode(partner).isCollapsed(networkView)) {
 				if (DEBUG) logger.debug("... returning null ");
 				// skip it
 				return null;
@@ -676,6 +707,19 @@ public class MetaNode {
 		// Set the visual style
 		new_view.setVisualStyle(Cytoscape.getCurrentNetworkView().getVisualStyle().getName());
 		new_view.fitContent();
+	}
+
+	/**
+ 	 * Determine if this metanode is collapsed in this view
+ 	 *
+ 	 * @param view the network view to check
+ 	 * @return True if it is collapsed, False otherwise
+ 	 */
+	public boolean isCollapsed(CyNetworkView view) {
+		if (collapsedMap.containsKey(view)) {
+			return collapsedMap.get(view).booleanValue();
+		} else
+			return false;
 	}
 
 	/*****************************************************************
@@ -736,7 +780,7 @@ public class MetaNode {
 			CyNode partner = getPartner(edge);
 			if (DEBUG) logger.debug("... partner is "+partner.getIdentifier());
 			// Is our partner an expanded metaNode?
-			if (MetaNode.getMetaNode(partner) != null && !MetaNode.getMetaNode(partner).isCollapsed) {
+			if (MetaNode.getMetaNode(partner) != null && !MetaNode.getMetaNode(partner).isCollapsed(networkView)) {
 				// Yes, just continue
 				continue;
 			} else if (isNodeHidden(partner)) {
@@ -820,7 +864,7 @@ public class MetaNode {
 			Dimension d = new Dimension();
 			d.setSize(xValue, yValue);
 			// Is this already visible?
-			if (hiddenNodes.containsKey(node) && hiddenNodes.get(node) == Boolean.FALSE)
+			if (network.containsNode(node))
 				continue;
 			restoreNode(node, d);
 		}
@@ -862,7 +906,7 @@ public class MetaNode {
 			if (metaMap.containsKey(node)) {
 				// Yes, recurse down
 				MetaNode child = (MetaNode)metaMap.get(node);
-				if (!child.isCollapsed) {
+				if (!child.isCollapsed(networkView)) {
 					if (childMetaNodes == null) {
 						childMetaNodes = new ArrayList<MetaNode>();
 					}
@@ -916,7 +960,6 @@ public class MetaNode {
 	private void hideNode(CyNode node) {
 		if (DEBUG) logger.debug("Hiding node "+node.getIdentifier());
 		network.hideNode(node);
-		hiddenNodes.put(node, Boolean.TRUE);
 	}
 
 	/**
@@ -930,7 +973,6 @@ public class MetaNode {
 		if (DEBUG) logger.debug("Restoring node "+node.getIdentifier());
 
 		network.restoreNode(node);
-		hiddenNodes.put(node, Boolean.FALSE);
 
 		if (center != null) {
 			// Get the nodeView
@@ -954,12 +996,7 @@ public class MetaNode {
 	 * @return true if the node is hidden, false otherwise
 	 */
 	private boolean isNodeHidden(CyNode node) {
-		if (hiddenNodes.containsKey(node) &&
-			  hiddenNodes.get(node) == Boolean.TRUE) { 
-			return true;
-		}
-
-		return false;
+		return (!network.containsNode(node));
 	}
 
 	/**
@@ -1024,7 +1061,7 @@ public class MetaNode {
 		for (CyGroup group: groupList) {
 			if (metaMap.containsKey(group.getGroupNode())) {
 				MetaNode meta = metaMap.get(group.getGroupNode());
-				if (meta != this && meta.isCollapsed) return meta;
+				if (meta != this && meta.isCollapsed(networkView)) return meta;
 			}
 		}
 		return null;
