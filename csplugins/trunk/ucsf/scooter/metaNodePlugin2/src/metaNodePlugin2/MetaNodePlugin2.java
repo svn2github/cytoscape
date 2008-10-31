@@ -57,7 +57,6 @@ import cytoscape.Cytoscape;
 import cytoscape.CyEdge;
 import cytoscape.CyNode;
 import cytoscape.CyNetwork;
-import cytoscape.data.CyAttributes;
 import cytoscape.logger.CyLogger;
 import cytoscape.plugin.CytoscapePlugin;
 import cytoscape.plugin.PluginInfo;
@@ -96,7 +95,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		DELETE("delete"),
 		EXPANDALL("expandAll"),
 		COLLAPSEALL("collapseAll"),
-		EXPANDNEW("expandNew");
+		EXPANDNEW("expandNew"),
+		SETTINGS("settings");
 
 		private String name;
 		private Command(String s) { name = s; }
@@ -380,7 +380,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				}
 				m.add(item);
 			}
-
+			m.add(new JSeparator());
 			{
 				groupList = sortList(groupList);
 				addMenuItem(m, Command.EXPAND, groupList, contextNode, "Expand metanode");
@@ -391,6 +391,13 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				addMenuItem(m, Command.DELETE, groupList, contextNode, "Remove node from metanode");
 				addMenuItem(m, Command.EXPANDALL, groupList, null, "Expand all metanodes");
 				addMenuItem(m, Command.COLLAPSEALL, groupList, null, "Collapse all metanodes");
+			}
+			m.add(new JSeparator());
+			{
+			  JMenuItem item = new JMenuItem("Metanode Settings...");
+				MetanodeCommandListener l = new MetanodeCommandListener(Command.SETTINGS, null,null);
+				item.addActionListener(l);
+				m.add(item);
 			}
 		}
 
@@ -619,6 +626,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				expandAll();
 			} else if (command == Command.COLLAPSEALL) {
 				collapseAll();
+			} else if (command == Command.SETTINGS) {
+				// Bring up the settings dialog
 			}
 		}
 

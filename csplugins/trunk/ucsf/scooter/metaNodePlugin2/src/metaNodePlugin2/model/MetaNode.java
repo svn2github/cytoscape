@@ -250,9 +250,7 @@ public class MetaNode {
 		// will be meta-edges
 		ArrayList<CyEdge>newOuterEdges = new ArrayList();
 		List<CyEdge>externalEdges = group.getOuterEdges();
-		Iterator<CyEdge>iter = externalEdges.iterator();
-		while (iter.hasNext()) {
-			CyEdge edge = iter.next();
+		for (CyEdge edge: externalEdges) {
 			if (DEBUG) logger.debug("... outer edge "+edge.getIdentifier());
 			if (!isMetaEdge(edge))
 				continue;
@@ -267,9 +265,7 @@ public class MetaNode {
 		}
 
 		// OK, now add all of the new outer edges
-		iter = newOuterEdges.iterator();
-		while (iter.hasNext()) {
-			CyEdge edge = iter.next();
+		for (CyEdge edge: newOuterEdges) {
 			if (!externalEdges.contains(edge)) {
 					if (DEBUG) logger.debug("... adding edge "+edge.getIdentifier());
 			    group.addOuterEdge(edge);
@@ -342,9 +338,7 @@ public class MetaNode {
 			List<CyEdge> edges = metaGroup.getOuterEdges();
 	
 			// Attach them to the group node
-			Iterator<CyEdge> iter = edges.iterator();
-			while (iter.hasNext()) {
-				CyEdge edge = iter.next();
+			for (CyEdge edge: edges) {
 				if (DEBUG) logger.debug("... checking edge "+edge.getIdentifier());
 				// Did we "cause" this edge?
 				if (edge.getTarget() == node || edge.getSource() == node) {
@@ -405,9 +399,7 @@ public class MetaNode {
 		List <CyEdge>removeEdges = new ArrayList();
 
 		// For each metaEdge, see if we're the cause for the metaNode.  If so, remove it.
-		Iterator <CyEdge>mEdge = newEdgeMap.keySet().iterator();
-		while (mEdge.hasNext()) {
-			CyEdge metaEdge = mEdge.next();
+		for (CyEdge metaEdge: newEdgeMap.keySet()) {
 			// Get the list of edges represented by this metaEdge
 			List<CyEdge> edgeList = newEdgeMap.get(metaEdge);
 			// For each edge, see if this node is on one side
@@ -428,17 +420,14 @@ public class MetaNode {
 			}
 		}
 		// OK, now remove all of the metaEdges
-		mEdge = removeEdges.iterator();
-		while (mEdge.hasNext()) {
-			newEdgeMap.remove(mEdge.next());
+		for (CyEdge edge: removeEdges) {
+			newEdgeMap.remove(edge);
 		}
 
 		// Now, we need to see if we need to add any metaEdges since we've moved this
 		// node out.  We'll find that out by walking the outerEdgeMap and see if we
 		// are now a partner
-		mEdge = metaGroup.getOuterEdges().iterator();
-		while (mEdge.hasNext()) {
-			CyEdge edge = mEdge.next();
+		for (CyEdge edge: metaGroup.getOuterEdges()) {
 			if (edge.getTarget() == node || edge.getSource() == node) {
 				// Rats, looks like we need to create metaEdges for this node
 				CyEdge metaEdge = createMetaEdge(edge, null, false);
@@ -747,9 +736,7 @@ public class MetaNode {
 		List<CyEdge> edges = metaGroup.getOuterEdges();
 	
 		// Attach them to the group node
-		Iterator<CyEdge> iter = edges.iterator();
-		while (iter.hasNext()) {
-			CyEdge edge = iter.next();
+		for (CyEdge edge: edges) {
 			CyEdge newEdge = createMetaEdge(edge, null, false);
 			if (newEdge != null) {
 				network.addEdge(newEdge);
@@ -768,12 +755,9 @@ public class MetaNode {
 		//
 		// Restore outer edges
 		//
-		List<CyEdge> edges = metaGroup.getOuterEdges();
 		if (DEBUG) logger.debug(metaGroup.getGroupName()+": restoreEdges");
-		Iterator<CyEdge> iter = edges.iterator();
-		while (iter.hasNext()) {
+		for (CyEdge edge: metaGroup.getOuterEdges()) {
 			// First, see if the partner of this edge is gone
-			CyEdge edge = iter.next();
 			if (DEBUG) logger.debug("... restoring outer edge "+edge.getIdentifier());
 			String identifier = edge.getIdentifier();
 			// Get the edge partner
@@ -798,10 +782,7 @@ public class MetaNode {
 		//
 		// Restore inner edges
 		//
-		edges = metaGroup.getInnerEdges();
-		iter = edges.iterator();
-		while (iter.hasNext()) {
-			CyEdge edge = iter.next();
+		for (CyEdge edge: metaGroup.getInnerEdges()) {
 			if (DEBUG) logger.debug("restoreEdges: restoring inner edge "+edge.getIdentifier());
 			restoreEdge(edge);
 		}
@@ -854,11 +835,7 @@ public class MetaNode {
 		double xOffset = 0;
 		double yOffset = 0;
 
-		List<CyNode> nodes = metaGroup.getNodes();
-		Iterator<CyNode> nodeIter = nodes.iterator();
-		while (nodeIter.hasNext()) {
-			CyNode node = nodeIter.next();
-
+		for (CyNode node: metaGroup.getNodes()) {
 			double xValue = getXHintAttr(nodeAttributes, node.getIdentifier(), xCenter);
 			double yValue = getYHintAttr(nodeAttributes, node.getIdentifier(), yCenter);
 			Dimension d = new Dimension();
@@ -1093,7 +1070,7 @@ public class MetaNode {
 	/**
 	 * Update our child counts and attributes
 	 */
-	private void updateAttributes() {
+	protected void updateAttributes() {
 		nChildren = metaGroup.getNodes().size();
 
 		nDescendents = nChildren;
@@ -1102,6 +1079,7 @@ public class MetaNode {
 			if (metaMap.containsKey(node)) {
 				// This node is a metaNode
 				MetaNode mn = metaMap.get(node);
+				mn.updateAttributes();
 				nDescendents += mn.getDescendentCount()-1;
 			}
 		}
