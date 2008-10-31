@@ -157,7 +157,7 @@ public class BelowAndAbovePanel extends JPanel {
 
                 final ContinuousMapping cMapping;
 
-                cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type).getMapping(0);
+                cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getCalculator(type).getMapping(0);
 
                 BoundaryRangeValues brv;
                 BoundaryRangeValues original;
@@ -182,7 +182,7 @@ public class BelowAndAbovePanel extends JPanel {
                 cMapping.fireStateChanged();
 
                 // Update view.
-                Cytoscape.redrawGraph( Cytoscape.getVisualMappingManager().getNetworkView() );
+                Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
                 caller.repaint();
                 caller.getParent()

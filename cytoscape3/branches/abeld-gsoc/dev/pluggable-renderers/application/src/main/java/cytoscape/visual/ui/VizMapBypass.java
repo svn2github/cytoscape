@@ -77,7 +77,7 @@ abstract class VizMapBypass {
 						if (attrs.hasAttribute(id, attrName))
 							attrs.deleteAttribute(id, attrName);
 
-					Cytoscape.redrawGraph(vmm.getNetworkView());
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 					BypassHack.finished();
 				}
 			});
@@ -93,7 +93,7 @@ abstract class VizMapBypass {
 					if (attrs.hasAttribute(id, type.getName()))
 						attrs.deleteAttribute(id, type.getName());
 
-					Cytoscape.redrawGraph(vmm.getNetworkView());
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 					BypassHack.finished();
 				}
 			});
@@ -118,7 +118,7 @@ abstract class VizMapBypass {
 
 					String val = ObjectToString.getStringValue(obj);
 					attrs.setAttribute(graphObj.getIdentifier(), type.getName(), val);
-					Cytoscape.redrawGraph(vmm.getNetworkView());
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 					BypassHack.finished();
 				}
 			});

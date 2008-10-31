@@ -133,7 +133,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 				vmm.setVisualStyleForView( new_view, newVS );
 			}
 		}
-        vmm.setVisualStyle(vsName);
+        vmm.setVisualStyleForView(new_view, vsName);
 	}
 
 	public void menuSelected(MenuEvent e) {

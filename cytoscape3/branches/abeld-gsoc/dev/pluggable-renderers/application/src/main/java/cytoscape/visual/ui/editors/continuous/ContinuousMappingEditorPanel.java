@@ -405,7 +405,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	private void initRangeValues() {
 		final CyAttributes attr;
 
-		calculator = Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type);
+		calculator = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getCalculator(type);
 		if (type.isNodeProp()) {
 			attr = Cytoscape.getNodeAttributes();
 		} else {
@@ -562,7 +562,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				slider.repaint();
 				repaint();
 
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 			} else {
 				valueSpinner.setEnabled(false);
 				valueSpinner.setValue(0);
@@ -604,7 +604,7 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 				      .setLocation((int) ((slider.getSize().width - 12) * newPosition), 0);
 
 				updateMap();
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 				slider.getSelectedThumb().repaint();
 				slider.getParent().repaint();

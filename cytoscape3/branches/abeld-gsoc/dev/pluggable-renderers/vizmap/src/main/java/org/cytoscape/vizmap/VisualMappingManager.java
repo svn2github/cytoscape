@@ -121,4 +121,11 @@ public class VisualMappingManager extends SubjectBase {
 		if ( g != null && vs != null )
 			viewStyleMap.put(g,vs);
 	}
+	/** Sets the visual style of the given GraphView to the given VisualStyle */
+	public void setVisualStyleForView( GraphView g, String vsName ) {
+		if ( g != null && vsName != null && catalog.getVisualStyle(vsName)!=null){
+			viewStyleMap.put(g, catalog.getVisualStyle(vsName));
+		}
+	}
+	
 }

@@ -65,7 +65,6 @@ public class DefaultViewPanel extends JPanel {
 	private final static long serialVersionUID = 1202339876691085L;
 	private static final int PADDING = 20;
 	private GraphView view;
-	private GraphView oldView;
 	private static GraphPerspective dummyNet;
 	private Color background;
 
@@ -100,11 +99,8 @@ public class DefaultViewPanel extends JPanel {
 		view.setIdentifier(dummyNet.getIdentifier());
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
-		Cytoscape.getVisualMappingManager().setNetworkView(view);
 		
-		oldView = Cytoscape.getVisualMappingManager().getNetworkView();
-
-		background = (Color) Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalProperty("backgroundColor");
+		background = (Color) Cytoscape.getVisualMappingManager().getVisualStyleForView(view).getGlobalProperty("backgroundColor");
 		this.setBackground(background);
 	}
 
@@ -128,7 +124,6 @@ public class DefaultViewPanel extends JPanel {
 	 */
 	public void clean() {
 		Cytoscape.destroyNetwork(dummyNet);
-		Cytoscape.getVisualMappingManager().setNetworkView(oldView);
 		dummyNet = null;
 		canvas = null;
 	}
@@ -138,8 +133,6 @@ public class DefaultViewPanel extends JPanel {
 	 */
 	protected void updateView() {
 		if (view != null) {
-			Cytoscape.getVisualMappingManager().setNetworkView(view);
-			Cytoscape.getVisualMappingManager().setVisualStyleForView(view, Cytoscape.getVisualMappingManager().getVisualStyle());
 
 			final Dimension panelSize = this.getSize();
 			view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
@@ -154,7 +147,6 @@ public class DefaultViewPanel extends JPanel {
 			this.add(canvas);
 
 			canvas.setLocation(PADDING / 2, PADDING / 2);
-			Cytoscape.getVisualMappingManager().getVisualStyle().apply(view);
 
 			if ((background != null) && (canvas != null)) {
 				canvas.setBackground(background);

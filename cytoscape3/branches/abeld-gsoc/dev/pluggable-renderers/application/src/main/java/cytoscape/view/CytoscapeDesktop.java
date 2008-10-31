@@ -413,20 +413,23 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 * @return the OLD VisualStyle
 	 */
 	public VisualStyle setVisualStyle(VisualStyle style) {
-		vmm.setVisualStyle(style);
+		vmm.setVisualStyleForView(Cytoscape.getCurrentNetworkView(), style);
 		return null; // TODO why does this return null, should the method just return void instead?
 	}
 
+	// FIXME: pre-pluggable-renderers refactor, this did a whole bunch of stuff. Most of it seemed nonsensical so I commented it out. 
+	// TODO: understand what this methods is used for an fix accordingly
 	protected void updateFocus(String network_id) {
-		final VisualStyle old_style = vmm.getVisualStyle();
-		final GraphView old_view = Cytoscape.getCurrentNetworkView();
+		//final VisualStyle old_style = vmm.getVisualStyle();
+		//final GraphView old_view = Cytoscape.getCurrentNetworkView();
 
     // set the current Network/View
     Cytoscape.setCurrentNetwork(network_id);
 
     if (Cytoscape.setCurrentNetworkView(network_id)) {
       // deal with the new Network
-      final GraphView new_view = Cytoscape.getCurrentNetworkView();
+    	/*
+    	final GraphView new_view = Cytoscape.getCurrentNetworkView();
 
       VisualMappingManager visMgr = new VisualMappingManager();
       VisualStyle new_style = visMgr.getVisualStyleForView(new_view);
@@ -438,10 +441,10 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
       if (new_style.getName().equals(old_style.getName()) == false) {
         vmm.setVisualStyle(new_style);
-
-        // Is this necessary?
-        Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-      }
+*/
+      // Is this necessary?
+      Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
+      //}
     }
 	}
 

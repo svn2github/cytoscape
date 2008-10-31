@@ -151,8 +151,8 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	public static JPanel getDefaultView(String vsName) {
 		if(dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
-		Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
-		dab.mainView.updateBackgroungColor((Color) Cytoscape.getVisualMappingManager().getVisualStyle().getGlobalProperty("backgroundColor"));
+		Cytoscape.getVisualMappingManager().setVisualStyleForView(Cytoscape.getCurrentNetworkView(), vsName);
+		dab.mainView.updateBackgroungColor((Color) Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getGlobalProperty("backgroundColor"));
 		                                            
 		dab.mainView.updateView();
 
@@ -204,7 +204,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Default Appearance for "
-		         + Cytoscape.getVisualMappingManager().getVisualStyle().getName());
+		         + Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getName());
 		mainView.setBorder(new javax.swing.border.LineBorder(java.awt.Color.darkGray, 1, true));
 
 		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(mainView);
@@ -249,8 +249,6 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 		applyButton.setText("Apply");
 		applyButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					
-					Cytoscape.getVisualMappingManager().setNetworkView(Cytoscape.getCurrentNetworkView());
 					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 					dispose();
 				}
@@ -324,7 +322,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			System.out.println("got visual style modified event!");
 			VisualStyle vs = (VisualStyle) evt.getOldValue();
 			// only react to changes in VisualStyle we are editing:
-			if (vs.getName().equals(Cytoscape.getVisualMappingManager().getVisualStyle().getName())){ // can this _not_ match?
+			if (vs.getName().equals(Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getName())){ // can this _not_ match?
 				System.out.println("rebuilding list");
 				buildList();
 				mainView.updateView();
@@ -370,7 +368,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			//FIXME: here the string 'selected' will contin the global property to set!!
 			System.out.println("FIXME: not setting global property:"+selected);
 			try {
-				VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
+				VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView());
 				vs.setGlobalProperty("defaultColor", newColor);
 				Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vs, null);
 
@@ -379,7 +377,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			}
 
 			// FIXME: these should be moved to a VISUALSTYLE_MODIFIED callback
-			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 			if (selected.equals("Background Color")) {
 				//FIXME: Cytoscape.getVisualMappingManager().getVisualStyle().apply(mainView);
@@ -507,7 +505,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 				VisualProperty vp = (VisualProperty) value;
 				setText(vp.getName());
 				if (vp.getDataType() == String.class) {
-					final Object defVal = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue(vp); 
+					final Object defVal = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getDefaultValue(vp); 
 
 					if (defVal != null) {
 						this.setToolTipText((String) defVal);

@@ -258,7 +258,7 @@ public abstract class Cytoscape {
        public static final String PROXY_MODIFIED = "PROXY_MODIFIED";
 
        /**
-        * Specifies that the given VisualStyle has been modified.
+        * Specifies that the given VisualStyle has been modified. FIXME: this should event be moved to VisualMappingManager
         */
        public static final String VISUALSTYLE_MODIFIED = "VISUALSTYLE_MODIFIED";
 
@@ -1734,8 +1734,6 @@ public abstract class Cytoscape {
 
 		if (vs != null) {
 			VMMFactory.getVisualMappingManager().setVisualStyleForView(view,vs);
-			VMMFactory.getVisualMappingManager().setVisualStyle(vs);
-			VMMFactory.getVisualMappingManager().setNetworkView(view);
 		}
 
 		if (layout == null) {
@@ -1960,8 +1958,6 @@ public abstract class Cytoscape {
 	 * This is a temporary utility method and will eventually be refactored away.
 	 */
 	public static void redrawGraph(GraphView view) {
-		VMMFactory.getVisualMappingManager().setNetworkView(view);
-		VMMFactory.getVisualMappingManager().getVisualStyle().apply(view);
 		view.updateView();
 	}
 

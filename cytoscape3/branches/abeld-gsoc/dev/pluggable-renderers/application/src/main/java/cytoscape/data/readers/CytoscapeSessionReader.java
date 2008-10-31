@@ -364,8 +364,6 @@ public class CytoscapeSessionReader {
 				VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 				VisualStyle lastVS = vmm.getVisualStyle(lastVSName);
 				vmm.setVisualStyleForView(curView,lastVS);
-				vmm.setNetworkView(curView);
-				vmm.setVisualStyle(lastVS);
 				Cytoscape.redrawGraph(curView);
 			}
 
@@ -699,11 +697,8 @@ public class CytoscapeSessionReader {
 				curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
 				                                         reader.getLayoutAlgorithm());
 
-				Cytoscape.getVisualMappingManager().setVisualStyleForView(curNetView, 
-							Cytoscape.getVisualMappingManager().getVisualStyle(vsName));
+				Cytoscape.getVisualMappingManager().setVisualStyleForView(curNetView, vsName);
 
-				Cytoscape.getVisualMappingManager().setNetworkView(curNetView);
-				Cytoscape.getVisualMappingManager().setVisualStyle(vsName);
 
 				reader.doPostProcessing(new_network);
 

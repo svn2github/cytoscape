@@ -86,7 +86,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 	public void actionPerformed(ActionEvent e) {
 		GraphPerspective origNet = Cytoscape.getCurrentNetwork();
 		GraphView origView = Cytoscape.getCurrentNetworkView();
-		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle(); 
+		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyleForView(origView); 
 
 		GraphPerspective new_network = Cytoscape.createNetwork(origNet.getNodeIndicesArray(),
 		                                                origNet.getEdgeIndicesArray(),
@@ -131,7 +131,7 @@ public class CloneGraphInNewWindowAction extends CytoscapeAction {
 				nev.setLineType( oev.getLineType() );
 			}
 
-			Cytoscape.getVisualMappingManager().setVisualStyle(vs);
+			Cytoscape.getVisualMappingManager().setVisualStyleForView(newView, vs);
 		}
 	}
 

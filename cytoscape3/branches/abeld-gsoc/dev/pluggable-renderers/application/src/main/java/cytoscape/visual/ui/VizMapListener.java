@@ -145,12 +145,6 @@ public class VizMapListener implements PropertyChangeListener {
 
                 System.out.println("Applying visual styles from: " + vizmapSource.toString());
 
-                // In the situation where the old visual style has been overwritten
-                // with a new visual style of the same name, then make sure it is
-                // reapplied.
-                final VisualMappingManager vmm = VMMFactory.getVisualMappingManager();
-                vmm.setVisualStyle(vmm.getVisualStyle().getName());
-				vmm.setVisualStyleForView( Cytoscape.getCurrentNetworkView(), vmm.getVisualStyle() );
                 Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
             }
         }

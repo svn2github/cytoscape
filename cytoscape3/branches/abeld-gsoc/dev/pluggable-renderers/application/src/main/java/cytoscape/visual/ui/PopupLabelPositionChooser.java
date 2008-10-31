@@ -177,7 +177,7 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 			if ( go != null ) {
 				String val = ObjectToString.getStringValue(newlp);
 				Cytoscape.getNodeAttributes().setAttribute(go.getIdentifier(), "NODE_LABEL_POSITION", val);
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 			}
 		}
 	}

@@ -69,9 +69,10 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	 * Creates a new LineTypeIcon object.
 	 */
 	public LineTypeIcon() {
-		this((Stroke) VMMFactory.getVisualMappingManager().getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("EDGE_LINE_STYLE")),
+//		 FIXME: this used per-visual style defaults, but got them from a deprecated API
+		this((Stroke) new BasicStroke(),
 			DEFAULT_ICON_SIZE * 3, DEFAULT_ICON_SIZE, "default LineTypeIcon name", 
-			(Color) VMMFactory.getVisualMappingManager().getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("EDGE_COLOR")) );
+			(Color) Color.BLACK );
 	}
 	
 	public LineTypeIcon(Stroke stroke) {
@@ -103,7 +104,7 @@ public class LineTypeIcon extends VisualPropertyIcon {
 	public LineTypeIcon(Stroke stroke, int width, int height, String name, Color color) {
 		super(null, width, height, name, color);
 
-		final float lineWidth = ((Number) VMMFactory.getVisualMappingManager().getVisualStyle().getDefaultValue(VisualPropertyCatalog.getVisualProperty("EDGE_LINE_WIDTH"))).floatValue(); 
+		final float lineWidth = 1.0f; // FIXME: this used per-visual style defaults, but got them from a deprecated API
 
 		final BasicStroke st = (BasicStroke) stroke;
 		/*

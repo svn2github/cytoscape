@@ -230,10 +230,6 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 			Cytoscape.getDesktop().setFocus(Cytoscape.getCurrentNetwork().getIdentifier());
 
 			String curNetID = Cytoscape.getCurrentNetwork().getIdentifier();
-
-			Cytoscape.getVisualMappingManager()
-			         .setVisualStyleForView(Cytoscape.getNetworkView(curNetID),
-			                                Cytoscape.getVisualMappingManager().getVisualStyle());
 			Cytoscape.redrawGraph(Cytoscape.getNetworkView(curNetID));
 		}
 

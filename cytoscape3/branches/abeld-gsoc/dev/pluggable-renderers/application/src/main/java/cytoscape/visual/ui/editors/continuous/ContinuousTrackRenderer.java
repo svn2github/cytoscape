@@ -134,9 +134,9 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 		this.type = type;
 
 		if (type.isNodeProp())
-			cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type).getMapping(0);
+			cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getCalculator(type).getMapping(0);
 		else
-			cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyle().getCalculator(type).getMapping(0);
+			cMapping = (ContinuousMapping) Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getCalculator(type).getMapping(0);
 
 		title = cMapping.getControllingAttributeName();
 
@@ -587,7 +587,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 
 					cMapping.fireStateChanged();
 
-					Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+					Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 					slider.repaint();
 				}
 
@@ -621,7 +621,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 				cMapping.fireStateChanged();
 
 				// Update view.
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 				slider.repaint();
 				repaint();
@@ -652,7 +652,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 				cMapping.fireStateChanged();
 
 				// Update view.
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 				slider.repaint();
 				repaint();
@@ -721,7 +721,7 @@ public class ContinuousTrackRenderer extends JComponent implements VizMapperTrac
 			if (dragFlag == true) {
 				dragFlag = false;
 				cMapping.fireStateChanged();
-				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+				Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 			}
 		}
 

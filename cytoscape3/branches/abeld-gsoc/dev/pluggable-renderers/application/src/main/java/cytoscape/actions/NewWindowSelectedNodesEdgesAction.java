@@ -119,7 +119,7 @@ public class NewWindowSelectedNodesEdgesAction extends CytoscapeAction {
                 vsName = newVS.getName();
             }
         }
-        vmm.setVisualStyle(vsName);
+        vmm.setVisualStyleForView(new_network_view, vsName);
 	}
 
 	public void menuSelected(MenuEvent e) {

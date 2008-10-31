@@ -65,6 +65,7 @@ import javax.swing.border.EmptyBorder;
 import org.cytoscape.GraphPerspective;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
+import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualStyle;
 
 import cytoscape.Cytoscape;
@@ -722,20 +723,19 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				final GraphPerspective cyNetwork = Cytoscape.getCurrentNetwork();
 				Cytoscape.getCurrentNetwork().setTitle(value);
 				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
-
+				final GraphView view = Cytoscape.getCurrentNetworkView();
 				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager.getClient(selectedClientID))
 				                    .getDefaultVisualStyle();
 				if(style == null) {
-					style = Cytoscape.getVisualMappingManager().getVisualStyle();
+					style = Cytoscape.getVisualMappingManager().getVisualStyleForView(view);
 				}
 
 
 
-				if (Cytoscape.getVisualMappingManager().getCalculatorCatalog()
-                .getVisualStyle(style.getName()) == null)
+				if (Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(style.getName()) == null)
 					Cytoscape.getVisualMappingManager().getCalculatorCatalog().addVisualStyle(style);
 
-				Cytoscape.getVisualMappingManager().setVisualStyle(style);
+				Cytoscape.getVisualMappingManager().setVisualStyleForView(view, style);
 
 		}
 	}

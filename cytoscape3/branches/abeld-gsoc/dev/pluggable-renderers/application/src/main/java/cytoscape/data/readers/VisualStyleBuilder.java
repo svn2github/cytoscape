@@ -96,7 +96,7 @@ public class VisualStyleBuilder {
 		
 		// First, get our current style information. 
 		VisualMappingManager vm = Cytoscape.getVisualMappingManager();
-		VisualStyle currentStyle = vm.getVisualStyle();
+		VisualStyle currentStyle = vm.getVisualStyleForView(Cytoscape.getCurrentNetworkView());
 
 		//FIXME nac.setNodeSizeLocked(nodeSizeLocked); 
 
@@ -151,7 +151,7 @@ public class VisualStyleBuilder {
 
 		// Now, attempt to add it
 		catalog.addVisualStyle(graphStyle);
-		vizmapper.setVisualStyle(graphStyle);
+		vizmapper.setVisualStyleForView(Cytoscape.getCurrentNetworkView(), graphStyle);
 	}
 
 	private String getAttrName(VisualProperty type) {

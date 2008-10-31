@@ -147,7 +147,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	protected void addButtonActionPerformed(ActionEvent evt) {
 		BoundaryRangeValues newRange;
 		
-		Object defValue = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue(type);
+		Object defValue = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getDefaultValue(type);
 		final double maxValue = EditorValueRangeTracer.getTracer().getMax(type);
 
 		if (mapping.getPointCount() == 0) {
@@ -155,7 +155,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 			newRange = new BoundaryRangeValues(below, defValue, above);
 			mapping.addPoint(maxValue / 2, newRange);
-			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 			slider.repaint();
 			repaint();
@@ -243,7 +243,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			updateMap();
 			mapping.fireStateChanged();
 
-			Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 			repaint();
 		}
 	}
@@ -293,7 +293,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 						slider.setTrackRenderer(new DiscreteTrackRenderer(type, below, above));
 						slider.repaint();
 
-						Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
+						Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 					}
 				}
 			});
@@ -321,7 +321,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 			below = allPoints.get(0).getRange().lesserValue;
 			above = allPoints.get(allPoints.size() - 1).getRange().greaterValue;
 		} else {
-			Object defaultVal = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue(type);
+			Object defaultVal = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getDefaultValue(type);
 			below = defaultVal;
 			above = defaultVal;
 		}

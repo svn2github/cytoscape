@@ -99,7 +99,7 @@ public class ValueSelectDialog extends JDialog {
 		setList();
 		
 		// get original value and set the selected item.
-		originalValue = Cytoscape.getVisualMappingManager().getVisualStyle().getDefaultValue(type); 
+		originalValue = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getDefaultValue(type); 
 	}
 
 	/**

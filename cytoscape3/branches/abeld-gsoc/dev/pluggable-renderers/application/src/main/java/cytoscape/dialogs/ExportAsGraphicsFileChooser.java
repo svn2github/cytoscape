@@ -88,7 +88,7 @@ public class ExportAsGraphicsFileChooser extends JDialog implements ActionListen
 	// Check if transparency is used in the visual style
 	private boolean useTransparency(){
 
-		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyle();
+		VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView());
 		// FIXME FIXME FIXME
 		return true;
 		/*
