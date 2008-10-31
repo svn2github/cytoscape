@@ -16,7 +16,35 @@
 
 	<context:annotation-config />
 
+	<!-- for initialization -->
+	<bean name="cyMenus" class="cytoscape.view.CyMenus"/>
+
+	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop">
+		<constructor-arg ref="cyMenus"/>
+	</bean>
+
+	<!-- TODO fix vizmapper
+	<bean name="defaultViewPanel" class="cytoscape.visual.ui.DefaultViewPanel">
+		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
+		<constructor-arg ref="graphViewFactoryServiceRef"/>
+	</bean>
+
+	<bean name="vizMapperMainPanel" class="cytoscape.visual.ui.VizMapperMainPanel">
+		<constructor-arg ref="cytoscapeDesktop"/>
+		<constructor-arg ref="defaultViewPanel"/>
+	</bean>
+	-->
+
+	<bean name="cyMain" class="cytoscape.CyMain">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+
 	<!-- menu actions -->
+	<bean id="importGraphFileAction" class="cytoscape.actions.ImportGraphFileAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+		<constructor-arg ref="cyReaderManagerServiceRef"/>
+		<constructor-arg ref="graphViewFactoryServiceRef"/>
+	</bean>
 	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
 		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
 		<constructor-arg ref="graphViewFactoryServiceRef"/>
@@ -73,28 +101,5 @@
 	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.EAST,false));"/>
 	-->
 
-
-	<!-- for initialization -->
-	<bean name="cyMenus" class="cytoscape.view.CyMenus"/>
-
-	<bean name="cytoscapeDesktop" class="cytoscape.view.CytoscapeDesktop">
-		<constructor-arg ref="cyMenus"/>
-	</bean>
-
-	<!-- TODO fix vizmapper
-	<bean name="defaultViewPanel" class="cytoscape.visual.ui.DefaultViewPanel">
-		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
-		<constructor-arg ref="graphViewFactoryServiceRef"/>
-	</bean>
-
-	<bean name="vizMapperMainPanel" class="cytoscape.visual.ui.VizMapperMainPanel">
-		<constructor-arg ref="cytoscapeDesktop"/>
-		<constructor-arg ref="defaultViewPanel"/>
-	</bean>
-	-->
-
-	<bean name="cyMain" class="cytoscape.CyMain">
-		<constructor-arg ref="cytoscapeDesktop"/>
-	</bean>
 
 </beans>

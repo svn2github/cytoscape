@@ -12,10 +12,10 @@ public interface CyNetworkReader extends CyReader {
 
 	/** 
 	 * Once the {@link CyReader#read()} method finishes executing, this 
-	 * method should return a non-null {@link List} of {@link CyNetwork} objects.
-	 * @return A non-null {@link List} of {@link CyNetwork} objects.
+	 * method should return a {@link CyNetwork} object.
+	 * @return A {@link CyNetwork} object.
 	 */
-	public List<CyNetwork> getReadNetworks();
+	public CyNetwork getReadNetwork();
 }
 
 

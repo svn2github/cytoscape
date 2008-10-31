@@ -234,10 +234,8 @@ public class GMLReader implements CyNetworkReader, CyNetworkViewReader {
 		percentUtil = new PercentUtil(3);
 	}
 
-	public List<CyNetwork> getReadNetworks() {
-		List<CyNetwork> ret = new ArrayList<CyNetwork>(1);
-		ret.add(network);
-		return ret;
+	public CyNetwork getReadNetwork() {
+		return network;
 	}
 
 	public List<GraphView> getReadNetworkViews() {

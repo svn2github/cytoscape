@@ -45,6 +45,7 @@ import java.util.Map;
   */
 public interface CyNetwork extends Identifiable, GraphObject {
 	String DEFAULT_ATTRS = "USER";
+	String HIDDEN_ATTRS = "HIDDEN";
 
 	CyNode addNode();
 

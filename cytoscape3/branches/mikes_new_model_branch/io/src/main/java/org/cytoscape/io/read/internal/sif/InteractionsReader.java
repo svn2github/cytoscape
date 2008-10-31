@@ -46,6 +46,7 @@ import cytoscape.task.PercentUtil;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
+import org.cytoscape.model.CyNetworkFactory;
 import org.cytoscape.model.CyNode;
 
 import java.io.IOException;
@@ -62,13 +63,14 @@ public class InteractionsReader implements CyNetworkReader {
 	private TaskMonitor taskMonitor;
 	private List<Interaction> allInteractions; 
 	private InputStream inputStream;
+	private CyNetworkFactory networkFactory;
 	private CyNetwork network;
 	private PercentUtil percentUtil;
 
-	// TODO figure out insertion of network
-	public InteractionsReader(CyNetwork net) {
+	public InteractionsReader(CyNetworkFactory net) {
 		allInteractions = new ArrayList<Interaction>();
-		network = net;
+		networkFactory = net;
+		network = null;
 	}
 
 	public void setTaskMonitor(TaskMonitor monitor) {
@@ -81,10 +83,8 @@ public class InteractionsReader implements CyNetworkReader {
 		inputStream = is;
 	}
 
-	public List<CyNetwork> getReadNetworks() {
-		List<CyNetwork> ret = new ArrayList<CyNetwork>(1);
-		ret.add(network);
-		return ret;
+	public CyNetwork getReadNetwork() {
+		return network;
 	}
 
 	public String[] getExtensions() {
@@ -134,6 +134,8 @@ public class InteractionsReader implements CyNetworkReader {
 	} 
 
 	private void createNetwork() {
+
+		network = networkFactory.getInstance();
 
 		// figure out how many nodes and edges we need before we create the graph;
 		// this improves performance for large graphs

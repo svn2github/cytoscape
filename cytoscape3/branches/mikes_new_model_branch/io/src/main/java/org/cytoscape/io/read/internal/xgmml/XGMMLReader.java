@@ -168,10 +168,8 @@ public class XGMMLReader implements CyNetworkReader, CyNetworkViewReader {
 		networkStream = is;
 	}
 
-	public List<CyNetwork> getReadNetworks() {
-		List<CyNetwork> l = new ArrayList<CyNetwork>(1);
-		l.add(newNet);
-		return l;
+	public CyNetwork getReadNetwork() {
+		return newNet;
 	}
 
 	public List<GraphView> getReadNetworkViews() {

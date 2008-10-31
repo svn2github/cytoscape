@@ -297,16 +297,6 @@ public class CyMenus implements GraphViewChangeListener {
 	 */
 	void initializeMenus() {
 		if (!menusInitialized) {
-/*
-		trac = new ServiceTracker(bundleContext, CyAction.class.getName(), null) {
-		@Override public Object addingService(ServiceReference r) {
-                    CyAction cla = (CyAction)super.addingService(r);
-					addAction( cla );
-                    return cla;
-                 }
-            };
-		trac.open();
-*/
 			menusInitialized = true;
 	//		fillMenuBar();
 			fillToolBar();

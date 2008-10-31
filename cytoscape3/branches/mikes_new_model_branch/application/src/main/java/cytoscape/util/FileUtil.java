@@ -136,10 +136,10 @@ public abstract class FileUtil {
 	 * @param load_save_custom a flag for the type of file dialog
 	 * @param filters an array of CyFileFilters that let you filter
 	 *                based on extension
-	 */
 	public static File[] getFiles(String title, int load_save_custom, CyFileFilter[] filters) {
-		return getFiles(null, title, load_save_custom, filters, null, null, true);
+		return getFiles(, title, load_save_custom, filters, null, null, true);
 	}
+	 */
 
     /**
      * Returns an array of File objects, this method should be used instead

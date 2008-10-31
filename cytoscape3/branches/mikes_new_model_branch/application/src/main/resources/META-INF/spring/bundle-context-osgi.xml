@@ -17,6 +17,13 @@
 	                interface="org.cytoscape.view.GraphViewFactory">
 	</osgi:reference>
 
+	<osgi:reference id="cyReaderManagerServiceRef" 
+	                interface="org.cytoscape.io.read.CyReaderManager">
+	</osgi:reference>
+
+
+
+	<osgi:service id="importGraphFileActionService" ref="importGraphFileAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="newWindowSelectedNodesOnlyActionService" ref="newWindowSelectedNodesOnlyAction" interface="cytoscape.util.CyAction"/>
 
 	<osgi:service id="newSessionActionService" ref="newSessionAction" interface="cytoscape.util.CyAction"/>
