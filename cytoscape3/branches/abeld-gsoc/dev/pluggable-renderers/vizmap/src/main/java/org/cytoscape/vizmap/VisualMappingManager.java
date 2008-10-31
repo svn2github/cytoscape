@@ -79,10 +79,6 @@ public class VisualMappingManager extends SubjectBase {
 	// Catalog of visual styles and calculators.
 	// This is the actual object to store styles.
 	private CalculatorCatalog catalog;
-	
-	private GraphView networkView; // the object displaying the network
-	private VisualStyle activeVS; // the currently active visual style
-
 	private static final String DEF_STYLE_NAME = "default";
 
 	/**
@@ -92,47 +88,6 @@ public class VisualMappingManager extends SubjectBase {
 	 */
 	public VisualMappingManager() {
 		this.catalog = CalculatorCatalogFactory.getCalculatorCatalog();
-		
-		// TODO figure out where to get properties from
-//		// Try to find default style name from prop.
-//		String defStyle = CytoscapeInit.getProperties().getProperty("defaultVisualStyle");
-//
-//		if (defStyle == null)
-//			defStyle = DEF_STYLE_NAME;
-
-		VisualStyle vs = catalog.getVisualStyle(DEF_STYLE_NAME);
-
-		if (vs == null)
-			vs = catalog.getVisualStyle(DEF_STYLE_NAME);
-
-		setVisualStyle(vs);
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param new_view DOCUMENT ME!
-	 */
-	public void setNetworkView(final GraphView new_view) {
-		this.networkView = new_view;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public GraphView getNetworkView() {
-		return networkView;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public GraphPerspective getNetwork() {
-		return networkView.getGraphPerspective();
 	}
 
 	/**
@@ -153,10 +108,7 @@ public class VisualMappingManager extends SubjectBase {
 		return catalog.getVisualStyle(name);
 	}
 
-	public VisualStyle getVisualStyle() {
-		return activeVS;
-	}
-
+	/** Returns the VisualSTyle used by the give GraphView */
 	public VisualStyle getVisualStyleForView( GraphView g ) {
 		if ( !viewStyleMap.containsKey(g) ) 
 			viewStyleMap.put( g, catalog.getVisualStyle(DEF_STYLE_NAME) );
@@ -164,43 +116,9 @@ public class VisualMappingManager extends SubjectBase {
 		return viewStyleMap.get(g);
 	}
 
+	/** Sets the visual style of the given GraphView to the given VisualStyle */
 	public void setVisualStyleForView( GraphView g, VisualStyle vs ) {
 		if ( g != null && vs != null )
 			viewStyleMap.put(g,vs);
-	}
-
-	/**
-	 * Sets a new visual style, and returns the old style. Also fires an event
-	 * to attached listeners only if the visual style changes.
-	 *
-	 * If the argument is null, the previous visual style is simply returned.
-	 */
-	public VisualStyle setVisualStyle(final VisualStyle vs) {
-		
-		if ((vs != null) && (vs != activeVS)) {
-			VisualStyle tmp = activeVS;
-			activeVS = vs;
-			fireStateChanged();
-
-			return tmp;
-		} else
-			return activeVS;
-	}
-
-	/**
-	 * Sets a new visual style. Attempts to get the style with the given name
-	 * from the catalog and pass that to setVisualStyle(VisualStyle). The return
-	 * value is the old style.
-	 *
-	 * If no visual style with the given name is found, no change is made, an
-	 * error message is passed to the logger, and null is returned.
-	 */
-	public VisualStyle setVisualStyle(final String newVSName) {
-		final VisualStyle vs = catalog.getVisualStyle(newVSName);
-
-		if (vs != null)
-			return setVisualStyle(vs);
-		else
-			return activeVS;
 	}
 }
