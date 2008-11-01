@@ -67,6 +67,8 @@ import javax.xml.bind.Unmarshaller;
 import org.cytoscape.GraphPerspective;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
+
+import org.cytoscape.vizmap.CalculatorCatalog;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualStyle;
 import org.cytoscape.vizmap.DuplicateCalculatorNameException;
@@ -153,7 +155,7 @@ public class CytoscapeSessionReader {
 	private float networkCounter = 0;
 	private float netIndex = 0;
 	private long start;
-	private String lastVSName = null;
+	private VisualStyle lastVS = null; 
 
 	/**
 	 * Constructor for remote file (specified by an URL)<br>
@@ -362,7 +364,6 @@ public class CytoscapeSessionReader {
 
 			if ((curView != null) && (curView.equals(Cytoscape.getNullNetworkView()) == false)) {
 				VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
-				VisualStyle lastVS = vmm.getVisualStyle(lastVSName);
 				vmm.setVisualStyleForView(curView,lastVS);
 				Cytoscape.redrawGraph(curView);
 			}
@@ -687,18 +688,28 @@ public class CytoscapeSessionReader {
 			// Execute if view is available.
 			if (childNet.isViewAvailable()) {
 				// Set visual style
-				String vsName = childNet.getVisualStyle();
+				String vsName = childNet.getVisualStyle(); // FIXME: shouldn't this return VisualStyle instead of string??
 
 				if (vsName == null)
 					vsName = "default";
 
-				lastVSName = vsName;
+				String lastVSName = vsName;
 
 				curNetView = Cytoscape.createNetworkView(new_network, new_network.getTitle(),
 				                                         reader.getLayoutAlgorithm());
 
-				Cytoscape.getVisualMappingManager().setVisualStyleForView(curNetView, vsName);
-
+				// FIXME: just a work-around until childNet.getVisualStyle() returns a VisualStyle
+				CalculatorCatalog catalog = Cytoscape.getVisualMappingManager().getCalculatorCatalog();
+				lastVS = null;
+				for (VisualStyle vs: catalog.getVisualStyles()){
+					if (vs.getName().equals(vsName))
+						lastVS = vs;
+				}
+				if (lastVS == null){ // just in case
+					lastVS = catalog.getDefaultVisualStyle();
+				}
+				Cytoscape.getVisualMappingManager().setVisualStyleForView(curNetView, lastVS);
+				
 
 				reader.doPostProcessing(new_network);
 

@@ -732,7 +732,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 
 
-				if (Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyle(style.getName()) == null)
+				if ( !Cytoscape.getVisualMappingManager().getCalculatorCatalog().getVisualStyleNames().contains(style.getName()))
 					Cytoscape.getVisualMappingManager().getCalculatorCatalog().addVisualStyle(style);
 
 				Cytoscape.getVisualMappingManager().setVisualStyleForView(view, style);

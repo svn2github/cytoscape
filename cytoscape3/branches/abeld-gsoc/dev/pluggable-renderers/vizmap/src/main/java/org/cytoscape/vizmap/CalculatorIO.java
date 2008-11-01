@@ -221,13 +221,13 @@ public class CalculatorIO {
 		}
 
 		// visual styles
-		final Set<String> visualStyleNames = catalog.getVisualStyleNames();
+		final Set<VisualStyle> visualStyles = catalog.getVisualStyles();
+		//final Set<String> visualStyleNames = catalog.getVisualStyleNames();
 
-		VisualStyle vs;
 		Properties styleProps;
 
-		for (String name : visualStyleNames) {
-			vs = catalog.getVisualStyle(name);
+		for (VisualStyle vs: visualStyles) {
+			String name = vs.getName();
 			styleProps = new Properties();
 
 			try {

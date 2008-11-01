@@ -79,7 +79,6 @@ public class VisualMappingManager extends SubjectBase {
 	// Catalog of visual styles and calculators.
 	// This is the actual object to store styles.
 	private CalculatorCatalog catalog;
-	private static final String DEF_STYLE_NAME = "default";
 
 	/**
 	 * Creates a new VisualMappingManager object.
@@ -99,19 +98,10 @@ public class VisualMappingManager extends SubjectBase {
 		return catalog;
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public VisualStyle getVisualStyle(String name) {
-		return catalog.getVisualStyle(name);
-	}
-
-	/** Returns the VisualSTyle used by the give GraphView */
+	/** Returns the VisualStyle used by the given GraphView */
 	public VisualStyle getVisualStyleForView( GraphView g ) {
 		if ( !viewStyleMap.containsKey(g) ) 
-			viewStyleMap.put( g, catalog.getVisualStyle(DEF_STYLE_NAME) );
+			viewStyleMap.put( g, catalog.getDefaultVisualStyle() );
 
 		return viewStyleMap.get(g);
 	}
@@ -121,11 +111,4 @@ public class VisualMappingManager extends SubjectBase {
 		if ( g != null && vs != null )
 			viewStyleMap.put(g,vs);
 	}
-	/** Sets the visual style of the given GraphView to the given VisualStyle */
-	public void setVisualStyleForView( GraphView g, String vsName ) {
-		if ( g != null && vsName != null && catalog.getVisualStyle(vsName)!=null){
-			viewStyleMap.put(g, catalog.getVisualStyle(vsName));
-		}
-	}
-	
 }

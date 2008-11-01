@@ -58,6 +58,7 @@ import org.cytoscape.view.VisualPropertyCatalog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -77,10 +78,11 @@ public class CalculatorCatalog {
 	private static final String label = "label";
 	private Map<VisualProperty, Map<String, Calculator>> calculators;
 	private Map<VisualProperty, List<ChangeListener>> listeners;
-	private Map<String, VisualStyle> visualStyles;
+	private Set<VisualStyle> visualStyles;
 	private Map<String, Class> mappers;
 
 	private Properties props;
+	final private VisualStyle defaultVisualStyle = new VisualStyle("default");
 
 	/**
 	 * Only one <code>ChangeEvent</code> is needed per catalog instance since
@@ -104,7 +106,7 @@ public class CalculatorCatalog {
 		calculators = new HashMap<VisualProperty, Map<String, Calculator>>();
 		listeners = new HashMap<VisualProperty, List<ChangeListener>>();
 
-		visualStyles = new HashMap<String, VisualStyle>();
+		visualStyles = new HashSet<VisualStyle>();
 
 		// mapping database
 		mappers = new HashMap<String, Class>();
@@ -264,7 +266,7 @@ public class CalculatorCatalog {
 	public String checkCalculatorName(String calcName, VisualProperty calcType) {
 		Map<String, Calculator> theMap = getCalculatorMap(calcType);
 
-		return checkName(calcName, theMap);
+		return checkName(calcName, theMap.keySet());
 	}
 
 	/**
@@ -283,7 +285,7 @@ public class CalculatorCatalog {
 	    throws DuplicateCalculatorNameException, IllegalArgumentException {
 		final VisualProperty calcType = c.getVisualProperty();
 		final Map<String, Calculator> theMap = getCalculatorMap(calcType);
-		final String newName = checkName(name, theMap);
+		final String newName = checkName(name, theMap.keySet());
 
 		if (newName.equals(name)) { // given name is unique
 			theMap.remove(c.toString());
@@ -392,7 +394,11 @@ public class CalculatorCatalog {
 	 * @return DOCUMENT ME!
 	 */
 	public Set<String> getVisualStyleNames() {
-		return visualStyles.keySet();
+		Set<String> result = new HashSet<String>();
+		for (VisualStyle vs: visualStyles){
+			result.add(vs.getName());
+		}
+		return result;
 	}
 
 	/**
@@ -400,8 +406,8 @@ public class CalculatorCatalog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public Collection<VisualStyle> getVisualStyles() {
-		return visualStyles.values();
+	public Set<VisualStyle> getVisualStyles() {
+		return new HashSet<VisualStyle>(visualStyles); // return copy
 	}
 
 	/**
@@ -416,12 +422,13 @@ public class CalculatorCatalog {
 		final String name = vs.toString();
 
 		// check for duplicate names
-		if (visualStyles.keySet().contains(name)) {
+		Set<String> existingNames = getVisualStyleNames();
+		if (existingNames .contains(name)) {
 			String s = "Duplicate visual style name " + name;
 			throw new DuplicateCalculatorNameException(s);
 		}
 
-		visualStyles.put(name, vs);
+		visualStyles.add(vs);
 	}
 
 	/**
@@ -431,8 +438,8 @@ public class CalculatorCatalog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public VisualStyle removeVisualStyle(String name) {
-		return visualStyles.remove(name);
+	public void removeVisualStyle(VisualStyle style) {
+		visualStyles.remove(style);
 	}
 
 	/**
@@ -442,11 +449,14 @@ public class CalculatorCatalog {
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public VisualStyle getVisualStyle(String name) {
+	/*public VisualStyle getVisualStyle(String name) {
 		if ((name != null) && name.equals("default") && !visualStyles.containsKey(name))
 			createDefaultVisualStyle();
 
 		return visualStyles.get(name);
+	}*/
+	public VisualStyle getDefaultVisualStyle() {
+		return defaultVisualStyle;
 	}
 
 	/**
@@ -457,7 +467,7 @@ public class CalculatorCatalog {
 	 * @return DOCUMENT ME!
 	 */
 	public String checkVisualStyleName(String name) {
-		return checkName(name, visualStyles);
+		return checkName(name, getVisualStyleNames());
 	}
 
 	protected void addCalculator(Calculator c, Map<String, Calculator> m) throws DuplicateCalculatorNameException {
@@ -475,14 +485,14 @@ public class CalculatorCatalog {
 		m.put(name, c);
 	}
 
-	protected String checkName(String name, Map<String, ?> m) {
+	protected String checkName(String name, Set<String> existingNames) {
 		if (name == null)
 			return null;
 
 		String newName = name;
 		int nameApp = 2;
 
-		while (m.keySet().contains(newName)) {
+		while (existingNames.contains(newName)) {
 			newName = name + nameApp;
 			nameApp++;
 		}
@@ -539,7 +549,7 @@ public class CalculatorCatalog {
 	 * @return
 	 */
 	public String checkCalculatorName(VisualProperty type, String name) {
-		return checkName(name, getCalculatorMap(type));
+		return checkName(name, getCalculatorMap(type).keySet());
 	}
 
 	/**
@@ -584,8 +594,4 @@ public class CalculatorCatalog {
 		}	
 	}
 	*/
-
-	public void addNodeRenderer(NodeRenderer nodeRenderer){
-		// get supported visualAttributes, add them somewhere.. (?)
-	}
 }

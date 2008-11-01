@@ -143,11 +143,20 @@ public class VisualStyleBuilder {
 		CalculatorCatalog catalog = vizmapper.getCalculatorCatalog();
 
 		String styleName = name + " style";
-
+		
+		// Remove this in case we've already loaded this network once
+		if ( catalog.getVisualStyleNames().contains(styleName)){
+			VisualStyle oldVS = null;
+			for (VisualStyle vs: catalog.getVisualStyles()){
+				if (vs.getName().equals(styleName))
+					oldVS = vs;
+			}
+			// FIXME: in this case, instead of creating new one, the old VisualStyle should be modified in-place 
+			catalog.removeVisualStyle(oldVS);
+		}
+			
 		VisualStyle graphStyle = new VisualStyle(styleName, calculators, currentStyle.copyGlobalVisualProperties());
 
-		// Remove this in case we've already loaded this network once
-		catalog.removeVisualStyle(styleName);
 
 		// Now, attempt to add it
 		catalog.addVisualStyle(graphStyle);

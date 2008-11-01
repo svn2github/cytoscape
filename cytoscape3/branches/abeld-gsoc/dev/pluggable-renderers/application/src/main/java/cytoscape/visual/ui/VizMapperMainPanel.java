@@ -214,7 +214,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private static final ImageIcon duplicateIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_slide-duplicate.png"));
 	private static final ImageIcon legendIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_graphic-styles-16.png"));
 	private static final ImageIcon editIcon = new ImageIcon(Cytoscape.class.getResource("/images/ximian/stock_edit-16.png"));
-	private static final String DEFAULT_VS_NAME = "default";
 
 	/*
 	 * This is a singleton.
@@ -242,13 +241,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private GraphView currentView;
 	
 	/** store the Table state for each VisualStyle in this map, by storing the TableModel*/
-	private Map<String, TableModel> vsToModelMap;
+	private Map<VisualStyle, TableModel> vsToModelMap;
 
 	// Keeps current discrete mappings.  NOT PERMANENT
 	private final Map<String, Map<Object, Object>> discMapBuffer = new HashMap<String, Map<Object, Object>>();
-	private String lastVSName = null;
+	private VisualStyle lastVS = null;
 	private Map<VisualProperty, JDialog> editorWindowManager = new HashMap<VisualProperty, JDialog>();
-	private Map<String, Image> defaultImageManager = new HashMap<String, Image>();
+	private Map<VisualStyle, Image> defaultImageManager = new HashMap<VisualStyle, Image>();
 
 	
 	private boolean ignore = false;
@@ -263,7 +262,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		vmm = Cytoscape.getVisualMappingManager();
 		vmm.addChangeListener(this);
 
-		vsToModelMap = new HashMap<String, TableModel>();
+		vsToModelMap = new HashMap<VisualStyle, TableModel>();
 		setMenu();
 
 		// Need to register listener here, instead of CytoscapeDesktop.
@@ -444,7 +443,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		defaultAppearencePanel = new javax.swing.JPanel();
 		visualPropertySheetPanel = new PropertySheetPanel();
 		//System.out.println("putting in initComponents:"+vmm.getVisualStyle().getName()+" -> "+visualPropertySheetPanel.getTable().getModel());
-		vsToModelMap.put(currentlyEditedVS.getName(), visualPropertySheetPanel.getTable().getModel());
+		vsToModelMap.put(currentlyEditedVS, visualPropertySheetPanel.getTable().getModel());
 		
 		vsSelectPanel = new javax.swing.JPanel();
 		vsNameComboBox = new javax.swing.JComboBox();
@@ -611,20 +610,31 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// End of variables declaration
 	private void vsNameComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		final String vsName = (String) vsNameComboBox.getSelectedItem();
-
+		
 		if (vsName != null) {
+			VisualStyle vs = getVisualStyleFromName(vsName);
 			if (currentView.equals(Cytoscape.getNullNetworkView())) {
-				switchVS(vsName, false);
+				switchVS(vs, false);
 			} else {
-				switchVS(vsName, true);
+				switchVS(vs, true);
 			}
 		}
 	}
-
-	private void switchVS(String vsName) {
-		switchVS(vsName, true);
+	/** Since vsNameComboBox stores strings, have to provide a vsName -> VisualStyle lookup. */
+	private VisualStyle getVisualStyleFromName(String vsName){
+		// rather than storing a String->VisualStyle Map, look up each time:
+		CalculatorCatalog catalog = vmm.getCalculatorCatalog();
+		VisualStyle visualStyle = null;
+		for (VisualStyle vs: catalog.getVisualStyles()){
+			if (vs.getName().equals(vsName))
+				visualStyle = vs;
+		}
+		if (visualStyle == null){ // just in case
+			System.out.println("FIXME: can't happen!!");
+			visualStyle = catalog.getDefaultVisualStyle();
+		}
+		return visualStyle;
 	}
-
 	/** set given TableModel as model for PropertySheetPanel widget;
 	 * workaround bug in PropertySheetPanel.
 	 * model _must_ be a PropertySheetTableModel since it is cast to one somwhere.
@@ -638,36 +648,38 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		visualPropertySheetPanel.setSorting(true);
 		visualPropertySheetPanel.setMode(PropertySheetPanel.VIEW_AS_CATEGORIES);
 	}
-	private void switchVS(String vsName, boolean redraw) {
-		System.out.println("switching to:"+vsName);
-		System.out.println("	from:"+currentlyEditedVS.getName());
+
+	private void switchVS(VisualStyle vs) {
+		switchVS(vs, true);
+	}
+
+	private void switchVS(VisualStyle visualStyle, boolean redraw) {
+
 		if (ignore)
 			return;
 
 		// If new VS name is the same, ignore.
-		if (lastVSName == vsName)
+		if (lastVS == visualStyle)
 			return;
-		System.out.println("  switching to:"+vsName);
+
 		closeEditorWindow();
 
-		System.out.println("VS Switched --> " + vsName + ", Last = " + lastVSName);
-		//System.out.println("in map: "+vsToModelMap.get(vmm.getVisualStyle().getName()));
-		vmm.setVisualStyleForView(currentView, vsName);
-		if (vsToModelMap.containsKey(vsName)){
+		vmm.setVisualStyleForView(currentView, visualStyle);
+		if (vsToModelMap.containsKey(visualStyle)){
 			//System.out.println("swapping in exsisting TableModel:");
-			setModel(vsToModelMap.get(vsName));
+			setModel(vsToModelMap.get(visualStyle));
 		} else {
 			//System.out.println("no TableModel yet for this VisualStyle, have to create it:");
 			PropertySheetTableModel model = new PropertySheetTableModel();
 			setModel(model);
 			
-			vsToModelMap.put(vsName, model);
+			vsToModelMap.put(visualStyle, model);
 			setPropertyTable();
 		}
 		// MLC 03/31/08:
 		//lastVSName = vsName;
 
-		vmm.setVisualStyleForView( currentView, vmm.getVisualStyle(vsName) );	
+		vmm.setVisualStyleForView( currentView, visualStyle);	
 
 		if (redraw)
 			if (currentView != null) Cytoscape.redrawGraph(currentView);
@@ -675,21 +687,21 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Draw default view
 		 */
-		Image defImg = defaultImageManager.get(vsName);
+		Image defImg = defaultImageManager.get(visualStyle);
 
 		if(defImg == null) {
 			System.out.println("  Default image is not available in the buffer.  Create a new one.");
-			updateDefaultImage(vsName,
-									(GraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(vsName)).getView(),
+			updateDefaultImage(visualStyle,
+									(GraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(visualStyle)).getView(),
 									defaultAppearencePanel.getSize());
-			defImg = defaultImageManager.get(vsName);
+			defImg = defaultImageManager.get(visualStyle);
 		}
 		// Set the default view to the panel.
 		setDefaultPanel(defImg);
 
 		// Cleanup desktop.
 		Cytoscape.getDesktop().repaint();
-		vsNameComboBox.setSelectedItem(vsName);
+		vsNameComboBox.setSelectedItem(visualStyle.getName());
 		System.out.println("  vs switching done");
 	}
 
@@ -723,10 +735,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		for (String name : vsNames) {
 			vsNameComboBox.addItem(name);
+			
+			// FIXME: ensure that this comment below is not true any more, ie. VisualMappingManager.setVisualStyle() is not called
 			// MLC 03/31/08:
 			// Deceptively, getDefaultView actually actually calls VisualMappingManager.setVisualStyle()
 			// so each time we add a combobox item, the visual style is changing.
 			// Make sure to set the lastVSName as we change the visual style:
+			/*
 			view = null;
 			try{
 			System.out.println("visual style name: "+name);
@@ -740,11 +755,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (view != null) {
 				System.out.println("Creating Default Image for " + name);
 				updateDefaultImage(name, view, panelSize);
-			}
+			}*/
+			//FIXME: should check that this comment is not actually used
 		}
 
 		// Switch back to the original style.
-		switchVS(style.getName());
+		switchVS(style);
 		
 		// Restore listeners
 		for (int i = 0; i < li.length; i++)
@@ -758,16 +774,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 * @param view
 	 * @param size
 	 */
-	private void updateDefaultImage(String vsName, GraphView view, Dimension size) {
-		Image image = defaultImageManager.remove(vsName);
+	private void updateDefaultImage(VisualStyle visualStyle, GraphView view, Dimension size) {
+		Image image = defaultImageManager.remove(visualStyle);
 
 		if (image != null) {
 			image.flush();
 			image = null;
 		}
 
-		defaultImageManager.put(vsName,
-		                        view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9));
+		defaultImageManager.put(visualStyle, view.createImage((int) size.getWidth(), (int) size.getHeight(), 0.9));
 	}
 
 	private void setPropertySheetAppearence() {
@@ -1489,14 +1504,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	class DefaultMouseListener extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
 			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
-				final String targetName = currentlyEditedVS.getName();
 				final String focus = currentView.getIdentifier();
 
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop());
-				updateDefaultImage(targetName, (GraphView) panel.getView(), defaultAppearencePanel.getSize());
-				setDefaultPanel(defaultImageManager.get(targetName));
+				updateDefaultImage(currentlyEditedVS, (GraphView) panel.getView(), defaultAppearencePanel.getSize());
+				setDefaultPanel(defaultImageManager.get(currentlyEditedVS));
 
-				vmm.setVisualStyleForView(currentView, targetName);
+				vmm.setVisualStyleForView(currentView, currentlyEditedVS);
 				Cytoscape.getDesktop().setFocus(focus);
 				Cytoscape.getDesktop().repaint();
 			}
@@ -1527,7 +1541,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		//System.out.println("clearing in initializeTableState");
 		//vsToModelMap = new HashMap<String, TableModel>(); // propertyMap was re-written here in previous versions, so this might be needed, but maybe not.
 		editorWindowManager = new HashMap<VisualProperty, JDialog>();
-		defaultImageManager = new HashMap<String, Image>();
+		defaultImageManager = new HashMap<VisualStyle, Image>();
 	}
 
 	private void manageWindow(final String status, VisualProperty vpt, Object source) {
@@ -1636,12 +1650,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
-			final String vsName = vs.getName();
-			
-			lastVSName = null;
+			lastVS = null;
 			initVizmapperGUI();
-			switchVS(vsName);
-			vsNameComboBox.setSelectedItem(vsName);
+			switchVS(vs);
+			vsNameComboBox.setSelectedItem(vs.getName());
 
 			return;
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
@@ -1653,7 +1665,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				if (vs.getName().equals(vsNameComboBox.getSelectedItem())) {
 					Cytoscape.redrawGraph(currentView);
 				} else {
-					switchVS(vs.getName(), false);
+					switchVS(vs, false);
 					vsNameComboBox.setSelectedItem(vs.getName());
 					setDefaultPanel(this.defaultImageManager.get(vs.getName()));
 				}
@@ -2157,23 +2169,23 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			// Apply the new style
 			vmm.setVisualStyleForView(currentView, newStyle);
 
-			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(name);
+			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(newStyle);
 			final GraphView view = (GraphView) ((DefaultViewPanel) defPanel).getView();
 			final Dimension panelSize = defaultAppearencePanel.getSize();
 
 			if (view != null) {
 				System.out.println("Creating Default Image for new visual style " + name);
-				updateDefaultImage(name, view, panelSize);
-				setDefaultPanel(defaultImageManager.get(name));
+				updateDefaultImage(newStyle, view, panelSize);
+				setDefaultPanel(defaultImageManager.get(newStyle));
 			}
 
 			vsNameComboBox.addItem(name);
-			switchVS(name);
+			switchVS(newStyle);
 		}
 	}
 
 	/**
-	 * Get a new Visual Style name
+	 * Get a new Visual Style name by asking the user with a dialog
 	 *
 	 * @param s
 	 *            DOCUMENT ME!
@@ -2224,38 +2236,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		public void actionPerformed(ActionEvent e) {
 			final VisualStyle currentStyle = currentlyEditedVS;
 			final String oldName = currentStyle.getName();
-			final String name = getStyleName(currentStyle);
+			final String newName = getStyleName(currentStyle);
 
-			if (name == null) {
+			if (newName == null) {
 				return;
 			}
-
-			lastVSName = name;
-
-			final Image img = defaultImageManager.get(oldName);
-			defaultImageManager.put(name, img);
-			defaultImageManager.remove(oldName);
-
-			/*
-			 * Update name
-			 */
-			currentStyle.setName(name);
-
-			vmm.getCalculatorCatalog().removeVisualStyle(oldName);
-			vmm.getCalculatorCatalog().addVisualStyle(currentStyle);
-
-			vmm.setVisualStyleForView( currentView, currentStyle );
-
-			/*
-			 * Update combo box and
-			 */
-			vsNameComboBox.addItem(name);
-			vsNameComboBox.setSelectedItem(name);
+			// Update name
+			currentStyle.setName(newName);
+			// Update combo box (widgets)
 			vsNameComboBox.removeItem(oldName);
+			vsNameComboBox.addItem(newName);
+			vsNameComboBox.setSelectedItem(newName);
 
-			final TableModel model = vsToModelMap.get(oldName);
-			vsToModelMap.put(name, model);
-			vsToModelMap.remove(oldName);
+			vmm.setVisualStyleForView( currentView, currentStyle ); // FIXME: is this actually needed?
 		}
 	}
 
@@ -2266,7 +2259,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private final static long serialVersionUID = 1213748836929313L;
 		public void actionPerformed(ActionEvent e) {
 			VisualStyle vs = currentlyEditedVS;
-			if (vs.getName().equals(DEFAULT_VS_NAME)) {
+			if (vs == vmm.getCalculatorCatalog().getDefaultVisualStyle()) {
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
 				                              "You cannot delete default style.",
 				                              "Cannot remove style!", JOptionPane.ERROR_MESSAGE);
@@ -2284,19 +2277,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			if (ich == JOptionPane.YES_OPTION) {
 				final CalculatorCatalog catalog = vmm.getCalculatorCatalog();
-				catalog.removeVisualStyle(styleName);
+				catalog.removeVisualStyle(vs);
 
 				// try to switch to the default style
-				VisualStyle currentStyle = catalog.getVisualStyle(DEFAULT_VS_NAME);
+				VisualStyle currentStyle = catalog.getDefaultVisualStyle();
 
 				/*
 				 * Update Visual Mapping Browser.
 				 */
 				vsNameComboBox.removeItem(styleName);
 				vsNameComboBox.setSelectedItem(currentStyle.getName());
-				switchVS(currentStyle.getName());
-				defaultImageManager.remove(styleName);
-				vsToModelMap.remove(styleName);
+				switchVS(currentStyle);
+				defaultImageManager.remove(vs);
+				vsToModelMap.remove(vs);
 
 				vmm.setVisualStyleForView( currentView, currentStyle );
 				if (currentView != null) Cytoscape.redrawGraph(currentView);
@@ -2318,29 +2311,25 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			}
 
 			final String newName = getStyleName(clone);
-
-			if ((newName == null) || (newName.trim().length() == 0)) {
-				return;
-			}
-
+			if ((newName == null) || (newName.trim().length() == 0)) return;
 			clone.setName(newName);
 
 			// add new style to the catalog
 			vmm.getCalculatorCatalog().addVisualStyle(clone);
 			vmm.setVisualStyleForView(currentView, clone);
 
-			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(newName);
+			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(clone);
 			final GraphView view = (GraphView) ((DefaultViewPanel) defPanel).getView();
 			final Dimension panelSize = defaultAppearencePanel.getSize();
 
 			if (view != null) {
 				System.out.println("Creating Default Image for new visual style " + newName);
-				updateDefaultImage(newName, view, panelSize);
+				updateDefaultImage(clone, view, panelSize);
 				setDefaultPanel(defaultImageManager.get(newName));
 			}
 
 			vsNameComboBox.addItem(newName);
-			switchVS(newName);
+			switchVS(clone);
 		}
 	}
 
@@ -3201,7 +3190,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		// Update GUI based on CalcCatalog's state.
 		if (!findVSName(currentName)) {
-			syncStyleBox();
+			syncStyleBox(); // FIXME!!
 		} else {
 			// Bug fix: 0001802: if VS already existed in combobox, select it
 			for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
@@ -3215,11 +3204,14 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		// kono: should be placed here.
 		// MLC 03/31/08 BEGIN:
 		// Make fure we update the lastVSName based on anything that changes the visual style:
-		lastVSName = currentName;
+		lastVS = currentlyEditedVS;
 		// MLC 03/31/08 END.
 	}
 
+	// FIXME: why is this needed at all? shouldn't the event listeners keep the combobox and the CalculatorCatalog in sync at all times?
 	private void syncStyleBox() {
+	///** Add all currently defined VisualStyles to vsNameComboBox */
+	//private void fillStyleBox() {
 
 		String curStyleName = currentlyEditedVS.getName();
 
@@ -3230,7 +3222,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
 			styleName = vsNameComboBox.getItemAt(i).toString();
 
-			if (vmm.getCalculatorCatalog().getVisualStyle(styleName) == null) {
+			if (getVisualStyleFromName(styleName) == vmm.getCalculatorCatalog().getDefaultVisualStyle() && !styleName.equals("default")) {
 				// No longer exists in the VMM.  Remove.
 				//System.out.println("No longer exists in the VMM.  Removing in syncStyleBox()");
 				vsNameComboBox.removeItem(styleName);
@@ -3251,9 +3243,9 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		//Note: Because vsNameComboBox.removeAllItems() will fire unwanted event, 
 		// vmm.getVisualStyle().getName() will not be the same as curStyleName
 		if ((curStyleName == null) || curStyleName.trim().equals(""))
-			switchVS(currentlyEditedVS.getName());
+			switchVS(currentlyEditedVS);
 		else
-			switchVS(curStyleName);
+			switchVS(currentlyEditedVS);
 	}
 
 	// return true iff 'match' is found as a name within the

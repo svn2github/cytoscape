@@ -108,8 +108,7 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			return;
 		}
 
-        String vsName = "default";
-       
+        VisualStyle newVS = null;
 	   	VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
         // keep the node positions
 		if (current_network_view != Cytoscape.getNullNetworkView()) {
@@ -125,15 +124,13 @@ public class NewWindowSelectedNodesOnlyAction extends CytoscapeAction {
 			new_view.fitContent();
 
 			// Set visual style
-			VisualStyle newVS = vmm.getVisualStyleForView( current_network_view );
+			newVS = vmm.getVisualStyleForView( current_network_view );
 
-
-			if (newVS != null) {
-                vsName = newVS.getName();
-				vmm.setVisualStyleForView( new_view, newVS );
-			}
 		}
-        vmm.setVisualStyleForView(new_view, vsName);
+		if (newVS == null){
+			newVS = Cytoscape.getVisualMappingManager().getCalculatorCatalog().getDefaultVisualStyle();
+		}
+        vmm.setVisualStyleForView(new_view, newVS);
 	}
 
 	public void menuSelected(MenuEvent e) {
