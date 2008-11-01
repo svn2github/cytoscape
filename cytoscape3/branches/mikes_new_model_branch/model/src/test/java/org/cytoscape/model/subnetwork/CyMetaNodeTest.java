@@ -132,4 +132,82 @@ public class CyMetaNodeTest extends TestCase {
 		assertEquals(4,root.getEdgeCount());
     }
 
+    public void testMetaNodeEdgeAdding() {
+		// just in base
+        CyNode n1 = root.addNode();
+        CyNode n2 = root.addNode();
+        CyNode n3 = root.addNode();
+
+		// in metanode 2
+        CyNode n4 = root.addNode();
+        CyNode n5 = root.addNode();
+        CyNode n6 = root.addNode();
+
+		// in metanode 1
+        CyNode n7 = root.addNode();
+        CyNode n8 = root.addNode();
+
+		// between base and m1
+		CyEdge e1 = root.addEdge(n1,n7,true);
+
+		// between base and m2
+		CyEdge e2 = root.addEdge(n2,n4,true);
+		CyEdge e3 = root.addEdge(n2,n5,true);
+
+		// within m1
+		CyEdge e4 = root.addEdge(n7,n8,false);
+
+		// within m2
+		CyEdge e5 = root.addEdge(n4,n5,false);
+		CyEdge e6 = root.addEdge(n5,n6,false);
+
+		// just in base
+		CyEdge e7 = root.addEdge(n2,n3,false);
+
+		assertEquals( "inital node count",8,root.getNodeCount());  
+		assertEquals( "inital edge count",7,root.getEdgeCount());  
+
+		// create metanode 1
+        List<CyNode> m1sl = new ArrayList<CyNode>(2);
+        m1sl.add(n7);
+        m1sl.add(n8);
+
+        CySubNetwork m1s = root.addSubNetwork(m1sl);
+        CyMetaNode m1 = root.addMetaNode(m1s);
+
+		assertEquals( "root after m1 node count",9,root.getNodeCount());  
+		assertEquals( "base after m1 node count",8,root.getBaseNetwork().getNodeCount());  
+		assertEquals( "root after m1 edge count",8,root.getEdgeCount());  
+		assertEquals( "base after m1 edge count",7,root.getBaseNetwork().getEdgeCount());  
+
+		// create metanode 2
+        List<CyNode> m2sl = new ArrayList<CyNode>(2);
+        m2sl.add(n4);
+        m2sl.add(n5);
+        m2sl.add(n6);
+
+        CySubNetwork m2s = root.addSubNetwork(m2sl);
+        CyMetaNode m2 = root.addMetaNode(m2s);
+
+		assertEquals( "root after m2 node count",10,root.getNodeCount());  
+		assertEquals( "base after m2 node count",8,root.getBaseNetwork().getNodeCount());  
+		assertEquals( "root after m2 edge count",9,root.getEdgeCount());  
+		assertEquals( "base after m2 edge count",7,root.getBaseNetwork().getEdgeCount());  
+
+		// add edge between n4 n6 (within metanode)
+
+		// add edge between n3 n1 (just in base)
+
+		// add edge between n6 n2 (between meta and base, but with existing meta edge)
+
+		// add edge between n6 n3 (between meta and base, but new meta edge)
+
+		// add edge between n6 n8 (between two meta nodes)
+
+		// add edge between m1 n3 (between meta node in root and base)
+
+		// add edge between m1 m2 (just in root)
+
+		// what about metanodes within metanodes?
+	}
 }
