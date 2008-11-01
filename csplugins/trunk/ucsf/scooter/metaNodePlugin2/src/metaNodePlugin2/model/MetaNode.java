@@ -504,8 +504,10 @@ public class MetaNode {
 		metaGroup.setState(MetaNodePlugin2.COLLAPSED);
 
 		// If we're supposed to, update the display
-		if (updateNetwork)
+		if (updateNetwork) {
+			updateAttributes();
 			updateDisplay();
+		}
 		// prf.done("collapse: updateDisplay=");
 	}
 
@@ -1071,24 +1073,44 @@ public class MetaNode {
 	 * Update our child counts and attributes
 	 */
 	protected void updateAttributes() {
+
+		// Start by walking through all of the node
+		// attributes and figure out the number of
+		// children and dscendents that we have.  We'll
+		// also update our attributes as we go
+		Map<String,Object> attributeMap = initAttributeMap(nodeAttributes);
 		nChildren = metaGroup.getNodes().size();
-
 		nDescendents = nChildren;
-
 		for (CyNode node: metaGroup.getNodes()) {
 			if (metaMap.containsKey(node)) {
 				// This node is a metaNode
 				MetaNode mn = metaMap.get(node);
 				mn.updateAttributes();
 				nDescendents += mn.getDescendentCount()-1;
+				aggregateAttributes(nodeAttributes, attributeMap, node.getIdentifier(), mn.getDescendentCount());
+			} else {
+				aggregateAttributes(nodeAttributes, attributeMap, node.getIdentifier(), 1);
 			}
 		}
+		assignAttributes(nodeAttributes, attributeMap, groupNode.getIdentifier(), nDescendents);
 
+		// Update our "special" attributes
 		nodeAttributes.setAttribute(groupNode.getIdentifier(), CHILDREN_ATTR,
 		                            new Integer(nChildren));
 		nodeAttributes.setAttribute(groupNode.getIdentifier(), DESCENDENTS_ATTR,
 		                            new Integer(nDescendents));
-		
+
+		// OK, now walk though our meta edges and update
+		// those attributes.  Note that there isn't an easy
+		// way to update meta edges recursively, so we just
+		// do our best
+		for (CyEdge metaEdge: newEdgeMap.keySet()) {
+			attributeMap = initAttributeMap(edgeAttributes);
+			for (CyEdge childEdge: newEdgeMap.get(metaEdge)) {
+				aggregateAttributes(edgeAttributes, attributeMap, childEdge.getIdentifier(), 1);
+			}
+			assignAttributes(edgeAttributes, attributeMap, metaEdge.getIdentifier(), newEdgeMap.get(metaEdge).size());
+		}
 	}
 
 	/**
@@ -1149,5 +1171,160 @@ public class MetaNode {
 			return center - nodeAttributes.getDoubleAttribute(nodeName,Y_HINT_ATTR);
 		else 
 			return center;
+	}
+
+	/***********************************************************************************
+	 * Attribute aggregation code.  At this point, this code should be considered a    *
+	 * prototype implementation to test the advantages of attribute aggregation.       *
+	 * Eventually, this code will need to be hooked up with a UI that will provide the *
+	 * user the opportunity to select the type of aggregation for each attributes and  *
+	 * the default aggregation for each type.  This code assumes the following         *
+	 * aggregation types (with alternatives in braces):                                *
+	 *     TYPE_BOOLEAN        Logical AND {Logical OR, None}                          *
+	 *     TYPE_COMPLEX        None                                                    *
+	 *     TYPE_FLOATING       Average {Sum, Min, Max, Median, None}                   *
+	 *     TYPE_INTEGER        Average {Sum, Min, Max, Median, None}                   *
+	 *     TYPE_SIMPLE_LIST    Concatenation {None}                                    *
+	 *     TYPE_SIMPLE_MAP     None                                                    *
+	 *     TYPE_STRING         Comma separated {Tab separated, Most common, None}      *
+	 **********************************************************************************/
+
+	/**
+	 * Initialize a HashMap to use for aggregating our attributes
+	 *
+	 * @param attrMap the attributes over which we're aggregating
+	 * @return the map of attribute names and values that we're updating
+	 */
+	private Map<String,Object> initAttributeMap(CyAttributes attrMap) {
+		// For the prototype implementation, just get all of the user visible attributes
+		Map<String,Object>retMap = new HashMap();
+
+		// Eventually, we would optionally pull the aggregation list from the user
+		// options
+		String [] attributes = attrMap.getAttributeNames();
+		for (int i = 0; i < attributes.length; i++) {
+			String attr = attributes[i];
+			byte type = attrMap.getType(attr);
+			// Also need to add exclusions
+			if (!attrMap.getUserVisible(attr) || 
+			    type == CyAttributes.TYPE_COMPLEX ||
+			    type == CyAttributes.TYPE_SIMPLE_MAP) {
+				continue;
+			}
+			retMap.put(attr, null);
+		}
+		return retMap;
+	}
+
+	/**
+	 * Aggregate the data into our map.
+	 *
+	 * @param attrMap the attributes over which we're aggregating
+	 * @param aggrMap the aggregation map
+	 * @param source the source of the attributes
+	 * @param count the weight of the attribute (for averaging)
+	 */
+	private void aggregateAttributes(CyAttributes attrMap, 
+	                                 Map<String,Object>aggrMap, 
+	                                 String source, int count) {
+		
+		for (String attr: aggrMap.keySet()) {
+			Object val = aggrMap.get(attr);
+			switch(attrMap.getType(attr)) {
+			case CyAttributes.TYPE_BOOLEAN:
+				{
+					Boolean attrVal = attrMap.getBooleanAttribute(source, attr);
+					if (val == null) 
+						val = attrVal;
+					else if (attrVal != null) {
+						boolean b = ((Boolean)val).booleanValue();
+						val = Boolean.valueOf(b && attrVal.booleanValue());
+					}
+				}
+				break;
+			case CyAttributes.TYPE_FLOATING:
+				{
+					Double attrVal = attrMap.getDoubleAttribute(source, attr);
+					if (val == null) 
+						val = attrMap.getDoubleAttribute(source, attr);
+					else if (attrVal != null) {
+						double d = ((Double)val).doubleValue();
+						val = Double.valueOf(d + attrVal.doubleValue()*(double)count);
+					}
+				}
+				break;
+			case CyAttributes.TYPE_INTEGER:
+				{
+					Integer attrVal = attrMap.getIntegerAttribute(source, attr);
+					if (val == null) 
+						val = attrMap.getIntegerAttribute(source, attr);
+					else if (attrVal != null) {
+						int i = ((Integer)val).intValue();
+						val = Integer.valueOf(i + attrVal.intValue()*count);
+					}
+				}
+				break;
+			case CyAttributes.TYPE_SIMPLE_LIST:
+				{
+					List attrVal = attrMap.getListAttribute(source, attr);
+					if (val == null) 
+						val = attrMap.getListAttribute(source, attr);
+					else if (attrVal != null)
+						((List)val).addAll(attrVal);
+				}
+				break;
+			case CyAttributes.TYPE_STRING:
+				{
+					String attrVal = attrMap.getStringAttribute(source, attr);
+					if (val == null) 
+						val = attrMap.getStringAttribute(source, attr);
+					else if (attrVal != null)
+						val = (String)val + "," + attrVal;
+				}
+				break;
+			}
+			aggrMap.put(attr,val);
+		}
+	}
+
+	/**
+ 	 * Actually assign the aggregated attributes to our meta (edge,node)
+ 	 *
+ 	 * @param attrMap the attributes map we're assigning to
+ 	 * @param aggrMap the aggregated attributes
+ 	 * @param identifier the name of the object
+ 	 * @param count the total number (for finalizing averages)
+ 	 */
+	private void	assignAttributes(CyAttributes attrMap,
+	                               Map<String,Object>aggrMap, 
+	                               String identifier, int count) {
+
+		for (String attr: aggrMap.keySet()) {
+			switch(attrMap.getType(attr)) {
+			case CyAttributes.TYPE_BOOLEAN:
+				attrMap.setAttribute(identifier, attr, (Boolean)aggrMap.get(attr));
+				break;
+			case CyAttributes.TYPE_SIMPLE_LIST:
+				attrMap.setListAttribute(identifier, attr, (List)aggrMap.get(attr));
+				break;
+			case CyAttributes.TYPE_STRING:
+				attrMap.setAttribute(identifier, attr, (String)aggrMap.get(attr));
+				break;
+			case CyAttributes.TYPE_FLOATING:
+				if (aggrMap.get(attr) != null) {
+					double sum = ((Double)aggrMap.get(attr)).doubleValue();
+					attrMap.setAttribute(identifier, attr, Double.valueOf(sum/(double)count));
+				} else 
+					attrMap.setAttribute(identifier, attr, Double.valueOf(0));
+				break;
+			case CyAttributes.TYPE_INTEGER:
+				if (aggrMap.get(attr) != null) {
+					int sum = ((Integer)aggrMap.get(attr)).intValue();
+					attrMap.setAttribute(identifier, attr, Integer.valueOf(sum/count));
+				} else 
+					attrMap.setAttribute(identifier, attr, Integer.valueOf(0));
+				break;
+			}
+		}
 	}
 }
