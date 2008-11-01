@@ -320,10 +320,6 @@ public class CytoscapeSessionReader {
 		// All listeners should listen to this event to ignore unnecessary events!
 		Cytoscape.firePropertyChange(Integer.toString(Cytoscape.SESSION_OPENED), null, true);
 
-		if (Cytoscape.getDesktop() != null) {
-			Cytoscape.getDesktop().getVizMapperUI().initializeTableState();
-		}
-
 		try {
 			unzipSessionFromURL();
 		} catch (DuplicateCalculatorNameException dcne) {

@@ -646,57 +646,56 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		visualPropertySheetPanel.setSorting(true);
 		visualPropertySheetPanel.setMode(PropertySheetPanel.VIEW_AS_CATEGORIES);
 	}
+	
+	/** Handle 'VISUALSTYLE_CHANGED' event: switch widgets to show new VisualStyle
+	 * NOTE: this is an event handler and only modifies VMMP's widgets
+	 * 
+	 * currentNetwork.getVisualStyle() is the new VisualStyle, ie. the switch in viewmodel layer has happend already
+	 */
+	private void adaptToVisualStyleChanged(){
+		currentlyEditedVS = vmm.getVisualStyleForView(currentView);
+		if (lastVS  == currentlyEditedVS)
+			return; // nothing to do
 
-	private void switchVS(VisualStyle vs) {
-		switchVS(vs, true);
-	}
+		closeEditorWindow(); // FIXME: is this needed? why?
 
-	private void switchVS(VisualStyle visualStyle, boolean redraw) {
-		// If new VS name is the same, ignore.
-		if (lastVS == visualStyle)
-			return;
-
-		closeEditorWindow();
-
-		vmm.setVisualStyleForView(currentView, visualStyle);
-		if (vsToModelMap.containsKey(visualStyle)){
+		if (vsToModelMap.containsKey(currentlyEditedVS)){
 			//System.out.println("swapping in exsisting TableModel:");
-			setModel(vsToModelMap.get(visualStyle));
+			setModel(vsToModelMap.get(currentlyEditedVS));
 		} else {
 			//System.out.println("no TableModel yet for this VisualStyle, have to create it:");
 			PropertySheetTableModel model = new PropertySheetTableModel();
 			setModel(model);
 			
-			vsToModelMap.put(visualStyle, model);
+			vsToModelMap.put(currentlyEditedVS, model);
 			setPropertyTable();
 		}
-		// MLC 03/31/08:
-		//lastVSName = vsName;
 
-		vmm.setVisualStyleForView( currentView, visualStyle);	
-
-		if (redraw)
-			if (currentView != null) Cytoscape.redrawGraph(currentView);
-
-		/*
-		 * Draw default view
-		 */
-		Image defImg = defaultImageManager.get(visualStyle);
+		// update default view
+		Image defImg = defaultImageManager.get(currentlyEditedVS);
 
 		if(defImg == null) {
 			System.out.println("  Default image is not available in the buffer.  Create a new one.");
-			updateDefaultImage(visualStyle,
-									(GraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(visualStyle)).getView(),
+			updateDefaultImage(currentlyEditedVS,
+									(GraphView) ((DefaultViewPanel) DefaultAppearenceBuilder.getDefaultView(currentlyEditedVS)).getView(),
 									defaultAppearencePanel.getSize());
-			defImg = defaultImageManager.get(visualStyle);
+			defImg = defaultImageManager.get(currentlyEditedVS);
 		}
 		// Set the default view to the panel.
 		setDefaultPanel(defImg);
 
-		// Cleanup desktop.
-		Cytoscape.getDesktop().repaint();
-		vsNameComboBox.setSelectedItem(visualStyle.getName());
-		System.out.println("  vs switching done");
+		vsNameComboBox.setSelectedItem(currentlyEditedVS.getName());
+	}
+	private void switchVS(VisualStyle vs) {
+		switchVS(vs, true);
+	}
+
+	/** switch the VS of the current network to visualStyle */
+	private void switchVS(VisualStyle visualStyle, boolean redraw) {
+		vmm.setVisualStyleForView(currentView, visualStyle);
+		
+		if (redraw)
+			if (currentView != null) Cytoscape.redrawGraph(currentView);
 	}
 
 	private static final String CATEGORY_UNUSED = "Unused Properties";
@@ -1511,16 +1510,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		}
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void initializeTableState() {
-		//System.out.println("clearing in initializeTableState");
-		//vsToModelMap = new HashMap<String, TableModel>(); // propertyMap was re-written here in previous versions, so this might be needed, but maybe not.
-		editorWindowManager = new HashMap<VisualProperty, JDialog>();
-		defaultImageManager = new HashMap<VisualStyle, Image>();
-	}
-
 	private void manageWindow(final String status, VisualProperty vpt, Object source) {
 		if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)) {
 			this.editorWindowManager.put(vpt, (JDialog) source);
@@ -1607,12 +1596,10 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		/*
 		 * Got global event
 		 */
-		VisualStyle vs = currentlyEditedVS;
 		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			String vmName = vs.getName();
-			setDefaultPanel(defaultImageManager.get(vmName));
-			vsNameComboBox.setSelectedItem(vmName);
+			setDefaultPanel(defaultImageManager.get(currentlyEditedVS));
+			vsNameComboBox.setSelectedItem(currentlyEditedVS.getName());
 			setPropertyTable();
 			visualPropertySheetPanel.setSorting(true);
 			return;
@@ -1620,25 +1607,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
 			lastVS = null;
 			initVizmapperGUI();
-			switchVS(vs);
-			vsNameComboBox.setSelectedItem(vs.getName());
-
+			adaptToVisualStyleChanged(); // FIXME: is this needed?
 			return;
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
-		           && (e.getSource().getClass() == NetworkPanel.class)) {
+		           && (e.getSource().getClass() == NetworkPanel.class)) { //FIXME: why do we have to check source?
+			// update local state:
 			currentView = Cytoscape.getCurrentNetworkView();
-			currentlyEditedVS = vmm.getVisualStyleForView(currentView);
-			if (vs != null) {
-
-				if (vs.getName().equals(vsNameComboBox.getSelectedItem())) {
-					Cytoscape.redrawGraph(currentView);
-				} else {
-					switchVS(vs, false);
-					vsNameComboBox.setSelectedItem(vs.getName());
-					setDefaultPanel(this.defaultImageManager.get(vs.getName()));
-				}
-			}
-
+			adaptToVisualStyleChanged(); // FIXME: is this needed?
 			return;
 		} else if (e.getPropertyName().equals(Cytoscape.VISUALSTYLE_MODIFIED)){
 			System.out.println("got VISUALSTYLE_MODIFIED!");
@@ -1761,7 +1736,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		ObjectMapping mapping;
 		final Calculator curCalc;
 
-		curCalc = vs.getCalculator(type);
+		curCalc = currentlyEditedVS.getCalculator(type);
 
 		if (curCalc == null) {
 			return;
@@ -1829,7 +1804,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 			final VizMapperProperty newRootProp = new VizMapperProperty();
 			
-			Calculator c = vs.getCalculator(type);
+			Calculator c = currentlyEditedVS.getCalculator(type);
 			if (type.isNodeProp())
 				buildProperty(c, newRootProp, NODE_VISUAL_MAPPING);
 			else
