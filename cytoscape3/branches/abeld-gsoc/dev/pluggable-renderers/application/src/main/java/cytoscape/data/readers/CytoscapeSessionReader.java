@@ -367,8 +367,6 @@ public class CytoscapeSessionReader {
 				vmm.setVisualStyleForView(curView,lastVS);
 				Cytoscape.redrawGraph(curView);
 			}
-
-			Cytoscape.getDesktop().getVizMapperUI().enableListeners(true);
 		}
 
 		System.out.println("Session loaded in " + (System.currentTimeMillis() - start) + " msec.");

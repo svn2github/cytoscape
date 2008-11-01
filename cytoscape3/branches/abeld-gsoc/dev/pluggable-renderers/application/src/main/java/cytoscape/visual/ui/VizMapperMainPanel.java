@@ -250,8 +250,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	private Map<VisualStyle, Image> defaultImageManager = new HashMap<VisualStyle, Image>();
 
 	
-	private boolean ignore = false;
-	
 	// For node size lock
 	VizMapperProperty nodeSize;
 	VizMapperProperty nodeWidth;
@@ -654,10 +652,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	private void switchVS(VisualStyle visualStyle, boolean redraw) {
-
-		if (ignore)
-			return;
-
 		// If new VS name is the same, ignore.
 		if (lastVS == visualStyle)
 			return;
@@ -1518,23 +1512,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	}
 
 	/**
-	 * On/Off listeners.
-	 * This is for performance.
-	 *
-	 * @param on
-	 *            DOCUMENT ME!
-	 */
-	public void enableListeners(boolean on) {
-		if (on) {
-			Cytoscape.getVisualMappingManager().addChangeListener(this);
-			syncStyleBox();
-			ignore = false;
-		} else {
-			Cytoscape.getVisualMappingManager().removeChangeListener(this);
-		}
-	}
-
-	/**
 	 * DOCUMENT ME!
 	 */
 	public void initializeTableState() {
@@ -1613,15 +1590,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
-		// Set ignore flag.
-		if (e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
-			ignore = true;
-			enableListeners(false);
-		}
-
-		if (ignore)
-			return;
 
 		/*
 		 * Managing editor windows.
@@ -3179,9 +3147,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		System.out.println("vizmappermainpanel: statechanged"+e);
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
 		final String currentName = currentlyEditedVS.getName();
-		
-		if (ignore)
-			return;
 
 		System.out.println("Got VMM Change event.  Cur VS in VMM: " + currentName);
 
