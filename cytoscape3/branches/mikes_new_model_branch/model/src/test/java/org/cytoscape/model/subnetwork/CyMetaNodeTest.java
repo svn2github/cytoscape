@@ -134,18 +134,18 @@ public class CyMetaNodeTest extends TestCase {
 
     public void testMetaNodeEdgeAdding() {
 		// just in base
-        CyNode n1 = root.addNode();
-        CyNode n2 = root.addNode();
-        CyNode n3 = root.addNode();
+		CyNode n1 = root.addNode();
+		CyNode n2 = root.addNode();
+		CyNode n3 = root.addNode();
 
 		// in metanode 2
-        CyNode n4 = root.addNode();
-        CyNode n5 = root.addNode();
-        CyNode n6 = root.addNode();
+		CyNode n4 = root.addNode();
+		CyNode n5 = root.addNode();
+		CyNode n6 = root.addNode();
 
 		// in metanode 1
-        CyNode n7 = root.addNode();
-        CyNode n8 = root.addNode();
+		CyNode n7 = root.addNode();
+		CyNode n8 = root.addNode();
 
 		// between base and m1
 		CyEdge e1 = root.addEdge(n1,n7,true);
@@ -168,12 +168,12 @@ public class CyMetaNodeTest extends TestCase {
 		assertEquals( "inital edge count",7,root.getEdgeCount());  
 
 		// create metanode 1
-        List<CyNode> m1sl = new ArrayList<CyNode>(2);
-        m1sl.add(n7);
-        m1sl.add(n8);
+		List<CyNode> m1sl = new ArrayList<CyNode>(2);
+		m1sl.add(n7);
+		m1sl.add(n8);
 
-        CySubNetwork m1s = root.addSubNetwork(m1sl);
-        CyMetaNode m1 = root.addMetaNode(m1s);
+		CySubNetwork m1s = root.addSubNetwork(m1sl);
+		CyMetaNode m1 = root.addMetaNode(m1s);
 
 		assertEquals( "root after m1 node count",9,root.getNodeCount());  
 		assertEquals( "base after m1 node count",8,root.getBaseNetwork().getNodeCount());  
@@ -181,13 +181,13 @@ public class CyMetaNodeTest extends TestCase {
 		assertEquals( "base after m1 edge count",7,root.getBaseNetwork().getEdgeCount());  
 
 		// create metanode 2
-        List<CyNode> m2sl = new ArrayList<CyNode>(2);
-        m2sl.add(n4);
-        m2sl.add(n5);
-        m2sl.add(n6);
+		List<CyNode> m2sl = new ArrayList<CyNode>(2);
+		m2sl.add(n4);
+		m2sl.add(n5);
+		m2sl.add(n6);
 
-        CySubNetwork m2s = root.addSubNetwork(m2sl);
-        CyMetaNode m2 = root.addMetaNode(m2s);
+		CySubNetwork m2s = root.addSubNetwork(m2sl);
+		CyMetaNode m2 = root.addMetaNode(m2s);
 
 		assertEquals( "root after m2 node count",10,root.getNodeCount());  
 		assertEquals( "base after m2 node count",8,root.getBaseNetwork().getNodeCount());  
