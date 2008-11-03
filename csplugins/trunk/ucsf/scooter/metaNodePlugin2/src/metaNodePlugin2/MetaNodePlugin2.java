@@ -71,6 +71,7 @@ import cytoscape.groups.CyGroupViewer;
 
 // our imports
 import metaNodePlugin2.model.MetaNode;
+import metaNodePlugin2.ui.AttributeHandlingDialog;
 
 /**
  * The MetaNodePlugin2 class provides the primary interface to the
@@ -628,6 +629,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				collapseAll();
 			} else if (command == Command.SETTINGS) {
 				// Bring up the settings dialog
+				new AttributeHandlingDialog();
 			}
 		}
 
