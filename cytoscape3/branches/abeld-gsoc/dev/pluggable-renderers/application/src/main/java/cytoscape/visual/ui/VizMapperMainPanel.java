@@ -2056,16 +2056,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		return new BasicCalculator(newCalcName, mapper, type);
 	}
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param vsName
-	 *            DOCUMENT ME!
-	 */
-	public void setCurrentVS(String vsName) {
-		vsNameComboBox.setSelectedItem(vsName);
-	}
-
 	/*
 	 * Actions for option menu
 	 */
