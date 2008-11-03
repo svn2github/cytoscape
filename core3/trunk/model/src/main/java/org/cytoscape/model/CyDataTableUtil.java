@@ -53,6 +53,8 @@ public class CyDataTableUtil {
 	 * Boolean an IllegalArgumentException will be thrown.
 	 */
 	public static List<CyNode> getNodesInState(final CyNetwork net, final String columnName, final boolean state) {
+		if ( net == null )
+			throw new NullPointerException("network is null");
 		CyDataTable table = net.getNodeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 		if ( table.getColumnTypeMap().get(columnName) != Boolean.class )
 			throw new IllegalArgumentException("colunm name is not a Boolean type");
@@ -70,6 +72,8 @@ public class CyDataTableUtil {
 	 * Boolean an IllegalArgumentException will be thrown.
 	 */
 	public static List<CyEdge> getEdgesInState(final CyNetwork net, final String columnName, final boolean state) {
+		if ( net == null )
+			throw new NullPointerException("network is null");
 		CyDataTable table = net.getEdgeCyDataTables().get(CyNetwork.DEFAULT_ATTRS);
 		if ( table.getColumnTypeMap().get(columnName) != Boolean.class )
 			throw new IllegalArgumentException("colunm name is not a Boolean type");
