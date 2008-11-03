@@ -61,16 +61,18 @@ import java.util.Set;
 public class LayoutMenu extends JMenu implements MenuListener {
 	private final static long serialVersionUID = 1202339874255880L;
 	List<CyLayoutAlgorithm> subMenuList;
+	LayoutMenuManager menuMgr;
 
 	/**
 	 * Creates a new LayoutMenu object.
 	 *
 	 * @param menuName  DOCUMENT ME!
 	 */
-	public LayoutMenu(String menuName) {
+	public LayoutMenu(String menuName, LayoutMenuManager menuMgr) {
 		super(menuName);
 		addMenuListener(this);
 		subMenuList = new ArrayList<CyLayoutAlgorithm>();
+		this.menuMgr = menuMgr;
 	}
 
 	/**
@@ -125,18 +127,23 @@ public class LayoutMenu extends JMenu implements MenuListener {
 
 		// Figure out if we have anything selected
 		CyNetwork network = Cytoscape.getCurrentNetwork();
-		List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
+		boolean someSelected = false; 
+		if ( network != null ) {
+			List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
+			someSelected = (selectedNodes.size() > 0);
+		}
+
 		boolean enableMenuItem = checkEnabled(); 
 
 		// Now, add each layout, as appropriate
-		for (CyLayoutAlgorithm layout: LayoutMenuManager.getLayoutsInMenu(getText())) {
+		for (CyLayoutAlgorithm layout: menuMgr.getLayoutsInMenu(getText())) {
 			// Make sure we don't have any lingering locked nodes
 			layout.unlockAllNodes();
 
 			if ((layout.supportsNodeAttributes().size() > 0)
 			    || (layout.supportsEdgeAttributes().size() > 0)) {
 				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
-			} else if (layout.supportsSelectedOnly() && (selectedNodes.size() > 0)) {
+			} else if (layout.supportsSelectedOnly() && someSelected) {
 				super.add(new DynamicLayoutMenu(layout,enableMenuItem));
 			} else {
 				super.add(new StaticLayoutMenu(layout,enableMenuItem));

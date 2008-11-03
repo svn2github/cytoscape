@@ -39,6 +39,7 @@ package cytoscape.layout.ui;
 
 import cytoscape.Cytoscape;
 import cytoscape.task.util.TaskManager;
+import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.layout.CyLayoutAlgorithm;
 import org.cytoscape.layout.CyLayouts;
 
@@ -71,12 +72,19 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private JComboBox algorithmSelector; // Which algorithm we're using
 	private JPanel algorithmPanel; // The panel this algorithm uses
 
+	private CyLayouts cyLayouts;
+	private CytoscapeDesktop desktop;
+	private LayoutMenuManager menuMgr;
+
 	/**
 	 * Creates a new LayoutSettingsDialog object.
 	 */
-	public LayoutSettingsDialog() {
-		super(Cytoscape.getDesktop(), "Layout Settings", false);
+	public LayoutSettingsDialog(CyLayouts cyLayouts, CytoscapeDesktop desktop, LayoutMenuManager menuMgr) {
+		super(desktop, "Layout Settings", false);
 		initializeOnce(); // Initialize the components we only do once
+		this.cyLayouts = cyLayouts;
+		this.desktop = desktop;
+		this.menuMgr = menuMgr;
 	}
 
 	/**
@@ -106,7 +114,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			// OK, initialize and display
 			initialize();
 			pack();
-			setLocationRelativeTo(Cytoscape.getDesktop());
+			setLocationRelativeTo(desktop);
 			setVisible(true);
 		}
 	}
@@ -171,7 +179,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 		algorithmSelector.addItem("Select algorithm to view settings");
 
 		// Get the list of known layout menus
-		Set<String> menus = LayoutMenuManager.getLayoutMenuNames();
+		Set<String> menus = menuMgr.getLayoutMenuNames();
 	
 		for (String menu : menus) {
 
@@ -179,7 +187,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 				algorithmSelector.addItem(menu);
 			}
 
-			for (CyLayoutAlgorithm algo : LayoutMenuManager.getLayoutsInMenu(menu)) {
+			for (CyLayoutAlgorithm algo : menuMgr.getLayoutsInMenu(menu)) {
 				if (algo.getSettingsPanel() != null) {
 					algorithmSelector.addItem(algo);
 				}
@@ -188,13 +196,13 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	}
 
 	private void updateAllSettings() {
-		for ( CyLayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
+		for ( CyLayoutAlgorithm algo : cyLayouts.getAllLayouts() ) { 
 			algo.updateSettings();
 		}
 	}
 
 	private void revertAllSettings() {
-		for ( CyLayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
+		for ( CyLayoutAlgorithm algo : cyLayouts.getAllLayouts() ) { 
 			algo.revertSettings();
 		}
 	}

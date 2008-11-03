@@ -46,6 +46,6 @@ public class NewNetworkAction extends CytoscapeAction {
 		System.out.println("newNet: " + newNet.getSUID());
 		GraphView view = gvf.createGraphView(newNet);
 		// TODO figure this out
-		Cytoscape.addNetwork(newNet, view);
+		Cytoscape.addNetwork(newNet, view, null);
 	}
 }

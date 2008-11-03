@@ -34,10 +34,11 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
-package org.cytoscape.layout.algorithms;
+package org.cytoscape.layout.internal.algorithms;
 
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.layout.AbstractLayout;
+import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.EdgeView;
 import org.cytoscape.view.NodeView;
 
@@ -51,6 +52,7 @@ import java.util.List;
  * the default layout for Cytoscape data readers.
  */
 public class GridNodeLayout extends AbstractLayout {
+
 	/**
 	 * Creates a new GridNodeLayout object.
 	 */
@@ -63,7 +65,7 @@ public class GridNodeLayout extends AbstractLayout {
 	 * @return  DOCUMENT ME!
 	 */
 	public String getName() {
-		return "grid";
+		return CyLayouts.DEFAULT_LAYOUT_NAME;
 	}
 
 	/**

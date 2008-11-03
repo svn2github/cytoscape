@@ -43,6 +43,7 @@ import cytoscape.util.CytoscapeAction;
 import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.view.GraphViewFactory;
+import org.cytoscape.layout.CyLayouts;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -63,11 +64,12 @@ public class ImportGraphFileAction extends CytoscapeAction {
 	private CytoscapeDesktop desktop;
 	private CyReaderManager rdmgr;
 	private GraphViewFactory gvf;
+	private CyLayouts cyLayouts;
 
 	/**
 	 * Constructor.
 	 */
-	public ImportGraphFileAction(CytoscapeDesktop desktop, CyReaderManager rdmgr, GraphViewFactory gvf ) {
+	public ImportGraphFileAction(CytoscapeDesktop desktop, CyReaderManager rdmgr, GraphViewFactory gvf, CyLayouts cyLayouts ) {
 		super("Network (multiple file types)...");
 		setPreferredMenu("File.Import");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_L, ActionEvent.CTRL_MASK);
@@ -76,6 +78,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 		this.desktop = desktop;
 		this.rdmgr = rdmgr;
 		this.gvf = gvf;
+		this.cyLayouts = cyLayouts;
 	}
 
 	/**
@@ -121,7 +124,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			String URLstr = fd.getURLStr();
 			System.out.println("URL: "+URLstr);
 			try {
-				LoadNetworkTask.loadURL(new URL(URLstr), false, rdmgr, gvf);
+				LoadNetworkTask.loadURL(new URL(URLstr), false, rdmgr, gvf, cyLayouts);
 			} catch (MalformedURLException e3) {
 				JOptionPane.showMessageDialog(fd, "URL error!", "Warning",
 			 	                             JOptionPane.INFORMATION_MESSAGE);
@@ -146,7 +149,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 						messages.add(files[i].getName());
 					}
 	
-					LoadNetworkTask.loadFile(files[i], skipMessage, rdmgr, gvf);
+					LoadNetworkTask.loadFile(files[i], skipMessage, rdmgr, gvf, cyLayouts);
 				}
 	
 				if (files.length != 1) {

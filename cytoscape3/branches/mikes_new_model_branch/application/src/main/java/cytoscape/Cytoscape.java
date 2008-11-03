@@ -1104,7 +1104,7 @@ public abstract class Cytoscape {
 		destroyNetworkView(getNetworkViewMap().get(network.getSUID()));
 	}
 
-	public static void addNetwork(CyNetwork network, GraphView view) {
+	public static void addNetwork(CyNetwork network, GraphView view, CyLayouts cyLayouts) {
 		getNetworkMap().put(network.getSUID(), network);
 
 		if ( view != null ) {
@@ -1113,8 +1113,9 @@ public abstract class Cytoscape {
 			setCurrentNetworkView(network.getSUID());
 
 			setSelectionMode(Cytoscape.getSelectionMode(), view);
-
-			CyLayouts.getDefaultLayout().doLayout(view);
+	
+			if ( cyLayouts != null )
+				cyLayouts.getDefaultLayout().doLayout(view);
 
 			view.fitContent();
 
@@ -1597,48 +1598,6 @@ public abstract class Cytoscape {
 		return createNetworkView(network,title,layout,null);
 	}
 
-
-	/**
-	 * Creates a GraphView that is placed placed in a given visual style
-	 * and rendered with a given layout algorithm.
-	 * The GraphView will become the current view and have focus.
-	 *
-	 * @param network
-	 *            the network to create a view of
-	 * @param title
-	 *            the title to use for the view
-	 * @param layout
-	 *            the CyLayoutAlgorithm to use for layout. If null, will
-	 *            use the default layout (CyLayouts.getDefaultLayout()).
-	 * @param vs the VisualStyle in which to render this new network. If null,
-	 *           the default visual style will be used.
-	 */
-	public static void addNetworkView(GraphView view, CyLayoutAlgorithm layout, VisualStyle vs) {
-		long suid = view.getNetwork().getSUID();
-		getNetworkViewMap().put(suid, view);
-
-		setCurrentNetworkView(suid);
-
-		setSelectionMode(Cytoscape.getSelectionMode(), view);
-
-		if (vs != null) {
-			VMMFactory.getVisualMappingManager().setVisualStyleForView(view,vs);
-			VMMFactory.getVisualMappingManager().setVisualStyle(vs);
-			VMMFactory.getVisualMappingManager().setNetworkView(view);
-		}
-
-		if (layout == null) {
-			layout = CyLayouts.getDefaultLayout();
-		}
-
-		Cytoscape.firePropertyChange(cytoscape.view.CytoscapeDesktop.NETWORK_VIEW_CREATED, null, view);
-
-		layout.doLayout(view);
-
-		view.fitContent();
-
-		redrawGraph(view);
-	}
 
 	public static GraphView createNetworkView(CyNetwork network, String title, CyLayoutAlgorithm layout,
 	                                              VisualStyle vs) {

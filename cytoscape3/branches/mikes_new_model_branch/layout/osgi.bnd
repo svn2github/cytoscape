@@ -2,6 +2,5 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
-Bundle-Activator: org.cytoscape.layout.LayoutActivator
-Export-Package: org.cytoscape.layout
-Private-Package: org.cytoscape.layout.algorithms
+Export-Package: ${bundle.symbolicName}
+Private-Package: ${bundle.symbolicName}.internal.*

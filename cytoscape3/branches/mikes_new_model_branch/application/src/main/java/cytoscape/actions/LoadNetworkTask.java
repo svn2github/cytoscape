@@ -51,10 +51,12 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.CyNetworkNaming;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.layout.CyLayoutAlgorithm;
+import org.cytoscape.layout.CyLayouts;
 import org.cytoscape.view.GraphView;
 import org.cytoscape.io.read.CyReaderManager;
 import org.cytoscape.io.read.CyNetworkReader;
 import org.cytoscape.view.GraphViewFactory;
+
 
 import javax.swing.*;
 import java.io.File;
@@ -80,8 +82,8 @@ public class LoadNetworkTask implements Task {
 	 * @param u the URL to load the network from
 	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
-	public static void loadURL(URL u, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf) {
-		loadURL(u, skipMessage, null, mgr, gvf);
+	public static void loadURL(URL u, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl) {
+		loadURL(u, skipMessage, null, mgr, gvf,cyl);
 	}
 
 	/**
@@ -93,9 +95,9 @@ public class LoadNetworkTask implements Task {
 	 * @param file the file to load the network from
 	 * @param skipMessage if true, dispose of the task monitor dialog immediately
 	 */
-	public static void loadFile(File file, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf) {
+	public static void loadFile(File file, boolean skipMessage, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl) {
 		// Create LoadNetwork Task
-		loadFile(file, skipMessage, null, mgr, gvf);
+		loadFile(file, skipMessage, null, mgr, gvf,cyl);
 	}
 
 	/**
@@ -111,8 +113,8 @@ public class LoadNetworkTask implements Task {
 	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
 	 *                        after it has been read in (provided that a view was created).
 	 */
-	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf) {
-		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm, mgr, gvf);
+	public static void loadURL(URL u, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl) {
+		LoadNetworkTask task = new LoadNetworkTask(u, layoutAlgorithm, mgr, gvf, cyl);
 		setupTask(task, skipMessage, true);
 	}
 
@@ -127,8 +129,8 @@ public class LoadNetworkTask implements Task {
 	 * @param layoutAlgorithm if this is non-null, use this algorithm to lay out the network
 	 *                        after it has been read in (provided that a view was created).
 	 */
-	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf) {
-		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm, mgr, gvf);
+	public static void loadFile(File file, boolean skipMessage, CyLayoutAlgorithm layoutAlgorithm, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl) {
+		LoadNetworkTask task = new LoadNetworkTask(file, layoutAlgorithm, mgr, gvf, cyl);
 		setupTask(task, skipMessage, true);
 	}
 
@@ -158,21 +160,24 @@ public class LoadNetworkTask implements Task {
 	private CyLayoutAlgorithm layoutAlgorithm = null;
 	private CyReaderManager mgr; 
 	private GraphViewFactory gvf; 
+	private CyLayouts cyl; 
 
-	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf) {
+	private LoadNetworkTask(URL u, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl) {
 		url = u;
 		name = u.toString();
 		reader = null;
 		layoutAlgorithm = layout;
 		this.mgr = mgr;
 		this.gvf = gvf;
+		this.cyl = cyl;
 
 		// Postpone getting the reader since we want to do that in a thread
 	}
 
-	private LoadNetworkTask(File file, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf) {
+	private LoadNetworkTask(File file, CyLayoutAlgorithm layout, CyReaderManager mgr, GraphViewFactory gvf, CyLayouts cyl) {
 		this.mgr = mgr;
 		this.gvf = gvf;
+		this.cyl = cyl;
 		try { 
 		reader = mgr.getReader(file.getAbsolutePath());
 		} catch (IOException ioe) {
@@ -246,7 +251,7 @@ public class LoadNetworkTask implements Task {
 			cyNetwork.attrs().set("name",CyNetworkNaming.getSuggestedNetworkTitle(name));
 			GraphView view = gvf.createGraphView( cyNetwork );
 
-			Cytoscape.addNetwork( cyNetwork, view );
+			Cytoscape.addNetwork( cyNetwork, view, cyl );
 
 			if ((layoutAlgorithm != null) && (view != null)) {
 				// Yes, do it

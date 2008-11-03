@@ -60,7 +60,7 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 
 	private void addMenuItem(WebServiceClient client, JMenu menu) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction(client.getDisplayName()) {
-	private final static long serialVersionUID = 1202339872420066L;
+			private final static long serialVersionUID = 1202339872420066L;
 			public void actionPerformed(ActionEvent e) {
 
 				System.out.println("Start Expanding network: " + e.getActionCommand() );
@@ -126,7 +126,9 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message, "Expansion complete", JOptionPane.YES_NO_OPTION
 				);
 				if (value == JOptionPane.YES_OPTION) {
-					CyLayouts.getLayout(defLayout).doLayout(Cytoscape.getCurrentNetworkView());
+					// TODO inject CyLayouts	
+					//CyLayouts.getLayout(defLayout).doLayout(Cytoscape.getCurrentNetworkView());
+					System.out.println("NOT executing layout!");
 				}
 
 		} else if(evt.getPropertyName().equals(Cytoscape.PREFERENCES_UPDATED)) {
@@ -197,7 +199,5 @@ public class NetworkExpander implements PropertyChangeListener, NodeContextMenuL
 			this.taskMonitor = arg0;
 			
 		}
-		
 	}
-	
 }

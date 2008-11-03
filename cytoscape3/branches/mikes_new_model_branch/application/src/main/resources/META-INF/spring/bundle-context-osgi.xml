@@ -21,6 +21,9 @@
 	                interface="org.cytoscape.io.read.CyReaderManager">
 	</osgi:reference>
 
+	<osgi:reference id="cyLayoutsServiceRef" 
+	                interface="org.cytoscape.layout.CyLayouts">
+	</osgi:reference>
 
 
 	<osgi:service id="importGraphFileActionService" ref="importGraphFileAction" interface="cytoscape.util.CyAction"/>

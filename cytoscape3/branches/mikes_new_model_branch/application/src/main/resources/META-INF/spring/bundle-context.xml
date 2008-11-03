@@ -44,6 +44,7 @@
 		<constructor-arg ref="cytoscapeDesktop"/>
 		<constructor-arg ref="cyReaderManagerServiceRef"/>
 		<constructor-arg ref="graphViewFactoryServiceRef"/>
+		<constructor-arg ref="cyLayoutsServiceRef"/>
 	</bean>
 	<bean id="newNetworkAction" class="cytoscape.actions.NewNetworkAction">
 		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
@@ -89,7 +90,15 @@
 	<bean id="deselectAllAction" class="cytoscape.actions.DeselectAllAction"/>
 	<bean id="showGraphicsDetailsAction" class="cytoscape.actions.ShowGraphicsDetailsAction"/>
 	<bean id="setVisualPropertiesAction" class="cytoscape.actions.SetVisualPropertiesAction"/>
-	<bean id="settingsAction" class="cytoscape.layout.ui.SettingsAction"/>
+	<bean id="layoutMenuManager" class="cytoscape.layout.ui.LayoutMenuManager">
+		<constructor-arg ref="cyMenus"/>
+		<constructor-arg ref="cyLayoutsServiceRef"/>
+	</bean>
+	<bean id="settingsAction" class="cytoscape.layout.ui.SettingsAction">
+		<constructor-arg ref="cyLayoutsServiceRef"/>
+		<constructor-arg ref="cytoscapeDesktop"/>
+		<constructor-arg ref="layoutMenuManager"/>
+	</bean>
 	<bean id="pluginManagerAction" class="cytoscape.actions.PluginManagerAction"/>
 	<bean id="pluginUpdateAction" class="cytoscape.actions.PluginUpdateAction"/>
 	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction"/>

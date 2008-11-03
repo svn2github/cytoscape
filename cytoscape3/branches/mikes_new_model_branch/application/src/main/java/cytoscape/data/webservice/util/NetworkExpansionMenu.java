@@ -98,7 +98,7 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 
 	private JMenuItem getMenuItem(final WebServiceClient client) {
 		final JMenuItem expandMenu = new JMenuItem(new AbstractAction("Get neighbours by ID(s)") {
-	private final static long serialVersionUID = 1213748837134204L;
+				private final static long serialVersionUID = 1213748837134204L;
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("Start expanding network: " + e.getActionCommand());
 
@@ -178,7 +178,9 @@ public class NetworkExpansionMenu implements PropertyChangeListener {
 			                                          JOptionPane.YES_NO_OPTION);
 
 			if (value == JOptionPane.YES_OPTION) {
-				CyLayouts.getLayout(defLayout).doLayout(Cytoscape.getCurrentNetworkView());
+				// TODO inject CyLayouts
+				//CyLayouts.getLayout(defLayout).doLayout(Cytoscape.getCurrentNetworkView());
+				System.out.println("NOT executing layout!");
 			}
 		} else if (evt.getPropertyName().equals(Cytoscape.PREFERENCES_UPDATED)) {
 			defLayout = CytoscapeInit.getProperties().getProperty("expanderDefaultLayout");
