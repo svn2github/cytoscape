@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <name>Cytoscape Core</name>
 
@@ -274,7 +274,6 @@
     <module>util.intr</module>
     <module>graph.fixed</module>
     <module>graph.dynamic</module>
-    <module>model</module>
     <module>render.immed</module>
     <module>geom.spacial</module>
     <module>render.stateful</module>
