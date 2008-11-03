@@ -41,56 +41,199 @@ import java.util.Map;
 
 
 /**
- * DOCUMENT ME!
-  */
+ * CyNetwork is the primary class for algorithm writing.  All algorithms should take a 
+ * CyNetwork as input, and do their best to only use the API of CyNetwork.  CyNetwork
+ * provides a straightforward interface to a simple graph.  For an interface to a
+ * more complicated subgraph, see {@link CyRootNetwork} and {@link CySubnetwork}, both
+ * of which inherit from CyNetwork.
+ *
+ * The CyNetwork interface provides most of the methods a plugin would need to create
+ * a graph, traverse it, get and set attributes, and inquire about the existence of
+ * nodes and edges.
+ */
 public interface CyNetwork extends Identifiable, GraphObject {
+	/**
+	 * The "USER" CyDataTable is created by default for CyNetworks, CyNodes, and
+	 * CyEdges.  Other CyDataTables may also be associated -- see {@link CyDataTable}
+	 * for more information.  The table should be referenced using this constant:
+	 * <code>CyNetwork.DEFAULT_ATTRS</code>.
+	 */
 	String DEFAULT_ATTRS = "USER";
+
+	/**
+	 * The "HIDDEN" CyDataTable is created by default for CyNetworks, CyNodes, and
+	 * CyEdges.  Other CyDataTables may also be associated -- see {@link CyDataTable}
+	 * for more information.
+	 */
 	String HIDDEN_ATTRS = "HIDDEN";
 
+	/**
+	 * This method is used to create and add a node to this network.
+	 *
+	 * @return the created node
+	 */
 	CyNode addNode();
 
+	/**
+	 * Remove a node from the network and delete the node (if it only exists in 
+	 * this network).  See {@link CyRootNetwork} for information about having the
+	 * same node in two networks.
+	 *
+	 * @param node the node to be deleted
+	 * @return true if the node was successfully deleted
+	 */
 	boolean removeNode(CyNode node);
 
+	/**
+	 * This method is used to create and add an edge to this network.
+	 *
+	 * @param source the source (or start) of the edge
+	 * @param target the target (or end) of the edge
+	 * @param isDirected if 'true' this is a directed edge
+	 * @return the created edge
+	 */
 	CyEdge addEdge(CyNode source, CyNode target, boolean isDirected);
 
+	/**
+	 * Remove an edge from the network and delete the edge (if it only exists in
+	 * this network).  See {@link CyRootNetwork} for information about having the
+	 * same edge in two networks.
+	 *
+	 * @param edge the edge to be deleted
+	 * @return true if the edge was successfully deleted
+	 */
 	boolean removeEdge(CyEdge edge);
 
+	/**
+	 * Return the number of nodes in this network.
+	 *
+	 * @return the number of nodes
+	 */
 	int getNodeCount();
 
+	/**
+	 * Return the number of edges in this network.
+	 *
+	 * @return the number of edges
+	 */
 	int getEdgeCount();
 
+	/**
+	 * Return a list of the nodes in this network.
+	 *
+	 * @return the node list
+	 */
 	List<CyNode> getNodeList();
 
+	/**
+	 * Return a list of the edges in this network.
+	 *
+	 * @return the edge list
+	 */
 	List<CyEdge> getEdgeList();
 
+	/**
+	 * Determine if this CyNetwork contains a particular node.
+	 *
+	 * @param node the node to check
+	 * @return true if this network contains the node
+	 */
 	boolean containsNode(CyNode node);
 
+	/**
+	 * Determine if this CyNetwork contains a particular edge.
+	 *
+	 * @param edge the edge to check
+	 * @return true if this network contains the edge
+	 */
 	boolean containsEdge(CyEdge edge);
 
+	/**
+	 * Determine if this CyNetwork contains an edge between
+	 * two nodes.  Note that if the edge is directed, the
+	 * source and targets must match.
+	 *
+	 * @param  from the source of the edge
+	 * @param  to the target of the edge
+	 * @return true if this network contains the edge
+	 */
 	boolean containsEdge(CyNode from, CyNode to);
 
+	/**
+	 * Return the CyNode that has the index.
+	 *
+	 * @param index the index of the CyNode to get
+	 * @return the associated CyNode or null if there is no
+	 * node with that index in this network.
+	 */
 	CyNode getNode(int index);
 
+	/**
+	 * Return the CyEdge that has the index.
+	 *
+	 * @param index the index of the CyEdge to get
+	 * @return the associated CyEdge or null if there is no
+	 * edge with that index in this network.
+	 */
 	CyEdge getEdge(int index);
 
+	/**
+	 * Get the list of nodes that neighbor this node where the
+	 * definition of "neighbor" is a node that is connected to this
+	 * node by the passed edgeType.  The {@link CyEdge.Type} enum is
+	 * used to determine whether the list includes undirected, directed,
+	 * incoming, or outgoing edges.
+	 *
+	 * @param node the node whose neighbors we're looking for
+	 * @param edgeType the directionality of the edges we're interested in
+	 * @return the list of nodes that neighbor this node
+	 */
 	List<CyNode> getNeighborList(CyNode node, CyEdge.Type edgeType);
 
+	/**
+	 * Get the list of edges that connect to this node. The {@link CyEdge.Type} enum is
+	 * used to determine whether the list includes undirected, directed,
+	 * incoming, or outgoing edges.
+	 *
+	 * @param node the node whose edges we're looking for
+	 * @param edgeType the directionality of the edges we're interested in
+	 * @return the list of edges that are adjacent to this one
+	 */
 	List<CyEdge> getAdjacentEdgeList(CyNode node, CyEdge.Type edgeType);
 
+	/**
+	 * Get the list of edges that connect two nodes.  The {@link CyEdge.Type} enum is
+	 * used to determine whether the list includes undirected, directed,
+	 * incoming, or outgoing edges.
+	 *
+	 * @param source the source node
+	 * @param target the target node
+	 * @param edgeType the directionality of the edges we're interested in
+	 * @return the list of edges that include source and target and directed edges.
+	 */
 	List<CyEdge> getConnectingEdgeList(CyNode source, CyNode target, CyEdge.Type edgeType);
 
-/**
-     * Defines the attributes available for the CyNetwork.
-     */
-	Map<String,CyDataTable> getNetworkCyDataTables();
+	/**
+	 * Return the map of {@link CyDataTable}s for this network.  The map is indexed by the
+	 * name of the data table (e.g. "USER")
+	 *
+	 * @return the map of {@link CyDataTable}s for this network
+	 */
+	Map<String, ?extends CyDataTable> getNetworkCyDataTables();
 
-/**
-     * Defines the attributes available for all of the CyNode objects in the CyNetwork. 
-     */
-	Map<String,CyDataTable> getNodeCyDataTables();
+	/**
+	 * Return the map of {@link CyDataTable}s for nodes in this network.  The map is indexed by the
+	 * name of the data table (e.g. "USER")
+	 *
+	 * @return the map of {@link CyDataTable}s for nodes in this network
+	 */
+	Map<String, ?extends CyDataTable> getNodeCyDataTables();
 
-/**
-     * Defines the attributes available for all of the CyEdge objects in the CyNetwork. 
-     */
-	Map<String,CyDataTable> getEdgeCyDataTables();
+	/**
+	 * Return the map of {@link CyDataTable}s for edges in this network.  The map is indexed by the
+	 * name of the data table (e.g. "USER")
+	 *
+	 * @return the map of {@link CyDataTable}s for edges in this network
+	 */
+	Map<String, ?extends CyDataTable> getEdgeCyDataTables();
 }
