@@ -256,7 +256,10 @@ public class AttributeHandlingDialog extends JDialog
 	}
 
 	public void tunableChanged(Tunable t) {
-		if (t.getName().equals("attributeList")) {
+		if (t.getName().equals("enableHandling")) {
+      boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
+			AttributeHandler.setEnable(enableHandling);
+		} else if (t.getName().equals("attributeList")) {
 			CyAttributes attrs = null;
 
 			// Get the attribute
