@@ -40,9 +40,8 @@ import java.awt.event.FocusListener;
 import javax.swing.JTextField;
 
 import com.l2fprod.common.beans.editor.DoublePropertyEditor;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
-
-import cytoscape.Cytoscape;
+import cytoscape.visual.ui.VisualPropertySheetPanel;
+import cytoscape.visual.ui.VizMapperProperty;
 
 
 /**
@@ -55,14 +54,16 @@ public class CyDoublePropertyEditor extends DoublePropertyEditor {
 	/**
 	 * Creates a new CyStringPropertyEditor object.
 	 */
-	public CyDoublePropertyEditor() {
+	public CyDoublePropertyEditor(final VisualPropertySheetPanel panel) {
 		super();
 
 		((JTextField) editor).addFocusListener(new FocusListener() {
 				public void focusGained(FocusEvent e) {
-					final Item item = (Item) Cytoscape.getDesktop().getVizMapperUI().getSelectedItem();
-					selected = item.getProperty().getDisplayName();
-					setCurrentValue();
+					VizMapperProperty prop = panel.getSelectedProperty();
+					if (prop != null){
+						selected = prop.getDisplayName();
+						setCurrentValue();
+					}
 				}
 
 				public void focusLost(FocusEvent arg0) {
