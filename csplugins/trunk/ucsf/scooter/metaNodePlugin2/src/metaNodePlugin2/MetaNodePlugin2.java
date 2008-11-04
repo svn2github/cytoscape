@@ -118,6 +118,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 
 	private Method updateMethod = null;
 	private CyGroupViewer namedSelectionViewer = null;
+	private AttributeHandlingDialog settingsDialog = null;
 
 	protected int descendents = 0;
 
@@ -152,6 +153,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		// See if we can get any help from the group panel.  We'll try this again
 		// later if we fail now.
 		registerWithGroupPanel();
+
+		// Initialize the settings dialog -- we do this here so that our properties
+		// get read in.
+		settingsDialog = new AttributeHandlingDialog();
 
 		logger.info("metaNodePlugin2 "+VERSION+" initialized");
 	}
@@ -629,7 +634,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				collapseAll();
 			} else if (command == Command.SETTINGS) {
 				// Bring up the settings dialog
-				new AttributeHandlingDialog();
+				settingsDialog.setVisible(true);
 			}
 		}
 

@@ -81,13 +81,14 @@ public class AttributeHandlingDialog extends JDialog
 	private Tunable typeList = null;
 	private Tunable attrList = null;
 	private String[] attributeArray = null;
+	private List<Tunable>tunableEnablers = null;
 
 	// Dialog components
 	JPanel tunablePanel = null;
 
 	public AttributeHandlingDialog() {
 		super(Cytoscape.getDesktop(), "Metanode Attribute Handling Dialog", false);
-		metanodeProperties = new MetanodeProperties("metanode");
+		metanodeProperties = new MetanodeProperties("");
 
 		initializeProperties();
 
@@ -95,7 +96,6 @@ public class AttributeHandlingDialog extends JDialog
 
 		initialize();
 		pack();
-		setVisible(true);
 	}
 
 	private void initialize() {
@@ -141,6 +141,8 @@ public class AttributeHandlingDialog extends JDialog
 	}
 
 	private void initializeProperties() {
+		tunableEnablers = new ArrayList();
+
 		{
 			Tunable t = new Tunable("enableHandling",
 			                        "Enable Attribute Aggregation",
@@ -153,22 +155,39 @@ public class AttributeHandlingDialog extends JDialog
 		                                   Tunable.GROUP, new Integer(5),
 		                                   new Boolean(true), null, Tunable.COLLAPSABLE));
 		{
-			metanodeProperties.add(new Tunable("stringDefaults", "String Attributes",
+			Tunable t = new Tunable("stringDefaults", "String Attributes",
+		 	                        Tunable.LIST, new Integer(0),
+		 	                        AttributeHandler.getStringOptions(), null, 0);
+			metanodeProperties.add(t);
+			tunableEnablers.add(t);
+
+			t = new Tunable("intDefaults", "Integer Attributes",
 		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getStringOptions(), null, 0));
-			metanodeProperties.add(new Tunable("intDefaults", "Integer Attributes",
+		 	                                  AttributeHandler.getIntOptions(), null, 0);
+			metanodeProperties.add(t);
+			tunableEnablers.add(t);
+
+			t = new Tunable("doubleDefaults", "Double Attributes",
 		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getIntOptions(), null, 0));
-			metanodeProperties.add(new Tunable("doubleDefaults", "Double Attributes",
+		 	                                  AttributeHandler.getDoubleOptions(), null, 0);
+			metanodeProperties.add(t);
+			tunableEnablers.add(t);
+
+			t = new Tunable("listDefaults", "List Attributes",
 		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getDoubleOptions(), null, 0));
-			metanodeProperties.add(new Tunable("listDefaults", "List Attributes",
+		 	                                  AttributeHandler.getListOptions(), null, 0);
+			metanodeProperties.add(t);
+			tunableEnablers.add(t);
+
+			t = new Tunable("booleanDefaults", "Boolean Attributes",
 		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getListOptions(), null, 0));
-			metanodeProperties.add(new Tunable("booleanDefaults", "Boolean Attributes",
-		 	                                  Tunable.LIST, new Integer(0),
-		 	                                  AttributeHandler.getBooleanOptions(), null, 0));
+		 	                                  AttributeHandler.getBooleanOptions(), null, 0);
+			metanodeProperties.add(t);
+			tunableEnablers.add(t);
 		}
+
+		// We only really care about the property settings for our defaults
+		metanodeProperties.initializeProperties();
 
 		metanodeProperties.add(new Tunable("attributesGroup",
 		                                    "Overrides for Specific Attributes",
@@ -181,6 +200,7 @@ public class AttributeHandlingDialog extends JDialog
 		 	                       getAttributes(), null, 0);
 			attrList.addTunableValueListener(this);
 			metanodeProperties.add(attrList);
+			tunableEnablers.add(attrList);
 
 			typeString = new Tunable("attributeType", "Attribute Type",
 			                Tunable.STRING, "",
@@ -192,16 +212,49 @@ public class AttributeHandlingDialog extends JDialog
 			typeList = new Tunable("aggregationType", "Aggregation Type",
 			                       Tunable.LIST, new Integer(0), empty, null, 0);
 			metanodeProperties.add(typeList);
+			tunableEnablers.add(typeList);
 			// Update
 			tunableChanged(attrList);
 		}
+		updateSettings(true);
 	}
 
-	public void updateTunables(boolean force) {
+	public void updateSettings(boolean force) {
 		metanodeProperties.updateValues();
+
+		// Get our defaults and pass them down to the AttributeHandler
+		Tunable t = metanodeProperties.get("enableHandling");
+		if ((t != null) && (t.valueChanged() || force)) {
+      boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
+			AttributeHandler.setEnable(enableHandling);
+			enableTunables(enableHandling);
+		}
+
+		// For each default value, get the default and set it
+		t = metanodeProperties.get("stringDefaults");
+		if ((t != null) && (t.valueChanged() || force)) {
+			AttributeHandler.setDefault(CyAttributes.TYPE_STRING, (AttributeHandlingType)getListValue(t));
+		}
+		t = metanodeProperties.get("intDefaults");
+		if ((t != null) && (t.valueChanged() || force)) {
+			AttributeHandler.setDefault(CyAttributes.TYPE_INTEGER, (AttributeHandlingType)getListValue(t));
+		}
+		t = metanodeProperties.get("doubleDefaults");
+		if ((t != null) && (t.valueChanged() || force)) {
+			AttributeHandler.setDefault(CyAttributes.TYPE_FLOATING, (AttributeHandlingType)getListValue(t));
+		}
+		t = metanodeProperties.get("listDefaults");
+		if ((t != null) && (t.valueChanged() || force)) {
+			AttributeHandler.setDefault(CyAttributes.TYPE_SIMPLE_LIST, (AttributeHandlingType)getListValue(t));
+		}
+		t = metanodeProperties.get("booleanDefaults");
+		if ((t != null) && (t.valueChanged() || force)) {
+			AttributeHandler.setDefault(CyAttributes.TYPE_BOOLEAN, (AttributeHandlingType)getListValue(t));
+		}
+
 	}
 
-	public void revertTunables() {
+	public void revertSettings() {
 		metanodeProperties.revertProperties();
 		AttributeHandler.revertSettings();
 	}
@@ -241,13 +294,13 @@ public class AttributeHandlingDialog extends JDialog
 		String command = e.getActionCommand();
 
 		if (command.equals("done")) {
-			updateTunables(true);
+			updateSettings(true);
 			setVisible(false);
 		} else if (command.equals("save")) {
-			updateTunables(true);
+			updateSettings(true);
 			metanodeProperties.saveProperties();
 		} else if (command.equals("cancel")) {
-			revertTunables();
+			revertSettings();
 			setVisible(false);
 		} else if (command.equals("clear")) {
 			AttributeHandler.clearSettings();
@@ -259,11 +312,15 @@ public class AttributeHandlingDialog extends JDialog
 		if (t.getName().equals("enableHandling")) {
       boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);
+			enableTunables(enableHandling);
 		} else if (t.getName().equals("attributeList")) {
 			CyAttributes attrs = null;
 
 			// Get the attribute
 			String attributeWP = (String)getListValue(t);
+
+			if (attributeWP == null)
+				return;
 
 			// Strip prefix
 			String attribute = attributeWP.substring(5);
@@ -338,5 +395,14 @@ public class AttributeHandlingDialog extends JDialog
 		Object[] array = (Object [])t.getLowerBound();
 
 		return array[attributeIndex];
+	}
+
+	private void enableTunables(boolean enableHandling) {
+		for (Tunable t: tunableEnablers) {
+			// System.out.println("Setting immutable for "+t+" to "+(!enableHandling));
+		 	t.setImmutable(!enableHandling);
+		}
+		doLayout();
+		pack();
 	}
 }

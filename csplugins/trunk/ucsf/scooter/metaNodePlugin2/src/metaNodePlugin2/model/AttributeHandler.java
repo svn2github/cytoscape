@@ -49,6 +49,7 @@ import java.util.Map;
 public class AttributeHandler {
 	static private Map<String, AttributeHandler>handlerMap = null;
 	static private Map<String, AttributeHandler>saveHandlerMap = null;
+	static private List<AttributeHandlingType> defaultHandling = null;
 	static private boolean aggregating = false;
 
 	private String attribute;
@@ -274,6 +275,11 @@ public class AttributeHandler {
  	 */
 	static public boolean getEnable() {
 		return aggregating;
+	}
+
+	static public void setDefault(byte attributeType, AttributeHandlingType type) {
+		if (defaultHandling == null) defaultHandling = new ArrayList();
+		defaultHandling.add((int)attributeType, type);
 	}
 
 	/**************************************************************************
