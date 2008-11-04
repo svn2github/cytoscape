@@ -41,6 +41,7 @@ import cytoscape.Cytoscape;
 
 import cytoscape.layout.CyLayouts;
 import cytoscape.layout.CyLayoutAlgorithm;
+import cytoscape.layout.LayoutProperties;
 import cytoscape.layout.LayoutTask;
 
 import cytoscape.task.util.TaskManager;
@@ -110,6 +111,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			setVisible(false);
 		} else if (command.equals("save")) {
 			updateAllSettings();
+			saveAllProperties();
 		} else if (command.equals("execute")) {
 			// Layout using the current layout
 			updateAllSettings();
@@ -213,6 +215,14 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 	private void updateAllSettings() {
 		for ( CyLayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
 			algo.updateSettings();
+		}
+	}
+
+	private void saveAllProperties() {
+		for ( CyLayoutAlgorithm algo : CyLayouts.getAllLayouts() ) { 
+			LayoutProperties props = algo.getSettings();
+			if (props != null)
+				props.saveProperties();
 		}
 	}
 
