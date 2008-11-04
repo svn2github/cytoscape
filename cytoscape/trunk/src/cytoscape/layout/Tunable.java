@@ -484,7 +484,7 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 		else
 			clearFlag(IMMUTABLE);
 		if (inputField != null)
-			inputField.setEnabled(checkFlag(IMMUTABLE));
+			inputField.setEnabled(!checkFlag(IMMUTABLE));
 	}
 
 	/**
