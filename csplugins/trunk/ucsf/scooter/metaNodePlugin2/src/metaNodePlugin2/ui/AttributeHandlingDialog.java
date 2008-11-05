@@ -42,6 +42,7 @@ import metaNodePlugin2.model.MetanodeProperties;
 import metaNodePlugin2.model.AttributeHandler;
 import metaNodePlugin2.model.AttributeHandler.AttributeHandlingType;
 
+import cytoscape.CyNetwork;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 import cytoscape.layout.Tunable;
@@ -227,6 +228,7 @@ public class AttributeHandlingDialog extends JDialog
 		if ((t != null) && (t.valueChanged() || force)) {
       boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 			enableTunables(enableHandling);
 		}
 
@@ -234,22 +236,32 @@ public class AttributeHandlingDialog extends JDialog
 		t = metanodeProperties.get("stringDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_STRING, (AttributeHandlingType)getListValue(t));
+			if (t.valueChanged())
+				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("intDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_INTEGER, (AttributeHandlingType)getListValue(t));
+			if (t.valueChanged())
+				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("doubleDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_FLOATING, (AttributeHandlingType)getListValue(t));
+			if (t.valueChanged())
+				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("listDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_SIMPLE_LIST, (AttributeHandlingType)getListValue(t));
+			if (t.valueChanged())
+				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("booleanDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_BOOLEAN, (AttributeHandlingType)getListValue(t));
+			if (t.valueChanged())
+				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 	}
@@ -257,6 +269,10 @@ public class AttributeHandlingDialog extends JDialog
 	public void revertSettings() {
 		metanodeProperties.revertProperties();
 		AttributeHandler.revertSettings();
+	}
+
+	public void updateOverrides(CyNetwork network) {
+		AttributeHandler.loadHandlerMappings(network);
 	}
 
 	private String[] getAttributes() {

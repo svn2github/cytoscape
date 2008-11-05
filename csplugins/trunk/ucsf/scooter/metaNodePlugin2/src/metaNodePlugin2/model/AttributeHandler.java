@@ -33,6 +33,7 @@
 package metaNodePlugin2.model;
 
 import cytoscape.CyNetwork;
+import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 import java.util.ArrayList;
@@ -51,11 +52,14 @@ public class AttributeHandler {
 	static private Map<String, AttributeHandler>saveHandlerMap = null;
 	static private List<AttributeHandlingType> defaultHandling = null;
 	static private boolean aggregating = false;
+	static private CyNetwork network;
+	static public String OVERRIDE_ATTRIBUTE = "__MetanodeAggregation";
 
 	private String attribute;
 	private AttributeHandlingType type;
 	private byte attributeType;
 	private Object aggregateValue;
+	private int count;
 
 	/**
  	 * The AttributeHandlingType enum contains the list of all of the
@@ -171,12 +175,20 @@ public class AttributeHandler {
  	 * @param handlerType the aggregation method for use by the handler
  	 */
 	static public void addHandler(String attribute, AttributeHandlingType handlerType) {
-						if (handlerMap == null) handlerMap = new HashMap();
+		if (handlerMap == null) handlerMap = new HashMap();
 
 		if (handlerMap.containsKey(attribute)) {
 			handlerMap.get(attribute).setHandlerType(handlerType);
 		} else {
 			handlerMap.put(attribute, new AttributeHandler(attribute, handlerType));
+		}
+		
+		// Update our list of overrides in the network attributes
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		if (networkAttributes.hasAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE)) {
+			Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
+			attrMap.put(attribute, handlerType.toString());
+			networkAttributes.setMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE, attrMap);
 		}
 	}
 
@@ -222,33 +234,6 @@ public class AttributeHandler {
 		return null;
 	}
 
-	static public Object aggregateAttribute(String source, String attribute, int count) {
-		// Are we aggregating?
-		if (!aggregating) return null;
-		// Get the AttributeHandler
-		// If there isn't one, create a default handler for this attribute
-		// Aggregate
-		return null;
-	}
-
-	static public Object assignAttribute(String destination, String attribute, int count) {
-		// Are we aggregating?
-		if (!aggregating) return null;
-		// Get the AttributeHandler
-		// Assign
-		return null;
-	}
-
-	/**
- 	 * Save the current mapping of attributes to attribute aggregation options into
- 	 * the network attributes for this network.
- 	 *
- 	 * @param network the CyNetwork we're going to save our options into
- 	 */
-	static public void saveHandlerMappings(CyNetwork network) {
-		//
-	}
-
 	/**
  	 * Load the current mapping of attributes to attribute aggregation options from
  	 * the network attributes for this network.
@@ -256,7 +241,14 @@ public class AttributeHandler {
  	 * @param network the CyNetwork we're going to read our options from
  	 */
 	static public void loadHandlerMappings(CyNetwork network) {
-		//
+		CyAttributes networkAttributes = Cytoscape.getNetworkAttributes();
+		AttributeHandler.network = network;
+		if (networkAttributes.hasAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE)) {
+			Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
+			for (String attr: attrMap.keySet()) {
+				handlerMap.put(attr, new AttributeHandler(attr, stringToType(attrMap.get(attr))));
+			}
+		}
 	}
 
 	/**
@@ -279,7 +271,34 @@ public class AttributeHandler {
 
 	static public void setDefault(byte attributeType, AttributeHandlingType type) {
 		if (defaultHandling == null) defaultHandling = new ArrayList();
-		defaultHandling.add((int)attributeType, type);
+		try {
+			defaultHandling.set((int)attributeType, type);
+		} catch (IndexOutOfBoundsException e) {
+			defaultHandling.add((int)attributeType, type);
+		}
+	}
+
+	static public AttributeHandler getDefaultHandler(byte attributeType, String attribute) {
+		AttributeHandlingType t;
+		try {
+			t = defaultHandling.get((int)attributeType);
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
+		// OK, now add it in, but don't update our attributes
+		if (handlerMap == null) handlerMap = new HashMap();
+		AttributeHandler h = new AttributeHandler(attribute, t);
+		handlerMap.put(attribute, h);
+		return h;
+	}
+
+
+	static public AttributeHandlingType stringToType(String str) {
+		for (AttributeHandlingType type: AttributeHandlingType.values()) {
+			if (str.equals(type.toString()))
+				return type;
+		}
+		return AttributeHandlingType.NONE;
 	}
 
 	/**************************************************************************
@@ -289,6 +308,8 @@ public class AttributeHandler {
 	protected AttributeHandler (String attribute, AttributeHandlingType type) {
 		this.attribute = attribute;
 		this.type = type;
+		this.count = 0;
+		aggregateValue = null;
 	}
 
 	public void setHandlerType(AttributeHandlingType type) {
@@ -303,11 +324,140 @@ public class AttributeHandler {
 		return type;
 	}
 
-	public Object aggregateAttribute(String source, int count) {
-		return null;
+	public Object aggregateAttribute(CyAttributes attrMap, String source, int count) {
+		byte attributeType = attrMap.getType(attribute);
+
+		switch (attributeType) {
+			case CyAttributes.TYPE_BOOLEAN:
+				{
+					boolean value = attrMap.getBooleanAttribute(source, attribute).booleanValue();
+					if (aggregateValue == null)
+						aggregateValue = Boolean.valueOf(value);
+					else if (type == AttributeHandlingType.AND) {
+						aggregateValue = Boolean.valueOf(((Boolean)aggregateValue).booleanValue() & value);
+					} else if (type == AttributeHandlingType.OR) {
+						aggregateValue = Boolean.valueOf(((Boolean)aggregateValue).booleanValue() | value);
+					}
+				}
+				break;
+			case CyAttributes.TYPE_INTEGER:
+				{
+					int value = attrMap.getIntegerAttribute(source, attribute).intValue();
+					if (aggregateValue == null) {
+						aggregateValue = Integer.valueOf(value);
+					} else if (type == AttributeHandlingType.MIN) {
+						if (value < ((Integer)aggregateValue).intValue())
+							aggregateValue = Integer.valueOf(value);
+					} else if (type == AttributeHandlingType.MAX) {
+						if (value > ((Integer)aggregateValue).intValue())
+							aggregateValue = Integer.valueOf(value);
+					} else if (type == AttributeHandlingType.AVG) {
+						aggregateValue = Integer.valueOf(((Integer)aggregateValue).intValue() + value)*count;
+					} else if (type == AttributeHandlingType.MEDIAN) {
+						aggregateValue = Integer.valueOf(((Integer)aggregateValue).intValue() + value);
+					} else if (type == AttributeHandlingType.SUM) {
+						aggregateValue = Integer.valueOf(((Integer)aggregateValue).intValue() + value)*count;
+					}
+				}
+				break;
+			case CyAttributes.TYPE_FLOATING:
+				{
+					double value = attrMap.getDoubleAttribute(source, attribute).doubleValue();
+					if (aggregateValue == null) {
+						aggregateValue = Double.valueOf(value);
+					} else if (type == AttributeHandlingType.MIN) {
+						if (value < ((Double)aggregateValue).doubleValue())
+							aggregateValue = Double.valueOf(value);
+					} else if (type == AttributeHandlingType.MAX) {
+						if (value > ((Double)aggregateValue).doubleValue())
+							aggregateValue = Double.valueOf(value);
+					} else if (type == AttributeHandlingType.AVG) {
+						aggregateValue = Double.valueOf(((Double)aggregateValue).doubleValue() + value)*count;
+					} else if (type == AttributeHandlingType.MEDIAN) {
+						aggregateValue = Double.valueOf(((Double)aggregateValue).doubleValue() + value);
+					} else if (type == AttributeHandlingType.SUM) {
+						aggregateValue = Double.valueOf(((Double)aggregateValue).doubleValue() + value)*count;
+					}
+				}
+				break;
+			case CyAttributes.TYPE_SIMPLE_LIST:
+				{
+					List value = attrMap.getListAttribute(source, attribute);
+					if (aggregateValue == null) {
+						aggregateValue = value;
+					} else if (type == AttributeHandlingType.CONCAT) {
+						((List)aggregateValue).addAll(value);
+					}
+				}
+				break;
+			case CyAttributes.TYPE_STRING:
+				{
+					String value = attrMap.getStringAttribute(source, attribute);
+					if (aggregateValue == null) {
+						if (type == AttributeHandlingType.MCV) {
+							aggregateValue = (Map<String,Integer>)new HashMap();
+						} else
+							aggregateValue = value;
+					} else if (type == AttributeHandlingType.CSV) {
+						aggregateValue = (String)aggregateValue + "," + value;
+					} else if (type == AttributeHandlingType.TSV) {
+						aggregateValue = (String)aggregateValue + "\t" + value;
+					} else if (type == AttributeHandlingType.MCV) {
+						Map<String,Integer>histo = (Map<String,Integer>)aggregateValue;
+						if (histo.containsKey(value)) {
+							histo.put(value, Integer.valueOf(histo.get(value).intValue()+1));
+						} else
+							histo.put(value, Integer.valueOf(1));
+					}
+				}
+				break;
+			default:
+		}
+
+		this.count += count;
+		return aggregateValue;
 	}
 
-	public Object assignAttribute(String destination, int count) {
+	public Object assignAttribute(CyAttributes attrMap, String destination) {
+		byte attributeType = attrMap.getType(attribute);
+
+		switch (attributeType) {
+			case CyAttributes.TYPE_BOOLEAN:
+				attrMap.setAttribute(destination, attribute, (Boolean)aggregateValue);
+				break;
+			case CyAttributes.TYPE_INTEGER:
+				if (type == AttributeHandlingType.AVG || type == AttributeHandlingType.MEDIAN)
+					aggregateValue = Integer.valueOf(((Integer)aggregateValue).intValue() / this.count);
+				attrMap.setAttribute(destination, attribute, (Integer)aggregateValue);
+				break;
+			case CyAttributes.TYPE_FLOATING:
+				if (type == AttributeHandlingType.AVG || type == AttributeHandlingType.MEDIAN)
+					aggregateValue = Double.valueOf(((Double)aggregateValue).doubleValue() / (double)this.count);
+				attrMap.setAttribute(destination, attribute, (Double)aggregateValue);
+				break;
+			case CyAttributes.TYPE_SIMPLE_LIST:
+				attrMap.setListAttribute(destination, attribute, (List)aggregateValue);
+				break;
+			case CyAttributes.TYPE_STRING:
+				if (type == AttributeHandlingType.MCV) {
+					int max = -1;
+					String mcv = null;
+					Map<String,Integer> histo = (Map<String,Integer>)aggregateValue;
+					for (String str: histo.keySet()) {
+						if (histo.get(str).intValue() > max) {
+							mcv = str;
+							max = histo.get(str).intValue();
+						}
+					}
+					aggregateValue = mcv;
+				}
+				attrMap.setAttribute(destination, attribute, (String)aggregateValue);
+				break;
+			default:
+		}
+
+		aggregateValue = null;
+		count = 0;
 		return null;
 	}
 }

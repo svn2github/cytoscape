@@ -132,6 +132,9 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			// Add ourselves to the network view created change list
 			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
 			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_CREATED, this);
+			// We also want to add ourselves to the network view focused change list
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 			// Add our context menu
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
 		} catch (ClassCastException e) {
@@ -270,6 +273,10 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 	public void propertyChange (PropertyChangeEvent e) {
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
+			MetaNode.newView((CyNetworkView)e.getNewValue());
+		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
+			// Load the default aggregation values for this network
+			settingsDialog.updateOverrides(((CyNetworkView)e.getNewValue()).getNetwork());
 			MetaNode.newView((CyNetworkView)e.getNewValue());
 		}
 	}
