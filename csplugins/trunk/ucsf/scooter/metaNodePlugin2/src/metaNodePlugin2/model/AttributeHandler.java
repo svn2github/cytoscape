@@ -50,7 +50,7 @@ import java.util.Map;
 public class AttributeHandler {
 	static private Map<String, AttributeHandler>handlerMap = null;
 	static private Map<String, AttributeHandler>saveHandlerMap = null;
-	static private List<AttributeHandlingType> defaultHandling = null;
+	static private AttributeHandlingType[] defaultHandling = new AttributeHandlingType[15];
 	static private boolean aggregating = false;
 	static private CyNetwork network;
 	static public String OVERRIDE_ATTRIBUTE = "__MetanodeAggregation";
@@ -270,21 +270,17 @@ public class AttributeHandler {
 	}
 
 	static public void setDefault(byte attributeType, AttributeHandlingType type) {
-		if (defaultHandling == null) defaultHandling = new ArrayList();
-		try {
-			defaultHandling.set((int)attributeType, type);
-		} catch (IndexOutOfBoundsException e) {
-			defaultHandling.add((int)attributeType, type);
-		}
+		if (attributeType < 0) attributeType += 10;
+		defaultHandling[attributeType] = type;
 	}
 
 	static public AttributeHandler getDefaultHandler(byte attributeType, String attribute) {
 		AttributeHandlingType t;
-		try {
-			t = defaultHandling.get((int)attributeType);
-		} catch (IndexOutOfBoundsException e) {
+		if (attributeType < 0) attributeType += 10;
+		t = defaultHandling[attributeType];
+		if (t == null)
 			return null;
-		}
+
 		// OK, now add it in, but don't update our attributes
 		if (handlerMap == null) handlerMap = new HashMap();
 		AttributeHandler h = new AttributeHandler(attribute, t);
@@ -306,7 +302,7 @@ public class AttributeHandler {
 	 *************************************************************************/
 
 	protected AttributeHandler (String attribute, AttributeHandlingType type) {
-		this.attribute = attribute;
+		this.attribute = attribute.substring(5); // Skip over type
 		this.type = type;
 		this.count = 0;
 		aggregateValue = null;
@@ -326,6 +322,8 @@ public class AttributeHandler {
 
 	public Object aggregateAttribute(CyAttributes attrMap, String source, int count) {
 		byte attributeType = attrMap.getType(attribute);
+		if (!attrMap.hasAttribute(source,attribute))
+			return aggregateValue;
 
 		switch (attributeType) {
 			case CyAttributes.TYPE_BOOLEAN:
@@ -420,6 +418,8 @@ public class AttributeHandler {
 
 	public Object assignAttribute(CyAttributes attrMap, String destination) {
 		byte attributeType = attrMap.getType(attribute);
+
+		System.out.println("Assigning attribute "+attribute+"("+aggregateValue.toString()+") to "+destination);
 
 		switch (attributeType) {
 			case CyAttributes.TYPE_BOOLEAN:

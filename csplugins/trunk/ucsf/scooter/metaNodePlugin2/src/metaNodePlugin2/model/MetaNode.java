@@ -1172,22 +1172,6 @@ public class MetaNode {
 			return center;
 	}
 
-	/***********************************************************************************
-	 * Attribute aggregation code.  At this point, this code should be considered a    *
-	 * prototype implementation to test the advantages of attribute aggregation.       *
-	 * Eventually, this code will need to be hooked up with a UI that will provide the *
-	 * user the opportunity to select the type of aggregation for each attributes and  *
-	 * the default aggregation for each type.  This code assumes the following         *
-	 * aggregation types (with alternatives in braces):                                *
-	 *     TYPE_BOOLEAN        Logical AND {Logical OR, None}                          *
-	 *     TYPE_COMPLEX        None                                                    *
-	 *     TYPE_FLOATING       Average {Sum, Min, Max, Median, None}                   *
-	 *     TYPE_INTEGER        Average {Sum, Min, Max, Median, None}                   *
-	 *     TYPE_SIMPLE_LIST    Concatenation {None}                                    *
-	 *     TYPE_SIMPLE_MAP     None                                                    *
-	 *     TYPE_STRING         Comma separated {Tab separated, Most common, None}      *
-	 **********************************************************************************/
-
 	/**
 	 * Aggregate the data into our map.
 	 *
@@ -1199,7 +1183,6 @@ public class MetaNode {
 	private void aggregateAttributes(CyAttributes attrMap, 
 	                                 String attrType,
 	                                 String source, MetaNode recurse) {
-
 		if (!AttributeHandler.getEnable())
 			return;
 
@@ -1233,7 +1216,7 @@ public class MetaNode {
 	                                MetaNode recurse) {
 
 		if (recurse == null) {
-			handler.aggregateAttribute(attrMap, source, 1);
+			Object value = handler.aggregateAttribute(attrMap, source, 1);
 			return;
 		}
 		if (handler.getHandlerType() != AttributeHandlingType.MEDIAN &&
@@ -1269,6 +1252,7 @@ public class MetaNode {
 		String [] attributes = attrMap.getAttributeNames();
 		for (int i = 0; i < attributes.length; i++) {
 			String attr = attributes[i];
+			System.out.println("Assigning attribute for "+attr+" to "+target);
 			// Get our handler
 			AttributeHandler handler = AttributeHandler.getHandler(attrType+"."+attr);
 

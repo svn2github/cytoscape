@@ -157,9 +157,13 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		// later if we fail now.
 		registerWithGroupPanel();
 
-		// Initialize the settings dialog -- we do this here so that our properties
-		// get read in.
-		settingsDialog = new AttributeHandlingDialog();
+		try {
+			// Initialize the settings dialog -- we do this here so that our properties
+			// get read in.
+			settingsDialog = new AttributeHandlingDialog();
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+		}
 
 		logger.info("metaNodePlugin2 "+VERSION+" initialized");
 	}
@@ -276,8 +280,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			MetaNode.newView((CyNetworkView)e.getNewValue());
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			// Load the default aggregation values for this network
-			settingsDialog.updateOverrides(((CyNetworkView)e.getNewValue()).getNetwork());
-			MetaNode.newView((CyNetworkView)e.getNewValue());
+			settingsDialog.updateOverrides(Cytoscape.getCurrentNetwork());
+			MetaNode.newView(Cytoscape.getCurrentNetworkView());
 		}
 	}
 
