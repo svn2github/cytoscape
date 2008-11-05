@@ -168,9 +168,9 @@ public class ModulePropertiesImpl implements ModuleProperties {
 			String property = (String) iter.nextElement();
 
 			if (property.startsWith(prefix)) {
-				int start = prefix.length() + 1;
-				propertyMap.put(property.substring(start + 1), props.getProperty(property));
-				savedPropertyMap.put(property.substring(start + 1), props.getProperty(property));
+				int start = prefix.length();
+				propertyMap.put(property.substring(start), props.getProperty(property));
+				savedPropertyMap.put(property.substring(start), props.getProperty(property));
 			}
 		}
 

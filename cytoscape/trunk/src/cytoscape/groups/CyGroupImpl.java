@@ -293,8 +293,8 @@ public class CyGroupImpl implements CyGroup {
 	public void setState(int state) {
 		CyAttributes attributes = Cytoscape.getNodeAttributes();
 		this.groupState = state;
-		attributes.setAttribute(this.groupName, GROUP_STATE_ATTR, this.groupState);
 		attributes.setUserVisible(GROUP_STATE_ATTR, false);
+		attributes.setAttribute(this.groupName, GROUP_STATE_ATTR, this.groupState);
 
 		// Get our viewer
 		CyGroupViewer v = CyGroupManager.getGroupViewer(this.viewer);
@@ -353,8 +353,8 @@ public class CyGroupImpl implements CyGroup {
 		this.viewer = viewerName;
 
 		if (this.viewer != null) {
-			attributes.setAttribute(this.groupName, GROUP_VIEWER_ATTR, this.viewer);
 			attributes.setUserVisible(GROUP_VIEWER_ATTR, false);
+			attributes.setAttribute(this.groupName, GROUP_VIEWER_ATTR, this.viewer);
 		}
 	}
 
