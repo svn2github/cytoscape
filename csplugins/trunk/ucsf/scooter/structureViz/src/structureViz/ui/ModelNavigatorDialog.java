@@ -392,7 +392,8 @@ public class ModelNavigatorDialog
 		chimeraMenu.add(alignMenu);
 
 		JMenu clashMenu = new JMenu("Clash Detection");
-		addMenuItem(clashMenu, "Find Clashes", FINDCLASH, "findclash sel");
+		addMenuItem(clashMenu, "Find Clashes", FINDCLASH, "findclash sel continuous true");
+		// addMenuItem(clashMenu, "Find Clashes", FINDCLASH, "findclash sel");
 		addMenuItem(clashMenu, "Clear Clash", COMMAND, "~findclash");
 		chimeraMenu.add(clashMenu);
 

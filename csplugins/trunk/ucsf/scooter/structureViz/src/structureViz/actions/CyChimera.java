@@ -124,8 +124,11 @@ public class CyChimera {
 			// Start by handling any chemical (2D) structures
 			String chemStruct = getChemStruct(node);
 			if (chemStruct != null && chemStruct.length() > 0) {
-					Structure s = new Structure(chemStruct.trim() ,node , Structure.StructureType.SMILES);
-					structureList.add(s);
+					String[] structList = chemStruct.split(",");
+					for (int i = 0; i < structList.length; i++) {
+						Structure s = new Structure(structList[i].trim() ,node , Structure.StructureType.SMILES);
+						structureList.add(s);
+					}
 			}
 
 			// Now handle the PDB structures
