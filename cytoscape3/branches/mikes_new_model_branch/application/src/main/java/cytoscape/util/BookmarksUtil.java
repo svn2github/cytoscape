@@ -182,7 +182,7 @@ public abstract class BookmarksUtil {
 
 		// Load the Bookmarks object from given xml file  
 		try {
-			theBookmarks = BookmarksUtil.getBookmarks(pBookmarkFile.toURL());
+			theBookmarks = BookmarksUtil.getBookmarks(pBookmarkFile.toURI().toURL());
 		} catch (IOException e) {
 			System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
 		} catch (JAXBException e) {
