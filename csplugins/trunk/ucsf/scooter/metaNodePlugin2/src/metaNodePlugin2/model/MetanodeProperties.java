@@ -25,6 +25,6 @@ public class MetanodeProperties extends LayoutProperties {
 	 */
 	public MetanodeProperties(String propertyPrefix) {
 		super(propertyPrefix);
-		setModuleType("metanode");
+		setModuleType("groups");
 	}
 }

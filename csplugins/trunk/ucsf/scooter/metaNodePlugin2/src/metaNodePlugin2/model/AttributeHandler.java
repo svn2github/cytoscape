@@ -37,6 +37,7 @@ import cytoscape.Cytoscape;
 import cytoscape.data.CyAttributes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,8 @@ public class AttributeHandler {
 		MEDIAN("Median value"),
 		CONCAT("Concatenate"),
 		AND("Logical AND"),
-		OR("Logical OR");
+		OR("Logical OR"),
+		DEFAULT("(no override)");
 
 		private String name;
 		private AttributeHandlingType(String s) { name = s; }
@@ -189,6 +191,17 @@ public class AttributeHandler {
 			Map<String,String> attrMap = (Map<String,String>)networkAttributes.getMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE);
 			attrMap.put(attribute, handlerType.toString());
 			networkAttributes.setMapAttribute(network.getIdentifier(), OVERRIDE_ATTRIBUTE, attrMap);
+		}
+	}
+
+	/**
+ 	 * Remove a handler for the designated attribute from our internal map of handlers
+ 	 *
+ 	 * @param attribute the attribute this handler is for
+ 	 */
+	static public void removeHandler(String attribute) {
+		if (handlerMap != null && handlerMap.containsKey(attribute)) {
+			handlerMap.remove(attribute);
 		}
 	}
 
@@ -322,6 +335,9 @@ public class AttributeHandler {
 
 	public Object aggregateAttribute(CyAttributes attrMap, String source, int count) {
 		byte attributeType = attrMap.getType(attribute);
+		if (type == AttributeHandlingType.NONE)
+			return null;
+
 		if (!attrMap.hasAttribute(source,attribute))
 			return aggregateValue;
 
@@ -341,7 +357,7 @@ public class AttributeHandler {
 			case CyAttributes.TYPE_INTEGER:
 				{
 					int value = attrMap.getIntegerAttribute(source, attribute).intValue();
-					if (aggregateValue == null) {
+					if (aggregateValue == null && type != AttributeHandlingType.MEDIAN) {
 						aggregateValue = Integer.valueOf(value);
 					} else if (type == AttributeHandlingType.MIN) {
 						if (value < ((Integer)aggregateValue).intValue())
@@ -352,7 +368,9 @@ public class AttributeHandler {
 					} else if (type == AttributeHandlingType.AVG) {
 						aggregateValue = Integer.valueOf(((Integer)aggregateValue).intValue() + value)*count;
 					} else if (type == AttributeHandlingType.MEDIAN) {
-						aggregateValue = Integer.valueOf(((Integer)aggregateValue).intValue() + value);
+						if (aggregateValue == null)
+							aggregateValue = (List<Integer>)new ArrayList();
+						((List<Integer>)aggregateValue).add(attrMap.getIntegerAttribute(source, attribute));
 					} else if (type == AttributeHandlingType.SUM) {
 						aggregateValue = Integer.valueOf(((Integer)aggregateValue).intValue() + value)*count;
 					}
@@ -361,7 +379,7 @@ public class AttributeHandler {
 			case CyAttributes.TYPE_FLOATING:
 				{
 					double value = attrMap.getDoubleAttribute(source, attribute).doubleValue();
-					if (aggregateValue == null) {
+					if (aggregateValue == null && type != AttributeHandlingType.MEDIAN) {
 						aggregateValue = Double.valueOf(value);
 					} else if (type == AttributeHandlingType.MIN) {
 						if (value < ((Double)aggregateValue).doubleValue())
@@ -372,7 +390,9 @@ public class AttributeHandler {
 					} else if (type == AttributeHandlingType.AVG) {
 						aggregateValue = Double.valueOf(((Double)aggregateValue).doubleValue() + value)*count;
 					} else if (type == AttributeHandlingType.MEDIAN) {
-						aggregateValue = Double.valueOf(((Double)aggregateValue).doubleValue() + value);
+						if (aggregateValue == null)
+							aggregateValue = (List<Double>)new ArrayList();
+						((List<Double>)aggregateValue).add(attrMap.getDoubleAttribute(source, attribute));
 					} else if (type == AttributeHandlingType.SUM) {
 						aggregateValue = Double.valueOf(((Double)aggregateValue).doubleValue() + value)*count;
 					}
@@ -391,21 +411,22 @@ public class AttributeHandler {
 			case CyAttributes.TYPE_STRING:
 				{
 					String value = attrMap.getStringAttribute(source, attribute);
-					if (aggregateValue == null) {
-						if (type == AttributeHandlingType.MCV) {
-							aggregateValue = (Map<String,Integer>)new HashMap();
-						} else
-							aggregateValue = value;
+					if (aggregateValue == null && type != AttributeHandlingType.MCV) {
+						aggregateValue = value;
 					} else if (type == AttributeHandlingType.CSV) {
 						aggregateValue = (String)aggregateValue + "," + value;
 					} else if (type == AttributeHandlingType.TSV) {
 						aggregateValue = (String)aggregateValue + "\t" + value;
 					} else if (type == AttributeHandlingType.MCV) {
+						if (aggregateValue == null)
+							aggregateValue = (Map<String,Integer>)new HashMap();
+						// TODO: What's the right way to handle blank values?
 						Map<String,Integer>histo = (Map<String,Integer>)aggregateValue;
 						if (histo.containsKey(value)) {
 							histo.put(value, Integer.valueOf(histo.get(value).intValue()+1));
-						} else
+						} else {
 							histo.put(value, Integer.valueOf(1));
+						}
 					}
 				}
 				break;
@@ -419,20 +440,48 @@ public class AttributeHandler {
 	public Object assignAttribute(CyAttributes attrMap, String destination) {
 		byte attributeType = attrMap.getType(attribute);
 
-		System.out.println("Assigning attribute "+attribute+"("+aggregateValue.toString()+") to "+destination);
+		if (type == AttributeHandlingType.NONE)
+			return null;
+
+		if (aggregateValue == null) {
+			attrMap.deleteAttribute(destination, attribute);
+			return null;
+		}
 
 		switch (attributeType) {
 			case CyAttributes.TYPE_BOOLEAN:
 				attrMap.setAttribute(destination, attribute, (Boolean)aggregateValue);
 				break;
 			case CyAttributes.TYPE_INTEGER:
-				if (type == AttributeHandlingType.AVG || type == AttributeHandlingType.MEDIAN)
+				if (aggregateValue != null && type == AttributeHandlingType.AVG)
 					aggregateValue = Integer.valueOf(((Integer)aggregateValue).intValue() / this.count);
+				else if (aggregateValue != null && type == AttributeHandlingType.MEDIAN) {
+					List<Integer>vList = (List<Integer>)aggregateValue;
+					Integer[] vArray = new Integer[vList.size()];
+					vArray = vList.toArray(vArray);
+					Arrays.sort(vArray);
+					if (vArray.length % 2 == 1)
+						aggregateValue = vArray[(vArray.length-1)/2];
+					else {
+						aggregateValue = (vArray[(vArray.length/2)-1] + vArray[(vArray.length/2)]) / 2;
+					}
+				}
 				attrMap.setAttribute(destination, attribute, (Integer)aggregateValue);
 				break;
 			case CyAttributes.TYPE_FLOATING:
-				if (type == AttributeHandlingType.AVG || type == AttributeHandlingType.MEDIAN)
+				if (aggregateValue != null && type == AttributeHandlingType.AVG)
 					aggregateValue = Double.valueOf(((Double)aggregateValue).doubleValue() / (double)this.count);
+				else if (aggregateValue != null && type == AttributeHandlingType.MEDIAN) {
+					List<Double>vList = (List<Double>)aggregateValue;
+					Double[] vArray = new Double[vList.size()];
+					vArray = vList.toArray(vArray);
+					Arrays.sort(vArray);
+					if (vArray.length % 2 == 1)
+						aggregateValue = vArray[(vArray.length-1)/2];
+					else {
+						aggregateValue = (vArray[(vArray.length/2)-1] + vArray[(vArray.length/2)]) / (double)2;
+					}
+				}
 				attrMap.setAttribute(destination, attribute, (Double)aggregateValue);
 				break;
 			case CyAttributes.TYPE_SIMPLE_LIST:

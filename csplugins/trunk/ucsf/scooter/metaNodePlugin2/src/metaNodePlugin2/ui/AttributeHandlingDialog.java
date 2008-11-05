@@ -89,7 +89,7 @@ public class AttributeHandlingDialog extends JDialog
 
 	public AttributeHandlingDialog() {
 		super(Cytoscape.getDesktop(), "Metanode Attribute Handling Dialog", false);
-		metanodeProperties = new MetanodeProperties("");
+		metanodeProperties = new MetanodeProperties("metanode");
 
 		initializeProperties();
 
@@ -209,7 +209,7 @@ public class AttributeHandlingDialog extends JDialog
 			typeString.setImmutable(true);
 			metanodeProperties.add(typeString);
 
-			String[] empty = {""};
+			String[] empty = {"(no override)"};
 			typeList = new Tunable("aggregationType", "Aggregation Type",
 			                       Tunable.LIST, new Integer(0), empty, null, 0);
 			metanodeProperties.add(typeList);
@@ -236,32 +236,27 @@ public class AttributeHandlingDialog extends JDialog
 		t = metanodeProperties.get("stringDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_STRING, (AttributeHandlingType)getListValue(t));
-			if (t.valueChanged())
-				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("intDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_INTEGER, (AttributeHandlingType)getListValue(t));
-			if (t.valueChanged())
-				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("doubleDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_FLOATING, (AttributeHandlingType)getListValue(t));
-			if (t.valueChanged())
-				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("listDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_SIMPLE_LIST, (AttributeHandlingType)getListValue(t));
-			if (t.valueChanged())
-				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 		t = metanodeProperties.get("booleanDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
 			AttributeHandler.setDefault(CyAttributes.TYPE_BOOLEAN, (AttributeHandlingType)getListValue(t));
-			if (t.valueChanged())
-				metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 	}
@@ -273,6 +268,10 @@ public class AttributeHandlingDialog extends JDialog
 
 	public void updateOverrides(CyNetwork network) {
 		AttributeHandler.loadHandlerMappings(network);
+	}
+
+	public void updateAttributes() {
+		attrList.setLowerBound(getAttributes());
 	}
 
 	private String[] getAttributes() {
@@ -349,7 +348,13 @@ public class AttributeHandlingDialog extends JDialog
 			byte type = attrs.getType(attribute);
 
 			// Get the list
-			AttributeHandlingType[] handlingTypes = AttributeHandler.getHandlingOptions(type);
+			AttributeHandlingType[] hTypes = AttributeHandler.getHandlingOptions(type);
+			AttributeHandlingType[] handlingTypes = new AttributeHandlingType[hTypes.length+1];
+
+			handlingTypes[0] = AttributeHandlingType.DEFAULT;
+			for (int i = 0; i < hTypes.length; i++) {
+				handlingTypes[i+1] = hTypes[i];
+			}
 
 			// Set the name
 			typeString.setValue(attributeName(type));
@@ -406,6 +411,8 @@ public class AttributeHandlingDialog extends JDialog
 	private Object getListValue(Tunable t) {
 		// Get the index
 		int attributeIndex = ((Integer)t.getValue()).intValue();
+		if (attributeIndex < 0)
+			return null;
 
 		// Get the original array
 		Object[] array = (Object [])t.getLowerBound();

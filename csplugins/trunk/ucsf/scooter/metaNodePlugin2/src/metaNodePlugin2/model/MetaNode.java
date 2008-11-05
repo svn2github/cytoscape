@@ -551,6 +551,7 @@ public class MetaNode {
 				if (!isMetaEdge(edge)) {
 					// Not a meta edge.  This may be an additional edge that got created
 					// to our group node.  We want to add this to our outerEdge list
+					if (DEBUG) logger.debug("Adding outer edge "+edge.getIdentifier()+" to "+groupNode.getIdentifier());
 					metaGroup.addOuterEdge(edge);
 				}
 				hideEdge(edge);
@@ -653,13 +654,20 @@ public class MetaNode {
 			newEdge = metaEdgeMap.get(partner);
 			addMetaEdge(newEdge, partner, edge);
 		} else {
-			if (source == partner)
-				target = groupNode;
-			else
-				source = groupNode;
+			// Do we already have this edge?
+			if (metaEdgeMap.containsKey(partner)) {
+				// Yes, return it
+				return null;
+				// newEdge = metaEdgeMap.get(partner);
+			} else {
+				if (source == partner)
+					target = groupNode;
+				else
+					source = groupNode;
 
-			newEdge = getMetaEdge(source, target, edge);
-			addMetaEdge(newEdge, partner, edge);
+				newEdge = getMetaEdge(source, target, edge);
+				addMetaEdge(newEdge, partner, edge);
+			}
 		}
 		if (DEBUG) logger.debug("... returning edge "+newEdge.getIdentifier());
 		return newEdge;
@@ -669,7 +677,8 @@ public class MetaNode {
 		if (!newEdgeMap.containsKey(newEdge)) {
 			newEdgeMap.put(newEdge, new ArrayList());
 		}
-		newEdgeMap.get(newEdge).add(edge);
+		if (!newEdgeMap.get(newEdge).contains(edge))
+			newEdgeMap.get(newEdge).add(edge);
 		metaEdgeMap.put(partner,newEdge);
 	}
 
@@ -740,6 +749,7 @@ public class MetaNode {
 	
 		// Attach them to the group node
 		for (CyEdge edge: edges) {
+			if (DEBUG) logger.debug("Outer edge: "+edge.getIdentifier());
 			CyEdge newEdge = createMetaEdge(edge, null, false);
 			if (newEdge != null) {
 				network.addEdge(newEdge);
@@ -1054,8 +1064,7 @@ public class MetaNode {
 	 * @return true if edge is a meta-edge
 	 */
 	private boolean isMetaEdge(CyEdge edge) {
-		String interaction = edgeAttributes.getStringAttribute(edge.getIdentifier(), Semantics.INTERACTION);
-		if (interaction.startsWith("meta-"))
+		if (metaEdgeMap.containsValue(edge))
 			return true;
 
 		return false;
@@ -1121,8 +1130,8 @@ public class MetaNode {
 	 */
 	private void setXHintAttr(CyAttributes nodeAttributes, String nodeName, double value) {
 		String attr = metaGroup.getGroupName()+":"+X_HINT_ATTR;
-		nodeAttributes.setAttribute(nodeName,attr,value);
 		nodeAttributes.setUserVisible(attr,false);
+		nodeAttributes.setAttribute(nodeName,attr,value);
 	}
 
 	/**
@@ -1134,8 +1143,8 @@ public class MetaNode {
 	 */
 	private void setYHintAttr(CyAttributes nodeAttributes, String nodeName, double value) {
 		String attr = metaGroup.getGroupName()+":"+Y_HINT_ATTR;
-		nodeAttributes.setAttribute(nodeName,attr,value);
 		nodeAttributes.setUserVisible(attr,false);
+		nodeAttributes.setAttribute(nodeName,attr,value);
 	}
 
 	/**
@@ -1252,12 +1261,10 @@ public class MetaNode {
 		String [] attributes = attrMap.getAttributeNames();
 		for (int i = 0; i < attributes.length; i++) {
 			String attr = attributes[i];
-			System.out.println("Assigning attribute for "+attr+" to "+target);
 			// Get our handler
 			AttributeHandler handler = AttributeHandler.getHandler(attrType+"."+attr);
-
-			if (handler == null) return;
-			handler.assignAttribute(attrMap, target);
+			if (handler != null)
+				handler.assignAttribute(attrMap, target);
 		}
 	}
 }

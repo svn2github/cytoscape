@@ -278,6 +278,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
 			MetaNode.newView((CyNetworkView)e.getNewValue());
+			settingsDialog.updateAttributes();
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			// Load the default aggregation values for this network
 			settingsDialog.updateOverrides(Cytoscape.getCurrentNetwork());
