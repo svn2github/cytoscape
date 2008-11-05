@@ -306,31 +306,51 @@ public class ForceDirectedLayout extends AbstractGraphPartition
 		layoutProperties.updateValues();
 
 		Tunable t = layoutProperties.get("selected_only");
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			selectedOnly = ((Boolean) t.getValue()).booleanValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("partition");
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setPartition(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("defaultSpringCoefficient");
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			defaultSpringCoefficient = ((Double) t.getValue()).doubleValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("defaultSpringLength");
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			defaultSpringLength = ((Double) t.getValue()).doubleValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("defaultNodeMass");
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			defaultNodeMass = ((Double) t.getValue()).doubleValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("numIterations");
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			numIterations = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("integrator");
 		if ((t != null) && (t.valueChanged() || force)) {
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 			if (((Integer) t.getValue()).intValue() == 0)
 				integrator = new RungeKuttaIntegrator();
 			else if (((Integer) t.getValue()).intValue() == 1)

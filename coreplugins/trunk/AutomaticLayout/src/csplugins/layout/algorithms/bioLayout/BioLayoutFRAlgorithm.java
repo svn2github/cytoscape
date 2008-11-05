@@ -445,49 +445,67 @@ public class BioLayoutFRAlgorithm extends BioLayoutAlgorithm {
 		super.updateSettings(force);
 
 		Tunable t = layoutProperties.get("repulsion_multiplier");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setRepulsionMultiplier(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("attraction_multiplier");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setAttractionMultiplier(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("gravity_multiplier");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setGravityMultiplier(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("iterations");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setNumberOfIterations(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("temperature");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setTemperature(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("spread_factor");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setSpreadFactor(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("update_iterations");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setUpdateIterations(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("conflict_avoidance");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setConflictAvoidanceForce(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("max_distance_factor");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setMaxDistanceFactor(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 	}
 
 	/**

@@ -382,39 +382,53 @@ public class BioLayoutKKAlgorithm extends BioLayoutAlgorithm {
 		super.updateSettings(force);
 
 		Tunable t = layoutProperties.get("iterations_pernode");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setNumberOfIterationsPerNode(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("layout_passes");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setNumberOfLayoutPasses(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("distance_strength");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setDistanceSpringStrength(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("rest_length");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setDistanceRestLength(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("disconnected_strength");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setDisconnectedSpringStrength(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("disconnected_rest_length");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setDisconnectedRestLength(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("anticollisionStrength");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setAnticollisionSpringStrength(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 	}
 
 	/**

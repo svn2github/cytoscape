@@ -150,44 +150,60 @@ public class ISOMLayout extends AbstractGraphPartition {
 		layoutProperties.updateValues();
 
 		Tunable t = layoutProperties.get("maxEpoch");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			maxEpoch = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("sizeFactor");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			sizeFactor = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("radiusConstantTime");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			radiusConstantTime = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("radius");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			radius = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("minRadius");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			minRadius = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("initialAdaptation");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			initialAdaptation = ((Double) t.getValue()).doubleValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("minAdaptation");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			minAdaptation = ((Double) t.getValue()).doubleValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("coolingFactor");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			coolingFactor = ((Double) t.getValue()).doubleValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 	}
 
 	/**

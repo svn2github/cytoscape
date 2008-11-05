@@ -1224,44 +1224,60 @@ public class HierarchicalLayoutAlgorithm extends AbstractLayout {
 		layoutProperties.updateValues();
 
 		Tunable t = layoutProperties.get("nodeHorizontalSpacing");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			nodeVerticalSpacing = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("nodeVerticalSpacing");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			nodeVerticalSpacing = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("componentSpacing");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			componentSpacing = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("bandGap");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			bandGap = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("leftEdge");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			leftEdge = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("topEdge");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			topEdge = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("rightMargin");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			rightMargin = ((Integer) t.getValue()).intValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("selected_only");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			selected_only = ((Boolean) t.getValue()).booleanValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 	}
 
 	/**

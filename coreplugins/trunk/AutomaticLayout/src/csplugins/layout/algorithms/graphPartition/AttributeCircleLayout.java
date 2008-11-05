@@ -169,14 +169,18 @@ public class AttributeCircleLayout extends AbstractGraphPartition {
 		layoutProperties.updateValues();
 
 		Tunable t = layoutProperties.get("spacing");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			spacing = ((Double) t.getValue()).doubleValue();
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("attribute");
-
 		if ((t != null) && (t.valueChanged() || force)) {
 			String newValue = (String) t.getValue();
+			// Does it make sense to save the attribute???
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 
 			if (newValue.equals("(none)")) {
 				attribute = null;

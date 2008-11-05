@@ -271,24 +271,33 @@ public abstract class BioLayoutAlgorithm extends AbstractGraphPartition {
 		layoutProperties.updateValues();
 
 		Tunable t = layoutProperties.get("debug");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setDebug(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
+
 
 		t = layoutProperties.get("partition");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setPartition(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("randomize");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setRandomize(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		t = layoutProperties.get("selected_only");
-
-		if ((t != null) && (t.valueChanged() || force))
+		if ((t != null) && (t.valueChanged() || force)) {
 			setSelectedOnly(t.getValue().toString());
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
+		}
 
 		if (supportWeights) 
 			edgeWeighter.updateSettings(layoutProperties, force);

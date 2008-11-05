@@ -123,24 +123,32 @@ public class EdgeWeighter {
     if ((t != null) && (t.valueChanged() || force)) {
     	minWeightCutoff = ((Double) t.getValue()).doubleValue();
 			resetRequired = true;
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
     t = layoutProperties.get("max_weight"); 
     if ((t != null) && (t.valueChanged() || force)) {
     	maxWeightCutoff = ((Double) t.getValue()).doubleValue();
 			resetRequired = true;
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
     t = layoutProperties.get("edge_attribute");
     if ((t != null) && (t.valueChanged() || force)) {
     	weightAttribute = (t.getValue().toString());
 			resetRequired = true;
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 		t = layoutProperties.get("weight_type");
 		if ((t != null) && (t.valueChanged() || force)) {
 			type = weightChoices[((Integer) t.getValue()).intValue()];
 			resetRequired = true;
+			if (t.valueChanged())
+				layoutProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 		if (resetRequired) 
