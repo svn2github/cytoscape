@@ -34,76 +34,29 @@
  */
 package cytoscape.visual.ui;
 
-import com.l2fprod.common.propertysheet.DefaultProperty;
-import com.l2fprod.common.propertysheet.Property;
-import com.l2fprod.common.propertysheet.PropertyEditorRegistry;
-import com.l2fprod.common.propertysheet.PropertyRendererRegistry;
 import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import com.l2fprod.common.propertysheet.PropertySheetTable;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel;
-import com.l2fprod.common.propertysheet.PropertySheetTableModel.Item;
 import com.l2fprod.common.swing.plaf.blue.BlueishButtonUI;
 
 import cytoscape.Cytoscape;
-import org.cytoscape.GraphObject;
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
-
-import org.cytoscape.attributes.CyAttributes;
-import org.cytoscape.attributes.CyAttributesUtils;
-import org.cytoscape.attributes.MultiHashMapListener;
 
 import cytoscape.util.SwingWorker;
 
 import cytoscape.util.swing.DropDownMenuButton;
 
-import org.cytoscape.view.DiscreteValue;
 import org.cytoscape.view.GraphView;
-import org.cytoscape.view.VisualPropertyCatalog;
-import org.cytoscape.view.VisualPropertyIcon;
 
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 import org.cytoscape.view.VisualProperty;
-
 import org.cytoscape.vizmap.CalculatorCatalog;
-import org.cytoscape.vizmap.LabelPosition;
 import org.cytoscape.vizmap.VisualMappingManager;
-
 import org.cytoscape.vizmap.VisualStyle;
 
-import org.cytoscape.vizmap.calculators.BasicCalculator;
-import org.cytoscape.vizmap.calculators.Calculator;
-
-import org.cytoscape.vizmap.mappings.ContinuousMapping;
-import org.cytoscape.vizmap.mappings.DiscreteMapping;
-import org.cytoscape.vizmap.mappings.ObjectMapping;
-import org.cytoscape.vizmap.mappings.PassThroughMapping;
-
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
-import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
-import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
-import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
-import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
-
-
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -111,51 +64,22 @@ import java.awt.event.MouseEvent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyEditor;
-
-import java.lang.reflect.Constructor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 
 
 /**
@@ -301,6 +225,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		return EditorFactory.showDiscreteEditor(type);
 	}
 	public VisualStyle getCurrentlyEditedVS(){
+		if (currentlyEditedVS == null){
+			// FIXME: this shouldn't happen, i.e. nothing should call this method before currentlyEditedVS is initialized.
+			// I think it happens due to out-of-order OSGi initialization 
+			currentlyEditedVS = vmm.getCalculatorCatalog().getDefaultVisualStyle();
+		}
 		return currentlyEditedVS;
 	}
 	public GraphView getCurrentView(){
@@ -317,6 +246,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		mainSplitPane = new javax.swing.JSplitPane();
 		defaultAppearencePanel = new javax.swing.JPanel();
 		visualPropertySheetPanel = new VisualPropertySheetPanel(this);
+		PropertySheetPanel propertySheetPanel = visualPropertySheetPanel.getPSP();
 		
 		vsSelectPanel = new javax.swing.JPanel();
 		vsNameComboBox = new javax.swing.JComboBox();
@@ -341,7 +271,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		
 		mainSplitPane.setLeftComponent(defaultAppearencePanel);
 
-		visualPropertySheetPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
+		propertySheetPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
 		                                                                                "Visual Mapping Browser",
 		                                                                                javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 		                                                                                javax.swing.border.TitledBorder.DEFAULT_POSITION,
@@ -350,7 +280,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		                                                                                                  12),
 		                                                                                java.awt.Color.darkGray));
 
-		mainSplitPane.setRightComponent(visualPropertySheetPanel);
+		mainSplitPane.setRightComponent(propertySheetPanel);
 
 		vsSelectPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
 		                                                                     "Current Visual Style",
@@ -595,14 +525,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	class DefaultMouseListener extends MouseAdapter {
 		public void mouseClicked(MouseEvent e) {
 			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
-				final String focus = currentView.getIdentifier();
-
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop());
 				updateDefaultImage(currentlyEditedVS, (GraphView) panel.getView(), defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(currentlyEditedVS));
 
 				vmm.setVisualStyleForView(currentView, currentlyEditedVS);
-				Cytoscape.getDesktop().setFocus(focus);
 				Cytoscape.getDesktop().repaint();
 			}
 		}
@@ -615,7 +542,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
+		System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			setDefaultPanel(defaultImageManager.get(currentlyEditedVS));
 			vsNameComboBox.setSelectedItem(currentlyEditedVS.getName());

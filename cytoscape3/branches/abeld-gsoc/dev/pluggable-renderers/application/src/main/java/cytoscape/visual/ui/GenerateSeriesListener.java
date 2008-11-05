@@ -15,8 +15,8 @@ public class GenerateSeriesListener extends DiscreteMappingEditorListener {
 		super(panel);
 	}
 	public Map<Object, Object> generateValues(VisualProperty type, DiscreteMapping dm, Set<Object> attrSet) {
-		final String start = JOptionPane.showInputDialog(visualPropertySheetPanel,"Please enter start value (1st number in the series)", "0");
-		final String increment = JOptionPane.showInputDialog(visualPropertySheetPanel, "Please enter increment", "1");
+		final String start = JOptionPane.showInputDialog(visualPropertySheetPanel.getPSP(),"Please enter start value (1st number in the series)", "0");
+		final String increment = JOptionPane.showInputDialog(visualPropertySheetPanel.getPSP(), "Please enter increment", "1");
 
 		if ((increment == null) || (start == null)) return null;
 

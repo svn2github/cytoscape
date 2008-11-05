@@ -55,12 +55,18 @@ public abstract class VisualPropertyCatalog {
 		return collectionOfVisualProperties(null, null);
 	}
 	public static Collection<VisualProperty> collectionOfVisualProperties(GraphView networkview){
-		List<NodeView> nodeviews = new ArrayList<NodeView>();
-		for (Iterator it = networkview.getNodeViewsIterator(); it.hasNext();){
-			NodeView nv = (NodeView)it.next();
-			nodeviews.add(nv);
+		if (networkview != null){
+			List<NodeView> nodeviews = new ArrayList<NodeView>();
+		
+			nodeviews = new ArrayList<NodeView>();
+			for (Iterator it = networkview.getNodeViewsIterator(); it.hasNext();){
+				NodeView nv = (NodeView)it.next();
+				nodeviews.add(nv);
+			}
+			return collectionOfVisualProperties(nodeviews, networkview.getEdgeViewsList());
+		} else {
+			return collectionOfVisualProperties(null, null);
 		}
-		return collectionOfVisualProperties(nodeviews, networkview.getEdgeViewsList());
 	}
 	/**
 	 * Returns the collection of all those VisualProperties that are in use for

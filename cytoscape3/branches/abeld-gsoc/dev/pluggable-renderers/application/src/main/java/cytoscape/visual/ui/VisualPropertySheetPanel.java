@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +90,7 @@ import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
 import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
 
-public class VisualPropertySheetPanel extends JPanel implements PropertyChangeListener, PopupMenuListener {
+public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMenuListener {
 
 	private static final long serialVersionUID = 1L;
 	private VizMapperMainPanel vmmp;
@@ -251,6 +250,7 @@ public class VisualPropertySheetPanel extends JPanel implements PropertyChangeLi
 		/*
 		 * Managing editor windows.
 		 */
+		System.out.println("VPSP got event:"+e);
 		if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)
 		    || e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
 			manageWindow(e.getPropertyName(), (VisualProperty) e.getNewValue(), e.getSource());
@@ -331,7 +331,7 @@ public class VisualPropertySheetPanel extends JPanel implements PropertyChangeLi
 			if (e.getNewValue() == null) return;
 			if (e.getNewValue().equals("Continuous Mapper")
 					&& ((dataClass != Integer.class) && (dataClass != Double.class) && (dataClass != Float.class))) {
-				JOptionPane.showMessageDialog(this,
+				JOptionPane.showMessageDialog(propertySheetPanel,
 						"Continuous Mapper can be used with Numbers only.",
 						"Incompatible Mapping Type!",
 						JOptionPane.INFORMATION_MESSAGE);
@@ -378,7 +378,7 @@ public class VisualPropertySheetPanel extends JPanel implements PropertyChangeLi
 				if ((dataType == CyAttributes.TYPE_FLOATING) || (dataType == CyAttributes.TYPE_INTEGER)) {
 					// Do nothing
 				} else {
-					JOptionPane.showMessageDialog(this,
+					JOptionPane.showMessageDialog(propertySheetPanel,
 					                              "Continuous Mapper can be used with Numbers only.\nPlease select numerical attributes.",
 					                              "Incompatible Mapping Type!",
 					                              JOptionPane.INFORMATION_MESSAGE);
@@ -696,17 +696,15 @@ public class VisualPropertySheetPanel extends JPanel implements PropertyChangeLi
 		stringCellEditor.addPropertyChangeListener(this);
 		labelPositionEditor.addPropertyChangeListener(this);
 		
-		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
+		Cytoscape.getNodeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(propertySheetPanel,
 																		Cytoscape.getNodeAttributes(),
 																		nodeAttrEditor, nodeNumericalAttrEditor));
-		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
+		Cytoscape.getEdgeAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(propertySheetPanel,
 																		Cytoscape.getEdgeAttributes(),
 																		edgeAttrEditor, edgeNumericalAttrEditor));
-		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(this,
+		Cytoscape.getNetworkAttributes().getMultiHashMap().addDataListener(new MultiHashMapListenerAdapter(propertySheetPanel,
 																		Cytoscape.getNetworkAttributes(),
 																		null, null));
-
-		this.add(propertySheetPanel);
 	}
 	
 	/** set given TableModel as model for PropertySheetPanel widget;

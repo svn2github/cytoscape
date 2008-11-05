@@ -28,7 +28,7 @@ public class GenerateValueListener extends DiscreteMappingEditorListener {
 	public Map<Object, Object> generateValues(VisualProperty type, DiscreteMapping dm, Set<Object> attrSet) {
 		// Show error if there is no attribute value.
 		if (attrSet.size() == 0) {
-			JOptionPane.showMessageDialog(visualPropertySheetPanel, "No attribute value is available.",
+			JOptionPane.showMessageDialog(visualPropertySheetPanel.getPSP(), "No attribute value is available.",
 		                              	"Cannot generate values", JOptionPane.ERROR_MESSAGE);
 		}
 		/*
@@ -63,7 +63,7 @@ public class GenerateValueListener extends DiscreteMappingEditorListener {
 						valueMap.put(key, new Color(((Number) (rand.nextFloat() * MAX_COLOR)) .intValue()));
 				}
 		} else if ((type.getDataType() == Number.class) && (functionType == RANDOM)) {
-			final String range = JOptionPane.showInputDialog(visualPropertySheetPanel,
+			final String range = JOptionPane.showInputDialog(visualPropertySheetPanel.getPSP(),
 					"Please enter the value range (example: 30-100)",
 					"Assign Random Numbers",
 					JOptionPane.PLAIN_MESSAGE);
