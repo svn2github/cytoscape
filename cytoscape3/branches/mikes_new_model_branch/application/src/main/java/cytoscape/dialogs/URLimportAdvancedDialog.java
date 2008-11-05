@@ -331,7 +331,7 @@ public class URLimportAdvancedDialog extends JDialog implements ActionListener,
 
 		// Load the Bookmarks object from given xml file  
 		try {
-			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURL());
+			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURI().toURL());
 		} catch (IOException e) {
 			System.out.println("IOException -- bookmarkSource");
 		} catch (JAXBException e) {
