@@ -278,7 +278,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		/***********************************************************************
 		 * Below this line, accept only cell editor events.
 		 **********************************************************************/
-		//System.out.println("cell editor event.");
+		System.out.println("cell editor event.");
 		if (e.getPropertyName().equalsIgnoreCase("value") == false)	return;
 
 		if (e.getNewValue().equals(e.getOldValue())) return;
@@ -776,10 +776,10 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 	public void adaptToVisualStyleChanged(){
 		VisualStyle currentlyEditedVS = vmmp.getCurrentlyEditedVS();
 		if (vsToModelMap.containsKey(currentlyEditedVS)){
-			//System.out.println("swapping in exsisting TableModel:");
+			System.out.println("swapping in exsisting TableModel:");
 			setModel(vsToModelMap.get(currentlyEditedVS));
 		} else {
-			//System.out.println("no TableModel yet for this VisualStyle, have to create it:");
+			System.out.println("no TableModel yet for this VisualStyle, have to create it:");
 			PropertySheetTableModel model = new PropertySheetTableModel();
 			setModel(model);
 			setPropertyTable();
@@ -1154,17 +1154,19 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		// Clean up sheet -- FIXME: this shouldn't be needed since propertySheetPanel is supposed to be empty (?) 
 		for (Property item : propertySheetPanel.getProperties())
 			propertySheetPanel.removeProperty(item);
-		//System.out.println("cleared PropertyTable, num properties:"+(visualPropertySheetPanel.getProperties()).length);
+		System.out.println("cleared PropertyTable, num properties:"+(propertySheetPanel.getProperties()).length);
 		VisualStyle currentlyEditedVS = vmmp.getCurrentlyEditedVS();
 		final List<Calculator> ncList = currentlyEditedVS.getNodeCalculators();
 		final List<Calculator> ecList = currentlyEditedVS.getEdgeCalculators();
 
 		editorReg.registerDefaults(); // FIXME ezzel valamit kezdeni
-
+		System.out.println("ncList length:"+ncList.size());
 		/* Add properties to the property sheet. */
 		setPropertyFromCalculator(ncList);
+		System.out.println("node calculator properties added, num properties:"+(propertySheetPanel.getProperties()).length);
 		setPropertyFromCalculator(ecList);
-
+		
+		System.out.println("in-use properties added, num properties:"+(propertySheetPanel.getProperties()).length);
 		/* Finally, add unused visual properties (as VizMapperProperties) to propList */
 		for (VisualProperty vp : byNameSortedVisualProperties(VisualPropertyCatalog.collectionOfVisualProperties(vmmp.getCurrentView()))) { //FIXME: assumes currentView
 			if (currentlyEditedVS.getCalculator(vp) == null) {
@@ -1176,17 +1178,12 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				propertySheetPanel.addProperty(prop);
 			}
 		}
-		//System.out.println("setPropertyTable done, num properties:"+(visualPropertySheetPanel.getProperties()).length);
+		System.out.println("setPropertyTable done, num properties:"+(propertySheetPanel.getProperties()).length);
 	}
 	
 	private void setPropertyFromCalculator(List<Calculator> calcList) {
 		for (Calculator calc : calcList) {
 			final VizMapperProperty calculatorTypeProp = new VizMapperProperty();
-			if (calc.getVisualProperty().isNodeProp()){
-				propertySheetPanel.addProperty(0, calculatorTypeProp);
-			} else {
-				propertySheetPanel.addProperty(calculatorTypeProp);
-			}
 
 			buildProperty(calc, calculatorTypeProp);
 
@@ -1204,7 +1201,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		}
 	}
 	/*
-	 * Build one property for one visual property.
+	 * Build one property for one visual property, and add it to the PropertySheet
 	 */
 	public final void buildProperty(Calculator calc, VizMapperProperty calculatorTypeProp) {
 		final VisualProperty type = calc.getVisualProperty();
