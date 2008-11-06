@@ -219,7 +219,7 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	 *
 	 * @return the map of {@link CyDataTable}s for this network
 	 */
-	Map<String, ?extends CyDataTable> getNetworkCyDataTables();
+	Map<String,CyDataTable> getNetworkCyDataTables();
 
 	/**
 	 * Return the map of {@link CyDataTable}s for nodes in this network.  The map is indexed by the
@@ -227,7 +227,7 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	 *
 	 * @return the map of {@link CyDataTable}s for nodes in this network
 	 */
-	Map<String, ?extends CyDataTable> getNodeCyDataTables();
+	Map<String,CyDataTable> getNodeCyDataTables();
 
 	/**
 	 * Return the map of {@link CyDataTable}s for edges in this network.  The map is indexed by the
@@ -235,5 +235,5 @@ public interface CyNetwork extends Identifiable, GraphObject {
 	 *
 	 * @return the map of {@link CyDataTable}s for edges in this network
 	 */
-	Map<String, ?extends CyDataTable> getEdgeCyDataTables();
+	Map<String,CyDataTable> getEdgeCyDataTables();
 }
