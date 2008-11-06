@@ -206,6 +206,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 	 *            DOCUMENT ME!
 	 */
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+		//System.out.println("popupMenuWillBecomeVisible"+e);
 		final VizMapperProperty prop = getSelectedProperty();
 
 		if (prop == null)
@@ -587,9 +588,9 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				// TODO Auto-generated method stub
 			}
 		});
-
+		menu = new JPopupMenu();
 		table.setComponentPopupMenu(menu);
-
+		
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				processMouseClick(e);
@@ -644,7 +645,6 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				}
 			});
 		
-		menu = new JPopupMenu();
 		generateValues.add(rainbow1);
 		generateValues.add(rainbow2);
 		generateValues.add(randomize);
