@@ -160,6 +160,12 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		// Need to register listener here, instead of CytoscapeDesktop.
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+		
+		// This can't be here because it would create an inifinite loop since this constructor gets called
+		// when there is no CytoscapeDesktop object yet, and Cytoscape.getDesktop() would cann that constr
+		// again, which would call this constr. etc.
+		// as a workaround, hook up this listener in Cytoscape.getDesktop() 
+		//Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);		
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(new VizMapListener());
 
 		initComponents();
@@ -238,6 +244,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	public CalculatorCatalog getCalculatorCatalog(){
 		return vmm.getCalculatorCatalog();
 	}
+	/** only reason this is public is so that Cytoscape.getDesktop() can hook up event listeners */
+	public VisualPropertySheetPanel getVPSP(){
+		return visualPropertySheetPanel;
+	}
+
 	/**
 	 * GUI initialization code based on the auto-generated code from NetBeans
 	 *

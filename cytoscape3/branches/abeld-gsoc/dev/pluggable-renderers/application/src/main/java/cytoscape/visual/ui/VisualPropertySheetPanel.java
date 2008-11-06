@@ -168,6 +168,12 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		initWidgets();
 		adaptToVisualStyleChanged();
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+
+		// This can't be here because it would create an inifinite loop since this constructor gets called
+		// when there is no CytoscapeDesktop object yet, and Cytoscape.getDesktop() would cann that constr
+		// again, which would call this constr. etc.
+		// as a workaround, hook up this listener in Cytoscape.getDesktop() 
+		//Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 	
 	/**
@@ -260,7 +266,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				editorWindowManager.remove((VisualProperty) e.getNewValue());
 
 		} else if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
-			setPropertyTable();
+			adaptToVisualStyleChanged();  // FIXME: is this needed? why?
 		} else if (e.getPropertyName().equals(Cytoscape.SESSION_LOADED)
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
@@ -269,7 +275,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
 		} else if (e.getPropertyName().equals(Cytoscape.VISUALSTYLE_MODIFIED)){
 			System.out.println("got VISUALSTYLE_MODIFIED!");
-			setPropertyTable();
+			//setPropertyTable();
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 		           || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
 			setAttrComboBox();

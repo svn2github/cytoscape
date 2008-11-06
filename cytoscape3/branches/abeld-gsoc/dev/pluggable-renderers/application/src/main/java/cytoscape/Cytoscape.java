@@ -983,6 +983,10 @@ public abstract class Cytoscape {
 	public static CytoscapeDesktop getDesktop() {
 		if (defaultDesktop == null) {
 			defaultDesktop = new CytoscapeDesktop();
+			// these listeners should be hooked up in the constructor of the given objects, but that would create an infinite loop.
+			// so hook them up here instead
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(defaultDesktop.getVizMapperUI());
+			Cytoscape.getDesktop().getSwingPropertyChangeSupport().addPropertyChangeListener(defaultDesktop.getVizMapperUI().getVPSP());
 		}
 
 		return defaultDesktop;
