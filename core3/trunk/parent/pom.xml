@@ -48,6 +48,30 @@
           </compilerArguments>
         </configuration>
       </plugin>
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+               </goals>
+             </execution>
+           </executions>
+     </plugin>
+     <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+       </plugin>  
     </plugins>
     
     <!-- this is the preferred method of deployment transport mechanism -->
@@ -64,6 +88,8 @@
   <!-- these items don't exist in the typical public maven repos;
        we could add these directly to Nexus if desired -->
   <repositories>
+
+     
     <!-- for biojava -->
     <repository>
       <id>wwmm</id>
