@@ -836,14 +836,15 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				newProp.setDisplayName(vp.getName());
 				newProp.setHiddenObject(vp);
 				newProp.setValue("Please select a value!");
+				if (vp.isNodeProp()) {newProp.setCategory(NODE_VISUAL_MAPPING);
+				} else { newProp.setCategory(EDGE_VISUAL_MAPPING); }
+				
 				addSubProperty(newProp, mapProp, "Mapping Type", null, "Please select a mapping type!");
-				propertySheetPanel.addProperty(0, newProp);
+				propertySheetPanel.addProperty(newProp);
 
 				if (vp.isNodeProp()) {
-					newProp.setCategory(NODE_VISUAL_MAPPING);
 					editorReg.registerEditor(newProp, nodeAttrEditor);
 				} else {
-					newProp.setCategory(EDGE_VISUAL_MAPPING);
 					editorReg.registerEditor(newProp, edgeAttrEditor);
 				}
 
@@ -1207,13 +1208,13 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		final VisualProperty type = calc.getVisualProperty();
 		// Set one calculator
 		if (type.isNodeProp()){
-			calculatorTypeProp.setCategory("Node VisualProperties");
+			calculatorTypeProp.setCategory(NODE_VISUAL_MAPPING);
 		} else {
-			calculatorTypeProp.setCategory("Edge VisualProperties");
+			calculatorTypeProp.setCategory(EDGE_VISUAL_MAPPING);
 		}
 		calculatorTypeProp.setDisplayName(type.getName());
 		calculatorTypeProp.setHiddenObject(type);
-		propertySheetPanel.addProperty(0, calculatorTypeProp);
+		propertySheetPanel.addProperty(calculatorTypeProp);
 		System.out.println("Build one property for one visual property.");
 		// Mapping 0 is always currently used mapping.
 		final ObjectMapping firstMap = calc.getMapping(0);
