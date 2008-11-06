@@ -1462,10 +1462,14 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 
 		List<? extends GraphObject> obj;
 
-		if (forNodes) { // FIXME: assumes currentView
-			obj = vmmp.getCurrentView().getGraphPerspective().nodesList();
+		GraphView view = vmmp.getCurrentView();
+		 // if there is no network open we can't do anything but return empty result.
+		if (view == null || view == Cytoscape.getNullNetworkView()) return ids;
+
+		if (forNodes) {
+			obj = view.getGraphPerspective().nodesList();
 		} else {
-			obj = vmmp.getCurrentView().getGraphPerspective().edgesList();
+			obj = view.getGraphPerspective().edgesList();
 		}
 
 		for (GraphObject o : obj) {
