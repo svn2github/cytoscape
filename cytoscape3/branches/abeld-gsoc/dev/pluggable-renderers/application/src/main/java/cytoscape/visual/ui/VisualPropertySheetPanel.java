@@ -29,7 +29,6 @@ import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
@@ -250,6 +249,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		/*
 		 * Managing editor windows.
 		 */
+		try {
 		System.out.println("VPSP got event:"+e);
 		if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)
 		    || e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
@@ -277,7 +277,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		/***********************************************************************
 		 * Below this line, accept only cell editor events.
 		 **********************************************************************/
-		
+		//System.out.println("cell editor event.");
 		if (e.getPropertyName().equalsIgnoreCase("value") == false)	return;
 
 		if (e.getNewValue().equals(e.getOldValue())) return;
@@ -287,8 +287,8 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 
 		VisualProperty type = null;
 		VizMapperProperty typeRootProp = null;
-
 		if ((prop.getParentProperty() == null) && e.getNewValue() instanceof String) {
+			//System.out.println("This is a controlling attr name change signal.");
 			/*
 			 * This is a controlling attr name change signal.
 			 */
@@ -346,6 +346,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 			}
 
 			return;
+			
 		}
 
 		/*
@@ -496,6 +497,9 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		updateTableView();
 
 		propertySheetPanel.repaint();
+		} catch (Exception exc){
+			exc.printStackTrace();
+		}
 	}
 	
 	public PropertySheetTable getTable(){
@@ -561,7 +565,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		propertySheetPanel.setRendererFactory(rendReg);
 		propertySheetPanel.setEditorFactory(editorReg);
 		table = propertySheetPanel.getTable();
-		
+
 		table.getColumnModel().addColumnModelListener(new TableColumnModelListener() {
 			public void columnAdded(TableColumnModelEvent arg0) {
 				// TODO Auto-generated method stub
@@ -682,9 +686,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 
 		filledBoxRenderer.setBackground(Color.white);
 		filledBoxRenderer.setForeground(Color.blue);
-
-		setAttrComboBox();
-		mappingTypeEditor.setAvailableValues(Cytoscape.getVisualMappingManager().getCalculatorCatalog().getMappingNames().toArray());
+		
 		numberCellEditor = new CyDoublePropertyEditor(this);
 		
 		nodeAttrEditor.addPropertyChangeListener(this);
@@ -791,6 +793,8 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 			window.dispose();
 			editorWindowManager.remove(vpt);
 		}
+		setAttrComboBox();
+		mappingTypeEditor.setAvailableValues(Cytoscape.getVisualMappingManager().getCalculatorCatalog().getMappingNames().toArray());
 	}
 	
 	/** remove the widgets cached for visualStyle */
@@ -799,6 +803,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 	}
 	
 	private void processMouseClick(MouseEvent e) {
+		//System.out.println("processMouseClick");
 		int selectedRow = propertySheetPanel.getTable().getSelectedRow();
 		/*
 		 * Adjust height if it's an legend icon.
@@ -806,6 +811,8 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		updateTableView();
 
 		if (SwingUtilities.isLeftMouseButton(e) && (0 <= selectedRow)) {
+			//System.out.println("handling selection");
+
 			final Item item = (Item) propertySheetPanel.getTable().getValueAt(selectedRow, 0);
 			final Property curProp = item.getProperty();
 
@@ -829,6 +836,8 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				newProp.setDisplayName(vp.getName());
 				newProp.setHiddenObject(vp);
 				newProp.setValue("Please select a value!");
+				addSubProperty(newProp, mapProp, "Mapping Type", null, "Please select a mapping type!");
+				propertySheetPanel.addProperty(0, newProp);
 
 				if (vp.isNodeProp()) {
 					newProp.setCategory(NODE_VISUAL_MAPPING);
@@ -839,8 +848,6 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				}
 
 				editorReg.registerEditor(mapProp, mappingTypeEditor);
-				addSubProperty(newProp, mapProp, "Mapping Type", null, "Please select a mapping type!");
-				propertySheetPanel.addProperty(0, newProp);
 
 				expandLastSelectedItem(vp.getName());
 
@@ -981,7 +988,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 			Property curProp = item.getProperty();
 
 			if ((curProp != null) && (curProp.getDisplayName().equals(name))) {
-				table.setRowSelectionInterval(i, i);
+				table.setRowSelectionInterval(i, i); // FIXME: is this needed?
 
 				if (item.isVisible() == false) {
 					item.toggle();
@@ -1175,6 +1182,12 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 	private void setPropertyFromCalculator(List<Calculator> calcList) {
 		for (Calculator calc : calcList) {
 			final VizMapperProperty calculatorTypeProp = new VizMapperProperty();
+			if (calc.getVisualProperty().isNodeProp()){
+				propertySheetPanel.addProperty(0, calculatorTypeProp);
+			} else {
+				propertySheetPanel.addProperty(calculatorTypeProp);
+			}
+
 			buildProperty(calc, calculatorTypeProp);
 
 			PropertyEditor editor = editorReg.getEditor(calculatorTypeProp);
@@ -1187,11 +1200,6 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				} else {
 					editorReg.registerEditor(calculatorTypeProp, edgeAttrEditor);
 				}
-			}
-			if (calc.getVisualProperty().isNodeProp()){
-				propertySheetPanel.addProperty(0, calculatorTypeProp);
-			} else {
-				propertySheetPanel.addProperty(calculatorTypeProp);
 			}
 		}
 	}
@@ -1208,6 +1216,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		}
 		calculatorTypeProp.setDisplayName(type.getName());
 		calculatorTypeProp.setHiddenObject(type);
+		propertySheetPanel.addProperty(0, calculatorTypeProp);
 		System.out.println("Build one property for one visual property.");
 		// Mapping 0 is always currently used mapping.
 		final ObjectMapping firstMap = calc.getMapping(0);
@@ -1310,7 +1319,6 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				}
 			}
 		}
-		propertySheetPanel.addProperty(0, calculatorTypeProp);
 	}
 	/** Add given Property as subProperty to given Property, and set some values on the subProperty*/
 	private void addSubProperty(VizMapperProperty parentProp, VizMapperProperty subProp, String displayName, Class klass, Object value){
@@ -1341,7 +1349,12 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				System.out.println("------- Key = " + key + ", val = " + val + ", disp = " + strVal);
 			}
 
-			Class c = val.getClass();
+			Class c;
+			if (val != null){
+				c = val.getClass();
+			} else {
+				c = null;
+			}
 			addSubProperty(parent, valProp, strVal, c, val);
 			
 			rendReg.registerRenderer(valProp, rend);
