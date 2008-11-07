@@ -72,12 +72,11 @@
 	<osgi:service id="helpContentsActionService" ref="helpContentsAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="helpContactHelpDeskActionService" ref="helpContactHelpDeskAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="helpAboutActionService" ref="helpAboutAction" interface="cytoscape.util.CyAction"/>
-	<!--
-	<osgi:service id="cytoPanelAction(CytoPanelName.WEST,true));Service" ref="cytoPanelAction(CytoPanelName.WEST,true));" interface="cytoscape.util.CyAction"/>
-	<osgi:service id="cytoPanelAction(CytoPanelName.SOUTH,true));Service" ref="cytoPanelAction(CytoPanelName.SOUTH,true));" interface="cytoscape.util.CyAction"/>
-	<osgi:service id="cytoPanelAction(CytoPanelName.EAST,false));Service" ref="cytoPanelAction(CytoPanelName.EAST,false));" interface="cytoscape.util.CyAction"/>
-	-->
 
+	<osgi:service id="cytoPanelWestActionService" ref="cytoPanelWestAction" interface="cytoscape.util.CyAction"/>
+	<osgi:service id="cytoPanelSouthActionService" ref="cytoPanelSouthAction" interface="cytoscape.util.CyAction"/>
+
+	<osgi:service id="cytoPanelEastActionService" ref="cytoPanelEastAction" interface="cytoscape.util.CyAction"/>
     <osgi:set id="cyActionSet" interface="cytoscape.util.CyAction" cardinality="0..N">
         <osgi:listener bind-method="addAction" unbind-method="removeAction" ref="cyMenus"/>
     </osgi:set>

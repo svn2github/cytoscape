@@ -39,7 +39,7 @@
 		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>
 
-	<!-- menu actions -->
+	<!-- CyAction service beans -->
 	<bean id="importGraphFileAction" class="cytoscape.actions.ImportGraphFileAction">
 		<constructor-arg ref="cytoscapeDesktop"/>
 		<constructor-arg ref="cyReaderManagerServiceRef"/>
@@ -90,6 +90,7 @@
 	<bean id="deselectAllAction" class="cytoscape.actions.DeselectAllAction"/>
 	<bean id="showGraphicsDetailsAction" class="cytoscape.actions.ShowGraphicsDetailsAction"/>
 	<bean id="setVisualPropertiesAction" class="cytoscape.actions.SetVisualPropertiesAction"/>
+	<!-- not a CyAction, but adds menu -->
 	<bean id="layoutMenuManager" class="cytoscape.layout.ui.LayoutMenuManager">
 		<constructor-arg ref="cyMenus"/>
 		<constructor-arg ref="cyLayoutsServiceRef"/>
@@ -104,15 +105,30 @@
 	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction"/>
 	<bean id="helpContactHelpDeskAction" class="cytoscape.actions.HelpContactHelpDeskAction"/>
 	<bean id="helpAboutAction" class="cytoscape.actions.HelpAboutAction"/>
+
+	<!-- not a CyAction, but adds menu -->
 	<bean id="arrangeAction" class="cytoscape.actions.ArrangeAction">
 		<constructor-arg ref="cytoscapeDesktop"/>
 		<constructor-arg ref="cyMenus"/>
 	</bean>
-	<!--
-	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.WEST,true));"/>
-	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.SOUTH,true));"/>
-	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.EAST,false));"/>
-	-->
+
+	<bean id="cytoPanelWestAction" class="cytoscape.actions.CytoPanelAction">
+		<constructor-arg type="cytoscape.view.cytopanels.CytoPanelName" value="WEST"/>
+		<constructor-arg value="true"/>
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="cytoPanelSouthAction" class="cytoscape.actions.CytoPanelAction">
+		<constructor-arg type="cytoscape.view.cytopanels.CytoPanelName" value="SOUTH"/>
+		<constructor-arg value="true"/>
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="cytoPanelEastAction" class="cytoscape.actions.CytoPanelAction">
+		<constructor-arg type="cytoscape.view.cytopanels.CytoPanelName" value="EAST"/>
+		<constructor-arg value="false"/>
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+
+
 
 
 </beans>
