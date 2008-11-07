@@ -44,6 +44,7 @@
 package cytoscape.actions;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.bookmarks.Bookmarks;
 import cytoscape.bookmarks.DataSource;
 import cytoscape.dialogs.plugins.PluginManageDialog;
@@ -61,10 +62,11 @@ import java.util.Map;
 public class PluginManagerAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339870172822L;
 	private String bookmarkCategory = "plugins";
-
-	public PluginManagerAction() {
+	private CytoscapeDesktop desktop;
+	public PluginManagerAction(CytoscapeDesktop desktop) {
 		super("Manage Plugins");
 		setPreferredMenu("Plugins");
+		this.desktop = desktop;
 	}
 
 	/**
@@ -75,8 +77,7 @@ public class PluginManagerAction extends CytoscapeAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		PluginManageDialog dialog = new PluginManageDialog(Cytoscape
-				.getDesktop());
+		PluginManageDialog dialog = new PluginManageDialog(desktop);
 		PluginManager Mgr = PluginManager.getPluginManager();
 
 		String DefaultUrl = cytoscape.CytoscapeInit.getProperties().getProperty("defaultPluginDownloadUrl");
@@ -111,7 +112,7 @@ public class PluginManagerAction extends CytoscapeAction {
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.setOwner(desktop);
 		jTaskConfig.displayCloseButton(false);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(true);

@@ -124,7 +124,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 			String URLstr = fd.getURLStr();
 			System.out.println("URL: "+URLstr);
 			try {
-				LoadNetworkTask.loadURL(new URL(URLstr), false, rdmgr, gvf, cyLayouts);
+				LoadNetworkTask.loadURL(new URL(URLstr), false, rdmgr, gvf, cyLayouts,desktop);
 			} catch (MalformedURLException e3) {
 				JOptionPane.showMessageDialog(fd, "URL error!", "Warning",
 			 	                             JOptionPane.INFORMATION_MESSAGE);
@@ -149,7 +149,7 @@ public class ImportGraphFileAction extends CytoscapeAction {
 						messages.add(files[i].getName());
 					}
 	
-					LoadNetworkTask.loadFile(files[i], skipMessage, rdmgr, gvf, cyLayouts);
+					LoadNetworkTask.loadFile(files[i], skipMessage, rdmgr, gvf, cyLayouts,desktop);
 				}
 	
 				if (files.length != 1) {

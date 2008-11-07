@@ -45,6 +45,7 @@ package cytoscape.actions;
 import cytoscape.Cytoscape;
 import cytoscape.data.CyNetworkUtilities;
 import cytoscape.util.CytoscapeAction;
+import cytoscape.view.CytoscapeDesktop;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -61,14 +62,15 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 	JButton search;
 	JButton cancel;
 	JTextField searchField;
-
+	private CytoscapeDesktop desktop;
 	/**
 	 * Creates a new AlphabeticalSelectionAction object.
 	 */
-	public AlphabeticalSelectionAction() {
+	public AlphabeticalSelectionAction(CytoscapeDesktop desktop) {
 		super("By Name...");
 		setPreferredMenu("Select.Nodes");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_F, ActionEvent.CTRL_MASK);
+		this.desktop = desktop;
 	}
 
 	/**
@@ -102,7 +104,7 @@ public class AlphabeticalSelectionAction extends CytoscapeAction implements Acti
 	}
 
 	private JDialog createDialog() {
-		dialog = new JDialog(Cytoscape.getDesktop(), "Select Nodes By Name", false);
+		dialog = new JDialog(desktop, "Select Nodes By Name", false);
 
 		JPanel main_panel = new JPanel();
 		main_panel.setLayout(new BorderLayout());

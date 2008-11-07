@@ -54,7 +54,9 @@
 		<constructor-arg ref="cyRootNetworkFactoryServiceRef"/>
 		<constructor-arg ref="graphViewFactoryServiceRef"/>
 	</bean>
-	<bean id="newSessionAction" class="cytoscape.actions.NewSessionAction"/>
+	<bean id="newSessionAction" class="cytoscape.actions.NewSessionAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<bean id="newWindowSelectedNodesEdgesAction" class="cytoscape.actions.NewWindowSelectedNodesEdgesAction"/>
 	<bean id="cloneGraphInNewWindowAction" class="cytoscape.actions.CloneGraphInNewWindowAction"/>
 	<bean id="webServiceNetworkImportAction" class="cytoscape.actions.WebServiceNetworkImportAction"/>
@@ -62,13 +64,21 @@
 	<bean id="exitAction" class="cytoscape.actions.ExitAction"/>
 	<bean id="undoAction" class="cytoscape.util.undo.UndoAction"/>
 	<bean id="redoAction" class="cytoscape.util.undo.RedoAction"/>
-	<bean id="createNetworkViewAction" class="cytoscape.actions.CreateNetworkViewAction"/>
+	<bean id="createNetworkViewAction" class="cytoscape.actions.CreateNetworkViewAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<bean id="destroyNetworkViewAction" class="cytoscape.actions.DestroyNetworkViewAction"/>
 	<bean id="destroyNetworkAction" class="cytoscape.actions.DestroyNetworkAction"/>
 	<bean id="deleteAction" class="cytoscape.actions.DeleteAction"/>
-	<bean id="preferenceAction" class="cytoscape.actions.PreferenceAction"/>
-	<bean id="bookmarkAction" class="cytoscape.actions.BookmarkAction"/>
-	<bean id="proxyServerAction" class="cytoscape.actions.ProxyServerAction"/>
+	<bean id="preferenceAction" class="cytoscape.actions.PreferenceAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="bookmarkAction" class="cytoscape.actions.BookmarkAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="proxyServerAction" class="cytoscape.actions.ProxyServerAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<bean id="invertSelectedNodesAction" class="cytoscape.actions.InvertSelectedNodesAction"/>
 	<bean id="hideSelectedNodesAction" class="cytoscape.actions.HideSelectedNodesAction"/>
 	<bean id="unHideSelectedNodesAction" class="cytoscape.actions.UnHideSelectedNodesAction"/>
@@ -76,7 +86,9 @@
 	<bean id="deSelectAllNodesAction" class="cytoscape.actions.DeSelectAllNodesAction"/>
 	<bean id="selectFirstNeighborsAction" class="cytoscape.actions.SelectFirstNeighborsAction"/>
 	<bean id="selectConnectedNodesAction" class="cytoscape.actions.SelectConnectedNodesAction"/>
-	<bean id="alphabeticalSelectionAction" class="cytoscape.actions.AlphabeticalSelectionAction"/>
+	<bean id="alphabeticalSelectionAction" class="cytoscape.actions.AlphabeticalSelectionAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<bean id="listFromFileSelectionAction" class="cytoscape.actions.ListFromFileSelectionAction"/>
 	<bean id="invertSelectedEdgesAction" class="cytoscape.actions.InvertSelectedEdgesAction"/>
 	<bean id="hideSelectedEdgesAction" class="cytoscape.actions.HideSelectedEdgesAction"/>
@@ -89,7 +101,9 @@
 	<bean id="selectAllAction" class="cytoscape.actions.SelectAllAction"/>
 	<bean id="deselectAllAction" class="cytoscape.actions.DeselectAllAction"/>
 	<bean id="showGraphicsDetailsAction" class="cytoscape.actions.ShowGraphicsDetailsAction"/>
-	<bean id="setVisualPropertiesAction" class="cytoscape.actions.SetVisualPropertiesAction"/>
+	<bean id="setVisualPropertiesAction" class="cytoscape.actions.SetVisualPropertiesAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<!-- not a CyAction, but adds menu -->
 	<bean id="layoutMenuManager" class="cytoscape.layout.ui.LayoutMenuManager">
 		<constructor-arg ref="cyMenus"/>
@@ -100,8 +114,12 @@
 		<constructor-arg ref="cytoscapeDesktop"/>
 		<constructor-arg ref="layoutMenuManager"/>
 	</bean>
-	<bean id="pluginManagerAction" class="cytoscape.actions.PluginManagerAction"/>
-	<bean id="pluginUpdateAction" class="cytoscape.actions.PluginUpdateAction"/>
+	<bean id="pluginManagerAction" class="cytoscape.actions.PluginManagerAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="pluginUpdateAction" class="cytoscape.actions.PluginUpdateAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction"/>
 	<bean id="helpContactHelpDeskAction" class="cytoscape.actions.HelpContactHelpDeskAction"/>
 	<bean id="helpAboutAction" class="cytoscape.actions.HelpAboutAction"/>

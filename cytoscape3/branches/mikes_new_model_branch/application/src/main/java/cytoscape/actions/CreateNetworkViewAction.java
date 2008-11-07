@@ -36,6 +36,7 @@
  */
 package cytoscape.actions;
 
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeInit;
 import cytoscape.task.Task;
@@ -61,19 +62,12 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	/**
 	 * Creates a new CreateNetworkViewAction object.
 	 */
-	public CreateNetworkViewAction() {
+	private final CytoscapeDesktop desktop;
+	public CreateNetworkViewAction(CytoscapeDesktop desktop) {
 		super("Create View");
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(java.awt.event.KeyEvent.VK_V, ActionEvent.ALT_MASK);
-	}
-
-	/**
-	 * Creates a new CreateNetworkViewAction object.
-	 *
-	 * @param label  DOCUMENT ME!
-	 */
-	public CreateNetworkViewAction(boolean label) {
-		super();
+		this.desktop = desktop;
 	}
 
 	/**
@@ -83,7 +77,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
-		createViewFromCurrentNetwork(cyNetwork);
+		createViewFromCurrentNetwork(cyNetwork,desktop);
 	}
 
 	/**
@@ -91,12 +85,13 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 	 *
 	 * @param cyNetwork DOCUMENT ME!
 	 */
-	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork) {
+	// TODO - Move this somewhere else since it's used elsewhere
+	public static void createViewFromCurrentNetwork(CyNetwork cyNetwork, CytoscapeDesktop desk) {
 		NumberFormat formatter = new DecimalFormat("#,###,###");
 
 		if (cyNetwork.getNodeCount() > Integer.parseInt(CytoscapeInit.getProperties()
 		                                                             .getProperty("secondaryViewThreshold"))) {
-			int n = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(),
+			int n = JOptionPane.showConfirmDialog(desk,
 			                                      "Network contains "
 			                                      + formatter.format(cyNetwork.getNodeCount())
 			                                      + " nodes and "
@@ -110,7 +105,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			if (n == JOptionPane.YES_OPTION) {
 				Cytoscape.createNetworkView(cyNetwork);
 			} else {
-				JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+				JOptionPane.showMessageDialog(desk,
 				                              "Create View Request Cancelled by User.");
 			}
 		} else {
@@ -122,7 +117,7 @@ public class CreateNetworkViewAction extends CytoscapeAction {
 			JTaskConfig jTaskConfig = new JTaskConfig();
 
 			jTaskConfig.displayCancelButton(false);
-			jTaskConfig.setOwner(Cytoscape.getDesktop());
+			jTaskConfig.setOwner(desk);
 			jTaskConfig.displayCloseButton(false);
 			jTaskConfig.displayStatus(true);
 			jTaskConfig.setAutoDispose(true);

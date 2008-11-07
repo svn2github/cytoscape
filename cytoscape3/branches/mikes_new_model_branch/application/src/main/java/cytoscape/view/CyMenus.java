@@ -576,11 +576,12 @@ public class CyMenus implements GraphViewChangeListener {
 		toolBar.add(helpButton);
 
 		toolBar.addSeparator();
-
+/* TODO - re-enable
 		vizButton = toolBar.add(new SetVisualPropertiesAction(false));
 		vizButton.setIcon(new ImageIcon(getClass()
 		                                    .getResource("/images/ximian/stock_file-with-objects.png")));
 		vizButton.setToolTipText("Open VizMapper\u2122");
 		vizButton.setBorderPainted(false);
+		*/
 	} 
 }
