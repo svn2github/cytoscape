@@ -104,6 +104,10 @@
 	<bean id="helpContentsAction" class="cytoscape.actions.HelpContentsAction"/>
 	<bean id="helpContactHelpDeskAction" class="cytoscape.actions.HelpContactHelpDeskAction"/>
 	<bean id="helpAboutAction" class="cytoscape.actions.HelpAboutAction"/>
+	<bean id="arrangeAction" class="cytoscape.actions.ArrangeAction">
+		<constructor-arg ref="cytoscapeDesktop"/>
+		<constructor-arg ref="cyMenus"/>
+	</bean>
 	<!--
 	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.WEST,true));"/>
 	<bean id="cytoPanelAction" class="cytoscape.actions.CytoPanelAction(CytoPanelName.SOUTH,true));"/>
