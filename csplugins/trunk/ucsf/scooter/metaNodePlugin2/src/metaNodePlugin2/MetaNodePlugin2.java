@@ -380,11 +380,6 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			CyNetwork network = Cytoscape.getCurrentNetwork();
 			Set currentNodes = network.getSelectedNodes();
 			List<CyGroup>groupList = CyGroupManager.getGroupList(groupViewer);
-			List<CyGroup>nodeGroups = null;
-
-			if (contextNode != null) {
-				nodeGroups = contextNode.getGroups();
-			}
 
 			// Add our menu items
 			{
@@ -476,6 +471,17 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 				}
 			} else if (command == Command.COLLAPSE) {
 				List<CyGroup>nodeGroups = contextNode.getGroups();
+
+				// Handle the case of an expanded group where we didn't hide the group node
+				if (contextNode.isaGroup()) {
+					CyGroup group = CyGroupManager.getCyGroup(contextNode);
+					if (groupList.contains(group) && group.getState() == EXPANDED) {
+						if (nodeGroups == null) nodeGroups = new ArrayList();
+						if (!nodeGroups.contains(group))
+							nodeGroups.add(group);
+					}
+				}
+
 				if (nodeGroups != null && nodeGroups.size() > 0) {
 					if (nodeGroups.size() == 1) {
 						CyGroup group = nodeGroups.get(0);
@@ -655,15 +661,39 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		 */
 		private void newGroup() {
 			CyNetwork network = Cytoscape.getCurrentNetwork();
-			List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
 			List<CyGroup> groupList = CyGroupManager.getGroupList();
 			String groupName = JOptionPane.showInputDialog("Please enter a name for this metanode");
 			if (groupName == null) return;
+			for (CyGroup group: groupList) {
+				if (groupName.equals(group.getGroupName())) {
+					// Oops -- already have a group named groupName!
+					JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
+						"There is already a group named "+groupName,"GroupError",
+						JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+
+			// Careful!  If one of the nodes is an expanded (but not hidden) metanode,
+			// we need to collapse it first or this gets messy fast
+			for (CyNode node: (List<CyNode>)new ArrayList(network.getSelectedNodes())) {
+				MetaNode mn = MetaNode.getMetaNode(node);
+				if (mn == null) continue;
+				// Is this an expanded metanode?
+				if (mn.getCyGroup().getState() == EXPANDED) {
+					// Yes, collapse it
+					mn.collapse(recursive, multipleEdges, true, Cytoscape.getCurrentNetworkView());
+				}
+			}
+
+			// OK, now get the selected nodes again
+			List<CyNode> currentNodes = new ArrayList(network.getSelectedNodes());
+
 			CyGroup group = CyGroupManager.createGroup(groupName, currentNodes, viewerName);
 			if (group == null) {
-				// Oops -- already have a group named groupName!
+				// Oops -- something didn't happen right!
 				JOptionPane.showMessageDialog(Cytoscape.getDesktop(), 
-					"There is already a group named "+groupName,"GroupError",
+					"Unable to create group "+groupName,"GroupError",
 					JOptionPane.ERROR_MESSAGE);
 				return;
 			}

@@ -81,6 +81,7 @@ public class MetaNode {
 	// Static variables
 	private static HashMap<CyNode,MetaNode> metaMap = new HashMap();
 	private static final boolean DEBUG = false;
+	private static boolean hideMetanode = true;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
 	public static final String Y_HINT_ATTR = "__metanodeHintY";
@@ -214,6 +215,25 @@ public class MetaNode {
 		}
 	}
 
+	/**
+	 * Sets whether or not we hide the metnode when we expand the
+	 * network.
+	 *
+	 * @param hide if 'true' we hide the metanode upon expansion
+	 */
+	static public void setHideMetaNode(boolean hide) {
+		hideMetanode = hide;
+	}
+
+	/**
+	 * Returns 'true' if we hide the metnode when we expand the
+	 * network.
+	 *
+	 * @return 'true' if we hide the metanode upon expansion
+	 */
+	static public boolean getHideMetaNode() {
+		return hideMetanode;
+	}
 
 
 	/*****************************************************************
@@ -553,6 +573,8 @@ public class MetaNode {
 					// to our group node.  We want to add this to our outerEdge list
 					if (DEBUG) logger.debug("Adding outer edge "+edge.getIdentifier()+" to "+groupNode.getIdentifier());
 					metaGroup.addOuterEdge(edge);
+					if (!hideMetanode)
+						continue;
 				}
 				hideEdge(edge);
 			}
@@ -560,10 +582,23 @@ public class MetaNode {
 
 		// Add the nodes back in
 		restoreNodes();
+
+		// See if we need to create membership edges
+		if (!MetaNode.hideMetanode) {
+			List<CyEdge> innerEdges = metaGroup.getInnerEdges();
+			for (CyNode node: metaGroup.getNodes()) {
+				CyEdge edge = Cytoscape.getCyEdge(groupNode, node, Semantics.INTERACTION, "member", true);
+				if (!innerEdges.contains(edge)) {
+					metaGroup.addInnerEdge(edge);
+				}
+			}
+		}
+
 		// Add the edges back in
 		restoreEdges();
 		// Remove the metaNode
-		network.hideNode(groupNode);
+		if (MetaNode.hideMetanode)
+			network.hideNode(groupNode);
 
 		if (update) {
 			// update
@@ -784,9 +819,11 @@ public class MetaNode {
 				// Partner is collapsed -- need to make a meta edge
 				// Get the parent
 				MetaNode parent = getParent(partner);
-				// Create the meta-edge
-				if (DEBUG) logger.debug("... parent of "+partner.getIdentifier()+" is "+parent.metaGroup.getGroupName());
-				restoreEdge(parent.createMetaEdge(edge, getLocalNode(edge), false));
+				if (parent != null) {
+					// Create the meta-edge
+					if (DEBUG) logger.debug("... parent of "+partner.getIdentifier()+" is "+parent.metaGroup.getGroupName());
+					restoreEdge(parent.createMetaEdge(edge, getLocalNode(edge), false));
+				}
 			} else {
 				restoreEdge(edge);
 			}
@@ -1090,17 +1127,32 @@ public class MetaNode {
 		// also update our attributes as we go
 		nChildren = metaGroup.getNodes().size();
 		nDescendents = nChildren;
+
+		// We need to update all of our contained metanode attributes
+		// first or we'll wind up adding extra attributes
+		for (CyNode node: metaGroup.getNodes()) {
+			if (metaMap.containsKey(node)) {
+				MetaNode mn = metaMap.get(node);
+				if (mn.getCyGroup().getState() == MetaNodePlugin2.COLLAPSED) {
+					mn.updateAttributes();
+				}
+			}
+		}
+
+		// OK, now handle
 		for (CyNode node: metaGroup.getNodes()) {
 			if (metaMap.containsKey(node)) {
 				// This node is a metaNode
 				MetaNode mn = metaMap.get(node);
-				mn.updateAttributes();
-				nDescendents += mn.getDescendentCount()-1;
-				aggregateAttributes(nodeAttributes, "node", node.getIdentifier(), mn);
+				if (mn.getCyGroup().getState() == MetaNodePlugin2.COLLAPSED) {
+					nDescendents += mn.getDescendentCount()-1;
+					aggregateAttributes(nodeAttributes, "node", node.getIdentifier(), mn);
+				}
 			} else {
 				aggregateAttributes(nodeAttributes, "node", node.getIdentifier(), null);
 			}
 		}
+		if (DEBUG) logger.debug("Assigning attributes for node "+groupNode.getIdentifier());
 		assignAttributes(nodeAttributes, "node", groupNode.getIdentifier());
 
 		// Update our "special" attributes

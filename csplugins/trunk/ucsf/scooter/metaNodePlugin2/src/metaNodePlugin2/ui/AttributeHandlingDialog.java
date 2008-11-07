@@ -38,6 +38,7 @@
 */
 package metaNodePlugin2.ui;
 
+import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetanodeProperties;
 import metaNodePlugin2.model.AttributeHandler;
 import metaNodePlugin2.model.AttributeHandler.AttributeHandlingType;
@@ -145,6 +146,14 @@ public class AttributeHandlingDialog extends JDialog
 		tunableEnablers = new ArrayList();
 
 		{
+			Tunable t = new Tunable("hideMetanodes",
+			                        "Hide metanodes on expansion",
+			                        Tunable.BOOLEAN, new Boolean(true), 0);
+			t.addTunableValueListener(this);
+			metanodeProperties.add(t);
+		}
+
+		{
 			Tunable t = new Tunable("enableHandling",
 			                        "Enable Attribute Aggregation",
 			                        Tunable.BOOLEAN, new Boolean(false), 0);
@@ -230,6 +239,13 @@ public class AttributeHandlingDialog extends JDialog
 			AttributeHandler.setEnable(enableHandling);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 			enableTunables(enableHandling);
+		}
+
+		t = metanodeProperties.get("hideMetanodes");
+		if ((t != null) && (t.valueChanged() || force)) {
+      boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
+			MetaNode.setHideMetaNode(hideMetanode);
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
 		// For each default value, get the default and set it
@@ -324,7 +340,10 @@ public class AttributeHandlingDialog extends JDialog
 	}
 
 	public void tunableChanged(Tunable t) {
-		if (t.getName().equals("enableHandling")) {
+		if (t.getName().equals("hideMetanode")) {
+      boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
+			MetaNode.setHideMetaNode(hideMetanode);
+		} else if (t.getName().equals("enableHandling")) {
       boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);
 			enableTunables(enableHandling);
