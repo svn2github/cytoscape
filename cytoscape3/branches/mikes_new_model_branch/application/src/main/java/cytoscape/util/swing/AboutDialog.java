@@ -43,6 +43,7 @@ import javax.swing.event.HyperlinkListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.awt.Frame;
 
 
 /**
@@ -53,12 +54,6 @@ import java.net.URL;
  */
 public class AboutDialog extends javax.swing.JDialog implements HyperlinkListener {
 	private final static long serialVersionUID = 1213748837120927L;
-	// Singleton.
-	private static final AboutDialog about;
-
-	static {
-		about = new AboutDialog(Cytoscape.getDesktop(), true);
-	}
 
 	// Show method with full parameter set.
 	/**
@@ -68,44 +63,44 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 	 * @param icon DOCUMENT ME!
 	 * @param description DOCUMENT ME!
 	 */
-	public static void showDialog(String title, Icon icon, String description) {
-		about.titleLabel.setText(title);
-		about.titleLabel.setIcon(icon);
+	public void showDialog(String title, Icon icon, String description) {
+		titleLabel.setText(title);
+		titleLabel.setIcon(icon);
 
 		URL target = null;
-        about.mainEditorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES,
+        mainEditorPane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES,
                     Boolean.TRUE);
         try {
 			target = new URL(description);
 		} catch (MalformedURLException e) {
-            about.mainEditorPane.setContentType("text/html");
-			about.mainEditorPane.setText(description);
-			about.repaint();
-			about.setVisible(true);
+            mainEditorPane.setContentType("text/html");
+			mainEditorPane.setText(description);
+			repaint();
+			setVisible(true);
 			return;
 		}
 
 		try {
-			about.mainEditorPane.setPage(target);
-			about.pack();
-			about.repaint();
-			about.setVisible(true);
+			mainEditorPane.setPage(target);
+			pack();
+			repaint();
+			setVisible(true);
 		} catch (IOException e) {
-			about.mainEditorPane.setText("Could not connect to " + target.toString());
+			mainEditorPane.setText("Could not connect to " + target.toString());
 			e.printStackTrace();
-			about.pack();
-			about.repaint();
-			about.setVisible(true);
+			pack();
+			repaint();
+			setVisible(true);
 		}
 	}
 
 	/** Creates new form WSAboutDialog */
-	public AboutDialog(java.awt.Frame parent, boolean modal) {
+	public AboutDialog(Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
 		mainEditorPane.setEditable(false);
 		mainEditorPane.addHyperlinkListener(this);
-		setLocationRelativeTo(Cytoscape.getDesktop());
+		setLocationRelativeTo(parent);
 		setAlwaysOnTop(true);
 	}
 
@@ -117,12 +112,12 @@ public class AboutDialog extends javax.swing.JDialog implements HyperlinkListene
 	 * @param title  DOCUMENT ME!
 	 * @param icon  DOCUMENT ME!
 	 * @param contentURL  DOCUMENT ME!
-	 */
-	public AboutDialog(java.awt.Frame parent, boolean modal, String title, Icon icon, URL contentURL) {
+	public AboutDialog(Frame parent, boolean modal, String title, Icon icon, URL contentURL) {
 		super(parent, modal);
 		initComponents();
 		mainEditorPane.setContentType("text/html");
 	}
+	 */
 
 	/** This method is called from within the constructor to
 	 * initialize the form.

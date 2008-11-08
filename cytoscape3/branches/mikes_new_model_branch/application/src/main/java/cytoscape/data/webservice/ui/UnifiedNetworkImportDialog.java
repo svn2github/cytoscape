@@ -67,8 +67,6 @@ import java.util.Map;
  */
 public class UnifiedNetworkImportDialog extends JDialog implements PropertyChangeListener {
 	private final static long serialVersionUID = 1213748836720749L;
-	// This is a singleton.
-	private static final UnifiedNetworkImportDialog dialog;
 
 	// Selected web service client ID
 	private String selectedClientID = null;
@@ -90,21 +88,15 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
     
     private boolean cancelFlag = false;
 
-    static {
-		dialog = new UnifiedNetworkImportDialog(Cytoscape.getDesktop(), false);
-	}
-
-	/**
-	 *  DOCUMENT ME!
-	 */
-	public static void showDialog() {
-		dialog.setLocationRelativeTo(Cytoscape.getDesktop());
-		dialog.setVisible(true);
-	}
+	private AboutDialog about;
 
 	/** Creates new form NetworkImportDialog */
 	public UnifiedNetworkImportDialog(Frame parent, boolean modal) {
 		super(parent, modal);
+
+		setLocationRelativeTo(parent);
+
+		about = new AboutDialog(parent,true);
 
 		// Register as listener.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -453,7 +445,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 		if(icon == null) {
 			icon = DEF_ICON;
 		}
-		AboutDialog.showDialog(clientName, icon, description);
+		about.showDialog(clientName, icon, description);
 	}
 
 	private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {
