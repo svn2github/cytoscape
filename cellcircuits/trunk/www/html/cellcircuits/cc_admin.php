@@ -45,7 +45,7 @@ $data = getRawDataListFromDB($connection);
   ?>
   <tr>
     <td><?php echo $record['raw_data_auto_id']; ?></td>
-    <td><?php echo convert_xml2html($record['pubmed_xml_record'], 'pubmedref_to_html_full.xsl'); ?></td>
+    <td><?php echo $record['pubmed_html_full'] ; ?></td>
     <td><div align="center"><?php echo $record['status']; ?></div></td>
     <td><div align="center"><?php if ($record['status'] == 'unpublished' || $record['status'] == 'new') 
 			{ 
@@ -86,7 +86,7 @@ $data = getRawDataListFromDB($connection);
 // Retrive list of raw data in table "submission_data"
 function getRawDataListFromDB($connection) {
 
-	$dbQuery = "select raw_data_auto_id, pmid, pubmed_xml_record, data_file_id, status, time_stamp, file_name "; 
+	$dbQuery = "select raw_data_auto_id, pmid, pubmed_xml_record, pubmed_html_full,  pubmed_html_medium, pubmed_html_short, data_file_id, status, time_stamp, file_name "; 
 	$dbQuery .= "from submission_data, raw_files ";
 	$dbQuery .= "where submission_data.data_file_id = raw_files.raw_file_auto_id order by status";
 
@@ -105,6 +105,10 @@ function getRawDataListFromDB($connection) {
 		$record['raw_data_auto_id'] = $_row["raw_data_auto_id"];
 		$record['pmid'] = $_row["pmid"];
 		$record['pubmed_xml_record'] = $_row["pubmed_xml_record"];
+		$record['pubmed_html_full'] = $_row["pubmed_html_full"];
+		$record['pubmed_html_medium'] = $_row["pubmed_html_medium"];
+		$record['pubmed_html_short'] = $_row["pubmed_html_short"];
+
 		//$record['contact_person'] = $_row["contact_person"];
 		//$record['email'] = $_row["email"];
 		$record['data_file_id'] = $_row["data_file_id"];
