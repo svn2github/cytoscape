@@ -20,10 +20,16 @@ CREATE TABLE submission_data (
 	raw_data_auto_id	int NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	pmid				int, -- PuMed id
 	pubmed_xml_record	text,
+	pubmed_html_full	text, -- converted HTML text from XML
+	pubmed_html_medium	text, -- converted HTML text from XML
+	pubmed_html_short	text, -- converted HTML text from XML
 	contact_person		varchar(100),
 	email				varchar(100),
 	data_file_id		int default -1, -- .zip file
 	comment				text default "",
+	proposed_title		varchar(200); -- for ubpublished data
+	authors				varchar(200); -- for ubpublished data
+	affiliation			varchar(200); -- for ubpublished data
 	status				varchar(15) default 'new',
 	time_stamp			timestamp default CURRENT_TIMESTAMP
 );
@@ -49,7 +55,7 @@ CREATE TABLE publications (
 	pub_url				varchar(200  ) default '',	
 	supplement_file_id	int default -1,
 	supplement_url	varchar(150) default 'none',
-	-- network_image_format varchar(10), -- sif, jpg, png
+	-- network_image_format varchar(10), -- gif, jpg, png
 	cover_image_id		int,	
 	pdf_file_id			int default -1,
 	time_stamp			timestamp default CURRENT_TIMESTAMP	
