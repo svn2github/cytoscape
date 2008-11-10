@@ -1,4 +1,13 @@
 <?php
+/*
+  File name: data_submission_step2.php
+  
+  This script handles the data submission from end-users. It will retrive publication record from PubMed,
+  if PMID is supplied. If PMID is not provided, assumes it is unpublished data set and use
+  unpublishedRef.xml as template to replace PubMed XML record. XML record will be translated into HTML
+  records and saved into DB (submission_data table), the ZIP file (contains model data) will be validated
+  before saved into DB.
+*/
 include_once 'cc_utils.php';
 include_once 'go_utils.php';
 
@@ -30,14 +39,29 @@ if ($mode == 'edit') {
 //$rawdata_id = NULL;
 $publication = "None";
 
+// By default, assume this is a published paper, with pmid
+$isPublished = true;
+
 // Case for "new" mode
 if (isset ($_GET['pmid'])) {
 	$data['pmid'] = $_GET['pmid'];
-	$data['pubmed_xml_record'] =  getpubmed_xml_record($data['pmid']);
+	if ($data['pmid'] =='none') { // for unpublished paper
+		$data['pmid'] = generatePMID($connection); // generate a negative number to replace PMID
+		$data['pubmed_xml_record'] = "None";
+	}
+	else {
+		$data['pubmed_xml_record'] =  getpubmed_xml_record($data['pmid']);
+	}
 }
 if (isset ($_POST['pmid'])) {
 	$data['pmid'] = $_POST['pmid'];
-	$data['pubmed_xml_record'] =  getpubmed_xml_record($data['pmid']);
+	if ($data['pmid'] =='none') { // for unpublished paper
+		$data['pmid'] = generatePMID($connection); // generate a negative number to replace PMID
+		$data['pubmed_xml_record'] =  'None';
+	}
+	else {
+		$data['pubmed_xml_record'] =  getpubmed_xml_record($data['pmid']);
+	}
 }
 
 // Case for "edit" mode
@@ -71,6 +95,10 @@ $data['contact'] = NULL;
 $data['email'] = NULL;
 $data['comment'] = NULL;
 
+$data["proposedTitle"] = NULL; // for unpublished data 
+$data["authors"] = NULL; // for unpublished data 
+$data["affiliation"] = NULL; // for unpublished data 
+
 if (isset ($_POST['tfPubMedID']) && !empty($_POST['tfPubMedID'])) {
 	$data['pmid'] = $_POST['tfPubMedID'];
 }
@@ -90,6 +118,18 @@ if (isset ($_POST['tfContact'])) {
 if (isset ($_POST['tfEmail']) && !empty($_POST['tfEmail'])) {
 	$data['email'] = $_POST['tfEmail'];
 }
+
+// for unpublished data		
+if (isset ($_POST['tfProposedTitle'])) {
+	$data['proposedTitle'] = addslashes($_POST['tfProposedTitle']);
+}
+if (isset ($_POST['tfAuthors'])) {
+	$data['authors'] = addslashes($_POST['tfAuthors']);
+}
+if (isset ($_POST['tfAffiliation'])) {
+	$data['affiliation'] = addslashes($_POST['tfAffiliation']);
+}
+
 			
 // Case for 'edit', pull data out of DB for the given dataID
 if ($mode == 'edit') {
@@ -152,11 +192,44 @@ if (!($tried && $validated)) {
 		  <?php
 		  }
 		  ?>
+
+		  <?php
+		  
+		  	if ((($mode == 'new')&& ($data['pmid']<0)) || (($mode == 'edit') && ($db_data['pmid'] < 0))) { // for unpublished data set
+				?>
+				<tr>
+				<th scope="row">Proposed title</th>
+				<td><input name="tfProposedTitle" type="text" id="tfProposedTitle" size="80" value = "<?php if ($mode != 'new') {echo $db_data["proposedTitle"];} ?>" /></td>
+				<td>&nbsp;</td>								
+				</tr>
+				
+				<tr>
+				<th scope="row">Authors</th>
+				<td><input name="tfAuthors" type="text" id="tfAuthors" size="80" value = "<?php if ($mode != 'new') {echo $db_data["authors"];} ?>" /></td>
+				<td>&nbsp;</td>
+				</tr>
+				
+				<tr>
+				<th scope="row">Affiliation</th>
+				<td><input name="tfAffiliation" type="text" id="tfAffiliation" size="80" value = "<?php if ($mode != 'new') {echo $db_data["affiliation"];} ?>" /></td>
+				<td>&nbsp;</td>
+				</tr>
+
+				<?php
+
+			}
+			else {
+		  ?>
 		  <tr>
 		    <th scope="row">Publication</th>
 		    <td><?php if ($mode == 'new') { echo convert_xml2html($data['pubmed_xml_record'],'pubmedref_to_html_full.xsl');}  else { echo convert_xml2html($db_data['pubmed_xml_record'], 'pubmedref_to_html_full.xsl');}  ?>	</td>
 		    <td>&nbsp;</td>
 	      </tr>
+		  			
+			<?php
+				}
+			?>
+			
 		  <tr>
 		    <th scope="row">&nbsp;</th>
 		    <td>&nbsp;</td>
@@ -264,6 +337,9 @@ if (!($tried && $validated)) {
 		<input name="pmid" type="hidden" id="pmid" value="<?php echo $data['pmid']; ?>">
 		<input name="mode" type="hidden" id="mode" value="<?php echo $mode; ?>">
 		<input name="rawdata_id" type="hidden" id="rawdata_id" value="<?php echo $data['rawdata_id']; ?>">
+		<input name="proposedTitle" type="hidden" id="proposedTitle" value="<?php echo $data['proposedTitle']; ?>">
+		<input name="authors" type="hidden" id="authors" value="<?php echo $data['authors']; ?>">
+		<input name="affiliation" type="hidden" id="affiliation" value="<?php echo $data['affiliation']; ?>">
 		<p>&nbsp;</p>
 		
 		</form>
@@ -278,7 +354,6 @@ else
 	//}
 		if ($mode == 'new') {
 			insertData2DB($data, $connection);
-			//Email notification
 			
 			?>
 Thanks you for submitting your cell circuits data. Cell Circuits staff will review your data and publish it on the cell circuits web site.</p>
@@ -286,7 +361,7 @@ Thanks you for submitting your cell circuits data. Cell Circuits staff will revi
         <p>
           <?php
 		 	// Send a confirmation e-mail to user, also cc to staff
-		 	//sendConfirmationEmail($data);
+		 	sendConfirmationEmail($data);
 		}
 		else { // edit
 			if (updateData2DB($db_data, $data, $connection))
@@ -319,25 +394,6 @@ function getpubmed_xml_record($pmid) {
 	return $xml_doc;	
 }//
 
-/*
-function convert_xml_html($xml_doc) {
-	if ($xml_doc == "\n<ERROR>Empty id list - nothing todo</ERROR>\n") {
-		$publication = "No record was found in PubMed for pmid =".$pmid;;
-		return $publication;
-	}
-
-
-	$publication = "	
-<li>
-	Solomon IC. Modulation of gasp frequency by activation of pre-Bötzinger complex in vivo. 
-	<i>Journal of neurophysiology, </i>
-	<b>
-	87(3)</b>:1664-8, (2002). PubMed ID: 
-	<a href=\"http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=11877539\">11877539</a>
-</li>";
-	return $publication;
-}
-*/
 
 function sendConfirmationEmail($data) {
 	include 'staff_emails.php';
@@ -350,7 +406,12 @@ function sendConfirmationEmail($data) {
 	for ($i=0; $i<count($staff_emails); $i++){
         	$bcc = $bcc . $staff_emails[$i] . " ";
 	}
-	$subject = "Your cell circuits data regarding pmid = " . $data['pmid'];
+	
+	$pmid = $data['pmid'];
+	if ($pmid < 0){
+		$pmid = 'none';
+	}
+	$subject = "Your cell circuits data regarding pmid = " . $pmid;
 	$body = $data['contact'].",\n\nThank you for submitting your cellcircuits data. " .
         	"CellCircuits staff will review your data and publish it on the CellCircuits website." .
         	"\n\nCellCircuits team";
@@ -397,6 +458,9 @@ function getDataFromDB($rawdata_id, $connection) {
 	$record['email'] = $_row["email"];
 	$record['data_file_id'] = $_row["data_file_id"];
 	$record['comment'] = stripslashes($_row["comment"]);
+	$record['proposedTitle'] = stripslashes($_row["proposed_title"]);
+	$record['authors'] = stripslashes($_row["authors"]);
+	$record['affiliation'] = stripslashes($_row["affiliation"]);
 	$record['status'] = $_row["status"];
 	$record['time_stamp'] = $_row["time_stamp"];
 				
@@ -482,6 +546,29 @@ function updateData2DB($db_data, $data, $connection) {
 		$dbQuery1 .= "comment='$tmpStr' " ;
 	}
 
+
+	if ($db_data['proposedTitle'] != trim($data['proposedTitle'])) {
+			if ($dbQuery1 != "") {
+			$dbQuery1 .= ",";
+		}
+		$tmpStr = trim($data['proposedTitle']);
+		$dbQuery1 .= "proposed_title='$tmpStr' " ;
+	}
+	if ($db_data['authors'] != trim($data['authors'])) {
+			if ($dbQuery1 != "") {
+			$dbQuery1 .= ",";
+		}
+		$tmpStr = trim($data['authors']);
+		$dbQuery1 .= "authors='$tmpStr' " ;
+	}
+	if ($db_data['affiliation'] != trim($data['affiliation'])) {
+			if ($dbQuery1 != "") {
+			$dbQuery1 .= ",";
+		}
+		$tmpStr = trim($data['affiliation']);
+		$dbQuery1 .= "affiliation='$tmpStr' " ;
+	}
+
 	if ($dbQuery1 == "") {
 		return true;
 	}
@@ -538,7 +625,12 @@ function updateData2DB($db_data, $data, $connection) {
 
 
 function insertData2DB($data, $connection) {
-	
+
+		//echo "email = ",$data['email'], "<br>";		
+		//echo "proposedTitle = ",$data['proposedTitle'], "<br>";
+		//echo "authors = ",$data['authors'], "<br>";
+		//exit();
+		
 		$data_file_auto_id = -1;
 
 		if ($data['dataFile'] != NULL) {
@@ -564,14 +656,27 @@ function insertData2DB($data, $connection) {
 		}
 
 		////
+		if ($data['pmid'] < 0) { // case for ubpublished data
+			$data['pubmed_xml_record'] = generateXMLRecord($data);
+		}
+		
 		$pmid = $data['pmid'];
 		$pubmed_xml_record = addslashes($data['pubmed_xml_record']);
+				
+		$pubmed_html_full =  addslashes(convert_xml2html($data['pubmed_xml_record'], './pubmedref_to_html_full.xsl'));
+		$pubmed_html_medium = addslashes(convert_xml2html($data['pubmed_xml_record'], './pubmedref_to_html_medium.xsl'));
+		$pubmed_html_short = addslashes(convert_xml2html($data['pubmed_xml_record'], './pubmedref_to_html_short.xsl'));
+		
 		$contact = $data['contact'];
 		$email = $data['email'];
 		$comment = addslashes($data['comment']);
+
+		$proposedTitle = addslashes($data['proposedTitle']);
+		$authors = addslashes($data['authors']);
+		$affiliation = addslashes($data['affiliation']);
 		
-		$dbQuery = 'insert into submission_data ( raw_data_auto_id, pmid, pubmed_xml_record, contact_person, email, data_file_id, comment) values ';
-		$dbQuery .= "(0, '$pmid','$pubmed_xml_record','$contact', '$email','$data_file_auto_id', '$comment')";
+		$dbQuery = 'insert into submission_data ( raw_data_auto_id, pmid, pubmed_xml_record, pubmed_html_full, pubmed_html_medium, pubmed_html_short, contact_person, email, data_file_id, comment, proposed_title, authors, affiliation) values ';
+		$dbQuery .= "(0, '$pmid','$pubmed_xml_record','$pubmed_html_full','$pubmed_html_medium','$pubmed_html_short','$contact', '$email','$data_file_auto_id', '$comment', '$proposedTitle','$authors', '$affiliation')";
 
 		//echo "<br>dbQuery = " . $dbQuery . "<br>";
 		// Run the query
@@ -606,7 +711,7 @@ function isValidUserInput($data, $connection){
 	if ($data['dataFile'] == NULL) {
 		$msg .= "Error: Data file (in .zip format) is a required field!<br>";
 	}
-	else if (!isValidZipFile($data['dataFile']['tmp_name'], $connection)){
+	else if (!isValidZipFile($data, $connection)){
 		// Make sure it is a zip file, non-empty, with correct contents, sif and image directory inside
 		$msg .= "Invalid data file!<br>";
 	}
@@ -619,8 +724,10 @@ function isValidUserInput($data, $connection){
 } // End of function isValidUserInput()
 
 
-function isValidZipFile($zipTmpFileName, $connection){
+function isValidZipFile($data, $connection){
 	$isValid = true;
+	
+	$zipTmpFileName = $data['dataFile']['tmp_name'];
 	
 	//echo "zipTmpFileName = $zipTmpFileName<br>";
 	$zipFileParser = new ZipFileParser($zipTmpFileName);
@@ -629,7 +736,8 @@ function isValidZipFile($zipTmpFileName, $connection){
 	$publication_url = $zipFileParser->getPublication_url();
 	//echo "publication_url =",$publication_url,"<br>";
 
-	if ($publication_url == "") {
+	// For unpublished data, pmid < 0, just ignore it
+	if ($publication_url == "" && $data['pmid']>0) {
 		$isValid = false;
 		echo "Error: publication_url is required<br>";
 
@@ -661,7 +769,7 @@ function isValidZipFile($zipTmpFileName, $connection){
 	if ($sifFileCount != $imgFileCount  || $imgFileCount != $thumFileCount) {
 		$isValid = false;
 		echo "Error: Number of sif files must match number of image/thumImage files<br>";
-	}
+	}	
 	
 	// validate organisim
 	$organismArray = $zipFileParser->getOrganismArray();
@@ -722,6 +830,50 @@ function isValidZipFile($zipTmpFileName, $connection){
 	//return false;
 	return $isValid;
 }          
+
+// Generate a negative number, which will be used as PMID
+function generatePMID($connection) {
+	$dbQuery = "select min(pmid) as minPMID from submission_data";
+
+	// Run the query
+	if (!($result = @ mysql_query($dbQuery, $connection)))
+		showerror();
+
+	if (@ mysql_num_rows($result) != 1) {
+		return NULL;			
+	}
+	
+	$_row = @ mysql_fetch_array($result);
+
+	$pmid = $_row["minPMID"];
+
+	if ($pmid >= 0) {
+		$pmid = -1;
+	}
+	else {
+		$pmid--;
+	}
+	return $pmid;
+}
+
+
+//Generate XML record for unpublished data 
+function generateXMLRecord($data) {
+	$proposedTitle = $data['proposedTitle'];
+	$authors = $data['authors'];
+	$affiliation = $data['affiliation'];
+	
+	$myFile = "unpublishedRef.xml";
+	$fh = fopen($myFile, 'r');
+	$xmlRecord = fread($fh, filesize($myFile));
+	fclose($fh);
+	
+	$xmlRecord = str_replace("TitleTitleTitle",$proposedTitle, $xmlRecord);
+	$xmlRecord = str_replace("AuthorsAuthorsAuthors",$authors, $xmlRecord);
+	$xmlRecord = str_replace("affiliationaffiliationaffiliation",$affiliation, $xmlRecord);
+
+	return $xmlRecord;
+}
 
 ?>
 
