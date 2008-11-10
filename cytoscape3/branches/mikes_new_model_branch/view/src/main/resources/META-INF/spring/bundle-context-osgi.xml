@@ -9,6 +9,10 @@
 	                interface="org.cytoscape.model.subnetwork.CyRootNetworkFactory">
     </osgi:reference>
 
+	<osgi:reference id="undoSupportServiceRef" 
+	                interface="org.cytoscape.work.UndoSupport">
+    </osgi:reference>
+
     <osgi:reference id="cyDataTableFactoryServiceRef" 
 	                interface="org.cytoscape.model.CyDataTableFactory">
     </osgi:reference>

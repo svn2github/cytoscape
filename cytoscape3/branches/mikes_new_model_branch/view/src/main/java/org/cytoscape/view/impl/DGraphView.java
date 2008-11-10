@@ -60,6 +60,7 @@ import org.cytoscape.view.GraphViewObject;
 import org.cytoscape.view.NodeContextMenuListener;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.PrintLOD;
+import org.cytoscape.work.UndoSupport;
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
 
@@ -312,7 +313,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 	 *
 	 * @param perspective The graph model that we'll be creating a view for.
 	 */
-	public DGraphView(CyNetwork perspective, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot) {
+	public DGraphView(CyNetwork perspective, CyDataTableFactory dataFactory, CyRootNetworkFactory cyRoot, UndoSupport undo) {
 		m_perspective = perspective;
 
 		CyDataTable nodeCAM = dataFactory.createTable("node view",false);
@@ -339,7 +340,7 @@ public class DGraphView implements GraphView, Printable, PhoebeCanvasDroppable {
 		m_defaultNodeYMin = 0.0f;
 		m_defaultNodeXMax = m_defaultNodeXMin + DNodeView.DEFAULT_WIDTH;
 		m_defaultNodeYMax = m_defaultNodeYMin + DNodeView.DEFAULT_HEIGHT;
-		m_networkCanvas = new InnerCanvas(m_lock, this);
+		m_networkCanvas = new InnerCanvas(m_lock, this, undo);
 		m_backgroundCanvas = new ArbitraryGraphicsCanvas(m_perspective, this, m_networkCanvas,
 		                                                 Color.white, true, true);
 		addViewportChangeListener(m_backgroundCanvas);

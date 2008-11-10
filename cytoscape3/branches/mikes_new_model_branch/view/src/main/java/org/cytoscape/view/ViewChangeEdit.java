@@ -37,7 +37,7 @@
 package org.cytoscape.view;
 
 import org.cytoscape.view.impl.ViewState;
-import undo.Undo;
+import org.cytoscape.work.UndoSupport;
 
 import javax.swing.undo.AbstractUndoableEdit;
 
@@ -57,17 +57,20 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 
 	private SavedObjs m_savedObjs;
 
+	private UndoSupport m_undo;
+
 	public static enum SavedObjs { ALL, SELECTED, NODES, EDGES, SELECTED_NODES, SELECTED_EDGES }
 
-	public ViewChangeEdit(GraphView view,String label) {
-		this(view, SavedObjs.ALL, label);
+	public ViewChangeEdit(GraphView view,String label,UndoSupport undo) {
+		this(view, SavedObjs.ALL, label, undo);
 	}
 
-	public ViewChangeEdit(GraphView view, SavedObjs saveObjs, String label) {
+	public ViewChangeEdit(GraphView view, SavedObjs saveObjs, String label, UndoSupport undo) {
 		super();
 		m_view = view;
 		m_label = label;
 		m_savedObjs = saveObjs;
+		m_undo = undo;
 
 		saveOldPositions();
 	}
@@ -83,7 +86,7 @@ public class ViewChangeEdit extends AbstractUndoableEdit {
 	public void post() {
 		saveNewPositions();
 		if ( !origState.equals(newState) )
-			Undo.getUndoableEditSupport().postEdit( this );
+			m_undo.getUndoableEditSupport().postEdit( this );
 	}
 
 	/**

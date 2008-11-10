@@ -305,7 +305,6 @@
     <module>tunable</module>
     <module>task</module>
     <module>view</module>
-    <module>undo</module>
     <module>phoebe.dnd</module>
     <module>layout</module>
     <module>wrappers</module>

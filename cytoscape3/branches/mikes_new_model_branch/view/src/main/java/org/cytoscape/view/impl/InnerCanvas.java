@@ -53,6 +53,7 @@ import org.cytoscape.view.GraphViewChangeListener;
 import org.cytoscape.view.NodeContextMenuListener;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.ViewChangeEdit;
+import org.cytoscape.work.UndoSupport;
 import phoebe.PhoebeCanvasDropEvent;
 import phoebe.PhoebeCanvasDropListener;
 import phoebe.PhoebeCanvasDroppable;
@@ -155,15 +156,18 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 	 */
 	public Vector<NodeContextMenuListener> nodeContextMenuListeners = new Vector<NodeContextMenuListener>();
 
+	private UndoSupport m_undo;
+
 	/**
 	 * DOCUMENT ME!
 	 */
 	public Vector<EdgeContextMenuListener> edgeContextMenuListeners = new Vector<EdgeContextMenuListener>();
 
-	InnerCanvas(Object lock, DGraphView view) {
+	InnerCanvas(Object lock, DGraphView view, UndoSupport undo) {
 		super();
 		m_lock = lock;
 		m_view = view;
+		m_undo = undo;
 		m_lod[0] = new GraphLOD(); // Default LOD.
 		m_hash = new IntHash();
 		m_backgroundColor = Color.white;
@@ -471,7 +475,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						final int edge = chosenAnchor >>> 6;
 						final int anchorInx = chosenAnchor & 0x0000003f;
 						//****** Save remove handle
-						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Remove Edge Handle");
+						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Remove Edge Handle",m_undo);
 						((DEdgeView) m_view.getEdgeView(edge)).removeHandle(anchorInx);
 						m_button1NodeDrag = false;
 					} else {
@@ -500,7 +504,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 						m_ptBuff[1] = m_lastYMousePos;
 						m_view.xformComponentToNodeCoords(m_ptBuff);
 						//******* Store current handle list *********
-						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Add Edge Handle");
+						m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.SELECTED_EDGES,"Add Edge Handle",m_undo);
 						final int chosenInx = ((DEdgeView) m_view.getEdgeView(chosenEdge))
 																														.addHandleFoo(new Point2D.Float((float) m_ptBuff[0],
 																														(float) m_ptBuff[1]));
@@ -581,13 +585,13 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			repaint();
 		} else if (e.getButton() == MouseEvent.BUTTON2) {
 			//******** Save all node positions
-			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move");
+			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
 			m_currMouseButton = 2;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
 		} else if ((e.getButton() == MouseEvent.BUTTON3) || (isMacPlatform() && e.isControlDown())) {
 			//******** Save all node positions
-			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move");
+			m_undoable_edit = new ViewChangeEdit(m_view,ViewChangeEdit.SavedObjs.NODES,"Move",m_undo);
 			m_currMouseButton = 3;
 			m_lastXMousePos = e.getX();
 			m_lastYMousePos = e.getY();
@@ -771,7 +775,7 @@ public class InnerCanvas extends DingCanvas implements MouseListener, MouseMotio
 			if (m_button1NodeDrag) {
 				//*****SAVE SELECTED NODE & EDGE POSITIONS******
 				if (m_undoable_edit == null) {
-					m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move");
+					m_undoable_edit = new ViewChangeEdit(m_view, ViewChangeEdit.SavedObjs.SELECTED, "Move",m_undo);
 				}
 				synchronized (m_lock) {
 					m_ptBuff[0] = m_lastXMousePos;
