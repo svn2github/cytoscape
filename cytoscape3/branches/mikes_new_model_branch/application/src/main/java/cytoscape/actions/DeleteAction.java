@@ -44,10 +44,10 @@ import org.cytoscape.model.GraphObject;
 import org.cytoscape.model.subnetwork.CyRootNetworkFactory;
 import org.cytoscape.model.subnetwork.CySubNetwork;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.work.UndoSupport;
 
 import cytoscape.Cytoscape;
 import cytoscape.util.CytoscapeAction;
-import cytoscape.util.undo.CyUndo;
 
 
 /**
@@ -63,14 +63,6 @@ public class DeleteAction extends CytoscapeAction {
 
 	private CyRootNetworkFactory cyRootNetworkFactory;
 	
-	public void setCyRootNetworkFactory(CyRootNetworkFactory cyRootNetworkFactory) {
-		this.cyRootNetworkFactory = cyRootNetworkFactory;
-	}
-	
-	public CyRootNetworkFactory getCyRootNetworkFactory() {
-		return this.cyRootNetworkFactory;
-	}
-	
 	/**
 	 * 
 	 */
@@ -78,11 +70,13 @@ public class DeleteAction extends CytoscapeAction {
 
 	private GraphObject graphObj = null;
 
+	private final UndoSupport undo;
+
 	/**
 	 * action for deleting selected Cytoscape nodes and edges
 	 */
-	public DeleteAction() {
-		this(null);
+	public DeleteAction(final UndoSupport undo, final CyRootNetworkFactory root) {
+		this(null,undo,root);
 	}
 
 	/**
@@ -92,11 +86,13 @@ public class DeleteAction extends CytoscapeAction {
 	 * @param obj the object to be deleted
 	 */
 
-	public DeleteAction(GraphObject obj) {
+	public DeleteAction(GraphObject obj, final UndoSupport undo, final CyRootNetworkFactory root) {
 		super(ACTION_TITLE);
 		setPreferredMenu("Edit");
 		setAcceleratorCombo(KeyEvent.VK_DELETE, 0);
 		graphObj = obj;
+		this.undo = undo;
+		cyRootNetworkFactory = root; 
 	}
 
 
@@ -143,7 +139,7 @@ public class DeleteAction extends CytoscapeAction {
 			edges.add( cyEdge );
 		}
 
-		CyUndo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this) );
+		undo.getUndoableEditSupport().postEdit( new DeleteEdit(cyNet,nodes,edges,this) );
 		
 		// delete the actual nodes and edges
 

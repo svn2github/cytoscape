@@ -25,6 +25,9 @@
 	                interface="org.cytoscape.layout.CyLayouts">
 	</osgi:reference>
 
+	<osgi:reference id="undoSupportServiceRef" 
+	                interface="org.cytoscape.work.UndoSupport">
+	</osgi:reference>
 
 	<osgi:service id="importGraphFileActionService" ref="importGraphFileAction" interface="cytoscape.util.CyAction"/>
 	<osgi:service id="newWindowSelectedNodesOnlyActionService" ref="newWindowSelectedNodesOnlyAction" interface="cytoscape.util.CyAction"/>

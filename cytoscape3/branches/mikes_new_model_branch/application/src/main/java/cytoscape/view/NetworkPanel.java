@@ -664,7 +664,7 @@ class PopupActionListener implements ActionListener {
 			Cytoscape.destroyNetwork(cyNetwork);
 		} // end of if ()
 		else if (label == EDIT_TITLE) {
-			CyNetworkNaming.editNetworkTitle(cyNetwork);
+			CyNetworkNaming.editNetworkTitle(cyNetwork, desktop);
 			desktop.getNetworkPanel().updateTitle(cyNetwork);
 		} // end of if ()
 		else {

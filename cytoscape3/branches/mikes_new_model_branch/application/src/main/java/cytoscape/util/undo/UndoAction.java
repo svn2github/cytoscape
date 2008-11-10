@@ -38,6 +38,8 @@ package cytoscape.util.undo;
 
 import cytoscape.util.CytoscapeAction;
 
+import org.cytoscape.work.UndoSupport;
+
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.undo.CannotUndoException;
@@ -51,14 +53,17 @@ import java.awt.event.KeyEvent;
 public class UndoAction extends CytoscapeAction {
 	private final static long serialVersionUID = 1202339875212525L;
 
+	private UndoSupport undo;
+
 	/**
 	 * Constructs the action.
 	 */
-	public UndoAction() {
+	public UndoAction(UndoSupport undo) {
 		super("Undo");
 		setAcceleratorCombo(KeyEvent.VK_Z, ActionEvent.CTRL_MASK);
 		setPreferredMenu("Edit");
 		setEnabled(true);
+		this.undo = undo;
 	}
 
     /**
@@ -67,8 +72,8 @@ public class UndoAction extends CytoscapeAction {
      */
 	public void actionPerformed(ActionEvent e) {
 		try {
-			if ( CyUndo.undoManager.canUndo() )
-				CyUndo.undoManager.undo();
+			if ( undo.getUndoManager().canUndo() )
+				undo.getUndoManager().undo();
 		} catch (CannotUndoException ex) {
 			System.out.println("Unable to undo: " + ex);
 			ex.printStackTrace();
@@ -80,9 +85,9 @@ public class UndoAction extends CytoscapeAction {
      * @param e The menu event that triggers this method call.
      */
 	public void menuSelected(MenuEvent e) {
-		if (CyUndo.undoManager.canUndo()) {
+		if (undo.getUndoManager().canUndo()) {
 			setEnabled(true);
-			putValue(Action.NAME, CyUndo.undoManager.getUndoPresentationName());
+			putValue(Action.NAME, undo.getUndoManager().getUndoPresentationName());
 		} else {
 			setEnabled(false);
 			putValue(Action.NAME, "Undo");

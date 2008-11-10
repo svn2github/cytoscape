@@ -1062,7 +1062,7 @@ public abstract class Cytoscape {
 
 		getSelectedNetworkViews().remove(view);
 
-		Long viewID = view.getIdentifier();
+		Long viewID = view.getNetwork().getSUID();
 
 		if (viewID.equals(currentNetworkViewID)) {
 			if (getNetworkViewMap().size() <= 0)

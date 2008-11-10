@@ -102,8 +102,7 @@ public class CyNetworkNaming {
 	 * this will assign that title to the given CyNetwork
 	 * @para network is the CyNetwork whose title is to be changed
 	 */
-	public static void editNetworkTitle(CyNetwork network) {
-		Component parent = Cytoscape.getDesktop();
+	public static void editNetworkTitle(CyNetwork network, Component parent) {
 		String pname = network.attrs().get("name",String.class);
 		String name = null;
 		String sname = "";

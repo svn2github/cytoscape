@@ -64,14 +64,21 @@
 	</bean>
 	<bean id="printAction" class="cytoscape.actions.PrintAction"/>
 	<bean id="exitAction" class="cytoscape.actions.ExitAction"/>
-	<bean id="undoAction" class="cytoscape.util.undo.UndoAction"/>
-	<bean id="redoAction" class="cytoscape.util.undo.RedoAction"/>
+	<bean id="undoAction" class="cytoscape.util.undo.UndoAction">
+		<constructor-arg ref="undoSupportServiceRef"/>
+	</bean>
+	<bean id="redoAction" class="cytoscape.util.undo.RedoAction">
+		<constructor-arg ref="undoSupportServiceRef"/>
+	</bean>
 	<bean id="createNetworkViewAction" class="cytoscape.actions.CreateNetworkViewAction">
 		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>
 	<bean id="destroyNetworkViewAction" class="cytoscape.actions.DestroyNetworkViewAction"/>
 	<bean id="destroyNetworkAction" class="cytoscape.actions.DestroyNetworkAction"/>
-	<bean id="deleteAction" class="cytoscape.actions.DeleteAction"/>
+	<bean id="deleteAction" class="cytoscape.actions.DeleteAction">
+		<constructor-arg ref="undoSupportServiceRef"/>
+		<constructor-arg ref="cyRootNetworkFactoryServiceRef"/>
+	</bean>
 	<bean id="preferenceAction" class="cytoscape.actions.PreferenceAction">
 		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>
@@ -148,6 +155,12 @@
 		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>
 
+
+	<!-- Other stuff to be started -->
+	<bean id="undoMonitor" class="cytoscape.util.undo.UndoMonitor">
+		<constructor-arg ref="cytoscapeDesktop"/>
+		<constructor-arg ref="undoSupportServiceRef"/>
+	</bean>
 
 
 
