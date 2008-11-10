@@ -1247,6 +1247,15 @@ sub getSifFileID {
 	return $sif_file_id;
 }
 
+# For unpublished data, PMID < 0
+sub getPMIDSignFromURL {
+	my($url) = @_;
+	my $signChar = substr($url, 93, 1);
+	if ($signChar == "-") {
+		return -1;
+	}
+	return 1;
+}
 
 sub format_model_thm_td
 {
@@ -1269,7 +1278,12 @@ sub format_model_thm_td
 	# image_file_IDs for networkImage and thumImage
 	my ($lrg_image_file_id, $thm_image_file_id) = getImageFileIDs($pubName, $modelName);
 	
-    my $model_thm_html = <<MODEL_HTML;
+	# Need PMID here to distingush if it is a published or not, pmid < 0, if unpublished ones
+	my $pmidSign = getPMIDSignFromURL($pubInfo->{$pub}->{citation});
+	
+	my $model_thm_html = "";
+	if ($pmidSign >0) {
+    $model_thm_html = <<MODEL_HTML;
       <td class='search-result' align='center' valign='top' >$score</td>
       <td class='search-result' align='center' valign='top' bgcolor='white'>
 	  
@@ -1281,6 +1295,23 @@ sub format_model_thm_td
 	 <b class='pub-citation'>$pubInfo->{$pub}->{name} [model:&nbsp;$name]</b><br>
 	 <a class='white-bg-link' href='$pubInfo->{$pub}->{citation}' title='PubMed abstract'>[PubMed]</a>
 MODEL_HTML
+	
+	}
+	else { # Donot show PUBMed link, if this is an unpublished data
+    $model_thm_html = <<MODEL_HTML2;
+      <td class='search-result' align='center' valign='top' >$score</td>
+      <td class='search-result' align='center' valign='top' bgcolor='white'>
+	  
+         <a href='$search_url/getNetworkImage.php?image_type=network_image&image_file_id=$lrg_image_file_id&return_type=html'>
+            <img src='$search_url/getNetworkImage.php?image_type=network_thm_image&image_file_id=$thm_image_file_id' border='0'>
+         </a><br />
+		  
+	 <b class='pub-citation'></b><br>
+	 <b class='pub-citation'>$pubInfo->{$pub}->{name} [model:&nbsp;$name]</b><br>
+MODEL_HTML2
+	
+	}
+	
       
    if(exists($pubInfo->{$pub}->{supplement_URL}) &&
        $pubInfo->{$pub}->{supplement_URL} ne "") 
