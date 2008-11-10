@@ -18,6 +18,8 @@
 
 
 	<bean id="cyLayouts" class="org.cytoscape.layout.internal.CyLayoutsImpl"/>
-	<bean id="gridNodeLayout" class="org.cytoscape.layout.internal.algorithms.GridNodeLayout"/>
+	<bean id="gridNodeLayout" class="org.cytoscape.layout.internal.algorithms.GridNodeLayout">
+		<constructor-arg ref="undoSupportServiceRef"/>
+	</bean>
 
 </beans>

@@ -44,6 +44,7 @@ import org.cytoscape.view.GraphView;
 import org.cytoscape.view.GraphViewFactory;
 import org.cytoscape.view.NodeView;
 import org.cytoscape.view.ViewChangeEdit;
+import org.cytoscape.work.UndoSupport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,12 +98,14 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 
 	// Should definitely be overridden!
 	protected String propertyPrefix = "abstract";
+	protected UndoSupport undo;
 
 	/**
 	 * The Constructor is null
 	 */
-	public AbstractLayout() {
+	public AbstractLayout(UndoSupport undo) {
 		this.staticNodes = new HashSet<NodeView>();
+		this.undo = undo;
 	}
 
 	/**
@@ -259,7 +262,7 @@ abstract public class AbstractLayout implements CyLayoutAlgorithm {
 		taskMonitor = monitor;
 
 		// set up the edit
-		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout");
+		undoableEdit = new ViewChangeEdit(networkView, toString() + " Layout", undo);
 
 		// this is overridden by children and does the actual layout
 		construct();

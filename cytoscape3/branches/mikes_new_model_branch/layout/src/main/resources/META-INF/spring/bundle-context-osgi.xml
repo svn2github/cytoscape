@@ -17,4 +17,8 @@
         <osgi:listener bind-method="addLayout" unbind-method="removeLayout" ref="cyLayouts"/>
     </osgi:set>
 
+    <osgi:reference id="undoSupportServiceRef"
+                    interface="org.cytoscape.work.UndoSupport">
+    </osgi:reference>
+
 </beans>
