@@ -72,7 +72,7 @@ function pvaluewin(){
       <td align='left' valign='center' rowspan=2>
          &nbsp;<a class='white-bg-link' href='index.html' title='Click to go to the Cell Circuits Home Page'>CellCircuits&nbsp;Home</a><br />
 	 &nbsp;<a class='white-bg-link' href='about_cell_circuits.html'>About&nbsp;CellCircuits</a><br/>
-	 &nbsp;<a class="white-bg-link" href="Tutorial-advanced-search.html">Help</a>
+	 &nbsp;<a class="white-bg-link" href="tutorial/Tutorial-advanced-search.html">Help</a>
       </td>
     </tr>
     <tr>
@@ -199,7 +199,13 @@ for ($i=0; $i<count($publications)/2; $i++) {
 			?> <a class="white-bg-link" href="<?php echo $publication['supplement_url']; ?>">[Supplemental Website]</a> <?php
 		}
 		?>
+		<?php
+			if ($publication['pmid'] >0) {
+			?>
 		<a class="white-bg-link" href="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=<?php echo $publication['pmid']; ?>&query_hl=24"> [PubMed]</a>
+		<?php
+			}
+			?>
 		</p>
 	  </td>
 <?php
