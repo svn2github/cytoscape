@@ -48,6 +48,11 @@ import java.beans.PropertyChangeListener;
  * the views are created.
  */
 public class VizMapBypassNetworkListener implements PropertyChangeListener {
+
+	public VizMapBypassNetworkListener() {
+		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
+	}
+
 	/**
 	 * Listens for NETWORK_VIEW_CREATED events and if it hears one, it adds
 	 * node and edge context menu listeners to the view.

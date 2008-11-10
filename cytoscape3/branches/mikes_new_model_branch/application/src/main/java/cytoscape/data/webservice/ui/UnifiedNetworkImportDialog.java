@@ -39,11 +39,13 @@ import cytoscape.data.webservice.*;
 import cytoscape.data.webservice.CyWebServiceEvent.WSEventType;
 import cytoscape.data.webservice.CyWebServiceEvent.WSResponseType;
 import cytoscape.data.webservice.ui.WebServiceClientGUI.IconSize;
+import cytoscape.data.webservice.util.WebServiceThemeInstall;
 import cytoscape.task.Task;
 import cytoscape.task.TaskMonitor;
 import cytoscape.task.ui.JTaskConfig;
 import cytoscape.task.util.TaskManager;
 import cytoscape.util.swing.AboutDialog;
+import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.tunable.ModuleProperties;
 import org.cytoscape.tunable.Tunable;
@@ -89,14 +91,16 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
     private boolean cancelFlag = false;
 
 	private AboutDialog about;
+	private final CytoscapeDesktop desktop;
 
 	/** Creates new form NetworkImportDialog */
-	public UnifiedNetworkImportDialog(Frame parent, boolean modal) {
+	public UnifiedNetworkImportDialog(CytoscapeDesktop parent, boolean modal) {
 		super(parent, modal);
+		this.desktop = parent;
 
-		setLocationRelativeTo(parent);
+		setLocationRelativeTo(desktop);
 
-		about = new AboutDialog(parent,true);
+		about = new AboutDialog(desktop,true);
 
 		// Register as listener.
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -383,11 +387,9 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
     }
 
     private void createInstallButtonListener(JButton installButton) {
-        installButton.addActionListener(new ActionListener() {
+        	installButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                    cytoscape.data.webservice.util.WebServiceThemeInstall wst
-                            = new cytoscape.data.webservice.util.WebServiceThemeInstall
-                            (UnifiedNetworkImportDialog.this);
+                    WebServiceThemeInstall wst = new WebServiceThemeInstall(UnifiedNetworkImportDialog.this);
             	boolean displayError = false;
             	try {
             		cytoscape.plugin.DownloadableInfo InstalledTheme = wst.installTheme();
@@ -401,7 +403,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
             		jde.printStackTrace();
             	} finally {
             		if (displayError)
-            			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+            			JOptionPane.showMessageDialog(UnifiedNetworkImportDialog.this,
                                 "Failed to install the WebServiceThemePack",
                                 "Install Error", JOptionPane.ERROR_MESSAGE);
             	}
@@ -420,7 +422,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 
 		// Configure JTask Dialog Pop-Up Box
 		final JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.setOwner(this);
 		jTaskConfig.displayCloseButton(true);
 		jTaskConfig.displayCancelButton(true);
 		jTaskConfig.displayStatus(true);
@@ -653,7 +655,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				                       + selectedClientID,
 				                       "Do you want to create new network from the search result?"
 				                   };
-				int value = JOptionPane.showConfirmDialog(Cytoscape.getDesktop(), message,
+				int value = JOptionPane.showConfirmDialog(this, message,
 				                                          "Import network",
 				                                          JOptionPane.YES_NO_OPTION);
 
@@ -681,7 +683,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 				return;
 			
 			String[] message = { "Network loaded.", "Please enter name for new network:" };
-			String value = JOptionPane.showInputDialog(Cytoscape.getDesktop(), message,
+			String value = JOptionPane.showInputDialog(this, message,
 			                                           "Name new network",
 			                                           JOptionPane.QUESTION_MESSAGE);
 			if (value == null || value.length() == 0 )
@@ -690,7 +692,7 @@ public class UnifiedNetworkImportDialog extends JDialog implements PropertyChang
 			
 				final CyNetwork cyNetwork = Cytoscape.getCurrentNetwork();
 				Cytoscape.getCurrentNetwork().attrs().set("name",value);
-				Cytoscape.getDesktop().getNetworkPanel().updateTitle(cyNetwork);
+				desktop.getNetworkPanel().updateTitle(cyNetwork);
 
 				VisualStyle style = ((NetworkImportWebServiceClient) WebServiceClientManager.getClient(selectedClientID))
 				                    .getDefaultVisualStyle();

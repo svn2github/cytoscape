@@ -38,12 +38,10 @@ package cytoscape.view;
 
 import cytoscape.Cytoscape;
 import cytoscape.CytoscapeVersion;
-import cytoscape.data.webservice.ui.WebServiceContextMenuListener;
 import cytoscape.view.cytopanels.BiModalJSplitPane;
 import cytoscape.view.cytopanels.CytoPanel;
 import cytoscape.view.cytopanels.CytoPanelImp;
 import cytoscape.view.cytopanels.CytoPanelState;
-import cytoscape.visual.ui.VizMapBypassNetworkListener;
 //import cytoscape.visual.ui.VizMapperMainPanel;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.view.GraphView;
@@ -255,14 +253,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 */
 		this.getSwingPropertyChangeSupport().addPropertyChangeListener(networkPanel);
 		networkPanel.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
-
-		// add a listener for node bypass
-		Cytoscape.getSwingPropertyChangeSupport()
-		         .addPropertyChangeListener(new VizMapBypassNetworkListener());
-
-    // Web Service Client context menu.
-    Cytoscape.getSwingPropertyChangeSupport()
-        .addPropertyChangeListener(new WebServiceContextMenuListener());
 
 		// initialize Menus
 		cyMenus.initializeMenus();
@@ -644,7 +634,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public BirdsEyeViewHandler getBirdsEyeViewHandler() {
 		if(bevh == null) {
-			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane());
+			bevh = new BirdsEyeViewHandler(networkViewManager.getDesktopPane(),this);
 		}
 		
 		return bevh;

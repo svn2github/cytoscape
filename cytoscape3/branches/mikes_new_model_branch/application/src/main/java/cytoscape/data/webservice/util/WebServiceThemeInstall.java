@@ -57,7 +57,7 @@ public class WebServiceThemeInstall {
 
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.setOwner(unifiedNetworkImportDialog);
 		jTaskConfig.displayCloseButton(false);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(true);
@@ -68,7 +68,7 @@ public class WebServiceThemeInstall {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 unifiedNetworkImportDialog.resetGUI();
-                JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+                JOptionPane.showMessageDialog(unifiedNetworkImportDialog,
                                 "Web Services Pack Successfully Installed.",
                                 "Installation Successfull", JOptionPane.INFORMATION_MESSAGE);
             }

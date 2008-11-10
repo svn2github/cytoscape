@@ -162,6 +162,9 @@
 		<constructor-arg ref="undoSupportServiceRef"/>
 	</bean>
 
+	<bean id="webServiceContextMenuListener" class="cytoscape.data.webservice.ui.WebServiceContextMenuListener"/>
+	<bean id="vizMapBypassNetworkListener" class="cytoscape.visual.ui.VizMapBypassNetworkListener"/>
+
 
 
 </beans>

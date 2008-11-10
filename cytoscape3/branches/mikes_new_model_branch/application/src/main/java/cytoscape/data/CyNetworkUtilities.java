@@ -56,14 +56,14 @@ import java.util.Set;
 import java.util.Vector;
 
 
-//-------------------------------------------------------------------------
+
 /**
  * This class provides static methods that operate on a CyNetwork to perform
  * various useful tasks. Many of these methods make assumptions about the data
  * types that are available in the node and edge attributes of the network.
  */
 public class CyNetworkUtilities {
-	// -------------------------------------------------------------------------
+
 	/**
 	 * Saves all selected nodes in the current view to a file with the given
 	 * name.
@@ -77,12 +77,8 @@ public class CyNetworkUtilities {
 
 		List<CyNode> selectedNodes = CyDataTableUtil.getNodesInState(network,"selected",true);
 
-		if (selectedNodes.size() <= 0) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(), "No selected nodes.", "Message",
-			                              JOptionPane.INFORMATION_MESSAGE);
-
+		if (selectedNodes.size() <= 0)
 			return false;
-		}
 
 		String lineSep = System.getProperty("line.separator");
 
@@ -93,7 +89,7 @@ public class CyNetworkUtilities {
 			for ( CyNode node : selectedNodes ) { 
 				String nodeUID = node.attrs().get("name",String.class);
 				fout.write(nodeUID + lineSep);
-			} // for i
+			} 
 
 			fout.close();
 
@@ -105,9 +101,8 @@ public class CyNetworkUtilities {
 
 			return false;
 		}
-	} // saveSelectedNodeNames
+	} 
 
-	// -------------------------------------------------------------------------
 
 	/**
 	 * Saves all nodes in the given network to a file with the given
@@ -128,7 +123,7 @@ public class CyNetworkUtilities {
 
 			for ( CyNode node : network.getNodeList() ) {
 				fout.write(node.attrs().get("name",String.class) + lineSep);
-			} // for i
+			} 
 
 			fout.close();
 
@@ -142,7 +137,6 @@ public class CyNetworkUtilities {
 		}
 	}
 
-	// -------------------------------------------------------------------------
 	/**
 	 * Selects every node in the current view whose canonical name, label, or
 	 * any known synonym starts with the string specified by the second
@@ -190,12 +184,12 @@ public class CyNetworkUtilities {
 
 						break;
 					}
-				} //inner for
-			} //else
+				} 
+			} 
 
 			if (matched)
 				nodeFound++;
-		} //for
+		} 
 
 		if (nodeFound == 0) {
 			JOptionPane.showMessageDialog(null, "No match for the string \"" + key + "\"",
@@ -211,5 +205,4 @@ public class CyNetworkUtilities {
 		return found;
 	}
 
-	// -------------------------------------------------------------------------
 }

@@ -53,14 +53,16 @@ import java.beans.PropertyChangeListener;
 class BirdsEyeViewHandler implements PropertyChangeListener {
 	final BirdsEyeView bev;
 	FrameListener frameListener = new FrameListener();
+	final CytoscapeDesktop desktop;
 
 	/**
 	 * Creates a new BirdsEyeViewHandler object.
 	 * @param desktopPane The JDesktopPane of the NetworkViewManager. Can be null.
 	 */
-	BirdsEyeViewHandler(Component desktopPane) {
+	BirdsEyeViewHandler(Component desktopPane, final CytoscapeDesktop desktop) {
+		this.desktop = desktop;
 		bev = new BirdsEyeView(Cytoscape.getCurrentNetworkView(), desktopPane) {
-	private final static long serialVersionUID = 1213748836623570L;
+				private final static long serialVersionUID = 1213748836623570L;
 				public Dimension getMinimumSize() {
 					return new Dimension(180, 180);
 				}
@@ -88,7 +90,7 @@ class BirdsEyeViewHandler implements PropertyChangeListener {
 		// doesn't already have one.
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED)
 		{
-			JDesktopPane desktopPane = Cytoscape.getDesktop().getNetworkViewManager().getDesktopPane();
+			JDesktopPane desktopPane = desktop.getNetworkViewManager().getDesktopPane();
 			if (desktopPane == null)
 				return;
 

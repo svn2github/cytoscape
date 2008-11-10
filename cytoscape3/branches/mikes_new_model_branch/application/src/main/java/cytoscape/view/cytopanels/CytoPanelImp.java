@@ -713,7 +713,11 @@ public class CytoPanelImp extends JPanel implements CytoPanel, ChangeListener {
 
 			// SOUTH_WEST is used for manualLayout, it is nested in cytoPanel_1
 			if (compassDirection == SwingConstants.SOUTH_WEST) {
-				((CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)).validate();
+				//((CytoPanelImp) Cytoscape.getDesktop().getCytoPanel(SwingConstants.WEST)).validate();
+				try {
+					this.getParent().getParent().validate();
+				} catch (Exception e) {
+				}
 			}
 		}
 	}

@@ -42,6 +42,7 @@
 package cytoscape;
 
 import org.cytoscape.model.CyNetwork;
+import cytoscape.view.CytoscapeDesktop;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -58,8 +59,6 @@ import java.util.Map;
  * @author Allan Kuchinsky
  * @version 1.0
  *
- *
- *
  */
 public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	/**
@@ -71,20 +70,23 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 *
 	 */
 	public static final String CLEAN = "Clean";
-	private static Map<CyNetwork,String> networkStateMap = new HashMap<CyNetwork,String>();
+
+
+	private Map<CyNetwork,String> networkStateMap;
 
 	/**
 	 *
 	 */
-	public CytoscapeModifiedNetworkManager() {
-		super();
+	public CytoscapeModifiedNetworkManager(CytoscapeDesktop desktop) {
+		networkStateMap = new HashMap<CyNetwork,String>();
 
-		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		desktop.getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(Cytoscape.NETWORK_MODIFIED, this);
-		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		desktop.getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(Cytoscape.NETWORK_SAVED, this);
-		Cytoscape.getDesktop().getSwingPropertyChangeSupport()
+		desktop.getSwingPropertyChangeSupport()
 		         .addPropertyChangeListener(Cytoscape.NETWORK_CREATED, this);
+
 		Cytoscape.getSwingPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
@@ -118,7 +120,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 * @param net
 	 * @return
 	 */
-	public static boolean isModified(CyNetwork net) {
+	public boolean isModified(CyNetwork net) {
 		String modObj = networkStateMap.get(net);
 
 		if (modObj == null) // no network in table, so it can't be modified
@@ -136,7 +138,7 @@ public class CytoscapeModifiedNetworkManager implements PropertyChangeListener {
 	 * @param net
 	 * @param state values supported in this version: CLEAN, MODIFIED
 	 */
-	public static void setModified(CyNetwork net, String state) {
+	public void setModified(CyNetwork net, String state) {
 		networkStateMap.put(net, state);
 	}
 }
