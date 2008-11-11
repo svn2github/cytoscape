@@ -369,9 +369,9 @@
 		</java>
 	</target>
 
-	<!-- ======================================================= -->
-	<!-- Make the JavaDocs for Cytoscape                         -->
-	<!-- ======================================================= -->
+	<!-- ========================================================= -->
+	<!-- Make the Full JavaDocs for Cytoscape (including key libs) -->
+	<!-- ========================================================= -->
 	<target name="doc" description="Runs JavaDoc.">
 		<javadoc destdir="${javadoc.dir}" 
 		         source="1.5" 
@@ -416,6 +416,30 @@
 		</javadoc>
 	</target>
 
+	<!-- ======================================================= -->
+	<!-- Make the JavaDocs for cytoscape jar ONLY                -->
+	<!-- ======================================================= -->
+	<target name="doc-simple" description="Runs JavaDoc.">
+		<javadoc destdir="${javadoc.dir}" 
+		         source="1.5" 
+		         breakiterator="true" 
+		         Windowtitle="Cytoscape ${version} API" 
+		         header="Cytoscape ${version} (c) 2006,2007 ISB, MSKCC, UCSD" 
+		         footer="www.cytoscape.org" 
+		         classpathref="classpath" 
+		         access="public">
+
+			<packageset dir="${src.dir}">
+				<include name="cytoscape/**" />
+				<!-- exclude xjc generated code -->
+				<exclude name="cytoscape/generated/" />
+				<exclude name="cytoscape/generated2/" />
+				<exclude name="cytoscape/bookmarks/" />
+			</packageset>
+		
+			<link href="http://java.sun.com/j2se/1.5/docs/api/" />
+		</javadoc>
+	</target>
 
 	<!-- ======================================================= -->
 	<!-- Manfiest Target                                         -->
