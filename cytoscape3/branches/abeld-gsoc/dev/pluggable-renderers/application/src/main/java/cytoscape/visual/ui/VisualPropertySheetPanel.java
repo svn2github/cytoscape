@@ -273,9 +273,9 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
 		           && (e.getSource().getClass() == NetworkPanel.class)) { //FIXME: why do we have to check source?
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
+			setPropertyTable();
 		} else if (e.getPropertyName().equals(Cytoscape.VISUALSTYLE_MODIFIED)){
 			System.out.println("got VISUALSTYLE_MODIFIED!");
-			//setPropertyTable();
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 		           || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
 			setAttrComboBox();
