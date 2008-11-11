@@ -71,6 +71,7 @@ import cytoscape.groups.CyGroupViewer;
 
 // our imports
 import metaNodePlugin2.model.MetaNode;
+import metaNodePlugin2.model.MetanodeProperties;
 import metaNodePlugin2.ui.AttributeHandlingDialog;
 
 /**
@@ -297,6 +298,18 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			menu = new JPopupMenu();
 		}
 		menu.add(getNodePopupMenu(nodeView));
+	}
+
+	/**
+	 * Provides a handle to get all of our settings
+	 *
+	 * @return our current settings
+	 */
+	public MetanodeProperties getSettings() {
+		if (settingsDialog != null) 
+			return settingsDialog.getSettings();
+		else
+			return null;
 	}
 
 	/**

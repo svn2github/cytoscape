@@ -244,7 +244,7 @@ public class AttributeHandlingDialog extends JDialog
 		t = metanodeProperties.get("hideMetanodes");
 		if ((t != null) && (t.valueChanged() || force)) {
       boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
-			MetaNode.setHideMetaNode(hideMetanode);
+			MetaNode.setHideMetaNodeDefault(hideMetanode);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
@@ -280,6 +280,10 @@ public class AttributeHandlingDialog extends JDialog
 	public void revertSettings() {
 		metanodeProperties.revertProperties();
 		AttributeHandler.revertSettings();
+	}
+
+	public MetanodeProperties getSettings() {
+		return metanodeProperties;
 	}
 
 	public void updateOverrides(CyNetwork network) {
@@ -342,7 +346,7 @@ public class AttributeHandlingDialog extends JDialog
 	public void tunableChanged(Tunable t) {
 		if (t.getName().equals("hideMetanode")) {
       boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
-			MetaNode.setHideMetaNode(hideMetanode);
+			MetaNode.setHideMetaNodeDefault(hideMetanode);
 		} else if (t.getName().equals("enableHandling")) {
       boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);

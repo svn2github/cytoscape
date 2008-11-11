@@ -81,7 +81,8 @@ public class MetaNode {
 	// Static variables
 	private static HashMap<CyNode,MetaNode> metaMap = new HashMap();
 	private static final boolean DEBUG = false;
-	private static boolean hideMetanode = true;
+	private static boolean hideMetanodeDefault = true;
+	private static boolean sizeToBoundingBoxDefault = true;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
 	public static final String Y_HINT_ATTR = "__metanodeHintY";
@@ -110,6 +111,10 @@ public class MetaNode {
 	private CyNetwork network = null;
 	private int nChildren = 0;
 	private int nDescendents = 0;
+	private Dimension metanodeSize = null;
+
+	private boolean hideMetanode = true;
+	private boolean sizeToBoundingBox = false;
 
 	private CyLogger logger = null;
 
@@ -221,8 +226,8 @@ public class MetaNode {
 	 *
 	 * @param hide if 'true' we hide the metanode upon expansion
 	 */
-	static public void setHideMetaNode(boolean hide) {
-		hideMetanode = hide;
+	static public void setHideMetaNodeDefault(boolean hide) {
+		MetaNode.hideMetanodeDefault = hide;
 	}
 
 	/**
@@ -231,10 +236,30 @@ public class MetaNode {
 	 *
 	 * @return 'true' if we hide the metanode upon expansion
 	 */
-	static public boolean getHideMetaNode() {
-		return hideMetanode;
+	static public boolean getHideMetaNodeDefault() {
+		return MetaNode.hideMetanodeDefault;
 	}
 
+	/**
+	 * Sets whether or not we size the metnode to the bounding box
+	 * of all of the children when we expand the network.  NOTE:
+	 * this only makes sense if hideMetanode is false.
+	 *
+	 * @param hide if 'true' we resize on expansion
+	 */
+	static public void setSizeToBoundingBoxDefault(boolean resize) {
+		MetaNode.sizeToBoundingBoxDefault = resize;
+	}
+
+	/**
+	 * Returns 'true' if we hide the metnode when we expand the
+	 * network.
+	 *
+	 * @return 'true' if we hide the metanode upon expansion
+	 */
+	static public boolean getSizeToBoundingBoxDefault() {
+		return MetaNode.sizeToBoundingBoxDefault;
+	}
 
 	/*****************************************************************
 	 *                    Public methods                             *
@@ -252,6 +277,8 @@ public class MetaNode {
 		metaEdgeMap = new HashMap();
 		collapsedMap = new HashMap();
 		logger = CyLogger.getLogger(MetaNode.class);
+		this.hideMetanode = MetaNode.hideMetanodeDefault;
+		this.sizeToBoundingBox = MetaNode.sizeToBoundingBoxDefault;
 
 		if (DEBUG) logger.debug("Creating meta-group "+group.getGroupName());
 
@@ -573,7 +600,7 @@ public class MetaNode {
 					// to our group node.  We want to add this to our outerEdge list
 					if (DEBUG) logger.debug("Adding outer edge "+edge.getIdentifier()+" to "+groupNode.getIdentifier());
 					metaGroup.addOuterEdge(edge);
-					if (!hideMetanode)
+					if (!this.hideMetanode)
 						continue;
 				}
 				hideEdge(edge);
@@ -584,7 +611,7 @@ public class MetaNode {
 		restoreNodes();
 
 		// See if we need to create membership edges
-		if (!MetaNode.hideMetanode) {
+		if (!this.hideMetanode) {
 			List<CyEdge> innerEdges = metaGroup.getInnerEdges();
 			for (CyNode node: metaGroup.getNodes()) {
 				CyEdge edge = Cytoscape.getCyEdge(groupNode, node, Semantics.INTERACTION, "member", true);
@@ -592,12 +619,21 @@ public class MetaNode {
 					metaGroup.addInnerEdge(edge);
 				}
 			}
+			// See if we're resizing to the bounding box...
+			if (this.sizeToBoundingBox && metanodeSize != null) {
+				// Get the nodeView
+				NodeView nv = networkView.getNodeView(groupNode);
+				nv.setHeight(metanodeSize.getHeight()+5);
+				nv.setWidth(metanodeSize.getWidth()+5);
+				nv.setShape(NodeView.RECTANGLE);
+				nv.setTransparency(10);  // This seems to be ignored...
+			}
 		}
 
 		// Add the edges back in
 		restoreEdges();
 		// Remove the metaNode
-		if (MetaNode.hideMetanode)
+		if (this.hideMetanode)
 			network.hideNode(groupNode);
 
 		if (update) {
@@ -756,6 +792,47 @@ public class MetaNode {
 			return collapsedMap.get(view).booleanValue();
 		} else
 			return false;
+	}
+
+	/**
+	 * Sets whether or not we hide the metnode when we expand the
+	 * network.
+	 *
+	 * @param hide if 'true' we hide the metanode upon expansion
+	 */
+	public void setHideMetaNode(boolean hide) {
+		this.hideMetanode = hide;
+	}
+
+	/**
+	 * Returns 'true' if we hide the metnode when we expand the
+	 * network.
+	 *
+	 * @return 'true' if we hide the metanode upon expansion
+	 */
+	public boolean getHideMetaNode() {
+		return this.hideMetanode;
+	}
+
+	/**
+	 * Sets whether or not we size the metnode to the bounding box
+	 * of all of the children when we expand the network.  NOTE:
+	 * this only makes sense if hideMetanode is false.
+	 *
+	 * @param hide if 'true' we resize on expansion
+	 */
+	public void setSizeToBoundingBox(boolean resize) {
+		this.sizeToBoundingBox = resize;
+	}
+
+	/**
+	 * Returns 'true' if we hide the metnode when we expand the
+	 * network.
+	 *
+	 * @return 'true' if we hide the metanode upon expansion
+	 */
+	public boolean getSizeToBoundingBox() {
+		return this.sizeToBoundingBox;
 	}
 
 	/*****************************************************************
@@ -924,6 +1001,10 @@ public class MetaNode {
 		Iterator <CyNode> nodeIter = nodes.iterator();
 		double xCenter = 0;
 		double yCenter = 0;
+		double xMax = -100000;
+		double xMin = 100000;
+		double yMax = -100000;
+		double yMin = 100000;
 		Double xLocations[] = new Double[nodes.size()];
 		Double yLocations[] = new Double[nodes.size()];
 		int averageCount = 0;
@@ -944,11 +1025,22 @@ public class MetaNode {
 			NodeView nodeView = (NodeView)networkView.getNodeView(node);
 			if (nodeView != null && !isNodeHidden(node)) {
 				averageCount++;
-				xLocations[i] = new Double(nodeView.getXPosition());
-				yLocations[i] = new Double(nodeView.getYPosition());
+				double xLocation = nodeView.getXPosition();
+				double yLocation = nodeView.getYPosition();
+				double width = nodeView.getWidth();
+				double height = nodeView.getHeight();
+
+				xLocations[i] = new Double(xLocation);
+				yLocations[i] = new Double(yLocation);
 				
-				xCenter += xLocations[i].doubleValue();
-				yCenter += yLocations[i].doubleValue();
+				xCenter += xLocation;
+				yCenter += yLocation;
+
+				// Calculate our bounding box
+				if (xLocation+width/2 > xMax) xMax = xLocation+width/2;
+				if (yLocation+height/2 > yMax) yMax = yLocation+height/2;
+				if (xLocation-width/2 < xMin) xMin = xLocation-width/2;
+				if (yLocation-height/2 < yMin) yMin = yLocation-height/2;
 			} else {
 				xLocations[i] = null;
 				yLocations[i] = null;
@@ -972,6 +1064,10 @@ public class MetaNode {
 			// Hide the node
 			hideNode(node);
 		}
+		if (metanodeSize == null) {
+			metanodeSize = new Dimension();
+		}
+		metanodeSize.setSize(xMax-xMin, yMax-yMin);
 		Dimension dim = new Dimension();
 		dim.setSize(xCenter, yCenter);
 		return dim;
