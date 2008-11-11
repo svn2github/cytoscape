@@ -44,19 +44,20 @@ import java.util.Map;
 
 
 /**
- * CyAttributes provides access to node and edge attributes within Cytoscape.
+ * CyAttributes provides access to network, node, and edge attributes within Cytoscape.
  * <P>
  * CyAttributes is a replacement for {@link GraphObjAttributes}, which will be
  * officially removed from the Cytoscape core in September, 2006.
  * <h3>Basic Concepts:</h3>
- * Each node and edge within Cytoscape can be annotated with one or more
+ * Each network, node, and edge within Cytoscape can be annotated with one or more
  * attributes.  For example, a node representing a protein could have
  * attributes for description, species, NCBI Gene ID, UniProt ID, etc.
  * These attributes are set and retrieved via the CyAttributes interface.
  * <h3>Global Attributes:</h3>
- * There are two sets of global attributes, one for nodes, and one for edges.
+ * There are three sets of global attributes, one for networks, one for nodes, and one for edges.
  * To access these global attributes, use:
  * <UL>
+ * <LI>{@link cytoscape.Cytoscape#getNetworkAttributes()}
  * <LI>{@link cytoscape.Cytoscape#getNodeAttributes()}
  * <LI>{@link cytoscape.Cytoscape#getEdgeAttributes()}
  * </UL>
@@ -65,6 +66,7 @@ import java.util.Map;
  * nodes and edges.  The unique identifiers for nodes and edges are available
  * via the <CODE>getIdentifier()</CODE> method:
  * <UL>
+ * <LI>For networks, use {@link cytoscape.CyNetwork#getIdentifier()}.
  * <LI>For nodes, use {@link cytoscape.CyNode#getIdentifier()}.
  * <LI>For edges, use {@link cytoscape.CyEdge#getIdentifier()}.
  * </UL>
@@ -79,7 +81,7 @@ import java.util.Map;
  * <LI>We want to enable inter-plugin communication, such that plugins can
  * share attribute data without having to agree to use some predefined or
  * custom data structure ahead of time.
- * <LI>We want to build a universal node/edge attribute browser.
+ * <LI>We want to build a universal network/node/edge attribute browser.
  * </UL>
  * <h3>Getting / Setting Attributes:  An Overview</h3>
  * There are three ways to get/set attributes.  They are (in order
