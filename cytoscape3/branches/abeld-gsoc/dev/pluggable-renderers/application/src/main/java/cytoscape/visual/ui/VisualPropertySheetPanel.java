@@ -257,7 +257,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		 * Managing editor windows.
 		 */
 		try {
-		System.out.println("VPSP got event:"+e);
+		//System.out.println("VPSP got event:"+e);
 		if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)
 		    || e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
 			manageWindow(e.getPropertyName(), (VisualProperty) e.getNewValue(), e.getSource());
@@ -275,7 +275,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
 			setPropertyTable();
 		} else if (e.getPropertyName().equals(Cytoscape.VISUALSTYLE_MODIFIED)){
-			System.out.println("got VISUALSTYLE_MODIFIED!");
+			//System.out.println("got VISUALSTYLE_MODIFIED!");
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 		           || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
 			setAttrComboBox();
@@ -284,7 +284,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		/***********************************************************************
 		 * Below this line, accept only cell editor events.
 		 **********************************************************************/
-		System.out.println("cell editor event.");
+		//System.out.println("cell editor event.");
 		if (e.getPropertyName().equalsIgnoreCase("value") == false)	return;
 
 		if (e.getNewValue().equals(e.getOldValue())) return;
@@ -782,10 +782,10 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 	public void adaptToVisualStyleChanged(){
 		VisualStyle currentlyEditedVS = vmmp.getCurrentlyEditedVS();
 		if (vsToModelMap.containsKey(currentlyEditedVS)){
-			System.out.println("swapping in exsisting TableModel:");
+			//System.out.println("swapping in exsisting TableModel:");
 			setModel(vsToModelMap.get(currentlyEditedVS));
 		} else {
-			System.out.println("no TableModel yet for this VisualStyle, have to create it:");
+			//System.out.println("no TableModel yet for this VisualStyle, have to create it:");
 			PropertySheetTableModel model = new PropertySheetTableModel();
 			setModel(model);
 			setPropertyTable();
@@ -1161,19 +1161,19 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		// Clean up sheet -- FIXME: this shouldn't be needed since propertySheetPanel is supposed to be empty (?) 
 		for (Property item : propertySheetPanel.getProperties())
 			propertySheetPanel.removeProperty(item);
-		System.out.println("cleared PropertyTable, num properties:"+(propertySheetPanel.getProperties()).length);
+		//System.out.println("cleared PropertyTable, num properties:"+(propertySheetPanel.getProperties()).length);
 		VisualStyle currentlyEditedVS = vmmp.getCurrentlyEditedVS();
 		final List<Calculator> ncList = currentlyEditedVS.getNodeCalculators();
 		final List<Calculator> ecList = currentlyEditedVS.getEdgeCalculators();
 
 		editorReg.registerDefaults(); // FIXME ezzel valamit kezdeni
-		System.out.println("ncList length:"+ncList.size());
+		//System.out.println("ncList length:"+ncList.size());
 		/* Add properties to the property sheet. */
 		setPropertyFromCalculator(ncList);
-		System.out.println("node calculator properties added, num properties:"+(propertySheetPanel.getProperties()).length);
+		//System.out.println("node calculator properties added, num properties:"+(propertySheetPanel.getProperties()).length);
 		setPropertyFromCalculator(ecList);
 		
-		System.out.println("in-use properties added, num properties:"+(propertySheetPanel.getProperties()).length);
+		//System.out.println("in-use properties added, num properties:"+(propertySheetPanel.getProperties()).length);
 		/* Finally, add unused visual properties (as VizMapperProperties) to propList */
 		for (VisualProperty vp : byNameSortedVisualProperties(VisualPropertyCatalog.collectionOfVisualProperties(vmmp.getCurrentView()))) { //FIXME: assumes currentView
 			if (currentlyEditedVS.getCalculator(vp) == null) {
@@ -1185,7 +1185,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				propertySheetPanel.addProperty(prop);
 			}
 		}
-		System.out.println("setPropertyTable done, num properties:"+(propertySheetPanel.getProperties()).length);
+		//System.out.println("setPropertyTable done, num properties:"+(propertySheetPanel.getProperties()).length);
 	}
 	
 	private void setPropertyFromCalculator(List<Calculator> calcList) {
@@ -1220,7 +1220,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		}
 		calculatorTypeProp.setDisplayName(type.getName());
 		calculatorTypeProp.setHiddenObject(type);
-		System.out.println("Build one property for one visual property.");
+		//System.out.println("Build one property for one visual property.");
 		// Mapping 0 is always currently used mapping.
 		final ObjectMapping firstMap = calc.getMapping(0);
 		String attrName;
@@ -1424,7 +1424,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		final List<Icon> iconList = new ArrayList<Icon>();
 		final List<Object> values = new ArrayList<Object>();
 		final Map<Object, VisualPropertyIcon> iconSet = vp.getIconSet();
-		System.out.println("building discrete editor for:"+vp.getName());
+		//System.out.println("building discrete editor for:"+vp.getName());
 		for (Object val: iconSet.keySet()){
 			iconList.add(iconSet.get(val));
 			values.add(val);

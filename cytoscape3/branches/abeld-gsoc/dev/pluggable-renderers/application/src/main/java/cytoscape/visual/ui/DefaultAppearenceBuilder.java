@@ -318,11 +318,11 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 
 	public void propertyChange(PropertyChangeEvent evt){
 		if (evt.getPropertyName() == Cytoscape.VISUALSTYLE_MODIFIED) {
-			System.out.println("got visual style modified event!");
+			//System.out.println("got visual style modified event!");
 			VisualStyle vs = (VisualStyle) evt.getOldValue();
 			// only react to changes in VisualStyle we are editing:
 			if (vs.getName().equals(Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getName())){ // can this _not_ match?
-				System.out.println("rebuilding list");
+				//System.out.println("rebuilding list");
 				buildList();
 				mainView.updateView();
 				repaint();
@@ -370,8 +370,8 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			final String selected = (String) globalList.getSelectedValue();
 			Color newColor = CyColorChooser.showDialog(this, "Choose new color.", Color.white);
 
-			//FIXME: here the string 'selected' will contin the global property to set!!
-			System.out.println("FIXME: not setting global property:"+selected);
+			//FIXME: here the string 'selected' will contain the global property to set!!
+			//System.out.println("FIXME: not setting global property:"+selected);
 			try {
 				VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView());
 				vs.setGlobalProperty("defaultColor", newColor);
@@ -434,7 +434,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 				nodeIcon.setLeftPadding(15);
 				model.addElement(type);
 				nodeIcons.add(nodeIcon);
-				System.out.println("adding node visualproperty:"+type.getName());
+				//System.out.println("adding node visualproperty:"+type.getName());
 			} else {
 				System.out.println("warning: default Icon for VisualProperty is null: "+type);
 				System.out.println("VisualProperty name: "+type.getName());

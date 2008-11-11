@@ -553,7 +553,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
-		System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
+		//System.out.println("==================GLOBAL Signal: " + e.getPropertyName() + ", SRC = " + e.getSource().toString());
 		if (e.getPropertyName().equals(Cytoscape.CYTOSCAPE_INITIALIZED)) {
 			setDefaultPanel(defaultImageManager.get(currentlyEditedVS));
 			vsNameComboBox.setSelectedItem(currentlyEditedVS.getName());
@@ -783,11 +783,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void stateChanged(ChangeEvent e) {
-		System.out.println("vizmappermainpanel: statechanged"+e);
+		//System.out.println("vizmappermainpanel: statechanged"+e);
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
 		final String currentName = currentlyEditedVS.getName();
 
-		System.out.println("Got VMM Change event.  Cur VS in VMM: " + currentName);
+		//System.out.println("Got VMM Change event.  Cur VS in VMM: " + currentName);
 
 		if ((selectedName == null) || (currentName == null) || (currentView == null) || currentView.equals(Cytoscape.getNullNetworkView()))
 			return;
