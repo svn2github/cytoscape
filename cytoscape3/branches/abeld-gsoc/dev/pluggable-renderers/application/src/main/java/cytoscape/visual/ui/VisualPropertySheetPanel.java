@@ -1220,7 +1220,6 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		}
 		calculatorTypeProp.setDisplayName(type.getName());
 		calculatorTypeProp.setHiddenObject(type);
-		propertySheetPanel.addProperty(calculatorTypeProp);
 		System.out.println("Build one property for one visual property.");
 		// Mapping 0 is always currently used mapping.
 		final ObjectMapping firstMap = calc.getMapping(0);
@@ -1323,6 +1322,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 				}
 			}
 		}
+		propertySheetPanel.addProperty(calculatorTypeProp);
 	}
 	/** Add given Property as subProperty to given Property, and set some values on the subProperty*/
 	private void addSubProperty(VizMapperProperty parentProp, VizMapperProperty subProp, String displayName, Class klass, Object value){
