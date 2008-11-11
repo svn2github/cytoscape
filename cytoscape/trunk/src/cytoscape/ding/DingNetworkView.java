@@ -438,7 +438,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	 * @param layout DOCUMENT ME!
 	 */
 	public void applyLayout(CyLayoutAlgorithm layout) {
-		layout.doLayout();
+		layout.doLayout(this);
 	}
 
 	/**
@@ -451,7 +451,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
 		layout.lockNodes(convertToViews(nodes));
 		layout.setSelectedOnly(true);
-		layout.doLayout();
+		layout.doLayout(this);
 	}
 
 	/**
@@ -464,7 +464,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	public void applyLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges) {
 		layout.lockNodes(getInverseViews(convertToViews(nodes)));
 		layout.setSelectedOnly(true);
-		layout.doLayout();
+		layout.doLayout(this);
 	}
 
 	private NodeView[] getInverseViews(NodeView[] given) {
@@ -527,7 +527,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	public void applyLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges) {
 		layout.lockNodes(getInverseViews(nodes));
 		layout.setSelectedOnly(true);
-		layout.doLayout();
+		layout.doLayout(this);
 	}
 
 	/**
@@ -540,7 +540,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	public void applyLockedLayout(CyLayoutAlgorithm layout, int[] nodes, int[] edges) {
 		layout.lockNodes(convertToNodeViews(nodes));
 		layout.setSelectedOnly(true);
-		layout.doLayout();
+		layout.doLayout(this);
 	}
 
 	private NodeView[] convertToNodeViews(int[] nodes) {
@@ -563,7 +563,7 @@ public class DingNetworkView extends DGraphView implements CyNetworkView {
 	public void applyLayout(CyLayoutAlgorithm layout, int[] nodes, int[] edges) {
 		layout.lockNodes(getInverseViews(convertToNodeViews(nodes)));
 		layout.setSelectedOnly(true);
-		layout.doLayout();
+		layout.doLayout(this);
 	}
 
 	// AJK: 05/19/06 BEGIN
