@@ -223,34 +223,46 @@ public interface CyNetworkView extends GraphView {
 
 	/**
 	 * Applies the given layout to the entire CyNetworkView,
-	 * but locks the given Nodes and Edges in place
+	 * but locks the given Nodes and Edges in place.
+	 * NOTE: currently, none of the layout algorithms support edge-locked layouts, so
+	 * the edges argument is ignored.
 	 */
 	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges);
 
 	/**
-	 * Applies the  given layout to only the given Nodes and Edges
+	 * Applies the  given layout to only the given Nodes and Edges.
+	 * NOTE: currently, none of the layout algorithms support edge-locked layouts, so
+	 * the edges argument is ignored.
 	 */
 	public void applyLayout(CyLayoutAlgorithm layout, CyNode[] nodes, CyEdge[] edges);
 
 	/**
 	 * Applies the given layout to the entire CyNetworkView,
-	 * but locks the given NodeViews and EdgeViews in place
+	 * but locks the given NodeViews and EdgeViews in place.
+	 * NOTE: currently, none of the layout algorithms support edge-locked layouts, so
+	 * the edges argument is ignored.
 	 */
 	public void applyLockedLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges);
 
 	/**
-	 * Applies the  given layout to only the given NodeViews and EdgeViews
+	 * Applies the  given layout to only the given NodeViews and EdgeViews.
+	 * NOTE: currently, none of the layout algorithms support edge-locked layouts, so
+	 * the edges argument is ignored.
 	 */
 	public void applyLayout(CyLayoutAlgorithm layout, CyNodeView[] nodes, CyEdgeView[] edges);
 
 	/**
 	 * Applies the given layout to the entire CyNetworkView,
-	 * but locks the given Nodes and Edges in place
+	 * but locks the given Nodes and Edges in place.
+	 * NOTE: currently, none of the layout algorithms support edge-locked layouts, so
+	 * the edges argument is ignored.
 	 */
 	public void applyLockedLayout(CyLayoutAlgorithm layout, int[] nodes, int[] edges);
 
 	/**
-	 * Applies the  given layout to only the given Nodes and Edges
+	 * Applies the  given layout to only the given Nodes and Edges.
+	 * NOTE: currently, none of the layout algorithms support edge-locked layouts, so
+	 * the edges argument is ignored.
 	 */
 	public void applyLayout(CyLayoutAlgorithm layout, int[] nodes, int[] edges);
 
