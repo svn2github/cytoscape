@@ -530,13 +530,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 		defaultImageButton.setIcon(new ImageIcon(defImage));
 		defaultAppearencePanel.add(defaultImageButton, BorderLayout.CENTER);
-		defaultImageButton.addMouseListener(new DefaultMouseListener());
+		defaultImageButton.addMouseListener(new DefaultMouseListener(this));
 	}
 
 	class DefaultMouseListener extends MouseAdapter {
+		private VizMapperMainPanel vmmp;
+		public DefaultMouseListener(VizMapperMainPanel vmmp){super(); this.vmmp = vmmp;}
 		public void mouseClicked(MouseEvent e) {
 			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
-				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop());
+				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop(), vmmp.getCurrentlyEditedVS());
 				updateDefaultImage(currentlyEditedVS, (GraphView) panel.getView(), defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(currentlyEditedVS));
 
@@ -562,10 +564,16 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			lastVS = null;
 			initVizmapperGUI();
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
-		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)
-		           && (e.getSource().getClass() == NetworkPanel.class)) { //FIXME: why do we have to check source?
+		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)) {
+			System.out.println("vmmp got NETWORK_VIEW_FOCUS: "+Cytoscape.getCurrentNetworkView());
 			// update local state:
-			currentView = Cytoscape.getCurrentNetworkView();
+			//System.out.println("setting vmmp.currentView: "+currentView );
+			//currentView = Cytoscape.getCurrentNetworkView(); // this will return null on first call!!
+			//adaptToVisualStyleChanged(); // FIXME: is this needed?
+		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUSED)) {
+			// update local state:
+			System.out.println("vmmp got NETWORK_VIEW_FOCUSED: "+Cytoscape.getCurrentNetworkView());
+			currentView = Cytoscape.getCurrentNetworkView(); // this will return null on first call!!
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
 		} 
 	}

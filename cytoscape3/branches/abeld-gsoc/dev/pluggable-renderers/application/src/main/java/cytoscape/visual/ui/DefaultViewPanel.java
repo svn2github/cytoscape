@@ -52,6 +52,7 @@ import org.cytoscape.view.GraphViewFactory;
 import cytoscape.Cytoscape;
 import org.cytoscape.RootGraph;
 import org.cytoscape.view.GraphView;
+import org.cytoscape.vizmap.VisualStyle;
 
 
 /**
@@ -75,13 +76,13 @@ public class DefaultViewPanel extends JPanel {
 	private final Node target;
 	private final Edge edge;
 	private Component canvas = null;
-
+	private VisualStyle visualStyle;
 
 	/**
 	 * Creates a new NodeFullDetailView object.
 	 */
-	public DefaultViewPanel() {
-
+	public DefaultViewPanel(VisualStyle visualStyle) {
+		this.visualStyle = visualStyle;
 		source = Cytoscape.getCyNode("Source",true);
 		target = Cytoscape.getCyNode("Target",true);
 		edge = Cytoscape.getCyEdge(source.getIdentifier(), "Edge", target.getIdentifier(), "interaction");
@@ -99,7 +100,7 @@ public class DefaultViewPanel extends JPanel {
 		view.setIdentifier(dummyNet.getIdentifier());
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
-		
+		visualStyle.apply(view);
 		background = (Color) Cytoscape.getVisualMappingManager().getVisualStyleForView(view).getGlobalProperty("backgroundColor");
 		this.setBackground(background);
 	}
@@ -133,7 +134,7 @@ public class DefaultViewPanel extends JPanel {
 	 */
 	protected void updateView() {
 		if (view != null) {
-
+			visualStyle.apply(view);
 			final Dimension panelSize = this.getSize();
 			view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
 			                        (int) panelSize.getHeight() - PADDING));

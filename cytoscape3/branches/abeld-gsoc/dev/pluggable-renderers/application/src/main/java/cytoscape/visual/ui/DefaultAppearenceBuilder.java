@@ -104,18 +104,18 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	
 	//private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
 	//                                                      .getNodeAppearanceCalculator();
-
+	private VisualStyle visualStyle;
 	/**
-	 * Creates a new DefaultAppearenceBuilder object.
+	 * Creates a new DefaultAppearenceBuilder object. -- use static constructors instead
 	 *
 	 * @param parent DOCUMENT ME!
 	 * @param modal DOCUMENT ME!
 	 */
-	public DefaultAppearenceBuilder(Frame parent, boolean modal) {
+	private DefaultAppearenceBuilder(Frame parent, VisualStyle visualStyle, boolean modal) {
 		super(parent, modal);
+		this.visualStyle = visualStyle;
 		initComponents();
 		buildList();
-
 		this.addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent e) {
 					mainView.updateView();
@@ -131,9 +131,9 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	 *
 	 * @return DOCUMENT ME!
 	 */
-	public static JPanel showDialog(Frame parent) {
+	public static JPanel showDialog(Frame parent, VisualStyle visualStyle) {
 		if(dab == null)
-			dab = new DefaultAppearenceBuilder(parent, true);
+			dab = new DefaultAppearenceBuilder(parent, visualStyle, true);
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(900, 400);
 		dab.mainView.updateView();
@@ -150,7 +150,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	 */
 	public static JPanel getDefaultView(VisualStyle visualStyle) {
 		if(dab == null)
-			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), true);
+			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), visualStyle, true);
 		dab.mainView.updateBackgroungColor((Color) visualStyle.getGlobalProperty("backgroundColor"));
 		                                            
 		dab.mainView.updateView();
@@ -168,7 +168,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	// <editor-fold defaultstate="collapsed" desc=" Generated Code ">
 	private void initComponents() {
 		jXPanel1 = new org.jdesktop.swingx.JXPanel();
-		mainView = new DefaultViewPanel();
+		mainView = new DefaultViewPanel(visualStyle);
 		jXTitledPanel1 = new org.jdesktop.swingx.JXTitledPanel();
 		defaultObjectTabbedPane = new javax.swing.JTabbedPane();
 		nodeScrollPane = new javax.swing.JScrollPane();
@@ -202,8 +202,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			});
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Default Appearance for "
-		         + Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getName());
+		setTitle("Default Appearance for " + visualStyle.getName());
 		mainView.setBorder(new javax.swing.border.LineBorder(java.awt.Color.darkGray, 1, true));
 
 		org.jdesktop.layout.GroupLayout jXPanel2Layout = new org.jdesktop.layout.GroupLayout(mainView);
@@ -349,10 +348,10 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 
 				newValue = VizMapperMainPanel.showValueSelectDialog((VisualProperty) list.getSelectedValue(), this);
 				VisualProperty vp = (VisualProperty) list.getSelectedValue();
+				System.out.println("setting default value of:"+vp+" to:"+newValue);
 				if (newValue != null){
-					VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView());
-					vs.setDefaultValue(vp, newValue);
-					Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vs, null);
+					visualStyle.setDefaultValue(vp, newValue);
+					Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, visualStyle, null);
 				}
 
 			} catch (Exception e1) {
@@ -373,9 +372,8 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			//FIXME: here the string 'selected' will contain the global property to set!!
 			//System.out.println("FIXME: not setting global property:"+selected);
 			try {
-				VisualStyle vs = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView());
-				vs.setGlobalProperty("defaultColor", newColor);
-				Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vs, null);
+				visualStyle.setGlobalProperty("defaultColor", newColor);
+				Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, visualStyle, null);
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -510,7 +508,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 				VisualProperty vp = (VisualProperty) value;
 				setText(vp.getName());
 				if (vp.getDataType() == String.class) {
-					final Object defVal = Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getDefaultValue(vp); 
+					final Object defVal = visualStyle.getDefaultValue(vp); 
 
 					if (defVal != null) {
 						this.setToolTipText((String) defVal);
