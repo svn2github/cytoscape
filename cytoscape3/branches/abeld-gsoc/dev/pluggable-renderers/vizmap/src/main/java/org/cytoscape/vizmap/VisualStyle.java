@@ -224,9 +224,10 @@ public class VisualStyle implements Cloneable {
 		}
 	}
 
-	/** Apply this VisualStyle to the view */
+	/**  this VisualStyle to the view */
 	public void apply(GraphView network_view){
-		//System.out.println("APPLYING VISUAL STYLE");
+		//System.out.println("APPLYING VISUAL STYLE:");
+		//Thread.dumpStack();
 		
 		// FIXME: rethink this:
 		// setup proper background colors
@@ -263,6 +264,7 @@ public class VisualStyle implements Cloneable {
 				}
 				if (o == null) { o = defaultValues.get(vp); }
 				if (o == null) { o = vp.getDefaultAppearanceObject(); }
+				//System.out.println("applying to nodeView:"+nodeView+"vp:"+ vp.getName()+ "obj:"+o);
 				vp.applyToNodeView(nodeView, o);
 			}
 		}
