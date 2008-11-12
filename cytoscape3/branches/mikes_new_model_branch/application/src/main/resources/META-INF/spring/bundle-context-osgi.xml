@@ -84,4 +84,23 @@
         <osgi:listener bind-method="addAction" unbind-method="removeAction" ref="cyMenus"/>
     </osgi:set>
 
+	<!-- visual property editor services -->
+
+        <osgi:service id="continuousColorService" ref="continuousColor" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="continuousContinuousService" ref="continuousContinuous" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="continuousDiscreteService" ref="continuousDiscrete" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="discreteArrowShapeService" ref="discreteArrowShape" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="discreteColorService" ref="discreteColor" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="discreteFontService" ref="discreteFont" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="discreteLabelPositionService" ref="discreteLabelPosition" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="discreteLineStyleService" ref="discreteLineStyle" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="discreteNodeShapeService" ref="discreteNodeShape" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="discreteNumberService" ref="discreteNumber" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+        <osgi:service id="discreteStringService" ref="discreteString" interface="cytoscape.visual.ui.editors.EditorDisplayer"/>
+
+    <osgi:set id="editorSet" interface="cytoscape.visual.ui.editors.EditorDisplayer" cardinality="0..N">
+        <osgi:listener bind-method="addEditorDisplayer" unbind-method="removeEditorDisplayer" ref="editorFactory"/>
+    </osgi:set>
+<!--
+	-->
 </beans>

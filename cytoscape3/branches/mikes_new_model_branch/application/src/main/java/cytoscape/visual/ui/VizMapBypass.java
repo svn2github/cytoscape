@@ -42,6 +42,8 @@ import org.cytoscape.model.CyRow;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
+import cytoscape.visual.ui.editors.EditorFactory;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,11 +56,16 @@ import java.util.List;
  * Node and Edge bypass classes.
  */
 abstract class VizMapBypass {
-	protected Frame parent = Cytoscape.getDesktop();
 	protected VisualMappingManager vmm = Cytoscape.getVisualMappingManager();
 	protected GraphObject graphObj = null;
 
 	abstract protected List<String> getBypassNames();
+
+	protected EditorFactory editorFactory;
+
+	VizMapBypass(EditorFactory editorFactory) {
+		this.editorFactory = editorFactory;
+	}
 
 	protected void addResetAllMenuItem(JMenu menu) {
 		JMenuItem jmi = new JMenuItem(new AbstractAction("Reset All") {
@@ -99,7 +106,7 @@ abstract class VizMapBypass {
 					Object obj = null;
 
 					try {
-						obj = EditorFactory.showDiscreteEditor(type);
+						obj = editorFactory.showDiscreteEditor(type);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						obj = null;

@@ -23,6 +23,8 @@
 		<constructor-arg ref="cyMenus"/>
 	</bean>
 
+	<bean name="editorFactory" class="cytoscape.visual.ui.editors.EditorFactory"/>
+
 	<!-- TODO fix vizmapper
 	<bean name="defaultViewPanel" class="cytoscape.visual.ui.DefaultViewPanel">
 		<constructor-arg ref="cyNetworkFactoryServiceRef"/>
@@ -32,7 +34,10 @@
 	<bean name="vizMapperMainPanel" class="cytoscape.visual.ui.VizMapperMainPanel">
 		<constructor-arg ref="cytoscapeDesktop"/>
 		<constructor-arg ref="defaultViewPanel"/>
+		<constructor-arg ref="editorFactory"/>
 	</bean>
+
+
 	-->
 
 	<bean name="cyMain" class="cytoscape.CyMain">
@@ -163,8 +168,35 @@
 	</bean>
 
 	<bean id="webServiceContextMenuListener" class="cytoscape.data.webservice.ui.WebServiceContextMenuListener"/>
-	<bean id="vizMapBypassNetworkListener" class="cytoscape.visual.ui.VizMapBypassNetworkListener"/>
+	<bean id="vizMapBypassNetworkListener" class="cytoscape.visual.ui.VizMapBypassNetworkListener">
+		<constructor-arg ref="editorFactory"/>
+	</bean>
 
 
+	<!-- Visual property editors -->
+	<bean id="continuousColor" class="cytoscape.visual.ui.editors.internal.ContinuousColor"/>
+	<bean id="continuousContinuous" class="cytoscape.visual.ui.editors.internal.ContinuousContinuous"/>
+	<bean id="continuousDiscrete" class="cytoscape.visual.ui.editors.internal.ContinuousDiscrete">
+		<constructor-arg ref="cytoscapeDesktop"/>
+		<constructor-arg ref="editorFactory"/>
+	</bean>
+	<bean id="discreteArrowShape" class="cytoscape.visual.ui.editors.internal.DiscreteArrowShape"/>
+	<bean id="discreteColor" class="cytoscape.visual.ui.editors.internal.DiscreteColor">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="discreteFont" class="cytoscape.visual.ui.editors.internal.DiscreteFont">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="discreteLabelPosition" class="cytoscape.visual.ui.editors.internal.DiscreteLabelPosition">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="discreteLineStyle" class="cytoscape.visual.ui.editors.internal.DiscreteLineStyle"/>
+	<bean id="discreteNodeShape" class="cytoscape.visual.ui.editors.internal.DiscreteNodeShape"/>
+	<bean id="discreteNumber" class="cytoscape.visual.ui.editors.internal.DiscreteNumber">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="discreteString" class="cytoscape.visual.ui.editors.internal.DiscreteString">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 
 </beans>

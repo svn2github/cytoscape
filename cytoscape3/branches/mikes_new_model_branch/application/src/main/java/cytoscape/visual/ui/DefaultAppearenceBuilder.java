@@ -44,6 +44,7 @@ import org.cytoscape.vizmap.icon.VisualPropertyIcon;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import org.jdesktop.swingx.painter.gradient.BasicGradientPainter;
+import cytoscape.visual.ui.editors.EditorFactory; 
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,15 +85,18 @@ public class DefaultAppearenceBuilder extends JDialog {
 		NODE_PROPS = new TreeSet<VisualPropertyType>(VisualPropertyType.getNodeVisualPropertyList());
 	}
 
+	private EditorFactory editorFactory;
+
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
 	 *
 	 * @param parent DOCUMENT ME!
 	 * @param modal DOCUMENT ME!
 	 */
-	public DefaultAppearenceBuilder(Frame parent, final DefaultViewPanel mainView) {
+	public DefaultAppearenceBuilder(Frame parent, final DefaultViewPanel mainView, final EditorFactory editorFactory) {
 		super(parent, true);
 		this.mainView = mainView; 
+		this.editorFactory = editorFactory;
 		initComponents();
 		buildList();
 
@@ -328,10 +332,12 @@ public class DefaultAppearenceBuilder extends JDialog {
 					list = edgeList;
 				}
 
-				newValue = VizMapperMainPanel.showValueSelectDialog((VisualPropertyType) list
-				                                                                                                                                                                                                                                                                                                                                                              .getSelectedValue(),
-				                                                    this);
-				VizMapperMainPanel.apply(newValue, (VisualPropertyType) list.getSelectedValue());
+				VisualPropertyType type = (VisualPropertyType) list.getSelectedValue();
+				newValue = editorFactory.showDiscreteEditor(type);
+
+				if ( newValue != null )
+					type.setDefault(Cytoscape.getVisualMappingManager().getVisualStyle(), newValue);
+
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

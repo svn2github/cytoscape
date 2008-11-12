@@ -44,6 +44,7 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
 import cytoscape.visual.ui.editors.discrete.*;
+import cytoscape.visual.ui.editors.EditorFactory;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.GraphObject;
@@ -177,16 +178,18 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	VizMapperProperty nodeHeight;
 
 	private final CytoscapeDesktop desktop;
+	private final EditorFactory editorFactory;
 	private final DefaultAppearenceBuilder defAppBldr;
 	private CyNetwork currentNetwork;
 	private GraphView currentView;
 
 	/** Creates new form AttributeOrientedPanel */
-	public VizMapperMainPanel(final CytoscapeDesktop desktop, final DefaultViewPanel dvp) {
+	public VizMapperMainPanel(final CytoscapeDesktop desktop, final DefaultViewPanel dvp, final EditorFactory editorFactory) {
 
 		this.desktop = desktop;
+		this.editorFactory = editorFactory;
 
-		defAppBldr = new DefaultAppearenceBuilder(desktop,dvp);
+		defAppBldr = new DefaultAppearenceBuilder(desktop,dvp,editorFactory);
 		vmm = Cytoscape.getVisualMappingManager();
 		vmm.addChangeListener(this);
 
@@ -448,15 +451,15 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		menu.addPopupMenuListener(this);
 	}
 
-	public static void apply(Object newValue, VisualPropertyType type) {
-		if (newValue != null)
-			type.setDefault(Cytoscape.getVisualMappingManager().getVisualStyle(), newValue);
-	}
-
-	public static Object showValueSelectDialog(VisualPropertyType type, Component caller)
-	    throws Exception {
-		return EditorFactory.showDiscreteEditor(type);
-	}
+//	public static void apply(Object newValue, VisualPropertyType type) {
+//		if (newValue != null)
+//			type.setDefault(Cytoscape.getVisualMappingManager().getVisualStyle(), newValue);
+//	}
+//
+//	public static Object showValueSelectDialog(VisualPropertyType type, Component caller)
+//	    throws Exception {
+//		return editorFactory.showDiscreteEditor(type);
+//	}
 
 	/**
 	 * GUI initialization code based on the auto-generated code from NetBeans
@@ -1289,7 +1292,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 						return;
 					} else {
 						try {
-							((JDialog) EditorFactory.showContinuousEditor(type)).addPropertyChangeListener(this);
+							((JDialog) editorFactory.showContinuousEditor(type)).addPropertyChangeListener(this);
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
@@ -2804,7 +2807,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		Object newValue = null;
 
 		try {
-			newValue = EditorFactory.showDiscreteEditor(type);
+			newValue = editorFactory.showDiscreteEditor(type);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

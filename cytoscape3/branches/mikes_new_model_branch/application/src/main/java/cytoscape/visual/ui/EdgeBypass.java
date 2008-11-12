@@ -39,12 +39,16 @@ package cytoscape.visual.ui;
 import cytoscape.Cytoscape;
 import org.cytoscape.model.CyEdge;
 import org.cytoscape.vizmap.VisualPropertyType;
+import cytoscape.visual.ui.editors.EditorFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 class EdgeBypass extends VizMapBypass {
+	EdgeBypass(EditorFactory ef) {
+		super(ef);
+	}
     JMenuItem addMenu(CyEdge e) {
         graphObj = e;
         JMenu menu = new JMenu("Visual Mapping Bypass");

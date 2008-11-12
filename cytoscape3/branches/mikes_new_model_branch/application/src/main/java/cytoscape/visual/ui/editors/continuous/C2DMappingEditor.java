@@ -35,7 +35,7 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
-import cytoscape.visual.ui.EditorFactory;
+import cytoscape.visual.ui.editors.EditorFactory;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
 import org.cytoscape.vizmap.mappings.continuous.ContinuousMappingPoint;
@@ -65,11 +65,15 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 *
 	 * @param type DOCUMENT ME!
 	 */
-	public C2DMappingEditor(VisualPropertyType type) {
+
+	private EditorFactory editorFactory;
+
+	public C2DMappingEditor(VisualPropertyType type, EditorFactory editorFactory) {
 		super(type);
 		this.iconPanel.setVisible(false);
 		this.belowPanel.setVisible(false);
 		this.abovePanel.setVisible(false);
+		this.editorFactory = editorFactory;
 		setSlider();
 	}
 
@@ -84,12 +88,12 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 * @return  DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type) {
-		editor = new C2DMappingEditor(type);
+	                                VisualPropertyType type, Frame parent, EditorFactory ef) {
+		editor = new C2DMappingEditor(type,ef);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);
 		editor.setAlwaysOnTop(true);
-		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setLocationRelativeTo(parent);
 		editor.setVisible(true);
 
 		return editor;
@@ -102,7 +106,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
 	                                VisualPropertyType type) {
-		editor = new C2DMappingEditor(type);
+		editor = new C2DMappingEditor(type,null);
 
 		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
@@ -125,7 +129,7 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 	 */
 	public static ImageIcon getLegend(final int width, final int height,
 	                                  final VisualPropertyType type) {
-		editor = new C2DMappingEditor(type);
+		editor = new C2DMappingEditor(type,null);
 
 		if (editor.slider.getTrackRenderer() instanceof DiscreteTrackRenderer == false) {
 			return null;
@@ -254,17 +258,15 @@ public class C2DMappingEditor extends ContinuousMappingEditorPanel {
 
 		slider.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
-					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e
-					                                                                                                                                                                                                                                                   .getX(),
-					                                                                           e
-					                                                                                                                                                                                                                                                     .getY());
+					int range = ((DiscreteTrackRenderer) slider.getTrackRenderer()).getRangeID(e.getX(),
+					                                                                           e.getY());
 
 					Object newValue = null;
 
 					if (e.getClickCount() == 2) {
 						try {
 							setAlwaysOnTop(false);
-							newValue = EditorFactory.showDiscreteEditor(type);
+							newValue = editorFactory.showDiscreteEditor(type);
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						} finally {
