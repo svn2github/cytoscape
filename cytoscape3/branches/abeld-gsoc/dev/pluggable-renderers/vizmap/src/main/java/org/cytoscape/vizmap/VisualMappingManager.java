@@ -36,15 +36,8 @@
  */
 package org.cytoscape.vizmap;
 
-import org.cytoscape.Node;
-import org.cytoscape.Edge;
-import org.cytoscape.GraphPerspective;
-
-import org.cytoscape.view.EdgeView;
-import org.cytoscape.view.NodeView;
 import org.cytoscape.view.GraphView;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 

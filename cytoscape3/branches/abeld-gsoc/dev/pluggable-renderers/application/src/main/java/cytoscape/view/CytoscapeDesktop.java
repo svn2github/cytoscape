@@ -127,17 +127,6 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 	 */
 	public static final String NETWORK_VIEW_DESTROYED = "NETWORK_VIEW_DESTROYED";
 
-	// state variables
-	/**
-	 *
-	 */
-	public static final String VISUAL_STYLE = "VISUAL_STYLE";
-
-	/**
-	 *
-	 */
-	public static final String VIZMAP_ENABLED = "VIZMAP_ENABLED";
-
 	private static final String SMALL_ICON = "/images/c16.png";
 
 	// --------------------//
