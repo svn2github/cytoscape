@@ -370,6 +370,7 @@ public class MapNodeAttributes {
                 for (int i=0; i<idList.size(); i++) {
                     String idPair = (String) idList.get(i);
                     String parts[] = idPair.split(":");
+					if (parts.length != 2) continue;
                     String dbName = parts[0];
                     String id = parts[1];
                     String key = BIOPAX_XREF_PREFIX + dbName.toUpperCase();
