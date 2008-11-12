@@ -381,7 +381,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	// End of variables declaration
 	private void vsNameComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
 		final String vsName = (String) vsNameComboBox.getSelectedItem();
-		
+		System.out.println("vsNameComboBoxActionPerformed!"+vsName);
 		if (vsName != null) {
 			VisualStyle vs = getVisualStyleFromName(vsName);
 			if (currentView.equals(Cytoscape.getNullNetworkView())) {
@@ -414,6 +414,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 */
 	private void adaptToVisualStyleChanged(){
 		currentlyEditedVS = vmm.getVisualStyleForView(currentView);
+
+		System.out.println("re-applying to current network:"); // FIXME: this should be in View's (Presentation layer) event listener
+		currentlyEditedVS.apply(currentView);
+		Cytoscape.redrawGraph(currentView);
+		visualPropertySheetPanel.adaptToVisualStyleChanged();
 		if (lastVS  == currentlyEditedVS)
 			return; // nothing to do
 
@@ -438,6 +443,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 
 	/** switch the VS of the current network to visualStyle */
 	private void switchVS(VisualStyle visualStyle, boolean redraw) {
+		System.out.println("switchVS!");
 		vmm.setVisualStyleForView(currentView, visualStyle);
 		
 		if (redraw)
@@ -792,7 +798,8 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 	 *            DOCUMENT ME!
 	 */
 	public void stateChanged(ChangeEvent e) {
-		//System.out.println("vizmappermainpanel: statechanged"+e);
+		System.out.println("vizmappermainpanel: statechanged"+e);
+		adaptToVisualStyleChanged(); // FIXME: is this needed?
 		final String selectedName = (String) vsNameComboBox.getSelectedItem();
 		final String currentName = currentlyEditedVS.getName();
 
@@ -813,7 +820,6 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 				}
 			}
 		}
-		
 		// kono: should be placed here.
 		// MLC 03/31/08 BEGIN:
 		// Make sure we update the lastVSName based on anything that changes the visual style:

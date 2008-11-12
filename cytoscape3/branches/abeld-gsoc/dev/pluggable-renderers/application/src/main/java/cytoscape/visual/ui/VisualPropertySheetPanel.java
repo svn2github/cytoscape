@@ -275,6 +275,13 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
 			setPropertyTable();
 		} else if (e.getPropertyName().equals(Cytoscape.VISUALSTYLE_MODIFIED)){
+			// FIXME: these should be moved to GraphView implementation's propertyChange() handler!
+			System.out.println("VPSP.PropertyChange() -- VISUALSTYLE_MODIFIED");
+			VisualStyle vs = vmmp.getCurrentlyEditedVS();
+			System.out.println("applying: "+vs+"to "+vmmp.getCurrentView());
+			System.out.println("noderenderer default value: "+vs.getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_RENDERER")));
+			vs.apply(vmmp.getCurrentView());
+			Cytoscape.redrawGraph(vmmp.getCurrentView());
 			//System.out.println("got VISUALSTYLE_MODIFIED!");
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 		           || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
@@ -497,11 +504,11 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 		}
 
 		((DiscreteMapping) mapping).putMapValue(key, newValue);
-
+		Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vmmp.getCurrentlyEditedVS(), null);
 		/*
 		 * Update table and current network view.
 		 */
-		updateTableView();
+		updateTableView(); // FIXME: is this needed??
 
 		propertySheetPanel.repaint();
 		} catch (Exception exc){
