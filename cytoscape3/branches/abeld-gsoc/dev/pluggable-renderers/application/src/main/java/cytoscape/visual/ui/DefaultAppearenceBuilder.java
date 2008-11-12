@@ -151,8 +151,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	public static JPanel getDefaultView(VisualStyle visualStyle) {
 		if(dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), visualStyle, true);
-		dab.mainView.updateBackgroungColor((Color) visualStyle.getGlobalProperty("backgroundColor"));
-		                                            
+
 		dab.mainView.updateView();
 
 		return dab.getPanel();
@@ -318,18 +317,10 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	public void propertyChange(PropertyChangeEvent evt){
 		if (evt.getPropertyName() == Cytoscape.VISUALSTYLE_MODIFIED) {
 			//System.out.println("got visual style modified event!");
-			VisualStyle vs = (VisualStyle) evt.getOldValue();
-			// only react to changes in VisualStyle we are editing:
-			if (vs.getName().equals(Cytoscape.getVisualMappingManager().getVisualStyleForView(Cytoscape.getCurrentNetworkView()).getName())){ // can this _not_ match?
-				//System.out.println("rebuilding list");
-				buildList();
-				mainView.updateView();
-				repaint();
-				buildList();
-				mainView.updateView();
-				repaint();
-
-			}
+			// FIXME: should only react to changes in VisualStyle we are editing:
+			mainView.updateView();
+			buildList();
+			repaint();
 		}
 	}
 	
@@ -383,8 +374,8 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
 
 			if (selected.equals("Background Color")) {
-				//FIXME: Cytoscape.getVisualMappingManager().getVisualStyle().apply(mainView);
-				mainView.updateBackgroungColor(newColor);
+				visualStyle.setGlobalProperty("backgroundColor", newColor);
+				Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, visualStyle, null);
 			}
 
 			mainView.updateView();

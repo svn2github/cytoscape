@@ -538,12 +538,13 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		public DefaultMouseListener(VizMapperMainPanel vmmp){super(); this.vmmp = vmmp;}
 		public void mouseClicked(MouseEvent e) {
 			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
-				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop(), vmmp.getCurrentlyEditedVS());
-				updateDefaultImage(currentlyEditedVS, (GraphView) panel.getView(), defaultAppearencePanel.getSize());
-				setDefaultPanel(defaultImageManager.get(currentlyEditedVS));
+				VisualStyle vs = vmmp.getCurrentlyEditedVS();
+				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop(), vs);
+				updateDefaultImage(vs, (GraphView) panel.getView(), defaultAppearencePanel.getSize());
+				setDefaultPanel(defaultImageManager.get(vs));
 
-				vmm.setVisualStyleForView(currentView, currentlyEditedVS);
-				Cytoscape.getDesktop().repaint();
+				vmm.setVisualStyleForView(currentView, vs);
+				Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, vs, null);
 			}
 		}
 	}

@@ -39,7 +39,6 @@ import org.cytoscape.view.GraphView;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +49,6 @@ import org.cytoscape.GraphPerspective;
 import org.cytoscape.Node;
 import org.cytoscape.view.GraphViewFactory;
 import cytoscape.Cytoscape;
-import org.cytoscape.RootGraph;
-import org.cytoscape.view.GraphView;
 import org.cytoscape.vizmap.VisualStyle;
 
 
@@ -75,11 +72,10 @@ public class DefaultViewPanel extends JPanel {
 	private final Node source;
 	private final Node target;
 	private final Edge edge;
-	private Component canvas = null;
 	private VisualStyle visualStyle;
 
 	/**
-	 * Creates a new NodeFullDetailView object.
+	 * 
 	 */
 	public DefaultViewPanel(VisualStyle visualStyle) {
 		this.visualStyle = visualStyle;
@@ -101,50 +97,24 @@ public class DefaultViewPanel extends JPanel {
 		view.getNodeView(source).setOffset(0, 0);
 		view.getNodeView(target).setOffset(150, 10);
 		visualStyle.apply(view);
-		background = (Color) Cytoscape.getVisualMappingManager().getVisualStyleForView(view).getGlobalProperty("backgroundColor");
+		background = (Color) visualStyle.getGlobalProperty("backgroundColor");
 		this.setBackground(background);
 	}
 
-	protected void updateBackgroungColor(final Color newColor) {
-		background = newColor;
-		this.setBackground(background);
-		repaint();
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return DOCUMENT ME!
-	 */
-	public Component getCanvas() {
-		return canvas;
-	}
-
 	/**
 	 * DOCUMENT ME!
 	 */
-	public void clean() {
-		Cytoscape.destroyNetwork(dummyNet);
-		dummyNet = null;
-		canvas = null;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 */
-	protected void updateView() {
+	public void updateView() {
 		if (view != null) {
 			visualStyle.apply(view);
 			final Dimension panelSize = this.getSize();
 			view.setSize(new Dimension((int) panelSize.getWidth() - PADDING,
 			                        (int) panelSize.getHeight() - PADDING));
 			view.fitContent();
-			canvas = (view.getComponent());
 
-			for (MouseListener listener : canvas.getMouseListeners())
-				canvas.removeMouseListener(listener);
-
-			this.removeAll();
+			Component canvas = view.getComponent(); 
+			
+			this.removeAll(); //FIXME: should this 'remove then add' be done?
 			this.add(canvas);
 
 			canvas.setLocation(PADDING / 2, PADDING / 2);
