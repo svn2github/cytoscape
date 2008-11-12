@@ -93,15 +93,20 @@ public class VisualMappingManager extends SubjectBase {
 
 	/** Returns the VisualStyle used by the given GraphView */
 	public VisualStyle getVisualStyleForView( GraphView g ) {
-		if ( !viewStyleMap.containsKey(g) ) 
+		if ( !viewStyleMap.containsKey(g) ){			
 			viewStyleMap.put( g, catalog.getDefaultVisualStyle() );
+			fireStateChanged(); // ?? should we fire here? strictly speaking, the VisualStyle of g might have changed
+			// can't cause infinite loop since this branch will only be entered once since viewStyleMap will contain g next time around.
+		}
 
 		return viewStyleMap.get(g);
 	}
 
 	/** Sets the visual style of the given GraphView to the given VisualStyle */
 	public void setVisualStyleForView( GraphView g, VisualStyle vs ) {
-		if ( g != null && vs != null )
+		if ( g != null && vs != null ){
 			viewStyleMap.put(g,vs);
+			fireStateChanged();
+		}
 	}
 }
