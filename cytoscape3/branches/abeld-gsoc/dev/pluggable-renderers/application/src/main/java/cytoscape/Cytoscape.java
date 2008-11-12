@@ -2028,7 +2028,12 @@ public abstract class Cytoscape {
 				public Set<VisualProperty> changed(Collection<NodeView> nodeviews, Collection<EdgeView> edgeviews, Collection<VisualProperty> current_vps){
 					Set <NodeRenderer> renderers = new HashSet<NodeRenderer>();
 					for (NodeView nv: nodeviews){
-						renderers.add(nv.getRenderer());
+						if (nv.getRenderer() != null){ // FIXME: debug why this can happen, and remove this check
+							renderers.add(nv.getRenderer());
+						} else {
+							System.out.println("fixme: this shouldn't happen: renderer is null!");
+						}
+							
 					}
 					Set <VisualProperty> visualProperties = new HashSet<VisualProperty>();
 					for (Renderer renderer: renderers){
