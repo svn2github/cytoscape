@@ -39,6 +39,7 @@ package cytoscape.visual.ui;
 import cytoscape.Cytoscape;
 import org.cytoscape.model.GraphObject;
 import org.cytoscape.model.CyRow;
+import org.cytoscape.model.CyDataTable;
 import org.cytoscape.vizmap.ObjectToString;
 import org.cytoscape.vizmap.VisualMappingManager;
 import org.cytoscape.vizmap.VisualPropertyType;
@@ -116,6 +117,9 @@ abstract class VizMapBypass {
 						return;
 
 					String val = ObjectToString.getStringValue(obj);
+					CyDataTable table = graphObj.attrs().getDataTable();
+					if ( !table.getColumnTypeMap().containsKey( type.getBypassAttrName() ) )
+						table.createColumn( type.getBypassAttrName(), String.class, false );
 					graphObj.attrs().set(type.getBypassAttrName(), val);
 					Cytoscape.redrawGraph(vmm.getNetworkView());
 					BypassHack.finished();

@@ -168,6 +168,7 @@ public class PopupLabelPositionChooser extends JDialog implements PropertyChange
 			GraphObject go = BypassHack.getCurrentObject();
 			if ( go != null ) {
 				String val = ObjectToString.getStringValue(newlp);
+				// TODO check if attr has been created or not and create if necessary
 				go.attrs().set(VisualPropertyType.NODE_LABEL_POSITION.getBypassAttrName(), val);
 				Cytoscape.redrawGraph(Cytoscape.getVisualMappingManager().getNetworkView());
 			}

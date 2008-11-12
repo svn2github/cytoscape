@@ -84,7 +84,7 @@ public class EditorFactory {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public Object showDiscreteEditor(VisualPropertyType type) throws Exception {
-		return showEditor(type,EditorDisplayer.Type.CONTINUOUS);
+		return showEditor(type,EditorDisplayer.Type.DISCRETE);
 	}
 	
 

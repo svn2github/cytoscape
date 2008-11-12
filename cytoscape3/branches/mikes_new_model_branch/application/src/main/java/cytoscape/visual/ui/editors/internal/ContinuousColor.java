@@ -21,6 +21,6 @@ public class ContinuousColor implements EditorDisplayer {
 	}
 
 	public Object showEditor(VisualPropertyType type) {
-		return GradientEditorPanel.showDialog(450, 180,"Gradient Editor",null);
+		return GradientEditorPanel.showDialog(450, 180,"Gradient Editor",type);
 	}
 }

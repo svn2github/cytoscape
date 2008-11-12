@@ -23,6 +23,6 @@ public class DiscreteString implements EditorDisplayer {
 	}
 
 	public Object showEditor(VisualPropertyType type) {
-		return JOptionPane.showInputDialog(desk,"Please enter a new numeric value:");
+		return JOptionPane.showInputDialog(desk,"Please enter a new value:");
 	}
 }
