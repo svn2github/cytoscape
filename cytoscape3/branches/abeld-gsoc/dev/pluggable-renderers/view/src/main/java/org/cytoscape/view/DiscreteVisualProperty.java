@@ -62,6 +62,7 @@ public class DiscreteVisualProperty implements VisualProperty {
 	public void applyToNodeView(NodeView nv, Object o) {
 		// FIXME FIXME FIXME: this will be replaced with a simple "ev.setVisualAttribute(o)" -- infact, such a method isn't even needed in VisualProperty
 		// the following is only needed until we refactor the ViewModel layer & rendering
+		//System.out.println("applyToNodeView");
 		if ((o == null) || (nv == null)) {
 			return;
 		} else if (name.equals("NODE_SHAPE")){
@@ -70,6 +71,9 @@ public class DiscreteVisualProperty implements VisualProperty {
 			if (nv.getShape() != newShape)
 				nv.setShape(newShape);
 		} else if (name.equals("NODE_RENDERER")){
+			//System.out.println("setting nodeRenderer for:"+nv);
+			//System.out.println("setting nodeRenderer:"+o);
+			//System.out.println("setting nodeRenderer:"+(NodeRenderer)o);
 			NodeRenderer newRenderer = (NodeRenderer) o;
 			if (nv.getRenderer() != newRenderer)
 				nv.setRenderer(newRenderer);

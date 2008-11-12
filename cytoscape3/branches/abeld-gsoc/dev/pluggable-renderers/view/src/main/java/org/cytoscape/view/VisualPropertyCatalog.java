@@ -80,15 +80,15 @@ public abstract class VisualPropertyCatalog {
 		Collection<VisualProperty> allVisualProperties = visualProperties.values();
 		if (nodeviews == null && edgeviews == null)
 			return allVisualProperties;
-		System.out.println("making list of VisualProperties in use:");
+		//System.out.println("making list of VisualProperties in use:");
 		Set <VisualProperty> toRemove = new HashSet<VisualProperty>();
 		for (DependentVisualPropertyCallback callback: callbacks.values()){
 			toRemove.addAll(callback.changed(nodeviews, edgeviews, allVisualProperties));
 		}
-		System.out.println("removing:"+toRemove.size());
+		//System.out.println("removing:"+toRemove.size());
 		Set <VisualProperty> result = new HashSet<VisualProperty>(allVisualProperties);
 		result.removeAll(toRemove);
-		System.out.println("len of result:"+result.size());
+		//System.out.println("len of result:"+result.size());
 		return result;
 	}
 
