@@ -104,21 +104,21 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	
 	//private final NodeAppearanceCalculator nac = Cytoscape.getVisualMappingManager().getVisualStyle()
 	//                                                      .getNodeAppearanceCalculator();
-	private VisualStyle visualStyle;
+	private static VisualStyle visualStyle;
 	/**
 	 * Creates a new DefaultAppearenceBuilder object. -- use static constructors instead
 	 *
 	 * @param parent DOCUMENT ME!
 	 * @param modal DOCUMENT ME!
 	 */
-	private DefaultAppearenceBuilder(Frame parent, VisualStyle visualStyle, boolean modal) {
+	private DefaultAppearenceBuilder(Frame parent, final VisualStyle visualStyle, boolean modal) {
 		super(parent, modal);
 		this.visualStyle = visualStyle;
 		initComponents();
 		buildList();
 		this.addComponentListener(new ComponentAdapter() {
 				public void componentResized(ComponentEvent e) {
-					mainView.updateView();
+					mainView.updateView(visualStyle);
 				}
 			});
 		Cytoscape.getPropertyChangeSupport().addPropertyChangeListener(this); // to listen to VISUALSTYLE_MODIFIED events
@@ -136,7 +136,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			dab = new DefaultAppearenceBuilder(parent, visualStyle, true);
 		dab.setLocationRelativeTo(parent);
 		dab.setSize(900, 400);
-		dab.mainView.updateView();
+		dab.mainView.updateView(visualStyle);
 		dab.setLocationRelativeTo(Cytoscape.getDesktop());
 		dab.setVisible(true);
 
@@ -151,8 +151,8 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 	public static JPanel getDefaultView(VisualStyle visualStyle) {
 		if(dab == null)
 			dab = new DefaultAppearenceBuilder(Cytoscape.getDesktop(), visualStyle, true);
-
-		dab.mainView.updateView();
+		DefaultAppearenceBuilder.setNewVS(visualStyle);
+		dab.mainView.updateView(visualStyle);
 
 		return dab.getPanel();
 	}
@@ -318,12 +318,14 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 		if (evt.getPropertyName() == Cytoscape.VISUALSTYLE_MODIFIED) {
 			//System.out.println("got visual style modified event!");
 			// FIXME: should only react to changes in VisualStyle we are editing:
-			mainView.updateView();
+			mainView.updateView(visualStyle);
 			buildList();
 			repaint();
 		}
 	}
-	
+	public static void setNewVS(VisualStyle newVS){
+		visualStyle = newVS;
+	}
 	private void listActionPerformed(MouseEvent e) {
 		if (e.getClickCount() == 1) {
 			Object newValue = null;
@@ -339,7 +341,6 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 
 				newValue = VizMapperMainPanel.showValueSelectDialog((VisualProperty) list.getSelectedValue(), this);
 				VisualProperty vp = (VisualProperty) list.getSelectedValue();
-				System.out.println("setting default value of:"+vp+" to:"+newValue);
 				if (newValue != null){
 					visualStyle.setDefaultValue(vp, newValue);
 					Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, visualStyle, null);
@@ -350,7 +351,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 			}
 			// FIXME: these should be moved to a VISUALSTYLE_MODIFIED callback
 			Cytoscape.redrawGraph(Cytoscape.getCurrentNetworkView());
-			mainView.updateView();
+			mainView.updateView(visualStyle);
 			mainView.repaint();
 		}
 	}
@@ -378,7 +379,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 				Cytoscape.firePropertyChange(Cytoscape.VISUALSTYLE_MODIFIED, visualStyle, null);
 			}
 
-			mainView.updateView();
+			mainView.updateView(visualStyle);
 			mainView.repaint();
 		}
 	}
@@ -462,7 +463,7 @@ public class DefaultAppearenceBuilder extends JDialog implements PropertyChangeL
 		edgeList.setCellRenderer(new VisualPropCellRenderer(edgeIcons));
 		globalList.setCellRenderer(new VisualPropCellRenderer(globalIcons));
 
-		mainView.updateView();
+		mainView.updateView(visualStyle);
 		mainView.repaint();
 	}
 

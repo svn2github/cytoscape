@@ -283,6 +283,7 @@ public class VisualPropertySheetPanel implements PropertyChangeListener, PopupMe
 			vs.apply(vmmp.getCurrentView());
 			Cytoscape.redrawGraph(vmmp.getCurrentView());
 			//System.out.println("got VISUALSTYLE_MODIFIED!");
+			setPropertyTable();
 		} else if (e.getPropertyName().equals(Cytoscape.ATTRIBUTES_CHANGED)
 		           || e.getPropertyName().equals(Cytoscape.NETWORK_LOADED)) {
 			setAttrComboBox();

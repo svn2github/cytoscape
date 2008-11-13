@@ -44,6 +44,7 @@ import cytoscape.util.SwingWorker;
 import cytoscape.util.swing.DropDownMenuButton;
 
 import org.cytoscape.view.GraphView;
+import org.cytoscape.view.VisualPropertyCatalog;
 
 import cytoscape.view.CytoscapeDesktop;
 import cytoscape.view.NetworkPanel;
@@ -416,9 +417,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		currentlyEditedVS = vmm.getVisualStyleForView(currentView);
 
 		System.out.println("re-applying to current network:"); // FIXME: this should be in View's (Presentation layer) event listener
+		System.out.println("default value of renderer"+currentlyEditedVS.getDefaultValue(VisualPropertyCatalog.getVisualProperty("NODE_RENDERER")));
 		currentlyEditedVS.apply(currentView);
 		Cytoscape.redrawGraph(currentView);
 		visualPropertySheetPanel.adaptToVisualStyleChanged();
+		
 		if (lastVS  == currentlyEditedVS)
 			return; // nothing to do
 
@@ -546,6 +549,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			if (javax.swing.SwingUtilities.isLeftMouseButton(e)) {
 				VisualStyle vs = vmmp.getCurrentlyEditedVS();
 				final DefaultViewPanel panel = (DefaultViewPanel) DefaultAppearenceBuilder.showDialog(Cytoscape.getDesktop(), vs);
+				panel.updateView(vs);
 				updateDefaultImage(vs, (GraphView) panel.getView(), defaultAppearencePanel.getSize());
 				setDefaultPanel(defaultImageManager.get(vs));
 
@@ -570,6 +574,7 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		           || e.getPropertyName().equals(Cytoscape.VIZMAP_LOADED)) {
 			lastVS = null;
 			initVizmapperGUI();
+			syncStyleBox(); // FIXME: does this belong here??
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
 		} else if (e.getPropertyName().equals(CytoscapeDesktop.NETWORK_VIEW_FOCUS)) {
 			System.out.println("vmmp got NETWORK_VIEW_FOCUS: "+Cytoscape.getCurrentNetworkView());
@@ -581,8 +586,19 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 			// update local state:
 			System.out.println("vmmp got NETWORK_VIEW_FOCUSED: "+Cytoscape.getCurrentNetworkView());
 			currentView = Cytoscape.getCurrentNetworkView(); // this will return null on first call!!
+			syncStyleBox(); // FIXME: does this belong here??
 			adaptToVisualStyleChanged(); // FIXME: is this needed?
-		} 
+		} else if (e.getPropertyName().equals(Cytoscape.VISUALSTYLE_MODIFIED)){
+			DefaultAppearenceBuilder.setNewVS(currentlyEditedVS);
+			final JPanel defPanel = DefaultAppearenceBuilder.getDefaultView(currentlyEditedVS);
+			final GraphView view = (GraphView) ((DefaultViewPanel) defPanel).getView();
+			final Dimension panelSize = defaultAppearencePanel.getSize();
+			if (view != null) {
+				System.out.println("updating Default Image");
+				updateDefaultImage(currentlyEditedVS, view, panelSize);
+			}
+		}
+
 	}
 
 	/*
@@ -837,11 +853,11 @@ public class VizMapperMainPanel extends JPanel implements PropertyChangeListener
 		String styleName;
 		List<String> namesInBox = new ArrayList<String>();
 		namesInBox.addAll(vmm.getCalculatorCatalog().getVisualStyleNames());
-
+		System.out.println("syncStyleBox, len:"+ vmm.getCalculatorCatalog().getVisualStyleNames().size());
 		for (int i = 0; i < vsNameComboBox.getItemCount(); i++) {
 			styleName = vsNameComboBox.getItemAt(i).toString();
 
-			if (getVisualStyleFromName(styleName) == vmm.getCalculatorCatalog().getDefaultVisualStyle() && !styleName.equals("default")) {
+			if (getVisualStyleFromName(styleName) != vmm.getCalculatorCatalog().getDefaultVisualStyle() && !styleName.equals("default")) {
 				// No longer exists in the VMM.  Remove.
 				//System.out.println("No longer exists in the VMM.  Removing in syncStyleBox()");
 				vsNameComboBox.removeItem(styleName);

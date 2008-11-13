@@ -104,7 +104,8 @@ public class DefaultViewPanel extends JPanel {
 	/**
 	 * DOCUMENT ME!
 	 */
-	public void updateView() {
+	public void updateView(VisualStyle vs) {
+		visualStyle = vs;
 		if (view != null) {
 			visualStyle.apply(view);
 			final Dimension panelSize = this.getSize();
@@ -122,6 +123,7 @@ public class DefaultViewPanel extends JPanel {
 			if ((background != null) && (canvas != null)) {
 				canvas.setBackground(background);
 			}
+			this.repaint();
 		}
 	}
 
