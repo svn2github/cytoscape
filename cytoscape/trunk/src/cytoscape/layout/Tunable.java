@@ -483,8 +483,12 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 			setFlag(IMMUTABLE);
 		else
 			clearFlag(IMMUTABLE);
-		if (inputField != null)
+		if (inputField != null) {
 			inputField.setEnabled(!checkFlag(IMMUTABLE));
+			if (checkFlag(USESLIDER) && slider != null) {
+				slider.setEnabled(!checkFlag(IMMUTABLE)); 
+			}
+		}
 	}
 
 	/**
@@ -860,6 +864,10 @@ public class Tunable implements FocusListener,ChangeListener,ActionListener,Item
 				inputField = textField;
 				tunablePanel.add(textField, BorderLayout.EAST);
 				textField.setBackground(Color.white);
+				if(checkFlag(IMMUTABLE)) {
+					inputField.setEnabled(false);
+					slider.setEnabled(false);
+				}
 				return tunablePanel;
 
 			} else {
