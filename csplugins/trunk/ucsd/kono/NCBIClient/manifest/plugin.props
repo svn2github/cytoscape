@@ -8,7 +8,7 @@ pluginName=NCBIClient
 pluginDescription=<p>Web Service client module for <a href="http://www.ncbi.nlm.nih.gov/entrez/query/static/esoap_help.html">NCBI Entrez Utilities Web Service</a>.</p><p>For more information, please visit the following pages:</p><ul><li><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/SampleWebServiceClients">Sample clients</a></li><li><a href="http://www.cytoscape.org/cgi-bin/moin.cgi/WebServiceWorkflow">Sample workflow</a></li></ul><p><strong><font color="red">To use this function from Cytoscape Desktop, <u>NCBI Entrez Gene User Interface</u> plugin is required.</font></strong>
 
 # Plugin version number, this must be two numbers separated by a decimlal.  Ex. 0.2, 14.03
-pluginVersion=0.52
+pluginVersion=0.70
 
 # Compatible Cytoscape version
 cytoscapeVersion=2.6
