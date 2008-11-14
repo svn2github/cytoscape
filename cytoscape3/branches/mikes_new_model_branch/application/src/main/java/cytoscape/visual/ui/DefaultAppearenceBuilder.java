@@ -87,6 +87,10 @@ public class DefaultAppearenceBuilder extends JDialog {
 
 	private EditorFactory editorFactory;
 
+	
+	public DefaultAppearenceBuilder() {
+		
+	}
 	/**
 	 * Creates a new DefaultAppearenceBuilder object.
 	 *

@@ -1,0 +1,23 @@
+# Label for main menu.
+vizMapperMainPanel.menu.createNewStyleAction=\u65b0\u3057\u3044\u30d3\u30b8\u30e5\u30a2\u30eb\u30b9\u30bf\u30a4\u30eb\u306e\u4f5c\u6210
+vizMapperMainPanel.menu.removeStyleAction=Remove Visual Style
+vizMapperMainPanel.menu.renameStyleAction=Rename existing Visual Style...
+vizMapperMainPanel.menu.copyStyleAction=Copy existing Visual Style...
+vizMapperMainPanel.menu.createLegendAction=Create legend from current Visual Style...
+
+# Icon names for main menu.
+vizMapperMainPanel.menu.createNewStyleAction.icon=addIcon
+vizMapperMainPanel.menu.removeStyleAction.icon=delIcon
+vizMapperMainPanel.menu.renameStyleAction.icon=renameIcon
+vizMapperMainPanel.menu.copyStyleAction.icon=copyIcon
+vizMapperMainPanel.menu.createLegendAction.icon=legendIcon
+
+# Label for right-click menu.
+vizMapperMainPanel.menu.generateMenu=Generate Discrete Values
+vizMapperMainPanel.menu.modifyMenu=Modify Discrete Values
+vizMapperMainPanel.menu.removeMappingAction=Delete mapping
+
+# Icon names for right-click menu.
+vizMapperMainPanel.menu.removeMappingAction.icon=delIcon
+vizMapperMainPanel.menu.generateMenu.icon=rndIcon
+
