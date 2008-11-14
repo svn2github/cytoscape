@@ -49,8 +49,12 @@ import java.beans.*;
 import java.lang.reflect.Method;
 
 // giny imports
+import ding.view.NodeContextMenuListener;
+import giny.model.Node;
 import giny.view.NodeView;
-import ding.view.*;
+import giny.view.GraphView;
+import giny.view.GraphViewChangeEvent;
+import giny.view.GraphViewChangeListener;
 
 // Cytoscape imports
 import cytoscape.Cytoscape;
@@ -82,7 +86,8 @@ import metaNodePlugin2.ui.AttributeHandlingDialog;
 public class MetaNodePlugin2 extends CytoscapePlugin 
                              implements CyGroupViewer, 
                                         NodeContextMenuListener,
-                                        PropertyChangeListener {
+                                        PropertyChangeListener,
+	                                      GraphViewChangeListener {
 
 	public static final String viewerName = "metaNode";
 	public static final double VERSION = 1.2;
@@ -117,6 +122,8 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 
 	private static boolean registeredWithGroupPanel = false;
 
+	private static boolean addedGraphViewChangeListener = false;
+
 	private Method updateMethod = null;
 	private CyGroupViewer namedSelectionViewer = null;
 	private AttributeHandlingDialog settingsDialog = null;
@@ -138,6 +145,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			          .addPropertyChangeListener( CytoscapeDesktop.NETWORK_VIEW_FOCUSED, this);
 			// Add our context menu
 			Cytoscape.getCurrentNetworkView().addNodeContextMenuListener(this);
+			Cytoscape.getCurrentNetworkView().addGraphViewChangeListener(this);
 		} catch (ClassCastException e) {
 			logger.error(e.getMessage());
 		}
@@ -279,6 +287,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_CREATED) {
 			((CyNetworkView)e.getNewValue()).addNodeContextMenuListener(this);
 			MetaNode.newView((CyNetworkView)e.getNewValue());
+			((CyNetworkView)e.getNewValue()).addGraphViewChangeListener(this);
 			settingsDialog.updateAttributes();
 		} else if (e.getPropertyName() == CytoscapeDesktop.NETWORK_VIEW_FOCUSED) {
 			// Load the default aggregation values for this network
@@ -298,6 +307,37 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 			menu = new JPopupMenu();
 		}
 		menu.add(getNodePopupMenu(nodeView));
+	}
+
+	/**
+ 	 * Implements the graphViewChanged required by GraphViewChangeListener
+ 	 *
+ 	 * @param event the event that triggered this change
+ 	 */
+	public void graphViewChanged(GraphViewChangeEvent event) {
+		if (event.getType() == GraphViewChangeEvent.NODES_SELECTED_TYPE) {
+			// Get the selected nodes
+			Node[] nodes = event.getSelectedNodes();
+			// We only care about expanded metanodes
+			for (int i=0; i < nodes.length; i++) {
+				MetaNode n = MetaNode.getMetaNode((CyNode)nodes[i]);
+				if (n == null || n.getCyGroup().getState() == COLLAPSED) continue;
+				// OK, so we have selected an expanded metanode.  This means that we are
+				// not hiding the metanode, so we want to implicitly select all of the children
+				Cytoscape.getCurrentNetwork().setSelectedNodeState(n.getCyGroup().getNodes(), true);
+			}
+		} else if (event.getType() == GraphViewChangeEvent.NODES_UNSELECTED_TYPE) {
+			// Get the selected nodes
+			Node[] nodes = event.getUnselectedNodes();
+			// We only care about expanded metanodes
+			for (int i=0; i < nodes.length; i++) {
+				MetaNode n = MetaNode.getMetaNode((CyNode)nodes[i]);
+				if (n == null || n.getCyGroup().getState() == COLLAPSED) continue;
+				// OK, so we have selected an expanded metanode.  This means that we are
+				// not hiding the metanode, so we want to implicitly select all of the children
+				Cytoscape.getCurrentNetwork().setSelectedNodeState(n.getCyGroup().getNodes(), false);
+			}
+		}
 	}
 
 	/**

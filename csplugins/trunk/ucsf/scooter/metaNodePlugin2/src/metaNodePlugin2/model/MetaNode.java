@@ -60,6 +60,7 @@ import cytoscape.data.Semantics;
 import cytoscape.logger.CyLogger;
 import cytoscape.util.CytoscapeAction;
 import cytoscape.visual.VisualMappingManager;
+import cytoscape.visual.VisualPropertyType;
 
 import cytoscape.groups.CyGroup;
 import cytoscape.groups.CyGroupManager;
@@ -82,6 +83,7 @@ public class MetaNode {
 	private static HashMap<CyNode,MetaNode> metaMap = new HashMap();
 	private static final boolean DEBUG = false;
 	private static boolean hideMetanodeDefault = true;
+	private static double metanodeOpacity = 100.;
 	private static boolean sizeToBoundingBoxDefault = true;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
@@ -228,6 +230,15 @@ public class MetaNode {
 	 */
 	static public void setHideMetaNodeDefault(boolean hide) {
 		MetaNode.hideMetanodeDefault = hide;
+	}
+
+	/**
+	 * Sets the opacity of a metanode if we don't hide on expansion.
+	 *
+	 * @param opacity the opacity (between 0 and 100)
+	 */
+	static public void setExpandedOpacity(double opacity) {
+		MetaNode.metanodeOpacity = 255*opacity/100;
 	}
 
 	/**
@@ -623,10 +634,19 @@ public class MetaNode {
 			if (this.sizeToBoundingBox && metanodeSize != null) {
 				// Get the nodeView
 				NodeView nv = networkView.getNodeView(groupNode);
+				String id = groupNode.getIdentifier();
+				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_SHAPE.getBypassAttrName(), "rect");
+				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_HEIGHT.getBypassAttrName(), ""+metanodeSize.getHeight()+5);
+				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_WIDTH.getBypassAttrName(), ""+metanodeSize.getWidth()+5);
+				nodeAttributes.setAttribute(id, VisualPropertyType.NODE_OPACITY.getBypassAttrName(), ""+MetaNode.metanodeOpacity);
+				Cytoscape.getVisualMappingManager().vizmapNode(nv, networkView);
+				nv.setShape(NodeView.RECTANGLE);
 				nv.setHeight(metanodeSize.getHeight()+5);
 				nv.setWidth(metanodeSize.getWidth()+5);
-				nv.setShape(NodeView.RECTANGLE);
-				nv.setTransparency(10);  // This seems to be ignored...
+
+				// Now, if we're selected, select our children
+				if (network.isSelected(nv.getNode()))
+					network.setSelectedNodeState(metaGroup.getNodes(), true);
 			}
 		}
 
@@ -1210,6 +1230,7 @@ public class MetaNode {
 		// VisualMappingManager vizmapper = Cytoscape.getVisualMappingManager();
 		// vizmapper.applyAppearances();
 		networkView.updateView();
+		// networkView.redrawGraph(false,true);
 	}
 
 	/**

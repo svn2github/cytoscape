@@ -82,6 +82,7 @@ public class AttributeHandlingDialog extends JDialog
 	private Tunable typeString = null;
 	private Tunable typeList = null;
 	private Tunable attrList = null;
+	private Tunable opacityTunable = null;
 	private String[] attributeArray = null;
 	private List<Tunable>tunableEnablers = null;
 
@@ -145,12 +146,30 @@ public class AttributeHandlingDialog extends JDialog
 	private void initializeProperties() {
 		tunableEnablers = new ArrayList();
 
+		
+		metanodeProperties.add(new Tunable("appearanceGroup", "Metanode Appearance",
+		                                   Tunable.GROUP, new Integer(3),
+		                                   new Boolean(true), null, Tunable.COLLAPSABLE));
 		{
 			Tunable t = new Tunable("hideMetanodes",
 			                        "Hide metanodes on expansion",
 			                        Tunable.BOOLEAN, new Boolean(true), 0);
 			t.addTunableValueListener(this);
 			metanodeProperties.add(t);
+		}
+
+		// Sliders always look better when grouped
+		metanodeProperties.add(new Tunable("opacityGroup", "Metanode Opacity",
+		                                   Tunable.GROUP, new Integer(1),
+		                                   null, null, 0));
+
+		{
+			opacityTunable = new Tunable("metanodeOpacity",
+			                        "Percent opacity of metanodes when expanded",
+			                        Tunable.DOUBLE, new Double(50), new Double(0), new Double(100), Tunable.USESLIDER);
+			opacityTunable.setImmutable(true);
+			opacityTunable.addTunableValueListener(this);
+			metanodeProperties.add(opacityTunable);
 		}
 
 		{
@@ -248,6 +267,14 @@ public class AttributeHandlingDialog extends JDialog
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
+		t = metanodeProperties.get("metanodeOpacity");
+		if ((t != null) && (t.valueChanged() || force)) {
+      double metanodeOpacity = ((Double) t.getValue()).doubleValue();
+			MetaNode.setExpandedOpacity(metanodeOpacity);
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+		}
+
+
 		// For each default value, get the default and set it
 		t = metanodeProperties.get("stringDefaults");
 		if ((t != null) && (t.valueChanged() || force)) {
@@ -344,9 +371,16 @@ public class AttributeHandlingDialog extends JDialog
 	}
 
 	public void tunableChanged(Tunable t) {
-		if (t.getName().equals("hideMetanode")) {
+		if (t.getName().equals("hideMetanodes")) {
       boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
+			if (hideMetanode) 
+				opacityTunable.setImmutable(true);
+			else
+				opacityTunable.setImmutable(false);
 			MetaNode.setHideMetaNodeDefault(hideMetanode);
+		} else if (t.getName().equals("metanodeOpacity")) {
+      double opacity = ((Double) t.getValue()).doubleValue();
+			MetaNode.setExpandedOpacity(opacity);
 		} else if (t.getName().equals("enableHandling")) {
       boolean enableHandling = ((Boolean) t.getValue()).booleanValue();
 			AttributeHandler.setEnable(enableHandling);
