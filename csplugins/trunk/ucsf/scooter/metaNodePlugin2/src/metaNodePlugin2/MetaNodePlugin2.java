@@ -76,7 +76,7 @@ import cytoscape.groups.CyGroupViewer;
 // our imports
 import metaNodePlugin2.model.MetaNode;
 import metaNodePlugin2.model.MetanodeProperties;
-import metaNodePlugin2.ui.AttributeHandlingDialog;
+import metaNodePlugin2.ui.MetanodeSettingsDialog;
 
 /**
  * The MetaNodePlugin2 class provides the primary interface to the
@@ -126,7 +126,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 
 	private Method updateMethod = null;
 	private CyGroupViewer namedSelectionViewer = null;
-	private AttributeHandlingDialog settingsDialog = null;
+	private MetanodeSettingsDialog settingsDialog = null;
 
 	protected int descendents = 0;
 
@@ -169,7 +169,7 @@ public class MetaNodePlugin2 extends CytoscapePlugin
 		try {
 			// Initialize the settings dialog -- we do this here so that our properties
 			// get read in.
-			settingsDialog = new AttributeHandlingDialog();
+			settingsDialog = new MetanodeSettingsDialog();
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 		}

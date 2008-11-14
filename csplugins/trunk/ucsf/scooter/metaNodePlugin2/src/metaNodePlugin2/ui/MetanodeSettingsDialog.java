@@ -1,6 +1,6 @@
 /* vim: set ts=2:
 
-  File: AttributeHandlingDialog.java
+  File: MetanodeSettingsDialog.java
 
   Copyright (c) 2008, The Cytoscape Consortium (www.cytoscape.org)
 
@@ -72,10 +72,10 @@ import javax.swing.border.TitledBorder;
 
 /**
  *
- * The AttributeHandling is a dialog that provides an interface into all of the
- * options for attribute handling. 
+ * The MetanodeSettingsDialog is a dialog that provides an interface into all of the
+ * options for the various metanode settings
  */
-public class AttributeHandlingDialog extends JDialog 
+public class MetanodeSettingsDialog extends JDialog 
                                       implements ActionListener, TunableListener, ComponentListener {
 
 	private MetanodeProperties metanodeProperties;
@@ -83,13 +83,14 @@ public class AttributeHandlingDialog extends JDialog
 	private Tunable typeList = null;
 	private Tunable attrList = null;
 	private Tunable opacityTunable = null;
+	private Tunable sizeToBoundingBox = null;
 	private String[] attributeArray = null;
 	private List<Tunable>tunableEnablers = null;
 
 	// Dialog components
 	JPanel tunablePanel = null;
 
-	public AttributeHandlingDialog() {
+	public MetanodeSettingsDialog() {
 		super(Cytoscape.getDesktop(), "Metanode Attribute Handling Dialog", false);
 		metanodeProperties = new MetanodeProperties("metanode");
 
@@ -158,6 +159,15 @@ public class AttributeHandlingDialog extends JDialog
 			metanodeProperties.add(t);
 		}
 
+		{
+			sizeToBoundingBox = new Tunable("sizeToBoundingBox",
+			                        "Size metanode to the bounding box of all children",
+			                        Tunable.BOOLEAN, new Boolean(false), 0);
+			sizeToBoundingBox.setImmutable(true);
+			sizeToBoundingBox.addTunableValueListener(this);
+			metanodeProperties.add(sizeToBoundingBox);
+		}
+
 		// Sliders always look better when grouped
 		metanodeProperties.add(new Tunable("opacityGroup", "Metanode Opacity",
 		                                   Tunable.GROUP, new Integer(1),
@@ -166,7 +176,7 @@ public class AttributeHandlingDialog extends JDialog
 		{
 			opacityTunable = new Tunable("metanodeOpacity",
 			                        "Percent opacity of metanodes when expanded",
-			                        Tunable.DOUBLE, new Double(50), new Double(0), new Double(100), Tunable.USESLIDER);
+			                        Tunable.DOUBLE, new Double(0), new Double(0), new Double(100), Tunable.USESLIDER);
 			opacityTunable.setImmutable(true);
 			opacityTunable.addTunableValueListener(this);
 			metanodeProperties.add(opacityTunable);
@@ -264,6 +274,13 @@ public class AttributeHandlingDialog extends JDialog
 		if ((t != null) && (t.valueChanged() || force)) {
       boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
 			MetaNode.setHideMetaNodeDefault(hideMetanode);
+			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
+		}
+
+		t = metanodeProperties.get("sizeToBoundingBox");
+		if ((t != null) && (t.valueChanged() || force)) {
+      boolean sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
+			MetaNode.setSizeToBoundingBoxDefault(sizeToBoundingBox);
 			metanodeProperties.setProperty(t.getName(), t.getValue().toString());
 		}
 
@@ -373,11 +390,18 @@ public class AttributeHandlingDialog extends JDialog
 	public void tunableChanged(Tunable t) {
 		if (t.getName().equals("hideMetanodes")) {
       boolean hideMetanode = ((Boolean) t.getValue()).booleanValue();
-			if (hideMetanode) 
-				opacityTunable.setImmutable(true);
+			if (hideMetanode)
+				sizeToBoundingBox.setImmutable(true);
 			else
-				opacityTunable.setImmutable(false);
+				sizeToBoundingBox.setImmutable(false);
 			MetaNode.setHideMetaNodeDefault(hideMetanode);
+		} else if (t.getName().equals("sizeToBoundingBox")) {
+      boolean sizeToBoundingBox = ((Boolean) t.getValue()).booleanValue();
+			if (sizeToBoundingBox) 
+				opacityTunable.setImmutable(false);
+			else
+				opacityTunable.setImmutable(true);
+			MetaNode.setSizeToBoundingBoxDefault(sizeToBoundingBox);
 		} else if (t.getName().equals("metanodeOpacity")) {
       double opacity = ((Double) t.getValue()).doubleValue();
 			MetaNode.setExpandedOpacity(opacity);
@@ -442,6 +466,7 @@ public class AttributeHandlingDialog extends JDialog
 			// Create the handler
 			AttributeHandler.addHandler(attributeWP, handlerType);
 		}
+		repaint();
 	}
 
 	private String attributeName(byte type) {

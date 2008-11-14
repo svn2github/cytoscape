@@ -83,7 +83,7 @@ public class MetaNode {
 	private static HashMap<CyNode,MetaNode> metaMap = new HashMap();
 	private static final boolean DEBUG = false;
 	private static boolean hideMetanodeDefault = true;
-	private static double metanodeOpacity = 100.;
+	private static double metanodeOpacity = 0.;
 	private static boolean sizeToBoundingBoxDefault = true;
 
 	public static final String X_HINT_ATTR = "__metanodeHintX";
@@ -623,13 +623,6 @@ public class MetaNode {
 
 		// See if we need to create membership edges
 		if (!this.hideMetanode) {
-			List<CyEdge> innerEdges = metaGroup.getInnerEdges();
-			for (CyNode node: metaGroup.getNodes()) {
-				CyEdge edge = Cytoscape.getCyEdge(groupNode, node, Semantics.INTERACTION, "member", true);
-				if (!innerEdges.contains(edge)) {
-					metaGroup.addInnerEdge(edge);
-				}
-			}
 			// See if we're resizing to the bounding box...
 			if (this.sizeToBoundingBox && metanodeSize != null) {
 				// Get the nodeView
@@ -647,6 +640,14 @@ public class MetaNode {
 				// Now, if we're selected, select our children
 				if (network.isSelected(nv.getNode()))
 					network.setSelectedNodeState(metaGroup.getNodes(), true);
+			} else {
+				List<CyEdge> innerEdges = metaGroup.getInnerEdges();
+				for (CyNode node: metaGroup.getNodes()) {
+					CyEdge edge = Cytoscape.getCyEdge(groupNode, node, Semantics.INTERACTION, "member", true);
+					if (!innerEdges.contains(edge)) {
+						metaGroup.addInnerEdge(edge);
+					}
+				}
 			}
 		}
 
