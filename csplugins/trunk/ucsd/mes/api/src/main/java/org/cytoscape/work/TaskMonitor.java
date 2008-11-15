@@ -196,5 +196,6 @@ public interface TaskMonitor {
      * strictly less than (&lt;) 1.
      */
     TaskMonitor getChildMonitor(float percent);
+    List<TaskMonitor> getChildMonitors(int num);
 
 }
