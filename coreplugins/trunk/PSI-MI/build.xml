@@ -22,6 +22,9 @@
     <property name="build.compiler" value="modern"/>
     <!-- Junit Directory -->
     <property name="junit.dir" value="${build.dir}/junit"/>
+	
+	<!-- Location of Cytoscape Source -->
+	<property name="cytoscape.dir" value="../../cytoscape"/>
 
 
     <!-- For XJC compiler task -->
@@ -32,13 +35,13 @@
     <!-- Classpath with all lib JAR Files -->
     <path id="classpath">
         <pathelement path="${build.classes}"/>
-        <fileset dir="../../cytoscape/lib">
+        <fileset dir="${cytoscape.dir}/lib">
                 <include name="*.jar"/>
         </fileset>
-        <fileset dir="../../cytoscape/">
+        <fileset dir="${cytoscape.dir}/">
                 <include name="cytoscape.jar"/>
         </fileset>
-        <fileset dir="../../cytoscape/lib/build-libs/">
+        <fileset dir="${cytoscape.dir}/lib/build-libs/">
                 <include name="*.jar" />
         </fileset>
     </path>
@@ -93,9 +96,9 @@
             <fileset dir="${jars.dir}"/>
         </copy>
         <copy todir="${plugins.dir}">
-            <fileset dir="../../cytoscape/plugins/core"/>
+            <fileset dir="${cytoscape.dir}/plugins/core"/>
         </copy>
-    	<java jar="../../cytoscape/cytoscape.jar" fork="true">
+    	<java jar="${cytoscape.dir}/cytoscape.jar" fork="true">
             <arg line="-p plugins"/>
         </java>
     </target>
