@@ -1,0 +1,10 @@
+TODO
+
+1. pagination query -- retrieve all, get a slice, drop the rest -- very slow
+2. Multiple copies of the search form, should have only one copy and share by all
+3. Header/Footer are hard-coded
+4. Messy CSS
+5. Automate synoyms.tab creation
+6. Need audit script -- log table
+7. click on 'sif' trigger web start of Cytoscape
+8. Zip validation -- check name consistency in sif/img/thm_img
