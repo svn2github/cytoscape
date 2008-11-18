@@ -5,15 +5,24 @@ package cytoscape.visual.ui.editors.internal;
 import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.vizmap.VisualPropertyType;
 import cytoscape.visual.ui.editors.EditorDisplayer;
-import cytoscape.visual.ui.PopupLabelPositionChooser;
+import cytoscape.visual.ui.editors.discrete.PopupLabelPositionChooser;
+import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
+import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
 import org.cytoscape.vizmap.LabelPosition;
+import java.beans.PropertyEditor;
+import javax.swing.table.TableCellRenderer;
+
 
 public class DiscreteLabelPosition implements EditorDisplayer {
 
-	private CytoscapeDesktop desk;
+	private final CytoscapeDesktop desk;
+	private final LabelPositionCellRenderer labelPositionRenderer; 
+	private final CyLabelPositionPropertyEditor labelPositionEditor;
 
-	public DiscreteLabelPosition(CytoscapeDesktop desk) {
+	public DiscreteLabelPosition(final CytoscapeDesktop desk) {
 		this.desk = desk;
+		labelPositionRenderer = new LabelPositionCellRenderer();
+		labelPositionEditor = new CyLabelPositionPropertyEditor();
 	}
 
 	public Class<?> getDataType() {
@@ -27,4 +36,12 @@ public class DiscreteLabelPosition implements EditorDisplayer {
 	public Object showEditor(VisualPropertyType type) {
 		return PopupLabelPositionChooser.showDialog(desk,null);
 	}
+
+    public PropertyEditor getCellEditor() {
+		return labelPositionEditor;
+    }
+
+    public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
+		return labelPositionRenderer;
+    }
 }

@@ -50,14 +50,14 @@ import org.cytoscape.model.GraphObject;
  * <b>This code should NEVER propagate to newer versions of Cytoscape!!!</b>
  * This should be handled in a completely different way in the future.
  */
-class BypassHack {
+public class BypassHack {
 	private static GraphObject curr = null;
 
 	static void setCurrentObject(GraphObject o) {
 		curr = o;
 	}
 
-	static GraphObject getCurrentObject() {
+	public static GraphObject getCurrentObject() {
 		return curr;
 	}
 

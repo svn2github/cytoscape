@@ -5,15 +5,25 @@ package cytoscape.visual.ui.editors.internal;
 import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.vizmap.VisualPropertyType;
 import cytoscape.visual.ui.editors.EditorDisplayer;
-import cytoscape.visual.ui.PopupFontChooser;
+import cytoscape.visual.ui.editors.discrete.PopupFontChooser;
+import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
+import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
 import java.awt.Font;
+import java.beans.PropertyEditor;
+import javax.swing.table.TableCellRenderer;
+
 
 public class DiscreteFont implements EditorDisplayer {
 
-	private CytoscapeDesktop desk;
+	private final CytoscapeDesktop desk;
+	private final CyFontPropertyEditor fontCellEditor;
+	private final FontCellRenderer fontCellRenderer;
+
 
 	public DiscreteFont(CytoscapeDesktop desk) {
 		this.desk = desk;
+		fontCellEditor = new CyFontPropertyEditor();
+		fontCellRenderer = new FontCellRenderer();
 	}
 
 	public Class<?> getDataType() {
@@ -27,4 +37,14 @@ public class DiscreteFont implements EditorDisplayer {
 	public Object showEditor(VisualPropertyType type) {
 		return PopupFontChooser.showDialog(desk,null);
 	}
+
+    public PropertyEditor getCellEditor() {
+		return fontCellEditor;
+    }
+
+    public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
+		return fontCellRenderer;
+    }
+
+
 }

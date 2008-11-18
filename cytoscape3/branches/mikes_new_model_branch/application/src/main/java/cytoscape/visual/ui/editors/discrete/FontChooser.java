@@ -40,7 +40,7 @@
 // $Date: 2008-02-06 15:34:25 -0800 (Wed, 06 Feb 2008) $
 // $Author: mes $
 //--------------------------------------------------------------------------
-package cytoscape.visual.ui;
+package cytoscape.visual.ui.editors.discrete;
 
 
 //--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ import java.awt.event.ItemListener;
  * Defines a generalized font chooser class. FontChooser contains three
  * components to display font face selection.
  */
-public class FontChooser extends JPanel {
+class FontChooser extends JPanel {
 	private final static long serialVersionUID = 1202339876728781L;
     private Font selectedFont;
     protected DefaultComboBoxModel fontFaceModel;

@@ -3,7 +3,7 @@ package cytoscape.visual.ui.editors.discrete;
 import com.l2fprod.common.beans.editor.FontPropertyEditor;
 import com.l2fprod.common.util.ResourceManager;
 import cytoscape.Cytoscape;
-import cytoscape.visual.ui.PopupFontChooser;
+import cytoscape.visual.ui.editors.discrete.PopupFontChooser;
 
 import java.awt.*;
 

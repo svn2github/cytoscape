@@ -142,16 +142,7 @@ import cytoscape.visual.ui.appearance.ColorManager;
 import cytoscape.visual.ui.appearance.IconManager;
 import cytoscape.visual.ui.editors.EditorFactory;
 import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel;
-import cytoscape.visual.ui.editors.discrete.CyColorCellRenderer;
-import cytoscape.visual.ui.editors.discrete.CyColorPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyDoublePropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyFontPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyLabelPositionPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.CyStringPropertyEditor;
-import cytoscape.visual.ui.editors.discrete.FontCellRenderer;
-import cytoscape.visual.ui.editors.discrete.LabelPositionCellRenderer;
-import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
 
 /**
  * New VizMapper UI main panel. Refactored for Cytoscape 3.
@@ -258,7 +249,8 @@ public class VizMapperMainPanel extends JPanel implements
 	private void startVizMapper() {
 		vmm.addChangeListener(this);
 
-		numberCellEditor = new CyDoublePropertyEditor(this);
+		// TODO wtf?
+		//numberCellEditor = new CyDoublePropertyEditor(this);
 
 		propertyMap = new HashMap<String, List<Property>>();
 		setMenu();
@@ -307,15 +299,9 @@ public class VizMapperMainPanel extends JPanel implements
 
 		mappingTypeEditor.addPropertyChangeListener(this);
 
-		colorCellEditor.addPropertyChangeListener(this);
-		fontCellEditor.addPropertyChangeListener(this);
-		numberCellEditor.addPropertyChangeListener(this);
-		shapeCellEditor.addPropertyChangeListener(this);
-		stringCellEditor.addPropertyChangeListener(this);
-		lineCellEditor.addPropertyChangeListener(this);
-		arrowCellEditor.addPropertyChangeListener(this);
+		for ( PropertyEditor p : editorFactory.getCellEditors() )
+			p.addPropertyChangeListener(this);
 
-		labelPositionEditor.addPropertyChangeListener(this);
 	}
 
 	/**
@@ -753,52 +739,10 @@ public class VizMapperMainPanel extends JPanel implements
 	private javax.swing.JComboBox vsNameComboBox;
 	private javax.swing.JPanel vsSelectPanel;
 
-	/*
-	 * Renderer and Editors for the cells
-	 */
-
-	// For general values (string & number)
-	private DefaultTableCellRenderer defCellRenderer = new DefaultTableCellRenderer();
-
-	// For String values
-	private CyStringPropertyEditor stringCellEditor = new CyStringPropertyEditor();
-
-	// For colors
-	private CyColorCellRenderer collorCellRenderer = new CyColorCellRenderer();
-	private CyColorPropertyEditor colorCellEditor = new CyColorPropertyEditor();
-
-	// For shapes
-	private ShapeCellRenderer shapeCellRenderer = new ShapeCellRenderer(
-			VisualPropertyType.NODE_SHAPE);
-	private CyComboBoxPropertyEditor shapeCellEditor = new CyComboBoxPropertyEditor();
-
-	// For Lines
-	private ShapeCellRenderer lineCellRenderer = new ShapeCellRenderer(
-			VisualPropertyType.EDGE_LINE_STYLE);
-	private CyComboBoxPropertyEditor lineCellEditor = new CyComboBoxPropertyEditor();
-
-	// For Arrow shapes
-	private CyComboBoxPropertyEditor arrowCellEditor = new CyComboBoxPropertyEditor();
-	private ShapeCellRenderer arrowShapeCellRenderer = new ShapeCellRenderer(
-			VisualPropertyType.EDGE_TGTARROW_SHAPE);
-
-	// For sizes
-	private CyDoublePropertyEditor numberCellEditor; // = new
-														// CyDoublePropertyEditor();
-
-	// For font faces
-	private CyFontPropertyEditor fontCellEditor = new CyFontPropertyEditor();
-	private FontCellRenderer fontCellRenderer = new FontCellRenderer();
-
-	// For label positions
-	private LabelPositionCellRenderer labelPositionRenderer = new LabelPositionCellRenderer();
-	private CyLabelPositionPropertyEditor labelPositionEditor = new CyLabelPositionPropertyEditor();
 
 	// Others
 	private DefaultTableCellRenderer emptyBoxRenderer = new DefaultTableCellRenderer();
 	private DefaultTableCellRenderer filledBoxRenderer = new DefaultTableCellRenderer();
-	private DefaultTableCellRenderer continuousRenderer = new DefaultTableCellRenderer();
-	private DefaultTableCellRenderer discreteRenderer = new DefaultTableCellRenderer();
 
 	/*
 	 * Controlling attr selector
@@ -814,8 +758,7 @@ public class VizMapperMainPanel extends JPanel implements
 			.getIconSet();
 	private static final Map<Object, Icon> arrowShapeIcons = ArrowShape
 			.getIconSet();
-	private static final Map<Object, Icon> lineTypeIcons = LineStyle
-			.getIconSet();
+	private static final Map<Object, Icon> lineTypeIcons = LineStyle.getIconSet();
 	private PropertyRendererRegistry rendReg = new PropertyRendererRegistry();
 	private PropertyEditorRegistry editorReg = new PropertyEditorRegistry();
 
@@ -1116,10 +1059,6 @@ public class VizMapperMainPanel extends JPanel implements
 		/*
 		 * Set editors
 		 */
-		collorCellRenderer.setForeground(Color.DARK_GRAY);
-		collorCellRenderer.setOddBackgroundColor(new Color(150, 150, 150, 20));
-		collorCellRenderer.setEvenBackgroundColor(Color.white);
-
 		emptyBoxRenderer.setHorizontalTextPosition(SwingConstants.CENTER);
 		emptyBoxRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		emptyBoxRenderer.setBackground(new Color(0, 200, 255, 20));
@@ -1161,8 +1100,8 @@ public class VizMapperMainPanel extends JPanel implements
 			shapeNames[i] = nodeShapes.get(i).getShapeName();
 		}
 
-		shapeCellEditor.setAvailableValues(nodeShapes.toArray());
-		shapeCellEditor.setAvailableIcons(iconArray);
+		//shapeCellEditor.setAvailableValues(nodeShapes.toArray());
+		//shapeCellEditor.setAvailableIcons(iconArray);
 
 		iconList.clear();
 		iconList.addAll(arrowShapeIcons.values());
@@ -1180,8 +1119,8 @@ public class VizMapperMainPanel extends JPanel implements
 			arrowNames[i] = newIcon.getName();
 		}
 
-		arrowCellEditor.setAvailableValues(arrowShapes.toArray());
-		arrowCellEditor.setAvailableIcons(iconArray);
+		//arrowCellEditor.setAvailableValues(arrowShapes.toArray());
+//		arrowCellEditor.setAvailableIcons(iconArray);
 
 		iconList = new ArrayList();
 		iconList.addAll(lineTypeIcons.values());
@@ -1198,8 +1137,8 @@ public class VizMapperMainPanel extends JPanel implements
 			shapeNames[i] = newIcon.getName();
 		}
 
-		lineCellEditor.setAvailableValues(lineTypes.toArray());
-		lineCellEditor.setAvailableIcons(iconArray);
+		//lineCellEditor.setAvailableValues(lineTypes.toArray());
+		//lineCellEditor.setAvailableIcons(iconArray);
 	}
 
 	private void updateTableView() {
@@ -1256,12 +1195,10 @@ public class VizMapperMainPanel extends JPanel implements
 									gradientRenderer);
 						} else if (dataType == Number.class) {
 							final DefaultTableCellRenderer cRenderer = new DefaultTableCellRenderer();
-							// continuousRenderer.setIcon(icon);
 							cRenderer.setIcon(icon);
 							rendReg.registerRenderer(shownProp, cRenderer);
 						} else {
 							final DefaultTableCellRenderer dRenderer = new DefaultTableCellRenderer();
-							// discreteRenderer.setIcon(icon);
 							dRenderer.setIcon(icon);
 							rendReg.registerRenderer(shownProp, dRenderer);
 						}
@@ -1631,127 +1568,20 @@ public class VizMapperMainPanel extends JPanel implements
 			/*
 			 * Discrete Mapping
 			 */
-			if ((firstMap.getClass() == DiscreteMapping.class)
-					&& (attrName != null)) {
+			if ((firstMap.getClass() == DiscreteMapping.class) && (attrName != null)) {
 				final Map discMapping = ((DiscreteMapping) firstMap).getAll();
 
-				// final Set<Object> attrSet = loadKeys(attrName, attr,
-				// firstMap, nodeOrEdge);
+				// final Set<Object> attrSet = loadKeys(attrName, attr, firstMap, nodeOrEdge);
 				final Set<Object> attrSet = new TreeSet<Object>(
-						attr
-								.getColumnValues(
-										firstMap.getControllingAttributeName(),
-										attr
-												.getColumnTypeMap()
-												.get(
-														firstMap
-																.getControllingAttributeName())));
+						attr.getColumnValues( firstMap.getControllingAttributeName(),
+							attr.getColumnTypeMap().get( firstMap .getControllingAttributeName())));
 
-				switch (type) {
-				/*
-				 * Color calculators
-				 */
-				case NODE_FILL_COLOR:
-				case NODE_BORDER_COLOR:
-				case EDGE_COLOR:
-				case EDGE_SRCARROW_COLOR:
-				case EDGE_TGTARROW_COLOR:
-				case NODE_LABEL_COLOR:
-				case EDGE_LABEL_COLOR:
-					setDiscreteProps(type, discMapping, attrSet,
-							colorCellEditor, collorCellRenderer,
+				setDiscreteProps(type, discMapping, attrSet,
+							editorFactory.getDiscreteCellEditor(type), 
+							editorFactory.getDiscreteCellRenderer(type),
 							calculatorTypeProp);
-
-					break;
-
-				case NODE_LINE_STYLE:
-				case EDGE_LINE_STYLE:
-					setDiscreteProps(type, discMapping, attrSet,
-							lineCellEditor, lineCellRenderer,
-							calculatorTypeProp);
-
-					break;
-
-				/*
-				 * Shape property
-				 */
-				case NODE_SHAPE:
-					setDiscreteProps(type, discMapping, attrSet,
-							shapeCellEditor, shapeCellRenderer,
-							calculatorTypeProp);
-
-					break;
-
-				/*
-				 * Arrow Head Shapes
-				 */
-				case EDGE_SRCARROW_SHAPE:
-				case EDGE_TGTARROW_SHAPE:
-					setDiscreteProps(type, discMapping, attrSet,
-							arrowCellEditor, arrowShapeCellRenderer,
-							calculatorTypeProp);
-
-					break;
-
-				case NODE_LABEL:
-				case EDGE_LABEL:
-				case NODE_TOOLTIP:
-				case EDGE_TOOLTIP:
-					setDiscreteProps(type, discMapping, attrSet,
-							stringCellEditor, defCellRenderer,
-							calculatorTypeProp);
-
-					break;
-
-				/*
-				 * Font props
-				 */
-				case NODE_FONT_FACE:
-				case EDGE_FONT_FACE:
-					setDiscreteProps(type, discMapping, attrSet,
-							fontCellEditor, fontCellRenderer,
-							calculatorTypeProp);
-
-					break;
-
-				/*
-				 * Size-related props
-				 */
-				case NODE_FONT_SIZE:
-				case EDGE_FONT_SIZE:
-				case NODE_SIZE:
-				case NODE_WIDTH:
-				case NODE_HEIGHT:
-				case NODE_LINE_WIDTH:
-				case EDGE_LINE_WIDTH:
-				case NODE_OPACITY:
-				case EDGE_OPACITY:
-				case NODE_LABEL_OPACITY:
-				case EDGE_LABEL_OPACITY:
-				case NODE_BORDER_OPACITY:
-					setDiscreteProps(type, discMapping, attrSet,
-							numberCellEditor, defCellRenderer,
-							calculatorTypeProp);
-
-					break;
-
-				/*
-				 * Node Label Position. Needs special editor
-				 */
-				case NODE_LABEL_POSITION:
-					setDiscreteProps(type, discMapping, attrSet,
-							labelPositionEditor, labelPositionRenderer,
-							calculatorTypeProp);
-
-					break;
-
-				default:
-					break;
-				}
-			} else if ((firstMap.getClass() == ContinuousMapping.class)
-					&& (attrName != null)) {
-				int wi = this.visualPropertySheetPanel.getTable().getCellRect(
-						0, 1, true).width;
+			} else if ((firstMap.getClass() == ContinuousMapping.class) && (attrName != null)) {
+				int wi = this.visualPropertySheetPanel.getTable().getCellRect(0,1,true).width;
 
 				VizMapperProperty graphicalView = new VizMapperProperty();
 				graphicalView.setDisplayName(GRAPHICAL_MAP_VIEW);
@@ -1759,40 +1589,16 @@ public class VizMapperMainPanel extends JPanel implements
 				graphicalView.setParentProperty(calculatorTypeProp);
 				calculatorTypeProp.addSubProperty(graphicalView);
 
-				final Class dataType = type.getDataType();
-				final ImageIcon icon = ContinuousMappingEditorPanel.getIcon(wi,
-						70, (VisualPropertyType) type);
-
-				if (dataType == Color.class) {
-					/*
-					 * Color-related calcs.
-					 */
-					final DefaultTableCellRenderer gradientRenderer = new DefaultTableCellRenderer();
-					gradientRenderer.setIcon(icon);
-
-					rendReg.registerRenderer(graphicalView, gradientRenderer);
-				} else if (dataType == Number.class) {
-					/*
-					 * Size/Width related calcs.
-					 */
-					continuousRenderer.setIcon(icon);
-					rendReg.registerRenderer(graphicalView, continuousRenderer);
-				} else {
-					discreteRenderer.setIcon(icon);
-					rendReg.registerRenderer(graphicalView, discreteRenderer);
-				}
+				TableCellRenderer crenderer = editorFactory.getContinuousCellRenderer(type,wi,70);
+				rendReg.registerRenderer(graphicalView,crenderer);
 			} else if ((firstMap.getClass() == PassThroughMapping.class)
 					&& (attrName != null)) {
-				/*
-				 * Passthrough
-				 */
+				// Passthrough
 				String id;
 				String value;
 				VizMapperProperty oneProperty;
 
-				/*
-				 * Accept String only.
-				 */
+				// Accept String only.
 				if (attr.getColumnTypeMap().get(attrName) == String.class) {
 					while (it.hasNext()) {
 						GraphObject go = ((GraphObject) it.next());
@@ -1956,12 +1762,10 @@ public class VizMapperMainPanel extends JPanel implements
 		defaultImageManager = new HashMap<String, Image>();
 	}
 
-	private void manageWindow(final String status, VisualPropertyType vpt,
-			Object source) {
+	private void manageWindow(final String status, VisualPropertyType vpt, Object source) {
 		if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)) {
 			this.editorWindowManager.put(vpt, (JDialog) source);
-		} else if (status
-				.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
+		} else if (status.equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
 			final VisualPropertyType type = vpt;
 
 			/*
@@ -2000,8 +1804,7 @@ public class VizMapperMainPanel extends JPanel implements
 					0, 1, true).width;
 
 			final DefaultTableCellRenderer cRenderer = new DefaultTableCellRenderer();
-			cRenderer.setIcon(ContinuousMappingEditorPanel.getIcon(width, 70,
-					type));
+			cRenderer.setIcon(ContinuousMappingEditorPanel.getIcon(width, 70, type));
 
 			rendReg.registerRenderer(vprop, cRenderer);
 			visualPropertySheetPanel.getTable().repaint();
@@ -2014,8 +1817,7 @@ public class VizMapperMainPanel extends JPanel implements
 
 		for (VisualPropertyType vpt : typeSet) {
 			JDialog window = editorWindowManager.get(vpt);
-			manageWindow(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED,
-					vpt, null);
+			manageWindow(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED, vpt, null);
 			window.dispose();
 			keySet.add(vpt);
 		}
@@ -2032,8 +1834,7 @@ public class VizMapperMainPanel extends JPanel implements
 	 */
 	public void propertyChange(PropertyChangeEvent e) {
 		// Set ignore flag.
-		if (e.getPropertyName().equals(
-				Integer.toString(Cytoscape.SESSION_OPENED))) {
+		if (e.getPropertyName().equals(Integer.toString(Cytoscape.SESSION_OPENED))) {
 			ignore = true;
 			enableListeners(false);
 		}
@@ -2044,17 +1845,12 @@ public class VizMapperMainPanel extends JPanel implements
 		/*
 		 * Managing editor windows.
 		 */
-		if (e.getPropertyName().equals(
-				ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)
-				|| e.getPropertyName().equals(
-						ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
-			manageWindow(e.getPropertyName(), (VisualPropertyType) e
-					.getNewValue(), e.getSource());
+		if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_OPENED)
+				|| e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED)) {
+			manageWindow(e.getPropertyName(), (VisualPropertyType) e .getNewValue(), e.getSource());
 
-			if (e.getPropertyName().equals(
-					ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED))
-				editorWindowManager
-						.remove((VisualPropertyType) e.getNewValue());
+			if (e.getPropertyName().equals(ContinuousMappingEditorPanel.EDITOR_WINDOW_CLOSED))
+				editorWindowManager.remove((VisualPropertyType) e.getNewValue());
 
 			return;
 		}
@@ -2354,11 +2150,12 @@ public class VizMapperMainPanel extends JPanel implements
 				|| (type.getDataType() == String.class)) {
 			key = e.getOldValue();
 
-			if (type.getDataType() == Number.class) {
-				numberCellEditor = new CyDoublePropertyEditor(this);
-				numberCellEditor.addPropertyChangeListener(this);
-				editorReg.registerEditor(prop, numberCellEditor);
-			}
+// TODO WTF?
+//			if (type.getDataType() == Number.class) {
+//				numberCellEditor = new CyDoublePropertyEditor(this);
+//				numberCellEditor.addPropertyChangeListener(this);
+//				editorReg.registerEditor(prop, numberCellEditor);
+//			}
 		} else {
 			key = ((Item) visualPropertySheetPanel.getTable().getValueAt(
 					selected, 0)).getProperty().getDisplayName();

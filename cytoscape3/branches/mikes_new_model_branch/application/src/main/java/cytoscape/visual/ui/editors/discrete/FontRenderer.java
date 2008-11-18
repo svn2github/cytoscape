@@ -40,7 +40,7 @@
 // $Date: 2008-02-06 15:34:25 -0800 (Wed, 06 Feb 2008) $
 // $Author: mes $
 //--------------------------------------------------------------------------
-package cytoscape.visual.ui;
+package cytoscape.visual.ui.editors.discrete;
 
 
 //--------------------------------------------------------------------------
@@ -55,7 +55,7 @@ import java.awt.*;
  * {@link FontChooser}
  * JList or JComboBox in the face specified.
  */
-public class FontRenderer extends DefaultListCellRenderer {
+class FontRenderer extends DefaultListCellRenderer {
 	private final static long serialVersionUID = 1202339876741828L;
     /**
      *  DOCUMENT ME!

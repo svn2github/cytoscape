@@ -38,9 +38,14 @@ package cytoscape.visual.ui.editors;
 import org.cytoscape.vizmap.VisualPropertyType;
 
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
+
+import java.beans.PropertyEditor;
+import javax.swing.table.TableCellRenderer;
 
 public class EditorFactory {
 
@@ -58,22 +63,13 @@ public class EditorFactory {
 		displayers.remove(ed);
 	}
 
-	private Object showEditor(VisualPropertyType type, EditorDisplayer.Type edType) {
+	private EditorDisplayer findEditor(VisualPropertyType type, EditorDisplayer.Type edType) {
 		final Class<?> dataType = type.getDataType();
-		EditorDisplayer res = null; 
-		for (EditorDisplayer command : displayers) {
-			if ( dataType == command.getDataType() && 
-			     edType == command.getEditorType() ) {
-				res = command;
-				break;
-			}
-		}
+		for (EditorDisplayer disp : displayers) 
+			if ( dataType == disp.getDataType() && edType == disp.getEditorType() ) 
+				return disp;	
 
-		if ( res == null )
-			throw new NullPointerException("no editor found for: " + type.toString());
-
-	
-		return res.showEditor(type);
+		throw new NullPointerException("no editor displayer found for: " + type.toString());
 	}
 
 	/**
@@ -84,7 +80,7 @@ public class EditorFactory {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public Object showDiscreteEditor(VisualPropertyType type) throws Exception {
-		return showEditor(type,EditorDisplayer.Type.DISCRETE);
+		return findEditor(type,EditorDisplayer.Type.DISCRETE).showEditor(type);
 	}
 	
 
@@ -97,6 +93,30 @@ public class EditorFactory {
 	 * @throws Exception DOCUMENT ME!
 	 */
 	public Object showContinuousEditor(VisualPropertyType type) throws Exception {
-		return showEditor(type,EditorDisplayer.Type.CONTINUOUS);
+		return findEditor(type,EditorDisplayer.Type.CONTINUOUS).showEditor(type);
 	}
-}	
+
+	public List<PropertyEditor> getCellEditors() {
+		List<PropertyEditor> ret = new ArrayList<PropertyEditor>();
+		for (EditorDisplayer disp : displayers) 
+			ret.add( disp.getCellEditor() );
+
+		return ret;
+	}
+
+	public PropertyEditor getDiscreteCellEditor(VisualPropertyType type) {
+		return findEditor(type,EditorDisplayer.Type.DISCRETE).getCellEditor();
+	}
+
+	public TableCellRenderer getDiscreteCellRenderer(VisualPropertyType type) {
+		return findEditor(type,EditorDisplayer.Type.DISCRETE).getCellRenderer(type,0,0);
+	}
+
+	public PropertyEditor getContinuousCellEditor(VisualPropertyType type) {
+		return findEditor(type,EditorDisplayer.Type.CONTINUOUS).getCellEditor();
+	}
+
+	public TableCellRenderer getContinuousCellRenderer(VisualPropertyType type,int w,int h) {
+		return findEditor(type,EditorDisplayer.Type.CONTINUOUS).getCellRenderer(type,w,h);
+	}
+}
