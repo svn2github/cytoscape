@@ -105,7 +105,7 @@ public class LayoutSettingsDialog extends JDialog implements ActionListener {
 			// Layout using the current layout
 			updateAllSettings();
 			TaskManager.executeTask( new LayoutTask(currentLayout,Cytoscape.getCurrentNetworkView()),
-			                         LayoutTask.getDefaultTaskConfig() );
+			                         LayoutTask.getDefaultTaskConfig(getParent()) );
 		} else if (command.equals("cancel")) {
 			// Call revertSettings for each layout
 			revertAllSettings();

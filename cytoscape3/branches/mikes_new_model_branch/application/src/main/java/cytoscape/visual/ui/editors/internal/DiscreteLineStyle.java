@@ -5,6 +5,7 @@ import cytoscape.visual.ui.editors.EditorDisplayer;
 import cytoscape.visual.ui.editors.discrete.ValueSelectDialog;
 import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
+import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.vizmap.VisualPropertyType;
 import javax.swing.JOptionPane;
 import org.cytoscape.vizmap.LineStyle;
@@ -18,8 +19,10 @@ public class DiscreteLineStyle implements EditorDisplayer {
 
     private final ShapeCellRenderer lineCellRenderer; 
     private final CyComboBoxPropertyEditor lineCellEditor; 
+    private final CytoscapeDesktop desk; 
 
-	public DiscreteLineStyle() { 
+	public DiscreteLineStyle(final CytoscapeDesktop desk) { 
+		this.desk = desk;
     	lineCellRenderer = new ShapeCellRenderer( VisualPropertyType.EDGE_LINE_STYLE);
     	lineCellEditor = new CyComboBoxPropertyEditor();
 	}
@@ -33,8 +36,7 @@ public class DiscreteLineStyle implements EditorDisplayer {
 	}
 
 	public Object showEditor(VisualPropertyType type) {
-		// TODO why is the second arg null?
-		return ValueSelectDialog.showDialog(VisualPropertyType.EDGE_LINE_STYLE,null);
+		return ValueSelectDialog.showDialog(VisualPropertyType.EDGE_LINE_STYLE,desk);
 	}
 
     public PropertyEditor getCellEditor() {

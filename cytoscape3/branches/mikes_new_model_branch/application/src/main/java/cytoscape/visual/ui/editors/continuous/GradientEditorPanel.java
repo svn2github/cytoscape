@@ -35,6 +35,7 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.util.CyColorChooser;
 import org.cytoscape.vizmap.VisualPropertyType;
 import org.cytoscape.vizmap.mappings.BoundaryRangeValues;
@@ -70,8 +71,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @param type
 	 *            DOCUMENT ME!
 	 */
-	public GradientEditorPanel(VisualPropertyType type) {
-		super(type);
+	public GradientEditorPanel(VisualPropertyType type,CytoscapeDesktop desk) {
+		super(type,desk);
 		iconPanel.setVisible(false);
 		initSlider();
 
@@ -90,12 +91,12 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @param type DOCUMENT ME!
 	 */
 	public static Object showDialog(final int width, final int height, final String title,
-	                                VisualPropertyType type) {
-		editor = new GradientEditorPanel(type);
+	                                VisualPropertyType type, CytoscapeDesktop desk) {
+		editor = new GradientEditorPanel(type, desk);
 		editor.setSize(new Dimension(width, height));
 		editor.setTitle(title);
 		editor.setAlwaysOnTop(true);
-		editor.setLocationRelativeTo(Cytoscape.getDesktop());
+		editor.setLocationRelativeTo(desk);
 		editor.setVisible(true);
 		editor.repaint();
 
@@ -112,11 +113,10 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getLegend(final int width, final int height,
-	                                  final VisualPropertyType type) {
-		editor = new GradientEditorPanel(type);
+	                                  final VisualPropertyType type, final CytoscapeDesktop desk) {
+		editor = new GradientEditorPanel(type,desk);
 
-		CyGradientTrackRenderer rend = (CyGradientTrackRenderer) editor.slider
-		                                                                                                                       .getTrackRenderer();
+		CyGradientTrackRenderer rend = (CyGradientTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);
 
 		return rend.getLegend(width, height);
@@ -128,8 +128,8 @@ public class GradientEditorPanel extends ContinuousMappingEditorPanel
 	 * @return  DOCUMENT ME!
 	 */
 	public static ImageIcon getIcon(final int iconWidth, final int iconHeight,
-	                                VisualPropertyType type) {
-		editor = new GradientEditorPanel(type);
+	                                VisualPropertyType type, CytoscapeDesktop desk) {
+		editor = new GradientEditorPanel(type, desk);
 
 		CyGradientTrackRenderer rend = (CyGradientTrackRenderer) editor.slider.getTrackRenderer();
 		rend.getRendererComponent(editor.slider);

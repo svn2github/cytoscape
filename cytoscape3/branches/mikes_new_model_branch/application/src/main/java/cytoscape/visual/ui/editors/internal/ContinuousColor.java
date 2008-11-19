@@ -6,7 +6,6 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.ui.editors.EditorDisplayer;
 import java.awt.Color;
 import cytoscape.visual.ui.editors.continuous.GradientEditorPanel; 
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel; 
 import org.cytoscape.vizmap.VisualPropertyType;
 import java.beans.PropertyEditor;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -16,8 +15,10 @@ import javax.swing.table.TableCellRenderer;
 public class ContinuousColor implements EditorDisplayer {
 
 	private final DefaultTableCellRenderer gradientRenderer; 
-	public ContinuousColor() { 
+	private final CytoscapeDesktop desk; 
+	public ContinuousColor(final CytoscapeDesktop desk) { 
 		gradientRenderer = new DefaultTableCellRenderer();
+		this.desk = desk;
 	}
 
 	public Class<?> getDataType() {
@@ -29,7 +30,7 @@ public class ContinuousColor implements EditorDisplayer {
 	}
 
 	public Object showEditor(VisualPropertyType type) {
-		return GradientEditorPanel.showDialog(450, 180,"Gradient Editor",type);
+		return GradientEditorPanel.showDialog(450, 180,"Gradient Editor",type,desk);
 	}
 
     public PropertyEditor getCellEditor() {
@@ -37,7 +38,7 @@ public class ContinuousColor implements EditorDisplayer {
 	}
 
     public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
-		gradientRenderer.setIcon(ContinuousMappingEditorPanel.getIcon(width,height, type));
+		gradientRenderer.setIcon(GradientEditorPanel.getIcon(width,height, type, desk));
 		return gradientRenderer;
 	}
 }

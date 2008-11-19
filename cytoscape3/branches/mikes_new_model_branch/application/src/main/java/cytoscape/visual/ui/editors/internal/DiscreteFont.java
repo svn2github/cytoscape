@@ -22,7 +22,7 @@ public class DiscreteFont implements EditorDisplayer {
 
 	public DiscreteFont(CytoscapeDesktop desk) {
 		this.desk = desk;
-		fontCellEditor = new CyFontPropertyEditor();
+		fontCellEditor = new CyFontPropertyEditor(desk);
 		fontCellRenderer = new FontCellRenderer();
 	}
 

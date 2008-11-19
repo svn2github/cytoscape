@@ -74,8 +74,19 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public BookmarkDialog(JFrame pParent) throws JAXBException, IOException {
+	public BookmarkDialog(Dialog pParent) throws JAXBException, IOException {
 		super(pParent, true);
+		basicInit();
+		this.setLocationRelativeTo(pParent);
+	}
+
+	public BookmarkDialog(Frame pParent) throws JAXBException, IOException {
+		super(pParent, true);
+		basicInit();
+		this.setLocationRelativeTo(pParent);
+	}
+
+	private void basicInit() throws JAXBException, IOException {
 		this.setTitle("Bookmark manager");
 
 		initComponents();
@@ -84,7 +95,6 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 		loadBookmarks();
 
 		setSize(new Dimension(500, 250));
-		this.setLocationRelativeTo(pParent);
 	}
 
 	/**
@@ -93,9 +103,18 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 	 * @throws IOException
 	 * @throws JAXBException
 	 */
-	public BookmarkDialog(JFrame pParent, String pCategoryName) throws JAXBException, IOException {
+	public BookmarkDialog(Dialog pParent, String pCategoryName) throws JAXBException, IOException {
 		this(pParent);
+		categoryInit(pCategoryName);
+	}
 
+	public BookmarkDialog(Frame pParent, String pCategoryName) throws JAXBException, IOException {
+		this(pParent);
+		categoryInit(pCategoryName);
+	}
+
+
+	private void categoryInit(String pCategoryName) throws JAXBException, IOException {
 		Dimension winSize = this.getSize();
 		
 		// Set the given category the selected item in comboBox
@@ -558,50 +577,5 @@ public class BookmarkDialog extends JDialog implements ActionListener, ListSelec
 		private javax.swing.JTextField tfURL;
 
 		// End of variables declaration
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		JDialog theDialog = new BookmarkDialog();
-		theDialog.setPreferredSize(new Dimension(350, 400));
-		theDialog.pack();
-		theDialog.setVisible(true);
-	}
-
-	// for test only
-	/**
-	 * Creates a new BookmarkDialog object.
-	 */
-	public BookmarkDialog() {
-		this.setTitle("Bookmark manager");
-
-		theBookmarks = getTestBookmarks();
-		initComponents();
-		bookmarkCategory = cmbCategory.getSelectedItem().toString();
-		// theBookmarks = Cytoscape.getBookmarks();
-		loadBookmarks();
-	}
-
-	// For test only, remove after test pass
-	private Bookmarks getTestBookmarks() {
-		Bookmarks tmpBookmarks = null;
-
-		java.io.File tmpBookmarkFile = new java.io.File("bookmarks_kei.xml");
-		System.out.println("tmpBookmarkFile =" + tmpBookmarkFile.getAbsolutePath());
-
-		// Load the Bookmarks object from given xml file
-		try {
-			tmpBookmarks = BookmarksUtil.getBookmarks(tmpBookmarkFile.toURI().toURL());
-		} catch (IOException e) {
-			System.out.println("IOException -- bookmarkSource");
-		} catch (JAXBException e) {
-			System.out.println("JAXBException -- bookmarkSource");
-		} catch (Exception e) {
-			System.out.println("Can not read the bookmark file, the bookmark file may not exist!");
-		}
-
-		return tmpBookmarks;
 	}
 }

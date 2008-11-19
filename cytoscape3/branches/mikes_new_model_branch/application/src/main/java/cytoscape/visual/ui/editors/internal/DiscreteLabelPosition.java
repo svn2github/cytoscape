@@ -22,7 +22,7 @@ public class DiscreteLabelPosition implements EditorDisplayer {
 	public DiscreteLabelPosition(final CytoscapeDesktop desk) {
 		this.desk = desk;
 		labelPositionRenderer = new LabelPositionCellRenderer();
-		labelPositionEditor = new CyLabelPositionPropertyEditor();
+		labelPositionEditor = new CyLabelPositionPropertyEditor(desk);
 	}
 
 	public Class<?> getDataType() {

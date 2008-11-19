@@ -35,6 +35,7 @@
 package cytoscape.visual.ui.editors.continuous;
 
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.model.CyRow;
 import org.cytoscape.model.CyDataTable;
 import org.cytoscape.vizmap.VisualPropertyType;
@@ -89,10 +90,12 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 	protected Object above;
 	protected static ContinuousMappingEditorPanel editor;
 	protected double lastSpinnerNumber = 0;
+	protected final CytoscapeDesktop desktop;
 
 	/** Creates new form ContinuousMapperEditorPanel */
-	public ContinuousMappingEditorPanel(final VisualPropertyType type) {
+	public ContinuousMappingEditorPanel(final VisualPropertyType type, final CytoscapeDesktop desktop) {
 		this.type = type;
+		this.desktop = desktop;
 		initComponents();
 		setVisualPropLabel();
 
@@ -108,27 +111,6 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 					firePropertyChange(EDITOR_WINDOW_CLOSED, this, type);
 				}
 			});
-	}
-
-	/**
-	 *  Dynamically generate small icons from continuous mappers.
-	 *
-	 * @param width DOCUMENT ME!
-	 * @param height DOCUMENT ME!
-	 * @param type DOCUMENT ME!
-	 *
-	 * @return  DOCUMENT ME!
-	 */
-	public static ImageIcon getIcon(final int width, final int height, VisualPropertyType type) {
-		final Class dataType = type.getDataType();
-
-		if (dataType == Color.class) {
-			return GradientEditorPanel.getIcon(width, height, type);
-		} else if (dataType == Number.class) {
-			return C2CMappingEditor.getIcon(width, height, type);
-		} else {
-			return C2DMappingEditor.getIcon(width, height, type);
-		}
 	}
 
 	protected void setSpinner() {
@@ -366,7 +348,8 @@ public abstract class ContinuousMappingEditorPanel extends JDialog implements Pr
 
 	protected void minMaxButtonActionPerformed(ActionEvent evt) {
 		final Double[] newVal = MinMaxDialog.getMinMax(EditorValueRangeTracer.getTracer().getMin(type),
-		                                         EditorValueRangeTracer.getTracer().getMax(type));
+		                                         EditorValueRangeTracer.getTracer().getMax(type),
+												 desktop);
 
 		if (newVal == null)
 			return;

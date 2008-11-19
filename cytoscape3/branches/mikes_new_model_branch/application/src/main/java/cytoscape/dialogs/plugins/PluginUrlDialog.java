@@ -34,7 +34,7 @@ public class PluginUrlDialog extends JDialog {
 	/**
 	 * Creates a new PluginUrlDialog object.
 	 */
-	public PluginUrlDialog(JDialog owner) {
+	public PluginUrlDialog(Dialog owner) {
 		super(owner, "Plugin Download Sites");
 		parentDialog = (PluginManageDialog) owner;
 		setLocationRelativeTo(owner);
@@ -59,7 +59,7 @@ public class PluginUrlDialog extends JDialog {
 		try {
 			theBookmarks = Cytoscape.getBookmarks();
 		} catch (Exception E) {
-			JOptionPane.showMessageDialog(Cytoscape.getDesktop(),
+			JOptionPane.showMessageDialog(getOwner(),
 					"Failed to retrieve bookmarks for plugin download sites.",
 					"Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace();
@@ -86,7 +86,7 @@ public class PluginUrlDialog extends JDialog {
 			(SelectedSite.getHref(), new UrlAction(parentDialog, SelectedSite.getHref()));
 		// Configure JTask Dialog Pop-Up Box
 		JTaskConfig jTaskConfig = new JTaskConfig();
-		jTaskConfig.setOwner(Cytoscape.getDesktop());
+		jTaskConfig.setOwner(getOwner());
 		jTaskConfig.displayCloseButton(false);
 		jTaskConfig.displayStatus(true);
 		jTaskConfig.setAutoDispose(true);
@@ -101,9 +101,9 @@ public class PluginUrlDialog extends JDialog {
 	// add - opens the bookmarks dialog to add a new download site
 	private void addSiteHandler(java.awt.event.ActionEvent evt) {
 		try {
-	final int preEdit = BookmarksUtil.getDataSourceList(
+			final int preEdit = BookmarksUtil.getDataSourceList(
 					bookmarkCategory, theBookmarks.getCategory()).size();
-			BookmarkDialog bDialog = new BookmarkDialog(Cytoscape.getDesktop(), "plugins");
+			BookmarkDialog bDialog = new BookmarkDialog((Dialog)getOwner(), "plugins");
 
 			// for some reason the windowStateListener wasn't getting the event
 			// so I have to use this one
@@ -142,7 +142,7 @@ public class PluginUrlDialog extends JDialog {
 		} catch (Exception E) {
 			JOptionPane
 					.showMessageDialog(
-							Cytoscape.getDesktop(),
+							getOwner(),
 							"Failed to get bookmarks.  Go to Edit->Preferences->Bookmarks to edit your plugin download sites.",
 							"Error", JOptionPane.ERROR_MESSAGE);
 			E.printStackTrace();

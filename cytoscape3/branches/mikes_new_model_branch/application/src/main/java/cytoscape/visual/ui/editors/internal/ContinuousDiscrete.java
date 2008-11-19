@@ -5,7 +5,6 @@ import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.ui.editors.EditorDisplayer;
 import cytoscape.visual.ui.editors.EditorFactory;
 import cytoscape.visual.ui.editors.continuous.C2DMappingEditor; 
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel; 
 import org.cytoscape.vizmap.VisualPropertyType;
 import java.beans.PropertyEditor;
 import javax.swing.table.TableCellRenderer;
@@ -41,7 +40,7 @@ public class ContinuousDiscrete implements EditorDisplayer {
     }
 
     public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
-		cellRenderer.setIcon(ContinuousMappingEditorPanel.getIcon(width,height,type));
+		cellRenderer.setIcon(C2DMappingEditor.getIcon(width,height,type, desktop));
 		return cellRenderer;
     }
 }

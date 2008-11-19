@@ -3,8 +3,8 @@ package cytoscape.visual.ui.editors.internal;
 
 import cytoscape.visual.ui.editors.EditorDisplayer;
 import cytoscape.visual.ui.editors.continuous.C2CMappingEditor; 
-import cytoscape.visual.ui.editors.continuous.ContinuousMappingEditorPanel; 
 import org.cytoscape.vizmap.VisualPropertyType;
+import cytoscape.view.CytoscapeDesktop;
 import java.beans.PropertyEditor;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
@@ -13,7 +13,9 @@ import javax.swing.table.TableCellRenderer;
 public class ContinuousContinuous implements EditorDisplayer {
 
 	private final DefaultTableCellRenderer continuousRenderer;
-	public ContinuousContinuous() { 
+	private final CytoscapeDesktop desk;
+	public ContinuousContinuous(final CytoscapeDesktop desk) { 
+		this.desk = desk;
 		continuousRenderer = new DefaultTableCellRenderer();	
 	}
 
@@ -26,7 +28,7 @@ public class ContinuousContinuous implements EditorDisplayer {
 	}
 
 	public Object showEditor(VisualPropertyType type) {
-		return C2CMappingEditor.showDialog(450, 350,"Continuous Editor for " + type.getName(),null);
+		return C2CMappingEditor.showDialog(450, 350,"Continuous Editor for " + type.getName(),type,desk);
 	}
 
     public PropertyEditor getCellEditor() {
@@ -34,7 +36,7 @@ public class ContinuousContinuous implements EditorDisplayer {
     }
 
     public TableCellRenderer getCellRenderer(VisualPropertyType type, int width, int height) {
-		continuousRenderer.setIcon(ContinuousMappingEditorPanel.getIcon(width,height, type));
+		continuousRenderer.setIcon(C2CMappingEditor.getIcon(width,height, type, desk));
 		return continuousRenderer;
     }
 }

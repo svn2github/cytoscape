@@ -72,15 +72,15 @@ public class ValueSelectDialog extends JDialog {
 	 * @param parent
 	 * @return
 	 */
-	public static Object showDialog(VisualPropertyType type, JDialog parent) {
+	public static Object showDialog(VisualPropertyType type, Frame parent) {
 	
 		final ValueSelectDialog dialog = new ValueSelectDialog(type, parent, true);
 		dialog.setVisible(true);
 		return dialog.getValue();
 	}
 
-	private ValueSelectDialog(VisualPropertyType type, JDialog parent, boolean modal) {
-		super(Cytoscape.getDesktop(), modal);
+	private ValueSelectDialog(VisualPropertyType type, Frame parent, boolean modal) {
+		super(parent, modal);
 		this.type = type;
 		shapeMap = this.type.getVisualProperty().getIconSet();
 		initComponents();

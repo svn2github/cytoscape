@@ -5,6 +5,7 @@ import cytoscape.visual.ui.editors.EditorDisplayer;
 import cytoscape.visual.ui.editors.discrete.ValueSelectDialog;
 import cytoscape.visual.ui.editors.discrete.CyComboBoxPropertyEditor;
 import cytoscape.visual.ui.editors.discrete.ShapeCellRenderer;
+import cytoscape.view.CytoscapeDesktop;
 import org.cytoscape.vizmap.VisualPropertyType;
 import javax.swing.JOptionPane;
 import org.cytoscape.vizmap.NodeShape;
@@ -21,8 +22,10 @@ public class DiscreteNodeShape implements EditorDisplayer {
 
 	private final ShapeCellRenderer shapeCellRenderer; 
 	private final CyComboBoxPropertyEditor shapeCellEditor; 
+	private final CytoscapeDesktop desk; 
 
-	public DiscreteNodeShape() { 
+	public DiscreteNodeShape(final CytoscapeDesktop desk) { 
+		this.desk = desk;
 		shapeCellRenderer = new ShapeCellRenderer(VisualPropertyType.NODE_SHAPE);
 		shapeCellEditor = new CyComboBoxPropertyEditor();
 	}
@@ -36,8 +39,7 @@ public class DiscreteNodeShape implements EditorDisplayer {
 	}
 
 	public Object showEditor(VisualPropertyType type) {
-		// TODO why is the second arg null?
-		return ValueSelectDialog.showDialog(VisualPropertyType.NODE_SHAPE,null);
+		return ValueSelectDialog.showDialog(VisualPropertyType.NODE_SHAPE,desk);
 	}
 
     public PropertyEditor getCellEditor() {

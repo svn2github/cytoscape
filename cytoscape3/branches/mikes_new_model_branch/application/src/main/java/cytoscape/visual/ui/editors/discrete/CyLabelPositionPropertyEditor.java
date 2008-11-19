@@ -37,6 +37,7 @@ package cytoscape.visual.ui.editors.discrete;
 import com.l2fprod.common.swing.ComponentFactory;
 import com.l2fprod.common.swing.PercentLayout;
 import cytoscape.Cytoscape;
+import cytoscape.view.CytoscapeDesktop;
 import cytoscape.visual.ui.editors.discrete.PopupLabelPositionChooser;
 import org.cytoscape.vizmap.LabelPosition;
 
@@ -52,11 +53,13 @@ public class CyLabelPositionPropertyEditor extends com.l2fprod.common.beans.edit
 	private LabelPositionCellRenderer label;
 	private JButton button;
 	private LabelPosition position;
+	private final CytoscapeDesktop desk;
 
 	/**
 	 * Creates a new CyLabelPositionLabelEditor object.
 	 */
-	public CyLabelPositionPropertyEditor() {
+	public CyLabelPositionPropertyEditor(final CytoscapeDesktop desk) {
+		this.desk = desk;
 		editor = new JPanel(new PercentLayout(PercentLayout.HORIZONTAL, 0));
 		((JPanel) editor).add("*", label = new LabelPositionCellRenderer());
 		label.setOpaque(false);
@@ -99,8 +102,7 @@ public class CyLabelPositionPropertyEditor extends com.l2fprod.common.beans.edit
 	}
 
 	protected void editLabelPosition() {
-		final LabelPosition newVal = PopupLabelPositionChooser.showDialog(Cytoscape.getDesktop(),
-		                                                                  position);
+		final LabelPosition newVal = PopupLabelPositionChooser.showDialog(desk, position);
 
 		if (newVal != null) {
 			final LabelPosition old = position;

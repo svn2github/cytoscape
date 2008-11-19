@@ -1183,25 +1183,8 @@ public class VizMapperMainPanel extends JPanel implements
 						table.setRowHeight(i, 80);
 
 						int wi = table.getCellRect(0, 1, true).width;
-						final ImageIcon icon = ContinuousMappingEditorPanel
-								.getIcon(wi, 70, (VisualPropertyType) type);
-						final Class dataType = ((VisualPropertyType) type)
-								.getDataType();
-
-						if (dataType == Color.class) {
-							final DefaultTableCellRenderer gradientRenderer = new DefaultTableCellRenderer();
-							gradientRenderer.setIcon(icon);
-							rendReg.registerRenderer(shownProp,
-									gradientRenderer);
-						} else if (dataType == Number.class) {
-							final DefaultTableCellRenderer cRenderer = new DefaultTableCellRenderer();
-							cRenderer.setIcon(icon);
-							rendReg.registerRenderer(shownProp, cRenderer);
-						} else {
-							final DefaultTableCellRenderer dRenderer = new DefaultTableCellRenderer();
-							dRenderer.setIcon(icon);
-							rendReg.registerRenderer(shownProp, dRenderer);
-						}
+						final TableCellRenderer cRenderer = editorFactory.getContinuousCellRenderer((VisualPropertyType) type,wi,70); 
+						rendReg.registerRenderer(shownProp, cRenderer);
 					}
 				}
 			} else if ((shownProp != null) && (shownProp.getCategory() != null)
@@ -1803,9 +1786,7 @@ public class VizMapperMainPanel extends JPanel implements
 			final int width = visualPropertySheetPanel.getTable().getCellRect(
 					0, 1, true).width;
 
-			final DefaultTableCellRenderer cRenderer = new DefaultTableCellRenderer();
-			cRenderer.setIcon(ContinuousMappingEditorPanel.getIcon(width, 70, type));
-
+			final TableCellRenderer cRenderer = editorFactory.getContinuousCellRenderer(type,width,70); 
 			rendReg.registerRenderer(vprop, cRenderer);
 			visualPropertySheetPanel.getTable().repaint();
 		}

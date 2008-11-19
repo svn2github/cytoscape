@@ -74,6 +74,6 @@ public class StaticLayoutMenu extends JMenuItem implements ActionListener {
 		layout.setSelectedOnly(false);
 
 		TaskManager.executeTask( new LayoutTask(layout,Cytoscape.getCurrentNetworkView()),
-		                         LayoutTask.getDefaultTaskConfig() );
+		                         LayoutTask.getDefaultTaskConfig(getParent()) );
 	}
 }

@@ -174,13 +174,19 @@
 
 
 	<!-- Visual property editors -->
-	<bean id="continuousColor" class="cytoscape.visual.ui.editors.internal.ContinuousColor"/>
-	<bean id="continuousContinuous" class="cytoscape.visual.ui.editors.internal.ContinuousContinuous"/>
+	<bean id="continuousColor" class="cytoscape.visual.ui.editors.internal.ContinuousColor">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="continuousContinuous" class="cytoscape.visual.ui.editors.internal.ContinuousContinuous">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<bean id="continuousDiscrete" class="cytoscape.visual.ui.editors.internal.ContinuousDiscrete">
 		<constructor-arg ref="cytoscapeDesktop"/>
 		<constructor-arg ref="editorFactory"/>
 	</bean>
-	<bean id="discreteArrowShape" class="cytoscape.visual.ui.editors.internal.DiscreteArrowShape"/>
+	<bean id="discreteArrowShape" class="cytoscape.visual.ui.editors.internal.DiscreteArrowShape">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<bean id="discreteColor" class="cytoscape.visual.ui.editors.internal.DiscreteColor">
 		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>
@@ -190,8 +196,12 @@
 	<bean id="discreteLabelPosition" class="cytoscape.visual.ui.editors.internal.DiscreteLabelPosition">
 		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>
-	<bean id="discreteLineStyle" class="cytoscape.visual.ui.editors.internal.DiscreteLineStyle"/>
-	<bean id="discreteNodeShape" class="cytoscape.visual.ui.editors.internal.DiscreteNodeShape"/>
+	<bean id="discreteLineStyle" class="cytoscape.visual.ui.editors.internal.DiscreteLineStyle">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
+	<bean id="discreteNodeShape" class="cytoscape.visual.ui.editors.internal.DiscreteNodeShape">
+		<constructor-arg ref="cytoscapeDesktop"/>
+	</bean>
 	<bean id="discreteNumber" class="cytoscape.visual.ui.editors.internal.DiscreteNumber">
 		<constructor-arg ref="cytoscapeDesktop"/>
 	</bean>

@@ -453,6 +453,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 		} else if (e.getPropertyName() == Cytoscape.NETWORK_DESTROYED) {
 			// fire the event so that the NetworkPanel can catch it
 			pcs.firePropertyChange(e);
+			setFocus( Cytoscape.getCurrentNetwork().getSUID() );
 
 			// Check new session or not
 			if ((Cytoscape.getNetworkSet().size() == 0)
@@ -472,6 +473,7 @@ public class CytoscapeDesktop extends JFrame implements PropertyChangeListener {
 
 			// pass on the event
 			pcs.firePropertyChange(e);
+			setFocus( Cytoscape.getCurrentNetwork().getSUID() );
 		}
 	}
 
