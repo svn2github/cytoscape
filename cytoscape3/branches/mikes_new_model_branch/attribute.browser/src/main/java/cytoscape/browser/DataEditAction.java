@@ -162,7 +162,7 @@ public class DataEditAction extends AbstractUndoableEdit {
 				return;
 			}
 		} else if (targetType == CyAttributes.TYPE_STRING) {
-			attr.setAttribute(id, att, newValueStr);
+			attr.setAttribute(id, att, replaceNewlines( newValueStr ));
 		} else if (targetType == CyAttributes.TYPE_SIMPLE_LIST) {
 			errMessage = "List editing is not supported in this version.";
 			showErrorWindow(errMessage);
@@ -179,6 +179,38 @@ public class DataEditAction extends AbstractUndoableEdit {
 
 		valid = true;
 	}
+
+    private String replaceNewlines(String s) {
+        StringBuffer sb = new StringBuffer( s );
+        int index = 0;
+        while ( index < sb.length() ) {
+            if ( sb.charAt(index) == '\\' ) {
+                if ( sb.charAt(index+1) == 'n') {
+                    sb.setCharAt(index,'\n');
+                    sb.deleteCharAt(index+1);
+                    index++;
+                } else if ( sb.charAt(index+1) == 'b') {
+                    sb.setCharAt(index,'\b');
+                    sb.deleteCharAt(index+1);
+                    index++;
+                } else if ( sb.charAt(index+1) == 'r') {
+                    sb.setCharAt(index,'\r');
+                    sb.deleteCharAt(index+1);
+                    index++;
+                } else if ( sb.charAt(index+1) == 'f') {
+                    sb.setCharAt(index,'\f');
+                    sb.deleteCharAt(index+1);
+                    index++;
+                } else if ( sb.charAt(index+1) == 't') {
+                    sb.setCharAt(index,'\t');
+                    sb.deleteCharAt(index+1);
+                    index++;
+                }
+            }
+            index++;
+        }
+        return sb.toString();
+    }
 
 	// Pop-up window for error message
 	private void showErrorWindow(String errMessage) {
