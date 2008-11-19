@@ -45,15 +45,10 @@ public class TextJarReader {
   StringBuffer sb;
 //---------------------------------------------------------------------------
 public TextJarReader (String URI) throws Exception
-{
+{           
   sb = new StringBuffer ();
-  filename = URI.substring (6);
-  ClassLoader cl = this.getClass().getClassLoader();
-  URL url = cl.getResource (filename);
-  JarURLConnection juc = (JarURLConnection) url.openConnection ();
-  JarFile jarFile = juc.getJarFile();
-  InputStream is = jarFile.getInputStream (jarFile.getJarEntry (filename));
-  reader = new InputStreamReader (is);
+  filename = URI.substring (6); 
+  reader =  new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(filename));
 
 } // ctor
 //-----------------------------------------------------------------------------------
@@ -73,7 +68,20 @@ public String getText ()
 {
   return sb.toString ();
 
-} // read
+} // read  
+
+public static void main(String[] args) {
+    try {
+        TextJarReader tjr = new TextJarReader("jar://hello");
+        int numBytes = tjr.read();
+        String text = tjr.getText();
+        System.out.println("Retrieved " + numBytes + " from file, containing: \n" + text);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+    
+}
+
 //---------------------------------------------------------------------------
 } // TextJarReader
 
