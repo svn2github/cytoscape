@@ -215,6 +215,15 @@ public class CyLogger {
 	}
 
 	/**
+	 * Get the debug status. 
+	 *
+	 * @return 'true' if the debug flag is enabled.
+	 */
+	public boolean isDebugging() {
+		return this.debugging;
+	}
+
+	/**
 	 * Log a message at the specified log level.
 	 *
 	 * @param message the message to be logged
